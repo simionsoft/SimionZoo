@@ -17,6 +17,8 @@ CCritic *CCritic::getInstance(char* configFile)
 		pCritic= new CTDLambdaCritic(pParameters);
 	else if (strcmp(pParameters->getStringPtr("ALGORITHM"),"True-Online-TD-Lambda")==0)
 		pCritic= new CTrueOnlineTDLambdaCritic(pParameters);
+	else if (strcmp(pParameters->getStringPtr("ALGORITHM"), "TDC-Lambda") == 0)
+		pCritic = new CTDCLambdaCritic(pParameters);
 
 	delete pParameters;
 

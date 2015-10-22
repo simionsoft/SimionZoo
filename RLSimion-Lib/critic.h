@@ -67,4 +67,29 @@ public:
 	void save(char* filename);
 };
 
+class CTDCLambdaCritic : public CCritic
+{
+	char m_saveFilename[1024];
+
+	CFeatureVFA* m_pVFA; //value function approximator
+	CFeatureList* m_z; //traces
+	CFeatureList* m_aux;
+	CFeatureList* m_s_features;
+	CFeatureList* m_s_p_features;
+	CFeatureList* m_w;
+	CFeatureList* m_a;
+
+	double *m_pAlpha;
+	double m_gamma;
+	double m_lambda;
+	double m_beta;
+public:
+	CTDCLambdaCritic(CParameters *pParameters);
+	~CTDCLambdaCritic();
+
+	double update(CState *s, CAction *a, CState *s_p, double r, double rho);
+
+	void load(char* filename);
+	void save(char* filename);
+};
 

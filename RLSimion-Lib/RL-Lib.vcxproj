@@ -85,6 +85,7 @@
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="critic-td-lambda.cpp" />
+    <ClCompile Include="critic-tdc-lambda.cpp" />
     <ClCompile Include="critic-true-online-td-lambda.cpp" />
     <ClCompile Include="critic.cpp" />
     <ClCompile Include="experiment.cpp" />

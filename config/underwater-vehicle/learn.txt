@@ -18,4 +18,4 @@ LOG_EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
 LOG_TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
 LOG_EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episodes? 0: no/ 1: yes
 LOG_FREQ : 0.25				//seconds
-EVAL_FREQ : 10				//in episodes
+EVAL_FREQ : 50				//in episodes

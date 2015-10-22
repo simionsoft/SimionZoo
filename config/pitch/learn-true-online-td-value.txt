@@ -8,7 +8,7 @@ PARAMETER_SCHEDULER_CONFIG_FILE : ../config/pitch/parameter-schedules/learn-valu
 
 
 //parameters of the experiment
-NUM_EPISODES : 1000		//number of episodes
+NUM_EPISODES : 100		//number of episodes
 EPISODE_LENGTH : 50.0		//length in seconds
 RANDOM_SEED : 1			//the seed used to generate random numbers
 

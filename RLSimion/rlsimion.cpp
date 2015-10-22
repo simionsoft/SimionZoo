@@ -31,7 +31,7 @@ CExperiment *g_pExperiment;
 int main(int argc, char* argv[])
 {
 	//Global parameters and objects
-	g_pParameters= new CParameters("../config/magnetic-levitation/test-pid.txt");
+	g_pParameters= new CParameters("../config/underwater-vehicle/learn.txt");
 
 	g_pWorld= new CWorld(g_pParameters->getStringPtr("WORLD_CONFIG_FILE"));
 
