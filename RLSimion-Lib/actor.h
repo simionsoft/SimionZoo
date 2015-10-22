@@ -19,7 +19,7 @@ public:
 
 	virtual double selectAction(CState *s,CAction *a)= 0;
 
-	virtual void update(CState *s,CAction *a,CState *s_p,double r,double td)= 0;
+	virtual void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td)= 0;
 
 	static CActor *getInstance(char* configFile);
 };
@@ -46,7 +46,7 @@ public:
 
 	double selectAction(CState *s,CAction *a);
 
-	void update(CState *s,CAction *a,CState *s_p,double r,double td);
+	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td);
 
 
 };
@@ -70,7 +70,7 @@ public:
 
 	double selectAction(CState *s,CAction *a);
 
-	void update(CState *s,CAction *a,CState *s_p,double r,double td);
+	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td);
 
 	double getLastActionProbability();
 };*/

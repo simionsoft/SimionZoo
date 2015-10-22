@@ -1,6 +1,5 @@
 WORLD_CONFIG_FILE : ../config/magnetic-levitation/environment/parameters.txt
 ACTOR_CONFIG_FILE : ../config/magnetic-levitation/controllers/pid.txt
-REWARD_CONFIG_FILE : ../config/magnetic-levitation/rewards/reward.txt
 
 
 //parameters of the experiment

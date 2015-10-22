@@ -20,7 +20,7 @@ public:
 
 	double selectAction(CState *s,CAction *a);
 
-	void update(CState *s,CAction *a,CState *s_p,double r,double td){}
+	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
 class CPIDController: public CActor
@@ -34,7 +34,7 @@ public:
 
 	double selectAction(CState *s,CAction *a);
 
-	void update(CState *s,CAction *a,CState *s_p,double r,double td){}
+	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
 class CWindTurbineVidalController: public CActor
@@ -47,7 +47,7 @@ public:
 
 	double selectAction(CState *s,CAction *a);
 
-	void update(CState *s,CAction *a,CState *s_p,double r,double td){}
+	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
 class CWindTurbineBoukhezzarController: public CActor
@@ -60,7 +60,7 @@ public:
 
 	double selectAction(CState *s,CAction *a);
 
-	void update(CState *s,CAction *a,CState *s_p,double r,double td){}
+	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
 class CWindTurbineJonkmanController: public CActor
@@ -79,5 +79,5 @@ public:
 
 	double selectAction(CState *s,CAction *a);
 
-	void update(CState *s,CAction *a,CState *s_p,double r,double td){}
+	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };

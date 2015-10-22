@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "critic.h"
 #include "vfa.h"
 #include "parameters.h"
@@ -35,7 +35,7 @@ CTDLambdaCritic::~CTDLambdaCritic()
 	delete m_aux;
 }
 
-double CTDLambdaCritic::update(CState *s, CAction *a, CState *s_p, double r,double rho)
+double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)
 {
 	if (*m_pAlpha==0.0) return 0.0;
 	//using sample importance
@@ -59,7 +59,7 @@ double CTDLambdaCritic::update(CState *s, CAction *a, CState *s_p, double r,doub
 	double newValue= m_pVFA->getValue(m_aux);
 	double td= r + m_gamma*newValue - oldValue;
 	
-	m_pVFA->add(m_z,td);//*rho);
+	m_pVFA->add(m_z,td*rho);
 
 	//m_pVFA->getFeatures(s,0,m_aux);
 	//double checkOldValue= m_pVFA->getValue(m_aux);

@@ -13,7 +13,7 @@ public:
 	CCritic(){}
 	virtual ~CCritic(){}
 
-	virtual double update(CState *s,CAction *a,CState *s_p,double r, double rho)= 0;
+	virtual double updateValue(CState *s,CAction *a,CState *s_p,double r, double rho)= 0;
 
 	static CCritic *getInstance(char* configFile);
 
@@ -36,7 +36,7 @@ public:
 	CTDLambdaCritic(CParameters *pParameters);
 	~CTDLambdaCritic();
 
-	double update(CState *s,CAction *a,CState *s_p,double r, double rho);
+	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
 
 	void load(char* filename);
 	void save(char* filename);
@@ -61,7 +61,7 @@ public:
 	CTrueOnlineTDLambdaCritic(CParameters *pParameters);
 	~CTrueOnlineTDLambdaCritic();
 
-	double update(CState *s,CAction *a,CState *s_p,double r, double rho);
+	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
 
 	void load(char* filename);
 	void save(char* filename);
@@ -87,7 +87,7 @@ public:
 	CTDCLambdaCritic(CParameters *pParameters);
 	~CTDCLambdaCritic();
 
-	double update(CState *s, CAction *a, CState *s_p, double r, double rho);
+	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
 
 	void load(char* filename);
 	void save(char* filename);

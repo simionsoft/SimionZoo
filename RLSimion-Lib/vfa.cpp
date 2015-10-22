@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "vfa.h"
 #include "featuremap.h"
 #include "features.h"

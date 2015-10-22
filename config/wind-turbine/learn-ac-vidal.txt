@@ -2,7 +2,6 @@
 WORLD_CONFIG_FILE : ../config/wind-turbine/environment/parameters.txt
 CRITIC_CONFIG_FILE : ../config/wind-turbine/agents/td-critic-vidal.txt
 ACTOR_CONFIG_FILE : ../config/wind-turbine/agents/cacla-actor-vidal.txt
-REWARD_CONFIG_FILE : ../config/wind-turbine/rewards/ieee-ie-reward.txt
 PARAMETER_SCHEDULER_CONFIG_FILE : ../config/wind-turbine/parameter-schedules/ac-learn-policy.txt
 
 

@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "world.h"
 #include "world-windturbine.h"
 #include "setpoint.h"

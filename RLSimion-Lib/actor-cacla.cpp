@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "actor.h"
 #include "vfa.h"
 #include "noise.h"
@@ -99,6 +99,12 @@ double CCACLAActor::getProbability(CAction* a)
 	if (g_pExperiment->isEvaluationEpisode())
 		return 1.0;
 
+	for (int i = 0; i < m_numOutputs; i++)
+	{
+		varProd *= (1 - max(1.0, fabs(m_pExpNoise[i]->getLastValue())));
+	}
+	return varProd;
+
 
 	//http://en.wikipedia.org/wiki/Multivariate_normal_distribution
 
@@ -125,7 +131,7 @@ double CCACLAActor::getProbability(CAction* a)
 	return min(1.0,expo/root);
 }
 
-void CCACLAActor::update(CState *s,CAction *a,CState *s_p,double r,double td)
+void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td)
 {
 	double lastNoise;
 	double a_width;

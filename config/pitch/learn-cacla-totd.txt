@@ -2,7 +2,6 @@
 WORLD_CONFIG_FILE : ../config/pitch/environment/parameters.txt
 CRITIC_CONFIG_FILE : ../config/pitch/agents/true-online-td-critic.txt
 ACTOR_CONFIG_FILE : ../config/pitch/agents/cacla-actor.txt
-REWARD_CONFIG_FILE : ../config/pitch/rewards/reward.txt
 PARAMETER_SCHEDULER_CONFIG_FILE : ../config/pitch/parameter-schedules/learn-policy-and-value.txt
 
 

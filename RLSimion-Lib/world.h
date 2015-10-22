@@ -5,6 +5,7 @@ typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CParameters;
 class CDynamicModel;
+class CReward;
 
 class CWorld
 {
@@ -13,6 +14,7 @@ class CWorld
 	static double m_dt;
 	static double m_t;
 	static double m_step_start_t;
+	CReward* m_pReward;
 public:
 	static double getDT();
 	static double getT();
@@ -28,7 +30,9 @@ public:
 	CAction *getActionDescriptor();
 
 	void reset(CState *s);
-	void executeAction(CState *s,CAction *a,CState *s_p);
+
+	//this function returns the reward of the tuple <s,a,s_p>
+	double executeAction(CState *s,CAction *a,CState *s_p);
 };
 
 class CDynamicModel

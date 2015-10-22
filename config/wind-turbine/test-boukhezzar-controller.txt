@@ -1,6 +1,5 @@
 WORLD_CONFIG_FILE : ../config/environments/windturbine-parameters.txt
 ACTOR_CONFIG_FILE : ../config/controllers/boukhezzar-parameters.txt
-REWARD_CONFIG_FILE : ../config/rewards/ieee-ie-reward.txt
 EXPERIMENT_CONFIG_FILE : ../config/experiments/test-episode.txt
 
 //parameters of the experiment

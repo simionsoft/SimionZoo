@@ -1,6 +1,5 @@
 WORLD_CONFIG_FILE : ../config/wind-turbine/environment/parameters.txt
 ACTOR_CONFIG_FILE : ../config/wind-turbine/controllers/vidal-parameters.txt
-REWARD_CONFIG_FILE : ../config/wind-turbine/rewards/ieee-ie-reward.txt
 
 //parameters of the experiment
 NUM_EPISODES : 1		//number of episodes

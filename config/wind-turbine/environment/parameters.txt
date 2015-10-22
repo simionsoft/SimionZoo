@@ -1,6 +1,6 @@
 DYNAMIC_MODEL : WIND_TURBINE_ONE_MASS
 DELTA_T : 0.01
 NUM_SIMULATION_STEPS : 4
-
+REWARD_CONFIG_FILE : ../config/wind-turbine/rewards/ieee-ie-reward.txt
 WIND_DATA_FILE : ../config/wind-turbine/environment/windturbine-wind-data.txt
 POWER_SET_POINT_FILE : ../config/wind-turbine/environment/windturbine-power-setpoint.txt

@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "parameterscheduler.h"
 #include "parameters.h"
 #include "globals.h"

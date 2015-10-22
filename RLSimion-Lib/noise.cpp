@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "noise.h"
 #include "globals.h"
 #include "parameters.h"

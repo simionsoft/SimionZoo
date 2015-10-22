@@ -1,8 +1,7 @@
 //config files
 WORLD_CONFIG_FILE : ../config/underwater-vehicle/environment/parameters.txt
-CRITIC_CONFIG_FILE : ../config/underwater-vehicle/agents/td-critic-learn-value.txt
+CRITIC_CONFIG_FILE : ../config/underwater-vehicle/agents/tdc-critic-learn-value.txt
 ACTOR_CONFIG_FILE : ../config/underwater-vehicle/agents/cacla-actor.txt
-REWARD_CONFIG_FILE : ../config/underwater-vehicle/rewards/reward.txt
 PARAMETER_SCHEDULER_CONFIG_FILE : ../config/underwater-vehicle/parameter-schedules/learn-value.txt
 
 

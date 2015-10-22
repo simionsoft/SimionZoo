@@ -2,16 +2,13 @@
 
 class CParameters;
 class CWorld;
-class CCritic;
-class CActor;
+class CSimGod;
 class CReward;
 class CLogger;
 class CExperiment;
 
 extern CParameters *g_pParameters;
 extern CWorld *g_pWorld;
-extern CCritic *g_pCritic;
-extern CActor *g_pActor;
-extern CReward *g_pReward;
+extern CSimGod *g_pSimGod;
 extern CLogger *g_pLogger;
 extern CExperiment *g_pExperiment;

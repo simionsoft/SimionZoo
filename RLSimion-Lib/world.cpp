@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "world.h"
 #include "parameters.h"
 #include "states-and-actions.h"
@@ -7,6 +7,7 @@
 #include "world-underwatervehicle.h"
 #include "world-pitchcontrol.h"
 #include "world-magneticlevitation.h"
+#include "reward.h"
 
 double CWorld::m_t= 0.0;
 double CWorld::m_dt= 0.0;
@@ -30,6 +31,8 @@ CWorld::CWorld(char* configFile)
 		m_pDynamicModel= new CMagneticLevitation(pParameters);
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
+
+	m_pReward = new CReward(pParameters->getStringPtr("REWARD_CONFIG_FILE"));
 
 	delete pParameters;
 }
@@ -61,7 +64,7 @@ void CWorld::reset(CState *s)
 		m_pDynamicModel->reset(s);
 }
 
-void CWorld::executeAction(CState *s,CAction *a,CState *s_p)
+double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 {
 	double dt= m_dt/m_simulationSteps;
 
@@ -76,6 +79,8 @@ void CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 			m_t+= dt;
 		}
 	}
+
+	return m_pReward->getReward(s, a, s_p);
 }
 
 CState *CWorld::getStateDescriptor()

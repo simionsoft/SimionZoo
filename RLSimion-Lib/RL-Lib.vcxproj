@@ -96,6 +96,7 @@
     <ClCompile Include="parameterscheduler.cpp" />
     <ClCompile Include="reward.cpp" />
     <ClCompile Include="setpoint.cpp" />
+    <ClCompile Include="SimGod.cpp" />
     <ClCompile Include="states-and-actions.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -121,6 +122,7 @@
     <ClInclude Include="parameterscheduler.h" />
     <ClInclude Include="reward.h" />
     <ClInclude Include="setpoint.h" />
+    <ClInclude Include="SimGod.h" />
     <ClInclude Include="states-and-actions.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />

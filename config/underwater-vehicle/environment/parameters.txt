@@ -1,5 +1,5 @@
 DYNAMIC_MODEL : UNDERWATER_VEHICLE
 DELTA_T : 0.03
 NUM_SIMULATION_STEPS : 4
-
+REWARD_CONFIG_FILE : ../config/underwater-vehicle/rewards/reward.txt
 SET_POINT_FILE : ../config/underwater-vehicle/environment/setpoint.txt

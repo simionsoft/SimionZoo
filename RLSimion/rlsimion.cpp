@@ -4,8 +4,7 @@
 #include "stdafx.h"
 #include "../RLSimion-Lib/parameters.h"
 #include "../RLSimion-Lib/world.h"
-#include "../RLSimion-Lib/critic.h"
-#include "../RLSimion-Lib/actor.h"
+#include "../RLSimion-Lib/simgod.h"
 #include "../RLSimion-Lib/reward.h"
 #include "../RLSimion-Lib/states-and-actions.h"
 #include "../RLSimion-Lib/parameterscheduler.h"
@@ -22,8 +21,7 @@
 
 CParameters *g_pParameters;
 CWorld *g_pWorld;
-CCritic *g_pCritic;
-CActor *g_pActor;
+CSimGod *g_pSimGod;
 CReward *g_pReward;
 CParameterScheduler *g_pParameterScheduler;
 CExperiment *g_pExperiment;
@@ -35,9 +33,9 @@ int main(int argc, char* argv[])
 
 	g_pWorld= new CWorld(g_pParameters->getStringPtr("WORLD_CONFIG_FILE"));
 
-	g_pCritic= CCritic::getInstance(g_pParameters->getStringPtr("CRITIC_CONFIG_FILE"));
-	g_pActor= CActor::getInstance(g_pParameters->getStringPtr("ACTOR_CONFIG_FILE"));
-	g_pReward= new CReward(g_pParameters->getStringPtr("REWARD_CONFIG_FILE"));
+	g_pSimGod = new CSimGod(g_pParameters);
+
+	
 	g_pParameterScheduler= new CParameterScheduler(g_pParameters->getStringPtr("PARAMETER_SCHEDULER_CONFIG_FILE"));
 	g_pExperiment= new CExperiment(g_pParameters);
 
@@ -64,17 +62,13 @@ int main(int argc, char* argv[])
 				g_pParameterScheduler->update();
 
 			//a= pi(s)
-			rho= g_pActor->selectAction(s,a);
-			//s_p= f(s,a)
-			g_pWorld->executeAction(s,a,s_p);
-			//r= R(s,a,s')
-			r= g_pReward->getReward(s,a,s_p);
+			g_pSimGod->selectAction(s,a);
 
-			//update critic
-			if (g_pCritic)
-				td= g_pCritic->update(s,a,s_p,r,rho);
-			//update actor
-			g_pActor->update(s,a,s_p,r,td);
+			//s_p= f(s,a); r= R(s');
+			r= g_pWorld->executeAction(s,a,s_p);
+
+			//update god's policy and value estimation
+			g_pSimGod->update(s, a, s_p, r);
 
 
 			//log tuple <s,a,s',r>
@@ -85,8 +79,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	delete g_pActor;
-	delete g_pCritic;
+	delete g_pSimGod;
 
 	printf("\nThe END\n");
 	char c;
@@ -100,7 +93,6 @@ int main(int argc, char* argv[])
 	delete g_pWorld;
 	
 	delete g_pParameterScheduler;
-	delete g_pReward;
 	delete g_pExperiment;
 
 	return 0;

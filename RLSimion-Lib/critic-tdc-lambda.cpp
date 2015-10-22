@@ -44,7 +44,7 @@ CTDCLambdaCritic::~CTDCLambdaCritic()
 	delete m_w;
 }
 
-double CTDCLambdaCritic::update(CState *s, CAction *a, CState *s_p, double r,double rho)
+double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r, double rho)
 {
 	if (*m_pAlpha==0.0) return 0.0;
 	

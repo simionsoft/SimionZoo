@@ -1,4 +1,4 @@
-#include <stdafx.h>
+#include "stdafx.h"
 #include "critic.h"
 #include "vfa.h"
 #include "parameters.h"
@@ -36,7 +36,7 @@ CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 	delete m_aux;
 }
 
-double CTrueOnlineTDLambdaCritic::update(CState *s, CAction *a, CState *s_p, double r,double rho)
+double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)
 {
 	double v_s_p;
 
