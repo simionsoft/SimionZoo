@@ -1,0 +1,6 @@
+ALGORITHM : VIDAL
+A : 1.0
+K_alpha : 6000.0
+KP : 1.0
+KI : 0.00//1
+P_s : 600000.0		//Power setpoint, used in the torque controller

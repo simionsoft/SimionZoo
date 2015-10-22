@@ -1,0 +1,5 @@
+ALGORITHM : PID
+KP : 100.0
+KI : 0.001
+KD : 0.0
+ERROR_VARIABLE : v-deviation

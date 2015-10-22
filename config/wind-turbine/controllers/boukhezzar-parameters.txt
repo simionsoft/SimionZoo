@@ -1,0 +1,6 @@
+ALGORITHM : BOUKHEZZAR
+C_0 : 1.0
+KP : 0.1
+KI : 0.001
+J_t : 3.92e5
+K_t : 400.0

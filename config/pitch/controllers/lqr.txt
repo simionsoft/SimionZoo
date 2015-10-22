@@ -1,0 +1,4 @@
+ALGORITHM : LQR
+attack-angle : -0.6435
+pitch-rate : 169.695
+control-deviation : -7.0711

@@ -1,0 +1,5 @@
+DYNAMIC_MODEL : UNDERWATER_VEHICLE
+DELTA_T : 0.03
+NUM_SIMULATION_STEPS : 4
+
+SET_POINT_FILE : ../config/underwater-vehicle/environment/setpoint.txt

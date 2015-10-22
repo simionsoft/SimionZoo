@@ -1,0 +1,24 @@
+//config files
+WORLD_CONFIG_FILE : ../config/wind-turbine/environments/windturbine-parameters.txt
+CRITIC_CONFIG_FILE : ../config/wind-turbine/agents/td-critic-boukhezzar.txt
+ACTOR_CONFIG_FILE : ../config/wind-turbine/agents/cacla-actor-boukhezzar.txt
+REWARD_CONFIG_FILE : ../config/wind-turbine/rewards/ieee-ie-reward.txt
+PARAMETER_SCHEDULER_CONFIG_FILE : ../config/wind-turbine/parameterschedules/ac-learn.txt
+EXPERIMENT_CONFIG_FILE : ../config/experiments/learn-episodes.txt
+
+ACTOR_LOAD : ../vfa-data/boukhezzar-AC.bin
+
+//parameters of the experiment
+NUM_EPISODES : 2000		//number of episodes
+EPISODE_LENGTH : 200.0		//length in seconds
+RANDOM_SEED : 1			//the seed used to generate random numbers
+
+//logging parameters
+LOG_FREQ : 0.2			//in seconds
+LOG_OUTPUT_DIR : ../output-logs
+LOG_FILE_PREFIX : wt-learn
+LOG_EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
+LOG_TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
+LOG_EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episodes? 0: no/ 1: yes
+LOG_FREQ : 0.25				//seconds
+EVAL_FREQ : 20				//in episodes

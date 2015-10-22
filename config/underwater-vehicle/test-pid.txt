@@ -1,0 +1,19 @@
+WORLD_CONFIG_FILE : ../config/underwater-vehicle/environment/parameters.txt
+ACTOR_CONFIG_FILE : ../config/underwater-vehicle/controllers/pid.txt
+REWARD_CONFIG_FILE : ../config/underwater-vehicle/rewards/reward.txt
+
+
+//parameters of the experiment
+NUM_EPISODES : 1		//number of episodes
+EPISODE_LENGTH : 25.0		//length in seconds
+RANDOM_SEED : 1			//the seed used to generate random numbers
+
+//logging parameters
+LOG_FREQ : 0.2			//in seconds
+LOG_OUTPUT_DIR : ../output-logs/underwater-vehicle
+LOG_FILE_PREFIX : uv-test-pid
+LOG_EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
+LOG_TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
+LOG_EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episodes? 0: no/ 1: yes
+LOG_FREQ : 0.25				//seconds
+EVAL_FREQ : 20				//in episodes

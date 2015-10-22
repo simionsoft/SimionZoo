@@ -1,0 +1,5 @@
+ALGORITHM : TD-Lambda
+VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(50-c),d_omega_r(50),T_g(50),E_p(50-c)
+INITIAL_GAMMA : 0.9
+INITIAL_LAMBDA : 0.9
+LOAD : ../vfa-data/vidal-value.bin

@@ -1,0 +1,5 @@
+WORLD_CONFIG_FILE : ../config/environments/windturbine-parameters.txt
+ACTOR_CONFIG_FILE : ../config/agents/cacla-actor-vidal.txt
+CONTROLLER_CONFIG_FILE : ../config/controllers/vidal-parameters.txt
+
+ACTOR_LOAD : ../vfa-data/vidal-AC2.bin

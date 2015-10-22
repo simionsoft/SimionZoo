@@ -1,0 +1,5 @@
+WORLD_CONFIG_FILE : ../config/pitch/environment/parameters.txt
+ACTOR_CONFIG_FILE : ../config/pitch/agents/cacla-actor.txt
+CONTROLLER_CONFIG_FILE : ../config/pitch/controllers/lqr.txt
+
+OUTPUT_FILE : ../vfa-data/pitch-lqr.bin
