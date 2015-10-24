@@ -87,6 +87,9 @@
     <ClCompile Include="SimGod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="actor-critic-bhatnagar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -153,6 +156,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SimGod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actor-critic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

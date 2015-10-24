@@ -1,5 +1,0 @@
-DYNAMIC_MODEL : PITCH_CONTROL
-DELTA_T : 0.05
-NUM_SIMULATION_STEPS : 4
-REWARD_CONFIG_FILE : ../config/pitch/rewards/reward.txt
-SET_POINT_FILE : ../config/pitch/environment/setpoint.txt

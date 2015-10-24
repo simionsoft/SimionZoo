@@ -33,12 +33,12 @@ double getNormalDistributionSample(/*double mu, */double sigma)
 //}
 
 
-CGaussianNoise::CGaussianNoise(int actionDim)
+CGaussianNoise::CGaussianNoise(int actionDim, CParameters* pParameters)
 {
 	char paramName[MAX_PARAMETER_NAME_SIZE];
-	sprintf_s(paramName,MAX_PARAMETER_NAME_SIZE, "ACTOR_NOISE_WIDTH_%d",actionDim);
+	sprintf_s(paramName,MAX_PARAMETER_NAME_SIZE, "SIMGOD/ACTOR/NOISE_WIDTH_%d",actionDim);
 	//m_pWidth= g_pParameters->add(paramName,0.0); //2015/10/09
-	m_pSigma= g_pParameters->add(paramName, 0.0); //2015/10/09
+	m_pSigma= pParameters->add(paramName, 0.0); //2015/10/09
 
 	m_lastValue= 0.0;
 }

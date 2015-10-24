@@ -3,6 +3,7 @@
 #define LINEAR_DECAY 0
 #define QUADRATIC_DECAY 1
 
+class CParameters;
 
 struct CScheduleData
 {
@@ -18,7 +19,7 @@ class CParameterScheduler
 	int m_numParameterSchedules;
 
 public:
-	CParameterScheduler(char* configFile);
+	CParameterScheduler(char* configFile, CParameters* pParameters);
 	~CParameterScheduler();
 
 	void update();

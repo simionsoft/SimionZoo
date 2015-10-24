@@ -13,28 +13,26 @@ double CWorld::m_t= 0.0;
 double CWorld::m_dt= 0.0;
 double CWorld::m_step_start_t= 0.0;
 
-CWorld::CWorld(char* configFile)
+CWorld::CWorld(CParameters* pParameters)
 {
-	CParameters* pParameters= new CParameters(configFile);
+	assert(pParameters);
 	m_t= 0.0;
 
-	m_simulationSteps= (int)pParameters->getDouble("NUM_SIMULATION_STEPS");
-	m_dt= pParameters->getDouble("DELTA_T");
+	m_simulationSteps= (int)pParameters->getDouble("WORLD/NUM_SIMULATION_STEPS");
+	m_dt= pParameters->getDouble("WORLD/DELTA_T");
 
-	if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"WIND_TURBINE_ONE_MASS")==0)
+	if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"WIND_TURBINE_ONE_MASS")==0)
 		m_pDynamicModel= new CWindTurbine(pParameters);
-	else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"UNDERWATER_VEHICLE")==0)
+	else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"UNDERWATER_VEHICLE")==0)
 		m_pDynamicModel= new CUnderwaterVehicle(pParameters);
-	else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"PITCH_CONTROL")==0)
+	else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"PITCH_CONTROL")==0)
 		m_pDynamicModel= new CPitchControl(pParameters);
-	else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"MAGNETIC_LEVITATION")==0)
+	else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"MAGNETIC_LEVITATION")==0)
 		m_pDynamicModel= new CMagneticLevitation(pParameters);
-	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
+	//else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
-	m_pReward = new CReward(pParameters->getStringPtr("REWARD_CONFIG_FILE"));
-
-	delete pParameters;
+	m_pReward = new CReward(pParameters);
 }
 
 CWorld::~CWorld()
@@ -59,6 +57,8 @@ double CWorld::getStepStartT()
 
 void CWorld::reset(CState *s)
 {
+	m_avgReward = 0.0;
+	m_lastReward = 0.0;
 	m_t= 0.0;
 	if (m_pDynamicModel)
 		m_pDynamicModel->reset(s);
@@ -79,10 +79,22 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 			m_t+= dt;
 		}
 	}
+	m_lastReward = m_pReward->getReward(s, a, s_p);
+	m_avgReward = (1.0 - m_avgRewardGain)*m_avgReward + m_avgRewardGain*m_lastReward;
 
-	return m_pReward->getReward(s, a, s_p);
+	return m_lastReward;
 }
 
+double CWorld::getLastReward()
+{
+	return m_lastReward;
+}
+
+double CWorld::getAvgReward()
+{
+	return m_avgReward;
+
+}
 CState *CWorld::getStateDescriptor()
 {
 	if (m_pDynamicModel)

@@ -1,5 +1,0 @@
-ACTOR_NOISE_WIDTH_0 : 0.1,0.0,0.0,quadratic
-
-ACTOR_LEARNING_RATE_0 : 0.1,0.1,0.0,linear
-
-CRITIC_LEARNING_RATE : 0.1,0.1,0.0,linear

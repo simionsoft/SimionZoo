@@ -20,7 +20,7 @@ CPitchControl::CPitchControl(CParameters* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"pitch",-1.4,1.4);
 
-	m_pSetpoint= new CFileSetPoint(pParameters->getStringPtr("SET_POINT_FILE"));
+	m_pSetpoint= new CFileSetPoint(pParameters->getStringPtr("WORLD/SET_POINT_FILE"));
 }
 
 CPitchControl::~CPitchControl()

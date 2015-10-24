@@ -31,14 +31,20 @@ public:
 	char *getStringPtr(char* parameterName);
 	double *getDoublePtr(char* parameterName);
 	double getDouble(char* parameterName);
+	double getDouble(int parameterIndex);
 
 	char *getParameterName(int parameterIndex);
+	//only takes into account parameters starting with parameterPrefix. Returns the name from the parameterPrefix on
+	char *getParameterName(int parameterIndex, char* parameterPrefix);
+
+
 	char *getStringPtr(int parameterIndex);
 	double *getDoublePtr(int parameterIndex);
 
 	int getParameterIndex(char* parameterName);
 
 	int getNumParameters(){return m_numParameters;}
+	int getNumParameters(char* parameterPrefix); //only takes into account parameters starting with parameterPrefix
 
 	bool exists(char* parameterName);
 };

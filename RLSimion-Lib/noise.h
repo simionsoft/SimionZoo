@@ -1,5 +1,7 @@
 #pragma once
 
+class CParameters;
+
 
 class CGaussianNoise
 {
@@ -8,7 +10,7 @@ class CGaussianNoise
 	double *m_pSigma; //2015/10/09
 	//double getWidth(){if (m_pWidth) return *m_pWidth; else return 0.0;} //2015/10/09
 public:
-	CGaussianNoise(int actionDim);
+	CGaussianNoise(int actionDim, CParameters* pParameters);
 	~CGaussianNoise();
 
 	double getNewValue();

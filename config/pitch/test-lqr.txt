@@ -1,17 +1,31 @@
-WORLD_CONFIG_FILE : ../config/pitch/environment/parameters.txt
-ACTOR_CONFIG_FILE : ../config/pitch/controllers/lqr.txt
-
-
 //parameters of the experiment
-NUM_EPISODES : 1		//number of episodes
-EPISODE_LENGTH : 50.0		//length in seconds
-RANDOM_SEED : 1			//the seed used to generate random numbers
+EXPERIMENT/NUM_EPISODES : 1		//number of episodes
+EXPERIMENT/EPISODE_LENGTH : 50.0		//length in seconds
+EXPERIMENT/RANDOM_SEED : 1			//the seed used to generate random numbers
+EXPERIMENT/EVAL_FREQ : 50				//in episodes
+EXPERIMENT/LOG/OUTPUT_DIR : ../logs/pitch
+EXPERIMENT/LOG/FILE_PREFIX : pitch-test-lqr
+EXPERIMENT/LOG/EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/FREQ : 0.25				//seconds
 
-//logging parameters
-LOG_OUTPUT_DIR : ../output-logs/pitch
-LOG_FILE_PREFIX : pitch-test-lqr
-LOG_EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
-LOG_TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
-LOG_EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episodes? 0: no/ 1: yes
-LOG_FREQ : 0.25				//seconds
-EVAL_FREQ : 50				//in episodes
+//World
+WORLD/DYNAMIC_MODEL : PITCH_CONTROL
+WORLD/DELTA_T : 0.05
+WORLD/NUM_SIMULATION_STEPS : 4
+WORLD/SET_POINT_FILE : ../config/pitch/setpoints/setpoint.txt
+WORLD/REWARD/MIN_REWARD : -100.0
+WORLD/REWARD/MAX_REWARD : 1.0
+WORLD/REWARD/NUM_COMPONENTS : 1
+WORLD/REWARD/COMPONENT_TYPE_0 : DEVIATION_VARIABLE
+WORLD/REWARD/COMPONENT_WEIGHT_0 : 1
+WORLD/REWARD/COMPONENT_TOLERANCE_0 : 0.02
+WORLD/REWARD/CONTROL_ERROR_VARIABLE_0 : control-deviation
+
+//Simion god
+SIMGOD/TYPE : ACTOR-ONLY
+SIMGOD/ACTOR/ALGORITHM : LQR
+SIMGOD/ACTOR/LQR-GAINS/attack-angle : -0.6435
+SIMGOD/ACTOR/LQR-GAINS/pitch-rate : 169.695
+SIMGOD/ACTOR/LQR-GAINS/control-deviation : -7.0711

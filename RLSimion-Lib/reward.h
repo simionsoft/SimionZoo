@@ -4,6 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CErrorComponent;
+class CParameters;
 
 class CReward
 {
@@ -13,7 +14,7 @@ class CReward
 	double m_maxReward;
 	int m_numRewardComponents;
 public:
-	CReward(char* configFile);
+	CReward(CParameters* pParameters);
 	~CReward();
 
 	double getReward(CState *s,CAction *a,CState *s_p);

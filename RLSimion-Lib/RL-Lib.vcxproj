@@ -82,6 +82,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
+    <ClCompile Include="actor-critic-bhatnagar.cpp" />
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="critic-td-lambda.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="actor-critic.h" />
     <ClInclude Include="actor.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />

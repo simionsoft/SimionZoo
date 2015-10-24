@@ -6,9 +6,7 @@
 
 #define NUM_STATE_VARIABLES 3
 
-#define DIM_UV_GOAL_V 0
-#define DIM_UV_V 1
-#define DIM_UV_V_CONTROL_DEVIATION 2
+
 
 
 CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
@@ -22,7 +20,7 @@ CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"u-thrust",-30.0,30.0);
 
-	m_pSetpoint= new CFileSetPoint(pParameters->getStringPtr("SET_POINT_FILE"));
+	m_pSetpoint= new CFileSetPoint(pParameters->getStringPtr("WORLD/SET_POINT_FILE"));
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()

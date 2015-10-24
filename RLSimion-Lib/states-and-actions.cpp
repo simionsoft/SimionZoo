@@ -10,34 +10,6 @@ CNamedVarSet::CNamedVarSet(int numVars)
 	m_pValues= new double[numVars];
 	m_numVars= numVars;
 }
-//
-//CNamedVarSet::CNamedVarSet(CParameters* pParameters)
-//{
-//	char paramName[MAX_PARAMETER_NAME_SIZE];
-//
-//	m_pProperties= new CNamedVarProperties[numVars];
-//	m_pValues= new double[numVars];
-//	m_numVars= pParameters->getDouble("NUM_VARIABLES");
-//
-//	for (int i= 0; i<m_numVars; i++)
-//	{
-//		sprintf_s(paramName,"VARIABLE_%d_NAME",i);
-//		if(pParameters->exists(paramName))
-//			strcpy(m_pProperties[i].name,pParameters->getStringPtr(paramName));
-//
-//		sprintf_s(paramName,"VARIABLE_%d_MIN",i);
-//		if(pParameters->exists(paramName))
-//			strcpy(m_pProperties[i].name,pParameters->getStringPtr(paramName));
-//
-//		sprintf_s(paramName,"VARIABLE_%d_MAX",i);
-//		if(pParameters->exists(paramName))
-//			strcpy(m_pProperties[i].name,pParameters->getStringPtr(paramName));
-//
-//		sprintf_s(paramName,"VARIABLE_%d_INITIAL_VALUE",i);
-//		if(pParameters->exists(paramName))
-//			strcpy(m_pProperties[i].name,pParameters->getStringPtr(paramName));
-//	}
-//}
 
 CNamedVarSet::~CNamedVarSet()
 {

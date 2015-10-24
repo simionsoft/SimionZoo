@@ -1,27 +1,58 @@
 #include "stdafx.h"
 #include "critic.h"
 #include "parameters.h"
+#include "vfa.h"
 
+CCritic* CCritic::m_pCritic = 0;
 
-
-CCritic *CCritic::getInstance(char* configFile)
+CCritic *CCritic::getCriticInstance(CParameters* pParameters)
 {
-	CCritic* pCritic= 0;
 
-	if (!configFile) return (CCritic*)0;
+	if (m_pCritic == 0 && pParameters)
+	{
 
+		if (strcmp(pParameters->getStringPtr("SIMGOD/CRITIC/ALGORITHM"), "TD-Lambda") == 0)
+			m_pCritic = new CTDLambdaCritic(pParameters);
+		else if (strcmp(pParameters->getStringPtr("SIMGOD/CRITIC/ALGORITHM"), "True-Online-TD-Lambda") == 0)
+			m_pCritic = new CTrueOnlineTDLambdaCritic(pParameters);
+		else if (strcmp(pParameters->getStringPtr("SIMGOD/CRITIC/ALGORITHM"), "TDC-Lambda") == 0)
+			m_pCritic = new CTDCLambdaCritic(pParameters);
 
-	CParameters *pParameters= new CParameters(configFile);
-
-	if (strcmp(pParameters->getStringPtr("ALGORITHM"),"TD-Lambda")==0)
-		pCritic= new CTDLambdaCritic(pParameters);
-	else if (strcmp(pParameters->getStringPtr("ALGORITHM"),"True-Online-TD-Lambda")==0)
-		pCritic= new CTrueOnlineTDLambdaCritic(pParameters);
-	else if (strcmp(pParameters->getStringPtr("ALGORITHM"), "TDC-Lambda") == 0)
-		pCritic = new CTDCLambdaCritic(pParameters);
-
-	delete pParameters;
-
-	return pCritic;
+	}
+	return m_pCritic;
 }
 
+
+void CCritic::saveVFunction(char* pFilename)
+{
+	FILE* pFile;
+
+	printf("Saving Value-Function (\"%s\")...", pFilename);
+
+	fopen_s(&pFile, pFilename, "wb");
+	if (pFile)
+	{
+		m_pVFA->save(pFile);
+		fclose(pFile);
+		printf("OK\n");
+	}
+
+}
+
+void CCritic::loadVFunction(char* pFilename)
+{
+	FILE* pFile;
+
+	printf("Loading Value-Function (\"%s\")...", pFilename);
+
+	fopen_s(&pFile, pFilename, "rb");
+	if (pFile)
+	{
+		m_pVFA->load(pFile);
+		fclose(pFile);
+
+		printf("OK\n");
+	}
+	else printf("FAILED\n");
+
+}

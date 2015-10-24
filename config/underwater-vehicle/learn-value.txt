@@ -1,21 +1,39 @@
 //config files
-WORLD_CONFIG_FILE : ../config/underwater-vehicle/environment/parameters.txt
-CRITIC_CONFIG_FILE : ../config/underwater-vehicle/agents/tdc-critic-learn-value.txt
-ACTOR_CONFIG_FILE : ../config/underwater-vehicle/agents/cacla-actor.txt
 PARAMETER_SCHEDULER_CONFIG_FILE : ../config/underwater-vehicle/parameter-schedules/learn-value.txt
 
-
-
 //parameters of the experiment
-NUM_EPISODES : 100		//number of episodes
-EPISODE_LENGTH : 200.0		//length in seconds
-RANDOM_SEED : 1			//the seed used to generate random numbers
+EXPERIMENT/NUM_EPISODES : 100		//number of episodes
+EXPERIMENT/EPISODE_LENGTH : 200.0		//length in seconds
+EXPERIMENT/RANDOM_SEED : 1			//the seed used to generate random numbers
+EXPERIMENT/EVAL_FREQ : 0				//in episodes
+EXPERIMENT/LOG/OUTPUT_DIR : ../logs/underwater-vehicle
+EXPERIMENT/LOG/FILE_PREFIX : pitch-learn
+EXPERIMENT/LOG/EVALUATION_EPISODES : 0		//log all the evaluation episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/EVALUATION_AVG_REWARDS : 0		//log summary of the evaluation episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/FREQ : 0.25				//seconds
 
-//logging parameters
-LOG_OUTPUT_DIR : ../output-logs/underwater-vehicle
-LOG_FILE_PREFIX : pitch-learn
-LOG_EVALUATION_EPISODES : 0		//log all the evaluation episodes? 0: no/ 1: yes
-LOG_TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
-LOG_EVALUATION_AVG_REWARDS : 0		//log summary of the evaluation episodes? 0: no/ 1: yes
-LOG_FREQ : 0.25				//seconds
-EVAL_FREQ : 0				//in episodes
+//World
+WORLD/DYNAMIC_MODEL : UNDERWATER_VEHICLE
+WORLD/DELTA_T : 0.03
+WORLD/NUM_SIMULATION_STEPS : 4
+WORLD/SET_POINT_FILE : ../config/underwater-vehicle/setpoints/setpoint.txt
+WORLD/REWARD/MIN_REWARD : -100.0
+WORLD/REWARD/MAX_REWARD : 1.0
+WORLD/REWARD/NUM_COMPONENTS : 1
+WORLD/REWARD/COMPONENT_TYPE_0 : DEVIATION_VARIABLE
+WORLD/REWARD/COMPONENT_WEIGHT_0 : 1
+WORLD/REWARD/COMPONENT_TOLERANCE_0 : 0.1
+WORLD/REWARD/CONTROL_ERROR_VARIABLE_0 : v-deviation
+
+//Simion god
+SIMGOD/TYPE : ACTOR-CRITIC
+SIMGOD/ACTOR/ALGORITHM : CACLA
+SIMGOD/ACTOR/NUM_OUTPUTS : 1
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(10000)
+SIMGOD/ACTOR/LOAD : ../data/underwater-vehicle-pid.bin
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(10000)
+SIMGOD/CRITIC/INITIAL_GAMMA : 0.9
+SIMGOD/CRITIC/INITIAL_LAMBDA : 0.9
+SIMGOD/CRITIC/LOAD : ../data/underwater-vehicle-value.bin

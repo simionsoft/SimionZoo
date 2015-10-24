@@ -22,8 +22,8 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ii]pch/
-output-logs/
-vfa-data/
+logs/
+data/
 
 # Roslyn cache directories
 *.ide/

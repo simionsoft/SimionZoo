@@ -1,5 +1,0 @@
-ALGORITHM : CACLA
-NUM_OUTPUTS : 1
-POLICY_RBF_VARIABLES_0 : v-deviation(10000)
-
-LOAD : ../vfa-data/underwater-vehicle-pid.bin

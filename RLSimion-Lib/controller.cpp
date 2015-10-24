@@ -16,19 +16,21 @@
 CLQRController::CLQRController(CParameters *pParameters)
 {
 	int numVarsRead;
-	m_numVars= pParameters->getNumParameters()-1; //All but "ALGORITHM"
+	m_numVars= pParameters->getNumParameters("SIMGOD/ACTOR/")-1; //All but "ALGORITHM"
 	m_pVariableIndices= new int[m_numVars];
 	m_pGains= new double[m_numVars];
+	char* pName;
 
 	CState* pSDesc= g_pWorld->getStateDescriptor();
 
 	numVarsRead= 0;
-	for (int i= 0; i<pParameters->getNumParameters(); i++)
+	for (int i = 0; i<pParameters->getNumParameters(); i++)
 	{
-		if (strcmp("ALGORITHM",pParameters->getParameterName(i))!=0)
+		pName = pParameters->getParameterName(i);
+		if (strstr(pName,"SIMGOD/ACTOR/LQR-GAINS/")!=0)
 		{
-			m_pVariableIndices[numVarsRead]= pSDesc->getVarIndex(pParameters->getParameterName(i));
-			m_pGains[numVarsRead]= pParameters->getDouble(pParameters->getParameterName(i));
+			m_pVariableIndices[numVarsRead] = pSDesc->getVarIndex(pParameters->getParameterName(numVarsRead, "SIMGOD/ACTOR/LQR-GAINS/"));
+			m_pGains[numVarsRead] = pParameters->getDouble(i);
 			numVarsRead++;
 		}
 	}
@@ -59,13 +61,13 @@ double CLQRController::selectAction(CState *s, CAction *a)
 
 CPIDController::CPIDController(CParameters *pParameters)
 {
-	m_kP= pParameters->getDouble("KP");
-	m_kI= pParameters->getDouble("KI");
-	m_kD= pParameters->getDouble("KD");
+	m_kP= pParameters->getDouble("SIMGOD/ACTOR/KP");
+	m_kI= pParameters->getDouble("SIMGOD/ACTOR/KI");
+	m_kD= pParameters->getDouble("SIMGOD/ACTOR/KD");
 
 	CState *pSDesc= g_pWorld->getStateDescriptor();
 	if (pSDesc)
-		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->getStringPtr("ERROR_VARIABLE"));
+		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->getStringPtr("SIMGOD/ACTOR/ERROR_VARIABLE"));
 	else
 	{
 		printf("ERROR: PID controller missconfigured. Invalid ERROR_VARIABLE");
@@ -104,10 +106,10 @@ double sgn(double value)
 
 CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameters)
 {
-	m_pA= g_pParameters->add("A",pParameters->getDouble("A"));
-	m_pK_alpha= g_pParameters->add("K_alpha",pParameters->getDouble("K_alpha"));
-	m_pKP= g_pParameters->add("KP",pParameters->getDouble("KP"));
-	m_pKI= g_pParameters->add("KI",pParameters->getDouble("KI"));
+	m_pA= pParameters->add("A",pParameters->getDouble("A"));
+	m_pK_alpha= pParameters->add("K_alpha",pParameters->getDouble("K_alpha"));
+	m_pKP= pParameters->add("KP",pParameters->getDouble("KP"));
+	m_pKI= pParameters->add("KI",pParameters->getDouble("KI"));
 	m_P_s= pParameters->getDouble("P_s");
 }
 
@@ -145,9 +147,9 @@ double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 
 CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* pParameters)
 {
-	m_pC_0= g_pParameters->add("C_0",pParameters->getDouble("C_0"));
-	m_pKP= g_pParameters->add("KP",pParameters->getDouble("KP"));
-	m_pKI= g_pParameters->add("KI",pParameters->getDouble("KI"));
+	m_pC_0= pParameters->add("C_0",pParameters->getDouble("C_0"));
+	m_pKP= pParameters->add("KP",pParameters->getDouble("KP"));
+	m_pKI= pParameters->add("KI",pParameters->getDouble("KI"));
 	m_J_t= pParameters->getDouble("J_t");
 	m_K_t= pParameters->getDouble("K_t");
 }

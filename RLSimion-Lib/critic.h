@@ -6,26 +6,30 @@ typedef CNamedVarSet CAction;
 class CParameters;
 class CFeatureVFA;
 class CFeatureList;
+class CParameters;
 
 class CCritic
 {
+	static CCritic* m_pCritic;
+
+protected:
+	CFeatureVFA* m_pVFA; //value function approximator
 public:
 	CCritic(){}
 	virtual ~CCritic(){}
 
 	virtual double updateValue(CState *s,CAction *a,CState *s_p,double r, double rho)= 0;
 
-	static CCritic *getInstance(char* configFile);
+	static CCritic *getCriticInstance(CParameters* pParameters);
 
-	virtual void load(char* filename){}
-	virtual void save(char* filename){}
+	void loadVFunction(char* filename);
+	void saveVFunction(char* filename);
 };
 
 class CTDLambdaCritic: public CCritic
 {
 	char m_saveFilename[1024];
 
-	CFeatureVFA* m_pVFA; //value function approximator
 	CFeatureList* m_z; //traces
 	CFeatureList* m_aux;
 
@@ -37,9 +41,6 @@ public:
 	~CTDLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
-
-	void load(char* filename);
-	void save(char* filename);
 };
 
 class CTrueOnlineTDLambdaCritic: public CCritic
@@ -49,7 +50,6 @@ class CTrueOnlineTDLambdaCritic: public CCritic
 	//Proceedings of the 31st International Conference on Machine learning
 	char m_saveFilename[1024];
 
-	CFeatureVFA* m_pVFA; //value function approximator
 	CFeatureList* m_e; //traces
 	CFeatureList* m_aux;
 	double m_v_s;
@@ -63,15 +63,12 @@ public:
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
 
-	void load(char* filename);
-	void save(char* filename);
 };
 
 class CTDCLambdaCritic : public CCritic
 {
 	char m_saveFilename[1024];
 
-	CFeatureVFA* m_pVFA; //value function approximator
 	CFeatureList* m_z; //traces
 	CFeatureList* m_aux;
 	CFeatureList* m_s_features;
@@ -88,8 +85,5 @@ public:
 	~CTDCLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
-
-	void load(char* filename);
-	void save(char* filename);
 };
 

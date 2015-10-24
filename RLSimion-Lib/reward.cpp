@@ -56,34 +56,34 @@ void CErrorComponent::init(CParameters* pParameters,int componentIndex)
 
 	m_componentIndex= componentIndex;
 
-	sprintf_s(parameterName,256,"REWARD_COMPONENT_TYPE_%d",componentIndex);
+	sprintf_s(parameterName,256,"WORLD/REWARD/COMPONENT_TYPE_%d",componentIndex);
 	sprintf_s(m_errorComponentType,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
 	
-	sprintf_s(parameterName,256,"REWARD_COMPONENT_WEIGHT_%d",componentIndex);
+	sprintf_s(parameterName,256,"WORLD/REWARD/COMPONENT_WEIGHT_%d",componentIndex);
 	m_weight= pParameters->getDouble(parameterName);
 
-	sprintf_s(parameterName,256,"REWARD_COMPONENT_TOLERANCE_%d",componentIndex);
+	sprintf_s(parameterName,256,"WORLD/REWARD/COMPONENT_TOLERANCE_%d",componentIndex);
 	m_tolerance= pParameters->getDouble(parameterName);
 
 	if (strcmp(m_errorComponentType,"VARIABLE_DIFFERENCE")==0)
 	{
-		sprintf_s(parameterName,256,"CONTROLLED_VARIABLE_%d",componentIndex);
+		sprintf_s(parameterName,256,"WORLD/REWARD/CONTROLLED_VARIABLE_%d",componentIndex);
 		sprintf_s(m_controlledVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
-		sprintf_s(parameterName,256,"SETPOINT_VARIABLE_%d",componentIndex);
+		sprintf_s(parameterName,256,"WORLD/REWARD/SETPOINT_VARIABLE_%d",componentIndex);
 		sprintf_s(m_setpointVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
 	}
 	else if (strcmp(m_errorComponentType,"DEVIATION_VARIABLE")==0)
 	{
-		sprintf_s(parameterName,256,"CONTROL_ERROR_VARIABLE_%d",componentIndex);
+		sprintf_s(parameterName,256,"WORLD/REWARD/CONTROL_ERROR_VARIABLE_%d",componentIndex);
 		sprintf_s(m_controlErrorVariable,MAX_PARAMETER_NAME_SIZE,"%s", pParameters->getStringPtr(parameterName));
 	}
 	else if ( (strcmp(m_errorComponentType,"CONSTANT_DIFFERENCE")==0)
 			|| (strcmp(m_errorComponentType,"PUNISH_IF_ABOVE")==0)
 			|| (strcmp(m_errorComponentType,"PUNISH_IF_BELOW")==0) )
 	{
-		sprintf_s(parameterName,256,"CONTROLLED_VARIABLE_%d",componentIndex);
+		sprintf_s(parameterName,256,"WORLD/REWARD/CONTROLLED_VARIABLE_%d",componentIndex);
 		sprintf_s(m_controlledVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
-		sprintf_s(parameterName,256,"SETPOINT_CONSTANT_%d",componentIndex);
+		sprintf_s(parameterName,256,"WORLD/REWARD/SETPOINT_CONSTANT_%d",componentIndex);
 		m_setpointConstant= pParameters->getDouble(parameterName);
 	}
 	else assert(0);
@@ -136,15 +136,13 @@ double CErrorComponent::getRewardComponent(CState* state)
 }
 
 
-CReward::CReward(char* pConfigFile)
+CReward::CReward(CParameters* pParameters)
 {
-	CParameters *pParameters= new CParameters(pConfigFile);
-
-	m_numRewardComponents= (int) pParameters->getDouble("NUM_REWARD_COMPONENTS");
+	m_numRewardComponents= (int) pParameters->getDouble("WORLD/REWARD/NUM_COMPONENTS");
 	m_pErrorComponents= new CErrorComponent[m_numRewardComponents];
 
-	m_minReward= pParameters->getDouble("MIN_REWARD");
-	m_maxReward= pParameters->getDouble("MAX_REWARD");
+	m_minReward= pParameters->getDouble("WORLD/REWARD/MIN_REWARD");
+	m_maxReward= pParameters->getDouble("WORLD/REWARD/MAX_REWARD");
 
 	m_lastReward= 0.0;
 
@@ -152,8 +150,6 @@ CReward::CReward(char* pConfigFile)
 	{
 		m_pErrorComponents[i].init(pParameters,i);
 	}
-
-	delete pParameters;
 }
 
 CReward::~CReward()

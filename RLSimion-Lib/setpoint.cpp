@@ -27,7 +27,7 @@ int countlines(char *filename)
 CFileSetPoint::CFileSetPoint(char *pFilename)
 {
 	//char fullFilename[1024];
-	m_numSteps= 0;//(int)g_pParameters->getParameter("TIME")/g_pParameters->getParameter("DELTA_T");
+	m_numSteps= 0;
 
 
 	FILE *pFile;

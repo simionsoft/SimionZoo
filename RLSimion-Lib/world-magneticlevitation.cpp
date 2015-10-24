@@ -20,7 +20,7 @@ CMagneticLevitation::CMagneticLevitation(CParameters* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"voltage",-60,60);
 
-	m_pEvalSetPoint= new CFileSetPoint(pParameters->getStringPtr("EVALUATION_SET_POINT_FILE"));
+	m_pEvalSetPoint= new CFileSetPoint(pParameters->getStringPtr("WORLD/EVALUATION_SET_POINT_FILE"));
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
 }
 

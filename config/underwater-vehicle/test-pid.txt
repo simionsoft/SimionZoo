@@ -1,18 +1,33 @@
-WORLD_CONFIG_FILE : ../config/underwater-vehicle/environment/parameters.txt
-ACTOR_CONFIG_FILE : ../config/underwater-vehicle/controllers/pid.txt
-
-
 //parameters of the experiment
-NUM_EPISODES : 1		//number of episodes
-EPISODE_LENGTH : 25.0		//length in seconds
-RANDOM_SEED : 1			//the seed used to generate random numbers
+EXPERIMENT/NUM_EPISODES : 1		//number of episodes
+EXPERIMENT/EPISODE_LENGTH : 25.0		//length in seconds
+EXPERIMENT/RANDOM_SEED : 1			//the seed used to generate random numbers
+EXPERIMENT/EVAL_FREQ : 20				//in episodes
+EXPERIMENT/LOG/FREQ : 0.2			//in seconds
+EXPERIMENT/LOG/OUTPUT_DIR : ../logs/underwater-vehicle
+EXPERIMENT/LOG/FILE_PREFIX : uv-test-pid
+EXPERIMENT/LOG/EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episodes? 0: no/ 1: yes
+EXPERIMENT/LOG/FREQ : 0.25				//seconds
 
-//logging parameters
-LOG_FREQ : 0.2			//in seconds
-LOG_OUTPUT_DIR : ../output-logs/underwater-vehicle
-LOG_FILE_PREFIX : uv-test-pid
-LOG_EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
-LOG_TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
-LOG_EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episodes? 0: no/ 1: yes
-LOG_FREQ : 0.25				//seconds
-EVAL_FREQ : 20				//in episodes
+//World
+WORLD/DYNAMIC_MODEL : UNDERWATER_VEHICLE
+WORLD/DELTA_T : 0.03
+WORLD/NUM_SIMULATION_STEPS : 4
+WORLD/SET_POINT_FILE : ../config/underwater-vehicle/setpoints/setpoint.txt
+WORLD/REWARD/MIN_REWARD : -100.0
+WORLD/REWARD/MAX_REWARD : 1.0
+WORLD/REWARD/NUM_COMPONENTS : 1
+WORLD/REWARD/COMPONENT_TYPE_0 : DEVIATION_VARIABLE
+WORLD/REWARD/COMPONENT_WEIGHT_0 : 1
+WORLD/REWARD/COMPONENT_TOLERANCE_0 : 0.1
+WORLD/REWARD/CONTROL_ERROR_VARIABLE_0 : v-deviation
+
+//Simion god
+SIMGOD/TYPE : ACTOR-ONLY
+SIMGOD/ACTOR/ALGORITHM : PID
+SIMGOD/ACTOR/KP : 100.0
+SIMGOD/ACTOR/KI : 0.001
+SIMGOD/ACTOR/KD : 0.0
+SIMGOD/ACTOR/ERROR_VARIABLE : v-deviation

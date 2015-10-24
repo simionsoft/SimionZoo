@@ -188,8 +188,8 @@ CWindTurbine::CWindTurbine(CParameters *pParameters)
 	m_pActionDescriptor->setProperties(0,"d_beta",-0.1745329252,0.1745329252);
 	m_pActionDescriptor->setProperties(1,"d_T_g",-100000,100000);
 
-	m_pWindData= new CFileSetPoint(pParameters->getStringPtr("WIND_DATA_FILE"));
-	m_pPowerSetpoint= new CFileSetPoint(pParameters->getStringPtr("POWER_SET_POINT_FILE"));
+	m_pWindData= new CFileSetPoint(pParameters->getStringPtr("WORLD/WIND_DATA_FILE"));
+	m_pPowerSetpoint= new CFileSetPoint(pParameters->getStringPtr("WORLD/POWER_SET_POINT_FILE"));
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;
@@ -285,105 +285,3 @@ void CWindTurbine::executeAction(CState *s, CAction *a, double dt)
 	s->setValue("T_g",T_g);
 	s->setValue("beta", beta);
 }
-/*
-
-
-//CWindTurbineMVController BOUKHEZZAR
-CWindTurbineControllerBoukhezzar::CWindTurbineControllerBoukhezzar(CContinuousAction *contAction, CActionSet *pStaticCActionSet, int randomControllerMode):CContinuousActionController(contAction,randomControllerMode)
-{
-	addParameter("KP",g_pParameters->getParameter("KP"));
-	addParameter("C0",g_pParameters->getParameter("C0"));
-
-
-
-	m_pStaticCActionSet= pStaticCActionSet;
-	m_contAction= contAction;
-};
-
-CWindTurbineControllerBoukhezzar::~CWindTurbineControllerBoukhezzar()
-{
-};
-
-void CWindTurbineControllerBoukhezzar::getNextContinuousAction(CStateCollection *stateCol, CContinuousActionData *action)
-{
-	CState *state = stateCol->getState();
-
-	//d(Tg)/dt= (1/omega_r)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_r*T_g - T_g*T_g))
-	//d(beta)/dt= K_p*(omega_ref - omega_r)
-
-	double omega_r= state->getContinuousState(DIM_omega_r);
-	double C_0= getParameter("C0");
-	double error_P= -state->getContinuousState(DIM_P_error);
-	double T_a= state->getContinuousState(DIM_T_a);
-	double K_p= getParameter("KP");
-
-	double omega_ref= NOMINAL_ROTOR_SPEED;
-	double T_g= state->getContinuousState(DIM_T_g);
-	double beta= state->getContinuousState(DIM_beta);
-	
-	double d_T_g= (1.0/omega_r)*(C_0*error_P - (1.0/J_t)
-		*(T_a*T_g - K_t*omega_r*T_g - T_g*T_g));
-
-	double d_beta= K_p*state->getContinuousState(DIM_omega_r_error);
-
-	action->setActionValue(DIM_A_beta,d_beta);
-	action->setActionValue(DIM_A_torque,d_T_g);
-}
-
-
-//CWindTurbineMVController VIDAL
-CWindTurbineControllerVidal::CWindTurbineControllerVidal(CContinuousAction *contAction, CActionSet *pStaticCActionSet, int randomControllerMode):CContinuousActionController(contAction,randomControllerMode)
-{
-	addParameter("A",g_pParameters->getParameter("A"));
-	addParameter("K_alpha",g_pParameters->getParameter("K_alpha"));
-	addParameter("KP",g_pParameters->getParameter("KP"));
-	addParameter("KI",g_pParameters->getParameter("KI"));
-
-	m_pStaticCActionSet= pStaticCActionSet;
-	m_contAction= contAction;
-	m_integrative_omega_r_error= 0.0;
-};
-
-CWindTurbineControllerVidal::~CWindTurbineControllerVidal()
-{
-};
-
-void CWindTurbineControllerVidal::getNextContinuousAction(CStateCollection *stateCol, CContinuousActionData *action)
-{
-	CState *state = stateCol->getState();
-
-	if (state->isResetState())
-		m_integrative_omega_r_error=0.0;
-
-	//d(Tg)/dt= (-1/omega_r)*(T_g*(a*omega_r-d_omega_r)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
-	//d(beta)/dt= K_p*(omega_ref - omega_r) + K_i*(error_integral)
-
-	double A= getParameter("A");
-	double K_alpha= getParameter("K_alpha");
-	double K_p= getParameter("KP");
-	double K_i= getParameter("KI");
-
-	double T_a= state->getContinuousState(DIM_T_a);
-	double omega_r= state->getContinuousState(DIM_omega_r);
-	double d_omega_r= state->getContinuousState(DIM_d_omega_r);
-	double P_set= state->getContinuousState(DIM_P_set);
-	double P_e= state->getContinuousState(DIM_P_e);
-	double error_P= state->getContinuousState(DIM_P_error);
-	double omega_ref= NOMINAL_ROTOR_SPEED;
-	double T_g= state->getContinuousState(DIM_T_g);
-	double beta= state->getContinuousState(DIM_beta);
-	
-	double d_T_g;
-	
-	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*(A*omega_r+d_omega_r) - A*P_set + K_alpha*sgn(error_P));
-	else d_T_g= 0.0;
-
-	double error_omega= state->getContinuousState(DIM_omega_r_error);
-	
-	double d_beta=K_p*(error_omega) + K_i*state->getContinuousState(DIM_integrative_omega_r_error);
-				 //0.5*K_p*error_omega*(1.0+sgn(error_omega))
-				//+ K_i*state->getContinuousState(DIM_integrative_omega_r_error);
-
-	action->setActionValue(DIM_A_beta,d_beta);
-	action->setActionValue(DIM_A_torque,d_T_g);
-}*/

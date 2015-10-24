@@ -168,6 +168,11 @@ double CParameters::getDouble(char* parameterName)
 	return *getDoublePtr(index);
 }
 
+double CParameters::getDouble(int index)
+{
+		return *getDoublePtr(index);
+}
+
 char *CParameters::getParameterName(int index)
 {
 	if (index>=0)
@@ -200,4 +205,30 @@ bool CParameters::exists(char* paramName)
 			return true;
 	}
 	return false;
+}
+
+int CParameters::getNumParameters(char* parameterPrefix)
+{
+	int numParameters = 0;
+	for (int i = 0; i < m_numParameters; i++)
+	{
+		if (strstr(m_pParameters[i].name, parameterPrefix) != 0)
+			numParameters++;
+	}
+	return numParameters;
+}
+
+char *CParameters::getParameterName(int parameterIndex, char* parameterPrefix)
+{
+	int numParameters = 0;
+	for (int i = 0; i < m_numParameters; i++)
+	{
+		if (strstr(m_pParameters[i].name, parameterPrefix) != 0)
+		{
+			if (numParameters == parameterIndex)
+				return &m_pParameters[i].name[strlen(parameterPrefix)];
+			numParameters++;
+		}
+	}
+	return 0;
 }

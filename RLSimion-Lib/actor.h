@@ -11,8 +11,13 @@ class CGaussianNoise;
 
 class CActor
 {
+	static CActor* m_pActor;
 protected:
 	int m_numOutputs;
+	CFeatureVFA **m_pPolicy;
+
+	void savePolicy(char* pFilename);
+	void loadPolicy(char* pFilename);
 public:
 	CActor(){}
 	virtual ~CActor(){};
@@ -21,7 +26,7 @@ public:
 
 	virtual void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td)= 0;
 
-	static CActor *getInstance(char* configFile);
+	static CActor *getActorInstance(CParameters* pParameters);
 };
 
 
@@ -32,13 +37,11 @@ class CCACLAActor:public CActor
 	char m_saveFilename[1024];
 	CFeatureList *m_pStateFeatures;
 
-	void save(char* pFilename);
-	void load(char* pFilename);
+
 	double getProbability(CAction* a);
 
 public:
 	double **m_pAlpha;
-	CFeatureVFA **m_pPolicy;
 	CGaussianNoise **m_pExpNoise;
 
 	CCACLAActor(CParameters *pParameters);
@@ -47,8 +50,6 @@ public:
 	double selectAction(CState *s,CAction *a);
 
 	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td);
-
-
 };
 
 /*

@@ -11,11 +11,13 @@ CExperiment::~CExperiment()
 
 CExperiment::CExperiment(CParameters* pParameters)
 {
-	m_randomSeed= (int) pParameters->getDouble("RANDOM_SEED");
+	m_randomSeed= (int) pParameters->getDouble("EXPERIMENT/RANDOM_SEED");
 	srand(m_randomSeed);
 
-	m_numEpisodes= (int) pParameters->getDouble("NUM_EPISODES");
-	m_numSteps= (int) (pParameters->getDouble("EPISODE_LENGTH")/CWorld::getDT());
+	m_numEpisodes= (int) pParameters->getDouble("EXPERIMENT/NUM_EPISODES");
+	m_numSteps= (int) (pParameters->getDouble("EXPERIMENT/EPISODE_LENGTH")/CWorld::getDT());
+	m_evalFreq = (unsigned int)pParameters->getDouble("EXPERIMENT/EVAL_FREQ");
+
 	m_step= 0;
 	m_episode= 0;
 
@@ -28,14 +30,13 @@ CExperiment::CExperiment(CParameters* pParameters)
 		LOG_FREQ : 0.25 //seconds
 */
 
-	strcpy_s(m_outputDir,MAX_FILENAME_LENGTH,pParameters->getStringPtr("LOG_OUTPUT_DIR"));
-	strcpy_s(m_filePrefix,MAX_FILENAME_LENGTH,pParameters->getStringPtr("LOG_FILE_PREFIX"));
+	strcpy_s(m_outputDir,MAX_FILENAME_LENGTH,pParameters->getStringPtr("EXPERIMENT/LOG/OUTPUT_DIR"));
+	strcpy_s(m_filePrefix,MAX_FILENAME_LENGTH,pParameters->getStringPtr("EXPERIMENT/LOG/FILE_PREFIX"));
 
-	m_bLogEvaluationEpisodes= (1.0 == pParameters->getDouble("LOG_EVALUATION_EPISODES"));
-	m_bLogTrainingEpisodes= (1.0 == pParameters->getDouble("LOG_TRAINING_EPISODES"));
-	m_bLogEvaluationSummary= (1.0 == pParameters->getDouble("LOG_EVALUATION_AVG_REWARDS"));
-	m_evalFreq= (unsigned int)pParameters->getDouble("EVAL_FREQ");
-	m_logFreq= pParameters->getDouble("LOG_FREQ");
+	m_bLogEvaluationEpisodes= (1.0 == pParameters->getDouble("EXPERIMENT/LOG/EVALUATION_EPISODES"));
+	m_bLogTrainingEpisodes= (1.0 == pParameters->getDouble("EXPERIMENT/LOG/TRAINING_EPISODES"));
+	m_bLogEvaluationSummary= (1.0 == pParameters->getDouble("EXPERIMENT/LOG/EVALUATION_AVG_REWARDS"));
+	m_logFreq= pParameters->getDouble("EXPERIMENT/LOG/FREQ");
 
 	m_pFile= (void*) 0;
 

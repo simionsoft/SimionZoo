@@ -213,7 +213,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	CParameters *pFeatureVFAParameters= new CParameters(g_pParameters->getStringPtr("ACTOR_CONFIG_FILE"));
 
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
-	pController= CActor::getInstance(g_pParameters->getStringPtr("CONTROLLER_CONFIG_FILE"));
+	pController= CActor::getActorInstance(g_pParameters->getStringPtr("CONTROLLER_CONFIG_FILE"));
 
 	char parameterName[MAX_PARAMETER_NAME_SIZE];
 

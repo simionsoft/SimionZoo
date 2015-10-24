@@ -1,5 +1,4 @@
 ALGORITHM : CACLA
 NUM_OUTPUTS : 1
 POLICY_RBF_VARIABLES_0 : attack-angle(150),pitch-rate(150),control-deviation(150)
-
 LOAD : ../vfa-data/pitch-lqr.bin

@@ -8,20 +8,20 @@
 
 CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 {
-	m_pVFA= new CRBFFeatureGridVFA(pParameters->getStringPtr("VALUE_FUNCTION_RBF_VARIABLES"));
+	m_pVFA= new CRBFFeatureGridVFA(pParameters->getStringPtr("SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES"));
 	m_e= new CFeatureList();
 	m_aux= new CFeatureList();
 	m_v_s= 0.0;
 
-	m_pAlpha= g_pParameters->add("CRITIC_LEARNING_RATE",0.0);
-	m_gamma= pParameters->getDouble("INITIAL_GAMMA");
-	m_lambda= pParameters->getDouble("INITIAL_LAMBDA");
+	m_pAlpha= pParameters->add("SIMGOD/CRITIC/LEARNING_RATE",0.0);
+	m_gamma= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_GAMMA");
+	m_lambda= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_LAMBDA");
 
-	if (pParameters->exists("LOAD"))
-		load(pParameters->getStringPtr("LOAD"));
+	if (pParameters->exists("SIMGOD/CRITIC/LOAD"))
+		loadVFunction(pParameters->getStringPtr("SIMGOD/CRITIC/LOAD"));
 
-	if (pParameters->exists("SAVE"))
-		strcpy_s(m_saveFilename,1024,pParameters->getStringPtr("SAVE"));
+	if (pParameters->exists("SIMGOD/CRITIC/SAVE"))
+		strcpy_s(m_saveFilename,1024,pParameters->getStringPtr("SIMGOD/CRITIC/SAVE"));
 	else
 		m_saveFilename[0]= 0;
 }
@@ -29,7 +29,7 @@ CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 {
 	if (m_saveFilename[0]!=0)
-		save(m_saveFilename);
+		saveVFunction(m_saveFilename);
 
 	delete m_pVFA;
 	delete m_e;
@@ -76,37 +76,3 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 	return td;
 }
 
-
-void CTrueOnlineTDLambdaCritic::save(char* pFilename)
-{
-	FILE* pFile;
-	
-	printf("CTDLambdaCritic::save(\"%s\")...",pFilename);
-
-	fopen_s(&pFile,pFilename,"wb");
-	if (pFile)
-	{
-		m_pVFA->save(pFile);
-		fclose(pFile);
-		printf("OK\n");
-	}
-
-}
-
-void CTrueOnlineTDLambdaCritic::load(char* pFilename)
-{
-	FILE* pFile;
-
-	printf("CTDLambdaCritic::load(\"%s\")...",pFilename);
-
-	fopen_s(&pFile,pFilename,"rb");
-	if (pFile)
-	{
-		m_pVFA->load(pFile);
-		fclose(pFile);
-
-		printf("OK\n");
-	}
-	else printf("FAILED\n");
-
-}

@@ -4,24 +4,32 @@
 #include "globals.h"
 #include "experiment.h"
 
-CParameterScheduler::CParameterScheduler(char *configFile)
+CParameterScheduler::CParameterScheduler(char *configFile,CParameters* pParameters)
 {
 	char configLine[MAX_STRING_SIZE], *name;
 	char decay[MAX_STRING_SIZE];
-	CParameters *pParameters= new CParameters(configFile);
+
+	m_numParameterSchedules = 0;
+	m_pScheduleData = 0;
+
+	if (!configFile) return;
+
+	CParameters* pSchedules = new CParameters(configFile);
 	
-	int numParameterSchedules= pParameters->getNumParameters();
+	int numParameterSchedules = pSchedules->getNumParameters();
 
 	m_pScheduleData= new CScheduleData[numParameterSchedules];
 
-	m_numParameterSchedules= 0;
-
 	for (int i= 0; i<numParameterSchedules; i++)
 	{
-		name= pParameters->getParameterName(i);
-		m_pScheduleData[i].pValue= g_pParameters->getDoublePtr(name);
+		//get the parameter's name from the schedule file
+		name = pSchedules->getParameterName(i);
 
-		strcpy_s(configLine, MAX_STRING_SIZE, pParameters->getStringPtr(i));
+		//get a pointer to the actual parameter
+		m_pScheduleData[i].pValue = pParameters->getDoublePtr(name);
+
+		//parse the schedule line
+		strcpy_s(configLine, MAX_STRING_SIZE, pSchedules->getStringPtr(i));
 		if (sscanf_s(configLine,"%lf,%lf,%lf,%s",&m_pScheduleData[i].start
 			,&m_pScheduleData[i].end, &m_pScheduleData[i].evalValue,decay,MAX_STRING_SIZE)==4)
 		{
@@ -39,12 +47,14 @@ CParameterScheduler::CParameterScheduler(char *configFile)
 		}
 	}
 	assert(m_numParameterSchedules==numParameterSchedules);
+
+	delete pSchedules;
 }
 
 
 CParameterScheduler::~CParameterScheduler()
 {
-	delete [] m_pScheduleData;
+	if (m_pScheduleData) delete [] m_pScheduleData;
 }
 
 

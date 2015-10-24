@@ -15,12 +15,15 @@ class CWorld
 	static double m_t;
 	static double m_step_start_t;
 	CReward* m_pReward;
+	double m_lastReward;
+	double m_avgReward;
+	double m_avgRewardGain= 0.9;
 public:
 	static double getDT();
 	static double getT();
 	static double getStepStartT();
 
-	CWorld(char* configFile);
+	CWorld(CParameters* pParameters);
 	~CWorld();
 
 	CState *getStateInstance(); // pointer to a new CState. has to be deleted
@@ -33,6 +36,9 @@ public:
 
 	//this function returns the reward of the tuple <s,a,s_p>
 	double executeAction(CState *s,CAction *a,CState *s_p);
+
+	double getAvgReward();
+	double getLastReward();
 };
 
 class CDynamicModel

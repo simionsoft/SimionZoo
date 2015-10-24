@@ -1,5 +1,0 @@
-ALGORITHM : REGULAR_GRADIENT
-NUM_OUTPUTS : 1
-POLICY_RBF_VARIABLES_0 : attack-angle(100),pitch-rate(100),control-deviation(100)
-
-LOAD : ../vfa-data/pitch-lqr.bin

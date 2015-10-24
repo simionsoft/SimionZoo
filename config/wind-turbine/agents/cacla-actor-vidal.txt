@@ -4,4 +4,3 @@ POLICY_RBF_VARIABLES_0 : E_omega_r(10000)//,E_int_omega_r(1000)
 POLICY_RBF_VARIABLES_1 : omega_r(75-c),d_omega_r(75-c),T_g(75),E_p(75-c)
 
 LOAD : ../vfa-data/vidal-AC2.bin
-//LOAD : ../data/matrices/vidal/vidal-Policy.bin

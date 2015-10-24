@@ -46,10 +46,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	g_pWorld= new CWorld(g_pParameters->getStringPtr("WORLD_CONFIG_FILE"));
 
 	//INITIALISE ACTOR
-	CActor *pActor= CActor::getInstance(g_pParameters->getStringPtr("ACTOR_CONFIG_FILE"));
+	CActor *pActor= CActor::getActorInstance(g_pParameters->getStringPtr("ACTOR_CONFIG_FILE"));
 
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
-	CActor *pController= CActor::getInstance(g_pParameters->getStringPtr("CONTROLLER_CONFIG_FILE"));
+	CActor *pController= CActor::getActorInstance(g_pParameters->getStringPtr("CONTROLLER_CONFIG_FILE"));
 
 	CState *s= g_pWorld->getStateInstance();
 	CAction *a= g_pWorld->getActionInstance();

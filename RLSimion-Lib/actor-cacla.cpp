@@ -13,7 +13,7 @@ CCACLAActor::CCACLAActor(CParameters *pParameters)
 {
 	char parameterName[MAX_PARAMETER_NAME_SIZE];
 
-	m_numOutputs= (int) pParameters->getDouble("NUM_OUTPUTS");
+	m_numOutputs= (int) pParameters->getDouble("SIMGOD/ACTOR/NUM_OUTPUTS");
 
 	m_pAlpha= new double* [m_numOutputs];
 	m_pPolicy= new CFeatureVFA* [m_numOutputs];
@@ -21,22 +21,22 @@ CCACLAActor::CCACLAActor(CParameters *pParameters)
 
 	for (int i= 0; i<m_numOutputs; i++)
 	{
-		sprintf_s(parameterName,MAX_PARAMETER_NAME_SIZE,"ACTOR_LEARNING_RATE_%d",i);
-		m_pAlpha[i]= g_pParameters->add(parameterName,0.0);
+		sprintf_s(parameterName,MAX_PARAMETER_NAME_SIZE,"SIMGOD/ACTOR/LEARNING_RATE_%d",i);
+		m_pAlpha[i]= pParameters->add(parameterName,0.0);
 
-		sprintf_s(parameterName,MAX_PARAMETER_NAME_SIZE,"POLICY_RBF_VARIABLES_%d",i);
+		sprintf_s(parameterName,MAX_PARAMETER_NAME_SIZE,"SIMGOD/ACTOR/POLICY_RBF_VARIABLES_%d",i);
 		m_pPolicy[i]= new CRBFFeatureGridVFA(pParameters->getStringPtr(parameterName));
 
-		m_pExpNoise[i]= new CGaussianNoise(i);
+		m_pExpNoise[i]= new CGaussianNoise(i,pParameters);
 	}
 
 	m_pStateFeatures= new CFeatureList();
 
-	if (pParameters->exists("LOAD"))
-		load(pParameters->getStringPtr("LOAD"));
+	if (pParameters->exists("SIMGOD/ACTOR/LOAD"))
+		loadPolicy(pParameters->getStringPtr("SIMGOD/ACTOR/LOAD"));
 
-	if (pParameters->exists("SAVE"))
-		strcpy_s(m_saveFilename,1024,pParameters->getStringPtr("SAVE"));
+	if (pParameters->exists("SIMGOD/ACTOR/SAVE"))
+		strcpy_s(m_saveFilename,1024,pParameters->getStringPtr("SIMGOD/ACTOR/SAVE"));
 	else
 		m_saveFilename[0]= 0;
 
@@ -45,7 +45,7 @@ CCACLAActor::CCACLAActor(CParameters *pParameters)
 CCACLAActor::~CCACLAActor()
 {
 	if (m_saveFilename[0]!=0)
-		save(m_saveFilename);
+		savePolicy(m_saveFilename);
 
 	for (int i= 0; i<m_numOutputs; i++)
 	{
@@ -150,43 +150,4 @@ void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double 
 				m_pPolicy[i]->add(m_pStateFeatures,(*(m_pAlpha[i]))*lastNoise);
 		}
 	}
-}
-
-void CCACLAActor::save(char* pFilename)
-{
-	FILE* pFile;
-
-	printf("CACLAActor::load(\"%s\")...",pFilename);
-
-	fopen_s(&pFile,pFilename,"wb");
-	if (pFile)
-	{
-		for (int i= 0; i<m_numOutputs; i++)
-		{
-			m_pPolicy[i]->save(pFile);
-		}
-		fclose(pFile);
-	}
-
-}
-
-void CCACLAActor::load(char* pFilename)
-{
-	FILE* pFile;
-
-	printf("CACLAActor::load(\"%s\")...",pFilename);
-
-	fopen_s(&pFile,pFilename,"rb");
-	if (pFile)
-	{		
-		for (int i= 0; i<m_numOutputs; i++)
-		{
-			m_pPolicy[i]->load(pFile);
-		}
-		//assert(numWeights==numWeightsRead);
-		fclose(pFile);
-		printf("OK\n");
-	}
-	else printf("FAILED\n");
-
 }
