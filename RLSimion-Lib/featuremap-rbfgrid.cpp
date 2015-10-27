@@ -69,7 +69,7 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,char* varName,int numCen
 
 CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(char* configString)
 {
-	char * token;
+	char * token= 0, *nextToken= 0;
 	char copy[MAX_STRING_SIZE];
 
 	m_numVariables= getNumVariables(configString) +1;
@@ -91,7 +91,7 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(char* configString)
 
 	strcpy_s(copy,MAX_STRING_SIZE,configString);
 
-	token= strtok(copy,",");
+	token = strtok_s(copy,",", &nextToken);
 	while (token)
 	{
 		if (sscanf_s(token, "%[^(](%d,%d,%d,%c)", varName, MAX_STRING_SIZE, &numFeatures, &min, &max, &distType) == 5)
@@ -115,7 +115,7 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(char* configString)
 
 		else assert(0);
 
-		token= strtok(0,",");
+		token= strtok_s(0,",", &nextToken);
 	}
 
 	assert(m_numVariables==numVar);

@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLSimion", "RLSimion\RLSimi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ControllerToAC", "ControllerToAC\ControllerToAC.vcxproj", "{C02FD0DA-4C15-4C93-833A-A4A107EAA37E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Badger", "Badger\Badger.vcxproj", "{05B6C66D-D1FA-415F-B9AF-8FBA8116B92C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -39,6 +41,10 @@ Global
 		{C02FD0DA-4C15-4C93-833A-A4A107EAA37E}.Debug|Win32.Build.0 = Debug|Win32
 		{C02FD0DA-4C15-4C93-833A-A4A107EAA37E}.Release|Win32.ActiveCfg = Release|Win32
 		{C02FD0DA-4C15-4C93-833A-A4A107EAA37E}.Release|Win32.Build.0 = Release|Win32
+		{05B6C66D-D1FA-415F-B9AF-8FBA8116B92C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{05B6C66D-D1FA-415F-B9AF-8FBA8116B92C}.Debug|Win32.Build.0 = Debug|Win32
+		{05B6C66D-D1FA-415F-B9AF-8FBA8116B92C}.Release|Win32.ActiveCfg = Release|Win32
+		{05B6C66D-D1FA-415F-B9AF-8FBA8116B92C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

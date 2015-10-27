@@ -25,8 +25,15 @@ CExperiment *g_pExperiment;
 
 int main(int argc, char* argv[])
 {
-	//Global parameters and objects
-	CParameters *pParameters= new CParameters("../config/pitch/learn-value.txt");
+	CParameters *pParameters;
+	if (argc > 1)
+		pParameters = new CParameters(argv[1]);
+	else
+	{
+		printf("ERROR: configuration file not provided as an argument");
+		exit(-1);
+	}
+		//pParameters= new CParameters("../config/wind-turbine/learn-vidal.txt");
 
 	g_pWorld= new CWorld(pParameters);
 	CSimGod* pSimGod = new CSimGod(pParameters);

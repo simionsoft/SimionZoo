@@ -106,11 +106,11 @@ double sgn(double value)
 
 CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameters)
 {
-	m_pA= pParameters->add("A",pParameters->getDouble("A"));
-	m_pK_alpha= pParameters->add("K_alpha",pParameters->getDouble("K_alpha"));
-	m_pKP= pParameters->add("KP",pParameters->getDouble("KP"));
-	m_pKI= pParameters->add("KI",pParameters->getDouble("KI"));
-	m_P_s= pParameters->getDouble("P_s");
+	m_pA= pParameters->add("SIMGOD/ACTOR/A",pParameters->getDouble("SIMGOD/ACTOR/A"));
+	m_pK_alpha= pParameters->add("SIMGOD/ACTOR/K_alpha",pParameters->getDouble("SIMGOD/ACTOR/K_alpha"));
+	m_pKP= pParameters->add("SIMGOD/ACTOR/KP",pParameters->getDouble("SIMGOD/ACTOR/KP"));
+	m_pKI= pParameters->add("SIMGOD/ACTOR/KI",pParameters->getDouble("SIMGOD/ACTOR/KI"));
+	m_P_s= pParameters->getDouble("SIMGOD/ACTOR/P_s");
 }
 
 double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
@@ -147,11 +147,11 @@ double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 
 CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* pParameters)
 {
-	m_pC_0= pParameters->add("C_0",pParameters->getDouble("C_0"));
-	m_pKP= pParameters->add("KP",pParameters->getDouble("KP"));
-	m_pKI= pParameters->add("KI",pParameters->getDouble("KI"));
-	m_J_t= pParameters->getDouble("J_t");
-	m_K_t= pParameters->getDouble("K_t");
+	m_pC_0= pParameters->add("SIMGOD/ACTOR/C_0",pParameters->getDouble("SIMGOD/ACTOR/C_0"));
+	m_pKP= pParameters->add("SIMGOD/ACTOR/KP",pParameters->getDouble("SIMGOD/ACTOR/KP"));
+	m_pKI= pParameters->add("SIMGOD/ACTOR/KI",pParameters->getDouble("SIMGOD/ACTOR/KI"));
+	m_J_t= pParameters->getDouble("SIMGOD/ACTOR/J_t");
+	m_K_t= pParameters->getDouble("SIMGOD/ACTOR/K_t");
 }
 
 
@@ -186,16 +186,16 @@ double CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	m_CornerFreq= pParameters->getDouble("CornerFreq");
+	m_CornerFreq= pParameters->getDouble("SIMGOD/ACTOR/CornerFreq");
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp= pParameters->getDouble("VSRtGnSp");
-	m_VS_SlPc= pParameters->getDouble("VS_SlPc");
-	m_VS_Rgn2K= pParameters->getDouble("VS_Rgn2K");
-	m_VS_Rgn2Sp= pParameters->getDouble("VS_Rgn2Sp");
-	m_VS_CtInSp= pParameters->getDouble("VS_CtInSp");
-	m_VS_RtPwr= pParameters->getDouble("VS_RtPwr");
-	m_VS_Rgn3MP= pParameters->getDouble("VS_Rgn3MP");
+	m_VS_RtGnSp= pParameters->getDouble("SIMGOD/ACTOR/VSRtGnSp");
+	m_VS_SlPc= pParameters->getDouble("SIMGOD/ACTOR/VS_SlPc");
+	m_VS_Rgn2K= pParameters->getDouble("SIMGOD/ACTOR/VS_Rgn2K");
+	m_VS_Rgn2Sp= pParameters->getDouble("SIMGOD/ACTOR/VS_Rgn2Sp");
+	m_VS_CtInSp= pParameters->getDouble("SIMGOD/ACTOR/VS_CtInSp");
+	m_VS_RtPwr= pParameters->getDouble("SIMGOD/ACTOR/VS_RtPwr");
+	m_VS_Rgn3MP= pParameters->getDouble("SIMGOD/ACTOR/VS_Rgn3MP");
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -207,10 +207,10 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParam
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	m_PC_KK= pParameters->getDouble("PC_KK");
-	m_PC_KP= pParameters->getDouble("PC_KP");
-	m_PC_KI= pParameters->getDouble("PC_KI");
-	m_PC_RefSpd= pParameters->getDouble("PC_RefSpd");
+	m_PC_KK= pParameters->getDouble("SIMGOD/ACTOR/PC_KK");
+	m_PC_KP= pParameters->getDouble("SIMGOD/ACTOR/PC_KP");
+	m_PC_KI= pParameters->getDouble("SIMGOD/ACTOR/PC_KI");
+	m_PC_RefSpd= pParameters->getDouble("SIMGOD/ACTOR/PC_RefSpd");
 
 	m_IntSpdErr= 0.0;
 }

@@ -5,14 +5,21 @@
 #define MAX_STRING_SIZE 512
 #define MAX_LINE_LENGTH (MAX_PARAMETER_NAME_SIZE + MAX_STRING_SIZE + 3)
 
+#define NOT_INITIALIZED 0
 #define NUMERIC_PARAMETER 1
 #define STRING_PARAMETER 2
 
-struct CParameter
+class CParameter
 {
+public:
 	char name[MAX_PARAMETER_NAME_SIZE];
 	void *pValue;
 	int type;
+
+	CParameter();
+	void releasePtr();
+	~CParameter();
+	CParameter& operator= (const CParameter& parameter);
 };
 
 class CParameters
@@ -24,7 +31,9 @@ public:
 	~CParameters();
 
 	double *add(char *parametername, double value);
-		
+
+	static bool parseLine(char* line, CParameter& parameter);
+
 	void loadParameters(char *parameterFile);
 	void saveParameters(char *parameterFile);
 
@@ -47,4 +56,6 @@ public:
 	int getNumParameters(char* parameterPrefix); //only takes into account parameters starting with parameterPrefix
 
 	bool exists(char* parameterName);
+
+	void setParameter(CParameter& parameter);
 };
