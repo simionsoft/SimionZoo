@@ -66,7 +66,7 @@ double CExperiment::getProgress()
 
 double CExperiment::getCurrentAvgReward()
 {
-	return m_episodeRewards/(double)max(m_step,1);
+	return m_lastEvaluationAvgReward;// m_episodeRewards / (double)max(m_step, 1);
 }
 
 void CExperiment::writeEpisodeLogFileHeader(CState *s, CAction *a)
@@ -139,11 +139,14 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 			fclose((FILE*) m_pFile);
 			m_pFile= 0;
 		}
-
-		//SAVE AVERAGE REWARDS IN SUMMARY FILE????
-		if (m_bLogEvaluationSummary && isEvaluationEpisode())
+		if (isEvaluationEpisode())
 		{
-			writeEpisodeSummary();
+			m_lastEvaluationAvgReward= m_episodeRewards / (double)std::max(m_step, (unsigned int)1);
+			//SAVE AVERAGE REWARDS IN SUMMARY FILE????
+			if (m_bLogEvaluationSummary)
+			{
+				writeEpisodeSummary();
+			}
 		}
 	}
 	

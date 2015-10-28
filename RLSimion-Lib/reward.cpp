@@ -110,12 +110,12 @@ double CErrorComponent::getRewardComponent(CState* state)
 	}
 	else if (strcmp(m_errorComponentType,"PUNISH_IF_ABOVE")==0)
 	{
-		error= max(0.0,state->getValue(m_controlledVariable)
+		error= std::max(0.0,state->getValue(m_controlledVariable)
 			-m_setpointConstant);
 	}
 	else if (strcmp(m_errorComponentType,"PUNISH_IF_BELOW")==0)
 	{
-		error= max(0.0,m_setpointConstant - state->getValue(m_controlledVariable));
+		error= std::max(0.0,m_setpointConstant - state->getValue(m_controlledVariable));
 	}
 
 	error= (error)/m_tolerance;
@@ -128,7 +128,7 @@ double CErrorComponent::getRewardComponent(CState* state)
 
 	rew= m_weight*rew;
 
-	rew= max(MIN_REWARD,rew);
+	rew= std::max(MIN_REWARD,rew);
 
 	m_lastReward= rew;
 

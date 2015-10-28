@@ -104,7 +104,7 @@ void CNamedVarSet::setValue(char* varName, double value)
 	{
 		if (strcmp(m_pProperties[i].name,varName)==0)
 		{
-			m_pValues[i]= min(m_pProperties[i].max,max(m_pProperties[i].min,value));
+			m_pValues[i]= std::min(m_pProperties[i].max,std::max(m_pProperties[i].min,value));
 			return;
 		}
 	}
@@ -122,7 +122,7 @@ double CNamedVarSet::getValue(int i)
 void CNamedVarSet::setValue(int i, double value)
 {
 	if (i>=0 && i<m_numVars)
-		m_pValues[i]= min(m_pProperties[i].max,max(m_pProperties[i].min,value));
+		m_pValues[i]= std::min(m_pProperties[i].max,std::max(m_pProperties[i].min,value));
 }
 
 void CNamedVarSet::copy(CNamedVarSet* nvs)

@@ -55,7 +55,10 @@ public:
 	int getNumParameters(){return m_numParameters;}
 	int getNumParameters(char* parameterPrefix); //only takes into account parameters starting with parameterPrefix
 
+	CParameter& getParameter(int index);
+
 	bool exists(char* parameterName);
 
 	void setParameter(CParameter& parameter);
+	void setParameters(CParameters* pParameters);
 };

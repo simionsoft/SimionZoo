@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 		printf("ERROR: configuration file not provided as an argument");
 		exit(-1);
 	}
-		//pParameters= new CParameters("../config/wind-turbine/learn-vidal.txt");
+	printf("\n\n******************\RLSimion******************\nConfig. file %s******************\n\n", numExperiment, commandLine);
 
 	g_pWorld= new CWorld(pParameters);
 	CSimGod* pSimGod = new CSimGod(pParameters);
@@ -81,9 +81,6 @@ int main(int argc, char* argv[])
 
 	delete pSimGod;
 
-	printf("\nThe END\n");
-	char c;
-	scanf_s("%c",&c);
 
 	delete s;
 	delete s_p;

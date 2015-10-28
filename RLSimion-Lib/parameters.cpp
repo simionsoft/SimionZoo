@@ -39,11 +39,13 @@ CParameter& CParameter::operator= (const CParameter& parameter)
 		pValue = new double;
 		*(double*)pValue = *(double*)parameter.pValue;
 	}
-	else if (type== NOT_INITIALIZED)
+	else if (type== STRING_PARAMETER)
 	{
 		pValue = new char[MAX_STRING_SIZE];
 		strcpy_s((char*)pValue, 512, (char*)parameter.pValue);
 	}
+	strcpy_s(name, MAX_PARAMETER_NAME_SIZE, parameter.name);
+
 	return *this;
 }
 
@@ -73,6 +75,8 @@ bool CParameters::parseLine(char* line, CParameter& parameter)
 	char stringValue[MAX_STRING_SIZE];
 	double value = 0.0;
 	int length;
+
+	parameter.releasePtr();
 
 	result = sscanf_s(line, "%s : %lf", description, MAX_PARAMETER_NAME_SIZE, &value);
 	if (result == 2 && strstr(line, ",") == 0)
@@ -107,7 +111,7 @@ void CParameters::loadParameters(char* parameterFile)
 
 	char* ret;
 	char* pComment;
-
+	CParameter parameter;
 
 	FILE* stream;
 	printf("Loading %s...",parameterFile);
@@ -127,8 +131,10 @@ void CParameters::loadParameters(char* parameterFile)
 			}
 
 			//parse line
-			if (parseLine(line, m_pParameters[m_numParameters]))
-				m_numParameters++;
+			if (parseLine(line, parameter))
+			{
+				setParameter(parameter);
+			}
 			
 			ret= fgets(line,MAX_LINE_LENGTH,stream);
 		}
@@ -287,5 +293,19 @@ void CParameters::setParameter(CParameter& parameter)
 	else
 	{
 		m_pParameters[pos] = parameter;
+	}
+}
+
+CParameter& CParameters::getParameter(int index)
+{
+	assert(index >= 0 && index < m_numParameters);
+	return m_pParameters[index];
+}
+
+void CParameters::setParameters(CParameters* pParameters)
+{
+	for (int i = 0; i < pParameters->getNumParameters(); i++)
+	{
+		setParameter(pParameters->getParameter(i));
 	}
 }

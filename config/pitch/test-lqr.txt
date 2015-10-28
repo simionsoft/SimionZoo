@@ -3,7 +3,7 @@ EXPERIMENT/NUM_EPISODES : 1		//number of episodes
 EXPERIMENT/EPISODE_LENGTH : 50.0		//length in seconds
 EXPERIMENT/RANDOM_SEED : 1			//the seed used to generate random numbers
 EXPERIMENT/EVAL_FREQ : 50				//in episodes
-EXPERIMENT/LOG/OUTPUT_DIR : ../logs/pitch
+EXPERIMENT/LOG/OUTPUT_DIR : ..\logs\pitch
 EXPERIMENT/LOG/FILE_PREFIX : pitch-test-lqr
 EXPERIMENT/LOG/EVALUATION_EPISODES : 1		//log all the evaluation episodes? 0: no/ 1: yes
 EXPERIMENT/LOG/TRAINING_EPISODES : 0		//log all the training episodes? 0: no/ 1: yes
@@ -14,7 +14,7 @@ EXPERIMENT/LOG/FREQ : 0.25				//seconds
 WORLD/DYNAMIC_MODEL : PITCH_CONTROL
 WORLD/DELTA_T : 0.05
 WORLD/NUM_SIMULATION_STEPS : 4
-WORLD/SET_POINT_FILE : ../config/pitch/setpoints/setpoint.txt
+WORLD/SET_POINT_FILE : ..\config\pitch\setpoints\setpoint.txt
 WORLD/REWARD/MIN_REWARD : -100.0
 WORLD/REWARD/MAX_REWARD : 1.0
 WORLD/REWARD/NUM_COMPONENTS : 1

@@ -94,7 +94,7 @@ double C_p(double lambda, double beta) //[1]
 	double e= exp(-16.5/lambda_i);
 	c_p= 0.5*(116.0/lambda_i - 0.4*beta -5.0)*exp(-16.5/lambda_i);
 	//c_p= 0.5*(116.0/lambda_i - 0.4*(beta -5.0))*exp(-16.5/lambda_i);
-	return max(0.00001,c_p);
+	return std::max(0.00001,c_p);
 }
 double C_q(double lambda, double beta)
 {

@@ -49,38 +49,38 @@ void ProcessCommand(CParameters* pAppParameters)
 	char commandLine[512];
 
 	//create parameter file for experiment
-	sprintf_s(fileName, 512, "%s\\exp-%d.txt", pAppParameters->getStringPtr("BADGER_OUTPUT_DIRECTORY"),numExperiment);
+	sprintf_s(fileName, 512, "%s\\exp-%d.txt", pAppParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"),numExperiment);
 	g_pCurrentParameters->saveParameters(fileName);
 
 	
 	
 	//command line
-	sprintf_s(commandLine, 512, "%s %s", pAppParameters->getStringPtr("EXE_FILE"), fileName);
-	printf("EXPERIMENT %d: %s\n", numExperiment, commandLine);
+	sprintf_s(commandLine, 512, "%s %s", pAppParameters->getStringPtr("BADGER/EXE_FILE"), fileName);
+	printf("\n\n******************\nBadger******************\nExperiment %d: %s******************\n\n", numExperiment, commandLine);
 
-	if (0 != (int)pAppParameters->getDouble("RUN_EXPERIMENTS"))
+	if (0 != (int)pAppParameters->getDouble("BADGER/RUN_EXPERIMENTS"))
 	{
-		printf("RUNNING...\n\n\n");
+//		printf("RUNNING...\n\n\n");
 		system(commandLine);
-		printf("DONE\n\n\n");
+//		printf("DONE\n\n\n");
 	}
 
-	if (0 != (int)pAppParameters->getDouble("SAVE_EXPERIMENTS"))
+	if (0 != (int)pAppParameters->getDouble("BADGER/SAVE_EXPERIMENTS"))
 	{
-		printf("SAVING COMMAND...");
+		//printf("SAVING COMMAND...");
 		FILE* pBatchFile;
-		if (numExperiment==0 && 0!= (int)pAppParameters->getDouble("SAVE_EXPERIMENTS_FILE_RESET"))
-			fopen_s(&pBatchFile, pAppParameters->getStringPtr("SAVE_EXPERIMENTS_FILE"), "w");
+		if (numExperiment==0 && 0!= (int)pAppParameters->getDouble("BADGER/SAVE_EXPERIMENTS_FILE_RESET"))
+			fopen_s(&pBatchFile, pAppParameters->getStringPtr("BADGER/SAVE_EXPERIMENTS_FILE"), "w");
 		else
-			fopen_s(&pBatchFile, pAppParameters->getStringPtr("SAVE_EXPERIMENTS_FILE"),"a");
+			fopen_s(&pBatchFile, pAppParameters->getStringPtr("BADGER/SAVE_EXPERIMENTS_FILE"),"a");
 		if (pBatchFile)
 		{
 			fprintf_s(pBatchFile, "%s\n", commandLine);
 			fclose(pBatchFile);
-			printf("DONE\n");
+		//	printf("DONE\n");
 		}
-		else
-			printf("FAILED\n");
+		//else
+		//	printf("FAILED\n");
 	}
 
 	//increment experiment-id
@@ -98,7 +98,10 @@ void TraverseTree(Node* pNode,CParameters* pAppParameters)
 	{
 		for (int i= 0; i<pNode->numParameters; i++)
 		{
-			g_pCurrentParameters->setParameter(pNode->parameters[i]);
+			if (!strcmp(pNode->parameters[i].name, "BADGER/BASE_PARAMETER_FILE"))
+				g_pCurrentParameters->loadParameters((char*)pNode->parameters[i].pValue);
+			else
+				g_pCurrentParameters->setParameter(pNode->parameters[i]);
 		}
 	}
 
@@ -117,7 +120,7 @@ void TraverseTree(Node* pNode,CParameters* pAppParameters)
 }
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	Node Root;
 
@@ -134,11 +137,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	CParameters *pAppParameters = new CParameters("Badger-parameters.txt");
 
 	//try to create directory in case it doesn't exist
-	_mkdir(pAppParameters->getStringPtr("BADGER_OUTPUT_DIRECTORY"));
+	_mkdir(pAppParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"));
 
+	g_pCurrentParameters = new CParameters(pAppParameters->getStringPtr("BADGER/BASE_PARAMETER_FILE"));
 
-	g_pCurrentParameters = new CParameters(pAppParameters->getStringPtr("BASE_PARAMETER_FILE"));
-	fopen_s(&pFile, pAppParameters->getStringPtr("EXPERIMENT_CONFIG_FILE"), "r");
+	fopen_s(&pFile, pAppParameters->getStringPtr("BADGER/EXPERIMENT_CONFIG_FILE"), "r");
 	if (pFile)
 	{
 		while (fgets(line, sizeof(line), pFile))

@@ -101,7 +101,7 @@ double CCACLAActor::getProbability(CAction* a)
 
 	for (int i = 0; i < m_numOutputs; i++)
 	{
-		varProd *= (1 - max(1.0, fabs(m_pExpNoise[i]->getLastValue())));
+		varProd *= (1 - std::max(1.0, fabs(m_pExpNoise[i]->getLastValue())));
 	}
 	return varProd;
 
@@ -128,7 +128,7 @@ double CCACLAActor::getProbability(CAction* a)
 	double root= sqrt(pow((2*M_PI),(double)m_numOutputs)*varProd);
 	double expo= exp(-0.5*mahalanobisDist);
 
-	return min(1.0,expo/root);
+	return std::min(1.0,expo/root);
 }
 
 void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td)

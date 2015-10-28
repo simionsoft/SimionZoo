@@ -25,6 +25,7 @@ class CExperiment
 
 	double m_lastLogTime;
 	double m_episodeRewards;
+	double m_lastEvaluationAvgReward;
 	
 	//regular log files
 	void openEpisodeLogFile();

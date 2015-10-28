@@ -241,7 +241,7 @@ double CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	else                                                                       //We are in region 2 1/2 - simple induction generator transition region
 		GenTrq = m_VS_Slope25*( m_GenSpeedF - m_VS_SySp   );
 
-	GenTrq  = min( GenTrq, s->getMax("T_g")  );   //Saturate the command using the maximum torque limit
+	GenTrq  = std::min( GenTrq, s->getMax("T_g")  );   //Saturate the command using the maximum torque limit
 
 	double TrqRate;
 	TrqRate = ( GenTrq - s->getValue("T_g") )/CWorld::getDT(); //Torque rate (unsaturated)
@@ -255,7 +255,7 @@ double CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	double SpdErr    = m_GenSpeedF - m_PC_RefSpd;                                 //Current speed error
 	m_IntSpdErr = m_IntSpdErr + SpdErr*CWorld::getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
-	m_IntSpdErr = min( max( m_IntSpdErr, s->getMax("beta")/( GK*m_PC_KI ) ), s->getMin("beta")/( GK*m_PC_KI ));
+	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getMax("beta")/( GK*m_PC_KI ) ), s->getMin("beta")/( GK*m_PC_KI ));
   
 	//Compute the pitch commands associated with the proportional and integral
 	//  gains:
@@ -265,7 +265,7 @@ double CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	//Superimpose the individual commands to get the total pitch command;
 	//  saturate the overall command using the pitch angle limits:
 	double PitComT   = PitComP + PitComI;                                     //Overall command (unsaturated)
-	PitComT   = min( max( PitComT, s->getMin("beta") ), s->getMax("beta") );           //Saturate the overall command using the pitch angle limits
+	PitComT   = std::min( std::max( PitComT, s->getMin("beta") ), s->getMax("beta") );           //Saturate the overall command using the pitch angle limits
 
 	//Saturate the overall commanded pitch using the pitch rate limit:
 	//NOTE: Since the current pitch angle may be different for each blade
