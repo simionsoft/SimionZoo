@@ -1,0 +1,137 @@
+{
+BADGER/BASE_PARAMETER_FILE : ..\config\pitch\learn.txt
+ {
+SIMGOD/ACTOR/LOAD : ..\data\pitch-policy.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(150),pitch-rate(150),control-deviation(150)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),control-deviation(150)
+SIMGOD/CRITIC/LOAD : ..\data\pitch-value.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-1
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-1
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\pitch-policy-2.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(112),pitch-rate(112),control-deviation(112)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(112),pitch-rate(112),control-deviation(112)
+SIMGOD/CRITIC/LOAD : ..\data\pitch-value-2.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-2
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-2
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\pitch-policy-3.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(75),pitch-rate(75),control-deviation(75)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(75),pitch-rate(75),control-deviation(75)
+SIMGOD/CRITIC/LOAD : ..\data\pitch-value-3.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-3
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-3
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+}
+{
+BADGER/BASE_PARAMETER_FILE : ..\config\underwater-vehicle\learn.txt
+ {
+SIMGOD/ACTOR/LOAD : ..\data\uv-policy.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(10000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(10000)
+SIMGOD/CRITIC/LOAD : ..\data\uv-value.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : uv-learn-1
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : uv-learn-1
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\uv-policy-2.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(75000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(75000)
+SIMGOD/CRITIC/LOAD : ..\data\uv-value-2.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : uv-learn-2
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : uv-learn-2
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\uv-policy-3.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(5000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(5000)
+SIMGOD/CRITIC/LOAD : ..\data\uv-value-3.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : uv-learn-3
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : uv-learn-3
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+}
+{
+BADGER/BASE_PARAMETER_FILE : ..\config\wind-turbine\learn-vidal.txt
+ {
+SIMGOD/ACTOR/LOAD : ..\data\vidal-policy.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : E_omega_r(10000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(75-c),d_omega_r(75-c),T_g(75),E_p(75-c)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(50-c),d_omega_r(50),T_g(50),E_p(50-c)
+SIMGOD/CRITIC/LOAD : ..\data\vidal-value.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : wt-learn-1
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : wt-learn-1
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\vidal-policy-2.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : E_omega_r(7500)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(56-c),d_omega_r(56-c),T_g(56),E_p(56-c)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(37-c),d_omega_r(37),T_g(37),E_p(37-c)
+SIMGOD/CRITIC/LOAD : ..\data\vidal-value-2.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : wt-learn-2
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : wt-learn-2
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\vidal-policy-3.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : E_omega_r(5000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(37-c),d_omega_r(37-c),T_g(37),E_p(37-c)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(25-c),d_omega_r(25),T_g(25),E_p(25-c)
+SIMGOD/CRITIC/LOAD : ..\data\vidal-value-3.bin
+  {
+EXPERIMENT/LOG/FILE_PREFIX : wt-learn-3
+EXPERIMENT/RANDOM_SEED : 1
+  }
+  {
+EXPERIMENT/LOG/FILE_PREFIX : wt-learn-3
+EXPERIMENT/RANDOM_SEED : 2
+  }
+ }
+}

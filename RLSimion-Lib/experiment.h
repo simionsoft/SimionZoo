@@ -20,10 +20,8 @@ class CExperiment
 	unsigned int m_evalFreq; //in episodes
 	double m_logFreq; //in seconds
 
-	__int64 m_lastCounter;
-	__int64 m_counterFreq;
+	std::chrono::time_point<std::chrono::high_resolution_clock> m_lastLogTime;
 
-	double m_lastLogTime;
 	double m_episodeRewards;
 	double m_lastEvaluationAvgReward;
 	
