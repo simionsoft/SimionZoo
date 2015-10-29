@@ -56,7 +56,7 @@ void ProcessCommand(CParameters* pAppParameters)
 	
 	//command line
 	sprintf_s(commandLine, 512, "%s %s", pAppParameters->getStringPtr("BADGER/EXE_FILE"), fileName);
-	printf("\n\n******************\nBadger******************\nExperiment %d: %s******************\n\n", numExperiment, commandLine);
+	printf("\n\n******************\nBadger\n******************\nExperiment %d: %s******************\n\n", numExperiment, commandLine);
 
 	if (0 != (int)pAppParameters->getDouble("BADGER/RUN_EXPERIMENTS"))
 	{
