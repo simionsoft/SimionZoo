@@ -152,13 +152,10 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 	
 
 	//print progress
-	std::chrono::time_point<std::chrono::microseconds> t = std::chrono::microseconds::now();
-
-	//__int64 currentCounter;
-	//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-	//double time= (double)(currentCounter-m_lastCounter) / (double) m_counterFreq;
-	//if (time>0.5) //each .5 secs?
-	std::chrono::duration_cast<std::chrono::microseconds>(end - start).count()
+	__int64 currentCounter;
+	QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
+	double time= (double)(currentCounter-m_lastCounter) / (double) m_counterFreq;
+	if (time>0.5) //each .5 secs?
 	{
 		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%) Avg.Reward: %.2f        \r"
 			,m_episode,m_numEpisodes,m_step,m_numSteps,getProgress()*100.0,getCurrentAvgReward());
