@@ -86,10 +86,9 @@ int main(int argc, char* argv[])
 	delete s_p;
 	delete a;
 
+	delete g_pParameterScheduler;
 	delete pParameters;
 	delete g_pWorld;
-	
-	delete g_pParameterScheduler;
 	delete g_pExperiment;
 
 	return 0;

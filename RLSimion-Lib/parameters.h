@@ -60,5 +60,7 @@ public:
 	bool exists(char* parameterName);
 
 	void setParameter(CParameter& parameter);
+	void setParameter(char* name, double value);
+	void setParameter(char* name, char* value);
 	void setParameters(CParameters* pParameters);
 };

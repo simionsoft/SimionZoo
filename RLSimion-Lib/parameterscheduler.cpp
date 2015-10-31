@@ -11,6 +11,7 @@ CParameterScheduler::CParameterScheduler(char *configFile,CParameters* pParamete
 
 	m_numParameterSchedules = 0;
 	m_pScheduleData = 0;
+	m_pParameters = pParameters;		// don't free the memory!!!
 
 	if (!configFile) return;
 
@@ -25,8 +26,8 @@ CParameterScheduler::CParameterScheduler(char *configFile,CParameters* pParamete
 		//get the parameter's name from the schedule file
 		name = pSchedules->getParameterName(i);
 
-		//get a pointer to the actual parameter
-		m_pScheduleData[i].pValue = pParameters->getDoublePtr(name);
+		m_pScheduleData[i].pName = new char[strlen(name) + 1];
+		strcpy_s(m_pScheduleData[i].pName, strlen(name) + 1, name);
 
 		//parse the schedule line
 		strcpy_s(configLine, MAX_STRING_SIZE, pSchedules->getStringPtr(i));
@@ -74,17 +75,17 @@ void CParameterScheduler::update()
 			switch(m_pScheduleData[i].decayType)
 			{
 			case LINEAR_DECAY:
-				*m_pScheduleData[i].pValue = 
-					m_pScheduleData[i].start + progress*(m_pScheduleData[i].end-m_pScheduleData[i].start);
+				m_pParameters->setParameter(m_pScheduleData[i].pName, 
+					m_pScheduleData[i].start + progress*(m_pScheduleData[i].end-m_pScheduleData[i].start));
 				break;
 			case QUADRATIC_DECAY:
-				*m_pScheduleData[i].pValue = 
-					m_pScheduleData[i].start + (1.- pow(1-progress,2.0))*(m_pScheduleData[i].end-m_pScheduleData[i].start);
+				m_pParameters->setParameter(m_pScheduleData[i].pName,
+					m_pScheduleData[i].start + (1.- pow(1-progress,2.0))*(m_pScheduleData[i].end-m_pScheduleData[i].start));
 				break;
 			}
 		}
 		else
-			*m_pScheduleData[i].pValue= m_pScheduleData[i].evalValue;
+			m_pParameters->setParameter(m_pScheduleData[i].pName,m_pScheduleData[i].evalValue);
 	}
 
 }

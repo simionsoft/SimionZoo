@@ -115,6 +115,8 @@ CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameter
 
 double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 {
+	//f(omega_r,T_g,d_omega_r,E_p, E_int_omega_r)
+
 	//d(Tg)/dt= (-1/omega_r)*(T_g*(a*omega_r-d_omega_r)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//d(beta)/dt= K_p*(omega_ref - omega_r) + K_i*(error_integral)
 	double T_a= s->getValue("T_a");
@@ -131,8 +133,8 @@ double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*( (*m_pA) *omega_r+d_omega_r) - (*m_pA)*m_P_s + (*m_pK_alpha)*sgn(error_P));
 	else d_T_g= 0.0;
 
-	
-	double d_beta= (*m_pKP)*s->getValue("E_omega_r") + (*m_pKI)*s->getValue("E_int_omega_r");
+	double e_omega_r = omega_r - 4.39823; //NOMINAL WIND SPEED
+	double d_beta = (*m_pKP)*e_omega_r +(*m_pKI)*s->getValue("E_int_omega_r");
 				 /*0.5*K_p*error_omega*(1.0+sgn(error_omega))
 				+ K_i*s->getValue("integrative_omega_r_error);*/
 

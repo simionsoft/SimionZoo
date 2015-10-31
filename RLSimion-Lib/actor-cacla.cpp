@@ -49,7 +49,6 @@ CCACLAActor::~CCACLAActor()
 
 	for (int i= 0; i<m_numOutputs; i++)
 	{
-		delete m_pAlpha[i];
 		delete m_pPolicy[i];
 		delete m_pExpNoise[i];
 	}

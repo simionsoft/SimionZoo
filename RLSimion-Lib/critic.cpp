@@ -43,6 +43,8 @@ void CCritic::loadVFunction(char* pFilename)
 {
 	FILE* pFile;
 
+	if (!strcmp(pFilename, "NONE")) return;
+
 	printf("Loading Value-Function (\"%s\")...", pFilename);
 
 	fopen_s(&pFile, pFilename, "rb");
