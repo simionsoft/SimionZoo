@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 		printf("ERROR: configuration file not provided as an argument");
 		exit(-1);
 	}
-	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s******************\n\n", argv[1]);
+	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
 
 	g_pWorld= new CWorld(pParameters);
 	CSimGod* pSimGod = new CSimGod(pParameters);
