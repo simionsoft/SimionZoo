@@ -42,7 +42,7 @@ public:
 CWorld *g_pWorld;
 CExperiment *g_pExperiment = 0;
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
 	if (argc<2)
 	{
