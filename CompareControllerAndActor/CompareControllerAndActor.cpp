@@ -12,16 +12,14 @@
 #include "../RLSimion-Lib/vfa.h"
 
 
-CParameters *g_pParameters;
-CWorld *g_pWorld;
-CExperiment *g_pExperiment= 0;
+
 
 class CStats
 {
-	double min,max,total;
+	double min,max,total, sqrtotal;
 	int numValues;
 public:
-	CStats(){min= 99999999.9; max= 0.0; total= 0.0;numValues= 0;}
+	CStats(){ min = 99999999.9; max = 0.0; total = 0.0; numValues = 0; sqrtotal = 0.0; }
 	~CStats(){}
 	void addValue(double value)
 	{
@@ -32,46 +30,54 @@ public:
 		if (value<min)
 			min= value;
 		total+= value;
+		sqrtotal += value*value;
 	}
 	double getMax(){return max;}
 	double getMin(){return min;}
 	double getAvg(){return total/(double)numValues;}
+	double getRMSE(){ return sqrt(sqrtotal / (double)numValues); }
 };
+
+
+CWorld *g_pWorld;
+CExperiment *g_pExperiment = 0;
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	g_pParameters= new CParameters("CompareControllerAndActor-parameters.txt");
+	if (argc<2)
+	{
+		printf("ERROR: a configuration file should be provided as an argument.");
+		exit(-1);
+	}
+
+	CParameters* pAppParameters= new CParameters(argv[1]);
 	
 	//INITIALISE WORLD -> STATE PROPERTIES
-	g_pWorld= new CWorld(g_pParameters->getStringPtr("WORLD_CONFIG_FILE"));
-
+	CParameters* pActorParameters = new CParameters(pAppParameters->getStringPtr("ACTOR_CONFIG_FILE"));
 	//INITIALISE ACTOR
-	CActor *pActor= CActor::getActorInstance(g_pParameters->getStringPtr("ACTOR_CONFIG_FILE"));
+
+	g_pWorld = new CWorld(pActorParameters);
+	CActor *pActor = CActor::getActorInstance(pActorParameters);
 
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
-	CActor *pController= CActor::getActorInstance(g_pParameters->getStringPtr("CONTROLLER_CONFIG_FILE"));
+	CParameters* pControllerParameters = new CParameters(pAppParameters->getStringPtr("CONTROLLER_CONFIG_FILE"));
+	CActor *pController = CActor::getActorInstance(pControllerParameters);
 
 	CState *s= g_pWorld->getStateInstance();
 	CAction *a= g_pWorld->getActionInstance();
 	CAction *a2= g_pWorld->getActionInstance();
-#define NUM_SAMPLES 100000
+
+	int numSamples = (int) pAppParameters->getDouble("COMPARE_AC_AND_ACTOR/NUM_SAMPLES");
+	
+//#define NUM_SAMPLES 100000
 #define NUM_POINTS_PER_DIM 100000
 	double value;
 	CStats* pStats= new CStats[a->getNumVars()];
 
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(10187705,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(10187706,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(10187631,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(9765830,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(10182080,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(10187630,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(9765831,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(10182081,s,a);
-	//((CCACLAActor*)pActor)->m_pPolicy[1]->getFeatureStateAction(9765756,s,a);
 	
-	for (int i= 0; i<NUM_SAMPLES; i++)
+	for (int i= 0; i<numSamples; i++)
 	{
-		printf("Sampling controller and actor: %d/%d samples\r",i,NUM_SAMPLES);
+		printf("Sampling controller and actor: %d/%d samples\r",i,numSamples);
 		for (int j= 0; j<s->getNumVars(); j++)
 		{
 			value= (double)(rand()%NUM_POINTS_PER_DIM)/ (double)NUM_POINTS_PER_DIM;
@@ -86,13 +92,18 @@ int _tmain(int argc, _TCHAR* argv[])
 			pStats[j].addValue(a->getValue(j) - a2->getValue(j));
 		}
 	}
-	for (int j= 0; j<a->getNumVars(); j++)
+
+	FILE *pFile;
+	fopen_s(&pFile, pAppParameters->getStringPtr("COMPARE_AC_AND_ACTOR/OUTPUT_FILE"), "w");
+	if (pFile)
 	{
-		printf("Comparison stats for dim %d: Max=%.5f Min=%.5f Avg=%.5f\n"
-			,j, pStats[j].getMax(),pStats[j].getMin(),pStats[j].getAvg());
+		for (int j = 0; j < a->getNumVars(); j++)
+		{
+			fprintf_s(pFile,"Comparison stats for dim %d: Max=%.5f Min=%.5f Avg=%.5f\n"
+				, j, pStats[j].getMax(), pStats[j].getMin(), pStats[j].getAvg(), pStats[j].getRMSE());
+		}
+		fclose(pFile);
 	}
-	printf("Press ENTER...");
-	char c= getchar();
 
 	delete [] pStats;
 
@@ -103,7 +114,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	delete g_pWorld;
 	delete pController;
 	delete pActor;
-
-	delete g_pParameters;
+	delete pAppParameters;
+	delete pActorParameters;
+	delete pControllerParameters;
 }
 
