@@ -1,4 +1,4 @@
-BADGER/EXPERIMENT_CONFIG_FILE : Experiment-Learn-2.txt
+BADGER/EXPERIMENT_CONFIG_FILE : Experiment-Learn.txt
 BADGER/EXE_FILE : ..\Release\RLSimion.exe
 BADGER/OUTPUT_DIRECTORY : ..\config\badgers
 BADGER/RUN_EXPERIMENTS : 1

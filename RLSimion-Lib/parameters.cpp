@@ -12,16 +12,19 @@ CParameter::CParameter()
 
 void CParameter::releasePtr()
 {
-	if (pValue && type == NUMERIC_PARAMETER)
+	if (pValue && type != NOT_INITIALIZED)
 	{
-		delete pValue;
-		pValue = 0;
+		if (type == NUMERIC_PARAMETER)
+		{
+			delete (double*) pValue;
+			pValue = 0;
+		}
+		if (type == STRING_PARAMETER)
+		{
+			delete[](char*) pValue;
+		}
 	}
-	if (pValue && type == STRING_PARAMETER)
-	{
-		delete[] pValue;
-		pValue = 0;
-	}
+	type = NOT_INITIALIZED;
 }
 
 CParameter::~CParameter()
@@ -34,6 +37,8 @@ CParameter& CParameter::operator= (const CParameter& parameter)
 	releasePtr();
 
 	type = parameter.type;
+	strcpy_s(name, MAX_PARAMETER_NAME_SIZE, parameter.name);
+
 	if (type == NUMERIC_PARAMETER)
 	{
 		pValue = new double;
@@ -44,7 +49,6 @@ CParameter& CParameter::operator= (const CParameter& parameter)
 		pValue = new char[MAX_STRING_SIZE];
 		strcpy_s((char*)pValue, 512, (char*)parameter.pValue);
 	}
-	strcpy_s(name, MAX_PARAMETER_NAME_SIZE, parameter.name);
 
 	return *this;
 }
@@ -64,7 +68,11 @@ CParameters::CParameters(char* parameterFile)
 
 CParameters::~CParameters()
 {
-	if (m_pParameters) delete [] m_pParameters;
+	if (m_pParameters)
+	{
+		delete[] m_pParameters;
+		m_pParameters = 0;
+	}
 }
 
 
@@ -92,8 +100,7 @@ bool CParameters::parseLine(char* line, CParameter& parameter)
 		result = sscanf_s(line, "%s : %[^\n]s", description, MAX_PARAMETER_NAME_SIZE, stringValue, MAX_STRING_SIZE);
 		if (result == 2)
 		{
-			strcpy_s(parameter.name, MAX_PARAMETER_NAME_SIZE
-				, description);
+			strcpy_s(parameter.name, MAX_PARAMETER_NAME_SIZE, description);
 			length = MAX_STRING_SIZE;//strlen(stringValue)+1;
 			parameter.pValue = (void*) new char[length];
 			strcpy_s((char*)parameter.pValue, MAX_STRING_SIZE, stringValue);
@@ -293,6 +300,42 @@ void CParameters::setParameter(CParameter& parameter)
 	else
 	{
 		m_pParameters[pos] = parameter;
+	}
+}
+
+void CParameters::setParameter(char* name, double value)
+{
+	int pos = getParameterIndex(name);
+
+	if (pos < 0)
+	{
+		strcpy_s(m_pParameters[m_numParameters].name, MAX_PARAMETER_NAME_SIZE,name);
+		m_pParameters[m_numParameters].pValue = (void*)new double;
+		*(double*)m_pParameters[m_numParameters].pValue = value;
+		m_pParameters[m_numParameters].type = NUMERIC_PARAMETER;
+		m_numParameters++;
+	}
+	else
+	{
+		*(double*)m_pParameters[pos].pValue= value;
+	}
+}
+
+void CParameters::setParameter(char* name, char* value)
+{
+	int pos = getParameterIndex(name);
+
+	if (pos < 0)
+	{
+		strcpy_s(m_pParameters[m_numParameters].name, MAX_PARAMETER_NAME_SIZE, name);
+		m_pParameters[m_numParameters].pValue = (void*)new char[MAX_STRING_SIZE];
+		strcpy_s((char*)m_pParameters[m_numParameters].pValue, MAX_STRING_SIZE,(char*) value);
+		m_pParameters[m_numParameters].type = STRING_PARAMETER;
+		m_numParameters++;
+	}
+	else
+	{
+		strcpy_s((char*)m_pParameters[pos].pValue, MAX_STRING_SIZE, (char*)value);
 	}
 }
 

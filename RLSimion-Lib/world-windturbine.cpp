@@ -212,8 +212,6 @@ void CWindTurbine::reset(CState *s)
 	double initial_rotor_speed= NOMINAL_ROTOR_SPEED;
 
 
-
-
 	if (m_initial_blade_angle==0.0)
 	{
 		printf("Calculating initial torque and blade angle parameters...\n");

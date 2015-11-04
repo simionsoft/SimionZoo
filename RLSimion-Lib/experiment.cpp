@@ -110,19 +110,25 @@ bool CExperiment::isCurrentEpisodeLogged()
 void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 {
 	bool bLog= isCurrentEpisodeLogged();
+	
+	//FIRST STEP IN EPISODE????
+	if (m_step == 1)
+	{
+		m_episodeRewards = r;
+		m_lastEvaluationAvgReward = 0.0;
+		m_lastLogTime = 0.0;
 
-	if (m_step==1) m_episodeRewards= r;
+		if (bLog)
+		{
+			openEpisodeLogFile();
+			if (m_pFile)
+				writeEpisodeLogFileHeader(s, a);
+		}
+	}
 	else m_episodeRewards+= r;
 
 
-	//FIRST STEP IN EPISODE????
-	if (bLog && m_step==1)
-	{
-		m_lastLogTime= 0.0;
-		openEpisodeLogFile();
-		if (m_pFile)
-			writeEpisodeLogFileHeader(s,a);
-	}
+
 
 	if (bLog && (CWorld::getStepStartT()-m_lastLogTime>=m_logFreq || m_step==1))
 	{

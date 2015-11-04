@@ -49,7 +49,9 @@ void CActor::loadPolicy(char* pFilename)
 {
 	FILE* pFile;
 
-	printf("CACLAActor::load(\"%s\")...", pFilename);
+	if (!strcmp(pFilename, "NONE")) return;
+
+	printf("Loading policy (\"%s\")...", pFilename);
 
 	fopen_s(&pFile, pFilename, "rb");
 	if (pFile)

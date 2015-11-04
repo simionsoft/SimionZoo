@@ -1,4 +1,35 @@
 {
+BADGER/BASE_PARAMETER_FILE : ..\config\wind-turbine\learn-value-vidal.txt
+ {
+SIMGOD/ACTOR/LOAD : ..\data\vidal-policy.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
+SIMGOD/CRITIC/SAVE : ..\data\vidal-value.bin
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\vidal-policy-2.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(60),d_omega_r(60),T_g(60),E_p(60)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(60),d_omega_r(60),T_g(60),E_p(60)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(60),d_omega_r(60),T_g(60),E_p(60)
+SIMGOD/CRITIC/SAVE : ..\data\vidal-value-2.bin
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\vidal-policy-3.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(40),d_omega_r(40),T_g(40),E_p(40)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(40),d_omega_r(40),T_g(40),E_p(40)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(40),d_omega_r(40),T_g(40),E_p(40)
+SIMGOD/CRITIC/SAVE : ..\data\vidal-value-3.bin
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\vidal-policy-4.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(20),d_omega_r(20),T_g(20),E_p(20)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(20),d_omega_r(20),T_g(20),E_p(20)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(20),d_omega_r(20),T_g(20),E_p(20)
+SIMGOD/CRITIC/SAVE : ..\data\vidal-value-4.bin
+ }
+}
+{
 BADGER/BASE_PARAMETER_FILE : ..\config\pitch\learn-value.txt
  {
 SIMGOD/ACTOR/LOAD : ..\data\pitch-policy.bin
@@ -8,15 +39,21 @@ SIMGOD/CRITIC/SAVE : ..\data\pitch-value.bin
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\pitch-policy-2.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(112),pitch-rate(112),control-deviation(112)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(112),pitch-rate(112),control-deviation(112)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(125),pitch-rate(125),control-deviation(125)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(125),pitch-rate(125),control-deviation(125)
 SIMGOD/CRITIC/SAVE : ..\data\pitch-value-2.bin
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\pitch-policy-3.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(100),pitch-rate(100),control-deviation(100)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(100),pitch-rate(100),control-deviation(100)
+SIMGOD/CRITIC/SAVE : ..\data\pitch-value-3.bin
+ }
+ {
+SIMGOD/ACTOR/LOAD : ..\data\pitch-policy-4.bin
 SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(75),pitch-rate(75),control-deviation(75)
 SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(75),pitch-rate(75),control-deviation(75)
-SIMGOD/CRITIC/SAVE : ..\data\pitch-value-3.bin
+SIMGOD/CRITIC/SAVE : ..\data\pitch-value-4.bin
  }
 }
 {
@@ -29,8 +66,8 @@ SIMGOD/CRITIC/SAVE : ..\data\uv-value.bin
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\uv-policy-2.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(75000)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(75000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(7500)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(7500)
 SIMGOD/CRITIC/SAVE : ..\data\uv-value-2.bin
  }
  {
@@ -39,28 +76,10 @@ SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(5000)
 SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(5000)
 SIMGOD/CRITIC/SAVE : ..\data\uv-value-3.bin
  }
-}
-{
-BADGER/BASE_PARAMETER_FILE : ..\config\wind-turbine\learn-value.txt
  {
-SIMGOD/ACTOR/LOAD : ..\data\vidal-policy.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : E_omega_r(10000)
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(75-c),d_omega_r(75-c),T_g(75),E_p(75-c)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(50-c),d_omega_r(50),T_g(50),E_p(50-c)
-SIMGOD/CRITIC/SAVE : ..\data\vidal-value.bin
- }
- {
-SIMGOD/ACTOR/LOAD : ..\data\vidal-policy-2.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : E_omega_r(7500)
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(56-c),d_omega_r(56-c),T_g(56),E_p(56-c)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(37-c),d_omega_r(37),T_g(37),E_p(37-c)
-SIMGOD/CRITIC/SAVE : ..\data\vidal-value-2.bin
- }
- {
-SIMGOD/ACTOR/LOAD : ..\data\vidal-policy-3.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : E_omega_r(5000)
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(37-c),d_omega_r(37-c),T_g(37),E_p(37-c)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(25-c),d_omega_r(25),T_g(25),E_p(25-c)
-SIMGOD/CRITIC/SAVE : ..\data\vidal-value-3.bin
+SIMGOD/ACTOR/LOAD : ..\data\uv-policy-4.bin
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(2500)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(2500)
+SIMGOD/CRITIC/SAVE : ..\data\uv-value-4.bin
  }
 }
