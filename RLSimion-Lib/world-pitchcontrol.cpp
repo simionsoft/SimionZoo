@@ -32,16 +32,15 @@ void CPitchControl::reset(CState *s)
 {
 	double u;
 
-	//just checking whether bad results are due to using 
-//	if (g_pExperiment->isEvaluationEpisode())
+	if (g_pExperiment->isEvaluationEpisode())
 		//setpoint file in case we're evaluating
 		s->setValue("setpoint-pitch",m_pSetpoint->getPointSet(0.0));
-	//else
-	//{
-	//	//random point in [-0.5,0.5]
-	//	u= ((double)(rand()%10000))/ 10000.0;
-	//	s->setValue("setpoint-pitch",(2*u-0.5)*0.5);
-	//}
+	else
+	{
+		//random point in [-0.5,0.5]
+		u= ((double)(rand()%10000))/ 10000.0;
+		s->setValue("setpoint-pitch",(2*u-0.5)*0.5);
+	}
 	s->setValue("attack-angle",0.0);
 	s->setValue("pitch",0.0);
 	s->setValue("pitch-rate",0.0);
@@ -52,13 +51,13 @@ void CPitchControl::executeAction(CState *s, CAction *a, double dt)
 {
 	double setpoint_pitch;
 	
-//	if (g_pExperiment->isEvaluationEpisode())
+	if (g_pExperiment->isEvaluationEpisode())
 	{
 		setpoint_pitch= m_pSetpoint->getPointSet(CWorld::getT());
 		s->setValue("setpoint-pitch",setpoint_pitch);
 	}
-	//else
-	//	setpoint_pitch= s->getValue("setpoint-pitch");
+	else
+		setpoint_pitch= s->getValue("setpoint-pitch");
 
 	double angle_attack= s->getValue("attack-angle");
 	double pitch_rate= s->getValue("pitch-rate");

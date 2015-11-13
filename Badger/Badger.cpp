@@ -11,10 +11,10 @@
 #pragma comment(lib,"../Release/RLSimion-Lib.lib")
 #endif
 
-#define MAX_NUM_CHILDREN 16
+#define MAX_NUM_CHILDREN 100
 
-#define MAX_NUM_PARAM_PER_NODE 16
-#define PARAMETER_NAME_MAX_SIZE 512
+#define MAX_NUM_PARAM_PER_NODE 100
+#define PARAMETER_NAME_MAX_SIZE 1024
 struct Node
 {
 	int numParameters;
@@ -34,7 +34,8 @@ struct Node
 	}
 	~Node()
 	{
-		for (int i= 0; i<numChildren; i++) delete pChildren[i];
+		for (int i= 0; i<numChildren; i++)
+			delete pChildren[i];
 	}
 };
 
@@ -83,10 +84,7 @@ void ProcessCommand(CParameters* pAppParameters)
 
 	if (0 != (int)pAppParameters->getDouble("BADGER/RUN_EXPERIMENTS"))
 	{
-//		printf("RUNNING...\n\n\n");
 		g_pProcessSpawner->spawnOrWait(commandLine);
-		//system(commandLine);
-//		printf("DONE\n\n\n");
 	}
 
 	if (0 != (int)pAppParameters->getDouble("BADGER/SAVE_EXPERIMENTS"))
@@ -101,10 +99,7 @@ void ProcessCommand(CParameters* pAppParameters)
 		{
 			fprintf_s(pBatchFile, "%s\n", commandLine);
 			fclose(pBatchFile);
-		//	printf("DONE\n");
 		}
-		//else
-		//	printf("FAILED\n");
 	}
 
 	//increment experiment-id
@@ -201,10 +196,12 @@ int main(int argc, char* argv[])
 				}
 				else //if (sscanf_s(line, "%s : %lf", name,&value)==2)
 				{
-					CParameters::parseLine(line, pCurrent->parameters[pCurrent->numParameters]);
-					pCurrent->numParameters++;
+					if (CParameters::parseLine(line, pCurrent->parameters[pCurrent->numParameters]))
+					{
+						pCurrent->numParameters++;
+						numParameters++;	
+					}
 
-					numParameters++;
 				}
 				//else printf("ERROR in line %d\n",numLines);
 
