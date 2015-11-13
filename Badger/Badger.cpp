@@ -3,6 +3,8 @@
 
 #include "stdafx.h"
 #include "../RLSimion-Lib/parameters.h"
+#include "ProcessSpawner.h"
+
 #ifdef _DEBUG
 #pragma comment(lib,"../Debug/RLSimion-Lib.lib")
 #else
@@ -38,9 +40,30 @@ struct Node
 
 CParameters *g_pCurrentParameters;
 int numLeafs = 0;
-STARTUPINFO startupInfo;
-PROCESS_INFORMATION processInfo;
 
+CProcessSpawner* g_pProcessSpawner;
+
+
+int g_firstBadgerFileIndex = 0;
+int getFirstBadgerFileIndex(CParameters* pParameters)
+{
+	char fileName[512];
+	FILE* pFile;
+
+	if (0 != (int)pParameters->getDouble("BADGER/RESET_BADGER_INDEX"))
+		return 0;
+	
+	int n = -1;
+	do
+	{
+		n++;
+		sprintf_s(fileName, 512, "%s\\exp-%d.txt", pParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"), n);
+		fopen_s(&pFile, fileName, "r");
+		if (pFile) fclose(pFile);
+	} while (pFile != 0);
+
+	return n;
+}
 
 void ProcessCommand(CParameters* pAppParameters)
 {
@@ -49,19 +72,20 @@ void ProcessCommand(CParameters* pAppParameters)
 	char commandLine[512];
 
 	//create parameter file for experiment
-	sprintf_s(fileName, 512, "%s\\exp-%d.txt", pAppParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"),numExperiment);
+	sprintf_s(fileName, 512, "%s\\exp-%d.txt", pAppParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"), numExperiment + g_firstBadgerFileIndex);
 	g_pCurrentParameters->saveParameters(fileName);
 
 	
 	
 	//command line
 	sprintf_s(commandLine, 512, "%s %s", pAppParameters->getStringPtr("BADGER/EXE_FILE"), fileName);
-	printf("\n\n******************\nBadger\n******************\nExperiment %d: %s******************\n\n", numExperiment, commandLine);
+	printf("\n\n******************\nBadger\n******************\nExperiment %d: %s\n******************\n\n", numExperiment, commandLine);
 
 	if (0 != (int)pAppParameters->getDouble("BADGER/RUN_EXPERIMENTS"))
 	{
 //		printf("RUNNING...\n\n\n");
-		system(commandLine);
+		g_pProcessSpawner->spawnOrWait(commandLine);
+		//system(commandLine);
 //		printf("DONE\n\n\n");
 	}
 
@@ -129,57 +153,72 @@ int main(int argc, char* argv[])
 	Node *pCurrent= &Root;
 	Node *pLastNode= pCurrent;
 	char line[512];
+	char experimentFile[1024];
 	FILE *pFile;
 	int numParameters= 0;
 	int numLines= 0;
+	int numExperiments;
+
 
 	//SetWorkPath();
 	CParameters *pAppParameters = new CParameters("Badger-parameters.txt");
 
+	g_pProcessSpawner = new CProcessSpawner((int)pAppParameters->getDouble("BADGER/MAX_NUM_PROCESSES"));
+
 	//try to create directory in case it doesn't exist
 	_mkdir(pAppParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"));
 
+	g_firstBadgerFileIndex = getFirstBadgerFileIndex(pAppParameters);
+
 	g_pCurrentParameters = new CParameters(pAppParameters->getStringPtr("BADGER/BASE_PARAMETER_FILE"));
 
-	fopen_s(&pFile, pAppParameters->getStringPtr("BADGER/EXPERIMENT_CONFIG_FILE"), "r");
-	if (pFile)
+	numExperiments = (int)pAppParameters->getDouble("BADGER/NUM_EXPERIMENTS");
+
+	for (int i = 0; i < numExperiments; i++)
 	{
-		while (fgets(line, sizeof(line), pFile))
+		sprintf_s(experimentFile, 1024, "BADGER/EXPERIMENT_%d", i);
+		fopen_s(&pFile,pAppParameters->getStringPtr(experimentFile), "r");
+		if (pFile)
 		{
-			numLines++;
-			if (strstr(line,"{") !=0)
+			while (fgets(line, sizeof(line), pFile))
 			{
-				pLastNode= new Node;
-				pCurrent->pChildren[pCurrent->numChildren]= pLastNode;
-				pCurrent->numChildren++;
+				numLines++;
+				if (strstr(line, "{") != 0)
+				{
+					pLastNode = new Node;
+					pCurrent->pChildren[pCurrent->numChildren] = pLastNode;
+					pCurrent->numChildren++;
 
-				pLastNode->pParent= pCurrent;
-				pCurrent = pLastNode;
+					pLastNode->pParent = pCurrent;
+					pCurrent = pLastNode;
 
-				//ReadNodeParameters(line,pLastNode);
-				
-			}
-			else if (strstr(line,"}")!=0)
-			{
-				pCurrent= pCurrent->pParent;
-			}
-			else //if (sscanf_s(line, "%s : %lf", name,&value)==2)
-			{
-				CParameters::parseLine(line, pCurrent->parameters[pCurrent->numParameters]);
-				pCurrent->numParameters++;
+					//ReadNodeParameters(line,pLastNode);
 
-				numParameters++;
+				}
+				else if (strstr(line, "}") != 0)
+				{
+					pCurrent = pCurrent->pParent;
+				}
+				else //if (sscanf_s(line, "%s : %lf", name,&value)==2)
+				{
+					CParameters::parseLine(line, pCurrent->parameters[pCurrent->numParameters]);
+					pCurrent->numParameters++;
+
+					numParameters++;
+				}
+				//else printf("ERROR in line %d\n",numLines);
+
 			}
-			//else printf("ERROR in line %d\n",numLines);
-			
+			fclose(pFile);
+			//printf("%d lines and %d parameters read\n", numLines, numParameters);
 		}
-		fclose(pFile);
-		printf("%d lines and %d parameters read\n",numLines,numParameters);
+
 	}
+	TraverseTree(&Root, pAppParameters);
 
+	g_pProcessSpawner->waitAll();
 
-	TraverseTree(&Root,pAppParameters);
-
+	delete g_pProcessSpawner;
 	delete pAppParameters;
 	delete g_pCurrentParameters;
 

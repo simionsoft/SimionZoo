@@ -19,7 +19,7 @@ CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
 	m_pAlpha= pParameters->add("SIMGOD/CRITIC/LEARNING_RATE",0.0);
 	m_gamma= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_GAMMA");
 	m_lambda= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_LAMBDA");
-	m_beta = pParameters->getDouble("SIMGOD/CRITIC/INITIAL_BETA");
+	m_beta = 0.9;// pParameters->getDouble("SIMGOD/CRITIC/INITIAL_BETA");
 
 	if (pParameters->exists("SIMGOD/CRITIC/LOAD"))
 		loadVFunction(pParameters->getStringPtr("SIMGOD/CRITIC/LOAD"));

@@ -52,7 +52,7 @@ CCACLAActor::~CCACLAActor()
 		delete m_pPolicy[i];
 		delete m_pExpNoise[i];
 	}
-	delete [] m_pAlpha;
+
 	delete [] m_pPolicy;
 	delete [] m_pExpNoise;
 

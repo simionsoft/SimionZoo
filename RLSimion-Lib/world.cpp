@@ -17,6 +17,9 @@ CWorld::CWorld(CParameters* pParameters)
 {
 	assert(pParameters);
 	m_t= 0.0;
+	m_lastReward = 0.0;
+	m_avgReward = 0.0;
+	m_avgRewardGain = 0.0;
 
 	m_simulationSteps= (int)pParameters->getDouble("WORLD/NUM_SIMULATION_STEPS");
 	m_dt= pParameters->getDouble("WORLD/DELTA_T");

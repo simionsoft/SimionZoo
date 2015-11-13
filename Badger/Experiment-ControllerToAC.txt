@@ -31,13 +31,13 @@ CONTROLLER_TO_AC/ACTOR_CONFIG_FILE : ..\config\pitch\learn-value.txt
 CONTROLLER_TO_AC/CONTROLLER_CONFIG_FILE : ..\config\pitch\test-lqr.txt
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\pitch-policy.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(150),pitch-rate(150),control-deviation(150)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),control-deviation(150)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(200),pitch-rate(200),control-deviation(200)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(200),pitch-rate(200),control-deviation(200)
  }
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\pitch-policy-2.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(125),pitch-rate(125),control-deviation(125)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(125),pitch-rate(125),control-deviation(125)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(150),pitch-rate(150),control-deviation(150)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),control-deviation(150)
  }
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\pitch-policy-3.bin
@@ -46,8 +46,8 @@ SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(100),pitch-rate(100),c
  }
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\pitch-policy-4.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(75),pitch-rate(75),control-deviation(75)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(75),pitch-rate(75),control-deviation(75)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(50),pitch-rate(50),control-deviation(50)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(50),pitch-rate(50),control-deviation(50)
  }
 }
 {
@@ -55,22 +55,22 @@ CONTROLLER_TO_AC/ACTOR_CONFIG_FILE : ..\config\underwater-vehicle\learn-value.tx
 CONTROLLER_TO_AC/CONTROLLER_CONFIG_FILE : ..\config\underwater-vehicle\test-pid.txt
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\uv-policy.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(10000)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(10000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(100000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(100000)
  }
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\uv-policy-2.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(7500)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(7500)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(75000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(75000)
  }
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\uv-policy-3.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(5000)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(5000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(50000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(50000)
  }
  {
 CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\uv-policy-4.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(2500)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(2500)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(25000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(25000)
  }
 }

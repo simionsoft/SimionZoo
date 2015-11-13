@@ -1,5 +1,7 @@
 {
 BADGER/BASE_PARAMETER_FILE : ..\config\wind-turbine\learn-vidal.txt
+EXPERIMENT/LOG/OUTPUT_DIR : ..\logs\wind-turbine\b-iii
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
  {
 SIMGOD/ACTOR/LOAD : ..\data\vidal-policy.bin
 SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
@@ -79,10 +81,12 @@ EXPERIMENT/LOG/FILE_PREFIX : wt-learn-vidal-4-c
 }
 {
 BADGER/BASE_PARAMETER_FILE : ..\config\pitch\learn.txt
+EXPERIMENT/LOG/OUTPUT_DIR : ..\logs\pitch\b-iii
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
  {
 SIMGOD/ACTOR/LOAD : ..\data\pitch-policy.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(150),pitch-rate(150),control-deviation(150)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),control-deviation(150)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(200),pitch-rate(200),control-deviation(200)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(200),pitch-rate(200),control-deviation(200)
 SIMGOD/CRITIC/LOAD : ..\data\pitch-value.bin
   {
 EXPERIMENT/NUM_EPISODES : 500
@@ -99,8 +103,8 @@ EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-c
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\pitch-policy-2.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(125),pitch-rate(125),control-deviation(125)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(125),pitch-rate(125),control-deviation(125)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(150),pitch-rate(150),control-deviation(150)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),control-deviation(150)
 SIMGOD/CRITIC/LOAD : ..\data\pitch-value-2.bin
   {
 EXPERIMENT/NUM_EPISODES : 500
@@ -135,8 +139,8 @@ EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-3-c
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\pitch-policy-4.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(75),pitch-rate(75),control-deviation(75)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(75),pitch-rate(75),control-deviation(75)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(50),pitch-rate(50),control-deviation(50)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(50),pitch-rate(50),control-deviation(50)
 SIMGOD/CRITIC/LOAD : ..\data\pitch-value-4.bin
   {
 EXPERIMENT/NUM_EPISODES : 500
@@ -154,10 +158,12 @@ EXPERIMENT/LOG/FILE_PREFIX : pitch-learn-4-c
 }
 {
 BADGER/BASE_PARAMETER_FILE : ..\config\underwater-vehicle\learn.txt
+EXPERIMENT/LOG/OUTPUT_DIR : ..\logs\underwater-vehicle\b-iii
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
  {
 SIMGOD/ACTOR/LOAD : ..\data\uv-policy.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(10000)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(10000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(100000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(100000)
 SIMGOD/CRITIC/LOAD : ..\data\uv-value.bin
   {
 EXPERIMENT/NUM_EPISODES : 500
@@ -165,7 +171,7 @@ EXPERIMENT/LOG/FILE_PREFIX : uv-learn-a
   }
   {
 EXPERIMENT/NUM_EPISODES : 1000
-EXPERIMENT/LOG/FILE_PREFIX : uv-lear-b
+EXPERIMENT/LOG/FILE_PREFIX : uv-learn-b
   }
   {
 EXPERIMENT/NUM_EPISODES : 2000
@@ -174,8 +180,8 @@ EXPERIMENT/LOG/FILE_PREFIX : uv-learn-c
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\uv-policy-2.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(7500)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(7500)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(75000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(75000)
 SIMGOD/CRITIC/LOAD : ..\data\uv-value-2.bin
   {
 EXPERIMENT/NUM_EPISODES : 500
@@ -192,8 +198,8 @@ EXPERIMENT/LOG/FILE_PREFIX : uv-learn-2-c
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\uv-policy-3.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(5000)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(5000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(50000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(50000)
 SIMGOD/CRITIC/LOAD : ..\data\uv-value-3.bin
   {
 EXPERIMENT/NUM_EPISODES : 500
@@ -210,8 +216,8 @@ EXPERIMENT/LOG/FILE_PREFIX : uv-learn-3-c
  }
  {
 SIMGOD/ACTOR/LOAD : ..\data\uv-policy-4.bin
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(2500)
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(2500)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(25000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(25000)
 SIMGOD/CRITIC/LOAD : ..\data\uv-value-4.bin
   {
 EXPERIMENT/NUM_EPISODES : 500
