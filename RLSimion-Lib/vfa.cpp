@@ -49,7 +49,7 @@ void CFeatureVFA::load(void* pFile)
 }
 
 
-CRBFFeatureGridVFA::CRBFFeatureGridVFA(char* configString)
+CRBFFeatureGridVFA::CRBFFeatureGridVFA(const char* configString)
 {
 	m_pFeatureMap= new CGaussianRBFGridFeatureMap(configString);
 

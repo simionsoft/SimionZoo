@@ -93,6 +93,7 @@
     <ClCompile Include="featuremap-rbfgrid.cpp" />
     <ClCompile Include="features.cpp" />
     <ClCompile Include="noise.cpp" />
+    <ClCompile Include="parameter.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="parameterscheduler.cpp" />
     <ClCompile Include="reward.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="features.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="noise.h" />
+    <ClInclude Include="parameter.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="parameterscheduler.h" />
     <ClInclude Include="reward.h" />

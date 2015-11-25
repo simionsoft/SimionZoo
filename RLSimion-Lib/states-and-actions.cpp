@@ -18,7 +18,7 @@ CNamedVarSet::~CNamedVarSet()
 }
 
 
-char* CNamedVarSet::getName(int i)
+const char* CNamedVarSet::getName(int i)
 {
 	if (i>=0 && i<m_numVars)
 		return m_pProperties[i].name;
@@ -36,14 +36,14 @@ double CNamedVarSet::getMax(int i)
 		return m_pProperties[i].max;
 	return 0.0;
 }
-double CNamedVarSet::getMin(char* name)
+double CNamedVarSet::getMin(const char* name)
 {
 	int i= getVarIndex(name);
 	if (i>=0 && i<m_numVars)
 		return m_pProperties[i].min;
 	return 0.0;
 }
-double CNamedVarSet::getMax(char* name)
+double CNamedVarSet::getMax(const char* name)
 {
 	int i= getVarIndex(name);
 	if (i>=0 && i<m_numVars)
@@ -51,7 +51,7 @@ double CNamedVarSet::getMax(char* name)
 	return 0.0;
 }
 
-void CNamedVarSet::setName(int i,char* name)
+void CNamedVarSet::setName(int i,const char* name)
 {
 	if (i>=0 && i<m_numVars)
 		strcpy_s(m_pProperties[i].name,VAR_NAME_MAX_LENGTH,name);
@@ -66,7 +66,7 @@ void CNamedVarSet::setMax(int i,double max)
 	if (i>=0 && i<m_numVars)
 		m_pProperties[i].max= max;
 }
-void CNamedVarSet::setProperties(int i,char* name, double min, double max)
+void CNamedVarSet::setProperties(int i,const char* name, double min, double max)
 {
 	if (i>=0 && i<m_numVars)
 	{
@@ -77,7 +77,7 @@ void CNamedVarSet::setProperties(int i,char* name, double min, double max)
 }
 
 
-double CNamedVarSet::getValue(char* varName)
+double CNamedVarSet::getValue(const char* varName)
 {
 	for (int i= 0; i<m_numVars; i++)
 	{
@@ -88,7 +88,7 @@ double CNamedVarSet::getValue(char* varName)
 	return 0.0;
 }
 
-int CNamedVarSet::getVarIndex(char* varName)
+int CNamedVarSet::getVarIndex(const char* varName)
 {
 	for (int i= 0; i<m_numVars; i++)
 	{
@@ -98,7 +98,7 @@ int CNamedVarSet::getVarIndex(char* varName)
 	return -1;
 }
 
-void CNamedVarSet::setValue(char* varName, double value)
+void CNamedVarSet::setValue(const char* varName, double value)
 {
 	for (int i= 0; i<m_numVars; i++)
 	{

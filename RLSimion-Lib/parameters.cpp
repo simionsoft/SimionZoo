@@ -1,78 +1,80 @@
 #include "stdafx.h"
 #include "parameters.h"
-
-//CPARAMETER
-
-CParameter::CParameter()
-{
-	name[0] = 0;
-	pValue = 0;
-	type = NOT_INITIALIZED;
-}
-
-void CParameter::releasePtr()
-{
-	if (pValue && type != NOT_INITIALIZED)
-	{
-		if (type == NUMERIC_PARAMETER)
-		{
-			delete (double*) pValue;
-			pValue = 0;
-		}
-		if (type == STRING_PARAMETER)
-		{
-			delete[](char*) pValue;
-		}
-	}
-	type = NOT_INITIALIZED;
-}
-
-CParameter::~CParameter()
-{
-	releasePtr();
-}
-
-CParameter& CParameter::operator= (const CParameter& parameter)
-{
-	releasePtr();
-
-	type = parameter.type;
-	strcpy_s(name, MAX_PARAMETER_NAME_SIZE, parameter.name);
-
-	if (type == NUMERIC_PARAMETER)
-	{
-		pValue = new double;
-		*(double*)pValue = *(double*)parameter.pValue;
-	}
-	else if (type== STRING_PARAMETER)
-	{
-		pValue = new char[MAX_STRING_SIZE];
-		strcpy_s((char*)pValue, 512, (char*)parameter.pValue);
-	}
-
-	return *this;
-}
+#include "parameter.h"
 
 
+///////////////////////////////////////////////////////////////////////////
 //CPARAMETERS
+////////////////////////////////////////////////////////////////////////////
 
-CParameters::CParameters(char* parameterFile)
-{
-	m_numParameters= 0;
-	m_pParameters= new CParameter [MAX_NUM_PARAMETERS];
+CParameters* CParameters::m_pRootNode = 0;
 
-	if (!parameterFile) return;
-
-	loadParameters(parameterFile);
-}
-
-CParameters::~CParameters()
+void CParameters::reset()
 {
 	if (m_pParameters)
 	{
 		delete[] m_pParameters;
 		m_pParameters = 0;
 	}
+	if (m_pChildren)
+	{
+		for (int i = 0; i < m_numChildren; i++)
+		{
+			assert(m_pChildren[i]);
+			m_pChildren[i]->reset();
+			delete m_pChildren[i];
+			m_pChildren[i] = 0;
+		}
+		delete[] m_pChildren;
+		m_pChildren = 0;
+	}
+
+	m_numParameters = 0;
+	m_numChildren = 0;
+	m_name[0] = 0;
+	m_pParent = 0;
+}
+
+CParameters::CParameters()
+{
+	allocate();
+}
+
+void CParameters::allocate()
+{
+	m_numParameters = 0;
+	m_pParameters = new CParameter[MAX_NUM_PARAMETERS];
+
+	m_numChildren = 0;
+	m_pChildren = new CParameters*[MAX_NUM_CHILDREN];
+
+	m_name[0] = 0;
+	m_pParent = 0;
+}
+
+CParameters::CParameters(const char* parameterFile)
+{
+	allocate();
+
+	sprintf_s(m_name, MAX_PARAMETER_NAME_SIZE, "Root");
+
+	loadParameters(parameterFile);
+	m_pParent = 0;
+}
+
+CParameters::~CParameters()
+{
+	reset();
+}
+
+char* CParameters::getName()
+{
+	return m_name;
+}
+
+void CParameters::setName(const char* name)
+{
+	strcpy_s(m_name, MAX_PARAMETER_NAME_SIZE, name);
 }
 
 
@@ -82,17 +84,15 @@ bool CParameters::parseLine(char* line, CParameter& parameter)
 	char description[MAX_PARAMETER_NAME_SIZE];
 	char stringValue[MAX_STRING_SIZE];
 	double value = 0.0;
-	int length;
 
 	parameter.releasePtr();
 
 	result = sscanf_s(line, "%s : %lf", description, MAX_PARAMETER_NAME_SIZE, &value);
 	if (result == 2 && strstr(line, ",") == 0)
 	{
-		strcpy_s(parameter.name, description);
-		parameter.pValue = (void*) new double;
-		*(double*)parameter.pValue = value;
-		parameter.type = NUMERIC_PARAMETER;
+		parameter.setName(description);
+		parameter.setValue(value);
+	
 		return true;
 	}
 	else
@@ -100,11 +100,9 @@ bool CParameters::parseLine(char* line, CParameter& parameter)
 		result = sscanf_s(line, "%s : %[^\n]s", description, MAX_PARAMETER_NAME_SIZE, stringValue, MAX_STRING_SIZE);
 		if (result == 2)
 		{
-			strcpy_s(parameter.name, MAX_PARAMETER_NAME_SIZE, description);
-			length = MAX_STRING_SIZE;//strlen(stringValue)+1;
-			parameter.pValue = (void*) new char[length];
-			strcpy_s((char*)parameter.pValue, MAX_STRING_SIZE, stringValue);
-			parameter.type = STRING_PARAMETER;
+			parameter.setName(description);
+			parameter.setValue(stringValue);
+
 			return true;
 		}
 	}
@@ -112,9 +110,11 @@ bool CParameters::parseLine(char* line, CParameter& parameter)
 }
 
 
-void CParameters::loadParameters(char* parameterFile)
+void CParameters::loadParameters(const char* parameterFile, bool bLoadAsTree)
 {
 	char line[MAX_LINE_LENGTH];
+	char strippedParameterName[MAX_PARAMETER_NAME_SIZE];
+	CParameters* pParent;
 
 	char* ret;
 	char* pComment;
@@ -127,6 +127,12 @@ void CParameters::loadParameters(char* parameterFile)
 	if (stream)
 	{
 		printf("ok\n");
+
+		//allocate memory buffers if needed
+		if (!m_pParameters) allocate();
+		//if we load parameters on this parameter node, it will act as root from now on
+		m_pRootNode = this;
+
 		ret= fgets(line,MAX_LINE_LENGTH,stream);
 		while (ret)
 		{
@@ -140,7 +146,22 @@ void CParameters::loadParameters(char* parameterFile)
 			//parse line
 			if (parseLine(line, parameter))
 			{
-				setParameter(parameter);
+				if (bLoadAsTree)
+				{
+					//load the parameter into a tree structure
+					pParent= findParent(parameter.getName(), strippedParameterName, true);
+					if (pParent)
+					{
+						parameter.setName(strippedParameterName);
+						pParent->addParameter(parameter);
+					}
+				}
+				else
+				{
+					//load the parameter into a table
+					addParameter(parameter);
+				}
+
 			}
 			
 			ret= fgets(line,MAX_LINE_LENGTH,stream);
@@ -153,202 +174,183 @@ void CParameters::loadParameters(char* parameterFile)
 	}
 }
 
-void CParameters::saveParameters(char *parameterFile)
+void CParameters::saveParametersRecursive(void* file, char* prefix)
 {
+	char fullName[MAX_PARAMETER_NAME_SIZE];
 
+	if (prefix)
+		sprintf_s(fullName, MAX_PARAMETER_NAME_SIZE, "%s/%s", prefix, m_name);
+	else
+		strcpy_s(fullName, MAX_PARAMETER_NAME_SIZE, m_name);
+
+	//first save own parameters
+	for (int i = 0; m_numParameters; i++)
+	{
+		m_pParameters[i].saveParameter(file, fullName);
+	}
+	
+	//next children
+	for (int i = 0; m_numChildren; i++)
+	{
+		m_pChildren[i]->saveParametersRecursive(file, fullName);
+	}
+}
+
+void CParameters::saveParameters(const char *parameterFile)
+{
+	//Self parameter's are not saved, only children's parameters
 	FILE *stream;
 	
 	fopen_s(&stream,parameterFile,"w");
-	
 
 	if (stream)
 	{
-		for (int i= 0; i<m_numParameters; i++)
-		{
-			if(m_pParameters[i].type==NUMERIC_PARAMETER)
-				fprintf(stream, "%s : %f\n",m_pParameters[i].name,*(double*)m_pParameters[i].pValue);
-			else
-				fprintf(stream, "%s : %s\n",m_pParameters[i].name,(char*)m_pParameters[i].pValue);
-		}
+		for (int i = 0; i < m_numParameters; i++)
+			m_pParameters[i].saveParameter((void*)stream, 0);
+		for (int i = 0; i < m_numChildren; i++)
+			m_pChildren[i]->saveParametersRecursive((void*)stream, 0);
+
 		fclose(stream);
 	}
 	else printf("ERROR: Can't save file %s",parameterFile);
-	//fprintf(stream,"# END-OF-PARAMETERS #");
 }
 
-
-
-double * CParameters::add(char *parametername, double value)
+CParameters* CParameters::findParent(const char* fullParameterName, char* outStrippedName, bool bCreateIfNotExists)
 {
-	assert(m_numParameters<MAX_NUM_PARAMETERS-1);
-	m_pParameters[m_numParameters].pValue= new double;
-	*((double*)m_pParameters[m_numParameters].pValue)= value;
-	m_pParameters[m_numParameters].type= NUMERIC_PARAMETER;
-	strcpy_s(m_pParameters[m_numParameters].name,MAX_PARAMETER_NAME_SIZE,parametername);
-	m_numParameters++;
-	return (double*) m_pParameters[m_numParameters-1].pValue;
-}
+	char nameCopy[MAX_PARAMETER_NAME_SIZE];
+	CParameters* pNode, *pAux;
+	char *nextToken, *token= 0;
+	
+	strcpy_s(nameCopy, MAX_PARAMETER_NAME_SIZE, fullParameterName);
+	pNode = this;
 
-int CParameters::getParameterIndex(char* parameterName)
-{
-	for (int i= 0; i<m_numParameters; i++)
+	token = strtok_s(nameCopy, "/", &nextToken);
+	while (nextToken!=0 && nextToken[0]!=0)
 	{
-		if (strcmp(m_pParameters[i].name,parameterName)==0)
-			return i;
+		pAux = pNode->getChild(token);
+		if (!pAux)
+			pAux = pNode->addChild(token);
+		pNode = pAux;
+
+		token = strtok_s(0, "/", &nextToken);
 	}
-	return -1;
+
+	//output the stripped parameter's name
+	if (outStrippedName)
+		strcpy_s(outStrippedName,MAX_PARAMETER_NAME_SIZE, token);
+
+	return pNode;
 }
 
-
-char *CParameters::getStringPtr(char* parameterName)
+CParameter* CParameters::getParameter(const char* paramName)
 {
-	int index= getParameterIndex(parameterName);
-
-	return getStringPtr(index);
-}
-
-double *CParameters::getDoublePtr(char* parameterName)
-{
-	int index= getParameterIndex(parameterName);
-	assert(index>=0);
-
-	return getDoublePtr(index);
-}
-
-double CParameters::getDouble(char* parameterName)
-{
-	int index= getParameterIndex(parameterName);
-	assert(index>=0);
-
-	return *getDoublePtr(index);
-}
-
-double CParameters::getDouble(int index)
-{
-		return *getDoublePtr(index);
-}
-
-char *CParameters::getParameterName(int index)
-{
-	if (index>=0)
-		return m_pParameters[index].name;
-
-	return 0;
-}
-
-char *CParameters::getStringPtr(int index)
-{
-	if (index>=0 && m_pParameters[index].type==STRING_PARAMETER)
-		return (char*)m_pParameters[index].pValue;
-
-	return 0;
-}
-
-double *CParameters::getDoublePtr(int index)
-{
-	if (index>=0 && m_pParameters[index].type==NUMERIC_PARAMETER)
-		return (double*)m_pParameters[index].pValue;
-
-	return 0;
-}
-
-bool CParameters::exists(char* paramName)
-{
-	for (int i= 0; i<m_numParameters; i++)
+	for (int i = 0; i<m_numParameters; i++)
 	{
-		if (strcmp(m_pParameters[i].name,paramName)==0)
-			return true;
+		if (strcmp(m_pParameters[i].getName(), paramName) == 0)
+			return &m_pParameters[i];
 	}
+	return 0;
+}
+
+CParameter* CParameters::getParameter(int index)
+{
+	if (index >= 0 && index < m_numParameters)
+		return &m_pParameters[index];
+	return 0;
+}
+
+bool CParameters::exists(const char* paramName)
+{
+	if (getParameter(paramName))
+		return true;
 	return false;
 }
 
-int CParameters::getNumParameters(char* parameterPrefix)
+CParameter* CParameters::setParameter(const CParameter& parameter)
 {
-	int numParameters = 0;
-	for (int i = 0; i < m_numParameters; i++)
-	{
-		if (strstr(m_pParameters[i].name, parameterPrefix) != 0)
-			numParameters++;
-	}
-	return numParameters;
+	CParameter* pParameter = getParameter(parameter.getName());
+
+	if (pParameter)
+		*pParameter = parameter;
+
+	return pParameter; //be it a valid pointer or null
+}
+CParameter* CParameters::setParameter(const CParameter* parameter)
+{
+	CParameter* pParameter = getParameter(parameter->getName());
+
+	if (pParameter)
+		*pParameter = *parameter;
+
+	return pParameter; //be it a valid pointer or null
 }
 
-char *CParameters::getParameterName(int parameterIndex, char* parameterPrefix)
+CParameter* CParameters::addParameter(const CParameter& parameter)
 {
-	int numParameters = 0;
-	for (int i = 0; i < m_numParameters; i++)
+	CParameter *pParameter = setParameter(parameter);
+
+	if (!pParameter)
 	{
-		if (strstr(m_pParameters[i].name, parameterPrefix) != 0)
-		{
-			if (numParameters == parameterIndex)
-				return &m_pParameters[i].name[strlen(parameterPrefix)];
-			numParameters++;
-		}
+		m_pParameters[m_numParameters] = parameter;
+		pParameter = &m_pParameters[m_numParameters];
+		m_numParameters++;
+	}
+	return pParameter;
+}
+CParameter* CParameters::addParameter(const CParameter* parameter)
+{
+	CParameter *pParameter = setParameter(parameter);
+
+	if (!pParameter)
+	{
+		m_pParameters[m_numParameters] = *parameter;
+		pParameter = &m_pParameters[m_numParameters];
+		m_numParameters++;
+	}
+	return pParameter;
+}
+
+
+CParameters* CParameters::getChild(int i)
+{
+	if (i < m_numChildren && i>=0)
+		return m_pChildren[i];
+	return 0;
+}
+
+CParameters* CParameters::getChild(const char* name)
+{
+	for (int i = 0; i < m_numChildren; i++)
+	{
+		if (strcmp(name, m_pChildren[i]->getName()) == 0)
+			return m_pChildren[i];
 	}
 	return 0;
 }
 
-void CParameters::setParameter(CParameter& parameter)
+CParameters* CParameters::addChild(const char* name)
 {
-	int pos = getParameterIndex(parameter.name);
+	CParameters* pChild= 0;
+	char newName[MAX_PARAMETER_NAME_SIZE];
 
-	if (pos < 0)
-	{
-		m_pParameters[m_numParameters] = parameter;
-		m_numParameters++;
-	}
+	//if a name is provided, we first check if the child already exists
+	if (name)
+		pChild= getChild(name);
 	else
 	{
-		m_pParameters[pos] = parameter;
+		//if no name is provided, we make up a new name and create it
+		sprintf_s(newName, MAX_PARAMETER_NAME_SIZE, "%d", m_numChildren);
+		name = newName;
 	}
-}
 
-void CParameters::setParameter(char* name, double value)
-{
-	int pos = getParameterIndex(name);
-
-	if (pos < 0)
+	if (!pChild)
 	{
-		strcpy_s(m_pParameters[m_numParameters].name, MAX_PARAMETER_NAME_SIZE,name);
-		m_pParameters[m_numParameters].pValue = (void*)new double;
-		*(double*)m_pParameters[m_numParameters].pValue = value;
-		m_pParameters[m_numParameters].type = NUMERIC_PARAMETER;
-		m_numParameters++;
+		m_pChildren[m_numChildren] = new CParameters();
+		pChild = m_pChildren[m_numChildren];
+		pChild->setName(name);
+		pChild->setParent(this);
+		m_numChildren++;	
 	}
-	else
-	{
-		*(double*)m_pParameters[pos].pValue= value;
-	}
-}
 
-void CParameters::setParameter(char* name, char* value)
-{
-	int pos = getParameterIndex(name);
-
-	if (pos < 0)
-	{
-		strcpy_s(m_pParameters[m_numParameters].name, MAX_PARAMETER_NAME_SIZE, name);
-		m_pParameters[m_numParameters].pValue = (void*)new char[MAX_STRING_SIZE];
-		strcpy_s((char*)m_pParameters[m_numParameters].pValue, MAX_STRING_SIZE,(char*) value);
-		m_pParameters[m_numParameters].type = STRING_PARAMETER;
-		m_numParameters++;
-	}
-	else
-	{
-		strcpy_s((char*)m_pParameters[pos].pValue, MAX_STRING_SIZE, (char*)value);
-	}
-}
-
-CParameter& CParameters::getParameter(int index)
-{
-	assert(index >= 0 && index < m_numParameters);
-	return m_pParameters[index];
-}
-
-void CParameters::setParameters(CParameters* pParameters)
-{
-	for (int i = 0; i < pParameters->getNumParameters(); i++)
-	{
-		setParameter(pParameters->getParameter(i));
-	}
+	return pChild;
 }

@@ -5,7 +5,7 @@
 //CFileSetPoint//////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
-int countlines(char *filename)
+int countlines(const char *filename)
 {
   // count the number of lines in the file called filename                                    
   FILE *fp;
@@ -24,7 +24,7 @@ int countlines(char *filename)
   return lines;
 }
 
-CFileSetPoint::CFileSetPoint(char *pFilename)
+CFileSetPoint::CFileSetPoint(const char *pFilename)
 {
 	//char fullFilename[1024];
 	m_numSteps= 0;

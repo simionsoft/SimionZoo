@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "world.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "states-and-actions.h"
 
 #include "world-windturbine.h"
@@ -21,21 +22,23 @@ CWorld::CWorld(CParameters* pParameters)
 	m_avgReward = 0.0;
 	m_avgRewardGain = 0.0;
 
-	m_simulationSteps= (int)pParameters->getDouble("WORLD/NUM_SIMULATION_STEPS");
-	m_dt= pParameters->getDouble("WORLD/DELTA_T");
+	m_simulationSteps= (int)(pParameters->getParameter("NUM_SIMULATION_STEPS"))->getDouble();
+	m_dt= pParameters->getParameter("DELTA_T")->getDouble();
 
-	if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"WIND_TURBINE_ONE_MASS")==0)
+	const char* pName = pParameters->getParameter("DYNAMIC_MODEL")->getStringPtr();
+
+	if (strcmp(pName,"WIND_TURBINE_ONE_MASS")==0)
 		m_pDynamicModel= new CWindTurbine(pParameters);
-	else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"UNDERWATER_VEHICLE")==0)
+	else if (strcmp(pName, "UNDERWATER_VEHICLE") == 0)
 		m_pDynamicModel= new CUnderwaterVehicle(pParameters);
-	else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"PITCH_CONTROL")==0)
+	else if (strcmp(pName, "PITCH_CONTROL") == 0)
 		m_pDynamicModel= new CPitchControl(pParameters);
-	else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"MAGNETIC_LEVITATION")==0)
+	else if (strcmp(pName, "MAGNETIC_LEVITATION") == 0)
 		m_pDynamicModel= new CMagneticLevitation(pParameters);
-	//else if (strcmp(pParameters->getStringPtr("WORLD/DYNAMIC_MODEL"),"HEATING_COIL")==0)
+	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
-	m_pReward = new CReward(pParameters);
+	m_pReward = new CReward(pParameters->getChild("REWARD"));
 }
 
 CWorld::~CWorld()
@@ -124,4 +127,10 @@ CAction *CWorld::getActionInstance()
 	if (m_pDynamicModel)
 		return m_pDynamicModel->getActionDescriptor()->getInstance();
 	return 0;
+}
+
+CDynamicModel::~CDynamicModel()
+{ 
+	if (m_pStateDescriptor) delete m_pStateDescriptor;
+	if (m_pActionDescriptor) delete m_pActionDescriptor;
 }

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "controller.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "globals.h"
 #include "states-and-actions.h"
 #include "world.h"
@@ -15,26 +16,19 @@
 	int numVars;*/
 CLQRController::CLQRController(CParameters *pParameters)
 {
-	int numVarsRead;
-	m_numVars= pParameters->getNumParameters("SIMGOD/ACTOR/")-1; //All but "ALGORITHM"
+	CParameters* pChild= pParameters->getChild("LQR-GAINS");
+	m_numVars = pChild->getNumParameters();
+
+
 	m_pVariableIndices= new int[m_numVars];
 	m_pGains= new double[m_numVars];
-	char* pName;
 
 	CState* pSDesc= g_pWorld->getStateDescriptor();
-
-	numVarsRead= 0;
-	for (int i = 0; i<pParameters->getNumParameters(); i++)
+	for (int i = 0; i < m_numVars; i++)
 	{
-		pName = pParameters->getParameterName(i);
-		if (strstr(pName,"SIMGOD/ACTOR/LQR-GAINS/")!=0)
-		{
-			m_pVariableIndices[numVarsRead] = pSDesc->getVarIndex(pParameters->getParameterName(numVarsRead, "SIMGOD/ACTOR/LQR-GAINS/"));
-			m_pGains[numVarsRead] = pParameters->getDouble(i);
-			numVarsRead++;
-		}
+		m_pVariableIndices[i] = pSDesc->getVarIndex(pChild->getParameter(i)->getName());
+		m_pGains[i] = pChild->getParameter(i)->getDouble();
 	}
-	assert(numVarsRead==m_numVars);
 }
 
 CLQRController::~CLQRController()
@@ -61,13 +55,13 @@ double CLQRController::selectAction(CState *s, CAction *a)
 
 CPIDController::CPIDController(CParameters *pParameters)
 {
-	m_kP= pParameters->getDouble("SIMGOD/ACTOR/KP");
-	m_kI= pParameters->getDouble("SIMGOD/ACTOR/KI");
-	m_kD= pParameters->getDouble("SIMGOD/ACTOR/KD");
+	m_kP= pParameters->getParameter("KP")->getDouble();
+	m_kI= pParameters->getParameter("KI")->getDouble();
+	m_kD= pParameters->getParameter("KD")->getDouble();
 
 	CState *pSDesc= g_pWorld->getStateDescriptor();
 	if (pSDesc)
-		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->getStringPtr("SIMGOD/ACTOR/ERROR_VARIABLE"));
+		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->getParameter("ERROR_VARIABLE")->getStringPtr());
 	else
 	{
 		printf("ERROR: PID controller missconfigured. Invalid ERROR_VARIABLE");
@@ -106,11 +100,11 @@ double sgn(double value)
 
 CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameters)
 {
-	m_pA= pParameters->add("SIMGOD/ACTOR/A",pParameters->getDouble("SIMGOD/ACTOR/A"));
-	m_pK_alpha= pParameters->add("SIMGOD/ACTOR/K_alpha",pParameters->getDouble("SIMGOD/ACTOR/K_alpha"));
-	m_pKP= pParameters->add("SIMGOD/ACTOR/KP",pParameters->getDouble("SIMGOD/ACTOR/KP"));
-	m_pKI= pParameters->add("SIMGOD/ACTOR/KI",pParameters->getDouble("SIMGOD/ACTOR/KI"));
-	m_P_s= pParameters->getDouble("SIMGOD/ACTOR/P_s");
+	m_pA= pParameters->getParameter("A");
+	m_pK_alpha = pParameters->getParameter("K_alpha");
+	m_pKP = pParameters->getParameter("KP");
+	m_pKI= pParameters->getParameter("KI");
+	m_P_s= pParameters->getParameter("P_s")->getDouble();
 }
 
 double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
@@ -130,11 +124,12 @@ double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 	
 	double d_T_g;
 	
-	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*( (*m_pA) *omega_r+d_omega_r) - (*m_pA)*m_P_s + (*m_pK_alpha)*sgn(error_P));
+	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*( m_pA->getDouble() *omega_r+d_omega_r) 
+		- m_pA->getDouble()*m_P_s + m_pK_alpha->getDouble()*sgn(error_P));
 	else d_T_g= 0.0;
 
 	double e_omega_r = omega_r - 4.39823; //NOMINAL WIND SPEED
-	double d_beta = (*m_pKP)*e_omega_r +(*m_pKI)*s->getValue("E_int_omega_r");
+	double d_beta = m_pKP->getDouble()*e_omega_r +m_pKI->getDouble()*s->getValue("E_int_omega_r");
 				 /*0.5*K_p*error_omega*(1.0+sgn(error_omega))
 				+ K_i*s->getValue("integrative_omega_r_error);*/
 
@@ -149,11 +144,11 @@ double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 
 CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* pParameters)
 {
-	m_pC_0= pParameters->add("SIMGOD/ACTOR/C_0",pParameters->getDouble("SIMGOD/ACTOR/C_0"));
-	m_pKP= pParameters->add("SIMGOD/ACTOR/KP",pParameters->getDouble("SIMGOD/ACTOR/KP"));
-	m_pKI= pParameters->add("SIMGOD/ACTOR/KI",pParameters->getDouble("SIMGOD/ACTOR/KI"));
-	m_J_t= pParameters->getDouble("SIMGOD/ACTOR/J_t");
-	m_K_t= pParameters->getDouble("SIMGOD/ACTOR/K_t");
+	m_pC_0= pParameters->getParameter("C_0");
+	m_pKP = pParameters->getParameter("KP");
+	m_pKI= pParameters->getParameter("KI");
+	m_J_t= pParameters->getParameter("J_t")->getDouble();
+	m_K_t= pParameters->getParameter("K_t")->getDouble();
 }
 
 
@@ -163,7 +158,7 @@ double CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 	//d(beta)/dt= K_p*(omega_ref - omega_r)
 
 	double omega_r= s->getValue("omega_r");	// state->getContinuousState(DIM_omega_r);
-	double C_0= *m_pC_0;					//getParameter("C0");
+	double C_0= m_pC_0->getDouble();					//getParameter("C0");
 	double error_P= s->getValue("E_p");		//-state->getContinuousState(DIM_P_error);
 	double T_a= s->getValue("T_a");			//state->getContinuousState(DIM_T_a);
 
@@ -173,7 +168,7 @@ double CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 	double d_T_g= (1.0/omega_r)*(C_0*error_P - (1.0/m_J_t)
 		*(T_a*T_g - m_K_t*omega_r*T_g - T_g*T_g));
 
-	double d_beta= (*m_pKP)*s->getValue("E_omega_r") + (*m_pKI)*s->getValue("E_int_omega_r");
+	double d_beta= m_pKP->getDouble()*s->getValue("E_omega_r") + m_pKI->getDouble()*s->getValue("E_int_omega_r");
 		// K_p*state->getContinuousState(DIM_omega_r_error);
 
 	a->setValue("d_beta",d_beta); //action->setActionValue(DIM_A_beta,d_beta);
@@ -188,16 +183,16 @@ double CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	m_CornerFreq= pParameters->getDouble("SIMGOD/ACTOR/CornerFreq");
+	m_CornerFreq= pParameters->getParameter("CornerFreq")->getDouble();
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp= pParameters->getDouble("SIMGOD/ACTOR/VSRtGnSp");
-	m_VS_SlPc= pParameters->getDouble("SIMGOD/ACTOR/VS_SlPc");
-	m_VS_Rgn2K= pParameters->getDouble("SIMGOD/ACTOR/VS_Rgn2K");
-	m_VS_Rgn2Sp= pParameters->getDouble("SIMGOD/ACTOR/VS_Rgn2Sp");
-	m_VS_CtInSp= pParameters->getDouble("SIMGOD/ACTOR/VS_CtInSp");
-	m_VS_RtPwr= pParameters->getDouble("SIMGOD/ACTOR/VS_RtPwr");
-	m_VS_Rgn3MP= pParameters->getDouble("SIMGOD/ACTOR/VS_Rgn3MP");
+	m_VS_RtGnSp = pParameters->getParameter("VSRtGnSp")->getDouble();
+	m_VS_SlPc = pParameters->getParameter("VS_SlPc")->getDouble();
+	m_VS_Rgn2K = pParameters->getParameter("VS_Rgn2K")->getDouble();
+	m_VS_Rgn2Sp = pParameters->getParameter("VS_Rgn2Sp")->getDouble();
+	m_VS_CtInSp = pParameters->getParameter("VS_CtInSp")->getDouble();
+	m_VS_RtPwr = pParameters->getParameter("VS_RtPwr")->getDouble();
+	m_VS_Rgn3MP = pParameters->getParameter("VS_Rgn3MP")->getDouble();
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -209,10 +204,10 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParam
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	m_PC_KK= pParameters->getDouble("SIMGOD/ACTOR/PC_KK");
-	m_PC_KP= pParameters->getDouble("SIMGOD/ACTOR/PC_KP");
-	m_PC_KI= pParameters->getDouble("SIMGOD/ACTOR/PC_KI");
-	m_PC_RefSpd= pParameters->getDouble("SIMGOD/ACTOR/PC_RefSpd");
+	m_PC_KK = pParameters->getParameter("PC_KK")->getDouble();
+	m_PC_KP = pParameters->getParameter("PC_KP")->getDouble();
+	m_PC_KI = pParameters->getParameter("PC_KI")->getDouble();
+	m_PC_RefSpd = pParameters->getParameter("PC_RefSpd")->getDouble();
 
 	m_IntSpdErr= 0.0;
 }

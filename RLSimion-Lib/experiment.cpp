@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "experiment.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "states-and-actions.h"
 #include "world.h"
 
@@ -11,12 +12,12 @@ CExperiment::~CExperiment()
 
 CExperiment::CExperiment(CParameters* pParameters)
 {
-	m_randomSeed= (int) pParameters->getDouble("EXPERIMENT/RANDOM_SEED");
+	m_randomSeed= (int) pParameters->getParameter("RANDOM_SEED")->getDouble();
 	srand(m_randomSeed);
 
-	m_numEpisodes= (int) pParameters->getDouble("EXPERIMENT/NUM_EPISODES");
-	m_numSteps= (int) (pParameters->getDouble("EXPERIMENT/EPISODE_LENGTH")/CWorld::getDT());
-	m_evalFreq = (unsigned int)pParameters->getDouble("EXPERIMENT/EVAL_FREQ");
+	m_numEpisodes= (int) pParameters->getParameter("NUM_EPISODES")->getDouble();
+	m_numSteps= (int) (pParameters->getParameter("EPISODE_LENGTH")->getDouble()/CWorld::getDT());
+	m_evalFreq = (unsigned int)pParameters->getParameter("EVAL_FREQ")->getDouble();
 
 	m_step= 0;
 	m_episode= 0;
@@ -29,19 +30,21 @@ CExperiment::CExperiment(CParameters* pParameters)
 		LOG_EVALUATION_AVG_REWARDS : 1
 		LOG_FREQ : 0.25 //seconds
 */
+	CParameters* pLogParameters = pParameters->getChild("LOG");
 
-	strcpy_s(m_outputDir,MAX_FILENAME_LENGTH,pParameters->getStringPtr("EXPERIMENT/LOG/OUTPUT_DIR"));
-	strcpy_s(m_filePrefix,MAX_FILENAME_LENGTH,pParameters->getStringPtr("EXPERIMENT/LOG/FILE_PREFIX"));
+	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, pLogParameters->getParameter("OUTPUT_DIR")->getStringPtr());
+	strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pLogParameters->getParameter("FILE_PREFIX")->getStringPtr());
 
-	m_bLogEvaluationEpisodes= (1.0 == pParameters->getDouble("EXPERIMENT/LOG/EVALUATION_EPISODES"));
-	m_bLogTrainingEpisodes= (1.0 == pParameters->getDouble("EXPERIMENT/LOG/TRAINING_EPISODES"));
-	m_bLogEvaluationSummary= (1.0 == pParameters->getDouble("EXPERIMENT/LOG/EVALUATION_AVG_REWARDS"));
-	m_logFreq= pParameters->getDouble("EXPERIMENT/LOG/FREQ");
+	m_bLogEvaluationEpisodes = (1.0 == pLogParameters->getParameter("EVALUATION_EPISODES")->getDouble());
+	m_bLogTrainingEpisodes = (1.0 == pLogParameters->getParameter("TRAINING_EPISODES")->getDouble());
+	m_bLogEvaluationSummary = (1.0 == pLogParameters->getParameter("EVALUATION_AVG_REWARDS")->getDouble());
+	m_logFreq = pLogParameters->getParameter("FREQ")->getDouble();
 
 	m_pFile= (void*) 0;
 
 	m_lastLogTime= 0.0;
 	m_episodeRewards= 0.0;
+	m_lastEvaluationAvgReward = 0.0;
 
 	_mkdir(m_outputDir);
 
@@ -115,7 +118,6 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 	if (m_step == 1)
 	{
 		m_episodeRewards = r;
-		m_lastEvaluationAvgReward = 0.0;
 		m_lastLogTime = 0.0;
 
 		if (bLog)
@@ -163,7 +165,7 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 	double time= (double)(currentCounter-m_lastCounter) / (double) m_counterFreq;
 	if (time>0.5) //each .5 secs?
 	{
-		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%) Avg.Reward: %.2f        \r"
+		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%) Avg.Reward: %.4f        \r"
 			,m_episode,m_numEpisodes,m_step,m_numSteps,getProgress()*100.0,getCurrentAvgReward());
 		m_lastCounter= currentCounter;
 	}

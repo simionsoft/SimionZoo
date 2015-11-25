@@ -7,6 +7,7 @@ class CParameters;
 class CFeatureVFA;
 class CFeatureList;
 class CParameters;
+class CParameter;
 
 class CCritic
 {
@@ -22,8 +23,8 @@ public:
 
 	static CCritic *getCriticInstance(CParameters* pParameters);
 
-	void loadVFunction(char* filename);
-	void saveVFunction(char* filename);
+	void loadVFunction(const char* filename);
+	void saveVFunction(const char* filename);
 };
 
 class CTDLambdaCritic: public CCritic
@@ -33,7 +34,7 @@ class CTDLambdaCritic: public CCritic
 	CFeatureList* m_z; //traces
 	CFeatureList* m_aux;
 
-	double *m_pAlpha;
+	CParameter *m_pAlpha;
 	double m_gamma;
 	double m_lambda;
 public:
@@ -54,7 +55,7 @@ class CTrueOnlineTDLambdaCritic: public CCritic
 	CFeatureList* m_aux;
 	double m_v_s;
 
-	double *m_pAlpha;
+	CParameter *m_pAlpha;
 	double m_gamma;
 	double m_lambda;
 public:
@@ -76,7 +77,7 @@ class CTDCLambdaCritic : public CCritic
 	CFeatureList* m_w;
 	CFeatureList* m_a;
 
-	double *m_pAlpha;
+	CParameter *m_pAlpha;
 	double m_gamma;
 	double m_lambda;
 	double m_beta;

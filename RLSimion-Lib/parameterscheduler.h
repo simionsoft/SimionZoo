@@ -4,20 +4,19 @@
 #define QUADRATIC_DECAY 1
 
 class CParameters;
+class CParameter;
 
 struct CScheduleData
 {
 	double start, end, evalValue;
-	char *pName;
+	CParameter* pParameter;
 	int decayType;
 	
 	CScheduleData()
 	{
-		pName = 0;
 	}
 	~CScheduleData()
 	{
-		if (pName) delete [] pName;
 	}
 };
 
@@ -29,7 +28,7 @@ class CParameterScheduler
 	CParameters *m_pParameters;
 
 public:
-	CParameterScheduler(char* configFile, CParameters* pParameters);
+	CParameterScheduler(CParameters* pParameters);
 	~CParameterScheduler();
 
 	void update();

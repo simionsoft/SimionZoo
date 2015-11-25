@@ -20,7 +20,6 @@
 #include <stdio.h>
 
 CWorld* g_pWorld;
-CParameterScheduler *g_pParameterScheduler;
 CExperiment *g_pExperiment;
 
 int main(int argc, char* argv[])
@@ -35,12 +34,10 @@ int main(int argc, char* argv[])
 	}
 	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
 
-	g_pWorld= new CWorld(pParameters);
-	CSimGod* pSimGod = new CSimGod(pParameters);
-	g_pExperiment= new CExperiment(pParameters);
-
-	g_pParameterScheduler= new CParameterScheduler(pParameters->getStringPtr("PARAMETER_SCHEDULER_CONFIG_FILE"), pParameters);
-
+	g_pWorld= new CWorld(pParameters->getChild("WORLD"));
+	CSimGod* pSimGod = new CSimGod(pParameters->getChild("SIMGOD"));
+	g_pExperiment= new CExperiment(pParameters->getChild("EXPERIMENT"));
+	CParameterScheduler* pParameterScheduler= new CParameterScheduler(pParameters->getChild("PARAMETER_SCHEDULER"));
 
 	CState *s= g_pWorld->getStateInstance();
 	CState *s_p= g_pWorld->getStateInstance();
@@ -59,8 +56,7 @@ int main(int argc, char* argv[])
 		{
 
 			//Update parameters that have a schedule: learning gains, exploration, ...
-			if (g_pParameterScheduler)
-				g_pParameterScheduler->update();
+			pParameterScheduler->update();
 
 			//a= pi(s)
 			pSimGod->selectAction(s,a);
@@ -86,7 +82,7 @@ int main(int argc, char* argv[])
 	delete s_p;
 	delete a;
 
-	delete g_pParameterScheduler;
+	delete pParameterScheduler;
 	delete pParameters;
 	delete g_pWorld;
 	delete g_pExperiment;

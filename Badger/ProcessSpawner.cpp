@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "ProcessSpawner.h"
+#include "../RLSimion-Lib/parameters.h"
+#include "../RLSimion-Lib/parameter.h"
 #include <string>
 
 //STARTUPINFO *pStartupInfo;
@@ -60,10 +62,10 @@ void* CProcessSlot::getThreadHandle()
 
 
 
-CProcessSpawner::CProcessSpawner(int numMaxProcesses)
+CProcessSpawner::CProcessSpawner(CParameters* pParameters)
 {
 	m_numSlotsUsed = 0;
-	m_numSlots = numMaxProcesses;
+	m_numSlots = (int)pParameters->getParameter("MAX_NUM_PROCESSES")->getDouble();
 
 	m_pHandles = new void*[m_numSlots];
 

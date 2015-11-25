@@ -2,7 +2,7 @@
 #include "noise.h"
 #include "globals.h"
 #include "parameters.h"
-
+#include "parameter.h"
 
 double getNormalDistributionSample(/*double mu, */double sigma)
 {
@@ -36,9 +36,9 @@ double getNormalDistributionSample(/*double mu, */double sigma)
 CGaussianNoise::CGaussianNoise(int actionDim, CParameters* pParameters)
 {
 	char paramName[MAX_PARAMETER_NAME_SIZE];
-	sprintf_s(paramName,MAX_PARAMETER_NAME_SIZE, "SIMGOD/ACTOR/NOISE_WIDTH_%d",actionDim);
-	//m_pWidth= g_pParameters->add(paramName,0.0); //2015/10/09
-	m_pSigma= pParameters->add(paramName, 0.0); //2015/10/09
+	sprintf_s(paramName,MAX_PARAMETER_NAME_SIZE, "NOISE_WIDTH_%d",actionDim);
+
+	m_pSigma= pParameters->addParameter(CParameter(paramName, 0.0)); //2015/10/09
 
 	m_lastValue= 0.0;
 }
@@ -51,10 +51,10 @@ double CGaussianNoise::getNewValue()
 {
 	double randValue = 0.0;
 	//if (*m_pWidth > 0.0000000001) //2015/10/09
-	if (*m_pSigma > 0.00000000001) //2015/10/09
+	if (m_pSigma->getDouble() > 0.00000000001) //2015/10/09
 	{
 		//standard normal distribution: 99.7% of the samples will be within [-3.0,3.0]
-		randValue = getNormalDistributionSample(*m_pSigma); //1.0 //2015/10/09
+		randValue = getNormalDistributionSample(m_pSigma->getDouble()); //1.0 //2015/10/09
 
 		//randValue= 0.7*randValue + 0.3* m_lastValue;
 

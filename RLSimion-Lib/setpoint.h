@@ -16,7 +16,7 @@ class CFileSetPoint: public CSetPoint
 	double *m_pTimes;
 	double m_totalTime;
 public:
-	CFileSetPoint(char* pFilename);
+	CFileSetPoint(const char* pFilename);
 	~CFileSetPoint();
 
 	double getPointSet(double time);

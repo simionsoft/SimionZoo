@@ -1,5 +1,4 @@
-function plotColumn(file,column,color,linestyle)
-%function plotColumn(file,column,downfactor,color,miny,maxy,linestyle)
+function plotColumn(file,column,color,linestyle,firstLine)
     switch color
         case 1
             colorname='red';
@@ -14,11 +13,25 @@ function plotColumn(file,column,color,linestyle)
         otherwise
             colorname='magenta';
     end
-    %data= dlmread(file,' ',2,0);
-    data= dlmread(file,' ',0,0);
+    
+    data= dlmread(file,' ',firstLine,0);
+    
+    
+    switch rem(linestyle,4)
+        case 0
+            plot(data(:,1),data(:,column),'-','color',colorname);
+        case 1
+            plot(data(:,1),data(:,column),'--','color',colorname);
+        case 2
+            plot(data(:,1),data(:,column),'.-','color',colorname);
+        case 3
+            plot(data(:,1),data(:,column),':','color',colorname);
+    end
+
+
         
   %  plot(downsample(data(1:(maxy-miny+1),1),downfactor),downsample(data(miny:maxy,column),downfactor),linestyle,'color',colorname);
-  plot(data(:,1),data(:,column),linestyle,'color',colorname);
+ 
   
   %  xlim([0 data((maxy-miny+1),1)]);
 end

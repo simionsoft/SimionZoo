@@ -2,26 +2,27 @@
 #include "critic.h"
 #include "vfa.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "features.h"
 #include "globals.h"
 #include "experiment.h"
 
 CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 {
-	m_pVFA= new CRBFFeatureGridVFA(pParameters->getStringPtr("SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES"));
+	m_pVFA= new CRBFFeatureGridVFA(pParameters->getParameter("VALUE_FUNCTION_RBF_VARIABLES")->getStringPtr());
 	m_e= new CFeatureList();
 	m_aux= new CFeatureList();
 	m_v_s= 0.0;
 
-	m_pAlpha= pParameters->add("SIMGOD/CRITIC/LEARNING_RATE",0.0);
-	m_gamma= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_GAMMA");
-	m_lambda= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_LAMBDA");
+	m_pAlpha= pParameters->addParameter(CParameter("LEARNING_RATE",0.0));
+	m_gamma= pParameters->getParameter("INITIAL_GAMMA")->getDouble();
+	m_lambda= pParameters->getParameter("INITIAL_LAMBDA")->getDouble();
 
-	if (pParameters->exists("SIMGOD/CRITIC/LOAD"))
-		loadVFunction(pParameters->getStringPtr("SIMGOD/CRITIC/LOAD"));
+	if (pParameters->exists("LOAD"))
+		loadVFunction(pParameters->getParameter("LOAD")->getStringPtr());
 
-	if (pParameters->exists("SIMGOD/CRITIC/SAVE"))
-		strcpy_s(m_saveFilename,1024,pParameters->getStringPtr("SIMGOD/CRITIC/SAVE"));
+	if (pParameters->exists("SAVE"))
+		strcpy_s(m_saveFilename,1024,pParameters->getParameter("SAVE")->getStringPtr());
 	else
 		m_saveFilename[0]= 0;
 }
@@ -40,7 +41,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 {
 	double v_s_p;
 
-	if (*m_pAlpha==0.0) return 0.0;
+	if (m_pAlpha->getDouble()==0.0) return 0.0;
 	
 	if (g_pExperiment->m_step==1)
 	{
@@ -63,13 +64,13 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 
 
 	m_e->mult(m_gamma*m_lambda);
-	m_e->addFeatureList(m_aux,*m_pAlpha *(1-m_gamma*m_lambda*e_T_phi_s));
+	m_e->addFeatureList(m_aux,m_pAlpha->getDouble() *(1-m_gamma*m_lambda*e_T_phi_s));
 	m_e->applyThreshold(0.0001);	
 
 	//theta= theta + delta*e + alpha[v_s - theta^T*phi(s)]* phi(s)
 	m_pVFA->add(m_e,td);
 	double theta_T_phi_s= m_pVFA->getValue(m_aux);
-	m_pVFA->add(m_aux,*m_pAlpha *(m_v_s - theta_T_phi_s));
+	m_pVFA->add(m_aux,m_pAlpha->getDouble() *(m_v_s - theta_T_phi_s));
 	//v_s= v_s_p
 	m_v_s= v_s_p;
 

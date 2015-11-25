@@ -24,6 +24,7 @@ bld/
 [Ii]pch/
 logs/
 data/
+images/
 
 # Roslyn cache directories
 *.ide/

@@ -2,7 +2,7 @@
 #include "reward.h"
 #include "states-and-actions.h"
 #include "parameters.h"
-
+#include "parameter.h"
 
 #define NUM_MAX_REWARD_COMPONENTS 10
 
@@ -56,35 +56,35 @@ void CErrorComponent::init(CParameters* pParameters,int componentIndex)
 
 	m_componentIndex= componentIndex;
 
-	sprintf_s(parameterName,256,"WORLD/REWARD/COMPONENT_TYPE_%d",componentIndex);
-	sprintf_s(m_errorComponentType,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
+	sprintf_s(parameterName,256,"COMPONENT_TYPE_%d",componentIndex);
+	sprintf_s(m_errorComponentType,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getParameter(parameterName)->getStringPtr());
 	
-	sprintf_s(parameterName,256,"WORLD/REWARD/COMPONENT_WEIGHT_%d",componentIndex);
-	m_weight= pParameters->getDouble(parameterName);
+	sprintf_s(parameterName,256,"COMPONENT_WEIGHT_%d",componentIndex);
+	m_weight= pParameters->getParameter(parameterName)->getDouble();
 
-	sprintf_s(parameterName,256,"WORLD/REWARD/COMPONENT_TOLERANCE_%d",componentIndex);
-	m_tolerance= pParameters->getDouble(parameterName);
+	sprintf_s(parameterName,256,"COMPONENT_TOLERANCE_%d",componentIndex);
+	m_tolerance= pParameters->getParameter(parameterName)->getDouble();
 
 	if (strcmp(m_errorComponentType,"VARIABLE_DIFFERENCE")==0)
 	{
-		sprintf_s(parameterName,256,"WORLD/REWARD/CONTROLLED_VARIABLE_%d",componentIndex);
-		sprintf_s(m_controlledVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
-		sprintf_s(parameterName,256,"WORLD/REWARD/SETPOINT_VARIABLE_%d",componentIndex);
-		sprintf_s(m_setpointVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
+		sprintf_s(parameterName,256,"CONTROLLED_VARIABLE_%d",componentIndex);
+		sprintf_s(m_controlledVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getParameter(parameterName)->getStringPtr());
+		sprintf_s(parameterName,256,"SETPOINT_VARIABLE_%d",componentIndex);
+		sprintf_s(m_setpointVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getParameter(parameterName)->getStringPtr());
 	}
 	else if (strcmp(m_errorComponentType,"DEVIATION_VARIABLE")==0)
 	{
-		sprintf_s(parameterName,256,"WORLD/REWARD/CONTROL_ERROR_VARIABLE_%d",componentIndex);
-		sprintf_s(m_controlErrorVariable,MAX_PARAMETER_NAME_SIZE,"%s", pParameters->getStringPtr(parameterName));
+		sprintf_s(parameterName,256,"CONTROL_ERROR_VARIABLE_%d",componentIndex);
+		sprintf_s(m_controlErrorVariable,MAX_PARAMETER_NAME_SIZE,"%s", pParameters->getParameter(parameterName)->getStringPtr());
 	}
 	else if ( (strcmp(m_errorComponentType,"CONSTANT_DIFFERENCE")==0)
 			|| (strcmp(m_errorComponentType,"PUNISH_IF_ABOVE")==0)
 			|| (strcmp(m_errorComponentType,"PUNISH_IF_BELOW")==0) )
 	{
-		sprintf_s(parameterName,256,"WORLD/REWARD/CONTROLLED_VARIABLE_%d",componentIndex);
-		sprintf_s(m_controlledVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getStringPtr(parameterName));
-		sprintf_s(parameterName,256,"WORLD/REWARD/SETPOINT_CONSTANT_%d",componentIndex);
-		m_setpointConstant= pParameters->getDouble(parameterName);
+		sprintf_s(parameterName,256,"CONTROLLED_VARIABLE_%d",componentIndex);
+		sprintf_s(m_controlledVariable,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getParameter(parameterName)->getStringPtr());
+		sprintf_s(parameterName,256,"SETPOINT_CONSTANT_%d",componentIndex);
+		m_setpointConstant= pParameters->getParameter(parameterName)->getDouble();
 	}
 	else assert(0);
 }
@@ -138,11 +138,11 @@ double CErrorComponent::getRewardComponent(CState* state)
 
 CReward::CReward(CParameters* pParameters)
 {
-	m_numRewardComponents= (int) pParameters->getDouble("WORLD/REWARD/NUM_COMPONENTS");
+	m_numRewardComponents= (int) pParameters->getParameter("NUM_COMPONENTS")->getDouble();
 	m_pErrorComponents= new CErrorComponent[m_numRewardComponents];
 
-	m_minReward= pParameters->getDouble("WORLD/REWARD/MIN_REWARD");
-	m_maxReward= pParameters->getDouble("WORLD/REWARD/MAX_REWARD");
+	m_minReward= pParameters->getParameter("MIN_REWARD")->getDouble();
+	m_maxReward= pParameters->getParameter("MAX_REWARD")->getDouble();
 
 	m_lastReward= 0.0;
 

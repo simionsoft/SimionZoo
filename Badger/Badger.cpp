@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "../RLSimion-Lib/parameters.h"
+#include "../RLSimion-Lib/parameter.h"
 #include "ProcessSpawner.h"
 
 #ifdef _DEBUG
@@ -11,33 +12,6 @@
 #pragma comment(lib,"../Release/RLSimion-Lib.lib")
 #endif
 
-#define MAX_NUM_CHILDREN 100
-
-#define MAX_NUM_PARAM_PER_NODE 100
-#define PARAMETER_NAME_MAX_SIZE 1024
-struct Node
-{
-	int numParameters;
-	CParameter parameters[MAX_NUM_PARAM_PER_NODE];
-
-
-	int numChildren;
-	Node *pChildren[MAX_NUM_CHILDREN];
-	Node *pParent;
-	Node()
-	{
-		numParameters= 0;
-		numChildren= 0;
-		pParent= 0;
-		//name[0]= 0;
-		//value= -1.0;
-	}
-	~Node()
-	{
-		for (int i= 0; i<numChildren; i++)
-			delete pChildren[i];
-	}
-};
 
 CParameters *g_pCurrentParameters;
 int numLeafs = 0;
@@ -51,14 +25,14 @@ int getFirstBadgerFileIndex(CParameters* pParameters)
 	char fileName[512];
 	FILE* pFile;
 
-	if (0 != (int)pParameters->getDouble("BADGER/RESET_BADGER_INDEX"))
+	if (0 != (int)pParameters->getParameter("RESET_BADGER_INDEX")->getDouble())
 		return 0;
 	
 	int n = -1;
 	do
 	{
 		n++;
-		sprintf_s(fileName, 512, "%s\\exp-%d.txt", pParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"), n);
+		sprintf_s(fileName, 512, "%s\\exp-%d.txt", pParameters->getParameter("OUTPUT_DIRECTORY")->getStringPtr(), n);
 		fopen_s(&pFile, fileName, "r");
 		if (pFile) fclose(pFile);
 	} while (pFile != 0);
@@ -73,28 +47,30 @@ void ProcessCommand(CParameters* pAppParameters)
 	char commandLine[512];
 
 	//create parameter file for experiment
-	sprintf_s(fileName, 512, "%s\\exp-%d.txt", pAppParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"), numExperiment + g_firstBadgerFileIndex);
+	sprintf_s(fileName, 512, "%s\\exp-%d.txt", pAppParameters->getParameter("OUTPUT_DIRECTORY")->getStringPtr()
+		, numExperiment + g_firstBadgerFileIndex);
 	g_pCurrentParameters->saveParameters(fileName);
 
 	
 	
 	//command line
-	sprintf_s(commandLine, 512, "%s %s", pAppParameters->getStringPtr("BADGER/EXE_FILE"), fileName);
+	//using the full name BADGER/EXE_FILE because it comes from the experiment config file, loaded as a table, not a tree
+	sprintf_s(commandLine, 512, "%s %s", g_pCurrentParameters->getParameter("BADGER/EXE_FILE")->getStringPtr(), fileName);
 	printf("\n\n******************\nBadger\n******************\nExperiment %d: %s\n******************\n\n", numExperiment, commandLine);
 
-	if (0 != (int)pAppParameters->getDouble("BADGER/RUN_EXPERIMENTS"))
+	if (0 != (int)pAppParameters->getParameter("RUN_EXPERIMENTS")->getDouble())
 	{
 		g_pProcessSpawner->spawnOrWait(commandLine);
 	}
 
-	if (0 != (int)pAppParameters->getDouble("BADGER/SAVE_EXPERIMENTS"))
+	if (0 != (int)pAppParameters->getParameter("SAVE_EXPERIMENTS")->getDouble())
 	{
 		//printf("SAVING COMMAND...");
 		FILE* pBatchFile;
-		if (numExperiment==0 && 0!= (int)pAppParameters->getDouble("BADGER/SAVE_EXPERIMENTS_FILE_RESET"))
-			fopen_s(&pBatchFile, pAppParameters->getStringPtr("BADGER/SAVE_EXPERIMENTS_FILE"), "w");
+		if (numExperiment==0 && 0!= (int)pAppParameters->getParameter("SAVE_EXPERIMENTS_FILE_RESET")->getDouble())
+			fopen_s(&pBatchFile, pAppParameters->getParameter("SAVE_EXPERIMENTS_FILE")->getStringPtr(), "w");
 		else
-			fopen_s(&pBatchFile, pAppParameters->getStringPtr("BADGER/SAVE_EXPERIMENTS_FILE"),"a");
+			fopen_s(&pBatchFile, pAppParameters->getParameter("SAVE_EXPERIMENTS_FILE")->getStringPtr(),"a");
 		if (pBatchFile)
 		{
 			fprintf_s(pBatchFile, "%s\n", commandLine);
@@ -108,23 +84,30 @@ void ProcessCommand(CParameters* pAppParameters)
 
 
 
-void TraverseTree(Node* pNode,CParameters* pAppParameters)
+void TraverseTree(CParameters* pNode,CParameters* pAppParameters)
 {
+	//pNode is the tree of parameters read from an experiment file (the hierarchy is set using "{" and "}"
+	//each parameter name contains its complete path
 
+	//pAppParameters is a regular tree of parameters hanging from the node labeled "BADGER"
 
 	//set parameters, whether is leaf or not
-	if (strcmp(pNode->parameters[0].name,"Root")!=0)
+	if (strcmp(pNode->getName(),"Root")!=0)
 	{
-		for (int i= 0; i<pNode->numParameters; i++)
+		for (int i= 0; i<pNode->getNumParameters(); i++)
 		{
-			if (!strcmp(pNode->parameters[i].name, "BADGER/BASE_PARAMETER_FILE"))
-				g_pCurrentParameters->loadParameters((char*)pNode->parameters[i].pValue);
+			//THIS HAS TO BE THE FULLNAME BECAUSE IT COMES FROM THE BADGER EXPERIMENT FILE
+			if (!strcmp(pNode->getParameter(i)->getName(), "BADGER/BASE_PARAMETER_FILE")) 
+			{
+				g_pCurrentParameters->reset();
+				g_pCurrentParameters->loadParameters(pNode->getParameter(i)->getStringPtr(),false);
+			}
 			else
-				g_pCurrentParameters->setParameter(pNode->parameters[i]);
+				g_pCurrentParameters->addParameter(pNode->getParameter(i));
 		}
 	}
 
-	if (pNode->numChildren==0)
+	if (pNode->getNumChildren()==0)
 	{
 		numLeafs++;
 
@@ -132,23 +115,23 @@ void TraverseTree(Node* pNode,CParameters* pAppParameters)
 
 		return;
 	}
-	else for (int i= 0; i<pNode->numChildren; i++)
+	else for (int i= 0; i<pNode->getNumChildren(); i++)
 	{
-		TraverseTree(pNode->pChildren[i],pAppParameters);
+		TraverseTree(pNode->getChild(i),pAppParameters);
 	}
 }
 
 
 int main(int argc, char* argv[])
 {
-	Node Root;
+	CParameters Root;
 
-	strcpy_s(Root.parameters[0].name, 512, "Root");
+	Root.setName("Root");
 
-	Node *pCurrent= &Root;
-	Node *pLastNode= pCurrent;
+	CParameters *pCurrent= &Root;
+	CParameters *pLastNode= pCurrent;
+	CParameter readParameter;
 	char line[512];
-	char experimentFile[1024];
 	FILE *pFile;
 	int numParameters= 0;
 	int numLines= 0;
@@ -156,23 +139,25 @@ int main(int argc, char* argv[])
 
 
 	//SetWorkPath();
-	CParameters *pAppParameters = new CParameters("Badger-parameters.txt");
+	CParameters *pAppParameters = new CParameters("..\\Badger\\Badger-parameters.txt");
+	CParameters *pBadgerParameters = pAppParameters->getChild("BADGER");
 
-	g_pProcessSpawner = new CProcessSpawner((int)pAppParameters->getDouble("BADGER/MAX_NUM_PROCESSES"));
+	g_pProcessSpawner = new CProcessSpawner(pBadgerParameters);
 
 	//try to create directory in case it doesn't exist
-	_mkdir(pAppParameters->getStringPtr("BADGER/OUTPUT_DIRECTORY"));
+	_mkdir(pBadgerParameters->getParameter("OUTPUT_DIRECTORY")->getStringPtr());
 
-	g_firstBadgerFileIndex = getFirstBadgerFileIndex(pAppParameters);
+	g_firstBadgerFileIndex = getFirstBadgerFileIndex(pBadgerParameters);
 
-	g_pCurrentParameters = new CParameters(pAppParameters->getStringPtr("BADGER/BASE_PARAMETER_FILE"));
+	g_pCurrentParameters = new CParameters;
 
-	numExperiments = (int)pAppParameters->getDouble("BADGER/NUM_EXPERIMENTS");
+	CParameters* pExperimentNode = pBadgerParameters->getChild("EXPERIMENTS");
+
+	numExperiments = pExperimentNode->getNumParameters();
 
 	for (int i = 0; i < numExperiments; i++)
 	{
-		sprintf_s(experimentFile, 1024, "BADGER/EXPERIMENT_%d", i);
-		fopen_s(&pFile,pAppParameters->getStringPtr(experimentFile), "r");
+		fopen_s(&pFile,pExperimentNode->getParameter(i)->getStringPtr(), "r");
 		if (pFile)
 		{
 			while (fgets(line, sizeof(line), pFile))
@@ -180,38 +165,29 @@ int main(int argc, char* argv[])
 				numLines++;
 				if (strstr(line, "{") != 0)
 				{
-					pLastNode = new Node;
-					pCurrent->pChildren[pCurrent->numChildren] = pLastNode;
-					pCurrent->numChildren++;
+					pLastNode = pCurrent->addChild(0);
 
-					pLastNode->pParent = pCurrent;
 					pCurrent = pLastNode;
-
-					//ReadNodeParameters(line,pLastNode);
-
 				}
 				else if (strstr(line, "}") != 0)
 				{
-					pCurrent = pCurrent->pParent;
+					pCurrent = pCurrent->getParent();
 				}
-				else //if (sscanf_s(line, "%s : %lf", name,&value)==2)
+				else
 				{
-					if (CParameters::parseLine(line, pCurrent->parameters[pCurrent->numParameters]))
+					if (CParameters::parseLine(line, readParameter))
 					{
-						pCurrent->numParameters++;
+						pCurrent->addParameter(readParameter);
 						numParameters++;	
 					}
 
 				}
-				//else printf("ERROR in line %d\n",numLines);
-
 			}
 			fclose(pFile);
-			//printf("%d lines and %d parameters read\n", numLines, numParameters);
 		}
 
 	}
-	TraverseTree(&Root, pAppParameters);
+	TraverseTree(&Root, pAppParameters->getChild("BADGER"));
 
 	g_pProcessSpawner->waitAll();
 

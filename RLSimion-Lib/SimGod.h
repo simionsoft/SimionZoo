@@ -9,6 +9,7 @@ class CParameters;
 
 class CSimGod
 {
+	CActor* m_pController;
 	CActor* m_pActor;
 	CCritic* m_pCritic;
 public:

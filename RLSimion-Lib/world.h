@@ -47,6 +47,7 @@ protected:
 	CState *m_pStateDescriptor;
 	CAction *m_pActionDescriptor;
 public:
+	virtual ~CDynamicModel();
 	virtual void reset(CState *s)= 0;
 	virtual void executeAction(CState *s,CAction *a,double dt)= 0;
 

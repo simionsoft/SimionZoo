@@ -3,6 +3,7 @@
 #include "world-windturbine.h"
 #include "setpoint.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "states-and-actions.h"
 
 
@@ -188,8 +189,8 @@ CWindTurbine::CWindTurbine(CParameters *pParameters)
 	m_pActionDescriptor->setProperties(0,"d_beta",-0.1745329252,0.1745329252);
 	m_pActionDescriptor->setProperties(1,"d_T_g",-100000,100000);
 
-	m_pWindData= new CFileSetPoint(pParameters->getStringPtr("WORLD/WIND_DATA_FILE"));
-	m_pPowerSetpoint= new CFileSetPoint(pParameters->getStringPtr("WORLD/POWER_SET_POINT_FILE"));
+	m_pWindData= new CFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
+	m_pPowerSetpoint= new CFileSetPoint(pParameters->getParameter("POWER_SET_POINT_FILE")->getStringPtr());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;

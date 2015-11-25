@@ -3,10 +3,10 @@
 #include "states-and-actions.h"
 #include "setpoint.h"
 #include "parameters.h"
+#include "parameter.h"
+
 
 #define NUM_STATE_VARIABLES 3
-
-
 
 
 CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
@@ -20,7 +20,7 @@ CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"u-thrust",-30.0,30.0);
 
-	m_pSetpoint= new CFileSetPoint(pParameters->getStringPtr("WORLD/SET_POINT_FILE"));
+	m_pSetpoint= new CFileSetPoint(pParameters->getParameter("SET_POINT_FILE")->getStringPtr());
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()

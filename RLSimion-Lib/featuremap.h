@@ -40,7 +40,7 @@ class CGaussianRBFGridFeatureMap: public CFeatureMap
 	int *m_pNumCenters;
 	double **m_pCenters;
 
-	int getNumVariables(char* configString);
+	int getNumVariables(const char* configString);
 	void initCenterPoints(int i,char* varName,int numCenters
 					  ,double minV= 0.0, double maxV= 0.0,char distType='u');
 
@@ -48,7 +48,7 @@ class CGaussianRBFGridFeatureMap: public CFeatureMap
 	void getDimFeatures(int dim, double value, CFeatureList* outDimFeatures);
 	double getFeatureFactor(int dim, int feature,double value);
 public:
-	CGaussianRBFGridFeatureMap(char* configString);
+	CGaussianRBFGridFeatureMap(const char* configString);
 	~CGaussianRBFGridFeatureMap();
 
 	void getFeatures(CState* s,CAction* a,CFeatureList* outFeatures);

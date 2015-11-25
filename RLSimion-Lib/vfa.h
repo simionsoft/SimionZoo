@@ -35,7 +35,7 @@ class CRBFFeatureGridVFA: public CFeatureVFA
 {
 
 public:
-	CRBFFeatureGridVFA(char* configString);
+	CRBFFeatureGridVFA(const char* configString);
 	~CRBFFeatureGridVFA();
 
 	double getValue(CFeatureList *features);

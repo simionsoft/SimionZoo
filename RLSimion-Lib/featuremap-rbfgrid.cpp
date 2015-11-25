@@ -2,6 +2,7 @@
 #include "featuremap.h"
 #include "states-and-actions.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "globals.h"
 #include "world.h"
 #include "features.h"
@@ -67,7 +68,7 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,char* varName,int numCen
 
 }
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(char* configString)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(const char* configString)
 {
 	char * token= 0, *nextToken= 0;
 	char copy[MAX_STRING_SIZE];
@@ -148,7 +149,7 @@ CGaussianRBFGridFeatureMap::~CGaussianRBFGridFeatureMap()
 	delete m_pVarFeatures;
 }
 
-int CGaussianRBFGridFeatureMap::getNumVariables(char* configString)
+int CGaussianRBFGridFeatureMap::getNumVariables(const char* configString)
 {
 	int count= 0, i= 0;
 	if (!configString) return 0;

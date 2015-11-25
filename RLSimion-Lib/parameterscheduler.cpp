@@ -1,37 +1,49 @@
 #include "stdafx.h"
 #include "parameterscheduler.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "globals.h"
 #include "experiment.h"
 
-CParameterScheduler::CParameterScheduler(char *configFile,CParameters* pParameters)
+CParameterScheduler::CParameterScheduler(CParameters* pParameters)
 {
-	char configLine[MAX_STRING_SIZE], *name;
+	char nodeName[MAX_PARAMETER_NAME_SIZE];
+	const char *scheduleConfig;
+	char strippedName[MAX_PARAMETER_NAME_SIZE];
 	char decay[MAX_STRING_SIZE];
+	CParameters* pParameterNode;
+	CParameters* pScheduleNode;
 
-	m_numParameterSchedules = 0;
-	m_pScheduleData = 0;
+	if (pParameters && pParameters->exists("NUM_SCHEDULES"))
+		m_numParameterSchedules = (int) pParameters->getParameter("NUM_SCHEDULES")->getDouble();
+	else
+	{
+		m_numParameterSchedules = 0;
+		m_pScheduleData = 0;
+		return;
+	}
+
 	m_pParameters = pParameters;		// don't free the memory!!!
-
-	if (!configFile) return;
-
-	CParameters* pSchedules = new CParameters(configFile);
 	
-	int numParameterSchedules = pSchedules->getNumParameters();
+	m_pScheduleData = new CScheduleData[m_numParameterSchedules];
+	CParameters* pRoot = pParameters->getRootNode();
 
-	m_pScheduleData= new CScheduleData[numParameterSchedules];
-
-	for (int i= 0; i<numParameterSchedules; i++)
+	for (int i = 0; i<m_numParameterSchedules; i++)
 	{
 		//get the parameter's name from the schedule file
-		name = pSchedules->getParameterName(i);
+		sprintf_s(nodeName, MAX_PARAMETER_NAME_SIZE, "%d", i);
+		pScheduleNode = pParameters->getChild(nodeName);
 
-		m_pScheduleData[i].pName = new char[strlen(name) + 1];
-		strcpy_s(m_pScheduleData[i].pName, strlen(name) + 1, name);
+		//EITHER REWRITE THIS OR GET RID OF THE WHOLE CLASS USING SCHEDULED PARAMETERS WITHIN THE TREE STRUCTURE
+		pParameterNode = pRoot->findParent(pScheduleNode->getParameter("PARAMETER")->getStringPtr(), strippedName, false);
+
+		m_pScheduleData[i].pParameter = pParameterNode->getParameter(strippedName);
+
+		//get the schedule line: XMLra pasatzen geanen hau berriz egin behar da!!! eta ondo!!
+		scheduleConfig = pScheduleNode->getParameter("SCHEDULE")->getStringPtr();
 
 		//parse the schedule line
-		strcpy_s(configLine, MAX_STRING_SIZE, pSchedules->getStringPtr(i));
-		if (sscanf_s(configLine,"%lf,%lf,%lf,%s",&m_pScheduleData[i].start
+		if (sscanf_s(scheduleConfig, "%lf,%lf,%lf,%s", &m_pScheduleData[i].start
 			,&m_pScheduleData[i].end, &m_pScheduleData[i].evalValue,decay,MAX_STRING_SIZE)==4)
 		{
 			if (strcmp(decay,"linear")==0)
@@ -39,17 +51,13 @@ CParameterScheduler::CParameterScheduler(char *configFile,CParameters* pParamete
 			else if (strcmp(decay,"quadratic")==0)
 				m_pScheduleData[i].decayType= QUADRATIC_DECAY;
 			else assert(0);
-			m_numParameterSchedules++;
 		}
 		else
 		{
-			printf("Error reading parameter schedule in:\nFILE= %s\nLINE %d=%s\n"
-				,configFile,i,configLine);
+			printf("Error reading parameter schedule :\nLINE %d=%s\n"
+				, scheduleConfig);
 		}
 	}
-	assert(m_numParameterSchedules==numParameterSchedules);
-
-	delete pSchedules;
 }
 
 
@@ -75,17 +83,15 @@ void CParameterScheduler::update()
 			switch(m_pScheduleData[i].decayType)
 			{
 			case LINEAR_DECAY:
-				m_pParameters->setParameter(m_pScheduleData[i].pName, 
-					m_pScheduleData[i].start + progress*(m_pScheduleData[i].end-m_pScheduleData[i].start));
+				m_pScheduleData[i].pParameter->setValue(m_pScheduleData[i].start + progress*(m_pScheduleData[i].end-m_pScheduleData[i].start));
 				break;
 			case QUADRATIC_DECAY:
-				m_pParameters->setParameter(m_pScheduleData[i].pName,
-					m_pScheduleData[i].start + (1.- pow(1-progress,2.0))*(m_pScheduleData[i].end-m_pScheduleData[i].start));
+				m_pScheduleData[i].pParameter->setValue(m_pScheduleData[i].start + (1.- pow(1-progress,2.0))*(m_pScheduleData[i].end-m_pScheduleData[i].start));
 				break;
 			}
 		}
 		else
-			m_pParameters->setParameter(m_pScheduleData[i].pName,m_pScheduleData[i].evalValue);
+			m_pScheduleData[i].pParameter->setValue(m_pScheduleData[i].evalValue);
 	}
 
 }

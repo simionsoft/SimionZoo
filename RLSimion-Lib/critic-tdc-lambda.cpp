@@ -2,13 +2,14 @@
 #include "critic.h"
 #include "vfa.h"
 #include "parameters.h"
+#include "parameter.h"
 #include "features.h"
 #include "globals.h"
 #include "experiment.h"
 
 CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
 {
-	m_pVFA= new CRBFFeatureGridVFA(pParameters->getStringPtr("SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES"));
+	m_pVFA= new CRBFFeatureGridVFA(pParameters->getParameter("VALUE_FUNCTION_RBF_VARIABLES")->getStringPtr());
 	m_z= new CFeatureList();
 	m_aux= new CFeatureList();
 	m_s_features = new CFeatureList();
@@ -16,16 +17,16 @@ CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
 	m_a = new CFeatureList();
 	m_w = new CFeatureList();
 
-	m_pAlpha= pParameters->add("SIMGOD/CRITIC/LEARNING_RATE",0.0);
-	m_gamma= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_GAMMA");
-	m_lambda= pParameters->getDouble("SIMGOD/CRITIC/INITIAL_LAMBDA");
-	m_beta = 0.9;// pParameters->getDouble("SIMGOD/CRITIC/INITIAL_BETA");
+	m_pAlpha= pParameters->addParameter(CParameter("LEARNING_RATE",0.0));
+	m_gamma= pParameters->getParameter("INITIAL_GAMMA")->getDouble();
+	m_lambda= pParameters->getParameter("INITIAL_LAMBDA")->getDouble();
+	m_beta = 0.9;// pParameters->getDouble("INITIAL_BETA");
 
-	if (pParameters->exists("SIMGOD/CRITIC/LOAD"))
-		loadVFunction(pParameters->getStringPtr("SIMGOD/CRITIC/LOAD"));
+	if (pParameters->exists("LOAD"))
+		loadVFunction(pParameters->getParameter("LOAD")->getStringPtr());
 
-	if (pParameters->exists("SIMGOD/CRITIC/SAVE"))
-		strcpy_s(m_saveFilename,1024,pParameters->getStringPtr("SIMGOD/CRITIC/SAVE"));
+	if (pParameters->exists("SAVE"))
+		strcpy_s(m_saveFilename,1024,pParameters->getParameter("SAVE")->getStringPtr());
 	else
 		m_saveFilename[0]= 0;
 }
@@ -46,7 +47,7 @@ CTDCLambdaCritic::~CTDCLambdaCritic()
 
 double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r, double rho)
 {
-	if (*m_pAlpha==0.0) return 0.0;
+	if (m_pAlpha->getDouble()==0.0) return 0.0;
 	
 	if (g_pExperiment->m_step==1)
 		m_z->clear();
@@ -73,7 +74,7 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 	m_z->applyThreshold(0.0001);	
 
 	//theta= theta + alpha*td*z	
-	m_pVFA->add(m_z, (*m_pAlpha) *td);//*rho);
+	m_pVFA->add(m_z, m_pAlpha->getDouble() *td);//*rho);
 
 
 	return td;

@@ -3,6 +3,7 @@
 #include "actor.h"
 
 class CParameters;
+class CParameter;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -39,7 +40,7 @@ public:
 
 class CWindTurbineVidalController: public CActor
 {
-	double *m_pA, *m_pK_alpha, *m_pKP, *m_pKI;
+	CParameter *m_pA, *m_pK_alpha, *m_pKP, *m_pKI;
 	double m_P_s;
 public:
 	CWindTurbineVidalController(CParameters* pParameters);
@@ -52,7 +53,7 @@ public:
 
 class CWindTurbineBoukhezzarController: public CActor
 {
-	double *m_pC_0, *m_pKP, *m_pKI;
+	CParameter *m_pC_0, *m_pKP, *m_pKI;
 	double m_K_t, m_J_t;
 public:
 	CWindTurbineBoukhezzarController(CParameters* pParameters);

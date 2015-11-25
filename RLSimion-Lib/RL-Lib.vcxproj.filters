@@ -90,6 +90,9 @@
     <ClCompile Include="actor-critic-bhatnagar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="parameter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -159,6 +162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="actor-critic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

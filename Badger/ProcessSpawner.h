@@ -1,5 +1,6 @@
 #pragma once
 
+class CParameters;
 
 class CProcessSlot
 {
@@ -25,7 +26,7 @@ class CProcessSpawner
 
 	void getHandles();
 public:
-	CProcessSpawner(int numMaxProcesses);
+	CProcessSpawner(CParameters* pParameters);
 	~CProcessSpawner();
 
 	void spawnOrWait(char* commandLine);

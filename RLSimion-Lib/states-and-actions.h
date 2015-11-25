@@ -32,22 +32,22 @@ public:
 
 	int getNumVars(){return m_numVars;}
 
-	int getVarIndex(char* name);
+	int getVarIndex(const char* name);
 
-	char* getName(int i);
+	const char* getName(int i);
 	double getMin(int i);
 	double getMax(int i);
-	double getMin(char* name);
-	double getMax(char* name);
+	double getMin(const char* name);
+	double getMax(const char* name);
 
-	void setName(int i,char* name);
+	void setName(int i,const char* name);
 	void setMin(int i,double min);
 	void setMax(int i,double max);
 
-	void setProperties(int i, char* name, double min, double max);
+	void setProperties(int i,const char* name, double min, double max);
 
-	double getValue(char* varName);
-	void setValue(char* varName, double value);
+	double getValue(const char* varName);
+	void setValue(const char* varName, double value);
 	
 	double* getValueVector(){return m_pValues;}
 
