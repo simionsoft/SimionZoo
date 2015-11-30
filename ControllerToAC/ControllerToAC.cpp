@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 	g_pWorld = new CWorld(pActorParameters->getChild("WORLD"));
 
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
-	pController = CActor::getActorInstance(pControllerParameters->getChild("ACTOR"));
+	pController = CActor::getControllerInstance(pControllerParameters->getChild("SIMGOD")->getChild("ACTOR"));
 
 	char parameterName[MAX_PARAMETER_NAME_SIZE];
 

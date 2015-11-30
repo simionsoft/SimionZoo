@@ -7,7 +7,7 @@ class CNaturalACBhatnagar3 : public CActor, public CCritic
 {
 public:
 	//CActor interface
-	virtual double selectAction(CState *s, CAction *a) = 0;
+	virtual void selectAction(CState *s, CAction *a) = 0;
 
 	virtual void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td) = 0;
 

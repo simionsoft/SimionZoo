@@ -37,7 +37,7 @@ CLQRController::~CLQRController()
 	delete [] m_pGains;
 }
 
-double CLQRController::selectAction(CState *s, CAction *a)
+void CLQRController::selectAction(CState *s, CAction *a)
 {
 	double output= 0.0; // only 1-dimension so far
 
@@ -47,7 +47,6 @@ double CLQRController::selectAction(CState *s, CAction *a)
 	}
 	// delta= -K*x
 	a->setValue(0,-output);
-	return 1.0; //rho
 }
 
 //PID//////////////////////////////////////////////////////////////////////////
@@ -72,7 +71,7 @@ CPIDController::CPIDController(CParameters *pParameters)
 
 
 
-double CPIDController::selectAction(CState *s,CAction *a)
+void CPIDController::selectAction(CState *s,CAction *a)
 {
 	if (CWorld::getT()== 0.0)
 		m_intError= 0.0;
@@ -84,7 +83,6 @@ double CPIDController::selectAction(CState *s,CAction *a)
 	//so far, it only works with 1-output controllers
 	a->setValue(0,error*m_kP + m_intError*m_kI + dError*m_kD);
 
-	return 1.0;
 }
 
 double sgn(double value)
@@ -107,7 +105,7 @@ CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameter
 	m_P_s= pParameters->getParameter("P_s")->getDouble();
 }
 
-double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
+void CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 {
 	//f(omega_r,T_g,d_omega_r,E_p, E_int_omega_r)
 
@@ -136,7 +134,6 @@ double CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 	a->setValue("d_beta",d_beta);
 	a->setValue("d_T_g",d_T_g);
 
-	return 1.0;
 }
 
 //BOUKHEZZAR CONTROLLER////////////////////////////////////////////////
@@ -152,7 +149,7 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* 
 }
 
 
-double CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
+void CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 {
 	//d(Tg)/dt= (1/omega_r)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_r*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_r)
@@ -174,7 +171,6 @@ double CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 	a->setValue("d_beta",d_beta); //action->setActionValue(DIM_A_beta,d_beta);
 	a->setValue("d_T_g",d_T_g); //action->setActionValue(DIM_A_torque,d_T_g);
 
-	return 1.0;
 }
 
 //JONKMAN//////////////////////////////////////////////////////////////////////////
@@ -212,7 +208,7 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParam
 	m_IntSpdErr= 0.0;
 }
 
-double CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
+void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 {
 	//Filter the generator speed
 	double Alpha;
@@ -274,8 +270,6 @@ double CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	double d_beta= ( PitComT - s->getValue("beta") )/CWorld::getDT();
 	
 	a->setValue("d_beta",d_beta);
-
-	return 1.0;
 	/*
 	for (int k=1; k<=NumBl; k++) //Loop through all blades
 	{

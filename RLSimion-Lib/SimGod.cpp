@@ -28,7 +28,7 @@ CSimGod::CSimGod(CParameters* pParameters)
 		m_pActor = m_pController;
 		m_pCritic = 0;
 	}
-	
+	m_rho = 0.0;
 	
 }
 
@@ -43,8 +43,20 @@ CSimGod::~CSimGod()
 
 double CSimGod::selectAction(CState* s, CAction* a)
 {
+
 	//the controller selects the action: might be the actor
-	return m_pController->selectAction(s, a);
+	m_pController->selectAction(s, a);
+
+	if (m_pController == m_pActor)
+		m_rho = 1.0;
+	else
+	{
+		double controllerProb = m_pController->getProbability(s, a);
+		double actorProb = m_pActor->getProbability(s, a);
+		m_rho = actorProb / controllerProb;
+	}
+		
+	return m_rho;
 }
 
 double CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
@@ -53,7 +65,7 @@ double CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 
 	//update critic
 	if (m_pCritic)
-		td = m_pCritic->updateValue(s, a, s_p, r, 1.0);// , rho);
+		td = m_pCritic->updateValue(s, a, s_p, r, m_rho);
 
 	//update actor: might be the controller
 	m_pActor->updatePolicy(s, a, s_p, r, td);

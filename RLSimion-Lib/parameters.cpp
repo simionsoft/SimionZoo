@@ -291,6 +291,8 @@ CParameter* CParameters::addParameter(const CParameter& parameter)
 
 	if (!pParameter)
 	{
+		if (!m_pParameters) allocate();
+
 		m_pParameters[m_numParameters] = parameter;
 		pParameter = &m_pParameters[m_numParameters];
 		m_numParameters++;
@@ -303,6 +305,8 @@ CParameter* CParameters::addParameter(const CParameter* parameter)
 
 	if (!pParameter)
 	{
+		if (!m_pParameters) allocate();
+
 		m_pParameters[m_numParameters] = *parameter;
 		pParameter = &m_pParameters[m_numParameters];
 		m_numParameters++;
@@ -345,6 +349,8 @@ CParameters* CParameters::addChild(const char* name)
 
 	if (!pChild)
 	{
+		if (!m_pChildren) allocate();
+
 		m_pChildren[m_numChildren] = new CParameters();
 		pChild = m_pChildren[m_numChildren];
 		pChild->setName(name);

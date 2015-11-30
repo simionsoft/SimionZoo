@@ -1,10 +1,10 @@
-//BADGER/EXPERIMENTS/0 : Experiment-Train.txt
-BADGER/EXPERIMENTS/0 : Experiment-CompareControllerAndActor.txt
-//BADGER/EXPERIMENTS/1 : Experiment-ControllerToAC.txt
-//BADGER/EXPERIMENTS/2 : Experiment-LearnValue.txt
-//BADGER/EXPERIMENTS/3 : Experiment-Wind-turbine.txt
-//BADGER/EXPERIMENTS/4 : Experiment-Pitch.txt
-//BADGER/EXPERIMENTS/5 : Experiment-Underwater-vehicle.txt
+BADGER/EXPERIMENTS/0 : Experiment-Train.txt
+BADGER/EXPERIMENTS/1 : Experiment-ControllerToAC.txt
+BADGER/EXPERIMENTS/2 : Experiment-CompareControllerAndActor.txt
+BADGER/EXPERIMENTS/3 : Experiment-LearnValue.txt
+BADGER/EXPERIMENTS/4 : Experiment-Wind-turbine.txt
+BADGER/EXPERIMENTS/5 : Experiment-Pitch.txt
+BADGER/EXPERIMENTS/6 : Experiment-Underwater-vehicle.txt
 BADGER/MAX_NUM_PROCESSES : 3
 BADGER/OUTPUT_DIRECTORY : ..\config\badgers
 BADGER/RESET_BADGER_INDEX : 1

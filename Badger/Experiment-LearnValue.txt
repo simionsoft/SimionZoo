@@ -11,10 +11,6 @@ SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\vidal-td-value.bin
   }
   {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\vidal-tdc-value.bin
-  }
-  {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\vidal-totd-value.bin
   }
@@ -27,10 +23,6 @@ SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(60),d_omega_r(60),T_g(60),E
   {
 SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\vidal-td-value-2.bin
-  }
-  {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\vidal-tdc-value-2.bin
   }
   {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
@@ -47,10 +39,6 @@ SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\vidal-td-value-3.bin
   }
   {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\vidal-tdc-value-3.bin
-  }
-  {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\vidal-totd-value-3.bin
   }
@@ -63,10 +51,6 @@ SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(20),d_omega_r(20),T_g(20),E
   {
 SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\vidal-td-value-4.bin
-  }
-  {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\vidal-tdc-value-4.bin
   }
   {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
@@ -86,10 +70,6 @@ SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\pitch-td-value.bin
   }
   {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\pitch-tdc-value.bin
-  }
-  {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\pitch-totd-value.bin
   }
@@ -101,10 +81,6 @@ SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),c
   {
 SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\pitch-td-value-2.bin
-  }
-  {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\pitch-tdc-value-2.bin
   }
   {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
@@ -120,10 +96,6 @@ SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\pitch-td-value-3.bin
   }
   {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\pitch-tdc-value-3.bin
-  }
-  {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\pitch-totd-value-3.bin
   }
@@ -135,10 +107,6 @@ SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(50),pitch-rate(50),con
   {
 SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\pitch-td-value-4.bin
-  }
-  {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\pitch-tdc-value-4.bin
   }
   {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
@@ -158,10 +126,6 @@ SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\uv-td-value.bin
   }
   {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\uv-tdc-value.bin
-  }
-  {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\uv-totd-value.bin
   }
@@ -173,10 +137,6 @@ SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(7500)
   {
 SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\uv-td-value-2.bin
-  }
-  {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\uv-tdc-value-2.bin
   }
   {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
@@ -192,10 +152,6 @@ SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\uv-td-value-3.bin
   }
   {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\uv-tdc-value-3.bin
-  }
-  {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\uv-totd-value-3.bin
   }
@@ -207,10 +163,6 @@ SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(2500)
   {
 SIMGOD/CRITIC/ALGORITHM : TD-Lambda
 SIMGOD/CRITIC/SAVE : ..\data\uv-td-value-4.bin
-  }
-  {
-SIMGOD/CRITIC/ALGORITHM : TDC-Lambda
-SIMGOD/CRITIC/SAVE : ..\data\uv-tdc-value-4.bin
   }
   {
 SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda

@@ -19,7 +19,7 @@ public:
 	CLQRController(CParameters* pParameters);
 	~CLQRController();
 
-	double selectAction(CState *s,CAction *a);
+	void selectAction(CState *s,CAction *a);
 
 	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
@@ -33,7 +33,7 @@ public:
 	CPIDController(CParameters* pParameters);
 	~CPIDController(){}
 
-	double selectAction(CState *s,CAction *a);
+	void selectAction(CState *s,CAction *a);
 
 	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
@@ -46,7 +46,7 @@ public:
 	CWindTurbineVidalController(CParameters* pParameters);
 	~CWindTurbineVidalController(){}
 
-	double selectAction(CState *s,CAction *a);
+	void selectAction(CState *s,CAction *a);
 
 	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
@@ -59,7 +59,7 @@ public:
 	CWindTurbineBoukhezzarController(CParameters* pParameters);
 	~CWindTurbineBoukhezzarController(){}
 
-	double selectAction(CState *s,CAction *a);
+	void selectAction(CState *s,CAction *a);
 
 	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
@@ -78,7 +78,7 @@ public:
 	CWindTurbineJonkmanController(CParameters* pParameters);
 	~CWindTurbineJonkmanController(){}
 
-	double selectAction(CState *s,CAction *a);
+	void selectAction(CState *s,CAction *a);
 
 	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };

@@ -5,6 +5,28 @@
 #include "states-and-actions.h"
 #include "world.h"
 
+double CExperimentProgress::getExperimentProgress()
+{
+	double progress = ((double)m_step - 1 + (m_episode - 1)*m_numSteps)
+		/ ((double)m_numSteps*m_numEpisodes - 1);
+	return progress;
+}
+
+CExperimentProgress& CExperimentProgress::operator=(CExperimentProgress& exp)
+{
+	m_step = exp.getStep();
+	m_episode = exp.getEpisode();
+	m_numEpisodes = exp.getNumEpisodes();
+	m_numSteps = exp.getNumSteps();
+	return *this;
+}
+bool CExperimentProgress::operator==(CExperimentProgress& exp)
+{
+	return m_step == exp.getStep() && m_episode == exp.getEpisode();
+}
+
+
+
 
 CExperiment::~CExperiment()
 {
@@ -15,12 +37,10 @@ CExperiment::CExperiment(CParameters* pParameters)
 	m_randomSeed= (int) pParameters->getParameter("RANDOM_SEED")->getDouble();
 	srand(m_randomSeed);
 
-	m_numEpisodes= (int) pParameters->getParameter("NUM_EPISODES")->getDouble();
-	m_numSteps= (int) (pParameters->getParameter("EPISODE_LENGTH")->getDouble()/CWorld::getDT());
-	m_evalFreq = (unsigned int)pParameters->getParameter("EVAL_FREQ")->getDouble();
+	m_expProgress.setNumEpisodes( (unsigned int)pParameters->getParameter("NUM_EPISODES")->getDouble());
+	m_expProgress.setNumSteps( (unsigned int)(pParameters->getParameter("EPISODE_LENGTH")->getDouble() / CWorld::getDT()));
 
-	m_step= 0;
-	m_episode= 0;
+	m_evalFreq = (unsigned int)pParameters->getParameter("EVAL_FREQ")->getDouble();
 
 /*
 		LOG_OUTPUT_DIR : output-logs
@@ -55,17 +75,12 @@ CExperiment::CExperiment(CParameters* pParameters)
 bool CExperiment::isEvaluationEpisode()
 {
 	if (m_evalFreq==0) return false;
-	if (m_episode==1 || (m_episode % m_evalFreq==0))
+	if (m_expProgress.getEpisode() == 1 || (m_expProgress.getEpisode() % m_evalFreq == 0))
 		return true;
 	return false;
 }
 
-double CExperiment::getProgress()
-{
-	double progress= ((double) m_step-1 + (m_episode-1)*m_numSteps)
-						/ ((double) m_numSteps*m_numEpisodes-1);
-	return progress;
-}
+
 
 double CExperiment::getCurrentAvgReward()
 {
@@ -115,7 +130,7 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 	bool bLog= isCurrentEpisodeLogged();
 	
 	//FIRST STEP IN EPISODE????
-	if (m_step == 1)
+	if ( m_expProgress.isFirstStep() )
 	{
 		m_episodeRewards = r;
 		m_lastLogTime = 0.0;
@@ -132,14 +147,14 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 
 
 
-	if (bLog && (CWorld::getStepStartT()-m_lastLogTime>=m_logFreq || m_step==1))
+	if (bLog && (CWorld::getStepStartT() - m_lastLogTime >= m_logFreq || m_expProgress.isFirstStep()))
 	{
 		writeEpisodeStep(s,a,s_p,r);
 		m_lastLogTime= CWorld::getStepStartT();
 	}
 
 	//LAST STEP IN EPISODE????
-	if (m_step==m_numSteps)
+	if (m_expProgress.isLastStep())
 	{
 		//close current log file
 		if (bLog && m_pFile)
@@ -149,7 +164,7 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 		}
 		if (isEvaluationEpisode())
 		{
-			m_lastEvaluationAvgReward= m_episodeRewards / (double)std::max(m_step, (unsigned int)1);
+			m_lastEvaluationAvgReward= m_episodeRewards / (double)std::max(m_expProgress.getStep(), (unsigned int)1);
 			//SAVE AVERAGE REWARDS IN SUMMARY FILE????
 			if (m_bLogEvaluationSummary)
 			{
@@ -166,7 +181,9 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 	if (time>0.5) //each .5 secs?
 	{
 		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%) Avg.Reward: %.4f        \r"
-			,m_episode,m_numEpisodes,m_step,m_numSteps,getProgress()*100.0,getCurrentAvgReward());
+			,m_expProgress.getEpisode(),m_expProgress.getNumEpisodes()
+			,m_expProgress.getStep(),m_expProgress.getNumSteps(),m_expProgress.getExperimentProgress()*100.0
+			,getCurrentAvgReward());
 		m_lastCounter= currentCounter;
 	}
 
@@ -177,10 +194,10 @@ void CExperiment::openEpisodeLogFile()
 	char filename[1024];
 	if (!isEvaluationEpisode())
 		sprintf_s(filename,1024,"%s/%s-training-%d-%d.txt",m_outputDir,m_filePrefix
-		,m_randomSeed,m_episode);
+		,m_randomSeed,m_expProgress.getEpisode());
 	else
 		sprintf_s(filename,1024,"%s/%s-evaluation-%d-%d.txt",m_outputDir,m_filePrefix
-		,m_randomSeed,m_episode);
+		, m_randomSeed, m_expProgress.getEpisode());
 
 
 	fopen_s((FILE**) &m_pFile,filename,"w");
@@ -192,12 +209,12 @@ void CExperiment::writeEpisodeSummary()
 	char filename[1024];
 	sprintf_s(filename,1024,"%s/%s-summary-%d.txt",m_outputDir,m_filePrefix,m_randomSeed);
 	
-	if (m_episode==1)
+	if (m_expProgress.isFirstEpisode())
 		fopen_s(&pFile,filename,"w");
 	else fopen_s(&pFile,filename,"a");
 	if (pFile)
 	{
-		fprintf(pFile,"%d %f\n",m_episode,getCurrentAvgReward());
+		fprintf(pFile,"%d %f\n",m_expProgress.getEpisode(),getCurrentAvgReward());
 		fclose(pFile);
 	}
 }

@@ -71,11 +71,11 @@ class CTDCLambdaCritic : public CCritic
 	char m_saveFilename[1024];
 
 	CFeatureList* m_z; //traces
-	CFeatureList* m_aux;
 	CFeatureList* m_s_features;
 	CFeatureList* m_s_p_features;
-	CFeatureList* m_w;
+	CFeatureList* m_omega;
 	CFeatureList* m_a;
+	CFeatureList* m_b;
 
 	CParameter *m_pAlpha;
 	double m_gamma;

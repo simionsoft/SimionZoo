@@ -12,6 +12,8 @@ class CSimGod
 	CActor* m_pController;
 	CActor* m_pActor;
 	CCritic* m_pCritic;
+
+	double m_rho;
 public:
 
 	CSimGod(CParameters* pParameters);

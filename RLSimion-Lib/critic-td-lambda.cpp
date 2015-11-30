@@ -41,12 +41,9 @@ double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r
 	if (m_pAlpha->getDouble()==0.0) return 0.0;
 	//using sample importance
 	//z= gamma * lambda * rho * z + phi_v(s)
-
-	//not using sample importance
-	//z= gamma * lambda * z + phi_v(s)
-	if (g_pExperiment->m_step==1)
+	if (g_pExperiment->m_expProgress.isFirstStep())
 		m_z->clear();
-	m_z->mult(m_lambda*m_gamma);//*rho);
+	m_z->mult(m_lambda*m_gamma*rho);
 	m_z->applyThreshold(0.0001);
 
 	m_pVFA->getFeatures(s,0,m_aux);
@@ -58,12 +55,10 @@ double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r
 
 	m_pVFA->getFeatures(s_p,0,m_aux);
 	double newValue= m_pVFA->getValue(m_aux);
-	double td= r + m_gamma*newValue - oldValue;
+	double td= rho*r + m_gamma*newValue - oldValue;
 	
-	m_pVFA->add(m_z,td*rho);
+	m_pVFA->add(m_z,td);
 
-	//m_pVFA->getFeatures(s,0,m_aux);
-	//double checkOldValue= m_pVFA->getValue(m_aux);
 
 	return td;
 }

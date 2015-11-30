@@ -47,12 +47,12 @@ int main(int argc, char* argv[])
 	double td= 0.0;
 
 	//episodes
-	for (g_pExperiment->m_episode= 1; g_pExperiment->m_episode<=g_pExperiment->m_numEpisodes; g_pExperiment->m_episode++)
+	for (g_pExperiment->m_expProgress.setEpisode(1); g_pExperiment->m_expProgress.isValidEpisode(); g_pExperiment->m_expProgress.incEpisode())
 	{
 		g_pWorld->reset(s);
 
 		//steps per episode
-		for (g_pExperiment->m_step= 1; g_pExperiment->m_step<=g_pExperiment->m_numSteps; g_pExperiment->m_step++)
+		for (g_pExperiment->m_expProgress.setStep(1); g_pExperiment->m_expProgress.isValidStep(); g_pExperiment->m_expProgress.incStep())
 		{
 
 			//Update parameters that have a schedule: learning gains, exploration, ...

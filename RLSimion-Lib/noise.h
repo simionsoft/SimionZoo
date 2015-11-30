@@ -16,6 +16,6 @@ public:
 	double getNewValue();
 	double getLastValue();
 	//double getLastValuesProbability();
-	//double getSigma(){return m_pSigma;}
+	double getSigma();
 };
 

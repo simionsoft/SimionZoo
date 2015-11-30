@@ -64,68 +64,77 @@ CCACLAActor::~CCACLAActor()
 	delete m_pStateFeatures;
 }
 
-double CCACLAActor::selectAction(CState *s,CAction *a)
+void CCACLAActor::selectAction(CState *s,CAction *a)
 {
 	double a_width;
 	double noise;
 	double u_i;
 	double prob= 1.0;
 
-	for (int i= 0; i<m_numOutputs; i++)
+	if (m_outputTime == g_pExperiment->m_expProgress)
 	{
-		a_width= 0.5*(a->getMax(i) - a->getMin(i));
-		noise= m_pExpNoise[i]->getNewValue() * a_width;
+		a->copy(m_pOutput);
+	}
+	else
+	{
+		for (int i= 0; i<m_numOutputs; i++)
+		{
+			a_width= 0.5*(a->getMax(i) - a->getMin(i));
+			noise= m_pExpNoise[i]->getNewValue() * a_width;
 
-		m_pPolicy[i]->getFeatures(s,0,m_pStateFeatures);
+			m_pPolicy[i]->getFeatures(s,0,m_pStateFeatures);
 
-		u_i= m_pPolicy[i]->getValue(m_pStateFeatures);
+			u_i= m_pPolicy[i]->getValue(m_pStateFeatures);
 
-		a->setValue(i, u_i + noise);
-
-		//if (!g_pExperiment->isEvaluationEpisode())
-		//	prob*= m_pExpNoise[i]->getLastValuesProbability();
+			a->setValue(i, u_i + noise);
+		}
+		m_pOutput->copy(a);
+		m_outputTime = g_pExperiment->m_expProgress;
 	}
 
-	return getProbability(a);
-		//prob;
+
 }
 
 
-double CCACLAActor::getProbability(CAction* a)
+double CCACLAActor::getProbability(CState* s, CAction* a)
 {
 	double actionProb= 1.0;
 	double actionDist= 0.0;
 	double mahalanobisDist= 0.0;
 	double varProd= 1.0;
-	//double noiseWidth;
-	//double var_i; //action's i-th dimension's variance
+	double noiseWidth;
+	double var_i; //action's i-th dimension's variance
+	double a_width;
 
-	if (g_pExperiment->isEvaluationEpisode())
-		return 1.0;
 
-	for (int i = 0; i < m_numOutputs; i++)
-	{
-		varProd *= (1 - std::max(1.0, fabs(m_pExpNoise[i]->getLastValue())));
-	}
-	return varProd;
+	//if (g_pExperiment->isEvaluationEpisode())
+	//	return 1.0;
+
+	//for (int i = 0; i < m_numOutputs; i++)
+	//{
+	//	varProd *= (1 - std::max(1.0, fabs(m_pExpNoise[i]->getLastValue())));
+	//}
+	//return varProd;
 
 
 	//http://en.wikipedia.org/wiki/Multivariate_normal_distribution
 
 	//if there is no correlation:
 	//f(x,mu)= exp(-0.5 * (x-mu)^T * (x-mu)/var(x))/ sqrt(2*pi^k* prod var(x))
-	//for (int i = 0; i<m_numOutputs ;i++)
-	//{
-	//	var_i= m_pExpNoise[i]->getSigma();
-	//	noiseWidth= m_pExpNoise[i]->getLastValue();
+	selectAction(s, m_pOutput);
+	for (int i = 0; i<m_numOutputs ;i++)
+	{
+		var_i= std::max(0.000000001,m_pExpNoise[i]->getSigma());
+		a_width = 0.5*(a->getMax(i) - a->getMin(i));
+		noiseWidth = fabs((a->getValue(i) - m_pOutput->getValue(i)) / a_width);
 
-	//	if (noiseWidth!=0.0)
-	//	{
-	//		//actionDist= (m_pExpNoise[i]->getLastValue()/noiseWidth)*3.0; //because we are using sigma=1 /3 to map values into [-1,1]
-	//		mahalanobisDist+= noiseWidth*noiseWidth / (var_i*var_i);// Variance=1.0 , otherwise it should be  / (var_i*var_i);
-	//		varProd= varProd* var_i*var_i;
-	//	}
-	//}
+		if (noiseWidth!=0.0)
+		{
+			//actionDist= (m_pExpNoise[i]->getLastValue()/noiseWidth)*3.0; //because we are using sigma=1 /3 to map values into [-1,1]
+			mahalanobisDist+= noiseWidth*noiseWidth / (var_i*var_i);// Variance=1.0 , otherwise it should be  / (var_i*var_i);
+			varProd= varProd* var_i*var_i;
+		}
+	}
 
 	if (mahalanobisDist==0.0) return 1.0;
 
@@ -150,8 +159,6 @@ void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double 
 
 		for (int i= 0; i<m_numOutputs; i++)
 		{
-			/*a_width= 0.5*(a->getMax(i) - a->getMin(i));
-			lastNoise= m_pExpNoise[i]->getLastValue() * a_width;*/
 			lastNoise = a->getValue(i) - m_pOutput->getValue(i);
 
 			m_pPolicy[i]->getFeatures(s,0,m_pStateFeatures);

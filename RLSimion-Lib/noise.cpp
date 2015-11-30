@@ -72,3 +72,8 @@ double CGaussianNoise::getLastValue()
 {
 	return m_lastValue;// * (*m_pWidth);
 }
+
+double CGaussianNoise::getSigma()
+{
+	return m_pSigma->getDouble();
+}

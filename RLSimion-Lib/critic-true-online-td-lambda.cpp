@@ -43,7 +43,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 
 	if (m_pAlpha->getDouble()==0.0) return 0.0;
 	
-	if (g_pExperiment->m_step==1)
+	if (g_pExperiment->m_expProgress.isFirstStep())
 	{
 		m_e->clear();
 		//vs= theta^T * phi(s)

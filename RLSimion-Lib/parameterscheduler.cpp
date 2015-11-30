@@ -74,7 +74,7 @@ void CParameterScheduler::update()
 	bool eval= g_pExperiment->isEvaluationEpisode();
 
 	if (!eval) 
-		progress= g_pExperiment->getProgress();
+		progress= g_pExperiment->m_expProgress.getExperimentProgress();
 
 	for (int i= 0; i<m_numParameterSchedules; i++)
 	{

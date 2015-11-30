@@ -97,10 +97,11 @@ void TraverseTree(CParameters* pNode,CParameters* pAppParameters)
 		for (int i= 0; i<pNode->getNumParameters(); i++)
 		{
 			//THIS HAS TO BE THE FULLNAME BECAUSE IT COMES FROM THE BADGER EXPERIMENT FILE
-			if (!strcmp(pNode->getParameter(i)->getName(), "BADGER/BASE_PARAMETER_FILE")) 
+			if (!strcmp(pNode->getParameter(i)->getName(), "BADGER/BASE_PARAMETER_FILE"))
 			{
 				g_pCurrentParameters->reset();
-				g_pCurrentParameters->loadParameters(pNode->getParameter(i)->getStringPtr(),false);
+				if (strcmp("NONE", pNode->getParameter(i)->getStringPtr()))
+					g_pCurrentParameters->loadParameters(pNode->getParameter(i)->getStringPtr(), false);
 			}
 			else
 				g_pCurrentParameters->addParameter(pNode->getParameter(i));
@@ -125,8 +126,6 @@ void TraverseTree(CParameters* pNode,CParameters* pAppParameters)
 int main(int argc, char* argv[])
 {
 	CParameters Root;
-
-	Root.setName("Root");
 
 	CParameters *pCurrent= &Root;
 	CParameters *pLastNode= pCurrent;
@@ -157,9 +156,18 @@ int main(int argc, char* argv[])
 
 	for (int i = 0; i < numExperiments; i++)
 	{
+		const char* filename = pExperimentNode->getParameter(i)->getStringPtr();
 		fopen_s(&pFile,pExperimentNode->getParameter(i)->getStringPtr(), "r");
 		if (pFile)
 		{
+			//get rid of parameters remaining from previous batch file
+			g_pCurrentParameters->reset();
+			//go back to the root node
+			pCurrent = &Root;
+			pLastNode = pCurrent;
+			Root.setName("Root");
+			Root.reset();
+
 			while (fgets(line, sizeof(line), pFile))
 			{
 				numLines++;
@@ -184,12 +192,14 @@ int main(int argc, char* argv[])
 				}
 			}
 			fclose(pFile);
+
+			TraverseTree(&Root, pAppParameters->getChild("BADGER"));
+
+			g_pProcessSpawner->waitAll();
 		}
 
 	}
-	TraverseTree(&Root, pAppParameters->getChild("BADGER"));
 
-	g_pProcessSpawner->waitAll();
 
 	delete g_pProcessSpawner;
 	delete pAppParameters;
