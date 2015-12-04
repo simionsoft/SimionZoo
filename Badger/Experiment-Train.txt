@@ -1,0 +1,187 @@
+{
+BADGER/BASE_PARAMETER_FILE : ..\config\wind-turbine\train-vidal.txt
+BADGER/EXE_FILE : ..\Release\RLSimion.exe
+SIMGOD/ACTOR/LOAD : NONE
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-td-value.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-td-policy.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-totd-value.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-totd-policy.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(60),d_omega_r(60),T_g(60),E_p(60)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(60),d_omega_r(60),T_g(60),E_p(60)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(60),d_omega_r(60),T_g(60),E_p(60)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-td-value-2.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-td-policy-2.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-totd-value-2.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-totd-policy-2.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(40),d_omega_r(40),T_g(40),E_p(40)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(40),d_omega_r(40),T_g(40),E_p(40)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(40),d_omega_r(40),T_g(40),E_p(40)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-td-value-3.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-td-policy-3.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-totd-value-3.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-totd-policy-3.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(20),d_omega_r(20),T_g(20),E_p(20)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(20),d_omega_r(20),T_g(20),E_p(20)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : omega_r(20),d_omega_r(20),T_g(20),E_p(20)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-td-value-4.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-td-policy-4.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\vidal-trained-totd-value-4.bin
+SIMGOD/ACTOR/SAVE : ..\data\vidal-trained-totd-policy-4.bin
+  }
+ }
+}
+{
+BADGER/BASE_PARAMETER_FILE : ..\config\pitch\train.txt
+BADGER/EXE_FILE : ..\Release\RLSimion.exe
+SIMGOD/ACTOR/LOAD : NONE
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(200),pitch-rate(200),control-deviation(200)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(200),pitch-rate(200),control-deviation(200)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-td-value.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-td-policy.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-totd-value.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-totd-policy.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(150),pitch-rate(150),control-deviation(150)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),control-deviation(150)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-td-value-2.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-td-policy-2.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-totd-value-2.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-totd-policy-2.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(100),pitch-rate(100),control-deviation(100)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(100),pitch-rate(100),control-deviation(100)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-td-value-3.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-td-policy-3.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-totd-value-3.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-totd-policy-3.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : attack-angle(50),pitch-rate(50),control-deviation(50)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : attack-angle(50),pitch-rate(50),control-deviation(50)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-td-value-4.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-td-policy-4.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/CRITIC/SAVE : ..\data\pitch-trained-totd-value-4.bin
+SIMGOD/ACTOR/SAVE : ..\data\pitch-trained-totd-policy-4.bin
+  }
+ }
+}
+{
+BADGER/BASE_PARAMETER_FILE : ..\config\underwater-vehicle\train.txt
+BADGER/EXE_FILE : ..\Release\RLSimion.exe
+SIMGOD/ACTOR/LOAD : NONE
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(10000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(10000)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-td-policy.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-td-value.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-totd-policy.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-totd-value.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(7500)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(7500)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-td-policy-2.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-td-value-2.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-totd-policy-2.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-totd-value-2.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(5000)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(5000)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-td-policy-3.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-td-value-3.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-totd-policy-3.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-totd-value-3.bin
+  }
+ }
+ {
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : v-deviation(2500)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : v-deviation(2500)
+  {
+SIMGOD/CRITIC/ALGORITHM : TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-td-policy-4.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-td-value-4.bin
+  }
+  {
+SIMGOD/CRITIC/ALGORITHM : True-Online-TD-Lambda
+SIMGOD/ACTOR/SAVE : ..\data\uv-trained-totd-policy-4.bin
+SIMGOD/CRITIC/SAVE : ..\data\uv-trained-totd-value-4.bin
+  }
+ }
+}

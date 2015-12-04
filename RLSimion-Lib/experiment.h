@@ -27,11 +27,11 @@ public:
 	bool isLastStep(){ return m_step == m_numSteps; }
 	void setEpisode(unsigned int episode){ m_episode = episode; }
 	void setStep(unsigned int step){ m_step = step; }
-	bool isValidStep(){ return m_step > 0 && m_step < m_numSteps; }
+	bool isValidStep(){ return m_step > 0 && m_step <= m_numSteps; }
 	void incStep(){ m_step++; }
 	bool isFirstEpisode(){ return m_episode == 1; }
 	bool isLastEpisode(){ return m_episode == m_numEpisodes; }
-	bool isValidEpisode(){ return m_episode > 0 && m_episode < m_numEpisodes; }
+	bool isValidEpisode(){ return m_episode > 0 && m_episode <= m_numEpisodes; }
 	void incEpisode(){ m_episode++; }
 
 	unsigned int getNumEpisodes(){ return m_numEpisodes; }

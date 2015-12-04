@@ -71,11 +71,11 @@ void CCACLAActor::selectAction(CState *s,CAction *a)
 	double u_i;
 	double prob= 1.0;
 
-	if (m_outputTime == g_pExperiment->m_expProgress)
-	{
-		a->copy(m_pOutput);
-	}
-	else
+	//if (m_outputTime == g_pExperiment->m_expProgress)
+	//{
+	//	a->copy(m_pOutput);
+	//}
+	//else
 	{
 		for (int i= 0; i<m_numOutputs; i++)
 		{
@@ -88,8 +88,8 @@ void CCACLAActor::selectAction(CState *s,CAction *a)
 
 			a->setValue(i, u_i + noise);
 		}
-		m_pOutput->copy(a);
-		m_outputTime = g_pExperiment->m_expProgress;
+		//m_pOutput->copy(a);
+		//m_outputTime = g_pExperiment->m_expProgress;
 	}
 
 
@@ -173,6 +173,8 @@ void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double 
 void CCACLAActor::savePolicy(const char* pFilename)
 {
 	FILE* pFile;
+
+	if (!strcmp(pFilename, "NONE")) return;
 
 	printf("Saving Policy (\"%s\")...", pFilename);
 

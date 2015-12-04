@@ -28,6 +28,8 @@ void CCritic::saveVFunction(const char* pFilename)
 {
 	FILE* pFile;
 
+	if (!strcmp("NONE", pFilename)) return;
+
 	printf("Saving Value-Function (\"%s\")...", pFilename);
 
 	fopen_s(&pFile, pFilename, "wb");
