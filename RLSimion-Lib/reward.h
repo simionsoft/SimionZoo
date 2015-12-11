@@ -10,12 +10,19 @@ class CReward
 {
 	CErrorComponent* m_pErrorComponents;
 	double m_lastReward;
-	double m_minReward;
-	double m_maxReward;
+	
 	int m_numRewardComponents;
 public:
+	static double m_minReward;
+	static double m_maxReward;
+
 	CReward(CParameters* pParameters);
 	~CReward();
 
 	double getReward(CState *s,CAction *a,CState *s_p);
+
+	double getLastScalarReward(){ return m_lastReward; }
+	
+	int getNumRewardComponents(){ return m_numRewardComponents; }
+	double getLastRewardComponent(int i);
 };

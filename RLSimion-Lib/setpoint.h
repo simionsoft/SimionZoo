@@ -11,15 +11,24 @@ public:
 
 class CFileSetPoint: public CSetPoint
 {
+protected:
 	int m_numSteps;
 	double *m_pSetPoints;
 	double *m_pTimes;
 	double m_totalTime;
 public:
+	CFileSetPoint();
 	CFileSetPoint(const char* pFilename);
 	~CFileSetPoint();
 
 	double getPointSet(double time);
+};
+
+class CHHFileSetPoint : public CFileSetPoint
+{
+public:
+	CHHFileSetPoint(const char* pFilename);
+	~CHHFileSetPoint(){}
 };
 
 class CFixedStepSizeSetPoint: public CSetPoint

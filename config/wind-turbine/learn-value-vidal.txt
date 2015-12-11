@@ -12,8 +12,8 @@ PARAMETER_SCHEDULER/4/PARAMETER : SIMGOD/CRITIC/LEARNING_RATE
 PARAMETER_SCHEDULER/4/SCHEDULE : 0.1,0.1,0.0,linear
 
 //parameters of the experiment
-EXPERIMENT/NUM_EPISODES : 100		//number of episodes
-EXPERIMENT/EPISODE_LENGTH : 200.0		//length in seconds
+EXPERIMENT/NUM_EPISODES : 2000		//number of episodes
+EXPERIMENT/EPISODE_LENGTH : 360.0		//length in seconds
 EXPERIMENT/RANDOM_SEED : 1			//the seed used to generate random numbers
 EXPERIMENT/EVAL_FREQ : 50				//in episodes
 EXPERIMENT/LOG/FREQ : 0.25			//in seconds
@@ -27,11 +27,18 @@ EXPERIMENT/LOG/EVALUATION_AVG_REWARDS : 1		//log summary of the evaluation episo
 WORLD/DYNAMIC_MODEL : WIND_TURBINE_ONE_MASS
 WORLD/DELTA_T : 0.01
 WORLD/NUM_SIMULATION_STEPS : 4
-WORLD/WIND_DATA_FILE : ..\config\wind-turbine\setpoints\windturbine-wind-data.txt
+WORLD/EVALUATION_WIND_DATA_FILE : ../config/wind-turbine/setpoints/TurbSim-10.25.hh
+WORLD/WIND_DATA_FILES/0 : ../config/wind-turbine/setpoints/TurbSim-9.hh
+WORLD/WIND_DATA_FILES/1 : ../config/wind-turbine/setpoints/TurbSim-9.5.hh
+WORLD/WIND_DATA_FILES/2 : ../config/wind-turbine/setpoints/TurbSim-10.hh
+WORLD/WIND_DATA_FILES/3 : ../config/wind-turbine/setpoints/TurbSim-10.5.hh
+WORLD/WIND_DATA_FILES/4 : ../config/wind-turbine/setpoints/TurbSim-11.hh
+WORLD/WIND_DATA_FILES/5 : ../config/wind-turbine/setpoints/TurbSim-11.5.hh
+WORLD/WIND_DATA_FILES/6 : ../config/wind-turbine/setpoints/TurbSim-12.hh
 WORLD/POWER_SET_POINT_FILE : ..\config\wind-turbine\setpoints\windturbine-power-setpoint.txt
 WORLD/REWARD/MIN_REWARD : -100.0
 WORLD/REWARD/MAX_REWARD : 1.0
-WORLD/REWARD/NUM_COMPONENTS : 1
+WORLD/REWARD/NUM_COMPONENTS : 4
 WORLD/REWARD/COMPONENT_TYPE_0 : DEVIATION_VARIABLE
 WORLD/REWARD/COMPONENT_WEIGHT_0 : 1
 WORLD/REWARD/COMPONENT_TOLERANCE_0 : 10
@@ -53,11 +60,11 @@ WORLD/REWARD/CONTROL_ERROR_VARIABLE_3 : d_beta
 SIMGOD/TYPE : ACTOR-CRITIC
 SIMGOD/ACTOR/ALGORITHM : CACLA
 SIMGOD/ACTOR/NUM_OUTPUTS : 2
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : E_omega_r(10000)//,E_int_omega_r(1000)
-SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(75-c),d_omega_r(75-c),T_g(75),E_p(75-c)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_0 : omega_r(10000)//,E_int_omega_r(1000)
+SIMGOD/ACTOR/POLICY_RBF_VARIABLES_1 : omega_r(80),d_omega_r(80),T_g(80),E_p(80)
 SIMGOD/ACTOR/LOAD : ..\data\vidal-policy.bin
 SIMGOD/CRITIC/ALGORITHM : TD-Lambda
-SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(50-c),d_omega_r(50),T_g(50),E_p(50-c)
+SIMGOD/CRITIC/VALUE_FUNCTION_RBF_VARIABLES : E_omega_r(80),d_omega_r(80),T_g(80),E_p(80)
 SIMGOD/CRITIC/INITIAL_GAMMA : 0.9
 SIMGOD/CRITIC/INITIAL_LAMBDA : 0.9
 SIMGOD/CRITIC/SAVE : ..\data\vidal-value.bin

@@ -1,4 +1,5 @@
-function plotColumn(file,column,color,linestyle,firstLine)
+function plotColumn(file,column,color,linestyle,firstLine,minx,maxx)
+
     switch color
         case 1
             colorname='red';
@@ -16,22 +17,29 @@ function plotColumn(file,column,color,linestyle,firstLine)
     
     data= dlmread(file,' ',firstLine,0);
     
+    s=size(data,1);
+    x1=cast(s*minx,'int32');
+    x1= max(1,x1);
+    x2=cast(s*maxx,'int32');
+    x2= min(size(data,1),x2);
     
-    switch rem(linestyle,4)
+    switch rem(linestyle,5)
         case 0
-            plot(data(:,1),data(:,column),'-','color',colorname);
+            plot(data(x1:x2,1),data(x1:x2,column),'-','color',colorname);
         case 1
-            plot(data(:,1),data(:,column),'--','color',colorname);
+            plot(data(x1:x2,1),data(x1:x2,column),'--','color',colorname);
         case 2
-            plot(data(:,1),data(:,column),'.-','color',colorname);
+            plot(data(x1:x2,1),data(x1:x2,column),'.-','color',colorname);
         case 3
-            plot(data(:,1),data(:,column),':','color',colorname);
+            plot(data(x1:x2,1),data(x1:x2,column),':','color',colorname);
+        case 4
+            plot(data(x1:x2,1),data(x1:x2,column),'-.','color',colorname);
     end
 
 
         
   %  plot(downsample(data(1:(maxy-miny+1),1),downfactor),downsample(data(miny:maxy,column),downfactor),linestyle,'color',colorname);
  
-  
-  %  xlim([0 data((maxy-miny+1),1)]);
+ 
+    xlim([data(x1,1) data(x2,1)]);% data((x2-x1+1),1)]);
 end

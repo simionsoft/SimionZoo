@@ -5,6 +5,8 @@
 #include "parameters.h"
 #include "parameter.h"
 #include "states-and-actions.h"
+#include "experiment.h"
+#include "globals.h"
 
 
 //[1]
@@ -38,8 +40,8 @@
 #define MAX_AERODYNAMIC_TORQUE 400000.0 //N/m
 
 #define NOMINAL_ROTOR_SPEED 4.39823//rad/s - 42 rpm[thesis boukhezzar]
-#define MAX_ROTOR_SPEED NOMINAL_ROTOR_SPEED+2.0
-#define MIN_ROTOR_SPEED NOMINAL_ROTOR_SPEED-2.0
+#define MAX_ROTOR_SPEED NOMINAL_ROTOR_SPEED +2.0
+#define MIN_ROTOR_SPEED NOMINAL_ROTOR_SPEED -2.0
 
 //////////////////////////////////////////////////////////
 #define INITIAL_ROTOR_SPEED NOMINAL_ROTOR_SPEED //rad/s nominal-speed [6]
@@ -189,7 +191,18 @@ CWindTurbine::CWindTurbine(CParameters *pParameters)
 	m_pActionDescriptor->setProperties(0,"d_beta",-0.1745329252,0.1745329252);
 	m_pActionDescriptor->setProperties(1,"d_T_g",-100000,100000);
 
-	m_pWindData= new CFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
+	//load all the wind data files
+	CParameters* pWindDataFiles = pParameters->getChild("WIND_DATA_FILES");
+	m_numDataFiles = pWindDataFiles->getNumParameters();
+	m_currentDataFile = 0;
+	m_pEvaluationWindData = new CHHFileSetPoint(pParameters->getParameter("EVALUATION_WIND_DATA_FILE")->getStringPtr());
+	m_pTrainingWindData = new CSetPoint* [m_numDataFiles];
+	for (int i = 0; i<m_numDataFiles; i++)
+	{
+		m_pTrainingWindData[i] = new CHHFileSetPoint(pWindDataFiles->getParameter(i)->getStringPtr());
+	}
+
+	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
 	m_pPowerSetpoint= new CFileSetPoint(pParameters->getParameter("POWER_SET_POINT_FILE")->getStringPtr());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
@@ -199,7 +212,12 @@ CWindTurbine::CWindTurbine(CParameters *pParameters)
 
 CWindTurbine::~CWindTurbine()
 {
-	delete m_pWindData;
+	for (int i = 0; i < m_numDataFiles; i++)
+	{
+		delete m_pTrainingWindData[i];
+	}
+	delete[] m_pTrainingWindData;
+	delete m_pEvaluationWindData;
 	delete m_pPowerSetpoint;
 }
 
@@ -209,7 +227,12 @@ CWindTurbine::~CWindTurbine()
 
 void CWindTurbine::reset(CState *s)
 {
-	double initial_wind_speed= m_pWindData->getPointSet(0.0);
+	if (g_pExperiment->isEvaluationEpisode())
+		m_pCurrentWindData = m_pEvaluationWindData;
+	else
+		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
+
+	double initial_wind_speed = m_pCurrentWindData->getPointSet(0.0);
 	double initial_rotor_speed= NOMINAL_ROTOR_SPEED;
 
 
@@ -244,7 +267,7 @@ void CWindTurbine::reset(CState *s)
 void CWindTurbine::executeAction(CState *s, CAction *a, double dt)
 {
 	s->setValue("P_s",m_pPowerSetpoint->getPointSet(CWorld::getT()));
-	s->setValue("v",m_pWindData->getPointSet(CWorld::getT()));//CONSTANT_WIND_SPEED);//-0.05+0.1*((double)(rand()%1000))/1000.0);//
+	s->setValue("v", m_pCurrentWindData->getPointSet(CWorld::getT()));
 
 	//beta= beta + d(beta)/dt
 	double beta= s->getValue("beta");

@@ -4,6 +4,7 @@
 #include "parameter.h"
 #include "states-and-actions.h"
 #include "world.h"
+#include "reward.h"
 
 double CExperimentProgress::getExperimentProgress()
 {
@@ -87,7 +88,7 @@ double CExperiment::getCurrentAvgReward()
 	return m_lastEvaluationAvgReward;// m_episodeRewards / (double)max(m_step, 1);
 }
 
-void CExperiment::writeEpisodeLogFileHeader(CState *s, CAction *a)
+void CExperiment::writeEpisodeLogFileHeader(CState *s, CAction *a, CReward* pReward)
 {
 	fprintf((FILE*) m_pFile,"Time");
 
@@ -100,10 +101,15 @@ void CExperiment::writeEpisodeLogFileHeader(CState *s, CAction *a)
 	{
 		fprintf((FILE*) m_pFile,"/%s",a->getName(i));
 	}
-	fprintf((FILE*) m_pFile,"\n");
+
+	for (int i = 0; i < pReward->getNumRewardComponents(); i++)
+	{
+		fprintf((FILE*)m_pFile, "/r_%d", i);
+	}
+	fprintf((FILE*) m_pFile,"/r\n");
 }
 
-void CExperiment::writeEpisodeStep(CState *s, CAction *a, CState *s_p, double r)
+void CExperiment::writeEpisodeStep(CState *s, CAction *a, CState *s_p, CReward* pReward)
 {
 	if (!m_pFile) return;
 
@@ -116,7 +122,11 @@ void CExperiment::writeEpisodeStep(CState *s, CAction *a, CState *s_p, double r)
 	{
 		fprintf((FILE*) m_pFile,"%.3f ",a->getValue(i));
 	}
-	fprintf((FILE*) m_pFile,"%.3f\n",r);
+	for (int i = 0; i < pReward->getNumRewardComponents(); i++)
+	{
+		fprintf((FILE*)m_pFile, "%.3f ", pReward->getLastRewardComponent(i));
+	}
+	fprintf((FILE*) m_pFile,"%.3f\n",pReward->getLastScalarReward());
 }
 
 bool CExperiment::isCurrentEpisodeLogged()
@@ -125,9 +135,10 @@ bool CExperiment::isCurrentEpisodeLogged()
 	return (m_bLogEvaluationEpisodes && bEval) || (m_bLogTrainingEpisodes && !bEval);
 }
 
-void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
+void CExperiment::logStep(CState *s, CAction *a, CState *s_p, CReward* pReward)
 {
 	bool bLog= isCurrentEpisodeLogged();
+	double r = pReward->getLastScalarReward();
 	
 	//FIRST STEP IN EPISODE????
 	if ( m_expProgress.isFirstStep() )
@@ -139,7 +150,7 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 		{
 			openEpisodeLogFile();
 			if (m_pFile)
-				writeEpisodeLogFileHeader(s, a);
+				writeEpisodeLogFileHeader(s, a, pReward);
 		}
 	}
 	else m_episodeRewards+= r;
@@ -149,7 +160,7 @@ void CExperiment::logStep(CState *s, CAction *a, CState *s_p, double r)
 
 	if (bLog && (CWorld::getStepStartT() - m_lastLogTime >= m_logFreq || m_expProgress.isFirstStep()))
 	{
-		writeEpisodeStep(s,a,s_p,r);
+		writeEpisodeStep(s,a,s_p,pReward);
 		m_lastLogTime= CWorld::getStepStartT();
 	}
 

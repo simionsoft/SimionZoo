@@ -1,7 +1,7 @@
 function txt=fileStats(file1)
 
-    columns=[7 9 11 12 16 17 18 19];
-    absvalue=[1 1 1 1 0 0 0 0];
+    columns=[4 7 9 11 12 16 17 18 19];
+    absvalue=[1 1 1 1 1 0 0 0 0];
 
    
      f=fopen(file1,'r');

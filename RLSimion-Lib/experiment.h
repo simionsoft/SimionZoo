@@ -4,6 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CParameters;
+class CReward;
 
 #define MAX_FILENAME_LENGTH 512
 
@@ -65,8 +66,8 @@ class CExperiment
 	
 	//regular log files
 	void openEpisodeLogFile();
-	void writeEpisodeStep(CState *s, CAction *a, CState *s_p, double r);
-	void writeEpisodeLogFileHeader(CState *s, CAction *a);
+	void writeEpisodeStep(CState *s, CAction *a, CState *s_p, CReward *pReward);
+	void writeEpisodeLogFileHeader(CState *s, CAction *a, CReward *pReward);
 
 	//summary files: avg reward of evaluation episodes
 	void writeEpisodeSummary();
@@ -84,5 +85,5 @@ public:
 	bool isEvaluationEpisode();
 	double getCurrentAvgReward();
 
-	void logStep(CState *s, CAction *a,CState *s_p, double r);
+	void logStep(CState *s, CAction *a,CState *s_p, CReward* pReward);
 };

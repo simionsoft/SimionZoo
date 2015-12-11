@@ -12,6 +12,8 @@
 #define PUNISH_IF_ABOVE 3
 #define PUNISH_IF_BELOW 4
 
+double CReward::m_minReward;
+double CReward::m_maxReward;
 
 class CErrorComponent
 {
@@ -88,8 +90,10 @@ void CErrorComponent::init(CParameters* pParameters,int componentIndex)
 	}
 	else assert(0);
 }
-#define MIN_REWARD -100.0
-#define MAX_REWARD 1.0
+
+
+
+
 double CErrorComponent::getRewardComponent(CState* state)
 {
 	double rew,error;
@@ -118,17 +122,18 @@ double CErrorComponent::getRewardComponent(CState* state)
 		error= std::max(0.0,m_setpointConstant - state->getValue(m_controlledVariable));
 	}
 
-	error= (error)/m_tolerance;
+	error= (error)/(m_tolerance);
 
-	rew= MAX_REWARD- error*error;//fabs(error);
-	/*rew= tanh(fabs(error)/m_rewardComponentMu);///w);
-	rew*= rew;
+	rew = CReward::m_maxReward - fabs(error);
+	//rew= exp(-(error*error));
+	
 
-	rew= m_weight*(1.0-rew);*/
 
-	rew= m_weight*rew;
+	//rew = CReward::m_maxReward - fabs(error);// *error;
 
-	rew= std::max(MIN_REWARD,rew);
+	//rew= m_weight*rew;
+
+	//rew= std::max(CReward::m_minReward,rew);
 
 	m_lastReward= rew;
 
@@ -160,7 +165,7 @@ CReward::~CReward()
 
 double CReward::getReward(CState *s,CAction *a, CState *s_p)
 {
-	double rew= 0.0;
+	double rew = 1.0;
 
 	for (int i= 0; i<m_numRewardComponents; i++)
 	{
@@ -172,4 +177,11 @@ double CReward::getReward(CState *s,CAction *a, CState *s_p)
 
 	m_lastReward= rew;
 	return rew;
+}
+
+double CReward::getLastRewardComponent(int i)
+{
+	if (i >= 0 && i < m_numRewardComponents)
+		return m_pErrorComponents[i].getLastRewardComponent();
+	return CReward::m_minReward;
 }

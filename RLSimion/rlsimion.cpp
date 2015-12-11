@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
 			pSimGod->update(s, a, s_p, r);
 
 			//log tuple <s,a,s',r>
-			g_pExperiment->logStep(s,a,s_p,r);
+			g_pExperiment->logStep(s,a,s_p,g_pWorld->getReward()); //we need the complete reward vector for logging
 
 			//s= s'
 			s->copy(s_p);

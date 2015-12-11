@@ -156,7 +156,7 @@ void CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 
 	double omega_r= s->getValue("omega_r");	// state->getContinuousState(DIM_omega_r);
 	double C_0= m_pC_0->getDouble();					//getParameter("C0");
-	double error_P= s->getValue("E_p");		//-state->getContinuousState(DIM_P_error);
+	double error_P= -s->getValue("E_p");		//-state->getContinuousState(DIM_P_error);
 	double T_a= s->getValue("T_a");			//state->getContinuousState(DIM_T_a);
 
 	double T_g= s->getValue("T_g");			//state->getContinuousState(DIM_T_g);
@@ -165,8 +165,8 @@ void CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 	double d_T_g= (1.0/omega_r)*(C_0*error_P - (1.0/m_J_t)
 		*(T_a*T_g - m_K_t*omega_r*T_g - T_g*T_g));
 
-	double d_beta= m_pKP->getDouble()*s->getValue("E_omega_r") + m_pKI->getDouble()*s->getValue("E_int_omega_r");
-		// K_p*state->getContinuousState(DIM_omega_r_error);
+	double e_omega_r = omega_r - 4.39823; //NOMINAL WIND SPEED
+	double d_beta = m_pKP->getDouble()*e_omega_r + m_pKI->getDouble()*s->getValue("E_int_omega_r");
 
 	a->setValue("d_beta",d_beta); //action->setActionValue(DIM_A_beta,d_beta);
 	a->setValue("d_T_g",d_T_g); //action->setActionValue(DIM_A_torque,d_T_g);

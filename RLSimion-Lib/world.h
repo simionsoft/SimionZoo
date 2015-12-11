@@ -39,6 +39,8 @@ public:
 
 	double getAvgReward();
 	double getLastReward();
+	CReward *getReward();
+
 };
 
 class CDynamicModel

@@ -44,6 +44,7 @@ CWorld::CWorld(CParameters* pParameters)
 CWorld::~CWorld()
 {
 	if (m_pDynamicModel) delete m_pDynamicModel;
+	if (m_pReward) delete m_pReward;
 }
 
 double CWorld::getDT()
@@ -59,6 +60,11 @@ double CWorld::getT()
 double CWorld::getStepStartT()
 {
 	return m_step_start_t;
+}
+
+CReward* CWorld::getReward()
+{
+	return m_pReward;
 }
 
 void CWorld::reset(CState *s)

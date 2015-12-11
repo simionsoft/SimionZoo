@@ -24,6 +24,14 @@ int countlines(const char *filename)
   return lines;
 }
 
+CFileSetPoint::CFileSetPoint()
+{
+	m_numSteps= 0;
+	m_pSetPoints= 0;
+	m_pTimes= 0;
+	m_totalTime= 0.0;
+}
+
 CFileSetPoint::CFileSetPoint(const char *pFilename)
 {
 	//char fullFilename[1024];
@@ -60,7 +68,16 @@ CFileSetPoint::CFileSetPoint(const char *pFilename)
 
 CFileSetPoint::~CFileSetPoint()
 {
-	if (m_pSetPoints) delete [] m_pSetPoints;
+	if (m_pSetPoints)
+	{
+		delete[] m_pSetPoints;
+		m_pSetPoints = 0;
+	}
+	if (m_pTimes)
+	{
+		delete[] m_pTimes;
+		m_pTimes = 0;
+	}
 }
 
 double CFileSetPoint::getPointSet(double time)
@@ -92,8 +109,39 @@ double CFileSetPoint::getPointSet(double time)
 	return m_pSetPoints[m_numSteps-1];//step % m_numSteps];
 }
 
+//CHHFileSetPoint//////////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 
+CHHFileSetPoint::CHHFileSetPoint(const char* pFilename) : CFileSetPoint()
+{
+	FILE* pHHFile;
+	char buffer[1024];
+	char* pNext;
 
+	int numLines = countlines(pFilename);
+	if (numLines == 0) return;
+
+	fopen_s(&pHHFile, pFilename, "r");
+	if (pHHFile)
+	{
+		m_pSetPoints = new double[numLines];
+		m_pTimes = new double[numLines];
+
+		while (!feof(pHHFile))
+		{
+			fgets(buffer, 1024, pHHFile);
+			if (buffer[0] != '!') //skip comments
+			{
+				m_pTimes[m_numSteps] = strtod(buffer, &pNext);		//first value is the time
+				m_pSetPoints[m_numSteps] = strtod(pNext, 0);		//second value is the horizontal wind speed
+
+				m_numSteps++;
+			}
+		}
+		m_totalTime = m_pTimes[m_numSteps - 1];
+		fclose(pHHFile);
+	}
+}
 
 
 //CFixedStepSizeSetPoint////////////////////////////////////////

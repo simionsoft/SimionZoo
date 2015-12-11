@@ -8,13 +8,13 @@ h=figure();
 
 
 
-f=fopen('../logs/vidal/vidal-log-0-1.txt','r');
+f=fopen('../logs/wind-turbine/wt-test-vidal-evaluation-1-1.txt','r');
 line=fgets(f);
 fclose(f);
 names= strread(line,'%s','delimiter','/');
 
-minx=1000;
-maxx=3000;
+minx=0.0;
+maxx=1.0;
 dsfactor=10;
 
 % #define DIM_P_set 0 //P_setpoint
@@ -40,12 +40,12 @@ for i=[7 8 9 11 13 14] %column + 2 (time + 1-indexed)
     %PLOTS
     hold off;
    % set(0,'defaultLineLineWidth',1);
-    plotColumn('../logs/vidal/vidal-log-0-1.txt',i,dsfactor,1,minx,maxx,'-');
+    plotColumn('../logs/wind-turbine/wt-test-vidal-evaluation-1-1.txt',i,1,0,2,minx,maxx);
     hold on;
-  %  set(0,'defaultLineLineWidth',1.5);
-    plotColumn('../logs/ii-3-dec/v-learn-1/ac-vidal-log-0-1.txt',i,dsfactor,2,minx,maxx,'--');
-    plotColumn('../logs/ii-3-dec/v-learn-1/ac-vidal-log-0-981.txt',i,dsfactor,3,minx,maxx,'-.');
-    plotColumn('../logs/ii-3-constant/v-learn-1/ac-vidal-log-0-981.txt',i,dsfactor,4,minx,maxx,'-.'); %-.
+%    set(0,'defaultLineLineWidth',1.5);
+    plotColumn('../logs/wind-turbine/wt-learn-vidal-evaluation-1-1.txt',i,2,1,2,minx,maxx);
+    plotColumn('../logs/wind-turbine/wt-learn-vidal-evaluation-1-1000.txt',i,3,3,2,minx,maxx);
+    plotColumn('../logs/wind-turbine/wt-learn-vidal-2-evaluation-1-1000.txt',i,4,3,2,minx,maxx);
 
     %LEGEND
     l= legend('$\pi_v$','${\hat{\pi}}_v$','$\hat{\pi}_{v}^{*}$','$\hat{\pi}_{v}^{**}$');
@@ -57,7 +57,7 @@ for i=[7 8 9 11 13 14] %column + 2 (time + 1-indexed)
         case 7
             lab= '$\omega_r$';
         case 8
-            lab= '$\dot{\omega_r$';
+            lab= '$\dot{\omega_r}$';
         case 9
             lab= '$\beta\:(rad)$';
         case 11
@@ -80,7 +80,7 @@ for i=[7 8 9 11 13 14] %column + 2 (time + 1-indexed)
     set(gcf, 'PaperPositionMode','auto');
 
     %SAVE
-    filename= sprintf('../images/vidal-%s', char(names(i)));
+    filename= sprintf('../images/vidal-%s-v2', char(names(i)));
     saveas(h,filename,'fig');
     print(h,'-depsc', filename);
     
@@ -90,12 +90,12 @@ for i=[7 8 9 11 13 14] %column + 2 (time + 1-indexed)
     %PLOTS
     hold off;
  %   set(0,'defaultLineLineWidth',1);
-    plotColumn('../logs/boukhezzar/boukhezzar-log-0-1.txt',i,dsfactor,1,minx,maxx,'-');
+    plotColumn('../logs/wind-turbine/wt-test-boukhezzar-evaluation-1-1.txt',i,1,0,2,minx,maxx);
     hold on;
 %    set(0,'defaultLineLineWidth',1.5);
-    plotColumn('../logs/ii-3-dec/b-learn-1/ac-boukhezzar-log-0-1.txt',i,dsfactor,2,minx,maxx,'--');
-    plotColumn('../logs/ii-3-dec/b-learn-1/ac-boukhezzar-log-0-981.txt',i,dsfactor,3,minx,maxx,'-.');
-    plotColumn('../logs/ii-3-constant/b-learn-1/ac-boukhezzar-log-0-981.txt',i,dsfactor,4,minx,maxx,'-.'); %-.
+    plotColumn('../logs/wind-turbine/wt-learn-boukhezzar-evaluation-1-1.txt',i,2,1,2,minx,maxx);
+    plotColumn('../logs/wind-turbine/wt-learn-boukhezzar-evaluation-1-1000.txt',i,3,3,2,minx,maxx);
+    plotColumn('../logs/wind-turbine/wt-learn-boukhezzar-2-evaluation-1-1000.txt',i,4,3,2,minx,maxx);
 
     %LEGEND
     l= legend('$\pi_b$','${\hat{\pi}}_b$','$\hat{\pi}_{b}^{*}$','$\hat{\pi}_{b}^{**}$');
@@ -107,7 +107,7 @@ for i=[7 8 9 11 13 14] %column + 2 (time + 1-indexed)
         case 7
             lab= '$\omega_r$';
         case 8
-            lab= '$\dot{\omega_r$';
+            lab= '$\dot{\omega_r}$';
         case 9
             lab= '$\beta\:(rad)$';
         case 11
@@ -124,7 +124,7 @@ for i=[7 8 9 11 13 14] %column + 2 (time + 1-indexed)
     yl= ylabel(lab,'FontSize',14);
     set(yl,'Interpreter','Latex');
     
-    filename= sprintf('../images/boukhezzar-%s', char(names(i)));
+    filename= sprintf('../images/boukhezzar-%s-v2', char(names(i)));
     saveas(h,filename,'fig');
     print(h,'-depsc', filename);
 end
