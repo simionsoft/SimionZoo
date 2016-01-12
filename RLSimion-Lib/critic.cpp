@@ -24,7 +24,7 @@ CCritic *CCritic::getCriticInstance(CParameters* pParameters)
 }
 
 
-void CCritic::saveVFunction(const char* pFilename)
+void CVFACritic::saveVFunction(const char* pFilename)
 {
 	FILE* pFile;
 
@@ -42,7 +42,7 @@ void CCritic::saveVFunction(const char* pFilename)
 
 }
 
-void CCritic::loadVFunction(const char* pFilename)
+void CVFACritic::loadVFunction(const char* pFilename)
 {
 	FILE* pFile;
 
@@ -60,4 +60,25 @@ void CCritic::loadVFunction(const char* pFilename)
 	}
 	else printf("FAILED\n");
 
+}
+
+CVFACritic::CVFACritic(CParameters* pParameters)
+{
+	m_pVFA = new CRBFFeatureGridVFA(pParameters->getParameter("VALUE_FUNCTION_RBF_VARIABLES")->getStringPtr());
+
+	if (pParameters->exists("LOAD"))
+		loadVFunction(pParameters->getParameter("LOAD")->getStringPtr());
+
+	if (pParameters->exists("SAVE"))
+		strcpy_s(m_saveFilename, 1024, pParameters->getParameter("SAVE")->getStringPtr());
+	else
+		m_saveFilename[0] = 0;
+}
+
+CVFACritic::~CVFACritic()
+{
+	if (m_saveFilename[0] != 0)
+		saveVFunction(m_saveFilename);
+
+	delete m_pVFA;
 }

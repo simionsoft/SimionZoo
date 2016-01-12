@@ -7,9 +7,8 @@
 #include "globals.h"
 #include "experiment.h"
 
-CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
+CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters) : CVFACritic(pParameters)
 {
-	m_pVFA= new CRBFFeatureGridVFA(pParameters->getParameter("VALUE_FUNCTION_RBF_VARIABLES")->getStringPtr());
 	m_z= new CFeatureList();
 
 	m_s_features = new CFeatureList();
@@ -22,22 +21,10 @@ CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
 	m_gamma= pParameters->getParameter("INITIAL_GAMMA")->getDouble();
 	m_lambda= pParameters->getParameter("INITIAL_LAMBDA")->getDouble();
 	m_beta = 0.9;// pParameters->getDouble("INITIAL_BETA");
-
-	if (pParameters->exists("LOAD"))
-		loadVFunction(pParameters->getParameter("LOAD")->getStringPtr());
-
-	if (pParameters->exists("SAVE"))
-		strcpy_s(m_saveFilename,1024,pParameters->getParameter("SAVE")->getStringPtr());
-	else
-		m_saveFilename[0]= 0;
 }
 
 CTDCLambdaCritic::~CTDCLambdaCritic()
 {
-	if (m_saveFilename[0]!=0)
-		saveVFunction(m_saveFilename);
-
-	delete m_pVFA;
 	delete m_z;
 	delete m_b;
 	delete m_s_features;

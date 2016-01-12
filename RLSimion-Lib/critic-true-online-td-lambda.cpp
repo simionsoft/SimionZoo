@@ -7,9 +7,8 @@
 #include "globals.h"
 #include "experiment.h"
 
-CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
+CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters) : CVFACritic(pParameters)
 {
-	m_pVFA= new CRBFFeatureGridVFA(pParameters->getParameter("VALUE_FUNCTION_RBF_VARIABLES")->getStringPtr());
 	m_e= new CFeatureList();
 	m_aux= new CFeatureList();
 	m_v_s= 0.0;
@@ -17,22 +16,10 @@ CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 	m_pAlpha= pParameters->addParameter(CParameter("LEARNING_RATE",0.0));
 	m_gamma= pParameters->getParameter("INITIAL_GAMMA")->getDouble();
 	m_lambda= pParameters->getParameter("INITIAL_LAMBDA")->getDouble();
-
-	if (pParameters->exists("LOAD"))
-		loadVFunction(pParameters->getParameter("LOAD")->getStringPtr());
-
-	if (pParameters->exists("SAVE"))
-		strcpy_s(m_saveFilename,1024,pParameters->getParameter("SAVE")->getStringPtr());
-	else
-		m_saveFilename[0]= 0;
 }
 
 CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 {
-	if (m_saveFilename[0]!=0)
-		saveVFunction(m_saveFilename);
-
-	delete m_pVFA;
 	delete m_e;
 	delete m_aux;
 }

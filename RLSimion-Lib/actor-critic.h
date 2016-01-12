@@ -3,19 +3,15 @@
 #include "../RLSimion-Lib/actor.h"
 #include "../RLSimion-Lib/critic.h"
 
-class CNaturalACBhatnagar3 : public CActor, public CCritic
+//Here we declare classes that implement both an actor and a critic
+class CNaturalACBhatnagar3 : public CVFAActor, public CVFACritic
 {
 public:
+	CNaturalACBhatnagar3(CParameters* pParameters);
+	~CNaturalACBhatnagar3();
 	//CActor interface
-	virtual void selectAction(CState *s, CAction *a) = 0;
-
-	virtual void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td) = 0;
-
-	static CActor *getActorInstance(char* configFile);
+	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td) ;
 
 	//CCritic interface
-	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
-
-	static CCritic *getCriticInstance(char* configFile);
-
+	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
 };

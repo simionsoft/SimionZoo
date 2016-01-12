@@ -36,34 +36,41 @@ public:
 	static CActor *getControllerInstance(CParameters* pParameters);
 };
 
-
-
-class CCACLAActor :public CActor
+class CVFAActor : public CActor
 {
+protected:
 	bool m_bSave;
 	char m_saveFilename[1024];
+
+	CFeatureVFA **m_pPolicy;	
+	CParameter **m_pAlpha;
+	CGaussianNoise **m_pExpNoise;
+
 	CFeatureList *m_pStateFeatures;
 	CAction *m_pOutput;
 	CExperimentProgress m_outputTime;
-protected:
-
+public:
+	CVFAActor(CParameters* pParameters);
+	~CVFAActor();
 	void savePolicy(const char* pFilename);
 	void loadPolicy(const char* pFilename);
-	CFeatureVFA **m_pPolicy;
+
+	double getProbability(CState* s, CAction* a);
+
+	void selectAction(CState *s, CAction *a);
+};
+
+
+class CCACLAActor :public CVFAActor
+{
+
 public:
-	CParameter **m_pAlpha;
-	CGaussianNoise **m_pExpNoise;
 
 	CCACLAActor(CParameters *pParameters);
 	~CCACLAActor();
 
-	void selectAction(CState *s, CAction *a);
-
 	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
-
-	double getProbability(CState* s, CAction* a);
-}
-;
+};
 
 /*
 class CRegularGradientActor:public CActor

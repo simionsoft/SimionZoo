@@ -10,61 +10,17 @@
 #include "features.h"
 #include "experiment.h"
 
-CCACLAActor::CCACLAActor(CParameters *pParameters)
+CCACLAActor::CCACLAActor(CParameters *pParameters) : CVFAActor(pParameters)
 {
-	char parameterName[MAX_PARAMETER_NAME_SIZE];
-
-	m_numOutputs= (int) pParameters->getParameter("NUM_OUTPUTS")->getDouble();
-
-	m_pOutput = g_pWorld->getActionInstance();
-	m_pAlpha= new CParameter* [m_numOutputs];
-	m_pPolicy= new CFeatureVFA* [m_numOutputs];
-	m_pExpNoise= new CGaussianNoise* [m_numOutputs];
-
-	for (int i= 0; i<m_numOutputs; i++)
-	{
-		sprintf_s(parameterName,MAX_PARAMETER_NAME_SIZE,"LEARNING_RATE_%d",i);
-		m_pAlpha[i]= pParameters->addParameter(CParameter(parameterName,0.0));
-
-		sprintf_s(parameterName,MAX_PARAMETER_NAME_SIZE,"POLICY_RBF_VARIABLES_%d",i);
-		m_pPolicy[i]= new CRBFFeatureGridVFA(pParameters->getParameter(parameterName)->getStringPtr());
-
-		m_pExpNoise[i]= new CGaussianNoise(i,pParameters);
-	}
-
-	m_pStateFeatures= new CFeatureList();
-
-	if (pParameters->exists("LOAD"))
-		loadPolicy(pParameters->getParameter("LOAD")->getStringPtr());
-
-	if (pParameters->exists("SAVE"))
-		strcpy_s(m_saveFilename,1024,pParameters->getParameter("SAVE")->getStringPtr());
-	else
-		m_saveFilename[0]= 0;
 
 }
 
 CCACLAActor::~CCACLAActor()
 {
-	if (m_pOutput)
-		delete m_pOutput;
 
-	if (m_saveFilename[0]!=0)
-		savePolicy(m_saveFilename);
-
-	for (int i= 0; i<m_numOutputs; i++)
-	{
-		delete m_pPolicy[i];
-		delete m_pExpNoise[i];
-	}
-
-	delete [] m_pPolicy;
-	delete [] m_pExpNoise;
-
-	delete m_pStateFeatures;
 }
 
-void CCACLAActor::selectAction(CState *s,CAction *a)
+void CVFAActor::selectAction(CState *s,CAction *a)
 {
 	double a_width;
 	double noise;
@@ -96,7 +52,7 @@ void CCACLAActor::selectAction(CState *s,CAction *a)
 }
 
 
-double CCACLAActor::getProbability(CState* s, CAction* a)
+double CVFAActor::getProbability(CState* s, CAction* a)
 {
 	double actionProb= 1.0;
 	double actionDist= 0.0;
@@ -170,7 +126,7 @@ void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double 
 }
 
 
-void CCACLAActor::savePolicy(const char* pFilename)
+void CVFAActor::savePolicy(const char* pFilename)
 {
 	FILE* pFile;
 
@@ -190,7 +146,7 @@ void CCACLAActor::savePolicy(const char* pFilename)
 
 }
 
-void CCACLAActor::loadPolicy(const char* pFilename)
+void CVFAActor::loadPolicy(const char* pFilename)
 {
 	FILE* pFile;
 

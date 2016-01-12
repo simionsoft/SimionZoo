@@ -12,25 +12,35 @@ class CParameter;
 class CCritic
 {
 	static CCritic* m_pCritic;
-
-protected:
-	CFeatureVFA* m_pVFA; //value function approximator
 public:
 	CCritic(){}
 	virtual ~CCritic(){}
 
-	virtual double updateValue(CState *s,CAction *a,CState *s_p,double r, double rho)= 0;
+	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
 
 	static CCritic *getCriticInstance(CParameters* pParameters);
+
+	virtual void loadVFunction(const char* filename)= 0;
+	virtual void saveVFunction(const char* filename)= 0;
+};
+
+class CVFACritic: public CCritic
+{
+protected:
+	char m_saveFilename[1024];
+	CFeatureVFA* m_pVFA; //value function approximator
+public:
+	CVFACritic(CParameters* pParameters);
+	virtual ~CVFACritic();
+
+	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
 
 	void loadVFunction(const char* filename);
 	void saveVFunction(const char* filename);
 };
 
-class CTDLambdaCritic: public CCritic
+class CTDLambdaCritic: public CVFACritic
 {
-	char m_saveFilename[1024];
-
 	CFeatureList* m_z; //traces
 	CFeatureList* m_aux;
 
@@ -44,7 +54,7 @@ public:
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
 };
 
-class CTrueOnlineTDLambdaCritic: public CCritic
+class CTrueOnlineTDLambdaCritic: public CVFACritic
 {
 	//True Online TD(lambda)
 	//Harm van Seijen, Richard Sutton
@@ -66,7 +76,7 @@ public:
 
 };
 
-class CTDCLambdaCritic : public CCritic
+class CTDCLambdaCritic : public CVFACritic
 {
 	char m_saveFilename[1024];
 
