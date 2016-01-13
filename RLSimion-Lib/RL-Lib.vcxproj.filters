@@ -87,10 +87,13 @@
     <ClCompile Include="SimGod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="actor-critic-bhatnagar.cpp">
+    <ClCompile Include="parameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameter.cpp">
+    <ClCompile Include="natural-actor-critic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-vfa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,10 +164,10 @@
     <ClInclude Include="SimGod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="actor-critic.h">
+    <ClInclude Include="parameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameter.h">
+    <ClInclude Include="natural-actor-critic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
