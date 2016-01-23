@@ -19,6 +19,7 @@ namespace FormularioXML
         List<TextBox> inputs = new List<TextBox>();
         List<ComboBox> combos = new List<ComboBox>();
         Dictionary<Control, Control> choice = new Dictionary<Control, Control>();
+        private List<TableLayoutPanel> myPanels = new List<TableLayoutPanel>();
 
 
         public Form2(List<Element> elements, Dictionary<string,ComplexType> myDic)
@@ -109,7 +110,7 @@ namespace FormularioXML
                     }
                     else
                     {
-                        TextBox tmp_t = new TextBox();
+                        MaskedTextBox tmp_t = new MaskedTextBox();
                         tmp_t.Size = new Size(100, 13);
                         tmp_t.Name = e.name;
                         tmp_t.Anchor = AnchorStyles.Right;
@@ -161,26 +162,29 @@ namespace FormularioXML
             int x_index = 0;
             int y_index = 0;
             this.components = new System.ComponentModel.Container();
-            panel = new System.Windows.Forms.TableLayoutPanel();
-           
-           
-            
+            panel = new System.Windows.Forms.TableLayoutPanel();  
             panel.ColumnCount = 2;
             panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             panel.Location = new System.Drawing.Point(34, 29);
             panel.Name = "tableLayoutPanel1";
-            panel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            panel.Size = new System.Drawing.Size(300, 581);
+            panel.Size = new System.Drawing.Size(310, 581);
             panel.TabIndex = 0;
-            //panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            //panel.AutoSize = true;
-            
             panel.AutoScroll = true;
             panel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             
-            int index = 5;
+    
             foreach (Element e in elements)
             {
+                /*
+                TableLayoutPanel elementPanel = new System.Windows.Forms.TableLayoutPanel();
+                elementPanel.ColumnCount = 2;
+                elementPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+                elementPanel.Name = "panel" + e.name;
+                elementPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+                elementPanel.Size = new System.Drawing.Size(350, 250);
+                elementPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+                elementPanel.AutoSize = true;
+                */
                 Label tmp_l = new Label();
                 tmp_l.AutoSize = true;
                 tmp_l.Name = e.type;
@@ -192,7 +196,7 @@ namespace FormularioXML
                 {
                     //es un tipo simpleType
                 }
-                else if (myDic.TryGetValue(e.type, out tmp_ct))
+                else if (myDic.ContainsKey(e.type))
                 {
                     //es un tipo complejo
                     //Program.resolveComplex(ref tmp_ct, myDic);
@@ -204,7 +208,9 @@ namespace FormularioXML
                     tmp_name.Text = e.name;
                     panel.Controls.Add(tmp_name);
                     //antes de resolverlo hay que poner nombre del tipo y de la instancia ya que puede haber mas de una
-                    resolveComplexType(tmp_ct, panel, myDic, ref x_index, ref y_index, 5);
+                    //resolveComplexType(tmp_ct, panel, myDic, ref x_index, ref y_index, 5);
+                    panel.Controls.AddRange(getAllControls(e.type).ToArray());
+                    int i = 0;
 
                 }
                 else
@@ -212,7 +218,8 @@ namespace FormularioXML
                     // es un tipo simple
 
                 }
-
+                //myPanels.Add(elementPanel);
+                //panel.Controls.Add(elementPanel);
                 
             }
 
@@ -273,20 +280,14 @@ namespace FormularioXML
                 choice.TryGetValue(tmp, out tmp_c);
                 if(tmp_c==null)
                 {
-                    int index = panel.Controls.IndexOf(tmp)+1;
-                    for(int i = index+1; i<=panel.Controls.Count;)
-                    {
-                        panel.Controls.RemoveAt(index);
-                    }
+                    int index = panel.Controls.IndexOf(tmp);
+                    removeControls(index, panel.Controls.Count-1);
                 }
                 else
                 {
-                    int deleteUntil = panel.Controls.IndexOf(tmp_c);
-                    int index = panel.Controls.IndexOf(tmp)+1;                 
-                    for (; index<deleteUntil; deleteUntil--)
-                    {
-                        panel.Controls.RemoveAt(index);
-                    }
+                    int deleteUntil = panel.Controls.IndexOf(tmp_c)-1;
+                    int index = panel.Controls.IndexOf(tmp);
+                    removeControls(index, deleteUntil);
                 }              
             }
             else
@@ -297,37 +298,63 @@ namespace FormularioXML
                 choice.Add(sender as Control, next);
             }
             List<Control> lista = this.getAllControls(tmp.Text);
-            panel.Controls.AddRange(lista.ToArray());
-            int position = panel.Controls.IndexOf(tmp) + 1;
-            foreach(Control control in lista)
-            {
-                panel.Controls.SetChildIndex(control, position);
-                position++;
-            }
-            //panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            //panel.AutoSize = false;
+            addControlsAt(lista, panel.Controls.IndexOf(tmp) + 1);
             panel.AutoScroll = false;
             panel.AutoScroll = true;
             panel.ResumeLayout();
             
-            //hay que hacer saber el numero de elemnto que hay qeu añadir al panel, hacer sitio para los elementos y añadirlos
-            //movePanelItems(cell1.Row + 1, count(tmp.SelectedText));
-           //primero vamos a guardar los controles que estan despues de chocie
-            /*List<Control> tmp_controls = new List<Control>();
-            for(int index = end+1;index<panel.Controls.Count;)
+           
+        }
+        private void addControlsAt(List<Control> list, int index)
+        {
+            panel.Controls.AddRange(list.ToArray());
+            foreach (Control control in list)
             {
-                tmp_controls.Add(panel.Controls[index]);
-               // panel.Controls.RemoveAt(index);
-                break;
+                panel.Controls.SetChildIndex(control, index);
+                index++;
             }
-            Button boton = new Button();
-            panel.Controls.Add(boton);
-            panel.Controls.SetChildIndex(boton, 5);*/
-            
-            //panel.Controls.RemoveAt(5);
-            //int tt= 6;
-            //Control[] ccc = lista.ToArray();
-            //panel.Controls.AddRange(lista.ToArray());
+
+        }
+        private void removeControls(int start, int finish)
+        {
+            for (; start < finish; finish--)
+            {
+                panel.Controls.RemoveAt(finish);
+            }
+
+        }
+        private void button_Click(object sender, EventArgs e)
+        {
+            Control button = sender as Control;
+            int buttonIndex = panel.Controls.IndexOf(button);
+            String value = button.Name;
+            if(myDic.ContainsKey(value))
+            {
+
+            }
+            else
+            {
+                Label original = panel.Controls[buttonIndex-2] as Label; 
+                Label copy = new Label();
+                copy.Size = original.Size;
+                copy.Anchor = original.Anchor;
+                copy.Name = original.Name;
+                copy.Text = original.Text;
+
+                MaskedTextBox originalTextBox = panel.Controls[buttonIndex - 1] as MaskedTextBox;
+                MaskedTextBox copy2 = new MaskedTextBox();
+                copy2.Size = originalTextBox.Size;
+                copy2.Anchor = originalTextBox.Anchor;
+                copy2.Name = originalTextBox.Name;
+
+                panel.Controls.Add(copy);
+                panel.Controls.Add(copy2);
+
+                panel.Controls.SetChildIndex(copy, buttonIndex);
+                panel.Controls.SetChildIndex(copy2, buttonIndex+1);
+
+
+            }
         }
         private int count(String typeName)
         {
@@ -392,7 +419,7 @@ namespace FormularioXML
                 label.Anchor = AnchorStyles.Left;
                 controls.Add(label);
 
-                TextBox textBox = new TextBox();
+                MaskedTextBox textBox = new MaskedTextBox();
                 textBox.Name=typeName;
                 textBox.Size= new Size(100,13);
                 textBox.Anchor = AnchorStyles.Right;
@@ -412,14 +439,27 @@ namespace FormularioXML
             complexHeadLine.Size = new System.Drawing.Size(35, 13);
             complexHeadLine.Text = complex.name;
             list.Add(complexHeadLine);
+            if (complex.getMax() <= 1)
+            {
+                Label complexHeadLine2 = new Label();
+                complexHeadLine2.AutoSize = true;
+                complexHeadLine2.Name = complex.elementName;
+                complexHeadLine2.Size = new System.Drawing.Size(35, 13);
+                complexHeadLine2.Text = complex.elementName;
+                list.Add(complexHeadLine2);
+            }
+            else
+            {
+                complexHeadLine.Text += ":" + complex.elementName;
+                Button buttonAdd = new Button();
+                buttonAdd.Size = new Size(100, 25);
+                buttonAdd.Text = "ADD";
+                buttonAdd.Anchor = AnchorStyles.Right;
+                buttonAdd.Click += new System.EventHandler(this.button_Click);
 
-            Label complexHeadLine2 = new Label();
-            complexHeadLine2.AutoSize = true;
-            complexHeadLine2.Name = complex.elementName;
-            complexHeadLine2.Size = new System.Drawing.Size(35, 13);
-            complexHeadLine2.Text = complex.elementName;
-            list.Add(complexHeadLine2);
+                list.Add(buttonAdd);
 
+            }
             if (complex.elements != null)
             {
                 foreach (Element e in complex.elements)
@@ -460,14 +500,29 @@ namespace FormularioXML
                     }
                     else
                     {
-                        TextBox tmp_t = new TextBox();
+                        //to do: mirar si puede ser null o no. Cambiar tipo por maskedType y añadir restriccion de typo
+                        //restriccion numeric o string
+                        MaskedTextBox tmp_t = new MaskedTextBox();
                         tmp_t.Size = new Size(100, 13);
                         tmp_t.Name = e.name;
                         tmp_t.Anchor = AnchorStyles.Right;
                         list.Add(tmp_t);
+                        if(e.max>1)
+                        {
+                            Button buttonAdd = new Button();
+                            buttonAdd.Size = new Size(100, 25);
+                            buttonAdd.Text = "ADD";
+                            buttonAdd.Anchor = AnchorStyles.Left;
+                            buttonAdd.Click += new System.EventHandler(this.button_Click);
+                            list.Add(buttonAdd);
+                            Label emptyLabel = new Label();
+                            list.Add(emptyLabel);
+
+                        }
+
                     }
                    
-
+                    // hay qeu comprobar si maxocur es mayor que 1 para saber si hay que añadir botones de añadir o borrar ultimo.
 
                 }
 
@@ -510,7 +565,8 @@ namespace FormularioXML
 
                 list.Add(tmp_cb);
             }
-
+            // hay que comprobar si es maxocur diferente de uno para añadir boton de añadir
+           
         }
 
     }

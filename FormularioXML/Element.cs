@@ -76,7 +76,25 @@ namespace FormularioXML
         public List<Attribute> attributes;
         public List<Element> choice;
         public List<ComplexType> complexElements;
-        
+        private Element father;
+
+        public void setFather(Element e)
+        {
+            this.father = e;
+        }
+
+        public int getMin()
+        {
+            if (father == null)
+                return 1;
+            return father.min;
+        }
+        public int getMax()
+        {
+            if (father == null)
+                return 1;
+            return father.max;
+        }
         public ComplexType copy()
         {
             ComplexType copy = new ComplexType(this.name);

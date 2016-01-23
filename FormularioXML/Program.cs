@@ -25,6 +25,7 @@ namespace FormularioXML
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new Form1());
             Application.Run(new Form2(xsdElements,myDic));
 
 
@@ -185,6 +186,7 @@ namespace FormularioXML
                 if (dic.TryGetValue(element.type, out tmp_ct))
                 {
                      //to do: hay qeu quitarlo de la lista element y ponerlo en la lista complex para resolverlo
+                    tmp_ct.setFather(element);
                     elementToResolve.addComplexElemente(tmp_ct);
                     elementToResolve.elements.Remove(element);
                     index--;
@@ -216,7 +218,9 @@ namespace FormularioXML
                 {
                     //to do: hay qeu quitarlo de la lista element y ponerlo en la lista complex para resolverlo
                     tmp_ct.elementName = element.name;
+                    //tmp_ct.setFather(element);
                     result.addComplexElemente(resolveComplex(tmp_ct,dic, ref complexName));
+                    result.complexElements.ElementAt(result.complexElements.Count - 1).setFather(element);
                     result.elements.Remove(element);
                     index--;
                 }
@@ -252,7 +256,7 @@ namespace FormularioXML
                             tmp_e.canBeNull();
                         if (childElement.MaxOccurs > 1 && childElement.MaxOccursString == null)
                             tmp_e.setMax((int)childElement.MaxOccurs);
-                        else
+                        if (childElement.MaxOccurs >1 && childElement.MaxOccursString!=null)
                             tmp_e.setMax(int.MaxValue);
                         if (childElement.ElementSchemaType is XmlSchemaSimpleType)
                         {
