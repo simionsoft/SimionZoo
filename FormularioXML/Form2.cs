@@ -18,9 +18,10 @@ namespace FormularioXML
         List<Label> labels = new List<Label>();
         List<TextBox> inputs = new List<TextBox>();
         List<ComboBox> combos = new List<ComboBox>();
+        Dictionary<Button, List<Button>> addDelete = new Dictionary<Button, List<Button>>();
+        Dictionary<Button, Button> buttons = new Dictionary<Button, Button>();
         Dictionary<Control, Control> choice = new Dictionary<Control, Control>();
-        private List<TableLayoutPanel> myPanels = new List<TableLayoutPanel>();
-
+       
 
         public Form2(List<Element> elements, Dictionary<string,ComplexType> myDic)
         {
@@ -28,13 +29,7 @@ namespace FormularioXML
             this.myDic = myDic;
             test = elements.ElementAt(0);
             initializeComponent();
-            /* ejemplo para desplazar celdar 
-            Control c1 = tableLayoutPanel1.GetControlFromPosition(0, 1);
-            Control c2 = tableLayoutPanel1.GetControlFromPosition(0, 2);
-            //TableLayoutPanelCellPosition cell1 = tlp.GetCellPosition(c1);
-            tableLayoutPanel1.SetCellPosition(c1, new TableLayoutPanelCellPosition(0, 5));
-            tableLayoutPanel1.SetCellPosition(c2, new TableLayoutPanelCellPosition(0, 6));
-            */
+            
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -325,22 +320,52 @@ namespace FormularioXML
         }
         private void button_Click(object sender, EventArgs e)
         {
+            panel.SuspendLayout();
             Control button = sender as Control;
             int buttonIndex = panel.Controls.IndexOf(button);
+            Label copy=null;
             String value = button.Name;
+            bool complex = false;
             if(myDic.ContainsKey(value))
             {
+                complex = true;
+                List<Control> list = getAllControls(value);
+                panel.Controls.AddRange(list.ToArray());
+
+                foreach(Control control in list)
+                {
+                    buttonIndex++;
+                    panel.Controls.SetChildIndex(control, buttonIndex);
+                }
+                Label empty = new Label();
+                empty.Name = "empty";
+                panel.Controls.Add(empty);
+                panel.Controls.SetChildIndex(empty,buttonIndex+1);
+                Button delete = createDeleteButtonAt(buttonIndex + 2, complex);
+                if(!addDelete.ContainsKey(sender as Button))
+                {
+                    List<Button> deleteList = new List<Button>();
+                    deleteList.Add(delete);
+                    addDelete.Add(sender as Button, deleteList);
+                }
+                else
+                {
+                    List<Button> deleteList = addDelete[sender as Button];
+                    deleteList.Add(delete);
+                    addDelete[sender as Button] = deleteList;
+                }
+                buttons.Add(delete, sender as Button);
 
             }
             else
             {
                 Label original = panel.Controls[buttonIndex-2] as Label; 
-                Label copy = new Label();
+                copy = new Label();
                 copy.Size = original.Size;
                 copy.Anchor = original.Anchor;
                 copy.Name = original.Name;
                 copy.Text = original.Text;
-
+                
                 MaskedTextBox originalTextBox = panel.Controls[buttonIndex - 1] as MaskedTextBox;
                 MaskedTextBox copy2 = new MaskedTextBox();
                 copy2.Size = originalTextBox.Size;
@@ -350,11 +375,79 @@ namespace FormularioXML
                 panel.Controls.Add(copy);
                 panel.Controls.Add(copy2);
 
-                panel.Controls.SetChildIndex(copy, buttonIndex);
-                panel.Controls.SetChildIndex(copy2, buttonIndex+1);
+                panel.Controls.SetChildIndex(copy, buttonIndex+2);
+                panel.Controls.SetChildIndex(copy2, buttonIndex+3);
 
-
+                
+                Label empty = new Label();
+                empty.Name = "empty";
+                panel.Controls.Add(empty);
+                Button delete = createDeleteButtonAt(buttonIndex + 4, complex);
+                panel.Controls.SetChildIndex(empty, buttonIndex + 5);
+               
+                if (!addDelete.ContainsKey(sender as Button))
+                {
+                    List<Button> deleteList = new List<Button>();
+                    deleteList.Add(delete);
+                    addDelete.Add(sender as Button, deleteList);
+                }
+                else
+                {
+                    List<Button> deleteList = addDelete[sender as Button];
+                    deleteList.Add(delete);
+                    addDelete[sender as Button] = deleteList;
+                }
+                buttons.Add(delete, sender as Button);
             }
+            panel.ResumeLayout();
+        }
+        private void delete_Click(object sender, EventArgs e)
+        {
+            
+            panel.SuspendLayout();
+            Button delete = sender as Button;
+            Button add = buttons[delete];
+            List<Button> deleteButtons = addDelete[add];
+            int deleteIndexInButtonsList = deleteButtons.IndexOf(delete);
+            if(deleteIndexInButtonsList+1==deleteButtons.Count)
+            {
+                removeControls(panel.Controls.IndexOf(add) , panel.Controls.IndexOf(delete));
+            }
+            else
+            {
+                Button previous = deleteButtons[deleteIndexInButtonsList + 1];
+                removeControls(panel.Controls.IndexOf(previous), panel.Controls.IndexOf(delete));
+            }
+            deleteButtons.Remove(delete);
+            addDelete[add] = deleteButtons;
+            panel.AutoScroll = false;
+            panel.AutoScroll = true;
+            panel.ResumeLayout();
+           
+           
+            
+        }
+        private Button createDeleteButtonAt(int index, bool complex)
+        {
+            Button delete = new Button();
+            delete.Text = "DELETE";
+            delete.Size = new Size(100, 25);
+            delete.Anchor = AnchorStyles.Right;
+            delete.Name = "Delete";
+            delete.Click += new System.EventHandler(this.delete_Click);
+            if(!complex)
+            {
+                delete.Anchor = AnchorStyles.Left;
+                panel.Controls.Add(delete);
+                panel.Controls.SetChildIndex(delete, index);
+            }
+            else
+            {
+                panel.Controls.Add(delete);
+                panel.Controls.SetChildIndex(delete, index);
+            }
+            return delete;
+
         }
         private int count(String typeName)
         {
@@ -454,6 +547,7 @@ namespace FormularioXML
                 Button buttonAdd = new Button();
                 buttonAdd.Size = new Size(100, 25);
                 buttonAdd.Text = "ADD";
+                buttonAdd.Name = complex.elementName;
                 buttonAdd.Anchor = AnchorStyles.Right;
                 buttonAdd.Click += new System.EventHandler(this.button_Click);
 
