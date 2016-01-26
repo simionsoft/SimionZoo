@@ -5,8 +5,10 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace FormularioXML
 {
@@ -21,6 +23,10 @@ namespace FormularioXML
         Dictionary<Button, List<Button>> addDelete = new Dictionary<Button, List<Button>>();
         Dictionary<Button, Button> buttons = new Dictionary<Button, Button>();
         Dictionary<Control, Control> choice = new Dictionary<Control, Control>();
+        Dictionary<CheckBox, List<Control>> enable = new Dictionary<CheckBox, List<Control>>();
+        private XmlDocument xmldocument= new XmlDocument();
+        private XmlNode root;
+        private XmlNode currentXmlNode;
        
 
         public Form2(List<Element> elements, Dictionary<string,ComplexType> myDic)
@@ -28,6 +34,8 @@ namespace FormularioXML
             this.elements = elements;
             this.myDic = myDic;
             test = elements.ElementAt(0);
+            root = xmldocument.CreateElement("experiment");
+            xmldocument.AppendChild(root);
             initializeComponent();
             
         }
@@ -105,7 +113,7 @@ namespace FormularioXML
                     }
                     else
                     {
-                        MaskedTextBox tmp_t = new MaskedTextBox();
+                        TextBox tmp_t = new TextBox();
                         tmp_t.Size = new Size(100, 13);
                         tmp_t.Name = e.name;
                         tmp_t.Anchor = AnchorStyles.Right;
@@ -170,22 +178,16 @@ namespace FormularioXML
     
             foreach (Element e in elements)
             {
-                /*
-                TableLayoutPanel elementPanel = new System.Windows.Forms.TableLayoutPanel();
-                elementPanel.ColumnCount = 2;
-                elementPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-                elementPanel.Name = "panel" + e.name;
-                elementPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-                elementPanel.Size = new System.Drawing.Size(350, 250);
-                elementPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-                elementPanel.AutoSize = true;
-                */
+
+                XmlNode elementNode = xmldocument.CreateElement(e.name);
+                root.AppendChild(elementNode);
+                this.currentXmlNode = elementNode;
+
                 Label tmp_l = new Label();
                 tmp_l.AutoSize = true;
                 tmp_l.Name = e.type;
                 tmp_l.Size = new System.Drawing.Size(35, 13);
                 tmp_l.Text = e.type;
-                ComplexType tmp_ct;
                 //hay que comprobar si son tipo simple, simplextype o cumpuestos si son simple hay que poner un text box si son complejos añadir el complejo.
                 if (e.type == null || e.type.Equals(""))
                 {
@@ -213,9 +215,8 @@ namespace FormularioXML
                     // es un tipo simple
 
                 }
-                //myPanels.Add(elementPanel);
-                //panel.Controls.Add(elementPanel);
-                
+                xmldocument.Save("prueba.xml");
+                                
             }
 
 
@@ -324,6 +325,7 @@ namespace FormularioXML
             Control button = sender as Control;
             int buttonIndex = panel.Controls.IndexOf(button);
             Label copy=null;
+       
             String value = button.Name;
             bool complex = false;
             if(myDic.ContainsKey(value))
@@ -366,8 +368,8 @@ namespace FormularioXML
                 copy.Name = original.Name;
                 copy.Text = original.Text;
                 
-                MaskedTextBox originalTextBox = panel.Controls[buttonIndex - 1] as MaskedTextBox;
-                MaskedTextBox copy2 = new MaskedTextBox();
+                TextBox originalTextBox = panel.Controls[buttonIndex - 1] as TextBox;
+                TextBox copy2 = new TextBox();
                 copy2.Size = originalTextBox.Size;
                 copy2.Anchor = originalTextBox.Anchor;
                 copy2.Name = originalTextBox.Name;
@@ -512,7 +514,7 @@ namespace FormularioXML
                 label.Anchor = AnchorStyles.Left;
                 controls.Add(label);
 
-                MaskedTextBox textBox = new MaskedTextBox();
+                TextBox textBox = new TextBox();
                 textBox.Name=typeName;
                 textBox.Size= new Size(100,13);
                 textBox.Anchor = AnchorStyles.Right;
@@ -522,8 +524,9 @@ namespace FormularioXML
         }
         private void getAllControls(ref List<Control> list, ComplexType complex, List<string> lista)
         {
+            XmlNode father = currentXmlNode;
             //to do: añadir label con el nombre del campo complejo para saber que se esta rellenando
-            
+            CheckBox nullCheckBox = null;
 
             //añadir etiquita para saber que se esta rellenando
             Label complexHeadLine = new Label();
@@ -532,6 +535,8 @@ namespace FormularioXML
             complexHeadLine.Size = new System.Drawing.Size(35, 13);
             complexHeadLine.Text = complex.name;
             list.Add(complexHeadLine);
+            Button buttonAdd = null;
+            List<Control> controls = null;
             if (complex.getMax() <= 1)
             {
                 Label complexHeadLine2 = new Label();
@@ -544,20 +549,37 @@ namespace FormularioXML
             else
             {
                 complexHeadLine.Text += ":" + complex.elementName;
-                Button buttonAdd = new Button();
+                buttonAdd = new Button();
                 buttonAdd.Size = new Size(100, 25);
                 buttonAdd.Text = "ADD";
-                buttonAdd.Name = complex.elementName;
+                buttonAdd.Name = complex.name;
                 buttonAdd.Anchor = AnchorStyles.Right;
                 buttonAdd.Click += new System.EventHandler(this.button_Click);
 
                 list.Add(buttonAdd);
 
             }
+            if(complex.getMin()==0)
+            {
+                controls = new List<Control>();
+                if(buttonAdd!=null)
+                    controls.Add(buttonAdd);
+                nullCheckBox = new CheckBox();
+                nullCheckBox.Text = "IS NULL";
+                nullCheckBox.Checked = false;
+                nullCheckBox.Anchor = AnchorStyles.Left;
+                nullCheckBox.Click += new EventHandler(this.checkBox);
+                list.Add(nullCheckBox);
+                Label empty = new Label();
+                list.Add(empty);
+
+            }
             if (complex.elements != null)
             {
                 foreach (Element e in complex.elements)
                 {
+                    XmlNode child = xmldocument.CreateElement(e.name);
+                    currentXmlNode.AppendChild(child);
                     //to do: añadir el elemento al panel. Hay que comprobar si es simpleType antes de añadir
                     //si es simple type hay que añadir combox para seleccionar s
                     //si tiene type un textbox para introducir el tipo
@@ -570,7 +592,7 @@ namespace FormularioXML
                     list.Add(tmp_l);
                     if ((e.type == null || e.type.Equals("")) && e.simpleType != null)
                     {
-
+                        
                         ComboBox tmp_cb = new ComboBox();
                         foreach (RestrictionEnum res in e.simpleType.restricction.validOptions)
                         {
@@ -579,7 +601,8 @@ namespace FormularioXML
                         tmp_cb.Size = new Size(100, 13);
                         tmp_cb.Anchor = AnchorStyles.Right;
                         list.Add(tmp_cb);
-
+                        if (controls != null)
+                            controls.Add(tmp_cb);
                     }
                     else if (e.type.Equals("boolean"))
                     {
@@ -589,29 +612,54 @@ namespace FormularioXML
                         tmp_cb.Size = new Size(100, 13);
                         tmp_cb.Anchor = AnchorStyles.Right;
                         list.Add(tmp_cb);
-
+                        if (controls != null)
+                            controls.Add(tmp_cb);
 
                     }
                     else
                     {
+                       
                         //to do: mirar si puede ser null o no. Cambiar tipo por maskedType y añadir restriccion de typo
                         //restriccion numeric o string
-                        MaskedTextBox tmp_t = new MaskedTextBox();
+                        TextBox tmp_t = new TextBox();
                         tmp_t.Size = new Size(100, 13);
                         tmp_t.Name = e.name;
                         tmp_t.Anchor = AnchorStyles.Right;
                         list.Add(tmp_t);
+                        if (controls != null)
+                            controls.Add(tmp_t);
+                        Button buttonAdd2=null;
                         if(e.max>1)
                         {
-                            Button buttonAdd = new Button();
-                            buttonAdd.Size = new Size(100, 25);
-                            buttonAdd.Text = "ADD";
-                            buttonAdd.Anchor = AnchorStyles.Left;
-                            buttonAdd.Click += new System.EventHandler(this.button_Click);
-                            list.Add(buttonAdd);
+                            buttonAdd2 = new Button();
+                            buttonAdd2.Size = new Size(100, 25);
+                            buttonAdd2.Text = "ADD";
+                            buttonAdd2.Anchor = AnchorStyles.Left;
+                            buttonAdd2.Click += new System.EventHandler(this.button_Click);
+                            list.Add(buttonAdd2);
+                            if (controls != null)
+                                controls.Add(buttonAdd2);
                             Label emptyLabel = new Label();
                             list.Add(emptyLabel);
 
+                        }
+                        if (e.min == 0)
+                        {
+                            List<Control> control = new List<Control>();
+                            control.Add(tmp_t);
+                            if (buttonAdd != null)
+                                control.Add(buttonAdd2);
+                            CheckBox nullCheckBox2 = new CheckBox();
+                            nullCheckBox2.Click += new EventHandler(this.checkBox);
+                            nullCheckBox2.Text = "IS NULL";
+                            nullCheckBox2.Checked = false;
+                            nullCheckBox2.Anchor = AnchorStyles.Left;
+                            if (controls != null)
+                                controls.Add(nullCheckBox2);
+                            list.Add(nullCheckBox2);
+                            enable.Add(nullCheckBox2, control);
+                            Label empty = new Label();
+                            list.Add(empty);
                         }
 
                     }
@@ -627,14 +675,31 @@ namespace FormularioXML
                 
                 foreach (ComplexType e in complex.complexElements)
                 {
-                    
+                    XmlNode complexChild = xmldocument.CreateElement(e.name);
+                    currentXmlNode.AppendChild(complexChild);
+                    currentXmlNode = complexChild;                  
                     if (lista.Count > 0)
                     {
+                        
                         e.elementName = lista.ElementAt(0);
                         lista.RemoveAt(0);
                     }
                     getAllControls(ref list,e,lista);
+                    currentXmlNode = father;
+                    complexChild.InnerText = "prueba";
                     
+                }
+                if(controls!=null)
+                {
+                    int index = list.IndexOf(controls[controls.Count - 1]);
+                    for(;index<list.Count;index++)
+                    {
+                        Control c = list[index];
+                        if(!(c is Label))
+                        {
+                            controls.Add(c);
+                        }
+                    }
                 }
             }
             if (complex.choice != null)
@@ -656,11 +721,57 @@ namespace FormularioXML
                     tmp_cb.Items.Add(e.name);
                 }
                 tmp_cb.SelectedIndexChanged += new EventHandler(this.comboBox_SelectedIndexChanged);
-
+                if (controls != null)
+                    controls.Add(tmp_cb);
                 list.Add(tmp_cb);
             }
+            if (controls != null)
+                enable.Add(nullCheckBox, controls);
             // hay que comprobar si es maxocur diferente de uno para añadir boton de añadir
            
+        }
+
+        private void checkBox(object sender, EventArgs e)
+        {
+            CheckBox checkBox = sender as CheckBox;
+            if(checkBox.Checked)
+            {
+                List<Control> t = enable[sender as CheckBox];
+                foreach(Control control in enable[checkBox])
+                {
+                    control.Enabled = false;
+                }
+            }
+            else
+            {
+                foreach (Control control in enable[checkBox])
+                {
+                    control.Enabled = true;
+                }
+            }
+        }
+
+        private bool validateTextBox(string type,string value)
+        {
+            Regex regex;
+            switch (type)
+            {
+                case "decimal":
+                    regex = new Regex(@"^(-|)((0\.\d+)|[1-9]\d*(\.\d+))$");
+                    if(regex.IsMatch(value))
+                    {
+                        return true;
+                    }
+                    return validateTextBox("int",value);
+                case "int":
+                    regex = new Regex(@"^(-|)[1-9][0-9]*$");
+                    return regex.IsMatch(value);
+                default:
+                    return false;
+
+            }
+             
+            
         }
 
     }
