@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace FormularioXML
 {
@@ -27,6 +28,7 @@ namespace FormularioXML
         private XmlDocument xmldocument= new XmlDocument();
         private XmlNode root;
         private XmlNode currentXmlNode;
+        private Dictionary<Control, XmlNode> xmlDyc = new Dictionary<Control, XmlNode>();
        
 
         public Form2(List<Element> elements, Dictionary<string,ComplexType> myDic)
@@ -40,9 +42,43 @@ namespace FormularioXML
             
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void validate(object sender, EventArgs e)
         {
+            foreach(Control key in xmlDyc.Keys)
+            {
+                String value = key.Text;
+                XmlNode node = xmlDyc[key];
+                
+                if(value.Equals("")&&key.Enabled)
+                {                   
+                    MessageBox.Show("PLEASE FILL ALL THE INPUTS");       
+                    return;
+                }
+                else
+                {
+                    //falta hacer la validacion si es bool que cumpla, int o decimal
+                    //
+                    if(key is ComboBox&& !((ComboBox)key).Items.Contains(value))
+                    {
+                        MessageBox.Show("PLEASE USE COMBOBOX OPTIONS IN "+key.Name);
+                        return;
+                    }
+                    if(key is TextBox && !validateTextBox(key.AccessibleDescription,value))
+                    {
+                        MessageBox.Show(key.Name+" VALUE IS NOT VALID. PLEASE USE THE CORRECT DATATYPE");
+                        return;
+                    }
+                    node.InnerText = value;
 
+                }
+            }
+            cleanNullTagsAndSave("prueba.xml");
+        }
+        private void cleanNullTagsAndSave(string path)
+        {
+            XElement doc = XElement.Load(new XmlNodeReader(xmldocument));
+            doc.Descendants().Where(t => string.IsNullOrEmpty(t.Value)).Remove();
+            doc.Save(path);
         }
         private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
@@ -116,10 +152,11 @@ namespace FormularioXML
                         TextBox tmp_t = new TextBox();
                         tmp_t.Size = new Size(100, 13);
                         tmp_t.Name = e.name;
+                        tmp_t.AccessibleDescription = e.type;
                         tmp_t.Anchor = AnchorStyles.Right;
                         panel.Controls.Add(tmp_t);
                     }
-                    x_index++;
+                    
                     
 
                 }
@@ -215,11 +252,16 @@ namespace FormularioXML
                     // es un tipo simple
 
                 }
-                xmldocument.Save("prueba.xml");
+                
                                 
             }
 
-
+            Button validate = new Button();
+            validate.Size= new Size(100, 35);
+            validate.Text = "VALIDATE";
+            validate.Location = new Point(500, 300);
+            validate.Click += new EventHandler(this.validate);
+            this.Controls.Add(validate);
 
 
 
@@ -371,6 +413,7 @@ namespace FormularioXML
                 TextBox originalTextBox = panel.Controls[buttonIndex - 1] as TextBox;
                 TextBox copy2 = new TextBox();
                 copy2.Size = originalTextBox.Size;
+                copy2.AccessibleDescription = original.AccessibleDescription;
                 copy2.Anchor = originalTextBox.Anchor;
                 copy2.Name = originalTextBox.Name;
 
@@ -516,6 +559,7 @@ namespace FormularioXML
 
                 TextBox textBox = new TextBox();
                 textBox.Name=typeName;
+                textBox.AccessibleDescription = typeName;
                 textBox.Size= new Size(100,13);
                 textBox.Anchor = AnchorStyles.Right;
                 controls.Add(textBox);
@@ -565,6 +609,7 @@ namespace FormularioXML
                 if(buttonAdd!=null)
                     controls.Add(buttonAdd);
                 nullCheckBox = new CheckBox();
+                nullCheckBox.Name = "NULL";
                 nullCheckBox.Text = "IS NULL";
                 nullCheckBox.Checked = false;
                 nullCheckBox.Anchor = AnchorStyles.Left;
@@ -601,6 +646,7 @@ namespace FormularioXML
                         tmp_cb.Size = new Size(100, 13);
                         tmp_cb.Anchor = AnchorStyles.Right;
                         list.Add(tmp_cb);
+                        xmlDyc.Add(tmp_cb, child);
                         if (controls != null)
                             controls.Add(tmp_cb);
                     }
@@ -612,6 +658,7 @@ namespace FormularioXML
                         tmp_cb.Size = new Size(100, 13);
                         tmp_cb.Anchor = AnchorStyles.Right;
                         list.Add(tmp_cb);
+                        xmlDyc.Add(tmp_cb, child);
                         if (controls != null)
                             controls.Add(tmp_cb);
 
@@ -624,8 +671,10 @@ namespace FormularioXML
                         TextBox tmp_t = new TextBox();
                         tmp_t.Size = new Size(100, 13);
                         tmp_t.Name = e.name;
+                        tmp_t.AccessibleDescription = e.type;
                         tmp_t.Anchor = AnchorStyles.Right;
                         list.Add(tmp_t);
+                        xmlDyc.Add(tmp_t, child);
                         if (controls != null)
                             controls.Add(tmp_t);
                         Button buttonAdd2=null;
@@ -650,6 +699,7 @@ namespace FormularioXML
                             if (buttonAdd != null)
                                 control.Add(buttonAdd2);
                             CheckBox nullCheckBox2 = new CheckBox();
+                            nullCheckBox2.Name = "NULL";
                             nullCheckBox2.Click += new EventHandler(this.checkBox);
                             nullCheckBox2.Text = "IS NULL";
                             nullCheckBox2.Checked = false;
@@ -675,7 +725,7 @@ namespace FormularioXML
                 
                 foreach (ComplexType e in complex.complexElements)
                 {
-                    XmlNode complexChild = xmldocument.CreateElement(e.name);
+                    XmlNode complexChild = xmldocument.CreateElement(e.elementName);
                     currentXmlNode.AppendChild(complexChild);
                     currentXmlNode = complexChild;                  
                     if (lista.Count > 0)
@@ -686,7 +736,7 @@ namespace FormularioXML
                     }
                     getAllControls(ref list,e,lista);
                     currentXmlNode = father;
-                    complexChild.InnerText = "prueba";
+                    //complexChild.InnerText = "prueba";
                     
                 }
                 if(controls!=null)
@@ -746,6 +796,15 @@ namespace FormularioXML
             {
                 foreach (Control control in enable[checkBox])
                 {
+                    if(control is CheckBox && control.Name.Equals("NULL"))
+                    {
+                        CheckBox tmp = control as CheckBox;
+                        if(tmp.Checked)
+                        {
+                            this.checkBox(tmp, null);
+                        }
+                      
+                    }
                     control.Enabled = true;
                 }
             }
@@ -763,7 +822,7 @@ namespace FormularioXML
                         return true;
                     }
                     return validateTextBox("int",value);
-                case "int":
+                case "integer":
                     regex = new Regex(@"^(-|)[1-9][0-9]*$");
                     return regex.IsMatch(value);
                 default:
