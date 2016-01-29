@@ -47,7 +47,7 @@ namespace FormularioXML
         {
             foreach(ComboBox combo in combos)
             {
-               if(combo.SelectedIndex==-1)
+               if(combo.SelectedIndex==-1 && combo.Enabled)
                {
                    MessageBox.Show("PLEASE SELECT THE WANTED CHOICE");
                    return;
@@ -339,8 +339,7 @@ namespace FormularioXML
                 }
                 //eliminar el child viejo del xml
                 controlFatherInXmlDocu[sender as Control].RemoveChild(controlFatherInXmlDocu[sender as Control].ChildNodes.Item(controlFatherInXmlDocu[sender as Control].ChildNodes.Count-1));
-               // XmlNodeList t = controlFatherInXmlDocu[sender as Control].ChildNodes;
-                //t.Item(t.Count - 1);
+               
             }
             else
             {
@@ -374,6 +373,10 @@ namespace FormularioXML
         {
             for (; start < finish; finish--)
             {
+                if (panel.Controls[finish] is ComboBox && combos.Contains(panel.Controls[finish] as ComboBox))
+                    combos.Remove(panel.Controls[finish] as ComboBox);
+                if (xmlDyc.ContainsKey(panel.Controls[finish]))
+                    xmlDyc.Remove(panel.Controls[finish]);
                 panel.Controls.RemoveAt(finish);
             }
 
@@ -580,6 +583,11 @@ namespace FormularioXML
                 textBox.Size= new Size(100,13);
                 textBox.Anchor = AnchorStyles.Right;
                 controls.Add(textBox);
+
+                //hay qeu añadir el elemento al arbol
+                //XmlNode child = xmldocument.CreateElement(typeName);
+                //currentXmlNode.AppendChild(child);
+                xmlDyc.Add(textBox, currentXmlNode);
             }
             return controls;
         }
