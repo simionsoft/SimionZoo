@@ -34,7 +34,7 @@ namespace FormularioXML
         {
             XmlSchemaSet schemaSet = new XmlSchemaSet();
             schemaSet.ValidationEventHandler += new ValidationEventHandler(ValidationCallback);
-            schemaSet.Add("http://www.w3.org/2001/XMLSchema", "RLSimion.xsd");
+            schemaSet.Add("http://www.w3.org/2001/XMLSchema", "../config/RLSimion.xsd");
             schemaSet.Compile();
 
             XmlSchema xmlSchema = null;
@@ -44,7 +44,7 @@ namespace FormularioXML
             }
 
             DataSet myDS = new DataSet();
-            myDS.ReadXmlSchema("RLSimion.xsd");
+            myDS.ReadXmlSchema("../config/RLSimion.xsd");
 
             Dictionary<string, List<Element>> elementsWithComplexType = new Dictionary<string, List<Element>>();
             //Dictionary<string, ComplexType> dicTranslator = new Dictionary<string, ComplexType>();
