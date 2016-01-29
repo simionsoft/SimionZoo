@@ -392,7 +392,13 @@ namespace FormularioXML
             bool complex = false;
             if(myDic.ContainsKey(value))
             {
+
+                //corregir se necesita una nodo nuevo que cuelge del padre.
                 complex = true;
+                currentXmlNode = controlFatherInXmlDocu[sender as Control].ParentNode;
+                XmlNode node = xmldocument.CreateElement(controlFatherInXmlDocu[sender as Control].Name);
+                currentXmlNode.AppendChild(node);
+                currentXmlNode = node;
                 List<Control> list = getAllControls(value);
                 panel.Controls.AddRange(list.ToArray());
 
@@ -419,6 +425,7 @@ namespace FormularioXML
                     addDelete[sender as Button] = deleteList;
                 }
                 buttons.Add(delete, sender as Button);
+                controlFatherInXmlDocu.Add(delete, node);
 
             }
             else
@@ -449,6 +456,13 @@ namespace FormularioXML
                 panel.Controls.Add(empty);
                 Button delete = createDeleteButtonAt(buttonIndex + 4, complex);
                 panel.Controls.SetChildIndex(empty, buttonIndex + 5);
+
+                //fijar el padre
+
+                XmlNode father = controlFatherInXmlDocu[sender as Control];
+                XmlElement child = xmldocument.CreateElement(copy2.Name);
+                father.AppendChild(child);
+                xmlDyc.Add(copy2, child);
                
                 if (!addDelete.ContainsKey(sender as Button))
                 {
@@ -463,6 +477,7 @@ namespace FormularioXML
                     addDelete[sender as Button] = deleteList;
                 }
                 buttons.Add(delete, sender as Button);
+                controlFatherInXmlDocu.Add(delete, child);
             }
             panel.ResumeLayout();
         }
@@ -483,8 +498,20 @@ namespace FormularioXML
                 Button previous = deleteButtons[deleteIndexInButtonsList + 1];
                 removeControls(panel.Controls.IndexOf(previous), panel.Controls.IndexOf(delete));
             }
+
             deleteButtons.Remove(delete);
             addDelete[add] = deleteButtons;
+            if(controlFatherInXmlDocu.ContainsKey(sender as Control))
+            {
+                XmlNode g = controlFatherInXmlDocu[sender as Control];
+                g.ParentNode.RemoveChild(g);
+            }
+            else
+            {
+
+            }
+            //xmldocument.RemoveChild(controlFatherInXmlDocu[sender as Control]);
+            
             panel.AutoScroll = false;
             panel.AutoScroll = true;
             panel.ResumeLayout();
@@ -624,7 +651,7 @@ namespace FormularioXML
                 buttonAdd.Name = complex.name;
                 buttonAdd.Anchor = AnchorStyles.Right;
                 buttonAdd.Click += new System.EventHandler(this.button_Click);
-
+                controlFatherInXmlDocu.Add(buttonAdd, currentXmlNode);
                 list.Add(buttonAdd);
 
             }
@@ -715,6 +742,7 @@ namespace FormularioXML
                                 controls.Add(buttonAdd2);
                             Label emptyLabel = new Label();
                             list.Add(emptyLabel);
+                            controlFatherInXmlDocu.Add(buttonAdd2, currentXmlNode);
 
                         }
                         if (e.min == 0)
