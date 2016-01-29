@@ -29,6 +29,7 @@ namespace FormularioXML
         private XmlNode root;
         private XmlNode currentXmlNode;
         private Dictionary<Control, XmlNode> xmlDyc = new Dictionary<Control, XmlNode>();
+        private Dictionary<Control, XmlNode> controlFatherInXmlDocu = new Dictionary<Control, XmlNode>();
        
 
         public Form2(List<Element> elements, Dictionary<string,ComplexType> myDic)
@@ -44,6 +45,14 @@ namespace FormularioXML
 
         private void validate(object sender, EventArgs e)
         {
+            foreach(ComboBox combo in combos)
+            {
+               if(combo.SelectedIndex==-1)
+               {
+                   MessageBox.Show("PLEASE SELECT THE WANTED CHOICE");
+                   return;
+               }
+            }
             foreach(Control key in xmlDyc.Keys)
             {
                 String value = key.Text;
@@ -309,6 +318,7 @@ namespace FormularioXML
         }
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            
             panel.SuspendLayout();
             ComboBox tmp = sender as ComboBox;  
             if(choice.ContainsKey(tmp))
@@ -326,7 +336,11 @@ namespace FormularioXML
                     int deleteUntil = panel.Controls.IndexOf(tmp_c)-1;
                     int index = panel.Controls.IndexOf(tmp);
                     removeControls(index, deleteUntil);
-                }              
+                }
+                //eliminar el child viejo del xml
+                controlFatherInXmlDocu[sender as Control].RemoveChild(controlFatherInXmlDocu[sender as Control].ChildNodes.Item(controlFatherInXmlDocu[sender as Control].ChildNodes.Count-1));
+               // XmlNodeList t = controlFatherInXmlDocu[sender as Control].ChildNodes;
+                //t.Item(t.Count - 1);
             }
             else
             {
@@ -335,6 +349,9 @@ namespace FormularioXML
                    next = panel.Controls[panel.Controls.IndexOf(sender as Control) + 1];
                 choice.Add(sender as Control, next);
             }
+            XmlNode child = this.xmldocument.CreateElement(tmp.Text);
+            this.controlFatherInXmlDocu[sender as Control].AppendChild(child);
+            currentXmlNode = child;
             List<Control> lista = this.getAllControls(tmp.Text);
             addControlsAt(lista, panel.Controls.IndexOf(tmp) + 1);
             panel.AutoScroll = false;
@@ -774,6 +791,9 @@ namespace FormularioXML
                 if (controls != null)
                     controls.Add(tmp_cb);
                 list.Add(tmp_cb);
+                controlFatherInXmlDocu.Add(tmp_cb, currentXmlNode);
+                this.combos.Add(tmp_cb);
+                
             }
             if (controls != null)
                 enable.Add(nullCheckBox, controls);
@@ -826,7 +846,7 @@ namespace FormularioXML
                     regex = new Regex(@"^(-|)[1-9][0-9]*$");
                     return regex.IsMatch(value);
                 default:
-                    return false;
+                    return true;
 
             }
              
