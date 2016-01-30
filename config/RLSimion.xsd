@@ -85,13 +85,32 @@
     </xs:sequence>
   </xs:complexType>
 
-
-
   <xs:complexType name="simgod">
+    <xs:choice>
+      <xs:element name="actor-only" type="actor-only"/>
+      <xs:element name="actor-critic" type="actor-critic"/>
+      <xs:element name="actor-critic-controller" type="actor-critic-controller"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="actor-only">
     <xs:sequence>
-      <xs:element name="actor" minOccurs="1" type="actor-controller"/>
-      <xs:element name="critic" minOccurs="0" type="critic"/>
-      <xs:element name="controller" minOccurs="0" type="actor-controller"/>
+      <xs:element name="actor" type="actor-controller"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="actor-critic">
+    <xs:sequence>
+      <xs:element name="actor" type="actor-controller"/>
+      <xs:element name="critic" type="critic"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="actor-critic-controller">
+    <xs:sequence>
+      <xs:element name="actor" type="actor-controller"/>
+      <xs:element name="critic" type="critic"/>
+      <xs:element name="controller" type="actor-controller"/>
     </xs:sequence>
   </xs:complexType>
 
