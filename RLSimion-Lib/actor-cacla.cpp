@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "parameter.h"
 
-CCACLAActor::CCACLAActor(CParameters *pParameters) : CVFAActor(pParameters)
+CCACLAActor::CCACLAActor(CParameters *pParameters) : CVFAGaussianNoiseActor(pParameters)
 {
 
 }

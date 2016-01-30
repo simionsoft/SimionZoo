@@ -43,6 +43,8 @@ namespace FormularioXML
                 xmlSchema = schema;
             }
 
+            //DataSet myDS = new DataSet();
+           // myDS.ReadXmlSchema("RLSimion.xsd");
             DataSet myDS = new DataSet();
             myDS.ReadXmlSchema("../config/RLSimion.xsd");
 

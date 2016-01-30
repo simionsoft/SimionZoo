@@ -50,7 +50,7 @@ CActor *CActor::getControllerInstance(CParameters* pParameters)
 	return m_pController;
 }
 
-CVFAActor::CVFAActor(CParameters* pParameters)
+CVFAGaussianNoiseActor::CVFAGaussianNoiseActor(CParameters* pParameters)
 {
 	char parameterName[MAX_PARAMETER_NAME_SIZE];
 
@@ -84,7 +84,7 @@ CVFAActor::CVFAActor(CParameters* pParameters)
 		m_saveFilename[0] = 0;
 }
 
-CVFAActor::~CVFAActor()
+CVFAGaussianNoiseActor::~CVFAGaussianNoiseActor()
 {
 	if (m_saveFilename[0] != 0)
 		savePolicy(m_saveFilename);

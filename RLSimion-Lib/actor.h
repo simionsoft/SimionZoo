@@ -36,7 +36,7 @@ public:
 	static CActor *getControllerInstance(CParameters* pParameters);
 };
 
-class CVFAActor : public CActor
+class CVFAGaussianNoiseActor : public CActor
 {
 protected:
 	bool m_bSave;
@@ -50,8 +50,8 @@ protected:
 	CAction *m_pOutput;
 	CExperimentProgress m_outputTime;
 public:
-	CVFAActor(CParameters* pParameters);
-	~CVFAActor();
+	CVFAGaussianNoiseActor(CParameters* pParameters);
+	~CVFAGaussianNoiseActor();
 	void savePolicy(const char* pFilename);
 	void loadPolicy(const char* pFilename);
 
@@ -61,7 +61,7 @@ public:
 };
 
 
-class CCACLAActor :public CVFAActor
+class CCACLAActor :public CVFAGaussianNoiseActor
 {
 
 public:
