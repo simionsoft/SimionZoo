@@ -37,7 +37,7 @@ namespace FormularioXML
             this.elements = elements;
             this.myDic = myDic;
             test = elements.ElementAt(0);
-            root = xmldocument.CreateElement("experiment");
+            root = xmldocument.CreateElement("RLSimion");
             xmldocument.AppendChild(root);
             initializeComponent();
             
@@ -189,7 +189,7 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = "CHOICE";
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = "CHOICE";
+                tmp_l.Text = complex.name;
                 tmp_l.Anchor = AnchorStyles.Left;
                 panel.Controls.Add(tmp_l);
 
@@ -216,7 +216,7 @@ namespace FormularioXML
             panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             panel.Location = new System.Drawing.Point(34, 29);
             panel.Name = "tableLayoutPanel1";
-            panel.Size = new System.Drawing.Size(310, 581);
+            panel.Size = new System.Drawing.Size(400, 581);
             panel.TabIndex = 0;
             panel.AutoScroll = true;
             panel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
@@ -233,7 +233,7 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = e.type;
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = e.type;
+                tmp_l.Text = e.name;
                 //hay que comprobar si son tipo simple, simplextype o cumpuestos si son simple hay que poner un text box si son complejos añadir el complejo.
                 if (e.type == null || e.type.Equals(""))
                 {
@@ -248,7 +248,7 @@ namespace FormularioXML
                     Label tmp_name = new Label();
                     tmp_name.AutoSize = true;
                     tmp_name.Size = new System.Drawing.Size(35, 13);
-                    tmp_name.Text = e.name;
+                    tmp_name.Text = "";// e.name;
                     panel.Controls.Add(tmp_name);
                     //antes de resolverlo hay que poner nombre del tipo y de la instancia ya que puede haber mas de una
                     //resolveComplexType(tmp_ct, panel, myDic, ref x_index, ref y_index, 5);
@@ -629,7 +629,7 @@ namespace FormularioXML
             complexHeadLine.AutoSize = true;
             complexHeadLine.Name = complex.name;
             complexHeadLine.Size = new System.Drawing.Size(35, 13);
-            complexHeadLine.Text = complex.name;
+            complexHeadLine.Text = complex.elementName;
             list.Add(complexHeadLine);
             Button buttonAdd = null;
             List<Control> controls = null;
@@ -639,12 +639,12 @@ namespace FormularioXML
                 complexHeadLine2.AutoSize = true;
                 complexHeadLine2.Name = complex.elementName;
                 complexHeadLine2.Size = new System.Drawing.Size(35, 13);
-                complexHeadLine2.Text = complex.elementName;
+                complexHeadLine2.Text = "";// complex.elementName;
                 list.Add(complexHeadLine2);
             }
             else
             {
-                complexHeadLine.Text += ":" + complex.elementName;
+                //complexHeadLine.Text =  complex.elementName;
                 buttonAdd = new Button();
                 buttonAdd.Size = new Size(100, 25);
                 buttonAdd.Text = "ADD";
@@ -812,7 +812,7 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = "CHOICE";
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = "CHOICE";
+                tmp_l.Text = complex.elementName;
                 tmp_l.Anchor = AnchorStyles.Left;
                 list.Add(tmp_l);
 
