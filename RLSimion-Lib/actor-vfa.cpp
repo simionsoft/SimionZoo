@@ -6,7 +6,7 @@
 
 //Here we implement the methods common to all VFAActors
 
-void CVFAActor::selectAction(CState *s, CAction *a)
+void CVFAGaussianNoiseActor::selectAction(CState *s, CAction *a)
 {
 	double a_width;
 	double noise;
@@ -38,7 +38,7 @@ void CVFAActor::selectAction(CState *s, CAction *a)
 }
 
 
-double CVFAActor::getProbability(CState* s, CAction* a)
+double CVFAGaussianNoiseActor::getProbability(CState* s, CAction* a)
 {
 	double actionProb = 1.0;
 	double actionDist = 0.0;
@@ -87,7 +87,7 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 }
 
 
-void CVFAActor::savePolicy(const char* pFilename)
+void CVFAGaussianNoiseActor::savePolicy(const char* pFilename)
 {
 	FILE* pFile;
 
@@ -107,7 +107,7 @@ void CVFAActor::savePolicy(const char* pFilename)
 
 }
 
-void CVFAActor::loadPolicy(const char* pFilename)
+void CVFAGaussianNoiseActor::loadPolicy(const char* pFilename)
 {
 	FILE* pFile;
 
