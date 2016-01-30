@@ -28,7 +28,6 @@
 
   <xs:complexType name="world">
     <xs:sequence>
-      <xs:element name="dynamic-model" type="xs:string"/>
       <xs:element name="reward" type="reward"/>
       <xs:element name="DELTA_T" type="xs:decimal"/>
       <xs:element name="NUM_SIMULATION_STEPS" type="xs:integer"/>
@@ -98,7 +97,6 @@
 
   <xs:complexType name="actor-controller">
     <xs:sequence>
-      <xs:element name="ALGORITHM" type="xs:string"/>
       <xs:element name="LOAD" type="xs:string" default=""/>
       <xs:element name="SAVE" type="xs:string" default=""/>
       <xs:choice>
@@ -114,7 +112,6 @@
 
   <xs:complexType name="critic">
     <xs:sequence>
-      <xs:element name="ALGORITHM" type="xs:string"/>
       <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
       <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
       <xs:choice>
@@ -220,7 +217,6 @@
 
   <xs:complexType name="numeric">
     <xs:sequence>
-      <xs:element name="TYPE" type="xs:string"/>
       <xs:choice>
         <xs:element name="decimal" type="xs:decimal"/>
         <xs:element name="schedule" type="schedule"/>
