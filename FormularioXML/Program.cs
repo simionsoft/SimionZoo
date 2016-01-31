@@ -210,7 +210,11 @@ namespace FormularioXML
         public static ComplexType resolveComplex(ComplexType complexToResolve, Dictionary<string, ComplexType> dic, ref List<string> complexName)
         {
             ComplexType result = complexToResolve.copy();
-
+            if (result.elements == null)
+            {
+                result.elementName = result.name;
+                return result;
+            }
             for (int index = 0; index < result.elements.Count; index++)
             {
                 Element element = result.elements.ElementAt(index);

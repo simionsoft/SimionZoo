@@ -140,8 +140,8 @@ namespace FormularioXML
                         {
                             tmp_cb.Items.Add(res.ToString());
                         }
-                        tmp_cb.Size = new Size(100, 13);
-                        tmp_cb.Anchor = AnchorStyles.Right;
+                        tmp_cb.Size = new Size(100, 25);
+                        tmp_cb.Anchor = AnchorStyles.Left;
                         panel.Controls.Add(tmp_cb);
 
                     }
@@ -150,8 +150,8 @@ namespace FormularioXML
                         ComboBox tmp_cb = new ComboBox();
                         tmp_cb.Items.Add("TRUE");
                         tmp_cb.Items.Add("FALSE");
-                        tmp_cb.Size = new Size(100, 13);
-                        tmp_cb.Anchor = AnchorStyles.Right;
+                        tmp_cb.Size = new Size(100, 25);
+                        tmp_cb.Anchor = AnchorStyles.Left;
                         panel.Controls.Add(tmp_cb);
 
 
@@ -159,10 +159,10 @@ namespace FormularioXML
                     else
                     {
                         TextBox tmp_t = new TextBox();
-                        tmp_t.Size = new Size(100, 13);
+                        tmp_t.Size = new Size(100, 25);
                         tmp_t.Name = e.name;
                         tmp_t.AccessibleDescription = e.type;
-                        tmp_t.Anchor = AnchorStyles.Right;
+                        tmp_t.Anchor = AnchorStyles.Left;
                         panel.Controls.Add(tmp_t);
                     }
                     
@@ -195,7 +195,7 @@ namespace FormularioXML
 
                 ComboBox tmp_cb = new ComboBox();
                 tmp_cb.Size = new System.Drawing.Size(100, 13);
-                tmp_cb.Anchor = AnchorStyles.Right;
+                tmp_cb.Anchor = AnchorStyles.Left;
                 foreach (Element e in complex.choice)
                 {
                     tmp_cb.Items.Add(e.name);
@@ -216,11 +216,26 @@ namespace FormularioXML
             panel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             panel.Location = new System.Drawing.Point(34, 29);
             panel.Name = "tableLayoutPanel1";
-            panel.Size = new System.Drawing.Size(400, 581);
+            panel.Size = new System.Drawing.Size(300, 581);
             panel.TabIndex = 0;
             panel.AutoScroll = true;
             panel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
-            
+
+            Label title = new Label();
+            title.AutoSize = true;
+            title.Name = "Title";
+            title.Size = new System.Drawing.Size(35, 13);
+            title.Text = "RLSimion";
+            title.Anchor = AnchorStyles.Left;
+            panel.Controls.Add(title);
+
+            Label title2 = new Label();
+            title2.AutoSize = true;
+            title2.Name = "Title";
+            title2.Size = new System.Drawing.Size(35, 13);
+            title2.Text = "";
+            title2.Anchor = AnchorStyles.Left;
+            panel.Controls.Add(title2);
     
             foreach (Element e in elements)
             {
@@ -234,6 +249,7 @@ namespace FormularioXML
                 tmp_l.Name = e.type;
                 tmp_l.Size = new System.Drawing.Size(35, 13);
                 tmp_l.Text = e.name;
+                tmp_l.Anchor = AnchorStyles.Left;
                 //hay que comprobar si son tipo simple, simplextype o cumpuestos si son simple hay que poner un text box si son complejos añadir el complejo.
                 if (e.type == null || e.type.Equals(""))
                 {
@@ -253,7 +269,7 @@ namespace FormularioXML
                     //antes de resolverlo hay que poner nombre del tipo y de la instancia ya que puede haber mas de una
                     //resolveComplexType(tmp_ct, panel, myDic, ref x_index, ref y_index, 5);
                     panel.Controls.AddRange(getAllControls(e.type).ToArray());
-                    int i = 0;
+                    
 
                 }
                 else
@@ -383,6 +399,7 @@ namespace FormularioXML
         }
         private void button_Click(object sender, EventArgs e)
         {
+            //corregir hay que añadir en el sitio correcto no al final
             panel.SuspendLayout();
             Control button = sender as Control;
             int buttonIndex = panel.Controls.IndexOf(button);
@@ -393,11 +410,22 @@ namespace FormularioXML
             if(myDic.ContainsKey(value))
             {
 
-                //corregir se necesita una nodo nuevo que cuelge del padre.
+                
                 complex = true;
                 currentXmlNode = controlFatherInXmlDocu[sender as Control].ParentNode;
                 XmlNode node = xmldocument.CreateElement(controlFatherInXmlDocu[sender as Control].Name);
-                currentXmlNode.AppendChild(node);
+                //el nodo hay que ponerlo en la posicion correcto no al final
+                currentXmlNode.InsertBefore(node, controlFatherInXmlDocu[sender as Control]);
+                /*var child = currentXmlNode.ChildNodes;
+                foreach(XmlNode nodo in child)
+                {
+                    if(nodo.Name.Equals(node.Name))
+                    {
+                        currentXmlNode.InsertBefore(node, nodo);
+                        break;
+                    }
+                }*/
+                //currentXmlNode.AppendChild(node);    
                 currentXmlNode = node;
                 List<Control> list = getAllControls(value);
                 panel.Controls.AddRange(list.ToArray());
@@ -524,7 +552,7 @@ namespace FormularioXML
             Button delete = new Button();
             delete.Text = "DELETE";
             delete.Size = new Size(100, 25);
-            delete.Anchor = AnchorStyles.Right;
+            delete.Anchor = AnchorStyles.Left;
             delete.Name = "Delete";
             delete.Click += new System.EventHandler(this.delete_Click);
             if(!complex)
@@ -607,8 +635,8 @@ namespace FormularioXML
                 TextBox textBox = new TextBox();
                 textBox.Name=typeName;
                 textBox.AccessibleDescription = typeName;
-                textBox.Size= new Size(100,13);
-                textBox.Anchor = AnchorStyles.Right;
+                textBox.Size= new Size(100,25);
+                textBox.Anchor = AnchorStyles.Left;
                 controls.Add(textBox);
 
                 //hay qeu añadir el elemento al arbol
@@ -629,7 +657,8 @@ namespace FormularioXML
             complexHeadLine.AutoSize = true;
             complexHeadLine.Name = complex.name;
             complexHeadLine.Size = new System.Drawing.Size(35, 13);
-            complexHeadLine.Text = complex.elementName;
+            complexHeadLine.Text = complex.name;
+            complexHeadLine.Anchor = AnchorStyles.Left;
             list.Add(complexHeadLine);
             Button buttonAdd = null;
             List<Control> controls = null;
@@ -649,7 +678,7 @@ namespace FormularioXML
                 buttonAdd.Size = new Size(100, 25);
                 buttonAdd.Text = "ADD";
                 buttonAdd.Name = complex.name;
-                buttonAdd.Anchor = AnchorStyles.Right;
+                buttonAdd.Anchor = AnchorStyles.Left;
                 buttonAdd.Click += new System.EventHandler(this.button_Click);
                 controlFatherInXmlDocu.Add(buttonAdd, currentXmlNode);
                 list.Add(buttonAdd);
@@ -695,8 +724,8 @@ namespace FormularioXML
                         {
                             tmp_cb.Items.Add(res.ToString());
                         }
-                        tmp_cb.Size = new Size(100, 13);
-                        tmp_cb.Anchor = AnchorStyles.Right;
+                        tmp_cb.Size = new Size(100, 25);
+                        tmp_cb.Anchor = AnchorStyles.Left;
                         list.Add(tmp_cb);
                         xmlDyc.Add(tmp_cb, child);
                         if (controls != null)
@@ -707,8 +736,8 @@ namespace FormularioXML
                         ComboBox tmp_cb = new ComboBox();
                         tmp_cb.Items.Add("TRUE");
                         tmp_cb.Items.Add("FALSE");
-                        tmp_cb.Size = new Size(100, 13);
-                        tmp_cb.Anchor = AnchorStyles.Right;
+                        tmp_cb.Size = new Size(100, 25);
+                        tmp_cb.Anchor = AnchorStyles.Left;
                         list.Add(tmp_cb);
                         xmlDyc.Add(tmp_cb, child);
                         if (controls != null)
@@ -721,10 +750,10 @@ namespace FormularioXML
                         //to do: mirar si puede ser null o no. Cambiar tipo por maskedType y añadir restriccion de typo
                         //restriccion numeric o string
                         TextBox tmp_t = new TextBox();
-                        tmp_t.Size = new Size(100, 13);
+                        tmp_t.Size = new Size(100, 25);
                         tmp_t.Name = e.name;
                         tmp_t.AccessibleDescription = e.type;
-                        tmp_t.Anchor = AnchorStyles.Right;
+                        tmp_t.Anchor = AnchorStyles.Left;
                         list.Add(tmp_t);
                         xmlDyc.Add(tmp_t, child);
                         if (controls != null)
@@ -812,18 +841,19 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = "CHOICE";
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = complex.elementName;
+                tmp_l.Text = complex.name;
                 tmp_l.Anchor = AnchorStyles.Left;
                 list.Add(tmp_l);
 
                 ComboBox tmp_cb = new ComboBox();
                 tmp_cb.Size = new System.Drawing.Size(100, 13);
-                tmp_cb.Anchor = AnchorStyles.Right;
+                tmp_cb.Anchor = AnchorStyles.Left;
                 foreach (Element e in complex.choice)
                 {
                     tmp_cb.Items.Add(e.name);
                 }
                 tmp_cb.SelectedIndexChanged += new EventHandler(this.comboBox_SelectedIndexChanged);
+                Size oo = tmp_cb.Size;
                 if (controls != null)
                     controls.Add(tmp_cb);
                 list.Add(tmp_cb);
