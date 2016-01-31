@@ -223,9 +223,10 @@ namespace FormularioXML
                 if (dic.TryGetValue(element.type, out tmp_ct))
                 {
                     //to do: hay qeu quitarlo de la lista element y ponerlo en la lista complex para resolverlo
-                    tmp_ct.elementName = element.name;
+                   
                     //tmp_ct.setFather(element);
                     result.addComplexElemente(resolveComplex(tmp_ct,dic, ref complexName));
+                    result.complexElements[result.complexElements.Count-1].elementName = element.name;
                     result.complexElements.ElementAt(result.complexElements.Count - 1).setFather(element);
                     result.elements.Remove(element);
                     index--;

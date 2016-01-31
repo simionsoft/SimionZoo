@@ -295,12 +295,17 @@ namespace FormularioXML
 
             Button validate = new Button();
             validate.Size= new Size(100, 35);
-            validate.Text = "VALIDATE";
+            validate.Text = "SAVE";
             validate.Location = new Point(500, 300);
             validate.Click += new EventHandler(this.validate);
             this.Controls.Add(validate);
 
-
+            Button load = new Button();
+            load.Size = new Size(100, 35);
+            load.Text = "LOAD";
+            load.Location = new Point(500, 340);
+            load.Click += new EventHandler(this.load);
+            this.Controls.Add(load);
 
             // 
             // contextMenuStrip1
@@ -318,6 +323,51 @@ namespace FormularioXML
             panel.ResumeLayout(false);
             panel.PerformLayout();
             this.ResumeLayout(false);
+        }
+
+        private void load(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "XML-File | *.xml";
+            if(ofd.ShowDialog() == DialogResult.OK)
+            {
+                String fileName = ofd.FileName;
+                XmlDocument doc = new XmlDocument();
+                doc.Load(fileName);
+                XmlNode rl = doc.LastChild;
+                foreach(XmlNode node in rl.ChildNodes)
+                {
+                    fillForm(node);
+                }
+               
+            }
+
+        }
+        private void fillForm(XmlNode node)
+        {
+            
+            if(node.HasChildNodes)
+            {
+                Console.WriteLine(node.Name);
+                var children = node.ChildNodes;
+                int i = 0;
+                foreach (XmlNode nodo in node.ChildNodes)
+                {
+                    if( i<children.Count-1 && children[i].Name.Equals(children[i+1].Name))
+                    {
+                        
+                        //es un unbounnd hay qeu darle al botton de add
+                        Console.WriteLine("multi");
+                    }
+                    i++;
+                    fillForm(nodo);
+                }
+            }
+            else
+            {
+                Console.WriteLine(node.InnerText);
+            }
+
         }
         private void movePanelItems(int row, int offset)
         {
@@ -669,12 +719,12 @@ namespace FormularioXML
             complexHeadLine.AutoSize = true;
             complexHeadLine.Name = complex.name;
             complexHeadLine.Size = new System.Drawing.Size(35, 13);
-            complexHeadLine.Text = complex.name;
+            complexHeadLine.Text = complex.elementName;
             complexHeadLine.Anchor = AnchorStyles.Left;
             list.Add(complexHeadLine);
             Button buttonAdd = null;
             List<Control> controls = null;
-            if (complex.getMax() <= 1)
+            if (complex.getMax() == 1)
             {
                 Label complexHeadLine2 = new Label();
                 complexHeadLine2.AutoSize = true;
