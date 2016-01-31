@@ -54,6 +54,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
@@ -353,6 +354,10 @@
             this.splitContainer2.SplitterDistance = 64;
             this.splitContainer2.TabIndex = 2;
             // 
+            // saveFileDialog1
+            // 
+            this.saveFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -422,6 +427,7 @@
         private System.Windows.Forms.CheckBox checkBox3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.SplitContainer splitContainer4;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
 
     }
 }

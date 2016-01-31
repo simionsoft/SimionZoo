@@ -81,7 +81,19 @@ namespace FormularioXML
 
                 }
             }
-            cleanNullTagsAndSave("prueba.xml");
+            cleanNullTagsAndSave();
+        }
+        private void cleanNullTagsAndSave()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "XML-File | *.xml";
+            if(sfd.ShowDialog()== System.Windows.Forms.DialogResult.OK)
+            {
+                XElement doc = XElement.Load(new XmlNodeReader(xmldocument));
+                doc.Descendants().Where(t => string.IsNullOrEmpty(t.Value)).Remove();
+                doc.Save(sfd.FileName);
+            }
+            
         }
         private void cleanNullTagsAndSave(string path)
         {
