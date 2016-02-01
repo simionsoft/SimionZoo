@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  
+  <xs:element name="EXPERIMENT" type="experiment"/>
+  <xs:element name="WORLD" type="world"/>
   <xs:element name="SIMGOD" type="simgod"/>
 
   <xs:complexType name="experiment">

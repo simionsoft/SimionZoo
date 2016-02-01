@@ -139,7 +139,7 @@ namespace FormularioXML
                     //si tiene type un textbox para introducir el tipo
                     Label tmp_l = new Label();
                     tmp_l.AutoSize = true;
-                    tmp_l.Name = e.name;
+                    tmp_l.Name = "CHOICE";
                     tmp_l.Size = new System.Drawing.Size(35, 13);
                     tmp_l.Text = e.name;
                     tmp_l.Anchor = AnchorStyles.Left;
@@ -201,7 +201,7 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = "CHOICE";
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = complex.name;
+                tmp_l.Text = complex.elementName;
                 tmp_l.Anchor = AnchorStyles.Left;
                 panel.Controls.Add(tmp_l);
 
@@ -331,42 +331,71 @@ namespace FormularioXML
             ofd.Filter = "XML-File | *.xml";
             if(ofd.ShowDialog() == DialogResult.OK)
             {
+                
                 String fileName = ofd.FileName;
                 XmlDocument doc = new XmlDocument();
                 doc.Load(fileName);
+                //to do:hay que borrar quitar poner un formulario base sin unbbound 
                 XmlNode rl = doc.LastChild;
+                int index = 3;
                 foreach(XmlNode node in rl.ChildNodes)
                 {
-                    fillForm(node);
+                    fillForm(node,ref index);
                 }
                
             }
 
         }
-        private void fillForm(XmlNode node)
+        private void fillForm(XmlNode node, ref int index)
         {
+            panel.SuspendLayout();
             
             if(node.HasChildNodes)
             {
+
+                if (panel.Controls[index] is Label && panel.Controls[index].Name.Equals("CHOICE"))
+                {
+                    index++;
+                    ComboBox tmp = panel.Controls[index] as ComboBox;
+                    var list = tmp.Items;
+                    if (list.Contains(node.Name))
+                    {
+                        tmp.SelectedIndex = list.IndexOf(node.Name);
+                        index++;
+                    }
+                }
+                if (panel.Controls[index] is Label && panel.Controls[index].Text.Equals(node.Name))
+                    index++;
+                
+                while((panel.Controls[index] is Label && panel.Controls[index].Text.Equals(""))|| panel.Controls[index] is Button)
+                {
+                    index++;
+                }
                 Console.WriteLine(node.Name);
                 var children = node.ChildNodes;
                 int i = 0;
                 foreach (XmlNode nodo in node.ChildNodes)
                 {
-                    if( i<children.Count-1 && children[i].Name.Equals(children[i+1].Name))
+                    int multi = 0;
+                    while (i < children.Count - 1 -multi && children[i].Name.Equals(children[i + 1 +multi].Name))
                     {
-                        
-                        //es un unbounnd hay qeu darle al botton de add
-                        Console.WriteLine("multi");
+                        ((Button)(panel.Controls[index + 1])).PerformClick();
+                        multi++;
+                       
                     }
+                    
+                    
                     i++;
-                    fillForm(nodo);
+                    fillForm(nodo, ref index);
                 }
             }
             else
             {
-                Console.WriteLine(node.InnerText);
+                Console.WriteLine(node.InnerText+"  "+index);
+                panel.Controls[index].Text = node.InnerText;
+                index++;
             }
+            panel.ResumeLayout();
 
         }
         private void movePanelItems(int row, int offset)
@@ -721,7 +750,8 @@ namespace FormularioXML
             complexHeadLine.Size = new System.Drawing.Size(35, 13);
             complexHeadLine.Text = complex.elementName;
             complexHeadLine.Anchor = AnchorStyles.Left;
-            list.Add(complexHeadLine);
+            if(complex.father!=null)
+                list.Add(complexHeadLine);
             Button buttonAdd = null;
             List<Control> controls = null;
             if (complex.getMax() == 1)
@@ -731,7 +761,8 @@ namespace FormularioXML
                 complexHeadLine2.Name = complex.elementName;
                 complexHeadLine2.Size = new System.Drawing.Size(35, 13);
                 complexHeadLine2.Text = "";// complex.elementName;
-                list.Add(complexHeadLine2);
+                if(complex.father!=null)
+                    list.Add(complexHeadLine2);
             }
             else
             {
@@ -773,14 +804,14 @@ namespace FormularioXML
                     //si tiene type un textbox para introducir el tipo
                     Label tmp_l = new Label();
                     tmp_l.AutoSize = true;
-                    tmp_l.Name = e.name;
+                   
                     tmp_l.Size = new System.Drawing.Size(35, 13);
                     tmp_l.Text = e.name;
                     tmp_l.Anchor = AnchorStyles.Left;
                     list.Add(tmp_l);
                     if ((e.type == null || e.type.Equals("")) && e.simpleType != null)
                     {
-                        
+                        tmp_l.Name = "CHOICE";   
                         ComboBox tmp_cb = new ComboBox();
                         foreach (RestrictionEnum res in e.simpleType.restricction.validOptions)
                         {
@@ -903,7 +934,7 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = "CHOICE";
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = complex.name;
+                tmp_l.Text = complex.elementName;
                 tmp_l.Anchor = AnchorStyles.Left;
                 list.Add(tmp_l);
 
