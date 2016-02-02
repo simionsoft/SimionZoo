@@ -3,11 +3,11 @@
   <xs:element name="RLSimion" type="RLSimion"></xs:element>
   <xs:complexType name="RLSimion">
     <xs:sequence>
-      <xs:element name="EXPERIMENT" type="experiment"/>
-      <xs:element name="WORLD" type="world"/>
-      <xs:element name="SIMGOD" type="simgod"/>
-    </xs:sequence>
-  </xs:complexType>
+  <xs:element name="EXPERIMENT" type="experiment"/>
+  <xs:element name="WORLD" type="world"/>
+  <xs:element name="SIMGOD" type="simgod"/>
+      </xs:sequence>
+    </xs:complexType>
 
   <xs:complexType name="experiment">
     <xs:sequence>
@@ -102,16 +102,16 @@
       <xs:element name="ACTOR" type="actor"/>
     </xs:sequence>
   </xs:complexType>
-
+  
   <xs:complexType name="actor-critic">
     <xs:sequence>
       <xs:element name="ACTOR" type="actor"/>
       <xs:element name="CRITIC" type="critic"/>
     </xs:sequence>
   </xs:complexType>
-
+  
   <!--ACTOR/CONTROLLER -->
-
+  
   <xs:complexType name="actor-critic-controller">
     <xs:sequence>
       <xs:element name="ACTOR" type="actor"/>
@@ -130,7 +130,7 @@
         <xs:element name="vidal" type="vidal"/>
         <xs:element name="boukhezzar" type="boukhezzar"/>
       </xs:choice>
-
+      
     </xs:sequence>
   </xs:complexType>
 
@@ -162,7 +162,7 @@
 
     </xs:sequence>
   </xs:complexType>
-
+  
   <xs:complexType name="RegularGradientActor">
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
@@ -172,7 +172,7 @@
       <xs:element name="ACTION" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
-
+  
   <xs:complexType name="IncrementalNaturalActor">
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
@@ -257,7 +257,7 @@
   </xs:complexType>
 
   <!--CRITIC -->
-
+  
   <xs:complexType name="critic">
     <xs:sequence>
       <xs:choice>
@@ -269,7 +269,7 @@
       <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
-
+  
   <xs:complexType name="TD-Lambda">
     <xs:sequence>
       <xs:element name="VFA" type="rbf-value"/>

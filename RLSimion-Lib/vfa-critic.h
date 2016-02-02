@@ -17,6 +17,8 @@ public:
 
 	void loadVFunction(const char* filename);
 	void saveVFunction(const char* filename);
+
+	static CVFACritic* getInstance(CParameters* pParameters);
 };
 
 class CTDLambdaCritic : public CVFACritic

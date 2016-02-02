@@ -76,7 +76,7 @@ namespace FormularioXML
         public List<Attribute> attributes;
         public List<Element> choice;
         public List<ComplexType> complexElements;
-        private Element father;
+        public Element father;
 
         public void setFather(Element e)
         {

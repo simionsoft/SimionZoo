@@ -9,10 +9,7 @@
 #include "parameters.h"
 
 
-//The compatible features of a gaussian policy, according to
-//http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/pg.pdf
-//is:
-// \Psi_sa= \delta log pi(s,a)= (a_t-\pi(s_t)) * phi(s_t) / sigma^2
+
 
 
 CIncrementalNaturalActor::CIncrementalNaturalActor(CParameters *pParameters) 
@@ -39,6 +36,17 @@ void CIncrementalNaturalActor::updatePolicy(CState *s, CAction *a, CState *s_p, 
 
 	//If we use Gaussian Noise added to the VFA's output:
 	//Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
+
+	//The compatible features of a gaussian policy, according to
+	//http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/pg.pdf
+	//is:
+	// \Psi_sa= \delta log pi(s,a)= (a_t-\pi(s_t)) * phi(s_t) / sigma^2
+
+	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
+	
+	//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
+	m_e->update(m_pParameters->getParameter("GAMMA")->getDouble());
+	m_e->addFeatureList(m_grad_u);
 
 
 	alpha = m_pParameters->getParameter("ALPHA")->getDouble();

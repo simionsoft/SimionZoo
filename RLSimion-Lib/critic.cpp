@@ -3,22 +3,15 @@
 #include "parameters.h"
 #include "parameter.h"
 #include "vfa.h"
-
+#include "vfa-critic.h"
 
 
 CCritic *CCritic::getInstance(CParameters* pParameters)
 {
 	if (!pParameters) return 0;
 
-
-	const char* type = pParameters->getChild(0)->getName();
-	if (!)
-	if (strcmp(pAlgorithm, "TD-Lambda") == 0)
-		return new CTDLambdaCritic(pParameters);
-	else if (strcmp(pAlgorithm, "True-Online-TD-Lambda") == 0)
-		return new CTrueOnlineTDLambdaCritic(pParameters);
-	else if (strcmp(pAlgorithm, "TDC-Lambda") == 0)
-		return new CTDCLambdaCritic(pParameters);
+	if (!strcmp(pParameters->getChild(0)->getName(), "VFA_CRITIC"))
+		return CVFACritic::getInstance(pParameters->getChild(0));
 
 	return 0;
 }
