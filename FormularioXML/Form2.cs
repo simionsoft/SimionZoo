@@ -995,7 +995,7 @@ namespace FormularioXML
                 tmp_cb.Anchor = AnchorStyles.Left;
                 foreach (Element e in complex.choice)
                 {
-                    tmp_cb.Items.Add(e.name);
+                    tmp_cb.Items.Add(e.type);
                 }
                 tmp_cb.SelectedIndexChanged += new EventHandler(this.comboBox_SelectedIndexChanged);
                 Size oo = tmp_cb.Size;
