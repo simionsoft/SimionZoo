@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 
 namespace FormularioXML
 {
@@ -201,7 +202,7 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = "CHOICE";
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = complex.elementName;
+                tmp_l.Text = complex.name;
                 tmp_l.Anchor = AnchorStyles.Left;
                 panel.Controls.Add(tmp_l);
 
@@ -335,7 +336,34 @@ namespace FormularioXML
                 String fileName = ofd.FileName;
                 XmlDocument doc = new XmlDocument();
                 doc.Load(fileName);
-                //to do:hay que borrar quitar poner un formulario base sin unbbound 
+                /*
+                XmlSchemaSet schemaSet = new XmlSchemaSet();
+                schemaSet.Add("http://www.w3.org/2001/XMLSchema", "../config/RLSimion.xsd");
+                //schemaSet.Compile();
+                XDocument docToValidate = XDocument.Parse(doc.OuterXml); ;
+                string msg = "";
+                docToValidate.Validate(schemaSet, (o, t) =>
+                {
+                    msg += t.Message + Environment.NewLine;
+                });
+                if(!msg.Equals(""))
+                {
+                    MessageBox.Show("SELECT XML FILE IS NOT VALID");
+                    return;
+                }
+               */
+                for (int y = 0; y < addDelete.Count;y++ )
+                {
+                    Button x = addDelete.Keys.ElementAt(y);
+                        if (addDelete[x] != null && addDelete[x].Count > 0)
+                        {
+                            for (int i = 0; i < addDelete[x].Count; )
+                            {
+                                addDelete[x][i].PerformClick();
+                            }
+                        }
+
+                    }
                 XmlNode rl = doc.LastChild;
                 int index = 3;
                 foreach(XmlNode node in rl.ChildNodes)
@@ -377,13 +405,23 @@ namespace FormularioXML
                 foreach (XmlNode nodo in node.ChildNodes)
                 {
                     int multi = 0;
+                    
                     while (i < children.Count - 1 -multi && children[i].Name.Equals(children[i + 1 +multi].Name))
                     {
-                        ((Button)(panel.Controls[index + 1])).PerformClick();
+                        if (panel.Controls[index + 1] is Button && panel.Controls[index + 1].Text.Equals("ADD"))
+                            ((Button)(panel.Controls[index + 1])).PerformClick();
+                        else if(panel.Controls[index+2] is Button && panel.Controls[index+2].Text.Equals("ADD"))
+                            ((Button)(panel.Controls[index + 2])).PerformClick();
                         multi++;
                        
                     }
-                    
+                    while ((panel.Controls[index] is Label && panel.Controls[index].Text.Equals("")) || panel.Controls[index] is Button)
+                    {
+                        if (index + 1 < panel.Controls.Count)
+                            index++;
+                        else
+                            break;
+                    }
                     
                     i++;
                     fillForm(nodo, ref index);
@@ -394,6 +432,10 @@ namespace FormularioXML
                 Console.WriteLine(node.InnerText+"  "+index);
                 panel.Controls[index].Text = node.InnerText;
                 index++;
+                if(panel.Controls.Count>index && panel.Controls[index] is Button)
+                {
+                    index += 2;
+                }
             }
             panel.ResumeLayout();
 
@@ -580,7 +622,17 @@ namespace FormularioXML
 
                 XmlNode father = controlFatherInXmlDocu[sender as Control];
                 XmlElement child = xmldocument.CreateElement(copy2.Name);
-                father.AppendChild(child);
+                var list = father.ChildNodes;
+                for (int i = 0; i < list.Count;i++ )
+                {
+                    if (list[i].Name.Equals(child.Name))
+                    {
+                        father.InsertBefore(child, list[i]);
+                        break;
+                    }
+                }
+                    
+                //father.AppendChild(child);
                 xmlDyc.Add(copy2, child);
                
                 if (!addDelete.ContainsKey(sender as Button))
@@ -934,7 +986,7 @@ namespace FormularioXML
                 tmp_l.AutoSize = true;
                 tmp_l.Name = "CHOICE";
                 tmp_l.Size = new System.Drawing.Size(35, 13);
-                tmp_l.Text = complex.elementName;
+                tmp_l.Text = complex.name;
                 tmp_l.Anchor = AnchorStyles.Left;
                 list.Add(tmp_l);
 
