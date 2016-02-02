@@ -380,7 +380,7 @@ namespace FormularioXML
                 if (panel.Controls[index] is Label && panel.Controls[index].Text.Equals(node.Name))
                     index++;
                 
-                while((panel.Controls[index] is Label && panel.Controls[index].Text.Equals(""))|| panel.Controls[index] is Button)
+                while((panel.Controls[index] is Label && panel.Controls[index].Text.Equals(""))|| panel.Controls[index] is Button || panel.Controls[index] is CheckBox)
                 {
                     index++;
                 }
@@ -400,7 +400,7 @@ namespace FormularioXML
                         multi++;
                        
                     }
-                    while ((panel.Controls[index] is Label && panel.Controls[index].Text.Equals("")) || panel.Controls[index] is Button)
+                    while ((panel.Controls[index] is Label && panel.Controls[index].Text.Equals("")) || panel.Controls[index] is Button || panel.Controls[index] is CheckBox)
                     {
                         if (index + 1 < panel.Controls.Count)
                             index++;
@@ -1042,7 +1042,7 @@ namespace FormularioXML
                     {
                         return true;
                     }
-                    return validateTextBox("int",value);
+                    return validateTextBox("integer",value);
                 case "integer":
                     regex = new Regex(@"^(-|)[1-9][0-9]*$");
                     return regex.IsMatch(value);
