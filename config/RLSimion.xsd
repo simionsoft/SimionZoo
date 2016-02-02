@@ -1,9 +1,13 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
-  <xs:element name="EXPERIMENT" type="experiment"/>
-  <xs:element name="WORLD" type="world"/>
-  <xs:element name="SIMGOD" type="simgod"/>
+  <xs:element name="RLSimion" type="RLSimion"></xs:element>
+  <xs:complexType name="RLSimion">
+    <xs:sequence>
+      <xs:element name="EXPERIMENT" type="experiment"/>
+      <xs:element name="WORLD" type="world"/>
+      <xs:element name="SIMGOD" type="simgod"/>
+    </xs:sequence>
+  </xs:complexType>
 
   <xs:complexType name="experiment">
     <xs:sequence>
@@ -87,9 +91,9 @@
 
   <xs:complexType name="simgod">
     <xs:choice>
-      <xs:element name="ACTOR-ONLY" type="actor-only"/>
-      <xs:element name="ACTOR-CRITIC" type="actor-critic"/>
-      <xs:element name="ACTOR-CRITIC-CONTROLLER" type="actor-critic-controller"/>
+      <xs:element name="actor-only" type="actor-only"/>
+      <xs:element name="actor-critic" type="actor-critic"/>
+      <xs:element name="actor-critic-controller" type="actor-critic-controller"/>
     </xs:choice>
   </xs:complexType>
 
@@ -98,16 +102,16 @@
       <xs:element name="ACTOR" type="actor"/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="actor-critic">
     <xs:sequence>
       <xs:element name="ACTOR" type="actor"/>
       <xs:element name="CRITIC" type="critic"/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <!--ACTOR/CONTROLLER -->
-  
+
   <xs:complexType name="actor-critic-controller">
     <xs:sequence>
       <xs:element name="ACTOR" type="actor"/>
@@ -119,20 +123,22 @@
   <xs:complexType name="actor">
     <xs:sequence>
       <xs:choice>
-        <xs:element name="VFA-Learner" type="VFA-Policy-Learner"/>
+        <xs:element name="VFA-Actor" type="VFA-Actor"/>
         <xs:element name="PID" type="PID"/>
         <xs:element name="LQR" type="LQR"/>
         <xs:element name="jonkman" type="jonkman"/>
         <xs:element name="vidal" type="vidal"/>
         <xs:element name="boukhezzar" type="boukhezzar"/>
       </xs:choice>
-      
+
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="VFA-Policy-Learner">
+  <xs:complexType name="VFA-Actor">
     <xs:sequence>
       <xs:element name="Single-Output-Policy-Learner" maxOccurs="unbounded" type="Single-Output-Policy-Learner"/>
+      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -143,11 +149,6 @@
         <xs:element name="RegularGradientActor" type="RegularGradientActor"/>
         <xs:element name="IncrementalNaturalActor" type="IncrementalNaturalActor"/>
       </xs:choice>
-      <xs:element name="VFA" type="vfa-policy"/>
-      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
-      <xs:element name="ACTION" type="xs:string"/>
-      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
-      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -155,20 +156,31 @@
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="VFA" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
+
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="RegularGradientActor">
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="VFA" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="IncrementalNaturalActor">
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="GAMMA" type="numeric"/>
+      <xs:element name="VFA" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -245,7 +257,7 @@
   </xs:complexType>
 
   <!--CRITIC -->
-  
+
   <xs:complexType name="critic">
     <xs:sequence>
       <xs:choice>
@@ -257,7 +269,7 @@
       <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="TD-Lambda">
     <xs:sequence>
       <xs:element name="VFA" type="rbf-value"/>
@@ -282,6 +294,7 @@
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="GAMMA" type="numeric"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="BETA" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -325,8 +338,10 @@
 
   <xs:complexType name="etraces">
     <xs:sequence>
+      <xs:element name="USE" type="xs:boolean"/>
       <xs:element name="LAMBDA" type="numeric"/>
       <xs:element name="THRESHOLD" type="numeric"/>
+      <xs:element name="REPLACE" type="xs:boolean"/>
     </xs:sequence>
   </xs:complexType>
 

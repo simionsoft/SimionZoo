@@ -37,8 +37,6 @@ namespace FormularioXML
             this.elements = elements;
             this.myDic = myDic;
             test = elements.ElementAt(0);
-            root = xmldocument.CreateElement("RLSimion");
-            xmldocument.AppendChild(root);
             initializeComponent();
             
         }
@@ -233,28 +231,15 @@ namespace FormularioXML
             panel.AutoScroll = true;
             panel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
 
-            Label title = new Label();
-            title.AutoSize = true;
-            title.Name = "Title";
-            title.Size = new System.Drawing.Size(35, 13);
-            title.Text = "RLSimion";
-            title.Anchor = AnchorStyles.Left;
-            panel.Controls.Add(title);
-
-            Label title2 = new Label();
-            title2.AutoSize = true;
-            title2.Name = "Title";
-            title2.Size = new System.Drawing.Size(35, 13);
-            title2.Text = "";
-            title2.Anchor = AnchorStyles.Left;
-            panel.Controls.Add(title2);
+           
     
             foreach (Element e in elements)
             {
 
-                XmlNode elementNode = xmldocument.CreateElement(e.name);
-                root.AppendChild(elementNode);
-                this.currentXmlNode = elementNode;
+                
+                root = xmldocument.CreateElement(e.name);
+                xmldocument.AppendChild(root);
+                this.currentXmlNode = root;
 
                 Label tmp_l = new Label();
                 tmp_l.AutoSize = true;
@@ -757,6 +742,7 @@ namespace FormularioXML
                 nullCheckBox.Checked = false;
                 nullCheckBox.Anchor = AnchorStyles.Left;
                 nullCheckBox.Click += new EventHandler(this.checkBox);
+                controls.Add(nullCheckBox);
                 list.Add(nullCheckBox);
                 Label empty = new Label();
                 list.Add(empty);
@@ -839,8 +825,9 @@ namespace FormularioXML
                         if (e.min == 0)
                         {
                             List<Control> control = new List<Control>();
-                            control.Add(tmp_t);
-                            if (buttonAdd != null)
+                            if(tmp_t!=null)
+                                control.Add(tmp_t);
+                            if (buttonAdd2 != null)
                                 control.Add(buttonAdd2);
                             CheckBox nullCheckBox2 = new CheckBox();
                             nullCheckBox2.Name = "NULL";
@@ -885,7 +872,10 @@ namespace FormularioXML
                 }
                 if(controls!=null)
                 {
-                    int index = list.IndexOf(controls[controls.Count - 1]);
+                    int index = list.IndexOf(controls[0]);
+                    controls.RemoveAt(0);
+                    index++;
+                    
                     for(;index<list.Count;index++)
                     {
                         Control c = list[index];
@@ -935,7 +925,7 @@ namespace FormularioXML
             if(checkBox.Checked)
             {
                 List<Control> t = enable[sender as CheckBox];
-                foreach(Control control in enable[checkBox])
+                foreach(Control control in t)
                 {
                     control.Enabled = false;
                 }
