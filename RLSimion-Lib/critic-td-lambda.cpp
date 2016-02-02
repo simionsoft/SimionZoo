@@ -8,16 +8,11 @@
 #include "experiment.h"
 
 
-CTDLambdaCritic::CTDLambdaCritic(CParameters *pParameters) : CVFACritic(pParameters)
+CTDLambdaCritic::CTDLambdaCritic(CParameters *pParameters)
+	: CVFACritic(pParameters)
 {
-	m_z= new CFeatureList();
+	m_z= new CETraces(pParameters->getChild("ETRACES"));
 	m_aux= new CFeatureList();
-
-	m_pAlpha= pParameters->addParameter(CParameter("LEARNING_RATE",0.0));
-	m_gamma= pParameters->getParameter("INITIAL_GAMMA")->getDouble();
-	m_lambda= pParameters->getParameter("INITIAL_LAMBDA")->getDouble();
-
-	
 }
 
 CTDLambdaCritic::~CTDLambdaCritic()
@@ -28,16 +23,18 @@ CTDLambdaCritic::~CTDLambdaCritic()
 
 double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)
 {
-	if (m_pAlpha->getDouble()==0.0) return 0.0;
+	double alpha = m_pParameters->getParameter("ALPHA")->getDouble();
+	if (alpha==0.0) return 0.0;
 	//using sample importance
 	//z= gamma * lambda * rho * z + phi_v(s)
 	if (g_pExperiment->m_expProgress.isFirstStep())
 		m_z->clear();
-	m_z->mult(m_lambda*m_gamma*rho);
+	double gamma = m_pParameters->getParameter("GAMMA")->getDouble();
+	m_z->update(gamma*rho);
 	m_z->applyThreshold(0.0001);
 
 	m_pVFA->getFeatures(s,0,m_aux);
-	m_z->addFeatureList(m_aux,m_pAlpha->getDouble(),false,true);
+	m_z->addFeatureList(m_aux,alpha,false,true);
 
 
 	//theta= theta + alpha(r + gamma*newValue - oldValue)*z
@@ -45,7 +42,7 @@ double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r
 
 	m_pVFA->getFeatures(s_p,0,m_aux);
 	double newValue= m_pVFA->getValue(m_aux);
-	double td= rho*r + m_gamma*newValue - oldValue;
+	double td = rho*r + gamma*newValue - oldValue;
 	
 	m_pVFA->add(m_z,td);
 

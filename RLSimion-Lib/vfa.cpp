@@ -2,22 +2,43 @@
 #include "vfa.h"
 #include "featuremap.h"
 #include "features.h"
+#include "parameters.h"
 
-void CFeatureVFA::getFeatures(CState* s,CAction* a,CFeatureList* outFeatures)
+CLinearVFA::CLinearVFA(CParameters* pParameters) : CParamObject(pParameters)
+{
+	m_pFeatureMap = CFeatureMap::getInstance(pParameters->getChild("FEATURE_MAP"));
+
+	m_numWeights = m_pFeatureMap->getTotalNumFeatures();
+	m_pWeights = new double[m_numWeights];
+
+	m_pAux = new CFeatureList();
+
+	memset(m_pWeights, 0, sizeof(double)*m_numWeights);
+}
+
+CLinearVFA::~CLinearVFA()
+{
+	delete m_pFeatureMap;
+	delete m_pAux;
+
+	delete[] m_pWeights;
+}
+
+void CLinearVFA::getFeatures(CState* s, CAction* a, CFeatureList* outFeatures)
 {
 	assert (s);
 	assert (outFeatures);
 	m_pFeatureMap->getFeatures(s,a,outFeatures);
 }
 
-void CFeatureVFA::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
+void CLinearVFA::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
 {
 	assert(feature>=0 && feature<m_pFeatureMap->getTotalNumFeatures());
 	m_pFeatureMap->getFeatureStateAction(feature,s,a);
 }
 
 
-void CFeatureVFA::add(CFeatureList* pFeatures,double alpha)
+void CLinearVFA::add(CFeatureList* pFeatures, double alpha)
 {
 	assert(pFeatures);
 	//double sum= 0.0;
@@ -30,7 +51,7 @@ void CFeatureVFA::add(CFeatureList* pFeatures,double alpha)
 	}
 }
 
-void CFeatureVFA::save(void* pFile)
+void CLinearVFA::save(void* pFile)
 {
 	assert(m_pWeights && m_numWeights>=0);
 
@@ -38,7 +59,7 @@ void CFeatureVFA::save(void* pFile)
 	fwrite(m_pWeights,sizeof(double),m_numWeights,(FILE*)pFile);
 }
 
-void CFeatureVFA::load(void* pFile)
+void CLinearVFA::load(void* pFile)
 {
 	unsigned int numWeightsRead;
 	fread_s(&numWeightsRead,sizeof(unsigned int),sizeof(unsigned int),1,(FILE*)pFile);
@@ -49,23 +70,9 @@ void CFeatureVFA::load(void* pFile)
 }
 
 
-CRBFFeatureGridVFA::CRBFFeatureGridVFA(const char* configString)
-{
-	m_pFeatureMap= new CGaussianRBFGridFeatureMap(configString);
 
-	m_numWeights= m_pFeatureMap->getTotalNumFeatures();
-	m_pWeights= new double[m_numWeights];
-	memset(m_pWeights,0,sizeof(double)*m_numWeights);
-}
 
-CRBFFeatureGridVFA::~CRBFFeatureGridVFA()
-{
-	delete m_pFeatureMap;
-
-	delete [] m_pWeights;
-}
-
-double CRBFFeatureGridVFA::getValue(CFeatureList *pFeatures)
+double CLinearVFA::getValue(CFeatureList *pFeatures)
 {
 	double value= 0.0;
 	assert(pFeatures);
@@ -77,4 +84,10 @@ double CRBFFeatureGridVFA::getValue(CFeatureList *pFeatures)
 		value+= m_pWeights[pFeatures->m_pFeatures[i].m_index] * pFeatures->m_pFeatures[i].m_factor;
 	}
 	return value;
+}
+
+double CLinearVFA::getValue(CState *s, CAction* a)
+{
+	getFeatures(s, a, m_pAux);
+	return getValue(m_pAux);
 }

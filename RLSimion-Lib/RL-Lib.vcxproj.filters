@@ -90,10 +90,19 @@
     <ClCompile Include="parameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="natural-actor-critic.cpp">
+    <ClCompile Include="vfa-actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="actor-vfa.cpp">
+    <ClCompile Include="actor-regular.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-incremetal-natural-gradient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vfa-critic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,7 +176,13 @@
     <ClInclude Include="parameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="natural-actor-critic.h">
+    <ClInclude Include="vfa-actor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parameterized-object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa-critic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

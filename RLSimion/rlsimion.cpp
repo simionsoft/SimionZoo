@@ -7,7 +7,7 @@
 #include "../RLSimion-Lib/simgod.h"
 #include "../RLSimion-Lib/reward.h"
 #include "../RLSimion-Lib/states-and-actions.h"
-#include "../RLSimion-Lib/parameterscheduler.h"
+//#include "../RLSimion-Lib/parameterscheduler.h"
 #include "../RLSimion-Lib/experiment.h"
 
 #ifdef _DEBUG
@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 	g_pWorld= new CWorld(pParameters->getChild("WORLD"));
 	CSimGod* pSimGod = new CSimGod(pParameters->getChild("SIMGOD"));
 	g_pExperiment= new CExperiment(pParameters->getChild("EXPERIMENT"));
-	CParameterScheduler* pParameterScheduler= new CParameterScheduler(pParameters->getChild("PARAMETER_SCHEDULER"));
+	//CParameterScheduler* pParameterScheduler= new CParameterScheduler(pParameters->getChild("PARAMETER_SCHEDULER"));
 
 	CState *s= g_pWorld->getStateInstance();
 	CState *s_p= g_pWorld->getStateInstance();
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 		{
 
 			//Update parameters that have a schedule: learning gains, exploration, ...
-			pParameterScheduler->update();
+		//	pParameterScheduler->update();
 
 			//a= pi(s)
 			pSimGod->selectAction(s,a);
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 	delete s_p;
 	delete a;
 
-	delete pParameterScheduler;
+	//delete pParameterScheduler;
 	delete pParameters;
 	delete g_pWorld;
 	delete g_pExperiment;

@@ -8,6 +8,8 @@ class CParameter;
 #define MAX_LINE_LENGTH (MAX_PARAMETER_NAME_SIZE + MAX_STRING_SIZE + 3)
 #define MAX_NUM_CHILDREN 64
 
+
+
 class CParameters
 {
 	int m_numParameters;
@@ -46,7 +48,7 @@ public:
 
 	//Find (and create if bCreateIfNotExist is true) the node corresponding to the full path of a parameter
 	//If succesful, the stripped parameter's name is returned in outStrippedName
-	//This is the only method that gets a full path as a parameter
+	//This is the only method that takes a full path as a parameter
 	CParameters* findParent(const char* fullParameterName, char* outStrippedName, bool bCreateIfNotExists);
 
 	CParameters* getRootNode(){ return m_pRootNode; }
@@ -76,3 +78,4 @@ public:
 	//Returns a pointer to a child, which is created if doesn't already exist. Name doesn't contain a path, but only the node's name
 	CParameters* addChild(const char* name);
 };
+

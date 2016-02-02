@@ -1,5 +1,6 @@
 #pragma once
 
+#include "parameterized-object.h"
 
 //CFeature////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
@@ -34,7 +35,7 @@ public:
 	static void swapFeatureLists(CFeatureList** pList1,CFeatureList** pList2);
 
 	CFeatureList();//(int type= LIST_UNSORTED);
-	~CFeatureList();
+	virtual ~CFeatureList();
 
 	void clear();
 	void mult(double factor);
@@ -50,4 +51,13 @@ public:
 	void applyThreshold(double threshold);
 	void normalize();
 	void copy(CFeatureList* inList);
+};
+
+class CETraces: public CFeatureList, public CParamObject
+{
+public:
+	CETraces(CParameters* pParameters);
+	~CETraces();
+
+	void update(double rho= 1.0);
 };

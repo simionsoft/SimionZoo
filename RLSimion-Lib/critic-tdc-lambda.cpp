@@ -7,9 +7,10 @@
 #include "globals.h"
 #include "experiment.h"
 
-CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters) : CVFACritic(pParameters)
+CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
+	: CVFACritic(pParameters)
 {
-	m_z= new CFeatureList();
+	m_z= new CETraces(pParameters->getChild("ETRACES"));
 
 	m_s_features = new CFeatureList();
 	m_s_p_features = new CFeatureList();
@@ -18,9 +19,6 @@ CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters) : CVFACritic(pParam
 	m_omega = new CFeatureList();
 
 	m_pAlpha= pParameters->addParameter(CParameter("LEARNING_RATE",0.0));
-	m_gamma= pParameters->getParameter("INITIAL_GAMMA")->getDouble();
-	m_lambda= pParameters->getParameter("INITIAL_LAMBDA")->getDouble();
-	m_beta = 0.9;// pParameters->getDouble("INITIAL_BETA");
 }
 
 CTDCLambdaCritic::~CTDCLambdaCritic()
@@ -50,10 +48,11 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 	double oldValue = m_pVFA->getValue(m_s_features);
 	double newValue = m_pVFA->getValue(m_s_p_features);
 
-	double td= rho*r + m_gamma * newValue - oldValue;
+	double gamma = m_pParameters->getParameter("GAMMA")->getDouble();
+	double td= rho*r + gamma * newValue - oldValue;
 
 	//z_{k+1}= rho*gamma*lambda*z_k + omega(x_t)
-	m_z->mult(rho*m_lambda*m_gamma);
+	m_z->update(rho*gamma);
 	m_z->addFeatureList(m_s_features,rho,false,true);
 	m_z->applyThreshold(0.0001);	
 
@@ -70,10 +69,13 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 	//theta_{t+1}=theta_t+alpha(z_t*delta_t)
 	m_pVFA->add(m_z, m_pAlpha->getDouble() *td);
 	//theta_{t+1}= theta_t - gamma*rho(1-\lambda)*phi_t*innerprod2
-	m_pVFA->add(m_s_p_features, -1.0*m_gamma*rho*(1.0 - m_lambda)*innerprod2);
+
+	double lambda = m_z->getParameters()->getParameter("LAMBDA")->getDouble();
+	m_pVFA->add(m_s_p_features, -1.0*gamma*rho*(1.0 - lambda)*innerprod2);
 
 	//omega_{t+1}=omega_t+beta(z_{t+1}*td - phi_{t+1}(phi{t+1}^T * omega_t)
-	m_omega->addFeatureList(m_z, m_beta*td, true, false);
+	double beta = m_pParameters->getParameter("BETA")->getDouble();
+	m_omega->addFeatureList(m_z, beta*td, true, false);
 	m_omega->addFeatureList(m_s_p_features,- innerprod1, true, false);
 	m_omega->applyThreshold(0.0001);
 

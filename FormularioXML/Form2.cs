@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.Schema;
 
 namespace FormularioXML
 {
@@ -140,7 +139,7 @@ namespace FormularioXML
                     //si tiene type un textbox para introducir el tipo
                     Label tmp_l = new Label();
                     tmp_l.AutoSize = true;
-                    tmp_l.Name = "CHOICE";
+                    tmp_l.Name = e.name;
                     tmp_l.Size = new System.Drawing.Size(35, 13);
                     tmp_l.Text = e.name;
                     tmp_l.Anchor = AnchorStyles.Left;
@@ -332,112 +331,42 @@ namespace FormularioXML
             ofd.Filter = "XML-File | *.xml";
             if(ofd.ShowDialog() == DialogResult.OK)
             {
-                
                 String fileName = ofd.FileName;
                 XmlDocument doc = new XmlDocument();
                 doc.Load(fileName);
-                /*
-                XmlSchemaSet schemaSet = new XmlSchemaSet();
-                schemaSet.Add("http://www.w3.org/2001/XMLSchema", "../config/RLSimion.xsd");
-                //schemaSet.Compile();
-                XDocument docToValidate = XDocument.Parse(doc.OuterXml); ;
-                string msg = "";
-                docToValidate.Validate(schemaSet, (o, t) =>
-                {
-                    msg += t.Message + Environment.NewLine;
-                });
-                if(!msg.Equals(""))
-                {
-                    MessageBox.Show("SELECT XML FILE IS NOT VALID");
-                    return;
-                }
-               */
-                for (int y = 0; y < addDelete.Count;y++ )
-                {
-                    Button x = addDelete.Keys.ElementAt(y);
-                        if (addDelete[x] != null && addDelete[x].Count > 0)
-                        {
-                            for (int i = 0; i < addDelete[x].Count; )
-                            {
-                                addDelete[x][i].PerformClick();
-                            }
-                        }
-
-                    }
                 XmlNode rl = doc.LastChild;
-                int index = 3;
                 foreach(XmlNode node in rl.ChildNodes)
                 {
-                    fillForm(node,ref index);
+                    fillForm(node);
                 }
                
             }
 
         }
-        private void fillForm(XmlNode node, ref int index)
+        private void fillForm(XmlNode node)
         {
-            panel.SuspendLayout();
             
             if(node.HasChildNodes)
             {
-
-                if (panel.Controls[index] is Label && panel.Controls[index].Name.Equals("CHOICE"))
-                {
-                    index++;
-                    ComboBox tmp = panel.Controls[index] as ComboBox;
-                    var list = tmp.Items;
-                    if (list.Contains(node.Name))
-                    {
-                        tmp.SelectedIndex = list.IndexOf(node.Name);
-                        index++;
-                    }
-                }
-                if (panel.Controls[index] is Label && panel.Controls[index].Text.Equals(node.Name))
-                    index++;
-                
-                while((panel.Controls[index] is Label && panel.Controls[index].Text.Equals(""))|| panel.Controls[index] is Button)
-                {
-                    index++;
-                }
                 Console.WriteLine(node.Name);
                 var children = node.ChildNodes;
                 int i = 0;
                 foreach (XmlNode nodo in node.ChildNodes)
                 {
-                    int multi = 0;
-                    
-                    while (i < children.Count - 1 -multi && children[i].Name.Equals(children[i + 1 +multi].Name))
+                    if( i<children.Count-1 && children[i].Name.Equals(children[i+1].Name))
                     {
-                        if (panel.Controls[index + 1] is Button && panel.Controls[index + 1].Text.Equals("ADD"))
-                            ((Button)(panel.Controls[index + 1])).PerformClick();
-                        else if(panel.Controls[index+2] is Button && panel.Controls[index+2].Text.Equals("ADD"))
-                            ((Button)(panel.Controls[index + 2])).PerformClick();
-                        multi++;
-                       
+                        
+                        //es un unbounnd hay qeu darle al botton de add
+                        Console.WriteLine("multi");
                     }
-                    while ((panel.Controls[index] is Label && panel.Controls[index].Text.Equals("")) || panel.Controls[index] is Button)
-                    {
-                        if (index + 1 < panel.Controls.Count)
-                            index++;
-                        else
-                            break;
-                    }
-                    
                     i++;
-                    fillForm(nodo, ref index);
+                    fillForm(nodo);
                 }
             }
             else
             {
-                Console.WriteLine(node.InnerText+"  "+index);
-                panel.Controls[index].Text = node.InnerText;
-                index++;
-                if(panel.Controls.Count>index && panel.Controls[index] is Button)
-                {
-                    index += 2;
-                }
+                Console.WriteLine(node.InnerText);
             }
-            panel.ResumeLayout();
 
         }
         private void movePanelItems(int row, int offset)
@@ -622,17 +551,7 @@ namespace FormularioXML
 
                 XmlNode father = controlFatherInXmlDocu[sender as Control];
                 XmlElement child = xmldocument.CreateElement(copy2.Name);
-                var list = father.ChildNodes;
-                for (int i = 0; i < list.Count;i++ )
-                {
-                    if (list[i].Name.Equals(child.Name))
-                    {
-                        father.InsertBefore(child, list[i]);
-                        break;
-                    }
-                }
-                    
-                //father.AppendChild(child);
+                father.AppendChild(child);
                 xmlDyc.Add(copy2, child);
                
                 if (!addDelete.ContainsKey(sender as Button))
@@ -802,8 +721,7 @@ namespace FormularioXML
             complexHeadLine.Size = new System.Drawing.Size(35, 13);
             complexHeadLine.Text = complex.elementName;
             complexHeadLine.Anchor = AnchorStyles.Left;
-            if(complex.father!=null)
-                list.Add(complexHeadLine);
+            list.Add(complexHeadLine);
             Button buttonAdd = null;
             List<Control> controls = null;
             if (complex.getMax() == 1)
@@ -813,8 +731,7 @@ namespace FormularioXML
                 complexHeadLine2.Name = complex.elementName;
                 complexHeadLine2.Size = new System.Drawing.Size(35, 13);
                 complexHeadLine2.Text = "";// complex.elementName;
-                if(complex.father!=null)
-                    list.Add(complexHeadLine2);
+                list.Add(complexHeadLine2);
             }
             else
             {
@@ -856,14 +773,14 @@ namespace FormularioXML
                     //si tiene type un textbox para introducir el tipo
                     Label tmp_l = new Label();
                     tmp_l.AutoSize = true;
-                   
+                    tmp_l.Name = e.name;
                     tmp_l.Size = new System.Drawing.Size(35, 13);
                     tmp_l.Text = e.name;
                     tmp_l.Anchor = AnchorStyles.Left;
                     list.Add(tmp_l);
                     if ((e.type == null || e.type.Equals("")) && e.simpleType != null)
                     {
-                        tmp_l.Name = "CHOICE";   
+                        
                         ComboBox tmp_cb = new ComboBox();
                         foreach (RestrictionEnum res in e.simpleType.restricction.validOptions)
                         {

@@ -10,7 +10,7 @@ typedef CNamedVarSet CAction;
 
 
 
-class CLQRController: public CActor
+class CLQRController : public CActor
 {
 	int* m_pVariableIndices;
 	double *m_pGains;
@@ -20,11 +20,9 @@ public:
 	~CLQRController();
 
 	void selectAction(CState *s,CAction *a);
-
-	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
-class CPIDController: public CActor
+class CPIDController : public CActor
 {
 	double m_kP, m_kI, m_kD;
 	double m_intError;
@@ -34,11 +32,9 @@ public:
 	~CPIDController(){}
 
 	void selectAction(CState *s,CAction *a);
-
-	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
-class CWindTurbineVidalController: public CActor
+class CWindTurbineVidalController : public CActor
 {
 	CParameter *m_pA, *m_pK_alpha, *m_pKP, *m_pKI;
 	double m_P_s;
@@ -47,11 +43,9 @@ public:
 	~CWindTurbineVidalController(){}
 
 	void selectAction(CState *s,CAction *a);
-
-	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
-class CWindTurbineBoukhezzarController: public CActor
+class CWindTurbineBoukhezzarController : public CActor
 {
 	CParameter *m_pC_0, *m_pKP, *m_pKI;
 	double m_K_t, m_J_t;
@@ -60,11 +54,9 @@ public:
 	~CWindTurbineBoukhezzarController(){}
 
 	void selectAction(CState *s,CAction *a);
-
-	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };
 
-class CWindTurbineJonkmanController: public CActor
+class CWindTurbineJonkmanController : public CActor
 {
 	//generator speed filter's parameters and variables
 	double m_CornerFreq, m_GenSpeedF;
@@ -79,6 +71,4 @@ public:
 	~CWindTurbineJonkmanController(){}
 
 	void selectAction(CState *s,CAction *a);
-
-	void updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td){}
 };

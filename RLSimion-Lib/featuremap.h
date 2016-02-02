@@ -4,6 +4,7 @@ class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+#include "parameterized-object.h"
 
 //CFeatureMap//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
@@ -15,6 +16,8 @@ public:
 
 	virtual unsigned int getTotalNumFeatures()= 0;
 	virtual unsigned int getMaxNumActiveFeatures()= 0;
+
+	static CFeatureMap* getInstance(CParameters* pParameters);
 };
 
 
@@ -25,7 +28,7 @@ public:
 
 #define MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION 3
 
-class CGaussianRBFGridFeatureMap: public CFeatureMap
+class CGaussianRBFGridFeatureMap: public CFeatureMap, public CParamObject
 {
 	//CFeatureList* m_pBuffer;
 	CFeatureList* m_pVarFeatures;
@@ -41,14 +44,14 @@ class CGaussianRBFGridFeatureMap: public CFeatureMap
 	double **m_pCenters;
 
 	int getNumVariables(const char* configString);
-	void initCenterPoints(int i,char* varName,int numCenters
-					  ,double minV= 0.0, double maxV= 0.0,char distType='u');
+	void initCenterPoints(int i,const char* varName,int numCenters
+					  ,double minV, double maxV,const char *distType);
 
 	double getDimValue(int dim, CState* s, CAction* a);
 	void getDimFeatures(int dim, double value, CFeatureList* outDimFeatures);
 	double getFeatureFactor(int dim, int feature,double value);
 public:
-	CGaussianRBFGridFeatureMap(const char* configString);
+	CGaussianRBFGridFeatureMap(CParameters* pParameters);
 	~CGaussianRBFGridFeatureMap();
 
 	void getFeatures(CState* s,CAction* a,CFeatureList* outFeatures);

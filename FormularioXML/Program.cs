@@ -46,7 +46,7 @@ namespace FormularioXML
             //DataSet myDS = new DataSet();
            // myDS.ReadXmlSchema("RLSimion.xsd");
             DataSet myDS = new DataSet();
-           // myDS.ReadXmlSchema("../config/RLSimion.xsd");
+            myDS.ReadXmlSchema("../config/RLSimion.xsd");
 
             Dictionary<string, List<Element>> elementsWithComplexType = new Dictionary<string, List<Element>>();
             //Dictionary<string, ComplexType> dicTranslator = new Dictionary<string, ComplexType>();
