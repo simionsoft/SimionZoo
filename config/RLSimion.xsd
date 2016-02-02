@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-
+  <xs:element name="EXPERIMENT" type="experiment"/>
+  <xs:element name="WORLD" type="world"/>
   <xs:element name="SIMGOD" type="simgod"/>
 
   <xs:complexType name="experiment">
@@ -97,14 +98,14 @@
       <xs:element name="ACTOR" type="actor"/>
     </xs:sequence>
   </xs:complexType>
-
+  
   <xs:complexType name="actor-critic">
     <xs:sequence>
       <xs:element name="ACTOR" type="actor"/>
       <xs:element name="CRITIC" type="critic"/>
     </xs:sequence>
   </xs:complexType>
-
+  
   <!--ACTOR/CONTROLLER -->
   
   <xs:complexType name="actor-critic-controller">
@@ -149,7 +150,7 @@
       <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="CACLA">
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
@@ -176,7 +177,7 @@
       <xs:element name="SIGMA" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="vfa-policy">
     <xs:sequence>
       <xs:choice>
@@ -199,7 +200,7 @@
       <xs:element maxOccurs="unbounded" name="LQR-GAIN" type="state-variable-gain"/>
     </xs:sequence>
   </xs:complexType>
-  
+
   <xs:complexType name="state-variable-gain">
     <xs:sequence>
       <xs:element name="state-variable" type="xs:string"/>
