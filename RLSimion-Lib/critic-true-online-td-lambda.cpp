@@ -6,6 +6,7 @@
 #include "features.h"
 #include "globals.h"
 #include "experiment.h"
+#include "vfa-critic.h"
 
 CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)

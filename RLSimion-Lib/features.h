@@ -42,7 +42,7 @@ public:
 	double getFactor(unsigned int index);
 	double innerProduct(CFeatureList *inList);
 	void copyMult(double factor,CFeatureList *inList);
-	void addFeatureList(CFeatureList *inList,double factor=1.0, bool bAddIfExists= false, bool bReplaceIfExists= false);
+	virtual void addFeatureList(CFeatureList *inList,double factor=1.0, bool bAddIfExists= false, bool bReplaceIfExists= false);
 	void add(unsigned int index, double value, bool bAddIfExists= false, bool bReplaceIfExists= false);
 
 	//spawn: all features (indices and values) are spawned by those in inList
@@ -59,5 +59,9 @@ public:
 	CETraces(CParameters* pParameters);
 	~CETraces();
 
-	void update(double rho= 1.0);
+	//traces will be multiplied by factor*lambda
+	void update(double factor= 1.0);
+
+	void addFeatureList(CFeatureList *inList, double factor=1.0);
+
 };

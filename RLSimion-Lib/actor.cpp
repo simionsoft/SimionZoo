@@ -16,7 +16,7 @@ CActor* CActor::getInstance(CParameters* pParameters)
 {
 	if (!pParameters) return 0;
 
-	const char* type = pParameters->getName();
+	const char* type = pParameters->getChild(0)->getName();
 
 	if (strcmp(type, "VFA_ACTOR") == 0)
 		return new CVFAActor(pParameters);

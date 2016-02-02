@@ -6,6 +6,7 @@
 #include "features.h"
 #include "globals.h"
 #include "experiment.h"
+#include "vfa-critic.h"
 
 
 CTDLambdaCritic::CTDLambdaCritic(CParameters *pParameters)
@@ -34,7 +35,7 @@ double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r
 	m_z->applyThreshold(0.0001);
 
 	m_pVFA->getFeatures(s,0,m_aux);
-	m_z->addFeatureList(m_aux,alpha,false,true);
+	m_z->addFeatureList(m_aux,alpha);
 
 
 	//theta= theta + alpha(r + gamma*newValue - oldValue)*z

@@ -125,7 +125,7 @@
   <xs:complexType name="actor">
     <xs:sequence>
       <xs:choice>
-        <xs:element name="VFA-Learner" type="VFA-Policy-Learner"/>
+        <xs:element name="VFA-Actor" type="VFA-Actor"/>
         <xs:element name="PID" type="PID"/>
         <xs:element name="LQR" type="LQR"/>
         <xs:element name="jonkman" type="jonkman"/>
@@ -136,9 +136,11 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="VFA-Policy-Learner">
+  <xs:complexType name="VFA-Actor">
     <xs:sequence>
       <xs:element name="Single-Output-Policy-Learner" maxOccurs="unbounded" type="Single-Output-Policy-Learner"/>
+      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -149,11 +151,6 @@
         <xs:element name="RegularGradientActor" type="RegularGradientActor"/>
         <xs:element name="IncrementalNaturalActor" type="IncrementalNaturalActor"/>
       </xs:choice>
-      <xs:element name="VFA" type="vfa-policy"/>
-      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
-      <xs:element name="ACTION" type="xs:string"/>
-      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
-      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -161,6 +158,10 @@
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="VFA" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
+
     </xs:sequence>
   </xs:complexType>
   
@@ -168,6 +169,9 @@
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="VFA" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
   
@@ -175,6 +179,10 @@
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="GAMMA" type="numeric"/>
+      <xs:element name="VFA" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -288,6 +296,7 @@
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="GAMMA" type="numeric"/>
       <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="BETA" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -331,8 +340,10 @@
 
   <xs:complexType name="etraces">
     <xs:sequence>
+      <xs:element name="USE" type="xs:boolean"/>
       <xs:element name="LAMBDA" type="numeric"/>
       <xs:element name="THRESHOLD" type="numeric"/>
+      <xs:element name="REPLACE" type="xs:boolean"/>
     </xs:sequence>
   </xs:complexType>
 

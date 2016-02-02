@@ -80,6 +80,7 @@ class CIncrementalNaturalActor : public CSingleOutputPolicyLearner
 	//Thomas Degris, Patrick M. Pilarski, Richard S. Sutton
 	//2012 American Control Conference
 	CETraces *m_e;
+	CFeatureList *m_grad_u;
 public:
 
 	CIncrementalNaturalActor(CParameters *pParameters);

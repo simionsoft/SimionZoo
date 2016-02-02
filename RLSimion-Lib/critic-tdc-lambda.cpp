@@ -6,6 +6,7 @@
 #include "features.h"
 #include "globals.h"
 #include "experiment.h"
+#include "vfa-critic.h"
 
 CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
@@ -53,7 +54,7 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 
 	//z_{k+1}= rho*gamma*lambda*z_k + omega(x_t)
 	m_z->update(rho*gamma);
-	m_z->addFeatureList(m_s_features,rho,false,true);
+	m_z->addFeatureList(m_s_features,rho);
 	m_z->applyThreshold(0.0001);	
 
 
