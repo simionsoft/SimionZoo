@@ -33,13 +33,8 @@ double getNormalDistributionSample(/*double mu, */double sigma)
 //}
 
 
-CGaussianNoise::CGaussianNoise(int actionDim, CParameters* pParameters)
+CGaussianNoise::CGaussianNoise(CParameters* pParameters) : CParamObject(pParameters)
 {
-	char paramName[MAX_PARAMETER_NAME_SIZE];
-	sprintf_s(paramName,MAX_PARAMETER_NAME_SIZE, "NOISE_WIDTH_%d",actionDim);
-
-	m_pSigma= pParameters->addParameter(CParameter(paramName, 0.0)); //2015/10/09
-
 	m_lastValue= 0.0;
 }
 
@@ -50,6 +45,7 @@ CGaussianNoise::~CGaussianNoise()
 double CGaussianNoise::getNewValue()
 {
 	double randValue = 0.0;
+	double sigma = m_pParameters->getParameter("SIGMA")->getDouble();
 	//if (*m_pWidth > 0.0000000001) //2015/10/09
 	if (m_pSigma->getDouble() > 0.00000000001) //2015/10/09
 	{

@@ -8,23 +8,23 @@
 
 CSimGod::CSimGod(CParameters* pParameters)
 {
-	const char* configType = pParameters->getParameter("TYPE")->getStringPtr();
+	CParameters* child = pParameters->getChild(0);
 
-	if (strcmp(configType, "ACTOR-CRITIC")==0)
+	if (strcmp(child->getName(), "ACTOR-CRITIC") == 0)
 	{
-		m_pController = CActor::getActorInstance(pParameters->getChild("ACTOR"));
+		m_pController = CActor::getInstance(child->getChild("ACTOR"));
 		m_pActor = m_pController;
-		m_pCritic = CCritic::getCriticInstance(pParameters->getChild("CRITIC"));
+		m_pCritic = CCritic::getInstance(child->getChild("CRITIC"));
 	}
-	else if(strcmp(configType, "ACTOR-CRITIC-CONTROLLER") == 0)
+	else if (strcmp(child->getName(), "ACTOR-CRITIC-CONTROLLER") == 0)
 	{
-		m_pController = CActor::getControllerInstance(pParameters->getChild("CONTROLLER")); //CActor is a singleton
-		m_pActor = CActor::getActorInstance(pParameters->getChild("ACTOR"));
-		m_pCritic = CCritic::getCriticInstance(pParameters->getChild("CRITIC"));
+		m_pController = CActor::getInstance(child->getChild("CONTROLLER")); //CActor is a singleton
+		m_pActor = CActor::getInstance(child->getChild("ACTOR"));
+		m_pCritic = CCritic::getInstance(child->getChild("CRITIC"));
 	}
-	else if (strcmp(configType, "ACTOR-ONLY") == 0)
+	else if (strcmp(child->getName(), "ACTOR-ONLY") == 0)
 	{
-		m_pController = CActor::getActorInstance(pParameters->getChild("ACTOR"));
+		m_pController = CActor::getInstance(child->getChild("ACTOR"));
 		m_pActor = m_pController;
 		m_pCritic = 0;
 	}

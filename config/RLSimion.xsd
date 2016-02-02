@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  
+
   <xs:element name="SIMGOD" type="simgod"/>
 
   <xs:complexType name="experiment">
@@ -86,71 +86,102 @@
 
   <xs:complexType name="simgod">
     <xs:choice>
-      <xs:element name="actor-only" type="actor-only"/>
-      <xs:element name="actor-critic" type="actor-critic"/>
-      <xs:element name="actor-critic-controller" type="actor-critic-controller"/>
+      <xs:element name="ACTOR-ONLY" type="actor-only"/>
+      <xs:element name="ACTOR-CRITIC" type="actor-critic"/>
+      <xs:element name="ACTOR-CRITIC-CONTROLLER" type="actor-critic-controller"/>
     </xs:choice>
   </xs:complexType>
 
   <xs:complexType name="actor-only">
     <xs:sequence>
-      <xs:element name="actor" type="actor-controller"/>
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:complexType name="actor-critic">
-    <xs:sequence>
-      <xs:element name="actor" type="actor-controller"/>
-      <xs:element name="critic" type="critic"/>
-    </xs:sequence>
-  </xs:complexType>
-  
-  <xs:complexType name="actor-critic-controller">
-    <xs:sequence>
-      <xs:element name="actor" type="actor-controller"/>
-      <xs:element name="critic" type="critic"/>
-      <xs:element name="controller" type="actor-controller"/>
+      <xs:element name="ACTOR" type="actor"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="actor-controller">
+  <xs:complexType name="actor-critic">
     <xs:sequence>
-      <xs:element name="LOAD" type="xs:string" default=""/>
-      <xs:element name="SAVE" type="xs:string" default=""/>
+      <xs:element name="ACTOR" type="actor"/>
+      <xs:element name="CRITIC" type="critic"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--ACTOR/CONTROLLER -->
+  
+  <xs:complexType name="actor-critic-controller">
+    <xs:sequence>
+      <xs:element name="ACTOR" type="actor"/>
+      <xs:element name="CRITIC" type="critic"/>
+      <xs:element name="CONTROLLER" type="actor"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actor">
+    <xs:sequence>
       <xs:choice>
-        <xs:element name="CACLA" type="CACLA"/>
+        <xs:element name="VFA-Learner" type="VFA-Policy-Learner"/>
         <xs:element name="PID" type="PID"/>
         <xs:element name="LQR" type="LQR"/>
         <xs:element name="jonkman" type="jonkman"/>
         <xs:element name="vidal" type="vidal"/>
         <xs:element name="boukhezzar" type="boukhezzar"/>
       </xs:choice>
+      
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="critic">
+  <xs:complexType name="VFA-Policy-Learner">
     <xs:sequence>
+      <xs:element name="Single-Output-Policy-Learner" maxOccurs="unbounded" type="Single-Output-Policy-Learner"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Single-Output-Policy-Learner">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="CACLA" type="CACLA"/>
+        <xs:element name="RegularGradientActor" type="RegularGradientActor"/>
+        <xs:element name="IncrementalNaturalActor" type="IncrementalNaturalActor"/>
+      </xs:choice>
+      <xs:element name="VFA" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
       <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
       <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
-      <xs:choice>
-        <xs:element name="TD-Lambda" type="TD-Lambda"/>
-        <xs:element name="True-Online-TD-Lambda" type="True-Online-TD-Lambda"/>
-        <xs:element name="TDC-Lambda" type="TDC-Lambda"/>
-     </xs:choice>
     </xs:sequence>
   </xs:complexType>
-
+  
   <xs:complexType name="CACLA">
     <xs:sequence>
-      <xs:element name="vfa" maxOccurs="unbounded" type="rbf-policy"/>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
+      <xs:element name="ALPHA" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="RegularGradientActor">
+    <xs:sequence>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
+      <xs:element name="ALPHA" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="IncrementalNaturalActor">
+    <xs:sequence>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
+      <xs:element name="ALPHA" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="rbf-policy">
+  <xs:complexType name="gaussian-noise">
     <xs:sequence>
-      <xs:element name="NOISE_WIDTH" type="numeric"/>
-      <xs:element name="LEARNING_RATE" type="numeric"/>
-      <xs:element name="RBF_GRID" type="state-action-grid"/>
+      <xs:element name="SIGMA" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="vfa-policy">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="RBF_GRID" type="state-grid"/>
+      </xs:choice>
     </xs:sequence>
   </xs:complexType>
 
@@ -166,6 +197,13 @@
   <xs:complexType name="LQR">
     <xs:sequence>
       <xs:element maxOccurs="unbounded" name="LQR-GAIN" type="state-variable-gain"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="state-variable-gain">
+    <xs:sequence>
+      <xs:element name="state-variable" type="xs:string"/>
+      <xs:element name="gain" type="xs:decimal"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -205,31 +243,50 @@
     </xs:sequence>
   </xs:complexType>
 
+  <!--CRITIC -->
+  
+  <xs:complexType name="critic">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="TD-Lambda" type="TD-Lambda"/>
+        <xs:element name="True-Online-TD-Lambda" type="True-Online-TD-Lambda"/>
+        <xs:element name="TDC-Lambda" type="TDC-Lambda"/>
+      </xs:choice>
+      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  
   <xs:complexType name="TD-Lambda">
     <xs:sequence>
-      <xs:element name="vfa" type="rbf-value"/>
-      <xs:element name="LEARNING_RATE" type="numeric"/>
+      <xs:element name="VFA" type="rbf-value"/>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
+      <xs:element name="GAMMA" type="numeric"/>
+      <xs:element name="ALPHA" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="True-Online-TD-Lambda">
     <xs:sequence>
-      <xs:element name="vfa" type="rbf-value"/>
-      <xs:element name="LEARNING_RATE" type="numeric"/>
+      <xs:element name="VFA" type="rbf-value"/>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
+      <xs:element name="GAMMA" type="numeric"/>
+      <xs:element name="ALPHA" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="TDC-Lambda">
     <xs:sequence>
-      <xs:element name="vfa" type="rbf-value"/>
-      <xs:element name="LEARNING_RATE" type="numeric"/>
+      <xs:element name="VFA" type="rbf-value"/>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
+      <xs:element name="GAMMA" type="numeric"/>
+      <xs:element name="ALPHA" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="rbf-value">
     <xs:sequence>
-      <xs:element name="LEARNING_RATE" type="numeric"/>
-      <xs:element name="RBF_GRID" type="state-action-grid"/>
+      <xs:element name="RBF_GRID" type="state-grid"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -258,11 +315,37 @@
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="state-action-grid">
+  <xs:complexType name="state-grid">
     <xs:sequence>
-      <xs:element name="dimension" maxOccurs="unbounded" type="state-action-grid-dimension"/>
+      <xs:element name="state-grid-dimension" maxOccurs="unbounded" type="state-grid-dimension"/>
     </xs:sequence>
   </xs:complexType>
+
+
+  <xs:complexType name="etraces">
+    <xs:sequence>
+      <xs:element name="LAMBDA" type="numeric"/>
+      <xs:element name="THRESHOLD" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="state-grid-dimension">
+    <xs:sequence>
+      <xs:element name="VARIABLE_NAME" type="xs:string"/>
+      <xs:element name="NUM_FEATURES" type="xs:integer"/>
+      <xs:element name="DISTRIBUTION">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="linear"/>
+            <xs:enumeration value="quadratic"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+
+
 
   <!--<xs:element name="state-variables-wind-turbine">
     <xs:simpleType>
@@ -313,27 +396,5 @@
     <xs:alternative test="@dynamic-model='underwater-vehicle'" type="state-variables-wind-turbine"/>
     <xs:alternative type="xs:error"/>
   </xs:element>-->
-
-  <xs:complexType name="state-action-grid-dimension">
-    <xs:sequence>
-      <xs:element name="state-action-variable" type="xs:string"/>
-      <xs:element name="dimension-num-features" type="xs:integer"/>
-      <xs:element name="feature-distribution">
-        <xs:simpleType>
-          <xs:restriction base="xs:string">
-            <xs:enumeration value="linear"/>
-            <xs:enumeration value="quadratic"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:element>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="state-variable-gain">
-    <xs:sequence>
-      <xs:element name="state-variable" type="xs:string"/>
-      <xs:element name="gain" type="xs:decimal"/>
-    </xs:sequence>
-  </xs:complexType>
 
 </xs:schema>

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "features.h"
 #include "parameters.h"
+#include "parameter.h"
 
 #define FEATURE_BLOCK_SIZE 1024
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
@@ -215,3 +216,14 @@ void CFeatureList::copy(CFeatureList* inList)
 }
 
 
+CETraces::CETraces(CParameters* pParameters) : CParamObject(pParameters)
+{}
+
+CETraces::~CETraces()
+{}
+
+void CETraces::update(double rho)
+{
+	mult(rho* m_pParameters->getParameter("LAMBDA")->getDouble());
+	applyThreshold(m_pParameters->getParameter("THRESHOLD")->getDouble());
+}

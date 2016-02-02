@@ -5,17 +5,25 @@ class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-//CFeatureVFA////////////////////////////////////////////////////////////////////
+
+#include "parameterized-object.h"
+//CLinearVFA////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-class CFeatureVFA
+class CLinearVFA: public CParamObject
 {
 protected:
 	CFeatureMap* m_pFeatureMap;
 	double* m_pWeights;
 	unsigned int m_numWeights;
+	CFeatureList *m_pAux;
 public:
-	virtual double getValue(CFeatureList *features)= 0;
+
+	CLinearVFA(CParameters* pParameters);
+	~CLinearVFA();
+
+	double getValue(CFeatureList *features);
+	double getValue(CState *s, CAction *a);
 
 	double *getWeightPtr(){return m_pWeights;}
 	unsigned int getNumWeights(){return m_numWeights;}
@@ -28,15 +36,3 @@ public:
 	void load(void* pFile);
 };
 
-//CRBFGridVFA//////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-class CRBFFeatureGridVFA: public CFeatureVFA
-{
-
-public:
-	CRBFFeatureGridVFA(const char* configString);
-	~CRBFFeatureGridVFA();
-
-	double getValue(CFeatureList *features);
-};

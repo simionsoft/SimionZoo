@@ -9,8 +9,8 @@
 
 #define ACTIVATION_THRESHOLD 0.0001
 
-void CGaussianRBFGridFeatureMap::initCenterPoints(int i,char* varName,int numCenters
-					  ,double minV, double maxV,char distType)
+void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int numCenters
+					  ,double minV, double maxV,const char* distType)
 {
 	int index;
 	CState *pSDesc= g_pWorld->getStateDescriptor();
@@ -42,7 +42,7 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,char* varName,int numCen
 		}
 	}
 
-	if (distType=='u')
+	if (!strcmp(distType,"linear"))
 	{
 		for (int j= 0; j<numCenters; j++)
 			m_pCenters[i][j]= minV + (((double)j)/(numCenters-1))*(maxV-minV);
@@ -55,9 +55,9 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,char* varName,int numCen
 		{
 			normalisedPos=((double)j-ncenters*.5)/(ncenters*.5);
 
-			if (distType=='c')
+			if (!strcmp(distType, "cubic"))
 				normalisedPos= pow(normalisedPos,3.0);
-			else if (distType=='q')
+			else if (!strcmp(distType, "quadratic"))
 				normalisedPos= pow(normalisedPos,2.0);
 			else assert(0);
 
@@ -68,12 +68,13 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,char* varName,int numCen
 
 }
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(const char* configString)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
+: CParamObject(pParameters)
 {
 	char * token= 0, *nextToken= 0;
 	char copy[MAX_STRING_SIZE];
 
-	m_numVariables= getNumVariables(configString) +1;
+	m_numVariables = pParameters->getNumChildren();//getNumVariables(configString) +1;
 	
 	m_variableType= new short [m_numVariables];
 	m_variableIndex= new int [m_numVariables];
@@ -84,42 +85,29 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(const char* configString)
 //	m_pBuffer= new CFeatureList();
 	m_pVarFeatures= new CFeatureList();
 
+
+
 	int numFeatures= 0;
 	int numVar= 0;
-	char varName[MAX_STRING_SIZE];
+	const char *varName;
 	double min,max;
-	char distType;
+	const char* distType;
 
-	strcpy_s(copy,MAX_STRING_SIZE,configString);
-
-	token = strtok_s(copy,",", &nextToken);
-	while (token)
+	for (int i = 0; i < m_numVariables; i++)
 	{
-		if (sscanf_s(token, "%[^(](%d,%d,%d,%c)", varName, MAX_STRING_SIZE, &numFeatures, &min, &max, &distType) == 5)
-		{
-			initCenterPoints(numVar, varName, numFeatures, min, max, distType);
-			
-			numVar++;
-		}
-		else if (sscanf_s(token, "%[^(](%d-%c)", varName, MAX_STRING_SIZE, &numFeatures, &distType) == 3)
-		{
-			initCenterPoints(numVar,varName,numFeatures,0.0,0.0,distType);
-			
-			numVar++;
-		}
-		else if (sscanf_s(token, "%[^(](%d)", varName, MAX_STRING_SIZE, &numFeatures) == 2)
-		{
-			initCenterPoints(numVar,varName,numFeatures);
-			
-			numVar++;
-		}
+		varName = m_pParameters->getParameter("VARIABLE_NAME")->getStringPtr();
+		numFeatures = (int)m_pParameters->getParameter("NUM_FEATURES")->getDouble();
+		if (m_pParameters->exists("MIN_VALUE"))
+			min = m_pParameters->getParameter("MIN_VALUE")->getDouble();
+		else min = 0.0;
+		if (m_pParameters->exists("MAX_VALUE"))
+			max = m_pParameters->getParameter("MAX_VALUE")->getDouble();
+		else max = 0.0;
+		distType = m_pParameters->getParameter("DISTRIBUTION")->getStringPtr();
+		initCenterPoints(i, varName, numFeatures, min, max, distType);
 
-		else assert(0);
-
-		token= strtok_s(0,",", &nextToken);
 	}
 
-	assert(m_numVariables==numVar);
 
 	//pre-calculate number of features
 	m_totalNumFeatures= 1;

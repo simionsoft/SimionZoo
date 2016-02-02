@@ -161,7 +161,7 @@
       <FileName>states-and-actions.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CFeatureVFA" Collapsed="true">
+  <Class Name="CLinearVFA" Collapsed="true">
     <Position X="0.5" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAEAIAAAKCQACAAAAAAAAIAAAAAAABAAAAAQAACAAA=</HashCode>
