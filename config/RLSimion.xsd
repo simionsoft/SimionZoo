@@ -1,10 +1,16 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:element name="EXPERIMENT" type="experiment"/>
-  <xs:element name="WORLD" type="world"/>
-  <xs:element name="SIMGOD" type="simgod"/>
-
+  <xs:element name="RLSimion">
+    <xs:complexType>
+    <xs:sequence>
+      <xs:element name="EXPERIMENT" type="experiment"/>
+      <xs:element name="WORLD" type="world"/>
+      <xs:element name="SIMGOD" type="simgod"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
   <xs:complexType name="experiment">
     <xs:sequence>
       <xs:element name="NUM_EPISODES" type="xs:integer" default="1"/>
@@ -87,9 +93,9 @@
 
   <xs:complexType name="simgod">
     <xs:choice>
-      <xs:element name="ACTOR-ONLY" type="actor-only"/>
-      <xs:element name="ACTOR-CRITIC" type="actor-critic"/>
-      <xs:element name="ACTOR-CRITIC-CONTROLLER" type="actor-critic-controller"/>
+      <xs:element name="actor-only" type="actor-only"/>
+      <xs:element name="actor-critic" type="actor-critic"/>
+      <xs:element name="actor-critic-controller" type="actor-critic-controller"/>
     </xs:choice>
   </xs:complexType>
 
