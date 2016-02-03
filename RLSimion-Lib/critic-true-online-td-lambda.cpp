@@ -4,6 +4,7 @@
 #include "parameters.h"
 #include "parameter.h"
 #include "features.h"
+#include "etraces.h"
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"

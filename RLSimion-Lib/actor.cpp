@@ -18,7 +18,7 @@ CActor* CActor::getInstance(CParameters* pParameters)
 
 	const char* type = pParameters->getChild(0)->getName();
 
-	if (strcmp(type, "VFA_ACTOR") == 0)
+	if (strcmp(type, "VFA-Actor") == 0)
 		return new CVFAActor(pParameters);
 	else if (strcmp(type, "VIDAL") == 0)
 		return new CWindTurbineVidalController(pParameters);

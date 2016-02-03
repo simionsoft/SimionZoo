@@ -4,25 +4,31 @@
 #include "parameter.h"
 #include "critic.h"
 #include "actor.h"
-
+#include "actor-critic.h"
 
 CSimGod::CSimGod(CParameters* pParameters)
 {
 	CParameters* child = pParameters->getChild(0);
 
-	if (strcmp(child->getName(), "ACTOR-CRITIC") == 0)
+	if (strcmp(child->getName(), "Actor-Critic") == 0)
 	{
 		m_pController = CActor::getInstance(child->getChild("ACTOR"));
 		m_pActor = m_pController;
 		m_pCritic = CCritic::getInstance(child->getChild("CRITIC"));
 	}
-	else if (strcmp(child->getName(), "ACTOR-CRITIC-CONTROLLER") == 0)
+	if (strcmp(child->getName(), "Compact-Actor-Critic") == 0)
+	{
+		m_pController = CActorCritic::getInstance(child->getChild("ACTOR-CRITIC"));
+		m_pActor = m_pController;
+		m_pCritic = (CCritic*) m_pController;
+	}
+	else if (strcmp(child->getName(), "Actor-Critic-Controller") == 0)
 	{
 		m_pController = CActor::getInstance(child->getChild("CONTROLLER")); //CActor is a singleton
 		m_pActor = CActor::getInstance(child->getChild("ACTOR"));
 		m_pCritic = CCritic::getInstance(child->getChild("CRITIC"));
 	}
-	else if (strcmp(child->getName(), "ACTOR-ONLY") == 0)
+	else if (strcmp(child->getName(), "Actor") == 0)
 	{
 		m_pController = CActor::getInstance(child->getChild("ACTOR"));
 		m_pActor = m_pController;

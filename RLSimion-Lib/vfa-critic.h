@@ -1,22 +1,26 @@
 #pragma once
 
 #include "critic.h"
+#include "parameterized-object.h"
 
 class CLinearVFA;
 class CParameters;
+class CETraces;
+class CFeatureList;
+class CParameter;
 
 class CVFACritic : public CCritic, public CParamObject
 {
 protected:
 	CLinearVFA* m_pVFA; //value function approximator
+
+	void loadVFunction(const char* filename);
+	void saveVFunction(const char* filename);
 public:
 	CVFACritic(CParameters* pParameters);
 	virtual ~CVFACritic();
 
 	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
-
-	void loadVFunction(const char* filename);
-	void saveVFunction(const char* filename);
 
 	static CVFACritic* getInstance(CParameters* pParameters);
 };

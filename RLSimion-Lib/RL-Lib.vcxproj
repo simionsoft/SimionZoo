@@ -82,9 +82,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
-    <ClCompile Include="actor-incremetal-natural-gradient.cpp" />
+    <ClCompile Include="actor-critic-inac.cpp" />
+    <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
+    <ClCompile Include="etraces.cpp" />
     <ClCompile Include="featuremap.cpp" />
+    <ClCompile Include="vfa-actor-critic.cpp" />
     <ClCompile Include="vfa-actor.cpp" />
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="controller.cpp" />
@@ -116,9 +119,11 @@
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="actor-critic.h" />
     <ClInclude Include="actor.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
+    <ClInclude Include="etraces.h" />
     <ClInclude Include="experiment.h" />
     <ClInclude Include="featuremap.h" />
     <ClInclude Include="features.h" />
@@ -134,8 +139,10 @@
     <ClInclude Include="states-and-actions.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="vfa-actor-critic.h" />
     <ClInclude Include="vfa-actor.h" />
     <ClInclude Include="vfa-critic.h" />
+    <ClInclude Include="vfa-policy.h" />
     <ClInclude Include="vfa.h" />
     <ClInclude Include="world-magneticlevitation.h" />
     <ClInclude Include="world-pitchcontrol.h" />
