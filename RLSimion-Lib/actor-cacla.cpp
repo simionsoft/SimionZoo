@@ -2,23 +2,27 @@
 #include "actor.h"
 #include "vfa.h"
 #include "vfa-actor.h"
+#include "vfa-policy.h"
 #include "states-and-actions.h"
 #include "features.h"
+#include "etraces.h"
 #include "parameter.h"
 #include "parameters.h"
 
-CCACLAActor::CCACLAActor(CParameters *pParameters)
-: CSingleOutputPolicyLearner(pParameters)
+CCACLALearner::CCACLALearner(CParameters *pParameters)
+: CSingleOutputVFAPolicyLearner(pParameters)
 {
 	m_e = new CETraces(pParameters->getChild("ETRACES"));
+	m_pStateFeatures = new CFeatureList();
 }
 
-CCACLAActor::~CCACLAActor()
+CCACLALearner::~CCACLALearner()
 {
+	delete m_pStateFeatures;
 	delete m_e;
 }
 
-void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td)
+void CCACLALearner::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td)
 {
 	double lastNoise;
 	double alpha;
@@ -32,11 +36,11 @@ void CCACLAActor::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double 
 	alpha = m_pParameters->getParameter("ALPHA")->getDouble();
 	actionVar = m_pParameters->getParameter("ACTION")->getStringPtr();
 
-	lastNoise = a->getValue(actionVar) - m_pVFA->getValue(s, a);// m_pOutput->getValue(i);
+	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(s, a);// m_pOutput->getValue(i);
 
-	m_pVFA->getFeatures(s,a,m_pStateFeatures);
+	m_pPolicy->getVFA()->getFeatures(s,a,m_pStateFeatures);
 
 	if (alpha != 0.0)
-		m_pVFA->add(m_pStateFeatures,alpha*lastNoise);
+		m_pPolicy->getVFA()->add(m_pStateFeatures,alpha*lastNoise);
 }
 

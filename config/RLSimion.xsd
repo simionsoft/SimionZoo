@@ -91,24 +91,32 @@
 
   <xs:complexType name="simgod">
     <xs:choice>
-      <xs:element name="actor-only" type="actor-only"/>
-      <xs:element name="actor-critic" type="actor-critic"/>
-      <xs:element name="actor-critic-controller" type="actor-critic-controller"/>
+      <xs:element name="Actor" type="actor"/>
+      <xs:element name="Actor-Critic" type="actor-critic"/>
+      <xs:element name="Actor-Critic-Controller" type="actor-critic-controller"/>
     </xs:choice>
   </xs:complexType>
 
-  <xs:complexType name="actor-only">
-    <xs:sequence>
-      <xs:element name="ACTOR" type="actor"/>
-    </xs:sequence>
-  </xs:complexType>
-  
   <xs:complexType name="actor-critic">
+    <xs:choice>
+      <xs:element name="Separate-Actor-and-Critic" type="separate-actor-and-critic"/>
+      <xs:element name="Compact-Actor-And-Critic" type="compact-actor-and-critic"/>
+    </xs:choice>
+  </xs:complexType>
+
+
+  <xs:complexType name="separate-actor-and-critic">
     <xs:sequence>
       <xs:element name="ACTOR" type="actor"/>
       <xs:element name="CRITIC" type="critic"/>
     </xs:sequence>
   </xs:complexType>
+  <xs:complexType name="compact-actor-and-critic">
+    <xs:choice>
+      <xs:element name="IncrementalNaturalActorCritic" type="INAC"/>
+    </xs:choice>
+  </xs:complexType>
+    
   
   <!--ACTOR/CONTROLLER -->
   
@@ -136,19 +144,28 @@
 
   <xs:complexType name="VFA-Actor">
     <xs:sequence>
-      <xs:element name="Single-Output-Policy-Learner" maxOccurs="unbounded" type="Single-Output-Policy-Learner"/>
+      <xs:element name="Single-Output-VFA-Policy-Learner" maxOccurs="unbounded" type="Single-Output-VFA-Policy-Learner"/>
       <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
       <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
-  <xs:complexType name="Single-Output-Policy-Learner">
+  <xs:complexType name="Single-Output-VFA-Policy-Learner">
     <xs:sequence>
       <xs:choice>
         <xs:element name="CACLA" type="CACLA"/>
         <xs:element name="RegularGradientActor" type="RegularGradientActor"/>
-        <xs:element name="IncrementalNaturalActor" type="IncrementalNaturalActor"/>
       </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+
+
+  <xs:complexType name="Single-Output-VFA-Policy">
+    <xs:sequence>
+      <xs:element name="POLICY" type="vfa-policy"/>
+      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
+      <xs:element name="ACTION" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -156,10 +173,7 @@
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
-      <xs:element name="VFA" type="vfa-policy"/>
-      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
-      <xs:element name="ACTION" type="xs:string"/>
-
+      <xs:element name="POLICY" type="Single-Output-VFA-Policy"/>
     </xs:sequence>
   </xs:complexType>
   
@@ -167,20 +181,28 @@
     <xs:sequence>
       <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA" type="numeric"/>
-      <xs:element name="VFA" type="vfa-policy"/>
-      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
-      <xs:element name="ACTION" type="xs:string"/>
+      <xs:element name="POLICY" type="Single-Output-VFA-Policy"/>
     </xs:sequence>
   </xs:complexType>
   
-  <xs:complexType name="IncrementalNaturalActor">
+ 
+  <xs:complexType name="INAC">
     <xs:sequence>
-      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
-      <xs:element name="ALPHA" type="numeric"/>
       <xs:element name="GAMMA" type="numeric"/>
-      <xs:element name="VFA" type="vfa-policy"/>
-      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
-      <xs:element name="ACTION" type="xs:string"/>
+      <!--CRITIC-->
+      <xs:element name="VFA_V" type="vfa-policy"/>
+      <xs:element name="ETRACES_V" minOccurs="0" type="etraces"/>
+      <xs:element name="ALPHA_R" type="numeric"/>
+      <xs:element name="ALPHA_U" type="numeric"/>
+      <!--ACTOR-->
+      <xs:element name="POLICY" maxOccurs="unbounded" type="INAC-Output-VFA-Policy"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="INAC-Output-VFA-Policy">
+    <xs:sequence>
+      <xs:element name="POLICY" type="Single-Output-VFA-Policy"/>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -192,9 +214,8 @@
 
   <xs:complexType name="vfa-policy">
     <xs:sequence>
-      <xs:choice>
-        <xs:element name="RBF_GRID" type="state-grid"/>
-      </xs:choice>
+      <xs:element name="VFA" type="state-grid"/>
+      <xs:element name ="EXPLORATION_NOISE" type="gaussian-noise"/>
     </xs:sequence>
   </xs:complexType>
 

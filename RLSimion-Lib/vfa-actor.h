@@ -2,30 +2,27 @@
 
 #include "actor.h"
 #include "parameterized-object.h"
+class CNamedVarSet;
+typedef CNamedVarSet CState;
+typedef CNamedVarSet CAction;
 
 class CETraces;
+class CSingleOutputVFAPolicy;
 
 
-class CSingleOutputPolicyLearner : public CParamObject
+class CSingleOutputVFAPolicyLearner: public CParamObject
 {
-
 protected:
-	CLinearVFA *m_pVFA;
-	CGaussianNoise *m_pExpNoise;
-	CFeatureList *m_pStateFeatures;
-
+	CSingleOutputVFAPolicy* m_pPolicy;
 public:
-	CSingleOutputPolicyLearner(CParameters* pParameters);
-	~CSingleOutputPolicyLearner();
-
-	void selectAction(CState *s, CAction *a);
+	CSingleOutputVFAPolicyLearner(CParameters* pParameters);
+	~CSingleOutputVFAPolicyLearner();
 
 	virtual void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td)= 0;
 
-	CLinearVFA* getVFA(){ return m_pVFA; }
-	CGaussianNoise* getExpNoise(){ return m_pExpNoise; }
+	CSingleOutputVFAPolicy* getPolicy(){ return m_pPolicy; }
 
-	static CSingleOutputPolicyLearner* getInstance(CParameters* pParameters);
+	static CSingleOutputVFAPolicyLearner* getInstance(CParameters* pParameters);
 };
 
 
@@ -33,7 +30,7 @@ class CVFAActor: public CActor, public CParamObject
 {
 protected:
 	int m_numOutputs;
-	CSingleOutputPolicyLearner **m_pPolicyLearners;
+	CSingleOutputVFAPolicyLearner **m_pPolicyLearners;
 public:
 	CVFAActor(CParameters* pParameters);
 	virtual ~CVFAActor();
@@ -52,39 +49,42 @@ public:
 
 
 
-class CCACLAActor : public CSingleOutputPolicyLearner
+class CCACLALearner : public CSingleOutputVFAPolicyLearner
 {
+	CFeatureList *m_pStateFeatures;
 	CETraces *m_e;
 public:
 
-	CCACLAActor(CParameters *pParameters);
-	~CCACLAActor();
+	CCACLALearner(CParameters *pParameters);
+	~CCACLALearner();
 
 	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
 };
 
-class CRegularActor :public CSingleOutputPolicyLearner
+class CRegularPolicyGradientLearner :public CSingleOutputVFAPolicyLearner
 {
+	CFeatureList *m_pStateFeatures;
 	CETraces *m_e;
 public:
 
-	CRegularActor(CParameters *pParameters);
-	~CRegularActor();
+	CRegularPolicyGradientLearner(CParameters *pParameters);
+	~CRegularPolicyGradientLearner();
 
 	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
 };
-
-class CIncrementalNaturalActor : public CSingleOutputPolicyLearner
-{
-	//"Model-free Reinforcement Learning with Continuous Action in Practice"
-	//Thomas Degris, Patrick M. Pilarski, Richard S. Sutton
-	//2012 American Control Conference
-	CETraces *m_e;
-	CFeatureList *m_grad_u;
-public:
-
-	CIncrementalNaturalActor(CParameters *pParameters);
-	~CIncrementalNaturalActor();
-
-	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
-};
+//
+//class CIncrementalNaturalActor : public CSingleOutputPolicyLearner
+//{
+//	//"Model-free Reinforcement Learning with Continuous Action in Practice"
+//	//Thomas Degris, Patrick M. Pilarski, Richard S. Sutton
+//	//2012 American Control Conference
+//	CETraces *m_e;
+//	CFeatureList *m_grad_u;
+//	CFeatureList *m_s_features;
+//public:
+//
+//	CIncrementalNaturalActor(CParameters *pParameters);
+//	~CIncrementalNaturalActor();
+//
+//	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
+//};

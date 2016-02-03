@@ -1,6 +1,5 @@
 #pragma once
 
-#include "parameterized-object.h"
 
 //CFeature////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
@@ -53,15 +52,3 @@ public:
 	void copy(CFeatureList* inList);
 };
 
-class CETraces: public CFeatureList, public CParamObject
-{
-public:
-	CETraces(CParameters* pParameters);
-	~CETraces();
-
-	//traces will be multiplied by factor*lambda
-	void update(double factor= 1.0);
-
-	void addFeatureList(CFeatureList *inList, double factor=1.0);
-
-};

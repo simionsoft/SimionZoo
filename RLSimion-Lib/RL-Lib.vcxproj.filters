@@ -96,13 +96,22 @@
     <ClCompile Include="actor-regular.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="actor-incremetal-natural-gradient.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="featuremap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vfa-critic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vfa-actor-critic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic-inac.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="etraces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -183,6 +192,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vfa-critic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actor-critic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa-actor-critic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="etraces.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa-policy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

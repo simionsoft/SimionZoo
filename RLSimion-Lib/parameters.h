@@ -71,10 +71,13 @@ public:
 	void setParent(CParameters* pParent){ m_pParent = pParent; }
 	//Returns the number of children
 	int getNumChildren(){ return m_numChildren; };
+	int getNumChildrenByTag(const char* tag);
 	//Returns a pointer to the i-th child
 	CParameters* getChild(int i);
 	//Returns a pointer to a child, or NULL if not found. Name doesn't contain a path, but only the node's name
 	CParameters* getChild(const char* name);
+	//Returns a pointer to a child, or NULL if not found. Name doesn't contain a path, but only the node's name
+	CParameters* getChildByTag(const char* tag, int i);
 	//Returns a pointer to a child, which is created if doesn't already exist. Name doesn't contain a path, but only the node's name
 	CParameters* addChild(const char* name);
 };

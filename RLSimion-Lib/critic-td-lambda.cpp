@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
+#include "etraces.h"
 
 
 CTDLambdaCritic::CTDLambdaCritic(CParameters *pParameters)
