@@ -14,6 +14,7 @@ namespace FormularioXML
         public ComplexType complexType = null;
         public int min = 1;
         public int max = 1;
+        public string defaultValue;
 
         public void canBeNull()
         {

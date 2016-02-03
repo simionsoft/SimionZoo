@@ -3,12 +3,12 @@
   <xs:element name="RLSimion" type="RLSimion"></xs:element>
   <xs:complexType name="RLSimion">
     <xs:sequence>
-      <xs:element name="EXPERIMENT" type="experiment"/>
-      <xs:element name="WORLD" type="world"/>
-      <xs:element name="SIMGOD" type="simgod"/>
+  <xs:element name="EXPERIMENT" type="experiment"/>
+  <xs:element name="WORLD" type="world"/>
+  <xs:element name="SIMGOD" type="simgod"/>
       </xs:sequence>
     </xs:complexType>
-  
+
   <xs:complexType name="experiment">
     <xs:sequence>
       <xs:element name="NUM_EPISODES" type="xs:integer" default="1"/>
