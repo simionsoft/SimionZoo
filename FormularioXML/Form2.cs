@@ -780,6 +780,7 @@ namespace FormularioXML
 
                 TextBox textBox = new TextBox();
                 textBox.Name=typeName;
+                textBox.Text = typeName;
                 textBox.AccessibleDescription = typeName;
                 textBox.Size= new Size(100,25);
                 textBox.Anchor = AnchorStyles.Left;
@@ -902,6 +903,7 @@ namespace FormularioXML
                         TextBox tmp_t = new TextBox();
                         tmp_t.Size = new Size(100, 25);
                         tmp_t.Name = e.name;
+                        tmp_t.Text = e.defaultValue;
                         tmp_t.AccessibleDescription = e.type;
                         tmp_t.Anchor = AnchorStyles.Left;
                         list.Add(tmp_t);

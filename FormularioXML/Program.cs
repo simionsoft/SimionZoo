@@ -67,7 +67,7 @@ namespace FormularioXML
                     Element tmp_e = new Element(schemaElement.Name, schemaElement.SchemaTypeName.Name);
 
                     elements.Add(tmp_e);
-                    if (schemaElement.ElementSchemaType is XmlSchemaComplexType)
+                    if (schemaElement is XmlSchemaComplexType)
                     {
                         List<Element> returnedList = new List<Element>();
                         //comprobar si existe una entrada para el tipo de datos complejo en elementwithcomplextype
@@ -265,6 +265,10 @@ namespace FormularioXML
                             tmp_e.setMax((int)childElement.MaxOccurs);
                         if (childElement.MaxOccurs >1 && childElement.MaxOccursString!=null)
                             tmp_e.setMax(int.MaxValue);
+                        if (childElement.DefaultValue == null)
+                            tmp_e.defaultValue = childElement.SchemaTypeName.Name;
+                        else
+                            tmp_e.defaultValue = childElement.DefaultValue;
                         if (childElement.ElementSchemaType is XmlSchemaSimpleType)
                         {
 
