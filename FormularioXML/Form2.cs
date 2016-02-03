@@ -31,7 +31,7 @@ namespace FormularioXML
         private XmlNode currentXmlNode;
         private Dictionary<Control, XmlNode> xmlDyc = new Dictionary<Control, XmlNode>();
         private Dictionary<Control, XmlNode> controlFatherInXmlDocu = new Dictionary<Control, XmlNode>();
-       
+        private Dictionary<ComboBox, CheckBox> comboInNull = new Dictionary<ComboBox, CheckBox>();
 
         public Form2(List<Element> elements, Dictionary<string,ComplexType> myDic)
         {
@@ -450,11 +450,21 @@ namespace FormularioXML
 
 
         }
+        private void removeFromNull(ComboBox key,Control c)
+        {
+            List<Control> myList = enable[comboInNull[key]];
+            for(int i=myList.IndexOf(c);myList.IndexOf(key)<i;)
+            {
+                myList.RemoveAt(i);
+            }
+            enable[comboInNull[key]] = myList;
+        }
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             
             panel.SuspendLayout();
-            ComboBox tmp = sender as ComboBox;  
+            ComboBox tmp = sender as ComboBox;
+            
             if(choice.ContainsKey(tmp))
             {
                 //el choice ha sido usado y hay que borrar todo lo que hay antes de poner escribrir lo nuevo
@@ -469,6 +479,7 @@ namespace FormularioXML
                 {
                     int deleteUntil = panel.Controls.IndexOf(tmp_c)-1;
                     int index = panel.Controls.IndexOf(tmp);
+                    removeFromNull(tmp, tmp_c);
                     removeControls(index, deleteUntil);
                 }
                 //eliminar el child viejo del xml
@@ -487,6 +498,13 @@ namespace FormularioXML
             currentXmlNode = child;
             List<Control> lista = this.getAllControls(tmp.Text);
             addControlsAt(lista, panel.Controls.IndexOf(tmp) + 1);
+            if (this.comboInNull.ContainsKey(tmp))
+            {
+                CheckBox cb = comboInNull[tmp];
+                List<Control> myList = this.enable[cb];
+                myList.AddRange(lista);
+                enable[cb] = myList;
+            }
             panel.AutoScroll = false;
             panel.AutoScroll = true;
             panel.ResumeLayout();
@@ -865,8 +883,9 @@ namespace FormularioXML
                     else if (e.type.Equals("boolean"))
                     {
                         ComboBox tmp_cb = new ComboBox();
-                        tmp_cb.Items.Add("TRUE");
-                        tmp_cb.Items.Add("FALSE");
+                        tmp_cb.Items.Add("true");
+                        tmp_cb.Items.Add("false");
+                        tmp_cb.Name = "boolCombo";
                         tmp_cb.Size = new Size(100, 25);
                         tmp_cb.Anchor = AnchorStyles.Left;
                         list.Add(tmp_cb);
@@ -953,18 +972,21 @@ namespace FormularioXML
                     //complexChild.InnerText = "prueba";
                     
                 }
-                if(controls!=null && controls.Count>0)
+                if(controls!=null)
                 {
-                    int index = list.IndexOf(controls[0]);
+                    int index = list.IndexOf(controls[0])+1;
+                    CheckBox tmp = controls.ElementAt(0) as CheckBox;
                     controls.RemoveAt(0);
-                    index++;
-                    
                     for(;index<list.Count;index++)
                     {
                         Control c = list[index];
                         if(!(c is Label))
                         {
                             controls.Add(c);
+                            if(c is ComboBox && !c.Name.Equals("boolCombo"))
+                            {
+                                this.comboInNull.Add(c as ComboBox, tmp);
+                            }
                         }
                     }
                 }
