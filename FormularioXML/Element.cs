@@ -16,6 +16,10 @@ namespace FormularioXML
         public int max = 1;
         public string defaultValue;
 
+        public override string ToString()
+        {
+            return this.name;
+        }
         public void canBeNull()
         {
             min = 0;

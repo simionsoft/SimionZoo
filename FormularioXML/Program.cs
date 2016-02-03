@@ -238,6 +238,7 @@ namespace FormularioXML
         }
         private static void OutputElements(XmlSchemaParticle particle, ComplexType father)
         {
+            
             XmlSchemaSequence sequence = particle as XmlSchemaSequence;
             XmlSchemaChoice choice = particle as XmlSchemaChoice;
             XmlSchemaAll all = particle as XmlSchemaAll;

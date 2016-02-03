@@ -44,13 +44,18 @@ namespace FormularioXML
 
         private void validate(object sender, EventArgs e)
         {
-            foreach(ComboBox combo in combos)
+            foreach(Control combo in panel.Controls)
             {
-               if(combo.SelectedIndex==-1 && combo.Enabled)
-               {
-                   MessageBox.Show("PLEASE SELECT THE WANTED CHOICE");
-                   return;
-               }
+                if (combo is ComboBox)
+                {
+                    if (((ComboBox)combo).SelectedIndex == -1 && combo.Enabled)
+                    {
+                        var t = combo.Name;
+                        var index = panel.Controls.IndexOf(combo);      
+                        MessageBox.Show("PLEASE SELECT THE WANTED CHOICE");
+                        return;
+                    }
+                }
             }
             foreach(Control key in xmlDyc.Keys)
             {
@@ -66,9 +71,10 @@ namespace FormularioXML
                 {
                     //falta hacer la validacion si es bool que cumpla, int o decimal
                     //
-                    if(key is ComboBox&& !((ComboBox)key).Items.Contains(value))
+                    if(key is ComboBox&& !((ComboBox)key).Items.Contains(value) && key.Enabled)
                     {
                         MessageBox.Show("PLEASE USE COMBOBOX OPTIONS IN "+key.Name);
+                        ComboBox t = key as ComboBox;
                         return;
                     }
                     if(key is TextBox && !validateTextBox(key.AccessibleDescription,value))
@@ -310,7 +316,23 @@ namespace FormularioXML
             panel.PerformLayout();
             this.ResumeLayout(false);
         }
+        public bool ValidateSchema(string xmlPath, string xsdPath)
+        {
+            XmlDocument xml = new XmlDocument();
+            xml.Load(xmlPath);
 
+            xml.Schemas.Add(null, xsdPath);
+
+            try
+            {
+                xml.Validate(null);
+            }
+            catch (XmlSchemaValidationException)
+            {
+                return false;
+            }
+            return true;
+        }
         private void load(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -321,22 +343,16 @@ namespace FormularioXML
                 String fileName = ofd.FileName;
                 XmlDocument doc = new XmlDocument();
                 doc.Load(fileName);
-                /*
-                XmlSchemaSet schemaSet = new XmlSchemaSet();
-                schemaSet.Add("http://www.w3.org/2001/XMLSchema", "../config/RLSimion.xsd");
-                //schemaSet.Compile();
-                XDocument docToValidate = XDocument.Parse(doc.OuterXml); ;
-                string msg = "";
-                docToValidate.Validate(schemaSet, (o, t) =>
+                
+                if(ValidateSchema(fileName,"../config/RLSimion.xsd"))
                 {
-                    msg += t.Message + Environment.NewLine;
-                });
-                if(!msg.Equals(""))
+
+                }
+                else
                 {
-                    MessageBox.Show("SELECT XML FILE IS NOT VALID");
+                    MessageBox.Show("XML IS NOT VALID");
                     return;
                 }
-               */
                 for (int y = 0; y < addDelete.Count;y++ )
                 {
                     Button x = addDelete.Keys.ElementAt(y);
@@ -376,6 +392,8 @@ namespace FormularioXML
                         tmp.SelectedIndex = list.IndexOf(node.Name);
                         index++;
                     }
+                    
+                    
                 }
                 if (panel.Controls[index] is Label && panel.Controls[index].Text.Equals(node.Name))
                     index++;
@@ -464,7 +482,7 @@ namespace FormularioXML
             
             panel.SuspendLayout();
             ComboBox tmp = sender as ComboBox;
-            
+            var selectedItem = tmp.SelectedItem as Element;
             if(choice.ContainsKey(tmp))
             {
                 //el choice ha sido usado y hay que borrar todo lo que hay antes de poner escribrir lo nuevo
@@ -493,10 +511,10 @@ namespace FormularioXML
                    next = panel.Controls[panel.Controls.IndexOf(sender as Control) + 1];
                 choice.Add(sender as Control, next);
             }
-            XmlNode child = this.xmldocument.CreateElement(tmp.Text);
+            XmlNode child = this.xmldocument.CreateElement(selectedItem.name);
             this.controlFatherInXmlDocu[sender as Control].AppendChild(child);
             currentXmlNode = child;
-            List<Control> lista = this.getAllControls(tmp.Text);
+            List<Control> lista = this.getAllControls(selectedItem.type);
             addControlsAt(lista, panel.Controls.IndexOf(tmp) + 1);
             if (this.comboInNull.ContainsKey(tmp))
             {
@@ -757,6 +775,7 @@ namespace FormularioXML
         }
         private List<Control> getAllControls(String typeName)
         {
+            
             List<Control> controls = new List<Control>();
             if(myDic.ContainsKey(typeName))
             {
@@ -795,6 +814,7 @@ namespace FormularioXML
         }
         private void getAllControls(ref List<Control> list, ComplexType complex, List<string> lista)
         {
+            
             XmlNode father = currentXmlNode;
             //to do: añadir label con el nombre del campo complejo para saber que se esta rellenando
             CheckBox nullCheckBox = null;
@@ -1004,12 +1024,14 @@ namespace FormularioXML
                 tmp_l.Anchor = AnchorStyles.Left;
                 list.Add(tmp_l);
 
+
+                //to do: aqui es el donde hay info para poder crear el nodo del arbol. aqui es donde se sabe el nombre del elemento. en el comboBox luego solo se sabe el tipo que hay que añadir
                 ComboBox tmp_cb = new ComboBox();
                 tmp_cb.Size = new System.Drawing.Size(100, 13);
                 tmp_cb.Anchor = AnchorStyles.Left;
                 foreach (Element e in complex.choice)
                 {
-                    tmp_cb.Items.Add(e.type);
+                    tmp_cb.Items.Add(e);
                 }
                 tmp_cb.SelectedIndexChanged += new EventHandler(this.comboBox_SelectedIndexChanged);
                 Size oo = tmp_cb.Size;
@@ -1035,6 +1057,7 @@ namespace FormularioXML
                 foreach(Control control in t)
                 {
                     control.Enabled = false;
+                    control.Text = "";
                 }
             }
             else
