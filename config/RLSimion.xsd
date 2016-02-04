@@ -12,32 +12,32 @@
   <xs:complexType name="experiment">
     <xs:sequence>
       <xs:element name="NUM_EPISODES" type="xs:integer" default="1"/>
-      <xs:element name="EPISODE_LENGTH" type="xs:integer"/>
-      <xs:element name="RANDOM_SEED" type="xs:integer"/>
-      <xs:element name="EVAL_FREQ" type="xs:integer"/>
+      <xs:element name="EPISODE_LENGTH" type="xs:integer"  default="1000"/>
+      <xs:element name="RANDOM_SEED" type="xs:integer"  default="1"/>
+      <xs:element name="EVAL_FREQ" type="xs:integer"  default="20"/>
       <xs:element name="LOG" type="log"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="log">
     <xs:sequence>
-      <xs:element name="FREQ " type="xs:decimal"/>
-      <xs:element name="OUTPUT_DIR" type="xs:string"/>
-      <xs:element name="FILE_PREFIX" type="xs:integer"/>
-      <xs:element name="EVALUATION_EPISODES" type="xs:boolean"/>
-      <xs:element name="TRAINING_EPISODES" type="xs:boolean"/>
-      <xs:element name="EVALUATION_AVG_REWARDS" type="xs:boolean"/>
+      <xs:element name="FREQ " type="xs:decimal" default="0.25"/>
+      <xs:element name="OUTPUT_DIR" type="xs:string" default=""/>
+      <xs:element name="FILE_PREFIX" type="xs:string" default="prefix"/>
+      <xs:element name="EVALUATION_EPISODES" type="xs:boolean" default="true"/>
+      <xs:element name="TRAINING_EPISODES" type="xs:boolean" default="false"/>
+      <xs:element name="EVALUATION_AVG_REWARDS" type="xs:boolean" default="true"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="world">
     <xs:sequence>
-      <xs:element name="DELTA_T" type="xs:decimal"/>
-      <xs:element name="NUM_SIMULATION_STEPS" type="xs:integer"/>
+      <xs:element name="DELTA_T" type="xs:decimal" default="0.01"/>
+      <xs:element name="NUM_SIMULATION_STEPS" type="xs:integer" default="4"/>
       <xs:element name="reward" type="reward"/>
       <xs:choice>
         <xs:element name="wind-turbine" type="wind-turbine"/>
-        <xs:element name="magnetic-levitation" type="magnetic-levitation"/>
+      <!--  <xs:element name="magnetic-levitation" type="magnetic-levitation"/> -->
         <xs:element name="pitch" type="pitch"/>
         <xs:element name="underwater-vehicle" type="underwater-vehicle"/>
       </xs:choice>
@@ -46,34 +46,35 @@
 
   <xs:complexType name="wind-turbine">
     <xs:sequence>
-      <xs:element name="EVALUATION_WIND_DATA_FILE" type="xs:string"/>
+      <xs:element name="EVALUATION_WIND_DATA_FILE" type="xs:string" default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
       <xs:element name="TRAINING_WIND_DATA_FILES" type="xs:string" maxOccurs="unbounded"/>
-      <xs:element name="POWER_SET_POINT_FILE" type="xs:string"/>
+      <xs:element name="POWER_SET_POINT_FILE" type="xs:string" default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="pitch">
     <xs:sequence>
-      <xs:element name="SET_POINT_FILE" type="xs:string"/>
+      <xs:element name="SET_POINT_FILE" type="xs:string" default="../config/pitch/setpoints/setpoint.txt"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="underwater-vehicle">
     <xs:sequence>
-      <xs:element name="SET_POINT_FILE" type="xs:string"/>
+      <xs:element name="SET_POINT_FILE" type="xs:string" default="../config/underwater-vehicle/setpoints/setpoint.txt"/>
     </xs:sequence>
   </xs:complexType>
-
+<!-- not yet finished
   <xs:complexType name="magnetic-levitation">
     <xs:sequence>
       <xs:element name="SET_POINT_FILE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
+  -->
 
   <xs:complexType name="reward">
     <xs:sequence>
-      <xs:element name="MIN_REWARD" type="xs:decimal"/>
-      <xs:element name="MAX_REWARD" type="xs:decimal"/>
+      <xs:element name="MIN_REWARD" type="xs:decimal" default="-100"/>
+      <xs:element name="MAX_REWARD" type="xs:decimal" default="1.0"/>
       <xs:sequence>
         <xs:element name="reward-component" maxOccurs="unbounded" minOccurs="1" type="reward-component"/>
       </xs:sequence>
@@ -144,8 +145,8 @@
 
   <xs:complexType name="VFA-Actor">
     <xs:sequence>
-      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
-      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
+      <xs:element minOccurs="0" name="LOAD" type="xs:string" default=""/>
+      <xs:element minOccurs="0" name="SAVE" type="xs:string" default=""/>
       <xs:element name="Single-Output-VFA-Policy-Learner" maxOccurs="unbounded" type="Single-Output-VFA-Policy-Learner"/>
     </xs:sequence>
   </xs:complexType>
@@ -163,7 +164,7 @@
 
   <xs:complexType name="Single-Output-VFA-Policy">
     <xs:sequence>
-      <xs:element name="ACTION" type="xs:string"/>
+      <xs:element name="ACTION" type="xs:string" default=""/>
       <xs:element name="POLICY" type="vfa-policy"/>
       <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
     </xs:sequence>
@@ -237,23 +238,23 @@
   <xs:complexType name="state-variable-gain">
     <xs:sequence>
       <xs:element name="state-variable" type="xs:string"/>
-      <xs:element name="gain" type="xs:decimal"/>
+      <xs:element name="gain" type="xs:decimal" default="0.0"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="jonkman">
     <xs:sequence>
-      <xs:element name="VS_RtGnSp" type="numeric"/>
-      <xs:element name="VS_SlPc" type="numeric"/>
-      <xs:element name="VS_Rgn2K" type="numeric"/>
-      <xs:element name="VS_Rgn2Sp" type="numeric"/>
-      <xs:element name="VS_CtInSp" type="numeric"/>
-      <xs:element name="VS_RtPwr" type="numeric"/>
-      <xs:element name="VS_Rgn3MP" type="numeric"/>
+      <xs:element name="VS_RtGnSp" type="xs:decimal" default="12.6805"/>
+      <xs:element name="VS_SlPc" type="xs:decimal" default="10.0"/>
+      <xs:element name="VS_Rgn2K" type="xs:decimal" default="2.332287"/>
+      <xs:element name="VS_Rgn2Sp" type="xs:decimal" default="91.21091"/>
+      <xs:element name="VS_CtInSp" type="xs:decimal" default="70.16224"/>
+      <xs:element name="VS_RtPwr" type="xs:decimal" default="5296610.0"/>
+      <xs:element name="VS_Rgn3MP" type="xs:decimal" default="0.01745329"/>
       <xs:element name="PC_KI" type="numeric"/>
       <xs:element name="PC_KK" type="numeric"/>
       <xs:element name="PC_KP" type="numeric"/>
-      <xs:element name="PC_RefSpd" type="numeric"/>
+      <xs:element name="PC_RefSpd" type="xs:decimal" default="122.9096"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -281,8 +282,8 @@
   
   <xs:complexType name="critic">
     <xs:sequence>
-      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
-      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
+      <xs:element minOccurs="0" name="LOAD" type="xs:string" default=""/>
+      <xs:element minOccurs="0" name="SAVE" type="xs:string" default=""/>
       <xs:choice>
         <xs:element name="TD-Lambda" type="TD-Lambda"/>
         <xs:element name="True-Online-TD-Lambda" type="True-Online-TD-Lambda"/>
@@ -328,7 +329,7 @@
   <xs:complexType name="numeric">
     <xs:sequence>
       <xs:choice>
-        <xs:element name="decimal" type="xs:decimal"/>
+        <xs:element name="decimal" type="xs:decimal" default="0.0"/>
         <xs:element name="schedule" type="schedule"/>
       </xs:choice>
     </xs:sequence>
@@ -359,18 +360,18 @@
 
   <xs:complexType name="etraces">
     <xs:sequence>
-      <xs:element name="USE" type="xs:boolean"/>
-      <xs:element name="REPLACE" type="xs:boolean"/>
-      <xs:element name="LAMBDA" type="numeric"/>
-      <xs:element name="THRESHOLD" type="numeric"/>
+      <xs:element name="USE" type="xs:boolean" default="true"/>
+      <xs:element name="REPLACE" type="xs:boolean" default="true"/>
+      <xs:element name="LAMBDA" type="xs:decimal" default="0.9"/>
+      <xs:element name="THRESHOLD" type="xs:decimal" default="0.001"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="state-grid-dimension">
     <xs:sequence>
-      <xs:element name="VARIABLE_NAME" type="xs:string"/>
-      <xs:element name="NUM_FEATURES" type="xs:integer"/>
-      <xs:element name="DISTRIBUTION">
+      <xs:element name="VARIABLE_NAME" type="xs:string" default=""/>
+      <xs:element name="NUM_FEATURES" type="xs:integer" default="10"/>
+      <xs:element name="DISTRIBUTION" default="linear">
         <xs:simpleType>
           <xs:restriction base="xs:string">
             <xs:enumeration value="linear"/>
@@ -384,7 +385,8 @@
 
 
 
-  <!--<xs:element name="state-variables-wind-turbine">
+  <!--
+  <xs:element name="state-variables-wind-turbine">
     <xs:simpleType>
       <xs:restriction base="xs:string">
         <xs:enumeration value="P_s" />
@@ -432,6 +434,7 @@
     <xs:alternative test="@dynamic-model='pitch'" type="state-variables-pitch-control"/>
     <xs:alternative test="@dynamic-model='underwater-vehicle'" type="state-variables-wind-turbine"/>
     <xs:alternative type="xs:error"/>
-  </xs:element>-->
+  </xs:element>
+  -->
 
 </xs:schema>
