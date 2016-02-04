@@ -26,7 +26,7 @@ namespace FormularioXML
         Dictionary<Button, Button> buttons = new Dictionary<Button, Button>();
         Dictionary<Control, Control> choice = new Dictionary<Control, Control>();
         Dictionary<CheckBox, List<Control>> enable = new Dictionary<CheckBox, List<Control>>();
-        private XmlDocument xmldocument= new XmlDocument();
+        private XmlDocument xmldocument;
         private XmlNode root;
         private XmlNode currentXmlNode;
         private Dictionary<Control, XmlNode> xmlDyc = new Dictionary<Control, XmlNode>();
@@ -237,7 +237,7 @@ namespace FormularioXML
             panel.TabIndex = 0;
             panel.AutoScroll = true;
             panel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
-
+            xmldocument = new XmlDocument();
            
     
             foreach (Element e in elements)
@@ -316,11 +316,8 @@ namespace FormularioXML
             panel.PerformLayout();
             this.ResumeLayout(false);
         }
-        public bool ValidateSchema(string xmlPath, string xsdPath)
+        public bool ValidateSchema(XmlDocument xml, string xsdPath)
         {
-            XmlDocument xml = new XmlDocument();
-            xml.Load(xmlPath);
-
             xml.Schemas.Add(null, xsdPath);
 
             try
@@ -344,7 +341,7 @@ namespace FormularioXML
                 XmlDocument doc = new XmlDocument();
                 doc.Load(fileName);
                 
-                if(ValidateSchema(fileName,"../config/RLSimion.xsd"))
+                if(ValidateSchema(doc,"../config/RLSimion.xsd"))
                 {
 
                 }
@@ -366,11 +363,18 @@ namespace FormularioXML
 
                     }
                 XmlNode rl = doc.LastChild;
-                int index = 3;
-                foreach(XmlNode node in rl.ChildNodes)
+                int index = 0;
+                try
                 {
-                    fillForm(node,ref index);
+                    fillForm(rl, ref index);
                 }
+                catch(Exception)
+                {
+                    MessageBox.Show("ERROR LOADING XML");
+                    return;
+                }
+                   
+                
                
             }
 
@@ -470,12 +474,15 @@ namespace FormularioXML
         }
         private void removeFromNull(ComboBox key,Control c)
         {
-            List<Control> myList = enable[comboInNull[key]];
-            for(int i=myList.IndexOf(c);myList.IndexOf(key)<i;)
+            if (comboInNull.ContainsKey(key) && enable.ContainsKey(comboInNull[key]))
             {
-                myList.RemoveAt(i);
+                List<Control> myList = enable[comboInNull[key]];
+                for (int i = myList.IndexOf(c); myList.IndexOf(key) < i; )
+                {
+                    myList.RemoveAt(i);
+                }
+                enable[comboInNull[key]] = myList;
             }
-            enable[comboInNull[key]] = myList;
         }
         private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {

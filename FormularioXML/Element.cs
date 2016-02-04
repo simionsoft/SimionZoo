@@ -20,6 +20,13 @@ namespace FormularioXML
         {
             return this.name;
         }
+        public override bool Equals(Object cadena)
+        {
+            if (cadena is string)
+                return (cadena as string).Equals(this.name);
+            else
+                return base.Equals(cadena);
+        }
         public void canBeNull()
         {
             min = 0;

@@ -3,11 +3,11 @@
   <xs:element name="RLSimion" type="RLSimion"></xs:element>
   <xs:complexType name="RLSimion">
     <xs:sequence>
-  <xs:element name="EXPERIMENT" type="experiment"/>
-  <xs:element name="WORLD" type="world"/>
-  <xs:element name="SIMGOD" type="simgod"/>
-      </xs:sequence>
-    </xs:complexType>
+      <xs:element name="EXPERIMENT" type="experiment"/>
+      <xs:element name="WORLD" type="world"/>
+      <xs:element name="SIMGOD" type="simgod"/>
+    </xs:sequence>
+  </xs:complexType>
 
   <xs:complexType name="experiment">
     <xs:sequence>
@@ -32,9 +32,9 @@
 
   <xs:complexType name="world">
     <xs:sequence>
-      <xs:element name="reward" type="reward"/>
       <xs:element name="DELTA_T" type="xs:decimal"/>
       <xs:element name="NUM_SIMULATION_STEPS" type="xs:integer"/>
+      <xs:element name="reward" type="reward"/>
       <xs:choice>
         <xs:element name="wind-turbine" type="wind-turbine"/>
         <xs:element name="magnetic-levitation" type="magnetic-levitation"/>
@@ -144,9 +144,9 @@
 
   <xs:complexType name="VFA-Actor">
     <xs:sequence>
-      <xs:element name="Single-Output-VFA-Policy-Learner" maxOccurs="unbounded" type="Single-Output-VFA-Policy-Learner"/>
       <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
       <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
+      <xs:element name="Single-Output-VFA-Policy-Learner" maxOccurs="unbounded" type="Single-Output-VFA-Policy-Learner"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -163,9 +163,9 @@
 
   <xs:complexType name="Single-Output-VFA-Policy">
     <xs:sequence>
+      <xs:element name="ACTION" type="xs:string"/>
       <xs:element name="POLICY" type="vfa-policy"/>
       <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
-      <xs:element name="ACTION" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -221,10 +221,10 @@
 
   <xs:complexType name="PID">
     <xs:sequence>
+      <xs:element name="ERROR_VARIABLE" type="xs:string"/>
       <xs:element name="KP" type="numeric"/>
       <xs:element name="KI" type="numeric"/>
       <xs:element name="KD" type="numeric"/>
-      <xs:element name="ERROR_VARIABLE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -281,13 +281,13 @@
   
   <xs:complexType name="critic">
     <xs:sequence>
+      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
       <xs:choice>
         <xs:element name="TD-Lambda" type="TD-Lambda"/>
         <xs:element name="True-Online-TD-Lambda" type="True-Online-TD-Lambda"/>
         <xs:element name="TDC-Lambda" type="TDC-Lambda"/>
       </xs:choice>
-      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
-      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
     </xs:sequence>
   </xs:complexType>
   
@@ -336,9 +336,6 @@
 
   <xs:complexType name="schedule">
     <xs:sequence>
-      <xs:element name="INITIAL_VALUE" type="xs:decimal"/>
-      <xs:element name="FINAL_VALUE" type="xs:decimal"/>
-      <xs:element name="EVALUATION_EPISODE_VALUE" type="xs:decimal"/>
       <xs:element name="INTERPOLATION">
         <xs:simpleType>
           <xs:restriction base="xs:string">
@@ -347,6 +344,9 @@
           </xs:restriction>
         </xs:simpleType>
       </xs:element>
+      <xs:element name="INITIAL_VALUE" type="xs:decimal"/>
+      <xs:element name="FINAL_VALUE" type="xs:decimal"/>
+      <xs:element name="EVALUATION_EPISODE_VALUE" type="xs:decimal"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -360,9 +360,9 @@
   <xs:complexType name="etraces">
     <xs:sequence>
       <xs:element name="USE" type="xs:boolean"/>
+      <xs:element name="REPLACE" type="xs:boolean"/>
       <xs:element name="LAMBDA" type="numeric"/>
       <xs:element name="THRESHOLD" type="numeric"/>
-      <xs:element name="REPLACE" type="xs:boolean"/>
     </xs:sequence>
   </xs:complexType>
 
