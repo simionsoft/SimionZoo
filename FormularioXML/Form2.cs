@@ -916,6 +916,16 @@ namespace FormularioXML
                         tmp_cb.Name = "boolCombo";
                         tmp_cb.Size = new Size(100, 25);
                         tmp_cb.Anchor = AnchorStyles.Left;
+                        if (e.defaultValue.Equals(""))
+                            tmp_cb.SelectedIndex=0;
+                        else
+                        {
+                            if(e.defaultValue.Equals("true"))
+                                tmp_cb.SelectedIndex = 0;
+                            else
+                                tmp_cb.SelectedIndex = 1;
+
+                        }
                         list.Add(tmp_cb);
                         xmlDyc.Add(tmp_cb, child);
                         if (controls != null)
@@ -1041,13 +1051,12 @@ namespace FormularioXML
                     tmp_cb.Items.Add(e);
                 }
                 tmp_cb.SelectedIndexChanged += new EventHandler(this.comboBox_SelectedIndexChanged);
-                Size oo = tmp_cb.Size;
                 if (controls != null)
                     controls.Add(tmp_cb);
                 list.Add(tmp_cb);
                 controlFatherInXmlDocu.Add(tmp_cb, currentXmlNode);
                 this.combos.Add(tmp_cb);
-                
+                //tmp_cb.SelectedIndex = 0;
             }
             if (controls != null)
                 enable.Add(nullCheckBox, controls);
