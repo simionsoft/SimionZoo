@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="RLSimion" type="RLSimion"></xs:element>
+  <xs:element name="RLSimion" type="RLSimion">
+  </xs:element>
   <xs:complexType name="RLSimion">
     <xs:sequence>
-      <xs:element name="EXPERIMENT" type="experiment"/>
+      <!-- FIRST WE CONFIGURE THE WORLD, THEN THE REST -->
       <xs:element name="WORLD" type="world"/>
+      <xs:element name="EXPERIMENT" type="experiment"/>
       <xs:element name="SIMGOD" type="simgod"/>
     </xs:sequence>
+    <!-- <xs:attribute name="Version" type="xs:decimal" default="0.0"/>  -->
   </xs:complexType>
 
   <xs:complexType name="experiment">
@@ -166,7 +169,6 @@
     <xs:sequence>
       <xs:element name="ACTION" type="xs:string" default=""/>
       <xs:element name="POLICY" type="vfa-policy"/>
-      <xs:element name="EXPLORATION_NOISE" type="gaussian-noise"/>
     </xs:sequence>
   </xs:complexType>
 
