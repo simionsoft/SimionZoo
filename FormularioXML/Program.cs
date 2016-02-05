@@ -283,7 +283,7 @@ namespace FormularioXML
                             {
                                 foreach (XmlSchemaEnumerationFacet a in res.Facets)
                                 {
-                                    int c = 0;
+                                    
                                     if (a.Value.Equals("linear"))
                                     {
                                         tmp_r.addValidOption(RestrictionEnum.linear);
