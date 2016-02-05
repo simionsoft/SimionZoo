@@ -35,15 +35,15 @@
 
   <xs:complexType name="world">
     <xs:sequence>
+      <xs:choice>
+        <xs:element name="Wind-turbine" type="wind-turbine"/>
+      <!--  <xs:element name="magnetic-levitation" type="magnetic-levitation"/> -->
+        <xs:element name="Pitch" type="pitch"/>
+        <xs:element name="Underwater-vehicle" type="underwater-vehicle"/>
+      </xs:choice>
       <xs:element name="DELTA_T" type="xs:decimal" default="0.01"/>
       <xs:element name="NUM_SIMULATION_STEPS" type="xs:integer" default="4"/>
-      <xs:element name="reward" type="reward"/>
-      <xs:choice>
-        <xs:element name="wind-turbine" type="wind-turbine"/>
-      <!--  <xs:element name="magnetic-levitation" type="magnetic-levitation"/> -->
-        <xs:element name="pitch" type="pitch"/>
-        <xs:element name="underwater-vehicle" type="underwater-vehicle"/>
-      </xs:choice>
+      <xs:element name="REWARD" type="reward"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -86,7 +86,6 @@
 
   <xs:complexType name="reward-component">
     <xs:sequence>
-      <xs:element name="COMPONENT_TYPE" type="xs:string"/>
       <xs:element name="COMPONENT_WEIGHT" type="xs:decimal"/>
       <xs:element name="COMPONENT_TOLERANCE" type="xs:decimal"/>
       <xs:element name="CONTROL_ERROR_VARIABLE" type="xs:string"/>
@@ -174,17 +173,17 @@
 
   <xs:complexType name="CACLA">
     <xs:sequence>
-      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
-      <xs:element name="ALPHA" type="numeric"/>
       <xs:element name="POLICY" type="Single-Output-VFA-Policy"/>
+      <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
     </xs:sequence>
   </xs:complexType>
   
   <xs:complexType name="RegularGradientActor">
     <xs:sequence>
-      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
-      <xs:element name="ALPHA" type="numeric"/>
       <xs:element name="POLICY" type="Single-Output-VFA-Policy"/>
+      <xs:element name="ALPHA" type="numeric"/>
+      <xs:element name="ETRACES" minOccurs="0" type="etraces"/>
     </xs:sequence>
   </xs:complexType>
   
@@ -196,9 +195,10 @@
       <xs:element name="VFA_V" type="vfa-policy"/>
       <xs:element name="ETRACES_V" minOccurs="0" type="etraces"/>
       <xs:element name="ALPHA_R" type="numeric"/>
-      <xs:element name="ALPHA_U" type="numeric"/>
+
       <!--ACTOR-->
       <xs:element name="POLICY" maxOccurs="unbounded" type="INAC-Output-VFA-Policy"/>
+          <xs:element name="ALPHA_U" type="numeric"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -383,60 +383,5 @@
       </xs:element>
     </xs:sequence>
   </xs:complexType>
-
-
-
-
-  <!--
-  <xs:element name="state-variables-wind-turbine">
-    <xs:simpleType>
-      <xs:restriction base="xs:string">
-        <xs:enumeration value="P_s" />
-        <xs:enumeration value="P_e" />
-        <xs:enumeration value="P_a" />
-        <xs:enumeration value="v" />
-        <xs:enumeration value="T_a" />
-        <xs:enumeration value="omega_r" />
-        <xs:enumeration value="d_omega_r" />
-        <xs:enumeration value="beta" />
-        <xs:enumeration value="d_beta" />
-        <xs:enumeration value="T_g" />
-        <xs:enumeration value="d_T_g" />
-        <xs:enumeration value="E_p" />
-        <xs:enumeration value="E_omega_r" />
-        <xs:enumeration value="E_int_omega_r" />
-      </xs:restriction>
-    </xs:simpleType>
-  </xs:element>
-  
-  <xs:element name="state-variables-pitch-control">
-    <xs:simpleType>
-      <xs:restriction base="xs:string">
-        <xs:enumeration value="setpoint-pitch" />
-        <xs:enumeration value="pitch" />
-        <xs:enumeration value="attack-angle" />
-        <xs:enumeration value="pitch-rate" />
-        <xs:enumeration value="control-deviation" />
-      </xs:restriction>
-    </xs:simpleType>
-  </xs:element>
-  
-    <xs:element name="state-variables-underwater-vehicle">
-    <xs:simpleType>
-      <xs:restriction base="xs:string">
-        <xs:enumeration value="v-setpoint" />
-        <xs:enumeration value="v" />
-        <xs:enumeration value="v-deviation" />
-      </xs:restriction>
-    </xs:simpleType>
-  </xs:element>
-  
-  <xs:element name="state-variable">
-    <xs:alternative test="@dynamic-model='wind-turbine'" type="state-variables-wind-turbine"/>
-    <xs:alternative test="@dynamic-model='pitch'" type="state-variables-pitch-control"/>
-    <xs:alternative test="@dynamic-model='underwater-vehicle'" type="state-variables-wind-turbine"/>
-    <xs:alternative type="xs:error"/>
-  </xs:element>
-  -->
 
 </xs:schema>

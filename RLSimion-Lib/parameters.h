@@ -9,7 +9,6 @@ class CParameter;
 #define MAX_NUM_CHILDREN 64
 
 
-
 class CParameters
 {
 	int m_numParameters;

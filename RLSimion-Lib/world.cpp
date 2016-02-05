@@ -14,7 +14,9 @@ double CWorld::m_t= 0.0;
 double CWorld::m_dt= 0.0;
 double CWorld::m_step_start_t= 0.0;
 
-CWorld::CWorld(CParameters* pParameters)
+
+
+CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 {
 	assert(pParameters);
 	m_t= 0.0;
@@ -22,10 +24,10 @@ CWorld::CWorld(CParameters* pParameters)
 	m_avgReward = 0.0;
 	m_avgRewardGain = 0.0;
 
-	m_simulationSteps= (int)(pParameters->getParameter("NUM_SIMULATION_STEPS"))->getDouble();
-	m_dt= pParameters->getParameter("DELTA_T")->getDouble();
+	m_simulationSteps= atoi(pParameters->FirstChildElement("NUM_SIMULATION_STEPS")->Value());
+	m_dt = atof(pParameters->FirstChildElement("DELTA_T")->Value());
 
-	const char* pName = pParameters->getParameter("DYNAMIC_MODEL")->getStringPtr();
+	const char* pName = pParameters->Attribute("DYNAMIC_MODEL");
 
 	if (strcmp(pName,"WIND_TURBINE_ONE_MASS")==0)
 		m_pDynamicModel= new CWindTurbine(pParameters);
@@ -38,7 +40,7 @@ CWorld::CWorld(CParameters* pParameters)
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
-	m_pReward = new CReward(pParameters->getChild("REWARD"));
+	m_pReward = new CReward(pParameters->FirstChildElement("REWARD"));
 }
 
 CWorld::~CWorld()
