@@ -32,6 +32,7 @@ namespace FormularioXML
         private Dictionary<Control, XmlNode> xmlDyc = new Dictionary<Control, XmlNode>();
         private Dictionary<Control, XmlNode> controlFatherInXmlDocu = new Dictionary<Control, XmlNode>();
         private Dictionary<ComboBox, CheckBox> comboInNull = new Dictionary<ComboBox, CheckBox>();
+        
 
         public Form2(List<Element> elements, Dictionary<string,ComplexType> myDic)
         {
@@ -238,7 +239,36 @@ namespace FormularioXML
             panel.AutoScroll = true;
             panel.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             xmldocument = new XmlDocument();
-           
+            Button validate = new Button();
+            validate.Size = new Size(100, 35);
+            validate.Text = "SAVE";
+            validate.Location = new Point(500, 300);
+            validate.Click += new EventHandler(this.validate);
+            this.Controls.Add(validate);
+
+            Button load = new Button();
+            load.Size = new Size(100, 35);
+            load.Text = "LOAD";
+            load.Location = new Point(500, 340);
+            load.Click += new EventHandler(this.load);
+            this.Controls.Add(load);
+
+            // 
+            // contextMenuStrip1
+            // 
+            // 
+            // Form2
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1032, 622);
+            this.Controls.Add(panel);
+            this.Name = "Form2";
+            this.Text = "Form2";
+            this.Load += new System.EventHandler(this.Form2_Load);
+            panel.ResumeLayout(false);
+            panel.PerformLayout();
+            this.ResumeLayout(false);
     
             foreach (Element e in elements)
             {
@@ -272,7 +302,19 @@ namespace FormularioXML
                     panel.Controls.Add(tmp_name);
                     //antes de resolverlo hay que poner nombre del tipo y de la instancia ya que puede haber mas de una
                     //resolveComplexType(tmp_ct, panel, myDic, ref x_index, ref y_index, 5);
-                    panel.Controls.AddRange(getAllControls(e.type).ToArray());
+                    panel.Controls.AddRange(getAllControls(e.type,true).ToArray());
+                    
+                    if(combos!=null)
+                    {
+                        for(int i=0;i<combos.Count;i++)
+                        {
+                            ComboBox combo = combos[i];
+                            if (combo.SelectedIndex == -1)
+                                combo.SelectedIndex = 0;
+                         }
+
+                    }
+                    
                     
 
                 }
@@ -284,37 +326,9 @@ namespace FormularioXML
                 
                                 
             }
-
-            Button validate = new Button();
-            validate.Size= new Size(100, 35);
-            validate.Text = "SAVE";
-            validate.Location = new Point(500, 300);
-            validate.Click += new EventHandler(this.validate);
-            this.Controls.Add(validate);
-
-            Button load = new Button();
-            load.Size = new Size(100, 35);
-            load.Text = "LOAD";
-            load.Location = new Point(500, 340);
-            load.Click += new EventHandler(this.load);
-            this.Controls.Add(load);
-
-            // 
-            // contextMenuStrip1
-            // 
-            // 
-            // Form2
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1032, 622);
-            this.Controls.Add(panel);
-            this.Name = "Form2";
-            this.Text = "Form2";
-            this.Load += new System.EventHandler(this.Form2_Load);
-            panel.ResumeLayout(false);
-            panel.PerformLayout();
-            this.ResumeLayout(false);
+            
+           
+           
         }
         public bool ValidateSchema(XmlDocument xml, string xsdPath)
         {
@@ -521,7 +535,7 @@ namespace FormularioXML
             XmlNode child = this.xmldocument.CreateElement(selectedItem.name);
             this.controlFatherInXmlDocu[sender as Control].AppendChild(child);
             currentXmlNode = child;
-            List<Control> lista = this.getAllControls(selectedItem.type);
+            List<Control> lista = this.getAllControls(selectedItem.type,false);
             addControlsAt(lista, panel.Controls.IndexOf(tmp) + 1);
             if (this.comboInNull.ContainsKey(tmp))
             {
@@ -588,7 +602,7 @@ namespace FormularioXML
                 }*/
                 //currentXmlNode.AppendChild(node);    
                 currentXmlNode = node;
-                List<Control> list = getAllControls(value);
+                List<Control> list = getAllControls(value,false);
                 panel.Controls.AddRange(list.ToArray());
 
                 foreach(Control control in list)
@@ -780,7 +794,7 @@ namespace FormularioXML
             }
             return number;
         }
-        private List<Control> getAllControls(String typeName)
+        private List<Control> getAllControls(String typeName, bool auto)
         {
             
             List<Control> controls = new List<Control>();
@@ -792,7 +806,8 @@ namespace FormularioXML
                 List<string> list = new List<string>();
                 complex = Program.resolveComplex(complex, myDic, ref list);
                 //Program.resolveComplex(ref complex, myDic, ref list);
-                getAllControls(ref controls,complex,list);
+                getAllControls(ref controls,complex,list,auto);
+                
             }
             else
             {
@@ -819,7 +834,7 @@ namespace FormularioXML
             }
             return controls;
         }
-        private void getAllControls(ref List<Control> list, ComplexType complex, List<string> lista)
+        private void getAllControls(ref List<Control> list, ComplexType complex, List<string> lista,bool auto)
         {
             
             XmlNode father = currentXmlNode;
@@ -1006,7 +1021,7 @@ namespace FormularioXML
                         e.elementName = lista.ElementAt(0);
                         lista.RemoveAt(0);
                     }
-                    getAllControls(ref list,e,lista);
+                    getAllControls(ref list,e,lista,auto);
                     currentXmlNode = father;
                     //complexChild.InnerText = "prueba";
                     
@@ -1056,12 +1071,17 @@ namespace FormularioXML
                 list.Add(tmp_cb);
                 controlFatherInXmlDocu.Add(tmp_cb, currentXmlNode);
                 this.combos.Add(tmp_cb);
-                //tmp_cb.SelectedIndex = 0;
+                
             }
             if (controls != null)
                 enable.Add(nullCheckBox, controls);
             // hay que comprobar si es maxocur diferente de uno para añadir boton de añadir
-           
+            Control last =list[(list.Count-1)];
+            if(auto &&  last is ComboBox && (last as ComboBox).SelectedIndex==-1)
+            {
+               // (last as ComboBox).SelectedItem=(last as ComboBox).Items[0];
+               
+            }
         }
 
         private void checkBox(object sender, EventArgs e)
