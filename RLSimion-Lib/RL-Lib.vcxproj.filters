@@ -114,6 +114,9 @@
     <ClCompile Include="etraces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="parameters-xml-helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -204,6 +207,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vfa-policy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters-xml-helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

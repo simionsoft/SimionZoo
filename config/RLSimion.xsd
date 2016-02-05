@@ -50,7 +50,7 @@
   <xs:complexType name="wind-turbine">
     <xs:sequence>
       <xs:element name="EVALUATION_WIND_DATA_FILE" type="xs:string" default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
-      <xs:element name="TRAINING_WIND_DATA_FILES" type="xs:string" maxOccurs="unbounded"/>
+      <xs:element name="TRAINING_WIND_DATA_FILE" type="xs:string" maxOccurs="unbounded"/>
       <xs:element name="POWER_SET_POINT_FILE" type="xs:string" default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
     </xs:sequence>
   </xs:complexType>
@@ -167,7 +167,7 @@
   <xs:complexType name="Single-Output-VFA-Policy">
     <xs:sequence>
       <xs:element name="ACTION" type="xs:string" default=""/>
-      <xs:element name="POLICY" type="vfa-policy"/>
+      <xs:element name="VFA-POLICY" type="vfa-policy"/>
     </xs:sequence>
   </xs:complexType>
 

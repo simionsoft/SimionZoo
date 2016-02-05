@@ -2,13 +2,11 @@
 #include "world.h"
 #include "world-pitchcontrol.h"
 #include "states-and-actions.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
 
-CPitchControl::CPitchControl(CParameters* pParameters)
+CPitchControl::CPitchControl(tinyxml2::XMLElement* pParameters)
 {
 	m_pStateDescriptor= new CState(5);
 	
@@ -21,7 +19,7 @@ CPitchControl::CPitchControl(CParameters* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"pitch",-1.4,1.4);
 
-	m_pSetpoint= new CFileSetPoint(pParameters->getParameter("SET_POINT_FILE")->getStringPtr());
+	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->Value());
 }
 
 CPitchControl::~CPitchControl()

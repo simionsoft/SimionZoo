@@ -3,8 +3,8 @@
   <WORLD>
     <Wind-turbine>
       <EVALUATION_WIND_DATA_FILE>../config/wind-turbine/setpoints/TurbSim-10.25.hh</EVALUATION_WIND_DATA_FILE>
-      <TRAINING_WIND_DATA_FILES>../config/wind-turbine/setpoints/TurbSim-11.hh</TRAINING_WIND_DATA_FILES>
-      <TRAINING_WIND_DATA_FILES>../config/wind-turbine/setpoints/TurbSim-10.hh</TRAINING_WIND_DATA_FILES>
+      <TRAINING_WIND_DATA_FILE>../config/wind-turbine/setpoints/TurbSim-11.hh</TRAINING_WIND_DATA_FILE>
+      <TRAINING_WIND_DATA_FILE>../config/wind-turbine/setpoints/TurbSim-10.hh</TRAINING_WIND_DATA_FILE>
       <POWER_SET_POINT_FILE>../config/wind-turbine/setpoints/windturbine-power-setpoint.txt</POWER_SET_POINT_FILE>
     </Wind-turbine>
     <DELTA_T>0.01</DELTA_T>
@@ -42,23 +42,9 @@
             <LOAD>../data/policy.bin</LOAD>
             <Single-Output-VFA-Policy-Learner>
               <CACLA>
-                <ETRACES>
-                  <USE>false</USE>
-                  <REPLACE>true</REPLACE>
-                  <LAMBDA>0.9</LAMBDA>
-                  <THRESHOLD>0.001</THRESHOLD>
-                </ETRACES>
-                <ALPHA>
-                  <schedule>
-                    <INTERPOLATION>linear</INTERPOLATION>
-                    <INITIAL_VALUE>0.001</INITIAL_VALUE>
-                    <FINAL_VALUE>0.0001</FINAL_VALUE>
-                    <EVALUATION_EPISODE_VALUE>0.0</EVALUATION_EPISODE_VALUE>
-                  </schedule>
-                </ALPHA>
                 <POLICY>
                   <ACTION>d_T_g</ACTION>
-                  <POLICY>
+                  <VFA-POLICY>
                     <VFA>
                       <state-grid-dimension>
                         <VARIABLE_NAME>omega_r</VARIABLE_NAME>
@@ -76,24 +62,30 @@
                         <decimal>10</decimal>
                       </SIGMA>
                     </EXPLORATION_NOISE>
+                  </VFA-POLICY>
                   </POLICY>
-                </POLICY>
-              </CACLA>
-            </Single-Output-VFA-Policy-Learner>
-            <Single-Output-VFA-Policy-Learner>
-              <CACLA>
+                <ALPHA>
+                  <schedule>
+                    <INTERPOLATION>linear</INTERPOLATION>
+                    <INITIAL_VALUE>0.001</INITIAL_VALUE>
+                    <FINAL_VALUE>0.0001</FINAL_VALUE>
+                    <EVALUATION_EPISODE_VALUE>0.0</EVALUATION_EPISODE_VALUE>
+                  </schedule>
+                </ALPHA>
                 <ETRACES>
                   <USE>false</USE>
                   <REPLACE>true</REPLACE>
                   <LAMBDA>0.9</LAMBDA>
                   <THRESHOLD>0.001</THRESHOLD>
                 </ETRACES>
-                <ALPHA>
-                  <decimal>0.1</decimal>
-                </ALPHA>
+              </CACLA>
+            </Single-Output-VFA-Policy-Learner>
+            <Single-Output-VFA-Policy-Learner>
+              <CACLA>
+
                 <POLICY>
                   <ACTION>d_beta</ACTION>
-                  <POLICY>
+                  <VFA-POLICY>
                     <VFA>
                       <state-grid-dimension>
                         <VARIABLE_NAME>omega_r</VARIABLE_NAME>
@@ -106,8 +98,17 @@
                         <decimal>0.0001</decimal>
                       </SIGMA>
                     </EXPLORATION_NOISE>
-                  </POLICY>
+                  </VFA-POLICY>
                 </POLICY>
+                <ALPHA>
+                  <decimal>0.1</decimal>
+                </ALPHA>
+                <ETRACES>
+                  <USE>false</USE>
+                  <REPLACE>true</REPLACE>
+                  <LAMBDA>0.9</LAMBDA>
+                  <THRESHOLD>0.001</THRESHOLD>
+                </ETRACES>
               </CACLA>
             </Single-Output-VFA-Policy-Learner>
           </VFA-Actor>
