@@ -197,7 +197,7 @@ CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 		new CHHFileSetPoint(pParameters->FirstChildElement("EVALUATION_WIND_DATA_FILE")->Value());
 
 	//training files
-	m_numDataFiles = ParametersXMLHelper::countChildren(pParameters, "TRAINING_WIND_DATA_FILE");
+	m_numDataFiles = XMLHelperCountChildren(pParameters, "TRAINING_WIND_DATA_FILE");
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
 
 	tinyxml2::XMLElement* pElement= pParameters->FirstChildElement("TRAINING_WIND_DATA_FILE");

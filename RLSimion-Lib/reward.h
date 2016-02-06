@@ -5,6 +5,7 @@ typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CErrorComponent;
 class CParameters;
+class tinyxml2::XMLElement;
 
 class CReward
 {
@@ -16,7 +17,7 @@ public:
 	static double m_minReward;
 	static double m_maxReward;
 
-	CReward(CParameters* pParameters);
+	CReward(tinyxml2::XMLElement* pParameters);
 	~CReward();
 
 	double getReward(CState *s,CAction *a,CState *s_p);

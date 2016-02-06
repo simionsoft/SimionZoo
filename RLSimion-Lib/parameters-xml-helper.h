@@ -1,6 +1,5 @@
 #pragma once
 
-namespace ParametersXMLHelper
-{
-	static int countChildren(tinyxml2::XMLElement* pElement, const char* name);
-}
+
+int XMLHelperCountChildren(tinyxml2::XMLElement* pElement, const char* name);
+double XMLHelperGetNumeric(tinyxml2::XMLElement*);

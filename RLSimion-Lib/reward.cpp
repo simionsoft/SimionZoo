@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "reward.h"
 #include "states-and-actions.h"
-#include "parameters.h"
-#include "parameter.h"
+#include "parameterized-object.h"
+#include "parameters-xml-helper.h"
 
 #define NUM_MAX_REWARD_COMPONENTS 10
 
@@ -15,48 +15,46 @@
 double CReward::m_minReward;
 double CReward::m_maxReward;
 
-class CErrorComponent
+class CErrorComponent : public CParamObject
 {
-	char m_errorComponentType[MAX_PARAMETER_NAME_SIZE];
-	char m_controlledVariable[MAX_PARAMETER_NAME_SIZE];
-	char m_setpointVariable[MAX_PARAMETER_NAME_SIZE];
-	char m_controlErrorVariable[MAX_PARAMETER_NAME_SIZE];
+	//char m_errorComponentType[MAX_PARAMETER_NAME_SIZE];
+	//char m_controlledVariable[MAX_PARAMETER_NAME_SIZE];
+	//char m_setpointVariable[MAX_PARAMETER_NAME_SIZE];
+	//char m_controlErrorVariable[MAX_PARAMETER_NAME_SIZE];
 
-	double m_setpointConstant;
-	double m_weight;
-	int m_componentIndex;
-	//double m_rewardComponentMu;
-	double m_tolerance;
+	//double m_setpointConstant;
+	//double m_weight;
+	//int m_componentIndex;
+	////double m_rewardComponentMu;
+	//double m_tolerance;
 	double m_lastReward;
 public:
-	CErrorComponent();
+	CErrorComponent() : CParamObject(0){ m_lastReward = 0.0; }
 	~CErrorComponent();
 
-	void init(CParameters* pParameters,int componentIndex);
+	void init(tinyxml2::XMLElement* pParameters);
 	double getRewardComponent(CState *state);
 	double getLastRewardComponent(){return m_lastReward;}
 };
-
-CErrorComponent::CErrorComponent()
-{
-	m_errorComponentType[0]= 0;
-	m_controlledVariable[0]= 0;
-	m_setpointVariable[0]= 0;
-	m_controlErrorVariable[0]= 0;
-	m_weight= 0.0;
-	m_componentIndex= -1;
-	m_lastReward= 0.0;
-}
+//
+//CErrorComponent::CErrorComponent()
+//{
+//	//m_errorComponentType[0]= 0;
+//	//m_controlledVariable[0]= 0;
+//	//m_setpointVariable[0]= 0;
+//	//m_controlErrorVariable[0]= 0;
+//	//m_weight= 0.0;
+//	//m_componentIndex= -1;
+//	m_lastReward= 0.0;
+//}
 
 CErrorComponent::~CErrorComponent()
 {
 }
 
-void CErrorComponent::init(CParameters* pParameters,int componentIndex)
+void CErrorComponent::init(tinyxml2::XMLElement* pParameters)
 {
-	char parameterName[256];
-
-	m_componentIndex= componentIndex;
+	/*char parameterName[256];
 
 	sprintf_s(parameterName,256,"COMPONENT_TYPE_%d",componentIndex);
 	sprintf_s(m_errorComponentType,MAX_PARAMETER_NAME_SIZE,"%s",pParameters->getParameter(parameterName)->getStringPtr());
@@ -88,7 +86,7 @@ void CErrorComponent::init(CParameters* pParameters,int componentIndex)
 		sprintf_s(parameterName,256,"SETPOINT_CONSTANT_%d",componentIndex);
 		m_setpointConstant= pParameters->getParameter(parameterName)->getDouble();
 	}
-	else assert(0);
+	else assert(0);*/
 }
 
 
@@ -98,31 +96,34 @@ double CErrorComponent::getRewardComponent(CState* state)
 {
 	double rew,error;
 
-	if (strcmp(m_errorComponentType,"VARIABLE_DIFFERENCE")==0)
-	{
-		error= state->getValue(m_setpointVariable)
-			- state->getValue(m_controlledVariable);
-	}
-	else if (strcmp(m_errorComponentType,"DEVIATION_VARIABLE")==0) 
-	{
-		error= state->getValue(m_controlErrorVariable);
-	}
-	else if (strcmp(m_errorComponentType,"CONSTANT_DIFFERENCE")==0)
-	{
-		error= m_setpointConstant 
-			- state->getValue(m_controlledVariable);
-	}
-	else if (strcmp(m_errorComponentType,"PUNISH_IF_ABOVE")==0)
-	{
-		error= std::max(0.0,state->getValue(m_controlledVariable)
-			-m_setpointConstant);
-	}
-	else if (strcmp(m_errorComponentType,"PUNISH_IF_BELOW")==0)
-	{
-		error= std::max(0.0,m_setpointConstant - state->getValue(m_controlledVariable));
-	}
+	const char* errorStateVar = m_pParameters->FirstChildElement("CONTROL_ERROR_VARIABLE")->Value();
+	error = state->getValue(errorStateVar);
 
-	error= (error)/(m_tolerance);
+	//if (strcmp(m_errorComponentType,"VARIABLE_DIFFERENCE")==0)
+	//{
+	//	error= state->getValue(m_setpointVariable)
+	//		- state->getValue(m_controlledVariable);
+	//}
+	//else if (strcmp(m_errorComponentType,"DEVIATION_VARIABLE")==0) 
+	//{
+	//	error= state->getValue(m_controlErrorVariable);
+	//}
+	//else if (strcmp(m_errorComponentType,"CONSTANT_DIFFERENCE")==0)
+	//{
+	//	error= m_setpointConstant 
+	//		- state->getValue(m_controlledVariable);
+	//}
+	//else if (strcmp(m_errorComponentType,"PUNISH_IF_ABOVE")==0)
+	//{
+	//	error= std::max(0.0,state->getValue(m_controlledVariable)
+	//		-m_setpointConstant);
+	//}
+	//else if (strcmp(m_errorComponentType,"PUNISH_IF_BELOW")==0)
+	//{
+	//	error= std::max(0.0,m_setpointConstant - state->getValue(m_controlledVariable));
+	//}
+	double tolerance = XMLHelperGetNumeric(m_pParameters->FirstChildElement("COMPONENT_TOLERANCE"));
+	error= (error)/(tolerance);
 
 	rew = CReward::m_maxReward - fabs(error);
 	//rew= exp(-(error*error));
