@@ -3,7 +3,7 @@
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class CParameters;
+
 class CDynamicModel;
 class CReward;
 
@@ -23,7 +23,7 @@ public:
 	static double getT();
 	static double getStepStartT();
 
-	CWorld(CParameters* pParameters);
+	CWorld(tinyxml2::XMLElement* pParameters);
 	~CWorld();
 
 	CState *getStateInstance(); // pointer to a new CState. has to be deleted

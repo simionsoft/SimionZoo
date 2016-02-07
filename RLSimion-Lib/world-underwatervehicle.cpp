@@ -2,14 +2,13 @@
 #include "world-underwatervehicle.h"
 #include "states-and-actions.h"
 #include "setpoint.h"
-#include "parameters.h"
-#include "parameter.h"
+
 
 
 #define NUM_STATE_VARIABLES 3
 
 
-CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
+CUnderwaterVehicle::CUnderwaterVehicle(tinyxml2::XMLElement* pParameters)
 {
 
 	m_pStateDescriptor= new CState(3);
@@ -20,7 +19,7 @@ CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"u-thrust",-30.0,30.0);
 
-	m_pSetpoint= new CFileSetPoint(pParameters->getParameter("SET_POINT_FILE")->getStringPtr());
+	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->Value());
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()

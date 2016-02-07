@@ -2,7 +2,6 @@
 
 #include "world.h"
 
-class CParameters;
 class CSetPoint;
 
 class CUnderwaterVehicle : public CDynamicModel
@@ -10,7 +9,7 @@ class CUnderwaterVehicle : public CDynamicModel
 	CSetPoint *m_pSetpoint;
 public:
 
-	CUnderwaterVehicle(CParameters* pParameters);
+	CUnderwaterVehicle(tinyxml2::XMLElement* pParameters);
 	~CUnderwaterVehicle();
 
 	void reset(CState *s);

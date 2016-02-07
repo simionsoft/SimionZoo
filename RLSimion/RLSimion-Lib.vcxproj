@@ -97,13 +97,7 @@
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RLSimion.h">
-      <DependentUpon>..\config\RLSimion.xsd</DependentUpon>
-    </ClInclude>
     <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xsd Include="..\config\RLSimion.xsd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

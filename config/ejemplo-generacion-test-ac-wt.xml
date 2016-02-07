@@ -1,0 +1,56 @@
+<Application Name="RLSimion">
+  <DROP-LIST-ELEMENT Name="WORLD">
+    <!-- Esto quiere decir que el elemento se puede plegar/desplegar-->
+    <CHOICE Name="Dynamic-Model">
+      <!-- Este elemento se traduciría como dropdown-list-->
+      <CHOICE-ELEMENT Name="Wind-turbine">
+        <!--Esto es una entrada en la lista. Por defecto, se seleccionaría la primera-->
+        <GLOBAL-LIST Name="State-variables">
+          <!-- los elementos con tag GLOBAL-LIST no se representan en el formulario
+          , definen listas globales con un nombre.
+          Cada elemento tendrá un key de tipo string (Name), mínimo y máximo-->
+          <VARIABLE Name="P_a" Min="0.0" Max="650000"/>
+          <VARIABLE Name="P_e" Min="0.0" Max="650000"/>
+          <VARIABLE Name="v" Min="0.0" Max="3.0"/>
+        </GLOBAL-LIST>
+        <GLOBAL-LIST Name="Action-variables">
+          <!--otra lista global-->
+          <VARIABLE Name="d_beta" Min="-10" Max="10"/>
+          <VARIABLE Name="d_T_g" Min="-1000" Max="1000"/>
+        </GLOBAL-LIST>
+        <FILE-PATH Name="EVALUATION_WIND_DATA_FILE"/>
+        <!-- este tipo de elemento se configuraría con un textbox con un botón "..." al lado p.ej.-->
+        <LIST Name="TRAINING_WIND_DATA_FILE">
+          <!-- esto indicaría que vamos a tener n elementos, cada uno con lo que haya dentro de LIST
+          Hará falta "Add" y "Delete", cuanto más discretos mejor-->
+          <FILE-PATH-ELEMENT Name="File"/>
+        </LIST>
+        <FILE-PATH Name="POWER_SET_POINT_FILE"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Pitch-control">
+        <GLOBAL-LIST Name="State-variables">
+          <!-- Si se selecciona este CHOICE-ELEMENT, reescribimos los valores de las listas-->
+          <VARIABLE Name="rho" Min="0.0" Max="1.2"/>
+          <VARIABLE Name="angle-of-attack" Min="-0.2" Max="0.2"/>
+        </GLOBAL-LIST>
+        <GLOBAL-LIST Name="Action-variables">
+          <!--otra lista global-->
+          <VARIABLE Name="beta" Min="-10" Max="10"/>
+        </GLOBAL-LIST>
+        <FILE-PATH Name="SET_POINT_FILE"/>
+      </CHOICE-ELEMENT>
+    </CHOICE>
+    <DECIMAL-ATTRIBUTE Name="DELTA_T" default="0.01"/>
+    <INTEGER-ATTRIBUTE Name="NUM_SIMULATION_STEPS" default="4"/>
+    <DROP-LIST-ELEMENT Name="REWARD">
+      <DECIMAL-ATTRIBUTE Name="MIN_REWARD"/>
+      <DECIMAL-ATTRIBUTE Name="MAX_REWARD"/>
+      <LIST Name="Reward-components">
+        <DECIMAL-ATTRIBUTE Name="Weight" default="1.0"/>
+        <DECIMAL-ATTRIBUTE Name="Tolerance" default="10"/>
+        <LIST-REF-ATTRIBUTE List="State-variables" Name="Error-variable"/>
+        <!-- Esto quiere decir que es una lista con las keys de la lista que se llama "State-variables"-->
+      </LIST>
+    </DROP-LIST-ELEMENT>
+  </DROP-LIST-ELEMENT>
+</Application>

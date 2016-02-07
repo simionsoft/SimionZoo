@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "../RLSimion-Lib/parameters.h"
+
 #include "../RLSimion-Lib/world.h"
 #include "../RLSimion-Lib/simgod.h"
 #include "../RLSimion-Lib/reward.h"
@@ -10,23 +10,20 @@
 //#include "../RLSimion-Lib/parameterscheduler.h"
 #include "../RLSimion-Lib/experiment.h"
 
-#ifdef _DEBUG
-	#pragma comment (lib,"../Debug/RLSimion-Lib.lib")
-#else
-	#pragma comment (lib,"../Release/RLSimion-Lib.lib")
-#endif
 
-#include <stdlib.h>
-#include <stdio.h>
+
 
 CWorld* g_pWorld;
 CExperiment *g_pExperiment;
 
 int main(int argc, char* argv[])
 {
-	CParameters *pParameters;
+	tinyxml2::XMLDocument parameters;
+	
+	//CParameters *pParameters;
 	if (argc > 1)
-		pParameters = new CParameters(argv[1]);
+		parameters.LoadFile(argv[1]);
+		//pParameters = new CParameters(argv[1]);
 	else
 	{
 		printf("ERROR: configuration file not provided as an argument");
@@ -34,9 +31,9 @@ int main(int argc, char* argv[])
 	}
 	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
 
-	g_pWorld= new CWorld(pParameters->getChild("WORLD"));
-	CSimGod* pSimGod = new CSimGod(pParameters->getChild("SIMGOD"));
-	g_pExperiment= new CExperiment(pParameters->getChild("EXPERIMENT"));
+	g_pWorld= new CWorld(parameters.FirstChildElement("WORLD"));
+	CSimGod* pSimGod = new CSimGod(parameters.FirstChildElement("SIMGOD"));
+	g_pExperiment = new CExperiment(parameters.FirstChildElement("EXPERIMENT"));
 	//CParameterScheduler* pParameterScheduler= new CParameterScheduler(pParameters->getChild("PARAMETER_SCHEDULER"));
 
 	CState *s= g_pWorld->getStateInstance();

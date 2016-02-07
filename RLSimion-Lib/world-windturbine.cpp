@@ -2,12 +2,10 @@
 #include "world.h"
 #include "world-windturbine.h"
 #include "setpoint.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "states-and-actions.h"
 #include "experiment.h"
 #include "globals.h"
-
+#include "parameters-xml-helper.h"
 
 //[1]
 //"Torque and pitch angle control for VSWT in all operating regimes"
@@ -166,7 +164,7 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 }
 
 
-CWindTurbine::CWindTurbine(CParameters *pParameters)
+CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 {
 	//STATE VARIABLES
 	m_pStateDescriptor= new CState(14);
@@ -192,18 +190,25 @@ CWindTurbine::CWindTurbine(CParameters *pParameters)
 	m_pActionDescriptor->setProperties(1,"d_T_g",-100000,100000);
 
 	//load all the wind data files
-	CParameters* pWindDataFiles = pParameters->getChild("WIND_DATA_FILES");
-	m_numDataFiles = pWindDataFiles->getNumParameters();
 	m_currentDataFile = 0;
-	m_pEvaluationWindData = new CHHFileSetPoint(pParameters->getParameter("EVALUATION_WIND_DATA_FILE")->getStringPtr());
-	m_pTrainingWindData = new CSetPoint* [m_numDataFiles];
+
+	//evaluation file
+	m_pEvaluationWindData = 
+		new CHHFileSetPoint(pParameters->FirstChildElement("EVALUATION_WIND_DATA_FILE")->Value());
+
+	//training files
+	m_numDataFiles = ParametersXMLHelper::countChildren(pParameters, "TRAINING_WIND_DATA_FILE");
+	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
+
+	tinyxml2::XMLElement* pElement= pParameters->FirstChildElement("TRAINING_WIND_DATA_FILE");
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
-		m_pTrainingWindData[i] = new CHHFileSetPoint(pWindDataFiles->getParameter(i)->getStringPtr());
+		m_pTrainingWindData[i] = new CHHFileSetPoint(pElement->Value());
+		pElement = pElement->NextSiblingElement("TRAINING_WIND_DATA_FILE");
 	}
 
 	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
-	m_pPowerSetpoint= new CFileSetPoint(pParameters->getParameter("POWER_SET_POINT_FILE")->getStringPtr());
+	m_pPowerSetpoint= new CFileSetPoint(pParameters->FirstChildElement("POWER_SET_POINT_FILE")->Value());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;
