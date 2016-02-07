@@ -45,12 +45,13 @@ namespace FormularioXML
 
         private void validate(object sender, EventArgs e)
         {
-            foreach(Control combo in panel.Controls)
+            foreach(Control combo in combos)
             {
                 if (combo is ComboBox)
                 {
                     if (((ComboBox)combo).SelectedIndex == -1 && combo.Enabled)
                     {
+                        
                         var t = combo.Name;
                         var index = panel.Controls.IndexOf(combo);      
                         MessageBox.Show("PLEASE SELECT THE WANTED CHOICE");
@@ -154,7 +155,7 @@ namespace FormularioXML
                     {
 
                         ComboBox tmp_cb = new ComboBox();
-                        tmp_cb.DropDownStyle = ComboBoxStyle.DropDownList;
+                        //tmp_cb.DropDownStyle = ComboBoxStyle.DropDownList;
                         foreach (RestrictionEnum res in e.simpleType.restricction.validOptions)
                         {
                             tmp_cb.Items.Add(res.ToString());
@@ -396,7 +397,105 @@ namespace FormularioXML
             }
 
         }
-        private void fillForm(XmlNode node, ref int index,bool doNothing)
+        private void fillForm(XmlNode node, ref int index, bool doNothing)
+        {
+            panel.SuspendLayout();
+
+            if (node.HasChildNodes)
+            {
+
+
+               if(!doNothing)
+               {
+                   while(true)
+                   {
+                       Control control = panel.Controls[index];
+                       if (control is Label && control.Text.Equals(node.Name))
+                           break;
+                       if(control is ComboBox && panel.Controls[index-1].Name.Equals("CHOICE"))
+                       {
+                           ComboBox combo = control as ComboBox;
+                           var items = combo.Items;
+                           combo.SelectedIndex = items.IndexOf(node.Name);
+                           index++;
+                           break;
+                       }
+                       index++;
+                   }
+               }
+               else
+               {
+
+               }
+            Console.WriteLine(node.Name);
+            var children = node.ChildNodes;
+            int i = 0;
+            bool unbounded = false;
+            foreach (XmlNode nodo in node.ChildNodes)
+            {
+
+                int multi = 0;
+
+                while (i < children.Count - 1 - multi && children[i].Name.Equals(children[i + 1 + multi].Name))
+                {
+                    if (panel.Controls[index + 1] is Button && panel.Controls[index + 1].Text.Equals("ADD"))
+                        ((Button)(panel.Controls[index + 1])).PerformClick();
+                    else if (panel.Controls[index + 2] is Button && panel.Controls[index + 2].Text.Equals("ADD"))
+                        ((Button)(panel.Controls[index + 2])).PerformClick();
+                    else if (panel.Controls[index + 3] is Button && panel.Controls[index + 3].Text.Equals("ADD"))
+                        ((Button)(panel.Controls[index + 3])).PerformClick();
+                    multi++;
+
+                }
+                Console.WriteLine("Multi: " + multi);
+                i++;
+                var ttt = nodo.ChildNodes;
+                fillForm(nodo, ref index, unbounded);
+                unbounded = (multi > 0);
+            }
+            }
+            else
+            {
+                
+                index++;
+                Control controlToBeWritten = panel.Controls[index];
+                if (controlToBeWritten is TextBox)
+                    controlToBeWritten.Text = node.InnerText;
+                else if (controlToBeWritten is ComboBox)
+                {
+                    ComboBox combo = controlToBeWritten as ComboBox;
+                    var items = combo.Items;
+                    int selectedIndex = items.IndexOf(node.InnerText);
+                    if (node.ParentNode.Name.Equals("DISTRIBUTION"))
+                    {
+                        var tttt = items[0] as string;
+                        var ee = tttt.Length;
+                    }
+                    (panel.Controls[index] as ComboBox).SelectedIndex = selectedIndex;
+                    //combo.SelectedIndex = 1;
+                    combo.SelectedValue = node.InnerText;
+
+                }
+                if(index<panel.Controls.Count-1)
+                {
+                    Control control = panel.Controls[index+1];
+                    if((control is Label)&&(!(control.Text.Equals(""))))
+                    {
+                        
+                    }
+                    else
+                    {
+                        index += 3;
+                    }
+                }
+               
+
+            }
+            panel.ResumeLayout();
+
+        }
+
+        private void fillForm44(XmlNode node, ref int index,bool doNothing)
         {
             panel.SuspendLayout();
           
@@ -494,7 +593,7 @@ namespace FormularioXML
             panel.ResumeLayout();
 
         }
-        private void fillForm3(XmlNode node, ref int index, bool doNothing)
+        private void fillForm55(XmlNode node, ref int index, bool doNothing)
         {
             panel.SuspendLayout();
 
@@ -505,8 +604,11 @@ namespace FormularioXML
                 {
                     if(impar.Text.Equals(node.Name))
                     {
-                        if (panel.Controls[index + 1] is ComboBox || panel.Controls[index + 1] is TextBox)
-                            index++;
+                        index++;
+                        if (panel.Controls[index] is ComboBox || panel.Controls[index] is TextBox)
+                        {
+
+                        }
                         else
                         {
                             while (panel.Controls[index].Text.Equals("") || panel.Controls[index] is CheckBox || panel.Controls[index] is Button)
@@ -519,6 +621,10 @@ namespace FormularioXML
                         String nodeName = node.Name;
                         ComboBox combo = panel.Controls[index] as ComboBox;
                         combo.SelectedItem = combo.Items[combo.Items.IndexOf(nodeName)];
+                    }
+                    else
+                    {
+
                     }
                 }
                 else if(impar is ComboBox)
@@ -536,9 +642,10 @@ namespace FormularioXML
                 Console.WriteLine(node.Name);
                 int multi = 0;
                 var children = node.ChildNodes;
+                int i = 0;
                 foreach (XmlNode nodo in node.ChildNodes)
                 {
-                    int i = 0;
+                    
                     while (i < children.Count - 1 - multi && children[i].Name.Equals(children[i + 1 + multi].Name))
                     {
                         if (panel.Controls[index + 1] is Button && panel.Controls[index + 1].Text.Equals("ADD"))
@@ -571,6 +678,10 @@ namespace FormularioXML
                     }
                     else
                         index++;
+                }
+                else
+                {
+
                 }
                 Console.WriteLine(node.InnerText);
             }
@@ -1028,13 +1139,13 @@ namespace FormularioXML
                     {
                         tmp_l.Name = "CHOICE";   
                         ComboBox tmp_cb = new ComboBox();
-                        tmp_cb.DropDownStyle = ComboBoxStyle.DropDownList;
                         foreach (RestrictionEnum res in e.simpleType.restricction.validOptions)
                         {
                             tmp_cb.Items.Add(res.ToString());
                         }
                         tmp_cb.Size = new Size(100, 25);
                         tmp_cb.Anchor = AnchorStyles.Left;
+                        //tmp_cb.DropDownStyle = ComboBoxStyle.DropDownList;
                         list.Add(tmp_cb);
                         xmlDyc.Add(tmp_cb, child);
                         if (controls != null)
@@ -1148,7 +1259,6 @@ namespace FormularioXML
                 {
                     int index = list.IndexOf(controls[0])+1;
                     CheckBox tmp = controls.ElementAt(0) as CheckBox;
-                    controls.RemoveAt(0);
                     for(;index<list.Count;index++)
                     {
                         Control c = list[index];
@@ -1193,7 +1303,10 @@ namespace FormularioXML
                 
             }
             if (controls != null)
+            {
+                controls.RemoveAt(0);
                 enable.Add(nullCheckBox, controls);
+            }
             // hay que comprobar si es maxocur diferente de uno para añadir boton de añadir
             Control last =list[(list.Count-1)];
             if(auto &&  last is ComboBox && (last as ComboBox).SelectedIndex==-1)

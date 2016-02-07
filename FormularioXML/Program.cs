@@ -3,8 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Schema;
 
 namespace FormularioXML
@@ -20,15 +23,78 @@ namespace FormularioXML
             //LOAD XSD
             List<Element> xsdElements = new List<Element>();
             Dictionary<string, ComplexType> myDic = new Dictionary<string, ComplexType>();
+            Dictionary<String, System.Type> myEnums = new Dictionary<string,Type>();
 
-            loadXsd(ref xsdElements, ref myDic);
+           // loadXsd(ref xsdElements, ref myDic);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new Form1());
-            Application.Run(new Form2(xsdElements,myDic));
+            //Application.Run(new Form2(xsdElements,myDic));
+            createEnuns();
+            System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom("TempAssembly.dll");
+            var enums = ass.GetTypes();
+            foreach(System.Type tipo in enums)
+            {
+                myEnums.Add(tipo.FullName, tipo);
+                Console.WriteLine(tipo.FullName);
+                string[] values = tipo.GetEnumNames();
+                foreach(string name in values)
+                {
+                    Console.WriteLine(name);
+                }
 
+            }
+            
+        }
+        private static void createEnuns()
+        {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
 
+            // Create a dynamic assembly in the current application domain,
+            // and allow it to be executed and saved to disk.
+            AssemblyName aName = new AssemblyName("TempAssembly");
+            AssemblyBuilder ab = currentDomain.DefineDynamicAssembly(aName, AssemblyBuilderAccess.RunAndSave);
+
+            // Define a dynamic module in "TempAssembly" assembly. For a single-
+            // module assembly, the module has the same name as the assembly.
+            ModuleBuilder mb = ab.DefineDynamicModule(aName.Name, aName.Name + ".dll");
+
+            XmlDocument doc = new XmlDocument();
+            doc.Load("../config/enums.xml");
+            XmlNode rl = doc.LastChild;
+            foreach(XmlNode Enum in rl.ChildNodes)
+            {
+                string nameEnum = Enum.Attributes[0].Value;
+                if(Enum.ChildNodes!=null && Enum.ChildNodes.Count==1)
+                {
+                    EnumBuilder eb = mb.DefineEnum(nameEnum, TypeAttributes.Public, typeof(int));
+                    var element = Enum.ChildNodes[0];
+                    var restrictions = element.ChildNodes[0];
+                    Console.WriteLine(nameEnum);
+                    int i = 0;
+                    foreach(XmlNode restriction in restrictions)
+                    {
+                        string name = restriction.Attributes[0].Value;
+                        eb.DefineLiteral(name, i);
+                        i++;
+                    }
+                    Type finished = eb.CreateType();
+                }
+               
+            }
+
+            // Define a public enumeration with the name "Elevation" and an 
+            // underlying type of Integer.
+            /*EnumBuilder eb = mb.DefineEnum("Elevation", TypeAttributes.Public, typeof(int));
+
+            // Define two members, "High" and "Low".
+            eb.DefineLiteral("Low", 0);
+            eb.DefineLiteral("High", 1);
+            */
+            // Create the type and save the assembly.
+            //Type finished = eb.CreateType();
+            ab.Save(aName.Name + ".dll");
         }
         private static void loadXsd(ref List<Element> elements, ref Dictionary<string,ComplexType> dicTranslator)
         {
