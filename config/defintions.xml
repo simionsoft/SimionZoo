@@ -1,0 +1,52 @@
+<CLASS-DEFINITIONS>
+  <ACTOR>
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="CACLA">
+        <FILE-PATH-VALUE Name="LOAD" CanBeNull="true"/>
+        <FILE-PATH-VALUE Name="SAVE" CanBeNull="true"/>
+        <MULTI-VALUED Name="OUTPUTS" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Regular-Gradient">
+        <FILE-PATH-VALUE Name="LOAD" CanBeNull="true"/>
+        <FILE-PATH-VALUE Name="SAVE" CanBeNull="true"/>
+        <MULTI-VALUED Name="OUTPUTS" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
+      </CHOICE-ELEMENT>
+    </CHOICE>
+  </ACTOR>
+  <SINGLE-OUTPUT-VFA-LEARNER>
+    <XML-NODE-REF Name="Action" XMLFile="WORLD-DEFINITION" Child="ACTION"/>
+    <BRANCH Name="RBFGrid" Class="RBF-GRID"/>
+    <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
+  </SINGLE-OUTPUT-VFA-LEARNER>
+  <RBF-GRID>
+    <MULTI-VALUED Name="State-Dim-Grid" Class="STATE-DIM-GRID"/>
+  </RBF-GRID>
+  <STATE-DIM-GRID>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
+    <INTEGER-VALUE Name="Num.Features" default="10"/>
+    <ENUM-VALUE Name="Distribution" Class="ENUM-DISTRIBUTIONS"/>
+  </STATE-DIM-GRID>
+  <GAUSSIAN-NOISE>
+    <DECIMAL-VALUE Name="Sigma" default="0.001"/>
+  </GAUSSIAN-NOISE>
+  <CRITIC>
+    <u_thrust>
+      <Units>N</Units>
+      <Min>-30</Min>
+      <Max>30</Max>
+    </u_thrust>
+  </CRITIC>
+  <REWARD-COMPONENT>
+    <DECIMAL-VALUE Name="Weight" default="1.0"/>
+    <DECIMAL-VALUE Name="Tolerance" default="10"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
+  </REWARD-COMPONENT>
+  <ENUM-DISTRIBUTIONS>
+    <ENUM>linear</ENUM>
+    <ENUM>quadratic</ENUM>
+  </ENUM-DISTRIBUTIONS>
+  <ENUM-BOOLEAN>
+    <ENUM>true</ENUM>
+    <ENUM>false</ENUM>
+  </ENUM-BOOLEAN>
+</CLASS-DEFINITIONS>

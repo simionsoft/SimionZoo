@@ -60,8 +60,6 @@
 #define K_t 400.0 //N*m/rad/s [thesis boukhezzar]
 #define J_t 3.92e5 //kg*m^2
 
-#define DIM_A_beta 0 //beta
-#define DIM_A_torque 1 //T_g
 
 #define NUM_ACTION_VARS 2
 

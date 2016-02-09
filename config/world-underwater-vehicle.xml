@@ -1,0 +1,28 @@
+<WORLD-DEFINITION>
+  <STATE>
+    <v-setpoint>
+      <Units>m/s</Units>
+      <Min>-5.0</Min>
+      <Max>5.0</Max>
+    </v-setpoint>
+    <v>
+      <Units>m/s</Units>
+      <Min>-5.0</Min>
+      <Max>5.0</Max>
+    </v>
+    <v-deviation>
+      <Units>m/s</Units>
+      <Min>-10.0</Min>
+      <Max>10.0</Max>
+    </v-deviation>
+  </STATE>
+  <ACTION>
+    <u_thrust>
+      <Units>N</Units>
+      <Min>-30</Min>
+      <Max>30</Max>
+    </u_thrust>
+  </ACTION>
+  <CONSTANTS>
+  </CONSTANTS>
+</WORLD-DEFINITION>

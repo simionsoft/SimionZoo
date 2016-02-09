@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<APP Name="RLSimion">
+  <INCLUDE>./config/definitions.xml</INCLUDE>
+  <BRANCH Name="WORLD">
+    <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
+      <CHOICE-ELEMENT Name="Wind-turbine" XML="./config/world-wind-turbine.xml" Child="WORLD-DEFINITION">
+        <FILE-PATH-VALUE Name="EVALUATION_WIND_DATA_FILE" default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
+        <MULTI-VALUED Name="TRAINING_WIND_DATA_FILE" Class="FILE-PATH-VALUE" default="../config/wind-turbine/setpoints/TurbSim-11.hh"/>
+        <FILE-PATH-VALUE Name="POWER_SET_POINT_FILE" default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Underwater-vehicle" XML="./config/world-underwater-vehicle.xml">
+        <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
+      </CHOICE-ELEMENT>
+    </CHOICE>
+    <DECIMAL-VALUE Name="DELTA_T" default="0.01"/>
+    <INTEGER-VALUE Name="NUM_SIMULATION_STEPS" default="4"/>
+    <BRANCH Name="REWARD">
+      <DECIMAL-VALUE Name="MIN_REWARD" Comment="Minimum allowed reward"/>
+      <DECIMAL-VALUE Name="MAX_REWARD" Comment="Maximum output of each reward component"/>
+      <MULTI-VALUED Class="REWARD-COMPONENT"/>
+    </BRANCH>
+  </BRANCH>
+  <BRANCH Name="EXPERIMENT">
+    <INTEGER-VALUE Name="NUM_EPISODES" default="1000" Comment="Number of episodes"/>
+    <INTEGER-VALUE Name="EPISODE_LENGTH" default="360" Comment="Length in seconds"/>
+    <INTEGER-VALUE Name="RANDOM_SEED" default="1" Comment="Seed used to generate random numbers"/>
+    <INTEGER-VALUE Name="EVAL_FREQ" default="10" Comment="Evaluation freq. in episodes"/>
+    <BRANCH Name="LOG">
+      <DECIMAL-VALUE Name="FREQ" default="0.25" Comment="log freq. in seconds"/>
+      <DIR-PATH-VALUE Name="OUTPUT_DIR" default="test-dir" Comment="name of the directory where log files will be saved (within ./logs)"/>
+      <STRING-VALUE Name="prefix" default="prefix" Comment="Prefix given to the names of the generated log files"/>
+      <BOOLEAN-VALUE Name="EVALUATION_EPISODES" default="true" Comment="Log evaluation episodes?"/>
+      <BOOLEAN-VALUE Name="TRAINING_EPISODES" default="false" Comment="Log training episodes?"/>
+      <BOOLEAN-VALUE Name="EVALUATION_AVG_REWARDS" default="true" Comment="Log average rewards in evaluation episodes?"/>
+    </BRANCH>   
+  </BRANCH>
+  <BRANCH Name="SIMGOD">
+    <CHOICE Name="Configuration">
+      <CHOICE-ELEMENT Name="Actor">
+        <BRANCH Name="ACTOR" Class="Actor"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Actor-Critic">
+        <BRANCH Name="ACTOR" Class="Actor"/>
+        <BRANCH Name="CRITIC" Class="Critic"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Actor-Critic-Controller">
+        <BRANCH Name="ACTOR" Class="Actor"/>
+        <BRANCH Name="CRITIC" Class="Critic"/>
+        <BRANCH Name="CONTROLLER" Class="Actor"/>
+      </CHOICE-ELEMENT>
+    </CHOICE>
+  </BRANCH>
+</APP>
