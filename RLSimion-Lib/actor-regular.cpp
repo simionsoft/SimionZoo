@@ -4,21 +4,22 @@
 #include "states-and-actions.h"
 #include "features.h"
 #include "etraces.h"
-#include "parameter.h"
-#include "parameters.h"
+#include "parameters-xml-helper.h"
 #include "vfa-policy.h"
 
-CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(CParameters *pParameters)
+CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(tinyxml2::XMLElement *pParameters)
 : CSingleOutputVFAPolicyLearner(pParameters)
 {
 	m_pStateFeatures = new CFeatureList();
-	m_e = new CETraces(pParameters->getChild("ETRACES"));
+	m_e = new CETraces(pParameters->FirstChildElement("ETRACES"));
+	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 }
 
 CRegularPolicyGradientLearner::~CRegularPolicyGradientLearner()
 {
 	delete m_pStateFeatures;
 	delete m_e;
+	delete m_pAlpha;
 }
 
 void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td)
@@ -30,8 +31,8 @@ void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *
 	//Regular gradient actor update
 	//theta= theta + alpha*(lastNoise)*phi_pi(s)*td
 
-	alpha = m_pParameters->getParameter("ALPHA")->getDouble();
-	actionVar = m_pParameters->getParameter("ACTION")->getStringPtr();
+	alpha = m_pAlpha->get();
+	actionVar = m_pParameters->FirstChildElement("ACTION")->Value();
 
 	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(s, a);// m_pOutput->getValue(i);
 

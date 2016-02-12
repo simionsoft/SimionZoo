@@ -6,23 +6,24 @@
 #include "states-and-actions.h"
 #include "features.h"
 #include "etraces.h"
-#include "parameter.h"
-#include "parameters.h"
+#include "parameters-xml-helper.h"
 
-CCACLALearner::CCACLALearner(CParameters *pParameters)
+CCACLALearner::CCACLALearner(tinyxml2::XMLElement *pParameters)
 : CSingleOutputVFAPolicyLearner(pParameters)
 {
-	m_e = new CETraces(pParameters->getChild("ETRACES"));
 	m_pStateFeatures = new CFeatureList();
+	m_e = new CETraces(pParameters->FirstChildElement("ETRACES"));
+	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 }
 
 CCACLALearner::~CCACLALearner()
 {
-	delete m_pStateFeatures;
+	delete m_pAlpha;
 	delete m_e;
+	delete m_pStateFeatures;
 }
 
-void CCACLALearner::updatePolicy(CState *s,CAction *a,CState *s_p,double r,double td)
+void CCACLALearner::updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td)
 {
 	double lastNoise;
 	double alpha;
@@ -33,8 +34,8 @@ void CCACLALearner::updatePolicy(CState *s,CAction *a,CState *s_p,double r,doubl
 	//if delta>0: theta= theta + alpha*(lastNoise)*phi_pi(s)
 
 
-	alpha = m_pParameters->getParameter("ALPHA")->getDouble();
-	actionVar = m_pParameters->getParameter("ACTION")->getStringPtr();
+	alpha = m_pAlpha->get();
+	actionVar = m_pParameters->FirstChildElement("ACTION")->Value();
 
 	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(s, a);// m_pOutput->getValue(i);
 

@@ -5,6 +5,7 @@ class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+class tinyxml2::XMLElement;
 
 #include "parameterized-object.h"
 //CLinearVFA////////////////////////////////////////////////////////////////////
@@ -19,7 +20,7 @@ protected:
 	CFeatureList *m_pAux;
 public:
 
-	CLinearVFA(CParameters* pParameters);
+	CLinearVFA(tinyxml2::XMLElement* pParameters);
 	~CLinearVFA();
 
 	double getValue(CFeatureList *features);

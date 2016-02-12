@@ -1,26 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RLSimion>
   <WORLD>
-    <Wind-turbine>
-      <WORLD-DEFINITION>./config/world-wind-turbine.xml</WORLD-DEFINITION>
-      <EVALUATION_WIND_DATA>../config/wind-turbine/setpoints/TurbSim-10.25.hh</EVALUATION_WIND_DATA>
-      <TRAINING_WIND_DATA>
-        <FILE>../config/wind-turbine/setpoints/TurbSim-11.hh</FILE>
-        <FILE>../config/wind-turbine/setpoints/TurbSim-10.hh</FILE>
-      </TRAINING_WIND_DATA>
-      <POWER_SET_POINT>../config/wind-turbine/setpoints/windturbine-power-setpoint.txt</POWER_SET_POINT>
-    </Wind-turbine>
+    <DYNAMIC-MODEL>
+      <Wind-turbine>
+        <WORLD-DEFINITION>./config/world-wind-turbine.xml</WORLD-DEFINITION>
+        <EVALUATION_WIND_DATA>../config/wind-turbine/setpoints/TurbSim-10.25.hh</EVALUATION_WIND_DATA>
+        <TRAINING_WIND_DATA>
+          <FILE>../config/wind-turbine/setpoints/TurbSim-11.hh</FILE>
+          <FILE>../config/wind-turbine/setpoints/TurbSim-10.hh</FILE>
+        </TRAINING_WIND_DATA>
+        <POWER_SET_POINT>../config/wind-turbine/setpoints/windturbine-power-setpoint.txt</POWER_SET_POINT>
+      </Wind-turbine>
+    </DYNAMIC-MODEL>
     <DELTA_T>0.01</DELTA_T>
     <NUM_SIMULATION_STEPS>4</NUM_SIMULATION_STEPS>
     <REWARD>
       <MIN_REWARD>-100</MIN_REWARD>
       <MAX_REWARD>1.0</MAX_REWARD>
       <REWARD-COMPONENT>
-        <COMPONENT_WEIGHT>1.0</COMPONENT_WEIGHT>
-        <COMPONENT_TOLERANCE>10</COMPONENT_TOLERANCE>
-        <CONTROL_ERROR_VARIABLE>E_p</CONTROL_ERROR_VARIABLE>
+        <WEIGHT>1.0</WEIGHT>
+        <TOLERANCE>10</TOLERANCE>
+        <ERROR_VARIABLE>E_p</ERROR_VARIABLE>
       </REWARD-COMPONENT>
-    </REWARD>
+      <REWARD-COMPONENT>
+        <WEIGHT>1.0</WEIGHT>
+        <TOLERANCE>0.01</TOLERANCE>
+        <ERROR_VARIABLE>E_omega_r</ERROR_VARIABLE>
+      </REWARD-COMPONENT>    </REWARD>
   </WORLD>
   <EXPERIMENT>
     <NUM_EPISODES>1</NUM_EPISODES>
@@ -38,60 +44,56 @@
   </EXPERIMENT>
   <SIMGOD>
     <ACTOR>
-      <CACLA>
+      <VFA-LEARNER>
         <LOAD>../data/policy.bin</LOAD>
-        <SINGLE-OUTPUT-VFA-LEARNER>
-          <ACTION>d_T_g</ACTION>
-          <RBF-GRID>
-            <state-dim-grid>
-              <VARIABLE_NAME>omega_r</VARIABLE_NAME>
-              <NUM_FEATURES>70</NUM_FEATURES>
-              <DISTRIBUTION>linear</DISTRIBUTION>
-            </state-dim-grid>
-            <state-dim-grid>
-              <VARIABLE_NAME>T_g</VARIABLE_NAME>
-              <NUM_FEATURES>80</NUM_FEATURES>
-              <DISTRIBUTION>linear</DISTRIBUTION>
-            </state-dim-grid>
-          </RBF-GRID>
-          <EXPLORATION_NOISE>
-            <SIGMA>
-              <decimal>10</decimal>
-            </SIGMA>
-          </EXPLORATION_NOISE>
-          <ALPHA>
-            <schedule>
-              <INTERPOLATION>linear</INTERPOLATION>
-              <INITIAL_VALUE>0.001</INITIAL_VALUE>
-              <FINAL_VALUE>0.0001</FINAL_VALUE>
-              <EVALUATION_EPISODE_VALUE>0.0</EVALUATION_EPISODE_VALUE>
-            </schedule>
-          </ALPHA>
-          <ETRACES>
-            <REPLACE>true</REPLACE>
-            <LAMBDA>0.9</LAMBDA>
-            <THRESHOLD>0.001</THRESHOLD>
-          </ETRACES>
-        </SINGLE-OUTPUT-VFA-LEARNER>
-        <SINGLE-OUTPUT-VFA-LEARNER>
-          <ACTION>d_beta</ACTION>
-          <RBF-GRID>
-            <state-grid-dimension>
-              <VARIABLE_NAME>omega_r</VARIABLE_NAME>
-              <NUM_FEATURES>10</NUM_FEATURES>
-              <DISTRIBUTION>linear</DISTRIBUTION>
-            </state-grid-dimension>
-          </RBF-GRID>
-          <EXPLORATION_NOISE>
-            <SIGMA>
-              <decimal>0.0001</decimal>
-            </SIGMA>
-          </EXPLORATION_NOISE>
-          <ALPHA>
-            <decimal>0.1</decimal>
-          </ALPHA>
-        </SINGLE-OUTPUT-VFA-LEARNER>
-      </CACLA>
+        <OUTPUTS>
+          <CACLA>
+            <ACTION>d_T_g</ACTION>
+            <RBF-GRID>
+              <STATE-DIM-GRID>
+                <Variable>omega_r</Variable>
+                <Min>0.2</Min>
+                <Max>0.7</Max>
+                <Num-Features>70</Num-Features>
+                <Distribution>linear</Distribution>
+              </STATE-DIM-GRID>
+              <STATE-DIM-GRID>
+                <Variable>T_g</Variable>
+                <Num-Features>80</Num-Features>
+                <Distribution>linear</Distribution>
+              </STATE-DIM-GRID>
+            </RBF-GRID>
+            <EXPLORATION_NOISE>
+              <SIGMA>10</SIGMA>
+            </EXPLORATION_NOISE>
+            <ALPHA>
+              <Interpolation>linear</Interpolation>
+              <Initial-Value>0.001</Initial-Value>
+              <Final-Value>0.0001</Final-Value>
+              <Evaluation-Value>0.0</Evaluation-Value>
+            </ALPHA>
+            <ETRACES>
+              <REPLACE>true</REPLACE>
+              <LAMBDA>0.9</LAMBDA>
+              <THRESHOLD>0.001</THRESHOLD>
+            </ETRACES>
+          </CACLA>
+          <CACLA>
+            <ACTION>d_beta</ACTION>
+            <RBF-GRID>
+              <state-grid-dimension>
+                <VARIABLE_NAME>omega_r</VARIABLE_NAME>
+                <NUM_FEATURES>10</NUM_FEATURES>
+                <DISTRIBUTION>linear</DISTRIBUTION>
+              </state-grid-dimension>
+            </RBF-GRID>
+            <EXPLORATION_NOISE>
+              <SIGMA>0.0001</SIGMA>
+            </EXPLORATION_NOISE>
+            <ALPHA>0.1</ALPHA>
+          </CACLA>
+        </OUTPUTS>
+      </VFA-LEARNER>
     </ACTOR>
     <CRITIC>
       <TD-Lambda>
@@ -116,16 +118,12 @@
           <LAMBDA>0.9</LAMBDA>
           <THRESHOLD>0.001</THRESHOLD>
         </ETRACES>
-        <GAMMA>
-          <decimal>0.9</decimal>
-        </GAMMA>
+        <GAMMA>0.9</GAMMA>
         <ALPHA>
-          <schedule>
-            <INTERPOLATION>linear</INTERPOLATION>
-            <INITIAL_VALUE>0.01</INITIAL_VALUE>
-            <FINAL_VALUE>0.001</FINAL_VALUE>
-            <EVALUATION_EPISODE_VALUE>0.0</EVALUATION_EPISODE_VALUE>
-          </schedule>
+          <Interpolation>linear</Interpolation>
+          <Initial-Value>0.01</Initial-Value>
+          <Final-Value>0.001</Final-Value>
+          <Evaluation-Value>0.0</Evaluation-Value>
         </ALPHA>
       </TD-Lambda>
     </CRITIC>

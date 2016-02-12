@@ -55,20 +55,15 @@
   
   <!-- Generic actors and critics-->
   <CLASS Name="ACTOR">
-    <CHOICE Name="Algorithm">
-      
-      <CHOICE-ELEMENT Name="CACLA">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
-        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="VFA-Learner">
+        
+        <FILE-PATH-VALUE Name="Load" Optional="true"/>
+        <FILE-PATH-VALUE Name="Save" Optional="true"/>
+        <BRANCH Name="VFA-Learner" Class="VFA-Learner"/>
+        
       </CHOICE-ELEMENT>
-      
-      <CHOICE-ELEMENT Name="Regular-Gradient">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
-        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
-      </CHOICE-ELEMENT>
-      
+
       <CHOICE-ELEMENT Name="PID">
         <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
         <DECIMAL-VALUE Name="KP"/>
@@ -94,7 +89,7 @@
         <DECIMAL-VALUE Name="PC_RefSpd" Default="122.9096"/>
       </CHOICE-ELEMENT>
 
-      <CHOICE-ELEMENT name="Vidal">
+      <CHOICE-ELEMENT Name="Vidal">
         <DECIMAL-VALUE Name="A"/>
         <DECIMAL-VALUE Name="K_alpha"/>
         <DECIMAL-VALUE Name="KP"/>
@@ -102,7 +97,7 @@
         <DECIMAL-VALUE Name="P_s"/>
       </CHOICE-ELEMENT>
 
-      <CHOICE-ELEMENT name="Boukhezzar">  
+      <CHOICE-ELEMENT Name="Boukhezzar">  
         <DECIMAL-VALUE Name="C_0" type="numeric"/>
         <DECIMAL-VALUE Name="KP" type="numeric"/>
         <DECIMAL-VALUE Name="KI" type="numeric"/>
@@ -111,31 +106,52 @@
       </CHOICE-ELEMENT>
     </CHOICE>
   </CLASS>
+
+  <CLASS Name="VFA-Learner">
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="CACLA">
+        <FILE-PATH-VALUE Name="Load" Optional="true"/>
+        <FILE-PATH-VALUE Name="Save" Optional="true"/>
+        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Regular-Gradient">
+        <FILE-PATH-VALUE Name="Load" Optional="true"/>
+        <FILE-PATH-VALUE Name="Save" Optional="true"/>
+        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
+      </CHOICE-ELEMENT>
+    </CHOICE>
+  </CLASS>
+  <CHOICE-ELEMENT Name="CACLA">
+
+  </CHOICE-ELEMENT>
+
+
+
   <CLASS Name="CRITIC">
     <CHOICE Name="Algorithm">
       <CHOICE-ELEMENT Name="TD-Lambda">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
+        <FILE-PATH-VALUE Name="Load" Optional="true"/>
+        <FILE-PATH-VALUE Name="Save" Optional="true"/>
         <DECIMAL-VALUE Name="Alpha"/>
         <DECIMAL-VALUE Name="Gamma"/>
-        <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
+        <BRANCH Name="ETraces" Class="ETRACES" Optional="true"/>
         <BRANCH Name="V-Function" Class="RBF-GRID"/>
       </CHOICE-ELEMENT>
       <CHOICE-ELEMENT Name="True-Online-TD-Lambda">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
+        <FILE-PATH-VALUE Name="Load" Optional="true"/>
+        <FILE-PATH-VALUE Name="Save" Optional="true"/>
         <DECIMAL-VALUE Name="Alpha"/>
         <DECIMAL-VALUE Name="Gamma"/>
-        <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
+        <BRANCH Name="ETraces" Class="ETRACES" Optional="true"/>
         <BRANCH Name="V-Function" Class="RBF-GRID"/>
       </CHOICE-ELEMENT>
       <CHOICE-ELEMENT Name="TDC-Lambda">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
+        <FILE-PATH-VALUE Name="Load" Optional="true"/>
+        <FILE-PATH-VALUE Name="Save" Optional="true"/>
         <DECIMAL-VALUE Name="Alpha"/>
         <DECIMAL-VALUE Name="Gamma"/>
         <DECIMAL-VALUE Name="Beta"/>
-        <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
+        <BRANCH Name="ETraces" Class="ETRACES" Optional="true"/>
         <BRANCH Name="V-Function" Class="RBF-GRID"/>
       </CHOICE-ELEMENT>
     </CHOICE>
@@ -149,7 +165,7 @@
         <DECIMAL-VALUE Name="Gamma"/>
         <DECIMAL-VALUE Name="Alpha-r" Comment="Gain used to update the average reward"/>
         <BRANCH Name="V-Function" Class="RBF-GRID"/>
-        <BRANCH Name="V-ETraces" Class="ETRACES" CanBeNull="true"/>
+        <BRANCH Name="V-ETraces" Class="ETRACES" Optional="true"/>
         <DECIMAL-VALUE Name="Alpha-v" Comment="Gain used to update the V-Function"/>
         <MULTI-VALUED Name="Policy-Learners" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
       </CHOICE-ELEMENT>
@@ -160,7 +176,7 @@
     <XML-NODE-REF Name="Action" XMLFile="WORLD-DEFINITION" Child="ACTION"/>
     <BRANCH Name="RBF-Grid" Class="RBF-GRID"/>
     <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
-    <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
+    <BRANCH Name="ETraces" Class="ETRACES" Optional="true"/>
     <DECIMAL-VALUE Name="ALPHA"/>
   </CLASS>
   
@@ -183,7 +199,9 @@
   
   <CLASS Name="STATE-DIM-GRID">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
-    <INTEGER-VALUE Name="Num.Features" Default="10"/>
+    <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
+    <INTEGER-VALUE Name="Min" Optional="true"/>
+    <INTEGER-VALUE Name="Max" Optional="true"/>
     <ENUM-VALUE Name="Distribution" Class="DISTRIBUTIONS"/>
   </CLASS>
   
@@ -205,13 +223,20 @@
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
   </CLASS>
 
-  <ENUMERATED Name="DISTRIBUTIONS">
-      <VALUE>linear</VALUE>
-      <VALUE>quadratic</VALUE>
-  </ENUMERATED>
+  <ENUMERATED>
+    <DISTRIBUTIONS>
+        <VALUE>linear</VALUE>
+        <VALUE>quadratic</VALUE>
+    </DISTRIBUTIONS>
 
-  <ENUMERATED Name="BOOLEAN">
-    <VALUE>true</VALUE>
-    <VALUE>false</VALUE>
+    <BOOLEAN>
+      <VALUE>true</VALUE>
+      <VALUE>false</VALUE>
+    </BOOLEAN>
+
+    <TIME-REFERENCE>
+      <VALUE>true</VALUE>
+      <VALUE>false</VALUE>
+    </TIME-REFERENCE>
   </ENUMERATED>
 </DEFINITIONS>

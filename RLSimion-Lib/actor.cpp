@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "actor.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "noise.h"
 #include "controller.h"
 #include "vfa.h"
@@ -12,22 +10,24 @@
 #include "states-and-actions.h"
 
 
-CActor* CActor::getInstance(CParameters* pParameters)
+CActor* CActor::getInstance(tinyxml2::XMLElement* pParameters)
 {
+	tinyxml2::XMLElement* child;
 	if (!pParameters) return 0;
 
-	const char* type = pParameters->getChild(0)->getName();
+	child = pParameters->FirstChildElement();
+	const char* type = child->Name();
 
-	if (strcmp(type, "VFA-Actor") == 0)
-		return new CVFAActor(pParameters);
+	if (strcmp(type, "VFA-ACTOR") == 0)
+		return new CVFAActor(child); 
 	else if (strcmp(type, "VIDAL") == 0)
-		return new CWindTurbineVidalController(pParameters);
+		return new CWindTurbineVidalController(child);
 	else if (strcmp(type, "BOUKHEZZAR") == 0)
-		return new CWindTurbineBoukhezzarController(pParameters);
+		return new CWindTurbineBoukhezzarController(child);
 	else if (strcmp(type, "PID") == 0)
-		return new CPIDController(pParameters);
+		return new CPIDController(child);
 	else if (strcmp(type, "LQR") == 0)
-		return new CLQRController(pParameters);
+		return new CLQRController(child);
 	return 0;
 }
 

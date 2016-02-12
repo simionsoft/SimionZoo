@@ -4,9 +4,9 @@
 #include "features.h"
 #include "parameters.h"
 
-CLinearVFA::CLinearVFA(CParameters* pParameters) : CParamObject(pParameters)
+CLinearVFA::CLinearVFA(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_pFeatureMap = CFeatureMap::getInstance(pParameters->getChild("FEATURE_MAP"));
+	m_pFeatureMap = CFeatureMap::getInstance(pParameters);
 
 	m_numWeights = m_pFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
