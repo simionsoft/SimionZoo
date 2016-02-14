@@ -6,11 +6,13 @@
 #include "globals.h"
 #include "world.h"
 #include "features.h"
+#include "parameters-xml-helper.h"
+
 
 #define ACTIVATION_THRESHOLD 0.0001
 
 void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int numCenters
-					  ,double minV, double maxV,const char* distType)
+					  ,double minV, double maxV,const char* distribution)
 {
 	int index;
 	CState *pSDesc= g_pWorld->getStateDescriptor();
@@ -42,7 +44,7 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 		}
 	}
 
-	if (!strcmp(distType,"linear"))
+	if (!strcmp(distribution,"linear"))
 	{
 		for (int j= 0; j<numCenters; j++)
 			m_pCenters[i][j]= minV + (((double)j)/(numCenters-1))*(maxV-minV);
@@ -55,9 +57,9 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 		{
 			normalisedPos=((double)j-ncenters*.5)/(ncenters*.5);
 
-			if (!strcmp(distType, "cubic"))
+			if (!strcmp(distribution ,"cubic"))
 				normalisedPos= pow(normalisedPos,3.0);
-			else if (!strcmp(distType, "quadratic"))
+			else if (!strcmp(distribution, "quadratic");
 				normalisedPos= pow(normalisedPos,2.0);
 			else assert(0);
 
@@ -68,13 +70,13 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 
 }
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pParameters)
 : CParamObject(pParameters)
 {
 	char * token= 0, *nextToken= 0;
 	char copy[MAX_STRING_SIZE];
 
-	m_numVariables = pParameters->getNumChildren();//getNumVariables(configString) +1;
+	m_numVariables = XMLParameters::countChildren(pParameters, "state-dim-grid");
 	
 	m_variableType= new short [m_numVariables];
 	m_variableIndex= new int [m_numVariables];
@@ -92,18 +94,21 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
 	const char *varName;
 	double min,max;
 	const char* distType;
+	tinyxml2::XMLElement* child;
 
 	for (int i = 0; i < m_numVariables; i++)
 	{
-		varName = m_pParameters->getParameter("VARIABLE_NAME")->getStringPtr();
-		numFeatures = (int)m_pParameters->getParameter("NUM_FEATURES")->getDouble();
-		if (m_pParameters->exists("MIN_VALUE"))
-			min = m_pParameters->getParameter("MIN_VALUE")->getDouble();
-		else min = 0.0;
-		if (m_pParameters->exists("MAX_VALUE"))
-			max = m_pParameters->getParameter("MAX_VALUE")->getDouble();
-		else max = 0.0;
-		distType = m_pParameters->getParameter("DISTRIBUTION")->getStringPtr();
+		varName = m_pParameters->FirstChildElement("Variable")->Value();
+		numFeatures = atoi( m_pParameters->FirstChildElement("Num-Features")->Value());
+		child = m_pParameters->FirstChildElement("Min");
+		if (child)
+			min = atof(child->Value());
+		else min = g_pWorld->getStateDescriptor()->getMin(varName);
+		child = m_pParameters->FirstChildElement("Max");
+		if (child)
+			max = atof(child->Value());
+		else max = g_pWorld->getStateDescriptor()->getMax(varName);
+		distType = m_pParameters->FirstChildElement("Distribution")->Value();
 		initCenterPoints(i, varName, numFeatures, min, max, distType);
 
 	}

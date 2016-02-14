@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<APP Name="RLSimion">
+  
+  <INCLUDE>../config/definitions.xml</INCLUDE>
+  
+  <BRANCH Name="World" Class="WORLD"/>
+    
+  <BRANCH Name="Experiment" Class="EXPERIMENT"/>
+   
+  <BRANCH Name="SimGod" Class="SIMGOD"/>
+
+</APP>

@@ -1,18 +1,20 @@
 #pragma once
+#include "parameterized-object.h"
 
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class CErrorComponent;
-class CParameters;
+class CRewardComponent;
+
 class tinyxml2::XMLElement;
 
-class CReward
+class CReward: public CParamObject
 {
-	CErrorComponent* m_pErrorComponents;
+	CRewardComponent** m_pRewardComponents;
+	int m_numRewardComponents;
+
 	double m_lastReward;
 	
-	int m_numRewardComponents;
 public:
 	static double m_minReward;
 	static double m_maxReward;

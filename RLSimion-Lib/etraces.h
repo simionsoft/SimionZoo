@@ -2,10 +2,12 @@
 #include "features.h"
 #include "parameterized-object.h"
 
+class tinyxml2::XMLElement;
+
 class CETraces : public CFeatureList, public CParamObject
 {
 public:
-	CETraces(CParameters* pParameters);
+	CETraces(tinyxml2::XMLElement* pParameters);
 	~CETraces();
 
 	//traces will be multiplied by factor*lambda

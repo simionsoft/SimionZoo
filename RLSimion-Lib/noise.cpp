@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "noise.h"
 #include "globals.h"
-#include "parameters.h"
-#include "parameter.h"
+#include "parameters-xml-helper.h"
 
 double getNormalDistributionSample(/*double mu, */double sigma)
 {
@@ -33,9 +32,11 @@ double getNormalDistributionSample(/*double mu, */double sigma)
 //}
 
 
-CGaussianNoise::CGaussianNoise(CParameters* pParameters) : CParamObject(pParameters)
+CGaussianNoise::CGaussianNoise(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
 	m_lastValue= 0.0;
+
+	m_pSigma = XMLParameters::getNumericHandler(pParameters);
 }
 
 CGaussianNoise::~CGaussianNoise()
@@ -45,7 +46,7 @@ CGaussianNoise::~CGaussianNoise()
 double CGaussianNoise::getNewValue()
 {
 	double randValue = 0.0;
-	double sigma = m_pParameters->getParameter("SIGMA")->getDouble();
+	double sigma = m_pSigma->get();
 	//if (*m_pWidth > 0.0000000001) //2015/10/09
 	if (m_pSigma->getDouble() > 0.00000000001) //2015/10/09
 	{
@@ -71,5 +72,5 @@ double CGaussianNoise::getLastValue()
 
 double CGaussianNoise::getSigma()
 {
-	return m_pSigma->getDouble();
+	return m_pSigma->get();
 }

@@ -4,10 +4,9 @@
 #include "parameterized-object.h"
 
 class CLinearVFA;
-class CParameters;
 class CETraces;
 class CFeatureList;
-class CParameter;
+class tinyxml2::XMLElement;
 
 class CVFACritic : public CCritic, public CParamObject
 {
@@ -17,12 +16,12 @@ protected:
 	void loadVFunction(const char* filename);
 	void saveVFunction(const char* filename);
 public:
-	CVFACritic(CParameters* pParameters);
+	CVFACritic(tinyxml2::XMLElement* pParameters);
 	virtual ~CVFACritic();
 
 	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
 
-	static CVFACritic* getInstance(CParameters* pParameters);
+	static CVFACritic* getInstance(tinyxml2::XMLElement* pParameters);
 };
 
 class CTDLambdaCritic : public CVFACritic
@@ -31,7 +30,7 @@ class CTDLambdaCritic : public CVFACritic
 	CFeatureList* m_aux;
 
 public:
-	CTDLambdaCritic(CParameters *pParameters);
+	CTDLambdaCritic(tinyxml2::XMLElement *pParameters);
 	~CTDLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
@@ -49,7 +48,7 @@ class CTrueOnlineTDLambdaCritic : public CVFACritic
 	double m_v_s;
 
 public:
-	CTrueOnlineTDLambdaCritic(CParameters *pParameters);
+	CTrueOnlineTDLambdaCritic(tinyxml2::XMLElement *pParameters);
 	~CTrueOnlineTDLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
@@ -65,10 +64,10 @@ class CTDCLambdaCritic : public CVFACritic
 	CFeatureList* m_a;
 	CFeatureList* m_b;
 
-	CParameter *m_pAlpha;
+
 
 public:
-	CTDCLambdaCritic(CParameters *pParameters);
+	CTDCLambdaCritic(tinyxml2::XMLElement *pParameters);
 	~CTDCLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);

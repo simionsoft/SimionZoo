@@ -2,9 +2,11 @@
 #include "featuremap.h"
 #include "parameters.h"
 
-CFeatureMap* CFeatureMap::getInstance(CParameters* pParameters)
+CFeatureMap* CFeatureMap::getInstance(tinyxml2::XMLElement* pParameters)
 {
-	if (!strcmp(pParameters->getName(), "RBF_GRID"))
-		return new CGaussianRBFGridFeatureMap(pParameters);
+	tinyxml2::XMLElement* child;
+	child = pParameters->FirstChildElement("RBF_GRID");
+	if (child)
+		return new CGaussianRBFGridFeatureMap(child);
 	return 0;
 }
