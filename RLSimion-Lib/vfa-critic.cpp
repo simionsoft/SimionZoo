@@ -10,13 +10,13 @@ CVFACritic::CVFACritic(tinyxml2::XMLElement* pParameters) : CParamObject(pParame
 	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("V-FUNCTION"));
 
 	if (m_pParameters->FirstChildElement("LOAD"))
-		loadVFunction(m_pParameters->FirstChildElement("LOAD")->Value());
+		loadVFunction(m_pParameters->FirstChildElement("LOAD")->GetText());
 }
 
 CVFACritic::~CVFACritic()
 {
 	if (m_pParameters->FirstChildElement("SAVE"))
-		saveVFunction(m_pParameters->FirstChildElement("SAVE")->Value());
+		saveVFunction(m_pParameters->FirstChildElement("SAVE")->GetText());
 
 	delete m_pVFA;
 }

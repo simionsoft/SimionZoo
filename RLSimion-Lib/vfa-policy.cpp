@@ -15,7 +15,7 @@ CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters
 {
 	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("Linear-VFA"));
 	m_pExpNoise = new CGaussianNoise(pParameters->FirstChildElement("Exploration-Noise"));
-	m_outputAction = m_pParameters->FirstChildElement("Output-Action")->Value();
+	m_outputAction = m_pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = g_pWorld->getActionDescriptor()->getVarIndex(m_outputAction);
 }
 

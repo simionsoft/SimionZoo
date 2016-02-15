@@ -19,7 +19,7 @@ CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"voltage",-60,60);
 
-	m_pEvalSetPoint= new CFileSetPoint(pParameters->FirstChildElement("EVALUATION_SET_POINT_FILE")->Value());
+	m_pEvalSetPoint= new CFileSetPoint(pParameters->FirstChildElement("EVALUATION_SET_POINT_FILE")->GetText());
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
 }
 

@@ -19,7 +19,7 @@ CPitchControl::CPitchControl(tinyxml2::XMLElement* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"pitch",-1.4,1.4);
 
-	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->Value());
+	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->GetText());
 }
 
 CPitchControl::~CPitchControl()

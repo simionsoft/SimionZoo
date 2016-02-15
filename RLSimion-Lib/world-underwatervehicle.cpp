@@ -19,7 +19,7 @@ CUnderwaterVehicle::CUnderwaterVehicle(tinyxml2::XMLElement* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"u-thrust",-30.0,30.0);
 
-	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->Value());
+	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->GetText());
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()

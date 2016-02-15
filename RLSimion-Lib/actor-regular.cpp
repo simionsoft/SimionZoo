@@ -32,7 +32,7 @@ void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *
 	//theta= theta + alpha*(lastNoise)*phi_pi(s)*td
 
 	alpha = m_pAlpha->getValue();
-	actionVar = m_pParameters->FirstChildElement("ACTION")->Value();
+	actionVar = m_pParameters->FirstChildElement("ACTION")->GetText();
 
 	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(s, a);// m_pOutput->getValue(i);
 

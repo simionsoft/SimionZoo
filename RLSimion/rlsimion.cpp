@@ -18,11 +18,13 @@ CExperiment *g_pExperiment;
 
 int main(int argc, char* argv[])
 {
-	tinyxml2::XMLDocument parameters;
+	tinyxml2::XMLDocument xmlDoc;
+	tinyxml2::XMLElement* pParameters;
+
 	
 	//CParameters *pParameters;
 	if (argc > 1)
-		parameters.LoadFile(argv[1]);
+		xmlDoc.LoadFile(argv[1]);
 		//pParameters = new CParameters(argv[1]);
 	else
 	{
@@ -31,9 +33,10 @@ int main(int argc, char* argv[])
 	}
 	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
 
-	g_pWorld= new CWorld(parameters.FirstChildElement("WORLD"));
-	CSimGod* pSimGod = new CSimGod(parameters.FirstChildElement("SIMGOD"));
-	g_pExperiment = new CExperiment(parameters.FirstChildElement("EXPERIMENT"));
+	pParameters = xmlDoc.FirstChildElement("RLSimion");
+	g_pWorld = new CWorld(pParameters->FirstChildElement("WORLD"));
+	CSimGod* pSimGod = new CSimGod(pParameters->FirstChildElement("SIMGOD"));
+	g_pExperiment = new CExperiment(pParameters->FirstChildElement("EXPERIMENT"));
 	//CParameterScheduler* pParameterScheduler= new CParameterScheduler(pParameters->getChild("PARAMETER_SCHEDULER"));
 
 	CState *s= g_pWorld->getStateInstance();

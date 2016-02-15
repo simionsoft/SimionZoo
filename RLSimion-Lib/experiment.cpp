@@ -51,12 +51,12 @@ CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 
 	tinyxml2::XMLElement* pLogParameters = pParameters->FirstChildElement("LOG");
 
-	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Ouput-directory")->Value());
-	strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Prefix")->Value());
+	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Ouput-directory")->GetText());
+	strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Prefix")->GetText());
 
-	m_bLogEvaluationEpisodes = XMLParameters::getBoolean(pLogParameters->FirstChildElement("Log-eval-episodes"));
-	m_bLogTrainingEpisodes = XMLParameters::getBoolean(pLogParameters->FirstChildElement("Log-training-episodes"));
-	m_bLogEvaluationSummary = XMLParameters::getBoolean(pLogParameters->FirstChildElement("Log-eval-avg-rewards"));
+	m_bLogEvaluationEpisodes = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-eval-episodes"));
+	m_bLogTrainingEpisodes = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-training-episodes"));
+	m_bLogEvaluationSummary = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-eval-avg-rewards"));
 	m_logFreq = XMLParameters::getConstDouble(pLogParameters->FirstChildElement("Freq"));
 
 	m_pFile= (void*) 0;

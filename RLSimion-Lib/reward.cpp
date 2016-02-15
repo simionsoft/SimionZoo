@@ -3,6 +3,8 @@
 #include "states-and-actions.h"
 #include "parameterized-object.h"
 #include "parameters-xml-helper.h"
+#include "world.h"
+#include "globals.h"
 
 #define NUM_MAX_REWARD_COMPONENTS 10
 
@@ -27,6 +29,9 @@ class CRewardComponent : public CParamObject
 	//int m_componentIndex;
 	////double m_rewardComponentMu;
 	//double m_tolerance;
+	const char* m_variable;
+	INumericValue *m_pTolerance;
+	INumericValue *m_pWeight;
 	double m_lastReward;
 public:
 	CRewardComponent(tinyxml2::XMLElement* pParameters);
@@ -45,6 +50,9 @@ CRewardComponent::CRewardComponent(tinyxml2::XMLElement* pParameters) : CParamOb
 	//m_controlErrorVariable[0]= 0;
 	//m_weight= 0.0;
 	//m_componentIndex= -1;
+	m_variable = pParameters->FirstChildElement("Variable")->GetText();
+	m_pTolerance = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Tolerance"));
+	m_pWeight = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Weight"));
 	m_lastReward= 0.0;
 }
 
@@ -95,11 +103,11 @@ void CRewardComponent::init(tinyxml2::XMLElement* pParameters)
 double CRewardComponent::getRewardComponent(CState* state)
 {
 	double rew,error;
-	const char* deviationVariable;
+	/*const char* deviationVariable;
 
-	deviationVariable = m_pParameters->FirstChildElement("REWARD-COMPONENT")->Value();
-
-	error = state->getValue(deviationVariable);
+	deviationVariable = m_pParameters->FirstChildElement("Variable")->GetText();
+*/
+	error = state->getValue(m_variable);
 /*
 	if (strcmp(m_errorComponentType,"VARIABLE_DIFFERENCE")==0)
 	{
@@ -126,7 +134,7 @@ double CRewardComponent::getRewardComponent(CState* state)
 	}
 */
 
-	error= (error)/(atof(m_pParameters->FirstChildElement("TOLERANCE")->Value()));
+	error= (error)/(m_pTolerance->getValue());
 
 	rew = CReward::m_maxReward - fabs(error);
 	//rew= exp(-(error*error));
@@ -137,7 +145,7 @@ double CRewardComponent::getRewardComponent(CState* state)
 
 	//rew= m_weight*rew;
 
-	//rew= std::max(CReward::m_minReward,rew);
+	rew= std::max(CReward::m_minReward,rew);
 
 	m_lastReward= rew;
 
@@ -147,19 +155,23 @@ double CRewardComponent::getRewardComponent(CState* state)
 
 CReward::CReward(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_minReward= atof(pParameters->FirstChildElement("MIN_REWARD")->Value());
-	m_maxReward = atof(pParameters->FirstChildElement("MAX_REWARD")->Value());
+	m_minReward= XMLParameters::getConstDouble(pParameters->FirstChildElement("Min"));
+	m_maxReward = XMLParameters::getConstDouble(pParameters->FirstChildElement("Max"));
 
 	m_lastReward= 0.0;
 
-	m_numRewardComponents = XMLParameters::countChildren(m_pParameters, "REWARD-COMPONENT");
+	tinyxml2::XMLElement* pRewardComponents = m_pParameters->FirstChildElement("Reward-components");
+
+	m_numRewardComponents = XMLParameters::countChildren(pRewardComponents);
+
 	m_pRewardComponents = new CRewardComponent*[m_numRewardComponents];
 
-	tinyxml2::XMLElement* parameters = m_pParameters->FirstChildElement("REWARD-COMPONENT");
+	tinyxml2::XMLElement* pComponent = pRewardComponents->FirstChildElement();
 	for (int i= 0; i<m_numRewardComponents; i++)
 	{
-		m_pRewardComponents[i] = new CRewardComponent(parameters);
-		parameters= parameters->NextSiblingElement("REWARD-COMPONENT");
+		m_pRewardComponents[i] = new CRewardComponent(pComponent);
+
+		pComponent = pComponent->NextSiblingElement();
 	}
 }
 

@@ -10,7 +10,7 @@ public:
 	CConstantValue(tinyxml2::XMLElement* pParameters)
 	{
 		//<ALPHA>0.1</ALPHA>
-		m_value = atof(pParameters->Value());
+		m_value = atof(pParameters->GetText());
 	}
 	double getValue(){ return m_value; }
 };
@@ -36,22 +36,30 @@ CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
 
 	param = pParameters->FirstChildElement("Interpolation");
 	assert(param);
-	if (!strcmp("linear", param->Value())) m_interpolation = linear;
-	else if (!strcmp("quadratic", param->Value())) m_interpolation = quadratic;
+	if (!strcmp("linear", param->GetText())) m_interpolation = linear;
+	else if (!strcmp("quadratic", param->GetText())) m_interpolation = quadratic;
 	else assert(0);
 
 	param = pParameters->FirstChildElement("Time-reference");
 
-	if (!param) m_timeReference = episode;
+	if (!param) m_timeReference = experiment;
 	else
 	{
-		if (!strcmp("experiment", param->Value())) m_timeReference = experiment;
-		else if (!strcmp("episode", param->Value())) m_timeReference = episode;
+		if (!strcmp("experiment", param->GetText())) m_timeReference = experiment;
+		else if (!strcmp("episode", param->GetText())) m_timeReference = episode;
 		else assert(0);
 	}
 
 	param = pParameters->FirstChildElement("Initial-Value");
-	if (param) m_startValue = atof(param->Value());
+	if (param) m_startValue = XMLParameters::getConstDouble(param);
+	else assert(0);
+
+	param = pParameters->FirstChildElement("End-Value");
+	if (param) m_endValue = XMLParameters::getConstDouble(param);
+	else assert(0);
+
+	param = pParameters->FirstChildElement("Evaluation-Value");
+	if (param) m_evaluationValue = XMLParameters::getConstDouble(param);
 	else assert(0);
 }
 
@@ -107,25 +115,33 @@ int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* nam
 
 INumericValue* XMLParameters::getNumericHandler(tinyxml2::XMLElement* pElement)
 {
-	if (!pElement->FirstChildElement()) return new CConstantValue(pElement);
+	if (!pElement->FirstChildElement())
+		return new CConstantValue(pElement);
 
-	if (!pElement->FirstChildElement("decimal")) return new CConstantValue(pElement->FirstChildElement("decimal"));
+	if (pElement->FirstChildElement("decimal"))
+		return new CConstantValue(pElement->FirstChildElement("decimal"));
 
 	return new CInterpolatedValue(pElement);
 }
 
-bool XMLParameters::getBoolean(tinyxml2::XMLElement* pParameters)
+bool XMLParameters::getConstBoolean(tinyxml2::XMLElement* pParameters)
 {
-	assert(pParameters && pParameters->Value());
-	return atoi(pParameters->Value()) != 0;
+	assert(pParameters && pParameters->GetText());
+
+	if (!strcmp(pParameters->GetText(), "true"))
+		return true;
+	if (!strcmp(pParameters->GetText(), "false"))
+		return false;
+	assert(0);
+	return false;
 }
 int XMLParameters::getConstInteger(tinyxml2::XMLElement* pParameters)
 {
-	assert(pParameters && pParameters->Value());
-	return atoi(pParameters->Value()) != 0;
+	assert(pParameters && pParameters->GetText());
+	return atoi(pParameters->GetText());
 }
 double XMLParameters::getConstDouble(tinyxml2::XMLElement* pParameters)
 {
-	assert(pParameters && pParameters->Value());
-	return atof(pParameters->Value()) != 0;
+	assert(pParameters && pParameters->GetText());
+	return atof(pParameters->GetText());
 }

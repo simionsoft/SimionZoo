@@ -192,21 +192,22 @@ CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 
 	//evaluation file
 	m_pEvaluationWindData = 
-		new CHHFileSetPoint(pParameters->FirstChildElement("EVALUATION_WIND_DATA_FILE")->Value());
+		new CHHFileSetPoint(pParameters->FirstChildElement("EVALUATION_WIND_DATA")->GetText());
 
 	//training files
-	m_numDataFiles = XMLParameters::countChildren(pParameters, "TRAINING_WIND_DATA_FILE");
+	tinyxml2::XMLElement* trainingWindFiles = pParameters->FirstChildElement("TRAINING_WIND_DATA");
+	m_numDataFiles = XMLParameters::countChildren(trainingWindFiles, "FILE");
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
 
-	tinyxml2::XMLElement* pElement= pParameters->FirstChildElement("TRAINING_WIND_DATA_FILE");
+	tinyxml2::XMLElement* pElement = trainingWindFiles->FirstChildElement("FILE");
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
-		m_pTrainingWindData[i] = new CHHFileSetPoint(pElement->Value());
-		pElement = pElement->NextSiblingElement("TRAINING_WIND_DATA_FILE");
+		m_pTrainingWindData[i] = new CHHFileSetPoint(pElement->GetText());
+		pElement = pElement->NextSiblingElement("FILE");
 	}
 
 	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
-	m_pPowerSetpoint= new CFileSetPoint(pParameters->FirstChildElement("POWER_SET_POINT_FILE")->Value());
+	m_pPowerSetpoint= new CFileSetPoint(pParameters->FirstChildElement("POWER_SET_POINT")->GetText());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;

@@ -12,25 +12,28 @@
         <POWER_SET_POINT>../config/wind-turbine/setpoints/windturbine-power-setpoint.txt</POWER_SET_POINT>
       </Wind-turbine>
     </DYNAMIC-MODEL>
-    <DELTA_T>0.01</DELTA_T>
-    <NUM_SIMULATION_STEPS>4</NUM_SIMULATION_STEPS>
+    <Delta-T>0.01</Delta-T>
+    <Num-Simulation-Steps>4</Num-Simulation-Steps>
     <REWARD>
-      <MIN_REWARD>-100</MIN_REWARD>
-      <MAX_REWARD>1.0</MAX_REWARD>
-      <REWARD-COMPONENT>
-        <WEIGHT>1.0</WEIGHT>
-        <TOLERANCE>10</TOLERANCE>
-        <ERROR_VARIABLE>E_p</ERROR_VARIABLE>
-      </REWARD-COMPONENT>
-      <REWARD-COMPONENT>
-        <WEIGHT>1.0</WEIGHT>
-        <TOLERANCE>0.01</TOLERANCE>
-        <ERROR_VARIABLE>E_omega_r</ERROR_VARIABLE>
-      </REWARD-COMPONENT>    </REWARD>
+      <Min>-100</Min>
+      <Max>1.0</Max>
+      <Reward-components>
+        <Deviation-Component>
+          <Weight>1.0</Weight>
+          <Tolerance>10</Tolerance>
+          <Variable>E_p</Variable>
+        </Deviation-Component>
+        <Deviation-Component>
+          <Weight>1.0</Weight>
+          <Tolerance>0.01</Tolerance>
+          <Variable>E_omega_r</Variable>
+        </Deviation-Component>
+      </Reward-components>
+    </REWARD>
   </WORLD>
   <EXPERIMENT>
     <Num-Episodes>1</Num-Episodes>
-    <Episode-Length>1000</Episode-Length>
+    <Episode-Length>360</Episode-Length>
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>20</Eval-Freq>
     <LOG>
@@ -44,87 +47,98 @@
   </EXPERIMENT>
   <SIMGOD>
     <ACTOR>
-      <VFA-LEARNER>
+      <VFA-Learner>
         <LOAD>../data/policy.bin</LOAD>
         <OUTPUTS>
           <CACLA>
-            <ACTION>d_T_g</ACTION>
-            <RBF-GRID>
-              <STATE-DIM-GRID>
-                <Variable>omega_r</Variable>
-                <Min>0.2</Min>
-                <Max>0.7</Max>
-                <Num-Features>70</Num-Features>
-                <Distribution>linear</Distribution>
-              </STATE-DIM-GRID>
-              <STATE-DIM-GRID>
-                <Variable>T_g</Variable>
-                <Num-Features>80</Num-Features>
-                <Distribution>linear</Distribution>
-              </STATE-DIM-GRID>
-            </RBF-GRID>
-            <EXPLORATION_NOISE>
-              <SIGMA>10</SIGMA>
-            </EXPLORATION_NOISE>
-            <ALPHA>
+            <VFA-Policy>
+              <Output-Action>d_T_g</Output-Action>
+              <Linear-VFA>
+                <RBF-Grid>
+                  <RBF-Grid-Dimension>
+                    <Variable>omega_r</Variable>
+                    <Min>0.2</Min>
+                    <Max>0.7</Max>
+                    <Num-Features>70</Num-Features>
+                    <Distribution>linear</Distribution>
+                  </RBF-Grid-Dimension>
+                  <RBF-Grid-Dimension>
+                    <Variable>T_g</Variable>
+                    <Num-Features>80</Num-Features>
+                    <Distribution>linear</Distribution>
+                  </RBF-Grid-Dimension>
+                </RBF-Grid>
+              </Linear-VFA>
+              <Exploration-Noise>
+                <Sigma>10</Sigma>
+              </Exploration-Noise>
+            </VFA-Policy>
+            <Alpha>
               <Interpolation>linear</Interpolation>
               <Initial-Value>0.001</Initial-Value>
-              <Final-Value>0.0001</Final-Value>
+              <End-Value>0.0001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
-            </ALPHA>
-            <ETRACES>
-              <REPLACE>true</REPLACE>
-              <LAMBDA>0.9</LAMBDA>
-              <THRESHOLD>0.001</THRESHOLD>
-            </ETRACES>
+            </Alpha>
+            <E-Traces>
+              <Replace>true</Replace>
+              <Lambda>0.9</Lambda>
+              <Threshold>0.001</Threshold>
+            </E-Traces>
           </CACLA>
           <CACLA>
-            <ACTION>d_beta</ACTION>
-            <RBF-GRID>
-              <state-grid-dimension>
-                <VARIABLE_NAME>omega_r</VARIABLE_NAME>
-                <NUM_FEATURES>10</NUM_FEATURES>
-                <DISTRIBUTION>linear</DISTRIBUTION>
-              </state-grid-dimension>
-            </RBF-GRID>
-            <EXPLORATION_NOISE>
-              <SIGMA>0.0001</SIGMA>
-            </EXPLORATION_NOISE>
-            <ALPHA>0.1</ALPHA>
+            <VFA-Policy>
+              <Output-Action>d_beta</Output-Action>
+              <Linear-VFA>
+                <RBF-Grid>
+                  <RBF-Grid-Dimension>
+                    <Variable>omega_r</Variable>
+                    <Num-Features>10</Num-Features>
+                    <Distribution>linear</Distribution>
+                  </RBF-Grid-Dimension>
+                </RBF-Grid>
+              </Linear-VFA>
+              <Exploration-Noise>
+                <Sigma>0.0001</Sigma>
+              </Exploration-Noise>
+            </VFA-Policy>
+            <Alpha>0.1</Alpha>
           </CACLA>
         </OUTPUTS>
-      </VFA-LEARNER>
+      </VFA-Learner>
     </ACTOR>
     <CRITIC>
       <TD-Lambda>
         <LOAD>./data/value.bin</LOAD>
         <V-FUNCTION>
-          <RBF_GRID>
-            <state-grid-dimension>
-              <VARIABLE_NAME>d_omega_r</VARIABLE_NAME>
-              <NUM_FEATURES>80</NUM_FEATURES>
-              <DISTRIBUTION>linear</DISTRIBUTION>
-            </state-grid-dimension>
-            <state-grid-dimension>
-              <VARIABLE_NAME>omega_r</VARIABLE_NAME>
-              <NUM_FEATURES>80</NUM_FEATURES>
-              <DISTRIBUTION>linear</DISTRIBUTION>
-            </state-grid-dimension>
-          </RBF_GRID>
-        </V-FUNCTION>
-        <ETRACES>
+          <Linear-VFA>
+            <RBF-Grid>
+              <RBF-Grid-Dimension>
+                <Variable>d_omega_r</Variable>
+                <Num-Features>80</Num-Features>
+                <Distribution>linear</Distribution>
+              </RBF-Grid-Dimension>
+              <RBF-Grid-Dimension>
+                <Variable>omega_r</Variable>
+                <Num-Features>80</Num-Features>
+                <Distribution>linear</Distribution>
+              </RBF-Grid-Dimension>
+            </RBF-Grid>
+          </Linear-VFA>
+              
+         </V-FUNCTION>
+        <E-Traces>
           <USE>true</USE>
-          <REPLACE>false</REPLACE>
-          <LAMBDA>0.9</LAMBDA>
-          <THRESHOLD>0.001</THRESHOLD>
-        </ETRACES>
+          <Replace>false</Replace>
+          <Lambda>0.9</Lambda>
+          <Threshold>0.001</Threshold>
+        </E-Traces>
         <GAMMA>0.9</GAMMA>
-        <ALPHA>
+        <Alpha>
           <Interpolation>linear</Interpolation>
           <Initial-Value>0.01</Initial-Value>
-          <Final-Value>0.001</Final-Value>
+          <End-Value>0.001</End-Value>
           <Evaluation-Value>0.0</Evaluation-Value>
-        </ALPHA>
+        </Alpha>
       </TD-Lambda>
     </CRITIC>
   </SIMGOD>

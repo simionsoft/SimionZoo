@@ -57,7 +57,7 @@ void CMultiController::selectAction(CState *s, CAction *a)
 	int numVars;*/
 CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 {
-	const char* outputAction = pParameters->FirstChildElement("Output-Action")->Value();
+	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
 	tinyxml2::XMLElement* pChild= pParameters->FirstChildElement("Gains");
@@ -70,8 +70,8 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	tinyxml2::XMLElement* pGain= pChild->FirstChildElement("LQR-GAIN");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->FirstChildElement("Variable")->Value());//
-		m_pGains[i] = atof(pGain->FirstChildElement("Variable")->Value());
+		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->FirstChildElement("Variable")->GetText());//
+		m_pGains[i] = atof(pGain->FirstChildElement("Variable")->GetText());
 
 		pGain = pGain->NextSiblingElement("LQR-GAIN");
 	}
@@ -100,7 +100,7 @@ void CLQRController::selectAction(CState *s, CAction *a)
 
 CPIDController::CPIDController(tinyxml2::XMLElement *pParameters)
 {
-	const char* outputAction = pParameters->FirstChildElement("Output-Action")->Value();
+	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
 	m_pKP= XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
@@ -109,7 +109,7 @@ CPIDController::CPIDController(tinyxml2::XMLElement *pParameters)
 
 	CState *pSDesc= g_pWorld->getStateDescriptor();
 	if (pSDesc)
-		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->FirstChildElement("Input-Variable")->Value());
+		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->FirstChildElement("Input-Variable")->GetText());
 	else
 	{
 		printf("ERROR: PID controller missconfigured. Invalid ERROR_VARIABLE");
@@ -198,8 +198,8 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(tinyxml2::XML
 	m_pC_0= XMLParameters::getNumericHandler(pParameters->FirstChildElement("C_0"));
 	m_pKP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
 	m_pKI= XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_J_t= atof(pParameters->FirstChildElement("J_t")->Value());
-	m_K_t= atof(pParameters->FirstChildElement("K_t")->Value());
+	m_J_t= atof(pParameters->FirstChildElement("J_t")->GetText());
+	m_K_t= atof(pParameters->FirstChildElement("K_t")->GetText());
 }
 
 
@@ -233,16 +233,16 @@ void CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElement *pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	m_CornerFreq= atof(pParameters->FirstChildElement("CornerFreq")->Value());
+	m_CornerFreq= atof(pParameters->FirstChildElement("CornerFreq")->GetText());
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp = atof(pParameters->FirstChildElement("VSRtGnSp")->Value());
-	m_VS_SlPc = atof(pParameters->FirstChildElement("VS_SlPc")->Value());
-	m_VS_Rgn2K = atof(pParameters->FirstChildElement("VS_Rgn2K")->Value());
-	m_VS_Rgn2Sp = atof(pParameters->FirstChildElement("VS_Rgn2Sp")->Value());
-	m_VS_CtInSp = atof(pParameters->FirstChildElement("VS_CtInSp")->Value());
-	m_VS_RtPwr = atof(pParameters->FirstChildElement("VS_RtPwr")->Value());
-	m_VS_Rgn3MP = atof(pParameters->FirstChildElement("VS_Rgn3MP")->Value());
+	m_VS_RtGnSp = atof(pParameters->FirstChildElement("VSRtGnSp")->GetText());
+	m_VS_SlPc = atof(pParameters->FirstChildElement("VS_SlPc")->GetText());
+	m_VS_Rgn2K = atof(pParameters->FirstChildElement("VS_Rgn2K")->GetText());
+	m_VS_Rgn2Sp = atof(pParameters->FirstChildElement("VS_Rgn2Sp")->GetText());
+	m_VS_CtInSp = atof(pParameters->FirstChildElement("VS_CtInSp")->GetText());
+	m_VS_RtPwr = atof(pParameters->FirstChildElement("VS_RtPwr")->GetText());
+	m_VS_Rgn3MP = atof(pParameters->FirstChildElement("VS_Rgn3MP")->GetText());
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -257,7 +257,7 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElemen
 	m_PC_KK = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KK"));
 	m_PC_KP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KP"));
 	m_PC_KI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KI"));
-	m_PC_RefSpd = atof(pParameters->FirstChildElement("PC_RefSpd")->Value());
+	m_PC_RefSpd = atof(pParameters->FirstChildElement("PC_RefSpd")->GetText());
 
 	m_IntSpdErr= 0.0;
 }

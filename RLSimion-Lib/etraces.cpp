@@ -2,13 +2,24 @@
 #include "etraces.h"
 #include "experiment.h"
 #include "globals.h"
+#include "parameters-xml-helper.h"
 
 CETraces::CETraces(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_bUse = atoi(m_pParameters->FirstChildElement("Use")->Value()) != 0;
-	m_threshold = atof(m_pParameters->FirstChildElement("Threshold")->Value());
-	m_lambda = atof(m_pParameters->FirstChildElement("Lambda")->Value());
-	m_bReplace = atoi(m_pParameters->FirstChildElement("Replace")->Value()) != 0;
+	if (pParameters)
+	{
+		m_bUse = true;
+		m_threshold = XMLParameters::getConstDouble(m_pParameters->FirstChildElement("Threshold"));
+		m_lambda = XMLParameters::getConstDouble(m_pParameters->FirstChildElement("Lambda"));
+		m_bReplace = XMLParameters::getConstBoolean(m_pParameters->FirstChildElement("Replace"));
+	}
+	else
+	{
+		m_bUse = false;
+		m_threshold = 0.0;
+		m_lambda = 1.0;
+		m_bReplace = false;
+	}
 }
 
 CETraces::~CETraces()

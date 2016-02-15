@@ -12,7 +12,7 @@
 
 CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_pPolicy = new CSingleOutputVFAPolicy(pParameters->FirstChildElement("POLICY"));
+	m_pPolicy = new CSingleOutputVFAPolicy(pParameters->FirstChildElement("VFA-Policy"));
 }
 
 CSingleOutputVFAPolicyLearner::~CSingleOutputVFAPolicyLearner()
@@ -34,10 +34,10 @@ CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxm
 
 CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameters)
 {
-	m_numOutputs = XMLParameters::countChildren(pParameters,"OUTPUTS");
-
 	tinyxml2::XMLElement* pOutputs = pParameters->FirstChildElement("OUTPUTS");
 
+	m_numOutputs = XMLParameters::countChildren(pOutputs);
+	
 	m_pPolicyLearners = new CSingleOutputVFAPolicyLearner*[m_numOutputs];
 
 	tinyxml2::XMLElement* pOutput= pOutputs->FirstChildElement();
@@ -49,14 +49,14 @@ CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameter
 	}
 
 	if (pParameters->FirstChildElement("LOAD"))
-		loadPolicy(pParameters->FirstChildElement("LOAD")->Value());
+		loadPolicy(pParameters->FirstChildElement("LOAD")->GetText());
 
 }
 
 CVFAActor::~CVFAActor()
 {
 	if (m_pParameters->FirstChildElement("SAVE"))
-		savePolicy(m_pParameters->FirstChildElement("SAVE")->Value());
+		savePolicy(m_pParameters->FirstChildElement("SAVE")->GetText());
 
 	for (int i = 0; i<m_numOutputs; i++)
 	{

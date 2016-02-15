@@ -36,7 +36,7 @@ CGaussianNoise::CGaussianNoise(tinyxml2::XMLElement* pParameters) : CParamObject
 {
 	m_lastValue= 0.0;
 
-	m_pSigma = XMLParameters::getNumericHandler(pParameters);
+	m_pSigma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Sigma"));
 }
 
 CGaussianNoise::~CGaussianNoise()

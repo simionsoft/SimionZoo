@@ -74,7 +74,7 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 	char * token= 0, *nextToken= 0;
 	//char copy[MAX_STRING_SIZE];
 
-	m_numVariables = XMLParameters::countChildren(pParameters, "state-dim-grid");
+	m_numVariables = XMLParameters::countChildren(pParameters, "RBF-Grid-Dimension");
 	
 	m_variableType= new short [m_numVariables];
 	m_variableIndex= new int [m_numVariables];
@@ -92,23 +92,25 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 	const char *varName;
 	double min,max;
 	const char* distType;
-	tinyxml2::XMLElement* child;
+	tinyxml2::XMLElement* dimension= pParameters->FirstChildElement("RBF-Grid-Dimension");
 
 	for (int i = 0; i < m_numVariables; i++)
 	{
-		varName = m_pParameters->FirstChildElement("Variable")->Value();
-		numFeatures = atoi( m_pParameters->FirstChildElement("Num-Features")->Value());
-		child = m_pParameters->FirstChildElement("Min");
-		if (child)
-			min = atof(child->Value());
+		varName = dimension->FirstChildElement("Variable")->GetText();
+		numFeatures = XMLParameters::getConstInteger(dimension->FirstChildElement("Num-Features"));
+
+		if (dimension->FirstChildElement("Min"))
+			min = XMLParameters::getConstDouble(dimension->FirstChildElement("Min"));
 		else min = g_pWorld->getStateDescriptor()->getMin(varName);
-		child = m_pParameters->FirstChildElement("Max");
-		if (child)
-			max = atof(child->Value());
+
+		if (dimension->FirstChildElement("Max"))
+			max = XMLParameters::getConstDouble(dimension->FirstChildElement("Max"));
 		else max = g_pWorld->getStateDescriptor()->getMax(varName);
-		distType = m_pParameters->FirstChildElement("Distribution")->Value();
+
+		distType = dimension->FirstChildElement("Distribution")->GetText();
 		initCenterPoints(i, varName, numFeatures, min, max, distType);
 
+		dimension = dimension->NextSiblingElement("RBF-Grid-Dimension");
 	}
 
 

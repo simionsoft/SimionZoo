@@ -8,6 +8,7 @@
 #include "world-pitchcontrol.h"
 #include "world-magneticlevitation.h"
 #include "reward.h"
+#include "parameters-xml-helper.h"
 
 double CWorld::m_t= 0.0;
 double CWorld::m_dt= 0.0;
@@ -23,19 +24,20 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	m_avgReward = 0.0;
 	m_avgRewardGain = 0.0;
 
-	m_simulationSteps= atoi(pParameters->FirstChildElement("NUM_SIMULATION_STEPS")->Value());
-	m_dt = atof(pParameters->FirstChildElement("DELTA_T")->Value());
+	m_simulationSteps= XMLParameters::getConstInteger(pParameters->FirstChildElement("Num-Simulation-Steps"));
+	m_dt = XMLParameters::getConstDouble(pParameters->FirstChildElement("Delta-T"));
 
-	const char* pName = pParameters->Attribute("DYNAMIC_MODEL");
+	tinyxml2::XMLElement* pModelParameters;
+	pModelParameters = pParameters->FirstChildElement("DYNAMIC-MODEL");
 
-	if (strcmp(pName,"WIND_TURBINE_ONE_MASS")==0)
-		m_pDynamicModel= new CWindTurbine(pParameters);
-	else if (strcmp(pName, "UNDERWATER_VEHICLE") == 0)
-		m_pDynamicModel= new CUnderwaterVehicle(pParameters);
-	else if (strcmp(pName, "PITCH_CONTROL") == 0)
-		m_pDynamicModel= new CPitchControl(pParameters);
-	else if (strcmp(pName, "MAGNETIC_LEVITATION") == 0)
-		m_pDynamicModel= new CMagneticLevitation(pParameters);
+	if (strcmp(pModelParameters->FirstChildElement()->Name(), "Wind-turbine") == 0)
+		m_pDynamicModel = new CWindTurbine(pModelParameters->FirstChildElement());
+	else if (strcmp(pModelParameters->Name(), "Underwater-vehicle") == 0)
+		m_pDynamicModel = new CUnderwaterVehicle(pModelParameters->FirstChildElement());
+	else if (strcmp(pModelParameters->Name(), "Pitch-control") == 0)
+		m_pDynamicModel = new CPitchControl(pModelParameters->FirstChildElement());
+	else if (strcmp(pModelParameters->Name(), "Magnetic-leviation") == 0)
+		m_pDynamicModel = new CMagneticLevitation(pModelParameters->FirstChildElement());
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 

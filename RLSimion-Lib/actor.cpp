@@ -18,7 +18,7 @@ CActor* CActor::getInstance(tinyxml2::XMLElement* pParameters)
 	child = pParameters->FirstChildElement();
 	const char* type = child->Name();
 
-	if (strcmp(type, "VFA-Actor") == 0)
+	if (strcmp(type, "VFA-Learner") == 0)
 		return new CVFAActor(child);
 	else if (!strcmp(type, "Multi-Controller"))
 		return new CMultiController(child);
