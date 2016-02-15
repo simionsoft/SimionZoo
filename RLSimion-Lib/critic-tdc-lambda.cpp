@@ -12,7 +12,7 @@
 CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_z= new CETraces(pParameters->getChild("ETRACES"));
+	m_z= new CETraces(pParameters->getChild("E-Traces"));
 
 	m_s_features = new CFeatureList();
 	m_s_p_features = new CFeatureList();

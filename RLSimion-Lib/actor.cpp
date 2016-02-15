@@ -18,16 +18,11 @@ CActor* CActor::getInstance(tinyxml2::XMLElement* pParameters)
 	child = pParameters->FirstChildElement();
 	const char* type = child->Name();
 
-	if (strcmp(type, "VFA-ACTOR") == 0)
-		return new CVFAActor(child); 
-	else if (strcmp(type, "VIDAL") == 0)
-		return new CWindTurbineVidalController(child);
-	else if (strcmp(type, "BOUKHEZZAR") == 0)
-		return new CWindTurbineBoukhezzarController(child);
-	else if (strcmp(type, "PID") == 0)
-		return new CPIDController(child);
-	else if (strcmp(type, "LQR") == 0)
-		return new CLQRController(child);
+	if (strcmp(type, "VFA-Actor") == 0)
+		return new CVFAActor(child);
+	else if (!strcmp(type, "Multi-Controller"))
+		return new CMultiController(child);
+
 	return 0;
 }
 

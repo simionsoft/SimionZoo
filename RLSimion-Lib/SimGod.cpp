@@ -1,41 +1,38 @@
 #include "stdafx.h"
 #include "SimGod.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "critic.h"
 #include "actor.h"
-#include "actor-critic.h"
+//#include "actor-critic.h"
 
-CSimGod::CSimGod(CParameters* pParameters)
+CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
 {
-	CParameters* child = pParameters->getChild(0);
+	tinyxml2::XMLElement* child;/* = pParameters->FirstChildElement("ACTOR/CRITIC");
 
-	if (strcmp(child->getName(), "Actor-Critic") == 0)
+	if (child)
 	{
-		m_pController = CActor::getInstance(child->getChild("ACTOR"));
-		m_pActor = m_pController;
-		m_pCritic = CCritic::getInstance(child->getChild("CRITIC"));
-	}
-	if (strcmp(child->getName(), "Compact-Actor-Critic") == 0)
-	{
-		m_pController = CActorCritic::getInstance(child->getChild("ACTOR-CRITIC"));
+		m_pController = CActorCritic::getInstance(child->FirstChildElement("ACTOR/CRITIC"));
 		m_pActor = m_pController;
 		m_pCritic = (CCritic*) m_pController;
 	}
-	else if (strcmp(child->getName(), "Actor-Critic-Controller") == 0)
+	else*/
 	{
-		m_pController = CActor::getInstance(child->getChild("CONTROLLER")); //CActor is a singleton
-		m_pActor = CActor::getInstance(child->getChild("ACTOR"));
-		m_pCritic = CCritic::getInstance(child->getChild("CRITIC"));
+		if (pParameters->FirstChildElement("CONTROLLER"))
+		{
+			m_pController = CActor::getInstance(pParameters->FirstChildElement("CONTROLLER"));
+			m_pActor = CActor::getInstance(pParameters->FirstChildElement("ACTOR"));
+		}
+		else
+		{
+			m_pActor = CActor::getInstance(pParameters->FirstChildElement("ACTOR"));
+			m_pController = m_pActor;
+		}
+
+		if (pParameters->FirstChildElement("CRITIC"))
+			m_pCritic = CCritic::getInstance(pParameters->FirstChildElement("CHILD"));
+		else m_pCritic = 0;
 	}
-	else if (strcmp(child->getName(), "Actor") == 0)
-	{
-		m_pController = CActor::getInstance(child->getChild("ACTOR"));
-		m_pActor = m_pController;
-		m_pCritic = 0;
-	}
-	m_rho = 0.0;
 	
+	m_rho = 0.0;
 }
 
 

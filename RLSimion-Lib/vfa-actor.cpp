@@ -10,38 +10,9 @@
 #include "parameters-xml-helper.h"
 
 
-CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters)
-												: CParamObject(pParameters)
-{
-	m_pVFA = new CLinearVFA(pParameters);
-	m_pExpNoise = new CGaussianNoise(pParameters->FirstChildElement("EXPLORATION_NOISE"));
-}
-
-CSingleOutputVFAPolicy::~CSingleOutputVFAPolicy()
-{
-	delete m_pVFA;
-	delete m_pExpNoise;
-}
-
-void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
-{
-	double a_width;
-	double noise;
-	double output;
-	const char* actionVar = m_pParameters->FirstChildElement("ACTION")->Value();
-	int actionIndex = a->getVarIndex(actionVar);
-
-	a_width = 0.5*(a->getMax(actionIndex) - a->getMin(actionIndex));
-	noise = m_pExpNoise->getNewValue() * a_width;
-
-	output= m_pVFA->getValue(s, 0);
-
-	a->setValue(actionVar, output + noise);
-}
-
 CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_pPolicy = new CSingleOutputVFAPolicy(pParameters);
+	m_pPolicy = new CSingleOutputVFAPolicy(pParameters->FirstChildElement("POLICY"));
 }
 
 CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxml2::XMLElement* pParameters)
@@ -50,14 +21,13 @@ CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxm
 	{
 		if (!strcmp(pParameters->Name(), "CACLA"))
 			return new CCACLALearner(pParameters);
-		if (!strcmp(pParameters->Name(), "REGULAR_GRADIENT_ACTOR"))
+		if (!strcmp(pParameters->Name(), "Regular-Gradient"))
 			return new CRegularPolicyGradientLearner(pParameters);
 	}
 	return 0;
 }
 
-CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters)
-: CParamObject(pParameters)
+CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameters)
 {
 	m_numOutputs = XMLParameters::countChildren(pParameters,"OUTPUTS");
 

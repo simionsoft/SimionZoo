@@ -11,7 +11,7 @@ CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(tinyxml2::XMLElemen
 : CSingleOutputVFAPolicyLearner(pParameters)
 {
 	m_pStateFeatures = new CFeatureList();
-	m_e = new CETraces(pParameters->FirstChildElement("ETRACES"));
+	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));
 	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 }
 
@@ -31,7 +31,7 @@ void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *
 	//Regular gradient actor update
 	//theta= theta + alpha*(lastNoise)*phi_pi(s)*td
 
-	alpha = m_pAlpha->get();
+	alpha = m_pAlpha->getValue();
 	actionVar = m_pParameters->FirstChildElement("ACTION")->Value();
 
 	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(s, a);// m_pOutput->getValue(i);

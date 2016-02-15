@@ -4,7 +4,8 @@
 class CLinearVFA;
 class CSingleOutputVFAPolicy;
 class CETraces;
-
+class tinyxml2::XMLElement;
+/*
 class CVFAActorCritic: public CActorCritic, public CParamObject
 {
 protected:
@@ -21,7 +22,7 @@ protected:
 	void loadPolicy(const char* pFilename);
 public:
 
-	CVFAActorCritic(CParameters* pParameters);
+	CVFAActorCritic(tinyxml2::XMLElement* pParameters);
 	virtual ~CVFAActorCritic();
 
 
@@ -33,7 +34,7 @@ public:
 
 	virtual double getProbability(CState* s, CAction* a) = 0;
 
-	static CVFAActorCritic *getInstance(CParameters* pParameters);
+	static CVFAActorCritic *getInstance(tinyxml2::XMLElement* pParameters);
 };
 
 class CIncrementalNaturalActorCritic: public CVFAActorCritic
@@ -50,7 +51,7 @@ class CIncrementalNaturalActorCritic: public CVFAActorCritic
 	CETraces* m_e_v;
 	double m_avg_r;
 public:
-	CIncrementalNaturalActorCritic(CParameters* pParameters);
+	CIncrementalNaturalActorCritic(tinyxml2::XMLElement* pParameters);
 	virtual ~CIncrementalNaturalActorCritic();
 
 
@@ -61,4 +62,4 @@ public:
 	virtual void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
 
 	virtual double getProbability(CState* s, CAction* a);
-};
+};*/

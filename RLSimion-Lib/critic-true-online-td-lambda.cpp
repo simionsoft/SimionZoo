@@ -12,7 +12,7 @@
 CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_e= new CETraces(pParameters->getChild("ETRACES"));
+	m_e= new CETraces(pParameters->getChild("E-Traces"));
 	m_aux= new CFeatureList();
 	m_v_s= 0.0;
 }

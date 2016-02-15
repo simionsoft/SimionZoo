@@ -7,6 +7,7 @@ class CLinearVFA;
 class CETraces;
 class CFeatureList;
 class tinyxml2::XMLElement;
+class INumericValue;
 
 class CVFACritic : public CCritic, public CParamObject
 {
@@ -69,6 +70,24 @@ class CTDCLambdaCritic : public CVFACritic
 public:
 	CTDCLambdaCritic(tinyxml2::XMLElement *pParameters);
 	~CTDCLambdaCritic();
+
+	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
+};
+
+
+class CIncrementalNaturalCritic : public CVFACritic
+{
+	CFeatureList *m_s_features;
+	CFeatureList *m_s_p_features;
+
+	CETraces* m_e_v;
+	double m_avg_r;
+
+	INumericValue *m_pAlphaV, *m_pAlphaR, *m_pGamma;
+	
+public:
+	CIncrementalNaturalCritic(tinyxml2::XMLElement *pParameters);
+	~CIncrementalNaturalCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
 };

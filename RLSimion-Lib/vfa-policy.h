@@ -16,6 +16,8 @@ class CSingleOutputVFAPolicy : public CParamObject
 protected:
 	CLinearVFA *m_pVFA;
 	CGaussianNoise *m_pExpNoise;
+	int m_outputActionIndex;
+	const char* m_outputAction;
 public:
 	CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters);
 	~CSingleOutputVFAPolicy();
@@ -24,4 +26,6 @@ public:
 
 	CLinearVFA* getVFA(){ return m_pVFA; }
 	CGaussianNoise* getExpNoise(){ return m_pExpNoise; }
+	const char* getOutputAction(){ return m_outputAction; }
+	int getOutputActionIndex(){ return m_outputActionIndex; }
 };

@@ -112,6 +112,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vfa-critic.cpp" />
+    <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
     <ClCompile Include="world-magneticlevitation.cpp" />
     <ClCompile Include="world-pitchcontrol.cpp" />

@@ -5,7 +5,7 @@ class CCritic;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class CParameters;
+class tinyxml2::XMLElement;
 
 class CSimGod
 {
@@ -16,7 +16,7 @@ class CSimGod
 	double m_rho;
 public:
 
-	CSimGod(CParameters* pParameters);
+	CSimGod(tinyxml2::XMLElement* pParameters);
 	~CSimGod();
 
 	double selectAction(CState* s,CAction* a);

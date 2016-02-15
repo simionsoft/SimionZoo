@@ -42,13 +42,20 @@
         <BRANCH Name="ACTOR" Class="Actor"/>
       </CHOICE-ELEMENT>
       <CHOICE-ELEMENT Name="Actor-Critic">
-        <BRANCH Name="ACTOR" Class="Actor"/>
-        <BRANCH Name="CRITIC" Class="Critic"/>
+        <BRANCH Name="ACTOR" Class="ACTOR"/>
+        <BRANCH Name="CRITIC" Class="CRITIC"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Actor/Critic">
+        <BRANCH Name="ACTOR/CRITIC" Class="ACTOR/CRITIC"/>
       </CHOICE-ELEMENT>
       <CHOICE-ELEMENT Name="Actor-Critic-Controller">
-        <BRANCH Name="ACTOR" Class="Actor"/>
-        <BRANCH Name="CRITIC" Class="Critic"/>
-        <BRANCH Name="CONTROLLER" Class="Actor"/>
+        <BRANCH Name="ACTOR" Class="ACTOR"/>
+        <BRANCH Name="CRITIC" Class="CRITIC"/>
+        <BRANCH Name="CONTROLLER" Class="ACTOR"/>
+      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Actor/Critic-Controller">
+        <BRANCH Name="ACTOR/CRITIC" Class="ACTOR-CRITIC"/>
+        <BRANCH Name="CONTROLLER" Class="ACTOR"/>
       </CHOICE-ELEMENT>
     </CHOICE>
   </CLASS>
@@ -56,22 +63,35 @@
   <!-- Generic actors and critics-->
   <CLASS Name="ACTOR">
     <CHOICE Name="Type">
-      <CHOICE-ELEMENT Name="VFA-Learner">
-        
+      <CHOICE-ELEMENT Name="VFA-Actor">
         <FILE-PATH-VALUE Name="Load" Optional="true"/>
         <FILE-PATH-VALUE Name="Save" Optional="true"/>
-        <BRANCH Name="VFA-Learner" Class="VFA-Learner"/>
-        
+        <BRANCH Name="VFA-Learner" Class="VFA-Learner-Outputs"/>
       </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Multi-Controller">
+        <MULTI-VALUED Name="Controllers" Class="CONTROLLER"/>
+      </CHOICE-ELEMENT>
+    </CHOICE>
+  </CLASS>
 
+  <CLASS Name="VFA-Learner-Outputs">
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <MULTI-VALUED Name="Outputs" Class="Single-Output-VFA-Policy-Learner"/>
+  </CLASS>
+
+  <CLASS Name="Controller">
+    <CHOICE Name="Algorithm">
       <CHOICE-ELEMENT Name="PID">
-        <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
+        <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" Child="ACTION"/>
+        <XML-NODE-REF Name="Input-Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
         <DECIMAL-VALUE Name="KP"/>
         <DECIMAL-VALUE Name="KI"/>
         <DECIMAL-VALUE Name="KD"/>
       </CHOICE-ELEMENT>
 
       <CHOICE-ELEMENT Name="LQR">
+        <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" Child="ACTION"/>
         <MULTI-VALUED Name="Gains" Class="LQR-GAIN"/>
       </CHOICE-ELEMENT>
 
@@ -97,7 +117,7 @@
         <DECIMAL-VALUE Name="P_s"/>
       </CHOICE-ELEMENT>
 
-      <CHOICE-ELEMENT Name="Boukhezzar">  
+      <CHOICE-ELEMENT Name="Boukhezzar">
         <DECIMAL-VALUE Name="C_0" type="numeric"/>
         <DECIMAL-VALUE Name="KP" type="numeric"/>
         <DECIMAL-VALUE Name="KI" type="numeric"/>
@@ -106,25 +126,6 @@
       </CHOICE-ELEMENT>
     </CHOICE>
   </CLASS>
-
-  <CLASS Name="VFA-Learner">
-    <CHOICE Name="Algorithm">
-      <CHOICE-ELEMENT Name="CACLA">
-        <FILE-PATH-VALUE Name="Load" Optional="true"/>
-        <FILE-PATH-VALUE Name="Save" Optional="true"/>
-        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
-      </CHOICE-ELEMENT>
-      <CHOICE-ELEMENT Name="Regular-Gradient">
-        <FILE-PATH-VALUE Name="Load" Optional="true"/>
-        <FILE-PATH-VALUE Name="Save" Optional="true"/>
-        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
-      </CHOICE-ELEMENT>
-    </CHOICE>
-  </CLASS>
-  <CHOICE-ELEMENT Name="CACLA">
-
-  </CHOICE-ELEMENT>
-
 
 
   <CLASS Name="CRITIC">
@@ -167,17 +168,17 @@
         <BRANCH Name="V-Function" Class="RBF-GRID"/>
         <BRANCH Name="V-ETraces" Class="ETRACES" Optional="true"/>
         <DECIMAL-VALUE Name="Alpha-v" Comment="Gain used to update the V-Function"/>
-        <MULTI-VALUED Name="Policy-Learners" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
+        <MULTI-VALUED Name="Policy-Learners" Class="Single-Output-VFA-Policy-Learner"/>
       </CHOICE-ELEMENT>
     </CHOICE>
   </CLASS>
   
-  <CLASS Name="SINGLE-OUTPUT-VFA-LEARNER">
-    <XML-NODE-REF Name="Action" XMLFile="WORLD-DEFINITION" Child="ACTION"/>
+  <CLASS Name="Single-Output-VFA-Policy-Learner">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" Child="ACTION"/>
     <BRANCH Name="RBF-Grid" Class="RBF-GRID"/>
     <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
     <BRANCH Name="ETraces" Class="ETRACES" Optional="true"/>
-    <DECIMAL-VALUE Name="ALPHA"/>
+    <DECIMAL-VALUE Name="Alpha" Comment="Gain used to update the policy"/>
   </CLASS>
   
   <CLASS Name="LQR-GAIN">

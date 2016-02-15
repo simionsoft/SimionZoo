@@ -12,7 +12,7 @@ CCACLALearner::CCACLALearner(tinyxml2::XMLElement *pParameters)
 : CSingleOutputVFAPolicyLearner(pParameters)
 {
 	m_pStateFeatures = new CFeatureList();
-	m_e = new CETraces(pParameters->FirstChildElement("ETRACES"));
+	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));
 	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 }
 
@@ -34,8 +34,8 @@ void CCACLALearner::updatePolicy(CState *s, CAction *a, CState *s_p, double r, d
 	//if delta>0: theta= theta + alpha*(lastNoise)*phi_pi(s)
 
 
-	alpha = m_pAlpha->get();
-	actionVar = m_pParameters->FirstChildElement("ACTION")->Value();
+	alpha = m_pAlpha->getValue();
+	actionVar = m_pPolicy->getOutputAction();
 
 	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(s, a);// m_pOutput->getValue(i);
 

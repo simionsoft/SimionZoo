@@ -12,7 +12,7 @@ public:
 		//<ALPHA>0.1</ALPHA>
 		m_value = atof(pParameters->Value());
 	}
-	double get(){ return m_value; }
+	double getValue(){ return m_value; }
 };
 
 enum EnumInterpolation{linear, quadratic};
@@ -27,7 +27,7 @@ class CInterpolatedValue : public INumericValue
 	EnumTimeReference m_timeReference;
 public:
 	CInterpolatedValue(tinyxml2::XMLElement* pParameters);
-	double get();
+	double getValue();
 };
 
 CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
@@ -53,18 +53,24 @@ CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
 	param = pParameters->FirstChildElement("Initial-Value");
 	if (param) m_startValue = atof(param->Value());
 	else assert(0);
+}
 
 
-
-int ParametersXMLHelper::countChildren(tinyxml2::XMLElement* pElement, const char* name)
+int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* name)
 {
 	int count = 0;
-	tinyxml2::XMLElement* p = pElement->FirstChildElement(name);
+	tinyxml2::XMLElement* p;
+	
+	if (name) p= pElement->FirstChildElement(name);
+	else p = pElement->FirstChildElement();
 
 	while (p != 0)
 	{
 		count++;
-		p = p->NextSiblingElement(name);
+
+		if (name)
+			p = p->NextSiblingElement(name);
+		else p = p->NextSiblingElement();
 	}
 	return count;
 }

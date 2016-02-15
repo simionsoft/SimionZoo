@@ -2,29 +2,32 @@
 #include "vfa-actor-critic.h"
 #include "vfa-actor.h"
 #include "vfa.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "vfa-policy.h"
+#include "parameters-xml-helper.h"
 
-CVFAActorCritic* CVFAActorCritic::getInstance(CParameters* pParameters)
+CVFAActorCritic* CVFAActorCritic::getInstance(tinyxml2::XMLElement* pParameters)
 {
 	if (!pParameters) return 0;
 
-	if (!strcmp(pParameters->getName(), "INAC"))
+	if (!strcmp(pParameters->Name(), "INAC"))
 		return new CIncrementalNaturalActorCritic(pParameters);
 
 	return 0;
 }
 
-CVFAActorCritic::CVFAActorCritic(CParameters* pParameters) : CParamObject(pParameters)
+CVFAActorCritic::CVFAActorCritic(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
 	m_pVFunction = new CLinearVFA(pParameters);
 
-	m_numOutputs = pParameters->getNumChildrenByTag("Single-Output-Policy");
+	m_numOutputs = XMLParameters::countChildren(pParameters,"POLICY");
 	m_pPolicies = new CSingleOutputVFAPolicy*[m_numOutputs];
+
+	tinyxml2::XMLElement *child = pParameters->FirstChildElement("POLICY");
 	for (int i = 0; i < m_numOutputs; i++)
 	{
-		m_pPolicies[i] = new CSingleOutputVFAPolicy(pParameters->getChildByTag("Single-Output-Policy",i));
+		m_pPolicies[i] = new CSingleOutputVFAPolicy(child);
+
+		child = child->NextSiblingElement("POLICY");
 	}
 }
 
