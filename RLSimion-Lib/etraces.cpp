@@ -1,23 +1,25 @@
 #include "stdafx.h"
 #include "etraces.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "experiment.h"
 #include "globals.h"
 
-CETraces::CETraces(CParameters* pParameters) : CParamObject(pParameters)
-{}
+CETraces::CETraces(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
+{
+	m_bUse = atoi(m_pParameters->FirstChildElement("Use")->Value()) != 0;
+	m_threshold = atof(m_pParameters->FirstChildElement("Threshold")->Value());
+	m_lambda = atof(m_pParameters->FirstChildElement("Lambda")->Value());
+	m_bReplace = atoi(m_pParameters->FirstChildElement("Replace")->Value()) != 0;
+}
 
 CETraces::~CETraces()
 {}
 
 void CETraces::update(double factor)
 {
-	if (!g_pExperiment->m_expProgress.isFirstStep()
-		&& m_pParameters->getParameter("USE")->getDouble() == 1.0)
+	if (!g_pExperiment->m_expProgress.isFirstStep() && m_bUse)
 	{
-		mult(factor* m_pParameters->getParameter("LAMBDA")->getDouble());
-		applyThreshold(m_pParameters->getParameter("THRESHOLD")->getDouble());
+		mult(factor* m_lambda);
+		applyThreshold(m_threshold);
 	}
 	else
 		clear();
@@ -25,10 +27,9 @@ void CETraces::update(double factor)
 
 void CETraces::addFeatureList(CFeatureList* inList, double factor)
 {
-	if (m_pParameters->getParameter("USE")->getDouble() == 1.0)
+	if (m_bUse)
 	{
-		bool bReplace = (bool)(1 == (int)m_pParameters->getParameter("REPLACE")->getDouble());
-		CFeatureList::addFeatureList(inList, factor, !bReplace, bReplace);
+		CFeatureList::addFeatureList(inList, factor, !m_bReplace, m_bReplace);
 	}
 	else
 	{

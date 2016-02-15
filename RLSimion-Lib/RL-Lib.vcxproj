@@ -83,12 +83,10 @@
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
     <ClCompile Include="actor-critic-inac.cpp" />
-    <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="parameters-xml-helper.cpp" />
-    <ClCompile Include="vfa-actor-critic.cpp" />
     <ClCompile Include="vfa-actor.cpp" />
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="controller.cpp" />
@@ -100,9 +98,6 @@
     <ClCompile Include="featuremap-rbfgrid.cpp" />
     <ClCompile Include="features.cpp" />
     <ClCompile Include="noise.cpp" />
-    <ClCompile Include="parameter.cpp" />
-    <ClCompile Include="parameters.cpp" />
-    <ClCompile Include="parameterscheduler.cpp" />
     <ClCompile Include="reward.cpp" />
     <ClCompile Include="setpoint.cpp" />
     <ClCompile Include="SimGod.cpp" />
@@ -131,18 +126,14 @@
     <ClInclude Include="features.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="noise.h" />
-    <ClInclude Include="parameter.h" />
     <ClInclude Include="parameterized-object.h" />
     <ClInclude Include="parameters-xml-helper.h" />
-    <ClInclude Include="parameters.h" />
-    <ClInclude Include="parameterscheduler.h" />
     <ClInclude Include="reward.h" />
     <ClInclude Include="setpoint.h" />
     <ClInclude Include="SimGod.h" />
     <ClInclude Include="states-and-actions.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="vfa-actor-critic.h" />
     <ClInclude Include="vfa-actor.h" />
     <ClInclude Include="vfa-critic.h" />
     <ClInclude Include="vfa-policy.h" />

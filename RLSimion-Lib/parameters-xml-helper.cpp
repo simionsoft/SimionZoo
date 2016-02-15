@@ -55,6 +55,36 @@ CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
 	else assert(0);
 }
 
+double CInterpolatedValue::getValue()
+{
+	double progress;
+
+	//evalution episode?
+	if (g_pExperiment->isEvaluationEpisode())
+		return m_evaluationValue;
+	//time reference
+	switch (m_timeReference)
+	{
+	case experiment:
+		progress = g_pExperiment->m_expProgress.getExperimentProgress();
+		break;
+	case episode:
+	default:
+		progress = g_pExperiment->m_expProgress.getEpisodeProgress();
+	}
+	//interpolation
+	switch (m_interpolation)
+	{
+	case linear:
+		return m_startValue + (m_endValue - m_startValue)* progress;
+	case quadratic:
+	default:
+		return m_startValue + (1. - pow(1 - progress, 2.0))*(m_endValue - m_startValue)* progress;
+	}
+
+
+}
+
 
 int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* name)
 {
@@ -73,4 +103,29 @@ int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* nam
 		else p = p->NextSiblingElement();
 	}
 	return count;
+}
+
+INumericValue* XMLParameters::getNumericHandler(tinyxml2::XMLElement* pElement)
+{
+	if (!pElement->FirstChildElement()) return new CConstantValue(pElement);
+
+	if (!pElement->FirstChildElement("decimal")) return new CConstantValue(pElement->FirstChildElement("decimal"));
+
+	return new CInterpolatedValue(pElement);
+}
+
+bool XMLParameters::getBoolean(tinyxml2::XMLElement* pParameters)
+{
+	assert(pParameters && pParameters->Value());
+	return atoi(pParameters->Value()) != 0;
+}
+int XMLParameters::getConstInteger(tinyxml2::XMLElement* pParameters)
+{
+	assert(pParameters && pParameters->Value());
+	return atoi(pParameters->Value()) != 0;
+}
+double XMLParameters::getConstDouble(tinyxml2::XMLElement* pParameters)
+{
+	assert(pParameters && pParameters->Value());
+	return atof(pParameters->Value()) != 0;
 }

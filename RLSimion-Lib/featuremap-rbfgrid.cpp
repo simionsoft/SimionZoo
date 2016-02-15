@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "featuremap.h"
 #include "states-and-actions.h"
-#include "parameters.h"
-#include "parameter.h"
+
 #include "globals.h"
 #include "world.h"
 #include "features.h"
@@ -59,7 +58,7 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 
 			if (!strcmp(distribution ,"cubic"))
 				normalisedPos= pow(normalisedPos,3.0);
-			else if (!strcmp(distribution, "quadratic");
+			else if (!strcmp(distribution, "quadratic"))
 				normalisedPos= pow(normalisedPos,2.0);
 			else assert(0);
 
@@ -70,11 +69,10 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 
 }
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pParameters)
-: CParamObject(pParameters)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pParameters): CParamObject(pParameters)
 {
 	char * token= 0, *nextToken= 0;
-	char copy[MAX_STRING_SIZE];
+	//char copy[MAX_STRING_SIZE];
 
 	m_numVariables = XMLParameters::countChildren(pParameters, "state-dim-grid");
 	

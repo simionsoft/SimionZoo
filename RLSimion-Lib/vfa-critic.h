@@ -9,6 +9,9 @@ class CFeatureList;
 class tinyxml2::XMLElement;
 class INumericValue;
 
+
+//Interface class
+
 class CVFACritic : public CCritic, public CParamObject
 {
 protected:
@@ -25,11 +28,14 @@ public:
 	static CVFACritic* getInstance(tinyxml2::XMLElement* pParameters);
 };
 
+//VFACritic implementations
+
 class CTDLambdaCritic : public CVFACritic
 {
 	CETraces* m_z; //traces
 	CFeatureList* m_aux;
-
+	INumericValue* m_pAlpha;
+	INumericValue* m_pGamma;
 public:
 	CTDLambdaCritic(tinyxml2::XMLElement *pParameters);
 	~CTDLambdaCritic();
@@ -43,11 +49,11 @@ class CTrueOnlineTDLambdaCritic : public CVFACritic
 	//Harm van Seijen, Richard Sutton
 	//Proceedings of the 31st International Conference on Machine learning
 
-
 	CETraces* m_e; //traces
 	CFeatureList* m_aux;
 	double m_v_s;
-
+	INumericValue* m_pAlpha;
+	INumericValue* m_pGamma;
 public:
 	CTrueOnlineTDLambdaCritic(tinyxml2::XMLElement *pParameters);
 	~CTrueOnlineTDLambdaCritic();
@@ -65,7 +71,10 @@ class CTDCLambdaCritic : public CVFACritic
 	CFeatureList* m_a;
 	CFeatureList* m_b;
 
-
+	INumericValue* m_pAlpha;
+	INumericValue* m_pGamma;
+	INumericValue* m_pBeta;
+	
 
 public:
 	CTDCLambdaCritic(tinyxml2::XMLElement *pParameters);

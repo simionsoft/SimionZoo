@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "world.h"
-#include "parameters.h"
-#include "parameter.h"
+
 #include "states-and-actions.h"
 
 #include "world-windturbine.h"

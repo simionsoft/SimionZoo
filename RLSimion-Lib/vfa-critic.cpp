@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "vfa-critic.h"
 #include "vfa.h"
-#include "parameters.h"
-#include "parameter.h"
+
 #include "parameterized-object.h"
 
 

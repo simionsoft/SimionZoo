@@ -17,8 +17,8 @@ class CSingleOutputVFAPolicyLearner: public CParamObject
 protected:
 	CSingleOutputVFAPolicy* m_pPolicy;
 
-	CSingleOutputVFAPolicyLearner (tinyxml2::XMLElement* pParameters);
 public:
+	CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters);
 	~CSingleOutputVFAPolicyLearner();
 
 	virtual void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td)= 0;

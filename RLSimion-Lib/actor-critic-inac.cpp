@@ -27,6 +27,11 @@ CIncrementalNaturalCritic::~CIncrementalNaturalCritic()
 {
 	delete m_s_features;
 	delete m_s_p_features;
+
+	delete m_pAlphaV;
+	delete m_pAlphaR;
+	delete m_pGamma;
+
 	delete m_e_v;
 }
 
@@ -58,7 +63,8 @@ double CIncrementalNaturalCritic::updateValue(CState *s, CAction *a, CState *s_p
 	return td;
 }
 
-CIncrementalNaturalActor::CIncrementalNaturalActor(tinyxml2::XMLElement* pParameters)
+CIncrementalNaturalActor::CIncrementalNaturalActor(tinyxml2::XMLElement* pParameters) 
+							: CSingleOutputVFAPolicyLearner(pParameters)
 {
 	m_grad_u = new CFeatureList();
 	m_s_features = new CFeatureList();
@@ -75,7 +81,11 @@ CIncrementalNaturalActor::~CIncrementalNaturalActor()
 {
 	delete m_grad_u;
 	delete m_s_features;
+
 	delete m_pGamma;
+	delete m_pAlphaU;
+	delete m_pAlphaV;
+
 	delete m_e;
 	delete m_w;
 }
@@ -113,12 +123,12 @@ void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, d
 	m_e->update(gamma);
 	m_e->addFeatureList(m_grad_u);
 	//2. w= w - alpha_v * Grad_u pi(a|s)/pi(a|s) * Grad_u pi(a|s)/pi(a|s)^T * w + alpha_v*td*e_u
-	double innerprod = m_grad_u->innerProduct(m_w[i]); //Grad_u pi(a|s)/pi(a|s)^T * w
+	double innerprod = m_grad_u->innerProduct(m_w); //Grad_u pi(a|s)/pi(a|s)^T * w
 	m_grad_u->mult(alpha_v*innerprod*-1.0);
-	m_w[i]->addFeatureList(m_grad_u);
-	m_w[i]->addFeatureList(m_e, alpha_v*td);
+	m_w->addFeatureList(m_grad_u);
+	m_w->addFeatureList(m_e, alpha_v*td);
 	//3. u= u + alpha_u * w
-	m_pPolicy->getVFA()->add(m_w[i], alpha_u);
+	m_pPolicy->getVFA()->add(m_w, alpha_u);
 }
 /*
 CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(tinyxml2::XMLElement* pParameters)

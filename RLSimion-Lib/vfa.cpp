@@ -2,7 +2,7 @@
 #include "vfa.h"
 #include "featuremap.h"
 #include "features.h"
-#include "parameters.h"
+
 
 CLinearVFA::CLinearVFA(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {

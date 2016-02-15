@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "featuremap.h"
-#include "parameters.h"
+
+class tinyxml2::XMLElement;
 
 CFeatureMap* CFeatureMap::getInstance(tinyxml2::XMLElement* pParameters)
 {

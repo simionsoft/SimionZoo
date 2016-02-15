@@ -1,37 +1,39 @@
 #include "stdafx.h"
 #include "critic.h"
 #include "vfa.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "features.h"
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "etraces.h"
+#include "parameters-xml-helper.h"
 
-
-CTDLambdaCritic::CTDLambdaCritic(CParameters *pParameters)
+CTDLambdaCritic::CTDLambdaCritic(tinyxml2::XMLElement *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_z= new CETraces(pParameters->getChild("E-Traces"));
+	m_z= new CETraces(pParameters->FirstChildElement("E-Traces"));
 	m_aux= new CFeatureList();
+	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pGamma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Gamma"));
 }
 
 CTDLambdaCritic::~CTDLambdaCritic()
 {
 	delete m_z;
 	delete m_aux;
+	delete m_pAlpha;
+	delete m_pGamma;
 }
 
 double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)
 {
-	double alpha = m_pParameters->getParameter("ALPHA")->getDouble();
+	double alpha = m_pAlpha->getValue();
 	if (alpha==0.0) return 0.0;
 	//using sample importance
 	//z= gamma * lambda * rho * z + phi_v(s)
 	if (g_pExperiment->m_expProgress.isFirstStep())
 		m_z->clear();
-	double gamma = m_pParameters->getParameter("GAMMA")->getDouble();
+	double gamma = m_pGamma->getValue();
 	m_z->update(gamma*rho);
 	m_z->applyThreshold(0.0001);
 

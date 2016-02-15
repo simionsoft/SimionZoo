@@ -6,7 +6,7 @@
 
 CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
 {
-	tinyxml2::XMLElement* child;/* = pParameters->FirstChildElement("ACTOR/CRITIC");
+	/*tinyxml2::XMLElement* child;/* = pParameters->FirstChildElement("ACTOR/CRITIC");
 
 	if (child)
 	{
@@ -28,7 +28,7 @@ CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
 		}
 
 		if (pParameters->FirstChildElement("CRITIC"))
-			m_pCritic = CCritic::getInstance(pParameters->FirstChildElement("CHILD"));
+			m_pCritic = CCritic::getInstance(pParameters->FirstChildElement("CRITIC"));
 		else m_pCritic = 0;
 	}
 	

@@ -1,33 +1,37 @@
 #include "stdafx.h"
 #include "critic.h"
 #include "vfa.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "features.h"
 #include "etraces.h"
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
+#include "parameters-xml-helper.h"
 
-CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
+CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(tinyxml2::XMLElement *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_e= new CETraces(pParameters->getChild("E-Traces"));
+	m_e= new CETraces(pParameters->FirstChildElement("E-Traces"));
 	m_aux= new CFeatureList();
 	m_v_s= 0.0;
+	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pGamma= XMLParameters::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+
 }
 
 CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 {
 	delete m_e;
 	delete m_aux;
+	delete m_pAlpha;
+	delete m_pGamma;
 }
 
 double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)
 {
 	double v_s_p;
 
-	if (m_pParameters->getParameter("ALPHA")->getDouble()) return 0.0;
+	if (m_pAlpha->getValue()==0.0) return 0.0;
 	
 	if (g_pExperiment->m_expProgress.isFirstStep())
 	{
@@ -41,8 +45,8 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 	m_pVFA->getFeatures(s_p,0,m_aux);
 	v_s_p= m_pVFA->getValue(m_aux);
 
-	double gamma = m_pParameters->getParameter("GAMMA")->getDouble();
-	double alpha = m_pParameters->getParameter("ALPHA")->getDouble();
+	double gamma = m_pGamma->getValue();
+	double alpha = m_pAlpha->getValue();
 	//delta= R + gamma* v_s_p - v_s
 	double td = r + gamma*v_s_p - m_v_s;
 
@@ -52,7 +56,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 
 
 	m_e->update(gamma);
-	double lambda = m_e->getParameters()->getParameter("LAMBDA")->getDouble();
+	double lambda = m_e->getLambda();
 	m_e->addFeatureList(m_aux,alpha *(1-gamma*lambda*e_T_phi_s));
 
 	//theta= theta + delta*e + alpha[v_s - theta^T*phi(s)]* phi(s)

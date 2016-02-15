@@ -15,6 +15,11 @@ CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(tinyxml2::XMLElemen
 	m_pPolicy = new CSingleOutputVFAPolicy(pParameters->FirstChildElement("POLICY"));
 }
 
+CSingleOutputVFAPolicyLearner::~CSingleOutputVFAPolicyLearner()
+{
+	delete m_pPolicy;
+}
+
 CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxml2::XMLElement* pParameters)
 {
 	if (pParameters)

@@ -44,7 +44,7 @@ class CPIDController : public CActor
 	int m_errorVariableIndex;
 public:
 	CPIDController(tinyxml2::XMLElement* pParameters);
-	~CPIDController(){}
+	~CPIDController();
 
 	void selectAction(CState *s,CAction *a);
 };

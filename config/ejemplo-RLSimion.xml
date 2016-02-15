@@ -29,17 +29,17 @@
       </REWARD-COMPONENT>    </REWARD>
   </WORLD>
   <EXPERIMENT>
-    <NUM_EPISODES>1</NUM_EPISODES>
-    <EPISODE_LENGTH>1000</EPISODE_LENGTH>
-    <RANDOM_SEED>1</RANDOM_SEED>
-    <EVAL_FREQ>20</EVAL_FREQ>
+    <Num-Episodes>1</Num-Episodes>
+    <Episode-Length>1000</Episode-Length>
+    <Random-Seed>1</Random-Seed>
+    <Eval-Freq>20</Eval-Freq>
     <LOG>
-      <FREQ>0.25</FREQ>
-      <OUTPUT_DIR>test-dir</OUTPUT_DIR>
-      <FILE_PREFIX>prefix</FILE_PREFIX>
-      <EVALUATION_EPISODES>true</EVALUATION_EPISODES>
-      <TRAINING_EPISODES>false</TRAINING_EPISODES>
-      <EVALUATION_AVG_REWARDS>true</EVALUATION_AVG_REWARDS>
+      <Freq>0.25</Freq>
+      <Ouput-directory>test-dir</Ouput-directory>
+      <Prefix>prefix</Prefix>
+      <Log-eval-episodes>true</Log-eval-episodes>
+      <Log-training-episodes>false</Log-training-episodes>
+      <Log-eval-avg-rewards>true</Log-eval-avg-rewards>
     </LOG>
   </EXPERIMENT>
   <SIMGOD>

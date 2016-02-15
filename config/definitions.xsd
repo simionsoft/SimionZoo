@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="DEFINITIONS" type ="DEFINITIONS"/>
+
+    <xs:complexType name="DEFINITIONS">
+      <xs:sequence>
+          <xs:element name="INCLUDE" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="CLASS" type="CLASS-DEFINITION" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="ENUMERATED-TYPES" type="ENUMERATION-DEFINITIONS"/>
+      </xs:sequence>
+    </xs:complexType>
+
+  <xs:complexType name="CLASS-DEFINITION">
+    <xs:sequence>
+      <xs:element name="XML-NODE-REF" minOccurs="0" maxOccurs="unbounded" type="XML-NODE-REF"/>
+      <xs:element name="INTEGER-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="DECIMAL-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="STRING-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="DIR-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="FILE-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="ENUM-VALUE" minOccurs="0" maxOccurs="unbounded" type="ENUMERATED"/>
+
+      <xs:element name="MULTI-VALUED" minOccurs="0" maxOccurs="unbounded" type="MULTI-VALUED"/>
+      
+      <xs:element name="CHOICE" minOccurs="0" maxOccurs="1" type="CHOICE"/>
+
+      <xs:element name="BRANCH" minOccurs="0" maxOccurs="unbounded" type="BRANCH"/>
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="CHOICE">
+    <xs:sequence>
+      <xs:element name="XML-NODE-REF" minOccurs="0" maxOccurs="unbounded" type="XML-NODE-REF"/>
+      <xs:element name="INTEGER-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="DECIMAL-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="STRING-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="DIR-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="FILE-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="ENUM-VALUE" minOccurs="0" maxOccurs="unbounded" type="ENUMERATED"/>
+
+      <xs:element name="MULTI-VALUED" minOccurs="0" maxOccurs="unbounded" type="MULTI-VALUED"/>
+      
+      <xs:element name="CHOICE-ELEMENT" maxOccurs="unbounded" type="CHOICE-ELEMENT"/>
+
+      <xs:element name="BRANCH" minOccurs="0" maxOccurs="unbounded" type="BRANCH"/>
+
+    </xs:sequence>
+    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="LoadXML" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="CHOICE-ELEMENT">
+    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="XML" type="xs:string"/>
+    <xs:attribute name="Class" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="BRANCH">
+    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="Class" type="xs:string"/>
+    <xs:attribute name="Optional" type="xs:boolean"/>
+  </xs:complexType>
+
+  <xs:complexType name="MULTI-VALUED">
+    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="Class" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="ENUMERATED">
+    <xs:attribute name="Class" type="xs:string"/>
+    <xs:attributeGroup ref="CONSTANT-VALUE-ATTRIBUTES"/>
+  </xs:complexType>
+  
+  <xs:complexType name="XML-NODE-REF">
+    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="Comment" type="xs:string"/>
+    <xs:attribute name="XMLFile" type="xs:string"/>
+    <xs:attribute name="HangingFrom" type="xs:string"/>
+  </xs:complexType>
+                  
+  
+  <xs:attributeGroup name="CONSTANT-VALUE-ATTRIBUTES">
+    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="Default" type="xs:string"/>
+    <xs:attribute name="Comment" type="xs:string"/>
+    <xs:attribute name="Optional" type="xs:boolean"/>
+  </xs:attributeGroup>
+
+  <xs:complexType name="CONSTANT-VALUE">
+    <xs:attributeGroup ref="CONSTANT-VALUE-ATTRIBUTES"/>
+  </xs:complexType>
+  
+  <xs:complexType name="ENUMERATION-DEFINITIONS">
+    <xs:sequence maxOccurs="unbounded">
+      <xs:element name="ENUMERATION">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="VALUE" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="Name" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  
+</xs:schema>

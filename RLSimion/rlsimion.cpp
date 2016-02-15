@@ -7,7 +7,7 @@
 #include "../RLSimion-Lib/simgod.h"
 #include "../RLSimion-Lib/reward.h"
 #include "../RLSimion-Lib/states-and-actions.h"
-//#include "../RLSimion-Lib/parameterscheduler.h"
+
 #include "../RLSimion-Lib/experiment.h"
 
 
@@ -79,8 +79,6 @@ int main(int argc, char* argv[])
 	delete s_p;
 	delete a;
 
-	//delete pParameterScheduler;
-	delete pParameters;
 	delete g_pWorld;
 	delete g_pExperiment;
 

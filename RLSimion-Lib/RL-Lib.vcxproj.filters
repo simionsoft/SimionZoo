@@ -45,12 +45,6 @@
     <ClCompile Include="noise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameters.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="parameterscheduler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="reward.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,9 +81,6 @@
     <ClCompile Include="SimGod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vfa-actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -100,12 +91,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vfa-critic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="actor-critic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vfa-actor-critic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="actor-critic-inac.cpp">
@@ -146,12 +131,6 @@
     <ClInclude Include="noise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="parameterscheduler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="reward.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -188,9 +167,6 @@
     <ClInclude Include="SimGod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vfa-actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -201,9 +177,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="actor-critic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vfa-actor-critic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="etraces.h">
