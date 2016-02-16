@@ -6,7 +6,7 @@
 #include "states-and-actions.h"
 #include "features.h"
 #include "etraces.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 CCACLALearner::CCACLALearner(tinyxml2::XMLElement *pParameters)
 : CSingleOutputVFAPolicyLearner(pParameters)
@@ -32,13 +32,16 @@ void CCACLALearner::updatePolicy(CState *s, CAction *a, CState *s_p, double r, d
 	//CACLA (van Hasselt)
 	//if delta>0: theta= theta + alpha*(lastNoise)*phi_pi(s)
 
-	alpha = m_pAlpha->getValue();
+	if (td > 0.0)
+	{
+		alpha = m_pAlpha->getValue();
 
-	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getVFA()->getValue(s, a);
+		m_pPolicy->getVFA()->getFeatures(s, a, m_pStateFeatures);
 
-	m_pPolicy->getVFA()->getFeatures(s,a,m_pStateFeatures);
+		lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);
 
-	if (alpha != 0.0)
-		m_pPolicy->getVFA()->add(m_pStateFeatures,alpha*lastNoise);
+		if (alpha != 0.0)
+			m_pPolicy->getVFA()->add(m_pStateFeatures, alpha*lastNoise);
+	}
 }
 

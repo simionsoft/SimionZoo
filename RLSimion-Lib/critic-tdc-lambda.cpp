@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 CTDCLambdaCritic::CTDCLambdaCritic(tinyxml2::XMLElement *pParameters)
 	: CVFACritic(pParameters)
@@ -44,7 +44,6 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 	
 	if (g_pExperiment->m_expProgress.isFirstStep())
 	{
-		m_z->clear();
 		m_omega->clear();
 	}
 
@@ -61,8 +60,6 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 	//z_{k+1}= rho*gamma*lambda*z_k + omega(x_t)
 	m_z->update(rho*gamma);
 	m_z->addFeatureList(m_s_features,rho);
-	m_z->applyThreshold(0.0001);	
-
 
 	//\theta_{t+1}=\theta_{t}+\alpha(z_t*delta_t-gamma*rho(1-\lambda)\phi_t*(z_{t+1}^T*w_t))
 	//innerprod1= omega(x_t)^T*w //<----- used in the update of w

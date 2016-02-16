@@ -3,7 +3,7 @@
 #include "states-and-actions.h"
 #include "world.h"
 #include "reward.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 double CExperimentProgress::getExperimentProgress()
 {
@@ -51,7 +51,8 @@ CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 
 	tinyxml2::XMLElement* pLogParameters = pParameters->FirstChildElement("LOG");
 
-	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Ouput-directory")->GetText());
+	sprintf_s(m_outputDir, MAX_FILENAME_LENGTH,"../logs/%s"
+		, pLogParameters->FirstChildElement("Ouput-directory")->GetText());
 	strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Prefix")->GetText());
 
 	m_bLogEvaluationEpisodes = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-eval-episodes"));

@@ -24,7 +24,7 @@
   <CLASS Name="LOG">
     <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds"/>
     <STRING-VALUE Name="Prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
-    <DIR-PATH-VALUE Name="Ouput-directory" Default="test-dir" Comment="name of the directory where log files will be saved (within ./logs)"/>
+    <STRING-VALUE Name="Ouput-directory" Default="test-dir" Comment="name of the directory within ../logs/ where log files will be saved "/>
 
     <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
     <ENUM-VALUE Class="BOOLEAN" Name="Log-training-episodes" Default="false" Comment="Log training episodes?"/>
@@ -170,21 +170,24 @@
   </CLASS>
 
   <CLASS Name="CRITIC">
+    <BRANCH Name="Type" Class="VFA-Critic"/>
+  </CLASS>
+
+  <CLASS Name="VFA-Critic">
     <CHOICE Name="Algorithm">
       <CHOICE-ELEMENT Name="TD-Lambda" Class="TD-Lambda"/>
       <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="TD-Lambda"/>
       <CHOICE-ELEMENT Name="TDC-Lambda" Class="TDC-Lambda"/>
-        
     </CHOICE>
   </CLASS>
-
+  
   <CLASS Name="TD-Lambda">
     <DECIMAL-VALUE Name="Alpha"/>
     <DECIMAL-VALUE Name="Gamma"/>
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
-    <BRANCH Name="V-Function" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
   </CLASS>
 
   <CLASS Name="True-Online-TD-Lambda">
@@ -193,7 +196,7 @@
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
-    <BRANCH Name="V-Function" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
   </CLASS>
   
   <CLASS Name="TDC-Lambda">
@@ -203,7 +206,7 @@
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="E-Traces" Class="ETRACES"  Optional="true"/>
-    <BRANCH Name="V-Function" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
   </CLASS>
   
 
@@ -265,8 +268,9 @@
 
   <ENUMERATED-TYPES>
     <ENUMERATION Name="DISTRIBUTIONS">
-        <VALUE>linear</VALUE>
-        <VALUE>quadratic</VALUE>
+      <VALUE>linear</VALUE>
+      <VALUE>quadratic</VALUE>
+      <VALUE>cubic</VALUE>
     </ENUMERATION>
 
     <ENUMERATION Name="BOOLEAN">

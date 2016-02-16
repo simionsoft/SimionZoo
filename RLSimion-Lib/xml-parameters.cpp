@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 #include "globals.h"
 #include "experiment.h"
 
@@ -20,6 +20,8 @@ enum EnumTimeReference{ experiment,episode };
 
 class CInterpolatedValue : public INumericValue
 {
+	double m_startOffset; //normalized offset to start
+	double m_preOffsetValue; //value before the start of the schedule
 	double m_startValue;
 	double m_endValue;
 	double m_evaluationValue;
@@ -33,6 +35,16 @@ public:
 CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
 {
 	tinyxml2::XMLElement* param;
+
+	param = pParameters->FirstChildElement("Start-Offset");
+	if (param)
+		m_startOffset = XMLParameters::getConstDouble(param);
+	else m_startOffset = 0.0;
+
+	param = pParameters->FirstChildElement("Pre-Offset-Value");
+	if (param)
+		m_preOffsetValue = XMLParameters::getConstDouble(param);
+	else m_preOffsetValue = 0.0;
 
 	param = pParameters->FirstChildElement("Interpolation");
 	assert(param);
@@ -79,6 +91,13 @@ double CInterpolatedValue::getValue()
 	case episode:
 	default:
 		progress = g_pExperiment->m_expProgress.getEpisodeProgress();
+	}
+
+	if (m_startOffset != 0.0)
+	{
+		if (progress < m_startOffset) return m_preOffsetValue;
+
+		progress = (progress - m_startOffset) / (1 - m_startOffset);
 	}
 	//interpolation
 	switch (m_interpolation)

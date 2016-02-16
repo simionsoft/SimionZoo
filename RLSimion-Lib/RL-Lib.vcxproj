@@ -86,7 +86,7 @@
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="featuremap.cpp" />
-    <ClCompile Include="parameters-xml-helper.cpp" />
+    <ClCompile Include="xml-parameters.cpp" />
     <ClCompile Include="vfa-actor.cpp" />
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="controller.cpp" />
@@ -127,7 +127,7 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameterized-object.h" />
-    <ClInclude Include="parameters-xml-helper.h" />
+    <ClInclude Include="xml-parameters.h" />
     <ClInclude Include="reward.h" />
     <ClInclude Include="setpoint.h" />
     <ClInclude Include="SimGod.h" />

@@ -4,7 +4,7 @@
 #include "states-and-actions.h"
 #include "features.h"
 #include "etraces.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 #include "vfa-policy.h"
 
 CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(tinyxml2::XMLElement *pParameters)
@@ -34,9 +34,10 @@ void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *
 	alpha = m_pAlpha->getValue();
 	actionVar = m_pParameters->FirstChildElement("ACTION")->GetText();
 
-	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(s, a);// m_pOutput->getValue(i);
-
 	m_pPolicy->getVFA()->getFeatures(s, a, m_pStateFeatures);
+
+	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);// m_pOutput->getValue(i);
+
 
 	if (alpha != 0.0)
 		m_pPolicy->getVFA()->add(m_pStateFeatures, alpha*lastNoise*td);

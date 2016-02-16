@@ -34,6 +34,11 @@ int main(int argc, char* argv[])
 	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
 
 	pParameters = xmlDoc.FirstChildElement("RLSimion");
+	if (xmlDoc.Error())
+	{
+		printf("Error loading configuration file: %s\n\n", xmlDoc.ErrorName());
+		exit(-1);
+	}
 	g_pWorld = new CWorld(pParameters->FirstChildElement("WORLD"));
 	CSimGod* pSimGod = new CSimGod(pParameters->FirstChildElement("SIMGOD"));
 	g_pExperiment = new CExperiment(pParameters->FirstChildElement("EXPERIMENT"));
@@ -54,10 +59,6 @@ int main(int argc, char* argv[])
 		//steps per episode
 		for (g_pExperiment->m_expProgress.setStep(1); g_pExperiment->m_expProgress.isValidStep(); g_pExperiment->m_expProgress.incStep())
 		{
-
-			//Update parameters that have a schedule: learning gains, exploration, ...
-		//	pParameterScheduler->update();
-
 			//a= pi(s)
 			pSimGod->selectAction(s,a);
 

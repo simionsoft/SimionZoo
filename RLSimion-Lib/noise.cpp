@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "noise.h"
 #include "globals.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 double getNormalDistributionSample(/*double mu, */double sigma)
 {

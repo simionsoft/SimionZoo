@@ -11,7 +11,7 @@
 #include "noise.h"
 #include "states-and-actions.h"
 #include "vfa-critic.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 CIncrementalNaturalCritic::CIncrementalNaturalCritic(tinyxml2::XMLElement* pParameters) : CVFACritic(pParameters)
 {

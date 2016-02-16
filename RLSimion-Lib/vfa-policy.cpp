@@ -5,7 +5,7 @@
 #include "vfa.h"
 #include "vfa-policy.h"
 #include "actor.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 #include "globals.h"
 #include "world.h"
 

@@ -7,7 +7,7 @@
 
 CVFACritic::CVFACritic(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("V-FUNCTION"));
+	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("Linear-VFA"));
 
 	if (m_pParameters->FirstChildElement("LOAD"))
 		loadVFunction(m_pParameters->FirstChildElement("LOAD")->GetText());

@@ -8,7 +8,7 @@
 #include "world-pitchcontrol.h"
 #include "world-magneticlevitation.h"
 #include "reward.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 double CWorld::m_t= 0.0;
 double CWorld::m_dt= 0.0;

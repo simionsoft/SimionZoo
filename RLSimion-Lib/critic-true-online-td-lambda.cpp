@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(tinyxml2::XMLElement *pParameters)
 	: CVFACritic(pParameters)
@@ -35,7 +35,6 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 	
 	if (g_pExperiment->m_expProgress.isFirstStep())
 	{
-		m_e->clear();
 		//vs= theta^T * phi(s)
 		m_pVFA->getFeatures(s,0,m_aux);
 		m_v_s= m_pVFA->getValue(m_aux);

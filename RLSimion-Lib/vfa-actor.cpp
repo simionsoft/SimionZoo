@@ -7,7 +7,7 @@
 #include "actor.h"
 #include "experiment.h"
 #include "globals.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 
 CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)

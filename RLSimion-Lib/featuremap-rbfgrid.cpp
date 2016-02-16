@@ -5,7 +5,7 @@
 #include "globals.h"
 #include "world.h"
 #include "features.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 
 #define ACTIVATION_THRESHOLD 0.0001

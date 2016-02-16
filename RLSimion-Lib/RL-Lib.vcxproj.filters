@@ -99,10 +99,10 @@
     <ClCompile Include="etraces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameters-xml-helper.cpp">
+    <ClCompile Include="vfa-policy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vfa-policy.cpp">
+    <ClCompile Include="xml-parameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,7 +185,7 @@
     <ClInclude Include="vfa-policy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameters-xml-helper.h">
+    <ClInclude Include="xml-parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

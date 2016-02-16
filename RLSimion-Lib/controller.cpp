@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "states-and-actions.h"
 #include "world.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 CMultiController::CMultiController(tinyxml2::XMLElement* pParameters)
 {

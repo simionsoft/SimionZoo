@@ -6,7 +6,7 @@
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "etraces.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 
 CTDLambdaCritic::CTDLambdaCritic(tinyxml2::XMLElement *pParameters)
 	: CVFACritic(pParameters)
@@ -29,13 +29,12 @@ double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r
 {
 	double alpha = m_pAlpha->getValue();
 	if (alpha==0.0) return 0.0;
+
 	//using sample importance
 	//z= gamma * lambda * rho * z + phi_v(s)
-	if (g_pExperiment->m_expProgress.isFirstStep())
-		m_z->clear();
+
 	double gamma = m_pGamma->getValue();
 	m_z->update(gamma*rho);
-	m_z->applyThreshold(0.0001);
 
 	m_pVFA->getFeatures(s,0,m_aux);
 	m_z->addFeatureList(m_aux,alpha);

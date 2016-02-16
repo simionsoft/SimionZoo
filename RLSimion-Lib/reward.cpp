@@ -2,7 +2,7 @@
 #include "reward.h"
 #include "states-and-actions.h"
 #include "parameterized-object.h"
-#include "parameters-xml-helper.h"
+#include "xml-parameters.h"
 #include "world.h"
 #include "globals.h"
 
@@ -145,7 +145,7 @@ double CRewardComponent::getRewardComponent(CState* state)
 
 	//rew= m_weight*rew;
 
-	rew= std::max(CReward::m_minReward,rew);
+	//rew= std::max(CReward::m_minReward,rew);
 
 	m_lastReward= rew;
 
