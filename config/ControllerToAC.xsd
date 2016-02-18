@@ -1,0 +1,325 @@
+
+<xs:schema xmlns:xs="http://www.w3.org/TR/xmlschema11-1/">
+
+  <xs:element name="EXPERIMENT" type="experiment"/>
+  <xs:element name="WORLD" type="world"/>
+  <xs:element name="SIMGOD" type="simgod"/>
+
+  <xs:complexType name="experiment">
+    <xs:sequence>
+      <xs:element name="NUM_EPISODES" type="xs:integer" default="1"/>
+      <xs:element name="EPISODE_LENGTH" type="xs:integer"/>
+      <xs:element name="RANDOM_SEED" type="xs:integer"/>
+      <xs:element name="EVAL_FREQ" type="xs:integer"/>
+      <xs:element name="LOG" type="log"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="log">
+    <xs:sequence>
+      <xs:element name="FREQ " type="xs:decimal"/>
+      <xs:element name="OUTPUT_DIR" type="xs:string"/>
+      <xs:element name="FILE_PREFIX" type="xs:integer"/>
+      <xs:element name="EVALUATION_EPISODES" type="xs:boolean"/>
+      <xs:element name="TRAINING_EPISODES" type="xs:boolean"/>
+      <xs:element name="EVALUATION_AVG_REWARDS" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="world">
+    <xs:sequence>
+      <xs:element name="dynamic-model" type="xs:string"/>
+      <xs:element name="reward" type="reward"/>
+      <xs:element name="DELTA_T" type="xs:decimal"/>
+      <xs:element name="NUM_SIMULATION_STEPS" type="xs:integer"/>
+      <xs:choice>
+        <xs:element name="wind-turbine" type="wind-turbine"/>
+        <xs:element name="magnetic-levitation" type="magnetic-levitation"/>
+        <xs:element name="pitch" type="pitch"/>
+        <xs:element name="underwater-vehicle" type="underwater-vehicle"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="wind-turbine">
+    <xs:sequence>
+      <xs:element name="EVALUATION_WIND_DATA_FILE" type="xs:string"/>
+      <xs:element name="TRAINING_WIND_DATA_FILES" type="xs:string" maxOccurs="unbounded"/>
+      <xs:element name="POWER_SET_POINT_FILE" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="pitch">
+    <xs:sequence>
+      <xs:element name="SET_POINT_FILE" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="underwater-vehicle">
+    <xs:sequence>
+      <xs:element name="SET_POINT_FILE" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="magnetic-levitation">
+    <xs:sequence>
+      <xs:element name="SET_POINT_FILE" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="reward">
+    <xs:sequence>
+      <xs:element name="MIN_REWARD" type="xs:decimal"/>
+      <xs:element name="MAX_REWARD" type="xs:decimal"/>
+      <xs:sequence>
+        <xs:element name="reward-component" maxOccurs="unbounded" minOccurs="1" type="reward-component"/>
+      </xs:sequence>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="reward-component">
+    <xs:sequence>
+      <xs:element name="COMPONENT_TYPE" type="xs:string"/>
+      <xs:element name="COMPONENT_WEIGHT" type="xs:decimal"/>
+      <xs:element name="COMPONENT_TOLERANCE" type="xs:decimal"/>
+      <xs:element name="CONTROL_ERROR_VARIABLE" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+
+
+  <xs:complexType name="simgod">
+    <xs:sequence>
+      <xs:element name="actor" minOccurs="1" type="actor-controller"/>
+      <xs:element name="critic" minOccurs="0" type="critic"/>
+      <xs:element name="controller" minOccurs="0" type="actor-controller"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actor-controller">
+    <xs:sequence>
+      <xs:element name="ALGORITHM" type="xs:string"/>
+      <xs:element name="LOAD" type="xs:string" default=""/>
+      <xs:element name="SAVE" type="xs:string" default=""/>
+      <xs:choice>
+        <xs:element name="CACLA" type="CACLA"/>
+        <xs:element name="PID" type="PID"/>
+        <xs:element name="LQR" type="LQR"/>
+        <xs:element name="jonkman" type="jonkman"/>
+        <xs:element name="vidal" type="vidal"/>
+        <xs:element name="boukhezzar" type="boukhezzar"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="critic">
+    <xs:sequence>
+      <xs:element name="ALGORITHM" type="xs:string"/>
+      <xs:element minOccurs="0" name="LOAD" type="xs:string"/>
+      <xs:element minOccurs="0" name="SAVE" type="xs:string"/>
+      <xs:choice>
+        <xs:element name="TD-Lambda" type="TD-Lambda"/>
+        <xs:element name="True-Online-TD-Lambda" type="True-Online-TD-Lambda"/>
+        <xs:element name="TDC-Lambda" type="TDC-Lambda"/>
+     </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CACLA">
+    <xs:sequence>
+      <xs:element name="vfa" maxOccurs="unbounded" type="rbf-policy"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rbf-policy">
+    <xs:sequence>
+      <xs:element name="NOISE_WIDTH" type="numeric"/>
+      <xs:element name="LEARNING_RATE" type="numeric"/>
+      <xs:element name="RBF_GRID" type="state-action-grid"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="PID">
+    <xs:sequence>
+      <xs:element name="KP" type="numeric"/>
+      <xs:element name="KI" type="numeric"/>
+      <xs:element name="KD" type="numeric"/>
+      <xs:element name="ERROR_VARIABLE" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="LQR">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" name="LQR-GAIN" type="state-variable-gain"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="jonkman">
+    <xs:sequence>
+      <xs:element name="VS_RtGnSp" type="numeric"/>
+      <xs:element name="VS_SlPc" type="numeric"/>
+      <xs:element name="VS_Rgn2K" type="numeric"/>
+      <xs:element name="VS_Rgn2Sp" type="numeric"/>
+      <xs:element name="VS_CtInSp" type="numeric"/>
+      <xs:element name="VS_RtPwr" type="numeric"/>
+      <xs:element name="VS_Rgn3MP" type="numeric"/>
+      <xs:element name="PC_KI" type="numeric"/>
+      <xs:element name="PC_KK" type="numeric"/>
+      <xs:element name="PC_KP" type="numeric"/>
+      <xs:element name="PC_RefSpd" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="vidal">
+    <xs:sequence>
+      <xs:element name="A" type="numeric"/>
+      <xs:element name="K_alpha" type="numeric"/>
+      <xs:element name="KP" type="numeric"/>
+      <xs:element name="KI" type="numeric"/>
+      <xs:element name="P_s" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="boukhezzar">
+    <xs:sequence>
+      <xs:element name="C_0" type="numeric"/>
+      <xs:element name="KP" type="numeric"/>
+      <xs:element name="KI" type="numeric"/>
+      <xs:element name="K_t" type="numeric"/>
+      <xs:element name="J_t" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TD-Lambda">
+    <xs:sequence>
+      <xs:element name="vfa" type="rbf-value"/>
+      <xs:element name="LEARNING_RATE" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="True-Online-TD-Lambda">
+    <xs:sequence>
+      <xs:element name="vfa" type="rbf-value"/>
+      <xs:element name="LEARNING_RATE" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="TDC-Lambda">
+    <xs:sequence>
+      <xs:element name="vfa" type="rbf-value"/>
+      <xs:element name="LEARNING_RATE" type="numeric"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rbf-value">
+    <xs:sequence>
+      <xs:element name="LEARNING_RATE" type="numeric"/>
+      <xs:element name="RBF_GRID" type="state-action-grid"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="numeric">
+    <xs:sequence>
+      <xs:element name="TYPE" type="xs:string"/>
+      <xs:choice>
+        <xs:element name="decimal" type="xs:decimal"/>
+        <xs:element name="schedule" type="schedule"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="schedule">
+    <xs:sequence>
+      <xs:element name="INITIAL_VALUE" type="xs:decimal"/>
+      <xs:element name="FINAL_VALUE" type="xs:decimal"/>
+      <xs:element name="EVALUATION_EPISODE_VALUE" type="xs:decimal"/>
+      <xs:element name="INTERPOLATION">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="linear" />
+            <xs:enumeration value="quadratic" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="state-action-grid">
+    <xs:sequence>
+      <xs:element name="dimension" maxOccurs="unbounded" type="state-action-grid-dimension"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!--<xs:element name="state-variables-wind-turbine">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="P_s" />
+        <xs:enumeration value="P_e" />
+        <xs:enumeration value="P_a" />
+        <xs:enumeration value="v" />
+        <xs:enumeration value="T_a" />
+        <xs:enumeration value="omega_r" />
+        <xs:enumeration value="d_omega_r" />
+        <xs:enumeration value="beta" />
+        <xs:enumeration value="d_beta" />
+        <xs:enumeration value="T_g" />
+        <xs:enumeration value="d_T_g" />
+        <xs:enumeration value="E_p" />
+        <xs:enumeration value="E_omega_r" />
+        <xs:enumeration value="E_int_omega_r" />
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  
+  <xs:element name="state-variables-pitch-control">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="setpoint-pitch" />
+        <xs:enumeration value="pitch" />
+        <xs:enumeration value="attack-angle" />
+        <xs:enumeration value="pitch-rate" />
+        <xs:enumeration value="control-deviation" />
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  
+    <xs:element name="state-variables-underwater-vehicle">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="v-setpoint" />
+        <xs:enumeration value="v" />
+        <xs:enumeration value="v-deviation" />
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:element>
+  
+  <xs:element name="state-variable">
+    <xs:alternative test="@dynamic-model='wind-turbine'" type="state-variables-wind-turbine"/>
+    <xs:alternative test="@dynamic-model='pitch'" type="state-variables-pitch-control"/>
+    <xs:alternative test="@dynamic-model='underwater-vehicle'" type="state-variables-wind-turbine"/>
+    <xs:alternative type="xs:error"/>
+  </xs:element>-->
+
+  <xs:complexType name="state-action-grid-dimension">
+    <xs:sequence>
+      <xs:element name="state-action-variable" type="xs:string"/>
+      <xs:element name="dimension-num-features" type="xs:integer"/>
+      <xs:element name="feature-distribution">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="linear"/>
+            <xs:enumeration value="quadratic"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="state-variable-gain">
+    <xs:sequence>
+      <xs:element name="state-variable" type="xs:string"/>
+      <xs:element name="gain" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>

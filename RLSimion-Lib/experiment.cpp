@@ -1,15 +1,20 @@
 #include "stdafx.h"
 #include "experiment.h"
-#include "parameters.h"
-#include "parameter.h"
 #include "states-and-actions.h"
 #include "world.h"
 #include "reward.h"
+#include "xml-parameters.h"
 
 double CExperimentProgress::getExperimentProgress()
 {
 	double progress = ((double)m_step - 1 + (m_episode - 1)*m_numSteps)
 		/ ((double)m_numSteps*m_numEpisodes - 1);
+	return progress;
+}
+
+double CExperimentProgress::getEpisodeProgress()
+{
+	double progress = ((double)m_step - 1)	/ ((double)m_numSteps - 1);
 	return progress;
 }
 
@@ -33,33 +38,27 @@ CExperiment::~CExperiment()
 {
 }
 
-CExperiment::CExperiment(CParameters* pParameters)
+CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 {
-	m_randomSeed= (int) pParameters->getParameter("RANDOM_SEED")->getDouble();
+	m_randomSeed= XMLParameters::getConstInteger(pParameters->FirstChildElement("Random-Seed"));
 	srand(m_randomSeed);
 
-	m_expProgress.setNumEpisodes( (unsigned int)pParameters->getParameter("NUM_EPISODES")->getDouble());
-	m_expProgress.setNumSteps( (unsigned int)(pParameters->getParameter("EPISODE_LENGTH")->getDouble() / CWorld::getDT()));
+	m_expProgress.setNumEpisodes(XMLParameters::getConstInteger(pParameters->FirstChildElement("Num-Episodes")));
+	m_expProgress.setNumSteps((unsigned int)
+		(XMLParameters::getConstDouble(pParameters->FirstChildElement("Episode-Length")) / CWorld::getDT()));
 
-	m_evalFreq = (unsigned int)pParameters->getParameter("EVAL_FREQ")->getDouble();
+	m_evalFreq = XMLParameters::getConstInteger(pParameters->FirstChildElement("Eval-Freq"));
 
-/*
-		LOG_OUTPUT_DIR : output-logs
-		LOG_FILE_PREFIX : windturbine
-		LOG_EVALUATION_EPISODES : 1
-		LOG_TRAINING_EPISODES : 1
-		LOG_EVALUATION_AVG_REWARDS : 1
-		LOG_FREQ : 0.25 //seconds
-*/
-	CParameters* pLogParameters = pParameters->getChild("LOG");
+	tinyxml2::XMLElement* pLogParameters = pParameters->FirstChildElement("LOG");
 
-	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, pLogParameters->getParameter("OUTPUT_DIR")->getStringPtr());
-	strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pLogParameters->getParameter("FILE_PREFIX")->getStringPtr());
+	sprintf_s(m_outputDir, MAX_FILENAME_LENGTH,"../logs/%s"
+		, pLogParameters->FirstChildElement("Ouput-directory")->GetText());
+	strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Prefix")->GetText());
 
-	m_bLogEvaluationEpisodes = (1.0 == pLogParameters->getParameter("EVALUATION_EPISODES")->getDouble());
-	m_bLogTrainingEpisodes = (1.0 == pLogParameters->getParameter("TRAINING_EPISODES")->getDouble());
-	m_bLogEvaluationSummary = (1.0 == pLogParameters->getParameter("EVALUATION_AVG_REWARDS")->getDouble());
-	m_logFreq = pLogParameters->getParameter("FREQ")->getDouble();
+	m_bLogEvaluationEpisodes = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-eval-episodes"));
+	m_bLogTrainingEpisodes = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-training-episodes"));
+	m_bLogEvaluationSummary = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-eval-avg-rewards"));
+	m_logFreq = XMLParameters::getConstDouble(pLogParameters->FirstChildElement("Freq"));
 
 	m_pFile= (void*) 0;
 

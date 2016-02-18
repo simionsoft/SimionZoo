@@ -2,188 +2,243 @@
   
   <!--World-->
   <CLASS Name="WORLD">
-    <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
-      <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world-wind-turbine.xml">
-        <FILE-PATH-VALUE Name="EVALUATION_WIND_DATA_FILE" Default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
-        <MULTI-VALUED Name="TRAINING_WIND_DATA_FILE" Class="FILE-PATH-VALUE"/>
-        <FILE-PATH-VALUE Name="POWER_SET_POINT_FILE" Default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
-      </CHOICE-ELEMENT>
-      <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world-underwater-vehicle.xml">
-        <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
-      </CHOICE-ELEMENT>
-    </CHOICE>
-    <DECIMAL-VALUE Name="DELTA_T" Default="0.01"/>
     <INTEGER-VALUE Name="NUM_SIMULATION_STEPS" Default="4"/>
+    <DECIMAL-VALUE Name="DELTA_T" Default="0.01"/>
+    <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
+      <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world-wind-turbine.xml" Class="Wind-turbine-parameters"/>
+      <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world-underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
+    </CHOICE>
     <BRANCH Name="Reward" Class="REWARD"/>
   </CLASS>
 
+  <!-- World parameters -->
+  <CLASS Name="Wind-turbine-parameters">
+    <FILE-PATH-VALUE Name="EVALUATION_WIND_DATA" Default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
+    <FILE-PATH-VALUE Name="POWER_SET_POINT" Default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
+    <MULTI-VALUED Name="FILE" Class="FILE-PATH-VALUE"/>
+  </CLASS>
+  <CLASS Name="Underwater-vehicle-parameters">
+    <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
+  </CLASS>
+  
   <CLASS Name="LOG">
-    <DECIMAL-VALUE Name="FREQ" Default="0.25" Comment="log freq. in seconds"/>
-    <DIR-PATH-VALUE Name="OUTPUT_DIR" Default="test-dir" Comment="name of the directory where log files will be saved (within ./logs)"/>
-    <STRING-VALUE Name="prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
-    <ENUM-VALUE Class="BOOLEAN" Name="EVALUATION_EPISODES" Default="true" Comment="Log evaluation episodes?"/>
-    <ENUM-VALUE Class="BOOLEAN" Name="TRAINING_EPISODES" Default="false" Comment="Log training episodes?"/>
-    <ENUM-VALUE Class="BOOLEAN" Name="EVALUATION_AVG_REWARDS" Default="true" Comment="Log average rewards in evaluation episodes?"/>
+    <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds"/>
+    <STRING-VALUE Name="Prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
+    <STRING-VALUE Name="Ouput-directory" Default="test-dir" Comment="name of the directory within ../logs/ where log files will be saved "/>
+
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-training-episodes" Default="false" Comment="Log training episodes?"/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-avg-rewards" Default="true" Comment="Log average rewards in evaluation episodes?"/>
   </CLASS>
   
   <!--Experiment-->
   <CLASS Name="EXPERIMENT">
-    <INTEGER-VALUE Name="NUM_EPISODES" Default="1000" Comment="Number of episodes"/>
-    <INTEGER-VALUE Name="EPISODE_LENGTH" Default="360" Comment="Length in seconds"/>
-    <INTEGER-VALUE Name="RANDOM_SEED" Default="1" Comment="Seed used to generate random numbers"/>
-    <INTEGER-VALUE Name="EVAL_FREQ" Default="10" Comment="Evaluation freq. in episodes"/>
+    <INTEGER-VALUE Name="Num-Episodes" Default="1000" Comment="Number of episodes"/>
+    <INTEGER-VALUE Name="Episode-Length" Default="360" Comment="Length in seconds"/>
+    <INTEGER-VALUE Name="Random-Seed" Default="1" Comment="Seed used to generate random numbers"/>
+    <INTEGER-VALUE Name="Eval-Freq" Default="10" Comment="Evaluation freq. in episodes"/>
     <BRANCH Name="Log" Class="LOG"/>
   </CLASS>
   
   <!--SIMGOD-->
   <CLASS Name="SIMGOD">
     <CHOICE Name="Configuration">
-      <CHOICE-ELEMENT Name="Actor">
-        <BRANCH Name="ACTOR" Class="Actor"/>
-      </CHOICE-ELEMENT>
-      <CHOICE-ELEMENT Name="Actor-Critic">
-        <BRANCH Name="ACTOR" Class="Actor"/>
-        <BRANCH Name="CRITIC" Class="Critic"/>
-      </CHOICE-ELEMENT>
-      <CHOICE-ELEMENT Name="Actor-Critic-Controller">
-        <BRANCH Name="ACTOR" Class="Actor"/>
-        <BRANCH Name="CRITIC" Class="Critic"/>
-        <BRANCH Name="CONTROLLER" Class="Actor"/>
-      </CHOICE-ELEMENT>
+      <CHOICE-ELEMENT Name="Actor" Class="ACTOR-COMPONENTS-CONFIG"/>
+      
+      <CHOICE-ELEMENT Name="Actor-Critic" Class="ACTOR-CRITIC-CONFIG"/>
+
+      <CHOICE-ELEMENT Name="Actor-Critic-Controller" Class="ACTOR-CRITIC-CONTROLLER-CONFIG"/>
     </CHOICE>
+  </CLASS>
+
+  <CLASS Name="ACTOR-CONFIG">
+    <BRANCH Name="Actor" Class="ACTOR"/>
+  </CLASS>
+  
+  <CLASS Name="ACTOR-CRITIC-CONFIG">
+    <BRANCH Name="Actor" Class="ACTOR"/>
+    <BRANCH Name="Critic" Class="CRITIC"/>
+  </CLASS>
+
+  <CLASS Name="ACTOR-CRITIC-CONTROLLER-CONFIG">
+    <BRANCH Name="Controller" Class="ACTOR"/>
+    <BRANCH Name="Actor" Class="ACTOR"/>
+    <BRANCH Name="Critic" Class="CRITIC"/>
   </CLASS>
   
   <!-- Generic actors and critics-->
   <CLASS Name="ACTOR">
-    <CHOICE Name="Algorithm">
-      
-      <CHOICE-ELEMENT Name="CACLA">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
-        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
-      </CHOICE-ELEMENT>
-      
-      <CHOICE-ELEMENT Name="Regular-Gradient">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
-        <MULTI-VALUED Name="Outputs" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
-      </CHOICE-ELEMENT>
-      
-      <CHOICE-ELEMENT Name="PID">
-        <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
-        <DECIMAL-VALUE Name="KP"/>
-        <DECIMAL-VALUE Name="KI"/>
-        <DECIMAL-VALUE Name="KD"/>
-      </CHOICE-ELEMENT>
-
-      <CHOICE-ELEMENT Name="LQR">
-        <MULTI-VALUED Name="Gains" Class="LQR-GAIN"/>
-      </CHOICE-ELEMENT>
-
-      <CHOICE-ELEMENT Name="Jonkman">
-        <DECIMAL-VALUE Name="VS_RtGnSp" Default="12.6805"/>
-        <DECIMAL-VALUE Name="VS_SlPc" Default="10.0"/>
-        <DECIMAL-VALUE Name="VS_Rgn2K" Default="2.332287"/>
-        <DECIMAL-VALUE Name="VS_Rgn2Sp" Default="91.21091"/>
-        <DECIMAL-VALUE Name="VS_CtInSp" Default="70.16224"/>
-        <DECIMAL-VALUE Name="VS_RtPwr" Default="5296610.0"/>
-        <DECIMAL-VALUE Name="VS_Rgn3MP" Default="0.01745329"/>
-        <DECIMAL-VALUE Name="PC_KI"/>
-        <DECIMAL-VALUE Name="PC_KK"/>
-        <DECIMAL-VALUE Name="PC_KP"/>
-        <DECIMAL-VALUE Name="PC_RefSpd" Default="122.9096"/>
-      </CHOICE-ELEMENT>
-
-      <CHOICE-ELEMENT name="Vidal">
-        <DECIMAL-VALUE Name="A"/>
-        <DECIMAL-VALUE Name="K_alpha"/>
-        <DECIMAL-VALUE Name="KP"/>
-        <DECIMAL-VALUE Name="KI"/>
-        <DECIMAL-VALUE Name="P_s"/>
-      </CHOICE-ELEMENT>
-
-      <CHOICE-ELEMENT name="Boukhezzar">  
-        <DECIMAL-VALUE Name="C_0" type="numeric"/>
-        <DECIMAL-VALUE Name="KP" type="numeric"/>
-        <DECIMAL-VALUE Name="KI" type="numeric"/>
-        <DECIMAL-VALUE Name="K_t" type="numeric"/>
-        <DECIMAL-VALUE Name="J_t" type="numeric"/>
-      </CHOICE-ELEMENT>
-    </CHOICE>
-  </CLASS>
-  <CLASS Name="CRITIC">
-    <CHOICE Name="Algorithm">
-      <CHOICE-ELEMENT Name="TD-Lambda">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
-        <DECIMAL-VALUE Name="Alpha"/>
-        <DECIMAL-VALUE Name="Gamma"/>
-        <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
-        <BRANCH Name="V-Function" Class="RBF-GRID"/>
-      </CHOICE-ELEMENT>
-      <CHOICE-ELEMENT Name="True-Online-TD-Lambda">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
-        <DECIMAL-VALUE Name="Alpha"/>
-        <DECIMAL-VALUE Name="Gamma"/>
-        <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
-        <BRANCH Name="V-Function" Class="RBF-GRID"/>
-      </CHOICE-ELEMENT>
-      <CHOICE-ELEMENT Name="TDC-Lambda">
-        <FILE-PATH-VALUE Name="Load" CanBeNull="true"/>
-        <FILE-PATH-VALUE Name="Save" CanBeNull="true"/>
-        <DECIMAL-VALUE Name="Alpha"/>
-        <DECIMAL-VALUE Name="Gamma"/>
-        <DECIMAL-VALUE Name="Beta"/>
-        <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
-        <BRANCH Name="V-Function" Class="RBF-GRID"/>
-      </CHOICE-ELEMENT>
-    </CHOICE>
-  </CLASS>
-
-  <!--Compact Actor-Critics-->
-
-  <CLASS Name="ACTOR-CRITIC">
-    <CHOICE Name="Algorithm">
-      <CHOICE-ELEMENT Name="IncrementalNAC">
-        <DECIMAL-VALUE Name="Gamma"/>
-        <DECIMAL-VALUE Name="Alpha-r" Comment="Gain used to update the average reward"/>
-        <BRANCH Name="V-Function" Class="RBF-GRID"/>
-        <BRANCH Name="V-ETraces" Class="ETRACES" CanBeNull="true"/>
-        <DECIMAL-VALUE Name="Alpha-v" Comment="Gain used to update the V-Function"/>
-        <MULTI-VALUED Name="Policy-Learners" Class="SINGLE-OUTPUT-VFA-LEARNER"/>
-      </CHOICE-ELEMENT>
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="VFA-Learner" Class="VFA-Learner"/>
+      <CHOICE-ELEMENT Name="Multi-Controller" Class="CONTROLLER"/>
     </CHOICE>
   </CLASS>
   
-  <CLASS Name="SINGLE-OUTPUT-VFA-LEARNER">
-    <XML-NODE-REF Name="Action" XMLFile="WORLD-DEFINITION" Child="ACTION"/>
-    <BRANCH Name="RBF-Grid" Class="RBF-GRID"/>
-    <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
-    <BRANCH Name="ETraces" Class="ETRACES" CanBeNull="true"/>
-    <DECIMAL-VALUE Name="ALPHA"/>
+
+  <CLASS Name="VFA-Learner">
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <MULTI-VALUED Name="Outputs" Class="Single-Output-VFA-Policy-Learner"/>
   </CLASS>
+
+  <CLASS Name="Single-Output-VFA-Policy-Learner">
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="CACLA" Class="CACLA"/>
+      <CHOICE-ELEMENT Name="RegularGradient" Class="RegularGradient"/>
+      <CHOICE-ELEMENT Name="Incremental-Natural-Actor" Class="Incremental-Natural-Actor"/>
+    </CHOICE>
+   </CLASS>
+
+  <CLASS Name="CACLA">
+    <DECIMAL-VALUE Name="Alpha" Comment="Gain used to update the policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+  </CLASS>
+
+  <CLASS Name="Regular-Gradient">
+    
+    <DECIMAL-VALUE Name="Alpha" Comment="Gain used to update the policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+  </CLASS>
+
+  <CLASS Name="Incremental-Natural-Actor">
+    <DECIMAL-VALUE Name="Alpha-v" Comment="Gain used by the critic to update the value"/>
+    <DECIMAL-VALUE Name="Gamma" Comment="Gamma parameter used by the critic"/>
+    <DECIMAL-VALUE Name="Alpha-u" Comment="Gain used to update the policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+  </CLASS>
+
+  <CLASS Name="VFA-Policy">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="ACTION"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+    <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
+  </CLASS>
+  
+  <CLASS Name="Controller">
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="PID" Class="PID"/>
+      <CHOICE-ELEMENT Name="LQR" Class="LQR"/>
+      <CHOICE-ELEMENT Name="Jonkman" Class="Jonkman"/>
+      <CHOICE-ELEMENT Name="Vidal" Class="Vidal"/>
+      <CHOICE-ELEMENT Name="Boukhezzar" Class="Boukhezzar"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="PID">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="ACTION"/>
+    <XML-NODE-REF Name="Input-Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
+    <DECIMAL-VALUE Name="KP"/>
+    <DECIMAL-VALUE Name="KI"/>
+    <DECIMAL-VALUE Name="KD"/>
+  </CLASS>
+
+  <CLASS Name="LQR">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="ACTION"/>
+    <MULTI-VALUED Name="Gains" Class="LQR-GAIN"/>
+  </CLASS>
+
+  <CLASS Name="Jonkman">
+    <DECIMAL-VALUE Name="VS_RtGnSp" Default="12.6805"/>
+    <DECIMAL-VALUE Name="VS_SlPc" Default="10.0"/>
+    <DECIMAL-VALUE Name="VS_Rgn2K" Default="2.332287"/>
+    <DECIMAL-VALUE Name="VS_Rgn2Sp" Default="91.21091"/>
+    <DECIMAL-VALUE Name="VS_CtInSp" Default="70.16224"/>
+    <DECIMAL-VALUE Name="VS_RtPwr" Default="5296610.0"/>
+    <DECIMAL-VALUE Name="VS_Rgn3MP" Default="0.01745329"/>
+    <DECIMAL-VALUE Name="PC_KI"/>
+    <DECIMAL-VALUE Name="PC_KK"/>
+    <DECIMAL-VALUE Name="PC_KP"/>
+    <DECIMAL-VALUE Name="PC_RefSpd" Default="122.9096"/>
+  </CLASS>
+
+  <CLASS Name="Vidal">
+    <DECIMAL-VALUE Name="A"/>
+    <DECIMAL-VALUE Name="K_alpha"/>
+    <DECIMAL-VALUE Name="KP"/>
+    <DECIMAL-VALUE Name="KI"/>
+    <DECIMAL-VALUE Name="P_s"/>
+  </CLASS>
+
+  <CLASS Name="Boukhezzar">
+    <DECIMAL-VALUE Name="C_0"/>
+    <DECIMAL-VALUE Name="KP"/>
+    <DECIMAL-VALUE Name="KI"/>
+    <DECIMAL-VALUE Name="K_t"/>
+    <DECIMAL-VALUE Name="J_t"/>
+  </CLASS>
+
+  <CLASS Name="CRITIC">
+    <BRANCH Name="Type" Class="VFA-Critic"/>
+  </CLASS>
+
+  <CLASS Name="VFA-Critic">
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="TD-Lambda" Class="TD-Lambda"/>
+      <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="TD-Lambda"/>
+      <CHOICE-ELEMENT Name="TDC-Lambda" Class="TDC-Lambda"/>
+    </CHOICE>
+  </CLASS>
+  
+  <CLASS Name="TD-Lambda">
+    <DECIMAL-VALUE Name="Alpha"/>
+    <DECIMAL-VALUE Name="Gamma"/>
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+  </CLASS>
+
+  <CLASS Name="True-Online-TD-Lambda">
+    <DECIMAL-VALUE Name="Alpha"/>
+    <DECIMAL-VALUE Name="Gamma"/>
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+  </CLASS>
+  
+  <CLASS Name="TDC-Lambda">
+    <DECIMAL-VALUE Name="Alpha"/>
+    <DECIMAL-VALUE Name="Gamma"/>
+    <DECIMAL-VALUE Name="Beta"/>
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="E-Traces" Class="ETRACES"  Optional="true"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+  </CLASS>
+  
+
   
   <CLASS Name="LQR-GAIN">
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
     <DECIMAL-VALUE Name="Gain"/>
   </CLASS>
   
   <CLASS Name="ETRACES">
-    <ENUM-VALUE Name="Replace" Class="BOOLEAN"/>
     <DECIMAL-VALUE Name="Lambda" Default="0.9"/>
-    <DECIMAL-VLAUE Name="Threshold" Default="0.001"/>
+    <DECIMAL-VALUE Name="Threshold" Default="0.001"/>
+    <ENUM-VALUE Name="Replace" Class="BOOLEAN"/>
+  </CLASS>
+
+  <CLASS Name="Linear-VFA">
+    <CHOICE Name="Approximator">
+      <CHOICE-ELEMENT Name="RBF-Grid" Class="RBF-GRID"/>
+    </CHOICE>
   </CLASS>
   
   <CLASS Name="RBF-GRID">
-    <MULTI-VALUED Name="State-Dim-Grid" Class="STATE-DIM-GRID"/>
+    <MULTI-VALUED Name="RBF-Grid-Dimension" Class="RBF-GRID-DIMENSION"/>
   </CLASS>
 
   <!-- RBFs-->
   
-  <CLASS Name="STATE-DIM-GRID">
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
-    <INTEGER-VALUE Name="Num.Features" Default="10"/>
+  <CLASS Name="RBF-GRID-DIMENSION">
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
+    <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
+    <INTEGER-VALUE Name="Min" Optional="true"/>
+    <INTEGER-VALUE Name="Max" Optional="true"/>
     <ENUM-VALUE Name="Distribution" Class="DISTRIBUTIONS"/>
   </CLASS>
   
@@ -194,24 +249,39 @@
   <!--REWARDS-->
 
   <CLASS Name="REWARD">
-    <DECIMAL-VALUE Name="MIN_REWARD" Comment="Minimum allowed reward"/>
-    <DECIMAL-VALUE Name="MAX_REWARD" Comment="Maximum output of each reward component"/>
+    <DECIMAL-VALUE Name="Min" Comment="Minimum allowed reward"/>
+    <DECIMAL-VALUE Name="Max" Comment="Maximum output of each reward component"/>
     <MULTI-VALUED Name="Reward-components" Class="REWARD-COMPONENT"/>
   </CLASS>
 
   <CLASS Name="REWARD-COMPONENT">
-    <DECIMAL-VALUE Name="Weight" Default="1.0"/>
-    <DECIMAL-VALUE Name="Tolerance" Default="10"/>
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" Child="STATE"/>
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="Deviation-component" Class="DEVIATION-REWARD-COMPONENT"/>
+    </CHOICE> 
   </CLASS>
 
-  <ENUMERATED Name="DISTRIBUTIONS">
+  <CLASS Name="DEVIATION-REWARD-COMPONENT">
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
+    <DECIMAL-VALUE Name="Weight" Default="1.0"/>
+    <DECIMAL-VALUE Name="Tolerance" Default="10"/>
+  </CLASS>
+
+  <ENUMERATED-TYPES>
+    <ENUMERATION Name="DISTRIBUTIONS">
       <VALUE>linear</VALUE>
       <VALUE>quadratic</VALUE>
-  </ENUMERATED>
+      <VALUE>cubic</VALUE>
+    </ENUMERATION>
 
-  <ENUMERATED Name="BOOLEAN">
-    <VALUE>true</VALUE>
-    <VALUE>false</VALUE>
-  </ENUMERATED>
+    <ENUMERATION Name="BOOLEAN">
+      <VALUE>true</VALUE>
+      <VALUE>false</VALUE>
+    </ENUMERATION>
+
+    <ENUMERATION Name="TIME-REFERENCE">
+      <VALUE>episode</VALUE>
+      <VALUE>experiment</VALUE>
+      <VALUE>time</VALUE>
+    </ENUMERATION>
+  </ENUMERATED-TYPES>
 </DEFINITIONS>

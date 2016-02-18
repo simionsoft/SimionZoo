@@ -4,7 +4,9 @@ class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+class tinyxml2::XMLElement;
 #include "parameterized-object.h"
+
 
 //CFeatureMap//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
@@ -17,7 +19,7 @@ public:
 	virtual unsigned int getTotalNumFeatures()= 0;
 	virtual unsigned int getMaxNumActiveFeatures()= 0;
 
-	static CFeatureMap* getInstance(CParameters* pParameters);
+	static CFeatureMap* getInstance(tinyxml2::XMLElement* pParameters);
 };
 
 
@@ -45,13 +47,13 @@ class CGaussianRBFGridFeatureMap: public CFeatureMap, public CParamObject
 
 	int getNumVariables(const char* configString);
 	void initCenterPoints(int i,const char* varName,int numCenters
-					  ,double minV, double maxV,const char *distType);
+					  ,double minV, double maxV,const char* distribution);
 
 	double getDimValue(int dim, CState* s, CAction* a);
 	void getDimFeatures(int dim, double value, CFeatureList* outDimFeatures);
 	double getFeatureFactor(int dim, int feature,double value);
 public:
-	CGaussianRBFGridFeatureMap(CParameters* pParameters);
+	CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pParameters);
 	~CGaussianRBFGridFeatureMap();
 
 	void getFeatures(CState* s,CAction* a,CFeatureList* outFeatures);

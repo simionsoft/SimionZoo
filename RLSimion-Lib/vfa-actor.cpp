@@ -1,87 +1,62 @@
 #include "stdafx.h"
-#include "vfa-policy.h"
-#include "actor.h"
 #include "states-and-actions.h"
 #include "noise.h"
 #include "vfa-actor.h"
 #include "vfa.h"
-#include "parameters.h"
-#include "parameter.h"
+#include "vfa-policy.h"
+#include "actor.h"
 #include "experiment.h"
 #include "globals.h"
+#include "xml-parameters.h"
 
 
-CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(CParameters* pParameters)
-: CParamObject(pParameters)
+CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_pVFA = new CLinearVFA(pParameters->getChild("VFA"));
-
-	m_pExpNoise = new CGaussianNoise(pParameters->getChild("EXPLORATION_NOISE"));
+	m_pPolicy = new CSingleOutputVFAPolicy(pParameters->FirstChildElement("VFA-Policy"));
 }
 
-CSingleOutputVFAPolicy::~CSingleOutputVFAPolicy()
+CSingleOutputVFAPolicyLearner::~CSingleOutputVFAPolicyLearner()
 {
-	delete m_pVFA;
-	delete m_pExpNoise;
+	delete m_pPolicy;
 }
 
-void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
-{
-	double a_width;
-	double noise;
-	double output;
-	const char* actionVar = m_pParameters->getParameter("ACTION")->getStringPtr();
-	int actionIndex = a->getVarIndex(actionVar);
-
-	a_width = 0.5*(a->getMax(actionIndex) - a->getMin(actionIndex));
-	noise = m_pExpNoise->getNewValue() * a_width;
-
-	output= m_pVFA->getValue(s, 0);
-
-	a->setValue(actionVar, output + noise);
-}
-
-CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(CParameters* pParameters) : CParamObject(pParameters)
-{
-	m_pPolicy = new CSingleOutputVFAPolicy(pParameters);
-}
-
-CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(CParameters* pParameters)
+CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxml2::XMLElement* pParameters)
 {
 	if (pParameters)
 	{
-		if (!strcmp(pParameters->getChild(0)->getName(), "CACLA"))
+		if (!strcmp(pParameters->Name(), "CACLA"))
 			return new CCACLALearner(pParameters);
-		if (!strcmp(pParameters->getChild(0)->getName(), "REGULAR_GRADIENT_ACTOR"))
+		if (!strcmp(pParameters->Name(), "Regular-Gradient"))
 			return new CRegularPolicyGradientLearner(pParameters);
 	}
 	return 0;
 }
 
-CVFAActor::CVFAActor(CParameters* pParameters)
-: CParamObject(pParameters)
+CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameters)
 {
-	m_numOutputs = (int)pParameters->getNumChildren();
+	tinyxml2::XMLElement* pOutputs = pParameters->FirstChildElement("OUTPUTS");
 
+	m_numOutputs = XMLParameters::countChildren(pOutputs);
+	
 	m_pPolicyLearners = new CSingleOutputVFAPolicyLearner*[m_numOutputs];
 
-
+	tinyxml2::XMLElement* pOutput= pOutputs->FirstChildElement();
 	for (int i = 0; i<m_numOutputs; i++)
 	{
 		//////////////hemen VFAActor motako haurrak hartu behar die bakarrik!!!
-		m_pPolicyLearners[i] =
-			CSingleOutputVFAPolicyLearner::getInstance(pParameters->getChildByTag("Single-Output-VFA-Policy-Learner",i));
+		m_pPolicyLearners[i] = CSingleOutputVFAPolicyLearner::getInstance(pOutput);
+		pOutput = pOutput->NextSiblingElement();
 	}
 
-	if (pParameters->exists("LOAD"))
-		loadPolicy(pParameters->getParameter("LOAD")->getStringPtr());
+	if (pParameters->FirstChildElement("LOAD"))
+		loadPolicy(pParameters->FirstChildElement("LOAD")->GetText());
 
 }
 
 CVFAActor::~CVFAActor()
 {
-	if (m_pParameters->exists("SAVE"))
-		savePolicy(m_pParameters->getParameter("SAVE")->getStringPtr());
+	if (m_pParameters->FirstChildElement("SAVE"))
+		savePolicy(m_pParameters->FirstChildElement("SAVE")->GetText());
 
 	for (int i = 0; i<m_numOutputs; i++)
 	{

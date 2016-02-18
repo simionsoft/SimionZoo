@@ -1,15 +1,15 @@
 #pragma once
 
 
-class CParameters;
+class tinyxml2::XMLElement;
 
 class CParamObject
 {
 protected:
-	CParameters* m_pParameters;
+	tinyxml2::XMLElement* m_pParameters;
 public:
-	CParamObject(CParameters* pParameters){ m_pParameters = pParameters; }
+	CParamObject(tinyxml2::XMLElement* pParameters){ m_pParameters = pParameters; }
 	~CParamObject(){}
 
-	CParameters* getParameters(){ return m_pParameters; }
+	tinyxml2::XMLElement* getParameters(){ return m_pParameters; }
 };

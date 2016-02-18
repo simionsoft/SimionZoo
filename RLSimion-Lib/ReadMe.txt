@@ -1,30 +1,12 @@
-========================================================================
-    STATIC LIBRARY : RL-Lib Project Overview
-========================================================================
-
-AppWizard has created this RL-Lib library project for you.
-
-This file contains a summary of what you will find in each of the files that
-make up your RL-Lib application.
+Author: Borja Fernandez-Gauna
 
 
-RL-Lib.vcproj
-    This is the main project file for VC++ projects generated using an Application Wizard.
-    It contains information about the version of Visual C++ that generated the file, and
-    information about the platforms, configurations, and project features selected with the
-    Application Wizard.
+-This library is the core of RLSimion and implements all the classes and functionalities.
 
+-There are three global objects, all configured using a single XML configuration file:
 
-/////////////////////////////////////////////////////////////////////////////
+	-The World: the environment. Dynamic model, set points, reward, ...
+	-SimGod: the controller, be it an A/C learner or a regular controller (PID, LQR, Vidal, Boukhezzar, Jonkman, ...)
+	-Experiment: the definition of the experiment itself and log information. Number of episodes, evaluation episodes, ....
 
-StdAfx.h, StdAfx.cpp
-    These files are used to build a precompiled header (PCH) file
-    named RL-Lib.pch and a precompiled types file named StdAfx.obj.
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-AppWizard uses "TODO:" comments to indicate parts of the source code you
-should add to or customize.
-
-/////////////////////////////////////////////////////////////////////////////
+-It depends on the 3-rd party tinyxml2 library

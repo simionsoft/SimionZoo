@@ -7,7 +7,7 @@
 #include "../RLSimion-Lib/simgod.h"
 #include "../RLSimion-Lib/reward.h"
 #include "../RLSimion-Lib/states-and-actions.h"
-//#include "../RLSimion-Lib/parameterscheduler.h"
+
 #include "../RLSimion-Lib/experiment.h"
 
 
@@ -18,11 +18,13 @@ CExperiment *g_pExperiment;
 
 int main(int argc, char* argv[])
 {
-	tinyxml2::XMLDocument parameters;
+	tinyxml2::XMLDocument xmlDoc;
+	tinyxml2::XMLElement* pParameters;
+
 	
 	//CParameters *pParameters;
 	if (argc > 1)
-		parameters.LoadFile(argv[1]);
+		xmlDoc.LoadFile(argv[1]);
 		//pParameters = new CParameters(argv[1]);
 	else
 	{
@@ -31,9 +33,15 @@ int main(int argc, char* argv[])
 	}
 	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
 
-	g_pWorld= new CWorld(parameters.FirstChildElement("WORLD"));
-	CSimGod* pSimGod = new CSimGod(parameters.FirstChildElement("SIMGOD"));
-	g_pExperiment = new CExperiment(parameters.FirstChildElement("EXPERIMENT"));
+	pParameters = xmlDoc.FirstChildElement("RLSimion");
+	if (xmlDoc.Error())
+	{
+		printf("Error loading configuration file: %s\n\n", xmlDoc.ErrorName());
+		exit(-1);
+	}
+	g_pWorld = new CWorld(pParameters->FirstChildElement("WORLD"));
+	CSimGod* pSimGod = new CSimGod(pParameters->FirstChildElement("SIMGOD"));
+	g_pExperiment = new CExperiment(pParameters->FirstChildElement("EXPERIMENT"));
 	//CParameterScheduler* pParameterScheduler= new CParameterScheduler(pParameters->getChild("PARAMETER_SCHEDULER"));
 
 	CState *s= g_pWorld->getStateInstance();
@@ -51,10 +59,6 @@ int main(int argc, char* argv[])
 		//steps per episode
 		for (g_pExperiment->m_expProgress.setStep(1); g_pExperiment->m_expProgress.isValidStep(); g_pExperiment->m_expProgress.incStep())
 		{
-
-			//Update parameters that have a schedule: learning gains, exploration, ...
-		//	pParameterScheduler->update();
-
 			//a= pi(s)
 			pSimGod->selectAction(s,a);
 
@@ -79,8 +83,6 @@ int main(int argc, char* argv[])
 	delete s_p;
 	delete a;
 
-	//delete pParameterScheduler;
-	delete pParameters;
 	delete g_pWorld;
 	delete g_pExperiment;
 

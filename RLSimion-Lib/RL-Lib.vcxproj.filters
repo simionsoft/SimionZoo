@@ -45,12 +45,6 @@
     <ClCompile Include="noise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameters.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="parameterscheduler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="reward.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,9 +81,6 @@
     <ClCompile Include="SimGod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vfa-actor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -102,19 +93,16 @@
     <ClCompile Include="vfa-critic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="actor-critic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vfa-actor-critic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="actor-critic-inac.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="etraces.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameters-xml-helper.cpp">
+    <ClCompile Include="vfa-policy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xml-parameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -141,12 +129,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="noise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="parameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="parameterscheduler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="reward.h">
@@ -185,9 +167,6 @@
     <ClInclude Include="SimGod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vfa-actor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -200,16 +179,13 @@
     <ClInclude Include="actor-critic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vfa-actor-critic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="etraces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vfa-policy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameters-xml-helper.h">
+    <ClInclude Include="xml-parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,7 +3,7 @@
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class CParameters;
+class tinyxml2::XMLElement;
 class CReward;
 
 #define MAX_FILENAME_LENGTH 512
@@ -78,7 +78,7 @@ public:
 
 	unsigned int m_randomSeed;
 
-	CExperiment(CParameters* pParameters);
+	CExperiment(tinyxml2::XMLElement* pParameters);
 	~CExperiment();
 
 	bool isCurrentEpisodeLogged();

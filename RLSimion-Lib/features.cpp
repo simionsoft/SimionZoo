@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "features.h"
-#include "parameters.h"
-#include "parameter.h"
+
 
 #define FEATURE_BLOCK_SIZE 1024
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
