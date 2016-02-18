@@ -42,14 +42,11 @@ namespace AppXML.ViewModels
                 TextBox t1 = new TextBox(label, param.defaultValue);
                 List<TextBox> t = new List<TextBox>();
                 t.Add(t1);
-            _   textBox = new ObservableCollection<TextBox>(t);
+                _textBox = new ObservableCollection<TextBox>(t);
             }
             else if (param.type == validTypes.EnumValue)
             {
-                List<string> values = new List<string>();
-                String clas = param.enumClas; 
-                values.Add("hola");
-                values.Add("adios");
+                List<string> values = Data.Utility.getEnumItems(CIntegerValue.definitions[param.enumClas]);
                 ComboBox cb = new ComboBox(label, values);
                 List<ComboBox> uuuu = new List<ViewModels.ComboBox>();
                 uuuu.Add(cb);

@@ -10,7 +10,19 @@ namespace AppXML.Data
 {
     public class Utility
     {
-        
+        public static List<string> getEnumItems(XmlNode father)
+        {
+            List<string> result = null;
+            if (father != null && father.HasChildNodes)
+            {
+                result = new List<string>();
+                foreach (XmlNode child in father.ChildNodes)
+                {
+                    result.Add(child.InnerText);
+                }
+            }
+            return result;
+        }
         public static Dictionary<string,XmlNode> getDefinitions(string filePath)
         {
 
@@ -25,10 +37,17 @@ namespace AppXML.Data
 
                     foreach (XmlNode node in root.ChildNodes)
                     {
-                        if (node.Name.Equals("CLASS") || node.Name.Equals("ENUMERATED"))
+                        if (node.Name.Equals("CLASS"))
                         {
                             string key = node.Attributes["Name"].Value;
                             result.Add(key, node);
+                        }
+                        else if(node.Name.Equals("ENUMERATED-TYPES"))
+                        {
+                            foreach(XmlNode child in node.ChildNodes)
+                            {
+                                result.Add(child.Attributes["Name"].Value, child);
+                            }
                         }
 
                     }

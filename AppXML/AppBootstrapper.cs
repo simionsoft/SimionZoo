@@ -14,7 +14,7 @@ namespace AppXML
         }
 
         protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
-            DisplayRootViewFor<IntegerViewModel>();
+            DisplayRootViewFor<MultiValuedViewModel>();
         }
     }
    

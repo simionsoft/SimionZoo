@@ -26,6 +26,7 @@ namespace AppXML.ViewModels
         public MainWindowViewModel()
         {
             _rootnode = Utility.getRootNode("../config/RLSimion.xml");
+           
             _branch = new BranchViewModel(_rootnode.children[1]);
         }
         public CNode rootnode
