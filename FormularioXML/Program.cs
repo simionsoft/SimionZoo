@@ -12,6 +12,14 @@ using System.Xml.Schema;
 
 namespace FormularioXML
 {
+    class Base<T>
+    {
+        T parameter;
+        public Base(T parametro)
+        {
+            parameter = parametro;
+        }
+    }
     static class Program
     {
         /// <summary>
@@ -45,6 +53,14 @@ namespace FormularioXML
                 }
 
             }
+            dynamic tmp = enums[0];
+            var value = Convert.ChangeType(tmp, tmp.BaseType);
+            
+           
+
+                
+
+            
             
         }
         private static void createEnuns()

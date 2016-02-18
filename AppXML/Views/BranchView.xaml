@@ -1,0 +1,9 @@
+﻿<UserControl x:Class="AppXML.Views.BranchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Height="175" Width="428">
+        <Label Content="{Binding name}" Margin="0,0,317,0" Height="47"/>
+        
+
+    </StackPanel>
+</UserControl>
