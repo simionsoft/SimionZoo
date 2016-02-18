@@ -7,6 +7,7 @@
     <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
       <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world-wind-turbine.xml" Class="Wind-turbine-parameters"/>
       <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world-underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
+      <CHOICE-ELEMENT Name="PItch-control" XML="../config/world-pitch-control.xml" Class="Pitch-control-parameters"/>
     </CHOICE>
     <BRANCH Name="Reward" Class="REWARD"/>
   </CLASS>
@@ -18,6 +19,9 @@
     <MULTI-VALUED Name="FILE" Class="FILE-PATH-VALUE"/>
   </CLASS>
   <CLASS Name="Underwater-vehicle-parameters">
+    <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
+  </CLASS>
+  <CLASS Name="Pitch-control-parameters">
     <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
   </CLASS>
   

@@ -1,8 +1,5 @@
 #include "stdafx.h"
-//#include "vfa-actor-critic.h"
-#include "experiment.h"
-#include "globals.h"
-#include "actor.h"
+
 #include "features.h"
 #include "etraces.h"
 #include "vfa.h"
@@ -12,6 +9,8 @@
 #include "states-and-actions.h"
 #include "vfa-critic.h"
 #include "xml-parameters.h"
+#include "globals.h"
+#include "experiment.h"
 
 CIncrementalNaturalCritic::CIncrementalNaturalCritic(tinyxml2::XMLElement* pParameters) : CVFACritic(pParameters)
 {
@@ -64,7 +63,7 @@ double CIncrementalNaturalCritic::updateValue(CState *s, CAction *a, CState *s_p
 }
 
 CIncrementalNaturalActor::CIncrementalNaturalActor(tinyxml2::XMLElement* pParameters) 
-							: CSingleOutputVFAPolicyLearner(pParameters)
+: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("VFA-Policy"))
 {
 	m_grad_u = new CFeatureList();
 	m_s_features = new CFeatureList();
@@ -110,13 +109,19 @@ void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, d
 	double gamma = m_pGamma->getValue();
 	double alpha_v = m_pAlphaV->getValue();
 	double alpha_u = m_pAlphaU->getValue();
+
+	if (g_pExperiment->m_expProgress.isFirstStep())
+		m_w->clear();
 	
 
 	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
 	m_pPolicy->getVFA()->getFeatures(s, a, m_s_features);
 	double sigma = m_pPolicy->getExpNoise()->getSigma();
-	double factor = (a->getValue(m_pPolicy->getOutputActionIndex())
-		- m_pPolicy->getVFA()->getValue(m_s_features)) / (sigma*sigma);
+	//do we have to scale the noise?
+	int actionIndex = m_pPolicy->getOutputActionIndex();
+	//double a_width = a->getMax(actionIndex) - a->getMin(actionIndex);
+	double noise = a->getValue(actionIndex) - m_pPolicy->getVFA()->getValue(m_s_features);
+	double factor= (noise) /*/a_width*/	/ (sigma*sigma);
 	m_grad_u->clear();
 	m_grad_u->addFeatureList(m_s_features, factor);
 	//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
@@ -125,8 +130,10 @@ void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, d
 	//2. w= w - alpha_v * Grad_u pi(a|s)/pi(a|s) * Grad_u pi(a|s)/pi(a|s)^T * w + alpha_v*td*e_u
 	double innerprod = m_grad_u->innerProduct(m_w); //Grad_u pi(a|s)/pi(a|s)^T * w
 	m_grad_u->mult(alpha_v*innerprod*-1.0);
+	m_grad_u->applyThreshold(0.0001);
 	m_w->addFeatureList(m_grad_u);
 	m_w->addFeatureList(m_e, alpha_v*td);
+	m_w->applyThreshold(0.0001);
 	//3. u= u + alpha_u * w
 	m_pPolicy->getVFA()->add(m_w, alpha_u);
 }

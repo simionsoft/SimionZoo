@@ -9,7 +9,7 @@ class CETraces : public CFeatureList, public CParamObject
 	bool m_bUse;
 	double m_threshold;
 	double m_lambda;
-	bool m_bReplace;
+
 public:
 	CETraces(tinyxml2::XMLElement* pParameters);
 	~CETraces();

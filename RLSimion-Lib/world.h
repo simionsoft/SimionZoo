@@ -45,14 +45,18 @@ public:
 
 class CDynamicModel
 {
-protected:
+private:
 	CState *m_pStateDescriptor;
 	CAction *m_pActionDescriptor;
+	tinyxml2::XMLElement *m_pConstants;
 public:
+	CDynamicModel(const char* pWorldDefinitionFile);
 	virtual ~CDynamicModel();
+
 	virtual void reset(CState *s)= 0;
 	virtual void executeAction(CState *s,CAction *a,double dt)= 0;
 
 	CState* getStateDescriptor(){return m_pStateDescriptor;}
 	CAction* getActionDescriptor(){return m_pActionDescriptor;}
+	double* getConstant(const char* constantName);
 };

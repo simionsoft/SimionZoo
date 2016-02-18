@@ -3,16 +3,17 @@
   <WORLD>
     <DYNAMIC-MODEL>
       <Wind-turbine>
-        <WORLD-DEFINITION>./config/world-wind-turbine.xml</WORLD-DEFINITION>
-        <EVALUATION_WIND_DATA>../config/wind-turbine/setpoints/TurbSim-10.25.hh</EVALUATION_WIND_DATA>
+        <WORLD-DEFINITION>..\config\world-wind-turbine.xml</WORLD-DEFINITION>
+        <EVALUATION_WIND_DATA>..\config\wind-turbine\setpoints\TurbSim-10.25.hh</EVALUATION_WIND_DATA>
         <TRAINING_WIND_DATA>
-          <FILE>../config/wind-turbine/setpoints/TurbSim-9.hh</FILE>
+          <FILE>../config/wind-turbine/setpoints/TurbSim-10.25.hh</FILE>
+          <!--<FILE>../config/wind-turbine/setpoints/TurbSim-9.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-9.5.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-10.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-10.5.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-11.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-11.5.hh</FILE>
-          <FILE>../config/wind-turbine/setpoints/TurbSim-12.hh</FILE>          
+          <FILE>../config/wind-turbine/setpoints/TurbSim-12.hh</FILE>-->          
         </TRAINING_WIND_DATA>
         <POWER_SET_POINT>../config/wind-turbine/setpoints/windturbine-power-setpoint.txt</POWER_SET_POINT>
       </Wind-turbine>

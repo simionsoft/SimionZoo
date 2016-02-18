@@ -79,8 +79,8 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 
 	//omega_{t+1}=omega_t+beta(z_{t+1}*td - phi_{t+1}(phi{t+1}^T * omega_t)
 	double beta = m_pBeta->getValue();
-	m_omega->addFeatureList(m_z, beta*td, true, false);
-	m_omega->addFeatureList(m_s_p_features,- innerprod1, true, false);
+	m_omega->addFeatureList(m_z, beta*td);
+	m_omega->addFeatureList(m_s_p_features,- innerprod1);
 	m_omega->applyThreshold(0.0001);
 
 

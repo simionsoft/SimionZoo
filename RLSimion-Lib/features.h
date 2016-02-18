@@ -22,10 +22,14 @@ struct CFeature
 
 class CFeatureList
 {
+
 	unsigned int m_numAllocFeatures;
 
 	void resize(unsigned int newSize, bool bKeepFeatures= true);
 	int getFeaturePos(unsigned int index);
+protected:
+	bool m_bAddIfExists;
+	bool m_bReplaceIfExists;
 public:
 	int m_type;
 	CFeature* m_pFeatures;
@@ -33,7 +37,7 @@ public:
 
 	static void swapFeatureLists(CFeatureList** pList1,CFeatureList** pList2);
 
-	CFeatureList();//(int type= LIST_UNSORTED);
+	CFeatureList(bool addIfExists= true, bool replaceIfExists= false);
 	virtual ~CFeatureList();
 
 	void clear();
@@ -41,8 +45,8 @@ public:
 	double getFactor(unsigned int index);
 	double innerProduct(CFeatureList *inList);
 	void copyMult(double factor,CFeatureList *inList);
-	virtual void addFeatureList(CFeatureList *inList,double factor=1.0, bool bAddIfExists= false, bool bReplaceIfExists= false);
-	void add(unsigned int index, double value, bool bAddIfExists= false, bool bReplaceIfExists= false);
+	virtual void addFeatureList(CFeatureList *inList,double factor= 1.0);
+	void add(unsigned int index, double value);
 
 	//spawn: all features (indices and values) are spawned by those in inList
 	void spawn(CFeatureList *inList, unsigned int indexOffset);

@@ -163,7 +163,9 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 
 
 CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
+: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("WORLD-DEFINITION")))
 {
+	/*
 	//STATE VARIABLES
 	m_pStateDescriptor= new CState(14);
 	
@@ -185,7 +187,7 @@ CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 	//ACTION VARIABLES
 	m_pActionDescriptor= new CAction(2);
 	m_pActionDescriptor->setProperties(0,"d_beta",-0.1745329252,0.1745329252);
-	m_pActionDescriptor->setProperties(1,"d_T_g",-100000,100000);
+	m_pActionDescriptor->setProperties(1,"d_T_g",-100000,100000);*/
 
 	//load all the wind data files
 	m_currentDataFile = 0;

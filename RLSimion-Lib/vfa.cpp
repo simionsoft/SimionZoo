@@ -14,6 +14,10 @@ CLinearVFA::CLinearVFA(tinyxml2::XMLElement* pParameters) : CParamObject(pParame
 	m_pAux = new CFeatureList();
 
 	memset(m_pWeights, 0, sizeof(double)*m_numWeights);
+
+	m_bSaturateOutput = false;
+	m_minOutput = 0.0;
+	m_maxOutput = 0.0;
 }
 
 CLinearVFA::~CLinearVFA()
@@ -22,6 +26,13 @@ CLinearVFA::~CLinearVFA()
 	delete m_pAux;
 
 	delete[] m_pWeights;
+}
+
+void CLinearVFA::saturateOutput(double min, double max)
+{
+	m_bSaturateOutput = true;
+	m_minOutput = min;
+	m_maxOutput = max;
 }
 
 void CLinearVFA::getFeatures(CState* s, CAction* a, CFeatureList* outFeatures)
@@ -41,14 +52,26 @@ void CLinearVFA::getFeatureStateAction(unsigned int feature, CState* s, CAction*
 void CLinearVFA::add(CFeatureList* pFeatures, double alpha)
 {
 	assert(pFeatures);
-	//double sum= 0.0;
-	for (unsigned int i= 0; i<pFeatures->m_numFeatures; i++)
-	{
-		assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
-		//assert(pFeatures->m_pFeatures[i].m_factor>=0.0 && pFeatures->m_pFeatures[i].m_factor<=1.0);
-		//sum+= alpha* pFeatures->m_pFeatures[i].m_factor;
-		m_pWeights[pFeatures->m_pFeatures[i].m_index]+= alpha* pFeatures->m_pFeatures[i].m_factor;
-	}
+
+	//replicating code because i think it will be more efficient avoiding the if per iteration
+	if (!m_bSaturateOutput)
+		for (unsigned int i= 0; i<pFeatures->m_numFeatures; i++)
+		{
+			assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
+
+			m_pWeights[pFeatures->m_pFeatures[i].m_index]+= alpha* pFeatures->m_pFeatures[i].m_factor;
+		}
+	else
+		for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
+		{
+			assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
+
+			//saturate output by saturation of the weights
+			m_pWeights[pFeatures->m_pFeatures[i].m_index] = 
+				std::min(m_maxOutput,
+					std::max(m_minOutput
+							, m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
+		}
 }
 
 void CLinearVFA::save(void* pFile)

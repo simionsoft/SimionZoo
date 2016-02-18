@@ -25,19 +25,17 @@ CVFACritic* CVFACritic::getInstance(tinyxml2::XMLElement* pParameters)
 {
 	if (!pParameters) return 0;
 
-	tinyxml2::XMLElement* child;
+	tinyxml2::XMLElement* child= pParameters->FirstChildElement();
 
-	child = pParameters->FirstChildElement("TD-Lambda");
-	if (child)
+
+	if (!strcmp(child->Name(), "TD-Lambda"))
 		return new CTDLambdaCritic(child);
-
-	child = pParameters->FirstChildElement("True-Online-TD-Lambda");
-	if (child)
+	if (!strcmp(child->Name(), "True-Online-TD-Lambda"))
 		return new CTrueOnlineTDLambdaCritic(child);
-
-	child = pParameters->FirstChildElement("TDC-Lambda");
-	if (child)
+	if (!strcmp(child->Name(), "TDC-Lambda"))
 		return new CTDCLambdaCritic(child);
+	if (!strcmp(child->Name(), "Incremental-Natural-Critic"))
+		return new CIncrementalNaturalCritic(child);
 
 	return 0;
 }

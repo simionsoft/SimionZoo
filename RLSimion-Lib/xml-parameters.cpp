@@ -164,3 +164,9 @@ double XMLParameters::getConstDouble(tinyxml2::XMLElement* pParameters)
 	assert(pParameters && pParameters->GetText());
 	return atof(pParameters->GetText());
 }
+
+const char* XMLParameters::getConstString(tinyxml2::XMLElement* pParameters)
+{
+	assert(pParameters && pParameters->GetText());
+	return pParameters->GetText();
+}

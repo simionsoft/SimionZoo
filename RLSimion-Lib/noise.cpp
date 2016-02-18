@@ -7,9 +7,10 @@ double getNormalDistributionSample(/*double mu, */double sigma)
 {
 	double x1 = (double) (rand() + 1) / ((double) RAND_MAX + 1);
 	double x2 = (double) rand() / (double) RAND_MAX;
-
+	assert(x1 != 0.0);
+	assert(-2 * log(x1) >= 0.0);
 	double z = sqrt(- 2 * log(x1)) * cos(2 * M_PI * x2);
-
+	assert(sigma != 0.0);
 	return z * sqrt(sigma) /*+ mu*/;
 }
 ////2015/10/09

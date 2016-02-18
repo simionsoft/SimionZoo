@@ -18,10 +18,15 @@ protected:
 	double* m_pWeights;
 	unsigned int m_numWeights;
 	CFeatureList *m_pAux;
+
+	bool m_bSaturateOutput;
+	double m_minOutput, m_maxOutput;
 public:
 
 	CLinearVFA(tinyxml2::XMLElement* pParameters);
 	~CLinearVFA();
+
+	void saturateOutput(double min, double max);
 
 	double getValue(CFeatureList *features);
 	double getValue(CState *s, CAction *a);

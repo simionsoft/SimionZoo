@@ -12,12 +12,14 @@
 //	int m_numFeatures;
 
 
-CFeatureList::CFeatureList()//(int type= LIST_UNSORTED);
+CFeatureList::CFeatureList(bool addIfExists, bool replaceIfExists)//(int type= LIST_UNSORTED);
 {
 	m_type= LIST_UNSORTED;
 	m_numAllocFeatures= FEATURE_BLOCK_SIZE;
 	m_pFeatures= new CFeature[m_numAllocFeatures];
 	m_numFeatures= 0;
+	m_bAddIfExists = addIfExists;
+	m_bReplaceIfExists = replaceIfExists;
 }
 
 CFeatureList::~CFeatureList()
@@ -38,8 +40,10 @@ void CFeatureList::resize(unsigned int newSize, bool bKeepFeatures)
 
 	CFeature* pNewFeatures= new CFeature[newSize];
 
+	unsigned int oldsize = sizeof(CFeature)*m_numFeatures;
+	unsigned int newsize = sizeof(CFeature)*newSize;
 	if (bKeepFeatures)
-		memcpy_s(pNewFeatures,sizeof(pNewFeatures)*newSize,m_pFeatures,sizeof(pNewFeatures)*m_numFeatures);
+		memcpy_s(pNewFeatures,sizeof(CFeature)*newSize,m_pFeatures,sizeof(CFeature)*m_numFeatures);
 	else m_numFeatures= 0;
 
 	delete [] m_pFeatures;
@@ -96,14 +100,14 @@ void CFeatureList::copyMult(double factor,CFeatureList *inList)
 	}
 }
 
-void CFeatureList::addFeatureList(CFeatureList *inList, double factor, bool bAddIfExists, bool bReplaceIfExists)
+void CFeatureList::addFeatureList(CFeatureList *inList, double factor)
 {
-	if (m_numFeatures+inList->m_numFeatures >m_numAllocFeatures)
-		resize (m_numFeatures+inList->m_numFeatures);
+	//if (m_numFeatures+inList->m_numFeatures >m_numAllocFeatures)
+	//	resize (m_numFeatures+inList->m_numFeatures);
 
 	for (unsigned int i= 0; i<inList->m_numFeatures; i++)
 	{
-		add(inList->m_pFeatures[i].m_index, inList->m_pFeatures[i].m_factor*factor,bAddIfExists,bReplaceIfExists);
+		add(inList->m_pFeatures[i].m_index, inList->m_pFeatures[i].m_factor*factor);
 	}
 }
 
@@ -116,9 +120,9 @@ int CFeatureList::getFeaturePos(unsigned int index)
 	return -1;
 }
 
-void CFeatureList::add(unsigned int index, double value, bool bAddIfExists, bool bReplaceIfExists)
+void CFeatureList::add(unsigned int index, double value)
 {
-	bool bCheckIfExists= (bAddIfExists || bReplaceIfExists);
+	bool bCheckIfExists= (m_bAddIfExists || m_bReplaceIfExists);
 	int pos;
 	if (bCheckIfExists)
 	{
@@ -126,7 +130,7 @@ void CFeatureList::add(unsigned int index, double value, bool bAddIfExists, bool
 
 		if (pos>=0)
 		{
-			if (bAddIfExists) m_pFeatures[pos].m_factor+= value;
+			if (m_bAddIfExists) m_pFeatures[pos].m_factor+= value;
 			else m_pFeatures[pos].m_factor= value;
 			return;
 		}

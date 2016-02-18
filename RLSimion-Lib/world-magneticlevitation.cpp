@@ -5,9 +5,11 @@
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
+#include "xml-parameters.h"
 
-CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters)
-{
+CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters) 
+: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("WORLD-DEFINITION")))
+{/*
 	m_pStateDescriptor= new CState(5);
 	
 	m_pStateDescriptor->setProperties(0,"position-setpoint",0.0,0.013);
@@ -17,7 +19,7 @@ CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters)
 	m_pStateDescriptor->setProperties(4,"position-deviation",-0.13,0.13);
 
 	m_pActionDescriptor= new CAction(1);
-	m_pActionDescriptor->setProperties(0,"voltage",-60,60);
+	m_pActionDescriptor->setProperties(0,"voltage",-60,60);*/
 
 	m_pEvalSetPoint= new CFileSetPoint(pParameters->FirstChildElement("EVALUATION_SET_POINT_FILE")->GetText());
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);

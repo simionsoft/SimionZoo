@@ -16,7 +16,8 @@ public:
 
 	static INumericValue* getNumericHandler(tinyxml2::XMLElement* pParameters);
 
-	static bool getConstBoolean(tinyxml2::XMLElement* pParameters);
-	static int getConstInteger(tinyxml2::XMLElement* pParameters);
-	static double getConstDouble(tinyxml2::XMLElement* pParameters);
+	static bool getConstBoolean(tinyxml2::XMLElement* pParameter);
+	static int getConstInteger(tinyxml2::XMLElement* pParameter);
+	static double getConstDouble(tinyxml2::XMLElement* pParameter);
+	static const char* getConstString(tinyxml2::XMLElement* pParameter);
 };

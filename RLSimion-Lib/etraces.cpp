@@ -11,14 +11,16 @@ CETraces::CETraces(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters
 		m_bUse = true;
 		m_threshold = XMLParameters::getConstDouble(m_pParameters->FirstChildElement("Threshold"));
 		m_lambda = XMLParameters::getConstDouble(m_pParameters->FirstChildElement("Lambda"));
-		m_bReplace = XMLParameters::getConstBoolean(m_pParameters->FirstChildElement("Replace"));
+		m_bReplaceIfExists = XMLParameters::getConstBoolean(m_pParameters->FirstChildElement("Replace"));
+		m_bAddIfExists = !m_bReplaceIfExists;
 	}
 	else
 	{
 		m_bUse = false;
 		m_threshold = 0.0;
 		m_lambda = 1.0;
-		m_bReplace = false;
+		m_bReplaceIfExists = false;
+		m_bAddIfExists = false;
 	}
 }
 
@@ -40,7 +42,7 @@ void CETraces::addFeatureList(CFeatureList* inList, double factor)
 {
 	if (m_bUse)
 	{
-		CFeatureList::addFeatureList(inList, factor, !m_bReplace, m_bReplace);
+		CFeatureList::addFeatureList(inList, factor);
 	}
 	else
 	{

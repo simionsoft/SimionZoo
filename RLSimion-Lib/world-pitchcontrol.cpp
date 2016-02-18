@@ -5,9 +5,12 @@
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
+#include "xml-parameters.h"
 
 CPitchControl::CPitchControl(tinyxml2::XMLElement* pParameters)
+: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("WORLD-DEFINITION")))
 {
+	/*
 	m_pStateDescriptor= new CState(5);
 	
 	m_pStateDescriptor->setProperties(0,"setpoint-pitch",-3.14159265,3.14159265);
@@ -17,7 +20,7 @@ CPitchControl::CPitchControl(tinyxml2::XMLElement* pParameters)
 	m_pStateDescriptor->setProperties(4,"control-deviation",-6.5,6.5);
 
 	m_pActionDescriptor= new CAction(1);
-	m_pActionDescriptor->setProperties(0,"pitch",-1.4,1.4);
+	m_pActionDescriptor->setProperties(0,"pitch",-1.4,1.4);*/
 
 	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->GetText());
 }

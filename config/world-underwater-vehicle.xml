@@ -1,27 +1,31 @@
 <WORLD-DEFINITION>
   <STATE>
-    <v-setpoint>
+    <Variable>
+      <Name>v-setpoint</Name>
       <Units>m/s</Units>
       <Min>-5.0</Min>
       <Max>5.0</Max>
-    </v-setpoint>
-    <v>
+    </Variable>
+    <Variable>
+      <Name>v</Name>
       <Units>m/s</Units>
       <Min>-5.0</Min>
       <Max>5.0</Max>
-    </v>
-    <v-deviation>
+    </Variable>
+    <Variable>
+      <Name>v-deviation</Name>
       <Units>m/s</Units>
       <Min>-10.0</Min>
       <Max>10.0</Max>
-    </v-deviation>
+    </Variable>
   </STATE>
   <ACTION>
-    <u_thrust>
+    <Variable>
+      <Name>u_thrust</Name>
       <Units>N</Units>
       <Min>-30</Min>
       <Max>30</Max>
-    </u_thrust>
+    </Variable>
   </ACTION>
   <CONSTANTS>
   </CONSTANTS>

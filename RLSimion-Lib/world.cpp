@@ -28,16 +28,16 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	m_dt = XMLParameters::getConstDouble(pParameters->FirstChildElement("Delta-T"));
 
 	tinyxml2::XMLElement* pModelParameters;
-	pModelParameters = pParameters->FirstChildElement("DYNAMIC-MODEL");
+	pModelParameters = pParameters->FirstChildElement("DYNAMIC-MODEL")->FirstChildElement();
 
-	if (strcmp(pModelParameters->FirstChildElement()->Name(), "Wind-turbine") == 0)
-		m_pDynamicModel = new CWindTurbine(pModelParameters->FirstChildElement());
+	if (strcmp(pModelParameters->Name(), "Wind-turbine") == 0)
+		m_pDynamicModel = new CWindTurbine(pModelParameters);
 	else if (strcmp(pModelParameters->Name(), "Underwater-vehicle") == 0)
-		m_pDynamicModel = new CUnderwaterVehicle(pModelParameters->FirstChildElement());
+		m_pDynamicModel = new CUnderwaterVehicle(pModelParameters);
 	else if (strcmp(pModelParameters->Name(), "Pitch-control") == 0)
-		m_pDynamicModel = new CPitchControl(pModelParameters->FirstChildElement());
+		m_pDynamicModel = new CPitchControl(pModelParameters);
 	else if (strcmp(pModelParameters->Name(), "Magnetic-leviation") == 0)
-		m_pDynamicModel = new CMagneticLevitation(pModelParameters->FirstChildElement());
+		m_pDynamicModel = new CMagneticLevitation(pModelParameters);
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
@@ -142,4 +142,24 @@ CDynamicModel::~CDynamicModel()
 { 
 	if (m_pStateDescriptor) delete m_pStateDescriptor;
 	if (m_pActionDescriptor) delete m_pActionDescriptor;
+}
+
+
+CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
+{
+	tinyxml2::XMLDocument configXMLDoc;
+	tinyxml2::XMLElement *rootNode;
+	if (pWorldDefinitionFile)
+	{
+		
+		configXMLDoc.LoadFile(pWorldDefinitionFile);
+		if (!configXMLDoc.Error())
+		{
+			rootNode = configXMLDoc.FirstChildElement("WORLD-DEFINITION");
+			m_pStateDescriptor =new CState( rootNode->FirstChildElement("STATE"));
+			m_pActionDescriptor = new CAction(rootNode->FirstChildElement("ACTION"));
+			//we only copy the pointer because we are assuming the xml config document won't be deleted until the main program ends
+			m_pConstants = rootNode->FirstChildElement("CONSTANTS");
+		}
+	}
 }

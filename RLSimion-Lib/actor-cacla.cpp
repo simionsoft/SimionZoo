@@ -9,7 +9,7 @@
 #include "xml-parameters.h"
 
 CCACLALearner::CCACLALearner(tinyxml2::XMLElement *pParameters)
-: CSingleOutputVFAPolicyLearner(pParameters)
+: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("VFA-Policy"))
 {
 	m_pStateFeatures = new CFeatureList();
 	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));

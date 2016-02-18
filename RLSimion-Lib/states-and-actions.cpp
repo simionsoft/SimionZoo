@@ -1,8 +1,30 @@
 #include "stdafx.h"
 #include "states-and-actions.h"
+#include "xml-parameters.h"
 
 
+CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
+{
+	m_numVars = XMLParameters::countChildren(pDescription, "Variable");
+	m_pProperties = new CNamedVarProperties[m_numVars];
+	m_pValues = new double[m_numVars];
 
+	tinyxml2::XMLElement* pVariable = pDescription->FirstChildElement("Variable");
+	int numVars= 0;
+
+	while (pVariable)
+	{
+		strcpy_s(m_pProperties[numVars].name , VAR_NAME_MAX_LENGTH
+					,XMLParameters::getConstString(pVariable->FirstChildElement("Name")));
+		strcpy_s(m_pProperties[numVars].units, VAR_NAME_MAX_LENGTH
+			, XMLParameters::getConstString(pVariable->FirstChildElement("Units")));
+		m_pProperties[numVars].min = XMLParameters::getConstDouble(pVariable->FirstChildElement("Min"));
+		m_pProperties[numVars].max = XMLParameters::getConstDouble(pVariable->FirstChildElement("Max"));
+
+		numVars++;
+		pVariable = pVariable->NextSiblingElement("Variable");
+	}
+}
 
 CNamedVarSet::CNamedVarSet(int numVars)
 {

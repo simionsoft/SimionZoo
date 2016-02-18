@@ -8,11 +8,13 @@ class CParameters;
 struct CNamedVarProperties
 {
 	char name[VAR_NAME_MAX_LENGTH];
+	char units[VAR_NAME_MAX_LENGTH];
 	double min;
 	double max;
 	CNamedVarProperties()
 	{
 		name[0]= 0;
+		units[0]= 0;
 		min= 0.0;
 		max= 0.0;
 	}
@@ -26,8 +28,8 @@ class CNamedVarSet
 	double *m_pValues;
 	int m_numVars;
 public:
+	CNamedVarSet(tinyxml2::XMLElement* pDescription);
 	CNamedVarSet(int numVars);
-	//CNamedVarSet(char* descriptionFile);
 	~CNamedVarSet();
 
 	int getNumVars(){return m_numVars;}

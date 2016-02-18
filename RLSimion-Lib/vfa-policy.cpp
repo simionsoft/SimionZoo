@@ -14,9 +14,13 @@ CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters
 : CParamObject(pParameters)
 {
 	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("Linear-VFA"));
+
 	m_pExpNoise = new CGaussianNoise(pParameters->FirstChildElement("Exploration-Noise"));
 	m_outputAction = m_pParameters->FirstChildElement("Output-Action")->GetText();
-	m_outputActionIndex = g_pWorld->getActionDescriptor()->getVarIndex(m_outputAction);
+	CAction *pActionDescriptor = g_pWorld->getActionDescriptor();
+	m_outputActionIndex = pActionDescriptor->getVarIndex(m_outputAction);
+
+	m_pVFA->saturateOutput(pActionDescriptor->getMin(m_outputActionIndex), pActionDescriptor->getMax(m_outputActionIndex));
 }
 
 CSingleOutputVFAPolicy::~CSingleOutputVFAPolicy()
@@ -31,8 +35,9 @@ void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
 	double noise;
 	double output;
 
-	a_width = 0.5*(a->getMax(m_outputActionIndex) - a->getMin(m_outputActionIndex));
-	noise = m_pExpNoise->getNewValue() * a_width;
+	//scaling the noise after sampling the normal distribution seems to mess with INAC's use of the variance
+	//a_width = 0.5*(a->getMax(m_outputActionIndex) - a->getMin(m_outputActionIndex));
+	noise = m_pExpNoise->getNewValue();// *a_width;
 
 	output = m_pVFA->getValue(s, 0);
 

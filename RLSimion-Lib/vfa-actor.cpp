@@ -12,7 +12,7 @@
 
 CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_pPolicy = new CSingleOutputVFAPolicy(pParameters->FirstChildElement("VFA-Policy"));
+	m_pPolicy = new CSingleOutputVFAPolicy(pParameters);
 }
 
 CSingleOutputVFAPolicyLearner::~CSingleOutputVFAPolicyLearner()
@@ -28,6 +28,8 @@ CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxm
 			return new CCACLALearner(pParameters);
 		if (!strcmp(pParameters->Name(), "Regular-Gradient"))
 			return new CRegularPolicyGradientLearner(pParameters);
+		if (!strcmp(pParameters->Name(), "Incremental-Natural-Actor"))
+			return new CIncrementalNaturalActor(pParameters);
 	}
 	return 0;
 }
@@ -108,8 +110,8 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 		output = m_pPolicyLearners[i]->getPolicy()->getVFA()->getValue(s, a);
 
 		var_i = std::max(0.000000001, m_pPolicyLearners[i]->getPolicy()->getExpNoise()->getSigma());
-		a_width = 0.5*(a->getMax(i) - a->getMin(i));
-		noiseWidth = fabs((a->getValue(i) - output) / a_width);
+	//	a_width = 0.5*(a->getMax(i) - a->getMin(i));
+		noiseWidth = fabs((a->getValue(i) - output) /*/ a_width*/);
 
 		if (noiseWidth != 0.0)
 		{
