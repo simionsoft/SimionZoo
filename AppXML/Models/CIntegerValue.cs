@@ -13,6 +13,35 @@ namespace AppXML.Models
         public validTypes type { get; set; }
         public string enumClas { get; set; }
         public string defaultValue { get; set; }
+        public CIntegerValue(string tipo)
+        {
+            if (tipo == "INTEGER-VALUE")
+            {
+                type = validTypes.IntergerValue;
+            }
+            else if (tipo == "STRING-VALUE")
+            {
+                type = validTypes.StringValue;
+            }
+            else if (tipo == "DECIMAL-VALUE")
+            {
+                type = validTypes.DecimalValue;
+            }
+            else if (tipo == "DIR-PATH-VALUE")
+            {
+                type = validTypes.DirPathValue;
+            }
+            else if (tipo == "FILE-PATH-VALUE")
+            {
+                type = validTypes.FilePathValue;
+            }
+           
+        }
+        public CIntegerValue(XmlNode nodo)
+        {
+            type = validTypes.EnumValue;
+            enumClas = nodo.Attributes["Name"].Value;
+        }
         public CIntegerValue(XmlNode node, string n, string value)
         { 
             name = n; 

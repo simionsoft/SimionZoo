@@ -29,7 +29,6 @@
     <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds"/>
     <STRING-VALUE Name="Prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
     <STRING-VALUE Name="Ouput-directory" Default="test-dir" Comment="name of the directory within ../logs/ where log files will be saved "/>
-
     <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
     <ENUM-VALUE Class="BOOLEAN" Name="Log-training-episodes" Default="false" Comment="Log training episodes?"/>
     <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-avg-rewards" Default="true" Comment="Log average rewards in evaluation episodes?"/>

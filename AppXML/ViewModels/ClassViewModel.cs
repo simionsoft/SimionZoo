@@ -4,98 +4,93 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using AppXML.Models;
 using System.Collections.ObjectModel;
 using System.Xml;
-using AppXML.Models;
+using System.Windows.Controls;
+using AppXML.Data;
 
 namespace AppXML.ViewModels
 {
-    public class ClassViewModel: PropertyChangedBase
+    public class ClassViewModel
     {
-        private string _choiceName;
-        private string _choiceLoadXML;
-        private ObservableCollection<ChoiceElement> choiceElements;
-        private ObservableCollection<BranchViewModel> _branches;
-        private ObservableCollection<CIntegerValue> _simples;
-        private ObservableCollection<CMultiValued> _multis;
-        private string name;
-        private XmlNode node;
+        private ChoiceViewModel _choice;
+        private ObservableCollection<IntegerViewModel> _items;
+        private ObservableCollection<MultiValuedViewModel> _multis;
 
-
-        
-        public ClassViewModel(String className)
+        //faltan los branches pero estan sin crear BranchViewModel y BranchView
+        public ClassViewModel(string clasName)
         {
-            if(CNode.definitions!=null)
+            XmlNode node = CNode.definitions[clasName];
+            foreach (XmlNode child in node.ChildNodes)
             {
-                if(CNode.definitions.ContainsKey(className))
+                if (child.Name == "CHOICE")
                 {
-                    XmlNode node = CNode.definitions[className];
-                    name = className;
-                    foreach(XmlNode child in node.ChildNodes)
-                    {
-                        if(child.Name=="BRANCH")
-                        {
-                            if (_branches == null)
-                                _branches = new ObservableCollection<BranchViewModel>();
-                            _branches.Add(new BranchViewModel(CNode.getInstance(child)));
-                        }
-                        else if(child.Name=="MULTI-VALUED")
-                        {
-                            if (_multis == null)
-                                _multis = new ObservableCollection<CMultiValued>();
-                            _multis.Add((CNode.getInstance(child) as CMultiValued));
-                        }
-                        else if(child.Name.EndsWith("VALUE"))
-                        {
-                            if (_simples == null)
-                                _simples = new ObservableCollection<CIntegerValue>();
-                            _simples.Add((CNode.getInstance(child) as CIntegerValue));
-                        }
-                        else if(child.Name=="CHOICE")
-                        {
-                            _choiceName = child.Attributes["Name"].Value;
-                            if(child.Attributes["LoadXML"]!=null)
-                                _choiceLoadXML = child.Attributes["LoadXML"].Value;
-                            foreach(XmlNode nodo in child.ChildNodes)
-                            {
-                                if(nodo.Name=="CHOICE-ELEMENT")
-                                {
-                                    if (choiceElements == null)
-                                        choiceElements = new ObservableCollection<ChoiceElement>();
-                                    ChoiceElement ce = new ChoiceElement();
-                                    ce.name = nodo.Attributes["Name"].Value;
-                                    if(nodo.Attributes["XML"]!=null)
-                                        ce.XML = nodo.Attributes["XML"].Value;
-                                    foreach(XmlNode childNode in nodo.ChildNodes)
-                                    {
-                                        if (childNode.Name == "BRANCH")
-                                        {
-                                            if (ce.branches==null)
-                                                ce.branches = new List<CBranch>();
-                                            ce.branches.Add((CNode.getInstance(childNode) as CBranch));
-                                        } 
-                                        else if(childNode.Name == "MULTI-VALUED")
-                                        {
-                                            if (ce.multis == null)
-                                                ce.multis = new List<CMultiValued>();
-                                            ce.multis.Add((CNode.getInstance(childNode) as CMultiValued));
-                                        }
-                                        else if(childNode.Name.EndsWith("VALUE"))
-                                        {
-                                            if (ce.simples == null)
-                                                ce.simples = new List<CIntegerValue>();
-                                            ce.simples.Add((CNode.getInstance(childNode) as CIntegerValue));
+                    _choice = new ChoiceViewModel(child);
+                }
+                else if (child.Name.EndsWith("VALUE"))
+                {
+                    if (_items == null)
+                        _items = new ObservableCollection<IntegerViewModel>();
+                    CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
+                    IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ);
+                    _items.Add(ivw);
 
-                                        }
-                                    }
-                                    this.choiceElements.Add(ce);
-                                }
-                            }
+                }
+                else if (child.Name == "MULTI-VALUED")
+                {
+                    //to do: añadir los multis a su lista y añadirlo en el xaml
+                    if (_multis == null)
+                        _multis = new ObservableCollection<MultiValuedViewModel>();
 
-                        }
-                    }
+                }
+                else if (child.Name == "BRANCH")
+                {
+                    //to do: cuando BranchViewModel este hecho hacer la rama
+
                 }
             }
+
+
         }
+        public ClassViewModel()
+        {
+            //PARAMERTRO DEL CONSTRUCTOR
+            String clasName = "WORLD";
+            Utility.getRootNode("../config/RLSimion.xml");
+            //CONSTRUCTOR
+            XmlNode node = CNode.definitions[clasName];
+            foreach(XmlNode child in node.ChildNodes)
+            {
+                if(child.Name == "CHOICE")
+                {
+                    _choice = new ChoiceViewModel(child);
+                }
+                else if(child.Name.EndsWith("VALUE"))
+                {
+                    if (_items == null)
+                        _items = new ObservableCollection<IntegerViewModel>();
+                    CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
+                    IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value,civ);
+                    _items.Add(ivw);
+
+                }
+                else if(child.Name == "MULTI-VALUED")
+                {
+                    if (_multis == null)
+                        _multis = new ObservableCollection<MultiValuedViewModel>();
+
+                }
+                else if(child.Name == "BRANCH")
+                {
+
+                }
+            }
+            
+            
+        }
+        public ChoiceViewModel Choice { get { return _choice; } set { } }
+        public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
+        
     }
 }
