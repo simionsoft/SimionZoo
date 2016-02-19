@@ -14,6 +14,7 @@
     <ProjectGuid>{C02FD0DA-4C15-4C93-833A-A4A107EAA37E}</ProjectGuid>
     <RootNamespace>ControllerToActorCritic</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <ProjectName>ControllerToVFAPolicy</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -87,7 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ControllerToAC.cpp" />
+    <ClCompile Include="ControllerToVFAPolicy.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -100,7 +101,10 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Xml Include="..\config\ControllerToVFAPolicy.xml" />
+    <Xml Include="..\config\definitions.xml" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

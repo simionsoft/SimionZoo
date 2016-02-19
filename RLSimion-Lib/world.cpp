@@ -28,7 +28,7 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	m_dt = XMLParameters::getConstDouble(pParameters->FirstChildElement("Delta-T"));
 
 	tinyxml2::XMLElement* pModelParameters;
-	pModelParameters = pParameters->FirstChildElement("DYNAMIC-MODEL")->FirstChildElement();
+	pModelParameters = pParameters->FirstChildElement("Dynamic-Model")->FirstChildElement();
 
 	if (strcmp(pModelParameters->Name(), "Wind-turbine") == 0)
 		m_pDynamicModel = new CWindTurbine(pModelParameters);
@@ -41,7 +41,7 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
-	m_pReward = new CReward(pParameters->FirstChildElement("REWARD"));
+	m_pReward = new CReward(pParameters->FirstChildElement("Reward"));
 }
 
 CWorld::~CWorld()
@@ -155,11 +155,11 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 		configXMLDoc.LoadFile(pWorldDefinitionFile);
 		if (!configXMLDoc.Error())
 		{
-			rootNode = configXMLDoc.FirstChildElement("WORLD-DEFINITION");
-			m_pStateDescriptor =new CState( rootNode->FirstChildElement("STATE"));
-			m_pActionDescriptor = new CAction(rootNode->FirstChildElement("ACTION"));
+			rootNode = configXMLDoc.FirstChildElement("World-Definition");
+			m_pStateDescriptor =new CState( rootNode->FirstChildElement("State"));
+			m_pActionDescriptor = new CAction(rootNode->FirstChildElement("Action"));
 			//we only copy the pointer because we are assuming the xml config document won't be deleted until the main program ends
-			m_pConstants = rootNode->FirstChildElement("CONSTANTS");
+			m_pConstants = rootNode->FirstChildElement("Constants");
 		}
 	}
 }

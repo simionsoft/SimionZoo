@@ -11,11 +11,12 @@ CMultiController::CMultiController(tinyxml2::XMLElement* pParameters)
 
 	m_pControllers = new CActor*[m_numControllers];
 
-	tinyxml2::XMLElement* pControllerParameters = pParameters->FirstChildElement();
+	tinyxml2::XMLElement* pControllerParameters = pParameters->FirstChildElement("Controller");
 	for (int i = 0; i < m_numControllers; i++)
 	{
-		m_pControllers[i] = CMultiController::getInstance(pControllerParameters);
-		pControllerParameters= pControllerParameters->NextSiblingElement();
+		m_pControllers[i] = CMultiController::getInstance(pControllerParameters->FirstChildElement());
+
+		pControllerParameters = pControllerParameters->NextSiblingElement("Controller");
 	}
 }
 
@@ -31,9 +32,9 @@ CMultiController::~CMultiController()
 CActor* CMultiController::getInstance(tinyxml2::XMLElement* pParameters)
 {
 	const char* type = pParameters->Name();
-	if (strcmp(type, "VIDAL") == 0)
+	if (strcmp(type, "Vidal") == 0)
 		return new CWindTurbineVidalController(pParameters);
-	else if (strcmp(type, "BOUKHEZZAR") == 0)
+	else if (strcmp(type, "Boukhezzar") == 0)
 		return new CWindTurbineBoukhezzarController(pParameters);
 	else if (strcmp(type, "PID") == 0)
 		return new CPIDController(pParameters);
@@ -58,7 +59,7 @@ void CMultiController::selectAction(CState *s, CAction *a)
 CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 {
 	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
-	m_outputActionIndex = g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
+	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
 	tinyxml2::XMLElement* pChild= pParameters->FirstChildElement("Gains");
 	m_numVars = XMLParameters::countChildren(pChild);
@@ -66,8 +67,8 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	m_pVariableIndices= new int[m_numVars];
 	m_pGains= new double[m_numVars];
 
-	CState* pSDesc= g_pWorld->getStateDescriptor();
-	tinyxml2::XMLElement* pGain= pChild->FirstChildElement("LQR-GAIN");
+	CState* pSDesc= RLSimion::g_pWorld->getStateDescriptor();
+	tinyxml2::XMLElement* pGain= pChild->FirstChildElement("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
 		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->FirstChildElement("Variable")->GetText());//
@@ -101,13 +102,13 @@ void CLQRController::selectAction(CState *s, CAction *a)
 CPIDController::CPIDController(tinyxml2::XMLElement *pParameters)
 {
 	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
-	m_outputActionIndex = g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
+	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
 	m_pKP= XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
 	m_pKI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
 	m_pKD = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KD"));
 
-	CState *pSDesc= g_pWorld->getStateDescriptor();
+	CState *pSDesc= RLSimion::g_pWorld->getStateDescriptor();
 	if (pSDesc)
 		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->FirstChildElement("Input-Variable")->GetText());
 	else

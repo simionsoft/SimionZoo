@@ -163,7 +163,7 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 
 
 CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
-: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("WORLD-DEFINITION")))
+: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("World-Definition")))
 {
 	/*
 	//STATE VARIABLES
@@ -194,22 +194,22 @@ CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 
 	//evaluation file
 	m_pEvaluationWindData = 
-		new CHHFileSetPoint(pParameters->FirstChildElement("EVALUATION_WIND_DATA")->GetText());
+		new CHHFileSetPoint(pParameters->FirstChildElement("Evaluation-Wind-Data")->GetText());
 
 	//training files
-	tinyxml2::XMLElement* trainingWindFiles = pParameters->FirstChildElement("TRAINING_WIND_DATA");
-	m_numDataFiles = XMLParameters::countChildren(trainingWindFiles, "FILE");
+	tinyxml2::XMLElement* trainingWindFiles = pParameters->FirstChildElement("Training-Wind-Data");
+	m_numDataFiles = XMLParameters::countChildren(trainingWindFiles, "File");
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
 
-	tinyxml2::XMLElement* pElement = trainingWindFiles->FirstChildElement("FILE");
+	tinyxml2::XMLElement* pElement = trainingWindFiles->FirstChildElement("File");
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
 		m_pTrainingWindData[i] = new CHHFileSetPoint(pElement->GetText());
-		pElement = pElement->NextSiblingElement("FILE");
+		pElement = pElement->NextSiblingElement("File");
 	}
 
 	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
-	m_pPowerSetpoint= new CFileSetPoint(pParameters->FirstChildElement("POWER_SET_POINT")->GetText());
+	m_pPowerSetpoint= new CFileSetPoint(pParameters->FirstChildElement("Power-Set-Point")->GetText());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;
@@ -233,7 +233,7 @@ CWindTurbine::~CWindTurbine()
 
 void CWindTurbine::reset(CState *s)
 {
-	if (g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		m_pCurrentWindData = m_pEvaluationWindData;
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];

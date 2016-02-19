@@ -8,7 +8,7 @@
 #include "vfa-policy.h"
 
 CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(tinyxml2::XMLElement *pParameters)
-: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("POLICY")->FirstChildElement())
+: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("Policy")->FirstChildElement())
 {
 	m_pStateFeatures = new CFeatureList();
 	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));

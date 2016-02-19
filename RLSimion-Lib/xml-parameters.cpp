@@ -80,17 +80,17 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	switch (m_timeReference)
 	{
 	case experiment:
-		progress = g_pExperiment->m_expProgress.getExperimentProgress();
+		progress = RLSimion::g_pExperiment->m_expProgress.getExperimentProgress();
 		break;
 	case episode:
 	default:
-		progress = g_pExperiment->m_expProgress.getEpisodeProgress();
+		progress = RLSimion::g_pExperiment->m_expProgress.getEpisodeProgress();
 	}
 
 	if (m_startOffset != 0.0)

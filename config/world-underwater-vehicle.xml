@@ -1,5 +1,6 @@
-<WORLD-DEFINITION>
-  <STATE>
+<?xml version="1.0" encoding="utf-8"?>
+<World-Definition>
+  <State>
     <Variable>
       <Name>v-setpoint</Name>
       <Units>m/s</Units>
@@ -18,15 +19,15 @@
       <Min>-10.0</Min>
       <Max>10.0</Max>
     </Variable>
-  </STATE>
-  <ACTION>
+  </State>
+  <Action>
     <Variable>
       <Name>u_thrust</Name>
       <Units>N</Units>
       <Min>-30</Min>
       <Max>30</Max>
     </Variable>
-  </ACTION>
+  </Action>
   <CONSTANTS>
   </CONSTANTS>
-</WORLD-DEFINITION>
+</World-Definition>

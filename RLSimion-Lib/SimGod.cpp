@@ -16,19 +16,19 @@ CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
 	}
 	else*/
 	{
-		if (pParameters->FirstChildElement("CONTROLLER"))
+		if (pParameters->FirstChildElement("Controller"))
 		{
-			m_pController = CActor::getInstance(pParameters->FirstChildElement("CONTROLLER"));
-			m_pActor = CActor::getInstance(pParameters->FirstChildElement("ACTOR"));
+			m_pController = CActor::getInstance(pParameters->FirstChildElement("Controller"));
+			m_pActor = CActor::getInstance(pParameters->FirstChildElement("Actor"));
 		}
 		else
 		{
-			m_pActor = CActor::getInstance(pParameters->FirstChildElement("ACTOR"));
+			m_pActor = CActor::getInstance(pParameters->FirstChildElement("Actor"));
 			m_pController = m_pActor;
 		}
 
-		if (pParameters->FirstChildElement("CRITIC"))
-			m_pCritic = CCritic::getInstance(pParameters->FirstChildElement("CRITIC"));
+		if (pParameters->FirstChildElement("Critic"))
+			m_pCritic = CCritic::getInstance(pParameters->FirstChildElement("Critic"));
 		else m_pCritic = 0;
 	}
 	

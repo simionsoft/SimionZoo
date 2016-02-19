@@ -8,7 +8,7 @@
 #include "xml-parameters.h"
 
 CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters) 
-: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("WORLD-DEFINITION")))
+: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("World-Definition")))
 {/*
 	m_pStateDescriptor= new CState(5);
 	
@@ -21,7 +21,7 @@ CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"voltage",-60,60);*/
 
-	m_pEvalSetPoint= new CFileSetPoint(pParameters->FirstChildElement("EVALUATION_SET_POINT_FILE")->GetText());
+	m_pEvalSetPoint= new CFileSetPoint(pParameters->FirstChildElement("Evaluation-Set-Point-File")->GetText());
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
 }
 
@@ -34,7 +34,7 @@ CMagneticLevitation::~CMagneticLevitation()
 void CMagneticLevitation::reset(CState *s)
 {
 	CSetPoint *pSetPoint;
-	if (g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		pSetPoint= m_pEvalSetPoint;
 	else
 		pSetPoint= m_pLearnSetPoint;
@@ -48,7 +48,7 @@ void CMagneticLevitation::reset(CState *s)
 
 
 	//initialization procedure: 0.5 seconds with 15V
-	/*CAction *a= g_pWorld->getActionDescriptor();
+	/*CAction *a= RLSimion::g_pWorld->getActionDescriptor();
 	a->setValue("voltage",15.0);
 	double t= 0.0;
 	double dt= 0.01;
@@ -70,7 +70,7 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double I= s->getValue("current");
 	double setpoint;
 	
-	if (g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		setpoint= m_pEvalSetPoint->getPointSet(CWorld::getT());
 	else
 		setpoint= m_pLearnSetPoint->getPointSet(CWorld::getT());

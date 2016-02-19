@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <DEFINITIONS>
-  
-  <!--World-->
+    <!--World-->
   <CLASS Name="WORLD">
     <INTEGER-VALUE Name="NUM_SIMULATION_STEPS" Default="4"/>
     <DECIMAL-VALUE Name="DELTA_T" Default="0.01"/>
@@ -74,7 +74,7 @@
   <CLASS Name="ACTOR">
     <CHOICE Name="Type">
       <CHOICE-ELEMENT Name="VFA-Learner" Class="VFA-Learner"/>
-      <CHOICE-ELEMENT Name="Multi-Controller" Class="CONTROLLER"/>
+      <CHOICE-ELEMENT Name="Multi-Controller" Class="MULTI-CONTROLLER"/>
     </CHOICE>
   </CLASS>
   
@@ -115,18 +115,25 @@
   </CLASS>
 
   <CLASS Name="VFA-Policy">
-    <CHOICE Name="Type">
-      <CHOICE-ELEMENT Name="State-Function-Gaussian-Noise" Class="STATE-FUNCTION-GAUSSIAN-NOISE"/>
-    </CHOICE>
-  </CLASS>
-  
-  <CLASS Name="STATE-FUNCTION-GAUSSIAN-NOISE"
-    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="ACTION"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
     <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
   </CLASS>
+
+  <CLASS Name="MULTI-OUTPUT-VFA">
+    <MULTI-VALUED Name="Single-Output-VFA" Class="SINGLE-OUTPUT-VFA"/>
+  </CLASS>
+
+  <CLASS Name="SINGLE-OUTPUT-VFA">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+  </CLASS>
+
+  <CLASS Name="MULTI-CONTROLLER">
+    <MULTI-VALUED Name="Controller" Class="CONTROLLER"/>
+  </CLASS>
   
-  <CLASS Name="Controller">
+  <CLASS Name="CONTROLLER">
     <CHOICE Name="Algorithm">
       <CHOICE-ELEMENT Name="PID" Class="PID"/>
       <CHOICE-ELEMENT Name="LQR" Class="LQR"/>
@@ -137,15 +144,15 @@
   </CLASS>
 
   <CLASS Name="PID">
-    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="ACTION"/>
-    <XML-NODE-REF Name="Input-Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Input-Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <DECIMAL-VALUE Name="KP"/>
     <DECIMAL-VALUE Name="KI"/>
     <DECIMAL-VALUE Name="KD"/>
   </CLASS>
 
   <CLASS Name="LQR">
-    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="ACTION"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <MULTI-VALUED Name="Gains" Class="LQR-GAIN"/>
   </CLASS>
 
@@ -222,7 +229,7 @@
 
   
   <CLASS Name="LQR-GAIN">
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <DECIMAL-VALUE Name="Gain"/>
   </CLASS>
   
@@ -245,7 +252,7 @@
   <!-- RBFs-->
   
   <CLASS Name="RBF-GRID-DIMENSION">
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
     <INTEGER-VALUE Name="Min" Optional="true"/>
     <INTEGER-VALUE Name="Max" Optional="true"/>
@@ -271,7 +278,7 @@
   </CLASS>
 
   <CLASS Name="DEVIATION-REWARD-COMPONENT">
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="STATE"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <DECIMAL-VALUE Name="Weight" Default="1.0"/>
     <DECIMAL-VALUE Name="Tolerance" Default="10"/>
   </CLASS>

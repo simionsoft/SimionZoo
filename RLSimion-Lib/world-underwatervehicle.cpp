@@ -9,7 +9,7 @@
 
 
 CUnderwaterVehicle::CUnderwaterVehicle(tinyxml2::XMLElement* pParameters)
-: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("WORLD-DEFINITION")))
+: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("World-Definition")))
 {
 	/*
 	m_pStateDescriptor= new CState(3);
@@ -20,7 +20,7 @@ CUnderwaterVehicle::CUnderwaterVehicle(tinyxml2::XMLElement* pParameters)
 	m_pActionDescriptor= new CAction(1);
 	m_pActionDescriptor->setProperties(0,"u-thrust",-30.0,30.0);*/
 
-	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("SET_POINT_FILE")->GetText());
+	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("Set-Point-File")->GetText());
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<APP Name="Controller-To-VFA-Policy">
+
+  <INCLUDE>../config/definitions.xml</INCLUDE>
+
+  <BRANCH Name="World" Class="WORLD"/>
+
+  <BRANCH Name="Controller" Class="CONTROLLER"/>
+
+  <BRANCH Name="Multi-Output-VFA" Class="MULTI-OUTPUT-VFA"/>
+
+  <FILE-PATH-VALUE Name="Output-File"/>
+</APP>

@@ -11,17 +11,17 @@
 
 
 CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters)
-: CParamObject(pParameters->FirstChildElement("State-Function-Gaussian-Noise"))
+: CParamObject(pParameters)
 {
 	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("Linear-VFA"));
 
 	m_pExpNoise = new CGaussianNoise(pParameters->FirstChildElement("Exploration-Noise"));
-	m_outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
-	CAction *pActionDescriptor = g_pWorld->getActionDescriptor();
+
+	m_outputAction = m_pParameters->FirstChildElement("Output-Action")->GetText();
+	CAction *pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
 	m_outputActionIndex = pActionDescriptor->getVarIndex(m_outputAction);
 
-	m_pVFA->saturateOutput(pActionDescriptor->getMin(m_outputActionIndex)
-		, pActionDescriptor->getMax(m_outputActionIndex));
+	m_pVFA->saturateOutput(pActionDescriptor->getMin(m_outputActionIndex), pActionDescriptor->getMax(m_outputActionIndex));
 }
 
 CSingleOutputVFAPolicy::~CSingleOutputVFAPolicy()
@@ -41,9 +41,6 @@ void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
 	noise = m_pExpNoise->getNewValue();// *a_width;
 
 	output = m_pVFA->getValue(s, 0);
-
-	double finalOutput = noise + output;
-	finalOutput = std::max(a->getMin(m_outputActionIndex), std::min(a->getMax(m_outputActionIndex), finalOutput));
 
 	a->setValue(m_outputActionIndex, output + noise);
 }
