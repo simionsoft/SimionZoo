@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using System.Collections.ObjectModel;
 using AppXML.Models;
+using System.Xml;
 namespace AppXML.ViewModels
 {
     public class MultiValuedViewModel: PropertyChangedBase
@@ -15,13 +16,38 @@ namespace AppXML.ViewModels
         private CIntegerValue original;
         private string label;
 
-        public MultiValuedViewModel()
+        public MultiValuedViewModel(string label, string clas)
         {
-            label = "etiqueta";
-            CNode root = AppXML.Data.Utility.getRootNode("../config/RLSimion.xml");
-            original = CNode.getInstance(CNode.definitions["VFA-Learner"].ChildNodes[1]) as CIntegerValue;
-            _header = new IntegerViewModel(label, original);
-
+            if (CNode.definitions != null)
+            {
+                if (CNode.definitions.ContainsKey(clas))
+                {
+                    //es un multi de clase o un enum
+                    XmlNode nodo = CNode.definitions[clas];
+                    if(nodo.Name.StartsWith("ENUMERATION"))
+                    {
+                        original = new CIntegerValue(nodo); 
+                        _header = new IntegerViewModel(label, original);
+                        this.label = label;
+                    }
+                    else
+                    {
+                        //es una clase
+                    }
+                }
+                else if (clas != "DECIMAL")
+                {
+                    //es un integervalue
+                    original = new CIntegerValue(clas);
+                    _header = new IntegerViewModel(label, original);
+                    this.label = label;
+                }
+                else
+                {
+                    //es un decimal
+                }
+            }
+           
             _aded = new ObservableCollection<IntegerViewModel>();
 
         }
@@ -43,14 +69,10 @@ namespace AppXML.ViewModels
             NotifyOfPropertyChange(() => Aded);
 
         }
-          public void AddNew()
-        {
-       
-            
+        public void AddNew()
+        {           
             IntegerViewModel t = new IntegerViewModel(label, original);
             _aded.Add(t);
-
-
         }
     }
 }

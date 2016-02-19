@@ -22,12 +22,12 @@ namespace AppXML.ViewModels
     public class MainWindowViewModel: PropertyChangedBase
     {
         private CNode _rootnode;
-        private BranchViewModel _branch;
+        //private BranchViewModel _branch;
         public MainWindowViewModel()
         {
             _rootnode = Utility.getRootNode("../config/RLSimion.xml");
            
-            _branch = new BranchViewModel(_rootnode.children[1]);
+          //  _branch = new BranchViewModel(_rootnode.children[1]);
         }
         public CNode rootnode
         {
@@ -41,18 +41,7 @@ namespace AppXML.ViewModels
             }
 
         }
-        public BranchViewModel Branch
-        {
-            get
-            {
-                return _branch;
-            }
-            set
-            {
-                _branch = value;
-            }
-        }
-        
+       
         
        
         

@@ -10,11 +10,17 @@ namespace AppXML.Models
     {
         public string name;
         public string XML;
-        public List<CBranch> branches;
-        public List<CIntegerValue> simples;
-        public List<CMultiValued> multis;
+        public string clas;
 
-
+        public override string ToString()
+        {
+            return name;
+        }
+        public ChoiceElement(string name, string clas)
+        {
+            this.name = name;
+            this.clas = clas;
+        }
         
     }
 }
