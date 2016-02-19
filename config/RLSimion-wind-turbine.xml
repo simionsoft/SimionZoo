@@ -74,17 +74,32 @@
                   <RBF-Grid>
                     <RBF-Grid-Dimension>
                       <Variable>omega_r</Variable>
-                      <Num-Features>10000</Num-Features>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>d_omega_r</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>T_g</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>E_p</Variable>
+                      <Num-Features>40</Num-Features>
                       <Distribution>cubic</Distribution>
                     </RBF-Grid-Dimension>
                   </RBF-Grid>
                 </Linear-VFA>
                 <Exploration-Noise>
                   <Sigma>
-                    <Start-Offset>0.2</Start-Offset>
+                    <Start-Offset>0.0</Start-Offset>
                     <Pre-Offset-Value>0.0</Pre-Offset-Value>
                     <Interpolation>linear</Interpolation>
-                    <Initial-Value>0.0001</Initial-Value>
+                    <Initial-Value>0.00001</Initial-Value>
                     <End-Value>0.0</End-Value>
                     <Evaluation-Value>0.0</Evaluation-Value>
                   </Sigma>
@@ -93,8 +108,8 @@
             </Policy>
             <Alpha>
               <Interpolation>linear</Interpolation>
-              <Initial-Value>0.01</Initial-Value>
-              <End-Value>0.001</End-Value>
+              <Initial-Value>0.001</Initial-Value>
+              <End-Value>0.0001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Alpha>
           </CACLA>
@@ -106,32 +121,32 @@
                   <RBF-Grid>
                     <RBF-Grid-Dimension>
                       <Variable>omega_r</Variable>
-                      <Num-Features>80</Num-Features>
+                      <Num-Features>40</Num-Features>
                       <Distribution>cubic</Distribution>
                     </RBF-Grid-Dimension>
                     <RBF-Grid-Dimension>
                       <Variable>d_omega_r</Variable>
-                      <Num-Features>80</Num-Features>
+                      <Num-Features>40</Num-Features>
                       <Distribution>cubic</Distribution>
                     </RBF-Grid-Dimension>
                     <RBF-Grid-Dimension>
                       <Variable>T_g</Variable>
-                      <Num-Features>80</Num-Features>
+                      <Num-Features>40</Num-Features>
                       <Distribution>linear</Distribution>
                     </RBF-Grid-Dimension>
                     <RBF-Grid-Dimension>
                       <Variable>E_p</Variable>
-                      <Num-Features>80</Num-Features>
+                      <Num-Features>40</Num-Features>
                       <Distribution>cubic</Distribution>
                     </RBF-Grid-Dimension>
                   </RBF-Grid>
                 </Linear-VFA>
                 <Exploration-Noise>
                   <Sigma>
-                    <Start-Offset>0.2</Start-Offset>
+                    <Start-Offset>0.0</Start-Offset>
                     <Pre-Offset-Value>0.0</Pre-Offset-Value>
                     <Interpolation>linear</Interpolation>
-                    <Initial-Value>0.0001</Initial-Value>
+                    <Initial-Value>0.01</Initial-Value>
                     <End-Value>0.0</End-Value>
                     <Evaluation-Value>0.0</Evaluation-Value>
                   </Sigma>
@@ -140,8 +155,8 @@
             </Policy>
             <Alpha>
               <Interpolation>linear</Interpolation>
-              <Initial-Value>0.01</Initial-Value>
-              <End-Value>0.001</End-Value>
+              <Initial-Value>0.001</Initial-Value>
+              <End-Value>0.0001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Alpha>
           </CACLA>
@@ -184,7 +199,7 @@
           <Alpha>
             <Interpolation>linear</Interpolation>
             <Initial-Value>0.1</Initial-Value>
-            <End-Value>0.01</End-Value>
+            <End-Value>0.1</End-Value>
             <Evaluation-Value>0.0</Evaluation-Value>
           </Alpha>
         </TD-Lambda>

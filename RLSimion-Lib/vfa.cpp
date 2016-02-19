@@ -53,7 +53,7 @@ void CLinearVFA::add(CFeatureList* pFeatures, double alpha)
 {
 	assert(pFeatures);
 
-	//replicating code because i think it will be more efficient avoiding the if per iteration
+	//replicating code because i think it will be more efficient avoiding the per-iteration if
 	if (!m_bSaturateOutput)
 		for (unsigned int i= 0; i<pFeatures->m_numFeatures; i++)
 		{
