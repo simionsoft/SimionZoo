@@ -53,7 +53,7 @@
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>50</Eval-Freq>
     <LOG>
-      <Freq>0.0</Freq>
+      <Freq>0.25</Freq>
       <Ouput-directory>wind-turbine-2</Ouput-directory>
       <Prefix>wt-learn-vidal</Prefix>
       <Log-eval-episodes>true</Log-eval-episodes>
@@ -67,28 +67,30 @@
         <LOAD>../data/vidal-policy-not-uniform-2.bin</LOAD>
         <OUTPUTS>
           <CACLA>
-            <VFA-Policy>
-              <Output-Action>d_beta</Output-Action>
-              <Linear-VFA>
-                <RBF-Grid>
-                  <RBF-Grid-Dimension>
-                    <Variable>omega_r</Variable>
-                    <Num-Features>10000</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                </RBF-Grid>
-              </Linear-VFA>
-              <Exploration-Noise>
-                <Sigma>
-                  <Start-Offset>0.2</Start-Offset>
-                  <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                  <Interpolation>linear</Interpolation>
-                  <Initial-Value>0.000001</Initial-Value>
-                  <End-Value>0.0</End-Value>
-                  <Evaluation-Value>0.0</Evaluation-Value>
-                </Sigma>
-              </Exploration-Noise>
-            </VFA-Policy>
+            <POLICY>
+              <State-Function-Gaussian-Noise>
+                <Output-Action>d_beta</Output-Action>
+                <Linear-VFA>
+                  <RBF-Grid>
+                    <RBF-Grid-Dimension>
+                      <Variable>omega_r</Variable>
+                      <Num-Features>10000</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                  </RBF-Grid>
+                </Linear-VFA>
+                <Exploration-Noise>
+                  <Sigma>
+                    <Start-Offset>0.2</Start-Offset>
+                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                    <Interpolation>linear</Interpolation>
+                    <Initial-Value>0.0001</Initial-Value>
+                    <End-Value>0.0</End-Value>
+                    <Evaluation-Value>0.0</Evaluation-Value>
+                  </Sigma>
+                </Exploration-Noise>
+              </State-Function-Gaussian-Noise>
+            </POLICY>
             <Alpha>
               <Interpolation>linear</Interpolation>
               <Initial-Value>0.01</Initial-Value>
@@ -97,43 +99,45 @@
             </Alpha>
           </CACLA>
           <CACLA>
-            <VFA-Policy>
-              <Output-Action>d_T_g</Output-Action>
-              <Linear-VFA>
-                <RBF-Grid>
-                  <RBF-Grid-Dimension>
-                    <Variable>omega_r</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>d_omega_r</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>T_g</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>linear</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>E_p</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                </RBF-Grid>
-              </Linear-VFA>
-              <Exploration-Noise>
-                <Sigma>
-                  <Start-Offset>0.2</Start-Offset>
-                  <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                  <Interpolation>linear</Interpolation>
-                  <Initial-Value>0.000001</Initial-Value>
-                  <End-Value>0.0</End-Value>
-                  <Evaluation-Value>0.0</Evaluation-Value>
-                </Sigma>
-              </Exploration-Noise>
-            </VFA-Policy>
+            <POLICY>
+              <State-Function-Gaussian-Noise>
+                <Output-Action>d_T_g</Output-Action>
+                <Linear-VFA>
+                  <RBF-Grid>
+                    <RBF-Grid-Dimension>
+                      <Variable>omega_r</Variable>
+                      <Num-Features>80</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>d_omega_r</Variable>
+                      <Num-Features>80</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>T_g</Variable>
+                      <Num-Features>80</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>E_p</Variable>
+                      <Num-Features>80</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                  </RBF-Grid>
+                </Linear-VFA>
+                <Exploration-Noise>
+                  <Sigma>
+                    <Start-Offset>0.2</Start-Offset>
+                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                    <Interpolation>linear</Interpolation>
+                    <Initial-Value>0.0001</Initial-Value>
+                    <End-Value>0.0</End-Value>
+                    <Evaluation-Value>0.0</Evaluation-Value>
+                  </Sigma>
+                </Exploration-Noise>
+              </State-Function-Gaussian-Noise>
+            </POLICY>
             <Alpha>
               <Interpolation>linear</Interpolation>
               <Initial-Value>0.01</Initial-Value>

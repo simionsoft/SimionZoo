@@ -66,6 +66,8 @@ void CLinearVFA::add(CFeatureList* pFeatures, double alpha)
 		{
 			assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
 
+			assert(m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor>=m_minOutput);
+			assert(m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor <= m_maxOutput);
 			//saturate output by saturation of the weights
 			m_pWeights[pFeatures->m_pFeatures[i].m_index] = 
 				std::min(m_maxOutput,

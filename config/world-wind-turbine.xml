@@ -95,8 +95,8 @@
     <Variable>
       <Name>d_T_g</Name>
       <Units>N/m/s</Units>
-      <Min>-1000</Min>
-      <Max>1000</Max>
+      <Min>-100000</Min>
+      <Max>100000</Max>
     </Variable>
   </ACTION>
   <CONSTANTS>

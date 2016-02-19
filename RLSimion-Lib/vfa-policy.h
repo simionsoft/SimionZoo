@@ -10,6 +10,7 @@ typedef CNamedVarSet CAction;
 
 class tinyxml2::XMLElement;
 
+
 class CSingleOutputVFAPolicy : public CParamObject
 {
 
