@@ -9,16 +9,21 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
+            <DataTemplate DataType="{x:Type vm:MultiValuedViewModel}">
+                <v:MultiValuedView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:IntegerViewModel}">
                 <v:IntegerView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:BranchViewModel}">
+                <v:BranchView/>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
+    <ItemsControl Background="Azure">
+        <ListBox x:Name="Items"/>
+        <ListBox x:Name="Multis"/>  
+        <ListBox x:Name="Branches"/>
         <ContentControl x:Name="Choice"></ContentControl>
-        <StackPanel Orientation="Vertical">
-            <ItemsControl ItemsSource="{Binding Items}">         
-            </ItemsControl>
-        </StackPanel>
-    </StackPanel>
+    </ItemsControl>
 </UserControl>

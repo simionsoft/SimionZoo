@@ -19,16 +19,17 @@ using System.Windows;
 using Caliburn.Micro;
 namespace AppXML.ViewModels
 {
-    public class MainWindowViewModel: PropertyChangedBase
+    public class WindowViewModel: PropertyChangedBase
     {
         private CNode _rootnode;
-        //private BranchViewModel _branch;
-        public MainWindowViewModel()
+        private BranchViewModel _branch;
+        public WindowViewModel()
         {
             _rootnode = Utility.getRootNode("../config/RLSimion.xml");
-           
-          //  _branch = new BranchViewModel(_rootnode.children[1]);
+
+            _branch = new BranchViewModel("World", "Wind-turbine-parameters");
         }
+        public BranchViewModel Branch { get { return _branch; } set { } }
         public CNode rootnode
         {
             get
