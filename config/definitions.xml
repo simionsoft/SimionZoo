@@ -46,7 +46,7 @@
   <!--SIMGOD-->
   <CLASS Name="SIMGOD">
     <CHOICE Name="Configuration">
-      <CHOICE-ELEMENT Name="Actor" Class="ACTOR-COMPONENTS-CONFIG"/>
+      <CHOICE-ELEMENT Name="Actor" Class="ACTOR-CONFIG"/>
       
       <CHOICE-ELEMENT Name="Actor-Critic" Class="ACTOR-CRITIC-CONFIG"/>
 

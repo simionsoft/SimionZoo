@@ -22,14 +22,15 @@ namespace AppXML.ViewModels
     public class WindowViewModel: PropertyChangedBase
     {
         private CNode _rootnode;
-        private BranchViewModel _branch;
+        //private BranchViewModel _branch;
         public WindowViewModel()
         {
             _rootnode = Utility.getRootNode("../config/RLSimion.xml");
+            
 
-            _branch = new BranchViewModel("World", "Wind-turbine-parameters");
+            //_branch = new BranchViewModel("World", "Wind-turbine-parameters");
         }
-        public BranchViewModel Branch { get { return _branch; } set { } }
+        //public BranchViewModel Branch { get { return _branch; } set { } }
         public CNode rootnode
         {
             get
