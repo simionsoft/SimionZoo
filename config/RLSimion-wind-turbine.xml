@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RLSimion>
-  <WORLD>
-    <DYNAMIC-MODEL>
+  <World>
+    <Dynamic-Model>
       <Wind-turbine>
-        <WORLD-DEFINITION>..\config\world-wind-turbine.xml</WORLD-DEFINITION>
-        <EVALUATION_WIND_DATA>..\config\wind-turbine\setpoints\TurbSim-10.25.hh</EVALUATION_WIND_DATA>
-        <TRAINING_WIND_DATA>
-          <FILE>../config/wind-turbine/setpoints/TurbSim-10.25.hh</FILE>
+        <World-Definition>..\config\world-wind-turbine.xml</World-Definition>
+        <Evaluation-Wind-Data>..\config\wind-turbine\setpoints\TurbSim-10.25.hh</Evaluation-Wind-Data>
+        <Training-Wind-Data>
+          <File>../config/wind-turbine/setpoints/TurbSim-10.25.hh</File>
           <!--<FILE>../config/wind-turbine/setpoints/TurbSim-9.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-9.5.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-10.hh</FILE>
@@ -14,13 +14,13 @@
           <FILE>../config/wind-turbine/setpoints/TurbSim-11.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-11.5.hh</FILE>
           <FILE>../config/wind-turbine/setpoints/TurbSim-12.hh</FILE>-->          
-        </TRAINING_WIND_DATA>
-        <POWER_SET_POINT>../config/wind-turbine/setpoints/windturbine-power-setpoint.txt</POWER_SET_POINT>
+        </Training-Wind-Data>
+        <Power-Set-Point>../config/wind-turbine/setpoints/windturbine-power-setpoint.txt</Power-Set-Point>
       </Wind-turbine>
-    </DYNAMIC-MODEL>
+    </Dynamic-Model>
     <Delta-T>0.01</Delta-T>
     <Num-Simulation-Steps>4</Num-Simulation-Steps>
-    <REWARD>
+    <Reward>
       <Min>-100</Min>
       <Max>1.0</Max>
       <Reward-components>
@@ -45,106 +45,125 @@
           <Variable>d_beta</Variable>
         </Deviation-Component>
       </Reward-components>
-    </REWARD>
-  </WORLD>
-  <EXPERIMENT>
+    </Reward>
+  </World>
+  <Experiment>
     <Num-Episodes>1000</Num-Episodes>
     <Episode-Length>360</Episode-Length>
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>50</Eval-Freq>
-    <LOG>
-      <Freq>0.0</Freq>
+    <Log>
+      <Freq>0.25</Freq>
       <Ouput-directory>wind-turbine-2</Ouput-directory>
       <Prefix>wt-learn-vidal</Prefix>
       <Log-eval-episodes>true</Log-eval-episodes>
       <Log-training-episodes>false</Log-training-episodes>
       <Log-eval-avg-rewards>true</Log-eval-avg-rewards>
-    </LOG>
-  </EXPERIMENT>
-  <SIMGOD>
-    <ACTOR>
+    </Log>
+  </Experiment>
+  <SimGod>
+    <Actor>
       <VFA-Learner>
-        <LOAD>../data/vidal-policy-not-uniform-2.bin</LOAD>
-        <OUTPUTS>
+        <Load>../data/test.bin</Load>
+        <Outputs>
           <CACLA>
-            <VFA-Policy>
-              <Output-Action>d_beta</Output-Action>
-              <Linear-VFA>
-                <RBF-Grid>
-                  <RBF-Grid-Dimension>
-                    <Variable>omega_r</Variable>
-                    <Num-Features>10000</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                </RBF-Grid>
-              </Linear-VFA>
-              <Exploration-Noise>
-                <Sigma>
-                  <Start-Offset>0.2</Start-Offset>
-                  <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                  <Interpolation>linear</Interpolation>
-                  <Initial-Value>0.000001</Initial-Value>
-                  <End-Value>0.0</End-Value>
-                  <Evaluation-Value>0.0</Evaluation-Value>
-                </Sigma>
-              </Exploration-Noise>
-            </VFA-Policy>
+            <Policy>
+              <VFA-Policy>
+                <Output-Action>d_beta</Output-Action>
+                <Linear-VFA>
+                  <RBF-Grid>
+                    <RBF-Grid-Dimension>
+                      <Variable>omega_r</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>d_omega_r</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>T_g</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>E_p</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                  </RBF-Grid>
+                </Linear-VFA>
+                <Exploration-Noise>
+                  <Sigma>
+                    <Start-Offset>0.0</Start-Offset>
+                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                    <Interpolation>linear</Interpolation>
+                    <Initial-Value>0.00001</Initial-Value>
+                    <End-Value>0.0</End-Value>
+                    <Evaluation-Value>0.0</Evaluation-Value>
+                  </Sigma>
+                </Exploration-Noise>
+              </VFA-Policy>
+            </Policy>
             <Alpha>
               <Interpolation>linear</Interpolation>
-              <Initial-Value>0.01</Initial-Value>
-              <End-Value>0.001</End-Value>
+              <Initial-Value>0.001</Initial-Value>
+              <End-Value>0.0001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Alpha>
           </CACLA>
           <CACLA>
-            <VFA-Policy>
-              <Output-Action>d_T_g</Output-Action>
-              <Linear-VFA>
-                <RBF-Grid>
-                  <RBF-Grid-Dimension>
-                    <Variable>omega_r</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>d_omega_r</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>T_g</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>linear</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>E_p</Variable>
-                    <Num-Features>80</Num-Features>
-                    <Distribution>cubic</Distribution>
-                  </RBF-Grid-Dimension>
-                </RBF-Grid>
-              </Linear-VFA>
-              <Exploration-Noise>
-                <Sigma>
-                  <Start-Offset>0.2</Start-Offset>
-                  <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                  <Interpolation>linear</Interpolation>
-                  <Initial-Value>0.000001</Initial-Value>
-                  <End-Value>0.0</End-Value>
-                  <Evaluation-Value>0.0</Evaluation-Value>
-                </Sigma>
-              </Exploration-Noise>
-            </VFA-Policy>
+            <Policy>
+              <VFA-Policy>
+                <Output-Action>d_T_g</Output-Action>
+                <Linear-VFA>
+                  <RBF-Grid>
+                    <RBF-Grid-Dimension>
+                      <Variable>omega_r</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>d_omega_r</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>T_g</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>E_p</Variable>
+                      <Num-Features>40</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                  </RBF-Grid>
+                </Linear-VFA>
+                <Exploration-Noise>
+                  <Sigma>
+                    <Start-Offset>0.0</Start-Offset>
+                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                    <Interpolation>linear</Interpolation>
+                    <Initial-Value>0.01</Initial-Value>
+                    <End-Value>0.0</End-Value>
+                    <Evaluation-Value>0.0</Evaluation-Value>
+                  </Sigma>
+                </Exploration-Noise>
+              </VFA-Policy>
+            </Policy>
             <Alpha>
               <Interpolation>linear</Interpolation>
-              <Initial-Value>0.01</Initial-Value>
-              <End-Value>0.001</End-Value>
+              <Initial-Value>0.001</Initial-Value>
+              <End-Value>0.0001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Alpha>
           </CACLA>
-        </OUTPUTS>
+        </Outputs>
       </VFA-Learner>
-    </ACTOR>
-    <CRITIC>
+    </Actor>
+    <Critic>
       <VFA-Critic>
         <TD-Lambda>
           <Linear-VFA>
@@ -180,11 +199,11 @@
           <Alpha>
             <Interpolation>linear</Interpolation>
             <Initial-Value>0.1</Initial-Value>
-            <End-Value>0.01</End-Value>
+            <End-Value>0.1</End-Value>
             <Evaluation-Value>0.0</Evaluation-Value>
           </Alpha>
         </TD-Lambda>
       </VFA-Critic>
-    </CRITIC>
-  </SIMGOD>
+    </Critic>
+  </SimGod>
 </RLSimion>

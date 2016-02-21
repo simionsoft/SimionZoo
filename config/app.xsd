@@ -8,7 +8,5 @@
       <xs:element name="BRANCH" minOccurs="0" maxOccurs="unbounded" type="BRANCH"/>
     </xs:sequence>
     <xs:attribute name="Name" type="xs:string"/>
-  </xs:complexType>
-  
-  
+  </xs:complexType>  
 </xs:schema>

@@ -63,7 +63,7 @@ double CIncrementalNaturalCritic::updateValue(CState *s, CAction *a, CState *s_p
 }
 
 CIncrementalNaturalActor::CIncrementalNaturalActor(tinyxml2::XMLElement* pParameters) 
-: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("VFA-Policy"))
+: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("Policy")->FirstChildElement())
 {
 	m_grad_u = new CFeatureList();
 	m_s_features = new CFeatureList();
@@ -110,7 +110,7 @@ void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, d
 	double alpha_v = m_pAlphaV->getValue();
 	double alpha_u = m_pAlphaU->getValue();
 
-	if (g_pExperiment->m_expProgress.isFirstStep())
+	if (RLSimion::g_pExperiment->m_expProgress.isFirstStep())
 		m_w->clear();
 	
 

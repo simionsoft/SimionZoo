@@ -36,7 +36,7 @@ CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxm
 
 CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameters)
 {
-	tinyxml2::XMLElement* pOutputs = pParameters->FirstChildElement("OUTPUTS");
+	tinyxml2::XMLElement* pOutputs = pParameters->FirstChildElement("Outputs");
 
 	m_numOutputs = XMLParameters::countChildren(pOutputs);
 	
@@ -50,15 +50,15 @@ CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameter
 		pOutput = pOutput->NextSiblingElement();
 	}
 
-	if (pParameters->FirstChildElement("LOAD"))
-		loadPolicy(pParameters->FirstChildElement("LOAD")->GetText());
+	if (pParameters->FirstChildElement("Load"))
+		loadPolicy(pParameters->FirstChildElement("Load")->GetText());
 
 }
 
 CVFAActor::~CVFAActor()
 {
-	if (m_pParameters->FirstChildElement("SAVE"))
-		savePolicy(m_pParameters->FirstChildElement("SAVE")->GetText());
+	if (m_pParameters->FirstChildElement("Save"))
+		savePolicy(m_pParameters->FirstChildElement("Save")->GetText());
 
 	for (int i = 0; i<m_numOutputs; i++)
 	{
@@ -80,7 +80,7 @@ void CVFAActor::selectAction(CState *s, CAction *a)
 
 void CVFAActor::updatePolicy(CState* s, CAction* a, CState* s_p, double r, double td)
 {
-	if (!g_pExperiment->isEvaluationEpisode())
+	if (!RLSimion::g_pExperiment->isEvaluationEpisode())
 		for (int i = 0; i<m_numOutputs; i++)
 		{
 			//each uni-dimensional policy sets its own action's value

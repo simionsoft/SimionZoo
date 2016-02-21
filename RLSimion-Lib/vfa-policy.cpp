@@ -16,8 +16,9 @@ CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters
 	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("Linear-VFA"));
 
 	m_pExpNoise = new CGaussianNoise(pParameters->FirstChildElement("Exploration-Noise"));
+
 	m_outputAction = m_pParameters->FirstChildElement("Output-Action")->GetText();
-	CAction *pActionDescriptor = g_pWorld->getActionDescriptor();
+	CAction *pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
 	m_outputActionIndex = pActionDescriptor->getVarIndex(m_outputAction);
 
 	m_pVFA->saturateOutput(pActionDescriptor->getMin(m_outputActionIndex), pActionDescriptor->getMax(m_outputActionIndex));

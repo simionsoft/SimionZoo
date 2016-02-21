@@ -1,5 +1,6 @@
-<WORLD-DEFINITION>
-  <STATE>
+<?xml version="1.0" encoding="utf-8"?>
+<World-Definition>
+  <State>
     <Variable>
       <Name>P_s</Name>
       <Units>W</Units>
@@ -11,81 +12,81 @@
       <Units>W</Units>
       <Min>500000.0</Min>
       <Max>700000.0</Max>
-      </Variable>
-      <Variable>
-        <Name>P_a</Name>
-        <Units>W</Units>
-        <Min>0.0</Min>
-        <Max>1600000.0</Max>
-      </Variable>
-      <Variable>
-        <Name>v</Name>
-        <Units>m/s</Units>
-        <Min>1.0</Min>
-        <Max>50.0</Max>
-      </Variable>
-      <Variable>
-        <Name>T_a</Name>
-        <Units>N/m</Units>
-        <Min>0.0</Min>
-        <Max>400000.0</Max>
-      </Variable>
-      <Variable>
-        <Name>omega_r</Name>
-        <Units>rad/s</Units>
-        <Min>2.39823</Min>
-        <Max>6.39823</Max>
-      </Variable>
-      <Variable>
-        <Name>d_omega_r</Name>
-        <Units>rad/s^2</Units>
-        <Min>-2.0</Min>
-        <Max>2.0</Max>
-      </Variable>
-      <Variable>
-        <Name>beta</Name>
-        <Units>rad</Units>
-        <Min>-0.3490658504</Min>
-        <Max>0.5235987756</Max>
-      </Variable>
-      <Variable>
-        <Name>d_beta</Name>
-        <Units>rad/s</Units>
-        <Min>-0.1745329252</Min>
-        <Max>0.1745329252</Max>
-      </Variable>
-      <Variable>
-        <Name>T_g</Name>
-        <Units>N/m</Units>
-        <Min>100000</Min>
-        <Max>162000</Max>
-      </Variable>
-      <Variable>
-        <Name>d_T_g</Name>
-        <Units>N/m/s</Units>
-        <Min>-100000</Min>
-        <Max>100000</Max>
-      </Variable>
-      <Variable>
-        <Name>E_p</Name>
-        <Units>W</Units>
-        <Min>-100000</Min>
-        <Max>100000</Max>
-      </Variable>
-      <Variable>
-        <Name>E_omega_r</Name>
-        <Units>rad/s</Units>
-        <Min>-4.0</Min>
-        <Max>4.0</Max>
-      </Variable>
-      <Variable>
-        <Name>E_int_omega_r</Name>
-        <Units>rad</Units>
-        <Min>-100.0</Min>
-        <Max>100.0</Max>
-      </Variable>
-    </STATE>
-  <ACTION>
+    </Variable>
+    <Variable>
+      <Name>P_a</Name>
+      <Units>W</Units>
+      <Min>0.0</Min>
+      <Max>1600000.0</Max>
+    </Variable>
+    <Variable>
+      <Name>v</Name>
+      <Units>m/s</Units>
+      <Min>1.0</Min>
+      <Max>50.0</Max>
+    </Variable>
+    <Variable>
+      <Name>T_a</Name>
+      <Units>N/m</Units>
+      <Min>0.0</Min>
+      <Max>400000.0</Max>
+    </Variable>
+    <Variable>
+      <Name>omega_r</Name>
+      <Units>rad/s</Units>
+      <Min>2.39823</Min>
+      <Max>6.39823</Max>
+    </Variable>
+    <Variable>
+      <Name>d_omega_r</Name>
+      <Units>rad/s^2</Units>
+      <Min>-2.0</Min>
+      <Max>2.0</Max>
+    </Variable>
+    <Variable>
+      <Name>beta</Name>
+      <Units>rad</Units>
+      <Min>-0.3490658504</Min>
+      <Max>0.5235987756</Max>
+    </Variable>
+    <Variable>
+      <Name>d_beta</Name>
+      <Units>rad/s</Units>
+      <Min>-0.1745329252</Min>
+      <Max>0.1745329252</Max>
+    </Variable>
+    <Variable>
+      <Name>T_g</Name>
+      <Units>N/m</Units>
+      <Min>100000</Min>
+      <Max>162000</Max>
+    </Variable>
+    <Variable>
+      <Name>d_T_g</Name>
+      <Units>N/m/s</Units>
+      <Min>-100000</Min>
+      <Max>100000</Max>
+    </Variable>
+    <Variable>
+      <Name>E_p</Name>
+      <Units>W</Units>
+      <Min>-100000</Min>
+      <Max>100000</Max>
+    </Variable>
+    <Variable>
+      <Name>E_omega_r</Name>
+      <Units>rad/s</Units>
+      <Min>-4.0</Min>
+      <Max>4.0</Max>
+    </Variable>
+    <Variable>
+      <Name>E_int_omega_r</Name>
+      <Units>rad</Units>
+      <Min>-100.0</Min>
+      <Max>100.0</Max>
+    </Variable>
+  </State>
+  <Action>
     <Variable>
       <Name>d_beta</Name>
       <Units>rad/s</Units>
@@ -95,11 +96,11 @@
     <Variable>
       <Name>d_T_g</Name>
       <Units>N/m/s</Units>
-      <Min>-1000</Min>
-      <Max>1000</Max>
+      <Min>-100000</Min>
+      <Max>100000</Max>
     </Variable>
-  </ACTION>
-  <CONSTANTS>
+  </Action>
+  <Constants>
     <Constant>
       <Name>P_e_nom</Name>
       <Value>600000.0</Value>
@@ -129,5 +130,5 @@
       <Value>3.9200000</Value>
       <!--3.92e5-->
     </Constant>
-  </CONSTANTS>
-</WORLD-DEFINITION>
+  </Constants>
+</World-Definition>

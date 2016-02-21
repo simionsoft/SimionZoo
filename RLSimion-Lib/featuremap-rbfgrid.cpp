@@ -14,8 +14,8 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 					  ,double minV, double maxV,const char* distribution)
 {
 	int index;
-	CState *pSDesc= g_pWorld->getStateDescriptor();
-	CAction *pADesc= g_pWorld->getActionDescriptor();
+	CState *pSDesc= RLSimion::g_pWorld->getStateDescriptor();
+	CAction *pADesc= RLSimion::g_pWorld->getActionDescriptor();
 
 	m_pCenters[i]= new double[numCenters];
 	m_pNumCenters[i]= numCenters;
@@ -101,11 +101,11 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 
 		if (dimension->FirstChildElement("Min"))
 			min = XMLParameters::getConstDouble(dimension->FirstChildElement("Min"));
-		else min = g_pWorld->getStateDescriptor()->getMin(varName);
+		else min = RLSimion::g_pWorld->getStateDescriptor()->getMin(varName);
 
 		if (dimension->FirstChildElement("Max"))
 			max = XMLParameters::getConstDouble(dimension->FirstChildElement("Max"));
-		else max = g_pWorld->getStateDescriptor()->getMax(varName);
+		else max = RLSimion::g_pWorld->getStateDescriptor()->getMax(varName);
 
 		distType = dimension->FirstChildElement("Distribution")->GetText();
 		initCenterPoints(i, varName, numFeatures, min, max, distType);
