@@ -36,9 +36,8 @@ void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
 	double noise;
 	double output;
 
-	//scaling the noise after sampling the normal distribution seems to mess with INAC's use of the variance
-	//a_width = 0.5*(a->getMax(m_outputActionIndex) - a->getMin(m_outputActionIndex));
-	noise = m_pExpNoise->getNewValue();// *a_width;
+	
+	noise = m_pExpNoise->getNewValue() * a->getRangeWidth(m_outputActionIndex);
 
 	output = m_pVFA->getValue(s, 0);
 

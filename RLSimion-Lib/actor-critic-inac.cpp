@@ -119,9 +119,10 @@ void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, d
 	double sigma = m_pPolicy->getExpNoise()->getSigma();
 	//do we have to scale the noise?
 	int actionIndex = m_pPolicy->getOutputActionIndex();
-	//double a_width = a->getMax(actionIndex) - a->getMin(actionIndex);
+
 	double noise = a->getValue(actionIndex) - m_pPolicy->getVFA()->getValue(m_s_features);
-	double factor= (noise) /*/a_width*/	/ (sigma*sigma);
+	//log (noise_scale_factor * noise) = log(noise_scale_factor) + log (noise), right????
+	double factor= log(a->getRangeWidth(actionIndex)) + (noise) / (sigma*sigma);
 	m_grad_u->clear();
 	m_grad_u->addFeatureList(m_s_features, factor);
 	//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)

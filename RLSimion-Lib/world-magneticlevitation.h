@@ -7,6 +7,9 @@ class CSetPoint;
 //MAGNETIC LEVIATION OF A STEEL BALL
 class CMagneticLevitation: public CDynamicModel
 {
+	int m_sPosition, m_sVelocity, m_sCurrent;
+	int m_sPositionSetpoint, m_sPositionDeviation;
+	int m_aVoltage;
 	CSetPoint *m_pEvalSetPoint,*m_pLearnSetPoint;
 
 public:

@@ -64,15 +64,13 @@
   
   <Controller>
     <Multi-Controller>
-      <Controller>
-        <Vidal>
-          <A>1.0</A>
-          <K_alpha>6000.0</K_alpha>
-          <KP>1.0</KP>
-          <KI>0.0</KI>
-          <P_s>600000.0</P_s>
-        </Vidal>
-      </Controller>
+      <Vidal>
+        <A>1.0</A>
+        <K_alpha>6000.0</K_alpha>
+        <KP>1.0</KP>
+        <KI>0.0</KI>
+        <P_s>600000.0</P_s>
+      </Vidal>
     </Multi-Controller>
   </Controller>
   

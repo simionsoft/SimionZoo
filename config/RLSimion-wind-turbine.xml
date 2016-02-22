@@ -99,7 +99,7 @@
                     <Start-Offset>0.0</Start-Offset>
                     <Pre-Offset-Value>0.0</Pre-Offset-Value>
                     <Interpolation>linear</Interpolation>
-                    <Initial-Value>0.00001</Initial-Value>
+                    <Initial-Value>0.0001</Initial-Value>
                     <End-Value>0.0</End-Value>
                     <Evaluation-Value>0.0</Evaluation-Value>
                   </Sigma>
@@ -108,7 +108,7 @@
             </Policy>
             <Alpha>
               <Interpolation>linear</Interpolation>
-              <Initial-Value>0.001</Initial-Value>
+              <Initial-Value>0.0001</Initial-Value>
               <End-Value>0.0001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Alpha>
@@ -146,7 +146,7 @@
                     <Start-Offset>0.0</Start-Offset>
                     <Pre-Offset-Value>0.0</Pre-Offset-Value>
                     <Interpolation>linear</Interpolation>
-                    <Initial-Value>0.01</Initial-Value>
+                    <Initial-Value>0.00001</Initial-Value>
                     <End-Value>0.0</End-Value>
                     <Evaluation-Value>0.0</Evaluation-Value>
                   </Sigma>
@@ -155,7 +155,7 @@
             </Policy>
             <Alpha>
               <Interpolation>linear</Interpolation>
-              <Initial-Value>0.001</Initial-Value>
+              <Initial-Value>0.0001</Initial-Value>
               <End-Value>0.0001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Alpha>
@@ -195,11 +195,11 @@
             <Lambda>0.9</Lambda>
             <Threshold>0.0001</Threshold>
           </E-Traces>
-          <Gamma>0.9</Gamma>
+          <Gamma>0.4</Gamma>
           <Alpha>
             <Interpolation>linear</Interpolation>
             <Initial-Value>0.1</Initial-Value>
-            <End-Value>0.1</End-Value>
+            <End-Value>0.01</End-Value>
             <Evaluation-Value>0.0</Evaluation-Value>
           </Alpha>
         </TD-Lambda>

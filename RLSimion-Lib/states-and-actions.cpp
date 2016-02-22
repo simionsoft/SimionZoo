@@ -58,6 +58,14 @@ double CNamedVarSet::getMax(int i)
 		return m_pProperties[i].max;
 	return 0.0;
 }
+
+double CNamedVarSet::getRangeWidth(int i)
+{
+	if (i >= 0 && i<m_numVars)
+		return m_pProperties[i].max - m_pProperties[i].min;
+	return 0.0;
+}
+
 double CNamedVarSet::getMin(const char* name)
 {
 	int i= getVarIndex(name);
@@ -117,6 +125,7 @@ int CNamedVarSet::getVarIndex(const char* varName)
 		if (strcmp(m_pProperties[i].name,varName)==0)
 			return i;
 	}
+	assert(0);
 	return -1;
 }
 

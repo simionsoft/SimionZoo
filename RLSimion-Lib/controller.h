@@ -51,6 +51,12 @@ public:
 
 class CWindTurbineVidalController : public CActor
 {
+	//state variable indices
+	int m_omega_r_index, m_d_omega_r_index;
+	int m_E_p_index, m_T_g_index, m_beta_index;
+	int m_E_int_omega_r_index;
+	//action variable indices
+	int m_d_beta_index, m_d_T_g_index;
 	INumericValue *m_pA, *m_pK_alpha, *m_pKP, *m_pKI, *m_P_s;
 public:
 	CWindTurbineVidalController(tinyxml2::XMLElement* pParameters);
@@ -61,6 +67,14 @@ public:
 
 class CWindTurbineBoukhezzarController : public CActor
 {
+	//state variable indices
+	int m_omega_r_index, m_d_omega_r_index;
+	int m_E_p_index, m_T_a_index, m_T_g_index;
+	int m_beta_index, m_E_int_omega_r_index;
+
+	//action variable indices
+	int m_d_beta_index, m_d_T_g_index;
+
 	INumericValue *m_pC_0, *m_pKP, *m_pKI;
 	double m_K_t, m_J_t;
 public:
@@ -72,6 +86,10 @@ public:
 
 class CWindTurbineJonkmanController : public CActor
 {
+	int m_omega_g_index, m_d_omega_r_index;
+	int m_E_p_index, m_T_g_index, m_beta_index;
+	int m_d_beta_index, m_d_T_g_index;
+
 	//generator speed filter's parameters and variables
 	double m_CornerFreq, m_GenSpeedF;
 	//generator torque controller's parameters and variables
