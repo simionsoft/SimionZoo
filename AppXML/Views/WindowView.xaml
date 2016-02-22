@@ -7,23 +7,19 @@
              xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <!--
+    
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:BranchViewModel}">
             <v:BranchView/>
         </DataTemplate>
-    </Window.Resources> -->
+    </Window.Resources> 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="251*"/>
-            <ColumnDefinition Width="266*"/>
-        </Grid.ColumnDefinitions>
-        <TreeView x:Name="Tree" HorizontalAlignment="Left" Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="352" Grid.ColumnSpan="2">
-           
-            <TreeViewItem ItemsSource="{Binding rootnode.children}" Header="{Binding rootnode.name}">
-               
+        
+        <TreeView  HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
+            <TreeViewItem x:Name="Branches" Header="{Binding rootnode.name}">
+                
             </TreeViewItem>
+           
         </TreeView>
-
     </Grid>
 </Window>

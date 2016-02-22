@@ -10,6 +10,12 @@ namespace AppXML.ViewModels
     {
         private string _name;
         private ClassViewModel _class;
+        public BranchViewModel()
+        {
+            AppXML.Data.Utility.getRootNode("../config/RLSimion.xml");
+            _name = "World";
+            _class = new ClassViewModel("EXPERIMENT");
+        }
         public BranchViewModel(string name,string clas)
         {
             _name = name;

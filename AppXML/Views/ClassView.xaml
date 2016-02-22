@@ -21,9 +21,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <ItemsControl Background="Azure">
-        <ListBox x:Name="Items"/>
-        <ListBox x:Name="Multis"/>  
-        <ListBox x:Name="Branches"/>
+        <ListView x:Name="Items"/>
+        <ListView x:Name="Multis"/>  
+        <ListView x:Name="Branches"/>
         <ContentControl x:Name="Choice"></ContentControl>
     </ItemsControl>
 </UserControl>

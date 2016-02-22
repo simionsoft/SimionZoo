@@ -31,7 +31,7 @@ namespace AppXML.Data
             doc.Load(filePath);
             if (doc.HasChildNodes)
             {
-                XmlNode root = doc.ChildNodes[0];
+                XmlNode root = doc.ChildNodes[1];
                 if (root.HasChildNodes)
                 {
 
