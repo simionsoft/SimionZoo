@@ -17,13 +17,13 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
-            <Label x:Name="Label" Width="100"></Label>
+            <Label x:Name="Label" Width="200"></Label>
             <ComboBox SelectedIndex="0" ItemsSource="{Binding Combo}" Width="150" cal:Message.Attach="[Event SelectionChanged]=[Action ComboChanged($this)]">  
             </ComboBox>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ContentControl>
-                <Label x:Name="Class" Width="150"></Label>
+            <ContentControl x:Name="Class">
+                
             </ContentControl>
             
         </StackPanel>

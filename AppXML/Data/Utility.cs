@@ -31,7 +31,7 @@ namespace AppXML.Data
             doc.Load(filePath);
             if (doc.HasChildNodes)
             {
-                XmlNode root = doc.ChildNodes[0];
+                XmlNode root = doc.ChildNodes[1];
                 if (root.HasChildNodes)
                 {
 
@@ -63,7 +63,11 @@ namespace AppXML.Data
             XmlNode element = xmldoc.DocumentElement;
             CNode rootnode = CNode.getInstance(element);
             foreach (XmlNode node in element.ChildNodes)
-                rootnode.children.Add(CNode.getInstance(node));
+            {
+                CNode cn = CNode.getInstance(node);
+                if(cn is CBranch)
+                    rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value));
+            }
             return rootnode;
         }
     }

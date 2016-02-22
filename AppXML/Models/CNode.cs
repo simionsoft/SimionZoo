@@ -1,4 +1,5 @@
 ﻿using AppXML.Data;
+using AppXML.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,8 +14,12 @@ namespace AppXML.Models
     public class CNode
     {
         public static Dictionary<string, XmlNode> definitions;
-        private readonly ObservableCollection<CNode> _children = new ObservableCollection<CNode>();
-        public ObservableCollection<CNode> children { get { return _children; } }
+        private readonly ObservableCollection<BranchViewModel> _children = new ObservableCollection<BranchViewModel>();
+        public ObservableCollection<BranchViewModel> children { get { return _children; } set { } }
+        public void AddBranch(BranchViewModel branch)
+        {
+            _children.Add(branch);
+        }
         public string name { get; set; }
         public XmlNode node { get; set; }
         
