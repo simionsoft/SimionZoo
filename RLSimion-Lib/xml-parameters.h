@@ -7,10 +7,11 @@ public:
 	virtual double getValue() = 0;
 };
 
-
+#include <list>
 
 class XMLParameters
 {
+	static std::list<INumericValue*> m_handlers;
 public:
 	static int countChildren(tinyxml2::XMLElement* pElement, const char* name= 0);
 
@@ -20,4 +21,6 @@ public:
 	static int getConstInteger(tinyxml2::XMLElement* pParameter);
 	static double getConstDouble(tinyxml2::XMLElement* pParameter);
 	static const char* getConstString(tinyxml2::XMLElement* pParameter);
+
+	static void freeHandlers();
 };

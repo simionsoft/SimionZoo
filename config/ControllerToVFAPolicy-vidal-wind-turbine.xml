@@ -81,22 +81,22 @@
         <RBF-Grid>
           <RBF-Grid-Dimension>
             <Variable>omega_r</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>cubic</Distribution>
           </RBF-Grid-Dimension>
           <RBF-Grid-Dimension>
             <Variable>d_omega_r</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>cubic</Distribution>
           </RBF-Grid-Dimension>
           <RBF-Grid-Dimension>
             <Variable>T_g</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>linear</Distribution>
           </RBF-Grid-Dimension>
           <RBF-Grid-Dimension>
             <Variable>E_p</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>cubic</Distribution>
           </RBF-Grid-Dimension>
         </RBF-Grid>
@@ -108,22 +108,22 @@
         <RBF-Grid>
           <RBF-Grid-Dimension>
             <Variable>omega_r</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>cubic</Distribution>
           </RBF-Grid-Dimension>
           <RBF-Grid-Dimension>
             <Variable>d_omega_r</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>cubic</Distribution>
           </RBF-Grid-Dimension>
           <RBF-Grid-Dimension>
             <Variable>T_g</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>linear</Distribution>
           </RBF-Grid-Dimension>
           <RBF-Grid-Dimension>
             <Variable>E_p</Variable>
-            <Num-Features>40</Num-Features>
+            <Num-Features>80</Num-Features>
             <Distribution>cubic</Distribution>
           </RBF-Grid-Dimension>
         </RBF-Grid>
@@ -131,5 +131,5 @@
     </Single-Output-VFA>
   </Multi-Output-VFA>
   
-  <Output-File>../data/test.bin</Output-File>
+  <Output-File>../data/vidal-80.bin</Output-File>
 </Controller-To-VFA-Policy>

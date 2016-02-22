@@ -88,6 +88,9 @@ void CVFAActor::updatePolicy(CState* s, CAction* a, CState* s_p, double r, doubl
 		}
 }
 
+/*
+
+//doesn't work, not sure if it should either
 
 double CVFAActor::getProbability(CState* s, CAction* a)
 {
@@ -97,9 +100,10 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 	double varProd = 1.0;
 	double noiseWidth;
 	double var_i; //action's i-th dimension's variance
-	double a_width;
 	double output;
 
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+		return 1.0;
 	//http://en.wikipedia.org/wiki/Multivariate_normal_distribution
 
 	//if there is no correlation:
@@ -110,8 +114,9 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 		output = m_pPolicyLearners[i]->getPolicy()->getVFA()->getValue(s, a);
 
 		var_i = std::max(0.000000001, m_pPolicyLearners[i]->getPolicy()->getExpNoise()->getSigma());
-	//	a_width = 0.5*(a->getMax(i) - a->getMin(i));
-		noiseWidth = fabs((a->getValue(i) - output) /*/ a_width*/);
+
+		noiseWidth = fabs((a->getValue(i) - output) 
+			/ a->getRangeHalfWidth(m_pPolicyLearners[i]->getPolicy()->getOutputActionIndex()));
 
 		if (noiseWidth != 0.0)
 		{
@@ -128,7 +133,7 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 
 	return std::min(1.0, expo / root);
 }
-
+*/
 
 void CVFAActor::savePolicy(const char* pFilename)
 {

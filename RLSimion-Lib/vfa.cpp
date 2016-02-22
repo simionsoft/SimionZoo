@@ -14,7 +14,9 @@ CLinearVFA::CLinearVFA(tinyxml2::XMLElement* pParameters) : CParamObject(pParame
 	m_pAux = new CFeatureList();
 
 	double initValue = 0.0;
-	std::fill_n(m_pWeights, m_numWeights, initValue);
+	for (unsigned int i = 0; i < m_numWeights; i++)
+		m_pWeights[i] = initValue;
+	//std::fill_n(m_pWeights, m_numWeights, initValue);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;

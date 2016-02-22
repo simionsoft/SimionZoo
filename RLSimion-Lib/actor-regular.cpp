@@ -26,7 +26,6 @@ void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *
 {
 	double lastNoise;
 	double alpha;
-	const char* actionVar;
 
 	//Regular gradient actor update
 	//theta= theta + alpha*(lastNoise)*phi_pi(s)*td

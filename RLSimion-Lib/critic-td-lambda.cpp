@@ -21,8 +21,6 @@ CTDLambdaCritic::~CTDLambdaCritic()
 {
 	delete m_z;
 	delete m_aux;
-	delete m_pAlpha;
-	delete m_pGamma;
 }
 
 double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)

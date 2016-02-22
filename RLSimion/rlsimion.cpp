@@ -9,7 +9,7 @@
 #include "../RLSimion-Lib/states-and-actions.h"
 #include "../RLSimion-Lib/globals.h"
 #include "../RLSimion-Lib/experiment.h"
-
+#include "../RLSimion-Lib/xml-parameters.h"
 
 int main(int argc, char* argv[])
 {
@@ -71,8 +71,10 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	//pending task: rewrite using smart pointers
 	delete pSimGod;
 
+	XMLParameters::freeHandlers();
 
 	delete s;
 	delete s_p;

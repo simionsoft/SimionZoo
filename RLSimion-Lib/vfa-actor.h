@@ -42,7 +42,7 @@ public:
 
 	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
 
-	double getProbability(CState* s, CAction* a);
+//	double getProbability(CState* s, CAction* a);
 
 	void savePolicy(const char* pFilename);
 	void loadPolicy(const char* pFilename);

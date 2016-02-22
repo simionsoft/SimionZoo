@@ -62,7 +62,7 @@ double CNamedVarSet::getMax(int i)
 double CNamedVarSet::getRangeWidth(int i)
 {
 	if (i >= 0 && i<m_numVars)
-		return m_pProperties[i].max - m_pProperties[i].min;
+		return ( m_pProperties[i].max - m_pProperties[i].min);
 	return 0.0;
 }
 

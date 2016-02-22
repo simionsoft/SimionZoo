@@ -3,6 +3,8 @@
 #include "globals.h"
 #include "experiment.h"
 
+std::list<INumericValue*> XMLParameters::m_handlers;// = std::list<INumericValue*>();
+
 class CConstantValue : public INumericValue
 {
 	double m_value;
@@ -134,13 +136,24 @@ int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* nam
 
 INumericValue* XMLParameters::getNumericHandler(tinyxml2::XMLElement* pElement)
 {
+	INumericValue* pHandler;
 	if (!pElement->FirstChildElement())
-		return new CConstantValue(pElement);
+		pHandler= new CConstantValue(pElement);
+	else if (pElement->FirstChildElement("decimal"))
+		pHandler= new CConstantValue(pElement->FirstChildElement("decimal"));
+	else pHandler= new CInterpolatedValue(pElement);
 
-	if (pElement->FirstChildElement("decimal"))
-		return new CConstantValue(pElement->FirstChildElement("decimal"));
+	m_handlers.push_front(pHandler);
 
-	return new CInterpolatedValue(pElement);
+	return pHandler;
+}
+
+void XMLParameters::freeHandlers()
+{
+	for (auto handler = m_handlers.begin(); handler != m_handlers.end(); handler++)
+	{
+		delete *handler;
+	}
 }
 
 bool XMLParameters::getConstBoolean(tinyxml2::XMLElement* pParameters)

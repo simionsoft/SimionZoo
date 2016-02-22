@@ -116,13 +116,19 @@ void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, d
 
 	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
 	m_pPolicy->getVFA()->getFeatures(s, a, m_s_features);
-	double sigma = m_pPolicy->getExpNoise()->getSigma();
+	double sigma = 1.0;//m_pPolicy->getExpNoise()->getSigma();
+	assert(0); // this won't work if we are using a scaled normal distribution with fixed variance (i think)
+
 	//do we have to scale the noise?
 	int actionIndex = m_pPolicy->getOutputActionIndex();
 
 	double noise = a->getValue(actionIndex) - m_pPolicy->getVFA()->getValue(m_s_features);
 	//log (noise_scale_factor * noise) = log(noise_scale_factor) + log (noise), right????
+
+	assert(0); //this has to be redone
 	double factor= log(a->getRangeWidth(actionIndex)) + (noise) / (sigma*sigma);
+
+
 	m_grad_u->clear();
 	m_grad_u->addFeatureList(m_s_features, factor);
 	//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
