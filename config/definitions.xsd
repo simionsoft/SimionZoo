@@ -61,6 +61,7 @@
   <xs:complexType name="BRANCH">
     <xs:attribute name="Name" type="xs:string"/>
     <xs:attribute name="Class" type="xs:string"/>
+    <xs:attribute name="Comment" type="xs:string"/>
     <xs:attribute name="Optional" type="xs:boolean"/>
   </xs:complexType>
 

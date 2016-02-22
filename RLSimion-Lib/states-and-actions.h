@@ -41,6 +41,7 @@ public:
 	double getMax(int i);
 	double getMin(const char* name);
 	double getMax(const char* name);
+	double getRangeWidth(int i);
 
 	void setName(int i,const char* name);
 	void setMin(int i,double min);
@@ -48,9 +49,12 @@ public:
 
 	void setProperties(int i,const char* name, double min, double max);
 
+private:
+	//private to force the use of indices instead of names. How much more efficient?
 	double getValue(const char* varName);
 	void setValue(const char* varName, double value);
-	
+public:
+
 	double* getValueVector(){return m_pValues;}
 
 	double getValue(int i);

@@ -26,17 +26,16 @@ void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *
 {
 	double lastNoise;
 	double alpha;
-	const char* actionVar;
 
 	//Regular gradient actor update
 	//theta= theta + alpha*(lastNoise)*phi_pi(s)*td
 
 	alpha = m_pAlpha->getValue();
-	actionVar = m_pParameters->FirstChildElement("ACTION")->GetText();
+
 
 	m_pPolicy->getVFA()->getFeatures(s, a, m_pStateFeatures);
 
-	lastNoise = a->getValue(actionVar) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);// m_pOutput->getValue(i);
+	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);// m_pOutput->getValue(i);
 
 
 	if (alpha != 0.0)

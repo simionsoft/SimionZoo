@@ -9,7 +9,9 @@ class CReward;
 
 class CWorld
 {
-	CDynamicModel* m_pDynamicModel;
+	friend class CRewardComponent;
+
+	static CDynamicModel* m_pDynamicModel;
 	int m_simulationSteps;
 	static double m_dt;
 	static double m_t;

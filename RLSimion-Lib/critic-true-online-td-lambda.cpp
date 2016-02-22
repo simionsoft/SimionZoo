@@ -23,8 +23,6 @@ CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 {
 	delete m_e;
 	delete m_aux;
-	delete m_pAlpha;
-	delete m_pGamma;
 }
 
 double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)

@@ -14,7 +14,7 @@ double getNormalDistributionSample(/*double mu, */double sigma)
 	return z * sqrt(sigma) /*+ mu*/;
 }
 ////2015/10/09
-//double CGaussianNoise::getLastValuesProbability()
+//double CGaussianNoiseVariableSigma::getLastValuesProbability()
 //{
 //	//https://en.wikipedia.org/wiki/Normal_distribution
 //	double intwidth= 0.001;
@@ -32,46 +32,49 @@ double getNormalDistributionSample(/*double mu, */double sigma)
 //	return prob;
 //}
 
+CNoise::CNoise()
+{
+	m_lastValue = 0.0;
+}
+
+CNoise* CNoise::getInstance(tinyxml2::XMLElement* pParameters)
+{
+	const char* pName = pParameters->FirstChildElement()->Name();
+
+	if (!strcmp(pName, "GaussianNoise"))
+		return new CGaussianNoise(pParameters->FirstChildElement());
+
+	assert(0);
+	return 0;
+}
 
 CGaussianNoise::CGaussianNoise(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_lastValue= 0.0;
-
 	m_pSigma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Sigma"));
+	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pScale = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Scale"));
 }
 
 CGaussianNoise::~CGaussianNoise()
 {
 }
 
-double CGaussianNoise::getNewValue()
+double CGaussianNoise::getValue()
 {
 	double randValue = 0.0;
 	double sigma = m_pSigma->getValue();
-	//if (*m_pWidth > 0.0000000001) //2015/10/09
-	if (sigma > 0.00000000001) //2015/10/09
-	{
-		//standard normal distribution: 99.7% of the samples will be within [-3.0,3.0]
-		randValue = getNormalDistributionSample(sigma); //1.0 //2015/10/09
+	double alpha = m_pAlpha->getValue();
 
-		//randValue= 0.7*randValue + 0.3* m_lastValue;
+	if (sigma > 0.00000000001)
+		randValue = getNormalDistributionSample(sigma);
 
-		//2015/10/09
-		//if (randValue<-3.0) randValue+= 3.0;
-		//else if (randValue>3.0) randValue-= 3.0; //100% of samples within [-3.0,3.0]
-		//randValue*= 0.3333; //100% the samples samples within [-1.0,1.0]
-	}
+	randValue*= m_pScale->getValue();
+
+	randValue = alpha*randValue + (1.0 - alpha)*m_lastValue;
+
 	m_lastValue= randValue;
 
-	return randValue; //2015/10/09   *(*m_pWidth);
+	return randValue;
 }
 
-double CGaussianNoise::getLastValue()
-{
-	return m_lastValue;// * (*m_pWidth);
-}
 
-double CGaussianNoise::getSigma()
-{
-	return m_pSigma->getValue();
-}

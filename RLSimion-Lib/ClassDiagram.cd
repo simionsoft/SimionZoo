@@ -105,7 +105,7 @@
       <FileName>features.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="CGaussianNoise" Collapsed="true">
+  <Class Name="CGaussianNoiseVariableSigma" Collapsed="true">
     <Position X="14.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAARABAAAAAAAQAAAAoAA=</HashCode>
