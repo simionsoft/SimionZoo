@@ -10,13 +10,16 @@
              Background="Chocolate">
     <UserControl.Resources>
         <ResourceDictionary>
-            <DataTemplate DataType="{x:Type vm:ClassViewModel}">
-                <v:ClassView/>
-            </DataTemplate>
+            
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
-        <Label x:Name="Name"></Label>
-        <ContentControl x:Name="Class"/>
-    </StackPanel>
+    <Grid>
+        <TreeView BorderBrush="white" BorderThickness="0">
+            <TreeViewItem Header="{Binding Name}">
+                <ContentControl x:Name="Class"></ContentControl>
+            </TreeViewItem>
+
+        </TreeView>
+        
+    </Grid>
 </UserControl>

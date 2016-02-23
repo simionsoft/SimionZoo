@@ -16,8 +16,8 @@
     <Grid>
         
         <TreeView  HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
-            <TreeViewItem x:Name="Branches" Header="{Binding rootnode.name}">
-                
+            <TreeViewItem x:Name ="Branches" Header="{Binding rootnode.name}">
+               
             </TreeViewItem>
            
         </TreeView>
