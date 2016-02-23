@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -10,6 +11,27 @@ namespace AppXML.Data
 {
     public class Utility
     {
+        public static Boolean validate(string value, validTypes type)
+        {
+            Boolean result = false;
+            if (value == "0")
+                return true;
+            Regex regex;
+            switch (type)
+            {
+                case validTypes.DecimalValue:
+                    regex = new Regex(@"^(-|)((0\.\d+)|[1-9]\d*(\.\d+))$");
+                    if (regex.IsMatch(value))
+                    {
+                        return true;
+                    }
+                    return validate(value, validTypes.IntergerValue);
+                case validTypes.IntergerValue:
+                    regex = new Regex(@"^(-|)[1-9][0-9]*$");
+                    return regex.IsMatch(value);                    
+            }
+            return result;
+        }
         public static List<string> getEnumItems(XmlNode father)
         {
             List<string> result = null;
