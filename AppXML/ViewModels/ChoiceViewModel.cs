@@ -26,8 +26,12 @@ namespace AppXML.ViewModels
             _comboValues = new ObservableCollection<ChoiceElement>();
             foreach(XmlNode child in nodo.ChildNodes)
             {
-                ChoiceElement ce = new ChoiceElement(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
-                _comboValues.Add(ce);
+                if(child.Name=="CHOICE-ELEMENT")
+                {
+                    ChoiceElement ce = new ChoiceElement(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                    _comboValues.Add(ce);
+                }
+                
             }
             _Class = new ClassViewModel(_comboValues[0].clas);
         }

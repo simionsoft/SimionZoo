@@ -20,10 +20,10 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ItemsControl Background="Azure">
-        <ListView x:Name="Items"/>
-        <ListView x:Name="Multis"/>  
-        <ListView x:Name="Branches"/>
-        <ContentControl x:Name="Choice"></ContentControl>
+    <ItemsControl>
+        <ListView x:Name="Items" BorderBrush="white" BorderThickness="0" Visibility="{Binding ItemsVisible}"/>
+        <ListView x:Name="Multis" BorderBrush="white" BorderThickness="0" Visibility="{Binding MultisVisible}"/>
+        <ListView x:Name="Branches" BorderBrush="white" BorderThickness="0" Visibility="{Binding BranchesVisible}"/>
+        <ContentControl x:Name="Choice" Visibility="{Binding ChoiceVisible}"></ContentControl>
     </ItemsControl>
 </UserControl>
