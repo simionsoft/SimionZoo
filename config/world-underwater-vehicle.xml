@@ -22,12 +22,12 @@
   </State>
   <Action>
     <Variable>
-      <Name>u_thrust</Name>
+      <Name>u-thrust</Name>
       <Units>N</Units>
       <Min>-30</Min>
       <Max>30</Max>
     </Variable>
   </Action>
-  <CONSTANTS>
-  </CONSTANTS>
+  <Constants>
+  </Constants>
 </World-Definition>
