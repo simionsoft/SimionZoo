@@ -13,7 +13,10 @@ CLinearVFA::CLinearVFA(tinyxml2::XMLElement* pParameters) : CParamObject(pParame
 
 	m_pAux = new CFeatureList();
 
-	memset(m_pWeights, 0, sizeof(double)*m_numWeights);
+	double initValue = 0.0;
+	for (unsigned int i = 0; i < m_numWeights; i++)
+		m_pWeights[i] = initValue;
+	//std::fill_n(m_pWeights, m_numWeights, initValue);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
@@ -66,8 +69,8 @@ void CLinearVFA::add(CFeatureList* pFeatures, double alpha)
 		{
 			assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
 
-			assert(m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor>=m_minOutput);
-			assert(m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor <= m_maxOutput);
+		//	assert(m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor>=m_minOutput);
+		//	assert(m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor <= m_maxOutput);
 			//saturate output by saturation of the weights
 			m_pWeights[pFeatures->m_pFeatures[i].m_index] = 
 				std::min(m_maxOutput,

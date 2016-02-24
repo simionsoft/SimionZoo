@@ -13,7 +13,7 @@
 double CWorld::m_t= 0.0;
 double CWorld::m_dt= 0.0;
 double CWorld::m_step_start_t= 0.0;
-
+CDynamicModel *CWorld::m_pDynamicModel = 0;
 
 
 CWorld::CWorld(tinyxml2::XMLElement* pParameters)

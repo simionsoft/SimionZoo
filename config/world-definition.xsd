@@ -2,12 +2,12 @@
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <xs:element name="WORLD-DEFINITION" type ="WORLD-DEFINITION"/>
+  <xs:element name="World-Definition" type ="WORLD-DEFINITION"/>
 
   <xs:complexType name="WORLD-DEFINITION">
     <xs:sequence>
-      <xs:element name="STATE" type="VARIABLES-LIST"/>
-      <xs:element name="ACTION" type="VARIABLES-LIST"/>
+      <xs:element name="State" type="VARIABLES-LIST"/>
+      <xs:element name="Action" type="VARIABLES-LIST"/>
       <xs:element name="CONSTANTS" type="CONSTANTS-LIST"/>
     </xs:sequence>
   </xs:complexType>

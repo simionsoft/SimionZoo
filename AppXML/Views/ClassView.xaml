@@ -9,16 +9,21 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
+            <DataTemplate DataType="{x:Type vm:MultiValuedViewModel}">
+                <v:MultiValuedView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:IntegerViewModel}">
                 <v:IntegerView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:BranchViewModel}">
+                <v:BranchView/>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
-        <ContentControl x:Name="Choice"></ContentControl>
-        <StackPanel Orientation="Vertical">
-            <ItemsControl ItemsSource="{Binding Items}">         
-            </ItemsControl>
-        </StackPanel>
-    </StackPanel>
+    <ItemsControl>
+        <ListView x:Name="Items" BorderBrush="white" BorderThickness="0" Visibility="{Binding ItemsVisible}"/>
+        <ListView x:Name="Multis" BorderBrush="white" BorderThickness="0" Visibility="{Binding MultisVisible}"/>
+        <ListView x:Name="Branches" BorderBrush="white" BorderThickness="0" Visibility="{Binding BranchesVisible}"/>
+        <ContentControl x:Name="Choice" Visibility="{Binding ChoiceVisible}"></ContentControl>
+    </ItemsControl>
 </UserControl>

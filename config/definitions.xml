@@ -46,7 +46,7 @@
   <!--SIMGOD-->
   <CLASS Name="SIMGOD">
     <CHOICE Name="Configuration">
-      <CHOICE-ELEMENT Name="Actor" Class="ACTOR-COMPONENTS-CONFIG"/>
+      <CHOICE-ELEMENT Name="Actor" Class="ACTOR-CONFIG"/>
       
       <CHOICE-ELEMENT Name="Actor-Critic" Class="ACTOR-CRITIC-CONFIG"/>
 
@@ -93,22 +93,21 @@
    </CLASS>
 
   <CLASS Name="CACLA">
-    <DECIMAL-VALUE Name="Alpha" Comment="Gain used to update the policy"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
     <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
   </CLASS>
 
   <CLASS Name="Regular-Gradient">
-    
-    <DECIMAL-VALUE Name="Alpha" Comment="Gain used to update the policy"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
     <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
   </CLASS>
 
   <CLASS Name="Incremental-Natural-Actor">
-    <DECIMAL-VALUE Name="Alpha-v" Comment="Gain used by the critic to update the value"/>
     <DECIMAL-VALUE Name="Gamma" Comment="Gamma parameter used by the critic"/>
-    <DECIMAL-VALUE Name="Alpha-u" Comment="Gain used to update the policy"/>
+    <BRANCH Name="Alpha-v" Class="NUMERIC-VALUE" Comment="Gain used by the critic to update the value"/>
+    <BRANCH Name="Alpha-u" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
     <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
   </CLASS>
@@ -198,29 +197,29 @@
   </CLASS>
   
   <CLASS Name="TD-Lambda">
-    <DECIMAL-VALUE Name="Alpha"/>
     <DECIMAL-VALUE Name="Gamma"/>
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
     <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
   </CLASS>
 
   <CLASS Name="True-Online-TD-Lambda">
-    <DECIMAL-VALUE Name="Alpha"/>
     <DECIMAL-VALUE Name="Gamma"/>
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
     <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
   </CLASS>
   
   <CLASS Name="TDC-Lambda">
-    <DECIMAL-VALUE Name="Alpha"/>
     <DECIMAL-VALUE Name="Gamma"/>
-    <DECIMAL-VALUE Name="Beta"/>
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="Beta" Class="NUMERIC-VALUE"/>
     <BRANCH Name="E-Traces" Class="ETRACES"  Optional="true"/>
     <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
   </CLASS>
@@ -259,8 +258,31 @@
   </CLASS>
   
   <CLASS Name="GAUSSIAN-NOISE">
-    <DECIMAL-VALUE Name="Sigma" Default="0.001"/>
+    <BRANCH Name="Sigma" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="Scale" Class="NUMERIC-VALUE"/>
   </CLASS>
+
+  <CLASS Name="NUMERIC-VALUE">
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="Constant" Class="CONSTANT"/>
+      <CHOICE-ELEMENT Name="Linear-Schedule" Class="LINEAR-SCHEDULE"/>
+      <!--<CHOICE-ELEMENT Name="Point-Interpolation" CLASS="POINT-INTERPOLATION"/>-->
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="CONSTANT">
+    <DECIMAL-VALUE Name="Value" Default="0.0"/>
+  </CLASS>
+
+  <CLASS Name="LINEAR-SCHEDULE">
+    <DECIMAL-VALUE Name="Start-Offset" Default="0.0"/>
+    <DECIMAL-VALUE Name="Initial-Value" Default="0.0"/>
+    <DECIMAL-VALUE Name="End-Value" Default="1.0"/>
+    <DECIMAL-VALUE Name="Evaluation-Value" Default="0.0"/>
+    <ENUM-VALUE Name="Interpolation" Class="INTERPOLATION"/>
+  </CLASS>
+  
   
   <!--REWARDS-->
 
@@ -289,6 +311,12 @@
       <VALUE>cubic</VALUE>
     </ENUMERATION>
 
+    <ENUMERATION Name="INTERPOLATION">
+      <VALUE>linear</VALUE>
+      <VALUE>quadratic</VALUE>
+      <VALUE>cubic</VALUE>
+    </ENUMERATION>
+    
     <ENUMERATION Name="BOOLEAN">
       <VALUE>true</VALUE>
       <VALUE>false</VALUE>

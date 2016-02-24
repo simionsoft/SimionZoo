@@ -32,10 +32,6 @@ CTDCLambdaCritic::~CTDCLambdaCritic()
 	delete m_s_p_features;
 	delete m_a;
 	delete m_omega;
-
-	delete m_pAlpha;
-	delete m_pBeta;
-	delete m_pGamma;
 }
 
 double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r, double rho)

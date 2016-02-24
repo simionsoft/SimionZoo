@@ -5,19 +5,29 @@
 class tinyxml2::XMLElement;
 class INumericValue;
 
-class CGaussianNoise: public CParamObject
+class CNoise
 {
+protected:
+	CNoise();
 	double m_lastValue;
-	//double *m_pWidth;  //2015/10/09
-	INumericValue* m_pSigma; //2015/10/09
-	//double getWidth(){if (m_pWidth) return *m_pWidth; else return 0.0;} //2015/10/09
+public:
+	virtual double getValue()= 0;
+
+	static CNoise* getInstance(tinyxml2::XMLElement* pParameters);
+};
+
+
+
+class CGaussianNoise: public CNoise, public CParamObject
+{
+	INumericValue* m_pSigma;
+	INumericValue* m_pAlpha;
+	INumericValue* m_pScale;
 public:
 	CGaussianNoise(tinyxml2::XMLElement* pParameters);
 	~CGaussianNoise();
+	double getSigma(){ return m_pSigma->getValue(); }
+	double unscale(double noise){ return noise / m_pScale->getValue(); }
 
-	double getNewValue();
-	double getLastValue();
-	//double getLastValuesProbability();
-	double getSigma();
+	double getValue();
 };
-

@@ -6,6 +6,8 @@ class CSetPoint;
 
 class CUnderwaterVehicle : public CDynamicModel
 {
+	int m_sVSetpoint, m_sV, m_sVDeviation;
+	int m_aUThrust;
 	CSetPoint *m_pSetpoint;
 public:
 

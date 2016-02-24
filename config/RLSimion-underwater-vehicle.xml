@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RLSimion>
-  <WORLD>
-    <DYNAMIC-MODEL>
+  <World>
+    <Dynamic-Model>
       <Underwater-vehicle>
-        <WORLD-DEFINITION>..\config\world-underwater-vehicle.xml</WORLD-DEFINITION>
-        <SET_POINT_FILE>..\config\underwater-vehicle\setpoints\setpoint.txt</SET_POINT_FILE>     
+        <World-Definition>..\config\world-underwater-vehicle.xml</World-Definition>
+        <Set-Point-File>..\config\underwater-vehicle\setpoints\setpoint.txt</Set-Point-File>
       </Underwater-vehicle>
-    </DYNAMIC-MODEL>
-    <Delta-T>0.03</Delta-T>
+    </Dynamic-Model>
+    <Delta-T>0.01</Delta-T>
     <Num-Simulation-Steps>4</Num-Simulation-Steps>
-    <REWARD>
+    <Reward>
       <Min>-100</Min>
       <Max>1.0</Max>
       <Reward-components>
@@ -19,69 +19,76 @@
           <Variable>v-deviation</Variable>
         </Deviation-Component>
       </Reward-components>
-    </REWARD>
-  </WORLD>
-  <EXPERIMENT>
+    </Reward>
+  </World>
+  <Experiment>
     <Num-Episodes>1000</Num-Episodes>
     <Episode-Length>200</Episode-Length>
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>50</Eval-Freq>
-    <LOG>
-      <Freq>0.0</Freq>
-      <Ouput-directory>underwater-vehicle</Ouput-directory>
-      <Prefix>uv-learn</Prefix>
+    <Log>
+      <Freq>0.03</Freq>
+      <Ouput-directory>underwater-vehicle-2</Ouput-directory>
+      <Prefix>uv</Prefix>
       <Log-eval-episodes>true</Log-eval-episodes>
       <Log-training-episodes>false</Log-training-episodes>
       <Log-eval-avg-rewards>true</Log-eval-avg-rewards>
-    </LOG>
-  </EXPERIMENT>
-  <SIMGOD>
-    <ACTOR>
+    </Log>
+  </Experiment>
+  <SimGod>
+    <Actor>
       <VFA-Learner>
-        <LOAD>..\data\uv-policy-3.bin</LOAD>
-        <OUTPUTS>
+        <Load>../data/uv-5000.bin</Load>
+        <Outputs>
           <CACLA>
-            <VFA-Policy>
-              <Output-Action>u_thrust</Output-Action>
-              <Linear-VFA>
-                <RBF-Grid>
-                  <RBF-Grid-Dimension>
-                    <Variable>v-deviation</Variable>
-                    <Num-Features>5000</Num-Features>
-                    <Distribution>linear</Distribution>
-                  </RBF-Grid-Dimension>
-                </RBF-Grid>
-              </Linear-VFA>
-              <Exploration-Noise>
-                <Sigma>
-                  <Start-Offset>0.2</Start-Offset>
-                  <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                  <Interpolation>linear</Interpolation>
-                  <Initial-Value>0.01</Initial-Value>
-                  <End-Value>0.001</End-Value>
-                  <Evaluation-Value>0.0</Evaluation-Value>
-                </Sigma>
-              </Exploration-Noise>
-            </VFA-Policy>
+            <Policy>
+              <VFA-Policy>
+                <Output-Action>u-thrust</Output-Action>
+                <Linear-VFA>
+                  <RBF-Grid>
+                    <RBF-Grid-Dimension>
+                      <Variable>v-deviation</Variable>
+                      <Num-Features>5000</Num-Features>
+                      <Distribution>cubic</Distribution>
+                    </RBF-Grid-Dimension>
+                  </RBF-Grid>
+                </Linear-VFA>
+                <Exploration-Noise>
+                  <GaussianNoise>
+                    <Sigma>1.0</Sigma>
+                    <Alpha>1.0</Alpha>
+                    <Scale>
+                      <Start-Offset>0.0</Start-Offset>
+                      <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                      <Interpolation>linear</Interpolation>
+                      <Initial-Value>0.1</Initial-Value>
+                      <End-Value>0.0</End-Value>
+                      <Evaluation-Value>0.0</Evaluation-Value>
+                    </Scale>
+                  </GaussianNoise>
+                </Exploration-Noise>
+              </VFA-Policy>
+            </Policy>
             <Alpha>
+              <Start-Offset>0.0</Start-Offset>
               <Interpolation>linear</Interpolation>
-              <Initial-Value>0.001</Initial-Value>
-              <End-Value>0.0</End-Value>
+              <Initial-Value>0.1</Initial-Value>
+              <End-Value>0.01</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Alpha>
           </CACLA>
-        </OUTPUTS>
+        </Outputs>
       </VFA-Learner>
-    </ACTOR>
-    <CRITIC>
+    </Actor>
+    <Critic>
       <VFA-Critic>
-        <True-Online-TD-Lambda>
+        <TD-Lambda>
           <Linear-VFA>
             <RBF-Grid>
               <RBF-Grid-Dimension>
                 <Variable>v-deviation</Variable>
                 <Num-Features>5000</Num-Features>
-                <Distribution>linear</Distribution>
+                <Distribution>cubic</Distribution>
               </RBF-Grid-Dimension>
             </RBF-Grid>
           </Linear-VFA>
@@ -94,11 +101,11 @@
           <Alpha>
             <Interpolation>linear</Interpolation>
             <Initial-Value>0.1</Initial-Value>
-            <End-Value>0.0</End-Value>
+            <End-Value>0.001</End-Value>
             <Evaluation-Value>0.0</Evaluation-Value>
           </Alpha>
-        </True-Online-TD-Lambda>
+        </TD-Lambda>
       </VFA-Critic>
-    </CRITIC>
-  </SIMGOD>
+    </Critic>
+  </SimGod>
 </RLSimion>

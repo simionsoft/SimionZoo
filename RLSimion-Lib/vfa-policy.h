@@ -2,7 +2,7 @@
 #include "parameterized-object.h"
 
 class CLinearVFA;
-class CGaussianNoise;
+class CNoise;
 
 class CNamedVarSet;
 typedef CNamedVarSet CState;
@@ -16,7 +16,7 @@ class CSingleOutputVFAPolicy : public CParamObject
 
 protected:
 	CLinearVFA *m_pVFA;
-	CGaussianNoise *m_pExpNoise;
+	CNoise *m_pExpNoise;
 	int m_outputActionIndex;
 	const char* m_outputAction;
 public:
@@ -26,7 +26,10 @@ public:
 	void selectAction(CState *s, CAction *a);
 
 	CLinearVFA* getVFA(){ return m_pVFA; }
-	CGaussianNoise* getExpNoise(){ return m_pExpNoise; }
+	CNoise* getExpNoise(){ return m_pExpNoise; }
 	const char* getOutputAction(){ return m_outputAction; }
 	int getOutputActionIndex(){ return m_outputActionIndex; }
+
+	//returns the factor by which the state features have to be multiplied to get the policy gradient
+	void getGradient(CState* s, CAction* a, CFeatureList* pOutGradient);
 };

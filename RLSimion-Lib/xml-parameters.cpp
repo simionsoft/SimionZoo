@@ -3,6 +3,8 @@
 #include "globals.h"
 #include "experiment.h"
 
+std::list<INumericValue*> XMLParameters::m_handlers;// = std::list<INumericValue*>();
+
 class CConstantValue : public INumericValue
 {
 	double m_value;
@@ -108,8 +110,70 @@ double CInterpolatedValue::getValue()
 	default:
 		return m_startValue + (1. - pow(1 - progress, 2.0))*(m_endValue - m_startValue)* progress;
 	}
+}
+
+class CBhatnagarSchedule : public INumericValue
+{
+	double m_alpha_0; //alpha_0
+	double m_alpha_c; //alpha_c
+	double m_t_exp; // exp
+	double m_evaluationValue; //value returned during evaluation episodes
+	EnumTimeReference m_timeReference;
+public:
+	//alpha_t= alpha_0*alpha_c / (alpha_c+t^{exp})
+	CBhatnagarSchedule(tinyxml2::XMLElement* pParameters);
+	double getValue();
+};
 
 
+CBhatnagarSchedule::CBhatnagarSchedule(tinyxml2::XMLElement* pParameters)
+{
+	tinyxml2::XMLElement* param;
+
+	param = pParameters->FirstChildElement("Time-reference");
+
+	if (!param) m_timeReference = experiment;
+	else
+	{
+		if (!strcmp("experiment", param->GetText())) m_timeReference = experiment;
+		else if (!strcmp("episode", param->GetText())) m_timeReference = episode;
+		else assert(0);
+	}
+
+	param = pParameters->FirstChildElement("Alpha-0");
+	if (param) m_alpha_0 = XMLParameters::getConstDouble(param);
+	else assert(0);
+
+	param = pParameters->FirstChildElement("Alpha-c");
+	if (param) m_alpha_c = XMLParameters::getConstDouble(param);
+	else assert(0);
+
+	param = pParameters->FirstChildElement("Evaluation-Value");
+	if (param) m_evaluationValue = XMLParameters::getConstDouble(param);
+	else assert(0);
+}
+
+
+double CBhatnagarSchedule::getValue()
+{
+	double t;
+
+	//evalution episode?
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+		return m_evaluationValue;
+	//time reference
+	switch (m_timeReference)
+	{
+	case experiment:
+		t = RLSimion::g_pExperiment->m_expProgress.getStep() 
+			+ (RLSimion::g_pExperiment->m_expProgress.getEpisode()-1) * RLSimion::g_pExperiment->m_expProgress.getNumSteps();
+		break;
+	case episode:
+	default:
+		t = RLSimion::g_pExperiment->m_expProgress.getStep();
+	}
+	
+	return m_alpha_0*m_alpha_c / (m_alpha_c + pow(t, m_t_exp));
 }
 
 
@@ -134,13 +198,25 @@ int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* nam
 
 INumericValue* XMLParameters::getNumericHandler(tinyxml2::XMLElement* pElement)
 {
+	INumericValue* pHandler;
 	if (!pElement->FirstChildElement())
-		return new CConstantValue(pElement);
+		pHandler= new CConstantValue(pElement);
+	else if (pElement->FirstChildElement("Linear-Schedule"))
+		pHandler = new CInterpolatedValue(pElement->FirstChildElement("Linear-Schedule"));
+	else if (pElement->FirstChildElement("Bhatnagar-Schedule"))
+		pHandler = new CBhatnagarSchedule(pElement->FirstChildElement("Bhatnagar-Schedule"));
 
-	if (pElement->FirstChildElement("decimal"))
-		return new CConstantValue(pElement->FirstChildElement("decimal"));
+	m_handlers.push_front(pHandler);
 
-	return new CInterpolatedValue(pElement);
+	return pHandler;
+}
+
+void XMLParameters::freeHandlers()
+{
+	for (auto handler = m_handlers.begin(); handler != m_handlers.end(); handler++)
+	{
+		delete *handler;
+	}
 }
 
 bool XMLParameters::getConstBoolean(tinyxml2::XMLElement* pParameters)

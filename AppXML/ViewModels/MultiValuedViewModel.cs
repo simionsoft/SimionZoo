@@ -51,7 +51,14 @@ namespace AppXML.ViewModels
             _aded = new ObservableCollection<IntegerViewModel>();
 
         }
+        /*
+        public MultiValuedViewModel()
+        {
+            original = new CIntegerValue("FILE-PATH-VALUE");
+            _header = new IntegerViewModel("File", original);
+            this.label = "File";
 
+        }*/
         public IntegerViewModel Header { get { return _header; } set { } }
         
         public ObservableCollection<IntegerViewModel> Aded 

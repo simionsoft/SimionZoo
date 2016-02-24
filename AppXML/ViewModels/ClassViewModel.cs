@@ -17,6 +17,7 @@ namespace AppXML.ViewModels
         private ChoiceViewModel _choice;
         private ObservableCollection<IntegerViewModel> _items;
         private ObservableCollection<MultiValuedViewModel> _multis;
+        private ObservableCollection<BranchViewModel> _branches;
 
         //faltan los branches pero estan sin crear BranchViewModel y BranchView
         public ClassViewModel(string clasName)
@@ -42,21 +43,25 @@ namespace AppXML.ViewModels
                     //to do: añadir los multis a su lista y añadirlo en el xaml
                     if (_multis == null)
                         _multis = new ObservableCollection<MultiValuedViewModel>();
-
+                    MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value,child.Attributes["Class"].Value);
+                    _multis.Add(mvvm);
                 }
                 else if (child.Name == "BRANCH")
                 {
-                    //to do: cuando BranchViewModel este hecho hacer la rama
-
+                   
+                    if (_branches == null)
+                        _branches = new ObservableCollection<BranchViewModel>();
+                    BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                    _branches.Add(bvm);
                 }
             }
 
 
         }
-        public ClassViewModel()
+       /* public ClassViewModel()
         {
             //PARAMERTRO DEL CONSTRUCTOR
-            String clasName = "WORLD";
+            String clasName = "EXPERIMENT";
             Utility.getRootNode("../config/RLSimion.xml");
             //CONSTRUCTOR
             XmlNode node = CNode.definitions[clasName];
@@ -79,18 +84,28 @@ namespace AppXML.ViewModels
                 {
                     if (_multis == null)
                         _multis = new ObservableCollection<MultiValuedViewModel>();
+                    MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                    _multis.Add(mvvm);
 
                 }
                 else if(child.Name == "BRANCH")
                 {
-
+                    if (_branches == null)
+                        _branches = new ObservableCollection<BranchViewModel>();
+                    BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                    _branches.Add(bvm);
                 }
             }
             
             
-        }
+        }*/
+        public string ItemsVisible { get { if(Items == null)return "Hidden";else return "Visible"; } set { } }
+        public string ChoiceVisible { get { if(Choice == null)return "Hidden";else return "Visible"; } set { } }
+        public string BranchesVisible { get {if(Branches == null)return "Hidden";else return "Visible"; } set { } }
+        public string MultisVisible { get { if (Multis == null)return "Hidden"; else return "Visible"; } set { } }
         public ChoiceViewModel Choice { get { return _choice; } set { } }
         public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
-        
+        public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
+        public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
     }
 }

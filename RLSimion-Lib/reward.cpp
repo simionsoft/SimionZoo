@@ -19,17 +19,8 @@ double CReward::m_maxReward;
 
 class CRewardComponent : public CParamObject
 {
-	//char m_errorComponentType[MAX_PARAMETER_NAME_SIZE];
-	//char m_controlledVariable[MAX_PARAMETER_NAME_SIZE];
-	//char m_setpointVariable[MAX_PARAMETER_NAME_SIZE];
-	//char m_controlErrorVariable[MAX_PARAMETER_NAME_SIZE];
 
-	//double m_setpointConstant;
-	//double m_weight;
-	//int m_componentIndex;
-	////double m_rewardComponentMu;
-	//double m_tolerance;
-	const char* m_variable;
+	int m_sVariable;
 	INumericValue *m_pTolerance;
 	INumericValue *m_pWeight;
 	double m_lastReward;
@@ -50,7 +41,7 @@ CRewardComponent::CRewardComponent(tinyxml2::XMLElement* pParameters) : CParamOb
 	//m_controlErrorVariable[0]= 0;
 	//m_weight= 0.0;
 	//m_componentIndex= -1;
-	m_variable = pParameters->FirstChildElement("Variable")->GetText();
+	m_sVariable = CWorld::m_pDynamicModel->getStateDescriptor()->getVarIndex(pParameters->FirstChildElement("Variable")->GetText());
 	m_pTolerance = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Tolerance"));
 	m_pWeight = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Weight"));
 	m_lastReward= 0.0;
@@ -107,7 +98,7 @@ double CRewardComponent::getRewardComponent(CState* state)
 
 	deviationVariable = m_pParameters->FirstChildElement("Variable")->GetText();
 */
-	error = state->getValue(m_variable);
+	error = state->getValue(m_sVariable);
 /*
 	if (strcmp(m_errorComponentType,"VARIABLE_DIFFERENCE")==0)
 	{

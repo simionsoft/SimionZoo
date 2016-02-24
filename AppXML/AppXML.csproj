@@ -82,10 +82,11 @@
     <Compile Include="Models\CIntegerValue.cs" />
     <Compile Include="Models\CMultiValued.cs" />
     <Compile Include="Models\CNode.cs" />
+    <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\ChoiceViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="ViewModels\MultiValuedViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\ChoiceView.xaml.cs">
@@ -94,11 +95,17 @@
     <Compile Include="Views\ClassView.xaml.cs">
       <DependentUpon>ClassView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\BranchView.xaml.cs">
+      <DependentUpon>BranchView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\IntegerView.xaml.cs">
       <DependentUpon>IntegerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MultiValuedView.xaml.cs">
       <DependentUpon>MultiValuedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WindowView.xaml.cs">
+      <DependentUpon>WindowView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -133,10 +140,6 @@
     <Resource Include="Views\images\file.JPG" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\BranchView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ChoiceView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -145,11 +148,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\IntegerView.xaml">
+    <Page Include="Views\BranchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\MainWindowView.xaml">
+    <Page Include="Views\IntegerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -160,6 +163,10 @@
     <Page Include="Views\ShellView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\WindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

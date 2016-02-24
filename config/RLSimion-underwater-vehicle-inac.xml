@@ -54,12 +54,14 @@
               </Linear-VFA>
               <Exploration-Noise>
                 <Sigma>
-                  <Start-Offset>0.0</Start-Offset>
-                  <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                  <Interpolation>linear</Interpolation>
-                  <Initial-Value>0.01</Initial-Value>
-                  <End-Value>0.001</End-Value>
-                  <Evaluation-Value>0.0</Evaluation-Value>
+                  <Linear-Schedule>
+                    <Start-Offset>0.0</Start-Offset>
+                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                    <Interpolation>linear</Interpolation>
+                    <Initial-Value>0.01</Initial-Value>
+                    <End-Value>0.001</End-Value>
+                    <Evaluation-Value>0.0</Evaluation-Value>
+                  </Linear-Schedule>
                 </Sigma>
               </Exploration-Noise>
             </VFA-Policy>
@@ -70,16 +72,20 @@
               <Threshold>0.0001</Threshold>
             </E-Traces>
             <Alpha-v>
-              <Interpolation>linear</Interpolation>
-              <Initial-Value>0.1</Initial-Value>
-              <End-Value>0.0</End-Value>
-              <Evaluation-Value>0.0</Evaluation-Value>
+              <Linear-Schedule>
+                <Interpolation>linear</Interpolation>
+                <Initial-Value>0.1</Initial-Value>
+                <End-Value>0.0</End-Value>
+                <Evaluation-Value>0.0</Evaluation-Value>
+              </Linear-Schedule>
             </Alpha-v>
             <Alpha-u>
-              <Interpolation>linear</Interpolation>
-              <Initial-Value>0.01</Initial-Value>
-              <End-Value>0.0</End-Value>
-              <Evaluation-Value>0.0</Evaluation-Value>
+              <Linear-Schedule>
+                <Interpolation>linear</Interpolation>
+                <Initial-Value>0.01</Initial-Value>
+                <End-Value>0.0</End-Value>
+                <Evaluation-Value>0.0</Evaluation-Value>
+              </Linear-Schedule>
             </Alpha-u>
           </Incremental-Natural-Actor>
         </OUTPUTS>
@@ -104,10 +110,12 @@
           </E-Traces>
           <Gamma>0.9</Gamma>
           <Alpha-v>
-            <Interpolation>linear</Interpolation>
-            <Initial-Value>0.1</Initial-Value>
-            <End-Value>0.0</End-Value>
-            <Evaluation-Value>0.0</Evaluation-Value>
+            <Linear-Schedule>
+              <Interpolation>linear</Interpolation>
+              <Initial-Value>0.1</Initial-Value>
+              <End-Value>0.0</End-Value>
+              <Evaluation-Value>0.0</Evaluation-Value>
+            </Linear-Schedule>
           </Alpha-v>
           <Alpha-r>0.9</Alpha-r>
         </Incremental-Natural-Critic>
