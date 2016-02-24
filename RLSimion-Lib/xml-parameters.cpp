@@ -148,6 +148,10 @@ CBhatnagarSchedule::CBhatnagarSchedule(tinyxml2::XMLElement* pParameters)
 	if (param) m_alpha_c = XMLParameters::getConstDouble(param);
 	else assert(0);
 
+	param = pParameters->FirstChildElement("Time-Exponent");
+	if (param) m_t_exp = XMLParameters::getConstDouble(param);
+	else assert(0);
+
 	param = pParameters->FirstChildElement("Evaluation-Value");
 	if (param) m_evaluationValue = XMLParameters::getConstDouble(param);
 	else assert(0);

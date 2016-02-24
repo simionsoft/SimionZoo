@@ -267,7 +267,7 @@
     <CHOICE Name="Type">
       <CHOICE-ELEMENT Name="Constant" Class="CONSTANT"/>
       <CHOICE-ELEMENT Name="Linear-Schedule" Class="LINEAR-SCHEDULE"/>
-      <!--<CHOICE-ELEMENT Name="Point-Interpolation" CLASS="POINT-INTERPOLATION"/>-->
+      <CHOICE-ELEMENT Name="Bhatnagar-Schedule" Class="BHATNAGAR-SCHEDULE"/>
     </CHOICE>
   </CLASS>
 
@@ -281,6 +281,13 @@
     <DECIMAL-VALUE Name="End-Value" Default="1.0"/>
     <DECIMAL-VALUE Name="Evaluation-Value" Default="0.0"/>
     <ENUM-VALUE Name="Interpolation" Class="INTERPOLATION"/>
+  </CLASS>
+
+  <CLASS Name="BHATNAGAR-SCHEDULE">
+    <DECIMAL-VALUE Name="Alpha-0" Default="0.0"/>
+    <DECIMAL-VALUE Name="Alpha-c" Default="0.0"/>
+    <DECIMAL-VALUE Name="Time-Exponent" Comment="exponent to which time t is raised. 1 for the actor and 2/3 for the critic in the original work" Default="1.0"/>
+    <DECIMAL-VALUE Name="Evaluation-Value" Default="0.0"/>
   </CLASS>
   
   
