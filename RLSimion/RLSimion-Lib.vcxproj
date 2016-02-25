@@ -100,7 +100,9 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\config\definitions.xml" />
+    <Xml Include="..\config\definitions.xml">
+      <SubType>Designer</SubType>
+    </Xml>
     <Xml Include="..\config\RLSimion.xml" />
     <Xml Include="..\config\world-underwater-vehicle.xml" />
     <Xml Include="..\config\world-wind-turbine.xml" />

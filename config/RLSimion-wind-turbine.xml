@@ -67,7 +67,6 @@
         <Load>../data/vidal-80.bin</Load>
         <Outputs>
           <CACLA>
-            <Policy>
               <VFA-Policy>
                 <Output-Action>d_beta</Output-Action>
                 <Linear-VFA>
@@ -109,7 +108,7 @@
                   </GaussianNoise>
               </Exploration-Noise>
               </VFA-Policy>
-            </Policy>
+
             <Alpha>
               <Start-Offset>0.0</Start-Offset>
               <Interpolation>linear</Interpolation>
@@ -119,49 +118,47 @@
             </Alpha>
           </CACLA>
           <CACLA>
-            <Policy>
-              <VFA-Policy>
-                <Output-Action>d_T_g</Output-Action>
-                <Linear-VFA>
-                  <RBF-Grid>
-                    <RBF-Grid-Dimension>
-                      <Variable>omega_r</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>cubic</Distribution>
-                    </RBF-Grid-Dimension>
-                    <RBF-Grid-Dimension>
-                      <Variable>d_omega_r</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>cubic</Distribution>
-                    </RBF-Grid-Dimension>
-                    <RBF-Grid-Dimension>
-                      <Variable>T_g</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>linear</Distribution>
-                    </RBF-Grid-Dimension>
-                    <RBF-Grid-Dimension>
-                      <Variable>E_p</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>cubic</Distribution>
-                    </RBF-Grid-Dimension>
-                  </RBF-Grid>
-                </Linear-VFA>
-                <Exploration-Noise>
-                  <GaussianNoise>
-                    <Sigma>1.0</Sigma>
-                    <Alpha>1.0</Alpha>
-                    <Scale>
-                      <Start-Offset>0.0</Start-Offset>
-                      <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                      <Interpolation>linear</Interpolation>
-                      <Initial-Value>10.0</Initial-Value>
-                      <End-Value>0.0</End-Value>
-                      <Evaluation-Value>0.0</Evaluation-Value>
-                    </Scale>
-                  </GaussianNoise>
-                </Exploration-Noise>
-              </VFA-Policy>
-            </Policy>
+            <VFA-Policy>
+              <Output-Action>d_T_g</Output-Action>
+              <Linear-VFA>
+                <RBF-Grid>
+                  <RBF-Grid-Dimension>
+                    <Variable>omega_r</Variable>
+                    <Num-Features>80</Num-Features>
+                    <Distribution>cubic</Distribution>
+                  </RBF-Grid-Dimension>
+                  <RBF-Grid-Dimension>
+                    <Variable>d_omega_r</Variable>
+                    <Num-Features>80</Num-Features>
+                    <Distribution>cubic</Distribution>
+                  </RBF-Grid-Dimension>
+                  <RBF-Grid-Dimension>
+                    <Variable>T_g</Variable>
+                    <Num-Features>80</Num-Features>
+                    <Distribution>linear</Distribution>
+                  </RBF-Grid-Dimension>
+                  <RBF-Grid-Dimension>
+                    <Variable>E_p</Variable>
+                    <Num-Features>80</Num-Features>
+                    <Distribution>cubic</Distribution>
+                  </RBF-Grid-Dimension>
+                </RBF-Grid>
+              </Linear-VFA>
+              <Exploration-Noise>
+                <GaussianNoise>
+                  <Sigma>1.0</Sigma>
+                  <Alpha>1.0</Alpha>
+                  <Scale>
+                    <Start-Offset>0.0</Start-Offset>
+                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                    <Interpolation>linear</Interpolation>
+                    <Initial-Value>10.0</Initial-Value>
+                    <End-Value>0.0</End-Value>
+                    <Evaluation-Value>0.0</Evaluation-Value>
+                  </Scale>
+                </GaussianNoise>
+              </Exploration-Noise>
+            </VFA-Policy>
             <Alpha>
               <Start-Offset>0.0</Start-Offset>
               <Interpolation>linear</Interpolation>
