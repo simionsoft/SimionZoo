@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="World-Definition" type ="WORLD-DEFINITION"/>
+
+  <xs:complexType name="WORLD-DEFINITION">
+    <xs:sequence>
+      <xs:element name="State" type="VARIABLES-LIST"/>
+      <xs:element name="Action" type="VARIABLES-LIST"/>
+      <xs:element name="CONSTANTS" type="CONSTANTS-LIST"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="VARIABLES-LIST">
+    <xs:sequence>
+      <xs:element name="Variable" type="VARIABLE" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="VARIABLE">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Units" type="xs:string"/>
+      <xs:element name="Min" type="xs:decimal"/>
+      <xs:element name="Max" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="CONSTANTS-LIST">
+    <xs:sequence>
+      <xs:element name="Constant" type="CONSTANT" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="CONSTANT">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Value" type="xs:decimal"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

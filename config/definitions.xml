@@ -266,7 +266,7 @@
   <CLASS Name="NUMERIC-VALUE" Window="New">
     <CHOICE Name="Type">
       <CHOICE-ELEMENT Name="Constant" Class="CONSTANT"/>
-      <CHOICE-ELEMENT Name="Linear-Schedule" Class="SCHEDULE"/>
+      <CHOICE-ELEMENT Name="Linear-Schedule" Class="LINEAR-SCHEDULE"/>
       <!--<CHOICE-ELEMENT Name="Point-Interpolation" CLASS="POINT-INTERPOLATION"/>-->
     </CHOICE>
   </CLASS>
@@ -275,7 +275,7 @@
     <DECIMAL-VALUE Name="Value" Default="0.0"/>
   </CLASS>
 
-  <CLASS Name="SCHEDULED-DOUBLE">
+  <CLASS Name="LINEAR-SCHEDULE">
     <DECIMAL-VALUE Name="Start-Offset" Default="0.0"/>
     <DECIMAL-VALUE Name="Initial-Value" Default="0.0"/>
     <DECIMAL-VALUE Name="End-Value" Default="1.0"/>

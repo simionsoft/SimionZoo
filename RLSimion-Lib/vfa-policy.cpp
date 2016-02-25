@@ -41,3 +41,17 @@ void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
 
 	a->setValue(m_outputActionIndex, output + noise);
 }
+
+void CSingleOutputVFAPolicy::getGradient(CState* s, CAction* a, CFeatureList* pOutGradient)
+{
+	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
+	m_pVFA->getFeatures(s, a, pOutGradient);
+
+	//TXAPUZAAAA^2!!!
+	double sigma = ((CGaussianNoise*)m_pExpNoise)->getSigma();
+	
+	double noise = a->getValue(m_outputActionIndex) - m_pVFA->getValue(pOutGradient);
+
+	double unscaled_noise = ((CGaussianNoise*)m_pExpNoise)->unscale(noise);
+	double factor = unscaled_noise / (sigma*sigma);
+}
