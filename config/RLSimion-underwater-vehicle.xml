@@ -68,11 +68,13 @@
               </Exploration-Noise>
             </VFA-Policy>
             <Alpha>
-              <Start-Offset>0.0</Start-Offset>
-              <Interpolation>linear</Interpolation>
-              <Initial-Value>0.1</Initial-Value>
-              <End-Value>0.1</End-Value>
-              <Evaluation-Value>0.0</Evaluation-Value>
+              <Linear-Schedule>
+                <Start-Offset>0.0</Start-Offset>
+                <Interpolation>linear</Interpolation>
+                <Initial-Value>0.1</Initial-Value>
+                <End-Value>0.1</End-Value>
+                <Evaluation-Value>0.0</Evaluation-Value>
+              </Linear-Schedule>
             </Alpha>
           </CACLA>
         </Outputs>

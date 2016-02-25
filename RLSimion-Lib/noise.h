@@ -26,8 +26,8 @@ class CGaussianNoise: public CNoise, public CParamObject
 public:
 	CGaussianNoise(tinyxml2::XMLElement* pParameters);
 	~CGaussianNoise();
-	double getSigma(){ return m_pSigma->getValue(); }
-	double unscale(double noise){ return noise / m_pScale->getValue(); }
+	double getSigma();
+	double unscale(double noise);
 
 	double getValue();
 };

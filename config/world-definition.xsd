@@ -8,7 +8,7 @@
     <xs:sequence>
       <xs:element name="State" type="VARIABLES-LIST"/>
       <xs:element name="Action" type="VARIABLES-LIST"/>
-      <xs:element name="CONSTANTS" type="CONSTANTS-LIST"/>
+      <xs:element name="Constants" type="CONSTANTS-LIST"/>
     </xs:sequence>
   </xs:complexType>
 

@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	
 	//INITIALISE WORLD -> STATE PROPERTIES
 	RLSimion::g_pWorld = new CWorld(pConfig->FirstChildElement("World"));
-	RLSimion::g_pExperiment = new CExperiment(pConfig->FirstChildElement("Experiment"));
+//	RLSimion::g_pExperiment = new CExperiment(pConfig->FirstChildElement("Experiment"));
 
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
 	tinyxml2::XMLElement* pControllerConfig = pConfig->FirstChildElement("Controller");
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 	tinyxml2::XMLElement* pVFAConfig = pConfig->FirstChildElement("Multi-Output-VFA");
 	tinyxml2::XMLElement* pOutputConfig = pConfig->FirstChildElement("Output-File");
 
-	if (!pVFAConfig || !RLSimion::g_pWorld || !RLSimion::g_pExperiment || !pOutputConfig)
+	if (!pVFAConfig || !RLSimion::g_pWorld || !pOutputConfig)
 	{
 		printf("Configuration error: Some component is missing in the config file\n");
 		exit(-1);

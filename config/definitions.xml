@@ -151,7 +151,7 @@
 
   <CLASS Name="LQR">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <MULTI-VALUED Name="Gains" Class="LQR-GAIN"/>
+    <MULTI-VALUED Name="LQR-Gain" Class="LQR-GAIN"/>
   </CLASS>
 
   <CLASS Name="Jonkman">

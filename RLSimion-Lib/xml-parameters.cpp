@@ -205,6 +205,7 @@ INumericValue* XMLParameters::getNumericHandler(tinyxml2::XMLElement* pElement)
 		pHandler = new CInterpolatedValue(pElement->FirstChildElement("Linear-Schedule"));
 	else if (pElement->FirstChildElement("Bhatnagar-Schedule"))
 		pHandler = new CBhatnagarSchedule(pElement->FirstChildElement("Bhatnagar-Schedule"));
+	else assert(0);
 
 	m_handlers.push_front(pHandler);
 
