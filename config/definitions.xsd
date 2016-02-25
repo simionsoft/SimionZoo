@@ -48,26 +48,30 @@
       <xs:element name="BRANCH" minOccurs="0" maxOccurs="unbounded" type="BRANCH"/>
 
     </xs:sequence>
-    <xs:attribute name="Name" type="xs:string"/>
-    <xs:attribute name="LoadXML" type="xs:string"/>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="XMLTag" type="xs:string" use="optional"/>
+    <xs:attribute name="LoadXML" type="xs:string" use="optional"/>
   </xs:complexType>
 
   <xs:complexType name="CHOICE-ELEMENT">
-    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="XMLTag" type="xs:string" use="optional"/>
     <xs:attribute name="XML" type="xs:string"/>
-    <xs:attribute name="Class" type="xs:string"/>
+    <xs:attribute name="Class" type="xs:string" use="required"/>
   </xs:complexType>
 
   <xs:complexType name="BRANCH">
-    <xs:attribute name="Name" type="xs:string"/>
-    <xs:attribute name="Class" type="xs:string"/>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="XMLTag" type="xs:string" use="optional"/>
+    <xs:attribute name="Class" type="xs:string" use="required"/>
     <xs:attribute name="Comment" type="xs:string"/>
     <xs:attribute name="Optional" type="xs:boolean"/>
   </xs:complexType>
 
   <xs:complexType name="MULTI-VALUED">
-    <xs:attribute name="Name" type="xs:string"/>
-    <xs:attribute name="Class" type="xs:string"/>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="XMLTag" type="xs:string" use="optional"/>
+    <xs:attribute name="Class" type="xs:string" use="required"/>
   </xs:complexType>
 
   <xs:complexType name="ENUMERATED">
@@ -76,15 +80,17 @@
   </xs:complexType>
   
   <xs:complexType name="XML-NODE-REF">
-    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="XMLTag" type="xs:string" use="optional"/>
     <xs:attribute name="Comment" type="xs:string"/>
-    <xs:attribute name="XMLFile" type="xs:string"/>
-    <xs:attribute name="HangingFrom" type="xs:string"/>
+    <xs:attribute name="XMLFile" type="xs:string" use="required"/>
+    <xs:attribute name="HangingFrom" type="xs:string" use="required"/>
   </xs:complexType>
                   
   
   <xs:attributeGroup name="CONSTANT-VALUE-ATTRIBUTES">
-    <xs:attribute name="Name" type="xs:string"/>
+    <xs:attribute name="Name" type="xs:string" use="required"/>
+    <xs:attribute name="XMLTag" type="xs:string" use="optional"/>
     <xs:attribute name="Default" type="xs:string"/>
     <xs:attribute name="Comment" type="xs:string"/>
     <xs:attribute name="Optional" type="xs:boolean"/>
