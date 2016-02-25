@@ -6,6 +6,7 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:v="clr-namespace:AppXML.Views"
+             xmlns:help="clr-namespace:AppXML.Views.Help"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -13,34 +14,63 @@
             <DataTemplate DataType="{x:Type vm:IntegerViewModel}">
                 <v:IntegerView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ClassViewModel}">
+                <v:ClassView/>
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <StackPanel Orientation="Vertical">
-        
-        <StackPanel Orientation="Horizontal">
-                <ContentControl x:Name="Header"></ContentControl>
-                <Button x:Name="AddNew" Width="25">+</Button>
+    <StackPanel>
+        <StackPanel Visibility="{Binding classVisible}" Orientation="Vertical">
+            <Grid help:GridHelpers.ColumnCount="2" help:GridHelpers.RowCount="{Binding RowCount}">
+
+                <ItemsControl x:Name="AdedClasses" Grid.Column="0"/>
+
+
+
+
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label x:Name="Label"/>
+                <Button Grid.Column="1"  Margin="2" Width="25" Height="26" cal:Message.Attach="[Event Click]=[Add()]" Content="+"/>
+                <ContentControl Grid.Row="1" x:Name="HeaderClass"/>
+            </Grid>
+
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <ItemsControl ItemsSource="{Binding Aded}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical">
-                        </StackPanel>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl> 
-            <ItemsControl ItemsSource="{Binding Aded}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Button Width="25" Height="26" cal:Message.Attach="[Event Click]=[Delete($this)]">-</Button>
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            
-        </StackPanel>    
+        <StackPanel Orientation="Vertical" Visibility="{Binding simpleVisible}">
+
+            <StackPanel Orientation="Horizontal">
+                <ItemsControl ItemsSource="{Binding Aded}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding Aded}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Width="25" Height="26" cal:Message.Attach="[Event Click]=[Delete($this)]" Content="-"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" >
+                <ContentControl x:Name="Header"/>
+                <Button x:Name="AddNew" Width="25" Content="+"/>
+            </StackPanel>
+        </StackPanel>
     </StackPanel>
 </UserControl>

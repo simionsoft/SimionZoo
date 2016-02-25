@@ -87,7 +87,7 @@
   <CLASS Name="Single-Output-VFA-Policy-Learner">
     <CHOICE Name="Algorithm">
       <CHOICE-ELEMENT Name="CACLA" Class="CACLA"/>
-      <CHOICE-ELEMENT Name="RegularGradient" Class="RegularGradient"/>
+      <CHOICE-ELEMENT Name="RegularGradient" Class="Regular-Gradient"/>
       <CHOICE-ELEMENT Name="Incremental-Natural-Actor" Class="Incremental-Natural-Actor"/>
     </CHOICE>
    </CLASS>
@@ -249,7 +249,7 @@
 
   <!-- RBFs-->
   
-  <CLASS Name="RBF-GRID-DIMENSION">
+  <CLASS Name="RBF-GRID-DIMENSION" Window="New">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
     <INTEGER-VALUE Name="Min" Optional="true"/>
@@ -263,7 +263,7 @@
     <BRANCH Name="Scale" Class="NUMERIC-VALUE"/>
   </CLASS>
 
-  <CLASS Name="NUMERIC-VALUE">
+  <CLASS Name="NUMERIC-VALUE" Window="New">
     <CHOICE Name="Type">
       <CHOICE-ELEMENT Name="Constant" Class="CONSTANT"/>
       <CHOICE-ELEMENT Name="Linear-Schedule" Class="SCHEDULE"/>
@@ -286,7 +286,7 @@
   
   <!--REWARDS-->
 
-  <CLASS Name="REWARD">
+  <CLASS Name="REWARD" Window="New">
     <DECIMAL-VALUE Name="Min" Comment="Minimum allowed reward"/>
     <DECIMAL-VALUE Name="Max" Comment="Maximum output of each reward component"/>
     <MULTI-VALUED Name="Reward-components" Class="REWARD-COMPONENT"/>

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 namespace AppXML.ViewModels
 {
-    public class BranchViewModel
+    public class BranchViewModel:PropertyChangedBase
     {
         private string _name;
         private ClassViewModel _class;
