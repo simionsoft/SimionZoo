@@ -98,6 +98,7 @@
     <Compile Include="Views\BranchView.xaml.cs">
       <DependentUpon>BranchView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Help\GridHelpers.cs" />
     <Compile Include="Views\IntegerView.xaml.cs">
       <DependentUpon>IntegerView.xaml</DependentUpon>
     </Compile>

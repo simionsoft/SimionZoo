@@ -58,7 +58,7 @@ namespace AppXML.ViewModels
 
 
         }
-        public ClassViewModel()
+       /* public ClassViewModel()
         {
             //PARAMERTRO DEL CONSTRUCTOR
             String clasName = "EXPERIMENT";
@@ -98,7 +98,11 @@ namespace AppXML.ViewModels
             }
             
             
-        }
+        }*/
+        public string ItemsVisible { get { if(Items == null)return "Hidden";else return "Visible"; } set { } }
+        public string ChoiceVisible { get { if(Choice == null)return "Hidden";else return "Visible"; } set { } }
+        public string BranchesVisible { get {if(Branches == null)return "Hidden";else return "Visible"; } set { } }
+        public string MultisVisible { get { if (Multis == null)return "Hidden"; else return "Visible"; } set { } }
         public ChoiceViewModel Choice { get { return _choice; } set { } }
         public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
         public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }

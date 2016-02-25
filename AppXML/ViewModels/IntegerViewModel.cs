@@ -37,9 +37,9 @@ namespace AppXML.ViewModels
                 t.Add(t1);
                 _textBoxFile = new ObservableCollection<TextBoxWithFile>(t);
             }
-            else if(param.type==validTypes.IntergerValue || param.type == validTypes.StringValue)
+            else if(param.type==validTypes.IntergerValue || param.type == validTypes.StringValue || param.type == validTypes.DecimalValue)
             {
-                TextBox t1 = new TextBox(label, param.defaultValue);
+                TextBox t1 = new TextBox(label, param.defaultValue,param.type);
                 List<TextBox> t = new List<TextBox>();
                 t.Add(t1);
                 _textBox = new ObservableCollection<TextBox>(t);
@@ -90,6 +90,8 @@ namespace AppXML.ViewModels
     {
         private string label;
         private string defaultValue;
+        private validTypes type;
+        private string _textColor = "White";
 
         public string Label
         {
@@ -109,10 +111,26 @@ namespace AppXML.ViewModels
                     
                 } 
         }
-        public TextBox(string label,string defaultValue)
+        public TextBox(string label,string defaultValue, validTypes tipo)
         {
             this.label = label;
             this.defaultValue = defaultValue;
+            type = tipo;
+        }
+        public string TextColor { get { return _textColor; } set { _textColor = value; NotifyOfPropertyChange(() => TextColor); } }
+        public void Validate(object sender)
+        {
+            if (type == validTypes.StringValue)
+                return;
+            Boolean isValid = AppXML.Data.Utility.validate(Default, type);
+            if(!isValid)
+            {
+                TextColor = "Red";
+            }
+            else
+            {
+                TextColor = "White";
+            }
         }
        
         
@@ -122,7 +140,7 @@ namespace AppXML.ViewModels
         private string buttonImage;
         private string type;
 
-        public TextBoxWithFile(string label,string def, string bt, string type):base(label,def)
+        public TextBoxWithFile(string label,string def, string bt, string type):base(label,def,validTypes.FilePathValue)
         {
             buttonImage = bt;
             this.type = type;
