@@ -29,7 +29,7 @@
 
 
             </Grid>
-
+            <Button cal:Message.Attach="[Event Click]=[DeleteLast()]" Visibility="{Binding DeleteVisible}">Delete</Button>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>

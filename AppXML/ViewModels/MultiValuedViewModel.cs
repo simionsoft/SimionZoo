@@ -113,7 +113,10 @@ namespace AppXML.ViewModels
             {
                 _adedClasses[i].index--;
             }*/
+            if (_adedClasses.Count == 0)
+                NotifyOfPropertyChange(() => DeleteVisible);
             NotifyOfPropertyChange(() => AdedClasses);
+
         }
         public void AddNew()
         {
@@ -156,14 +159,23 @@ namespace AppXML.ViewModels
             IntegerViewModel t = new IntegerViewModel(label, original);
             _aded.Add(t);
         }
+        public void DeleteLast()
+        {
+            _adedClasses.RemoveAt(_adedClasses.Count - 1);
+            if (_adedClasses.Count == 0)
+                NotifyOfPropertyChange(() => DeleteVisible);
+        }
         public void Add()
         {
             ClassViewModel cvm = new ClassViewModel(this.clas);
             //int index = _adedClasses.Count;
             //_adedClasses.Add(new ClassViewWithIndex(cvm,index));
             _adedClasses.Add(cvm);
+            if (_adedClasses.Count == 1)
+                NotifyOfPropertyChange(() => DeleteVisible);
            
         }
+        public String DeleteVisible { get { if (_adedClasses != null && _adedClasses.Count > 0) return "Visible"; else return "Hidden"; } set { } }
     }
     public class ClassViewWithIndex:PropertyChangedBase
     {
