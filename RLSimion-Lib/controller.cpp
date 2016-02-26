@@ -61,20 +61,19 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
-	tinyxml2::XMLElement* pChild= pParameters->FirstChildElement("Gains");
-	m_numVars = XMLParameters::countChildren(pChild);
+	m_numVars = XMLParameters::countChildren(pParameters,"LQR-Gain");
 
 	m_pVariableIndices= new int[m_numVars];
 	m_pGains= new double[m_numVars];
 
 	CState* pSDesc= RLSimion::g_pWorld->getStateDescriptor();
-	tinyxml2::XMLElement* pGain= pChild->FirstChildElement("LQR-Gain");
+	tinyxml2::XMLElement* pGain= pParameters->FirstChildElement("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->FirstChildElement("Variable")->GetText());//
-		m_pGains[i] = atof(pGain->FirstChildElement("Variable")->GetText());
+		m_pVariableIndices[i] = pSDesc->getVarIndex(XMLParameters::getConstString(pGain->FirstChildElement("Variable")));//
+		m_pGains[i] = XMLParameters::getConstDouble(pGain->FirstChildElement("Gain"));
 
-		pGain = pGain->NextSiblingElement("LQR-GAIN");
+		pGain = pGain->NextSiblingElement("LQR-Gain");
 	}
 }
 
