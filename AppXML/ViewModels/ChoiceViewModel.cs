@@ -19,21 +19,37 @@ namespace AppXML.ViewModels
         private XmlNode _node;
         private string _clas;
         private ClassViewModel _Class;
+        private string _XML;
         public ChoiceViewModel(XmlNode nodo)
         {
             _label = nodo.Attributes["Name"].Value;
             _node = nodo;
             _comboValues = new ObservableCollection<ChoiceElement>();
+            bool XML = false;
+            if (nodo.Attributes["LoadXML"] != null)
+            {
+                XML = true;
+                _XML = nodo.Attributes["LoadXML"].Value;
+            }
             foreach(XmlNode child in nodo.ChildNodes)
             {
                 if(child.Name=="CHOICE-ELEMENT")
                 {
                     ChoiceElement ce = new ChoiceElement(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                    if (XML && child.Attributes["XML"] != null)
+                        ce.XML = child.Attributes["XML"].Value;
                     _comboValues.Add(ce);
                 }
                 
             }
             _Class = new ClassViewModel(_comboValues[0].clas);
+            if(XML)
+            {
+                string key = _XML;
+                string value = _comboValues[0].XML;
+                CNode.XML.Add(key, value);
+            }
+                
         }
         /*public ChoiceViewModel()
         {
@@ -54,6 +70,7 @@ namespace AppXML.ViewModels
         public void ComboChanged(object sender)
         {
             _Class = new ClassViewModel((sender as ChoiceElement).clas);
+            CNode.XML[_XML] = (sender as ChoiceElement).XML;
             NotifyOfPropertyChange(() => Class);
         }
         public string Label { get { return _label; } set { } }

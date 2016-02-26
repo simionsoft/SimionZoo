@@ -18,6 +18,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<IntegerViewModel> _items;
         private ObservableCollection<MultiValuedViewModel> _multis;
         private ObservableCollection<BranchViewModel> _branches;
+        private XMLNodeRefViewModel _XMLNODE;
 
         //faltan los branches pero estan sin crear BranchViewModel y BranchView
         public ClassViewModel(string clasName)
@@ -53,6 +54,14 @@ namespace AppXML.ViewModels
                         _branches = new ObservableCollection<BranchViewModel>();
                     BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
                     _branches.Add(bvm);
+                }
+                else if(child.Name =="XML-NODE-REF")
+                {
+                    string label = child.Attributes["Name"].Value;
+                    string action = child.Attributes["HangingFrom"].Value;
+                    string xmlfile = child.Attributes["XMLFile"].Value;
+
+                    this._XMLNODE = new XMLNodeRefViewModel(label, xmlfile, action);
                 }
             }
 
@@ -107,5 +116,6 @@ namespace AppXML.ViewModels
         public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
         public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
+        public XMLNodeRefViewModel XMLNODE { get { return _XMLNODE; } set { } }
     }
 }

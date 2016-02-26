@@ -89,6 +89,7 @@
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="ViewModels\MultiValuedViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\XMLNodeRefViewModel.cs" />
     <Compile Include="Views\ChoiceView.xaml.cs">
       <DependentUpon>ChoiceView.xaml</DependentUpon>
     </Compile>
@@ -107,6 +108,9 @@
     </Compile>
     <Compile Include="Views\WindowView.xaml.cs">
       <DependentUpon>WindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\XMLNodeRefView.xaml.cs">
+      <DependentUpon>XMLNodeRefView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +166,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\XMLNodeRefView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

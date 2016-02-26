@@ -21,6 +21,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <ItemsControl>
+        <ContentControl x:Name="XMLNODE"></ContentControl>
         <ListView x:Name="Items" BorderBrush="white" BorderThickness="0" Visibility="{Binding ItemsVisible}"/>
         <ListView x:Name="Multis" BorderBrush="white" BorderThickness="0" Visibility="{Binding MultisVisible}"/>
         <ListView x:Name="Branches" BorderBrush="white" BorderThickness="0" Visibility="{Binding BranchesVisible}"/>
