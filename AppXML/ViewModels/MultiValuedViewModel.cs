@@ -175,6 +175,18 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => DeleteVisible);
            
         }
+        public void removeViews()
+        {
+            if (this._headerClass != null)
+                _headerClass.removeViews();
+            if(this._adedClasses!=null)
+            {
+                foreach(ClassViewModel clas in _adedClasses)
+                {
+                    clas.removeViews();
+                }
+            }
+        }
         public String DeleteVisible { get { if (_adedClasses != null && _adedClasses.Count > 0) return "Visible"; else return "Hidden"; } set { } }
     }
     public class ClassViewWithIndex:PropertyChangedBase

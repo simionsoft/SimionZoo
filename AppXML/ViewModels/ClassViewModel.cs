@@ -18,7 +18,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<IntegerViewModel> _items;
         private ObservableCollection<MultiValuedViewModel> _multis;
         private ObservableCollection<BranchViewModel> _branches;
-        private XMLNodeRefViewModel _XMLNODE;
+        private ObservableCollection<XMLNodeRefViewModel> _XMLNODE;
 
         //faltan los branches pero estan sin crear BranchViewModel y BranchView
         public ClassViewModel(string clasName)
@@ -60,8 +60,9 @@ namespace AppXML.ViewModels
                     string label = child.Attributes["Name"].Value;
                     string action = child.Attributes["HangingFrom"].Value;
                     string xmlfile = child.Attributes["XMLFile"].Value;
-
-                    this._XMLNODE = new XMLNodeRefViewModel(label, xmlfile, action);
+                    if (_XMLNODE == null)
+                        _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
+                    this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action));
                 }
             }
 
@@ -116,6 +117,31 @@ namespace AppXML.ViewModels
         public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
         public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
-        public XMLNodeRefViewModel XMLNODE { get { return _XMLNODE; } set { } }
+        public ObservableCollection<XMLNodeRefViewModel> XMLNODE { get { return _XMLNODE; } set { } }
+
+        public void removeViews()
+        {
+            if(_XMLNODE!=null)
+                CApp.removeViews(_XMLNODE.ToList());
+            if (_branches != null)
+            {
+                foreach(BranchViewModel branch in _branches)
+                {
+                    branch.removeViews();
+                }
+            }
+            if(_choice!=null)
+            {
+                _choice.removeViews();
+            }
+            if(_multis!=null)
+            {
+                foreach(MultiValuedViewModel multi in _multis)
+                {
+                    multi.removeViews();
+                }
+            }
+                
+        }
     }
 }

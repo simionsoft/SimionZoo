@@ -69,13 +69,23 @@ namespace AppXML.ViewModels
         }*/
         public void ComboChanged(object sender)
         {
-            _Class = new ClassViewModel((sender as ChoiceElement).clas);
-            CNode.XML[_XML] = (sender as ChoiceElement).XML;
+            ChoiceElement ce = sender as ChoiceElement;
+            _Class.removeViews();
+            _Class = new ClassViewModel(ce.clas);
+            if(ce.XML!=null)
+            {
+                CNode.XML[_XML] = (sender as ChoiceElement).XML;
+                CApp.updateViews();
+            }
             NotifyOfPropertyChange(() => Class);
         }
         public string Label { get { return _label; } set { } }
         public ObservableCollection<ChoiceElement> Combo { get { return _comboValues; } set { } }
         public string Clas { get { return _clas; } set { } }
         public ClassViewModel Class { get { return _Class; } set { } }
+        public void removeViews()
+        {
+            _Class.removeViews();
+        }
     }
 }

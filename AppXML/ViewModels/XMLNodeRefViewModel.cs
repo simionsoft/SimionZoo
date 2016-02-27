@@ -22,9 +22,15 @@ namespace AppXML.ViewModels
 
             List<string> names =AppXML.Data.Utility.getComboFromXML(file, action);
             _options = new ObservableCollection<string>(names);
+            AppXML.Models.CApp.addView(this);
             
        }
-
+        public void update()
+        {
+            List<string> names = AppXML.Data.Utility.getComboFromXML(_XMLFile, _action);
+            _options = new ObservableCollection<string>(names);
+            NotifyOfPropertyChange(() => Options);
+        }
         public ObservableCollection<string> Options { get { return _options; } set { } }
         public string Label { get { return _label; } set { } }
     }

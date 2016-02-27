@@ -11,7 +11,9 @@ namespace AppXML.Data
 {
     public class Utility
     {
+        //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
+        
         public static Boolean validate(string value, validTypes type)
         {
             Boolean result = false;

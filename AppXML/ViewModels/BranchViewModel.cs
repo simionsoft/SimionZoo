@@ -23,5 +23,9 @@ namespace AppXML.ViewModels
         }
         public string Name{get{return _name;}set{}}
         public ClassViewModel Class { get { return _class; } set { } }
+        public void removeViews()
+        {
+            _class.removeViews();
+        }
     }
 }
