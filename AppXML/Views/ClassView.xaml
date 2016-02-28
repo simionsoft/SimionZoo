@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:cal="http://www.caliburnproject.org"
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d" 
@@ -20,11 +21,17 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ItemsControl>
-        <ListView x:Name="XMLNODE"></ListView>
-        <ListView x:Name="Items" BorderBrush="white" BorderThickness="0" Visibility="{Binding ItemsVisible}"/>
-        <ListView x:Name="Multis" BorderBrush="white" BorderThickness="0" Visibility="{Binding MultisVisible}"/>
-        <ListView x:Name="Branches" BorderBrush="white" BorderThickness="0" Visibility="{Binding BranchesVisible}"/>
-        <ContentControl x:Name="Choice" Visibility="{Binding ChoiceVisible}"></ContentControl>
-    </ItemsControl>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding ResumeVisible}">
+            <Label x:Name="Resume"/>
+            <Button cal:Message.Attach="[Event Click]=[OpenForm()]" Content="Fill in"/>
+        </StackPanel>
+        <ItemsControl Visibility="{Binding ClassViewVisible}">
+            <ListView x:Name="XMLNODE" Visibility="{Binding XMLNodeVisible}"/>
+            <ListView x:Name="Items" BorderBrush="white" BorderThickness="0" Visibility="{Binding ItemsVisible}"/>
+            <ListView x:Name="Multis" BorderBrush="white" BorderThickness="0" Visibility="{Binding MultisVisible}"/>
+            <ListView x:Name="Branches" BorderBrush="white" BorderThickness="0" Visibility="{Binding BranchesVisible}"/>
+            <ContentControl x:Name="Choice" Visibility="{Binding ChoiceVisible}"/>
+        </ItemsControl>
+    </StackPanel>
 </UserControl>

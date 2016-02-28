@@ -47,6 +47,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -75,6 +76,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="AppWindowManager.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Models\CApp.cs" />
     <Compile Include="Models\CBranch.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="ViewModels\ChoiceViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
+    <Compile Include="ViewModels\WindowClassViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="ViewModels\MultiValuedViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -105,6 +108,9 @@
     </Compile>
     <Compile Include="Views\MultiValuedView.xaml.cs">
       <DependentUpon>MultiValuedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WindowClassView.xaml.cs">
+      <DependentUpon>WindowClassView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowView.xaml.cs">
       <DependentUpon>WindowView.xaml</DependentUpon>
@@ -162,6 +168,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultiValuedView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WindowClassView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
