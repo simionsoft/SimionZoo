@@ -11,6 +11,9 @@ namespace AppXML.Data
 {
     public class Utility
     {
+        //used to avoid readings of worl-denitions xml
+        private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
+        
         public static Boolean validate(string value, validTypes type)
         {
             Boolean result = false;
@@ -91,6 +94,38 @@ namespace AppXML.Data
                     rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value));
             }
             return rootnode;
+        }
+        public static List<string> getComboFromXML(string file, string action)
+        {
+            string xmlFile = CNode.XML[file];
+            string key = xmlFile + action;
+            if(xmlDic.ContainsKey(key))
+                return xmlDic[xmlFile+action];
+            else
+            {
+                List<string> result = new List<string>();
+                XmlDocument doc = new XmlDocument();
+                doc.Load(xmlFile);
+                foreach(XmlNode child in doc.ChildNodes)
+                {
+                    if(child.Name =="World-Definition")
+                    {
+                        foreach(XmlNode type in child.ChildNodes)
+                        {
+                            if(type.Name == action)
+                            {
+                                foreach(XmlNode variable in type.ChildNodes)
+                                {
+                                    result.Add(variable.ChildNodes[0].InnerText);
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                xmlDic.Add(key,result);
+                return result;
+            }
         }
     }
 }

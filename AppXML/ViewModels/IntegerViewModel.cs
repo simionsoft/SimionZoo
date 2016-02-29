@@ -120,6 +120,8 @@ namespace AppXML.ViewModels
         public string TextColor { get { return _textColor; } set { _textColor = value; NotifyOfPropertyChange(() => TextColor); } }
         public void Validate(object sender)
         {
+            if (type == validTypes.StringValue)
+                return;
             Boolean isValid = AppXML.Data.Utility.validate(Default, type);
             if(!isValid)
             {

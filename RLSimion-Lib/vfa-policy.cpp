@@ -33,7 +33,6 @@ void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
 {
 	double noise;
 	double output;
-
 	
 	noise = m_pExpNoise->getValue();
 

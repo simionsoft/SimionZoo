@@ -78,3 +78,12 @@ double CGaussianNoise::getValue()
 }
 
 
+double CGaussianNoise::getSigma()
+{
+	return m_pSigma->getValue(); 
+}
+
+double CGaussianNoise::unscale(double noise)
+{
+	return noise / m_pScale->getValue();
+}

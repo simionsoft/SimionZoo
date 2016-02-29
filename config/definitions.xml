@@ -87,20 +87,20 @@
   <CLASS Name="Single-Output-VFA-Policy-Learner">
     <CHOICE Name="Algorithm">
       <CHOICE-ELEMENT Name="CACLA" Class="CACLA"/>
-      <CHOICE-ELEMENT Name="RegularGradient" Class="RegularGradient"/>
+      <CHOICE-ELEMENT Name="RegularGradient" Class="Regular-Gradient"/>
       <CHOICE-ELEMENT Name="Incremental-Natural-Actor" Class="Incremental-Natural-Actor"/>
     </CHOICE>
    </CLASS>
 
   <CLASS Name="CACLA">
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
-    <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-POLICY"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
   </CLASS>
 
   <CLASS Name="Regular-Gradient">
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
-    <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-POLICY"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
   </CLASS>
 
@@ -108,11 +108,11 @@
     <DECIMAL-VALUE Name="Gamma" Comment="Gamma parameter used by the critic"/>
     <BRANCH Name="Alpha-v" Class="NUMERIC-VALUE" Comment="Gain used by the critic to update the value"/>
     <BRANCH Name="Alpha-u" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
-    <BRANCH Name ="VFA-Policy" Class="VFA-Policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-POLICY"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
   </CLASS>
 
-  <CLASS Name="VFA-Policy">
+  <CLASS Name="VFA-POLICY">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
     <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
@@ -151,7 +151,7 @@
 
   <CLASS Name="LQR">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <MULTI-VALUED Name="Gains" Class="LQR-GAIN"/>
+    <MULTI-VALUED Name="LQR-Gain" Class="LQR-GAIN"/>
   </CLASS>
 
   <CLASS Name="Jonkman">
@@ -258,9 +258,9 @@
   </CLASS>
   
   <CLASS Name="GAUSSIAN-NOISE">
-    <BRANCH Name="Sigma" Class="NUMERIC-VALUE"/>
-    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
-    <BRANCH Name="Scale" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="Sigma" Class="NUMERIC-VALUE" Comment="This parameter controls the width of the gaussian bell"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="This parameter controls the low-pass filter [0,1]. Alpha=1.0 disables the filter."/>
+    <BRANCH Name="Scale" Class="NUMERIC-VALUE" Comment="This parameter controls the scaling of the noise"/>
   </CLASS>
 
   <CLASS Name="NUMERIC-VALUE">
@@ -293,7 +293,7 @@
   
   <!--REWARDS-->
 
-  <CLASS Name="REWARD">
+  <CLASS Name="REWARD" Window="New">
     <DECIMAL-VALUE Name="Min" Comment="Minimum allowed reward"/>
     <DECIMAL-VALUE Name="Max" Comment="Maximum output of each reward component"/>
     <MULTI-VALUED Name="Reward-components" Class="REWARD-COMPONENT"/>

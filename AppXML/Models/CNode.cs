@@ -14,6 +14,7 @@ namespace AppXML.Models
     public class CNode
     {
         public static Dictionary<string, XmlNode> definitions;
+        public static Dictionary<string,string> XML=new Dictionary<string,string>();
         private readonly ObservableCollection<BranchViewModel> _children = new ObservableCollection<BranchViewModel>();
         public ObservableCollection<BranchViewModel> children { get { return _children; } set { } }
         public void AddBranch(BranchViewModel branch)

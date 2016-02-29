@@ -28,7 +28,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -47,6 +47,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -75,6 +76,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
+    <Compile Include="AppWindowManager.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Models\CApp.cs" />
     <Compile Include="Models\CBranch.cs" />
@@ -86,9 +88,11 @@
     <Compile Include="ViewModels\ChoiceViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
+    <Compile Include="ViewModels\WindowClassViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="ViewModels\MultiValuedViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
+    <Compile Include="ViewModels\XMLNodeRefViewModel.cs" />
     <Compile Include="Views\ChoiceView.xaml.cs">
       <DependentUpon>ChoiceView.xaml</DependentUpon>
     </Compile>
@@ -98,14 +102,21 @@
     <Compile Include="Views\BranchView.xaml.cs">
       <DependentUpon>BranchView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Help\GridHelpers.cs" />
     <Compile Include="Views\IntegerView.xaml.cs">
       <DependentUpon>IntegerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MultiValuedView.xaml.cs">
       <DependentUpon>MultiValuedView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WindowClassView.xaml.cs">
+      <DependentUpon>WindowClassView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\WindowView.xaml.cs">
       <DependentUpon>WindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\XMLNodeRefView.xaml.cs">
+      <DependentUpon>XMLNodeRefView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -160,11 +171,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ShellView.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Views\WindowClassView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\XMLNodeRefView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

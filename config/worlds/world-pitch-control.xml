@@ -1,5 +1,5 @@
-<World-Definition>
-  <State>
+<WORLD-DEFINITION>
+  <STATE>
     <Variable>
       <Name>setpoint-pitch</Name>
       <Units>rad</Units>
@@ -39,6 +39,6 @@
       <Max>1.4</Max>
     </Variable>
   </Action>
-  <CONSTANTS>
-  </CONSTANTS>
+  <Constants>
+  </Constants>
 </World-Definition>

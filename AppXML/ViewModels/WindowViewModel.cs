@@ -17,12 +17,24 @@ using System.Collections.ObjectModel;
 using System.Xml;
 using System.Windows;
 using Caliburn.Micro;
+using System.ComponentModel.Composition;
 namespace AppXML.ViewModels
 {
+    /*[Export(typeof(WindowViewModel))]*/
     public class WindowViewModel: PropertyChangedBase
     {
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
+        private readonly IWindowManager _windowManager;
+        
+
+        /*[ImportingConstructor]
+        public WindowViewModel(IWindowManager windowManager)
+        {
+          _windowManager = windowManager;
+          _rootnode = Utility.getRootNode("../config/RLSimion.xml");
+          _branches = _rootnode.children;
+        }*/
         public WindowViewModel()
         {
             _rootnode = Utility.getRootNode("../config/RLSimion.xml");
