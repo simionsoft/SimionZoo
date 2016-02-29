@@ -2,8 +2,8 @@
 <DEFINITIONS>
     <!--World-->
   <CLASS Name="WORLD">
-    <INTEGER-VALUE Name="NUM_SIMULATION_STEPS" Default="4"/>
-    <DECIMAL-VALUE Name="DELTA_T" Default="0.01"/>
+    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4"/>
+    <DECIMAL-VALUE Name="Delta-T" Default="0.01"/>
     <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
       <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world/wind-turbine.xml" Class="Wind-turbine-parameters"/>
       <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world/underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
@@ -14,15 +14,18 @@
 
   <!-- World parameters -->
   <CLASS Name="Wind-turbine-parameters">
-    <FILE-PATH-VALUE Name="EVALUATION_WIND_DATA" Default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
-    <FILE-PATH-VALUE Name="POWER_SET_POINT" Default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
-    <MULTI-VALUED Name="FILE" Class="FILE-PATH-VALUE"/>
+    <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
+    <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
+    <BRANCH Name="Training-Wind-Data" Class="LIST-OF-FILES"/>
   </CLASS>
   <CLASS Name="Underwater-vehicle-parameters">
     <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
   </CLASS>
   <CLASS Name="Pitch-control-parameters">
     <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
+  </CLASS>
+  <CLASS Name="LIST-OF-FILES">
+    <MULTI-VALUED Name="File" Class="FILE-PATH-VALUE"/>
   </CLASS>
   
   <CLASS Name="LOG">

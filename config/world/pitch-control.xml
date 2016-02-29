@@ -1,5 +1,6 @@
-<WORLD-DEFINITION>
-  <STATE>
+<?xml version="1.0" encoding="utf-8"?>
+<World-Definition>
+  <State>
     <Variable>
       <Name>setpoint-pitch</Name>
       <Units>rad</Units>

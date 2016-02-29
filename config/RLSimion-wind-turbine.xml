@@ -19,7 +19,7 @@
       </Wind-turbine>
     </Dynamic-Model>
     <Delta-T>0.01</Delta-T>
-    <Num-Simulation-Steps>4</Num-Simulation-Steps>
+    <Num-Integration-Steps>4</Num-Integration-Steps>
     <Reward>
       <Min>-100</Min>
       <Max>1.0</Max>

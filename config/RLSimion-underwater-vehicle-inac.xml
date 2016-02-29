@@ -8,7 +8,7 @@
       </Underwater-vehicle>
     </DYNAMIC-MODEL>
     <Delta-T>0.03</Delta-T>
-    <Num-Simulation-Steps>4</Num-Simulation-Steps>
+    <Num-Integration-Steps>4</Num-Integration-Steps>
     <REWARD>
       <Min>-100</Min>
       <Max>1.0</Max>
