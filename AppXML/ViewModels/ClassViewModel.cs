@@ -16,6 +16,11 @@ namespace AppXML.ViewModels
 {
     public class ClassViewModel
     {
+
+        private ClassViewModel _resumeClassViewModel=null;
+
+        public ClassViewModel ResumeClass { get { return _resumeClassViewModel; } set { _resumeClassViewModel = value; } }
+
         private ChoiceViewModel _choice;
         private ObservableCollection<IntegerViewModel> _items;
         private ObservableCollection<MultiValuedViewModel> _multis;
@@ -180,7 +185,7 @@ namespace AppXML.ViewModels
             
 
            WindowManager windowManager = new WindowManager();
-           WindowClassViewModel wcvm = new WindowClassViewModel(this._className);
+           WindowClassViewModel wcvm = new WindowClassViewModel(this._className, this);
            windowManager.ShowDialog(wcvm);
            
 

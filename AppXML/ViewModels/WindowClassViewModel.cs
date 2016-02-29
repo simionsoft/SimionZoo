@@ -7,17 +7,28 @@ using Caliburn.Micro;
 
 namespace AppXML.ViewModels
 {
-    public class WindowClassViewModel: PropertyChangedBase
+    public class WindowClassViewModel: Screen
     {
 
         private ClassViewModel _father;
+        private ClassViewModel _result;
 
-        public ClassViewModel Class { get { return _father; } set { _father = value; } }
+        public ClassViewModel Class { get { return _result; } set { _result = value; } }
 
-        public WindowClassViewModel(string className)
+        public WindowClassViewModel(string className,ClassViewModel father)
         {
-            _father = new ClassViewModel(className,false);
+            _father = father;
+
+            if (father.ResumeClass == null)
+                _result = new ClassViewModel(className, false);
+            else
+                _result = father.ResumeClass;
            
+        }
+        public void Save()
+        {
+            _father.ResumeClass = this.Class;
+            TryClose();
         }
     }
 }
