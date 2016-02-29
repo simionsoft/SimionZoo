@@ -152,12 +152,12 @@
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Xsd Include="..\config\worlds\world-definition.xsd" />
+    <Xml Include="..\config\world\pitch-control.xml" />
+    <Xml Include="..\config\world\underwater-vehicle.xml" />
+    <Xml Include="..\config\world\wind-turbine.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\config\worlds\world-pitch-control.xml" />
-    <Xml Include="..\config\worlds\world-underwater-vehicle.xml" />
-    <Xml Include="..\config\worlds\world-wind-turbine.xml" />
+    <Xsd Include="..\config\world\world-definition.xsd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

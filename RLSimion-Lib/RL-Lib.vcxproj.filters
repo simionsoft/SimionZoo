@@ -202,19 +202,19 @@
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Xsd Include="..\config\worlds\world-definition.xsd">
+    <Xml Include="..\config\world\pitch-control.xml">
       <Filter>world</Filter>
-    </Xsd>
+    </Xml>
+    <Xml Include="..\config\world\underwater-vehicle.xml">
+      <Filter>world</Filter>
+    </Xml>
+    <Xml Include="..\config\world\wind-turbine.xml">
+      <Filter>world</Filter>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\config\worlds\world-pitch-control.xml">
+    <Xsd Include="..\config\world\world-definition.xsd">
       <Filter>world</Filter>
-    </Xml>
-    <Xml Include="..\config\worlds\world-underwater-vehicle.xml">
-      <Filter>world</Filter>
-    </Xml>
-    <Xml Include="..\config\worlds\world-wind-turbine.xml">
-      <Filter>world</Filter>
-    </Xml>
+    </Xsd>
   </ItemGroup>
 </Project>

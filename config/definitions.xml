@@ -5,9 +5,9 @@
     <INTEGER-VALUE Name="NUM_SIMULATION_STEPS" Default="4"/>
     <DECIMAL-VALUE Name="DELTA_T" Default="0.01"/>
     <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
-      <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world-wind-turbine.xml" Class="Wind-turbine-parameters"/>
-      <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world-underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
-      <CHOICE-ELEMENT Name="PItch-control" XML="../config/world-pitch-control.xml" Class="Pitch-control-parameters"/>
+      <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world/wind-turbine.xml" Class="Wind-turbine-parameters"/>
+      <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world/underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
+      <CHOICE-ELEMENT Name="PItch-control" XML="../config/world/pitch-control.xml" Class="Pitch-control-parameters"/>
     </CHOICE>
     <BRANCH Name="Reward" Class="REWARD"/>
   </CLASS>
