@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="world">
+      <UniqueIdentifier>{9b7239a9-61c7-456b-882b-4bac6eda4432}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp">
@@ -60,21 +63,6 @@
     <ClCompile Include="vfa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="world-magneticlevitation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world-pitchcontrol.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world-underwatervehicle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world-windturbine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="critic-tdc-lambda.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -107,6 +95,21 @@
     </ClCompile>
     <ClCompile Include="globals.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="world-magneticlevitation.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="world-pitchcontrol.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="world-underwatervehicle.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="world-windturbine.cpp">
+      <Filter>world</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,21 +155,6 @@
     <ClInclude Include="vfa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="world-magneticlevitation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="world-pitchcontrol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="world-underwatervehicle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="world-windturbine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="world.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SimGod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -191,11 +179,42 @@
     <ClInclude Include="xml-parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="world-magneticlevitation.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="world-pitchcontrol.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="world-underwatervehicle.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="world-windturbine.h">
+      <Filter>world</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="..\config\worlds\world-definition.xsd">
+      <Filter>world</Filter>
+    </Xsd>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\config\worlds\world-pitch-control.xml">
+      <Filter>world</Filter>
+    </Xml>
+    <Xml Include="..\config\worlds\world-underwater-vehicle.xml">
+      <Filter>world</Filter>
+    </Xml>
+    <Xml Include="..\config\worlds\world-wind-turbine.xml">
+      <Filter>world</Filter>
+    </Xml>
   </ItemGroup>
 </Project>
