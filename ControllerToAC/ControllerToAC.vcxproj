@@ -104,6 +104,9 @@
   <ItemGroup>
     <Xml Include="..\config\ControllerToVFAPolicy.xml" />
     <Xml Include="..\config\definitions.xml" />
+    <Xml Include="..\config\examples\ControllerToVFAPolicy-pitch-control.xml" />
+    <Xml Include="..\config\examples\ControllerToVFAPolicy-underwater-vehicle.xml" />
+    <Xml Include="..\config\examples\ControllerToVFAPolicy-vidal-wind-turbine.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

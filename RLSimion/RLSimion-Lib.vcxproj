@@ -103,9 +103,10 @@
     <Xml Include="..\config\definitions.xml">
       <SubType>Designer</SubType>
     </Xml>
-    <Xml Include="..\config\RLSimion-underwater-vehicle-inac.xml" />
-    <Xml Include="..\config\RLSimion-underwater-vehicle.xml" />
-    <Xml Include="..\config\RLSimion-wind-turbine.xml" />
+    <Xml Include="..\config\examples\RLSimion-pitch-control.xml" />
+    <Xml Include="..\config\examples\RLSimion-underwater-vehicle-inac.xml" />
+    <Xml Include="..\config\examples\RLSimion-underwater-vehicle.xml" />
+    <Xml Include="..\config\examples\RLSimion-wind-turbine.xml" />
     <Xml Include="..\config\RLSimion.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

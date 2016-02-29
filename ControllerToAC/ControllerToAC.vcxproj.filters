@@ -16,6 +16,9 @@
     <Filter Include="config">
       <UniqueIdentifier>{ca51629b-ad2b-4ef8-8f7b-c17f872a951d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="examples">
+      <UniqueIdentifier>{297f5105-f65b-4557-86ec-dc5acd5d73ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +45,15 @@
     </Xml>
     <Xml Include="..\config\definitions.xml">
       <Filter>config</Filter>
+    </Xml>
+    <Xml Include="..\config\examples\ControllerToVFAPolicy-pitch-control.xml">
+      <Filter>examples</Filter>
+    </Xml>
+    <Xml Include="..\config\examples\ControllerToVFAPolicy-underwater-vehicle.xml">
+      <Filter>examples</Filter>
+    </Xml>
+    <Xml Include="..\config\examples\ControllerToVFAPolicy-vidal-wind-turbine.xml">
+      <Filter>examples</Filter>
     </Xml>
   </ItemGroup>
 </Project>

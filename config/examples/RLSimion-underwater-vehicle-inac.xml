@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RLSimion>
-  <WORLD>
-    <DYNAMIC-MODEL>
+  <World>
+    <Dynamic-Model>
       <Underwater-vehicle>
-        <WORLD-DEFINITION>..\config\world-underwater-vehicle.xml</WORLD-DEFINITION>
-        <SET_POINT_FILE>..\config\underwater-vehicle\setpoints\setpoint.txt</SET_POINT_FILE>     
+        <World-Definition>..\config\world\underwater-vehicle.xml</World-Definition>
+        <Set-Point-File>..\config\world\underwater-vehicle\setpoint.txt</Set-Point-File>     
       </Underwater-vehicle>
-    </DYNAMIC-MODEL>
+    </Dynamic-Model>
     <Delta-T>0.03</Delta-T>
     <Num-Integration-Steps>4</Num-Integration-Steps>
-    <REWARD>
+    <Reward>
       <Min>-100</Min>
       <Max>1.0</Max>
       <Reward-components>
@@ -19,27 +19,27 @@
           <Variable>v-deviation</Variable>
         </Deviation-Component>
       </Reward-components>
-    </REWARD>
-  </WORLD>
-  <EXPERIMENT>
+    </Reward>
+  </World>
+  <Experiment>
     <Num-Episodes>1000</Num-Episodes>
     <Episode-Length>200</Episode-Length>
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>50</Eval-Freq>
-    <LOG>
+    <Log>
       <Freq>0.0</Freq>
       <Ouput-directory>underwater-vehicle</Ouput-directory>
       <Prefix>uv-learn</Prefix>
       <Log-eval-episodes>true</Log-eval-episodes>
       <Log-training-episodes>false</Log-training-episodes>
       <Log-eval-avg-rewards>true</Log-eval-avg-rewards>
-    </LOG>
-  </EXPERIMENT>
-  <SIMGOD>
-    <ACTOR>
+    </Log>
+  </Experiment>
+  <SimGod>
+    <Actor>
       <VFA-Learner>
-        <LOAD>..\data\uv-policy-3.bin</LOAD>
-        <OUTPUTS>
+        <Load>..\data\uv-policy-3.bin</Load>
+        <Outputs>
           <Incremental-Natural-Actor>
             <VFA-Policy>
               <Output-Action>u_thrust</Output-Action>
@@ -88,10 +88,10 @@
               </Linear-Schedule>
             </Alpha-u>
           </Incremental-Natural-Actor>
-        </OUTPUTS>
+        </Outputs>
       </VFA-Learner>
-    </ACTOR>
-    <CRITIC>
+    </Actor>
+    <Critic>
       <VFA-Critic>
         <Incremental-Natural-Critic>
           <Linear-VFA>
@@ -120,6 +120,6 @@
           <Alpha-r>0.9</Alpha-r>
         </Incremental-Natural-Critic>
       </VFA-Critic>
-    </CRITIC>
-  </SIMGOD>
+    </Critic>
+  </SimGod>
 </RLSimion>

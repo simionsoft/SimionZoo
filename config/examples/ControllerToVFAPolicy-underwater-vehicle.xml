@@ -3,12 +3,12 @@
   <World>
     <Dynamic-Model>
       <Underwater-vehicle>
-        <World-Definition>..\config\world-underwater-vehicle.xml</World-Definition>
-        <Set-Point-File>..\config\underwater-vehicle\setpoints\setpoint.txt</Set-Point-File>
+        <World-Definition>..\config\world\underwater-vehicle.xml</World-Definition>
+        <Set-Point-File>..\config\world\underwater-vehicle\setpoint.txt</Set-Point-File>
       </Underwater-vehicle>
     </Dynamic-Model>
     <Delta-T>0.01</Delta-T>
-    <Num-Simulation-Steps>4</Num-Simulation-Steps>
+    <Num-Integration-Steps>4</Num-Integration-Steps>
     <Reward>
       <Min>-100</Min>
       <Max>1.0</Max>
