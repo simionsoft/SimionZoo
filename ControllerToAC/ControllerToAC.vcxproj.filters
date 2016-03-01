@@ -56,4 +56,9 @@
       <Filter>examples</Filter>
     </Xml>
   </ItemGroup>
+  <ItemGroup>
+    <Xsd Include="..\config\definitions.xsd">
+      <Filter>config</Filter>
+    </Xsd>
+  </ItemGroup>
 </Project>

@@ -6,14 +6,14 @@
         <World-Definition>..\config\world\wind-turbine.xml</World-Definition>
         <Evaluation-Wind-Data>..\config\world\wind-turbine\TurbSim-10.25.hh</Evaluation-Wind-Data>
         <Training-Wind-Data>
-          <File>..\config\world\wind-turbine\TurbSim-10.25.hh</File>
-          <!--<File>..\config\world\wind-turbine\TurbSim-9.hh</File>
+          <!--<File>..\config\world\wind-turbine\TurbSim-10.25.hh</File>-->
+          <File>..\config\world\wind-turbine\TurbSim-9.hh</File>
           <File>..\config\world\wind-turbine\TurbSim-9.5.hh</File>
           <File>..\config\world\wind-turbine\TurbSim-10.hh</File>
           <File>..\config\world\wind-turbine\TurbSim-10.5.hh</File>
           <File>..\config\world\wind-turbine\TurbSim-11.hh</File>
           <File>..\config\world\wind-turbine\TurbSim-11.5.hh</File>
-          <File>..\config\world\wind-turbine\TurbSim-12.hh</File>    -->      
+          <File>..\config\world\wind-turbine\TurbSim-12.hh</File>          
         </Training-Wind-Data>
         <Power-Set-Point>..\config\world\wind-turbine\windturbine-power-setpoint.txt</Power-Set-Point>
       </Wind-turbine>
@@ -96,7 +96,7 @@
                 <Exploration-Noise>
                   <GaussianNoise>
                     <Sigma>1.0</Sigma>
-                    <Alpha>1.0</Alpha>
+                    <Alpha>0.5</Alpha>
                     <Scale>
                       <Linear-Schedule>
                         <Start-Offset>0.0</Start-Offset>
@@ -150,7 +150,7 @@
               <Exploration-Noise>
                 <GaussianNoise>
                   <Sigma>1.0</Sigma>
-                  <Alpha>1.0</Alpha>
+                  <Alpha>0.5</Alpha>
                   <Scale>
                     <Linear-Schedule>
                       <Start-Offset>0.0</Start-Offset>
