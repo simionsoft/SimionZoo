@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "world-underwatervehicle.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "setpoint.h"
 #include "xml-parameters.h"
-
+#include "world.h"
+#include "globals.h"
 
 #define NUM_STATE_VARIABLES 3
 
@@ -38,7 +39,7 @@ void CUnderwaterVehicle::reset(CState *s)
 
 void CUnderwaterVehicle::executeAction(CState *s,CAction *a,double dt)
 {
-	double newSetpoint= m_pSetpoint->getPointSet(CWorld::getT());
+	double newSetpoint = m_pSetpoint->getPointSet(RLSimion::g_pWorld->getT());
 	double v= s->getValue(m_sV);
 	double u= a->getValue(m_aUThrust); //thrust
 	double dot_v= (u*(-0.5*tanh((fabs((1.2+0.2*sin(fabs(v)))*v*fabs(v) - u) -30.0)*0.1) + 0.5) 

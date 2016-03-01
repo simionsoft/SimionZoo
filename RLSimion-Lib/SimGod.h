@@ -5,7 +5,9 @@ class CCritic;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+typedef CNamedVarSet CReward;
 class tinyxml2::XMLElement;
+
 
 class CSimGod
 {
@@ -14,6 +16,9 @@ class CSimGod
 	CCritic* m_pCritic;
 
 	double m_rho;
+	double m_td;
+	double m_scalarReward;
+	CReward *m_pReward;
 public:
 
 	CSimGod(tinyxml2::XMLElement* pParameters);

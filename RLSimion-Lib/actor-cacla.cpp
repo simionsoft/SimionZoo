@@ -3,7 +3,7 @@
 #include "vfa.h"
 #include "vfa-actor.h"
 #include "vfa-policy.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "features.h"
 #include "etraces.h"
 #include "xml-parameters.h"

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "vfa-actor.h"
 #include "vfa.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "features.h"
 #include "etraces.h"
 #include "xml-parameters.h"

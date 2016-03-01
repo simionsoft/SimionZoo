@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "world.h"
 #include "world-magneticlevitation.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
@@ -81,9 +81,9 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double setpoint;
 	
 	if (RLSimion::g_pExperiment->isEvaluationEpisode())
-		setpoint= m_pEvalSetPoint->getPointSet(CWorld::getT());
+		setpoint = m_pEvalSetPoint->getPointSet(RLSimion::g_pWorld->getT());
 	else
-		setpoint= m_pLearnSetPoint->getPointSet(CWorld::getT());
+		setpoint = m_pLearnSetPoint->getPointSet(RLSimion::g_pWorld->getT());
 
 
 

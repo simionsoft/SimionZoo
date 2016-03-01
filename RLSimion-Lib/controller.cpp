@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "controller.h"
 #include "globals.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "world.h"
 #include "xml-parameters.h"
 
@@ -127,12 +127,12 @@ CPIDController::~CPIDController()
 
 void CPIDController::selectAction(CState *s,CAction *a)
 {
-	if (CWorld::getT()== 0.0)
+	if (RLSimion::g_pWorld->getT()== 0.0)
 		m_intError= 0.0;
 
 	double error= s->getValue(m_errorVariableIndex);
-	double dError= error*CWorld::getDT();
-	m_intError+= error*CWorld::getDT();
+	double dError = error*RLSimion::g_pWorld->getDT();
+	m_intError += error*RLSimion::g_pWorld->getDT();
 
 	a->setValue(m_outputActionIndex
 		,error*m_pKP->getValue() + m_intError*m_pKI->getValue() + dError*m_pKD->getValue());
@@ -305,12 +305,12 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	//Filter the generator speed
 	double Alpha;
 
-	if (CWorld::getT()==0.0)
+	if (RLSimion::g_pWorld->getT() == 0.0)
 	{
 		Alpha= 1.0;
 		m_GenSpeedF= s->getValue(m_omega_g_index);
 	}
-	else Alpha= exp( ( CWorld::getDT() )*m_CornerFreq );
+	else Alpha = exp((RLSimion::g_pWorld->getDT())*m_CornerFreq);
 	m_GenSpeedF = ( 1.0 - Alpha )*s->getValue(m_omega_g_index) + Alpha*m_GenSpeedF;
 
 	//TORQUE CONTROLLER
@@ -329,7 +329,7 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	GenTrq  = std::min( GenTrq, s->getMax("T_g")  );   //Saturate the command using the maximum torque limit
 
 	double TrqRate;
-	TrqRate = ( GenTrq - s->getValue(m_T_g_index) )/CWorld::getDT(); //Torque rate (unsaturated)
+	TrqRate = (GenTrq - s->getValue(m_T_g_index)) / RLSimion::g_pWorld->getDT(); //Torque rate (unsaturated)
 	a->setValue(m_d_T_g_index,TrqRate);
 
 	//PITCH CONTROLLER
@@ -338,7 +338,7 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	//Compute the current speed error and its integral w.r.t. time; saturate the
 	//  integral term using the pitch angle limits:
 	double SpdErr    = m_GenSpeedF - m_PC_RefSpd;                                 //Current speed error
-	m_IntSpdErr = m_IntSpdErr + SpdErr*CWorld::getDT();                           //Current integral of speed error w.r.t. time
+	m_IntSpdErr = m_IntSpdErr + SpdErr*RLSimion::g_pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
 	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getMax(m_beta_index)/( GK*m_PC_KI->getValue() ) )
 		, s->getMin("beta")/( GK*m_PC_KI->getValue() ));
@@ -360,7 +360,7 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	//      resulting overall pitch angle command may be different for each
 	//      blade.
 
-	double d_beta= ( PitComT - s->getValue(m_beta_index) )/CWorld::getDT();
+	double d_beta = (PitComT - s->getValue(m_beta_index)) / RLSimion::g_pWorld->getDT();
 	
 	a->setValue(m_d_beta_index,d_beta);
 	/*
