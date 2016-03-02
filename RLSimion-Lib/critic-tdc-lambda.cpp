@@ -19,9 +19,9 @@ CTDCLambdaCritic::CTDCLambdaCritic(tinyxml2::XMLElement *pParameters)
 	m_b= new CFeatureList();
 	m_omega = new CFeatureList();
 
-	m_pAlpha= XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pBeta = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Beta"));
-	m_pGamma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pAlpha= XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pBeta = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Beta"));
+	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
 }
 
 CTDCLambdaCritic::~CTDCLambdaCritic()

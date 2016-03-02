@@ -10,7 +10,7 @@
 
 
 CUnderwaterVehicle::CUnderwaterVehicle(tinyxml2::XMLElement* pParameters)
-: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("World-Definition")))
+: CDynamicModel(XMLUtils::getConstString(pParameters->FirstChildElement("World-Definition")))
 {
 	CState *pStateDescriptor = getStateDescriptor();
 	m_sVSetpoint = pStateDescriptor->getVarIndex("v-setpoint");

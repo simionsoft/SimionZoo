@@ -13,8 +13,8 @@ CTDLambdaCritic::CTDLambdaCritic(tinyxml2::XMLElement *pParameters)
 {
 	m_z= new CETraces(pParameters->FirstChildElement("E-Traces"));
 	m_aux= new CFeatureList();
-	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pGamma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
 }
 
 CTDLambdaCritic::~CTDLambdaCritic()

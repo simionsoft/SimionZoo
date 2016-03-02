@@ -44,13 +44,13 @@ CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 	if (pParameters)
 	{
 
-		m_randomSeed = XMLParameters::getConstInteger(pParameters->FirstChildElement("Random-Seed"));
+		m_randomSeed = XMLUtils::getConstInteger(pParameters->FirstChildElement("Random-Seed"));
 
-		m_expProgress.setNumEpisodes(XMLParameters::getConstInteger(pParameters->FirstChildElement("Num-Episodes")));
+		m_expProgress.setNumEpisodes(XMLUtils::getConstInteger(pParameters->FirstChildElement("Num-Episodes")));
 		m_expProgress.setNumSteps((unsigned int)
-			(XMLParameters::getConstDouble(pParameters->FirstChildElement("Episode-Length")) / RLSimion::g_pWorld->getDT()));
+			(XMLUtils::getConstDouble(pParameters->FirstChildElement("Episode-Length")) / RLSimion::g_pWorld->getDT()));
 
-		m_evalFreq = XMLParameters::getConstInteger(pParameters->FirstChildElement("Eval-Freq"));
+		m_evalFreq = XMLUtils::getConstInteger(pParameters->FirstChildElement("Eval-Freq"));
 
 		m_pLogger = new CLogger(pParameters->FirstChildElement("Log"));
 	}
@@ -81,7 +81,20 @@ bool CExperiment::isEvaluationEpisode()
 
 void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
-	//log step
+	bool evalEpisode = isEvaluationEpisode();
+	if (m_expProgress.isFirstEpisode() && m_expProgress.isFirstStep())
+
+		m_pLogger->firstEpisode(evalEpisode);
+	if (m_expProgress.isFirstStep())
+		m_pLogger->firstStep(evalEpisode);
+
 	//update stats
-	m_pLogger->timestep(s, a, s_p, r);
+	//output step-stats
+	m_pLogger->timestep(evalEpisode);
+
+	if (m_expProgress.isLastStep())
+		m_pLogger->lastStep(evalEpisode);
+
+	if (m_expProgress.isLastEpisode() && m_expProgress.isLastStep())
+		m_pLogger->lastEpisode(evalEpisode);
 }

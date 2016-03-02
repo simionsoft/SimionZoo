@@ -9,7 +9,7 @@ public:
 
 #include <list>
 
-class XMLParameters
+class XMLUtils
 {
 	static std::list<INumericValue*> m_handlers;
 public:

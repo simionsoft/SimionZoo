@@ -1,34 +1,24 @@
 #include "stdafx.h"
 #include "stats.h"
 
-#define MAX_SUBKEY_SIZE 128
-CStat::CStat(Stat key, const char* subkey, double* variable)
+#define MAX_KEY_SIZE 128
+
+CStatsInfo::CStatsInfo()
 {
-	m_key = key;
-
-	m_subkey = new char[MAX_SUBKEY_SIZE];
-	strcpy_s(m_subkey, MAX_SUBKEY_SIZE, subkey);
-
-	m_variable = variable;
-
 	reset();
 }
 
-CStat::~CStat()
-{
-	delete [] m_subkey;
-}
-
-void CStat::reset()
+void CStatsInfo::reset()
 {
 	m_min = std::numeric_limits<double>::max();
 	m_max = std::numeric_limits<double>::min();
-
-	m_numSamples= 0.0;
-	m_meanSum= 0.0;
-	m_stdDevSum= 0.0;
+	m_numSamples = 0;
+	m_meanSum = 0;
+	m_stdDevSum = 0;
 }
 
+//one pass-mean/std.dev. calculation
+//https://www.strchr.com/standard_deviation_in_one_pass
 //double std_dev(double a[], int n) {
 //	if (n == 0)
 //		return 0.0;
@@ -45,11 +35,8 @@ void CStat::reset()
 //	return sqrt(stdDevSum / (elements - 1));
 //}
 
-void CStat::addSample()
+void CStatsInfo::addExperimentSample(double value)
 {
-	if (!m_variable) return;
-
-	double value = *m_variable;
 	m_min = std::min(value, m_min);
 	m_max = std::max(value, m_max);
 
@@ -61,8 +48,61 @@ void CStat::addSample()
 	m_stdDevSum += stepMean * stepSum;
 }
 
-double CStat::getMin(){ return m_min; }
-double CStat::getMax(){ return m_max; }
-double CStat::getAvg(){ return m_meanSum / m_numSamples; }
-double CStat::getStdDev(){ return sqrt(fabs(m_stdDevSum / (m_numSamples - 1))); }
-double CStat::getValue(){ if (!m_variable) return 0.0; return *m_variable; }
+double CStatsInfo::getMin(){ return m_min; }
+double CStatsInfo::getMax(){ return m_max; }
+double CStatsInfo::getAvg(){ return m_meanSum / m_numSamples; }
+double CStatsInfo::getStdDev(){ return sqrt(fabs(m_stdDevSum / (m_numSamples - 1))); }
+
+
+
+CStats::CStats(const char* key, const char* subkey, double* variable)
+{
+	m_key = new char[MAX_KEY_SIZE];
+	strcpy_s(m_key, MAX_KEY_SIZE, key);
+
+	m_subkey = new char[MAX_KEY_SIZE];
+	strcpy_s(m_subkey, MAX_KEY_SIZE, subkey);
+
+	m_variable = variable;
+
+	reset();
+}
+
+CStats::~CStats()
+{
+	delete [] m_key;
+	delete [] m_subkey;
+}
+
+void CStats::reset()
+{
+	m_statsInfo.reset();
+}
+
+void CStats::addExperimentSample()
+{
+	if (m_variable)
+		m_statsInfo.addExperimentSample(*m_variable);
+}
+
+double CStats::getValue()
+{
+	if (m_variable)
+		return *m_variable;
+	return 0;
+}
+
+CStatsInfo* CStats::getStatsInfo()
+{
+	return &m_statsInfo;
+}
+
+const char* CStats::getKey()
+{
+	return m_key;
+}
+
+const char* CStats::getSubkey()
+{
+	return m_subkey;
+}

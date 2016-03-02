@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "experiment.h"
 
-std::list<INumericValue*> XMLParameters::m_handlers;// = std::list<INumericValue*>();
+std::list<INumericValue*> XMLUtils::m_handlers;// = std::list<INumericValue*>();
 
 class CConstantValue : public INumericValue
 {
@@ -40,12 +40,12 @@ CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
 
 	param = pParameters->FirstChildElement("Start-Offset");
 	if (param)
-		m_startOffset = XMLParameters::getConstDouble(param);
+		m_startOffset = XMLUtils::getConstDouble(param);
 	else m_startOffset = 0.0;
 
 	param = pParameters->FirstChildElement("Pre-Offset-Value");
 	if (param)
-		m_preOffsetValue = XMLParameters::getConstDouble(param);
+		m_preOffsetValue = XMLUtils::getConstDouble(param);
 	else m_preOffsetValue = 0.0;
 
 	param = pParameters->FirstChildElement("Interpolation");
@@ -65,15 +65,15 @@ CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
 	}
 
 	param = pParameters->FirstChildElement("Initial-Value");
-	if (param) m_startValue = XMLParameters::getConstDouble(param);
+	if (param) m_startValue = XMLUtils::getConstDouble(param);
 	else assert(0);
 
 	param = pParameters->FirstChildElement("End-Value");
-	if (param) m_endValue = XMLParameters::getConstDouble(param);
+	if (param) m_endValue = XMLUtils::getConstDouble(param);
 	else assert(0);
 
 	param = pParameters->FirstChildElement("Evaluation-Value");
-	if (param) m_evaluationValue = XMLParameters::getConstDouble(param);
+	if (param) m_evaluationValue = XMLUtils::getConstDouble(param);
 	else assert(0);
 }
 
@@ -141,19 +141,19 @@ CBhatnagarSchedule::CBhatnagarSchedule(tinyxml2::XMLElement* pParameters)
 	}
 
 	param = pParameters->FirstChildElement("Alpha-0");
-	if (param) m_alpha_0 = XMLParameters::getConstDouble(param);
+	if (param) m_alpha_0 = XMLUtils::getConstDouble(param);
 	else assert(0);
 
 	param = pParameters->FirstChildElement("Alpha-c");
-	if (param) m_alpha_c = XMLParameters::getConstDouble(param);
+	if (param) m_alpha_c = XMLUtils::getConstDouble(param);
 	else assert(0);
 
 	param = pParameters->FirstChildElement("Time-Exponent");
-	if (param) m_t_exp = XMLParameters::getConstDouble(param);
+	if (param) m_t_exp = XMLUtils::getConstDouble(param);
 	else assert(0);
 
 	param = pParameters->FirstChildElement("Evaluation-Value");
-	if (param) m_evaluationValue = XMLParameters::getConstDouble(param);
+	if (param) m_evaluationValue = XMLUtils::getConstDouble(param);
 	else assert(0);
 }
 
@@ -181,7 +181,7 @@ double CBhatnagarSchedule::getValue()
 }
 
 
-int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* name)
+int XMLUtils::countChildren(tinyxml2::XMLElement* pElement, const char* name)
 {
 	int count = 0;
 	tinyxml2::XMLElement* p;
@@ -200,7 +200,7 @@ int XMLParameters::countChildren(tinyxml2::XMLElement* pElement, const char* nam
 	return count;
 }
 
-INumericValue* XMLParameters::getNumericHandler(tinyxml2::XMLElement* pElement)
+INumericValue* XMLUtils::getNumericHandler(tinyxml2::XMLElement* pElement)
 {
 	INumericValue* pHandler;
 	if (!pElement->FirstChildElement())
@@ -216,7 +216,7 @@ INumericValue* XMLParameters::getNumericHandler(tinyxml2::XMLElement* pElement)
 	return pHandler;
 }
 
-void XMLParameters::freeHandlers()
+void XMLUtils::freeHandlers()
 {
 	for (auto handler = m_handlers.begin(); handler != m_handlers.end(); handler++)
 	{
@@ -224,7 +224,7 @@ void XMLParameters::freeHandlers()
 	}
 }
 
-bool XMLParameters::getConstBoolean(tinyxml2::XMLElement* pParameters)
+bool XMLUtils::getConstBoolean(tinyxml2::XMLElement* pParameters)
 {
 	assert(pParameters && pParameters->GetText());
 
@@ -235,18 +235,18 @@ bool XMLParameters::getConstBoolean(tinyxml2::XMLElement* pParameters)
 	assert(0);
 	return false;
 }
-int XMLParameters::getConstInteger(tinyxml2::XMLElement* pParameters)
+int XMLUtils::getConstInteger(tinyxml2::XMLElement* pParameters)
 {
 	assert(pParameters && pParameters->GetText());
 	return atoi(pParameters->GetText());
 }
-double XMLParameters::getConstDouble(tinyxml2::XMLElement* pParameters)
+double XMLUtils::getConstDouble(tinyxml2::XMLElement* pParameters)
 {
 	assert(pParameters && pParameters->GetText());
 	return atof(pParameters->GetText());
 }
 
-const char* XMLParameters::getConstString(tinyxml2::XMLElement* pParameters)
+const char* XMLUtils::getConstString(tinyxml2::XMLElement* pParameters)
 {
 	assert(pParameters && pParameters->GetText());
 	return pParameters->GetText();

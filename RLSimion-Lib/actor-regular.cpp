@@ -12,7 +12,7 @@ CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(tinyxml2::XMLElemen
 {
 	m_pStateFeatures = new CFeatureList();
 	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));
-	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 }
 
 CRegularPolicyGradientLearner::~CRegularPolicyGradientLearner()

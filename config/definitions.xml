@@ -29,14 +29,16 @@
   </CLASS>
   
   <CLASS Name="LOG">
-    <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds"/>
+    <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds. Freq=O.0 logs every step."/>
     <STRING-VALUE Name="Prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
-    <STRING-VALUE Name="Ouput-directory" Default="test-dir" Comment="name of the directory within ../logs/ where log files will be saved "/>
+    <STRING-VALUE Name="Ouput-directory" Default="test" Comment="name of the directory within ../logs/ where log files will be saved "/>
     <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
     <ENUM-VALUE Class="BOOLEAN" Name="Log-training-episodes" Default="false" Comment="Log training episodes?"/>
-    <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-avg-rewards" Default="true" Comment="Log average rewards in evaluation episodes?"/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-experiment" Default="true" Comment="Log summary of the results in evaluation episodes?"/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-training-experiment" Default="true" Comment="Log summary of the results in evaluation episodes?"/>
   </CLASS>
-  
+
+
   <!--Experiment-->
   <CLASS Name="EXPERIMENT">
     <INTEGER-VALUE Name="Num-Episodes" Default="1000" Comment="Number of episodes"/>

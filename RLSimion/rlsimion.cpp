@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 	//pending task: rewrite using smart pointers
 	RLSimion::shutdown();
 
-	XMLParameters::freeHandlers();
+	XMLUtils::freeHandlers();
 
 	delete s;
 	delete s_p;
