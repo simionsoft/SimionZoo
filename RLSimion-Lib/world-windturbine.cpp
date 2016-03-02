@@ -2,7 +2,7 @@
 #include "world.h"
 #include "world-windturbine.h"
 #include "setpoint.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "experiment.h"
 #include "globals.h"
 #include "xml-parameters.h"
@@ -270,8 +270,8 @@ void CWindTurbine::reset(CState *s)
 
 void CWindTurbine::executeAction(CState *s, CAction *a, double dt)
 {
-	s->setValue(m_sP_s,m_pPowerSetpoint->getPointSet(CWorld::getT()));
-	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CWorld::getT()));
+	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(RLSimion::g_pWorld->getT()));
+	s->setValue(m_sV, m_pCurrentWindData->getPointSet(RLSimion::g_pWorld->getT()));
 
 	//beta= beta + d(beta)/dt
 	double beta = s->getValue(m_sBeta);

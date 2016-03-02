@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "world.h"
 #include "world-pitchcontrol.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
@@ -55,7 +55,7 @@ void CPitchControl::executeAction(CState *s, CAction *a, double dt)
 	
 	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 	{
-		setpoint_pitch= m_pSetpoint->getPointSet(CWorld::getT());
+		setpoint_pitch = m_pSetpoint->getPointSet(RLSimion::g_pWorld->getT());
 		s->setValue(m_sSetpointPitch, setpoint_pitch);
 	}
 	else

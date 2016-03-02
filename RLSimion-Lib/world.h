@@ -3,27 +3,30 @@
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+typedef CNamedVarSet CReward;
 
 class CDynamicModel;
-class CReward;
+class CRewardFunction;
 
 class CWorld
 {
-	friend class CRewardComponent;
+	friend class CRewardFunctionComponent;
 
+	//static to be able to access it from the CRewardComponent constructor without resorting to the yet unassigned
+	//global pointer RLSimion::g_pWorld
 	static CDynamicModel* m_pDynamicModel;
 	int m_simulationSteps;
-	static double m_dt;
-	static double m_t;
-	static double m_step_start_t;
-	CReward* m_pReward;
+	double m_dt;
+	double m_t;
+	double m_step_start_t;
+	CRewardFunction* m_pReward;
 	double m_lastReward;
 	double m_avgReward;
 	double m_avgRewardGain= 0.9;
 public:
-	static double getDT();
-	static double getT();
-	static double getStepStartT();
+	double getDT();
+	double getT();
+	double getStepStartT();
 
 	CWorld(tinyxml2::XMLElement* pParameters);
 	~CWorld();
@@ -42,7 +45,6 @@ public:
 	double getAvgReward();
 	double getLastReward();
 	CReward *getReward();
-
 };
 
 class CDynamicModel

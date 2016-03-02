@@ -3,10 +3,12 @@
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+typedef CNamedVarSet CReward;
 class tinyxml2::XMLElement;
-class CReward;
 
-#define MAX_FILENAME_LENGTH 512
+
+class CLogger;
+
 
 class CExperimentProgress
 {
@@ -46,44 +48,18 @@ public:
 
 class CExperiment
 {
-	char m_outputDir[MAX_FILENAME_LENGTH];
-	char m_filePrefix[MAX_FILENAME_LENGTH];
-
-	void *m_pFile;
-
-	bool m_bLogEvaluationEpisodes;
-	bool m_bLogTrainingEpisodes;
-	bool m_bLogEvaluationSummary;
-	unsigned int m_evalFreq; //in episodes
-	double m_logFreq; //in seconds
-
-	__int64 m_lastCounter;
-	__int64 m_counterFreq;
-
-	double m_lastLogTime;
-	double m_episodeRewards;
-	double m_lastEvaluationAvgReward;
-	
-	//regular log files
-	void openEpisodeLogFile();
-	void writeEpisodeStep(CState *s, CAction *a, CState *s_p, CReward *pReward);
-	void writeEpisodeLogFileHeader(CState *s, CAction *a, CReward *pReward);
-
-	//summary files: avg reward of evaluation episodes
-	void writeEpisodeSummary();
-
+	bool isCurrentEpisodeLogged();
 public:
-	
-	CExperimentProgress m_expProgress;
-
-	unsigned int m_randomSeed;
-
 	CExperiment(tinyxml2::XMLElement* pParameters);
 	~CExperiment();
 
-	bool isCurrentEpisodeLogged();
-	bool isEvaluationEpisode();
-	double getCurrentAvgReward();
+	CExperimentProgress m_expProgress;
+	CLogger* m_pLogger;
 
-	void logStep(CState *s, CAction *a,CState *s_p, CReward* pReward);
+	unsigned int m_randomSeed;
+	unsigned int m_evalFreq; //in episodes
+
+	bool isEvaluationEpisode();
+
+	void timestep(CState *s, CAction *a,CState *s_p, CReward* pReward);
 };

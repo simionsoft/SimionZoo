@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "xml-parameters.h"
 
 
@@ -150,10 +150,26 @@ double CNamedVarSet::getValue(int i)
 	return 0.0;
 }
 
+double* CNamedVarSet::getValuePtr(int i)
+{
+	if (i >= 0 && i<m_numVars)
+		return &m_pValues[i];
+	assert(0);
+	return 0;
+}
+
 void CNamedVarSet::setValue(int i, double value)
 {
 	if (i>=0 && i<m_numVars)
 		m_pValues[i]= std::min(m_pProperties[i].max,std::max(m_pProperties[i].min,value));
+}
+
+double CNamedVarSet::getSumValue()
+{
+	double sum = 0.0;
+	for (int i = 0; i < m_numVars; i++)
+		sum += m_pValues[i];
+	return sum;
 }
 
 void CNamedVarSet::copy(CNamedVarSet* nvs)

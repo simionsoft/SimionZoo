@@ -1,5 +1,4 @@
-#ifndef __STATES_AND_ACTIONS__
-#define __STATES_AND_ACTIONS__
+#pragma once
 
 #define VAR_NAME_MAX_LENGTH 128
 
@@ -58,7 +57,10 @@ public:
 	double* getValueVector(){return m_pValues;}
 
 	double getValue(int i);
+	double* getValuePtr(int i);
 	void setValue(int i, double value);
+
+	double getSumValue(); //to get the scalarised reward easily
 
 	void copy(CNamedVarSet* nvs);
 
@@ -67,5 +69,5 @@ public:
 
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+typedef CNamedVarSet CReward;
 
-#endif

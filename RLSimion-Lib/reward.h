@@ -4,25 +4,29 @@
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class CRewardComponent;
+typedef CNamedVarSet CReward;
+class CRewardFunctionComponent;
 
 class tinyxml2::XMLElement;
 
-class CReward: public CParamObject
+class CRewardFunction: public CParamObject
 {
-	CRewardComponent** m_pRewardComponents;
+	CRewardFunctionComponent** m_pRewardComponents;
 	int m_numRewardComponents;
 
 	double m_lastReward;
-	
+	double m_reward;
+	CReward *m_pReward;
 public:
 	static double m_minReward;
 	static double m_maxReward;
 
-	CReward(tinyxml2::XMLElement* pParameters);
-	~CReward();
+	CRewardFunction(tinyxml2::XMLElement* pParameters);
+	~CRewardFunction();
 
-	double getReward(CState *s,CAction *a,CState *s_p);
+	CReward* getReward();
+
+	double calculateReward(CState *s,CAction *a,CState *s_p);
 
 	double getLastScalarReward(){ return m_lastReward; }
 	

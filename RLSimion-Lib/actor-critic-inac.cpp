@@ -6,7 +6,7 @@
 #include "vfa-policy.h"
 #include "vfa-actor.h"
 #include "noise.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "vfa-critic.h"
 #include "xml-parameters.h"
 #include "globals.h"

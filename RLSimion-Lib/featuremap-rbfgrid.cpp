@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "featuremap.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 
 #include "globals.h"
 #include "world.h"

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "noise.h"
 #include "vfa.h"
 #include "vfa-policy.h"
