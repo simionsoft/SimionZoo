@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
+using System.Windows.Threading;
+using System.Dynamic;
+using System.Windows;
 
 namespace AppXML.ViewModels
 {
@@ -27,8 +30,26 @@ namespace AppXML.ViewModels
         }
         public void Save()
         {
+            
             _father.ResumeClass = this.Class;
-            TryClose();
+            bool ok = _result.validate();
+            if(!ok)
+            {
+                DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);
+                dynamic settings = new ExpandoObject();
+                settings.WindowStyle = WindowStyle.ToolWindow;
+                settings.ShowInTaskbar = true;
+                settings.Title = "WARNING";
+
+                new WindowManager().ShowDialog(dvm, null, settings);   
+
+                if(dvm.DialogResult==DialogViewModel.Result.OK)
+                {
+                    TryClose();
+                }
+            }
+            else
+                TryClose();
         }
     }
 }

@@ -8,15 +8,23 @@ namespace AppXML.ViewModels
 {
     public class BranchViewModel:PropertyChangedBase
     {
+        private bool _isOptional;
         private string _name;
         private ClassViewModel _class;
-        public BranchViewModel()
-        {
-            AppXML.Data.Utility.getRootNode("../config/RLSimion.xml");
-            _name = "World";
-            _class = new ClassViewModel("EXPERIMENT");
+
+
+        public string IsOptionalVisible 
+        { 
+            get 
+            {
+                if (_isOptional)
+                    return "Visible";
+                else
+                    return "Hidden";
+            }
+            set { }
         }
-        public BranchViewModel(string name,string clas)
+        public BranchViewModel(string name,string clas,bool isOptional)
         {
             _name = name;
             _class = new ClassViewModel(clas);

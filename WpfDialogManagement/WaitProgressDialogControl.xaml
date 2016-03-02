@@ -1,0 +1,15 @@
+﻿<UserControl x:Class="Technewlogic.WpfDialogManagement.WaitProgressDialogControl"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:DialogManagement="clr-namespace:Technewlogic.WpfDialogManagement"
+		x:ClassModifier="internal" x:Name="root">
+
+	<StackPanel Width="450" DataContext="{Binding ElementName=root}" VerticalAlignment="Center">
+		<DialogManagement:WaitAnimation Margin="10" HorizontalAlignment="Center"
+				Visibility="{Binding AnimationVisibility}" />
+		<TextBlock Margin="10" HorizontalAlignment="Center" Text="{Binding DisplayText}" TextWrapping="Wrap" />
+		<ProgressBar Margin="10" Height="30" Maximum="100" Minimum="0" Value="{Binding Progress}"
+				Visibility="{Binding ProgressVisibility}" />
+	</StackPanel>
+
+</UserControl>

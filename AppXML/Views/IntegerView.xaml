@@ -22,7 +22,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{Binding Label}" Width="200"/>
-                        <ComboBox ItemsSource="{Binding ComboValues}" Width="150"/>
+                        <ComboBox x:Name="ComboValues" ItemsSource="{Binding ComboValues}" Width="150"  SelectedItem="{Binding SelectedComboValue}"  />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

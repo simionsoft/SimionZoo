@@ -15,7 +15,9 @@
     </UserControl.Resources>
     <Grid>
         <TreeView BorderBrush="white" BorderThickness="0">
+            
             <TreeViewItem Header="{Binding Name}">
+                <CheckBox Content="SET AS NULL" Visibility="{Binding IsOptionalVisble}"></CheckBox>
                 <ContentControl x:Name="Class"></ContentControl>
             </TreeViewItem>
 

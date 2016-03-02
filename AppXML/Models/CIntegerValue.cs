@@ -13,6 +13,7 @@ namespace AppXML.Models
         public validTypes type { get; set; }
         public string enumClas { get; set; }
         public string defaultValue { get; set; }
+        public Boolean isOptional { get; set; }
         public CIntegerValue(string tipo)
         {
             if (tipo == "INTEGER-VALUE")
@@ -41,6 +42,8 @@ namespace AppXML.Models
         {
             type = validTypes.EnumValue;
             enumClas = nodo.Attributes["Name"].Value;
+            if (node.Attributes["Optional"] != null)
+                isOptional = Convert.ToBoolean(node.Attributes["Optional"].Value);
         }
         public CIntegerValue(XmlNode node, string n, string value)
         { 
@@ -48,6 +51,8 @@ namespace AppXML.Models
             m_value = value;
             if(node.Attributes["Default"]!=null)
                 defaultValue=node.Attributes["Default"].Value;
+            if (node.Attributes["Optional"] != null)
+                isOptional = Convert.ToBoolean(node.Attributes["Optional"].Value);
             string tipo = node.Name;
             if(tipo == "INTEGER-VALUE")
             {

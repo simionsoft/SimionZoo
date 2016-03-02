@@ -90,8 +90,11 @@ namespace AppXML.Data
             foreach (XmlNode node in element.ChildNodes)
             {
                 CNode cn = CNode.getInstance(node);
+                bool isOptional = false;
+                if (node.Attributes["Optional"] != null)
+                    isOptional = Convert.ToBoolean(node.Attributes["Optional"].Value);
                 if(cn is CBranch)
-                    rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value));
+                    rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value,isOptional));
             }
             return rootnode;
         }
