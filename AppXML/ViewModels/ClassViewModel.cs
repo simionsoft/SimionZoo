@@ -68,7 +68,10 @@ namespace AppXML.ViewModels
 
                         if (_branches == null)
                             _branches = new ObservableCollection<BranchViewModel>();
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                        bool isOptional=false;
+                        if (child.Attributes["Optional"]!=null)
+                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -124,7 +127,10 @@ namespace AppXML.ViewModels
 
                         if (_branches == null)
                             _branches = new ObservableCollection<BranchViewModel>();
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                        bool isOptional = false;
+                        if (child.Attributes["Optional"] != null)
+                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -190,6 +196,16 @@ namespace AppXML.ViewModels
            
 
             
+        }
+        public bool validate()
+        {
+            
+            foreach(IntegerViewModel item in _items)
+            {
+                if (!item.validateIntegerViewModel())
+                    return false;
+            }
+            return true;
         }
     }
 }
