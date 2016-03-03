@@ -9,9 +9,9 @@ CETraces::CETraces(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters
 	if (pParameters)
 	{
 		m_bUse = true;
-		m_threshold = XMLParameters::getConstDouble(m_pParameters->FirstChildElement("Threshold"));
-		m_lambda = XMLParameters::getConstDouble(m_pParameters->FirstChildElement("Lambda"));
-		m_bReplaceIfExists = XMLParameters::getConstBoolean(m_pParameters->FirstChildElement("Replace"));
+		m_threshold = XMLUtils::getConstDouble(m_pParameters->FirstChildElement("Threshold"));
+		m_lambda = XMLUtils::getConstDouble(m_pParameters->FirstChildElement("Lambda"));
+		m_bReplaceIfExists = XMLUtils::getConstBoolean(m_pParameters->FirstChildElement("Replace"));
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
 	else

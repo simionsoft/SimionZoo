@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "controller.h"
 #include "globals.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "world.h"
 #include "xml-parameters.h"
 
 CMultiController::CMultiController(tinyxml2::XMLElement* pParameters)
 {
-	m_numControllers = XMLParameters::countChildren(pParameters);
+	m_numControllers = XMLUtils::countChildren(pParameters);
 
 	m_pControllers = new CActor*[m_numControllers];
 
@@ -61,7 +61,7 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
-	m_numVars = XMLParameters::countChildren(pParameters,"LQR-Gain");
+	m_numVars = XMLUtils::countChildren(pParameters,"LQR-Gain");
 
 	m_pVariableIndices= new int[m_numVars];
 	m_pGains= new double[m_numVars];
@@ -70,8 +70,8 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	tinyxml2::XMLElement* pGain= pParameters->FirstChildElement("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pVariableIndices[i] = pSDesc->getVarIndex(XMLParameters::getConstString(pGain->FirstChildElement("Variable")));//
-		m_pGains[i] = XMLParameters::getConstDouble(pGain->FirstChildElement("Gain"));
+		m_pVariableIndices[i] = pSDesc->getVarIndex(XMLUtils::getConstString(pGain->FirstChildElement("Variable")));//
+		m_pGains[i] = XMLUtils::getConstDouble(pGain->FirstChildElement("Gain"));
 
 		pGain = pGain->NextSiblingElement("LQR-Gain");
 	}
@@ -103,9 +103,9 @@ CPIDController::CPIDController(tinyxml2::XMLElement *pParameters)
 	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
-	m_pKP= XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_pKD = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KD"));
+	m_pKP= XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
+	m_pKI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
+	m_pKD = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KD"));
 
 	CState *pSDesc= RLSimion::g_pWorld->getStateDescriptor();
 	if (pSDesc)
@@ -127,12 +127,12 @@ CPIDController::~CPIDController()
 
 void CPIDController::selectAction(CState *s,CAction *a)
 {
-	if (CWorld::getT()== 0.0)
+	if (RLSimion::g_pWorld->getT()== 0.0)
 		m_intError= 0.0;
 
 	double error= s->getValue(m_errorVariableIndex);
-	double dError= error*CWorld::getDT();
-	m_intError+= error*CWorld::getDT();
+	double dError = error*RLSimion::g_pWorld->getDT();
+	m_intError += error*RLSimion::g_pWorld->getDT();
 
 	a->setValue(m_outputActionIndex
 		,error*m_pKP->getValue() + m_intError*m_pKI->getValue() + dError*m_pKD->getValue());
@@ -152,11 +152,11 @@ double sgn(double value)
 
 CWindTurbineVidalController::CWindTurbineVidalController(tinyxml2::XMLElement* pParameters)
 {
-	m_pA= XMLParameters::getNumericHandler(pParameters->FirstChildElement("A"));
-	m_pK_alpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("K_alpha"));
-	m_pKP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_P_s = XMLParameters::getNumericHandler(pParameters->FirstChildElement("P_s"));
+	m_pA= XMLUtils::getNumericHandler(pParameters->FirstChildElement("A"));
+	m_pK_alpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("K_alpha"));
+	m_pKP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
+	m_pKI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
+	m_P_s = XMLUtils::getNumericHandler(pParameters->FirstChildElement("P_s"));
 
 	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -208,9 +208,9 @@ void CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 
 CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(tinyxml2::XMLElement* pParameters)
 {
-	m_pC_0= XMLParameters::getNumericHandler(pParameters->FirstChildElement("C_0"));
-	m_pKP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI= XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
+	m_pC_0= XMLUtils::getNumericHandler(pParameters->FirstChildElement("C_0"));
+	m_pKP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
+	m_pKI= XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
 	m_J_t= atof(pParameters->FirstChildElement("J_t")->GetText());
 	m_K_t= atof(pParameters->FirstChildElement("K_t")->GetText());
 
@@ -262,13 +262,13 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElemen
 	m_CornerFreq= atof(pParameters->FirstChildElement("CornerFreq")->GetText());
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp = XMLParameters::getConstDouble(pParameters->FirstChildElement("VSRtGnSp"));
-	m_VS_SlPc = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_SlPc"));
-	m_VS_Rgn2K = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_Rgn2K"));
-	m_VS_Rgn2Sp = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_Rgn2Sp"));
-	m_VS_CtInSp = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_CtInSp"));
-	m_VS_RtPwr = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_RtPwr"));
-	m_VS_Rgn3MP = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_Rgn3MP"));
+	m_VS_RtGnSp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VSRtGnSp"));
+	m_VS_SlPc = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_SlPc"));
+	m_VS_Rgn2K = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn2K"));
+	m_VS_Rgn2Sp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn2Sp"));
+	m_VS_CtInSp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_CtInSp"));
+	m_VS_RtPwr = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_RtPwr"));
+	m_VS_Rgn3MP = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn3MP"));
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -280,10 +280,10 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElemen
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	m_PC_KK = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KK"));
-	m_PC_KP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KP"));
-	m_PC_KI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KI"));
-	m_PC_RefSpd = XMLParameters::getConstDouble(pParameters->FirstChildElement("PC_RefSpd"));
+	m_PC_KK = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KK"));
+	m_PC_KP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KP"));
+	m_PC_KI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KI"));
+	m_PC_RefSpd = XMLUtils::getConstDouble(pParameters->FirstChildElement("PC_RefSpd"));
 
 	m_IntSpdErr= 0.0;
 
@@ -305,12 +305,12 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	//Filter the generator speed
 	double Alpha;
 
-	if (CWorld::getT()==0.0)
+	if (RLSimion::g_pWorld->getT() == 0.0)
 	{
 		Alpha= 1.0;
 		m_GenSpeedF= s->getValue(m_omega_g_index);
 	}
-	else Alpha= exp( ( CWorld::getDT() )*m_CornerFreq );
+	else Alpha = exp((RLSimion::g_pWorld->getDT())*m_CornerFreq);
 	m_GenSpeedF = ( 1.0 - Alpha )*s->getValue(m_omega_g_index) + Alpha*m_GenSpeedF;
 
 	//TORQUE CONTROLLER
@@ -329,7 +329,7 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	GenTrq  = std::min( GenTrq, s->getMax("T_g")  );   //Saturate the command using the maximum torque limit
 
 	double TrqRate;
-	TrqRate = ( GenTrq - s->getValue(m_T_g_index) )/CWorld::getDT(); //Torque rate (unsaturated)
+	TrqRate = (GenTrq - s->getValue(m_T_g_index)) / RLSimion::g_pWorld->getDT(); //Torque rate (unsaturated)
 	a->setValue(m_d_T_g_index,TrqRate);
 
 	//PITCH CONTROLLER
@@ -338,7 +338,7 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	//Compute the current speed error and its integral w.r.t. time; saturate the
 	//  integral term using the pitch angle limits:
 	double SpdErr    = m_GenSpeedF - m_PC_RefSpd;                                 //Current speed error
-	m_IntSpdErr = m_IntSpdErr + SpdErr*CWorld::getDT();                           //Current integral of speed error w.r.t. time
+	m_IntSpdErr = m_IntSpdErr + SpdErr*RLSimion::g_pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
 	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getMax(m_beta_index)/( GK*m_PC_KI->getValue() ) )
 		, s->getMin("beta")/( GK*m_PC_KI->getValue() ));
@@ -360,7 +360,7 @@ void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
 	//      resulting overall pitch angle command may be different for each
 	//      blade.
 
-	double d_beta= ( PitComT - s->getValue(m_beta_index) )/CWorld::getDT();
+	double d_beta = (PitComT - s->getValue(m_beta_index)) / RLSimion::g_pWorld->getDT();
 	
 	a->setValue(m_d_beta_index,d_beta);
 	/*

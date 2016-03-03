@@ -50,9 +50,9 @@ CNoise* CNoise::getInstance(tinyxml2::XMLElement* pParameters)
 
 CGaussianNoise::CGaussianNoise(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_pSigma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Sigma"));
-	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pScale = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Scale"));
+	m_pSigma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Sigma"));
+	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pScale = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Scale"));
 }
 
 CGaussianNoise::~CGaussianNoise()

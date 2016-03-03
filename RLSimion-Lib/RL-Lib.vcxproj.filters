@@ -54,9 +54,6 @@
     <ClCompile Include="setpoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="states-and-actions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -96,9 +93,6 @@
     <ClCompile Include="globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="world.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
     <ClCompile Include="world-magneticlevitation.cpp">
       <Filter>world</Filter>
     </ClCompile>
@@ -110,6 +104,18 @@
     </ClCompile>
     <ClCompile Include="world-windturbine.cpp">
       <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="named-var-set.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -141,9 +147,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="setpoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="states-and-actions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -179,9 +182,6 @@
     <ClInclude Include="xml-parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="world.h">
-      <Filter>world</Filter>
-    </ClInclude>
     <ClInclude Include="world-magneticlevitation.h">
       <Filter>world</Filter>
     </ClInclude>
@@ -193,6 +193,18 @@
     </ClInclude>
     <ClInclude Include="world-windturbine.h">
       <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="named-var-set.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

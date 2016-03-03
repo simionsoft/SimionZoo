@@ -7,7 +7,7 @@
 #include "features.h"
 #include "world.h"
 #include "globals.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 
 
 CActor* CActor::getInstance(tinyxml2::XMLElement* pParameters)

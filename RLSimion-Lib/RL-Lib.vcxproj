@@ -87,6 +87,8 @@
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="globals.cpp" />
+    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="stats.cpp" />
     <ClCompile Include="xml-parameters.cpp" />
     <ClCompile Include="vfa-actor.cpp" />
     <ClCompile Include="actor.cpp" />
@@ -102,7 +104,7 @@
     <ClCompile Include="reward.cpp" />
     <ClCompile Include="setpoint.cpp" />
     <ClCompile Include="SimGod.cpp" />
-    <ClCompile Include="states-and-actions.cpp" />
+    <ClCompile Include="named-var-set.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -126,13 +128,15 @@
     <ClInclude Include="featuremap.h" />
     <ClInclude Include="features.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameterized-object.h" />
+    <ClInclude Include="stats.h" />
     <ClInclude Include="xml-parameters.h" />
     <ClInclude Include="reward.h" />
     <ClInclude Include="setpoint.h" />
     <ClInclude Include="SimGod.h" />
-    <ClInclude Include="states-and-actions.h" />
+    <ClInclude Include="named-var-set.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="vfa-actor.h" />

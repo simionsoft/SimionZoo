@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Technewlogic.WpfDialogManagement.DialogBaseControl"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:ClassModifier="internal" x:Name="root">
+
+	<UserControl.Resources>
+		<ResourceDictionary Source="/Technewlogic.WpfDialogManagement;component/DialogContentStyle.xaml" />
+	</UserControl.Resources>
+
+	<Grid>
+		<ContentControl x:Name="BackgroundImageHolder" />
+		<Border DataContext="{Binding ElementName=root}" Background="#50000000" HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch">
+			<Grid HorizontalAlignment="{Binding HorizontalDialogAlignment}"
+					VerticalAlignment="{Binding VerticalDialogAlignment}" Background="WhiteSmoke" Margin="30">
+				<ContentControl Style="{StaticResource ContentStyle1}">
+					<DockPanel>
+						<Grid Margin="2" DockPanel.Dock="Top" Visibility="{Binding CaptionVisibility}">
+							<TextBlock Margin="20,10" FontSize="25" VerticalAlignment="Center"
+									HorizontalAlignment="Center" Text="{Binding Caption}" />
+						</Grid>
+						<UniformGrid x:Name="ButtonsGrid" DockPanel.Dock="Bottom" Margin="10"
+								HorizontalAlignment="Center" />
+						<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+								Margin="2">
+							<ContentControl x:Name="CustomContent" Margin="15" />
+						</ScrollViewer>
+					</DockPanel>
+				</ContentControl>
+			</Grid>
+		</Border>
+	</Grid>
+
+</UserControl>

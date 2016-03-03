@@ -6,7 +6,7 @@
 #include "vfa-policy.h"
 #include "vfa-actor.h"
 #include "noise.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "vfa-critic.h"
 #include "xml-parameters.h"
 #include "globals.h"
@@ -16,9 +16,9 @@ CIncrementalNaturalCritic::CIncrementalNaturalCritic(tinyxml2::XMLElement* pPara
 {
 	m_s_features = new CFeatureList();
 	m_s_p_features = new CFeatureList();
-	m_pAlphaV = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
-	m_pAlphaR = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha-r"));
-	m_pGamma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pAlphaV = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
+	m_pAlphaR = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-r"));
+	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
 	m_e_v = new CETraces(pParameters->FirstChildElement("E-Traces"));
 }
 
@@ -67,10 +67,10 @@ CIncrementalNaturalActor::CIncrementalNaturalActor(tinyxml2::XMLElement* pParame
 {
 	m_grad_u = new CFeatureList();
 	m_s_features = new CFeatureList();
-	m_pGamma = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
 
-	m_pAlphaU = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha-u"));
-	m_pAlphaV = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
+	m_pAlphaU = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-u"));
+	m_pAlphaV = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
 
 	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));
 	m_w = new CFeatureList();

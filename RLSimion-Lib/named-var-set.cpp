@@ -1,11 +1,11 @@
 #include "stdafx.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "xml-parameters.h"
 
 
 CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
 {
-	m_numVars = XMLParameters::countChildren(pDescription, "Variable");
+	m_numVars = XMLUtils::countChildren(pDescription, "Variable");
 	m_pProperties = new CNamedVarProperties[m_numVars];
 	m_pValues = new double[m_numVars];
 
@@ -15,11 +15,11 @@ CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
 	while (pVariable)
 	{
 		strcpy_s(m_pProperties[numVars].name , VAR_NAME_MAX_LENGTH
-					,XMLParameters::getConstString(pVariable->FirstChildElement("Name")));
+					,XMLUtils::getConstString(pVariable->FirstChildElement("Name")));
 		strcpy_s(m_pProperties[numVars].units, VAR_NAME_MAX_LENGTH
-			, XMLParameters::getConstString(pVariable->FirstChildElement("Units")));
-		m_pProperties[numVars].min = XMLParameters::getConstDouble(pVariable->FirstChildElement("Min"));
-		m_pProperties[numVars].max = XMLParameters::getConstDouble(pVariable->FirstChildElement("Max"));
+			, XMLUtils::getConstString(pVariable->FirstChildElement("Units")));
+		m_pProperties[numVars].min = XMLUtils::getConstDouble(pVariable->FirstChildElement("Min"));
+		m_pProperties[numVars].max = XMLUtils::getConstDouble(pVariable->FirstChildElement("Max"));
 
 		numVars++;
 		pVariable = pVariable->NextSiblingElement("Variable");
@@ -150,10 +150,26 @@ double CNamedVarSet::getValue(int i)
 	return 0.0;
 }
 
+double* CNamedVarSet::getValuePtr(int i)
+{
+	if (i >= 0 && i<m_numVars)
+		return &m_pValues[i];
+	assert(0);
+	return 0;
+}
+
 void CNamedVarSet::setValue(int i, double value)
 {
 	if (i>=0 && i<m_numVars)
 		m_pValues[i]= std::min(m_pProperties[i].max,std::max(m_pProperties[i].min,value));
+}
+
+double CNamedVarSet::getSumValue()
+{
+	double sum = 0.0;
+	for (int i = 0; i < m_numVars; i++)
+		sum += m_pValues[i];
+	return sum;
 }
 
 void CNamedVarSet::copy(CNamedVarSet* nvs)

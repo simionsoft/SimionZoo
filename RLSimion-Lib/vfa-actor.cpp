@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "noise.h"
 #include "vfa-actor.h"
 #include "vfa.h"
@@ -38,7 +38,7 @@ CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameter
 {
 	tinyxml2::XMLElement* pOutputs = pParameters->FirstChildElement("Outputs");
 
-	m_numOutputs = XMLParameters::countChildren(pOutputs);
+	m_numOutputs = XMLUtils::countChildren(pOutputs);
 	
 	m_pPolicyLearners = new CSingleOutputVFAPolicyLearner*[m_numOutputs];
 

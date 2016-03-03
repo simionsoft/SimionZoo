@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "experiment.h"
-#include "states-and-actions.h"
-#include "world.h"
-#include "reward.h"
 #include "xml-parameters.h"
+#include "logger.h"
+#include "world.h"
+#include "globals.h"
+#include "stats.h"
 
 double CExperimentProgress::getExperimentProgress()
 {
@@ -43,24 +44,15 @@ CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 	if (pParameters)
 	{
 
-		m_randomSeed = XMLParameters::getConstInteger(pParameters->FirstChildElement("Random-Seed"));
+		m_randomSeed = XMLUtils::getConstInteger(pParameters->FirstChildElement("Random-Seed"));
 
-		m_expProgress.setNumEpisodes(XMLParameters::getConstInteger(pParameters->FirstChildElement("Num-Episodes")));
+		m_expProgress.setNumEpisodes(XMLUtils::getConstInteger(pParameters->FirstChildElement("Num-Episodes")));
 		m_expProgress.setNumSteps((unsigned int)
-			(XMLParameters::getConstDouble(pParameters->FirstChildElement("Episode-Length")) / CWorld::getDT()));
+			(XMLUtils::getConstDouble(pParameters->FirstChildElement("Episode-Length")) / RLSimion::g_pWorld->getDT()));
 
-		m_evalFreq = XMLParameters::getConstInteger(pParameters->FirstChildElement("Eval-Freq"));
+		m_evalFreq = XMLUtils::getConstInteger(pParameters->FirstChildElement("Eval-Freq"));
 
-		tinyxml2::XMLElement* pLogParameters = pParameters->FirstChildElement("Log");
-
-		sprintf_s(m_outputDir, MAX_FILENAME_LENGTH, "../logs/%s"
-			, pLogParameters->FirstChildElement("Ouput-directory")->GetText());
-		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pLogParameters->FirstChildElement("Prefix")->GetText());
-
-		m_bLogEvaluationEpisodes = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-eval-episodes"));
-		m_bLogTrainingEpisodes = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-training-episodes"));
-		m_bLogEvaluationSummary = XMLParameters::getConstBoolean(pLogParameters->FirstChildElement("Log-eval-avg-rewards"));
-		m_logFreq = XMLParameters::getConstDouble(pLogParameters->FirstChildElement("Freq"));
+		m_pLogger = new CLogger(pParameters->FirstChildElement("Log"));
 	}
 	else
 	{
@@ -68,25 +60,13 @@ CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 		m_expProgress.setNumEpisodes(0);
 		m_expProgress.setNumSteps(0);
 		m_evalFreq = 0;
-		m_outputDir[0] = 0;
-		m_filePrefix[0] = 0;
-		m_bLogEvaluationEpisodes = false;
-		m_bLogEvaluationSummary = false;
-		m_bLogTrainingEpisodes = false;
-		m_logFreq = 0.0;
+
 	}
 	srand(m_randomSeed);
 
-	m_pFile= (void*) 0;
-			srand(m_randomSeed);
-	m_lastLogTime= 0.0;
-	m_episodeRewards= 0.0;
-	m_lastEvaluationAvgReward = 0.0;
 
-	_mkdir(m_outputDir);
+	srand(m_randomSeed);
 
-	QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
-	QueryPerformanceCounter((LARGE_INTEGER*)&m_lastCounter);
 }
 
 bool CExperiment::isEvaluationEpisode()
@@ -99,149 +79,22 @@ bool CExperiment::isEvaluationEpisode()
 
 
 
-double CExperiment::getCurrentAvgReward()
+void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
-	return m_lastEvaluationAvgReward;// m_episodeRewards / (double)max(m_step, 1);
-}
+	bool evalEpisode = isEvaluationEpisode();
+	if (m_expProgress.isFirstEpisode() && m_expProgress.isFirstStep())
 
-void CExperiment::writeEpisodeLogFileHeader(CState *s, CAction *a, CReward* pReward)
-{
-	fprintf((FILE*) m_pFile,"Time");
+		m_pLogger->firstEpisode(evalEpisode);
+	if (m_expProgress.isFirstStep())
+		m_pLogger->firstStep(evalEpisode);
 
-	for (int i= 0; i<s->getNumVars(); i++)
-	{
-		fprintf((FILE*) m_pFile,"/%s",s->getName(i));
-	}
+	//update stats
+	//output step-stats
+	m_pLogger->timestep(evalEpisode);
 
-	for (int i= 0; i<a->getNumVars(); i++)
-	{
-		fprintf((FILE*) m_pFile,"/%s",a->getName(i));
-	}
-
-	for (int i = 0; i < pReward->getNumRewardComponents(); i++)
-	{
-		fprintf((FILE*)m_pFile, "/r_%d", i);
-	}
-	fprintf((FILE*) m_pFile,"/r\n");
-}
-
-void CExperiment::writeEpisodeStep(CState *s, CAction *a, CState *s_p, CReward* pReward)
-{
-	if (!m_pFile) return;
-
-	fprintf((FILE*) m_pFile,"%.3f ",CWorld::getStepStartT());
-	for (int i= 0; i<s->getNumVars(); i++)
-	{
-		fprintf((FILE*) m_pFile,"%.3f ",s->getValue(i));
-	}
-	for (int i= 0; i<a->getNumVars(); i++)
-	{
-		fprintf((FILE*) m_pFile,"%.3f ",a->getValue(i));
-	}
-	for (int i = 0; i < pReward->getNumRewardComponents(); i++)
-	{
-		fprintf((FILE*)m_pFile, "%.3f ", pReward->getLastRewardComponent(i));
-	}
-	fprintf((FILE*) m_pFile,"%.3f\n",pReward->getLastScalarReward());
-}
-
-bool CExperiment::isCurrentEpisodeLogged()
-{
-	bool bEval= isEvaluationEpisode();
-	return (m_bLogEvaluationEpisodes && bEval) || (m_bLogTrainingEpisodes && !bEval);
-}
-
-void CExperiment::logStep(CState *s, CAction *a, CState *s_p, CReward* pReward)
-{
-	bool bLog= isCurrentEpisodeLogged();
-	double r = pReward->getLastScalarReward();
-	
-	//FIRST STEP IN EPISODE????
-	if ( m_expProgress.isFirstStep() )
-	{
-		m_episodeRewards = r;
-		m_lastLogTime = 0.0;
-
-		if (bLog)
-		{
-			openEpisodeLogFile();
-			if (m_pFile)
-				writeEpisodeLogFileHeader(s, a, pReward);
-		}
-	}
-	else m_episodeRewards+= r;
-
-
-
-
-	if (bLog && (CWorld::getStepStartT() - m_lastLogTime >= m_logFreq || m_expProgress.isFirstStep()))
-	{
-		writeEpisodeStep(s,a,s_p,pReward);
-		m_lastLogTime= CWorld::getStepStartT();
-	}
-
-	//LAST STEP IN EPISODE????
 	if (m_expProgress.isLastStep())
-	{
-		//close current log file
-		if (bLog && m_pFile)
-		{
-			fclose((FILE*) m_pFile);
-			m_pFile= 0;
-		}
-		if (isEvaluationEpisode())
-		{
-			m_lastEvaluationAvgReward= m_episodeRewards / (double)std::max(m_expProgress.getStep(), (unsigned int)1);
-			//SAVE AVERAGE REWARDS IN SUMMARY FILE????
-			if (m_bLogEvaluationSummary)
-			{
-				writeEpisodeSummary();
-			}
-		}
-	}
-	
+		m_pLogger->lastStep(evalEpisode);
 
-	//print progress
-	__int64 currentCounter;
-	QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-	double time= (double)(currentCounter-m_lastCounter) / (double) m_counterFreq;
-	if (time>0.5) //each .5 secs?
-	{
-		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%) Avg.Reward: %.4f        \r"
-			,m_expProgress.getEpisode(),m_expProgress.getNumEpisodes()
-			,m_expProgress.getStep(),m_expProgress.getNumSteps(),m_expProgress.getExperimentProgress()*100.0
-			,getCurrentAvgReward());
-		m_lastCounter= currentCounter;
-	}
-
-}
-
-void CExperiment::openEpisodeLogFile()
-{
-	char filename[1024];
-	if (!isEvaluationEpisode())
-		sprintf_s(filename,1024,"%s/%s-training-%d-%d.txt",m_outputDir,m_filePrefix
-		,m_randomSeed,m_expProgress.getEpisode());
-	else
-		sprintf_s(filename,1024,"%s/%s-evaluation-%d-%d.txt",m_outputDir,m_filePrefix
-		, m_randomSeed, m_expProgress.getEpisode());
-
-
-	fopen_s((FILE**) &m_pFile,filename,"w");
-}
-
-void CExperiment::writeEpisodeSummary()
-{
-	FILE* pFile;
-	char filename[1024];
-	sprintf_s(filename,1024,"%s/%s-summary-%d.txt",m_outputDir,m_filePrefix,m_randomSeed);
-	
-	if (m_expProgress.isFirstEpisode())
-		fopen_s(&pFile,filename,"w");
-	else fopen_s(&pFile,filename,"a");
-	if (pFile)
-	{
-		fprintf(pFile,"%d %f\n",m_expProgress.getEpisode(),getCurrentAvgReward());
-		fclose(pFile);
-	}
+	if (m_expProgress.isLastEpisode() && m_expProgress.isLastStep())
+		m_pLogger->lastEpisode(evalEpisode);
 }

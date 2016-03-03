@@ -28,6 +28,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<XMLNodeRefViewModel> _XMLNODE;
         private string _resume;
         private string _className;
+        private WindowClassViewModel _wclvm;
 
         //faltan los branches pero estan sin crear BranchViewModel y BranchView
         public ClassViewModel(string clasName)
@@ -60,7 +61,10 @@ namespace AppXML.ViewModels
                         //to do: añadir los multis a su lista y añadirlo en el xaml
                         if (_multis == null)
                             _multis = new ObservableCollection<MultiValuedViewModel>();
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                        bool isOptional = false;
+                        if (child.Attributes["Optional"] != null)
+                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
                         _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
@@ -68,7 +72,10 @@ namespace AppXML.ViewModels
 
                         if (_branches == null)
                             _branches = new ObservableCollection<BranchViewModel>();
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                        bool isOptional=false;
+                        if (child.Attributes["Optional"]!=null)
+                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -116,7 +123,10 @@ namespace AppXML.ViewModels
                         //to do: añadir los multis a su lista y añadirlo en el xaml
                         if (_multis == null)
                             _multis = new ObservableCollection<MultiValuedViewModel>();
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                        bool isOptional = false;
+                        if (child.Attributes["Optional"] != null)
+                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
                         _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
@@ -124,7 +134,10 @@ namespace AppXML.ViewModels
 
                         if (_branches == null)
                             _branches = new ObservableCollection<BranchViewModel>();
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
+                        bool isOptional = false;
+                        if (child.Attributes["Optional"] != null)
+                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -185,11 +198,36 @@ namespace AppXML.ViewModels
             
 
            WindowManager windowManager = new WindowManager();
-           WindowClassViewModel wcvm = new WindowClassViewModel(this._className, this);
-           windowManager.ShowDialog(wcvm);
+           if(this._wclvm==null)
+             this._wclvm = new WindowClassViewModel(this._className, this);
+           windowManager.ShowDialog(this._wclvm);
            
 
             
+        }
+        public bool validate()
+        {
+            if (_items != null)
+            {
+                foreach (IntegerViewModel item in _items)
+                {
+                    if (!item.validateIntegerViewModel())
+                        return false;
+                }
+            }
+            if (_multis != null)
+            {
+                foreach (MultiValuedViewModel item in _multis)
+                {
+                    if (!item.validate())
+                        return false;
+                }
+            }
+            if(_choice != null)
+            {
+                return _choice.validate();
+            }
+            return true;
         }
     }
 }

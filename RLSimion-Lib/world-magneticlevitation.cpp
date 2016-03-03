@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "world.h"
 #include "world-magneticlevitation.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
 #include "xml-parameters.h"
 
 CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters) 
-: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("World-Definition")))
+: CDynamicModel(XMLUtils::getConstString(pParameters->FirstChildElement("World-Definition")))
 {/*
 	m_pStateDescriptor= new CState(5);
 	
@@ -31,7 +31,7 @@ CMagneticLevitation::CMagneticLevitation(tinyxml2::XMLElement* pParameters)
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aVoltage= pActionDescriptor->getVarIndex("voltage");
 
-	m_pEvalSetPoint= new CFileSetPoint(XMLParameters::getConstString(pParameters->FirstChildElement("Evaluation-Set-Point-File")));
+	m_pEvalSetPoint= new CFileSetPoint(XMLUtils::getConstString(pParameters->FirstChildElement("Evaluation-Set-Point-File")));
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
 }
 
@@ -81,9 +81,9 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double setpoint;
 	
 	if (RLSimion::g_pExperiment->isEvaluationEpisode())
-		setpoint= m_pEvalSetPoint->getPointSet(CWorld::getT());
+		setpoint = m_pEvalSetPoint->getPointSet(RLSimion::g_pWorld->getT());
 	else
-		setpoint= m_pLearnSetPoint->getPointSet(CWorld::getT());
+		setpoint = m_pLearnSetPoint->getPointSet(RLSimion::g_pWorld->getT());
 
 
 

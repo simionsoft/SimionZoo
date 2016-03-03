@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "featuremap.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 
 #include "globals.h"
 #include "world.h"
@@ -74,7 +74,7 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 	char * token= 0, *nextToken= 0;
 	//char copy[MAX_STRING_SIZE];
 
-	m_numVariables = XMLParameters::countChildren(pParameters, "RBF-Grid-Dimension");
+	m_numVariables = XMLUtils::countChildren(pParameters, "RBF-Grid-Dimension");
 	
 	m_variableType= new short [m_numVariables];
 	m_variableIndex= new int [m_numVariables];
@@ -97,14 +97,14 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 	for (int i = 0; i < m_numVariables; i++)
 	{
 		varName = dimension->FirstChildElement("Variable")->GetText();
-		numFeatures = XMLParameters::getConstInteger(dimension->FirstChildElement("Num-Features"));
+		numFeatures = XMLUtils::getConstInteger(dimension->FirstChildElement("Num-Features"));
 
 		if (dimension->FirstChildElement("Min"))
-			min = XMLParameters::getConstDouble(dimension->FirstChildElement("Min"));
+			min = XMLUtils::getConstDouble(dimension->FirstChildElement("Min"));
 		else min = RLSimion::g_pWorld->getStateDescriptor()->getMin(varName);
 
 		if (dimension->FirstChildElement("Max"))
-			max = XMLParameters::getConstDouble(dimension->FirstChildElement("Max"));
+			max = XMLUtils::getConstDouble(dimension->FirstChildElement("Max"));
 		else max = RLSimion::g_pWorld->getStateDescriptor()->getMax(varName);
 
 		distType = dimension->FirstChildElement("Distribution")->GetText();

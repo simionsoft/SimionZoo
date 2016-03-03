@@ -8,8 +8,26 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\config\definitions.xml" />
-    <Xml Include="..\config\RLSimion.xml" />
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="config">
+      <UniqueIdentifier>{8fc22975-3344-4620-8a56-695807894d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples">
+      <UniqueIdentifier>{6238d96b-6e47-4699-9bf5-25ce2cce85d7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\config\RLSimion.xml">
+      <Filter>config</Filter>
+    </Xml>
+    <Xml Include="..\config\definitions.xml">
+      <Filter>config</Filter>
+    </Xml>
+    <Xml Include="..\config\examples\RLSimion-pitch-control.xml">
+      <Filter>examples</Filter>
+    </Xml>
     <Xml Include="..\config\examples\RLSimion-underwater-vehicle.xml">
       <Filter>examples</Filter>
     </Xml>
@@ -19,16 +37,5 @@
     <Xml Include="..\config\examples\RLSimion-wind-turbine.xml">
       <Filter>examples</Filter>
     </Xml>
-    <Xml Include="..\config\examples\RLSimion-pitch-control.xml">
-      <Filter>examples</Filter>
-    </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="examples">
-      <UniqueIdentifier>{ee769542-886e-42e5-b5f5-b3e282592f2a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
 </Project>

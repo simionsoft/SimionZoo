@@ -3,7 +3,7 @@
 #include "vfa.h"
 #include "vfa-actor.h"
 #include "vfa-policy.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "features.h"
 #include "etraces.h"
 #include "xml-parameters.h"
@@ -13,7 +13,7 @@ CCACLALearner::CCACLALearner(tinyxml2::XMLElement *pParameters)
 {
 	m_pStateFeatures = new CFeatureList();
 	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));
-	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 }
 
 CCACLALearner::~CCACLALearner()

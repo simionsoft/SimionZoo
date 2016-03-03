@@ -87,6 +87,7 @@
     <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\ChoiceViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
+    <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
     <Compile Include="ViewModels\WindowClassViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
@@ -101,6 +102,9 @@
     </Compile>
     <Compile Include="Views\BranchView.xaml.cs">
       <DependentUpon>BranchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DialogView.xaml.cs">
+      <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Help\GridHelpers.cs" />
     <Compile Include="Views\IntegerView.xaml.cs">
@@ -160,6 +164,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BranchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -20,26 +20,29 @@ namespace AppXML.ViewModels
         private ObservableCollection<TextBox> _textBox;
         private ObservableCollection<ComboBox> _comboBox;
         private ObservableCollection<TextBoxWithFile> _textBoxFile;
+        private bool isOptional = false;
        
         public IntegerViewModel(String label, CIntegerValue param)
         {
+            
+            isOptional = param.isOptional;
             if(param.type== validTypes.DirPathValue)
             {
-                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/folder.jpg", "folder");
+                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/folder.jpg", "folder",param.isOptional);
                 List<TextBoxWithFile> t = new List<TextBoxWithFile>();
                 t.Add(t1);
                 _textBoxFile = new ObservableCollection<TextBoxWithFile>(t);
             }
             else if (param.type==validTypes.FilePathValue)
             {
-                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/file.jpg", "file");
+                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/file.jpg", "file",param.isOptional);
                 List<TextBoxWithFile> t = new List<TextBoxWithFile>();
                 t.Add(t1);
                 _textBoxFile = new ObservableCollection<TextBoxWithFile>(t);
             }
             else if(param.type==validTypes.IntergerValue || param.type == validTypes.StringValue || param.type == validTypes.DecimalValue)
             {
-                TextBox t1 = new TextBox(label, param.defaultValue,param.type);
+                TextBox t1 = new TextBox(label, param.defaultValue,param.type,param.isOptional);
                 List<TextBox> t = new List<TextBox>();
                 t.Add(t1);
                 _textBox = new ObservableCollection<TextBox>(t);
@@ -47,7 +50,7 @@ namespace AppXML.ViewModels
             else if (param.type == validTypes.EnumValue)
             {
                 List<string> values = Data.Utility.getEnumItems(CIntegerValue.definitions[param.enumClas]);
-                ComboBox cb = new ComboBox(label, values);
+                ComboBox cb = new ComboBox(label, values,param.defaultValue,param.isOptional);
                 List<ComboBox> uuuu = new List<ViewModels.ComboBox>();
                 uuuu.Add(cb);
                 _comboBox = new ObservableCollection<ComboBox>(uuuu);
@@ -83,6 +86,30 @@ namespace AppXML.ViewModels
        public ObservableCollection<TextBoxWithFile> TextBoxFile
        { 
            get { return _textBoxFile; } set { } }
+
+        public bool validateIntegerViewModel()
+       {
+           
+            if(_textBox!=null)
+            {
+                return _textBox[0].validate();
+            }
+            if(_comboBox!=null)
+            {
+               return _comboBox[0].validate();
+            }
+            if(_textBoxFile!=null)
+            {
+                return _textBoxFile[0].validate();
+            }
+            return false;
+       }
+        public bool validateIntegerViewModel(bool isOptional)
+        {
+            this.isOptional = isOptional;
+            return validateIntegerViewModel();
+           
+        }
     }
         
     
@@ -92,6 +119,21 @@ namespace AppXML.ViewModels
         private string defaultValue;
         private validTypes type;
         private string _textColor = "White";
+        protected bool isOptional;
+
+        public bool validate()
+        {
+            if(_textColor=="Red")
+            {
+                return false;
+            }
+            if((Default==null || Default=="") && !isOptional)
+            {
+                return false;
+            }
+            return true;
+        }
+
 
         public string Label
         {
@@ -111,11 +153,12 @@ namespace AppXML.ViewModels
                     
                 } 
         }
-        public TextBox(string label,string defaultValue, validTypes tipo)
+        public TextBox(string label,string defaultValue, validTypes tipo,bool optional)
         {
             this.label = label;
             this.defaultValue = defaultValue;
             type = tipo;
+            isOptional = optional;
         }
         public string TextColor { get { return _textColor; } set { _textColor = value; NotifyOfPropertyChange(() => TextColor); } }
         public void Validate(object sender)
@@ -140,7 +183,18 @@ namespace AppXML.ViewModels
         private string buttonImage;
         private string type;
 
-        public TextBoxWithFile(string label,string def, string bt, string type):base(label,def,validTypes.FilePathValue)
+        public bool validate()
+        {
+            if (!isOptional && (Default == null || Default == ""))
+                return false;
+            if (type == "file" && !File.Exists(Default))
+                return false;
+            if (type == "folder" && !Directory.Exists(Default))
+                return false;
+            return true;
+        }
+
+        public TextBoxWithFile(string label,string def, string bt, string type, bool optional):base(label,def,validTypes.FilePathValue,optional)
         {
             buttonImage = bt;
             this.type = type;
@@ -177,18 +231,42 @@ namespace AppXML.ViewModels
 
         }
     }
-    public class ComboBox 
+    public class ComboBox : PropertyChangedBase
     {
         private string label;
+        private bool isOptional;
         private ObservableCollection<string> _comboValues;
 
-            public ComboBox(string label, List<string> values)
-            {
-                this.label = label;
-                _comboValues = new ObservableCollection<string>(values);             
+        public ComboBox(string label, List<string> values,string defaultValue,bool optional)
+        {
+            this.label = label;
+            isOptional = optional;
+            if (defaultValue != null && defaultValue != "" && values.Contains(defaultValue))
+                SelectedComboValue = defaultValue;
+            _comboValues = new ObservableCollection<string>(values);
+            // SelectedComboValue = _comboValues[0];
                 
+        }
+        public string Label { get { return label; } set { } }
+        public ObservableCollection<string> ComboValues { get { return _comboValues; } set { } }
+
+        private string _selectedString;
+        public string SelectedComboValue
+        {
+            get { return _selectedString; }
+            set
+            {
+                _selectedString = value;
+                NotifyOfPropertyChange(() => SelectedComboValue);
+                // and do anything else required on selection changed
             }
-            public string Label { get { return label; } set { } }
-            public ObservableCollection<string> ComboValues { get { return _comboValues; } set { } }
+        }
+       
+        public bool validate()
+        {
+            if ((_selectedString == null || _selectedString == "") && !isOptional)
+                return false;
+            else return true;
+        }
     }
 }

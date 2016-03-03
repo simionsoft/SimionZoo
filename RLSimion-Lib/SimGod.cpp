@@ -2,7 +2,12 @@
 #include "SimGod.h"
 #include "critic.h"
 #include "actor.h"
-//#include "actor-critic.h"
+#include "globals.h"
+#include "world.h"
+#include "experiment.h"
+#include "logger.h"
+#include "reward.h"
+#include "named-var-set.h"
 
 CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
 {
@@ -33,6 +38,20 @@ CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
 	}
 	
 	m_rho = 0.0;
+	m_td = 0.0;
+	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Critic", "TD-error", &m_td);
+
+	m_scalarReward = 0.0;
+	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Reward", "scalar-sum", &m_scalarReward);
+
+	m_pReward = RLSimion::g_pWorld->getReward();
+	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Reward", m_pReward);
+
+	CState* pState = RLSimion::g_pWorld->getStateDescriptor();
+	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("State", pState);
+
+	CAction* pAction = RLSimion::g_pWorld->getActionDescriptor();
+	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Action", pAction);
 }
 
 
@@ -64,14 +83,12 @@ double CSimGod::selectAction(CState* s, CAction* a)
 
 double CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
-	double td= 0.0;
-
 	//update critic
 	if (m_pCritic)
-		td = m_pCritic->updateValue(s, a, s_p, r, m_rho);
+		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);
 
 	//update actor: might be the controller
-	m_pActor->updatePolicy(s, a, s_p, r, td);
+	m_pActor->updatePolicy(s, a, s_p, r, m_td);
 
-	return td;
+	return m_td;
 }

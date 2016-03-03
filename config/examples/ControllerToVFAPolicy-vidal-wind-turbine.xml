@@ -53,12 +53,12 @@
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>50</Eval-Freq>
     <Log>
-      <Freq>0.25</Freq>
+      <Log-Freq>0.25</Log-Freq>
       <Ouput-directory>wind-turbine-2</Ouput-directory>
       <Prefix>wt-learn-vidal</Prefix>
       <Log-eval-episodes>true</Log-eval-episodes>
       <Log-training-episodes>false</Log-training-episodes>
-      <Log-eval-avg-rewards>true</Log-eval-avg-rewards>
+      <Log-eval-experiment>true</Log-eval-experiment>
     </Log>
   </Experiment>-->
   

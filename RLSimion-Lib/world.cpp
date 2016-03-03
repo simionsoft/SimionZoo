@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "world.h"
 
-#include "states-and-actions.h"
+#include "named-var-set.h"
 
 #include "world-windturbine.h"
 #include "world-underwatervehicle.h"
@@ -10,10 +10,7 @@
 #include "reward.h"
 #include "xml-parameters.h"
 
-double CWorld::m_t= 0.0;
-double CWorld::m_dt= 0.0;
-double CWorld::m_step_start_t= 0.0;
-CDynamicModel *CWorld::m_pDynamicModel = 0;
+CDynamicModel* CWorld::m_pDynamicModel = 0;
 
 
 CWorld::CWorld(tinyxml2::XMLElement* pParameters)
@@ -24,8 +21,8 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	m_avgReward = 0.0;
 	m_avgRewardGain = 0.0;
 
-	m_simulationSteps= XMLParameters::getConstInteger(pParameters->FirstChildElement("Num-Integration-Steps"));
-	m_dt = XMLParameters::getConstDouble(pParameters->FirstChildElement("Delta-T"));
+	m_simulationSteps= XMLUtils::getConstInteger(pParameters->FirstChildElement("Num-Integration-Steps"));
+	m_dt = XMLUtils::getConstDouble(pParameters->FirstChildElement("Delta-T"));
 
 	tinyxml2::XMLElement* pModelParameters;
 	pModelParameters = pParameters->FirstChildElement("Dynamic-Model")->FirstChildElement();
@@ -38,10 +35,11 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 		m_pDynamicModel = new CPitchControl(pModelParameters);
 	else if (strcmp(pModelParameters->Name(), "Magnetic-leviation") == 0)
 		m_pDynamicModel = new CMagneticLevitation(pModelParameters);
+	else m_pDynamicModel = 0;
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
-	m_pReward = new CReward(pParameters->FirstChildElement("Reward"));
+	m_pReward = new CRewardFunction(pParameters->FirstChildElement("Reward"));
 }
 
 CWorld::~CWorld()
@@ -67,7 +65,7 @@ double CWorld::getStepStartT()
 
 CReward* CWorld::getReward()
 {
-	return m_pReward;
+	return m_pReward->getReward();
 }
 
 void CWorld::reset(CState *s)
@@ -94,7 +92,7 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 			m_t+= dt;
 		}
 	}
-	m_lastReward = m_pReward->getReward(s, a, s_p);
+	m_lastReward = m_pReward->calculateReward(s, a, s_p);
 	m_avgReward = (1.0 - m_avgRewardGain)*m_avgReward + m_avgRewardGain*m_lastReward;
 
 	return m_lastReward;

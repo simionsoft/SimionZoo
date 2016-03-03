@@ -14,8 +14,8 @@ CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(tinyxml2::XMLElement *pPara
 	m_e= new CETraces(pParameters->FirstChildElement("E-Traces"));
 	m_aux= new CFeatureList();
 	m_v_s= 0.0;
-	m_pAlpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pGamma= XMLParameters::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_pGamma= XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
 
 }
 

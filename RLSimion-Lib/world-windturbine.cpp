@@ -2,7 +2,7 @@
 #include "world.h"
 #include "world-windturbine.h"
 #include "setpoint.h"
-#include "states-and-actions.h"
+#include "named-var-set.h"
 #include "experiment.h"
 #include "globals.h"
 #include "xml-parameters.h"
@@ -163,7 +163,7 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 
 
 CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
-: CDynamicModel(XMLParameters::getConstString(pParameters->FirstChildElement("World-Definition")))
+: CDynamicModel(XMLUtils::getConstString(pParameters->FirstChildElement("World-Definition")))
 {
 	
 	//load all the wind data files
@@ -175,7 +175,7 @@ CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 
 	//training files
 	tinyxml2::XMLElement* trainingWindFiles = pParameters->FirstChildElement("Training-Wind-Data");
-	m_numDataFiles = XMLParameters::countChildren(trainingWindFiles, "File");
+	m_numDataFiles = XMLUtils::countChildren(trainingWindFiles, "File");
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
 
 	tinyxml2::XMLElement* pElement = trainingWindFiles->FirstChildElement("File");
@@ -270,8 +270,8 @@ void CWindTurbine::reset(CState *s)
 
 void CWindTurbine::executeAction(CState *s, CAction *a, double dt)
 {
-	s->setValue(m_sP_s,m_pPowerSetpoint->getPointSet(CWorld::getT()));
-	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CWorld::getT()));
+	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(RLSimion::g_pWorld->getT()));
+	s->setValue(m_sV, m_pCurrentWindData->getPointSet(RLSimion::g_pWorld->getT()));
 
 	//beta= beta + d(beta)/dt
 	double beta = s->getValue(m_sBeta);

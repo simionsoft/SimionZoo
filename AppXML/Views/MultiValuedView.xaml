@@ -20,14 +20,10 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel>
-        <StackPanel Visibility="{Binding classVisible}" Orientation="Vertical">
+        <CheckBox Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsNull}" cal:Message.Attach="[Event Click]=[Click($source)]">Set as null</CheckBox>
+        <StackPanel Visibility="{Binding classVisible}" Orientation="Vertical" IsEnabled="{Binding IsEnabled}">
             <Grid help:GridHelpers.ColumnCount="2" help:GridHelpers.RowCount="{Binding RowCount}">
-
                 <ItemsControl x:Name="AdedClasses" Grid.Column="0"/>
-
-
-
-
             </Grid>
             <Button cal:Message.Attach="[Event Click]=[DeleteLast()]" Visibility="{Binding DeleteVisible}">Delete</Button>
             <Grid>
