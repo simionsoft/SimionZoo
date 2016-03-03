@@ -35,7 +35,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Label x:Name="Label"/>
+                <Label x:Name="Label" ToolTip="{Binding Comment}"/>
                 <Button Grid.Column="1"  Margin="2" Width="25" Height="26" cal:Message.Attach="[Event Click]=[Add()]" Content="+"/>
                 <ContentControl Grid.Row="1" x:Name="HeaderClass"/>
             </Grid>
@@ -64,7 +64,7 @@
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" >
-                <ContentControl x:Name="Header"/>
+                <ContentControl x:Name="Header" ToolTip="{Binding Comment}"/>
                 <Button x:Name="AddNew" Width="25" Content="+"/>
             </StackPanel>
         </StackPanel>

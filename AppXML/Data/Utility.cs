@@ -93,8 +93,11 @@ namespace AppXML.Data
                 bool isOptional = false;
                 if (node.Attributes["Optional"] != null)
                     isOptional = Convert.ToBoolean(node.Attributes["Optional"].Value);
+                string comment = null;
+                if (node.Attributes["Comment"] != null)
+                    comment = node.Attributes["Comment"].Value;
                 if(cn is CBranch)
-                    rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value,isOptional));
+                    rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value,comment,isOptional));
             }
             return rootnode;
         }

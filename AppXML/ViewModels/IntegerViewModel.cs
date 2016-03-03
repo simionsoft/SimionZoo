@@ -21,28 +21,30 @@ namespace AppXML.ViewModels
         private ObservableCollection<ComboBox> _comboBox;
         private ObservableCollection<TextBoxWithFile> _textBoxFile;
         private bool isOptional = false;
-       
+        private string _comment;
+        public string Comment { get { return _comment; } set { } }
         public IntegerViewModel(String label, CIntegerValue param)
         {
             
             isOptional = param.isOptional;
+            _comment = param.comment;
             if(param.type== validTypes.DirPathValue)
             {
-                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/folder.jpg", "folder",param.isOptional);
+                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/folder.jpg", "folder",_comment,param.isOptional);
                 List<TextBoxWithFile> t = new List<TextBoxWithFile>();
                 t.Add(t1);
                 _textBoxFile = new ObservableCollection<TextBoxWithFile>(t);
             }
             else if (param.type==validTypes.FilePathValue)
             {
-                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/file.jpg", "file",param.isOptional);
+                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/file.jpg", "file",_comment,param.isOptional);
                 List<TextBoxWithFile> t = new List<TextBoxWithFile>();
                 t.Add(t1);
                 _textBoxFile = new ObservableCollection<TextBoxWithFile>(t);
             }
             else if(param.type==validTypes.IntergerValue || param.type == validTypes.StringValue || param.type == validTypes.DecimalValue)
             {
-                TextBox t1 = new TextBox(label, param.defaultValue,param.type,param.isOptional);
+                TextBox t1 = new TextBox(label, param.defaultValue,param.type,_comment,param.isOptional);
                 List<TextBox> t = new List<TextBox>();
                 t.Add(t1);
                 _textBox = new ObservableCollection<TextBox>(t);
@@ -50,7 +52,7 @@ namespace AppXML.ViewModels
             else if (param.type == validTypes.EnumValue)
             {
                 List<string> values = Data.Utility.getEnumItems(CIntegerValue.definitions[param.enumClas]);
-                ComboBox cb = new ComboBox(label, values,param.defaultValue,param.isOptional);
+                ComboBox cb = new ComboBox(label, values,param.defaultValue,_comment,param.isOptional);
                 List<ComboBox> uuuu = new List<ViewModels.ComboBox>();
                 uuuu.Add(cb);
                 _comboBox = new ObservableCollection<ComboBox>(uuuu);
@@ -120,6 +122,8 @@ namespace AppXML.ViewModels
         private validTypes type;
         private string _textColor = "White";
         protected bool isOptional;
+        private string _comment;
+        public string Comment { get { return _comment; } set { } }
 
         public bool validate()
         {
@@ -153,12 +157,13 @@ namespace AppXML.ViewModels
                     
                 } 
         }
-        public TextBox(string label,string defaultValue, validTypes tipo,bool optional)
+        public TextBox(string label,string defaultValue, validTypes tipo,string comment,bool optional)
         {
             this.label = label;
             this.defaultValue = defaultValue;
             type = tipo;
             isOptional = optional;
+            this._comment = comment;
         }
         public string TextColor { get { return _textColor; } set { _textColor = value; NotifyOfPropertyChange(() => TextColor); } }
         public void Validate(object sender)
@@ -194,7 +199,7 @@ namespace AppXML.ViewModels
             return true;
         }
 
-        public TextBoxWithFile(string label,string def, string bt, string type, bool optional):base(label,def,validTypes.FilePathValue,optional)
+        public TextBoxWithFile(string label,string def, string bt, string type,string comment, bool optional):base(label,def,validTypes.FilePathValue,comment,optional)
         {
             buttonImage = bt;
             this.type = type;
@@ -236,9 +241,12 @@ namespace AppXML.ViewModels
         private string label;
         private bool isOptional;
         private ObservableCollection<string> _comboValues;
+        private string _comment;
+        public string Comment { get { return _comment; } set { } }
 
-        public ComboBox(string label, List<string> values,string defaultValue,bool optional)
+        public ComboBox(string label, List<string> values,string defaultValue, string comment,bool optional)
         {
+            this._comment = comment;
             this.label = label;
             isOptional = optional;
             if (defaultValue != null && defaultValue != "" && values.Contains(defaultValue))

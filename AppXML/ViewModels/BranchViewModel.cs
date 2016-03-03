@@ -12,7 +12,11 @@ namespace AppXML.ViewModels
         private string _name;
         private ClassViewModel _class;
         private bool _isNull=false;
+        private string _comment;
 
+
+        public string Comment { get { return _comment; } set { } }
+        
         public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
         public bool IsEnabled { get { return !_isNull; } set { } }
 
@@ -27,9 +31,10 @@ namespace AppXML.ViewModels
             }
             set { }
         }
-        public BranchViewModel(string name,string clas,bool isOptional)
+        public BranchViewModel(string name,string clas,string comment,bool isOptional)
         {
             _name = name;
+            _comment = comment;
             _class = new ClassViewModel(clas);
             _isOptional = isOptional;
         }

@@ -301,7 +301,7 @@
   <CLASS Name="REWARD" Window="New">
     <DECIMAL-VALUE Name="Min" Comment="Minimum allowed reward"/>
     <DECIMAL-VALUE Name="Max" Comment="Maximum output of each reward component"/>
-    <MULTI-VALUED Name="Reward-components" Class="REWARD-COMPONENT"/>
+    <MULTI-VALUED Name="Reward-components"  Class="REWARD-COMPONENT"/>
   </CLASS>
 
   <CLASS Name="REWARD-COMPONENT">

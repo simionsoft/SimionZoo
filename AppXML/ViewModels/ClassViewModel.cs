@@ -64,7 +64,10 @@ namespace AppXML.ViewModels
                         bool isOptional = false;
                         if (child.Attributes["Optional"] != null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
+                        string comment = null;
+                        if (child.Attributes["Comment"] != null)
+                            comment = child.Attributes["Comment"].Value;
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional);
                         _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
@@ -75,7 +78,10 @@ namespace AppXML.ViewModels
                         bool isOptional=false;
                         if (child.Attributes["Optional"]!=null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
+                        string comment = null;
+                        if (child.Attributes["Comment"] != null)
+                            comment = child.Attributes["Comment"].Value;
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -126,8 +132,10 @@ namespace AppXML.ViewModels
                         bool isOptional = false;
                         if (child.Attributes["Optional"] != null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
-                        _multis.Add(mvvm);
+                        string comment = null;
+                        if (child.Attributes["Comment"] != null)
+                            comment = child.Attributes["Comment"].Value;
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional); _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
                     {
@@ -137,7 +145,10 @@ namespace AppXML.ViewModels
                         bool isOptional = false;
                         if (child.Attributes["Optional"] != null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,isOptional);
+                        string comment = null;
+                        if (child.Attributes["Comment"] != null)
+                            comment = child.Attributes["Comment"].Value;
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")

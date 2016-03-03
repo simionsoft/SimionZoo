@@ -16,7 +16,10 @@
     <Grid>
         <TreeView BorderBrush="white" BorderThickness="0">
             
-            <TreeViewItem Header="{Binding Name}">
+            <TreeViewItem>
+                <TreeViewItem.Header>
+                    <Label Content="{Binding Name}" ToolTip="{Binding Comment }"></Label>
+                </TreeViewItem.Header>
                 <CheckBox Content="SET AS NULL" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsNull}"></CheckBox>
                 <ContentControl x:Name="Class" IsEnabled="{Binding IsEnabled}"></ContentControl>
             </TreeViewItem>
