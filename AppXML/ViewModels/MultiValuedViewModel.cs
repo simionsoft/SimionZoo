@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using System.Collections.ObjectModel;
 using AppXML.Models;
 using System.Xml;
+using System.Windows.Controls;
 namespace AppXML.ViewModels
 {
     public class MultiValuedViewModel: PropertyChangedBase
@@ -15,11 +16,26 @@ namespace AppXML.ViewModels
         private IntegerViewModel _header;
         private CIntegerValue original;
         private string label;
+        private bool _isOptional;
+        private bool _isNull = false;
 
+        public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
+        public bool IsEnabled { get { return !IsNull; } set {} }
         private ClassViewModel _headerClass;
         private ObservableCollection<ClassViewModel> _adedClasses;
         private string clas;
 
+        public string IsOptionalVisible
+        {
+            get
+            {
+                if (_isOptional)
+                    return "Visible";
+                else
+                    return "Hidden";
+            }
+            set { }
+        }
         public string simpleVisible { get { 
             if (_aded != null)
                 return "Visible"; 
@@ -40,8 +56,9 @@ namespace AppXML.ViewModels
         }
         public string Label { get { return label; } set { } }
 
-        public MultiValuedViewModel(string label, string clas)
+        public MultiValuedViewModel(string label, string clas, bool isOptional)
         {
+            _isOptional = isOptional;
             if (CNode.definitions != null)
             {
                 if (CNode.definitions.ContainsKey(clas))
@@ -187,9 +204,61 @@ namespace AppXML.ViewModels
                 }
             }
         }
+        public void Click(Object sender)
+        {
+            CheckBox cb = sender as CheckBox;
+            if (Convert.ToBoolean(cb.IsChecked))
+            {
+                IsNull = true;
+            }
+            else
+                IsNull = false;
+            
+
+        }
         public String DeleteVisible { get { if (_adedClasses != null && _adedClasses.Count > 0) return "Visible"; else return "Hidden"; } set { } }
+
+        public bool validate()
+        {
+            if(HeaderClass!=null)
+            {
+                if (_isOptional && _isNull)
+                {
+                    return true;
+                }
+                if (!HeaderClass.validate())
+                    return false;
+                foreach(ClassViewModel cvm in AdedClasses)
+                {
+                    if (!cvm.validate())
+                        return false;
+                }
+                
+            }
+            if(Header!=null)
+            {
+                if (!Header.validateIntegerViewModel())
+                    return false;
+                foreach(IntegerViewModel ivm in Aded)
+                {
+                    if (!ivm.validateIntegerViewModel())
+                        return false;
+                }
+                
+            }
+            return true;
+        }
+        public bool cleanAndValidate()
+        {
+            if(_isOptional && _isNull)
+            {
+                this.AdedClasses = null;
+                this.HeaderClass = null;
+            }
+            return validate();
+        }
     }
-    public class ClassViewWithIndex:PropertyChangedBase
+    /*public class ClassViewWithIndex:PropertyChangedBase
     {
         public ClassViewModel myView;
         public int index;
@@ -202,5 +271,5 @@ namespace AppXML.ViewModels
             this.myView = view;
             this.index = index;
         }
-    }
+    }*/
 }

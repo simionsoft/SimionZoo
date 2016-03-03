@@ -11,7 +11,10 @@ namespace AppXML.ViewModels
         private bool _isOptional;
         private string _name;
         private ClassViewModel _class;
+        private bool _isNull=false;
 
+        public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
+        public bool IsEnabled { get { return !_isNull; } set { } }
 
         public string IsOptionalVisible 
         { 
@@ -28,6 +31,7 @@ namespace AppXML.ViewModels
         {
             _name = name;
             _class = new ClassViewModel(clas);
+            _isOptional = isOptional;
         }
         public string Name{get{return _name;}set{}}
         public ClassViewModel Class { get { return _class; } set { } }

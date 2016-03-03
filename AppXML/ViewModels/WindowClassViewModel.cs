@@ -16,23 +16,22 @@ namespace AppXML.ViewModels
         private ClassViewModel _father;
         private ClassViewModel _result;
 
-        public ClassViewModel Class { get { return _result; } set { _result = value; } }
+        public ClassViewModel Class { get { return _father.ResumeClass; } set { _father.ResumeClass = value; } }
 
         public WindowClassViewModel(string className,ClassViewModel father)
         {
             _father = father;
 
             if (father.ResumeClass == null)
-                _result = new ClassViewModel(className, false);
-            else
-                _result = father.ResumeClass;
+                _father.ResumeClass = new ClassViewModel(className, false);
+            
            
         }
         public void Save()
         {
             
-            _father.ResumeClass = this.Class;
-            bool ok = _result.validate();
+           // _father.ResumeClass = this.Class;
+            bool ok = Class.validate();
             if(!ok)
             {
                 DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);

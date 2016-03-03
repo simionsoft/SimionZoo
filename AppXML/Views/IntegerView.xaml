@@ -12,7 +12,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{Binding Label}" Width="200"/>
-                        <TextBox Text="{Binding Default}" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
+                        <TextBox Text="{Binding Default, Mode=TwoWay}" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

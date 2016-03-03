@@ -87,5 +87,10 @@ namespace AppXML.ViewModels
         {
             _Class.removeViews();
         }
+
+        public bool validate()
+        {
+            return _Class.validate();
+        }
     }
 }

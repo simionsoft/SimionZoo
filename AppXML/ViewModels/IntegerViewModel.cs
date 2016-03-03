@@ -104,6 +104,12 @@ namespace AppXML.ViewModels
             }
             return false;
        }
+        public bool validateIntegerViewModel(bool isOptional)
+        {
+            this.isOptional = isOptional;
+            return validateIntegerViewModel();
+           
+        }
     }
         
     
