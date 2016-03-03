@@ -11,7 +11,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Label}" Width="200"/>
+                        <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}" />
                         <TextBox Text="{Binding Default, Mode=TwoWay}" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
                     </StackPanel>
                 </DataTemplate>
@@ -21,7 +21,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Label}" Width="200"/>
+                        <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}"/>
                         <ComboBox x:Name="ComboValues" ItemsSource="{Binding ComboValues}" Width="150"  SelectedItem="{Binding SelectedComboValue}"  />
                     </StackPanel>
                 </DataTemplate>
@@ -31,7 +31,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Label}" Width="200"/>
+                        <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}"/>
                         <TextBox Text="{Binding Default}" Width="150"/>
                         <Button Width="30" cal:Message.Attach="[Event Click]=[Action FindPath()]">
                             <Image Source="{Binding ButtonImage}" Width="20" Height="20"></Image>

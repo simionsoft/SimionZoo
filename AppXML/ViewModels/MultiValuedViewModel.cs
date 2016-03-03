@@ -18,6 +18,8 @@ namespace AppXML.ViewModels
         private string label;
         private bool _isOptional;
         private bool _isNull = false;
+        private string _comment;
+        public string Comment { get { return _comment; } set { } }
 
         public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
         public bool IsEnabled { get { return !IsNull; } set {} }
@@ -56,8 +58,9 @@ namespace AppXML.ViewModels
         }
         public string Label { get { return label; } set { } }
 
-        public MultiValuedViewModel(string label, string clas, bool isOptional)
+        public MultiValuedViewModel(string label, string clas,string comment ,bool isOptional)
         {
+            _comment = comment;
             _isOptional = isOptional;
             if (CNode.definitions != null)
             {
