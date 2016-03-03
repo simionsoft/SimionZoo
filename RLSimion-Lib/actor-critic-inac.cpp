@@ -14,12 +14,12 @@
 
 CIncrementalNaturalCritic::CIncrementalNaturalCritic(tinyxml2::XMLElement* pParameters) : CVFACritic(pParameters)
 {
-	m_s_features = new CFeatureList();
-	m_s_p_features = new CFeatureList();
+	m_s_features = new CFeatureList("Critic\\s");
+	m_s_p_features = new CFeatureList("Critic\\s_p");
 	m_pAlphaV = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
 	m_pAlphaR = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-r"));
 	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
-	m_e_v = new CETraces(pParameters->FirstChildElement("E-Traces"));
+	m_e_v = new CETraces("Critic\\e_v",pParameters->FirstChildElement("E-Traces"));
 }
 
 CIncrementalNaturalCritic::~CIncrementalNaturalCritic()
@@ -65,15 +65,15 @@ double CIncrementalNaturalCritic::updateValue(CState *s, CAction *a, CState *s_p
 CIncrementalNaturalActor::CIncrementalNaturalActor(tinyxml2::XMLElement* pParameters) 
 : CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("VFA-Policy"))
 {
-	m_grad_u = new CFeatureList();
-	m_s_features = new CFeatureList();
+	m_grad_u = new CFeatureList("Actor\\grad-u");
+	m_s_features = new CFeatureList("Actor\\s");
 	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
 
 	m_pAlphaU = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-u"));
 	m_pAlphaV = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
 
-	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));
-	m_w = new CFeatureList();
+	m_e = new CETraces("Actor\\E-Traces",pParameters->FirstChildElement("E-Traces"));
+	m_w = new CFeatureList("Actor\\w");
 }
 
 CIncrementalNaturalActor::~CIncrementalNaturalActor()

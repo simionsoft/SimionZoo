@@ -7,7 +7,7 @@
 #include "../RLSimion-Lib/actor.h"
 #include "../RLSimion-Lib/reward.h"
 #include "../RLSimion-Lib/logger.h"
-#include "../RLSimion-Lib/states-and-actions.h"
+#include "../RLSimion-Lib/named-var-set.h"
 #include "../RLSimion-Lib/vfa.h"
 #include "../RLSimion-Lib/features.h"
 #include "../RLSimion-Lib/globals.h"

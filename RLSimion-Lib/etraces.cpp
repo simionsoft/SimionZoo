@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "xml-parameters.h"
 
-CETraces::CETraces(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
+CETraces::CETraces(const char* name, tinyxml2::XMLElement* pParameters) : CFeatureList(name), CParamObject(pParameters)
 {
 	if (pParameters)
 	{

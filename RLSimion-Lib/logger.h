@@ -20,6 +20,7 @@ class CLogger
 	bool m_bLogEvaluationEpisodes;
 	bool m_bLogTrainingEpisodes;
 	bool m_bLogEvaluationExperiment;
+	bool m_bLogTrainingExperiment;
 
 	double m_logFreq; //in seconds: time between file logs
 	double m_progUpdateFreq; //in seconds: time between progress updates
@@ -38,13 +39,13 @@ class CLogger
 	//void writeEpisodeSummary();
 
 	__int64 m_counterFreq;
-	__int64 m_episodeStartT;
-	__int64 m_experimentStartT;
-	__int64 m_lastProgressReportT;
+	__int64 m_episodeStartCounter;
+	__int64 m_experimentStartCounter;
+	__int64 m_lastProgressReportCounter;
 	double m_lastLogSimulationT;
 
 	bool logCurrentEpisode(bool evalEpisode);
-
+	bool logCurrentEpisodeInExperiment(bool evalEpisode);
 
 	void getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation);
 	//opens the experiment log file
@@ -66,6 +67,8 @@ public:
 	~CLogger();
 
 	void addVarToStats(const char* key, const char* subkey, double* variable);
+	void addVarToStats(const char* key, const char* subkey, int* variable);
+	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
 

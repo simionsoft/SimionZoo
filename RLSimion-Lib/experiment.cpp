@@ -83,8 +83,8 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
 	bool evalEpisode = isEvaluationEpisode();
 	if (m_expProgress.isFirstEpisode() && m_expProgress.isFirstStep())
-
 		m_pLogger->firstEpisode(evalEpisode);
+
 	if (m_expProgress.isFirstStep())
 		m_pLogger->firstStep(evalEpisode);
 

@@ -41,17 +41,6 @@ CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
 	m_td = 0.0;
 	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Critic", "TD-error", &m_td);
 
-	m_scalarReward = 0.0;
-	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Reward", "scalar-sum", &m_scalarReward);
-
-	m_pReward = RLSimion::g_pWorld->getReward();
-	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Reward", m_pReward);
-
-	CState* pState = RLSimion::g_pWorld->getStateDescriptor();
-	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("State", pState);
-
-	CAction* pAction = RLSimion::g_pWorld->getActionDescriptor();
-	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Action", pAction);
 }
 
 

@@ -2,6 +2,13 @@
 #include "named-var-set.h"
 #include "xml-parameters.h"
 
+CNamedVarProperties::CNamedVarProperties()
+{
+	name[0] = 0;
+	units[0] = 0;
+	min = std::numeric_limits<double>::lowest();
+	max = std::numeric_limits<double>::max();
+}
 
 CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
 {
@@ -160,8 +167,19 @@ double* CNamedVarSet::getValuePtr(int i)
 
 void CNamedVarSet::setValue(int i, double value)
 {
-	if (i>=0 && i<m_numVars)
-		m_pValues[i]= std::min(m_pProperties[i].max,std::max(m_pProperties[i].min,value));
+	if (i >= 0 && i < m_numVars)
+	{
+		if (value>=m_pProperties[i].min)
+		{
+			if (value <= m_pProperties[i].max)
+				m_pValues[i] = value;
+			else
+				m_pValues[i] = m_pProperties[i].max;
+		}
+		else
+			m_pValues[i] = m_pProperties[i].min;
+	}
+	//	m_pValues[i]= std::min(m_pProperties[i].max,std::max(m_pProperties[i].min,value));
 }
 
 double CNamedVarSet::getSumValue()
@@ -188,10 +206,10 @@ CNamedVarSet* CNamedVarSet::getInstance()
 
 	for (int i=0; i<m_numVars; i++)
 	{
-		pNew->setName(i,this->getName(i));
-		pNew->setMin(i,this->getMin(i));
-		pNew->setMax(i,this->getMax(i));
-		pNew->setValue(i,this->getValue(i));
+		pNew->setName(i,getName(i));
+		pNew->setMin(i,getMin(i));
+		pNew->setMax(i,getMax(i));
+		pNew->setValue(i,getMin(i));
 	}
 	return pNew;
 }

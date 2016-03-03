@@ -11,13 +11,13 @@
 CTDCLambdaCritic::CTDCLambdaCritic(tinyxml2::XMLElement *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_z= new CETraces(pParameters->FirstChildElement("E-Traces"));
+	m_z = new CETraces("Critic\\E-Traces",pParameters->FirstChildElement("E-Traces"));
 
-	m_s_features = new CFeatureList();
-	m_s_p_features = new CFeatureList();
-	m_a = new CFeatureList();
-	m_b= new CFeatureList();
-	m_omega = new CFeatureList();
+	m_s_features = new CFeatureList("Critic\\s");
+	m_s_p_features = new CFeatureList("Critic\\s_p");
+	m_a = new CFeatureList("Critic\\a");
+	m_b= new CFeatureList("Critic\\b");
+	m_omega = new CFeatureList("Critic\\omega");
 
 	m_pAlpha= XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 	m_pBeta = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Beta"));

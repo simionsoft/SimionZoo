@@ -16,7 +16,8 @@ void RLSimion::init(tinyxml2::XMLElement* pParameters)
 	if (pParameters->FirstChildElement("World"))
 		g_pWorld = new CWorld(pParameters->FirstChildElement("World"));
 	else g_pWorld = 0;
-	//Then, the experiment
+	//Then, the experiment.
+	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
 	if (pParameters->FirstChildElement("Experiment"))
 		g_pExperiment = new CExperiment(pParameters->FirstChildElement("Experiment"));
 	else g_pExperiment = 0;

@@ -17,9 +17,6 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 {
 	assert(pParameters);
 	m_t= 0.0;
-	m_lastReward = 0.0;
-	m_avgReward = 0.0;
-	m_avgRewardGain = 0.0;
 
 	m_simulationSteps= XMLUtils::getConstInteger(pParameters->FirstChildElement("Num-Integration-Steps"));
 	m_dt = XMLUtils::getConstDouble(pParameters->FirstChildElement("Delta-T"));
@@ -39,13 +36,14 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
-	m_pReward = new CRewardFunction(pParameters->FirstChildElement("Reward"));
+	m_pRewardFunction = new CRewardFunction(pParameters->FirstChildElement("Reward"));
+	m_scalarReward = 0.0;
 }
 
 CWorld::~CWorld()
 {
 	if (m_pDynamicModel) delete m_pDynamicModel;
-	if (m_pReward) delete m_pReward;
+	if (m_pRewardFunction) delete m_pRewardFunction;
 }
 
 double CWorld::getDT()
@@ -65,13 +63,12 @@ double CWorld::getStepStartT()
 
 CReward* CWorld::getReward()
 {
-	return m_pReward->getReward();
+	return m_pRewardFunction->getReward();
 }
 
 void CWorld::reset(CState *s)
 {
-	m_avgReward = 0.0;
-	m_lastReward = 0.0;
+	m_scalarReward = 0.0;
 	m_t= 0.0;
 	if (m_pDynamicModel)
 		m_pDynamicModel->reset(s);
@@ -92,22 +89,11 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 			m_t+= dt;
 		}
 	}
-	m_lastReward = m_pReward->calculateReward(s, a, s_p);
-	m_avgReward = (1.0 - m_avgRewardGain)*m_avgReward + m_avgRewardGain*m_lastReward;
+	m_scalarReward = m_pRewardFunction->calculateReward(s, a, s_p);
 
-	return m_lastReward;
+	return m_scalarReward;
 }
 
-double CWorld::getLastReward()
-{
-	return m_lastReward;
-}
-
-double CWorld::getAvgReward()
-{
-	return m_avgReward;
-
-}
 CState *CWorld::getStateDescriptor()
 {
 	if (m_pDynamicModel)

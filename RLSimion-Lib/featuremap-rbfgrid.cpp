@@ -83,7 +83,7 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 	m_pCenters= new double* [m_numVariables];
 
 //	m_pBuffer= new CFeatureList();
-	m_pVarFeatures= new CFeatureList();
+	m_pVarFeatures= new CFeatureList("RBFGrid\\var");
 
 
 

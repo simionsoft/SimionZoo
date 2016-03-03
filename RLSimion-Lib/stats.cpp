@@ -11,10 +11,11 @@ CStatsInfo::CStatsInfo()
 void CStatsInfo::reset()
 {
 	m_min = std::numeric_limits<double>::max();
-	m_max = std::numeric_limits<double>::min();
+	m_max = std::numeric_limits<double>::lowest();
 	m_numSamples = 0;
-	m_meanSum = 0;
-	m_stdDevSum = 0;
+	m_meanSum = 0.0;
+	m_stdDevSum = 0.0;
+	m_sum = 0.0;
 }
 
 //one pass-mean/std.dev. calculation
@@ -45,17 +46,26 @@ void CStatsInfo::addExperimentSample(double value)
 	double stepSum = value - m_meanSum;
 	double stepMean = ((double)(m_numSamples - 1) * stepSum) / (double)m_numSamples;
 	m_meanSum += stepMean;
+	m_sum += value;
 	m_stdDevSum += stepMean * stepSum;
 }
 
 double CStatsInfo::getMin(){ return m_min; }
 double CStatsInfo::getMax(){ return m_max; }
-double CStatsInfo::getAvg(){ return m_meanSum / m_numSamples; }
-double CStatsInfo::getStdDev(){ return sqrt(fabs(m_stdDevSum / (m_numSamples - 1))); }
+double CStatsInfo::getAvg()
+{
+	if (m_numSamples > 0) return m_sum / m_numSamples;
+	return 0.0;
+}
+double CStatsInfo::getStdDev()
+{
+	if (m_numSamples > 1) return sqrt(fabs(m_stdDevSum / (m_numSamples - 1)));
+	return 0.0;
+}
 
 
 
-CStats::CStats(const char* key, const char* subkey, double* variable)
+CStats::CStats(const char* key, const char* subkey, const void* variable, DataType type)
 {
 	m_key = new char[MAX_KEY_SIZE];
 	strcpy_s(m_key, MAX_KEY_SIZE, key);
@@ -63,7 +73,8 @@ CStats::CStats(const char* key, const char* subkey, double* variable)
 	m_subkey = new char[MAX_KEY_SIZE];
 	strcpy_s(m_subkey, MAX_KEY_SIZE, subkey);
 
-	m_variable = variable;
+	m_variable = (void*) variable;
+	m_type = type;
 
 	reset();
 }
@@ -82,13 +93,29 @@ void CStats::reset()
 void CStats::addExperimentSample()
 {
 	if (m_variable)
-		m_statsInfo.addExperimentSample(*m_variable);
+	{
+		if (m_type==Double)
+			m_statsInfo.addExperimentSample(*(double*)m_variable);
+		else if (m_type==UnsignedInt)
+			m_statsInfo.addExperimentSample(*(unsigned int*)m_variable);
+		else  if (m_type == Int)
+			m_statsInfo.addExperimentSample(*(int*)m_variable);
+	}
+	assert(0);
 }
 
 double CStats::getValue()
 {
 	if (m_variable)
-		return *m_variable;
+	{
+		if (m_type == Double)
+			return *(double*)m_variable;
+		else if (m_type==UnsignedInt)
+			return (double)*(unsigned int*)m_variable;
+		else if (m_type == Int)
+			return (double)*(unsigned int*)m_variable;
+	}
+	assert(0);
 	return 0;
 }
 

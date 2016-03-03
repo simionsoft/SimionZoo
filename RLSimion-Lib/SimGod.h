@@ -17,7 +17,7 @@ class CSimGod
 
 	double m_rho;
 	double m_td;
-	double m_scalarReward;
+
 	CReward *m_pReward;
 public:
 

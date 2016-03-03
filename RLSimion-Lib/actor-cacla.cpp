@@ -11,8 +11,8 @@
 CCACLALearner::CCACLALearner(tinyxml2::XMLElement *pParameters)
 : CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("VFA-Policy"))
 {
-	m_pStateFeatures = new CFeatureList();
-	m_e = new CETraces(pParameters->FirstChildElement("E-Traces"));
+	m_pStateFeatures = new CFeatureList("Actor\\s");
+	m_e = new CETraces("Actor\\E-Traces",pParameters->FirstChildElement("E-Traces"));
 	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
 }
 

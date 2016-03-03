@@ -19,10 +19,9 @@ class CWorld
 	double m_dt;
 	double m_t;
 	double m_step_start_t;
-	CRewardFunction* m_pReward;
-	double m_lastReward;
-	double m_avgReward;
-	double m_avgRewardGain= 0.9;
+	CRewardFunction* m_pRewardFunction;
+	double m_scalarReward;
+
 public:
 	double getDT();
 	double getT();
@@ -44,7 +43,9 @@ public:
 
 	double getAvgReward();
 	double getLastReward();
+
 	CReward *getReward();
+	double *getScalarReward(){ return &m_scalarReward; }
 };
 
 class CDynamicModel

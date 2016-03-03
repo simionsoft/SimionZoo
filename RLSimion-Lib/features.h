@@ -20,9 +20,11 @@ struct CFeature
 #define LIST_SORTED_BY_ABS_VALUE 2
 #define LIST_SORTED_BY_INDEX 3
 
+#define MAX_NAME_SIZE 128
+
 class CFeatureList
 {
-
+	char m_name[MAX_NAME_SIZE];
 	unsigned int m_numAllocFeatures;
 
 	void resize(unsigned int newSize, bool bKeepFeatures= true);
@@ -37,7 +39,7 @@ public:
 
 	static void swapFeatureLists(CFeatureList** pList1,CFeatureList** pList2);
 
-	CFeatureList(bool addIfExists= true, bool replaceIfExists= false);
+	CFeatureList(const char* name, bool addIfExists= true, bool replaceIfExists= false);
 	virtual ~CFeatureList();
 
 	void clear();

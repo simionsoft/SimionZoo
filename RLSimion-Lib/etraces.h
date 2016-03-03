@@ -11,7 +11,7 @@ class CETraces : public CFeatureList, public CParamObject
 	double m_lambda;
 
 public:
-	CETraces(tinyxml2::XMLElement* pParameters);
+	CETraces(const char* name, tinyxml2::XMLElement* pParameters);
 	~CETraces();
 
 	//traces will be multiplied by factor*lambda

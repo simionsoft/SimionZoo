@@ -38,11 +38,15 @@ int main(int argc, char* argv[])
 
 	RLSimion::init(pParameters);
 
-	//CParameterScheduler* pParameterScheduler= new CParameterScheduler(pParameters->getChild("PARAMETER_SCHEDULER"));
-
+	//create state and action vectors
 	CState *s= RLSimion::g_pWorld->getStateInstance();
 	CState *s_p= RLSimion::g_pWorld->getStateInstance();
 	CAction *a= RLSimion::g_pWorld->getActionInstance();
+	//register the state and action vectors in the logger
+	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("State", s);
+	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Action", a);
+	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Reward", "sum", RLSimion::g_pWorld->getScalarReward());
+	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Reward", RLSimion::g_pWorld->getReward());
 
 	double r= 0.0;
 

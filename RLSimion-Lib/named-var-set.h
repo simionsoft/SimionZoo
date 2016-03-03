@@ -10,13 +10,7 @@ struct CNamedVarProperties
 	char units[VAR_NAME_MAX_LENGTH];
 	double min;
 	double max;
-	CNamedVarProperties()
-	{
-		name[0]= 0;
-		units[0]= 0;
-		min= 0.0;
-		max= 0.0;
-	}
+	CNamedVarProperties();
 };
 
 

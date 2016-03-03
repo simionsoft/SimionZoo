@@ -11,7 +11,7 @@ CLinearVFA::CLinearVFA(tinyxml2::XMLElement* pParameters) : CParamObject(pParame
 	m_numWeights = m_pFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
 
-	m_pAux = new CFeatureList();
+	m_pAux = new CFeatureList("LinearVFA\\aux");
 
 	double initValue = 0.0;
 	for (unsigned int i = 0; i < m_numWeights; i++)

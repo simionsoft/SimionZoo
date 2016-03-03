@@ -12,6 +12,7 @@ class CStatsInfo
 	double m_min;
 	double m_max;
 	double m_numSamples;
+	double m_sum;
 	double m_meanSum;
 	double m_stdDevSum;
 
@@ -31,15 +32,18 @@ public:
 	void addExperimentSample(double value);
 };
 
+enum DataType{Double, Int, UnsignedInt};
+
 class CStats
 {
 	CStatsInfo m_statsInfo;
 
 	char* m_key;
 	char* m_subkey;
-	double* m_variable;
+	void* m_variable;
+	DataType m_type;
 public:
-	CStats(const char* key, const char* subkey, double *variable);
+	CStats(const char* key, const char* subkey, const void *variable, DataType type);
 	~CStats();
 
 	void reset();

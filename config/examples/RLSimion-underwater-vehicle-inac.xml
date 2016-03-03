@@ -33,6 +33,7 @@
       <Log-eval-episodes>true</Log-eval-episodes>
       <Log-training-episodes>false</Log-training-episodes>
       <Log-eval-experiment>true</Log-eval-experiment>
+      <Log-training-experiment>true</Log-training-experiment>
     </Log>
   </Experiment>
   <SimGod>
