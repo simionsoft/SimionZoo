@@ -6,12 +6,12 @@
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
-CTDCLambdaCritic::CTDCLambdaCritic(tinyxml2::XMLElement *pParameters)
+CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_z = new CETraces("Critic\\E-Traces",pParameters->FirstChildElement("E-Traces"));
+	m_z = new CETraces("Critic\\E-Traces",pParameters->getChild("E-Traces"));
 
 	m_s_features = new CFeatureList("Critic\\s");
 	m_s_p_features = new CFeatureList("Critic\\s_p");
@@ -19,9 +19,9 @@ CTDCLambdaCritic::CTDCLambdaCritic(tinyxml2::XMLElement *pParameters)
 	m_b= new CFeatureList("Critic\\b");
 	m_omega = new CFeatureList("Critic\\omega");
 
-	m_pAlpha= XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pBeta = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Beta"));
-	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pAlpha= pParameters->getNumericHandler("Alpha");
+	m_pBeta = pParameters->getNumericHandler("Beta");
+	m_pGamma = pParameters->getNumericHandler("Gamma");
 }
 
 CTDCLambdaCritic::~CTDCLambdaCritic()

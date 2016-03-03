@@ -4,15 +4,15 @@
 #include "named-var-set.h"
 #include "features.h"
 #include "etraces.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 #include "vfa-policy.h"
 
-CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(tinyxml2::XMLElement *pParameters)
-: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("VFA-Policy"))
+CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(CParameters *pParameters)
+: CSingleOutputVFAPolicyLearner(pParameters->getChild("VFA-Policy"))
 {
 	m_pStateFeatures = new CFeatureList("Actor\\s");
-	m_e = new CETraces("Actor\\E-Traces",pParameters->FirstChildElement("E-Traces"));
-	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
+	m_e = new CETraces("Actor\\E-Traces",pParameters->getChild("E-Traces"));
+	m_pAlpha = pParameters->getNumericHandler("Alpha");
 }
 
 CRegularPolicyGradientLearner::~CRegularPolicyGradientLearner()

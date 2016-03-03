@@ -5,7 +5,7 @@
 #include "named-var-set.h"
 #include "experiment.h"
 #include "globals.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
 //[1]
 //"Torque and pitch angle control for VSWT in all operating regimes"
@@ -162,8 +162,8 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 }
 
 
-CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
-: CDynamicModel(XMLUtils::getConstString(pParameters,"World-Definition"))
+CWindTurbine::CWindTurbine(CParameters *pParameters)
+: CDynamicModel(pParameters->getConstString("World-Definition"))
 {
 	
 	//load all the wind data files
@@ -171,22 +171,22 @@ CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 
 	//evaluation file
 	m_pEvaluationWindData = 
-		new CHHFileSetPoint(XMLUtils::getConstString(pParameters, "Evaluation-Wind-Data"));
+		new CHHFileSetPoint(pParameters->getConstString( "Evaluation-Wind-Data"));
 
 	//training files
-	tinyxml2::XMLElement* trainingWindFiles = pParameters->FirstChildElement("Training-Wind-Data");
-	m_numDataFiles = XMLUtils::countChildren(trainingWindFiles, "File");
+	CParameters* trainingWindFiles = pParameters->getChild("Training-Wind-Data");
+	m_numDataFiles = trainingWindFiles->countChildren("File");
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
 
-	tinyxml2::XMLElement* pElement = trainingWindFiles->FirstChildElement("File");
+	CParameters* pElement = trainingWindFiles->getChild("File");
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
-		m_pTrainingWindData[i] = new CHHFileSetPoint(pElement->GetText());
-		pElement = pElement->NextSiblingElement("File");
+		m_pTrainingWindData[i] = new CHHFileSetPoint(pElement->getConstString());
+		pElement = pElement->getNextChild("File");
 	}
 
 	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
-	m_pPowerSetpoint= new CFileSetPoint(pParameters->FirstChildElement("Power-Set-Point")->GetText());
+	m_pPowerSetpoint= new CFileSetPoint(pParameters->getChild("Power-Set-Point")->getConstString());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;

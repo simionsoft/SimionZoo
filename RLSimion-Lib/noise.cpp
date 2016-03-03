@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "noise.h"
 #include "globals.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
 double getNormalDistributionSample(/*double mu, */double sigma)
 {
@@ -37,22 +37,22 @@ CNoise::CNoise()
 	m_lastValue = 0.0;
 }
 
-CNoise* CNoise::getInstance(tinyxml2::XMLElement* pParameters)
+CNoise* CNoise::getInstance(CParameters* pParameters)
 {
-	const char* pName = pParameters->FirstChildElement()->Name();
+	const char* pName = pParameters->getChild()->getName();
 
 	if (!strcmp(pName, "GaussianNoise"))
-		return new CGaussianNoise(pParameters->FirstChildElement());
+		return new CGaussianNoise(pParameters->getChild());
 
 	assert(0);
 	return 0;
 }
 
-CGaussianNoise::CGaussianNoise(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
+CGaussianNoise::CGaussianNoise(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pSigma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Sigma"));
-	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pScale = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Scale"));
+	m_pSigma = pParameters->getNumericHandler("Sigma");
+	m_pAlpha = pParameters->getNumericHandler("Alpha");
+	m_pScale = pParameters->getNumericHandler("Scale");
 }
 
 CGaussianNoise::~CGaussianNoise()

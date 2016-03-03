@@ -89,7 +89,7 @@
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="stats.cpp" />
-    <ClCompile Include="xml-parameters.cpp" />
+    <ClCompile Include="parameters.cpp" />
     <ClCompile Include="vfa-actor.cpp" />
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="controller.cpp" />
@@ -132,7 +132,7 @@
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameterized-object.h" />
     <ClInclude Include="stats.h" />
-    <ClInclude Include="xml-parameters.h" />
+    <ClInclude Include="parameters.h" />
     <ClInclude Include="reward.h" />
     <ClInclude Include="setpoint.h" />
     <ClInclude Include="SimGod.h" />

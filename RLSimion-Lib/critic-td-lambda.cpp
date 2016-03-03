@@ -6,15 +6,15 @@
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "etraces.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
-CTDLambdaCritic::CTDLambdaCritic(tinyxml2::XMLElement *pParameters)
+CTDLambdaCritic::CTDLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_z= new CETraces("Critic\\E-Traces",pParameters->FirstChildElement("E-Traces"));
+	m_z= new CETraces("Critic\\E-Traces",pParameters->getChild("E-Traces"));
 	m_aux= new CFeatureList("Critic\\aux");
-	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pAlpha = pParameters->getNumericHandler("Alpha");
+	m_pGamma = pParameters->getNumericHandler("Gamma");
 }
 
 CTDLambdaCritic::~CTDLambdaCritic()

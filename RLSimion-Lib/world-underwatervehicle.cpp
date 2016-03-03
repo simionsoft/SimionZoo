@@ -2,15 +2,15 @@
 #include "world-underwatervehicle.h"
 #include "named-var-set.h"
 #include "setpoint.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 #include "world.h"
 #include "globals.h"
 
 #define NUM_STATE_VARIABLES 3
 
 
-CUnderwaterVehicle::CUnderwaterVehicle(tinyxml2::XMLElement* pParameters)
-: CDynamicModel(XMLUtils::getConstString(pParameters, "World-Definition"))
+CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
+: CDynamicModel(pParameters->getConstString("World-Definition"))
 {
 	CState *pStateDescriptor = getStateDescriptor();
 	m_sVSetpoint = pStateDescriptor->getVarIndex("v-setpoint");
@@ -20,7 +20,7 @@ CUnderwaterVehicle::CUnderwaterVehicle(tinyxml2::XMLElement* pParameters)
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aUThrust = pActionDescriptor->getVarIndex("u-thrust");
 
-	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("Set-Point-File")->GetText());
+	m_pSetpoint= new CFileSetPoint(pParameters->getChild("Set-Point-File")->getConstString());
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()

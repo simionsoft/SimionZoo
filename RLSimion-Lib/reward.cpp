@@ -2,7 +2,7 @@
 #include "reward.h"
 #include "named-var-set.h"
 #include "parameterized-object.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 #include "world.h"
 #include "globals.h"
 
@@ -25,16 +25,16 @@ class CRewardFunctionComponent : public CParamObject
 	INumericValue *m_pWeight;
 	double m_lastReward;
 public:
-	CRewardFunctionComponent(tinyxml2::XMLElement* pParameters);
+	CRewardFunctionComponent(CParameters* pParameters);
 	~CRewardFunctionComponent();
 
-//	void init(tinyxml2::XMLElement* pParameters/*,int componentIndex*/);
+//	void init(CParameters* pParameters/*,int componentIndex*/);
 	double getRewardComponent(CState *state);
 	double getLastRewardComponent(){return m_lastReward;}
 	const char* getName();
 };
 
-CRewardFunctionComponent::CRewardFunctionComponent(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
+CRewardFunctionComponent::CRewardFunctionComponent(CParameters* pParameters) : CParamObject(pParameters)
 {
 	//m_errorComponentType[0]= 0;
 	//m_controlledVariable[0]= 0;
@@ -42,11 +42,11 @@ CRewardFunctionComponent::CRewardFunctionComponent(tinyxml2::XMLElement* pParame
 	//m_controlErrorVariable[0]= 0;
 	//m_weight= 0.0;
 	//m_componentIndex= -1;
-	const char* varName = XMLUtils::getConstString(pParameters,"Variable");
+	const char* varName = pParameters->getConstString("Variable");
 	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r(%s)", varName);
 	m_sVariable = CWorld::m_pDynamicModel->getStateDescriptor()->getVarIndex(varName);
-	m_pTolerance = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Tolerance"));
-	m_pWeight = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Weight"));
+	m_pTolerance = pParameters->getNumericHandler("Tolerance");
+	m_pWeight = pParameters->getNumericHandler("Weight");
 	m_lastReward= 0.0;
 }
 
@@ -87,29 +87,29 @@ double CRewardFunctionComponent::getRewardComponent(CState* state)
 }
 
 
-CRewardFunction::CRewardFunction(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
+CRewardFunction::CRewardFunction(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_minReward= XMLUtils::getConstDouble(pParameters,"Min");
-	m_maxReward = XMLUtils::getConstDouble(pParameters, "Max");
+	m_minReward= pParameters->getConstDouble("Min");
+	m_maxReward = pParameters->getConstDouble("Max");
 
 	m_lastReward= 0.0;
 
-	tinyxml2::XMLElement* pRewardComponents = m_pParameters->FirstChildElement("Reward-components");
+	CParameters* pRewardComponents = m_pParameters->getChild("Reward-components");
 
-	m_numRewardComponents = XMLUtils::countChildren(pRewardComponents);
+	m_numRewardComponents = pRewardComponents->countChildren();
 
 	//the vector of reward functions
 	m_pRewardComponents = new CRewardFunctionComponent*[m_numRewardComponents];
 	//the reward vector (named variables)
 	m_pReward = new CReward(m_numRewardComponents);
 
-	tinyxml2::XMLElement* pComponent = pRewardComponents->FirstChildElement();
+	CParameters* pComponent = pRewardComponents->getChild();
 	for (int i= 0; i<m_numRewardComponents; i++)
 	{
 		m_pRewardComponents[i] = new CRewardFunctionComponent(pComponent);
 		m_pReward->setName(i, m_pRewardComponents[i]->getName());
 
-		pComponent = pComponent->NextSiblingElement();
+		pComponent = pComponent->getNextChild();
 	}
 }
 

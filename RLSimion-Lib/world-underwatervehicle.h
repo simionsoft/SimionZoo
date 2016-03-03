@@ -11,7 +11,7 @@ class CUnderwaterVehicle : public CDynamicModel
 	CSetPoint *m_pSetpoint;
 public:
 
-	CUnderwaterVehicle(tinyxml2::XMLElement* pParameters);
+	CUnderwaterVehicle(CParameters* pParameters);
 	~CUnderwaterVehicle();
 
 	void reset(CState *s);

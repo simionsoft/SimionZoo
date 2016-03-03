@@ -27,7 +27,7 @@ class CWindTurbine: public CDynamicModel
 	CSetPoint *m_pPowerSetpoint;
 
 public:
-	CWindTurbine(tinyxml2::XMLElement* pParameters);
+	CWindTurbine(CParameters* pParameters);
 	~CWindTurbine();
 
 	void reset(CState *s);

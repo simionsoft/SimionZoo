@@ -2,16 +2,16 @@
 #include "etraces.h"
 #include "experiment.h"
 #include "globals.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
-CETraces::CETraces(const char* name, tinyxml2::XMLElement* pParameters) : CFeatureList(name), CParamObject(pParameters)
+CETraces::CETraces(const char* name, CParameters* pParameters) : CFeatureList(name), CParamObject(pParameters)
 {
 	if (pParameters)
 	{
 		m_bUse = true;
-		m_threshold = XMLUtils::getConstDouble(m_pParameters,"Threshold");
-		m_lambda = XMLUtils::getConstDouble(m_pParameters,"Lambda");
-		m_bReplaceIfExists = XMLUtils::getConstBoolean(m_pParameters,"Replace");
+		m_threshold = m_pParameters->getConstDouble("Threshold");
+		m_lambda = m_pParameters->getConstDouble("Lambda");
+		m_bReplaceIfExists = m_pParameters->getConstBoolean("Replace");
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
 	else

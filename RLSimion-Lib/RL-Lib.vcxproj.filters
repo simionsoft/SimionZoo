@@ -87,9 +87,6 @@
     <ClCompile Include="vfa-policy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="xml-parameters.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -115,6 +112,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="named-var-set.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="parameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -179,9 +179,6 @@
     <ClInclude Include="vfa-policy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="xml-parameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="world-magneticlevitation.h">
       <Filter>world</Filter>
     </ClInclude>
@@ -204,6 +201,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="named-var-set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

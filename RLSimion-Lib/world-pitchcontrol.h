@@ -12,7 +12,7 @@ class CPitchControl: public CDynamicModel
 	CSetPoint *m_pSetpoint;
 
 public:
-	CPitchControl(tinyxml2::XMLElement* pParameters);
+	CPitchControl(CParameters* pParameters);
 	~CPitchControl();
 
 	void reset(CState *s);

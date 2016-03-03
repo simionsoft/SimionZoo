@@ -7,10 +7,10 @@
 #include "actor.h"
 #include "experiment.h"
 #include "globals.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
 
-CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
+CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(CParameters* pParameters) : CParamObject(pParameters)
 {
 	m_pPolicy = new CSingleOutputVFAPolicy(pParameters);
 }
@@ -20,45 +20,45 @@ CSingleOutputVFAPolicyLearner::~CSingleOutputVFAPolicyLearner()
 	delete m_pPolicy;
 }
 
-CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(tinyxml2::XMLElement* pParameters)
+CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(CParameters* pParameters)
 {
 	if (pParameters)
 	{
-		if (!strcmp(pParameters->Name(), "CACLA"))
+		if (!strcmp(pParameters->getName(), "CACLA"))
 			return new CCACLALearner(pParameters);
-		if (!strcmp(pParameters->Name(), "Regular-Gradient"))
+		if (!strcmp(pParameters->getName(), "Regular-Gradient"))
 			return new CRegularPolicyGradientLearner(pParameters);
-		if (!strcmp(pParameters->Name(), "Incremental-Natural-Actor"))
+		if (!strcmp(pParameters->getName(), "Incremental-Natural-Actor"))
 			return new CIncrementalNaturalActor(pParameters);
 	}
 	return 0;
 }
 
-CVFAActor::CVFAActor(tinyxml2::XMLElement* pParameters): CParamObject(pParameters)
+CVFAActor::CVFAActor(CParameters* pParameters): CParamObject(pParameters)
 {
-	tinyxml2::XMLElement* pOutputs = pParameters->FirstChildElement("Outputs");
+	CParameters* pOutputs = pParameters->getChild("Outputs");
 
-	m_numOutputs = XMLUtils::countChildren(pOutputs);
+	m_numOutputs = pOutputs->countChildren();
 	
 	m_pPolicyLearners = new CSingleOutputVFAPolicyLearner*[m_numOutputs];
 
-	tinyxml2::XMLElement* pOutput= pOutputs->FirstChildElement();
+	CParameters* pOutput= pOutputs->getChild();
 	for (int i = 0; i<m_numOutputs; i++)
 	{
 		//////////////hemen VFAActor motako haurrak hartu behar die bakarrik!!!
 		m_pPolicyLearners[i] = CSingleOutputVFAPolicyLearner::getInstance(pOutput);
-		pOutput = pOutput->NextSiblingElement();
+		pOutput = pOutput->getNextChild();
 	}
 
-	if (pParameters->FirstChildElement("Load"))
-		loadPolicy(pParameters->FirstChildElement("Load")->GetText());
+	if (pParameters->getChild("Load"))
+		loadPolicy(pParameters->getChild("Load")->getConstString());
 
 }
 
 CVFAActor::~CVFAActor()
 {
-	if (m_pParameters->FirstChildElement("Save"))
-		savePolicy(m_pParameters->FirstChildElement("Save")->GetText());
+	if (m_pParameters->getChild("Save"))
+		savePolicy(m_pParameters->getChild("Save")->getConstString());
 
 	for (int i = 0; i<m_numOutputs; i++)
 	{

@@ -6,7 +6,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
-class tinyxml2::XMLElement;
+class CParameters;
 
 
 class CSimGod
@@ -21,7 +21,7 @@ class CSimGod
 	CReward *m_pReward;
 public:
 
-	CSimGod(tinyxml2::XMLElement* pParameters);
+	CSimGod(CParameters* pParameters);
 	~CSimGod();
 
 	double selectAction(CState* s,CAction* a);

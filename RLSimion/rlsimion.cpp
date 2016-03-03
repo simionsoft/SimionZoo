@@ -9,13 +9,13 @@
 #include "../RLSimion-Lib/named-var-set.h"
 #include "../RLSimion-Lib/globals.h"
 #include "../RLSimion-Lib/experiment.h"
-#include "../RLSimion-Lib/xml-parameters.h"
+#include "../RLSimion-Lib/parameters.h"
 #include "../RLSimion-Lib/logger.h"
 
 int main(int argc, char* argv[])
 {
 	tinyxml2::XMLDocument xmlDoc;
-	tinyxml2::XMLElement* pParameters;
+	CParameters* pParameters;
 
 	
 	//CParameters *pParameters;
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 	}
 	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
 
-	pParameters = xmlDoc.FirstChildElement("RLSimion");
+	pParameters = (CParameters*) xmlDoc.FirstChildElement("RLSimion");
 	if (xmlDoc.Error())
 	{
 		printf("Error loading configuration file: %s\n\n", xmlDoc.ErrorName());
@@ -77,8 +77,6 @@ int main(int argc, char* argv[])
 
 	//pending task: rewrite using smart pointers
 	RLSimion::shutdown();
-
-	XMLUtils::freeHandlers();
 
 	delete s;
 	delete s_p;

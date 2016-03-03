@@ -8,32 +8,33 @@
 #include "logger.h"
 #include "reward.h"
 #include "named-var-set.h"
+#include "parameters.h"
 
-CSimGod::CSimGod(tinyxml2::XMLElement* pParameters)
+CSimGod::CSimGod(CParameters* pParameters)
 {
-	/*tinyxml2::XMLElement* child;/* = pParameters->FirstChildElement("ACTOR/CRITIC");
+	/*CParameters* child;/* = pParameters->getChild("ACTOR/CRITIC");
 
 	if (child)
 	{
-		m_pController = CActorCritic::getInstance(child->FirstChildElement("ACTOR/CRITIC"));
+		m_pController = CActorCritic::getInstance(child->getChild("ACTOR/CRITIC"));
 		m_pActor = m_pController;
 		m_pCritic = (CCritic*) m_pController;
 	}
 	else*/
 	{
-		if (pParameters->FirstChildElement("Controller"))
+		if (pParameters->getChild("Controller"))
 		{
-			m_pController = CActor::getInstance(pParameters->FirstChildElement("Controller"));
-			m_pActor = CActor::getInstance(pParameters->FirstChildElement("Actor"));
+			m_pController = CActor::getInstance(pParameters->getChild("Controller"));
+			m_pActor = CActor::getInstance(pParameters->getChild("Actor"));
 		}
 		else
 		{
-			m_pActor = CActor::getInstance(pParameters->FirstChildElement("Actor"));
+			m_pActor = CActor::getInstance(pParameters->getChild("Actor"));
 			m_pController = m_pActor;
 		}
 
-		if (pParameters->FirstChildElement("Critic"))
-			m_pCritic = CCritic::getInstance(pParameters->FirstChildElement("Critic"));
+		if (pParameters->getChild("Critic"))
+			m_pCritic = CCritic::getInstance(pParameters->getChild("Critic"));
 		else m_pCritic = 0;
 	}
 	

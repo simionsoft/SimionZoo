@@ -3,20 +3,20 @@
 #include "globals.h"
 #include "named-var-set.h"
 #include "world.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
-CMultiController::CMultiController(tinyxml2::XMLElement* pParameters)
+CMultiController::CMultiController(CParameters* pParameters)
 {
-	m_numControllers = XMLUtils::countChildren(pParameters);
+	m_numControllers = pParameters->countChildren();
 
 	m_pControllers = new CActor*[m_numControllers];
 
-	tinyxml2::XMLElement* pControllerParameters = pParameters->FirstChildElement();
+	CParameters* pControllerParameters = pParameters->getChild();
 	for (int i = 0; i < m_numControllers; i++)
 	{
 		m_pControllers[i] = CMultiController::getInstance(pControllerParameters);
 
-		pControllerParameters = pControllerParameters->NextSiblingElement();
+		pControllerParameters = pControllerParameters->getNextChild();
 	}
 }
 
@@ -29,9 +29,9 @@ CMultiController::~CMultiController()
 	delete [] m_pControllers;
 }
 
-CActor* CMultiController::getInstance(tinyxml2::XMLElement* pParameters)
+CActor* CMultiController::getInstance(CParameters* pParameters)
 {
-	const char* type = pParameters->Name();
+	const char* type = pParameters->getName();
 	if (strcmp(type, "Vidal") == 0)
 		return new CWindTurbineVidalController(pParameters);
 	else if (strcmp(type, "Boukhezzar") == 0)
@@ -56,24 +56,24 @@ void CMultiController::selectAction(CState *s, CAction *a)
 	/*int* m_pVariableIndices;
 	double *m_pGains;
 	int numVars;*/
-CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
+CLQRController::CLQRController(CParameters *pParameters)
 {
-	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
+	const char* outputAction = pParameters->getChild("Output-Action")->getConstString();
 	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
-	m_numVars = XMLUtils::countChildren(pParameters,"LQR-Gain");
+	m_numVars = pParameters->countChildren("LQR-Gain");
 
 	m_pVariableIndices= new int[m_numVars];
 	m_pGains= new double[m_numVars];
 
 	CState* pSDesc= RLSimion::g_pWorld->getStateDescriptor();
-	tinyxml2::XMLElement* pGain= pParameters->FirstChildElement("LQR-Gain");
+	CParameters* pGain= pParameters->getChild("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->FirstChildElement("Variable")->GetText());
-		m_pGains[i] = XMLUtils::getConstDouble(pGain, "Gain", 0.0);
+		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->getChild("Variable")->getConstString());
+		m_pGains[i] = pGain->getConstDouble("Gain", 0.0);
 
-		pGain = pGain->NextSiblingElement("LQR-Gain");
+		pGain = pGain->getNextChild("LQR-Gain");
 	}
 }
 
@@ -98,18 +98,18 @@ void CLQRController::selectAction(CState *s, CAction *a)
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-CPIDController::CPIDController(tinyxml2::XMLElement *pParameters)
+CPIDController::CPIDController(CParameters *pParameters)
 {
-	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
+	const char* outputAction = pParameters->getChild("Output-Action")->getConstString();
 	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
-	m_pKP= XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_pKD = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KD"));
+	m_pKP= pParameters->getNumericHandler("KP");
+	m_pKI = pParameters->getNumericHandler("KI");
+	m_pKD = pParameters->getNumericHandler("KD");
 
 	CState *pSDesc= RLSimion::g_pWorld->getStateDescriptor();
 	if (pSDesc)
-		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->FirstChildElement("Input-Variable")->GetText());
+		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->getChild("Input-Variable")->getConstString());
 	else
 	{
 		printf("ERROR: PID controller missconfigured. Invalid ERROR_VARIABLE");
@@ -150,13 +150,13 @@ double sgn(double value)
 //VIDAL////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CWindTurbineVidalController::CWindTurbineVidalController(tinyxml2::XMLElement* pParameters)
+CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameters)
 {
-	m_pA= XMLUtils::getNumericHandler(pParameters->FirstChildElement("A"));
-	m_pK_alpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("K_alpha"));
-	m_pKP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_P_s = XMLUtils::getNumericHandler(pParameters->FirstChildElement("P_s"));
+	m_pA= pParameters->getNumericHandler("A");
+	m_pK_alpha = pParameters->getNumericHandler("K_alpha");
+	m_pKP = pParameters->getNumericHandler("KP");
+	m_pKI = pParameters->getNumericHandler("KI");
+	m_P_s = pParameters->getNumericHandler("P_s");
 
 	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -206,13 +206,13 @@ void CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 //BOUKHEZZAR CONTROLLER////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(tinyxml2::XMLElement* pParameters)
+CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* pParameters)
 {
-	m_pC_0= XMLUtils::getNumericHandler(pParameters->FirstChildElement("C_0"));
-	m_pKP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI= XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_J_t= atof(pParameters->FirstChildElement("J_t")->GetText());
-	m_K_t= atof(pParameters->FirstChildElement("K_t")->GetText());
+	m_pC_0= pParameters->getNumericHandler("C_0");
+	m_pKP = pParameters->getNumericHandler("KP");
+	m_pKI= pParameters->getNumericHandler("KI");
+	m_J_t= pParameters->getConstDouble("J_t");
+	m_K_t= pParameters->getConstDouble("K_t");
 
 	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -256,19 +256,19 @@ void CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 //JONKMAN//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElement *pParameters)
+CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	m_CornerFreq= XMLUtils::getConstDouble(pParameters,"CornerFreq",0.0);
+	m_CornerFreq= pParameters->getConstDouble("CornerFreq",0.0);
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp = XMLUtils::getConstDouble(pParameters,"VSRtGnSp");
-	m_VS_SlPc = XMLUtils::getConstDouble(pParameters,"VS_SlPc");
-	m_VS_Rgn2K = XMLUtils::getConstDouble(pParameters,"VS_Rgn2K");
-	m_VS_Rgn2Sp = XMLUtils::getConstDouble(pParameters,"VS_Rgn2Sp");
-	m_VS_CtInSp = XMLUtils::getConstDouble(pParameters,"VS_CtInSp");
-	m_VS_RtPwr = XMLUtils::getConstDouble(pParameters,"VS_RtPwr");
-	m_VS_Rgn3MP = XMLUtils::getConstDouble(pParameters,"VS_Rgn3MP");
+	m_VS_RtGnSp = pParameters->getConstDouble("VSRtGnSp");
+	m_VS_SlPc = pParameters->getConstDouble("VS_SlPc");
+	m_VS_Rgn2K = pParameters->getConstDouble("VS_Rgn2K");
+	m_VS_Rgn2Sp = pParameters->getConstDouble("VS_Rgn2Sp");
+	m_VS_CtInSp = pParameters->getConstDouble("VS_CtInSp");
+	m_VS_RtPwr = pParameters->getConstDouble("VS_RtPwr");
+	m_VS_Rgn3MP = pParameters->getConstDouble("VS_Rgn3MP");
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -280,10 +280,10 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElemen
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	m_PC_KK = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KK"));
-	m_PC_KP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KP"));
-	m_PC_KI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KI"));
-	m_PC_RefSpd = XMLUtils::getConstDouble(pParameters,"PC_RefSpd");
+	m_PC_KK = pParameters->getNumericHandler("PC_KK");
+	m_PC_KP = pParameters->getNumericHandler("PC_KP");
+	m_PC_KI = pParameters->getNumericHandler("PC_KI");
+	m_PC_RefSpd = pParameters->getConstDouble("PC_RefSpd");
 
 	m_IntSpdErr= 0.0;
 

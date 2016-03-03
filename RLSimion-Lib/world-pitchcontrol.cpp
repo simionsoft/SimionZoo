@@ -5,10 +5,10 @@
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
-CPitchControl::CPitchControl(tinyxml2::XMLElement* pParameters)
-: CDynamicModel(XMLUtils::getConstString(pParameters, "World-Definition"))
+CPitchControl::CPitchControl(CParameters* pParameters)
+: CDynamicModel(pParameters->getConstString("World-Definition"))
 {
 	CState *pStateDescriptor = getStateDescriptor();
 	m_sSetpointPitch = pStateDescriptor->getVarIndex("setpoint-pitch");
@@ -22,7 +22,7 @@ CPitchControl::CPitchControl(tinyxml2::XMLElement* pParameters)
 
 
 
-	m_pSetpoint= new CFileSetPoint(pParameters->FirstChildElement("Set-Point-File")->GetText());
+	m_pSetpoint= new CFileSetPoint(pParameters->getChild("Set-Point-File")->getConstString());
 }
 
 CPitchControl::~CPitchControl()

@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class tinyxml2::XMLElement;
+class CParameters;
 
 
 class CActor
@@ -24,5 +24,5 @@ public:
 
 	virtual double getProbability(CState* s, CAction* a){ return 1.0; }
 
-	static CActor *getInstance(tinyxml2::XMLElement* pParameters);
+	static CActor *getInstance(CParameters* pParameters);
 };

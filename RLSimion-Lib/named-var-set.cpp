@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "named-var-set.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
 CNamedVarProperties::CNamedVarProperties()
 {
@@ -10,24 +10,24 @@ CNamedVarProperties::CNamedVarProperties()
 	max = std::numeric_limits<double>::max();
 }
 
-CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
+CNamedVarSet::CNamedVarSet(CParameters* pDescription)
 {
-	m_numVars = XMLUtils::countChildren(pDescription, "Variable");
+	m_numVars = pDescription->countChildren("Variable");
 	m_pProperties = new CNamedVarProperties[m_numVars];
 	m_pValues = new double[m_numVars];
 
-	tinyxml2::XMLElement* pVariable = pDescription->FirstChildElement("Variable");
+	CParameters* pVariable = pDescription->getChild("Variable");
 	int numVars= 0;
 
 	while (pVariable)
 	{
-		strcpy_s(m_pProperties[numVars].name , VAR_NAME_MAX_LENGTH,XMLUtils::getConstString(pVariable, "Name"));
-		strcpy_s(m_pProperties[numVars].units, VAR_NAME_MAX_LENGTH, XMLUtils::getConstString(pVariable, "Units"));
-		m_pProperties[numVars].min = XMLUtils::getConstDouble(pVariable,"Min");
-		m_pProperties[numVars].max = XMLUtils::getConstDouble(pVariable,"Max");
+		strcpy_s(m_pProperties[numVars].name , VAR_NAME_MAX_LENGTH,pVariable->getConstString("Name"));
+		strcpy_s(m_pProperties[numVars].units, VAR_NAME_MAX_LENGTH, pVariable->getConstString("Units"));
+		m_pProperties[numVars].min = pVariable->getConstDouble("Min");
+		m_pProperties[numVars].max = pVariable->getConstDouble("Max");
 
 		numVars++;
-		pVariable = pVariable->NextSiblingElement("Variable");
+		pVariable = pVariable->getNextChild("Variable");
 	}
 }
 

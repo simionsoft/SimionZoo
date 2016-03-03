@@ -715,8 +715,8 @@ public:
     */
     const XMLElement* FirstChildElement( const char* name = 0 ) const;
 
-    XMLElement* FirstChildElement( const char* name = 0 )	{
-        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->FirstChildElement( name ));
+	XMLElement* FirstChildElement(const char* name = 0)	{
+		return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->FirstChildElement(name));
     }
 
     /// Get the last child node, or null if none exists.
@@ -765,8 +765,8 @@ public:
     /// Get the next (right) sibling element of this node, with an optionally supplied name.
     const XMLElement*	NextSiblingElement( const char* name = 0 ) const;
 
-    XMLElement*	NextSiblingElement( const char* name = 0 )	{
-        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->NextSiblingElement( name ) );
+	XMLElement*	NextSiblingElement(const char* name = 0)	{
+		return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->NextSiblingElement(name));
     }
 
     /**
@@ -1448,8 +1448,8 @@ public:
     	@verbatim
     		int x = 0;
     		float y = 0;	// types of x and y are contrived for example
-    		const XMLElement* xElement = pointElement->FirstChildElement( "x" );
-    		const XMLElement* yElement = pointElement->FirstChildElement( "y" );
+    		const XMLElement* xElement = pointElement->getChild( "x" );
+    		const XMLElement* yElement = pointElement->getChild( "y" );
     		xElement->QueryIntText( &x );
     		yElement->QueryFloatText( &y );
     	@endverbatim
@@ -1601,14 +1601,14 @@ public:
         _writeBOM = useBOM;
     }
 
-    /** Return the root element of DOM. Equivalent to FirstChildElement().
+    /** Return the root element of DOM. Equivalent to getChild().
         To get the first node, use FirstChild().
     */
     XMLElement* RootElement()				{
-        return FirstChildElement();
+		return FirstChildElement();
     }
     const XMLElement* RootElement() const	{
-        return FirstChildElement();
+		return FirstChildElement();
     }
 
     /** Print the Document. If the Printer is not provided, it will
@@ -1749,16 +1749,16 @@ private:
 	easy to write a *lot* of code that looks like:
 
 	@verbatim
-	XMLElement* root = document.FirstChildElement( "Document" );
+	XMLElement* root = document.getChild( "Document" );
 	if ( root )
 	{
-		XMLElement* element = root->FirstChildElement( "Element" );
+		XMLElement* element = root->getChild( "Element" );
 		if ( element )
 		{
-			XMLElement* child = element->FirstChildElement( "Child" );
+			XMLElement* child = element->getChild( "Child" );
 			if ( child )
 			{
-				XMLElement* child2 = child->NextSiblingElement( "Child" );
+				XMLElement* child2 = child->getNextChild( "Child" );
 				if ( child2 )
 				{
 					// Finally do something useful.
@@ -1770,7 +1770,7 @@ private:
 
 	@verbatim
 	XMLHandle docHandle( &document );
-	XMLElement* child2 = docHandle.FirstChildElement( "Document" ).FirstChildElement( "Element" ).FirstChildElement().NextSiblingElement();
+	XMLElement* child2 = docHandle.getChild( "Document" ).getChild( "Element" ).getChild().getNextChild();
 	if ( child2 )
 	{
 		// do something useful
@@ -1812,7 +1812,7 @@ public:
     }
     /// Get the first child element of this handle.
     XMLHandle FirstChildElement( const char* name = 0 )						{
-        return XMLHandle( _node ? _node->FirstChildElement( name ) : 0 );
+		return XMLHandle(_node ? _node->FirstChildElement(name) : 0);
     }
     /// Get the last child of this handle.
     XMLHandle LastChild()													{
@@ -1835,8 +1835,8 @@ public:
         return XMLHandle( _node ? _node->NextSibling() : 0 );
     }
     /// Get the next sibling element of this handle.
-    XMLHandle NextSiblingElement( const char* name = 0 )					{
-        return XMLHandle( _node ? _node->NextSiblingElement( name ) : 0 );
+	XMLHandle NextSiblingElement(const char* name = 0)					{
+		return XMLHandle(_node ? _node->NextSiblingElement(name) : 0);
     }
 
     /// Safe cast to XMLNode. This can return null.
@@ -1890,8 +1890,8 @@ public:
     const XMLConstHandle FirstChild() const											{
         return XMLConstHandle( _node ? _node->FirstChild() : 0 );
     }
-    const XMLConstHandle FirstChildElement( const char* name = 0 ) const				{
-        return XMLConstHandle( _node ? _node->FirstChildElement( name ) : 0 );
+	const XMLConstHandle FirstChildElement(const char* name = 0) const				{
+		return XMLConstHandle(_node ? _node->FirstChildElement(name) : 0);
     }
     const XMLConstHandle LastChild()	const										{
         return XMLConstHandle( _node ? _node->LastChild() : 0 );
@@ -1909,7 +1909,7 @@ public:
         return XMLConstHandle( _node ? _node->NextSibling() : 0 );
     }
     const XMLConstHandle NextSiblingElement( const char* name = 0 ) const			{
-        return XMLConstHandle( _node ? _node->NextSiblingElement( name ) : 0 );
+		return XMLConstHandle(_node ? _node->NextSiblingElement(name) : 0);
     }
 
 

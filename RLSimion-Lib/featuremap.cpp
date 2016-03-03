@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "featuremap.h"
+#include "parameters.h"
 
-class tinyxml2::XMLElement;
+class CParameters;
 
-CFeatureMap* CFeatureMap::getInstance(tinyxml2::XMLElement* pParameters)
+CFeatureMap* CFeatureMap::getInstance(CParameters* pParameters)
 {
-	tinyxml2::XMLElement* child;
-	child = pParameters->FirstChildElement("RBF-Grid");
+	CParameters* child;
+	child = pParameters->getChild("RBF-Grid");
 	if (child)
 		return new CGaussianRBFGridFeatureMap(child);
 	return 0;

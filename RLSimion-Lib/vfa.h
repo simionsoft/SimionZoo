@@ -5,7 +5,7 @@ class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class tinyxml2::XMLElement;
+class CParameters;
 
 #include "parameterized-object.h"
 //CLinearVFA////////////////////////////////////////////////////////////////////
@@ -23,7 +23,7 @@ protected:
 	double m_minOutput, m_maxOutput;
 public:
 
-	CLinearVFA(tinyxml2::XMLElement* pParameters);
+	CLinearVFA(CParameters* pParameters);
 	~CLinearVFA();
 
 	void saturateOutput(double min, double max);

@@ -6,7 +6,7 @@ typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 
 
-class tinyxml2::XMLElement;
+class CParameters;
 
 #include <vector>
 class CStats;
@@ -63,7 +63,7 @@ class CLogger
 	//stats
 	std::vector<CStats*> m_stats;
 public:
-	CLogger(tinyxml2::XMLElement* pParameters);
+	CLogger(CParameters* pParameters);
 	~CLogger();
 
 	void addVarToStats(const char* key, const char* subkey, double* variable);

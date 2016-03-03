@@ -8,15 +8,15 @@
 #include "world.h"
 #include "globals.h"
 #include "named-var-set.h"
+#include "parameters.h"
 
-
-CActor* CActor::getInstance(tinyxml2::XMLElement* pParameters)
+CActor* CActor::getInstance(CParameters* pParameters)
 {
-	tinyxml2::XMLElement* child;
+	CParameters* child;
 	if (!pParameters) return 0;
 
-	child = pParameters->FirstChildElement();
-	const char* type = child->Name();
+	child = pParameters->getChild();
+	const char* type = child->getName();
 
 	if (strcmp(type, "VFA-Learner") == 0)
 		return new CVFAActor(child);

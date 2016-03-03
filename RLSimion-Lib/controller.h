@@ -6,7 +6,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class tinyxml2::XMLElement;
+class CParameters;
 class INumericValue;
 
 class CMultiController : public CActor
@@ -14,10 +14,10 @@ class CMultiController : public CActor
 	int m_numControllers;
 	CActor **m_pControllers;
 public:
-	CMultiController(tinyxml2::XMLElement* pParameters);
+	CMultiController(CParameters* pParameters);
 	virtual ~CMultiController();
 
-	static CActor* getInstance(tinyxml2::XMLElement* pParameters);
+	static CActor* getInstance(CParameters* pParameters);
 
 	void selectAction(CState *s, CAction *a);
 };
@@ -30,7 +30,7 @@ class CLQRController : public CActor
 	int m_outputActionIndex;
 	int m_numVars;
 public:
-	CLQRController(tinyxml2::XMLElement* pParameters);
+	CLQRController(CParameters* pParameters);
 	~CLQRController();
 
 	void selectAction(CState *s,CAction *a);
@@ -43,7 +43,7 @@ class CPIDController : public CActor
 	double m_intError;
 	int m_errorVariableIndex;
 public:
-	CPIDController(tinyxml2::XMLElement* pParameters);
+	CPIDController(CParameters* pParameters);
 	~CPIDController();
 
 	void selectAction(CState *s,CAction *a);
@@ -59,7 +59,7 @@ class CWindTurbineVidalController : public CActor
 	int m_d_beta_index, m_d_T_g_index;
 	INumericValue *m_pA, *m_pK_alpha, *m_pKP, *m_pKI, *m_P_s;
 public:
-	CWindTurbineVidalController(tinyxml2::XMLElement* pParameters);
+	CWindTurbineVidalController(CParameters* pParameters);
 	~CWindTurbineVidalController(){}
 
 	void selectAction(CState *s,CAction *a);
@@ -78,7 +78,7 @@ class CWindTurbineBoukhezzarController : public CActor
 	INumericValue *m_pC_0, *m_pKP, *m_pKI;
 	double m_K_t, m_J_t;
 public:
-	CWindTurbineBoukhezzarController(tinyxml2::XMLElement* pParameters);
+	CWindTurbineBoukhezzarController(CParameters* pParameters);
 	~CWindTurbineBoukhezzarController(){}
 
 	void selectAction(CState *s,CAction *a);
@@ -100,7 +100,7 @@ class CWindTurbineJonkmanController : public CActor
 	INumericValue *m_PC_KK, *m_PC_KP, *m_PC_KI;
 	double m_PC_RefSpd;
 public:
-	CWindTurbineJonkmanController(tinyxml2::XMLElement* pParameters);
+	CWindTurbineJonkmanController(CParameters* pParameters);
 	~CWindTurbineJonkmanController(){}
 
 	void selectAction(CState *s,CAction *a);

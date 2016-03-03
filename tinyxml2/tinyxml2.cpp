@@ -873,7 +873,7 @@ XMLNode* XMLNode::InsertAfterChild( XMLNode* afterThis, XMLNode* addThis )
 
 
 
-const XMLElement* XMLNode::FirstChildElement( const char* name ) const
+const XMLElement* XMLNode::FirstChildElement(const char* name) const
 {
     for( const XMLNode* node = _firstChild; node; node = node->_next ) {
         const XMLElement* element = node->ToElement();
@@ -901,7 +901,7 @@ const XMLElement* XMLNode::LastChildElement( const char* name ) const
 }
 
 
-const XMLElement* XMLNode::NextSiblingElement( const char* name ) const
+const XMLElement* XMLNode::NextSiblingElement(const char* name) const
 {
     for( const XMLNode* node = _next; node; node = node->_next ) {
         const XMLElement* element = node->ToElement();

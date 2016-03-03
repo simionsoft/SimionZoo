@@ -6,7 +6,7 @@
 class CLinearVFA;
 class CETraces;
 class CFeatureList;
-class tinyxml2::XMLElement;
+class CParameters;
 class INumericValue;
 
 
@@ -20,12 +20,12 @@ protected:
 	void loadVFunction(const char* filename);
 	void saveVFunction(const char* filename);
 public:
-	CVFACritic(tinyxml2::XMLElement* pParameters);
+	CVFACritic(CParameters* pParameters);
 	virtual ~CVFACritic();
 
 	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
 
-	static CVFACritic* getInstance(tinyxml2::XMLElement* pParameters);
+	static CVFACritic* getInstance(CParameters* pParameters);
 };
 
 //VFACritic implementations
@@ -37,7 +37,7 @@ class CTDLambdaCritic : public CVFACritic
 	INumericValue* m_pAlpha;
 	INumericValue* m_pGamma;
 public:
-	CTDLambdaCritic(tinyxml2::XMLElement *pParameters);
+	CTDLambdaCritic(CParameters *pParameters);
 	~CTDLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
@@ -55,7 +55,7 @@ class CTrueOnlineTDLambdaCritic : public CVFACritic
 	INumericValue* m_pAlpha;
 	INumericValue* m_pGamma;
 public:
-	CTrueOnlineTDLambdaCritic(tinyxml2::XMLElement *pParameters);
+	CTrueOnlineTDLambdaCritic(CParameters *pParameters);
 	~CTrueOnlineTDLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
@@ -77,7 +77,7 @@ class CTDCLambdaCritic : public CVFACritic
 	
 
 public:
-	CTDCLambdaCritic(tinyxml2::XMLElement *pParameters);
+	CTDCLambdaCritic(CParameters *pParameters);
 	~CTDCLambdaCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
@@ -95,7 +95,7 @@ class CIncrementalNaturalCritic : public CVFACritic
 	INumericValue *m_pAlphaV, *m_pAlphaR, *m_pGamma;
 	
 public:
-	CIncrementalNaturalCritic(tinyxml2::XMLElement *pParameters);
+	CIncrementalNaturalCritic(CParameters *pParameters);
 	~CIncrementalNaturalCritic();
 
 	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);

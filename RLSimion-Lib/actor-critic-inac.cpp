@@ -8,18 +8,18 @@
 #include "noise.h"
 #include "named-var-set.h"
 #include "vfa-critic.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 #include "globals.h"
 #include "experiment.h"
 
-CIncrementalNaturalCritic::CIncrementalNaturalCritic(tinyxml2::XMLElement* pParameters) : CVFACritic(pParameters)
+CIncrementalNaturalCritic::CIncrementalNaturalCritic(CParameters* pParameters) : CVFACritic(pParameters)
 {
 	m_s_features = new CFeatureList("Critic\\s");
 	m_s_p_features = new CFeatureList("Critic\\s_p");
-	m_pAlphaV = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
-	m_pAlphaR = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-r"));
-	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
-	m_e_v = new CETraces("Critic\\e_v",pParameters->FirstChildElement("E-Traces"));
+	m_pAlphaV = pParameters->getNumericHandler("Alpha-v");
+	m_pAlphaR = pParameters->getNumericHandler("Alpha-r");
+	m_pGamma = pParameters->getNumericHandler("Gamma");
+	m_e_v = new CETraces("Critic\\e_v",pParameters->getChild("E-Traces"));
 }
 
 CIncrementalNaturalCritic::~CIncrementalNaturalCritic()
@@ -62,17 +62,17 @@ double CIncrementalNaturalCritic::updateValue(CState *s, CAction *a, CState *s_p
 	return td;
 }
 
-CIncrementalNaturalActor::CIncrementalNaturalActor(tinyxml2::XMLElement* pParameters) 
-: CSingleOutputVFAPolicyLearner(pParameters->FirstChildElement("VFA-Policy"))
+CIncrementalNaturalActor::CIncrementalNaturalActor(CParameters* pParameters) 
+: CSingleOutputVFAPolicyLearner(pParameters->getChild("VFA-Policy"))
 {
 	m_grad_u = new CFeatureList("Actor\\grad-u");
 	m_s_features = new CFeatureList("Actor\\s");
-	m_pGamma = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pGamma = pParameters->getNumericHandler("Gamma");
 
-	m_pAlphaU = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-u"));
-	m_pAlphaV = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha-v"));
+	m_pAlphaU = pParameters->getNumericHandler("Alpha-u");
+	m_pAlphaV = pParameters->getNumericHandler("Alpha-v");
 
-	m_e = new CETraces("Actor\\E-Traces",pParameters->FirstChildElement("E-Traces"));
+	m_e = new CETraces("Actor\\E-Traces",pParameters->getChild("E-Traces"));
 	m_w = new CFeatureList("Actor\\w");
 }
 

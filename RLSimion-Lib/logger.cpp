@@ -4,28 +4,28 @@
 #include "named-var-set.h"
 #include "globals.h"
 #include "experiment.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 #include "stats.h"
 
 #define MAX_FILENAME_LENGTH 1024
 
-CLogger::CLogger(tinyxml2::XMLElement* pParameters)
+CLogger::CLogger(CParameters* pParameters)
 {
 	m_outputDir = new char[MAX_FILENAME_LENGTH];
 	m_filePrefix = new char[MAX_FILENAME_LENGTH];
 
 	if (pParameters)
 	{
-		sprintf_s(m_outputDir, MAX_FILENAME_LENGTH, "../logs/%s", XMLUtils::getConstString(pParameters,"Ouput-directory"));
-		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, XMLUtils::getConstString(pParameters,"Prefix"));
+		sprintf_s(m_outputDir, MAX_FILENAME_LENGTH, "../logs/%s", pParameters->getConstString( "Ouput-directory"));
+		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pParameters->getConstString("Prefix"));
 
-		m_bLogEvaluationEpisodes = XMLUtils::getConstBoolean(pParameters,"Log-eval-episodes", false);
-		m_bLogTrainingEpisodes = XMLUtils::getConstBoolean(pParameters,"Log-training-episodes", false);
-		m_bLogEvaluationExperiment = XMLUtils::getConstBoolean(pParameters,"Log-eval-experiment", true);
-		m_bLogTrainingExperiment = XMLUtils::getConstBoolean(pParameters, "Log-training-experiment", false);
+		m_bLogEvaluationEpisodes = pParameters->getConstBoolean("Log-eval-episodes", false);
+		m_bLogTrainingEpisodes = pParameters->getConstBoolean("Log-training-episodes", false);
+		m_bLogEvaluationExperiment = pParameters->getConstBoolean("Log-eval-experiment", true);
+		m_bLogTrainingExperiment = pParameters->getConstBoolean( "Log-training-experiment", false);
 
-		m_logFreq = XMLUtils::getConstDouble(pParameters, "Log-Freq", 0.25);
-		m_progUpdateFreq = XMLUtils::getConstDouble(pParameters, "Progress-Update-Freq", 0.5);
+		m_logFreq = pParameters->getConstDouble( "Log-Freq", 0.25);
+		m_progUpdateFreq = pParameters->getConstDouble( "Progress-Update-Freq", 0.5);
 
 		_mkdir(m_outputDir);
 	}
@@ -235,21 +235,21 @@ void CLogger::lastEpisode(bool evalEpisode)
 void CLogger::addVarToStats(const char* key, const char* subkey, double* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->FirstChildElement(key))
+	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*) variable, Double));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, int* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->FirstChildElement(key))
+	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*) variable, Int));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, unsigned int* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->FirstChildElement(key))
+	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*)variable, UnsignedInt));
 }
 

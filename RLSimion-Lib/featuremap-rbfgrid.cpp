@@ -5,7 +5,7 @@
 #include "globals.h"
 #include "world.h"
 #include "features.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
 
 #define ACTIVATION_THRESHOLD 0.0001
@@ -69,12 +69,12 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 
 }
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pParameters): CParamObject(pParameters)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters): CParamObject(pParameters)
 {
 	char * token= 0, *nextToken= 0;
 	//char copy[MAX_STRING_SIZE];
 
-	m_numVariables = XMLUtils::countChildren(pParameters, "RBF-Grid-Dimension");
+	m_numVariables = pParameters->countChildren("RBF-Grid-Dimension");
 	
 	m_variableType= new short [m_numVariables];
 	m_variableIndex= new int [m_numVariables];
@@ -92,20 +92,20 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 	const char *varName;
 	double min,max;
 	const char* distType;
-	tinyxml2::XMLElement* dimension= pParameters->FirstChildElement("RBF-Grid-Dimension");
+	CParameters* dimension= pParameters->getChild("RBF-Grid-Dimension");
 
 	for (int i = 0; i < m_numVariables; i++)
 	{
-		varName = dimension->FirstChildElement("Variable")->GetText();
-		numFeatures = XMLUtils::getConstInteger(dimension,"Num-Features",3);
+		varName = dimension->getChild("Variable")->getConstString();
+		numFeatures = dimension->getConstInteger("Num-Features",3);
 
-		min = XMLUtils::getConstDouble(dimension,"Min",RLSimion::g_pWorld->getStateDescriptor()->getMin(varName));
-		max = XMLUtils::getConstDouble(dimension,"Max",RLSimion::g_pWorld->getStateDescriptor()->getMax(varName));
+		min = dimension->getConstDouble("Min",RLSimion::g_pWorld->getStateDescriptor()->getMin(varName));
+		max = dimension->getConstDouble("Max",RLSimion::g_pWorld->getStateDescriptor()->getMax(varName));
 
-		distType = XMLUtils::getConstString(dimension,"Distribution", "linear");
+		distType = dimension->getConstString("Distribution", "linear");
 		initCenterPoints(i, varName, numFeatures, min, max, distType);
 
-		dimension = dimension->NextSiblingElement("RBF-Grid-Dimension");
+		dimension = dimension->getNextChild("RBF-Grid-Dimension");
 	}
 
 

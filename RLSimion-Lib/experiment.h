@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
-class tinyxml2::XMLElement;
+class CParameters;
 
 
 
@@ -52,7 +52,7 @@ class CExperiment
 {
 	bool isCurrentEpisodeLogged();
 public:
-	CExperiment(tinyxml2::XMLElement* pParameters);
+	CExperiment(CParameters* pParameters);
 	~CExperiment();
 
 	CExperimentProgress m_expProgress;

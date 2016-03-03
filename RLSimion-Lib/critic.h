@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class tinyxml2::XMLElement;
+class CParameters;
 
 
 class CCritic
@@ -18,6 +18,6 @@ public:
 
 	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
 
-	static CCritic *getInstance(tinyxml2::XMLElement* pParameters);
+	static CCritic *getInstance(CParameters* pParameters);
 };
 

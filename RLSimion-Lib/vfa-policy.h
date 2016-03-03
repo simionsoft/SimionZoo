@@ -8,7 +8,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class tinyxml2::XMLElement;
+class CParameters;
 
 
 class CSingleOutputVFAPolicy : public CParamObject
@@ -20,7 +20,7 @@ protected:
 	int m_outputActionIndex;
 	const char* m_outputAction;
 public:
-	CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters);
+	CSingleOutputVFAPolicy(CParameters* pParameters);
 	~CSingleOutputVFAPolicy();
 
 	void selectAction(CState *s, CAction *a);

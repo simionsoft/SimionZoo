@@ -9,7 +9,7 @@ typedef CNamedVarSet CAction;
 class CFeatureList;
 class CETraces;
 class CSingleOutputVFAPolicy;
-class tinyxml2::XMLElement;
+class CParameters;
 class INumericValue;
 
 class CSingleOutputVFAPolicyLearner: public CParamObject
@@ -18,14 +18,14 @@ protected:
 	CSingleOutputVFAPolicy* m_pPolicy;
 
 public:
-	CSingleOutputVFAPolicyLearner(tinyxml2::XMLElement* pParameters);
+	CSingleOutputVFAPolicyLearner(CParameters* pParameters);
 	~CSingleOutputVFAPolicyLearner();
 
 	virtual void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td)= 0;
 
 	CSingleOutputVFAPolicy* getPolicy(){ return m_pPolicy; }
 
-	static CSingleOutputVFAPolicyLearner* getInstance(tinyxml2::XMLElement* pParameters);
+	static CSingleOutputVFAPolicyLearner* getInstance(CParameters* pParameters);
 };
 
 
@@ -35,7 +35,7 @@ protected:
 	int m_numOutputs;
 	CSingleOutputVFAPolicyLearner **m_pPolicyLearners;
 public:
-	CVFAActor(tinyxml2::XMLElement* pParameters);
+	CVFAActor(CParameters* pParameters);
 	virtual ~CVFAActor();
 
 	void selectAction(CState *s, CAction *a);
@@ -59,7 +59,7 @@ class CCACLALearner : public CSingleOutputVFAPolicyLearner
 	INumericValue* m_pAlpha;
 public:
 
-	CCACLALearner(tinyxml2::XMLElement *pParameters);
+	CCACLALearner(CParameters *pParameters);
 	~CCACLALearner();
 
 	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
@@ -72,7 +72,7 @@ class CRegularPolicyGradientLearner :public CSingleOutputVFAPolicyLearner
 	INumericValue* m_pAlpha;
 public:
 
-	CRegularPolicyGradientLearner(tinyxml2::XMLElement *pParameters);
+	CRegularPolicyGradientLearner(CParameters *pParameters);
 	~CRegularPolicyGradientLearner();
 
 	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
@@ -92,7 +92,7 @@ class CIncrementalNaturalActor : public CSingleOutputVFAPolicyLearner
 	INumericValue* m_pAlphaV;
 public:
 
-	CIncrementalNaturalActor(tinyxml2::XMLElement *pParameters);
+	CIncrementalNaturalActor(CParameters *pParameters);
 	~CIncrementalNaturalActor();
 
 	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);

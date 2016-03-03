@@ -2,7 +2,7 @@
 
 #include "parameterized-object.h"
 
-class tinyxml2::XMLElement;
+class CParameters;
 class INumericValue;
 
 class CNoise
@@ -13,7 +13,7 @@ protected:
 public:
 	virtual double getValue()= 0;
 
-	static CNoise* getInstance(tinyxml2::XMLElement* pParameters);
+	static CNoise* getInstance(CParameters* pParameters);
 };
 
 
@@ -24,7 +24,7 @@ class CGaussianNoise: public CNoise, public CParamObject
 	INumericValue* m_pAlpha;
 	INumericValue* m_pScale;
 public:
-	CGaussianNoise(tinyxml2::XMLElement* pParameters);
+	CGaussianNoise(CParameters* pParameters);
 	~CGaussianNoise();
 	double getSigma();
 	double unscale(double noise);

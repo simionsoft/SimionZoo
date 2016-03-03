@@ -21,7 +21,7 @@ class CNamedVarSet
 	double *m_pValues;
 	int m_numVars;
 public:
-	CNamedVarSet(tinyxml2::XMLElement* pDescription);
+	CNamedVarSet(CParameters* pDescription);
 	CNamedVarSet(int numVars);
 	~CNamedVarSet();
 

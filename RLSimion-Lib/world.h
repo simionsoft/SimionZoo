@@ -7,6 +7,7 @@ typedef CNamedVarSet CReward;
 
 class CDynamicModel;
 class CRewardFunction;
+class CParameters;
 
 class CWorld
 {
@@ -27,7 +28,7 @@ public:
 	double getT();
 	double getStepStartT();
 
-	CWorld(tinyxml2::XMLElement* pParameters);
+	CWorld(CParameters* pParameters);
 	~CWorld();
 
 	CState *getStateInstance(); // pointer to a new CState. has to be deleted
@@ -53,7 +54,7 @@ class CDynamicModel
 private:
 	CState *m_pStateDescriptor;
 	CAction *m_pActionDescriptor;
-	tinyxml2::XMLElement *m_pConstants;
+	CParameters *m_pConstants;
 public:
 	CDynamicModel(const char* pWorldDefinitionFile);
 	virtual ~CDynamicModel();

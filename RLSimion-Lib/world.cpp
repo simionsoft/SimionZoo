@@ -8,35 +8,35 @@
 #include "world-pitchcontrol.h"
 #include "world-magneticlevitation.h"
 #include "reward.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
 
-CWorld::CWorld(tinyxml2::XMLElement* pParameters)
+CWorld::CWorld(CParameters* pParameters)
 {
 	assert(pParameters);
 	m_t= 0.0;
 
-	m_simulationSteps= XMLUtils::getConstInteger(pParameters,"Num-Integration-Steps");
-	m_dt = XMLUtils::getConstDouble(pParameters, "Delta-T");
+	m_simulationSteps= pParameters->getConstInteger("Num-Integration-Steps");
+	m_dt = pParameters->getConstDouble("Delta-T");
 
-	tinyxml2::XMLElement* pModelParameters;
-	pModelParameters = pParameters->FirstChildElement("Dynamic-Model")->FirstChildElement();
+	CParameters* pModelParameters;
+	pModelParameters = pParameters->getChild("Dynamic-Model")->getChild();
 
-	if (strcmp(pModelParameters->Name(), "Wind-turbine") == 0)
+	if (strcmp(pModelParameters->getName(), "Wind-turbine") == 0)
 		m_pDynamicModel = new CWindTurbine(pModelParameters);
-	else if (strcmp(pModelParameters->Name(), "Underwater-vehicle") == 0)
+	else if (strcmp(pModelParameters->getName(), "Underwater-vehicle") == 0)
 		m_pDynamicModel = new CUnderwaterVehicle(pModelParameters);
-	else if (strcmp(pModelParameters->Name(), "Pitch-control") == 0)
+	else if (strcmp(pModelParameters->getName(), "Pitch-control") == 0)
 		m_pDynamicModel = new CPitchControl(pModelParameters);
-	else if (strcmp(pModelParameters->Name(), "Magnetic-leviation") == 0)
+	else if (strcmp(pModelParameters->getName(), "Magnetic-leviation") == 0)
 		m_pDynamicModel = new CMagneticLevitation(pModelParameters);
 	else m_pDynamicModel = 0;
 	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
 	//	m_pDynamicModel= new CHeatingCoil(pParameters);
 
-	m_pRewardFunction = new CRewardFunction(pParameters->FirstChildElement("Reward"));
+	m_pRewardFunction = new CRewardFunction(pParameters->getChild("Reward"));
 	m_scalarReward = 0.0;
 }
 
@@ -132,18 +132,18 @@ CDynamicModel::~CDynamicModel()
 CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 {
 	tinyxml2::XMLDocument configXMLDoc;
-	tinyxml2::XMLElement *rootNode;
+	CParameters *rootNode;
 	if (pWorldDefinitionFile)
 	{
 		
 		configXMLDoc.LoadFile(pWorldDefinitionFile);
 		if (!configXMLDoc.Error())
 		{
-			rootNode = configXMLDoc.FirstChildElement("World-Definition");
-			m_pStateDescriptor =new CState( rootNode->FirstChildElement("State"));
-			m_pActionDescriptor = new CAction(rootNode->FirstChildElement("Action"));
+			rootNode = (CParameters*)configXMLDoc.FirstChildElement("World-Definition");
+			m_pStateDescriptor =new CState( rootNode->getChild("State"));
+			m_pActionDescriptor = new CAction(rootNode->getChild("Action"));
 			//we only copy the pointer because we are assuming the xml config document won't be deleted until the main program ends
-			m_pConstants = rootNode->FirstChildElement("Constants");
+			m_pConstants = rootNode->getChild("Constants");
 		}
 	}
 }

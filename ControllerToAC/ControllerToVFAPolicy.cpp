@@ -18,7 +18,7 @@
 int main(int argc, char* argv[])
 {
 	tinyxml2::XMLDocument xmlDoc;
-	tinyxml2::XMLElement* pConfig;
+	CParameters* pConfig;
 
 	if (argc < 2)
 	{
@@ -36,18 +36,18 @@ int main(int argc, char* argv[])
 		exit(-1);
 	}
 
-	pConfig = xmlDoc.FirstChildElement("Controller-To-VFA-Policy");
+	pConfig = xmlDoc.getChild("Controller-To-VFA-Policy");
 	
 	//INITIALISE WORLD -> STATE PROPERTIES
-	RLSimion::g_pWorld = new CWorld(pConfig->FirstChildElement("World"));
-//	RLSimion::g_pExperiment = new CExperiment(pConfig->FirstChildElement("Experiment"));
+	RLSimion::g_pWorld = new CWorld(pConfig->getChild("World"));
+//	RLSimion::g_pExperiment = new CExperiment(pConfig->getChild("Experiment"));
 
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
-	tinyxml2::XMLElement* pControllerConfig = pConfig->FirstChildElement("Controller");
+	CParameters* pControllerConfig = pConfig->getChild("Controller");
 	CActor* pController = CActor::getInstance(pControllerConfig);
 
-	tinyxml2::XMLElement* pVFAConfig = pConfig->FirstChildElement("Multi-Output-VFA");
-	tinyxml2::XMLElement* pOutputConfig = pConfig->FirstChildElement("Output-File");
+	CParameters* pVFAConfig = pConfig->getChild("Multi-Output-VFA");
+	CParameters* pOutputConfig = pConfig->getChild("Output-File");
 
 	if (!pVFAConfig || !RLSimion::g_pWorld || !pOutputConfig)
 	{
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 	CAction *a = RLSimion::g_pWorld->getActionInstance();
 
 
-	tinyxml2::XMLElement* pSingleOutputVFAConfig = pVFAConfig->FirstChildElement("Single-Output-VFA");
+	CParameters* pSingleOutputVFAConfig = pVFAConfig->getChild("Single-Output-VFA");
 	//CONTROLLER -> ACTOR
 	printf("\nSaving the weights of a VFA that approximates the controller...\n");
 	FILE* pFile;
@@ -77,8 +77,8 @@ int main(int argc, char* argv[])
 		while (pSingleOutputVFAConfig)
 		{
 
-			pVFA = new CLinearVFA(pSingleOutputVFAConfig->FirstChildElement("Linear-VFA"));
-			pOutputAction = pSingleOutputVFAConfig->FirstChildElement("Output-Action")->GetText();
+			pVFA = new CLinearVFA(pSingleOutputVFAConfig->getChild("Linear-VFA"));
+			pOutputAction = pSingleOutputVFAConfig->getChild("Output-Action")->GetText();
 
 			numWeights = pVFA->getNumWeights();
 			fwrite(&numWeights, sizeof(unsigned int), 1, pFile);
@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 			delete pVFA;
 			i++;
 
-			pSingleOutputVFAConfig = pSingleOutputVFAConfig->NextSiblingElement("Single-Output-VFA");
+			pSingleOutputVFAConfig = pSingleOutputVFAConfig->getNextChild("Single-Output-VFA");
 		}
 		printf("\nDone\n");
 		fclose(pFile);

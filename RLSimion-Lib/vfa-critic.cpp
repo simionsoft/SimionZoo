@@ -1,40 +1,40 @@
 #include "stdafx.h"
 #include "vfa-critic.h"
 #include "vfa.h"
-
+#include "parameters.h"
 #include "parameterized-object.h"
 
 
-CVFACritic::CVFACritic(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
+CVFACritic::CVFACritic(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("Linear-VFA"));
+	m_pVFA = new CLinearVFA(pParameters->getChild("Linear-VFA"));
 
-	if (m_pParameters->FirstChildElement("Load"))
-		loadVFunction(m_pParameters->FirstChildElement("Load")->GetText());
+	if (m_pParameters->getChild("Load"))
+		loadVFunction(m_pParameters->getChild("Load")->getConstString());
 }
 
 CVFACritic::~CVFACritic()
 {
-	if (m_pParameters->FirstChildElement("Save"))
-		saveVFunction(m_pParameters->FirstChildElement("Save")->GetText());
+	if (m_pParameters->getChild("Save"))
+		saveVFunction(m_pParameters->getChild("Save")->getConstString());
 
 	delete m_pVFA;
 }
 
-CVFACritic* CVFACritic::getInstance(tinyxml2::XMLElement* pParameters)
+CVFACritic* CVFACritic::getInstance(CParameters* pParameters)
 {
 	if (!pParameters) return 0;
 
-	tinyxml2::XMLElement* child= pParameters->FirstChildElement();
+	CParameters* child= pParameters->getChild();
 
 
-	if (!strcmp(child->Name(), "TD-Lambda"))
+	if (!strcmp(child->getName(), "TD-Lambda"))
 		return new CTDLambdaCritic(child);
-	if (!strcmp(child->Name(), "True-Online-TD-Lambda"))
+	if (!strcmp(child->getName(), "True-Online-TD-Lambda"))
 		return new CTrueOnlineTDLambdaCritic(child);
-	if (!strcmp(child->Name(), "TDC-Lambda"))
+	if (!strcmp(child->getName(), "TDC-Lambda"))
 		return new CTDCLambdaCritic(child);
-	if (!strcmp(child->Name(), "Incremental-Natural-Critic"))
+	if (!strcmp(child->getName(), "Incremental-Natural-Critic"))
 		return new CIncrementalNaturalCritic(child);
 
 	return 0;

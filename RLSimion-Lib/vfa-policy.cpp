@@ -3,19 +3,19 @@
 #include "noise.h"
 #include "vfa.h"
 #include "vfa-policy.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 #include "globals.h"
 #include "world.h"
 
 
-CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters)
+CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(CParameters* pParameters)
 : CParamObject(pParameters)
 {
-	m_pVFA = new CLinearVFA(pParameters->FirstChildElement("Linear-VFA"));
+	m_pVFA = new CLinearVFA(pParameters->getChild("Linear-VFA"));
 
-	m_pExpNoise = CNoise::getInstance (pParameters->FirstChildElement("Exploration-Noise"));
+	m_pExpNoise = CNoise::getInstance (pParameters->getChild("Exploration-Noise"));
 
-	m_outputAction = XMLUtils::getConstString(m_pParameters,"Output-Action");
+	m_outputAction = pParameters->getConstString("Output-Action");
 
 	CAction *pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
 	m_outputActionIndex = pActionDescriptor->getVarIndex(m_outputAction);

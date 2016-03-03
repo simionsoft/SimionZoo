@@ -13,7 +13,7 @@ class CMagneticLevitation: public CDynamicModel
 	CSetPoint *m_pEvalSetPoint,*m_pLearnSetPoint;
 
 public:
-	CMagneticLevitation(tinyxml2::XMLElement* pParameters);
+	CMagneticLevitation(CParameters* pParameters);
 	~CMagneticLevitation();
 
 	void reset(CState *s);

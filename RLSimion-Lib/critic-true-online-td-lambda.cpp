@@ -6,16 +6,16 @@
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 
-CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(tinyxml2::XMLElement *pParameters)
+CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_e= new CETraces("Critic\\E-Traces",pParameters->FirstChildElement("E-Traces"));
+	m_e= new CETraces("Critic\\E-Traces",pParameters->getChild("E-Traces"));
 	m_aux= new CFeatureList("Critic\\aux");
 	m_v_s= 0.0;
-	m_pAlpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Alpha"));
-	m_pGamma= XMLUtils::getNumericHandler(pParameters->FirstChildElement("Gamma"));
+	m_pAlpha = pParameters->getNumericHandler("Alpha");
+	m_pGamma= pParameters->getNumericHandler("Gamma");
 
 }
 

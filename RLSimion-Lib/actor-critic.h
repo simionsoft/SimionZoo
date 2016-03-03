@@ -20,5 +20,5 @@ public:
 
 	virtual double getProbability(CState* s, CAction* a){ return 1.0; }
 
-	static CActorCritic* getInstance(tinyxml2::XMLElement* pParameters);
+	static CActorCritic* getInstance(CParameters* pParameters);
 };

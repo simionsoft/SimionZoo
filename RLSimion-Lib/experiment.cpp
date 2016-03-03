@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "experiment.h"
-#include "xml-parameters.h"
+#include "parameters.h"
 #include "logger.h"
 #include "world.h"
 #include "globals.h"
@@ -39,19 +39,19 @@ CExperiment::~CExperiment()
 {
 }
 
-CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
+CExperiment::CExperiment(CParameters* pParameters)
 {
 	if (pParameters)
 	{
-		m_randomSeed = XMLUtils::getConstInteger(pParameters,"Random-Seed",1);
+		m_randomSeed = pParameters->getConstInteger("Random-Seed", 1);
 
-		m_expProgress.setNumEpisodes(XMLUtils::getConstInteger(pParameters,"Num-Episodes",1));
+		m_expProgress.setNumEpisodes(pParameters->getConstInteger("Num-Episodes", 1));
 		m_expProgress.setNumSteps((unsigned int)
-			(XMLUtils::getConstDouble(pParameters,"Episode-Length",1.0) / RLSimion::g_pWorld->getDT()));
+			(pParameters->getConstDouble("Episode-Length", 1.0) / RLSimion::g_pWorld->getDT()));
 
-		m_evalFreq = XMLUtils::getConstInteger(pParameters,"Eval-Freq",0.0);
+		m_evalFreq = pParameters->getConstInteger("Eval-Freq", 0);
 
-		m_pLogger = new CLogger(pParameters->FirstChildElement("Log"));
+		m_pLogger = new CLogger(pParameters->getChild("Log"));
 	}
 	else
 	{
