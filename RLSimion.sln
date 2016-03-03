@@ -42,8 +42,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XML", "Caliburn\XML.csproj"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppXML", "AppXML\AppXML.csproj", "{575C1FF1-8401-4EC8-8E58-4A09D2659DED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDialogManagement", "WpfDialogManagement\WpfDialogManagement.csproj", "{104D608C-81EF-4110-B0FA-6E78166F93D0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoApp", "..\..\..\Desktop\DemoApp\DemoApp.csproj", "{AFAAF820-1A30-44D1-BD88-F4F78308334B}"
 EndProject
 Global
@@ -580,48 +578,6 @@ Global
 		{575C1FF1-8401-4EC8-8E58-4A09D2659DED}.Release-Lib|Win32.ActiveCfg = Release|Any CPU
 		{575C1FF1-8401-4EC8-8E58-4A09D2659DED}.Release-Lib|x64.ActiveCfg = Release|Any CPU
 		{575C1FF1-8401-4EC8-8E58-4A09D2659DED}.Release-Lib|x86.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Dll|Any CPU.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Dll|Any CPU.Build.0 = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Dll|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Dll|Mixed Platforms.Build.0 = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Dll|Win32.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Dll|x64.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Dll|x86.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Lib|Any CPU.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Lib|Any CPU.Build.0 = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Lib|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Lib|Mixed Platforms.Build.0 = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Lib|Win32.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Lib|x64.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Debug-Lib|x86.ActiveCfg = Debug|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|Win32.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|x64.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release|x86.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Dll|Any CPU.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Dll|Any CPU.Build.0 = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Dll|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Dll|Mixed Platforms.Build.0 = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Dll|Win32.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Dll|x64.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Dll|x86.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Lib|Any CPU.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Lib|Any CPU.Build.0 = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Lib|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Lib|Mixed Platforms.Build.0 = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Lib|Win32.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Lib|x64.ActiveCfg = Release|Any CPU
-		{104D608C-81EF-4110-B0FA-6E78166F93D0}.Release-Lib|x86.ActiveCfg = Release|Any CPU
 		{AFAAF820-1A30-44D1-BD88-F4F78308334B}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{AFAAF820-1A30-44D1-BD88-F4F78308334B}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{AFAAF820-1A30-44D1-BD88-F4F78308334B}.Debug|Mixed Platforms.Build.0 = Debug|x86
