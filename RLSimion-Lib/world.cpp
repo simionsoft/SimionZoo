@@ -21,8 +21,8 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	m_avgReward = 0.0;
 	m_avgRewardGain = 0.0;
 
-	m_simulationSteps= XMLParameters::getConstInteger(pParameters->FirstChildElement("Num-Integration-Steps"));
-	m_dt = XMLParameters::getConstDouble(pParameters->FirstChildElement("Delta-T"));
+	m_simulationSteps= XMLUtils::getConstInteger(pParameters->FirstChildElement("Num-Integration-Steps"));
+	m_dt = XMLUtils::getConstDouble(pParameters->FirstChildElement("Delta-T"));
 
 	tinyxml2::XMLElement* pModelParameters;
 	pModelParameters = pParameters->FirstChildElement("Dynamic-Model")->FirstChildElement();

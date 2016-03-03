@@ -29,7 +29,7 @@
           <Tolerance>10</Tolerance>
           <Variable>E_p</Variable>
         </Deviation-Component>
-        <!--<Deviation-Component>
+        <Deviation-Component>
           <Weight>1.0</Weight>
           <Tolerance>0.02</Tolerance>
           <Variable>E_omega_r</Variable>
@@ -43,7 +43,7 @@
           <Weight>1.0</Weight>
           <Tolerance>0.1745</Tolerance>
           <Variable>d_beta</Variable>
-        </Deviation-Component>-->
+        </Deviation-Component>
       </Reward-components>
     </Reward>
   </World>
@@ -53,12 +53,12 @@
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>50</Eval-Freq>
     <Log>
-      <Freq>0.25</Freq>
+      <Log-Freq>0.25</Log-Freq>
       <Ouput-directory>wind-turbine-2</Ouput-directory>
       <Prefix>wt-learn-vidal</Prefix>
       <Log-eval-episodes>true</Log-eval-episodes>
       <Log-training-episodes>false</Log-training-episodes>
-      <Log-eval-avg-rewards>true</Log-eval-avg-rewards>
+      <Log-eval-experiment>true</Log-eval-experiment>
     </Log>
   </Experiment>
   <SimGod>

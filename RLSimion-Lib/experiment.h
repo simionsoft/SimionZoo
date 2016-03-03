@@ -7,6 +7,8 @@ typedef CNamedVarSet CReward;
 class tinyxml2::XMLElement;
 
 
+
+
 class CLogger;
 
 

@@ -7,7 +7,7 @@
 
 CMultiController::CMultiController(tinyxml2::XMLElement* pParameters)
 {
-	m_numControllers = XMLParameters::countChildren(pParameters);
+	m_numControllers = XMLUtils::countChildren(pParameters);
 
 	m_pControllers = new CActor*[m_numControllers];
 
@@ -61,7 +61,7 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
-	m_numVars = XMLParameters::countChildren(pParameters,"LQR-Gain");
+	m_numVars = XMLUtils::countChildren(pParameters,"LQR-Gain");
 
 	m_pVariableIndices= new int[m_numVars];
 	m_pGains= new double[m_numVars];
@@ -70,8 +70,8 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	tinyxml2::XMLElement* pGain= pParameters->FirstChildElement("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pVariableIndices[i] = pSDesc->getVarIndex(XMLParameters::getConstString(pGain->FirstChildElement("Variable")));//
-		m_pGains[i] = XMLParameters::getConstDouble(pGain->FirstChildElement("Gain"));
+		m_pVariableIndices[i] = pSDesc->getVarIndex(XMLUtils::getConstString(pGain->FirstChildElement("Variable")));//
+		m_pGains[i] = XMLUtils::getConstDouble(pGain->FirstChildElement("Gain"));
 
 		pGain = pGain->NextSiblingElement("LQR-Gain");
 	}
@@ -103,9 +103,9 @@ CPIDController::CPIDController(tinyxml2::XMLElement *pParameters)
 	const char* outputAction = pParameters->FirstChildElement("Output-Action")->GetText();
 	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
 
-	m_pKP= XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_pKD = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KD"));
+	m_pKP= XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
+	m_pKI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
+	m_pKD = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KD"));
 
 	CState *pSDesc= RLSimion::g_pWorld->getStateDescriptor();
 	if (pSDesc)
@@ -152,11 +152,11 @@ double sgn(double value)
 
 CWindTurbineVidalController::CWindTurbineVidalController(tinyxml2::XMLElement* pParameters)
 {
-	m_pA= XMLParameters::getNumericHandler(pParameters->FirstChildElement("A"));
-	m_pK_alpha = XMLParameters::getNumericHandler(pParameters->FirstChildElement("K_alpha"));
-	m_pKP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
-	m_P_s = XMLParameters::getNumericHandler(pParameters->FirstChildElement("P_s"));
+	m_pA= XMLUtils::getNumericHandler(pParameters->FirstChildElement("A"));
+	m_pK_alpha = XMLUtils::getNumericHandler(pParameters->FirstChildElement("K_alpha"));
+	m_pKP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
+	m_pKI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
+	m_P_s = XMLUtils::getNumericHandler(pParameters->FirstChildElement("P_s"));
 
 	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -208,9 +208,9 @@ void CWindTurbineVidalController::selectAction(CState *s,CAction *a)
 
 CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(tinyxml2::XMLElement* pParameters)
 {
-	m_pC_0= XMLParameters::getNumericHandler(pParameters->FirstChildElement("C_0"));
-	m_pKP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("KP"));
-	m_pKI= XMLParameters::getNumericHandler(pParameters->FirstChildElement("KI"));
+	m_pC_0= XMLUtils::getNumericHandler(pParameters->FirstChildElement("C_0"));
+	m_pKP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("KP"));
+	m_pKI= XMLUtils::getNumericHandler(pParameters->FirstChildElement("KI"));
 	m_J_t= atof(pParameters->FirstChildElement("J_t")->GetText());
 	m_K_t= atof(pParameters->FirstChildElement("K_t")->GetText());
 
@@ -262,13 +262,13 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElemen
 	m_CornerFreq= atof(pParameters->FirstChildElement("CornerFreq")->GetText());
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp = XMLParameters::getConstDouble(pParameters->FirstChildElement("VSRtGnSp"));
-	m_VS_SlPc = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_SlPc"));
-	m_VS_Rgn2K = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_Rgn2K"));
-	m_VS_Rgn2Sp = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_Rgn2Sp"));
-	m_VS_CtInSp = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_CtInSp"));
-	m_VS_RtPwr = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_RtPwr"));
-	m_VS_Rgn3MP = XMLParameters::getConstDouble(pParameters->FirstChildElement("VS_Rgn3MP"));
+	m_VS_RtGnSp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VSRtGnSp"));
+	m_VS_SlPc = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_SlPc"));
+	m_VS_Rgn2K = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn2K"));
+	m_VS_Rgn2Sp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn2Sp"));
+	m_VS_CtInSp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_CtInSp"));
+	m_VS_RtPwr = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_RtPwr"));
+	m_VS_Rgn3MP = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn3MP"));
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -280,10 +280,10 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElemen
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	m_PC_KK = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KK"));
-	m_PC_KP = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KP"));
-	m_PC_KI = XMLParameters::getNumericHandler(pParameters->FirstChildElement("PC_KI"));
-	m_PC_RefSpd = XMLParameters::getConstDouble(pParameters->FirstChildElement("PC_RefSpd"));
+	m_PC_KK = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KK"));
+	m_PC_KP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KP"));
+	m_PC_KI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KI"));
+	m_PC_RefSpd = XMLUtils::getConstDouble(pParameters->FirstChildElement("PC_RefSpd"));
 
 	m_IntSpdErr= 0.0;
 

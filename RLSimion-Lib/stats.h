@@ -3,9 +3,11 @@
 #include <vector>
 #include "parameterized-object.h"
 
-enum Stat{State,Action,TDError,ExplorationNoise,VectorSize,Reward};
 
-class CStat
+
+
+
+class CStatsInfo
 {
 	double m_min;
 	double m_max;
@@ -13,25 +15,41 @@ class CStat
 	double m_meanSum;
 	double m_stdDevSum;
 
-	Stat m_key;
-	char* m_subkey;
-	double* m_variable;
-
+	bool m_bLog;
 public:
-	CStat(Stat key, const char* subkey, double *variable);
-	~CStat();
-
-	const char* getKey();
-	const char* getSubkey();
+	CStatsInfo();
+	bool log();
 
 	void reset();
-	void addSample();
-
 	double getValue(); //the value in the last step
 
 	double getMin();
 	double getMax();
 	double getAvg();
 	double getStdDev();
+
+	void addExperimentSample(double value);
+};
+
+class CStats
+{
+	CStatsInfo m_statsInfo;
+
+	char* m_key;
+	char* m_subkey;
+	double* m_variable;
+public:
+	CStats(const char* key, const char* subkey, double *variable);
+	~CStats();
+
+	void reset();
+
+	const char* getKey();
+	const char* getSubkey();
+	double getValue();
+
+	CStatsInfo* getStatsInfo();
+
+	void addExperimentSample();
 };
 

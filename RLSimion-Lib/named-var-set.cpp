@@ -5,7 +5,7 @@
 
 CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
 {
-	m_numVars = XMLParameters::countChildren(pDescription, "Variable");
+	m_numVars = XMLUtils::countChildren(pDescription, "Variable");
 	m_pProperties = new CNamedVarProperties[m_numVars];
 	m_pValues = new double[m_numVars];
 
@@ -15,11 +15,11 @@ CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
 	while (pVariable)
 	{
 		strcpy_s(m_pProperties[numVars].name , VAR_NAME_MAX_LENGTH
-					,XMLParameters::getConstString(pVariable->FirstChildElement("Name")));
+					,XMLUtils::getConstString(pVariable->FirstChildElement("Name")));
 		strcpy_s(m_pProperties[numVars].units, VAR_NAME_MAX_LENGTH
-			, XMLParameters::getConstString(pVariable->FirstChildElement("Units")));
-		m_pProperties[numVars].min = XMLParameters::getConstDouble(pVariable->FirstChildElement("Min"));
-		m_pProperties[numVars].max = XMLParameters::getConstDouble(pVariable->FirstChildElement("Max"));
+			, XMLUtils::getConstString(pVariable->FirstChildElement("Units")));
+		m_pProperties[numVars].min = XMLUtils::getConstDouble(pVariable->FirstChildElement("Min"));
+		m_pProperties[numVars].max = XMLUtils::getConstDouble(pVariable->FirstChildElement("Max"));
 
 		numVars++;
 		pVariable = pVariable->NextSiblingElement("Variable");

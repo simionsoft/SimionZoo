@@ -11,12 +11,17 @@ CSimGod *RLSimion::g_pSimGod;
 
 void RLSimion::init(tinyxml2::XMLElement* pParameters)
 {
+	//First, the world was created
+	//No constructor in the world can call to any method from the CExperiment (i.e. stats) or CSimGod
 	if (pParameters->FirstChildElement("World"))
 		g_pWorld = new CWorld(pParameters->FirstChildElement("World"));
 	else g_pWorld = 0;
+	//Then, the experiment
 	if (pParameters->FirstChildElement("Experiment"))
 		g_pExperiment = new CExperiment(pParameters->FirstChildElement("Experiment"));
 	else g_pExperiment = 0;
+	//Last, the SimGod was created
+	//It can call from constructors any method from CWorld / CExperiment
 	if (pParameters->FirstChildElement("SimGod"))
 		g_pSimGod = new CSimGod(pParameters->FirstChildElement("SimGod"));
 	else g_pSimGod = 0;

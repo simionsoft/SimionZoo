@@ -42,11 +42,11 @@ CRewardFunctionComponent::CRewardFunctionComponent(tinyxml2::XMLElement* pParame
 	//m_controlErrorVariable[0]= 0;
 	//m_weight= 0.0;
 	//m_componentIndex= -1;
-	const char* varName = XMLParameters::getConstString(pParameters->FirstChildElement("Variable"));
+	const char* varName = XMLUtils::getConstString(pParameters->FirstChildElement("Variable"));
 	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r(%s)", varName);
 	m_sVariable = CWorld::m_pDynamicModel->getStateDescriptor()->getVarIndex(varName);
-	m_pTolerance = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Tolerance"));
-	m_pWeight = XMLParameters::getNumericHandler(pParameters->FirstChildElement("Weight"));
+	m_pTolerance = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Tolerance"));
+	m_pWeight = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Weight"));
 	m_lastReward= 0.0;
 }
 
@@ -89,14 +89,14 @@ double CRewardFunctionComponent::getRewardComponent(CState* state)
 
 CRewardFunction::CRewardFunction(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_minReward= XMLParameters::getConstDouble(pParameters->FirstChildElement("Min"));
-	m_maxReward = XMLParameters::getConstDouble(pParameters->FirstChildElement("Max"));
+	m_minReward= XMLUtils::getConstDouble(pParameters->FirstChildElement("Min"));
+	m_maxReward = XMLUtils::getConstDouble(pParameters->FirstChildElement("Max"));
 
 	m_lastReward= 0.0;
 
 	tinyxml2::XMLElement* pRewardComponents = m_pParameters->FirstChildElement("Reward-components");
 
-	m_numRewardComponents = XMLParameters::countChildren(pRewardComponents);
+	m_numRewardComponents = XMLUtils::countChildren(pRewardComponents);
 
 	//the vector of reward functions
 	m_pRewardComponents = new CRewardFunctionComponent*[m_numRewardComponents];
@@ -121,18 +121,15 @@ CRewardFunction::~CRewardFunction()
 
 double CRewardFunction::calculateReward(CState *s, CAction *a, CState *s_p)
 {
-	double rew = 0.0;
-
 	for (int i= 0; i<m_numRewardComponents; i++)
 	{
-		rew+= m_pRewardComponents[i]->getRewardComponent(s_p);
+		m_pReward->setValue(i, m_pRewardComponents[i]->getRewardComponent(s_p));
 	}
 
 	//rew*= (m_maxReward-m_minReward);
 	//rew+= m_minReward;
 
-	m_lastReward= rew;
-	return rew;
+	return m_pReward->getSumValue();
 }
 
 CReward* CRewardFunction::getReward()

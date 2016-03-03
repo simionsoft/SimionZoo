@@ -18,12 +18,24 @@ CLogger::CLogger(tinyxml2::XMLElement* pParameters)
 	{
 		sprintf_s(m_outputDir, MAX_FILENAME_LENGTH, "../logs/%s"
 			, pParameters->FirstChildElement("Ouput-directory")->GetText());
-		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, XMLParameters::getConstString(pParameters->FirstChildElement("Prefix")));
+		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, XMLUtils::getConstString(pParameters->FirstChildElement("Prefix")));
 
-		m_bLogEvaluationEpisodes = XMLParameters::getConstBoolean(pParameters->FirstChildElement("Log-eval-episodes"));
-		m_bLogTrainingEpisodes = XMLParameters::getConstBoolean(pParameters->FirstChildElement("Log-training-episodes"));
-		m_bLogEvaluationSummary = XMLParameters::getConstBoolean(pParameters->FirstChildElement("Log-eval-avg-rewards"));
-		m_logFreq = XMLParameters::getConstDouble(pParameters->FirstChildElement("Freq"));
+		if (pParameters->FirstChildElement("Log-eval-episodes"))
+			m_bLogEvaluationEpisodes = XMLUtils::getConstBoolean(pParameters->FirstChildElement("Log-eval-episodes"));
+		else m_bLogEvaluationEpisodes = false;
+		if (pParameters->FirstChildElement("Log-training-episodes"))
+			m_bLogTrainingEpisodes = XMLUtils::getConstBoolean(pParameters->FirstChildElement("Log-training-episodes"));
+		else m_bLogTrainingEpisodes = false;
+		if (pParameters->FirstChildElement("Log-eval-experiment"))
+			m_bLogEvaluationExperiment = XMLUtils::getConstBoolean(pParameters->FirstChildElement("Log-eval-experiment"));
+		else m_bLogEvaluationExperiment = false;
+
+		m_logFreq = XMLUtils::getConstDouble(pParameters->FirstChildElement("Log-Freq"));
+		if (pParameters->FirstChildElement("Progress-Update-Freq"))
+			m_progUpdateFreq = XMLUtils::getConstDouble(pParameters->FirstChildElement("Progress-Update-Freq"));
+		else m_progUpdateFreq = 0.5;
+
+		_mkdir(m_outputDir);
 	}
 	else
 	{
@@ -31,20 +43,17 @@ CLogger::CLogger(tinyxml2::XMLElement* pParameters)
 		m_outputDir[0] = 0;
 		m_filePrefix[0] = 0;
 		m_bLogEvaluationEpisodes = false;
-		m_bLogEvaluationSummary = false;
+		m_bLogEvaluationExperiment = false;
 		m_bLogTrainingEpisodes = false;
 		m_logFreq = 0.0;
+		m_progUpdateFreq = 0.5;
 	}
 
-	m_pFile = (void*)0;
-	m_lastLogTime = 0.0;
-	m_episodeRewards = 0.0;
-	m_lastEvaluationAvgReward = 0.0;
-
-	_mkdir(m_outputDir);
-
 	QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
-	QueryPerformanceCounter((LARGE_INTEGER*)&m_lastCounter);
+	m_episodeStartT = 0;
+	m_experimentStartT = 0;
+	m_lastLogSimulationT = 0.0;
+	m_lastProgressReportT = 0;
 }
 
 
@@ -54,172 +63,178 @@ CLogger::~CLogger()
 	delete [] m_filePrefix;
 }
 
-
-
-
-void CLogger::writeEpisodeLogFileHeader(CState *s, CAction *a, CReward* pReward)
+void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation)
 {
-	fprintf((FILE*)m_pFile, "Time");
-
-	for (int i = 0; i<s->getNumVars(); i++)
+	if (episodeLog)
 	{
-		fprintf((FILE*)m_pFile, "/%s", s->getName(i));
+		if (!evaluation)
+			sprintf_s(buffer, bufferSize, "%s/%s-train-epis-%d.txt", m_outputDir, m_filePrefix
+			, RLSimion::g_pExperiment->m_expProgress.getEpisode());
+		else
+			sprintf_s(buffer, bufferSize, "%s/%s-eval-epis-%d.txt", m_outputDir, m_filePrefix
+			, RLSimion::g_pExperiment->m_expProgress.getEpisode());
 	}
-
-	for (int i = 0; i<a->getNumVars(); i++)
+	else
 	{
-		fprintf((FILE*)m_pFile, "/%s", a->getName(i));
+		if (!evaluation)
+			sprintf_s(buffer, bufferSize, "%s/%s-train-exp-%d.txt", m_outputDir, m_filePrefix
+			, RLSimion::g_pExperiment->m_expProgress.getEpisode());
+		else
+			sprintf_s(buffer, bufferSize, "%s/%s-eval-exp-%d.txt", m_outputDir, m_filePrefix
+			, RLSimion::g_pExperiment->m_expProgress.getEpisode());
 	}
-
-	for (int i = 0; i < pReward->getNumVars(); i++)
-	{
-		fprintf((FILE*)m_pFile, "/%s", pReward->getName(i));
-	}
-	fprintf((FILE*)m_pFile, "/r\n");
 }
 
-void CLogger::writeEpisodeStep(CState *s, CAction *a, CState *s_p, CReward* pReward)
+FILE* CLogger::openLogFile(bool create, bool episodeLog, bool evalEpisode)
 {
-	if (!m_pFile) return;
+	FILE* pFile;
+	char filename[1024];
 
-	fprintf((FILE*)m_pFile, "%.3f ", RLSimion::g_pWorld->getStepStartT());
-	for (int i = 0; i<s->getNumVars(); i++)
+	getLogFilename(filename, 1024, episodeLog, evalEpisode);
+
+	if (create)
 	{
-		fprintf((FILE*)m_pFile, "%.3f ", s->getValue(i));
+		fopen_s(&pFile, filename, "w");
+		if (pFile)
+		{
+			writeLogFileHeader(pFile, episodeLog, evalEpisode);
+			fclose(pFile);
+		}
+		return 0;
 	}
-	for (int i = 0; i<a->getNumVars(); i++)
+	else
 	{
-		fprintf((FILE*)m_pFile, "%.3f ", a->getValue(i));
+		fopen_s(&pFile, filename, "a");
+		return pFile;
 	}
-	for (int i = 0; i < pReward->getNumVars(); i++)
-	{
-		fprintf((FILE*)m_pFile, "%.3f ", pReward->getValue(i));
-	}
-	fprintf((FILE*)m_pFile, "%.3f\n", pReward->getSumValue());
 }
 
-bool CLogger::isCurrentEpisodeLogged()
+void CLogger::writeLogFileHeader(FILE* pFile, bool episodeLog, bool evaluationLog)
 {
-	bool bEval = RLSimion::g_pExperiment->isEvaluationEpisode();
-	return (m_bLogEvaluationEpisodes && bEval) || (m_bLogTrainingEpisodes && !bEval);
+	if (!pFile) return;
+
+	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+	{
+		fprintf_s(pFile, "%s/%s ", (*it)->getKey(), (*it)->getSubkey());
+	}
+	fprintf_s(pFile, "\n");
 }
 
-void CLogger::timestep(CState *s, CAction *a, CState *s_p, CReward* pReward)
+void CLogger::writeExperimentLogData(bool evalEpisode)
 {
-	//update stats
+	if (evalEpisode && m_bLogEvaluationExperiment)
+	{
+		FILE* pFile = openLogFile(false, false, evalEpisode);
+
+		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+		{
+			fprintf(pFile, "%.3f ", (*it)->getValue());
+		}
+		fprintf(pFile, "\n");
+		fclose(pFile);
+	}
+}
+
+void CLogger::writeEpisodeLogData(bool evalEpisode)
+{
+	if ((evalEpisode && m_bLogEvaluationEpisodes) || (evalEpisode && m_bLogTrainingEpisodes))
+	{
+		FILE* pFile = openLogFile(false, true, evalEpisode);
+
+		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+		{
+			fprintf(pFile, "%.3f ", (*it)->getValue());
+		}
+		fprintf(pFile, "\n");
+		fclose(pFile);
+	}
+}
+
+bool CLogger::logCurrentEpisode(bool evalEpisode)
+{
+	return (evalEpisode && m_bLogEvaluationEpisodes) || (!evalEpisode && m_bLogTrainingEpisodes);
+}
+
+void CLogger::firstEpisode(bool evalEpisode)
+{
+	//set episode start time
+	QueryPerformanceCounter((LARGE_INTEGER*)&m_experimentStartT);
+
+	if (m_bLogEvaluationExperiment) openLogFile(true, false, evalEpisode);
+}
+
+void CLogger::firstStep(bool evalEpisode)
+{
+	//set episode start time
+	QueryPerformanceCounter((LARGE_INTEGER*)&m_episodeStartT);
+	m_lastLogSimulationT = 0.0;
+	//reset stats
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		(*iterator)->addSample();
+		(*iterator)->reset();
 	}
 
+	//create the episode log file
+	if (logCurrentEpisode(evalEpisode))
+		openLogFile(true, true, evalEpisode);
+}
 
-	bool bLog = isCurrentEpisodeLogged();
-	double r = pReward->getSumValue();
+void CLogger::timestep(bool evalEpisode)
+{
+	bool bLog = logCurrentEpisode(evalEpisode);
 
-	//FIRST STEP IN EPISODE????
-	if (RLSimion::g_pExperiment->m_expProgress.isFirstStep())
+	//output episode log data
+	if (bLog && (RLSimion::g_pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq
+		|| RLSimion::g_pExperiment->m_expProgress.isFirstStep()))
 	{
-		m_episodeRewards = r;
-		m_lastLogTime = 0.0;
-
-		if (bLog)
-		{
-			openEpisodeLogFile();
-			if (m_pFile)
-				writeEpisodeLogFileHeader(s, a, pReward);
-		}
-	}
-	else m_episodeRewards += r;
-
-
-
-
-	if (bLog && (RLSimion::g_pWorld->getStepStartT() - m_lastLogTime >= m_logFreq || RLSimion::g_pExperiment->m_expProgress.isFirstStep()))
-	{
-		writeEpisodeStep(s, a, s_p, pReward);
-		m_lastLogTime = RLSimion::g_pWorld->getStepStartT();
-	}
-
-	//LAST STEP IN EPISODE????
-	if (RLSimion::g_pExperiment->m_expProgress.isLastStep())
-	{
-		//close current log file
-		if (bLog && m_pFile)
-		{
-			fclose((FILE*)m_pFile);
-			m_pFile = 0;
-		}
-		if (RLSimion::g_pExperiment->isEvaluationEpisode())
-		{
-			m_lastEvaluationAvgReward = m_episodeRewards / (double)std::max(RLSimion::g_pExperiment->m_expProgress.getStep(), (unsigned int)1);
-			//SAVE AVERAGE REWARDS IN SUMMARY FILE????
-			if (m_bLogEvaluationSummary)
-			{
-				writeEpisodeSummary();
-			}
-		}
+		writeEpisodeLogData(evalEpisode);
+		m_lastLogSimulationT = RLSimion::g_pWorld->getStepStartT();
 	}
 
 
 	//print progress
 	__int64 currentCounter;
 	QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-	double time = (double)(currentCounter - m_lastCounter) / (double)m_counterFreq;
+	double time = (double)(currentCounter - m_lastProgressReportT) / (double)m_counterFreq;
 	if (time>0.5) //each .5 secs?
 	{
-		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%) Avg.Reward: %.4f        \r"
+		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%)\r"
 			, RLSimion::g_pExperiment->m_expProgress.getEpisode(), RLSimion::g_pExperiment->m_expProgress.getNumEpisodes()
 			, RLSimion::g_pExperiment->m_expProgress.getStep(), RLSimion::g_pExperiment->m_expProgress.getNumSteps()
-			, RLSimion::g_pExperiment->m_expProgress.getExperimentProgress()*100.0
-			, m_lastEvaluationAvgReward);
-		m_lastCounter = currentCounter;
+			, RLSimion::g_pExperiment->m_expProgress.getExperimentProgress()*100.0);
+		m_lastProgressReportT = currentCounter;
 	}
 
 }
 
-void CLogger::openEpisodeLogFile()
+void CLogger::lastStep(bool evalEpisode)
 {
-	char filename[1024];
-	if (!RLSimion::g_pExperiment->isEvaluationEpisode())
-		sprintf_s(filename, 1024, "%s/%s-training-%d.txt", m_outputDir, m_filePrefix
-		, RLSimion::g_pExperiment->m_expProgress.getEpisode());
-	else
-		sprintf_s(filename, 1024, "%s/%s-evaluation-%d.txt", m_outputDir, m_filePrefix
-		, RLSimion::g_pExperiment->m_expProgress.getEpisode());
-
-
-	fopen_s((FILE**)&m_pFile, filename, "w");
-}
-
-void CLogger::writeEpisodeSummary()
-{
-	FILE* pFile;
-	char filename[1024];
-	sprintf_s(filename, 1024, "%s/%s-summary.txt", m_outputDir, m_filePrefix);
-
-	if (RLSimion::g_pExperiment->m_expProgress.isFirstEpisode())
-		fopen_s(&pFile, filename, "w");
-	else fopen_s(&pFile, filename, "a");
-	if (pFile)
+	//update experiment stats
+	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		fprintf(pFile, "%d %f\n", RLSimion::g_pExperiment->m_expProgress.getEpisode()
-			, m_lastEvaluationAvgReward);
-		fclose(pFile);
+		(*iterator)->addExperimentSample();
 	}
+
+	writeExperimentLogData(evalEpisode);
+}
+
+void CLogger::lastEpisode(bool evalEpisode)
+{
+	//so far, we are doing nothing
 }
 
 
-void CLogger::addVarToStats(Stat key, const char* subkey, double* variable)
+void CLogger::addVarToStats(const char* key, const char* subkey, double* variable)
 {
 	//all stats added by the loaded classes are calculated
 	//if (m_pParameters->FirstChildElement(key))
-	m_stats.push_back(new CStat(key, subkey, variable));
+	m_stats.push_back(new CStats(key, subkey, variable));
 }
 
-void CLogger::addVarSetToStats(Stat key, CNamedVarSet* varset)
+void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 {
 	for (int i = 0; i < varset->getNumVars(); i++)
 	{
-		m_stats.push_back(new CStat(key, varset->getName(i), varset->getValuePtr(i)));
+		m_stats.push_back(new CStats(key, varset->getName(i), varset->getValuePtr(i)));
 	}
 }
