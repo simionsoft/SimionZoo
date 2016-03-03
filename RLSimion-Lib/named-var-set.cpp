@@ -21,12 +21,10 @@ CNamedVarSet::CNamedVarSet(tinyxml2::XMLElement* pDescription)
 
 	while (pVariable)
 	{
-		strcpy_s(m_pProperties[numVars].name , VAR_NAME_MAX_LENGTH
-					,XMLUtils::getConstString(pVariable->FirstChildElement("Name")));
-		strcpy_s(m_pProperties[numVars].units, VAR_NAME_MAX_LENGTH
-			, XMLUtils::getConstString(pVariable->FirstChildElement("Units")));
-		m_pProperties[numVars].min = XMLUtils::getConstDouble(pVariable->FirstChildElement("Min"));
-		m_pProperties[numVars].max = XMLUtils::getConstDouble(pVariable->FirstChildElement("Max"));
+		strcpy_s(m_pProperties[numVars].name , VAR_NAME_MAX_LENGTH,XMLUtils::getConstString(pVariable, "Name"));
+		strcpy_s(m_pProperties[numVars].units, VAR_NAME_MAX_LENGTH, XMLUtils::getConstString(pVariable, "Units"));
+		m_pProperties[numVars].min = XMLUtils::getConstDouble(pVariable,"Min");
+		m_pProperties[numVars].max = XMLUtils::getConstDouble(pVariable,"Max");
 
 		numVars++;
 		pVariable = pVariable->NextSiblingElement("Variable");

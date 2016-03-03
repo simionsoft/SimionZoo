@@ -43,14 +43,13 @@ CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 {
 	if (pParameters)
 	{
+		m_randomSeed = XMLUtils::getConstInteger(pParameters,"Random-Seed",1);
 
-		m_randomSeed = XMLUtils::getConstInteger(pParameters->FirstChildElement("Random-Seed"));
-
-		m_expProgress.setNumEpisodes(XMLUtils::getConstInteger(pParameters->FirstChildElement("Num-Episodes")));
+		m_expProgress.setNumEpisodes(XMLUtils::getConstInteger(pParameters,"Num-Episodes",1));
 		m_expProgress.setNumSteps((unsigned int)
-			(XMLUtils::getConstDouble(pParameters->FirstChildElement("Episode-Length")) / RLSimion::g_pWorld->getDT()));
+			(XMLUtils::getConstDouble(pParameters,"Episode-Length",1.0) / RLSimion::g_pWorld->getDT()));
 
-		m_evalFreq = XMLUtils::getConstInteger(pParameters->FirstChildElement("Eval-Freq"));
+		m_evalFreq = XMLUtils::getConstInteger(pParameters,"Eval-Freq",0.0);
 
 		m_pLogger = new CLogger(pParameters->FirstChildElement("Log"));
 	}
@@ -60,13 +59,8 @@ CExperiment::CExperiment(tinyxml2::XMLElement* pParameters)
 		m_expProgress.setNumEpisodes(0);
 		m_expProgress.setNumSteps(0);
 		m_evalFreq = 0;
-
 	}
 	srand(m_randomSeed);
-
-
-	srand(m_randomSeed);
-
 }
 
 bool CExperiment::isEvaluationEpisode()

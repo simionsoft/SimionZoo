@@ -15,7 +15,7 @@ CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(tinyxml2::XMLElement* pParameters
 
 	m_pExpNoise = CNoise::getInstance (pParameters->FirstChildElement("Exploration-Noise"));
 
-	m_outputAction = XMLUtils::getConstString(m_pParameters->FirstChildElement("Output-Action"));
+	m_outputAction = XMLUtils::getConstString(m_pParameters,"Output-Action");
 
 	CAction *pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
 	m_outputActionIndex = pActionDescriptor->getVarIndex(m_outputAction);

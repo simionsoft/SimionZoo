@@ -163,7 +163,7 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 
 
 CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
-: CDynamicModel(XMLUtils::getConstString(pParameters->FirstChildElement("World-Definition")))
+: CDynamicModel(XMLUtils::getConstString(pParameters,"World-Definition"))
 {
 	
 	//load all the wind data files
@@ -171,7 +171,7 @@ CWindTurbine::CWindTurbine(tinyxml2::XMLElement *pParameters)
 
 	//evaluation file
 	m_pEvaluationWindData = 
-		new CHHFileSetPoint(pParameters->FirstChildElement("Evaluation-Wind-Data")->GetText());
+		new CHHFileSetPoint(XMLUtils::getConstString(pParameters, "Evaluation-Wind-Data"));
 
 	//training files
 	tinyxml2::XMLElement* trainingWindFiles = pParameters->FirstChildElement("Training-Wind-Data");

@@ -36,45 +36,31 @@ public:
 
 CInterpolatedValue::CInterpolatedValue(tinyxml2::XMLElement* pParameters)
 {
-	tinyxml2::XMLElement* param;
+	m_startOffset = XMLUtils::getConstDouble(pParameters, "Start-Offset", 0.0);
+	m_preOffsetValue = XMLUtils::getConstDouble(pParameters, "Pre-Offset-Value", 0.0);
 
-	param = pParameters->FirstChildElement("Start-Offset");
+	tinyxml2::XMLElement* param = pParameters->FirstChildElement("Interpolation");
 	if (param)
-		m_startOffset = XMLUtils::getConstDouble(param);
-	else m_startOffset = 0.0;
+	{
+		if (!strcmp("linear", param->GetText())) m_interpolation = linear;
+		else if (!strcmp("quadratic", param->GetText())) m_interpolation = quadratic;
+		else assert(0);
+	}
+	else m_interpolation = linear;
 
-	param = pParameters->FirstChildElement("Pre-Offset-Value");
-	if (param)
-		m_preOffsetValue = XMLUtils::getConstDouble(param);
-	else m_preOffsetValue = 0.0;
-
-	param = pParameters->FirstChildElement("Interpolation");
-	assert(param);
-	if (!strcmp("linear", param->GetText())) m_interpolation = linear;
-	else if (!strcmp("quadratic", param->GetText())) m_interpolation = quadratic;
-	else assert(0);
 
 	param = pParameters->FirstChildElement("Time-reference");
-
-	if (!param) m_timeReference = experiment;
-	else
+	if (param)
 	{
 		if (!strcmp("experiment", param->GetText())) m_timeReference = experiment;
 		else if (!strcmp("episode", param->GetText())) m_timeReference = episode;
 		else assert(0);
 	}
+	else	m_timeReference = experiment;
 
-	param = pParameters->FirstChildElement("Initial-Value");
-	if (param) m_startValue = XMLUtils::getConstDouble(param);
-	else assert(0);
-
-	param = pParameters->FirstChildElement("End-Value");
-	if (param) m_endValue = XMLUtils::getConstDouble(param);
-	else assert(0);
-
-	param = pParameters->FirstChildElement("Evaluation-Value");
-	if (param) m_evaluationValue = XMLUtils::getConstDouble(param);
-	else assert(0);
+	m_startValue = XMLUtils::getConstDouble(pParameters, "Initial-Value", 0.0);
+	m_endValue = XMLUtils::getConstDouble(pParameters, "End-Value", 1.0);
+	m_evaluationValue = XMLUtils::getConstDouble(pParameters, "Evaluation-Value", 0.0);
 }
 
 double CInterpolatedValue::getValue()
@@ -140,21 +126,10 @@ CBhatnagarSchedule::CBhatnagarSchedule(tinyxml2::XMLElement* pParameters)
 		else assert(0);
 	}
 
-	param = pParameters->FirstChildElement("Alpha-0");
-	if (param) m_alpha_0 = XMLUtils::getConstDouble(param);
-	else assert(0);
-
-	param = pParameters->FirstChildElement("Alpha-c");
-	if (param) m_alpha_c = XMLUtils::getConstDouble(param);
-	else assert(0);
-
-	param = pParameters->FirstChildElement("Time-Exponent");
-	if (param) m_t_exp = XMLUtils::getConstDouble(param);
-	else assert(0);
-
-	param = pParameters->FirstChildElement("Evaluation-Value");
-	if (param) m_evaluationValue = XMLUtils::getConstDouble(param);
-	else assert(0);
+	m_alpha_0 = XMLUtils::getConstDouble(pParameters, "Alpha-0");
+	m_alpha_c = XMLUtils::getConstDouble(pParameters, "Alpha-c");
+	m_t_exp = XMLUtils::getConstDouble(pParameters, "Time-Exponent", 1.0);
+	m_evaluationValue = XMLUtils::getConstDouble(pParameters, "Evaluation-Value");
 }
 
 
@@ -224,30 +199,66 @@ void XMLUtils::freeHandlers()
 	}
 }
 
-bool XMLUtils::getConstBoolean(tinyxml2::XMLElement* pParameters)
-{
-	assert(pParameters && pParameters->GetText());
 
-	if (!strcmp(pParameters->GetText(), "true"))
-		return true;
-	if (!strcmp(pParameters->GetText(), "false"))
-		return false;
-	assert(0);
-	return false;
-}
-int XMLUtils::getConstInteger(tinyxml2::XMLElement* pParameters)
+bool XMLUtils::getConstBoolean(tinyxml2::XMLElement* pParameters, const char* paramName, bool defaultValue)
 {
-	assert(pParameters && pParameters->GetText());
-	return atoi(pParameters->GetText());
-}
-double XMLUtils::getConstDouble(tinyxml2::XMLElement* pParameters)
-{
-	assert(pParameters && pParameters->GetText());
-	return atof(pParameters->GetText());
+	tinyxml2::XMLElement* pParameter;
+	if (pParameters)
+	{
+		pParameter = pParameters->FirstChildElement(paramName);
+		if (pParameter)
+		{
+			if (!strcmp(pParameter->GetText(), "true"))
+				return true;
+			if (!strcmp(pParameter->GetText(), "false"))
+				return false;
+		}
+	}
+
+	return defaultValue;
 }
 
-const char* XMLUtils::getConstString(tinyxml2::XMLElement* pParameters)
+int XMLUtils::getConstInteger(tinyxml2::XMLElement* pParameters, const char* paramName, int defaultValue)
 {
-	assert(pParameters && pParameters->GetText());
-	return pParameters->GetText();
+	tinyxml2::XMLElement* pParameter;
+	if (pParameters)
+	{
+		pParameter = pParameters->FirstChildElement(paramName);
+		if (pParameter)
+		{
+			return atoi(pParameter->GetText());
+		}
+	}
+
+	return defaultValue;
+}
+
+double XMLUtils::getConstDouble(tinyxml2::XMLElement* pParameters, const char* paramName, double defaultValue)
+{
+	tinyxml2::XMLElement* pParameter;
+	if (pParameters)
+	{
+		pParameter = pParameters->FirstChildElement(paramName);
+		if (pParameter)
+		{
+			return atof(pParameter->GetText());
+		}
+	}
+
+	return defaultValue;
+}
+
+const char* XMLUtils::getConstString(tinyxml2::XMLElement* pParameters, const char* paramName, const char* defaultValue)
+{
+	tinyxml2::XMLElement* pParameter;
+	if (pParameters)
+	{
+		pParameter = pParameters->FirstChildElement(paramName);
+		if (pParameter)
+		{
+			return pParameter->GetText();
+		}
+	}
+
+	return defaultValue;
 }

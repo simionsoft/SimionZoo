@@ -18,8 +18,8 @@ CWorld::CWorld(tinyxml2::XMLElement* pParameters)
 	assert(pParameters);
 	m_t= 0.0;
 
-	m_simulationSteps= XMLUtils::getConstInteger(pParameters->FirstChildElement("Num-Integration-Steps"));
-	m_dt = XMLUtils::getConstDouble(pParameters->FirstChildElement("Delta-T"));
+	m_simulationSteps= XMLUtils::getConstInteger(pParameters,"Num-Integration-Steps");
+	m_dt = XMLUtils::getConstDouble(pParameters, "Delta-T");
 
 	tinyxml2::XMLElement* pModelParameters;
 	pModelParameters = pParameters->FirstChildElement("Dynamic-Model")->FirstChildElement();

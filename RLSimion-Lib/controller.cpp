@@ -70,8 +70,8 @@ CLQRController::CLQRController(tinyxml2::XMLElement *pParameters)
 	tinyxml2::XMLElement* pGain= pParameters->FirstChildElement("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pVariableIndices[i] = pSDesc->getVarIndex(XMLUtils::getConstString(pGain->FirstChildElement("Variable")));//
-		m_pGains[i] = XMLUtils::getConstDouble(pGain->FirstChildElement("Gain"));
+		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->FirstChildElement("Variable")->GetText());
+		m_pGains[i] = XMLUtils::getConstDouble(pGain, "Gain", 0.0);
 
 		pGain = pGain->NextSiblingElement("LQR-Gain");
 	}
@@ -259,16 +259,16 @@ void CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
 CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElement *pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	m_CornerFreq= atof(pParameters->FirstChildElement("CornerFreq")->GetText());
+	m_CornerFreq= XMLUtils::getConstDouble(pParameters,"CornerFreq",0.0);
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VSRtGnSp"));
-	m_VS_SlPc = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_SlPc"));
-	m_VS_Rgn2K = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn2K"));
-	m_VS_Rgn2Sp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn2Sp"));
-	m_VS_CtInSp = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_CtInSp"));
-	m_VS_RtPwr = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_RtPwr"));
-	m_VS_Rgn3MP = XMLUtils::getConstDouble(pParameters->FirstChildElement("VS_Rgn3MP"));
+	m_VS_RtGnSp = XMLUtils::getConstDouble(pParameters,"VSRtGnSp");
+	m_VS_SlPc = XMLUtils::getConstDouble(pParameters,"VS_SlPc");
+	m_VS_Rgn2K = XMLUtils::getConstDouble(pParameters,"VS_Rgn2K");
+	m_VS_Rgn2Sp = XMLUtils::getConstDouble(pParameters,"VS_Rgn2Sp");
+	m_VS_CtInSp = XMLUtils::getConstDouble(pParameters,"VS_CtInSp");
+	m_VS_RtPwr = XMLUtils::getConstDouble(pParameters,"VS_RtPwr");
+	m_VS_Rgn3MP = XMLUtils::getConstDouble(pParameters,"VS_Rgn3MP");
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -283,7 +283,7 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(tinyxml2::XMLElemen
 	m_PC_KK = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KK"));
 	m_PC_KP = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KP"));
 	m_PC_KI = XMLUtils::getNumericHandler(pParameters->FirstChildElement("PC_KI"));
-	m_PC_RefSpd = XMLUtils::getConstDouble(pParameters->FirstChildElement("PC_RefSpd"));
+	m_PC_RefSpd = XMLUtils::getConstDouble(pParameters,"PC_RefSpd");
 
 	m_IntSpdErr= 0.0;
 

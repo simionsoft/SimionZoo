@@ -16,27 +16,16 @@ CLogger::CLogger(tinyxml2::XMLElement* pParameters)
 
 	if (pParameters)
 	{
-		sprintf_s(m_outputDir, MAX_FILENAME_LENGTH, "../logs/%s"
-			, pParameters->FirstChildElement("Ouput-directory")->GetText());
-		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, XMLUtils::getConstString(pParameters->FirstChildElement("Prefix")));
+		sprintf_s(m_outputDir, MAX_FILENAME_LENGTH, "../logs/%s", XMLUtils::getConstString(pParameters,"Ouput-directory"));
+		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, XMLUtils::getConstString(pParameters,"Prefix"));
 
-		if (pParameters->FirstChildElement("Log-eval-episodes"))
-			m_bLogEvaluationEpisodes = XMLUtils::getConstBoolean(pParameters->FirstChildElement("Log-eval-episodes"));
-		else m_bLogEvaluationEpisodes = false;
-		if (pParameters->FirstChildElement("Log-training-episodes"))
-			m_bLogTrainingEpisodes = XMLUtils::getConstBoolean(pParameters->FirstChildElement("Log-training-episodes"));
-		else m_bLogTrainingEpisodes = false;
-		if (pParameters->FirstChildElement("Log-eval-experiment"))
-			m_bLogEvaluationExperiment = XMLUtils::getConstBoolean(pParameters->FirstChildElement("Log-eval-experiment"));
-		else m_bLogEvaluationExperiment = true;
-		if (pParameters->FirstChildElement("Log-training-experiment"))
-			m_bLogTrainingExperiment = XMLUtils::getConstBoolean(pParameters->FirstChildElement("Log-training-experiment"));
-		else m_bLogTrainingExperiment = false;
+		m_bLogEvaluationEpisodes = XMLUtils::getConstBoolean(pParameters,"Log-eval-episodes", false);
+		m_bLogTrainingEpisodes = XMLUtils::getConstBoolean(pParameters,"Log-training-episodes", false);
+		m_bLogEvaluationExperiment = XMLUtils::getConstBoolean(pParameters,"Log-eval-experiment", true);
+		m_bLogTrainingExperiment = XMLUtils::getConstBoolean(pParameters, "Log-training-experiment", false);
 
-		m_logFreq = XMLUtils::getConstDouble(pParameters->FirstChildElement("Log-Freq"));
-		if (pParameters->FirstChildElement("Progress-Update-Freq"))
-			m_progUpdateFreq = XMLUtils::getConstDouble(pParameters->FirstChildElement("Progress-Update-Freq"));
-		else m_progUpdateFreq = 0.5;
+		m_logFreq = XMLUtils::getConstDouble(pParameters, "Log-Freq", 0.25);
+		m_progUpdateFreq = XMLUtils::getConstDouble(pParameters, "Progress-Update-Freq", 0.5);
 
 		_mkdir(m_outputDir);
 	}

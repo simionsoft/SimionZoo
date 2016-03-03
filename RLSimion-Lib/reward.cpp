@@ -42,7 +42,7 @@ CRewardFunctionComponent::CRewardFunctionComponent(tinyxml2::XMLElement* pParame
 	//m_controlErrorVariable[0]= 0;
 	//m_weight= 0.0;
 	//m_componentIndex= -1;
-	const char* varName = XMLUtils::getConstString(pParameters->FirstChildElement("Variable"));
+	const char* varName = XMLUtils::getConstString(pParameters,"Variable");
 	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r(%s)", varName);
 	m_sVariable = CWorld::m_pDynamicModel->getStateDescriptor()->getVarIndex(varName);
 	m_pTolerance = XMLUtils::getNumericHandler(pParameters->FirstChildElement("Tolerance"));
@@ -89,8 +89,8 @@ double CRewardFunctionComponent::getRewardComponent(CState* state)
 
 CRewardFunction::CRewardFunction(tinyxml2::XMLElement* pParameters) : CParamObject(pParameters)
 {
-	m_minReward= XMLUtils::getConstDouble(pParameters->FirstChildElement("Min"));
-	m_maxReward = XMLUtils::getConstDouble(pParameters->FirstChildElement("Max"));
+	m_minReward= XMLUtils::getConstDouble(pParameters,"Min");
+	m_maxReward = XMLUtils::getConstDouble(pParameters, "Max");
 
 	m_lastReward= 0.0;
 

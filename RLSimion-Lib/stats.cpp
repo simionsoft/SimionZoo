@@ -100,8 +100,9 @@ void CStats::addExperimentSample()
 			m_statsInfo.addExperimentSample(*(unsigned int*)m_variable);
 		else  if (m_type == Int)
 			m_statsInfo.addExperimentSample(*(int*)m_variable);
+		else assert(0);
 	}
-	assert(0);
+	else	assert(0);
 }
 
 double CStats::getValue()

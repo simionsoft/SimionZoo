@@ -97,17 +97,12 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(tinyxml2::XMLElement* pPa
 	for (int i = 0; i < m_numVariables; i++)
 	{
 		varName = dimension->FirstChildElement("Variable")->GetText();
-		numFeatures = XMLUtils::getConstInteger(dimension->FirstChildElement("Num-Features"));
+		numFeatures = XMLUtils::getConstInteger(dimension,"Num-Features",3);
 
-		if (dimension->FirstChildElement("Min"))
-			min = XMLUtils::getConstDouble(dimension->FirstChildElement("Min"));
-		else min = RLSimion::g_pWorld->getStateDescriptor()->getMin(varName);
+		min = XMLUtils::getConstDouble(dimension,"Min",RLSimion::g_pWorld->getStateDescriptor()->getMin(varName));
+		max = XMLUtils::getConstDouble(dimension,"Max",RLSimion::g_pWorld->getStateDescriptor()->getMax(varName));
 
-		if (dimension->FirstChildElement("Max"))
-			max = XMLUtils::getConstDouble(dimension->FirstChildElement("Max"));
-		else max = RLSimion::g_pWorld->getStateDescriptor()->getMax(varName);
-
-		distType = dimension->FirstChildElement("Distribution")->GetText();
+		distType = XMLUtils::getConstString(dimension,"Distribution", "linear");
 		initCenterPoints(i, varName, numFeatures, min, max, distType);
 
 		dimension = dimension->NextSiblingElement("RBF-Grid-Dimension");

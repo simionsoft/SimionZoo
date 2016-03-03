@@ -9,9 +9,9 @@ CETraces::CETraces(const char* name, tinyxml2::XMLElement* pParameters) : CFeatu
 	if (pParameters)
 	{
 		m_bUse = true;
-		m_threshold = XMLUtils::getConstDouble(m_pParameters->FirstChildElement("Threshold"));
-		m_lambda = XMLUtils::getConstDouble(m_pParameters->FirstChildElement("Lambda"));
-		m_bReplaceIfExists = XMLUtils::getConstBoolean(m_pParameters->FirstChildElement("Replace"));
+		m_threshold = XMLUtils::getConstDouble(m_pParameters,"Threshold");
+		m_lambda = XMLUtils::getConstDouble(m_pParameters,"Lambda");
+		m_bReplaceIfExists = XMLUtils::getConstBoolean(m_pParameters,"Replace");
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
 	else

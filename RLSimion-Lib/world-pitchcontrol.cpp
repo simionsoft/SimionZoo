@@ -8,7 +8,7 @@
 #include "xml-parameters.h"
 
 CPitchControl::CPitchControl(tinyxml2::XMLElement* pParameters)
-: CDynamicModel(XMLUtils::getConstString(pParameters->FirstChildElement("World-Definition")))
+: CDynamicModel(XMLUtils::getConstString(pParameters, "World-Definition"))
 {
 	CState *pStateDescriptor = getStateDescriptor();
 	m_sSetpointPitch = pStateDescriptor->getVarIndex("setpoint-pitch");
