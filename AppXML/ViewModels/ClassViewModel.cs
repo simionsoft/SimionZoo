@@ -175,7 +175,7 @@ namespace AppXML.ViewModels
         public string BranchesVisible { get { if (Branches == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
         public string MultisVisible { get { if (Multis == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
         public string XMLNodeVisible { get { if (_XMLNODE == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
-        public ChoiceViewModel Choice { get { return _choice; } set { } }
+        public ChoiceViewModel Choice { get { return _choice; } set { _choice = value; } }
         public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
         public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
@@ -211,8 +211,6 @@ namespace AppXML.ViewModels
             
 
            WindowManager windowManager = new WindowManager();
-           if(this._wclvm==null)
-             this._wclvm = new WindowClassViewModel(this._className, this);
            windowManager.ShowDialog(this._wclvm);
            
 

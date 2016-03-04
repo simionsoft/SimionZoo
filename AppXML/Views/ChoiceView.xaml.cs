@@ -24,5 +24,10 @@ namespace AppXML.Views
         {
             InitializeComponent();
         }
+
+        private void ComboBox_Selected(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

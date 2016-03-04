@@ -18,7 +18,7 @@
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <Label x:Name="Label" Width="200"></Label>
-            <ComboBox SelectedIndex="0" ItemsSource="{Binding Combo}" Width="150" cal:Message.Attach="[Event SelectionChanged]=[Action ComboChanged($this)]">  
+            <ComboBox ItemsSource="{Binding Combo}" Width="150" SelectedItem="{Binding SelectedItem}">  
             </ComboBox>
         </StackPanel>
         <StackPanel Orientation="Vertical">
