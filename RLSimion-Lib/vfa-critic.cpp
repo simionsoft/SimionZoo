@@ -3,7 +3,7 @@
 #include "vfa.h"
 #include "parameters.h"
 #include "parameterized-object.h"
-
+#include "logger.h"
 
 CVFACritic::CVFACritic(CParameters* pParameters) : CParamObject(pParameters)
 {
@@ -40,41 +40,53 @@ CVFACritic* CVFACritic::getInstance(CParameters* pParameters)
 	return 0;
 }
 
-
-void CVFACritic::saveVFunction(const char* pFilename)
-{
-	FILE* pFile;
-
-	if (!strcmp("NONE", pFilename)) return;
-
-	printf("Saving Value-Function (\"%s\")...", pFilename);
-
-	fopen_s(&pFile, pFilename, "wb");
-	if (pFile)
-	{
-		m_pVFA->save(pFile);
-		fclose(pFile);
-		printf("OK\n");
-	}
-
-}
-
 void CVFACritic::loadVFunction(const char* pFilename)
 {
+	char msg[128];
 	FILE* pFile;
 
-	if (!strcmp(pFilename, "NONE")) return;
-
-	printf("Loading Value-Function (\"%s\")...", pFilename);
+	if (!strcmp(pFilename, "NONE") || pFilename == 0 || pFilename[0] == 0) return;
 
 	fopen_s(&pFile, pFilename, "rb");
 	if (pFile)
 	{
-		m_pVFA->load(pFile);
-		fclose(pFile);
+		sprintf_s(msg, 128, "Loading Policy (\"%s\")...", pFilename);
+		CLogger::logMessage(Info, msg);
 
-		printf("OK\n");
+		m_pVFA->load(pFile);
+
+		//assert(numWeights==numWeightsRead);
+		fclose(pFile);
+		CLogger::logMessage(Info, "OK\n");
+		return;
 	}
-	else printf("FAILED\n");
+	sprintf_s(msg, 128, "Loading Policy (\"%s\")...FAILED", pFilename);
+	CLogger::logMessage(Warning, msg);
+}
+
+void CVFACritic::saveVFunction(const char* pFilename)
+{
+	char msg[128];
+	FILE* pFile;
+
+	if (!strcmp(pFilename, "NONE") || pFilename == 0 || pFilename[0] == 0) return;
+
+	fopen_s(&pFile, pFilename, "wb");
+	if (pFile)
+	{
+		sprintf_s(msg, 128, "Saving V-Function (\"%s\")...", pFilename);
+		CLogger::logMessage(Info, msg);
+
+		m_pVFA->save(pFile);
+		
+		//assert(numWeights==numWeightsRead);
+		fclose(pFile);
+		CLogger::logMessage(Info, "OK\n");
+		return;
+	}
+	sprintf_s(msg, 128, "Saving V-Function (\"%s\")...FAILED", pFilename);
+	CLogger::logMessage(Warning, msg);
 
 }
+
+

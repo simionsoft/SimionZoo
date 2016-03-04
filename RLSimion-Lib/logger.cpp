@@ -210,12 +210,10 @@ void CLogger::timestep(bool evalEpisode)
 	__int64 currentCounter;
 	QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
 	double time = (double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
+	char progressMsg[1024];
 	if (time>m_progUpdateFreq)
 	{
-		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%)\r"
-			, RLSimion::g_pExperiment->m_expProgress.getEpisode(), RLSimion::g_pExperiment->m_expProgress.getNumEpisodes()
-			, RLSimion::g_pExperiment->m_expProgress.getStep(), RLSimion::g_pExperiment->m_expProgress.getNumSteps()
-			, RLSimion::g_pExperiment->m_expProgress.getExperimentProgress()*100.0);
+		CLogger::logMessage(Progress, RLSimion::g_pExperiment->m_expProgress.getProgressString());
 		m_lastProgressReportCounter = currentCounter;
 	}
 
@@ -261,3 +259,24 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 	}
 }
 
+void CLogger::logMessage(MessageType type, const char* message)
+{
+	char c;
+	switch (type)
+	{
+	case Warning:
+		printf("WARNING: %s\n", message);
+		break;
+	case Progress:
+		//extra spaces to avoid overwriting only partially previous message
+		printf("PROGRESS: %s                     \r",message);
+		break;
+	case Info:
+		printf("INFO: %s", message);
+		break;
+	case Error:
+		printf("FATAL ERROR: %s\n");
+		scanf_s("%c", &c);
+		exit(-1);
+	}
+}

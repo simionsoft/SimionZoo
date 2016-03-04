@@ -32,7 +32,14 @@ bool CExperimentProgress::operator==(CExperimentProgress& exp)
 	return m_step == exp.getStep() && m_episode == exp.getEpisode();
 }
 
-
+const char* CExperimentProgress::getProgressString()
+{
+	sprintf_s(m_progressMsg, MAX_PROGRESS_MSG_LEN, "Episode: %d/%d Step %d/%d (%.2f%%)"
+		, getEpisode(), getNumEpisodes()
+		, getStep(), getNumSteps()
+		, getExperimentProgress()*100.0);
+	return m_progressMsg;
+}
 
 
 CExperiment::~CExperiment()

@@ -11,6 +11,7 @@ class CParameters;
 
 class CLogger;
 
+#define MAX_PROGRESS_MSG_LEN 1024
 
 class CExperimentProgress
 {
@@ -19,6 +20,8 @@ class CExperimentProgress
 
 	unsigned int m_numEpisodes;
 	unsigned int m_numSteps;
+
+	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
 public:
 	CExperimentProgress(){ m_episode = 0; m_step = 0; }
 	~CExperimentProgress(){}
@@ -46,6 +49,8 @@ public:
 
 	double getExperimentProgress(); //[0,1]
 	double getEpisodeProgress(); //[0,1]
+
+	const char* getProgressString();
 };
 
 class CExperiment

@@ -8,7 +8,7 @@
 #include "experiment.h"
 #include "globals.h"
 #include "parameters.h"
-
+#include "logger.h"
 
 CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(CParameters* pParameters) : CParamObject(pParameters)
 {
@@ -137,42 +137,53 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 
 void CVFAActor::savePolicy(const char* pFilename)
 {
+	char msg[128];
+
 	FILE* pFile;
 
 	if (!strcmp(pFilename, "NONE") || pFilename == 0 || pFilename[0] == 0) return;
 
-	printf("Saving Policy (\"%s\")...", pFilename);
-
 	fopen_s(&pFile, pFilename, "wb");
 	if (pFile)
 	{
+		sprintf_s(msg, 128, "Saving Policy (\"%s\")...", pFilename);
+		CLogger::logMessage(Info, msg );
+
 		for (int i = 0; i<m_numOutputs; i++)
 		{
 			m_pPolicyLearners[i]->getPolicy()->getVFA()->save(pFile);
 		}
 		fclose(pFile);
+		CLogger::logMessage(Info, "OK\n");
+		return;
 	}
+	sprintf_s(msg, 128, "Saving Policy (\"%s\")...FAILED", pFilename);
+	CLogger::logMessage(Warning, msg);
 
 }
 
 void CVFAActor::loadPolicy(const char* pFilename)
 {
+	char msg[128];
 	FILE* pFile;
 
 	if (!strcmp(pFilename, "NONE") || pFilename == 0 || pFilename[0] == 0) return;
 
-	printf("Loading Policy (\"%s\")...", pFilename);
-
 	fopen_s(&pFile, pFilename, "rb");
 	if (pFile)
 	{
+		sprintf_s(msg, 128, "Loading Policy (\"%s\")...", pFilename);
+		CLogger::logMessage(Info, msg);
+
 		for (int i = 0; i<m_numOutputs; i++)
 		{
 			m_pPolicyLearners[i]->getPolicy()->getVFA()->load(pFile);
 		}
 		//assert(numWeights==numWeightsRead);
 		fclose(pFile);
-		printf("OK\n");
+		CLogger::logMessage(Info, "OK\n");
+		return;
 	}
-	else printf("FAILED\n");
+	sprintf_s(msg, 128, "Loading Policy (\"%s\")...FAILED", pFilename);
+	CLogger::logMessage(Warning, msg);
 }
