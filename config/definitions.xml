@@ -42,9 +42,10 @@
   <!--Experiment-->
   <CLASS Name="EXPERIMENT">
     <INTEGER-VALUE Name="Num-Episodes" Default="1000" Comment="Number of episodes"/>
-    <INTEGER-VALUE Name="Episode-Length" Default="360" Comment="Length in seconds"/>
+    <INTEGER-VALUE Name="Episode-Length" Default="360" Comment="Time length of each episode (in seconds)"/>
     <INTEGER-VALUE Name="Random-Seed" Default="1" Comment="Seed used to generate random numbers"/>
     <INTEGER-VALUE Name="Eval-Freq" Default="10" Comment="Evaluation freq. in episodes"/>
+    <INTEGER-VALUE Name="Progress-Update-Freq" Default="0.5" Comment="Progress update freq. (in seconds)"/>
     <BRANCH Name="Log" Class="LOG"/>
   </CLASS>
   

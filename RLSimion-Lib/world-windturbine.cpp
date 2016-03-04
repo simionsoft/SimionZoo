@@ -232,7 +232,7 @@ CWindTurbine::~CWindTurbine()
 
 void CWindTurbine::reset(CState *s)
 {
-	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		m_pCurrentWindData = m_pEvaluationWindData;
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];

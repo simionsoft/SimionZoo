@@ -38,7 +38,7 @@ double CTDCLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double 
 {
 	if (m_pAlpha->getValue()==0.0) return 0.0;
 	
-	if (RLSimion::g_pExperiment->m_expProgress.isFirstStep())
+	if (RLSimion::g_pExperiment->isFirstStep())
 	{
 		m_omega->clear();
 	}

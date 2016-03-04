@@ -110,7 +110,7 @@ void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, d
 	double alpha_v = m_pAlphaV->getValue();
 	double alpha_u = m_pAlphaU->getValue();
 
-	if (RLSimion::g_pExperiment->m_expProgress.isFirstStep())
+	if (RLSimion::g_pExperiment->isFirstStep())
 		m_w->clear();
 	
 	m_pPolicy->getGradient(s,a,m_grad_u);

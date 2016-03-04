@@ -51,12 +51,12 @@ int main(int argc, char* argv[])
 	double r= 0.0;
 
 	//episodes
-	for (RLSimion::g_pExperiment->m_expProgress.nextEpisode(); RLSimion::g_pExperiment->m_expProgress.isValidEpisode(); RLSimion::g_pExperiment->m_expProgress.nextEpisode())
+	for (RLSimion::g_pExperiment->nextEpisode(); RLSimion::g_pExperiment->isValidEpisode(); RLSimion::g_pExperiment->nextEpisode())
 	{
 		RLSimion::g_pWorld->reset(s);
 
 		//steps per episode
-		for (RLSimion::g_pExperiment->m_expProgress.nextStep(); RLSimion::g_pExperiment->m_expProgress.isValidStep(); RLSimion::g_pExperiment->m_expProgress.nextStep())
+		for (RLSimion::g_pExperiment->nextStep(); RLSimion::g_pExperiment->isValidStep(); RLSimion::g_pExperiment->nextStep())
 		{
 			//a= pi(s)
 			RLSimion::g_pSimGod->selectAction(s,a);

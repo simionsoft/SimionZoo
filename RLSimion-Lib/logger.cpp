@@ -2,10 +2,9 @@
 #include "logger.h"
 #include "world.h"
 #include "named-var-set.h"
-#include "globals.h"
-#include "experiment.h"
 #include "parameters.h"
 #include "stats.h"
+#include "globals.h"
 
 #define MAX_FILENAME_LENGTH 1024
 
@@ -25,7 +24,6 @@ CLogger::CLogger(CParameters* pParameters)
 		m_bLogTrainingExperiment = pParameters->getConstBoolean( "Log-training-experiment", false);
 
 		m_logFreq = pParameters->getConstDouble( "Log-Freq", 0.25);
-		m_progUpdateFreq = pParameters->getConstDouble( "Progress-Update-Freq", 0.5);
 
 		_mkdir(m_outputDir);
 	}
@@ -39,13 +37,11 @@ CLogger::CLogger(CParameters* pParameters)
 		m_bLogTrainingEpisodes = true;
 		m_bLogTrainingExperiment = false;
 		m_logFreq = 0.0;
-		m_progUpdateFreq = 0.5;
 	}
 
 	QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
 	m_episodeStartCounter = 0;
 	m_experimentStartCounter = 0;
-	m_lastProgressReportCounter = 0;
 	m_lastLogSimulationT = 0.0;
 }
 
@@ -56,16 +52,14 @@ CLogger::~CLogger()
 	delete [] m_filePrefix;
 }
 
-void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation)
+void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation,unsigned int index)
 {
 	if (episodeLog)
 	{
 		if (!evaluation)
-			sprintf_s(buffer, bufferSize, "%s/%s-train-epis-%d.txt", m_outputDir, m_filePrefix
-			, RLSimion::g_pExperiment->m_expProgress.getEvaluationEpisodeIndex());
+			sprintf_s(buffer, bufferSize, "%s/%s-train-epis-%d.txt", m_outputDir, m_filePrefix, index);
 		else
-			sprintf_s(buffer, bufferSize, "%s/%s-eval-epis-%d.txt", m_outputDir, m_filePrefix
-			, RLSimion::g_pExperiment->m_expProgress.getTrainingEpisodeIndex());
+			sprintf_s(buffer, bufferSize, "%s/%s-eval-epis-%d.txt", m_outputDir, m_filePrefix, index);
 	}
 	else
 	{
@@ -76,12 +70,12 @@ void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool
 	}
 }
 
-FILE* CLogger::openLogFile(bool create, bool episodeLog, bool evalEpisode)
+FILE* CLogger::openLogFile(bool create, bool episodeLog, bool evalEpisode, unsigned int episodeIndex)
 {
 	FILE* pFile;
 	char filename[1024];
 
-	getLogFilename(filename, 1024, episodeLog, evalEpisode);
+	getLogFilename(filename, 1024, episodeLog, evalEpisode, episodeIndex);
 
 	if (create)
 	{
@@ -115,22 +109,18 @@ void CLogger::writeLogFileHeader(FILE* pFile, bool episodeLog, bool evaluationLo
 	fprintf_s(pFile, "\n");
 }
 
-void CLogger::writeExperimentLogData(bool evalEpisode)
+void CLogger::writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex)
 {
 	if (logCurrentEpisodeInExperiment(evalEpisode))
 	{
-		FILE* pFile = openLogFile(false, false, evalEpisode);
+		FILE* pFile = openLogFile(false, false, evalEpisode, episodeIndex);
 
 		//output the episode index, the elapsed time since the experiment started and the last episode's time length
 		__int64 currentCounter;
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
 		double experimentTime = (double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
 		double episodeDuration = (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
-		int episodeIndex;
-		if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
-			episodeIndex = RLSimion::g_pExperiment->m_expProgress.getEvaluationEpisodeIndex();
-		else
-			episodeIndex = RLSimion::g_pExperiment->m_expProgress.getTrainingEpisodeIndex();
+
 		fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
 		//output the stats
 		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
@@ -142,11 +132,11 @@ void CLogger::writeExperimentLogData(bool evalEpisode)
 	}
 }
 
-void CLogger::writeEpisodeLogData(bool evalEpisode)
+void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
 {
 	if (logCurrentEpisode(evalEpisode))
 	{
-		FILE* pFile = openLogFile(false, true, evalEpisode);
+		FILE* pFile = openLogFile(false, true, evalEpisode, episodeIndex);
 
 		fprintf(pFile, "%.3f ", RLSimion::g_pWorld->getT());
 
@@ -174,13 +164,15 @@ void CLogger::firstEpisode(bool evalEpisode)
 	//set episode start time
 	QueryPerformanceCounter((LARGE_INTEGER*)&m_experimentStartCounter);
 
-	if (m_bLogEvaluationExperiment) openLogFile(true, false, evalEpisode);
+	if ((m_bLogEvaluationExperiment && evalEpisode) || (!m_bLogTrainingExperiment && !evalEpisode))
+		openLogFile(true, false, evalEpisode, 1);
 }
 
-void CLogger::firstStep(bool evalEpisode)
+void CLogger::firstStep(bool evalEpisode, unsigned int episodeIndex)
 {
 	//set episode start time
 	QueryPerformanceCounter((LARGE_INTEGER*)&m_episodeStartCounter);
+
 	m_lastLogSimulationT = 0.0;
 	//reset stats
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
@@ -189,10 +181,10 @@ void CLogger::firstStep(bool evalEpisode)
 
 	//create the episode log file
 	if (logCurrentEpisode(evalEpisode))
-		openLogFile(true, true, evalEpisode);
+		openLogFile(true, true, evalEpisode, episodeIndex);
 }
 
-void CLogger::timestep(bool evalEpisode)
+void CLogger::timestep(bool evalEpisode, unsigned int episodeIndex)
 {
 	bool bLog = logCurrentEpisode(evalEpisode);
 
@@ -203,30 +195,17 @@ void CLogger::timestep(bool evalEpisode)
 	}
 
 	//output episode log data
-	if (bLog && (RLSimion::g_pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq
-		|| RLSimion::g_pExperiment->m_expProgress.isFirstStep()))
+	if (bLog && (RLSimion::g_pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq))
 	{
-		writeEpisodeLogData(evalEpisode);
+		writeEpisodeLogData(evalEpisode, episodeIndex);
 		m_lastLogSimulationT = RLSimion::g_pWorld->getStepStartT();
-	}
-
-
-	//print progress
-	__int64 currentCounter;
-	QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-	double time = (double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
-
-	if (time>m_progUpdateFreq)
-	{
-		CLogger::logMessage(Progress, RLSimion::g_pExperiment->m_expProgress.getProgressString());
-		m_lastProgressReportCounter = currentCounter;
 	}
 
 }
 
-void CLogger::lastStep(bool evalEpisode)
+void CLogger::lastStep(bool evalEpisode, unsigned int episodeIndex)
 {
-	writeExperimentLogData(evalEpisode);
+	writeExperimentLogData(evalEpisode, episodeIndex);
 }
 
 void CLogger::lastEpisode(bool evalEpisode)

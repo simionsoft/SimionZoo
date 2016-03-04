@@ -34,7 +34,7 @@ void CPitchControl::reset(CState *s)
 {
 	double u;
 
-	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		//setpoint file in case we're evaluating
 		s->setValue(m_sSetpointPitch,m_pSetpoint->getPointSet(0.0));
 	else
@@ -53,7 +53,7 @@ void CPitchControl::executeAction(CState *s, CAction *a, double dt)
 {
 	double setpoint_pitch;
 	
-	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 	{
 		setpoint_pitch = m_pSetpoint->getPointSet(RLSimion::g_pWorld->getT());
 		s->setValue(m_sSetpointPitch, setpoint_pitch);

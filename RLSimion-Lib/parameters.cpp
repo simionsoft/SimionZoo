@@ -62,17 +62,17 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	switch (m_timeReference)
 	{
 	case experiment:
-		progress = RLSimion::g_pExperiment->m_expProgress.getExperimentProgress();
+		progress = RLSimion::g_pExperiment->getExperimentProgress();
 		break;
 	case episode:
 	default:
-		progress = RLSimion::g_pExperiment->m_expProgress.getEpisodeProgress();
+		progress = RLSimion::g_pExperiment->getEpisodeProgress();
 	}
 
 	if (m_startOffset != 0.0)
@@ -127,18 +127,18 @@ double CBhatnagarSchedule::getValue()
 	double t;
 
 	//evalution episode?
-	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	switch (m_timeReference)
 	{
 	case experiment:
-		t = RLSimion::g_pExperiment->m_expProgress.getStep() 
-			+ (RLSimion::g_pExperiment->m_expProgress.getEpisodeIndex()-1) * RLSimion::g_pExperiment->m_expProgress.getNumSteps();
+		t = RLSimion::g_pExperiment->getStep() 
+			+ (RLSimion::g_pExperiment->getEpisodeIndex()-1) * RLSimion::g_pExperiment->getNumSteps();
 		break;
 	case episode:
 	default:
-		t = RLSimion::g_pExperiment->m_expProgress.getStep();
+		t = RLSimion::g_pExperiment->getStep();
 	}
 	
 	return m_alpha_0*m_alpha_c / (m_alpha_c + pow(t, m_t_exp));

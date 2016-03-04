@@ -27,7 +27,9 @@ public:
 	bool operator==(CExperimentTime& exp);
 };
 
-class CExperimentProgress
+
+
+class CExperiment
 {
 	unsigned int m_episodeIndex; //[1..g_numEpisodes]
 	unsigned int m_step; //]1..g_numStepsPerEpisode]
@@ -42,11 +44,15 @@ class CExperimentProgress
 	//steps
 	unsigned int m_numSteps;
 
+	double m_progUpdateFreq; //in seconds: time between progress updates
+	__int64 m_counterFreq;
+	__int64 m_lastProgressReportCounter;
 
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
+	void reset();
 public:
-	CExperimentProgress(){ reset(); }
-	~CExperimentProgress(){}
+	CExperiment(CParameters* pParameters);
+	~CExperiment();
 
 	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }
 
@@ -60,9 +66,9 @@ public:
 
 	//EPISODES
 	unsigned int getEpisodeIndex(){ return m_episodeIndex; }
+	unsigned int getRelativeEpisodeIndex(){ if (!isEvaluationEpisode()) return m_trainingEpisodeIndex; return m_evalEpisodeIndex; }
 	unsigned int getTrainingEpisodeIndex(){ return m_trainingEpisodeIndex; }
 	unsigned int getEvaluationEpisodeIndex(){ return m_evalEpisodeIndex; }
-	void setNumEpisodes(unsigned int numTrainingEpisodes, unsigned int evalFreq);
 	void nextEpisode();
 	//true if is the first evaluation episode or the first training episode
 	bool isFirstEpisode();
@@ -80,17 +86,8 @@ public:
 	double getEpisodeProgress(); //[0,1]
 
 	const char* getProgressString();
-	void reset();
-};
 
-class CExperiment
-{
-	bool isCurrentEpisodeLogged();
-public:
-	CExperiment(CParameters* pParameters);
-	~CExperiment();
 
-	CExperimentProgress m_expProgress;
 	CLogger* m_pLogger;
 
 	unsigned int m_randomSeed;
