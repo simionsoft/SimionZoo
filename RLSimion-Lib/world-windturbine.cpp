@@ -6,6 +6,7 @@
 #include "experiment.h"
 #include "globals.h"
 #include "parameters.h"
+#include "logger.h"
 
 //[1]
 //"Torque and pitch angle control for VSWT in all operating regimes"
@@ -231,7 +232,7 @@ CWindTurbine::~CWindTurbine()
 
 void CWindTurbine::reset(CState *s)
 {
-	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		m_pCurrentWindData = m_pEvaluationWindData;
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
@@ -242,9 +243,11 @@ void CWindTurbine::reset(CState *s)
 
 	if (m_initial_blade_angle==0.0)
 	{
-		printf("Calculating initial torque and blade angle parameters...\n");
+		CLogger::logMessage(Info,"Calculating initial torque and blade angle parameters...\n");
 		FindSuitableParameters(initial_wind_speed,initial_rotor_speed,m_initial_torque,m_initial_blade_angle);
-		printf("T_g= %f     //    Beta= %f\n",m_initial_torque,m_initial_blade_angle);
+		char msg[128];
+		sprintf_s(msg,"T_g= %f     //    Beta= %f\n",m_initial_torque,m_initial_blade_angle);
+		CLogger::logMessage(Info, msg);
 	}
 
 	double tsr= initial_rotor_speed*D*0.5/initial_wind_speed;

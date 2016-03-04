@@ -2,6 +2,7 @@
 #include "parameters.h"
 #include "globals.h"
 #include "experiment.h"
+#include "logger.h"
 
 std::list<INumericValue*> CParameters::m_handlers;
 
@@ -61,7 +62,7 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	switch (m_timeReference)
@@ -126,14 +127,14 @@ double CBhatnagarSchedule::getValue()
 	double t;
 
 	//evalution episode?
-	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	switch (m_timeReference)
 	{
 	case experiment:
 		t = RLSimion::g_pExperiment->m_expProgress.getStep() 
-			+ (RLSimion::g_pExperiment->m_expProgress.getEpisode()-1) * RLSimion::g_pExperiment->m_expProgress.getNumSteps();
+			+ (RLSimion::g_pExperiment->m_expProgress.getEpisodeIndex()-1) * RLSimion::g_pExperiment->m_expProgress.getNumSteps();
 		break;
 	case episode:
 	default:
@@ -200,6 +201,9 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 		if (!strcmp(pParameter->GetText(), "false"))
 			return false;
 	}
+	char msg[128];
+	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %b", getName(), paramName, defaultValue);
+	CLogger::logMessage(Warning, msg);
 
 	return defaultValue;
 }
@@ -213,7 +217,9 @@ int CParameters::getConstInteger(const char* paramName, int defaultValue)
 	{
 		return atoi(pParameter->GetText());
 	}
-
+	char msg[128];
+	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %d", getName(), paramName, defaultValue);
+	CLogger::logMessage(Warning, msg);
 	return defaultValue;
 }
 
@@ -226,6 +232,9 @@ double CParameters::getConstDouble(const char* paramName, double defaultValue)
 	{
 		return atof(pParameter->GetText());
 	}
+	char msg[128];
+	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %f", getName(), paramName, defaultValue);
+	CLogger::logMessage(Warning, msg);
 
 	return defaultValue;
 }
@@ -242,7 +251,11 @@ const char* CParameters::getConstString(const char* paramName, const char* defau
 			return pParameter->GetText();
 		}
 	}
-	else if (GetText()) return GetText();
+	else
+	if (GetText()) return GetText();
+	char msg[128];
+	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %s", getName(), paramName, defaultValue);
+	CLogger::logMessage(Warning, msg);
 
 	return defaultValue;
 }

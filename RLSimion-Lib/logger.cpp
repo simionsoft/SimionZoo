@@ -62,10 +62,10 @@ void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool
 	{
 		if (!evaluation)
 			sprintf_s(buffer, bufferSize, "%s/%s-train-epis-%d.txt", m_outputDir, m_filePrefix
-			, RLSimion::g_pExperiment->m_expProgress.getEpisode());
+			, RLSimion::g_pExperiment->m_expProgress.getEvaluationEpisodeIndex());
 		else
 			sprintf_s(buffer, bufferSize, "%s/%s-eval-epis-%d.txt", m_outputDir, m_filePrefix
-			, RLSimion::g_pExperiment->m_expProgress.getEpisode());
+			, RLSimion::g_pExperiment->m_expProgress.getTrainingEpisodeIndex());
 	}
 	else
 	{
@@ -126,7 +126,12 @@ void CLogger::writeExperimentLogData(bool evalEpisode)
 		QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
 		double experimentTime = (double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
 		double episodeDuration = (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
-		fprintf(pFile, "%d %.3f %.3f ", RLSimion::g_pExperiment->m_expProgress.getEpisode(), experimentTime, episodeDuration);
+		int episodeIndex;
+		if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
+			episodeIndex = RLSimion::g_pExperiment->m_expProgress.getEvaluationEpisodeIndex();
+		else
+			episodeIndex = RLSimion::g_pExperiment->m_expProgress.getTrainingEpisodeIndex();
+		fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
 		//output the stats
 		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 		{
@@ -210,12 +215,10 @@ void CLogger::timestep(bool evalEpisode)
 	__int64 currentCounter;
 	QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
 	double time = (double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
+
 	if (time>m_progUpdateFreq)
 	{
-		printf("EPISODE: %d/%d STEP %d/%d (%.2f%%)\r"
-			, RLSimion::g_pExperiment->m_expProgress.getEpisode(), RLSimion::g_pExperiment->m_expProgress.getNumEpisodes()
-			, RLSimion::g_pExperiment->m_expProgress.getStep(), RLSimion::g_pExperiment->m_expProgress.getNumSteps()
-			, RLSimion::g_pExperiment->m_expProgress.getExperimentProgress()*100.0);
+		CLogger::logMessage(Progress, RLSimion::g_pExperiment->m_expProgress.getProgressString());
 		m_lastProgressReportCounter = currentCounter;
 	}
 
@@ -261,3 +264,24 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 	}
 }
 
+void CLogger::logMessage(MessageType type, const char* message)
+{
+	char c;
+	switch (type)
+	{
+	case Warning:
+		printf("WARNING: %s\n", message);
+		break;
+	case Progress:
+		//extra spaces to avoid overwriting only partially previous message
+		printf("PROGRESS: %s                     \r",message);
+		break;
+	case Info:
+		printf("INFO: %s", message);
+		break;
+	case Error:
+		printf("FATAL ERROR: %s\n");
+		scanf_s("%c", &c);
+		exit(-1);
+	}
+}

@@ -11,6 +11,7 @@ class CParameters;
 #include <vector>
 class CStats;
 
+enum MessageType {Progress,Info,Warning, Error};
 
 class CLogger
 {
@@ -24,19 +25,6 @@ class CLogger
 
 	double m_logFreq; //in seconds: time between file logs
 	double m_progUpdateFreq; //in seconds: time between progress updates
-
-	//__int64 m_lastCounter;
-
-
-
-
-	////regular log files
-	//void openEpisodeLogFile();
-	//void writeEpisodeStep(CState *s, CAction *a, CState *s_p, CReward *pReward);
-	//void writeEpisodeLogFileHeader(CState *s, CAction *a, CReward *pReward);
-
-	////summary files: avg reward of evaluation episodes
-	//void writeEpisodeSummary();
 
 	__int64 m_counterFreq;
 	__int64 m_episodeStartCounter;
@@ -66,12 +54,17 @@ public:
 	CLogger(CParameters* pParameters);
 	~CLogger();
 
+	//METHODS CALLED FROM ANY CLASS
 	void addVarToStats(const char* key, const char* subkey, double* variable);
 	void addVarToStats(const char* key, const char* subkey, int* variable);
 	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
+	//Function called to report progress and error messages
+	//static so that it can be called right from the beginning
+	static void logMessage(MessageType type, const char* message);
 
+	//METHODS CALLED FROM CExperiment
 	//called to log episodes
 	void firstEpisode(bool evalEpisode);
 	void lastEpisode(bool evalEpisode);

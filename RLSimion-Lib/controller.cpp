@@ -4,6 +4,7 @@
 #include "named-var-set.h"
 #include "world.h"
 #include "parameters.h"
+#include "logger.h"
 
 CMultiController::CMultiController(CParameters* pParameters)
 {
@@ -111,10 +112,8 @@ CPIDController::CPIDController(CParameters *pParameters)
 	if (pSDesc)
 		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->getChild("Input-Variable")->getConstString());
 	else
-	{
-		printf("ERROR: PID controller missconfigured. Invalid ERROR_VARIABLE");
-		exit(-1);
-	}
+		CLogger::logMessage(Error,"ERROR: PID controller missconfigured. Invalid ERROR_VARIABLE");
+
 	m_intError= 0.0;
 }
 
