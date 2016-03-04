@@ -13,6 +13,9 @@ namespace AppXML.ViewModels
         private ObservableCollection<string> _options;
         private string _XMLFile;
         private string _action;
+        private string _selectedOption;
+
+        public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; } }
 
         public XMLNodeRefViewModel(string label, string file, string action )
         {
@@ -33,5 +36,9 @@ namespace AppXML.ViewModels
         }
         public ObservableCollection<string> Options { get { return _options; } set { } }
         public string Label { get { return _label; } set { } }
+        public bool validate()
+        {
+            return _selectedOption != null;
+        }
     }
 }

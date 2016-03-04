@@ -32,6 +32,7 @@ namespace AppXML.ViewModels
             
            // _father.ResumeClass = this.Class;
             bool ok = Class.validate();
+            string c = _father.ResumeClass.Multis[0].HeaderClass.Choice.Class.XMLNODE[0].SelectedOption;
             if(!ok)
             {
                 DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);

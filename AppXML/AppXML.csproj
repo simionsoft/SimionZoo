@@ -92,7 +92,6 @@
     <Compile Include="ViewModels\WindowClassViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="ViewModels\MultiValuedViewModel.cs" />
-    <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\XMLNodeRefViewModel.cs" />
     <Compile Include="Views\ChoiceView.xaml.cs">
       <DependentUpon>ChoiceView.xaml</DependentUpon>

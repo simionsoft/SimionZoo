@@ -17,7 +17,7 @@ namespace AppXML.ViewModels
     public class ClassViewModel
     {
 
-        private ClassViewModel _resumeClassViewModel=null;
+        private ClassViewModel _resumeClassViewModel;
 
         public ClassViewModel ResumeClass { get { return _resumeClassViewModel; } set { _resumeClassViewModel = value; } }
 
@@ -38,6 +38,7 @@ namespace AppXML.ViewModels
             if (node.Attributes["Window"] != null)
             {
                 _resume = "Press the button to open the form";
+                _wclvm = new WindowClassViewModel(clasName, this);
             }
             else
             {
@@ -106,6 +107,7 @@ namespace AppXML.ViewModels
             if (ignoreWindow && node.Attributes["Window"] != null)
             {
                 _resume = "Press the button to open the form";
+                _wclvm = new WindowClassViewModel(clasName, this);
             }
             else
             {
@@ -218,27 +220,53 @@ namespace AppXML.ViewModels
         }
         public bool validate()
         {
-            if (_items != null)
+            if(_wclvm==null)
             {
-                foreach (IntegerViewModel item in _items)
+                if (_branches != null)
                 {
-                    if (!item.validateIntegerViewModel())
-                        return false;
+                    foreach (BranchViewModel item in _branches)
+                    {
+                        if (!item.validate())
+                            return false;
+                    }
                 }
-            }
-            if (_multis != null)
-            {
-                foreach (MultiValuedViewModel item in _multis)
+                if (_items != null)
                 {
-                    if (!item.validate())
-                        return false;
+                    foreach (IntegerViewModel item in _items)
+                    {
+                        if (!item.validateIntegerViewModel())
+                            return false;
+                    }
                 }
+                if (_multis != null)
+                {
+                    foreach (MultiValuedViewModel item in _multis)
+                    {
+                        if (!item.validate())
+                            return false;
+                    }
+                }
+                if (_choice != null)
+                {
+                    return _choice.validate();
+                }
+                if (_XMLNODE != null)
+                {
+                    foreach (XMLNodeRefViewModel item in _XMLNODE)
+                    {
+                        if (!item.validate())
+                            return false;
+                    }
+                }
+                
+                return true;
             }
-            if(_choice != null)
+           
+            else
             {
-                return _choice.validate();
+                return ResumeClass.validate();
             }
-            return true;
+            
         }
     }
 }
