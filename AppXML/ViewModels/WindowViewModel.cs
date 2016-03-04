@@ -25,22 +25,16 @@ namespace AppXML.ViewModels
     {
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
-        private readonly IWindowManager _windowManager;
+        
         
 
-        /*[ImportingConstructor]
-        public WindowViewModel(IWindowManager windowManager)
-        {
-          _windowManager = windowManager;
-          _rootnode = Utility.getRootNode("../config/RLSimion.xml");
-          _branches = _rootnode.children;
-        }*/
+       
         public WindowViewModel()
         {
             _rootnode = Utility.getRootNode("../config/RLSimion.xml");
             _branches = _rootnode.children;
 
-            //_branch = new BranchViewModel("World", "Wind-turbine-parameters");
+           
         }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         public CNode rootnode
@@ -56,7 +50,16 @@ namespace AppXML.ViewModels
 
         }
        
-        
+        public void Validate()
+        {
+            foreach(BranchViewModel branch in _branches)
+            {
+                if(!branch.validate())
+                {
+                    //error
+                }
+            }
+        }
        
         
        
