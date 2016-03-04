@@ -44,7 +44,7 @@ CMagneticLevitation::~CMagneticLevitation()
 void CMagneticLevitation::reset(CState *s)
 {
 	CSetPoint *pSetPoint;
-	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		pSetPoint= m_pEvalSetPoint;
 	else
 		pSetPoint= m_pLearnSetPoint;
@@ -80,7 +80,7 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double I= s->getValue(m_sCurrent);
 	double setpoint;
 	
-	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		setpoint = m_pEvalSetPoint->getPointSet(RLSimion::g_pWorld->getT());
 	else
 		setpoint = m_pLearnSetPoint->getPointSet(RLSimion::g_pWorld->getT());

@@ -54,12 +54,17 @@ public:
 	CLogger(CParameters* pParameters);
 	~CLogger();
 
+	//METHODS CALLED FROM ANY CLASS
 	void addVarToStats(const char* key, const char* subkey, double* variable);
 	void addVarToStats(const char* key, const char* subkey, int* variable);
 	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
+	//Function called to report progress and error messages
+	//static so that it can be called right from the beginning
+	static void logMessage(MessageType type, const char* message);
 
+	//METHODS CALLED FROM CExperiment
 	//called to log episodes
 	void firstEpisode(bool evalEpisode);
 	void lastEpisode(bool evalEpisode);
@@ -67,8 +72,4 @@ public:
 	void firstStep(bool evalEpisode);
 	void lastStep(bool evalEpisode);
 	void timestep(bool evalEpisode);
-
-	//Function called to report progress and error messages
-	//static so that it can be called right from the beginning
-	static void logMessage(MessageType type, const char* message);
 };

@@ -62,7 +62,7 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	switch (m_timeReference)
@@ -127,14 +127,14 @@ double CBhatnagarSchedule::getValue()
 	double t;
 
 	//evalution episode?
-	if (RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	switch (m_timeReference)
 	{
 	case experiment:
 		t = RLSimion::g_pExperiment->m_expProgress.getStep() 
-			+ (RLSimion::g_pExperiment->m_expProgress.getEpisode()-1) * RLSimion::g_pExperiment->m_expProgress.getNumSteps();
+			+ (RLSimion::g_pExperiment->m_expProgress.getEpisodeIndex()-1) * RLSimion::g_pExperiment->m_expProgress.getNumSteps();
 		break;
 	case episode:
 	default:

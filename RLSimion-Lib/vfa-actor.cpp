@@ -80,7 +80,7 @@ void CVFAActor::selectAction(CState *s, CAction *a)
 
 void CVFAActor::updatePolicy(CState* s, CAction* a, CState* s_p, double r, double td)
 {
-	if (!RLSimion::g_pExperiment->isEvaluationEpisode())
+	if (!RLSimion::g_pExperiment->m_expProgress.isEvaluationEpisode())
 		for (int i = 0; i<m_numOutputs; i++)
 		{
 			//each uni-dimensional policy sets its own action's value

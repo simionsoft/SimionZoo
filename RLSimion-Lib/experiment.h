@@ -13,44 +13,74 @@ class CLogger;
 
 #define MAX_PROGRESS_MSG_LEN 1024
 
-class CExperimentProgress
+//utility class to get a experiment time reference
+//for example, we can use this reference to know if some feature vector has already been calculated in this time-step
+class CExperimentTime
 {
-	unsigned int m_episode; //[1..g_numEpisodes]
+public:
+	unsigned int m_episodeIndex; //[1..g_numEpisodes]
 	unsigned int m_step; //]1..g_numStepsPerEpisode]
 
-	unsigned int m_numEpisodes;
+	CExperimentTime(unsigned int episodeIndex, unsigned int step){ m_episodeIndex = episodeIndex; m_step = step; }
+
+	CExperimentTime& operator=(CExperimentTime& exp);
+	bool operator==(CExperimentTime& exp);
+};
+
+class CExperimentProgress
+{
+	unsigned int m_episodeIndex; //[1..g_numEpisodes]
+	unsigned int m_step; //]1..g_numStepsPerEpisode]
+	unsigned int m_trainingEpisodeIndex; //[1..m_numTrainingEpisodes]
+	unsigned int m_evalEpisodeIndex; //[1..1+m_numTrainingEpisodes/ evalFreq]
+
+	//episode stuff
+	unsigned int m_totalNumEpisodes;
+	unsigned int m_numTrainingEpisodes;
+	unsigned int m_numEvaluationEpisodes;
+	unsigned int m_evalFreq;
+	//steps
 	unsigned int m_numSteps;
+
 
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
 public:
-	CExperimentProgress(){ m_episode = 0; m_step = 0; }
+	CExperimentProgress(){ reset(); }
 	~CExperimentProgress(){}
 
-	CExperimentProgress& operator=(CExperimentProgress& exp);
-	bool operator==(CExperimentProgress& exp);
+	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }
 
-	unsigned int getEpisode(){ return m_episode; }
+
+	//STEP
+	bool isValidStep(){ return m_step > 0 && m_step <= m_numSteps; }
 	unsigned int getStep(){ return m_step; }
 	bool isFirstStep(){ return m_step == 1; }
 	bool isLastStep(){ return m_step == m_numSteps; }
-	void setEpisode(unsigned int episode){ m_episode = episode; }
-	void setStep(unsigned int step){ m_step = step; }
-	bool isValidStep(){ return m_step > 0 && m_step <= m_numSteps; }
-	void incStep(){ m_step++; }
-	bool isFirstEpisode(){ return m_episode == 1; }
-	bool isLastEpisode(){ return m_episode == m_numEpisodes; }
-	bool isValidEpisode(){ return m_episode > 0 && m_episode <= m_numEpisodes; }
-	void incEpisode(){ m_episode++; }
+	void nextStep();
 
-	unsigned int getNumEpisodes(){ return m_numEpisodes; }
+	//EPISODES
+	unsigned int getEpisodeIndex(){ return m_episodeIndex; }
+	unsigned int getTrainingEpisodeIndex(){ return m_trainingEpisodeIndex; }
+	unsigned int getEvaluationEpisodeIndex(){ return m_evalEpisodeIndex; }
+	void setNumEpisodes(unsigned int numTrainingEpisodes, unsigned int evalFreq);
+	void nextEpisode();
+	//true if is the first evaluation episode or the first training episode
+	bool isFirstEpisode();
+	//true if is the last evaluation episode or the last training episode
+	bool isLastEpisode();
+	bool isValidEpisode(){ return m_episodeIndex > 0 && m_episodeIndex <= m_totalNumEpisodes; }
+
+	bool isEvaluationEpisode();
+
+	unsigned int getTotalNumEpisodes(){ return m_totalNumEpisodes; }
 	unsigned int getNumSteps(){ return m_numSteps; }
-	void setNumEpisodes(unsigned int numEpisodes){ m_numEpisodes = numEpisodes; }
 	void setNumSteps(unsigned int numSteps){ m_numSteps = numSteps; }
 
 	double getExperimentProgress(); //[0,1]
 	double getEpisodeProgress(); //[0,1]
 
 	const char* getProgressString();
+	void reset();
 };
 
 class CExperiment
@@ -64,9 +94,6 @@ public:
 	CLogger* m_pLogger;
 
 	unsigned int m_randomSeed;
-	unsigned int m_evalFreq; //in episodes
-
-	bool isEvaluationEpisode();
 
 	void timestep(CState *s, CAction *a,CState *s_p, CReward* pReward);
 };
