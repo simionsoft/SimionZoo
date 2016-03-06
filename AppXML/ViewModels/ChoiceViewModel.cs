@@ -21,8 +21,10 @@ namespace AppXML.ViewModels
         private string _clas;
         private ClassViewModel _Class;
         private string _XML;
-        public ChoiceViewModel(XmlNode nodo)
+        private XmlDocument _doc;
+        public ChoiceViewModel(XmlNode nodo, XmlDocument doc)
         {
+            _doc = doc;
             _label = nodo.Attributes["Name"].Value;
             _node = nodo;
             _comboValues = new ObservableCollection<ChoiceElement>();
@@ -66,7 +68,7 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => SelectedItem);
                 if (_Class != null)
                     _Class.removeViews();
-                _Class = new ClassViewModel(SelectedItem.clas);
+                _Class = new ClassViewModel(SelectedItem.clas,_doc);
                 if (SelectedItem.XML != null)
                 {
                     CNode.XML[_XML] = SelectedItem.XML;
@@ -83,6 +85,11 @@ namespace AppXML.ViewModels
         public bool validate()
         {
             return _Class.validate();
+        }
+
+        internal XmlNode getXmlNode()
+        {
+            return _Class.getXmlNode();
         }
     }
 }

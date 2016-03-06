@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace AppXML.ViewModels
 {
-    public class ClassViewModel
+    public class ClassViewModel:PropertyChangedBase
     {
 
         private ClassViewModel _resumeClassViewModel;
@@ -29,16 +29,20 @@ namespace AppXML.ViewModels
         private string _resume;
         private string _className;
         private WindowClassViewModel _wclvm;
+        private XmlDocument _doc;
+        public XmlNode resume;
 
         //faltan los branches pero estan sin crear BranchViewModel y BranchView
-        public ClassViewModel(string clasName)
+        public ClassViewModel(string clasName, XmlDocument doc)
         {
+            _doc = doc;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
             if (node.Attributes["Window"] != null)
             {
                 _resume = "Press the button to open the form";
-                _wclvm = new WindowClassViewModel(clasName, this);
+                _wclvm = new WindowClassViewModel(clasName, this,_doc);
+               
             }
             else
             {
@@ -46,14 +50,14 @@ namespace AppXML.ViewModels
                 {
                     if (child.Name == "CHOICE")
                     {
-                        _choice = new ChoiceViewModel(child);
+                        _choice = new ChoiceViewModel(child,_doc);
                     }
                     else if (child.Name.EndsWith("VALUE"))
                     {
                         if (_items == null)
                             _items = new ObservableCollection<IntegerViewModel>();
                         CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
-                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ);
+                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc);
                         _items.Add(ivw);
 
                     }
@@ -68,7 +72,7 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional);
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,doc);
                         _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
@@ -82,7 +86,7 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional);
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,_doc);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -92,7 +96,12 @@ namespace AppXML.ViewModels
                         string xmlfile = child.Attributes["XMLFile"].Value;
                         if (_XMLNODE == null)
                             _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
-                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action));
+                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action,_doc));
+                    }
+                    else if (child.Name == "RESUME")
+                    {
+                        resume = child;
+
                     }
                 }
             }
@@ -100,14 +109,15 @@ namespace AppXML.ViewModels
 
         }
 
-        public ClassViewModel(string clasName, Boolean ignoreWindow)
+        public ClassViewModel(string clasName, Boolean ignoreWindow, XmlDocument doc)
         {
+            _doc = doc;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
             if (ignoreWindow && node.Attributes["Window"] != null)
             {
                 _resume = "Press the button to open the form";
-                _wclvm = new WindowClassViewModel(clasName, this);
+                _wclvm = new WindowClassViewModel(clasName, this,_doc);
             }
             else
             {
@@ -115,14 +125,14 @@ namespace AppXML.ViewModels
                 {
                     if (child.Name == "CHOICE")
                     {
-                        _choice = new ChoiceViewModel(child);
+                        _choice = new ChoiceViewModel(child,_doc);
                     }
                     else if (child.Name.EndsWith("VALUE"))
                     {
                         if (_items == null)
                             _items = new ObservableCollection<IntegerViewModel>();
                         CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
-                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ);
+                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc);
                         _items.Add(ivw);
 
                     }
@@ -137,7 +147,7 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional); _multis.Add(mvvm);
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional,doc); _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
                     {
@@ -150,7 +160,7 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional);
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional,_doc);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -160,7 +170,12 @@ namespace AppXML.ViewModels
                         string xmlfile = child.Attributes["XMLFile"].Value;
                         if (_XMLNODE == null)
                             _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
-                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action));
+                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action,_doc));
+                    }
+                    else if(child.Name == "RESUME")
+                    {
+                        resume = child;
+
                     }
                 }
             }
@@ -180,7 +195,7 @@ namespace AppXML.ViewModels
         public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         public ObservableCollection<XMLNodeRefViewModel> XMLNODE { get { return _XMLNODE; } set { } }
-        public string Resume { get { return _resume; } set { _resume = value; } }
+        public string Resume { get { return _resume; } set { _resume = value; NotifyOfPropertyChange(() => Resume); } }
 
         public void removeViews()
         {
@@ -265,6 +280,51 @@ namespace AppXML.ViewModels
                 return ResumeClass.validate();
             }
             
+        }
+
+        public XmlNode getXmlNode()
+        {
+            XmlNode nodo = _doc.CreateElement(_className);
+            if (_branches != null)
+            {
+                foreach (BranchViewModel item in _branches)
+                {
+                    nodo.AppendChild(item.getXmlNode());
+                }
+            }
+            if (_items != null)
+            {
+                foreach (IntegerViewModel item in _items)
+                {
+                    nodo.AppendChild(item.getXmlNode());
+                }
+            }
+            
+            if (_multis != null)
+            {
+                foreach (MultiValuedViewModel item in _multis)
+                {
+                    List<XmlNode> nodes = item.getXmlNode();
+                    foreach (XmlNode node in nodes)
+                        nodo.AppendChild(node);
+                }
+            }
+            
+            if (_choice != null)
+            {
+                nodo.AppendChild(_choice.getXmlNode());
+            }
+            
+            if (_XMLNODE != null)
+            {
+                foreach (XMLNodeRefViewModel item in _XMLNODE)
+                {
+                    nodo.AppendChild(item.getXmlNode());
+                }
+            }
+              
+           
+            return nodo;
         }
     }
 }

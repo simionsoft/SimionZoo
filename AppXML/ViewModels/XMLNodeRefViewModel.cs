@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace AppXML.ViewModels
 {
@@ -14,15 +15,16 @@ namespace AppXML.ViewModels
         private string _XMLFile;
         private string _action;
         private string _selectedOption;
+        private XmlDocument _doc;
 
         public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; } }
 
-        public XMLNodeRefViewModel(string label, string file, string action )
+        public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc )
         {
             this._label = label;
             this._XMLFile = file;
             this._action = action;
-
+            _doc = doc;
             List<string> names =AppXML.Data.Utility.getComboFromXML(file, action);
             _options = new ObservableCollection<string>(names);
             AppXML.Models.CApp.addView(this);
@@ -39,6 +41,13 @@ namespace AppXML.ViewModels
         public bool validate()
         {
             return _selectedOption != null;
+        }
+
+        internal XmlNode getXmlNode()
+        {
+            XmlNode node = _doc.CreateElement(Label);
+            node.InnerText = SelectedOption;
+            return node;
         }
     }
 }

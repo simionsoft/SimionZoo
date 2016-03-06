@@ -303,6 +303,13 @@
     <DECIMAL-VALUE Name="Min" Comment="Minimum allowed reward"/>
     <DECIMAL-VALUE Name="Max" Comment="Maximum output of each reward component"/>
     <MULTI-VALUED Name="Reward-components"  Class="REWARD-COMPONENT"/>
+    <RESUME>
+      <REWARD-COMPONENT>
+        <DEVIATION-REWARD-COMPONENT>
+          <Variable/>
+        </DEVIATION-REWARD-COMPONENT>
+      </REWARD-COMPONENT>
+    </RESUME>
   </CLASS>
 
   <CLASS Name="REWARD-COMPONENT">

@@ -97,7 +97,7 @@ namespace AppXML.Data
                 if (node.Attributes["Comment"] != null)
                     comment = node.Attributes["Comment"].Value;
                 if(cn is CBranch)
-                    rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value,comment,isOptional));
+                    rootnode.AddBranch(new ViewModels.BranchViewModel(node.Attributes["Name"].Value, node.Attributes["Class"].Value,comment,isOptional,(rootnode as CApp).document));
             }
             return rootnode;
         }

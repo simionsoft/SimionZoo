@@ -28,6 +28,18 @@ namespace AppXML.Models
             foreach (XMLNodeRefViewModel view in viewsWithNodeRef)
                 view.update();
         }
-        public CApp(XmlNode node, string n) { name = n; }
+        public CApp(XmlNode node, string n) 
+        { 
+            name = n;
+            _document = new XmlDocument();
+            _root = _document.CreateElement(name);
+            _document.AppendChild(_root);
+
+        }
+
+        private XmlDocument _document;
+        private XmlNode _root;
+        public XmlDocument document { get { return _document; } private set { } }
+        public XmlNode root { get { return _root; } private set { } }
     }
 }

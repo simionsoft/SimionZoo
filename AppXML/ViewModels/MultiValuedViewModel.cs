@@ -20,7 +20,7 @@ namespace AppXML.ViewModels
         private bool _isNull = false;
         private string _comment;
         public string Comment { get { return _comment; } set { } }
-
+        private XmlDocument _doc;
         public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
         public bool IsEnabled { get { return !IsNull; } set {} }
         private ClassViewModel _headerClass;
@@ -58,9 +58,10 @@ namespace AppXML.ViewModels
         }
         public string Label { get { return label; } set { } }
 
-        public MultiValuedViewModel(string label, string clas,string comment ,bool isOptional)
+        public MultiValuedViewModel(string label, string clas,string comment ,bool isOptional, XmlDocument doc)
         {
             _comment = comment;
+            _doc = doc;
             _isOptional = isOptional;
             if (CNode.definitions != null)
             {
@@ -71,7 +72,7 @@ namespace AppXML.ViewModels
                     if(nodo.Name.StartsWith("ENUMERATION"))
                     {
                         original = new CIntegerValue(nodo); 
-                        _header = new IntegerViewModel(label, original);
+                        _header = new IntegerViewModel(label, original,_doc);
                         this.label = label;
                         _aded = new ObservableCollection<IntegerViewModel>();
 
@@ -83,7 +84,7 @@ namespace AppXML.ViewModels
                         this.clas = clas;
                         //List<ClassViewModel> list = new List<ClassViewModel>();
                         //list.Add(new ClassViewModel(clas));
-                        _headerClass = new ClassViewModel(clas);
+                        _headerClass = new ClassViewModel(clas,doc);
                        //new ObservableCollection<ClassViewModel>(list);
                         _adedClasses = new ObservableCollection<ClassViewModel>();
 
@@ -93,7 +94,7 @@ namespace AppXML.ViewModels
                 {
                     //es un integervalue
                     original = new CIntegerValue(clas);
-                    _header = new IntegerViewModel(label, original);
+                    _header = new IntegerViewModel(label, original,_doc);
                     this.label = label;
                     _aded = new ObservableCollection<IntegerViewModel>();
                 }
@@ -176,7 +177,7 @@ namespace AppXML.ViewModels
                     original.defaultValue = valor;
                 }
             }
-            IntegerViewModel t = new IntegerViewModel(label, original);
+            IntegerViewModel t = new IntegerViewModel(label, original,_doc);
             _aded.Add(t);
         }
         public void DeleteLast()
@@ -187,7 +188,7 @@ namespace AppXML.ViewModels
         }
         public void Add()
         {
-            ClassViewModel cvm = new ClassViewModel(this.clas);
+            ClassViewModel cvm = new ClassViewModel(this.clas,_doc);
             //int index = _adedClasses.Count;
             //_adedClasses.Add(new ClassViewWithIndex(cvm,index));
             _adedClasses.Add(cvm);
@@ -260,19 +261,34 @@ namespace AppXML.ViewModels
             }
             return validate();
         }
-    }
-    /*public class ClassViewWithIndex:PropertyChangedBase
-    {
-        public ClassViewModel myView;
-        public int index;
 
-        public ClassViewModel MyView { get { return myView; } set { } }
-        public int Index { get { return index; } set { } }
-
-        public ClassViewWithIndex(ClassViewModel view, int index)
+        internal List<XmlNode> getXmlNode()
         {
-            this.myView = view;
-            this.index = index;
+            List<XmlNode> nodes = new List<XmlNode>();
+            if(HeaderClass!=null)
+            {
+                nodes.Add(HeaderClass.getXmlNode());
+                if(AdedClasses!=null)
+                {
+                    foreach(ClassViewModel cvm in AdedClasses)
+                    {
+                        nodes.Add(cvm.getXmlNode());
+                    }
+                }
+            }
+            else
+            {
+                nodes.Add(Header.getXmlNode());
+                if(Aded!=null)
+                {
+                    foreach(IntegerViewModel ivm in Aded)
+                    {
+                        nodes.Add(ivm.getXmlNode());
+                    }
+                }
+            }
+            return nodes;
         }
-    }*/
+    }
+   
 }

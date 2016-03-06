@@ -11,6 +11,7 @@ using Microsoft.Win32;
 using System.IO;
 using System.Windows.Forms;
 using AppXML.Models;
+using System.Xml;
 
 namespace AppXML.ViewModels
 {
@@ -23,9 +24,10 @@ namespace AppXML.ViewModels
         private bool isOptional = false;
         private string _comment;
         public string Comment { get { return _comment; } set { } }
-        public IntegerViewModel(String label, CIntegerValue param)
+        private XmlDocument _doc;
+        public IntegerViewModel(String label, CIntegerValue param, XmlDocument doc)
         {
-            
+            _doc = doc;
             isOptional = param.isOptional;
             _comment = param.comment;
             if(param.type== validTypes.DirPathValue)
@@ -111,6 +113,28 @@ namespace AppXML.ViewModels
             this.isOptional = isOptional;
             return validateIntegerViewModel();
            
+        }
+
+        internal XmlNode getXmlNode()
+        {
+            XmlNode nodo = null;
+            if(_textBox!=null)
+            {
+                nodo = _doc.CreateElement(_textBox[0].Label);
+                nodo.InnerText = _textBox[0].Default;
+            }
+            if(_comboBox!=null)
+            {
+                nodo = _doc.CreateElement(_comboBox[0].Label);
+                nodo.InnerText = _comboBox[0].SelectedComboValue;
+            }
+            if(_textBoxFile!=null)
+            {
+                nodo = _doc.CreateElement(_textBoxFile[0].Label);
+                nodo.InnerText = _textBoxFile[0].Default;
+            }
+            return nodo;
+            
         }
     }
         

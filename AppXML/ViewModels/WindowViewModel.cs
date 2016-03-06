@@ -25,7 +25,7 @@ namespace AppXML.ViewModels
     {
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
-        
+        private XmlDocument _doc;
         
 
        
@@ -33,7 +33,7 @@ namespace AppXML.ViewModels
         {
             _rootnode = Utility.getRootNode("../config/RLSimion.xml");
             _branches = _rootnode.children;
-
+            _doc = (this._rootnode as CApp).document;
            
         }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
