@@ -262,17 +262,25 @@ namespace AppXML.ViewModels
             return validate();
         }
 
-        internal List<XmlNode> getXmlNode()
+        internal List<XmlNode> getXmlNode(string name)
         {
             List<XmlNode> nodes = new List<XmlNode>();
             if(HeaderClass!=null)
             {
-                nodes.Add(HeaderClass.getXmlNode());
+                XmlNode nodo = _doc.CreateElement(name);
+                List<XmlNode> nodos = HeaderClass.getXmlNodes();
+                foreach (XmlNode child in nodos)
+                    nodo.AppendChild(child);
+                nodes.Add(nodo);
                 if(AdedClasses!=null)
                 {
                     foreach(ClassViewModel cvm in AdedClasses)
                     {
-                        nodes.Add(cvm.getXmlNode());
+                        XmlNode nodo2 = _doc.CreateElement(name);
+                        List<XmlNode> nodos2 = HeaderClass.getXmlNodes();
+                        foreach (XmlNode child in nodos2)
+                            nodo2.AppendChild(child);
+                        nodes.Add(nodo2);
                     }
                 }
             }

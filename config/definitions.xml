@@ -304,11 +304,11 @@
     <DECIMAL-VALUE Name="Max" Comment="Maximum output of each reward component"/>
     <MULTI-VALUED Name="Reward-components"  Class="REWARD-COMPONENT"/>
     <RESUME>
-      <REWARD-COMPONENT>
-        <DEVIATION-REWARD-COMPONENT>
+      <Reward-components>
+        <Deviation-component>
           <Variable/>
-        </DEVIATION-REWARD-COMPONENT>
-      </REWARD-COMPONENT>
+        </Deviation-component>
+      </Reward-components>
     </RESUME>
   </CLASS>
 

@@ -52,13 +52,20 @@ namespace AppXML.ViewModels
        
         public void Validate()
         {
+            XmlNode rootNode = _doc.CreateElement(_rootnode.name);
             foreach(BranchViewModel branch in _branches)
             {
                 if(!branch.validate())
                 {
-                    //error
+                    //mostrar error
+                    //return;
+                }
+                else
+                {
+                    rootNode.AppendChild(branch.getXmlNode());
                 }
             }
+            
         }
        
         

@@ -57,7 +57,10 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
-            return Class.getXmlNode();
+            XmlNode result = _doc.CreateElement(Name);
+            foreach (XmlNode child in Class.getXmlNodes())
+                result.AppendChild(child);
+            return result;
         }
     }
 }

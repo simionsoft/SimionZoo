@@ -89,7 +89,10 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
-            return _Class.getXmlNode();
+            XmlNode nodo = _doc.CreateElement(SelectedItem.name);
+            foreach (XmlNode child in _Class.getXmlNodes())
+                nodo.AppendChild(child);
+            return nodo;
         }
     }
 }

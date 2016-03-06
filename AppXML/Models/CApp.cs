@@ -32,8 +32,8 @@ namespace AppXML.Models
         { 
             name = n;
             _document = new XmlDocument();
-            _root = _document.CreateElement(name);
-            _document.AppendChild(_root);
+            //_root = _document.CreateElement(name);
+            //_document.AppendChild(_root);
 
         }
 

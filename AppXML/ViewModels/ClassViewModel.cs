@@ -282,48 +282,112 @@ namespace AppXML.ViewModels
             
         }
 
+        public List<XmlNode> getXmlNodes()
+        {
+            List<XmlNode> result = new List<XmlNode>();
+            //XmlNode nodo = _doc.CreateElement(_className);
+            if(_resume==null)
+            {
+                if (_branches != null)
+                {
+                    foreach (BranchViewModel item in _branches)
+                    {
+                        result.Add(item.getXmlNode());
+                        //nodo.AppendChild(item.getXmlNode());
+                    }
+                }
+                if (_items != null)
+                {
+                    foreach (IntegerViewModel item in _items)
+                    {
+                        result.Add(item.getXmlNode());
+                        //nodo.AppendChild(item.getXmlNode());
+                    }
+                }
+                if (_multis != null)
+                {
+                    foreach (MultiValuedViewModel item in _multis)
+                    {
+                        List<XmlNode> nodes = item.getXmlNode(item.Label);
+                        foreach (XmlNode node in nodes)
+                            //nodo.AppendChild(node);
+                            result.Add(node);
+                    }
+                }
+
+                if (_choice != null)
+                {
+                    //nodo.AppendChild(_choice.getXmlNode());
+                    result.Add(_choice.getXmlNode());
+                }
+                if (_XMLNODE != null)
+                {
+                    foreach (XMLNodeRefViewModel item in _XMLNODE)
+                    {
+                        //nodo.AppendChild(item.getXmlNode());
+                        result.Add(item.getXmlNode());
+                    }
+                }
+              
+            }
+            else
+            {
+                return ResumeClass.getXmlNodes();
+            }       
+            return result;
+        }
         public XmlNode getXmlNode()
         {
+            
             XmlNode nodo = _doc.CreateElement(_className);
-            if (_branches != null)
+            if (_resume == null)
             {
-                foreach (BranchViewModel item in _branches)
+                if (_branches != null)
                 {
-                    nodo.AppendChild(item.getXmlNode());
+                    foreach (BranchViewModel item in _branches)
+                    {
+                        
+                        nodo.AppendChild(item.getXmlNode());
+                    }
                 }
-            }
-            if (_items != null)
-            {
-                foreach (IntegerViewModel item in _items)
+                if (_items != null)
                 {
-                    nodo.AppendChild(item.getXmlNode());
+                    foreach (IntegerViewModel item in _items)
+                    {
+                        
+                        nodo.AppendChild(item.getXmlNode());
+                    }
                 }
-            }
-            
-            if (_multis != null)
-            {
-                foreach (MultiValuedViewModel item in _multis)
+                if (_multis != null)
                 {
-                    List<XmlNode> nodes = item.getXmlNode();
-                    foreach (XmlNode node in nodes)
-                        nodo.AppendChild(node);
+                    foreach (MultiValuedViewModel item in _multis)
+                    {
+                        List<XmlNode> nodes = item.getXmlNode(item.Label);
+                        foreach (XmlNode node in nodes)
+                            nodo.AppendChild(node);
+                            
+                    }
                 }
-            }
-            
-            if (_choice != null)
-            {
-                nodo.AppendChild(_choice.getXmlNode());
-            }
-            
-            if (_XMLNODE != null)
-            {
-                foreach (XMLNodeRefViewModel item in _XMLNODE)
+
+                if (_choice != null)
                 {
-                    nodo.AppendChild(item.getXmlNode());
+                    nodo.AppendChild(_choice.getXmlNode());
+                    
                 }
+                if (_XMLNODE != null)
+                {
+                    foreach (XMLNodeRefViewModel item in _XMLNODE)
+                    {
+                        nodo.AppendChild(item.getXmlNode());
+                        
+                    }
+                }
+
             }
-              
-           
+            else
+            {
+                return ResumeClass.getXmlNode();
+            }
             return nodo;
         }
     }
