@@ -15,7 +15,7 @@ namespace AppXML.ViewModels
         private bool _isNull=false;
         private string _comment;
         private XmlDocument _doc;
-
+        private string _tag;
 
         public string Comment { get { return _comment; } set { } }
         
@@ -33,13 +33,19 @@ namespace AppXML.ViewModels
             }
             set { }
         }
-        public BranchViewModel(string name,string clas,string comment,bool isOptional, XmlDocument doc)
+        public BranchViewModel(string name,string clas,string comment,bool isOptional, XmlDocument doc, string tag)
         {
             _name = name;
             _comment = comment;
             _class = new ClassViewModel(clas,doc);
             _isOptional = isOptional;
             _doc = doc;
+            if (tag == null || tag == "")
+                _tag = name;
+            else
+                _tag = tag;
+
+            
         }
         public string Name{get{return _name;}set{}}
         public ClassViewModel Class { get { return _class; } set { } }
@@ -57,10 +63,44 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
-            XmlNode result = _doc.CreateElement(Name);
+            XmlNode result = resolveTag(_tag);
+            XmlNode lastChild = getLastChild(result);
             foreach (XmlNode child in Class.getXmlNodes())
-                result.AppendChild(child);
+                lastChild.AppendChild(child);
             return result;
+        }
+
+        private XmlNode getLastChild(XmlNode result)
+        {
+            if (result.HasChildNodes)
+                return getLastChild(result.ChildNodes[0]);
+            else 
+                return result;
+        }
+
+        private XmlNode resolveTag(string _tag)
+        {
+            string[] tags = _tag.Split('/');
+            if(tags.Count()>0)
+            {
+                XmlNode result = _doc.CreateElement(tags[0]);
+                if(tags.Count()>1)
+                {
+                    XmlNode father = result;
+                    for(int i=1;i<tags.Count();i++)
+                    {
+                        XmlNode nodo = _doc.CreateElement(tags[i]);
+                        father.AppendChild(nodo);
+                        father = nodo;
+                    }
+
+                }
+                return result;
+            }
+
+            return null;
+           
+            
         }
     }
 }

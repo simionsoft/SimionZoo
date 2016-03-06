@@ -3,7 +3,7 @@
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
     
-  <BRANCH Name="World" Class="WORLD"/>
+  <BRANCH Name="World" Class="WORLD" XMLTag="mundo1/mundo2/mundo3"/>
     
   <BRANCH Name="Experiment" Class="EXPERIMENT"/>
 

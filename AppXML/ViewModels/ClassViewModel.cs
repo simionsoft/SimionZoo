@@ -86,7 +86,10 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,_doc);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,_doc,tag);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
@@ -160,7 +163,10 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional,_doc);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, _doc, tag);
                         _branches.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
