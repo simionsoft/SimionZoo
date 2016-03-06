@@ -29,7 +29,7 @@
   </CLASS>
   
   <CLASS Name="LOG">
-    <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds. Freq=O.0 logs every step."/>
+    <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds. Freq=0 logs every step."/>
     <STRING-VALUE Name="Prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
     <STRING-VALUE Name="Ouput-directory" Default="test" Comment="name of the directory within ../logs/ where log files will be saved "/>
     <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
@@ -45,7 +45,7 @@
     <INTEGER-VALUE Name="Episode-Length" Default="360" Comment="Time length of each episode (in seconds)"/>
     <INTEGER-VALUE Name="Random-Seed" Default="1" Comment="Seed used to generate random numbers"/>
     <INTEGER-VALUE Name="Eval-Freq" Default="10" Comment="Evaluation freq. in episodes"/>
-    <INTEGER-VALUE Name="Progress-Update-Freq" Default="0.5" Comment="Progress update freq. (in seconds)"/>
+    <DECIMAL-VALUE Name="Progress-Update-Freq" Default="0.5" Comment="Progress update freq. (in seconds)"/>
     <BRANCH Name="Log" Class="LOG"/>
   </CLASS>
   

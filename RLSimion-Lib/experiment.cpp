@@ -5,7 +5,7 @@
 #include "world.h"
 #include "globals.h"
 #include "stats.h"
-
+#include "timer.h"
 
 
 CExperimentTime& CExperimentTime::operator=(CExperimentTime& exp)
@@ -91,6 +91,7 @@ bool CExperiment::isLastEpisode()
 
 CExperiment::~CExperiment()
 {
+	delete m_pProgressTimer;
 }
 
 CExperiment::CExperiment(CParameters* pParameters)
@@ -99,7 +100,6 @@ CExperiment::CExperiment(CParameters* pParameters)
 	{
 		m_progUpdateFreq = pParameters->getConstDouble("Progress-Update-Freq", 0.5);
 		m_randomSeed = pParameters->getConstInteger("Random-Seed", 1);
-
 
 		m_numTrainingEpisodes = pParameters->getConstInteger("Num-Episodes", 1);
 		m_evalFreq = std::min((int)m_numTrainingEpisodes, pParameters->getConstInteger("Eval-Freq", 0));
@@ -127,7 +127,8 @@ CExperiment::CExperiment(CParameters* pParameters)
 		m_evalFreq = 0;
 		setNumSteps(0);
 	}
-	QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
+	m_pProgressTimer = new CTimer();
+	//QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
 	srand(m_randomSeed);
 }
 
@@ -137,14 +138,15 @@ CExperiment::CExperiment(CParameters* pParameters)
 void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
 	//print progress
-	__int64 currentCounter;
-	QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-	double time = (double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
+	//__int64 currentCounter;
+	//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
+	double time = m_pProgressTimer->getElapsedTime();//(double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
 
 	if (time>m_progUpdateFreq)
 	{
 		CLogger::logMessage(Progress, RLSimion::g_pExperiment->getProgressString());
-		m_lastProgressReportCounter = currentCounter;
+		m_pProgressTimer->startTimer();
+		//m_lastProgressReportCounter = currentCounter;
 	}
 
 	bool evalEpisode = isEvaluationEpisode();
