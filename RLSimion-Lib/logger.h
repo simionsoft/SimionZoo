@@ -10,6 +10,7 @@ class CParameters;
 
 #include <vector>
 class CStats;
+class CTimer;
 
 enum MessageType {Progress,Info,Warning, Error};
 
@@ -25,10 +26,12 @@ class CLogger
 
 	double m_logFreq; //in seconds: time between file logs
 
-
+	CTimer *m_pEpisodeTimer;
+	CTimer *m_pExperimentTimer;
+/*
 	__int64 m_counterFreq;
 	__int64 m_episodeStartCounter;
-	__int64 m_experimentStartCounter;
+	__int64 m_experimentStartCounter;*/
 	double m_lastLogSimulationT;
 
 	bool logCurrentEpisode(bool evalEpisode);

@@ -5,11 +5,8 @@ typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CParameters;
-
-
-
-
 class CLogger;
+class CTimer;
 
 #define MAX_PROGRESS_MSG_LEN 1024
 
@@ -45,8 +42,9 @@ class CExperiment
 	unsigned int m_numSteps;
 
 	double m_progUpdateFreq; //in seconds: time between progress updates
-	__int64 m_counterFreq;
-	__int64 m_lastProgressReportCounter;
+	CTimer* m_pProgressTimer;
+	/*__int64 m_counterFreq;
+	__int64 m_lastProgressReportCounter;*/
 
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
 	void reset();

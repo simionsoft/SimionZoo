@@ -5,6 +5,7 @@
 #include "parameters.h"
 #include "stats.h"
 #include "globals.h"
+#include "timer.h"
 
 #define MAX_FILENAME_LENGTH 1024
 
@@ -39,15 +40,19 @@ CLogger::CLogger(CParameters* pParameters)
 		m_logFreq = 0.0;
 	}
 
-	QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
-	m_episodeStartCounter = 0;
-	m_experimentStartCounter = 0;
+	m_pEpisodeTimer = new CTimer();
+	m_pExperimentTimer = new CTimer();
+	//QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
+	//m_episodeStartCounter = 0;
+	//m_experimentStartCounter = 0;
 	m_lastLogSimulationT = 0.0;
 }
 
 
 CLogger::~CLogger()
 {
+	delete m_pExperimentTimer;
+	delete m_pEpisodeTimer,
 	delete [] m_outputDir;
 	delete [] m_filePrefix;
 }
@@ -116,10 +121,10 @@ void CLogger::writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex
 		FILE* pFile = openLogFile(false, false, evalEpisode, episodeIndex);
 
 		//output the episode index, the elapsed time since the experiment started and the last episode's time length
-		__int64 currentCounter;
-		QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-		double experimentTime = (double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
-		double episodeDuration = (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
+		//__int64 currentCounter;
+		//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
+		double experimentTime = m_pExperimentTimer->getElapsedTime(false);//(double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
+		double episodeDuration = m_pEpisodeTimer->getElapsedTime(false);// (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
 
 		fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
 		//output the stats
@@ -162,7 +167,8 @@ bool CLogger::logCurrentEpisodeInExperiment(bool evalEpisode)
 void CLogger::firstEpisode(bool evalEpisode)
 {
 	//set episode start time
-	QueryPerformanceCounter((LARGE_INTEGER*)&m_experimentStartCounter);
+	m_pEpisodeTimer->startTimer();
+	//QueryPerformanceCounter((LARGE_INTEGER*)&m_experimentStartCounter);
 
 	if ((m_bLogEvaluationExperiment && evalEpisode) || (!m_bLogTrainingExperiment && !evalEpisode))
 		openLogFile(true, false, evalEpisode, 1);
@@ -171,7 +177,8 @@ void CLogger::firstEpisode(bool evalEpisode)
 void CLogger::firstStep(bool evalEpisode, unsigned int episodeIndex)
 {
 	//set episode start time
-	QueryPerformanceCounter((LARGE_INTEGER*)&m_episodeStartCounter);
+	//QueryPerformanceCounter((LARGE_INTEGER*)&m_episodeStartCounter);
+	m_pEpisodeTimer->startTimer();
 
 	m_lastLogSimulationT = 0.0;
 	//reset stats
