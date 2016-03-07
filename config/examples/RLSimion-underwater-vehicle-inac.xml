@@ -43,30 +43,32 @@
         <Outputs>
           <Incremental-Natural-Actor>
             <VFA-Policy>
-              <Output-Action>u_thrust</Output-Action>
-              <Linear-State-VFA>
-                <State-Feature-Map>
-                  <RBF-State-Grid>
-                    <RBF-Grid-Dimension>
-                      <Variable>v-deviation</Variable>
-                      <Num-Features>5000</Num-Features>
-                      <Distribution>linear</Distribution>
-                    </RBF-Grid-Dimension>
-                  </RBF-State-Grid>
-                </State-Feature-Map>
-              </Linear-State-VFA>
-              <Exploration-Noise>
-                <Sigma>
-                  <Linear-Schedule>
-                    <Start-Offset>0.0</Start-Offset>
-                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                    <Interpolation>linear</Interpolation>
-                    <Initial-Value>0.01</Initial-Value>
-                    <End-Value>0.001</End-Value>
-                    <Evaluation-Value>0.0</Evaluation-Value>
-                  </Linear-Schedule>
-                </Sigma>
-              </Exploration-Noise>
+              <Deterministic-Policy-Gaussian-Noise>
+                <Output-Action>u_thrust</Output-Action>
+                <Linear-State-VFA>
+                  <State-Feature-Map>
+                    <RBF-State-Grid>
+                      <RBF-Grid-Dimension>
+                        <Variable>v-deviation</Variable>
+                        <Num-Features>5000</Num-Features>
+                        <Distribution>linear</Distribution>
+                      </RBF-Grid-Dimension>
+                    </RBF-State-Grid>
+                  </State-Feature-Map>
+                </Linear-State-VFA>
+                <Exploration-Noise>
+                  <Sigma>
+                    <Linear-Schedule>
+                      <Start-Offset>0.0</Start-Offset>
+                      <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                      <Interpolation>linear</Interpolation>
+                      <Initial-Value>0.01</Initial-Value>
+                      <End-Value>0.001</End-Value>
+                      <Evaluation-Value>0.0</Evaluation-Value>
+                    </Linear-Schedule>
+                  </Sigma>
+                </Exploration-Noise>
+              </Deterministic-Policy-Gaussian-Noise>
             </VFA-Policy>
             <Gamma>0.9</Gamma>
             <E-Traces>

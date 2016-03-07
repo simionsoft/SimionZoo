@@ -12,7 +12,7 @@
 
 CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pPolicy = new CSingleOutputVFAPolicy(pParameters);
+	m_pPolicy = CSingleOutputVFAPolicy::getInstance(pParameters);
 }
 
 CSingleOutputVFAPolicyLearner::~CSingleOutputVFAPolicyLearner()

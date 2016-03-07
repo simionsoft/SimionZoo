@@ -5,6 +5,10 @@
 class CParameters;
 class INumericValue;
 
+
+double getNormalDistributionSample(double mu, double sigma);
+
+
 class CNoise
 {
 protected:

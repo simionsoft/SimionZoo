@@ -69,7 +69,66 @@
         <Outputs>
           <CACLA>
               <VFA-Policy>
-                <Output-Action>d_beta</Output-Action>
+                <Deterministic-Policy-Gaussian-Noise>
+                  <Output-Action>d_beta</Output-Action>
+                  <Linear-State-VFA>
+                    <State-Feature-Map>
+                      <RBF-State-Grid>
+                        <RBF-Grid-Dimension>
+                          <Variable>omega_r</Variable>
+                          <Num-Features>80</Num-Features>
+                          <Distribution>cubic</Distribution>
+                        </RBF-Grid-Dimension>
+                        <RBF-Grid-Dimension>
+                          <Variable>d_omega_r</Variable>
+                          <Num-Features>80</Num-Features>
+                          <Distribution>cubic</Distribution>
+                        </RBF-Grid-Dimension>
+                        <RBF-Grid-Dimension>
+                          <Variable>T_g</Variable>
+                          <Num-Features>80</Num-Features>
+                          <Distribution>linear</Distribution>
+                        </RBF-Grid-Dimension>
+                        <RBF-Grid-Dimension>
+                          <Variable>E_p</Variable>
+                          <Num-Features>80</Num-Features>
+                          <Distribution>cubic</Distribution>
+                        </RBF-Grid-Dimension>
+                      </RBF-State-Grid>
+                    </State-Feature-Map>
+                  </Linear-State-VFA>
+                  <Exploration-Noise>
+                    <GaussianNoise>
+                      <Sigma>1.0</Sigma>
+                      <Alpha>1.0</Alpha>
+                      <Scale>
+                        <Linear-Schedule>
+                          <Start-Offset>0.0</Start-Offset>
+                          <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                          <Interpolation>linear</Interpolation>
+                          <Initial-Value>0.001</Initial-Value>
+                          <End-Value>0.00001</End-Value>
+                          <Evaluation-Value>0.0</Evaluation-Value>
+                        </Linear-Schedule>
+                      </Scale>
+                    </GaussianNoise>
+                  </Exploration-Noise>
+                </Deterministic-Policy-Gaussian-Noise>
+              </VFA-Policy>
+            <Alpha>
+              <Linear-Schedule>
+                <Start-Offset>0.0</Start-Offset>
+                <Interpolation>linear</Interpolation>
+                <Initial-Value>0.001</Initial-Value>
+                <End-Value>0.00001</End-Value>
+                <Evaluation-Value>0.0</Evaluation-Value>
+              </Linear-Schedule>
+            </Alpha>
+          </CACLA>
+          <CACLA>
+            <VFA-Policy>
+              <Deterministic-Policy-Gaussian-Noise>
+                <Output-Action>d_T_g</Output-Action>
                 <Linear-State-VFA>
                   <State-Feature-Map>
                     <RBF-State-Grid>
@@ -105,69 +164,14 @@
                         <Start-Offset>0.0</Start-Offset>
                         <Pre-Offset-Value>0.0</Pre-Offset-Value>
                         <Interpolation>linear</Interpolation>
-                        <Initial-Value>0.001</Initial-Value>
-                        <End-Value>0.00001</End-Value>
+                        <Initial-Value>1.0</Initial-Value>
+                        <End-Value>0.0</End-Value>
                         <Evaluation-Value>0.0</Evaluation-Value>
                       </Linear-Schedule>
                     </Scale>
                   </GaussianNoise>
-              </Exploration-Noise>
-              </VFA-Policy>
-            <Alpha>
-              <Linear-Schedule>
-                <Start-Offset>0.0</Start-Offset>
-                <Interpolation>linear</Interpolation>
-                <Initial-Value>0.001</Initial-Value>
-                <End-Value>0.00001</End-Value>
-                <Evaluation-Value>0.0</Evaluation-Value>
-              </Linear-Schedule>
-            </Alpha>
-          </CACLA>
-          <CACLA>
-            <VFA-Policy>
-              <Output-Action>d_T_g</Output-Action>
-              <Linear-State-VFA>
-                <State-Feature-Map>
-                  <RBF-State-Grid>
-                    <RBF-Grid-Dimension>
-                      <Variable>omega_r</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>cubic</Distribution>
-                    </RBF-Grid-Dimension>
-                    <RBF-Grid-Dimension>
-                      <Variable>d_omega_r</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>cubic</Distribution>
-                    </RBF-Grid-Dimension>
-                    <RBF-Grid-Dimension>
-                      <Variable>T_g</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>linear</Distribution>
-                    </RBF-Grid-Dimension>
-                    <RBF-Grid-Dimension>
-                      <Variable>E_p</Variable>
-                      <Num-Features>80</Num-Features>
-                      <Distribution>cubic</Distribution>
-                    </RBF-Grid-Dimension>
-                  </RBF-State-Grid>
-                </State-Feature-Map>
-              </Linear-State-VFA>
-              <Exploration-Noise>
-                <GaussianNoise>
-                  <Sigma>1.0</Sigma>
-                  <Alpha>1.0</Alpha>
-                  <Scale>
-                    <Linear-Schedule>
-                      <Start-Offset>0.0</Start-Offset>
-                      <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                      <Interpolation>linear</Interpolation>
-                      <Initial-Value>1.0</Initial-Value>
-                      <End-Value>0.0</End-Value>
-                      <Evaluation-Value>0.0</Evaluation-Value>
-                    </Linear-Schedule>
-                  </Scale>
-                </GaussianNoise>
-              </Exploration-Noise>
+                </Exploration-Noise>
+              </Deterministic-Policy-Gaussian-Noise>
             </VFA-Policy>
             <Alpha>
               <Linear-Schedule>
