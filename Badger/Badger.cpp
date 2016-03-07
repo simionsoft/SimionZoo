@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "../RLSimion-Lib/parameters.h"
-#include "../RLSimion-Lib/parameter.h"
+
 #include "ProcessSpawner.h"
 
 #ifdef _DEBUG

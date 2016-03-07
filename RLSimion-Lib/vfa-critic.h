@@ -3,7 +3,7 @@
 #include "critic.h"
 #include "parameterized-object.h"
 
-class CLinearVFA;
+class CLinearStateVFA;
 class CETraces;
 class CFeatureList;
 class CParameters;
@@ -15,7 +15,7 @@ class INumericValue;
 class CVFACritic : public CCritic, public CParamObject
 {
 protected:
-	CLinearVFA* m_pVFA; //value function approximator
+	CLinearStateVFA* m_pVFA; //value function approximator
 
 	void loadVFunction(const char* filename);
 	void saveVFunction(const char* filename);
@@ -23,7 +23,7 @@ public:
 	CVFACritic(CParameters* pParameters);
 	virtual ~CVFACritic();
 
-	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
+	virtual double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho) = 0;
 
 	static CVFACritic* getInstance(CParameters* pParameters);
 };
@@ -40,7 +40,7 @@ public:
 	CTDLambdaCritic(CParameters *pParameters);
 	~CTDLambdaCritic();
 
-	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
+	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
 };
 
 class CTrueOnlineTDLambdaCritic : public CVFACritic
@@ -58,7 +58,7 @@ public:
 	CTrueOnlineTDLambdaCritic(CParameters *pParameters);
 	~CTrueOnlineTDLambdaCritic();
 
-	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
+	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
 
 };
 
@@ -80,7 +80,7 @@ public:
 	CTDCLambdaCritic(CParameters *pParameters);
 	~CTDCLambdaCritic();
 
-	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
+	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
 };
 
 
@@ -98,5 +98,5 @@ public:
 	CIncrementalNaturalCritic(CParameters *pParameters);
 	~CIncrementalNaturalCritic();
 
-	double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho);
+	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
 };

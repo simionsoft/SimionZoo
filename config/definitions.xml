@@ -120,7 +120,7 @@
 
   <CLASS Name="VFA-POLICY">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
     <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
   </CLASS>
 
@@ -130,7 +130,7 @@
 
   <CLASS Name="SINGLE-OUTPUT-VFA">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
   </CLASS>
 
   <CLASS Name="MULTI-CONTROLLER">
@@ -208,7 +208,7 @@
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
-    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
   </CLASS>
 
   <CLASS Name="True-Online-TD-Lambda">
@@ -217,7 +217,7 @@
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
     <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
-    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
   </CLASS>
   
   <CLASS Name="TDC-Lambda">
@@ -227,7 +227,7 @@
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
     <BRANCH Name="Beta" Class="NUMERIC-VALUE"/>
     <BRANCH Name="E-Traces" Class="ETRACES"  Optional="true"/>
-    <BRANCH Name="Linear-VFA" Class="Linear-VFA"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
   </CLASS>
   
 
@@ -243,20 +243,39 @@
     <ENUM-VALUE Name="Replace" Class="BOOLEAN"/>
   </CLASS>
 
-  <CLASS Name="Linear-VFA">
+  <CLASS Name="LINEAR-STATE-VFA">
     <CHOICE Name="Approximator">
-      <CHOICE-ELEMENT Name="RBF-Grid" Class="RBF-GRID"/>
+      <CHOICE-ELEMENT Name="RBF-State-Grid" Class="RBF-STATE-GRID"/>
     </CHOICE>
   </CLASS>
   
-  <CLASS Name="RBF-GRID">
-    <MULTI-VALUED Name="RBF-Grid-Dimension" Class="RBF-GRID-DIMENSION"/>
+  <CLASS Name="LINEAR-STATE-ACTION-VFA">
+    <CHOICE Name="Approximator" XMLTag="">
+      <CHOICE-ELEMENT Name="RBF-State-Action-Grid" Class="RBF-STATE-ACTION-GRID"/>
+    </CHOICE>
+  </CLASS>
+  
+  <CLASS Name="RBF-STATE-GRID" XMLTag="FeatureMap/RBF-State-Grid">
+    <MULTI-VALUED Name="RBF-State-Grid-Dimension" Class="RBF-STATE-GRID-DIMENSION"/>
+  </CLASS>
+
+  <CLASS Name="RBF-STATE-ACTION-GRID" XMLTag="FeatureMap/RBF-State-Action-Grid">
+    <MULTI-VALUED Name="RBF-State-Grid-Dimension" Class="RBF-STATE-GRID-DIMENSION"/>
+    <MULTI-VALUED Name="RBF-Action-Grid-Dimension" Class="RBF-ACTION-GRID-DIMENSION"/>
   </CLASS>
 
   <!-- RBFs-->
   
-  <CLASS Name="RBF-GRID-DIMENSION">
+  <CLASS Name="RBF-STATE-GRID-DIMENSION">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
+    <INTEGER-VALUE Name="Min" Optional="true"/>
+    <INTEGER-VALUE Name="Max" Optional="true"/>
+    <ENUM-VALUE Name="Distribution" Class="DISTRIBUTIONS"/>
+  </CLASS>
+
+  <CLASS Name="RBF-ACTION-GRID-DIMENSION">
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
     <INTEGER-VALUE Name="Min" Optional="true"/>
     <INTEGER-VALUE Name="Max" Optional="true"/>

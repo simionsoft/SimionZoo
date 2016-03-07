@@ -34,7 +34,7 @@ CIncrementalNaturalCritic::~CIncrementalNaturalCritic()
 	delete m_e_v;
 }
 
-double CIncrementalNaturalCritic::updateValue(CState *s, CAction *a, CState *s_p, double r, double rho)
+double CIncrementalNaturalCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho)
 {
 	// Incremental Natural Actor - Critic(INAC)
 	//Critic update:
@@ -44,8 +44,8 @@ double CIncrementalNaturalCritic::updateValue(CState *s, CAction *a, CState *s_p
 	//v = v + alpha_v*td*e_v
 	double alpha_v = m_pAlphaV->getValue();
 	double gamma = m_pGamma->getValue();
-	m_pVFA->getFeatures(s, a, m_s_features);
-	m_pVFA->getFeatures(s_p, a, m_s_p_features);
+	m_pVFA->getFeatures(s, m_s_features);
+	m_pVFA->getFeatures(s_p, m_s_p_features);
 	//1. td= r - avg_r + gamma*V(s_p) - V(s)
 	double td = r - m_avg_r + gamma * m_pVFA->getValue(m_s_p_features)
 		- m_pVFA->getValue(m_s_features);
@@ -89,7 +89,7 @@ CIncrementalNaturalActor::~CIncrementalNaturalActor()
 	delete m_w;
 }
 
-void CIncrementalNaturalActor::updatePolicy(CState* s, CState* a, CState *s_p, double r, double td)
+void CIncrementalNaturalActor::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r, double td)
 {
 	//Incremental Natural Actor-Critic (INAC)
 	//Actor update:

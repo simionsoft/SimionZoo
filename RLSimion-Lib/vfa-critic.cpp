@@ -7,7 +7,7 @@
 
 CVFACritic::CVFACritic(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pVFA = new CLinearVFA(pParameters->getChild("Linear-VFA"));
+	m_pVFA = new CLinearStateVFA(pParameters->getChild("Linear-State-VFA"));
 
 	if (m_pParameters->getChild("Load"))
 		loadVFunction(m_pParameters->getChild("Load")->getConstString());

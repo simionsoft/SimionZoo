@@ -1,7 +1,7 @@
 #pragma once
 #include "parameterized-object.h"
 
-class CLinearVFA;
+class CLinearStateVFA;
 class CNoise;
 
 class CNamedVarSet;
@@ -15,7 +15,7 @@ class CSingleOutputVFAPolicy : public CParamObject
 {
 
 protected:
-	CLinearVFA *m_pVFA;
+	CLinearStateVFA *m_pVFA;
 	CNoise *m_pExpNoise;
 	int m_outputActionIndex;
 	const char* m_outputAction;
@@ -23,13 +23,13 @@ public:
 	CSingleOutputVFAPolicy(CParameters* pParameters);
 	~CSingleOutputVFAPolicy();
 
-	void selectAction(CState *s, CAction *a);
+	void selectAction(const CState *s, CAction *a);
 
-	CLinearVFA* getVFA(){ return m_pVFA; }
+	CLinearStateVFA* getVFA(){ return m_pVFA; }
 	CNoise* getExpNoise(){ return m_pExpNoise; }
 	const char* getOutputAction(){ return m_outputAction; }
 	int getOutputActionIndex(){ return m_outputActionIndex; }
 
 	//returns the factor by which the state features have to be multiplied to get the policy gradient
-	void getGradient(CState* s, CAction* a, CFeatureList* pOutGradient);
+	void getGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 };

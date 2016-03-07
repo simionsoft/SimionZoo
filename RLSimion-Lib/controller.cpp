@@ -44,7 +44,7 @@ CActor* CMultiController::getInstance(CParameters* pParameters)
 	return 0;
 }
 
-void CMultiController::selectAction(CState *s, CAction *a)
+void CMultiController::selectAction(const CState *s, CAction *a)
 {
 	for (int i = 0; i < m_numControllers; i++)
 	{
@@ -84,7 +84,7 @@ CLQRController::~CLQRController()
 	delete [] m_pGains;
 }
 
-void CLQRController::selectAction(CState *s, CAction *a)
+void CLQRController::selectAction(const CState *s, CAction *a)
 {
 	double output= 0.0; // only 1-dimension so far
 
@@ -124,7 +124,7 @@ CPIDController::~CPIDController()
 	delete m_pKD;
 }
 
-void CPIDController::selectAction(CState *s,CAction *a)
+void CPIDController::selectAction(const CState *s, CAction *a)
 {
 	if (RLSimion::g_pWorld->getT()== 0.0)
 		m_intError= 0.0;
@@ -171,7 +171,7 @@ CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameter
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
 }
 
-void CWindTurbineVidalController::selectAction(CState *s,CAction *a)
+void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 {
 	//f(omega_r,T_g,d_omega_r,E_p, E_int_omega_r)
 
@@ -228,7 +228,7 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* 
 }
 
 
-void CWindTurbineBoukhezzarController::selectAction(CState *s,CAction *a)
+void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 {
 	//d(Tg)/dt= (1/omega_r)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_r*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_r)
@@ -299,7 +299,7 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParam
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
 }
 
-void CWindTurbineJonkmanController::selectAction(CState *s,CAction *a)
+void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 {
 	//Filter the generator speed
 	double Alpha;

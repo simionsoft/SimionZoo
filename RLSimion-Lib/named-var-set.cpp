@@ -45,40 +45,41 @@ CNamedVarSet::~CNamedVarSet()
 }
 
 
-const char* CNamedVarSet::getName(int i)
+char* CNamedVarSet::getName(int i) const
 {
 	if (i>=0 && i<m_numVars)
 		return m_pProperties[i].name;
 	return 0;
 }
-double CNamedVarSet::getMin(int i)
+double CNamedVarSet::getMin(int i) const
 {
 	if (i>=0 && i<m_numVars)
 		return m_pProperties[i].min;
 	return 0.0;
 }
-double CNamedVarSet::getMax(int i)
+double CNamedVarSet::getMax(int i) const
 {
 	if (i>=0 && i<m_numVars)
 		return m_pProperties[i].max;
 	return 0.0;
 }
 
-double CNamedVarSet::getRangeWidth(int i)
+double CNamedVarSet::getRangeWidth(int i) const
 {
 	if (i >= 0 && i<m_numVars)
 		return ( m_pProperties[i].max - m_pProperties[i].min);
 	return 0.0;
 }
 
-double CNamedVarSet::getMin(const char* name)
+double CNamedVarSet::getMin(const char* name) const
 {
 	int i= getVarIndex(name);
 	if (i>=0 && i<m_numVars)
 		return m_pProperties[i].min;
 	return 0.0;
 }
-double CNamedVarSet::getMax(const char* name)
+
+double CNamedVarSet::getMax(const char* name) const
 {
 	int i= getVarIndex(name);
 	if (i>=0 && i<m_numVars)
@@ -112,7 +113,7 @@ void CNamedVarSet::setProperties(int i,const char* name, double min, double max)
 }
 
 
-double CNamedVarSet::getValue(const char* varName)
+double CNamedVarSet::getValue(const char* varName) const
 {
 	for (int i= 0; i<m_numVars; i++)
 	{
@@ -123,7 +124,7 @@ double CNamedVarSet::getValue(const char* varName)
 	return 0.0;
 }
 
-int CNamedVarSet::getVarIndex(const char* varName)
+int CNamedVarSet::getVarIndex(const char* varName) const
 {
 	for (int i= 0; i<m_numVars; i++)
 	{
@@ -147,7 +148,7 @@ void CNamedVarSet::setValue(const char* varName, double value)
 	assert(0);
 }
 
-double CNamedVarSet::getValue(int i)
+double CNamedVarSet::getValue(int i) const
 {
 	if (i>=0 && i<m_numVars)
 		return m_pValues[i];
@@ -180,7 +181,7 @@ void CNamedVarSet::setValue(int i, double value)
 	//	m_pValues[i]= std::min(m_pProperties[i].max,std::max(m_pProperties[i].min,value));
 }
 
-double CNamedVarSet::getSumValue()
+double CNamedVarSet::getSumValue() const
 {
 	double sum = 0.0;
 	for (int i = 0; i < m_numVars; i++)

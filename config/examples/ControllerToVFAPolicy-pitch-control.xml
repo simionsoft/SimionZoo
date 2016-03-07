@@ -59,25 +59,27 @@
   <Multi-Output-VFA>
     <Single-Output-VFA>
       <Output-Action>pitch</Output-Action>
-      <Linear-VFA>
-        <RBF-Grid>
-          <RBF-Grid-Dimension>
-            <Variable>attack-angle</Variable>
-            <Num-Features>200</Num-Features>
-            <Distribution>linear</Distribution>
-          </RBF-Grid-Dimension>
-          <RBF-Grid-Dimension>
-            <Variable>pitch-rate</Variable>
-            <Num-Features>200</Num-Features>
-            <Distribution>linear</Distribution>
-          </RBF-Grid-Dimension>
-          <RBF-Grid-Dimension>
-            <Variable>control-deviation</Variable>
-            <Num-Features>200</Num-Features>
-            <Distribution>linear</Distribution>
-          </RBF-Grid-Dimension>
-        </RBF-Grid>
-      </Linear-VFA>
+      <Linear-State-VFA>
+        <State-Feature-Map>
+          <RBF-State-Grid>
+            <RBF-Grid-Dimension>
+              <Variable>attack-angle</Variable>
+              <Num-Features>200</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>pitch-rate</Variable>
+              <Num-Features>200</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>control-deviation</Variable>
+              <Num-Features>200</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+          </RBF-State-Grid>
+        </State-Feature-Map>
+      </Linear-State-VFA>
     </Single-Output-VFA>
   </Multi-Output-VFA>
   

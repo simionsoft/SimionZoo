@@ -71,13 +71,13 @@ int main(int argc, char* argv[])
 	int i = 0;
 	if (pFile)
 	{
-		CLinearVFA* pVFA;
+		CLinearStateVFA* pVFA;
 		const char* pOutputAction;
 
 		while (pSingleOutputVFAConfig)
 		{
 
-			pVFA = new CLinearVFA(pSingleOutputVFAConfig->getChild("Linear-VFA"));
+			pVFA = new CLinearStateVFA(pSingleOutputVFAConfig->getChild("Linear-State-VFA"));
 			pOutputAction = pSingleOutputVFAConfig->getChild("Output-Action")->GetText();
 
 			numWeights = pVFA->getNumWeights();

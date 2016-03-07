@@ -22,7 +22,7 @@ CRegularPolicyGradientLearner::~CRegularPolicyGradientLearner()
 	delete m_pAlpha;
 }
 
-void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td)
+void CRegularPolicyGradientLearner::updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td)
 {
 	double lastNoise;
 	double alpha;
@@ -33,7 +33,7 @@ void CRegularPolicyGradientLearner::updatePolicy(CState *s, CAction *a, CState *
 	alpha = m_pAlpha->getValue();
 
 
-	m_pPolicy->getVFA()->getFeatures(s, a, m_pStateFeatures);
+	m_pPolicy->getVFA()->getFeatures(s, m_pStateFeatures);
 
 	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);// m_pOutput->getValue(i);
 

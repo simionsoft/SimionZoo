@@ -21,7 +21,7 @@ public:
 	CSingleOutputVFAPolicyLearner(CParameters* pParameters);
 	~CSingleOutputVFAPolicyLearner();
 
-	virtual void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td)= 0;
+	virtual void updatePolicy(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
 
 	CSingleOutputVFAPolicy* getPolicy(){ return m_pPolicy; }
 
@@ -38,9 +38,9 @@ public:
 	CVFAActor(CParameters* pParameters);
 	virtual ~CVFAActor();
 
-	void selectAction(CState *s, CAction *a);
+	void selectAction(const CState *s, CAction *a);
 
-	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 
 //	double getProbability(CState* s, CAction* a);
 
@@ -62,7 +62,7 @@ public:
 	CCACLALearner(CParameters *pParameters);
 	~CCACLALearner();
 
-	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };
 
 class CRegularPolicyGradientLearner :public CSingleOutputVFAPolicyLearner
@@ -75,7 +75,7 @@ public:
 	CRegularPolicyGradientLearner(CParameters *pParameters);
 	~CRegularPolicyGradientLearner();
 
-	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };
 
 class CIncrementalNaturalActor : public CSingleOutputVFAPolicyLearner
@@ -95,5 +95,5 @@ public:
 	CIncrementalNaturalActor(CParameters *pParameters);
 	~CIncrementalNaturalActor();
 
-	void updatePolicy(CState *s, CAction *a, CState *s_p, double r, double td);
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };
