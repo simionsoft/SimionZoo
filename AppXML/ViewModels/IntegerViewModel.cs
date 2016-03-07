@@ -25,11 +25,16 @@ namespace AppXML.ViewModels
         private string _comment;
         public string Comment { get { return _comment; } set { } }
         private XmlDocument _doc;
-        public IntegerViewModel(String label, CIntegerValue param, XmlDocument doc)
+        private string _tag;
+        public IntegerViewModel(String label, CIntegerValue param, XmlDocument doc, string tag)
         {
             _doc = doc;
             isOptional = param.isOptional;
             _comment = param.comment;
+            if (tag == null || tag == "")
+                _tag = label;
+            else
+                _tag = tag;
             if(param.type== validTypes.DirPathValue)
             {
                 TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/folder.jpg", "folder",_comment,param.isOptional);
@@ -117,23 +122,21 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
-            XmlNode nodo = null;
+            XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
+            XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
             if(_textBox!=null)
             {
-                nodo = _doc.CreateElement(_textBox[0].Label);
-                nodo.InnerText = _textBox[0].Default;
+                lastChild.InnerText = _textBox[0].Default;
             }
             if(_comboBox!=null)
             {
-                nodo = _doc.CreateElement(_comboBox[0].Label);
-                nodo.InnerText = _comboBox[0].SelectedComboValue;
+               lastChild.InnerText = _comboBox[0].SelectedComboValue;
             }
             if(_textBoxFile!=null)
             {
-                nodo = _doc.CreateElement(_textBoxFile[0].Label);
-                nodo.InnerText = _textBoxFile[0].Default;
+               lastChild.InnerText = _textBoxFile[0].Default;
             }
-            return nodo;
+            return result;
             
         }
     }

@@ -50,14 +50,20 @@ namespace AppXML.ViewModels
                 {
                     if (child.Name == "CHOICE")
                     {
-                        _choice = new ChoiceViewModel(child,_doc);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        _choice = new ChoiceViewModel(child,_doc,tag);
                     }
                     else if (child.Name.EndsWith("VALUE"))
                     {
                         if (_items == null)
                             _items = new ObservableCollection<IntegerViewModel>();
                         CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
-                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc,tag);
                         _items.Add(ivw);
 
                     }
@@ -72,7 +78,10 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,doc);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,doc,tag);
                         _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
@@ -99,7 +108,10 @@ namespace AppXML.ViewModels
                         string xmlfile = child.Attributes["XMLFile"].Value;
                         if (_XMLNODE == null)
                             _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
-                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action,_doc));
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action,_doc,tag));
                     }
                     else if (child.Name == "RESUME")
                     {
@@ -128,14 +140,21 @@ namespace AppXML.ViewModels
                 {
                     if (child.Name == "CHOICE")
                     {
-                        _choice = new ChoiceViewModel(child,_doc);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        _choice = new ChoiceViewModel(child, _doc, tag);
                     }
                     else if (child.Name.EndsWith("VALUE"))
                     {
                         if (_items == null)
                             _items = new ObservableCollection<IntegerViewModel>();
                         CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
-                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ, _doc, tag);
+                       // IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc);
                         _items.Add(ivw);
 
                     }
@@ -150,7 +169,11 @@ namespace AppXML.ViewModels
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional,doc); _multis.Add(mvvm);
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                        _multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
                     {
@@ -176,7 +199,10 @@ namespace AppXML.ViewModels
                         string xmlfile = child.Attributes["XMLFile"].Value;
                         if (_XMLNODE == null)
                             _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
-                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action,_doc));
+                        string tag = null;
+                        if (child.Attributes["XMLTag"] != null)
+                            tag = child.Attributes["XMLTag"].Value;
+                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action, _doc, tag));
                     }
                     else if(child.Name == "RESUME")
                     {
@@ -314,7 +340,7 @@ namespace AppXML.ViewModels
                 {
                     foreach (MultiValuedViewModel item in _multis)
                     {
-                        List<XmlNode> nodes = item.getXmlNode(item.Label);
+                        List<XmlNode> nodes = item.getXmlNode();
                         foreach (XmlNode node in nodes)
                             //nodo.AppendChild(node);
                             result.Add(node);
@@ -368,7 +394,7 @@ namespace AppXML.ViewModels
                 {
                     foreach (MultiValuedViewModel item in _multis)
                     {
-                        List<XmlNode> nodes = item.getXmlNode(item.Label);
+                        List<XmlNode> nodes = item.getXmlNode();
                         foreach (XmlNode node in nodes)
                             nodo.AppendChild(node);
                             

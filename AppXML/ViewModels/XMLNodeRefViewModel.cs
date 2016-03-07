@@ -16,14 +16,19 @@ namespace AppXML.ViewModels
         private string _action;
         private string _selectedOption;
         private XmlDocument _doc;
+        private string tag;
 
         public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; } }
 
-        public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc )
+        public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc, string tag)
         {
             this._label = label;
             this._XMLFile = file;
             this._action = action;
+            if (tag == null || tag == "")
+                this.tag = label;
+            else
+                this.tag = tag;
             _doc = doc;
             List<string> names =AppXML.Data.Utility.getComboFromXML(file, action);
             _options = new ObservableCollection<string>(names);
@@ -45,9 +50,10 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
-            XmlNode node = _doc.CreateElement(Label);
-            node.InnerText = SelectedOption;
-            return node;
+            XmlNode nodo = AppXML.Data.Utility.resolveTag(tag, _doc);
+            XmlNode lastChild = AppXML.Data.Utility.getLastChild(nodo);
+            lastChild.InnerText = SelectedOption;
+            return nodo;
         }
     }
 }

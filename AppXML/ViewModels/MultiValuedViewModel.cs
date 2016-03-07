@@ -26,7 +26,7 @@ namespace AppXML.ViewModels
         private ClassViewModel _headerClass;
         private ObservableCollection<ClassViewModel> _adedClasses;
         private string clas;
-
+        private string tag;
         public string IsOptionalVisible
         {
             get
@@ -58,11 +58,15 @@ namespace AppXML.ViewModels
         }
         public string Label { get { return label; } set { } }
 
-        public MultiValuedViewModel(string label, string clas,string comment ,bool isOptional, XmlDocument doc)
+        public MultiValuedViewModel(string label, string clas,string comment ,bool isOptional, XmlDocument doc,string tag)
         {
             _comment = comment;
             _doc = doc;
             _isOptional = isOptional;
+            if (tag == null || tag == "")
+                this.tag = label;
+            else
+                this.tag = tag;
             if (CNode.definitions != null)
             {
                 if (CNode.definitions.ContainsKey(clas))
@@ -72,7 +76,7 @@ namespace AppXML.ViewModels
                     if(nodo.Name.StartsWith("ENUMERATION"))
                     {
                         original = new CIntegerValue(nodo); 
-                        _header = new IntegerViewModel(label, original,_doc);
+                        _header = new IntegerViewModel(label, original,_doc,tag);
                         this.label = label;
                         _aded = new ObservableCollection<IntegerViewModel>();
 
@@ -94,7 +98,7 @@ namespace AppXML.ViewModels
                 {
                     //es un integervalue
                     original = new CIntegerValue(clas);
-                    _header = new IntegerViewModel(label, original,_doc);
+                    _header = new IntegerViewModel(label, original,_doc,tag);
                     this.label = label;
                     _aded = new ObservableCollection<IntegerViewModel>();
                 }
@@ -177,7 +181,7 @@ namespace AppXML.ViewModels
                     original.defaultValue = valor;
                 }
             }
-            IntegerViewModel t = new IntegerViewModel(label, original,_doc);
+            IntegerViewModel t = new IntegerViewModel(label, original,_doc,tag);
             _aded.Add(t);
         }
         public void DeleteLast()
@@ -262,24 +266,26 @@ namespace AppXML.ViewModels
             return validate();
         }
 
-        internal List<XmlNode> getXmlNode(string name)
+        internal List<XmlNode> getXmlNode()
         {
             List<XmlNode> nodes = new List<XmlNode>();
             if(HeaderClass!=null)
             {
-                XmlNode nodo = _doc.CreateElement(name);
+                XmlNode nodo = AppXML.Data.Utility.resolveTag(tag, _doc);
+                XmlNode lastChild = AppXML.Data.Utility.getLastChild(nodo);
                 List<XmlNode> nodos = HeaderClass.getXmlNodes();
                 foreach (XmlNode child in nodos)
-                    nodo.AppendChild(child);
+                    lastChild.AppendChild(child);
                 nodes.Add(nodo);
                 if(AdedClasses!=null)
                 {
                     foreach(ClassViewModel cvm in AdedClasses)
                     {
-                        XmlNode nodo2 = _doc.CreateElement(name);
+                        XmlNode nodo2 = AppXML.Data.Utility.resolveTag(tag, _doc);
+                        XmlNode lastChild2 = AppXML.Data.Utility.getLastChild(nodo2);
                         List<XmlNode> nodos2 = HeaderClass.getXmlNodes();
                         foreach (XmlNode child in nodos2)
-                            nodo2.AppendChild(child);
+                            lastChild2.AppendChild(child);
                         nodes.Add(nodo2);
                     }
                 }

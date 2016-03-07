@@ -104,6 +104,37 @@ namespace AppXML.Data
             }
             return rootnode;
         }
+        public static XmlNode resolveTag(string _tag, XmlDocument _doc)
+        {
+            string[] tags = _tag.Split('/');
+            if(tags.Count()>0)
+            {
+                XmlNode result = _doc.CreateElement(tags[0]);
+                if(tags.Count()>1)
+                {
+                    XmlNode father = result;
+                    for(int i=1;i<tags.Count();i++)
+                    {
+                        XmlNode nodo = _doc.CreateElement(tags[i]);
+                        father.AppendChild(nodo);
+                        father = nodo;
+                    }
+
+                }
+                return result;
+            }
+
+            return null;
+           
+            
+        }
+        public static XmlNode getLastChild(XmlNode result)
+        {
+            if (result.HasChildNodes)
+                return getLastChild(result.ChildNodes[0]);
+            else
+                return result;
+        }
         public static List<string> getComboFromXML(string file, string action)
         {
             string xmlFile = CNode.XML[file];

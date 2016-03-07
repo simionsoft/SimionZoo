@@ -11,6 +11,7 @@ namespace AppXML.Models
         public string name;
         public string XML;
         public string clas;
+        public string tag;
 
         public override string ToString()
         {

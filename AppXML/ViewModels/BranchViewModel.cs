@@ -63,8 +63,8 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
-            XmlNode result = resolveTag(_tag);
-            XmlNode lastChild = getLastChild(result);
+            XmlNode result = AppXML.Data.Utility.resolveTag(_tag,_doc);
+            XmlNode lastChild = AppXML.Data.Utility.getLastChild(result); 
             foreach (XmlNode child in Class.getXmlNodes())
                 lastChild.AppendChild(child);
             return result;

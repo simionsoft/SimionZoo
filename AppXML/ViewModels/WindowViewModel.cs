@@ -52,6 +52,7 @@ namespace AppXML.ViewModels
        
         public void Validate()
         {
+            _doc.RemoveAll();
             XmlNode rootNode = _doc.CreateElement(_rootnode.name);
             foreach(BranchViewModel branch in _branches)
             {
@@ -65,6 +66,8 @@ namespace AppXML.ViewModels
                     rootNode.AppendChild(branch.getXmlNode());
                 }
             }
+            _doc.AppendChild(rootNode);
+            _doc.Save("prueba.xml");
             
         }
        

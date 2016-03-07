@@ -22,12 +22,17 @@ namespace AppXML.ViewModels
         private ClassViewModel _Class;
         private string _XML;
         private XmlDocument _doc;
-        public ChoiceViewModel(XmlNode nodo, XmlDocument doc)
+        private string _tag;
+        public ChoiceViewModel(XmlNode nodo, XmlDocument doc, string tag)
         {
             _doc = doc;
             _label = nodo.Attributes["Name"].Value;
             _node = nodo;
             _comboValues = new ObservableCollection<ChoiceElement>();
+            if (tag == null || tag=="")
+                _tag = _label;
+            else
+                _tag = tag;
             bool XML = false;
             if (nodo.Attributes["LoadXML"] != null)
             {
@@ -41,6 +46,10 @@ namespace AppXML.ViewModels
                     ChoiceElement ce = new ChoiceElement(child.Attributes["Name"].Value, child.Attributes["Class"].Value);
                     if (XML && child.Attributes["XML"] != null)
                         ce.XML = child.Attributes["XML"].Value;
+                    if (child.Attributes["XMLTag"] != null)
+                        ce.tag = child.Attributes["XMLTag"].Value;
+                    else
+                        ce.tag = ce.name;
                     _comboValues.Add(ce);
                 }
                 
@@ -89,10 +98,15 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
-            XmlNode nodo = _doc.CreateElement(SelectedItem.name);
+            XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
+            XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
+            //se asume que el tag para el interior del choice class es el nombre
+            XmlNode itemResult = AppXML.Data.Utility.resolveTag(SelectedItem.tag, _doc);
+            XmlNode itemLastChild = AppXML.Data.Utility.getLastChild(itemResult);
             foreach (XmlNode child in _Class.getXmlNodes())
-                nodo.AppendChild(child);
-            return nodo;
+                itemLastChild.AppendChild(child);
+            lastChild.AppendChild(itemResult);
+            return result;
         }
     }
 }
