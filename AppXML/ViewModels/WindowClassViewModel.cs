@@ -78,7 +78,7 @@ namespace AppXML.ViewModels
                            result += cChild.InnerText + " ";
                            return result;
                        }
-                       else
+                       else 
                        {
                            result +=obteinResume(cChild, rChild);
                        }

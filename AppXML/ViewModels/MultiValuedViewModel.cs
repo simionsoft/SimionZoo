@@ -228,12 +228,11 @@ namespace AppXML.ViewModels
 
         public bool validate()
         {
+            if(_isNull)
+                return true;
             if(HeaderClass!=null)
             {
-                if (_isOptional && _isNull)
-                {
-                    return true;
-                }
+               
                 if (!HeaderClass.validate())
                     return false;
                 foreach(ClassViewModel cvm in AdedClasses)
@@ -268,6 +267,8 @@ namespace AppXML.ViewModels
 
         internal List<XmlNode> getXmlNode()
         {
+            if (_isNull)
+                return null;
             List<XmlNode> nodes = new List<XmlNode>();
             if(HeaderClass!=null)
             {

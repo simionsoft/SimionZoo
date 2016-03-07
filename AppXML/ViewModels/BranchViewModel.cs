@@ -63,10 +63,19 @@ namespace AppXML.ViewModels
 
         internal XmlNode getXmlNode()
         {
+            if(IsNull)
+                return null;
             XmlNode result = AppXML.Data.Utility.resolveTag(_tag,_doc);
             XmlNode lastChild = AppXML.Data.Utility.getLastChild(result); 
             foreach (XmlNode child in Class.getXmlNodes())
-                lastChild.AppendChild(child);
+            {
+                if(child!=null)
+                    lastChild.AppendChild(child);
+            }
+            //si al ultimo nodo no se le ha añadido ningun hijo no hay que añadir la rama ya que esta vacia.
+            /*
+            if (!lastChild.HasChildNodes)
+                return null;*/
             return result;
         }
 

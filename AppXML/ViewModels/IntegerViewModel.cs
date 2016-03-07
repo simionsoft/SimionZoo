@@ -136,6 +136,8 @@ namespace AppXML.ViewModels
             {
                lastChild.InnerText = _textBoxFile[0].Default;
             }
+            if (lastChild.InnerText =="")
+                return null;
             return result;
             
         }
@@ -197,6 +199,11 @@ namespace AppXML.ViewModels
         {
             if (type == validTypes.StringValue)
                 return;
+            if(isOptional==true && Default=="")
+            {
+                TextColor = "White";
+                return;
+            }
             Boolean isValid = AppXML.Data.Utility.validate(Default, type);
             if(!isValid)
             {

@@ -41,7 +41,7 @@
             </Grid>
 
         </StackPanel>
-        <StackPanel Orientation="Vertical" Visibility="{Binding simpleVisible}">
+        <StackPanel Orientation="Vertical" Visibility="{Binding simpleVisible}" IsEnabled="{Binding IsEnabled}">
 
             <StackPanel Orientation="Horizontal">
                 <ItemsControl ItemsSource="{Binding Aded}">
