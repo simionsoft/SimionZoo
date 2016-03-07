@@ -16,7 +16,7 @@ public:
 	CCritic(){}
 	virtual ~CCritic(){}
 
-	virtual double updateValue(CState *s, CAction *a, CState *s_p, double r, double rho) = 0;
+	virtual double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho) = 0;
 
 	static CCritic *getInstance(CParameters* pParameters);
 };

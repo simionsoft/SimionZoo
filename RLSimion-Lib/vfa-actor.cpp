@@ -69,7 +69,7 @@ CVFAActor::~CVFAActor()
 
 }
 
-void CVFAActor::selectAction(CState *s, CAction *a)
+void CVFAActor::selectAction(const CState *s, CAction *a)
 {
 	for (int i = 0; i<m_numOutputs; i++)
 	{
@@ -78,7 +78,7 @@ void CVFAActor::selectAction(CState *s, CAction *a)
 	}
 }
 
-void CVFAActor::updatePolicy(CState* s, CAction* a, CState* s_p, double r, double td)
+void CVFAActor::updatePolicy(const CState* s, const CAction* a, const CState* s_p, double r, double td)
 {
 	if (!RLSimion::g_pExperiment->isEvaluationEpisode())
 		for (int i = 0; i<m_numOutputs; i++)

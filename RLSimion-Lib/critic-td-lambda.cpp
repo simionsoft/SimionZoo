@@ -23,7 +23,7 @@ CTDLambdaCritic::~CTDLambdaCritic()
 	delete m_aux;
 }
 
-double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)
+double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r,double rho)
 {
 	double alpha = m_pAlpha->getValue();
 	if (alpha==0.0) return 0.0;
@@ -34,14 +34,14 @@ double CTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r
 	double gamma = m_pGamma->getValue();
 	m_z->update(gamma*rho);
 
-	m_pVFA->getFeatures(s,0,m_aux);
+	m_pVFA->getFeatures(s, m_aux);
 	m_z->addFeatureList(m_aux,alpha);
 
 
 	//theta= theta + alpha(r + gamma*newValue - oldValue)*z
 	double oldValue= m_pVFA->getValue(m_aux);
 
-	m_pVFA->getFeatures(s_p,0,m_aux);
+	m_pVFA->getFeatures(s_p, m_aux);
 	double newValue= m_pVFA->getValue(m_aux);
 	double td = rho*r + gamma*newValue - oldValue;
 	

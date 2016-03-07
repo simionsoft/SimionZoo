@@ -44,25 +44,27 @@
           <CACLA>
             <VFA-Policy>
               <Output-Action>pitch</Output-Action>
-              <Linear-VFA>
-                <RBF-Grid>
-                  <RBF-Grid-Dimension>
-                    <Variable>attack-angle</Variable>
-                    <Num-Features>200</Num-Features>
-                    <Distribution>linear</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>pitch-rate</Variable>
-                    <Num-Features>200</Num-Features>
-                    <Distribution>linear</Distribution>
-                  </RBF-Grid-Dimension>
-                  <RBF-Grid-Dimension>
-                    <Variable>control-deviation</Variable>
-                    <Num-Features>200</Num-Features>
-                    <Distribution>linear</Distribution>
-                  </RBF-Grid-Dimension>
-                </RBF-Grid>
-              </Linear-VFA>
+              <Linear-State-VFA>
+                <State-Feature-Map>
+                  <RBF-State-Grid>
+                    <RBF-Grid-Dimension>
+                      <Variable>attack-angle</Variable>
+                      <Num-Features>200</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>pitch-rate</Variable>
+                      <Num-Features>200</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                    <RBF-Grid-Dimension>
+                      <Variable>control-deviation</Variable>
+                      <Num-Features>200</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                  </RBF-State-Grid>
+                </State-Feature-Map>
+              </Linear-State-VFA>
               <Exploration-Noise>
                 <GaussianNoise>
                   <Sigma>1.0</Sigma>
@@ -96,25 +98,27 @@
     <Critic>
       <VFA-Critic>
         <TD-Lambda>
-          <Linear-VFA>
-            <RBF-Grid>
-              <RBF-Grid-Dimension>
-                <Variable>attack-angle</Variable>
-                <Num-Features>200</Num-Features>
-                <Distribution>linear</Distribution>
-              </RBF-Grid-Dimension>
-              <RBF-Grid-Dimension>
-                <Variable>pitch-rate</Variable>
-                <Num-Features>200</Num-Features>
-                <Distribution>linear</Distribution>
-              </RBF-Grid-Dimension>
-              <RBF-Grid-Dimension>
-                <Variable>control-deviation</Variable>
-                <Num-Features>200</Num-Features>
-                <Distribution>linear</Distribution>
-              </RBF-Grid-Dimension>
-            </RBF-Grid>
-          </Linear-VFA>
+          <Linear-State-VFA>
+            <State-Feature-Map>
+              <RBF-State-Grid>
+                <RBF-Grid-Dimension>
+                  <Variable>attack-angle</Variable>
+                  <Num-Features>200</Num-Features>
+                  <Distribution>linear</Distribution>
+                </RBF-Grid-Dimension>
+                <RBF-Grid-Dimension>
+                  <Variable>pitch-rate</Variable>
+                  <Num-Features>200</Num-Features>
+                  <Distribution>linear</Distribution>
+                </RBF-Grid-Dimension>
+                <RBF-Grid-Dimension>
+                  <Variable>control-deviation</Variable>
+                  <Num-Features>200</Num-Features>
+                  <Distribution>linear</Distribution>
+                </RBF-Grid-Dimension>
+              </RBF-State-Grid>
+            </State-Feature-Map>
+          </Linear-State-VFA>
           <E-Traces>
             <Replace>true</Replace>
             <Lambda>0.9</Lambda>

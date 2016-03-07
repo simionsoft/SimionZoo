@@ -44,15 +44,17 @@
           <Incremental-Natural-Actor>
             <VFA-Policy>
               <Output-Action>u_thrust</Output-Action>
-              <Linear-VFA>
-                <RBF-Grid>
-                  <RBF-Grid-Dimension>
-                    <Variable>v-deviation</Variable>
-                    <Num-Features>5000</Num-Features>
-                    <Distribution>linear</Distribution>
-                  </RBF-Grid-Dimension>
-                </RBF-Grid>
-              </Linear-VFA>
+              <Linear-State-VFA>
+                <State-Feature-Map>
+                  <RBF-State-Grid>
+                    <RBF-Grid-Dimension>
+                      <Variable>v-deviation</Variable>
+                      <Num-Features>5000</Num-Features>
+                      <Distribution>linear</Distribution>
+                    </RBF-Grid-Dimension>
+                  </RBF-State-Grid>
+                </State-Feature-Map>
+              </Linear-State-VFA>
               <Exploration-Noise>
                 <Sigma>
                   <Linear-Schedule>
@@ -95,15 +97,17 @@
     <Critic>
       <VFA-Critic>
         <Incremental-Natural-Critic>
-          <Linear-VFA>
-            <RBF-Grid>
-              <RBF-Grid-Dimension>
-                <Variable>v-deviation</Variable>
-                <Num-Features>5000</Num-Features>
-                <Distribution>linear</Distribution>
-              </RBF-Grid-Dimension>
-            </RBF-Grid>
-          </Linear-VFA>
+          <Linear-State-VFA>
+            <State-Feature-Map>
+              <RBF-State-Grid>
+                <RBF-Grid-Dimension>
+                  <Variable>v-deviation</Variable>
+                  <Num-Features>5000</Num-Features>
+                  <Distribution>linear</Distribution>
+                </RBF-Grid-Dimension>
+              </RBF-State-Grid>
+            </State-Feature-Map>
+          </Linear-State-VFA>
           <E-Traces>
             <Replace>true</Replace>
             <Lambda>0.9</Lambda>

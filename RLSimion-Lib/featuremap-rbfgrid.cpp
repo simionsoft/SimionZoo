@@ -137,19 +137,9 @@ CGaussianRBFGridFeatureMap::~CGaussianRBFGridFeatureMap()
 	delete m_pVarFeatures;
 }
 
-int CGaussianRBFGridFeatureMap::getNumVariables(const char* configString)
-{
-	int count= 0, i= 0;
-	if (!configString) return 0;
-	while (configString[i]!=0)
-	{
-		if (configString[i]==',') count++;
-		i++;
-	}
-	return count;
-}
 
-double CGaussianRBFGridFeatureMap::getDimValue(int dim, CState* s, CAction* a)
+
+double CGaussianRBFGridFeatureMap::getDimValue(int dim, const CState* s, const CAction* a)
 {
 	assert(dim >=0 && dim <m_numVariables);
 	if (m_variableType[dim]==STATE_VARIABLE)
@@ -242,7 +232,7 @@ void CGaussianRBFGridFeatureMap::getDimFeatures (int dim, double value, CFeature
 }
 
 
-void CGaussianRBFGridFeatureMap::getFeatures(CState* s,CAction* a,CFeatureList* outFeatures)
+void CGaussianRBFGridFeatureMap::getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures)
 {
 	unsigned int offset= 1;
 
@@ -271,9 +261,10 @@ void CGaussianRBFGridFeatureMap::getFeatureStateAction(unsigned int feature, CSt
 	{
 		dimFeature= feature % m_pNumCenters[i];
 
-		if (m_variableType[i]==STATE_VARIABLE)
+		if (m_variableType[i]==STATE_VARIABLE && s)
 			s->setValue(m_variableIndex[i],m_pCenters[i][dimFeature]);
-		else a->setValue(m_variableIndex[i],m_pCenters[i][dimFeature]);
+		else if (a)
+			a->setValue(m_variableIndex[i],m_pCenters[i][dimFeature]);
 
 		feature= feature/m_pNumCenters[i];
 	}

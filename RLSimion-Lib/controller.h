@@ -19,7 +19,7 @@ public:
 
 	static CActor* getInstance(CParameters* pParameters);
 
-	void selectAction(CState *s, CAction *a);
+	void selectAction(const CState *s, CAction *a);
 };
 
 
@@ -33,7 +33,7 @@ public:
 	CLQRController(CParameters* pParameters);
 	~CLQRController();
 
-	void selectAction(CState *s,CAction *a);
+	void selectAction(const CState *s,CAction *a);
 };
 
 class CPIDController : public CActor
@@ -46,7 +46,7 @@ public:
 	CPIDController(CParameters* pParameters);
 	~CPIDController();
 
-	void selectAction(CState *s,CAction *a);
+	void selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineVidalController : public CActor
@@ -62,7 +62,7 @@ public:
 	CWindTurbineVidalController(CParameters* pParameters);
 	~CWindTurbineVidalController(){}
 
-	void selectAction(CState *s,CAction *a);
+	void selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineBoukhezzarController : public CActor
@@ -81,7 +81,7 @@ public:
 	CWindTurbineBoukhezzarController(CParameters* pParameters);
 	~CWindTurbineBoukhezzarController(){}
 
-	void selectAction(CState *s,CAction *a);
+	void selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineJonkmanController : public CActor
@@ -103,5 +103,5 @@ public:
 	CWindTurbineJonkmanController(CParameters* pParameters);
 	~CWindTurbineJonkmanController(){}
 
-	void selectAction(CState *s,CAction *a);
+	void selectAction(const CState *s,CAction *a);
 };

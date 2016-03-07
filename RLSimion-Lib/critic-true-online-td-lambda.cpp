@@ -25,7 +25,7 @@ CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 	delete m_aux;
 }
 
-double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p, double r,double rho)
+double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,const CState *s_p, double r,double rho)
 {
 	double v_s_p;
 
@@ -34,12 +34,12 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 	if (RLSimion::g_pExperiment->isFirstStep())
 	{
 		//vs= theta^T * phi(s)
-		m_pVFA->getFeatures(s,0,m_aux);
+		m_pVFA->getFeatures(s,m_aux);
 		m_v_s= m_pVFA->getValue(m_aux);
 	}
 		
 	//vs_p= theta^T * phi(s_p)
-	m_pVFA->getFeatures(s_p,0,m_aux);
+	m_pVFA->getFeatures(s_p,m_aux);
 	v_s_p= m_pVFA->getValue(m_aux);
 
 	double gamma = m_pGamma->getValue();
@@ -48,7 +48,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(CState *s, CAction *a, CState *s_p
 	double td = r + gamma*v_s_p - m_v_s;
 
 	//e= gamma*lambda*e + alpha*[1-gamma*lambda* e^T*phi(s)]* phi(s)
-	m_pVFA->getFeatures(s,0,m_aux);										//m_aux <- phi(s)
+	m_pVFA->getFeatures(s,m_aux);										//m_aux <- phi(s)
 	double e_T_phi_s= m_e->innerProduct(m_aux);
 
 

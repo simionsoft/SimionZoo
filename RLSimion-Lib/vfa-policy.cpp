@@ -11,7 +11,7 @@
 CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(CParameters* pParameters)
 : CParamObject(pParameters)
 {
-	m_pVFA = new CLinearVFA(pParameters->getChild("Linear-VFA"));
+	m_pVFA = new CLinearStateVFA(pParameters->getChild("Linear-State-VFA"));
 
 	m_pExpNoise = CNoise::getInstance (pParameters->getChild("Exploration-Noise"));
 
@@ -29,27 +29,27 @@ CSingleOutputVFAPolicy::~CSingleOutputVFAPolicy()
 	delete m_pExpNoise;
 }
 
-void CSingleOutputVFAPolicy::selectAction(CState *s, CAction *a)
+void CSingleOutputVFAPolicy::selectAction(const CState *s, CAction *a)
 {
 	double noise;
 	double output;
 	
 	noise = m_pExpNoise->getValue();
 
-	output = m_pVFA->getValue(s, 0);
+	output = m_pVFA->getValue(s);
 
 	a->setValue(m_outputActionIndex, output + noise);
 }
 
-void CSingleOutputVFAPolicy::getGradient(CState* s, CAction* a, CFeatureList* pOutGradient)
+void CSingleOutputVFAPolicy::getGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
 	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
-	m_pVFA->getFeatures(s, a, pOutGradient);
+	m_pVFA->getFeatures(s, pOutGradient);
 
 	//TXAPUZAAAA^2!!!
 	double sigma = ((CGaussianNoise*)m_pExpNoise)->getSigma();
 	
-	double noise = a->getValue(m_outputActionIndex) - m_pVFA->getValue(pOutGradient);
+	double noise = a->getValue(m_outputActionIndex) - m_pVFA->getValue((const CFeatureList*)pOutGradient);
 
 	double unscaled_noise = ((CGaussianNoise*)m_pExpNoise)->unscale(noise);
 	double factor = unscaled_noise / (sigma*sigma);

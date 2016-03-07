@@ -55,17 +55,16 @@ void CFeatureList::mult(double factor)
 	{
 		m_pFeatures[i].m_factor*= factor;
 	}
-	//applyThreshold(DEFAULT_FEATURE_THRESHOLD);
 }
+//
+//void CFeatureList::swapFeatureLists(CFeatureList** pList1,CFeatureList** pList2)
+//{
+//	CFeatureList *auxList= *pList1;
+//	*pList1= *pList2;
+//	*pList2= auxList;
+//}
 
-void CFeatureList::swapFeatureLists(CFeatureList** pList1,CFeatureList** pList2)
-{
-	CFeatureList *auxList= *pList1;
-	*pList1= *pList2;
-	*pList2= auxList;
-}
-
-double CFeatureList::getFactor(unsigned int index)
+double CFeatureList::getFactor(unsigned int index) const
 {
 	for (unsigned int i= 0; i<m_numFeatures; i++)
 	{
@@ -75,7 +74,7 @@ double CFeatureList::getFactor(unsigned int index)
 	return 0.0;
 }
 
-double CFeatureList::innerProduct(CFeatureList *inList)
+double CFeatureList::innerProduct(const CFeatureList *inList)
 {
 	double innerprod= 0.0;
 	for (unsigned int i= 0; i<m_numFeatures; i++)
@@ -85,7 +84,7 @@ double CFeatureList::innerProduct(CFeatureList *inList)
 	return innerprod;
 }
 
-void CFeatureList::copyMult(double factor,CFeatureList *inList)
+void CFeatureList::copyMult(double factor, const CFeatureList *inList)
 {
 	if (m_numAllocFeatures<inList->m_numFeatures)
 		resize(inList->m_numFeatures);
@@ -98,7 +97,7 @@ void CFeatureList::copyMult(double factor,CFeatureList *inList)
 	}
 }
 
-void CFeatureList::addFeatureList(CFeatureList *inList, double factor)
+void CFeatureList::addFeatureList(const CFeatureList *inList, double factor)
 {
 	//if (m_numFeatures+inList->m_numFeatures >m_numAllocFeatures)
 	//	resize (m_numFeatures+inList->m_numFeatures);
@@ -145,7 +144,7 @@ void CFeatureList::add(unsigned int index, double value)
 }
 
 //spawn: all features (indices and values) are spawned by those in inList
-void CFeatureList::spawn(CFeatureList *inList, unsigned int indexOffset)
+void CFeatureList::spawn(const CFeatureList *inList, unsigned int indexOffset)
 {
 	unsigned int newNumFeatures= inList->m_numFeatures * m_numFeatures;
 
@@ -202,7 +201,7 @@ void CFeatureList::normalize()
 		m_pFeatures[i].m_factor*= sum;
 }
 
-void CFeatureList::copy(CFeatureList* inList)
+void CFeatureList::copy(const CFeatureList* inList)
 {
 	if (m_numAllocFeatures<inList->m_numFeatures)
 		resize(inList->m_numFeatures,false);
@@ -214,4 +213,10 @@ void CFeatureList::copy(CFeatureList* inList)
 		m_pFeatures[i].m_index= inList->m_pFeatures[i].m_index;
 		m_pFeatures[i].m_factor= inList->m_pFeatures[i].m_factor;
 	}
+}
+
+void CFeatureList::offsetIndices(unsigned int offset)
+{
+	for (unsigned int i = 0; i < m_numFeatures; i++)
+		m_pFeatures[i].m_index += offset;
 }

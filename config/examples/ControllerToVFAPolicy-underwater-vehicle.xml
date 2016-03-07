@@ -51,15 +51,17 @@
   <Multi-Output-VFA>
     <Single-Output-VFA>
       <Output-Action>u-thrust</Output-Action>
-      <Linear-VFA>
-        <RBF-Grid>
-          <RBF-Grid-Dimension>
-            <Variable>v-deviation</Variable>
-            <Num-Features>5000</Num-Features>
-            <Distribution>cubic</Distribution>
-          </RBF-Grid-Dimension>
-        </RBF-Grid>
-      </Linear-VFA>
+      <Linear-State-VFA>
+        <State-Feature-Map>
+          <RBF-State-Grid>
+            <RBF-Grid-Dimension>
+              <Variable>v-deviation</Variable>
+              <Num-Features>5000</Num-Features>
+              <Distribution>cubic</Distribution>
+            </RBF-Grid-Dimension>
+          </RBF-State-Grid>
+        </State-Feature-Map>
+      </Linear-State-VFA>
     </Single-Output-VFA>
   </Multi-Output-VFA>
   

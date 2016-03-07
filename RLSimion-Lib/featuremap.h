@@ -7,13 +7,14 @@ typedef CNamedVarSet CAction;
 class CParameters;
 #include "parameterized-object.h"
 
+enum MapType{StateMap,ActionMap};
 
 //CFeatureMap//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 class CFeatureMap
 {
 public:
-	virtual void getFeatures(CState* s,CAction* a,CFeatureList* outFeatures)= 0;
+	virtual void getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures)= 0;
 	virtual void getFeatureStateAction(unsigned int feature, CState* s, CAction* a)= 0;
 
 	virtual unsigned int getTotalNumFeatures()= 0;
@@ -45,18 +46,17 @@ class CGaussianRBFGridFeatureMap: public CFeatureMap, public CParamObject
 	int *m_pNumCenters;
 	double **m_pCenters;
 
-	int getNumVariables(const char* configString);
 	void initCenterPoints(int i,const char* varName,int numCenters
 					  ,double minV, double maxV,const char* distribution);
 
-	double getDimValue(int dim, CState* s, CAction* a);
+	double getDimValue(int dim, const CState* s, const CAction* a);
 	void getDimFeatures(int dim, double value, CFeatureList* outDimFeatures);
 	double getFeatureFactor(int dim, int feature,double value);
 public:
 	CGaussianRBFGridFeatureMap(CParameters* pParameters);
 	~CGaussianRBFGridFeatureMap();
 
-	void getFeatures(CState* s,CAction* a,CFeatureList* outFeatures);
+	void getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures);
 	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
 
 	unsigned int getTotalNumFeatures(){return m_totalNumFeatures;}
