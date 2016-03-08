@@ -61,7 +61,7 @@ namespace AppXML.ViewModels
                 if(!branch.validate())
                 {
                     //mostrar error
-                    //return;
+                    return;
                 }
                 else
                 {
@@ -71,7 +71,7 @@ namespace AppXML.ViewModels
             _doc.AppendChild(rootNode);
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "XML-File | *.xml";
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "..\\log");
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "..\\experiments");
             if (!Directory.Exists(CombinedPath))
                 System.IO.Directory.CreateDirectory(CombinedPath);
             sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)

@@ -2,8 +2,10 @@
 <APP Name="RLSimion">
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
-    
+
   <BRANCH Name="World" Class="WORLD"/>
+
+  <BRANCH Name="Log" Class="LOG"/>
     
   <BRANCH Name="Experiment" Class="EXPERIMENT"/>
 

@@ -297,3 +297,13 @@ const char* CParameters::getName()
 {
 	return Name();
 }
+
+void CParameters::saveFile(const char* pFilename)
+{
+	SaveFile(pFilename, false);
+}
+
+void CParameters::saveFile(FILE* pFile)
+{
+	SaveFile(pFile, false);
+}

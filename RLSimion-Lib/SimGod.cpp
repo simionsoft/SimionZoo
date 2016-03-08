@@ -74,11 +74,12 @@ double CSimGod::selectAction(CState* s, CAction* a)
 double CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
 	//update critic
-	if (m_pCritic)
+	if (m_pCritic && !RLSimion::g_pExperiment->isEvaluationEpisode())
 		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);
 
 	//update actor: might be the controller
-	m_pActor->updatePolicy(s, a, s_p, r, m_td);
+	if( !RLSimion::g_pExperiment->isEvaluationEpisode())
+		m_pActor->updatePolicy(s, a, s_p, r, m_td);
 
 	return m_td;
 }

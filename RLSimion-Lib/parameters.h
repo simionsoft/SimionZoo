@@ -42,4 +42,7 @@ public:
 	const char* getName();
 
 	static void freeHandlers();
+
+	void saveFile(const char* pFilename);
+	void saveFile(FILE* pFile);
 };

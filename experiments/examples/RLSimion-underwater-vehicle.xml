@@ -2,12 +2,12 @@
 <RLSimion>
   <World>
     <Dynamic-Model>
-      <Pitch-control>
-        <World-Definition>..\config\world\pitch-control.xml</World-Definition>
-        <Set-Point-File>..\config\world\pitch-control\setpoint.txt</Set-Point-File>
-      </Pitch-control>
+      <Underwater-vehicle>
+        <World-Definition>..\config\world\underwater-vehicle.xml</World-Definition>
+        <Set-Point-File>..\config\world\underwater-vehicle\setpoint.txt</Set-Point-File>
+      </Underwater-vehicle>
     </Dynamic-Model>
-    <Delta-T>0.05</Delta-T>
+    <Delta-T>0.01</Delta-T>
     <Num-Integration-Steps>4</Num-Integration-Steps>
     <Reward>
       <Min>-100</Min>
@@ -15,53 +15,43 @@
       <Reward-components>
         <Deviation-Component>
           <Weight>1.0</Weight>
-          <Tolerance>0.02</Tolerance>
-          <Variable>control-deviation</Variable>
+          <Tolerance>0.1</Tolerance>
+          <Variable>v-deviation</Variable>
         </Deviation-Component>
       </Reward-components>
     </Reward>
   </World>
+  <Log>
+    <Log-Freq>0.03</Log-Freq>
+    <Ouput-directory>underwater-vehicle-2</Ouput-directory>
+    <Prefix>uv</Prefix>
+    <Log-eval-episodes>true</Log-eval-episodes>
+    <Log-training-episodes>false</Log-training-episodes>
+    <Log-eval-experiment>true</Log-eval-experiment>
+    <Log-training-experiment>true</Log-training-experiment>
+  </Log>
   <Experiment>
     <Num-Episodes>1000</Num-Episodes>
-    <Episode-Length>50</Episode-Length>
+    <Episode-Length>200</Episode-Length>
     <Random-Seed>1</Random-Seed>
     <Eval-Freq>50</Eval-Freq>
-    <Log>
-      <Log-Freq>0.25</Log-Freq>
-      <Ouput-directory>pitch-2</Ouput-directory>
-      <Prefix>pitch</Prefix>
-      <Log-eval-episodes>true</Log-eval-episodes>
-      <Log-training-episodes>false</Log-training-episodes>
-      <Log-eval-experiment>true</Log-eval-experiment>
-      <Log-training-experiment>true</Log-training-experiment>
-    </Log>
   </Experiment>
   <SimGod>
     <Actor>
       <VFA-Learner>
-        <Load>../data/pitch-200.bin</Load>
+        <Load>../data/uv-5000.bin</Load>
         <Outputs>
           <CACLA>
             <VFA-Policy>
               <Deterministic-Policy-Gaussian-Noise>
-                <Output-Action>pitch</Output-Action>
+                <Output-Action>u-thrust</Output-Action>
                 <Linear-State-VFA>
                   <State-Feature-Map>
                     <RBF-State-Grid>
                       <RBF-Grid-Dimension>
-                        <Variable>attack-angle</Variable>
-                        <Num-Features>200</Num-Features>
-                        <Distribution>linear</Distribution>
-                      </RBF-Grid-Dimension>
-                      <RBF-Grid-Dimension>
-                        <Variable>pitch-rate</Variable>
-                        <Num-Features>200</Num-Features>
-                        <Distribution>linear</Distribution>
-                      </RBF-Grid-Dimension>
-                      <RBF-Grid-Dimension>
-                        <Variable>control-deviation</Variable>
-                        <Num-Features>200</Num-Features>
-                        <Distribution>linear</Distribution>
+                        <Variable>v-deviation</Variable>
+                        <Num-Features>5000</Num-Features>
+                        <Distribution>cubic</Distribution>
                       </RBF-Grid-Dimension>
                     </RBF-State-Grid>
                   </State-Feature-Map>
@@ -75,7 +65,7 @@
                         <Start-Offset>0.0</Start-Offset>
                         <Pre-Offset-Value>0.0</Pre-Offset-Value>
                         <Interpolation>linear</Interpolation>
-                        <Initial-Value>0.001</Initial-Value>
+                        <Initial-Value>0.1</Initial-Value>
                         <End-Value>0.0</End-Value>
                         <Evaluation-Value>0.0</Evaluation-Value>
                       </Linear-Schedule>
@@ -88,8 +78,8 @@
               <Linear-Schedule>
                 <Start-Offset>0.0</Start-Offset>
                 <Interpolation>linear</Interpolation>
-                <Initial-Value>0.01</Initial-Value>
-                <End-Value>0.0</End-Value>
+                <Initial-Value>0.1</Initial-Value>
+                <End-Value>0.1</End-Value>
                 <Evaluation-Value>0.0</Evaluation-Value>
               </Linear-Schedule>
             </Alpha>
@@ -104,19 +94,9 @@
             <State-Feature-Map>
               <RBF-State-Grid>
                 <RBF-Grid-Dimension>
-                  <Variable>attack-angle</Variable>
-                  <Num-Features>200</Num-Features>
-                  <Distribution>linear</Distribution>
-                </RBF-Grid-Dimension>
-                <RBF-Grid-Dimension>
-                  <Variable>pitch-rate</Variable>
-                  <Num-Features>200</Num-Features>
-                  <Distribution>linear</Distribution>
-                </RBF-Grid-Dimension>
-                <RBF-Grid-Dimension>
-                  <Variable>control-deviation</Variable>
-                  <Num-Features>200</Num-Features>
-                  <Distribution>linear</Distribution>
+                  <Variable>v-deviation</Variable>
+                  <Num-Features>5000</Num-Features>
+                  <Distribution>cubic</Distribution>
                 </RBF-Grid-Dimension>
               </RBF-State-Grid>
             </State-Feature-Map>
@@ -131,7 +111,7 @@
             <Linear-Schedule>
               <Interpolation>linear</Interpolation>
               <Initial-Value>0.1</Initial-Value>
-              <End-Value>0.0</End-Value>
+              <End-Value>0.001</End-Value>
               <Evaluation-Value>0.0</Evaluation-Value>
             </Linear-Schedule>
           </Alpha>

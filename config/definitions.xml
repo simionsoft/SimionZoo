@@ -46,7 +46,6 @@
     <INTEGER-VALUE Name="Random-Seed" Default="1" Comment="Seed used to generate random numbers"/>
     <INTEGER-VALUE Name="Eval-Freq" Default="10" Comment="Evaluation freq. in episodes"/>
     <DECIMAL-VALUE Name="Progress-Update-Freq" Default="0.5" Comment="Progress update freq. (in seconds)"/>
-    <BRANCH Name="Log" Class="LOG"/>
   </CLASS>
   
   <!--SIMGOD-->
@@ -340,6 +339,7 @@
           <Deviation-component>
               <Variable/>
           </Deviation-component>
+          <Literal>C</Literal>
        </Type>
       </Reward-components>
     </RESUME>

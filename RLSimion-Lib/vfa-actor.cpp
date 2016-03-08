@@ -5,22 +5,21 @@
 #include "vfa.h"
 #include "vfa-policy.h"
 #include "actor.h"
-#include "experiment.h"
 #include "globals.h"
 #include "parameters.h"
 #include "logger.h"
 
-CSingleOutputVFAPolicyLearner::CSingleOutputVFAPolicyLearner(CParameters* pParameters) : CParamObject(pParameters)
+CVFAPolicyLearner::CVFAPolicyLearner(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pPolicy = CSingleOutputVFAPolicy::getInstance(pParameters);
+	m_pPolicy = CDeterministicVFAPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
 }
 
-CSingleOutputVFAPolicyLearner::~CSingleOutputVFAPolicyLearner()
+CVFAPolicyLearner::~CVFAPolicyLearner()
 {
 	delete m_pPolicy;
 }
 
-CSingleOutputVFAPolicyLearner* CSingleOutputVFAPolicyLearner::getInstance(CParameters* pParameters)
+CVFAPolicyLearner* CVFAPolicyLearner::getInstance(CParameters* pParameters)
 {
 	if (pParameters)
 	{
@@ -40,12 +39,12 @@ CVFAActor::CVFAActor(CParameters* pParameters): CParamObject(pParameters)
 
 	m_numOutputs = pOutputs->countChildren();
 	
-	m_pPolicyLearners = new CSingleOutputVFAPolicyLearner*[m_numOutputs];
+	m_pPolicyLearners = new CVFAPolicyLearner*[m_numOutputs];
 
 	CParameters* pOutput= pOutputs->getChild();
 	for (int i = 0; i<m_numOutputs; i++)
 	{
-		m_pPolicyLearners[i] = CSingleOutputVFAPolicyLearner::getInstance(pOutput);
+		m_pPolicyLearners[i] = CVFAPolicyLearner::getInstance(pOutput);
 		pOutput = pOutput->getNextChild();
 	}
 
@@ -79,12 +78,11 @@ void CVFAActor::selectAction(const CState *s, CAction *a)
 
 void CVFAActor::updatePolicy(const CState* s, const CAction* a, const CState* s_p, double r, double td)
 {
-	if (!RLSimion::g_pExperiment->isEvaluationEpisode())
-		for (int i = 0; i<m_numOutputs; i++)
-		{
-			//each uni-dimensional policy sets its own action's value
-			m_pPolicyLearners[i]->updatePolicy(s, a, s_p, r, td);
-		}
+	for (int i = 0; i<m_numOutputs; i++)
+	{
+		//each uni-dimensional policy sets its own action's value
+		m_pPolicyLearners[i]->updatePolicy(s, a, s_p, r, td);
+	}
 }
 
 /*
@@ -136,27 +134,41 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 
 void CVFAActor::savePolicy(const char* pFilename)
 {
+	CParameters* pFeatureMapParameters;
 	char msg[128];
+	char binFile[512];
+	char xmlDescFile[512];
 
-	FILE* pFile;
+	FILE* pBinFile;
+	FILE* pXMLFile;
 
 	if (!strcmp(pFilename, "NONE") || pFilename == 0 || pFilename[0] == 0) return;
 
-	fopen_s(&pFile, pFilename, "wb");
-	if (pFile)
+	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
+	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
+	fopen_s(&pBinFile, binFile, "wb");//////////NOT CALLED!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	if (pBinFile)
 	{
-		sprintf_s(msg, 128, "Saving Policy (\"%s\")...", pFilename);
-		CLogger::logMessage(Info, msg );
-
-		for (int i = 0; i<m_numOutputs; i++)
+		fopen_s(&pXMLFile, xmlDescFile, "w");
+		if (pXMLFile)
 		{
-			m_pPolicyLearners[i]->getPolicy()->getVFA()->save(pFile);
+			sprintf_s(msg, 128, "Saving Policy (\"%s\" (.bin/.xml)...", pFilename);
+			CLogger::logMessage(Info, msg);
+
+			for (int i = 0; i < m_numOutputs; i++)
+			{
+				pFeatureMapParameters = m_pPolicyLearners[i]->getPolicy()->getVFA()->getParameters();
+				if (pFeatureMapParameters)
+					pFeatureMapParameters->saveFile(pXMLFile);
+				m_pPolicyLearners[i]->getPolicy()->getVFA()->save(pBinFile);
+			}
+			fclose(pBinFile);
+			fclose(pXMLFile);
+			CLogger::logMessage(Info, "OK\n");
+			return;
 		}
-		fclose(pFile);
-		CLogger::logMessage(Info, "OK\n");
-		return;
 	}
-	sprintf_s(msg, 128, "Saving Policy (\"%s\")...FAILED", pFilename);
+	sprintf_s(msg, 128, "Saving Policy (\"%s\")...FAILED", binFile);
 	CLogger::logMessage(Warning, msg);
 
 }

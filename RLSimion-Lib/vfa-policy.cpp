@@ -8,7 +8,7 @@
 #include "world.h"
 #include "features.h"
 
-CSingleOutputVFAPolicy* CSingleOutputVFAPolicy::getInstance(CParameters* pParameters)
+CDeterministicVFAPolicy* CDeterministicVFAPolicy::getInstance(CParameters* pParameters)
 {
 	const char* pName = pParameters->getChild()->getName();
 
@@ -20,7 +20,7 @@ CSingleOutputVFAPolicy* CSingleOutputVFAPolicy::getInstance(CParameters* pParame
 	return 0;
 }
 
-CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(CParameters* pParameters)
+CDeterministicVFAPolicy::CDeterministicVFAPolicy(CParameters* pParameters)
 : CParamObject(pParameters)
 {
 	m_pVFA = new CLinearStateVFA(pParameters->getChild("Linear-State-VFA"));
@@ -33,7 +33,7 @@ CSingleOutputVFAPolicy::CSingleOutputVFAPolicy(CParameters* pParameters)
 	m_pVFA->saturateOutput(pActionDescriptor->getMin(m_outputActionIndex), pActionDescriptor->getMax(m_outputActionIndex));
 }
 
-CSingleOutputVFAPolicy::~CSingleOutputVFAPolicy()
+CDeterministicVFAPolicy::~CDeterministicVFAPolicy()
 {
 	delete m_pVFA;
 }
@@ -44,7 +44,7 @@ CSingleOutputVFAPolicy::~CSingleOutputVFAPolicy()
 /////////////////////////////////////////////////////////
 
 CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CParameters* pParameters)
-: CSingleOutputVFAPolicy(pParameters)
+: CDeterministicVFAPolicy(pParameters)
 {
 	m_pExpNoise = CNoise::getInstance(pParameters->getChild("Exploration-Noise"));
 }
@@ -83,7 +83,8 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
 
-CStochasticPolicyGaussianNoise::CStochasticPolicyGaussianNoise(CParameters* pParameters) : CSingleOutputVFAPolicy(pParameters)
+CStochasticPolicyGaussianNoise::CStochasticPolicyGaussianNoise(CParameters* pParameters)
+	: CDeterministicVFAPolicy(pParameters)
 {
 	m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
 	m_pAux = new CFeatureList("Sto-Policy\\aux");

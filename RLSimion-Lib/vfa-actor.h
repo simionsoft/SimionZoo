@@ -8,24 +8,24 @@ typedef CNamedVarSet CAction;
 
 class CFeatureList;
 class CETraces;
-class CSingleOutputVFAPolicy;
+class CDeterministicVFAPolicy;
 class CParameters;
 class INumericValue;
 
-class CSingleOutputVFAPolicyLearner: public CParamObject
+class CVFAPolicyLearner: public CParamObject
 {
 protected:
-	CSingleOutputVFAPolicy* m_pPolicy;
+	CDeterministicVFAPolicy* m_pPolicy;
 
 public:
-	CSingleOutputVFAPolicyLearner(CParameters* pParameters);
-	~CSingleOutputVFAPolicyLearner();
+	CVFAPolicyLearner(CParameters* pParameters);
+	~CVFAPolicyLearner();
 
 	virtual void updatePolicy(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
 
-	CSingleOutputVFAPolicy* getPolicy(){ return m_pPolicy; }
+	CDeterministicVFAPolicy* getPolicy(){ return m_pPolicy; }
 
-	static CSingleOutputVFAPolicyLearner* getInstance(CParameters* pParameters);
+	static CVFAPolicyLearner* getInstance(CParameters* pParameters);
 };
 
 
@@ -33,7 +33,7 @@ class CVFAActor: public CActor, public CParamObject
 {
 protected:
 	int m_numOutputs;
-	CSingleOutputVFAPolicyLearner **m_pPolicyLearners;
+	CVFAPolicyLearner **m_pPolicyLearners;
 public:
 	CVFAActor(CParameters* pParameters);
 	virtual ~CVFAActor();
@@ -52,7 +52,7 @@ public:
 
 
 
-class CCACLALearner : public CSingleOutputVFAPolicyLearner
+class CCACLALearner : public CVFAPolicyLearner
 {
 	CFeatureList *m_pStateFeatures;
 	CETraces *m_e;
@@ -65,7 +65,7 @@ public:
 	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };
 
-class CRegularPolicyGradientLearner :public CSingleOutputVFAPolicyLearner
+class CRegularPolicyGradientLearner :public CVFAPolicyLearner
 {
 	CFeatureList *m_pStateFeatures;
 	CETraces *m_e;
@@ -78,7 +78,7 @@ public:
 	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };
 
-class CIncrementalNaturalActor : public CSingleOutputVFAPolicyLearner
+class CIncrementalNaturalActor : public CVFAPolicyLearner
 {
 	//"Model-free Reinforcement Learning with Continuous Action in Practice"
 	//Thomas Degris, Patrick M. Pilarski, Richard S. Sutton

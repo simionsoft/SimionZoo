@@ -71,6 +71,10 @@ namespace AppXML.ViewModels
                foreach(XmlNode cChild in c.ChildNodes)
                {
                    string cTag = cChild.Name;
+                   if(cTag=="Literal")
+                   {
+                       result += cChild.InnerText;
+                   }
                    if (cTag == rTag)
                    {
                        if (!rChild.HasChildNodes)

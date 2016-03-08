@@ -60,47 +60,59 @@ int main(int argc, char* argv[])
 	CParameters* pSingleOutputVFAConfig = pVFAConfig->getChild("Single-Output-VFA");
 	//CONTROLLER -> ACTOR
 	printf("\nSaving the weights of a VFA that approximates the controller...\n");
-	FILE* pFile;
+	FILE *pBinFile, *pXMLFile;
 	unsigned int numWeights;
 	unsigned int feature;
 	double output;
-	fopen_s(&pFile, pOutputConfig->getConstString(), "wb");
+	char binFilename[512];
+	char xmlFilename[512];
 
+	sprintf_s(binFilename, 512, "%s.weights.bin", pOutputConfig->getConstString());
+	sprintf_s(xmlFilename, 512, "%s.feature-map.xml", pOutputConfig->getConstString());
+	fopen_s(&pBinFile, pOutputConfig->getConstString(), "wb");
+	
 	int i = 0;
-	if (pFile)
+	if (pBinFile)
 	{
-		CLinearStateVFA* pVFA;
-		const char* pOutputAction;
-
-		while (pSingleOutputVFAConfig)
+		fopen_s(&pXMLFile,xmlFilename, "w");
+		if (pXMLFile)
 		{
+			CLinearStateVFA* pVFA;
+			CParameters* pFeatureMapParameters;
+			const char* pOutputAction;
 
-			pVFA = new CLinearStateVFA(pSingleOutputVFAConfig->getChild("Linear-State-VFA"));
-			pOutputAction = pSingleOutputVFAConfig->getChild("Output-Action")->getConstString();
-
-			numWeights = pVFA->getNumWeights();
-			fwrite(&numWeights, sizeof(unsigned int), 1, pFile);
-
-			double *pWeights = new double[numWeights];
-
-			for (feature = 0; feature < numWeights; feature++)
+			while (pSingleOutputVFAConfig)
 			{
-				if (feature % 1000 == 0)
-					printf("Output dim: %d      Progress: %2.2f%%\r", i + 1	,  100.0*((double)feature) / ((double)numWeights));
-				pVFA->getFeatureState(feature, s);
-				pController->selectAction(s, a);
-				output = a->getValue(i);
-				pWeights[feature] = output;
-			}
-			fwrite(pWeights, sizeof(double), numWeights, pFile);
-			delete[] pWeights;
-			delete pVFA;
-			i++;
+				pVFA = new CLinearStateVFA(pSingleOutputVFAConfig->getChild("Linear-State-VFA"));
+				pFeatureMapParameters = pVFA->getParameters();
+				pOutputAction = pSingleOutputVFAConfig->getChild("Output-Action")->getConstString();
 
-			pSingleOutputVFAConfig = pSingleOutputVFAConfig->getNextChild("Single-Output-VFA");
+				numWeights = pVFA->getNumWeights();
+				fwrite(&numWeights, sizeof(unsigned int), 1, pBinFile);
+
+				double *pWeights = new double[numWeights];
+
+				for (feature = 0; feature < numWeights; feature++)
+				{
+					if (feature % 1000 == 0)
+						printf("Output dim: %d      Progress: %2.2f%%\r", i + 1, 100.0*((double)feature) / ((double)numWeights));
+					pVFA->getFeatureState(feature, s);
+					pController->selectAction(s, a);
+					output = a->getValue(i);
+					pWeights[feature] = output;
+				}
+				pFeatureMapParameters->saveFile(pXMLFile);
+				fwrite(pWeights, sizeof(double), numWeights, pBinFile);
+				delete[] pWeights;
+				delete pVFA;
+				i++;
+
+				pSingleOutputVFAConfig = pSingleOutputVFAConfig->getNextChild("Single-Output-VFA");
+			}
+			fclose(pXMLFile);
 		}
 		printf("\nDone\n");
-		fclose(pFile);
+		fclose(pBinFile);
 	}
 	else printf("ERROR: could not open output file\n");
 	
