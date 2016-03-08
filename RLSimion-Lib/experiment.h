@@ -5,7 +5,6 @@ typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CParameters;
-class CLogger;
 class CTimer;
 
 #define MAX_PROGRESS_MSG_LEN 1024
@@ -85,8 +84,6 @@ public:
 
 	const char* getProgressString();
 
-
-	CLogger* m_pLogger;
 
 	unsigned int m_randomSeed;
 

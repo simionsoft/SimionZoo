@@ -40,7 +40,7 @@ CSimGod::CSimGod(CParameters* pParameters)
 	
 	m_rho = 0.0;
 	m_td = 0.0;
-	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Critic", "TD-error", &m_td);
+	RLSimion::g_pLogger->addVarToStats("Critic", "TD-error", &m_td);
 
 }
 

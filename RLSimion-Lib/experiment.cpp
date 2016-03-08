@@ -116,7 +116,6 @@ CExperiment::CExperiment(CParameters* pParameters)
 		setNumSteps((unsigned int)(pParameters->getConstDouble("Episode-Length", 1.0) / RLSimion::g_pWorld->getDT()));
 		reset();
 
-		m_pLogger = new CLogger(pParameters->getChild("Log"));
 	}
 	else
 	{
@@ -151,19 +150,19 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
-		m_pLogger->firstEpisode(evalEpisode);
+		RLSimion::g_pLogger->firstEpisode(evalEpisode);
 
 	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
-		m_pLogger->firstStep(evalEpisode, episodeIndex);
+		RLSimion::g_pLogger->firstStep(evalEpisode, episodeIndex);
 
 	//update stats
 	//output step-stats
-	m_pLogger->timestep(evalEpisode, episodeIndex);
+	RLSimion::g_pLogger->timestep(evalEpisode, episodeIndex);
 
 	if (isLastStep())
-		m_pLogger->lastStep(evalEpisode, episodeIndex);
+		RLSimion::g_pLogger->lastStep(evalEpisode, episodeIndex);
 
 	if (isLastEpisode() && isLastStep())
-		m_pLogger->lastEpisode(evalEpisode);
+		RLSimion::g_pLogger->lastEpisode(evalEpisode);
 }

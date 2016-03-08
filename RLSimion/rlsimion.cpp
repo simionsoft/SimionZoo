@@ -14,27 +14,25 @@
 
 int main(int argc, char* argv[])
 {
-	tinyxml2::XMLDocument xmlDoc;
+	CParameterFile xmlDoc;
 	CParameters* pParameters;
 
-	
-	//CParameters *pParameters;
 	if (argc > 1)
-		xmlDoc.LoadFile(argv[1]);
-		//pParameters = new CParameters(argv[1]);
+	{
+		pParameters = xmlDoc.loadFile(argv[1], "RLSimion");
+		if (!pParameters)
+		{
+			printf("Error loading configuration file: %s\n\n", xmlDoc.getError());
+			getchar();
+			exit(-1);
+		}
+	}
 	else
 	{
 		printf("ERROR: configuration file not provided as an argument");
 		exit(-1);
 	}
 	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
-
-	pParameters = (CParameters*) xmlDoc.FirstChildElement("RLSimion");
-	if (xmlDoc.Error())
-	{
-		printf("Error loading configuration file: %s\n\n", xmlDoc.ErrorName());
-		exit(-1);
-	}
 
 	RLSimion::init(pParameters);
 
@@ -43,10 +41,10 @@ int main(int argc, char* argv[])
 	CState *s_p= RLSimion::g_pWorld->getStateInstance();
 	CAction *a= RLSimion::g_pWorld->getActionInstance();
 	//register the state and action vectors in the logger
-	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("State", s);
-	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Action", a);
-	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Reward", "sum", RLSimion::g_pWorld->getScalarReward());
-	RLSimion::g_pExperiment->m_pLogger->addVarSetToStats("Reward", RLSimion::g_pWorld->getReward());
+	RLSimion::g_pLogger->addVarSetToStats("State", s);
+	RLSimion::g_pLogger->addVarSetToStats("Action", a);
+	RLSimion::g_pLogger->addVarToStats("Reward", "sum", RLSimion::g_pWorld->getScalarReward());
+	RLSimion::g_pLogger->addVarSetToStats("Reward", RLSimion::g_pWorld->getReward());
 
 	double r= 0.0;
 

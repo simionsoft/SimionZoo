@@ -17,7 +17,7 @@ CFeatureList::CFeatureList(const char* name, bool addIfExists, bool replaceIfExi
 	m_bAddIfExists = addIfExists;
 	m_bReplaceIfExists = replaceIfExists;
 	strcpy_s(m_name, MAX_NAME_SIZE, name);
-	RLSimion::g_pExperiment->m_pLogger->addVarToStats("Features",m_name, &m_numFeatures);
+	RLSimion::g_pLogger->addVarToStats("Features",m_name, &m_numFeatures);
 }
 
 CFeatureList::~CFeatureList()

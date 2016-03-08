@@ -4,6 +4,12 @@
 #include "experiment.h"
 #include "logger.h"
 
+#ifdef _DEBUG
+#pragma comment (lib,"../Debug/tinyxml2.lib")
+#else
+#pragma comment (lib,"../Release/tinyxml2.lib")
+#endif
+
 std::list<INumericValue*> CParameters::m_handlers;
 
 class CConstantValue : public INumericValue
@@ -142,6 +148,21 @@ double CBhatnagarSchedule::getValue()
 	}
 	
 	return m_alpha_0*m_alpha_c / (m_alpha_c + pow(t, m_t_exp));
+}
+
+CParameters* CParameterFile::loadFile(const char* fileName, const char* nodeName)
+{
+	LoadFile(fileName);
+	if (Error()) return 0;
+
+
+	return (CParameters*) (this->FirstChildElement(nodeName));
+	
+}
+
+const char* CParameterFile::getError()
+{
+	return ErrorName();
 }
 
 

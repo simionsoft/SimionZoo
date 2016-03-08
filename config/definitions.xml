@@ -51,7 +51,7 @@
   
   <!--SIMGOD-->
   <CLASS Name="SIMGOD">
-    <CHOICE Name="Configuration">
+    <CHOICE Name="Configuration" XMLTag="">
       <CHOICE-ELEMENT Name="Actor" Class="ACTOR-CONFIG"/>
       
       <CHOICE-ELEMENT Name="Actor-Critic" Class="ACTOR-CRITIC-CONFIG"/>

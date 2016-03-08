@@ -1,10 +1,22 @@
 #pragma once
 #include <list>
 
+
+
 class INumericValue
 {
 public:
 	virtual double getValue() = 0;
+};
+
+#include "../tinyxml2/tinyxml2.h"
+class CParameters;
+
+class CParameterFile : private tinyxml2::XMLDocument
+{
+public:
+	CParameters* loadFile(const char* fileName, const char* nodeName);
+	const char* getError();
 };
 
 //this class is a simplified interface of CParameters

@@ -45,7 +45,6 @@ CVFAActor::CVFAActor(CParameters* pParameters): CParamObject(pParameters)
 	CParameters* pOutput= pOutputs->getChild();
 	for (int i = 0; i<m_numOutputs; i++)
 	{
-		//////////////hemen VFAActor motako haurrak hartu behar die bakarrik!!!
 		m_pPolicyLearners[i] = CSingleOutputVFAPolicyLearner::getInstance(pOutput);
 		pOutput = pOutput->getNextChild();
 	}

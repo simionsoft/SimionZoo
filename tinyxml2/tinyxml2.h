@@ -1162,6 +1162,12 @@ public:
     }
     virtual bool Accept( XMLVisitor* visitor ) const;
 
+	//Added 2016/03/08 Borja Fdez-Gauna
+	//Save a node within an XMLDocument instead of the whole file
+	bool SaveFile(const char* filename, bool compact = false);
+	void SaveFile(FILE* fp, bool compact = false);
+	void Print(XMLPrinter* streamer = 0) const;
+
     /** Given an attribute name, Attribute() returns the value
     	for the attribute of that name, or null if none
     	exists. For example:
