@@ -2,10 +2,10 @@
 <DEFINITIONS>
     <!--World-->
   <CLASS Name="WORLD">
-    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" XMLTag="int/todo"/>
-    <DECIMAL-VALUE Name="Delta-T" Default="0.01" XMLTag="decimal"/>
-    <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION" XMLTag="PruebaChoice">
-      <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world/wind-turbine.xml" Class="Wind-turbine-parameters" XMLTag="pruebaelement/prueba"/>
+    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" Optional="true"/>
+    <DECIMAL-VALUE Name="Delta-T" Default="0.01"/>
+    <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
+      <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world/wind-turbine.xml" Class="Wind-turbine-parameters" />
       <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world/underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
       <CHOICE-ELEMENT Name="PItch-control" XML="../config/world/pitch-control.xml" Class="Pitch-control-parameters"/>
     </CHOICE>
@@ -25,7 +25,7 @@
     <FILE-PATH-VALUE Name="SET_POINT_FILE"/>
   </CLASS>
   <CLASS Name="LIST-OF-FILES">
-    <MULTI-VALUED Name="File" Class="FILE-PATH-VALUE" XMLTag="misArchivos"/>
+    <MULTI-VALUED Name="File" Class="FILE-PATH-VALUE"/>
   </CLASS>
   
   <CLASS Name="LOG">
@@ -337,7 +337,7 @@
     <RESUME>
       <Reward-components>
         <Type>
-           <Deviation-component>
+          <Deviation-component>
               <Variable/>
           </Deviation-component>
        </Type>
@@ -352,7 +352,7 @@
   </CLASS>
 
   <CLASS Name="DEVIATION-REWARD-COMPONENT">
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State" XMLTag="VariableConTag"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State" />
     <DECIMAL-VALUE Name="Weight" Default="1.0"/>
     <DECIMAL-VALUE Name="Tolerance" Default="10"/>
   </CLASS>

@@ -324,7 +324,9 @@ namespace AppXML.ViewModels
                 {
                     foreach (BranchViewModel item in _branches)
                     {
-                        result.Add(item.getXmlNode());
+                        XmlNode bvmn = item.getXmlNode();
+                        if(bvmn!=null)
+                            result.Add(item.getXmlNode());
                         //nodo.AppendChild(item.getXmlNode());
                     }
                 }
@@ -341,9 +343,13 @@ namespace AppXML.ViewModels
                     foreach (MultiValuedViewModel item in _multis)
                     {
                         List<XmlNode> nodes = item.getXmlNode();
-                        foreach (XmlNode node in nodes)
-                            //nodo.AppendChild(node);
-                            result.Add(node);
+                        if(nodes!=null)
+                        {
+                            foreach (XmlNode node in nodes)
+                                //nodo.AppendChild(node);
+                                result.Add(node);
+                        }
+                        
                     }
                 }
 
