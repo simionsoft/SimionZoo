@@ -199,7 +199,7 @@ namespace AppXML.ViewModels
         {
             if (type == validTypes.StringValue)
                 return;
-            if(isOptional==true && Default=="")
+            if(isOptional==true && (Default==null || Default==""))
             {
                 TextColor = "White";
                 return;
