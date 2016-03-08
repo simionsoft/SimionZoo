@@ -18,6 +18,8 @@ using System.Xml;
 using System.Windows;
 using Caliburn.Micro;
 using System.ComponentModel.Composition;
+using System.Windows.Forms;
+using System.IO;
 namespace AppXML.ViewModels
 {
     /*[Export(typeof(WindowViewModel))]*/
@@ -67,7 +69,17 @@ namespace AppXML.ViewModels
                 }
             }
             _doc.AppendChild(rootNode);
-            _doc.Save("prueba.xml");
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "XML-File | *.xml";
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "..\\log");
+            if (!Directory.Exists(CombinedPath))
+                System.IO.Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                _doc.Save(sfd.FileName);
+            }
+            
+            
             
         }
        
