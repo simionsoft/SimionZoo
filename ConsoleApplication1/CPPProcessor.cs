@@ -57,7 +57,7 @@ namespace CustomXMLBuilder
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
                 parsedXML += getLevelIndent() + "<CHOICE-ELEMENT Name=" + parameterMatches[1].Value.Trim(' ') +" Class=\""
-                        + parameterMatches[2].Value.Trim(' ') + "\"\\>\n";
+                        + parameterMatches[2].Value.Trim(' ') + "\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -97,9 +97,9 @@ namespace CustomXMLBuilder
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<INTEGER-VALUE Name=" + parameterMatches[1].Value.Trim(' ') + " Class=\""
+                parsedXML += getLevelIndent() + "<INTEGER-VALUE Name=\"" + parameterMatches[1].Value.Trim(' ') + "\" Class="
                     + parameterMatches[2].Value.Trim(' ') + " Default=\"" + parameterMatches[3].Value.Trim(' ')
-                    + "\"\\>\n";
+                    + "\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -119,9 +119,9 @@ namespace CustomXMLBuilder
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<DOUBLE-VALUE Name=" + parameterMatches[1].Value.Trim(' ') + " Class=\""
+                parsedXML += getLevelIndent() + "<DOUBLE-VALUE Name=\"" + parameterMatches[1].Value.Trim(' ') + "\" Class="
                      + parameterMatches[2].Value.Trim(' ') + " Default=\"" + parameterMatches[3].Value.Trim(' ')
-                     + "\"\\>\n";
+                     + "\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -141,9 +141,9 @@ namespace CustomXMLBuilder
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<BOOLEAN-VALUE Name=" + parameterMatches[1].Value.Trim(' ') + " Class=\""
+                parsedXML += getLevelIndent() + "<BOOLEAN-VALUE Name=\"" + parameterMatches[1].Value.Trim(' ') + "\" Class="
                     + parameterMatches[2].Value.Trim(' ') + " Default=\"" + parameterMatches[3].Value.Trim(' ')
-                    + "\"\\>\n";
+                    + "\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -163,9 +163,9 @@ namespace CustomXMLBuilder
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<STRING-VALUE Name=" + parameterMatches[1].Value.Trim(' ') + " Class=\""
+                parsedXML += getLevelIndent() + "<STRING-VALUE Name=\"" + parameterMatches[1].Value.Trim(' ') + "\" Class="
                      + parameterMatches[2].Value.Trim(' ') + " Default=\"" + parameterMatches[3].Value.Trim(' ')
-                     + "\"\\>\n";
+                     + "\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -198,7 +198,7 @@ namespace CustomXMLBuilder
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 parsedXML += getLevelIndent() + "<MULTI-VALUED Name=\"" + match.Groups["name"].Value 
-                    + "\" Class=\"" + match.Groups["className"].Value +"\"\\>\n";
+                    + "\" Class=\"" + match.Groups["className"].Value +"\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -235,7 +235,7 @@ namespace CustomXMLBuilder
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
-                parsedXML += getLevelIndent() + "<BRANCH Name=\"" + match.Groups["parameterName"].Value + "\" Class=\"NUMERIC-VALUE\"\\>\n";
+                parsedXML += getLevelIndent() + "<BRANCH Name=\"" + match.Groups["parameterName"].Value + "\" Class=\"NUMERIC-VALUE\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
