@@ -20,6 +20,7 @@ using Caliburn.Micro;
 using System.ComponentModel.Composition;
 using System.Windows.Forms;
 using System.IO;
+using System.Dynamic;
 namespace AppXML.ViewModels
 {
     /*[Export(typeof(WindowViewModel))]*/
@@ -60,7 +61,15 @@ namespace AppXML.ViewModels
             {
                 if(!branch.validate())
                 {
-                    //mostrar error
+                    DialogViewModel dvm = new DialogViewModel(null, "Error validating de form. Please check form", DialogViewModel.DialogType.Info);
+                    dynamic settings = new ExpandoObject();
+                    settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                    settings.ShowInTaskbar = true;
+                    settings.Title = "ERROR";
+
+                    new WindowManager().ShowDialog(dvm, null, settings);
+
+           
                     return;
                 }
                 else

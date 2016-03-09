@@ -258,7 +258,13 @@ namespace AppXML.ViewModels
             
 
            WindowManager windowManager = new WindowManager();
-           windowManager.ShowDialog(this._wclvm);
+           dynamic settings = new ExpandoObject();
+           settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+           settings.ShowInTaskbar = true;
+           settings.Title = this._className;
+
+           //new WindowManager().ShowDialog(dvm, null, settings);
+           windowManager.ShowDialog(this._wclvm,null,settings);
            
 
             
