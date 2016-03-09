@@ -2,13 +2,17 @@
 #include "critic.h"
 #include "vfa-critic.h"
 #include "parameters.h"
+#include "globals.h"
 
-CCritic *CCritic::getInstance(CParameters* pParameters)
+CCritic* CLASS_FACTORY(CCritic)::getInstance(CParameters* pParameters)
 {
 	if (!pParameters) return 0;
 
-	if (!strcmp(pParameters->getChild()->getName(), "VFA-Critic"))
-		return CVFACritic::getInstance(pParameters->getChild());
+	const char* name = pParameters->getChild()->getName();
+	CHOICE("Critic-Type");
+	CHOICE_ELEMENT_FACTORY(name, "VFA-Critic", CVFACritic, pParameters->getChild());
+	END_CHOICE();
 
+	END_CLASS();
 	return 0;
 }

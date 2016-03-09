@@ -33,6 +33,7 @@ class CExperiment
 	unsigned int m_evalEpisodeIndex; //[1..1+m_numTrainingEpisodes/ evalFreq]
 
 	//episode stuff
+	double m_episodeLength;
 	unsigned int m_totalNumEpisodes;
 	unsigned int m_numTrainingEpisodes;
 	unsigned int m_numEvaluationEpisodes;

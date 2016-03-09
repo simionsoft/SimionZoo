@@ -19,7 +19,7 @@ public:
 	const char* getError();
 };
 
-//this class is a simplified interface of CParameters
+//this class is a simplified interface of tinyxml2::XMLElement
 class CParameters: private tinyxml2::XMLElement
 {
 	//We use downcasting, so don't add any non-static attributes here!!

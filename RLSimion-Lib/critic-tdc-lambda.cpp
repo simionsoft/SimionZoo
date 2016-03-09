@@ -8,20 +8,21 @@
 #include "vfa-critic.h"
 #include "parameters.h"
 
-CTDCLambdaCritic::CTDCLambdaCritic(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CTDCLambdaCritic) (CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_z = new CETraces("Critic\\E-Traces",pParameters->getChild("E-Traces"));
+	m_z = new CETraces("Critic/E-Traces",pParameters->getChild("E-Traces"));
 
-	m_s_features = new CFeatureList("Critic\\s");
-	m_s_p_features = new CFeatureList("Critic\\s_p");
-	m_a = new CFeatureList("Critic\\a");
-	m_b= new CFeatureList("Critic\\b");
-	m_omega = new CFeatureList("Critic\\omega");
+	m_s_features = new CFeatureList("Critic/s");
+	m_s_p_features = new CFeatureList("Critic/s_p");
+	m_a = new CFeatureList("Critic/a");
+	m_b= new CFeatureList("Critic/b");
+	m_omega = new CFeatureList("Critic/omega");
 
-	m_pAlpha= pParameters->getNumericHandler("Alpha");
-	m_pBeta = pParameters->getNumericHandler("Beta");
-	m_pGamma = pParameters->getNumericHandler("Gamma");
+	NUMERIC_VALUE(m_pAlpha,pParameters,"Alpha");
+	NUMERIC_VALUE(m_pBeta,pParameters,"Beta");
+	NUMERIC_VALUE(m_pGamma,pParameters,"Gamma");
+	END_CLASS();
 }
 
 CTDCLambdaCritic::~CTDCLambdaCritic()

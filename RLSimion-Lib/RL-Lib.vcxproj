@@ -44,6 +44,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -63,6 +64,18 @@
     <Lib>
       <OutputFile>../Debug/$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>..\Debug\CustomBuildXML.exe $(ProjectDir)</Command>
+      <Outputs>..\config\definitions-test.xml</Outputs>
+      <Inputs>
+      </Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+      <Message>RLSimion XML preprocess</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -155,15 +168,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-  </ItemGroup>
-  <ItemGroup>
     <Xml Include="..\config\world\pitch-control.xml" />
     <Xml Include="..\config\world\underwater-vehicle.xml" />
     <Xml Include="..\config\world\wind-turbine.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xsd Include="..\config\world\world-definition.xsd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

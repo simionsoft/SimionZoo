@@ -11,8 +11,8 @@
 CTDLambdaCritic::CTDLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_z= new CETraces("Critic\\E-Traces",pParameters->getChild("E-Traces"));
-	m_aux= new CFeatureList("Critic\\aux");
+	m_z= new CETraces("Critic/E-Traces",pParameters->getChild("E-Traces"));
+	m_aux= new CFeatureList("Critic/aux");
 	m_pAlpha = pParameters->getNumericHandler("Alpha");
 	m_pGamma = pParameters->getNumericHandler("Gamma");
 }

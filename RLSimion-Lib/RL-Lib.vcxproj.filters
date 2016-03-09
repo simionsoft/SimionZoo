@@ -217,9 +217,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-  </ItemGroup>
-  <ItemGroup>
     <Xml Include="..\config\world\pitch-control.xml">
       <Filter>world</Filter>
     </Xml>
@@ -229,10 +226,5 @@
     <Xml Include="..\config\world\wind-turbine.xml">
       <Filter>world</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <Xsd Include="..\config\world\world-definition.xsd">
-      <Filter>world</Filter>
-    </Xsd>
   </ItemGroup>
 </Project>

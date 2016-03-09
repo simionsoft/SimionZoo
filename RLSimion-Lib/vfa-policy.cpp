@@ -87,7 +87,7 @@ CStochasticPolicyGaussianNoise::CStochasticPolicyGaussianNoise(CParameters* pPar
 	: CDeterministicVFAPolicy(pParameters)
 {
 	m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
-	m_pAux = new CFeatureList("Sto-Policy\\aux");
+	m_pAux = new CFeatureList("Sto-Policy/aux");
 }
 
 CStochasticPolicyGaussianNoise::~CStochasticPolicyGaussianNoise()

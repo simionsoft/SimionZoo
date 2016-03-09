@@ -7,13 +7,16 @@
 #include "features.h"
 #include "etraces.h"
 #include "parameters.h"
+#include "globals.h"
 
-CCACLALearner::CCACLALearner(CParameters *pParameters)
-: CSingleOutputVFAPolicyLearner(pParameters->getChild("VFA-Policy"))
+CLASS_CONSTRUCTOR(CCACLALearner)(CParameters *pParameters): EXTENDS(CVFAPolicyLearner,pParameters->getChild("VFA-Policy"))
 {
-	m_pStateFeatures = new CFeatureList("Actor\\s");
-	m_e = new CETraces("Actor\\E-Traces",pParameters->getChild("E-Traces"));
-	m_pAlpha = pParameters->getNumericHandler("Alpha");
+	m_pStateFeatures = new CFeatureList("Actor/s");
+	CHILD_CLASS(m_e, "E-Traces",CETraces, "Actor/E-Traces", pParameters->getChild("E-Traces"));
+	/*m_e = new CETraces("Actor/E-Traces",pParameters->getChild("E-Traces"));*/
+	NUMERIC_VALUE(m_pAlpha, pParameters, "Alpha");
+
+	END_CLASS();
 }
 
 CCACLALearner::~CCACLALearner()

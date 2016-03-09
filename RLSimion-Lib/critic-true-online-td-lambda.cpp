@@ -11,8 +11,8 @@
 CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
 	: CVFACritic(pParameters)
 {
-	m_e= new CETraces("Critic\\E-Traces",pParameters->getChild("E-Traces"));
-	m_aux= new CFeatureList("Critic\\aux");
+	m_e= new CETraces("Critic/E-Traces",pParameters->getChild("E-Traces"));
+	m_aux= new CFeatureList("Critic/aux");
 	m_v_s= 0.0;
 	m_pAlpha = pParameters->getNumericHandler("Alpha");
 	m_pGamma= pParameters->getNumericHandler("Gamma");

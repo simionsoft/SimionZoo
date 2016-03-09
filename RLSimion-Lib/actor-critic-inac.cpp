@@ -12,14 +12,15 @@
 #include "globals.h"
 #include "experiment.h"
 
-CIncrementalNaturalCritic::CIncrementalNaturalCritic(CParameters* pParameters) : CVFACritic(pParameters)
+CLASS_CONSTRUCTOR(CIncrementalNaturalCritic)(CParameters* pParameters) : EXTENDS(CVFACritic,pParameters)
 {
-	m_s_features = new CFeatureList("Critic\\s");
-	m_s_p_features = new CFeatureList("Critic\\s_p");
-	m_pAlphaV = pParameters->getNumericHandler("Alpha-v");
-	m_pAlphaR = pParameters->getNumericHandler("Alpha-r");
-	m_pGamma = pParameters->getNumericHandler("Gamma");
-	m_e_v = new CETraces("Critic\\e_v",pParameters->getChild("E-Traces"));
+	m_s_features = new CFeatureList("Critic/s");
+	m_s_p_features = new CFeatureList("Critic/s_p");
+	NUMERIC_VALUE(m_pAlphaV, pParameters,"Alpha-v");
+	NUMERIC_VALUE(m_pAlphaR,pParameters, "Alpha-r");
+	NUMERIC_VALUE(m_pGamma, pParameters,"Gamma");
+	CHILD_CLASS(m_e_v,"E-Traces",CETraces,"Critic/e_v",pParameters->getChild("E-Traces"));
+	END_CLASS();
 }
 
 CIncrementalNaturalCritic::~CIncrementalNaturalCritic()
@@ -62,18 +63,18 @@ double CIncrementalNaturalCritic::updateValue(const CState *s, const CAction *a,
 	return td;
 }
 
-CIncrementalNaturalActor::CIncrementalNaturalActor(CParameters* pParameters) 
-: CSingleOutputVFAPolicyLearner(pParameters->getChild("VFA-Policy"))
+CLASS_CONSTRUCTOR(CIncrementalNaturalActor)(CParameters* pParameters) 
+: EXTENDS(CVFAPolicyLearner,pParameters->getChild("VFA-Policy"))
 {
-	m_grad_u = new CFeatureList("Actor\\grad-u");
-	m_s_features = new CFeatureList("Actor\\s");
+	m_grad_u = new CFeatureList("Actor/grad-u");
+	m_s_features = new CFeatureList("Actor/s");
 	m_pGamma = pParameters->getNumericHandler("Gamma");
 
 	m_pAlphaU = pParameters->getNumericHandler("Alpha-u");
 	m_pAlphaV = pParameters->getNumericHandler("Alpha-v");
 
-	m_e = new CETraces("Actor\\E-Traces",pParameters->getChild("E-Traces"));
-	m_w = new CFeatureList("Actor\\w");
+	m_e = new CETraces("Actor/E-Traces",pParameters->getChild("E-Traces"));
+	m_w = new CFeatureList("Actor/w");
 }
 
 CIncrementalNaturalActor::~CIncrementalNaturalActor()
