@@ -94,15 +94,16 @@ CExperiment::~CExperiment()
 	delete m_pProgressTimer;
 }
 
-CExperiment::CExperiment(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CExperiment) (CParameters* pParameters)
 {
 	if (pParameters)
 	{
-		m_progUpdateFreq = pParameters->getConstDouble("Progress-Update-Freq", 0.5);
-		m_randomSeed = pParameters->getConstInteger("Random-Seed", 1);
+		CONST_DOUBLE_VALUE(m_progUpdateFreq ,pParameters,"Progress-Update-Freq", 0.5);
+		CONST_INTEGER_VALUE(m_randomSeed ,pParameters,"Random-Seed", 1);
 
-		m_numTrainingEpisodes = pParameters->getConstInteger("Num-Episodes", 1);
-		m_evalFreq = std::min((int)m_numTrainingEpisodes, pParameters->getConstInteger("Eval-Freq", 0));
+		CONST_INTEGER_VALUE(m_numTrainingEpisodes, pParameters,"Num-Episodes", 1);
+		CONST_INTEGER_VALUE(m_evalFreq, pParameters, "Eval-Freq", 0);
+	
 		if (m_evalFreq != 0)
 		{
 			m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes / m_evalFreq;
@@ -113,7 +114,8 @@ CExperiment::CExperiment(CParameters* pParameters)
 			m_numEvaluationEpisodes = 0;
 			m_totalNumEpisodes = m_numTrainingEpisodes;
 		}
-		setNumSteps((unsigned int)(pParameters->getConstDouble("Episode-Length", 1.0) / RLSimion::g_pWorld->getDT()));
+		CONST_DOUBLE_VALUE(m_episodeLength, pParameters, "Episode-Length", 1.0);
+		setNumSteps((unsigned int)(m_episodeLength / RLSimion::g_pWorld->getDT()));
 		reset();
 
 	}
@@ -129,6 +131,8 @@ CExperiment::CExperiment(CParameters* pParameters)
 	m_pProgressTimer = new CTimer();
 	//QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
 	srand(m_randomSeed);
+
+	END_CLASS();
 }
 
 

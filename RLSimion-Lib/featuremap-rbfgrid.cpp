@@ -69,7 +69,7 @@ void CGaussianRBFGridFeatureMap::initCenterPoints(int i,const char* varName,int 
 
 }
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters): CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CGaussianRBFGridFeatureMap) (CParameters* pParameters): CParamObject(pParameters)
 {
 	char * token= 0, *nextToken= 0;
 	//char copy[MAX_STRING_SIZE];
@@ -83,8 +83,7 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
 	m_pCenters= new double* [m_numVariables];
 
 //	m_pBuffer= new CFeatureList();
-	m_pVarFeatures= new CFeatureList("RBFGrid\\var");
-
+	m_pVarFeatures= new CFeatureList("RBFGrid/var");
 
 
 	int numFeatures= 0;

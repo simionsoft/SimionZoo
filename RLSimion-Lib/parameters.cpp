@@ -223,7 +223,7 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 			return false;
 	}
 	char msg[128];
-	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %b", getName(), paramName, defaultValue);
+	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %b", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
 
 	return defaultValue;
@@ -239,7 +239,7 @@ int CParameters::getConstInteger(const char* paramName, int defaultValue)
 		return atoi(pParameter->GetText());
 	}
 	char msg[128];
-	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %d", getName(), paramName, defaultValue);
+	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
 	return defaultValue;
 }
@@ -254,7 +254,7 @@ double CParameters::getConstDouble(const char* paramName, double defaultValue)
 		return atof(pParameter->GetText());
 	}
 	char msg[128];
-	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %f", getName(), paramName, defaultValue);
+	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %f", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
 
 	return defaultValue;
@@ -275,7 +275,7 @@ const char* CParameters::getConstString(const char* paramName, const char* defau
 	else
 	if (GetText()) return GetText();
 	char msg[128];
-	sprintf_s(msg, 128, "Parameter %s\\%s not found. Using default value %s", getName(), paramName, defaultValue);
+	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %s", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
 
 	return defaultValue;

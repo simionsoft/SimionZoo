@@ -32,7 +32,7 @@ int getFirstBadgerFileIndex(CParameters* pParameters)
 	do
 	{
 		n++;
-		sprintf_s(fileName, 512, "%s\\exp-%d.txt", pParameters->getParameter("OUTPUT_DIRECTORY")->getStringPtr(), n);
+		sprintf_s(fileName, 512, "%s/exp-%d.txt", pParameters->getParameter("OUTPUT_DIRECTORY")->getStringPtr(), n);
 		fopen_s(&pFile, fileName, "r");
 		if (pFile) fclose(pFile);
 	} while (pFile != 0);
@@ -47,7 +47,7 @@ void ProcessCommand(CParameters* pAppParameters)
 	char commandLine[512];
 
 	//create parameter file for experiment
-	sprintf_s(fileName, 512, "%s\\exp-%d.txt", pAppParameters->getParameter("OUTPUT_DIRECTORY")->getStringPtr()
+	sprintf_s(fileName, 512, "%s/exp-%d.txt", pAppParameters->getParameter("OUTPUT_DIRECTORY")->getStringPtr()
 		, numExperiment + g_firstBadgerFileIndex);
 	g_pCurrentParameters->saveParameters(fileName);
 
@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
 
 
 	//SetWorkPath();
-	CParameters *pAppParameters = new CParameters("..\\Badger\\Badger-parameters.txt");
+	CParameters *pAppParameters = new CParameters("../Badger/Badger-parameters.txt");
 	CParameters *pBadgerParameters = pAppParameters->getChild("BADGER");
 
 	g_pProcessSpawner = new CProcessSpawner(pBadgerParameters);

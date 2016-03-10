@@ -64,7 +64,7 @@ CLinearStateVFA::CLinearStateVFA(CParameters* pParameters) : CParamObject(pParam
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
 
-	m_pAux = new CFeatureList("LinearStateVFA\\aux");
+	m_pAux = new CFeatureList("LinearStateVFA/aux");
 
 	double initValue = 0.0;
 	for (unsigned int i = 0; i < m_numWeights; i++)
@@ -144,7 +144,7 @@ CLinearStateActionVFA::CLinearStateActionVFA(CParameters* pParameters) : CParamO
 	m_numWeights = m_numStateWeights * m_numActionWeights;
 	m_pWeights = new double[m_numWeights];
 
-	m_pAux = new CFeatureList("LinearStateActionVFA\\aux");
+	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
 
 	double initValue = 0.0;
 	for (unsigned int i = 0; i < m_numWeights; i++)

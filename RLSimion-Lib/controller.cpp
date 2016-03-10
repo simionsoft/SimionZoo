@@ -5,8 +5,9 @@
 #include "world.h"
 #include "parameters.h"
 #include "logger.h"
+#include "globals.h"
 
-CMultiController::CMultiController(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CMultiController) (CParameters* pParameters)
 {
 	m_numControllers = pParameters->countChildren();
 
@@ -15,10 +16,26 @@ CMultiController::CMultiController(CParameters* pParameters)
 	CParameters* pControllerParameters = pParameters->getChild();
 	for (int i = 0; i < m_numControllers; i++)
 	{
-		m_pControllers[i] = CMultiController::getInstance(pControllerParameters);
+		MULTI_VALUED_FACTORY(m_pControllers[i],"Controllers",CMultiController,pControllerParameters);
 
 		pControllerParameters = pControllerParameters->getNextChild();
 	}
+
+}
+
+CActor* CMultiController::getInstance(CParameters* pParameters)
+{
+	const char* type = pParameters->getName();
+	CHOICE("Controller-Type");
+	CHOICE_ELEMENT(type,"Vidal", CWindTurbineVidalController, pParameters);
+	CHOICE_ELEMENT(type,"Boukhezzar", CWindTurbineBoukhezzarController, pParameters);
+	CHOICE_ELEMENT(type,"PID", CPIDController, pParameters);
+	CHOICE_ELEMENT(type,"LQR", CLQRController, pParameters);
+	END_CHOICE();
+
+	return 0;
+
+	END_CLASS();
 }
 
 CMultiController::~CMultiController()
@@ -30,19 +47,7 @@ CMultiController::~CMultiController()
 	delete [] m_pControllers;
 }
 
-CActor* CMultiController::getInstance(CParameters* pParameters)
-{
-	const char* type = pParameters->getName();
-	if (strcmp(type, "Vidal") == 0)
-		return new CWindTurbineVidalController(pParameters);
-	else if (strcmp(type, "Boukhezzar") == 0)
-		return new CWindTurbineBoukhezzarController(pParameters);
-	else if (strcmp(type, "PID") == 0)
-		return new CPIDController(pParameters);
-	else if (strcmp(type, "LQR") == 0)
-		return new CLQRController(pParameters);
-	return 0;
-}
+
 
 void CMultiController::selectAction(const CState *s, CAction *a)
 {
@@ -57,30 +62,38 @@ void CMultiController::selectAction(const CState *s, CAction *a)
 	/*int* m_pVariableIndices;
 	double *m_pGains;
 	int numVars;*/
-CLQRController::CLQRController(CParameters *pParameters)
+
+CLASS_CONSTRUCTOR(CLQRGain)(CParameters* pParameters)
 {
-	const char* outputAction = pParameters->getChild("Output-Action")->getConstString();
-	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
+	STATE_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
+	CONST_DOUBLE_VALUE(m_gain, pParameters, "Gain", 0.0);
+	
+	END_CLASS();
+}
+CLASS_CONSTRUCTOR(CLQRController)(CParameters *pParameters)
+{
+	ACTION_VARIABLE_REF(m_outputActionIndex,pParameters,"Output-Action");
+	
+	/*m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);*/
 
 	m_numVars = pParameters->countChildren("LQR-Gain");
 
-	m_pVariableIndices= new int[m_numVars];
-	m_pGains= new double[m_numVars];
-
-	CState* pSDesc= RLSimion::g_pWorld->getStateDescriptor();
-	CParameters* pGain= pParameters->getChild("LQR-Gain");
+	m_pGains = new CLQRGain*[m_numVars];
+	CParameters* pGain = pParameters->getChild("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pVariableIndices[i] = pSDesc->getVarIndex(pGain->getChild("Variable")->getConstString());
-		m_pGains[i] = pGain->getConstDouble("Gain", 0.0);
+		m_pGains[i] = new CLQRGain(pGain);
 
+		MULTI_VALUED(m_pGains[i],"LQR-Gain",CLQRGain,pGain);
 		pGain = pGain->getNextChild("LQR-Gain");
 	}
+
+	END_CLASS();
 }
 
 CLQRController::~CLQRController()
 {
-	delete [] m_pVariableIndices;
+	for (int i = 0; i < m_numVars; i++) delete m_pGains[i];
 	delete [] m_pGains;
 }
 
@@ -90,7 +103,7 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 
 	for (int i= 0; i<m_numVars; i++)
 	{
-		output+= s->getValue(m_pVariableIndices[i])*m_pGains[i];
+		output+= s->getValue(m_pGains[i]->m_variableIndex)*m_pGains[i]->m_gain;
 	}
 	// delta= -K*x
 	a->setValue(m_outputActionIndex, -output);
@@ -99,20 +112,17 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-CPIDController::CPIDController(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CPIDController)(CParameters *pParameters)
 {
-	const char* outputAction = pParameters->getChild("Output-Action")->getConstString();
-	m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);
+	ACTION_VARIABLE_REF(m_outputActionIndex, pParameters, "Output-Action");
 
-	m_pKP= pParameters->getNumericHandler("KP");
-	m_pKI = pParameters->getNumericHandler("KI");
-	m_pKD = pParameters->getNumericHandler("KD");
+	NUMERIC_VALUE(m_pKP,pParameters,"KP");
+	NUMERIC_VALUE(m_pKI,pParameters, "KI");
+	NUMERIC_VALUE(m_pKD,pParameters,"KD");
 
-	CState *pSDesc= RLSimion::g_pWorld->getStateDescriptor();
-	if (pSDesc)
-		m_errorVariableIndex= pSDesc->getVarIndex(pParameters->getChild("Input-Variable")->getConstString());
-	else
-		CLogger::logMessage(Error,"ERROR: PID controller missconfigured. Invalid ERROR_VARIABLE");
+	STATE_VARIABLE_REF(m_errorVariableIndex, pParameters, "Input-Variable");
+
+	END_CLASS();
 
 	m_intError= 0.0;
 }

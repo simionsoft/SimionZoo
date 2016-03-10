@@ -10,7 +10,7 @@
 #include "named-var-set.h"
 #include "parameters.h"
 
-CActor* CActor::getInstance(CParameters* pParameters)
+CActor* CLASS_FACTORY(CActor)::getInstance(CParameters* pParameters)
 {
 	CParameters* child;
 	if (!pParameters) return 0;
@@ -18,11 +18,12 @@ CActor* CActor::getInstance(CParameters* pParameters)
 	child = pParameters->getChild();
 	const char* type = child->getName();
 
-	if (strcmp(type, "VFA-Learner") == 0)
-		return new CVFAActor(child);
-	else if (!strcmp(type, "Multi-Controller"))
-		return new CMultiController(child);
+	CHOICE("Actor-Type");
+	CHOICE_ELEMENT(type, "VFA-Learner", CVFAActor, child);
+	CHOICE_ELEMENT(type, "Multi-Controller", CMultiController, child);
+	END_CHOICE();
 
+	END_CLASS();
 	return 0;
 }
 

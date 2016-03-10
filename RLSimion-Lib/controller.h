@@ -22,11 +22,17 @@ public:
 	void selectAction(const CState *s, CAction *a);
 };
 
+class CLQRGain
+{
+public:
+	CLQRGain(CParameters* pParameters);
+	unsigned int m_variableIndex;
+	double m_gain;
+};
 
 class CLQRController : public CActor
 {
-	int* m_pVariableIndices;
-	double *m_pGains;
+	CLQRGain** m_pGains;
 	int m_outputActionIndex;
 	int m_numVars;
 public:
