@@ -20,10 +20,10 @@ CLASS_CONSTRUCTOR(CMultiController) (CParameters* pParameters)
 
 		pControllerParameters = pControllerParameters->getNextChild();
 	}
-
+	END_CLASS();
 }
 
-CActor* CMultiController::getInstance(CParameters* pParameters)
+CActor* CLASS_FACTORY(CMultiController)::getInstance(CParameters* pParameters)
 {
 	const char* type = pParameters->getName();
 	CHOICE("Controller-Type");

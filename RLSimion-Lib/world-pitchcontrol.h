@@ -12,7 +12,7 @@ class CPitchControl: public CDynamicModel
 	CSetPoint *m_pSetpoint;
 
 public:
-	CPitchControl(CParameters* pParameters);
+	CPitchControl(const char* worldDefinition, CParameters* pParameters);
 	~CPitchControl();
 
 	void reset(CState *s);

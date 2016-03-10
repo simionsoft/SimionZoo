@@ -9,8 +9,8 @@
 #define NUM_STATE_VARIABLES 3
 
 
-CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
-: CDynamicModel(pParameters->getConstString("World-Definition"))
+CUnderwaterVehicle::CUnderwaterVehicle(const char* worldDefinition, CParameters *pParameters)
+: CDynamicModel(worldDefinition)
 {
 	CState *pStateDescriptor = getStateDescriptor();
 	m_sVSetpoint = pStateDescriptor->getVarIndex("v-setpoint");

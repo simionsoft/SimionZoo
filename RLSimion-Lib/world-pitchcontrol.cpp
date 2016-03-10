@@ -7,8 +7,8 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CPitchControl::CPitchControl(CParameters* pParameters)
-: CDynamicModel(pParameters->getConstString("World-Definition"))
+CPitchControl::CPitchControl(const char* worldDefinition, CParameters *pParameters)
+: CDynamicModel(worldDefinition)
 {
 	CState *pStateDescriptor = getStateDescriptor();
 	m_sSetpointPitch = pStateDescriptor->getVarIndex("setpoint-pitch");

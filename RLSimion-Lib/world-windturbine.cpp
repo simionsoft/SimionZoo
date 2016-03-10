@@ -163,16 +163,15 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 }
 
 
-CWindTurbine::CWindTurbine(CParameters *pParameters)
-: CDynamicModel(pParameters->getConstString("World-Definition"))
+CLASS_CONSTRUCTOR(CWindTurbine) (const char* worldDefinition, CParameters *pParameters)
+: CDynamicModel(worldDefinition)
 {
 	
 	//load all the wind data files
 	m_currentDataFile = 0;
 
 	//evaluation file
-	m_pEvaluationWindData = 
-		new CHHFileSetPoint(pParameters->getConstString( "Evaluation-Wind-Data"));
+	CHILD_CLASS(m_pEvaluationWindData,"Evaluation-Wind-Data",CHHFileSetPoint,pParameters->getConstString( "Evaluation-Wind-Data"));
 
 	//training files
 	CParameters* trainingWindFiles = pParameters->getChild("Training-Wind-Data");
@@ -187,7 +186,7 @@ CWindTurbine::CWindTurbine(CParameters *pParameters)
 	}
 
 	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
-	m_pPowerSetpoint= new CFileSetPoint(pParameters->getChild("Power-Set-Point")->getConstString());
+	CHILD_CLASS(m_pPowerSetpoint,"Power-Set-Point",CFileSetPoint,pParameters->getChild("Power-Set-Point")->getConstString());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;
@@ -213,6 +212,7 @@ CWindTurbine::CWindTurbine(CParameters *pParameters)
 	CAction* pActionDescriptor = getActionDescriptor();
 	m_aD_beta = pActionDescriptor->getVarIndex("d_beta");
 	m_aD_T_g = pActionDescriptor->getVarIndex("d_T_g");
+	END_CLASS();
 }
 
 CWindTurbine::~CWindTurbine()
