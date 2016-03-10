@@ -15,8 +15,16 @@ namespace AppXML.Models
     {
         public static Dictionary<string, XmlNode> definitions;
         public static Dictionary<string,string> XML=new Dictionary<string,string>();
-        private readonly ObservableCollection<BranchViewModel> _children = new ObservableCollection<BranchViewModel>();
+        private  readonly ObservableCollection<BranchViewModel> _children = new ObservableCollection<BranchViewModel>();
         public ObservableCollection<BranchViewModel> children { get { return _children; } set { } }
+
+        
+
+        public void cleanAll()
+        {
+            XML.Clear();
+        }
+
         public void AddBranch(BranchViewModel branch)
         {
             _children.Add(branch);

@@ -23,6 +23,20 @@ namespace AppXML.ViewModels
         private string _XML;
         private XmlDocument _doc;
         private string _tag;
+
+        public string Tag { get { return _tag; } }
+        public void setSelectedItem(string name)
+        {
+            foreach(ChoiceElement item in _comboValues)
+            {
+                if(item.name==name)
+                {
+                    SelectedItem = item;
+                    return;
+                }
+            }
+        }
+
         public ChoiceViewModel(XmlNode nodo, XmlDocument doc, string tag)
         {
             _doc = doc;
