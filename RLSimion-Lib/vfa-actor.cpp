@@ -19,21 +19,22 @@ CVFAPolicyLearner::~CVFAPolicyLearner()
 	delete m_pPolicy;
 }
 
-CVFAPolicyLearner* CVFAPolicyLearner::getInstance(CParameters* pParameters)
+CVFAPolicyLearner* CLASS_FACTORY(CVFAPolicyLearner)::getInstance(CParameters* pParameters)
 {
 	if (pParameters)
 	{
-		if (!strcmp(pParameters->getName(), "CACLA"))
-			return new CCACLALearner(pParameters);
-		if (!strcmp(pParameters->getName(), "Regular-Gradient"))
-			return new CRegularPolicyGradientLearner(pParameters);
-		if (!strcmp(pParameters->getName(), "Incremental-Natural-Actor"))
-			return new CIncrementalNaturalActor(pParameters);
+		const char* name = pParameters->getName();
+		CHOICE("Learner-Type");
+		CHOICE_ELEMENT(name, "CACLA", CCACLALearner, pParameters);
+		CHOICE_ELEMENT(name, "Regular-Gradient", CRegularPolicyGradientLearner, pParameters);
+		CHOICE_ELEMENT(name, "Incremental-Natural-Actor", CIncrementalNaturalActor, pParameters);
+		END_CHOICE();
 	}
+	END_CLASS();
 	return 0;
 }
 
-CVFAActor::CVFAActor(CParameters* pParameters): CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CVFAActor)(CParameters* pParameters): CParamObject(pParameters)
 {
 	CParameters* pOutputs = pParameters->getChild("Outputs");
 
@@ -47,10 +48,10 @@ CVFAActor::CVFAActor(CParameters* pParameters): CParamObject(pParameters)
 		m_pPolicyLearners[i] = CVFAPolicyLearner::getInstance(pOutput);
 		pOutput = pOutput->getNextChild();
 	}
-
+	
 	if (pParameters->getChild("Load"))
 		loadPolicy(pParameters->getChild("Load")->getConstString());
-
+	END_CLASS();
 }
 
 CVFAActor::~CVFAActor()

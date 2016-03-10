@@ -174,15 +174,16 @@ CLASS_CONSTRUCTOR(CWindTurbine) (const char* worldDefinition, CParameters *pPara
 	CHILD_CLASS(m_pEvaluationWindData,"Evaluation-Wind-Data",CHHFileSetPoint,pParameters->getConstString( "Evaluation-Wind-Data"));
 
 	//training files
-	CParameters* trainingWindFiles = pParameters->getChild("Training-Wind-Data");
-	m_numDataFiles = trainingWindFiles->countChildren("File");
-	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
 
-	CParameters* pElement = trainingWindFiles->getChild("File");
+	m_numDataFiles = pParameters->countChildren("Training-Wind-Data");
+	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
+	CParameters* trainingWindFiles = pParameters->getChild("Training-Wind-Data");
+	const char* filename;
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
-		m_pTrainingWindData[i] = new CHHFileSetPoint(pElement->getConstString());
-		pElement = pElement->getNextChild("File");
+		MULTI_VALUED(m_pTrainingWindData[i], "Training-Wind-Data", CHHFileSetPoint, pParameters->getConstString());
+
+		pParameters = pParameters->getNextChild("Training-Wind-Data");
 	}
 
 	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());

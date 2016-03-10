@@ -142,7 +142,7 @@ CDynamicModel *CLASS_FACTORY(CDynamicModel)::getInstance(CParameters* pParameter
 	CHOICE_ELEMENT_XML(name, "Wind-turbine", CWindTurbine, "..config/world/wind-turbine.xml", pParameters);
 	CHOICE_ELEMENT_XML(name, "Underwater-vehicle", CUnderwaterVehicle, "..config/world/underwater-vehicle.xml", pParameters);
 	CHOICE_ELEMENT_XML(name, "Pitch-control", CWindTurbine, "..config/world/pitch-control.xml", pParameters);
-	CHOICE_ELEMENT_XML(name, "Magnetic-leviation", CUnderwaterVehicle, "..config/world/magnetic-levitation.xml", pParameters);
+	CHOICE_ELEMENT_XML(name, "Magnetic-leviation", CMagneticLevitation, "..config/world/magnetic-levitation.xml", pParameters);
 	END_CHOICE();
 
 	END_CLASS();

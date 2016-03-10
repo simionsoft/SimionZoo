@@ -94,7 +94,7 @@ namespace CustomXMLBuilder
             increaseIndent();
             //#define CHOICE_ELEMENT(checkVariable, checkLiteral, className, ...)
             //#define CHOICE_ELEMENT_FACTORY(checkVariable, checkLiteral, className, ...) 
-            string sPattern = @"(CHOICE_ELEMENT|CHOICE_ELEMENT_FACTORY)\(" + extractTokenRegex + @"\)";
+            string sPattern = @"(CHOICE_ELEMENT|CHOICE_ELEMENT_FACTORY)\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -114,7 +114,7 @@ namespace CustomXMLBuilder
         {
             increaseIndent();
             //define CHOICE_ELEMENT_XML(checkVariable,checkLiteral,className,XMLFilename, ...)
-            string sPattern = @"CHOICE_ELEMENT_XML\(" + extractTokenRegex + @"\)";
+            string sPattern = @"CHOICE_ELEMENT_XML\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -137,7 +137,7 @@ namespace CustomXMLBuilder
             //#define END_CHOICE()
             increaseIndent();
 
-            string sPattern = @"(CHOICE|CHOICE_XML)\(" + extractTokenRegex + @"\)(.*?)END_CHOICE\(\)";
+            string sPattern = @"(CHOICE|CHOICE_XML)\s*\(" + extractTokenRegex + @"\)(.*?)END_CHOICE\(\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -167,7 +167,7 @@ namespace CustomXMLBuilder
         {
             increaseIndent();
             //#define CONST_INTEGER_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstInteger(parameterName,defaultValue);
-            string sPattern = @"CONST_INTEGER_VALUE\(" + extractTokenRegex + @"\)";
+            string sPattern = @"CONST_INTEGER_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -189,7 +189,7 @@ namespace CustomXMLBuilder
         {
             increaseIndent();
             //#define CONST_DOUBLE_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstDouble(parameterName,defaultValue);
-            string sPattern = @"CONST_DOUBLE_VALUE\(" + extractTokenRegex + @"\)";
+            string sPattern = @"CONST_DOUBLE_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -211,7 +211,7 @@ namespace CustomXMLBuilder
         {
             increaseIndent();
             //#define CONST_BOOLEAN_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstBoolean(parameterName,defaultValue);
-            string sPattern = @"CONST_BOOLEAN_VALUE\(" + extractTokenRegex + @"\)";
+            string sPattern = @"CONST_BOOLEAN_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -223,8 +223,8 @@ namespace CustomXMLBuilder
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 parsedXML += getLevelIndent() + "<BOOLEAN-VALUE Name=" + parameterMatches[2].Value.Trim(' ') 
-                    + " Default=" + parameterMatches[3].Value.Trim(' ')
-                    + "/>\n";
+                    + " Default=\"" + parameterMatches[3].Value.Trim(' ')
+                    + "\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -233,7 +233,7 @@ namespace CustomXMLBuilder
         {
             increaseIndent();
             //#define CONST_STRING_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstString(parameterName,defaultValue);
-            string sPattern = @"CONST_STRING_VALUE\(" + extractTokenRegex + @"\)";
+            string sPattern = @"CONST_STRING_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -244,8 +244,8 @@ namespace CustomXMLBuilder
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<STRING-VALUE Name=\"" + parameterMatches[2].Value.Trim(' ') 
-                    + "\" Default=" + parameterMatches[3].Value.Trim(' ') + "/>\n";
+                parsedXML += getLevelIndent() + "<STRING-VALUE Name=" + parameterMatches[2].Value.Trim(' ') 
+                    + " Default=" + parameterMatches[3].Value.Trim(' ') + "/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -254,7 +254,7 @@ namespace CustomXMLBuilder
         {
             increaseIndent();
             //#define FILE_PATH_VALUE(variable,parameterNode,variableName,default) variable= (char*)parameterNode->getConstString(variableName);
-            string sPattern = @"FILE_PATH_VALUE\(" + extractTokenRegex + @"\)";
+            string sPattern = @"FILE_PATH_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -276,7 +276,7 @@ namespace CustomXMLBuilder
             increaseIndent();
             // #define DIR_PATH_VALUE(variable,parameterNode,variableName,default) variable= (char*)parameterNode->getConstString(variableName);
 
-            string sPattern = @"DIR_PATH_VALUE\(" + extractTokenRegex + @"\)";
+            string sPattern = @"DIR_PATH_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -299,7 +299,7 @@ namespace CustomXMLBuilder
             //#define STATE_VARIABLE_REF(variable,parameterNode,variableName) 
             // ->     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
 
-            string sPattern = @"STATE_VARIABLE_REF\(" + extractTokenRegex + @"\)";
+            string sPattern = @"STATE_VARIABLE_REF\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -322,7 +322,7 @@ namespace CustomXMLBuilder
             //#define ACTION_VARIABLE_REF(variable,parameterNode,variableName) 
             // ->     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
 
-            string sPattern = @"STATE_VARIABLE_REF\(" + extractTokenRegex + @"\)";
+            string sPattern = @"STATE_VARIABLE_REF\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -345,7 +345,7 @@ namespace CustomXMLBuilder
             //#define MULTI_VALUE(name,indexedVariable,className,parameters)
             //#define MULTI_VALUE_FACTORY(name,indexedVariable,className,parameters)
             // -> <MULTI-VALUED Name="RBF-State-Grid-Dimension" Class="RBF-STATE-GRID-DIMENSION"/>
-            string sPattern = @"(MULTI_VALUED_FACTORY|MULTI_VALUED)\(" + extractTokenRegex + @"\)";
+            string sPattern = @"(MULTI_VALUED_FACTORY|MULTI_VALUED)\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -372,7 +372,7 @@ namespace CustomXMLBuilder
             //#define CHILD_CLASS(variable,className,constructorParameters,...) variable= new className(constructorParameters,__VA_ARGS__);
             //#define CHILD_CLASS_FACTORY(variable,className,constructorParameters,...) variable= className::getInstance(constructorParameters,__VA_ARGS__);
             // -> <BRANCH Name="" Class=""/>
-            string sPattern = @"(CHILD_CLASS|CHILD_CLASS_FACTORY)\(" + extractTokenRegex + @"\)";
+            string sPattern = @"(CHILD_CLASS|CHILD_CLASS_FACTORY)\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -392,7 +392,7 @@ namespace CustomXMLBuilder
         {
             increaseIndent();
             //#define NUMERIC_VALUE(variable,parameterNode,parameterName)
-            string sPattern = @"NUMERIC_VALUE\((?<variable>\w+),(?<parameterNode>\w+),""(?<parameterName>\w+)""\)";
+            string sPattern = @"NUMERIC_VALUE\s*\((?<variable>\w+),(?<parameterNode>\w+),""(?<parameterName>\w+)""\)";
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
@@ -409,7 +409,7 @@ namespace CustomXMLBuilder
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
-                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY)\(" + extractTokenRegex + @"\)");
+                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY)\s*\(" + extractTokenRegex + @"\)");
                 string header = functionArgumentsMatch.Groups[0].Value;
 
                 var parameterMatches = Regex.Matches(header, extractArgsRegex);
