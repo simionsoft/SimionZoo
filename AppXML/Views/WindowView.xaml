@@ -22,5 +22,6 @@
            
         </TreeView>
         <Button Content="Validate" cal:Message.Attach="[Event Click]=[Action Validate()]" HorizontalAlignment="Left" Margin="675,277,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Load" HorizontalAlignment="Left" Margin="675,190,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action Load()]"/>
     </Grid>
 </Window>

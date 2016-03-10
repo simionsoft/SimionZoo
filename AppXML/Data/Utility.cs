@@ -167,5 +167,9 @@ namespace AppXML.Data
                 return result;
             }
         }
+        public static void cleanAll()
+        {
+            xmlDic.Clear();
+        }
     }
 }
