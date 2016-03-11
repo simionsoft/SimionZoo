@@ -4,7 +4,7 @@
 #include "parameters.h"
 #include "globals.h"
 
-CCritic* CLASS_FACTORY(CCritic)::getInstance(CParameters* pParameters)
+CCritic* CLASS_FACTORY(CCritic)(CParameters* pParameters)
 {
 	if (!pParameters) return 0;
 

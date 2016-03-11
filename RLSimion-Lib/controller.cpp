@@ -23,7 +23,7 @@ CLASS_CONSTRUCTOR(CMultiController) (CParameters* pParameters)
 	END_CLASS();
 }
 
-CActor* CLASS_FACTORY(CMultiController)::getInstance(CParameters* pParameters)
+CActor* CLASS_FACTORY(CMultiController)(CParameters* pParameters)
 {
 	const char* type = pParameters->getName();
 	CHOICE("Controller-Type");
@@ -159,13 +159,13 @@ double sgn(double value)
 //VIDAL////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineVidalController)(CParameters* pParameters)
 {
-	m_pA= pParameters->getNumericHandler("A");
-	m_pK_alpha = pParameters->getNumericHandler("K_alpha");
-	m_pKP = pParameters->getNumericHandler("KP");
-	m_pKI = pParameters->getNumericHandler("KI");
-	m_P_s = pParameters->getNumericHandler("P_s");
+	NUMERIC_VALUE(m_pA, pParameters, "A");
+	NUMERIC_VALUE(m_pK_alpha, pParameters, "K_alpha");
+	NUMERIC_VALUE(m_pKP, pParameters, "KP");
+	NUMERIC_VALUE(m_pKI, pParameters, "KI");
+	NUMERIC_VALUE(m_P_s, pParameters, "P_s");
 
 	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -179,6 +179,7 @@ CWindTurbineVidalController::CWindTurbineVidalController(CParameters* pParameter
 
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
+	END_CLASS();
 }
 
 void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
@@ -215,13 +216,14 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 //BOUKHEZZAR CONTROLLER////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController)(CParameters* pParameters)
 {
-	m_pC_0= pParameters->getNumericHandler("C_0");
-	m_pKP = pParameters->getNumericHandler("KP");
-	m_pKI= pParameters->getNumericHandler("KI");
-	m_J_t= pParameters->getConstDouble("J_t");
-	m_K_t= pParameters->getConstDouble("K_t");
+
+	NUMERIC_VALUE(m_pC_0,pParameters,"C_0");
+	NUMERIC_VALUE(m_pKP,pParameters,"KP");
+	NUMERIC_VALUE(m_pKI,pParameters,"KI");
+	CONST_DOUBLE_VALUE(m_J_t,pParameters,"J_t",0.0);
+	CONST_DOUBLE_VALUE(m_K_t,pParameters,"K_t",0.0);
 
 	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -235,6 +237,7 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CParameters* 
 
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
+	END_CLASS();
 }
 
 
@@ -265,19 +268,19 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 //JONKMAN//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineJonkmanController)(CParameters *pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	m_CornerFreq= pParameters->getConstDouble("CornerFreq",0.0);
+	CONST_DOUBLE_VALUE(m_CornerFreq,pParameters,"CornerFreq",0.0);
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp = pParameters->getConstDouble("VSRtGnSp");
-	m_VS_SlPc = pParameters->getConstDouble("VS_SlPc");
-	m_VS_Rgn2K = pParameters->getConstDouble("VS_Rgn2K");
-	m_VS_Rgn2Sp = pParameters->getConstDouble("VS_Rgn2Sp");
-	m_VS_CtInSp = pParameters->getConstDouble("VS_CtInSp");
-	m_VS_RtPwr = pParameters->getConstDouble("VS_RtPwr");
-	m_VS_Rgn3MP = pParameters->getConstDouble("VS_Rgn3MP");
+	CONST_DOUBLE_VALUE(m_VS_RtGnSp,pParameters,"VSRtGnSp",0.0);
+	CONST_DOUBLE_VALUE(m_VS_SlPc,pParameters,"VS_SlPc",0.0);
+	CONST_DOUBLE_VALUE(m_VS_Rgn2K,pParameters,"VS_Rgn2K",0.0);
+	CONST_DOUBLE_VALUE(m_VS_Rgn2Sp,pParameters,"VS_Rgn2Sp",0.0);
+	CONST_DOUBLE_VALUE(m_VS_CtInSp,pParameters,"VS_CtInSp",0.0);
+	CONST_DOUBLE_VALUE(m_VS_RtPwr,pParameters,"VS_RtPwr",0.0);
+	CONST_DOUBLE_VALUE(m_VS_Rgn3MP,pParameters,"VS_Rgn3MP",0.0);
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -289,10 +292,10 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParam
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	m_PC_KK = pParameters->getNumericHandler("PC_KK");
-	m_PC_KP = pParameters->getNumericHandler("PC_KP");
-	m_PC_KI = pParameters->getNumericHandler("PC_KI");
-	m_PC_RefSpd = pParameters->getConstDouble("PC_RefSpd");
+	NUMERIC_VALUE(m_PC_KK,pParameters,"PC_KK");
+	NUMERIC_VALUE(m_PC_KP,pParameters,"PC_KP");
+	NUMERIC_VALUE(m_PC_KI,pParameters,"PC_KI");
+	CONST_DOUBLE_VALUE(m_PC_RefSpd,pParameters,"PC_RefSpd",0.0);
 
 	m_IntSpdErr= 0.0;
 
@@ -307,6 +310,7 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CParameters *pParam
 
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
+	END_CLASS();
 }
 
 void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)

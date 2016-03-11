@@ -34,7 +34,7 @@ public:
 	const char* getName();
 };
 
-CRewardFunctionComponent::CRewardFunctionComponent(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CRewardFunctionComponent)(CParameters* pParameters) : CParamObject(pParameters)
 {
 	//m_errorComponentType[0]= 0;
 	//m_controlledVariable[0]= 0;
@@ -42,12 +42,14 @@ CRewardFunctionComponent::CRewardFunctionComponent(CParameters* pParameters) : C
 	//m_controlErrorVariable[0]= 0;
 	//m_weight= 0.0;
 	//m_componentIndex= -1;
+	STATE_VARIABLE_REF(m_sVariable, pParameters, "Variable");
 	const char* varName = pParameters->getConstString("Variable");
 	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r(%s)", varName);
-	m_sVariable = CWorld::m_pDynamicModel->getStateDescriptor()->getVarIndex(varName);
-	m_pTolerance = pParameters->getNumericHandler("Tolerance");
-	m_pWeight = pParameters->getNumericHandler("Weight");
+	
+	NUMERIC_VALUE(m_pTolerance,pParameters,"Tolerance");
+	NUMERIC_VALUE(m_pWeight,pParameters,"Weight");
 	m_lastReward= 0.0;
+	END_CLASS();
 }
 
 CRewardFunctionComponent::~CRewardFunctionComponent()
@@ -87,10 +89,10 @@ double CRewardFunctionComponent::getRewardComponent(CState* state)
 }
 
 
-CRewardFunction::CRewardFunction(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CRewardFunction)(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_minReward= pParameters->getConstDouble("Min");
-	m_maxReward = pParameters->getConstDouble("Max");
+	CONST_DOUBLE_VALUE(m_minReward,pParameters,"Min",-100.0);
+	CONST_DOUBLE_VALUE(m_maxReward,pParameters,"Max",1.0);
 
 	m_lastReward= 0.0;
 
@@ -106,11 +108,12 @@ CRewardFunction::CRewardFunction(CParameters* pParameters) : CParamObject(pParam
 	CParameters* pComponent = pRewardComponents->getChild();
 	for (int i= 0; i<m_numRewardComponents; i++)
 	{
-		m_pRewardComponents[i] = new CRewardFunctionComponent(pComponent);
+		MULTI_VALUED(m_pRewardComponents[i], "Reward-Component", CRewardFunctionComponent, pComponent);
 		m_pReward->setName(i, m_pRewardComponents[i]->getName());
 
 		pComponent = pComponent->getNextChild();
 	}
+	END_CLASS();
 }
 
 CRewardFunction::~CRewardFunction()

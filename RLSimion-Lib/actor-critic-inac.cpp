@@ -70,11 +70,12 @@ CLASS_CONSTRUCTOR(CIncrementalNaturalActor)(CParameters* pParameters)
 	m_s_features = new CFeatureList("Actor/s");
 	m_pGamma = pParameters->getNumericHandler("Gamma");
 
-	m_pAlphaU = pParameters->getNumericHandler("Alpha-u");
-	m_pAlphaV = pParameters->getNumericHandler("Alpha-v");
+	NUMERIC_VALUE(m_pAlphaU,pParameters,"Alpha-u");
+	NUMERIC_VALUE(m_pAlphaV,pParameters,"Alpha-v");
 
-	m_e = new CETraces("Actor/E-Traces",pParameters->getChild("E-Traces"));
+	CHILD_CLASS(m_e,"ETraces",CETraces,"Actor/E-Traces",pParameters->getChild("E-Traces"));
 	m_w = new CFeatureList("Actor/w");
+	END_CLASS();
 }
 
 CIncrementalNaturalActor::~CIncrementalNaturalActor()

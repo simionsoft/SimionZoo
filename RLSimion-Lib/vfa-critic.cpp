@@ -4,38 +4,42 @@
 #include "parameters.h"
 #include "parameterized-object.h"
 #include "logger.h"
+#include "globals.h"
 
-CVFACritic::CVFACritic(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CVFACritic) (CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pVFA = new CLinearStateVFA(pParameters->getChild("Linear-State-VFA"));
+	CHILD_CLASS(m_pVFA, "V-Function", CLinearStateVFA, pParameters->getChild("V-Function"));
 
-	if (m_pParameters->getChild("Load"))
-		loadVFunction(m_pParameters->getChild("Load")->getConstString());
+	//m_pVFA = new CLinearStateVFA();
+	CONST_STRING_VALUE_OPTIONAL(m_loadFile, pParameters, "Load");
+	CONST_STRING_VALUE_OPTIONAL(m_saveFile, pParameters, "Save");
+	if (m_loadFile)
+		loadVFunction(m_loadFile);
+
+	END_CLASS();
 }
 
 CVFACritic::~CVFACritic()
 {
-	if (m_pParameters->getChild("Save"))
-		saveVFunction(m_pParameters->getChild("Save")->getConstString());
+	if (m_saveFile)
+		saveVFunction(m_saveFile);
 
 	delete m_pVFA;
 }
 
-CVFACritic* CVFACritic::getInstance(CParameters* pParameters)
+CVFACritic* CLASS_FACTORY(CVFACritic)(CParameters* pParameters)
 {
 	if (!pParameters) return 0;
 
 	CParameters* child= pParameters->getChild();
 
+	CHOICE("Type");
+	CHOICE_ELEMENT(child->getName(), "TD-Lambda", CTDLambdaCritic, child);
+	CHOICE_ELEMENT(child->getName(), "True-Online-TD-Lambda", CTrueOnlineTDLambdaCritic, child);
+	CHOICE_ELEMENT(child->getName(), "TDC-Lambda", CTDCLambdaCritic, child);
+	CHOICE_ELEMENT(child->getName(), "Incremental-Natural-Critic", CIncrementalNaturalCritic, child);
 
-	if (!strcmp(child->getName(), "TD-Lambda"))
-		return new CTDLambdaCritic(child);
-	if (!strcmp(child->getName(), "True-Online-TD-Lambda"))
-		return new CTrueOnlineTDLambdaCritic(child);
-	if (!strcmp(child->getName(), "TDC-Lambda"))
-		return new CTDCLambdaCritic(child);
-	if (!strcmp(child->getName(), "Incremental-Natural-Critic"))
-		return new CIncrementalNaturalCritic(child);
+	END_CLASS();
 
 	return 0;
 }

@@ -135,7 +135,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	}
 }
 
-CDynamicModel *CLASS_FACTORY(CDynamicModel)::getInstance(CParameters* pParameters)
+CDynamicModel *CLASS_FACTORY(CDynamicModel)(CParameters* pParameters)
 {
 	const char* name = pParameters->getName();
 	CHOICE_XML("Dynamic-Model", "WORLD-DEFINITION");
@@ -144,6 +144,7 @@ CDynamicModel *CLASS_FACTORY(CDynamicModel)::getInstance(CParameters* pParameter
 	CHOICE_ELEMENT_XML(name, "Pitch-control", CWindTurbine, "..config/world/pitch-control.xml", pParameters);
 	CHOICE_ELEMENT_XML(name, "Magnetic-leviation", CMagneticLevitation, "..config/world/magnetic-levitation.xml", pParameters);
 	END_CHOICE();
+	return 0;
 
 	END_CLASS();
 }

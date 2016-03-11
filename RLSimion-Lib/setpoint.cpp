@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "setpoint.h"
-
+#include "parameters.h"
+#include "globals.h"
 
 //CFileSetPoint//////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -32,19 +33,20 @@ CFileSetPoint::CFileSetPoint()
 	m_totalTime= 0.0;
 }
 
-CFileSetPoint::CFileSetPoint(const char *pFilename)
+CLASS_CONSTRUCTOR(CFileSetPoint)(CParameters* pParameters)
 {
 	//char fullFilename[1024];
 	m_numSteps= 0;
 
-
+	const char* filename;
+	FILE_PATH_VALUE(filename, pParameters, "File", "");
 	FILE *pFile;
 
-	int numLines= countlines(pFilename);
+	int numLines = countlines(filename);
 	if (numLines==0) return;
 
 	char buffer [1024];
-	fopen_s(&pFile,pFilename,"r");
+	fopen_s(&pFile,filename,"r");
 	
 	if (pFile!=0)
 	{
@@ -60,9 +62,10 @@ CFileSetPoint::CFileSetPoint(const char *pFilename)
 		fclose(pFile);
 	}
 	else
-		printf("ERROR: could not open setpoint file %s\n",pFilename);
+		printf("ERROR: could not open setpoint file %s\n",filename);
 
 	m_totalTime= m_pTimes[m_numSteps-1];
+	END_CLASS();
 }
 
 
@@ -112,16 +115,19 @@ double CFileSetPoint::getPointSet(double time)
 //CHHFileSetPoint//////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-CHHFileSetPoint::CHHFileSetPoint(const char* pFilename) : CFileSetPoint()
+CLASS_CONSTRUCTOR(CHHFileSetPoint)(CParameters* pParameters) : CFileSetPoint()
 {
 	FILE* pHHFile;
 	char buffer[1024];
 	char* pNext;
 
-	int numLines = countlines(pFilename);
+	const char* filename;
+	FILE_PATH_VALUE(filename, pParameters, "File", "");
+
+	int numLines = countlines(filename);
 	if (numLines == 0) return;
 
-	fopen_s(&pHHFile, pFilename, "r");
+	fopen_s(&pHHFile, filename, "r");
 	if (pHHFile)
 	{
 		m_pSetPoints = new double[numLines];
@@ -141,6 +147,7 @@ CHHFileSetPoint::CHHFileSetPoint(const char* pFilename) : CFileSetPoint()
 		m_totalTime = m_pTimes[m_numSteps - 1];
 		fclose(pHHFile);
 	}
+	END_CLASS();
 }
 
 

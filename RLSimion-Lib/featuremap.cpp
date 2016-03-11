@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "featuremap.h"
 #include "parameters.h"
+#include "globals.h"
 
-
-CFeatureMap* CFeatureMap::getInstance(CParameters* pParameters)
+CFeatureMap* CLASS_FACTORY(CFeatureMap)(CParameters* pParameters)
 {
-	CParameters* child;
-	child = pParameters->getChild("RBF-State-Grid");
-	if (child)
-		return new CGaussianRBFGridFeatureMap(child);
-	child = pParameters->getChild("RBF-Action-Grid");
-	if (child)
-		return new CGaussianRBFGridFeatureMap(child);
+	const char* name = pParameters->getName();
+	CHOICE("Type");
+	CHOICE_ELEMENT(name, "RBF-State-Grid", CGaussianRBFStateGridFeatureMap, pParameters);
+	CHOICE_ELEMENT(name, "RBF-Action-Grid", CGaussianRBFActionGridFeatureMap, pParameters);
+	END_CHOICE();
+
+	END_CLASS();
 	return 0;
 }

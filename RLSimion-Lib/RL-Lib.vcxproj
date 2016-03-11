@@ -101,6 +101,7 @@
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="single-dimension-grid.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="timer.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameterized-object.h" />
+    <ClInclude Include="single-dimension-grid.h" />
     <ClInclude Include="stats.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="reward.h" />

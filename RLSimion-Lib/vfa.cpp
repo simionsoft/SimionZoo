@@ -3,7 +3,7 @@
 #include "featuremap.h"
 #include "features.h"
 #include "parameters.h"
-
+#include "globals.h"
 
 //LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
 CLinearVFA::CLinearVFA()
@@ -57,16 +57,17 @@ void CLinearVFA::load(void* pFile)
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLinearStateVFA::CLinearStateVFA(CParameters* pParameters) : CParamObject(pParameters), CLinearVFA()
+CLASS_CONSTRUCTOR(CLinearStateVFA)(CParameters* pParameters) : CParamObject(pParameters), CLinearVFA()
 {
-	m_pStateFeatureMap = CFeatureMap::getInstance(pParameters->getChild("State-Feature-Map"));
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap,pParameters->getChild("State-Feature-Map"));
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
 
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
 
-	double initValue = 0.0;
+	double initValue;
+	CONST_DOUBLE_VALUE(initValue, pParameters, "Init-Value", 0.0);
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights[i] = initValue;
 	//std::fill_n(m_pWeights, m_numWeights, initValue);
@@ -74,6 +75,7 @@ CLinearStateVFA::CLinearStateVFA(CParameters* pParameters) : CParamObject(pParam
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
+	END_CLASS();
 }
 
 CLinearStateVFA::~CLinearStateVFA()
@@ -134,10 +136,10 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLinearStateActionVFA::CLinearStateActionVFA(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateActionVFA)(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pStateFeatureMap = CFeatureMap::getInstance(pParameters->getChild("State-Feature-Map"));
-	m_pActionFeatureMap = CFeatureMap::getInstance(pParameters->getChild("Action-Feature-Map"));
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap,pParameters->getChild("State-Feature-Map"));
+	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map",CFeatureMap,pParameters->getChild("Action-Feature-Map"));
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -146,7 +148,8 @@ CLinearStateActionVFA::CLinearStateActionVFA(CParameters* pParameters) : CParamO
 
 	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
 
-	double initValue = 0.0;
+	double initValue;
+	CONST_DOUBLE_VALUE(initValue, pParameters, "Init-Value", 0.0);
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights[i] = initValue;
 	//std::fill_n(m_pWeights, m_numWeights, initValue);
@@ -154,6 +157,7 @@ CLinearStateActionVFA::CLinearStateActionVFA(CParameters* pParameters) : CParamO
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
+	END_CLASS();
 }
 
 CLinearStateActionVFA::~CLinearStateActionVFA()

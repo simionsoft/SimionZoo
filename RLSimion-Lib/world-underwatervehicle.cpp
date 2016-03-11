@@ -20,9 +20,8 @@ CLASS_CONSTRUCTOR(CUnderwaterVehicle)(const char* worldDefinition, CParameters *
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aUThrust = pActionDescriptor->getVarIndex("u-thrust");
 
-	const char* setpointFilename;
-	CONST_STRING_VALUE(setpointFilename, pParameters, "Set-Point-File", "../config/world/underwater-vehicle/setpoint.txt");
-	m_pSetpoint = new CFileSetPoint(setpointFilename);
+	CHILD_CLASS(m_pSetpoint,"Set-Point-File",CFileSetPoint,pParameters->getChild("Set-Point-File"));
+	
 	END_CLASS();
 }
 
