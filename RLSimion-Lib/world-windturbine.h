@@ -27,7 +27,7 @@ class CWindTurbine: public CDynamicModel
 	CSetPoint *m_pPowerSetpoint;
 
 public:
-	CWindTurbine(CParameters* pParameters);
+	CWindTurbine(const char* worldDefinition,CParameters* pParameters);
 	~CWindTurbine();
 
 	void reset(CState *s);

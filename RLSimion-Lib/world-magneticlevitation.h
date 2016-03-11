@@ -13,7 +13,7 @@ class CMagneticLevitation: public CDynamicModel
 	CSetPoint *m_pEvalSetPoint,*m_pLearnSetPoint;
 
 public:
-	CMagneticLevitation(CParameters* pParameters);
+	CMagneticLevitation(const char* worldDefinition, CParameters* pParameters);
 	~CMagneticLevitation();
 
 	void reset(CState *s);

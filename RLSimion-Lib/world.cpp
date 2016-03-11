@@ -1,43 +1,30 @@
 #include "stdafx.h"
 #include "world.h"
-
 #include "named-var-set.h"
-
 #include "world-windturbine.h"
 #include "world-underwatervehicle.h"
 #include "world-pitchcontrol.h"
 #include "world-magneticlevitation.h"
 #include "reward.h"
 #include "parameters.h"
+#include "globals.h"
 
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
 
-CWorld::CWorld(CParameters* pParameters)
+CLASS_CONSTRUCTOR (CWorld) (CParameters* pParameters)
 {
 	assert(pParameters);
 	m_t= 0.0;
 
-	m_simulationSteps= pParameters->getConstInteger("Num-Integration-Steps");
-	m_dt = pParameters->getConstDouble("Delta-T");
+	CONST_INTEGER_VALUE(m_simulationSteps,pParameters,"Num-Integration-Steps",4);
+	CONST_DOUBLE_VALUE(m_dt,pParameters,"Delta-T",0.01);
+	
+	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model", CDynamicModel, pParameters->getChild("Dynamic-Model"));
 
-	CParameters* pModelParameters;
-	pModelParameters = pParameters->getChild("Dynamic-Model")->getChild();
-
-	if (strcmp(pModelParameters->getName(), "Wind-turbine") == 0)
-		m_pDynamicModel = new CWindTurbine(pModelParameters);
-	else if (strcmp(pModelParameters->getName(), "Underwater-vehicle") == 0)
-		m_pDynamicModel = new CUnderwaterVehicle(pModelParameters);
-	else if (strcmp(pModelParameters->getName(), "Pitch-control") == 0)
-		m_pDynamicModel = new CPitchControl(pModelParameters);
-	else if (strcmp(pModelParameters->getName(), "Magnetic-leviation") == 0)
-		m_pDynamicModel = new CMagneticLevitation(pModelParameters);
-	else m_pDynamicModel = 0;
-	//else if (strcmp(pParameters->getStringPtr("DYNAMIC_MODEL"),"HEATING_COIL")==0)
-	//	m_pDynamicModel= new CHeatingCoil(pParameters);
-
-	m_pRewardFunction = new CRewardFunction(pParameters->getChild("Reward"));
+	CHILD_CLASS(m_pRewardFunction,"Reward", CRewardFunction,pParameters->getChild("Reward"));
 	m_scalarReward = 0.0;
+	END_CLASS();
 }
 
 CWorld::~CWorld()
@@ -146,4 +133,17 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 			m_pConstants = rootNode->getChild("Constants");
 		}
 	}
+}
+
+CDynamicModel *CLASS_FACTORY(CDynamicModel)::getInstance(CParameters* pParameters)
+{
+	const char* name = pParameters->getName();
+	CHOICE_XML("Dynamic-Model", "WORLD-DEFINITION");
+	CHOICE_ELEMENT_XML(name, "Wind-turbine", CWindTurbine, "..config/world/wind-turbine.xml", pParameters);
+	CHOICE_ELEMENT_XML(name, "Underwater-vehicle", CUnderwaterVehicle, "..config/world/underwater-vehicle.xml", pParameters);
+	CHOICE_ELEMENT_XML(name, "Pitch-control", CWindTurbine, "..config/world/pitch-control.xml", pParameters);
+	CHOICE_ELEMENT_XML(name, "Magnetic-leviation", CMagneticLevitation, "..config/world/magnetic-levitation.xml", pParameters);
+	END_CHOICE();
+
+	END_CLASS();
 }

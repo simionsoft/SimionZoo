@@ -9,22 +9,22 @@
 
 #define MAX_FILENAME_LENGTH 1024
 
-CLogger::CLogger(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CLogger) (CParameters* pParameters)
 {
-	m_outputDir = new char[MAX_FILENAME_LENGTH];
-	m_filePrefix = new char[MAX_FILENAME_LENGTH];
+	m_outputDir = 0;// new char[MAX_FILENAME_LENGTH];
+	m_filePrefix = 0;// new char[MAX_FILENAME_LENGTH];
 
 	if (pParameters)
 	{
-		sprintf_s(m_outputDir, MAX_FILENAME_LENGTH, "../logs/%s", pParameters->getConstString( "Ouput-directory"));
-		strcpy_s(m_filePrefix, MAX_FILENAME_LENGTH, pParameters->getConstString("Prefix"));
+		DIR_PATH_VALUE(m_outputDir,  pParameters, "Output-Directory","../logs");
+		CONST_STRING_VALUE(m_filePrefix, pParameters, "Prefix", "");
 
-		m_bLogEvaluationEpisodes = pParameters->getConstBoolean("Log-eval-episodes", false);
-		m_bLogTrainingEpisodes = pParameters->getConstBoolean("Log-training-episodes", false);
-		m_bLogEvaluationExperiment = pParameters->getConstBoolean("Log-eval-experiment", true);
-		m_bLogTrainingExperiment = pParameters->getConstBoolean( "Log-training-experiment", false);
+		CONST_BOOLEAN_VALUE(m_bLogEvaluationEpisodes,pParameters,"Log-eval-episodes", false);
+		CONST_BOOLEAN_VALUE(m_bLogTrainingEpisodes,pParameters,"Log-training-episodes", false);
+		CONST_BOOLEAN_VALUE(m_bLogEvaluationExperiment,pParameters,"Log-eval-experiment", true);
+		CONST_BOOLEAN_VALUE(m_bLogTrainingExperiment,pParameters,"Log-training-experiment", false);
 
-		m_logFreq = pParameters->getConstDouble( "Log-Freq", 0.25);
+		CONST_DOUBLE_VALUE(m_logFreq,pParameters,"Log-Freq", 0.25);
 
 		_mkdir(m_outputDir);
 	}
@@ -42,19 +42,17 @@ CLogger::CLogger(CParameters* pParameters)
 
 	m_pEpisodeTimer = new CTimer();
 	m_pExperimentTimer = new CTimer();
-	//QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
-	//m_episodeStartCounter = 0;
-	//m_experimentStartCounter = 0;
 	m_lastLogSimulationT = 0.0;
+	END_CLASS();
 }
 
 
 CLogger::~CLogger()
 {
 	delete m_pExperimentTimer;
-	delete m_pEpisodeTimer,
-	delete [] m_outputDir;
-	delete [] m_filePrefix;
+	delete m_pEpisodeTimer;
+	//delete [] m_outputDir;
+	//delete [] m_filePrefix;
 }
 
 void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation,unsigned int index)

@@ -55,6 +55,7 @@ private:
 	CState *m_pStateDescriptor;
 	CAction *m_pActionDescriptor;
 	CParameters *m_pConstants;
+
 public:
 	CDynamicModel(const char* pWorldDefinitionFile);
 	virtual ~CDynamicModel();
@@ -65,4 +66,6 @@ public:
 	CState* getStateDescriptor(){return m_pStateDescriptor;}
 	CAction* getActionDescriptor(){return m_pActionDescriptor;}
 	double* getConstant(const char* constantName);
+
+	static CDynamicModel* getInstance(CParameters* pParameters);
 };

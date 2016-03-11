@@ -9,8 +9,8 @@
 #define NUM_STATE_VARIABLES 3
 
 
-CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
-: CDynamicModel(pParameters->getConstString("World-Definition"))
+CLASS_CONSTRUCTOR(CUnderwaterVehicle)(const char* worldDefinition, CParameters *pParameters)
+: CDynamicModel(worldDefinition)
 {
 	CState *pStateDescriptor = getStateDescriptor();
 	m_sVSetpoint = pStateDescriptor->getVarIndex("v-setpoint");
@@ -20,7 +20,10 @@ CUnderwaterVehicle::CUnderwaterVehicle(CParameters* pParameters)
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aUThrust = pActionDescriptor->getVarIndex("u-thrust");
 
-	m_pSetpoint= new CFileSetPoint(pParameters->getChild("Set-Point-File")->getConstString());
+	const char* setpointFilename;
+	CONST_STRING_VALUE(setpointFilename, pParameters, "Set-Point-File", "../config/world/underwater-vehicle/setpoint.txt");
+	m_pSetpoint = new CFileSetPoint(setpointFilename);
+	END_CLASS();
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()

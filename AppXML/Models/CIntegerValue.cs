@@ -25,7 +25,7 @@ namespace AppXML.Models
             {
                 type = validTypes.StringValue;
             }
-            else if (tipo == "DECIMAL-VALUE")
+            else if (tipo == "DOUBLE-VALUE")
             {
                 type = validTypes.DecimalValue;
             }
@@ -67,7 +67,7 @@ namespace AppXML.Models
             {
                 type=validTypes.StringValue;
             }
-            else if(tipo=="DECIMAL-VALUE")
+            else if(tipo=="DOUBLE-VALUE")
             {
                 type=validTypes.DecimalValue;
             }

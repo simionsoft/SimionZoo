@@ -4,14 +4,14 @@
 #include "globals.h"
 #include "parameters.h"
 
-CETraces::CETraces(const char* name, CParameters* pParameters) : CFeatureList(name), CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CETraces)(const char* name, CParameters* pParameters) : CFeatureList(name), CParamObject(pParameters)
 {
 	if (pParameters)
 	{
 		m_bUse = true;
-		m_threshold = m_pParameters->getConstDouble("Threshold");
-		m_lambda = m_pParameters->getConstDouble("Lambda");
-		m_bReplaceIfExists = m_pParameters->getConstBoolean("Replace");
+		CONST_DOUBLE_VALUE(m_threshold,m_pParameters,"Threshold",0.001);
+		CONST_DOUBLE_VALUE(m_lambda,m_pParameters,"Lambda",0.9);
+		CONST_BOOLEAN_VALUE(m_bReplaceIfExists,m_pParameters,"Replace",true);
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
 	else
@@ -22,6 +22,7 @@ CETraces::CETraces(const char* name, CParameters* pParameters) : CFeatureList(na
 		m_bReplaceIfExists = false;
 		m_bAddIfExists = false;
 	}
+	END_CLASS();
 }
 
 CETraces::~CETraces()

@@ -7,8 +7,8 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CMagneticLevitation::CMagneticLevitation(CParameters* pParameters) 
-: CDynamicModel(pParameters->getConstString("World-Definition"))
+CMagneticLevitation::CMagneticLevitation(const char* worldDefinition, CParameters *pParameters)
+: CDynamicModel(worldDefinition)
 {/*
 	m_pStateDescriptor= new CState(5);
 	

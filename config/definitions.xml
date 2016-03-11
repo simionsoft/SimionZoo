@@ -3,7 +3,7 @@
     <!--World-->
   <CLASS Name="WORLD">
     <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" Optional="true"/>
-    <DECIMAL-VALUE Name="Delta-T" Default="0.01"/>
+    <DOUBLE-VALUE Name="Delta-T" Default="0.01"/>
     <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
       <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world/wind-turbine.xml" Class="Wind-turbine-parameters" />
       <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world/underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
@@ -31,7 +31,7 @@
   </CLASS>
   
   <CLASS Name="LOG">
-    <DECIMAL-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds. Freq=0 logs every step."/>
+    <DOUBLE-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds. Freq=0 logs every step."/>
     <STRING-VALUE Name="Prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
     <STRING-VALUE Name="Ouput-directory" Default="test" Comment="name of the directory within ../logs/ where log files will be saved "/>
     <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
@@ -47,7 +47,7 @@
     <INTEGER-VALUE Name="Episode-Length" Default="360" Comment="Time length of each episode (in seconds)"/>
     <INTEGER-VALUE Name="Random-Seed" Default="1" Comment="Seed used to generate random numbers"/>
     <INTEGER-VALUE Name="Eval-Freq" Default="10" Comment="Evaluation freq. in episodes"/>
-    <DECIMAL-VALUE Name="Progress-Update-Freq" Default="0.5" Comment="Progress update freq. (in seconds)"/>
+    <DOUBLE-VALUE Name="Progress-Update-Freq" Default="0.5" Comment="Progress update freq. (in seconds)"/>
   </CLASS>
   
   <!--SIMGOD-->
@@ -112,7 +112,7 @@
   </CLASS>
 
   <CLASS Name="Incremental-Natural-Actor">
-    <DECIMAL-VALUE Name="Gamma" Comment="Gamma parameter used by the critic"/>
+    <DOUBLE-VALUE Name="Gamma" Comment="Gamma parameter used by the critic"/>
     <BRANCH Name="Alpha-v" Class="NUMERIC-VALUE" Comment="Gain used by the critic to update the value"/>
     <BRANCH Name="Alpha-u" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
     <BRANCH Name ="VFA-Policy" Class="VFA-POLICY"/>
@@ -163,9 +163,9 @@
   <CLASS Name="PID">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <XML-NODE-REF Name="Input-Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
-    <DECIMAL-VALUE Name="KP"/>
-    <DECIMAL-VALUE Name="KI"/>
-    <DECIMAL-VALUE Name="KD"/>
+    <DOUBLE-VALUE Name="KP"/>
+    <DOUBLE-VALUE Name="KI"/>
+    <DOUBLE-VALUE Name="KD"/>
   </CLASS>
 
   <CLASS Name="LQR">
@@ -174,33 +174,33 @@
   </CLASS>
 
   <CLASS Name="Jonkman">
-    <DECIMAL-VALUE Name="VS_RtGnSp" Default="12.6805"/>
-    <DECIMAL-VALUE Name="VS_SlPc" Default="10.0"/>
-    <DECIMAL-VALUE Name="VS_Rgn2K" Default="2.332287"/>
-    <DECIMAL-VALUE Name="VS_Rgn2Sp" Default="91.21091"/>
-    <DECIMAL-VALUE Name="VS_CtInSp" Default="70.16224"/>
-    <DECIMAL-VALUE Name="VS_RtPwr" Default="5296610.0"/>
-    <DECIMAL-VALUE Name="VS_Rgn3MP" Default="0.01745329"/>
-    <DECIMAL-VALUE Name="PC_KI"/>
-    <DECIMAL-VALUE Name="PC_KK"/>
-    <DECIMAL-VALUE Name="PC_KP"/>
-    <DECIMAL-VALUE Name="PC_RefSpd" Default="122.9096"/>
+    <DOUBLE-VALUE Name="VS_RtGnSp" Default="12.6805"/>
+    <DOUBLE-VALUE Name="VS_SlPc" Default="10.0"/>
+    <DOUBLE-VALUE Name="VS_Rgn2K" Default="2.332287"/>
+    <DOUBLE-VALUE Name="VS_Rgn2Sp" Default="91.21091"/>
+    <DOUBLE-VALUE Name="VS_CtInSp" Default="70.16224"/>
+    <DOUBLE-VALUE Name="VS_RtPwr" Default="5296610.0"/>
+    <DOUBLE-VALUE Name="VS_Rgn3MP" Default="0.01745329"/>
+    <DOUBLE-VALUE Name="PC_KI"/>
+    <DOUBLE-VALUE Name="PC_KK"/>
+    <DOUBLE-VALUE Name="PC_KP"/>
+    <DOUBLE-VALUE Name="PC_RefSpd" Default="122.9096"/>
   </CLASS>
 
   <CLASS Name="Vidal">
-    <DECIMAL-VALUE Name="A"/>
-    <DECIMAL-VALUE Name="K_alpha"/>
-    <DECIMAL-VALUE Name="KP"/>
-    <DECIMAL-VALUE Name="KI"/>
-    <DECIMAL-VALUE Name="P_s"/>
+    <DOUBLE-VALUE Name="A"/>
+    <DOUBLE-VALUE Name="K_alpha"/>
+    <DOUBLE-VALUE Name="KP"/>
+    <DOUBLE-VALUE Name="KI"/>
+    <DOUBLE-VALUE Name="P_s"/>
   </CLASS>
 
   <CLASS Name="Boukhezzar">
-    <DECIMAL-VALUE Name="C_0"/>
-    <DECIMAL-VALUE Name="KP"/>
-    <DECIMAL-VALUE Name="KI"/>
-    <DECIMAL-VALUE Name="K_t"/>
-    <DECIMAL-VALUE Name="J_t"/>
+    <DOUBLE-VALUE Name="C_0"/>
+    <DOUBLE-VALUE Name="KP"/>
+    <DOUBLE-VALUE Name="KI"/>
+    <DOUBLE-VALUE Name="K_t"/>
+    <DOUBLE-VALUE Name="J_t"/>
   </CLASS>
 
   <CLASS Name="CRITIC">
@@ -216,7 +216,7 @@
   </CLASS>
   
   <CLASS Name="TD-Lambda">
-    <DECIMAL-VALUE Name="Gamma"/>
+    <DOUBLE-VALUE Name="Gamma"/>
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
@@ -225,7 +225,7 @@
   </CLASS>
 
   <CLASS Name="True-Online-TD-Lambda">
-    <DECIMAL-VALUE Name="Gamma"/>
+    <DOUBLE-VALUE Name="Gamma"/>
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
@@ -234,7 +234,7 @@
   </CLASS>
   
   <CLASS Name="TDC-Lambda">
-    <DECIMAL-VALUE Name="Gamma"/>
+    <DOUBLE-VALUE Name="Gamma"/>
     <FILE-PATH-VALUE Name="Load" Optional="true"/>
     <FILE-PATH-VALUE Name="Save" Optional="true"/>
     <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
@@ -247,12 +247,12 @@
   
   <CLASS Name="LQR-GAIN">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
-    <DECIMAL-VALUE Name="Gain"/>
+    <DOUBLE-VALUE Name="Gain"/>
   </CLASS>
   
   <CLASS Name="ETRACES">
-    <DECIMAL-VALUE Name="Lambda" Default="0.9"/>
-    <DECIMAL-VALUE Name="Threshold" Default="0.001"/>
+    <DOUBLE-VALUE Name="Lambda" Default="0.9"/>
+    <DOUBLE-VALUE Name="Threshold" Default="0.001"/>
     <ENUM-VALUE Name="Replace" Class="BOOLEAN"/>
   </CLASS>
 
@@ -310,30 +310,30 @@
   </CLASS>
 
   <CLASS Name="CONSTANT">
-    <DECIMAL-VALUE Name="Value" Default="0.0"/>
+    <DOUBLE-VALUE Name="Value" Default="0.0"/>
   </CLASS>
 
   <CLASS Name="LINEAR-SCHEDULE">
-    <DECIMAL-VALUE Name="Start-Offset" Default="0.0"/>
-    <DECIMAL-VALUE Name="Initial-Value" Default="0.0"/>
-    <DECIMAL-VALUE Name="End-Value" Default="1.0"/>
-    <DECIMAL-VALUE Name="Evaluation-Value" Default="0.0"/>
+    <DOUBLE-VALUE Name="Start-Offset" Default="0.0"/>
+    <DOUBLE-VALUE Name="Initial-Value" Default="0.0"/>
+    <DOUBLE-VALUE Name="End-Value" Default="1.0"/>
+    <DOUBLE-VALUE Name="Evaluation-Value" Default="0.0"/>
     <ENUM-VALUE Name="Interpolation" Class="INTERPOLATION"/>
   </CLASS>
 
   <CLASS Name="BHATNAGAR-SCHEDULE">
-    <DECIMAL-VALUE Name="Alpha-0" Default="0.0"/>
-    <DECIMAL-VALUE Name="Alpha-c" Default="0.0"/>
-    <DECIMAL-VALUE Name="Time-Exponent" Comment="exponent to which time t is raised. 1 for the actor and 2/3 for the critic in the original work" Default="1.0"/>
-    <DECIMAL-VALUE Name="Evaluation-Value" Default="0.0"/>
+    <DOUBLE-VALUE Name="Alpha-0" Default="0.0"/>
+    <DOUBLE-VALUE Name="Alpha-c" Default="0.0"/>
+    <DOUBLE-VALUE Name="Time-Exponent" Comment="exponent to which time t is raised. 1 for the actor and 2/3 for the critic in the original work" Default="1.0"/>
+    <DOUBLE-VALUE Name="Evaluation-Value" Default="0.0"/>
   </CLASS>
   
   
   <!--REWARDS-->
 
   <CLASS Name="REWARD" Window="New">
-    <DECIMAL-VALUE Name="Min" Comment="Minimum allowed reward"/>
-    <DECIMAL-VALUE Name="Max" Comment="Maximum output of each reward component"/>
+    <DOUBLE-VALUE Name="Min" Comment="Minimum allowed reward"/>
+    <DOUBLE-VALUE Name="Max" Comment="Maximum output of each reward component"/>
     <MULTI-VALUED Name="Reward-components"  Class="REWARD-COMPONENT"/>
     <RESUME>
       <Reward-components>
@@ -355,8 +355,8 @@
 
   <CLASS Name="DEVIATION-REWARD-COMPONENT">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State" />
-    <DECIMAL-VALUE Name="Weight" Default="1.0"/>
-    <DECIMAL-VALUE Name="Tolerance" Default="10"/>
+    <DOUBLE-VALUE Name="Weight" Default="1.0"/>
+    <DOUBLE-VALUE Name="Tolerance" Default="10"/>
   </CLASS>
 
   <ENUMERATED-TYPES>
