@@ -171,23 +171,22 @@ CLASS_CONSTRUCTOR(CWindTurbine) (const char* worldDefinition, CParameters *pPara
 	m_currentDataFile = 0;
 
 	//evaluation file
-	CHILD_CLASS(m_pEvaluationWindData,"Evaluation-Wind-Data",CHHFileSetPoint,pParameters->getConstString( "Evaluation-Wind-Data"));
+	const char* filename;
+	CHILD_CLASS(m_pEvaluationWindData, "Evaluation-Wind-Data", CHHFileSetPoint, pParameters->getChild("Evaluation-Wind-Data"));
 
 	//training files
-
-	m_numDataFiles = pParameters->countChildren("Training-Wind-Data");
+	const char trainingDataId[] = "Training-Wind-Data";
+	m_numDataFiles = pParameters->countChildren(trainingDataId);
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
-	CParameters* trainingWindFiles = pParameters->getChild("Training-Wind-Data");
-	const char* filename;
+	CParameters* trainingWindFiles = pParameters->getChild(trainingDataId);
+
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
-		MULTI_VALUED(m_pTrainingWindData[i], "Training-Wind-Data", CHHFileSetPoint, pParameters->getConstString());
+		MULTI_VALUED(m_pTrainingWindData[i], "Training-Wind-Data", CHHFileSetPoint, trainingWindFiles);
 
-		pParameters = pParameters->getNextChild("Training-Wind-Data");
+		trainingWindFiles = trainingWindFiles->getNextChild(trainingDataId);
 	}
-
-	//m_pWindData = new CHHFileSetPoint(pParameters->getParameter("WIND_DATA_FILE")->getStringPtr());
-	CHILD_CLASS(m_pPowerSetpoint,"Power-Set-Point",CFileSetPoint,pParameters->getChild("Power-Set-Point")->getConstString());
+	CHILD_CLASS(m_pPowerSetpoint, "Power-Set-Point", CFileSetPoint, pParameters->getChild("Power-Set-Point"));
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;

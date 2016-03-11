@@ -10,7 +10,7 @@
 #include "named-var-set.h"
 #include "parameters.h"
 
-CActor* CLASS_FACTORY(CActor)::getInstance(CParameters* pParameters)
+CActor* CLASS_FACTORY(CActor)(CParameters* pParameters)
 {
 	CParameters* child;
 	if (!pParameters) return 0;

@@ -10,7 +10,7 @@
 #include "named-var-set.h"
 #include "parameters.h"
 
-CSimGod::CSimGod(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CSimGod)(CParameters* pParameters)
 {
 	/*CParameters* child;/* = pParameters->getChild("ACTOR/CRITIC");
 
@@ -22,26 +22,16 @@ CSimGod::CSimGod(CParameters* pParameters)
 	}
 	else*/
 	{
-		if (pParameters->getChild("Controller"))
-		{
-			m_pController = CActor::getInstance(pParameters->getChild("Controller"));
-			m_pActor = CActor::getInstance(pParameters->getChild("Actor"));
-		}
-		else
-		{
-			m_pActor = CActor::getInstance(pParameters->getChild("Actor"));
-			m_pController = m_pActor;
-		}
-
-		if (pParameters->getChild("Critic"))
-			m_pCritic = CCritic::getInstance(pParameters->getChild("Critic"));
-		else m_pCritic = 0;
+		CHILD_CLASS_FACTORY(m_pController, "Controller", CActor, pParameters->getChild("Controller"));
+		CHILD_CLASS_FACTORY(m_pActor, "Actor", CActor, pParameters->getChild("Actor"));
+		CHILD_CLASS_FACTORY(m_pCritic, "Critic", CCritic, pParameters->getChild("Critic"));
+		if (!m_pController) m_pController = m_pActor;
 	}
 	
 	m_rho = 0.0;
 	m_td = 0.0;
 	RLSimion::g_pLogger->addVarToStats("Critic", "TD-error", &m_td);
-
+	END_CLASS();
 }
 
 

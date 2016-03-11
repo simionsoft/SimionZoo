@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CMagneticLevitation::CMagneticLevitation(const char* worldDefinition, CParameters *pParameters)
+CLASS_CONSTRUCTOR(CMagneticLevitation)(const char* worldDefinition, CParameters *pParameters)
 : CDynamicModel(worldDefinition)
 {/*
 	m_pStateDescriptor= new CState(5);
@@ -31,8 +31,10 @@ CMagneticLevitation::CMagneticLevitation(const char* worldDefinition, CParameter
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aVoltage= pActionDescriptor->getVarIndex("voltage");
 
-	m_pEvalSetPoint= new CFileSetPoint(pParameters->getConstString("Evaluation-Set-Point-File"));
+	CHILD_CLASS(m_pEvalSetPoint, "Evaluation-Set-Point", CFileSetPoint, pParameters->getChild("Evaluation-Set-Point"));
+
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
+	END_CLASS();
 }
 
 CMagneticLevitation::~CMagneticLevitation()

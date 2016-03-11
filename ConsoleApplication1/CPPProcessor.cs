@@ -401,6 +401,26 @@ namespace CustomXMLBuilder
             decreaseIndent();
             return parsedXML;
         }
+        public string parseClassExtensions(string text)
+        {
+            increaseIndent();
+            //#define EXTENDS(className,...)
+            // -> <BRANCH Name="" Class=""/>
+            string sPattern = @"(EXTENDS)\s*\(" + extractTokenRegex + @"\)";
+
+            string parsedXML = "";
+            foreach (Match match in Regex.Matches(text, sPattern))
+            {
+                var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
+                string arguments = parameters.Groups[1].Value;
+
+                var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
+                m_checker.addClassReference(parameterMatches[0].Value.Trim(' '));
+                parsedXML += getLevelIndent() + "<BRANCH Name=\"Inline\" Class=\""  + parameterMatches[0].Value.Trim(' ') + "\"/>\n";
+            }
+            decreaseIndent();
+            return parsedXML;
+        }
         public string parseClasses(string text)
         {
            string sPattern = @"(CLASS_CONSTRUCTOR|CLASS_FACTORY)(.*?)END_CLASS\(\)";
@@ -421,6 +441,7 @@ namespace CustomXMLBuilder
                     parsedXML += getLevelIndent() + "<CLASS Name=\"" + parameterMatches[1].Value + "-Factory\">\n";
 
                 string classDefinition= match.Groups[2].Value;
+                parsedXML += parseClassExtensions(classDefinition);
                 parsedXML += parseChildClasses(classDefinition);
                 parsedXML += parseChoices(classDefinition);
                 parsedXML += parseMultiValues(classDefinition);

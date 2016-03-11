@@ -120,6 +120,9 @@
     <ClCompile Include="timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="single-dimension-grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -159,9 +162,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vfa.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SimGod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vfa-actor.h">
@@ -210,6 +210,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SimGod.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

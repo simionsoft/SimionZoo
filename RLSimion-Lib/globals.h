@@ -18,7 +18,7 @@ namespace RLSimion
 }
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
-#define CLASS_FACTORY(name) name
+#define CLASS_FACTORY(name) name::getInstance
 #define CLASS_CONSTRUCTOR(name) name::name
 #define END_CLASS()
 
@@ -40,6 +40,7 @@ namespace RLSimion
 #define CONST_INTEGER_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstInteger(parameterName,defaultValue);
 #define CONST_BOOLEAN_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstBoolean(parameterName,defaultValue);
 #define CONST_STRING_VALUE(variable,parameterNode,parameterName,defaultValue) variable= (char*)parameterNode->getConstString(parameterName,defaultValue);
+#define CONST_STRING_VALUE_OPTIONAL(variable,parameterNode,parameterName) if(parameterNode->getChild(parameterName)) {variable= (char*)parameterNode->getChild(parameterName)->getConstString(parameterName);} else {variable= 0;}
 #define CONST_DOUBLE_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstDouble(parameterName,defaultValue);
 
 #define MULTI_VALUED(indexedVariable,name,className,...) indexedVariable= new className(__VA_ARGS__);

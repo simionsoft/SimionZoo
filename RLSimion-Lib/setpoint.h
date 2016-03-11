@@ -1,5 +1,7 @@
 #pragma once
 
+class CParameters;
+
 class CSetPoint
 {
 public:
@@ -18,7 +20,7 @@ protected:
 	double m_totalTime;
 public:
 	CFileSetPoint();
-	CFileSetPoint(const char* pFilename);
+	CFileSetPoint(CParameters* pParameters);
 	~CFileSetPoint();
 
 	double getPointSet(double time);
@@ -27,7 +29,7 @@ public:
 class CHHFileSetPoint : public CFileSetPoint
 {
 public:
-	CHHFileSetPoint(const char* pFilename);
+	CHHFileSetPoint(CParameters* pParameters);
 	~CHHFileSetPoint(){}
 };
 

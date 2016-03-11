@@ -14,7 +14,10 @@ class INumericValue;
 
 class CVFACritic : public CCritic, public CParamObject
 {
+	char* m_loadFile = 0;
+	char* m_saveFile = 0;
 protected:
+
 	CLinearStateVFA* m_pVFA; //value function approximator
 
 	void loadVFunction(const char* filename);

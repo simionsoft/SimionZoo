@@ -19,7 +19,7 @@ CVFAPolicyLearner::~CVFAPolicyLearner()
 	delete m_pPolicy;
 }
 
-CVFAPolicyLearner* CLASS_FACTORY(CVFAPolicyLearner)::getInstance(CParameters* pParameters)
+CVFAPolicyLearner* CLASS_FACTORY(CVFAPolicyLearner)(CParameters* pParameters)
 {
 	if (pParameters)
 	{
@@ -45,19 +45,20 @@ CLASS_CONSTRUCTOR(CVFAActor)(CParameters* pParameters): CParamObject(pParameters
 	CParameters* pOutput= pOutputs->getChild();
 	for (int i = 0; i<m_numOutputs; i++)
 	{
-		m_pPolicyLearners[i] = CVFAPolicyLearner::getInstance(pOutput);
+		MULTI_VALUED_FACTORY(m_pPolicyLearners[i], "Outputs", CVFAPolicyLearner, pOutput);
+		//m_pPolicyLearners[i] = CVFAPolicyLearner::getInstance(pOutput);
 		pOutput = pOutput->getNextChild();
 	}
-	
-	if (pParameters->getChild("Load"))
-		loadPolicy(pParameters->getChild("Load")->getConstString());
+
+	CONST_STRING_VALUE_OPTIONAL(m_loadFile, pParameters, "Load");
+	CONST_STRING_VALUE_OPTIONAL(m_saveFile, pParameters, "Save");
+	if (m_loadFile) loadPolicy(m_loadFile);
 	END_CLASS();
 }
 
 CVFAActor::~CVFAActor()
 {
-	if (m_pParameters->getChild("Save"))
-		savePolicy(m_pParameters->getChild("Save")->getConstString());
+	if (m_saveFile) savePolicy(m_saveFile);
 
 	for (int i = 0; i<m_numOutputs; i++)
 	{

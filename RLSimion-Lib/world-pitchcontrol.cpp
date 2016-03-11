@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CPitchControl::CPitchControl(const char* worldDefinition, CParameters *pParameters)
+CLASS_CONSTRUCTOR(CPitchControl)(const char* worldDefinition, CParameters *pParameters)
 : CDynamicModel(worldDefinition)
 {
 	CState *pStateDescriptor = getStateDescriptor();
@@ -20,9 +20,9 @@ CPitchControl::CPitchControl(const char* worldDefinition, CParameters *pParamete
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aPitch = pActionDescriptor->getVarIndex("pitch");
 
-
-
-	m_pSetpoint= new CFileSetPoint(pParameters->getChild("Set-Point-File")->getConstString());
+	CHILD_CLASS(m_pSetpoint, "Set-Point-File",CFileSetPoint,pParameters->getChild("Set-Point-File"));
+	
+	END_CLASS();
 }
 
 CPitchControl::~CPitchControl()

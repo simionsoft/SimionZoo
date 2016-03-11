@@ -30,8 +30,11 @@ public:
 
 
 class CVFAActor: public CActor, public CParamObject
-{
+{	
+	char* m_loadFile = 0;
+	char* m_saveFile = 0;
 protected:
+
 	int m_numOutputs;
 	CVFAPolicyLearner **m_pPolicyLearners;
 public:

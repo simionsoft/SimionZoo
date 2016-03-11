@@ -267,9 +267,9 @@ namespace AppXML.ViewModels
                     {
                         XmlNode nodo2 = AppXML.Data.Utility.resolveTag(tag, _doc);
                         XmlNode lastChild2 = AppXML.Data.Utility.getLastChild(nodo2);
-                        List<XmlNode> nodos2 = HeaderClass.getXmlNodes();
-                        foreach (XmlNode child in nodos2)
-                            lastChild2.AppendChild(child);
+                        List<XmlNode> nodos2 = cvm.getXmlNodes();
+                        foreach (XmlNode child2 in nodos2)
+                            lastChild2.AppendChild(child2);
                         nodes.Add(nodo2);
                     }
                 }

@@ -8,15 +8,14 @@
 #include "vfa-critic.h"
 #include "parameters.h"
 
-CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CParameters *pParameters)
-	: CVFACritic(pParameters)
+CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)(CParameters *pParameters)
+	: EXTENDS(CVFACritic,pParameters)
 {
-	m_e= new CETraces("Critic/E-Traces",pParameters->getChild("E-Traces"));
+	CHILD_CLASS(m_e, "E-Traces", CETraces, "Critic/E-Traces", pParameters->getChild("E-Traces"));
 	m_aux= new CFeatureList("Critic/aux");
 	m_v_s= 0.0;
-	m_pAlpha = pParameters->getNumericHandler("Alpha");
-	m_pGamma= pParameters->getNumericHandler("Gamma");
-
+	NUMERIC_VALUE(m_pAlpha, pParameters, "Alpha");
+	NUMERIC_VALUE(m_pGamma, pParameters, "Gamma");
 }
 
 CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
