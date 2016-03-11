@@ -128,6 +128,8 @@ namespace AppXML.ViewModels
                 {
                     foreach (BranchViewModel item in cvm.Branches)
                     {
+                        if (dataSet)
+                            break;
                         string itemTag = item.Tag;
                         splitedTag = itemTag.Split('/');
                         XmlNode tmp = data;
@@ -169,7 +171,8 @@ namespace AppXML.ViewModels
                 {
                     foreach (MultiValuedViewModel item in cvm.Multis)
                     {
-                        
+                        if (dataSet)
+                            break;
                         string itemTag = item.Tag;
                         splitedTag = itemTag.Split('/');
                         XmlNode tmp = data;
@@ -180,7 +183,7 @@ namespace AppXML.ViewModels
                                 if (tag == splitedTag[splitedTag.Length - 1])
                                 {
 
-                                   if(multiStarted==false)
+                                   if(multiStarted==false || currentMulti!=tag)
                                    {
                                        currentMulti = tag;
                                        multiIndex = 0;
@@ -201,16 +204,18 @@ namespace AppXML.ViewModels
                                    {
                                        if(item.HeaderClass==null)
                                        {
-                                           if(multiIndex>=item.Aded.Count)
+                                           int index = item.Aded.Count;
+                                           if(index==-0 || multiIndex>=index)
                                                 item.AddNew();
-                                           item.Aded[multiIndex].Value = tmp.InnerText;    
+                                           item.Aded[index].Value = tmp.InnerText;    
                                        }
                                                                             
                                        else
                                        {
-                                           if (multiIndex >= item.AdedClasses.Count)
+                                           int index = item.AdedClasses.Count;
+                                           if (index ==0 ||multiIndex >= index)
                                                item.Add();
-                                           fillTheClass(item.AdedClasses[multiIndex], tmp);
+                                           fillTheClass(item.AdedClasses[index], tmp);
 
                                        }
                                        multiIndex++;
@@ -234,6 +239,8 @@ namespace AppXML.ViewModels
                 {
                     foreach (XMLNodeRefViewModel item in cvm.XMLNODE)
                     {
+                        if (dataSet)
+                            break;
                         string itemTag = item.Tag;
                         splitedTag = itemTag.Split('/');
                         XmlNode tmp = data;
@@ -266,6 +273,8 @@ namespace AppXML.ViewModels
                 {
                     foreach (IntegerViewModel item in cvm.Items)
                     {
+                        if (dataSet)
+                            break;
                         string itemTag = item.Tag;
                         splitedTag = itemTag.Split('/');
                         XmlNode tmp = data;

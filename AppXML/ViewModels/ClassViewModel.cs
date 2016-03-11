@@ -381,6 +381,7 @@ namespace AppXML.ViewModels
             }
             else
             {
+
                 return ResumeClass.getXmlNodes();
             }       
             return result;
