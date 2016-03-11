@@ -16,7 +16,7 @@ namespace AppXML.ViewModels
         private string _comment;
         private XmlDocument _doc;
         private string _tag;
-
+        public string Tag { get { return _tag; } set { } }
         public string Comment { get { return _comment; } set { } }
         
         public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }

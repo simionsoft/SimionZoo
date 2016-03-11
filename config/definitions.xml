@@ -17,6 +17,8 @@
     <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
     <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
     <BRANCH Name="Training-Wind-Data" Class="LIST-OF-FILES"/>
+    <BRANCH Name="Training-Wind-Data2" Class="LIST-OF-FILES"/>
+
   </CLASS>
   <CLASS Name="Underwater-vehicle-parameters">
     <FILE-PATH-VALUE Name="Set-Point-File"/>

@@ -18,6 +18,8 @@ namespace AppXML.ViewModels
         private XmlDocument _doc;
         private string tag;
 
+        public string Tag { get { return tag; } set { } }
+
         public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; } }
 
         public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc, string tag)

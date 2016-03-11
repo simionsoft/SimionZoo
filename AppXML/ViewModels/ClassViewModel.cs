@@ -32,6 +32,11 @@ namespace AppXML.ViewModels
         private XmlDocument _doc;
         public XmlNode resume;
 
+        public void setResumeInClassView()
+        {
+            _wclvm.Save();
+        }
+
         //faltan los branches pero estan sin crear BranchViewModel y BranchView
         public ClassViewModel(string clasName, XmlDocument doc)
         {

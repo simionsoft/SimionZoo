@@ -26,6 +26,22 @@ namespace AppXML.ViewModels
         public string Comment { get { return _comment; } set { } }
         private XmlDocument _doc;
         private string _tag;
+        public string Tag { get { return _tag; } }
+        public string Value
+        {
+            get { return ""; } 
+            set 
+            {
+                if (this.ComboBox != null)
+                    ComboBox[0].SelectedComboValue = value;
+                else if (this.TextBox != null)
+                    TextBox[0].Default = value;
+                else if (this.TextBoxFile != null)
+                    TextBoxFile[0].Default = value;
+            } 
+        }
+
+
         public IntegerViewModel(String label, CIntegerValue param, XmlDocument doc, string tag)
         {
             _doc = doc;

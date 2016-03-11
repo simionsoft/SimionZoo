@@ -27,6 +27,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<ClassViewModel> _adedClasses;
         private string clas;
         private string tag;
+        public string Tag { get { return tag; } set { } }
         public string IsOptionalVisible
         {
             get
@@ -145,25 +146,7 @@ namespace AppXML.ViewModels
         }
         public void AddNew()
         {
-           /* if (_aded.Count > 0)
-            {
-                var x = _aded[_aded.Count - 1];
-                if (x.ComboBox != null)
-                {
-
-                }
-                else if (x.TextBox != null)
-                {
-                    string valor = x.TextBox[0].Default;
-                    original.defaultValue = valor;
-                }
-                else if (x.TextBoxFile != null)
-                {
-                    string valor = x.TextBoxFile[0].Default;
-                    original.defaultValue = valor;
-                }
-            }
-            else*/
+           
             {
                 var x = Header;
                 if (x.ComboBox != null)

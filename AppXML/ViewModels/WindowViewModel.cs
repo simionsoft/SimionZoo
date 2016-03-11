@@ -1,23 +1,9 @@
 ﻿using AppXML.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AppXML.Data;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Windows;
 using Caliburn.Micro;
-using System.ComponentModel.Composition;
 using System.Windows.Forms;
 using System.IO;
 using System.Dynamic;
@@ -94,30 +80,36 @@ namespace AppXML.ViewModels
         public void fillTheClass(ClassViewModel cvm, XmlNode dataNode)
         {
             //here we have to set the new data such as: selected choice element, default values for every *.value, etc.
-           
-            foreach(XmlNode data in dataNode)
+            bool dataSet = false;
+            bool multiStarted = false;
+            string currentMulti = "";
+            int multiIndex = 0;
+            foreach (XmlNode data in dataNode)
             {
+                dataSet = false;
                 string dataTag = data.Name;
                 string branchTag = null;
                 string[] splitedTag = null;
                 //once we have the tag we have to find out if the branch has this tag somewhere
-                if(cvm.Choice!=null)
+                if (cvm.Choice != null)
                 {
                     branchTag = cvm.Choice.Tag;
                     splitedTag = branchTag.Split('/');
                     XmlNode tmp = data;
-                    foreach(string tag in splitedTag)
+                    foreach (string tag in splitedTag)
                     {
-                        if(tag==dataTag)
+                        if (tag == dataTag)
                         {
-                            if(tag==splitedTag[splitedTag.Length-1])
+                            if (tag == splitedTag[splitedTag.Length - 1])
                             {
-                                if(tmp.HasChildNodes)
+                                if (tmp.HasChildNodes)
                                 {
                                     XmlNode choiceElementData = tmp.FirstChild;
                                     string name = choiceElementData.Name;
                                     cvm.Choice.setSelectedItem(name);
                                     fillTheClass(cvm.Choice.Class, choiceElementData);
+                                    dataSet = true;
+
                                 }
                             }
                             else
@@ -127,14 +119,183 @@ namespace AppXML.ViewModels
                                     tmp = data.FirstChild;
                                     dataTag = tmp.Name;
                                 }
+
+                            }
+                        }
+                    }
+                }
+                if(!dataSet && cvm.Branches!=null)
+                {
+                    foreach (BranchViewModel item in cvm.Branches)
+                    {
+                        string itemTag = item.Tag;
+                        splitedTag = itemTag.Split('/');
+                        XmlNode tmp = data;
+                        foreach (string tag in splitedTag)
+                        {
+                            if (itemTag == dataTag)
+                            {
+                                if (tag == splitedTag[splitedTag.Length - 1])
+                                {
+                                    if (tmp.HasChildNodes)
+                                    {
+                                        //item.Value = tmp.InnerText;
+                                        if (item.Class.Resume == null)
+                                            fillTheClass(item.Class, tmp);
+                                        else
+                                        {
+                                            fillTheClass(item.Class.ResumeClass, tmp);
+                                            item.Class.setResumeInClassView();
+
+                                        }
+                                        dataSet = true;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (data.HasChildNodes)
+                                    {
+                                        tmp = data.FirstChild;
+                                        dataTag = tmp.Name;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!dataSet && cvm.Multis != null)
+                {
+                    foreach (MultiValuedViewModel item in cvm.Multis)
+                    {
+                        
+                        string itemTag = item.Tag;
+                        splitedTag = itemTag.Split('/');
+                        XmlNode tmp = data;
+                        foreach (string tag in splitedTag)
+                        {
+                            if (itemTag == dataTag)
+                            {
+                                if (tag == splitedTag[splitedTag.Length - 1])
+                                {
+
+                                   if(multiStarted==false)
+                                   {
+                                       currentMulti = tag;
+                                       multiIndex = 0;
+                                       multiStarted = true;
+                                       if(item.HeaderClass==null)
+                                       {
+                                           item.Header.Value = tmp.InnerText;
+                                           //item.Aded.Clear();
+                                       }
+                                       else
+                                       {
+                                           fillTheClass(item.HeaderClass, tmp);
+                                           //item.AdedClasses.Clear();
+                                       }
+                                       break;
+                                   }
+                                   else
+                                   {
+                                       if(item.HeaderClass==null)
+                                       {
+                                           if(multiIndex>=item.Aded.Count)
+                                                item.AddNew();
+                                           item.Aded[multiIndex].Value = tmp.InnerText;    
+                                       }
+                                                                            
+                                       else
+                                       {
+                                           if (multiIndex >= item.AdedClasses.Count)
+                                               item.Add();
+                                           fillTheClass(item.AdedClasses[multiIndex], tmp);
+
+                                       }
+                                       multiIndex++;
+                                       break;
+                                   }
+                                }
+                                else
+                                {
+                                    if (data.HasChildNodes)
+                                    {
+                                        tmp = data.FirstChild;
+                                        dataTag = tmp.Name;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!dataSet && cvm.XMLNODE != null)
+                {
+                    foreach (XMLNodeRefViewModel item in cvm.XMLNODE)
+                    {
+                        string itemTag = item.Tag;
+                        splitedTag = itemTag.Split('/');
+                        XmlNode tmp = data;
+                        foreach (string tag in splitedTag)
+                        {
+                            if (itemTag == dataTag)
+                            {
+                                if (tag == splitedTag[splitedTag.Length - 1])
+                                {
+                                    
+                                        item.SelectedOption = tmp.InnerText;
+                                        dataSet = true;
+                                        break;
                                    
+                                }
+                                else
+                                {
+                                    if (data.HasChildNodes)
+                                    {
+                                        tmp = data.FirstChild;
+                                        dataTag = tmp.Name;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!dataSet && cvm.Items != null)
+                {
+                    foreach (IntegerViewModel item in cvm.Items)
+                    {
+                        string itemTag = item.Tag;
+                        splitedTag = itemTag.Split('/');
+                        XmlNode tmp = data;
+                        foreach (string tag in splitedTag)
+                        {
+                            if (itemTag == dataTag)
+                            {
+                                if (tag == splitedTag[splitedTag.Length - 1])
+                                {
+                                    
+                                        item.Value = tmp.InnerText;
+                                        dataSet = true;
+                                        break;
+                                    
+                                }
+                                else
+                                {
+                                    if (data.HasChildNodes)
+                                    {
+                                        tmp = data.FirstChild;
+                                        dataTag = tmp.Name;
+                                    }
+
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
         public void Load()
         {
             //si hubiera mas de una aplicacion habria que tenerlo en cuenta
