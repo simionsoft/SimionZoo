@@ -15,6 +15,9 @@ namespace AppXML.ViewModels
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
         private XmlDocument _doc;
+        private RightTreeViewModel _graf;
+
+        public RightTreeViewModel Graf { get { return _graf; } set { } }
 
 
 
@@ -344,6 +347,12 @@ namespace AppXML.ViewModels
                 }
             }
 
+        }
+        public void SetAsRoot()
+        {
+            AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", _doc, null);
+            this._graf = new RightTreeViewModel();
+            NotifyOfPropertyChange(() => Graf);
         }
     }
 }

@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="AppXML.Views.RightTreeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:data="clr-namespace:AppXML.Models"
+             xmlns:cal="http://www.caliburnproject.org"
+             mc:Ignorable="d" 
+          
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel>
+        <TreeView Name="Tree" ItemsSource="{Binding Tree}" cal:Message.Attach="[Event SelectedItemChanged]=[Action Change($source)]">
+            <TreeView.Resources>
+                <ResourceDictionary>
+                    <!-- Import the resource dictionary file which 
+             contains the Style that makes TreeViewItems
+             display their child items in an organization 
+             chart layout. -->
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary 
+            Source="OrgChartTreeViewItemStyle.xaml" />
+                    </ResourceDictionary.MergedDictionaries>
+
+                    <!-- This template explains how to render 
+             a Node object and its child nodes. -->
+                    <HierarchicalDataTemplate 
+          DataType="{x:Type data:TreeNode}" 
+          ItemsSource="{Binding ChildNodes}"
+          >
+                        <TextBlock Text="{Binding Text}" cal:Message.Attach=""/>
+                    </HierarchicalDataTemplate>
+                </ResourceDictionary>
+            </TreeView.Resources>
+
+            <!-- Put the root item(s) in a centered Grid so that 
+         they will be centered and retain their width. -->
+            <TreeView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid 
+          HorizontalAlignment="Center" 
+          IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
+           
+        </TreeView>
+
+
+    </StackPanel>
+</UserControl>

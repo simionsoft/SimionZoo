@@ -151,7 +151,8 @@ namespace AppXML.ViewModels
                 var x = Header;
                 if (x.ComboBox != null)
                 {
-
+                    string valor = x.ComboBox[0].SelectedComboValue;
+                    original.defaultValue = valor;
                 }
                 else if (x.TextBox != null) 
                 {
