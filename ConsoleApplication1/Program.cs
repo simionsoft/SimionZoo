@@ -23,16 +23,17 @@ namespace CustomXMLBuilder
             string dirPath = args[0];
 
             List<string> sourceFiles = new List<string>(Directory.EnumerateFiles(dirPath,"*.cpp",SearchOption.AllDirectories));
-            string output;
 
             System.IO.StreamWriter outputFile= new System.IO.StreamWriter("../config/test-definitions.xml");
             outputFile.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<DEFINITIONS>\n");
+            string xmlOutput= "";
             foreach (var file in sourceFiles)
             {
-                output = sourceProcessor.processFile(file);
+                xmlOutput += sourceProcessor.processFile(file);
 
-                outputFile.Write(output);
             }
+            //xmlOutput= sourceProcessor.resolveInlineClassRefs(xmlOutput);
+            outputFile.Write(xmlOutput);
             outputFile.Write("\n</DEFINITIONS>");
             outputFile.Close();
             sourceProcessor.m_checker.checkClassReferences();

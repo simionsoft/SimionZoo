@@ -17,7 +17,7 @@ class CDeterministicVFAPolicy : public CParamObject
 protected:
 	CLinearStateVFA *m_pVFA;
 	int m_outputActionIndex;
-	const char* m_outputAction;
+	//const char* m_outputAction;
 public:
 	CDeterministicVFAPolicy(CParameters* pParameters);
 	~CDeterministicVFAPolicy();
