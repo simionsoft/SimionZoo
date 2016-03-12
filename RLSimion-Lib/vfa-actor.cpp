@@ -11,7 +11,7 @@
 
 CLASS_CONSTRUCTOR(CVFAPolicyLearner)(CParameters* pParameters) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicVFAPolicy, pParameters->getChild("Deterministic-VFA-Policy"))M
+	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicVFAPolicy, pParameters->getChild("Deterministic-VFA-Policy"));
 	//m_pPolicy = CDeterministicVFAPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
 	END_CLASS();
 }

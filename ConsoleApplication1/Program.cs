@@ -32,7 +32,7 @@ namespace CustomXMLBuilder
                 xmlOutput += sourceProcessor.processFile(file);
 
             }
-            //xmlOutput= sourceProcessor.resolveInlineClassRefs(xmlOutput);
+            xmlOutput= sourceProcessor.resolveInlineClassRefs(xmlOutput);
             outputFile.Write(xmlOutput);
             outputFile.Write("\n</DEFINITIONS>");
             outputFile.Close();

@@ -44,10 +44,11 @@ CDeterministicVFAPolicy::~CDeterministicVFAPolicy()
 //CDetPolicyGaussianNoise////////////////////////////////
 /////////////////////////////////////////////////////////
 
-CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CParameters* pParameters)
-: CDeterministicVFAPolicy(pParameters)
+CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)(CParameters* pParameters)
+: EXTENDS(CDeterministicVFAPolicy,pParameters)
 {
-	m_pExpNoise = CNoise::getInstance(pParameters->getChild("Exploration-Noise"));
+	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise",CNoise,pParameters->getChild("Exploration-Noise"));
+	END_CLASS();
 }
 
 CDeterministicPolicyGaussianNoise::~CDeterministicPolicyGaussianNoise()
@@ -84,11 +85,13 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
 
-CStochasticPolicyGaussianNoise::CStochasticPolicyGaussianNoise(CParameters* pParameters)
-	: CDeterministicVFAPolicy(pParameters)
+CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)(CParameters* pParameters)
+	: EXTENDS(CDeterministicVFAPolicy,pParameters)
 {
-	m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
+	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", CLinearStateVFA, m_pVFA->getParameters());
+	//m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
 	m_pAux = new CFeatureList("Sto-Policy/aux");
+	END_CLASS();
 }
 
 CStochasticPolicyGaussianNoise::~CStochasticPolicyGaussianNoise()

@@ -24,7 +24,7 @@ public:
 
 	CLinearStateVFA* getVFA(){ return m_pVFA; }
 
-	const char* getOutputAction(){ return m_outputAction; }
+//	const char* getOutputAction(){ return m_outputAction; }
 	int getOutputActionIndex(){ return m_outputActionIndex; }
 
 	static CDeterministicVFAPolicy* getInstance(CParameters* pParameters);

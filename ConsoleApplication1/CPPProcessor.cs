@@ -96,6 +96,8 @@ namespace CustomXMLBuilder
         {
             //<BRANCH Name="Inline" Class="CVFAPolicyLearner"/>
             // -> <CLASS Name="CVFAPolicyLearner" ...> **** </CLASS>
+
+            string input = text;
             string sPattern = @"<BRANCH Name=""Inline"".*?Class=""(\w+)""/>";
             string sPattern2;
 
@@ -104,9 +106,11 @@ namespace CustomXMLBuilder
             {
                 string referencedClass = match.Groups[1].Value;
 
-                sPattern2 = @"<CLASS Name=""CVFAPolicyLearner""";// @"<CLASS Name=""" + referencedClass + @""".*?/>(.*?)</CLASS>";
-                var definitionMatch = Regex.Match(text, sPattern2);
-                string classDefinition = definitionMatch.Groups[0].Value;
+                sPattern2 = @"<CLASS Name=""" + referencedClass + @""">(.*?)</CLASS>";
+                var definitionMatch = Regex.Match(text, sPattern2,RegexOptions.Singleline);
+                string classDefinition = definitionMatch.Groups[1].Value;
+
+                input= input.Replace(match.Groups[0].Value, classDefinition);
 
                // var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
@@ -121,8 +125,8 @@ namespace CustomXMLBuilder
                 //parsedXML += getLevelIndent() + "</CHOICE>\n";
 
             }
-            decreaseIndent();
-            return parsedXML;
+
+            return input;
         }
         public string parseChoiceElements(string text)
         {
