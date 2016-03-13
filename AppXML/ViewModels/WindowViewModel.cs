@@ -218,7 +218,7 @@ namespace AppXML.ViewModels
                                            int index = item.Aded.Count;
                                            if(index==-0 || multiIndex>=index)
                                                 item.AddNew();
-                                           item.Aded[index].Value = tmp.InnerText;    
+                                           item.Aded[multiIndex].Value = tmp.InnerText;    
                                        }
                                                                             
                                        else
@@ -226,7 +226,7 @@ namespace AppXML.ViewModels
                                            int index = item.AdedClasses.Count;
                                            if (index ==0 ||multiIndex >= index)
                                                item.Add();
-                                           fillTheClass(item.AdedClasses[index], tmp);
+                                           fillTheClass(item.AdedClasses[multiIndex], tmp);
 
                                        }
                                        multiIndex++;
@@ -336,22 +336,26 @@ namespace AppXML.ViewModels
             }
             else
                 return;
-
             XmlDocument loadedDocument = new XmlDocument();
             loadedDocument.Load(fileDoc);
             XmlNode loadedDocumentRoot = loadedDocument.DocumentElement;
-            foreach(BranchViewModel branch in _branches)
+            LoadDocument(loadedDocumentRoot);
+           
+        }
+        private void LoadDocument(XmlNode loadedDocumentRoot)
+        {
+            foreach (BranchViewModel branch in _branches)
             {
                 //we have to find the correct data input for every branch we have in the form. If we do not have data we do nothing
-                if(loadedDocumentRoot.HasChildNodes)
+                if (loadedDocumentRoot.HasChildNodes)
                 {
-                     foreach(XmlNode dataNode in loadedDocumentRoot.ChildNodes)
-                     {
-                         if(dataNode.Name==branch.Name)
-                         {
-                             fillTheClass(branch.Class, dataNode);
-                         }
-                     }
+                    foreach (XmlNode dataNode in loadedDocumentRoot.ChildNodes)
+                    {
+                        if (dataNode.Name == branch.Name)
+                        {
+                            fillTheClass(branch.Class, dataNode);
+                        }
+                    }
                 }
             }
 
@@ -372,7 +376,11 @@ namespace AppXML.ViewModels
                 if (dvm.DialogResult == DialogViewModel.Result.CANCEL)
                     return;
             }
-            AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", _doc, null);
+            
+            XmlDocument document = new XmlDocument();
+            XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
+            document.AppendChild(newRoot);
+            AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
                 _graf = new RightTreeViewModel(rootNode);
             NotifyOfPropertyChange(() => Graf);
@@ -396,7 +404,10 @@ namespace AppXML.ViewModels
                 name = dvm.Text;
             if(name==null)
                 name="Node";
-            Models.TreeNode node = new Models.TreeNode(name, _doc, Graf.SelectedTreeNode);
+            XmlDocument document = new XmlDocument();
+            XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
+            document.AppendChild(newRoot);
+            Models.TreeNode node = new Models.TreeNode(name, document, Graf.SelectedTreeNode);
             Graf.AddNode(node);
             NotifyOfPropertyChange(() => RemoveChildVisible);
             //NotifyOfPropertyChange(() => Graf);
@@ -410,6 +421,21 @@ namespace AppXML.ViewModels
         {
             List<XmlDocument> myList = Graf.getAllLeafs();
         }
-    
+        public void LoadSelectedNode()
+        {
+            if (Graf.SelectedTreeNode == null || Graf.SelectedTreeNode.Doc==null)
+                return;
+            XmlDocument doc = Graf.SelectedTreeNode.Doc;
+            XmlNode loadedDocumentRoot = doc.DocumentElement;
+            LoadDocument(loadedDocumentRoot);
+            //LoadDocument(doc.DocumentElement);
+            //NotifyOfPropertyChange(() => Branches);
+        }
+        private XmlDocument copyDocument(XmlDocument source)
+        {
+            XmlDocument doc = new XmlDocument();
+
+            return doc;
+        }
     }
 }
