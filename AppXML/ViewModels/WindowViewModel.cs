@@ -42,7 +42,25 @@ namespace AppXML.ViewModels
 
         }
 
-        public void Validate()
+        public void Save()
+        {
+            if (!validate())
+                return;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "XML-File | *.xml";
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
+            if (!Directory.Exists(CombinedPath))
+                System.IO.Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                _doc.Save(sfd.FileName);
+            }
+
+
+
+        }
+        
+        private bool validate()
         {
             _doc.RemoveAll();
             XmlNode rootNode = _doc.CreateElement(_rootnode.name);
@@ -59,7 +77,7 @@ namespace AppXML.ViewModels
                     new WindowManager().ShowDialog(dvm, null, settings);
 
 
-                    return;
+                    return false;
                 }
                 else
                 {
@@ -67,18 +85,7 @@ namespace AppXML.ViewModels
                 }
             }
             _doc.AppendChild(rootNode);
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "XML-File | *.xml";
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
-            if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                _doc.Save(sfd.FileName);
-            }
-
-
-
+            return true;
         }
         public void fillTheClass(ClassViewModel cvm, XmlNode dataNode)
         {
@@ -350,9 +357,49 @@ namespace AppXML.ViewModels
         }
         public void SetAsRoot()
         {
+            if (!validate())
+                return;
+            if(this.Graf!=null)
+            {
+                DialogViewModel dvm = new DialogViewModel(null, "There is already a root node. Do you want to overwrite?", DialogViewModel.DialogType.YesNo);
+                dynamic settings = new ExpandoObject();
+                settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                settings.ShowInTaskbar = true;
+                settings.Title = "ERROR";
+
+                new WindowManager().ShowDialog(dvm, null, settings);
+                if (dvm.DialogResult == DialogViewModel.Result.CANCEL)
+                    return;
+            }
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", _doc, null);
-            this._graf = new RightTreeViewModel();
+            if (this._graf == null)
+                _graf = new RightTreeViewModel(rootNode);
             NotifyOfPropertyChange(() => Graf);
+            NotifyOfPropertyChange(() => AddChildVisible);
         }
+        public string AddChildVisible { get { if (_graf!=null && _graf.Tree != null) return "Visible"; else return "Hidden"; } set { } }
+        public string RemoveChildVisible { get { if (_graf!=null &&  _graf.Tree!=null && _graf.Tree[0].hasChildren()) return "Visible"; else return "Hidden"; } }
+        public void AddChild()
+        {
+            if (!validate())
+                return;
+            DialogViewModel dvm = new DialogViewModel(null, "Which name do you want for the new node?", DialogViewModel.DialogType.Answer);
+            dynamic settings = new ExpandoObject();
+            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            settings.ShowInTaskbar = true;
+            settings.Title = "Info";
+
+            new WindowManager().ShowDialog(dvm, null, settings);
+            string name = null;
+            if (dvm.DialogResult == DialogViewModel.Result.OK)
+                name = dvm.Text;
+            if(name==null)
+                name="Node";
+            Models.TreeNode node = new Models.TreeNode(name, _doc, Graf.SelectedTreeNode);
+            Graf.AddNode(node);
+            NotifyOfPropertyChange(() => RemoveChildVisible);
+            //NotifyOfPropertyChange(() => Graf);
+        }
+    
     }
 }

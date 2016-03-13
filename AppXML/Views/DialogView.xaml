@@ -11,6 +11,7 @@
     <StackPanel>
         <Label x:Name="Message">
         </Label>
+        <TextBox x:Name="Text" Visibility="{Binding AnswerVisibility}"></TextBox>
         <Button cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
         <Button cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
 

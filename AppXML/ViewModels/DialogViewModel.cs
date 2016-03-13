@@ -19,6 +19,8 @@ namespace AppXML.ViewModels
 
         public string CancelButtonVisibility { get { return _cancelButtonVisibility; } set { } }
 
+        private string _answerVisibility;
+        public string AnswerVisibility { get { return _answerVisibility; } set { } }
         public enum Result
         {
             OK,
@@ -30,6 +32,7 @@ namespace AppXML.ViewModels
         {
             Info,
             YesNo,
+            Answer,
         };
 
         private Result _result;
@@ -43,6 +46,10 @@ namespace AppXML.ViewModels
                 _cancelButtonVisibility = "Visible";
             else
                 _cancelButtonVisibility = "Hidden";
+            if (type == DialogType.Answer)
+                _answerVisibility = "Visible";
+            else
+                _answerVisibility = "Hidden";
         }
 
         public void OK()
@@ -57,6 +64,7 @@ namespace AppXML.ViewModels
         }
 
         public Result DialogResult { get { return _result; } }
+        public string Text { get; set; }
     }
     
 }

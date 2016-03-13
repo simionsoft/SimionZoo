@@ -17,6 +17,12 @@ namespace AppXML.Models
         public string Text { get { return _text; } set { _text = value; } }
         public List<TreeNode> ChildNodes { get { return _children; } set { } }
 
+
+        public void remove()
+        {
+            _father.removeElement(this);
+        }
+
         public TreeNode(string text,XmlDocument document, TreeNode father)
         {
             _text = text;
@@ -42,9 +48,17 @@ namespace AppXML.Models
         }
         public void removeElement(TreeNode child)
         {
+            //first we must know if child has childNodes or not
+            if(child.hasChildren())
+            {
+                //we need to add all children to the father of this node
+                foreach(TreeNode node in child.ChildNodes)
+                {
+                    child._father.addChild(node);
+                }
+            }
             if (_children.Contains(child))
                 _children.Remove(child);
-            //falta saber que hacer con los hijos si tienen
         }
 
     }

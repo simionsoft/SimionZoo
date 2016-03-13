@@ -12,37 +12,45 @@ namespace AppXML.ViewModels
 {
     public class RightTreeViewModel:PropertyChangedBase
     {
-        private ObservableCollection<TreeNode> _treeItems;
-        private TreeNode _tree;
+        ObservableCollection<TreeNode> _treeItems;
+        
 
         private TreeNode selectedTreeNode = null;
+        public TreeNode SelectedTreeNode { get { return selectedTreeNode; } set { } }
+        private TreeNode rootNode;
 
         public void Change(object sender)
         {
             var x = sender as System.Windows.Controls.TreeView;
             selectedTreeNode = x.SelectedValue as TreeNode;
-        }
-
-        public RightTreeViewModel()
-        {
-            XmlDocument doc = new XmlDocument();
-            doc.Load("../experiments/twoMulti.xml");
-            _tree = new TreeNode("root", doc, null);
-           // _tree.addChild(_tree);
-            TreeNode x = new TreeNode("hijo", doc, _tree);
-            _tree.addChild(x);
-           // TreeNode x = new TreeNode("hijo", doc, _tree);
-            _tree.addChild(x);
-            //TreeNode x = new TreeNode("hijo", doc, _tree);
-            _tree.addChild(x);
-            _treeItems = new ObservableCollection<TreeNode>();
-            _treeItems.Add(_tree);
+            /*if (selectedTreeNode == null)
+                return;
+            TreeNode xx = new TreeNode("prueba",null,selectedTreeNode);
+            selectedTreeNode.addChild(xx);
+            //Tree.Clear();
+            Tree.Remove(selectedTreeNode);
+            Tree.Add(selectedTreeNode);
+            NotifyOfPropertyChange(() => Tree);*/
         }
         public RightTreeViewModel(TreeNode tree)
         {
-            _tree = tree;
+            _treeItems = new ObservableCollection<TreeNode>();
+            _treeItems.Add(tree);
+            rootNode = tree;
+            selectedTreeNode = tree;
+        }
+        public ObservableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
+        public void AddNode(TreeNode newNode)
+        {
+            if (selectedTreeNode == null)
+                return;
+            TreeNode tmp = selectedTreeNode;
+            selectedTreeNode.addChild(newNode);
+            Tree = Tree;
+            //_treeItems = new ObservableCollection<TreeNode>();
+            //_treeItems.Add(rootNode);
+            NotifyOfPropertyChange(() => Tree);
         }
 
-        public ObservableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
     }
 }

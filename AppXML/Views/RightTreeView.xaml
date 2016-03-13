@@ -9,7 +9,8 @@
           
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-        <TreeView Name="Tree" ItemsSource="{Binding Tree}" cal:Message.Attach="[Event SelectedItemChanged]=[Action Change($source)]">
+       
+        <TreeView  ItemsSource="{Binding Tree}" cal:Message.Attach="[Event SelectedItemChanged]=[Action Change($source)]">
             <TreeView.Resources>
                 <ResourceDictionary>
                     <!-- Import the resource dictionary file which 
@@ -27,7 +28,7 @@
           DataType="{x:Type data:TreeNode}" 
           ItemsSource="{Binding ChildNodes}"
           >
-                        <TextBlock Text="{Binding Text}" cal:Message.Attach=""/>
+                        <TextBlock Text="{Binding Text}"/>
                     </HierarchicalDataTemplate>
                 </ResourceDictionary>
             </TreeView.Resources>
@@ -43,7 +44,6 @@
             </TreeView.ItemsPanel>
            
         </TreeView>
-
 
     </StackPanel>
 </UserControl>

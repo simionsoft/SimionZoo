@@ -22,14 +22,14 @@
             <TreeViewItem x:Name ="Branches" Header="{Binding rootnode.name}">
             </TreeViewItem>
         </TreeView>
-        <Button Content="Validate" cal:Message.Attach="[Event Click]=[Action Validate()]" HorizontalAlignment="Left" Margin="591,268,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" HorizontalAlignment="Left" Margin="591,268,0,0" VerticalAlignment="Top" Width="75"/>
         <Button Content="Load" HorizontalAlignment="Left" Margin="591,243,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action Load()]" RenderTransformOrigin="0.607,2.05"/>
         <Button Content="Set as root" HorizontalAlignment="Left" Margin="591,218,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action SetAsRoot()]" RenderTransformOrigin="0.607,3.6" />
         <StackPanel Margin="742,48,44,92">
             <ContentControl x:Name="Graf"></ContentControl>
         </StackPanel>
-        <Button Content="Add child" HorizontalAlignment="Left" Margin="591,193,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.113,1.475"/>
-        <Button Content="Remove child" HorizontalAlignment="Left" Margin="591,168,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Add child" HorizontalAlignment="Left" Margin="591,193,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.113,1.475" cal:Message.Attach="[Event Click]=[Action AddChild()]" Visibility="{Binding AddChildVisible}"/>
+        <Button Content="Remove child" HorizontalAlignment="Left" Margin="591,168,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding RemoveChildVisible}"/>
 
     </Grid>
 </Window>
