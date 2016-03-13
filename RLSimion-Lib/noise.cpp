@@ -37,22 +37,25 @@ CNoise::CNoise()
 	m_lastValue = 0.0;
 }
 
-CNoise* CNoise::getInstance(CParameters* pParameters)
+CNoise* CLASS_FACTORY(CNoise)(CParameters* pParameters)
 {
 	const char* pName = pParameters->getChild()->getName();
 
-	if (!strcmp(pName, "GaussianNoise"))
-		return new CGaussianNoise(pParameters->getChild());
+	CHOICE("Noise-Type");
+	CHOICE_ELEMENT(pName, "GaussianNoise", CGaussianNoise, pParameters->getChild());
+	END_CHOICE();
 
+	END_CLASS();
 	assert(0);
 	return 0;
 }
 
-CGaussianNoise::CGaussianNoise(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CGaussianNoise)(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pSigma = pParameters->getNumericHandler("Sigma");
-	m_pAlpha = pParameters->getNumericHandler("Alpha");
-	m_pScale = pParameters->getNumericHandler("Scale");
+	NUMERIC_VALUE(m_pSigma,pParameters,"Sigma");
+	NUMERIC_VALUE(m_pAlpha,pParameters,"Alpha");
+	NUMERIC_VALUE(m_pScale,pParameters,"Scale");
+	END_CLASS();
 }
 
 CGaussianNoise::~CGaussianNoise()

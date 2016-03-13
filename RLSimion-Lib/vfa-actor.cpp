@@ -9,9 +9,11 @@
 #include "parameters.h"
 #include "logger.h"
 
-CVFAPolicyLearner::CVFAPolicyLearner(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CVFAPolicyLearner)(CParameters* pParameters) : CParamObject(pParameters)
 {
-	m_pPolicy = CDeterministicVFAPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
+	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicVFAPolicy, pParameters->getChild("Deterministic-VFA-Policy"));
+	//m_pPolicy = CDeterministicVFAPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
+	END_CLASS();
 }
 
 CVFAPolicyLearner::~CVFAPolicyLearner()

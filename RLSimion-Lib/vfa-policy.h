@@ -17,14 +17,14 @@ class CDeterministicVFAPolicy : public CParamObject
 protected:
 	CLinearStateVFA *m_pVFA;
 	int m_outputActionIndex;
-	const char* m_outputAction;
+	//const char* m_outputAction;
 public:
 	CDeterministicVFAPolicy(CParameters* pParameters);
 	~CDeterministicVFAPolicy();
 
 	CLinearStateVFA* getVFA(){ return m_pVFA; }
 
-	const char* getOutputAction(){ return m_outputAction; }
+//	const char* getOutputAction(){ return m_outputAction; }
 	int getOutputActionIndex(){ return m_outputActionIndex; }
 
 	static CDeterministicVFAPolicy* getInstance(CParameters* pParameters);

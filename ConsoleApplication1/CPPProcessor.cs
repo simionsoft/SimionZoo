@@ -61,7 +61,9 @@ namespace CustomXMLBuilder
 
             numCharsProcessed += fileContents.Length;
 
-            return parseClasses(fileContents);
+            string parsedXMLFile= parseClasses(fileContents);
+
+            return parsedXMLFile;
         }
         //public MatchCollection parseMacroFunction(string text,string functionTag, string functionCloseTag)
         //{
@@ -89,6 +91,43 @@ namespace CustomXMLBuilder
         //        var parameterMatches = parseParameters(extractFuncRegex, functionMatch.Groups[0].Value);
         //    }
         //}
+
+        public string resolveInlineClassRefs(string text)
+        {
+            //<BRANCH Name="Inline" Class="CVFAPolicyLearner"/>
+            // -> <CLASS Name="CVFAPolicyLearner" ...> **** </CLASS>
+
+            string input = text;
+            string sPattern = @"<BRANCH Name=""Inline"".*?Class=""(\w+)""/>";
+            string sPattern2;
+
+            string parsedXML = "";
+            foreach (Match match in Regex.Matches(text, sPattern))
+            {
+                string referencedClass = match.Groups[1].Value;
+
+                sPattern2 = @"<CLASS Name=""" + referencedClass + @""">(.*?)</CLASS>";
+                var definitionMatch = Regex.Match(text, sPattern2,RegexOptions.Singleline);
+                string classDefinition = definitionMatch.Groups[1].Value;
+
+                input= input.Replace(match.Groups[0].Value, classDefinition);
+
+               // var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
+
+                //parsedXML += getLevelIndent() + "<CHOICE Name=" + parameterMatches[1].Value;
+                //if (parameterMatches.Count > 2)
+                //    parsedXML += @" LoadXML=" + parameterMatches[2].Value;
+                //parsedXML += ">\n";
+
+                //parsedXML += parseChoiceElementsLoadXML(match.Groups[2].Value);
+                //parsedXML += parseChoiceElements(match.Groups[2].Value);
+
+                //parsedXML += getLevelIndent() + "</CHOICE>\n";
+
+            }
+
+            return input;
+        }
         public string parseChoiceElements(string text)
         {
             increaseIndent();
