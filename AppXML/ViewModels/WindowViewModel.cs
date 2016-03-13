@@ -7,6 +7,7 @@ using Caliburn.Micro;
 using System.Windows.Forms;
 using System.IO;
 using System.Dynamic;
+using System.Collections.Generic;
 namespace AppXML.ViewModels
 {
     /*[Export(typeof(WindowViewModel))]*/
@@ -399,6 +400,15 @@ namespace AppXML.ViewModels
             Graf.AddNode(node);
             NotifyOfPropertyChange(() => RemoveChildVisible);
             //NotifyOfPropertyChange(() => Graf);
+        }
+        public void RemoveChild()
+        {
+            Graf.RemoveSelectedNode();
+            NotifyOfPropertyChange(() => RemoveChildVisible);
+        }
+        public void SaveAll()
+        {
+            List<XmlDocument> myList = Graf.getAllLeafs();
         }
     
     }

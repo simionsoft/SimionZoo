@@ -6,11 +6,11 @@
              xmlns:data="clr-namespace:AppXML.Models"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-          
+                Loaded="OnLoaded" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
        
-        <TreeView  ItemsSource="{Binding Tree}" cal:Message.Attach="[Event SelectedItemChanged]=[Action Change($source)]">
+        <TreeView  Name="Tree"   ItemsSource="{Binding Tree}" cal:Message.Attach="[Event SelectedItemChanged]=[Action Change($source)]">
             <TreeView.Resources>
                 <ResourceDictionary>
                     <!-- Import the resource dictionary file which 

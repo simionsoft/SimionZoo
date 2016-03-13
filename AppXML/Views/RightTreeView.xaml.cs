@@ -24,6 +24,15 @@ namespace AppXML.Views
         {
             InitializeComponent();
         }
-       
+        void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // Prevent the TreeView from responding to the keyboard.
+            // Since there's no sane way to set a TreeView's SelectedItem,
+            // we can't customize the keyboard navigation logic. :(
+            this.Tree.PreviewKeyDown += delegate(object obj, KeyEventArgs args) { args.Handled = true; };
+
+            // Put some data into the TreeView.
+            //this.PopulateTreeView();
+        }
     }
 }

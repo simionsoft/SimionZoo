@@ -16,7 +16,7 @@ namespace AppXML.Models
 
         public string Text { get { return _text; } set { _text = value; } }
         public List<TreeNode> ChildNodes { get { return _children; } set { } }
-
+        public XmlDocument Doc { get { return _document; } set { } }
 
         public void remove()
         {
@@ -55,6 +55,7 @@ namespace AppXML.Models
                 foreach(TreeNode node in child.ChildNodes)
                 {
                     child._father.addChild(node);
+                    node._father = child._father;
                 }
             }
             if (_children.Contains(child))

@@ -29,7 +29,8 @@
             <ContentControl x:Name="Graf"></ContentControl>
         </StackPanel>
         <Button Content="Add child" HorizontalAlignment="Left" Margin="591,193,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.113,1.475" cal:Message.Attach="[Event Click]=[Action AddChild()]" Visibility="{Binding AddChildVisible}"/>
-        <Button Content="Remove child" HorizontalAlignment="Left" Margin="591,168,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding RemoveChildVisible}"/>
+        <Button Content="Remove child" HorizontalAlignment="Left" Margin="591,168,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding RemoveChildVisible}"  cal:Message.Attach="[Event Click]=[Action RemoveChild()]"/>
+        <Button Content="Save all" HorizontalAlignment="Left" Margin="1080,506,0,0" VerticalAlignment="Top" Width="76" Visibility="{Binding RemoveChildVisible}"  cal:Message.Attach="[Event Click]=[Action SaveAll()]"/>
 
     </Grid>
 </Window>

@@ -12,7 +12,7 @@ namespace AppXML.ViewModels
 {
     public class RightTreeViewModel:PropertyChangedBase
     {
-        ObservableCollection<TreeNode> _treeItems;
+        BindableCollection<TreeNode> _treeItems;
         
 
         private TreeNode selectedTreeNode = null;
@@ -23,34 +23,53 @@ namespace AppXML.ViewModels
         {
             var x = sender as System.Windows.Controls.TreeView;
             selectedTreeNode = x.SelectedValue as TreeNode;
-            /*if (selectedTreeNode == null)
-                return;
-            TreeNode xx = new TreeNode("prueba",null,selectedTreeNode);
-            selectedTreeNode.addChild(xx);
-            //Tree.Clear();
-            Tree.Remove(selectedTreeNode);
-            Tree.Add(selectedTreeNode);
-            NotifyOfPropertyChange(() => Tree);*/
+            
         }
         public RightTreeViewModel(TreeNode tree)
         {
-            _treeItems = new ObservableCollection<TreeNode>();
+            _treeItems = new BindableCollection<TreeNode>();
             _treeItems.Add(tree);
             rootNode = tree;
             selectedTreeNode = tree;
         }
-        public ObservableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
+        public BindableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
         public void AddNode(TreeNode newNode)
         {
             if (selectedTreeNode == null)
                 return;
-            TreeNode tmp = selectedTreeNode;
             selectedTreeNode.addChild(newNode);
-            Tree = Tree;
-            //_treeItems = new ObservableCollection<TreeNode>();
-            //_treeItems.Add(rootNode);
+            _treeItems.Clear(); 
+            _treeItems.Add(rootNode);
             NotifyOfPropertyChange(() => Tree);
         }
+        public void RemoveSelectedNode()
+        {
+            if (selectedTreeNode == null||selectedTreeNode==rootNode)
+                return;
+            SelectedTreeNode.remove();
+            _treeItems.Clear();
+            _treeItems.Add(rootNode);
+            NotifyOfPropertyChange(() => Tree);
+            selectedTreeNode = rootNode;
+        }
 
+        internal List<XmlDocument> getAllLeafs()
+        {
+            List<XmlDocument> result = new List<XmlDocument>();
+            findLeafs(ref result, rootNode);
+            return result;
+        }
+        private void findLeafs(ref List<XmlDocument> result, TreeNode nodo)
+        {
+            if (nodo.hasChildren())
+            {
+                foreach (TreeNode child in nodo.ChildNodes)
+                {
+                    findLeafs(ref result, child);
+                }
+            }
+            else
+                result.Add(nodo.Doc);
+        }
     }
 }
