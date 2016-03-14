@@ -3,27 +3,36 @@
 #include "features.h"
 #include "etraces.h"
 #include "vfa.h"
-#include "vfa-policy.h"
-#include "vfa-actor.h"
+#include "actor-critic.h"
 #include "noise.h"
 #include "named-var-set.h"
 #include "vfa-critic.h"
 #include "parameters.h"
 #include "globals.h"
 #include "experiment.h"
-
-CLASS_CONSTRUCTOR(CIncrementalNaturalCritic)(CParameters* pParameters) : EXTENDS(CVFACritic,pParameters)
+#include "parameters-numeric.h"
+/*
+CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic)(CParameters* pParameters) : CParamObject(pParameters)
 {
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");
 	NUMERIC_VALUE(m_pAlphaV, pParameters,"Alpha-v");
 	NUMERIC_VALUE(m_pAlphaR,pParameters, "Alpha-r");
 	NUMERIC_VALUE(m_pGamma, pParameters,"Gamma");
-	CHILD_CLASS(m_e_v,"E-Traces",CETraces,"Critic/e_v",pParameters->getChild("E-Traces"));
+	CHILD_CLASS(m_e_v,"V-ETraces",CETraces,"Critic/e_v",pParameters->getChild("E-Traces"));
+
+
+	m_grad_u = new CFeatureList("Actor/grad-u");
+
+	NUMERIC_VALUE(m_pGamma, pParameters, "Gamma");
+	NUMERIC_VALUE(m_pAlphaU, pParameters, "Alpha-u");
+
+	CHILD_CLASS(m_e, "U-ETraces", CETraces, "Actor/E-Traces", pParameters->getChild("E-Traces"));
+	m_w = new CFeatureList("Actor/w");
 	END_CLASS();
 }
 
-CIncrementalNaturalCritic::~CIncrementalNaturalCritic()
+CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 {
 	delete m_s_features;
 	delete m_s_p_features;
@@ -33,9 +42,18 @@ CIncrementalNaturalCritic::~CIncrementalNaturalCritic()
 	delete m_pGamma;
 
 	delete m_e_v;
+
+	delete m_grad_u;
+	delete m_s_features;
+
+	delete m_pGamma;
+	delete m_pAlphaU;
+
+	delete m_e;
+	delete m_w;
 }
 
-double CIncrementalNaturalCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho)
+double CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
 	// Incremental Natural Actor - Critic(INAC)
 	//Critic update:
@@ -63,35 +81,9 @@ double CIncrementalNaturalCritic::updateValue(const CState *s, const CAction *a,
 	return td;
 }
 
-CLASS_CONSTRUCTOR(CIncrementalNaturalActor)(CParameters* pParameters) 
-: EXTENDS(CVFAPolicyLearner,pParameters->getChild("VFA-Policy"))
-{
-	m_grad_u = new CFeatureList("Actor/grad-u");
-	m_s_features = new CFeatureList("Actor/s");
-	m_pGamma = pParameters->getNumericHandler("Gamma");
 
-	NUMERIC_VALUE(m_pAlphaU,pParameters,"Alpha-u");
-	NUMERIC_VALUE(m_pAlphaV,pParameters,"Alpha-v");
 
-	CHILD_CLASS(m_e,"ETraces",CETraces,"Actor/E-Traces",pParameters->getChild("E-Traces"));
-	m_w = new CFeatureList("Actor/w");
-	END_CLASS();
-}
-
-CIncrementalNaturalActor::~CIncrementalNaturalActor()
-{
-	delete m_grad_u;
-	delete m_s_features;
-
-	delete m_pGamma;
-	delete m_pAlphaU;
-	delete m_pAlphaV;
-
-	delete m_e;
-	delete m_w;
-}
-
-void CIncrementalNaturalActor::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r, double td)
+void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r, double td)
 {
 	//Incremental Natural Actor-Critic (INAC)
 	//Actor update:
@@ -130,3 +122,4 @@ void CIncrementalNaturalActor::updatePolicy(const CState* s, const CState* a, co
 	//3. u= u + alpha_u * w
 	m_pPolicy->getVFA()->add(m_w, alpha_u);
 }
+*/

@@ -171,7 +171,6 @@ CLASS_CONSTRUCTOR(CWindTurbine) (const char* worldDefinition, CParameters *pPara
 	m_currentDataFile = 0;
 
 	//evaluation file
-	const char* filename;
 	CHILD_CLASS(m_pEvaluationWindData, "Evaluation-Wind-Data", CHHFileSetPoint, pParameters->getChild("Evaluation-Wind-Data"));
 
 	//training files

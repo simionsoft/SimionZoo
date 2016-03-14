@@ -3,12 +3,12 @@
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
 
-  <BRANCH Name="World" Class="WORLD"/>
+  <BRANCH Name="World" Class="CWorld"/>
 
-  <BRANCH Name="Log" Class="LOG"/>
+  <BRANCH Name="Log" Class="CLogger"/>
     
-  <BRANCH Name="Experiment" Class="EXPERIMENT"/>
+  <BRANCH Name="Experiment" Class="CExperiment"/>
 
-  <BRANCH Name="SimGod" Class="SIMGOD"/>
+  <BRANCH Name="SimGod" Class="CSimGod"/>
 
 </APP>

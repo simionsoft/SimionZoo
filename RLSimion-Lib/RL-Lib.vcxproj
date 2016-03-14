@@ -69,8 +69,8 @@
       </Command>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>..\Debug\CustomBuildXML.exe $(ProjectDir)</Command>
-      <Outputs>..\config\definitions-test.xml</Outputs>
+      <Command>..\Debug\CustomXMLBuilder.exe $(ProjectDir)</Command>
+      <Outputs>..\config\definitions.xml</Outputs>
       <Inputs>
       </Inputs>
       <TreatOutputAsContent>false</TreatOutputAsContent>
@@ -96,16 +96,20 @@
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
     <ClCompile Include="actor-critic-inac.cpp" />
+    <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="parameters-numeric.cpp" />
+    <ClCompile Include="simgod.cpp" />
+    <ClCompile Include="simion.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="timer.cpp" />
-    <ClCompile Include="vfa-actor.cpp" />
+    <ClCompile Include="policy-learner.cpp" />
     <ClCompile Include="actor.cpp" />
     <ClCompile Include="controller.cpp" />
     <ClCompile Include="critic-td-lambda.cpp" />
@@ -118,13 +122,11 @@
     <ClCompile Include="noise.cpp" />
     <ClCompile Include="reward.cpp" />
     <ClCompile Include="setpoint.cpp" />
-    <ClCompile Include="SimGod.cpp" />
     <ClCompile Include="named-var-set.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="vfa-critic.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
     <ClCompile Include="world-magneticlevitation.cpp" />
@@ -146,19 +148,21 @@
     <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameterized-object.h" />
+    <ClInclude Include="parameters-numeric.h" />
+    <ClInclude Include="simgod.h" />
+    <ClInclude Include="simion.h" />
     <ClInclude Include="single-dimension-grid.h" />
     <ClInclude Include="stats.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="reward.h" />
     <ClInclude Include="setpoint.h" />
-    <ClInclude Include="SimGod.h" />
     <ClInclude Include="named-var-set.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="vfa-actor.h" />
     <ClInclude Include="vfa-critic.h" />
-    <ClInclude Include="vfa-policy.h" />
+    <ClInclude Include="policy-learner.h" />
     <ClInclude Include="vfa.h" />
     <ClInclude Include="world-magneticlevitation.h" />
     <ClInclude Include="world-pitchcontrol.h" />

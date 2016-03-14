@@ -2,6 +2,7 @@
 #include "noise.h"
 #include "globals.h"
 #include "parameters.h"
+#include "parameters-numeric.h"
 
 double getNormalDistributionSample(double mu, double sigma)
 {
@@ -39,10 +40,11 @@ CNoise::CNoise()
 
 CNoise* CLASS_FACTORY(CNoise)(CParameters* pParameters)
 {
-	const char* pName = pParameters->getChild()->getName();
+	CParameters* pChild = pParameters->getChild();
+	const char* type = pChild->getName();
 
 	CHOICE("Noise-Type");
-	CHOICE_ELEMENT(pName, "GaussianNoise", CGaussianNoise, pParameters->getChild());
+	CHOICE_ELEMENT(type, "GaussianNoise", CGaussianNoise, pChild);
 	END_CHOICE();
 
 	END_CLASS();
@@ -60,6 +62,9 @@ CLASS_CONSTRUCTOR(CGaussianNoise)(CParameters* pParameters) : CParamObject(pPara
 
 CGaussianNoise::~CGaussianNoise()
 {
+	delete m_pSigma;
+	delete m_pAlpha;
+	delete m_pScale;
 }
 
 double CGaussianNoise::getValue()

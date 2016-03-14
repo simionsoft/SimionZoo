@@ -16,7 +16,7 @@
     <xs:sequence>
       <xs:element name="XML-NODE-REF" minOccurs="0" maxOccurs="unbounded" type="XML-NODE-REF"/>
       <xs:element name="INTEGER-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
-      <xs:element name="DECIMAL-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="DOUBLE-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
       <xs:element name="STRING-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
       <xs:element name="DIR-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
       <xs:element name="FILE-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
@@ -37,7 +37,7 @@
     <xs:sequence>
       <xs:element name="XML-NODE-REF" minOccurs="0" maxOccurs="unbounded" type="XML-NODE-REF"/>
       <xs:element name="INTEGER-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
-      <xs:element name="DECIMAL-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
+      <xs:element name="DOUBLE-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
       <xs:element name="STRING-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
       <xs:element name="DIR-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>
       <xs:element name="FILE-PATH-VALUE" minOccurs="0" maxOccurs="unbounded" type="CONSTANT-VALUE"/>

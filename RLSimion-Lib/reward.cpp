@@ -5,6 +5,7 @@
 #include "parameters.h"
 #include "world.h"
 #include "globals.h"
+#include "parameters-numeric.h"
 
 #define NUM_MAX_REWARD_COMPONENTS 10
 
@@ -21,8 +22,8 @@ class CRewardFunctionComponent : public CParamObject
 {
 	char m_name[MAX_REWARD_NAME_SIZE];
 	int m_sVariable;
-	INumericValue *m_pTolerance;
-	INumericValue *m_pWeight;
+	CNumericValue *m_pTolerance;
+	CNumericValue *m_pWeight;
 	double m_lastReward;
 public:
 	CRewardFunctionComponent(CParameters* pParameters);
@@ -54,6 +55,8 @@ CLASS_CONSTRUCTOR(CRewardFunctionComponent)(CParameters* pParameters) : CParamOb
 
 CRewardFunctionComponent::~CRewardFunctionComponent()
 {
+	delete m_pTolerance;
+	delete m_pWeight;
 }
 
 const char* CRewardFunctionComponent::getName()

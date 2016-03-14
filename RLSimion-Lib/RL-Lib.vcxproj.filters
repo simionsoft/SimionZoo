@@ -63,19 +63,10 @@
     <ClCompile Include="critic-tdc-lambda.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SimGod.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vfa-actor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="actor-regular.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="featuremap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="vfa-critic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="actor-critic-inac.cpp">
@@ -121,6 +112,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="single-dimension-grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="parameters-numeric.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simgod.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="policy-learner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -179,9 +185,6 @@
     <ClInclude Include="etraces.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vfa-policy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="world-magneticlevitation.h">
       <Filter>world</Filter>
     </ClInclude>
@@ -215,7 +218,16 @@
     <ClInclude Include="single-dimension-grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SimGod.h">
+    <ClInclude Include="parameters-numeric.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simgod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="policy-learner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

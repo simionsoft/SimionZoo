@@ -1,25 +1,27 @@
 #pragma once
 
-#include "actor.h"
+#include "simion.h"
+#include "parameterized-object.h"
 
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
 class CParameters;
-class INumericValue;
+class CNumericValue;
 
-class CMultiController : public CActor
+class CController : public CSimion
 {
-	int m_numControllers;
-	CActor **m_pControllers;
+
 public:
-	CMultiController(CParameters* pParameters);
-	virtual ~CMultiController();
 
-	static CActor* getInstance(CParameters* pParameters);
+	static CController* getInstance(CParameters* pParameters);
 
-	void selectAction(const CState *s, CAction *a);
+	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r){ }
+
+	virtual void selectAction(const CState *s, CAction *a);
+
+	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r){}
 };
 
 class CLQRGain
@@ -30,7 +32,7 @@ public:
 	double m_gain;
 };
 
-class CLQRController : public CActor
+class CLQRController : public CController, public CParamObject
 {
 	CLQRGain** m_pGains;
 	int m_outputActionIndex;
@@ -42,9 +44,9 @@ public:
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CPIDController : public CActor
+class CPIDController : public CController, public CParamObject
 {
-	INumericValue *m_pKP, *m_pKI, *m_pKD;
+	CNumericValue *m_pKP, *m_pKI, *m_pKD;
 	int m_outputActionIndex;
 	double m_intError;
 	int m_errorVariableIndex;
@@ -55,7 +57,7 @@ public:
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CWindTurbineVidalController : public CActor
+class CWindTurbineVidalController : public CController, public CParamObject
 {
 	//state variable indices
 	int m_omega_r_index, m_d_omega_r_index;
@@ -63,15 +65,15 @@ class CWindTurbineVidalController : public CActor
 	int m_E_int_omega_r_index;
 	//action variable indices
 	int m_d_beta_index, m_d_T_g_index;
-	INumericValue *m_pA, *m_pK_alpha, *m_pKP, *m_pKI, *m_P_s;
+	CNumericValue *m_pA, *m_pK_alpha, *m_pKP, *m_pKI, *m_P_s;
 public:
 	CWindTurbineVidalController(CParameters* pParameters);
-	~CWindTurbineVidalController(){}
+	~CWindTurbineVidalController();
 
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CWindTurbineBoukhezzarController : public CActor
+class CWindTurbineBoukhezzarController : public CController, public CParamObject
 {
 	//state variable indices
 	int m_omega_r_index, m_d_omega_r_index;
@@ -81,16 +83,16 @@ class CWindTurbineBoukhezzarController : public CActor
 	//action variable indices
 	int m_d_beta_index, m_d_T_g_index;
 
-	INumericValue *m_pC_0, *m_pKP, *m_pKI;
+	CNumericValue *m_pC_0, *m_pKP, *m_pKI;
 	double m_K_t, m_J_t;
 public:
 	CWindTurbineBoukhezzarController(CParameters* pParameters);
-	~CWindTurbineBoukhezzarController(){}
+	~CWindTurbineBoukhezzarController();
 
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CWindTurbineJonkmanController : public CActor
+class CWindTurbineJonkmanController : public CController, public CParamObject
 {
 	int m_omega_g_index, m_d_omega_r_index;
 	int m_E_p_index, m_T_g_index, m_beta_index;
@@ -103,11 +105,11 @@ class CWindTurbineJonkmanController : public CActor
 	double m_VS_TrGnSp, m_VS_SySp, m_VS_Slope15, m_VS_Slope25, m_VS_Rgn3MP;
 	//pitch controller's parameters and variables
 	double m_IntSpdErr;
-	INumericValue *m_PC_KK, *m_PC_KP, *m_PC_KI;
+	CNumericValue *m_PC_KK, *m_PC_KP, *m_PC_KI;
 	double m_PC_RefSpd;
 public:
 	CWindTurbineJonkmanController(CParameters* pParameters);
-	~CWindTurbineJonkmanController(){}
+	~CWindTurbineJonkmanController();
 
 	void selectAction(const CState *s,CAction *a);
 };

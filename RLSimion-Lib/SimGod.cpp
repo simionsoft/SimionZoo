@@ -5,71 +5,74 @@
 #include "globals.h"
 #include "world.h"
 #include "experiment.h"
-#include "logger.h"
 #include "reward.h"
 #include "named-var-set.h"
 #include "parameters.h"
+#include "simion.h"
 
 CLASS_CONSTRUCTOR(CSimGod)(CParameters* pParameters)
 {
-	/*CParameters* child;/* = pParameters->getChild("ACTOR/CRITIC");
-
-	if (child)
+	m_numSimions = pParameters->countChildren("Simion");
+	m_pSimions = new CSimion*[m_numSimions];
+	CParameters* pChild = pParameters->getChild("Simion");
+	for (int i = 0; i < m_numSimions; i++)
 	{
-		m_pController = CActorCritic::getInstance(child->getChild("ACTOR/CRITIC"));
-		m_pActor = m_pController;
-		m_pCritic = (CCritic*) m_pController;
-	}
-	else*/
-	{
-		CHILD_CLASS_FACTORY(m_pController, "Controller", CActor, pParameters->getChild("Controller"));
-		CHILD_CLASS_FACTORY(m_pActor, "Actor", CActor, pParameters->getChild("Actor"));
-		CHILD_CLASS_FACTORY(m_pCritic, "Critic", CCritic, pParameters->getChild("Critic"));
-		if (!m_pController) m_pController = m_pActor;
+		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", CSimion, pChild);
+		pChild = pChild->getNextChild("Simion");
 	}
 	
-	m_rho = 0.0;
-	m_td = 0.0;
-	RLSimion::g_pLogger->addVarToStats("Critic", "TD-error", &m_td);
+	//m_td = 0.0;
+	//RLSimion::g_pLogger->addVarToStats("Critic", "TD-error", &m_td);
 	END_CLASS();
 }
 
 
 CSimGod::~CSimGod()
 {
-	if (m_pCritic) delete m_pCritic;
-	if (m_pController && m_pController != m_pActor) delete m_pController;
-	if (m_pActor) delete m_pActor;
-}
-
-
-double CSimGod::selectAction(CState* s, CAction* a)
-{
-
-	//the controller selects the action: might be the actor
-	m_pController->selectAction(s, a);
-
-	if (m_pController == m_pActor)
-		m_rho = 1.0;
-	else
+	for (int i = 0; i < m_numSimions; i++)
 	{
-		double controllerProb = m_pController->getProbability(s, a);
-		double actorProb = m_pActor->getProbability(s, a);
-		m_rho = actorProb / controllerProb;
+		delete m_pSimions[i];
 	}
-		
-	return m_rho;
+	delete[] m_pSimions;
 }
 
-double CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
+
+void CSimGod::selectAction(CState* s, CAction* a)
 {
+
+	for (int i = 0; i < m_numSimions; i++)
+		m_pSimions[i]->selectAction(s, a);
+
+	
+	//m_pController->selectAction(s, a);
+
+	//if (m_pController == m_pActor)
+	//	m_rho = 1.0;
+	//else
+	//{
+	//	double controllerProb = m_pController->getProbability(s, a);
+	//	double actorProb = m_pActor->getProbability(s, a);
+	//	m_rho = actorProb / controllerProb;
+	//}
+	//	
+	//return m_rho;
+}
+
+void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
+{
+	if (RLSimion::g_pExperiment->isEvaluationEpisode()) return;
+
 	//update critic
-	if (m_pCritic && !RLSimion::g_pExperiment->isEvaluationEpisode())
-		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);
+	for (int i = 0; i < m_numSimions; i++)
+		m_pSimions[i]->updateValue(s, a,s_p,r);
+	/*if (m_pCritic && !RLSimion::g_pExperiment->isEvaluationEpisode())
+		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);*/
 
 	//update actor: might be the controller
-	if( !RLSimion::g_pExperiment->isEvaluationEpisode())
-		m_pActor->updatePolicy(s, a, s_p, r, m_td);
+	for (int i = 0; i < m_numSimions; i++)
+		m_pSimions[i]->updatePolicy(s, a,s_p,r);
 
-	return m_td;
+	//if( !RLSimion::g_pExperiment->isEvaluationEpisode())
+	//	m_pActor->updatePolicy(s, a, s_p, r, m_td);
+
 }

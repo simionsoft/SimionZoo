@@ -8,7 +8,7 @@ class CParameters;
 class CSingleDimensionGrid;
 #include "parameterized-object.h"
 
-enum VariableType{StateVariable,ActionVariable};
+//enum VariableType{StateVariable,ActionVariable};
 
 //CFeatureMap//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////

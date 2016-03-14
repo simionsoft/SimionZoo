@@ -11,6 +11,11 @@ CWorld* RLSimion::g_pWorld= 0;
 CExperiment *RLSimion::g_pExperiment= 0;
 CSimGod *RLSimion::g_pSimGod= 0;
 
+ENUMERATION(Boolean, "False", "True");
+ENUMERATION(Distribution, "linear", "quadratic", "cubic");
+ENUMERATION(Interpolation, "linear", "quadratic", "cubic");
+ENUMERATION(TimeReference, "episode", "experiment", "experimentTime");
+
 void RLSimion::init(CParameters* pParameters)
 {
 	//First, a logger was created so that we could know about creation itself
@@ -52,5 +57,4 @@ void RLSimion::shutdown()
 		delete g_pSimGod;
 		g_pSimGod = 0;
 	}
-	CParameters::freeHandlers();
 }

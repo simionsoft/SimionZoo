@@ -7,9 +7,10 @@
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "parameters.h"
+#include "parameters-numeric.h"
 
 CLASS_CONSTRUCTOR(CTDCLambdaCritic) (CParameters *pParameters)
-	: CVFACritic(pParameters)
+	: CCritic(pParameters)
 {
 	m_z = new CETraces("Critic/E-Traces",pParameters->getChild("E-Traces"));
 
@@ -33,9 +34,12 @@ CTDCLambdaCritic::~CTDCLambdaCritic()
 	delete m_s_p_features;
 	delete m_a;
 	delete m_omega;
+	delete m_pAlpha;
+	delete m_pBeta;
+	delete m_pGamma;
 }
 
-double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho)
+double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
 	if (m_pAlpha->getValue()==0.0) return 0.0;
 	
@@ -43,13 +47,14 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 	{
 		m_omega->clear();
 	}
+	double rho = 1.0;
 
-	m_pVFA->getFeatures(s, m_s_features);
-	m_pVFA->getFeatures(s_p, m_s_p_features);
+	m_pVFunction->getFeatures(s, m_s_features);
+	m_pVFunction->getFeatures(s_p, m_s_p_features);
 
 	//delta= r + gamma*omega(x_{t+1})- omega(x_t)
-	double oldValue = m_pVFA->getValue(m_s_features);
-	double newValue = m_pVFA->getValue(m_s_p_features);
+	double oldValue = m_pVFunction->getValue(m_s_features);
+	double newValue = m_pVFunction->getValue(m_s_p_features);
 
 	double gamma = m_pGamma->getValue();
 	double td= rho*r + gamma * newValue - oldValue;
@@ -68,11 +73,11 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 	m_a->copy(m_z);
 	double innerprod2 = m_a->innerProduct(m_omega);
 	//theta_{t+1}=theta_t+alpha(z_t*delta_t)
-	m_pVFA->add(m_z, m_pAlpha->getValue() *td);
+	m_pVFunction->add(m_z, m_pAlpha->getValue() *td);
 	//theta_{t+1}= theta_t - gamma*rho(1-\lambda)*phi_t*innerprod2
 
 	double lambda = m_z->getLambda();
-	m_pVFA->add(m_s_p_features, -1.0*gamma*rho*(1.0 - lambda)*innerprod2);
+	m_pVFunction->add(m_s_p_features, -1.0*gamma*rho*(1.0 - lambda)*innerprod2);
 
 	//omega_{t+1}=omega_t+beta(z_{t+1}*td - phi_{t+1}(phi{t+1}^T * omega_t)
 	double beta = m_pBeta->getValue();

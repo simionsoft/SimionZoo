@@ -1,20 +1,16 @@
 #pragma once
-#include <list>
-
-
-
-class INumericValue
-{
-public:
-	virtual double getValue() = 0;
-};
-
+//#include <list>
 #include "../tinyxml2/tinyxml2.h"
 class CParameters;
 
+
+
+
 class CParameterFile : private tinyxml2::XMLDocument
 {
+
 public:
+
 	CParameters* loadFile(const char* fileName, const char* nodeName);
 	const char* getError();
 };
@@ -23,12 +19,10 @@ public:
 class CParameters: private tinyxml2::XMLElement
 {
 	//We use downcasting, so don't add any non-static attributes here!!
-	static std::list<INumericValue*> m_handlers;
+
 public:
 	CParameters();
 	~CParameters();
-
-	INumericValue* getNumericHandler(const char* paramName);
 
 	bool getConstBoolean(const char* paramName, bool defaultValue= true);
 	int getConstInteger(const char* paramName, int defaultValue= 0);
@@ -40,8 +34,6 @@ public:
 	int countChildren(const char* paramName = 0);
 
 	const char* getName();
-
-	static void freeHandlers();
 
 	void saveFile(const char* pFilename);
 	void saveFile(FILE* pFile);

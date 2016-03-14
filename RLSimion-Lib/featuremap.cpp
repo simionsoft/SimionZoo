@@ -5,10 +5,12 @@
 
 CFeatureMap* CLASS_FACTORY(CFeatureMap)(CParameters* pParameters)
 {
-	const char* name = pParameters->getName();
+	CParameters* pChild = pParameters->getChild();
+	const char* type = pChild->getName();
+
 	CHOICE("Type");
-	CHOICE_ELEMENT(name, "RBF-State-Grid", CGaussianRBFStateGridFeatureMap, pParameters);
-	CHOICE_ELEMENT(name, "RBF-Action-Grid", CGaussianRBFActionGridFeatureMap, pParameters);
+	CHOICE_ELEMENT(type, "RBF-State-Grid", CGaussianRBFStateGridFeatureMap, pChild);
+	CHOICE_ELEMENT(type, "RBF-Action-Grid", CGaussianRBFActionGridFeatureMap, pChild);
 	END_CHOICE();
 
 	END_CLASS();

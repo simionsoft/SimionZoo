@@ -7,46 +7,26 @@ class CLinearStateVFA;
 class CETraces;
 class CFeatureList;
 class CParameters;
-class INumericValue;
+class CNumericValue;
 
 
-//Interface class
 
-class CVFACritic : public CCritic, public CParamObject
-{
-	char* m_loadFile = 0;
-	char* m_saveFile = 0;
-protected:
+//CCritic implementations
 
-	CLinearStateVFA* m_pVFA; //value function approximator
-
-	void loadVFunction(const char* filename);
-	void saveVFunction(const char* filename);
-public:
-	CVFACritic(CParameters* pParameters);
-	virtual ~CVFACritic();
-
-	virtual double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho) = 0;
-
-	static CVFACritic* getInstance(CParameters* pParameters);
-};
-
-//VFACritic implementations
-
-class CTDLambdaCritic : public CVFACritic
+class CTDLambdaCritic : public CCritic
 {
 	CETraces* m_z; //traces
 	CFeatureList* m_aux;
-	INumericValue* m_pAlpha;
-	INumericValue* m_pGamma;
+	CNumericValue* m_pAlpha;
+	CNumericValue* m_pGamma;
 public:
 	CTDLambdaCritic(CParameters *pParameters);
 	~CTDLambdaCritic();
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
+	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 
-class CTrueOnlineTDLambdaCritic : public CVFACritic
+class CTrueOnlineTDLambdaCritic : public CCritic
 {
 	//True Online TD(lambda)
 	//Harm van Seijen, Richard Sutton
@@ -55,17 +35,17 @@ class CTrueOnlineTDLambdaCritic : public CVFACritic
 	CETraces* m_e; //traces
 	CFeatureList* m_aux;
 	double m_v_s;
-	INumericValue* m_pAlpha;
-	INumericValue* m_pGamma;
+	CNumericValue* m_pAlpha;
+	CNumericValue* m_pGamma;
 public:
 	CTrueOnlineTDLambdaCritic(CParameters *pParameters);
 	~CTrueOnlineTDLambdaCritic();
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
+	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 
 };
 
-class CTDCLambdaCritic : public CVFACritic
+class CTDCLambdaCritic : public CCritic
 {
 	CETraces* m_z; //traces
 	CFeatureList* m_s_features;
@@ -74,32 +54,16 @@ class CTDCLambdaCritic : public CVFACritic
 	CFeatureList* m_a;
 	CFeatureList* m_b;
 
-	INumericValue* m_pAlpha;
-	INumericValue* m_pGamma;
-	INumericValue* m_pBeta;
+	CNumericValue* m_pAlpha;
+	CNumericValue* m_pGamma;
+	CNumericValue* m_pBeta;
 	
 
 public:
 	CTDCLambdaCritic(CParameters *pParameters);
 	~CTDCLambdaCritic();
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
+	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 
 
-class CIncrementalNaturalCritic : public CVFACritic
-{
-	CFeatureList *m_s_features;
-	CFeatureList *m_s_p_features;
-
-	CETraces* m_e_v;
-	double m_avg_r;
-
-	INumericValue *m_pAlphaV, *m_pAlphaR, *m_pGamma;
-	
-public:
-	CIncrementalNaturalCritic(CParameters *pParameters);
-	~CIncrementalNaturalCritic();
-
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r, double rho);
-};

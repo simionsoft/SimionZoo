@@ -11,7 +11,9 @@ CLASS_CONSTRUCTOR(CETraces)(const char* name, CParameters* pParameters) : CFeatu
 		m_bUse = true;
 		CONST_DOUBLE_VALUE(m_threshold,m_pParameters,"Threshold",0.001);
 		CONST_DOUBLE_VALUE(m_lambda,m_pParameters,"Lambda",0.9);
-		CONST_BOOLEAN_VALUE(m_bReplaceIfExists,m_pParameters,"Replace",true);
+		const char* replace;
+		ENUM_VALUE(replace, Boolean, m_pParameters, "Replace", "True");
+		m_bReplaceIfExists = !strcmp(replace, "True");
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
 	else

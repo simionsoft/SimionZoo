@@ -137,12 +137,14 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 
 CDynamicModel *CLASS_FACTORY(CDynamicModel)(CParameters* pParameters)
 {
-	const char* name = pParameters->getName();
+	CParameters* pChild = pParameters->getChild();
+	const char* type = pChild->getName();
+
 	CHOICE_XML("Dynamic-Model", "WORLD-DEFINITION");
-	CHOICE_ELEMENT_XML(name, "Wind-turbine", CWindTurbine, "..config/world/wind-turbine.xml", pParameters);
-	CHOICE_ELEMENT_XML(name, "Underwater-vehicle", CUnderwaterVehicle, "..config/world/underwater-vehicle.xml", pParameters);
-	CHOICE_ELEMENT_XML(name, "Pitch-control", CWindTurbine, "..config/world/pitch-control.xml", pParameters);
-	CHOICE_ELEMENT_XML(name, "Magnetic-leviation", CMagneticLevitation, "..config/world/magnetic-levitation.xml", pParameters);
+	CHOICE_ELEMENT_XML(type, "Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml", pChild);
+	CHOICE_ELEMENT_XML(type, "Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml", pChild);
+	CHOICE_ELEMENT_XML(type, "Pitch-control", CWindTurbine, "../config/world/pitch-control.xml", pChild);
+	CHOICE_ELEMENT_XML(type, "Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml", pChild);
 	END_CHOICE();
 	return 0;
 

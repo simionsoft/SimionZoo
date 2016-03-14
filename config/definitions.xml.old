@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DEFINITIONS>
+    <!--World-->
+  <CLASS Name="WORLD">
+    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" Optional="true"/>
+    <DOUBLE-VALUE Name="Delta-T" Default="0.01"/>
+    <CHOICE Name="Dynamic-Model" LoadXML="WORLD-DEFINITION">
+      <CHOICE-ELEMENT Name="Wind-turbine" XML="../config/world/wind-turbine.xml" Class="Wind-turbine-parameters" />
+      <CHOICE-ELEMENT Name="Underwater-vehicle" XML="../config/world/underwater-vehicle.xml" Class="Underwater-vehicle-parameters"/>
+      <CHOICE-ELEMENT Name="Pitch-control" XML="../config/world/pitch-control.xml" Class="Pitch-control-parameters"/>
+    </CHOICE>
+    <BRANCH Name="Reward" Class="REWARD"/>
+  </CLASS>
+
+  <!-- World parameters -->
+  <CLASS Name="Wind-turbine-parameters">
+    <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/wind-turbine/setpoints/TurbSim-10.25.hh"/>
+    <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/wind-turbine/setpoints/windturbine-power-setpoint.txt"/>
+    <MULTI-VALUED Name="Prueba" Class="FILE-PATH-VALUE"/>
+        <MULTI-VALUED Name="Prueba4" Class="INTEGER-VALUE"/>
+
+    <BRANCH Name="Training-Wind-Data" Class="LIST-OF-FILES"/>
+    <BRANCH Name="Training-Wind-Data2" Class="LIST-OF-FILES"/>
+
+  </CLASS>
+  <CLASS Name="Underwater-vehicle-parameters">
+    <FILE-PATH-VALUE Name="Set-Point-File"/>
+  </CLASS>
+  <CLASS Name="Pitch-control-parameters">
+    <FILE-PATH-VALUE Name="Set-Point-File"/>
+  </CLASS>
+  <CLASS Name="LIST-OF-FILES">
+    <MULTI-VALUED Name="File" Class="FILE-PATH-VALUE"/>
+  </CLASS>
+  
+  <CLASS Name="LOG">
+    <DOUBLE-VALUE Name="Freq" Default="0.25" Comment="log freq. in seconds. Freq=0 logs every step."/>
+    <STRING-VALUE Name="Prefix" Default="prefix" Comment="Prefix given to the names of the generated log files"/>
+    <STRING-VALUE Name="Ouput-directory" Default="test" Comment="name of the directory within ../logs/ where log files will be saved "/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-training-episodes" Default="false" Comment="Log training episodes?"/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-experiment" Default="true" Comment="Log summary of the results in evaluation episodes?"/>
+    <ENUM-VALUE Class="BOOLEAN" Name="Log-training-experiment" Default="true" Comment="Log summary of the results in evaluation episodes?"/>
+  </CLASS>
+
+
+  <!--Experiment-->
+  <CLASS Name="EXPERIMENT">
+    <INTEGER-VALUE Name="Num-Episodes" Default="1000" Comment="Number of episodes"/>
+    <INTEGER-VALUE Name="Episode-Length" Default="360" Comment="Time length of each episode (in seconds)"/>
+    <INTEGER-VALUE Name="Random-Seed" Default="1" Comment="Seed used to generate random numbers"/>
+    <INTEGER-VALUE Name="Eval-Freq" Default="10" Comment="Evaluation freq. in episodes"/>
+    <DOUBLE-VALUE Name="Progress-Update-Freq" Default="0.5" Comment="Progress update freq. (in seconds)"/>
+  </CLASS>
+  
+  <!--SIMGOD-->
+  <CLASS Name="SIMGOD">
+    <CHOICE Name="Configuration" XMLTag="">
+      <CHOICE-ELEMENT Name="Actor" Class="ACTOR-CONFIG"/>
+      
+      <CHOICE-ELEMENT Name="Actor-Critic" Class="ACTOR-CRITIC-CONFIG"/>
+
+      <CHOICE-ELEMENT Name="Actor-Critic-Controller" Class="ACTOR-CRITIC-CONTROLLER-CONFIG"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="ACTOR-CONFIG">
+    <BRANCH Name="Actor" Class="ACTOR"/>
+  </CLASS>
+  
+  <CLASS Name="ACTOR-CRITIC-CONFIG">
+    <BRANCH Name="Actor" Class="ACTOR"/>
+    <BRANCH Name="Critic" Class="CRITIC"/>
+  </CLASS>
+
+  <CLASS Name="ACTOR-CRITIC-CONTROLLER-CONFIG">
+    <BRANCH Name="Controller" Class="ACTOR"/>
+    <BRANCH Name="Actor" Class="ACTOR"/>
+    <BRANCH Name="Critic" Class="CRITIC"/>
+  </CLASS>
+  
+  <!-- Generic actors and critics-->
+  <CLASS Name="ACTOR">
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="VFA-Learner" Class="VFA-Learner"/>
+      <CHOICE-ELEMENT Name="Multi-Controller" Class="MULTI-CONTROLLER"/>
+    </CHOICE>
+  </CLASS>
+  
+
+  <CLASS Name="VFA-Learner">
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <MULTI-VALUED Name="Outputs" Class="Single-Output-VFA-Policy-Learner"/>
+  </CLASS>
+
+  <CLASS Name="Single-Output-VFA-Policy-Learner">
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="CACLA" Class="CACLA"/>
+      <CHOICE-ELEMENT Name="RegularGradient" Class="Regular-Gradient"/>
+      <CHOICE-ELEMENT Name="Incremental-Natural-Actor" Class="Incremental-Natural-Actor"/>
+    </CHOICE>
+   </CLASS>
+
+  <CLASS Name="CACLA">
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-POLICY"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+  </CLASS>
+
+  <CLASS Name="Regular-Gradient">
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-POLICY"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+  </CLASS>
+
+  <CLASS Name="Incremental-Natural-Actor">
+    <DOUBLE-VALUE Name="Gamma" Comment="Gamma parameter used by the critic"/>
+    <BRANCH Name="Alpha-v" Class="NUMERIC-VALUE" Comment="Gain used by the critic to update the value"/>
+    <BRANCH Name="Alpha-u" Class="NUMERIC-VALUE" Comment="Gain used to update the policy"/>
+    <BRANCH Name ="VFA-Policy" Class="VFA-POLICY"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+  </CLASS>
+
+  <CLASS Name="VFA-POLICY">
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="DETERMINISTIC-POLICY-GAUSSIAN-NOISE"/>
+      <CHOICE-ELEMENT Name="Stochastic-Policy-Gaussian-Noise" Class="STOCHASTIC-POLICY-GAUSSIAN-NOISE"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="DETERMINISTIC-POLICY-GAUSSIAN-NOISE">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
+    <BRANCH Name="Exploration" Class="GAUSSIAN-NOISE"/>
+  </CLASS>
+
+  <CLASS Name="STOCHASTIC-POLICY-GAUSSIAN-NOISE">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
+  </CLASS>
+
+  <CLASS Name="MULTI-OUTPUT-VFA">
+    <MULTI-VALUED Name="Single-Output-VFA" Class="SINGLE-OUTPUT-VFA"/>
+  </CLASS>
+
+  <CLASS Name="SINGLE-OUTPUT-VFA">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
+  </CLASS>
+
+  <CLASS Name="MULTI-CONTROLLER">
+    <MULTI-VALUED Name="Controller" Class="CONTROLLER"/>
+  </CLASS>
+  
+  <CLASS Name="CONTROLLER">
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="PID" Class="PID"/>
+      <CHOICE-ELEMENT Name="LQR" Class="LQR"/>
+      <CHOICE-ELEMENT Name="Jonkman" Class="Jonkman"/>
+      <CHOICE-ELEMENT Name="Vidal" Class="Vidal"/>
+      <CHOICE-ELEMENT Name="Boukhezzar" Class="Boukhezzar"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="PID">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Input-Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <DOUBLE-VALUE Name="KP"/>
+    <DOUBLE-VALUE Name="KI"/>
+    <DOUBLE-VALUE Name="KD"/>
+  </CLASS>
+
+  <CLASS Name="LQR">
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <MULTI-VALUED Name="LQR-Gain" Class="LQR-GAIN"/>
+  </CLASS>
+
+  <CLASS Name="Jonkman">
+    <DOUBLE-VALUE Name="VS_RtGnSp" Default="12.6805"/>
+    <DOUBLE-VALUE Name="VS_SlPc" Default="10.0"/>
+    <DOUBLE-VALUE Name="VS_Rgn2K" Default="2.332287"/>
+    <DOUBLE-VALUE Name="VS_Rgn2Sp" Default="91.21091"/>
+    <DOUBLE-VALUE Name="VS_CtInSp" Default="70.16224"/>
+    <DOUBLE-VALUE Name="VS_RtPwr" Default="5296610.0"/>
+    <DOUBLE-VALUE Name="VS_Rgn3MP" Default="0.01745329"/>
+    <DOUBLE-VALUE Name="PC_KI"/>
+    <DOUBLE-VALUE Name="PC_KK"/>
+    <DOUBLE-VALUE Name="PC_KP"/>
+    <DOUBLE-VALUE Name="PC_RefSpd" Default="122.9096"/>
+  </CLASS>
+
+  <CLASS Name="Vidal">
+    <DOUBLE-VALUE Name="A"/>
+    <DOUBLE-VALUE Name="K_alpha"/>
+    <DOUBLE-VALUE Name="KP"/>
+    <DOUBLE-VALUE Name="KI"/>
+    <DOUBLE-VALUE Name="P_s"/>
+  </CLASS>
+
+  <CLASS Name="Boukhezzar">
+    <DOUBLE-VALUE Name="C_0"/>
+    <DOUBLE-VALUE Name="KP"/>
+    <DOUBLE-VALUE Name="KI"/>
+    <DOUBLE-VALUE Name="K_t"/>
+    <DOUBLE-VALUE Name="J_t"/>
+  </CLASS>
+
+  <CLASS Name="CRITIC">
+    <BRANCH Name="Type" Class="VFA-Critic"/>
+  </CLASS>
+
+  <CLASS Name="VFA-Critic">
+    <CHOICE Name="Algorithm">
+      <CHOICE-ELEMENT Name="TD-Lambda" Class="TD-Lambda"/>
+      <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="TD-Lambda"/>
+      <CHOICE-ELEMENT Name="TDC-Lambda" Class="TDC-Lambda"/>
+    </CHOICE>
+  </CLASS>
+  
+  <CLASS Name="TD-Lambda">
+    <DOUBLE-VALUE Name="Gamma"/>
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
+  </CLASS>
+
+  <CLASS Name="True-Online-TD-Lambda">
+    <DOUBLE-VALUE Name="Gamma"/>
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="E-Traces" Class="ETRACES" Optional="true"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
+  </CLASS>
+  
+  <CLASS Name="TDC-Lambda">
+    <DOUBLE-VALUE Name="Gamma"/>
+    <FILE-PATH-VALUE Name="Load" Optional="true"/>
+    <FILE-PATH-VALUE Name="Save" Optional="true"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="Beta" Class="NUMERIC-VALUE"/>
+    <BRANCH Name="E-Traces" Class="ETRACES"  Optional="true"/>
+    <BRANCH Name="Linear-State-VFA" Class="LINEAR-STATE-VFA"/>
+  </CLASS>
+  
+
+  
+  <CLASS Name="LQR-GAIN">
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <DOUBLE-VALUE Name="Gain"/>
+  </CLASS>
+  
+  <CLASS Name="ETRACES">
+    <DOUBLE-VALUE Name="Lambda" Default="0.9"/>
+    <DOUBLE-VALUE Name="Threshold" Default="0.001"/>
+    <ENUM-VALUE Name="Replace" Class="BOOLEAN"/>
+  </CLASS>
+
+  <CLASS Name="LINEAR-STATE-VFA">
+    <CHOICE Name="Approximator">
+      <CHOICE-ELEMENT Name="RBF-State-Grid" Class="RBF-STATE-GRID"/>
+    </CHOICE>
+  </CLASS>
+  
+  <CLASS Name="LINEAR-STATE-ACTION-VFA">
+    <CHOICE Name="Approximator" XMLTag="">
+      <CHOICE-ELEMENT Name="RBF-State-Action-Grid" Class="RBF-STATE-ACTION-GRID"/>
+    </CHOICE>
+  </CLASS>
+  
+  <CLASS Name="RBF-STATE-GRID" XMLTag="FeatureMap/RBF-State-Grid">
+    <MULTI-VALUED Name="RBF-State-Grid-Dimension" Class="RBF-STATE-GRID-DIMENSION"/>
+  </CLASS>
+
+  <CLASS Name="RBF-STATE-ACTION-GRID" XMLTag="FeatureMap/RBF-State-Action-Grid">
+    <MULTI-VALUED Name="RBF-State-Grid-Dimension" Class="RBF-STATE-GRID-DIMENSION"/>
+    <MULTI-VALUED Name="RBF-Action-Grid-Dimension" Class="RBF-ACTION-GRID-DIMENSION"/>
+  </CLASS>
+
+  <!-- RBFs-->
+  
+  <CLASS Name="RBF-STATE-GRID-DIMENSION">
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
+    <INTEGER-VALUE Name="Min" Optional="true"/>
+    <INTEGER-VALUE Name="Max" Optional="true"/>
+    <ENUM-VALUE Name="Distribution" Class="DISTRIBUTIONS"/>
+  </CLASS>
+
+  <CLASS Name="RBF-ACTION-GRID-DIMENSION">
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <INTEGER-VALUE Name="Num-Features" Optional="false" Default="10"/>
+    <INTEGER-VALUE Name="Min" Optional="true"/>
+    <INTEGER-VALUE Name="Max" Optional="true"/>
+    <ENUM-VALUE Name="Distribution" Class="DISTRIBUTIONS"/>
+  </CLASS>
+  
+  <CLASS Name="GAUSSIAN-NOISE">
+    <BRANCH Name="Sigma" Class="NUMERIC-VALUE" Comment="This parameter controls the width of the gaussian bell"/>
+    <BRANCH Name="Alpha" Class="NUMERIC-VALUE" Comment="This parameter controls the low-pass filter [0,1]. Alpha=1.0 disables the filter."/>
+    <BRANCH Name="Scale" Class="NUMERIC-VALUE" Comment="This parameter controls the scaling of the noise"/>
+  </CLASS>
+
+  <CLASS Name="NUMERIC-VALUE">
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="Constant" Class="CONSTANT"/>
+      <CHOICE-ELEMENT Name="Linear-Schedule" Class="LINEAR-SCHEDULE"/>
+      <CHOICE-ELEMENT Name="Bhatnagar-Schedule" Class="BHATNAGAR-SCHEDULE"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="CONSTANT">
+    <DOUBLE-VALUE Name="Value" Default="0.0"/>
+  </CLASS>
+
+  <CLASS Name="LINEAR-SCHEDULE">
+    <DOUBLE-VALUE Name="Start-Offset" Default="0.0"/>
+    <DOUBLE-VALUE Name="Initial-Value" Default="0.0"/>
+    <DOUBLE-VALUE Name="End-Value" Default="1.0"/>
+    <DOUBLE-VALUE Name="Evaluation-Value" Default="0.0"/>
+    <ENUM-VALUE Name="Interpolation" Class="INTERPOLATION"/>
+  </CLASS>
+
+  <CLASS Name="BHATNAGAR-SCHEDULE">
+    <DOUBLE-VALUE Name="Alpha-0" Default="0.0"/>
+    <DOUBLE-VALUE Name="Alpha-c" Default="0.0"/>
+    <DOUBLE-VALUE Name="Time-Exponent" Comment="exponent to which time t is raised. 1 for the actor and 2/3 for the critic in the original work" Default="1.0"/>
+    <DOUBLE-VALUE Name="Evaluation-Value" Default="0.0"/>
+  </CLASS>
+  
+  
+  <!--REWARDS-->
+
+  <CLASS Name="REWARD" Window="New">
+    <DOUBLE-VALUE Name="Min" Comment="Minimum allowed reward"/>
+    <DOUBLE-VALUE Name="Max" Comment="Maximum output of each reward component"/>
+    <MULTI-VALUED Name="Reward-components"  Class="REWARD-COMPONENT"/>
+    <RESUME>
+      <Reward-components>
+        <Type>
+          <Deviation-component>
+              <Variable/>
+          </Deviation-component>
+          <Literal>C</Literal>
+       </Type>
+      </Reward-components>
+    </RESUME>
+  </CLASS>
+
+  <CLASS Name="REWARD-COMPONENT">
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="Deviation-component" Class="DEVIATION-REWARD-COMPONENT"/>
+    </CHOICE> 
+  </CLASS>
+
+  <CLASS Name="DEVIATION-REWARD-COMPONENT">
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State" />
+    <DOUBLE-VALUE Name="Weight" Default="1.0"/>
+    <DOUBLE-VALUE Name="Tolerance" Default="10"/>
+  </CLASS>
+
+  <ENUMERATED-TYPES>
+    <ENUMERATION Name="DISTRIBUTIONS">
+      <VALUE>linear</VALUE>
+      <VALUE>quadratic</VALUE>
+      <VALUE>cubic</VALUE>
+    </ENUMERATION>
+
+    <ENUMERATION Name="INTERPOLATION">
+      <VALUE>linear</VALUE>
+      <VALUE>quadratic</VALUE>
+      <VALUE>cubic</VALUE>
+    </ENUMERATION>
+    
+    <ENUMERATION Name="BOOLEAN">
+      <VALUE>true</VALUE>
+      <VALUE>false</VALUE>
+    </ENUMERATION>
+
+    <ENUMERATION Name="TIME-REFERENCE">
+      <VALUE>episode</VALUE>
+      <VALUE>experiment</VALUE>
+      <VALUE>time</VALUE>
+    </ENUMERATION>
+  </ENUMERATED-TYPES>
+</DEFINITIONS>

@@ -19,10 +19,15 @@ CLASS_CONSTRUCTOR(CLogger) (CParameters* pParameters)
 		DIR_PATH_VALUE(m_outputDir,  pParameters, "Output-Directory","../logs");
 		CONST_STRING_VALUE(m_filePrefix, pParameters, "Prefix", "");
 
-		CONST_BOOLEAN_VALUE(m_bLogEvaluationEpisodes,pParameters,"Log-eval-episodes", false);
-		CONST_BOOLEAN_VALUE(m_bLogTrainingEpisodes,pParameters,"Log-training-episodes", false);
-		CONST_BOOLEAN_VALUE(m_bLogEvaluationExperiment,pParameters,"Log-eval-experiment", true);
-		CONST_BOOLEAN_VALUE(m_bLogTrainingExperiment,pParameters,"Log-training-experiment", false);
+		const char* boolStr;
+		ENUM_VALUE(boolStr,Boolean,pParameters,"Log-eval-episodes", "False");
+		m_bLogEvaluationEpisodes = !strcmp(boolStr, "True");
+		ENUM_VALUE(boolStr, Boolean, pParameters, "Log-training-episodes", "False");
+		m_bLogTrainingEpisodes = !strcmp(boolStr, "True");
+		ENUM_VALUE(boolStr,Boolean, pParameters, "Log-eval-experiment", "True");
+		m_bLogEvaluationExperiment = !strcmp(boolStr, "True");
+		ENUM_VALUE(boolStr,Boolean, pParameters, "Log-training-experiment", "False");
+		m_bLogTrainingExperiment = !strcmp(boolStr, "True");
 
 		CONST_DOUBLE_VALUE(m_logFreq,pParameters,"Log-Freq", 0.25);
 

@@ -4,33 +4,20 @@
 #include "named-var-set.h"
 #include "world.h"
 #include "parameters.h"
-#include "logger.h"
 #include "globals.h"
+#include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CMultiController) (CParameters* pParameters)
+
+CController* CLASS_FACTORY(CController)(CParameters* pParameters)
 {
-	m_numControllers = pParameters->countChildren();
-
-	m_pControllers = new CActor*[m_numControllers];
-
-	CParameters* pControllerParameters = pParameters->getChild();
-	for (int i = 0; i < m_numControllers; i++)
-	{
-		MULTI_VALUED_FACTORY(m_pControllers[i],"Controllers",CMultiController,pControllerParameters);
-
-		pControllerParameters = pControllerParameters->getNextChild();
-	}
-	END_CLASS();
-}
-
-CActor* CLASS_FACTORY(CMultiController)(CParameters* pParameters)
-{
-	const char* type = pParameters->getName();
+	CParameters* pChild = pParameters->getChild();
+	const char* type = pChild->getName();
+	
 	CHOICE("Controller-Type");
-	CHOICE_ELEMENT(type,"Vidal", CWindTurbineVidalController, pParameters);
-	CHOICE_ELEMENT(type,"Boukhezzar", CWindTurbineBoukhezzarController, pParameters);
-	CHOICE_ELEMENT(type,"PID", CPIDController, pParameters);
-	CHOICE_ELEMENT(type,"LQR", CLQRController, pParameters);
+	CHOICE_ELEMENT(type, "Vidal", CWindTurbineVidalController, pChild);
+	CHOICE_ELEMENT(type, "Boukhezzar", CWindTurbineBoukhezzarController, pChild);
+	CHOICE_ELEMENT(type, "PID", CPIDController, pChild);
+	CHOICE_ELEMENT(type, "LQR", CLQRController, pChild);
 	END_CHOICE();
 
 	return 0;
@@ -38,24 +25,7 @@ CActor* CLASS_FACTORY(CMultiController)(CParameters* pParameters)
 	END_CLASS();
 }
 
-CMultiController::~CMultiController()
-{
-	for (int i = 0; i < m_numControllers; i++)
-	{
-		delete m_pControllers[i];
-	}
-	delete [] m_pControllers;
-}
 
-
-
-void CMultiController::selectAction(const CState *s, CAction *a)
-{
-	for (int i = 0; i < m_numControllers; i++)
-	{
-		m_pControllers[i]->selectAction(s, a);
-	}
-}
 
 //LQR//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -70,7 +40,7 @@ CLASS_CONSTRUCTOR(CLQRGain)(CParameters* pParameters)
 	
 	END_CLASS();
 }
-CLASS_CONSTRUCTOR(CLQRController)(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CLQRController)(CParameters *pParameters) : CParamObject(pParameters)
 {
 	ACTION_VARIABLE_REF(m_outputActionIndex,pParameters,"Output-Action");
 	
@@ -112,7 +82,7 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CPIDController)(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CPIDController)(CParameters *pParameters) : CParamObject(pParameters)
 {
 	ACTION_VARIABLE_REF(m_outputActionIndex, pParameters, "Output-Action");
 
@@ -159,7 +129,16 @@ double sgn(double value)
 //VIDAL////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CWindTurbineVidalController)(CParameters* pParameters)
+CWindTurbineVidalController::~CWindTurbineVidalController()
+{
+	delete m_pA;
+	delete m_pK_alpha;
+	delete m_pKP;
+	delete m_pKI;
+	delete m_P_s;
+}
+
+CLASS_CONSTRUCTOR(CWindTurbineVidalController)(CParameters* pParameters) : CParamObject(pParameters)
 {
 	NUMERIC_VALUE(m_pA, pParameters, "A");
 	NUMERIC_VALUE(m_pK_alpha, pParameters, "K_alpha");
@@ -216,7 +195,14 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 //BOUKHEZZAR CONTROLLER////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController)(CParameters* pParameters)
+CWindTurbineBoukhezzarController::~CWindTurbineBoukhezzarController()
+{
+	delete m_pC_0;
+	delete m_pKP;
+	delete m_pKI;
+}
+
+CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController)(CParameters* pParameters) : CParamObject(pParameters)
 {
 
 	NUMERIC_VALUE(m_pC_0,pParameters,"C_0");
@@ -268,7 +254,14 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 //JONKMAN//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CWindTurbineJonkmanController)(CParameters *pParameters)
+CWindTurbineJonkmanController::~CWindTurbineJonkmanController()
+{
+	delete m_PC_KK;
+	delete m_PC_KP;
+	delete m_PC_KI;
+}
+
+CLASS_CONSTRUCTOR(CWindTurbineJonkmanController)(CParameters *pParameters) : CParamObject(pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
 	CONST_DOUBLE_VALUE(m_CornerFreq,pParameters,"CornerFreq",0.0);

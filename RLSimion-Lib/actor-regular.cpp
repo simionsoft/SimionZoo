@@ -5,11 +5,12 @@
 #include "features.h"
 #include "etraces.h"
 #include "parameters.h"
-#include "vfa-policy.h"
+#include "policy-learner.h"
 #include "globals.h"
+#include "parameters-numeric.h"
 
 CLASS_CONSTRUCTOR(CRegularPolicyGradientLearner)(CParameters *pParameters)
-	: EXTENDS(CVFAPolicyLearner,pParameters->getChild("VFA-Policy"))
+	: EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
 	CHILD_CLASS(m_e,"E-Traces",CETraces,"Actor/E-Traces",pParameters->getChild("E-Traces"));

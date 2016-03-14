@@ -12,7 +12,7 @@ namespace CustomXMLBuilder
     {
         static void Main(string[] args)
         {
-            CPPProcessor sourceProcessor= new CPPProcessor();
+            SourceProcessor sourceProcessor= new SourceProcessor();
             int numargs = args.GetLength(0);
             if (args.GetLength(0)<1)
             {
@@ -22,23 +22,38 @@ namespace CustomXMLBuilder
             Console.WriteLine("Running CustomXMLBuilder " + args[0]);
             string dirPath = args[0];
 
-            List<string> sourceFiles = new List<string>(Directory.EnumerateFiles(dirPath,"*.cpp",SearchOption.AllDirectories));
 
-            System.IO.StreamWriter outputFile= new System.IO.StreamWriter("../config/test-definitions.xml");
-            outputFile.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<DEFINITIONS>\n");
+
             string xmlOutput= "";
+
+            //Parse CPP source files for class definition macros: CLASS_CONSTRUCTOR, CHILD_CLASS, EXTENDS, ...
+            List<string> sourceFiles = new List<string>(Directory.EnumerateFiles(dirPath, "*.cpp", SearchOption.AllDirectories));
             foreach (var file in sourceFiles)
             {
-                xmlOutput += sourceProcessor.processFile(file);
+                xmlOutput += sourceProcessor.processCPPFile(file);
 
             }
+
+
+
             xmlOutput= sourceProcessor.resolveInlineClassRefs(xmlOutput);
-            outputFile.Write(xmlOutput);
-            outputFile.Write("\n</DEFINITIONS>");
-            outputFile.Close();
-            sourceProcessor.m_checker.checkClassReferences();
-            Console.WriteLine("Processed {0} Kbs of code", sourceProcessor.numCharsProcessed/1000);
-            Console.ReadKey();
+
+            int numErrors= sourceProcessor.m_checker.checkClassReferences();
+            if (numErrors > 0)
+            {
+               
+                Console.ReadKey();
+            }
+            else
+            {      
+                System.IO.StreamWriter outputFile = new System.IO.StreamWriter("../config/definitions.xml");
+
+                outputFile.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<DEFINITIONS>\n");
+                outputFile.Write(xmlOutput);
+                outputFile.Write("\n</DEFINITIONS>");
+                outputFile.Close();
+                Console.WriteLine("Source code correctly parsed and XML configuration succesfully built. {0} Kbs of code read.", sourceProcessor.numCharsProcessed / 1000);
+            }
         }
     }
 }

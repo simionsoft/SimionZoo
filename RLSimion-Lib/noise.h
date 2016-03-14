@@ -3,7 +3,7 @@
 #include "parameterized-object.h"
 
 class CParameters;
-class INumericValue;
+class CNumericValue;
 
 
 double getNormalDistributionSample(double mu, double sigma);
@@ -24,9 +24,9 @@ public:
 
 class CGaussianNoise: public CNoise, public CParamObject
 {
-	INumericValue* m_pSigma;
-	INumericValue* m_pAlpha;
-	INumericValue* m_pScale;
+	CNumericValue* m_pSigma;
+	CNumericValue* m_pAlpha;
+	CNumericValue* m_pScale;
 public:
 	CGaussianNoise(CParameters* pParameters);
 	~CGaussianNoise();

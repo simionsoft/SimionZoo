@@ -19,6 +19,11 @@ CSingleDimensionGrid::CSingleDimensionGrid()
 	m_distributionType = 0;
 }
 
+CSingleDimensionGrid::~CSingleDimensionGrid()
+{
+	delete[] m_pCenters;
+}
+
 void CSingleDimensionGrid::initCenterPoints()
 {
 	m_pCenters = new double[m_numCenters];
@@ -54,8 +59,8 @@ CLASS_CONSTRUCTOR(CStateVariableGrid)(CParameters* pParameters)
 	STATE_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
 	CONST_INTEGER_VALUE(m_numCenters, pParameters, "Num-Features", 3);
 
-	CONST_DOUBLE_VALUE(m_min, pParameters, "Min", RLSimion::g_pWorld->getStateDescriptor()->getMin(m_variableIndex));
-	CONST_DOUBLE_VALUE(m_max, pParameters, "Max", RLSimion::g_pWorld->getStateDescriptor()->getMax(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_min, pParameters, "Min", 0.0);// RLSimion::g_pWorld->getStateDescriptor()->getMin(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_max, pParameters, "Max", 1.0);// RLSimion::g_pWorld->getStateDescriptor()->getMax(m_variableIndex));
 
 	CONST_STRING_VALUE(m_distributionType, pParameters, "Distribution", "linear");
 	initCenterPoints();
@@ -77,8 +82,8 @@ CLASS_CONSTRUCTOR(CActionVariableGrid)(CParameters* pParameters)
 	ACTION_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
 	CONST_INTEGER_VALUE(m_numCenters, pParameters, "Num-Features", 3);
 
-	CONST_DOUBLE_VALUE(m_min, pParameters, "Min", RLSimion::g_pWorld->getActionDescriptor()->getMin(m_variableIndex));
-	CONST_DOUBLE_VALUE(m_max, pParameters, "Max", RLSimion::g_pWorld->getActionDescriptor()->getMax(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_min, pParameters, "Min", 0.0);// RLSimion::g_pWorld->getActionDescriptor()->getMin(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_max, pParameters, "Max", 1.0);// RLSimion::g_pWorld->getActionDescriptor()->getMax(m_variableIndex));
 
 	CONST_STRING_VALUE(m_distributionType, pParameters, "Distribution", "linear");
 	initCenterPoints();

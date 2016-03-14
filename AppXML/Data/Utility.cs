@@ -67,11 +67,13 @@ namespace AppXML.Data
                             string key = node.Attributes["Name"].Value;
                             result.Add(key, node);
                         }
-                        else if(node.Name.Equals("ENUMERATED-TYPES"))
+                        else if(node.Name.Equals("ENUMERATION"))
                         {
-                            foreach(XmlNode child in node.ChildNodes)
+                            //foreach(XmlNode child in node.ChildNodes)
                             {
-                                result.Add(child.Attributes["Name"].Value, child);
+                                string key = node.Attributes["Name"].Value;
+                                result.Add(key, node);
+                                //result.Add(child.Attributes["Name"].Value, child);
                             }
                         }
 

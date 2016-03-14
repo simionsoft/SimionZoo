@@ -2,18 +2,18 @@
 #include "actor.h"
 #include "vfa.h"
 #include "vfa-actor.h"
-#include "vfa-policy.h"
+#include "policy-learner.h"
 #include "named-var-set.h"
 #include "features.h"
 #include "etraces.h"
 #include "parameters.h"
 #include "globals.h"
+#include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CCACLALearner)(CParameters *pParameters): EXTENDS(CVFAPolicyLearner,pParameters->getChild("VFA-Policy"))
+CLASS_CONSTRUCTOR(CCACLALearner)(CParameters *pParameters): EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
 	CHILD_CLASS(m_e, "E-Traces",CETraces, "Actor/E-Traces", pParameters->getChild("E-Traces"));
-	/*m_e = new CETraces("Actor/E-Traces",pParameters->getChild("E-Traces"));*/
 	NUMERIC_VALUE(m_pAlpha, pParameters, "Alpha");
 
 	END_CLASS();
