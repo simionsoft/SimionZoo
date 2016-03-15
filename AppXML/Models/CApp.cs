@@ -14,7 +14,7 @@ namespace AppXML.Models
 
         public static void cleanAll()
         {
-            viewsWithNodeRef.Clear();
+            viewsWithNodeRef= new List<XMLNodeRefViewModel>();
         }
 
         public static void addView(XMLNodeRefViewModel view)

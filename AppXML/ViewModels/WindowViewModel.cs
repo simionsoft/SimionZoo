@@ -19,15 +19,71 @@ namespace AppXML.ViewModels
         private RightTreeViewModel _graf;
 
         public RightTreeViewModel Graf { get { return _graf; } set { } }
+        private ObservableCollection<string> _apps = new ObservableCollection<string>();
+        public ObservableCollection<string> Apps { get { return _apps; } set { } }
+        private string[] apps;
+        private string selectedApp;
+        public string SelectedApp { get { return selectedApp; } 
+            set 
+            {
+                if (value == selectedApp)
+                {
+                    return;
+                }
+                if (selectedApp == null || selectedApp == "")
+                {
+                    selectedApp = value;
+                    return;
+                }
+                    
+                int index = Apps.IndexOf(value);
+               
 
+                
 
-
+                WindowViewModel wvm = new WindowViewModel(this.apps, Apps, index);
+               // DialogViewModel dvm = new DialogViewModel(null, "Error validating de form. Please check form", DialogViewModel.DialogType.Info);
+                dynamic settings = new ExpandoObject();
+                settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                //settings.ShowInTaskbar = true;
+                //settings.Title = "ERROR";
+                
+                new WindowManager().ShowDialog(wvm, null, settings);
+                
+            } 
+        }
+        public WindowViewModel(string[] apps, ObservableCollection<string> Apps, int index)
+        {
+            CNode.cleanAll();
+            CApp.cleanAll();
+            this.apps = apps;
+            _apps = Apps;
+            selectedApp = Apps[index];
+            _rootnode = Utility.getRootNode(apps[index]);
+            _branches = _rootnode.children;
+            _doc = (this._rootnode as CApp).document;
+        }
         public WindowViewModel()
         {
-            _rootnode = Utility.getRootNode("../config/RLSimion.xml");
+            apps = Directory.GetFiles("..\\apps");
+            getAppsNames();
+            SelectedApp = Apps[0];
+            _rootnode = Utility.getRootNode(apps[0]);
             _branches = _rootnode.children;
             _doc = (this._rootnode as CApp).document;
 
+        }
+        private void getAppsNames()
+        {
+            foreach(string app in apps)
+            {
+                char[] spliter = "\\".ToCharArray();
+                string[] tmp = app.Split(spliter);
+                tmp = tmp[tmp.Length - 1].Split('.');
+                string name =tmp[0];
+                _apps.Add(name);
+            
+            }
         }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         public CNode rootnode
