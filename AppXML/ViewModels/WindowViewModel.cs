@@ -382,7 +382,7 @@ namespace AppXML.ViewModels
             document.AppendChild(newRoot);
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
-                _graf = new RightTreeViewModel(rootNode);
+                _graf = new RightTreeViewModel(rootNode, this);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => AddChildVisible);
         }

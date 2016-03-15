@@ -3,43 +3,37 @@
   <CLASS Name="CCACLALearner">
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
+    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory"/>
   </CLASS>
 
-  <CLASS Name="CIncrementalNaturalCritic">
-    <BRANCH Name="E-Traces" Class="CETraces"/>
+  <CLASS Name="CIncrementalNaturalActorCritic">
+    <BRANCH Name="V-ETraces" Class="CETraces"/>
+    <BRANCH Name="U-ETraces" Class="CETraces"/>
     <BRANCH Name="Alpha-v" Class="CNumericValue-Factory"/>
     <BRANCH Name="Alpha-r" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
-  </CLASS>
-
-  <CLASS Name="CIncrementalNaturalActor">
-    <BRANCH Name="ETraces" Class="CETraces"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
     <BRANCH Name="Alpha-u" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Alpha-v" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
+  </CLASS>
+
+  <CLASS Name="CActorCritic">
+    <BRANCH Name="Actor" Class="CActor"/>
+    <BRANCH Name="Critic" Class="CCritic-Factory"/>
   </CLASS>
 
   <CLASS Name="CRegularPolicyGradientLearner">
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
+    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory"/>
   </CLASS>
 
-  <CLASS Name="CActor-Factory">
-    <CHOICE Name="Actor-Type">
-      <CHOICE-ELEMENT Name="VFA-Learner" Class="CVFAActor"/>
-      <CHOICE-ELEMENT Name="Multi-Controller" Class="CMultiController"/>
-    </CHOICE>
+  <CLASS Name="CActor">
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
+    <MULTI-VALUED Name="Outputs" Class="CPolicyLearner-Factory"/>
   </CLASS>
 
-  <CLASS Name="CMultiController">
-    <MULTI-VALUED Name="Controllers" Class="CMultiController-Factory"/>
-  </CLASS>
-
-  <CLASS Name="CMultiController-Factory">
+  <CLASS Name="CController-Factory">
     <CHOICE Name="Controller-Type">
       <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController"/>
       <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController"/>
@@ -101,6 +95,8 @@
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
   </CLASS>
 
@@ -114,12 +110,22 @@
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
+  </CLASS>
+
+  <CLASS Name="CCritic">
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
   </CLASS>
 
   <CLASS Name="CCritic-Factory">
-    <CHOICE Name="Critic-Type">
-      <CHOICE-ELEMENT Name="VFA-Critic" Class="CVFACritic-Factory"/>
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="TD-Lambda" Class="CTDLambdaCritic"/>
+      <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="CTrueOnlineTDLambdaCritic"/>
+      <CHOICE-ELEMENT Name="TDC-Lambda" Class="CTDCLambdaCritic"/>
     </CHOICE>
   </CLASS>
 
@@ -223,6 +229,17 @@
     </CHOICE>
   </CLASS>
 
+  <CLASS Name="CPolicyLearner">
+    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory"/>
+  </CLASS>
+
+  <CLASS Name="CPolicyLearner-Factory">
+    <CHOICE Name="Learner-Type">
+      <CHOICE-ELEMENT Name="CACLA" Class="CCACLALearner"/>
+      <CHOICE-ELEMENT Name="Regular-Gradient" Class="CRegularPolicyGradientLearner"/>
+    </CHOICE>
+  </CLASS>
+
   <CLASS Name="CRewardFunctionComponent">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <BRANCH Name="Tolerance" Class="CNumericValue-Factory"/>
@@ -244,9 +261,14 @@
   </CLASS>
 
   <CLASS Name="CSimGod">
-    <BRANCH Name="Controller" Class="CActor-Factory"/>
-    <BRANCH Name="Actor" Class="CActor-Factory"/>
-    <BRANCH Name="Critic" Class="CCritic-Factory"/>
+    <MULTI-VALUED Name="Simion" Class="CSimion-Factory"/>
+  </CLASS>
+
+  <CLASS Name="CSimion-Factory">
+    <CHOICE Name="Type">
+      <CHOICE-ELEMENT Name="Controller" Class="CController-Factory"/>
+      <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic"/>
+    </CHOICE>
   </CLASS>
 
   <CLASS Name="CStateVariableGrid">
@@ -265,43 +287,14 @@
     <STRING-VALUE Name="Distribution" Default="linear"/>
   </CLASS>
 
-  <CLASS Name="CVFAPolicyLearner">
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
-  </CLASS>
-
-  <CLASS Name="CVFAPolicyLearner-Factory">
-    <CHOICE Name="Learner-Type">
-      <CHOICE-ELEMENT Name="CACLA" Class="CCACLALearner"/>
-      <CHOICE-ELEMENT Name="Regular-Gradient" Class="CRegularPolicyGradientLearner"/>
-      <CHOICE-ELEMENT Name="Incremental-Natural-Actor" Class="CIncrementalNaturalActor"/>
-    </CHOICE>
-  </CLASS>
-
-  <CLASS Name="CVFAActor">
-    <MULTI-VALUED Name="Outputs" Class="CVFAPolicyLearner-Factory"/>
-  </CLASS>
-
-  <CLASS Name="CVFACritic">
-    <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
-  </CLASS>
-
-  <CLASS Name="CVFACritic-Factory">
-    <CHOICE Name="Type">
-      <CHOICE-ELEMENT Name="TD-Lambda" Class="CTDLambdaCritic"/>
-      <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="CTrueOnlineTDLambdaCritic"/>
-      <CHOICE-ELEMENT Name="TDC-Lambda" Class="CTDCLambdaCritic"/>
-      <CHOICE-ELEMENT Name="Incremental-Natural-Critic" Class="CIncrementalNaturalCritic"/>
-    </CHOICE>
-  </CLASS>
-
-  <CLASS Name="CDeterministicVFAPolicy-Factory">
+  <CLASS Name="CDeterministicPolicy-Factory">
     <CHOICE Name="Policy-Type">
       <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise"/>
       <CHOICE-ELEMENT Name="Stochastic-Policy-Gaussian-Noise" Class="CStochasticPolicyGaussianNoise"/>
     </CHOICE>
   </CLASS>
 
-  <CLASS Name="CDeterministicVFAPolicy">
+  <CLASS Name="CDeterministicPolicy">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA"/>
   </CLASS>

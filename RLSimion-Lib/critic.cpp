@@ -6,6 +6,19 @@
 #include "logger.h"
 #include "vfa.h"
 
+CLASS_CONSTRUCTOR(CCritic) (CParameters* pParameters) : CParamObject(pParameters)
+{
+	CHILD_CLASS(m_pVFunction, "V-Function", CLinearStateVFA, pParameters->getChild("V-Function"));
+
+	//m_pVFA = new CLinearStateVFA();
+	CONST_STRING_VALUE(m_loadFile, pParameters, "Load","");
+	CONST_STRING_VALUE(m_saveFile, pParameters, "Save","");
+	if (m_loadFile)
+		loadVFunction(m_loadFile);
+
+	END_CLASS();
+}
+
 CCritic* CLASS_FACTORY(CCritic)(CParameters* pParameters)
 {
 	if (!pParameters) return 0;
