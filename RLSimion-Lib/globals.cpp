@@ -6,18 +6,32 @@
 #include "parameters.h"
 #include "logger.h"
 
+
 CLogger *RLSimion::g_pLogger= 0;
 CWorld* RLSimion::g_pWorld= 0;
 CExperiment *RLSimion::g_pExperiment= 0;
 CSimGod *RLSimion::g_pSimGod= 0;
+CParameterFile* g_pConfigDoc= 0;
 
 ENUMERATION(Boolean, "False", "True");
 ENUMERATION(Distribution, "linear", "quadratic", "cubic");
 ENUMERATION(Interpolation, "linear", "quadratic", "cubic");
 ENUMERATION(TimeReference, "episode", "experiment", "experimentTime");
 
-void RLSimion::init(CParameters* pParameters)
+
+
+void RLSimion::init(int argc, char* argv[])
 {
+	CParameters* pParameters;
+
+	if (!g_pConfigDoc) g_pConfigDoc = new CParameterFile;
+
+	if (argc > 1) pParameters = g_pConfigDoc->loadFile(argv[1], "RLSimion");
+
+	if (argc <= 1 || !pParameters) exit(-1);
+
+	if (argc > 2) CLogger::createOutputPipe(argv[2]);
+
 	//First, a logger was created so that we could know about creation itself
 	g_pLogger = new CLogger(pParameters->getChild("Log")); //with or without parameters
 	
@@ -57,4 +71,10 @@ void RLSimion::shutdown()
 		delete g_pSimGod;
 		g_pSimGod = 0;
 	}
+	if (g_pConfigDoc)
+	{
+		delete g_pConfigDoc;
+		g_pConfigDoc = 0;
+	}
+	CLogger::closeOutputPipe();
 }

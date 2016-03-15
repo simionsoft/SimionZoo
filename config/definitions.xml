@@ -320,7 +320,7 @@
   </CLASS>
 
   <CLASS Name="CPitchControl">
-    <FILE-PATH-VALUE Name="Set-Point-File" Default="../config/world/pitch-control/setpoints/setpoint.txt"/>
+    <FILE-PATH-VALUE Name="Set-Point-File" Default="../config/world/pitch-control/setpoint.txt"/>
   </CLASS>
 
   <CLASS Name="CUnderwaterVehicle">
@@ -329,7 +329,7 @@
 
   <CLASS Name="CWindTurbine">
     <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/world/wind-turbine/TurbSim-10.25.hh"/>
-    <FILE-PATH-VALUE Name="Power-Set-Point" Default="./config/world/wind-turbine/windturbine-power-setpoint.txt"/>
+    <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/world/wind-turbine/power-setpoint.txt"/>
     <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE"/>
   </CLASS>
 

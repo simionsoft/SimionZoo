@@ -104,10 +104,6 @@
       <SubType>Designer</SubType>
     </Xml>
     <Xml Include="..\config\RLSimion.xml" />
-    <Xml Include="..\experiments\examples\RLSimion-pitch-control.xml" />
-    <Xml Include="..\experiments\examples\RLSimion-underwater-vehicle-inac.xml" />
-    <Xml Include="..\experiments\examples\RLSimion-underwater-vehicle.xml" />
-    <Xml Include="..\experiments\examples\RLSimion-wind-turbine.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

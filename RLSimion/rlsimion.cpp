@@ -14,27 +14,10 @@
 
 int main(int argc, char* argv[])
 {
-	CParameterFile xmlDoc;
-	CParameters* pParameters;
 
-	if (argc > 1)
-	{
-		pParameters = xmlDoc.loadFile(argv[1], "RLSimion");
-		if (!pParameters)
-		{
-			printf("Error loading configuration file: %s\n\n", xmlDoc.getError());
-			getchar();
-			exit(-1);
-		}
-	}
-	else
-	{
-		printf("ERROR: configuration file not provided as an argument");
-		exit(-1);
-	}
-	printf("\n\n******************\nRLSimion\n******************\nConfig. file %s\n******************\n\n", argv[1]);
+	CParameters* pParameters= 0;
 
-	RLSimion::init(pParameters);
+	RLSimion::init(argc,argv);
 
 	//create state and action vectors
 	CState *s = CWorld::getDynamicModel()->getStateDescriptor()->getInstance();

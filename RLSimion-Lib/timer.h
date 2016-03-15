@@ -1,5 +1,6 @@
 #pragma once
 
+
 class CTimer
 {
 	std::chrono::system_clock::time_point m_startTimePoint;

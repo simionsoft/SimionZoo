@@ -7,6 +7,9 @@
 #include "globals.h"
 #include "timer.h"
 
+static MessageOutputMode m_messageOutputMode= MessageOutputMode::Console;
+static void* m_outputPipe = 0;
+
 #define MAX_FILENAME_LENGTH 1024
 
 CLASS_CONSTRUCTOR(CLogger) (CParameters* pParameters)
@@ -253,24 +256,89 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 	}
 }
 
+//WINDOWS-SPECIFIC STUFF
+#include <windows.h>
+
+
+
+
 void CLogger::logMessage(MessageType type, const char* message)
 {
-	char c;
-	switch (type)
+	wchar_t messageLine[1024];
+	unsigned long bytesWritten;
+
+	if (m_messageOutputMode == MessageOutputMode::NamedPipe && m_outputPipe)
 	{
-	case Warning:
-		printf("WARNING: %s\n", message);
-		break;
-	case Progress:
-		//extra spaces to avoid overwriting only partially previous message
-		printf("PROGRESS: %s                     \r",message);
-		break;
-	case Info:
-		printf("INFO: %s", message);
-		break;
-	case Error:
-		printf("FATAL ERROR: %s\n");
-		scanf_s("%c", &c);
-		exit(-1);
+		switch (type)
+		{
+		case Warning:
+			swprintf_s(messageLine, 1024, TEXT("<Message>WARNING: %s</Message>\n"), message);
+			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			break;
+		case Progress:
+			//extra spaces to avoid overwriting only partially previous message
+			swprintf_s(messageLine, 1024, TEXT("<Progress>%s</Progress>"), message);
+			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			break;
+		case Info:
+			swprintf_s(messageLine, 1024, TEXT("<Message>INFO: %s</Message>\n"), message);
+			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			break;
+		case Error:
+			swprintf_s(messageLine, 1024, TEXT("<Message>FATAL ERROR: %s</Message>\n"));
+			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			closeOutputPipe();
+			exit(-1);
+		}
 	}
+	else
+	{
+		switch (type)
+		{
+		case Warning:
+			printf("WARNING: %s\n", message);
+			break;
+		case Progress:
+			//extra spaces to avoid overwriting only partially previous message
+			printf("PROGRESS: %s                     \r", message);
+			break;
+		case Info:
+			printf("INFO: %s", message);
+			break;
+		case Error:
+			printf("FATAL ERROR: %s\n");
+			RLSimion::shutdown();
+			exit(-1);
+		}
+	}
+}
+
+void CLogger::closeOutputPipe()
+{
+	if (m_outputPipe)
+	{
+		RLSimion::shutdown();
+		m_outputPipe = 0;
+	}
+}
+
+void CLogger::createOutputPipe(const char* pipeName)
+{
+	wchar_t pipename[512];
+	swprintf_s(pipename, 512, TEXT("\\\\.\\pipe\\%s"), pipename);
+
+	m_outputPipe = CreateFile(
+		pipename,   // pipe name 
+		GENERIC_WRITE,
+		0,              // no sharing 
+		NULL,           // default security attributes
+		OPEN_EXISTING,  // opens existing pipe 
+		0,              // default attributes 
+		NULL);          // no template file 
+
+	if (m_outputPipe == INVALID_HANDLE_VALUE)
+		return;
+
+
+	m_messageOutputMode = MessageOutputMode::NamedPipe;
 }

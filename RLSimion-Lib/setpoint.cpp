@@ -2,6 +2,7 @@
 #include "setpoint.h"
 #include "parameters.h"
 #include "globals.h"
+#include "logger.h"
 
 //CFileSetPoint//////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -60,7 +61,11 @@ CFileSetPoint::CFileSetPoint(const char* filename)
 		fclose(pFile);
 	}
 	else
-		printf("ERROR: could not open setpoint file %s\n",filename);
+	{
+		char message[512];
+		sprintf_s(message,512,"ERROR: could not open setpoint file %s\n", filename);
+		RLSimion::g_pLogger->logMessage(MessageType::Warning, message);
+	}
 
 	m_totalTime= m_pTimes[m_numSteps-1];
 	END_CLASS();

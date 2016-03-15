@@ -6,6 +6,7 @@ class CWorld;
 class CExperiment;
 class CSimGod;
 class CParameters;
+class CParameterFile;
 
 namespace RLSimion
 {
@@ -14,9 +15,9 @@ namespace RLSimion
 	extern CExperiment *g_pExperiment;
 	extern CSimGod *g_pSimGod;
 
-	void init(CParameters* pParameters);
+	void init(int argc, char* argv[]);
 	void shutdown();
-}
+};
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
 #define CLASS_FACTORY(name) name::getInstance
