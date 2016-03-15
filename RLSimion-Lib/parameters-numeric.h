@@ -7,5 +7,5 @@ class CNumericValue
 public:
 	virtual double getValue() = 0;
 
-	static CNumericValue* getInstance(CParameters* pParameters, const char* parameterName);
+	static CNumericValue* getInstance(CParameters* pParameters);
 };

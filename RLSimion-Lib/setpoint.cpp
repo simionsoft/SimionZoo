@@ -33,13 +33,11 @@ CFileSetPoint::CFileSetPoint()
 	m_totalTime= 0.0;
 }
 
-CLASS_CONSTRUCTOR(CFileSetPoint)(CParameters* pParameters)
+CFileSetPoint::CFileSetPoint(const char* filename)
 {
 	//char fullFilename[1024];
 	m_numSteps= 0;
 
-	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "File", "");
 	FILE *pFile;
 
 	int numLines = countlines(filename);
@@ -115,14 +113,11 @@ double CFileSetPoint::getPointSet(double time)
 //CHHFileSetPoint//////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CHHFileSetPoint)(CParameters* pParameters) : CFileSetPoint()
+CHHFileSetPoint::CHHFileSetPoint(const char* filename) : CFileSetPoint()
 {
 	FILE* pHHFile;
 	char buffer[1024];
 	char* pNext;
-
-	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "File", "");
 
 	int numLines = countlines(filename);
 	if (numLines == 0) return;

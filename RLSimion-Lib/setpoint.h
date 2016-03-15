@@ -20,7 +20,7 @@ protected:
 	double m_totalTime;
 public:
 	CFileSetPoint();
-	CFileSetPoint(CParameters* pParameters);
+	CFileSetPoint(const char* filename);
 	~CFileSetPoint();
 
 	double getPointSet(double time);
@@ -29,7 +29,7 @@ public:
 class CHHFileSetPoint : public CFileSetPoint
 {
 public:
-	CHHFileSetPoint(CParameters* pParameters);
+	CHHFileSetPoint(const char* filename);
 	~CHHFileSetPoint(){}
 };
 

@@ -2,9 +2,9 @@
 #include "actor.h"
 #include "noise.h"
 #include "controller.h"
-#include "vfa-actor.h"
+
 #include "actor.h"
-#include "vfa-actor.h"
+#include "policy.h"
 #include "globals.h"
 #include "named-var-set.h"
 #include "parameters.h"

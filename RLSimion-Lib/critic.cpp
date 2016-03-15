@@ -8,7 +8,7 @@
 
 CLASS_CONSTRUCTOR(CCritic) (CParameters* pParameters) : CParamObject(pParameters)
 {
-	CHILD_CLASS(m_pVFunction, "V-Function", CLinearStateVFA, pParameters->getChild("V-Function"));
+	CHILD_CLASS(m_pVFunction, "V-Function", CLinearStateVFA, pParameters);
 
 	//m_pVFA = new CLinearStateVFA();
 	CONST_STRING_VALUE(m_loadFile, pParameters, "Load","");
@@ -21,16 +21,10 @@ CLASS_CONSTRUCTOR(CCritic) (CParameters* pParameters) : CParamObject(pParameters
 
 CCritic* CLASS_FACTORY(CCritic)(CParameters* pParameters)
 {
-	if (!pParameters) return 0;
-
-	CParameters* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
-
-	CHOICE("Type");
-	CHOICE_ELEMENT(type, "TD-Lambda", CTDLambdaCritic, pChild);
-	CHOICE_ELEMENT(type, "True-Online-TD-Lambda", CTrueOnlineTDLambdaCritic, pChild);
-	CHOICE_ELEMENT(type, "TDC-Lambda", CTDCLambdaCritic, pChild);
-	//CHOICE-ELEMENT-COMMENTED(type, "Incremental-Natural-Critic", CIncrementalNaturalCritic, pChild);
+	CHOICE("Critic");
+	CHOICE_ELEMENT("TD-Lambda", CTDLambdaCritic);
+	CHOICE_ELEMENT("True-Online-TD-Lambda", CTrueOnlineTDLambdaCritic);
+	CHOICE_ELEMENT("TDC-Lambda", CTDCLambdaCritic);
 	END_CHOICE();
 
 	END_CLASS();

@@ -49,5 +49,3 @@ namespace AppXML.Models
         public XmlNode root { get { return _root; } private set { } }
     }
 }
-
-

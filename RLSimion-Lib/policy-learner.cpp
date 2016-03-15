@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "named-var-set.h"
 #include "noise.h"
-#include "vfa-actor.h"
-#include "vfa.h"
 #include "policy-learner.h"
+#include "vfa.h"
+#include "policy.h"
 #include "actor.h"
 #include "globals.h"
 #include "parameters.h"
@@ -12,7 +12,7 @@
 
 CLASS_CONSTRUCTOR(CPolicyLearner)(CParameters* pParameters) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicPolicy, pParameters->getChild("Deterministic-VFA-Policy"));
+	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicPolicy, pParameters);
 	//m_pPolicy = CDeterministicPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
 	END_CLASS();
 }
@@ -24,13 +24,9 @@ CPolicyLearner::~CPolicyLearner()
 
 CPolicyLearner* CLASS_FACTORY(CPolicyLearner)(CParameters* pParameters)
 {
-	CParameters* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
-
-	CHOICE("Learner-Type");
-	CHOICE_ELEMENT(type, "CACLA", CCACLALearner, pParameters);
-	CHOICE_ELEMENT(type, "Regular-Gradient", CRegularPolicyGradientLearner, pParameters);
-	//CHOICE-ELEMENT-COMMENTED(type, "Incremental-Natural-Actor", CIncrementalNaturalActor, pParameters);
+	CHOICE("Policy-Learner");
+	CHOICE_ELEMENT("CACLA", CCACLALearner);
+	CHOICE_ELEMENT("Regular-Gradient", CRegularPolicyGradientLearner);
 	END_CHOICE();
 
 	END_CLASS();

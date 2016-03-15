@@ -44,7 +44,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
-    <CustomBuildAfterTargets>BuildLink</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -160,9 +160,9 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="timer.h" />
-    <ClInclude Include="vfa-actor.h" />
-    <ClInclude Include="vfa-critic.h" />
     <ClInclude Include="policy-learner.h" />
+    <ClInclude Include="vfa-critic.h" />
+    <ClInclude Include="policy.h" />
     <ClInclude Include="vfa.h" />
     <ClInclude Include="world-magneticlevitation.h" />
     <ClInclude Include="world-pitchcontrol.h" />

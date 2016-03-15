@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vfa-actor.h"
+#include "policy.h"
 #include "vfa.h"
 #include "named-var-set.h"
 #include "features.h"
@@ -13,7 +13,7 @@ CLASS_CONSTRUCTOR(CRegularPolicyGradientLearner)(CParameters *pParameters)
 	: EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
-	CHILD_CLASS(m_e,"E-Traces",CETraces,"Actor/E-Traces",pParameters->getChild("E-Traces"));
+	CHILD_CLASS(m_e,"E-Traces",CETraces,pParameters,"Actor/E-Traces");
 	NUMERIC_VALUE(m_pAlpha,pParameters,"Alpha");
 
 	END_CLASS();

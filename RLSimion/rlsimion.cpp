@@ -37,9 +37,9 @@ int main(int argc, char* argv[])
 	RLSimion::init(pParameters);
 
 	//create state and action vectors
-	CState *s= RLSimion::g_pWorld->getStateInstance();
-	CState *s_p= RLSimion::g_pWorld->getStateInstance();
-	CAction *a= RLSimion::g_pWorld->getActionInstance();
+	CState *s = CWorld::getDynamicModel()->getStateDescriptor()->getInstance();
+	CState *s_p = CWorld::getDynamicModel()->getStateDescriptor()->getInstance();
+	CAction *a = CWorld::getDynamicModel()->getActionDescriptor()->getInstance();
 	//register the state and action vectors in the logger
 	RLSimion::g_pLogger->addVarSetToStats("State", s);
 	RLSimion::g_pLogger->addVarSetToStats("Action", a);

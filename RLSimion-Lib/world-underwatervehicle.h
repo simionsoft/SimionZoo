@@ -11,7 +11,7 @@ class CUnderwaterVehicle : public CDynamicModel
 	CSetPoint *m_pSetpoint;
 public:
 
-	CUnderwaterVehicle(const char* worldDefinition, CParameters* pParameters);
+	CUnderwaterVehicle(CParameters* pParameters,const char* worldDefinition);
 	~CUnderwaterVehicle();
 
 	void reset(CState *s);

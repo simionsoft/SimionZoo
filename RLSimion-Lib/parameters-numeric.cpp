@@ -133,25 +133,14 @@ double CBhatnagarSchedule::getValue()
 }
 
 
-CNumericValue* CLASS_FACTORY(CNumericValue)(CParameters* pParameters, const char* paramName)
+CNumericValue* CLASS_FACTORY(CNumericValue)(CParameters* pParameters)
 {
-	CParameters* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
-
-	CHOICE("Type");
-	CHOICE_ELEMENT(type, "Constant", CConstantValue, pChild);
-	CHOICE_ELEMENT(type, "Linear-Schedule", CInterpolatedValue, pChild);
-	CHOICE_ELEMENT(type, "Bhatnagar-Schedule", CBhatnagarSchedule, pChild);
+	CHOICE("Schedule");
+	CHOICE_ELEMENT("Constant", CConstantValue);
+	CHOICE_ELEMENT("Linear-Schedule", CInterpolatedValue);
+	CHOICE_ELEMENT("Bhatnagar-Schedule", CBhatnagarSchedule);
 	END_CHOICE();
 	END_CLASS();
 
 	return 0;
 }
-
-//void CParameters::freeHandlers()
-//{
-//	for (auto handler = m_handlers.begin(); handler != m_handlers.end(); handler++)
-//	{
-//		delete *handler;
-//	}
-//}

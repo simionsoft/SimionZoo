@@ -99,22 +99,20 @@ CLASS_CONSTRUCTOR(CRewardFunction)(CParameters* pParameters) : CParamObject(pPar
 
 	m_lastReward= 0.0;
 
-	CParameters* pRewardComponents = m_pParameters->getChild("Reward-components");
-
-	m_numRewardComponents = pRewardComponents->countChildren();
+	m_numRewardComponents = m_pParameters->countChildren("Reward-Component");
 
 	//the vector of reward functions
+	CParameters* pRewardComponents = m_pParameters->getChild("Reward-Component");
 	m_pRewardComponents = new CRewardFunctionComponent*[m_numRewardComponents];
 	//the reward vector (named variables)
 	m_pReward = new CReward(m_numRewardComponents);
 
-	CParameters* pComponent = pRewardComponents->getChild();
 	for (int i= 0; i<m_numRewardComponents; i++)
 	{
-		MULTI_VALUED(m_pRewardComponents[i], "Reward-Component", CRewardFunctionComponent, pComponent);
+		MULTI_VALUED(m_pRewardComponents[i], "Reward-Component", CRewardFunctionComponent, pRewardComponents);
 		m_pReward->setName(i, m_pRewardComponents[i]->getName());
 
-		pComponent = pComponent->getNextChild();
+		pRewardComponents = pRewardComponents->getNextChild("Reward-Component");
 	}
 	END_CLASS();
 }

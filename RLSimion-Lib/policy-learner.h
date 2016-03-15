@@ -1,71 +1,58 @@
 #pragma once
+
 #include "parameterized-object.h"
-
-class CLinearStateVFA;
-class CNoise;
-
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
+class CFeatureList;
+class CETraces;
+class CDeterministicPolicy;
 class CParameters;
+class CNumericValue;
 
-
-//The interface class. One State-Function that represents a deterministic function output to some action
-class CDeterministicPolicy : public CParamObject
+class CPolicyLearner: public CParamObject
 {
 protected:
-	CLinearStateVFA *m_pVFA;
-	int m_outputActionIndex;
-	//const char* m_outputAction;
+	CDeterministicPolicy* m_pPolicy;
+
 public:
-	CDeterministicPolicy(CParameters* pParameters);
-	~CDeterministicPolicy();
+	CPolicyLearner(CParameters* pParameters);
+	~CPolicyLearner();
 
-	CLinearStateVFA* getVFA(){ return m_pVFA; }
+	virtual void updatePolicy(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
 
-//	const char* getOutputAction(){ return m_outputAction; }
-	int getOutputActionIndex(){ return m_outputActionIndex; }
+	CDeterministicPolicy* getPolicy(){ return m_pPolicy; }
 
-	static CDeterministicPolicy* getInstance(CParameters* pParameters);
-
-
-	virtual void selectAction(const CState *s, CAction *a) = 0;
-	//returns the factor by which the state features have to be multiplied to get the policy gradient
-	virtual void getGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
+	static CPolicyLearner* getInstance(CParameters* pParameters);
 };
 
-//A policy that adds noise drawn from N(VFA(s),sigma) deterministic
-//As proposed by Hasselt (?)
-class CDeterministicPolicyGaussianNoise : public CDeterministicPolicy
+
+
+
+
+class CCACLALearner : public CPolicyLearner
 {
-protected:
-	CNoise *m_pExpNoise;
-
+	CFeatureList *m_pStateFeatures;
+	CETraces *m_e;
+	CNumericValue* m_pAlpha;
 public:
-	CDeterministicPolicyGaussianNoise(CParameters* pParameters);
-	~CDeterministicPolicyGaussianNoise();
 
-	void selectAction(const CState *s, CAction *a);
+	CCACLALearner(CParameters *pParameters);
+	~CCACLALearner();
 
-	//returns the factor by which the state features have to be multiplied to get the policy gradient
-	void getGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };
 
-//A policy that adds noise drawn from N(VFA(s),sigma) deterministic
-//Model-Free Reinforcement Learning with Continuous Action in Practice
-//2012 American Control Conference
-class CStochasticPolicyGaussianNoise : public CDeterministicPolicy
+class CRegularPolicyGradientLearner :public CPolicyLearner
 {
-protected:
-	CLinearStateVFA *m_pSigmaVFA;
-	CFeatureList *m_pAux;
+	CFeatureList *m_pStateFeatures;
+	CETraces *m_e;
+	CNumericValue* m_pAlpha;
 public:
-	CStochasticPolicyGaussianNoise(CParameters* pParameters);
-	~CStochasticPolicyGaussianNoise();
 
-	void selectAction(const CState *s, CAction *a);
+	CRegularPolicyGradientLearner(CParameters *pParameters);
+	~CRegularPolicyGradientLearner();
 
-	//returns the factor by which the state features have to be multiplied to get the policy gradient
-	void getGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };

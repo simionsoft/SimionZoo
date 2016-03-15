@@ -12,7 +12,7 @@
 CLASS_CONSTRUCTOR(CTDCLambdaCritic) (CParameters *pParameters)
 	: CCritic(pParameters)
 {
-	m_z = new CETraces("Critic/E-Traces",pParameters->getChild("E-Traces"));
+	CHILD_CLASS(m_z,"E-Traces",CETraces,pParameters,"Critic/E-Traces");
 
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");

@@ -40,11 +40,8 @@ CNoise::CNoise()
 
 CNoise* CLASS_FACTORY(CNoise)(CParameters* pParameters)
 {
-	CParameters* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
-
-	CHOICE("Noise-Type");
-	CHOICE_ELEMENT(type, "GaussianNoise", CGaussianNoise, pChild);
+	CHOICE("Noise");
+	CHOICE_ELEMENT("GaussianNoise", CGaussianNoise);
 	END_CHOICE();
 
 	END_CLASS();

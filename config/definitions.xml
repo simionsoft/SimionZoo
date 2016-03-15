@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <DEFINITIONS>
   <CLASS Name="CCACLALearner">
     <BRANCH Name="E-Traces" Class="CETraces"/>
@@ -34,7 +34,7 @@
   </CLASS>
 
   <CLASS Name="CController-Factory">
-    <CHOICE Name="Controller-Type">
+    <CHOICE Name="Controller">
       <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController"/>
       <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController"/>
       <CHOICE-ELEMENT Name="PID" Class="CPIDController"/>
@@ -101,6 +101,7 @@
   </CLASS>
 
   <CLASS Name="CTDCLambdaCritic">
+    <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
     <BRANCH Name="Beta" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
@@ -122,7 +123,7 @@
   </CLASS>
 
   <CLASS Name="CCritic-Factory">
-    <CHOICE Name="Type">
+    <CHOICE Name="Critic">
       <CHOICE-ELEMENT Name="TD-Lambda" Class="CTDLambdaCritic"/>
       <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="CTrueOnlineTDLambdaCritic"/>
       <CHOICE-ELEMENT Name="TDC-Lambda" Class="CTDCLambdaCritic"/>
@@ -152,7 +153,7 @@
   </CLASS>
 
   <CLASS Name="CFeatureMap-Factory">
-    <CHOICE Name="Type">
+    <CHOICE Name="Feature-Map">
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap"/>
       <CHOICE-ELEMENT Name="RBF-Action-Grid" Class="CGaussianRBFActionGridFeatureMap"/>
     </CHOICE>
@@ -188,7 +189,7 @@
   </CLASS>
 
   <CLASS Name="CNoise-Factory">
-    <CHOICE Name="Noise-Type">
+    <CHOICE Name="Noise">
       <CHOICE-ELEMENT Name="GaussianNoise" Class="CGaussianNoise"/>
     </CHOICE>
   </CLASS>
@@ -222,7 +223,7 @@
   </CLASS>
 
   <CLASS Name="CNumericValue-Factory">
-    <CHOICE Name="Type">
+    <CHOICE Name="Schedule">
       <CHOICE-ELEMENT Name="Constant" Class="CConstantValue"/>
       <CHOICE-ELEMENT Name="Linear-Schedule" Class="CInterpolatedValue"/>
       <CHOICE-ELEMENT Name="Bhatnagar-Schedule" Class="CBhatnagarSchedule"/>
@@ -234,7 +235,7 @@
   </CLASS>
 
   <CLASS Name="CPolicyLearner-Factory">
-    <CHOICE Name="Learner-Type">
+    <CHOICE Name="Policy-Learner">
       <CHOICE-ELEMENT Name="CACLA" Class="CCACLALearner"/>
       <CHOICE-ELEMENT Name="Regular-Gradient" Class="CRegularPolicyGradientLearner"/>
     </CHOICE>
@@ -252,20 +253,12 @@
     <MULTI-VALUED Name="Reward-Component" Class="CRewardFunctionComponent"/>
   </CLASS>
 
-  <CLASS Name="CFileSetPoint">
-    <FILE-PATH-VALUE Name="File" Default=""/>
-  </CLASS>
-
-  <CLASS Name="CHHFileSetPoint">
-    <FILE-PATH-VALUE Name="File" Default=""/>
-  </CLASS>
-
   <CLASS Name="CSimGod">
     <MULTI-VALUED Name="Simion" Class="CSimion-Factory"/>
   </CLASS>
 
   <CLASS Name="CSimion-Factory">
-    <CHOICE Name="Type">
+    <CHOICE Name="Simion">
       <CHOICE-ELEMENT Name="Controller" Class="CController-Factory"/>
       <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic"/>
     </CHOICE>
@@ -288,7 +281,7 @@
   </CLASS>
 
   <CLASS Name="CDeterministicPolicy-Factory">
-    <CHOICE Name="Policy-Type">
+    <CHOICE Name="Policy">
       <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise"/>
       <CHOICE-ELEMENT Name="Stochastic-Policy-Gaussian-Noise" Class="CStochasticPolicyGaussianNoise"/>
     </CHOICE>
@@ -323,21 +316,21 @@
   </CLASS>
 
   <CLASS Name="CMagneticLevitation">
-    <BRANCH Name="Evaluation-Set-Point" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Evaluation-Set-Point" Default="../config/world/magnetic-levitation/setpoint.txt"/>
   </CLASS>
 
   <CLASS Name="CPitchControl">
-    <BRANCH Name="Set-Point-File" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Set-Point-File" Default="../config/world/pitch-control/setpoints/setpoint.txt"/>
   </CLASS>
 
   <CLASS Name="CUnderwaterVehicle">
-    <BRANCH Name="Set-Point-File" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Set-Point-File" Default="../config/world/underwater-vehicle/setpoint.txt"/>
   </CLASS>
 
   <CLASS Name="CWindTurbine">
-    <MULTI-VALUED Name="Training-Wind-Data" Class="CHHFileSetPoint"/>
-    <BRANCH Name="Evaluation-Wind-Data" Class="CHHFileSetPoint"/>
-    <BRANCH Name="Power-Set-Point" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/world/wind-turbine/setpoints/TurbSim-10.25.hh"/>
+    <FILE-PATH-VALUE Name="Power-Set-Point" Default="windturbine-power-setpoint.txt"/>
+    <MULTI-VALUED Name="Training-Wind-Data" Class="STRING-VALUE"/>
   </CLASS>
 
   <CLASS Name="CWorld">
@@ -348,7 +341,7 @@
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">
-    <CHOICE Name="Dynamic-Model" LoadXML= "WORLD-DEFINITION">
+    <CHOICE Name="Model" LoadXML= "WORLD-DEFINITION">
       <CHOICE-ELEMENT Name="Wind-turbine" Class="CWindTurbine" XML="../config/world/wind-turbine.xml"/>
       <CHOICE-ELEMENT Name="Underwater-vehicle" Class="CUnderwaterVehicle" XML="../config/world/underwater-vehicle.xml"/>
       <CHOICE-ELEMENT Name="Pitch-control" Class="CWindTurbine" XML="../config/world/pitch-control.xml"/>
