@@ -1,6 +1,7 @@
 ﻿using AppXML.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,6 +23,16 @@ namespace AppXML.Data
             Regex regex;
             switch (type)
             {
+                case validTypes.FilePathValue:
+                    if(File.Exists(value))
+                        return true;
+                    else
+                        return false;
+                case validTypes.DirPathValue:
+                    if (Directory.Exists(value))
+                        return true;
+                    else
+                        return false;
                 case validTypes.DecimalValue:
                     regex = new Regex(@"^(-|)((0\.\d+)|[1-9]\d*(\.\d+))$");
                     if (regex.IsMatch(value))

@@ -270,7 +270,11 @@ namespace AppXML.ViewModels
                 Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
                  openFileDialog.Filter = "Text Files (.txt)|*.txt|All Files (*.*)|*.*";
                  if (openFileDialog.ShowDialog() == true)
-                    this.Default = openFileDialog.FileName;
+                 {
+                     this.Default = openFileDialog.FileName;
+                     this.TextColor = "White";
+                 }
+                   
             }  
             else if(type=="folder")
             {
@@ -278,6 +282,8 @@ namespace AppXML.ViewModels
                 if (fbd.ShowDialog() == DialogResult.OK)
                     {
                         this.Default = fbd.SelectedPath;
+                        this.TextColor = "White";
+
                     }
                     
             }
