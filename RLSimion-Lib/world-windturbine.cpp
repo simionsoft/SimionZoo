@@ -172,7 +172,7 @@ CLASS_CONSTRUCTOR(CWindTurbine) (CParameters *pParameters,const char* worldDefin
 
 	//evaluation file
 	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "Evaluation-Wind-Data", "../config/world/wind-turbine/setpoints/TurbSim-10.25.hh");
+	FILE_PATH_VALUE(filename, pParameters, "Evaluation-Wind-Data", "../config/world/wind-turbine/TurbSim-10.25.hh");
 	m_pEvaluationWindData = new CHHFileSetPoint(filename);
 
 	//training files
@@ -183,12 +183,12 @@ CLASS_CONSTRUCTOR(CWindTurbine) (CParameters *pParameters,const char* worldDefin
 
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
-		MULTI_VALUED_STRING(filename, trainingWindFiles, "Training-Wind-Data", "../config/world/wind-turbine/setpoints/TurbSim-10.5.hh");
+		MULTI_VALUED_FILE_PATH(filename, trainingWindFiles, "Training-Wind-Data", "../config/world/wind-turbine/TurbSim-10.5.hh");
 		m_pTrainingWindData[i]= new CHHFileSetPoint(filename);
 
 		trainingWindFiles = trainingWindFiles->getNextChild(trainingDataId);
 	}
-	FILE_PATH_VALUE(filename, pParameters, "Power-Set-Point", "./config/world/wind-turbine/setpoints/windturbine-power-setpoint.txt");
+	FILE_PATH_VALUE(filename, pParameters, "Power-Set-Point", "../config/world/wind-turbine/power-setpoint.txt");
 	m_pPowerSetpoint = new CFileSetPoint(filename);
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;

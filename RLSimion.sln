@@ -40,7 +40,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppXML", "AppXML\AppXML.csp
 		{A97CFEAC-DBE2-433C-9454-6D1D2749C591} = {A97CFEAC-DBE2-433C-9454-6D1D2749C591}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomXMLBuilder", "ConsoleApplication1\CustomXMLBuilder.csproj", "{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomXMLBuilder", "CustomXMLBuilder\CustomXMLBuilder.csproj", "{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -461,7 +461,6 @@ Global
 		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}.Debug|Win32.Build.0 = Debug|Any CPU
 		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}.Debug-Dll|Any CPU.ActiveCfg = Debug|Any CPU

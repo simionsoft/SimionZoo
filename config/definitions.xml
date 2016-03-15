@@ -328,9 +328,9 @@
   </CLASS>
 
   <CLASS Name="CWindTurbine">
-    <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/world/wind-turbine/setpoints/TurbSim-10.25.hh"/>
-    <FILE-PATH-VALUE Name="Power-Set-Point" Default="windturbine-power-setpoint.txt"/>
-    <MULTI-VALUED Name="Training-Wind-Data" Class="STRING-VALUE"/>
+    <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/world/wind-turbine/TurbSim-10.25.hh"/>
+    <FILE-PATH-VALUE Name="Power-Set-Point" Default="./config/world/wind-turbine/windturbine-power-setpoint.txt"/>
+    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE"/>
   </CLASS>
 
   <CLASS Name="CWorld">
@@ -345,7 +345,6 @@
       <CHOICE-ELEMENT Name="Wind-turbine" Class="CWindTurbine" XML="../config/world/wind-turbine.xml"/>
       <CHOICE-ELEMENT Name="Underwater-vehicle" Class="CUnderwaterVehicle" XML="../config/world/underwater-vehicle.xml"/>
       <CHOICE-ELEMENT Name="Pitch-control" Class="CWindTurbine" XML="../config/world/pitch-control.xml"/>
-      <CHOICE-ELEMENT Name="Magnetic-leviation" Class="CMagneticLevitation" XML="../config/world/magnetic-levitation.xml"/>
     </CHOICE>
   </CLASS>
 
