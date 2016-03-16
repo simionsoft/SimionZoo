@@ -4,15 +4,13 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
-
-
 class CParameters;
-
 #include <vector>
 class CStats;
 class CTimer;
 
 enum MessageType {Progress,Info,Warning, Error};
+enum MessageOutputMode {Console,NamedPipe};
 
 class CLogger
 {
@@ -28,10 +26,8 @@ class CLogger
 
 	CTimer *m_pEpisodeTimer;
 	CTimer *m_pExperimentTimer;
-/*
-	__int64 m_counterFreq;
-	__int64 m_episodeStartCounter;
-	__int64 m_experimentStartCounter;*/
+
+
 	double m_lastLogSimulationT;
 
 	bool logCurrentEpisode(bool evalEpisode);
@@ -62,9 +58,14 @@ public:
 	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
+	static MessageOutputMode m_messageOutputMode;
+	static void* m_outputPipe;
+	static void createOutputPipe(const char* pipeName);
+	static void closeOutputPipe();
 	//Function called to report progress and error messages
 	//static so that it can be called right from the beginning
 	static void logMessage(MessageType type, const char* message);
+
 
 protected:
 	friend class CExperiment;

@@ -12,7 +12,7 @@
 CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)(CParameters *pParameters)
 	: EXTENDS(CCritic,pParameters)
 {
-	CHILD_CLASS(m_e, "E-Traces", CETraces, "Critic/E-Traces", pParameters->getChild("E-Traces"));
+	CHILD_CLASS(m_e, "E-Traces", CETraces, pParameters,"Critic/E-Traces" );
 	m_aux= new CFeatureList("Critic/aux");
 	m_v_s= 0.0;
 	NUMERIC_VALUE(m_pAlpha, pParameters, "Alpha");

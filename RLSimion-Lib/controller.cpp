@@ -10,14 +10,11 @@
 
 CController* CLASS_FACTORY(CController)(CParameters* pParameters)
 {
-	CParameters* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
-	
-	CHOICE("Controller-Type");
-	CHOICE_ELEMENT(type, "Vidal", CWindTurbineVidalController, pChild);
-	CHOICE_ELEMENT(type, "Boukhezzar", CWindTurbineBoukhezzarController, pChild);
-	CHOICE_ELEMENT(type, "PID", CPIDController, pChild);
-	CHOICE_ELEMENT(type, "LQR", CLQRController, pChild);
+	CHOICE("Controller");
+	CHOICE_ELEMENT("Vidal", CWindTurbineVidalController);
+	CHOICE_ELEMENT("Boukhezzar", CWindTurbineBoukhezzarController);
+	CHOICE_ELEMENT("PID", CPIDController);
+	CHOICE_ELEMENT("LQR", CLQRController);
 	END_CHOICE();
 
 	return 0;
@@ -146,7 +143,7 @@ CLASS_CONSTRUCTOR(CWindTurbineVidalController)(CParameters* pParameters) : CPara
 	NUMERIC_VALUE(m_pKI, pParameters, "KI");
 	NUMERIC_VALUE(m_P_s, pParameters, "P_s");
 
-	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
+	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
 	m_d_omega_r_index = pStateDescriptor->getVarIndex("d_omega_r");
 	m_E_p_index = pStateDescriptor->getVarIndex("E_p");
@@ -154,7 +151,7 @@ CLASS_CONSTRUCTOR(CWindTurbineVidalController)(CParameters* pParameters) : CPara
 	m_beta_index = pStateDescriptor->getVarIndex("beta");
 	m_E_int_omega_r_index = pStateDescriptor->getVarIndex("E_int_omega_r");
 
-	CAction* pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
+	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
@@ -211,7 +208,7 @@ CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController)(CParameters* pParameters) : 
 	CONST_DOUBLE_VALUE(m_J_t,pParameters,"J_t",0.0);
 	CONST_DOUBLE_VALUE(m_K_t,pParameters,"K_t",0.0);
 
-	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
+	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
 	m_d_omega_r_index = pStateDescriptor->getVarIndex("d_omega_r");
 	m_E_p_index = pStateDescriptor->getVarIndex("E_p");
@@ -219,7 +216,7 @@ CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController)(CParameters* pParameters) : 
 	m_T_a_index = pStateDescriptor->getVarIndex("T_a");
 	m_beta_index = pStateDescriptor->getVarIndex("beta");
 
-	CAction* pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
+	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
@@ -292,14 +289,14 @@ CLASS_CONSTRUCTOR(CWindTurbineJonkmanController)(CParameters *pParameters) : CPa
 
 	m_IntSpdErr= 0.0;
 
-	CState* pStateDescriptor = RLSimion::g_pWorld->getStateDescriptor();
+	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_g_index = pStateDescriptor->getVarIndex("omega_g");
 
 	m_E_p_index = pStateDescriptor->getVarIndex("E_p");
 	m_T_g_index = pStateDescriptor->getVarIndex("T_g");
 	m_beta_index = pStateDescriptor->getVarIndex("beta");
 
-	CAction* pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
+	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");

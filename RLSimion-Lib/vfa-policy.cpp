@@ -7,16 +7,14 @@
 #include "globals.h"
 #include "world.h"
 #include "features.h"
+#include "policy.h"
 
 CDeterministicPolicy* CLASS_FACTORY(CDeterministicPolicy)(CParameters* pParameters)
 {
-	CParameters* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
+	CHOICE("Policy");
 
-	CHOICE("Policy-Type");
-
-	CHOICE_ELEMENT(type, "Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise, pChild);
-	CHOICE_ELEMENT(type, "Stochastic-Policy-Gaussian-Noise", CStochasticPolicyGaussianNoise, pChild);
+	CHOICE_ELEMENT("Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise);
+	CHOICE_ELEMENT("Stochastic-Policy-Gaussian-Noise", CStochasticPolicyGaussianNoise);
 
 	END_CHOICE();
 	END_CLASS();
@@ -26,11 +24,11 @@ CDeterministicPolicy* CLASS_FACTORY(CDeterministicPolicy)(CParameters* pParamete
 CLASS_CONSTRUCTOR(CDeterministicPolicy)(CParameters* pParameters)
 : CParamObject(pParameters)
 {
-	CHILD_CLASS(m_pVFA, "Linear-State-VFA", CLinearStateVFA, pParameters->getChild("Linear-State-VFA"));
+	CHILD_CLASS(m_pVFA, "Linear-State-VFA", CLinearStateVFA, pParameters);
 
 	ACTION_VARIABLE_REF(m_outputActionIndex, pParameters, "Output-Action");
 
-	CAction* pActionDescriptor = RLSimion::g_pWorld->getActionDescriptor();
+	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 	m_pVFA->saturateOutput(pActionDescriptor->getMin(m_outputActionIndex), pActionDescriptor->getMax(m_outputActionIndex));
 	END_CLASS();
 }
@@ -48,7 +46,7 @@ CDeterministicPolicy::~CDeterministicPolicy()
 CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)(CParameters* pParameters)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise",CNoise,pParameters->getChild("Exploration-Noise"));
+	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise",CNoise,pParameters);
 	END_CLASS();
 }
 
@@ -89,7 +87,7 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)(CParameters* pParameters)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
-	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", CLinearStateVFA, m_pVFA->getParameters());
+	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", CLinearStateVFA, pParameters);
 	//m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
 	m_pAux = new CFeatureList("Sto-Policy/aux");
 	END_CLASS();

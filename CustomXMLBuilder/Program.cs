@@ -47,8 +47,8 @@ namespace CustomXMLBuilder
             else
             {      
                 System.IO.StreamWriter outputFile = new System.IO.StreamWriter("../config/definitions.xml");
-
-                outputFile.Write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<DEFINITIONS>\n");
+                // encoding=\"utf-8\"
+                outputFile.Write("<?xml version=\"1.0\"?>\n<DEFINITIONS>\n");
                 outputFile.Write(xmlOutput);
                 outputFile.Write("\n</DEFINITIONS>");
                 outputFile.Close();

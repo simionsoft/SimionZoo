@@ -2,6 +2,7 @@
 #include "setpoint.h"
 #include "parameters.h"
 #include "globals.h"
+#include "logger.h"
 
 //CFileSetPoint//////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -33,13 +34,11 @@ CFileSetPoint::CFileSetPoint()
 	m_totalTime= 0.0;
 }
 
-CLASS_CONSTRUCTOR(CFileSetPoint)(CParameters* pParameters)
+CFileSetPoint::CFileSetPoint(const char* filename)
 {
 	//char fullFilename[1024];
 	m_numSteps= 0;
 
-	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "File", "");
 	FILE *pFile;
 
 	int numLines = countlines(filename);
@@ -62,7 +61,11 @@ CLASS_CONSTRUCTOR(CFileSetPoint)(CParameters* pParameters)
 		fclose(pFile);
 	}
 	else
-		printf("ERROR: could not open setpoint file %s\n",filename);
+	{
+		char message[512];
+		sprintf_s(message,512,"ERROR: could not open setpoint file %s\n", filename);
+		RLSimion::g_pLogger->logMessage(MessageType::Warning, message);
+	}
 
 	m_totalTime= m_pTimes[m_numSteps-1];
 	END_CLASS();
@@ -115,14 +118,11 @@ double CFileSetPoint::getPointSet(double time)
 //CHHFileSetPoint//////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CHHFileSetPoint)(CParameters* pParameters) : CFileSetPoint()
+CHHFileSetPoint::CHHFileSetPoint(const char* filename) : CFileSetPoint()
 {
 	FILE* pHHFile;
 	char buffer[1024];
 	char* pNext;
-
-	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "File", "");
 
 	int numLines = countlines(filename);
 	if (numLines == 0) return;

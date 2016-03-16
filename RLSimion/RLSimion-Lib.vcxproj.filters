@@ -14,9 +14,6 @@
     <Filter Include="config">
       <UniqueIdentifier>{8fc22975-3344-4620-8a56-695807894d0c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="examples">
-      <UniqueIdentifier>{6238d96b-6e47-4699-9bf5-25ce2cce85d7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\config\RLSimion.xml">
@@ -24,18 +21,6 @@
     </Xml>
     <Xml Include="..\config\definitions.xml">
       <Filter>config</Filter>
-    </Xml>
-    <Xml Include="..\experiments\examples\RLSimion-pitch-control.xml">
-      <Filter>examples</Filter>
-    </Xml>
-    <Xml Include="..\experiments\examples\RLSimion-underwater-vehicle.xml">
-      <Filter>examples</Filter>
-    </Xml>
-    <Xml Include="..\experiments\examples\RLSimion-underwater-vehicle-inac.xml">
-      <Filter>examples</Filter>
-    </Xml>
-    <Xml Include="..\experiments\examples\RLSimion-wind-turbine.xml">
-      <Filter>examples</Filter>
     </Xml>
   </ItemGroup>
 </Project>

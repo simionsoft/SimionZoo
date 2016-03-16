@@ -6,6 +6,7 @@ class CWorld;
 class CExperiment;
 class CSimGod;
 class CParameters;
+class CParameterFile;
 
 namespace RLSimion
 {
@@ -14,9 +15,9 @@ namespace RLSimion
 	extern CExperiment *g_pExperiment;
 	extern CSimGod *g_pSimGod;
 
-	void init(CParameters* pParameters);
+	void init(int argc, char* argv[]);
 	void shutdown();
-}
+};
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
 #define CLASS_FACTORY(name) name::getInstance
@@ -29,29 +30,36 @@ namespace RLSimion
 
 //The child class is given a name according to the context from the parent class, so the parameter node should include
 //the appropriate hierarchy (i.e., pParameters->getChild("VFA"))
-#define CHILD_CLASS(variable,name,className,constructorParameters,...) variable= new className(constructorParameters,__VA_ARGS__);
-#define CHILD_CLASS_FACTORY(variable,name,className,constructorParameters,...) variable= className::getInstance(constructorParameters,__VA_ARGS__);
+#define CHILD_CLASS(variable,name,className,pParameterNode,...) variable= new className(pParameterNode->getChild(name),__VA_ARGS__);
+#define CHILD_CLASS_FACTORY(variable,name,className,pParameterNode,...) variable= className::getInstance(pParameterNode->getChild(name),__VA_ARGS__);
 
-#define CHOICE(name)
-#define CHOICE_XML(name,loadXML)
+#define CHOICE(name) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();
+#define CHOICE_XML(name,loadXML) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();
 #define END_CHOICE()
 
-#define CHOICE_ELEMENT_XML(checkVariable,checkLiteral,className,XMLFilename, ...) if(!strcmp(checkVariable,checkLiteral)) return new className(XMLFilename,__VA_ARGS__);
-#define CHOICE_ELEMENT(checkVariable,checkLiteral,className, ...) if(!strcmp(checkVariable,checkLiteral)) return new className(__VA_ARGS__);
-#define CHOICE_ELEMENT_FACTORY(checkVariable, checkLiteral, className, ...) if(!strcmp(checkVariable,checkLiteral)) return className::getInstance(__VA_ARGS__);
+#define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename) if(!strcmp(type,checkLiteral)) return new className(pChild,XMLFilename);
+#define CHOICE_ELEMENT(checkLiteral,className) if(!strcmp(type,checkLiteral)) return new className(pChild);
+#define CHOICE_ELEMENT_FACTORY(checkLiteral, className) if(!strcmp(type,checkLiteral)) return className::getInstance(pChild);
 
-#define NUMERIC_VALUE(variable,parameterNode,parameterName) variable= CNumericValue::getInstance(parameterNode,parameterName);
+#define NUMERIC_VALUE(variable,parameterNode,parameterName) variable= CNumericValue::getInstance(parameterNode->getChild(parameterName));
 #define CONST_INTEGER_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstInteger(parameterName,defaultValue);
 //#define CONST_BOOLEAN_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstBoolean(parameterName,defaultValue);
 #define CONST_STRING_VALUE(variable,parameterNode,parameterName,defaultValue) variable= (char*)parameterNode->getConstString(parameterName,defaultValue);
-#define CONST_STRING_VALUE_OPTIONAL(variable,parameterNode,parameterName) if(parameterNode->getChild(parameterName)) {variable= (char*)parameterNode->getChild(parameterName)->getConstString(parameterName);} else {variable= 0;}
+//#define CONST_STRING_VALUE_OPTIONAL(variable,parameterNode,parameterName) if(parameterNode->getChild(parameterName)) {variable= (char*)parameterNode->getChild(parameterName)->getConstString(parameterName);} else {variable= 0;}
 #define CONST_DOUBLE_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstDouble(parameterName,defaultValue);
 
 #define MULTI_VALUED(indexedVariable,name,className,...) indexedVariable= new className(__VA_ARGS__);
 #define MULTI_VALUED_FACTORY(indexedVariable,name,className,...) indexedVariable= className::getInstance(__VA_ARGS__);
 
-#define STATE_VARIABLE_REF(variable,parameterNode,variableName) variable= RLSimion::g_pWorld->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
-#define ACTION_VARIABLE_REF(variable,parameterNode,variableName) variable= RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
+#define MULTI_VALUED_STRING(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstString(defaultValue);
+#define MULTI_VALUED_DOUBLE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstDouble(defaultValue);
+#define MULTI_VALUED_INTEGER(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstInteger(defaultValue);
+#define MULTI_VALUED_FILE_PATH(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstString(defaultValue);
+#define MULTI_VALUED_STATE_VAR_REF(variable,parameterNode,parameterName,defaultValue) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
+#define MULTI_VALUED_ACTION_VAR_REF(variable,parameterNode,parameterName,defaultValue) CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
+
+#define STATE_VARIABLE_REF(variable,parameterNode,variableName) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
+#define ACTION_VARIABLE_REF(variable,parameterNode,variableName) variable= CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
 
 #define DIR_PATH_VALUE(variable,parameterNode,variableName,defaultValue) variable= (char*)parameterNode->getConstString(variableName,defaultValue);
 #define FILE_PATH_VALUE(variable,parameterNode,variableName,defaultValue) variable= (char*)parameterNode->getConstString(variableName,defaultValue);

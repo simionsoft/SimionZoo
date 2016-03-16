@@ -12,7 +12,7 @@ CLASS_CONSTRUCTOR(CActorCritic)(CParameters* pParameters) : CParamObject(pParame
 	m_td = 0.0;
 
 	CHILD_CLASS(m_pActor, "Actor", CActor, pParameters->getChild("Actor"));
-	CHILD_CLASS_FACTORY(m_pCritic, "Critic", CCritic, pParameters->getChild("Critic"));
+	CHILD_CLASS_FACTORY(m_pCritic, "Critic", CCritic, pParameters);
 	END_CLASS();
 
 }

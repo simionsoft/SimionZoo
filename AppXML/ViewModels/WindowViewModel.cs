@@ -8,9 +8,10 @@ using System.Windows.Forms;
 using System.IO;
 using System.Dynamic;
 using System.Collections.Generic;
+using System.ComponentModel.Composition;
 namespace AppXML.ViewModels
 {
-    /*[Export(typeof(WindowViewModel))]*/
+    //[Export(typeof(WindowViewModel))]
     public class WindowViewModel : PropertyChangedBase
     {
         private CNode _rootnode;
@@ -26,32 +27,20 @@ namespace AppXML.ViewModels
         public string SelectedApp { get { return selectedApp; } 
             set 
             {
-                if (value == selectedApp)
-                {
-                    return;
-                }
-                if (selectedApp == null || selectedApp == "")
-                {
-                    selectedApp = value;
-                    return;
-                }
-                    
-                int index = Apps.IndexOf(value);
-               
+                CNode.cleanAll();
+                CApp.cleanAll();
 
-                
-
-                WindowViewModel wvm = new WindowViewModel(this.apps, Apps, index);
-               // DialogViewModel dvm = new DialogViewModel(null, "Error validating de form. Please check form", DialogViewModel.DialogType.Info);
-                dynamic settings = new ExpandoObject();
-                settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-                //settings.ShowInTaskbar = true;
-                //settings.Title = "ERROR";
-                
-                new WindowManager().ShowDialog(wvm, null, settings);
-                
+                int index = _apps.IndexOf(value);
+                selectedApp = Apps[index];
+                _rootnode = Utility.getRootNode(apps[index]);
+                _branches = _rootnode.children;
+                _doc = (this._rootnode as CApp).document;
+                Graf = null;
+                NotifyOfPropertyChange(() => Branches);
+                NotifyOfPropertyChange(() => Graf);
             } 
         }
+        /*
         public WindowViewModel(string[] apps, ObservableCollection<string> Apps, int index)
         {
             CNode.cleanAll();
@@ -63,11 +52,15 @@ namespace AppXML.ViewModels
             _branches = _rootnode.children;
             _doc = (this._rootnode as CApp).document;
         }
+        private readonly IWindowManager _windowManager;
+ 
+        [ImportingConstructor]*/
         public WindowViewModel()
         {
+             //_windowManager = windowManager;
             apps = Directory.GetFiles("..\\apps");
             getAppsNames();
-            SelectedApp = Apps[0];
+            selectedApp = Apps[0];
             _rootnode = Utility.getRootNode(apps[0]);
             _branches = _rootnode.children;
             _doc = (this._rootnode as CApp).document;
@@ -438,7 +431,7 @@ namespace AppXML.ViewModels
             document.AppendChild(newRoot);
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
-                _graf = new RightTreeViewModel(rootNode);
+                _graf = new RightTreeViewModel(rootNode, this);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => AddChildVisible);
         }
@@ -487,11 +480,6 @@ namespace AppXML.ViewModels
             //LoadDocument(doc.DocumentElement);
             //NotifyOfPropertyChange(() => Branches);
         }
-        private XmlDocument copyDocument(XmlDocument source)
-        {
-            XmlDocument doc = new XmlDocument();
-
-            return doc;
-        }
+       
     }
 }

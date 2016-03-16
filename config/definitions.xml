@@ -1,46 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <DEFINITIONS>
   <CLASS Name="CCACLALearner">
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
+    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory"/>
   </CLASS>
 
-  <CLASS Name="CIncrementalNaturalCritic">
-    <BRANCH Name="E-Traces" Class="CETraces"/>
+  <CLASS Name="CIncrementalNaturalActorCritic">
+    <BRANCH Name="V-ETraces" Class="CETraces"/>
+    <BRANCH Name="U-ETraces" Class="CETraces"/>
     <BRANCH Name="Alpha-v" Class="CNumericValue-Factory"/>
     <BRANCH Name="Alpha-r" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
-  </CLASS>
-
-  <CLASS Name="CIncrementalNaturalActor">
-    <BRANCH Name="ETraces" Class="CETraces"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
     <BRANCH Name="Alpha-u" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Alpha-v" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
+  </CLASS>
+
+  <CLASS Name="CActorCritic">
+    <BRANCH Name="Actor" Class="CActor"/>
+    <BRANCH Name="Critic" Class="CCritic-Factory"/>
   </CLASS>
 
   <CLASS Name="CRegularPolicyGradientLearner">
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
+    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory"/>
   </CLASS>
 
-  <CLASS Name="CActor-Factory">
-    <CHOICE Name="Actor-Type">
-      <CHOICE-ELEMENT Name="VFA-Learner" Class="CVFAActor"/>
-      <CHOICE-ELEMENT Name="Multi-Controller" Class="CMultiController"/>
-    </CHOICE>
+  <CLASS Name="CActor">
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
+    <MULTI-VALUED Name="Outputs" Class="CPolicyLearner-Factory"/>
   </CLASS>
 
-  <CLASS Name="CMultiController">
-    <MULTI-VALUED Name="Controllers" Class="CMultiController-Factory"/>
-  </CLASS>
-
-  <CLASS Name="CMultiController-Factory">
-    <CHOICE Name="Controller-Type">
+  <CLASS Name="CController-Factory">
+    <CHOICE Name="Controller">
       <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController"/>
       <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController"/>
       <CHOICE-ELEMENT Name="PID" Class="CPIDController"/>
@@ -101,10 +95,13 @@
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
   </CLASS>
 
   <CLASS Name="CTDCLambdaCritic">
+    <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
     <BRANCH Name="Beta" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
@@ -114,12 +111,22 @@
     <BRANCH Name="E-Traces" Class="CETraces"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory"/>
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
+  </CLASS>
+
+  <CLASS Name="CCritic">
+    <STRING-VALUE Name="Load" Default=""/>
+    <STRING-VALUE Name="Save" Default=""/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
   </CLASS>
 
   <CLASS Name="CCritic-Factory">
-    <CHOICE Name="Critic-Type">
-      <CHOICE-ELEMENT Name="VFA-Critic" Class="CVFACritic-Factory"/>
+    <CHOICE Name="Critic">
+      <CHOICE-ELEMENT Name="TD-Lambda" Class="CTDLambdaCritic"/>
+      <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="CTrueOnlineTDLambdaCritic"/>
+      <CHOICE-ELEMENT Name="TDC-Lambda" Class="CTDCLambdaCritic"/>
     </CHOICE>
   </CLASS>
 
@@ -146,7 +153,7 @@
   </CLASS>
 
   <CLASS Name="CFeatureMap-Factory">
-    <CHOICE Name="Type">
+    <CHOICE Name="Feature-Map">
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap"/>
       <CHOICE-ELEMENT Name="RBF-Action-Grid" Class="CGaussianRBFActionGridFeatureMap"/>
     </CHOICE>
@@ -182,7 +189,7 @@
   </CLASS>
 
   <CLASS Name="CNoise-Factory">
-    <CHOICE Name="Noise-Type">
+    <CHOICE Name="Noise">
       <CHOICE-ELEMENT Name="GaussianNoise" Class="CGaussianNoise"/>
     </CHOICE>
   </CLASS>
@@ -216,10 +223,21 @@
   </CLASS>
 
   <CLASS Name="CNumericValue-Factory">
-    <CHOICE Name="Type">
+    <CHOICE Name="Schedule">
       <CHOICE-ELEMENT Name="Constant" Class="CConstantValue"/>
       <CHOICE-ELEMENT Name="Linear-Schedule" Class="CInterpolatedValue"/>
       <CHOICE-ELEMENT Name="Bhatnagar-Schedule" Class="CBhatnagarSchedule"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="CPolicyLearner">
+    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory"/>
+  </CLASS>
+
+  <CLASS Name="CPolicyLearner-Factory">
+    <CHOICE Name="Policy-Learner">
+      <CHOICE-ELEMENT Name="CACLA" Class="CCACLALearner"/>
+      <CHOICE-ELEMENT Name="Regular-Gradient" Class="CRegularPolicyGradientLearner"/>
     </CHOICE>
   </CLASS>
 
@@ -235,18 +253,15 @@
     <MULTI-VALUED Name="Reward-Component" Class="CRewardFunctionComponent"/>
   </CLASS>
 
-  <CLASS Name="CFileSetPoint">
-    <FILE-PATH-VALUE Name="File" Default=""/>
-  </CLASS>
-
-  <CLASS Name="CHHFileSetPoint">
-    <FILE-PATH-VALUE Name="File" Default=""/>
-  </CLASS>
-
   <CLASS Name="CSimGod">
-    <BRANCH Name="Controller" Class="CActor-Factory"/>
-    <BRANCH Name="Actor" Class="CActor-Factory"/>
-    <BRANCH Name="Critic" Class="CCritic-Factory"/>
+    <MULTI-VALUED Name="Simion" Class="CSimion-Factory"/>
+  </CLASS>
+
+  <CLASS Name="CSimion-Factory">
+    <CHOICE Name="Simion">
+      <CHOICE-ELEMENT Name="Controller" Class="CController-Factory"/>
+      <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic"/>
+    </CHOICE>
   </CLASS>
 
   <CLASS Name="CStateVariableGrid">
@@ -265,43 +280,14 @@
     <STRING-VALUE Name="Distribution" Default="linear"/>
   </CLASS>
 
-  <CLASS Name="CVFAPolicyLearner">
-    <BRANCH Name="Policy" Class="CDeterministicVFAPolicy-Factory"/>
-  </CLASS>
-
-  <CLASS Name="CVFAPolicyLearner-Factory">
-    <CHOICE Name="Learner-Type">
-      <CHOICE-ELEMENT Name="CACLA" Class="CCACLALearner"/>
-      <CHOICE-ELEMENT Name="Regular-Gradient" Class="CRegularPolicyGradientLearner"/>
-      <CHOICE-ELEMENT Name="Incremental-Natural-Actor" Class="CIncrementalNaturalActor"/>
-    </CHOICE>
-  </CLASS>
-
-  <CLASS Name="CVFAActor">
-    <MULTI-VALUED Name="Outputs" Class="CVFAPolicyLearner-Factory"/>
-  </CLASS>
-
-  <CLASS Name="CVFACritic">
-    <BRANCH Name="V-Function" Class="CLinearStateVFA"/>
-  </CLASS>
-
-  <CLASS Name="CVFACritic-Factory">
-    <CHOICE Name="Type">
-      <CHOICE-ELEMENT Name="TD-Lambda" Class="CTDLambdaCritic"/>
-      <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="CTrueOnlineTDLambdaCritic"/>
-      <CHOICE-ELEMENT Name="TDC-Lambda" Class="CTDCLambdaCritic"/>
-      <CHOICE-ELEMENT Name="Incremental-Natural-Critic" Class="CIncrementalNaturalCritic"/>
-    </CHOICE>
-  </CLASS>
-
-  <CLASS Name="CDeterministicVFAPolicy-Factory">
-    <CHOICE Name="Policy-Type">
+  <CLASS Name="CDeterministicPolicy-Factory">
+    <CHOICE Name="Policy">
       <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise"/>
       <CHOICE-ELEMENT Name="Stochastic-Policy-Gaussian-Noise" Class="CStochasticPolicyGaussianNoise"/>
     </CHOICE>
   </CLASS>
 
-  <CLASS Name="CDeterministicVFAPolicy">
+  <CLASS Name="CDeterministicPolicy">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA"/>
   </CLASS>
@@ -330,21 +316,21 @@
   </CLASS>
 
   <CLASS Name="CMagneticLevitation">
-    <BRANCH Name="Evaluation-Set-Point" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Evaluation-Set-Point" Default="../config/world/magnetic-levitation/setpoint.txt"/>
   </CLASS>
 
   <CLASS Name="CPitchControl">
-    <BRANCH Name="Set-Point-File" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Set-Point-File" Default="../config/world/pitch-control/setpoint.txt"/>
   </CLASS>
 
   <CLASS Name="CUnderwaterVehicle">
-    <BRANCH Name="Set-Point-File" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Set-Point-File" Default="../config/world/underwater-vehicle/setpoint.txt"/>
   </CLASS>
 
   <CLASS Name="CWindTurbine">
-    <MULTI-VALUED Name="Training-Wind-Data" Class="CHHFileSetPoint"/>
-    <BRANCH Name="Evaluation-Wind-Data" Class="CHHFileSetPoint"/>
-    <BRANCH Name="Power-Set-Point" Class="CFileSetPoint"/>
+    <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/world/wind-turbine/TurbSim-10.25.hh"/>
+    <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/world/wind-turbine/power-setpoint.txt"/>
+    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE"/>
   </CLASS>
 
   <CLASS Name="CWorld">
@@ -355,7 +341,7 @@
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">
-    <CHOICE Name="Dynamic-Model" LoadXML= "WORLD-DEFINITION">
+    <CHOICE Name="Model" LoadXML= "WORLD-DEFINITION">
       <CHOICE-ELEMENT Name="Wind-turbine" Class="CWindTurbine" XML="../config/world/wind-turbine.xml"/>
       <CHOICE-ELEMENT Name="Underwater-vehicle" Class="CUnderwaterVehicle" XML="../config/world/underwater-vehicle.xml"/>
       <CHOICE-ELEMENT Name="Pitch-control" Class="CPitchControl" XML="../config/world/pitch-control.xml"/>

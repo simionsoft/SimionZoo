@@ -17,12 +17,13 @@ CLASS_CONSTRUCTOR (CWorld) (CParameters* pParameters)
 	assert(pParameters);
 	m_t= 0.0;
 
+	//The dynamic model must be created before the reward so that references to state variables are correctly set
+	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model", CDynamicModel, pParameters);
+	CHILD_CLASS(m_pRewardFunction, "Reward", CRewardFunction, pParameters);
+
 	CONST_INTEGER_VALUE(m_simulationSteps,pParameters,"Num-Integration-Steps",4);
 	CONST_DOUBLE_VALUE(m_dt,pParameters,"Delta-T",0.01);
-	
-	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model", CDynamicModel, pParameters->getChild("Dynamic-Model"));
 
-	CHILD_CLASS(m_pRewardFunction,"Reward", CRewardFunction,pParameters->getChild("Reward"));
 	m_scalarReward = 0.0;
 	END_CLASS();
 }
@@ -80,34 +81,34 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 
 	return m_scalarReward;
 }
-
-CState *CWorld::getStateDescriptor()
-{
-	if (m_pDynamicModel)
-		return m_pDynamicModel->getStateDescriptor();
-	return 0;
-}
-
-CAction *CWorld::getActionDescriptor()
-{
-	if (m_pDynamicModel)
-		return m_pDynamicModel->getActionDescriptor();
-	return 0;
-}
-
-CState *CWorld::getStateInstance()
-{
-	if (m_pDynamicModel)
-		return m_pDynamicModel->getStateDescriptor()->getInstance();
-	return 0;
-}
-
-CAction *CWorld::getActionInstance()
-{
-	if (m_pDynamicModel)
-		return m_pDynamicModel->getActionDescriptor()->getInstance();
-	return 0;
-}
+//
+//CState *CWorld::getStateDescriptor()
+//{
+//	if (m_pDynamicModel)
+//		return m_pDynamicModel->getStateDescriptor();
+//	return 0;
+//}
+//
+//CAction *CWorld::getActionDescriptor()
+//{
+//	if (m_pDynamicModel)
+//		return m_pDynamicModel->getActionDescriptor();
+//	return 0;
+//}
+//
+//CState *CWorld::getStateInstance()
+//{
+//	if (m_pDynamicModel)
+//		return m_pDynamicModel->getStateDescriptor()->getInstance();
+//	return 0;
+//}
+//
+//CAction *CWorld::getActionInstance()
+//{
+//	if (m_pDynamicModel)
+//		return m_pDynamicModel->getActionDescriptor()->getInstance();
+//	return 0;
+//}
 
 CDynamicModel::~CDynamicModel()
 { 
@@ -137,14 +138,11 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 
 CDynamicModel *CLASS_FACTORY(CDynamicModel)(CParameters* pParameters)
 {
-	CParameters* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
-
-	CHOICE_XML("Dynamic-Model", "WORLD-DEFINITION");
-	CHOICE_ELEMENT_XML(type, "Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml", pChild);
-	CHOICE_ELEMENT_XML(type, "Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml", pChild);
-	CHOICE_ELEMENT_XML(type, "Pitch-control", CWindTurbine, "../config/world/pitch-control.xml", pChild);
-	CHOICE_ELEMENT_XML(type, "Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml", pChild);
+	CHOICE_XML("Model", "WORLD-DEFINITION");
+	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml");
+	CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml");
+	CHOICE_ELEMENT_XML("Pitch-control", CWindTurbine, "../config/world/pitch-control.xml");
+	//CHOICE _ ELEMENT _ XML("Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml");
 	END_CHOICE();
 	return 0;
 

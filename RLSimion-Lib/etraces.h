@@ -11,7 +11,7 @@ class CETraces : public CFeatureList, public CParamObject
 	double m_lambda;
 
 public:
-	CETraces(const char* name, CParameters* pParameters);
+	CETraces(CParameters* pParameters, const char* name);
 	~CETraces();
 
 	//traces will be multiplied by factor*lambda

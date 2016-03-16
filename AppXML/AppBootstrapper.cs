@@ -23,8 +23,8 @@ namespace AppXML
         protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
             DisplayRootViewFor<WindowViewModel>();
         }
-
-/*        protected override void Configure()
+/*
+        protected override void Configure()
         {
           container = new CompositionContainer(new AggregateCatalog(AssemblySource.Instance.Select(x => new AssemblyCatalog(x)).OfType<ComposablePartCatalog>()));
 
@@ -48,8 +48,8 @@ namespace AppXML
           }
 
           throw new Exception(string.Format("Could not locate any instances of contract {0}.", contract));
-        }*/
-
+        }
+*/
       }
     
   

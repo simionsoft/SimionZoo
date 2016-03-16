@@ -2,9 +2,9 @@
 #include "actor.h"
 #include "noise.h"
 #include "controller.h"
-#include "vfa-actor.h"
+
 #include "actor.h"
-#include "vfa-actor.h"
+#include "policy.h"
 #include "globals.h"
 #include "named-var-set.h"
 #include "parameters.h"
@@ -13,7 +13,7 @@
 #include "vfa.h"
 
 
-CLASS_CONSTRUCTOR(CActor)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CActor)(CParameters* pParameters) : CParamObject(pParameters)
 {
 	CParameters* pOutputs = pParameters->getChild("Outputs");
 
@@ -29,8 +29,8 @@ CLASS_CONSTRUCTOR(CActor)(CParameters* pParameters)
 		pOutput = pOutput->getNextChild();
 	}
 
-	CONST_STRING_VALUE_OPTIONAL(m_loadFile, pParameters, "Load");
-	CONST_STRING_VALUE_OPTIONAL(m_saveFile, pParameters, "Save");
+	CONST_STRING_VALUE(m_loadFile, pParameters, "Load","");
+	CONST_STRING_VALUE(m_saveFile, pParameters, "Save","");
 	if (m_loadFile) loadPolicy(m_loadFile);
 	END_CLASS();
 }
