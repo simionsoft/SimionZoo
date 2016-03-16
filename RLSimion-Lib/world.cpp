@@ -141,7 +141,7 @@ CDynamicModel *CLASS_FACTORY(CDynamicModel)(CParameters* pParameters)
 	CHOICE_XML("Model", "WORLD-DEFINITION");
 	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml");
 	CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml");
-	CHOICE_ELEMENT_XML("Pitch-control", CWindTurbine, "../config/world/pitch-control.xml");
+	CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml");
 	//CHOICE _ ELEMENT _ XML("Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml");
 	END_CHOICE();
 	return 0;

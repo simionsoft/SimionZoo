@@ -344,8 +344,7 @@
     <CHOICE Name="Model" LoadXML= "WORLD-DEFINITION">
       <CHOICE-ELEMENT Name="Wind-turbine" Class="CWindTurbine" XML="../config/world/wind-turbine.xml"/>
       <CHOICE-ELEMENT Name="Underwater-vehicle" Class="CUnderwaterVehicle" XML="../config/world/underwater-vehicle.xml"/>
-      <CHOICE-ELEMENT Name="Pitch-control" Class="CPitchControl" XML="../config/world/pitch-control.xml"/>
-      <CHOICE-ELEMENT Name="Magnetic-leviation" Class="CMagneticLevitation" XML="../config/world/magnetic-levitation.xml"/>
+      <CHOICE-ELEMENT Name="Pitch-control" Class="CWindTurbine" XML="../config/world/pitch-control.xml"/>
     </CHOICE>
   </CLASS>
 
