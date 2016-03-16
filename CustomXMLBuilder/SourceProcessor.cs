@@ -16,6 +16,7 @@ namespace CustomXMLBuilder
         private List<string> m_enumDefinitions;
         private List<string> m_enumReferences;
         private int m_numErrors= 0;
+        private int m_numWarnings = 0;
 
         public void addClassDefinition(string className){m_classDefinitions.Add(className);}
         public void addClassReference(string className){m_classReferences.Add(className);}
@@ -47,6 +48,12 @@ namespace CustomXMLBuilder
                     //m_classReferences.RemoveAll(c => c==classRef);
                     m_numErrors++;
                 }
+            }
+            foreach (string classDef in m_classDefinitions)
+            {
+                if (!m_classReferences.Contains(classDef))
+                    Console.WriteLine("WARNING: Class {0} defined but not referenced",classDef);
+                m_numWarnings++;
             }
             return m_numErrors;
         }

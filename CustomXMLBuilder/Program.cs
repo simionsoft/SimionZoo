@@ -39,12 +39,6 @@ namespace CustomXMLBuilder
             xmlOutput= sourceProcessor.resolveInlineClassRefs(xmlOutput);
 
             int numErrors= sourceProcessor.m_checker.checkClassReferences();
-            if (numErrors > 0)
-            {
-               
-                Console.ReadKey();
-            }
-            else
             {      
                 System.IO.StreamWriter outputFile = new System.IO.StreamWriter("../config/definitions.xml");
                 // encoding=\"utf-8\"
