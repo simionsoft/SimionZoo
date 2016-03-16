@@ -7,8 +7,7 @@
 #include "globals.h"
 #include "timer.h"
 
-static MessageOutputMode m_messageOutputMode= MessageOutputMode::Console;
-static void* m_outputPipe = 0;
+
 
 #define MAX_FILENAME_LENGTH 1024
 
@@ -260,7 +259,8 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 #include <windows.h>
 
 
-
+MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
+void* CLogger::m_outputPipe = 0;
 
 void CLogger::logMessage(MessageType type, const char* message)
 {
