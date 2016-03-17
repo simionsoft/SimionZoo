@@ -38,7 +38,7 @@ CNoise::CNoise()
 	m_lastValue = 0.0;
 }
 
-CNoise* CLASS_FACTORY(CNoise)(CParameters* pParameters)
+CLASS_FACTORY(CNoise)
 {
 	CHOICE("Noise");
 	CHOICE_ELEMENT("GaussianNoise", CGaussianNoise);
@@ -49,7 +49,7 @@ CNoise* CLASS_FACTORY(CNoise)(CParameters* pParameters)
 	return 0;
 }
 
-CLASS_CONSTRUCTOR(CGaussianNoise)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CGaussianNoise) : CParamObject(pParameters)
 {
 	NUMERIC_VALUE(m_pSigma,pParameters,"Sigma");
 	NUMERIC_VALUE(m_pAlpha,pParameters,"Alpha");

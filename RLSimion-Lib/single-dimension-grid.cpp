@@ -54,7 +54,7 @@ void CSingleDimensionGrid::initCenterPoints()
 	}
 }
 
-CLASS_CONSTRUCTOR(CStateVariableGrid)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CStateVariableGrid)
 {
 	STATE_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
 	CONST_INTEGER_VALUE(m_numCenters, pParameters, "Num-Features", 3);
@@ -77,7 +77,7 @@ double CStateVariableGrid::getVariableValue(const CState* s, const CAction* a)
 }
 
 
-CLASS_CONSTRUCTOR(CActionVariableGrid)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CActionVariableGrid)
 {
 	ACTION_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
 	CONST_INTEGER_VALUE(m_numCenters, pParameters, "Num-Features", 3);

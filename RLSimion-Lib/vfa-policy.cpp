@@ -9,7 +9,7 @@
 #include "features.h"
 #include "policy.h"
 
-CDeterministicPolicy* CLASS_FACTORY(CDeterministicPolicy)(CParameters* pParameters)
+CLASS_FACTORY(CDeterministicPolicy)
 {
 	CHOICE("Policy");
 
@@ -21,7 +21,7 @@ CDeterministicPolicy* CLASS_FACTORY(CDeterministicPolicy)(CParameters* pParamete
 	return 0;
 }
 
-CLASS_CONSTRUCTOR(CDeterministicPolicy)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CDeterministicPolicy)
 : CParamObject(pParameters)
 {
 	CHILD_CLASS(m_pVFA, "Linear-State-VFA", CLinearStateVFA, pParameters);
@@ -43,7 +43,7 @@ CDeterministicPolicy::~CDeterministicPolicy()
 //CDetPolicyGaussianNoise////////////////////////////////
 /////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
 	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise",CNoise,pParameters);
@@ -84,7 +84,7 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
 	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", CLinearStateVFA, pParameters);

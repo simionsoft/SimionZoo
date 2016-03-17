@@ -20,8 +20,8 @@ namespace RLSimion
 };
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
-#define CLASS_FACTORY(name) name::getInstance
-#define CLASS_CONSTRUCTOR(name) name::name
+#define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
+#define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
 #define END_CLASS()
 
 //The superclass' parameters are embedded inline within the subclass' definition, so the superclass' parameters

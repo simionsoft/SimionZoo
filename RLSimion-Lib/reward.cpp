@@ -35,7 +35,7 @@ public:
 	const char* getName();
 };
 
-CLASS_CONSTRUCTOR(CRewardFunctionComponent)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CRewardFunctionComponent) : CParamObject(pParameters)
 {
 	//m_errorComponentType[0]= 0;
 	//m_controlledVariable[0]= 0;
@@ -92,7 +92,7 @@ double CRewardFunctionComponent::getRewardComponent(CState* state)
 }
 
 
-CLASS_CONSTRUCTOR(CRewardFunction)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CRewardFunction) : CParamObject(pParameters)
 {
 	CONST_DOUBLE_VALUE(m_minReward,pParameters,"Min",-100.0);
 	CONST_DOUBLE_VALUE(m_maxReward,pParameters,"Max",1.0);

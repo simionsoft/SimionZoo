@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CLASS_CONSTRUCTOR(CPitchControl)(CParameters *pParameters,const char* worldDefinition)
+CLASS_CONSTRUCTOR(CPitchControl,const char* worldDefinition)
 : CDynamicModel(worldDefinition)
 {
 	CState *pStateDescriptor = getStateDescriptor();

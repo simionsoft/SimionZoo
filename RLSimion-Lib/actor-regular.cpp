@@ -9,7 +9,7 @@
 #include "globals.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CRegularPolicyGradientLearner)(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CRegularPolicyGradientLearner)
 	: EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");

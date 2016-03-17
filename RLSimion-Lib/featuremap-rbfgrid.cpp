@@ -16,7 +16,7 @@ CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
 	m_pGrid = 0;
 }
 
-CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap)(CParameters* pParameters) : CGaussianRBFGridFeatureMap(pParameters)
+CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters)
 {
 	m_pVarFeatures= new CFeatureList("RBFGrid/var");
 
@@ -43,7 +43,7 @@ CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap)(CParameters* pParameters) : C
 	END_CLASS();
 }
 
-CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap)(CParameters* pParameters) : CGaussianRBFGridFeatureMap(pParameters)
+CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters)
 {
 	m_pVarFeatures = new CFeatureList("RBFGrid/var");
 

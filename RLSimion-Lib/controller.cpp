@@ -8,7 +8,7 @@
 #include "parameters-numeric.h"
 
 
-CController* CLASS_FACTORY(CController)(CParameters* pParameters)
+CLASS_FACTORY(CController)
 {
 	CHOICE("Controller");
 	CHOICE_ELEMENT("Vidal", CWindTurbineVidalController);
@@ -30,14 +30,14 @@ CController* CLASS_FACTORY(CController)(CParameters* pParameters)
 	double *m_pGains;
 	int numVars;*/
 
-CLASS_CONSTRUCTOR(CLQRGain)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CLQRGain)
 {
 	STATE_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
 	CONST_DOUBLE_VALUE(m_gain, pParameters, "Gain", 0.0);
 	
 	END_CLASS();
 }
-CLASS_CONSTRUCTOR(CLQRController)(CParameters *pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLQRController) : CParamObject(pParameters)
 {
 	ACTION_VARIABLE_REF(m_outputActionIndex,pParameters,"Output-Action");
 	
@@ -79,7 +79,7 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CPIDController)(CParameters *pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CPIDController) : CParamObject(pParameters)
 {
 	ACTION_VARIABLE_REF(m_outputActionIndex, pParameters, "Output-Action");
 
@@ -135,7 +135,7 @@ CWindTurbineVidalController::~CWindTurbineVidalController()
 	delete m_P_s;
 }
 
-CLASS_CONSTRUCTOR(CWindTurbineVidalController)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineVidalController) : CParamObject(pParameters)
 {
 	NUMERIC_VALUE(m_pA, pParameters, "A");
 	NUMERIC_VALUE(m_pK_alpha, pParameters, "K_alpha");
@@ -199,7 +199,7 @@ CWindTurbineBoukhezzarController::~CWindTurbineBoukhezzarController()
 	delete m_pKI;
 }
 
-CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController) : CParamObject(pParameters)
 {
 
 	NUMERIC_VALUE(m_pC_0,pParameters,"C_0");
@@ -258,7 +258,7 @@ CWindTurbineJonkmanController::~CWindTurbineJonkmanController()
 	delete m_PC_KI;
 }
 
-CLASS_CONSTRUCTOR(CWindTurbineJonkmanController)(CParameters *pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineJonkmanController) : CParamObject(pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
 	CONST_DOUBLE_VALUE(m_CornerFreq,pParameters,"CornerFreq",0.0);

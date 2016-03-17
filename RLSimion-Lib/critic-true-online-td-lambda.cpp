@@ -9,7 +9,7 @@
 #include "parameters-numeric.h"
 #include "parameters.h"
 
-CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)
 	: EXTENDS(CCritic,pParameters)
 {
 	CHILD_CLASS(m_e, "E-Traces", CETraces, pParameters,"Critic/E-Traces" );

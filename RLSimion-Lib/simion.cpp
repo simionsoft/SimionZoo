@@ -5,7 +5,7 @@
 #include "controller.h"
 #include "actor-critic.h"
 
-CSimion* CLASS_FACTORY(CSimion)(CParameters* pParameters)
+CLASS_FACTORY(CSimion)
 {
 	CHOICE("Simion");
 	CHOICE_ELEMENT_FACTORY("Controller", CController);

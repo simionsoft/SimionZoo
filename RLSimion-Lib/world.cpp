@@ -12,7 +12,7 @@
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
 
-CLASS_CONSTRUCTOR (CWorld) (CParameters* pParameters)
+CLASS_CONSTRUCTOR (CWorld)
 {
 	assert(pParameters);
 	m_t= 0.0;
@@ -136,7 +136,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	}
 }
 
-CDynamicModel *CLASS_FACTORY(CDynamicModel)(CParameters* pParameters)
+CLASS_FACTORY(CDynamicModel)
 {
 	CHOICE_XML("Model", "WORLD-DEFINITION");
 	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml");

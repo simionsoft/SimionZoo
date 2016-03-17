@@ -9,7 +9,7 @@
 #include "parameters.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CTDLambdaCritic)(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CTDLambdaCritic)
 	: EXTENDS(CCritic,pParameters)
 {
 	CHILD_CLASS(m_z, "E-Traces", CETraces, pParameters,"Critic/E-Traces" );

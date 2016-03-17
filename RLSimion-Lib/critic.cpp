@@ -6,7 +6,7 @@
 #include "logger.h"
 #include "vfa.h"
 
-CLASS_CONSTRUCTOR(CCritic) (CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CCritic) : CParamObject(pParameters)
 {
 	CHILD_CLASS(m_pVFunction, "V-Function", CLinearStateVFA, pParameters);
 
@@ -19,7 +19,7 @@ CLASS_CONSTRUCTOR(CCritic) (CParameters* pParameters) : CParamObject(pParameters
 	END_CLASS();
 }
 
-CCritic* CLASS_FACTORY(CCritic)(CParameters* pParameters)
+CLASS_FACTORY(CCritic)
 {
 	CHOICE("Critic");
 	CHOICE_ELEMENT("TD-Lambda", CTDLambdaCritic);
