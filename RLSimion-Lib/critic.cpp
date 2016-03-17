@@ -8,7 +8,7 @@
 
 CLASS_CONSTRUCTOR(CCritic) : CParamObject(pParameters)
 {
-	CHILD_CLASS(m_pVFunction, "V-Function", CLinearStateVFA, pParameters);
+	CHILD_CLASS(m_pVFunction, "V-Function", CLinearStateVFA);
 
 	//m_pVFA = new CLinearStateVFA();
 	CONST_STRING_VALUE(m_loadFile, pParameters, "Load","");

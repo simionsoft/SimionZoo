@@ -19,7 +19,7 @@ CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic) : CParamObject(pParameters)
 	NUMERIC_VALUE(m_pAlphaV, pParameters,"Alpha-v");
 	NUMERIC_VALUE(m_pAlphaR,pParameters, "Alpha-r");
 	NUMERIC_VALUE(m_pGamma, pParameters,"Gamma");
-	CHILD_CLASS(m_e_v,"V-ETraces",CETraces,"Critic/e_v",pParameters);
+	CHILD_CLASS(m_e_v,"V-ETraces",CETraces,"Critic/e_v");
 
 
 	m_grad_u = new CFeatureList("Actor/grad-u");
@@ -27,7 +27,7 @@ CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic) : CParamObject(pParameters)
 	NUMERIC_VALUE(m_pGamma, pParameters, "Gamma");
 	NUMERIC_VALUE(m_pAlphaU, pParameters, "Alpha-u");
 
-	CHILD_CLASS(m_e, "U-ETraces", CETraces, "Actor/E-Traces", pParameters);
+	CHILD_CLASS(m_e, "U-ETraces", CETraces, "Actor/E-Traces");
 	m_w = new CFeatureList("Actor/w");
 	END_CLASS();
 }
