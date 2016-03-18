@@ -324,10 +324,10 @@
   </CLASS>
 
   <CLASS Name="CWorld">
-    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" Comment="The number of integration steps performed each simulation time-step"/>
-    <DOUBLE-VALUE Name="Delta-T" Default="0.01" Comment="The delta-time between simulation steps"/>
-    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model"/>
-    <BRANCH Name="Reward" Class="CRewardFunction" Comment="The reward function" Window="New"/>
+    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4"/>
+    <DOUBLE-VALUE Name="Delta-T" Default="0.01"/>
+    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory"/>
+    <BRANCH Name="Reward" Class="CRewardFunction"/>
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">

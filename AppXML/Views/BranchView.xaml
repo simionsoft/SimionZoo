@@ -6,7 +6,7 @@
              xmlns:v="clr-namespace:AppXML.Views"
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             
              >
     <UserControl.Resources>
         <ResourceDictionary>
@@ -14,14 +14,18 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <TreeView BorderBrush="white" BorderThickness="0">
-            
+        <TreeView BorderBrush="white" BorderThickness="0" >
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="True"/>
+                </Style>
+            </TreeView.ItemContainerStyle>
             <TreeViewItem>
                 <TreeViewItem.Header>
                     <Label Content="{Binding Name}" ToolTip="{Binding Comment }"></Label>
                 </TreeViewItem.Header>
                 <CheckBox Content="SET AS NULL" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsNull}"></CheckBox>
-                <ContentControl x:Name="Class" IsEnabled="{Binding IsEnabled}"></ContentControl>
+                <ContentControl x:Name="Class" IsEnabled="{Binding IsEnabled}" Focusable="False" ></ContentControl>
             </TreeViewItem>
 
         </TreeView>

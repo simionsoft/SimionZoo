@@ -17,6 +17,7 @@ namespace AppXML.Models
         public string comment { get; set; }
         public CIntegerValue(string tipo)
         {
+            
             if (tipo == "INTEGER-VALUE")
             {
                 type = validTypes.IntergerValue;

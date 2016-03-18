@@ -15,7 +15,7 @@ namespace AppXML.ViewModels
     {
 
         private ClassViewModel _father;
-        private ClassViewModel _result;
+       
         private XmlDocument _doc;
 
         public ClassViewModel Class { get { return _father.ResumeClass; } set { _father.ResumeClass = value; } }

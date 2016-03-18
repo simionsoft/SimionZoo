@@ -20,12 +20,13 @@ namespace AppXML.ViewModels
         private ClassViewModel _resumeClassViewModel;
 
         public ClassViewModel ResumeClass { get { return _resumeClassViewModel; } set { _resumeClassViewModel = value; } }
-
+        private ObservableCollection<ValidableAndNodeViewModel> _allItems = new ObservableCollection<ValidableAndNodeViewModel>();
+       
         private ChoiceViewModel _choice;
-        private ObservableCollection<IntegerViewModel> _items;
+        /*private ObservableCollection<IntegerViewModel> _items;
         private ObservableCollection<MultiValuedViewModel> _multis;
         private ObservableCollection<BranchViewModel> _branches;
-        private ObservableCollection<XMLNodeRefViewModel> _XMLNODE;
+        private ObservableCollection<XMLNodeRefViewModel> _XMLNODE;*/
         private string _resume;
         private string _className;
         private WindowClassViewModel _wclvm;
@@ -59,24 +60,25 @@ namespace AppXML.ViewModels
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
                         _choice = new ChoiceViewModel(child,_doc,tag);
+                        _allItems.Add(_choice);
                     }
                     else if (child.Name.EndsWith("VALUE"))
                     {
-                        if (_items == null)
-                            _items = new ObservableCollection<IntegerViewModel>();
+                        //if (_items == null)
+                        //    _items = new ObservableCollection<IntegerViewModel>();
                         CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
                         IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc,tag);
-                        _items.Add(ivw);
+                        _allItems.Add(ivw);
 
                     }
                     else if (child.Name == "MULTI-VALUED")
                     {
                         //to do: añadir los multis a su lista y añadirlo en el xaml
-                        if (_multis == null)
-                            _multis = new ObservableCollection<MultiValuedViewModel>();
+                        //if (_multis == null)
+                         //   _multis = new ObservableCollection<MultiValuedViewModel>();
                         bool isOptional = false;
                         if (child.Attributes["Optional"] != null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
@@ -86,14 +88,30 @@ namespace AppXML.ViewModels
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,doc,tag);
-                        _multis.Add(mvvm);
+                        if(child.Attributes["Class"].Value=="XML-NODE-REF")
+                        {
+                            string action = child.Attributes["HangingFrom"].Value;
+                            string xmlfile = child.Attributes["XMLFile"].Value;
+                            MultiXmlNodeRefViewModel mxml = new MultiXmlNodeRefViewModel(child.Attributes["Name"].Value, xmlfile, action, doc, tag);
+                            _allItems.Add(mxml);
+                        }
+                        else if (!CNode.definitions.ContainsKey(child.Attributes["Class"].Value))
+                        {
+                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            _allItems.Add(simple);
+                        }
+                        else
+                        {
+                            MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            _allItems.Add(mvvm);
+                        }
+                        
                     }
                     else if (child.Name == "BRANCH")
                     {
 
-                        if (_branches == null)
-                            _branches = new ObservableCollection<BranchViewModel>();
+                       // if (_branches == null)
+                       //     _branches = new ObservableCollection<BranchViewModel>();
                         bool isOptional=false;
                         if (child.Attributes["Optional"]!=null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
@@ -104,19 +122,19 @@ namespace AppXML.ViewModels
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
                         BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,comment,isOptional,_doc,tag);
-                        _branches.Add(bvm);
+                        _allItems.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
                     {
                         string label = child.Attributes["Name"].Value;
                         string action = child.Attributes["HangingFrom"].Value;
                         string xmlfile = child.Attributes["XMLFile"].Value;
-                        if (_XMLNODE == null)
-                            _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
+                        //if (_XMLNODE == null)
+                        //    _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
-                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action,_doc,tag));
+                        _allItems.Add(new XMLNodeRefViewModel(label, xmlfile, action,_doc,tag));
                     }
                     else if (child.Name == "RESUME")
                     {
@@ -149,25 +167,26 @@ namespace AppXML.ViewModels
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
                         _choice = new ChoiceViewModel(child, _doc, tag);
+                        _allItems.Add(_choice);
                     }
                     else if (child.Name.EndsWith("VALUE"))
                     {
-                        if (_items == null)
-                            _items = new ObservableCollection<IntegerViewModel>();
+                        //if (_items == null)
+                          //  _items = new ObservableCollection<IntegerViewModel>();
                         CIntegerValue civ = CNode.getInstance(child) as CIntegerValue;
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
                         IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ, _doc, tag);
                        // IntegerViewModel ivw = new IntegerViewModel(child.Attributes["Name"].Value, civ,_doc);
-                        _items.Add(ivw);
+                        _allItems.Add(ivw);
 
                     }
                     else if (child.Name == "MULTI-VALUED")
                     {
                         //to do: añadir los multis a su lista y añadirlo en el xaml
-                        if (_multis == null)
-                            _multis = new ObservableCollection<MultiValuedViewModel>();
+                        //if (_multis == null)
+                          //  _multis = new ObservableCollection<MultiValuedViewModel>();
                         bool isOptional = false;
                         if (child.Attributes["Optional"] != null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
@@ -177,14 +196,24 @@ namespace AppXML.ViewModels
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
-                        MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
-                        _multis.Add(mvvm);
+                        if (!CNode.definitions.ContainsKey(child.Attributes["Class"].Value))
+                        {
+                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            _allItems.Add(simple);
+                        }
+                        else
+                        {
+                            MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            _allItems.Add(mvvm);
+                        }
+                        //MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                        //_multis.Add(mvvm);
                     }
                     else if (child.Name == "BRANCH")
                     {
 
-                        if (_branches == null)
-                            _branches = new ObservableCollection<BranchViewModel>();
+                       //if (_branches == null)
+                        //    _branches = new ObservableCollection<BranchViewModel>();
                         bool isOptional = false;
                         if (child.Attributes["Optional"] != null)
                             isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
@@ -195,19 +224,19 @@ namespace AppXML.ViewModels
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
                         BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, _doc, tag);
-                        _branches.Add(bvm);
+                        _allItems.Add(bvm);
                     }
                     else if (child.Name == "XML-NODE-REF")
                     {
                         string label = child.Attributes["Name"].Value;
                         string action = child.Attributes["HangingFrom"].Value;
                         string xmlfile = child.Attributes["XMLFile"].Value;
-                        if (_XMLNODE == null)
-                            _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
+                        //if (_XMLNODE == null)
+                         //   _XMLNODE = new ObservableCollection<XMLNodeRefViewModel>();
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
-                        this._XMLNODE.Add(new XMLNodeRefViewModel(label, xmlfile, action, _doc, tag));
+                        _allItems.Add(new XMLNodeRefViewModel(label, xmlfile, action, _doc, tag));
                     }
                     else if(child.Name == "RESUME")
                     {
@@ -222,40 +251,54 @@ namespace AppXML.ViewModels
 
         public string ClassViewVisible { get { if (_resume != null)return "Hidden"; else return "Visible"; } set { } }
         public string ResumeVisible { get { if (_resume == null)return "Hidden"; else return "Visible"; } set { } }
-        public string ItemsVisible { get { if(Items == null || _resume!=null )return "Hidden";else return "Visible"; } set { } }
-        public string ChoiceVisible { get { if (Choice == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
-        public string BranchesVisible { get { if (Branches == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
-        public string MultisVisible { get { if (Multis == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
-        public string XMLNodeVisible { get { if (_XMLNODE == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
+        //public string ItemsVisible { get { if(Items == null || _resume!=null )return "Hidden";else return "Visible"; } set { } }
+        //public string ChoiceVisible { get { if (Choice == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
+        //public string BranchesVisible { get { if (Branches == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
+        //public string MultisVisible { get { if (Multis == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
+       // public string XMLNodeVisible { get { if (_XMLNODE == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
         public ChoiceViewModel Choice { get { return _choice; } set { _choice = value; } }
-        public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
-        public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
-        public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
-        public ObservableCollection<XMLNodeRefViewModel> XMLNODE { get { return _XMLNODE; } set { } }
+        //public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
+        //public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
+        //public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
+        //public ObservableCollection<XMLNodeRefViewModel> XMLNODE { get { return _XMLNODE; } set { } }
+        public ObservableCollection<ValidableAndNodeViewModel> AllItems { get { return _allItems; } set { } }
         public string Resume { get { return _resume; } set { _resume = value; NotifyOfPropertyChange(() => Resume); } }
 
         public void removeViews()
         {
-            if(_XMLNODE!=null)
-                CApp.removeViews(_XMLNODE.ToList());
-            if (_branches != null)
+            foreach(ValidableAndNodeViewModel item in _allItems)
             {
-                foreach(BranchViewModel branch in _branches)
-                {
-                    branch.removeViews();
-                }
+                if (item is XMLNodeRefViewModel)
+                    CApp.removeView(item as XMLNodeRefViewModel);
+                if (item is BranchViewModel)
+                    (item as BranchViewModel).removeViews();
+                if (item is ChoiceViewModel)
+                    (item as ChoiceViewModel).removeViews();
+                if (item is MultiValuedViewModel)
+                    (item as MultiValuedViewModel).removeViews();
+                if (item is MultiXmlNodeRefViewModel)
+                    (item as MultiXmlNodeRefViewModel).removeViews();
             }
-            if(_choice!=null)
-            {
-                _choice.removeViews();
-            }
-            if(_multis!=null)
-            {
-                foreach(MultiValuedViewModel multi in _multis)
-                {
-                    multi.removeViews();
-                }
-            }
+            //if(_XMLNODE!=null)
+              //  CApp.removeViews(_XMLNODE.ToList());
+            //if (_branches != null)
+           // {
+             //   foreach(BranchViewModel branch in _branches)
+               // {
+                 //   branch.removeViews();
+                //}
+            //}
+            //if(_choice!=null)
+            //{
+              //  _choice.removeViews();
+           // }
+            //if(_multis!=null)
+           // {
+             //   foreach(MultiValuedViewModel multi in _multis)
+              //  {
+              //      multi.removeViews();
+              //  }
+          //  }
                 
         }
         public void OpenForm()
@@ -278,6 +321,12 @@ namespace AppXML.ViewModels
         {
             if(_wclvm==null)
             {
+                foreach(ValidableAndNodeViewModel item in _allItems)
+                {
+                    if (!item.validate())
+                        return false;
+                }
+                /*
                 if (_branches != null)
                 {
                     foreach (BranchViewModel item in _branches)
@@ -314,7 +363,7 @@ namespace AppXML.ViewModels
                             return false;
                     }
                 }
-                
+                */
                 return true;
             }
            
@@ -327,11 +376,20 @@ namespace AppXML.ViewModels
 
         public List<XmlNode> getXmlNodes()
         {
+            
             List<XmlNode> result = new List<XmlNode>();
             //XmlNode nodo = _doc.CreateElement(_className);
             if(_resume==null)
             {
-                if (_branches != null)
+                foreach (ValidableAndNodeViewModel item in _allItems)
+                {
+
+                    List<XmlNode> tmp = item.getXmlNode();
+                    if (tmp != null)
+                        result.AddRange(tmp);
+
+                }
+                /*if (_branches != null)
                 {
                     foreach (BranchViewModel item in _branches)
                     {
@@ -376,7 +434,7 @@ namespace AppXML.ViewModels
                         //nodo.AppendChild(item.getXmlNode());
                         result.Add(item.getXmlNode());
                     }
-                }
+                }*/
               
             }
             else
@@ -384,12 +442,17 @@ namespace AppXML.ViewModels
                 return ResumeClass.getXmlNodes();
             }       
             return result;
+           
         }
         public XmlNode getXmlNode()
         {
             
             XmlNode nodo = _doc.CreateElement(_className);
-            if (_resume == null)
+            List<XmlNode> list = getXmlNodes();
+            foreach (XmlNode node in list)
+                nodo.AppendChild(node);
+            return nodo;
+            /*if (_resume == null)
             {
                 if (_branches != null)
                 {
@@ -437,7 +500,8 @@ namespace AppXML.ViewModels
             {
                 return ResumeClass.getXmlNode();
             }
-            return nodo;
+            return nodo;*/
+            
         }
     }
 }

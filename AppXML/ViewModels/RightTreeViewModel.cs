@@ -10,6 +10,17 @@ using System.Xml;
 
 namespace AppXML.ViewModels
 {
+    public class NodeAndName
+    {
+        public string name;
+        public XmlDocument doc;
+
+        public NodeAndName(string n,XmlDocument t)
+        {
+            name = n;
+            doc = t;
+        }
+    }
     public class RightTreeViewModel:PropertyChangedBase
     {
         BindableCollection<TreeNode> _treeItems;
@@ -53,13 +64,13 @@ namespace AppXML.ViewModels
             selectedTreeNode = rootNode;
         }
 
-        internal List<XmlDocument> getAllLeafs()
+        internal List<NodeAndName> getAllLeafs()
         {
-            List<XmlDocument> result = new List<XmlDocument>();
+            List<NodeAndName> result = new List<NodeAndName>();
             findLeafs(ref result, rootNode);
             return result;
         }
-        private void findLeafs(ref List<XmlDocument> result, TreeNode nodo)
+        private void findLeafs(ref List<NodeAndName> result, TreeNode nodo)
         {
             if (nodo.hasChildren())
             {
@@ -69,7 +80,7 @@ namespace AppXML.ViewModels
                 }
             }
             else
-                result.Add(nodo.Doc);
+                result.Add(new NodeAndName(nodo.Text,nodo.Doc));
         }
     }
 }

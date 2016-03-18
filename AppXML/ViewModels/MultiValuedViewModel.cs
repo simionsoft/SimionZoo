@@ -10,7 +10,7 @@ using System.Xml;
 using System.Windows.Controls;
 namespace AppXML.ViewModels
 {
-    public class MultiValuedViewModel: PropertyChangedBase
+    public class MultiValuedViewModel: ValidableAndNodeViewModel
     {
         private ObservableCollection<IntegerViewModel> _aded;
         private IntegerViewModel _header;
@@ -95,6 +95,7 @@ namespace AppXML.ViewModels
 
                     }
                 }
+               
                 else 
                 {
                     //es un integervalue
@@ -210,7 +211,7 @@ namespace AppXML.ViewModels
         }
         public String DeleteVisible { get { if (_adedClasses != null && _adedClasses.Count > 0) return "Visible"; else return "Hidden"; } set { } }
 
-        public bool validate()
+        public override bool validate()
         {
             if(_isNull)
                 return true;
@@ -249,7 +250,7 @@ namespace AppXML.ViewModels
             return validate();
         }
 
-        internal List<XmlNode> getXmlNode()
+        public override List<XmlNode> getXmlNode()
         {
             if (_isNull)
                 return null;
@@ -277,12 +278,14 @@ namespace AppXML.ViewModels
             }
             else
             {
-                nodes.Add(Header.getXmlNode());
+                nodes.AddRange(Header.getXmlNode());
+                //nodes.Add(Header.getXmlNode());
                 if(Aded!=null)
                 {
                     foreach(IntegerViewModel ivm in Aded)
                     {
-                        nodes.Add(ivm.getXmlNode());
+                        nodes.AddRange(Header.getXmlNode());
+                       // nodes.Add(ivm.getXmlNode());
                     }
                 }
             }

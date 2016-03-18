@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="55" d:DesignWidth="300">
+             >
     <StackPanel Orientation="Horizontal">
         <ItemsControl ItemsSource="{Binding TextBox}">
             <ItemsControl.ItemTemplate>

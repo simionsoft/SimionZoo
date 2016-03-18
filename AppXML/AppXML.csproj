@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
+    <Compile Include="Data\NamedPipeServer.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Models\CApp.cs" />
     <Compile Include="Models\CBranch.cs" />
@@ -90,7 +91,10 @@
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
+    <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
+    <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
     <Compile Include="ViewModels\RightTreeViewModel.cs" />
+    <Compile Include="ViewModels\ValidableAndNodeViewModel.cs" />
     <Compile Include="ViewModels\WindowClassViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="ViewModels\MultiValuedViewModel.cs" />
@@ -111,8 +115,14 @@
     <Compile Include="Views\IntegerView.xaml.cs">
       <DependentUpon>IntegerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\MultiSimpleView.xaml.cs">
+      <DependentUpon>MultiSimpleView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MultiValuedView.xaml.cs">
       <DependentUpon>MultiValuedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MultiXmlNodeRefView.xaml.cs">
+      <DependentUpon>MultiXmlNodeRefView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RightTreeView.xaml.cs">
       <DependentUpon>RightTreeView.xaml</DependentUpon>
@@ -159,6 +169,14 @@
     <Resource Include="Views\images\file.JPG" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\MultiSimpleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MultiXmlNodeRefView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\OrgChartTreeViewItemStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
