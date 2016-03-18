@@ -9,8 +9,19 @@ using System.IO;
 using System.Dynamic;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System;
+using System.Diagnostics;
+using System.Text;
 namespace AppXML.ViewModels
 {
+    public interface IValidable
+    {
+        bool validate();
+    }
+    public interface IGetXml
+    {
+        List<XmlNode> getXmlNode();
+    }
     //[Export(typeof(WindowViewModel))]
     public class WindowViewModel : PropertyChangedBase
     {
@@ -131,7 +142,7 @@ namespace AppXML.ViewModels
                 }
                 else
                 {
-                    rootNode.AppendChild(branch.getXmlNode());
+                    rootNode.AppendChild(branch.getXmlNode()[0]);
                 }
             }
             _doc.AppendChild(rootNode);
@@ -139,6 +150,7 @@ namespace AppXML.ViewModels
         }
         public void fillTheClass(ClassViewModel cvm, XmlNode dataNode)
         {
+            
             //here we have to set the new data such as: selected choice element, default values for every *.value, etc.
             bool dataSet = false;
             bool multiStarted = false;
@@ -184,6 +196,176 @@ namespace AppXML.ViewModels
                         }
                     }
                 }
+                foreach(ValidableAndNodeViewModel view in cvm.AllItems)
+                {
+                    if(!dataSet)
+                    {
+                        XMLNodeRefViewModel itemXml = view as XMLNodeRefViewModel;
+                        if(itemXml!=null)
+                        {
+                            string itemTag = itemXml.Tag;
+                            splitedTag = itemTag.Split('/');
+                            XmlNode tmp = data;
+                            foreach (string tag in splitedTag)
+                            {
+                                if (itemTag == dataTag)
+                                {
+                                    if (tag == splitedTag[splitedTag.Length - 1])
+                                    {
+
+                                        itemXml.SelectedOption = tmp.InnerText;
+                                        dataSet = true;
+                                        break;
+
+                                    }
+                                    else
+                                    {
+                                        if (data.HasChildNodes)
+                                        {
+                                            tmp = data.FirstChild;
+                                            dataTag = tmp.Name;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                        MultiValuedViewModel itemMulti = view as MultiValuedViewModel;
+                        if(itemMulti!=null)
+                        {
+                            string itemTag = itemMulti.Tag;
+                            splitedTag = itemTag.Split('/');
+                            XmlNode tmp = data;
+                            foreach (string tag in splitedTag)
+                            {
+                                if (itemTag == dataTag)
+                                {
+                                    if (tag == splitedTag[splitedTag.Length - 1])
+                                    {
+
+                                        if (multiStarted == false || currentMulti != tag)
+                                        {
+                                            currentMulti = tag;
+                                            multiIndex = 0;
+                                            multiStarted = true;
+                                            if (itemMulti.HeaderClass == null)
+                                            {
+                                                itemMulti.Header.Value = tmp.InnerText;
+                                                //item.Aded.Clear();
+                                            }
+                                            else
+                                            {
+                                                fillTheClass(itemMulti.HeaderClass, tmp);
+                                                //item.AdedClasses.Clear();
+                                            }
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            if (itemMulti.HeaderClass == null)
+                                            {
+                                                int index = itemMulti.Aded.Count;
+                                                if (index == -0 || multiIndex >= index)
+                                                    itemMulti.AddNew();
+                                                itemMulti.Aded[multiIndex].Value = tmp.InnerText;
+                                            }
+
+                                            else
+                                            {
+                                                int index = itemMulti.AdedClasses.Count;
+                                                if (index == 0 || multiIndex >= index)
+                                                    itemMulti.Add();
+                                                fillTheClass(itemMulti.AdedClasses[multiIndex], tmp);
+
+                                            }
+                                            multiIndex++;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (data.HasChildNodes)
+                                        {
+                                            tmp = data.FirstChild;
+                                            dataTag = tmp.Name;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                        IntegerViewModel itemInteger = view as IntegerViewModel;
+                        if(itemInteger!=null)
+                        {
+                            string itemTag = itemInteger.Tag;
+                            splitedTag = itemTag.Split('/');
+                            XmlNode tmp = data;
+                            foreach (string tag in splitedTag)
+                            {
+                                if (itemTag == dataTag)
+                                {
+                                    if (tag == splitedTag[splitedTag.Length - 1])
+                                    {
+
+                                        itemInteger.Value = tmp.InnerText;
+                                        dataSet = true;
+                                        break;
+
+                                    }
+                                    else
+                                    {
+                                        if (data.HasChildNodes)
+                                        {
+                                            tmp = data.FirstChild;
+                                            dataTag = tmp.Name;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                        BranchViewModel itemBranch = view as BranchViewModel;
+                        if(itemBranch!=null)
+                        {
+                            string itemTag = itemBranch.Tag;
+                            splitedTag = itemTag.Split('/');
+                            XmlNode tmp = data;
+                            foreach (string tag in splitedTag)
+                            {
+                                if (itemTag == dataTag)
+                                {
+                                    if (tag == splitedTag[splitedTag.Length - 1])
+                                    {
+                                        if (tmp.HasChildNodes)
+                                        {
+                                            //item.Value = tmp.InnerText;
+                                            if (itemBranch.Class.Resume == null)
+                                                fillTheClass(itemBranch.Class, tmp);
+                                            else
+                                            {
+                                                fillTheClass(itemBranch.Class.ResumeClass, tmp);
+                                                itemBranch.Class.setResumeInClassView();
+
+                                            }
+                                            dataSet = true;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (data.HasChildNodes)
+                                        {
+                                            tmp = data.FirstChild;
+                                            dataTag = tmp.Name;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                /*
                 if(!dataSet && cvm.Branches!=null)
                 {
                     foreach (BranchViewModel item in cvm.Branches)
@@ -362,7 +544,7 @@ namespace AppXML.ViewModels
                             }
                         }
                     }
-                }
+                }*/
             }
         }
         public void Load()
@@ -431,7 +613,7 @@ namespace AppXML.ViewModels
             document.AppendChild(newRoot);
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
-                _graf = new RightTreeViewModel(rootNode, this);
+                _graf = new RightTreeViewModel(rootNode);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => AddChildVisible);
         }
@@ -468,7 +650,38 @@ namespace AppXML.ViewModels
         }
         public void SaveAll()
         {
-            List<XmlDocument> myList = Graf.getAllLeafs();
+            List<NodeAndName> myList = Graf.getAllLeafs();
+            List<string> pahts = new List<string>();
+            string folderName = "../experiments/" +"experiment" +DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            Directory.CreateDirectory(CombinedPath);
+            foreach(NodeAndName item in myList)
+            {
+                string path = CombinedPath + "/" + item.name + ".xml";
+                item.doc.Save(path);
+                pahts.Add(path);
+            }
+            runExperimentas(pahts);
+        }
+        private void runExperimentas(List<string> myList)
+        {
+            int max = Environment.ProcessorCount;
+            string[] tmp = (myList[0].Split('/'));
+            string pipeName = @"preuba";
+            Process myProces = new Process();
+            myProces.StartInfo.FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../debug/RLSimion");
+            myProces.StartInfo.Arguments = myList[0] + ","+pipeName;
+            myProces.Start();
+            
+            Data.NamedPipeServer pipe = new NamedPipeServer(pipeName, 0);
+            pipe.Start();
+            
+            Console.Write("pipe");
+            //pipe.StopServer();
+
+            //ffmpeg.StartInfo.FileName = "../cmd.exe";
+            //ffmpeg.StartInfo.Arguments = "/k " + ffmpegPath + " " + ffmpegParams
+            //ffmpeg.Start();
         }
         public void LoadSelectedNode()
         {

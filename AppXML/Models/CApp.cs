@@ -29,6 +29,10 @@ namespace AppXML.Models
                 viewsWithNodeRef.Remove(view);
             }
         }
+        public static void removeView(XMLNodeRefViewModel view)
+        {
+            viewsWithNodeRef.Remove(view);
+        }
         public static void updateViews()
         {
             foreach (XMLNodeRefViewModel view in viewsWithNodeRef)

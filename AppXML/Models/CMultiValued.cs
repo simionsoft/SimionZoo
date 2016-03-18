@@ -8,7 +8,7 @@ namespace AppXML.Models
 {
     public class CMultiValued: CNode
     {
-        public string name;
+       
         public string klass;
 
         public CMultiValued(string n, string k)

@@ -12,13 +12,12 @@ using System.Windows.Controls;
 
 namespace AppXML.ViewModels
 {
-    public class ChoiceViewModel:PropertyChangedBase
+    public class ChoiceViewModel:ValidableAndNodeViewModel
     {
         private string _label;
         private ObservableCollection<ChoiceElement> _comboValues;
         private ChoiceElement _selectedItem;
         private XmlNode _node;
-        private string _clas;
         private ClassViewModel _Class;
         private string _XML;
         private XmlDocument _doc;
@@ -82,7 +81,6 @@ namespace AppXML.ViewModels
        
         public string Label { get { return _label; } set { } }
         public ObservableCollection<ChoiceElement> Combo { get { return _comboValues; } set { } }
-        public string Clas { get { return _clas; } set { } }
         public ClassViewModel Class { get { return _Class; } set { _Class = value; } }
         public ChoiceElement SelectedItem { get { return _selectedItem; } 
             set
@@ -105,12 +103,12 @@ namespace AppXML.ViewModels
             _Class.removeViews();
         }
 
-        public bool validate()
+        public override bool validate()
         {
             return _Class.validate();
         }
 
-        internal XmlNode getXmlNode()
+        public override List<XmlNode> getXmlNode()
         {
             XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
             XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
@@ -120,7 +118,9 @@ namespace AppXML.ViewModels
             foreach (XmlNode child in _Class.getXmlNodes())
                 itemLastChild.AppendChild(child);
             lastChild.AppendChild(itemResult);
-            return result;
+            List<XmlNode> list = new List<XmlNode>();
+            list.Add(result);
+            return list;
         }
     }
 }

@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace AppXML.ViewModels
 {
-    public class IntegerViewModel: Caliburn.Micro.PropertyChangedBase
+    public class IntegerViewModel: ValidableAndNodeViewModel
     {
        
         private ObservableCollection<TextBox> _textBox;
@@ -112,7 +112,7 @@ namespace AppXML.ViewModels
        { 
            get { return _textBoxFile; } set { } }
 
-        public bool validateIntegerViewModel()
+       public bool validateIntegerViewModel()
        {
            
             if(_textBox!=null)
@@ -135,8 +135,11 @@ namespace AppXML.ViewModels
             return validateIntegerViewModel();
            
         }
-
-        internal XmlNode getXmlNode()
+        public override bool validate()
+        {
+            return validateIntegerViewModel();
+        }
+        public override List<XmlNode> getXmlNode()
         {
             XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
             XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
@@ -154,7 +157,9 @@ namespace AppXML.ViewModels
             }
             if (lastChild.InnerText =="")
                 return null;
-            return result;
+            List<XmlNode> list = new List<XmlNode>();
+            list.Add(result);
+            return list;
             
         }
     }
@@ -164,7 +169,7 @@ namespace AppXML.ViewModels
     {
         private string label;
         private string defaultValue;
-        private validTypes type;
+        public validTypes type;
         private string _textColor = "White";
         protected bool isOptional;
         private string _comment;
@@ -236,15 +241,15 @@ namespace AppXML.ViewModels
     public class TextBoxWithFile:TextBox
     {
         private string buttonImage;
-        private string type;
+        
 
-        public bool validate()
+        public new bool validate()
         {
             if (!isOptional && (Default == null || Default == ""))
                 return false;
-            if (type == "file" && !File.Exists(Default))
+            if (type == validTypes.FilePathValue && !File.Exists(Default))
                 return false;
-            if (type == "folder" && !Directory.Exists(Default))
+            if (type == validTypes.DirPathValue && !Directory.Exists(Default))
                 return false;
             return true;
         }
@@ -252,11 +257,15 @@ namespace AppXML.ViewModels
         public TextBoxWithFile(string label,string def, string bt, string type,string comment, bool optional):base(label,def,validTypes.FilePathValue,comment,optional)
         {
             buttonImage = bt;
-            this.type = type;
+            if (type == "folder")
+                this.type = validTypes.DirPathValue;
+            else
+                this.type = validTypes.FilePathValue;
+            
 
         }
         public string ButtonImage { get { return buttonImage; } set { buttonImage = value; } }
-        public string Type
+        public validTypes Type
         {
             get { return type; }
             set { type = value; }
@@ -265,7 +274,7 @@ namespace AppXML.ViewModels
         public void FindPath()
         {
            
-            if(type=="file")
+            if(type==validTypes.FilePathValue)
             {
                 Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
                  openFileDialog.Filter = "Text Files (.txt)|*.txt|All Files (*.*)|*.*";
@@ -276,7 +285,7 @@ namespace AppXML.ViewModels
                  }
                    
             }  
-            else if(type=="folder")
+            else if(type==validTypes.DirPathValue)
             {
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
                 if (fbd.ShowDialog() == DialogResult.OK)

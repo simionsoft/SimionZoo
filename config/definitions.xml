@@ -338,6 +338,7 @@
     <DOUBLE-VALUE Name="Delta-T" Default="0.01"/>
     <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory"/>
     <BRANCH Name="Reward" Class="CRewardFunction"/>
+    <MULTI-VALUED Name="prueba" Class="XML-NODE-REF" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">

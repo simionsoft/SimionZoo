@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace AppXML.ViewModels
 {
-    public class XMLNodeRefViewModel:Caliburn.Micro.PropertyChangedBase
+    public class XMLNodeRefViewModel:ValidableAndNodeViewModel
     {
         private string _label;
         private ObservableCollection<string> _options;
@@ -20,7 +20,7 @@ namespace AppXML.ViewModels
 
         public string Tag { get { return tag; } set { } }
 
-        public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; } }
+        public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; NotifyOfPropertyChange(()=>SelectedOption); } }
 
         public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc, string tag)
         {
@@ -45,17 +45,19 @@ namespace AppXML.ViewModels
         }
         public ObservableCollection<string> Options { get { return _options; } set { } }
         public string Label { get { return _label; } set { } }
-        public bool validate()
+        public override bool validate()
         {
             return _selectedOption != null;
         }
 
-        internal XmlNode getXmlNode()
+        public override List<XmlNode> getXmlNode()
         {
             XmlNode nodo = AppXML.Data.Utility.resolveTag(tag, _doc);
             XmlNode lastChild = AppXML.Data.Utility.getLastChild(nodo);
             lastChild.InnerText = SelectedOption;
-            return nodo;
+            List<XmlNode> result = new List<XmlNode>();
+            result.Add(nodo);
+            return result;
         }
     }
 }

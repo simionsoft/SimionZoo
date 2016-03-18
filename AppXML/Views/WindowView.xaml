@@ -21,7 +21,6 @@
         <TreeView  HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
             <TreeViewItem x:Name ="Branches" Header="{Binding rootnode.name}"/>
         </TreeView>
-        <Button Content="Load node" cal:Message.Attach="[Event Click]=[Action LoadSelectedNode()]" HorizontalAlignment="Left" Margin="591,143,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding RemoveChildVisible}"/>
         <Button Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" HorizontalAlignment="Left" Margin="591,268,0,0" VerticalAlignment="Top" Width="75"/>
         <Button Content="Load" HorizontalAlignment="Left" Margin="591,243,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action Load()]" RenderTransformOrigin="0.607,2.05"/>
         <Button Content="Set as root" HorizontalAlignment="Left" Margin="591,218,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action SetAsRoot()]" RenderTransformOrigin="0.607,3.6" />
