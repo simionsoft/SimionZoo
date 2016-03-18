@@ -43,12 +43,12 @@ CLASS_CONSTRUCTOR(CRewardFunctionComponent) : CParamObject(pParameters)
 	//m_controlErrorVariable[0]= 0;
 	//m_weight= 0.0;
 	//m_componentIndex= -1;
-	STATE_VARIABLE_REF(m_sVariable, pParameters, "Variable");
+	STATE_VARIABLE_REF(m_sVariable, "Variable","Input state variable");
 	const char* varName = pParameters->getConstString("Variable");
 	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r(%s)", varName);
 	
-	NUMERIC_VALUE(m_pTolerance,pParameters,"Tolerance");
-	NUMERIC_VALUE(m_pWeight,pParameters,"Weight");
+	NUMERIC_VALUE(m_pTolerance,"Tolerance","Tolerance value: errors greater will result in a negative reward");
+	NUMERIC_VALUE(m_pWeight,"Weight","Weight of this reward function component (in case more than one is used)");
 	m_lastReward= 0.0;
 	END_CLASS();
 }
@@ -94,8 +94,8 @@ double CRewardFunctionComponent::getRewardComponent(CState* state)
 
 CLASS_CONSTRUCTOR(CRewardFunction) : CParamObject(pParameters)
 {
-	CONST_DOUBLE_VALUE(m_minReward,pParameters,"Min",-100.0);
-	CONST_DOUBLE_VALUE(m_maxReward,pParameters,"Max",1.0);
+	CONST_DOUBLE_VALUE(m_minReward,"Min",-100.0,"Minimum output of the reward function");
+	CONST_DOUBLE_VALUE(m_maxReward,"Max",1.0,"Maximum output of the reward function");
 
 	m_lastReward= 0.0;
 
@@ -109,7 +109,7 @@ CLASS_CONSTRUCTOR(CRewardFunction) : CParamObject(pParameters)
 
 	for (int i= 0; i<m_numRewardComponents; i++)
 	{
-		MULTI_VALUED(m_pRewardComponents[i], "Reward-Component", CRewardFunctionComponent, pRewardComponents);
+		MULTI_VALUED(m_pRewardComponents[i], "Reward-Component", "A component of the reward function",CRewardFunctionComponent, pRewardComponents);
 		m_pReward->setName(i, m_pRewardComponents[i]->getName());
 
 		pRewardComponents = pRewardComponents->getNextChild("Reward-Component");

@@ -17,7 +17,7 @@ CLASS_CONSTRUCTOR(CSimGod)
 	CParameters* pChild = pParameters->getChild("Simion");
 	for (int i = 0; i < m_numSimions; i++)
 	{
-		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", CSimion, pChild);
+		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", "A Simion: a learning agent",CSimion, pChild);
 		pChild = pChild->getNextChild("Simion");
 	}
 	

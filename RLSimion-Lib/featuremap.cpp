@@ -6,9 +6,9 @@
 CLASS_FACTORY(CFeatureMap)
 {
 
-	CHOICE("Feature-Map");
-	CHOICE_ELEMENT("RBF-State-Grid", CGaussianRBFStateGridFeatureMap);
-	CHOICE_ELEMENT("RBF-Action-Grid", CGaussianRBFActionGridFeatureMap);
+	CHOICE("Feature-Map","Feature map type");
+	CHOICE_ELEMENT("RBF-State-Grid", CGaussianRBFStateGridFeatureMap,"Grid on the state-space");
+	CHOICE_ELEMENT("RBF-Action-Grid", CGaussianRBFActionGridFeatureMap,"Grid on the action-space");
 	END_CHOICE();
 
 	END_CLASS();

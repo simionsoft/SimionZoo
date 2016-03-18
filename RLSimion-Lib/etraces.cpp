@@ -9,10 +9,10 @@ CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name), CParamObject
 	if (pParameters)
 	{
 		m_bUse = true;
-		CONST_DOUBLE_VALUE(m_threshold,m_pParameters,"Threshold",0.001);
-		CONST_DOUBLE_VALUE(m_lambda,m_pParameters,"Lambda",0.9);
+		CONST_DOUBLE_VALUE(m_threshold,"Threshold",0.001,"Threshold applied to trace factors");
+		CONST_DOUBLE_VALUE(m_lambda,"Lambda",0.9,"Lambda parameter");
 		const char* replace;
-		ENUM_VALUE(replace, Boolean, m_pParameters, "Replace", "True");
+		ENUM_VALUE(replace, Boolean, "Replace", "True","Replace existing traces? Or add?");
 		m_bReplaceIfExists = !strcmp(replace, "True");
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
