@@ -92,6 +92,7 @@
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
     <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
+    <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
     <Compile Include="ViewModels\RightTreeViewModel.cs" />
     <Compile Include="ViewModels\ValidableAndNodeViewModel.cs" />
     <Compile Include="ViewModels\WindowClassViewModel.cs" />
@@ -119,6 +120,9 @@
     </Compile>
     <Compile Include="Views\MultiValuedView.xaml.cs">
       <DependentUpon>MultiValuedView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MultiXmlNodeRefView.xaml.cs">
+      <DependentUpon>MultiXmlNodeRefView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RightTreeView.xaml.cs">
       <DependentUpon>RightTreeView.xaml</DependentUpon>
@@ -166,6 +170,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\MultiSimpleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MultiXmlNodeRefView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

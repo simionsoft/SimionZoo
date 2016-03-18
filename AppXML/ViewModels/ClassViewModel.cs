@@ -92,9 +92,8 @@ namespace AppXML.ViewModels
                         {
                             string action = child.Attributes["HangingFrom"].Value;
                             string xmlfile = child.Attributes["XMLFile"].Value;
-                           //hay que crear el viewmodel y la vista el viewmodel tiene que heredar de multivaluedviewmodel
-                            //hay que tener en cuenta que estos elementos se tienen que actualizar al cambiar el world.
-                            
+                            MultiXmlNodeRefViewModel mxml = new MultiXmlNodeRefViewModel(child.Attributes["Name"].Value, xmlfile, action, doc, tag);
+                            _allItems.Add(mxml);
                         }
                         else if (!CNode.definitions.ContainsKey(child.Attributes["Class"].Value))
                         {
@@ -277,6 +276,8 @@ namespace AppXML.ViewModels
                     (item as ChoiceViewModel).removeViews();
                 if (item is MultiValuedViewModel)
                     (item as MultiValuedViewModel).removeViews();
+                if (item is MultiXmlNodeRefViewModel)
+                    (item as MultiXmlNodeRefViewModel).removeViews();
             }
             //if(_XMLNODE!=null)
               //  CApp.removeViews(_XMLNODE.ToList());

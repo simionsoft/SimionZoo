@@ -13,6 +13,9 @@
             <DataTemplate DataType="{x:Type vm:MultiValuedViewModel}">
                 <v:MultiValuedView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MultiXmlNodeRefViewModel}">
+                <v:MultiXmlNodeRefView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:MultiSimpleViewModel}">
                 <v:MultiSimpleView/>
             </DataTemplate>
