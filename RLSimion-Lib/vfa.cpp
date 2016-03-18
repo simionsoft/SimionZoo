@@ -57,9 +57,9 @@ void CLinearVFA::load(void* pFile)
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA)(CParameters* pParameters) : CParamObject(pParameters), CLinearVFA()
+CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters), CLinearVFA()
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap,pParameters);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
@@ -136,10 +136,10 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap,pParameters);
-	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map",CFeatureMap,pParameters);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map",CFeatureMap);
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();

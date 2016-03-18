@@ -14,7 +14,7 @@ public:
 	double getValue(){ return m_value; }
 };
 
-CLASS_CONSTRUCTOR(CConstantValue)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CConstantValue)
 {
 	//<ALPHA>0.1</ALPHA>
 	CONST_DOUBLE_VALUE(m_value, pParameters, "Value", 0.0);
@@ -37,7 +37,7 @@ public:
 	double getValue();
 };
 
-CLASS_CONSTRUCTOR(CInterpolatedValue)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CInterpolatedValue)
 {
 
 	CONST_DOUBLE_VALUE(m_startOffset, pParameters, "Start-Offset", 0.0);
@@ -102,7 +102,7 @@ public:
 };
 
 
-CLASS_CONSTRUCTOR(CBhatnagarSchedule)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CBhatnagarSchedule)
 {
 	ENUM_VALUE(m_timeReference, TimeReference, pParameters, "Time-reference", "linear");
 
@@ -133,7 +133,7 @@ double CBhatnagarSchedule::getValue()
 }
 
 
-CNumericValue* CLASS_FACTORY(CNumericValue)(CParameters* pParameters)
+CLASS_FACTORY(CNumericValue)
 {
 	CHOICE("Schedule");
 	CHOICE_ELEMENT("Constant", CConstantValue);

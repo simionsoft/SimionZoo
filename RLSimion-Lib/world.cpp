@@ -12,14 +12,14 @@
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
 
-CLASS_CONSTRUCTOR (CWorld) (CParameters* pParameters)
+CLASS_CONSTRUCTOR (CWorld)
 {
 	assert(pParameters);
 	m_t= 0.0;
 
 	//The dynamic model must be created before the reward so that references to state variables are correctly set
-	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model", CDynamicModel, pParameters);
-	CHILD_CLASS(m_pRewardFunction, "Reward", CRewardFunction, pParameters);
+	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model", CDynamicModel);
+	CHILD_CLASS(m_pRewardFunction, "Reward", CRewardFunction);
 
 	CONST_INTEGER_VALUE(m_simulationSteps,pParameters,"Num-Integration-Steps",4);
 	CONST_DOUBLE_VALUE(m_dt,pParameters,"Delta-T",0.01);
@@ -136,7 +136,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	}
 }
 
-CDynamicModel *CLASS_FACTORY(CDynamicModel)(CParameters* pParameters)
+CLASS_FACTORY(CDynamicModel)
 {
 	CHOICE_XML("Model", "WORLD-DEFINITION");
 	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml");

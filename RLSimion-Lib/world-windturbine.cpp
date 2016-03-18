@@ -163,7 +163,7 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 }
 
 
-CLASS_CONSTRUCTOR(CWindTurbine) (CParameters *pParameters,const char* worldDefinition)
+CLASS_CONSTRUCTOR(CWindTurbine,const char* worldDefinition)
 : CDynamicModel(worldDefinition)
 {
 	

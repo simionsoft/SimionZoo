@@ -9,7 +9,7 @@
 #define NUM_STATE_VARIABLES 3
 
 
-CLASS_CONSTRUCTOR(CUnderwaterVehicle)(CParameters *pParameters,const char* worldDefinition)
+CLASS_CONSTRUCTOR(CUnderwaterVehicle,const char* worldDefinition)
 : CDynamicModel(worldDefinition)
 {
 	CState *pStateDescriptor = getStateDescriptor();

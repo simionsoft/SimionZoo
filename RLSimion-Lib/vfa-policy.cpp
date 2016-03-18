@@ -9,7 +9,7 @@
 #include "features.h"
 #include "policy.h"
 
-CDeterministicPolicy* CLASS_FACTORY(CDeterministicPolicy)(CParameters* pParameters)
+CLASS_FACTORY(CDeterministicPolicy)
 {
 	CHOICE("Policy");
 
@@ -21,10 +21,10 @@ CDeterministicPolicy* CLASS_FACTORY(CDeterministicPolicy)(CParameters* pParamete
 	return 0;
 }
 
-CLASS_CONSTRUCTOR(CDeterministicPolicy)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CDeterministicPolicy)
 : CParamObject(pParameters)
 {
-	CHILD_CLASS(m_pVFA, "Linear-State-VFA", CLinearStateVFA, pParameters);
+	CHILD_CLASS(m_pVFA, "Linear-State-VFA", CLinearStateVFA);
 
 	ACTION_VARIABLE_REF(m_outputActionIndex, pParameters, "Output-Action");
 
@@ -43,10 +43,10 @@ CDeterministicPolicy::~CDeterministicPolicy()
 //CDetPolicyGaussianNoise////////////////////////////////
 /////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise",CNoise,pParameters);
+	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise",CNoise);
 	END_CLASS();
 }
 
@@ -84,10 +84,10 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
-	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", CLinearStateVFA, pParameters);
+	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", CLinearStateVFA);
 	//m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
 	m_pAux = new CFeatureList("Sto-Policy/aux");
 	END_CLASS();

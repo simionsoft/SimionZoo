@@ -20,8 +20,8 @@ namespace RLSimion
 };
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
-#define CLASS_FACTORY(name) name::getInstance
-#define CLASS_CONSTRUCTOR(name) name::name
+#define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
+#define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
 #define END_CLASS()
 
 //The superclass' parameters are embedded inline within the subclass' definition, so the superclass' parameters
@@ -30,8 +30,8 @@ namespace RLSimion
 
 //The child class is given a name according to the context from the parent class, so the parameter node should include
 //the appropriate hierarchy (i.e., pParameters->getChild("VFA"))
-#define CHILD_CLASS(variable,name,className,pParameterNode,...) variable= new className(pParameterNode->getChild(name),__VA_ARGS__);
-#define CHILD_CLASS_FACTORY(variable,name,className,pParameterNode,...) variable= className::getInstance(pParameterNode->getChild(name),__VA_ARGS__);
+#define CHILD_CLASS(variable,name,className,...) variable= new className(pParameters->getChild(name),__VA_ARGS__);
+#define CHILD_CLASS_FACTORY(variable,name,className,...) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__);
 
 #define CHOICE(name) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();
 #define CHOICE_XML(name,loadXML) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();

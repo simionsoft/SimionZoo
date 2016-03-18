@@ -11,7 +11,7 @@
 
 #define MAX_FILENAME_LENGTH 1024
 
-CLASS_CONSTRUCTOR(CLogger) (CParameters* pParameters)
+CLASS_CONSTRUCTOR(CLogger)
 {
 	m_outputDir = 0;// new char[MAX_FILENAME_LENGTH];
 	m_filePrefix = 0;// new char[MAX_FILENAME_LENGTH];

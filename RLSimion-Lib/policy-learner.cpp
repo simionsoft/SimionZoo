@@ -10,9 +10,9 @@
 #include "logger.h"
 
 
-CLASS_CONSTRUCTOR(CPolicyLearner)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CPolicyLearner) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicPolicy, pParameters);
+	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicPolicy);
 	//m_pPolicy = CDeterministicPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
 	END_CLASS();
 }
@@ -22,7 +22,7 @@ CPolicyLearner::~CPolicyLearner()
 	delete m_pPolicy;
 }
 
-CPolicyLearner* CLASS_FACTORY(CPolicyLearner)(CParameters* pParameters)
+CLASS_FACTORY(CPolicyLearner)
 {
 	CHOICE("Policy-Learner");
 	CHOICE_ELEMENT("CACLA", CCACLALearner);

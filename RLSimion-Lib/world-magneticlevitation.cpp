@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CLASS_CONSTRUCTOR(CMagneticLevitation)(CParameters *pParameters,const char* worldDefinition)
+CLASS_CONSTRUCTOR(CMagneticLevitation,const char* worldDefinition)
 : CDynamicModel(worldDefinition)
 {/*
 	m_pStateDescriptor= new CState(5);

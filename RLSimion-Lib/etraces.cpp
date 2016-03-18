@@ -4,7 +4,7 @@
 #include "globals.h"
 #include "parameters.h"
 
-CLASS_CONSTRUCTOR(CETraces)(CParameters* pParameters, const char* name) : CFeatureList(name), CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name), CParamObject(pParameters)
 {
 	if (pParameters)
 	{

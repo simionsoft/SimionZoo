@@ -9,10 +9,10 @@
 #include "parameters.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CTDLambdaCritic)(CParameters *pParameters)
+CLASS_CONSTRUCTOR(CTDLambdaCritic)
 	: EXTENDS(CCritic,pParameters)
 {
-	CHILD_CLASS(m_z, "E-Traces", CETraces, pParameters,"Critic/E-Traces" );
+	CHILD_CLASS(m_z, "E-Traces", CETraces,"Critic/E-Traces" );
 	m_aux= new CFeatureList("Critic/aux");
 	NUMERIC_VALUE(m_pAlpha, pParameters,"Alpha");
 	NUMERIC_VALUE(m_pGamma,pParameters,"Gamma");

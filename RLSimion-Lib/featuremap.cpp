@@ -3,7 +3,7 @@
 #include "parameters.h"
 #include "globals.h"
 
-CFeatureMap* CLASS_FACTORY(CFeatureMap)(CParameters* pParameters)
+CLASS_FACTORY(CFeatureMap)
 {
 
 	CHOICE("Feature-Map");

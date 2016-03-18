@@ -5,14 +5,14 @@
 #include "actor.h"
 #include "critic.h"
 
-CLASS_CONSTRUCTOR(CActorCritic)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CActorCritic) : CParamObject(pParameters)
 {
 	CParameters* pChild = pParameters->getChild();
 	const char* type = pChild->getName();
 	m_td = 0.0;
 
-	CHILD_CLASS(m_pActor, "Actor", CActor, pParameters->getChild("Actor"));
-	CHILD_CLASS_FACTORY(m_pCritic, "Critic", CCritic, pParameters);
+	CHILD_CLASS(m_pActor, "Actor", CActor);
+	CHILD_CLASS_FACTORY(m_pCritic, "Critic", CCritic);
 	END_CLASS();
 
 }

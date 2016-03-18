@@ -13,7 +13,7 @@
 #include "vfa.h"
 
 
-CLASS_CONSTRUCTOR(CActor)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters)
 {
 	CParameters* pOutputs = pParameters->getChild("Outputs");
 

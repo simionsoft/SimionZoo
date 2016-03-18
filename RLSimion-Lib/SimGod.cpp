@@ -10,7 +10,7 @@
 #include "parameters.h"
 #include "simion.h"
 
-CLASS_CONSTRUCTOR(CSimGod)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CSimGod)
 {
 	m_numSimions = pParameters->countChildren("Simion");
 	m_pSimions = new CSimion*[m_numSimions];

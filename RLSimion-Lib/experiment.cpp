@@ -94,7 +94,7 @@ CExperiment::~CExperiment()
 	delete m_pProgressTimer;
 }
 
-CLASS_CONSTRUCTOR(CExperiment) (CParameters* pParameters)
+CLASS_CONSTRUCTOR(CExperiment)
 {
 	if (pParameters)
 	{
