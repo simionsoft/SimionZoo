@@ -320,7 +320,7 @@ namespace CustomXMLBuilder
                 else
                     hangingFrom = "Action";
 
-                parsedXML += getLevelIndent() + "<XML-NODE-REF Name=" + parameterMatches[2].Value.Trim(' ')
+                parsedXML += getLevelIndent() + "<XML-NODE-REF Name=" + parameterMatches[1].Value.Trim(' ')
                     + " XMLFile=\"WORLD-DEFINITION\" HangingFrom=\"" + hangingFrom + "\"/>\n";
             }
             decreaseIndent();

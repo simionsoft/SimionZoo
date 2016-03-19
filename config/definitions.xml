@@ -33,18 +33,18 @@
   </CLASS>
 
   <CLASS Name="CLQRGain">
-    <XML-NODE-REF Name="The input state variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <DOUBLE-VALUE Name="Gain" Default="0.0" Comment="The gain applied to the input state variable"/>
   </CLASS>
 
   <CLASS Name="CLQRController">
-    <XML-NODE-REF Name="The output action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <MULTI-VALUED Name="LQR-Gain" Class="CLQRGain" Comment="An LQR gain on an input state variable"/>
   </CLASS>
 
   <CLASS Name="CPIDController">
-    <XML-NODE-REF Name="The output action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <XML-NODE-REF Name="The input state variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Input-Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain"/>
     <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain"/>
     <BRANCH Name="KD" Class="CNumericValue-Factory" Comment="Derivative gain"/>
@@ -232,7 +232,7 @@
   </CLASS>
 
   <CLASS Name="CRewardFunctionComponent">
-    <XML-NODE-REF Name="Input state variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <BRANCH Name="Tolerance" Class="CNumericValue-Factory" Comment="Tolerance value: errors greater will result in a negative reward"/>
     <BRANCH Name="Weight" Class="CNumericValue-Factory" Comment="Weight of this reward function component (in case more than one is used)"/>
   </CLASS>
@@ -255,7 +255,7 @@
   </CLASS>
 
   <CLASS Name="CStateVariableGrid">
-    <XML-NODE-REF Name="The state variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <INTEGER-VALUE Name="Num-Features" Default="3" Comment="The number of points that form the grid"/>
     <DOUBLE-VALUE Name="Min" Default="0.0" Comment="The minimum value of the points that define the grid"/>
     <DOUBLE-VALUE Name="Max" Default="1.0" Comment="The maximum value of the points that define the grid"/>
@@ -263,7 +263,7 @@
   </CLASS>
 
   <CLASS Name="CActionVariableGrid">
-    <XML-NODE-REF Name="The action variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <INTEGER-VALUE Name="Num-Features" Default="3" Comment="The number of points that form the grid"/>
     <DOUBLE-VALUE Name="Min" Default="0.0" Comment="The minimum value of the points that define the grid"/>
     <DOUBLE-VALUE Name="Max" Default="1.0" Comment="The maximum value of the points that define the grid"/>
@@ -278,19 +278,19 @@
   </CLASS>
 
   <CLASS Name="CDeterministicPolicy">
-    <XML-NODE-REF Name="The output action variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CDeterministicPolicyGaussianNoise">
     <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration"/>
-    <XML-NODE-REF Name="The output action variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CStochasticPolicyGaussianNoise">
     <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates variance(s)"/>
-    <XML-NODE-REF Name="The output action variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
+    <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
@@ -324,10 +324,10 @@
   </CLASS>
 
   <CLASS Name="CWorld">
-    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4"/>
-    <DOUBLE-VALUE Name="Delta-T" Default="0.01"/>
-    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory"/>
-    <BRANCH Name="Reward" Class="CRewardFunction"/>
+    <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" Comment="The number of integration steps performed each simulation time-step"/>
+    <DOUBLE-VALUE Name="Delta-T" Default="0.01" Comment="The delta-time between simulation steps"/>
+    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model"/>
+    <BRANCH Name="Reward" Class="CRewardFunction" Comment="The reward function" Window="New"/>
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">
