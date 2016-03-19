@@ -32,7 +32,7 @@ CLASS_CONSTRUCTOR(CMagneticLevitation,const char* worldDefinition)
 	m_aVoltage= pActionDescriptor->getVarIndex("voltage");
 
 	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "Evaluation-Set-Point", "../config/world/magnetic-levitation/setpoint.txt");
+	FILE_PATH_VALUE(filename, "Evaluation-Set-Point", "../config/world/magnetic-levitation/setpoint.txt","The setpoint file");
 	m_pEvalSetPoint = new CFileSetPoint(filename);
 
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);

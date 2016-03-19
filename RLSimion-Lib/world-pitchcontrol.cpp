@@ -21,7 +21,7 @@ CLASS_CONSTRUCTOR(CPitchControl,const char* worldDefinition)
 	m_aPitch = pActionDescriptor->getVarIndex("pitch");
 
 	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "Set-Point-File", "../config/world/pitch-control/setpoint.txt");
+	FILE_PATH_VALUE(filename, "Set-Point-File", "../config/world/pitch-control/setpoint.txt","The setpoint file");
 	m_pSetpoint = new CFileSetPoint(filename);
 	
 	END_CLASS();

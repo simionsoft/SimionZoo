@@ -11,8 +11,8 @@ CLASS_CONSTRUCTOR(CActorCritic) : CParamObject(pParameters)
 	const char* type = pChild->getName();
 	m_td = 0.0;
 
-	CHILD_CLASS(m_pActor, "Actor", CActor);
-	CHILD_CLASS_FACTORY(m_pCritic, "Critic", CCritic);
+	CHILD_CLASS(m_pActor, "Actor", "The actor","",CActor);
+	CHILD_CLASS_FACTORY(m_pCritic, "Critic","The critic", "",CCritic);
 	END_CLASS();
 
 }

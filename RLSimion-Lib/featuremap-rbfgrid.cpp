@@ -26,7 +26,7 @@ CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGridFeatureMap(
 	CParameters* dimension = pParameters->getChild("RBF-Grid-Dimension");
 	for (int i = 0; i < m_numDimensions; i++)
 	{
-		MULTI_VALUED(m_pGrid[i], "RBF-Grid-Dimension", CStateVariableGrid,dimension);
+		MULTI_VALUED(m_pGrid[i], "RBF-Grid-Dimension", "Parameters of the state-dimension's grid",CStateVariableGrid,dimension);
 
 		dimension= dimension->getNextChild("RBF-Grid-Dimension");
 	}
@@ -53,7 +53,7 @@ CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap
 	CParameters* dimension = pParameters->getChild("RBF-Grid-Dimension");
 	for (int i = 0; i < m_numDimensions; i++)
 	{
-		MULTI_VALUED(m_pGrid[i], "RBF-Grid-Dimension", CActionVariableGrid, dimension);
+		MULTI_VALUED(m_pGrid[i], "RBF-Grid-Dimension", "Parameters of the action-dimension's grid", CActionVariableGrid, dimension);
 
 		dimension = dimension->getNextChild("RBF-Grid-Dimension");
 	}

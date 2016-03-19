@@ -40,8 +40,8 @@ CNoise::CNoise()
 
 CLASS_FACTORY(CNoise)
 {
-	CHOICE("Noise");
-	CHOICE_ELEMENT("GaussianNoise", CGaussianNoise);
+	CHOICE("Noise","Noise type");
+	CHOICE_ELEMENT("GaussianNoise", CGaussianNoise,"Gaussian noise");
 	END_CHOICE();
 
 	END_CLASS();
@@ -51,9 +51,9 @@ CLASS_FACTORY(CNoise)
 
 CLASS_CONSTRUCTOR(CGaussianNoise) : CParamObject(pParameters)
 {
-	NUMERIC_VALUE(m_pSigma,pParameters,"Sigma");
-	NUMERIC_VALUE(m_pAlpha,pParameters,"Alpha");
-	NUMERIC_VALUE(m_pScale,pParameters,"Scale");
+	NUMERIC_VALUE(m_pSigma,"Sigma","Width of the gaussian bell");
+	NUMERIC_VALUE(m_pAlpha,"Alpha","Low-pass first-order filter's gain [0...1]. 1=no filter");
+	NUMERIC_VALUE(m_pScale,"Scale","Scale factor applied to the noise signal before adding it to the policy's output");
 	END_CLASS();
 }
 

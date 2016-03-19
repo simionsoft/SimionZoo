@@ -12,7 +12,7 @@
 
 CLASS_CONSTRUCTOR(CPolicyLearner) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", CDeterministicPolicy);
+	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", "The policy to be learned","",CDeterministicPolicy);
 	//m_pPolicy = CDeterministicPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
 	END_CLASS();
 }
@@ -24,9 +24,9 @@ CPolicyLearner::~CPolicyLearner()
 
 CLASS_FACTORY(CPolicyLearner)
 {
-	CHOICE("Policy-Learner");
-	CHOICE_ELEMENT("CACLA", CCACLALearner);
-	CHOICE_ELEMENT("Regular-Gradient", CRegularPolicyGradientLearner);
+	CHOICE("Policy-Learner","The algorith used to learn the policy");
+	CHOICE_ELEMENT("CACLA", CCACLALearner,"CACLA algorithm");
+	CHOICE_ELEMENT("Regular-Gradient", CRegularPolicyGradientLearner,"A regular policy-gradient learning algorithm");
 	END_CHOICE();
 
 	END_CLASS();

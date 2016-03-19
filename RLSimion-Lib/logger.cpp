@@ -18,20 +18,20 @@ CLASS_CONSTRUCTOR(CLogger)
 
 	if (pParameters)
 	{
-		DIR_PATH_VALUE(m_outputDir,  pParameters, "Output-Directory","../logs");
-		CONST_STRING_VALUE(m_filePrefix, pParameters, "Prefix", "");
+		DIR_PATH_VALUE(m_outputDir,  "Output-Directory","../logs","Directory where the output log files will be saved");
+		CONST_STRING_VALUE(m_filePrefix, "Prefix", "","Prefix given to the output log files");
 
 		const char* boolStr;
-		ENUM_VALUE(boolStr,Boolean,pParameters,"Log-eval-episodes", "False");
+		ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "False","Log evaluation episodes?");
 		m_bLogEvaluationEpisodes = !strcmp(boolStr, "True");
-		ENUM_VALUE(boolStr, Boolean, pParameters, "Log-training-episodes", "False");
+		ENUM_VALUE(boolStr, Boolean, "Log-training-episodes", "False","Log training episodes?");
 		m_bLogTrainingEpisodes = !strcmp(boolStr, "True");
-		ENUM_VALUE(boolStr,Boolean, pParameters, "Log-eval-experiment", "True");
+		ENUM_VALUE(boolStr,Boolean, "Log-eval-experiment", "True","Log the stats of the evaluation episodes?");
 		m_bLogEvaluationExperiment = !strcmp(boolStr, "True");
-		ENUM_VALUE(boolStr,Boolean, pParameters, "Log-training-experiment", "False");
+		ENUM_VALUE(boolStr,Boolean, "Log-training-experiment", "False","Log the stats of the training episodes?");
 		m_bLogTrainingExperiment = !strcmp(boolStr, "True");
 
-		CONST_DOUBLE_VALUE(m_logFreq,pParameters,"Log-Freq", 0.25);
+		CONST_DOUBLE_VALUE(m_logFreq,"Log-Freq", 0.25,"Log frequency. Simulation time in seconds.");
 
 		_mkdir(m_outputDir);
 	}

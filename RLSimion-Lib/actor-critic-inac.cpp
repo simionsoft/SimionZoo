@@ -12,7 +12,7 @@
 #include "experiment.h"
 #include "parameters-numeric.h"
 /*
-CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic) : CParamObject(pParameters)
+C LASS_CONSTRUCTOR(CIncrementalNaturalActorCritic) : CParamObject(pParameters)
 {
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");

@@ -10,11 +10,11 @@
 
 CLASS_FACTORY(CController)
 {
-	CHOICE("Controller");
-	CHOICE_ELEMENT("Vidal", CWindTurbineVidalController);
-	CHOICE_ELEMENT("Boukhezzar", CWindTurbineBoukhezzarController);
-	CHOICE_ELEMENT("PID", CPIDController);
-	CHOICE_ELEMENT("LQR", CLQRController);
+	CHOICE("Controller","The specific controller to be used");
+	CHOICE_ELEMENT("Vidal", CWindTurbineVidalController,"The Vidal wind-turbine controller. Outputs: d_T_g and d_beta");
+	CHOICE_ELEMENT("Boukhezzar", CWindTurbineBoukhezzarController,"The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta");
+	CHOICE_ELEMENT("PID", CPIDController,"A PID controller");
+	CHOICE_ELEMENT("LQR", CLQRController,"An LQR controller");
 	END_CHOICE();
 
 	return 0;
@@ -32,14 +32,14 @@ CLASS_FACTORY(CController)
 
 CLASS_CONSTRUCTOR(CLQRGain)
 {
-	STATE_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
-	CONST_DOUBLE_VALUE(m_gain, pParameters, "Gain", 0.0);
+	STATE_VARIABLE_REF(m_variableIndex, "Variable", "The input state variable");
+	CONST_DOUBLE_VALUE(m_gain, "Gain", 0.0,"The gain applied to the input state variable");
 	
 	END_CLASS();
 }
 CLASS_CONSTRUCTOR(CLQRController) : CParamObject(pParameters)
 {
-	ACTION_VARIABLE_REF(m_outputActionIndex,pParameters,"Output-Action");
+	ACTION_VARIABLE_REF(m_outputActionIndex,"Output-Action","The output action");
 	
 	/*m_outputActionIndex = RLSimion::g_pWorld->getActionDescriptor()->getVarIndex(outputAction);*/
 
@@ -51,7 +51,7 @@ CLASS_CONSTRUCTOR(CLQRController) : CParamObject(pParameters)
 	{
 		m_pGains[i] = new CLQRGain(pGain);
 
-		MULTI_VALUED(m_pGains[i],"LQR-Gain",CLQRGain,pGain);
+		MULTI_VALUED(m_pGains[i],"LQR-Gain","An LQR gain on an input state variable",CLQRGain,pGain);
 		pGain = pGain->getNextChild("LQR-Gain");
 	}
 
@@ -81,13 +81,13 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 
 CLASS_CONSTRUCTOR(CPIDController) : CParamObject(pParameters)
 {
-	ACTION_VARIABLE_REF(m_outputActionIndex, pParameters, "Output-Action");
+	ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action");
 
-	NUMERIC_VALUE(m_pKP,pParameters,"KP");
-	NUMERIC_VALUE(m_pKI,pParameters, "KI");
-	NUMERIC_VALUE(m_pKD,pParameters,"KD");
+	NUMERIC_VALUE(m_pKP,"KP", "Proportional gain");
+	NUMERIC_VALUE(m_pKI, "KI","Integral gain");
+	NUMERIC_VALUE(m_pKD,"KD","Derivative gain");
 
-	STATE_VARIABLE_REF(m_errorVariableIndex, pParameters, "Input-Variable");
+	STATE_VARIABLE_REF(m_errorVariableIndex, "Input-Variable","The input state variable");
 
 	END_CLASS();
 
@@ -137,11 +137,11 @@ CWindTurbineVidalController::~CWindTurbineVidalController()
 
 CLASS_CONSTRUCTOR(CWindTurbineVidalController) : CParamObject(pParameters)
 {
-	NUMERIC_VALUE(m_pA, pParameters, "A");
-	NUMERIC_VALUE(m_pK_alpha, pParameters, "K_alpha");
-	NUMERIC_VALUE(m_pKP, pParameters, "KP");
-	NUMERIC_VALUE(m_pKI, pParameters, "KI");
-	NUMERIC_VALUE(m_P_s, pParameters, "P_s");
+	NUMERIC_VALUE(m_pA, "A", "A parameter of the torque controller");
+	NUMERIC_VALUE(m_pK_alpha, "K_alpha", "K_alpha parameter of the torque controller");
+	NUMERIC_VALUE(m_pKP, "KP", "Proportional gain of the pitch controller");
+	NUMERIC_VALUE(m_pKI, "KI", "Integral gain of the pitch controller");
+	NUMERIC_VALUE(m_P_s, "P_s", "Power setpoint for the torque controller");
 
 	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -202,11 +202,11 @@ CWindTurbineBoukhezzarController::~CWindTurbineBoukhezzarController()
 CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController) : CParamObject(pParameters)
 {
 
-	NUMERIC_VALUE(m_pC_0,pParameters,"C_0");
-	NUMERIC_VALUE(m_pKP,pParameters,"KP");
-	NUMERIC_VALUE(m_pKI,pParameters,"KI");
-	CONST_DOUBLE_VALUE(m_J_t,pParameters,"J_t",0.0);
-	CONST_DOUBLE_VALUE(m_K_t,pParameters,"K_t",0.0);
+	NUMERIC_VALUE(m_pC_0,"C_0", "C_0 parameter");
+	NUMERIC_VALUE(m_pKP,"KP","Proportional gain of the pitch controller");
+	NUMERIC_VALUE(m_pKI,"KI", "Integral gain of the pitch controller");
+	CONST_DOUBLE_VALUE(m_J_t,"J_t",0.0,"Wind turbine model's J_t parameter (kg*m^2)");
+	CONST_DOUBLE_VALUE(m_K_t,"K_t",0.0,"Wind turbine model's K_t parameter");
 
 	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
@@ -261,16 +261,16 @@ CWindTurbineJonkmanController::~CWindTurbineJonkmanController()
 CLASS_CONSTRUCTOR(CWindTurbineJonkmanController) : CParamObject(pParameters)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	CONST_DOUBLE_VALUE(m_CornerFreq,pParameters,"CornerFreq",0.0);
+	CONST_DOUBLE_VALUE(m_CornerFreq,"CornerFreq",0.0,"Corner Freq. parameter");
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	CONST_DOUBLE_VALUE(m_VS_RtGnSp,pParameters,"VSRtGnSp",0.0);
-	CONST_DOUBLE_VALUE(m_VS_SlPc,pParameters,"VS_SlPc",0.0);
-	CONST_DOUBLE_VALUE(m_VS_Rgn2K,pParameters,"VS_Rgn2K",0.0);
-	CONST_DOUBLE_VALUE(m_VS_Rgn2Sp,pParameters,"VS_Rgn2Sp",0.0);
-	CONST_DOUBLE_VALUE(m_VS_CtInSp,pParameters,"VS_CtInSp",0.0);
-	CONST_DOUBLE_VALUE(m_VS_RtPwr,pParameters,"VS_RtPwr",0.0);
-	CONST_DOUBLE_VALUE(m_VS_Rgn3MP,pParameters,"VS_Rgn3MP",0.0);
+	CONST_DOUBLE_VALUE(m_VS_RtGnSp,"VSRtGnSp",0.0,"Rated Generator Speed");
+	CONST_DOUBLE_VALUE(m_VS_SlPc,"VS_SlPc",0.0,"SIPc parameter");
+	CONST_DOUBLE_VALUE(m_VS_Rgn2K,"VS_Rgn2K",0.0,"Rgn2K parameter");
+	CONST_DOUBLE_VALUE(m_VS_Rgn2Sp,"VS_Rgn2Sp",0.0,"Rgn2Sp parameter");
+	CONST_DOUBLE_VALUE(m_VS_CtInSp,"VS_CtInSp",0.0,"CtlnSp parameter");
+	CONST_DOUBLE_VALUE(m_VS_RtPwr,"VS_RtPwr",0.0,"Rated power");
+	CONST_DOUBLE_VALUE(m_VS_Rgn3MP,"VS_Rgn3MP",0.0,"Rgn3MP parameter");
 	
 	m_VS_SySp    = m_VS_RtGnSp/( 1.0 +  0.01*m_VS_SlPc );
 	m_VS_Slope15 = ( m_VS_Rgn2K*m_VS_Rgn2Sp*m_VS_Rgn2Sp )/( m_VS_Rgn2Sp - m_VS_CtInSp );
@@ -282,10 +282,10 @@ CLASS_CONSTRUCTOR(CWindTurbineJonkmanController) : CParamObject(pParameters)
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	NUMERIC_VALUE(m_PC_KK,pParameters,"PC_KK");
-	NUMERIC_VALUE(m_PC_KP,pParameters,"PC_KP");
-	NUMERIC_VALUE(m_PC_KI,pParameters,"PC_KI");
-	CONST_DOUBLE_VALUE(m_PC_RefSpd,pParameters,"PC_RefSpd",0.0);
+	NUMERIC_VALUE(m_PC_KK,"PC_KK","PC_KK");
+	NUMERIC_VALUE(m_PC_KP,"PC_KP","PC_KP");
+	NUMERIC_VALUE(m_PC_KI,"PC_KI","PC_KI");
+	CONST_DOUBLE_VALUE(m_PC_RefSpd,"PC_RefSpd",0.0,"Pitch control reference speed");
 
 	m_IntSpdErr= 0.0;
 
