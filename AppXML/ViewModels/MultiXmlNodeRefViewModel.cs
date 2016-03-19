@@ -38,8 +38,15 @@ namespace AppXML.ViewModels
         private string action;
         private XmlDocument doc;
         private string tag;
-        
 
+        public string Tag { get { return tag; } set { tag = value; } }
+        public void AddNew()
+        {
+            if (_addedXml == null)
+                _addedXml = new ObservableCollection<XMLNodeRefViewModel>();
+            AddedXml.Add(new XMLNodeRefViewModel(Label, file, action, doc, tag));
+            NotifyOfPropertyChange(() => AddedXml);
+        }
         public MultiXmlNodeRefViewModel(string label,string file,string action,XmlDocument doc, string tag)
         {
             Label = label;
@@ -47,6 +54,8 @@ namespace AppXML.ViewModels
             this.action = action;
             this.doc = doc;
             this.tag = tag;
+            if (this.tag == null)
+                this.tag = label;
             _header = new XMLNodeRefViewModel(label, file, action, doc, tag);
         }
         public void Add()

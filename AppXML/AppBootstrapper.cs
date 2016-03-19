@@ -21,7 +21,7 @@ namespace AppXML
         }
 
         protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
-            DisplayRootViewFor<ProcessesWindowViewModel>();
+            DisplayRootViewFor<WindowViewModel>();
         }
 /*
         protected override void Configure()
