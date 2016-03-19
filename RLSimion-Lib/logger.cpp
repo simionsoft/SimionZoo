@@ -272,21 +272,21 @@ void CLogger::logMessage(MessageType type, const char* message)
 		switch (type)
 		{
 		case Warning:
-			swprintf_s(messageLine, 1024, TEXT("<Message>WARNING: %s</Message>\n"), message);
-			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			swprintf_s(messageLine, 1024, TEXT("<Message>WARNING: %s</Message>"), message);
+			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
 			break;
 		case Progress:
 			//extra spaces to avoid overwriting only partially previous message
 			swprintf_s(messageLine, 1024, TEXT("<Progress>%s</Progress>"), message);
-			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
 			break;
 		case Info:
-			swprintf_s(messageLine, 1024, TEXT("<Message>INFO: %s</Message>\n"), message);
-			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			swprintf_s(messageLine, 1024, TEXT("<Message>INFO: %s</Message>"), message);
+			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
 			break;
 		case Error:
-			swprintf_s(messageLine, 1024, TEXT("<Message>FATAL ERROR: %s</Message>\n"));
-			WriteFile(m_outputPipe, messageLine, wcslen(messageLine), &bytesWritten, 0);
+			swprintf_s(messageLine, 1024, TEXT("<Message>FATAL ERROR: %s</Message>"));
+			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
 			closeOutputPipe();
 			exit(-1);
 		}
@@ -317,18 +317,29 @@ void CLogger::closeOutputPipe()
 {
 	if (m_outputPipe)
 	{
-		RLSimion::shutdown();
+		CloseHandle(m_outputPipe);
 		m_outputPipe = 0;
 	}
 }
 
 void CLogger::createOutputPipe(const char* pipeName)
 {
-	wchar_t pipename[512];
-	swprintf_s(pipename, 512, TEXT("\\\\.\\pipe\\%s"), pipename);
+	wchar_t w_pipename[512];
+	swprintf_s(w_pipename, 512, TEXT("\\\\.\\pipe\\%s"), pipeName);
+
+	//m_outputPipe = CreateNamedPipe(
+	//	w_pipename,             // pipe name 
+	//	PIPE_ACCESS_OUTBOUND,       // write access 
+	//	PIPE_TYPE_MESSAGE |       // message type pipe 
+	//	PIPE_WAIT,                // blocking mode 
+	//	PIPE_UNLIMITED_INSTANCES, // max. instances  
+	//	1024,              // output buffer size 
+	//	0,              // input buffer size 
+	//	NMPWAIT_USE_DEFAULT_WAIT, // client time-out 
+	//	NULL);                    // default security attribute  
 
 	m_outputPipe = CreateFile(
-		pipename,   // pipe name 
+		w_pipename,   // pipe name 
 		GENERIC_WRITE,
 		0,              // no sharing 
 		NULL,           // default security attributes

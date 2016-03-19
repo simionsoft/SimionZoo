@@ -62,12 +62,16 @@ namespace AppXML.Data
             this.listenThread = new Thread(new ThreadStart(ListenForClients));
             this.listenThread.Start();
         }
+        public const uint INBOUND = (0x00000001);
+        public const uint REJECT_REMOTE_CLIENTS = (0x00000008);
+        public const uint READMODE_BYTE = (0x00000000);
         private void ListenForClients()
         {
             while (true)
             {
 
-                clientHandle = CreateNamedPipe(this.pipeName, DUPLEX | FILE_FLAG_OVERLAPPED, 0, 255, BUFFER_SIZE, BUFFER_SIZE, 0, IntPtr.Zero);
+                clientHandle = CreateNamedPipe(this.pipeName, INBOUND |READMODE_BYTE, 0, 255
+                    , BUFFER_SIZE, BUFFER_SIZE, 0, IntPtr.Zero);
 
                 //could not create named pipe
                 if (clientHandle.IsInvalid)

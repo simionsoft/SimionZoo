@@ -720,9 +720,9 @@ namespace AppXML.ViewModels
             string[] tmp = (myList[0].Split('/'));
             string pipeName = @"preuba";
             Process myProces = new Process();
-            myProces.StartInfo.FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../debug/RLSimion");
+            myProces.StartInfo.FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../debug/RLSimion.exe");
             myProces.StartInfo.Arguments = myList[0] + ","+pipeName;
-            myProces.Start();
+ //           myProces.Start();
             
             Data.NamedPipeServer pipe = new NamedPipeServer(pipeName, 0);
             pipe.Start();
