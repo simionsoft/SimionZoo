@@ -93,6 +93,9 @@
     <Compile Include="ViewModels\IntegerViewModel.cs" />
     <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
     <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
+    <Compile Include="ViewModels\ProcessesWindowViewModel.cs" />
+    <Compile Include="ViewModels\ProcessManagerViewModel.cs" />
+    <Compile Include="ViewModels\ProcessStateViewModel.cs" />
     <Compile Include="ViewModels\RightTreeViewModel.cs" />
     <Compile Include="ViewModels\ValidableAndNodeViewModel.cs" />
     <Compile Include="ViewModels\WindowClassViewModel.cs" />
@@ -123,6 +126,15 @@
     </Compile>
     <Compile Include="Views\MultiXmlNodeRefView.xaml.cs">
       <DependentUpon>MultiXmlNodeRefView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProcessesWindowView.xaml.cs">
+      <DependentUpon>ProcessesWindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProcessManagerView.xaml.cs">
+      <DependentUpon>ProcessManagerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProcessStateView.xaml.cs">
+      <DependentUpon>ProcessStateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RightTreeView.xaml.cs">
       <DependentUpon>RightTreeView.xaml</DependentUpon>
@@ -202,6 +214,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultiValuedView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProcessesWindowView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProcessManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProcessStateView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
