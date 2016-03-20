@@ -12,6 +12,9 @@ using System.ComponentModel.Composition;
 using System;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using System.IO.Pipes;
 namespace AppXML.ViewModels
 {
     public interface IValidable
@@ -716,24 +719,23 @@ namespace AppXML.ViewModels
         }
         private void runExperimentas(List<string> myList)
         {
-            int max = Environment.ProcessorCount;
-            string[] tmp = (myList[0].Split('/'));
-            string pipeName = @"preuba";
-            Process myProces = new Process();
-            myProces.StartInfo.FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../debug/RLSimion.exe");
-            myProces.StartInfo.Arguments = myList[0] + ","+pipeName;
- //           myProces.Start();
+            ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
+            dynamic settings = new ExpandoObject();
+            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            settings.ShowInTaskbar = true;
+            settings.Title = "Process Manager";
+            //foreach (string name in myList)
+            //{
+             //   ProcessStateViewModel psv = new ProcessStateViewModel(name);
+              //  pwvm.addProcess(psv);
+            //}
+            new WindowManager().ShowWindow(pwvm, null, settings);
+            pwvm.run();
             
-            Data.NamedPipeServer pipe = new NamedPipeServer(pipeName, 0);
-            pipe.Start();
             
-            Console.Write("pipe");
-            //pipe.StopServer();
-
-            //ffmpeg.StartInfo.FileName = "../cmd.exe";
-            //ffmpeg.StartInfo.Arguments = "/k " + ffmpegPath + " " + ffmpegParams
-            //ffmpeg.Start();
+            
         }
+        
         public void LoadSelectedNode()
         {
             if (Graf.SelectedTreeNode == null || Graf.SelectedTreeNode.Doc==null)

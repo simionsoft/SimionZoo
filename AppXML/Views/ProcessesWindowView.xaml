@@ -7,7 +7,12 @@
              mc:Ignorable="d" Width="655.224" Height="409.776">
     
     <StackPanel>
-        <ContentControl x:Name="Manager" Height="291" RenderTransformOrigin="0.512,0.507" Margin="40,40,41,0"/>
-        <Button x:Name="Close" Content="Close" IsEnabled="{Binding CloseButtonIsEnabled}" Margin="559,5,41,0"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            
+                <ContentControl x:Name="Manager" />
+            
+        </ScrollViewer>
+        <Button x:Name="Close" Content="Close" Width="50"/>
+        <ScrollViewer Height="100"/>
     </StackPanel>
 </Window>

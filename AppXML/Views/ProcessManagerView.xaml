@@ -14,7 +14,9 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
-        <ItemsControl x:Name="Processes"></ItemsControl>
-    </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="20">
+            <ItemsControl x:Name="Processes"></ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>
