@@ -241,6 +241,7 @@ namespace AppXML.ViewModels
     public class TextBoxWithFile:TextBox
     {
         private string buttonImage;
+        private string copyDefault;
         
 
         public new bool validate()
@@ -261,6 +262,7 @@ namespace AppXML.ViewModels
                 this.type = validTypes.DirPathValue;
             else
                 this.type = validTypes.FilePathValue;
+            copyDefault = Default;
             
 
         }
@@ -277,7 +279,22 @@ namespace AppXML.ViewModels
             if(type==validTypes.FilePathValue)
             {
                 Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-                 openFileDialog.Filter = "Text Files (.txt)|*.txt|All Files (*.*)|*.*";
+                if(copyDefault!=null && copyDefault!="")
+                {
+                    string extension = copyDefault.Split('.').Last();
+                    string filter = "File (." + extension + ")|*." + extension + "|All Files (*.*)|*.*";
+                    openFileDialog.Filter = filter;
+                    if(File.Exists(copyDefault))
+                    {
+                        bool isAbsolute = Path.IsPathRooted(copyDefault);
+                        if (isAbsolute)
+                            openFileDialog.InitialDirectory = Path.GetDirectoryName(copyDefault);
+                        else
+                            openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), Default)))
+;
+                    }
+                }             
+               
                  if (openFileDialog.ShowDialog() == true)
                  {
                      this.Default = openFileDialog.FileName;
@@ -288,6 +305,14 @@ namespace AppXML.ViewModels
             else if(type==validTypes.DirPathValue)
             {
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
+                if (copyDefault != null && Directory.Exists(copyDefault))
+                {
+                    if (Path.IsPathRooted(copyDefault))
+                        fbd.SelectedPath = copyDefault;
+                    else
+                        fbd.SelectedPath = System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), Default));
+                }
+                    
                 if (fbd.ShowDialog() == DialogResult.OK)
                     {
                         this.Default = fbd.SelectedPath;
