@@ -102,14 +102,9 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\config\ControllerToVFAPolicy.xml" />
-    <Xml Include="..\config\definitions.xml" />
     <Xml Include="..\experiments\examples\ControllerToVFAPolicy-pitch-control.xml" />
     <Xml Include="..\experiments\examples\ControllerToVFAPolicy-underwater-vehicle.xml" />
     <Xml Include="..\experiments\examples\ControllerToVFAPolicy-vidal-wind-turbine.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Xsd Include="..\config\definitions.xsd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

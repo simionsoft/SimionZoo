@@ -173,11 +173,6 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\config\world\pitch-control.xml" />
-    <Xml Include="..\config\world\underwater-vehicle.xml" />
-    <Xml Include="..\config\world\wind-turbine.xml" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
