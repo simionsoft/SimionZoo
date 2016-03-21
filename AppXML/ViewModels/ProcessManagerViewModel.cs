@@ -48,44 +48,47 @@ namespace AppXML.ViewModels
         }
         public void run()
         {
-            foreach (ProcessStateViewModel process in Processes)
-            {
+            Parallel.ForEach(Processes, (process) =>
+                                                {
+                                                    string name = process.pipeName ;
+                                                    StartServer(name);
+                                                    Task.Delay(1000).Wait();
+                                                    var client = new NamedPipeClientStream(name);
+                                                    client.Connect(4000);
+                                                    StreamReader reader = new StreamReader(client);
+                                                    process.SMS = "Running";
+                                                    System.Windows.Forms.Application.DoEvents();
+                                                    bool reading = true;
+                                                    while (reading)
+                                                    {
+                                                        string sms = reader.ReadLine();
+                                                        XmlDocument xml = new XmlDocument();
+                                                        xml.LoadXml(sms);
+                                                        XmlNode node = xml.DocumentElement;
+                                                        if (node.Name == "Progress")
+                                                        {
+                                                            int progress = Convert.ToInt32(node.InnerText);
+                                                            process.Status = progress;
+                                                            //pwvm.Notify();
+                                                            if (progress == 100)
+                                                            {
+                                                                reading = false;
+                                                                process.SMS = "Finished";
 
+                                                            }
+                                                            else if (node.Name == "Message")
+                                                            {
 
-                //string[] tmp = (myList[0].Split('/'));
-                ///string pipeName = @"preuba";
-                /*StartServer();
-                Task.Delay(1000).Wait();
-                var client = new NamedPipeClientStream("PipesOfPiece");
-                client.Connect(4000);
-                StreamReader reader = new StreamReader(client);*/
-                process.SMS = "Running";
-                /*Notify();
-                bool reading = true;
-                while (reading)
-                {
-                    string sms = reader.ReadLine();
-                    XmlDocument xml = new XmlDocument();
-                    xml.LoadXml(sms);
-                    XmlNode node = xml.DocumentElement;
-                    if (node.Name == "Progress")
-                    {
-                        int progress = Convert.ToInt32(node.InnerText);
-                        process.Status = progress;
-                        //pwvm.Notify();
-                        if (progress == 100)
-                            reading = false;
-                    }
-                    else if (node.Name == "Message")
-                    {
-
-                    }
-                }
-
-                //       });
-
-                */
-            }
+                                                            }
+                                                            System.Windows.Forms.Application.DoEvents();
+                                                        }
+                                                    }
+                                                    reader.Close();
+                                                    client.Close();
+                                                });
+            
+                
+            
         }
         public ProcessManagerViewModel(List<string> paths)
         {
@@ -96,12 +99,15 @@ namespace AppXML.ViewModels
                 _processes.Add(psv);
             }
            
+
+           
+           
         }
-        private void StartServer()
+        private void StartServer(string name)
         {
             Task.Factory.StartNew(() =>
             {
-                var server = new NamedPipeServerStream("PipesOfPiece");
+                var server = new NamedPipeServerStream(name);
                 server.WaitForConnection();
                 //StreamReader reader = new StreamReader(server);
                 StreamWriter writer = new StreamWriter(server);
@@ -111,12 +117,12 @@ namespace AppXML.ViewModels
 
                     writer.WriteLine("<Progress>" + i + "</Progress>");
                     writer.Flush();
-                    Task.Delay(50).Wait();
+                    Task.Delay(25).Wait();
                     i++;
 
                 }
-                writer.Close();
-                server.Close();
+                //writer.Close();
+                //server.Close();
             });
         }
         public void Notify()

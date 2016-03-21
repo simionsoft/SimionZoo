@@ -11,6 +11,7 @@ namespace AppXML.ViewModels
         private string label;
         private int status;
         private string sms;
+        public string pipeName{get;set;}
 
         public string Label
         {
@@ -39,17 +40,13 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => Status);
             }
         }
-        public ProcessStateViewModel()
-        {
-            label = "prueba";
-            sms = "inicio";
-            status = 20;
-        }
+        
         public ProcessStateViewModel(string label)
         {
             this.label = label;
             this.status = 0;
-            this.sms = "Initializing";
+            this.sms = "Waiting";
+            this.pipeName = (label.Split('/').Last()).Split('.').First();
         }
     }
 }

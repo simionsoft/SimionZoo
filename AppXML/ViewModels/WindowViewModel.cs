@@ -715,9 +715,11 @@ namespace AppXML.ViewModels
                 item.doc.Save(path);
                 pahts.Add(path);
             }
-            runExperimentas(pahts);
+            ProcessManagerViewModel  pmvm = initExperimentas(pahts);
+            pmvm.run();
+            
         }
-        private void runExperimentas(List<string> myList)
+        private ProcessManagerViewModel initExperimentas(List<string> myList)
         {
             ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
             dynamic settings = new ExpandoObject();
@@ -730,8 +732,7 @@ namespace AppXML.ViewModels
               //  pwvm.addProcess(psv);
             //}
             new WindowManager().ShowWindow(pwvm, null, settings);
-            pwvm.run();
-            
+            return pwvm;
             
             
         }
