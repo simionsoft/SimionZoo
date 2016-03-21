@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -51,10 +52,13 @@ namespace AppXML.ViewModels
             Parallel.ForEach(Processes, (process) =>
                                                 {
                                                     string name = process.pipeName ;
-                                                    StartServer(name);
+                                                    ProcessStartInfo startInfo = new ProcessStartInfo();
+                                                    startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),"../debug/RLSimion.exe");
+                                                    startInfo.Arguments = process.Label + ";" + process.pipeName;
+                                                    Process.Start(startInfo);
                                                     Task.Delay(1000).Wait();
                                                     var client = new NamedPipeClientStream(name);
-                                                    client.Connect(4000);
+                                                    client.Connect(10000);
                                                     StreamReader reader = new StreamReader(client);
                                                     process.SMS = "Running";
                                                     System.Windows.Forms.Application.DoEvents();
