@@ -236,3 +236,19 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+/temp/Win32-Debug-Dll
+/RLSimion/app.h
+/config/badgers
+/config/pitch
+/config/pitch/learn-2.txt
+/config/pitch/train.txt
+/config/underwater-vehicle
+/config/underwater-vehicle/learn-2.txt
+/config/underwater-vehicle/train.txt
+/config/wind-turbine
+/config/wind-turbine/learn-boukhezzar.txt
+/config/wind-turbine/learn-vidal-2.txt
+/config/wind-turbine/test-boukhezzar.txt
+/config/wind-turbine/windturbine-power-setpoint.txt
+/Badger/experiment-batch.bat
+/CompareControllerAndActor/NONE

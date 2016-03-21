@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="config">
-      <UniqueIdentifier>{ca51629b-ad2b-4ef8-8f7b-c17f872a951d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="examples">
       <UniqueIdentifier>{297f5105-f65b-4557-86ec-dc5acd5d73ab}</UniqueIdentifier>
     </Filter>
@@ -40,12 +37,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="..\config\ControllerToVFAPolicy.xml">
-      <Filter>config</Filter>
-    </Xml>
-    <Xml Include="..\config\definitions.xml">
-      <Filter>config</Filter>
-    </Xml>
     <Xml Include="..\experiments\examples\ControllerToVFAPolicy-pitch-control.xml">
       <Filter>examples</Filter>
     </Xml>
@@ -55,10 +46,5 @@
     <Xml Include="..\experiments\examples\ControllerToVFAPolicy-vidal-wind-turbine.xml">
       <Filter>examples</Filter>
     </Xml>
-  </ItemGroup>
-  <ItemGroup>
-    <Xsd Include="..\config\definitions.xsd">
-      <Filter>config</Filter>
-    </Xsd>
   </ItemGroup>
 </Project>

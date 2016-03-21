@@ -10,17 +10,4 @@
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Filter Include="config">
-      <UniqueIdentifier>{8fc22975-3344-4620-8a56-695807894d0c}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="..\config\RLSimion.xml">
-      <Filter>config</Filter>
-    </Xml>
-    <Xml Include="..\config\definitions.xml">
-      <Filter>config</Filter>
-    </Xml>
-  </ItemGroup>
 </Project>
