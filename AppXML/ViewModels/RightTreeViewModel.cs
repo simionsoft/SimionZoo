@@ -10,6 +10,17 @@ using System.Xml;
 
 namespace AppXML.ViewModels
 {
+    public class NodeAndName
+    {
+        public string name;
+        public XmlDocument doc;
+
+        public NodeAndName(string n,XmlDocument t)
+        {
+            name = n;
+            doc = t;
+        }
+    }
     public class RightTreeViewModel:PropertyChangedBase
     {
         BindableCollection<TreeNode> _treeItems;
@@ -18,22 +29,19 @@ namespace AppXML.ViewModels
         private TreeNode selectedTreeNode = null;
         public TreeNode SelectedTreeNode { get { return selectedTreeNode; } set { } }
         private TreeNode rootNode;
-        private WindowViewModel _father;
 
         public void Change(object sender)
         {
             var x = sender as System.Windows.Controls.TreeView;
             selectedTreeNode = x.SelectedValue as TreeNode;
-            _father.LoadSelectedNode();
             
         }
-        public RightTreeViewModel(TreeNode tree, WindowViewModel father)
+        public RightTreeViewModel(TreeNode tree)
         {
             _treeItems = new BindableCollection<TreeNode>();
             _treeItems.Add(tree);
             rootNode = tree;
             selectedTreeNode = tree;
-            _father = father;
         }
         public BindableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
         public void AddNode(TreeNode newNode)
@@ -56,13 +64,13 @@ namespace AppXML.ViewModels
             selectedTreeNode = rootNode;
         }
 
-        internal List<XmlDocument> getAllLeafs()
+        internal List<NodeAndName> getAllLeafs()
         {
-            List<XmlDocument> result = new List<XmlDocument>();
+            List<NodeAndName> result = new List<NodeAndName>();
             findLeafs(ref result, rootNode);
             return result;
         }
-        private void findLeafs(ref List<XmlDocument> result, TreeNode nodo)
+        private void findLeafs(ref List<NodeAndName> result, TreeNode nodo)
         {
             if (nodo.hasChildren())
             {
@@ -72,7 +80,7 @@ namespace AppXML.ViewModels
                 }
             }
             else
-                result.Add(nodo.Doc);
+                result.Add(new NodeAndName(nodo.Text,nodo.Doc));
         }
     }
 }

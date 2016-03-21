@@ -7,11 +7,17 @@
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             >
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type vm:MultiValuedViewModel}">
                 <v:MultiValuedView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MultiXmlNodeRefViewModel}">
+                <v:MultiXmlNodeRefView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MultiSimpleViewModel}">
+                <v:MultiSimpleView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:IntegerViewModel}">
                 <v:IntegerView/>
@@ -26,12 +32,8 @@
             <Label x:Name="Resume"/>
             <Button cal:Message.Attach="[Event Click]=[OpenForm()]" Content="Fill in"/>
         </StackPanel>
-        <ItemsControl Visibility="{Binding ClassViewVisible}">
-            <ListView x:Name="XMLNODE" Visibility="{Binding XMLNodeVisible}"/>
-            <ListView x:Name="Items" BorderBrush="white" BorderThickness="0" Visibility="{Binding ItemsVisible}"/>
-            <ListView x:Name="Multis" BorderBrush="white" BorderThickness="0" Visibility="{Binding MultisVisible}"/>
-            <ListView x:Name="Branches" BorderBrush="white" BorderThickness="0" Visibility="{Binding BranchesVisible}"/>
-            <ContentControl x:Name="Choice" Visibility="{Binding ChoiceVisible}"/>
+        <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}" Focusable="False">
+          
         </ItemsControl>
     </StackPanel>
 </UserControl>

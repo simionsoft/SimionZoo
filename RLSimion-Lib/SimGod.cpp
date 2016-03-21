@@ -10,14 +10,14 @@
 #include "parameters.h"
 #include "simion.h"
 
-CLASS_CONSTRUCTOR(CSimGod)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CSimGod)
 {
 	m_numSimions = pParameters->countChildren("Simion");
 	m_pSimions = new CSimion*[m_numSimions];
 	CParameters* pChild = pParameters->getChild("Simion");
 	for (int i = 0; i < m_numSimions; i++)
 	{
-		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", CSimion, pChild);
+		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", "A Simion: a learning agent",CSimion, pChild);
 		pChild = pChild->getNextChild("Simion");
 	}
 	

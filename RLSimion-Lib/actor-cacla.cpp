@@ -10,11 +10,11 @@
 #include "globals.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CCACLALearner)(CParameters *pParameters): EXTENDS(CPolicyLearner,pParameters)
+CLASS_CONSTRUCTOR(CCACLALearner): EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
-	CHILD_CLASS(m_e, "E-Traces",CETraces, pParameters, "Actor/E-Traces");
-	NUMERIC_VALUE(m_pAlpha, pParameters, "Alpha");
+	CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA","",CETraces, "Actor/E-Traces");
+	NUMERIC_VALUE(m_pAlpha, "Alpha","Learning gain [0..1]");
 
 	END_CLASS();
 }

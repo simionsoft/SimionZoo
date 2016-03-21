@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CLASS_CONSTRUCTOR(CPitchControl)(CParameters *pParameters,const char* worldDefinition)
+CLASS_CONSTRUCTOR(CPitchControl,const char* worldDefinition)
 : CDynamicModel(worldDefinition)
 {
 	CState *pStateDescriptor = getStateDescriptor();
@@ -21,7 +21,7 @@ CLASS_CONSTRUCTOR(CPitchControl)(CParameters *pParameters,const char* worldDefin
 	m_aPitch = pActionDescriptor->getVarIndex("pitch");
 
 	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "Set-Point-File", "../config/world/pitch-control/setpoint.txt");
+	FILE_PATH_VALUE(filename, "Set-Point-File", "../config/world/pitch-control/setpoint.txt","The setpoint file");
 	m_pSetpoint = new CFileSetPoint(filename);
 	
 	END_CLASS();

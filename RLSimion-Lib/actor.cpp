@@ -13,7 +13,7 @@
 #include "vfa.h"
 
 
-CLASS_CONSTRUCTOR(CActor)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters)
 {
 	CParameters* pOutputs = pParameters->getChild("Outputs");
 
@@ -24,13 +24,13 @@ CLASS_CONSTRUCTOR(CActor)(CParameters* pParameters) : CParamObject(pParameters)
 	CParameters* pOutput = pOutputs->getChild();
 	for (int i = 0; i<m_numOutputs; i++)
 	{
-		MULTI_VALUED_FACTORY(m_pPolicyLearners[i], "Outputs", CPolicyLearner, pOutput);
+		MULTI_VALUED_FACTORY(m_pPolicyLearners[i], "Outputs", "The outputs of the actor. One for each output dimension",CPolicyLearner, pOutput);
 		//m_pPolicyLearners[i] = CVFAPolicyLearner::getInstance(pOutput);
 		pOutput = pOutput->getNextChild();
 	}
 
-	CONST_STRING_VALUE(m_loadFile, pParameters, "Load","");
-	CONST_STRING_VALUE(m_saveFile, pParameters, "Save","");
+	CONST_STRING_VALUE(m_loadFile, "Load","","File from where the weights will be loaded");
+	CONST_STRING_VALUE(m_saveFile, "Save","","File where the actor's weights will be saved");
 	if (m_loadFile) loadPolicy(m_loadFile);
 	END_CLASS();
 }

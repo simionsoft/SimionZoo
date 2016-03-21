@@ -20,9 +20,10 @@ namespace AppXML.Models
 
         
 
-        public void cleanAll()
+        public static void cleanAll()
         {
             XML.Clear();
+            definitions.Clear();
         }
 
         public void AddBranch(BranchViewModel branch)

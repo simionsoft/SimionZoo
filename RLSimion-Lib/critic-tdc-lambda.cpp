@@ -9,10 +9,10 @@
 #include "parameters.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CTDCLambdaCritic) (CParameters *pParameters)
+CLASS_CONSTRUCTOR(CTDCLambdaCritic)
 	: CCritic(pParameters)
 {
-	CHILD_CLASS(m_z,"E-Traces",CETraces,pParameters,"Critic/E-Traces");
+	CHILD_CLASS(m_z,"E-Traces","Elilgibility traces of the critic","",CETraces,"Critic/E-Traces");
 
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");
@@ -20,9 +20,9 @@ CLASS_CONSTRUCTOR(CTDCLambdaCritic) (CParameters *pParameters)
 	m_b= new CFeatureList("Critic/b");
 	m_omega = new CFeatureList("Critic/omega");
 
-	NUMERIC_VALUE(m_pAlpha,pParameters,"Alpha");
-	NUMERIC_VALUE(m_pBeta,pParameters,"Beta");
-	NUMERIC_VALUE(m_pGamma,pParameters,"Gamma");
+	NUMERIC_VALUE(m_pAlpha,"Alpha","Learning gain of the critic");
+	NUMERIC_VALUE(m_pBeta,"Beta","Learning gain applied to the omega vector");
+	NUMERIC_VALUE(m_pGamma,"Gamma","Gamma parameter");
 	END_CLASS();
 }
 

@@ -7,7 +7,7 @@ using Caliburn.Micro;
 using System.Xml;
 namespace AppXML.ViewModels
 {
-    public class BranchViewModel:PropertyChangedBase
+    public class BranchViewModel:ValidableAndNodeViewModel
     {
         private bool _isOptional;
         private string _name;
@@ -54,14 +54,14 @@ namespace AppXML.ViewModels
             _class.removeViews();
         }
 
-        public bool validate()
+        public override bool validate()
         {
             if (_isOptional && IsNull)
                 return true;
             return _class.validate();
         }
 
-        internal XmlNode getXmlNode()
+        public override  List<XmlNode> getXmlNode()
         {
             if(IsNull)
                 return null;
@@ -76,7 +76,9 @@ namespace AppXML.ViewModels
             /*
             if (!lastChild.HasChildNodes)
                 return null;*/
-            return result;
+            List<XmlNode> list = new List<XmlNode>();
+            list.Add(result);
+            return list;
         }
 
         private XmlNode getLastChild(XmlNode result)

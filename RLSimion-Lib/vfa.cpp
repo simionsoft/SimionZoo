@@ -57,9 +57,9 @@ void CLinearVFA::load(void* pFile)
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA)(CParameters* pParameters) : CParamObject(pParameters), CLinearVFA()
+CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters), CLinearVFA()
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap,pParameters);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction (state->features)","",CFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
@@ -67,7 +67,7 @@ CLASS_CONSTRUCTOR(CLinearStateVFA)(CParameters* pParameters) : CParamObject(pPar
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
 
 	double initValue;
-	CONST_DOUBLE_VALUE(initValue, pParameters, "Init-Value", 0.0);
+	CONST_DOUBLE_VALUE(initValue, "Init-Value", 0.0,"The initial value given to the VFA's weights on initialization");
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights[i] = initValue;
 	//std::fill_n(m_pWeights, m_numWeights, initValue);
@@ -136,10 +136,10 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA)(CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map",CFeatureMap,pParameters);
-	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map",CFeatureMap,pParameters);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map","",CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map","",CFeatureMap);
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -149,7 +149,7 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA)(CParameters* pParameters) : CParamObjec
 	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
 
 	double initValue;
-	CONST_DOUBLE_VALUE(initValue, pParameters, "Init-Value", 0.0);
+	CONST_DOUBLE_VALUE(initValue, "Init-Value", 0.0,"The initial value given to the weights on initialization");
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights[i] = initValue;
 	//std::fill_n(m_pWeights, m_numWeights, initValue);

@@ -63,8 +63,9 @@ namespace CustomXMLBuilder
         public Checker m_checker = new Checker();
         public int numCharsProcessed = 0;
         string extractTokenRegex = @"(?>[^()]+|\((?<open>)|\)(?<-open>))*";
-        string extractFuncRegex = @"\b[^()]+\((.*)\)$";
-        string extractArgsRegex = @"(?:[^,()]+((?:\(\s+(?>[^()]+|\((?<open>)|\)(?<-open>))*\)))*)+";
+        string extractFuncRegex = @"(.+?)\((.*)\)$";
+        string extractArgsRegex = @"(?:[^,()]+((?:\((?>[^""()]+|\((?<open>)|\)(?<-open>))*\)))*)+";
+            //@"(?:[^,()]+((?:\(\s+(?>[^()]+|\((?<open>)|\)(?<-open>))*\)))*)+";
         int m_level = 0;
         void increaseIndent() { m_level++; }
         void decreaseIndent() { m_level--; }
@@ -128,7 +129,7 @@ namespace CustomXMLBuilder
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = functionArgumentsMatch.Groups[1].Value;
+                string arguments = functionArgumentsMatch.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
@@ -148,15 +149,17 @@ namespace CustomXMLBuilder
         string parseChoiceElements(string text)
         {
             increaseIndent();
-            //#define CHOICE_ELEMENT(checkLiteral, className, ...)
-            //#define CHOICE_ELEMENT_FACTORY(checkLiteral, className, ...) 
+            //#define CHOICE_ELEMENT(checkLiteral,className,comment)
+            //#define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment)
+            //-> <CHOICE Name="" Comment =""><CHOICE-ELEMENT Name="".../></CHOICE>
+
             string sPattern = @"(CHOICE_ELEMENT|CHOICE_ELEMENT_FACTORY)\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = functionArgumentsMatch.Groups[1].Value;
+                string arguments = functionArgumentsMatch.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
@@ -166,7 +169,7 @@ namespace CustomXMLBuilder
                 else referencedClass = parameterMatches[1].Value.Trim(' ') + "-Factory";
                 m_checker.addClassReference(referencedClass);
                 parsedXML += getLevelIndent() + "<CHOICE-ELEMENT Name=" + parameterMatches[0].Value.Trim(' ') + " Class=\""
-                        + referencedClass + "\"/>\n";
+                        + referencedClass + "\" Comment=" + parameterMatches[2].Value.Trim(' ') + "/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -174,27 +177,28 @@ namespace CustomXMLBuilder
         string parseChoiceElementsLoadXML(string text)
         {
             increaseIndent();
-            //define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename, ...)
+            //#define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment)
             string sPattern = @"CHOICE_ELEMENT_XML\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = functionArgumentsMatch.Groups[1].Value;
+                string arguments = functionArgumentsMatch.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
                 m_checker.addClassReference(parameterMatches[1].Value.Trim(' '));
                 parsedXML += getLevelIndent() + "<CHOICE-ELEMENT Name=" + parameterMatches[0].Value.Trim(' ') + " Class=\""
-                        + parameterMatches[1].Value.Trim(' ') + "\" XML=" + parameterMatches[2].Value.Trim(' ') + "/>\n";
+                        + parameterMatches[1].Value.Trim(' ') + "\" XML=" + parameterMatches[2].Value.Trim(' ')
+                        + " Comment=" + parameterMatches[3].Value.Trim(' ') + "/>\n";
             }
             decreaseIndent();
             return parsedXML;
         }
         string parseChoices(string text)
         {
-            //#define CHOICE(name)
-            //#define CHOICE_XML(name,loadXML)
+            //#define CHOICE(name,comment)
+            //#define CHOICE_XML(name,loadXML,comment)
             //#define END_CHOICE()
             increaseIndent();
 
@@ -211,8 +215,10 @@ namespace CustomXMLBuilder
 
                 parsedXML += getLevelIndent() + "<CHOICE Name=" + parameterMatches[1].Value;
 
-                if (parameterMatches.Count>2)
-                    parsedXML += @" LoadXML=" + parameterMatches[2].Value;
+                if (parameterMatches.Count>3)
+                    parsedXML +=  " Comment=" + parameterMatches[3].Value + @" LoadXML=" + parameterMatches[2].Value;
+                else 
+                    parsedXML+=" Comment=" + parameterMatches[2].Value;
                 parsedXML += ">\n";
 
                 parsedXML += parseChoiceElementsLoadXML(match.Groups[2].Value);
@@ -227,8 +233,8 @@ namespace CustomXMLBuilder
         string parseEnumValues(string text)
         {
             increaseIndent();
-            //#define ENUM_VALUE(variable,typeName,parameterNode,parameterName,defaultValue)
-            // -> <ENUM_VALUE Name="parameterName" Class="typeName"/>
+            //#define ENUM_VALUE(variable,typeName,parameterName,defaultValue,comment)
+            // -> <ENUM_VALUE Name="parameterName" Class="typeName" Comment=""/>
             string sPattern = @"ENUM_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
@@ -236,206 +242,101 @@ namespace CustomXMLBuilder
             {
                 //Console.WriteLine(match.Value);
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 m_checker.addEnumReference(parameterMatches[1].Value.Trim(' '));
 
-                parsedXML += getLevelIndent() + "<ENUM-VALUE Name=" + parameterMatches[3].Value.Trim(' ')
+                parsedXML += getLevelIndent() + "<ENUM-VALUE Name=" + parameterMatches[2].Value.Trim(' ')
                     + " Class=\"" + parameterMatches[1].Value.Trim(' ') 
-                    + "\" Default=" + parameterMatches[4].Value.Trim(' ')
+                    + "\" Default=" + parameterMatches[3].Value.Trim(' ')
+                    + " Comment=" + parameterMatches[4].Value.Trim(' ')
                     + "/>\n";
             }
             decreaseIndent();
             return parsedXML;
         }
-        string parseConstIntegerValues(string text)
+        string parseConstantParameters(string text)
         {
             increaseIndent();
-            //#define CONST_INTEGER_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstInteger(parameterName,defaultValue);
-            string sPattern = @"CONST_INTEGER_VALUE\s*\(" + extractTokenRegex + @"\)";
+            //#define CONST_INTEGER_VALUE(variable,parameterName,defaultValue,comment)
+            //#define CONST_DOUBLE_VALUE(variable,parameterName,defaultValue,comment)
+            //...
+            string sPattern = @"(CONST_INTEGER|CONST_DOUBLE|CONST_STRING|FILE_PATH|DIR_PATH)_VALUE\s*?\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<INTEGER-VALUE Name=" + parameterMatches[2].Value.Trim(' ')
-                    + " Default=\"" + parameterMatches[3].Value.Trim(' ')
-                    + "\"/>\n";
+               
+                string outputClassName;
+                switch (match.Groups[1].Value)
+                {
+                    case "CONST_INTEGER": outputClassName = "INTEGER-VALUE"; break;
+                    case "CONST_DOUBLE": outputClassName = "DOUBLE-VALUE"; break;
+                    case "CONST_STRING": outputClassName = "STRING-VALUE"; break;
+                    case "FILE_PATH": outputClassName = "FILE-PATH-VALUE"; break;
+                    case "DIR_PATH": outputClassName = "DIR-PATH-VALUE"; break;
+                    default: outputClassName = ""; break;
+                }
+                parsedXML += getLevelIndent() + "<" + outputClassName + " Name=" + parameterMatches[1].Value.Trim(' ');
+                if (outputClassName == "INTEGER-VALUE" || outputClassName == "DOUBLE-VALUE")
+                    parsedXML += " Default=\"" + parameterMatches[2].Value.Trim(' ') + "\"";
+                else parsedXML += " Default=" + parameterMatches[2].Value.Trim(' ');
+                    
+                parsedXML+= " Comment="  + parameterMatches[3].Value.Trim(' ') + "/>\n";
             }
             decreaseIndent();
             return parsedXML;
         }
-        string parseConstDoubleValues(string text)
+      
+        string parseVariableRefs(string text)
         {
             increaseIndent();
-            //#define CONST_DOUBLE_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstDouble(parameterName,defaultValue);
-            string sPattern = @"CONST_DOUBLE_VALUE\s*\(" + extractTokenRegex + @"\)";
+            //#define STATE_VARIABLE_REF(variable,variableName,comment)
+            //#define ACTION_VARIABLE_REF(variable,variableName,comment)
+            // ->     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State/Action"/>
+
+            string sPattern = @"(STATE|ACTION)_VARIABLE_REF\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<DOUBLE-VALUE Name=" + parameterMatches[2].Value.Trim(' ')
-                    + " Default=\"" + parameterMatches[3].Value.Trim(' ')
-                     + "\"/>\n";
+                string hangingFrom;
+                if (match.Groups[1].Value == "STATE")
+                    hangingFrom = "State";
+                else
+                    hangingFrom = "Action";
+
+                parsedXML += getLevelIndent() + "<XML-NODE-REF Name=" + parameterMatches[1].Value.Trim(' ')
+                    + " XMLFile=\"WORLD-DEFINITION\" HangingFrom=\"" + hangingFrom + "\"/>\n";
             }
             decreaseIndent();
             return parsedXML;
         }
-        string parseConstBooleanValues(string text)
-        {
-            increaseIndent();
-            //#define CONST_BOOLEAN_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstBoolean(parameterName,defaultValue);
-            // -> <ENUM-VALUE Class="BOOLEAN" Name="Log-eval-episodes" Default="true" Comment="Log evaluation episodes?"/>
-            string sPattern = @"CONST_BOOLEAN_VALUE\s*\(" + extractTokenRegex + @"\)";
-
-            string parsedXML = "";
-            foreach (Match match in Regex.Matches(text, sPattern))
-            {
-                //Console.WriteLine(match.Value);
-                var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
-
-                var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-
-                parsedXML += getLevelIndent() + "<ENUM-VALUE Class=\"BOOLEAN\" Name=" + parameterMatches[2].Value.Trim(' ') 
-                    + " Default=\"" + parameterMatches[3].Value.Trim(' ')
-                    + "\"/>\n";
-            }
-            decreaseIndent();
-            return parsedXML;
-        }
-        string parseConstStringValues(string text)
-        {
-            increaseIndent();
-            //#define CONST_STRING_VALUE(variable,parameterNode,parameterName,defaultValue) variable= parameterNode->getConstString(parameterName,defaultValue);
-            string sPattern = @"CONST_STRING_VALUE\s*\(" + extractTokenRegex + @"\)";
-
-            string parsedXML = "";
-            foreach (Match match in Regex.Matches(text, sPattern))
-            {
-                //Console.WriteLine(match.Value);
-                var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
-
-                var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-
-                parsedXML += getLevelIndent() + "<STRING-VALUE Name=" + parameterMatches[2].Value.Trim(' ') 
-                    + " Default=" + parameterMatches[3].Value.Trim(' ') + "/>\n";
-            }
-            decreaseIndent();
-            return parsedXML;
-        }
-        string parseFilePathValues(string text)
-        {
-            increaseIndent();
-            //#define FILE_PATH_VALUE(variable,parameterNode,variableName,default) variable= (char*)parameterNode->getConstString(variableName);
-            string sPattern = @"FILE_PATH_VALUE\s*\(" + extractTokenRegex + @"\)";
-
-            string parsedXML = "";
-            foreach (Match match in Regex.Matches(text, sPattern))
-            {
-                //Console.WriteLine(match.Value);
-                var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
-
-                var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-
-                parsedXML += getLevelIndent() + "<FILE-PATH-VALUE Name=" + parameterMatches[2].Value.Trim(' ') 
-                    + " Default=" + parameterMatches[3].Value.Trim(' ')                     + "/>\n";
-            }
-            decreaseIndent();
-            return parsedXML;
-        }
-        string parseDirPathValues(string text)
-        {
-            increaseIndent();
-            // #define DIR_PATH_VALUE(variable,parameterNode,variableName,default) variable= (char*)parameterNode->getConstString(variableName);
-
-            string sPattern = @"DIR_PATH_VALUE\s*\(" + extractTokenRegex + @"\)";
-
-            string parsedXML = "";
-            foreach (Match match in Regex.Matches(text, sPattern))
-            {
-                //Console.WriteLine(match.Value);
-                var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
-
-                var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-
-                parsedXML += getLevelIndent() + "<DIR-PATH-VALUE Name=" + parameterMatches[2].Value.Trim(' ')
-                    + " Default=" + parameterMatches[3].Value.Trim(' ') + "/>\n";
-            }
-            decreaseIndent();
-            return parsedXML;
-        }
-        string parseStateVariableRefs(string text)
-        {
-            increaseIndent();
-            //#define STATE_VARIABLE_REF(variable,parameterNode,variableName) 
-            // ->     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
-
-            string sPattern = @"STATE_VARIABLE_REF\s*\(" + extractTokenRegex + @"\)";
-
-            string parsedXML = "";
-            foreach (Match match in Regex.Matches(text, sPattern))
-            {
-                //Console.WriteLine(match.Value);
-                var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
-
-                var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-
-                parsedXML += getLevelIndent() + "<XML-NODE-REF Name=" + parameterMatches[2].Value.Trim(' ')
-                    + " XMLFile=\"WORLD-DEFINITION\" HangingFrom=\"State\"/>\n";
-            }
-            decreaseIndent();
-            return parsedXML;
-        }
-        string parseActionVariableRefs(string text)
-        {
-            increaseIndent();
-            //#define ACTION_VARIABLE_REF(variable,parameterNode,variableName) 
-            // ->     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-
-            string sPattern = @"ACTION_VARIABLE_REF\s*\(" + extractTokenRegex + @"\)";
-
-            string parsedXML = "";
-            foreach (Match match in Regex.Matches(text, sPattern))
-            {
-                //Console.WriteLine(match.Value);
-                var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
-
-                var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-
-                parsedXML += getLevelIndent() + "<XML-NODE-REF Name=" + parameterMatches[2].Value.Trim(' ')
-                    + " XMLFile=\"WORLD-DEFINITION\" HangingFrom=\"Action\"/>\n";
-            }
-            decreaseIndent();
-            return parsedXML;
-        }
+  
         string parseMultiBasicType(string text)
         {
             increaseIndent();
-            //#define MULTI_VALUED_STRING(variable,parameterNode,parameterName,defaultValue)
-            //#define MULTI_VALUED_DOUBLE(variable,parameterNode,parameterName,defaultValue)
-            //#define MULTI_VALUED_INTEGER(variable,parameterNode,parameterName,defaultValue)
-            //#define MULTI_VALUED_FILE_PATH(variable,parameterNode,parameterName,defaultValue)
-            //#define MULTI_VALUED_STATE_VAR_REF(variable,parameterNode,parameterName,defaultValue)
-            //#define MULTI_VALUED_ACTION_VAR_REF(variable,parameterNode,parameterName,defaultValue)
+            //#define MULTI_VALUED_STRING(variable,parameterName,comment,defaultValue,parameterNode) 
+            //#define MULTI_VALUED_DOUBLE(variable,parameterName,comment,defaultValue,parameterNode)
+            //#define MULTI_VALUED_INTEGER(variable,parameterName,comment,defaultValue,parameterNode)
+            //#define MULTI_VALUED_FILE_PATH(variable,parameterName,comment,defaultValue,parameterNode)
+            //#define MULTI_VALUED_STATE_VAR_REF(variable,parameterName,comment,parameterNode)
+            //#define MULTI_VALUED_ACTION_VAR_REF(variable,parameterName,comment,parameterNode)
+
             // -> <MULTI-VALUED Name="RBF-State-Grid-Dimension" Class="STRING-VALUE"/>
             string sPattern = @"MULTI_VALUED_(STRING|DOUBLE|INTEGER|FILE_PATH|STATE_VAR_REF|ACTION_VAR_REF)\(" 
                 + extractTokenRegex + @"\)";
@@ -445,24 +346,32 @@ namespace CustomXMLBuilder
             {
                 //Console.WriteLine(match.Value);
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                string referencedBasicType;
+                string referencedBasicType,HangingFrom="";
                 switch (match.Groups[1].Value.Trim(' '))
                 {
                     case "STRING": referencedBasicType = "STRING-VALUE"; break;
                     case "DOUBLE": referencedBasicType = "DOUBLE-VALUE"; break;
                     case "INTEGER": referencedBasicType = "INTEGER-VALUE"; break;
                     case "FILE_PATH": referencedBasicType = "FILE-PATH-VALUE"; break;
-                    case "STATE_VAR_REF": referencedBasicType = "XML-NODE-REF"; break;
-                    case "ACTION_VAR_REF": referencedBasicType = "XML-NODE-REF"; break;
-                    default: referencedBasicType = "n/a"; break;
+                    case "STATE_VAR_REF": referencedBasicType = "XML-NODE-REF"; HangingFrom = "State"; break;
+                    case "ACTION_VAR_REF": referencedBasicType = "XML-NODE-REF"; HangingFrom="Action";break;
+                    default: referencedBasicType = ""; break;
                 }
 
-                parsedXML += getLevelIndent() + "<MULTI-VALUED Name=" + parameterMatches[2].Value.Trim(' ')
-                        + " Class=\"" + referencedBasicType + "\"/>\n";
+                parsedXML += getLevelIndent() + "<MULTI-VALUED Name=" + parameterMatches[1].Value.Trim(' ')
+                        + " Class=\"" + referencedBasicType + "\" Comment=" + parameterMatches[2].Value.Trim(' ');
+                if (HangingFrom != "") parsedXML += " HangingFrom=\"" + HangingFrom + "\"";
+                else
+                {
+                    if (referencedBasicType=="STRING-VALUE" || referencedBasicType=="FILE-PATH-VALUE")
+                        parsedXML += " Default=" + parameterMatches[3].Value.Trim(' ');
+                    else parsedXML += " Default=\"" + parameterMatches[3].Value.Trim(' ') + "\"";
+                }
+                 parsedXML += "/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -470,8 +379,8 @@ namespace CustomXMLBuilder
         string parseMultiValues(string text)
         {
             increaseIndent();
-            //#define MULTI_VALUE(name,indexedVariable,className,parameters)
-            //#define MULTI_VALUE_FACTORY(name,indexedVariable,className,parameters)
+            //#define MULTI_VALUE(indexedVariable,name,comment,className,...)
+            //#define MULTI_VALUE_FACTORY(indexedVariable,name,comment,className,...)
             // -> <MULTI-VALUED Name="RBF-State-Grid-Dimension" Class="RBF-STATE-GRID-DIMENSION"/>
             string sPattern = @"(MULTI_VALUED_FACTORY|MULTI_VALUED)\s*\(" + extractTokenRegex + @"\)";
 
@@ -480,19 +389,19 @@ namespace CustomXMLBuilder
             {
                 //Console.WriteLine(match.Value);
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 string referencedClass;
                 if (match.Groups[1].Value.Trim(' ') == "MULTI_VALUED")
-                    referencedClass = parameterMatches[2].Value.Trim(' ');
-                else referencedClass = parameterMatches[2].Value.Trim(' ') + "-Factory";
+                    referencedClass = parameterMatches[3].Value.Trim(' ');
+                else referencedClass = parameterMatches[3].Value.Trim(' ') + "-Factory";
 
                 m_checker.addClassReference(referencedClass);
                 
                 parsedXML += getLevelIndent() + "<MULTI-VALUED Name=" + parameterMatches[1].Value.Trim(' ')
-                        + " Class=\"" + referencedClass+ "\"/>\n";
+                        + " Class=\"" + referencedClass+ "\" Comment=" + parameterMatches[2].Value.Trim(' ') +"/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -500,8 +409,8 @@ namespace CustomXMLBuilder
         string parseChildClasses(string text)
         {
             increaseIndent();
-            //#define CHILD_CLASS(variable,className,constructorParameters,...) variable= new className(constructorParameters,__VA_ARGS__);
-            //#define CHILD_CLASS_FACTORY(variable,className,constructorParameters,...) variable= className::getInstance(constructorParameters,__VA_ARGS__);
+            //#define CHILD_CLASS(variable,name,comment,window,className,constructorParameters,...) variable= new className(constructorParameters,__VA_ARGS__);
+            //#define CHILD_CLASS_FACTORY(variable,name,comment,window,className,constructorParameters,...) variable= className::getInstance(constructorParameters,__VA_ARGS__);
             // -> <BRANCH Name="" Class=""/>
             string sPattern = @"(CHILD_CLASS|CHILD_CLASS_FACTORY)\s*\(" + extractTokenRegex + @"\)";
 
@@ -510,18 +419,22 @@ namespace CustomXMLBuilder
             {
                 //Console.WriteLine(match.Value);
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 string referencedClass;
                 if (match.Groups[1].Value.Trim(' ') == "CHILD_CLASS")
-                    referencedClass= parameterMatches[2].Value.Trim(' ');
-                else referencedClass= parameterMatches[2].Value.Trim(' ') + "-Factory";
+                    referencedClass= parameterMatches[4].Value.Trim(' ');
+                else referencedClass= parameterMatches[4].Value.Trim(' ') + "-Factory";
 
                 m_checker.addClassReference(referencedClass);
 
-                parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[1].Value.Trim(' ') + " Class=\""  + referencedClass + "\"/>\n";                
+                parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[1].Value.Trim(' ')
+                    + " Class=\"" + referencedClass + "\" Comment=" + parameterMatches[2].Value.Trim(' ');
+                if (parameterMatches[3].Value.Trim(' ') != "\"\"") //Window
+                    parsedXML += " Window=" + parameterMatches[3].Value;
+                parsedXML+= "/>\n";                
             }
             decreaseIndent();
             return parsedXML;
@@ -529,7 +442,7 @@ namespace CustomXMLBuilder
         string parseNumericValues(string text)
         {
             increaseIndent();
-            //#define NUMERIC_VALUE(variable,parameterNode,parameterName)
+            //#define NUMERIC_VALUE(variable,parameterName,comment)
              string sPattern = @"NUMERIC_VALUE\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
@@ -537,12 +450,12 @@ namespace CustomXMLBuilder
             {
                 //Console.WriteLine(match.Value);
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[2].Value.Trim(' ')
-                    + " Class=\"CNumericValue-Factory\"/>\n";
+                parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[1].Value.Trim(' ')
+                    + " Class=\"CNumericValue-Factory\"" + " Comment=" + parameterMatches[2].Value.Trim(' ') + "/>\n";
             }
             decreaseIndent();
             return parsedXML;
@@ -558,7 +471,7 @@ namespace CustomXMLBuilder
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 var parameters = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                string arguments = parameters.Groups[1].Value;
+                string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
                 m_checker.addClassReference(parameterMatches[0].Value.Trim(' '));
@@ -575,29 +488,24 @@ namespace CustomXMLBuilder
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
-                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY)\s*\(" + extractTokenRegex + @"\)");
+                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY)\s*\(" + extractTokenRegex+ @"\)");
                 string header = functionArgumentsMatch.Groups[0].Value;
 
-                var parameterMatches = Regex.Matches(header, extractArgsRegex);
+                var functionMatches = Regex.Match(header, extractFuncRegex);
 
+                var parameterMatches = Regex.Match(functionMatches.Groups[2].Value, extractArgsRegex);
                 string definedClass;
-                if (parameterMatches[0].Value.Trim(' ') == "CLASS_CONSTRUCTOR")
-                    definedClass= parameterMatches[1].Value;
-                else definedClass= parameterMatches[1].Value + "-Factory";
+                if (match.Groups[1].Value.Trim(' ') == "CLASS_CONSTRUCTOR")
+                    definedClass = parameterMatches.Groups[0].Value;
+                else definedClass = parameterMatches.Groups[0].Value + "-Factory";
 
                 m_checker.addClassDefinition(definedClass);
                 parsedXML += getLevelIndent() + "<CLASS Name=\"" + definedClass + "\">\n";
-                
-                string classDefinition= match.Groups[2].Value;
-                parsedXML += parseStateVariableRefs(classDefinition);
-                parsedXML += parseActionVariableRefs(classDefinition);
-                parsedXML += parseConstIntegerValues(classDefinition);
-                parsedXML += parseConstDoubleValues(classDefinition);
-                parsedXML += parseConstStringValues(classDefinition);
-                parsedXML += parseDirPathValues(classDefinition);
-                parsedXML += parseFilePathValues(classDefinition);
 
-                parsedXML += parseConstBooleanValues(classDefinition);
+                string classDefinition = match.Groups[2].Value;
+                parsedXML += parseVariableRefs(classDefinition);
+
+                parsedXML += parseConstantParameters(classDefinition);
 
                 parsedXML += parseEnumValues(classDefinition);
                 parsedXML += parseMultiValues(classDefinition);

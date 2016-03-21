@@ -12,17 +12,17 @@
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
 
-CLASS_CONSTRUCTOR (CWorld) (CParameters* pParameters)
+CLASS_CONSTRUCTOR (CWorld)
 {
 	assert(pParameters);
 	m_t= 0.0;
 
 	//The dynamic model must be created before the reward so that references to state variables are correctly set
-	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model", CDynamicModel, pParameters);
-	CHILD_CLASS(m_pRewardFunction, "Reward", CRewardFunction, pParameters);
+	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model","The dynamic model","", CDynamicModel);
+	CHILD_CLASS(m_pRewardFunction, "Reward","The reward function","New", CRewardFunction);
 
-	CONST_INTEGER_VALUE(m_simulationSteps,pParameters,"Num-Integration-Steps",4);
-	CONST_DOUBLE_VALUE(m_dt,pParameters,"Delta-T",0.01);
+	CONST_INTEGER_VALUE(m_simulationSteps,"Num-Integration-Steps",4,"The number of integration steps performed each simulation time-step");
+	CONST_DOUBLE_VALUE(m_dt,"Delta-T",0.01,"The delta-time between simulation steps");
 
 	m_scalarReward = 0.0;
 	END_CLASS();
@@ -136,12 +136,12 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	}
 }
 
-CDynamicModel *CLASS_FACTORY(CDynamicModel)(CParameters* pParameters)
+CLASS_FACTORY(CDynamicModel)
 {
-	CHOICE_XML("Model", "WORLD-DEFINITION");
-	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml");
-	CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml");
-	CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml");
+	CHOICE_XML("Model", "WORLD-DEFINITION","The world");
+	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml","A two-mass model of a VS Wind Turbine");
+	CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml","An underwater vehicle control task");
+	CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml","An airplane pitch control task");
 	//CHOICE _ ELEMENT _ XML("Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml");
 	END_CHOICE();
 	return 0;

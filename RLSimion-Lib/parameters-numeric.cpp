@@ -14,10 +14,10 @@ public:
 	double getValue(){ return m_value; }
 };
 
-CLASS_CONSTRUCTOR(CConstantValue)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CConstantValue)
 {
 	//<ALPHA>0.1</ALPHA>
-	CONST_DOUBLE_VALUE(m_value, pParameters, "Value", 0.0);
+	CONST_DOUBLE_VALUE(m_value, "Value", 0.0,"Constant value");
 	END_CLASS();
 }
 
@@ -37,19 +37,19 @@ public:
 	double getValue();
 };
 
-CLASS_CONSTRUCTOR(CInterpolatedValue)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CInterpolatedValue)
 {
 
-	CONST_DOUBLE_VALUE(m_startOffset, pParameters, "Start-Offset", 0.0);
-	CONST_DOUBLE_VALUE(m_preOffsetValue, pParameters, "Pre-Offset-Value", 0.0);
+	CONST_DOUBLE_VALUE(m_startOffset, "Start-Offset", 0.0,"Normalized time from which the schedule will begin [0...1]");
+	CONST_DOUBLE_VALUE(m_preOffsetValue, "Pre-Offset-Value", 0.0,"Output value before the schedule begins");
 
-	ENUM_VALUE(m_interpolation, Interpolation, pParameters, "Interpolation", "linear");
+	ENUM_VALUE(m_interpolation, Interpolation, "Interpolation", "linear","Interpolation type");
 
-	ENUM_VALUE(m_timeReference, TimeReference, pParameters, "Time-reference", "experiment");
+	ENUM_VALUE(m_timeReference, TimeReference, "Time-reference", "experiment","Time reference");
 
-	CONST_DOUBLE_VALUE(m_startValue, pParameters, "Initial-Value", 0.0);
-	CONST_DOUBLE_VALUE(m_endValue, pParameters, "End-Value", 1.0);
-	CONST_DOUBLE_VALUE(m_evaluationValue, pParameters, "Evaluation-Value", 0.0);
+	CONST_DOUBLE_VALUE(m_startValue, "Initial-Value", 0.0,"Output value at the beginning of the schedule");
+	CONST_DOUBLE_VALUE(m_endValue, "End-Value", 1.0,"Output value at the end of the schedule");
+	CONST_DOUBLE_VALUE(m_evaluationValue, "Evaluation-Value", 0.0,"Output value during evaluation episodes");
 	END_CLASS();
 }
 
@@ -102,14 +102,14 @@ public:
 };
 
 
-CLASS_CONSTRUCTOR(CBhatnagarSchedule)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CBhatnagarSchedule)
 {
-	ENUM_VALUE(m_timeReference, TimeReference, pParameters, "Time-reference", "linear");
+	ENUM_VALUE(m_timeReference, TimeReference,  "Time-reference", "linear","Time reference");
 
-	CONST_DOUBLE_VALUE(m_alpha_0, pParameters, "Alpha-0", 1.0);
-	CONST_DOUBLE_VALUE(m_alpha_c, pParameters, "Alpha-c", 1.0);
-	CONST_DOUBLE_VALUE(m_t_exp, pParameters, "Time-Exponent", 1.0);
-	CONST_DOUBLE_VALUE(m_evaluationValue, pParameters, "Evaluation-Value", 0.0);
+	CONST_DOUBLE_VALUE(m_alpha_0,  "Alpha-0", 1.0,"Alpha-0 parameter in Bhatnagar's schedule");
+	CONST_DOUBLE_VALUE(m_alpha_c, "Alpha-c", 1.0, "Alpha-c parameter in Bhatnagar's schedule");
+	CONST_DOUBLE_VALUE(m_t_exp, "Time-Exponent", 1.0, "Time exponent in Bhatnagar's schedule");
+	CONST_DOUBLE_VALUE(m_evaluationValue, "Evaluation-Value", 0.0,"Output value during evaluation episodes");
 	END_CLASS();
 }
 
@@ -133,12 +133,12 @@ double CBhatnagarSchedule::getValue()
 }
 
 
-CNumericValue* CLASS_FACTORY(CNumericValue)(CParameters* pParameters)
+CLASS_FACTORY(CNumericValue)
 {
-	CHOICE("Schedule");
-	CHOICE_ELEMENT("Constant", CConstantValue);
-	CHOICE_ELEMENT("Linear-Schedule", CInterpolatedValue);
-	CHOICE_ELEMENT("Bhatnagar-Schedule", CBhatnagarSchedule);
+	CHOICE("Schedule","Schedule-type");
+	CHOICE_ELEMENT("Constant", CConstantValue,"Constant value");
+	CHOICE_ELEMENT("Linear-Schedule", CInterpolatedValue,"Linear schedule");
+	CHOICE_ELEMENT("Bhatnagar-Schedule", CBhatnagarSchedule,"Bhatnagar's schedule");
 	END_CHOICE();
 	END_CLASS();
 

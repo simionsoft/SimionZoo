@@ -54,15 +54,15 @@ void CSingleDimensionGrid::initCenterPoints()
 	}
 }
 
-CLASS_CONSTRUCTOR(CStateVariableGrid)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CStateVariableGrid)
 {
-	STATE_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
-	CONST_INTEGER_VALUE(m_numCenters, pParameters, "Num-Features", 3);
+	STATE_VARIABLE_REF(m_variableIndex, "Variable","The state variable");
+	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
 
-	CONST_DOUBLE_VALUE(m_min, pParameters, "Min", 0.0);// RLSimion::g_pWorld->getStateDescriptor()->getMin(m_variableIndex));
-	CONST_DOUBLE_VALUE(m_max, pParameters, "Max", 1.0);// RLSimion::g_pWorld->getStateDescriptor()->getMax(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_min, "Min", 0.0,"The minimum value of the points that define the grid");// RLSimion::g_pWorld->getStateDescriptor()->getMin(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_max, "Max", 1.0, "The maximum value of the points that define the grid");// RLSimion::g_pWorld->getStateDescriptor()->getMax(m_variableIndex));
 
-	CONST_STRING_VALUE(m_distributionType, pParameters, "Distribution", "linear");
+	CONST_STRING_VALUE(m_distributionType, "Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
 	initCenterPoints();
 	END_CLASS();
 }
@@ -77,15 +77,15 @@ double CStateVariableGrid::getVariableValue(const CState* s, const CAction* a)
 }
 
 
-CLASS_CONSTRUCTOR(CActionVariableGrid)(CParameters* pParameters)
+CLASS_CONSTRUCTOR(CActionVariableGrid)
 {
-	ACTION_VARIABLE_REF(m_variableIndex, pParameters, "Variable");
-	CONST_INTEGER_VALUE(m_numCenters, pParameters, "Num-Features", 3);
+	ACTION_VARIABLE_REF(m_variableIndex, "Variable", "The action variable");
+	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
 
-	CONST_DOUBLE_VALUE(m_min, pParameters, "Min", 0.0);// RLSimion::g_pWorld->getActionDescriptor()->getMin(m_variableIndex));
-	CONST_DOUBLE_VALUE(m_max, pParameters, "Max", 1.0);// RLSimion::g_pWorld->getActionDescriptor()->getMax(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_min, "Min", 0.0,"The minimum value of the points that define the grid");// RLSimion::g_pWorld->getActionDescriptor()->getMin(m_variableIndex));
+	CONST_DOUBLE_VALUE(m_max, "Max", 1.0, "The maximum value of the points that define the grid");// RLSimion::g_pWorld->getActionDescriptor()->getMax(m_variableIndex));
 
-	CONST_STRING_VALUE(m_distributionType, pParameters, "Distribution", "linear");
+	CONST_STRING_VALUE(m_distributionType, "Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
 	initCenterPoints();
 	END_CLASS();
 }

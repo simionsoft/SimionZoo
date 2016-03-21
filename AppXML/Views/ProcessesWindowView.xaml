@@ -1,0 +1,18 @@
+﻿<Window x:Class="AppXML.Views.ProcessesWindowView"
+            
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Width="655.224" Height="409.776">
+    
+    <StackPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            
+                <ContentControl x:Name="Manager" />
+            
+        </ScrollViewer>
+        <Button x:Name="Close" Content="Close" Width="50"/>
+        <ScrollViewer Height="100"/>
+    </StackPanel>
+</Window>

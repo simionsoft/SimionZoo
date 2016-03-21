@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "parameters.h"
 
-CLASS_CONSTRUCTOR(CMagneticLevitation)(CParameters *pParameters,const char* worldDefinition)
+CLASS_CONSTRUCTOR(CMagneticLevitation,const char* worldDefinition)
 : CDynamicModel(worldDefinition)
 {/*
 	m_pStateDescriptor= new CState(5);
@@ -32,7 +32,7 @@ CLASS_CONSTRUCTOR(CMagneticLevitation)(CParameters *pParameters,const char* worl
 	m_aVoltage= pActionDescriptor->getVarIndex("voltage");
 
 	const char* filename;
-	FILE_PATH_VALUE(filename, pParameters, "Evaluation-Set-Point", "../config/world/magnetic-levitation/setpoint.txt");
+	FILE_PATH_VALUE(filename, "Evaluation-Set-Point", "../config/world/magnetic-levitation/setpoint.txt","The setpoint file");
 	m_pEvalSetPoint = new CFileSetPoint(filename);
 
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);

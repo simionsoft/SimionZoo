@@ -6,25 +6,25 @@
 #include "logger.h"
 #include "vfa.h"
 
-CLASS_CONSTRUCTOR(CCritic) (CParameters* pParameters) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CCritic) : CParamObject(pParameters)
 {
-	CHILD_CLASS(m_pVFunction, "V-Function", CLinearStateVFA, pParameters);
+	CHILD_CLASS(m_pVFunction, "V-Function","The parameterization of the V-Function to be learned","", CLinearStateVFA);
 
 	//m_pVFA = new CLinearStateVFA();
-	CONST_STRING_VALUE(m_loadFile, pParameters, "Load","");
-	CONST_STRING_VALUE(m_saveFile, pParameters, "Save","");
+	CONST_STRING_VALUE(m_loadFile, "Load","","File from where the weights of the V-Function will be loaded before the experiment");
+	CONST_STRING_VALUE(m_saveFile, "Save", "", "File where the weights of the V-Function will be saved after the experiment");
 	if (m_loadFile)
 		loadVFunction(m_loadFile);
 
 	END_CLASS();
 }
 
-CCritic* CLASS_FACTORY(CCritic)(CParameters* pParameters)
+CLASS_FACTORY(CCritic)
 {
-	CHOICE("Critic");
-	CHOICE_ELEMENT("TD-Lambda", CTDLambdaCritic);
-	CHOICE_ELEMENT("True-Online-TD-Lambda", CTrueOnlineTDLambdaCritic);
-	CHOICE_ELEMENT("TDC-Lambda", CTDCLambdaCritic);
+	CHOICE("Critic","Critic type");
+	CHOICE_ELEMENT("TD-Lambda", CTDLambdaCritic,"TD-Lambda algorithm");
+	CHOICE_ELEMENT("True-Online-TD-Lambda", CTrueOnlineTDLambdaCritic,"True-online TD-Lambda algorithm");
+	CHOICE_ELEMENT("TDC-Lambda", CTDCLambdaCritic,"TDC-Lambda algorithm");
 	END_CHOICE();
 
 	END_CLASS();

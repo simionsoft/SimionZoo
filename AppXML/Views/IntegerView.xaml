@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="55" d:DesignWidth="300">
+             >
     <StackPanel Orientation="Horizontal">
         <ItemsControl ItemsSource="{Binding TextBox}">
             <ItemsControl.ItemTemplate>
@@ -32,7 +32,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}"/>
-                        <TextBox Text="{Binding Default}" Width="150"/>
+                        <TextBox Text="{Binding Default}" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]"  Background="{Binding TextColor}"/>
                         <Button Width="30" cal:Message.Attach="[Event Click]=[Action FindPath()]">
                             <Image Source="{Binding ButtonImage}" Width="20" Height="20"></Image>
                         </Button>
