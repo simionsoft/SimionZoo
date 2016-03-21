@@ -25,7 +25,7 @@ CLASS_CONSTRUCTOR(CDeterministicPolicy)
 : CParamObject(pParameters)
 {
 	CHILD_CLASS(m_pVFA, "Linear-State-VFA", "The parameterized VFA that approximates the function","",CLinearStateVFA);
-
+	
 	ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action variable");
 
 	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();

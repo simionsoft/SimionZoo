@@ -49,8 +49,9 @@ class CExperiment
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
 	void reset();
 public:
-	CExperiment(CParameters* pParameters);
+	CExperiment();
 	~CExperiment();
+	void init(CParameters* pParameters);
 
 	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }
 

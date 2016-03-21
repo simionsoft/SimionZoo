@@ -11,9 +11,18 @@
 
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
-
-CLASS_CONSTRUCTOR (CWorld)
+CWorld::CWorld()
 {
+	m_pDynamicModel = 0;
+	m_pRewardFunction = 0;
+	m_numIntegrationSteps = 0;
+	m_dt = 0.0;
+	m_scalarReward = 0.0;
+}
+
+CLASS_INIT(CWorld)
+{
+	if (!pParameters) return;
 	assert(pParameters);
 	m_t= 0.0;
 
@@ -21,7 +30,7 @@ CLASS_CONSTRUCTOR (CWorld)
 	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model","The dynamic model","", CDynamicModel);
 	CHILD_CLASS(m_pRewardFunction, "Reward","The reward function","New", CRewardFunction);
 
-	CONST_INTEGER_VALUE(m_simulationSteps,"Num-Integration-Steps",4,"The number of integration steps performed each simulation time-step");
+	CONST_INTEGER_VALUE(m_numIntegrationSteps,"Num-Integration-Steps",4,"The number of integration steps performed each simulation time-step");
 	CONST_DOUBLE_VALUE(m_dt,"Delta-T",0.01,"The delta-time between simulation steps");
 
 	m_scalarReward = 0.0;
@@ -30,8 +39,14 @@ CLASS_CONSTRUCTOR (CWorld)
 
 CWorld::~CWorld()
 {
-	if (m_pDynamicModel) delete m_pDynamicModel;
-	if (m_pRewardFunction) delete m_pRewardFunction;
+	if (m_pDynamicModel)
+	{
+		delete m_pDynamicModel; m_pDynamicModel = 0;
+	}
+	if (m_pRewardFunction)
+	{
+		delete m_pRewardFunction; m_pRewardFunction = 0;
+	}
 }
 
 double CWorld::getDT()
@@ -64,14 +79,14 @@ void CWorld::reset(CState *s)
 
 double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 {
-	double dt= m_dt/m_simulationSteps;
+	double dt= m_dt/m_numIntegrationSteps;
 
 	m_step_start_t= m_t;
 
 	if (m_pDynamicModel)
 	{
 		s_p->copy(s);
-		for (int i= 0; i<m_simulationSteps; i++)
+		for (int i= 0; i<m_numIntegrationSteps; i++)
 		{
 			m_pDynamicModel->executeAction(s_p,a,dt);
 			m_t+= dt;

@@ -72,7 +72,7 @@ namespace AppXML.ViewModels
         public WindowViewModel()
         {
              //_windowManager = windowManager;
-            apps = Directory.GetFiles("..\\apps");
+            apps = Directory.GetFiles("..\\config\\apps");
             getAppsNames();
             selectedApp = Apps[0];
             _rootnode = Utility.getRootNode(apps[0]);

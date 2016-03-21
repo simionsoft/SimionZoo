@@ -10,30 +10,39 @@
 #include "parameters.h"
 #include "simion.h"
 
-CLASS_CONSTRUCTOR(CSimGod)
+CLASS_INIT(CSimGod)
 {
 	m_numSimions = pParameters->countChildren("Simion");
 	m_pSimions = new CSimion*[m_numSimions];
 	CParameters* pChild = pParameters->getChild("Simion");
 	for (int i = 0; i < m_numSimions; i++)
 	{
-		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", "A Simion: a learning agent",CSimion, pChild);
+		MULTI_VALUED_FACTORY(m_pSimions[i], "Simions", "Simions: agents and controllers",CSimion, pChild);
 		pChild = pChild->getNextChild("Simion");
 	}
 	
 	//m_td = 0.0;
-	//RLSimion::g_pLogger->addVarToStats("Critic", "TD-error", &m_td);
+	//RLSimion::Logger.addVarToStats("Critic", "TD-error", &m_td);
 	END_CLASS();
+}
+
+CSimGod::CSimGod()
+{
+	m_numSimions = 0;
+	m_pSimions = 0;
 }
 
 
 CSimGod::~CSimGod()
 {
-	for (int i = 0; i < m_numSimions; i++)
+	if (m_pSimions)
 	{
-		delete m_pSimions[i];
+		for (int i = 0; i < m_numSimions; i++)
+		{
+			if (m_pSimions[i]) delete m_pSimions[i];
+		}
+		delete[] m_pSimions;
 	}
-	delete[] m_pSimions;
 }
 
 
@@ -60,19 +69,19 @@ void CSimGod::selectAction(CState* s, CAction* a)
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
-	if (RLSimion::g_pExperiment->isEvaluationEpisode()) return;
+	if (RLSimion::Experiment.isEvaluationEpisode()) return;
 
 	//update critic
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updateValue(s, a,s_p,r);
-	/*if (m_pCritic && !RLSimion::g_pExperiment->isEvaluationEpisode())
+	/*if (m_pCritic && !RLSimion::Experiment.isEvaluationEpisode())
 		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);*/
 
 	//update actor: might be the controller
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updatePolicy(s, a,s_p,r);
 
-	//if( !RLSimion::g_pExperiment->isEvaluationEpisode())
+	//if( !RLSimion::Experiment.isEvaluationEpisode())
 	//	m_pActor->updatePolicy(s, a, s_p, r, m_td);
 
 }

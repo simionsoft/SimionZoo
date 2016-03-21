@@ -32,7 +32,7 @@ CETraces::~CETraces()
 
 void CETraces::update(double factor)
 {
-	if (!RLSimion::g_pExperiment->isFirstStep() && m_bUse)
+	if (!RLSimion::Experiment.isFirstStep() && m_bUse)
 	{
 		mult(factor* m_lambda);
 		applyThreshold(m_threshold);

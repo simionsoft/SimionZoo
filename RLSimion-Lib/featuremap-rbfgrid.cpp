@@ -10,7 +10,7 @@
 #define ACTIVATION_THRESHOLD 0.0001
 
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters) : CParamObject(pParameters)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters) : CFeatureMap(pParameters)
 {
 	m_numDimensions = 0;
 	m_pGrid = 0;

@@ -49,8 +49,9 @@ class CLogger
 	//stats
 	std::vector<CStats*> m_stats;
 public:
-	CLogger(CParameters* pParameters);
+	CLogger();
 	~CLogger();
+	void init(CParameters* pParameters);
 
 	//METHODS CALLED FROM ANY CLASS
 	void addVarToStats(const char* key, const char* subkey, double* variable);

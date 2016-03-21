@@ -94,40 +94,31 @@ CExperiment::~CExperiment()
 	delete m_pProgressTimer;
 }
 
-CLASS_CONSTRUCTOR(CExperiment)
+CLASS_INIT(CExperiment)
 {
-	if (pParameters)
-	{
-		CONST_DOUBLE_VALUE(m_progUpdateFreq ,"Progress-Update-Freq", 0.5,"Progress update frequency (seconds)");
-		CONST_INTEGER_VALUE(m_randomSeed ,"Random-Seed", 1,"Random seed used to generate random sequences of numbers");
+	if (!pParameters) return;
 
-		CONST_INTEGER_VALUE(m_numTrainingEpisodes, "Num-Episodes", 1,"Number of episodes");
-		CONST_INTEGER_VALUE(m_evalFreq, "Eval-Freq", 0,"Evaluation frequency (in episodes)");
+	CONST_DOUBLE_VALUE(m_progUpdateFreq ,"Progress-Update-Freq", 0.5,"Progress update frequency (seconds)");
+	CONST_INTEGER_VALUE(m_randomSeed ,"Random-Seed", 1,"Random seed used to generate random sequences of numbers");
+
+	CONST_INTEGER_VALUE(m_numTrainingEpisodes, "Num-Episodes", 1,"Number of episodes");
+	CONST_INTEGER_VALUE(m_evalFreq, "Eval-Freq", 0,"Evaluation frequency (in episodes)");
 	
-		if (m_evalFreq != 0)
-		{
-			m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes / m_evalFreq;
-			m_totalNumEpisodes = m_numTrainingEpisodes + m_numEvaluationEpisodes;
-		}
-		else
-		{
-			m_numEvaluationEpisodes = 0;
-			m_totalNumEpisodes = m_numTrainingEpisodes;
-		}
-		CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
-		setNumSteps((unsigned int)(m_episodeLength / RLSimion::g_pWorld->getDT()));
-		reset();
-
+	if (m_evalFreq != 0)
+	{
+		m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes / m_evalFreq;
+		m_totalNumEpisodes = m_numTrainingEpisodes + m_numEvaluationEpisodes;
 	}
 	else
 	{
-		m_randomSeed = 0;
 		m_numEvaluationEpisodes = 0;
-		m_totalNumEpisodes = 0;
-		m_numTrainingEpisodes = 0;
-		m_evalFreq = 0;
-		setNumSteps(0);
+		m_totalNumEpisodes = m_numTrainingEpisodes;
 	}
+	CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
+	setNumSteps((unsigned int)(m_episodeLength / RLSimion::World.getDT()));
+	reset();
+
+
 	m_pProgressTimer = new CTimer();
 	//QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
 	srand(m_randomSeed);
@@ -135,7 +126,15 @@ CLASS_CONSTRUCTOR(CExperiment)
 	END_CLASS();
 }
 
-
+CExperiment::CExperiment()
+{
+	m_randomSeed = 0;
+	m_numEvaluationEpisodes = 0;
+	m_totalNumEpisodes = 0;
+	m_numTrainingEpisodes = 0;
+	m_evalFreq = 0;
+	setNumSteps(0);
+}
 
 
 void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
@@ -147,26 +146,26 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	if (time>m_progUpdateFreq)
 	{
-		CLogger::logMessage(Progress, RLSimion::g_pExperiment->getProgressString());
+		CLogger::logMessage(Progress, RLSimion::Experiment.getProgressString());
 		m_pProgressTimer->startTimer();
 		//m_lastProgressReportCounter = currentCounter;
 	}
 
 	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
-		RLSimion::g_pLogger->firstEpisode(evalEpisode);
+		RLSimion::Logger.firstEpisode(evalEpisode);
 
 	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
-		RLSimion::g_pLogger->firstStep(evalEpisode, episodeIndex);
+		RLSimion::Logger.firstStep(evalEpisode, episodeIndex);
 
 	//update stats
 	//output step-stats
-	RLSimion::g_pLogger->timestep(evalEpisode, episodeIndex);
+	RLSimion::Logger.timestep(evalEpisode, episodeIndex);
 
 	if (isLastStep())
-		RLSimion::g_pLogger->lastStep(evalEpisode, episodeIndex);
+		RLSimion::Logger.lastStep(evalEpisode, episodeIndex);
 
 	if (isLastEpisode() && isLastStep())
-		RLSimion::g_pLogger->lastEpisode(evalEpisode);
+		RLSimion::Logger.lastEpisode(evalEpisode);
 }

@@ -13,7 +13,10 @@ class CParameters;
 
 class CLinearVFA
 {
+
 protected:
+	const char* m_saveFilename;
+	const char* m_loadFilename;
 
 	double* m_pWeights;
 	unsigned int m_numWeights;
@@ -30,8 +33,8 @@ public:
 
 	void saturateOutput(double min, double max);
 
-	void save(void* pFile);
-	void load(void* pFile);
+	void saveWeights(const char* pFilename);
+	void loadWeights(const char* pFilename);
 };
 
 class CLinearStateVFA: public CParamObject, public CLinearVFA
@@ -50,6 +53,9 @@ public:
 	void getFeatures(const CState* s,CFeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, CState* s);
 	void add(const CFeatureList* pFeatures,double alpha= 1.0);
+
+	void save(const char* pFilename);
+	void load(const char* pFilename);
 };
 
 
@@ -81,4 +87,7 @@ public:
 	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
 
 	void add(const CFeatureList* pFeatures, double alpha = 1.0);
+
+	void save(const char* pFilename);
+	void load(const char* pFilename);
 };

@@ -7,9 +7,9 @@
 
 CLASS_FACTORY(CSimion)
 {
-	CHOICE("Simion","The Simion's class");
+	CHOICE("Type","The Simion class");
 	CHOICE_ELEMENT_FACTORY("Controller", CController,"A controller");
-	CHOICE_ELEMENT("Actor-Critic", CActorCritic,"An Actor-Critic");
+	CHOICE_ELEMENT("Actor-Critic", CActorCritic,"An Actor-Critic agent");
 	END_CHOICE();
 	return 0;
 	END_CLASS();

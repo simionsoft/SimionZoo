@@ -11,46 +11,47 @@
 
 #define MAX_FILENAME_LENGTH 1024
 
-CLASS_CONSTRUCTOR(CLogger)
+CLASS_INIT(CLogger)
 {
+	if (!pParameters) return;
+
 	m_outputDir = 0;// new char[MAX_FILENAME_LENGTH];
 	m_filePrefix = 0;// new char[MAX_FILENAME_LENGTH];
 
-	if (pParameters)
-	{
-		DIR_PATH_VALUE(m_outputDir,  "Output-Directory","../logs","Directory where the output log files will be saved");
-		CONST_STRING_VALUE(m_filePrefix, "Prefix", "","Prefix given to the output log files");
 
-		const char* boolStr;
-		ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "False","Log evaluation episodes?");
-		m_bLogEvaluationEpisodes = !strcmp(boolStr, "True");
-		ENUM_VALUE(boolStr, Boolean, "Log-training-episodes", "False","Log training episodes?");
-		m_bLogTrainingEpisodes = !strcmp(boolStr, "True");
-		ENUM_VALUE(boolStr,Boolean, "Log-eval-experiment", "True","Log the stats of the evaluation episodes?");
-		m_bLogEvaluationExperiment = !strcmp(boolStr, "True");
-		ENUM_VALUE(boolStr,Boolean, "Log-training-experiment", "False","Log the stats of the training episodes?");
-		m_bLogTrainingExperiment = !strcmp(boolStr, "True");
+	DIR_PATH_VALUE(m_outputDir,  "Output-Directory","../logs","Directory where the output log files will be saved");
+	CONST_STRING_VALUE(m_filePrefix, "Prefix", "","Prefix given to the output log files");
 
-		CONST_DOUBLE_VALUE(m_logFreq,"Log-Freq", 0.25,"Log frequency. Simulation time in seconds.");
+	const char* boolStr;
+	ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "False","Log evaluation episodes?");
+	m_bLogEvaluationEpisodes = !strcmp(boolStr, "True");
+	ENUM_VALUE(boolStr, Boolean, "Log-training-episodes", "False","Log training episodes?");
+	m_bLogTrainingEpisodes = !strcmp(boolStr, "True");
+	ENUM_VALUE(boolStr,Boolean, "Log-eval-experiment", "True","Log the stats of the evaluation episodes?");
+	m_bLogEvaluationExperiment = !strcmp(boolStr, "True");
+	ENUM_VALUE(boolStr,Boolean, "Log-training-experiment", "False","Log the stats of the training episodes?");
+	m_bLogTrainingExperiment = !strcmp(boolStr, "True");
 
-		_mkdir(m_outputDir);
-	}
-	else
-	{
-		//default values for safety
-		m_outputDir[0] = 0;
-		m_filePrefix[0] = 0;
-		m_bLogEvaluationEpisodes = false;
-		m_bLogEvaluationExperiment = false;
-		m_bLogTrainingEpisodes = true;
-		m_bLogTrainingExperiment = false;
-		m_logFreq = 0.0;
-	}
+	CONST_DOUBLE_VALUE(m_logFreq,"Log-Freq", 0.25,"Log frequency. Simulation time in seconds.");
+
+	_mkdir(m_outputDir);
+
 
 	m_pEpisodeTimer = new CTimer();
 	m_pExperimentTimer = new CTimer();
 	m_lastLogSimulationT = 0.0;
 	END_CLASS();
+}
+CLogger::CLogger()
+{
+	//default values for safety
+	m_outputDir = 0;
+	m_filePrefix = 0;
+	m_bLogEvaluationEpisodes = false;
+	m_bLogEvaluationExperiment = false;
+	m_bLogTrainingEpisodes = true;
+	m_bLogTrainingExperiment = false;
+	m_logFreq = 0.0;
 }
 
 
@@ -148,7 +149,7 @@ void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
 	{
 		FILE* pFile = openLogFile(false, true, evalEpisode, episodeIndex);
 
-		fprintf(pFile, "%.3f ", RLSimion::g_pWorld->getT());
+		fprintf(pFile, "%.3f ", RLSimion::World.getT());
 
 		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 		{
@@ -207,10 +208,10 @@ void CLogger::timestep(bool evalEpisode, unsigned int episodeIndex)
 	}
 
 	//output episode log data
-	if (bLog && (RLSimion::g_pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq))
+	if (bLog && (RLSimion::World.getStepStartT() - m_lastLogSimulationT >= m_logFreq))
 	{
 		writeEpisodeLogData(evalEpisode, episodeIndex);
-		m_lastLogSimulationT = RLSimion::g_pWorld->getStepStartT();
+		m_lastLogSimulationT = RLSimion::World.getStepStartT();
 	}
 
 }

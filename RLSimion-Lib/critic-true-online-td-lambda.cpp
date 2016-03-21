@@ -35,7 +35,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,
 	if (m_pAlpha->getValue()==0.0) return 0.0;
 	double rho = 0.0;
 	
-	if (RLSimion::g_pExperiment->isFirstStep())
+	if (RLSimion::Experiment.isFirstStep())
 	{
 		//vs= theta^T * phi(s)
 		m_pVFunction->getFeatures(s,m_aux);

@@ -11,8 +11,8 @@ class CSimion;
 
 class CSimGod
 {
-	int m_numSimions;
-	CSimion** m_pSimions;
+	int m_numSimions= 0;
+	CSimion** m_pSimions = 0;
 	//CActor* m_pController;
 	//CActor* m_pActor;
 	//CCritic* m_pCritic;
@@ -21,9 +21,10 @@ class CSimGod
 
 	CReward *m_pReward;
 public:
-
-	CSimGod(CParameters* pParameters);
+	CSimGod();
 	~CSimGod();
+
+	void init(CParameters* pParameters);
 
 	void selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r);

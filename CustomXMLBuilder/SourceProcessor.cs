@@ -18,10 +18,14 @@ namespace CustomXMLBuilder
         private int m_numErrors= 0;
         private int m_numWarnings = 0;
 
-        public void addClassDefinition(string className){m_classDefinitions.Add(className);}
-        public void addClassReference(string className){m_classReferences.Add(className);}
-        public void addEnumDefinition(string enumName) { m_enumDefinitions.Add(enumName); }
-        public void addEnumReference(string enumName) { m_enumReferences.Add(enumName); }
+        public void addClassDefinition(string className){
+            m_classDefinitions.Add(className);}
+        public void addClassReference(string className){
+            m_classReferences.Add(className);}
+        public void addEnumDefinition(string enumName) { 
+            m_enumDefinitions.Add(enumName); }
+        public void addEnumReference(string enumName) {
+            m_enumReferences.Add(enumName); }
         public Checker()
         {
             m_classDefinitions = new List<string>();
@@ -52,7 +56,7 @@ namespace CustomXMLBuilder
             foreach (string classDef in m_classDefinitions)
             {
                 if (!m_classReferences.Contains(classDef))
-                    Console.WriteLine("WARNING: Class {0} defined but not referenced",classDef);
+                    Console.WriteLine("WARNING: Class {0} defined but not referenced ",classDef);
                 m_numWarnings++;
             }
             return m_numErrors;
@@ -482,20 +486,20 @@ namespace CustomXMLBuilder
         }
         string parseClasses(string text)
         {
-            string sPattern = @"(CLASS_CONSTRUCTOR|CLASS_FACTORY)(.*?)END_CLASS\(\)";
+            string sPattern = @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT)(.*?)END_CLASS\(\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
-                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY)\s*\(" + extractTokenRegex+ @"\)");
+                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT)\s*\(" + extractTokenRegex+ @"\)");
                 string header = functionArgumentsMatch.Groups[0].Value;
 
                 var functionMatches = Regex.Match(header, extractFuncRegex);
 
                 var parameterMatches = Regex.Match(functionMatches.Groups[2].Value, extractArgsRegex);
                 string definedClass;
-                if (match.Groups[1].Value.Trim(' ') == "CLASS_CONSTRUCTOR")
+                if (match.Groups[1].Value.Trim(' ') != "CLASS_FACTORY")
                     definedClass = parameterMatches.Groups[0].Value;
                 else definedClass = parameterMatches.Groups[0].Value + "-Factory";
 

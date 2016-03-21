@@ -11,10 +11,8 @@ class CParameters;
 
 class CWorld
 {
-	//static to be able to access it from the CRewardComponent constructor without resorting to the yet unassigned
-	//global pointer RLSimion::g_pWorld
 	static CDynamicModel* m_pDynamicModel;
-	int m_simulationSteps;
+	int m_numIntegrationSteps;
 	double m_dt;
 	double m_t;
 	double m_step_start_t;
@@ -27,14 +25,10 @@ public:
 	double getStepStartT();
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel; }
 
-	CWorld(CParameters* pParameters);
+	CWorld();
 	~CWorld();
 
-	//CState *getStateInstance(); // pointer to a new CState. has to be deleted
-	//CAction *getActionInstance();
-
-	//CState *getStateDescriptor(); // pointer to the state descriptor. don't delete
-	//CAction *getActionDescriptor();
+	void init(CParameters* pParameters);
 
 	void reset(CState *s);
 

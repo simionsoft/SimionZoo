@@ -10,10 +10,7 @@ class CLinearStateVFA;
 
 class CCritic: public CParamObject
 {
-	const char* m_loadFile = 0;
-	const char* m_saveFile = 0;
-	virtual void loadVFunction(const char* filename);
-	virtual void saveVFunction(const char* filename);
+
 protected:
 	CLinearStateVFA* m_pVFunction; //value function approximator
 

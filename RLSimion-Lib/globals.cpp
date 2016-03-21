@@ -7,10 +7,10 @@
 #include "logger.h"
 
 
-CLogger *RLSimion::g_pLogger= 0;
-CWorld* RLSimion::g_pWorld= 0;
-CExperiment *RLSimion::g_pExperiment= 0;
-CSimGod *RLSimion::g_pSimGod= 0;
+CLogger RLSimion::Logger;
+CWorld RLSimion::World;
+CExperiment RLSimion::Experiment;
+CSimGod RLSimion::SimGod;
 CParameterFile* g_pConfigDoc= 0;
 
 ENUMERATION(Boolean, "False", "True");
@@ -20,57 +20,35 @@ ENUMERATION(TimeReference, "episode", "experiment", "experimentTime");
 
 
 
-void RLSimion::init(int argc, char* argv[])
+CParameters* RLSimion::init(int argc, char* argv[],const char* rootNodeName)
 {
 	CParameters* pParameters;
 
 	if (!g_pConfigDoc) g_pConfigDoc = new CParameterFile;
 
-	if (argc > 1) pParameters = g_pConfigDoc->loadFile(argv[1], "RLSimion");
+	if (argc > 1) pParameters = g_pConfigDoc->loadFile(argv[1], rootNodeName);
 
 	if (argc <= 1 || !pParameters) exit(-1);
 
 	if (argc > 2) CLogger::createOutputPipe(argv[2]);
 
-	//First, a logger was created so that we could know about creation itself
-	g_pLogger = new CLogger(pParameters->getChild("Log")); //with or without parameters
+	//In the beginning, a logger was created so that we could know about creation itself
+	Logger.init(pParameters->getChild("Log")); //with or without parameters
 	
 	//Then the world was created by chance
-	if (pParameters->getChild("World"))
-		g_pWorld = new CWorld(pParameters->getChild("World"));
-	else g_pWorld = 0;
+	World.init(pParameters->getChild("World"));
 
 	//Then, the experiment.
-	g_pExperiment = new CExperiment(pParameters->getChild("Experiment"));	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
+	Experiment.init(pParameters->getChild("Experiment"));	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
 
 	//Last, the SimGod was created to create and control all the simions
-	if (pParameters->getChild("SimGod"))
-		g_pSimGod = new CSimGod(pParameters->getChild("SimGod"));
-	else g_pSimGod = 0;
+	SimGod.init(pParameters->getChild("SimGod"));
+
+	return pParameters;
 }
 
 void RLSimion::shutdown()
 {
-	if (g_pLogger) 
-	{ 
-		delete g_pLogger;
-		g_pLogger = 0;
-	}
-	if (g_pWorld) 
-	{
-		delete g_pWorld;
-		g_pWorld = 0;
-	}
-	if (g_pExperiment)
-	{
-		delete g_pExperiment;
-		g_pExperiment = 0;
-	}
-	if (g_pSimGod)
-	{
-		delete g_pSimGod;
-		g_pSimGod = 0;
-	}
 	if (g_pConfigDoc)
 	{
 		delete g_pConfigDoc;

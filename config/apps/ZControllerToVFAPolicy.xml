@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<APP Name="Controller-To-VFA-Policy">
+
+  <INCLUDE>../config/definitions.xml</INCLUDE>
+
+  <BRANCH Name="World" Class="CDynamicModel-Factory"/>
+
+  <BRANCH Name="Controller" Class="CController-Factory"/>
+
+  <BRANCH Name="Policy" Class="CDeterministicPolicy"/>
+
+</APP>

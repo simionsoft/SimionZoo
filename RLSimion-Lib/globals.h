@@ -10,18 +10,19 @@ class CParameterFile;
 
 namespace RLSimion
 {
-	extern CLogger *g_pLogger;
-	extern CWorld *g_pWorld;
-	extern CExperiment *g_pExperiment;
-	extern CSimGod *g_pSimGod;
+	extern CLogger Logger;
+	extern CWorld World;
+	extern CExperiment Experiment;
+	extern CSimGod SimGod;
 
-	void init(int argc, char* argv[]);
+	CParameters* init(int argc, char* argv[],const char* rootNodeName);
 	void shutdown();
 };
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
 #define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
+#define CLASS_INIT(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
 #define END_CLASS()
 
 //The superclass' parameters are embedded inline within the subclass' definition, so the superclass' parameters

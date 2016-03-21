@@ -17,39 +17,39 @@ int main(int argc, char* argv[])
 
 	CParameters* pParameters= 0;
 
-	RLSimion::init(argc,argv);
+	RLSimion::init(argc,argv,"RLSimion");
 
 	//create state and action vectors
 	CState *s = CWorld::getDynamicModel()->getStateDescriptor()->getInstance();
 	CState *s_p = CWorld::getDynamicModel()->getStateDescriptor()->getInstance();
 	CAction *a = CWorld::getDynamicModel()->getActionDescriptor()->getInstance();
 	//register the state and action vectors in the logger
-	RLSimion::g_pLogger->addVarSetToStats("State", s);
-	RLSimion::g_pLogger->addVarSetToStats("Action", a);
-	RLSimion::g_pLogger->addVarToStats("Reward", "sum", RLSimion::g_pWorld->getScalarReward());
-	RLSimion::g_pLogger->addVarSetToStats("Reward", RLSimion::g_pWorld->getReward());
+	RLSimion::Logger.addVarSetToStats("State", s);
+	RLSimion::Logger.addVarSetToStats("Action", a);
+	RLSimion::Logger.addVarToStats("Reward", "sum", RLSimion::World.getScalarReward());
+	RLSimion::Logger.addVarSetToStats("Reward", RLSimion::World.getReward());
 
 	double r= 0.0;
 
 	//episodes
-	for (RLSimion::g_pExperiment->nextEpisode(); RLSimion::g_pExperiment->isValidEpisode(); RLSimion::g_pExperiment->nextEpisode())
+	for (RLSimion::Experiment.nextEpisode(); RLSimion::Experiment.isValidEpisode(); RLSimion::Experiment.nextEpisode())
 	{
-		RLSimion::g_pWorld->reset(s);
+		RLSimion::World.reset(s);
 
 		//steps per episode
-		for (RLSimion::g_pExperiment->nextStep(); RLSimion::g_pExperiment->isValidStep(); RLSimion::g_pExperiment->nextStep())
+		for (RLSimion::Experiment.nextStep(); RLSimion::Experiment.isValidStep(); RLSimion::Experiment.nextStep())
 		{
 			//a= pi(s)
-			RLSimion::g_pSimGod->selectAction(s,a);
+			RLSimion::SimGod.selectAction(s,a);
 
 			//s_p= f(s,a); r= R(s');
-			r= RLSimion::g_pWorld->executeAction(s,a,s_p);
+			r= RLSimion::World.executeAction(s,a,s_p);
 
 			//update god's policy and value estimation
-			RLSimion::g_pSimGod->update(s, a, s_p, r);
+			RLSimion::SimGod.update(s, a, s_p, r);
 
 			//log tuple <s,a,s',r>
-			RLSimion::g_pExperiment->timestep(s,a,s_p,RLSimion::g_pWorld->getReward()); //we need the complete reward vector for logging
+			RLSimion::Experiment.timestep(s,a,s_p,RLSimion::World.getReward()); //we need the complete reward vector for logging
 
 			//s= s'
 			s->copy(s_p);

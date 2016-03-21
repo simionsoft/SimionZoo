@@ -12,9 +12,10 @@ class CSingleDimensionGrid;
 
 //CFeatureMap//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
-class CFeatureMap
+class CFeatureMap: public CParamObject
 {
 public:
+	CFeatureMap(CParameters* pParameters);
 	virtual void getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures)= 0;
 	virtual void getFeatureStateAction(unsigned int feature, CState* s, CAction* a)= 0;
 
@@ -30,7 +31,7 @@ public:
 #define MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION 3
 
 
-class CGaussianRBFGridFeatureMap: public CFeatureMap, public CParamObject
+class CGaussianRBFGridFeatureMap: public CFeatureMap
 {
 protected:
 	CFeatureList* m_pVarFeatures;

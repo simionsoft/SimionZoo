@@ -1,3 +1,0 @@
-CONTROLLER_TO_AC/ACTOR_CONFIG_FILE : ..\config\wind-turbine\learn-vidal.txt
-CONTROLLER_TO_AC/CONTROLLER_CONFIG_FILE : ..\config\wind-turbine\test-vidal.txt
-CONTROLLER_TO_AC/OUTPUT_FILE : ..\data\vidal-policy-not-uniform-2.bin
