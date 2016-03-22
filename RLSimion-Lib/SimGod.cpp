@@ -12,6 +12,7 @@
 
 CLASS_INIT(CSimGod)
 {
+	if (!pParameters) return;
 	m_numSimions = pParameters->countChildren("Simion");
 	m_pSimions = new CSimion*[m_numSimions];
 	CParameters* pChild = pParameters->getChild("Simion");

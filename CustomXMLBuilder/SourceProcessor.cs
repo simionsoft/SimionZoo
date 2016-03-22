@@ -9,54 +9,76 @@ using System.Text.RegularExpressions;
 
 namespace CustomXMLBuilder
 {
+    public class classReference : IEquatable<classReference>
+    {
+        public string className;
+        public string file;
+        public int line;
+        public classReference(string c, string f, int l)
+        { 
+            className = c;
+            file = f;
+            line = l;
+        }
+        public bool Equals(classReference c)
+        {
+            if (className == c.className)
+                return true;
+            return false;
+        }
+    }
     class Checker
     {
-        private List<string> m_classDefinitions;
-        private List<string> m_classReferences;
-        private List<string> m_enumDefinitions;
-        private List<string> m_enumReferences;
+        private List<classReference> m_classDefinitions;
+        private List<classReference> m_classReferences;
+        private List<classReference> m_enumDefinitions;
+        private List<classReference> m_enumReferences;
         private int m_numErrors= 0;
         private int m_numWarnings = 0;
 
-        public void addClassDefinition(string className){
+        public void addClassDefinition(classReference className)
+        {
             m_classDefinitions.Add(className);}
-        public void addClassReference(string className){
+        public void addClassReference(classReference className)
+        {
             m_classReferences.Add(className);}
-        public void addEnumDefinition(string enumName) { 
+        public void addEnumDefinition(classReference enumName)
+        { 
             m_enumDefinitions.Add(enumName); }
-        public void addEnumReference(string enumName) {
+        public void addEnumReference(classReference enumName)
+        {
             m_enumReferences.Add(enumName); }
         public Checker()
         {
-            m_classDefinitions = new List<string>();
-            m_classReferences = new List<string>();
-            m_enumDefinitions = new List<string>();
-            m_enumReferences = new List<string>();
+            m_classDefinitions = new List<classReference>();
+            m_classReferences = new List<classReference>();
+            m_enumDefinitions = new List<classReference>();
+            m_enumReferences = new List<classReference>();
         }
         public int checkClassReferences()
         {
-            foreach (string classRef in m_classReferences)
+            foreach (classReference classRef in m_classReferences)
             {
                 if (!m_classDefinitions.Contains(classRef))
                 {
-                    Console.WriteLine("ERROR: Reference to undefined class found: " + classRef);
+                    Console.WriteLine("../config/definitions.xml : error: Reference to undefined class found: " + classRef.className);
                     //m_classReferences.RemoveAll(c => c==classRef);
                     m_numErrors++;
                 }
             }
-            foreach (string enumRef in m_enumReferences)
+            foreach (classReference enumRef in m_enumReferences)
             {
                 if (!m_enumDefinitions.Contains(enumRef))
                 {
-                    Console.WriteLine("ERROR: Reference to undefined enumerated type found: " + enumRef);
+                    Console.WriteLine("../config/definitions.xml : error : Reference to undefined enumerated type found: " + enumRef.className);
                     //m_classReferences.RemoveAll(c => c==classRef);
                     m_numErrors++;
                 }
             }
-            foreach (string classDef in m_classDefinitions)
+            foreach (classReference classDef in m_classDefinitions)
             {
                 if (!m_classReferences.Contains(classDef))
-                    Console.WriteLine("WARNING: Class {0} defined but not referenced ",classDef);
+                    Console.WriteLine("../config/definitions.xml : warning: Class {0} defined but not referenced ",classDef.className);
                 m_numWarnings++;
             }
             return m_numErrors;
@@ -64,6 +86,7 @@ namespace CustomXMLBuilder
     }
     class SourceProcessor
     {
+        string m_currentFile;
         public Checker m_checker = new Checker();
         public int numCharsProcessed = 0;
         string extractTokenRegex = @"(?>[^()]+|\((?<open>)|\)(?<-open>))*";
@@ -83,6 +106,7 @@ namespace CustomXMLBuilder
         public string processCPPFile(string filename)
         {
             m_level = 1;
+            m_currentFile = filename;
             string fileContents = File.ReadAllText(filename, Encoding.UTF8);
             fileContents = fileContents.Replace('\r', ' ');//'\n');
             fileContents = fileContents.Replace('\n', ' ');
@@ -138,7 +162,7 @@ namespace CustomXMLBuilder
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 parsedXML += getLevelIndent() + "<ENUMERATION Name=\"" + parameterMatches[0].Value.Trim() + "\">\n";
-                m_checker.addEnumDefinition(parameterMatches[0].Value.Trim());
+                m_checker.addEnumDefinition(new classReference(parameterMatches[0].Value.Trim(),m_currentFile,0));
                 increaseIndent();
                 for (int i = 1; i < parameterMatches.Count; i++ )
                 {
@@ -171,7 +195,7 @@ namespace CustomXMLBuilder
                 if (match.Groups[1].Value.Trim(' ') == "CHOICE_ELEMENT")
                     referencedClass = parameterMatches[1].Value.Trim(' ');
                 else referencedClass = parameterMatches[1].Value.Trim(' ') + "-Factory";
-                m_checker.addClassReference(referencedClass);
+                m_checker.addClassReference(new classReference(referencedClass,m_currentFile,0));
                 parsedXML += getLevelIndent() + "<CHOICE-ELEMENT Name=" + parameterMatches[0].Value.Trim(' ') + " Class=\""
                         + referencedClass + "\" Comment=" + parameterMatches[2].Value.Trim(' ') + "/>\n";
             }
@@ -191,7 +215,7 @@ namespace CustomXMLBuilder
                 string arguments = functionArgumentsMatch.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-                m_checker.addClassReference(parameterMatches[1].Value.Trim(' '));
+                m_checker.addClassReference(new classReference(parameterMatches[1].Value.Trim(' '),m_currentFile,0));
                 parsedXML += getLevelIndent() + "<CHOICE-ELEMENT Name=" + parameterMatches[0].Value.Trim(' ') + " Class=\""
                         + parameterMatches[1].Value.Trim(' ') + "\" XML=" + parameterMatches[2].Value.Trim(' ')
                         + " Comment=" + parameterMatches[3].Value.Trim(' ') + "/>\n";
@@ -250,7 +274,7 @@ namespace CustomXMLBuilder
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
-                m_checker.addEnumReference(parameterMatches[1].Value.Trim(' '));
+                m_checker.addEnumReference(new classReference(parameterMatches[1].Value.Trim(' '),m_currentFile,0));
 
                 parsedXML += getLevelIndent() + "<ENUM-VALUE Name=" + parameterMatches[2].Value.Trim(' ')
                     + " Class=\"" + parameterMatches[1].Value.Trim(' ') 
@@ -402,7 +426,7 @@ namespace CustomXMLBuilder
                     referencedClass = parameterMatches[3].Value.Trim(' ');
                 else referencedClass = parameterMatches[3].Value.Trim(' ') + "-Factory";
 
-                m_checker.addClassReference(referencedClass);
+                m_checker.addClassReference(new classReference(referencedClass,m_currentFile,0));
                 
                 parsedXML += getLevelIndent() + "<MULTI-VALUED Name=" + parameterMatches[1].Value.Trim(' ')
                         + " Class=\"" + referencedClass+ "\" Comment=" + parameterMatches[2].Value.Trim(' ') +"/>\n";
@@ -432,7 +456,7 @@ namespace CustomXMLBuilder
                     referencedClass= parameterMatches[4].Value.Trim(' ');
                 else referencedClass= parameterMatches[4].Value.Trim(' ') + "-Factory";
 
-                m_checker.addClassReference(referencedClass);
+                m_checker.addClassReference(new classReference(referencedClass,m_currentFile, 0));
 
                 parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[1].Value.Trim(' ')
                     + " Class=\"" + referencedClass + "\" Comment=" + parameterMatches[2].Value.Trim(' ');
@@ -457,6 +481,7 @@ namespace CustomXMLBuilder
                 string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
+                m_checker.addClassReference(new classReference("CNumericValue-Factory", m_currentFile, 0));
 
                 parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[1].Value.Trim(' ')
                     + " Class=\"CNumericValue-Factory\"" + " Comment=" + parameterMatches[2].Value.Trim(' ') + "/>\n";
@@ -478,7 +503,7 @@ namespace CustomXMLBuilder
                 string arguments = parameters.Groups[2].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-                m_checker.addClassReference(parameterMatches[0].Value.Trim(' '));
+                m_checker.addClassReference(new classReference(parameterMatches[0].Value.Trim(' '),m_currentFile,0));
                 parsedXML += getLevelIndent() + "<BRANCH Name=\"Inline\" Class=\""  + parameterMatches[0].Value.Trim(' ') + "\"/>\n";
             }
             decreaseIndent();
@@ -503,7 +528,7 @@ namespace CustomXMLBuilder
                     definedClass = parameterMatches.Groups[0].Value;
                 else definedClass = parameterMatches.Groups[0].Value + "-Factory";
 
-                m_checker.addClassDefinition(definedClass);
+                m_checker.addClassDefinition(new classReference(definedClass,m_currentFile,0));
                 parsedXML += getLevelIndent() + "<CLASS Name=\"" + definedClass + "\">\n";
 
                 string classDefinition = match.Groups[2].Value;

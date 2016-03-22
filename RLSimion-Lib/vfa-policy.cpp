@@ -24,7 +24,7 @@ CLASS_FACTORY(CDeterministicPolicy)
 CLASS_CONSTRUCTOR(CDeterministicPolicy)
 : CParamObject(pParameters)
 {
-	CHILD_CLASS(m_pVFA, "Linear-State-VFA", "The parameterized VFA that approximates the function","",CLinearStateVFA);
+	CHILD_CLASS_FACTORY(m_pVFA, "Linear-State-VFA", "The parameterized VFA that approximates the function", "", CLinearStateVFA);
 	
 	ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action variable");
 
@@ -87,7 +87,7 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
-	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", "The parameterized VFA that approximates variance(s)","", CLinearStateVFA);
+	CHILD_CLASS_FACTORY(m_pSigmaVFA, "Sigma-VFA", "The parameterized VFA that approximates variance(s)", "", CLinearStateVFA);
 	//m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
 	m_pAux = new CFeatureList("Sto-Policy/aux");
 	END_CLASS();

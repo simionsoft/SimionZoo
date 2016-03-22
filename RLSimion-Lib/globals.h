@@ -19,6 +19,7 @@ namespace RLSimion
 	void shutdown();
 };
 
+
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
 #define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
@@ -36,7 +37,7 @@ namespace RLSimion
 
 #define CHOICE(name,comment) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();
 #define CHOICE_XML(name,loadXML,comment) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();
-#define END_CHOICE()
+#define END_CHOICE() return 0;
 
 #define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment) if(!strcmp(type,checkLiteral)) return new className(pChild,XMLFilename);
 #define CHOICE_ELEMENT(checkLiteral,className,comment) if(!strcmp(type,checkLiteral)) return new className(pChild);

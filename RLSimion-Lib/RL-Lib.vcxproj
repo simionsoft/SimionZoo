@@ -49,6 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
+    <CustomBuildAfterTargets>..\config\definitions.xml</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -65,16 +66,19 @@
       <OutputFile>../Debug/$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>..\Debug\CustomXMLBuilder.exe $(ProjectDir)</Command>
+      <Message>Custom XML definition build process</Message>
     </PostBuildEvent>
     <CustomBuildStep>
-      <Command>..\Debug\CustomXMLBuilder.exe $(ProjectDir)</Command>
-      <Outputs>..\config\definitions.xml</Outputs>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
       <Inputs>
       </Inputs>
       <TreatOutputAsContent>false</TreatOutputAsContent>
-      <Message>RLSimion XML preprocess</Message>
+      <Message>
+      </Message>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -92,6 +96,11 @@
       <TargetMachine>MachineX86</TargetMachine>
       <OutputFile>../Release/$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
+    <CustomBuildStep>
+      <Command>..\Debug\CustomXMLBuilder.exe $(ProjectDir)</Command>
+      <Message>RLSimion XML preprocess</Message>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
@@ -127,6 +136,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
     <ClCompile Include="world-magneticlevitation.cpp" />
@@ -161,6 +171,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="policy-learner.h" />
+    <ClInclude Include="utils.h" />
     <ClInclude Include="vfa-critic.h" />
     <ClInclude Include="policy.h" />
     <ClInclude Include="vfa.h" />

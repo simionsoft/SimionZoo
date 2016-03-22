@@ -83,7 +83,7 @@
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned"/>
   </CLASS>
 
   <CLASS Name="CTDCLambdaCritic">
@@ -97,11 +97,11 @@
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned"/>
   </CLASS>
 
   <CLASS Name="CCritic">
-    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned"/>
   </CLASS>
 
   <CLASS Name="CCritic-Factory">
@@ -262,6 +262,10 @@
     <STRING-VALUE Name="Distribution" Default="linear" Comment="The manner in which the points are distributed on the action variable's grid"/>
   </CLASS>
 
+  <CLASS Name="CString">
+    <STRING-VALUE Name="Value" Default="" Comment="The value of the string"/>
+  </CLASS>
+
   <CLASS Name="CDeterministicPolicy-Factory">
     <CHOICE Name="Policy" Comment="The policy type">
       <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise" Comment="A deterministic polich pi(s) to which some noise is added"/>
@@ -271,26 +275,35 @@
 
   <CLASS Name="CDeterministicPolicy">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
+    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CDeterministicPolicyGaussianNoise">
     <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
+    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CStochasticPolicyGaussianNoise">
-    <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates variance(s)"/>
+    <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates variance(s)"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
+    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFA">
     <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the VFA's weights on initialization"/>
-    <FILE-PATH-VALUE Name="Load" Default="" Comment="The weights will be loaded from this file"/>
-    <FILE-PATH-VALUE Name="Save" Default="" Comment="The weights will be saved to this file"/>
     <BRANCH Name="State-Feature-Map" Class="CFeatureMap-Factory" Comment="The feature map fuction (state->features)"/>
+  </CLASS>
+
+  <CLASS Name="CLinearStateVFAFromFile">
+    <FILE-PATH-VALUE Name="Load" Default="../config/data" Comment="The VFA will be loaded from this file"/>
+  </CLASS>
+
+  <CLASS Name="CLinearStateVFA-Factory">
+    <CHOICE Name="Parameterization" Comment= "Do we want to define the vfa explicitly or load it from file?">
+      <CHOICE-ELEMENT Name="Explicit" Class="CLinearStateVFA" Comment="The parameterization is explicitly given and no weights loaded."/>
+      <CHOICE-ELEMENT Name="From-File" Class="CLinearStateVFAFromFile" Comment="The parameterization and weights are read from a file."/>
+    </CHOICE>
   </CLASS>
 
   <CLASS Name="CLinearStateActionVFA">

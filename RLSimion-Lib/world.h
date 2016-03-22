@@ -24,6 +24,7 @@ public:
 	double getT();
 	double getStepStartT();
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel; }
+	static void setDynamicModel(CDynamicModel* model){ m_pDynamicModel = model; }
 
 	CWorld();
 	~CWorld();

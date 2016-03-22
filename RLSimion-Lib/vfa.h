@@ -24,7 +24,7 @@ protected:
 
 public:
 	CLinearVFA();
-	~CLinearVFA();
+	virtual ~CLinearVFA();
 	double getValue(const CFeatureList *features);
 	double *getWeightPtr(){ return m_pWeights; }
 	unsigned int getNumWeights(){ return m_numWeights; }
@@ -33,6 +33,7 @@ public:
 
 	bool saveWeights(const char* pFilename);
 	bool loadWeights(const char* pFilename);
+
 };
 
 class CLinearStateVFA: public CParamObject, public CLinearVFA
@@ -44,7 +45,7 @@ protected:
 public:
 	CLinearStateVFA();
 	CLinearStateVFA(CParameters* pParameters);
-	~CLinearStateVFA();
+	virtual ~CLinearStateVFA();
 	using CLinearVFA::getValue;
 	double getValue(const CState *s);
 
@@ -53,7 +54,9 @@ public:
 	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 
 	void save(const char* pFilename);
-	void load(const char* pFilename);
+	//void load(const char* pFilename);
+
+	static CLinearStateVFA* getInstance(CParameters* pParameters);
 };
 
 class CLinearStateVFAFromFile: public CLinearStateVFA

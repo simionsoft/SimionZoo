@@ -111,40 +111,40 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 //	CLogger::logMessage(Warning, msg);
 //}
 //
-//void CLinearStateVFA::save(const char* pFilename)
-//{
-//	CParameters* pFeatureMapParameters;
-//	char msg[128];
-//	char binFile[512];
-//	char xmlDescFile[512];
-//	FILE* pXMLFile;
-//
-//	if ( pFilename == 0 || pFilename[0] == 0) return;
-//
-//	sprintf_s(msg, 128, "Saving Policy (\"%s\" (.bin/.xml)...", pFilename);
-//	CLogger::logMessage(Info, msg);
-//
-//	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
-//	saveWeights(binFile);
-//
-//	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
-//
-//	fopen_s(&pXMLFile, xmlDescFile, "w");
-//	if (pXMLFile)
-//	{
-//		pFeatureMapParameters= m_pStateFeatureMap->getParameters();
-//
-//		if (pFeatureMapParameters)
-//			pFeatureMapParameters->saveFile(pXMLFile);
-//
-//		fclose(pXMLFile);
-//		CLogger::logMessage(Info, "OK\n");
-//		return;
-//	}
-//
-//	sprintf_s(msg, 128, "FAILED", binFile);
-//	CLogger::logMessage(Warning, msg);
-//}
+void CLinearStateVFA::save(const char* pFilename)
+{
+	CParameters* pFeatureMapParameters;
+	char msg[128];
+	char binFile[512];
+	char xmlDescFile[512];
+	FILE* pXMLFile;
+
+	if ( pFilename == 0 || pFilename[0] == 0) return;
+
+	sprintf_s(msg, 128, "Saving Policy (\"%s\" (.bin/.xml)...", pFilename);
+	CLogger::logMessage(Info, msg);
+
+	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
+	saveWeights(binFile);
+
+	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
+
+	fopen_s(&pXMLFile, xmlDescFile, "w");
+	if (pXMLFile)
+	{
+		pFeatureMapParameters= m_pStateFeatureMap->getParameters();
+
+		if (pFeatureMapParameters)
+			pFeatureMapParameters->saveFile(pXMLFile);
+
+		fclose(pXMLFile);
+		CLogger::logMessage(Info, "OK\n");
+		return;
+	}
+
+	sprintf_s(msg, 128, "FAILED", binFile);
+	CLogger::logMessage(Warning, msg);
+}
 
 
 
@@ -187,6 +187,15 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
+	END_CLASS();
+}
+
+CLASS_FACTORY(CLinearStateVFA)
+{
+	CHOICE("Parameterization", "Do we want to define the vfa explicitly or load it from file?");
+	CHOICE_ELEMENT("Explicit", CLinearStateVFA,"The parameterization is explicitly given and no weights loaded.");
+	CHOICE_ELEMENT("From-File", CLinearStateVFAFromFile, "The parameterization and weights are read from a file.");
+	END_CHOICE();
 	END_CLASS();
 }
 
