@@ -700,6 +700,10 @@ namespace AppXML.ViewModels
         public void SaveAll()
         {
             List<NodeAndName> myList = Graf.getAllLeafs();
+            if(myList.Count==0)
+            {
+                myList.Add(new NodeAndName("root",_doc));
+            }
             List<string> pahts = new List<string>();
             string folderName = "../experiments/" +"experiment" +DateTime.Now.ToString("yyyyMMddHHmmssffff");
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), folderName);
