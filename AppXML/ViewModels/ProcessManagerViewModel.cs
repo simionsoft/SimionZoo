@@ -56,6 +56,8 @@ namespace AppXML.ViewModels
                                                     ProcessStartInfo startInfo = new ProcessStartInfo();
                                                     startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),"../debug/RLSimion.exe");
                                                     startInfo.Arguments = process.Label + " " + process.pipeName;
+                                                    //startInfo.CreateNoWindow = true;
+                                                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
                                                     //not to read 23.232 as 23232
                                                     Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;

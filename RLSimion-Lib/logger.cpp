@@ -126,20 +126,23 @@ void CLogger::writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex
 	{
 		FILE* pFile = openLogFile(false, false, evalEpisode, episodeIndex);
 
-		//output the episode index, the elapsed time since the experiment started and the last episode's time length
-		//__int64 currentCounter;
-		//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-		double experimentTime = m_pExperimentTimer->getElapsedTime(false);//(double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
-		double episodeDuration = m_pEpisodeTimer->getElapsedTime(false);// (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
-
-		fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
-		//output the stats
-		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+		if (pFile)
 		{
-			fprintf(pFile, "%.3f(%.3f) ", (*it)->getStatsInfo()->getAvg(), (*it)->getStatsInfo()->getStdDev());
+			//output the episode index, the elapsed time since the experiment started and the last episode's time length
+			//__int64 currentCounter;
+			//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
+			double experimentTime = m_pExperimentTimer->getElapsedTime(false);//(double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
+			double episodeDuration = m_pEpisodeTimer->getElapsedTime(false);// (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
+
+			fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
+			//output the stats
+			for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+			{
+				fprintf(pFile, "%.3f(%.3f) ", (*it)->getStatsInfo()->getAvg(), (*it)->getStatsInfo()->getStdDev());
+			}
+			fprintf(pFile, "\n");
+			fclose(pFile);
 		}
-		fprintf(pFile, "\n");
-		fclose(pFile);
 	}
 }
 
@@ -149,14 +152,17 @@ void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
 	{
 		FILE* pFile = openLogFile(false, true, evalEpisode, episodeIndex);
 
-		fprintf(pFile, "%.3f ", RLSimion::World.getT());
-
-		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+		if (pFile)
 		{
-			fprintf(pFile, "%.3f ", (*it)->getValue());
+			fprintf(pFile, "%.3f ", RLSimion::World.getT());
+
+			for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+			{
+				fprintf(pFile, "%.3f ", (*it)->getValue());
+			}
+			fprintf(pFile, "\n");
+			fclose(pFile);
 		}
-		fprintf(pFile, "\n");
-		fclose(pFile);
 	}
 }
 
@@ -339,7 +345,7 @@ void CLogger::createOutputPipe(const char* pipeName)
 
 
 
-	wprintf(L"Creating pipe: %ls\n", w_completePipename);
+	//wprintf(L"Creating pipe: %ls\n", w_completePipename);
 
 	//m_outputPipe = CreateNamedPipe(
 	//	w_pipename,             // pipe name 
@@ -363,11 +369,11 @@ void CLogger::createOutputPipe(const char* pipeName)
 
 	if (m_outputPipe == INVALID_HANDLE_VALUE)
 	{
-		printf("FAILED\n");
+		//printf("FAILED\n");
 
 		return;
 	}
-	printf("OK\n");
+	//printf("OK\n");
 
 	m_messageOutputMode = MessageOutputMode::NamedPipe;
 }
