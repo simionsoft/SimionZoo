@@ -28,7 +28,11 @@ CParameters* RLSimion::init(int argc, char* argv[],const char* rootNodeName)
 
 	if (argc > 1) pParameters = g_pConfigDoc->loadFile(argv[1], rootNodeName);
 
-	if (argc <= 1 || !pParameters) exit(-1);
+	if (argc <= 1 || !pParameters)
+	{
+		getchar();
+		exit(-1);
+	}
 
 	if (argc > 2) CLogger::createOutputPipe(argv[2]);
 

@@ -11,8 +11,7 @@
 CLinearVFA::CLinearVFA()
 {
 	m_pWeights = 0;
-	m_loadFilename = 0;
-	m_saveFilename = 0;
+
 }
 CLinearVFA::~CLinearVFA()
 {
@@ -40,7 +39,7 @@ void CLinearVFA::saturateOutput(double min, double max)
 	m_maxOutput = max;
 }
 
-void CLinearVFA::saveWeights(const char* pFilename)
+bool CLinearVFA::saveWeights(const char* pFilename)
 {
 	FILE* pFile;
 	assert(m_pWeights && m_numWeights >= 0);
@@ -51,10 +50,12 @@ void CLinearVFA::saveWeights(const char* pFilename)
 		fwrite(&m_numWeights, sizeof(unsigned int), 1, (FILE*)pFile);
 		fwrite(m_pWeights, sizeof(double), m_numWeights, (FILE*)pFile);
 		fclose(pFile);
+		return true;
 	}
+	return false;
 }
 
-void CLinearVFA::loadWeights(const char* pFilename)
+bool CLinearVFA::loadWeights(const char* pFilename)
 {
 	FILE* pFile;
 	unsigned int numWeightsRead;
@@ -69,85 +70,87 @@ void CLinearVFA::loadWeights(const char* pFilename)
 		fread_s(m_pWeights, numWeightsRead*sizeof(double), sizeof(double), numWeightsRead, (FILE*)pFile);
 
 		fclose(pFile);
+		return true;
 	}
+	return false;
 }
-
-void CLinearStateVFA::load(const char* pFilename)
-{
-	CParameters* pFeatureMapParameters;
-	char msg[128];
-	char binFile[512];
-	char xmlDescFile[512];
-	FILE* pXMLFile;
-	CParameterFile* parameterFile;
-
-	if (pFilename == 0 || pFilename[0] == 0) return;
-
-	sprintf_s(msg, 128, "Loading Policy (\"%s\" (.bin/.xml)...", pFilename);
-	CLogger::logMessage(Info, msg);
-
-	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
-
-	fopen_s(&pXMLFile, xmlDescFile, "r");
-	if (pXMLFile)
-	{
-		//pFeatureMapParameters = m_pStateFeatureMap->getParameters();
-
-		//if (pFeatureMapParameters)
-		//	pFeatureMapParameters->saveFile(pXMLFile);
-
-		//fclose(pXMLFile);
-		//CLogger::logMessage(Info, "OK\n");
-		return;
-	}
-
-	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
-	loadWeights(binFile);
-
-	sprintf_s(msg, 128, "FAILED", binFile);
-	CLogger::logMessage(Warning, msg);
-}
-
-void CLinearStateVFA::save(const char* pFilename)
-{
-	CParameters* pFeatureMapParameters;
-	char msg[128];
-	char binFile[512];
-	char xmlDescFile[512];
-	FILE* pXMLFile;
-
-	if ( pFilename == 0 || pFilename[0] == 0) return;
-
-	sprintf_s(msg, 128, "Saving Policy (\"%s\" (.bin/.xml)...", pFilename);
-	CLogger::logMessage(Info, msg);
-
-	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
-	saveWeights(binFile);
-
-	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
-
-	fopen_s(&pXMLFile, xmlDescFile, "w");
-	if (pXMLFile)
-	{
-		pFeatureMapParameters= m_pStateFeatureMap->getParameters();
-
-		if (pFeatureMapParameters)
-			pFeatureMapParameters->saveFile(pXMLFile);
-
-		fclose(pXMLFile);
-		CLogger::logMessage(Info, "OK\n");
-		return;
-	}
-
-	sprintf_s(msg, 128, "FAILED", binFile);
-	CLogger::logMessage(Warning, msg);
-}
+//
+//void CLinearStateVFA::load(const char* pFilename)
+//{
+//	CParameters* pFeatureMapParameters;
+//	char msg[128];
+//	char binFile[512];
+//	char xmlDescFile[512];
+//	FILE* pXMLFile;
+//	CParameterFile parameterFile;
+//	CParameters* pReadParameters;
+//
+//	if (pFilename == 0 || pFilename[0] == 0) return;
+//
+//	sprintf_s(msg, 128, "Loading Policy (\"%s\" (.bin/.xml)...", pFilename);
+//	CLogger::logMessage(Info, msg);
+//
+//	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
+//
+//	pReadParameters = parameterFile.loadFile(xmlDescFile);
+//	pFeatureMapParameters = m_pStateFeatureMap->setParameters(pReadParameters);
+//
+//		//if (pFeatureMapParameters)
+//		//	pFeatureMapParameters->saveFile(pXMLFile);
+//
+//		//fclose(pXMLFile);
+//		//CLogger::logMessage(Info, "OK\n");
+//	//	return;
+//	//}
+//
+//	sprintf_s(binFile, 512, "%s", pFilename);
+//	if (loadWeights(binFile))
+//		sprintf_s(msg, 128, "OK", binFile);
+//	else
+//		sprintf_s(msg, 128, "FAILED", binFile);
+//	CLogger::logMessage(Warning, msg);
+//}
+//
+//void CLinearStateVFA::save(const char* pFilename)
+//{
+//	CParameters* pFeatureMapParameters;
+//	char msg[128];
+//	char binFile[512];
+//	char xmlDescFile[512];
+//	FILE* pXMLFile;
+//
+//	if ( pFilename == 0 || pFilename[0] == 0) return;
+//
+//	sprintf_s(msg, 128, "Saving Policy (\"%s\" (.bin/.xml)...", pFilename);
+//	CLogger::logMessage(Info, msg);
+//
+//	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
+//	saveWeights(binFile);
+//
+//	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
+//
+//	fopen_s(&pXMLFile, xmlDescFile, "w");
+//	if (pXMLFile)
+//	{
+//		pFeatureMapParameters= m_pStateFeatureMap->getParameters();
+//
+//		if (pFeatureMapParameters)
+//			pFeatureMapParameters->saveFile(pXMLFile);
+//
+//		fclose(pXMLFile);
+//		CLogger::logMessage(Info, "OK\n");
+//		return;
+//	}
+//
+//	sprintf_s(msg, 128, "FAILED", binFile);
+//	CLogger::logMessage(Warning, msg);
+//}
 
 
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters), CLinearVFA()
+CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters)
 {
 	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction (state->features)","",CFeatureMap);
 
@@ -160,13 +163,26 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters), CLinearVFA()
 	CONST_DOUBLE_VALUE(initValue, "Init-Value", 0.0,"The initial value given to the VFA's weights on initialization");
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights[i] = initValue;
-	//std::fill_n(m_pWeights, m_numWeights, initValue);
 
-	FILE_PATH_VALUE(m_loadFilename, "Load", "", "The weights will be loaded from this file");
-	FILE_PATH_VALUE(m_saveFilename, "Save", "", "The weights will be saved to this file");
 
-	if (m_loadFilename)
-		load(m_loadFilename);
+	m_bSaturateOutput = false;
+	m_minOutput = 0.0;
+	m_maxOutput = 0.0;
+	END_CLASS();
+}
+CLinearStateVFA::CLinearStateVFA() : CParamObject(0)
+{}
+
+CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
+{
+	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data", "The VFA will be loaded from this file");
+	CParameterFile mapFeatureParameterFile;
+	CParameters* mapFeatureParameters= mapFeatureParameterFile.loadFile(m_loadFilename);
+	m_pStateFeatureMap = CFeatureMap::getInstance(mapFeatureParameters);
+
+	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
+	m_pWeights = new double[m_numWeights];
+	loadWeights(m_loadFilename);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
@@ -176,8 +192,8 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters), CLinearVFA()
 
 CLinearStateVFA::~CLinearStateVFA()
 {
-	if (m_saveFilename)
-		save(m_saveFilename);
+	/*if (m_saveFilename)
+		save(m_saveFilename);*/
 
 	delete m_pStateFeatureMap;
 	delete m_pAux;

@@ -44,6 +44,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomXMLBuilder", "CustomX
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PipeTest", "PipeTest\PipeTest.vcxproj", "{994FD136-9E45-49BE-802B-C56308BDBF2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipeTestCSharp", "PipeTestCSharp\PipeTestCSharp.csproj", "{3B57CDC7-33F8-483F-833B-2053567ECA90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -547,6 +549,48 @@ Global
 		{994FD136-9E45-49BE-802B-C56308BDBF2B}.Release-Lib|x64.ActiveCfg = Release|Win32
 		{994FD136-9E45-49BE-802B-C56308BDBF2B}.Release-Lib|x86.ActiveCfg = Release|Win32
 		{994FD136-9E45-49BE-802B-C56308BDBF2B}.Release-Lib|x86.Build.0 = Release|Win32
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Dll|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Dll|Any CPU.Build.0 = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Dll|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Dll|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Dll|Win32.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Dll|x64.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Dll|x86.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Lib|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Lib|Any CPU.Build.0 = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Lib|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Lib|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Lib|Win32.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Lib|x64.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Debug-Lib|x86.ActiveCfg = Debug|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release|Win32.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release|x64.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release|x86.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Dll|Any CPU.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Dll|Any CPU.Build.0 = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Dll|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Dll|Mixed Platforms.Build.0 = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Dll|Win32.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Dll|x64.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Dll|x86.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Lib|Any CPU.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Lib|Any CPU.Build.0 = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Lib|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Lib|Mixed Platforms.Build.0 = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Lib|Win32.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Lib|x64.ActiveCfg = Release|Any CPU
+		{3B57CDC7-33F8-483F-833B-2053567ECA90}.Release-Lib|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Threading;
 
 namespace AppXML.ViewModels
 {
@@ -54,12 +55,15 @@ namespace AppXML.ViewModels
                                                     string name = process.pipeName ;
                                                     ProcessStartInfo startInfo = new ProcessStartInfo();
                                                     startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),"../debug/RLSimion.exe");
-                                                    startInfo.Arguments = process.Label + ";" + process.pipeName;
+                                                    startInfo.Arguments = process.Label + " " + process.pipeName;
+
+                                                    //not to read 23.232 as 23232
+                                                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+                                                    //Task.Delay(1000).Wait();
+                                                    var server = new NamedPipeServerStream(name);
                                                     Process.Start(startInfo);
-                                                    Task.Delay(1000).Wait();
-                                                    var client = new NamedPipeClientStream(name);
-                                                    client.Connect(10000);
-                                                    StreamReader reader = new StreamReader(client);
+                                                    server.WaitForConnection();
+                                                    StreamReader reader = new StreamReader(server);
                                                     process.SMS = "Running";
                                                     System.Windows.Forms.Application.DoEvents();
                                                     bool reading = true;
@@ -71,10 +75,9 @@ namespace AppXML.ViewModels
                                                         XmlNode node = xml.DocumentElement;
                                                         if (node.Name == "Progress")
                                                         {
-                                                            int progress = Convert.ToInt32(node.InnerText);
-                                                            process.Status = progress;
-                                                            //pwvm.Notify();
-                                                            if (progress == 100)
+                                                            double progress = Convert.ToDouble(node.InnerText);
+                                                            process.Status = Convert.ToInt32(progress);
+                                                            if (progress==100.0)
                                                             {
                                                                 reading = false;
                                                                 process.SMS = "Finished";
@@ -88,7 +91,7 @@ namespace AppXML.ViewModels
                                                         }
                                                     }
                                                     reader.Close();
-                                                    client.Close();
+                                                    server.Close();
                                                 });
             
                 

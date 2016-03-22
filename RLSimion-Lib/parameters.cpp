@@ -18,8 +18,9 @@ CParameters* CParameterFile::loadFile(const char* fileName, const char* nodeName
 	LoadFile(fileName);
 	if (Error()) return 0;
 
-
-	return (CParameters*) (this->FirstChildElement(nodeName));
+	if (nodeName)
+		return (CParameters*) (this->FirstChildElement(nodeName));
+	return (CParameters*)this->FirstChildElement();
 	
 }
 
@@ -146,4 +147,11 @@ void CParameters::saveFile(const char* pFilename)
 void CParameters::saveFile(FILE* pFile)
 {
 	SaveFile(pFile, false);
+}
+
+void CParameters::clone(CParameterFile* parameterFile)
+{
+	this->DeleteChildren();
+
+	this->ShallowClone((tinyxml2::XMLDocument*) parameterFile);
 }

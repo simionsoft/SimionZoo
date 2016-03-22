@@ -258,36 +258,39 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 
 //WINDOWS-SPECIFIC STUFF
 #include <windows.h>
-
+#include <string>
 
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
 void* CLogger::m_outputPipe = 0;
 
 void CLogger::logMessage(MessageType type, const char* message)
 {
-	wchar_t messageLine[1024];
+
+	char messageLine[1024];
 	unsigned long bytesWritten;
+
 
 	if (m_messageOutputMode == MessageOutputMode::NamedPipe && m_outputPipe)
 	{
+		//mbstowcs_s(&numChars, messageMByte, 1024, message, 1023);
 		switch (type)
 		{
 		case Warning:
-			swprintf_s(messageLine, 1024, TEXT("<Message>WARNING: %s</Message>"), message);
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Progress:
 			//extra spaces to avoid overwriting only partially previous message
-			swprintf_s(messageLine, 1024, TEXT("<Progress>%s</Progress>"), message);
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Progress>%s</Progress>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Info:
-			swprintf_s(messageLine, 1024, TEXT("<Message>INFO: %s</Message>"), message);
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Message>INFO: %s</Message>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Error:
-			swprintf_s(messageLine, 1024, TEXT("<Message>FATAL ERROR: %s</Message>"));
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Message>FATAL ERROR: %ls</Message>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			closeOutputPipe();
 			exit(-1);
 		}
@@ -325,8 +328,18 @@ void CLogger::closeOutputPipe()
 
 void CLogger::createOutputPipe(const char* pipeName)
 {
+	size_t convertedChars;
+	
 	wchar_t w_pipename[512];
-	swprintf_s(w_pipename, 512, TEXT("\\\\.\\pipe\\%s"), pipeName);
+	wchar_t w_completePipename[512] = L"\\\\.\\pipe\\";
+
+	
+	mbstowcs_s(&convertedChars, w_pipename,512, pipeName, 512);
+	wcscat_s(w_completePipename, w_pipename);
+
+
+
+	wprintf(L"Creating pipe: %ls\n", w_completePipename);
 
 	//m_outputPipe = CreateNamedPipe(
 	//	w_pipename,             // pipe name 
@@ -340,7 +353,7 @@ void CLogger::createOutputPipe(const char* pipeName)
 	//	NULL);                    // default security attribute  
 
 	m_outputPipe = CreateFile(
-		w_pipename,   // pipe name 
+		w_completePipename,   // pipe name 
 		GENERIC_WRITE,
 		0,              // no sharing 
 		NULL,           // default security attributes
@@ -349,8 +362,12 @@ void CLogger::createOutputPipe(const char* pipeName)
 		NULL);          // no template file 
 
 	if (m_outputPipe == INVALID_HANDLE_VALUE)
-		return;
+	{
+		printf("FAILED\n");
 
+		return;
+	}
+	printf("OK\n");
 
 	m_messageOutputMode = MessageOutputMode::NamedPipe;
 }
