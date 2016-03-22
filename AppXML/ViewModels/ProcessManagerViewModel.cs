@@ -73,6 +73,8 @@ namespace AppXML.ViewModels
                                                     {
                                                         string sms = reader.ReadLine();
                                                         XmlDocument xml = new XmlDocument();
+                                                        if (sms == null)
+                                                            break;
                                                         xml.LoadXml(sms);
                                                         XmlNode node = xml.DocumentElement;
                                                         if (node.Name == "Progress")
@@ -85,13 +87,14 @@ namespace AppXML.ViewModels
                                                                 process.SMS = "Finished";
 
                                                             }
-                                                            else if (node.Name == "Message")
-                                                            {
-
-                                                            }
-                                                            System.Windows.Forms.Application.DoEvents();
                                                         }
-                                                    }
+                                                        else if (node.Name == "Message")
+                                                        {
+                                                                process.SMS = node.InnerText;
+                                                        }
+                                                        System.Windows.Forms.Application.DoEvents();
+                                                   }
+                                                    
                                                     reader.Close();
                                                     server.Close();
                                                 });
