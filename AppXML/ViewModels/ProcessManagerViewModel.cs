@@ -68,31 +68,33 @@ namespace AppXML.ViewModels
                                                     StreamReader reader = new StreamReader(server);
                                                     process.SMS = "Running";
                                                     System.Windows.Forms.Application.DoEvents();
-                                                    bool reading = true;
-                                                    while (reading)
+                                                    //bool reading = true;
+                                                    while (server.IsConnected)
                                                     {
                                                         string sms = reader.ReadLine();
                                                         XmlDocument xml = new XmlDocument();
-                                                        if (sms == null)
-                                                            break;
-                                                        xml.LoadXml(sms);
-                                                        XmlNode node = xml.DocumentElement;
-                                                        if (node.Name == "Progress")
+                                                        if (sms != null)
                                                         {
-                                                            double progress = Convert.ToDouble(node.InnerText);
-                                                            process.Status = Convert.ToInt32(progress);
-                                                            if (progress==100.0)
+                                                            xml.LoadXml(sms);
+                                                            XmlNode node = xml.DocumentElement;
+                                                            if (node.Name == "Progress")
                                                             {
-                                                                reading = false;
-                                                                process.SMS = "Finished";
+                                                                double progress = Convert.ToDouble(node.InnerText);
+                                                                process.Status = Convert.ToInt32(progress);
+                                                                if (progress == 100.0)
+                                                                {
+                                                                    //reading = false;
+                                                                    process.SMS = "Finished";
 
+                                                                }
                                                             }
-                                                        }
-                                                        else if (node.Name == "Message")
-                                                        {
+                                                            else if (node.Name == "Message")
+                                                            {
                                                                 process.SMS = node.InnerText;
-                                                        }
-                                                        System.Windows.Forms.Application.DoEvents();
+                                                            }
+                                                            System.Windows.Forms.Application.DoEvents();
+                                                        }  
+                                                       
                                                    }
                                                     
                                                     reader.Close();
