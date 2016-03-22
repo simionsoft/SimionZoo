@@ -52,6 +52,7 @@ namespace AppXML.ViewModels
                 Graf = null;
                 NotifyOfPropertyChange(() => Branches);
                 NotifyOfPropertyChange(() => Graf);
+                NotifyOfPropertyChange(() => rootnode);
             } 
         }
         /*
