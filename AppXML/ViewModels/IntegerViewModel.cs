@@ -297,7 +297,8 @@ namespace AppXML.ViewModels
                
                  if (openFileDialog.ShowDialog() == true)
                  {
-                     this.Default = openFileDialog.FileName;
+
+                     this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
                      this.TextColor = "White";
                  }
                    
@@ -315,7 +316,7 @@ namespace AppXML.ViewModels
                     
                 if (fbd.ShowDialog() == DialogResult.OK)
                     {
-                        this.Default = fbd.SelectedPath;
+                        this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), fbd.SelectedPath);
                         this.TextColor = "White";
 
                     }

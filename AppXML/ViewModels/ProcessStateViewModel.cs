@@ -46,7 +46,7 @@ namespace AppXML.ViewModels
             this.label = label;
             this.status = 0;
             this.sms = "Waiting";
-            this.pipeName = (label.Split('/').Last()).Split('.').First();
+            this.pipeName = (label.Split('\\').Last()).Split('.').First();
         }
     }
 }

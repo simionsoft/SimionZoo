@@ -10,11 +10,47 @@ using System.Xml;
 
 namespace AppXML.Data
 {
-    public class Utility
+    public static class Utility
     {
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
-        
+
+        public static string GetRelativePathTo(string absPath, string relTo)
+        {
+            string[] absDirs = absPath.Split('\\');
+            string[] relDirs = relTo.Split('\\');
+            // Get the shortest of the two paths 
+            int len = absDirs.Length < relDirs.Length ? absDirs.Length : relDirs.Length;
+            // Use to determine where in the loop we exited 
+            int lastCommonRoot = -1; int index;
+            // Find common root 
+            for (index = 0; index < len; index++)
+            {
+                if (absDirs[index] == relDirs[index])
+                    lastCommonRoot = index;
+                else break;
+            }
+            // If we didn't find a common prefix then throw 
+            if (lastCommonRoot == -1)
+            {
+                return relTo;
+            }
+            // Build up the relative path 
+            StringBuilder relativePath = new StringBuilder();
+            // Add on the .. 
+            for (index = lastCommonRoot + 1; index < absDirs.Length; index++)
+            {
+                if (absDirs[index].Length > 0) relativePath.Append("..\\");
+            }
+            // Add on the folders 
+            for (index = lastCommonRoot + 1; index < relDirs.Length - 1; index++)
+            {
+                relativePath.Append(relDirs[index] + "\\");
+            }
+            relativePath.Append(relDirs[relDirs.Length - 1]);
+            relativePath.Replace('\\','/');
+            return relativePath.ToString();
+        }
         public static Boolean validate(string value, validTypes type)
         {
             Boolean result = false;

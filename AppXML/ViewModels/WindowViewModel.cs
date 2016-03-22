@@ -112,6 +112,7 @@ namespace AppXML.ViewModels
                 return;
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "XML-File | *.xml";
+            sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
                 System.IO.Directory.CreateDirectory(CombinedPath);
@@ -603,18 +604,11 @@ namespace AppXML.ViewModels
         }
         public void Load()
         {
-            //si hubiera mas de una aplicacion habria que tenerlo en cuenta
-            //el include no se trata ya que al cargar ya se hace el include si hubiera un selector de app habria que tenerlo en cuenta
-            //por lo que el definitions que se va a utilizar es el que ya esta cargado
-            //CApp.cleanAll();
-            //Utility.cleanAll();
-            //CNode newRootNode = Utility.getRootNode("../config/RLSimion.xml");
-            //string fileApp = "../config/RLSimion.xml";
-            //XmlDocument appFile = new XmlDocument();
-            //appFile.Load(fileApp);
+            
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "XML-File | *.xml";
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()),"experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 fileDoc = ofd.FileName;
@@ -713,7 +707,7 @@ namespace AppXML.ViewModels
             {
                 string path = CombinedPath + "/" + item.name + ".xml";
                 item.doc.Save(path);
-                pahts.Add(path);
+                pahts.Add(Path.GetFullPath(path));
             }
             ProcessManagerViewModel  pmvm = initExperimentas(pahts);
             pmvm.run();
