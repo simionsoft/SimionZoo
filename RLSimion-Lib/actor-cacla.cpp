@@ -13,7 +13,7 @@
 CLASS_CONSTRUCTOR(CCACLALearner): EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
-	CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA","",CETraces, "Actor/E-Traces");
+	CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA",true,CETraces, "Actor/E-Traces");
 	NUMERIC_VALUE(m_pAlpha, "Alpha","Learning gain [0..1]");
 
 	END_CLASS();

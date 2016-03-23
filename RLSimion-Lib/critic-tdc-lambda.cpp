@@ -12,7 +12,7 @@
 CLASS_CONSTRUCTOR(CTDCLambdaCritic)
 	: CCritic(pParameters)
 {
-	CHILD_CLASS(m_z,"E-Traces","Elilgibility traces of the critic","",CETraces,"Critic/E-Traces");
+	CHILD_CLASS(m_z,"E-Traces","Elilgibility traces of the critic",true,CETraces,"Critic/E-Traces");
 
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");

@@ -92,7 +92,7 @@ double CRewardFunctionComponent::getRewardComponent(CState* state)
 }
 
 
-CLASS_CONSTRUCTOR(CRewardFunction) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR_NEW_WINDOW(CRewardFunction) : CParamObject(pParameters)
 {
 	CONST_DOUBLE_VALUE(m_minReward,"Min",-100.0,"Minimum output of the reward function");
 	CONST_DOUBLE_VALUE(m_maxReward,"Max",1.0,"Maximum output of the reward function");

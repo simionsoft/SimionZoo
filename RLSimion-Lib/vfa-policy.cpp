@@ -13,7 +13,7 @@ CLASS_FACTORY(CDeterministicPolicy)
 {
 	CHOICE("Policy","The policy type");
 
-	CHOICE_ELEMENT("Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise,"A deterministic polich pi(s) to which some noise is added");
+	CHOICE_ELEMENT("Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise,"A deterministic policy pi(s) to which some noise is added");
 	CHOICE_ELEMENT("Stochastic-Policy-Gaussian-Noise", CStochasticPolicyGaussianNoise,"An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))");
 
 	END_CHOICE();
@@ -24,7 +24,7 @@ CLASS_FACTORY(CDeterministicPolicy)
 CLASS_CONSTRUCTOR(CDeterministicPolicy)
 : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pVFA, "Linear-State-VFA", "The parameterized VFA that approximates the function", "", CLinearStateVFA);
+	CHILD_CLASS_FACTORY(m_pVFA, "Linear-State-VFA", "The parameterized VFA that approximates the function", false, CLinearStateVFA);
 	
 	ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action variable");
 
@@ -38,6 +38,14 @@ CDeterministicPolicy::~CDeterministicPolicy()
 	delete m_pVFA;
 }
 
+void CDeterministicPolicy::selectAction(const CState* s, CAction* a)
+{
+	double output;
+
+	output = m_pVFA->getValue(s);
+
+	a->setValue(m_outputActionIndex, output);
+}
 
 
 //CDetPolicyGaussianNoise////////////////////////////////
@@ -46,7 +54,7 @@ CDeterministicPolicy::~CDeterministicPolicy()
 CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise","Parameters of the noise used as exploration","",CNoise);
+	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise","Parameters of the noise used as exploration",false,CNoise);
 	END_CLASS();
 }
 
@@ -87,7 +95,7 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)
 	: EXTENDS(CDeterministicPolicy, pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pSigmaVFA, "Sigma-VFA", "The parameterized VFA that approximates variance(s)", "", CLinearStateVFA);
+	CHILD_CLASS_FACTORY(m_pSigmaVFA, "Sigma-VFA", "The parameterized VFA that approximates variance(s)", false, CLinearStateVFA);
 	//m_pSigmaVFA = new CLinearStateVFA(m_pVFA->getParameters());//same parameterization as the mean-VFA
 	m_pAux = new CFeatureList("Sto-Policy/aux");
 	END_CLASS();

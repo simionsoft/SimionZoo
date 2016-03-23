@@ -59,8 +59,8 @@ CLASS_CONSTRUCTOR(CStateVariableGrid)
 	STATE_VARIABLE_REF(m_variableIndex, "Variable","The state variable");
 	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
 
-	CONST_DOUBLE_VALUE(m_min, "Min", 0.0,"The minimum value of the points that define the grid");// RLSimion::World.getStateDescriptor()->getMin(m_variableIndex));
-	CONST_DOUBLE_VALUE(m_max, "Max", 1.0, "The maximum value of the points that define the grid");// RLSimion::World.getStateDescriptor()->getMax(m_variableIndex));
+	m_min= RLSimion::World.getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex);
+	m_max= RLSimion::World.getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex);
 
 	CONST_STRING_VALUE(m_distributionType, "Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
 	initCenterPoints();
@@ -82,8 +82,8 @@ CLASS_CONSTRUCTOR(CActionVariableGrid)
 	ACTION_VARIABLE_REF(m_variableIndex, "Variable", "The action variable");
 	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
 
-	CONST_DOUBLE_VALUE(m_min, "Min", 0.0,"The minimum value of the points that define the grid");// RLSimion::World.getActionDescriptor()->getMin(m_variableIndex));
-	CONST_DOUBLE_VALUE(m_max, "Max", 1.0, "The maximum value of the points that define the grid");// RLSimion::World.getActionDescriptor()->getMax(m_variableIndex));
+	m_min = RLSimion::World.getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex);
+	m_max = RLSimion::World.getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex);
 
 	CONST_STRING_VALUE(m_distributionType, "Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
 	initCenterPoints();

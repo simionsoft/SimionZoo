@@ -24,6 +24,11 @@ namespace RLSimion
 #define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_INIT(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
+
+#define CLASS_FACTORY_NEW_WINDOW(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
+#define CLASS_CONSTRUCTOR_NEW_WINDOW(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
+#define CLASS_INIT_NEW_WINDOW(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
+
 #define END_CLASS()
 
 //The superclass' parameters are embedded inline within the subclass' definition, so the superclass' parameters
@@ -32,16 +37,16 @@ namespace RLSimion
 
 //The child class is given a name according to the context from the parent class, so the parameter node should include
 //the appropriate hierarchy (i.e., pParameters->getChild("VFA"))
-#define CHILD_CLASS(variable,name,comment,window,className,...) variable= new className(pParameters->getChild(name),__VA_ARGS__);
-#define CHILD_CLASS_FACTORY(variable,name,comment,window,className,...) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__);
+#define CHILD_CLASS(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= new className(pParameters->getChild(name),__VA_ARGS__); else variable= new className(0,__VA_ARGS__);
+#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance(0,__VA_ARGS__);
 
-#define CHOICE(name,comment) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();
-#define CHOICE_XML(name,loadXML,comment) CParameters* pChild = pParameters->getChild(name)->getChild();const char* type = pChild->getName();
+#define CHOICE(name,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
+#define CHOICE_XML(name,loadXML,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
 #define END_CHOICE() return 0;
 
-#define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment) if(!strcmp(type,checkLiteral)) return new className(pChild,XMLFilename);
-#define CHOICE_ELEMENT(checkLiteral,className,comment) if(!strcmp(type,checkLiteral)) return new className(pChild);
-#define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment) if(!strcmp(type,checkLiteral)) return className::getInstance(pChild);
+#define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),XMLFilename);
+#define CHOICE_ELEMENT(checkLiteral,className,comment) if (pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral));
+#define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment) if(pChild->getChild(checkLiteral)) return className::getInstance(pChild->getChild(checkLiteral));
 
 #define NUMERIC_VALUE(variable,parameterName,comment) variable= CNumericValue::getInstance(pParameters->getChild(parameterName));
 #define CONST_INTEGER_VALUE(variable,parameterName,defaultValue,comment) variable= pParameters->getConstInteger(parameterName,defaultValue);

@@ -12,7 +12,7 @@
 
 CLASS_CONSTRUCTOR(CPolicyLearner) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", "The policy to be learned","",CDeterministicPolicy);
+	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", "The policy to be learned",false,CDeterministicPolicy);
 	//m_pPolicy = CDeterministicPolicy::getInstance(pParameters->getChild("Deterministic-VFA-Policy"));
 	END_CLASS();
 }

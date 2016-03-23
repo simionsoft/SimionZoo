@@ -3,8 +3,19 @@
 #include "globals.h"
 #include "parameters.h"
 
-CLASS_CONSTRUCTOR(CString)
+CLASS_CONSTRUCTOR(CDirFileOutput)
 {
-	CONST_STRING_VALUE(m_string, "Value", "", "The value of the string");
+	DIR_PATH_VALUE(m_outputDir, "Output-Dir", "../data", "The output directory");
+	CONST_STRING_VALUE(m_filePrefix, "File-Prefix", "", "The prefix given to all the output files");
 	END_CLASS();
+}
+
+const char* CDirFileOutput::getOutputDir()
+{
+	return m_outputDir;
+}
+
+const char* CDirFileOutput::getFilePrefix()
+{
+	return m_filePrefix;
 }

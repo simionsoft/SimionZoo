@@ -437,8 +437,8 @@ namespace CustomXMLBuilder
         string parseChildClasses(string text)
         {
             increaseIndent();
-            //#define CHILD_CLASS(variable,name,comment,window,className,constructorParameters,...) variable= new className(constructorParameters,__VA_ARGS__);
-            //#define CHILD_CLASS_FACTORY(variable,name,comment,window,className,constructorParameters,...) variable= className::getInstance(constructorParameters,__VA_ARGS__);
+            //#define CHILD_CLASS(variable,name,comment,optional,className,constructorParameters,...) variable= new className(constructorParameters,__VA_ARGS__);
+            //#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,constructorParameters,...) variable= className::getInstance(constructorParameters,__VA_ARGS__);
             // -> <BRANCH Name="" Class=""/>
             string sPattern = @"(CHILD_CLASS|CHILD_CLASS_FACTORY)\s*\(" + extractTokenRegex + @"\)";
 
@@ -461,7 +461,7 @@ namespace CustomXMLBuilder
                 parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[1].Value.Trim(' ')
                     + " Class=\"" + referencedClass + "\" Comment=" + parameterMatches[2].Value.Trim(' ');
                 if (parameterMatches[3].Value.Trim(' ') != "\"\"") //Window
-                    parsedXML += " Window=" + parameterMatches[3].Value;
+                    parsedXML += " Optional=\"" + parameterMatches[3].Value + "\"";
                 parsedXML+= "/>\n";                
             }
             decreaseIndent();
@@ -511,25 +511,39 @@ namespace CustomXMLBuilder
         }
         string parseClasses(string text)
         {
-            string sPattern = @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT)(.*?)END_CLASS\(\)";
+            //#define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
+            //#define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
+            //#define CLASS_INIT(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
+
+            //#define CLASS_FACTORY_NEW_WINDOW(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
+            //#define CLASS_CONSTRUCTOR_NEW_WINDOW(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
+            //#define CLASS_INIT_NEW_WINDOW(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
+            string sPattern = @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)(.*?)END_CLASS\(\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
-                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT)\s*\(" + extractTokenRegex+ @"\)");
+                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)\s*\(" + extractTokenRegex + @"\)");
                 string header = functionArgumentsMatch.Groups[0].Value;
 
                 var functionMatches = Regex.Match(header, extractFuncRegex);
 
                 var parameterMatches = Regex.Match(functionMatches.Groups[2].Value, extractArgsRegex);
                 string definedClass;
-                if (match.Groups[1].Value.Trim(' ') != "CLASS_FACTORY")
+                if (functionMatches.Groups[1].Value.Trim(' ') != "CLASS_FACTORY"
+                    && functionMatches.Groups[1].Value != "CLASS_FACTORY_NEW_WINDOW")
                     definedClass = parameterMatches.Groups[0].Value;
                 else definedClass = parameterMatches.Groups[0].Value + "-Factory";
 
                 m_checker.addClassDefinition(new classReference(definedClass,m_currentFile,0));
-                parsedXML += getLevelIndent() + "<CLASS Name=\"" + definedClass + "\">\n";
+                parsedXML += getLevelIndent() + "<CLASS Name=\"" + definedClass + "\"";
+
+                if (functionMatches.Groups[1].Value == "CLASS_FACTORY_NEW_WINDOW"
+                    || functionMatches.Groups[1].Value == "CLASS_CONSTRUCTOR_NEW_WINDOW" 
+                    || functionMatches.Groups[1].Value == "CLASS_INIT_NEW_WINDOW")
+                    parsedXML += " Window=\"New\"";
+                parsedXML += ">\n";
 
                 string classDefinition = match.Groups[2].Value;
                 parsedXML += parseVariableRefs(classDefinition);

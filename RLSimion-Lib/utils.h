@@ -2,9 +2,12 @@
 
 class CParameters;
 
-class CString
+class CDirFileOutput
 {
-	const char* m_string;
+	const char* m_outputDir;
+	const char* m_filePrefix;
 public:
-	CString(CParameters* pParameters);
+	CDirFileOutput(CParameters* pParameters);
+	const char* getOutputDir();
+	const char* getFilePrefix();
 };

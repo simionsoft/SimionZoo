@@ -31,9 +31,9 @@ public:
 	static CDeterministicPolicy* getInstance(CParameters* pParameters);
 
 
-	virtual void selectAction(const CState *s, CAction *a) = 0;
+	virtual void selectAction(const CState *s, CAction *a);
 	//returns the factor by which the state features have to be multiplied to get the policy gradient
-	virtual void getGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
+	virtual void getGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient){};
 };
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic

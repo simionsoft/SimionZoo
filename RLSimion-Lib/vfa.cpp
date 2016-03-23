@@ -152,7 +152,7 @@ void CLinearStateVFA::save(const char* pFilename)
 
 CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction (state->features)","",CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction (state->features)",false,CFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
@@ -262,8 +262,8 @@ double CLinearStateVFA::getValue(const CState *s)
 
 CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map","",CFeatureMap);
-	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map","",CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CFeatureMap);
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
