@@ -619,6 +619,12 @@ namespace AppXML.ViewModels
             XmlDocument loadedDocument = new XmlDocument();
             loadedDocument.Load(fileDoc);
             XmlNode loadedDocumentRoot = loadedDocument.DocumentElement;
+            if (!loadedDocumentRoot.Name.Equals(selectedApp))
+            {
+                SelectedApp = loadedDocumentRoot.Name;
+                NotifyOfPropertyChange(() => SelectedApp);
+
+            }
             LoadDocument(loadedDocumentRoot);
            
         }
