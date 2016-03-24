@@ -45,7 +45,7 @@ namespace AppXML.ViewModels
                 CApp.cleanAll();
 
                 int index = _apps.IndexOf(value);
-                selectedApp = Apps[index];
+                selectedApp = value;
                 _rootnode = Utility.getRootNode(apps[index]);
                 _branches = _rootnode.children;
                 _doc = (this._rootnode as CApp).document;

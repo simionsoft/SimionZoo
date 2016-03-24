@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<APP Name="Controller-To-VFA-Policy">
+<APP Name="ControllerToVFAPolicy">
   <EXE>../Debug/ControllerToVFAPolicy.exe</EXE>
   
   <INCLUDE>../config/definitions.xml</INCLUDE>

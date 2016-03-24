@@ -54,7 +54,7 @@ namespace AppXML.ViewModels
                                                 {
                                                     string name = process.pipeName ;
                                                     ProcessStartInfo startInfo = new ProcessStartInfo();
-                                                    startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),"../debug/RLSimion.exe");
+                                                    startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),Models.CApp.EXE);
                                                     startInfo.Arguments = process.Label + " " + process.pipeName;
                                                     //startInfo.CreateNoWindow = true;
                                                     startInfo.WindowStyle = ProcessWindowStyle.Hidden;
