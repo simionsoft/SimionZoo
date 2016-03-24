@@ -161,6 +161,10 @@ namespace AppXML.ViewModels
             bool multiStarted = false;
             string currentMulti = "";
             int multiIndex = 0;
+            if(cvm.ResumeClass!=null)
+            {
+                cvm = cvm.ResumeClass;
+            }
             foreach (XmlNode data in dataNode)
             {
                 dataSet = false;
