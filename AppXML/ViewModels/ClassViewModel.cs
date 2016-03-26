@@ -88,16 +88,21 @@ namespace AppXML.ViewModels
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
+                        string def = null;
+                        if (child.Attributes["Default"] != null)
+                        {
+                            def = child.Attributes["Default"].Value;
+                        }
                         if(child.Attributes["Class"].Value=="XML-NODE-REF")
                         {
                             string action = child.Attributes["HangingFrom"].Value;
                             string xmlfile = child.Attributes["XMLFile"].Value;
-                            MultiXmlNodeRefViewModel mxml = new MultiXmlNodeRefViewModel(child.Attributes["Name"].Value, xmlfile, action, doc, tag);
+                            MultiXmlNodeRefViewModel mxml = new MultiXmlNodeRefViewModel(child.Attributes["Name"].Value ,xmlfile, action, doc, tag);
                             _allItems.Add(mxml);
                         }
                         else if (!CNode.definitions.ContainsKey(child.Attributes["Class"].Value))
                         {
-                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,def ,comment, isOptional, doc, tag);
                             _allItems.Add(simple);
                         }
                         else
@@ -196,9 +201,14 @@ namespace AppXML.ViewModels
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
+                        string def = null;
+                        if (child.Attributes["Default"] != null)
+                        {
+                            def = child.Attributes["Default"].Value;
+                        }
                         if (!CNode.definitions.ContainsKey(child.Attributes["Class"].Value))
                         {
-                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, def,comment, isOptional, doc, tag);
                             _allItems.Add(simple);
                         }
                         else

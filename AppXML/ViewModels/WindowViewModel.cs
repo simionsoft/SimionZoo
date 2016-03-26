@@ -668,8 +668,10 @@ namespace AppXML.ViewModels
             }
             
             XmlDocument document = new XmlDocument();
+
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
+            document.Save("copia.xml");
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
                 _graf = new RightTreeViewModel(rootNode);
@@ -718,9 +720,16 @@ namespace AppXML.ViewModels
             string folderName = "../experiments/" +"experiment" +DateTime.Now.ToString("yyyyMMddHHmmssffff");
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), folderName);
             Directory.CreateDirectory(CombinedPath);
+            List<string> names = new List<string>();
             foreach(NodeAndName item in myList)
             {
-                string path = CombinedPath + "/" + item.name + ".xml";
+                string path = CombinedPath + "/" + item.name;
+                while(names.Contains(path.ToUpper()))
+                {
+                    path += 'c';
+                }
+                names.Add(path.ToUpper());
+                path += ".xml";
                 item.doc.Save(path);
                 pahts.Add(Path.GetFullPath(path));
             }
