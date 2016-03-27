@@ -50,7 +50,8 @@ namespace AppXML.ViewModels
         }
         public void run()
         {
-            Parallel.ForEach(Processes, (process) =>
+            //Parallel.ForEach(Processes, (process) =>
+            foreach(ProcessStateViewModel process in Processes)
                                                 {
                                                     string name = process.pipeName ;
                                                     ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -99,7 +100,7 @@ namespace AppXML.ViewModels
                                                     
                                                     reader.Close();
                                                     server.Close();
-                                                });
+                                                }//);
             
                 
             
@@ -117,7 +118,7 @@ namespace AppXML.ViewModels
            
            
         }
-        private void StartServer(string name)
+    /*    private void StartServer(string name)
         {
             Task.Factory.StartNew(() =>
             {
@@ -138,7 +139,7 @@ namespace AppXML.ViewModels
                 //writer.Close();
                 //server.Close();
             });
-        }
+        }*/
         public void Notify()
         {
             NotifyOfPropertyChange(() => Processes);
