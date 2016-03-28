@@ -16,7 +16,7 @@
 CParameters* CParameterFile::loadFile(const char* fileName, const char* nodeName)
 {
 	LoadFile(fileName);
-	if (Error()) return 0;
+	if (Error()) throw std::exception((std::string("Couldn't load file: ") + std::string(fileName)).c_str());
 
 	if (nodeName)
 		return (CParameters*) (this->FirstChildElement(nodeName));
@@ -34,6 +34,9 @@ int CParameters::countChildren(const char* name)
 {
 	int count = 0;
 	CParameters* p;
+
+	if (!this)
+		throw std::exception((std::string("Illegal count of children parameters")).c_str());
 	
 	if (name) p= getChild(name);
 	else p = getChild();
@@ -55,6 +58,9 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
 
+	if (!this)
+		throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+
 	pParameter = getChild(paramName);
 	if (pParameter)
 	{
@@ -73,6 +79,8 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 int CParameters::getConstInteger(const char* paramName, int defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
+	if (!this)
+		throw std::exception((std::string("Illegal access to integer parameter") + std::string(paramName)).c_str());
 
 	pParameter = getChild(paramName);
 	if (pParameter)
@@ -88,6 +96,8 @@ int CParameters::getConstInteger(const char* paramName, int defaultValue)
 double CParameters::getConstDouble(const char* paramName, double defaultValue)
 {
 	CParameters* pParameter;
+	if (!this)
+		throw std::exception((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
 
 	pParameter = getChild(paramName);
 	if (pParameter)
@@ -104,6 +114,8 @@ double CParameters::getConstDouble(const char* paramName, double defaultValue)
 const char* CParameters::getConstString(const char* paramName, const char* defaultValue)
 {
 	CParameters* pParameter;
+	if (!this)
+		throw std::exception((std::string("Illegal access to string parameter") + std::string(paramName)).c_str());
 
 	if (paramName)
 	{
@@ -114,7 +126,7 @@ const char* CParameters::getConstString(const char* paramName, const char* defau
 		}
 	}
 	else
-	if (GetText()) return GetText();
+		if (GetText()) return GetText();
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %s", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
@@ -124,18 +136,27 @@ const char* CParameters::getConstString(const char* paramName, const char* defau
 
 CParameters* CParameters::getChild(const char* paramName)
 {
+	if (!this)
+		throw std::exception("Illegal access to child parameter");
+
 	tinyxml2::XMLElement* child = FirstChildElement(paramName);
 	return static_cast<CParameters*> (child);
 }
 
 CParameters* CParameters::getNextChild(const char* paramName)
 {
+	if (!this)
+		throw std::exception("Illegal access to child parameter");
+
 	tinyxml2::XMLElement* child = NextSiblingElement(paramName);
 	return static_cast<CParameters*> (child);
 }
 
 const char* CParameters::getName()
 {
+	if (!this)
+		throw std::exception("Illegal access to inexistant parameter's name");
+
 	return Name();
 }
 

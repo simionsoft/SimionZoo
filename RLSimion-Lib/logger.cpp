@@ -316,9 +316,8 @@ void CLogger::logMessage(MessageType type, const char* message)
 			printf("INFO: %s", message);
 			break;
 		case Error:
-			printf("FATAL ERROR: %s\n");
-			RLSimion::shutdown();
-			exit(-1);
+			printf("FATAL ERROR: %s\n",message);
+			break;
 		}
 	}
 }

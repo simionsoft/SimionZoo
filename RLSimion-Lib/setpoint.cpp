@@ -13,6 +13,10 @@ int countlines(const char *filename)
   FILE *fp;
   
   fopen_s(&fp,filename,"r");
+
+  if (!fp)
+	  throw std::exception((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
+
   int ch=0;
   int lines=1;
 
@@ -62,9 +66,7 @@ CFileSetPoint::CFileSetPoint(const char* filename)
 	}
 	else
 	{
-		char message[512];
-		sprintf_s(message,512,"ERROR: could not open setpoint file %s\n", filename);
-		RLSimion::Logger.logMessage(MessageType::Warning, message);
+		throw std::exception((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
 	}
 
 	m_totalTime= m_pTimes[m_numSteps-1];
@@ -146,6 +148,10 @@ CHHFileSetPoint::CHHFileSetPoint(const char* filename) : CFileSetPoint()
 		}
 		m_totalTime = m_pTimes[m_numSteps - 1];
 		fclose(pHHFile);
+	}
+	else
+	{
+		throw std::exception((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
 	}
 	END_CLASS();
 }

@@ -18,6 +18,7 @@ CLASS_INIT(CSimGod)
 	CParameters* pChild = pParameters->getChild("Simion");
 	for (int i = 0; i < m_numSimions; i++)
 	{
+		m_pSimions[i] = 0;
 		MULTI_VALUED_FACTORY(m_pSimions[i], "Simions", "Simions: agents and controllers",CSimion, pChild);
 		pChild = pChild->getNextChild("Simion");
 	}
