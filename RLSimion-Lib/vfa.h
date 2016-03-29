@@ -11,7 +11,7 @@ class CParameters;
 //CLinearVFA////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-class CLinearVFA
+class CLinearVFA : public CParamObject
 {
 
 protected:
@@ -23,7 +23,7 @@ protected:
 	double m_minOutput, m_maxOutput;
 
 public:
-	CLinearVFA();
+	CLinearVFA(CParameters* pParameters);
 	virtual ~CLinearVFA();
 	double getValue(const CFeatureList *features);
 	double *getWeightPtr(){ return m_pWeights; }
@@ -36,7 +36,7 @@ public:
 
 };
 
-class CLinearStateVFA: public CParamObject, public CLinearVFA
+class CLinearStateVFA: public CLinearVFA
 {
 protected:
 	CFeatureMap* m_pStateFeatureMap;
@@ -67,7 +67,7 @@ public:
 };
 
 
-class CLinearStateActionVFA : public CParamObject, public CLinearVFA
+class CLinearStateActionVFA : public CLinearVFA
 {
 protected:
 

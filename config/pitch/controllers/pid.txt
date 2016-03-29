@@ -1,5 +1,0 @@
-ALGORITHM : PID
-KP : 1.0
-KI : 0.5
-KD : 0.0
-ERROR_VARIABLE : control-deviation

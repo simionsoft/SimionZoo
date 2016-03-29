@@ -1,5 +1,0 @@
-ALGORITHM : TD-Lambda
-VALUE_FUNCTION_RBF_VARIABLES : attack-angle(150),pitch-rate(150),control-deviation(150)
-INITIAL_GAMMA : 0.9
-INITIAL_LAMBDA : 0.9
-LOAD : ../vfa-data/pitch-value.bin

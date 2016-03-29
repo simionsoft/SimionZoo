@@ -1,5 +1,0 @@
-DYNAMIC_MODEL : MAGNETIC_LEVITATION
-DELTA_T : 0.004
-NUM_SIMULATION_STEPS : 4
-REWARD_CONFIG_FILE : ../config/magnetic-levitation/rewards/reward.txt
-EVALUATION_SET_POINT_FILE : ../config/magnetic-levitation/environment/eval-setpoint.txt

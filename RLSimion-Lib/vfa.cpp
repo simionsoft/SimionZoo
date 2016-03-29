@@ -8,7 +8,7 @@
 
 
 //LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
-CLinearVFA::CLinearVFA()
+CLinearVFA::CLinearVFA(CParameters* pParameters) : CParamObject(pParameters)
 {
 	m_pWeights = 0;
 
@@ -52,6 +52,7 @@ bool CLinearVFA::saveWeights(const char* pFilename)
 		fclose(pFile);
 		return true;
 	}
+	else throw std::exception("Couldn't open binary file with VFA weights");
 	return false;
 }
 
@@ -138,7 +139,7 @@ void CLinearStateVFA::save(const char* pFilename)
 			pFeatureMapParameters->saveFile(pXMLFile);
 
 		fclose(pXMLFile);
-		CLogger::logMessage(Info, "OK\n");
+		CLogger::logMessage(Info, "OK");
 		return;
 	}
 
@@ -150,7 +151,7 @@ void CLinearStateVFA::save(const char* pFilename)
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(pParameters)
 {
 	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction (state->features)",false,CFeatureMap);
 
@@ -170,19 +171,28 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters)
 	m_maxOutput = 0.0;
 	END_CLASS();
 }
-CLinearStateVFA::CLinearStateVFA() : CParamObject(0)
+CLinearStateVFA::CLinearStateVFA() : CLinearVFA(0)
 {}
 
 CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 {
-	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data", "The VFA will be loaded from this file");
+
+	//load the map feature description from an xml file
+	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.xml", "The VFA will be loaded from this file");
 	CParameterFile mapFeatureParameterFile;
 	CParameters* mapFeatureParameters= mapFeatureParameterFile.loadFile(m_loadFilename);
-	m_pStateFeatureMap = CFeatureMap::getInstance(mapFeatureParameters);
+	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(mapFeatureParameters);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
-	loadWeights(m_loadFilename);
+
+	//load the weigths from the binary file
+	char binFilename[1024];
+	strcpy_s(binFilename, 1024, m_loadFilename);
+	strcpy_s(&binFilename[strlen(m_loadFilename) - 3], 1024 - strlen(m_loadFilename), "bin");
+	loadWeights(binFilename);
+
+	m_pAux = new CFeatureList("LinearStateVFA/aux");
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
@@ -260,7 +270,7 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters)
 {
 	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CFeatureMap);
 	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CFeatureMap);

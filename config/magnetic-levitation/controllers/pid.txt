@@ -1,5 +1,0 @@
-ALGORITHM : PID
-KP : 1000.0
-KI : 0.0001
-KD : 0.0
-ERROR_VARIABLE : position-deviation
