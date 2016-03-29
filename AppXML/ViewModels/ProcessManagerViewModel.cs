@@ -50,8 +50,13 @@ namespace AppXML.ViewModels
         }
         public void run()
         {
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                
             Parallel.ForEach(Processes, (process) =>
-           // foreach(ProcessStateViewModel process in Processes)
+            //foreach(ProcessStateViewModel process in Processes)
                                                 {
                                                     string name = process.pipeName ;
                                                     ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -68,7 +73,7 @@ namespace AppXML.ViewModels
                                                     server.WaitForConnection();
                                                     StreamReader reader = new StreamReader(server);
                                                     process.SMS = "Running";
-                                                  //  System.Windows.Forms.Application.DoEvents();
+                                                    System.Windows.Forms.Application.DoEvents();
                                                     //bool reading = true;
                                                     while (server.IsConnected)
                                                     {
@@ -107,6 +112,12 @@ namespace AppXML.ViewModels
                                                     reader.Close();
                                                     server.Close();
                                                 });
+                }
+                catch (Exception ex)
+                {
+                    // at least try to log it ...
+                }
+            });
             
                 
             
