@@ -50,8 +50,8 @@ namespace AppXML.ViewModels
         }
         public void run()
         {
-            //Parallel.ForEach(Processes, (process) =>
-            foreach(ProcessStateViewModel process in Processes)
+            Parallel.ForEach(Processes, (process) =>
+           // foreach(ProcessStateViewModel process in Processes)
                                                 {
                                                     string name = process.pipeName ;
                                                     ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -68,7 +68,7 @@ namespace AppXML.ViewModels
                                                     server.WaitForConnection();
                                                     StreamReader reader = new StreamReader(server);
                                                     process.SMS = "Running";
-                                                    System.Windows.Forms.Application.DoEvents();
+                                                  //  System.Windows.Forms.Application.DoEvents();
                                                     //bool reading = true;
                                                     while (server.IsConnected)
                                                     {
@@ -82,6 +82,7 @@ namespace AppXML.ViewModels
                                                             {
                                                                 double progress = Convert.ToDouble(node.InnerText);
                                                                 process.Status = Convert.ToInt32(progress);
+                                                               
                                                                 if (progress == 100.0)
                                                                 {
                                                                     //reading = false;
@@ -92,15 +93,20 @@ namespace AppXML.ViewModels
                                                             else if (node.Name == "Message")
                                                             {
                                                                 process.SMS = node.InnerText;
+                                                               
                                                             }
-                                                            System.Windows.Forms.Application.DoEvents();
+                                                           System.Windows.Forms.Application.DoEvents();
                                                         }  
+                                                        else
+                                                        {
+
+                                                        }
                                                        
                                                    }
                                                     
                                                     reader.Close();
                                                     server.Close();
-                                                }//);
+                                                });
             
                 
             

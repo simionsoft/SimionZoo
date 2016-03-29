@@ -674,7 +674,7 @@ namespace AppXML.ViewModels
             document.Save("copia.xml");
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
-                _graf = new RightTreeViewModel(rootNode);
+                _graf = new RightTreeViewModel(rootNode,this);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => AddChildVisible);
         }
