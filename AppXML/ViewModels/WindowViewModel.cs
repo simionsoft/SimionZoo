@@ -733,24 +733,24 @@ namespace AppXML.ViewModels
                 item.doc.Save(path);
                 pahts.Add(Path.GetFullPath(path));
             }
-            ProcessManagerViewModel  pmvm = initExperimentas(pahts);
-            pmvm.run();
+            initExperimentas(pahts);
+            
+           
             
         }
-        private ProcessManagerViewModel initExperimentas(List<string> myList)
+        private void initExperimentas(List<string> myList)
         {
             ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
             settings.ShowInTaskbar = true;
             settings.Title = "Process Manager";
-            //foreach (string name in myList)
-            //{
-             //   ProcessStateViewModel psv = new ProcessStateViewModel(name);
-              //  pwvm.addProcess(psv);
-            //}
-            new WindowManager().ShowWindow(pwvm, null, settings);
-            return pwvm;
+            ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
+            new WindowManager().ShowDialog(pwvm2, null, settings);
+            if(pwvm2.Exit==false)
+            {
+                pwvm2.Manager.closeAll();
+            }
             
             
         }
