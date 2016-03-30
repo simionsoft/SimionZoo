@@ -164,9 +164,14 @@ namespace AppXML.ViewModels
                 {
                     string valor = x.TextBoxFile[0].Default;
                     original.defaultValue = valor;
+                    
                 }
             }
             IntegerViewModel t = new IntegerViewModel(label, original,_doc,tag);
+            if(t.TextBoxFile!=null)
+            {
+                t.TextBoxFile[0].copyDefault = Header.TextBoxFile[0].copyDefault;
+            }
             _aded.Add(t);
         }
         public void DeleteLast()

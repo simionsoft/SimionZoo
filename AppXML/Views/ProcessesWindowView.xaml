@@ -3,16 +3,21 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:z="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" Width="655.224" Height="409.776">
-    
+    <z:Interaction.Triggers>
+        <z:EventTrigger EventName="Closing">
+            <z:InvokeCommandAction Command="{Binding CloseWindowCommand}" />
+        </z:EventTrigger>
+    </z:Interaction.Triggers>
+
     <StackPanel>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Visible">
             
                 <ContentControl x:Name="Manager" />
-            
         </ScrollViewer>
-        <Button x:Name="Close" Content="Close" Width="50"/>
-        <ScrollViewer Height="100"/>
+        <Button x:Name="CloseWindow" Content="Close" Width="50"/>
+
     </StackPanel>
 </Window>

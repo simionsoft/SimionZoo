@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,24 +11,38 @@ namespace AppXML.ViewModels
 {
     public class ProcessesWindowViewModel: Screen
     {
+        private ProcessManagerViewModel pwvm;
+
         public ProcessManagerViewModel Manager { get; set; }
         public bool isOver { get; set; }
 
 
-        public ProcessesWindowViewModel()
-        {
-            Manager = new ProcessManagerViewModel();
-            isOver = false;
-        }
+       
         public ProcessesWindowViewModel(List<ProcessStateViewModel> processes)
         {
             Manager = new ProcessManagerViewModel(processes);
             isOver = false;
+           
+
         }
-        public void Close()
+
+        public ProcessesWindowViewModel(ProcessManagerViewModel pwvm)
         {
-            if (isOver)
-                TryClose();
+            // TODO: Complete member initialization
+            Manager = pwvm;
+            isOver = false;
+           
+           
+        }
+
+       
+
+       
+        public void CloseWindow()
+        {
+            Manager.closeAll();
+            TryClose();
+            Exit = true;
                 
         }
         public void addProcess(ProcessStateViewModel process)
@@ -38,5 +53,7 @@ namespace AppXML.ViewModels
         {
             Manager.addProcess(processes);
         }
+
+        public bool Exit { get; set; }
     }
 }

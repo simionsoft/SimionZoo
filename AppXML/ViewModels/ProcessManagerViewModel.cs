@@ -15,6 +15,8 @@ namespace AppXML.ViewModels
     public class ProcessManagerViewModel:Caliburn.Micro.PropertyChangedBase
     {
         private ObservableCollection<ProcessStateViewModel> _processes;
+        private List<int> ids = new List<int>();
+        private List<object> readers = new List<object>();
         public ObservableCollection<ProcessStateViewModel> Processes
         {
             get { return _processes; }
@@ -24,18 +26,11 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => Processes);
             }
         }
-        public ProcessManagerViewModel()
-        {
-            _processes = new ObservableCollection<ProcessStateViewModel>();
-            //ProcessStateViewModel p1 = new ProcessStateViewModel("primero");
-            //ProcessStateViewModel p2 = new ProcessStateViewModel();
-            //_processes.Add(p1);
-            //_processes.Add(p2);
-        }
+   
         public ProcessManagerViewModel(List<ProcessStateViewModel> processes)
         {
             _processes = new ObservableCollection<ProcessStateViewModel>(processes);
-            
+            run();
         }
         public void addProcess(ProcessStateViewModel process)
         {
@@ -59,6 +54,7 @@ namespace AppXML.ViewModels
             //foreach(ProcessStateViewModel process in Processes)
                                                 {
                                                     string name = process.pipeName ;
+                                                    Process p = new Process();
                                                     ProcessStartInfo startInfo = new ProcessStartInfo();
                                                     startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),Models.CApp.EXE);
                                                     startInfo.Arguments = process.Label + " " + process.pipeName;
@@ -69,9 +65,15 @@ namespace AppXML.ViewModels
                                                     Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
                                                     //Task.Delay(1000).Wait();
                                                     var server = new NamedPipeServerStream(name);
-                                                    Process.Start(startInfo);
+                                                    
+                                                    p.StartInfo = startInfo;
+                                                    p.Start();
+                                                    //Process.Start(startInfo);
+                                                    this.ids.Add(p.Id);
                                                     server.WaitForConnection();
                                                     StreamReader reader = new StreamReader(server);
+                                                    readers.Add(reader);
+                                                    readers.Add(server);
                                                     process.SMS = "Running";
                                                     System.Windows.Forms.Application.DoEvents();
                                                     //bool reading = true;
@@ -108,9 +110,11 @@ namespace AppXML.ViewModels
                                                         }
                                                        
                                                    }
-                                                    
+                                                    ids.Remove(p.Id);
                                                     reader.Close();
+                                                    readers.Remove(reader);
                                                     server.Close();
+                                                    readers.Remove(server);
                                                 });
                 }
                 catch (Exception ex)
@@ -130,36 +134,41 @@ namespace AppXML.ViewModels
                 ProcessStateViewModel psv = new ProcessStateViewModel(name);
                 _processes.Add(psv);
             }
-           
+            run();
 
            
            
         }
-    /*    private void StartServer(string name)
+   
+       
+        internal void closeAll()
         {
-            Task.Factory.StartNew(() =>
-            {
-                var server = new NamedPipeServerStream(name);
-                server.WaitForConnection();
-                //StreamReader reader = new StreamReader(server);
-                StreamWriter writer = new StreamWriter(server);
-                int i = 0;
-                while (i <= 100)
-                {
 
-                    writer.WriteLine("<Progress>" + i + "</Progress>");
-                    writer.Flush();
-                    Task.Delay(25).Wait();
-                    i++;
+           
+                try
+                {
+                    foreach(int id in ids)
+                    {
+                        Process p = Process.GetProcessById(id);
+                        if (p != null && !p.HasExited)
+                          p.Kill();
+                    }
+                    ids.Clear();
+                    foreach(object item in readers)
+                    {
+                        if(item is StreamReader)
+                            (item as StreamReader).Close();
+                        if (item is NamedPipeServerStream)
+                            (item as NamedPipeServerStream).Close();
+                    }
 
                 }
-                //writer.Close();
-                //server.Close();
-            });
-        }*/
-        public void Notify()
-        {
-            NotifyOfPropertyChange(() => Processes);
+                catch (Exception ex)
+                {
+                    // at least try to log it ...
+                }
+            
+
         }
     }
 }
