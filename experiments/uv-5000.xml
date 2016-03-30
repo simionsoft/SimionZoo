@@ -45,7 +45,7 @@
     <Random-Seed>1</Random-Seed>
     <Num-Episodes>1000</Num-Episodes>
     <Eval-Freq>25</Eval-Freq>
-    <Episode-Length>100.0</Episode-Length>
+    <Episode-Length>200.0</Episode-Length>
   </Experiment>
   <SimGod>
     <Simion>
@@ -60,7 +60,7 @@
                       <Linear-Schedule>
                         <Start-Offset>0.0</Start-Offset>
                         <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                        <Initial-Value>0.1</Initial-Value>
+                        <Initial-Value>0.001</Initial-Value>
                         <End-Value>0.0</End-Value>
                         <Evaluation-Value>0.0</Evaluation-Value>
                         <Interpolation>linear</Interpolation>
@@ -76,29 +76,29 @@
                             <GaussianNoise>
                               <Sigma>
                                 <Schedule>
-                                  <Linear-Schedule>
-                                    <Start-Offset>0.0</Start-Offset>
-                                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                                    <Initial-Value>0.01</Initial-Value>
-                                    <End-Value>0</End-Value>
-                                    <Evaluation-Value>0.0</Evaluation-Value>
-                                    <Interpolation>linear</Interpolation>
-                                    <Time-reference>experiment</Time-reference>
-                                  </Linear-Schedule>
+                                  <Constant>
+                                    <Value>1</Value>
+                                  </Constant>
                                 </Schedule>
                               </Sigma>
                               <Alpha>
                                 <Schedule>
                                   <Constant>
-                                    <Value>0.1</Value>
+                                    <Value>1</Value>
                                   </Constant>
                                 </Schedule>
                               </Alpha>
                               <Scale>
                                 <Schedule>
-                                  <Constant>
-                                    <Value>10</Value>
-                                  </Constant>
+                                  <Linear-Schedule>
+                                    <Start-Offset>0.0</Start-Offset>
+                                    <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                                    <Initial-Value>0.0</Initial-Value>
+                                    <End-Value>0.0</End-Value>
+                                    <Evaluation-Value>0.0</Evaluation-Value>
+                                    <Interpolation>linear</Interpolation>
+                                    <Time-reference>experiment</Time-reference>
+                                  </Linear-Schedule>
                                 </Schedule>
                               </Scale>
                             </GaussianNoise>
@@ -108,7 +108,7 @@
                         <Linear-State-VFA>
                           <Parameterization>
                             <From-File>
-                              <Load>../data/uv-1000-pid.u-thrust.xml</Load>
+                              <Load>../data/uv-5000-pid.u-thrust.xml</Load>
                             </From-File>
                           </Parameterization>
                         </Linear-State-VFA>

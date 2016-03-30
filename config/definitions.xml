@@ -83,7 +83,7 @@
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="true"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CTDCLambdaCritic">
@@ -97,11 +97,11 @@
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="true"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CCritic">
-    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="true"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CCritic-Factory">
