@@ -41,7 +41,7 @@ void CCACLALearner::updatePolicy(const CState *s, const CAction *a, const CState
 
 		m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-		lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getValue(m_pStateFeatures);
+		lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);
 
 		if (alpha != 0.0)
 			m_pPolicy->addFeatures(m_pStateFeatures, alpha*lastNoise);

@@ -39,7 +39,7 @@ void CRegularPolicyGradientLearner::updatePolicy(const CState *s, const CAction 
 
 	m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getValue(m_pStateFeatures);// m_pOutput->getValue(i);
+	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);// m_pOutput->getValue(i);
 
 
 	if (alpha != 0.0)

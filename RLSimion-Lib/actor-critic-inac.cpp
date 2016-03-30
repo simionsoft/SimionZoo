@@ -11,29 +11,48 @@
 #include "globals.h"
 #include "experiment.h"
 #include "parameters-numeric.h"
-/*
-C LASS_CONSTRUCTOR(CIncrementalNaturalActorCritic) : CParamObject(pParameters)
+#include "policy.h"
+
+CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic)
 {
+	m_td = 0.0;
+
+
+	//critic's stuff
+
+	CHILD_CLASS_FACTORY(m_pVFunction, "VFunction", "The Value-function", false, CLinearStateVFA);
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");
-	NUMERIC_VALUE(m_pAlphaV, pParameters,"Alpha-v");
-	NUMERIC_VALUE(m_pAlphaR,pParameters, "Alpha-r");
-	NUMERIC_VALUE(m_pGamma, pParameters,"Gamma");
-	CHILD_CLASS(m_e_v,"V-ETraces",CETraces,"Critic/e_v");
+	NUMERIC_VALUE(m_pAlphaV, "Alpha-v","Learning gain used by the critic");
+	NUMERIC_VALUE(m_pAlphaR,"Alpha-r","Learning gain used to average the reward");
+	NUMERIC_VALUE(m_pGamma, "Gamma","Gamma parameter of the MDP");
+	CHILD_CLASS(m_e_v,"V-ETraces","Traces used by the critic",true,CETraces,"Critic/e_v");
 
+	//actor's stuff
+	m_numPolicies = pParameters->countChildren("Policy");
+	if (!m_numPolicies) throw std::exception("No policy defined for the INAC Simion");
+	CParameters* pChild = pParameters->getChild("Policy");
+	m_pPolicies = new CPolicy*[m_numPolicies];
+	m_w = new CFeatureList*[m_numPolicies];
+	for (int i = 0; i < m_numPolicies; i++)
+	{
+		MULTI_VALUED_FACTORY(m_pPolicies[i], "Policy", "The Policy", CPolicy, pChild);
+		assert(0);
+		//there's something 
+		m_w[i] = new CFeatureList("INAC-w",false,true);
+		pChild = pChild->getNextChild("Policy");
+	}
 
 	m_grad_u = new CFeatureList("Actor/grad-u");
-
-	NUMERIC_VALUE(m_pGamma, pParameters, "Gamma");
-	NUMERIC_VALUE(m_pAlphaU, pParameters, "Alpha-u");
-
-	CHILD_CLASS(m_e, "U-ETraces", CETraces, "Actor/E-Traces");
-	m_w = new CFeatureList("Actor/w");
+	NUMERIC_VALUE(m_pAlphaU, "Alpha-u","Learning gain used by the actor");
+	CHILD_CLASS(m_e_u, "U-ETraces","Traces used by the actor",true, CETraces, "Actor/E-Traces");
 	END_CLASS();
 }
 
 CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 {
+
+	delete m_pVFunction;
 	delete m_s_features;
 	delete m_s_p_features;
 
@@ -43,17 +62,21 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 
 	delete m_e_v;
 
+
+	for (int i = 0; i < m_numPolicies; i++)
+	{
+		delete m_pPolicies[i];
+		delete m_w[i];
+	}
+	delete[] m_pPolicies;
+	delete[]m_w;
+
 	delete m_grad_u;
-	delete m_s_features;
-
-	delete m_pGamma;
 	delete m_pAlphaU;
-
-	delete m_e;
-	delete m_w;
+	delete m_e_u;
 }
 
-double CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
 	// Incremental Natural Actor - Critic(INAC)
 	//Critic update:
@@ -63,27 +86,25 @@ double CIncrementalNaturalActorCritic::updateValue(const CState *s, const CActio
 	//v = v + alpha_v*td*e_v
 	double alpha_v = m_pAlphaV->getValue();
 	double gamma = m_pGamma->getValue();
-	m_pVFA->getFeatures(s, m_s_features);
-	m_pVFA->getFeatures(s_p, m_s_p_features);
+	m_pVFunction->getFeatures(s, m_s_features);
+	m_pVFunction->getFeatures(s_p, m_s_p_features);
 	//1. td= r - avg_r + gamma*V(s_p) - V(s)
-	double td = r - m_avg_r + gamma * m_pVFA->getValue(m_s_p_features)
-		- m_pVFA->getValue(m_s_features);
+	m_td = r - m_avg_r + gamma * m_pVFunction->getValue(m_s_p_features)
+		- m_pVFunction->getValue(m_s_features);
 
 	//2. avg_r= avg_r + alpha_r * td
-	m_avg_r += td * m_pAlphaR->getValue();
+	m_avg_r += m_td * m_pAlphaR->getValue();
 
 	//3. e_v= gamma* lambda*e_v + phi(s)
 	m_e_v->update(gamma);
 	m_e_v->addFeatureList(m_s_features);
 	//4. v = v + alpha_v*td*e_v
-	m_pVFA->add(m_e_v, alpha_v*td);
-
-	return td;
+	m_pVFunction->add(m_e_v, alpha_v*m_td);
 }
 
 
 
-void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r, double td)
+void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
 {
 	//Incremental Natural Actor-Critic (INAC)
 	//Actor update:
@@ -104,22 +125,32 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	double alpha_v = m_pAlphaV->getValue();
 	double alpha_u = m_pAlphaU->getValue();
 
-	if (RLSimion::Experiment.isFirstStep())
-		m_w->clear();
-	
-	m_pPolicy->getGradient(s,a,m_grad_u);
-	
-	//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
-	m_e->update(gamma);
-	m_e->addFeatureList(m_grad_u);
-	//2. w= w - alpha_v * Grad_u pi(a|s)/pi(a|s) * Grad_u pi(a|s)/pi(a|s)^T * w + alpha_v*td*e_u
-	double innerprod = m_grad_u->innerProduct(m_w); //Grad_u pi(a|s)/pi(a|s)^T * w
-	m_grad_u->mult(alpha_v*innerprod*-1.0);
-	m_grad_u->applyThreshold(0.0001);
-	m_w->addFeatureList(m_grad_u);
-	m_w->addFeatureList(m_e, alpha_v*td);
-	m_w->applyThreshold(0.0001);
-	//3. u= u + alpha_u * w
-	m_pPolicy->getVFA()->add(m_w, alpha_u);
+	for (int i = 0; i < m_numPolicies; i++)
+	{
+		if (RLSimion::Experiment.isFirstStep())
+			m_w[i]->clear();
+
+		m_pPolicies[i]->getNaturalGradient(s, a, m_grad_u);
+
+		//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
+		m_e_u->update(gamma);
+		m_e_u->addFeatureList(m_grad_u);
+		//2. w= w - alpha_v * Grad_u pi(a|s)/pi(a|s) * Grad_u pi(a|s)/pi(a|s)^T * w + alpha_v*td*e_u
+		double innerprod = m_grad_u->innerProduct(m_w[i]); //Grad_u pi(a|s)/pi(a|s)^T * w
+		m_grad_u->mult(alpha_v*innerprod*-1.0);
+		m_grad_u->applyThreshold(0.0001);
+		m_w[i]->addFeatureList(m_grad_u);
+		m_w[i]->addFeatureList(m_e_u, alpha_v*m_td);
+		m_w[i]->applyThreshold(0.0001);
+		//3. u= u + alpha_u * w
+		m_pPolicies[i]->addFeatures(m_w[i], alpha_u);
+	}
 }
-*/
+
+void CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
+{
+	for (int i = 0; i < m_numPolicies; i++)
+	{
+		m_pPolicies[i]->selectAction(s, a);
+	}
+}

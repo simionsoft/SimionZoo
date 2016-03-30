@@ -3,7 +3,18 @@
   <CLASS Name="CCACLALearner">
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by CACLA" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain [0..1]"/>
-    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
+  </CLASS>
+
+  <CLASS Name="CIncrementalNaturalActorCritic">
+    <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The Policy"/>
+    <BRANCH Name="VFunction" Class="CLinearStateVFA-Factory" Comment="The Value-function" Optional=" false"/>
+    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="true"/>
+    <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="true"/>
+    <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
+    <BRANCH Name="Alpha-r" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter of the MDP"/>
+    <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
   </CLASS>
 
   <CLASS Name="CActorCritic">
@@ -14,7 +25,7 @@
   <CLASS Name="CRegularPolicyGradientLearner">
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain"/>
-    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CActor">
@@ -213,7 +224,7 @@
   </CLASS>
 
   <CLASS Name="CPolicyLearner">
-    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CPolicyLearner-Factory">
@@ -243,6 +254,7 @@
     <CHOICE Name="Type" Comment="The Simion class">
       <CHOICE-ELEMENT Name="Controller" Class="CController-Factory" Comment="A controller"/>
       <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic" Comment="An Actor-Critic agent"/>
+      <CHOICE-ELEMENT Name="Inc-Natural-Actor-Critic" Class="CIncrementalNaturalActorCritic" Comment="Incremental-Natural-Actor-Critic as in 'Model-free Reinforcement Learning with Continuous Action in Practice'"/>
     </CHOICE>
   </CLASS>
 
@@ -263,14 +275,14 @@
     <STRING-VALUE Name="File-Prefix" Default="" Comment="The prefix given to all the output files"/>
   </CLASS>
 
-  <CLASS Name="CDeterministicPolicy-Factory">
+  <CLASS Name="CPolicy-Factory">
     <CHOICE Name="Policy" Comment="The policy type">
       <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise" Comment="A deterministic policy pi(s) to which some noise is added"/>
       <CHOICE-ELEMENT Name="Stochastic-Policy-Gaussian-Noise" Class="CStochasticPolicyGaussianNoise" Comment="An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))"/>
     </CHOICE>
   </CLASS>
 
-  <CLASS Name="CDeterministicPolicy">
+  <CLASS Name="CPolicy">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
   </CLASS>
 

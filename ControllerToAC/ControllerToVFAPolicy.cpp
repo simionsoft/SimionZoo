@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 		CController* pController = CController::getInstance(pConfig->getChild("Controller"));
 
 		CParameters* pPolicyParameters = pConfig->getChild("Policy");
-		CDeterministicPolicy* pVFAPolicy = new CDeterministicPolicy(pPolicyParameters);
+		CDeterministicPolicy* pVFAPolicy = new CPolicy(pPolicyParameters);
 
 		CDirFileOutput* pOutputDirFile = new CDirFileOutput(pConfig->getChild("Output-DirFile"));
 
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 			sprintf_s(completeFilename, "%s/%s.%s", pOutputDirFile->getOutputDir(), pOutputDirFile->getFilePrefix(), pVFAPolicy->getParameters()->getConstString("Output-Action"));
 			pVFAPolicy->getVFA()->save(completeFilename);
 			delete pVFAPolicy;
-			pVFAPolicy = CDeterministicPolicy::getInstance(pPolicyParameters);
+			pVFAPolicy = CPolicy::getInstance(pPolicyParameters);
 			i++;
 		}
 		CLogger::logMessage(MessageType::Progress, "100");
