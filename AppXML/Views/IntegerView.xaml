@@ -32,7 +32,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}"/>
-                        <TextBox Text="{Binding Default}" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]"  Background="{Binding TextColor}"/>
+                        <Label Content="{Binding Default}"  cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]"  Background="{Binding TextColor}"/>
                         <Button Width="30" cal:Message.Attach="[Event Click]=[Action FindPath()]">
                             <Image Source="{Binding ButtonImage}" Width="20" Height="20"></Image>
                         </Button>
