@@ -16,7 +16,14 @@ namespace AppXML.ViewModels
             else if (base.Header.TextBox != null)
                 base.Header.TextBox[0].Default = def;
             else if (base.Header.TextBoxFile!=null)
-                base.Header.TextBoxFile[0].Default=def;
+            {
+                if (def.Contains("*"))
+                    base.Header.TextBoxFile[0].Default = "";
+                else
+                    base.Header.TextBoxFile[0].Default = def;
+                base.Header.TextBoxFile[0].copyDefault = def;
+            }
+                
         }
     }
 }

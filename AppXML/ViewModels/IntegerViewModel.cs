@@ -241,7 +241,7 @@ namespace AppXML.ViewModels
     public class TextBoxWithFile:TextBox
     {
         private string buttonImage;
-        private string copyDefault;
+        public string copyDefault;
         
 
         public new bool validate()
@@ -263,7 +263,8 @@ namespace AppXML.ViewModels
             else
                 this.type = validTypes.FilePathValue;
             copyDefault = Default;
-            
+            if (Default!=null && Default.Contains("*."))
+                Default = "";
 
         }
         public string ButtonImage { get { return buttonImage; } set { buttonImage = value; } }
@@ -292,6 +293,19 @@ namespace AppXML.ViewModels
                         else
                             openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), Default)))
 ;
+                    }
+                    else if(copyDefault.Contains("*."))
+                    {
+                        string dirPath = copyDefault.Split('*').First();
+                        if(Directory.Exists(dirPath))
+                        {
+                            bool isAbsolute = Path.IsPathRooted(copyDefault);
+                            if (isAbsolute)
+                                openFileDialog.InitialDirectory = dirPath;
+                            else
+                                openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), dirPath)));
+                        }
+                        
                     }
                 }             
                
