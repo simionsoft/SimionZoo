@@ -25,13 +25,13 @@ CParameters* RLSimion::init(int argc, char* argv[],const char* rootNodeName)
 {
 	CParameters* pParameters;
 
+	if (argc > 2) CLogger::createOutputPipe(argv[2]);
+
 	if (!g_pConfigDoc) g_pConfigDoc = new CParameterFile;
 
 	if (argc > 1) pParameters = g_pConfigDoc->loadFile(argv[1], rootNodeName);
 
 	if (argc <= 1 || !pParameters) exit(-1);
-
-	if (argc > 2) CLogger::createOutputPipe(argv[2]);
 
 	//In the beginning, a logger was created so that we could know about creation itself
 	Logger.init(pParameters->getChild("Log")); //with or without parameters

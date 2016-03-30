@@ -236,7 +236,7 @@
   </CLASS>
 
   <CLASS Name="CSimGod">
-    <MULTI-VALUED Name="Simions" Class="CSimion-Factory" Comment="Simions: agents and controllers"/>
+    <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: agents and controllers"/>
   </CLASS>
 
   <CLASS Name="CSimion-Factory">
@@ -293,7 +293,7 @@
   </CLASS>
 
   <CLASS Name="CLinearStateVFAFromFile">
-    <FILE-PATH-VALUE Name="Load" Default="../config/data" Comment="The VFA will be loaded from this file"/>
+    <FILE-PATH-VALUE Name="Load" Default="../config/data/*.xml" Comment="The VFA will be loaded from this file"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFA-Factory">

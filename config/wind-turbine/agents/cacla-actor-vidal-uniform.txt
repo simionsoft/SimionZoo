@@ -1,6 +1,0 @@
-ALGORITHM : CACLA
-NUM_OUTPUTS : 2
-POLICY_RBF_VARIABLES_0 : E_omega_r(1000),E_int_omega_r(1000)
-POLICY_RBF_VARIABLES_1 : E_p(75),omega_r(75),d_omega_r(75),T_g(75)
-
-LOAD : ../vfa-data/vidal-AC-uniform.bin
