@@ -272,19 +272,18 @@
 
   <CLASS Name="CDeterministicPolicy">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
   </CLASS>
 
   <CLASS Name="CDeterministicPolicyGaussianNoise">
+    <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
     <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration" Optional="false"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
   </CLASS>
 
   <CLASS Name="CStochasticPolicyGaussianNoise">
+    <BRANCH Name="Mean-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
     <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates variance(s)" Optional=" false"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFA">
@@ -323,8 +322,8 @@
 
   <CLASS Name="CWindTurbine">
     <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/world/wind-turbine/TurbSim-10.25.hh" Comment="The wind file used for evaluation"/>
-    <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/world/wind-turbine/*.txt" Comment="The power setpoint file"/>
-    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE" Comment="The wind files used for training" Default="../config/world/wind-turbine/*.hh"/>
+    <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/world/wind-turbine/power-setpoint.txt" Comment="The power setpoint file"/>
+    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE" Comment="The wind files used for training" Default="../config/world/wind-turbine/TurbSim-10.5.hh"/>
   </CLASS>
 
   <CLASS Name="CWorld">

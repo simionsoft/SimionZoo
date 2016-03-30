@@ -6,6 +6,7 @@ class CParameters;
 class CActor;
 class CCritic;
 
+
 class CActorCritic: public CSimion, public CParamObject
 {
 	double m_td;
@@ -30,6 +31,9 @@ class CIncrementalNaturalActorCritic : public CActorCritic
 	//"Model-free Reinforcement Learning with Continuous Action in Practice"
 	//Thomas Degris, Patrick M. Pilarski, Richard S. Sutton
 	//2012 American Control Conference
+
+	CLinearStateVFA* m_pVFunction;
+	CDeterministicPolicy* m_p
 	double m_avg_r; 
 	CETraces *m_e;
 	CETraces* m_e_v;
@@ -49,6 +53,6 @@ public:
 
 	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 */

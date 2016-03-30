@@ -32,8 +32,8 @@
     </Reward>
   </World>
   <Log>
-    <Output-Directory>../logs/underwater-vehicle-3</Output-Directory>
-    <Prefix>uv-test</Prefix>
+    <Output-Directory>../logs/underwater-vehicle</Output-Directory>
+    <Prefix>uv-pid</Prefix>
     <Log-Freq>0.25</Log-Freq>
     <Log-eval-episodes>True</Log-eval-episodes>
     <Log-training-episodes>False</Log-training-episodes>
@@ -43,12 +43,12 @@
   <Experiment>
     <Progress-Update-Freq>0.5</Progress-Update-Freq>
     <Random-Seed>1</Random-Seed>
-    <Num-Episodes>100</Num-Episodes>
-    <Eval-Freq>10</Eval-Freq>
-    <Episode-Length>100.0</Episode-Length>
+    <Num-Episodes>1</Num-Episodes>
+    <Eval-Freq>1</Eval-Freq>
+    <Episode-Length>200.0</Episode-Length>
   </Experiment>
   <SimGod>
-    <Simions>
+    <Simion>
       <Type>
         <Controller>
           <Controller>
@@ -65,7 +65,7 @@
               <KI>
                 <Schedule>
                   <Constant>
-                    <Value>1</Value>
+                    <Value>0</Value>
                   </Constant>
                 </Schedule>
               </KI>
@@ -80,6 +80,6 @@
           </Controller>
         </Controller>
       </Type>
-    </Simions>
+    </Simion>
   </SimGod>
 </RLSimion>

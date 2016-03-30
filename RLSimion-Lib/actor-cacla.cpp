@@ -39,12 +39,12 @@ void CCACLALearner::updatePolicy(const CState *s, const CAction *a, const CState
 	{
 		alpha = m_pAlpha->getValue();
 
-		m_pPolicy->getVFA()->getFeatures(s, m_pStateFeatures);
+		m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-		lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);
+		lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getValue(m_pStateFeatures);
 
 		if (alpha != 0.0)
-			m_pPolicy->getVFA()->add(m_pStateFeatures, alpha*lastNoise);
+			m_pPolicy->addFeatures(m_pStateFeatures, alpha*lastNoise);
 	}
 }
 

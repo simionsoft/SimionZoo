@@ -37,7 +37,7 @@
   </Controller>
   <Policy>
     <Output-Action>u-thrust</Output-Action>
-    <Linear-State-VFA>
+    <Deterministic-Policy-VFA>
       <Parameterization>
         <Explicit>
           <Init-Value>0.0</Init-Value>
@@ -54,7 +54,7 @@
           </State-Feature-Map>
         </Explicit>
       </Parameterization>
-    </Linear-State-VFA>
+    </Deterministic-Policy-VFA>
   </Policy>
   <Output-DirFile>
     <Output-Dir>../data</Output-Dir>
