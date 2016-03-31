@@ -5,6 +5,11 @@
 class CParameters;
 class CActor;
 class CCritic;
+class CPolicy;
+class CETraces;
+class CNumericValue;
+class CFeatureList;
+class CLinearStateVFA;
 
 class CActorCritic: public CSimion, public CParamObject
 {
@@ -24,31 +29,38 @@ public:
 	CActorCritic* getInstance(CParameters* pParameters);
 };
 
-/*
-class CIncrementalNaturalActorCritic : public CActorCritic
+
+class CIncrementalNaturalActorCritic : public CSimion
 {
 	//"Model-free Reinforcement Learning with Continuous Action in Practice"
 	//Thomas Degris, Patrick M. Pilarski, Richard S. Sutton
 	//2012 American Control Conference
+	double m_td;
+
+	CLinearStateVFA* m_pVFunction;
+	int m_numPolicies;
+	CPolicy** m_pPolicies;
+
 	double m_avg_r; 
-	CETraces *m_e;
+	CETraces *m_e_u;
 	CETraces* m_e_v;
 	CFeatureList *m_grad_u;
 	CFeatureList *m_s_features;
 	CFeatureList *m_s_p_features;
-	CFeatureList *m_w;
+	CFeatureList **m_w;
 	CNumericValue* m_pGamma;
 	CNumericValue* m_pAlphaU;
 	CNumericValue* m_pAlphaV;
 	CNumericValue *m_pAlphaR;
-	CNumericValue *m_pGamma;
+
 public:
 
 	CIncrementalNaturalActorCritic(CParameters *pParameters);
 	~CIncrementalNaturalActorCritic();
 
-	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
+	virtual void selectAction(const CState *s, CAction *a);
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
+
+	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };
-*/

@@ -7,14 +7,14 @@ typedef CNamedVarSet CAction;
 
 class CFeatureList;
 class CETraces;
-class CDeterministicPolicy;
+class CPolicy;
 class CParameters;
 class CNumericValue;
 
 class CPolicyLearner: public CParamObject
 {
 protected:
-	CDeterministicPolicy* m_pPolicy;
+	CPolicy* m_pPolicy;
 
 public:
 	CPolicyLearner(CParameters* pParameters);
@@ -22,7 +22,7 @@ public:
 
 	virtual void updatePolicy(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
 
-	CDeterministicPolicy* getPolicy(){ return m_pPolicy; }
+	CPolicy* getPolicy(){ return m_pPolicy; }
 
 	static CPolicyLearner* getInstance(CParameters* pParameters);
 };

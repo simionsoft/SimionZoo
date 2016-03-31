@@ -8,7 +8,7 @@
 
 CLASS_CONSTRUCTOR(CCritic) : CParamObject(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pVFunction, "V-Function","The parameterization of the V-Function to be learned",true, CLinearStateVFA);
+	CHILD_CLASS_FACTORY(m_pVFunction, "V-Function","The parameterization of the V-Function to be learned",false, CLinearStateVFA);
 
 	END_CLASS();
 }

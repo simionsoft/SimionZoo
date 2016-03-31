@@ -22,6 +22,8 @@ protected:
 	bool m_bSaturateOutput;
 	double m_minOutput, m_maxOutput;
 
+	unsigned int m_minIndex;
+	unsigned int m_maxIndex;
 public:
 	CLinearVFA(CParameters* pParameters);
 	virtual ~CLinearVFA();
@@ -30,6 +32,8 @@ public:
 	unsigned int getNumWeights(){ return m_numWeights; }
 
 	void saturateOutput(double min, double max);
+
+	void setIndexOffset(unsigned int offset);
 
 	bool saveWeights(const char* pFilename);
 	bool loadWeights(const char* pFilename);
