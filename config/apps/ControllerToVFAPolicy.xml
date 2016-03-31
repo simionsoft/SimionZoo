@@ -8,7 +8,7 @@
 
   <BRANCH Name="Controller" Class="CController-Factory"/>
 
-  <BRANCH Name="Policy" Class="CPolicy"/>
+  <BRANCH Name="Policy" Class="CDeterministicPolicy"/>
 
   <BRANCH Name="Output-DirFile" Class="CDirFileOutput" Comment="The directory and basename for the output files"/>
 </APP>

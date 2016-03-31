@@ -99,7 +99,7 @@ namespace AppXML.ViewModels
                                                             }
                                                             else if (node.Name == "Message")
                                                             {
-                                                                process.SMS = node.InnerText;
+                                                                process.addMessage(node.InnerText);
                                                                
                                                             }
                                                            System.Windows.Forms.Application.DoEvents();

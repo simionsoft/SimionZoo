@@ -43,6 +43,10 @@ namespace AppXML.Data
                 if (absDirs[index].Length > 0) relativePath.Append("..\\");
             }
             // Add on the folders 
+            if(absDirs.Contains(relDirs[lastCommonRoot])&&(len-1==lastCommonRoot))
+            {
+                relativePath.Append("..\\");
+            }
             for (index = lastCommonRoot + 1; index < relDirs.Length - 1; index++)
             {
                 relativePath.Append(relDirs[index] + "\\");
