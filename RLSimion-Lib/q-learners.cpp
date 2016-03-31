@@ -51,19 +51,46 @@ void CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 //Soft-Max
 CLASS_CONSTRUCTOR(CQSoftMaxPolicy)
 {
+	m_pProbabilities = 0;
 	NUMERIC_VALUE(m_pTau, "Tau", "Temperature parameter");
 	END_CLASS();
 }
 
 CQSoftMaxPolicy::~CQSoftMaxPolicy()
 {
+	if (m_pProbabilities) delete[] m_pProbabilities;
 	delete m_pTau;
 }
 
 void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
 {
-	//TODO
-	assert(0);
+	unsigned int numActionWeights = pQFunction->getNumActionWeights();
+	//allocate the probability array if we have to
+	if (!m_pProbabilities)
+	{
+		if (numActionWeights > 0)
+			m_pProbabilities = new double[numActionWeights];
+	}
+	double inv_tau = 1.0/std::min(0.000001,m_pTau->getValue());
+	pQFunction->getActionValues(s, m_pProbabilities);
+	double sum = 0.0;
+	unsigned int i;
+	for (i = 0; i < numActionWeights; i++)
+	{
+		m_pProbabilities[i] = exp(m_pProbabilities[i] * inv_tau);
+		sum += m_pProbabilities[i];
+	}
+	sum = 1.0 / sum;
+	double randomValue = getRandomValue();
+	double searchSum = m_pProbabilities[0] * sum;
+	i= 1;
+	while (randomValue>searchSum && i<numActionWeights - 1)
+	{
+		searchSum += m_pProbabilities[i] * sum;
+		i++;
+	}
+	pQFunction->getFeatureStateAction(i, 0, a);
+	assert(i < numActionWeights);
 }
 
 ///////////////////////////////////

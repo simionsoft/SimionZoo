@@ -93,7 +93,11 @@ public:
 	double getValue(const CState *s, const CAction *a);
 
 	void argMax(const CState *s, CAction* a);
-	double max(const CState *s) const;
+	double max(const CState *s);
+	
+	//This function fills the pre-allocated array outActionVariables with the values of the different actions in state s
+	//The size of the buffer must be greater than the number of action weights
+	void getActionValues(const CState* s, double *outActionValues);
 
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
 

@@ -30,8 +30,12 @@ public:
 	void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a);
 };
 //Soft-max policy
+//https://webdocs.cs.ualberta.ca/~sutton/book/2/node4.html
+
 class CQSoftMaxPolicy : public CQPolicy
 {
+
+	double *m_pProbabilities;
 	CNumericValue* m_pTau;
 public:
 	CQSoftMaxPolicy(CParameters* pParameters);

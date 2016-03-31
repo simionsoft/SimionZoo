@@ -272,7 +272,7 @@ void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
 double CLinearStateVFA::getValue(const CState *s)
 {
 	getFeatures(s, m_pAux);
-	m_pAux->offsetIndices(-m_minIndex);
+//	m_pAux->offsetIndices(-m_minIndex);
 	return CLinearVFA::getValue(m_pAux);
 }
 
@@ -401,7 +401,39 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	getFeatureStateAction(arg,0,a);
 }
 
-double CLinearStateActionVFA::max(const CState* s) const
+double CLinearStateActionVFA::max(const CState* s)
 {
-	return 0.0;
+	//state features in aux list
+	getFeatures(s, 0, m_pAux);
+
+	double value = 0.0;
+	double maxValue = std::numeric_limits<double>::lowest();
+
+	//action-value maximization
+	for (unsigned int i = 0; i < m_numActionWeights; i++)
+	{
+		m_pAux->offsetIndices(m_numStateWeights);
+
+		value = getValue(m_pAux);
+		if (value>maxValue)
+			maxValue = value;
+	}
+
+	return maxValue;
+}
+
+void CLinearStateActionVFA::getActionValues(const CState* s,double *outActionValues)
+{
+	if (!outActionValues)
+		throw std::exception("CLinearStateActionVFA::getAction Values(...) tried to get action values without providing a buffer");
+	//state features in aux list
+	getFeatures(s, 0, m_pAux);
+
+	//action-value maximization
+	for (unsigned int i = 0; i < m_numActionWeights; i++)
+	{
+		m_pAux->offsetIndices(m_numStateWeights);
+
+		outActionValues[i] = getValue(m_pAux);
+	}
 }
