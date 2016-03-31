@@ -5,9 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
+    <StackPanel Orientation="Vertical" >
         <Label x:Name="Label"></Label>
-        <Label x:Name="SMS"></Label> 
+        <StackPanel Orientation="Horizontal">      
+            <Label x:Name="SMS"></Label> 
+            <Button x:Name="OpenSMS"  Width="27" Height="27" Visibility="{Binding OpenVisible}">
+                <Image Source="./images/lupa.jpg" Width="25" Height="25"></Image>
+            </Button>
+        </StackPanel>
         <ProgressBar Minimum="0" Maximum="100" x:Name="Status" Height="25"></ProgressBar>
     </StackPanel>
 </UserControl>
