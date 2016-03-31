@@ -234,6 +234,33 @@
     </CHOICE>
   </CLASS>
 
+  <CLASS Name="CQPolicy-Factory">
+    <CHOICE Name="Policy" Comment= "The exploration policy used to learn">
+      <CHOICE-ELEMENT Name="Epsilon-Greedy" Class="CQEGreedyPolicy" Comment="Epsilon-greedy: with probability epsilon the action with the highest Q-value. With probability 1-epsilon a random action"/>
+      <CHOICE-ELEMENT Name="Soft-Max" Class="CQSoftMaxPolicy" Comment="Soft-Max policy: higher probability to actions with higher Q-values. The temperature parameter tau balances the difference of probabilities."/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="CQEGreedyPolicy">
+    <BRANCH Name="Epsilon" Class="CNumericValue-Factory" Comment="The epsilon parameter that balances exploitation and exploration"/>
+  </CLASS>
+
+  <CLASS Name="CQSoftMaxPolicy">
+    <BRANCH Name="Tau" Class="CNumericValue-Factory" Comment="Temperature parameter"/>
+  </CLASS>
+
+  <CLASS Name="CQLearning">
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional=" true"/>
+  </CLASS>
+
+  <CLASS Name="CSARSA">
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional=" true"/>
+  </CLASS>
+
   <CLASS Name="CRewardFunctionComponent">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <BRANCH Name="Tolerance" Class="CNumericValue-Factory" Comment="Tolerance value: errors greater will result in a negative reward"/>
@@ -254,6 +281,8 @@
     <CHOICE Name="Type" Comment="The Simion class">
       <CHOICE-ELEMENT Name="Controller" Class="CController-Factory" Comment="A controller"/>
       <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic" Comment="An Actor-Critic agent"/>
+      <CHOICE-ELEMENT Name="Q-Learning" Class="CQLearning" Comment="A Q-Learning agent"/>
+      <CHOICE-ELEMENT Name="SARSA" Class="CSARSA" Comment="A SARSA agent"/>
       <CHOICE-ELEMENT Name="Inc-Natural-Actor-Critic" Class="CIncrementalNaturalActorCritic" Comment="Incremental-Natural-Actor-Critic as in 'Model-free Reinforcement Learning with Continuous Action in Practice'"/>
     </CHOICE>
   </CLASS>

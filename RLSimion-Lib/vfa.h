@@ -84,6 +84,8 @@ protected:
 	CFeatureList *m_pAux2;
 
 public:
+	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
+	unsigned int getNumActionWeights() const { return m_numActionWeights; }
 
 	CLinearStateActionVFA(CParameters* pParameters);
 	~CLinearStateActionVFA();
@@ -91,15 +93,16 @@ public:
 	double getValue(const CState *s, const CAction *a);
 
 	void argMax(const CState *s, CAction* a);
+	double max(const CState *s) const;
 
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
 
 	//features are built using the two feature maps: the state and action feature maps
 	//
-	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	void getFeatureStateAction(unsigned int feature,CState* s, CAction* a);
 
 	void add(const CFeatureList* pFeatures, double alpha = 1.0);
 
-	void save(const char* pFilename);
+	void save(const char* pFilename) const;
 	void load(const char* pFilename);
 };

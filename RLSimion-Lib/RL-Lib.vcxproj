@@ -112,6 +112,7 @@
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
+    <ClCompile Include="q-learners.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameterized-object.h" />
     <ClInclude Include="parameters-numeric.h" />
+    <ClInclude Include="q-learners.h" />
     <ClInclude Include="simgod.h" />
     <ClInclude Include="simion.h" />
     <ClInclude Include="single-dimension-grid.h" />

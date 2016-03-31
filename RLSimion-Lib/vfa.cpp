@@ -401,3 +401,7 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	getFeatureStateAction(arg,0,a);
 }
 
+double CLinearStateActionVFA::max(const CState* s) const
+{
+	return 0.0;
+}
