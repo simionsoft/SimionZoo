@@ -248,9 +248,16 @@ namespace AppXML.ViewModels
         {
             if (!isOptional && (Default == null || Default == ""))
                 return false;
-            if (type == validTypes.FilePathValue && !File.Exists(Default))
+            string tmp = Default;
+            if (!Path.IsPathRooted(Default))
+            {
+
+                tmp = Path.Combine(Directory.GetCurrentDirectory(), Default);
+                tmp = System.IO.Path.GetFullPath(tmp);
+            }
+            if (type == validTypes.FilePathValue && !File.Exists(tmp))
                 return false;
-            if (type == validTypes.DirPathValue && !Directory.Exists(Default))
+            if (type == validTypes.DirPathValue && !Directory.Exists(tmp))
                 return false;
             return true;
         }
