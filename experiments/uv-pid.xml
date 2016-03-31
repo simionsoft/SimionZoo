@@ -32,7 +32,7 @@
     </Reward>
   </World>
   <Log>
-    <Output-Directory>../logs/underwater-vehicle-3</Output-Directory>
+    <Output-Directory>../logs</Output-Directory>
     <Prefix>uv-test</Prefix>
     <Log-Freq>0.25</Log-Freq>
     <Log-eval-episodes>True</Log-eval-episodes>
