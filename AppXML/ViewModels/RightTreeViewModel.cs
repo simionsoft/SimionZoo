@@ -35,7 +35,7 @@ namespace AppXML.ViewModels
         public void Change(object sender)
         {
             var x = sender as System.Windows.Controls.TreeView;
-            if(selectedTreeNode!=sender as TreeNode)
+            if(selectedTreeNode!=x.SelectedValue as TreeNode)
             {
                 selectedTreeNode = x.SelectedValue as TreeNode;
                 father.LoadSelectedNode();

@@ -768,6 +768,43 @@ namespace AppXML.ViewModels
                 return;
             XmlDocument treeDoc = new XmlDocument();
             treeDoc.Load(fileDoc);
+            XmlElement fileRoot = treeDoc.DocumentElement;
+            if (fileRoot.Name != "ExperimentsTree")
+                return;
+            if (fileRoot.Attributes["App"] == null || !_apps.Contains(fileRoot.Attributes["App"].Value))
+                return;
+            SelectedApp = fileRoot.Attributes["App"].Value;
+            NotifyOfPropertyChange(() => SelectedApp);
+            foreach(XmlElement element in fileRoot.ChildNodes)
+            {
+                if(element.Name=="Root")
+                {
+                    string path = element.InnerText;
+                    if(File.Exists(path))
+                    {
+                        XmlDocument rootDocument = new XmlDocument();
+                        rootDocument.Load(path);
+                        LoadDocument(rootDocument.DocumentElement);
+                        this._graf = null;
+                        SetAsRoot();
+                    }
+                }
+                else if(element.Name=="Experiments")
+                {
+                    foreach(XmlElement exp in element.ChildNodes)
+                    {
+                        string nodeName = exp.Name;
+                        string path = exp.InnerText;
+                        if(File.Exists(path))
+                        {
+                            XmlDocument leafDoc = new XmlDocument();
+                            leafDoc.Load(path);
+                            Graf.AddNode(new Models.TreeNode(nodeName,leafDoc,Graf.SelectedTreeNode));
+                        }
+                    }
+                    NotifyOfPropertyChange(() => RemoveChildVisible);
+                }
+            }
 
         }
         
