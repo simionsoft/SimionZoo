@@ -125,7 +125,47 @@ namespace AppXML.ViewModels
 
 
         }
-        
+        public List<string> SaveTree()
+        {
+            Models.TreeNode root = Graf.RootNode;
+            List<NodeAndName>  leafs = Graf.getAllLeafs();
+            if (root == null || leafs == null || leafs.Count<1)
+                return null;
+            List<string> result = new List<string>();
+            string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            XmlDocument treeDoc = new XmlDocument();
+            XmlElement treeRootNode = treeDoc.CreateElement("ExperimentsTree");
+            treeRootNode.SetAttribute("App", SelectedApp);
+            XmlElement rootDef = treeDoc.CreateElement("Root");
+            string rootFolder = "../experiments/experiment" + stamp + "/root";
+            Directory.CreateDirectory(rootFolder);
+            string rootPath = rootFolder + "/root.xml";
+            root.Doc.Save(rootPath);
+            rootDef.InnerText = rootPath;
+            treeRootNode.AppendChild(rootDef);
+            XmlElement leafFather = treeDoc.CreateElement("Experiments");
+            List<string> names = new List<string>();
+            foreach(NodeAndName item in leafs)
+            {
+                while (names.Contains(item.name))
+                    item.name += "c";
+                names.Add(item.name);
+                string folderName = "../experiments/experiment"+stamp+"/" + item.name;
+                Directory.CreateDirectory(folderName);
+                string xmlPath = folderName +"/"+ item.name + ".xml";
+                item.doc.Save(xmlPath);
+                XmlElement leaf = treeDoc.CreateElement(item.name);
+                leaf.InnerText = xmlPath;
+                leafFather.AppendChild(leaf);
+                result.Add(Path.GetFullPath(xmlPath));
+            }
+            treeRootNode.AppendChild(leafFather);
+            treeDoc.AppendChild(treeRootNode);
+            String fileName = "../experiments/experiment" + stamp + ".xml";
+            treeDoc.Save(fileName);
+            return result;
+
+        }
         private bool validate()
         {
             _doc.RemoveAll();
@@ -712,19 +752,36 @@ namespace AppXML.ViewModels
         public void SaveAll()
         {
             List<NodeAndName> myList = Graf.getAllLeafs();
-            if(myList.Count==0)
+            initExperimentas(SaveTree());         
+        }
+        public void LoadTree()
+        {
+            string fileDoc = null;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "XML-File | *.xml";
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                myList.Add(new NodeAndName("root",_doc));
+                fileDoc = ofd.FileName;
             }
+            else
+                return;
+            XmlDocument treeDoc = new XmlDocument();
+            treeDoc.Load(fileDoc);
+
+        }
+        
+        private List<String> getPaths(List<NodeAndName> myList)
+        {
             List<string> pahts = new List<string>();
-            string folderName = "../experiments/" +"experiment" +DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            string folderName = "../experiments/" + "experiment" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), folderName);
             Directory.CreateDirectory(CombinedPath);
             List<string> names = new List<string>();
-            foreach(NodeAndName item in myList)
+            foreach (NodeAndName item in myList)
             {
                 string path = CombinedPath + "/" + item.name;
-                while(names.Contains(path.ToUpper()))
+                while (names.Contains(path.ToUpper()))
                 {
                     path += 'c';
                 }
@@ -733,10 +790,8 @@ namespace AppXML.ViewModels
                 item.doc.Save(path);
                 pahts.Add(Path.GetFullPath(path));
             }
-            initExperimentas(pahts);
-            
-           
-            
+            return pahts;
+
         }
         private void initExperimentas(List<string> myList)
         {

@@ -32,7 +32,7 @@
     </Reward>
   </World>
   <Log>
-    <Output-Directory>../logs/underwater-vehicle</Output-Directory>
+    <Output-Directory>../logs/Nueva carpeta</Output-Directory>
     <Prefix>uv-pid</Prefix>
     <Log-Freq>0.25</Log-Freq>
     <Log-eval-episodes>True</Log-eval-episodes>

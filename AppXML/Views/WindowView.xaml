@@ -32,8 +32,8 @@
         <Button Content="Run" HorizontalAlignment="Left" Margin="1080,506,0,0" VerticalAlignment="Top" Width="76" Visibility="{Binding AddChildVisible}"  cal:Message.Attach="[Event Click]=[Action SaveAll()]"/>
         <ComboBox x:Name="Apps" HorizontalAlignment="Left" Margin="87,10,0,0" VerticalAlignment="Top" Width="120" SelectedItem="{Binding SelectedApp}"/>
         <Label Content="APP" HorizontalAlignment="Left" Margin="23,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.381,0.758"/>
-        <Button Content="Save tree" HorizontalAlignment="Left" Margin="991,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.08,0.75" Visibility="{Binding AddChildVisible}"/>
-        <Button Content="Load tree" HorizontalAlignment="Left" Margin="901,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.5"/>
+        <Button x:Name="SaveTree" Content="Save tree" HorizontalAlignment="Left" Margin="899,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.08,0.75" Visibility="{Binding RemoveChildVisible}"/>
+        <Button x:Name="LoadTree"   Content="Load tree" HorizontalAlignment="Left" Margin="988,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.5"/>
 
     </Grid>
 </UserControl>

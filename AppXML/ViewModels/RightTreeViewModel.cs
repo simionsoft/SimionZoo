@@ -30,6 +30,8 @@ namespace AppXML.ViewModels
         public TreeNode SelectedTreeNode { get { return selectedTreeNode; } set { } }
         private TreeNode rootNode;
 
+        public TreeNode RootNode { get { return rootNode; } set { } }
+
         public void Change(object sender)
         {
             var x = sender as System.Windows.Controls.TreeView;
