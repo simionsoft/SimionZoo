@@ -846,7 +846,82 @@ namespace AppXML.ViewModels
             
             
         }
-        
+        public void SaveAllTheNodes()
+        {
+            Models.TreeNode root = Graf.RootNode;
+            List<NodeAndName> leafs = Graf.getAllLeafs();
+            if (root == null || leafs == null || leafs.Count < 1)
+                return;
+            List<string> result = new List<string>();
+            string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            XmlDocument treeDoc = new XmlDocument();
+            XmlElement treeRootNode = treeDoc.CreateElement("ExperimentsTree");
+            treeRootNode.SetAttribute("App", SelectedApp);
+            XmlElement rootDef = treeDoc.CreateElement("Root");
+            string rootFolder = "../experiments/experiment" + stamp + "/root";
+            Directory.CreateDirectory(rootFolder);
+            string rootPath = rootFolder + "/root.xml";
+            root.Doc.Save(rootPath);
+            rootDef.InnerText = rootPath;
+            treeRootNode.AppendChild(rootDef);
+            if (!root.hasChildren())
+                return;
+            List<string> names = new List<string>();
+            XmlElement leafFather = treeDoc.CreateElement("Experiments");
+            foreach(Models.TreeNode child in root.ChildNodes)
+            {
+                string name = child.Text;
+                while (names.Contains(name))
+                    name += "c";
+                XmlDocument docume = child.Doc;
+                string folderPath = "../experiments/experiment" + stamp + "/" + name;
+                Directory.CreateDirectory(folderPath);
+                string filePath = folderPath + "/" + name + ".xml";
+                docume.Save(filePath);
+                //crear carpeta para archivo xml y carpetas para sus hijos
+                //añadir el nodo al fichero xml
+                XmlElement docElement = treeDoc.CreateElement(name);
+                docElement.SetAttribute("Path", filePath);
+                //docElement.InnerText = filePath;
+                leafFather.AppendChild(docElement);
+                //si tiene hijos hay que recorrerlos 
+                if(child.hasChildren())
+                {
+                    foreach (Models.TreeNode item in child.ChildNodes)
+                        ResolverChildNode(item,folderPath,docElement);
+                }
+            }
+            treeRootNode.AppendChild(leafFather);
+            treeDoc.AppendChild(treeRootNode);
+            treeDoc.Save("../experiments/experiment" + stamp + ".xml");
+        }
+        public void ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)
+        {
+            string name = node.Text;
+            XmlDocument docume = node.Doc;
+            List<string> names = new List<string>();
+            while (names.Contains(name))
+                name += "c";
+            XmlDocument xmlDocument = father.OwnerDocument;
+            //crear la carpeta que va a contener el xml y sus hijos si los tuviera
+            string folderPath = fatherPath+"/"+name;
+            Directory.CreateDirectory(folderPath);
+            string filePath = folderPath + "/" + name + ".xml";
+            docume.Save(filePath);
+            //crear el xmlElement y añadirlo al padre
+            XmlElement element = xmlDocument.CreateElement(name);
+            element.SetAttribute("Path", filePath);
+
+            //element.InnerText = filePath;
+            father.AppendChild(element);
+            if(node.hasChildren())
+            {
+                foreach (Models.TreeNode child in node.ChildNodes)
+                    ResolverChildNode(child, folderPath, element);
+            }
+                
+
+        }
         public void LoadSelectedNode()
         {
             if (Graf.SelectedTreeNode == null || Graf.SelectedTreeNode.Doc==null)
