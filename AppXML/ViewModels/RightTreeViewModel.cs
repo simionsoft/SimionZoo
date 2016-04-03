@@ -27,7 +27,7 @@ namespace AppXML.ViewModels
         private readonly WindowViewModel father;
 
         private TreeNode selectedTreeNode = null;
-        public TreeNode SelectedTreeNode { get { return selectedTreeNode; } set { } }
+        public TreeNode SelectedTreeNode { get { return selectedTreeNode; } set { selectedTreeNode = value; } }
         private TreeNode rootNode;
 
         public TreeNode RootNode { get { return rootNode; } set { } }

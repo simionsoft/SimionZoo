@@ -49,10 +49,13 @@ namespace AppXML.ViewModels
                 _rootnode = Utility.getRootNode(apps[index]);
                 _branches = _rootnode.children;
                 _doc = (this._rootnode as CApp).document;
-                Graf = null;
+                _graf = null;
                 NotifyOfPropertyChange(() => Branches);
                 NotifyOfPropertyChange(() => Graf);
                 NotifyOfPropertyChange(() => rootnode);
+                NotifyOfPropertyChange(() => RemoveChildVisible);
+                NotifyOfPropertyChange(() => AddChildVisible);
+
             } 
         }
         /*
@@ -777,33 +780,81 @@ namespace AppXML.ViewModels
             NotifyOfPropertyChange(() => SelectedApp);
             foreach(XmlElement element in fileRoot.ChildNodes)
             {
-                if(element.Name=="Root")
+                try
                 {
-                    string path = element.InnerText;
-                    if(File.Exists(path))
+
+                
+                    if(element.Name=="Root")
                     {
-                        XmlDocument rootDocument = new XmlDocument();
-                        rootDocument.Load(path);
-                        LoadDocument(rootDocument.DocumentElement);
-                        this._graf = null;
-                        SetAsRoot();
-                    }
-                }
-                else if(element.Name=="Experiments")
-                {
-                    foreach(XmlElement exp in element.ChildNodes)
-                    {
-                        string nodeName = exp.Name;
-                        string path = exp.InnerText;
+                        string path = element.Attributes["Path"].Value;
                         if(File.Exists(path))
                         {
-                            XmlDocument leafDoc = new XmlDocument();
-                            leafDoc.Load(path);
-                            Graf.AddNode(new Models.TreeNode(nodeName,leafDoc,Graf.SelectedTreeNode));
+                            XmlDocument rootDocument = new XmlDocument();
+                            rootDocument.Load(path);
+                            LoadDocument(rootDocument.DocumentElement);
+                            this._graf = null;
+                            SetAsRoot();
                         }
                     }
-                    NotifyOfPropertyChange(() => RemoveChildVisible);
+                    else if(element.Name=="Experiments")
+                    {
+                        Models.TreeNode top = Graf.SelectedTreeNode;
+                        foreach(XmlElement exp in element.ChildNodes)
+                        {
+                            string nodeName = exp.Name;
+                            string path = exp.Attributes["Path"].Value;
+                            if(File.Exists(path))
+                            {
+                                XmlDocument leafDoc = new XmlDocument();
+                                leafDoc.Load(path);
+                                Models.TreeNode treeNode = new Models.TreeNode(nodeName,leafDoc,top);
+                                Graf.SelectedTreeNode = top;
+                                Graf.AddNode(treeNode);
+                                if(exp.HasChildNodes)
+                                {
+                                    foreach(XmlElement child in exp.ChildNodes)
+                                    {
+                                        LoadChildren(child, treeNode);
+                                    }
+                                }
+                            }
+                        }
+                        NotifyOfPropertyChange(() => RemoveChildVisible);
+                    }
+                }catch(Exception e)
+                {
+                   Console.WriteLine(e.StackTrace);
                 }
+            }
+
+        }
+
+        private void LoadChildren(XmlElement child, Models.TreeNode father)
+        {
+            try
+            {
+                Graf.SelectedTreeNode = father;
+                string name = child.Name;
+                string path = child.Attributes["Path"].Value;
+                if (File.Exists(path))
+                {
+                    XmlDocument leafDoc = new XmlDocument();
+                    leafDoc.Load(path);
+                    Models.TreeNode treeNode = new Models.TreeNode(name, leafDoc, father);
+                    Graf.AddNode(treeNode);
+                    if (child.HasChildNodes)
+                    {
+                        foreach (XmlElement node in child.ChildNodes)
+                        {
+                            LoadChildren(node, treeNode);
+                        }
+                    }
+                }
+
+
+            }catch(Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
             }
 
         }
@@ -862,7 +913,7 @@ namespace AppXML.ViewModels
             Directory.CreateDirectory(rootFolder);
             string rootPath = rootFolder + "/root.xml";
             root.Doc.Save(rootPath);
-            rootDef.InnerText = rootPath;
+            rootDef.SetAttribute("Path", rootPath);
             treeRootNode.AppendChild(rootDef);
             if (!root.hasChildren())
                 return;
@@ -873,6 +924,7 @@ namespace AppXML.ViewModels
                 string name = child.Text;
                 while (names.Contains(name))
                     name += "c";
+                names.Add(name);
                 XmlDocument docume = child.Doc;
                 string folderPath = "../experiments/experiment" + stamp + "/" + name;
                 Directory.CreateDirectory(folderPath);
