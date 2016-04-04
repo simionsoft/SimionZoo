@@ -196,7 +196,7 @@ void CLogger::firstEpisode(bool evalEpisode)
 	m_pEpisodeTimer->startTimer();
 	//QueryPerformanceCounter((LARGE_INTEGER*)&m_experimentStartCounter);
 
-	if ((m_bLogEvaluationExperiment && evalEpisode) || (!m_bLogTrainingExperiment && !evalEpisode))
+	if ((m_bLogEvaluationExperiment && evalEpisode) || (m_bLogTrainingExperiment && !evalEpisode))
 		openLogFile(true, false, evalEpisode, 1);
 }
 
