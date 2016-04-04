@@ -66,8 +66,10 @@ public:
 
 class CLinearStateVFAFromFile: public CLinearStateVFA
 {
+	CParameters* m_mapFeatureParameters;
 	const char* m_loadFilename;
 public:
+	~CLinearStateVFAFromFile();
 	CLinearStateVFAFromFile(CParameters* pParameters);
 };
 

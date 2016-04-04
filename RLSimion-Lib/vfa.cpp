@@ -187,8 +187,8 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 	//load the map feature description from an xml file
 	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.xml", "The VFA will be loaded from this file");
 	CParameterFile mapFeatureParameterFile;
-	CParameters* mapFeatureParameters= mapFeatureParameterFile.loadFile(m_loadFilename);
-	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(mapFeatureParameters);
+	m_mapFeatureParameters= mapFeatureParameterFile.loadFile(m_loadFilename);
+	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(m_mapFeatureParameters);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
@@ -207,6 +207,10 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
 	END_CLASS();
+}
+CLinearStateVFAFromFile::~CLinearStateVFAFromFile()
+{
+	delete[] m_mapFeatureParameters;
 }
 
 CLASS_FACTORY(CLinearStateVFA)

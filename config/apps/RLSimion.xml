@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <APP Name="RLSimion">
-  <EXE>../Debug/RLSimion.exe</EXE>
+  <EXE>../Release/RLSimion.exe</EXE>
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
 
