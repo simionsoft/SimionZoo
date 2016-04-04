@@ -145,9 +145,14 @@
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
   </CLASS>
 
-  <CLASS Name="CFeatureMap-Factory">
+  <CLASS Name="CStateFeatureMap-Factory">
     <CHOICE Name="Type" Comment="Feature map type">
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap" Comment="Grid on the state-space"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="CActionFeatureMap-Factory">
+    <CHOICE Name="Type" Comment= "Feature map type">
       <CHOICE-ELEMENT Name="RBF-Action-Grid" Class="CGaussianRBFActionGridFeatureMap" Comment="Grid on the action-space"/>
     </CHOICE>
   </CLASS>
@@ -329,7 +334,7 @@
 
   <CLASS Name="CLinearStateVFA">
     <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the VFA's weights on initialization"/>
-    <BRANCH Name="State-Feature-Map" Class="CFeatureMap-Factory" Comment="The feature map fuction (state->features)" Optional="false"/>
+    <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The feature map fuction: state->features" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFAFromFile">
@@ -345,8 +350,8 @@
 
   <CLASS Name="CLinearStateActionVFA">
     <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the weights on initialization"/>
-    <BRANCH Name="State-Feature-Map" Class="CFeatureMap-Factory" Comment="The state feature map" Optional="false"/>
-    <BRANCH Name="Action-Feature-Map" Class="CFeatureMap-Factory" Comment="The action feature map" Optional="false"/>
+    <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map" Optional="false"/>
+    <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The action feature map" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CMagneticLevitation">

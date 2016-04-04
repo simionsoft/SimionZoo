@@ -1,6 +1,7 @@
 #pragma once
 
-class CFeatureMap;
+class CStateFeatureMap;
+class CActionFeatureMap;
 class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
@@ -43,7 +44,7 @@ public:
 class CLinearStateVFA: public CLinearVFA
 {
 protected:
-	CFeatureMap* m_pStateFeatureMap;
+	CStateFeatureMap* m_pStateFeatureMap;
 	CFeatureList *m_pAux;
 
 public:
@@ -75,8 +76,8 @@ class CLinearStateActionVFA : public CLinearVFA
 {
 protected:
 
-	CFeatureMap* m_pStateFeatureMap;
-	CFeatureMap* m_pActionFeatureMap;
+	CStateFeatureMap* m_pStateFeatureMap;
+	CActionFeatureMap* m_pActionFeatureMap;
 	unsigned int m_numStateWeights;
 	unsigned int m_numActionWeights;
 

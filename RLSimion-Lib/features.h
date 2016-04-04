@@ -56,7 +56,7 @@ public:
 	void spawn(const CFeatureList *inList, unsigned int indexOffset);
 
 	//adds an offset to all feature indices in a feature list. Used in State-Action-Function::argMax to make it faster
-	void offsetIndices(unsigned int offset);
+	void offsetIndices(int offset);
 
 	void applyThreshold(double threshold);
 	void normalize();

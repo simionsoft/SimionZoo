@@ -158,7 +158,7 @@ void CLinearStateVFA::save(const char* pFilename)
 
 CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction (state->features)",false,CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
@@ -232,14 +232,14 @@ void CLinearStateVFA::getFeatures(const CState* s, CFeatureList* outFeatures)
 {
 	assert (s);
 	assert (outFeatures);
-	m_pStateFeatureMap->getFeatures(s,0,outFeatures);
+	m_pStateFeatureMap->getFeatures(s,outFeatures);
 	outFeatures->offsetIndices(m_minIndex);
 }
 
 void CLinearStateVFA::getFeatureState(unsigned int feature, CState* s)
 {
 	if (feature>=m_minIndex && feature<m_maxIndex)
-		m_pStateFeatureMap->getFeatureStateAction(feature,s,0);
+		m_pStateFeatureMap->getFeatureState(feature,s);
 }
 
 
@@ -272,7 +272,7 @@ void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
 double CLinearStateVFA::getValue(const CState *s)
 {
 	getFeatures(s, m_pAux);
-//	m_pAux->offsetIndices(-m_minIndex);
+	m_pAux->offsetIndices(-(int)m_minIndex);
 	return CLinearVFA::getValue(m_pAux);
 }
 
@@ -283,8 +283,8 @@ double CLinearStateVFA::getValue(const CState *s)
 
 CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CFeatureMap);
-	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CStateFeatureMap);
+	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CActionFeatureMap);
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -321,9 +321,9 @@ void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeat
 {
 	assert(s); assert(a);
 	assert(outFeatures);
-	m_pStateFeatureMap->getFeatures(s, 0, m_pAux);
+	m_pStateFeatureMap->getFeatures(s, m_pAux);
 
-	m_pActionFeatureMap->getFeatures(0, a, outFeatures);
+	m_pActionFeatureMap->getFeatures(a, outFeatures);
 
 	m_pAux->spawn(outFeatures, m_numStateWeights);
 
@@ -335,9 +335,9 @@ void CLinearStateActionVFA::getFeatureStateAction(unsigned int feature, CState* 
 	if (feature >= m_minIndex && feature < m_maxIndex)
 	{
 		if (s)
-			m_pStateFeatureMap->getFeatureStateAction(feature % m_numStateWeights, s, 0);
+			m_pStateFeatureMap->getFeatureState(feature % m_numStateWeights, s);
 		if (a)
-			m_pActionFeatureMap->getFeatureStateAction(feature / m_numStateWeights, 0, a);
+			m_pActionFeatureMap->getFeatureAction(feature / m_numStateWeights, a);
 	}
 }
 
