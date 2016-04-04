@@ -16,11 +16,6 @@ CLASS_INIT(CLogger)
 	if (!pParameters) return;
 
 	m_outputDir = 0;// new char[MAX_FILENAME_LENGTH];
-	m_filePrefix = 0;// new char[MAX_FILENAME_LENGTH];
-
-
-	DIR_PATH_VALUE(m_outputDir,  "Output-Directory","../logs","Directory where the output log files will be saved");
-	CONST_STRING_VALUE(m_filePrefix, "Prefix", "","Prefix given to the output log files");
 
 	const char* boolStr;
 	ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "False","Log evaluation episodes?");
@@ -34,7 +29,7 @@ CLASS_INIT(CLogger)
 
 	CONST_DOUBLE_VALUE(m_logFreq,"Log-Freq", 0.25,"Log frequency. Simulation time in seconds.");
 
-	_mkdir(m_outputDir);
+	//_mkdir(m_outputDir);
 
 
 	m_pEpisodeTimer = new CTimer();
@@ -42,11 +37,30 @@ CLASS_INIT(CLogger)
 	m_lastLogSimulationT = 0.0;
 	END_CLASS();
 }
+
+void CLogger::setLogDirectory(const char* xmlFilePath)
+{
+	if (!xmlFilePath)
+		throw(std::exception("CLogger. No output directory provided."));
+
+	m_outputDir = new char[strlen(xmlFilePath)+1];
+	strcpy_s(m_outputDir, strlen(xmlFilePath) + 1, xmlFilePath);
+
+	int i = strlen(m_outputDir)-1;
+	while (i > 0 && m_outputDir[i] != '/' && m_outputDir[i] != '\\')
+		i--;
+
+	if (i > 0)
+		m_outputDir[i] = 0;
+	//_splitpath_s(xmlFilePath,NULL, 0,m_outputDir, sizeof(m_outputDir),NULL, 0,NULL, 0);
+
+}
+
 CLogger::CLogger()
 {
 	//default values for safety
-	m_outputDir = 0;
-	m_filePrefix = 0;
+
+
 	m_bLogEvaluationEpisodes = false;
 	m_bLogEvaluationExperiment = false;
 	m_bLogTrainingEpisodes = true;
@@ -59,8 +73,8 @@ CLogger::~CLogger()
 {
 	delete m_pExperimentTimer;
 	delete m_pEpisodeTimer;
-	//delete [] m_outputDir;
-	//delete [] m_filePrefix;
+
+	if (m_outputDir) delete[] m_outputDir;
 }
 
 void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation,unsigned int index)
@@ -68,16 +82,16 @@ void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool
 	if (episodeLog)
 	{
 		if (!evaluation)
-			sprintf_s(buffer, bufferSize, "%s/%s-train-epis-%d.txt", m_outputDir, m_filePrefix, index);
+			sprintf_s(buffer, bufferSize, "%s/log-train-epis-%d.txt", m_outputDir, index);
 		else
-			sprintf_s(buffer, bufferSize, "%s/%s-eval-epis-%d.txt", m_outputDir, m_filePrefix, index);
+			sprintf_s(buffer, bufferSize, "%s/log-eval-epis-%d.txt", m_outputDir, index);
 	}
 	else
 	{
 		if (!evaluation)
-			sprintf_s(buffer, bufferSize, "%s/%s-train-exp.txt", m_outputDir, m_filePrefix);
+			sprintf_s(buffer, bufferSize, "%s/log-train-exp.txt", m_outputDir);
 		else
-			sprintf_s(buffer, bufferSize, "%s/%s-eval-exp.txt", m_outputDir, m_filePrefix);
+			sprintf_s(buffer, bufferSize, "%s/log-eval-exp.txt", m_outputDir);
 	}
 }
 

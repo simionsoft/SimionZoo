@@ -35,7 +35,8 @@ CParameters* RLSimion::init(int argc, char* argv[],const char* rootNodeName)
 
 	//In the beginning, a logger was created so that we could know about creation itself
 	Logger.init(pParameters->getChild("Log")); //with or without parameters
-	
+	Logger.setLogDirectory(argv[1]); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
+
 	//Then the world was created by chance
 	World.init(pParameters->getChild("World"));
 
