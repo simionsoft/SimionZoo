@@ -969,17 +969,38 @@ namespace AppXML.ViewModels
         }
         public void SaveAllTheNodes()
         {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "XML-File | *.xml";
+            sfd.InitialDirectory = "../experiments";
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
+            if (!Directory.Exists(CombinedPath))
+                System.IO.Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
+            string xmlFileName = null;
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                xmlFileName = sfd.FileName;
+            }
+            else
+                return;
+            xmlFileName = xmlFileName.Split('.')[0];
+            xmlFileName = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), xmlFileName);
+            if(Directory.Exists(xmlFileName))
+            {
+                Directory.Delete(xmlFileName,true);
+            }
+
             Models.TreeNode root = Graf.RootNode;
             List<NodeAndName> leafs = Graf.getAllLeafs();
             if (root == null || leafs == null || leafs.Count < 1)
                 return;
             List<string> result = new List<string>();
-            string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+           // string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
             XmlDocument treeDoc = new XmlDocument();
             XmlElement treeRootNode = treeDoc.CreateElement("ExperimentsTree");
             treeRootNode.SetAttribute("App", SelectedApp);
             XmlElement rootDef = treeDoc.CreateElement("Root");
-            string rootFolder = "../experiments/experiment" + stamp + "/root";
+            string rootFolder = xmlFileName + "/root";
             Directory.CreateDirectory(rootFolder);
             string rootPath = rootFolder + "/root.xml";
             root.Doc.Save(rootPath);
@@ -996,7 +1017,7 @@ namespace AppXML.ViewModels
                     name += "c";
                 names.Add(name);
                 XmlDocument docume = child.Doc;
-                string folderPath = "../experiments/experiment" + stamp + "/" + name;
+                string folderPath = xmlFileName + "/" + name;
                 Directory.CreateDirectory(folderPath);
                 string filePath = folderPath + "/" + name + ".xml";
                 docume.Save(filePath);
@@ -1015,7 +1036,7 @@ namespace AppXML.ViewModels
             }
             treeRootNode.AppendChild(leafFather);
             treeDoc.AppendChild(treeRootNode);
-            treeDoc.Save("../experiments/experiment" + stamp + ".xml");
+            treeDoc.Save(xmlFileName+ ".xml");
         }
         public void ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)
         {
