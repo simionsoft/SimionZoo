@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace AppXML.Data
 {
@@ -14,6 +15,54 @@ namespace AppXML.Data
     {
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
+
+        public static Dictionary<string, string> GetLeaves(XDocument doc)
+        {
+            var dict = doc
+                .Descendants()
+                //.Where(e => !e.HasElements)
+                .ToDictionary(e => GetPath(e), e=> e.Value);
+            return dict;
+        }
+        public static Dictionary<string, List<string>> getNodesWithMulti(XDocument doc)
+        {
+            var list = doc
+                .Descendants()
+                //.Where(e => e.HasElements)
+                .ToArray();
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+             foreach(XElement e in list)
+             {
+                 string key = GetPath(e);
+                 if (result.ContainsKey(key))
+                 {
+                     List<string> tmp = result[key];
+                     tmp.Add(e.Value);
+                     result[key]=tmp;
+                 }
+                 else
+                 {
+                     List<string> tmp = new List<string>();
+                     tmp.Add(e.Value);
+                     result.Add(key,tmp);
+                 }
+                     
+             }
+             return result;
+        }
+        private static string GetPath(XElement element)
+        {
+            var nodes = new List<string>();
+            var node = element;
+            while (node != null)
+            {
+                nodes.Add(node.Name.ToString());
+                node = node.Parent;
+            }
+
+            return string.Join("/", Enumerable.Reverse(nodes));
+        }
+
 
         public static string GetRelativePathTo(string absPath, string relTo)
         {

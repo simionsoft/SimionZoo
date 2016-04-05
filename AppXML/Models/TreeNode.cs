@@ -12,7 +12,9 @@ namespace AppXML.Models
         private XmlDocument _document;
         private List<TreeNode> _children;
         private string _text;
-        private TreeNode _father;
+        public TreeNode _father;
+        private string _dif;
+        public string Difference { get { return _dif; } set { _dif = value; } }
 
         public string Text { get { return _text; } set { _text = value; } }
         public List<TreeNode> ChildNodes { get { return _children; } set { } }
@@ -28,6 +30,7 @@ namespace AppXML.Models
             _text = text;
             _document = document;
             _father = father;
+            _dif = "None\n tu puta madre \n hola pepe";
         }
 
         public bool hasChildren()
