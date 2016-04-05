@@ -15,6 +15,7 @@
 #include "../RLSimion-Lib/policy.h"
 #include "../RLSimion-Lib/controller.h"
 #include "../RLSimion-Lib/utils.h"
+#include <algorithm>
 
 int main(int argc, char* argv[])
 {
@@ -32,7 +33,7 @@ int main(int argc, char* argv[])
 		CController* pController = CController::getInstance(pConfig->getChild("Controller"));
 
 		CParameters* pPolicyParameters = pConfig->getChild("Policy");
-		CDeterministicPolicy* pVFAPolicy = new CPolicy(pPolicyParameters);
+		CLinearStateVFA* pVFAPolicy = CLinearStateVFA::getInstance(pPolicyParameters);
 
 		CDirFileOutput* pOutputDirFile = new CDirFileOutput(pConfig->getChild("Output-DirFile"));
 
@@ -49,18 +50,20 @@ int main(int argc, char* argv[])
 		char msg[512];
 		char completeFilename[1024];
 		double progress;
-		double numDimensions = (double)pPolicyParameters->countChildren();
+		int outputActionIndex;
+		double numDimensions = (double)std::min(pController->getNumOutputs(), pPolicyParameters->countChildren());
 		while (pPolicyParameters)
 		{
-			double numWeights = pVFAPolicy->getVFA()->getNumWeights();
-			double * pWeights = pVFAPolicy->getVFA()->getWeightPtr();
+			outputActionIndex = pController->getOutputActionIndex(i);
+			double numWeights = pVFAPolicy->getNumWeights();
+			double * pWeights = pVFAPolicy->getWeightPtr();
 			for (int feature = 0; feature < numWeights; feature++)
 			{
 				if (feature % 1000 == 0)
 					printf("Output dim: %d      Progress: %2.2f%%\r", i + 1, 100.0*((double)feature) / ((double)numWeights));
-				pVFAPolicy->getVFA()->getFeatureState(feature, s);
+				pVFAPolicy->getFeatureState(feature, s);
 				pController->selectAction(s, a);
-				double output = a->getValue(pVFAPolicy->getOutputActionIndex());
+				double output = a->getValue(outputActionIndex);
 				pWeights[feature] = output;
 
 				progress = (((double)i) / numDimensions) + (1.0 / numDimensions) * ((double)feature) / ((double)numWeights);
@@ -71,10 +74,10 @@ int main(int argc, char* argv[])
 
 			pPolicyParameters = pPolicyParameters->getNextChild("Policy");
 
-			sprintf_s(completeFilename, "%s/%s.%s", pOutputDirFile->getOutputDir(), pOutputDirFile->getFilePrefix(), pVFAPolicy->getParameters()->getConstString("Output-Action"));
-			pVFAPolicy->getVFA()->save(completeFilename);
+			sprintf_s(completeFilename, "%s/%s.%s", pOutputDirFile->getOutputDir(), pOutputDirFile->getFilePrefix(), pWorld->getActionDescriptor()->getName(outputActionIndex));
+			pVFAPolicy->save(completeFilename);
 			delete pVFAPolicy;
-			pVFAPolicy = CPolicy::getInstance(pPolicyParameters);
+			pVFAPolicy = CLinearStateVFA::getInstance(pPolicyParameters);
 			i++;
 		}
 		CLogger::logMessage(MessageType::Progress, "100");

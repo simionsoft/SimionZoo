@@ -34,10 +34,11 @@
 
   <CLASS Name="CController-Factory">
     <CHOICE Name="Controller" Comment="The specific controller to be used">
-      <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController" Comment="The Vidal wind-turbine controller. Outputs: d_T_g and d_beta"/>
-      <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController" Comment="The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta"/>
       <CHOICE-ELEMENT Name="PID" Class="CPIDController" Comment="A PID controller"/>
       <CHOICE-ELEMENT Name="LQR" Class="CLQRController" Comment="An LQR controller"/>
+      <CHOICE-ELEMENT Name="Jonkman" Class="CWindTurbineJonkmanController" Comment="The Jonkman wind-turbine controller. Outputs: d_T_g and d_beta"/>
+      <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController" Comment="The Vidal wind-turbine controller. Outputs: d_T_g and d_beta"/>
+      <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController" Comment="The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta"/>
     </CHOICE>
   </CLASS>
 
@@ -293,13 +294,13 @@
   <CLASS Name="CStateVariableGrid">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <INTEGER-VALUE Name="Num-Features" Default="3" Comment="The number of points that form the grid"/>
-    <STRING-VALUE Name="Distribution" Default="linear" Comment="The manner in which the points are distributed on the state variable's grid"/>
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Default="linear" Comment="The manner in which the points are distributed on the state variable's grid"/>
   </CLASS>
 
   <CLASS Name="CActionVariableGrid">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <INTEGER-VALUE Name="Num-Features" Default="3" Comment="The number of points that form the grid"/>
-    <STRING-VALUE Name="Distribution" Default="linear" Comment="The manner in which the points are distributed on the action variable's grid"/>
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Default="linear" Comment="The manner in which the points are distributed on the action variable's grid"/>
   </CLASS>
 
   <CLASS Name="CDirFileOutput">

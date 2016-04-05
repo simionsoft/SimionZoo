@@ -14,6 +14,8 @@ class CController : public CSimion
 {
 
 public:
+	virtual int getNumOutputs()= 0;
+	virtual int getOutputActionIndex(int output)= 0;
 
 	static CController* getInstance(CParameters* pParameters);
 
@@ -38,8 +40,11 @@ class CLQRController : public CController, public CParamObject
 	int m_outputActionIndex;
 	int m_numVars;
 public:
-	CLQRController(CParameters* pParameters);
+		CLQRController(CParameters* pParameters);
 	~CLQRController();
+
+	int getNumOutputs();
+	int getOutputActionIndex(int output);
 
 	void selectAction(const CState *s,CAction *a);
 };
@@ -53,6 +58,9 @@ class CPIDController : public CController, public CParamObject
 public:
 	CPIDController(CParameters* pParameters);
 	~CPIDController();
+
+	int getNumOutputs();
+	int getOutputActionIndex(int output);
 
 	void selectAction(const CState *s,CAction *a);
 };
@@ -69,6 +77,9 @@ class CWindTurbineVidalController : public CController, public CParamObject
 public:
 	CWindTurbineVidalController(CParameters* pParameters);
 	~CWindTurbineVidalController();
+
+	int getNumOutputs();
+	int getOutputActionIndex(int output);
 
 	void selectAction(const CState *s,CAction *a);
 };
@@ -88,6 +99,9 @@ class CWindTurbineBoukhezzarController : public CController, public CParamObject
 public:
 	CWindTurbineBoukhezzarController(CParameters* pParameters);
 	~CWindTurbineBoukhezzarController();
+
+	int getNumOutputs();
+	int getOutputActionIndex(int output);
 
 	void selectAction(const CState *s,CAction *a);
 };
@@ -110,6 +124,9 @@ class CWindTurbineJonkmanController : public CController, public CParamObject
 public:
 	CWindTurbineJonkmanController(CParameters* pParameters);
 	~CWindTurbineJonkmanController();
+
+	int getNumOutputs();
+	int getOutputActionIndex(int output);
 
 	void selectAction(const CState *s,CAction *a);
 };
