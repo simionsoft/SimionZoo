@@ -15,6 +15,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.IO.Pipes;
+using System.Xml.Linq;
+using System.Xml.XPath;
 namespace AppXML.ViewModels
 {
     public interface IValidable
@@ -57,6 +59,74 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => AddChildVisible);
 
             } 
+        }
+        public void FIND()
+        {
+            XDocument xdoc = XDocument.Parse(_graf.SelectedTreeNode._father.Doc.OuterXml);  
+            //Dictionary<string,string> x = Utility.GetLeaves(xdoc);
+            Dictionary<string, List<string>> x = Utility.getNodesWithMulti(xdoc);
+            XDocument xdoc2 = XDocument.Parse(_graf.SelectedTreeNode.Doc.OuterXml);
+            //Dictionary<string, string> x2 = Utility.GetLeaves(xdoc2);
+            Dictionary<string, List<string>> x2 = Utility.getNodesWithMulti(xdoc2);
+            string lastMulti = " ";
+            List<string> message = new List<string>();
+            foreach (string key in x.Keys)
+            {
+
+                //buscar si existe en el otro dic
+                if(!x2.ContainsKey(key))
+                {
+                    Console.WriteLine(key +" is missing");
+            
+                }
+                else 
+                {
+                    List<string> list1 = x[key];
+                    List<string> list2 = x2[key];
+                    if(list1.Count==list2.Count)
+                    {
+                        for(int i=0;i<list2.Count;i++)
+                        {
+                            if(!list1[i].Equals(list2[i]))
+                            {
+                                message.Add(key);
+                                int index = message.IndexOf(key);
+                                if(index>0)
+                                {
+                                    if(key.StartsWith(message[index-1]))
+                                    {
+                                        message.RemoveAt(index - 1);
+                                    }
+                                }
+                                //Console.WriteLine(key + " is diferent");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!key.StartsWith(lastMulti))
+                        {
+                            Console.WriteLine(key + " does not have as many matches in both documents");
+                            lastMulti = key;
+                        }
+                        
+                    }
+                    x2.Remove(key);
+                }
+                
+               // var found = xdoc.XPathEvaluate(key) as IEnumerable<object>;
+
+               // foreach (var obj in found)
+               // {
+
+                 //   Console.Out.WriteLine(obj);
+               // }
+            }
+            foreach(string key in x2.Keys)
+            {
+
+            }
+    
         }
         /*
         public WindowViewModel(string[] apps, ObservableCollection<string> Apps, int index)
