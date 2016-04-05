@@ -18,7 +18,7 @@ namespace AppXML.Models
 
         public string Text { get { return _text; } set { _text = value; } }
         public List<TreeNode> ChildNodes { get { return _children; } set { } }
-        public XmlDocument Doc { get { return _document; } set { } }
+        public XmlDocument Doc { get { return _document; } set { _document = value; } }
 
         public void remove()
         {

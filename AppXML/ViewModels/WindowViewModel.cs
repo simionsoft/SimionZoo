@@ -38,6 +38,9 @@ namespace AppXML.ViewModels
         public RightTreeViewModel Graf { get { return _graf; } set { } }
         private ObservableCollection<string> _apps = new ObservableCollection<string>();
         public ObservableCollection<string> Apps { get { return _apps; } set { } }
+        private bool _isSelectedNodeLeaf = false;
+        public bool IsSelectedNodeLeafBool { get { return _isSelectedNodeLeaf; } set { _isSelectedNodeLeaf = value; NotifyOfPropertyChange(() => IsSelectedNodeLeaf); } }
+        public string IsSelectedNodeLeaf { get { if (_isSelectedNodeLeaf)return "Visible"; else return "Hidden"; } set { } }
         private string[] apps;
         private string selectedApp;
         public string SelectedApp { get { return selectedApp; } 
@@ -165,6 +168,15 @@ namespace AppXML.ViewModels
                 _apps.Add(name);
             
             }
+        }
+        public void ModifySelectedLeaf()
+        {
+            if (!validate())
+                return;
+            XmlDocument document = new XmlDocument();
+            XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
+            document.AppendChild(newRoot);
+            Graf.SelectedTreeNode.Doc = document;
         }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         public CNode rootnode
@@ -1037,6 +1049,10 @@ namespace AppXML.ViewModels
             treeRootNode.AppendChild(leafFather);
             treeDoc.AppendChild(treeRootNode);
             treeDoc.Save(xmlFileName+ ".xml");
+        }
+        public void ModifySelectedNode()
+        {
+
         }
         public void ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)
         {

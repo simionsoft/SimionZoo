@@ -36,6 +36,7 @@
         <Button x:Name="FIND" Content="FIND" HorizontalAlignment="Left" Margin="806,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.08,0.75" Visibility="{Binding RemoveChildVisible}"/>
 
         <Button x:Name="LoadTree"   Content="Load tree" HorizontalAlignment="Left" Margin="988,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.5"/>
+        <Button x:Name="ModifySelectedLeaf"  Content="Modify" HorizontalAlignment="Left" Margin="591,293,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding IsSelectedNodeLeaf}"/>
 
     </Grid>
 </UserControl>

@@ -39,6 +39,10 @@ namespace AppXML.ViewModels
             {
                 selectedTreeNode = x.SelectedValue as TreeNode;
                 father.LoadSelectedNode();
+                if (selectedTreeNode!=null && !selectedTreeNode.hasChildren())
+                    father.IsSelectedNodeLeafBool = true;
+                else
+                    father.IsSelectedNodeLeafBool = false;
             }
             
             
