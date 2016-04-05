@@ -11,10 +11,11 @@
 CLASS_FACTORY(CController)
 {
 	CHOICE("Controller","The specific controller to be used");
-	CHOICE_ELEMENT("Vidal", CWindTurbineVidalController,"The Vidal wind-turbine controller. Outputs: d_T_g and d_beta");
-	CHOICE_ELEMENT("Boukhezzar", CWindTurbineBoukhezzarController,"The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta");
 	CHOICE_ELEMENT("PID", CPIDController,"A PID controller");
 	CHOICE_ELEMENT("LQR", CLQRController,"An LQR controller");
+	CHOICE_ELEMENT("Jonkman", CWindTurbineJonkmanController, "The Jonkman wind-turbine controller. Outputs: d_T_g and d_beta");
+	CHOICE_ELEMENT("Vidal", CWindTurbineVidalController, "The Vidal wind-turbine controller. Outputs: d_T_g and d_beta");
+	CHOICE_ELEMENT("Boukhezzar", CWindTurbineBoukhezzarController, "The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta");
 	END_CHOICE();
 
 	return 0;
@@ -76,6 +77,18 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 	a->setValue(m_outputActionIndex, -output);
 }
 
+int CLQRController::getNumOutputs()
+{
+	return 1;
+}
+int CLQRController::getOutputActionIndex(int output)
+{
+	if (output == 0)
+		return m_outputActionIndex;
+	throw std::exception("CLQRController. Invalid action output given.");
+	return -1;
+}
+
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
@@ -99,6 +112,18 @@ CPIDController::~CPIDController()
 	delete m_pKP;
 	delete m_pKI;
 	delete m_pKD;
+}
+
+int CPIDController::getNumOutputs()
+{
+	return 1;
+}
+int CPIDController::getOutputActionIndex(int output)
+{
+	if (output == 0)
+		return m_outputActionIndex;
+	throw std::exception("CLQRController. Invalid action output given.");
+	return -1;
 }
 
 void CPIDController::selectAction(const CState *s, CAction *a)
@@ -156,6 +181,22 @@ CLASS_CONSTRUCTOR(CWindTurbineVidalController) : CParamObject(pParameters)
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
 	END_CLASS();
+}
+
+int CWindTurbineVidalController::getNumOutputs()
+{
+	return 2;
+}
+int CWindTurbineVidalController::getOutputActionIndex(int output)
+{
+	switch (output)
+	{
+	case 0: return m_d_beta_index;
+	case 1: return m_d_T_g_index;
+	default: throw std::exception("CLQRController. Invalid action output given.");
+	}
+	
+	return -1;
 }
 
 void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
@@ -221,6 +262,22 @@ CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController) : CParamObject(pParameters)
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
 	END_CLASS();
+}
+
+int CWindTurbineBoukhezzarController::getNumOutputs()
+{
+	return 2;
+}
+int CWindTurbineBoukhezzarController::getOutputActionIndex(int output)
+{
+	switch (output)
+	{
+	case 0: return m_d_beta_index;
+	case 1: return m_d_T_g_index;
+	default: throw std::exception("CLQRController. Invalid action output given.");
+	}
+
+	return -1;
 }
 
 
@@ -301,6 +358,22 @@ CLASS_CONSTRUCTOR(CWindTurbineJonkmanController) : CParamObject(pParameters)
 	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
 	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
 	END_CLASS();
+}
+
+int CWindTurbineJonkmanController::getNumOutputs()
+{
+	return 2;
+}
+int CWindTurbineJonkmanController::getOutputActionIndex(int output)
+{
+	switch (output)
+	{
+	case 0: return m_d_beta_index;
+	case 1: return m_d_T_g_index;
+	default: throw std::exception("CLQRController. Invalid action output given.");
+	}
+
+	return -1;
 }
 
 void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)

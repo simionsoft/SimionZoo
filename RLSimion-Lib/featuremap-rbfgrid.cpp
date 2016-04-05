@@ -43,6 +43,8 @@ CLASS_CONSTRUCTOR_NEW_WINDOW(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGrid
 	END_CLASS();
 }
 
+
+
 CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters), CActionFeatureMap(pParameters)
 {
 	m_pVarFeatures = new CFeatureList("RBFGrid/var");
@@ -69,6 +71,7 @@ CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap
 		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 	END_CLASS();
 }
+
 
 
 CGaussianRBFGridFeatureMap::~CGaussianRBFGridFeatureMap()

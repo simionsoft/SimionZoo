@@ -16,6 +16,8 @@ class CStateFeatureMap: public CParamObject
 {
 public:
 	CStateFeatureMap(CParameters* pParameters);
+	virtual ~CStateFeatureMap(){};
+
 	virtual void getFeatures(const CState* s,CFeatureList* outFeatures)= 0;
 	virtual void getFeatureState(unsigned int feature, CState* s)= 0;
 
@@ -29,6 +31,8 @@ class CActionFeatureMap : public CParamObject
 {
 public:
 	CActionFeatureMap(CParameters* pParameters);
+	virtual ~CActionFeatureMap(){};
+
 	virtual void getFeatures(const CAction* a, CFeatureList* outFeatures) = 0;
 	virtual void getFeatureAction(unsigned int feature, CAction* a) = 0;
 
@@ -69,6 +73,7 @@ class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap, publi
 {
 public:
 	CGaussianRBFStateGridFeatureMap(CParameters* pParameters);
+
 	void getFeatures(const CState* s, CFeatureList* outFeatures){ CGaussianRBFGridFeatureMap::getFeatures(s, 0, outFeatures); }
 	void getFeatureState(unsigned int feature, CState* s){ CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, s, 0); }
 	unsigned int getTotalNumFeatures(){ return m_totalNumFeatures; }
@@ -80,6 +85,7 @@ class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap, publ
 {
 public:
 	CGaussianRBFActionGridFeatureMap(CParameters* pParameters);
+	
 	void getFeatures(const CAction* a, CFeatureList* outFeatures){ CGaussianRBFGridFeatureMap::getFeatures(0, a, outFeatures); }
 	void getFeatureAction(unsigned int feature, CAction* a){ CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, 0, a); }
 	unsigned int getTotalNumFeatures(){ return m_totalNumFeatures; }

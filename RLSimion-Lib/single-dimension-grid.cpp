@@ -62,7 +62,7 @@ CLASS_CONSTRUCTOR(CStateVariableGrid)
 	m_min= RLSimion::World.getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex);
 	m_max= RLSimion::World.getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex);
 
-	CONST_STRING_VALUE(m_distributionType, "Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
+	ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
 	initCenterPoints();
 	END_CLASS();
 }
@@ -85,7 +85,7 @@ CLASS_CONSTRUCTOR(CActionVariableGrid)
 	m_min = RLSimion::World.getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex);
 	m_max = RLSimion::World.getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex);
 
-	CONST_STRING_VALUE(m_distributionType, "Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
+	ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
 	initCenterPoints();
 	END_CLASS();
 }
