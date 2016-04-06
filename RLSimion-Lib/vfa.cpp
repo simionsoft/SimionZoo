@@ -57,7 +57,8 @@ bool CLinearVFA::saveWeights(const char* pFilename)
 		fclose(pFile);
 		return true;
 	}
-	else throw std::exception("Couldn't open binary file with VFA weights");
+	else
+		CLogger::logMessage(MessageType::Error,"Couldn't open binary file with VFA weights");
 	return false;
 }
 
@@ -78,6 +79,8 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 		fclose(pFile);
 		return true;
 	}
+	else
+		CLogger::logMessage(MessageType::Warning, "Couldn't load weights from file");
 	return false;
 }
 //
@@ -127,7 +130,7 @@ void CLinearStateVFA::save(const char* pFilename)
 
 	if ( pFilename == 0 || pFilename[0] == 0) return;
 
-	sprintf_s(msg, 128, "Saving Policy (\"%s\" (.bin/.xml)...", pFilename);
+	sprintf_s(msg, 128, "Saving Policy to \"%s\" (.bin/.xml)...", pFilename);
 	CLogger::logMessage(Info, msg);
 
 	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
@@ -148,7 +151,7 @@ void CLinearStateVFA::save(const char* pFilename)
 		return;
 	}
 
-	sprintf_s(msg, 128, "FAILED", binFile);
+	sprintf_s(msg, 128, "Couldn't save the policy", binFile);
 	CLogger::logMessage(Warning, msg);
 }
 
