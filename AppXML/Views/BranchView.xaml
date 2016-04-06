@@ -22,9 +22,12 @@
             </TreeView.ItemContainerStyle>
             <TreeViewItem>
                 <TreeViewItem.Header>
-                    <Label Content="{Binding Name}" ToolTip="{Binding Comment }"></Label>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding Name}" ToolTip="{Binding Comment }"></Label>
+                        <CheckBox Content="Used" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsSet}" VerticalAlignment="Center" ></CheckBox>
+
+                    </StackPanel>
                 </TreeViewItem.Header>
-                <CheckBox Content="SET AS NULL" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsNull}"></CheckBox>
                 <ContentControl x:Name="Class" IsEnabled="{Binding IsEnabled}" Focusable="False" ></ContentControl>
             </TreeViewItem>
 

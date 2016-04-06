@@ -18,7 +18,14 @@ namespace AppXML.ViewModels
         private string _tag;
         public string Tag { get { return _tag; } set { } }
         public string Comment { get { return _comment; } set { } }
-        
+        public bool IsSet
+        {
+            get { return !_isNull; }
+            set
+            {
+                IsNull = !value;
+            }
+        }
         public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
         public bool IsEnabled { get { return !_isNull; } set { } }
 
