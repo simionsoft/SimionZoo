@@ -16,6 +16,86 @@ namespace AppXML.Data
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
 
+        public static string findDifferences(XmlDocument childDocument,XmlDocument fatherDocument)
+        {
+
+            XDocument xdoc = XDocument.Parse(fatherDocument.OuterXml);
+            //Dictionary<string,string> x = Utility.GetLeaves(xdoc);
+            Dictionary<string, List<string>> father = Utility.getNodesWithMulti(xdoc);
+            XDocument xdoc2 = XDocument.Parse(childDocument.OuterXml);
+            //Dictionary<string, string> x2 = Utility.GetLeaves(xdoc2);
+            Dictionary<string, List<string>> child = Utility.getNodesWithMulti(xdoc2);
+            string lastMulti = " ";
+            List<string> message = new List<string>();
+            List<string> missingMessage = new List<string>();
+            foreach (string key in child.Keys)
+            {
+                if (!father.ContainsKey(key))
+                    missingMessage.Add(key + " has been added to this child");
+                else
+                {
+                    List<string> list1 = child[key];
+                    List<string> list2 = father[key];
+                    if (list1.Count == list2.Count)
+                    {
+                        for (int i = 0; i < list2.Count; i++)
+                        {
+                            if (!list1[i].Equals(list2[i]))
+                            {
+                                message.Add(key);
+                                int index = message.IndexOf(key);
+                                if (index > 0)
+                                {
+                                    if (key.StartsWith(message[index - 1]))
+                                    {
+                                        message.RemoveAt(index - 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!key.StartsWith(lastMulti))
+                        {
+                            int dif = list1.Count - list2.Count;
+                            if (dif > 0)
+                            {
+                                missingMessage.Add("This child has " + dif + " more " + key);
+                            }
+                            else
+                            {
+                                missingMessage.Add("This child has " + dif + " less " + key);
+                                dif = -dif;
+                            }
+                            for (int i = 0; i < list1.Count - dif; i++)
+                            {
+                                if (list1[i].Equals(list2[i]))
+                                    missingMessage.Add("The element number " + i + " has the same parameters");
+                                else
+                                    missingMessage.Add("The element number " + i + " has not the same parameters");
+                            }
+                            lastMulti = key;
+                        }
+                    }
+                    father.Remove(key);
+                }
+            }
+            foreach (string key in father.Keys)
+            {
+                missingMessage.Add("The child does not have " + key);
+            }
+            string result = "";
+            foreach (string key in message)
+                result += key + " is different\n";
+            foreach (string sms in missingMessage)
+                result += sms + "\n";
+            if (result == "")
+                return null;
+            return result;
+
+        }
+
         public static Dictionary<string, string> GetLeaves(XDocument doc)
         {
             var dict = doc

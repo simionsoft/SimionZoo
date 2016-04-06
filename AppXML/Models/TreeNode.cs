@@ -30,7 +30,8 @@ namespace AppXML.Models
             _text = text;
             _document = document;
             _father = father;
-            _dif = "None\n tu puta madre \n hola pepe";
+            if(father!=null)
+                _dif = Data.Utility.findDifferences(_document,father.Doc);
         }
 
         public bool hasChildren()
@@ -49,6 +50,10 @@ namespace AppXML.Models
         {
             _children.Clear();
         }
+        public void updateDif()
+        {
+            _dif = Data.Utility.findDifferences(_document, _father.Doc);
+        }
         public void removeElement(TreeNode child)
         {
             //first we must know if child has childNodes or not
@@ -59,6 +64,7 @@ namespace AppXML.Models
                 {
                     child._father.addChild(node);
                     node._father = child._father;
+                    node.updateDif();
                 }
             }
             if (_children.Contains(child))
