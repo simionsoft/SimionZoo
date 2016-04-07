@@ -623,8 +623,9 @@ namespace AppXML.ViewModels
         }
         public void SaveAll()
         {
-            List<NodeAndName> myList = Graf.getAllLeafs();
-            initExperimentas(SaveTree());         
+            //List<NodeAndName> myList = Graf.getAllLeafs();
+            
+            initExperimentas(SaveAllTheNodes());         
         }
         public void LoadTree()
         {
@@ -766,7 +767,7 @@ namespace AppXML.ViewModels
             
             
         }
-        public void SaveAllTheNodes()
+        public List<string> SaveAllTheNodes()
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "XML-File | *.xml";
@@ -781,7 +782,7 @@ namespace AppXML.ViewModels
                 xmlFileName = sfd.FileName;
             }
             else
-                return;
+                return null;
             xmlFileName = xmlFileName.Split('.')[0];
             xmlFileName = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), xmlFileName);
             if(Directory.Exists(xmlFileName))
@@ -792,7 +793,7 @@ namespace AppXML.ViewModels
             Models.TreeNode root = Graf.RootNode;
             List<NodeAndName> leafs = Graf.getAllLeafs();
             if (root == null || leafs == null || leafs.Count < 1)
-                return;
+                return null;
             List<string> result = new List<string>();
            // string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
             XmlDocument treeDoc = new XmlDocument();
@@ -806,7 +807,7 @@ namespace AppXML.ViewModels
             rootDef.SetAttribute("Path", rootPath);
             treeRootNode.AppendChild(rootDef);
             if (!root.hasChildren())
-                return;
+                return result;
             List<string> names = new List<string>();
             XmlElement leafFather = treeDoc.CreateElement("Experiments");
             foreach(Models.TreeNode child in root.ChildNodes)
@@ -827,21 +828,21 @@ namespace AppXML.ViewModels
                 //docElement.InnerText = filePath;
                 leafFather.AppendChild(docElement);
                 //si tiene hijos hay que recorrerlos 
-                if(child.hasChildren())
+                if (child.hasChildren())
                 {
                     foreach (Models.TreeNode item in child.ChildNodes)
-                        ResolverChildNode(item,folderPath,docElement);
+                        result.AddRange(ResolverChildNode(item, folderPath, docElement));
                 }
+                else
+                    result.Add(filePath);
             }
             treeRootNode.AppendChild(leafFather);
             treeDoc.AppendChild(treeRootNode);
             treeDoc.Save(xmlFileName+ ".xml");
+            return result;
         }
-        public void ModifySelectedNode()
-        {
-
-        }
-        public void ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)
+      
+        public List<string> ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)
         {
             string name = node.Text;
             XmlDocument docume = node.Doc;
@@ -860,11 +861,15 @@ namespace AppXML.ViewModels
 
             //element.InnerText = filePath;
             father.AppendChild(element);
-            if(node.hasChildren())
+            List<string> result = new List<string>();
+            if (node.hasChildren())
             {
                 foreach (Models.TreeNode child in node.ChildNodes)
-                    ResolverChildNode(child, folderPath, element);
+                    result.AddRange(ResolverChildNode(child, folderPath, element));
             }
+            else
+                result.Add(filePath);
+            return result;
                 
 
         }
