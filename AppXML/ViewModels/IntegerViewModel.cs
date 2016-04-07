@@ -22,6 +22,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<ComboBox> _comboBox;
         private ObservableCollection<TextBoxWithFile> _textBoxFile;
         private bool isOptional = false;
+        public bool IsOptional { get { return isOptional; } set { isOptional = value; } }
         private string _comment;
         public string Comment { get { return _comment; } set { } }
         private XmlDocument _doc;
@@ -241,16 +242,23 @@ namespace AppXML.ViewModels
     public class TextBoxWithFile:TextBox
     {
         private string buttonImage;
-        private string copyDefault;
+        public string copyDefault;
         
 
         public new bool validate()
         {
             if (!isOptional && (Default == null || Default == ""))
                 return false;
-            if (type == validTypes.FilePathValue && !File.Exists(Default))
+            string tmp = Default;
+            if (!Path.IsPathRooted(Default))
+            {
+
+                tmp = Path.Combine(Directory.GetCurrentDirectory(), Default);
+                tmp = System.IO.Path.GetFullPath(tmp);
+            }
+            if (type == validTypes.FilePathValue && !File.Exists(tmp))
                 return false;
-            if (type == validTypes.DirPathValue && !Directory.Exists(Default))
+            if (type == validTypes.DirPathValue && !Directory.Exists(tmp))
                 return false;
             return true;
         }
@@ -263,7 +271,8 @@ namespace AppXML.ViewModels
             else
                 this.type = validTypes.FilePathValue;
             copyDefault = Default;
-            
+            if (Default!=null && Default.Contains("*."))
+                Default = "";
 
         }
         public string ButtonImage { get { return buttonImage; } set { buttonImage = value; } }
@@ -293,11 +302,25 @@ namespace AppXML.ViewModels
                             openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), Default)))
 ;
                     }
+                    else if(copyDefault.Contains("*."))
+                    {
+                        string dirPath = copyDefault.Split('*').First();
+                        if(Directory.Exists(dirPath))
+                        {
+                            bool isAbsolute = Path.IsPathRooted(copyDefault);
+                            if (isAbsolute)
+                                openFileDialog.InitialDirectory = dirPath;
+                            else
+                                openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), dirPath)));
+                        }
+                        
+                    }
                 }             
                
                  if (openFileDialog.ShowDialog() == true)
                  {
-                     this.Default = openFileDialog.FileName;
+
+                     this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
                      this.TextColor = "White";
                  }
                    
@@ -315,7 +338,7 @@ namespace AppXML.ViewModels
                     
                 if (fbd.ShowDialog() == DialogResult.OK)
                     {
-                        this.Default = fbd.SelectedPath;
+                        this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), fbd.SelectedPath);
                         this.TextColor = "White";
 
                     }

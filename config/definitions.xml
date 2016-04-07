@@ -1,20 +1,31 @@
 <?xml version="1.0"?>
 <DEFINITIONS>
   <CLASS Name="CCACLALearner">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by CACLA"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by CACLA" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain [0..1]"/>
-    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory" Comment="The policy to be learned"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
+  </CLASS>
+
+  <CLASS Name="CIncrementalNaturalActorCritic">
+    <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The Policy"/>
+    <BRANCH Name="VFunction" Class="CLinearStateVFA-Factory" Comment="The Value-function" Optional=" false"/>
+    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="true"/>
+    <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="true"/>
+    <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
+    <BRANCH Name="Alpha-r" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter of the MDP"/>
+    <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
   </CLASS>
 
   <CLASS Name="CActorCritic">
-    <BRANCH Name="Actor" Class="CActor" Comment="The actor"/>
-    <BRANCH Name="Critic" Class="CCritic-Factory" Comment="The critic"/>
+    <BRANCH Name="Actor" Class="CActor" Comment="The actor" Optional="false"/>
+    <BRANCH Name="Critic" Class="CCritic-Factory" Comment="The critic" Optional=" false"/>
   </CLASS>
 
   <CLASS Name="CRegularPolicyGradientLearner">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain"/>
-    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory" Comment="The policy to be learned"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CActor">
@@ -23,10 +34,11 @@
 
   <CLASS Name="CController-Factory">
     <CHOICE Name="Controller" Comment="The specific controller to be used">
-      <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController" Comment="The Vidal wind-turbine controller. Outputs: d_T_g and d_beta"/>
-      <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController" Comment="The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta"/>
       <CHOICE-ELEMENT Name="PID" Class="CPIDController" Comment="A PID controller"/>
       <CHOICE-ELEMENT Name="LQR" Class="CLQRController" Comment="An LQR controller"/>
+      <CHOICE-ELEMENT Name="Jonkman" Class="CWindTurbineJonkmanController" Comment="The Jonkman wind-turbine controller. Outputs: d_T_g and d_beta"/>
+      <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController" Comment="The Vidal wind-turbine controller. Outputs: d_T_g and d_beta"/>
+      <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController" Comment="The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta"/>
     </CHOICE>
   </CLASS>
 
@@ -80,28 +92,28 @@
   </CLASS>
 
   <CLASS Name="CTDLambdaCritic">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CTDCLambdaCritic">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Elilgibility traces of the critic"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Elilgibility traces of the critic" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Beta" Class="CNumericValue-Factory" Comment="Learning gain applied to the omega vector"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
   </CLASS>
 
   <CLASS Name="CTrueOnlineTDLambdaCritic">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CCritic">
-    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CCritic-Factory">
@@ -126,7 +138,7 @@
     <DOUBLE-VALUE Name="Episode-Length" Default="1.0" Comment="Length of an episode (seconds)"/>
   </CLASS>
 
-  <CLASS Name="CGaussianRBFStateGridFeatureMap">
+  <CLASS Name="CGaussianRBFStateGridFeatureMap" Window="New">
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
   </CLASS>
 
@@ -134,9 +146,14 @@
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
   </CLASS>
 
-  <CLASS Name="CFeatureMap-Factory">
+  <CLASS Name="CStateFeatureMap-Factory">
     <CHOICE Name="Type" Comment="Feature map type">
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap" Comment="Grid on the state-space"/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="CActionFeatureMap-Factory">
+    <CHOICE Name="Type" Comment= "Feature map type">
       <CHOICE-ELEMENT Name="RBF-Action-Grid" Class="CGaussianRBFActionGridFeatureMap" Comment="Grid on the action-space"/>
     </CHOICE>
   </CLASS>
@@ -161,8 +178,6 @@
     <VALUE>experimentTime</VALUE>
   </ENUMERATION>
   <CLASS Name="CLogger">
-    <DIR-PATH-VALUE Name="Output-Directory" Default="../logs" Comment="Directory where the output log files will be saved"/>
-    <STRING-VALUE Name="Prefix" Default="" Comment="Prefix given to the output log files"/>
     <DOUBLE-VALUE Name="Log-Freq" Default="0.25" Comment="Log frequency. Simulation time in seconds."/>
     <ENUM-VALUE Name="Log-eval-episodes" Class="Boolean" Default="False" Comment="Log evaluation episodes?"/>
     <ENUM-VALUE Name="Log-training-episodes" Class="Boolean" Default="False" Comment="Log training episodes?"/>
@@ -204,7 +219,7 @@
     <ENUM-VALUE Name="Time-reference" Class="TimeReference" Default="linear" Comment="Time reference"/>
   </CLASS>
 
-  <CLASS Name="CNumericValue-Factory">
+  <CLASS Name="CNumericValue-Factory" Window="New">
     <CHOICE Name="Schedule" Comment="Schedule-type">
       <CHOICE-ELEMENT Name="Constant" Class="CConstantValue" Comment="Constant value"/>
       <CHOICE-ELEMENT Name="Linear-Schedule" Class="CInterpolatedValue" Comment="Linear schedule"/>
@@ -213,7 +228,7 @@
   </CLASS>
 
   <CLASS Name="CPolicyLearner">
-    <BRANCH Name="Policy" Class="CDeterministicPolicy-Factory" Comment="The policy to be learned"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CPolicyLearner-Factory">
@@ -223,80 +238,119 @@
     </CHOICE>
   </CLASS>
 
+  <CLASS Name="CQPolicy-Factory">
+    <CHOICE Name="Policy" Comment= "The exploration policy used to learn">
+      <CHOICE-ELEMENT Name="Epsilon-Greedy" Class="CQEGreedyPolicy" Comment="Epsilon-greedy: with probability epsilon the action with the highest Q-value. With probability 1-epsilon a random action"/>
+      <CHOICE-ELEMENT Name="Soft-Max" Class="CQSoftMaxPolicy" Comment="Soft-Max policy: higher probability to actions with higher Q-values. The temperature parameter tau balances the difference of probabilities."/>
+    </CHOICE>
+  </CLASS>
+
+  <CLASS Name="CQEGreedyPolicy">
+    <BRANCH Name="Epsilon" Class="CNumericValue-Factory" Comment="The epsilon parameter that balances exploitation and exploration"/>
+  </CLASS>
+
+  <CLASS Name="CQSoftMaxPolicy">
+    <BRANCH Name="Tau" Class="CNumericValue-Factory" Comment="Temperature parameter"/>
+  </CLASS>
+
+  <CLASS Name="CQLearning">
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional=" true"/>
+  </CLASS>
+
+  <CLASS Name="CSARSA">
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional=" true"/>
+  </CLASS>
+
   <CLASS Name="CRewardFunctionComponent">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <BRANCH Name="Tolerance" Class="CNumericValue-Factory" Comment="Tolerance value: errors greater will result in a negative reward"/>
     <BRANCH Name="Weight" Class="CNumericValue-Factory" Comment="Weight of this reward function component (in case more than one is used)"/>
   </CLASS>
 
-  <CLASS Name="CRewardFunction">
+  <CLASS Name="CRewardFunction" Window="New">
     <DOUBLE-VALUE Name="Min" Default="-100.0" Comment="Minimum output of the reward function"/>
     <DOUBLE-VALUE Name="Max" Default="1.0" Comment="Maximum output of the reward function"/>
     <MULTI-VALUED Name="Reward-Component" Class="CRewardFunctionComponent" Comment="A component of the reward function"/>
   </CLASS>
 
   <CLASS Name="CSimGod">
-    <MULTI-VALUED Name="Simions" Class="CSimion-Factory" Comment="Simions: agents and controllers"/>
+    <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: agents and controllers"/>
   </CLASS>
 
   <CLASS Name="CSimion-Factory">
     <CHOICE Name="Type" Comment="The Simion class">
       <CHOICE-ELEMENT Name="Controller" Class="CController-Factory" Comment="A controller"/>
       <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic" Comment="An Actor-Critic agent"/>
+      <CHOICE-ELEMENT Name="Q-Learning" Class="CQLearning" Comment="A Q-Learning agent"/>
+      <CHOICE-ELEMENT Name="SARSA" Class="CSARSA" Comment="A SARSA agent"/>
+      <CHOICE-ELEMENT Name="Inc-Natural-Actor-Critic" Class="CIncrementalNaturalActorCritic" Comment="Incremental-Natural-Actor-Critic as in 'Model-free Reinforcement Learning with Continuous Action in Practice'"/>
     </CHOICE>
   </CLASS>
 
   <CLASS Name="CStateVariableGrid">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
     <INTEGER-VALUE Name="Num-Features" Default="3" Comment="The number of points that form the grid"/>
-    <DOUBLE-VALUE Name="Min" Default="0.0" Comment="The minimum value of the points that define the grid"/>
-    <DOUBLE-VALUE Name="Max" Default="1.0" Comment="The maximum value of the points that define the grid"/>
-    <STRING-VALUE Name="Distribution" Default="linear" Comment="The manner in which the points are distributed on the state variable's grid"/>
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Default="linear" Comment="The manner in which the points are distributed on the state variable's grid"/>
   </CLASS>
 
   <CLASS Name="CActionVariableGrid">
     <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
     <INTEGER-VALUE Name="Num-Features" Default="3" Comment="The number of points that form the grid"/>
-    <DOUBLE-VALUE Name="Min" Default="0.0" Comment="The minimum value of the points that define the grid"/>
-    <DOUBLE-VALUE Name="Max" Default="1.0" Comment="The maximum value of the points that define the grid"/>
-    <STRING-VALUE Name="Distribution" Default="linear" Comment="The manner in which the points are distributed on the action variable's grid"/>
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Default="linear" Comment="The manner in which the points are distributed on the action variable's grid"/>
   </CLASS>
 
-  <CLASS Name="CDeterministicPolicy-Factory">
+  <CLASS Name="CDirFileOutput">
+    <DIR-PATH-VALUE Name="Output-Dir" Default="../data" Comment="The output directory"/>
+    <STRING-VALUE Name="File-Prefix" Default="" Comment="The prefix given to all the output files"/>
+  </CLASS>
+
+  <CLASS Name="CPolicy-Factory">
     <CHOICE Name="Policy" Comment="The policy type">
-      <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise" Comment="A deterministic polich pi(s) to which some noise is added"/>
+      <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise" Comment="A deterministic policy pi(s) to which some noise is added"/>
       <CHOICE-ELEMENT Name="Stochastic-Policy-Gaussian-Noise" Class="CStochasticPolicyGaussianNoise" Comment="An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))"/>
     </CHOICE>
   </CLASS>
 
-  <CLASS Name="CDeterministicPolicy">
+  <CLASS Name="CPolicy">
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CDeterministicPolicyGaussianNoise">
-    <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration"/>
+    <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
+    <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration" Optional="false"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CStochasticPolicyGaussianNoise">
-    <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates variance(s)"/>
+    <BRANCH Name="Mean-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
+    <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates variance(s)" Optional=" false"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
-    <BRANCH Name="Linear-State-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFA">
     <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the VFA's weights on initialization"/>
-    <FILE-PATH-VALUE Name="Load" Default="" Comment="The weights will be loaded from this file"/>
-    <FILE-PATH-VALUE Name="Save" Default="" Comment="The weights will be saved to this file"/>
-    <BRANCH Name="State-Feature-Map" Class="CFeatureMap-Factory" Comment="The feature map fuction (state->features)"/>
+    <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The feature map fuction: state->features" Optional="false"/>
+  </CLASS>
+
+  <CLASS Name="CLinearStateVFAFromFile">
+    <FILE-PATH-VALUE Name="Load" Default="../config/data/*.xml" Comment="The VFA will be loaded from this file"/>
+  </CLASS>
+
+  <CLASS Name="CLinearStateVFA-Factory">
+    <CHOICE Name="Parameterization" Comment= "Do we want to define the vfa explicitly or load it from file?">
+      <CHOICE-ELEMENT Name="Explicit" Class="CLinearStateVFA" Comment="The parameterization is explicitly given and no weights loaded."/>
+      <CHOICE-ELEMENT Name="From-File" Class="CLinearStateVFAFromFile" Comment="The parameterization and weights are read from a file."/>
+    </CHOICE>
   </CLASS>
 
   <CLASS Name="CLinearStateActionVFA">
     <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the weights on initialization"/>
-    <BRANCH Name="State-Feature-Map" Class="CFeatureMap-Factory" Comment="The state feature map"/>
-    <BRANCH Name="Action-Feature-Map" Class="CFeatureMap-Factory" Comment="The action feature map"/>
+    <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map" Optional="false"/>
+    <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The action feature map" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CMagneticLevitation">
@@ -320,8 +374,8 @@
   <CLASS Name="CWorld">
     <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" Comment="The number of integration steps performed each simulation time-step"/>
     <DOUBLE-VALUE Name="Delta-T" Default="0.01" Comment="The delta-time between simulation steps"/>
-    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model"/>
-    <BRANCH Name="Reward" Class="CRewardFunction" Comment="The reward function" Window="New"/>
+    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model" Optional="false"/>
+    <BRANCH Name="Reward" Class="CRewardFunction" Comment="The reward function" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">

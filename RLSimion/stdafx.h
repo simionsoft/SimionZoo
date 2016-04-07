@@ -6,7 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <exception>
 
 #ifdef _DEBUG
 #pragma comment (lib,"../Debug/RLSimion-Lib.lib")

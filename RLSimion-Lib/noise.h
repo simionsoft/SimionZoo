@@ -5,6 +5,7 @@
 class CParameters;
 class CNumericValue;
 
+double getRandomValue();// returns a random value in range [0,1]
 
 double getNormalDistributionSample(double mu, double sigma);
 

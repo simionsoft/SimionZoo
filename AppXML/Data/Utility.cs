@@ -7,14 +7,183 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace AppXML.Data
 {
-    public class Utility
+    public static class Utility
     {
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
-        
+
+        public static string findDifferences(XmlDocument childDocument,XmlDocument fatherDocument)
+        {
+
+            XDocument xdoc = XDocument.Parse(fatherDocument.OuterXml);
+            //Dictionary<string,string> x = Utility.GetLeaves(xdoc);
+            Dictionary<string, List<string>> father = Utility.getNodesWithMulti(xdoc);
+            XDocument xdoc2 = XDocument.Parse(childDocument.OuterXml);
+            //Dictionary<string, string> x2 = Utility.GetLeaves(xdoc2);
+            Dictionary<string, List<string>> child = Utility.getNodesWithMulti(xdoc2);
+            string lastMulti = " ";
+            List<string> message = new List<string>();
+            List<string> missingMessage = new List<string>();
+            foreach (string key in child.Keys)
+            {
+                if (!father.ContainsKey(key))
+                    missingMessage.Add(key + " has been added to this child");
+                else
+                {
+                    List<string> list1 = child[key];
+                    List<string> list2 = father[key];
+                    if (list1.Count == list2.Count)
+                    {
+                        for (int i = 0; i < list2.Count; i++)
+                        {
+                            if (!list1[i].Equals(list2[i]))
+                            {
+                                message.Add(key);
+                                int index = message.IndexOf(key);
+                                if (index > 0)
+                                {
+                                    if (key.StartsWith(message[index - 1]))
+                                    {
+                                        message.RemoveAt(index - 1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (!key.StartsWith(lastMulti))
+                        {
+                            int dif = list1.Count - list2.Count;
+                            if (dif > 0)
+                            {
+                                missingMessage.Add("This child has " + dif + " more " + key);
+                            }
+                            else
+                            {
+                                missingMessage.Add("This child has " + dif + " less " + key);
+                                dif = -dif;
+                            }
+                            for (int i = 0; i < list1.Count - dif; i++)
+                            {
+                                if (list1[i].Equals(list2[i]))
+                                    missingMessage.Add("The element number " + i + " has the same parameters");
+                                else
+                                    missingMessage.Add("The element number " + i + " has not the same parameters");
+                            }
+                            lastMulti = key;
+                        }
+                    }
+                    father.Remove(key);
+                }
+            }
+            foreach (string key in father.Keys)
+            {
+                missingMessage.Add("The child does not have " + key);
+            }
+            string result = "";
+            foreach (string key in message)
+                result += key + " is different\n";
+            foreach (string sms in missingMessage)
+                result += sms + "\n";
+            if (result == "")
+                return null;
+            return result;
+
+        }
+
+        public static Dictionary<string, string> GetLeaves(XDocument doc)
+        {
+            var dict = doc
+                .Descendants()
+                //.Where(e => !e.HasElements)
+                .ToDictionary(e => GetPath(e), e=> e.Value);
+            return dict;
+        }
+        public static Dictionary<string, List<string>> getNodesWithMulti(XDocument doc)
+        {
+            var list = doc
+                .Descendants()
+                //.Where(e => e.HasElements)
+                .ToArray();
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+             foreach(XElement e in list)
+             {
+                 string key = GetPath(e);
+                 if (result.ContainsKey(key))
+                 {
+                     List<string> tmp = result[key];
+                     tmp.Add(e.Value);
+                     result[key]=tmp;
+                 }
+                 else
+                 {
+                     List<string> tmp = new List<string>();
+                     tmp.Add(e.Value);
+                     result.Add(key,tmp);
+                 }
+                     
+             }
+             return result;
+        }
+        private static string GetPath(XElement element)
+        {
+            var nodes = new List<string>();
+            var node = element;
+            while (node != null)
+            {
+                nodes.Add(node.Name.ToString());
+                node = node.Parent;
+            }
+
+            return string.Join("/", Enumerable.Reverse(nodes));
+        }
+
+
+        public static string GetRelativePathTo(string absPath, string relTo)
+        {
+            string[] absDirs = absPath.Split('\\');
+            string[] relDirs = relTo.Split('\\');
+            // Get the shortest of the two paths 
+            int len = absDirs.Length < relDirs.Length ? absDirs.Length : relDirs.Length;
+            // Use to determine where in the loop we exited 
+            int lastCommonRoot = -1; int index;
+            // Find common root 
+            for (index = 0; index < len; index++)
+            {
+                if (absDirs[index] == relDirs[index])
+                    lastCommonRoot = index;
+                else break;
+            }
+            // If we didn't find a common prefix then throw 
+            if (lastCommonRoot == -1)
+            {
+                return relTo;
+            }
+            // Build up the relative path 
+            StringBuilder relativePath = new StringBuilder();
+            // Add on the .. 
+            for (index = lastCommonRoot + 1; index < absDirs.Length; index++)
+            {
+                if (absDirs[index].Length > 0) relativePath.Append("..\\");
+            }
+            // Add on the folders 
+            if(absDirs.Contains(relDirs[lastCommonRoot])&&(len-1==lastCommonRoot))
+            {
+                relativePath.Append("..\\");
+            }
+            for (index = lastCommonRoot + 1; index < relDirs.Length - 1; index++)
+            {
+                relativePath.Append(relDirs[index] + "\\");
+            }
+            relativePath.Append(relDirs[relDirs.Length - 1]);
+            relativePath.Replace('\\','/');
+            return relativePath.ToString();
+        }
         public static Boolean validate(string value, validTypes type)
         {
             Boolean result = false;

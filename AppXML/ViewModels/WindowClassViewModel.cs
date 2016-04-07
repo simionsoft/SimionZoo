@@ -65,6 +65,8 @@ namespace AppXML.ViewModels
         {
 
            string result = "";
+           if (resume==null || !resume.HasChildNodes)
+               return result;
            foreach(XmlNode rChild in resume.ChildNodes)
            {
                string rTag = rChild.Name;

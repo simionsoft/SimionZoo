@@ -215,8 +215,9 @@ void CFeatureList::copy(const CFeatureList* inList)
 	}
 }
 
-void CFeatureList::offsetIndices(unsigned int offset)
+void CFeatureList::offsetIndices(int offset)
 {
+	if (offset == 0) return;
 	for (unsigned int i = 0; i < m_numFeatures; i++)
 		m_pFeatures[i].m_index += offset;
 }

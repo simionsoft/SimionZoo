@@ -12,12 +12,14 @@
 
 CLASS_INIT(CSimGod)
 {
+	if (!pParameters) return;
 	m_numSimions = pParameters->countChildren("Simion");
 	m_pSimions = new CSimion*[m_numSimions];
 	CParameters* pChild = pParameters->getChild("Simion");
 	for (int i = 0; i < m_numSimions; i++)
 	{
-		MULTI_VALUED_FACTORY(m_pSimions[i], "Simions", "Simions: agents and controllers",CSimion, pChild);
+		m_pSimions[i] = 0;
+		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", "Simions: agents and controllers",CSimion, pChild);
 		pChild = pChild->getNextChild("Simion");
 	}
 	

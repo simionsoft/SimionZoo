@@ -8,11 +8,9 @@
 
 
 //LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
-CLinearVFA::CLinearVFA()
+CLinearVFA::CLinearVFA(CParameters* pParameters) : CParamObject(pParameters)
 {
 	m_pWeights = 0;
-	m_loadFilename = 0;
-	m_saveFilename = 0;
 }
 CLinearVFA::~CLinearVFA()
 {
@@ -40,7 +38,13 @@ void CLinearVFA::saturateOutput(double min, double max)
 	m_maxOutput = max;
 }
 
-void CLinearVFA::saveWeights(const char* pFilename)
+void CLinearVFA::setIndexOffset(unsigned int offset)
+{
+	m_minIndex = offset;
+	m_maxIndex = offset + m_numWeights;
+}
+
+bool CLinearVFA::saveWeights(const char* pFilename)
 {
 	FILE* pFile;
 	assert(m_pWeights && m_numWeights >= 0);
@@ -51,10 +55,14 @@ void CLinearVFA::saveWeights(const char* pFilename)
 		fwrite(&m_numWeights, sizeof(unsigned int), 1, (FILE*)pFile);
 		fwrite(m_pWeights, sizeof(double), m_numWeights, (FILE*)pFile);
 		fclose(pFile);
+		return true;
 	}
+	else
+		CLogger::logMessage(MessageType::Error,"Couldn't open binary file with VFA weights");
+	return false;
 }
 
-void CLinearVFA::loadWeights(const char* pFilename)
+bool CLinearVFA::loadWeights(const char* pFilename)
 {
 	FILE* pFile;
 	unsigned int numWeightsRead;
@@ -69,45 +77,49 @@ void CLinearVFA::loadWeights(const char* pFilename)
 		fread_s(m_pWeights, numWeightsRead*sizeof(double), sizeof(double), numWeightsRead, (FILE*)pFile);
 
 		fclose(pFile);
+		return true;
 	}
+	else
+		CLogger::logMessage(MessageType::Warning, "Couldn't load weights from file");
+	return false;
 }
-
-void CLinearStateVFA::load(const char* pFilename)
-{
-	CParameters* pFeatureMapParameters;
-	char msg[128];
-	char binFile[512];
-	char xmlDescFile[512];
-	FILE* pXMLFile;
-	CParameterFile* parameterFile;
-
-	if (pFilename == 0 || pFilename[0] == 0) return;
-
-	sprintf_s(msg, 128, "Loading Policy (\"%s\" (.bin/.xml)...", pFilename);
-	CLogger::logMessage(Info, msg);
-
-	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
-
-	fopen_s(&pXMLFile, xmlDescFile, "r");
-	if (pXMLFile)
-	{
-		//pFeatureMapParameters = m_pStateFeatureMap->getParameters();
-
-		//if (pFeatureMapParameters)
-		//	pFeatureMapParameters->saveFile(pXMLFile);
-
-		//fclose(pXMLFile);
-		//CLogger::logMessage(Info, "OK\n");
-		return;
-	}
-
-	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
-	loadWeights(binFile);
-
-	sprintf_s(msg, 128, "FAILED", binFile);
-	CLogger::logMessage(Warning, msg);
-}
-
+//
+//void CLinearStateVFA::load(const char* pFilename)
+//{
+//	CParameters* pFeatureMapParameters;
+//	char msg[128];
+//	char binFile[512];
+//	char xmlDescFile[512];
+//	FILE* pXMLFile;
+//	CParameterFile parameterFile;
+//	CParameters* pReadParameters;
+//
+//	if (pFilename == 0 || pFilename[0] == 0) return;
+//
+//	sprintf_s(msg, 128, "Loading Policy (\"%s\" (.bin/.xml)...", pFilename);
+//	CLogger::logMessage(Info, msg);
+//
+//	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
+//
+//	pReadParameters = parameterFile.loadFile(xmlDescFile);
+//	pFeatureMapParameters = m_pStateFeatureMap->setParameters(pReadParameters);
+//
+//		//if (pFeatureMapParameters)
+//		//	pFeatureMapParameters->saveFile(pXMLFile);
+//
+//		//fclose(pXMLFile);
+//		//CLogger::logMessage(Info, "OK\n");
+//	//	return;
+//	//}
+//
+//	sprintf_s(binFile, 512, "%s", pFilename);
+//	if (loadWeights(binFile))
+//		sprintf_s(msg, 128, "OK", binFile);
+//	else
+//		sprintf_s(msg, 128, "FAILED", binFile);
+//	CLogger::logMessage(Warning, msg);
+//}
+//
 void CLinearStateVFA::save(const char* pFilename)
 {
 	CParameters* pFeatureMapParameters;
@@ -118,7 +130,7 @@ void CLinearStateVFA::save(const char* pFilename)
 
 	if ( pFilename == 0 || pFilename[0] == 0) return;
 
-	sprintf_s(msg, 128, "Saving Policy (\"%s\" (.bin/.xml)...", pFilename);
+	sprintf_s(msg, 128, "Saving Policy to \"%s\" (.bin/.xml)...", pFilename);
 	CLogger::logMessage(Info, msg);
 
 	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
@@ -135,11 +147,11 @@ void CLinearStateVFA::save(const char* pFilename)
 			pFeatureMapParameters->saveFile(pXMLFile);
 
 		fclose(pXMLFile);
-		CLogger::logMessage(Info, "OK\n");
+		CLogger::logMessage(Info, "OK");
 		return;
 	}
 
-	sprintf_s(msg, 128, "FAILED", binFile);
+	sprintf_s(msg, 128, "Couldn't save the policy", binFile);
 	CLogger::logMessage(Warning, msg);
 }
 
@@ -147,12 +159,14 @@ void CLinearStateVFA::save(const char* pFilename)
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters), CLinearVFA()
+CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction (state->features)","",CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = new double[m_numWeights];
+	m_minIndex = 0;
+	m_maxIndex = m_numWeights;
 
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
 
@@ -160,42 +174,79 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CParamObject(pParameters), CLinearVFA()
 	CONST_DOUBLE_VALUE(initValue, "Init-Value", 0.0,"The initial value given to the VFA's weights on initialization");
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights[i] = initValue;
-	//std::fill_n(m_pWeights, m_numWeights, initValue);
 
-	FILE_PATH_VALUE(m_loadFilename, "Load", "", "The weights will be loaded from this file");
-	FILE_PATH_VALUE(m_saveFilename, "Save", "", "The weights will be saved to this file");
-
-	if (m_loadFilename)
-		load(m_loadFilename);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
 	END_CLASS();
 }
+CLinearStateVFA::CLinearStateVFA() : CLinearVFA(0)
+{}
+
+CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
+{
+	char message[1024];
+	//load the map feature description from an xml file
+	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.xml", "The VFA will be loaded from this file");
+	CParameterFile mapFeatureParameterFile;
+	sprintf_s(message, 1024, "Loaded %s file", m_loadFilename);
+	CLogger::logMessage(MessageType::Info,message);
+
+	m_mapFeatureParameters= mapFeatureParameterFile.loadFile(m_loadFilename);
+	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(m_mapFeatureParameters);
+
+	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
+	m_pWeights = new double[m_numWeights];
+	m_minIndex = 0;
+	m_maxIndex = m_numWeights;
+
+	//load the weigths from the binary file
+	char binFilename[1024];
+	strcpy_s(binFilename, 1024, m_loadFilename);
+	strcpy_s(&binFilename[strlen(m_loadFilename) - 3], 1024 - strlen(m_loadFilename), "bin");
+	loadWeights(binFilename);
+
+	m_pAux = new CFeatureList("LinearStateVFA/aux");
+
+	m_bSaturateOutput = false;
+	m_minOutput = 0.0;
+	m_maxOutput = 0.0;
+	END_CLASS();
+}
+CLinearStateVFAFromFile::~CLinearStateVFAFromFile()
+{
+	delete[] m_mapFeatureParameters;
+}
+
+CLASS_FACTORY(CLinearStateVFA)
+{
+	CHOICE("Parameterization", "Do we want to define the vfa explicitly or load it from file?");
+	CHOICE_ELEMENT("Explicit", CLinearStateVFA,"The parameterization is explicitly given and no weights loaded.");
+	CHOICE_ELEMENT("From-File", CLinearStateVFAFromFile, "The parameterization and weights are read from a file.");
+	END_CHOICE();
+	END_CLASS();
+}
 
 CLinearStateVFA::~CLinearStateVFA()
 {
-	if (m_saveFilename)
-		save(m_saveFilename);
-
 	delete m_pStateFeatureMap;
 	delete m_pAux;
 }
-
 
 
 void CLinearStateVFA::getFeatures(const CState* s, CFeatureList* outFeatures)
 {
 	assert (s);
 	assert (outFeatures);
-	m_pStateFeatureMap->getFeatures(s,0,outFeatures);
+	m_pStateFeatureMap->getFeatures(s,outFeatures);
+	outFeatures->offsetIndices(m_minIndex);
 }
 
 void CLinearStateVFA::getFeatureState(unsigned int feature, CState* s)
 {
-	assert(feature>=0 && feature<m_pStateFeatureMap->getTotalNumFeatures());
-	m_pStateFeatureMap->getFeatureStateAction(feature,s,0);
+	if (feature>=m_minIndex && feature<m_maxIndex)
+		m_pStateFeatureMap->getFeatureState(feature,s);
 }
 
 
@@ -203,23 +254,24 @@ void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
 {
 	assert(pFeatures);
 
+
 	//replicating code because i think it will be more efficient avoiding the per-iteration if
 	if (!m_bSaturateOutput)
 		for (unsigned int i= 0; i<pFeatures->m_numFeatures; i++)
 		{
-			assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
-
-			m_pWeights[pFeatures->m_pFeatures[i].m_index]+= alpha* pFeatures->m_pFeatures[i].m_factor;
+			//IF instead of assert because some features may not belong to this specific VFA (for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
+			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
+				m_pWeights[pFeatures->m_pFeatures[i].m_index]+= alpha* pFeatures->m_pFeatures[i].m_factor;
 		}
 	else
 		for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 		{
-			assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
-
-			m_pWeights[pFeatures->m_pFeatures[i].m_index] = 
-				std::min(m_maxOutput,
-					std::max(m_minOutput
-							, m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
+			//IF instead of assert because some features may not belong to this specific VFA (for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
+			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
+				m_pWeights[pFeatures->m_pFeatures[i].m_index] = 
+					std::min(m_maxOutput,
+						std::max(m_minOutput
+								, m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
 		}
 }
 
@@ -227,6 +279,7 @@ void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
 double CLinearStateVFA::getValue(const CState *s)
 {
 	getFeatures(s, m_pAux);
+	m_pAux->offsetIndices(-(int)m_minIndex);
 	return CLinearVFA::getValue(m_pAux);
 }
 
@@ -235,15 +288,17 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map","",CFeatureMap);
-	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map","",CFeatureMap);
+	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CStateFeatureMap);
+	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CActionFeatureMap);
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
 	m_numWeights = m_numStateWeights * m_numActionWeights;
 	m_pWeights = new double[m_numWeights];
+	m_minIndex = 0;
+	m_maxIndex = m_numWeights;
 
 	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
 
@@ -273,21 +328,24 @@ void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeat
 {
 	assert(s); assert(a);
 	assert(outFeatures);
-	m_pStateFeatureMap->getFeatures(s, 0, m_pAux);
+	m_pStateFeatureMap->getFeatures(s, m_pAux);
 
-	m_pActionFeatureMap->getFeatures(0, a, outFeatures);
+	m_pActionFeatureMap->getFeatures(a, outFeatures);
 
 	m_pAux->spawn(outFeatures, m_numStateWeights);
+
+	outFeatures->offsetIndices(m_minIndex);
 }
 
 void CLinearStateActionVFA::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
 {
-	assert(feature >= 0 && feature<m_numWeights);
-
-	if (s)
-		m_pStateFeatureMap->getFeatureStateAction(feature % m_numStateWeights, s, 0);
-	if (a)
-		m_pActionFeatureMap->getFeatureStateAction(feature / m_numStateWeights, 0, a);
+	if (feature >= m_minIndex && feature < m_maxIndex)
+	{
+		if (s)
+			m_pStateFeatureMap->getFeatureState(feature % m_numStateWeights, s);
+		if (a)
+			m_pActionFeatureMap->getFeatureAction(feature / m_numStateWeights, a);
+	}
 }
 
 
@@ -299,19 +357,17 @@ void CLinearStateActionVFA::add(const CFeatureList* pFeatures, double alpha)
 	if (!m_bSaturateOutput)
 	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 	{
-		assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
-
-		m_pWeights[pFeatures->m_pFeatures[i].m_index] += alpha* pFeatures->m_pFeatures[i].m_factor;
+		if (pFeatures->m_pFeatures[i].m_index>=m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
+			m_pWeights[pFeatures->m_pFeatures[i].m_index] += alpha* pFeatures->m_pFeatures[i].m_factor;
 	}
 	else
 	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 	{
-		assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
-
-		m_pWeights[pFeatures->m_pFeatures[i].m_index] =
-			std::min(m_maxOutput,
-			std::max(m_minOutput
-			, m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
+		if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
+			m_pWeights[pFeatures->m_pFeatures[i].m_index] =
+				std::min(m_maxOutput,
+				std::max(m_minOutput
+				, m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
 	}
 }
 
@@ -352,3 +408,39 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	getFeatureStateAction(arg,0,a);
 }
 
+double CLinearStateActionVFA::max(const CState* s)
+{
+	//state features in aux list
+	getFeatures(s, 0, m_pAux);
+
+	double value = 0.0;
+	double maxValue = std::numeric_limits<double>::lowest();
+
+	//action-value maximization
+	for (unsigned int i = 0; i < m_numActionWeights; i++)
+	{
+		m_pAux->offsetIndices(m_numStateWeights);
+
+		value = getValue(m_pAux);
+		if (value>maxValue)
+			maxValue = value;
+	}
+
+	return maxValue;
+}
+
+void CLinearStateActionVFA::getActionValues(const CState* s,double *outActionValues)
+{
+	if (!outActionValues)
+		throw std::exception("CLinearStateActionVFA::getAction Values(...) tried to get action values without providing a buffer");
+	//state features in aux list
+	getFeatures(s, 0, m_pAux);
+
+	//action-value maximization
+	for (unsigned int i = 0; i < m_numActionWeights; i++)
+	{
+		m_pAux->offsetIndices(m_numStateWeights);
+
+		outActionValues[i] = getValue(m_pAux);
+	}
+}

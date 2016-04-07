@@ -133,7 +133,7 @@ double CBhatnagarSchedule::getValue()
 }
 
 
-CLASS_FACTORY(CNumericValue)
+CLASS_FACTORY_NEW_WINDOW(CNumericValue)
 {
 	CHOICE("Schedule","Schedule-type");
 	CHOICE_ELEMENT("Constant", CConstantValue,"Constant value");

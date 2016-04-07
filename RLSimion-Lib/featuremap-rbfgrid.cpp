@@ -10,13 +10,13 @@
 #define ACTIVATION_THRESHOLD 0.0001
 
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters) : CFeatureMap(pParameters)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
 {
 	m_numDimensions = 0;
 	m_pGrid = 0;
 }
 
-CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters)
+CLASS_CONSTRUCTOR_NEW_WINDOW(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters), CStateFeatureMap(pParameters)
 {
 	m_pVarFeatures= new CFeatureList("RBFGrid/var");
 
@@ -43,7 +43,9 @@ CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGridFeatureMap(
 	END_CLASS();
 }
 
-CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters)
+
+
+CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters), CActionFeatureMap(pParameters)
 {
 	m_pVarFeatures = new CFeatureList("RBFGrid/var");
 
@@ -69,6 +71,7 @@ CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap
 		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 	END_CLASS();
 }
+
 
 
 CGaussianRBFGridFeatureMap::~CGaussianRBFGridFeatureMap()

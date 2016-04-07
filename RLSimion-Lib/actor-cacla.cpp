@@ -13,7 +13,7 @@
 CLASS_CONSTRUCTOR(CCACLALearner): EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
-	CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA","",CETraces, "Actor/E-Traces");
+	CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA",true,CETraces, "Actor/E-Traces");
 	NUMERIC_VALUE(m_pAlpha, "Alpha","Learning gain [0..1]");
 
 	END_CLASS();
@@ -39,12 +39,12 @@ void CCACLALearner::updatePolicy(const CState *s, const CAction *a, const CState
 	{
 		alpha = m_pAlpha->getValue();
 
-		m_pPolicy->getVFA()->getFeatures(s, m_pStateFeatures);
+		m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-		lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);
+		lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);
 
 		if (alpha != 0.0)
-			m_pPolicy->getVFA()->add(m_pStateFeatures, alpha*lastNoise);
+			m_pPolicy->addFeatures(m_pStateFeatures, alpha*lastNoise);
 	}
 }
 

@@ -13,7 +13,7 @@ CLASS_CONSTRUCTOR(CRegularPolicyGradientLearner)
 	: EXTENDS(CPolicyLearner,pParameters)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
-	CHILD_CLASS(m_e,"E-Traces","Eligibility traces used by the regular Pol.Grad. learner","",CETraces,"Actor/E-Traces");
+	CHILD_CLASS(m_e,"E-Traces","Eligibility traces used by the regular Pol.Grad. learner",true,CETraces,"Actor/E-Traces");
 	NUMERIC_VALUE(m_pAlpha,"Alpha","The learning gain");
 
 	END_CLASS();
@@ -37,12 +37,12 @@ void CRegularPolicyGradientLearner::updatePolicy(const CState *s, const CAction 
 	alpha = m_pAlpha->getValue();
 
 
-	m_pPolicy->getVFA()->getFeatures(s, m_pStateFeatures);
+	m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getVFA()->getValue(m_pStateFeatures);// m_pOutput->getValue(i);
+	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);// m_pOutput->getValue(i);
 
 
 	if (alpha != 0.0)
-		m_pPolicy->getVFA()->add(m_pStateFeatures, alpha*lastNoise*td);
+		m_pPolicy->addFeatures(m_pStateFeatures, alpha*lastNoise*td);
 }
 

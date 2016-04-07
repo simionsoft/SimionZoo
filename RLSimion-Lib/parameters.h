@@ -11,7 +11,7 @@ class CParameterFile : private tinyxml2::XMLDocument
 
 public:
 
-	CParameters* loadFile(const char* fileName, const char* nodeName);
+	CParameters* loadFile(const char* fileName, const char* nodeName= (const char*)0);
 	const char* getError();
 };
 
@@ -37,4 +37,6 @@ public:
 
 	void saveFile(const char* pFilename);
 	void saveFile(FILE* pFile);
+
+	void clone(CParameterFile* pParameterFile);
 };

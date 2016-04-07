@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <APP Name="RLSimion">
+  <EXE>../Release/RLSimion.exe</EXE>
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
 
@@ -10,5 +11,4 @@
   <BRANCH Name="Experiment" Class="CExperiment"/>
 
   <BRANCH Name="SimGod" Class="CSimGod"/>
-
 </APP>

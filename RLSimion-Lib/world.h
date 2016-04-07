@@ -24,6 +24,7 @@ public:
 	double getT();
 	double getStepStartT();
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel; }
+	static void setDynamicModel(CDynamicModel* model){ m_pDynamicModel = model; }
 
 	CWorld();
 	~CWorld();
@@ -56,8 +57,10 @@ public:
 	virtual void reset(CState *s)= 0;
 	virtual void executeAction(CState *s,CAction *a,double dt)= 0;
 
-	CState* getStateDescriptor(){return m_pStateDescriptor;}
-	CAction* getActionDescriptor(){return m_pActionDescriptor;}
+	CState* getStateDescriptor();
+	CAction* getActionDescriptor();
+	CState* getStateInstance();
+	CAction* getActionInstance();
 	double* getConstant(const char* constantName);
 
 	static CDynamicModel* getInstance(CParameters* pParameters);

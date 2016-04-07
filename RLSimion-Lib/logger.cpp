@@ -16,11 +16,6 @@ CLASS_INIT(CLogger)
 	if (!pParameters) return;
 
 	m_outputDir = 0;// new char[MAX_FILENAME_LENGTH];
-	m_filePrefix = 0;// new char[MAX_FILENAME_LENGTH];
-
-
-	DIR_PATH_VALUE(m_outputDir,  "Output-Directory","../logs","Directory where the output log files will be saved");
-	CONST_STRING_VALUE(m_filePrefix, "Prefix", "","Prefix given to the output log files");
 
 	const char* boolStr;
 	ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "False","Log evaluation episodes?");
@@ -34,7 +29,7 @@ CLASS_INIT(CLogger)
 
 	CONST_DOUBLE_VALUE(m_logFreq,"Log-Freq", 0.25,"Log frequency. Simulation time in seconds.");
 
-	_mkdir(m_outputDir);
+	//_mkdir(m_outputDir);
 
 
 	m_pEpisodeTimer = new CTimer();
@@ -42,11 +37,30 @@ CLASS_INIT(CLogger)
 	m_lastLogSimulationT = 0.0;
 	END_CLASS();
 }
+
+void CLogger::setLogDirectory(const char* xmlFilePath)
+{
+	if (!xmlFilePath)
+		throw(std::exception("CLogger. No output directory provided."));
+
+	m_outputDir = new char[strlen(xmlFilePath)+1];
+	strcpy_s(m_outputDir, strlen(xmlFilePath) + 1, xmlFilePath);
+
+	int i = strlen(m_outputDir)-1;
+	while (i > 0 && m_outputDir[i] != '/' && m_outputDir[i] != '\\')
+		i--;
+
+	if (i > 0)
+		m_outputDir[i] = 0;
+	//_splitpath_s(xmlFilePath,NULL, 0,m_outputDir, sizeof(m_outputDir),NULL, 0,NULL, 0);
+
+}
+
 CLogger::CLogger()
 {
 	//default values for safety
-	m_outputDir = 0;
-	m_filePrefix = 0;
+
+
 	m_bLogEvaluationEpisodes = false;
 	m_bLogEvaluationExperiment = false;
 	m_bLogTrainingEpisodes = true;
@@ -59,8 +73,8 @@ CLogger::~CLogger()
 {
 	delete m_pExperimentTimer;
 	delete m_pEpisodeTimer;
-	//delete [] m_outputDir;
-	//delete [] m_filePrefix;
+
+	if (m_outputDir) delete[] m_outputDir;
 }
 
 void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation,unsigned int index)
@@ -68,16 +82,16 @@ void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool
 	if (episodeLog)
 	{
 		if (!evaluation)
-			sprintf_s(buffer, bufferSize, "%s/%s-train-epis-%d.txt", m_outputDir, m_filePrefix, index);
+			sprintf_s(buffer, bufferSize, "%s/log-train-epis-%d.txt", m_outputDir, index);
 		else
-			sprintf_s(buffer, bufferSize, "%s/%s-eval-epis-%d.txt", m_outputDir, m_filePrefix, index);
+			sprintf_s(buffer, bufferSize, "%s/log-eval-epis-%d.txt", m_outputDir, index);
 	}
 	else
 	{
 		if (!evaluation)
-			sprintf_s(buffer, bufferSize, "%s/%s-train-exp.txt", m_outputDir, m_filePrefix);
+			sprintf_s(buffer, bufferSize, "%s/log-train-exp.txt", m_outputDir);
 		else
-			sprintf_s(buffer, bufferSize, "%s/%s-eval-exp.txt", m_outputDir, m_filePrefix);
+			sprintf_s(buffer, bufferSize, "%s/log-eval-exp.txt", m_outputDir);
 	}
 }
 
@@ -126,20 +140,23 @@ void CLogger::writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex
 	{
 		FILE* pFile = openLogFile(false, false, evalEpisode, episodeIndex);
 
-		//output the episode index, the elapsed time since the experiment started and the last episode's time length
-		//__int64 currentCounter;
-		//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-		double experimentTime = m_pExperimentTimer->getElapsedTime(false);//(double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
-		double episodeDuration = m_pEpisodeTimer->getElapsedTime(false);// (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
-
-		fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
-		//output the stats
-		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+		if (pFile)
 		{
-			fprintf(pFile, "%.3f(%.3f) ", (*it)->getStatsInfo()->getAvg(), (*it)->getStatsInfo()->getStdDev());
+			//output the episode index, the elapsed time since the experiment started and the last episode's time length
+			//__int64 currentCounter;
+			//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
+			double experimentTime = m_pExperimentTimer->getElapsedTime(false);//(double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
+			double episodeDuration = m_pEpisodeTimer->getElapsedTime(false);// (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
+
+			fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
+			//output the stats
+			for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+			{
+				fprintf(pFile, "%.3f(%.3f) ", (*it)->getStatsInfo()->getAvg(), (*it)->getStatsInfo()->getStdDev());
+			}
+			fprintf(pFile, "\n");
+			fclose(pFile);
 		}
-		fprintf(pFile, "\n");
-		fclose(pFile);
 	}
 }
 
@@ -149,14 +166,17 @@ void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
 	{
 		FILE* pFile = openLogFile(false, true, evalEpisode, episodeIndex);
 
-		fprintf(pFile, "%.3f ", RLSimion::World.getT());
-
-		for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+		if (pFile)
 		{
-			fprintf(pFile, "%.3f ", (*it)->getValue());
+			fprintf(pFile, "%.3f ", RLSimion::World.getT());
+
+			for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+			{
+				fprintf(pFile, "%.3f ", (*it)->getValue());
+			}
+			fprintf(pFile, "\n");
+			fclose(pFile);
 		}
-		fprintf(pFile, "\n");
-		fclose(pFile);
 	}
 }
 
@@ -176,7 +196,7 @@ void CLogger::firstEpisode(bool evalEpisode)
 	m_pEpisodeTimer->startTimer();
 	//QueryPerformanceCounter((LARGE_INTEGER*)&m_experimentStartCounter);
 
-	if ((m_bLogEvaluationExperiment && evalEpisode) || (!m_bLogTrainingExperiment && !evalEpisode))
+	if ((m_bLogEvaluationExperiment && evalEpisode) || (m_bLogTrainingExperiment && !evalEpisode))
 		openLogFile(true, false, evalEpisode, 1);
 }
 
@@ -258,36 +278,39 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 
 //WINDOWS-SPECIFIC STUFF
 #include <windows.h>
-
+#include <string>
 
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
 void* CLogger::m_outputPipe = 0;
 
 void CLogger::logMessage(MessageType type, const char* message)
 {
-	wchar_t messageLine[1024];
+
+	char messageLine[1024];
 	unsigned long bytesWritten;
+
 
 	if (m_messageOutputMode == MessageOutputMode::NamedPipe && m_outputPipe)
 	{
+		//mbstowcs_s(&numChars, messageMByte, 1024, message, 1023);
 		switch (type)
 		{
 		case Warning:
-			swprintf_s(messageLine, 1024, TEXT("<Message>WARNING: %s</Message>"), message);
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Progress:
 			//extra spaces to avoid overwriting only partially previous message
-			swprintf_s(messageLine, 1024, TEXT("<Progress>%s</Progress>"), message);
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Progress>%s</Progress>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Info:
-			swprintf_s(messageLine, 1024, TEXT("<Message>INFO: %s</Message>"), message);
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Message>INFO: %s</Message>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Error:
-			swprintf_s(messageLine, 1024, TEXT("<Message>FATAL ERROR: %s</Message>"));
-			WriteFile(m_outputPipe, messageLine, 1024, &bytesWritten, 0);
+			sprintf_s(messageLine, 1024, "<Message>FATAL ERROR: %ls</Message>\n", message);
+			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			closeOutputPipe();
 			exit(-1);
 		}
@@ -307,9 +330,8 @@ void CLogger::logMessage(MessageType type, const char* message)
 			printf("INFO: %s", message);
 			break;
 		case Error:
-			printf("FATAL ERROR: %s\n");
-			RLSimion::shutdown();
-			exit(-1);
+			printf("FATAL ERROR: %s\n",message);
+			break;
 		}
 	}
 }
@@ -325,8 +347,18 @@ void CLogger::closeOutputPipe()
 
 void CLogger::createOutputPipe(const char* pipeName)
 {
+	size_t convertedChars;
+	
 	wchar_t w_pipename[512];
-	swprintf_s(w_pipename, 512, TEXT("\\\\.\\pipe\\%s"), pipeName);
+	wchar_t w_completePipename[512] = L"\\\\.\\pipe\\";
+
+	
+	mbstowcs_s(&convertedChars, w_pipename,512, pipeName, 512);
+	wcscat_s(w_completePipename, w_pipename);
+
+
+
+	//wprintf(L"Creating pipe: %ls\n", w_completePipename);
 
 	//m_outputPipe = CreateNamedPipe(
 	//	w_pipename,             // pipe name 
@@ -340,7 +372,7 @@ void CLogger::createOutputPipe(const char* pipeName)
 	//	NULL);                    // default security attribute  
 
 	m_outputPipe = CreateFile(
-		w_pipename,   // pipe name 
+		w_completePipename,   // pipe name 
 		GENERIC_WRITE,
 		0,              // no sharing 
 		NULL,           // default security attributes
@@ -349,8 +381,12 @@ void CLogger::createOutputPipe(const char* pipeName)
 		NULL);          // no template file 
 
 	if (m_outputPipe == INVALID_HANDLE_VALUE)
-		return;
+	{
+		//printf("FAILED\n");
 
+		return;
+	}
+	//printf("OK\n");
 
 	m_messageOutputMode = MessageOutputMode::NamedPipe;
 }

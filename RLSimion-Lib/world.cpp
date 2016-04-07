@@ -27,8 +27,8 @@ CLASS_INIT(CWorld)
 	m_t= 0.0;
 
 	//The dynamic model must be created before the reward so that references to state variables are correctly set
-	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model","The dynamic model","", CDynamicModel);
-	CHILD_CLASS(m_pRewardFunction, "Reward","The reward function","New", CRewardFunction);
+	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model","The dynamic model",false, CDynamicModel);
+	CHILD_CLASS(m_pRewardFunction, "Reward","The reward function",false, CRewardFunction);
 
 	CONST_INTEGER_VALUE(m_numIntegrationSteps,"Num-Integration-Steps",4,"The number of integration steps performed each simulation time-step");
 	CONST_DOUBLE_VALUE(m_dt,"Delta-T",0.01,"The delta-time between simulation steps");
@@ -111,19 +111,7 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 //	return 0;
 //}
 //
-//CState *CWorld::getStateInstance()
-//{
-//	if (m_pDynamicModel)
-//		return m_pDynamicModel->getStateDescriptor()->getInstance();
-//	return 0;
-//}
-//
-//CAction *CWorld::getActionInstance()
-//{
-//	if (m_pDynamicModel)
-//		return m_pDynamicModel->getActionDescriptor()->getInstance();
-//	return 0;
-//}
+
 
 CDynamicModel::~CDynamicModel()
 { 
@@ -149,6 +137,23 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 			m_pConstants = rootNode->getChild("Constants");
 		}
 	}
+}
+
+CState* CDynamicModel::getStateDescriptor()
+{
+	return m_pStateDescriptor;
+}
+CAction* CDynamicModel::getActionDescriptor()
+{
+	return m_pActionDescriptor;
+}
+CState* CDynamicModel::getStateInstance()
+{
+	return m_pStateDescriptor->getInstance(); 
+}
+CAction* CDynamicModel::getActionInstance()
+{
+	return m_pActionDescriptor->getInstance();
 }
 
 CLASS_FACTORY(CDynamicModel)

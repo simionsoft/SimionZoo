@@ -11,10 +11,12 @@ namespace AppXML.Models
     public class CApp:CNode
     {
         private static List<XMLNodeRefViewModel> viewsWithNodeRef = new List<XMLNodeRefViewModel>();
+        public static string EXE;
 
         public static void cleanAll()
         {
             viewsWithNodeRef= new List<XMLNodeRefViewModel>();
+            EXE = null;
         }
 
         public static void addView(XMLNodeRefViewModel view)

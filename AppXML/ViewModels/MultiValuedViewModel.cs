@@ -16,29 +16,15 @@ namespace AppXML.ViewModels
         private IntegerViewModel _header;
         private CIntegerValue original;
         private string label;
-        private bool _isOptional;
-        private bool _isNull = false;
         private string _comment;
         public string Comment { get { return _comment; } set { } }
         private XmlDocument _doc;
-        public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
-        public bool IsEnabled { get { return !IsNull; } set {} }
         private ClassViewModel _headerClass;
         private ObservableCollection<ClassViewModel> _adedClasses;
         private string clas;
         private string tag;
         public string Tag { get { return tag; } set { } }
-        public string IsOptionalVisible
-        {
-            get
-            {
-                if (_isOptional)
-                    return "Visible";
-                else
-                    return "Hidden";
-            }
-            set { }
-        }
+       
         public string simpleVisible { get { 
             if (_aded != null)
                 return "Visible"; 
@@ -59,11 +45,10 @@ namespace AppXML.ViewModels
         }
         public string Label { get { return label; } set { } }
 
-        public MultiValuedViewModel(string label, string clas,string comment ,bool isOptional, XmlDocument doc,string tag)
+        public MultiValuedViewModel(string label, string clas,string comment , XmlDocument doc,string tag)
         {
             _comment = comment;
             _doc = doc;
-            _isOptional = isOptional;
             if (tag == null || tag == "")
                 this.tag = label;
             else
@@ -164,9 +149,14 @@ namespace AppXML.ViewModels
                 {
                     string valor = x.TextBoxFile[0].Default;
                     original.defaultValue = valor;
+                    
                 }
             }
             IntegerViewModel t = new IntegerViewModel(label, original,_doc,tag);
+            if(t.TextBoxFile!=null)
+            {
+                t.TextBoxFile[0].copyDefault = Header.TextBoxFile[0].copyDefault;
+            }
             _aded.Add(t);
         }
         public void DeleteLast()
@@ -197,24 +187,12 @@ namespace AppXML.ViewModels
                 }
             }
         }
-        public void Click(Object sender)
-        {
-            CheckBox cb = sender as CheckBox;
-            if (Convert.ToBoolean(cb.IsChecked))
-            {
-                IsNull = true;
-            }
-            else
-                IsNull = false;
-            
-
-        }
+    
         public String DeleteVisible { get { if (_adedClasses != null && _adedClasses.Count > 0) return "Visible"; else return "Hidden"; } set { } }
 
         public override bool validate()
         {
-            if(_isNull)
-                return true;
+           
             if(HeaderClass!=null)
             {
                
@@ -240,20 +218,11 @@ namespace AppXML.ViewModels
             }
             return true;
         }
-        public bool cleanAndValidate()
-        {
-            if(_isOptional && _isNull)
-            {
-                this.AdedClasses = null;
-                this.HeaderClass = null;
-            }
-            return validate();
-        }
+       
 
         public override List<XmlNode> getXmlNode()
         {
-            if (_isNull)
-                return null;
+            
             List<XmlNode> nodes = new List<XmlNode>();
             if(HeaderClass!=null)
             {
@@ -290,6 +259,25 @@ namespace AppXML.ViewModels
                 }
             }
             return nodes;
+        }
+
+        public void setAsNull()
+        {
+            
+            if (HeaderClass != null)
+                HeaderClass.setAsNull();
+            else
+                Header.Value = "";
+            if(_adedClasses!=null)
+            {
+                foreach (ClassViewModel cvm in _adedClasses)
+                    cvm.setAsNull();
+            }
+            if (_aded != null)
+            {
+                foreach (IntegerViewModel ivm in _aded)
+                    ivm.Value = "";
+            }
         }
     }
    

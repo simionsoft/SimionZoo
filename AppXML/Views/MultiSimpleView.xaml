@@ -16,7 +16,7 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical" Visibility="{Binding simpleVisible}">
+    <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <ItemsControl ItemsSource="{Binding Aded}">
                 <ItemsControl.ItemsPanel>

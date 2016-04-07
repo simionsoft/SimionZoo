@@ -4,6 +4,11 @@
 #include "parameters.h"
 #include "parameters-numeric.h"
 
+double getRandomValue()
+{
+	return (double)(rand() + 1) / ((double)RAND_MAX + 1);
+}
+
 double getNormalDistributionSample(double mu, double sigma)
 {
 	double x1 = (double) (rand() + 1) / ((double) RAND_MAX + 1);

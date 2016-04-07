@@ -18,11 +18,14 @@ ENUMERATION(Distribution, "linear", "quadratic", "cubic");
 ENUMERATION(Interpolation, "linear", "quadratic", "cubic");
 ENUMERATION(TimeReference, "episode", "experiment", "experimentTime");
 
+//This is a trick to use a string directly from within an app's definition
 
 
 CParameters* RLSimion::init(int argc, char* argv[],const char* rootNodeName)
 {
 	CParameters* pParameters;
+
+	if (argc > 2) CLogger::createOutputPipe(argv[2]);
 
 	if (!g_pConfigDoc) g_pConfigDoc = new CParameterFile;
 
@@ -30,11 +33,10 @@ CParameters* RLSimion::init(int argc, char* argv[],const char* rootNodeName)
 
 	if (argc <= 1 || !pParameters) exit(-1);
 
-	if (argc > 2) CLogger::createOutputPipe(argv[2]);
-
 	//In the beginning, a logger was created so that we could know about creation itself
 	Logger.init(pParameters->getChild("Log")); //with or without parameters
-	
+	Logger.setLogDirectory(argv[1]); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
+
 	//Then the world was created by chance
 	World.init(pParameters->getChild("World"));
 

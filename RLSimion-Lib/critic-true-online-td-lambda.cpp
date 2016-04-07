@@ -12,7 +12,7 @@
 CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)
 	: EXTENDS(CCritic,pParameters)
 {
-	CHILD_CLASS(m_e, "E-Traces","Eligibility traces of the critic","", CETraces,"Critic/E-Traces" );
+	CHILD_CLASS(m_e, "E-Traces","Eligibility traces of the critic",true, CETraces,"Critic/E-Traces" );
 	m_aux= new CFeatureList("Critic/aux");
 	m_v_s= 0.0;
 	NUMERIC_VALUE(m_pAlpha, "Alpha", "Learning gain of the critic");

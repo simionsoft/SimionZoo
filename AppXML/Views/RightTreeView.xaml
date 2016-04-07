@@ -28,7 +28,7 @@
           DataType="{x:Type data:TreeNode}" 
           ItemsSource="{Binding ChildNodes}"
           >
-                        <TextBlock Text="{Binding Text}"/>
+                        <TextBlock Text="{Binding Text}" ToolTip="{Binding Difference}"/>
                     </HierarchicalDataTemplate>
                 </ResourceDictionary>
             </TreeView.Resources>

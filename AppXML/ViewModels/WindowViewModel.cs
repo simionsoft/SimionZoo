@@ -15,6 +15,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.IO.Pipes;
+using System.Xml.Linq;
+using System.Xml.XPath;
 namespace AppXML.ViewModels
 {
     public interface IValidable
@@ -36,6 +38,9 @@ namespace AppXML.ViewModels
         public RightTreeViewModel Graf { get { return _graf; } set { } }
         private ObservableCollection<string> _apps = new ObservableCollection<string>();
         public ObservableCollection<string> Apps { get { return _apps; } set { } }
+        private bool _isSelectedNodeLeaf = false;
+        public bool IsSelectedNodeLeafBool { get { return _isSelectedNodeLeaf; } set { _isSelectedNodeLeaf = value; NotifyOfPropertyChange(() => IsSelectedNodeLeaf); } }
+        public string IsSelectedNodeLeaf { get { if (_isSelectedNodeLeaf)return "Visible"; else return "Hidden"; } set { } }
         private string[] apps;
         private string selectedApp;
         public string SelectedApp { get { return selectedApp; } 
@@ -45,15 +50,22 @@ namespace AppXML.ViewModels
                 CApp.cleanAll();
 
                 int index = _apps.IndexOf(value);
-                selectedApp = Apps[index];
+                if (index == -1)
+                    return;
+                selectedApp = value;
                 _rootnode = Utility.getRootNode(apps[index]);
                 _branches = _rootnode.children;
                 _doc = (this._rootnode as CApp).document;
-                Graf = null;
+                _graf = null;
                 NotifyOfPropertyChange(() => Branches);
                 NotifyOfPropertyChange(() => Graf);
+                NotifyOfPropertyChange(() => rootnode);
+                NotifyOfPropertyChange(() => RemoveChildVisible);
+                NotifyOfPropertyChange(() => AddChildVisible);
+
             } 
         }
+       
         /*
         public WindowViewModel(string[] apps, ObservableCollection<string> Apps, int index)
         {
@@ -92,6 +104,15 @@ namespace AppXML.ViewModels
             
             }
         }
+        public void ModifySelectedLeaf()
+        {
+            if (!validate())
+                return;
+            XmlDocument document = new XmlDocument();
+            XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
+            document.AppendChild(newRoot);
+            Graf.SelectedTreeNode.Doc = document;
+        }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         public CNode rootnode
         {
@@ -112,6 +133,7 @@ namespace AppXML.ViewModels
                 return;
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "XML-File | *.xml";
+            sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
                 System.IO.Directory.CreateDirectory(CombinedPath);
@@ -123,7 +145,47 @@ namespace AppXML.ViewModels
 
 
         }
-        
+        public List<string> SaveTree()
+        {
+            Models.TreeNode root = Graf.RootNode;
+            List<NodeAndName>  leafs = Graf.getAllLeafs();
+            if (root == null || leafs == null || leafs.Count<1)
+                return null;
+            List<string> result = new List<string>();
+            string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            XmlDocument treeDoc = new XmlDocument();
+            XmlElement treeRootNode = treeDoc.CreateElement("ExperimentsTree");
+            treeRootNode.SetAttribute("App", SelectedApp);
+            XmlElement rootDef = treeDoc.CreateElement("Root");
+            string rootFolder = "../experiments/experiment" + stamp + "/root";
+            Directory.CreateDirectory(rootFolder);
+            string rootPath = rootFolder + "/root.xml";
+            root.Doc.Save(rootPath);
+            rootDef.InnerText = rootPath;
+            treeRootNode.AppendChild(rootDef);
+            XmlElement leafFather = treeDoc.CreateElement("Experiments");
+            List<string> names = new List<string>();
+            foreach(NodeAndName item in leafs)
+            {
+                while (names.Contains(item.name))
+                    item.name += "c";
+                names.Add(item.name);
+                string folderName = "../experiments/experiment"+stamp+"/" + item.name;
+                Directory.CreateDirectory(folderName);
+                string xmlPath = folderName +"/"+ item.name + ".xml";
+                item.doc.Save(xmlPath);
+                XmlElement leaf = treeDoc.CreateElement(item.name);
+                leaf.InnerText = xmlPath;
+                leafFather.AppendChild(leaf);
+                result.Add(Path.GetFullPath(xmlPath));
+            }
+            treeRootNode.AppendChild(leafFather);
+            treeDoc.AppendChild(treeRootNode);
+            String fileName = "../experiments/experiment" + stamp + ".xml";
+            treeDoc.Save(fileName);
+            return result;
+
+        }
         private bool validate()
         {
             _doc.RemoveAll();
@@ -155,10 +217,15 @@ namespace AppXML.ViewModels
         {
             
             //here we have to set the new data such as: selected choice element, default values for every *.value, etc.
+            cvm.setAsNull();
             bool dataSet = false;
             bool multiStarted = false;
             string currentMulti = "";
             int multiIndex = 0;
+            if(cvm.ResumeClass!=null)
+            {
+                cvm = cvm.ResumeClass;
+            }
             foreach (XmlNode data in dataNode)
             {
                 dataSet = false;
@@ -166,7 +233,7 @@ namespace AppXML.ViewModels
                 string branchTag = null;
                 string[] splitedTag = null;
                 //once we have the tag we have to find out if the branch has this tag somewhere
-                if (cvm.Choice != null)
+                if (!dataSet&&cvm.Choice != null)
                 {
                     branchTag = cvm.Choice.Tag;
                     splitedTag = branchTag.Split('/');
@@ -198,14 +265,17 @@ namespace AppXML.ViewModels
                             }
                         }
                     }
+                    if (dataSet)
+                        break;
                 }
                 foreach (ValidableAndNodeViewModel view in cvm.AllItems)
                 {
                     if (!dataSet)
                     {
                         MultiXmlNodeRefViewModel itemMultiXml = view as MultiXmlNodeRefViewModel;
-                        if (itemMultiXml != null)
+                        if (!dataSet && itemMultiXml != null)
                         {
+                            
                             string itemTag = itemMultiXml.Tag;
                             splitedTag = itemTag.Split('/');
                             XmlNode tmp = data;
@@ -222,6 +292,7 @@ namespace AppXML.ViewModels
                                             multiIndex = 0;
                                             multiStarted = true;
                                             itemMultiXml.Header.SelectedOption = tmp.InnerText;
+                                            dataSet = true;
                                             if (itemMultiXml.AddedXml != null)
                                                 itemMultiXml.AddedXml.Clear();
                                             break;
@@ -238,6 +309,7 @@ namespace AppXML.ViewModels
                                                 itemMultiXml.AddNew();
                                             itemMultiXml.AddedXml[multiIndex].SelectedOption = tmp.InnerText;
                                             multiIndex++;
+                                            dataSet = true;
                                             break;
                                         }
                                     }
@@ -247,14 +319,17 @@ namespace AppXML.ViewModels
                                         {
                                             tmp = data.FirstChild;
                                             dataTag = tmp.Name;
+                                          
                                         }
 
                                     }
                                 }
                             }
+                            if (dataSet)
+                                break;
                         }
                             XMLNodeRefViewModel itemXml = view as XMLNodeRefViewModel;
-                            if (itemXml != null)
+                            if (!dataSet && itemXml != null)
                             {
                                 string itemTag = itemXml.Tag;
                                 splitedTag = itemTag.Split('/');
@@ -282,10 +357,13 @@ namespace AppXML.ViewModels
                                         }
                                     }
                                 }
+                                if (dataSet)
+                                    break;
                             }
                             MultiValuedViewModel itemMulti = view as MultiValuedViewModel;
-                            if (itemMulti != null)
+                            if (!dataSet && itemMulti != null)
                             {
+                                
                                 string itemTag = itemMulti.Tag;
                                 splitedTag = itemTag.Split('/');
                                 XmlNode tmp = data;
@@ -295,7 +373,7 @@ namespace AppXML.ViewModels
                                     {
                                         if (tag == splitedTag[splitedTag.Length - 1])
                                         {
-
+                                           
                                             if (multiStarted == false || currentMulti != tag)
                                             {
                                                 currentMulti = tag;
@@ -311,6 +389,7 @@ namespace AppXML.ViewModels
                                                     fillTheClass(itemMulti.HeaderClass, tmp);
                                                     //item.AdedClasses.Clear();
                                                 }
+                                                dataSet = true;
                                                 break;
                                             }
                                             else
@@ -331,6 +410,7 @@ namespace AppXML.ViewModels
                                                     fillTheClass(itemMulti.AdedClasses[multiIndex], tmp);
 
                                                 }
+                                                dataSet = true;
                                                 multiIndex++;
                                                 break;
                                             }
@@ -346,10 +426,13 @@ namespace AppXML.ViewModels
                                         }
                                     }
                                 }
+                                if (dataSet)
+                                    break;
                             }
                             IntegerViewModel itemInteger = view as IntegerViewModel;
-                            if (itemInteger != null)
+                            if (!dataSet && itemInteger != null)
                             {
+                                
                                 string itemTag = itemInteger.Tag;
                                 splitedTag = itemTag.Split('/');
                                 XmlNode tmp = data;
@@ -376,9 +459,11 @@ namespace AppXML.ViewModels
                                         }
                                     }
                                 }
+                                if (dataSet)
+                                    break;
                             }
                             BranchViewModel itemBranch = view as BranchViewModel;
-                            if (itemBranch != null)
+                            if (!dataSet && itemBranch != null)
                             {
                                 string itemTag = itemBranch.Tag;
                                 splitedTag = itemTag.Split('/');
@@ -391,6 +476,7 @@ namespace AppXML.ViewModels
                                         {
                                             if (tmp.HasChildNodes)
                                             {
+                                                itemBranch.IsNull = false;
                                                 //item.Value = tmp.InnerText;
                                                 if (itemBranch.Class.Resume == null)
                                                     fillTheClass(itemBranch.Class, tmp);
@@ -416,205 +502,20 @@ namespace AppXML.ViewModels
                                     }
                                 }
                             }
-                        }
-                    }
-                    /*
-                    if(!dataSet && cvm.Branches!=null)
-                    {
-                        foreach (BranchViewModel item in cvm.Branches)
-                        {
                             if (dataSet)
                                 break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-                                        if (tmp.HasChildNodes)
-                                        {
-                                            //item.Value = tmp.InnerText;
-                                            if (item.Class.Resume == null)
-                                                fillTheClass(item.Class, tmp);
-                                            else
-                                            {
-                                                fillTheClass(item.Class.ResumeClass, tmp);
-                                                item.Class.setResumeInClassView();
-
-                                            }
-                                            dataSet = true;
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
                         }
                     }
-                    if (!dataSet && cvm.Multis != null)
-                    {
-                        foreach (MultiValuedViewModel item in cvm.Multis)
-                        {
-                            if (dataSet)
-                                break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-
-                                       if(multiStarted==false || currentMulti!=tag)
-                                       {
-                                           currentMulti = tag;
-                                           multiIndex = 0;
-                                           multiStarted = true;
-                                           if(item.HeaderClass==null)
-                                           {
-                                               item.Header.Value = tmp.InnerText;
-                                               //item.Aded.Clear();
-                                           }
-                                           else
-                                           {
-                                               fillTheClass(item.HeaderClass, tmp);
-                                               //item.AdedClasses.Clear();
-                                           }
-                                           break;
-                                       }
-                                       else
-                                       {
-                                           if(item.HeaderClass==null)
-                                           {
-                                               int index = item.Aded.Count;
-                                               if(index==-0 || multiIndex>=index)
-                                                    item.AddNew();
-                                               item.Aded[multiIndex].Value = tmp.InnerText;    
-                                           }
-                                                                            
-                                           else
-                                           {
-                                               int index = item.AdedClasses.Count;
-                                               if (index ==0 ||multiIndex >= index)
-                                                   item.Add();
-                                               fillTheClass(item.AdedClasses[multiIndex], tmp);
-
-                                           }
-                                           multiIndex++;
-                                           break;
-                                       }
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!dataSet && cvm.XMLNODE != null)
-                    {
-                        foreach (XMLNodeRefViewModel item in cvm.XMLNODE)
-                        {
-                            if (dataSet)
-                                break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-                                    
-                                            item.SelectedOption = tmp.InnerText;
-                                            dataSet = true;
-                                            break;
-                                   
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!dataSet && cvm.Items != null)
-                    {
-                        foreach (IntegerViewModel item in cvm.Items)
-                        {
-                            if (dataSet)
-                                break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-                                    
-                                            item.Value = tmp.InnerText;
-                                            dataSet = true;
-                                            break;
-                                    
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }*/
                 
             }
         }
         public void Load()
         {
-            //si hubiera mas de una aplicacion habria que tenerlo en cuenta
-            //el include no se trata ya que al cargar ya se hace el include si hubiera un selector de app habria que tenerlo en cuenta
-            //por lo que el definitions que se va a utilizar es el que ya esta cargado
-            //CApp.cleanAll();
-            //Utility.cleanAll();
-            //CNode newRootNode = Utility.getRootNode("../config/RLSimion.xml");
-            //string fileApp = "../config/RLSimion.xml";
-            //XmlDocument appFile = new XmlDocument();
-            //appFile.Load(fileApp);
+            
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "XML-File | *.xml";
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()),"experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 fileDoc = ofd.FileName;
@@ -624,11 +525,19 @@ namespace AppXML.ViewModels
             XmlDocument loadedDocument = new XmlDocument();
             loadedDocument.Load(fileDoc);
             XmlNode loadedDocumentRoot = loadedDocument.DocumentElement;
+            if (!loadedDocumentRoot.Name.Equals(selectedApp))
+            {
+                SelectedApp = loadedDocumentRoot.Name;
+                NotifyOfPropertyChange(() => SelectedApp);
+
+            }
             LoadDocument(loadedDocumentRoot);
            
         }
         private void LoadDocument(XmlNode loadedDocumentRoot)
         {
+            //we are goingo to set as null every viewModel that is optional. If they are optional are the document has a value for them the will be set in the process
+            //setAsNull();
             foreach (BranchViewModel branch in _branches)
             {
                 //we have to find the correct data input for every branch we have in the form. If we do not have data we do nothing
@@ -638,12 +547,20 @@ namespace AppXML.ViewModels
                     {
                         if (dataNode.Name == branch.Name)
                         {
-                            fillTheClass(branch.Class, dataNode);
+                           fillTheClass(branch.Class, dataNode);
                         }
                     }
                 }
             }
 
+        }
+
+        private void setAsNull()
+        {
+            foreach(BranchViewModel branch in _branches)
+            {
+                branch.setAsNull();
+            }
         }
         public void SetAsRoot()
         {
@@ -663,11 +580,13 @@ namespace AppXML.ViewModels
             }
             
             XmlDocument document = new XmlDocument();
+
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
+            document.Save("copia.xml");
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
-                _graf = new RightTreeViewModel(rootNode);
+                _graf = new RightTreeViewModel(rootNode,this);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => AddChildVisible);
         }
@@ -705,38 +624,250 @@ namespace AppXML.ViewModels
         public void SaveAll()
         {
             List<NodeAndName> myList = Graf.getAllLeafs();
+            initExperimentas(SaveTree());         
+        }
+        public void LoadTree()
+        {
+            string fileDoc = null;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "XML-File | *.xml";
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                fileDoc = ofd.FileName;
+            }
+            else
+                return;
+            XmlDocument treeDoc = new XmlDocument();
+            treeDoc.Load(fileDoc);
+            XmlElement fileRoot = treeDoc.DocumentElement;
+            if (fileRoot.Name != "ExperimentsTree")
+                return;
+            if (fileRoot.Attributes["App"] == null || !_apps.Contains(fileRoot.Attributes["App"].Value))
+                return;
+            SelectedApp = fileRoot.Attributes["App"].Value;
+            NotifyOfPropertyChange(() => SelectedApp);
+            foreach(XmlElement element in fileRoot.ChildNodes)
+            {
+                try
+                {
+
+                
+                    if(element.Name=="Root")
+                    {
+                        string path = element.Attributes["Path"].Value;
+                        if(File.Exists(path))
+                        {
+                            XmlDocument rootDocument = new XmlDocument();
+                            rootDocument.Load(path);
+                            LoadDocument(rootDocument.DocumentElement);
+                            this._graf = null;
+                            SetAsRoot();
+                        }
+                    }
+                    else if(element.Name=="Experiments")
+                    {
+                        Models.TreeNode top = Graf.SelectedTreeNode;
+                        foreach(XmlElement exp in element.ChildNodes)
+                        {
+                            string nodeName = exp.Name;
+                            string path = exp.Attributes["Path"].Value;
+                            if(File.Exists(path))
+                            {
+                                XmlDocument leafDoc = new XmlDocument();
+                                leafDoc.Load(path);
+                                Models.TreeNode treeNode = new Models.TreeNode(nodeName,leafDoc,top);
+                                Graf.SelectedTreeNode = top;
+                                Graf.AddNode(treeNode);
+                                if(exp.HasChildNodes)
+                                {
+                                    foreach(XmlElement child in exp.ChildNodes)
+                                    {
+                                        LoadChildren(child, treeNode);
+                                    }
+                                }
+                            }
+                        }
+                        NotifyOfPropertyChange(() => RemoveChildVisible);
+                    }
+                }catch(Exception e)
+                {
+                   Console.WriteLine(e.StackTrace);
+                }
+            }
+
+        }
+
+        private void LoadChildren(XmlElement child, Models.TreeNode father)
+        {
+            try
+            {
+                Graf.SelectedTreeNode = father;
+                string name = child.Name;
+                string path = child.Attributes["Path"].Value;
+                if (File.Exists(path))
+                {
+                    XmlDocument leafDoc = new XmlDocument();
+                    leafDoc.Load(path);
+                    Models.TreeNode treeNode = new Models.TreeNode(name, leafDoc, father);
+                    Graf.AddNode(treeNode);
+                    if (child.HasChildNodes)
+                    {
+                        foreach (XmlElement node in child.ChildNodes)
+                        {
+                            LoadChildren(node, treeNode);
+                        }
+                    }
+                }
+
+
+            }catch(Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+            }
+
+        }
+        
+        private List<String> getPaths(List<NodeAndName> myList)
+        {
             List<string> pahts = new List<string>();
-            string folderName = "../experiments/" +"experiment" +DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            string folderName = "../experiments/" + "experiment" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), folderName);
             Directory.CreateDirectory(CombinedPath);
-            foreach(NodeAndName item in myList)
+            List<string> names = new List<string>();
+            foreach (NodeAndName item in myList)
             {
-                string path = CombinedPath + "/" + item.name + ".xml";
+                string path = CombinedPath + "/" + item.name;
+                while (names.Contains(path.ToUpper()))
+                {
+                    path += 'c';
+                }
+                names.Add(path.ToUpper());
+                path += ".xml";
                 item.doc.Save(path);
-                pahts.Add(path);
+                pahts.Add(Path.GetFullPath(path));
             }
-            ProcessManagerViewModel  pmvm = initExperimentas(pahts);
-            pmvm.run();
-            
+            return pahts;
+
         }
-        private ProcessManagerViewModel initExperimentas(List<string> myList)
+        private void initExperimentas(List<string> myList)
         {
             ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
             settings.ShowInTaskbar = true;
             settings.Title = "Process Manager";
-            //foreach (string name in myList)
-            //{
-             //   ProcessStateViewModel psv = new ProcessStateViewModel(name);
-              //  pwvm.addProcess(psv);
-            //}
-            new WindowManager().ShowWindow(pwvm, null, settings);
-            return pwvm;
+            ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
+            new WindowManager().ShowDialog(pwvm2, null, settings);
+            if(pwvm2.Exit==false)
+            {
+                pwvm2.Manager.closeAll();
+            }
             
             
         }
-        
+        public void SaveAllTheNodes()
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "XML-File | *.xml";
+            sfd.InitialDirectory = "../experiments";
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
+            if (!Directory.Exists(CombinedPath))
+                System.IO.Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
+            string xmlFileName = null;
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                xmlFileName = sfd.FileName;
+            }
+            else
+                return;
+            xmlFileName = xmlFileName.Split('.')[0];
+            xmlFileName = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), xmlFileName);
+            if(Directory.Exists(xmlFileName))
+            {
+                Directory.Delete(xmlFileName,true);
+            }
+
+            Models.TreeNode root = Graf.RootNode;
+            List<NodeAndName> leafs = Graf.getAllLeafs();
+            if (root == null || leafs == null || leafs.Count < 1)
+                return;
+            List<string> result = new List<string>();
+           // string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            XmlDocument treeDoc = new XmlDocument();
+            XmlElement treeRootNode = treeDoc.CreateElement("ExperimentsTree");
+            treeRootNode.SetAttribute("App", SelectedApp);
+            XmlElement rootDef = treeDoc.CreateElement("Root");
+            string rootFolder = xmlFileName + "/root";
+            Directory.CreateDirectory(rootFolder);
+            string rootPath = rootFolder + "/root.xml";
+            root.Doc.Save(rootPath);
+            rootDef.SetAttribute("Path", rootPath);
+            treeRootNode.AppendChild(rootDef);
+            if (!root.hasChildren())
+                return;
+            List<string> names = new List<string>();
+            XmlElement leafFather = treeDoc.CreateElement("Experiments");
+            foreach(Models.TreeNode child in root.ChildNodes)
+            {
+                string name = child.Text;
+                while (names.Contains(name))
+                    name += "c";
+                names.Add(name);
+                XmlDocument docume = child.Doc;
+                string folderPath = xmlFileName + "/" + name;
+                Directory.CreateDirectory(folderPath);
+                string filePath = folderPath + "/" + name + ".xml";
+                docume.Save(filePath);
+                //crear carpeta para archivo xml y carpetas para sus hijos
+                //añadir el nodo al fichero xml
+                XmlElement docElement = treeDoc.CreateElement(name);
+                docElement.SetAttribute("Path", filePath);
+                //docElement.InnerText = filePath;
+                leafFather.AppendChild(docElement);
+                //si tiene hijos hay que recorrerlos 
+                if(child.hasChildren())
+                {
+                    foreach (Models.TreeNode item in child.ChildNodes)
+                        ResolverChildNode(item,folderPath,docElement);
+                }
+            }
+            treeRootNode.AppendChild(leafFather);
+            treeDoc.AppendChild(treeRootNode);
+            treeDoc.Save(xmlFileName+ ".xml");
+        }
+        public void ModifySelectedNode()
+        {
+
+        }
+        public void ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)
+        {
+            string name = node.Text;
+            XmlDocument docume = node.Doc;
+            List<string> names = new List<string>();
+            while (names.Contains(name))
+                name += "c";
+            XmlDocument xmlDocument = father.OwnerDocument;
+            //crear la carpeta que va a contener el xml y sus hijos si los tuviera
+            string folderPath = fatherPath+"/"+name;
+            Directory.CreateDirectory(folderPath);
+            string filePath = folderPath + "/" + name + ".xml";
+            docume.Save(filePath);
+            //crear el xmlElement y añadirlo al padre
+            XmlElement element = xmlDocument.CreateElement(name);
+            element.SetAttribute("Path", filePath);
+
+            //element.InnerText = filePath;
+            father.AppendChild(element);
+            if(node.hasChildren())
+            {
+                foreach (Models.TreeNode child in node.ChildNodes)
+                    ResolverChildNode(child, folderPath, element);
+            }
+                
+
+        }
         public void LoadSelectedNode()
         {
             if (Graf.SelectedTreeNode == null || Graf.SelectedTreeNode.Doc==null)

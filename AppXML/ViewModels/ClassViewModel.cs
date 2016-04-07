@@ -79,30 +79,33 @@ namespace AppXML.ViewModels
                         //to do: añadir los multis a su lista y añadirlo en el xaml
                         //if (_multis == null)
                          //   _multis = new ObservableCollection<MultiValuedViewModel>();
-                        bool isOptional = false;
-                        if (child.Attributes["Optional"] != null)
-                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
+                      
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
+                        string def = null;
+                        if (child.Attributes["Default"] != null)
+                        {
+                            def = child.Attributes["Default"].Value;
+                        }
                         if(child.Attributes["Class"].Value=="XML-NODE-REF")
                         {
                             string action = child.Attributes["HangingFrom"].Value;
                             string xmlfile = child.Attributes["XMLFile"].Value;
-                            MultiXmlNodeRefViewModel mxml = new MultiXmlNodeRefViewModel(child.Attributes["Name"].Value, xmlfile, action, doc, tag);
+                            MultiXmlNodeRefViewModel mxml = new MultiXmlNodeRefViewModel(child.Attributes["Name"].Value ,xmlfile, action, doc, tag);
                             _allItems.Add(mxml);
                         }
                         else if (!CNode.definitions.ContainsKey(child.Attributes["Class"].Value))
                         {
-                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value,def ,comment, doc, tag);
                             _allItems.Add(simple);
                         }
                         else
                         {
-                            MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, doc, tag);
                             _allItems.Add(mvvm);
                         }
                         
@@ -187,23 +190,25 @@ namespace AppXML.ViewModels
                         //to do: añadir los multis a su lista y añadirlo en el xaml
                         //if (_multis == null)
                           //  _multis = new ObservableCollection<MultiValuedViewModel>();
-                        bool isOptional = false;
-                        if (child.Attributes["Optional"] != null)
-                            isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
                         string comment = null;
                         if (child.Attributes["Comment"] != null)
                             comment = child.Attributes["Comment"].Value;
                         string tag = null;
                         if (child.Attributes["XMLTag"] != null)
                             tag = child.Attributes["XMLTag"].Value;
+                        string def = null;
+                        if (child.Attributes["Default"] != null)
+                        {
+                            def = child.Attributes["Default"].Value;
+                        }
                         if (!CNode.definitions.ContainsKey(child.Attributes["Class"].Value))
                         {
-                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            MultiSimpleViewModel simple = new MultiSimpleViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, def,comment, doc, tag);
                             _allItems.Add(simple);
                         }
                         else
                         {
-                            MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
+                            MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, doc, tag);
                             _allItems.Add(mvvm);
                         }
                         //MultiValuedViewModel mvvm = new MultiValuedViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, doc, tag);
@@ -502,6 +507,33 @@ namespace AppXML.ViewModels
             }
             return nodo;*/
             
+        }
+
+        public void setAsNull()
+        {
+            foreach(ValidableAndNodeViewModel item in this._allItems)
+            {
+                BranchViewModel bvwm = item as BranchViewModel;
+                ChoiceViewModel cvm = item as ChoiceViewModel;
+                MultiValuedViewModel mvvm = item as MultiValuedViewModel;
+                IntegerViewModel ivm = item as IntegerViewModel;
+                if(ivm!=null && ivm.IsOptional)
+                {
+                    ivm.Value = "";
+                }
+                if (bvwm != null)
+                {
+                    bvwm.setAsNull();
+                }
+               /* if(cvm !=null)
+                {
+                    cvm.setAsNull();
+                }*/
+                if(mvvm !=null)
+                {
+                    mvvm.setAsNull();
+                }
+            }
         }
     }
 }

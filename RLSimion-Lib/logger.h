@@ -15,7 +15,7 @@ enum MessageOutputMode {Console,NamedPipe};
 class CLogger
 {
 	char *m_outputDir;
-	char *m_filePrefix;
+
 
 	bool m_bLogEvaluationEpisodes;
 	bool m_bLogTrainingEpisodes;
@@ -59,10 +59,13 @@ public:
 	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
+	void setLogDirectory(const char* xmlFilePath);
+
 	static MessageOutputMode m_messageOutputMode;
 	static void* m_outputPipe;
 	static void createOutputPipe(const char* pipeName);
 	static void closeOutputPipe();
+
 	//Function called to report progress and error messages
 	//static so that it can be called right from the beginning
 	static void logMessage(MessageType type, const char* message);

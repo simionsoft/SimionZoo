@@ -43,6 +43,10 @@ namespace AppXML.Models
                 CNode.definitions=Utility.getDefinitions(node.InnerText);
                 return null;
             }
+            if(node.Name=="EXE")
+            {
+                CApp.EXE = node.InnerText;
+            }
             if (node.Name == "APP")
                 return new CApp(node, node.Attributes.GetNamedItem("Name").Value);
             if (node.Name == "BRANCH")
