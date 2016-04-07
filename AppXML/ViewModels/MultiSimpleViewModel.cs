@@ -9,7 +9,7 @@ namespace AppXML.ViewModels
 {
     public class MultiSimpleViewModel:MultiValuedViewModel
     {
-        public MultiSimpleViewModel(string label,string clas,string def,string comment, bool isOptional,XmlDocument doc,string tag):base(label,clas,comment,isOptional,doc,tag)
+        public MultiSimpleViewModel(string label,string clas,string def,string comment,XmlDocument doc,string tag):base(label,clas,comment,doc,tag)
         {
             if (base.Header.ComboBox != null)
                 base.Header.ComboBox[0].SelectedComboValue = def;

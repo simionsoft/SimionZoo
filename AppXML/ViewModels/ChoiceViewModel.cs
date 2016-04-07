@@ -122,5 +122,10 @@ namespace AppXML.ViewModels
             list.Add(result);
             return list;
         }
+
+        public void setAsNull()
+        {
+            Class.setAsNull();
+        }
     }
 }

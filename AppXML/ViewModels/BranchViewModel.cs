@@ -10,6 +10,7 @@ namespace AppXML.ViewModels
     public class BranchViewModel:ValidableAndNodeViewModel
     {
         private bool _isOptional;
+        public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
         private string _name;
         private ClassViewModel _class;
         private bool _isNull=false;
@@ -26,7 +27,7 @@ namespace AppXML.ViewModels
                 IsNull = !value;
             }
         }
-        public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsNull); NotifyOfPropertyChange(() => IsEnabled); } }
+        public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsSet); NotifyOfPropertyChange(() => IsEnabled); } }
         public bool IsEnabled { get { return !_isNull; } set { } }
 
         public string IsOptionalVisible 
@@ -119,6 +120,15 @@ namespace AppXML.ViewModels
             return null;
            
             
+        }
+
+        public void setAsNull()
+        {
+            if(this.IsOptional)
+            {
+                IsNull = true;
+            }
+            this.Class.setAsNull();
         }
     }
 }

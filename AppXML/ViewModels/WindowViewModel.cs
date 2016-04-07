@@ -50,6 +50,8 @@ namespace AppXML.ViewModels
                 CApp.cleanAll();
 
                 int index = _apps.IndexOf(value);
+                if (index == -1)
+                    return;
                 selectedApp = value;
                 _rootnode = Utility.getRootNode(apps[index]);
                 _branches = _rootnode.children;
@@ -215,6 +217,7 @@ namespace AppXML.ViewModels
         {
             
             //here we have to set the new data such as: selected choice element, default values for every *.value, etc.
+            cvm.setAsNull();
             bool dataSet = false;
             bool multiStarted = false;
             string currentMulti = "";
@@ -230,7 +233,7 @@ namespace AppXML.ViewModels
                 string branchTag = null;
                 string[] splitedTag = null;
                 //once we have the tag we have to find out if the branch has this tag somewhere
-                if (cvm.Choice != null)
+                if (!dataSet&&cvm.Choice != null)
                 {
                     branchTag = cvm.Choice.Tag;
                     splitedTag = branchTag.Split('/');
@@ -262,14 +265,17 @@ namespace AppXML.ViewModels
                             }
                         }
                     }
+                    if (dataSet)
+                        break;
                 }
                 foreach (ValidableAndNodeViewModel view in cvm.AllItems)
                 {
                     if (!dataSet)
                     {
                         MultiXmlNodeRefViewModel itemMultiXml = view as MultiXmlNodeRefViewModel;
-                        if (itemMultiXml != null)
+                        if (!dataSet && itemMultiXml != null)
                         {
+                            
                             string itemTag = itemMultiXml.Tag;
                             splitedTag = itemTag.Split('/');
                             XmlNode tmp = data;
@@ -286,6 +292,7 @@ namespace AppXML.ViewModels
                                             multiIndex = 0;
                                             multiStarted = true;
                                             itemMultiXml.Header.SelectedOption = tmp.InnerText;
+                                            dataSet = true;
                                             if (itemMultiXml.AddedXml != null)
                                                 itemMultiXml.AddedXml.Clear();
                                             break;
@@ -302,6 +309,7 @@ namespace AppXML.ViewModels
                                                 itemMultiXml.AddNew();
                                             itemMultiXml.AddedXml[multiIndex].SelectedOption = tmp.InnerText;
                                             multiIndex++;
+                                            dataSet = true;
                                             break;
                                         }
                                     }
@@ -311,14 +319,17 @@ namespace AppXML.ViewModels
                                         {
                                             tmp = data.FirstChild;
                                             dataTag = tmp.Name;
+                                          
                                         }
 
                                     }
                                 }
                             }
+                            if (dataSet)
+                                break;
                         }
                             XMLNodeRefViewModel itemXml = view as XMLNodeRefViewModel;
-                            if (itemXml != null)
+                            if (!dataSet && itemXml != null)
                             {
                                 string itemTag = itemXml.Tag;
                                 splitedTag = itemTag.Split('/');
@@ -346,10 +357,13 @@ namespace AppXML.ViewModels
                                         }
                                     }
                                 }
+                                if (dataSet)
+                                    break;
                             }
                             MultiValuedViewModel itemMulti = view as MultiValuedViewModel;
-                            if (itemMulti != null)
+                            if (!dataSet && itemMulti != null)
                             {
+                                
                                 string itemTag = itemMulti.Tag;
                                 splitedTag = itemTag.Split('/');
                                 XmlNode tmp = data;
@@ -359,7 +373,7 @@ namespace AppXML.ViewModels
                                     {
                                         if (tag == splitedTag[splitedTag.Length - 1])
                                         {
-
+                                           
                                             if (multiStarted == false || currentMulti != tag)
                                             {
                                                 currentMulti = tag;
@@ -375,6 +389,7 @@ namespace AppXML.ViewModels
                                                     fillTheClass(itemMulti.HeaderClass, tmp);
                                                     //item.AdedClasses.Clear();
                                                 }
+                                                dataSet = true;
                                                 break;
                                             }
                                             else
@@ -395,6 +410,7 @@ namespace AppXML.ViewModels
                                                     fillTheClass(itemMulti.AdedClasses[multiIndex], tmp);
 
                                                 }
+                                                dataSet = true;
                                                 multiIndex++;
                                                 break;
                                             }
@@ -410,10 +426,13 @@ namespace AppXML.ViewModels
                                         }
                                     }
                                 }
+                                if (dataSet)
+                                    break;
                             }
                             IntegerViewModel itemInteger = view as IntegerViewModel;
-                            if (itemInteger != null)
+                            if (!dataSet && itemInteger != null)
                             {
+                                
                                 string itemTag = itemInteger.Tag;
                                 splitedTag = itemTag.Split('/');
                                 XmlNode tmp = data;
@@ -440,9 +459,11 @@ namespace AppXML.ViewModels
                                         }
                                     }
                                 }
+                                if (dataSet)
+                                    break;
                             }
                             BranchViewModel itemBranch = view as BranchViewModel;
-                            if (itemBranch != null)
+                            if (!dataSet && itemBranch != null)
                             {
                                 string itemTag = itemBranch.Tag;
                                 splitedTag = itemTag.Split('/');
@@ -455,6 +476,7 @@ namespace AppXML.ViewModels
                                         {
                                             if (tmp.HasChildNodes)
                                             {
+                                                itemBranch.IsNull = false;
                                                 //item.Value = tmp.InnerText;
                                                 if (itemBranch.Class.Resume == null)
                                                     fillTheClass(itemBranch.Class, tmp);
@@ -480,188 +502,10 @@ namespace AppXML.ViewModels
                                     }
                                 }
                             }
-                        }
-                    }
-                    /*
-                    if(!dataSet && cvm.Branches!=null)
-                    {
-                        foreach (BranchViewModel item in cvm.Branches)
-                        {
                             if (dataSet)
                                 break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-                                        if (tmp.HasChildNodes)
-                                        {
-                                            //item.Value = tmp.InnerText;
-                                            if (item.Class.Resume == null)
-                                                fillTheClass(item.Class, tmp);
-                                            else
-                                            {
-                                                fillTheClass(item.Class.ResumeClass, tmp);
-                                                item.Class.setResumeInClassView();
-
-                                            }
-                                            dataSet = true;
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
                         }
                     }
-                    if (!dataSet && cvm.Multis != null)
-                    {
-                        foreach (MultiValuedViewModel item in cvm.Multis)
-                        {
-                            if (dataSet)
-                                break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-
-                                       if(multiStarted==false || currentMulti!=tag)
-                                       {
-                                           currentMulti = tag;
-                                           multiIndex = 0;
-                                           multiStarted = true;
-                                           if(item.HeaderClass==null)
-                                           {
-                                               item.Header.Value = tmp.InnerText;
-                                               //item.Aded.Clear();
-                                           }
-                                           else
-                                           {
-                                               fillTheClass(item.HeaderClass, tmp);
-                                               //item.AdedClasses.Clear();
-                                           }
-                                           break;
-                                       }
-                                       else
-                                       {
-                                           if(item.HeaderClass==null)
-                                           {
-                                               int index = item.Aded.Count;
-                                               if(index==-0 || multiIndex>=index)
-                                                    item.AddNew();
-                                               item.Aded[multiIndex].Value = tmp.InnerText;    
-                                           }
-                                                                            
-                                           else
-                                           {
-                                               int index = item.AdedClasses.Count;
-                                               if (index ==0 ||multiIndex >= index)
-                                                   item.Add();
-                                               fillTheClass(item.AdedClasses[multiIndex], tmp);
-
-                                           }
-                                           multiIndex++;
-                                           break;
-                                       }
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!dataSet && cvm.XMLNODE != null)
-                    {
-                        foreach (XMLNodeRefViewModel item in cvm.XMLNODE)
-                        {
-                            if (dataSet)
-                                break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-                                    
-                                            item.SelectedOption = tmp.InnerText;
-                                            dataSet = true;
-                                            break;
-                                   
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (!dataSet && cvm.Items != null)
-                    {
-                        foreach (IntegerViewModel item in cvm.Items)
-                        {
-                            if (dataSet)
-                                break;
-                            string itemTag = item.Tag;
-                            splitedTag = itemTag.Split('/');
-                            XmlNode tmp = data;
-                            foreach (string tag in splitedTag)
-                            {
-                                if (itemTag == dataTag)
-                                {
-                                    if (tag == splitedTag[splitedTag.Length - 1])
-                                    {
-                                    
-                                            item.Value = tmp.InnerText;
-                                            dataSet = true;
-                                            break;
-                                    
-                                    }
-                                    else
-                                    {
-                                        if (data.HasChildNodes)
-                                        {
-                                            tmp = data.FirstChild;
-                                            dataTag = tmp.Name;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-                    }*/
                 
             }
         }
@@ -692,6 +536,8 @@ namespace AppXML.ViewModels
         }
         private void LoadDocument(XmlNode loadedDocumentRoot)
         {
+            //we are goingo to set as null every viewModel that is optional. If they are optional are the document has a value for them the will be set in the process
+            //setAsNull();
             foreach (BranchViewModel branch in _branches)
             {
                 //we have to find the correct data input for every branch we have in the form. If we do not have data we do nothing
@@ -701,12 +547,20 @@ namespace AppXML.ViewModels
                     {
                         if (dataNode.Name == branch.Name)
                         {
-                            fillTheClass(branch.Class, dataNode);
+                           fillTheClass(branch.Class, dataNode);
                         }
                     }
                 }
             }
 
+        }
+
+        private void setAsNull()
+        {
+            foreach(BranchViewModel branch in _branches)
+            {
+                branch.setAsNull();
+            }
         }
         public void SetAsRoot()
         {

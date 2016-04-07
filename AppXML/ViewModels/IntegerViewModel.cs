@@ -22,6 +22,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<ComboBox> _comboBox;
         private ObservableCollection<TextBoxWithFile> _textBoxFile;
         private bool isOptional = false;
+        public bool IsOptional { get { return isOptional; } set { isOptional = value; } }
         private string _comment;
         public string Comment { get { return _comment; } set { } }
         private XmlDocument _doc;
