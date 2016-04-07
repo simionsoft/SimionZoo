@@ -32,8 +32,6 @@
     </Reward>
   </World>
   <Log>
-    <Output-Directory>../logs/underwater-vehicle</Output-Directory>
-    <Prefix>uv-cacla-td-5000</Prefix>
     <Log-Freq>0.25</Log-Freq>
     <Log-eval-episodes>True</Log-eval-episodes>
     <Log-training-episodes>False</Log-training-episodes>
@@ -55,6 +53,11 @@
             <Output>
               <Policy-Learner>
                 <CACLA>
+                  <E-Traces>
+                    <Threshold>0.001</Threshold>
+                    <Lambda>0.9</Lambda>
+                    <Replace>True</Replace>
+                  </E-Traces>
                   <Alpha>
                     <Schedule>
                       <Linear-Schedule>
@@ -71,6 +74,13 @@
                   <Policy>
                     <Policy>
                       <Deterministic-Policy-Gaussian-Noise>
+                        <Deterministic-Policy-VFA>
+                          <Parameterization>
+                            <From-File>
+                              <Load>../data/uv-5000.u-thrust.feature-map.xml</Load>
+                            </From-File>
+                          </Parameterization>
+                        </Deterministic-Policy-VFA>
                         <Exploration-Noise>
                           <Noise>
                             <GaussianNoise>
@@ -105,13 +115,6 @@
                           </Noise>
                         </Exploration-Noise>
                         <Output-Action>u-thrust</Output-Action>
-                        <Deterministic-Policy-VFA>
-                          <Parameterization>
-                            <From-File>
-                              <Load>../data/uv-5000-pid.u-thrust.xml</Load>
-                            </From-File>
-                          </Parameterization>
-                        </Deterministic-Policy-VFA>
                       </Deterministic-Policy-Gaussian-Noise>
                     </Policy>
                   </Policy>
