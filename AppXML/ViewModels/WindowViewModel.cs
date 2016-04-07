@@ -478,7 +478,7 @@ namespace AppXML.ViewModels
                                             {
                                                 itemBranch.IsNull = false;
                                                 //item.Value = tmp.InnerText;
-                                                if (itemBranch.Class.Resume == null)
+                                                if (itemBranch.Class.ItemName == null)
                                                     fillTheClass(itemBranch.Class, tmp);
                                                 else
                                                 {

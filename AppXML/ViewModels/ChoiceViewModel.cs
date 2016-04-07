@@ -89,7 +89,7 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => SelectedItem);
                 if (_Class != null)
                     _Class.removeViews();
-                _Class = new ClassViewModel(SelectedItem.clas,_doc);
+                _Class = new ClassViewModel(SelectedItem.clas,null,_doc);
                 if (SelectedItem.XML != null)
                 {
                     CNode.XML[_XML] = SelectedItem.XML;

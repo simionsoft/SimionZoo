@@ -74,7 +74,7 @@ namespace AppXML.ViewModels
                         this.clas = clas;
                         //List<ClassViewModel> list = new List<ClassViewModel>();
                         //list.Add(new ClassViewModel(clas));
-                        _headerClass = new ClassViewModel(clas,doc);
+                        _headerClass = new ClassViewModel(clas,label,doc);
                        //new ObservableCollection<ClassViewModel>(list);
                         _adedClasses = new ObservableCollection<ClassViewModel>();
 
@@ -167,7 +167,7 @@ namespace AppXML.ViewModels
         }
         public void Add()
         {
-            ClassViewModel cvm = new ClassViewModel(this.clas,_doc);
+            ClassViewModel cvm = new ClassViewModel(this.clas,null,_doc);
             //int index = _adedClasses.Count;
             //_adedClasses.Add(new ClassViewWithIndex(cvm,index));
             _adedClasses.Add(cvm);

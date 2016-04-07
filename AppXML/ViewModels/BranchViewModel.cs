@@ -45,7 +45,7 @@ namespace AppXML.ViewModels
         {
             _name = name;
             _comment = comment;
-            _class = new ClassViewModel(clas,doc);
+            _class = new ClassViewModel(clas,name,doc);
             _isOptional = isOptional;
             _doc = doc;
             if (tag == null || tag == "")

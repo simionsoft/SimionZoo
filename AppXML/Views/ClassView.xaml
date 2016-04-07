@@ -29,8 +29,7 @@
     </UserControl.Resources>
     <StackPanel>
         <StackPanel Orientation="Horizontal" Visibility="{Binding ResumeVisible}">
-            <Label x:Name="Resume"/>
-            <Button cal:Message.Attach="[Event Click]=[OpenForm()]" Content="Fill in"/>
+            <Button Content="{Binding ItemName}" cal:Message.Attach="[Event Click]=[OpenForm()]" Background="{Binding ButtonColor}"/>
         </StackPanel>
         <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}" Focusable="False">
           

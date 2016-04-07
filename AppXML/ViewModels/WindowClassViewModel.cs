@@ -25,7 +25,7 @@ namespace AppXML.ViewModels
             _father = father;
             _doc = doc;
             if (father.ResumeClass == null)
-                _father.ResumeClass = new ClassViewModel(className, false,doc);
+                _father.ResumeClass = new ClassViewModel(className,null, false,doc);
             
            
         }
@@ -37,6 +37,7 @@ namespace AppXML.ViewModels
             //string c = _father.ResumeClass.Multis[0].HeaderClass.Choice.Class.XMLNODE[0].SelectedOption;
             if (!ok)
             {
+                _father.ButtonColor = "Red";
                 DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);
                 dynamic settings = new ExpandoObject();
                 settings.WindowStyle = WindowStyle.ToolWindow;
@@ -52,13 +53,20 @@ namespace AppXML.ViewModels
             }
             else
             {
+                //set the color of buttom and close
+                _father.ButtonColor = "Blue";
+                TryClose();
+            }
+                /*
+            else
+            {
                 XmlNode c = _father.ResumeClass.getXmlNode();
                 XmlNode resume = _father.ResumeClass.resume;
                 string result = obteinResume(c, resume);
                 string test = "_RESUME: " + result;
                 _father.Resume = test;
                 TryClose();
-            }
+            }*/
         }
 
         private string obteinResume(XmlNode c, XmlNode resume)

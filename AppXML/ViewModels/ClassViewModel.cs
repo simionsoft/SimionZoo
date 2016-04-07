@@ -23,11 +23,13 @@ namespace AppXML.ViewModels
         private ObservableCollection<ValidableAndNodeViewModel> _allItems = new ObservableCollection<ValidableAndNodeViewModel>();
        
         private ChoiceViewModel _choice;
+        private string _buttonColor;
+        public string ButtonColor { get { return _buttonColor; } set { _buttonColor = value; NotifyOfPropertyChange(() => ButtonColor); } }
         /*private ObservableCollection<IntegerViewModel> _items;
         private ObservableCollection<MultiValuedViewModel> _multis;
         private ObservableCollection<BranchViewModel> _branches;
         private ObservableCollection<XMLNodeRefViewModel> _XMLNODE;*/
-        private string _resume;
+        private string _itemName;
         private string _className;
         private WindowClassViewModel _wclvm;
         private XmlDocument _doc;
@@ -38,15 +40,16 @@ namespace AppXML.ViewModels
             _wclvm.Save();
         }
 
-        //faltan los branches pero estan sin crear BranchViewModel y BranchView
-        public ClassViewModel(string clasName, XmlDocument doc)
+        
+        public ClassViewModel(string clasName,string itemName,  XmlDocument doc)
         {
             _doc = doc;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
             if (node.Attributes["Window"] != null)
             {
-                _resume = "Press the button to open the form";
+
+                this._itemName = itemName;
                 _wclvm = new WindowClassViewModel(clasName, this,_doc);
                
             }
@@ -150,14 +153,14 @@ namespace AppXML.ViewModels
 
         }
 
-        public ClassViewModel(string clasName, Boolean ignoreWindow, XmlDocument doc)
+        public ClassViewModel(string clasName, string itemName,Boolean ignoreWindow, XmlDocument doc)
         {
             _doc = doc;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
             if (ignoreWindow && node.Attributes["Window"] != null)
             {
-                _resume = "Press the button to open the form";
+                _itemName = itemName;
                 _wclvm = new WindowClassViewModel(clasName, this,_doc);
             }
             else
@@ -254,8 +257,8 @@ namespace AppXML.ViewModels
 
         }
 
-        public string ClassViewVisible { get { if (_resume != null)return "Hidden"; else return "Visible"; } set { } }
-        public string ResumeVisible { get { if (_resume == null)return "Hidden"; else return "Visible"; } set { } }
+        public string ClassViewVisible { get { if (_itemName != null)return "Hidden"; else return "Visible"; } set { } }
+        public string ResumeVisible { get { if (_itemName == null)return "Hidden"; else return "Visible"; } set { } }
         //public string ItemsVisible { get { if(Items == null || _resume!=null )return "Hidden";else return "Visible"; } set { } }
         //public string ChoiceVisible { get { if (Choice == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
         //public string BranchesVisible { get { if (Branches == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
@@ -267,7 +270,7 @@ namespace AppXML.ViewModels
         //public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         //public ObservableCollection<XMLNodeRefViewModel> XMLNODE { get { return _XMLNODE; } set { } }
         public ObservableCollection<ValidableAndNodeViewModel> AllItems { get { return _allItems; } set { } }
-        public string Resume { get { return _resume; } set { _resume = value; NotifyOfPropertyChange(() => Resume); } }
+        public string ItemName { get { return _itemName; } set { _itemName = value; NotifyOfPropertyChange(() => ItemName); } }
 
         public void removeViews()
         {
@@ -324,7 +327,7 @@ namespace AppXML.ViewModels
         }
         public bool validate()
         {
-            if(_wclvm==null)
+            if(_itemName==null)
             {
                 foreach(ValidableAndNodeViewModel item in _allItems)
                 {
@@ -384,7 +387,7 @@ namespace AppXML.ViewModels
             
             List<XmlNode> result = new List<XmlNode>();
             //XmlNode nodo = _doc.CreateElement(_className);
-            if(_resume==null)
+            if(_itemName==null)
             {
                 foreach (ValidableAndNodeViewModel item in _allItems)
                 {
