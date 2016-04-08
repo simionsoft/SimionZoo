@@ -8,6 +8,7 @@
 #include "vfa-critic.h"
 #include "parameters-numeric.h"
 #include "parameters.h"
+#include "app.h"
 
 CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)
 	: EXTENDS(CCritic,pParameters)
@@ -35,7 +36,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,
 	if (m_pAlpha->getValue()==0.0) return 0.0;
 	double rho = 0.0;
 	
-	if (RLSimion::Experiment.isFirstStep())
+	if (CApp::Experiment.isFirstStep())
 	{
 		//vs= theta^T * phi(s)
 		m_pVFunction->getFeatures(s,m_aux);

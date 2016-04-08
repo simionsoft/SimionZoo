@@ -8,7 +8,7 @@
 #include "noise.h"
 #include "etraces.h"
 #include "world.h"
-
+#include "app.h"
 
 ///////////////////////////////////////
 //Q-function-based POLICIES
@@ -129,7 +129,7 @@ void CQLearning::selectAction(const CState *s, CAction *a)
 CLASS_CONSTRUCTOR(CSARSA) : EXTENDS(CQLearning,pParameters)
 {
 	m_bNextActionSelected = false;
-	m_nextA = RLSimion::World.getDynamicModel()->getActionInstance();
+	m_nextA = CApp::World.getDynamicModel()->getActionInstance();
 	END_CLASS();
 }
 

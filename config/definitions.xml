@@ -32,6 +32,27 @@
     <MULTI-VALUED Name="Output" Class="CPolicyLearner-Factory" Comment="The outputs of the actor. One for each output dimension"/>
   </CLASS>
 
+  <CLASS Name="ControllerToVFAApp">
+    <MULTI-VALUED Name="Policy" Class="CLinearStateVFA-Factory" Comment="The VFAs used to approximate the controller"/>
+    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model's definition" Optional=" false"/>
+    <BRANCH Name="Controller" Class="CController-Factory" Comment="The controller to be approximated" Optional=" false"/>
+    <BRANCH Name="Output-DirFile" Class="CDirFileOutput" Comment="The output directory and file" Optional=" false"/>
+  </CLASS>
+
+  <CLASS Name="RLSimionApp">
+    <BRANCH Name="Log" Class="CLogger" Comment="The logger class" Optional=" false"/>
+    <BRANCH Name="World" Class="CWorld" Comment="The simulation environment and its parameters" Optional=" false"/>
+    <BRANCH Name="Experiment" Class="CExperiment" Comment="The parameters of the experiment" Optional=" false"/>
+    <BRANCH Name="SimGod" Class="CSimGod" Comment="The god class that controls all aspects of the simulation process" Optional=" false"/>
+  </CLASS>
+
+  <CLASS Name="CApp-Factory">
+    <CHOICE Name="APP" Comment= "The application">
+      <CHOICE-ELEMENT Name="RLSimion" Class="RLSimionApp" Comment="Full simulation application"/>
+      <CHOICE-ELEMENT Name="ControllerApproximator" Class="ControllerToVFAApp" Comment="Approximates an existing controller using VFA"/>
+    </CHOICE>
+  </CLASS>
+
   <CLASS Name="CController-Factory">
     <CHOICE Name="Controller" Comment="The specific controller to be used">
       <CHOICE-ELEMENT Name="PID" Class="CPIDController" Comment="A PID controller"/>

@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "experiment.h"
 #include "logger.h"
+#include "app.h"
 
 #define FEATURE_BLOCK_SIZE 1024
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
@@ -17,7 +18,7 @@ CFeatureList::CFeatureList(const char* name, bool addIfExists, bool replaceIfExi
 	m_bAddIfExists = addIfExists;
 	m_bReplaceIfExists = replaceIfExists;
 	strcpy_s(m_name, MAX_NAME_SIZE, name);
-	RLSimion::Logger.addVarToStats("Features",m_name, &m_numFeatures);
+	CApp::Logger.addVarToStats("Features",m_name, &m_numFeatures);
 }
 
 CFeatureList::~CFeatureList()

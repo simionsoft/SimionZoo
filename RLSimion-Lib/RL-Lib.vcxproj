@@ -107,6 +107,9 @@
     <ClCompile Include="actor-critic-inac.cpp" />
     <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
+    <ClCompile Include="app-controller-to-vfa.cpp" />
+    <ClCompile Include="app-rlsimion.cpp" />
+    <ClCompile Include="app.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="globals.cpp" />
@@ -149,6 +152,9 @@
   <ItemGroup>
     <ClInclude Include="actor-critic.h" />
     <ClInclude Include="actor.h" />
+    <ClInclude Include="app-controller-to-vfa.h" />
+    <ClInclude Include="app-rlsimion.h" />
+    <ClInclude Include="app.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="etraces.h" />

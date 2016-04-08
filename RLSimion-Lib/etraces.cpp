@@ -3,6 +3,7 @@
 #include "experiment.h"
 #include "globals.h"
 #include "parameters.h"
+#include "app.h"
 
 CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name), CParamObject(pParameters)
 {
@@ -32,7 +33,7 @@ CETraces::~CETraces()
 
 void CETraces::update(double factor)
 {
-	if (!RLSimion::Experiment.isFirstStep() && m_bUse)
+	if (!CApp::Experiment.isFirstStep() && m_bUse)
 	{
 		mult(factor* m_lambda);
 		applyThreshold(m_threshold);

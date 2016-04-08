@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "stats.h"
 #include "timer.h"
-
+#include "app.h"
 
 CExperimentTime& CExperimentTime::operator=(CExperimentTime& exp)
 {
@@ -115,7 +115,7 @@ CLASS_INIT(CExperiment)
 		m_totalNumEpisodes = m_numTrainingEpisodes;
 	}
 	CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
-	setNumSteps((unsigned int)(m_episodeLength / RLSimion::World.getDT()));
+	setNumSteps((unsigned int)(m_episodeLength / CApp::World.getDT()));
 	reset();
 
 
@@ -147,7 +147,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	if (time>m_progUpdateFreq || (isLastStep() && isLastEpisode()))
 	{
-		sprintf_s(msg, 1024, "%f", RLSimion::Experiment.getExperimentProgress()*100.0);
+		sprintf_s(msg, 1024, "%f", CApp::Experiment.getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);
 		m_pProgressTimer->startTimer();
 		//m_lastProgressReportCounter = currentCounter;
@@ -155,19 +155,19 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
-		RLSimion::Logger.firstEpisode(evalEpisode);
+		CApp::Logger.firstEpisode(evalEpisode);
 
 	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
-		RLSimion::Logger.firstStep(evalEpisode, episodeIndex);
+		CApp::Logger.firstStep(evalEpisode, episodeIndex);
 
 	//update stats
 	//output step-stats
-	RLSimion::Logger.timestep(evalEpisode, episodeIndex);
+	CApp::Logger.timestep(evalEpisode, episodeIndex);
 
 	if (isLastStep())
-		RLSimion::Logger.lastStep(evalEpisode, episodeIndex);
+		CApp::Logger.lastStep(evalEpisode, episodeIndex);
 
 	if (isLastEpisode() && isLastStep())
-		RLSimion::Logger.lastEpisode(evalEpisode);
+		CApp::Logger.lastEpisode(evalEpisode);
 }

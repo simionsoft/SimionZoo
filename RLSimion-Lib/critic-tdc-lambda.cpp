@@ -8,6 +8,7 @@
 #include "vfa-critic.h"
 #include "parameters.h"
 #include "parameters-numeric.h"
+#include "app.h"
 
 CLASS_CONSTRUCTOR(CTDCLambdaCritic)
 	: CCritic(pParameters)
@@ -43,7 +44,7 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 {
 	if (m_pAlpha->getValue()==0.0) return 0.0;
 	
-	if (RLSimion::Experiment.isFirstStep())
+	if (CApp::Experiment.isFirstStep())
 	{
 		m_omega->clear();
 	}

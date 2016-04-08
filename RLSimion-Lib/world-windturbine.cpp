@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "parameters.h"
 #include "logger.h"
+#include "app.h"
 
 //[1]
 //"Torque and pitch angle control for VSWT in all operating regimes"
@@ -235,7 +236,7 @@ CWindTurbine::~CWindTurbine()
 
 void CWindTurbine::reset(CState *s)
 {
-	if (RLSimion::Experiment.isEvaluationEpisode())
+	if (CApp::Experiment.isEvaluationEpisode())
 		m_pCurrentWindData = m_pEvaluationWindData;
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
@@ -276,8 +277,8 @@ void CWindTurbine::reset(CState *s)
 
 void CWindTurbine::executeAction(CState *s, CAction *a, double dt)
 {
-	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(RLSimion::World.getT()));
-	s->setValue(m_sV, m_pCurrentWindData->getPointSet(RLSimion::World.getT()));
+	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CApp::World.getT()));
+	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CApp::World.getT()));
 
 	//beta= beta + d(beta)/dt
 	double beta = s->getValue(m_sBeta);

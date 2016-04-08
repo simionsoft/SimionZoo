@@ -4,11 +4,5 @@
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
 
-  <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory"/>
-
-  <BRANCH Name="Controller" Class="CController-Factory"/>
-
-  <BRANCH Name="Policy" Class="CLinearStateVFA-Factory" Comment="The number of VFA's should match the number of outputs of the controller, otherwise the minimum will be taken."/>
-
-  <BRANCH Name="Output-DirFile" Class="CDirFileOutput" Comment="The directory and basename for the output files"/>
+  <BRANCH Name="ControllerToVFAPolicy" Class="ControllerToVFAApp"/>
 </APP>

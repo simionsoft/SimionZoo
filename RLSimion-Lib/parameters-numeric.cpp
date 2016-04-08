@@ -3,6 +3,7 @@
 #include "globals.h"
 #include "parameters.h"
 #include "experiment.h"
+#include "app.h"
 
 //std::list<INumericValue*> INumericValue::m_handlers;
 
@@ -59,15 +60,15 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (RLSimion::Experiment.isEvaluationEpisode())
+	if (CApp::Experiment.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	if (!strcmp(m_timeReference, "experiment"))
-		progress = RLSimion::Experiment.getExperimentProgress();
+		progress = CApp::Experiment.getExperimentProgress();
 	else if (!strcmp(m_timeReference, "episode"))
-		progress = RLSimion::Experiment.getEpisodeProgress();
+		progress = CApp::Experiment.getEpisodeProgress();
 	/*else if (!strcmp(m_timeReference, "episode"))
-	progress = RLSimion::Experiment.get();*/
+	progress = CApp::Experiment.get();*/
 	else assert(0);
 
 	if (m_startOffset != 0.0)
@@ -119,14 +120,14 @@ double CBhatnagarSchedule::getValue()
 	double t;
 
 	//evalution episode?
-	if (RLSimion::Experiment.isEvaluationEpisode())
+	if (CApp::Experiment.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	if (!strcmp(m_timeReference, "experiment"))
-		t = RLSimion::Experiment.getStep()
-		+ (RLSimion::Experiment.getEpisodeIndex() - 1) * RLSimion::Experiment.getNumSteps();
+		t = CApp::Experiment.getStep()
+		+ (CApp::Experiment.getEpisodeIndex() - 1) * CApp::Experiment.getNumSteps();
 	else if (!strcmp(m_timeReference, "episode"))
-		t = RLSimion::Experiment.getStep();
+		t = CApp::Experiment.getStep();
 	else assert(0);
 
 	return m_alpha_0*m_alpha_c / (m_alpha_c + pow(t, m_t_exp));

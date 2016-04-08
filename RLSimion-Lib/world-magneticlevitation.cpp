@@ -6,6 +6,8 @@
 #include "globals.h"
 #include "experiment.h"
 #include "parameters.h"
+#include "app.h"
+
 
 CLASS_CONSTRUCTOR(CMagneticLevitation,const char* worldDefinition)
 : CDynamicModel(worldDefinition)
@@ -48,7 +50,7 @@ CMagneticLevitation::~CMagneticLevitation()
 void CMagneticLevitation::reset(CState *s)
 {
 	CSetPoint *pSetPoint;
-	if (RLSimion::Experiment.isEvaluationEpisode())
+	if (CApp::Experiment.isEvaluationEpisode())
 		pSetPoint= m_pEvalSetPoint;
 	else
 		pSetPoint= m_pLearnSetPoint;
@@ -62,7 +64,7 @@ void CMagneticLevitation::reset(CState *s)
 
 
 	//initialization procedure: 0.5 seconds with 15V
-	/*CAction *a= RLSimion::World.getActionDescriptor();
+	/*CAction *a= CApp::World.getActionDescriptor();
 	a->setValue("voltage",15.0);
 	double t= 0.0;
 	double dt= 0.01;
@@ -84,10 +86,10 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double I= s->getValue(m_sCurrent);
 	double setpoint;
 	
-	if (RLSimion::Experiment.isEvaluationEpisode())
-		setpoint = m_pEvalSetPoint->getPointSet(RLSimion::World.getT());
+	if (CApp::Experiment.isEvaluationEpisode())
+		setpoint = m_pEvalSetPoint->getPointSet(CApp::World.getT());
 	else
-		setpoint = m_pLearnSetPoint->getPointSet(RLSimion::World.getT());
+		setpoint = m_pLearnSetPoint->getPointSet(CApp::World.getT());
 
 
 
