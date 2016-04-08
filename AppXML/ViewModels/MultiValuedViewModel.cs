@@ -196,11 +196,11 @@ namespace AppXML.ViewModels
             if(HeaderClass!=null)
             {
                
-                if (!HeaderClass.validate())
+                if (!HeaderClass.validate(false))
                     return false;
                 foreach(ClassViewModel cvm in AdedClasses)
                 {
-                    if (!cvm.validate())
+                    if (!cvm.validate(false))
                         return false;
                 }
                 

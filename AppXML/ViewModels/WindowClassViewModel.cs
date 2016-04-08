@@ -25,7 +25,13 @@ namespace AppXML.ViewModels
             _father = father;
             _doc = doc;
             if (father.ResumeClass == null)
-                _father.ResumeClass = new ClassViewModel(className,null, false,doc);
+            {
+                _father.ResumeClass = new ClassViewModel(className, null, false, doc);
+                _father.ResumeClass.validate(true);
+                //_father.ButtonColor = _father.ResumeClass.ButtonColor;
+
+            }
+
             
            
         }
@@ -33,7 +39,7 @@ namespace AppXML.ViewModels
         {
             
            // _father.ResumeClass = this.Class;
-            bool ok = Class.validate();
+            bool ok = Class.validate(false);
             //string c = _father.ResumeClass.Multis[0].HeaderClass.Choice.Class.XMLNODE[0].SelectedOption;
             if (!ok)
             {
@@ -53,8 +59,8 @@ namespace AppXML.ViewModels
             }
             else
             {
-                //set the color of buttom and close
-                _father.ButtonColor = "Blue";
+                
+                _father.ButtonColor = "White";
                 TryClose();
             }
                 /*

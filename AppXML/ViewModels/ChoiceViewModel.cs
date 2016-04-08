@@ -105,7 +105,7 @@ namespace AppXML.ViewModels
 
         public override bool validate()
         {
-            return _Class.validate();
+            return _Class.validate(false);
         }
 
         public override List<XmlNode> getXmlNode()

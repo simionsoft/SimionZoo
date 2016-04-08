@@ -19,7 +19,7 @@ namespace AppXML.ViewModels
 
         private ClassViewModel _resumeClassViewModel;
 
-        public ClassViewModel ResumeClass { get { return _resumeClassViewModel; } set { _resumeClassViewModel = value; } }
+        public ClassViewModel ResumeClass { get { return _resumeClassViewModel; } set { _resumeClassViewModel = value; NotifyOfPropertyChange(() => ResumeClass); } }
         private ObservableCollection<ValidableAndNodeViewModel> _allItems = new ObservableCollection<ValidableAndNodeViewModel>();
        
         private ChoiceViewModel _choice;
@@ -325,59 +325,39 @@ namespace AppXML.ViewModels
 
             
         }
-        public bool validate()
+        public bool validate(bool isCallByContructor)
         {
-            if(_itemName==null)
+            if(_itemName==null || _itemName=="")
             {
                 foreach(ValidableAndNodeViewModel item in _allItems)
                 {
                     if (!item.validate())
+                    {
+                        ButtonColor = "Red";
                         return false;
-                }
-                /*
-                if (_branches != null)
-                {
-                    foreach (BranchViewModel item in _branches)
-                    {
-                        if (!item.validate())
-                            return false;
                     }
+                        
                 }
-                if (_items != null)
-                {
-                    foreach (IntegerViewModel item in _items)
-                    {
-                        if (!item.validateIntegerViewModel())
-                            return false;
-                    }
-                }
-                if (_multis != null)
-                {
-                    foreach (MultiValuedViewModel item in _multis)
-                    {
-                        if (!item.validate())
-                            return false;
-                    }
-                }
-                if (_choice != null)
-                {
-                    return _choice.validate();
-                }
-                if (_XMLNODE != null)
-                {
-                    foreach (XMLNodeRefViewModel item in _XMLNODE)
-                    {
-                        if (!item.validate())
-                            return false;
-                    }
-                }
-                */
+                if (isCallByContructor)
+                    ButtonColor = "Orange";
+                else
+                    ButtonColor = "White";
                 return true;
             }
            
             else
             {
-                return ResumeClass.validate();
+                bool result = ResumeClass.validate(isCallByContructor);
+                if (result == true)
+                {
+                    if (isCallByContructor)
+                        ButtonColor = "Orange";
+                    else
+                        ButtonColor = "White";
+                }
+                else
+                    ButtonColor = "Red";
+                return result;
             }
             
         }

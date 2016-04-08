@@ -66,7 +66,7 @@ namespace AppXML.ViewModels
         {
             if (_isOptional && IsNull)
                 return true;
-            return _class.validate();
+            return _class.validate(false);
         }
 
         public override  List<XmlNode> getXmlNode()
