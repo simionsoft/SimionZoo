@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <tchar.h>
-
+#include <algorithm>
 
 #ifdef _DEBUG
 	#pragma comment(lib,"../Debug/RLSimion-Lib.lib")

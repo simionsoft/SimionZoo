@@ -135,6 +135,15 @@
     <ClCompile Include="q-learners.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="app-rlsimion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app-controller-to-vfa.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -240,6 +249,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="q-learners.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app-rlsimion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app-controller-to-vfa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

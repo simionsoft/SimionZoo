@@ -12,6 +12,7 @@
 #include "experiment.h"
 #include "parameters-numeric.h"
 #include "policy.h"
+#include "app.h"
 
 CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic)
 {
@@ -127,7 +128,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 
 	for (int i = 0; i < m_numPolicies; i++)
 	{
-		if (RLSimion::Experiment.isFirstStep())
+		if (CApp::Experiment.isFirstStep())
 			m_w[i]->clear();
 
 		m_pPolicies[i]->getNaturalGradient(s, a, m_grad_u);

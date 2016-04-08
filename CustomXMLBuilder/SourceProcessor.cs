@@ -437,10 +437,11 @@ namespace CustomXMLBuilder
         string parseChildClasses(string text)
         {
             increaseIndent();
-            //#define CHILD_CLASS(variable,name,comment,optional,className,constructorParameters,...) variable= new className(constructorParameters,__VA_ARGS__);
-            //#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,constructorParameters,...) variable= className::getInstance(constructorParameters,__VA_ARGS__);
+            //#define CHILD_CLASS(variable,name,comment,optional,className,constructorParameters,...)
+            //#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,constructorParameters,...)
+            //#define CHILD_CLASS_INIT(variable,name,comment,optional,...)
             // -> <BRANCH Name="" Class=""/>
-            string sPattern = @"(CHILD_CLASS|CHILD_CLASS_FACTORY)\s*\(" + extractTokenRegex + @"\)";
+            string sPattern = @"(CHILD_CLASS|CHILD_CLASS_FACTORY|CHILD_CLASS_INIT)\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -452,7 +453,7 @@ namespace CustomXMLBuilder
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 string referencedClass;
-                if (match.Groups[1].Value.Trim(' ') == "CHILD_CLASS")
+                if (match.Groups[1].Value.Trim(' ') == "CHILD_CLASS" || match.Groups[1].Value.Trim(' ') == "CHILD_CLASS_INIT")
                     referencedClass= parameterMatches[4].Value.Trim(' ');
                 else referencedClass= parameterMatches[4].Value.Trim(' ') + "-Factory";
 
@@ -518,13 +519,13 @@ namespace CustomXMLBuilder
             //#define CLASS_FACTORY_NEW_WINDOW(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
             //#define CLASS_CONSTRUCTOR_NEW_WINDOW(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
             //#define CLASS_INIT_NEW_WINDOW(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
-            string sPattern = @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)(.*?)END_CLASS\(\)";
+            string sPattern = @"(APP_CLASS_INIT|CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)(.*?)END_CLASS\(\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
-                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)\s*\(" + extractTokenRegex + @"\)");
+                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(APP_CLASS_INIT|CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)\s*\(" + extractTokenRegex + @"\)");
                 string header = functionArgumentsMatch.Groups[0].Value;
 
                 var functionMatches = Regex.Match(header, extractFuncRegex);
@@ -536,7 +537,10 @@ namespace CustomXMLBuilder
                     definedClass = parameterMatches.Groups[0].Value;
                 else definedClass = parameterMatches.Groups[0].Value + "-Factory";
 
-                m_checker.addClassDefinition(new classReference(definedClass,m_currentFile,0));
+                //if the class defines an App we don't want to check whether is referenced or not
+                if (functionMatches.Groups[1].Value.Trim(' ') != "APP_CLASS_INIT")
+                    m_checker.addClassDefinition(new classReference(definedClass,m_currentFile,0));
+
                 parsedXML += getLevelIndent() + "<CLASS Name=\"" + definedClass + "\"";
 
                 if (functionMatches.Groups[1].Value == "CLASS_FACTORY_NEW_WINDOW"

@@ -1,26 +1,13 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-class CLogger;
-class CWorld;
-class CExperiment;
-class CSimGod;
-class CParameters;
-class CParameterFile;
 
-namespace RLSimion
-{
-	extern CLogger Logger;
-	extern CWorld World;
-	extern CExperiment Experiment;
-	extern CSimGod SimGod;
 
-	CParameters* init(int argc, char* argv[],const char* rootNodeName);
-	void shutdown();
-};
+
 
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
+#define APP_CLASS_INIT(name,...) name* name::getInstance(__VA_ARGS__)
 #define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_INIT(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
@@ -39,14 +26,15 @@ namespace RLSimion
 //the appropriate hierarchy (i.e., pParameters->getChild("VFA"))
 #define CHILD_CLASS(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= new className(pParameters->getChild(name),__VA_ARGS__); else variable= new className(0,__VA_ARGS__);
 #define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance(0,__VA_ARGS__);
+#define CHILD_CLASS_INIT(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable.init(pParameters->getChild(name),__VA_ARGS__); else variable.init(0,__VA_ARGS__);
 
 #define CHOICE(name,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
 #define CHOICE_XML(name,loadXML,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
 #define END_CHOICE() return 0;
 
-#define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),XMLFilename);
-#define CHOICE_ELEMENT(checkLiteral,className,comment) if (pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral));
-#define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment) if(pChild->getChild(checkLiteral)) return className::getInstance(pChild->getChild(checkLiteral));
+#define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment,...) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),XMLFilename,__VA_ARGS__);
+#define CHOICE_ELEMENT(checkLiteral,className,comment,...) if (pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),__VA_ARGS__);
+#define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment,...) if(pChild->getChild(checkLiteral)) return className::getInstance(pChild->getChild(checkLiteral),__VA_ARGS__);
 
 #define NUMERIC_VALUE(variable,parameterName,comment) variable= CNumericValue::getInstance(pParameters->getChild(parameterName));
 #define CONST_INTEGER_VALUE(variable,parameterName,defaultValue,comment) variable= pParameters->getConstInteger(parameterName,defaultValue);

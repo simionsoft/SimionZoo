@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "SimGod.h"
-#include "critic.h"
-#include "actor.h"
+
 #include "globals.h"
-#include "world.h"
+
 #include "experiment.h"
-#include "reward.h"
+
 #include "named-var-set.h"
 #include "parameters.h"
 #include "simion.h"
+#include "app.h"
 
 CLASS_INIT(CSimGod)
 {
@@ -24,7 +24,7 @@ CLASS_INIT(CSimGod)
 	}
 	
 	//m_td = 0.0;
-	//RLSimion::Logger.addVarToStats("Critic", "TD-error", &m_td);
+	//CApp::Logger.addVarToStats("Critic", "TD-error", &m_td);
 	END_CLASS();
 }
 
@@ -71,19 +71,19 @@ void CSimGod::selectAction(CState* s, CAction* a)
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
-	if (RLSimion::Experiment.isEvaluationEpisode()) return;
+	if (CApp::Experiment.isEvaluationEpisode()) return;
 
 	//update critic
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updateValue(s, a,s_p,r);
-	/*if (m_pCritic && !RLSimion::Experiment.isEvaluationEpisode())
+	/*if (m_pCritic && !CApp::Experiment.isEvaluationEpisode())
 		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);*/
 
 	//update actor: might be the controller
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updatePolicy(s, a,s_p,r);
 
-	//if( !RLSimion::Experiment.isEvaluationEpisode())
+	//if( !CApp::Experiment.isEvaluationEpisode())
 	//	m_pActor->updatePolicy(s, a, s_p, r, m_td);
 
 }
