@@ -382,12 +382,12 @@ namespace AppXML.ViewModels
                                                 if (itemMulti.HeaderClass == null)
                                                 {
                                                     itemMulti.Header.Value = tmp.InnerText;
-                                                    //item.Aded.Clear();
+                                                    itemMulti.Aded.Clear();
                                                 }
                                                 else
                                                 {
                                                     fillTheClass(itemMulti.HeaderClass, tmp);
-                                                    //item.AdedClasses.Clear();
+                                                    itemMulti.AdedClasses.Clear();
                                                 }
                                                 dataSet = true;
                                                 break;
@@ -396,16 +396,16 @@ namespace AppXML.ViewModels
                                             {
                                                 if (itemMulti.HeaderClass == null)
                                                 {
-                                                    int index = itemMulti.Aded.Count;
-                                                    if (index == -0 || multiIndex >= index)
+                                                    //int index = itemMulti.Aded.Count;
+                                                    //if (index == -0 || multiIndex >= index)
                                                         itemMulti.AddNew();
                                                     itemMulti.Aded[multiIndex].Value = tmp.InnerText;
                                                 }
 
                                                 else
                                                 {
-                                                    int index = itemMulti.AdedClasses.Count;
-                                                    if (index == 0 || multiIndex >= index)
+                                                    //int index = itemMulti.AdedClasses.Count;
+                                                    //if (index == 0 || multiIndex >= index)
                                                         itemMulti.Add();
                                                     fillTheClass(itemMulti.AdedClasses[multiIndex], tmp);
 
@@ -538,6 +538,7 @@ namespace AppXML.ViewModels
         {
             //we are goingo to set as null every viewModel that is optional. If they are optional are the document has a value for them the will be set in the process
             //setAsNull();
+            _doc.RemoveAll();
             foreach (BranchViewModel branch in _branches)
             {
                 //we have to find the correct data input for every branch we have in the form. If we do not have data we do nothing
