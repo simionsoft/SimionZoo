@@ -21,8 +21,8 @@
         <TreeView  HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
             <TreeViewItem x:Name ="Branches" Header="{Binding rootnode.name}"/>
         </TreeView>
-        <Button Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" HorizontalAlignment="Left" Margin="591,268,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Load" HorizontalAlignment="Left" Margin="591,243,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action Load()]" RenderTransformOrigin="0.607,2.05"/>
+        <Button Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" HorizontalAlignment="Left" Margin="148,506,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Load" HorizontalAlignment="Left" Margin="55,506,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action Load()]" RenderTransformOrigin="0.607,2.05"/>
         <Button Content="Set as root" HorizontalAlignment="Left" Margin="591,218,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action SetAsRoot()]" RenderTransformOrigin="0.607,3.6" />
         <StackPanel Margin="742,48,44,92">
             <ContentControl x:Name="Graf"/>
@@ -35,7 +35,7 @@
         <Button x:Name="SaveAllTheNodes" Content="Save tree" HorizontalAlignment="Left" Margin="899,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.08,0.75" Visibility="{Binding RemoveChildVisible}"/>
 
         <Button x:Name="LoadTree"   Content="Load tree" HorizontalAlignment="Left" Margin="988,506,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.493,0.5"/>
-        <Button x:Name="ModifySelectedLeaf"  Content="Modify" HorizontalAlignment="Left" Margin="591,293,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding IsSelectedNodeLeaf}"/>
+        <Button x:Name="ModifySelectedLeaf"  Content="Modify" HorizontalAlignment="Left" Margin="591,243,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding IsSelectedNodeLeaf}"/>
 
     </Grid>
 </UserControl>

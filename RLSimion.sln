@@ -10,9 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLSimion-Lib", "RLSimion-Li
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppXML", "AppXML\AppXML.csproj", "{575C1FF1-8401-4EC8-8E58-4A09D2659DED}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A97CFEAC-DBE2-433C-9454-6D1D2749C591} = {A97CFEAC-DBE2-433C-9454-6D1D2749C591}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{78D64C99-9407-468F-9581-D5C97CBDF7C7}"
 EndProject

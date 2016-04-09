@@ -167,7 +167,7 @@ namespace AppXML.ViewModels
         }
         public void Add()
         {
-            ClassViewModel cvm = new ClassViewModel(this.clas,null,_doc);
+            ClassViewModel cvm = new ClassViewModel(this.clas,label,_doc);
             //int index = _adedClasses.Count;
             //_adedClasses.Add(new ClassViewWithIndex(cvm,index));
             _adedClasses.Add(cvm);
