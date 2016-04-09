@@ -81,20 +81,38 @@ namespace AppXML.ViewModels
        
         public string Label { get { return _label; } set { } }
         public ObservableCollection<ChoiceElement> Combo { get { return _comboValues; } set { } }
-        public ClassViewModel Class { get { return _Class; } set { _Class = value; } }
+        public ClassViewModel Class 
+        { 
+            get 
+            {
+               
+                    return _Class;
+               
+            } 
+            set
+            {
+                
+                    _Class=value;
+                    NotifyOfPropertyChange(() => Class);
+               
+            } 
+        }
         public ChoiceElement SelectedItem { get { return _selectedItem; } 
             set
             {
                 _selectedItem = value; 
-                NotifyOfPropertyChange(() => SelectedItem);
+                
                 if (_Class != null)
                     _Class.removeViews();
-                _Class = new ClassViewModel(SelectedItem.clas,null,_doc);
+                _Class = new ClassViewModel(_selectedItem.clas,value.name,_doc);
+               // if (_Class.ResumeClass != null)
+                 //   _Class.ItemName = value.name;
                 if (SelectedItem.XML != null)
                 {
                     CNode.XML[_XML] = SelectedItem.XML;
                     CApp.updateViews();
                 }
+                NotifyOfPropertyChange(() => SelectedItem);
                 NotifyOfPropertyChange(() => Class);
             } 
         }

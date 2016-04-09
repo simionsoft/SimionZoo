@@ -170,6 +170,8 @@
   <CLASS Name="CStateFeatureMap-Factory">
     <CHOICE Name="Type" Comment="Feature map type">
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap" Comment="Grid on the state-space"/>
+          <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap" Comment="Grid on the state-space"/>
+
     </CHOICE>
   </CLASS>
 

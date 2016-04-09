@@ -26,7 +26,7 @@ namespace AppXML.ViewModels
             _doc = doc;
             if (father.ResumeClass == null)
             {
-                _father.ResumeClass = new ClassViewModel(className, null, false, doc);
+                _father.ResumeClass = new ClassViewModel(className, className, false, doc);
                 _father.ResumeClass.validate(true);
                 //_father.ButtonColor = _father.ResumeClass.ButtonColor;
 

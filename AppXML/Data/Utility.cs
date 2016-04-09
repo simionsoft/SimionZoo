@@ -319,7 +319,11 @@ namespace AppXML.Data
         }
         public static List<string> getComboFromXML(string file, string action)
         {
-            string xmlFile = CNode.XML[file];
+            string xmlFile = null;
+            if (CNode.XML.ContainsKey(file))
+                xmlFile = CNode.XML[file];
+            else
+                return new List<string>();
             string key = xmlFile + action;
             if(xmlDic.ContainsKey(key))
                 return xmlDic[xmlFile+action];
