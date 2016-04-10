@@ -10,6 +10,9 @@ namespace AppXML.ViewModels
 {
     public class MultiXmlNodeRefViewModel:ValidableAndNodeViewModel
     {
+
+        private ClassViewModel owner;
+
         private XMLNodeRefViewModel _header;
         private ObservableCollection<XMLNodeRefViewModel> _addedXml;
 
@@ -44,25 +47,26 @@ namespace AppXML.ViewModels
         {
             if (_addedXml == null)
                 _addedXml = new ObservableCollection<XMLNodeRefViewModel>();
-            AddedXml.Add(new XMLNodeRefViewModel(Label, file, action, doc, tag));
+            AddedXml.Add(new XMLNodeRefViewModel(Label, file, action, doc, tag,owner));
             NotifyOfPropertyChange(() => AddedXml);
         }
-        public MultiXmlNodeRefViewModel(string label,string file,string action,XmlDocument doc, string tag)
+        public MultiXmlNodeRefViewModel(string label,string file,string action,XmlDocument doc, string tag,ClassViewModel owner)
         {
             Label = label;
+            this.owner = owner;
             this.file = file;
             this.action = action;
             this.doc = doc;
             this.tag = tag;
             if (this.tag == null)
                 this.tag = label;
-            _header = new XMLNodeRefViewModel(label, file, action, doc, tag);
+            _header = new XMLNodeRefViewModel(label, file, action, doc, tag,owner);
         }
         public void Add()
         {
             if (_addedXml == null)
                 _addedXml = new ObservableCollection<XMLNodeRefViewModel>();
-            XMLNodeRefViewModel tmp = new XMLNodeRefViewModel(Label, file, action, doc, tag);
+            XMLNodeRefViewModel tmp = new XMLNodeRefViewModel(Label, file, action, doc, tag,owner);
             if (_header.SelectedOption != null)
                 tmp.SelectedOption = _header.SelectedOption;
             _addedXml.Add(tmp);

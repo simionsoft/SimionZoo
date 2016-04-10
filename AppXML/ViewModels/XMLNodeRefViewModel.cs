@@ -22,7 +22,7 @@ namespace AppXML.ViewModels
 
         public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; NotifyOfPropertyChange(()=>SelectedOption); } }
 
-        public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc, string tag)
+        public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc, string tag,ClassViewModel owner)
         {
             this._label = label;
             this._XMLFile = file;
@@ -34,7 +34,7 @@ namespace AppXML.ViewModels
             _doc = doc;
             List<string> names =AppXML.Data.Utility.getComboFromXML(file, action);
             _options = new ObservableCollection<string>(names);
-            AppXML.Models.CApp.addView(this);
+            AppXML.Models.CApp.addView(this,owner);
             
        }
         public void update()

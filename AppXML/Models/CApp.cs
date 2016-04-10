@@ -11,15 +11,21 @@ namespace AppXML.Models
     public class CApp:CNode
     {
         private static List<XMLNodeRefViewModel> viewsWithNodeRef = new List<XMLNodeRefViewModel>();
+        private static List<ClassViewModel> newClassWithRefs = new List<ClassViewModel>();
         public static string EXE;
 
+
+        public static void addNewClass(ClassViewModel newClass)
+        {
+            newClassWithRefs.Add(newClass);
+        }
         public static void cleanAll()
         {
             viewsWithNodeRef= new List<XMLNodeRefViewModel>();
             EXE = null;
         }
 
-        public static void addView(XMLNodeRefViewModel view)
+        public static void addView(XMLNodeRefViewModel view,ClassViewModel owner)
         {
             if (!viewsWithNodeRef.Contains(view))
                 viewsWithNodeRef.Add(view);
@@ -28,17 +34,21 @@ namespace AppXML.Models
         {
             foreach(XMLNodeRefViewModel view in views)
             {
-                viewsWithNodeRef.Remove(view);
+                removeView(view);   
             }
         }
         public static void removeView(XMLNodeRefViewModel view)
         {
             viewsWithNodeRef.Remove(view);
+           
         }
         public static void updateViews()
         {
             foreach (XMLNodeRefViewModel view in viewsWithNodeRef)
                 view.update();
+            foreach (ClassViewModel view in newClassWithRefs)
+                view.validate(false);
+            
         }
         public CApp(XmlNode node, string n) 
         { 
