@@ -130,5 +130,10 @@ namespace AppXML.ViewModels
             }
             this.Class.setAsNull();
         }
+
+        public void removeFromNew()
+        {
+            _class.removeFromNewClass();
+        }
     }
 }

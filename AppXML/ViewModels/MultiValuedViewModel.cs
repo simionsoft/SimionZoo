@@ -120,6 +120,7 @@ namespace AppXML.ViewModels
         public void DeleteClass(ClassViewModel delete)
         {
             _adedClasses.Remove(delete);
+            delete.removeFromNewClass();
             /*int index = delete.index;
             for (int i = index; i < _adedClasses.Count;i++)
             {
@@ -161,6 +162,7 @@ namespace AppXML.ViewModels
         }
         public void DeleteLast()
         {
+            _adedClasses[AdedClasses.Count - 1].removeFromNewClass();
             _adedClasses.RemoveAt(_adedClasses.Count - 1);
             if (_adedClasses.Count == 0)
                 NotifyOfPropertyChange(() => DeleteVisible);
@@ -277,6 +279,19 @@ namespace AppXML.ViewModels
             {
                 foreach (IntegerViewModel ivm in _aded)
                     ivm.Value = "";
+            }
+        }
+
+        public void removeViewsFromNew()
+        {
+            if(HeaderClass!=null)
+            {
+                HeaderClass.removeFromNewClass();
+                if(AdedClasses!=null)
+                {
+                    foreach (ClassViewModel cvm in AdedClasses)
+                        cvm.removeFromNewClass();
+                }
             }
         }
     }

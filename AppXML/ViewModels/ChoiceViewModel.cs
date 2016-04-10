@@ -103,7 +103,11 @@ namespace AppXML.ViewModels
                 _selectedItem = value; 
                 
                 if (_Class != null)
+                {
                     _Class.removeViews();
+                    _Class.removeFromNewClass();
+
+                }
                 _Class = new ClassViewModel(_selectedItem.clas,value.name,_doc);
                // if (_Class.ResumeClass != null)
                  //   _Class.ItemName = value.name;
@@ -119,6 +123,7 @@ namespace AppXML.ViewModels
         public void removeViews()
         {
             _Class.removeViews();
+            
         }
 
         public override bool validate()
@@ -144,6 +149,11 @@ namespace AppXML.ViewModels
         public void setAsNull()
         {
             Class.setAsNull();
+        }
+
+        public void removeViewsFromNew()
+        {
+            _Class.removeFromNewClass();
         }
     }
 }

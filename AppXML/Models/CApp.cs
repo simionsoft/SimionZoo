@@ -21,11 +21,12 @@ namespace AppXML.Models
         }
         public static void cleanAll()
         {
-            viewsWithNodeRef= new List<XMLNodeRefViewModel>();
+            viewsWithNodeRef.Clear();
+            newClassWithRefs.Clear();
             EXE = null;
         }
 
-        public static void addView(XMLNodeRefViewModel view,ClassViewModel owner)
+        public static void addView(XMLNodeRefViewModel view)
         {
             if (!viewsWithNodeRef.Contains(view))
                 viewsWithNodeRef.Add(view);
@@ -41,6 +42,10 @@ namespace AppXML.Models
         {
             viewsWithNodeRef.Remove(view);
            
+        }
+        public static void updateNewClassWithRefs(ClassViewModel old)
+        {
+
         }
         public static void updateViews()
         {
@@ -63,5 +68,11 @@ namespace AppXML.Models
         private XmlNode _root;
         public XmlDocument document { get { return _document; } private set { } }
         public XmlNode root { get { return _root; } private set { } }
+
+        public static void removeFromNew(ClassViewModel classViewModel)
+        {
+            if (newClassWithRefs.Contains(classViewModel))
+                newClassWithRefs.Remove(classViewModel);
+        }
     }
 }

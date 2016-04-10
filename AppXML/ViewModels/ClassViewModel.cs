@@ -206,7 +206,9 @@ namespace AppXML.ViewModels
             foreach(ValidableAndNodeViewModel item in _allItems)
             {
                 if (item is XMLNodeRefViewModel)
+                {
                     CApp.removeView(item as XMLNodeRefViewModel);
+                }
                 if (item is BranchViewModel)
                     (item as BranchViewModel).removeViews();
                 if (item is ChoiceViewModel)
@@ -448,6 +450,21 @@ namespace AppXML.ViewModels
                 {
                     mvvm.setAsNull();
                 }
+            }
+        }
+
+        public void removeFromNewClass()
+        {
+            Models.CApp.removeFromNew(this);
+            foreach (ValidableAndNodeViewModel item in _allItems)
+            {
+                if (item is BranchViewModel)
+                    (item as BranchViewModel).removeFromNew();
+                if (item is ChoiceViewModel)
+                    (item as ChoiceViewModel).removeViewsFromNew();
+                if (item is MultiValuedViewModel)
+                    (item as MultiValuedViewModel).removeViewsFromNew();
+               
             }
         }
     }

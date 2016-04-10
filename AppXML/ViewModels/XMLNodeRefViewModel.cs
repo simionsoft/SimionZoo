@@ -34,7 +34,7 @@ namespace AppXML.ViewModels
             _doc = doc;
             List<string> names =AppXML.Data.Utility.getComboFromXML(file, action);
             _options = new ObservableCollection<string>(names);
-            AppXML.Models.CApp.addView(this,owner);
+            AppXML.Models.CApp.addView(this);
             
        }
         public void update()
