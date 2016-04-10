@@ -34,7 +34,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<BranchViewModel> _branches;
         private XmlDocument _doc;
         private RightTreeViewModel _graf;
-
+        public ObservableCollection<ValidableAndNodeViewModel> Branch { get { return _branches[0].Class.AllItems; } set { } }
         public RightTreeViewModel Graf { get { return _graf; } set { } }
         private ObservableCollection<string> _apps = new ObservableCollection<string>();
         public ObservableCollection<string> Apps { get { return _apps; } set { } }

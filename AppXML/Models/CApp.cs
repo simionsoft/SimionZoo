@@ -43,10 +43,6 @@ namespace AppXML.Models
             viewsWithNodeRef.Remove(view);
            
         }
-        public static void updateNewClassWithRefs(ClassViewModel old)
-        {
-
-        }
         public static void updateViews()
         {
             foreach (XMLNodeRefViewModel view in viewsWithNodeRef)
@@ -65,9 +61,8 @@ namespace AppXML.Models
         }
 
         private XmlDocument _document;
-        private XmlNode _root;
         public XmlDocument document { get { return _document; } private set { } }
-        public XmlNode root { get { return _root; } private set { } }
+        
 
         public static void removeFromNew(ClassViewModel classViewModel)
         {

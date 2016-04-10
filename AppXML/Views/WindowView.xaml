@@ -19,7 +19,7 @@
     <Grid>
 
         <TreeView  HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
-            <TreeViewItem x:Name ="Branches" Header="{Binding rootnode.name}"/>
+            <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}"/>
         </TreeView>
         <Button Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" HorizontalAlignment="Left" Margin="148,506,0,0" VerticalAlignment="Top" Width="75"/>
         <Button Content="Load" HorizontalAlignment="Left" Margin="55,506,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action Load()]" RenderTransformOrigin="0.607,2.05"/>
