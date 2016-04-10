@@ -57,7 +57,7 @@ namespace AppXML.ViewModels
                 _branches = _rootnode.children;
                 _doc = (this._rootnode as CApp).document;
                 _graf = null;
-                NotifyOfPropertyChange(() => Branches);
+                NotifyOfPropertyChange(() => Branch);
                 NotifyOfPropertyChange(() => Graf);
                 NotifyOfPropertyChange(() => rootnode);
                 NotifyOfPropertyChange(() => RemoveChildVisible);
