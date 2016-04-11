@@ -41,9 +41,10 @@
 
   <CLASS Name="RLSimionApp">
     <BRANCH Name="Log" Class="CLogger" Comment="The logger class" Optional=" false"/>
-    <BRANCH Name="World" Class="CWorld" Comment="The simulation environment and its parameters" Optional=" false"/>
+    
     <BRANCH Name="Experiment" Class="CExperiment" Comment="The parameters of the experiment" Optional=" false"/>
     <BRANCH Name="SimGod" Class="CSimGod" Comment="The god class that controls all aspects of the simulation process" Optional=" false"/>
+    <BRANCH Name="World" Class="CWorld" Comment="The simulation environment and its parameters" Optional=" false"/>
   </CLASS>
 
   <CLASS Name="CController-Factory">

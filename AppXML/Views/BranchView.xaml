@@ -15,12 +15,23 @@
     </UserControl.Resources>
     <Grid>
         <TreeView BorderBrush="white" BorderThickness="0" >
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="True"/>
-                </Style>
-            </TreeView.ItemContainerStyle>
-            <TreeViewItem>
+            <TreeView.Resources>
+            <Style TargetType="TreeViewItem">
+                <Style.Resources>
+                    <!-- SelectedItem with focus -->
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                       Color="Transparent" />
+                    <!-- SelectedItem without focus -->
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                       Color="Transparent" />
+                    <!-- SelectedItem text foreground -->
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                       Color="Black" />
+                </Style.Resources>
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            </Style>
+            </TreeView.Resources>
+            <TreeViewItem IsExpanded="True">
                 <TreeViewItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{Binding Name}" ToolTip="{Binding Comment }"></Label>

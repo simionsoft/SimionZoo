@@ -266,15 +266,10 @@ namespace AppXML.ViewModels
                     {
                         if(this.owner!=null)
                             owner.ButtonColor = "Red";
-                       // NotifyOfPropertyChange(() => ButtonColor);
-
-                        //NotifyOfPropertyChange(() => ResumeClass.ButtonColor);
-                        //NotifyOfPropertyChange(() => ResumeClass);
                         return false;
-                    }
-                        
+                    }    
                 }
-                if (isCallByContructor)
+                if (CApp.IsInitializing)
                 {
                     if (this.owner != null)
                         owner.ButtonColor = "Orange";
@@ -284,7 +279,7 @@ namespace AppXML.ViewModels
                     if (this.owner != null)
                         owner.ButtonColor = "White";
                 }
-               // NotifyOfPropertyChange(() => ResumeClass.ButtonColor);
+               
                 return true;
             }
            

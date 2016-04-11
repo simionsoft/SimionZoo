@@ -27,11 +27,11 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
+    <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal" Visibility="{Binding ResumeVisible}">
             <Button Content="{Binding ItemName}" cal:Message.Attach="[Event Click]=[OpenForm()]" Background="{Binding ButtonColor}"/>
         </StackPanel>
-        <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}" Focusable="False">
+        <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}" FocusVisualStyle="{x:Null}">
           
         </ItemsControl>
     </StackPanel>
