@@ -204,9 +204,11 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 	//load the weigths from the binary file
 	char binFilename[1024];
 	strcpy_s(binFilename, 1024, m_loadFilename);
-	strcpy_s(&binFilename[strlen(m_loadFilename) - 3], 1024 - strlen(m_loadFilename), "bin");
+	char* extension = strstr(binFilename, "feature-map.xml");
+	if (extension)
+		strcpy_s(extension,1024-(extension-binFilename+1),"weights.bin");
+		
 	loadWeights(binFilename);
-
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
 
 	m_bSaturateOutput = false;

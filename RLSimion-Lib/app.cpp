@@ -23,18 +23,10 @@ CApp::CApp(int argc, char* argv[])
 	if (argc <= 1)
 		Logger.logMessage(MessageType::Error, "Too few parameters");
 
-	if (!m_pConfigDoc)
-		m_pConfigDoc = new CParameterFile;
+	m_pConfigDoc = new CParameterFile;
 }
 
-CLASS_FACTORY(CApp,int argc,char* argv[])
-{
-	CHOICE("APP", "The application");
-	CHOICE_ELEMENT("RLSimion", RLSimionApp, "Full simulation application",argc,argv);
-	CHOICE_ELEMENT("ControllerApproximator", ControllerToVFAApp, "Approximates an existing controller using VFA", argc, argv);
-	END_CHOICE();
-	END_CLASS();
-}
+
 
 CApp::~CApp()
 {

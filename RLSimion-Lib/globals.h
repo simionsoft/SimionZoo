@@ -7,7 +7,7 @@
 
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
-#define APP_CLASS_INIT(name,...) name* name::getInstance(__VA_ARGS__)
+#define APP_CLASS(name,...) name::name(__VA_ARGS__)
 #define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_INIT(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)

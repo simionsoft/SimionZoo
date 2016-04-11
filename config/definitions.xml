@@ -46,13 +46,6 @@
     <BRANCH Name="SimGod" Class="CSimGod" Comment="The god class that controls all aspects of the simulation process" Optional=" false"/>
   </CLASS>
 
-  <CLASS Name="CApp-Factory">
-    <CHOICE Name="APP" Comment= "The application">
-      <CHOICE-ELEMENT Name="RLSimion" Class="RLSimionApp" Comment="Full simulation application"/>
-      <CHOICE-ELEMENT Name="ControllerApproximator" Class="ControllerToVFAApp" Comment="Approximates an existing controller using VFA"/>
-    </CHOICE>
-  </CLASS>
-
   <CLASS Name="CController-Factory">
     <CHOICE Name="Controller" Comment="The specific controller to be used">
       <CHOICE-ELEMENT Name="PID" Class="CPIDController" Comment="A PID controller"/>

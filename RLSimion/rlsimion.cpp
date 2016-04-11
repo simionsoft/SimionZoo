@@ -8,10 +8,7 @@
 
 int main(int argc, char* argv[])
 {
-	CApp app;
-	CApp* pApp = CApp::getInstance(argc,argv);
-
-	pApp->init(argc, argv);
+	CApp* pApp = new RLSimionApp(argc, argv);// CApp::getInstance(argc, argv);
 
 	pApp->run();
 

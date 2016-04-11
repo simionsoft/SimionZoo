@@ -1,4 +1,5 @@
 <ControllerToVFAPolicy>
+<ControllerToVFAPolicy>
   <Dynamic-Model>
     <Model>
       <Underwater-vehicle>
@@ -57,4 +58,5 @@
     <Output-Dir>../data</Output-Dir>
     <File-Prefix>uv-5000</File-Prefix>
   </Output-DirFile>
+</ControllerToVFAPolicy>
 </ControllerToVFAPolicy>
