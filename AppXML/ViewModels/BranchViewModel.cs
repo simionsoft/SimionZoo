@@ -41,6 +41,7 @@ namespace AppXML.ViewModels
             }
             set { }
         }
+        
         public BranchViewModel(string name,string clas,string comment,bool isOptional, XmlDocument doc, string tag)
         {
             _name = name;

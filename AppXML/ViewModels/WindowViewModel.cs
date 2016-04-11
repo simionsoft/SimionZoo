@@ -53,10 +53,12 @@ namespace AppXML.ViewModels
                 if (index == -1)
                     return;
                 selectedApp = value;
+                CApp.IsInitializing = true;
                 _rootnode = Utility.getRootNode(apps[index]);
                 _branches = _rootnode.children;
                 _doc = (this._rootnode as CApp).document;
                 _graf = null;
+                CApp.IsInitializing = false;
                 NotifyOfPropertyChange(() => Branch);
                 NotifyOfPropertyChange(() => Graf);
                 NotifyOfPropertyChange(() => rootnode);
@@ -84,13 +86,14 @@ namespace AppXML.ViewModels
         public WindowViewModel()
         {
              //_windowManager = windowManager;
+            CApp.IsInitializing = true;
             apps = Directory.GetFiles("..\\config\\apps");
             getAppsNames();
             selectedApp = Apps[0];
             _rootnode = Utility.getRootNode(apps[0]);
             _branches = _rootnode.children;
             _doc = (this._rootnode as CApp).document;
-
+            CApp.IsInitializing = false;
         }
         private void getAppsNames()
         {

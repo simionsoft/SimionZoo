@@ -12,6 +12,7 @@ namespace AppXML.Models
     {
         private static List<XMLNodeRefViewModel> viewsWithNodeRef = new List<XMLNodeRefViewModel>();
         private static List<ClassViewModel> newClassWithRefs = new List<ClassViewModel>();
+        public static bool IsInitializing { get; set; }
         public static string EXE;
 
 

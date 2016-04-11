@@ -19,6 +19,24 @@
     <Grid>
 
         <TreeView  HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
+            <TreeView.Resources>
+                <Style TargetType="TreeViewItem">
+                    <Style.Resources>
+                        <!-- SelectedItem with focus -->
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                       Color="Transparent" />
+                        <!-- SelectedItem without focus -->
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
+                       Color="Transparent" />
+                        <!-- SelectedItem text foreground -->
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                       Color="Black" />
+                    </Style.Resources>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                    <Setter Property="IsExpanded" Value="True"/>
+                
+                    </Style>
+            </TreeView.Resources>
             <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}"/>
         </TreeView>
         <Button Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" HorizontalAlignment="Left" Margin="148,506,0,0" VerticalAlignment="Top" Width="75"/>
