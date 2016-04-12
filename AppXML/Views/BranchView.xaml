@@ -33,7 +33,7 @@
             </TreeView.Resources>
             <TreeViewItem IsExpanded="True">
                 <TreeViewItem.Header>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" Focusable="False">
                         <Label Content="{Binding Name}" ToolTip="{Binding Comment }"></Label>
                         <CheckBox Content="Used" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsSet}" VerticalAlignment="Center" ></CheckBox>
 

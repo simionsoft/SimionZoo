@@ -90,6 +90,7 @@
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
+    <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
     <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
     <Compile Include="ViewModels\ProcessesWindowViewModel.cs" />
@@ -116,6 +117,9 @@
     <Compile Include="Views\Help\GridHelpers.cs" />
     <Compile Include="Views\IntegerView.xaml.cs">
       <DependentUpon>IntegerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LoadDialogView.xaml.cs">
+      <DependentUpon>LoadDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MultiSimpleView.xaml.cs">
       <DependentUpon>MultiSimpleView.xaml</DependentUpon>
@@ -180,6 +184,10 @@
     <Resource Include="Views\images\file.JPG" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\LoadDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MultiSimpleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

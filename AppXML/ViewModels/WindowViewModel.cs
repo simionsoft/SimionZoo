@@ -135,12 +135,13 @@ namespace AppXML.ViewModels
             if (!validate())
                 return;
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "XML-File | *.xml";
+            sfd.Filter = "Experiment | *.expe";
             sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
                 System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); 
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 _doc.Save(sfd.FileName);
             }
@@ -517,7 +518,7 @@ namespace AppXML.ViewModels
             
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "XML-File | *.xml";
+            ofd.Filter = "Experiment | *.expe";
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()),"experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -525,6 +526,7 @@ namespace AppXML.ViewModels
             }
             else
                 return;
+            
             XmlDocument loadedDocument = new XmlDocument();
             loadedDocument.Load(fileDoc);
             XmlNode loadedDocumentRoot = loadedDocument.DocumentElement;
@@ -536,6 +538,18 @@ namespace AppXML.ViewModels
             }
             LoadDocument(loadedDocumentRoot);
            
+           
+        }
+        private void showLoadDialog(LoadDialogViewModel ldvm)
+        {
+            Task.Factory.StartNew(() => 
+            {
+                dynamic settings = new ExpandoObject();
+                settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                settings.ShowInTaskbar = true;
+                settings.Title = "LOADING FILE";
+                new WindowManager().ShowDialog(ldvm, null, settings);
+            });
         }
         private void LoadDocument(XmlNode loadedDocumentRoot)
         {
@@ -587,7 +601,7 @@ namespace AppXML.ViewModels
 
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
-            document.Save("copia.xml");
+            //document.Save("copia.tree");
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
             if (this._graf == null)
                 _graf = new RightTreeViewModel(rootNode,this);
@@ -635,7 +649,7 @@ namespace AppXML.ViewModels
         {
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "XML-File | *.xml";
+            ofd.Filter = "Tree | *.tree";
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -774,7 +788,7 @@ namespace AppXML.ViewModels
         public List<string> SaveAllTheNodes()
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "XML-File | *.xml";
+            sfd.Filter = "Tree | *.tree";
             sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
@@ -806,7 +820,7 @@ namespace AppXML.ViewModels
             XmlElement rootDef = treeDoc.CreateElement("Root");
             string rootFolder = xmlFileName + "/root";
             Directory.CreateDirectory(rootFolder);
-            string rootPath = rootFolder + "/root.xml";
+            string rootPath = rootFolder + "/root.expe";
             root.Doc.Save(rootPath);
             rootDef.SetAttribute("Path", rootPath);
             treeRootNode.AppendChild(rootDef);
@@ -823,7 +837,7 @@ namespace AppXML.ViewModels
                 XmlDocument docume = child.Doc;
                 string folderPath = xmlFileName + "/" + name;
                 Directory.CreateDirectory(folderPath);
-                string filePath = folderPath + "/" + name + ".xml";
+                string filePath = folderPath + "/" + name + ".expe";
                 docume.Save(filePath);
                 //crear carpeta para archivo xml y carpetas para sus hijos
                 //añadir el nodo al fichero xml
@@ -842,7 +856,7 @@ namespace AppXML.ViewModels
             }
             treeRootNode.AppendChild(leafFather);
             treeDoc.AppendChild(treeRootNode);
-            treeDoc.Save(xmlFileName+ ".xml");
+            treeDoc.Save(xmlFileName+ ".tree");
             return result;
         }
       
@@ -857,7 +871,7 @@ namespace AppXML.ViewModels
             //crear la carpeta que va a contener el xml y sus hijos si los tuviera
             string folderPath = fatherPath+"/"+name;
             Directory.CreateDirectory(folderPath);
-            string filePath = folderPath + "/" + name + ".xml";
+            string filePath = folderPath + "/" + name + ".expe";
             docume.Save(filePath);
             //crear el xmlElement y añadirlo al padre
             XmlElement element = xmlDocument.CreateElement(name);
