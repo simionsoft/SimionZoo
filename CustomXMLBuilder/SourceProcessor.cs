@@ -519,13 +519,13 @@ namespace CustomXMLBuilder
             //#define CLASS_FACTORY_NEW_WINDOW(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
             //#define CLASS_CONSTRUCTOR_NEW_WINDOW(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
             //#define CLASS_INIT_NEW_WINDOW(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
-            string sPattern = @"(APP_CLASS_INIT|CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)(.*?)END_CLASS\(\)";
+            string sPattern = @"(APP_CLASS|CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)(.*?)END_CLASS\(\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
-                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(APP_CLASS_INIT|CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)\s*\(" + extractTokenRegex + @"\)");
+                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(APP_CLASS|CLASS_CONSTRUCTOR|CLASS_FACTORY|CLASS_INIT|CLASS_FACTORY_NEW_WINDOW|CLASS_CONSTRUCTOR_NEW_WINDOW|CLASS_INIT_NEW_WINDOW)\s*\(" + extractTokenRegex + @"\)");
                 string header = functionArgumentsMatch.Groups[0].Value;
 
                 var functionMatches = Regex.Match(header, extractFuncRegex);
@@ -538,7 +538,7 @@ namespace CustomXMLBuilder
                 else definedClass = parameterMatches.Groups[0].Value + "-Factory";
 
                 //if the class defines an App we don't want to check whether is referenced or not
-                if (functionMatches.Groups[1].Value.Trim(' ') != "APP_CLASS_INIT")
+                if (functionMatches.Groups[1].Value.Trim(' ') != "APP_CLASS")
                     m_checker.addClassDefinition(new classReference(definedClass,m_currentFile,0));
 
                 parsedXML += getLevelIndent() + "<CLASS Name=\"" + definedClass + "\"";

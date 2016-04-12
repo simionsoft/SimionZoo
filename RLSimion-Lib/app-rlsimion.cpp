@@ -7,13 +7,13 @@
 #include "logger.h"
 #include "named-var-set.h"
 #include "globals.h"
-#include "app.h"
 
-CLASS_CONSTRUCTOR(RLSimionApp, int argc, char* argv[]) : CApp(argc,argv)
+
+APP_CLASS(RLSimionApp, int argc, char* argv[]) : CApp(argc, argv)
 {
 	try
 	{
-
+		CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "RLSimion");
 		//In the beginning, a logger was created so that we could know about creation itself
 		CHILD_CLASS_INIT(Logger, "Log", "The logger class", false, CLogger);
 		Logger.setLogDirectory(argv[1]); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
@@ -44,9 +44,9 @@ void RLSimionApp::run()
 	try
 	{
 		//create state and action vectors
-		CState *s = World.getDynamicModel()->getStateDescriptor()->getInstance();
-		CState *s_p = World.getDynamicModel()->getStateDescriptor()->getInstance();
-		CAction *a = World.getDynamicModel()->getActionDescriptor()->getInstance();
+		CState *s = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
+		CState *s_p = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
+		CAction *a = CApp::World.getDynamicModel()->getActionDescriptor()->getInstance();
 		//register the state and action vectors in the logger
 		CApp::Logger.addVarSetToStats("State", s);
 		CApp::Logger.addVarSetToStats("Action", a);

@@ -13,7 +13,7 @@ class ControllerToVFAApp : public CApp
 	CLinearStateVFA** m_pVFAs;
 public:
 
-	ControllerToVFAApp(CParameters* pParameters,int argc,char* argv[]);
+	ControllerToVFAApp(int argc,char* argv[]);
 	~ControllerToVFAApp();
 
 	void run();

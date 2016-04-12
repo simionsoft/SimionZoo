@@ -21,6 +21,4 @@ public:
 	virtual ~CApp();
 
 	virtual void run()= 0;
-
-	static CApp* getInstance(CParameters* pParameters,int argc,char* argv[]);
 };

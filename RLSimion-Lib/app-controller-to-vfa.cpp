@@ -11,10 +11,11 @@
 #include "named-var-set.h"
 #include "app.h"
 
-CLASS_CONSTRUCTOR(ControllerToVFAApp, int argc, char* argv[]) : CApp(argc,argv)
+APP_CLASS(ControllerToVFAApp, int argc, char* argv[]) : CApp(argc,argv)
 {
 	try
 	{
+		CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "VFAToController");
 		//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
 
 		//First the world
