@@ -135,7 +135,7 @@ namespace AppXML.ViewModels
             if (!validate())
                 return;
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment | *.expe";
+            sfd.Filter = "Experiment | *.node";
             sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
@@ -518,7 +518,7 @@ namespace AppXML.ViewModels
             
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment | *.expe";
+            ofd.Filter = "Experiment | *.node";
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()),"experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -820,7 +820,7 @@ namespace AppXML.ViewModels
             XmlElement rootDef = treeDoc.CreateElement("Root");
             string rootFolder = xmlFileName + "/root";
             Directory.CreateDirectory(rootFolder);
-            string rootPath = rootFolder + "/root.expe";
+            string rootPath = rootFolder + "/root.node";
             root.Doc.Save(rootPath);
             rootDef.SetAttribute("Path", rootPath);
             treeRootNode.AppendChild(rootDef);
@@ -837,7 +837,7 @@ namespace AppXML.ViewModels
                 XmlDocument docume = child.Doc;
                 string folderPath = xmlFileName + "/" + name;
                 Directory.CreateDirectory(folderPath);
-                string filePath = folderPath + "/" + name + ".expe";
+                string filePath = folderPath + "/" + name + ".node";
                 docume.Save(filePath);
                 //crear carpeta para archivo xml y carpetas para sus hijos
                 //añadir el nodo al fichero xml
@@ -871,7 +871,7 @@ namespace AppXML.ViewModels
             //crear la carpeta que va a contener el xml y sus hijos si los tuviera
             string folderPath = fatherPath+"/"+name;
             Directory.CreateDirectory(folderPath);
-            string filePath = folderPath + "/" + name + ".expe";
+            string filePath = folderPath + "/" + name + ".node";
             docume.Save(filePath);
             //crear el xmlElement y añadirlo al padre
             XmlElement element = xmlDocument.CreateElement(name);
