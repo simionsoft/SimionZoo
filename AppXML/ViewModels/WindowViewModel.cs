@@ -386,12 +386,14 @@ namespace AppXML.ViewModels
                                                 if (itemMulti.HeaderClass == null)
                                                 {
                                                     itemMulti.Header.Value = tmp.InnerText;
-                                                    itemMulti.Aded.Clear();
+                                                    if(itemMulti.Aded!=null)
+                                                        itemMulti.Aded.Clear();
                                                 }
                                                 else
                                                 {
                                                     fillTheClass(itemMulti.HeaderClass, tmp);
-                                                    itemMulti.AdedClasses.Clear();
+                                                    if(itemMulti.AdedClasses!=null)
+                                                        itemMulti.AdedClasses.Clear();
                                                 }
                                                 dataSet = true;
                                                 break;
