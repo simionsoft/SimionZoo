@@ -135,7 +135,7 @@ namespace AppXML.ViewModels
             if (!validate())
                 return;
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment | *.expe";
+            sfd.Filter = "Experiment | *.node";
             sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
@@ -520,7 +520,7 @@ namespace AppXML.ViewModels
             
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment | *.expe";
+            ofd.Filter = "Experiment | *.node";
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()),"experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
