@@ -13,37 +13,30 @@
 
 APP_CLASS(ControllerToVFAApp, int argc, char* argv[]) : CApp(argc,argv)
 {
-	try
+	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "ControllerToVFAPolicy");
+	if (!pParameters) throw std::exception("Wrong experiment configuration file");
+	pParameters = pParameters->getChild("ControllerToVFAPolicy");
+	if (!pParameters) throw std::exception("Wrong experiment configuration file");
+	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
+
+	//First the world
+	CDynamicModel *pWorld;
+	CHILD_CLASS_FACTORY(pWorld, "Dynamic-Model", "The dynamic model's definition", false, CDynamicModel);
+	//This short-cut avoids having to define all the rest of parameters of the world not used in this app (setpoints, ...)
+	World.setDynamicModel(pWorld);
+
+	CHILD_CLASS_FACTORY(m_pController, "Controller", "The controller to be approximated", false, CController);
+
+	m_numVFAs = pParameters->countChildren("Policy");
+	CParameters* pPolicyParameters = pParameters->getChild("Policy");
+	m_pVFAs = new CLinearStateVFA*[m_numVFAs];
+	for (int i = 0; i < m_numVFAs; i++)
 	{
-		CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "VFAToController");
-		if (!pParameters) throw std::exception("Wrong experiment configuration file");
-		pParameters = pParameters->getChild("VFAToController");
-		if (!pParameters) throw std::exception("Wrong experiment configuration file");
-		//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
-
-		//First the world
-		CDynamicModel *pWorld;
-		CHILD_CLASS_FACTORY(pWorld, "Dynamic-Model", "The dynamic model's definition", false, CDynamicModel);
-		//This short-cut avoids having to define all the rest of parameters of the world not used in this app (setpoints, ...)
-		World.setDynamicModel(pWorld);
-
-		CHILD_CLASS_FACTORY(m_pController, "Controller", "The controller to be approximated", false, CController);
-
-		m_numVFAs = pParameters->countChildren("Policy");
-		CParameters* pPolicyParameters = pParameters->getChild("Policy");
-		m_pVFAs = new CLinearStateVFA*[m_numVFAs];
-		for (int i = 0; i < m_numVFAs; i++)
-		{
-			MULTI_VALUED_FACTORY(m_pVFAs[i], "Policy", "The VFAs used to approximate the controller", CLinearStateVFA, pPolicyParameters);
-			pPolicyParameters = pPolicyParameters->getNextChild("Policy");
-		}
-
-		CHILD_CLASS(m_pOutputDirFile, "Output-DirFile", "The output directory and file", false, CDirFileOutput);
+		MULTI_VALUED_FACTORY(m_pVFAs[i], "Policy", "The VFAs used to approximate the controller", CLinearStateVFA, pPolicyParameters);
+		pPolicyParameters = pPolicyParameters->getNextChild("Policy");
 	}
-	catch (std::exception& e)
-	{
-		CLogger::logMessage(MessageType::Error, e.what());
-	}
+
+	CHILD_CLASS(m_pOutputDirFile, "Output-DirFile", "The output directory and file", false, CDirFileOutput);
 
 	END_CLASS();
 }

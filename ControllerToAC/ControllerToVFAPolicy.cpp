@@ -8,12 +8,18 @@
 
 int main(int argc, char* argv[])
 {
-	CApp* pApp = new ControllerToVFAApp(argc, argv);// CApp::getInstance(argc, argv);
+	try
+	{
+		CApp* pApp = new ControllerToVFAApp(argc, argv);// CApp::getInstance(argc, argv);
 
-	pApp->run();
+		pApp->run();
 
-	delete pApp;
-
+		delete pApp;
+	}
+	catch (std::exception& e)
+	{
+		CLogger::logMessage(MessageType::Error, e.what());
+	}
 	return 0;
 }
 
