@@ -16,6 +16,9 @@ APP_CLASS(ControllerToVFAApp, int argc, char* argv[]) : CApp(argc,argv)
 	try
 	{
 		CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "VFAToController");
+		if (!pParameters) throw std::exception("Wrong experiment configuration file");
+		pParameters = pParameters->getChild("VFAToController");
+		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 		//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
 
 		//First the world
