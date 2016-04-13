@@ -41,8 +41,9 @@ namespace AppXML.ViewModels
         public void CloseWindow()
         {
             Manager.closeAll();
-            TryClose();
             Exit = true;
+            TryClose();
+            
                 
         }
         public void addProcess(ProcessStateViewModel process)

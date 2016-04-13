@@ -386,12 +386,14 @@ namespace AppXML.ViewModels
                                                 if (itemMulti.HeaderClass == null)
                                                 {
                                                     itemMulti.Header.Value = tmp.InnerText;
-                                                    itemMulti.Aded.Clear();
+                                                    if(itemMulti.Aded!=null)
+                                                        itemMulti.Aded.Clear();
                                                 }
                                                 else
                                                 {
                                                     fillTheClass(itemMulti.HeaderClass, tmp);
-                                                    itemMulti.AdedClasses.Clear();
+                                                    if(itemMulti.AdedClasses!=null)
+                                                        itemMulti.AdedClasses.Clear();
                                                 }
                                                 dataSet = true;
                                                 break;
@@ -544,11 +546,7 @@ namespace AppXML.ViewModels
         {
             Task.Factory.StartNew(() => 
             {
-                dynamic settings = new ExpandoObject();
-                settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-                settings.ShowInTaskbar = true;
-                settings.Title = "LOADING FILE";
-                new WindowManager().ShowDialog(ldvm, null, settings);
+               
             });
         }
         private void LoadDocument(XmlNode loadedDocumentRoot)
@@ -645,6 +643,71 @@ namespace AppXML.ViewModels
             
             initExperimentas(SaveAllTheNodes());         
         }
+        private void executeLoad(string fileDoc)
+        {
+         
+            
+                XmlDocument treeDoc = new XmlDocument();
+                treeDoc.Load(fileDoc);
+                XmlElement fileRoot = treeDoc.DocumentElement;
+                if (fileRoot.Name != "ExperimentsTree")
+                    return;
+                if (fileRoot.Attributes["App"] == null || !_apps.Contains(fileRoot.Attributes["App"].Value))
+                    return;
+                SelectedApp = fileRoot.Attributes["App"].Value;
+                NotifyOfPropertyChange(() => SelectedApp);
+                foreach (XmlElement element in fileRoot.ChildNodes)
+                {
+                    try
+                    {
+
+
+                        if (element.Name == "Root")
+                        {
+                            string path = element.Attributes["Path"].Value;
+                            if (File.Exists(path))
+                            {
+                                XmlDocument rootDocument = new XmlDocument();
+                                rootDocument.Load(path);
+                                LoadDocument(rootDocument.DocumentElement);
+                                this._graf = null;
+                                SetAsRoot();
+                            }
+                        }
+                        else if (element.Name == "Experiments")
+                        {
+                            Models.TreeNode top = Graf.SelectedTreeNode;
+                            foreach (XmlElement exp in element.ChildNodes)
+                            {
+                                string nodeName = exp.Name;
+                                string path = exp.Attributes["Path"].Value;
+                                if (File.Exists(path))
+                                {
+                                    XmlDocument leafDoc = new XmlDocument();
+                                    leafDoc.Load(path);
+                                    Models.TreeNode treeNode = new Models.TreeNode(nodeName, leafDoc, top);
+                                    Graf.SelectedTreeNode = top;
+                                    Graf.AddNode(treeNode);
+                                    if (exp.HasChildNodes)
+                                    {
+                                        foreach (XmlElement child in exp.ChildNodes)
+                                        {
+                                            LoadChildren(child, treeNode);
+                                        }
+                                    }
+                                }
+                            }
+                            NotifyOfPropertyChange(() => RemoveChildVisible);
+                           // ldvm.TryClose();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.StackTrace);
+                    }
+                }
+            
+        }
         public void LoadTree()
         {
             string fileDoc = null;
@@ -657,63 +720,15 @@ namespace AppXML.ViewModels
             }
             else
                 return;
-            XmlDocument treeDoc = new XmlDocument();
-            treeDoc.Load(fileDoc);
-            XmlElement fileRoot = treeDoc.DocumentElement;
-            if (fileRoot.Name != "ExperimentsTree")
-                return;
-            if (fileRoot.Attributes["App"] == null || !_apps.Contains(fileRoot.Attributes["App"].Value))
-                return;
-            SelectedApp = fileRoot.Attributes["App"].Value;
-            NotifyOfPropertyChange(() => SelectedApp);
-            foreach(XmlElement element in fileRoot.ChildNodes)
-            {
-                try
-                {
-
-                
-                    if(element.Name=="Root")
-                    {
-                        string path = element.Attributes["Path"].Value;
-                        if(File.Exists(path))
-                        {
-                            XmlDocument rootDocument = new XmlDocument();
-                            rootDocument.Load(path);
-                            LoadDocument(rootDocument.DocumentElement);
-                            this._graf = null;
-                            SetAsRoot();
-                        }
-                    }
-                    else if(element.Name=="Experiments")
-                    {
-                        Models.TreeNode top = Graf.SelectedTreeNode;
-                        foreach(XmlElement exp in element.ChildNodes)
-                        {
-                            string nodeName = exp.Name;
-                            string path = exp.Attributes["Path"].Value;
-                            if(File.Exists(path))
-                            {
-                                XmlDocument leafDoc = new XmlDocument();
-                                leafDoc.Load(path);
-                                Models.TreeNode treeNode = new Models.TreeNode(nodeName,leafDoc,top);
-                                Graf.SelectedTreeNode = top;
-                                Graf.AddNode(treeNode);
-                                if(exp.HasChildNodes)
-                                {
-                                    foreach(XmlElement child in exp.ChildNodes)
-                                    {
-                                        LoadChildren(child, treeNode);
-                                    }
-                                }
-                            }
-                        }
-                        NotifyOfPropertyChange(() => RemoveChildVisible);
-                    }
-                }catch(Exception e)
-                {
-                   Console.WriteLine(e.StackTrace);
-                }
-            }
+            
+           /* LoadDialogViewModel ldvm = new LoadDialogViewModel(fileDoc);
+            dynamic settings = new ExpandoObject();
+            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            settings.ShowInTaskbar = true;
+            settings.Title = "LOADING FILE";
+            new WindowManager().ShowWindow(ldvm, null, settings);*/
+            executeLoad(fileDoc);
+           // ldvm.Stop();
 
         }
 
@@ -774,7 +789,7 @@ namespace AppXML.ViewModels
             ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-            settings.ShowInTaskbar = true;
+            settings.ShowInTaskbar = false;
             settings.Title = "Process Manager";
             ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
             new WindowManager().ShowDialog(pwvm2, null, settings);
@@ -810,8 +825,6 @@ namespace AppXML.ViewModels
 
             Models.TreeNode root = Graf.RootNode;
             List<NodeAndName> leafs = Graf.getAllLeafs();
-            if (root == null || leafs == null || leafs.Count < 1)
-                return null;
             List<string> result = new List<string>();
            // string stamp = DateTime.Now.ToString("yyyyMMddHHmmssffff");
             XmlDocument treeDoc = new XmlDocument();
@@ -825,7 +838,10 @@ namespace AppXML.ViewModels
             rootDef.SetAttribute("Path", rootPath);
             treeRootNode.AppendChild(rootDef);
             if (!root.hasChildren())
+            {
+                result.Add(rootPath);
                 return result;
+            }
             List<string> names = new List<string>();
             XmlElement leafFather = treeDoc.CreateElement("Experiments");
             foreach(Models.TreeNode child in root.ChildNodes)

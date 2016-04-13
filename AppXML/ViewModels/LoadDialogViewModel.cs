@@ -15,6 +15,7 @@ namespace AppXML.ViewModels
         }
         public void Stop()
         {
+            System.Threading.Thread.Sleep(3000);
             TryClose();
         }
     }

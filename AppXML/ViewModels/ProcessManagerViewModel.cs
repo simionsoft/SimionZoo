@@ -119,6 +119,8 @@ namespace AppXML.ViewModels
                 }
                 catch (Exception ex)
                 {
+                    Processes[0].addMessage(ex.StackTrace);
+
                     // at least try to log it ...
                 }
             });
