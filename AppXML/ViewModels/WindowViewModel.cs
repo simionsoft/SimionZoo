@@ -725,15 +725,11 @@ namespace AppXML.ViewModels
             }
             else
                 return;
-            
-           /* LoadDialogViewModel ldvm = new LoadDialogViewModel(fileDoc);
-            dynamic settings = new ExpandoObject();
-            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-            settings.ShowInTaskbar = true;
-            settings.Title = "LOADING FILE";
-            new WindowManager().ShowWindow(ldvm, null, settings);*/
+            Cursor.Current = Cursors.WaitCursor;
+            System.Windows.Forms.Application.DoEvents();
             executeLoad(fileDoc);
-           // ldvm.Stop();
+            Cursor.Current = Cursors.Default;
+            
 
         }
 

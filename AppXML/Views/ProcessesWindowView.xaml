@@ -6,11 +6,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:z="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" Width="655.224" Height="409.776">
-    <z:Interaction.Triggers>
-        <z:EventTrigger EventName="Closing">
-            <z:InvokeCommandAction Command="{Binding CloseWindowCommand}" />
-        </z:EventTrigger>
-    </z:Interaction.Triggers>
+   
 
     <StackPanel>
         <ScrollViewer VerticalScrollBarVisibility="Visible">
