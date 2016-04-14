@@ -14,32 +14,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <TreeView BorderBrush="white" BorderThickness="0" >
-            <TreeView.Resources>
-            <Style TargetType="TreeViewItem">
-                <Style.Resources>
-                    <!-- SelectedItem with focus -->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                       Color="Transparent" />
-                    <!-- SelectedItem without focus -->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                       Color="Transparent" />
-                    <!-- SelectedItem text foreground -->
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
-                       Color="Black" />
-                </Style.Resources>
-                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-            </Style>
-            </TreeView.Resources>
+        <TreeView BorderBrush="Transparent" BorderThickness="0">
             <TreeViewItem IsExpanded="True">
                 <TreeViewItem.Header>
                     <StackPanel Orientation="Horizontal" Focusable="False">
-                        <Label Content="{Binding Name}" ToolTip="{Binding Comment }"></Label>
+                        <Label Content="{Binding Name}" ToolTip="{Binding Comment}"></Label>
                         <CheckBox Content="Used" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsSet}" VerticalAlignment="Center" ></CheckBox>
-
                     </StackPanel>
                 </TreeViewItem.Header>
-                <ContentControl x:Name="Class" IsEnabled="{Binding IsEnabled}" Focusable="False" ></ContentControl>
+                <ContentControl x:Name="Class" IsEnabled="{Binding IsEnabled}"></ContentControl>
             </TreeViewItem>
 
         </TreeView>

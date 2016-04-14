@@ -47,82 +47,82 @@ namespace AppXML.ViewModels
         {
             Task.Factory.StartNew(() =>
             {
-                try
-                {
+               
                 
             Parallel.ForEach(Processes, (process) =>
             //foreach(ProcessStateViewModel process in Processes)
                                                 {
-                                                    string name = process.pipeName ;
-                                                    Process p = new Process();
-                                                    ProcessStartInfo startInfo = new ProcessStartInfo();
-                                                    startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),Models.CApp.EXE);
-                                                    startInfo.Arguments = process.Label + " " + process.pipeName;
-                                                    //startInfo.CreateNoWindow = true;
-                                                    startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                                                     try
+                                                     {
+                                                        string name = process.pipeName ;
+                                                        Process p = new Process();
+                                                        ProcessStartInfo startInfo = new ProcessStartInfo();
+                                                        startInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(),Models.CApp.EXE);
+                                                        startInfo.Arguments = process.Label + " " + process.pipeName;
+                                                        //startInfo.CreateNoWindow = true;
+                                                        startInfo.WindowStyle = ProcessWindowStyle.Hidden;
 
-                                                    //not to read 23.232 as 23232
-                                                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-                                                    //Task.Delay(1000).Wait();
-                                                    var server = new NamedPipeServerStream(name);
+                                                        //not to read 23.232 as 23232
+                                                        Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+                                                        //Task.Delay(1000).Wait();
+                                                        var server = new NamedPipeServerStream(name);
                                                     
-                                                    p.StartInfo = startInfo;
-                                                    p.Start();
-                                                    //Process.Start(startInfo);
-                                                    this.ids.Add(p.Id);
-                                                    server.WaitForConnection();
-                                                    StreamReader reader = new StreamReader(server);
-                                                    readers.Add(reader);
-                                                    readers.Add(server);
-                                                    process.SMS = "Running";
-                                                    System.Windows.Forms.Application.DoEvents();
-                                                    //bool reading = true;
-                                                    while (server.IsConnected)
-                                                    {
-                                                        string sms = reader.ReadLine();
-                                                        XmlDocument xml = new XmlDocument();
-                                                        if (sms != null)
+                                                        p.StartInfo = startInfo;
+                                                        p.Start();
+                                                        //Process.Start(startInfo);
+                                                        this.ids.Add(p.Id);
+                                                        server.WaitForConnection();
+                                                        StreamReader reader = new StreamReader(server);
+                                                        readers.Add(reader);
+                                                        readers.Add(server);
+                                                        process.SMS = "Running";
+                                                        System.Windows.Forms.Application.DoEvents();
+                                                        //bool reading = true;
+                                                        while (server.IsConnected)
                                                         {
-                                                            xml.LoadXml(sms);
-                                                            XmlNode node = xml.DocumentElement;
-                                                            if (node.Name == "Progress")
+                                                            string sms = reader.ReadLine();
+                                                            XmlDocument xml = new XmlDocument();
+                                                            if (sms != null)
                                                             {
-                                                                double progress = Convert.ToDouble(node.InnerText);
-                                                                process.Status = Convert.ToInt32(progress);
-                                                               
-                                                                if (progress == 100.0)
+                                                                xml.LoadXml(sms);
+                                                                XmlNode node = xml.DocumentElement;
+                                                                if (node.Name == "Progress")
                                                                 {
-                                                                    //reading = false;
-                                                                    process.SMS = "Finished";
-
-                                                                }
-                                                            }
-                                                            else if (node.Name == "Message")
-                                                            {
-                                                                process.addMessage(node.InnerText);
+                                                                    double progress = Convert.ToDouble(node.InnerText);
+                                                                    process.Status = Convert.ToInt32(progress);
                                                                
+                                                                    if (progress == 100.0)
+                                                                    {
+                                                                        //reading = false;
+                                                                        process.SMS = "Finished";
+
+                                                                    }
+                                                                }
+                                                                else if (node.Name == "Message")
+                                                                {
+                                                                    process.addMessage(node.InnerText);
+                                                               
+                                                                }
+                                                               System.Windows.Forms.Application.DoEvents();
+                                                            }  
+                                                            else
+                                                            {
+
                                                             }
-                                                           System.Windows.Forms.Application.DoEvents();
-                                                        }  
-                                                        else
-                                                        {
-
-                                                        }
                                                        
-                                                   }
-                                                    ids.Remove(p.Id);
-                                                    reader.Close();
-                                                    readers.Remove(reader);
-                                                    server.Close();
-                                                    readers.Remove(server);
+                                                       }
+                                                        ids.Remove(p.Id);
+                                                        reader.Close();
+                                                        readers.Remove(reader);
+                                                        server.Close();
+                                                        readers.Remove(server);
+                                                     }
+                                                     catch (Exception ex)
+                                                     {
+                                                         process.addMessage(ex.StackTrace);
+                                                     }
                                                 });
-                }
-                catch (Exception ex)
-                {
-                    Processes[0].addMessage(ex.StackTrace);
-
-                    // at least try to log it ...
-                }
+               
             });
             
                 
@@ -147,13 +147,19 @@ namespace AppXML.ViewModels
         {
 
            
-                try
-                {
+               
                     foreach(int id in ids)
                     {
-                        Process p = Process.GetProcessById(id);
-                        if (p != null && !p.HasExited)
-                          p.Kill();
+                        try
+                        {
+                            Process p = Process.GetProcessById(id);
+                            if (p != null && !p.HasExited)
+                              p.Kill();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.StackTrace);
+                        }
                     }
                     ids.Clear();
                     foreach(object item in readers)
@@ -164,11 +170,7 @@ namespace AppXML.ViewModels
                             (item as NamedPipeServerStream).Close();
                     }
 
-                }
-                catch (Exception ex)
-                {
-                    // at least try to log it ...
-                }
+               
             
 
         }
