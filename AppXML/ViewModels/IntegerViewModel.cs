@@ -243,12 +243,13 @@ namespace AppXML.ViewModels
     {
         private string buttonImage;
         public string copyDefault;
-        
+        public string Color { get { return color; } set { color = value; NotifyOfPropertyChange(() => Color); } }
+        private string color;
 
         public new bool validate()
         {
             if (!isOptional && (Default == null || Default == ""))
-                return false;
+                return true;
             string tmp = Default;
             if (!Path.IsPathRooted(Default))
             {
@@ -257,9 +258,17 @@ namespace AppXML.ViewModels
                 tmp = System.IO.Path.GetFullPath(tmp);
             }
             if (type == validTypes.FilePathValue && !File.Exists(tmp))
+            {
+                this.TextColor = "Red";
                 return false;
+                
+            }
             if (type == validTypes.DirPathValue && !Directory.Exists(tmp))
+            {
+                this.TextColor = "Red";
                 return false;
+            }   
+            this.TextColor = "White";
             return true;
         }
 
