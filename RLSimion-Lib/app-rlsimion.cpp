@@ -9,7 +9,7 @@
 #include "globals.h"
 
 
-APP_CLASS(RLSimionApp, int argc, char* argv[]) : CApp(argc, argv)
+APP_CLASS(RLSimionApp)
 {
 	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "RLSimion");
 	if (!pParameters) throw std::exception("Wrong experiment configuration file");
@@ -38,51 +38,45 @@ RLSimionApp::~RLSimionApp()
 
 void RLSimionApp::run()
 {
-	try
+
+	//create state and action vectors
+	CState *s = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
+	CState *s_p = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
+	CAction *a = CApp::World.getDynamicModel()->getActionDescriptor()->getInstance();
+	//register the state and action vectors in the logger
+	CApp::Logger.addVarSetToStats("State", s);
+	CApp::Logger.addVarSetToStats("Action", a);
+	CApp::Logger.addVarToStats("Reward", "sum", CApp::World.getScalarReward());
+	CApp::Logger.addVarSetToStats("Reward", CApp::World.getReward());
+
+	double r = 0.0;
+
+	//episodes
+	for (CApp::Experiment.nextEpisode(); CApp::Experiment.isValidEpisode(); CApp::Experiment.nextEpisode())
 	{
-		//create state and action vectors
-		CState *s = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
-		CState *s_p = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
-		CAction *a = CApp::World.getDynamicModel()->getActionDescriptor()->getInstance();
-		//register the state and action vectors in the logger
-		CApp::Logger.addVarSetToStats("State", s);
-		CApp::Logger.addVarSetToStats("Action", a);
-		CApp::Logger.addVarToStats("Reward", "sum", CApp::World.getScalarReward());
-		CApp::Logger.addVarSetToStats("Reward", CApp::World.getReward());
+		CApp::World.reset(s);
 
-		double r = 0.0;
-
-		//episodes
-		for (CApp::Experiment.nextEpisode(); CApp::Experiment.isValidEpisode(); CApp::Experiment.nextEpisode())
+		//steps per episode
+		for (CApp::Experiment.nextStep(); CApp::Experiment.isValidStep(); CApp::Experiment.nextStep())
 		{
-			CApp::World.reset(s);
+			//a= pi(s)
+			CApp::SimGod.selectAction(s, a);
 
-			//steps per episode
-			for (CApp::Experiment.nextStep(); CApp::Experiment.isValidStep(); CApp::Experiment.nextStep())
-			{
-				//a= pi(s)
-				CApp::SimGod.selectAction(s, a);
+			//s_p= f(s,a); r= R(s');
+			r = CApp::World.executeAction(s, a, s_p);
 
-				//s_p= f(s,a); r= R(s');
-				r = CApp::World.executeAction(s, a, s_p);
+			//update god's policy and value estimation
+			CApp::SimGod.update(s, a, s_p, r);
 
-				//update god's policy and value estimation
-				CApp::SimGod.update(s, a, s_p, r);
+			//log tuple <s,a,s',r>
+			CApp::Experiment.timestep(s, a, s_p, CApp::World.getReward()); //we need the complete reward vector for logging
 
-				//log tuple <s,a,s',r>
-				CApp::Experiment.timestep(s, a, s_p, CApp::World.getReward()); //we need the complete reward vector for logging
-
-				//s= s'
-				s->copy(s_p);
-			}
+			//s= s'
+			s->copy(s_p);
 		}
+	}
 
-		delete s;
-		delete s_p;
-		delete a;
-	}
-	catch (std::exception& e)
-	{
-		CLogger::logMessage(MessageType::Error, e.what());
-	}
+	delete s;
+	delete s_p;
+	delete a;
 }

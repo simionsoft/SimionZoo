@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<APP Name="ControllerToVFAPolicy">
-  <EXE>../Debug/ControllerToVFAPolicy.exe</EXE>
-  
-  <INCLUDE>../config/definitions.xml</INCLUDE>
-
-  <BRANCH Name="ControllerToVFAPolicy" Class="ControllerToVFAApp"/>
-</APP>

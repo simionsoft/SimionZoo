@@ -7,6 +7,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CParameters;
+class CParameterFile;
 
 #include "parameterized-object.h"
 //CLinearVFA////////////////////////////////////////////////////////////////////
@@ -66,6 +67,7 @@ public:
 
 class CLinearStateVFAFromFile: public CLinearStateVFA
 {
+	CParameterFile* m_mapFeatureParameterFile;
 	CParameters* m_mapFeatureParameters;
 	const char* m_loadFilename;
 public:

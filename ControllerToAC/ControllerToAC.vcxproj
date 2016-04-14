@@ -14,7 +14,7 @@
     <ProjectGuid>{C02FD0DA-4C15-4C93-833A-A4A107EAA37E}</ProjectGuid>
     <RootNamespace>ControllerToActorCritic</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>ControllerToVFAPolicy</ProjectName>
+    <ProjectName>ControllerToVFA</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

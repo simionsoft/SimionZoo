@@ -78,7 +78,7 @@
                         <Deterministic-Policy-VFA>
                           <Parameterization>
                             <From-File>
-                              <Load>../data/uv-5000.u-thrust.feature-map.xml</Load>
+                              <Load>../data/uv-5000.u-thrust.fmap</Load>
                             </From-File>
                           </Parameterization>
                         </Deterministic-Policy-VFA>
