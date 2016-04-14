@@ -837,39 +837,40 @@ namespace AppXML.ViewModels
             root.Doc.Save(rootPath);
             rootDef.SetAttribute("Path", rootPath);
             treeRootNode.AppendChild(rootDef);
-            if (!root.hasChildren())
-            {
-                result.Add(rootPath);
-                return result;
-            }
+            
             List<string> names = new List<string>();
             XmlElement leafFather = treeDoc.CreateElement("Experiments");
-            foreach(Models.TreeNode child in root.ChildNodes)
+            if (root.ChildNodes != null)
             {
-                string name = child.Text;
-                while (names.Contains(name))
-                    name += "c";
-                names.Add(name);
-                XmlDocument docume = child.Doc;
-                string folderPath = xmlFileName + "/" + name;
-                Directory.CreateDirectory(folderPath);
-                string filePath = folderPath + "/" + name + ".node";
-                docume.Save(filePath);
-                //crear carpeta para archivo xml y carpetas para sus hijos
-                //añadir el nodo al fichero xml
-                XmlElement docElement = treeDoc.CreateElement(name);
-                docElement.SetAttribute("Path", filePath);
-                //docElement.InnerText = filePath;
-                leafFather.AppendChild(docElement);
-                //si tiene hijos hay que recorrerlos 
-                if (child.hasChildren())
+                foreach (Models.TreeNode child in root.ChildNodes)
                 {
-                    foreach (Models.TreeNode item in child.ChildNodes)
-                        result.AddRange(ResolverChildNode(item, folderPath, docElement));
+                    string name = child.Text;
+                    while (names.Contains(name))
+                        name += "c";
+                    names.Add(name);
+                    XmlDocument docume = child.Doc;
+                    string folderPath = xmlFileName + "/" + name;
+                    Directory.CreateDirectory(folderPath);
+                    string filePath = folderPath + "/" + name + ".node";
+                    docume.Save(filePath);
+                    //crear carpeta para archivo xml y carpetas para sus hijos
+                    //añadir el nodo al fichero xml
+                    XmlElement docElement = treeDoc.CreateElement(name);
+                    docElement.SetAttribute("Path", filePath);
+                    //docElement.InnerText = filePath;
+                    leafFather.AppendChild(docElement);
+                    //si tiene hijos hay que recorrerlos 
+                    if (child.hasChildren())
+                    {
+                        foreach (Models.TreeNode item in child.ChildNodes)
+                            result.AddRange(ResolverChildNode(item, folderPath, docElement));
+                    }
+                    else
+                        result.Add(filePath);
                 }
-                else
-                    result.Add(filePath);
             }
+            else
+                result.Add(rootPath);
             treeRootNode.AppendChild(leafFather);
             treeDoc.AppendChild(treeRootNode);
             treeDoc.Save(xmlFileName+ ".tree");
