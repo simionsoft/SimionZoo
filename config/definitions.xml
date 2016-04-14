@@ -32,6 +32,14 @@
     <MULTI-VALUED Name="Output" Class="CPolicyLearner-Factory" Comment="The outputs of the actor. One for each output dimension"/>
   </CLASS>
 
+  <CLASS Name="CompareControllerVFAApp">
+    <INTEGER-VALUE Name="Num-Samples" Default="100000" Comment="The number of samples taken to compare the controller and the approximation"/>
+    <MULTI-VALUED Name="Policy" Class="CLinearStateVFAFromFile" Comment="The VFAs used to approximate the controller"/>
+    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model's definition" Optional=" false"/>
+    <BRANCH Name="Controller" Class="CController-Factory" Comment="The controller to be approximated" Optional=" false"/>
+    <BRANCH Name="Output-DirFile" Class="CDirFileOutput" Comment="The output directory and file" Optional=" false"/>
+  </CLASS>
+
   <CLASS Name="ControllerToVFAApp">
     <MULTI-VALUED Name="Policy" Class="CLinearStateVFA-Factory" Comment="The VFAs used to approximate the controller"/>
     <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model's definition" Optional=" false"/>
@@ -351,7 +359,7 @@
   </CLASS>
 
   <CLASS Name="CLinearStateVFAFromFile">
-    <FILE-PATH-VALUE Name="Load" Default="../config/data/*.xml" Comment="The VFA will be loaded from this file"/>
+    <FILE-PATH-VALUE Name="Load" Default="../config/data/*.fmap" Comment="The VFA will be loaded from this file"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFA-Factory">

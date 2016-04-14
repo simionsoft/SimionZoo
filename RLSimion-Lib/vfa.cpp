@@ -133,10 +133,10 @@ void CLinearStateVFA::save(const char* pFilename)
 	sprintf_s(msg, 128, "Saving Policy to \"%s\" (.bin/.xml)...", pFilename);
 	CLogger::logMessage(Info, msg);
 
-	sprintf_s(binFile, 512, "%s.weights.bin", pFilename);
+	sprintf_s(binFile, 512, "%s.weights", pFilename);
 	saveWeights(binFile);
 
-	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
+	sprintf_s(xmlDescFile, 512, "%s.fmap", pFilename);
 
 	fopen_s(&pXMLFile, xmlDescFile, "w");
 	if (pXMLFile)
@@ -188,12 +188,13 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 {
 	char message[1024];
 	//load the map feature description from an xml file
-	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.xml", "The VFA will be loaded from this file");
-	CParameterFile mapFeatureParameterFile;
+	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.fmap", "The VFA will be loaded from this file");
+
 	sprintf_s(message, 1024, "Loaded %s file", m_loadFilename);
 	CLogger::logMessage(MessageType::Info,message);
 
-	m_mapFeatureParameters= mapFeatureParameterFile.loadFile(m_loadFilename);
+	m_mapFeatureParameterFile = new CParameterFile();
+	m_mapFeatureParameters= m_mapFeatureParameterFile->loadFile(m_loadFilename);
 	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(m_mapFeatureParameters);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
@@ -204,9 +205,9 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 	//load the weigths from the binary file
 	char binFilename[1024];
 	strcpy_s(binFilename, 1024, m_loadFilename);
-	char* extension = strstr(binFilename, "feature-map.xml");
+	char* extension = strstr(binFilename, "fmap");
 	if (extension)
-		strcpy_s(extension,1024-(extension-binFilename+1),"weights.bin");
+		strcpy_s(extension,1024-(extension-binFilename+1),"weights");
 		
 	loadWeights(binFilename);
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
@@ -218,7 +219,7 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 }
 CLinearStateVFAFromFile::~CLinearStateVFAFromFile()
 {
-	delete[] m_mapFeatureParameters;
+	delete m_mapFeatureParameterFile;
 }
 
 CLASS_FACTORY(CLinearStateVFA)

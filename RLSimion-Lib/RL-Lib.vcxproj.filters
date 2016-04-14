@@ -144,6 +144,9 @@
     <ClCompile Include="app-controller-to-vfa.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="app-compare-controller-vfa.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -258,6 +261,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="app-controller-to-vfa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app-compare-controller-vfa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

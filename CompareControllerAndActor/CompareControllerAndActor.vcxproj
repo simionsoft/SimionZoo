@@ -14,6 +14,7 @@
     <ProjectGuid>{DBBAF6F2-F646-46E0-8976-32B10728A2B6}</ProjectGuid>
     <RootNamespace>CompareControllerAndActor</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <ProjectName>CompareControllerVFA</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
