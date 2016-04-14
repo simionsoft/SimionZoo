@@ -226,9 +226,11 @@ namespace AppXML.ViewModels
             bool multiStarted = false;
             string currentMulti = "";
             int multiIndex = 0;
+            bool res = false;
             if(cvm.ResumeClass!=null)
             {
                 cvm = cvm.ResumeClass;
+                res = true;
             }
             foreach (XmlNode data in dataNode)
             {
@@ -254,6 +256,8 @@ namespace AppXML.ViewModels
                                     string name = choiceElementData.Name;
                                     cvm.Choice.setSelectedItem(name);
                                     fillTheClass(cvm.Choice.Class, choiceElementData);
+                                    if (res)
+                                        cvm.validate(false);
                                     dataSet = true;
 
                                 }
@@ -489,8 +493,7 @@ namespace AppXML.ViewModels
                                                 else
                                                 {
                                                     fillTheClass(itemBranch.Class.ResumeClass, tmp);
-                                                    itemBranch.Class.setResumeInClassView();
-
+                                                    itemBranch.Class.validate(false); 
                                                 }
                                                 dataSet = true;
                                                 break;
@@ -514,6 +517,8 @@ namespace AppXML.ViewModels
                     }
                 
             }
+            if (res)
+                cvm.validate(false);
         }
         public void Load()
         {
