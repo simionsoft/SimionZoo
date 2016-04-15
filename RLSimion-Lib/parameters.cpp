@@ -58,10 +58,12 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
 
-	if (!this || !paramName)
+	if (!this)
 		throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
 
-	pParameter = getChild(paramName);
+	if (paramName) pParameter = getChild(paramName);
+	else pParameter = this;
+
 	if (pParameter)
 	{
 		if (!strcmp(pParameter->GetText(), "true"))
@@ -69,6 +71,8 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 		if (!strcmp(pParameter->GetText(), "false"))
 			return false;
 	}
+	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %b", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
@@ -79,14 +83,18 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 int CParameters::getConstInteger(const char* paramName, int defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
-	if (!this || !paramName)
+	if (!this)
 		throw std::exception((std::string("Illegal access to integer parameter") + std::string(paramName)).c_str());
 
-	pParameter = getChild(paramName);
+	if (paramName) pParameter = getChild(paramName);
+	else pParameter = this;
+
 	if (pParameter)
 	{
 		return atoi(pParameter->GetText());
 	}
+	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
@@ -96,14 +104,18 @@ int CParameters::getConstInteger(const char* paramName, int defaultValue)
 double CParameters::getConstDouble(const char* paramName, double defaultValue)
 {
 	CParameters* pParameter;
-	if (!this || !paramName)
+	if (!this)
 		throw std::exception((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
 
-	pParameter = getChild(paramName);
+	if (paramName) pParameter = getChild(paramName);
+	else pParameter = this;
+
 	if (pParameter)
 	{
 		return atof(pParameter->GetText());
 	}
+	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %f", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
@@ -114,19 +126,18 @@ double CParameters::getConstDouble(const char* paramName, double defaultValue)
 const char* CParameters::getConstString(const char* paramName, const char* defaultValue)
 {
 	CParameters* pParameter;
-	if (!this || !paramName)
+	if (!this)
 		throw std::exception((std::string("Illegal access to string parameter") + std::string(paramName)).c_str());
 
-	if (paramName)
+	if (paramName) pParameter = getChild(paramName);
+	else pParameter = this;
+
+	if (pParameter)
 	{
-		pParameter = getChild(paramName);
-		if (pParameter)
-		{
-			return pParameter->GetText();
-		}
+		return pParameter->GetText();
 	}
-	else
-		if (GetText()) return GetText();
+	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %s", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);

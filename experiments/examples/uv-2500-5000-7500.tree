@@ -1,0 +1,8 @@
+<ExperimentsTree App="RLSimion">
+  <Root Path="../experiments/examples/uv-2500-5000-7500/root/root.node" />
+  <Experiments>
+    <uv-5000 Path="../experiments/examples/uv-2500-5000-7500/5000/5000.node" />
+    <uv-7500 Path="../experiments/examples/uv-2500-5000-7500/7500/7500.node" />
+    <uv-2500 Path="../experiments/examples/uv-2500-5000-7500/2500/2500.node" />
+  </Experiments>
+</ExperimentsTree>

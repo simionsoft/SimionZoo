@@ -10,6 +10,7 @@
 #include "world.h"
 #include "named-var-set.h"
 #include "app.h"
+#include "timer.h"
 
 APP_CLASS(ControllerToVFAApp)
 {
@@ -49,11 +50,13 @@ void ControllerToVFAApp::run()
 	CAction *a = World.getDynamicModel()->getActionDescriptor()->getInstance();
 	int i = 0;
 
+	CTimer timer;
 	char msg[512];
 	char completeFilename[1024];
 	double progress;
 	int outputActionIndex;
 	double numDimensions = (double)std::min(m_pController->getNumOutputs(), m_numVFAs);
+	timer.startTimer();
 	for (int i = 0; i < numDimensions; i++)
 	{
 		outputActionIndex = m_pController->getOutputActionIndex(i);
@@ -66,10 +69,14 @@ void ControllerToVFAApp::run()
 			double output = a->getValue(outputActionIndex);
 			pWeights[feature] = output;
 
-			progress = (((double)i) / numDimensions) + (1.0 / numDimensions) * ((double)feature) / ((double)numWeights);
-			progress *= 100.0;
-			sprintf_s(msg, 512, "%f", progress);
-			CLogger::logMessage(MessageType::Progress, msg);
+			if (timer.getElapsedTime() > 0.5)
+			{
+				progress = (((double)i) / numDimensions) + (1.0 / numDimensions) * ((double)feature) / ((double)numWeights);
+				progress *= 100.0;
+				sprintf_s(msg, 512, "%f", progress);
+				CLogger::logMessage(MessageType::Progress, msg);
+				timer.startTimer();
+			}
 		}
 
 

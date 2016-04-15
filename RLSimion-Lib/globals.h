@@ -46,10 +46,10 @@
 #define MULTI_VALUED(indexedVariable,name,comment,className,...) indexedVariable= new className(__VA_ARGS__);
 #define MULTI_VALUED_FACTORY(indexedVariable,name,comment,className,...) indexedVariable= className::getInstance(__VA_ARGS__);
 
-#define MULTI_VALUED_STRING(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstString(defaultValue);
-#define MULTI_VALUED_DOUBLE(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstDouble(defaultValue);
-#define MULTI_VALUED_INTEGER(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstInteger(defaultValue);
-#define MULTI_VALUED_FILE_PATH(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstString(defaultValue);
+#define MULTI_VALUED_STRING(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
+#define MULTI_VALUED_DOUBLE(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstDouble(0,defaultValue);
+#define MULTI_VALUED_INTEGER(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstInteger(0,defaultValue);
+#define MULTI_VALUED_FILE_PATH(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
 #define MULTI_VALUED_STATE_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
 #define MULTI_VALUED_ACTION_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
 
