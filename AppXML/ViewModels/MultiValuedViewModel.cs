@@ -250,13 +250,13 @@ namespace AppXML.ViewModels
             else
             {
                 nodes.AddRange(Header.getXmlNode());
-                //nodes.Add(Header.getXmlNode());
+                
                 if(Aded!=null)
                 {
                     foreach(IntegerViewModel ivm in Aded)
                     {
-                        nodes.AddRange(Header.getXmlNode());
-                       // nodes.Add(ivm.getXmlNode());
+                        nodes.AddRange(ivm.getXmlNode());
+                      
                     }
                 }
             }
