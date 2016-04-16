@@ -628,18 +628,26 @@ namespace AppXML.ViewModels
         {
             if (!validate())
                 return;
+
             DialogViewModel dvm = new DialogViewModel(null, "Which name do you want for the new node?", DialogViewModel.DialogType.Answer);
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
             settings.ShowInTaskbar = true;
             settings.Title = "Info";
-
-            new WindowManager().ShowDialog(dvm, null, settings);
+            WindowManager wm = new WindowManager();
             string name = null;
-            if (dvm.DialogResult == DialogViewModel.Result.OK)
-                name = dvm.Text;
-            if(name==null)
-                name="Node";
+            do
+            {
+                wm.ShowDialog(dvm, null, settings);
+                if (dvm.DialogResult == DialogViewModel.Result.OK)
+                    name = dvm.Text;
+                else
+                    return;
+                if (name == null)
+                    name = "Node";
+                dvm.Text = "The name "+name+" is not valid. ";
+            } while (!Utility.checkName(name));
+            
             XmlDocument document = new XmlDocument();
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
@@ -647,7 +655,7 @@ namespace AppXML.ViewModels
             Graf.AddNode(node);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => RemoveChildVisible);
-            //NotifyOfPropertyChange(() => Graf);
+           
         }
         public void RemoveChild()
         {

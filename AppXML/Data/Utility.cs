@@ -16,6 +16,18 @@ namespace AppXML.Data
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
 
+        public static bool checkName(string name)
+        {
+            try
+            {
+                XmlConvert.VerifyName(name);
+                return true;
+            }
+            catch
+            {
+               return false;
+            }
+        }
         public static string findDifferences(XmlDocument childDocument,XmlDocument fatherDocument)
         {
 
