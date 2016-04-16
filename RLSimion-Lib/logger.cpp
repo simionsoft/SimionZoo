@@ -327,7 +327,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 			printf("PROGRESS: %s                     \r", message);
 			break;
 		case Info:
-			printf("INFO: %s", message);
+			printf("INFO: %s\n", message);
 			break;
 		case Error:
 			printf("FATAL ERROR: %s\n",message);

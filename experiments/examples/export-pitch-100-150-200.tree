@@ -1,0 +1,8 @@
+<ExperimentsTree App="ControllerToVFA">
+  <Root Path="../experiments/examples/export-pitch-100-150-200/root/root.node" />
+  <Experiments>
+    <pitch200 Path="../experiments/examples/export-pitch-100-150-200/pitch200/pitch200.node" />
+    <pitch150 Path="../experiments/examples/export-pitch-100-150-200/pitch150/pitch150.node" />
+    <pitch100 Path="../experiments/examples/export-pitch-100-150-200/pitch100/pitch100.node" />
+  </Experiments>
+</ExperimentsTree>
