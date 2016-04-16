@@ -23,7 +23,7 @@ namespace AppXML.ViewModels
     }
     public class RightTreeViewModel:PropertyChangedBase
     {
-        BindableCollection<TreeNode> _treeItems;
+        ObservableCollection<TreeNode> _treeItems;
         private readonly WindowViewModel father;
 
         private TreeNode selectedTreeNode = null;
@@ -49,13 +49,13 @@ namespace AppXML.ViewModels
         }
         public RightTreeViewModel(TreeNode tree, WindowViewModel father)
         {
-            _treeItems = new BindableCollection<TreeNode>();
+            _treeItems = new ObservableCollection<TreeNode>();
             _treeItems.Add(tree);
             rootNode = tree;
             selectedTreeNode = tree;
             this.father = father;
         }
-        public BindableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
+        public ObservableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
         public void AddNode(TreeNode newNode)
         {
             if (selectedTreeNode == null)

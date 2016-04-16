@@ -35,7 +35,16 @@ namespace AppXML.ViewModels
         private XmlDocument _doc;
         private RightTreeViewModel _graf;
         public ObservableCollection<ValidableAndNodeViewModel> Branch { get { return _branches[0].Class.AllItems; } set { } }
-        public RightTreeViewModel Graf { get { return _graf; } set { } }
+        public RightTreeViewModel Graf { get { return _graf; } 
+            set 
+            {
+                _graf = value; 
+                NotifyOfPropertyChange(() => Graf); 
+                NotifyOfPropertyChange(()=> AddChildVisible);
+                NotifyOfPropertyChange(()=> RemoveChildVisible);
+
+            } 
+        }
         private ObservableCollection<string> _apps = new ObservableCollection<string>();
         public ObservableCollection<string> Apps { get { return _apps; } set { } }
         private bool _isSelectedNodeLeaf = false;
@@ -544,6 +553,8 @@ namespace AppXML.ViewModels
 
             }
             LoadDocument(loadedDocumentRoot);
+            Graf = null;
+            
            
            
         }
@@ -606,7 +617,7 @@ namespace AppXML.ViewModels
             document.AppendChild(newRoot);
             //document.Save("copia.tree");
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
-            if (this._graf == null)
+            //if (this._graf == null)
                 _graf = new RightTreeViewModel(rootNode,this);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => AddChildVisible);
@@ -634,6 +645,7 @@ namespace AppXML.ViewModels
             document.AppendChild(newRoot);
             Models.TreeNode node = new Models.TreeNode(name, document, Graf.SelectedTreeNode);
             Graf.AddNode(node);
+            NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => RemoveChildVisible);
             //NotifyOfPropertyChange(() => Graf);
         }
