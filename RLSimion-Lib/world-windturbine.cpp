@@ -247,10 +247,10 @@ void CWindTurbine::reset(CState *s)
 
 	if (m_initial_blade_angle==0.0)
 	{
-		CLogger::logMessage(Info,"Calculating initial torque and blade angle parameters...\n");
+		CLogger::logMessage(Info,"Calculating initial torque and blade angle parameters...");
 		FindSuitableParameters(initial_wind_speed,initial_rotor_speed,m_initial_torque,m_initial_blade_angle);
 		char msg[128];
-		sprintf_s(msg,"T_g= %f     //    Beta= %f\n",m_initial_torque,m_initial_blade_angle);
+		sprintf_s(msg,"T_g= %f     //    Beta= %f",m_initial_torque,m_initial_blade_angle);
 		CLogger::logMessage(Info, msg);
 	}
 
