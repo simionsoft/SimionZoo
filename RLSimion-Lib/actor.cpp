@@ -14,9 +14,8 @@
 
 CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters)
 {
+	m_numOutputs = pParameters->countChildren("Output");
 	CParameters* pOutput = pParameters->getChild("Output");
-
-	m_numOutputs = pOutput->countChildren();
 
 	m_pPolicyLearners = new CPolicyLearner*[m_numOutputs];
 
