@@ -703,7 +703,7 @@ namespace AppXML.ViewModels
                                 SetAsRoot();
                             }
                         }
-                        else if (element.Name == "Experiments")
+                        else if (element.Name == "Experiments" && element.HasChildNodes)
                         {
                             Models.TreeNode top = Graf.SelectedTreeNode;
                             foreach (XmlElement exp in element.ChildNodes)
