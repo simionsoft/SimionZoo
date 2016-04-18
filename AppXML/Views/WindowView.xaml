@@ -19,6 +19,12 @@
     <Grid>
 
         <TreeView HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="White"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+            </TreeView.Resources>
             <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" >
             </TreeViewItem>
         </TreeView>

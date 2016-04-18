@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using System.Xml;
+using System.Windows.Media;
 namespace AppXML.ViewModels
 {
     public class BranchViewModel:ValidableAndNodeViewModel
     {
+        
         private bool _isOptional;
         public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
         private string _name;
@@ -42,6 +44,8 @@ namespace AppXML.ViewModels
             set { }
         }
         
+        
+
         public BranchViewModel(string name,string clas,string comment,bool isOptional, XmlDocument doc, string tag)
         {
             _name = name;
