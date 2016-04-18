@@ -130,7 +130,7 @@ void CLinearStateVFA::save(const char* pFilename)
 
 	if ( pFilename == 0 || pFilename[0] == 0) return;
 
-	sprintf_s(msg, 128, "Saving Policy to \"%s\" (.bin/.xml)...", pFilename);
+	sprintf_s(msg, 128, "Saving Policy to \"%s\" (.fmap/.weights)...", pFilename);
 	CLogger::logMessage(Info, msg);
 
 	sprintf_s(binFile, 512, "%s.weights", pFilename);
