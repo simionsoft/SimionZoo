@@ -9,13 +9,14 @@
 #include "globals.h"
 
 
-int RLSimionApp::getOutputs(char* pBuffer, int bufferSize)
+int RLSimionApp::getOutputFiles(char* pBuffer[], int& numItems)
 {
 	int writtenBytes= 0;
 	if (!pBuffer) return -1;
 
-	writtenBytes= Logger.getOutputs(pBuffer,bufferSize);
+	writtenBytes= Logger.getOutputFiles(pBuffer,numItems);
 	pBuffer += writtenBytes;
+	return 0;
 }
 
 APP_CLASS(RLSimionApp)

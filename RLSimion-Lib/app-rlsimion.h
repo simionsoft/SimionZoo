@@ -10,8 +10,8 @@ public:
 	RLSimionApp(int argc,char* argv[]);
 	~RLSimionApp();
 
-	void getInputs(const char* xmlConfigFile);
-	void getOutputs(const char* xmlConfigFile);
+	int getInputFiles(char* pBuffer[], int& bufferSize);
+	int getOutputFiles(char* pBuffer[], int& bufferSize);
 
 	void run();
 };
