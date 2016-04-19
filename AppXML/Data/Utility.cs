@@ -107,7 +107,36 @@ namespace AppXML.Data
             return result;
 
         }
-
+        public static List<string> removeAndGetLeafs(string folder)
+        {
+            List<string> result = new List<string>();
+            bool isLeaf = Directory.GetDirectories(folder).Length == 0;
+            if(Directory.Exists(folder))
+            {
+                string root = null;
+                foreach(string item in Directory.GetFileSystemEntries(folder))
+                {
+                    FileAttributes attr = File.GetAttributes(item);
+                    if (attr.HasFlag(FileAttributes.Directory))
+                    {
+                        if (item.EndsWith("root"))
+                            root = removeAndGetLeafs(item)[0];
+                        else
+                            result.AddRange(removeAndGetLeafs(item));
+                    }
+                    else
+                    {
+                        if (!item.EndsWith(".node"))
+                            File.Delete(item);
+                        else if(isLeaf)
+                            result.Add(item);
+                    }
+                }
+                if (result.Count == 0 && root != null)
+                    result.Add(root);
+            }
+            return result;
+        }
         public static Dictionary<string, string> GetLeaves(XDocument doc)
         {
             var dict = doc

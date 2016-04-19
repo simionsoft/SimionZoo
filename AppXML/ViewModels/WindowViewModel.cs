@@ -123,7 +123,10 @@ namespace AppXML.ViewModels
             XmlDocument document = new XmlDocument();
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
+            if ( Utility.findDifferences(document, Graf.SelectedTreeNode.Doc)==null)
+                return;
             Graf.SelectedTreeNode.Doc = document;
+            Graf.LoadedAndModified = true;
         }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         public CNode rootnode
@@ -558,13 +561,7 @@ namespace AppXML.ViewModels
            
            
         }
-        private void showLoadDialog(LoadDialogViewModel ldvm)
-        {
-            Task.Factory.StartNew(() => 
-            {
-               
-            });
-        }
+       
         private void LoadDocument(XmlNode loadedDocumentRoot)
         {
             //we are goingo to set as null every viewModel that is optional. If they are optional are the document has a value for them the will be set in the process
@@ -617,8 +614,7 @@ namespace AppXML.ViewModels
             document.AppendChild(newRoot);
             //document.Save("copia.tree");
             AppXML.Models.TreeNode rootNode = new Models.TreeNode("root", document, null);
-            //if (this._graf == null)
-                _graf = new RightTreeViewModel(rootNode,this);
+            _graf = new RightTreeViewModel(rootNode,this);
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => AddChildVisible);
         }
@@ -665,8 +661,16 @@ namespace AppXML.ViewModels
         public void SaveAll()
         {
             //List<NodeAndName> myList = Graf.getAllLeafs();
-            
-            initExperimentas(SaveAllTheNodes());         
+            List<string> paths = null;
+            if (!Graf.Loaded)
+                paths=SaveAllTheNodes(true);
+            else if (Graf.LoadedAndModified)
+                paths = SaveAllTheNodes(true);
+            else
+                paths = SaveAllTheNodes(false);
+            if (paths!=null && paths.Count > 0)
+                initExperimentas(paths);
+         
         }
         private void executeLoad(string fileDoc)
         {
@@ -699,7 +703,7 @@ namespace AppXML.ViewModels
                                 SetAsRoot();
                             }
                         }
-                        else if (element.Name == "Experiments")
+                        else if (element.Name == "Experiments" && element.HasChildNodes)
                         {
                             Models.TreeNode top = Graf.SelectedTreeNode;
                             foreach (XmlElement exp in element.ChildNodes)
@@ -723,7 +727,7 @@ namespace AppXML.ViewModels
                                 }
                             }
                             NotifyOfPropertyChange(() => RemoveChildVisible);
-                           // ldvm.TryClose();
+                           
                         }
                     }
                     catch (Exception e)
@@ -747,9 +751,12 @@ namespace AppXML.ViewModels
                 return;
             Cursor.Current = Cursors.WaitCursor;
             System.Windows.Forms.Application.DoEvents();
+           
             executeLoad(fileDoc);
             Cursor.Current = Cursors.Default;
-            
+            Graf.Loaded = true;
+            Graf.LoadedAndModified = false;
+            Graf.LoadedXmlFile = fileDoc;
 
         }
 
@@ -814,29 +821,42 @@ namespace AppXML.ViewModels
             settings.Title = "Process Manager";
             ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
             new WindowManager().ShowDialog(pwvm2, null, settings);
-            if(pwvm2.Exit==false)
-            {
-                pwvm2.Manager.closeAll();
-            }
+            pwvm2.Manager.closeAll();
+            
             
             
         }
-        public List<string> SaveAllTheNodes()
+        public void SaveAllTheNodes()
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Tree | *.tree";
-            sfd.InitialDirectory = "../experiments";
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
-            if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
+            SaveAllTheNodes(true);
+        }
+        public List<string> SaveAllTheNodes(bool askAndSave)
+        {
             string xmlFileName = null;
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if(askAndSave)
             {
-                xmlFileName = sfd.FileName;
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Tree | *.tree";
+                sfd.InitialDirectory = "../experiments";
+                string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
+                if (!Directory.Exists(CombinedPath))
+                    System.IO.Directory.CreateDirectory(CombinedPath);
+                sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
+              
+                if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    xmlFileName = sfd.FileName;
+                }
+                else
+                    return new List<string>();
             }
             else
-                return null;
+            {
+                xmlFileName = Graf.LoadedXmlFile;
+                xmlFileName = xmlFileName.Split('.')[0];
+                xmlFileName = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), xmlFileName);
+                return Utility.removeAndGetLeafs(xmlFileName);
+            }
             xmlFileName = xmlFileName.Split('.')[0];
             xmlFileName = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), xmlFileName);
             if(Directory.Exists(xmlFileName))

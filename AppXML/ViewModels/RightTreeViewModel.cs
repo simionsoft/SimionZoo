@@ -23,6 +23,10 @@ namespace AppXML.ViewModels
     }
     public class RightTreeViewModel:PropertyChangedBase
     {
+        private bool _loadedAndModified=false;
+        public bool Loaded{get;set;}
+        public bool LoadedAndModified { get { return _loadedAndModified; } set { _loadedAndModified = Loaded & value; } }
+
         ObservableCollection<TreeNode> _treeItems;
         private readonly WindowViewModel father;
 
@@ -54,6 +58,9 @@ namespace AppXML.ViewModels
             rootNode = tree;
             selectedTreeNode = tree;
             this.father = father;
+            Loaded = false;
+            _loadedAndModified = false;
+            LoadedXmlFile = null;
         }
         public ObservableCollection<TreeNode> Tree { get { return _treeItems; } set { _treeItems = value; NotifyOfPropertyChange(() => Tree); } }
         public void AddNode(TreeNode newNode)
@@ -63,6 +70,7 @@ namespace AppXML.ViewModels
             selectedTreeNode.addChild(newNode);
             _treeItems.Clear(); 
             _treeItems.Add(rootNode);
+            _loadedAndModified = Loaded & true;
             NotifyOfPropertyChange(() => Tree);
         }
         public void RemoveSelectedNode()
@@ -73,7 +81,9 @@ namespace AppXML.ViewModels
             _treeItems.Clear();
             _treeItems.Add(rootNode);
             NotifyOfPropertyChange(() => Tree);
+            _loadedAndModified = Loaded & true;
             selectedTreeNode = rootNode;
+
         }
 
         internal List<NodeAndName> getAllLeafs()
@@ -94,5 +104,7 @@ namespace AppXML.ViewModels
             else
                 result.Add(new NodeAndName(nodo.Text,nodo.Doc));
         }
+
+        public string LoadedXmlFile { get; set; }
     }
 }
