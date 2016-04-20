@@ -28,6 +28,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomXMLBuilder", "CustomXMLBuilder\CustomXMLBuilder.csproj", "{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TESTInputOutputFile", "tools\TESTInputOutputFile\TESTInputOutputFile.vcxproj", "{16DD90A9-0519-4AEC-9F57-B13C9DFD46FB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4} = {E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}
+		{A97CFEAC-DBE2-433C-9454-6D1D2749C591} = {A97CFEAC-DBE2-433C-9454-6D1D2749C591}
+		{D1C528B6-AA02-4D29-9D61-DC08E317A70D} = {D1C528B6-AA02-4D29-9D61-DC08E317A70D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

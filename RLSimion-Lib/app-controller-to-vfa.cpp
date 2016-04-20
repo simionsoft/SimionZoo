@@ -53,7 +53,10 @@ CLASS_CONSTRUCTOR(ControllerToVFAApp)
 	int numDimensions = (int)std::min(m_pController->getNumOutputs(), m_numVFAs);
 	for (int i = 0; i < numDimensions; i++)
 	{
-		sprintf_s(completeFilename, "%s/%s.%s", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix()
+		sprintf_s(completeFilename, "%s/%s.%s.fmap", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix()
+			, World.getDynamicModel()->getActionDescriptor()->getName(m_pController->getOutputActionIndex(i)));
+		CApp::SimGod.registerOutputFile(completeFilename);
+		sprintf_s(completeFilename, "%s/%s.%s.weights", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix()
 			, World.getDynamicModel()->getActionDescriptor()->getName(m_pController->getOutputActionIndex(i)));
 		CApp::SimGod.registerOutputFile(completeFilename);
 	}

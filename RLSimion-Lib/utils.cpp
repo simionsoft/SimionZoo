@@ -23,6 +23,7 @@ void CFilePathList::addFilePath(const char* filepath)
 	{
 		m_pBuffer[m_numFilePaths] = new char[m_filePathMaxSize];
 		strcpy_s(m_pBuffer[m_numFilePaths], m_filePathMaxSize, filepath);
+		m_numFilePaths++;
 	}
 }
 

@@ -44,6 +44,8 @@ CSimGod::~CSimGod()
 		}
 		delete[] m_pSimions;
 	}
+	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
+	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);
 }
 
 
@@ -81,7 +83,9 @@ void CSimGod::delayedLoad()
 
 void CSimGod::registerInputFile(const char* filepath)
 {
-	m_inputFiles.push_back(filepath);
+	char* copy = new char[strlen(filepath) + 1];
+	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	m_inputFiles.push_back(copy);
 }
 
 void CSimGod::getInputFiles(CFilePathList& filepathList)
@@ -94,7 +98,9 @@ void CSimGod::getInputFiles(CFilePathList& filepathList)
 
 void CSimGod::registerOutputFile(const char* filepath)
 {
-	m_outputFiles.push_back(filepath);
+	char* copy = new char[strlen(filepath) + 1];
+	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	m_outputFiles.push_back(copy);
 }
 
 void CSimGod::getOutputFiles(CFilePathList& filepathList)

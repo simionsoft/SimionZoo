@@ -21,8 +21,10 @@ void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 	{
 		bEvaluation = Experiment.isEvaluationEpisode();
 		if (Logger.isEpisodeTypeLogged(bEvaluation))
-			Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bEvaluation,Experiment.getRelativeEpisodeIndex());
-		filePathList.addFilePath(filepath);
+		{
+			Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bEvaluation, Experiment.getRelativeEpisodeIndex());
+			filePathList.addFilePath(filepath);
+		}
 	}
 	//experiment log files
 	bool bExperimentType = true;
