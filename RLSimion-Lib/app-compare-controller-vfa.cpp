@@ -9,6 +9,7 @@
 #include "../RLSimion-Lib/vfa.h"
 #include "../RLSimion-Lib/utils.h"
 #include "../RLSimion-Lib/logger.h"
+#include "../RLSimion-Lib/simgod.h"
 
 class CSimpleStats
 {
@@ -35,6 +36,15 @@ public:
 	void reset(){ min = 99999999.9; max = 0.0; total = 0.0; numValues = 0; sqrtotal = 0.0; }
 };
 
+void CompareControllerVFAApp::getInputFiles(CFilePathList& filepathList)
+{
+	SimGod.getInputFiles(filepathList);
+}
+
+void CompareControllerVFAApp::getOutputFiles(CFilePathList& filepathList)
+{
+	SimGod.getOutputFiles(filepathList);
+}
 
 APP_CLASS (CompareControllerVFAApp)
 {
@@ -62,6 +72,10 @@ APP_CLASS (CompareControllerVFAApp)
 		pPolicyParameters = pPolicyParameters->getNextChild("Policy");
 	}
 	CHILD_CLASS(m_pOutputDirFile, "Output-DirFile", "The output directory and file", false, CDirFileOutput);
+
+	sprintf_s(m_outputFilePath, 1024, "%s/%s.txt", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix());
+	SimGod.registerOutputFile(m_outputFilePath);
+
 	CONST_INTEGER_VALUE(m_numSamples, "Num-Samples", 100000, "The number of samples taken to compare the controller and the approximation");
 	END_CLASS();
 }
@@ -104,11 +118,11 @@ void CompareControllerVFAApp::run()
 		CLogger::logMessage(MessageType::Progress, msg);
 	}
 
-	char outputFilename[1024];
+
 	char buffer[4000];
-	sprintf_s(outputFilename, 1024, "%s/%s.txt", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix());
+
 	FILE *pFile;
-	fopen_s(&pFile,outputFilename , "w");
+	fopen_s(&pFile,m_outputFilePath , "w");
 	if (pFile)
 	{
 		for (int j = 0; j < a->getNumVars(); j++)

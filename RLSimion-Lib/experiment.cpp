@@ -140,9 +140,7 @@ CExperiment::CExperiment()
 void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
 	char msg[1024];
-	//print progress
-	//__int64 currentCounter;
-	//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
+
 	double time = m_pProgressTimer->getElapsedTime();//(double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
 
 	if (time>m_progUpdateFreq || (isLastStep() && isLastEpisode()))
@@ -150,7 +148,6 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 		sprintf_s(msg, 1024, "%f", CApp::Experiment.getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);
 		m_pProgressTimer->startTimer();
-		//m_lastProgressReportCounter = currentCounter;
 	}
 
 	bool evalEpisode = isEvaluationEpisode();

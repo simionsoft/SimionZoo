@@ -7,6 +7,7 @@
 #include "simion.h"
 #include "app.h"
 #include "delayed-load.h"
+#include "utils.h"
 
 CLASS_INIT(CSimGod)
 {
@@ -75,5 +76,31 @@ void CSimGod::delayedLoad()
 	for (auto it = m_delayedLoadObjects.begin(); it != m_delayedLoadObjects.end(); it++)
 	{
 		(*it)->deferredLoadStep();
+	}
+}
+
+void CSimGod::registerInputFile(const char* filepath)
+{
+	m_inputFiles.push_back(filepath);
+}
+
+void CSimGod::getInputFiles(CFilePathList& filepathList)
+{
+	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++)
+	{
+		filepathList.addFilePath(*it);
+	}
+}
+
+void CSimGod::registerOutputFile(const char* filepath)
+{
+	m_outputFiles.push_back(filepath);
+}
+
+void CSimGod::getOutputFiles(CFilePathList& filepathList)
+{
+	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++)
+	{
+		filepathList.addFilePath(*it);
 	}
 }

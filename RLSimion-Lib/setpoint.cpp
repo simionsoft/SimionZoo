@@ -3,6 +3,8 @@
 #include "parameters.h"
 #include "globals.h"
 #include "logger.h"
+#include "app.h"
+#include "simgod.h"
 
 //CFileSetPoint//////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
@@ -40,6 +42,7 @@ CFileSetPoint::CFileSetPoint()
 
 CFileSetPoint::CFileSetPoint(const char* filename)
 {
+	CApp::SimGod.registerInputFile(filename);
 	//char fullFilename[1024];
 	m_numSteps= 0;
 
@@ -125,6 +128,8 @@ CHHFileSetPoint::CHHFileSetPoint(const char* filename) : CFileSetPoint()
 	FILE* pHHFile;
 	char buffer[1024];
 	char* pNext;
+
+	CApp::SimGod.registerInputFile(filename);
 
 	int numLines = countlines(filename);
 	if (numLines == 0) return;

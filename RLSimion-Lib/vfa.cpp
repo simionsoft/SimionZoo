@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "logger.h"
 #include "app.h"
+#include "simgod.h"
 
 //LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
 CLinearVFA::CLinearVFA(CParameters* pParameters) : CParamObject(pParameters)
@@ -154,6 +155,14 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 {
 	//load the map feature description from an xml file
 	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.fmap", "The VFA will be loaded from this file");
+	CApp::SimGod.registerInputFile(m_loadFilename);
+
+	strcpy_s(m_weightFilename, 1024, m_loadFilename);
+	char* extension = strstr(m_weightFilename, "fmap");
+	if (extension)
+		strcpy_s(extension, 1024 - (extension - m_weightFilename + 1), "weights");
+	CApp::SimGod.registerInputFile(m_weightFilename);
+
 
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
 	m_mapFeatureParameterFile = 0;
@@ -181,13 +190,7 @@ void CLinearStateVFAFromFile::deferredLoadStep()
 	m_maxIndex = m_numWeights;
 
 	//load the weigths from the binary file
-	char binFilename[1024];
-	strcpy_s(binFilename, 1024, m_loadFilename);
-	char* extension = strstr(binFilename, "fmap");
-	if (extension)
-		strcpy_s(extension, 1024 - (extension - binFilename + 1), "weights");
-
-	loadWeights(binFilename);
+	loadWeights(m_weightFilename);
 }
 
 CLinearStateVFAFromFile::~CLinearStateVFAFromFile()

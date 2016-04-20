@@ -13,13 +13,15 @@ class CompareControllerVFAApp : public CApp
 	CLinearStateVFA** m_pVFAs;
 	CDirFileOutput *m_pOutputDirFile;
 	int m_numSamples;
+
+	char m_outputFilePath[1024];
 public:
 
 	CompareControllerVFAApp(int argc, char* argv[]);
 	~CompareControllerVFAApp();
 
-	static const char* getInputs(const char* xmlConfigFile);
-	static const char* getOutputs(const char* xmlConfigFile);
+	void getInputFiles(CFilePathList& filePathList);
+	void getOutputFiles(CFilePathList& filePathList);
 
 	void run();
 };

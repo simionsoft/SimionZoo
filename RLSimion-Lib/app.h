@@ -6,6 +6,7 @@ class CLogger;
 class CWorld;
 class CExperiment;
 class CSimGod;
+class CFilePathList;
 
 class CApp
 {
@@ -20,8 +21,8 @@ public:
 	CApp(int argc, char* argv[]);
 	virtual ~CApp();
 
-//	virtual int getInputFiles(char* pBuffer[], int& numItems) = 0;
-	//virtual int getOutputFiles(char* pBuffer[], int& numItems) = 0;
+	virtual void getInputFiles(CFilePathList& filePathList) = 0;
+	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
 
 	virtual void run()= 0;
 };

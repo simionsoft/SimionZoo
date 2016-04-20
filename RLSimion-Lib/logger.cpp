@@ -7,7 +7,7 @@
 #include "globals.h"
 #include "timer.h"
 #include "app.h"
-
+#include "utils.h"
 
 #define MAX_FILENAME_LENGTH 1024
 
@@ -60,7 +60,6 @@ CLogger::CLogger()
 {
 	//default values for safety
 
-
 	m_bLogEvaluationEpisodes = false;
 	m_bLogEvaluationExperiment = false;
 	m_bLogTrainingEpisodes = true;
@@ -76,6 +75,8 @@ CLogger::~CLogger()
 
 	if (m_outputDir) delete[] m_outputDir;
 }
+
+
 
 void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation,unsigned int index)
 {
@@ -136,7 +137,7 @@ void CLogger::writeLogFileHeader(FILE* pFile, bool episodeLog, bool evaluationLo
 
 void CLogger::writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex)
 {
-	if (logCurrentEpisodeInExperiment(evalEpisode))
+	if (isExperimentTypeLogged(evalEpisode))
 	{
 		FILE* pFile = openLogFile(false, false, evalEpisode, episodeIndex);
 
@@ -162,7 +163,7 @@ void CLogger::writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex
 
 void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
 {
-	if (logCurrentEpisode(evalEpisode))
+	if (isEpisodeTypeLogged(evalEpisode))
 	{
 		FILE* pFile = openLogFile(false, true, evalEpisode, episodeIndex);
 
@@ -180,12 +181,13 @@ void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
 	}
 }
 
-bool CLogger::logCurrentEpisode(bool evalEpisode)
+
+bool CLogger::isEpisodeTypeLogged(bool evalEpisode)
 {
 	return (evalEpisode && m_bLogEvaluationEpisodes) || (!evalEpisode && m_bLogTrainingEpisodes);
 }
 
-bool CLogger::logCurrentEpisodeInExperiment(bool evalEpisode)
+bool CLogger::isExperimentTypeLogged(bool evalEpisode)
 {
 	return (evalEpisode && m_bLogEvaluationExperiment) || (!evalEpisode && m_bLogTrainingExperiment);
 }
@@ -213,13 +215,13 @@ void CLogger::firstStep(bool evalEpisode, unsigned int episodeIndex)
 
 
 	//create the episode log file
-	if (logCurrentEpisode(evalEpisode))
+	if (isEpisodeTypeLogged(evalEpisode))
 		openLogFile(true, true, evalEpisode, episodeIndex);
 }
 
 void CLogger::timestep(bool evalEpisode, unsigned int episodeIndex)
 {
-	bool bLog = logCurrentEpisode(evalEpisode);
+	bool bLog = isEpisodeTypeLogged(evalEpisode);
 
 	//update experiment stats
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)

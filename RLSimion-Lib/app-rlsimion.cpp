@@ -7,17 +7,43 @@
 #include "logger.h"
 #include "named-var-set.h"
 #include "globals.h"
+#include "utils.h"
 
-//
-//int RLSimionApp::getOutputFiles(char* pBuffer[], int& numItems)
-//{
-//	int ret= 0;
-//	if (!pBuffer) return -1;
-//
-//	ret= Logger.getOutputFiles(pBuffer,numItems);
-//
-//	return 0;
-//}
+void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
+{
+	//the list of log files depends on the experiment parameters and the logger parameters, so instead of introducing a dependency between them
+	//i thought it best to code it here
+	char filepath[CFilePathList::m_filePathMaxSize];
+	bool bEvaluation;
+
+	//episode log files
+	for (CApp::Experiment.nextEpisode(); CApp::Experiment.isValidEpisode(); CApp::Experiment.nextEpisode())
+	{
+		bEvaluation = Experiment.isEvaluationEpisode();
+		if (Logger.isEpisodeTypeLogged(bEvaluation))
+			Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bEvaluation,Experiment.getRelativeEpisodeIndex());
+		filePathList.addFilePath(filepath);
+	}
+	//experiment log files
+	bool bExperimentType = true;
+	if (Logger.isExperimentTypeLogged(bExperimentType))
+	{
+		Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bExperimentType, 0);
+		filePathList.addFilePath(filepath);
+	}
+	bExperimentType = false;
+	if (Logger.isExperimentTypeLogged(bExperimentType))
+	{
+		Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bExperimentType, 0);
+		filePathList.addFilePath(filepath);
+	}
+	SimGod.getOutputFiles(filePathList);
+}
+
+void RLSimionApp::getInputFiles(CFilePathList& filePathList)
+{
+	SimGod.getInputFiles(filePathList);
+}
 
 APP_CLASS(RLSimionApp)
 {

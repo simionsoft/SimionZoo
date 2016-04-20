@@ -8,6 +8,7 @@ class CParameters;
 #include <vector>
 class CStats;
 class CTimer;
+class CFilePathList;
 
 enum MessageType {Progress,Info,Warning, Error};
 enum MessageOutputMode {Console,NamedPipe};
@@ -30,10 +31,8 @@ class CLogger
 
 	double m_lastLogSimulationT;
 
-	bool logCurrentEpisode(bool evalEpisode);
-	bool logCurrentEpisodeInExperiment(bool evalEpisode);
 
-	void getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation, unsigned int episodeIndex);
+
 	//opens the experiment log file
 	//if create=true, the output file is created ("w" mode), writes the header and closes the file. Returns 0
 	//otherwise, the file is opened to append the new info ("a" mode). Returns the file just opened
@@ -53,6 +52,12 @@ public:
 	~CLogger();
 	void init(CParameters* pParameters);
 
+	//declared public to be accesed from CApp::getOutputFiles() avoiding including a dependency with CEpisode
+	void getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation, unsigned int episodeIndex);
+	//returns whether a specific type of episode is going to be logged
+	bool isEpisodeTypeLogged(bool evaluation);
+	bool isExperimentTypeLogged(bool evaluation);
+
 	//METHODS CALLED FROM ANY CLASS
 	void addVarToStats(const char* key, const char* subkey, double* variable);
 	void addVarToStats(const char* key, const char* subkey, int* variable);
@@ -60,7 +65,6 @@ public:
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
 	void setLogDirectory(const char* xmlFilePath);
-	int getOutputFiles(char* pBuffer[],int& numItems);
 
 	static MessageOutputMode m_messageOutputMode;
 	static void* m_outputPipe;

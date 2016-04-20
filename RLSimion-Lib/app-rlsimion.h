@@ -10,8 +10,8 @@ public:
 	RLSimionApp(int argc,char* argv[]);
 	~RLSimionApp();
 
-//	int getInputFiles(char* pBuffer[], int& numItems);
-//	int getOutputFiles(char* pBuffer[], int& numItems);
+	void getInputFiles(CFilePathList& filePathList);
+	void getOutputFiles(CFilePathList& filePathList);
 
 	void run();
 };

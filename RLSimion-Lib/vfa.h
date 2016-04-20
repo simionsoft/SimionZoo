@@ -72,6 +72,7 @@ class CLinearStateVFAFromFile: public CLinearStateVFA
 	CParameterFile* m_mapFeatureParameterFile;
 	CParameters* m_mapFeatureParameters;
 	const char* m_loadFilename;
+	char m_weightFilename[1024];
 
 	virtual void deferredLoadStep();
 public:

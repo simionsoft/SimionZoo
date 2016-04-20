@@ -8,6 +8,8 @@
 #include "reward.h"
 #include "parameters.h"
 #include "globals.h"
+#include "app.h"
+#include "simgod.h"
 
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
@@ -126,7 +128,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	CParameters *rootNode;
 	if (pWorldDefinitionFile)
 	{
-		
+		CApp::SimGod.registerInputFile(pWorldDefinitionFile);
 		configXMLDoc.LoadFile(pWorldDefinitionFile);
 		if (!configXMLDoc.Error())
 		{

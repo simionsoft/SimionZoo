@@ -11,6 +11,17 @@
 #include "named-var-set.h"
 #include "app.h"
 #include "timer.h"
+#include "simgod.h"
+
+void ControllerToVFAApp::getInputFiles(CFilePathList& filepathList)
+{
+	SimGod.getInputFiles(filepathList);
+}
+
+void ControllerToVFAApp::getOutputFiles(CFilePathList& filepathList)
+{
+	SimGod.getOutputFiles(filepathList);
+}
 
 APP_CLASS(ControllerToVFAApp)
 {
@@ -39,8 +50,15 @@ APP_CLASS(ControllerToVFAApp)
 		pPolicyParameters = pPolicyParameters->getNextChild("Policy");
 	}
 
+	char completeFilename[1024];
 	CHILD_CLASS(m_pOutputDirFile, "Output-DirFile", "The output directory and file", false, CDirFileOutput);
-
+	int numDimensions = (int)std::min(m_pController->getNumOutputs(), m_numVFAs);
+	for (int i = 0; i < numDimensions; i++)
+	{
+		sprintf_s(completeFilename, "%s/%s.%s", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix()
+			, World.getDynamicModel()->getActionDescriptor()->getName(m_pController->getOutputActionIndex(i)));
+		CApp::SimGod.registerOutputFile(completeFilename);
+	}
 	END_CLASS();
 }
 
