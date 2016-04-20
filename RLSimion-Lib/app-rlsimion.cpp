@@ -8,16 +8,16 @@
 #include "named-var-set.h"
 #include "globals.h"
 
-
-int RLSimionApp::getOutputFiles(char* pBuffer[], int& numItems)
-{
-	int writtenBytes= 0;
-	if (!pBuffer) return -1;
-
-	writtenBytes= Logger.getOutputFiles(pBuffer,numItems);
-	pBuffer += writtenBytes;
-	return 0;
-}
+//
+//int RLSimionApp::getOutputFiles(char* pBuffer[], int& numItems)
+//{
+//	int ret= 0;
+//	if (!pBuffer) return -1;
+//
+//	ret= Logger.getOutputFiles(pBuffer,numItems);
+//
+//	return 0;
+//}
 
 APP_CLASS(RLSimionApp)
 {
@@ -50,7 +50,6 @@ RLSimionApp::~RLSimionApp()
 
 void RLSimionApp::run()
 {
-
 	//create state and action vectors
 	CState *s = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
 	CState *s_p = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
@@ -60,6 +59,9 @@ void RLSimionApp::run()
 	CApp::Logger.addVarSetToStats("Action", a);
 	CApp::Logger.addVarToStats("Reward", "sum", CApp::World.getScalarReward());
 	CApp::Logger.addVarSetToStats("Reward", CApp::World.getReward());
+
+	//load stuff we don't want to be loaded in the constructors for faster construction
+	CApp::SimGod.delayedLoad();
 
 	double r = 0.0;
 

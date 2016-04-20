@@ -5,7 +5,7 @@
 #include "parameters.h"
 #include "globals.h"
 #include "logger.h"
-
+#include "app.h"
 
 //LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
 CLinearVFA::CLinearVFA(CParameters* pParameters) : CParamObject(pParameters)
@@ -83,43 +83,7 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 		CLogger::logMessage(MessageType::Warning, "Couldn't load weights from file");
 	return false;
 }
-//
-//void CLinearStateVFA::load(const char* pFilename)
-//{
-//	CParameters* pFeatureMapParameters;
-//	char msg[128];
-//	char binFile[512];
-//	char xmlDescFile[512];
-//	FILE* pXMLFile;
-//	CParameterFile parameterFile;
-//	CParameters* pReadParameters;
-//
-//	if (pFilename == 0 || pFilename[0] == 0) return;
-//
-//	sprintf_s(msg, 128, "Loading Policy (\"%s\" (.bin/.xml)...", pFilename);
-//	CLogger::logMessage(Info, msg);
-//
-//	sprintf_s(xmlDescFile, 512, "%s.feature-map.xml", pFilename);
-//
-//	pReadParameters = parameterFile.loadFile(xmlDescFile);
-//	pFeatureMapParameters = m_pStateFeatureMap->setParameters(pReadParameters);
-//
-//		//if (pFeatureMapParameters)
-//		//	pFeatureMapParameters->saveFile(pXMLFile);
-//
-//		//fclose(pXMLFile);
-//		//CLogger::logMessage(Info, "OK\n");
-//	//	return;
-//	//}
-//
-//	sprintf_s(binFile, 512, "%s", pFilename);
-//	if (loadWeights(binFile))
-//		sprintf_s(msg, 128, "OK", binFile);
-//	else
-//		sprintf_s(msg, 128, "FAILED", binFile);
-//	CLogger::logMessage(Warning, msg);
-//}
-//
+
 void CLinearStateVFA::save(const char* pFilename)
 {
 	CParameters* pFeatureMapParameters;
@@ -159,42 +123,56 @@ void CLinearStateVFA::save(const char* pFilename)
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(pParameters), CDeferredLoad()
 {
 	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
-	m_pWeights = new double[m_numWeights];
+	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
 
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
 
-	double initValue;
-	CONST_DOUBLE_VALUE(initValue, "Init-Value", 0.0,"The initial value given to the VFA's weights on initialization");
-	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights[i] = initValue;
-
+	CONST_DOUBLE_VALUE(m_initValue, "Init-Value", 0.0,"The initial value given to the VFA's weights on initialization");
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
 	END_CLASS();
 }
+void CLinearStateVFA::deferredLoadStep()
+{
+	m_pWeights = new double[m_numWeights];
+	for (unsigned int i = 0; i < m_numWeights; i++)
+		m_pWeights[i] = m_initValue;
+}
 CLinearStateVFA::CLinearStateVFA() : CLinearVFA(0)
 {}
 
 CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 {
-	char message[1024];
 	//load the map feature description from an xml file
 	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.fmap", "The VFA will be loaded from this file");
 
+	m_pAux = new CFeatureList("LinearStateVFA/aux");
+	m_mapFeatureParameterFile = 0;
+	m_mapFeatureParameters = 0;
+	m_minIndex= m_maxIndex= m_numWeights = 0;
+	m_pStateFeatureMap = 0;
+	m_bSaturateOutput = false;
+	m_minOutput = 0.0;
+	m_maxOutput = 0.0;
+	END_CLASS();
+}
+void CLinearStateVFAFromFile::deferredLoadStep()
+{
+	char message[1024];
 	sprintf_s(message, 1024, "Loaded %s file", m_loadFilename);
-	CLogger::logMessage(MessageType::Info,message);
+	CLogger::logMessage(MessageType::Info, message);
 
 	m_mapFeatureParameterFile = new CParameterFile();
-	m_mapFeatureParameters= m_mapFeatureParameterFile->loadFile(m_loadFilename);
+	m_mapFeatureParameters = m_mapFeatureParameterFile->loadFile(m_loadFilename);
 	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(m_mapFeatureParameters);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
@@ -207,16 +185,11 @@ CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 	strcpy_s(binFilename, 1024, m_loadFilename);
 	char* extension = strstr(binFilename, "fmap");
 	if (extension)
-		strcpy_s(extension,1024-(extension-binFilename+1),"weights");
-		
-	loadWeights(binFilename);
-	m_pAux = new CFeatureList("LinearStateVFA/aux");
+		strcpy_s(extension, 1024 - (extension - binFilename + 1), "weights");
 
-	m_bSaturateOutput = false;
-	m_minOutput = 0.0;
-	m_maxOutput = 0.0;
-	END_CLASS();
+	loadWeights(binFilename);
 }
+
 CLinearStateVFAFromFile::~CLinearStateVFAFromFile()
 {
 	delete m_mapFeatureParameterFile;

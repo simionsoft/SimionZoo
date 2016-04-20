@@ -111,6 +111,7 @@
     <ClCompile Include="app-controller-to-vfa.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="delayed-load.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="globals.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="app-compare-controller-vfa.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
+    <ClInclude Include="delayed-load.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experiment.h" />
     <ClInclude Include="featuremap.h" />

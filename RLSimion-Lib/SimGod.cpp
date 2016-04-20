@@ -1,14 +1,12 @@
 #include "stdafx.h"
 #include "SimGod.h"
-
 #include "globals.h"
-
 #include "experiment.h"
-
 #include "named-var-set.h"
 #include "parameters.h"
 #include "simion.h"
 #include "app.h"
+#include "delayed-load.h"
 
 CLASS_INIT(CSimGod)
 {
@@ -50,23 +48,8 @@ CSimGod::~CSimGod()
 
 void CSimGod::selectAction(CState* s, CAction* a)
 {
-
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->selectAction(s, a);
-
-	
-	//m_pController->selectAction(s, a);
-
-	//if (m_pController == m_pActor)
-	//	m_rho = 1.0;
-	//else
-	//{
-	//	double controllerProb = m_pController->getProbability(s, a);
-	//	double actorProb = m_pActor->getProbability(s, a);
-	//	m_rho = actorProb / controllerProb;
-	//}
-	//	
-	//return m_rho;
 }
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
@@ -76,14 +59,21 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 	//update critic
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updateValue(s, a,s_p,r);
-	/*if (m_pCritic && !CApp::Experiment.isEvaluationEpisode())
-		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);*/
 
 	//update actor: might be the controller
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updatePolicy(s, a,s_p,r);
+}
 
-	//if( !CApp::Experiment.isEvaluationEpisode())
-	//	m_pActor->updatePolicy(s, a, s_p, r, m_td);
+void CSimGod::registerDelayedLoadObj(CDeferredLoad* pObj)
+{
+	m_delayedLoadObjects.push_back(pObj);
+}
 
+void CSimGod::delayedLoad()
+{
+	for (auto it = m_delayedLoadObjects.begin(); it != m_delayedLoadObjects.end(); it++)
+	{
+		(*it)->deferredLoadStep();
+	}
 }
