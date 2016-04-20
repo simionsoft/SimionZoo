@@ -11,7 +11,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}" />
+                        <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}" />
                         <TextBox Text="{Binding Default, Mode=TwoWay}" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
                     </StackPanel>
                 </DataTemplate>
@@ -21,7 +21,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}"/>
+                        <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}"/>
                         <ComboBox x:Name="ComboValues" ItemsSource="{Binding ComboValues}" Width="150"  SelectedItem="{Binding SelectedComboValue}"  />
                     </StackPanel>
                 </DataTemplate>
@@ -31,11 +31,11 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Label}" Width="200" ToolTip="{Binding Comment}"/>
+                        <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}" />
                         <Button Width="30"  cal:Message.Attach="[Event Click]=[Action FindPath()]">
                             <Image Source="{Binding ButtonImage}" Width="20" Height="20"></Image>
                         </Button>
-                        <Label Content="{Binding Default}"   Background="{Binding TextColor}"/>
+                        <Label Content="{Binding FileName}" HorizontalAlignment="Right" Width="120"   Background="{Binding TextColor}"/>
                         
                     </StackPanel>
                 </DataTemplate>

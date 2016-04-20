@@ -22,7 +22,7 @@
             </ComboBox>
         </StackPanel>
         <StackPanel Orientation="Vertical">
-            <ContentControl x:Name="Class">
+            <ContentControl x:Name="Class" Margin="10">
             </ContentControl>
         </StackPanel>
     </StackPanel>

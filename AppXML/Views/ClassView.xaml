@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d" 
+             
              >
     <UserControl.Resources>
         <ResourceDictionary>
@@ -31,8 +32,11 @@
         <StackPanel Orientation="Horizontal" Visibility="{Binding ResumeVisible}">
             <Button Content="{Binding ItemName}" cal:Message.Attach="[Event Click]=[OpenForm()]" Background="{Binding ButtonColor}"/>
         </StackPanel>
-        <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}" FocusVisualStyle="{x:Null}">
-          
-        </ItemsControl>
+        <Border BorderThickness="{Binding Border}" CornerRadius="4" BorderBrush="Black">
+        <StackPanel Orientation="Horizontal" Margin="{Binding Margin}">
+                <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}" FocusVisualStyle="{x:Null}"/>
+                <Button x:Name="MultiAction" Content="{Binding MultiButton.content}" Visibility="{Binding MultiButton.visible}" Height="25" VerticalAlignment="Top" ></Button>
+            </StackPanel>
+        </Border>
     </StackPanel>
 </UserControl>

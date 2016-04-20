@@ -245,6 +245,15 @@ namespace AppXML.ViewModels
         public string copyDefault;
         public string Color { get { return color; } set { color = value; NotifyOfPropertyChange(() => Color); } }
         private string color;
+        public string FileName 
+        { 
+            get 
+            {
+                return AppXML.Data.Utility.getFileName(Default);
+            } 
+            set 
+            { } 
+        }
 
         public new bool validate()
         {
@@ -330,6 +339,7 @@ namespace AppXML.ViewModels
                  {
 
                      this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
+                     NotifyOfPropertyChange(() => FileName);
                      this.TextColor = "White";
                  }
                    
@@ -348,6 +358,8 @@ namespace AppXML.ViewModels
                 if (fbd.ShowDialog() == DialogResult.OK)
                     {
                         this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), fbd.SelectedPath);
+                        NotifyOfPropertyChange(() => FileName);
+
                         this.TextColor = "White";
 
                     }

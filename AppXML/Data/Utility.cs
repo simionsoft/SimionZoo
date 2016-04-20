@@ -398,5 +398,12 @@ namespace AppXML.Data
         {
             xmlDic.Clear();
         }
+
+        public static string getFileName(string Default)
+        {
+            char[] separators = {'/','\\'};
+            string[] tmp = Default.Split(separators);
+            return tmp[tmp.Length - 1];
+        }
     }
 }
