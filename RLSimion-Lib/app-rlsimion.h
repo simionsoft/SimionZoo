@@ -7,7 +7,7 @@ class RLSimionApp : public CApp
 {
 public:
 
-	RLSimionApp(int argc,char* argv[]);
+	RLSimionApp(CParameters* pParameters,const char* xmlConfigPath);
 	~RLSimionApp();
 
 	void getInputFiles(CFilePathList& filePathList);

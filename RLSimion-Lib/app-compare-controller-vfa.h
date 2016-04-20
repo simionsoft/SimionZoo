@@ -5,6 +5,7 @@
 class CController;
 class CLinearStateVFA;
 class CDirFileOutput;
+class CParameters;
 
 class CompareControllerVFAApp : public CApp
 {
@@ -17,7 +18,7 @@ class CompareControllerVFAApp : public CApp
 	char m_outputFilePath[1024];
 public:
 
-	CompareControllerVFAApp(int argc, char* argv[]);
+	CompareControllerVFAApp(CParameters* pParameters);
 	~CompareControllerVFAApp();
 
 	void getInputFiles(CFilePathList& filePathList);

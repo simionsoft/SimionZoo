@@ -4,17 +4,43 @@
 #include "stdafx.h"
 
 #include "../RLSimion-Lib/app-rlsimion.h"
+#include "../RLSimion-Lib/app-controller-to-vfa.h"
+#include "../RLSimion-Lib/app-compare-controller-vfa.h"
 #include "../RLSimion-Lib/logger.h"
+#include "../RLSimion-Lib/parameters.h"
+
 
 int main(int argc, char* argv[])
 {
+	CParameterFile configXMLFile;
+	CApp* pApp= 0;
 	try
 	{
-		CApp* pApp = new RLSimionApp(argc, argv);// CApp::getInstance(argc, argv);
+		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
+		if (argc > 2)
+			CLogger::createOutputPipe(argv[2]);
 
-		pApp->run();
+		if (argc <= 1)
+			CLogger::logMessage(MessageType::Error, "Too few parameters");
 
-		delete pApp;
+		CParameters* pParameters= configXMLFile.loadFile(argv[1]);
+		if (!pParameters) throw std::exception("Wrong experiment configuration file");
+
+		if (!strcmp("RLSimion", pParameters->getName()))
+			pApp = new RLSimionApp(pParameters, argv[1]);
+		else if (!strcmp("ControllerToVFA", pParameters->getName()))
+			pApp = new ControllerToVFAApp(pParameters);
+		else if (!strcmp("CompareControllerVFA", pParameters->getName()))
+			pApp = new CompareControllerVFAApp(pParameters);
+		
+		if (pApp)
+		{
+			pApp->run();
+
+			delete pApp;
+			CLogger::closeOutputPipe();
+		}
+		else throw std::exception("Wrong experiment configuration file");
 	}
 	catch (std::exception& e)
 	{

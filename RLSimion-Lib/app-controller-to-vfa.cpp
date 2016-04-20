@@ -23,10 +23,8 @@ void ControllerToVFAApp::getOutputFiles(CFilePathList& filepathList)
 	SimGod.getOutputFiles(filepathList);
 }
 
-APP_CLASS(ControllerToVFAApp)
+CLASS_CONSTRUCTOR(ControllerToVFAApp)
 {
-	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "ControllerToVFA");
-	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 	pParameters = pParameters->getChild("ControllerToVFA");
 	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
@@ -64,6 +62,8 @@ APP_CLASS(ControllerToVFAApp)
 
 void ControllerToVFAApp::run()
 {
+	SimGod.delayedLoad();
+
 	CState *s = World.getDynamicModel()->getStateDescriptor()->getInstance();
 	CAction *a = World.getDynamicModel()->getActionDescriptor()->getInstance();
 	int i = 0;
@@ -87,7 +87,7 @@ void ControllerToVFAApp::run()
 			double output = a->getValue(outputActionIndex);
 			pWeights[feature] = output;
 
-			if (timer.getElapsedTime() > 0.5)
+			if (timer.getElapsedTime() > 0.5) //every 0.5 seconds??
 			{
 				progress = (((double)i) / numDimensions) + (1.0 / numDimensions) * ((double)feature) / ((double)numWeights);
 				progress *= 100.0;

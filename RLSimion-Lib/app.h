@@ -18,9 +18,6 @@ public:
 	static CExperiment Experiment;
 	static CSimGod SimGod;
 
-	CApp(int argc, char* argv[]);
-	virtual ~CApp();
-
 	virtual void getInputFiles(CFilePathList& filePathList) = 0;
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
 

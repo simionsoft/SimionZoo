@@ -10,6 +10,7 @@
 #include "../RLSimion-Lib/utils.h"
 #include "../RLSimion-Lib/logger.h"
 #include "../RLSimion-Lib/simgod.h"
+#include "../RLSimion-Lib/timer.h"
 
 class CSimpleStats
 {
@@ -46,10 +47,8 @@ void CompareControllerVFAApp::getOutputFiles(CFilePathList& filepathList)
 	SimGod.getOutputFiles(filepathList);
 }
 
-APP_CLASS (CompareControllerVFAApp)
+CLASS_CONSTRUCTOR (CompareControllerVFAApp)
 {
-	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "CompareControllerVFA");
-	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 	pParameters = pParameters->getChild("CompareControllerVFA");
 	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
@@ -86,17 +85,21 @@ void CompareControllerVFAApp::run()
 	CAction *a = World.getDynamicModel()->getActionDescriptor()->getInstance();
 	CAction *a2 = World.getDynamicModel()->getActionDescriptor()->getInstance();
 
+	SimGod.delayedLoad();
+
 #define NUM_POINTS_PER_DIM 100000
 	double value;
 	CSimpleStats* pStats = new CSimpleStats[a->getNumVars()];
+
+	CTimer timer;
 
 	srand(1);
 	double progress;
 	int numOutputs;
 	char msg[1024];
+	timer.startTimer();
 	for (int i = 0; i<m_numSamples; i++)
 	{
-		printf("Sampling controller and actor: %d/%d samples\r", i, m_numSamples);
 		for (int j = 0; j<s->getNumVars(); j++)
 		{
 			value = (double)(rand() % NUM_POINTS_PER_DIM) / (double)NUM_POINTS_PER_DIM;
@@ -112,10 +115,15 @@ void CompareControllerVFAApp::run()
 
 			pStats[j].addValue(a->getValue(m_pController->getOutputActionIndex(j)) - m_pVFAs[j]->getValue(s));
 		}
-		progress = (((double)i) / numOutputs) + (1.0 / numOutputs) * ((double)i) / ((double)m_numSamples);
-		progress *= 100.0;
-		sprintf_s(msg, 512, "%f", progress);
-		CLogger::logMessage(MessageType::Progress, msg);
+
+		if (timer.getElapsedTime() > 0.5) //every .5 seconds??
+		{
+			progress = ((double)i) / ((double)m_numSamples);
+			progress *= 100.0;
+			sprintf_s(msg, 512, "%f", progress);
+			CLogger::logMessage(MessageType::Progress, msg);
+			timer.startTimer();
+		}
 	}
 
 

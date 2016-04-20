@@ -13,7 +13,7 @@ class ControllerToVFAApp : public CApp
 	CLinearStateVFA** m_pVFAs;
 public:
 
-	ControllerToVFAApp(int argc,char* argv[]);
+	ControllerToVFAApp(CParameters* pParameters);
 	~ControllerToVFAApp();
 
 	void getInputFiles(CFilePathList& filePathList);

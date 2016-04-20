@@ -45,17 +45,15 @@ void RLSimionApp::getInputFiles(CFilePathList& filePathList)
 	SimGod.getInputFiles(filePathList);
 }
 
-APP_CLASS(RLSimionApp)
+CLASS_CONSTRUCTOR(RLSimionApp, const char* xmlConfigPath)
 {
-	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "RLSimion");
-	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 	pParameters = pParameters->getChild("RLSimion");
 	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
 
 	//In the beginning, a logger was created so that we could know about creation itself
 	CHILD_CLASS_INIT(Logger, "Log", "The logger class", false, CLogger);
-	Logger.setLogDirectory(argv[1]); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
+	Logger.setLogDirectory(xmlConfigPath); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
 
 	//Then the world was created by chance
 	CHILD_CLASS_INIT(World, "World", "The simulation environment and its parameters", false, CWorld);
