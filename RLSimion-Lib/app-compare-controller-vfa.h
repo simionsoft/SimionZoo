@@ -18,5 +18,8 @@ public:
 	CompareControllerVFAApp(int argc, char* argv[]);
 	~CompareControllerVFAApp();
 
+	static const char* getInputs(const char* xmlConfigFile);
+	static const char* getOutputs(const char* xmlConfigFile);
+
 	void run();
 };

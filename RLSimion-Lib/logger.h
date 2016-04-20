@@ -60,6 +60,7 @@ public:
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
 	void setLogDirectory(const char* xmlFilePath);
+	int getOutputFiles(char* pBuffer[],int& numItems);
 
 	static MessageOutputMode m_messageOutputMode;
 	static void* m_outputPipe;

@@ -20,5 +20,8 @@ public:
 	CApp(int argc, char* argv[]);
 	virtual ~CApp();
 
+	virtual int getInputFiles(char* pBuffer[], int& numItems) = 0;
+	virtual int getOutputFiles(char* pBuffer[], int& numItems) = 0;
+
 	virtual void run()= 0;
 };
