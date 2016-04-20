@@ -1,7 +1,8 @@
-// TESTInputOutputFile.cpp : Defines the entry point for the console application.
+// RLSimionInterfaceDLL.cpp : Defines the exported functions for the DLL application.
 //
 
 #include "stdafx.h"
+#include "RLSimionInterfaceDLL.h"
 #include "../../RLSimion-Lib/app-rlsimion.h"
 #include "../../RLSimion-Lib/app-controller-to-vfa.h"
 #include "../../RLSimion-Lib/app-compare-controller-vfa.h"
@@ -9,26 +10,26 @@
 #include "../../RLSimion-Lib/parameters.h"
 #include "../../RLSimion-Lib/utils.h"
 
+// This is an example of an exported variable
+RLSIMIONINTERFACEDLL_API int nRLSimionInterfaceDLL=0;
 
-void main(int argc, char* argv[])
+// This is an example of an exported function.
+RLSIMIONINTERFACEDLL_API int getIOFiles(const char* xmlFilename,char* pBuffer, int bufferSize)
 {
 	CParameterFile configXMLFile;
 	CApp* pApp = 0;
 	CFilePathList InputFileList;
 	CFilePathList OutputFileList;
-	char buffer[10000];
-	char* pBuffer = buffer;
-	char* pBufferEnd = pBuffer + 10000;
+	char* pBufferEnd = pBuffer + bufferSize;
 	try
 	{
-		if (argc <= 1)
-			CLogger::logMessage(MessageType::Error, "Too few parameters");
+		if (!xmlFilename || !pBuffer) return -1;
 
-		CParameters* pParameters = configXMLFile.loadFile(argv[1]);
+		CParameters* pParameters = configXMLFile.loadFile(xmlFilename);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
 		if (!strcmp("RLSimion", pParameters->getName()))
-			pApp = new RLSimionApp(pParameters, argv[1]);
+			pApp = new RLSimionApp(pParameters, xmlFilename);
 		else if (!strcmp("ControllerToVFA", pParameters->getName()))
 			pApp = new ControllerToVFAApp(pParameters);
 		else if (!strcmp("CompareControllerVFA", pParameters->getName()))
@@ -37,40 +38,40 @@ void main(int argc, char* argv[])
 		if (pApp)
 		{
 			strcpy_s(pBuffer, pBufferEnd - pBuffer, "<Files>\n");
-			pBuffer += strlen("<Files>\n") ;
+			pBuffer += strlen("<Files>\n");
 			pApp->getInputFiles(InputFileList);
 			for (int i = 0; i < InputFileList.getNumFilePaths(); i++)
 			{
 				strcpy_s(pBuffer, pBufferEnd - pBuffer, "<Input>");
-				pBuffer += strlen("<Input>") ;
+				pBuffer += strlen("<Input>");
 				strcpy_s(pBuffer, pBufferEnd - pBuffer, InputFileList.getFilePath(i));
-				pBuffer += strlen(InputFileList.getFilePath(i)) ;
+				pBuffer += strlen(InputFileList.getFilePath(i));
 				strcpy_s(pBuffer, pBufferEnd - pBuffer, "</Input>\n");
-				pBuffer += strlen("</Input>\n") ;
+				pBuffer += strlen("</Input>\n");
 			}
 
 			pApp->getOutputFiles(OutputFileList);
 			for (int i = 0; i < OutputFileList.getNumFilePaths(); i++)
 			{
 				strcpy_s(pBuffer, pBufferEnd - pBuffer, "<Output>");
-				pBuffer += strlen("<Output>") ;
+				pBuffer += strlen("<Output>");
 				strcpy_s(pBuffer, pBufferEnd - pBuffer, OutputFileList.getFilePath(i));
-				pBuffer += strlen(OutputFileList.getFilePath(i)) ;
+				pBuffer += strlen(OutputFileList.getFilePath(i));
 				strcpy_s(pBuffer, pBufferEnd - pBuffer, "</Output>\n");
-				pBuffer += strlen("</Output>\n") ;
+				pBuffer += strlen("</Output>\n");
 			}
 			strcpy_s(pBuffer, pBufferEnd - pBuffer, "</Files>");
 			pBuffer += strlen("</Files>") + 1;
 
-			printf("%s", buffer);
 
 			delete pApp;
+			return 0;
 		}
 		else throw std::exception("Wrong experiment configuration file");
 	}
 	catch (std::exception& e)
 	{
 		CLogger::logMessage(MessageType::Error, e.what());
+		return -1;
 	}
 }
-
