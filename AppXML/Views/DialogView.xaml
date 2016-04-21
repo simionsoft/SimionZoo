@@ -8,13 +8,13 @@
              xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
     <StackPanel>
         <Label x:Name="Message">
         </Label>
-        <TextBox x:Name="Text" Visibility="{Binding AnswerVisibility}"></TextBox>
-        <Button cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
-        <Button cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
-
-
-    </StackPanel>
+        <TextBox x:Name="Text"  Visibility="{Binding AnswerVisibility}"></TextBox>
+        <Button Width="100" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
+        <Button Width="100"  cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
+        </StackPanel>
+    </ScrollViewer>
 </UserControl>

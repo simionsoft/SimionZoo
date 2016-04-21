@@ -5,15 +5,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:z="http://schemas.microsoft.com/expression/2010/interactivity"
-             mc:Ignorable="d" Width="655.224" Height="409.776">
-   
+             mc:Ignorable="d" Width="655.224" Height="409.776"
+             ResizeMode="CanMinimize"
+             WindowState="Maximized"
+        >
 
-    <StackPanel>
-        <ScrollViewer VerticalScrollBarVisibility="Visible">
-            
-                <ContentControl x:Name="Manager" />
-        </ScrollViewer>
-        <Button x:Name="CloseWindow" Content="Close" Width="50"/>
-
-    </StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <ContentControl x:Name="Manager" />
+            <Button x:Name="CloseWindow" Content="Close" Width="50"/>
+        </StackPanel>
+    </ScrollViewer>
 </Window>

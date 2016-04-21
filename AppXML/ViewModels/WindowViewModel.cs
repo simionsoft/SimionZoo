@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.IO.Pipes;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Windows.Media;
 namespace AppXML.ViewModels
 {
     public interface IValidable
@@ -52,6 +53,8 @@ namespace AppXML.ViewModels
         public string IsSelectedNodeLeaf { get { if (_isSelectedNodeLeaf)return "Visible"; else return "Hidden"; } set { } }
         private string[] apps;
         private string selectedApp;
+        public SolidColorBrush Color { get { return new SolidColorBrush((Color)ColorConverter.ConvertFromString("White")); } set { } }
+ 
         public string SelectedApp { get { return selectedApp; } 
             set 
             {
@@ -77,21 +80,7 @@ namespace AppXML.ViewModels
             } 
         }
        
-        /*
-        public WindowViewModel(string[] apps, ObservableCollection<string> Apps, int index)
-        {
-            CNode.cleanAll();
-            CApp.cleanAll();
-            this.apps = apps;
-            _apps = Apps;
-            selectedApp = Apps[index];
-            _rootnode = Utility.getRootNode(apps[index]);
-            _branches = _rootnode.children;
-            _doc = (this._rootnode as CApp).document;
-        }
-        private readonly IWindowManager _windowManager;
- 
-        [ImportingConstructor]*/
+       
         public WindowViewModel()
         {
              //_windowManager = windowManager;

@@ -5,10 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:local="clr-namespace:AppXML.Views.Help"
              xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d" Height="580.597" Width="1324.291">
-
+            
     <UserControl.Resources>
+        <local:ColorToSolidColorBrushValueConverter x:Key="ColorToSolidColorBrush_ValueConverter"/>
         <DataTemplate DataType="{x:Type vm:BranchViewModel}">
             <v:BranchView/>
         </DataTemplate>
@@ -17,25 +19,29 @@
         </DataTemplate>
     </UserControl.Resources>
     <Grid>
-
-        <TreeView HorizontalAlignment="Left"  Height="410" Margin="23,48,0,0" VerticalAlignment="Top" Width="500"  Grid.ColumnSpan="2">
-            <TreeView.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="White"/>
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
-            </TreeView.Resources>
-            <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" >
-            </TreeViewItem>
-        </TreeView>
+       
+            <StackPanel>
+            <TreeView HorizontalAlignment="Left" Height="410" Margin="23,48,0,0" VerticalAlignment="Top" BorderThickness="0">
+                <TreeView.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color}"   />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{Binding Color}"/>
+                </TreeView.Resources>
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4">
+                    <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" />
+                </Border>
+            </TreeView>
+            </StackPanel>
+        
         <Button Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" HorizontalAlignment="Left" Margin="148,506,0,0" VerticalAlignment="Top" Width="75"/>
         <Button Content="Load" HorizontalAlignment="Left" Margin="55,506,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action Load()]" RenderTransformOrigin="0.607,2.05"/>
         <Button Content="Set as root" HorizontalAlignment="Left" Margin="591,218,0,0" VerticalAlignment="Top" Width="75" cal:Message.Attach="[Event Click]=[Action SetAsRoot()]" RenderTransformOrigin="0.607,3.6" />
-        <StackPanel Margin="742,48,44,92">
+        <StackPanel Margin="689,48,44,92">
             <ContentControl x:Name="Graf"/>
         </StackPanel>
         <Button Content="Add child" HorizontalAlignment="Left" Margin="591,193,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.113,1.475" cal:Message.Attach="[Event Click]=[Action AddChild()]" Visibility="{Binding AddChildVisible}"/>
-        <Button Content="Remove child" HorizontalAlignment="Left" Margin="591,168,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding RemoveChildVisible}"  cal:Message.Attach="[Event Click]=[Action RemoveChild()]"/>
+        <Button Content="Remove child" HorizontalAlignment="Left" Margin="591,168,0,0" VerticalAlignment="Top" Width="75" Visibility="{Binding RemoveChildVisible}"  cal:Message.Attach="[Event Click]=[Action RemoveChild()]" RenderTransformOrigin="0.52,0.45"/>
         <Button Content="Run" HorizontalAlignment="Left" Margin="1080,506,0,0" VerticalAlignment="Top" Width="76" Visibility="{Binding AddChildVisible}"  cal:Message.Attach="[Event Click]=[Action SaveAll()]"/>
         <ComboBox x:Name="Apps" HorizontalAlignment="Left" Margin="87,10,0,0" VerticalAlignment="Top" SelectedItem="{Binding SelectedApp}"/>
         <Label Content="APP" HorizontalAlignment="Left" Margin="23,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.381,0.758"/>

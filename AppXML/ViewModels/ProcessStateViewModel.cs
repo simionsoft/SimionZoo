@@ -82,6 +82,8 @@ namespace AppXML.ViewModels
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
             settings.ShowInTaskbar = true;
             settings.Title = "Process info";
+            settings.WindowState = WindowState.Normal;
+            settings.WindowResize = ResizeMode.CanMinimize;
             new WindowManager().ShowWindow(dvm, null, settings);
         }
     }

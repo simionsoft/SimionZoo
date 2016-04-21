@@ -119,6 +119,7 @@ namespace AppXML.ViewModels
                                                      }
                                                      catch (Exception ex)
                                                      {
+                                                         process.SMS = "ABORTED";
                                                          process.addMessage(ex.StackTrace);
                                                      }
                                                 });

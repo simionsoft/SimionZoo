@@ -298,8 +298,10 @@ namespace AppXML.ViewModels
            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
            settings.ShowInTaskbar = true;
            settings.Title = this._className;
+           settings.WindowState = WindowState.Normal;
+            settings.ResizeMode = ResizeMode.CanMinimize;
 
-           //new WindowManager().ShowDialog(dvm, null, settings);
+           
            windowManager.ShowDialog(this._wclvm,null,settings);
            
 

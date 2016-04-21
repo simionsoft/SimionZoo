@@ -7,12 +7,14 @@
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
-        <ContentControl x:Name="Class">
-           
-        </ContentControl>
-        <Button cal:Message.Attach="[Event Click]=[Save()]">Save</Button>
-            
-    </StackPanel>
+             d:Height="300" d:Width="300">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+            <ContentControl x:Name="Class">
+
+            </ContentControl>
+            <Button Width="100" cal:Message.Attach="[Event Click]=[Save()]">Save</Button>
+        </StackPanel>
+    </ScrollViewer>
+    
 </UserControl>

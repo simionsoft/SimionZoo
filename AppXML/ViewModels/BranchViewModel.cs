@@ -10,7 +10,7 @@ namespace AppXML.ViewModels
 {
     public class BranchViewModel:ValidableAndNodeViewModel
     {
-        
+        public SolidColorBrush Color { get { return new SolidColorBrush((Color)ColorConverter.ConvertFromString("White")); } set { } }
         private bool _isOptional;
         public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
         private string _name;

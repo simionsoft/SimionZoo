@@ -9,7 +9,7 @@
                 Loaded="OnLoaded" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-       
+        <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4">
         <TreeView  Name="Tree"   ItemsSource="{Binding Tree}" cal:Message.Attach="[Event SelectedItemChanged]=[Action Change($source)]">
             <TreeView.Resources>
                 <ResourceDictionary>
@@ -44,6 +44,6 @@
             </TreeView.ItemsPanel>
            
         </TreeView>
-
+</Border>
     </StackPanel>
 </UserControl>
