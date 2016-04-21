@@ -53,14 +53,14 @@
             <Actor>
               <Output>
                 <Policy-Learner>
-                  <CACLA>
+                  <Regular-Gradient>
                     <Alpha>
                       <Schedule>
                         <Linear-Schedule>
                           <Start-Offset>0.0</Start-Offset>
                           <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                          <Initial-Value>0.001</Initial-Value>
-                          <End-Value>0.0</End-Value>
+                          <Initial-Value>0.0001</Initial-Value>
+                          <End-Value>0.0001</End-Value>
                           <Evaluation-Value>0.0</Evaluation-Value>
                           <Interpolation>linear</Interpolation>
                           <Time-reference>experiment</Time-reference>
@@ -72,9 +72,20 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <From-File>
-                                <Load>../data/uv-5000.u-thrust.fmap</Load>
-                              </From-File>
+                              <Explicit>
+                                <Init-Value>0.0</Init-Value>
+                                <State-Feature-Map>
+                                  <Type>
+                                    <RBF-State-Grid>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>v-deviation</Variable>
+                                        <Num-Features>5000</Num-Features>
+                                        <Distribution>linear</Distribution>
+                                      </RBF-Grid-Dimension>
+                                    </RBF-State-Grid>
+                                  </Type>
+                                </State-Feature-Map>
+                              </Explicit>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
@@ -100,7 +111,7 @@
                                       <Start-Offset>0.0</Start-Offset>
                                       <Pre-Offset-Value>0.0</Pre-Offset-Value>
                                       <Initial-Value>0.1</Initial-Value>
-                                      <End-Value>0.0</End-Value>
+                                      <End-Value>0</End-Value>
                                       <Evaluation-Value>0.0</Evaluation-Value>
                                       <Interpolation>linear</Interpolation>
                                       <Time-reference>experiment</Time-reference>
@@ -114,7 +125,7 @@
                         </Deterministic-Policy-Gaussian-Noise>
                       </Policy>
                     </Policy>
-                  </CACLA>
+                  </Regular-Gradient>
                 </Policy-Learner>
               </Output>
             </Actor>
