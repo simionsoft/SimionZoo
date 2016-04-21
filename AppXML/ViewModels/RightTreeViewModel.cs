@@ -68,8 +68,6 @@ namespace AppXML.ViewModels
             if (selectedTreeNode == null)
                 return;
             selectedTreeNode.addChild(newNode);
-            _treeItems.Clear(); 
-            _treeItems.Add(rootNode);
             _loadedAndModified = Loaded & true;
             NotifyOfPropertyChange(() => Tree);
         }
@@ -78,12 +76,9 @@ namespace AppXML.ViewModels
             if (selectedTreeNode == null||selectedTreeNode==rootNode)
                 return;
             SelectedTreeNode.remove();
-            _treeItems.Clear();
-            _treeItems.Add(rootNode);
-            NotifyOfPropertyChange(() => Tree);
+            Tree = new ObservableCollection<TreeNode> { rootNode };
             _loadedAndModified = Loaded & true;
-            selectedTreeNode = rootNode;
-
+            NotifyOfPropertyChange(() => Tree);
         }
 
         internal List<NodeAndName> getAllLeafs()

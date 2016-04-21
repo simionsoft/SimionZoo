@@ -115,6 +115,8 @@ namespace AppXML.ViewModels
             if ( Utility.findDifferences(document, Graf.SelectedTreeNode.Doc)==null)
                 return;
             Graf.SelectedTreeNode.Doc = document;
+            Graf.SelectedTreeNode.updateDif();
+            NotifyOfPropertyChange(() => Graf.Tree);
             Graf.LoadedAndModified = true;
         }
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
@@ -638,13 +640,14 @@ namespace AppXML.ViewModels
             document.AppendChild(newRoot);
             Models.TreeNode node = new Models.TreeNode(name, document, Graf.SelectedTreeNode);
             Graf.AddNode(node);
-            NotifyOfPropertyChange(() => Graf);
+            NotifyOfPropertyChange(() => Graf.Tree);
             NotifyOfPropertyChange(() => RemoveChildVisible);
            
         }
         public void RemoveChild()
         {
             Graf.RemoveSelectedNode();
+            NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => RemoveChildVisible);
         }
         public void SaveAll()

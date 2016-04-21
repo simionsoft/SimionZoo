@@ -7,17 +7,17 @@ using System.Xml;
 
 namespace AppXML.Models
 {
-    public class TreeNode
+    public class TreeNode:Caliburn.Micro.PropertyChangedBase
     {
         private XmlDocument _document;
         private List<TreeNode> _children;
         private string _text;
         public TreeNode _father;
         private string _dif;
-        public string Difference { get { return _dif; } set { _dif = value; } }
+        public string Difference { get { return _dif; } set { _dif = value; NotifyOfPropertyChange(() => Difference); } }
 
         public string Text { get { return _text; } set { _text = value; } }
-        public List<TreeNode> ChildNodes { get { return _children; } set { } }
+        public List<TreeNode> ChildNodes { get { return _children; } set { _children = value; NotifyOfPropertyChange(() => ChildNodes); } }
         public XmlDocument Doc { get { return _document; } set { _document = value; } }
 
         public void remove()
@@ -45,6 +45,7 @@ namespace AppXML.Models
             if (_children == null)
                 _children = new List<TreeNode>();
             _children.Add(child);
+            NotifyOfPropertyChange(() => ChildNodes);
         }
         public void clean()
         {
@@ -52,7 +53,7 @@ namespace AppXML.Models
         }
         public void updateDif()
         {
-            _dif = Data.Utility.findDifferences(_document, _father.Doc);
+            Difference = Data.Utility.findDifferences(_document, _father.Doc);
         }
         public void removeElement(TreeNode child)
         {
@@ -62,13 +63,14 @@ namespace AppXML.Models
                 //we need to add all children to the father of this node
                 foreach(TreeNode node in child.ChildNodes)
                 {
-                    child._father.addChild(node);
-                    node._father = child._father;
+                    this.addChild(node);
+                    node._father = this;
                     node.updateDif();
                 }
             }
-            if (_children.Contains(child))
-                _children.Remove(child);
+            _children.Remove(child);
+            NotifyOfPropertyChange(() => ChildNodes);
+            
         }
 
     }
