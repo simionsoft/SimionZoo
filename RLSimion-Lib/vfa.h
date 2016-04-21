@@ -10,6 +10,7 @@ class CParameters;
 class CParameterFile;
 
 #include "parameterized-object.h"
+#include "delayed-load.h"
 //CLinearVFA////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -42,12 +43,13 @@ public:
 
 };
 
-class CLinearStateVFA: public CLinearVFA
+class CLinearStateVFA: public CLinearVFA, public CDeferredLoad
 {
+	double m_initValue;
 protected:
 	CStateFeatureMap* m_pStateFeatureMap;
 	CFeatureList *m_pAux;
-
+	virtual void deferredLoadStep();
 public:
 	CLinearStateVFA();
 	CLinearStateVFA(CParameters* pParameters);
@@ -70,6 +72,9 @@ class CLinearStateVFAFromFile: public CLinearStateVFA
 	CParameterFile* m_mapFeatureParameterFile;
 	CParameters* m_mapFeatureParameters;
 	const char* m_loadFilename;
+	char m_weightFilename[1024];
+
+	virtual void deferredLoadStep();
 public:
 	~CLinearStateVFAFromFile();
 	CLinearStateVFAFromFile(CParameters* pParameters);

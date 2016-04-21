@@ -9,6 +9,8 @@
 #include "../RLSimion-Lib/vfa.h"
 #include "../RLSimion-Lib/utils.h"
 #include "../RLSimion-Lib/logger.h"
+#include "../RLSimion-Lib/simgod.h"
+#include "../RLSimion-Lib/timer.h"
 
 class CSimpleStats
 {
@@ -35,11 +37,18 @@ public:
 	void reset(){ min = 99999999.9; max = 0.0; total = 0.0; numValues = 0; sqrtotal = 0.0; }
 };
 
-
-APP_CLASS (CompareControllerVFAApp)
+void CompareControllerVFAApp::getInputFiles(CFilePathList& filepathList)
 {
-	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "CompareControllerVFA");
-	if (!pParameters) throw std::exception("Wrong experiment configuration file");
+	SimGod.getInputFiles(filepathList);
+}
+
+void CompareControllerVFAApp::getOutputFiles(CFilePathList& filepathList)
+{
+	SimGod.getOutputFiles(filepathList);
+}
+
+CLASS_CONSTRUCTOR (CompareControllerVFAApp)
+{
 	pParameters = pParameters->getChild("CompareControllerVFA");
 	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
@@ -62,6 +71,10 @@ APP_CLASS (CompareControllerVFAApp)
 		pPolicyParameters = pPolicyParameters->getNextChild("Policy");
 	}
 	CHILD_CLASS(m_pOutputDirFile, "Output-DirFile", "The output directory and file", false, CDirFileOutput);
+
+	sprintf_s(m_outputFilePath, 1024, "%s/%s.txt", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix());
+	SimGod.registerOutputFile(m_outputFilePath);
+
 	CONST_INTEGER_VALUE(m_numSamples, "Num-Samples", 100000, "The number of samples taken to compare the controller and the approximation");
 	END_CLASS();
 }
@@ -72,17 +85,21 @@ void CompareControllerVFAApp::run()
 	CAction *a = World.getDynamicModel()->getActionDescriptor()->getInstance();
 	CAction *a2 = World.getDynamicModel()->getActionDescriptor()->getInstance();
 
+	SimGod.delayedLoad();
+
 #define NUM_POINTS_PER_DIM 100000
 	double value;
 	CSimpleStats* pStats = new CSimpleStats[a->getNumVars()];
+
+	CTimer timer;
 
 	srand(1);
 	double progress;
 	int numOutputs;
 	char msg[1024];
+	timer.startTimer();
 	for (int i = 0; i<m_numSamples; i++)
 	{
-		printf("Sampling controller and actor: %d/%d samples\r", i, m_numSamples);
 		for (int j = 0; j<s->getNumVars(); j++)
 		{
 			value = (double)(rand() % NUM_POINTS_PER_DIM) / (double)NUM_POINTS_PER_DIM;
@@ -98,17 +115,22 @@ void CompareControllerVFAApp::run()
 
 			pStats[j].addValue(a->getValue(m_pController->getOutputActionIndex(j)) - m_pVFAs[j]->getValue(s));
 		}
-		progress = (((double)i) / numOutputs) + (1.0 / numOutputs) * ((double)i) / ((double)m_numSamples);
-		progress *= 100.0;
-		sprintf_s(msg, 512, "%f", progress);
-		CLogger::logMessage(MessageType::Progress, msg);
+
+		if (timer.getElapsedTime() > 0.5) //every .5 seconds??
+		{
+			progress = ((double)i) / ((double)m_numSamples);
+			progress *= 100.0;
+			sprintf_s(msg, 512, "%f", progress);
+			CLogger::logMessage(MessageType::Progress, msg);
+			timer.startTimer();
+		}
 	}
 
-	char outputFilename[1024];
+
 	char buffer[4000];
-	sprintf_s(outputFilename, 1024, "%s/%s.txt", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix());
+
 	FILE *pFile;
-	fopen_s(&pFile,outputFilename , "w");
+	fopen_s(&pFile,m_outputFilePath , "w");
 	if (pFile)
 	{
 		for (int j = 0; j < a->getNumVars(); j++)

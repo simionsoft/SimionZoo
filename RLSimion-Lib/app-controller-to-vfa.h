@@ -13,11 +13,11 @@ class ControllerToVFAApp : public CApp
 	CLinearStateVFA** m_pVFAs;
 public:
 
-	ControllerToVFAApp(int argc,char* argv[]);
+	ControllerToVFAApp(CParameters* pParameters);
 	~ControllerToVFAApp();
 
-	static const char* getInputs(const char* xmlConfigFile);
-	static const char* getOutputs(const char* xmlConfigFile);
+	void getInputFiles(CFilePathList& filePathList);
+	void getOutputFiles(CFilePathList& filePathList);
 
 	void run();
 };

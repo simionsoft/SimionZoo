@@ -7,19 +7,22 @@ typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CParameters;
 class CSimion;
+class CDeferredLoad;
+class CFilePathList;
+
+#include <vector>
 
 
 class CSimGod
 {
 	int m_numSimions= 0;
 	CSimion** m_pSimions = 0;
-	//CActor* m_pController;
-	//CActor* m_pActor;
-	//CCritic* m_pCritic;
-
-	//double m_td;
 
 	CReward *m_pReward;
+	std::vector<CDeferredLoad*> m_delayedLoadObjects;
+
+	std::vector<const char*> m_inputFiles;
+	std::vector<const char*> m_outputFiles;
 public:
 	CSimGod();
 	~CSimGod();
@@ -28,5 +31,14 @@ public:
 
 	void selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r);
+
+	void registerDelayedLoadObj(CDeferredLoad* pObj);
+	void delayedLoad();
+
+	void registerInputFile(const char* filepath);
+	void getInputFiles(CFilePathList& filepathList);
+
+	void registerOutputFile(const char* filepath);
+	void getOutputFiles(CFilePathList& filepathList);
 };
 

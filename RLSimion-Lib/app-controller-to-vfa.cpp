@@ -11,11 +11,20 @@
 #include "named-var-set.h"
 #include "app.h"
 #include "timer.h"
+#include "simgod.h"
 
-APP_CLASS(ControllerToVFAApp)
+void ControllerToVFAApp::getInputFiles(CFilePathList& filepathList)
 {
-	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "ControllerToVFA");
-	if (!pParameters) throw std::exception("Wrong experiment configuration file");
+	SimGod.getInputFiles(filepathList);
+}
+
+void ControllerToVFAApp::getOutputFiles(CFilePathList& filepathList)
+{
+	SimGod.getOutputFiles(filepathList);
+}
+
+CLASS_CONSTRUCTOR(ControllerToVFAApp)
+{
 	pParameters = pParameters->getChild("ControllerToVFA");
 	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 	//INTIALISE CONTROLLER: VIDAL, BOUKHEZZAR, ...
@@ -39,13 +48,25 @@ APP_CLASS(ControllerToVFAApp)
 		pPolicyParameters = pPolicyParameters->getNextChild("Policy");
 	}
 
+	char completeFilename[1024];
 	CHILD_CLASS(m_pOutputDirFile, "Output-DirFile", "The output directory and file", false, CDirFileOutput);
-
+	int numDimensions = (int)std::min(m_pController->getNumOutputs(), m_numVFAs);
+	for (int i = 0; i < numDimensions; i++)
+	{
+		sprintf_s(completeFilename, "%s/%s.%s.fmap", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix()
+			, World.getDynamicModel()->getActionDescriptor()->getName(m_pController->getOutputActionIndex(i)));
+		CApp::SimGod.registerOutputFile(completeFilename);
+		sprintf_s(completeFilename, "%s/%s.%s.weights", m_pOutputDirFile->getOutputDir(), m_pOutputDirFile->getFilePrefix()
+			, World.getDynamicModel()->getActionDescriptor()->getName(m_pController->getOutputActionIndex(i)));
+		CApp::SimGod.registerOutputFile(completeFilename);
+	}
 	END_CLASS();
 }
 
 void ControllerToVFAApp::run()
 {
+	SimGod.delayedLoad();
+
 	CState *s = World.getDynamicModel()->getStateDescriptor()->getInstance();
 	CAction *a = World.getDynamicModel()->getActionDescriptor()->getInstance();
 	int i = 0;
@@ -69,7 +90,7 @@ void ControllerToVFAApp::run()
 			double output = a->getValue(outputActionIndex);
 			pWeights[feature] = output;
 
-			if (timer.getElapsedTime() > 0.5)
+			if (timer.getElapsedTime() > 0.5) //every 0.5 seconds??
 			{
 				progress = (((double)i) / numDimensions) + (1.0 / numDimensions) * ((double)feature) / ((double)numWeights);
 				progress *= 100.0;

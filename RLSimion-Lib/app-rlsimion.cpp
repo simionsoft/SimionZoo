@@ -7,29 +7,55 @@
 #include "logger.h"
 #include "named-var-set.h"
 #include "globals.h"
+#include "utils.h"
 
-
-int RLSimionApp::getOutputFiles(char* pBuffer[], int& numItems)
+void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 {
-	int writtenBytes= 0;
-	if (!pBuffer) return -1;
+	//the list of log files depends on the experiment parameters and the logger parameters, so instead of introducing a dependency between them
+	//i thought it best to code it here
+	char filepath[CFilePathList::m_filePathMaxSize];
+	bool bEvaluation;
 
-	writtenBytes= Logger.getOutputFiles(pBuffer,numItems);
-	pBuffer += writtenBytes;
-	return 0;
+	//episode log files
+	for (CApp::Experiment.nextEpisode(); CApp::Experiment.isValidEpisode(); CApp::Experiment.nextEpisode())
+	{
+		bEvaluation = Experiment.isEvaluationEpisode();
+		if (Logger.isEpisodeTypeLogged(bEvaluation))
+		{
+			Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bEvaluation, Experiment.getRelativeEpisodeIndex());
+			filePathList.addFilePath(filepath);
+		}
+	}
+	//experiment log files
+	bool bExperimentType = true;
+	if (Logger.isExperimentTypeLogged(bExperimentType))
+	{
+		Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bExperimentType, 0);
+		filePathList.addFilePath(filepath);
+	}
+	bExperimentType = false;
+	if (Logger.isExperimentTypeLogged(bExperimentType))
+	{
+		Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bExperimentType, 0);
+		filePathList.addFilePath(filepath);
+	}
+	SimGod.getOutputFiles(filePathList);
 }
 
-APP_CLASS(RLSimionApp)
+void RLSimionApp::getInputFiles(CFilePathList& filePathList)
 {
-	CParameters* pParameters = m_pConfigDoc->loadFile(argv[1], "RLSimion");
-	if (!pParameters) throw std::exception("Wrong experiment configuration file");
+	SimGod.getInputFiles(filePathList);
+}
+
+CLASS_CONSTRUCTOR(RLSimionApp, const char* xmlConfigPath)
+{
 	pParameters = pParameters->getChild("RLSimion");
 	if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
 
 	//In the beginning, a logger was created so that we could know about creation itself
 	CHILD_CLASS_INIT(Logger, "Log", "The logger class", false, CLogger);
-	Logger.setLogDirectory(argv[1]); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
+	Logger.setLogDirectory(xmlConfigPath); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
 
 	//Then the world was created by chance
 	CHILD_CLASS_INIT(World, "World", "The simulation environment and its parameters", false, CWorld);
@@ -50,7 +76,6 @@ RLSimionApp::~RLSimionApp()
 
 void RLSimionApp::run()
 {
-
 	//create state and action vectors
 	CState *s = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
 	CState *s_p = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
@@ -60,6 +85,9 @@ void RLSimionApp::run()
 	CApp::Logger.addVarSetToStats("Action", a);
 	CApp::Logger.addVarToStats("Reward", "sum", CApp::World.getScalarReward());
 	CApp::Logger.addVarSetToStats("Reward", CApp::World.getReward());
+
+	//load stuff we don't want to be loaded in the constructors for faster construction
+	CApp::SimGod.delayedLoad();
 
 	double r = 0.0;
 

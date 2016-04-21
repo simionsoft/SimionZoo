@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #include "SimGod.h"
-
 #include "globals.h"
-
 #include "experiment.h"
-
 #include "named-var-set.h"
 #include "parameters.h"
 #include "simion.h"
 #include "app.h"
+#include "delayed-load.h"
+#include "utils.h"
 
 CLASS_INIT(CSimGod)
 {
@@ -45,28 +44,15 @@ CSimGod::~CSimGod()
 		}
 		delete[] m_pSimions;
 	}
+	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
+	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);
 }
 
 
 void CSimGod::selectAction(CState* s, CAction* a)
 {
-
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->selectAction(s, a);
-
-	
-	//m_pController->selectAction(s, a);
-
-	//if (m_pController == m_pActor)
-	//	m_rho = 1.0;
-	//else
-	//{
-	//	double controllerProb = m_pController->getProbability(s, a);
-	//	double actorProb = m_pActor->getProbability(s, a);
-	//	m_rho = actorProb / controllerProb;
-	//}
-	//	
-	//return m_rho;
 }
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
@@ -76,14 +62,51 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 	//update critic
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updateValue(s, a,s_p,r);
-	/*if (m_pCritic && !CApp::Experiment.isEvaluationEpisode())
-		m_td = m_pCritic->updateValue(s, a, s_p, r, m_rho);*/
 
 	//update actor: might be the controller
 	for (int i = 0; i < m_numSimions; i++)
 		m_pSimions[i]->updatePolicy(s, a,s_p,r);
+}
 
-	//if( !CApp::Experiment.isEvaluationEpisode())
-	//	m_pActor->updatePolicy(s, a, s_p, r, m_td);
+void CSimGod::registerDelayedLoadObj(CDeferredLoad* pObj)
+{
+	m_delayedLoadObjects.push_back(pObj);
+}
 
+void CSimGod::delayedLoad()
+{
+	for (auto it = m_delayedLoadObjects.begin(); it != m_delayedLoadObjects.end(); it++)
+	{
+		(*it)->deferredLoadStep();
+	}
+}
+
+void CSimGod::registerInputFile(const char* filepath)
+{
+	char* copy = new char[strlen(filepath) + 1];
+	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	m_inputFiles.push_back(copy);
+}
+
+void CSimGod::getInputFiles(CFilePathList& filepathList)
+{
+	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++)
+	{
+		filepathList.addFilePath(*it);
+	}
+}
+
+void CSimGod::registerOutputFile(const char* filepath)
+{
+	char* copy = new char[strlen(filepath) + 1];
+	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	m_outputFiles.push_back(copy);
+}
+
+void CSimGod::getOutputFiles(CFilePathList& filepathList)
+{
+	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++)
+	{
+		filepathList.addFilePath(*it);
+	}
 }

@@ -5,14 +5,6 @@
 #include "logger.h"
 
 
-#ifdef _DEBUG
-#pragma comment (lib,"../Debug/tinyxml2.lib")
-#else
-#pragma comment (lib,"../Release/tinyxml2.lib")
-#endif
-
-
-
 CParameters* CParameterFile::loadFile(const char* fileName, const char* nodeName)
 {
 	LoadFile(fileName);
