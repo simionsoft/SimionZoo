@@ -12,6 +12,6 @@
     <StackPanel Orientation="Horizontal">
 
         <Label x:Name="Label" Width="200"/>
-        <ComboBox x:Name="Options" ItemsSource="{Binding Options}"/>
+        <ComboBox x:Name="Options" SelectedItem="{Binding SelectedOption}" ItemsSource="{Binding Options}"/>
     </StackPanel>
 </UserControl>

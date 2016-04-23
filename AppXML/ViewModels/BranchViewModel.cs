@@ -29,6 +29,43 @@ namespace AppXML.ViewModels
                 IsNull = !value;
             }
         }
+        public void Change(object sender)
+        {
+            Caliburn.Micro.ActionExecutionContext context = sender as Caliburn.Micro.ActionExecutionContext;
+            BranchViewModel x = context.Target as BranchViewModel;
+            Console.WriteLine(x.Name);
+
+            
+        }
+        public void Copy()
+        {
+            if(validate())
+            {
+                List<XmlNode> data = getXmlNode();
+                if(data!=null)
+                {
+                    XmlNode dataNode = data[0];
+                    System.Windows.Clipboard.SetText(dataNode.OuterXml);
+                }
+            }
+            
+        }
+        public void Paste()
+        {
+            string data = System.Windows.Clipboard.GetText();
+            if(data!=null)
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(data);
+                AppXML.Data.Utility.fillTheClass(this._class, doc.DocumentElement);
+            }
+            catch
+            {
+
+            }
+           
+        }
         public bool IsNull { get { return _isNull; } set { _isNull = value; NotifyOfPropertyChange(() => IsSet); NotifyOfPropertyChange(() => IsEnabled); } }
         public bool IsEnabled { get { return !_isNull; } set { } }
 

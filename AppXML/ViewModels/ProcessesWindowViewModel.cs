@@ -38,7 +38,8 @@ namespace AppXML.ViewModels
        
         public void Close()
         {
-            Manager.closeAll();
+            if(Exit==false)
+                Manager.closeAll();
         }
        
         public void CloseWindow()

@@ -20,7 +20,11 @@ namespace AppXML.ViewModels
 
         public string Tag { get { return tag; } set { } }
 
-        public string SelectedOption { get { return _selectedOption; } set { _selectedOption = value; NotifyOfPropertyChange(()=>SelectedOption); } }
+        public string SelectedOption { get { return _selectedOption; } 
+            set {
+                _selectedOption = value; 
+                NotifyOfPropertyChange(()=>SelectedOption); 
+            } }
 
         public XMLNodeRefViewModel(string label, string file, string action, XmlDocument doc, string tag,ClassViewModel owner)
         {

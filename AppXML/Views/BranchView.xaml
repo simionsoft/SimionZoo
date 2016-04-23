@@ -7,20 +7,28 @@
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="AppXML.Views.BranchView"
              mc:Ignorable="d" 
-             
+             Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
              >
     <UserControl.Resources>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="White"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
+        
     </UserControl.Resources>
     <Grid>
-        <TreeView BorderBrush="Transparent" BorderThickness="0">
-            <TreeViewItem IsExpanded="True">
+        <TreeView BorderBrush="Transparent" BorderThickness="0" cal:Message.Attach="[Event SelectedItemChanged]=[Action Change($executionContext)]">
+            <TreeViewItem IsExpanded="True" >
                 <TreeViewItem.Header>
                     <StackPanel Orientation="Horizontal" Focusable="False">
-                        <Label Content="{Binding Name}" ToolTip="{Binding Comment}"/>
+                        
+
+                            <Label Content="{Binding Name}" ToolTip="{Binding Comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
+                            <Label.ContextMenu>
+                                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
+
+                                    <MenuItem Header="Copy" cal:Message.Attach="[Event Click]=[Action Copy()]" />
+                                    <MenuItem Header="Paste" cal:Message.Attach="[Event Click]=[Action Paste()]" />
+                                </ContextMenu>
+                            </Label.ContextMenu>
+                            
+                        </Label>
                         <CheckBox Content="Used" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsSet}" VerticalAlignment="Center" />
                     </StackPanel>
                 </TreeViewItem.Header>
