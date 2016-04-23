@@ -16,11 +16,21 @@ namespace AppXML.Data
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
 
-        public static bool checkName(string name)
+        public static bool checkName(string name, TreeNode father)
         {
             try
             {
                 XmlConvert.VerifyName(name);
+                if(father.ChildNodes!=null)
+                {
+                    foreach (TreeNode son in father.ChildNodes)
+                    {
+                        if (son.Text.ToUpper().Equals(name.ToUpper()))
+                        {
+                            return false;
+                        }
+                    }
+                }
                 return true;
             }
             catch
@@ -114,23 +124,29 @@ namespace AppXML.Data
             if(Directory.Exists(folder))
             {
                 string root = null;
-                foreach(string item in Directory.GetFileSystemEntries(folder))
+                string[] folders = Directory.GetDirectories(folder);
+                if (folders == null || folders.Length == 0)
                 {
-                    FileAttributes attr = File.GetAttributes(item);
-                    if (attr.HasFlag(FileAttributes.Directory))
+                    string[] files = Directory.GetFiles(folder);
+                    foreach (string file in files)
+                    {
+                        if (!file.EndsWith(".node"))
+                            File.Delete(file);
+                        else if (isLeaf)
+                            result.Add(file);
+                    }
+                    return result;
+                }
+                else
+                {
+                    foreach(string item in folders)
                     {
                         if (item.EndsWith("root"))
                             root = removeAndGetLeafs(item)[0];
                         else
                             result.AddRange(removeAndGetLeafs(item));
                     }
-                    else
-                    {
-                        if (!item.EndsWith(".node"))
-                            File.Delete(item);
-                        else if(isLeaf)
-                            result.Add(item);
-                    }
+                    
                 }
                 if (result.Count == 0 && root != null)
                     result.Add(root);

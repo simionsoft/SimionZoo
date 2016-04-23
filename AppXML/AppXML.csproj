@@ -114,8 +114,7 @@
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Help\ColorToSolidColorBrushValueConverter.cs" />
-    <Compile Include="Views\Help\GridHelpers.cs" />
+    <Compile Include="Views\Help\ComboBoxToMaxItemWidthConverter.cs" />
     <Compile Include="Views\IntegerView.xaml.cs">
       <DependentUpon>IntegerView.xaml</DependentUpon>
     </Compile>

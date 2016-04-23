@@ -7,10 +7,11 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:local="clr-namespace:AppXML.Views.Help"
              xmlns:v="clr-namespace:AppXML.Views"
-             mc:Ignorable="d" Height="580.597" Width="1324.291">
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase">
+
+    
             
     <UserControl.Resources>
-        <local:ColorToSolidColorBrushValueConverter x:Key="ColorToSolidColorBrush_ValueConverter"/>
         <DataTemplate DataType="{x:Type vm:BranchViewModel}">
             <v:BranchView/>
         </DataTemplate>
@@ -31,10 +32,10 @@
             <StackPanel>
                 <TreeView HorizontalAlignment="Left" Height="410" Margin="15" VerticalAlignment="Top" BorderThickness="0">
                     <TreeView.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color}"   />
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{Binding Color}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color}"/>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{Binding Color}"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="white"   />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="white"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="white"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="white"/>
                     </TreeView.Resources>
                     <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4">
                         <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" />
@@ -57,7 +58,7 @@
             <StackPanel Margin="15" VerticalAlignment="Center" HorizontalAlignment="Stretch">
                 <ContentControl x:Name="Graf"/>
             </StackPanel>
-        </DockPanel>
+        </DockPanel> 
         
     </DockPanel>
 </UserControl>

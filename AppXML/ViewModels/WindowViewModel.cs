@@ -53,7 +53,7 @@ namespace AppXML.ViewModels
         public string IsSelectedNodeLeaf { get { if (_isSelectedNodeLeaf)return "Visible"; else return "Hidden"; } set { } }
         private string[] apps;
         private string selectedApp;
-        public SolidColorBrush Color { get { return new SolidColorBrush((Color)ColorConverter.ConvertFromString("White")); } set { } }
+        //public SolidColorBrush Color { get { return new SolidColorBrush((Color)ColorConverter.ConvertFromString("White")); } set { } }
  
         public string SelectedApp { get { return selectedApp; } 
             set 
@@ -83,6 +83,8 @@ namespace AppXML.ViewModels
        
         public WindowViewModel()
         {
+           
+ 
              //_windowManager = windowManager;
             CApp.IsInitializing = true;
             apps = Directory.GetFiles("..\\config\\apps");
@@ -613,9 +615,8 @@ namespace AppXML.ViewModels
         public string RemoveChildVisible { get { if (_graf!=null &&  _graf.Tree!=null && _graf.Tree[0].hasChildren()) return "Visible"; else return "Hidden"; } }
         public void AddChild()
         {
-            if (!validate())
+            if (!validate() || Graf.SelectedTreeNode==null)
                 return;
-
             DialogViewModel dvm = new DialogViewModel(null, "Which name do you want for the new node?", DialogViewModel.DialogType.Answer);
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
@@ -630,10 +631,10 @@ namespace AppXML.ViewModels
                     name = dvm.Text;
                 else
                     return;
-                if (name == null)
-                    name = "Node";
+               
+                    
                 dvm.Text = "The name "+name+" is not valid. ";
-            } while (!Utility.checkName(name));
+            } while (name==null||!Utility.checkName(name,Graf.SelectedTreeNode));
             
             XmlDocument document = new XmlDocument();
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
@@ -746,9 +747,12 @@ namespace AppXML.ViewModels
            
             executeLoad(fileDoc);
             Cursor.Current = Cursors.Default;
-            Graf.Loaded = true;
-            Graf.LoadedAndModified = false;
-            Graf.LoadedXmlFile = fileDoc;
+            if (_graf != null)
+            {
+                Graf.Loaded = true;
+                Graf.LoadedAndModified = false;
+                Graf.LoadedXmlFile = fileDoc;
+            }
 
         }
 

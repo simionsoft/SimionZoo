@@ -3,11 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:help="clr-namespace:AppXML.Views.Help"
              mc:Ignorable="d" 
              >
+    <UserControl.Resources>
+        <help:ComboBoxToMaxItemWidthConverter x:Key="Convert"></help:ComboBoxToMaxItemWidthConverter>
+    </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
 
         <Label x:Name="Label" Width="200"/>
-        <ComboBox x:Name="Options" Width="150"/>
+        <ComboBox x:Name="Options" ItemsSource="{Binding Options}"/>
     </StackPanel>
 </UserControl>

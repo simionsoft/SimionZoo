@@ -68,6 +68,7 @@ namespace AppXML.ViewModels
             if (selectedTreeNode == null)
                 return;
             selectedTreeNode.addChild(newNode);
+            Tree = new ObservableCollection<TreeNode> { rootNode };
             _loadedAndModified = Loaded & true;
             NotifyOfPropertyChange(() => Tree);
         }

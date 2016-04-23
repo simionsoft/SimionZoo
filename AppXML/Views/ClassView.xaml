@@ -34,7 +34,7 @@
         </StackPanel>
         <Border BorderThickness="{Binding Border}" CornerRadius="4" BorderBrush="Black">
         <StackPanel Orientation="Horizontal" Margin="{Binding Margin}">
-                <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}" FocusVisualStyle="{x:Null}"/>
+                <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}"/>
                 <Button x:Name="MultiAction" Content="{Binding MultiButton.content}" Visibility="{Binding MultiButton.visible}" Height="25" VerticalAlignment="Top" ></Button>
             </StackPanel>
         </Border>

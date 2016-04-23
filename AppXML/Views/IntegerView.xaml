@@ -4,15 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://www.caliburnproject.org"
+             xmlns:help="clr-namespace:AppXML.Views.Help"
              mc:Ignorable="d" 
              >
+    <UserControl.Resources>
+        <help:ComboBoxToMaxItemWidthConverter x:Key="Convert"/>
+    </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <ItemsControl ItemsSource="{Binding TextBox}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}" />
-                        <TextBox Text="{Binding Default, Mode=TwoWay}" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
+                        <TextBox Text="{Binding Default, Mode=TwoWay}" HorizontalContentAlignment="Right" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -22,7 +26,7 @@
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}"/>
-                        <ComboBox x:Name="ComboValues" ItemsSource="{Binding ComboValues}" Width="150"  SelectedItem="{Binding SelectedComboValue}"  />
+                       <ComboBox x:Name="ComboValues" ItemsSource="{Binding ComboValues}"  SelectedItem="{Binding SelectedComboValue}" Width="150" HorizontalContentAlignment="Center"  />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
