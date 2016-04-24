@@ -15,7 +15,7 @@ namespace AppXML
         public class AppBootstrapper: BootstrapperBase {
 
 
-        private CompositionContainer container;
+        
         public AppBootstrapper() {
             Initialize();
         }

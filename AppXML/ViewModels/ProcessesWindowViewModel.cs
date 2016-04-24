@@ -11,7 +11,7 @@ namespace AppXML.ViewModels
 {
     public class ProcessesWindowViewModel: Screen
     {
-        private ProcessManagerViewModel pwvm;
+        
 
         public ProcessManagerViewModel Manager { get; set; }
         public bool isOver { get; set; }

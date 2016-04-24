@@ -20,7 +20,7 @@ namespace AppXML.Models
         {
             newClassWithRefs.Add(newClass);
         }
-        public static void cleanAll()
+        public static void cleanApp()
         {
             viewsWithNodeRef.Clear();
             newClassWithRefs.Clear();

@@ -59,7 +59,7 @@ namespace AppXML.ViewModels
             set 
             {
                 CNode.cleanAll();
-                CApp.cleanAll();
+                CApp.cleanApp();
 
                 int index = _apps.IndexOf(value);
                 if (index == -1)
