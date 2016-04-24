@@ -11,7 +11,35 @@ namespace AppXML.ViewModels
     public class BranchViewModel:ValidableAndNodeViewModel
     {
         //public SolidColorBrush Color { get { return new SolidColorBrush((Color)ColorConverter.ConvertFromString("White")); } set { } }
+        public bool PasteEnabled 
+        { 
+            get
+            {
+                string data = System.Windows.Clipboard.GetText();
+                try
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(data);
+                    if (doc.DocumentElement.Name.Equals(this.className))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+                catch
+                {
+                    return false;
+                }
+               
+            }
+            set { }
+}
         private bool _isOptional;
+        private string className;
         public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
         private string _name;
         private ClassViewModel _class;
@@ -29,14 +57,6 @@ namespace AppXML.ViewModels
                 IsNull = !value;
             }
         }
-        public void Change(object sender)
-        {
-            Caliburn.Micro.ActionExecutionContext context = sender as Caliburn.Micro.ActionExecutionContext;
-            BranchViewModel x = context.Target as BranchViewModel;
-            Console.WriteLine(x.Name);
-
-            
-        }
         public void Copy()
         {
             if(validate())
@@ -45,7 +65,7 @@ namespace AppXML.ViewModels
                 if(data!=null)
                 {
                     XmlNode dataNode = data[0];
-                    System.Windows.Clipboard.SetText(dataNode.OuterXml);
+                    System.Windows.Clipboard.SetText("<" + className + ">" + dataNode.OuterXml + "</" + className + ">");
                 }
             }
             
@@ -58,7 +78,16 @@ namespace AppXML.ViewModels
             {
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(data);
-                AppXML.Data.Utility.fillTheClass(this._class, doc.DocumentElement);
+                if(doc.DocumentElement.Name.Equals(this.className))
+                {
+                    this._class.setAsNull();
+                    AppXML.Data.Utility.fillTheClass(this._class, doc.DocumentElement.FirstChild);
+                }
+                else
+                {
+
+                }
+                    
             }
             catch
             {
@@ -85,6 +114,7 @@ namespace AppXML.ViewModels
 
         public BranchViewModel(string name,string clas,string comment,bool isOptional, XmlDocument doc, string tag)
         {
+            className = clas;
             _name = name;
             _comment = comment;
             _class = new ClassViewModel(clas,name,doc);

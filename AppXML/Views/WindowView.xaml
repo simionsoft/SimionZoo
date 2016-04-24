@@ -32,7 +32,10 @@
             <StackPanel>
                 <TreeView HorizontalAlignment="Left" Height="410" Margin="15" VerticalAlignment="Top" BorderThickness="0"  >
                     <TreeView.Resources>
-                        
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00000000"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#00000000"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#00000000"/>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#00000000"/>
                     </TreeView.Resources>
                     <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4">
                         <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" />
