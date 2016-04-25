@@ -249,7 +249,42 @@ namespace AppXML.ViewModels
         //public ObservableCollection<XMLNodeRefViewModel> XMLNODE { get { return _XMLNODE; } set { } }
         public ObservableCollection<ValidableAndNodeViewModel> AllItems { get { return _allItems; } set { } }
         public string ItemName { get { return _itemName; } set { _itemName = value; NotifyOfPropertyChange(() => ItemName); } }
+        public void Copy()
+        {
+            if (this.validate(false))
+            {
+                XmlNode data = getXmlNode();
+                if (data != null)
+                {
+                    System.Windows.Clipboard.SetText("<" + _className + ">" + data.OuterXml + "</" + _className + ">");
+                }
+            }
+        }
+        public void Paste()
+        {
+            string data = System.Windows.Clipboard.GetText();
+            if (data != null)
+                try
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(data);
+                    if (doc.DocumentElement.Name.Equals(this._className))
+                    {
+                        this.setAsNull();
+                        AppXML.Data.Utility.fillTheClass(this, doc.DocumentElement.FirstChild);
+                    }
+                    else
+                    {
 
+                    }
+
+                }
+                catch
+                {
+
+                }
+           
+        }
         public void removeViews()
         {
             foreach(ValidableAndNodeViewModel item in _allItems)
