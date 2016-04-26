@@ -18,7 +18,7 @@ namespace AppXML.Views
     /// <summary>
     /// Lógica de interacción para WindowView.xaml
     /// </summary>
-    public partial class WindowView : UserControl
+    public partial class WindowView : Window
     {
         public WindowView()
         {

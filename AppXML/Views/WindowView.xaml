@@ -1,64 +1,94 @@
-﻿<UserControl x:Class="AppXML.Views.WindowView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:vm="clr-namespace:AppXML.ViewModels"
-             xmlns:cal="http://www.caliburnproject.org"
-             xmlns:local="clr-namespace:AppXML.Views.Help"
-             xmlns:v="clr-namespace:AppXML.Views"
-             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase">
-
+﻿<Window x:Class="AppXML.Views.WindowView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:vm="clr-namespace:AppXML.ViewModels"
+            xmlns:cal="http://www.caliburnproject.org"
+            xmlns:local="clr-namespace:AppXML.Views.Help"
+            xmlns:v="clr-namespace:AppXML.Views"
+            xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+            WindowState="Maximized"
+            WindowStyle="ThreeDBorderWindow"
+            >
+             
     
             
-    <UserControl.Resources>
+    <Window.Resources>
         <DataTemplate DataType="{x:Type vm:BranchViewModel}">
             <v:BranchView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:RightTreeViewModel}">
             <v:RightTreeView/>
         </DataTemplate>
-    </UserControl.Resources>
-    <DockPanel LastChildFill="False">
-        <DockPanel LastChildFill="True" DockPanel.Dock="Left">
-            <StackPanel DockPanel.Dock="Top" Margin="15" Orientation="Horizontal">
+    </Window.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" DockPanel.Dock="Top" Margin="15,15,15,0" Orientation="Horizontal">
                 <Label Content="APP"/>
                 <ComboBox x:Name="Apps" SelectedItem="{Binding SelectedApp}"/>
             </StackPanel>
-            <StackPanel DockPanel.Dock="Bottom" HorizontalAlignment="Center" Orientation="Horizontal">
+            <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Orientation="Horizontal" MaxHeight="50">
                 <Button Margin="5,5,5,20" Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" Height="25" Width="75"/>
                 <Button Margin="5,5,5,20" Content="Load" Width="75" Height="25" cal:Message.Attach="[Event Click]=[Action Load()]"/>
             </StackPanel>
-            <StackPanel>
-                <TreeView HorizontalAlignment="Left" Height="410" Margin="15" VerticalAlignment="Top" BorderThickness="0"  >
+           
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4" Margin="15">
+                    <TreeView HorizontalAlignment="Left" Height="{Binding MaxHeight}" Width="{Binding MaxWidth}" Padding="5" Margin="5"   VerticalAlignment="Top" BorderThickness="0"  >
                     <TreeView.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00000000"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#00000000"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#00000000"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#00000000"/>
                     </TreeView.Resources>
-                    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4">
-                        <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" />
-                    </Border>
+                    
+                        <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"  Padding="0" VerticalContentAlignment="Top" />
+                    
                 </TreeView>
+                </Border>
             </StackPanel>
-        </DockPanel>
-        <StackPanel Orientation="Vertical" VerticalAlignment="Center" DockPanel.Dock="Left">
-            <Button Margin="5" Content="Add child"  Width="75"  cal:Message.Attach="[Event Click]=[Action AddChild()]" Visibility="{Binding AddChildVisible}"/>
-            <Button Margin="5" Content="Remove child"  Width="75" Visibility="{Binding RemoveChildVisible}"  cal:Message.Attach="[Event Click]=[Action RemoveChild()]"/>
-            <Button Margin="5" Content="Set as root" Width="75" cal:Message.Attach="[Event Click]=[Action SetAsRoot()]" />
-            <Button Margin="5" x:Name="ModifySelectedLeaf"  Content="Modify" Width="75" Visibility="{Binding IsSelectedNodeLeaf}"/>
-        </StackPanel>
-        <DockPanel LastChildFill="True" DockPanel.Dock="Left">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+            <StackPanel Grid.Row="1" Grid.Column="1"  Orientation="Vertical" VerticalAlignment="Center">
+                <Button Margin="5" Content="Add child"  Width="75"  cal:Message.Attach="[Event Click]=[Action AddChild()]" Visibility="{Binding AddChildVisible}"/>
+                <Button Margin="5" Content="Remove child"  Width="75" Visibility="{Binding RemoveChildVisible}"  cal:Message.Attach="[Event Click]=[Action RemoveChild()]"/>
+                <Button Margin="5" Content="Set as root" Width="75" cal:Message.Attach="[Event Click]=[Action SetAsRoot()]" />
+                <Button Margin="5" x:Name="ModifySelectedLeaf"  Content="Modify" Width="75" Visibility="{Binding IsSelectedNodeLeaf}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="2">
                 <Button Margin="5,5,5,20" Content="Run"  Width="75" Height="25" Visibility="{Binding AddChildVisible}"  cal:Message.Attach="[Event Click]=[Action SaveAll()]"/>
                 <Button Margin="5,5,5,20" x:Name="SaveAllTheNodes" Content="Save tree"  Width="75" Height="25" Visibility="{Binding RemoveChildVisible}"/>
                 <Button Margin="5,5,5,20" x:Name="LoadTree" Content="Load tree" Width="75" Height="25"/>
             </StackPanel>
-            <StackPanel Margin="15" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+            <StackPanel Margin="15" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2"  Height="{Binding MaxHeight}" Width="{Binding MaxWidth}" >
                 <ContentControl x:Name="Graf"/>
             </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+  
+    <!-- 
+    <DockPanel LastChildFill="False">
+        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="3*">
+            
+            
+            
+        </DockPanel>
+        
+        <DockPanel LastChildFill="True" DockPanel.Dock="Left">
+            
+            
         </DockPanel> 
         
-    </DockPanel>
-</UserControl>
+    </DockPanel>-->
+</Window>

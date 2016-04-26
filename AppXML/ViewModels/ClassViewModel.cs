@@ -533,7 +533,33 @@ namespace AppXML.ViewModels
                 }
             }
         }
+        public bool PasteEnabled
+        {
+            get
+            {
+                string data = System.Windows.Clipboard.GetText();
+                try
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(data);
+                    if (doc.DocumentElement.Name.Equals(this._className))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
 
+                }
+                catch
+                {
+                    return false;
+                }
+
+            }
+            set { }
+        }
         public void removeFromNewClass()
         {
             Models.CApp.removeFromNew(this);

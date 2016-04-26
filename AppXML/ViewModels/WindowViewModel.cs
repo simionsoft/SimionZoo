@@ -31,6 +31,38 @@ namespace AppXML.ViewModels
     //[Export(typeof(WindowViewModel))]
     public class WindowViewModel : PropertyChangedBase
     {
+        public double ControlHeight
+        {
+            get
+            {
+                return (int)System.Windows.SystemParameters.PrimaryScreenHeight;
+            }
+            set { }
+        }
+        public double ControlWidth
+        {
+            get
+            {
+                return System.Windows.SystemParameters.PrimaryScreenWidth;
+            }
+            set { }
+        }
+        public int MaxHeight
+        {
+            get
+            {
+                return (int)System.Windows.SystemParameters.PrimaryScreenHeight-200;
+            }
+            set { }
+        }
+        public double MaxWidth 
+        {
+            get 
+            {
+                return (System.Windows.SystemParameters.PrimaryScreenWidth - 200)/2; 
+            } 
+            set { } 
+        }
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
         private XmlDocument _doc;
