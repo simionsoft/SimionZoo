@@ -59,7 +59,7 @@
                         <Linear-Schedule>
                           <Start-Offset>0.0</Start-Offset>
                           <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                          <Initial-Value>0.0001</Initial-Value>
+                          <Initial-Value>0.01</Initial-Value>
                           <End-Value>0.0001</End-Value>
                           <Evaluation-Value>0.0</Evaluation-Value>
                           <Interpolation>linear</Interpolation>
@@ -72,20 +72,9 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <Explicit>
-                                <Init-Value>0.0</Init-Value>
-                                <State-Feature-Map>
-                                  <Type>
-                                    <RBF-State-Grid>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>v-deviation</Variable>
-                                        <Num-Features>5000</Num-Features>
-                                        <Distribution>linear</Distribution>
-                                      </RBF-Grid-Dimension>
-                                    </RBF-State-Grid>
-                                  </Type>
-                                </State-Feature-Map>
-                              </Explicit>
+                              <From-File>
+                                <Load>../data/uv-5000.u-thrust.fmap</Load>
+                              </From-File>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
