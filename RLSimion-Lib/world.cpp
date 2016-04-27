@@ -10,6 +10,7 @@
 #include "globals.h"
 #include "app.h"
 #include "simgod.h"
+#include "logger.h"
 
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
@@ -133,11 +134,13 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 		if (!configXMLDoc.Error())
 		{
 			rootNode = (CParameters*)configXMLDoc.FirstChildElement("World-Definition");
-			m_pStateDescriptor =new CState( rootNode->getChild("State"));
+			m_pStateDescriptor = new CState(rootNode->getChild("State"));
 			m_pActionDescriptor = new CAction(rootNode->getChild("Action"));
 			//we only copy the pointer because we are assuming the xml config document won't be deleted until the main program ends
 			m_pConstants = rootNode->getChild("Constants");
 		}
+		else
+			CLogger::logMessage(MessageType::Error, "Could not load the world definition file.");
 	}
 }
 
