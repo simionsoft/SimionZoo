@@ -5,7 +5,7 @@
 
 CDeferredLoad::CDeferredLoad()
 {
-	CApp::SimGod.registerDelayedLoadObj(this);
+	CApp::get()->SimGod.registerDelayedLoadObj(this);
 }
 
 CDeferredLoad::~CDeferredLoad()

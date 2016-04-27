@@ -129,7 +129,7 @@ void CQLearning::selectAction(const CState *s, CAction *a)
 CLASS_CONSTRUCTOR(CSARSA) : EXTENDS(CQLearning,pParameters)
 {
 	m_bNextActionSelected = false;
-	m_nextA = CApp::World.getDynamicModel()->getActionInstance();
+	m_nextA = CApp::get()->World.getDynamicModel()->getActionInstance();
 	END_CLASS();
 }
 

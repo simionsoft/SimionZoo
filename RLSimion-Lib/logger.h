@@ -52,7 +52,7 @@ public:
 	~CLogger();
 	void init(CParameters* pParameters);
 
-	//declared public to be accesed from CApp::getOutputFiles() avoiding including a dependency with CEpisode
+	//declared public to be accesed from CApp::get()->getOutputFiles() avoiding including a dependency with CEpisode
 	void getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation, unsigned int episodeIndex);
 	//returns whether a specific type of episode is going to be logged
 	bool isEpisodeTypeLogged(bool evaluation);

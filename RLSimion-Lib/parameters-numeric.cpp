@@ -60,15 +60,15 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (CApp::Experiment.isEvaluationEpisode())
+	if (CApp::get()->Experiment.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	if (!strcmp(m_timeReference, "experiment"))
-		progress = CApp::Experiment.getExperimentProgress();
+		progress = CApp::get()->Experiment.getExperimentProgress();
 	else if (!strcmp(m_timeReference, "episode"))
-		progress = CApp::Experiment.getEpisodeProgress();
+		progress = CApp::get()->Experiment.getEpisodeProgress();
 	/*else if (!strcmp(m_timeReference, "episode"))
-	progress = CApp::Experiment.get();*/
+	progress = CApp::get()->Experiment.get();*/
 	else assert(0);
 
 	if (m_startOffset != 0.0)
@@ -120,14 +120,14 @@ double CBhatnagarSchedule::getValue()
 	double t;
 
 	//evalution episode?
-	if (CApp::Experiment.isEvaluationEpisode())
+	if (CApp::get()->Experiment.isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	if (!strcmp(m_timeReference, "experiment"))
-		t = CApp::Experiment.getStep()
-		+ (CApp::Experiment.getEpisodeIndex() - 1) * CApp::Experiment.getNumSteps();
+		t = CApp::get()->Experiment.getStep()
+		+ (CApp::get()->Experiment.getEpisodeIndex() - 1) * CApp::get()->Experiment.getNumSteps();
 	else if (!strcmp(m_timeReference, "episode"))
-		t = CApp::Experiment.getStep();
+		t = CApp::get()->Experiment.getStep();
 	else assert(0);
 
 	return m_alpha_0*m_alpha_c / (m_alpha_c + pow(t, m_t_exp));

@@ -2,21 +2,31 @@
 
 class CParameters;
 class CParameterFile;
-class CLogger;
-class CWorld;
-class CExperiment;
-class CSimGod;
+
 class CFilePathList;
+
+#include "world.h"
+#include "logger.h"
+#include "experiment.h"
+#include "simgod.h"
 
 class CApp
 {
+private:
+	static CApp* m_pAppInstance;
 protected:
 	CParameterFile* m_pConfigDoc;
 public:
-	static CLogger Logger;
-	static CWorld World;
-	static CExperiment Experiment;
-	static CSimGod SimGod;
+
+	CApp();
+	~CApp();
+
+	static CApp* get();
+
+	CLogger Logger;
+	CWorld World;
+	CExperiment Experiment;
+	CSimGod SimGod;
 
 	virtual void getInputFiles(CFilePathList& filePathList) = 0;
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;

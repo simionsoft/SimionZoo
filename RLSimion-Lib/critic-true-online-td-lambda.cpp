@@ -36,7 +36,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,
 	if (m_pAlpha->getValue()==0.0) return 0.0;
 	double rho = 0.0;
 	
-	if (CApp::Experiment.isFirstStep())
+	if (CApp::get()->Experiment.isFirstStep())
 	{
 		//vs= theta^T * phi(s)
 		m_pVFunction->getFeatures(s,m_aux);

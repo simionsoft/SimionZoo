@@ -8,6 +8,7 @@
 #include "named-var-set.h"
 #include "globals.h"
 #include "utils.h"
+#include "app.h"
 
 void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 {
@@ -17,7 +18,7 @@ void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 	bool bEvaluation;
 
 	//episode log files
-	for (CApp::Experiment.nextEpisode(); CApp::Experiment.isValidEpisode(); CApp::Experiment.nextEpisode())
+	for (CApp::get()->Experiment.nextEpisode(); CApp::get()->Experiment.isValidEpisode(); CApp::get()->Experiment.nextEpisode())
 	{
 		bEvaluation = Experiment.isEvaluationEpisode();
 		if (Logger.isEpisodeTypeLogged(bEvaluation))
@@ -76,40 +77,43 @@ RLSimionApp::~RLSimionApp()
 
 void RLSimionApp::run()
 {
+	CApp* pApp = CApp::get();
+
 	//create state and action vectors
-	CState *s = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
-	CState *s_p = CApp::World.getDynamicModel()->getStateDescriptor()->getInstance();
-	CAction *a = CApp::World.getDynamicModel()->getActionDescriptor()->getInstance();
+	CState *s = pApp->World.getDynamicModel()->getStateDescriptor()->getInstance();
+	CState *s_p = pApp->World.getDynamicModel()->getStateDescriptor()->getInstance();
+	CAction *a = pApp->World.getDynamicModel()->getActionDescriptor()->getInstance();
 	//register the state and action vectors in the logger
-	CApp::Logger.addVarSetToStats("State", s);
-	CApp::Logger.addVarSetToStats("Action", a);
-	CApp::Logger.addVarToStats("Reward", "sum", CApp::World.getScalarReward());
-	CApp::Logger.addVarSetToStats("Reward", CApp::World.getReward());
+	pApp->Logger.addVarSetToStats("State", s);
+	pApp->Logger.addVarSetToStats("Action", a);
+	pApp->Logger.addVarToStats("Reward", "sum", pApp->World.getScalarReward());
+	pApp->Logger.addVarSetToStats("Reward", pApp->World.getReward());
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
-	CApp::SimGod.delayedLoad();
+	pApp->SimGod.delayedLoad();
 
 	double r = 0.0;
 
+
 	//episodes
-	for (CApp::Experiment.nextEpisode(); CApp::Experiment.isValidEpisode(); CApp::Experiment.nextEpisode())
+	for (pApp->Experiment.nextEpisode(); pApp->Experiment.isValidEpisode(); pApp->Experiment.nextEpisode())
 	{
-		CApp::World.reset(s);
+		pApp->World.reset(s);
 
 		//steps per episode
-		for (CApp::Experiment.nextStep(); CApp::Experiment.isValidStep(); CApp::Experiment.nextStep())
+		for (pApp->Experiment.nextStep(); pApp->Experiment.isValidStep(); pApp->Experiment.nextStep())
 		{
 			//a= pi(s)
-			CApp::SimGod.selectAction(s, a);
+			pApp->SimGod.selectAction(s, a);
 
 			//s_p= f(s,a); r= R(s');
-			r = CApp::World.executeAction(s, a, s_p);
+			r = pApp->World.executeAction(s, a, s_p);
 
 			//update god's policy and value estimation
-			CApp::SimGod.update(s, a, s_p, r);
+			pApp->SimGod.update(s, a, s_p, r);
 
 			//log tuple <s,a,s',r>
-			CApp::Experiment.timestep(s, a, s_p, CApp::World.getReward()); //we need the complete reward vector for logging
+			pApp->Experiment.timestep(s, a, s_p, pApp->World.getReward()); //we need the complete reward vector for logging
 
 			//s= s'
 			s->copy(s_p);

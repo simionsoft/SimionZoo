@@ -18,7 +18,7 @@ CFeatureList::CFeatureList(const char* name, bool addIfExists, bool replaceIfExi
 	m_bAddIfExists = addIfExists;
 	m_bReplaceIfExists = replaceIfExists;
 	strcpy_s(m_name, MAX_NAME_SIZE, name);
-	CApp::Logger.addVarToStats("Features",m_name, &m_numFeatures);
+	CApp::get()->Logger.addVarToStats("Features",m_name, &m_numFeatures);
 }
 
 CFeatureList::~CFeatureList()

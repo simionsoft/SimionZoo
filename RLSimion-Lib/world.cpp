@@ -129,7 +129,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	CParameters *rootNode;
 	if (pWorldDefinitionFile)
 	{
-		CApp::SimGod.registerInputFile(pWorldDefinitionFile);
+		CApp::get()->SimGod.registerInputFile(pWorldDefinitionFile);
 		configXMLDoc.LoadFile(pWorldDefinitionFile);
 		if (!configXMLDoc.Error())
 		{

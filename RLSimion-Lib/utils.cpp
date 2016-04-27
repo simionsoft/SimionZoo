@@ -17,6 +17,13 @@ CFilePathList::~CFilePathList()
 	delete[] m_pBuffer;
 }
 
+void CFilePathList::clear()
+{
+	for (int i = 0; i < m_numFilePaths; i++)
+		delete[] m_pBuffer[i];
+	m_numFilePaths = 0;
+}
+
 void CFilePathList::addFilePath(const char* filepath)
 {
 	if (m_numFilePaths < m_numMaxFilePaths - 1)

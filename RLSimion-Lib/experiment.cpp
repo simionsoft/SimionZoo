@@ -115,7 +115,7 @@ CLASS_INIT(CExperiment)
 		m_totalNumEpisodes = m_numTrainingEpisodes;
 	}
 	CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
-	setNumSteps((unsigned int)(m_episodeLength / CApp::World.getDT()));
+	setNumSteps((unsigned int)(m_episodeLength / CApp::get()->World.getDT()));
 	reset();
 
 
@@ -145,26 +145,26 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	if (time>m_progUpdateFreq || (isLastStep() && isLastEpisode()))
 	{
-		sprintf_s(msg, 1024, "%f", CApp::Experiment.getExperimentProgress()*100.0);
+		sprintf_s(msg, 1024, "%f", CApp::get()->Experiment.getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);
 		m_pProgressTimer->startTimer();
 	}
 
 	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
-		CApp::Logger.firstEpisode(evalEpisode);
+		CApp::get()->Logger.firstEpisode(evalEpisode);
 
 	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
-		CApp::Logger.firstStep(evalEpisode, episodeIndex);
+		CApp::get()->Logger.firstStep(evalEpisode, episodeIndex);
 
 	//update stats
 	//output step-stats
-	CApp::Logger.timestep(evalEpisode, episodeIndex);
+	CApp::get()->Logger.timestep(evalEpisode, episodeIndex);
 
 	if (isLastStep())
-		CApp::Logger.lastStep(evalEpisode, episodeIndex);
+		CApp::get()->Logger.lastStep(evalEpisode, episodeIndex);
 
 	if (isLastEpisode() && isLastStep())
-		CApp::Logger.lastEpisode(evalEpisode);
+		CApp::get()->Logger.lastEpisode(evalEpisode);
 }

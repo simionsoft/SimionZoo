@@ -23,7 +23,7 @@ CLASS_INIT(CSimGod)
 	}
 	
 	//m_td = 0.0;
-	//CApp::Logger.addVarToStats("Critic", "TD-error", &m_td);
+	//CApp::get()->Logger.addVarToStats("Critic", "TD-error", &m_td);
 	END_CLASS();
 }
 
@@ -45,7 +45,9 @@ CSimGod::~CSimGod()
 		delete[] m_pSimions;
 	}
 	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
+	m_inputFiles.clear();
 	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);
+	m_outputFiles.clear();
 }
 
 
@@ -57,7 +59,7 @@ void CSimGod::selectAction(CState* s, CAction* a)
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
-	if (CApp::Experiment.isEvaluationEpisode()) return;
+	if (CApp::get()->Experiment.isEvaluationEpisode()) return;
 
 	//update critic
 	for (int i = 0; i < m_numSimions; i++)

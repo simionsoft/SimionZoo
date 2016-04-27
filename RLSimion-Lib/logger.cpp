@@ -169,7 +169,7 @@ void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
 
 		if (pFile)
 		{
-			fprintf(pFile, "%.3f ", CApp::World.getT());
+			fprintf(pFile, "%.3f ", CApp::get()->World.getT());
 
 			for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 			{
@@ -230,10 +230,10 @@ void CLogger::timestep(bool evalEpisode, unsigned int episodeIndex)
 	}
 
 	//output episode log data
-	if (bLog && (CApp::World.getStepStartT() - m_lastLogSimulationT >= m_logFreq))
+	if (bLog && (CApp::get()->World.getStepStartT() - m_lastLogSimulationT >= m_logFreq))
 	{
 		writeEpisodeLogData(evalEpisode, episodeIndex);
-		m_lastLogSimulationT = CApp::World.getStepStartT();
+		m_lastLogSimulationT = CApp::get()->World.getStepStartT();
 	}
 
 }

@@ -24,6 +24,8 @@ extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* p
 	try
 	{
 		if (!xmlFilename || !pBuffer) return -1;
+		InputFileList.clear();
+		OutputFileList.clear();
 
 		CParameters* pParameters = configXMLFile.loadFile(xmlFilename);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");

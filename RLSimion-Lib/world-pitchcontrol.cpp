@@ -37,7 +37,7 @@ void CPitchControl::reset(CState *s)
 {
 	double u;
 
-	if (CApp::Experiment.isEvaluationEpisode())
+	if (CApp::get()->Experiment.isEvaluationEpisode())
 		//setpoint file in case we're evaluating
 		s->setValue(m_sSetpointPitch,m_pSetpoint->getPointSet(0.0));
 	else
@@ -56,9 +56,9 @@ void CPitchControl::executeAction(CState *s, CAction *a, double dt)
 {
 	double setpoint_pitch;
 	
-	if (CApp::Experiment.isEvaluationEpisode())
+	if (CApp::get()->Experiment.isEvaluationEpisode())
 	{
-		setpoint_pitch = m_pSetpoint->getPointSet(CApp::World.getT());
+		setpoint_pitch = m_pSetpoint->getPointSet(CApp::get()->World.getT());
 		s->setValue(m_sSetpointPitch, setpoint_pitch);
 	}
 	else

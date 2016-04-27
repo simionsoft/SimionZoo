@@ -8,8 +8,20 @@
 #include "globals.h"
 
 
-CLogger CApp::Logger;
-CWorld CApp::World;
-CExperiment CApp::Experiment;
-CSimGod CApp::SimGod;
 
+CApp* CApp::m_pAppInstance = 0;
+
+CApp::CApp()
+{
+	m_pAppInstance = this;
+}
+
+CApp::~CApp()
+{
+	m_pAppInstance = 0;
+}
+
+CApp* CApp::get()
+{
+	return m_pAppInstance;
+}

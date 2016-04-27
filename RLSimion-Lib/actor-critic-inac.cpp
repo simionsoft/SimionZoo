@@ -128,7 +128,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 
 	for (int i = 0; i < m_numPolicies; i++)
 	{
-		if (CApp::Experiment.isFirstStep())
+		if (CApp::get()->Experiment.isFirstStep())
 			m_w[i]->clear();
 
 		m_pPolicies[i]->getNaturalGradient(s, a, m_grad_u);

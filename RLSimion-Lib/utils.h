@@ -12,6 +12,9 @@ public:
 
 	CFilePathList();
 	~CFilePathList();
+
+	void clear();
+
 	void addFilePath(const char* filepath);
 	int getNumFilePaths() { return m_numFilePaths; }
 	const char* getFilePath(int i);

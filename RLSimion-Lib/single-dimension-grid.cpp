@@ -59,8 +59,8 @@ CLASS_CONSTRUCTOR(CStateVariableGrid)
 	STATE_VARIABLE_REF(m_variableIndex, "Variable","The state variable");
 	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
 
-	m_min= CApp::World.getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex);
-	m_max= CApp::World.getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex);
+	m_min= CApp::get()->World.getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex);
+	m_max= CApp::get()->World.getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex);
 
 	ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
 	initCenterPoints();
@@ -82,8 +82,8 @@ CLASS_CONSTRUCTOR(CActionVariableGrid)
 	ACTION_VARIABLE_REF(m_variableIndex, "Variable", "The action variable");
 	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
 
-	m_min = CApp::World.getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex);
-	m_max = CApp::World.getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex);
+	m_min = CApp::get()->World.getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex);
+	m_max = CApp::get()->World.getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex);
 
 	ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
 	initCenterPoints();
