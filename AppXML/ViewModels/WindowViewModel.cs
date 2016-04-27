@@ -119,6 +119,7 @@ namespace AppXML.ViewModels
         }
         public WindowViewModel()
         {
+           
              
              //_windowManager = windowManager;
             CApp.IsInitializing = true;
@@ -395,7 +396,32 @@ namespace AppXML.ViewModels
             else
                 paths = SaveAllTheNodes(false);
             if (paths!=null && paths.Count > 0)
+            {
+               
+                Dictionary<string, List<string>> problems = Utility.findIOProblems(paths);
+                if (problems.Count > 0)
+                {
+                    string sms = "Some output files could be overwritten during the experiment. \n";
+                    foreach(string file in problems.Keys)
+                    {
+                        sms += file + " file is the output of these experiments: ";
+                        foreach (string node in problems[file])
+                            sms += "\n\t" + node;
+                        sms += "\n";
+                    }
+                    sms += "Do you want to continue with the experiment?";
+                    DialogViewModel dvm = new DialogViewModel(null, sms, DialogViewModel.DialogType.YesNo);
+                    dynamic settings = new ExpandoObject();
+                    settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                    settings.ShowInTaskbar = true;
+                    settings.Title = "WARNING";
+                    new WindowManager().ShowDialog(dvm, null, settings);
+                    if (dvm.DialogResult != DialogViewModel.Result.OK)
+                        return;
+                }
                 initExperimentas(paths);
+            }
+               
          
         }
         private void executeLoad(string fileDoc)
@@ -590,7 +616,22 @@ namespace AppXML.ViewModels
             xmlFileName = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), xmlFileName);
             if(Directory.Exists(xmlFileName))
             {
-                Directory.Delete(xmlFileName,true);
+                try
+                {
+                    Directory.Delete(xmlFileName, true);
+                }
+                catch
+                {
+                    DialogViewModel dvm = new DialogViewModel(null, "It has not been possible to remove the directory: "+xmlFileName+". Make sure that it's not been using for other app.", DialogViewModel.DialogType.Info);
+                    dynamic settings = new ExpandoObject();
+                    settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                    settings.ShowInTaskbar = true;
+                    settings.Title = "ERROR";
+
+                    new WindowManager().ShowDialog(dvm, null, settings);
+                    return null;
+                }
+                
             }
 
             Models.TreeNode root = Graf.RootNode;

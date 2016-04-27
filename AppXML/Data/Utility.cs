@@ -21,13 +21,58 @@ namespace AppXML.Data
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
 
-        public static List<List<string>> findIOProblems(List<string> pahts)
+        public static Dictionary<string, List<string>> findIOProblems(List<string> pahts)
         {
-            string path = "C:\\Users\\unai\\Desktop\\RLSimion\\experiments\\j\\root\\root.node";
-            StringBuilder myResult = new StringBuilder(204800);                   
-            int error = getIOFiles(path, myResult, 204800);
-            Console.WriteLine(myResult);          
-            return null;
+           
+            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+            Dictionary<string, string> myDic = new Dictionary<string, string>();
+            foreach(string path in pahts)
+            {
+                StringBuilder myResult = new StringBuilder(204800);
+                int error = getIOFiles(path, myResult, 204800);
+                if(error==-1)
+                {
+                    //mostrar error
+                }
+                else
+                {
+                    XDocument doc = XDocument.Parse(myResult.ToString());
+                    /*XElement[] inputFiles = doc
+                    .Descendants()
+                    .Where(e => e.Name=="Input")
+                    .ToArray();*/
+                    XElement[] outputFiles = doc
+                    .Descendants()
+                    .Where(e => e.Name == "Output")
+                    .ToArray();
+                   /* foreach(XElement e in inputFiles)
+                    {
+                        Console.WriteLine(e.Value);
+                    }*/
+                    foreach (XElement e in outputFiles)
+                    {
+                        if(!myDic.ContainsKey(e.Value))
+                            myDic.Add(e.Value, path);
+                        else if(!myDic[e.Value].Equals(path))
+                        {
+                            if(result.ContainsKey(e.Value))
+                            {
+                                List<string> tmp =result[e.Value];
+                                if(!tmp.Contains(path))
+                                {
+                                    tmp.Add(path);
+                                    result[e.Value] = tmp;
+                                }
+                            }
+                            else
+                            result.Add(e.Value, new List<string> { myDic[e.Value], path });
+                        }
+                   
+                    }
+                }
+                myResult.Clear();
+            }      
+            return result;
         }
 
         public static bool checkName(string name, TreeNode father)
