@@ -14,7 +14,7 @@
 RLSIMIONINTERFACEDLL_API int nRLSimionInterfaceDLL=0;
 
 // This is an example of an exported function.
-RLSIMIONINTERFACEDLL_API int getIOFiles(const char* xmlFilename,char* pBuffer, int bufferSize)
+extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* pBuffer, int bufferSize)
 {
 	CParameterFile configXMLFile;
 	CApp* pApp = 0;

@@ -10,6 +10,7 @@
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowState="Maximized"
             WindowStyle="ThreeDBorderWindow"
+            Title="XMLConfigurator"
             >
              
     
@@ -22,31 +23,35 @@
             <v:RightTreeView/>
         </DataTemplate>
     </Window.Resources>
+    
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="50" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0" DockPanel.Dock="Top" Margin="15,15,15,0" Orientation="Horizontal">
+            <StackPanel Grid.Row="0" Grid.Column="0" Margin="15,10,15,0" Orientation="Horizontal">
                 <Label Content="APP"/>
                 <ComboBox x:Name="Apps" SelectedItem="{Binding SelectedApp}"/>
             </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="2" Margin="15,10,15,0" Orientation="Horizontal">
+                <Label Content="Experiment tree" FontSize="16" FontWeight="Bold"/>
+            </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Orientation="Horizontal" MaxHeight="50">
-                <Button Margin="5,5,5,20" Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" Height="25" Width="75"/>
-                <Button Margin="5,5,5,20" Content="Load" Width="75" Height="25" cal:Message.Attach="[Event Click]=[Action Load()]"/>
+                <Button Margin="5,5,5,15" Content="Save" cal:Message.Attach="[Event Click]=[Action Save()]" Height="25" Width="75"/>
+                <Button Margin="5,5,5,15" Content="Load" Width="75" Height="25" cal:Message.Attach="[Event Click]=[Action Load()]"/>
             </StackPanel>
            
             <StackPanel Grid.Row="1" Grid.Column="0">
                 <Border BorderBrush="Black" BorderThickness="1" CornerRadius="4" Margin="15">
-                    <TreeView HorizontalAlignment="Left" Height="{Binding MaxHeight}" Width="{Binding MaxWidth}" Padding="5" Margin="5"   VerticalAlignment="Top" BorderThickness="0"  >
+                    <TreeView HorizontalAlignment="Left" Height="{Binding MaxHeight}" Width="{Binding MaxWidth}" Padding="5" Margin="5"   VerticalAlignment="Top" BorderThickness="0" >
                     <TreeView.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00000000"/>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#00000000"/>
@@ -54,7 +59,7 @@
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#00000000"/>
                     </TreeView.Resources>
                     
-                        <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"  Padding="0" VerticalContentAlignment="Top" />
+                        <TreeViewItem x:Name ="Branch" Header="{Binding rootnode.name}" IsExpanded="True" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"  Padding="0" VerticalContentAlignment="Top" />
                     
                 </TreeView>
                 </Border>
@@ -66,13 +71,17 @@
                 <Button Margin="5" x:Name="ModifySelectedLeaf"  Content="Modify" Width="75" Visibility="{Binding IsSelectedNodeLeaf}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="2">
-                <Button Margin="5,5,5,20" Content="Run"  Width="75" Height="25" Visibility="{Binding AddChildVisible}"  cal:Message.Attach="[Event Click]=[Action SaveAll()]"/>
-                <Button Margin="5,5,5,20" x:Name="SaveAllTheNodes" Content="Save tree"  Width="75" Height="25" Visibility="{Binding RemoveChildVisible}"/>
-                <Button Margin="5,5,5,20" x:Name="LoadTree" Content="Load tree" Width="75" Height="25"/>
+                <Button Margin="5,5,5,15" Content="Run"  Width="75" Height="25" Visibility="{Binding AddChildVisible}"  cal:Message.Attach="[Event Click]=[Action SaveAll()]"/>
+                <Button Margin="5,5,5,15" x:Name="LoadTree" Content="Load tree" Width="75" Height="25"/>
+                <Button Margin="5,5,5,15" x:Name="SaveAllTheNodes" Content="Save tree"  Width="75" Height="25" Visibility="{Binding RemoveChildVisible}"/>
             </StackPanel>
-            <StackPanel Margin="15" VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="2"  Height="{Binding MaxHeight}" Width="{Binding MaxWidth}" >
-                <ContentControl x:Name="Graf"/>
+            <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
+                <Border BorderBrush="Black" Height="{Binding MaxHeight}" Width="{Binding MaxWidth}"  BorderThickness="1" CornerRadius="4" Margin="15" Background="LightGray">
+                    <ContentControl x:Name="Graf"  VerticalAlignment="Center" Padding="5" Margin="5"/>
+                </Border>
             </StackPanel>
+            
+           
 
         </Grid>
     </ScrollViewer>

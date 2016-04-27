@@ -59,7 +59,7 @@ namespace AppXML.ViewModels
         {
             get 
             {
-                return (System.Windows.SystemParameters.PrimaryScreenWidth - 200)/2; 
+                return (System.Windows.SystemParameters.PrimaryScreenWidth - 220)/2; 
             } 
             set { } 
         }
@@ -119,8 +119,7 @@ namespace AppXML.ViewModels
         }
         public WindowViewModel()
         {
-           
- 
+             
              //_windowManager = windowManager;
             CApp.IsInitializing = true;
             apps = Directory.GetFiles("..\\config\\apps");

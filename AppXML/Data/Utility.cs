@@ -9,13 +9,26 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using System.Runtime.InteropServices;
 
 namespace AppXML.Data
 {
     public static class Utility
     {
+        [DllImport(@"C:\\Users\\unai\\Desktop\\RLSimion\\debug/RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+        private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
+        
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
+
+        public static List<List<string>> findIOProblems(List<string> pahts)
+        {
+            string path = "C:\\Users\\unai\\Desktop\\RLSimion\\experiments\\j\\root\\root.node";
+            StringBuilder myResult = new StringBuilder(204800);                   
+            int error = getIOFiles(path, myResult, 204800);
+            Console.WriteLine(myResult);          
+            return null;
+        }
 
         public static bool checkName(string name, TreeNode father)
         {
