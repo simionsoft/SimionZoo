@@ -10,11 +10,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
     <StackPanel>
-        <Label x:Name="Message">
-        </Label>
-        <TextBox x:Name="Text"  Visibility="{Binding AnswerVisibility}"></TextBox>
-        <Button Width="100" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
-        <Button Width="100"  cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
+            <Label Margin="10,0,10,0" x:Name="Message">
+            </Label>
+            <TextBox Margin="10,0,10,0" x:Name="Text" Height="auto" Visibility="{Binding AnswerVisibility}"></TextBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+                
+                <Button Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
+                <Button Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
+            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
