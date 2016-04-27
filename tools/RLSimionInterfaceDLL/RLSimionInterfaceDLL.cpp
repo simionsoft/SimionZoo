@@ -62,7 +62,7 @@ extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* p
 			}
 			strcpy_s(pBuffer, pBufferEnd - pBuffer, "</Files>");
 			pBuffer += strlen("</Files>") + 1;
-
+			*pBuffer = 0;
 
 			delete pApp;
 			return 0;
