@@ -2,23 +2,17 @@
 //
 
 #include "stdafx.h"
-#include "../../RLSimion-Lib/app-rlsimion.h"
-#include "../../RLSimion-Lib/app-controller-to-vfa.h"
-#include "../../RLSimion-Lib/app-compare-controller-vfa.h"
-#include "../../RLSimion-Lib/logger.h"
-#include "../../RLSimion-Lib/parameters.h"
-#include "../../RLSimion-Lib/utils.h"
 
+#include "../../RLSimion-Lib/logger.h"
+
+#include "../RLSimionInterfaceDLL/RLSimionInterfaceDLL.h"
+#pragma comment(lib,"../../Debug/RLSimionInterfaceDLL.lib")
 
 void main(int argc, char* argv[])
 {
-	CParameterFile configXMLFile;
-	CApp* pApp = 0;
-	CFilePathList InputFileList;
-	CFilePathList OutputFileList;
+
 	char buffer[10000];
-	char* pBuffer;
-	char* pBufferEnd;
+
 	try
 	{
 		if (argc <= 1)
@@ -26,55 +20,10 @@ void main(int argc, char* argv[])
 
 		for (int fileIndex = 1; fileIndex < argc; fileIndex++)
 		{
-			InputFileList.clear();
-			OutputFileList.clear();
 
-			buffer[0] = 0;
-			pBuffer = buffer;
-			pBufferEnd = pBuffer + 10000;
-			CParameters* pParameters = configXMLFile.loadFile(argv[fileIndex]);
-			if (!pParameters) throw std::exception("Wrong experiment configuration file");
+				getIOFiles(argv[fileIndex], buffer, 10000);
 
-			if (!strcmp("RLSimion", pParameters->getName()))
-				pApp = new RLSimionApp(pParameters, argv[fileIndex]);
-			else if (!strcmp("ControllerToVFA", pParameters->getName()))
-				pApp = new ControllerToVFAApp(pParameters);
-			else if (!strcmp("CompareControllerVFA", pParameters->getName()))
-				pApp = new CompareControllerVFAApp(pParameters);
-
-			if (pApp)
-			{
-				strcpy_s(pBuffer, pBufferEnd - pBuffer, "<Files>\n");
-				pBuffer += strlen("<Files>\n");
-				pApp->getInputFiles(InputFileList);
-				for (int i = 0; i < InputFileList.getNumFilePaths(); i++)
-				{
-					strcpy_s(pBuffer, pBufferEnd - pBuffer, "<Input>");
-					pBuffer += strlen("<Input>");
-					strcpy_s(pBuffer, pBufferEnd - pBuffer, InputFileList.getFilePath(i));
-					pBuffer += strlen(InputFileList.getFilePath(i));
-					strcpy_s(pBuffer, pBufferEnd - pBuffer, "</Input>\n");
-					pBuffer += strlen("</Input>\n");
-				}
-
-				pApp->getOutputFiles(OutputFileList);
-				for (int i = 0; i < OutputFileList.getNumFilePaths(); i++)
-				{
-					strcpy_s(pBuffer, pBufferEnd - pBuffer, "<Output>");
-					pBuffer += strlen("<Output>");
-					strcpy_s(pBuffer, pBufferEnd - pBuffer, OutputFileList.getFilePath(i));
-					pBuffer += strlen(OutputFileList.getFilePath(i));
-					strcpy_s(pBuffer, pBufferEnd - pBuffer, "</Output>\n");
-					pBuffer += strlen("</Output>\n");
-				}
-				strcpy_s(pBuffer, pBufferEnd - pBuffer, "</Files>");
-				pBuffer += strlen("</Files>") + 1;
-
-				printf("%s", buffer);
-
-				delete pApp;
-			}
-			else throw std::exception("Wrong experiment configuration file");
+				printf("%s==========\n%s\n\n",argv[fileIndex], buffer);
 		}
 	}
 	catch (std::exception& e)

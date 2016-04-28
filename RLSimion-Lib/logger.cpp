@@ -65,13 +65,16 @@ CLogger::CLogger()
 	m_bLogTrainingEpisodes = true;
 	m_bLogTrainingExperiment = false;
 	m_logFreq = 0.0;
+	m_pEpisodeTimer = 0;
+	m_pExperimentTimer = 0;
+	m_outputDir = 0;
 }
 
 
 CLogger::~CLogger()
 {
-	delete m_pExperimentTimer;
-	delete m_pEpisodeTimer;
+	if (m_pExperimentTimer) delete m_pExperimentTimer;
+	if (m_pEpisodeTimer) delete m_pEpisodeTimer;
 
 	if (m_outputDir) delete[] m_outputDir;
 }

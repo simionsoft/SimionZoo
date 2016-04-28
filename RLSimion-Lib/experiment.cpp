@@ -91,7 +91,7 @@ bool CExperiment::isLastEpisode()
 
 CExperiment::~CExperiment()
 {
-	delete m_pProgressTimer;
+	if (m_pProgressTimer) delete m_pProgressTimer;
 }
 
 CLASS_INIT(CExperiment)
@@ -134,6 +134,7 @@ CExperiment::CExperiment()
 	m_numTrainingEpisodes = 0;
 	m_evalFreq = 0;
 	setNumSteps(0);
+	m_pProgressTimer = 0;
 }
 
 

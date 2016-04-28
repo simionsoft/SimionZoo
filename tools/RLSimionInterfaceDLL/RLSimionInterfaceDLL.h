@@ -10,13 +10,5 @@
 #define RLSIMIONINTERFACEDLL_API __declspec(dllimport)
 #endif
 
-// This class is exported from the RLSimionInterfaceDLL.dll
-class RLSIMIONINTERFACEDLL_API CRLSimionInterfaceDLL {
-public:
-	CRLSimionInterfaceDLL(void);
-	// TODO: add your methods here.
-};
 
-extern RLSIMIONINTERFACEDLL_API int nRLSimionInterfaceDLL;
-
-RLSIMIONINTERFACEDLL_API int fnRLSimionInterfaceDLL(void);
+extern "C" RLSIMIONINTERFACEDLL_API  int getIOFiles(const char* xmlFilename, char* pBuffer, int bufferSize);
