@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
+
 
 //Installing/uninstalling the service: https://msdn.microsoft.com/en-us/library/zt39148a%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396#BK_Install
 
@@ -21,6 +23,9 @@ namespace HerdAgent
     {
         const int m_discoveryPort = 2332;
         const int m_comPort = 2333;
+        const string m_discoveryMessage = "Slaves, show yourselves!";
+        const string m_discoveryAnswer = "At your command, my Master";
+
         private static AgentState m_state;
         private UdpClient m_discoverySocket;
 
@@ -35,13 +40,18 @@ namespace HerdAgent
             // points towards whoever had sent the message:
             IPEndPoint source = new IPEndPoint(0, 0);
             // get the actual message and fill out the source:
-            byte[] message = socket.EndReceive(ar, ref source);
+            string message = Encoding.ASCII.GetString(socket.EndReceive(ar, ref source));
 
-            if (message == Encoding.ASCII.GetBytes("ShowYourselves") && m_state!=AgentState.BUSY)
+            StreamWriter fileWriter = new StreamWriter("log.txt",true);
+            fileWriter.WriteLine("Received message from" + source);
+            fileWriter.WriteLine("Message= " + message);
+
+            if (message == m_discoveryMessage && m_state!=AgentState.BUSY)
             {
-                Console.WriteLine("Discovered by " + source);
-                m_state = AgentState.DISCOVERED;
+                fileWriter.WriteLine("Show");
+                socket.Send(Encoding.ASCII.GetBytes(m_discoveryAnswer),Encoding.ASCII.GetBytes(m_discoveryAnswer).Length);
             }
+            fileWriter.Close();
 
             socket.BeginReceive(new AsyncCallback(DiscoveryCallback), socket);
         }
@@ -55,6 +65,7 @@ namespace HerdAgent
 
         protected override void OnStop()
         {
+            m_discoverySocket.Close();
         }
     }
 }

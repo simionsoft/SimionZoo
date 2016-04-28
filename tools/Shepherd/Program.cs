@@ -12,19 +12,24 @@ namespace Shepherd
     {
         static void Main(string[] args)
         {
-            const int m_discoveryPort = 2332;
-            const int m_comPort = 2333;
+            const int m_discoveryPortSepherd = 2332;
+            const int m_discoveryPortHerd = 2333;
+            const int m_comPortShepherd = 2334;
+            const int m_comPortHerd = 2335;
+            const string m_discoveryMessage = "Slaves, show yourselves!";
+            const string m_discoveryAnswer = "At your command, my Master";
 
-            var Client = new UdpClient();
-            var RequestData = Encoding.ASCII.GetBytes("ShowYourselves");
-            var ServerEp = new IPEndPoint(IPAddress.Any, 0);
+            var Client = new UdpClient(m_discoveryPortSepherd);
+
+            var RequestData = Encoding.ASCII.GetBytes(m_discoveryMessage);
+            var ServerEp = new IPEndPoint(IPAddress.Any, m_discoveryPortHerd);
 
             Client.EnableBroadcast = true;
-            Client.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPort));
+            Client.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
 
             var ServerResponseData = Client.Receive(ref ServerEp);
             var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
-            Console.WriteLine("Recived {0} from {1}", ServerResponse, ServerEp.Address.ToString());
+            Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
 
             Client.Close();
         }
