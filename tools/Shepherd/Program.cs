@@ -33,6 +33,7 @@ namespace Shepherd
             var ServerEp = new IPEndPoint(IPAddress.Any, CJobDispatcher.m_discoveryPortHerd);
 
             m_discoverySocket.EnableBroadcast = true;
+            System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
             m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
 
 
@@ -42,8 +43,8 @@ namespace Shepherd
                 {
                     CJob job= new CJob();
                     job.name = "test-job";
-                    job.exeFile = "../Debug/RLSimion.exe";
-                    job.inputFiles.Add("../experiments/examples/uv-pid.node");
+                    job.exeFile = "..\\Debug\\RLSimion.exe";
+                    job.inputFiles.Add("..\\experiments\\examples\\uv-pid.node");
                     m_jobSender.SendJobQuery(netStream, job);
                 }
                 comSocket.Close();

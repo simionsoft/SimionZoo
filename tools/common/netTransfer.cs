@@ -59,7 +59,7 @@ namespace NetJobTransfer
             m_bytesInBuffer= 0;
             m_bufferOffset= 0;
             m_nextFileSize = 0;
-            m_tempDir = "c:\temp";
+            m_tempDir = "c:\\temp";
         }
 
         public void SendJobQuery(NetworkStream netStream,CJob job)
@@ -89,7 +89,7 @@ namespace NetJobTransfer
         private void SendJobHeader()
         {
             string header = "<Job Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
-                + m_job.outputFiles.Count + "\"/>";
+                + m_job.outputFiles.Count + "\">";
             byte[] headerbytes= Encoding.ASCII.GetBytes(header);
             m_netStream.Write(headerbytes,0,headerbytes.Length);
         }
@@ -126,7 +126,7 @@ namespace NetJobTransfer
                 long fileSize = 0;
                 fileStream = File.Open(fileName, FileMode.Open);
                 fileSize = fileStream.Length;
-                header += " Size=\"" + fileSize + "/>";
+                header += " Size=\"" + fileSize + "\">";
 
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
@@ -181,29 +181,43 @@ namespace NetJobTransfer
             ReceiveOutputFiles(false);
             ReceiveJobFooter();
 
-            return true;//if job properly received. For now, we will assume it
+            return true;//if job query properly received. For now, we will assume it
+        }
+        public bool ReceiveJobResult(NetworkStream netStream)
+        {
+            m_netStream = netStream;
+            m_bufferOffset = 0;
+            m_bytesInBuffer = 0;
+
+            ReceiveJobHeader();
+            ReceiveExeFiles(false);
+            ReceiveInputFiles(false);
+            ReceiveOutputFiles(true);
+            ReceiveJobFooter();
+
+            return true;//if job result properly received. For now, we will assume it}
         }
         private void ReadFromStream()
         {
             int bytesLeftToProcess= m_bytesInBuffer-m_bufferOffset;
             //something left to process in the buffer?
-            if (bytesLeftToProcess>0)
+            if (m_bufferOffset!=0)
             {
                 Buffer.BlockCopy(m_buffer,m_bufferOffset,m_buffer,0,m_bytesInBuffer-m_bufferOffset);
                 m_bytesInBuffer= m_bytesInBuffer-m_bufferOffset;
                 m_bufferOffset= 0;
             }
-            if (m_netStream.DataAvailable)
-                m_bytesInBuffer+= m_netStream.Read(m_buffer,m_bytesInBuffer, m_maxChunkSize);
+            if (m_netStream.DataAvailable && m_bytesInBuffer<m_maxChunkSize)
+                m_bytesInBuffer+= m_netStream.Read(m_buffer,m_bytesInBuffer, m_maxChunkSize-m_bytesInBuffer);
         }
         private void ReceiveJobHeader()
         {
             Match match;
-
-            string header = Encoding.ASCII.GetString(m_buffer);
+            
             do
             {
                 ReadFromStream();
+                string header = Encoding.ASCII.GetString(m_buffer);
                 match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
             }
             while (!match.Success);
@@ -211,7 +225,8 @@ namespace NetJobTransfer
             m_job.name = match.Groups[1].Value;
             m_numInputFilesRead = Int32.Parse(match.Groups[2].Value);
             m_numOutputFilesRead = Int32.Parse(match.Groups[3].Value);
-            m_bufferOffset = match.Length;
+            m_bufferOffset+= match.Index + match.Length;
+            ReadFromStream(); //we shift the buffer to the left skipping the processed header
         }
         private void ReceiveJobFooter()
         {
@@ -224,8 +239,6 @@ namespace NetJobTransfer
                 match = Regex.Match(header, "</Job>");
             }
             while (!match.Success);
-
-            //Run the Job
         }
         private void ReceiveExeFiles(bool receiveContent) {ReceiveFile(FileType.EXE,receiveContent);}
         private void ReceiveInputFiles(bool receiveContent)
@@ -245,15 +258,16 @@ namespace NetJobTransfer
                 if (receiveContent) ReceiveFileData();
                 ReceiveFileFooter(type);
         }
-
         public void ReceiveFileHeader(FileType type,bool receiveContent)
         {
             Match match;
 
-            string header = Encoding.ASCII.GetString(m_buffer);
+            
             do
             {
                 ReadFromStream();
+                string header = Encoding.ASCII.GetString(m_buffer);
+
                 if (receiveContent)
                     match = Regex.Match(header, "<(Exe|Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">");
                 else match = Regex.Match(header, "<(Exe|Input|Output) Name=\"([^\"]*)\">");
@@ -272,16 +286,17 @@ namespace NetJobTransfer
             if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
             else m_nextFileSize = 0;
 
-            m_bufferOffset += match.Length;
+            m_bufferOffset += match.Index+match.Length;
         }
         public void ReceiveFileFooter(FileType type)
         {
             Match match;
 
-            string header = Encoding.ASCII.GetString(m_buffer);
             do
             {
                 ReadFromStream();
+                string header = Encoding.ASCII.GetString(m_buffer);
+
                 if (type == FileType.EXE) match = Regex.Match(header, "</Exe>");
                 else if (type == FileType.INPUT) match = Regex.Match(header, "</Input>");
                 else match= Regex.Match(header,"</Output>");
@@ -290,32 +305,41 @@ namespace NetJobTransfer
 
             m_bufferOffset += match.Length + match.Index;
         }
-        private int SaveBufferToFile(FileStream outputFile)
+        private int SaveBufferToFile(FileStream outputFile,int bytesLeft)
         {
-            int bytesToWrite = Math.Min(m_nextFileSize, m_bytesInBuffer - m_bufferOffset);
+            int bytesToWrite = Math.Min(bytesLeft, m_bytesInBuffer - m_bufferOffset);
 
             outputFile.Write(m_buffer, m_bufferOffset, bytesToWrite);
-            m_bytesInBuffer -= bytesToWrite;
-            m_bufferOffset -= bytesToWrite;
+          
+            m_bufferOffset+= bytesToWrite;
             return bytesToWrite;
+        }
+        private string getCachedFilename(string originalFilename)
+        {
+            string outputFilename = m_tempDir.TrimEnd('/', '\\') + "\\" + originalFilename.TrimStart('.', '/', '\\');
+            return outputFilename;
         }
         public void ReceiveFileData()
         {
             int bytesLeft = m_nextFileSize;
 
-            string outputFilename= m_tempDir.TrimEnd('/','\\') + "/" + m_nextFileName.TrimStart('.','/');
-            FileStream outputFile = File.Open(m_tempDir, FileMode.Create);
+
+            string outputFilename = getCachedFilename(m_nextFileName);
+            string outputDir = Path.GetDirectoryName(outputFilename);
+            System.IO.Directory.CreateDirectory(outputDir);
+            FileStream outputFile = File.Open(outputFilename, FileMode.Create);
 
             do
             {
                 ReadFromStream();
-                bytesLeft -= SaveBufferToFile(outputFile);
+                bytesLeft -= SaveBufferToFile(outputFile,bytesLeft);
             } while (bytesLeft > 0);
             outputFile.Close();
 
         }
         public void RunJob()
         {
+
         }
 
     }
