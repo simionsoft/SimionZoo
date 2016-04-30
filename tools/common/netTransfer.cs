@@ -15,9 +15,11 @@ namespace NetJobTransfer
         public List<string> inputFiles;
         public List<string> outputFiles;
         public string exeFile;
+        public string comLineArgs;
         
         public CJob()
         {
+            comLineArgs = "";
             name = "";
             exeFile = "";
             inputFiles= new List<string>();
@@ -72,20 +74,10 @@ namespace NetJobTransfer
             SendOutputFiles(false);
             SendJobFooter();
         }
-        public void SendJobResult(NetworkStream netStream, CJob job)
-        {
-            m_netStream = netStream;
-            m_job = job;
-            SendJobHeader();
-            SendExeFiles(false);
-            SendInputFiles(false);
-            SendOutputFiles(true);
-            SendJobFooter();
-        }
 
-        private void SendExeFiles(bool sendContent) { if (m_job.exeFile!="") SendFile(m_job.exeFile,FileType.EXE, sendContent); }
-        private void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent); }
-        private void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent); }
+        private void SendExeFiles(bool sendContent) { if (m_job.exeFile!="") SendFile(m_job.exeFile,FileType.EXE, sendContent,false); }
+        private void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent,false); }
+        private void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent,true); }
         private void SendJobHeader()
         {
             string header = "<Job Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
@@ -99,7 +91,7 @@ namespace NetJobTransfer
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
             m_netStream.Write(footerbytes, 0, footerbytes.Length);
         }
-        private void SendFile(string fileName, FileType type, bool sendContent)
+        private void SendFile(string fileName, FileType type, bool sendContent,bool fromCachedDir)
         {
             string header;
             byte[] headerBytes;
@@ -107,23 +99,28 @@ namespace NetJobTransfer
 
             if (type == FileType.EXE)
             {
-                header = "<Exe Name=\"" + fileName + "\"";
-                footer = "</Exe>";
+                header = "<Exe Name=\"" + fileName + "\" ComLineArgs=\"" + m_job.comLineArgs  +"\"";
+                if (sendContent) footer = "</Exe>";
             }
             else if (type == FileType.INPUT)
             {
                 header = "<Input Name=\"" + fileName + "\"";
-                footer = "</Input>";
+                if (sendContent) footer = "</Input>";
             }
             else //output
             {
                 header = "<Output Name=\"" + fileName + "\"";
+                if (sendContent) footer = "</Output>";
             }
 
             if (sendContent)
             {
                 FileStream fileStream;
                 long fileSize = 0;
+
+                if (fromCachedDir)
+                    fileName = getCachedFilename(fileName);
+
                 fileStream = File.Open(fileName, FileMode.Open);
                 fileSize = fileStream.Length;
                 header += " Size=\"" + fileSize + "\">";
@@ -169,6 +166,15 @@ namespace NetJobTransfer
 
         }
 
+        public void SendJobResult(NetworkStream netStream)
+        {
+            m_netStream = netStream;
+            SendJobHeader();
+            SendExeFiles(false);
+            SendInputFiles(false);
+            SendOutputFiles(true);
+            SendJobFooter();
+        }
         public bool ReceiveJobQuery(NetworkStream netStream)
         {
             m_netStream = netStream;
@@ -240,37 +246,49 @@ namespace NetJobTransfer
             }
             while (!match.Success);
         }
-        private void ReceiveExeFiles(bool receiveContent) {ReceiveFile(FileType.EXE,receiveContent);}
+        private void ReceiveExeFiles(bool receiveContent) {ReceiveFile(FileType.EXE,receiveContent,true);}
         private void ReceiveInputFiles(bool receiveContent)
         {
             for (int i= 0; i<m_numInputFilesRead; i++)
-                ReceiveFile(FileType.INPUT,receiveContent);
+                ReceiveFile(FileType.INPUT,receiveContent,true);
         }
+
        private void ReceiveOutputFiles(bool receiveContent)
         {
             for (int i= 0; i<m_numOutputFilesRead; i++)
-                ReceiveFile(FileType.OUTPUT,receiveContent);
+                ReceiveFile(FileType.OUTPUT,receiveContent,false);
         }
 
-        private void ReceiveFile(FileType type,bool receiveContent)
+        private void ReceiveFile(FileType type,bool receiveContent,bool inCachedDir)
         {
                 ReceiveFileHeader(type,receiveContent);
-                if (receiveContent) ReceiveFileData();
-                ReceiveFileFooter(type);
+                if (receiveContent)
+                {
+                    ReceiveFileData(inCachedDir);
+                    ReceiveFileFooter(type);
+                }
         }
         public void ReceiveFileHeader(FileType type,bool receiveContent)
         {
             Match match;
 
-            
             do
             {
                 ReadFromStream();
                 string header = Encoding.ASCII.GetString(m_buffer);
 
-                if (receiveContent)
-                    match = Regex.Match(header, "<(Exe|Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">");
-                else match = Regex.Match(header, "<(Exe|Input|Output) Name=\"([^\"]*)\">");
+                if (type == FileType.EXE)
+                {
+                    if (receiveContent)
+                        match = Regex.Match(header, "<(Exe) Name=\"([^\"]*)\" ComLineArgs=\"([^\"]*)\" Size=\"([^\"]*)\">");
+                    else match = Regex.Match(header, "<(Exe) Name=\"([^\"]*)\" ComLineArgs=\"([^\"]*)\"/>");
+                }
+                else
+                {
+                    if (receiveContent)
+                        match = Regex.Match(header, "<(Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">");
+                    else match = Regex.Match(header, "<(Input|Output) Name=\"([^\"]*)\"/>");
+                }
             }
             while (!match.Success);
 
@@ -280,11 +298,29 @@ namespace NetJobTransfer
                 || (match.Groups[1].Value == "Output" && type != FileType.OUTPUT))
                 Debug.Assert(false,"The type of the file received missmatches the expected file type");
 
+            if (type == FileType.EXE)
+            {
+                m_job.comLineArgs = match.Groups[3].Value;
+                m_job.exeFile = match.Groups[2].Value;
+                m_nextFileName = match.Groups[2].Value;
+                if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[4].Value);
+                else m_nextFileSize = 0;
+            }
+            else
+            {
+                if (type == FileType.INPUT) m_job.inputFiles.Add(match.Groups[2].Value);
+                else m_job.outputFiles.Add(match.Groups[2].Value);
 
-            m_nextFileName = match.Groups[2].Value;
+                m_nextFileName = match.Groups[2].Value;
 
-            if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
-            else m_nextFileSize = 0;
+                if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
+                else m_nextFileSize = 0;
+            }
+
+            //We create the necessary directories for the file, be it an exe, an input or an output file
+            string outputFilename = getCachedFilename(m_nextFileName);
+            string outputDir = Path.GetDirectoryName(outputFilename);
+            System.IO.Directory.CreateDirectory(outputDir);
 
             m_bufferOffset += match.Index+match.Length;
         }
@@ -319,14 +355,16 @@ namespace NetJobTransfer
             string outputFilename = m_tempDir.TrimEnd('/', '\\') + "\\" + originalFilename.TrimStart('.', '/', '\\');
             return outputFilename;
         }
-        public void ReceiveFileData()
+        public void ReceiveFileData(bool inCachedDir)
         {
             int bytesLeft = m_nextFileSize;
 
+            string outputFilename;
+            if (inCachedDir)
+                outputFilename = getCachedFilename(m_nextFileName);
+            else
+                outputFilename = m_nextFileName;
 
-            string outputFilename = getCachedFilename(m_nextFileName);
-            string outputDir = Path.GetDirectoryName(outputFilename);
-            System.IO.Directory.CreateDirectory(outputDir);
             FileStream outputFile = File.Open(outputFilename, FileMode.Create);
 
             do
@@ -339,7 +377,16 @@ namespace NetJobTransfer
         }
         public void RunJob()
         {
+            Process myProcess= new Process();
+            
+            myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
+            myProcess.StartInfo.Arguments= m_job.comLineArgs;
+            myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+            Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+            myProcess.Start();
 
+            myProcess.WaitForExit();
+            Console.WriteLine("Exit code: " + myProcess.ExitCode);
         }
 
     }

@@ -70,7 +70,10 @@ namespace TESTHerdAgent
 
                     netJobDispatcher = new CJobDispatcher();
                     if (netJobDispatcher.ReceiveJobQuery(netStream))
+                    {
                         netJobDispatcher.RunJob();
+                        netJobDispatcher.SendJobResult(netStream);
+                    }
                     m_comSocket.Close();
                 }
             }

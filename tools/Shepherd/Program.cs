@@ -44,8 +44,16 @@ namespace Shepherd
                     CJob job= new CJob();
                     job.name = "test-job";
                     job.exeFile = "..\\Debug\\RLSimion.exe";
-                    job.inputFiles.Add("..\\experiments\\examples\\uv-pid.node");
+                    job.comLineArgs = "..\\experiments\\examples\\uv-pid.node";
+                    job.inputFiles.Add(job.comLineArgs);
+                    job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
+                    job.inputFiles.Add("..\\config\\world\\underwater-vehicle.xml");
+                    job.inputFiles.Add("..\\config\\world\\underwater-vehicle\\setpoint.txt");
+                    job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-1.txt");
+                    job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-2.txt");
+                    job.outputFiles.Add("..\\experiments\\examples\\log-eval-exp.txt");
                     m_jobSender.SendJobQuery(netStream, job);
+                    m_jobSender.ReceiveJobResult(netStream);
                 }
                 comSocket.Close();
             }
