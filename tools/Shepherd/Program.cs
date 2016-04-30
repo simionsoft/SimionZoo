@@ -5,33 +5,55 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
+using NetJobTransfer;
 
 namespace Shepherd
 {
+    enum AgentState { BUSY, AVAILABLE, DISCOVERED };
+    enum FileType { EXE, INPUT, OUTPUT};
+
     class Program
     {
+
+        private static AgentState m_state;
+        private static UdpClient m_discoverySocket;
+
+
+        
         static void Main(string[] args)
         {
-            const int m_discoveryPortSepherd = 2332;
-            const int m_discoveryPortHerd = 2333;
-            const int m_comPortShepherd = 2334;
-            const int m_comPortHerd = 2335;
-            const string m_discoveryMessage = "Slaves, show yourselves!";
-            const string m_discoveryAnswer = "At your command, my Master";
+            CJobDispatcher m_jobSender= new CJobDispatcher();
+            m_discoverySocket = new UdpClient();//(m_discoveryPortShepherd);
 
-            var Client = new UdpClient(m_discoveryPortSepherd);
+            var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
+            TcpSocket.Start();
 
-            var RequestData = Encoding.ASCII.GetBytes(m_discoveryMessage);
-            var ServerEp = new IPEndPoint(IPAddress.Any, m_discoveryPortHerd);
+            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
+            var ServerEp = new IPEndPoint(IPAddress.Any, CJobDispatcher.m_discoveryPortHerd);
 
-            Client.EnableBroadcast = true;
-            Client.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
+            m_discoverySocket.EnableBroadcast = true;
+            m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
 
-            var ServerResponseData = Client.Receive(ref ServerEp);
-            var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
-            Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
 
-            Client.Close();
+            using (TcpClient comSocket= TcpSocket.AcceptTcpClient())
+            {
+                using (NetworkStream netStream = comSocket.GetStream())
+                {
+                    CJob job= new CJob();
+                    job.name = "test-job";
+                    job.exeFile = "../Debug/RLSimion.exe";
+                    job.inputFiles.Add("../experiments/examples/uv-pid.node");
+                    m_jobSender.SendJobQuery(netStream, job);
+                }
+                comSocket.Close();
+            }
+            TcpSocket.Stop();
+            //var ServerResponseData = Client.Receive(ref ServerEp);
+            //var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
+            //Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
+
+            m_discoverySocket.Close();
         }
     }
 }

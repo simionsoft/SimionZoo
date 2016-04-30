@@ -6,22 +6,24 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using System.Text.RegularExpressions;
+using NetJobTransfer;
 
 namespace TESTHerdAgent
 {
     enum AgentState { BUSY, AVAILABLE, DISCOVERED };
+    enum FileType { EXE, INPUT, OUTPUT};
 
     class Program
     {
-        const int m_discoveryPortShepherd = 2332;
-        const int m_discoveryPortHerd = 2333;
-        const int m_comPortShepherd = 2334;
-        const int m_comPortHerd= 2335;
-        const string m_discoveryMessage = "Slaves, show yourselves!";
-        const string m_discoveryAnswer = "At your command, my Master";
+        
+       
 
-        private static AgentState m_state;
-        private static UdpClient m_discoverySocket;
+
+
+
+
+      
 
         //public static void DiscoveryCallback(IAsyncResult ar)
         //{
@@ -46,23 +48,34 @@ namespace TESTHerdAgent
         //}
         static void Main(string[] args)
         {
-             
+            AgentState m_state;
+            UdpClient m_discoverySocket;
+            TcpClient m_comSocket;
             m_state = AgentState.AVAILABLE;
-            m_discoverySocket = new UdpClient(m_discoveryPortHerd);
-            IPEndPoint herdClient= new IPEndPoint(0,0);
-           
+            m_discoverySocket = new UdpClient(CJobDispatcher.m_discoveryPortHerd);
+            IPEndPoint shepherd= new IPEndPoint(0,0);
+            CJobDispatcher netJobDispatcher;
            // m_discoverySocket.BeginReceive(new AsyncCallback(DiscoveryCallback), m_discoverySocket);
 
             while (true)
             {
-                byte[] message = m_discoverySocket.Receive(ref herdClient);
-                System.Console.WriteLine("Message received from " + herdClient);
+                byte[] message = m_discoverySocket.Receive(ref shepherd);
+                System.Console.WriteLine("Message received from " + shepherd);
                 System.Console.WriteLine(Encoding.ASCII.GetString(message));
                 System.Console.WriteLine();
 
-                m_discoverySocket.Send(Encoding.ASCII.GetBytes(m_discoveryAnswer)
-                    ,Encoding.ASCII.GetBytes(m_discoveryAnswer).Length,herdClient);
+                using (m_comSocket = new TcpClient(shepherd.Address.ToString(), CJobDispatcher.m_comPortShepherd))
+                {
+                    NetworkStream netStream = m_comSocket.GetStream();
+
+                    netJobDispatcher = new CJobDispatcher();
+                    if (netJobDispatcher.ReceiveJobQuery(netStream))
+                        netJobDispatcher.RunJob();
+                    m_comSocket.Close();
+                }
             }
+
+            m_discoverySocket.Close();
         }
 
 
