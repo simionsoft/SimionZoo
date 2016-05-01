@@ -54,7 +54,7 @@ namespace TESTHerdAgent
             m_state = AgentState.AVAILABLE;
             m_discoverySocket = new UdpClient(CJobDispatcher.m_discoveryPortHerd);
             IPEndPoint shepherd= new IPEndPoint(0,0);
-            CJobDispatcher netJobDispatcher;
+            HerdAgent herdAgent;
            // m_discoverySocket.BeginReceive(new AsyncCallback(DiscoveryCallback), m_discoverySocket);
 
             while (true)
@@ -68,11 +68,11 @@ namespace TESTHerdAgent
                 {
                     NetworkStream netStream = m_comSocket.GetStream();
 
-                    netJobDispatcher = new CJobDispatcher();
-                    if (netJobDispatcher.ReceiveJobQuery(netStream))
+                    herdAgent = new HerdAgent();
+                    if (herdAgent.ReceiveJobQuery(netStream))
                     {
-                        netJobDispatcher.RunJob();
-                        netJobDispatcher.SendJobResult(netStream);
+                        herdAgent.RunJob();
+                        herdAgent.SendJobResult(netStream);
                     }
                     m_comSocket.Close();
                 }

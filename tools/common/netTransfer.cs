@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace NetJobTransfer
 {
-    class CJob
+    public class CJob
     {
         public string name;
         public List<string> inputFiles;
@@ -26,9 +26,9 @@ namespace NetJobTransfer
             outputFiles= new List<string>();
         }
     }
-    enum AgentState { BUSY, AVAILABLE, DISCOVERED };
-    enum FileType { EXE, INPUT, OUTPUT};
-    class CJobDispatcher
+    public enum AgentState { BUSY, AVAILABLE, DISCOVERED };
+    public enum FileType { EXE, INPUT, OUTPUT};
+    public class CJobDispatcher
     {
         public const int m_discoveryPortShepherd = 2332;
         public const int m_discoveryPortHerd = 2333;
@@ -38,21 +38,21 @@ namespace NetJobTransfer
         public const string m_discoveryAnswer = "At your command, my Master";
         static int m_maxChunkSize = 1024;
 
-        private byte[] m_buffer;
+        protected byte[] m_buffer;
 
-        NetworkStream m_netStream;
+        protected NetworkStream m_netStream;
 
-        private int m_bytesInBuffer;
-        private int m_bufferOffset;
+        protected int m_bytesInBuffer;
+        protected int m_bufferOffset;
 
         //used for reading
-        private int m_nextFileSize;
-        private string m_nextFileName;
+        protected int m_nextFileSize;
+        protected string m_nextFileName;
 
-        private string m_tempDir;
-        private CJob m_job;
-        private int m_numInputFilesRead;
-        private int m_numOutputFilesRead;
+        protected string m_tempDir;
+        protected CJob m_job;
+        protected int m_numInputFilesRead;
+        protected int m_numOutputFilesRead;
 
         public CJobDispatcher()
         {
@@ -64,34 +64,24 @@ namespace NetJobTransfer
             m_tempDir = "c:\\temp";
         }
 
-        public void SendJobQuery(NetworkStream netStream,CJob job)
-        {
-            m_netStream = netStream;
-            m_job = job;
-            SendJobHeader();
-            SendExeFiles(true);
-            SendInputFiles(true);
-            SendOutputFiles(false);
-            SendJobFooter();
-        }
-
-        private void SendExeFiles(bool sendContent) { if (m_job.exeFile!="") SendFile(m_job.exeFile,FileType.EXE, sendContent,false); }
-        private void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent,false); }
-        private void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent,true); }
-        private void SendJobHeader()
+        
+        protected void SendExeFiles(bool sendContent) { if (m_job.exeFile!="") SendFile(m_job.exeFile,FileType.EXE, sendContent,false); }
+        protected void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent,false); }
+        protected void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent,true); }
+        protected void SendJobHeader()
         {
             string header = "<Job Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
                 + m_job.outputFiles.Count + "\">";
             byte[] headerbytes= Encoding.ASCII.GetBytes(header);
             m_netStream.Write(headerbytes,0,headerbytes.Length);
         }
-        private void SendJobFooter()
+        protected void SendJobFooter()
         {
             string footer = "</Job>";
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
             m_netStream.Write(footerbytes, 0, footerbytes.Length);
         }
-        private void SendFile(string fileName, FileType type, bool sendContent,bool fromCachedDir)
+        protected void SendFile(string fileName, FileType type, bool sendContent,bool fromCachedDir)
         {
             string header;
             byte[] headerBytes;
@@ -166,44 +156,7 @@ namespace NetJobTransfer
 
         }
 
-        public void SendJobResult(NetworkStream netStream)
-        {
-            m_netStream = netStream;
-            SendJobHeader();
-            SendExeFiles(false);
-            SendInputFiles(false);
-            SendOutputFiles(true);
-            SendJobFooter();
-        }
-        public bool ReceiveJobQuery(NetworkStream netStream)
-        {
-            m_netStream = netStream;
-            m_bufferOffset= 0;
-            m_bytesInBuffer= 0;
-
-            ReceiveJobHeader();
-            ReceiveExeFiles(true);
-            ReceiveInputFiles(true);
-            ReceiveOutputFiles(false);
-            ReceiveJobFooter();
-
-            return true;//if job query properly received. For now, we will assume it
-        }
-        public bool ReceiveJobResult(NetworkStream netStream)
-        {
-            m_netStream = netStream;
-            m_bufferOffset = 0;
-            m_bytesInBuffer = 0;
-
-            ReceiveJobHeader();
-            ReceiveExeFiles(false);
-            ReceiveInputFiles(false);
-            ReceiveOutputFiles(true);
-            ReceiveJobFooter();
-
-            return true;//if job result properly received. For now, we will assume it}
-        }
-        private void ReadFromStream()
+        protected void ReadFromStream()
         {
             int bytesLeftToProcess= m_bytesInBuffer-m_bufferOffset;
             //something left to process in the buffer?
@@ -216,7 +169,7 @@ namespace NetJobTransfer
             if (m_netStream.DataAvailable && m_bytesInBuffer<m_maxChunkSize)
                 m_bytesInBuffer+= m_netStream.Read(m_buffer,m_bytesInBuffer, m_maxChunkSize-m_bytesInBuffer);
         }
-        private void ReceiveJobHeader()
+        protected void ReceiveJobHeader()
         {
             Match match;
             
@@ -234,7 +187,7 @@ namespace NetJobTransfer
             m_bufferOffset+= match.Index + match.Length;
             ReadFromStream(); //we shift the buffer to the left skipping the processed header
         }
-        private void ReceiveJobFooter()
+        protected void ReceiveJobFooter()
         {
             Match match;
 
@@ -246,20 +199,19 @@ namespace NetJobTransfer
             }
             while (!match.Success);
         }
-        private void ReceiveExeFiles(bool receiveContent) {ReceiveFile(FileType.EXE,receiveContent,true);}
-        private void ReceiveInputFiles(bool receiveContent)
+        protected void ReceiveExeFiles(bool receiveContent) {ReceiveFile(FileType.EXE,receiveContent,true);}
+        protected void ReceiveInputFiles(bool receiveContent)
         {
             for (int i= 0; i<m_numInputFilesRead; i++)
                 ReceiveFile(FileType.INPUT,receiveContent,true);
         }
-
-       private void ReceiveOutputFiles(bool receiveContent)
+        protected void ReceiveOutputFiles(bool receiveContent)
         {
             for (int i= 0; i<m_numOutputFilesRead; i++)
                 ReceiveFile(FileType.OUTPUT,receiveContent,false);
         }
 
-        private void ReceiveFile(FileType type,bool receiveContent,bool inCachedDir)
+        protected void ReceiveFile(FileType type,bool receiveContent,bool inCachedDir)
         {
                 ReceiveFileHeader(type,receiveContent);
                 if (receiveContent)
@@ -268,7 +220,7 @@ namespace NetJobTransfer
                     ReceiveFileFooter(type);
                 }
         }
-        public void ReceiveFileHeader(FileType type,bool receiveContent)
+        protected void ReceiveFileHeader(FileType type,bool receiveContent)
         {
             Match match;
 
@@ -324,7 +276,7 @@ namespace NetJobTransfer
 
             m_bufferOffset += match.Index+match.Length;
         }
-        public void ReceiveFileFooter(FileType type)
+        protected void ReceiveFileFooter(FileType type)
         {
             Match match;
 
@@ -341,7 +293,7 @@ namespace NetJobTransfer
 
             m_bufferOffset += match.Length + match.Index;
         }
-        private int SaveBufferToFile(FileStream outputFile,int bytesLeft)
+        protected int SaveBufferToFile(FileStream outputFile,int bytesLeft)
         {
             int bytesToWrite = Math.Min(bytesLeft, m_bytesInBuffer - m_bufferOffset);
 
@@ -350,12 +302,12 @@ namespace NetJobTransfer
             m_bufferOffset+= bytesToWrite;
             return bytesToWrite;
         }
-        private string getCachedFilename(string originalFilename)
+        protected string getCachedFilename(string originalFilename)
         {
             string outputFilename = m_tempDir.TrimEnd('/', '\\') + "\\" + originalFilename.TrimStart('.', '/', '\\');
             return outputFilename;
         }
-        public void ReceiveFileData(bool inCachedDir)
+        protected void ReceiveFileData(bool inCachedDir)
         {
             int bytesLeft = m_nextFileSize;
 
@@ -375,12 +327,65 @@ namespace NetJobTransfer
             outputFile.Close();
 
         }
+    }
+    public class Shepherd: CJobDispatcher
+    {
+        public void SendJobQuery(NetworkStream netStream, CJob job)
+        {
+            m_netStream = netStream;
+            m_job = job;
+            SendJobHeader();
+            SendExeFiles(true);
+            SendInputFiles(true);
+            SendOutputFiles(false);
+            SendJobFooter();
+        }
+        public bool ReceiveJobResult(NetworkStream netStream)
+        {
+            m_netStream = netStream;
+            m_bufferOffset = 0;
+            m_bytesInBuffer = 0;
+
+            ReceiveJobHeader();
+            ReceiveExeFiles(false);
+            ReceiveInputFiles(false);
+            ReceiveOutputFiles(true);
+            ReceiveJobFooter();
+
+            return true;//if job result properly received. For now, we will assume it}
+        }
+    }
+    public class HerdAgent: CJobDispatcher
+    {
+        public void SendJobResult(NetworkStream netStream)
+        {
+            m_netStream = netStream;
+            SendJobHeader();
+            SendExeFiles(false);
+            SendInputFiles(false);
+            SendOutputFiles(true);
+            SendJobFooter();
+        }
+        public bool ReceiveJobQuery(NetworkStream netStream)
+        {
+            m_netStream = netStream;
+            m_bufferOffset= 0;
+            m_bytesInBuffer= 0;
+
+            ReceiveJobHeader();
+            ReceiveExeFiles(true);
+            ReceiveInputFiles(true);
+            ReceiveOutputFiles(false);
+            ReceiveJobFooter();
+
+            return true;//if job query properly received. For now, we will assume it
+        }
         public void RunJob()
         {
-            Process myProcess= new Process();
-            
+            Process myProcess = new Process();
+
             myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
-            myProcess.StartInfo.Arguments= m_job.comLineArgs;
+            myProcess.StartInfo.Arguments = m_job.comLineArgs;
             myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
             Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
             myProcess.Start();
@@ -388,6 +393,5 @@ namespace NetJobTransfer
             myProcess.WaitForExit();
             Console.WriteLine("Exit code: " + myProcess.ExitCode);
         }
-
     }
 }

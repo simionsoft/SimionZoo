@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.IO;
 using NetJobTransfer;
 
-namespace Shepherd
+namespace TESTShepherd
 {
     enum AgentState { BUSY, AVAILABLE, DISCOVERED };
     enum FileType { EXE, INPUT, OUTPUT};
@@ -23,7 +23,7 @@ namespace Shepherd
         
         static void Main(string[] args)
         {
-            CJobDispatcher m_jobSender= new CJobDispatcher();
+            Shepherd shepherd= new Shepherd();
             m_discoverySocket = new UdpClient();//(m_discoveryPortShepherd);
 
             var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
@@ -52,8 +52,8 @@ namespace Shepherd
                     job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-1.txt");
                     job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-2.txt");
                     job.outputFiles.Add("..\\experiments\\examples\\log-eval-exp.txt");
-                    m_jobSender.SendJobQuery(netStream, job);
-                    m_jobSender.ReceiveJobResult(netStream);
+                    shepherd.SendJobQuery(netStream, job);
+                    shepherd.ReceiveJobResult(netStream);
                 }
                 comSocket.Close();
             }
