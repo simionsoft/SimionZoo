@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using NetJobTransfer;
+using AppXML.Data;
 
 namespace TESTShepherd
 {
@@ -19,11 +20,10 @@ namespace TESTShepherd
         private static AgentState m_state;
         private static UdpClient m_discoverySocket;
 
-
-        
-        static void Main(string[] args)
+        public static void method(string filename)
         {
-            Shepherd shepherd= new Shepherd();
+
+            Shepherd shepherd = new Shepherd();
             m_discoverySocket = new UdpClient();//(m_discoveryPortShepherd);
 
             var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
@@ -35,25 +35,28 @@ namespace TESTShepherd
             m_discoverySocket.EnableBroadcast = true;
             System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
             m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
+            IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
+            string tmp = Encoding.ASCII.GetString(m_discoverySocket.Receive(ref xxx));
 
             // to do: leer las conexiones que se reciben y ordenarlas en base al nuemro de cores disponibles
             // en la linea de comandos hay que añadir el nombre del pipe y puentearlo
-            using (TcpClient comSocket= TcpSocket.AcceptTcpClient())
+            using (TcpClient comSocket = TcpSocket.AcceptTcpClient())
             {
                 using (NetworkStream netStream = comSocket.GetStream())
                 {
-                    CJob job= new CJob();
-                    job.name = "test-job";
+                    CJob job = new CJob();
+                    job.name = filename;
                     job.exeFile = "..\\Debug\\RLSimion.exe";
-                    job.comLineArgs = "..\\experiments\\examples\\uv-pid.node";
+                    job.comLineArgs = filename;
                     job.inputFiles.Add(job.comLineArgs);
-                   // job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
-                    job.inputFiles.Add("..\\config\\world\\underwater-vehicle.xml");
-                    job.inputFiles.Add("..\\config\\world\\underwater-vehicle\\setpoint.txt");
-                    job.inputFiles.Add("..\\data\\vidal-80.d_T_g.weights");
-                    job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-1.txt");
-                    job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-2.txt");
-                    job.outputFiles.Add("..\\experiments\\examples\\log-eval-exp.txt");
+                    List<string> inputs = Utility.getInputs(filename);
+                    if(inputs==null)
+                        return;
+                    foreach(string input in inputs)
+                    {
+                        job.inputFiles.Add(input);
+                    }
+                    // job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
                     shepherd.SendJobQuery(netStream, job);
                     shepherd.ReceiveJobResult(netStream);
                 }
@@ -66,5 +69,10 @@ namespace TESTShepherd
 
             m_discoverySocket.Close();
         }
+
+        static void Main(string[] args)
+        {
+            method("..\\experiments\\examples\\uv-pid");
+        }   
     }
 }

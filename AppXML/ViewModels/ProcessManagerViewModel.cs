@@ -48,6 +48,7 @@ namespace AppXML.ViewModels
         }
         public void run()
         {
+            
             cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
             po.CancellationToken = cts.Token;

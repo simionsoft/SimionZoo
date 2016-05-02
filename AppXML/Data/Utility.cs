@@ -10,16 +10,131 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Runtime.InteropServices;
+using System.Net.Sockets;
+using System.Net;
+using NetJobTransfer;
+
 
 namespace AppXML.Data
 {
     public static class Utility
     {
-        [DllImport(@"C:\\Users\\unai\\Desktop\\RLSimion\\debug/RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
         
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
+
+
+        public static void method(List<string> filenames)
+        {
+            AgentState m_state;
+            UdpClient m_discoverySocket;
+            Shepherd shepherd = new Shepherd();
+            m_discoverySocket = new UdpClient();//(m_discoveryPortShepherd);
+
+            var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
+            TcpSocket.Start();
+
+            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
+            var ServerEp = new IPEndPoint(IPAddress.Any, CJobDispatcher.m_discoveryPortHerd);
+
+            m_discoverySocket.EnableBroadcast = true;
+            System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
+            m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
+            //IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
+            //string tmp = Encoding.ASCII.GetString(m_discoverySocket.Receive(ref xxx));
+
+            // to do: leer las conexiones que se reciben y ordenarlas en base al nuemro de cores disponibles
+            // en la linea de comandos hay que añadir el nombre del pipe y puentearlo
+            using (TcpClient comSocket = TcpSocket.AcceptTcpClient())
+            {
+                using (NetworkStream netStream = comSocket.GetStream())
+                {
+                    CJob job = new CJob();
+                    job.name = "xxxxx";
+                    job.exeFile = "..\\Debug\\RLSimion.exe";
+                    foreach(string filename in filenames)
+                    {
+                        List<string> tmp = new List<string>();
+                        tmp.Add(filename);
+                        // add pipename
+                        job.comLineArgs.Add(tmp);
+                        job.inputFiles.Add(filename);
+                        Utility.getInputsAndOutputs(filename,ref job);
+                    }
+                    
+                    
+                    // job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
+                    shepherd.SendJobQuery(netStream, job);
+                    shepherd.ReceiveJobResult(netStream);
+                }
+                comSocket.Close();
+            }
+            TcpSocket.Stop();
+            //var ServerResponseData = Client.Receive(ref ServerEp);
+            //var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
+            //Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
+
+            m_discoverySocket.Close();
+        }
+
+        private static void getInputsAndOutputs(string path, ref CJob job)
+        {
+            StringBuilder myResult = new StringBuilder(204800);
+            int error = getIOFiles(path, myResult, 204800);
+            if (error == -1)
+            {
+                return;
+            }
+            else
+            {
+                XDocument doc = XDocument.Parse(myResult.ToString());
+                XElement[] inputFiles = doc
+                .Descendants()
+                .Where(e => e.Name == "Input")
+                .ToArray();
+                XElement[] outputFiles = doc
+                .Descendants()
+                .Where(e => e.Name == "Output")
+                .ToArray();
+                foreach (XElement e in inputFiles)
+                {
+                    if(!job.inputFiles.Contains(e.Value))
+                        job.inputFiles.Add(e.Value);
+                }
+                foreach (XElement e in outputFiles)
+                {
+                    if(!job.outputFiles.Contains(e.Value))
+                        job.outputFiles.Add(e.Value);
+                }
+            }
+        }
+
+        public static List<string> getInputs(string path)
+        {
+             StringBuilder myResult = new StringBuilder(204800);
+            int error = getIOFiles(path, myResult, 204800);
+            if (error == -1)
+            {
+                return null;
+            }
+            else
+            {
+                XDocument doc = XDocument.Parse(myResult.ToString());
+                XElement[] inputFiles = doc
+                .Descendants()
+                .Where(e => e.Name == "Input")
+                .ToArray();
+                List<string> returnList = new List<string>();
+                foreach(XElement e in inputFiles)
+                {
+                    returnList.Add(e.Value);
+                }
+                return returnList;
+            }
+                   
+        }
 
         public static Dictionary<string, List<string>> findIOProblems(List<string> pahts)
         {

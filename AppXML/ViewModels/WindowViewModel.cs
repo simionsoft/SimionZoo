@@ -419,6 +419,7 @@ namespace AppXML.ViewModels
                     if (dvm.DialogResult != DialogViewModel.Result.OK)
                         return;
                 }
+                Utility.method(paths);
                 initExperimentas(paths);
             }
                

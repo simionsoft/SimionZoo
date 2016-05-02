@@ -15,13 +15,14 @@ namespace NetJobTransfer
         public List<string> inputFiles;
         public List<string> outputFiles;
         public string exeFile;
-        public string comLineArgs;
+        public List<List<string>> comLineArgs;
         
         public CJob()
         {
-            comLineArgs = "";
+            //comLineArgs = "";
             name = "";
             exeFile = "";
+            comLineArgs = new List<List<string>>();
             inputFiles= new List<string>();
             outputFiles= new List<string>();
         }
@@ -252,7 +253,7 @@ namespace NetJobTransfer
 
             if (type == FileType.EXE)
             {
-                m_job.comLineArgs = match.Groups[3].Value;
+                //m_job.comLineArgs=match.Groups[3].Value;
                 m_job.exeFile = match.Groups[2].Value;
                 m_nextFileName = match.Groups[2].Value;
                 if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[4].Value);
@@ -385,13 +386,20 @@ namespace NetJobTransfer
             Process myProcess = new Process();
 
             myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
-            myProcess.StartInfo.Arguments = m_job.comLineArgs;
-            myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-            Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-            myProcess.Start();
-
-            myProcess.WaitForExit();
-            Console.WriteLine("Exit code: " + myProcess.ExitCode);
+            foreach(List<string> listOfArgs in m_job.comLineArgs)
+            {
+                string args = "";
+                foreach (string arg in listOfArgs)
+                    args += arg + " ";
+                myProcess.StartInfo.Arguments = args;
+                myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+                Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                myProcess.Start();
+                myProcess.WaitForExit();
+                Console.WriteLine("Exit code: " + myProcess.ExitCode);
+            }
+            //myProcess.StartInfo.Arguments = m_job.comLineArgs;
+           
         }
     }
 }
