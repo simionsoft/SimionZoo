@@ -63,7 +63,8 @@ namespace TESTHerdAgent
                 System.Console.WriteLine("Message received from " + shepherd);
                 System.Console.WriteLine(Encoding.ASCII.GetString(message));
                 System.Console.WriteLine();
-
+                // to do: devolver numero de cores
+                // no te conectas y esperas a que el maquina origen se conecte a ti.
                 using (m_comSocket = new TcpClient(shepherd.Address.ToString(), CJobDispatcher.m_comPortShepherd))
                 {
                     NetworkStream netStream = m_comSocket.GetStream();

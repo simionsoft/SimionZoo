@@ -36,7 +36,7 @@ namespace TESTShepherd
             System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
             m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
 
-
+            // to do: leer las conexiones que se reciben y ordenarlas en base al nuemro de cores disponibles
             using (TcpClient comSocket= TcpSocket.AcceptTcpClient())
             {
                 using (NetworkStream netStream = comSocket.GetStream())
@@ -46,9 +46,10 @@ namespace TESTShepherd
                     job.exeFile = "..\\Debug\\RLSimion.exe";
                     job.comLineArgs = "..\\experiments\\examples\\uv-pid.node";
                     job.inputFiles.Add(job.comLineArgs);
-                    job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
+                   // job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
                     job.inputFiles.Add("..\\config\\world\\underwater-vehicle.xml");
                     job.inputFiles.Add("..\\config\\world\\underwater-vehicle\\setpoint.txt");
+                    job.inputFiles.Add("..\\data\\vidal-80.d_T_g.weights");
                     job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-1.txt");
                     job.outputFiles.Add("..\\experiments\\examples\\log-eval-epis-2.txt");
                     job.outputFiles.Add("..\\experiments\\examples\\log-eval-exp.txt");
