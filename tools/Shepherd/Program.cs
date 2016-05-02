@@ -37,6 +37,7 @@ namespace TESTShepherd
             m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
 
             // to do: leer las conexiones que se reciben y ordenarlas en base al nuemro de cores disponibles
+            // en la linea de comandos hay que añadir el nombre del pipe y puentearlo
             using (TcpClient comSocket= TcpSocket.AcceptTcpClient())
             {
                 using (NetworkStream netStream = comSocket.GetStream())
