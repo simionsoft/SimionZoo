@@ -50,36 +50,46 @@ namespace TESTHerdAgent
         {
             AgentState m_state;
             UdpClient m_discoverySocket;
-            TcpClient m_comSocket;
+            TcpClient m_comSocket=null;
             m_state = AgentState.AVAILABLE;
             m_discoverySocket = new UdpClient(CJobDispatcher.m_discoveryPortHerd);
             IPEndPoint shepherd= new IPEndPoint(0,0);
             HerdAgent herdAgent;
-           // m_discoverySocket.BeginReceive(new AsyncCallback(DiscoveryCallback), m_discoverySocket);
-
             while (true)
             {
                 byte[] message = m_discoverySocket.Receive(ref shepherd);
                 System.Console.WriteLine("Message received from " + shepherd);
                 System.Console.WriteLine(Encoding.ASCII.GetString(message));
                 System.Console.WriteLine();
-                // to do: devolver numero de cores
-                // no te conectas y esperas a que el maquina origen se conecte a ti.
-                using (m_comSocket = new TcpClient(shepherd.Address.ToString(), CJobDispatcher.m_comPortShepherd))
+                byte[] data = Encoding.ASCII.GetBytes("<Cores>" + Environment.ProcessorCount + "</Cores>");
+                m_discoverySocket.Send(data,data.Length,shepherd);
+                var server = new TcpListener(IPAddress.Any, 4444);
+                server.Start();
+                m_comSocket = server.AcceptTcpClient();
+                NetworkStream netStream = m_comSocket.GetStream();
+                byte[] doIHaveToWork = new byte[24];
+                netStream.Read(doIHaveToWork, 0, 24);
+                if(Encoding.ASCII.GetString(doIHaveToWork).Split('\n')[0].Equals("You are free"))
                 {
-                    NetworkStream netStream = m_comSocket.GetStream();
 
+                }
+                else
+                {
                     herdAgent = new HerdAgent();
                     if (herdAgent.ReceiveJobQuery(netStream))
                     {
                         herdAgent.RunJob();
                         herdAgent.SendJobResult(netStream);
                     }
-                    m_comSocket.Close();
                 }
+                netStream.Close();
+                netStream.Dispose();
+                server.Stop();
+                m_comSocket.Close();
+                
+
             }
 
-            m_discoverySocket.Close();
         }
 
 

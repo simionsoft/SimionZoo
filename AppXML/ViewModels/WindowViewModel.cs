@@ -419,7 +419,7 @@ namespace AppXML.ViewModels
                     if (dvm.DialogResult != DialogViewModel.Result.OK)
                         return;
                 }
-                Utility.method(paths);
+                //Utility.method(paths);
                 initExperimentas(paths);
             }
                
@@ -571,6 +571,7 @@ namespace AppXML.ViewModels
         private void initExperimentas(List<string> myList)
         {
             ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
+            Task.Factory.StartNew(() => { pwvm.run(); });
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
             settings.ShowInTaskbar = false;

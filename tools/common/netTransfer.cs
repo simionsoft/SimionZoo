@@ -6,6 +6,12 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Xml.Linq;
+using System.Threading.Tasks;
+using System.Threading;
+using System.IO.Pipes;
+using System.Xml;
 
 namespace NetJobTransfer
 {
@@ -15,20 +21,20 @@ namespace NetJobTransfer
         public List<string> inputFiles;
         public List<string> outputFiles;
         public string exeFile;
-        public List<List<string>> comLineArgs;
-        
+        public List<string> comLineArgs;
+
         public CJob()
         {
             //comLineArgs = "";
             name = "";
             exeFile = "";
-            comLineArgs = new List<List<string>>();
-            inputFiles= new List<string>();
-            outputFiles= new List<string>();
+            comLineArgs = new List<string>();
+            inputFiles = new List<string>();
+            outputFiles = new List<string>();
         }
     }
     public enum AgentState { BUSY, AVAILABLE, DISCOVERED };
-    public enum FileType { EXE, INPUT, OUTPUT};
+    public enum FileType { EXE, INPUT, OUTPUT };
     public class CJobDispatcher
     {
         public const int m_discoveryPortShepherd = 2332;
@@ -59,22 +65,30 @@ namespace NetJobTransfer
         {
             m_job = new CJob();
             m_buffer = new byte[m_maxChunkSize];
-            m_bytesInBuffer= 0;
-            m_bufferOffset= 0;
+            m_bytesInBuffer = 0;
+            m_bufferOffset = 0;
             m_nextFileSize = 0;
             m_tempDir = "c:\\temp";
         }
 
-        
-        protected void SendExeFiles(bool sendContent) { if (m_job.exeFile!="") SendFile(m_job.exeFile,FileType.EXE, sendContent,false); }
-        protected void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent,false); }
-        protected void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent,true); }
+
+        protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
+        protected void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent, false); }
+        protected void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent, true); }
         protected void SendJobHeader()
         {
             string header = "<Job Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
                 + m_job.outputFiles.Count + "\">";
-            byte[] headerbytes= Encoding.ASCII.GetBytes(header);
-            m_netStream.Write(headerbytes,0,headerbytes.Length);
+            string args = "<Args>";// Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
+            //+ m_job.outputFiles.Count + "\">";
+            foreach (string arg in m_job.comLineArgs)
+            {
+                args += "<Arg>" + arg + "</Arg>";
+            }
+            args += "</Args>";
+            header += args;
+            byte[] headerbytes = Encoding.ASCII.GetBytes(header);
+            m_netStream.Write(headerbytes, 0, headerbytes.Length);
         }
         protected void SendJobFooter()
         {
@@ -82,7 +96,7 @@ namespace NetJobTransfer
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
             m_netStream.Write(footerbytes, 0, footerbytes.Length);
         }
-        protected void SendFile(string fileName, FileType type, bool sendContent,bool fromCachedDir)
+        protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
         {
             string header;
             byte[] headerBytes;
@@ -90,7 +104,7 @@ namespace NetJobTransfer
 
             if (type == FileType.EXE)
             {
-                header = "<Exe Name=\"" + fileName + "\" ComLineArgs=\"" + m_job.comLineArgs  +"\"";
+                header = "<Exe Name=\"" + fileName + "\" ComLineArgs=\"" + m_job.comLineArgs + "\"";
                 if (sendContent) footer = "</Exe>";
             }
             else if (type == FileType.INPUT)
@@ -159,25 +173,41 @@ namespace NetJobTransfer
 
         protected void ReadFromStream()
         {
-            int bytesLeftToProcess= m_bytesInBuffer-m_bufferOffset;
+            int bytesLeftToProcess = m_bytesInBuffer - m_bufferOffset;
             //something left to process in the buffer?
-            if (m_bufferOffset!=0)
+            if (m_bufferOffset != 0)
             {
-                Buffer.BlockCopy(m_buffer,m_bufferOffset,m_buffer,0,m_bytesInBuffer-m_bufferOffset);
-                m_bytesInBuffer= m_bytesInBuffer-m_bufferOffset;
-                m_bufferOffset= 0;
+                Buffer.BlockCopy(m_buffer, m_bufferOffset, m_buffer, 0, m_bytesInBuffer - m_bufferOffset);
+                m_bytesInBuffer = m_bytesInBuffer - m_bufferOffset;
+                m_bufferOffset = 0;
             }
-            if (m_netStream.DataAvailable && m_bytesInBuffer<m_maxChunkSize)
-                m_bytesInBuffer+= m_netStream.Read(m_buffer,m_bytesInBuffer, m_maxChunkSize-m_bytesInBuffer);
+            if (m_netStream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
+                m_bytesInBuffer += m_netStream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
         }
         protected void ReceiveJobHeader()
         {
             Match match;
-            
+
             do
             {
                 ReadFromStream();
                 string header = Encoding.ASCII.GetString(m_buffer);
+                string[] headerAndArgs = header.Split(new string[] { "<Args>", "</Args>" }, StringSplitOptions.None);
+                header = headerAndArgs[0];
+                string args = null;
+                if (headerAndArgs.Length > 1)
+                {
+
+                    XElement[] argsE = XDocument.Parse("<args>" + headerAndArgs[1] + "</args>")
+                    .Descendants()
+                    .Where(e => e.Name == "Arg")
+                    .ToArray();
+                    foreach (XElement arg in argsE)
+                    {
+                        m_job.comLineArgs.Add(arg.Value);
+                    }
+                }
+                Console.WriteLine(args);
                 match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
             }
             while (!match.Success);
@@ -185,9 +215,10 @@ namespace NetJobTransfer
             m_job.name = match.Groups[1].Value;
             m_numInputFilesRead = Int32.Parse(match.Groups[2].Value);
             m_numOutputFilesRead = Int32.Parse(match.Groups[3].Value);
-            m_bufferOffset+= match.Index + match.Length;
+            m_bufferOffset += match.Index + match.Length;
             ReadFromStream(); //we shift the buffer to the left skipping the processed header
         }
+
         protected void ReceiveJobFooter()
         {
             Match match;
@@ -200,28 +231,28 @@ namespace NetJobTransfer
             }
             while (!match.Success);
         }
-        protected void ReceiveExeFiles(bool receiveContent) {ReceiveFile(FileType.EXE,receiveContent,true);}
+        protected void ReceiveExeFiles(bool receiveContent) { ReceiveFile(FileType.EXE, receiveContent, true); }
         protected void ReceiveInputFiles(bool receiveContent)
         {
-            for (int i= 0; i<m_numInputFilesRead; i++)
-                ReceiveFile(FileType.INPUT,receiveContent,true);
+            for (int i = 0; i < m_numInputFilesRead; i++)
+                ReceiveFile(FileType.INPUT, receiveContent, true);
         }
         protected void ReceiveOutputFiles(bool receiveContent)
         {
-            for (int i= 0; i<m_numOutputFilesRead; i++)
-                ReceiveFile(FileType.OUTPUT,receiveContent,false);
+            for (int i = 0; i < m_numOutputFilesRead; i++)
+                ReceiveFile(FileType.OUTPUT, receiveContent, false);
         }
 
-        protected void ReceiveFile(FileType type,bool receiveContent,bool inCachedDir)
+        protected void ReceiveFile(FileType type, bool receiveContent, bool inCachedDir)
         {
-                ReceiveFileHeader(type,receiveContent);
-                if (receiveContent)
-                {
-                    ReceiveFileData(inCachedDir);
-                    ReceiveFileFooter(type);
-                }
+            ReceiveFileHeader(type, receiveContent);
+            if (receiveContent)
+            {
+                ReceiveFileData(inCachedDir);
+                ReceiveFileFooter(type);
+            }
         }
-        protected void ReceiveFileHeader(FileType type,bool receiveContent)
+        protected void ReceiveFileHeader(FileType type, bool receiveContent)
         {
             Match match;
 
@@ -249,11 +280,11 @@ namespace NetJobTransfer
             if ((match.Groups[1].Value == "Exe" && type != FileType.EXE)
                 || (match.Groups[1].Value == "Input" && type != FileType.INPUT)
                 || (match.Groups[1].Value == "Output" && type != FileType.OUTPUT))
-                Debug.Assert(false,"The type of the file received missmatches the expected file type");
+                Debug.Assert(false, "The type of the file received missmatches the expected file type");
 
             if (type == FileType.EXE)
             {
-                //m_job.comLineArgs=match.Groups[3].Value;
+
                 m_job.exeFile = match.Groups[2].Value;
                 m_nextFileName = match.Groups[2].Value;
                 if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[4].Value);
@@ -275,7 +306,7 @@ namespace NetJobTransfer
             string outputDir = Path.GetDirectoryName(outputFilename);
             System.IO.Directory.CreateDirectory(outputDir);
 
-            m_bufferOffset += match.Index+match.Length;
+            m_bufferOffset += match.Index + match.Length;
         }
         protected void ReceiveFileFooter(FileType type)
         {
@@ -288,19 +319,19 @@ namespace NetJobTransfer
 
                 if (type == FileType.EXE) match = Regex.Match(header, "</Exe>");
                 else if (type == FileType.INPUT) match = Regex.Match(header, "</Input>");
-                else match= Regex.Match(header,"</Output>");
+                else match = Regex.Match(header, "</Output>");
             }
             while (!match.Success);
 
             m_bufferOffset += match.Length + match.Index;
         }
-        protected int SaveBufferToFile(FileStream outputFile,int bytesLeft)
+        protected int SaveBufferToFile(FileStream outputFile, int bytesLeft)
         {
             int bytesToWrite = Math.Min(bytesLeft, m_bytesInBuffer - m_bufferOffset);
 
             outputFile.Write(m_buffer, m_bufferOffset, bytesToWrite);
-          
-            m_bufferOffset+= bytesToWrite;
+
+            m_bufferOffset += bytesToWrite;
             return bytesToWrite;
         }
         protected string getCachedFilename(string originalFilename)
@@ -323,13 +354,13 @@ namespace NetJobTransfer
             do
             {
                 ReadFromStream();
-                bytesLeft -= SaveBufferToFile(outputFile,bytesLeft);
+                bytesLeft -= SaveBufferToFile(outputFile, bytesLeft);
             } while (bytesLeft > 0);
             outputFile.Close();
 
         }
     }
-    public class Shepherd: CJobDispatcher
+    public class Shepherd : CJobDispatcher
     {
         public void SendJobQuery(NetworkStream netStream, CJob job)
         {
@@ -355,9 +386,19 @@ namespace NetJobTransfer
 
             return true;//if job result properly received. For now, we will assume it}
         }
+
+
     }
-    public class HerdAgent: CJobDispatcher
+    public class HerdAgent : CJobDispatcher
     {
+        private CancellationTokenSource cts;
+        private IPEndPoint master;
+
+        public void CancelRunningProcesses()
+        {
+            if (cts != null)
+                cts.Cancel();
+        }
         public void SendJobResult(NetworkStream netStream)
         {
             m_netStream = netStream;
@@ -370,10 +411,11 @@ namespace NetJobTransfer
         public bool ReceiveJobQuery(NetworkStream netStream)
         {
             m_netStream = netStream;
-            m_bufferOffset= 0;
-            m_bytesInBuffer= 0;
+            m_bufferOffset = 0;
+            m_bytesInBuffer = 0;
 
             ReceiveJobHeader();
+            //ReceiveJobArgs();
             ReceiveExeFiles(true);
             ReceiveInputFiles(true);
             ReceiveOutputFiles(false);
@@ -381,25 +423,147 @@ namespace NetJobTransfer
 
             return true;//if job query properly received. For now, we will assume it
         }
+        private void runOneProcess(Process p, NamedPipeServerStream server, CancellationToken ct)
+        {
+
+            ProcessStartInfo startInfo = new ProcessStartInfo();
+            
+
+            //not to read 23.232 as 23232
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            //Task.Delay(1000).Wait();
+
+
+          
+            p.Start();
+            //Process.Start(startInfo);
+            server.WaitForConnection();
+            StreamReader reader = new StreamReader(server);
+           
+            while (server.IsConnected)
+            {
+                string sms = reader.ReadLine();
+                XmlDocument xml = new XmlDocument();
+                if (sms != null)
+                {
+                    xml.LoadXml(sms);
+                    XmlNode node = xml.DocumentElement;
+                    if (node.Name == "Progress")
+                    {
+                        double progress = Convert.ToDouble(node.InnerText);
+                        int status = Convert.ToInt32(progress);
+
+                        if (progress == 100.0)
+                        {
+                            //reading = false;
+                             string SMS = "Finished";
+
+                        }
+                    }
+                    else if (node.Name == "Message")
+                    {
+                        //process.addMessage(node.InnerText);
+                        string sms2 = node.InnerText;
+
+                    }
+                    
+                }
+                else
+                {
+
+                }
+
+            }
+            //ids.Remove(p);
+            reader.Close();
+            //readers.Remove(reader);
+            server.Close();
+            //readers.Remove(server);
+        }
+       
         public void RunJob()
         {
-            Process myProcess = new Process();
+            cts = new CancellationTokenSource();
+            ParallelOptions po = new ParallelOptions();
+            po.CancellationToken = cts.Token;
+            //var t = Task.Factory.StartNew(() =>
+            //{
+                Parallel.ForEach(m_job.comLineArgs, po, (args) =>
+                {
+                    using (cts.Token.Register(Thread.CurrentThread.Abort))
+                    {
+                        string[] arguments = args.Split(' ');
+                        NamedPipeServerStream server = null;
+                        if (arguments.Length > 1)
+                        {
+                            server = new NamedPipeServerStream(arguments[1]);
+                        }
+                            
+                        Process myProcess = new Process();
+                       
+                        try
+                        {
+                              
+                            myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
+                            myProcess.StartInfo.Arguments = args;
+                            myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+                            Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                            runOneProcess(myProcess, server, cts.Token);
+                            Console.WriteLine("Exit code: " + myProcess.ExitCode);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (myProcess != null && !myProcess.HasExited)
+                            {
+                                myProcess.Kill();
+                                myProcess.Dispose();
+                            }
+                        }
 
-            myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
-            foreach(List<string> listOfArgs in m_job.comLineArgs)
-            {
-                string args = "";
-                foreach (string arg in listOfArgs)
-                    args += arg + " ";
-                myProcess.StartInfo.Arguments = args;
-                myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-                myProcess.Start();
-                myProcess.WaitForExit();
-                Console.WriteLine("Exit code: " + myProcess.ExitCode);
+                    }
+                });
+
+           // }, cts.Token);          
+          //  t.Wait();
             }
-            //myProcess.StartInfo.Arguments = m_job.comLineArgs;
-           
+        }
+        public class UdpState
+        {
+            public IPEndPoint e { get; set; }
+            public UdpClient u { get; set; }
+        }
+        public class PipesBridgeClient
+        {
+            private HerdAgent myHerdAgent;
+
+            public PipesBridgeClient(IPAddress server, HerdAgent agent)
+            {
+                myHerdAgent = agent;
+                server = IPAddress.Any;
+                IPEndPoint e = new IPEndPoint(server, 8888);
+                UdpClient u = new UdpClient(e);
+                UdpState s = new UdpState();
+                s.e = e;
+                s.u = u;
+                Console.WriteLine("listening for messages");
+                u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
+            }
+            private void ReceiveCallback(IAsyncResult ar)
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
+                    IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
+
+                    Byte[] receiveBytes = u.EndReceive(ar, ref e);
+                    string receiveString = Encoding.ASCII.GetString(receiveBytes);
+                    if (receiveString.Equals("QUIT"))
+                    {
+                        myHerdAgent.CancelRunningProcesses();
+                    }
+                });
+            }
         }
     }
-}
+
+    

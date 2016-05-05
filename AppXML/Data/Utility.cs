@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Net.Sockets;
 using System.Net;
 using NetJobTransfer;
+using System.Threading;
 
 
 namespace AppXML.Data
@@ -25,48 +26,69 @@ namespace AppXML.Data
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
 
-
-        public static void method(List<string> filenames)
+        public static Dictionary<IPEndPoint,int> getSlaves(out int cores)
         {
-            AgentState m_state;
+            Dictionary<IPEndPoint,int> myList = null;
+            cores = 0;
+            //firs send discovery message
             UdpClient m_discoverySocket;
-            Shepherd shepherd = new Shepherd();
-            m_discoverySocket = new UdpClient();//(m_discoveryPortShepherd);
-
-            var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
-            TcpSocket.Start();
-
-            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
-            var ServerEp = new IPEndPoint(IPAddress.Any, CJobDispatcher.m_discoveryPortHerd);
-
+            m_discoverySocket = new UdpClient();
             m_discoverySocket.EnableBroadcast = true;
+            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
             System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
             m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
-            //IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
-            //string tmp = Encoding.ASCII.GetString(m_discoverySocket.Receive(ref xxx));
+            System.Threading.Thread.Sleep(10000);
+            Task t = Task.Factory.StartNew(() => 
+            {
+                try
+                {
+                    myList = new Dictionary<IPEndPoint, int>();
+                    IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
+                    for (; ; )
+                    {
+                        string tmp = Encoding.ASCII.GetString(m_discoverySocket.Receive(ref xxx));
+                        if(!myList.ContainsKey(xxx))
+                        {
+                            myList.Add(xxx, Int32.Parse(XElement.Parse(tmp).Value));
+                        }
+                        //Console.WriteLine(tmp);
 
-            // to do: leer las conexiones que se reciben y ordenarlas en base al nuemro de cores disponibles
-            // en la linea de comandos hay que añadir el nombre del pipe y puentearlo
+                    }
+                }
+                catch
+                {
+
+                }
+               
+            });
+            t.Wait(3000);
+            m_discoverySocket.Close();
+            cores = myList.Values.ToList().Sum(od => od); 
+            if (myList != null && myList.Count > 1)
+            {
+                 return (from entry in myList orderby entry.Value ascending select entry).ToDictionary(x => x.Key, x => x.Value);
+            }
+            return myList;
+        }
+        public static void method(List<string> filenames)
+        {
+           
+            Shepherd shepherd = new Shepherd();
+            var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
+            TcpSocket.Start();
             using (TcpClient comSocket = TcpSocket.AcceptTcpClient())
             {
                 using (NetworkStream netStream = comSocket.GetStream())
                 {
-                    CJob job = new CJob();
-                    job.name = "xxxxx";
-                    job.exeFile = "..\\Debug\\RLSimion.exe";
-                    foreach(string filename in filenames)
-                    {
-                        List<string> tmp = new List<string>();
-                        tmp.Add(filename);
-                        // add pipename
-                        job.comLineArgs.Add(tmp);
-                        job.inputFiles.Add(filename);
-                        Utility.getInputsAndOutputs(filename,ref job);
-                    }
                     
                     
-                    // job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
-                    shepherd.SendJobQuery(netStream, job);
+                    
+              
+                    //shepherd.SendJobQuery(netStream, job);
+                    Thread.Sleep(20000);
+                   
+                    //System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
+                    //aborter.Send(RequestData2, RequestData2.Length, new IPEndPoint(IPAddress.Broadcast,8888));
                     shepherd.ReceiveJobResult(netStream);
                 }
                 comSocket.Close();
@@ -76,10 +98,10 @@ namespace AppXML.Data
             //var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
             //Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
 
-            m_discoverySocket.Close();
+            //m_discoverySocket.Close();
         }
 
-        private static void getInputsAndOutputs(string path, ref CJob job)
+        public static void getInputsAndOutputs(string path, ref CJob job)
         {
             StringBuilder myResult = new StringBuilder(204800);
             int error = getIOFiles(path, myResult, 204800);
