@@ -17,6 +17,7 @@ using Caliburn.Micro;
 using NetJobTransfer;
 using AppXML.Data;
 using System.Net.Sockets;
+using System.Xml.Linq;
 
 namespace AppXML.ViewModels
 {
@@ -138,18 +139,27 @@ namespace AppXML.ViewModels
         }
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
+            Task.Factory.StartNew(() => {
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             //hay que preparar cada trabajo y lanzarlo
             CJob job = new CJob();
             job.name = "xxxxx";
             job.exeFile = Models.CApp.EXE;
+            Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
             foreach (ProcessStateViewModel process in processes)
             {
                 job.comLineArgs.Add(process.Label + " "+ process.pipeName);
                 job.inputFiles.Add(process.Label);
                 Utility.getInputsAndOutputs(process.Label, ref job);
                 process.SMS="RUNNING REMOTELY";
+
+                myPipes.Add(process.pipeName, process);
+
             }
+            
             Shepherd shepherd = new Shepherd();
+            
+            
             var TcpSocket = new TcpClient();
             Thread.Sleep(2000);
             TcpSocket.Connect(endPoint.Address, 4444);
@@ -159,10 +169,47 @@ namespace AppXML.ViewModels
                     byte[] youHaveToWork=Encoding.ASCII.GetBytes("You are mine\n");
                     netStream.Write(youHaveToWork, 0, youHaveToWork.Length);
                     shepherd.SendJobQuery(netStream, job);
+                    for (; ; )
+                    {
+                        byte[] sms = new byte[256];
+                        int count = netStream.Read(sms, 0, 256);
+                        if(count<=1024)
+                        {
+                            byte[] xmlSms = new byte[count];
+                            Array.Copy(sms, xmlSms, count);
+                            if (Encoding.ASCII.GetString(xmlSms).Equals("There is no more data"))
+                                break;
+                            else
+                            {
+                                XmlDocument doc = new XmlDocument();
+                                doc.LoadXml(Encoding.ASCII.GetString(xmlSms));
+                                XmlNode e = doc.DocumentElement;
+                                string key = e.Name;
+                                XmlNode message = e.FirstChild;
+                                if (message.Name == "Progress")
+                                {
+                                    double progress = Convert.ToDouble(message.InnerText);
+                                    myPipes[key].Status = Convert.ToInt32(progress);
+                                }
+                                else if (message.Name == "Message")
+                                {
+                                    myPipes[key].addMessage(message.InnerText);
+
+                                }
+                                
+                                
+
+                               
+                            }
+                        }
+                        
+                 
+                    }
                     shepherd.ReceiveJobResult(netStream);
                 }
                 TcpSocket.Close();
             }
+            });
 
         }
         public void run(IEnumerable<ProcessStateViewModel> Processes)

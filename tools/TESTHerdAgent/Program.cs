@@ -78,7 +78,9 @@ namespace TESTHerdAgent
                     herdAgent = new HerdAgent();
                     if (herdAgent.ReceiveJobQuery(netStream))
                     {
-                        herdAgent.RunJob();
+                        herdAgent.RunJob(netStream);
+                        byte[] stopM= Encoding.ASCII.GetBytes("There is no more data");
+                        netStream.Write(stopM, 0, stopM.Length);
                         herdAgent.SendJobResult(netStream);
                     }
                 }

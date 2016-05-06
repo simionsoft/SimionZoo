@@ -423,7 +423,7 @@ namespace NetJobTransfer
 
             return true;//if job query properly received. For now, we will assume it
         }
-        private void runOneProcess(Process p, NamedPipeServerStream server, CancellationToken ct)
+        private void runOneProcess(Process p,string pipeName, NamedPipeServerStream server, CancellationToken ct,NetworkStream bridge)
         {
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -439,40 +439,33 @@ namespace NetJobTransfer
             //Process.Start(startInfo);
             server.WaitForConnection();
             StreamReader reader = new StreamReader(server);
-           
+
             while (server.IsConnected)
             {
                 string sms = reader.ReadLine();
-                XmlDocument xml = new XmlDocument();
                 if (sms != null)
                 {
-                    xml.LoadXml(sms);
-                    XmlNode node = xml.DocumentElement;
-                    if (node.Name == "Progress")
+                    //we have to add a header or new root to this sms, otherwise the master will not be able to know who is the reciever
+                    byte[] message = Encoding.ASCII.GetBytes("<" + pipeName + ">" + sms + "</" + pipeName + ">");
+                    byte[] fixedSMS = new byte[256];
+                    for (int i = 0; i < fixedSMS.Length; i++)
                     {
-                        double progress = Convert.ToDouble(node.InnerText);
-                        int status = Convert.ToInt32(progress);
-
-                        if (progress == 100.0)
-                        {
-                            //reading = false;
-                             string SMS = "Finished";
-
-                        }
+                        fixedSMS[i] = 32;
                     }
-                    else if (node.Name == "Message")
+                    if(message.Length>256)
                     {
-                        //process.addMessage(node.InnerText);
-                        string sms2 = node.InnerText;
-
+                        int bytesToRemove = message.Length-256;
+                        
+                    }
+                    else
+                    {
+                        Array.Copy(message, fixedSMS, message.Length);
+                        bridge.Write(fixedSMS, 0, fixedSMS.Length);
                     }
                     
-                }
-                else
-                {
+                    
 
                 }
-
             }
             //ids.Remove(p);
             reader.Close();
@@ -481,7 +474,7 @@ namespace NetJobTransfer
             //readers.Remove(server);
         }
        
-        public void RunJob()
+        public void RunJob(NetworkStream bridgeStream)
         {
             cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
@@ -493,12 +486,7 @@ namespace NetJobTransfer
                     using (cts.Token.Register(Thread.CurrentThread.Abort))
                     {
                         string[] arguments = args.Split(' ');
-                        NamedPipeServerStream server = null;
-                        if (arguments.Length > 1)
-                        {
-                            server = new NamedPipeServerStream(arguments[1]);
-                        }
-                            
+                        NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
                         Process myProcess = new Process();
                        
                         try
@@ -508,7 +496,7 @@ namespace NetJobTransfer
                             myProcess.StartInfo.Arguments = args;
                             myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
                             Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-                            runOneProcess(myProcess, server, cts.Token);
+                            runOneProcess(myProcess, arguments[1],server, cts.Token,bridgeStream);
                             Console.WriteLine("Exit code: " + myProcess.ExitCode);
                         }
                         catch (Exception ex)
