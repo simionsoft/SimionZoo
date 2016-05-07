@@ -69,13 +69,12 @@ namespace AppXML.ViewModels
                     }
                     else
                     {
-                        bool isOk = true;
                         double proportion = (double)Processes.Count/totalCores;
                         if (cts == null)
                             cts = new CancellationTokenSource();
                         ParallelOptions po = new ParallelOptions();
                         po.CancellationToken = cts.Token;
-                        Task t =Task.Factory.StartNew(() => {
+                        Task.Factory.StartNew(() => { 
                         Parallel.ForEach(slaves.Keys, po, (key) =>
                                                 {
                                                     if (index == Processes.Count)
@@ -110,16 +109,14 @@ namespace AppXML.ViewModels
                                                             }
                                                             catch (Exception ex)
                                                             {
-                                                                isOk = false;
+                                                                //stop the job
                                                             }
 
                                                         }
                                                     }
                                                     
                                                 });
-                           
                         });
-                       
                        
                       
                     }
@@ -128,7 +125,6 @@ namespace AppXML.ViewModels
                
                
             }
-           
         }
         public void addProcess(ProcessStateViewModel process)
         {
@@ -192,10 +188,7 @@ namespace AppXML.ViewModels
                                 XmlNode message = e.FirstChild;
                                 if (message.Name == "Progress")
                                 {
-
                                     double progress = Convert.ToDouble(message.InnerText);
-                                    if (progress == 100)
-                                        myPipes[key].SMS="Process has finished. Result has to be send";
                                     myPipes[key].Status = Convert.ToInt32(progress);
                                 }
                                 else if (message.Name == "Message")
@@ -213,23 +206,12 @@ namespace AppXML.ViewModels
                  
                     }
                     shepherd.ReceiveJobResult(netStream);
-                    foreach (ProcessStateViewModel p in myPipes.Values)
-                    {
-                        if (p.Status == 100) 
-                            p.SMS = "Data was received";
-                        else
-                            p.SMS="An error ocurred during the experiment";
-                    }
-                        
-                    
                 }
                 TcpSocket.Close();
             }
             });
 
         }
-
-        
         public void run(IEnumerable<ProcessStateViewModel> Processes)
         {
             isWorking = true;

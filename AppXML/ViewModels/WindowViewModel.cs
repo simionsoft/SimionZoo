@@ -574,7 +574,7 @@ namespace AppXML.ViewModels
             Task.Factory.StartNew(() => { pwvm.run(); });
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-            settings.ShowInTaskbar = true;
+            settings.ShowInTaskbar = false;
             settings.Title = "Process Manager";
             ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
             new WindowManager().ShowDialog(pwvm2, null, settings);

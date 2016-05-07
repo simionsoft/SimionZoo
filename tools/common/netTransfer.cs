@@ -74,14 +74,7 @@ namespace NetJobTransfer
 
         protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
         protected void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent, false); }
-        protected void SendOutputFiles(bool sendContent)
-        {
-            foreach (string file in m_job.outputFiles)
-            {
-                if (File.Exists(file))
-                    SendFile(file, FileType.OUTPUT, sendContent, true);
-            }
-        }
+        protected void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent, true); }
         protected void SendJobHeader()
         {
             string header = "<Job Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
