@@ -28,6 +28,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<ProcessStateViewModel> _processes;
         private List<Process> ids = new List<Process>();
         private List<object> readers = new List<object>();
+        private List<IPEndPoint> canceler;
         public ObservableCollection<ProcessStateViewModel> Processes
         {
             get { return _processes; }
@@ -69,6 +70,10 @@ namespace AppXML.ViewModels
                     }
                     else
                     {
+                        if (canceler == null)
+                            canceler = new List<IPEndPoint>(slaves.Keys);
+                        else
+                            canceler.Clear();
                         double proportion = (double)Processes.Count/totalCores;
                         if (cts == null)
                             cts = new CancellationTokenSource();
@@ -106,6 +111,8 @@ namespace AppXML.ViewModels
                                                             try
                                                             {
                                                                 runOneJob(myPro, key, cts.Token);
+                                                                foreach (ProcessStateViewModel p in myPro)
+                                                                    p.SMS = "Files received";
                                                             }
                                                             catch (Exception ex)
                                                             {
@@ -139,20 +146,19 @@ namespace AppXML.ViewModels
         }
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
+            Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
             Task.Factory.StartNew(() => {
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             //hay que preparar cada trabajo y lanzarlo
             CJob job = new CJob();
             job.name = "xxxxx";
             job.exeFile = Models.CApp.EXE;
-            Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
             foreach (ProcessStateViewModel process in processes)
             {
                 job.comLineArgs.Add(process.Label + " "+ process.pipeName);
                 job.inputFiles.Add(process.Label);
                 Utility.getInputsAndOutputs(process.Label, ref job);
                 process.SMS="RUNNING REMOTELY";
-
                 myPipes.Add(process.pipeName, process);
 
             }
@@ -190,6 +196,8 @@ namespace AppXML.ViewModels
                                 {
                                     double progress = Convert.ToDouble(message.InnerText);
                                     myPipes[key].Status = Convert.ToInt32(progress);
+                                    if (progress == 100)
+                                        myPipes[key].SMS = "The experiment has been completed";
                                 }
                                 else if (message.Name == "Message")
                                 {
@@ -206,10 +214,13 @@ namespace AppXML.ViewModels
                  
                     }
                     shepherd.ReceiveJobResult(netStream);
+                    
                 }
                 TcpSocket.Close();
             }
+                
             });
+            
 
         }
         public void run(IEnumerable<ProcessStateViewModel> Processes)
@@ -231,6 +242,7 @@ namespace AppXML.ViewModels
                                                         try
                                                         {
                                                             runOneProcess(process,p,server,cts.Token);
+                                                            
                                                         }
                                                         catch (Exception ex)
                                                         {
@@ -343,7 +355,17 @@ namespace AppXML.ViewModels
         internal void closeAll()
         {
             if(cts!=null)
-                cts.Cancel();                           
+                cts.Cancel();   
+            if(canceler!=null)
+            {
+                foreach(IPEndPoint ip in canceler)
+                {
+                    UdpClient m_discoverySocket;
+                    m_discoverySocket = new UdpClient();
+                    var RequestData = Encoding.ASCII.GetBytes("QUIT");
+                    m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(ip.Address, CJobDispatcher.m_discoveryPortHerd));
+                }
+            }
 
         }
     }

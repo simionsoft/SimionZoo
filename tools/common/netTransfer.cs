@@ -33,7 +33,7 @@ namespace NetJobTransfer
             outputFiles = new List<string>();
         }
     }
-    public enum AgentState { BUSY, AVAILABLE, DISCOVERED };
+    public enum AgentState { BUSY, AVAILABLE, DISCOVERED,CANCELING };
     public enum FileType { EXE, INPUT, OUTPUT };
     public class CJobDispatcher
     {
@@ -514,11 +514,19 @@ namespace NetJobTransfer
            // }, cts.Token);          
           //  t.Wait();
             }
+
+        public void stop()
+        {
+            if(cts!=null)
+                cts.Cancel();
         }
+    }
         public class UdpState
         {
             public IPEndPoint e { get; set; }
             public UdpClient u { get; set; }
+            public HerdAgent c { get; set; }
+            public AgentState st { get; set; }
         }
         public class PipesBridgeClient
         {
