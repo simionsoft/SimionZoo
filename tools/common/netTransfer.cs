@@ -166,9 +166,9 @@ namespace NetJobTransfer
                 headerBytes = Encoding.ASCII.GetBytes(header);
                 m_netStream.Write(headerBytes, 0, headerBytes.Length);
 
-                //Send the footer: </Exe>, </Input> or </Output>
-                byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
-                m_netStream.Write(footerBytes, 0, footerBytes.Length);
+                ////Send the footer: </Exe>, </Input> or </Output>
+                //byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
+                //m_netStream.Write(footerBytes, 0, footerBytes.Length);
 
                 m_netStream.Flush();
             }
