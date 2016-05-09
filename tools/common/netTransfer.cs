@@ -178,7 +178,7 @@ namespace NetJobTransfer
         {
             return Encoding.ASCII.GetString(m_buffer);
         }
-        public string markBytesAsProcessed(int numBytesProcessed)
+        public void markBytesAsProcessed(int numBytesProcessed)
         {
             m_bufferOffset += numBytesProcessed;
         }
