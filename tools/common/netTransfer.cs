@@ -414,6 +414,9 @@ namespace NetJobTransfer
             m_netStream = netStream;
             m_bufferOffset = 0;
             m_bytesInBuffer = 0;
+            m_job.comLineArgs.Clear();
+            m_job.inputFiles.Clear();
+            m_job.outputFiles.Clear();
 
             ReceiveJobHeader();
             ReceiveExeFiles(false);
