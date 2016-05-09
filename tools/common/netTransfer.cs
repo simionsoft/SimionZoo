@@ -174,8 +174,15 @@ namespace NetJobTransfer
             }
 
         }
-
-        protected void ReadFromStream()
+        public string GetBufferAsString()
+        {
+            return Encoding.ASCII.GetString(m_buffer);
+        }
+        public string markBytesAsProcessed(int numBytesProcessed)
+        {
+            m_bufferOffset += numBytesProcessed;
+        }
+        public void ReadFromStream()
         {
             int bytesLeftToProcess = m_bytesInBuffer - m_bufferOffset;
             //something left to process in the buffer?
