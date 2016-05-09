@@ -47,8 +47,8 @@ namespace TESTShepherd
                     CJob job = new CJob();
                     job.name = filename;
                     job.exeFile = "..\\Debug\\RLSimion.exe";
-                    job.comLineArgs = filename;
-                    job.inputFiles.Add(job.comLineArgs);
+                    job.comLineArgs.Add(filename);
+                    job.inputFiles.Add(filename);
                     List<string> inputs = Utility.getInputs(filename);
                     if(inputs==null)
                         return;

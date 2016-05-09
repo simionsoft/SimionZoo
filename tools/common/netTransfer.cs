@@ -60,6 +60,7 @@ namespace NetJobTransfer
         protected CJob m_job;
         protected int m_numInputFilesRead;
         protected int m_numOutputFilesRead;
+        protected int m_numTasksRead;
 
         public CJobDispatcher()
         {
@@ -68,6 +69,9 @@ namespace NetJobTransfer
             m_bytesInBuffer = 0;
             m_bufferOffset = 0;
             m_nextFileSize = 0;
+            m_numInputFilesRead = 0;
+            m_numOutputFilesRead = 0;
+            m_numTasksRead = 0;
             m_tempDir = "c:\\temp";
         }
 
@@ -77,15 +81,15 @@ namespace NetJobTransfer
         protected void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent, true); }
         protected void SendJobHeader()
         {
-            string header = "<Job Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
+            string header = "<Job Name=\"" + m_job.name + "\" NumTasks=\"" 
+                + m_job.comLineArgs.Count + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
                 + m_job.outputFiles.Count + "\">";
-            string args = "<Args>";// Name=\"" + m_job.name + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
-            //+ m_job.outputFiles.Count + "\">";
+            string args = "";// "<Args>";
             foreach (string arg in m_job.comLineArgs)
             {
                 args += "<Arg>" + arg + "</Arg>";
             }
-            args += "</Args>";
+           // args += "</Args>";
             header += args;
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             m_netStream.Write(headerbytes, 0, headerbytes.Length);
@@ -187,35 +191,53 @@ namespace NetJobTransfer
         protected void ReceiveJobHeader()
         {
             Match match;
+            string header;
 
             do
             {
                 ReadFromStream();
-                string header = Encoding.ASCII.GetString(m_buffer);
-                string[] headerAndArgs = header.Split(new string[] { "<Args>", "</Args>" }, StringSplitOptions.None);
-                header = headerAndArgs[0];
-                string args = null;
-                if (headerAndArgs.Length > 1)
-                {
+                header = Encoding.ASCII.GetString(m_buffer);
+                //string[] headerAndArgs = header.Split(new string[] { "<Args>", "</Args>" }, StringSplitOptions.None);
+                //header = headerAndArgs[0];
+                //string args = null;
+                //if (headerAndArgs.Length > 1)
+                //{
 
-                    XElement[] argsE = XDocument.Parse("<args>" + headerAndArgs[1] + "</args>")
-                    .Descendants()
-                    .Where(e => e.Name == "Arg")
-                    .ToArray();
-                    foreach (XElement arg in argsE)
-                    {
-                        m_job.comLineArgs.Add(arg.Value);
-                    }
-                }
-                Console.WriteLine(args);
-                match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
+                //    XElement[] argsE = XDocument.Parse("<args>" + headerAndArgs[1] + "</args>")
+                //    .Descendants()
+                //    .Where(e => e.Name == "Arg")
+                //    .ToArray();
+                //    foreach (XElement arg in argsE)
+                //    {
+                //        m_job.comLineArgs.Add(arg.Value);
+                //    }
+                //}
+                //Console.WriteLine(args);
+                match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumTasks=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
             }
             while (!match.Success);
 
+
+
+
             m_job.name = match.Groups[1].Value;
-            m_numInputFilesRead = Int32.Parse(match.Groups[2].Value);
-            m_numOutputFilesRead = Int32.Parse(match.Groups[3].Value);
+            m_numTasksRead = Int32.Parse(match.Groups[2].Value);
+            m_numInputFilesRead = Int32.Parse(match.Groups[3].Value);
+            m_numOutputFilesRead = Int32.Parse(match.Groups[4].Value);
             m_bufferOffset += match.Index + match.Length;
+
+            //read arguments
+            for (int i = 0; i < m_numTasksRead; i++)
+            {
+                ReadFromStream();
+                header = Encoding.ASCII.GetString(m_buffer);
+
+                match = Regex.Match(header, "<Arg>([^<]*)</Arg>");
+
+                m_job.comLineArgs.Add(match.Groups[1].Value);
+                m_bufferOffset += match.Index + match.Length;
+            }
+
             ReadFromStream(); //we shift the buffer to the left skipping the processed header
         }
 
@@ -223,10 +245,11 @@ namespace NetJobTransfer
         {
             Match match;
 
-            string header = Encoding.ASCII.GetString(m_buffer);
+            string header;
             do
             {
                 ReadFromStream();
+                header= Encoding.ASCII.GetString(m_buffer);
                 match = Regex.Match(header, "</Job>");
             }
             while (!match.Success);
