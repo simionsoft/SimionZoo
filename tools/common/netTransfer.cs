@@ -260,6 +260,7 @@ namespace NetJobTransfer
                 match = Regex.Match(header, "</Job>");
             }
             while (!match.Success);
+            m_bufferOffset += match.Index + match.Length;
         }
         protected void ReceiveExeFiles(bool receiveContent) { ReceiveFile(FileType.EXE, receiveContent, true); }
         protected void ReceiveInputFiles(bool receiveContent)
