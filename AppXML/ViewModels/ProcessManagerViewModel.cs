@@ -111,12 +111,12 @@ namespace AppXML.ViewModels
                                                             try
                                                             {
                                                                 runOneJob(myPro, key, cts.Token);
-                                                                foreach (ProcessStateViewModel p in myPro)
-                                                                    p.SMS = "Files received";
                                                             }
                                                             catch (Exception ex)
                                                             {
                                                                 //stop the job
+                                                                Console.WriteLine(ex.StackTrace);
+
                                                             }
 
                                                         }
