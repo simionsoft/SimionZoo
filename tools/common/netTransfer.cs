@@ -389,6 +389,7 @@ namespace NetJobTransfer
             } while (bytesLeft > 0);
             outputFile.Close();
 
+            ReadFromStream(); //discard processed data
         }
     }
     public class Shepherd : CJobDispatcher
