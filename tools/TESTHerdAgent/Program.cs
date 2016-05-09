@@ -99,7 +99,13 @@ namespace TESTHerdAgent
                         if (herdAgent.ReceiveJobQuery(netStream))
                         {
                             herdAgent.RunJob(netStream);
-                            byte[] stopM = Encoding.ASCII.GetBytes("There is no more data");
+                            byte[] stopM = new byte[256];
+                            for (int i = 0; i < stopM.Length; i++)
+                                stopM[i] = 32;
+                            byte [] tmp=Encoding.ASCII.GetBytes("There is no more data");
+                            Array.Copy(tmp, stopM, tmp.Length);
+
+                                
                             netStream.Write(stopM, 0, stopM.Length);
                             herdAgent.SendJobResult(netStream);
                         }

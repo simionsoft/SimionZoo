@@ -184,7 +184,7 @@ namespace AppXML.ViewModels
                         {
                             byte[] xmlSms = new byte[count];
                             Array.Copy(sms, xmlSms, count);
-                            if (Encoding.ASCII.GetString(xmlSms).Equals("There is no more data"))
+                            if (Encoding.ASCII.GetString(xmlSms).StartsWith("There is no more data"))
                                 break;
                             else
                             {
