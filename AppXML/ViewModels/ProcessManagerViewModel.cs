@@ -49,9 +49,9 @@ namespace AppXML.ViewModels
         public void run()
         {
             int coreNumbers = Environment.ProcessorCount;
-            /*if(coreNumbers>=_processes.Count)
+            if(coreNumbers>=_processes.Count)
                 run(new List<ProcessStateViewModel>(Processes));
-            else*/
+            else
             {
                 //antes de nada se lanzan los n primero experimentos
                 int index = 0;               
