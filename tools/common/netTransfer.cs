@@ -210,22 +210,7 @@ namespace NetJobTransfer
             {
                 ReadFromStream();
                 header = Encoding.ASCII.GetString(m_buffer);
-                //string[] headerAndArgs = header.Split(new string[] { "<Args>", "</Args>" }, StringSplitOptions.None);
-                //header = headerAndArgs[0];
-                //string args = null;
-                //if (headerAndArgs.Length > 1)
-                //{
 
-                //    XElement[] argsE = XDocument.Parse("<args>" + headerAndArgs[1] + "</args>")
-                //    .Descendants()
-                //    .Where(e => e.Name == "Arg")
-                //    .ToArray();
-                //    foreach (XElement arg in argsE)
-                //    {
-                //        m_job.comLineArgs.Add(arg.Value);
-                //    }
-                //}
-                //Console.WriteLine(args);
                 match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumTasks=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
             }
             while (!match.Success);
@@ -468,7 +453,7 @@ namespace NetJobTransfer
         {
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            
+            Object lockObject= new Object();
 
             //not to read 23.232 as 23232
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -477,42 +462,52 @@ namespace NetJobTransfer
 
           
             p.Start();
-            //Process.Start(startInfo);
-            server.WaitForConnection();
-            StreamReader reader = new StreamReader(server);
 
+            server.WaitForConnection();
+            XMLStreamReader xmlStreamReader= new XMLStreamReader();
+            
+            //StreamReader reader = new StreamReader(server);
+            byte[] message;
+            string xmlItem;
             while (server.IsConnected)
             {
-                string sms = reader.ReadLine();
-                if (sms != null)
+                xmlStreamReader.readFromNamedPipeStream(server);
+                //string sms = reader.ReadLine();
+                xmlItem= xmlStreamReader.processNextXMLItem();
+                if (xmlItem != "")
                 {
-                    //we have to add a header or new root to this sms, otherwise the master will not be able to know who is the reciever
-                    byte[] message = Encoding.ASCII.GetBytes("<" + pipeName + ">" + sms + "</" + pipeName + ">");
-                    byte[] fixedSMS = new byte[256];
-                    for (int i = 0; i < fixedSMS.Length; i++)
+                    message = Encoding.ASCII.GetBytes("<" + xmlItem + ">");
+                    lock(lockObject)
                     {
-                        fixedSMS[i] = 32;
+                        bridge.Write(message, 0, message.Length);
                     }
-                    if(message.Length>256)
-                    {
-                        int bytesToRemove = message.Length-256;
-                        
-                    }
-                    else
-                    {
-                        Array.Copy(message, fixedSMS, message.Length);
-                        bridge.Write(fixedSMS, 0, fixedSMS.Length);
-                    }
-                    
-                    
-
                 }
+                //if (sms != null)
+                //{
+                //    //we have to add a header or new root to this sms, otherwise the master will not be able to know who is the reciever
+                //    byte[] message = Encoding.ASCII.GetBytes("<" + pipeName + ">" + sms + "</" + pipeName + ">");
+                //    byte[] fixedSMS = new byte[256];
+                //    for (int i = 0; i < fixedSMS.Length; i++)
+                //    {
+                //        fixedSMS[i] = 32;
+                //    }
+                //    if(message.Length>256)
+                //    {
+                //        int bytesToRemove = message.Length-256;
+                        
+                //    }
+                //    else
+                //    {
+                //        Array.Copy(message, fixedSMS, message.Length);
+                //        bridge.Write(fixedSMS, 0, fixedSMS.Length);
+                //    }
+                //}
             }
-            //ids.Remove(p);
-            reader.Close();
-            //readers.Remove(reader);
+
+            //reader.Close();
+
             server.Close();
-            //readers.Remove(server);
+
         }
        
         public void RunJob(NetworkStream bridgeStream)
@@ -562,45 +557,105 @@ namespace NetJobTransfer
                 cts.Cancel();
         }
     }
-        public class UdpState
+    public class UdpState
+    {
+        public IPEndPoint e { get; set; }
+        public UdpClient u { get; set; }
+        public HerdAgent c { get; set; }
+        public AgentState st { get; set; }
+    }
+    public class PipesBridgeClient
+    {
+        private HerdAgent myHerdAgent;
+
+        public PipesBridgeClient(IPAddress server, HerdAgent agent)
         {
-            public IPEndPoint e { get; set; }
-            public UdpClient u { get; set; }
-            public HerdAgent c { get; set; }
-            public AgentState st { get; set; }
+            myHerdAgent = agent;
+            server = IPAddress.Any;
+            IPEndPoint e = new IPEndPoint(server, 8888);
+            UdpClient u = new UdpClient(e);
+            UdpState s = new UdpState();
+            s.e = e;
+            s.u = u;
+            Console.WriteLine("listening for messages");
+            u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
         }
-        public class PipesBridgeClient
+        private void ReceiveCallback(IAsyncResult ar)
         {
-            private HerdAgent myHerdAgent;
+            Task.Factory.StartNew(() =>
+            {
+                UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
+                IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
 
-            public PipesBridgeClient(IPAddress server, HerdAgent agent)
-            {
-                myHerdAgent = agent;
-                server = IPAddress.Any;
-                IPEndPoint e = new IPEndPoint(server, 8888);
-                UdpClient u = new UdpClient(e);
-                UdpState s = new UdpState();
-                s.e = e;
-                s.u = u;
-                Console.WriteLine("listening for messages");
-                u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
-            }
-            private void ReceiveCallback(IAsyncResult ar)
-            {
-                Task.Factory.StartNew(() =>
+                Byte[] receiveBytes = u.EndReceive(ar, ref e);
+                string receiveString = Encoding.ASCII.GetString(receiveBytes);
+                if (receiveString.Equals("QUIT"))
                 {
-                    UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
-                    IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
-
-                    Byte[] receiveBytes = u.EndReceive(ar, ref e);
-                    string receiveString = Encoding.ASCII.GetString(receiveBytes);
-                    if (receiveString.Equals("QUIT"))
-                    {
-                        myHerdAgent.CancelRunningProcesses();
-                    }
-                });
-            }
+                    myHerdAgent.CancelRunningProcesses();
+                }
+            });
         }
     }
+    class XMLStreamReader
+    {
+        private int m_bufferOffset;
+        private int m_bytesInBuffer;
+        private byte [] m_buffer;
+        private Match m_match;
+        const int m_maxChunkSize= 1024;
+        private string m_asciiBuffer;
+
+        public XMLStreamReader()
+        {
+            m_buffer= new byte [m_maxChunkSize];
+        }
+        private void discardProcessedData()
+        { 
+            //shift left unprocessed bytes to discard processed data
+            if (m_bufferOffset != 0)
+            {
+                Buffer.BlockCopy(m_buffer, m_bufferOffset, m_buffer, 0, m_bytesInBuffer - m_bufferOffset);
+                m_bytesInBuffer = m_bytesInBuffer - m_bufferOffset;
+                m_bufferOffset = 0;
+            }
+        }
+        public void readFromNetworkStream(NetworkStream stream)
+        {
+            discardProcessedData();
+            //read if there's something to read and if we have available storage
+            if (stream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
+                m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+        }
+        public void readFromNamedPipeStream(NamedPipeServerStream stream)
+        {
+            discardProcessedData();
+            //read if there's something to read and if we have available storage
+            if (m_bytesInBuffer < m_maxChunkSize)
+                m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+        }
+
+        //returns the next complete xml element (NO ATTRIBUTES!!) in the stream
+        //empty string if there was none
+        public string processNextXMLItem()
+        {
+            if (m_bytesInBuffer > 0)
+            {
+                 m_asciiBuffer= Encoding.ASCII.GetString(m_buffer,0,m_bytesInBuffer);
+
+                //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
+                ////this should return the whole message
+                m_match= Regex.Match(m_asciiBuffer,@"<([^>]*)>.*</(\1)>");
+
+                if (m_match.Success)
+                {
+                    m_bufferOffset += m_match.Index + m_match.Length;
+                    return m_match.Value;
+                }
+            }
+            return "";
+        }
+    }
+}
+
 
     

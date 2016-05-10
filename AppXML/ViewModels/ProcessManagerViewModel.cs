@@ -303,24 +303,24 @@ namespace AppXML.ViewModels
             //Process.Start(startInfo);
             this.ids.Add(p);
             server.WaitForConnection();
-            StreamReader reader = new StreamReader(server);
-            readers.Add(reader);
-            readers.Add(server);
+            XMLStreamReader xmlStreamReader = new XMLStreamReader();
+            string xmlItem;
+            XmlDocument xml = new XmlDocument();
+            //StreamReader reader = new StreamReader(server);
+            //readers.Add(reader); //<- mmmmm esto no sé si se puede quitar, es para probar nada más
+            //readers.Add(server);
             process.SMS = "Running";
             System.Windows.Forms.Application.DoEvents();
             //bool reading = true;
             while (server.IsConnected)
             {
-                byte[] sms = new byte[256];
-                int count = server.Read(sms, 0, 256);
-
-                XmlDocument xml = new XmlDocument();
                 try
                 {
-                    
-                    if (count>0 && sms != null)
+                    xmlStreamReader.readFromNamedPipeStream(server);
+                    xmlItem = xmlStreamReader.processNextXMLItem();
+                    if (xmlItem != "")
                     {
-                        xml.LoadXml(Encoding.ASCII.GetString(sms,0,count));
+                        xml.LoadXml(xmlItem);
                         XmlNode node = xml.DocumentElement;
                         if (node.Name == "Progress")
                         {
@@ -328,11 +328,7 @@ namespace AppXML.ViewModels
                             process.Status = Convert.ToInt32(progress);
 
                             if (progress == 100.0)
-                            {
-                                //reading = false;
                                 process.SMS = "Finished";
-
-                            }
                         }
                         else if (node.Name == "Message")
                         {
@@ -340,10 +336,6 @@ namespace AppXML.ViewModels
 
                         }
                         System.Windows.Forms.Application.DoEvents();
-                    }
-                    else
-                    {
-
                     }
                 }
                 catch
@@ -353,7 +345,7 @@ namespace AppXML.ViewModels
 
             }
             //ids.Remove(p);
-            reader.Close();
+            //reader.Close();
             //readers.Remove(reader);
             server.Close();
             //readers.Remove(server);
