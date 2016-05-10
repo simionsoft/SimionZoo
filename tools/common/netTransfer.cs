@@ -482,6 +482,7 @@ namespace NetJobTransfer
                     message = Encoding.ASCII.GetBytes(xmlItem);
                     lock(lockObject)
                     {
+                        xmlStream.writeMessage(bridge, "<" + pipeName + ">" + message + "</" + pipeName + ">", false);
                         bridge.Write(message, 0, message.Length);
                     }
                 }
