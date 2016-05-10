@@ -89,7 +89,7 @@ namespace AppXML.ViewModels
                                                         //Thread.Sleep(2000);
                                                         TcpSocket.Connect(key.Address, 4444);
                                                         NetworkStream netStream = TcpSocket.GetStream();
-                                                        byte[] youAreFree = Encoding.ASCII.GetBytes("You are free\n");
+                                                        byte[] youAreFree = Encoding.ASCII.GetBytes(CJobDispatcher.m_freeMessage);
                                                         netStream.Write(youAreFree, 0, youAreFree.Length);
                                                         netStream.Close();
                                                         netStream.Dispose();
@@ -175,41 +175,74 @@ namespace AppXML.ViewModels
             {
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
-                    byte[] youHaveToWork=Encoding.ASCII.GetBytes("You are mine\n");
-                    netStream.Write(youHaveToWork, 0, youHaveToWork.Length);
+                    XMLStream xmlStream = new XMLStream();
+                    xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage);
                     shepherd.SendJobQuery(netStream, job);
-                    for (; ; )
+                    string xmlItem;
+                    while(true)
                     {
-                        byte[] sms = new byte[256];
-                        int count = netStream.Read(sms, 0, 256);
-                        //if(count<=1024) //esto no puede pasar, no?
-                        {
-                            byte[] xmlSms = new byte[count];
-                            Array.Copy(sms, xmlSms, count);
-                            if (Encoding.ASCII.GetString(xmlSms).StartsWith("There is no more data"))
-                                break;
-                            else
-                            {
-                                XmlDocument doc = new XmlDocument();
-                                doc.LoadXml(Encoding.ASCII.GetString(xmlSms));
-                                XmlNode e = doc.DocumentElement;
-                                string key = e.Name;
-                                XmlNode message = e.FirstChild;
-                                if (message.Name == "Progress")
-                                {
-                                    double progress = Convert.ToDouble(message.InnerText);
-                                    myPipes[key].Status = Convert.ToInt32(progress);
-                                    if (progress == 100)
-                                        myPipes[key].SMS = "The experiment has been completed";
-                                }
-                                else if (message.Name == "Message")
-                                {
-                                    myPipes[key].addMessage(message.InnerText);
+                        xmlStream.readFromNetworkStream(netStream);
+                        xmlItem = xmlStream.processNextXMLItem();
 
-                                }
+                        if (xmlItem!="")
+                        {
+                            XmlDocument doc = new XmlDocument();
+                            doc.LoadXml(xmlItem);
+                            XmlNode e = doc.DocumentElement;
+                            string key = e.Name;
+                            XmlNode message = e.FirstChild;
+                            if (message.Name == "Progress")
+                            {
+                                double progress = Convert.ToDouble(message.InnerText);
+                                myPipes[key].Status = Convert.ToInt32(progress);
+                                if (progress == 100)
+                                    myPipes[key].SMS = "The experiment has been completed";
                             }
+                            else if (message.Name == "Message")
+                            {
+                                myPipes[key].addMessage(message.InnerText);
+                            }
+                            else if (message.Name == XMLStream.m_defaultMessageType
+                                && message.InnerText == CJobDispatcher.m_endMessage)
+                                break;
                         }
                     }
+
+                    //byte[] youHaveToWork=Encoding.ASCII.GetBytes("You are mine\n");
+                    //netStream.Write(youHaveToWork, 0, youHaveToWork.Length);
+                    //shepherd.SendJobQuery(netStream, job);
+                    //for (; ; )
+                    //{
+                    //    byte[] sms = new byte[256];
+                    //    int count = netStream.Read(sms, 0, 256);
+                    //    //if(count<=1024) //esto no puede pasar, no?
+                    //    {
+                    //        byte[] xmlSms = new byte[count];
+                    //        Array.Copy(sms, xmlSms, count);
+                    //        if (Encoding.ASCII.GetString(xmlSms).StartsWith("There is no more data"))
+                    //            break;
+                    //        else
+                    //        {
+                    //            XmlDocument doc = new XmlDocument();
+                    //            doc.LoadXml(Encoding.ASCII.GetString(xmlSms));
+                    //            XmlNode e = doc.DocumentElement;
+                    //            string key = e.Name;
+                    //            XmlNode message = e.FirstChild;
+                    //            if (message.Name == "Progress")
+                    //            {
+                    //                double progress = Convert.ToDouble(message.InnerText);
+                    //                myPipes[key].Status = Convert.ToInt32(progress);
+                    //                if (progress == 100)
+                    //                    myPipes[key].SMS = "The experiment has been completed";
+                    //            }
+                    //            else if (message.Name == "Message")
+                    //            {
+                    //                myPipes[key].addMessage(message.InnerText);
+
+                    //            }
+                    //        }
+                    //    }
+                    //}
                     shepherd.ReceiveJobResult(netStream);
                     
                 }
@@ -303,7 +336,7 @@ namespace AppXML.ViewModels
             //Process.Start(startInfo);
             this.ids.Add(p);
             server.WaitForConnection();
-            XMLStreamReader xmlStreamReader = new XMLStreamReader();
+            XMLStream xmlStream = new XMLStream();
             string xmlItem;
             XmlDocument xml = new XmlDocument();
             //StreamReader reader = new StreamReader(server);
@@ -316,8 +349,8 @@ namespace AppXML.ViewModels
             {
                 try
                 {
-                    xmlStreamReader.readFromNamedPipeStream(server);
-                    xmlItem = xmlStreamReader.processNextXMLItem();
+                    xmlStream.readFromNamedPipeStream(server);
+                    xmlItem = xmlStream.processNextXMLItem();
                     if (xmlItem != "")
                     {
                         xml.LoadXml(xmlItem);

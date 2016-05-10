@@ -43,6 +43,9 @@ namespace NetJobTransfer
         public const int m_comPortHerd = 2335;
         public const string m_discoveryMessage = "Slaves, show yourselves!";
         public const string m_discoveryAnswer = "At your command, my Master";
+        public const string m_aquireMessage = "You are mine now!";
+        public const string m_endMessage = "The end";
+        public const string m_freeMessage = "You are free";
         static int m_maxChunkSize = 1024;
 
         protected byte[] m_buffer;
@@ -464,16 +467,16 @@ namespace NetJobTransfer
             p.Start();
 
             server.WaitForConnection();
-            XMLStreamReader xmlStreamReader= new XMLStreamReader();
+            XMLStream xmlStream= new XMLStream();
             
             //StreamReader reader = new StreamReader(server);
             byte[] message;
             string xmlItem;
             while (server.IsConnected)
             {
-                xmlStreamReader.readFromNamedPipeStream(server);
+                xmlStream.readFromNamedPipeStream(server);
                 //string sms = reader.ReadLine();
-                xmlItem= xmlStreamReader.processNextXMLItem();
+                xmlItem= xmlStream.processNextXMLItem();
                 if (xmlItem != "")
                 {
                     message = Encoding.ASCII.GetBytes("<" + xmlItem + ">");
@@ -596,7 +599,7 @@ namespace NetJobTransfer
             });
         }
     }
-    class XMLStreamReader
+    class XMLStream
     {
         private int m_bufferOffset;
         private int m_bytesInBuffer;
@@ -604,8 +607,9 @@ namespace NetJobTransfer
         private Match m_match;
         const int m_maxChunkSize= 1024;
         private string m_asciiBuffer;
-
-        public XMLStreamReader()
+        private string m_lastXMLItem;
+        public const string m_defaultMessageType = "Internal";
+        public XMLStream()
         {
             m_buffer= new byte [m_maxChunkSize];
         }
@@ -618,6 +622,16 @@ namespace NetJobTransfer
                 m_bytesInBuffer = m_bytesInBuffer - m_bufferOffset;
                 m_bufferOffset = 0;
             }
+        }
+        public void writeMessage(NetworkStream stream, string message, string xmlTag = m_defaultMessageType)
+        {
+            byte[] msg = Encoding.ASCII.GetBytes("<" + xmlTag + ">" + message + "</" + xmlTag + ">");
+            stream.Write(msg, 0, msg.Length);
+        }
+        public void writeMessage(NamedPipeServerStream stream, string message, string xmlTag = m_defaultMessageType)
+        {
+            byte[] msg = Encoding.ASCII.GetBytes("<" + xmlTag + ">" + message + "</" + xmlTag + ">");
+            stream.Write(msg, 0, msg.Length);
         }
         public void readFromNetworkStream(NetworkStream stream)
         {
@@ -649,8 +663,19 @@ namespace NetJobTransfer
                 if (m_match.Success)
                 {
                     m_bufferOffset += m_match.Index + m_match.Length;
+                    m_lastXMLItem = m_match.Value;
                     return m_match.Value;
                 }
+            }
+            return "";
+        }
+        public string getLastXMLItemContent()
+        {
+            if (m_lastXMLItem!="")
+            {
+                m_match = Regex.Match(m_lastXMLItem, @"<[^>]*>([^<]*)<");
+                if (m_match.Success)
+                    return m_match.Groups[1].Value;
             }
             return "";
         }
