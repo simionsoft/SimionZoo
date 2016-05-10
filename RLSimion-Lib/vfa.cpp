@@ -209,8 +209,8 @@ CLASS_FACTORY(CLinearStateVFA)
 
 CLinearStateVFA::~CLinearStateVFA()
 {
-	delete m_pStateFeatureMap;
-	delete m_pAux;
+	if (m_pStateFeatureMap) delete m_pStateFeatureMap;
+	if (m_pAux) delete m_pAux;
 }
 
 
