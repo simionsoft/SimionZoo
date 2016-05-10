@@ -479,7 +479,7 @@ namespace NetJobTransfer
                 xmlItem= xmlStream.processNextXMLItem();
                 if (xmlItem != "")
                 {
-                    message = Encoding.ASCII.GetBytes("<" + xmlItem + ">");
+                    message = Encoding.ASCII.GetBytes(xmlItem);
                     lock(lockObject)
                     {
                         bridge.Write(message, 0, message.Length);
@@ -623,14 +623,22 @@ namespace NetJobTransfer
                 m_bufferOffset = 0;
             }
         }
-        public void writeMessage(NetworkStream stream, string message, string xmlTag = m_defaultMessageType)
+        public void writeMessage(NetworkStream stream, string message, bool addDefaultMessageType=false)
         {
-            byte[] msg = Encoding.ASCII.GetBytes("<" + xmlTag + ">" + message + "</" + xmlTag + ">");
+            byte[] msg;
+            if (addDefaultMessageType)
+                msg = Encoding.ASCII.GetBytes("<" + m_defaultMessageType + ">" + message + "</" + m_defaultMessageType + ">");
+            else
+                msg = Encoding.ASCII.GetBytes(message);
             stream.Write(msg, 0, msg.Length);
         }
-        public void writeMessage(NamedPipeServerStream stream, string message, string xmlTag = m_defaultMessageType)
+        public void writeMessage(NamedPipeServerStream stream, string message, bool addDefaultMessageType = false)
         {
-            byte[] msg = Encoding.ASCII.GetBytes("<" + xmlTag + ">" + message + "</" + xmlTag + ">");
+            byte[] msg;
+            if (addDefaultMessageType)
+                msg = Encoding.ASCII.GetBytes("<" + m_defaultMessageType + ">" + message + "</" + m_defaultMessageType + ">");
+            else
+                msg = Encoding.ASCII.GetBytes(message);
             stream.Write(msg, 0, msg.Length);
         }
         public void readFromNetworkStream(NetworkStream stream)

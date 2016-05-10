@@ -176,7 +176,7 @@ namespace AppXML.ViewModels
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
                     XMLStream xmlStream = new XMLStream();
-                    xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage);
+                    xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
                     shepherd.SendJobQuery(netStream, job);
                     string xmlItem;
                     while(true)
