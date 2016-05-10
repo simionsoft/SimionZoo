@@ -938,6 +938,8 @@ namespace AppXML.Data
 
         public static string getFileName(string Default)
         {
+            if (Default == null)
+                return null;
             char[] separators = {'/','\\'};
             string[] tmp = Default.Split(separators);
             return tmp[tmp.Length - 1];
