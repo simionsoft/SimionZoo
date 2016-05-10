@@ -170,7 +170,7 @@ namespace AppXML.ViewModels
             }
             if(_textBoxFile!=null)
             {
-               lastChild.InnerText = _textBoxFile[0].Default;
+               lastChild.InnerText = _textBoxFile[0].defaultValue;
             }
             if (lastChild.InnerText =="")
                 return null;
@@ -185,7 +185,7 @@ namespace AppXML.ViewModels
     public class TextBox: PropertyChangedBase
     {
         private string label;
-        protected string defaultValue;
+        public string defaultValue;
         public validTypes type;
         private string _textColor = "White";
         protected bool isOptional;
