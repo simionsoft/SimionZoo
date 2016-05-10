@@ -99,7 +99,7 @@ namespace AppXML.ViewModels
         
         public IntegerViewModel Header { get { return _header; } set { } }
 
-        public ClassViewModel HeaderClass { get { return _headerClass; } set { } }
+        public ClassViewModel HeaderClass { get { return _headerClass; } set { _headerClass = value; NotifyOfPropertyChange(() => HeaderClass); } }
         public ObservableCollection<ClassViewModel> AdedClasses { get { return _adedClasses; } set { _adedClasses = value; NotifyOfPropertyChange(()=> AdedClasses); } }
 
         public ObservableCollection<IntegerViewModel> Aded 

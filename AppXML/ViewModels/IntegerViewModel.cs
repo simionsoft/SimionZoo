@@ -34,11 +34,23 @@ namespace AppXML.ViewModels
             set 
             {
                 if (this.ComboBox != null)
+                {
                     ComboBox[0].SelectedComboValue = value;
-                else if (this.TextBox != null)
-                    TextBox[0].Default = value;
+                   
+                }
                 else if (this.TextBoxFile != null)
+                {
                     TextBoxFile[0].Default = value;
+                   
+                }  
+                else if (this.TextBox != null)
+                {
+                    TextBox[0].Default = value;
+                   
+                    
+                }
+                    
+                
             } 
         }
 
@@ -96,6 +108,7 @@ namespace AppXML.ViewModels
             set
             {
                 _textBox = value;
+                NotifyOfPropertyChange(() => TextBox);
             }
         }
        public ObservableCollection<ComboBox> ComboBox
@@ -106,12 +119,15 @@ namespace AppXML.ViewModels
            }
            set
            {
+               _comboBox = value;
                NotifyOfPropertyChange(()=>ComboBox);
            }
        }
        public ObservableCollection<TextBoxWithFile> TextBoxFile
-       { 
-           get { return _textBoxFile; } set { } }
+       {
+           get { return _textBoxFile; }
+           set { _textBoxFile = value; NotifyOfPropertyChange(() => TextBoxFile); }
+       }
 
        public bool validateIntegerViewModel()
        {
@@ -169,7 +185,7 @@ namespace AppXML.ViewModels
     public class TextBox: PropertyChangedBase
     {
         private string label;
-        private string defaultValue;
+        protected string defaultValue;
         public validTypes type;
         private string _textColor = "White";
         protected bool isOptional;
@@ -201,7 +217,7 @@ namespace AppXML.ViewModels
                 label = value;
             }
         }
-        public string Default { get { return this.defaultValue; } 
+        public string Default { get { return defaultValue; } 
             set { 
                     defaultValue = value;
                     NotifyOfPropertyChange(() => Default); 
@@ -245,14 +261,17 @@ namespace AppXML.ViewModels
         public string copyDefault;
         public string Color { get { return color; } set { color = value; NotifyOfPropertyChange(() => Color); } }
         private string color;
-        public string FileName 
+        public string Default 
         { 
             get 
             {
-                return AppXML.Data.Utility.getFileName(Default);
+                return AppXML.Data.Utility.getFileName(defaultValue);
             } 
             set 
-            { } 
+            {
+                defaultValue = value;
+                NotifyOfPropertyChange(() => Default);
+            } 
         }
 
         public new bool validate()
@@ -339,7 +358,7 @@ namespace AppXML.ViewModels
                  {
 
                      this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), openFileDialog.FileName);
-                     NotifyOfPropertyChange(() => FileName);
+                     NotifyOfPropertyChange(() => Default);
                      this.TextColor = "White";
                  }
                    
@@ -358,7 +377,7 @@ namespace AppXML.ViewModels
                 if (fbd.ShowDialog() == DialogResult.OK)
                     {
                         this.Default = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), fbd.SelectedPath);
-                        NotifyOfPropertyChange(() => FileName);
+                        NotifyOfPropertyChange(() => Default);
 
                         this.TextColor = "White";
 
