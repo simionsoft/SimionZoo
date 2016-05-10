@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.Text.RegularExpressions;
 using NetJobTransfer;
+using System.Threading;
 
 namespace TESTHerdAgent
 {
@@ -102,10 +103,10 @@ namespace TESTHerdAgent
                             byte[] stopM = new byte[256];
                             for (int i = 0; i < stopM.Length; i++)
                                 stopM[i] = 32;
-                            byte [] tmp=Encoding.ASCII.GetBytes("There is no more data");
+                            byte[] tmp = Encoding.ASCII.GetBytes("There is no more data");
                             Array.Copy(tmp, stopM, tmp.Length);
 
-                                
+
                             netStream.Write(stopM, 0, stopM.Length);
                             herdAgent.SendJobResult(netStream);
                         }
@@ -117,6 +118,7 @@ namespace TESTHerdAgent
                     m_state = AgentState.AVAILABLE;
 
                 }
+                else Thread.Sleep(1000);
             }
 
         }

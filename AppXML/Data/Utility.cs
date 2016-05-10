@@ -83,8 +83,8 @@ namespace AppXML.Data
             u.u = m_discoverySocket; 
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
             
-            //do we need to wait?
-            //Thread.Sleep(5000);
+            //We wait 2 secs for herd agents to reply
+            Thread.Sleep(2000);
 
             cores = myList.Values.ToList().Sum(od => od);
             if (myList != null && myList.Count > 1)
