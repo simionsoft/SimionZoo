@@ -22,14 +22,14 @@
           <A>
             <Schedule>
               <Constant>
-                <Value>600000.0</Value>
+                <Value>1.0</Value>
               </Constant>
             </Schedule>
           </A>
           <K_alpha>
             <Schedule>
               <Constant>
-                <Value>0.1</Value>
+                <Value>6000</Value>
               </Constant>
             </Schedule>
           </K_alpha>
