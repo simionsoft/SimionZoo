@@ -470,7 +470,7 @@ namespace NetJobTransfer
             XMLStream xmlStream= new XMLStream();
             
             //StreamReader reader = new StreamReader(server);
-            byte[] message;
+
             string xmlItem;
             while (server.IsConnected)
             {
@@ -479,10 +479,10 @@ namespace NetJobTransfer
                 xmlItem= xmlStream.processNextXMLItem();
                 if (xmlItem != "")
                 {
-                    message = Encoding.ASCII.GetBytes(xmlItem);
+                    
                     lock(lockObject)
                     {
-                        xmlStream.writeMessage(bridge, "<" + pipeName + ">" + message + "</" + pipeName + ">", false);
+                        xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
                        // bridge.Write(message, 0, message.Length);
                     }
                 }
