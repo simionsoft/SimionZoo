@@ -658,7 +658,7 @@ namespace NetJobTransfer
 
                 //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
                 ////this should return the whole message
-                m_match= Regex.Match(m_asciiBuffer,@"<([^>]*)>.*</(\1)>");
+                m_match= Regex.Match(m_asciiBuffer,@"<([^>]*)>.*?</(\1)>");
 
                 if (m_match.Success)
                 {
@@ -673,7 +673,7 @@ namespace NetJobTransfer
         {
             if (m_lastXMLItem!="")
             {
-                m_match = Regex.Match(m_lastXMLItem, @"<[^>]*>([^<]*)<");
+                m_match = Regex.Match(m_lastXMLItem, @"<[^>]*>([^<]*?)<");
                 if (m_match.Success)
                     return m_match.Groups[1].Value;
             }
