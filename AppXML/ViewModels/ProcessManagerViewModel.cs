@@ -182,7 +182,7 @@ namespace AppXML.ViewModels
                     {
                         byte[] sms = new byte[256];
                         int count = netStream.Read(sms, 0, 256);
-                        if(count<=1024)
+                        //if(count<=1024) //esto no puede pasar, no?
                         {
                             byte[] xmlSms = new byte[count];
                             Array.Copy(sms, xmlSms, count);
@@ -207,14 +207,8 @@ namespace AppXML.ViewModels
                                     myPipes[key].addMessage(message.InnerText);
 
                                 }
-                                
-                                
-
-                               
                             }
                         }
-                        
-                 
                     }
                     shepherd.ReceiveJobResult(netStream);
                     
@@ -317,34 +311,44 @@ namespace AppXML.ViewModels
             //bool reading = true;
             while (server.IsConnected)
             {
-                string sms = reader.ReadLine();
-                XmlDocument xml = new XmlDocument();
-                if (sms != null)
-                {
-                    xml.LoadXml(sms);
-                    XmlNode node = xml.DocumentElement;
-                    if (node.Name == "Progress")
-                    {
-                        double progress = Convert.ToDouble(node.InnerText);
-                        process.Status = Convert.ToInt32(progress);
+                byte[] sms = new byte[256];
+                int count = server.Read(sms, 0, 256);
 
-                        if (progress == 100.0)
+                XmlDocument xml = new XmlDocument();
+                try
+                {
+                    
+                    if (count>0 && sms != null)
+                    {
+                        xml.LoadXml(Encoding.ASCII.GetString(sms,0,count));
+                        XmlNode node = xml.DocumentElement;
+                        if (node.Name == "Progress")
                         {
-                            //reading = false;
-                            process.SMS = "Finished";
+                            double progress = Convert.ToDouble(node.InnerText);
+                            process.Status = Convert.ToInt32(progress);
+
+                            if (progress == 100.0)
+                            {
+                                //reading = false;
+                                process.SMS = "Finished";
+
+                            }
+                        }
+                        else if (node.Name == "Message")
+                        {
+                            process.addMessage(node.InnerText);
 
                         }
+                        System.Windows.Forms.Application.DoEvents();
                     }
-                    else if (node.Name == "Message")
+                    else
                     {
-                        process.addMessage(node.InnerText);
 
                     }
-                    System.Windows.Forms.Application.DoEvents();
                 }
-                else
+                catch
                 {
-
+                    Console.WriteLine("ahu");
                 }
 
             }
