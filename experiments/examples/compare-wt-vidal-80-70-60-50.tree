@@ -1,0 +1,9 @@
+<ExperimentsTree App="CompareControllerVFA">
+  <Root Path="../experiments/examples/compare-wt-vidal-80-70-60-50/root/root.node" />
+  <Experiments>
+    <vidal-50 Path="../experiments/examples/compare-wt-vidal-80-70-60-50/vidal-50/vidal-50.node" />
+    <vidal-60 Path="../experiments/examples/compare-wt-vidal-80-70-60-50/vidal-60/vidal-60.node" />
+    <vidal-70 Path="../experiments/examples/compare-wt-vidal-80-70-60-50/vidal-70/vidal-70.node" />
+    <vidal-80 Path="../experiments/examples/compare-wt-vidal-80-70-60-50/vidal-80/vidal-80.node" />
+  </Experiments>
+</ExperimentsTree>
