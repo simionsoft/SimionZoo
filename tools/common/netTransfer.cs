@@ -197,6 +197,7 @@ namespace NetJobTransfer
                 if (m_netStream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
                     m_bytesInBuffer += m_netStream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
 
+                //in case the shepherd (job dispatcher) writes slower than the herd agents read
                 if (m_bytesInBuffer == 0) Thread.Sleep(100);
             } while (m_bytesInBuffer == 0);
         }

@@ -85,7 +85,8 @@ namespace AppXML.ViewModels
                                                     if (index == Processes.Count)
                                                     {
                                                         var TcpSocket = new TcpClient();
-                                                        Thread.Sleep(2000);
+                                                        //my guess is we don't need this
+                                                        //Thread.Sleep(2000);
                                                         TcpSocket.Connect(key.Address, 4444);
                                                         NetworkStream netStream = TcpSocket.GetStream();
                                                         byte[] youAreFree = Encoding.ASCII.GetBytes("You are free\n");
@@ -168,7 +169,8 @@ namespace AppXML.ViewModels
             
             
             var TcpSocket = new TcpClient();
-            Thread.Sleep(2000);
+            //my guess is we don't need to sleep here
+            //Thread.Sleep(2000);
             TcpSocket.Connect(endPoint.Address, 4444);
             {
                 using (NetworkStream netStream = TcpSocket.GetStream())

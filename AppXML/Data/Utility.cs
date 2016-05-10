@@ -71,15 +71,21 @@ namespace AppXML.Data
             m_discoverySocket = new UdpClient();
             m_discoverySocket.EnableBroadcast = true;
             var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
-            System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
+            
+            //this sleep only made sense when we were debugging testherdagent and testshepherd at the same time
+            //System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
+
             m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
-            //System.Threading.Thread.Sleep(10000);
+
             UdpState u = new UdpState();
             IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
             u.e=xxx;
             u.u = m_discoverySocket; 
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
-            Thread.Sleep(5000);
+            
+            //do we need to wait?
+            //Thread.Sleep(5000);
+
             cores = myList.Values.ToList().Sum(od => od);
             if (myList != null && myList.Count > 1)
             {
@@ -100,14 +106,10 @@ namespace AppXML.Data
             {
                 using (NetworkStream netStream = comSocket.GetStream())
                 {
-                    
-                    
-                    
-              
-                    //shepherd.SendJobQuery(netStream, job);
-                    Thread.Sleep(20000);
+                    //we can just block the thread by waiting until we receive something. Don't think we need to sleep
+                    //Thread.Sleep(20000);
                    
-                    //System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
+
                     //aborter.Send(RequestData2, RequestData2.Length, new IPEndPoint(IPAddress.Broadcast,8888));
                     shepherd.ReceiveJobResult(netStream);
                 }
