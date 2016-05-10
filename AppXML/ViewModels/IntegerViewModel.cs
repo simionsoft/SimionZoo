@@ -278,11 +278,11 @@ namespace AppXML.ViewModels
         {
             if (!isOptional && (Default == null || Default == ""))
                 return true;
-            string tmp = Default;
-            if (!Path.IsPathRooted(Default))
+            string tmp = defaultValue;
+            if (!Path.IsPathRooted(tmp))
             {
 
-                tmp = Path.Combine(Directory.GetCurrentDirectory(), Default);
+                tmp = Path.Combine(Directory.GetCurrentDirectory(), tmp);
                 tmp = System.IO.Path.GetFullPath(tmp);
             }
             if (type == validTypes.FilePathValue && !File.Exists(tmp))
