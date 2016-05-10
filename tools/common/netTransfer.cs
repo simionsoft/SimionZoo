@@ -192,13 +192,13 @@ namespace NetJobTransfer
                 m_bytesInBuffer = m_bytesInBuffer - m_bufferOffset;
                 m_bufferOffset = 0;
             }
-            while (m_bytesInBuffer == 0)
+            do
             {
                 if (m_netStream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
                     m_bytesInBuffer += m_netStream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
 
                 if (m_bytesInBuffer == 0) Thread.Sleep(100);
-            }
+            } while (m_bytesInBuffer == 0);
         }
         protected void ReceiveJobHeader()
         {
