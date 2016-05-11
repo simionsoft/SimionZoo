@@ -89,8 +89,10 @@ namespace AppXML.ViewModels
                                                         //Thread.Sleep(2000);
                                                         TcpSocket.Connect(key.Address, 4444);
                                                         NetworkStream netStream = TcpSocket.GetStream();
-                                                        byte[] youAreFree = Encoding.ASCII.GetBytes(CJobDispatcher.m_freeMessage);
-                                                        netStream.Write(youAreFree, 0, youAreFree.Length);
+                                                        XMLStream xmlStream = new XMLStream();
+                                                        xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
+                                                        //byte[] youAreFree = Encoding.ASCII.GetBytes(CJobDispatcher.m_freeMessage);
+                                                        //netStream.Write(youAreFree, 0, youAreFree.Length);
                                                         netStream.Close();
                                                         netStream.Dispose();
                                                         TcpSocket.Close();

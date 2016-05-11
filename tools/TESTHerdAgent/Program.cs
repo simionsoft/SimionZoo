@@ -99,6 +99,7 @@ namespace TESTHerdAgent
                         if (xmlItemContent == CJobDispatcher.m_freeMessage)
                         {
                             //we do nothing and keep listening
+                            Console.WriteLine("This slave was discovered but not used");
                         }
                         else
                         {
