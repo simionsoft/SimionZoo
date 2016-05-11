@@ -203,7 +203,7 @@ namespace AppXML.ViewModels
                                 myPipes[key].addMessage(message.InnerText);
                             }
                             else
-                                if (message.Name == XMLStream.m_defaultMessageType
+                                if (key == XMLStream.m_defaultMessageType
                                 && message.InnerText == CJobDispatcher.m_endMessage)
                                 break;
                         }
