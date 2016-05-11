@@ -1,0 +1,10 @@
+<ExperimentsTree App="CompareControllerVFA">
+  <Root Path="../experiments/examples/compare-pitch-100-150-200/root/root.node" />
+  <Experiments>
+    <pitch-100 Path="../experiments/examples/compare-pitch-100-150-200/pitch-100/pitch-100.node" />
+    <pitch-150 Path="../experiments/examples/compare-pitch-100-150-200/pitch-150/pitch-150.node" />
+    <pitch-200 Path="../experiments/examples/compare-pitch-100-150-200/pitch-200/pitch-200.node" />
+    <pitch-50 Path="../experiments/examples/compare-pitch-100-150-200/pitch-50/pitch-50.node" />
+    <pitch-250 Path="../experiments/examples/compare-pitch-100-150-200/pitch-250/pitch-250.node" />
+  </Experiments>
+</ExperimentsTree>

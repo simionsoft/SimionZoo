@@ -88,29 +88,32 @@ namespace TESTHerdAgent
                     server.Start();
                     m_comSocket = server.AcceptTcpClient();
                     NetworkStream netStream = m_comSocket.GetStream();
-                    byte[] doIHaveToWork = new byte[24];
-                    netStream.Read(doIHaveToWork, 0, 24);
-                    if (Encoding.ASCII.GetString(doIHaveToWork).Split('\n')[0].Equals("You are free"))
-                    {
 
-                    }
-                    else
+                    XMLStream xmlStream = new XMLStream();
+                    xmlStream.readFromNetworkStream(netStream);
+                    string xmlItem = xmlStream.processNextXMLItem();
+                    string xmlItemContent;
+                    if (xmlItem != "")
                     {
-                        herdAgent = new HerdAgent();
-                        if (herdAgent.ReceiveJobQuery(netStream))
+                        xmlItemContent = xmlStream.getLastXMLItemContent();
+                        if (xmlItemContent == CJobDispatcher.m_freeMessage)
                         {
-                            herdAgent.RunJob(netStream);
-                            byte[] stopM = new byte[256];
-                            for (int i = 0; i < stopM.Length; i++)
-                                stopM[i] = 32;
-                            byte[] tmp = Encoding.ASCII.GetBytes("There is no more data");
-                            Array.Copy(tmp, stopM, tmp.Length);
+                            //we do nothing and keep listening
+                        }
+                        else
+                        {
+                            herdAgent = new HerdAgent();
+                            if (herdAgent.ReceiveJobQuery(netStream))
+                            {
+                                herdAgent.RunJob(netStream);
 
+                                xmlStream.writeMessage(netStream, CJobDispatcher.m_endMessage,true);
 
-                            netStream.Write(stopM, 0, stopM.Length);
-                            herdAgent.SendJobResult(netStream);
+                                herdAgent.SendJobResult(netStream);
+                            }
                         }
                     }
+
                     netStream.Close();
                     netStream.Dispose();
                     server.Stop();

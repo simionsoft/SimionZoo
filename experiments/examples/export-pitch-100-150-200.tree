@@ -4,5 +4,7 @@
     <pitch200 Path="../experiments/examples/export-pitch-100-150-200/pitch200/pitch200.node" />
     <pitch150 Path="../experiments/examples/export-pitch-100-150-200/pitch150/pitch150.node" />
     <pitch100 Path="../experiments/examples/export-pitch-100-150-200/pitch100/pitch100.node" />
+    <pitch-250 Path="../experiments/examples/export-pitch-100-150-200/pitch-250/pitch-250.node" />
+    <pitch-50 Path="../experiments/examples/export-pitch-100-150-200/pitch-50/pitch-50.node" />
   </Experiments>
 </ExperimentsTree>
