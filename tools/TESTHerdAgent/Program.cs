@@ -19,7 +19,7 @@ namespace TESTHerdAgent
     {
 
         static AgentState m_state = AgentState.AVAILABLE;
-        static HerdAgent herdAgent = new HerdAgent();
+        static HerdAgent herdAgent;// = new HerdAgent();
 
 
 
@@ -88,21 +88,21 @@ namespace TESTHerdAgent
                     server.Start();
                     m_comSocket = server.AcceptTcpClient();
                     NetworkStream netStream = m_comSocket.GetStream();
+                    herdAgent = new HerdAgent(netStream);
 
-                    XMLStream xmlStream = new XMLStream();
-                    xmlStream.readFromNetworkStream(netStream);
-                    string xmlItem = xmlStream.processNextXMLItem();
+                    herdAgent.read();
+                    string xmlItem = herdAgent.processNextXMLItem();
                     string xmlItemContent;
                     if (xmlItem != "")
                     {
-                        xmlItemContent = xmlStream.getLastXMLItemContent();
+                        xmlItemContent = herdAgent.getLastXMLItemContent();
                         if (xmlItemContent == CJobDispatcher.m_freeMessage)
                         {
                             //we do nothing and keep listening
                         }
                         else
                         {
-                            herdAgent = new HerdAgent(netStream);
+                            
                             if (herdAgent.ReceiveJobQuery())
                             {
                                 herdAgent.RunJob(netStream);
