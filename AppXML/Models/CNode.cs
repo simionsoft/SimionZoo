@@ -47,6 +47,10 @@ namespace AppXML.Models
             {
                 CApp.EXE = node.InnerText;
             }
+            if(node.Name=="PRE")
+            {
+                CApp.addPre(node.InnerText);
+            }
             if (node.Name == "APP")
                 return new CApp(node, node.Attributes.GetNamedItem("Name").Value);
             if (node.Name == "BRANCH")

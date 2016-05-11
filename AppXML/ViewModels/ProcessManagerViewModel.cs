@@ -155,6 +155,11 @@ namespace AppXML.ViewModels
             CJob job = new CJob();
             job.name = "xxxxx";
             job.exeFile = Models.CApp.EXE;
+            if(Models.CApp.pre!=null)
+            {
+                foreach (string prerec in Models.CApp.pre)
+                    job.inputFiles.Add(prerec);
+            }
             foreach (ProcessStateViewModel process in processes)
             {
                 job.comLineArgs.Add(process.Label + " "+ process.pipeName);

@@ -14,6 +14,7 @@ namespace AppXML.Models
         private static List<ClassViewModel> newClassWithRefs = new List<ClassViewModel>();
         public static bool IsInitializing { get; set; }
         public static string EXE;
+        public static List<string> pre;
 
 
         public static void addNewClass(ClassViewModel newClass)
@@ -24,6 +25,8 @@ namespace AppXML.Models
         {
             viewsWithNodeRef.Clear();
             newClassWithRefs.Clear();
+            if (pre != null)
+                pre.Clear();
             EXE = null;
         }
 
@@ -68,6 +71,13 @@ namespace AppXML.Models
         {
             if (newClassWithRefs.Contains(classViewModel))
                 newClassWithRefs.Remove(classViewModel);
+        }
+
+        public static void addPre(string p)
+        {
+            if (pre == null)
+                pre = new List<string>();
+            pre.Add(p);
         }
     }
 }
