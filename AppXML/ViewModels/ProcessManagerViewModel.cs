@@ -165,7 +165,7 @@ namespace AppXML.ViewModels
 
             }
             
-            Shepherd shepherd = new Shepherd();
+            Shepherd shepherd;
             
             
             var TcpSocket = new TcpClient();
@@ -175,14 +175,14 @@ namespace AppXML.ViewModels
             {
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
-                    XMLStream xmlStream = new XMLStream();
-                    xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
-                    shepherd.SendJobQuery(netStream, job);
+                    shepherd = new Shepherd(netStream);
+                    shepherd.writeMessage(CJobDispatcher.m_aquireMessage,true);
+                    shepherd.SendJobQuery(job);
                     string xmlItem;
                     while(true)
                     {
-                        xmlStream.readFromNetworkStream(netStream);
-                        xmlItem = xmlStream.processNextXMLItem();
+                        shepherd.read();
+                        xmlItem = shepherd.processNextXMLItem();
 
                         if (xmlItem!="")
                         {
@@ -209,7 +209,7 @@ namespace AppXML.ViewModels
                         }
                     }
 
-                    shepherd.ReceiveJobResult(netStream);
+                    shepherd.ReceiveJobResult();
                     
                 }
                 TcpSocket.Close();

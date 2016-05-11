@@ -102,14 +102,14 @@ namespace TESTHerdAgent
                         }
                         else
                         {
-                            herdAgent = new HerdAgent();
-                            if (herdAgent.ReceiveJobQuery(netStream))
+                            herdAgent = new HerdAgent(netStream);
+                            if (herdAgent.ReceiveJobQuery())
                             {
                                 herdAgent.RunJob(netStream);
 
-                                xmlStream.writeMessage(netStream, CJobDispatcher.m_endMessage,true);
+                                herdAgent.writeMessage(CJobDispatcher.m_endMessage,true);
 
-                                herdAgent.SendJobResult(netStream);
+                                herdAgent.SendJobResult();
                             }
                         }
                     }
