@@ -571,16 +571,17 @@ namespace AppXML.ViewModels
         private void initExperimentas(List<string> myList)
         {
             ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
-            Task.Factory.StartNew(() => 
-            {   pwvm.run();
-                
-            
-            });
+            ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
+            pwvm.owner = pwvm2;
+            //Task.Factory.StartNew(() => 
+            //{   
+                pwvm.run();
+                         
+            //});
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
             settings.ShowInTaskbar = true;
             settings.Title = "Process Manager";
-            ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
             new WindowManager().ShowDialog(pwvm2, null, settings);
             pwvm2.Manager.closeAll();
             

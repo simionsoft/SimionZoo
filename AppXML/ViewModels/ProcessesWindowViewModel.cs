@@ -11,13 +11,17 @@ namespace AppXML.ViewModels
 {
     public class ProcessesWindowViewModel: Screen
     {
-        
-
-        public ProcessManagerViewModel Manager { get; set; }
-        public bool isOver { get; set; }
 
 
-       
+        public ProcessManagerViewModel Manager { get { return _manager; } set { _manager = value; NotifyOfPropertyChange(()=>Manager);}  }
+        private ProcessManagerViewModel _manager;
+        public bool isOver { get { return _isOver; } set { _isOver = value;NotifyOfPropertyChange(()=>isOver); } }
+        private bool _isOver;
+
+        public ProcessesWindowViewModel()
+        {
+            _isOver = false;
+        }
         public ProcessesWindowViewModel(List<ProcessStateViewModel> processes)
         {
             Manager = new ProcessManagerViewModel(processes);
