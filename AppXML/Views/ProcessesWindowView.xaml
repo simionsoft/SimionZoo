@@ -13,7 +13,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
             <ContentControl x:Name="Manager" />
-            <Button x:Name="CloseWindow" Content="Close" Width="50"/>
+            <Button x:Name="CloseWindow" IsEnabled="{Binding isOver}" Content="Close" Width="50"/>
         </StackPanel>
     </ScrollViewer>
 </Window>

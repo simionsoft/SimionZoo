@@ -29,6 +29,7 @@ namespace AppXML.ViewModels
         private List<Process> ids = new List<Process>();
         private List<object> readers = new List<object>();
         private List<IPEndPoint> canceler;
+        public ProcessesWindowViewModel owner;
         public ObservableCollection<ProcessStateViewModel> Processes
         {
             get { return _processes; }
@@ -79,7 +80,7 @@ namespace AppXML.ViewModels
                             cts = new CancellationTokenSource();
                         ParallelOptions po = new ParallelOptions();
                         po.CancellationToken = cts.Token;
-                        Task.Factory.StartNew(() => { 
+                        Task y =Task.Factory.StartNew(() => { 
                         Parallel.ForEach(slaves.Keys, po, (key) =>
                                                 {
                                                     if (index == Processes.Count)
@@ -123,9 +124,12 @@ namespace AppXML.ViewModels
                                                         }
                                                     }
                                                     
-                                                });
+                                                }
+                                                
+                                                );
+                        owner.isOver = true;
                         
-                        });
+                        },cts.Token);
                        
                       
                     }
@@ -149,7 +153,7 @@ namespace AppXML.ViewModels
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
             Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
-            Task.Factory.StartNew(() => {
+            //Task.Factory.StartNew(() => {
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             //hay que preparar cada trabajo y lanzarlo
             CJob job = new CJob();
@@ -182,7 +186,11 @@ namespace AppXML.ViewModels
                 {
                     XMLStream xmlStream = new XMLStream();
                     xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
+                    foreach (ProcessStateViewModel p in processes)
+                        p.SMS = "DISPATCHING FILES";
                     shepherd.SendJobQuery(netStream, job);
+                    foreach (ProcessStateViewModel p in processes)
+                        p.SMS = "RUNNING";
                     string xmlItem;
                     while(true)
                     {
@@ -201,7 +209,7 @@ namespace AppXML.ViewModels
                                 double progress = Convert.ToDouble(message.InnerText);
                                 myPipes[key].Status = Convert.ToInt32(progress);
                                 if (progress == 100)
-                                    myPipes[key].SMS = "The experiment has been completed";
+                                    myPipes[key].SMS = "EXPERIMENT IS FINISHED. WAITING TO SEND FILES";
                             }
                             else if (message.Name == "Message")
                             {
@@ -213,14 +221,22 @@ namespace AppXML.ViewModels
                                 break;
                         }
                     }
-
+                    foreach (ProcessStateViewModel p in processes)
+                        p.SMS = "RECEIVING FILES";
                     shepherd.ReceiveJobResult(netStream);
-                    
+                    foreach (ProcessStateViewModel p in processes)
+                    {
+                        if (p.Status == 100)
+                            p.SMS = "FILES RECEIVED";
+                        else
+                            p.SMS = "ERROR";
+                    }
+                       
                 }
                 TcpSocket.Close();
             }
                 
-            });
+           // });
             
 
         }
@@ -269,8 +285,10 @@ namespace AppXML.ViewModels
                                                         
                                                     }
                                                 });
+            owner.isOver = true;
                
             },cts.Token);
+            
             
                 
             
