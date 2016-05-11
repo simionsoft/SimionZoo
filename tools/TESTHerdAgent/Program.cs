@@ -107,7 +107,7 @@ namespace TESTHerdAgent
                             {
                                 herdAgent.RunJob(netStream);
 
-                                xmlStream.writeMessage(netStream, CJobDispatcher.m_endMessage);
+                                xmlStream.writeMessage(netStream, CJobDispatcher.m_endMessage,true);
 
                                 herdAgent.SendJobResult(netStream);
                             }

@@ -202,47 +202,13 @@ namespace AppXML.ViewModels
                             {
                                 myPipes[key].addMessage(message.InnerText);
                             }
-                            else if (message.Name == XMLStream.m_defaultMessageType
+                            else
+                                if (message.Name == XMLStream.m_defaultMessageType
                                 && message.InnerText == CJobDispatcher.m_endMessage)
                                 break;
                         }
                     }
 
-                    //byte[] youHaveToWork=Encoding.ASCII.GetBytes("You are mine\n");
-                    //netStream.Write(youHaveToWork, 0, youHaveToWork.Length);
-                    //shepherd.SendJobQuery(netStream, job);
-                    //for (; ; )
-                    //{
-                    //    byte[] sms = new byte[256];
-                    //    int count = netStream.Read(sms, 0, 256);
-                    //    //if(count<=1024) //esto no puede pasar, no?
-                    //    {
-                    //        byte[] xmlSms = new byte[count];
-                    //        Array.Copy(sms, xmlSms, count);
-                    //        if (Encoding.ASCII.GetString(xmlSms).StartsWith("There is no more data"))
-                    //            break;
-                    //        else
-                    //        {
-                    //            XmlDocument doc = new XmlDocument();
-                    //            doc.LoadXml(Encoding.ASCII.GetString(xmlSms));
-                    //            XmlNode e = doc.DocumentElement;
-                    //            string key = e.Name;
-                    //            XmlNode message = e.FirstChild;
-                    //            if (message.Name == "Progress")
-                    //            {
-                    //                double progress = Convert.ToDouble(message.InnerText);
-                    //                myPipes[key].Status = Convert.ToInt32(progress);
-                    //                if (progress == 100)
-                    //                    myPipes[key].SMS = "The experiment has been completed";
-                    //            }
-                    //            else if (message.Name == "Message")
-                    //            {
-                    //                myPipes[key].addMessage(message.InnerText);
-
-                    //            }
-                    //        }
-                    //    }
-                    //}
                     shepherd.ReceiveJobResult(netStream);
                     
                 }
