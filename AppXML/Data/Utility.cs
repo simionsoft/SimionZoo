@@ -99,19 +99,20 @@ namespace AppXML.Data
         public static void method(List<string> filenames)
         {
            
-            Shepherd shepherd = new Shepherd();
+            Shepherd shepherd;
             var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
             TcpSocket.Start();
             using (TcpClient comSocket = TcpSocket.AcceptTcpClient())
             {
                 using (NetworkStream netStream = comSocket.GetStream())
                 {
+                    shepherd = new Shepherd(netStream);
                     //we can just block the thread by waiting until we receive something. Don't think we need to sleep
                     //Thread.Sleep(20000);
                    
 
                     //aborter.Send(RequestData2, RequestData2.Length, new IPEndPoint(IPAddress.Broadcast,8888));
-                    shepherd.ReceiveJobResult(netStream);
+                    shepherd.ReceiveJobResult();
                 }
                 comSocket.Close();
             }

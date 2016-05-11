@@ -23,7 +23,7 @@ namespace TESTShepherd
         public static void method(string filename)
         {
 
-            Shepherd shepherd = new Shepherd();
+            Shepherd shepherd;
             m_discoverySocket = new UdpClient();//(m_discoveryPortShepherd);
 
             var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
@@ -44,6 +44,7 @@ namespace TESTShepherd
             {
                 using (NetworkStream netStream = comSocket.GetStream())
                 {
+                    shepherd = new Shepherd(netStream);
                     CJob job = new CJob();
                     job.name = filename;
                     job.exeFile = "..\\Debug\\RLSimion.exe";
@@ -57,8 +58,8 @@ namespace TESTShepherd
                         job.inputFiles.Add(input);
                     }
                     // job.inputFiles.Add("..\\Debug\\msvcp120d.dll");
-                    shepherd.SendJobQuery(netStream, job);
-                    shepherd.ReceiveJobResult(netStream);
+                    shepherd.SendJobQuery( job);
+                    shepherd.ReceiveJobResult();
                 }
                 comSocket.Close();
             }

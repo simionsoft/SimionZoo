@@ -15,6 +15,7 @@ using System.Xml;
 
 namespace NetJobTransfer
 {
+    
     public class CJob
     {
         public string name;
@@ -37,6 +38,7 @@ namespace NetJobTransfer
     public enum FileType { EXE, INPUT, OUTPUT };
     public class CJobDispatcher
     {
+        private XMLStream m_xmlStream;
         public const int m_discoveryPortShepherd = 2332;
         public const int m_discoveryPortHerd = 2333;
         public const int m_comPortShepherd = 2334;
@@ -48,12 +50,8 @@ namespace NetJobTransfer
         public const string m_freeMessage = "You are free";
         static int m_maxChunkSize = 1024;
 
-        protected byte[] m_buffer;
 
         protected NetworkStream m_netStream;
-
-        protected int m_bytesInBuffer;
-        protected int m_bufferOffset;
 
         //used for reading
         protected int m_nextFileSize;
@@ -68,16 +66,34 @@ namespace NetJobTransfer
         public CJobDispatcher()
         {
             m_job = new CJob();
-            m_buffer = new byte[m_maxChunkSize];
-            m_bytesInBuffer = 0;
-            m_bufferOffset = 0;
+            m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
             m_numInputFilesRead = 0;
             m_numOutputFilesRead = 0;
             m_numTasksRead = 0;
             m_tempDir = "c:\\temp";
         }
-
+        
+        public void writeMessage( string message, bool addDefaultMessageType=false)
+        {
+            m_xmlStream.writeMessage(m_netStream,message,addDefaultMessageType);
+        }
+        public void read()
+        {
+            m_xmlStream.readFromNetworkStream(m_netStream);
+        }
+        public string processNextXMLItem()
+        {
+            return m_xmlStream.processNextXMLItem();
+        }
+        public string processNextXMLTag()
+        {
+            return m_xmlStream.processNextXMLTag();
+        }
+        public string getLastXMLItemContent()
+        {
+            return m_xmlStream.getLastXMLItemContent();
+        }
 
         protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
         protected void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent, false); }
@@ -177,34 +193,35 @@ namespace NetJobTransfer
             }
 
         }
-        public string GetBufferAsString()
-        {
-            return Encoding.ASCII.GetString(m_buffer);
-        }
-        public void markBytesAsProcessed(int numBytesProcessed)
-        {
-            m_bufferOffset += numBytesProcessed;
-        }
+        //public string GetBufferAsString()
+        //{
+        //    return Encoding.ASCII.GetString(m_buffer);
+        //}
+        //public void markBytesAsProcessed(int numBytesProcessed)
+        //{
+        //    m_bufferOffset += numBytesProcessed;
+        //}
         public void ReadFromStream()
         {
-            int bytesLeftToProcess = m_bytesInBuffer - m_bufferOffset;
-            //something left to process in the buffer?
-            if (m_bufferOffset != 0)
-            {
-                Buffer.BlockCopy(m_buffer, m_bufferOffset, m_buffer, 0, m_bytesInBuffer - m_bufferOffset);
-                m_bytesInBuffer = m_bytesInBuffer - m_bufferOffset;
-                m_bufferOffset = 0;
-            }
-            do
-            {
-                if (m_netStream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
-                    m_bytesInBuffer += m_netStream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+            m_xmlStream.readFromNetworkStream(m_netStream);
+            //int bytesLeftToProcess = m_bytesInBuffer - m_bufferOffset;
+            ////something left to process in the buffer?
+            //if (m_bufferOffset != 0)
+            //{
+            //    Buffer.BlockCopy(m_buffer, m_bufferOffset, m_buffer, 0, m_bytesInBuffer - m_bufferOffset);
+            //    m_bytesInBuffer = m_bytesInBuffer - m_bufferOffset;
+            //    m_bufferOffset = 0;
+            //}
+            //do
+            //{
+            //    if (m_netStream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
+            //        m_bytesInBuffer += m_netStream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
 
-                //in case the shepherd (job dispatcher) writes slower than the herd agents read
-                if (m_bytesInBuffer == 0) Thread.Sleep(100);
-            } while (m_bytesInBuffer == 0);
+            //    //in case the shepherd (job dispatcher) writes slower than the herd agents read
+            //    if (m_bytesInBuffer == 0) Thread.Sleep(100);
+            //} while (m_bytesInBuffer == 0);
         }
-        protected void ReceiveJobHeader()
+        public void ReceiveJobHeader()
         {
             Match match;
             string header;
@@ -212,7 +229,7 @@ namespace NetJobTransfer
             do
             {
                 ReadFromStream();
-                header = Encoding.ASCII.GetString(m_buffer);
+                header = m_xmlStream.processNextXMLTag();//Encoding.ASCII.GetString(m_buffer);
 
                 match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumTasks=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
             }
@@ -225,18 +242,17 @@ namespace NetJobTransfer
             m_numTasksRead = Int32.Parse(match.Groups[2].Value);
             m_numInputFilesRead = Int32.Parse(match.Groups[3].Value);
             m_numOutputFilesRead = Int32.Parse(match.Groups[4].Value);
-            m_bufferOffset += match.Index + match.Length;
 
             //read arguments
             for (int i = 0; i < m_numTasksRead; i++)
             {
                 ReadFromStream();
-                header = Encoding.ASCII.GetString(m_buffer);
+                header = m_xmlStream.processNextXMLItem();//Encoding.ASCII.GetString(m_buffer);
 
                 match = Regex.Match(header, "<Arg>([^<]*)</Arg>");
 
                 m_job.comLineArgs.Add(match.Groups[1].Value);
-                m_bufferOffset += match.Index + match.Length;
+                //m_bufferOffset += match.Index + match.Length;
             }
 
             ReadFromStream(); //we shift the buffer to the left skipping the processed header
@@ -250,11 +266,11 @@ namespace NetJobTransfer
             do
             {
                 ReadFromStream();
-                header= Encoding.ASCII.GetString(m_buffer);
+                header = m_xmlStream.processNextXMLTag();//Encoding.ASCII.GetString(m_buffer);
                 match = Regex.Match(header, "</Job>");
             }
             while (!match.Success);
-            m_bufferOffset += match.Index + match.Length;
+           // m_bufferOffset += match.Index + match.Length;
         }
         protected void ReceiveExeFiles(bool receiveContent) { ReceiveFile(FileType.EXE, receiveContent, true); }
         protected void ReceiveInputFiles(bool receiveContent)
@@ -284,7 +300,7 @@ namespace NetJobTransfer
             do
             {
                 ReadFromStream();
-                string header = Encoding.ASCII.GetString(m_buffer);
+                string header = m_xmlStream.processNextXMLTag();// Encoding.ASCII.GetString(m_buffer);
 
                 if (type == FileType.EXE)
                 {
@@ -331,7 +347,7 @@ namespace NetJobTransfer
             string outputDir = Path.GetDirectoryName(outputFilename);
             System.IO.Directory.CreateDirectory(outputDir);
 
-            m_bufferOffset += match.Index + match.Length;
+           // m_bufferOffset += match.Index + match.Length;
         }
         protected void ReceiveFileFooter(FileType type)
         {
@@ -340,7 +356,7 @@ namespace NetJobTransfer
             do
             {
                 ReadFromStream();
-                string header = Encoding.ASCII.GetString(m_buffer);
+                string header = m_xmlStream.processNextXMLTag();// Encoding.ASCII.GetString(m_buffer);
 
                 if (type == FileType.EXE) match = Regex.Match(header, "</Exe>");
                 else if (type == FileType.INPUT) match = Regex.Match(header, "</Input>");
@@ -348,15 +364,15 @@ namespace NetJobTransfer
             }
             while (!match.Success);
 
-            m_bufferOffset += match.Length + match.Index;
+            //m_bufferOffset += match.Length + match.Index;
         }
         protected int SaveBufferToFile(FileStream outputFile, int bytesLeft)
         {
-            int bytesToWrite = Math.Min(bytesLeft, m_bytesInBuffer - m_bufferOffset);
+            int bytesToWrite = Math.Min(bytesLeft, m_xmlStream.getBytesInBuffer() - m_xmlStream.getBufferOffset());
 
-            outputFile.Write(m_buffer, m_bufferOffset, bytesToWrite);
+            outputFile.Write(m_xmlStream.getBuffer(), m_xmlStream.getBufferOffset(), bytesToWrite);
 
-            m_bufferOffset += bytesToWrite;
+            m_xmlStream.addProcessedBytes(bytesToWrite);// m_bufferOffset += bytesToWrite;
             return bytesToWrite;
         }
         protected string getCachedFilename(string originalFilename)
@@ -388,9 +404,12 @@ namespace NetJobTransfer
     }
     public class Shepherd : CJobDispatcher
     {
-        public void SendJobQuery(NetworkStream netStream, CJob job)
+        public Shepherd(NetworkStream netStream)
         {
-            m_netStream = netStream;
+            m_netStream= netStream;
+        }
+        public void SendJobQuery(CJob job)
+        {
             m_job = job;
             SendJobHeader();
             SendExeFiles(true);
@@ -398,11 +417,8 @@ namespace NetJobTransfer
             SendOutputFiles(false);
             SendJobFooter();
         }
-        public bool ReceiveJobResult(NetworkStream netStream)
+        public bool ReceiveJobResult()
         {
-            m_netStream = netStream;
-            m_bufferOffset = 0;
-            m_bytesInBuffer = 0;
             m_job.comLineArgs.Clear();
             m_job.inputFiles.Clear();
             m_job.outputFiles.Clear();
@@ -421,27 +437,27 @@ namespace NetJobTransfer
     public class HerdAgent : CJobDispatcher
     {
         private CancellationTokenSource cts;
-        private IPEndPoint master;
+        
+        public HerdAgent(NetworkStream netStream)
+        {
+            m_netStream= netStream;
+        }
 
         public void CancelRunningProcesses()
         {
             if (cts != null)
                 cts.Cancel();
         }
-        public void SendJobResult(NetworkStream netStream)
+        public void SendJobResult()
         {
-            m_netStream = netStream;
             SendJobHeader();
             SendExeFiles(false);
             SendInputFiles(false);
             SendOutputFiles(true);
             SendJobFooter();
         }
-        public bool ReceiveJobQuery(NetworkStream netStream)
+        public bool ReceiveJobQuery()
         {
-            m_netStream = netStream;
-            m_bufferOffset = 0;
-            m_bytesInBuffer = 0;
 
             ReceiveJobHeader();
             //ReceiveJobArgs();
@@ -614,6 +630,10 @@ namespace NetJobTransfer
         {
             m_buffer= new byte [m_maxChunkSize];
         }
+        public int getBytesInBuffer() { return m_bytesInBuffer; }
+        public int getBufferOffset() { return m_bufferOffset; }
+        public byte[] getBuffer() { return m_buffer; }
+        public void addProcessedBytes(int processedBytes) { m_bufferOffset += processedBytes; }
         private void discardProcessedData()
         { 
             //shift left unprocessed bytes to discard processed data
@@ -668,6 +688,27 @@ namespace NetJobTransfer
                 //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
                 ////this should return the whole message
                 m_match= Regex.Match(m_asciiBuffer,@"<([^>]*)>.*?</(\1)>");
+
+                if (m_match.Success)
+                {
+                    m_bufferOffset += m_match.Index + m_match.Length;
+                    m_lastXMLItem = m_match.Value;
+                    return m_match.Value;
+                }
+            }
+            return "";
+        }
+        //returns the next complete xml element (NO ATTRIBUTES!!) in the stream
+        //empty string if there was none
+        public string processNextXMLTag()
+        {
+            if (m_bytesInBuffer > 0)
+            {
+                m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
+
+                //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
+                ////this should return the whole message
+                m_match = Regex.Match(m_asciiBuffer, @"<([^>]*)>");
 
                 if (m_match.Success)
                 {
