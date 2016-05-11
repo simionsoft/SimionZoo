@@ -175,8 +175,8 @@ namespace AppXML.ViewModels
                 myPipes.Add(process.pipeName, process);
 
             }
-            
-            Shepherd shepherd;
+
+            Shepherd shepherd = null; 
             
             
             var TcpSocket = new TcpClient();
@@ -186,11 +186,12 @@ namespace AppXML.ViewModels
             {
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
+                    shepherd = new Shepherd(netStream);
                     XMLStream xmlStream = new XMLStream();
                     xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
                     foreach (ProcessStateViewModel p in processes)
                         p.SMS = "DISPATCHING FILES";
-                    shepherd.SendJobQuery(netStream, job);
+                    shepherd.SendJobQuery(job);
                     foreach (ProcessStateViewModel p in processes)
                         p.SMS = "RUNNING";
                     string xmlItem;
@@ -225,7 +226,7 @@ namespace AppXML.ViewModels
                     }
                     foreach (ProcessStateViewModel p in processes)
                         p.SMS = "RECEIVING FILES";
-                    shepherd.ReceiveJobResult(netStream);
+                    shepherd.ReceiveJobResult();
                     foreach (ProcessStateViewModel p in processes)
                     {
                         if (p.Status == 100)
