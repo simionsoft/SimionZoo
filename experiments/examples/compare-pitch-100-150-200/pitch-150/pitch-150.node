@@ -7,7 +7,7 @@
     <Dynamic-Model>
       <Model>
         <Pitch-control>
-          <Set-Point-File>../config/world/pitch/setpoint.txt</Set-Point-File>
+          <Set-Point-File>../config/world/pitch-control/setpoint.txt</Set-Point-File>
         </Pitch-control>
       </Model>
     </Dynamic-Model>
