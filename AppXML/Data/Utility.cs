@@ -14,6 +14,7 @@ using System.Net.Sockets;
 using System.Net;
 using NetJobTransfer;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 
 namespace AppXML.Data
@@ -123,7 +124,7 @@ namespace AppXML.Data
 
             //m_discoverySocket.Close();
         }
-
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static void getInputsAndOutputs(string path, ref CJob job)
         {
             StringBuilder myResult = new StringBuilder(204800);
