@@ -78,55 +78,57 @@ namespace TESTHerdAgent
            
             m_discoverySocket.BeginReceive(DiscoveryCallback,u);
 
+
             while (true)
             {
                 if (Program.m_state == AgentState.DISCOVERED)
                 {
-
-                    Program.m_state = AgentState.BUSY;
-                    var server = new TcpListener(IPAddress.Any, 4444);
-                    server.Start();
-                    m_comSocket = server.AcceptTcpClient();
-                    NetworkStream netStream = m_comSocket.GetStream();
-                    herdAgent = new HerdAgent(netStream);
-
-                    herdAgent.read();
-                    string xmlItem = herdAgent.processNextXMLItem();
-                    string xmlItemContent;
-                    if (xmlItem != "")
+                    try
                     {
-                        xmlItemContent = herdAgent.getLastXMLItemContent();
-                        if (xmlItemContent == CJobDispatcher.m_freeMessage)
+                        Program.m_state = AgentState.BUSY;
+                        var server = new TcpListener(IPAddress.Any, 4444);
+                        server.Start();
+                        m_comSocket = server.AcceptTcpClient();
+                        NetworkStream netStream = m_comSocket.GetStream();
+                        herdAgent = new HerdAgent(netStream);
+
+                        herdAgent.read();
+                        string xmlItem = herdAgent.processNextXMLItem();
+                        string xmlItemContent;
+                        if (xmlItem != "")
                         {
-                            //we do nothing and keep listening
-                            Console.WriteLine("This slave was discovered but not used");
-                        }
-                        else
-                        {
-                            
-                            if (herdAgent.ReceiveJobQuery())
+                            xmlItemContent = herdAgent.getLastXMLItemContent();
+                            if (xmlItemContent == CJobDispatcher.m_freeMessage)
                             {
-                                herdAgent.RunJob(netStream);
+                                //we do nothing and keep listening
+                                Console.WriteLine("This slave was discovered but not used");
+                            }
+                            else if (xmlItemContent == CJobDispatcher.m_aquireMessage)
+                            {
+                                if (herdAgent.ReceiveJobQuery())
+                                {
+                                    herdAgent.RunJob(netStream);
 
-                                herdAgent.writeMessage(CJobDispatcher.m_endMessage,true);
+                                    herdAgent.writeMessage(CJobDispatcher.m_endMessage, true);
 
-                                herdAgent.SendJobResult();
+                                    herdAgent.SendJobResult();
+                                }
                             }
                         }
+                        netStream.Close();
+                        netStream.Dispose();
+                        server.Stop();
+                        m_comSocket.Close();
+                        m_state = AgentState.AVAILABLE;
                     }
-
-                    netStream.Close();
-                    netStream.Dispose();
-                    server.Stop();
-                    m_comSocket.Close();
-                    m_state = AgentState.AVAILABLE;
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                    }
 
                 }
                 else Thread.Sleep(1000);
             }
-
         }
-
-
     }
 }

@@ -666,8 +666,12 @@ namespace NetJobTransfer
         {
             discardProcessedData();
             //read if there's something to read and if we have available storage
-            if (stream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
-                m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+            do
+            {
+                if (stream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
+                    m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+                if (m_bytesInBuffer == 0) Thread.Sleep(200);
+            } while (m_bytesInBuffer == 0);
         }
         public void readFromNamedPipeStream(NamedPipeServerStream stream)
         {
