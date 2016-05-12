@@ -127,6 +127,11 @@ namespace AppXML.Data
         public static void getInputsAndOutputs(string path, ref CJob job)
         {
             StringBuilder myResult = new StringBuilder(204800);
+            object o = myResult;
+            Monitor.Enter(o);
+            
+           
+            //StringBuilder myResult = new StringBuilder(204800);
             int error = getIOFiles(path, myResult, 204800);
             if (error == -1)
             {
@@ -154,6 +159,7 @@ namespace AppXML.Data
                         job.outputFiles.Add(e.Value);
                 }
             }
+            Monitor.Exit(o);
         }
 
         public static List<string> getInputs(string path)
