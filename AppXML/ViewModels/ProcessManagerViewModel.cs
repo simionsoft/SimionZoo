@@ -18,6 +18,7 @@ using NetJobTransfer;
 using AppXML.Data;
 using System.Net.Sockets;
 using System.Xml.Linq;
+using System.Runtime.CompilerServices;
 
 namespace AppXML.ViewModels
 {
@@ -30,6 +31,7 @@ namespace AppXML.ViewModels
         private List<object> readers = new List<object>();
         private List<IPEndPoint> canceler;
         public ProcessesWindowViewModel owner;
+        private int indexOffset = 0;
         public ObservableCollection<ProcessStateViewModel> Processes
         {
             get { return _processes; }
@@ -50,12 +52,13 @@ namespace AppXML.ViewModels
         public void run()
         {
             int coreNumbers = Environment.ProcessorCount;
+            indexOffset = 0;
             if(coreNumbers>=_processes.Count)
                 run(new List<ProcessStateViewModel>(Processes));
             else
             {
                 //antes de nada se lanzan los n primero experimentos
-                int index = 0;               
+                
                 
                 
                     Dictionary<IPEndPoint, int> slaves = null;
@@ -64,9 +67,9 @@ namespace AppXML.ViewModels
                     if ((slaves == null || slaves.Count == 0))
                     {
                         
-                            var results = Processes.Skip(index).Take(Processes.Count-index);
-                            run(results);
-                            index = Processes.Count;
+                            //var results = Processes.Skip(index).Take(Processes.Count-index);
+                            run(Processes);
+                            //index = Processes.Count;
                         
                     }
                     else
@@ -84,8 +87,7 @@ namespace AppXML.ViewModels
                         Parallel.ForEach(slaves.Keys, po, (key) =>
                            // foreach(IPEndPoint key in slaves.Keys)
                                                 {
-                                                
-                                                    if (index == Processes.Count)
+                                                    if (indexOffset == Processes.Count)
                                                     {
                                                         var TcpSocket = new TcpClient();
                                                         //my guess is we don't need this
@@ -104,14 +106,12 @@ namespace AppXML.ViewModels
                                                     else
                                                     {
                                                         int cores = slaves[key];
-                                                        object o = index;
-                                                        Monitor.Enter(o);
-                                                        int amount = (int)Math.Floor(cores * proportion);
-                                                        if (index + amount > Processes.Count)
-                                                            amount = Processes.Count - index;
-                                                        IEnumerable<ProcessStateViewModel> myPro = Processes.Skip(index).Take(amount);
-                                                        index += amount;
-                                                        Monitor.Exit(o);
+                                                        //object o = index;
+                                                        //Monitor.Enter(o);
+                                                        int amount = (int)Math.Ceiling(cores * proportion);
+                                                        if (indexOffset + amount > Processes.Count)
+                                                            amount = Processes.Count - indexOffset;
+                                                        IEnumerable<ProcessStateViewModel> myPro = getMines(amount);
                                                         using (cts.Token.Register(Thread.CurrentThread.Abort))
                                                         {
                                                             try
@@ -136,7 +136,7 @@ namespace AppXML.ViewModels
                         owner.isOver = true;
                        
                         },cts.Token);
-                       
+                      
                       
                     }
                 
@@ -155,6 +155,13 @@ namespace AppXML.ViewModels
             foreach(ProcessStateViewModel process in processes)
                 _processes.Add(process);
             NotifyOfPropertyChange(() => Processes);
+        }
+        [MethodImpl(MethodImplOptions.Synchronized)]
+        private IEnumerable<ProcessStateViewModel> getMines(int cores)
+        {
+            IEnumerable<ProcessStateViewModel> myPro = Processes.Skip(indexOffset).Take(cores);
+            indexOffset += cores;
+            return myPro;
         }
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
