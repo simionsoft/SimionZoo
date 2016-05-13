@@ -149,7 +149,7 @@ namespace NetJobTransfer
                 if (fromCachedDir)
                     fileName = getCachedFilename(fileName);
 
-                fileStream = File.Open(fileName, FileMode.Open);
+                fileStream = File.OpenRead(fileName);
                 fileSize = fileStream.Length;
                 header += " Size=\"" + fileSize + "\">";
 

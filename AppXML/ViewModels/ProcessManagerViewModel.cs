@@ -82,7 +82,9 @@ namespace AppXML.ViewModels
                         po.CancellationToken = cts.Token;
                         Task y =Task.Factory.StartNew(() => { 
                         Parallel.ForEach(slaves.Keys, po, (key) =>
+                           // foreach(IPEndPoint key in slaves.Keys)
                                                 {
+                                                
                                                     if (index == Processes.Count)
                                                     {
                                                         var TcpSocket = new TcpClient();
@@ -114,7 +116,8 @@ namespace AppXML.ViewModels
                                                         {
                                                             try
                                                             {
-                                                                runOneJob(myPro, key, cts.Token);
+                                                                Task.Factory.StartNew(() => { runOneJob(myPro, key, cts.Token); });
+                                                                
                                                             }
                                                             catch (Exception ex)
                                                             {
@@ -129,10 +132,11 @@ namespace AppXML.ViewModels
                                                 }
                         
                                                 );
+                        
                         owner.isOver = true;
                        
                         },cts.Token);
-                      
+                       
                       
                     }
                 
@@ -155,7 +159,7 @@ namespace AppXML.ViewModels
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
             Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
-            //Task.Factory.StartNew(() => {
+            Task.Factory.StartNew(() => {
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             //hay que preparar cada trabajo y lanzarlo
             CJob job = new CJob();
@@ -171,7 +175,7 @@ namespace AppXML.ViewModels
                 job.comLineArgs.Add(process.Label + " "+ process.pipeName);
                 job.inputFiles.Add(process.Label);
                 Utility.getInputsAndOutputs(process.Label, ref job);
-                process.SMS="RUNNING REMOTELY";
+                //process.SMS="RUNNING REMOTELY";
                 myPipes.Add(process.pipeName, process);
 
             }
@@ -189,11 +193,11 @@ namespace AppXML.ViewModels
                     shepherd = new Shepherd(netStream);
                     XMLStream xmlStream = new XMLStream();
                     xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
-                    foreach (ProcessStateViewModel p in processes)
-                        p.SMS = "DISPATCHING FILES";
+                   // foreach (ProcessStateViewModel p in processes)
+                     //   p.SMS = "DISPATCHING FILES";
                     shepherd.SendJobQuery(job);
-                    foreach (ProcessStateViewModel p in processes)
-                        p.SMS = "RUNNING";
+                   // foreach (ProcessStateViewModel p in processes)
+                       // p.SMS = "RUNNING";
                     string xmlItem;
                     while(true)
                     {
@@ -211,12 +215,12 @@ namespace AppXML.ViewModels
                             {
                                 double progress = Convert.ToDouble(message.InnerText);
                                 myPipes[key].Status = Convert.ToInt32(progress);
-                                if (progress == 100)
-                                    myPipes[key].SMS = "EXPERIMENT IS FINISHED. WAITING TO SEND FILES";
+                               // if (progress == 100)
+                                  //  myPipes[key].SMS = "EXPERIMENT IS FINISHED. WAITING TO SEND FILES";
                             }
                             else if (message.Name == "Message")
                             {
-                                myPipes[key].addMessage(message.InnerText);
+                               // myPipes[key].addMessage(message.InnerText);
                             }
                             else
                                 if (key == XMLStream.m_defaultMessageType
@@ -224,9 +228,10 @@ namespace AppXML.ViewModels
                                 break;
                         }
                     }
-                    foreach (ProcessStateViewModel p in processes)
-                        p.SMS = "RECEIVING FILES";
+                    //foreach (ProcessStateViewModel p in processes)
+                      //  p.SMS = "RECEIVING FILES";
                     shepherd.ReceiveJobResult();
+                    /*
                     foreach (ProcessStateViewModel p in processes)
                     {
                         if (p.Status == 100)
@@ -234,12 +239,12 @@ namespace AppXML.ViewModels
                         else
                             p.SMS = "ERROR";
                     }
-                    
+                    */
                 }
                 TcpSocket.Close();
             }
                 
-           // });
+            });
             
 
         }
