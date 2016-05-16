@@ -86,7 +86,7 @@ namespace TESTHerdAgent
                     try
                     {
                         Program.m_state = AgentState.BUSY;
-                        var server = new TcpListener(IPAddress.Any, 4444);
+                        var server = new TcpListener(IPAddress.Any, NetJobTransfer.CJobDispatcher.m_comPortHerd);
                         server.Start();
                         m_comSocket = server.AcceptTcpClient();
                         NetworkStream netStream = m_comSocket.GetStream();

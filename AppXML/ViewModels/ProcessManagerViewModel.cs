@@ -92,7 +92,7 @@ namespace AppXML.ViewModels
                                                         var TcpSocket = new TcpClient();
                                                         //my guess is we don't need this
                                                         //Thread.Sleep(2000);
-                                                        TcpSocket.Connect(key.Address, 4444);
+                                                        TcpSocket.Connect(key.Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
                                                         NetworkStream netStream = TcpSocket.GetStream();
                                                         XMLStream xmlStream = new XMLStream();
                                                         xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
@@ -198,7 +198,7 @@ namespace AppXML.ViewModels
             var TcpSocket = new TcpClient();
             //my guess is we don't need to sleep here
             //Thread.Sleep(2000);
-            TcpSocket.Connect(endPoint.Address, 4444);
+            TcpSocket.Connect(endPoint.Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
             {
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
