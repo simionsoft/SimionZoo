@@ -123,6 +123,9 @@ namespace TESTHerdAgent
                     }
                     catch (Exception e)
                     {
+                       
+                        m_comSocket.Close();
+                        m_state = AgentState.AVAILABLE;
                         Console.WriteLine(e.ToString());
                     }
 
