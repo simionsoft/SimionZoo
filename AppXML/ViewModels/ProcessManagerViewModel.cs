@@ -48,7 +48,64 @@ namespace AppXML.ViewModels
             _processes = new ObservableCollection<ProcessStateViewModel>(processes);
             //construct();
         }
+        private void reRun(IEnumerable<ProcessStateViewModel> processes)
+        {
+            Dictionary<IPEndPoint, int> slaves = null;
+            int totalCores;
+            int i = 0;
+            do
+            {
+                slaves = Data.Utility.getSlaves(out totalCores);
+                Thread.Sleep(3000);
+                i++;
+                if (i == 2000)
+                    return;
+            } while (slaves != null && slaves.Count > 0); ParallelOptions po = new ParallelOptions();
+            po.CancellationToken = cts.Token;
+            Parallel.For(0, slaves.Count, j => { 
+            if(j==0)
+            {
+                canceler.Add(slaves.Keys.ElementAt(0));
+                using (cts.Token.Register(Thread.CurrentThread.Abort))
+                {
+                    try
+                    {
+                        this.runOneJob(processes,slaves.Keys.ElementAt(0),cts.Token);
 
+                    }
+                    catch (Exception ex)
+                    {
+                        //stop the job
+                        Console.WriteLine(ex.StackTrace);
+
+                    }
+
+                }
+            }
+            else
+            {
+                var TcpSocket = new TcpClient();
+                //my guess is we don't need this
+                //Thread.Sleep(2000);
+                TcpSocket.Connect(slaves.Keys.ElementAt(j).Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
+                NetworkStream netStream = TcpSocket.GetStream();
+                XMLStream xmlStream = new XMLStream();
+                xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
+                //byte[] youAreFree = Encoding.ASCII.GetBytes(CJobDispatcher.m_freeMessage);
+                //netStream.Write(youAreFree, 0, youAreFree.Length);
+                netStream.Close();
+                netStream.Dispose();
+                TcpSocket.Close();
+            }
+            
+            });
+           
+
+           
+
+            
+            
+        }
         public void run()
         {
             int coreNumbers = Environment.ProcessorCount;
@@ -83,7 +140,7 @@ namespace AppXML.ViewModels
                             cts = new CancellationTokenSource();
                         ParallelOptions po = new ParallelOptions();
                         po.CancellationToken = cts.Token;
-                        Task y =Task.Factory.StartNew(() => { 
+                        //Task y =Task.Factory.StartNew(() => { 
                         Parallel.ForEach(slaves.Keys, po, (key) =>
                            // foreach(IPEndPoint key in slaves.Keys)
                                                 {
@@ -133,9 +190,9 @@ namespace AppXML.ViewModels
                         
                                                 );
                         
-                        owner.isOver = true;
+                      
                        
-                        },cts.Token);
+                     //   },cts.Token);
                       
                       
                     }
@@ -254,12 +311,14 @@ namespace AppXML.ViewModels
                     
                 }
                 TcpSocket.Close();
+                owner.isFinished(processes.Count());
             }
                  }
                 catch
                 {
                     //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
                     //mandar a cualquier maquina que este libre
+                    this.reRun(processes);
                     Console.WriteLine("aqui");
                 }
             });
@@ -311,7 +370,7 @@ namespace AppXML.ViewModels
                                                         
                                                     }
                                                 });
-            owner.isOver = true;
+         
                
             },cts.Token);
             
@@ -397,6 +456,7 @@ namespace AppXML.ViewModels
             //readers.Remove(reader);
             server.Close();
             //readers.Remove(server);
+            owner.isFinished(1);
         }
        
         internal void closeAll()

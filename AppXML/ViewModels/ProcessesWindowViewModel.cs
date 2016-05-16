@@ -16,8 +16,14 @@ namespace AppXML.ViewModels
         public ProcessManagerViewModel Manager { get { return _manager; } set { _manager = value; NotifyOfPropertyChange(()=>Manager);}  }
         private ProcessManagerViewModel _manager;
         public bool isOver { get { return _isOver; } set { _isOver = value;NotifyOfPropertyChange(()=>isOver); } }
+        private int numOfProcesses;
         private bool _isOver;
-
+        public void isFinished(int count)
+        {
+            numOfProcesses -= count;
+            if (numOfProcesses == 0)
+                isOver = true;
+        }
         public ProcessesWindowViewModel()
         {
             _isOver = false;
@@ -25,6 +31,7 @@ namespace AppXML.ViewModels
         public ProcessesWindowViewModel(List<ProcessStateViewModel> processes)
         {
             Manager = new ProcessManagerViewModel(processes);
+            numOfProcesses = processes.Count;
             isOver = false;
            
 
@@ -34,6 +41,7 @@ namespace AppXML.ViewModels
         {
             // TODO: Complete member initialization
             Manager = pwvm;
+            numOfProcesses = pwvm.Processes.Count;
             isOver = false;
            
            
