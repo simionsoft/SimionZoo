@@ -80,13 +80,14 @@ namespace TESTHerdAgent
             {
                 if (Program.m_state == AgentState.DISCOVERED)
                 {
+                    Program.m_state = AgentState.BUSY;
+                    var server = new TcpListener(IPAddress.Any, NetJobTransfer.CJobDispatcher.m_comPortHerd);
+                    server.Start();
+                    m_comSocket = server.AcceptTcpClient();
+                    NetworkStream netStream = m_comSocket.GetStream(); 
                     try
                     {
-                        Program.m_state = AgentState.BUSY;
-                        var server = new TcpListener(IPAddress.Any, NetJobTransfer.CJobDispatcher.m_comPortHerd);
-                        server.Start();
-                        m_comSocket = server.AcceptTcpClient();
-                        NetworkStream netStream = m_comSocket.GetStream();
+
                         herdAgent = new HerdAgent(m_comSocket, netStream);
 
                         herdAgent.read();
@@ -126,7 +127,9 @@ namespace TESTHerdAgent
                     }
                     catch (Exception e)
                     {
-                       
+                        netStream.Close();
+                        netStream.Dispose();
+                        server.Stop();
                         m_comSocket.Close();
                         m_state = AgentState.AVAILABLE;
                         Console.WriteLine(e.ToString());
