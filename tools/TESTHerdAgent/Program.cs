@@ -21,11 +21,6 @@ namespace TESTHerdAgent
         static AgentState m_state = AgentState.AVAILABLE;
         static HerdAgent herdAgent;// = new HerdAgent();
 
-
-
-
-      
-
         public static void DiscoveryCallback(IAsyncResult ar)
         {
 
@@ -41,6 +36,7 @@ namespace TESTHerdAgent
 
             if (receiveString == "QUIT")
             {
+                Console.WriteLine("Quit message received");
                 if(Program.m_state==AgentState.BUSY)
                 {
                     m_state = AgentState.CANCELING;
@@ -53,7 +49,7 @@ namespace TESTHerdAgent
             }
             else if(Program.m_state==AgentState.AVAILABLE)
             {
-               
+                Console.WriteLine("Agent discovered");
                 byte[] data = Encoding.ASCII.GetBytes("<Cores>" + Environment.ProcessorCount + "</Cores>");
                 u.Send(data, data.Length, e);
                 Program.m_state = AgentState.DISCOVERED;
@@ -78,6 +74,7 @@ namespace TESTHerdAgent
            
             m_discoverySocket.BeginReceive(DiscoveryCallback,u);
 
+            Console.WriteLine("Herd agent listening");
 
             while (true)
             {
@@ -105,13 +102,19 @@ namespace TESTHerdAgent
                             }
                             else if (xmlItemContent == CJobDispatcher.m_aquireMessage)
                             {
+                                Console.WriteLine("Receiving job data from" + m_comSocket.Client.RemoteEndPoint.ToString());
                                 if (herdAgent.ReceiveJobQuery())
                                 {
+                                    Console.WriteLine("Running job");
                                     herdAgent.RunJob(netStream);
 
+                                    Console.WriteLine("Job finished");
                                     herdAgent.writeMessage(CJobDispatcher.m_endMessage, true);
 
+                                    Console.WriteLine("Sending job results");
                                     herdAgent.SendJobResult();
+
+                                    Console.WriteLine("Job results sent");
                                 }
                             }
                         }
