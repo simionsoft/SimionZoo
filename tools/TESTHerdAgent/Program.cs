@@ -87,7 +87,7 @@ namespace TESTHerdAgent
                         server.Start();
                         m_comSocket = server.AcceptTcpClient();
                         NetworkStream netStream = m_comSocket.GetStream();
-                        herdAgent = new HerdAgent(netStream);
+                        herdAgent = new HerdAgent(m_comSocket, netStream);
 
                         herdAgent.read();
                         string xmlItem = herdAgent.processNextXMLItem();

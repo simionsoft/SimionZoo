@@ -52,6 +52,7 @@ namespace NetJobTransfer
 
 
         protected NetworkStream m_netStream;
+        protected TcpClient m_tcpClient;
 
         //used for reading
         protected int m_nextFileSize;
@@ -63,7 +64,7 @@ namespace NetJobTransfer
         protected int m_numOutputFilesRead;
         protected int m_numTasksRead;
 
-        public CJobDispatcher()
+        public CJobDispatcher(TcpClient client)
         {
             m_job = new CJob();
             m_xmlStream = new XMLStream();
@@ -73,13 +74,18 @@ namespace NetJobTransfer
             m_numTasksRead = 0;
             m_tempDir = "c:\\temp";
         }
-        
+        public void checkConnection()
+        {
+            if (!m_tcpClient.Connected)
+                throw new Exception("TCP connection closed");
+        }
         public void writeMessage( string message, bool addDefaultMessageType=false)
         {
             m_xmlStream.writeMessage(m_netStream,message,addDefaultMessageType);
         }
         public void read()
         {
+            checkConnection();
             m_xmlStream.readFromNetworkStream(m_netStream);
         }
         public string processNextXMLItem()
@@ -111,12 +117,14 @@ namespace NetJobTransfer
            // args += "</Args>";
             header += args;
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
+            checkConnection();
             m_netStream.Write(headerbytes, 0, headerbytes.Length);
         }
         protected void SendJobFooter()
         {
             string footer = "</Job>";
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
+            checkConnection();
             m_netStream.Write(footerbytes, 0, footerbytes.Length);
         }
         protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
@@ -155,6 +163,7 @@ namespace NetJobTransfer
 
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
+                checkConnection();
                 m_netStream.Write(headerBytes, 0, headerBytes.Length);
 
                 //send the content if it has to be sent
@@ -167,6 +176,7 @@ namespace NetJobTransfer
                     {
                         lastReadBytes = fileStream.Read(buffer, 0, m_maxChunkSize);
                         readBytes += lastReadBytes;
+                        checkConnection();
                         m_netStream.Write(buffer, 0, (int)lastReadBytes);
                     }
                     fileStream.Close();
@@ -174,6 +184,7 @@ namespace NetJobTransfer
 
                 //Send the footer: </Exe>, </Input> or </Output>
                 byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
+                checkConnection();
                 m_netStream.Write(footerBytes, 0, footerBytes.Length);
 
                 m_netStream.Flush();
@@ -183,6 +194,7 @@ namespace NetJobTransfer
                 header += "/>";
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
+                checkConnection();
                 m_netStream.Write(headerBytes, 0, headerBytes.Length);
 
                 ////Send the footer: </Exe>, </Input> or </Output>
@@ -203,23 +215,8 @@ namespace NetJobTransfer
         //}
         public void ReadFromStream()
         {
+            checkConnection();
             m_xmlStream.readFromNetworkStream(m_netStream);
-            //int bytesLeftToProcess = m_bytesInBuffer - m_bufferOffset;
-            ////something left to process in the buffer?
-            //if (m_bufferOffset != 0)
-            //{
-            //    Buffer.BlockCopy(m_buffer, m_bufferOffset, m_buffer, 0, m_bytesInBuffer - m_bufferOffset);
-            //    m_bytesInBuffer = m_bytesInBuffer - m_bufferOffset;
-            //    m_bufferOffset = 0;
-            //}
-            //do
-            //{
-            //    if (m_netStream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
-            //        m_bytesInBuffer += m_netStream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
-
-            //    //in case the shepherd (job dispatcher) writes slower than the herd agents read
-            //    if (m_bytesInBuffer == 0) Thread.Sleep(100);
-            //} while (m_bytesInBuffer == 0);
         }
         public void ReceiveJobHeader()
         {
@@ -404,7 +401,7 @@ namespace NetJobTransfer
     }
     public class Shepherd : CJobDispatcher
     {
-        public Shepherd(NetworkStream netStream)
+        public Shepherd(TcpClient tcpClient, NetworkStream netStream): base(tcpClient)
         {
             m_netStream= netStream;
         }
@@ -438,7 +435,7 @@ namespace NetJobTransfer
     {
         private CancellationTokenSource cts;
         
-        public HerdAgent(NetworkStream netStream)
+        public HerdAgent(TcpClient tcpClient, NetworkStream netStream): base(tcpClient)
         {
             m_netStream= netStream;
         }
@@ -498,6 +495,7 @@ namespace NetJobTransfer
                     
                     lock(lockObject)
                     {
+                        checkConnection();
                         xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
                        // bridge.Write(message, 0, message.Length);
                     }

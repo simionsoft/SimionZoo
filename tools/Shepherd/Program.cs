@@ -44,7 +44,7 @@ namespace TESTShepherd
             {
                 using (NetworkStream netStream = comSocket.GetStream())
                 {
-                    shepherd = new Shepherd(netStream);
+                    shepherd = new Shepherd(comSocket,netStream);
                     CJob job = new CJob();
                     job.name = filename;
                     job.exeFile = "..\\Debug\\RLSimion.exe";
