@@ -259,7 +259,7 @@ namespace AppXML.ViewModels
             {
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
-                    shepherd = new Shepherd(netStream);
+                    shepherd = new Shepherd(TcpSocket,netStream);
                     XMLStream xmlStream = new XMLStream();
                     xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
                     foreach (ProcessStateViewModel p in processes)
