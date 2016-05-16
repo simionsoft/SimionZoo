@@ -60,17 +60,24 @@ namespace AppXML.ViewModels
                 i++;
                 if (i == 2000)
                     return;
-            } while (slaves != null && slaves.Count > 0); ParallelOptions po = new ParallelOptions();
-            po.CancellationToken = cts.Token;
-            Parallel.For(0, slaves.Count, j => { 
-            if(j==0)
+            } while (slaves == null ||  slaves.Count <1);
+            for (int ii = 1; i < slaves.Keys.Count;i++ )
             {
+                var TcpSocket = new TcpClient();
+                TcpSocket.Connect(slaves.Keys.ElementAt(ii).Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
+                NetworkStream netStream = TcpSocket.GetStream();
+                XMLStream xmlStream = new XMLStream();
+                xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
+                netStream.Close();
+                netStream.Dispose();
+                TcpSocket.Close();
+            }
                 canceler.Add(slaves.Keys.ElementAt(0));
                 using (cts.Token.Register(Thread.CurrentThread.Abort))
                 {
                     try
                     {
-                        this.runOneJob(processes,slaves.Keys.ElementAt(0),cts.Token);
+                        this.runOneJob(processes, slaves.Keys.ElementAt(0), cts.Token);
 
                     }
                     catch (Exception ex)
@@ -81,24 +88,23 @@ namespace AppXML.ViewModels
                     }
 
                 }
+            
+            
+            /*
+            ParallelOptions po = new ParallelOptions();
+            po.CancellationToken = cts.Token;
+            Parallel.For(0, slaves.Count, j => { 
+            if(j==0)
+            {
+                canceler.Add(slaves.Keys.ElementAt(0));
+                
             }
             else
             {
-                var TcpSocket = new TcpClient();
-                //my guess is we don't need this
-                //Thread.Sleep(2000);
-                TcpSocket.Connect(slaves.Keys.ElementAt(j).Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
-                NetworkStream netStream = TcpSocket.GetStream();
-                XMLStream xmlStream = new XMLStream();
-                xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
-                //byte[] youAreFree = Encoding.ASCII.GetBytes(CJobDispatcher.m_freeMessage);
-                //netStream.Write(youAreFree, 0, youAreFree.Length);
-                netStream.Close();
-                netStream.Dispose();
-                TcpSocket.Close();
+               
             }
             
-            });
+            });*/
            
 
            
@@ -314,12 +320,12 @@ namespace AppXML.ViewModels
                 owner.isFinished(processes.Count());
             }
                  }
-                catch
+                catch(Exception ex)
                 {
                     //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
                     //mandar a cualquier maquina que este libre
-                    this.reRun(processes);
-                    Console.WriteLine("aqui");
+                    this.reRun(myPipes.Values);
+                    Console.WriteLine(ex.StackTrace);
                 }
             });
             
