@@ -12,6 +12,7 @@ void main(int argc, char* argv[])
 {
 
 	char buffer[10000];
+	_CrtSetBreakAlloc(434);
 
 	try
 	{
@@ -30,5 +31,6 @@ void main(int argc, char* argv[])
 	{
 		CLogger::logMessage(MessageType::Error, e.what());
 	}
+	_CrtDumpMemoryLeaks();
 }
 

@@ -132,7 +132,7 @@ namespace TESTHerdAgent
                         server.Stop();
                         m_comSocket.Close();
                         m_state = AgentState.AVAILABLE;
-                        Console.WriteLine(e.ToString());
+                        Console.WriteLine(e.StackTrace);
                     }
 
                 }
