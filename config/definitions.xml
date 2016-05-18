@@ -359,7 +359,7 @@
   </CLASS>
 
   <CLASS Name="CLinearStateVFAFromFile">
-    <FILE-PATH-VALUE Name="Load" Default="../config/data/*.fmap" Comment="The VFA will be loaded from this file"/>
+    <FILE-PATH-VALUE Name="Load" Default="../data/*.fmap" Comment="The VFA will be loaded from this file"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFA-Factory">

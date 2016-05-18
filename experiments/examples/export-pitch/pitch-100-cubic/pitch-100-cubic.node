@@ -9,17 +9,17 @@
               <RBF-State-Grid>
                 <RBF-Grid-Dimension>
                   <Variable>control-deviation</Variable>
-                  <Num-Features>250</Num-Features>
-                  <Distribution>linear</Distribution>
+                  <Num-Features>100</Num-Features>
+                  <Distribution>cubic</Distribution>
                 </RBF-Grid-Dimension>
                 <RBF-Grid-Dimension>
                   <Variable>attack-angle</Variable>
-                  <Num-Features>250</Num-Features>
+                  <Num-Features>200</Num-Features>
                   <Distribution>linear</Distribution>
                 </RBF-Grid-Dimension>
                 <RBF-Grid-Dimension>
                   <Variable>pitch-rate</Variable>
-                  <Num-Features>250</Num-Features>
+                  <Num-Features>200</Num-Features>
                   <Distribution>linear</Distribution>
                 </RBF-Grid-Dimension>
               </RBF-State-Grid>
@@ -56,7 +56,7 @@
     </Controller>
     <Output-DirFile>
       <Output-Dir>../data</Output-Dir>
-      <File-Prefix>pitch-250</File-Prefix>
+      <File-Prefix>pitch-100-cubic</File-Prefix>
     </Output-DirFile>
   </ControllerToVFA>
 </ControllerToVFA>
