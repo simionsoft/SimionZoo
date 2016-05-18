@@ -131,7 +131,7 @@
                           <Deterministic-Policy-VFA>
                             <Parameterization>
                               <From-File>
-                                <Load>../data/vidal-60.d_beta.fmap</Load>
+                                <Load>../data/vidal-70-linear.d_beta.fmap</Load>
                               </From-File>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
@@ -197,7 +197,7 @@
                           <Deterministic-Policy-VFA>
                             <Parameterization>
                               <From-File>
-                                <Load>../data/vidal-60.d_T_g.fmap</Load>
+                                <Load>../data/vidal-70-linear.d_T_g.fmap</Load>
                               </From-File>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
@@ -279,22 +279,22 @@
                             <RBF-State-Grid>
                               <RBF-Grid-Dimension>
                                 <Variable>E_p</Variable>
-                                <Num-Features>60</Num-Features>
-                                <Distribution>cubic</Distribution>
+                                <Num-Features>70</Num-Features>
+                                <Distribution>linear</Distribution>
                               </RBF-Grid-Dimension>
                               <RBF-Grid-Dimension>
                                 <Variable>omega_r</Variable>
-                                <Num-Features>60</Num-Features>
-                                <Distribution>cubic</Distribution>
+                                <Num-Features>70</Num-Features>
+                                <Distribution>linear</Distribution>
                               </RBF-Grid-Dimension>
                               <RBF-Grid-Dimension>
                                 <Variable>d_omega_r</Variable>
-                                <Num-Features>60</Num-Features>
-                                <Distribution>cubic</Distribution>
+                                <Num-Features>70</Num-Features>
+                                <Distribution>linear</Distribution>
                               </RBF-Grid-Dimension>
                               <RBF-Grid-Dimension>
                                 <Variable>T_g</Variable>
-                                <Num-Features>60</Num-Features>
+                                <Num-Features>70</Num-Features>
                                 <Distribution>linear</Distribution>
                               </RBF-Grid-Dimension>
                             </RBF-State-Grid>

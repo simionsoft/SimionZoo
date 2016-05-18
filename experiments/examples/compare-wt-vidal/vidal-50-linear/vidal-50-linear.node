@@ -2,10 +2,10 @@
   <CompareControllerVFA>
     <Num-Samples>100000</Num-Samples>
     <Policy>
-      <Load>../data/vidal-80.d_beta.fmap</Load>
+      <Load>../data/vidal-50-linear.d_beta.fmap</Load>
     </Policy>
     <Policy>
-      <Load>../data/vidal-80.d_T_g.fmap</Load>
+      <Load>../data/vidal-50-linear.d_T_g.fmap</Load>
     </Policy>
     <Dynamic-Model>
       <Model>
@@ -59,7 +59,7 @@
     </Controller>
     <Output-DirFile>
       <Output-Dir>../data</Output-Dir>
-      <File-Prefix>compare-wt-vidal-80</File-Prefix>
+      <File-Prefix>compare-wt-vidal-50-linear</File-Prefix>
     </Output-DirFile>
   </CompareControllerVFA>
 </CompareControllerVFA>

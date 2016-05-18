@@ -2,7 +2,7 @@
   <CompareControllerVFA>
     <Num-Samples>100000</Num-Samples>
     <Policy>
-      <Load>../data/pitch-250.pitch.fmap</Load>
+      <Load>../data/pitch-50-cubic.pitch.fmap</Load>
     </Policy>
     <Dynamic-Model>
       <Model>
@@ -32,7 +32,7 @@
     </Controller>
     <Output-DirFile>
       <Output-Dir>../data</Output-Dir>
-      <File-Prefix>compare-pitch-250</File-Prefix>
+      <File-Prefix>compare-pitch-50-cubic</File-Prefix>
     </Output-DirFile>
   </CompareControllerVFA>
 </CompareControllerVFA>

@@ -100,7 +100,7 @@
     <Experiment>
       <Progress-Update-Freq>0.5</Progress-Update-Freq>
       <Random-Seed>1</Random-Seed>
-      <Num-Episodes>1000</Num-Episodes>
+      <Num-Episodes>5000</Num-Episodes>
       <Eval-Freq>50</Eval-Freq>
       <Episode-Length>360</Episode-Length>
     </Experiment>
