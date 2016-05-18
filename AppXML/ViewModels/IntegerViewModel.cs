@@ -330,24 +330,25 @@ namespace AppXML.ViewModels
                     string extension = copyDefault.Split('.').Last();
                     string filter = "File (." + extension + ")|*." + extension + "|All Files (*.*)|*.*";
                     openFileDialog.Filter = filter;
-                    if(File.Exists(copyDefault))
+                   // if(File.Exists(copyDefault))
+                    if(!copyDefault.Contains("*."))
                     {
-                        bool isAbsolute = Path.IsPathRooted(copyDefault);
-                        if (isAbsolute)
-                            openFileDialog.InitialDirectory = Path.GetDirectoryName(copyDefault);
-                        else
-                            openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), Default)))
+                        //bool isAbsolute = Path.IsPathRooted(copyDefault);
+                        //if (isAbsolute)
+                         //   openFileDialog.InitialDirectory = Path.GetDirectoryName(copyDefault);
+                        //else
+                            openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), copyDefault)))
 ;
                     }
-                    else if(copyDefault.Contains("*."))
+                    else //if(copyDefault.Contains("*."))
                     {
                         string dirPath = copyDefault.Split('*').First();
                         if(Directory.Exists(dirPath))
                         {
-                            bool isAbsolute = Path.IsPathRooted(copyDefault);
-                            if (isAbsolute)
-                                openFileDialog.InitialDirectory = dirPath;
-                            else
+                            //bool isAbsolute = Path.IsPathRooted(copyDefault);
+                            //if (isAbsolute)
+                            //    openFileDialog.InitialDirectory = dirPath;
+                            //else
                                 openFileDialog.InitialDirectory = Path.GetDirectoryName(System.IO.Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), dirPath)));
                         }
                         

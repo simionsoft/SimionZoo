@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TESTHerdAgent", "tools\TEST
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TESTHerdXMLParser", "tools\TESTHerdXMLParser\TESTHerdXMLParser.csproj", "{542DB0F3-F3CF-4CD8-AA5F-821F1A89353B}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup2", "Setup2\Setup2.vdproj", "{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -232,6 +234,16 @@ Global
 		{542DB0F3-F3CF-4CD8-AA5F-821F1A89353B}.Release|Win32.ActiveCfg = Release|Any CPU
 		{542DB0F3-F3CF-4CD8-AA5F-821F1A89353B}.Release|x64.ActiveCfg = Release|Any CPU
 		{542DB0F3-F3CF-4CD8-AA5F-821F1A89353B}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Debug|Any CPU.ActiveCfg = Debug
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Debug|Mixed Platforms.ActiveCfg = Debug
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Debug|Win32.ActiveCfg = Debug
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Debug|x64.ActiveCfg = Debug
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Debug|x86.ActiveCfg = Debug
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Release|Any CPU.ActiveCfg = Release
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Release|Mixed Platforms.ActiveCfg = Release
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Release|Win32.ActiveCfg = Release
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Release|x64.ActiveCfg = Release
+		{4D6D8DBB-CB3E-42FC-9F42-83ABCF8BA34F}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
