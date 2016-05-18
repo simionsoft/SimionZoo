@@ -1,0 +1,13 @@
+<ExperimentsTree App="RLSimion">
+  <Root Path="../experiments/examples/learn-wt-vidal/root/root.node" />
+  <Experiments>
+    <vidal-80 Path="../experiments/examples/learn-wt-vidal/vidal-80/vidal-80.node" />
+    <vidal-70 Path="../experiments/examples/learn-wt-vidal/vidal-70/vidal-70.node" />
+    <vidal-60 Path="../experiments/examples/learn-wt-vidal/vidal-60/vidal-60.node" />
+    <vida-50 Path="../experiments/examples/learn-wt-vidal/vida-50/vida-50.node" />
+    <vidal-50-linear Path="../experiments/examples/learn-wt-vidal/vidal-50-linear/vidal-50-linear.node" />
+    <vidal-60-linear Path="../experiments/examples/learn-wt-vidal/vidal-60-linear/vidal-60-linear.node" />
+    <vidal-70-linear Path="../experiments/examples/learn-wt-vidal/vidal-70-linear/vidal-70-linear.node" />
+    <vidal-80-linear Path="../experiments/examples/learn-wt-vidal/vidal-80-linear/vidal-80-linear.node" />
+  </Experiments>
+</ExperimentsTree>

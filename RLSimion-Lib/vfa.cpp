@@ -154,7 +154,7 @@ CLinearStateVFA::CLinearStateVFA() : CLinearVFA(0)
 CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
 {
 	//load the map feature description from an xml file
-	FILE_PATH_VALUE(m_loadFilename, "Load", "../config/data/*.fmap", "The VFA will be loaded from this file");
+	FILE_PATH_VALUE(m_loadFilename, "Load", "../data/*.fmap", "The VFA will be loaded from this file");
 	CApp::get()->SimGod.registerInputFile(m_loadFilename);
 
 	strcpy_s(m_weightFilename, 1024, m_loadFilename);
