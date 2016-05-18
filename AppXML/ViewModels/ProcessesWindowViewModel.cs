@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,14 +16,24 @@ namespace AppXML.ViewModels
 
         public ProcessManagerViewModel Manager { get { return _manager; } set { _manager = value; NotifyOfPropertyChange(()=>Manager);}  }
         private ProcessManagerViewModel _manager;
-        public bool isOver { get { return _isOver; } set { _isOver = value;NotifyOfPropertyChange(()=>isOver); } }
+        public bool isOver { get { return _isOver; } set 
+        { 
+            _isOver = value;
+            NotifyOfPropertyChange(()=>isOver);
+       
+           
+        } }
         private int numOfProcesses;
         private bool _isOver;
         public void isFinished(int count)
         {
             numOfProcesses -= count;
             if (numOfProcesses == 0)
+            {
                 isOver = true;
+               
+            }
+               
         }
         public ProcessesWindowViewModel()
         {

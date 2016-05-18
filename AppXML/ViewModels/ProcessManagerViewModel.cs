@@ -46,10 +46,14 @@ namespace AppXML.ViewModels
         public ProcessManagerViewModel(List<ProcessStateViewModel> processes)
         {
             _processes = new ObservableCollection<ProcessStateViewModel>(processes);
-            //construct();
         }
         private void reRun(IEnumerable<ProcessStateViewModel> processes)
         {
+            foreach (ProcessStateViewModel p in processes)
+            {
+                p.Status = 0;
+                p.SMS = "ERROR IN REMOTE HOST. LOOKING FOR A NEW HOST";
+            }
             Dictionary<IPEndPoint, int> slaves = null;
             int totalCores;
             int i = 0;
@@ -59,7 +63,7 @@ namespace AppXML.ViewModels
                 Thread.Sleep(3000);
                 i++;
                 if (i == 2000)
-                    return;
+                    run(processes);
             } while (slaves == null ||  slaves.Count <1);
             for (int ii = 1; i < slaves.Keys.Count;i++ )
             {

@@ -420,6 +420,8 @@ namespace AppXML.ViewModels
                         return;
                 }
                 //Utility.method(paths);
+                Graf.Loaded = true;
+                Graf.LoadedAndModified = false;
                 initExperimentas(paths);
             }
                
@@ -608,6 +610,7 @@ namespace AppXML.ViewModels
                 if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     xmlFileName = sfd.FileName;
+                    Graf.LoadedXmlFile = xmlFileName;
                 }
                 else
                     return new List<string>();

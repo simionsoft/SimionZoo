@@ -307,7 +307,7 @@ namespace AppXML.ViewModels
                 this.type = validTypes.DirPathValue;
             else
                 this.type = validTypes.FilePathValue;
-            copyDefault = Default;
+            copyDefault = defaultValue;
             if (Default!=null && Default.Contains("*."))
                 Default = "";
 
