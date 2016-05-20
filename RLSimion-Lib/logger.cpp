@@ -77,6 +77,8 @@ CLogger::~CLogger()
 	if (m_pEpisodeTimer) delete m_pEpisodeTimer;
 
 	if (m_outputDir) delete[] m_outputDir;
+
+	CloseHandle(m_outputPipe);
 }
 
 
@@ -301,23 +303,22 @@ void CLogger::logMessage(MessageType type, const char* message)
 		switch (type)
 		{
 		case Warning:
-			sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>\n", message);
+			sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>", message);
 			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Progress:
 			//extra spaces to avoid overwriting only partially previous message
-			sprintf_s(messageLine, 1024, "<Progress>%s</Progress>\n", message);
+			sprintf_s(messageLine, 1024, "<Progress>%s</Progress>", message);
 			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Info:
-			sprintf_s(messageLine, 1024, "<Message>INFO: %s</Message>\n", message);
+			sprintf_s(messageLine, 1024, "<Message>%s</Message>", message);
 			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
 			break;
 		case Error:
-			sprintf_s(messageLine, 1024, "<Message>FATAL ERROR: %ls</Message>\n", message);
+			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message);
 			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
-			closeOutputPipe();
-			exit(-1);
+			FlushFileBuffers(m_outputPipe);
 		}
 	}
 	else
@@ -332,10 +333,10 @@ void CLogger::logMessage(MessageType type, const char* message)
 			printf("PROGRESS: %s                     \r", message);
 			break;
 		case Info:
-			printf("INFO: %s\n", message);
+			printf("%s\n", message);
 			break;
 		case Error:
-			printf("FATAL ERROR: %s\n",message);
+			printf("ERROR: %s\n",message);
 			break;
 		}
 	}

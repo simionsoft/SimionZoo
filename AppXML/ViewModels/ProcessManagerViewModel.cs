@@ -412,23 +412,22 @@ namespace AppXML.ViewModels
 
             //not to read 23.232 as 23232
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            //Task.Delay(1000).Wait();
-            
+
 
             p.StartInfo = startInfo;
             p.Start();
-            //Process.Start(startInfo);
+
             this.ids.Add(p);
+            
             server.WaitForConnection();
+
             XMLStream xmlStream = new XMLStream();
             string xmlItem;
             XmlDocument xml = new XmlDocument();
-            //StreamReader reader = new StreamReader(server);
-            //readers.Add(reader); //<- mmmmm esto no sé si se puede quitar, es para probar nada más
-            //readers.Add(server);
+
             process.SMS = "Running";
             System.Windows.Forms.Application.DoEvents();
-            //bool reading = true;
+
             while (server.IsConnected)
             {
                 try
@@ -452,15 +451,9 @@ namespace AppXML.ViewModels
                             process.addMessage(node.InnerText);
 
                         }
-                        else if (node.Name == "Warning")
-                        {
-                            process.addMessage(node.InnerText);
-
-                        }
                         else if (node.Name == "Error")
                         {
                             process.addMessage(node.InnerText);
-
                         }
                         System.Windows.Forms.Application.DoEvents();
                     }
@@ -471,11 +464,8 @@ namespace AppXML.ViewModels
                 }
 
             }
-            //ids.Remove(p);
-            //reader.Close();
-            //readers.Remove(reader);
             server.Close();
-            //readers.Remove(server);
+            
             owner.isFinished(1);
         }
        
