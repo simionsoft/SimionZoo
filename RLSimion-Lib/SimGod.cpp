@@ -70,16 +70,23 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 		m_pSimions[i]->updatePolicy(s, a,s_p,r);
 }
 
-void CSimGod::registerDelayedLoadObj(CDeferredLoad* pObj)
+void CSimGod::registerDelayedLoadObj(CDeferredLoad* pObj,unsigned int loadOrder)
 {
-	m_delayedLoadObjects.push_back(pObj);
+	m_delayedLoadObjects.push_back(std::pair<CDeferredLoad*,unsigned int>(pObj,loadOrder));
+}
+
+bool myComparison(const std::pair<CDeferredLoad*, int> &a, const std::pair<CDeferredLoad*, int> &b)
+{
+	return a.second<b.second;
 }
 
 void CSimGod::delayedLoad()
 {
+	std::sort(m_delayedLoadObjects.begin(), m_delayedLoadObjects.end(),myComparison);
+
 	for (auto it = m_delayedLoadObjects.begin(); it != m_delayedLoadObjects.end(); it++)
 	{
-		(*it)->deferredLoadStep();
+		(*it).first->deferredLoadStep();
 	}
 }
 

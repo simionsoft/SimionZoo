@@ -3,9 +3,9 @@
 #include "simgod.h"
 #include "app.h"
 
-CDeferredLoad::CDeferredLoad()
+CDeferredLoad::CDeferredLoad(unsigned int loadOrder)
 {
-	CApp::get()->SimGod.registerDelayedLoadObj(this);
+	CApp::get()->SimGod.registerDelayedLoadObj(this,loadOrder);
 }
 
 CDeferredLoad::~CDeferredLoad()

@@ -8,11 +8,11 @@
 #include "named-var-set.h"
 #include "parameters.h"
 #include "policy-learner.h"
-
+#include "app.h"
 #include "vfa.h"
+#include "featuremap.h"
 
-
-CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters), CDeferredLoad(10)//if initialized, it has to be done after allocating memory for the weights
 {
 	m_numOutputs = pParameters->countChildren("Output");
 	CParameters* pOutput = pParameters->getChild("Output");
@@ -25,6 +25,8 @@ CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters)
 
 		pOutput = pOutput->getNextChild();
 	}
+
+	CHILD_CLASS_FACTORY(m_pInitController, "Base-Controller", "The base controller used to initialize the weights of the actor", true, CController);
 	END_CLASS();
 }
 
@@ -32,7 +34,7 @@ CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters)
 
 CActor::~CActor()
 {
-
+	delete m_pInitController;
 	for (int i = 0; i < m_numOutputs; i++)
 	{
 		delete m_pPolicyLearners[i];
@@ -41,7 +43,52 @@ CActor::~CActor()
 	delete[] m_pPolicyLearners;
 }
 
-
+void CActor::deferredLoadStep()
+{
+	int controllerActionIndex, actorActionIndex;
+	unsigned int feature, numWeights;
+	double *pWeights;
+	CState* s= CApp::get()->World.getDynamicModel()->getStateInstance();
+	CAction* a= CApp::get()->World.getDynamicModel()->getActionInstance();
+	int numActionDims = std::min(m_pInitController->getNumOutputs(), m_numOutputs);
+	if (m_pInitController)
+	{
+		//initialize the weights using the controller's output at each center point in state space
+		for (int actionIndex = 0; actionIndex < numActionDims; actionIndex++)
+		{
+			controllerActionIndex = m_pInitController->getOutputActionIndex(actionIndex);
+			for (int actorActionIndex = 0; actorActionIndex < m_numOutputs; actorActionIndex++)
+			{
+				if (controllerActionIndex == m_pPolicyLearners[actorActionIndex]->getPolicy()->getOutputActionIndex())
+				{
+					//controller's output action index and actor's match, so we use it to initialize
+					numWeights = m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
+					pWeights = m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeightPtr();
+					for (unsigned int i = 0; i < numWeights; i++)
+					{
+						m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getStateFeatureMap()->getFeatureState(i, s);
+						m_pInitController->selectAction(s, a);
+						pWeights[i] = a->getValue(controllerActionIndex);//m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getValue(s);
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		for (actorActionIndex = 0; actorActionIndex < m_numOutputs; actorActionIndex++)
+		{
+			numWeights = m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
+			pWeights = m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeightPtr();
+			for (unsigned int i = 0; i < numWeights; i++)
+			{
+				pWeights[i] = 0.0;
+			}
+		}
+	}
+	delete s;
+	delete a;
+}
 
 void CActor::selectAction(const CState *s, CAction *a)
 {

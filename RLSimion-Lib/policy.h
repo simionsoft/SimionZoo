@@ -34,6 +34,8 @@ public:
 	int getOutputActionIndex(){ return m_outputActionIndex; }
 
 	static CPolicy* getInstance(CParameters* pParameters);
+
+	virtual CLinearStateVFA* getDetPolicyStateVFA()= 0;
 };
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
@@ -56,6 +58,8 @@ public:
 	void selectAction(const CState *s, CAction *a);
 
 	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+
+	CLinearStateVFA* getDetPolicyStateVFA(){ return m_pDeterministicVFA; }
 };
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
@@ -82,4 +86,6 @@ public:
 	void selectAction(const CState *s, CAction *a);
 
 	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+
+	CLinearStateVFA* getDetPolicyStateVFA(){ return m_pMeanVFA; }
 };

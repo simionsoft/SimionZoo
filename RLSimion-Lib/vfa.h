@@ -45,7 +45,6 @@ public:
 
 class CLinearStateVFA: public CLinearVFA, public CDeferredLoad
 {
-	double m_initValue;
 protected:
 	CStateFeatureMap* m_pStateFeatureMap;
 	CFeatureList *m_pAux;
@@ -65,21 +64,23 @@ public:
 	//void load(const char* pFilename);
 
 	static CLinearStateVFA* getInstance(CParameters* pParameters);
+
+	CStateFeatureMap* getStateFeatureMap(){ return m_pStateFeatureMap; }
 };
-
-class CLinearStateVFAFromFile: public CLinearStateVFA
-{
-	CParameterFile* m_mapFeatureParameterFile;
-	CParameters* m_mapFeatureParameters;
-	const char* m_loadFilename;
-	char m_weightFilename[1024];
-
-	virtual void deferredLoadStep();
-public:
-	~CLinearStateVFAFromFile();
-	CLinearStateVFAFromFile(CParameters* pParameters);
-};
-
+//
+//class CLinearStateVFAFromFile: public CLinearStateVFA
+//{
+//	CParameterFile* m_mapFeatureParameterFile;
+//	CParameters* m_mapFeatureParameters;
+//	const char* m_loadFilename;
+//	char m_weightFilename[1024];
+//
+//	virtual void deferredLoadStep();
+//public:
+//	~CLinearStateVFAFromFile();
+//	CLinearStateVFAFromFile(CParameters* pParameters);
+//};
+//
 
 class CLinearStateActionVFA : public CLinearVFA
 {

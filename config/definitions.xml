@@ -30,6 +30,7 @@
 
   <CLASS Name="CActor">
     <MULTI-VALUED Name="Output" Class="CPolicyLearner-Factory" Comment="The outputs of the actor. One for each output dimension"/>
+    <BRANCH Name="Base-Controller" Class="CController-Factory" Comment="The base controller used to initialize the weights of the actor" Optional=" true"/>
   </CLASS>
 
   <CLASS Name="CompareControllerVFAApp">
