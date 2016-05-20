@@ -345,6 +345,7 @@ void CLogger::closeOutputPipe()
 {
 	if (m_outputPipe)
 	{
+		FlushFileBuffers(m_outputPipe);
 		CloseHandle(m_outputPipe);
 		m_outputPipe = 0;
 	}
@@ -361,20 +362,7 @@ void CLogger::createOutputPipe(const char* pipeName)
 	mbstowcs_s(&convertedChars, w_pipename,512, pipeName, 512);
 	wcscat_s(w_completePipename, w_pipename);
 
-
-
-	//wprintf(L"Creating pipe: %ls\n", w_completePipename);
-
-	//m_outputPipe = CreateNamedPipe(
-	//	w_pipename,             // pipe name 
-	//	PIPE_ACCESS_OUTBOUND,       // write access 
-	//	PIPE_TYPE_MESSAGE |       // message type pipe 
-	//	PIPE_WAIT,                // blocking mode 
-	//	PIPE_UNLIMITED_INSTANCES, // max. instances  
-	//	1024,              // output buffer size 
-	//	0,              // input buffer size 
-	//	NMPWAIT_USE_DEFAULT_WAIT, // client time-out 
-	//	NULL);                    // default security attribute  
+	
 
 	m_outputPipe = CreateFile(
 		w_completePipename,   // pipe name 
@@ -388,10 +376,11 @@ void CLogger::createOutputPipe(const char* pipeName)
 	if (m_outputPipe == INVALID_HANDLE_VALUE)
 	{
 		//printf("FAILED\n");
-
+		logMessage(MessageType::Error, "Could not create pipe");
 		return;
 	}
 	//printf("OK\n");
 
 	m_messageOutputMode = MessageOutputMode::NamedPipe;
+	logMessage(MessageType::Info, "Pipe succesfully created");
 }

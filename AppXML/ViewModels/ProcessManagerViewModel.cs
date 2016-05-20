@@ -452,6 +452,16 @@ namespace AppXML.ViewModels
                             process.addMessage(node.InnerText);
 
                         }
+                        else if (node.Name == "Warning")
+                        {
+                            process.addMessage(node.InnerText);
+
+                        }
+                        else if (node.Name == "Error")
+                        {
+                            process.addMessage(node.InnerText);
+
+                        }
                         System.Windows.Forms.Application.DoEvents();
                     }
                 }
