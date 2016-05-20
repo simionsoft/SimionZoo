@@ -96,6 +96,8 @@ protected:
 public:
 	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
 	unsigned int getNumActionWeights() const { return m_numActionWeights; }
+	CStateFeatureMap* getStateFeatureMap() const{ return m_pStateFeatureMap; }
+	CActionFeatureMap* getActionFeatureMap() const{ return m_pActionFeatureMap; }
 
 	CLinearStateActionVFA(CParameters* pParameters);
 	~CLinearStateActionVFA();
@@ -112,7 +114,7 @@ public:
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
 
 	//features are built using the two feature maps: the state and action feature maps
-	//
+	//the input is a feature in state-action space
 	void getFeatureStateAction(unsigned int feature,CState* s, CAction* a);
 
 	void add(const CFeatureList* pFeatures, double alpha = 1.0);

@@ -279,12 +279,16 @@
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional=" true"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
+    <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
 
   <CLASS Name="CSARSA">
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional=" true"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
+    <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
 
   <CLASS Name="CRewardFunctionComponent">

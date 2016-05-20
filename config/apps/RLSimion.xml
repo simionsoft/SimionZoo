@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <APP Name="RLSimion">
   <EXE>../Debug/RLSimion.exe</EXE>
-  <PRE>../Debug/msvcp120.dll</PRE>
-  <PRE>../Debug/msvcr120.dll</PRE>
+  <PRE>../Debug/msvcp120d.dll</PRE>
+  <PRE>../Debug/msvcr120d.dll</PRE>
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
 

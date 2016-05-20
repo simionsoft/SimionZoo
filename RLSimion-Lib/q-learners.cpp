@@ -9,6 +9,7 @@
 #include "etraces.h"
 #include "world.h"
 #include "app.h"
+#include "featuremap.h"
 
 ///////////////////////////////////////
 //Q-function-based POLICIES
@@ -44,7 +45,7 @@ void CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 	{
 		unsigned int numActionWeights= pQFunction->getNumActionWeights();
 		unsigned int randomActionWeight = rand() % numActionWeights;
-		pQFunction->getFeatureStateAction(randomActionWeight, 0, a);
+		pQFunction->getActionFeatureMap()->getFeatureAction(randomActionWeight, a);
 	}
 }
 
@@ -71,7 +72,7 @@ void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 		if (numActionWeights > 0)
 			m_pProbabilities = new double[numActionWeights];
 	}
-	double inv_tau = 1.0/std::min(0.000001,m_pTau->getValue());
+	double inv_tau = 1.0/std::max(0.000001,m_pTau->getValue());
 	pQFunction->getActionValues(s, m_pProbabilities);
 	double sum = 0.0;
 	unsigned int i;
@@ -89,7 +90,7 @@ void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 		searchSum += m_pProbabilities[i] * sum;
 		i++;
 	}
-	pQFunction->getFeatureStateAction(i, 0, a);
+	pQFunction->getActionFeatureMap()->getFeatureAction(i, a);
 	assert(i < numActionWeights);
 }
 
@@ -101,6 +102,9 @@ CLASS_CONSTRUCTOR(CQLearning)
 	CHILD_CLASS(m_pQFunction, "Q-Function", "The parameterization of the Q-Function", false, CLinearStateActionVFA);
 	CHILD_CLASS_FACTORY(m_pQPolicy, "Policy", "The policy to be followed", false, CQPolicy);
 	CHILD_CLASS(m_eTraces, "E-Traces", "E-Traces", true, CETraces, "Q-Learning/traces");
+	NUMERIC_VALUE(m_pGamma, "Gamma", "The gamma parameter of the MDP");
+	NUMERIC_VALUE(m_pAlpha, "Alpha", "The learning gain [0-1]");
+	m_pAux = new CFeatureList("QLearning/aux");
 	END_CLASS();
 }
 CQLearning::~CQLearning()
@@ -108,15 +112,20 @@ CQLearning::~CQLearning()
 	delete m_pQFunction;
 	delete m_pQPolicy;
 	delete m_eTraces;
+	delete m_pAux;
 }
 
 void CQLearning::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
 	m_eTraces->update();
-	double td = r + m_pGamma->getValue()*m_pQFunction->max(s_p) - m_pQFunction->getValue(s, a);
-	m_pQFunction->add(m_eTraces, td*m_pAlpha->getValue());
 
+	m_pQFunction->getFeatures(s, a, m_pAux);
+	m_eTraces->addFeatureList(m_pAux, m_pGamma->getValue());
+
+	double td = r + m_pGamma->getValue()*m_pQFunction->max(s_p) - m_pQFunction->getValue(s,a);
+
+	m_pQFunction->add(m_eTraces, td*m_pAlpha->getValue());
 }
 
 void CQLearning::selectAction(const CState *s, CAction *a)
@@ -146,7 +155,9 @@ void CSARSA::selectAction(const CState *s, CAction *a)
 		m_bNextActionSelected = false;
 	}
 	else
+	{
 		m_pQPolicy->selectAction(m_pQFunction, s, a);
+	}
 }
 
 void CSARSA::updateValue(const CState* s, const CAction* a, const CState* s_p, double r)
@@ -157,6 +168,9 @@ void CSARSA::updateValue(const CState* s, const CAction* a, const CState* s_p, d
 	//select a_t+1
 	m_pQPolicy->selectAction(m_pQFunction, s_p, m_nextA);
 	m_bNextActionSelected = true;
+
+	m_pQFunction->getFeatures(s, a, m_pAux);
+	m_eTraces->addFeatureList(m_pAux, m_pGamma->getValue());
 
 	double td = r + m_pGamma->getValue()*m_pQFunction->getValue(s_p,m_nextA) - m_pQFunction->getValue(s, a);
 	m_pQFunction->add(m_eTraces, td*m_pAlpha->getValue());

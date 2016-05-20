@@ -9,6 +9,7 @@ class CQPolicy;
 class CQFunctionUpdater;
 class CETraces;
 class CNumericValue;
+class CFeatureList;
 
 ////////////////////////////////////////////////////
 //Q-function based policies: abstract/factory class
@@ -57,6 +58,7 @@ protected:
 	CETraces *m_eTraces;
 	CNumericValue *m_pAlpha;
 	CNumericValue *m_pGamma;
+	CFeatureList *m_pAux;
 public:
 	CQLearning(CParameters* pParameters);
 	virtual ~CQLearning();
