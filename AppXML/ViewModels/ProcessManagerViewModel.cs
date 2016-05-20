@@ -454,6 +454,7 @@ namespace AppXML.ViewModels
                         else if (node.Name == "Error")
                         {
                             process.addMessage(node.InnerText);
+                            process.SMS = "ERROR";
                         }
                         System.Windows.Forms.Application.DoEvents();
                     }
