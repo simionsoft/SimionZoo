@@ -107,7 +107,7 @@ namespace AppXML.Data
             {
                 using (NetworkStream netStream = comSocket.GetStream())
                 {
-                    shepherd = new Shepherd(comSocket,netStream);
+                    shepherd = new Shepherd(comSocket,netStream,"");
                     //we can just block the thread by waiting until we receive something. Don't think we need to sleep
                     //Thread.Sleep(20000);
                    
