@@ -146,53 +146,53 @@ void CLinearStateVFA::deferredLoadStep()
 }
 CLinearStateVFA::CLinearStateVFA() : CLinearVFA(0)
 {}
-//
-//CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
-//{
-//	//load the map feature description from an xml file
-//	FILE_PATH_VALUE(m_loadFilename, "Load", "../data/*.fmap", "The VFA will be loaded from this file");
-//	CApp::get()->SimGod.registerInputFile(m_loadFilename);
-//
-//	strcpy_s(m_weightFilename, 1024, m_loadFilename);
-//	char* extension = strstr(m_weightFilename, "fmap");
-//	if (extension)
-//		strcpy_s(extension, 1024 - (extension - m_weightFilename + 1), "weights");
-//	CApp::get()->SimGod.registerInputFile(m_weightFilename);
-//
-//
-//	m_pAux = new CFeatureList("LinearStateVFA/aux");
-//	m_mapFeatureParameterFile = 0;
-//	m_mapFeatureParameters = 0;
-//	m_minIndex= m_maxIndex= m_numWeights = 0;
-//	m_pStateFeatureMap = 0;
-//	m_bSaturateOutput = false;
-//	m_minOutput = 0.0;
-//	m_maxOutput = 0.0;
-//	END_CLASS();
-//}
-//void CLinearStateVFAFromFile::deferredLoadStep()
-//{
-//	char message[1024];
-//	sprintf_s(message, 1024, "Loaded %s file", m_loadFilename);
-//	CLogger::logMessage(MessageType::Info, message);
-//
-//	m_mapFeatureParameterFile = new CParameterFile();
-//	m_mapFeatureParameters = m_mapFeatureParameterFile->loadFile(m_loadFilename);
-//	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(m_mapFeatureParameters);
-//
-//	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
-//	m_pWeights = new double[m_numWeights];
-//	m_minIndex = 0;
-//	m_maxIndex = m_numWeights;
-//
-//	//load the weigths from the binary file
-//	loadWeights(m_weightFilename);
-//}
-//
-//CLinearStateVFAFromFile::~CLinearStateVFAFromFile()
-//{
-//	delete m_mapFeatureParameterFile;
-//}
+
+CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
+{
+	//load the map feature description from an xml file
+	FILE_PATH_VALUE(m_loadFilename, "Load", "../data/*.fmap", "The VFA will be loaded from this file");
+	CApp::get()->SimGod.registerInputFile(m_loadFilename);
+
+	strcpy_s(m_weightFilename, 1024, m_loadFilename);
+	char* extension = strstr(m_weightFilename, "fmap");
+	if (extension)
+		strcpy_s(extension, 1024 - (extension - m_weightFilename + 1), "weights");
+	CApp::get()->SimGod.registerInputFile(m_weightFilename);
+
+
+	m_pAux = new CFeatureList("LinearStateVFA/aux");
+	m_mapFeatureParameterFile = 0;
+	m_mapFeatureParameters = 0;
+	m_minIndex= m_maxIndex= m_numWeights = 0;
+	m_pStateFeatureMap = 0;
+	m_bSaturateOutput = false;
+	m_minOutput = 0.0;
+	m_maxOutput = 0.0;
+	END_CLASS();
+}
+void CLinearStateVFAFromFile::deferredLoadStep()
+{
+	char message[1024];
+	sprintf_s(message, 1024, "Loaded %s file", m_loadFilename);
+	CLogger::logMessage(MessageType::Info, message);
+
+	m_mapFeatureParameterFile = new CParameterFile();
+	m_mapFeatureParameters = m_mapFeatureParameterFile->loadFile(m_loadFilename);
+	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(m_mapFeatureParameters);
+
+	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
+	m_pWeights = new double[m_numWeights];
+	m_minIndex = 0;
+	m_maxIndex = m_numWeights;
+
+	//load the weigths from the binary file
+	loadWeights(m_weightFilename);
+}
+
+CLinearStateVFAFromFile::~CLinearStateVFAFromFile()
+{
+	delete m_mapFeatureParameterFile;
+}
 
 CLASS_FACTORY(CLinearStateVFA)
 {

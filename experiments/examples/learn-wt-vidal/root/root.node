@@ -100,7 +100,7 @@
     <Experiment>
       <Progress-Update-Freq>0.5</Progress-Update-Freq>
       <Random-Seed>1</Random-Seed>
-      <Num-Episodes>1000</Num-Episodes>
+      <Num-Episodes>5000</Num-Episodes>
       <Eval-Freq>50</Eval-Freq>
       <Episode-Length>360</Episode-Length>
     </Experiment>
@@ -130,9 +130,34 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <From-File>
-                                <Load>../data/vidal-80.d_beta.fmap</Load>
-                              </From-File>
+                              <Explicit>
+                                <State-Feature-Map>
+                                  <Type>
+                                    <RBF-State-Grid>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>E_p</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>cubic</Distribution>
+                                      </RBF-Grid-Dimension>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>omega_r</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>cubic</Distribution>
+                                      </RBF-Grid-Dimension>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>d_omega_r</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>cubic</Distribution>
+                                      </RBF-Grid-Dimension>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>T_g</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>linear</Distribution>
+                                      </RBF-Grid-Dimension>
+                                    </RBF-State-Grid>
+                                  </Type>
+                                </State-Feature-Map>
+                              </Explicit>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
@@ -196,9 +221,34 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <From-File>
-                                <Load>../data/vidal-80.d_T_g.fmap</Load>
-                              </From-File>
+                              <Explicit>
+                                <State-Feature-Map>
+                                  <Type>
+                                    <RBF-State-Grid>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>E_p</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>cubic</Distribution>
+                                      </RBF-Grid-Dimension>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>omega_r</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>cubic</Distribution>
+                                      </RBF-Grid-Dimension>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>d_omega_r</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>cubic</Distribution>
+                                      </RBF-Grid-Dimension>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>T_g</Variable>
+                                        <Num-Features>50</Num-Features>
+                                        <Distribution>linear</Distribution>
+                                      </RBF-Grid-Dimension>
+                                    </RBF-State-Grid>
+                                  </Type>
+                                </State-Feature-Map>
+                              </Explicit>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
@@ -241,6 +291,47 @@
                   </CACLA>
                 </Policy-Learner>
               </Output>
+              <Base-Controller>
+                <Controller>
+                  <Vidal>
+                    <A>
+                      <Schedule>
+                        <Constant>
+                          <Value>1</Value>
+                        </Constant>
+                      </Schedule>
+                    </A>
+                    <K_alpha>
+                      <Schedule>
+                        <Constant>
+                          <Value>6000</Value>
+                        </Constant>
+                      </Schedule>
+                    </K_alpha>
+                    <KP>
+                      <Schedule>
+                        <Constant>
+                          <Value>1</Value>
+                        </Constant>
+                      </Schedule>
+                    </KP>
+                    <KI>
+                      <Schedule>
+                        <Constant>
+                          <Value>0.0</Value>
+                        </Constant>
+                      </Schedule>
+                    </KI>
+                    <P_s>
+                      <Schedule>
+                        <Constant>
+                          <Value>600000.0</Value>
+                        </Constant>
+                      </Schedule>
+                    </P_s>
+                  </Vidal>
+                </Controller>
+              </Base-Controller>
             </Actor>
             <Critic>
               <Critic>
@@ -273,28 +364,27 @@
                   <V-Function>
                     <Parameterization>
                       <Explicit>
-                        <Init-Value>0.0</Init-Value>
                         <State-Feature-Map>
                           <Type>
                             <RBF-State-Grid>
                               <RBF-Grid-Dimension>
                                 <Variable>E_p</Variable>
-                                <Num-Features>80</Num-Features>
+                                <Num-Features>50</Num-Features>
                                 <Distribution>cubic</Distribution>
                               </RBF-Grid-Dimension>
                               <RBF-Grid-Dimension>
                                 <Variable>omega_r</Variable>
-                                <Num-Features>80</Num-Features>
+                                <Num-Features>50</Num-Features>
                                 <Distribution>cubic</Distribution>
                               </RBF-Grid-Dimension>
                               <RBF-Grid-Dimension>
                                 <Variable>d_omega_r</Variable>
-                                <Num-Features>80</Num-Features>
+                                <Num-Features>50</Num-Features>
                                 <Distribution>cubic</Distribution>
                               </RBF-Grid-Dimension>
                               <RBF-Grid-Dimension>
                                 <Variable>T_g</Variable>
-                                <Num-Features>80</Num-Features>
+                                <Num-Features>50</Num-Features>
                                 <Distribution>linear</Distribution>
                               </RBF-Grid-Dimension>
                             </RBF-State-Grid>

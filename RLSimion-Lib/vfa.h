@@ -67,20 +67,20 @@ public:
 
 	CStateFeatureMap* getStateFeatureMap(){ return m_pStateFeatureMap; }
 };
-//
-//class CLinearStateVFAFromFile: public CLinearStateVFA
-//{
-//	CParameterFile* m_mapFeatureParameterFile;
-//	CParameters* m_mapFeatureParameters;
-//	const char* m_loadFilename;
-//	char m_weightFilename[1024];
-//
-//	virtual void deferredLoadStep();
-//public:
-//	~CLinearStateVFAFromFile();
-//	CLinearStateVFAFromFile(CParameters* pParameters);
-//};
-//
+
+class CLinearStateVFAFromFile: public CLinearStateVFA
+{
+	CParameterFile* m_mapFeatureParameterFile;
+	CParameters* m_mapFeatureParameters;
+	const char* m_loadFilename;
+	char m_weightFilename[1024];
+
+	virtual void deferredLoadStep();
+public:
+	~CLinearStateVFAFromFile();
+	CLinearStateVFAFromFile(CParameters* pParameters);
+};
+
 
 class CLinearStateActionVFA : public CLinearVFA
 {

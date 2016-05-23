@@ -46,7 +46,7 @@ CActor::~CActor()
 void CActor::deferredLoadStep()
 {
 	int controllerActionIndex, actorActionIndex;
-	unsigned int feature, numWeights;
+	unsigned int numWeights;
 	double *pWeights;
 	CState* s= CApp::get()->World.getDynamicModel()->getStateInstance();
 	CAction* a= CApp::get()->World.getDynamicModel()->getActionInstance();

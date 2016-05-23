@@ -118,7 +118,7 @@
     </Controller>
     <Output-DirFile>
       <Output-Dir>../data</Output-Dir>
-      <File-Prefix>vidal-50-linear</File-Prefix>
+      <File-Prefix>vidal-50</File-Prefix>
     </Output-DirFile>
   </ControllerToVFA>
 </ControllerToVFA>

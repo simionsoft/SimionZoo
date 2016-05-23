@@ -77,9 +77,19 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <From-File>
-                                <Load>../data/uv-5000.u-thrust.fmap</Load>
-                              </From-File>
+                              <Explicit>
+                                <State-Feature-Map>
+                                  <Type>
+                                    <RBF-State-Grid>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>v-deviation</Variable>
+                                        <Num-Features>2500</Num-Features>
+                                        <Distribution>linear</Distribution>
+                                      </RBF-Grid-Dimension>
+                                    </RBF-State-Grid>
+                                  </Type>
+                                </State-Feature-Map>
+                              </Explicit>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
@@ -154,13 +164,12 @@
                   <V-Function>
                     <Parameterization>
                       <Explicit>
-                        <Init-Value>0.0</Init-Value>
                         <State-Feature-Map>
                           <Type>
                             <RBF-State-Grid>
                               <RBF-Grid-Dimension>
                                 <Variable>v-deviation</Variable>
-                                <Num-Features>5000</Num-Features>
+                                <Num-Features>2500</Num-Features>
                                 <Distribution>linear</Distribution>
                               </RBF-Grid-Dimension>
                             </RBF-State-Grid>

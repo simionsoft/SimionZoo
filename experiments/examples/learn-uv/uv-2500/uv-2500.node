@@ -72,9 +72,19 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <From-File>
-                                <Load>../data/uv-2500.u-thrust.fmap</Load>
-                              </From-File>
+                              <Explicit>
+                                <State-Feature-Map>
+                                  <Type>
+                                    <RBF-State-Grid>
+                                      <RBF-Grid-Dimension>
+                                        <Variable>v-deviation</Variable>
+                                        <Num-Features>2500</Num-Features>
+                                        <Distribution>cubic</Distribution>
+                                      </RBF-Grid-Dimension>
+                                    </RBF-State-Grid>
+                                  </Type>
+                                </State-Feature-Map>
+                              </Explicit>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
@@ -117,6 +127,35 @@
                   </CACLA>
                 </Policy-Learner>
               </Output>
+              <Base-Controller>
+                <Controller>
+                  <PID>
+                    <Output-Action>u-thrust</Output-Action>
+                    <Input-Variable>v-deviation</Input-Variable>
+                    <KP>
+                      <Schedule>
+                        <Constant>
+                          <Value>100</Value>
+                        </Constant>
+                      </Schedule>
+                    </KP>
+                    <KI>
+                      <Schedule>
+                        <Constant>
+                          <Value>0.1</Value>
+                        </Constant>
+                      </Schedule>
+                    </KI>
+                    <KD>
+                      <Schedule>
+                        <Constant>
+                          <Value>0.0</Value>
+                        </Constant>
+                      </Schedule>
+                    </KD>
+                  </PID>
+                </Controller>
+              </Base-Controller>
             </Actor>
             <Critic>
               <Critic>
@@ -149,14 +188,13 @@
                   <V-Function>
                     <Parameterization>
                       <Explicit>
-                        <Init-Value>0.0</Init-Value>
                         <State-Feature-Map>
                           <Type>
                             <RBF-State-Grid>
                               <RBF-Grid-Dimension>
                                 <Variable>v-deviation</Variable>
                                 <Num-Features>2500</Num-Features>
-                                <Distribution>linear</Distribution>
+                                <Distribution>cubic</Distribution>
                               </RBF-Grid-Dimension>
                             </RBF-State-Grid>
                           </Type>

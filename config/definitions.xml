@@ -359,7 +359,6 @@
   </CLASS>
 
   <CLASS Name="CLinearStateVFA">
-    <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the VFA's weights on initialization"/>
     <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The feature map fuction: state->features" Optional="false"/>
   </CLASS>
 
@@ -370,7 +369,6 @@
   <CLASS Name="CLinearStateVFA-Factory">
     <CHOICE Name="Parameterization" Comment= "Do we want to define the vfa explicitly or load it from file?">
       <CHOICE-ELEMENT Name="Explicit" Class="CLinearStateVFA" Comment="The parameterization is explicitly given and no weights loaded."/>
-      <CHOICE-ELEMENT Name="From-File" Class="CLinearStateVFAFromFile" Comment="The parameterization and weights are read from a file."/>
     </CHOICE>
   </CLASS>
 
