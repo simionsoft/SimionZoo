@@ -14,7 +14,7 @@ using System.Net;
 using System.Dynamic;
 using System.Windows;
 using Caliburn.Micro;
-using NetJobTransfer;
+using Herd;
 using AppXML.Data;
 using System.Net.Sockets;
 using System.Xml.Linq;
@@ -63,12 +63,12 @@ namespace AppXML.ViewModels
                 Thread.Sleep(3000);
                 i++;
                 if (i == 2000)
-                    run(processes);
+                    runLocally(processes);
             } while (slaves == null ||  slaves.Count <1);
             for (int ii = 1; i < slaves.Keys.Count;i++ )
             {
                 var TcpSocket = new TcpClient();
-                TcpSocket.Connect(slaves.Keys.ElementAt(ii).Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
+                TcpSocket.Connect(slaves.Keys.ElementAt(ii).Address, Herd.CJobDispatcher.m_comPortHerd);
                 NetworkStream netStream = TcpSocket.GetStream();
                 XMLStream xmlStream = new XMLStream();
                 xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
@@ -121,7 +121,7 @@ namespace AppXML.ViewModels
             int coreNumbers = Environment.ProcessorCount;
             indexOffset = 0;
             if(coreNumbers>=_processes.Count)
-                run(new List<ProcessStateViewModel>(Processes));
+                runLocally(new List<ProcessStateViewModel>(Processes));
             else
             {
                 //antes de nada se lanzan los n primero experimentos
@@ -133,11 +133,7 @@ namespace AppXML.ViewModels
                     slaves=Data.Utility.getSlaves(out totalCores);
                     if ((slaves == null || slaves.Count == 0))
                     {
-                        
-                            //var results = Processes.Skip(index).Take(Processes.Count-index);
-                            run(Processes);
-                            //index = Processes.Count;
-                        
+                            runLocally(Processes);  
                     }
                     else
                     {
@@ -150,21 +146,16 @@ namespace AppXML.ViewModels
                             cts = new CancellationTokenSource();
                         ParallelOptions po = new ParallelOptions();
                         po.CancellationToken = cts.Token;
-                        //Task y =Task.Factory.StartNew(() => { 
                         Parallel.ForEach(slaves.Keys, po, (key) =>
-                           // foreach(IPEndPoint key in slaves.Keys)
                                                 {
                                                     if (indexOffset == Processes.Count)
                                                     {
                                                         var TcpSocket = new TcpClient();
-                                                        //my guess is we don't need this
-                                                        //Thread.Sleep(2000);
-                                                        TcpSocket.Connect(key.Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
+                                                        TcpSocket.Connect(key.Address, Herd.CJobDispatcher.m_comPortHerd);
                                                         NetworkStream netStream = TcpSocket.GetStream();
                                                         XMLStream xmlStream = new XMLStream();
                                                         xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
-                                                        //byte[] youAreFree = Encoding.ASCII.GetBytes(CJobDispatcher.m_freeMessage);
-                                                        //netStream.Write(youAreFree, 0, youAreFree.Length);
+
                                                         netStream.Close();
                                                         netStream.Dispose();
                                                         TcpSocket.Close();
@@ -173,8 +164,6 @@ namespace AppXML.ViewModels
                                                     else
                                                     {
                                                         int cores = slaves[key];
-                                                        //object o = index;
-                                                        //Monitor.Enter(o);
                                                         int amount = (int)Math.Ceiling(cores * proportion);
                                                         if (indexOffset + amount > Processes.Count)
                                                             amount = Processes.Count - indexOffset;
@@ -188,9 +177,7 @@ namespace AppXML.ViewModels
                                                             }
                                                             catch (Exception ex)
                                                             {
-                                                                //stop the job
                                                                 Console.WriteLine(ex.StackTrace);
-
                                                             }
 
                                                         }
@@ -265,7 +252,7 @@ namespace AppXML.ViewModels
             var TcpSocket = new TcpClient();
             //my guess is we don't need to sleep here
             //Thread.Sleep(2000);
-            TcpSocket.Connect(endPoint.Address, NetJobTransfer.CJobDispatcher.m_comPortHerd);
+            TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
             {
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
@@ -335,7 +322,7 @@ namespace AppXML.ViewModels
             
 
         }
-        public void run(IEnumerable<ProcessStateViewModel> Processes)
+        public void runLocally(IEnumerable<ProcessStateViewModel> Processes)
         {
             isWorking = true;
             if(cts==null)
@@ -370,23 +357,14 @@ namespace AppXML.ViewModels
                                                             }
                                                             process.SMS = "ABORTED";
                                                             process.addMessage(ex.StackTrace);
-                                         
-                                                            
-                                                            
-                                                               
-                                                            
-                                                           
+
                                                         }
                                                         
                                                     }
                                                 });
-         
-               
+
             },cts.Token);
-            
-                
-            
-            
+
         }
         public ProcessManagerViewModel(List<string> paths)
         {

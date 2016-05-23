@@ -1,4 +1,4 @@
-﻿namespace HerdAgent
+﻿namespace Herd
 {
     partial class HerdService
     {

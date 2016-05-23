@@ -12,7 +12,7 @@ using System.Xml.Linq;
 using System.Runtime.InteropServices;
 using System.Net.Sockets;
 using System.Net;
-using NetJobTransfer;
+using Herd;
 using System.Threading;
 using System.Runtime.CompilerServices;
 
@@ -30,8 +30,8 @@ namespace AppXML.Data
         public static void DiscoveryCallback(IAsyncResult ar)
         {
 
-            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
-            IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
+            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).client;
+            IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).ip;
 
             try
             {
@@ -80,8 +80,8 @@ namespace AppXML.Data
 
             UdpState u = new UdpState();
             IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
-            u.e=xxx;
-            u.u = m_discoverySocket; 
+            u.ip=xxx;
+            //u.u = m_discoverySocket; 
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
             
             //We wait 2 secs for herd agents to reply

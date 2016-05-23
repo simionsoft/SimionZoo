@@ -10,86 +10,63 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
-
+using Herd;
 
 //Installing/uninstalling the service: https://msdn.microsoft.com/en-us/library/zt39148a%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396#BK_Install
 
-namespace HerdAgent
+namespace Herd
 {
     
     
     
     public partial class HerdService : ServiceBase
     {
-        static HerdAgent herdAgent;
-        const string m_discoveryMessage = "Slaves, show yourselves!";
-        const string m_discoveryAnswer = "At your command, my Master";
+        private static HerdAgent herdAgent;
+        private static UdpClient m_discoveryClient;
+        private static TcpListener m_listener;
         private static string dirPath;
         private static AgentState m_state;
-        private UdpClient m_discoverySocket;
 
         public HerdService()
         {
             dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp";
+            Directory.CreateDirectory(dirPath);
             
             InitializeComponent();
         }
+        public static string getLogFilename()
+        { return dirPath + "//log.txt"; }
         public static void cleanLog()
         {
-            File.Delete(dirPath + "//log.txt");
+            string logFile = getLogFilename();
+            if (File.Exists(logFile))
+                File.Delete(logFile);
         }
         public static void Log(string logMessage)
         {
-            StreamWriter w = File.AppendText(dirPath + "//log.txt");
-            w.Write("\r\nLog Entry : ");
-            w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
-                DateTime.Now.ToLongDateString());
-            w.WriteLine("  :");
-            w.WriteLine("  :{0}", logMessage);
-            w.WriteLine("-------------------------------");
-            w.Close();
-        }
-        public static void DiscoveryCallback(IAsyncResult ar)
-        {
-
-            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
-            IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
-
-
-            Byte[] receiveBytes = u.EndReceive(ar, ref e);
-            string receiveString = Encoding.ASCII.GetString(receiveBytes);
-
-
-
-
-            if (receiveString == "QUIT")
+            if (File.Exists(getLogFilename()))
             {
-                Console.WriteLine("Quit message received");
-                if (m_state == AgentState.BUSY)
-                {
-                    m_state = AgentState.CANCELING;
-                    herdAgent.stop();
-                    m_state = AgentState.AVAILABLE;
-                }
-
-
+                StreamWriter w = File.AppendText(getLogFilename());
+                w.Write("\r\nLog Entry : ");
+                w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
+                    DateTime.Now.ToLongDateString());
+                w.WriteLine("  :");
+                w.WriteLine("  :{0}", logMessage);
+                w.WriteLine("-------------------------------");
+                w.Close();
             }
-            else if (m_state == AgentState.AVAILABLE)
+        }
+        public static void CommunicationCallback(IAsyncResult ar)
+        {
+            if (m_state != AgentState.BUSY)
             {
-                cleanLog();
-                Log("Agent discovered");
-                byte[] data = Encoding.ASCII.GetBytes("<Cores>" + Environment.ProcessorCount + "</Cores>");
-                u.Send(data, data.Length, e);
-                m_state = AgentState.DISCOVERED;
-                m_state = AgentState.BUSY;
-                var server = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortHerd);
-                server.Start();
-                TcpClient m_comSocket = server.AcceptTcpClient();
-                NetworkStream netStream = m_comSocket.GetStream();
+                TcpClient comSocket = m_listener.EndAcceptTcpClient(ar);
+                NetworkStream netStream = comSocket.GetStream();
+
                 try
                 {
-
-                    herdAgent = new HerdAgent(m_comSocket, netStream, dirPath);
+                    m_state = AgentState.BUSY;
+                    herdAgent = new HerdAgent(comSocket, netStream, dirPath);
                     herdAgent.read();
                     string xmlItem = herdAgent.processNextXMLItem();
                     string xmlItemContent;
@@ -103,7 +80,7 @@ namespace HerdAgent
                         }
                         else if (xmlItemContent == CJobDispatcher.m_aquireMessage)
                         {
-                            Log("Receiving job data from" + m_comSocket.Client.RemoteEndPoint.ToString());
+                            Log("Receiving job data from" + comSocket.Client.RemoteEndPoint.ToString());
                             if (herdAgent.ReceiveJobQuery())
                             {
                                 Log("Running job");
@@ -121,72 +98,94 @@ namespace HerdAgent
                     }
                     netStream.Close();
                     netStream.Dispose();
-                    server.Stop();
-                    m_comSocket.Close();
+                    m_listener.Stop();
+                    comSocket.Close();
                     m_state = AgentState.AVAILABLE;
                 }
                 catch (Exception ex)
                 {
                     netStream.Close();
                     netStream.Dispose();
-                    server.Stop();
-                    m_comSocket.Close();
+                    m_listener.Stop();
+                    comSocket.Close();
                     m_state = AgentState.AVAILABLE;
                     Log(ex.StackTrace);
                 }
-               
+            }
+            //start listening again
+            m_listener.BeginAcceptTcpClient(CommunicationCallback,ar);
+        }
+        public static void DiscoveryCallback(IAsyncResult ar)
+        {
+            IPEndPoint ip = ((UdpState)ar.AsyncState).ip;
+
+
+            Byte[] receiveBytes = m_discoveryClient.EndReceive(ar, ref ip);
+            string receiveString = Encoding.ASCII.GetString(receiveBytes);
+
+            if (receiveString == "QUIT")
+            {
+                Console.WriteLine("Quit message received");
+                if (m_state == AgentState.BUSY)
+                {
+                    m_state = AgentState.CANCELING;
+                    herdAgent.stop();
+                    m_state = AgentState.AVAILABLE;
+                }
+
 
             }
+            else if (m_state == AgentState.AVAILABLE)
+            {
 
-            u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
+                Log("Agent discovered");
+                byte[] data = Encoding.ASCII.GetBytes("<Cores>" + Environment.ProcessorCount + "</Cores>");
+                m_discoveryClient.Send(data, data.Length, ip);
+            }
+
+            m_discoveryClient.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
 
            
         }
-        /*
-        public static void DiscoveryCallback(IAsyncResult ar)
-        {
-            UdpClient socket = ar.AsyncState as UdpClient;
-            // points towards whoever had sent the message:
-            IPEndPoint source = new IPEndPoint(0, 0);
-            // get the actual message and fill out the source:
-            string message = Encoding.ASCII.GetString(socket.EndReceive(ar, ref source));
-
-            StreamWriter fileWriter = new StreamWriter("log.txt",true);
-            fileWriter.WriteLine("Received message from" + source);
-            fileWriter.WriteLine("Message= " + message);
-
-            if (message == m_discoveryMessage && m_state!=AgentState.BUSY)
-            {
-                fileWriter.WriteLine("Show");
-                socket.Send(Encoding.ASCII.GetBytes(m_discoveryAnswer),Encoding.ASCII.GetBytes(m_discoveryAnswer).Length);
-            }
-            fileWriter.Close();
-
-            socket.BeginReceive(new AsyncCallback(DiscoveryCallback), socket);
-        }
-        */
+       
         protected override void OnStart(string[] args)
         {
-            m_state = AgentState.AVAILABLE;
 
-            UdpClient m_discoverySocket;
-            m_discoverySocket = new UdpClient(CJobDispatcher.m_discoveryPortHerd);
+            DoStart();
+
+        }
+        public void DoStart()
+        {
+            m_state = AgentState.AVAILABLE;
+            cleanLog();
+
+            //UPD broadcast client
+
+            m_discoveryClient = new UdpClient(CJobDispatcher.m_discoveryPortHerd);
             UdpState state = new UdpState();
             IPEndPoint shepherd = new IPEndPoint(0, 0);
             UdpState u = new UdpState();
-            u.e = shepherd;
-            u.u = m_discoverySocket;
-            u.c = herdAgent;
+            u.ip = shepherd;
 
-            m_discoverySocket.BeginReceive(DiscoveryCallback, u);
+            m_discoveryClient.BeginReceive(DiscoveryCallback, u);
 
-            //m_discoverySocket = new UdpClient(m_discoveryPort);
-            //m_discoverySocket.BeginReceive(new AsyncCallback(DiscoveryCallback), m_discoverySocket);
+            //TCP communication socket
+
+            m_listener = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortHerd);
+            m_listener.Start();
+            TCPState tcpState = new TCPState();
+            tcpState.ip = shepherd;
+            m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
         }
 
         protected override void OnStop()
         {
-            m_discoverySocket.Close();
+            DoStop();
+        }
+        public void DoStop()
+        {
+            m_discoveryClient.Close();
+            m_listener.Stop();
         }
     }
 }

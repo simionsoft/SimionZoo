@@ -1,21 +1,18 @@
-using System.Text.RegularExpressions;
-using System.IO;
-using System.Net.Sockets;
-using System.Net;
 using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Xml.Linq;
-using System.Threading.Tasks;
-using System.Threading;
+using System.IO;
 using System.IO.Pipes;
-using System.Xml;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace NetJobTransfer
+namespace Herd
 {
-    
     public class CJob
     {
         public string name;
@@ -34,7 +31,7 @@ namespace NetJobTransfer
             outputFiles = new List<string>();
         }
     }
-    public enum AgentState { BUSY, AVAILABLE, DISCOVERED,CANCELING };
+    public enum AgentState { BUSY, AVAILABLE, DISCOVERED, CANCELING };
     public enum FileType { EXE, INPUT, OUTPUT };
     public class CJobDispatcher
     {
@@ -47,7 +44,10 @@ namespace NetJobTransfer
         public const string m_discoveryAnswer = "At your command, my Master";
         public const string m_aquireMessage = "You are mine now!";
         public const string m_endMessage = "The end";
+        public const string m_quitMessage = "Stop";
         public const string m_freeMessage = "You are free";
+        public const string m_cleanCacheMessage = "Clean the cache";
+        public const string m_updateMessage = "Update yourself";
         static int m_maxChunkSize = 1024;
 
 
@@ -80,14 +80,14 @@ namespace NetJobTransfer
             if (!client.Connected)
                 throw new Exception("TCP connection closed");
         }
-        public void writeMessage( string message, bool addDefaultMessageType=false)
+        public void writeMessage(string message, bool addDefaultMessageType = false)
         {
-            m_xmlStream.writeMessage(m_netStream,message,addDefaultMessageType);
+            m_xmlStream.writeMessage(m_netStream, message, addDefaultMessageType);
         }
         public void read()
         {
             checkConnection(m_tcpClient);
-            m_xmlStream.readFromNetworkStream(m_tcpClient,m_netStream);
+            m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
         public string processNextXMLItem()
         {
@@ -107,7 +107,7 @@ namespace NetJobTransfer
         protected void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent, true); }
         protected void SendJobHeader()
         {
-            string header = "<Job Name=\"" + m_job.name + "\" NumTasks=\"" 
+            string header = "<Job Name=\"" + m_job.name + "\" NumTasks=\""
                 + m_job.comLineArgs.Count + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
                 + m_job.outputFiles.Count + "\">";
             string args = "";// "<Args>";
@@ -115,7 +115,7 @@ namespace NetJobTransfer
             {
                 args += "<Arg>" + arg + "</Arg>";
             }
-           // args += "</Args>";
+            // args += "</Args>";
             header += args;
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             checkConnection(m_tcpClient);
@@ -217,7 +217,7 @@ namespace NetJobTransfer
         public void ReadFromStream()
         {
             checkConnection(m_tcpClient);
-            m_xmlStream.readFromNetworkStream(m_tcpClient,m_netStream);
+            m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
         public void ReceiveJobHeader()
         {
@@ -268,7 +268,7 @@ namespace NetJobTransfer
                 match = Regex.Match(header, "</Job>");
             }
             while (!match.Success);
-           // m_bufferOffset += match.Index + match.Length;
+            // m_bufferOffset += match.Index + match.Length;
         }
         protected void ReceiveExeFiles(bool receiveContent) { ReceiveFile(FileType.EXE, receiveContent, true); }
         protected void ReceiveInputFiles(bool receiveContent)
@@ -345,7 +345,7 @@ namespace NetJobTransfer
             string outputDir = Path.GetDirectoryName(outputFilename);
             System.IO.Directory.CreateDirectory(outputDir);
 
-           // m_bufferOffset += match.Index + match.Length;
+            // m_bufferOffset += match.Index + match.Length;
         }
         protected void ReceiveFileFooter(FileType type)
         {
@@ -402,9 +402,10 @@ namespace NetJobTransfer
     }
     public class Shepherd : CJobDispatcher
     {
-        public Shepherd(TcpClient tcpClient, NetworkStream netStream, string dirPath): base(tcpClient,dirPath)
+        public Shepherd(TcpClient tcpClient, NetworkStream netStream, string dirPath)
+            : base(tcpClient, dirPath)
         {
-            m_netStream= netStream;
+            m_netStream = netStream;
             tcpClient.ReceiveTimeout = 250;
             tcpClient.SendTimeout = 250;
             m_netStream.ReadTimeout = 250;
@@ -439,10 +440,11 @@ namespace NetJobTransfer
     public class HerdAgent : CJobDispatcher
     {
         private CancellationTokenSource cts;
-        
-        public HerdAgent(TcpClient tcpClient, NetworkStream netStream, string dirPath): base(tcpClient,dirPath)
+
+        public HerdAgent(TcpClient tcpClient, NetworkStream netStream, string dirPath)
+            : base(tcpClient, dirPath)
         {
-            m_netStream= netStream;
+            m_netStream = netStream;
             tcpClient.ReceiveTimeout = 250;
             tcpClient.SendTimeout = 250;
             m_netStream.ReadTimeout = 250;
@@ -474,69 +476,46 @@ namespace NetJobTransfer
 
             return true;//if job query properly received. For now, we will assume it
         }
-        private void runOneProcess(Process p,string pipeName, NamedPipeServerStream server, CancellationToken ct,NetworkStream bridge)
+        private void runOneProcess(Process p, string pipeName, NamedPipeServerStream server, CancellationToken ct, NetworkStream bridge)
         {
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            Object lockObject= new Object();
+            Object lockObject = new Object();
 
             //not to read 23.232 as 23232
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             //Task.Delay(1000).Wait();
 
 
-          
+
             p.Start();
 
             server.WaitForConnection();
-            XMLStream xmlStream= new XMLStream();
-            
-            //StreamReader reader = new StreamReader(server);
+            XMLStream xmlStream = new XMLStream();
 
             string xmlItem;
             while (server.IsConnected)
             {
                 xmlStream.readFromNamedPipeStream(server);
                 //string sms = reader.ReadLine();
-                xmlItem= xmlStream.processNextXMLItem();
+                xmlItem = xmlStream.processNextXMLItem();
                 if (xmlItem != "")
                 {
-                    
-                    lock(lockObject)
+
+                    lock (lockObject)
                     {
                         checkConnection(m_tcpClient);
                         xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
-                       // bridge.Write(message, 0, message.Length);
                     }
                 }
-                //if (sms != null)
-                //{
-                //    //we have to add a header or new root to this sms, otherwise the master will not be able to know who is the reciever
-                //    byte[] message = Encoding.ASCII.GetBytes("<" + pipeName + ">" + sms + "</" + pipeName + ">");
-                //    byte[] fixedSMS = new byte[256];
-                //    for (int i = 0; i < fixedSMS.Length; i++)
-                //    {
-                //        fixedSMS[i] = 32;
-                //    }
-                //    if(message.Length>256)
-                //    {
-                //        int bytesToRemove = message.Length-256;
-                        
-                //    }
-                //    else
-                //    {
-                //        Array.Copy(message, fixedSMS, message.Length);
-                //        bridge.Write(fixedSMS, 0, fixedSMS.Length);
-                //    }
-                //}
+
             }
 
-            //reader.Close();
 
             server.Close();
 
         }
-       
+
         public void RunJob(NetworkStream bridgeStream)
         {
             cts = new CancellationTokenSource();
@@ -544,52 +523,55 @@ namespace NetJobTransfer
             po.CancellationToken = cts.Token;
             //var t = Task.Factory.StartNew(() =>
             //{
-                Parallel.ForEach(m_job.comLineArgs, po, (args) =>
+            Parallel.ForEach(m_job.comLineArgs, po, (args) =>
+            {
+                using (cts.Token.Register(Thread.CurrentThread.Abort))
                 {
-                    using (cts.Token.Register(Thread.CurrentThread.Abort))
+                    string[] arguments = args.Split(' ');
+                    NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
+                    Process myProcess = new Process();
+
+                    try
                     {
-                        string[] arguments = args.Split(' ');
-                        NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
-                        Process myProcess = new Process();
-                       
-                        try
-                        {
-                              
-                            myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
-                            myProcess.StartInfo.Arguments = args;
-                            myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                            Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-                            runOneProcess(myProcess, arguments[1],server, cts.Token,bridgeStream);
-                            Console.WriteLine("Exit code: " + myProcess.ExitCode);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (myProcess != null && !myProcess.HasExited)
-                            {
-                                myProcess.Kill();
-                                myProcess.Dispose();
-                            }
-                        }
 
+                        myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
+                        myProcess.StartInfo.Arguments = args;
+                        myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+                        Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                        runOneProcess(myProcess, arguments[1], server, cts.Token, bridgeStream);
+                        Console.WriteLine("Exit code: " + myProcess.ExitCode);
                     }
-                });
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Exception thrown: " + ex.ToString());
+                        if (myProcess != null && !myProcess.HasExited)
+                        {
+                            myProcess.Kill();
+                            myProcess.Dispose();
+                        }
+                    }
 
-           // }, cts.Token);          
-          //  t.Wait();
-            }
+                }
+            });
+
+            // }, cts.Token);          
+            //  t.Wait();
+        }
 
         public void stop()
         {
-            if(cts!=null)
+            if (cts != null)
                 cts.Cancel();
         }
     }
     public class UdpState
     {
-        public IPEndPoint e { get; set; }
-        public UdpClient u { get; set; }
-        public HerdAgent c { get; set; }
-        public AgentState st { get; set; }
+        public UdpClient client { get; set; }
+        public IPEndPoint ip { get; set; }
+    }
+    public class TCPState
+    {
+        public IPEndPoint ip { get; set; }
     }
     public class PipesBridgeClient
     {
@@ -602,19 +584,18 @@ namespace NetJobTransfer
             IPEndPoint e = new IPEndPoint(server, 8888);
             UdpClient u = new UdpClient(e);
             UdpState s = new UdpState();
-            s.e = e;
-            s.u = u;
-            Console.WriteLine("listening for messages");
+            s.ip = e;
+            s.client = u;
+            Console.WriteLine("PipesBridgeClient is listening for messages");
             u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
         }
         private void ReceiveCallback(IAsyncResult ar)
         {
             Task.Factory.StartNew(() =>
             {
-                UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).u;
-                IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).e;
-
-                Byte[] receiveBytes = u.EndReceive(ar, ref e);
+                IPEndPoint e = (IPEndPoint)((UdpState)ar.AsyncState).ip;
+                UdpClient client = (UdpClient)((UdpState)ar).client;
+                Byte[] receiveBytes = client.EndReceive(ar, ref e);
                 string receiveString = Encoding.ASCII.GetString(receiveBytes);
                 if (receiveString.Equals("QUIT"))
                 {
@@ -627,22 +608,22 @@ namespace NetJobTransfer
     {
         private int m_bufferOffset;
         private int m_bytesInBuffer;
-        private byte [] m_buffer;
+        private byte[] m_buffer;
         private Match m_match;
-        const int m_maxChunkSize= 1024;
+        const int m_maxChunkSize = 1024;
         private string m_asciiBuffer;
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
         public XMLStream()
         {
-            m_buffer= new byte [m_maxChunkSize];
+            m_buffer = new byte[m_maxChunkSize];
         }
         public int getBytesInBuffer() { return m_bytesInBuffer; }
         public int getBufferOffset() { return m_bufferOffset; }
         public byte[] getBuffer() { return m_buffer; }
         public void addProcessedBytes(int processedBytes) { m_bufferOffset += processedBytes; }
         private void discardProcessedData()
-        { 
+        {
             //shift left unprocessed bytes to discard processed data
             if (m_bufferOffset != 0)
             {
@@ -651,7 +632,7 @@ namespace NetJobTransfer
                 m_bufferOffset = 0;
             }
         }
-        public void writeMessage(NetworkStream stream, string message, bool addDefaultMessageType=false)
+        public void writeMessage(NetworkStream stream, string message, bool addDefaultMessageType = false)
         {
             byte[] msg;
             if (addDefaultMessageType)
@@ -697,11 +678,11 @@ namespace NetJobTransfer
         {
             if (m_bytesInBuffer > 0)
             {
-                 m_asciiBuffer= Encoding.ASCII.GetString(m_buffer,0,m_bytesInBuffer);
+                m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
 
                 //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
                 ////this should return the whole message
-                m_match= Regex.Match(m_asciiBuffer,@"<([^>]*)>.*?</(\1)>");
+                m_match = Regex.Match(m_asciiBuffer, @"<([^>]*)>.*?</(\1)>");
 
                 if (m_match.Success)
                 {
@@ -735,7 +716,7 @@ namespace NetJobTransfer
         }
         public string getLastXMLItemContent()
         {
-            if (m_lastXMLItem!="")
+            if (m_lastXMLItem != "")
             {
                 m_match = Regex.Match(m_lastXMLItem, @"<[^>]*>([^<]*?)<");
                 if (m_match.Success)
@@ -745,6 +726,3 @@ namespace NetJobTransfer
         }
     }
 }
-
-
-    
