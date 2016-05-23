@@ -88,7 +88,7 @@ namespace TESTHerdAgent
                     try
                     {
 
-                        herdAgent = new HerdAgent(m_comSocket, netStream);
+                        ///herdAgent = new HerdAgent(m_comSocket, netStream);
 
                         herdAgent.read();
                         string xmlItem = herdAgent.processNextXMLItem();
