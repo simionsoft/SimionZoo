@@ -81,7 +81,7 @@ namespace AppXML.Data
             UdpState u = new UdpState();
             IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
             u.ip=xxx;
-            //u.u = m_discoverySocket; 
+            u.client = m_discoverySocket; 
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
             
             //We wait 2 secs for herd agents to reply

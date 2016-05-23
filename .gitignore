@@ -12,19 +12,20 @@ experiments/*
 !experiments/examples
 
 # Build results
-[Dd]ebug/
+[Dd]ebug/*
 [Dd]ebugPublic/
-[Rr]elease/
+[Rr]elease/*
 [Rr]eleases/
+!Release/msvcp120.dll
+!Release/msvcr120.dll
+!Debug/msvcp120d.dll
+!Debug/msvcr120d.dll
 x64/
 x86/
 build/
 bld/
 [Bb]in/*
-!bin/msvcp120.*
-!bin/msvcr120.*
-!bin/msvcp120d.*
-!bin/msvcr120d.*
+
 [Oo]bj/
 [Ii]pch/
 logs/
