@@ -109,6 +109,7 @@ namespace Herd
                     //start listening again
                     TCPState tcpState = new TCPState();
                     tcpState.ip = new IPEndPoint(0, 0);
+                    m_listener.Start();
                     m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
                 catch (Exception ex)
@@ -122,6 +123,7 @@ namespace Herd
                     //start listening again
                     TCPState tcpState = new TCPState();
                     tcpState.ip = new IPEndPoint(0, 0);
+                    m_listener.Start();
                     m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
             }

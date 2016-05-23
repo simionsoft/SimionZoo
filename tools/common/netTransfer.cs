@@ -540,6 +540,7 @@ namespace Herd
                         myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
                         Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
                         runOneProcess(myProcess, arguments[1], server, cts.Token, bridgeStream);
+                        myProcess.WaitForExit();
                         Console.WriteLine("Exit code: " + myProcess.ExitCode);
                     }
                     catch (Exception ex)
