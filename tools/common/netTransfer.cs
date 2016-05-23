@@ -520,6 +520,7 @@ namespace Herd
         {
             cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
+            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
             po.CancellationToken = cts.Token;
             //var t = Task.Factory.StartNew(() =>
             //{

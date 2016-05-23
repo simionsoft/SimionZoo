@@ -24,36 +24,40 @@ namespace Herd
         private static HerdAgent herdAgent;
         private static UdpClient m_discoveryClient;
         private static TcpListener m_listener;
-        private static string dirPath;
+        private static string m_dirPath;
         private static AgentState m_state;
 
         public HerdService()
         {
-            dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp";
-            Directory.CreateDirectory(dirPath);
+            m_dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp";
+            Directory.CreateDirectory(m_dirPath);
             
             InitializeComponent();
         }
         public static string getLogFilename()
-        { return dirPath + "//log.txt"; }
+        { return m_dirPath + "//log.txt"; }
+        public static void cleanCacheDir()
+        {
+            Directory.Delete(m_dirPath, true);
+            Directory.CreateDirectory(m_dirPath);
+        }
         public static void cleanLog()
         {
             string logFile = getLogFilename();
-            if (File.Exists(logFile))
-                File.Delete(logFile);
+            FileStream file= File.Create(logFile);
+            file.Close();
         }
         public static void Log(string logMessage)
         {
             if (File.Exists(getLogFilename()))
             {
+                string text= DateTime.Now.ToLongTimeString() + " " +
+                    DateTime.Now.ToLongDateString() + ": " + logMessage;
                 StreamWriter w = File.AppendText(getLogFilename());
-                w.Write("\r\nLog Entry : ");
-                w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
-                    DateTime.Now.ToLongDateString());
-                w.WriteLine("  :");
-                w.WriteLine("  :{0}", logMessage);
-                w.WriteLine("-------------------------------");
+                
+                w.WriteLine(text);
                 w.Close();
+                Console.WriteLine(text);
             }
         }
         public static void CommunicationCallback(IAsyncResult ar)
@@ -66,17 +70,17 @@ namespace Herd
                 try
                 {
                     m_state = AgentState.BUSY;
-                    herdAgent = new HerdAgent(comSocket, netStream, dirPath);
+                    herdAgent = new HerdAgent(comSocket, netStream, m_dirPath);
                     herdAgent.read();
                     string xmlItem = herdAgent.processNextXMLItem();
                     string xmlItemContent;
                     if (xmlItem != "")
                     {
                         xmlItemContent = herdAgent.getLastXMLItemContent();
-                        if (xmlItemContent == CJobDispatcher.m_freeMessage)
+                        if (xmlItemContent==CJobDispatcher.m_cleanCacheMessage)
                         {
-                            //we do nothing and keep listening
-                            Log("This slave was discovered but not used");
+                            //not yet implemented in the herd client, just in case...
+                            cleanLog();
                         }
                         else if (xmlItemContent == CJobDispatcher.m_aquireMessage)
                         {
@@ -101,19 +105,26 @@ namespace Herd
                     m_listener.Stop();
                     comSocket.Close();
                     m_state = AgentState.AVAILABLE;
+
+                    //start listening again
+                    TCPState tcpState = new TCPState();
+                    tcpState.ip = new IPEndPoint(0, 0);
+                    m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
                 catch (Exception ex)
                 {
                     netStream.Close();
                     netStream.Dispose();
-                    m_listener.Stop();
                     comSocket.Close();
                     m_state = AgentState.AVAILABLE;
                     Log(ex.StackTrace);
+                    //try to recover
+                    //start listening again
+                    TCPState tcpState = new TCPState();
+                    tcpState.ip = new IPEndPoint(0, 0);
+                    m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
             }
-            //start listening again
-            m_listener.BeginAcceptTcpClient(CommunicationCallback,ar);
         }
         public static void DiscoveryCallback(IAsyncResult ar)
         {
@@ -135,13 +146,18 @@ namespace Herd
 
 
             }
-            else if (m_state == AgentState.AVAILABLE)
+            else if (receiveString == CJobDispatcher.m_discoveryMessage)
             {
+                if (m_state == AgentState.AVAILABLE)
+                {
 
-                Log("Agent discovered");
-                byte[] data = Encoding.ASCII.GetBytes("<Cores>" + Environment.ProcessorCount + "</Cores>");
-                m_discoveryClient.Send(data, data.Length, ip);
+                    Log("Agent discovered by " + ip.ToString());
+                    byte[] data = Encoding.ASCII.GetBytes("<Cores>" + Environment.ProcessorCount + "</Cores>");
+                    m_discoveryClient.Send(data, data.Length, ip);
+                }
+                else Log("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
             }
+            else Log("Message received by " + ip.ToString() + " missunderstood");
 
             m_discoveryClient.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
 
