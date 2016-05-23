@@ -20,7 +20,11 @@ x64/
 x86/
 build/
 bld/
-[Bb]in/
+[Bb]in/*
+!bin/msvcp120.*
+!bin/msvcr120.*
+!bin/msvcp120d.*
+!bin/msvcr120d.*
 [Oo]bj/
 [Ii]pch/
 logs/
