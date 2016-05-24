@@ -23,6 +23,7 @@ class CParameters: private tinyxml2::XMLElement
 public:
 	CParameters();
 	virtual ~CParameters();
+	
 
 	bool getConstBoolean(const char* paramName, bool defaultValue= true);
 	int getConstInteger(const char* paramName, int defaultValue= 0);

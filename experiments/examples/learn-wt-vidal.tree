@@ -1,13 +1,45 @@
 <ExperimentsTree App="RLSimion">
   <Root Path="../experiments/examples/learn-wt-vidal/root/root.node" />
   <Experiments>
-    <vidal-50 Path="../experiments/examples/learn-wt-vidal/vidal-50/vidal-50.node" />
-    <vidal-60 Path="../experiments/examples/learn-wt-vidal/vidal-60/vidal-60.node" />
-    <vidal-70 Path="../experiments/examples/learn-wt-vidal/vidal-70/vidal-70.node" />
-    <vidal-80 Path="../experiments/examples/learn-wt-vidal/vidal-80/vidal-80.node" />
-    <vidal-50-linear Path="../experiments/examples/learn-wt-vidal/vidal-50-linear/vidal-50-linear.node" />
-    <vidal-60-linear Path="../experiments/examples/learn-wt-vidal/vidal-60-linear/vidal-60-linear.node" />
-    <vidal-70-linear Path="../experiments/examples/learn-wt-vidal/vidal-70-linear/vidal-70-linear.node" />
-    <vidal-80-linear Path="../experiments/examples/learn-wt-vidal/vidal-80-linear/vidal-80-linear.node" />
+    <vidal-50 Path="../experiments/examples/learn-wt-vidal/vidal-50/vidal-50.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-50/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-50/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-50/scaleC/scaleC.node" />
+    </vidal-50>
+    <vidal-60 Path="../experiments/examples/learn-wt-vidal/vidal-60/vidal-60.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-60/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-60/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-60/scaleC/scaleC.node" />
+    </vidal-60>
+    <vidal-70 Path="../experiments/examples/learn-wt-vidal/vidal-70/vidal-70.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-70/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-70/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-70/scaleC/scaleC.node" />
+    </vidal-70>
+    <vidal-80 Path="../experiments/examples/learn-wt-vidal/vidal-80/vidal-80.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-80/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-80/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-80/scaleC/scaleC.node" />
+    </vidal-80>
+    <vidal-50-linear Path="../experiments/examples/learn-wt-vidal/vidal-50-linear/vidal-50-linear.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-50-linear/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-50-linear/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-50-linear/scaleC/scaleC.node" />
+    </vidal-50-linear>
+    <vidal-60-linear Path="../experiments/examples/learn-wt-vidal/vidal-60-linear/vidal-60-linear.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-60-linear/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-60-linear/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-60-linear/scaleC/scaleC.node" />
+    </vidal-60-linear>
+    <vidal-70-linear Path="../experiments/examples/learn-wt-vidal/vidal-70-linear/vidal-70-linear.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-70-linear/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-70-linear/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-70-linear/scaleC/scaleC.node" />
+    </vidal-70-linear>
+    <vidal-80-linear Path="../experiments/examples/learn-wt-vidal/vidal-80-linear/vidal-80-linear.node">
+      <scaleA Path="../experiments/examples/learn-wt-vidal/vidal-80-linear/scaleA/scaleA.node" />
+      <scaleB Path="../experiments/examples/learn-wt-vidal/vidal-80-linear/scaleB/scaleB.node" />
+      <scaleC Path="../experiments/examples/learn-wt-vidal/vidal-80-linear/scaleC/scaleC.node" />
+    </vidal-80-linear>
   </Experiments>
 </ExperimentsTree>

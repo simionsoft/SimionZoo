@@ -50,7 +50,7 @@ CLASS_CONSTRUCTOR(CLQRController) : CParamObject(pParameters)
 	CParameters* pGain = pParameters->getChild("LQR-Gain");
 	for (int i = 0; i < m_numVars; i++)
 	{
-		m_pGains[i] = new CLQRGain(pGain);
+		//m_pGains[i] = new CLQRGain(pGain);
 
 		MULTI_VALUED(m_pGains[i],"LQR-Gain","An LQR gain on an input state variable",CLQRGain,pGain);
 		pGain = pGain->getNextChild("LQR-Gain");

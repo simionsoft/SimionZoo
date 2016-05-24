@@ -14,6 +14,7 @@ class CController : public CSimion
 {
 
 public:
+	virtual ~CController(){}
 	virtual int getNumOutputs()= 0;
 	virtual int getOutputActionIndex(int output)= 0;
 
@@ -30,6 +31,7 @@ class CLQRGain
 {
 public:
 	CLQRGain(CParameters* pParameters);
+	virtual ~CLQRGain(){}
 	unsigned int m_variableIndex;
 	double m_gain;
 };

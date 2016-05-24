@@ -12,11 +12,12 @@
 
 int main(int argc, char* argv[])
 {
-	CParameterFile configXMLFile;
-	CApp* pApp= 0;
-	_CrtSetBreakAlloc(305);
+
+	//_CrtSetBreakAlloc(157);
 	try
 	{
+		CParameterFile configXMLFile;
+		CApp* pApp = 0;
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
 		if (argc > 2)
 			CLogger::createOutputPipe(argv[2]);
@@ -39,7 +40,6 @@ int main(int argc, char* argv[])
 			pApp->run();
 
 			delete pApp;
-			CLogger::closeOutputPipe();
 		}
 		else throw std::exception("Wrong experiment configuration file");
 	}
@@ -47,6 +47,6 @@ int main(int argc, char* argv[])
 	{
 		CLogger::logMessage(MessageType::Error, e.what());
 	}
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }

@@ -1,0 +1,45 @@
+<ExperimentsTree App="RLSimion">
+  <Root Path="../experiments/examples/learn-pitch/root/root.node" />
+  <Experiments>
+    <f50 Path="../experiments/examples/learn-pitch/f50/f50.node">
+      <s-a Path="../experiments/examples/learn-pitch/f50/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f50/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f50/s-c/s-c.node" />
+    </f50>
+    <f100 Path="../experiments/examples/learn-pitch/f100/f100.node">
+      <s-a Path="../experiments/examples/learn-pitch/f100/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f100/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f100/s-c/s-c.node" />
+    </f100>
+    <f150 Path="../experiments/examples/learn-pitch/f150/f150.node">
+      <s-a Path="../experiments/examples/learn-pitch/f150/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f150/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f150/s-c/s-c.node" />
+    </f150>
+    <f200 Path="../experiments/examples/learn-pitch/f200/f200.node">
+      <s-a Path="../experiments/examples/learn-pitch/f200/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f200/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f200/s-c/s-c.node" />
+    </f200>
+    <f50-cubic Path="../experiments/examples/learn-pitch/f50-cubic/f50-cubic.node">
+      <s-a Path="../experiments/examples/learn-pitch/f50-cubic/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f50-cubic/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f50-cubic/s-c/s-c.node" />
+    </f50-cubic>
+    <f100-cubic Path="../experiments/examples/learn-pitch/f100-cubic/f100-cubic.node">
+      <s-a Path="../experiments/examples/learn-pitch/f100-cubic/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f100-cubic/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f100-cubic/s-c/s-c.node" />
+    </f100-cubic>
+    <f150-cubic Path="../experiments/examples/learn-pitch/f150-cubic/f150-cubic.node">
+      <s-a Path="../experiments/examples/learn-pitch/f150-cubic/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f150-cubic/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f150-cubic/s-c/s-c.node" />
+    </f150-cubic>
+    <f200-cubic Path="../experiments/examples/learn-pitch/f200-cubic/f200-cubic.node">
+      <s-a Path="../experiments/examples/learn-pitch/f200-cubic/s-a/s-a.node" />
+      <s-b Path="../experiments/examples/learn-pitch/f200-cubic/s-b/s-b.node" />
+      <s-c Path="../experiments/examples/learn-pitch/f200-cubic/s-c/s-c.node" />
+    </f200-cubic>
+  </Experiments>
+</ExperimentsTree>

@@ -208,7 +208,6 @@ CLinearStateVFA::~CLinearStateVFA()
 {
 	if (m_pStateFeatureMap) delete m_pStateFeatureMap;
 	if (m_pAux) delete m_pAux;
-	if (m_pWeights) delete[] m_pWeights;
 }
 
 

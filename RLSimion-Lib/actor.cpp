@@ -53,6 +53,7 @@ void CActor::deferredLoadStep()
 	int numActionDims = std::min(m_pInitController->getNumOutputs(), m_numOutputs);
 	if (m_pInitController)
 	{
+		CLogger::logMessage(MessageType::Info, "Initializing the policy weights using the base controller");
 		//initialize the weights using the controller's output at each center point in state space
 		for (int actionIndex = 0; actionIndex < numActionDims; actionIndex++)
 		{
@@ -73,9 +74,11 @@ void CActor::deferredLoadStep()
 				}
 			}
 		}
+		CLogger::logMessage(MessageType::Info, "Initialization finished");
 	}
 	else
 	{
+		CLogger::logMessage(MessageType::Info, "Initializing policy weights with null values");
 		for (actorActionIndex = 0; actorActionIndex < m_numOutputs; actorActionIndex++)
 		{
 			numWeights = m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
@@ -85,6 +88,7 @@ void CActor::deferredLoadStep()
 				pWeights[i] = 0.0;
 			}
 		}
+		CLogger::logMessage(MessageType::Info, "Initialization done");
 	}
 	delete s;
 	delete a;
