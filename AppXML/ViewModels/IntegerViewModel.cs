@@ -261,7 +261,7 @@ namespace AppXML.ViewModels
         public string copyDefault;
         public string Color { get { return color; } set { color = value; NotifyOfPropertyChange(() => Color); } }
         private string color;
-        public string Default 
+        new public string Default 
         { 
             get 
             {

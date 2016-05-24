@@ -41,7 +41,7 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => Processes);
             }
         }
-        private bool isWorking = false;
+        //private bool isWorking = false;
    
         public ProcessManagerViewModel(List<ProcessStateViewModel> processes)
         {
@@ -67,14 +67,15 @@ namespace AppXML.ViewModels
             } while (slaves == null ||  slaves.Count <1);
             for (int ii = 1; i < slaves.Keys.Count;i++ )
             {
-                var TcpSocket = new TcpClient();
-                TcpSocket.Connect(slaves.Keys.ElementAt(ii).Address, Herd.CJobDispatcher.m_comPortHerd);
-                NetworkStream netStream = TcpSocket.GetStream();
-                XMLStream xmlStream = new XMLStream();
-                xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
-                netStream.Close();
-                netStream.Dispose();
-                TcpSocket.Close();
+                using (var TcpSocket = new TcpClient())
+                {
+                    TcpSocket.Connect(slaves.Keys.ElementAt(ii).Address, Herd.CJobDispatcher.m_comPortHerd);
+                    using (NetworkStream netStream = TcpSocket.GetStream())
+                    {
+                        XMLStream xmlStream = new XMLStream();
+                        xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
+                    }
+                }
             }
                 canceler.Add(slaves.Keys.ElementAt(0));
                 using (cts.Token.Register(Thread.CurrentThread.Abort))
@@ -152,13 +153,14 @@ namespace AppXML.ViewModels
                                                     {
                                                         var TcpSocket = new TcpClient();
                                                         TcpSocket.Connect(key.Address, Herd.CJobDispatcher.m_comPortHerd);
-                                                        NetworkStream netStream = TcpSocket.GetStream();
-                                                        XMLStream xmlStream = new XMLStream();
-                                                        xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
+                                                        using (NetworkStream netStream = TcpSocket.GetStream())
+                                                        {
+                                                            XMLStream xmlStream = new XMLStream();
+                                                            xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
 
-                                                        netStream.Close();
-                                                        netStream.Dispose();
-                                                        TcpSocket.Close();
+                                                            netStream.Close();
+                                                            TcpSocket.Close();
+                                                        }
                 
                                                     }
                                                     else
@@ -324,7 +326,7 @@ namespace AppXML.ViewModels
         }
         public void runLocally(IEnumerable<ProcessStateViewModel> Processes)
         {
-            isWorking = true;
+            //isWorking = true;
             if(cts==null)
                 cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
@@ -335,31 +337,32 @@ namespace AppXML.ViewModels
                                                 {
                                                     Process p = new Process();
                                                     string name = process.pipeName;
-                                                    var server = new NamedPipeServerStream(name);
-                                                    using (cts.Token.Register(Thread.CurrentThread.Abort))
+                                                    using (var server = new NamedPipeServerStream(name))
                                                     {
-                                                        try
+                                                        using (cts.Token.Register(Thread.CurrentThread.Abort))
                                                         {
-                                                            runOneProcess(process,p,server,cts.Token);
-                                                            
-                                                        }
-                                                        catch (Exception ex)
-                                                        {
-                                                            if (p != null && !p.HasExited)
+                                                            try
                                                             {
-                                                                p.Kill();
-                                                                p.Dispose();
+                                                                runOneProcess(process, p, server, cts.Token);
+
                                                             }
-                                                            if (server != null && server.IsConnected)
+                                                            catch (Exception ex)
                                                             {
-                                                                server.Close();
-                                                                server.Dispose();
+                                                                if (p != null && !p.HasExited)
+                                                                {
+                                                                    p.Kill();
+                                                                    p.Dispose();
+                                                                }
+                                                                if (server != null && server.IsConnected)
+                                                                {
+                                                                    server.Close();
+                                                                }
+                                                                process.SMS = "ABORTED";
+                                                                process.addMessage(ex.StackTrace);
+
                                                             }
-                                                            process.SMS = "ABORTED";
-                                                            process.addMessage(ex.StackTrace);
 
                                                         }
-                                                        
                                                     }
                                                 });
 

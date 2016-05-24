@@ -115,7 +115,6 @@ namespace AppXML.Data
                     //aborter.Send(RequestData2, RequestData2.Length, new IPEndPoint(IPAddress.Broadcast,8888));
                     shepherd.ReceiveJobResult();
                 }
-                comSocket.Close();
             }
             TcpSocket.Stop();
             //var ServerResponseData = Client.Receive(ref ServerEp);
