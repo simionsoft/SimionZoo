@@ -21,7 +21,7 @@ class CTDLambdaCritic : public CCritic
 	CNumericValue* m_pGamma;
 public:
 	CTDLambdaCritic(CParameters *pParameters);
-	~CTDLambdaCritic();
+	virtual ~CTDLambdaCritic();
 
 	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };
@@ -39,7 +39,7 @@ class CTrueOnlineTDLambdaCritic : public CCritic
 	CNumericValue* m_pGamma;
 public:
 	CTrueOnlineTDLambdaCritic(CParameters *pParameters);
-	~CTrueOnlineTDLambdaCritic();
+	virtual ~CTrueOnlineTDLambdaCritic();
 
 	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 
@@ -61,7 +61,7 @@ class CTDCLambdaCritic : public CCritic
 
 public:
 	CTDCLambdaCritic(CParameters *pParameters);
-	~CTDCLambdaCritic();
+	virtual ~CTDCLambdaCritic();
 
 	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };

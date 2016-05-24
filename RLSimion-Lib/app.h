@@ -19,7 +19,7 @@ protected:
 public:
 
 	CApp();
-	~CApp();
+	virtual ~CApp();
 
 	static CApp* get();
 

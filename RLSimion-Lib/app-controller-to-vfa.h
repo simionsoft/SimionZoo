@@ -14,7 +14,7 @@ class ControllerToVFAApp : public CApp
 public:
 
 	ControllerToVFAApp(CParameters* pParameters);
-	~ControllerToVFAApp();
+	virtual ~ControllerToVFAApp();
 
 	void getInputFiles(CFilePathList& filePathList);
 	void getOutputFiles(CFilePathList& filePathList);

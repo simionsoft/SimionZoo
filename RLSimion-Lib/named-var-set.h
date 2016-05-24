@@ -23,7 +23,7 @@ class CNamedVarSet
 public:
 	CNamedVarSet(CParameters* pDescription);
 	CNamedVarSet(int numVars);
-	~CNamedVarSet();
+	virtual ~CNamedVarSet();
 
 	int getNumVars() const{ return m_numVars; }
 

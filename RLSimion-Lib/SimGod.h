@@ -25,7 +25,7 @@ class CSimGod
 	std::vector<const char*> m_outputFiles;
 public:
 	CSimGod();
-	~CSimGod();
+	virtual ~CSimGod();
 
 	void init(CParameters* pParameters);
 

@@ -12,7 +12,7 @@ class CETraces : public CFeatureList, public CParamObject
 
 public:
 	CETraces(CParameters* pParameters, const char* name);
-	~CETraces();
+	virtual ~CETraces();
 
 	//traces will be multiplied by factor*lambda
 	//traces are automatically cleared if it's the first step of an episode

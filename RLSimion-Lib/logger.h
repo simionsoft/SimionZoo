@@ -49,7 +49,7 @@ class CLogger
 	std::vector<CStats*> m_stats;
 public:
 	CLogger();
-	~CLogger();
+	virtual ~CLogger();
 	void init(CParameters* pParameters);
 
 	//declared public to be accesed from CApp::get()->getOutputFiles() avoiding including a dependency with CEpisode

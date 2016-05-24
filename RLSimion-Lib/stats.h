@@ -44,7 +44,7 @@ class CStats
 	DataType m_type;
 public:
 	CStats(const char* key, const char* subkey, const void *variable, DataType type);
-	~CStats();
+	virtual ~CStats();
 
 	void reset();
 

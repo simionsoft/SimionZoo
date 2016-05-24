@@ -79,6 +79,9 @@ CLogger::~CLogger()
 	if (m_outputDir) delete[] m_outputDir;
 
 	CloseHandle(m_outputPipe);
+
+	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
+		delete *it;
 }
 
 

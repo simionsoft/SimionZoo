@@ -18,7 +18,7 @@ class CActorCritic: public CSimion, public CParamObject
 	CCritic *m_pCritic;
 public:
 	CActorCritic(CParameters* pParameters);
-	~CActorCritic();
+	virtual ~CActorCritic();
 
 	virtual void selectAction(const CState *s, CAction *a);
 
@@ -56,7 +56,7 @@ class CIncrementalNaturalActorCritic : public CSimion
 public:
 
 	CIncrementalNaturalActorCritic(CParameters *pParameters);
-	~CIncrementalNaturalActorCritic();
+	virtual ~CIncrementalNaturalActorCritic();
 
 	virtual void selectAction(const CState *s, CAction *a);
 

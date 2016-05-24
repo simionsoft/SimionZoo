@@ -14,7 +14,7 @@ class CMagneticLevitation: public CDynamicModel
 
 public:
 	CMagneticLevitation(CParameters* pParameters,const char* worldDefinition);
-	~CMagneticLevitation();
+	virtual ~CMagneticLevitation();
 
 	void reset(CState *s);
 	void executeAction(CState *s,CAction *a,double dt);

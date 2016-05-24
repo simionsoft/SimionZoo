@@ -49,7 +49,7 @@ protected:
 
 public:
 	CDeterministicPolicyGaussianNoise(CParameters* pParameters);
-	~CDeterministicPolicyGaussianNoise();
+	virtual ~CDeterministicPolicyGaussianNoise();
 
 	void getFeatures(const CState* state, CFeatureList* outFeatureList);
 	void addFeatures(const CFeatureList* pFeatureList, double factor);
@@ -77,7 +77,7 @@ protected:
 	CFeatureList *m_pMeanFeatures,*m_pSigmaFeatures;
 public:
 	CStochasticPolicyGaussianNoise(CParameters* pParameters);
-	~CStochasticPolicyGaussianNoise();
+	virtual ~CStochasticPolicyGaussianNoise();
 
 	void getFeatures(const CState* state, CFeatureList* outFeatureList);
 	void addFeatures(const CFeatureList* pFeatureList, double factor);

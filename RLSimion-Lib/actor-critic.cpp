@@ -17,6 +17,12 @@ CLASS_CONSTRUCTOR(CActorCritic) : CParamObject(pParameters)
 
 }
 
+CActorCritic::~CActorCritic()
+{
+	if (m_pActor) delete m_pActor;
+	if (m_pCritic) delete m_pCritic;
+}
+
 void CActorCritic::selectAction(const CState *s, CAction *a)
 {
 	m_pActor->selectAction(s, a);

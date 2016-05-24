@@ -22,7 +22,7 @@ public:
 	static double m_maxReward;
 
 	CRewardFunction(CParameters* pParameters);
-	~CRewardFunction();
+	virtual ~CRewardFunction();
 
 	CReward* getReward();
 

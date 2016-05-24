@@ -77,12 +77,12 @@ class CLinearStateVFAFromFile: public CLinearStateVFA
 
 	virtual void deferredLoadStep();
 public:
-	~CLinearStateVFAFromFile();
+	virtual ~CLinearStateVFAFromFile();
 	CLinearStateVFAFromFile(CParameters* pParameters);
 };
 
 
-class CLinearStateActionVFA : public CLinearVFA
+class CLinearStateActionVFA : public CLinearVFA, public CDeferredLoad
 {
 protected:
 
@@ -93,7 +93,7 @@ protected:
 
 	CFeatureList *m_pAux;
 	CFeatureList *m_pAux2;
-
+	double m_initValue;
 public:
 	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
 	unsigned int getNumActionWeights() const { return m_numActionWeights; }
@@ -101,7 +101,7 @@ public:
 	CActionFeatureMap* getActionFeatureMap() const{ return m_pActionFeatureMap; }
 
 	CLinearStateActionVFA(CParameters* pParameters);
-	~CLinearStateActionVFA();
+	virtual ~CLinearStateActionVFA();
 	using CLinearVFA::getValue;
 	double getValue(const CState *s, const CAction *a);
 
@@ -122,4 +122,7 @@ public:
 
 	void save(const char* pFilename) const;
 	void load(const char* pFilename);
+
+
+	void deferredLoadStep();
 };

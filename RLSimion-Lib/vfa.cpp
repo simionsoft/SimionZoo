@@ -144,6 +144,7 @@ void CLinearStateVFA::deferredLoadStep()
 {
 	m_pWeights = new double[m_numWeights];
 }
+
 CLinearStateVFA::CLinearStateVFA() : CLinearVFA(0)
 {}
 
@@ -207,6 +208,7 @@ CLinearStateVFA::~CLinearStateVFA()
 {
 	if (m_pStateFeatureMap) delete m_pStateFeatureMap;
 	if (m_pAux) delete m_pAux;
+	if (m_pWeights) delete[] m_pWeights;
 }
 
 
@@ -263,7 +265,7 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters)
+CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters), CDeferredLoad()
 {
 	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CStateFeatureMap);
 	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CActionFeatureMap);
@@ -271,7 +273,7 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters)
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
 	m_numWeights = m_numStateWeights * m_numActionWeights;
-	m_pWeights = new double[m_numWeights];
+	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
 
@@ -280,11 +282,7 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters)
 	//this is used in "lower-level" methods
 	m_pAux2 = new CFeatureList("LinearStateActionVFA/aux2");
 
-	double initValue;
-	CONST_DOUBLE_VALUE(initValue, "Init-Value", 0.0,"The initial value given to the weights on initialization");
-	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights[i] = initValue;
-	//std::fill_n(m_pWeights, m_numWeights, initValue);
+	CONST_DOUBLE_VALUE(m_initValue, "Init-Value", 0.0,"The initial value given to the weights on initialization");
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
@@ -296,11 +294,17 @@ CLinearStateActionVFA::~CLinearStateActionVFA()
 {
 	delete m_pStateFeatureMap;
 	delete m_pActionFeatureMap;
-
+	if (m_pWeights) delete[] m_pWeights;
 	delete m_pAux;
+	delete m_pAux2;
 }
 
-
+void CLinearStateActionVFA::deferredLoadStep()
+{
+	m_pWeights= new double[m_numWeights];
+	for (unsigned int i = 0; i < m_numWeights; i++)
+		m_pWeights[i] = m_initValue;
+}
 
 void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
 {

@@ -19,6 +19,7 @@ public:
 	virtual double getValue()= 0;
 
 	static CNoise* getInstance(CParameters* pParameters);
+	virtual ~CNoise(){}
 };
 
 
@@ -30,7 +31,7 @@ class CGaussianNoise: public CNoise, public CParamObject
 	CNumericValue* m_pScale;
 public:
 	CGaussianNoise(CParameters* pParameters);
-	~CGaussianNoise();
+	virtual ~CGaussianNoise();
 	double getSigma();
 	double unscale(double noise);
 

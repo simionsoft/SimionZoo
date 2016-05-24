@@ -18,7 +18,7 @@ class CSimpleStats
 	int numValues;
 public:
 	CSimpleStats(){ reset(); }
-	~CSimpleStats(){}
+	virtual ~CSimpleStats(){}
 	void addValue(double value)
 	{
 		value = fabs(value);

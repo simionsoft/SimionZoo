@@ -11,8 +11,8 @@
 void main(int argc, char* argv[])
 {
 
-	char buffer[10000];
-	_CrtSetBreakAlloc(434);
+	char buffer[100000];
+	//_CrtSetBreakAlloc(405);
 
 	try
 	{
@@ -22,7 +22,7 @@ void main(int argc, char* argv[])
 		for (int fileIndex = 1; fileIndex < argc; fileIndex++)
 		{
 
-				getIOFiles(argv[fileIndex], buffer, 10000);
+				getIOFiles(argv[fileIndex], buffer, 100000);
 
 				printf("%s==========\n%s\n\n",argv[fileIndex], buffer);
 		}

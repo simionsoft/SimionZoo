@@ -112,6 +112,8 @@ CQLearning::~CQLearning()
 	delete m_pQFunction;
 	delete m_pQPolicy;
 	delete m_eTraces;
+	delete m_pGamma;
+	delete m_pAlpha;
 	delete m_pAux;
 }
 

@@ -28,7 +28,7 @@ class CWindTurbine: public CDynamicModel
 
 public:
 	CWindTurbine(CParameters* pParameters,const char* worldDefinition);
-	~CWindTurbine();
+	virtual ~CWindTurbine();
 
 	void reset(CState *s);
 	void executeAction(CState *s,CAction *a,double dt);

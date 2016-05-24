@@ -119,7 +119,9 @@ CLASS_CONSTRUCTOR_NEW_WINDOW(CRewardFunction) : CParamObject(pParameters)
 
 CRewardFunction::~CRewardFunction()
 {
+	for (int i = 0; i < m_numRewardComponents; i++) delete m_pRewardComponents[i];
 	delete [] m_pRewardComponents;
+	delete m_pReward;
 }
 
 

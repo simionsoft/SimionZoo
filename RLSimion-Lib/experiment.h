@@ -50,7 +50,7 @@ class CExperiment
 	void reset();
 public:
 	CExperiment();
-	~CExperiment();
+	virtual ~CExperiment();
 	void init(CParameters* pParameters);
 
 	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }

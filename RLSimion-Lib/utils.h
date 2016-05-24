@@ -11,7 +11,7 @@ public:
 	static const int m_filePathMaxSize = 1024;
 
 	CFilePathList();
-	~CFilePathList();
+	virtual ~CFilePathList();
 
 	void clear();
 

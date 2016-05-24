@@ -21,7 +21,7 @@ protected:
 public:
 	CFileSetPoint();
 	CFileSetPoint(const char* filename);
-	~CFileSetPoint();
+	virtual ~CFileSetPoint();
 
 	double getPointSet(double time);
 };
@@ -30,7 +30,7 @@ class CHHFileSetPoint : public CFileSetPoint
 {
 public:
 	CHHFileSetPoint(const char* filename);
-	~CHHFileSetPoint(){}
+	virtual ~CHHFileSetPoint(){}
 };
 
 class CFixedStepSizeSetPoint: public CSetPoint
@@ -42,7 +42,7 @@ class CFixedStepSizeSetPoint: public CSetPoint
 
 public:
 	CFixedStepSizeSetPoint(double stepTime, double min, double max);
-	~CFixedStepSizeSetPoint();
+	virtual ~CFixedStepSizeSetPoint();
 
 	double getPointSet(double time);
 };

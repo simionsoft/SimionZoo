@@ -16,6 +16,7 @@ class CFeatureList;
 class CQPolicy
 {
 public:
+	virtual ~CQPolicy(){}
 	static CQPolicy* getInstance(CParameters* pParameters);
 
 	virtual void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)= 0;
@@ -81,7 +82,7 @@ class CSARSA : public CQLearning
 	bool m_bNextActionSelected;
 public:
 	CSARSA(CParameters* pParameters);
-	~CSARSA();
+	virtual ~CSARSA();
 	void selectAction(const CState *s, CAction *a);
 	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };

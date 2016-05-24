@@ -13,7 +13,7 @@ class CPitchControl: public CDynamicModel
 
 public:
 	CPitchControl(CParameters* pParameters,const char* worldDefinition);
-	~CPitchControl();
+	virtual ~CPitchControl();
 
 	void reset(CState *s);
 	void executeAction(CState *s,CAction *a,double dt);

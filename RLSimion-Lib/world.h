@@ -27,7 +27,7 @@ public:
 	static void setDynamicModel(CDynamicModel* model){ m_pDynamicModel = model; }
 
 	CWorld();
-	~CWorld();
+	virtual ~CWorld();
 
 	void init(CParameters* pParameters);
 

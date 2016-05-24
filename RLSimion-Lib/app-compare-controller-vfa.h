@@ -19,7 +19,7 @@ class CompareControllerVFAApp : public CApp
 public:
 
 	CompareControllerVFAApp(CParameters* pParameters);
-	~CompareControllerVFAApp();
+	virtual ~CompareControllerVFAApp();
 
 	void getInputFiles(CFilePathList& filePathList);
 	void getOutputFiles(CFilePathList& filePathList);

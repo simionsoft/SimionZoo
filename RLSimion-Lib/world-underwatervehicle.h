@@ -12,7 +12,7 @@ class CUnderwaterVehicle : public CDynamicModel
 public:
 
 	CUnderwaterVehicle(CParameters* pParameters,const char* worldDefinition);
-	~CUnderwaterVehicle();
+	virtual ~CUnderwaterVehicle();
 
 	void reset(CState *s);
 	void executeAction(CState *s,CAction *a,double dt);

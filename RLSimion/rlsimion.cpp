@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 {
 	CParameterFile configXMLFile;
 	CApp* pApp= 0;
+	_CrtSetBreakAlloc(305);
 	try
 	{
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
@@ -46,6 +47,6 @@ int main(int argc, char* argv[])
 	{
 		CLogger::logMessage(MessageType::Error, e.what());
 	}
-	
+	_CrtDumpMemoryLeaks();
 	return 0;
 }

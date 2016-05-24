@@ -40,8 +40,8 @@ class CLQRController : public CController, public CParamObject
 	int m_outputActionIndex;
 	int m_numVars;
 public:
-		CLQRController(CParameters* pParameters);
-	~CLQRController();
+	CLQRController(CParameters* pParameters);
+	virtual ~CLQRController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
@@ -57,7 +57,7 @@ class CPIDController : public CController, public CParamObject
 	int m_errorVariableIndex;
 public:
 	CPIDController(CParameters* pParameters);
-	~CPIDController();
+	virtual ~CPIDController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
@@ -76,7 +76,7 @@ class CWindTurbineVidalController : public CController, public CParamObject
 	CNumericValue *m_pA, *m_pK_alpha, *m_pKP, *m_pKI, *m_P_s;
 public:
 	CWindTurbineVidalController(CParameters* pParameters);
-	~CWindTurbineVidalController();
+	virtual ~CWindTurbineVidalController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
@@ -98,7 +98,7 @@ class CWindTurbineBoukhezzarController : public CController, public CParamObject
 	double m_K_t, m_J_t;
 public:
 	CWindTurbineBoukhezzarController(CParameters* pParameters);
-	~CWindTurbineBoukhezzarController();
+	virtual ~CWindTurbineBoukhezzarController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
@@ -123,7 +123,7 @@ class CWindTurbineJonkmanController : public CController, public CParamObject
 	double m_PC_RefSpd;
 public:
 	CWindTurbineJonkmanController(CParameters* pParameters);
-	~CWindTurbineJonkmanController();
+	virtual ~CWindTurbineJonkmanController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
