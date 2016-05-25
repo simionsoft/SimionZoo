@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Name="HerdAgent"
+           Id="*"
+           UpgradeCode="{c0968319-0746-40a4-96a4-ca3fffda95aa}"
+           Manufacturer="GIC-SimionSoft"
+           Version="!(bind.FileVersion.HerdAgent.exe)"
+           Language="1033">
+    <Package InstallerVersion="200" 
+             Compressed="yes" InstallScope="perMachine"/>
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR"
+               Name="SourceDir">
+
+      <Directory Id="ProgramFilesFolder"
+                  Name="SimionSoft">
+        <Directory Id="APPINSTALLDIR"
+                    Name="HerdAgent">
+          <Component Id="SimionSoft.HerdAgent"
+                      Guid="{e50d26ba-f7c1-4d55-9530-fa5fb9b2e4c4}">
+            <File Id="HerdAgent.exe"
+                  Name="HerdAgent.exe"
+                  Source="..\..\Release\HerdAgent.exe"
+                  Vital="yes"
+                  KeyPath="yes"
+                  DiskId="1" />
+            <File Id="HerdAgent.exe.config"
+                  Name="HerdAgent.exe.config"
+                  Source="..\..\Release\HerdAgent.exe.config"
+                  Vital="yes"
+                  KeyPath="no"
+                  DiskId="1" />
+            <ServiceInstall Id="ServiceInstaller"
+                            Type="ownProcess"
+                            Vital="yes"
+                            Name="GIC-SimionSoft:HerdAgent"
+                            DisplayName="HerdAgent"
+                            Description="Service that implements an agent in the Herd distributed computation net"
+                            Start="auto"
+                            Account="LocalSystem"
+                            ErrorControl="ignore"
+                            Interactive="no" />
+            <ServiceControl Id="StartService"
+                            Start="install"
+                            Stop="both"
+                            Remove="uninstall"
+                            Name="GIC-SimionSoft:HerdAgent"
+                            Wait="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+     
+      <!--<Directory Id="CACHEDIRECTORY" Name="Temp">
+        <Component Id="CacheDir" Guid="7fa612cd-dde2-415f-ba19-9f688456bafe"
+          SharedDllRefCount="no" KeyPath="no" NeverOverwrite="no" Permanent="no" Transitive="no"
+          Win64="no" Location="either">
+          <CreateFolder/>
+        </Component>
+      </Directory>-->
+    </Directory>
+    <Feature Id='Complete' Title='Herd Agent' Description='The complete package.'
+        Display='expand' Level='1' ConfigurableDirectory='APPINSTALLDIR'>
+      <Feature Id='Service' Title='Program' Description='The executable files.' Level='1'>
+        <ComponentRef Id='SimionSoft.HerdAgent' />
+        <!--<ComponentRef Id='CacheDir'/>-->
+      </Feature>
+    </Feature>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="APPINSTALLDIR" />
+    <UIRef Id="WixUI_InstallDir" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+  </Product>
+</Wix>
+
+<!--<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="HerdAgentInstaller" Language="1033" Version="1.0.0.0" Manufacturer="GIC/Olatua Software" UpgradeCode="38cfde72-0913-4ab3-9c73-24f65a1bccb2">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of the Herd Agent is already installed." />
+    <MediaTemplate />
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="HerdAgentInstaller">
+          <Component Id="GIC-SimionSoft.HerdAgent" Guid="{c0968319-0746-40a4-96a4-ca3fffda95aa}">
+            <File Id="HerdAgent.exe"
+                  Name="HerdAgent.exe"
+                  Source="..\..\Release\HerdAgent.exe"
+                  Vital="yes"
+                  KeyPath="yes"
+                  DiskId="1" />
+            <File Id="HerdAgent.exe.config"
+                  Name="HerdAgent.exe.config"
+                  Source="..\..\Release\HerdAgent.exe.config"
+                  Vital="yes"
+                  KeyPath="no"
+                  DiskId="1" />
+            <ServiceInstall Id="ServiceInstaller"
+                            Type="ownProcess"
+                            Vital="yes"
+                            Name="GIC:HerdAgent"
+                            DisplayName="GIC:HerdAgent"
+                            Description="Herd agent for distributed computation"
+                            Start="auto"
+                            Account="LocalSystem"
+                            ErrorControl="ignore"
+                            Interactive="no" />
+            <ServiceControl Id="StartService"
+                            Start="install"
+                            Stop="both"
+                            Remove="uninstall"
+                            Name="GIC:HerdAgent"
+                            Wait="yes" />
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+    <Feature Id="ProductFeature"
+                     Title="GIC:HerdAgent"
+                     Level="1">
+      <ComponentRef Id="GIC.HerdAgent" />
+    </Feature>
+    </Product>
+
+
+
+
+	
+</Wix>-->
