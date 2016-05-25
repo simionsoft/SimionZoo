@@ -97,32 +97,32 @@ namespace AppXML.Data
                     
             
         }
-        public static void method(List<string> filenames)
-        {
+        //public static void method(List<string> filenames)
+        //{
            
-            Shepherd shepherd;
-            var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
-            TcpSocket.Start();
-            using (TcpClient comSocket = TcpSocket.AcceptTcpClient())
-            {
-                using (NetworkStream netStream = comSocket.GetStream())
-                {
-                    shepherd = new Shepherd(comSocket,netStream,"");
-                    //we can just block the thread by waiting until we receive something. Don't think we need to sleep
-                    //Thread.Sleep(20000);
+        //    Shepherd shepherd;
+        //    var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
+        //    TcpSocket.Start();
+        //    using (TcpClient comSocket = TcpSocket.AcceptTcpClient())
+        //    {
+        //        using (NetworkStream netStream = comSocket.GetStream())
+        //        {
+        //            shepherd = new Shepherd(comSocket,netStream,"");
+        //            //we can just block the thread by waiting until we receive something. Don't think we need to sleep
+        //            //Thread.Sleep(20000);
                    
 
-                    //aborter.Send(RequestData2, RequestData2.Length, new IPEndPoint(IPAddress.Broadcast,8888));
-                    shepherd.ReceiveJobResult();
-                }
-            }
-            TcpSocket.Stop();
-            //var ServerResponseData = Client.Receive(ref ServerEp);
-            //var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
-            //Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
+        //            //aborter.Send(RequestData2, RequestData2.Length, new IPEndPoint(IPAddress.Broadcast,8888));
+        //            shepherd.ReceiveJobResult();
+        //        }
+        //    }
+        //    TcpSocket.Stop();
+        //    //var ServerResponseData = Client.Receive(ref ServerEp);
+        //    //var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
+        //    //Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
 
-            //m_discoverySocket.Close();
-        }
+        //    //m_discoverySocket.Close();
+        //}
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void getInputsAndOutputs(string path, ref CJob job)
         {

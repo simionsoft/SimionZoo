@@ -36,9 +36,7 @@ namespace Herd
     public class CJobDispatcher
     {
         private XMLStream m_xmlStream;
-        public const int m_discoveryPortShepherd = 2332;
         public const int m_discoveryPortHerd = 2333;
-        public const int m_comPortShepherd = 2334;
         public const int m_comPortHerd = 2335;
         public const string m_discoveryMessage = "Slaves, show yourselves!";
         public const string m_discoveryAnswer = "At your command, my Master";

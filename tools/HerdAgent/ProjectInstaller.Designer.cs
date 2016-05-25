@@ -40,7 +40,7 @@
             // serviceInstaller1
             // 
             this.serviceInstaller1.Description = "RLSimion herd agent used for distributed work.";
-            this.serviceInstaller1.DisplayName = "SimionHerdAgent";
+            this.serviceInstaller1.DisplayName = "HerdAgent";
             this.serviceInstaller1.ServiceName = "HerdService";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             this.serviceInstaller1.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.serviceInstaller1_AfterInstall);
