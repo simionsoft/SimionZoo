@@ -149,21 +149,21 @@ namespace AppXML.ViewModels
                         po.CancellationToken = cts.Token;
                         Parallel.ForEach(slaves.Keys, po, (key) =>
                                                 {
-                                                    if (indexOffset == Processes.Count)
-                                                    {
-                                                        var TcpSocket = new TcpClient();
-                                                        TcpSocket.Connect(key.Address, Herd.CJobDispatcher.m_comPortHerd);
-                                                        using (NetworkStream netStream = TcpSocket.GetStream())
-                                                        {
-                                                            XMLStream xmlStream = new XMLStream();
-                                                            xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
+                                                    if (indexOffset < Processes.Count)
+                                                    //{
+                                                    //    var TcpSocket = new TcpClient();
+                                                    //    TcpSocket.Connect(key.Address, Herd.CJobDispatcher.m_comPortHerd);
+                                                    //    using (NetworkStream netStream = TcpSocket.GetStream())
+                                                    //    {
+                                                    //        XMLStream xmlStream = new XMLStream();
+                                                    //        xmlStream.writeMessage(netStream, CJobDispatcher.m_freeMessage, true);
 
-                                                            netStream.Close();
-                                                            TcpSocket.Close();
-                                                        }
+                                                    //        netStream.Close();
+                                                    //        TcpSocket.Close();
+                                                    //    }
                 
-                                                    }
-                                                    else
+                                                    //}
+                                                    //else
                                                     {
                                                         int cores = slaves[key];
                                                         int amount = (int)Math.Ceiling(cores * proportion);
