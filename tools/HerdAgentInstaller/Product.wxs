@@ -18,20 +18,24 @@
                   Name="SimionSoft">
         <Directory Id="APPINSTALLDIR"
                     Name="HerdAgent">
-          <Component Id="SimionSoft.HerdAgent"
-                      Guid="{e50d26ba-f7c1-4d55-9530-fa5fb9b2e4c4}">
+          <Component Id="SimionSoft.HerdAgent"  Guid="{e50d26ba-f7c1-4d55-9530-fa5fb9b2e4c4}">
             <fire:FirewallException Id="HerdAgentFirewallExceptionUDP" Name="HerdAgentFirewallExceptionUDP" Port="2333" Protocol="udp" IgnoreFailure="yes" Profile="all" Scope="localSubnet"/>
             <fire:FirewallException Id="HerdAgentFirewallExceptionTCP" Name="HerdAgentFirewallExceptionTCP" Port="2335" Protocol="tcp" IgnoreFailure="yes" Profile="all" Scope="localSubnet"/>
             <File Id="HerdAgent.exe"
                   Name="HerdAgent.exe"
-                  Source="..\..\Release\HerdAgent.exe"
+                  Source="..\..\Debug\HerdAgent.exe"
                   Vital="yes"
                   KeyPath="yes"
                   DiskId="1" />
-
+            <File Id="HerdAgent.pdb"
+                  Name="HerdAgent.pdb"
+                  Source="..\..\Debug\HerdAgent.pdb"
+                  Vital="yes"
+                  KeyPath="no"
+                  DiskId="1" />
             <File Id="HerdAgent.exe.config"
                   Name="HerdAgent.exe.config"
-                  Source="..\..\Release\HerdAgent.exe.config"
+                  Source="..\..\Debug\HerdAgent.exe.config"
                   Vital="yes"
                   KeyPath="no"
                   DiskId="1" />
