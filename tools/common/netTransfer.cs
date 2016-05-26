@@ -268,28 +268,28 @@ namespace Herd
             while (!match.Success);
             // m_bufferOffset += match.Index + match.Length;
         }
-        protected void ReceiveExeFiles(bool receiveContent) { ReceiveFile(FileType.EXE, receiveContent, true); }
-        protected void ReceiveInputFiles(bool receiveContent)
+        protected void ReceiveExeFiles(bool receiveContent,bool inCachedDir) { ReceiveFile(FileType.EXE, receiveContent, inCachedDir); }
+        protected void ReceiveInputFiles(bool receiveContent, bool inCachedDir)
         {
             for (int i = 0; i < m_numInputFilesRead; i++)
-                ReceiveFile(FileType.INPUT, receiveContent, true);
+                ReceiveFile(FileType.INPUT, receiveContent, inCachedDir);
         }
-        protected void ReceiveOutputFiles(bool receiveContent)
+        protected void ReceiveOutputFiles(bool receiveContent, bool inCachedDir)
         {
             for (int i = 0; i < m_numOutputFilesRead; i++)
-                ReceiveFile(FileType.OUTPUT, receiveContent, false);
+                ReceiveFile(FileType.OUTPUT, receiveContent, inCachedDir);
         }
 
         protected void ReceiveFile(FileType type, bool receiveContent, bool inCachedDir)
         {
-            ReceiveFileHeader(type, receiveContent);
+            ReceiveFileHeader(type, receiveContent,inCachedDir);
             if (receiveContent)
             {
                 ReceiveFileData(inCachedDir);
                 ReceiveFileFooter(type);
             }
         }
-        protected void ReceiveFileHeader(FileType type, bool receiveContent)
+        protected void ReceiveFileHeader(FileType type, bool receiveContent, bool inCachedDir)
         {
             Match match;
 
@@ -339,7 +339,10 @@ namespace Herd
             }
 
             //We create the necessary directories for the file, be it an exe, an input or an output file
-            string outputFilename = getCachedFilename(m_nextFileName);
+            string outputFilename;
+            if (inCachedDir)
+                outputFilename = getCachedFilename(m_nextFileName);
+            else outputFilename = m_nextFileName;
             string outputDir = Path.GetDirectoryName(outputFilename);
             System.IO.Directory.CreateDirectory(outputDir);
 
@@ -404,10 +407,6 @@ namespace Herd
             : base(tcpClient, dirPath)
         {
             m_netStream = netStream;
-            tcpClient.ReceiveTimeout = 250;
-            tcpClient.SendTimeout = 250;
-            m_netStream.ReadTimeout = 250;
-            m_netStream.WriteTimeout = 250;
         }
         public void SendJobQuery(CJob job)
         {
@@ -425,9 +424,9 @@ namespace Herd
             m_job.outputFiles.Clear();
 
             ReceiveJobHeader();
-            ReceiveExeFiles(false);
-            ReceiveInputFiles(false);
-            ReceiveOutputFiles(true);
+            ReceiveExeFiles(false,false);
+            ReceiveInputFiles(false,false);
+            ReceiveOutputFiles(true,false);
             ReceiveJobFooter();
 
             return true;//if job result properly received. For now, we will assume it}
@@ -467,9 +466,9 @@ namespace Herd
 
             ReceiveJobHeader();
             //ReceiveJobArgs();
-            ReceiveExeFiles(true);
-            ReceiveInputFiles(true);
-            ReceiveOutputFiles(false);
+            ReceiveExeFiles(true,true);
+            ReceiveInputFiles(true,true);
+            ReceiveOutputFiles(false,true);
             ReceiveJobFooter();
 
             return true;//if job query properly received. For now, we will assume it
