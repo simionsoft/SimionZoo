@@ -35,7 +35,7 @@ namespace Herd
     public enum FileType { EXE, INPUT, OUTPUT };
     public class CJobDispatcher
     {
-        private XMLStream m_xmlStream;
+        protected XMLStream m_xmlStream;
         public const int m_discoveryPortHerd = 2333;
         public const int m_comPortHerd = 2335;
         public const string m_discoveryMessage = "Slaves, show yourselves!";
@@ -46,8 +46,6 @@ namespace Herd
         public const string m_freeMessage = "You are free";
         public const string m_cleanCacheMessage = "Clean the cache";
         public const string m_updateMessage = "Update yourself";
-        static int m_maxChunkSize = 1024;
-
 
         protected NetworkStream m_netStream;
         protected TcpClient m_tcpClient;
@@ -170,10 +168,10 @@ namespace Herd
                 {
                     long readBytes = 0;
                     int lastReadBytes;
-                    byte[] buffer = new byte[m_maxChunkSize];
+                    byte[] buffer = new byte[m_xmlStream.getBufferSize()];
                     while (readBytes < fileSize)
                     {
-                        lastReadBytes = fileStream.Read(buffer, 0, m_maxChunkSize);
+                        lastReadBytes = fileStream.Read(buffer, 0, m_xmlStream.getBufferSize());
                         readBytes += lastReadBytes;
                         checkConnection(m_tcpClient);
                         m_netStream.Write(buffer, 0, (int)lastReadBytes);
@@ -196,22 +194,12 @@ namespace Herd
                 checkConnection(m_tcpClient);
                 m_netStream.Write(headerBytes, 0, headerBytes.Length);
 
-                ////Send the footer: </Exe>, </Input> or </Output>
-                //byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
-                //m_netStream.Write(footerBytes, 0, footerBytes.Length);
 
                 m_netStream.Flush();
             }
 
         }
-        //public string GetBufferAsString()
-        //{
-        //    return Encoding.ASCII.GetString(m_buffer);
-        //}
-        //public void markBytesAsProcessed(int numBytesProcessed)
-        //{
-        //    m_bufferOffset += numBytesProcessed;
-        //}
+
         public void ReadFromStream()
         {
             checkConnection(m_tcpClient);
@@ -230,9 +218,6 @@ namespace Herd
                 match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumTasks=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
             }
             while (!match.Success);
-
-
-
 
             m_job.name = match.Groups[1].Value;
             m_numTasksRead = Int32.Parse(match.Groups[2].Value);
@@ -407,6 +392,7 @@ namespace Herd
             : base(tcpClient, dirPath)
         {
             m_netStream = netStream;
+            m_xmlStream.resizeBuffer( tcpClient.SendBufferSize);
         }
         public void SendJobQuery(CJob job)
         {
@@ -442,6 +428,7 @@ namespace Herd
             : base(tcpClient, dirPath)
         {
             m_netStream = netStream;
+            m_xmlStream.resizeBuffer(tcpClient.ReceiveBufferSize);
         }
 
         public void CancelRunningProcesses()
@@ -599,19 +586,25 @@ namespace Herd
             });
         }
     }
-    class XMLStream
+    public class XMLStream
     {
         private int m_bufferOffset;
         private int m_bytesInBuffer;
         private byte[] m_buffer;
         private Match m_match;
-        const int m_maxChunkSize = 1024;
+        private int m_maxChunkSize = 1024;
         private string m_asciiBuffer;
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
         public XMLStream()
         {
             m_buffer = new byte[m_maxChunkSize];
+        }
+        public int getBufferSize() { return m_maxChunkSize; }
+        public void resizeBuffer(int newSize)
+        {
+            m_maxChunkSize = newSize;
+            m_buffer= new byte[m_maxChunkSize];
         }
         public int getBytesInBuffer() { return m_bytesInBuffer; }
         public int getBufferOffset() { return m_bufferOffset; }

@@ -52,6 +52,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TESTHerdAgent", "tools\TESTHerdAgent\TESTHerdAgent.csproj", "{1ADDBF7A-4064-42FB-846F-7D22E8BB9B5B}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "HerdAgentInstaller", "tools\HerdAgentInstaller\HerdAgentInstaller.wixproj", "{E0549B29-972D-42D6-BC5F-DDC6838FCA82}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3917EF51-812D-40C0-A742-DB73CAFC0918} = {3917EF51-812D-40C0-A742-DB73CAFC0918}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
