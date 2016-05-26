@@ -442,10 +442,6 @@ namespace Herd
             : base(tcpClient, dirPath)
         {
             m_netStream = netStream;
-            tcpClient.ReceiveTimeout = 250;
-            tcpClient.SendTimeout = 250;
-            m_netStream.ReadTimeout = 250;
-            m_netStream.WriteTimeout = 250;
         }
 
         public void CancelRunningProcesses()
