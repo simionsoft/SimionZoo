@@ -24,105 +24,11 @@ namespace AppXML.Data
         [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
         
-        private static Dictionary<IPEndPoint, int> myList ;
+        
         //used to avoid readings of worl-denitions xml
         private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
-        public static void DiscoveryCallback(IAsyncResult ar)
-        {
-
-            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).client;
-            IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).ip;
-
-            try
-            {
-                
-                Byte[] receiveBytes = u.EndReceive(ar, ref e);
-                string receiveString = Encoding.ASCII.GetString(receiveBytes);
-                if (!myList.ContainsKey(e))
-                {
-                    myList.Add(e, Int32.Parse(XElement.Parse(receiveString).Value));
-                }
-                u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-            
-           
-                
-
-            
-           
-
-           
-           
-
-           
-        }
-        public static Dictionary<IPEndPoint,int> getSlaves(out int cores)
-        {
-            if(myList==null)
-                myList = new Dictionary<IPEndPoint,int>();
-            else
-                myList.Clear();
-            cores = 0;
-            
-            UdpClient m_discoverySocket;
-            m_discoverySocket = new UdpClient();
-            m_discoverySocket.EnableBroadcast = true;
-            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
-            
-            //this sleep only made sense when we were debugging testherdagent and testshepherd at the same time
-            //System.Threading.Thread.Sleep(1000); //so that the shepherd waits for the herd agent to be ready
-
-            m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
-
-            UdpState u = new UdpState();
-            IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
-            u.ip=xxx;
-            u.client = m_discoverySocket; 
-            m_discoverySocket.BeginReceive(DiscoveryCallback, u);
-            
-            //We wait 2 secs for herd agents to reply
-            Thread.Sleep(2000);
-
-            cores = myList.Values.ToList().Sum(od => od);
-            if (myList != null && myList.Count > 1)
-            {
-                return (from entry in myList orderby entry.Value ascending select entry).ToDictionary(x => x.Key, x => x.Value);
-            }
-            return myList;
-                   
-                    
-            
-        }
-        //public static void method(List<string> filenames)
-        //{
-           
-        //    Shepherd shepherd;
-        //    var TcpSocket = new TcpListener(IPAddress.Any, CJobDispatcher.m_comPortShepherd);
-        //    TcpSocket.Start();
-        //    using (TcpClient comSocket = TcpSocket.AcceptTcpClient())
-        //    {
-        //        using (NetworkStream netStream = comSocket.GetStream())
-        //        {
-        //            shepherd = new Shepherd(comSocket,netStream,"");
-        //            //we can just block the thread by waiting until we receive something. Don't think we need to sleep
-        //            //Thread.Sleep(20000);
-                   
-
-        //            //aborter.Send(RequestData2, RequestData2.Length, new IPEndPoint(IPAddress.Broadcast,8888));
-        //            shepherd.ReceiveJobResult();
-        //        }
-        //    }
-        //    TcpSocket.Stop();
-        //    //var ServerResponseData = Client.Receive(ref ServerEp);
-        //    //var ServerResponse = Encoding.ASCII.GetString(ServerResponseData);
-        //    //Console.WriteLine("Received {0} from {1}", ServerResponse, ServerEp.Address.ToString());
-
-        //    //m_discoverySocket.Close();
-        //}
+        
+        
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void getInputsAndOutputs(string path, ref CJob job)
         {
