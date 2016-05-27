@@ -303,9 +303,14 @@ namespace AppXML.ViewModels
                     }
                     processStatusHandler.setAllJobsState("Receiving output files");
                     shepherd.ReceiveJobResult();
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message + ex.StackTrace);
+                    }
 
                     processStatusHandler.showEndMessage();
-  
+                    
                 }
                 TcpSocket.Close();
                 owner.isFinished(processes.Count());
