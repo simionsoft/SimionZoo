@@ -298,7 +298,14 @@ namespace AppXML.ViewModels
                     }
                     foreach (ProcessStateViewModel p in processes)
                         p.SMS = "RECEIVING FILES";
-                    shepherd.ReceiveJobResult();
+                    try
+                    {
+                        shepherd.ReceiveJobResult();
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message + ex.StackTrace);
+                    }
                     
                     foreach (ProcessStateViewModel p in processes)
                     {
