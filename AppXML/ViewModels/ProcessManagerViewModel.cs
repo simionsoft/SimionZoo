@@ -64,7 +64,8 @@ namespace AppXML.ViewModels
                 i++;
                 if (i == 2000)
                     runLocally(processes);
-            } while (slaves == null ||  slaves.Count <1);
+            }
+            while (slaves == null ||  slaves.Count <1);
             for (int ii = 1; i < slaves.Keys.Count;i++ )
             {
                 using (var TcpSocket = new TcpClient())
@@ -93,8 +94,8 @@ namespace AppXML.ViewModels
                     }
 
                 }
-            
-            }
+
+        }
         public void run()
         {
             int coreNumbers = Environment.ProcessorCount;
@@ -104,7 +105,7 @@ namespace AppXML.ViewModels
             else
             {
                 //antes de nada se lanzan los n primero experimentos
-                
+
                     Dictionary<IPEndPoint, int> slaves = null;
                     int totalCores;
                     slaves=Herd.Shepherd.getSlaves(out totalCores);
@@ -126,24 +127,24 @@ namespace AppXML.ViewModels
                         po.MaxDegreeOfParallelism = Environment.ProcessorCount;
                         Parallel.ForEach
                             (slaves.Keys, po, (key) =>
-                                                {
-                                                    if (indexOffset < Processes.Count)
-                                                    {
-                                                        int cores = slaves[key];
-                                                        int amount = (int)Math.Ceiling(cores * proportion);
-                                                        if (indexOffset + amount > Processes.Count)
-                                                            amount = Processes.Count - indexOffset;
-                                                        IEnumerable<ProcessStateViewModel> myPro = getMines(amount);
-                                                        using (cts.Token.Register(Thread.CurrentThread.Abort))
-                                                        {
+                            {
+                                if (indexOffset < Processes.Count)
+                                {
+                                    int cores = slaves[key];
+                                    int amount = (int)Math.Ceiling(cores * proportion);
+                                    if (indexOffset + amount > Processes.Count)
+                                        amount = Processes.Count - indexOffset;
+                                    IEnumerable<ProcessStateViewModel> myPro = getMines(amount);
+                                    using (cts.Token.Register(Thread.CurrentThread.Abort))
+                                    {
                                         try { runOneJob(myPro, key, cts.Token); }
 
                                         catch (Exception ex) { Console.WriteLine(ex.StackTrace); }
-                                                        }
-                                                    }
+                                    }
+                                }
                                                     
-                                                }
-                                                );
+                            }
+                            );
                     }
             }
         }
@@ -175,9 +176,9 @@ namespace AppXML.ViewModels
             public ProcessStatusHandler(IEnumerable<ProcessStateViewModel> processStateViewList)
             { m_processStateViewList = processStateViewList; m_ip = "";}
 
-            public void showCompleteMessage(ProcessStateViewModel p,string message)
+            public string completeMessage(ProcessStateViewModel p,string message)
             {
-                p.SMS = m_ip + " (" + p.pipeName + "): " + message;
+                return m_ip + " (" + p.pipeName + "): " + message;
             }
             public void setStatus(string processName,int progress)
             {
@@ -187,7 +188,7 @@ namespace AppXML.ViewModels
                     {
                         p.Status = progress;
                         if (progress == 100)
-                            showCompleteMessage(p, "Job finished and waiting for output files.");
+                            p.SMS= completeMessage(p, "Job finished and waiting for output files.");
                         return;
                     }
                 }
@@ -198,15 +199,20 @@ namespace AppXML.ViewModels
                 {
                     if (p.pipeName==processName)
                     {
-                        showCompleteMessage(p, message);
+                        p.addMessage( completeMessage(p, message));
                         return;
                     }
                 }
             }
-            public void logAllProccessMessage(string message)
+            public void logShepherdMessage(string message)
+            {
+                foreach (ProcessStateViewModel p in m_processStateViewList) p.addMessage(completeMessage(p, message));
+            }
+            public void setAllJobsState(string message)
             {
                 foreach (ProcessStateViewModel p in m_processStateViewList)
                     p.SMS = m_ip + ": " + message;
+                
             }
             public void showEndMessage()
             {
@@ -223,88 +229,87 @@ namespace AppXML.ViewModels
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
             //set the process logger class
-            ProcessStatusHandler processLogger = new ProcessStatusHandler(processes);
-            processLogger.m_ip= endPoint.Address.ToString();
-
+            ProcessStatusHandler processStatusHandler = new ProcessStatusHandler(processes);
+            processStatusHandler.m_ip= endPoint.Address.ToString();
+            
             //Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
-            Task.Factory.StartNew(() =>
-            {
+            Task.Factory.StartNew(() => {
                 try
                 {
-                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-                //hay que preparar cada trabajo y lanzarlo
-                CJob job = new CJob();
-                job.name = "xxxxx";
-                job.exeFile = Models.CApp.EXE;
-                if(Models.CApp.pre!=null)
-                {
-                    foreach (string prerec in Models.CApp.pre)
-                        job.inputFiles.Add(prerec);
-                }
-                foreach (ProcessStateViewModel process in processes)
-                {
-                    job.comLineArgs.Add(process.Label + " "+ process.pipeName);
-                    job.inputFiles.Add(process.Label);
-                    Utility.getInputsAndOutputs(process.Label, ref job);
-                    //myPipes.Add(process.pipeName, process);
 
-                }
+               
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            //hay que preparar cada trabajo y lanzarlo
+            CJob job = new CJob();
+            job.name = "xxxxx";
+            job.exeFile = Models.CApp.EXE;
+            if(Models.CApp.pre!=null)
+            {
+                foreach (string prerec in Models.CApp.pre)
+                    job.inputFiles.Add(prerec);
+            }
+            foreach (ProcessStateViewModel process in processes)
+            {
+                job.comLineArgs.Add(process.Label + " "+ process.pipeName);
+                job.inputFiles.Add(process.Label);
+                Utility.getInputsAndOutputs(process.Label, ref job);
+                //myPipes.Add(process.pipeName, process);
 
-                Shepherd shepherd = null; 
+            }
+
+            Shepherd shepherd = null; 
             
             
-                var TcpSocket = new TcpClient();
-
+            using (var TcpSocket = new TcpClient())
+            {
                 TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+                using (NetworkStream netStream = TcpSocket.GetStream())
                 {
-                    using (NetworkStream netStream = TcpSocket.GetStream())
+
+                    shepherd = new Shepherd(TcpSocket, netStream, "", processStatusHandler.logShepherdMessage);
+                    XMLStream xmlStream = new XMLStream();
+                    xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
+                    processStatusHandler.setAllJobsState("Sending job query");
+                    shepherd.SendJobQuery(job);
+                    processStatusHandler.setAllJobsState("Executing job query");
+                    string xmlItem;
+                    while(true)
                     {
+                        shepherd.read();
+                        xmlItem = shepherd.processNextXMLItem();
 
-                        shepherd = new Shepherd(TcpSocket, netStream, "",processLogger.logAllProccessMessage);
-                        XMLStream xmlStream = new XMLStream();
-                        xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
-                    
-                        shepherd.SendJobQuery(job);
-
-                        string xmlItem;
-                        while(true)
+                        if (xmlItem!="")
                         {
-                            shepherd.read();
-                            xmlItem = shepherd.processNextXMLItem();
-
-                            if (xmlItem!="")
+                            XmlDocument doc = new XmlDocument();
+                            doc.LoadXml(xmlItem);
+                            XmlNode e = doc.DocumentElement;
+                            string key = e.Name;
+                            XmlNode message = e.FirstChild;
+                            if (message.Name == "Progress")
                             {
-                                XmlDocument doc = new XmlDocument();
-                                doc.LoadXml(xmlItem);
-                                XmlNode e = doc.DocumentElement;
-                                string key = e.Name;
-                                XmlNode message = e.FirstChild;
-                                if (message.Name == "Progress")
-                                {
-                                    double progress = Convert.ToDouble(message.InnerText);
-                                    processLogger.setStatus(key,Convert.ToInt32(progress));
-                                    //myPipes[key].Status = Convert.ToInt32(progress);
-                                    //if (progress == 100)
-                                    //   myPipes[key].SMS = "EXPERIMENT IS FINISHED. WAITING TO SEND FILES";
-                                }
-                                else if (message.Name == "Message")
-                                {
-                                    processLogger.logProcessMessage(key, message.InnerText);
-                                    //myPipes[key].addMessage(message.InnerText);
-                                }
-                                else
-                                    if (key == XMLStream.m_defaultMessageType
-                                    && message.InnerText == CJobDispatcher.m_endMessage)
-                                    break;
+                                double progress = Convert.ToDouble(message.InnerText);
+                                processStatusHandler.setStatus(key, Convert.ToInt32(progress));
                             }
+                            else if (message.Name == "Message")
+                            {
+                                processStatusHandler.logProcessMessage(key, message.InnerText);
+                            }
+                            else
+                                if (key == XMLStream.m_defaultMessageType
+                                    && message.InnerText == CJobDispatcher.m_endMessage)
+                                break;
                         }
-                        shepherd.ReceiveJobResult();
-                        }
-                        processLogger.showEndMessage();
                     }
-                        TcpSocket.Close();
-                        owner.isFinished(processes.Count());
+                    processStatusHandler.setAllJobsState("Receiving output files");
+                    shepherd.ReceiveJobResult();
+
+
+                    processStatusHandler.showEndMessage();
+                    
                 }
+                owner.isFinished(processes.Count());
+            }
+        }
                 catch(Exception ex)
                 {
                     //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
@@ -326,37 +331,37 @@ namespace AppXML.ViewModels
             po.CancellationToken = cts.Token;
             var t=Task.Factory.StartNew(() =>
             {        
-            Parallel.ForEach(Processes,po, (process) =>
-                                                {
-                                                    Process p = new Process();
-                                                    string name = process.pipeName;
-                                                    using (var server = new NamedPipeServerStream(name))
-                                                    {
-                                                        using (cts.Token.Register(Thread.CurrentThread.Abort))
-                                                        {
-                                                            try
-                                                            {
-                                                                runOneProcess(process, p, server, cts.Token);
+                Parallel.ForEach(Processes,po, (process) =>
+                {
+                    Process p = new Process();
+                    string name = process.pipeName;
+                    using (var server = new NamedPipeServerStream(name))
+                    {
+                        using (cts.Token.Register(Thread.CurrentThread.Abort))
+                        {
+                            try
+                            {
+                                runOneProcess(process, p, server, cts.Token);
 
-                                                            }
-                                                            catch (Exception ex)
-                                                            {
-                                                                if (p != null && !p.HasExited)
-                                                                {
-                                                                    p.Kill();
-                                                                    p.Dispose();
-                                                                }
-                                                                if (server != null && server.IsConnected)
-                                                                {
-                                                                    server.Close();
-                                                                }
-                                                                process.SMS = "ABORTED";
-                                                                process.addMessage(ex.StackTrace);
-                                                            }
+                            }
+                            catch (Exception ex)
+                            {
+                                if (p != null && !p.HasExited)
+                                {
+                                    p.Kill();
+                                    p.Dispose();
+                                }
+                                if (server != null && server.IsConnected)
+                                {
+                                    server.Close();
+                                }
+                                process.SMS = "ABORTED";
+                                process.addMessage(ex.StackTrace);
+                            }
 
-                                                        }
-                                                    }
-                                                });
+                        }
+                    }
+                });
 
             },cts.Token);
 
