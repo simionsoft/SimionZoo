@@ -60,18 +60,25 @@ namespace Herd
                 Console.WriteLine(text);
             }
         }
-        public static void QuitCallback(IAsyncResult ar)
+        public class TCPCallbackInfo
         {
-            TcpClient comSocket = (TcpClient)ar;
+            public HerdAgent herdAgent { get; set; }
+            public TcpClient tcpClient { get; set; }
+        }
+        public static void QuitCallback(IAsyncResult callbackInfo)
+        {
+            HerdAgent herdAgent= ((TCPCallbackInfo)callbackInfo).herdAgent;
+            TcpClient comSocket = ((TCPCallbackInfo)callbackInfo).tcpClient;
             NetworkStream netStream = comSocket.GetStream();
             XMLStream xmlStream = new XMLStream();
+
             xmlStream.readFromNetworkStream(comSocket, netStream);
             string xmlItem = xmlStream.processNextXMLItem();
             if (xmlItem!="")
             {
                 string xmlItemContent = xmlStream.getLastXMLItemContent();
-                if (xmlItemContent==CJobDispatcher.m_quitMessage)
-
+                if (xmlItemContent == CJobDispatcher.m_quitMessage)
+                    herdAgent.CancelRunningProcesses();
             }
         }
         public static void CommunicationCallback(IAsyncResult ar)
@@ -103,7 +110,13 @@ namespace Herd
                             Log("Receiving job data from" + comSocket.Client.RemoteEndPoint.ToString());
                             if (herdAgent.ReceiveJobQuery())
                             {
-                                netStream.BeginRead(new byte[1024], 0, 1024, QuitCallback, comSocket);
+                                //Listen for a "quit" message from the client
+                                TCPCallbackInfo callbackInfo= new TCPCallbackInfo();
+                                callbackInfo.herdAgent = herdAgent;
+                                callbackInfo.tcpClient = comSocket;
+                                netStream.BeginRead(new byte[1024], 0, 1024, QuitCallback, (object)callbackInfo);
+
+                                //run the job
                                 Log("Running job");
                                 returnCode= herdAgent.RunJob(netStream);
 
