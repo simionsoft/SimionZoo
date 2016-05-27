@@ -227,94 +227,84 @@ namespace AppXML.ViewModels
             processLogger.m_ip= endPoint.Address.ToString();
 
             //Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
-            Task.Factory.StartNew(() => {
+            Task.Factory.StartNew(() =>
+            {
                 try
                 {
-
-               
-            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            //hay que preparar cada trabajo y lanzarlo
-            CJob job = new CJob();
-            job.name = "xxxxx";
-            job.exeFile = Models.CApp.EXE;
-            if(Models.CApp.pre!=null)
-            {
-                foreach (string prerec in Models.CApp.pre)
-                    job.inputFiles.Add(prerec);
-            }
-            foreach (ProcessStateViewModel process in processes)
-            {
-                job.comLineArgs.Add(process.Label + " "+ process.pipeName);
-                job.inputFiles.Add(process.Label);
-                Utility.getInputsAndOutputs(process.Label, ref job);
-                //myPipes.Add(process.pipeName, process);
-
-            }
-
-            Shepherd shepherd = null; 
-            
-            
-            var TcpSocket = new TcpClient();
-
-            TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
-            {
-                using (NetworkStream netStream = TcpSocket.GetStream())
+                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+                //hay que preparar cada trabajo y lanzarlo
+                CJob job = new CJob();
+                job.name = "xxxxx";
+                job.exeFile = Models.CApp.EXE;
+                if(Models.CApp.pre!=null)
                 {
-
-                    shepherd = new Shepherd(TcpSocket, netStream, "",processLogger.logAllProccessMessage);
-                    XMLStream xmlStream = new XMLStream();
-                    xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
-                    
-                    shepherd.SendJobQuery(job);
-
-                    string xmlItem;
-                    while(true)
-                    {
-                        shepherd.read();
-                        xmlItem = shepherd.processNextXMLItem();
-
-                        if (xmlItem!="")
-                        {
-                            XmlDocument doc = new XmlDocument();
-                            doc.LoadXml(xmlItem);
-                            XmlNode e = doc.DocumentElement;
-                            string key = e.Name;
-                            XmlNode message = e.FirstChild;
-                            if (message.Name == "Progress")
-                            {
-                                double progress = Convert.ToDouble(message.InnerText);
-                                processLogger.setStatus(key,Convert.ToInt32(progress));
-                                //myPipes[key].Status = Convert.ToInt32(progress);
-                                //if (progress == 100)
-                                //   myPipes[key].SMS = "EXPERIMENT IS FINISHED. WAITING TO SEND FILES";
-                            }
-                            else if (message.Name == "Message")
-                            {
-                                processLogger.logProcessMessage(key, message.InnerText);
-                                //myPipes[key].addMessage(message.InnerText);
-                            }
-                            else
-                                if (key == XMLStream.m_defaultMessageType
-                                && message.InnerText == CJobDispatcher.m_endMessage)
-                                break;
-                        }
-                    }
-                    shepherd.ReceiveJobResult();
-                    }
-                    catch(Exception ex)
-                    {
-                        Console.WriteLine(ex.Message + ex.StackTrace);
-                    }
-                    
-                    processLogger.showEndMessage();
-                    
-
-                    
+                    foreach (string prerec in Models.CApp.pre)
+                        job.inputFiles.Add(prerec);
                 }
-                TcpSocket.Close();
-                owner.isFinished(processes.Count());
-            }
-                 }
+                foreach (ProcessStateViewModel process in processes)
+                {
+                    job.comLineArgs.Add(process.Label + " "+ process.pipeName);
+                    job.inputFiles.Add(process.Label);
+                    Utility.getInputsAndOutputs(process.Label, ref job);
+                    //myPipes.Add(process.pipeName, process);
+
+                }
+
+                Shepherd shepherd = null; 
+            
+            
+                var TcpSocket = new TcpClient();
+
+                TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+                {
+                    using (NetworkStream netStream = TcpSocket.GetStream())
+                    {
+
+                        shepherd = new Shepherd(TcpSocket, netStream, "",processLogger.logAllProccessMessage);
+                        XMLStream xmlStream = new XMLStream();
+                        xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
+                    
+                        shepherd.SendJobQuery(job);
+
+                        string xmlItem;
+                        while(true)
+                        {
+                            shepherd.read();
+                            xmlItem = shepherd.processNextXMLItem();
+
+                            if (xmlItem!="")
+                            {
+                                XmlDocument doc = new XmlDocument();
+                                doc.LoadXml(xmlItem);
+                                XmlNode e = doc.DocumentElement;
+                                string key = e.Name;
+                                XmlNode message = e.FirstChild;
+                                if (message.Name == "Progress")
+                                {
+                                    double progress = Convert.ToDouble(message.InnerText);
+                                    processLogger.setStatus(key,Convert.ToInt32(progress));
+                                    //myPipes[key].Status = Convert.ToInt32(progress);
+                                    //if (progress == 100)
+                                    //   myPipes[key].SMS = "EXPERIMENT IS FINISHED. WAITING TO SEND FILES";
+                                }
+                                else if (message.Name == "Message")
+                                {
+                                    processLogger.logProcessMessage(key, message.InnerText);
+                                    //myPipes[key].addMessage(message.InnerText);
+                                }
+                                else
+                                    if (key == XMLStream.m_defaultMessageType
+                                    && message.InnerText == CJobDispatcher.m_endMessage)
+                                    break;
+                            }
+                        }
+                        shepherd.ReceiveJobResult();
+                        }
+                        processLogger.showEndMessage();
+                    }
+                        TcpSocket.Close();
+                        owner.isFinished(processes.Count());
+                }
                 catch(Exception ex)
                 {
                     //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
