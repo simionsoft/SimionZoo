@@ -109,7 +109,6 @@ namespace Herd
         {
             foreach (string file in m_job.inputFiles)
             {
-                m_logMessageHandler("Sending input file " + file);
                 SendFile(file, FileType.INPUT, sendContent, false);
             }
         }
@@ -117,7 +116,6 @@ namespace Herd
         {
             foreach (string file in m_job.outputFiles)
             {
-                m_logMessageHandler("Sending output file " + file);
                 SendFile(file, FileType.OUTPUT, sendContent, true);
             }
         }
@@ -169,6 +167,7 @@ namespace Herd
             {
                 FileStream fileStream;
                 long fileSize = 0;
+                m_logMessageHandler("Sending file " + fileName);
 
                 if (fromCachedDir)
                     fileName = getCachedFilename(fileName);
@@ -298,7 +297,7 @@ namespace Herd
             ReceiveFileHeader(type, receiveContent,inCachedDir);
             if (receiveContent)
             {
-                m_logMessageHandler("Receiving input file: " + m_nextFileName);
+                m_logMessageHandler("Receiving file: " + m_nextFileName);
                 ReceiveFileData(inCachedDir);
                 ReceiveFileFooter(type);
             }

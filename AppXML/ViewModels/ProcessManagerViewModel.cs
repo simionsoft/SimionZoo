@@ -64,7 +64,8 @@ namespace AppXML.ViewModels
                 i++;
                 if (i == 2000)
                     runLocally(processes);
-            } while (slaves == null ||  slaves.Count <1);
+            }
+            while (slaves == null ||  slaves.Count <1);
             for (int ii = 1; i < slaves.Keys.Count;i++ )
             {
                 using (var TcpSocket = new TcpClient())
@@ -175,9 +176,9 @@ namespace AppXML.ViewModels
             public ProcessStatusHandler(IEnumerable<ProcessStateViewModel> processStateViewList)
             { m_processStateViewList = processStateViewList; m_ip = "";}
 
-            public void showCompleteMessage(ProcessStateViewModel p,string message)
+            public string completeMessage(ProcessStateViewModel p,string message)
             {
-                p.SMS = m_ip + " (" + p.pipeName + "): " + message;
+                return m_ip + " (" + p.pipeName + "): " + message;
             }
             public void setStatus(string processName,int progress)
             {
@@ -187,7 +188,7 @@ namespace AppXML.ViewModels
                     {
                         p.Status = progress;
                         if (progress == 100)
-                            showCompleteMessage(p, "Job finished and waiting for output files.");
+                            p.SMS= completeMessage(p, "Job finished and waiting for output files.");
                         return;
                     }
                 }
@@ -198,15 +199,20 @@ namespace AppXML.ViewModels
                 {
                     if (p.pipeName==processName)
                     {
-                        showCompleteMessage(p, message);
+                        p.addMessage( completeMessage(p, message));
                         return;
                     }
                 }
             }
-            public void logAllProccessMessage(string message)
+            public void logShepherdMessage(string message)
+            {
+                foreach (ProcessStateViewModel p in m_processStateViewList) p.addMessage(completeMessage(p, message));
+            }
+            public void setAllJobsState(string message)
             {
                 foreach (ProcessStateViewModel p in m_processStateViewList)
                     p.SMS = m_ip + ": " + message;
+                
             }
             public void showEndMessage()
             {
@@ -223,8 +229,8 @@ namespace AppXML.ViewModels
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
             //set the process logger class
-            ProcessStatusHandler processLogger = new ProcessStatusHandler(processes);
-            processLogger.m_ip= endPoint.Address.ToString();
+            ProcessStatusHandler processStatusHandler = new ProcessStatusHandler(processes);
+            processStatusHandler.m_ip= endPoint.Address.ToString();
             
             //Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
             Task.Factory.StartNew(() => {
@@ -261,12 +267,12 @@ namespace AppXML.ViewModels
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
 
-                    shepherd = new Shepherd(TcpSocket, netStream, "",processLogger.logAllProccessMessage);
+                    shepherd = new Shepherd(TcpSocket, netStream, "", processStatusHandler.logShepherdMessage);
                     XMLStream xmlStream = new XMLStream();
                     xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
-                    
+                    processStatusHandler.setAllJobsState("Sending job query");
                     shepherd.SendJobQuery(job);
-
+                    processStastusHandler.setAllJobsState("Executing job query")
                     string xmlItem;
                     while(true)
                     {
@@ -283,15 +289,11 @@ namespace AppXML.ViewModels
                             if (message.Name == "Progress")
                             {
                                 double progress = Convert.ToDouble(message.InnerText);
-                                processLogger.setStatus(key,Convert.ToInt32(progress));
-                                //myPipes[key].Status = Convert.ToInt32(progress);
-                                //if (progress == 100)
-                                //   myPipes[key].SMS = "EXPERIMENT IS FINISHED. WAITING TO SEND FILES";
+                                processStatusHandler.setStatus(key, Convert.ToInt32(progress));
                             }
                             else if (message.Name == "Message")
                             {
-                                processLogger.logProcessMessage(key, message.InnerText);
-                                //myPipes[key].addMessage(message.InnerText);
+                                processStatusHandler.logProcessMessage(key, message.InnerText);
                             }
                             else
                                 if (key == XMLStream.m_defaultMessageType
@@ -299,12 +301,11 @@ namespace AppXML.ViewModels
                                 break;
                         }
                     }
+                    processStatusHandler.setAllJobsState("Receiving output files");
                     shepherd.ReceiveJobResult();
 
-                    processLogger.showEndMessage();
-                    
-
-                    
+                    processStatusHandler.showEndMessage();
+  
                 }
                 TcpSocket.Close();
                 owner.isFinished(processes.Count());
