@@ -60,6 +60,20 @@ namespace Herd
                 Console.WriteLine(text);
             }
         }
+        public static void QuitCallback(IAsyncResult ar)
+        {
+            TcpClient comSocket = (TcpClient)ar;
+            NetworkStream netStream = comSocket.GetStream();
+            XMLStream xmlStream = new XMLStream();
+            xmlStream.readFromNetworkStream(comSocket, netStream);
+            string xmlItem = xmlStream.processNextXMLItem();
+            if (xmlItem!="")
+            {
+                string xmlItemContent = xmlStream.getLastXMLItemContent();
+                if (xmlItemContent==CJobDispatcher.m_quitMessage)
+
+            }
+        }
         public static void CommunicationCallback(IAsyncResult ar)
         {
             if (m_state != AgentState.BUSY)
@@ -74,12 +88,14 @@ namespace Herd
                     herdAgent.read();
                     string xmlItem = herdAgent.processNextXMLItem();
                     string xmlItemContent;
+                    int returnCode;
                     if (xmlItem != "")
                     {
                         xmlItemContent = herdAgent.getLastXMLItemContent();
                         if (xmlItemContent==CJobDispatcher.m_cleanCacheMessage)
                         {
                             //not yet implemented in the herd client, just in case...
+                            Log("Cleaning cache directory");
                             cleanLog();
                         }
                         else if (xmlItemContent == CJobDispatcher.m_aquireMessage)
@@ -87,16 +103,25 @@ namespace Herd
                             Log("Receiving job data from" + comSocket.Client.RemoteEndPoint.ToString());
                             if (herdAgent.ReceiveJobQuery())
                             {
+                                netStream.BeginRead(new byte[1024], 0, 1024, QuitCallback, comSocket);
                                 Log("Running job");
-                                herdAgent.RunJob(netStream);
+                                returnCode= herdAgent.RunJob(netStream);
 
-                                Log("Job finished");
-                                herdAgent.writeMessage(CJobDispatcher.m_endMessage, true);
+                                if (returnCode >= 0)
+                                {
+                                    Log("Job finished");
+                                    herdAgent.writeMessage(CJobDispatcher.m_endMessage, true);
 
-                                Log("Sending job results");
-                                herdAgent.SendJobResult();
+                                    Log("Sending job results");
+                                    herdAgent.SendJobResult();
 
-                                Log("Job results sent");
+                                    Log("Job results sent");
+                                }
+                                else
+                                {
+                                    Log("The job returned an error code");
+                                    herdAgent.writeMessage(CJobDispatcher.m_errorMessage, true);
+                                }
                             }
                         }
                     }
@@ -136,19 +161,7 @@ namespace Herd
             Byte[] receiveBytes = m_discoveryClient.EndReceive(ar, ref ip);
             string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
-            if (receiveString == "QUIT")
-            {
-                Console.WriteLine("Quit message received");
-                if (m_state == AgentState.BUSY)
-                {
-                    m_state = AgentState.CANCELING;
-                    herdAgent.stop();
-                    m_state = AgentState.AVAILABLE;
-                }
-
-
-            }
-            else if (receiveString == CJobDispatcher.m_discoveryMessage)
+            if (receiveString == CJobDispatcher.m_discoveryMessage)
             {
                 if (m_state == AgentState.AVAILABLE)
                 {
@@ -159,11 +172,9 @@ namespace Herd
                 }
                 else Log("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
             }
-            else Log("Message received by " + ip.ToString() + " missunderstood");
+            else Log("Message received by " + ip.ToString() + " not understood: " + receiveString);
 
             m_discoveryClient.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
-
-           
         }
        
         protected override void OnStart(string[] args)

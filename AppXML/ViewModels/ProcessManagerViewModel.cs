@@ -29,7 +29,7 @@ namespace AppXML.ViewModels
         private ObservableCollection<ProcessStateViewModel> _processes;
         private List<Process> ids = new List<Process>();
         private List<object> readers = new List<object>();
-        private List<IPEndPoint> canceler;
+        private List<NetworkStream> m_tcpNetStreams = new List<NetworkStream>();
         public ProcessesWindowViewModel owner;
         private int indexOffset = 0;
         public ObservableCollection<ProcessStateViewModel> Processes
@@ -41,13 +41,35 @@ namespace AppXML.ViewModels
                 NotifyOfPropertyChange(() => Processes);
             }
         }
-        //private bool isWorking = false;
+        private object m_networkStreamLockObject= new object();
+        private void addTcpNetStream(NetworkStream netStream)
+        {
+            lock(m_networkStreamLockObject)
+            {
+                m_tcpNetStreams.Add(netStream);
+            }
+        }
+        private void stopRemoteJobs()
+        {
+            XMLStream xmlStream = new XMLStream();
+            foreach (NetworkStream netStream in m_tcpNetStreams)
+            {
+                try
+                {
+                    xmlStream.writeMessage(netStream, CJobDispatcher.m_quitMessage, true);
+                }
+                catch
+                {
+                    Console.WriteLine("janderclander");
+                }
+            }
+        }
    
         public ProcessManagerViewModel(List<ProcessStateViewModel> processes)
         {
             _processes = new ObservableCollection<ProcessStateViewModel>(processes);
         }
-        private void reRun(IEnumerable<ProcessStateViewModel> processes)
+        /*private void reRun(IEnumerable<ProcessStateViewModel> processes)
         {
             foreach (ProcessStateViewModel p in processes)
             {
@@ -95,14 +117,14 @@ namespace AppXML.ViewModels
 
                 }
 
-        }
+        }*/
         public void run()
         {
             int coreNumbers = Environment.ProcessorCount;
             indexOffset = 0;
-            if(coreNumbers>=_processes.Count)
+            /*if(coreNumbers>=_processes.Count)
                 runLocally(new List<ProcessStateViewModel>(Processes));
-            else
+            else*/
             {
                 //antes de nada se lanzan los n primero experimentos
 
@@ -115,10 +137,11 @@ namespace AppXML.ViewModels
                     }
                     else
                     {
-                        if (canceler == null)
-                            canceler = new List<IPEndPoint>(slaves.Keys);
-                        else
-                            canceler.Clear();
+                        m_tcpNetStreams.Clear();
+                        //if (canceler == null)
+                        //    canceler = new List<IPEndPoint>(slaves.Keys);
+                        //else
+                        //    canceler.Clear();
                         double proportion = (double)Processes.Count/totalCores;
                         if (cts == null)
                             cts = new CancellationTokenSource();
@@ -130,6 +153,7 @@ namespace AppXML.ViewModels
                             {
                                 if (indexOffset < Processes.Count)
                                 {
+
                                     int cores = slaves[key];
                                     int amount = (int)Math.Ceiling(cores * proportion);
                                     if (indexOffset + amount > Processes.Count)
@@ -236,80 +260,78 @@ namespace AppXML.ViewModels
             Task.Factory.StartNew(() => {
                 try
                 {
-
-               
-            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            //hay que preparar cada trabajo y lanzarlo
-            CJob job = new CJob();
-            job.name = "xxxxx";
-            job.exeFile = Models.CApp.EXE;
-            if(Models.CApp.pre!=null)
-            {
-                foreach (string prerec in Models.CApp.pre)
-                    job.inputFiles.Add(prerec);
-            }
-            foreach (ProcessStateViewModel process in processes)
-            {
-                job.comLineArgs.Add(process.Label + " "+ process.pipeName);
-                job.inputFiles.Add(process.Label);
-                Utility.getInputsAndOutputs(process.Label, ref job);
-                //myPipes.Add(process.pipeName, process);
-
-            }
-
-            Shepherd shepherd = null; 
-            
-            
-            using (var TcpSocket = new TcpClient())
-            {
-                TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
-                using (NetworkStream netStream = TcpSocket.GetStream())
-                {
-
-                    shepherd = new Shepherd(TcpSocket, netStream, "", processStatusHandler.logShepherdMessage);
-                    XMLStream xmlStream = new XMLStream();
-                    xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
-                    processStatusHandler.setAllJobsState("Sending job query");
-                    shepherd.SendJobQuery(job);
-                    processStatusHandler.setAllJobsState("Executing job query");
-                    string xmlItem;
-                    while(true)
+                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+                    //hay que preparar cada trabajo y lanzarlo
+                    CJob job = new CJob();
+                    job.name = "xxxxx";
+                    job.exeFile = Models.CApp.EXE;
+                    if(Models.CApp.pre!=null)
                     {
-                        shepherd.read();
-                        xmlItem = shepherd.processNextXMLItem();
-
-                        if (xmlItem!="")
-                        {
-                            XmlDocument doc = new XmlDocument();
-                            doc.LoadXml(xmlItem);
-                            XmlNode e = doc.DocumentElement;
-                            string key = e.Name;
-                            XmlNode message = e.FirstChild;
-                            if (message.Name == "Progress")
-                            {
-                                double progress = Convert.ToDouble(message.InnerText);
-                                processStatusHandler.setStatus(key, Convert.ToInt32(progress));
-                            }
-                            else if (message.Name == "Message")
-                            {
-                                processStatusHandler.logProcessMessage(key, message.InnerText);
-                            }
-                            else
-                                if (key == XMLStream.m_defaultMessageType
-                                    && message.InnerText == CJobDispatcher.m_endMessage)
-                                break;
-                        }
+                        foreach (string prerec in Models.CApp.pre)
+                            job.inputFiles.Add(prerec);
                     }
-                    processStatusHandler.setAllJobsState("Receiving output files");
-                    shepherd.ReceiveJobResult();
+                    foreach (ProcessStateViewModel process in processes)
+                    {
+                        job.comLineArgs.Add(process.Label + " "+ process.pipeName);
+                        job.inputFiles.Add(process.Label);
+                        Utility.getInputsAndOutputs(process.Label, ref job);
+                        //myPipes.Add(process.pipeName, process);
+                    }
+
+                    Shepherd shepherd = null; 
+            
+            
+                    using (var TcpSocket = new TcpClient())
+                    {
+                        TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+                        using (NetworkStream netStream = TcpSocket.GetStream())
+                        {
+                            addTcpNetStream(netStream);
+
+                            shepherd = new Shepherd(TcpSocket, netStream, "", processStatusHandler.logShepherdMessage);
+                            XMLStream xmlStream = new XMLStream();
+                            xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
+                            processStatusHandler.setAllJobsState("Sending job query");
+                            shepherd.SendJobQuery(job);
+                            processStatusHandler.setAllJobsState("Executing job query");
+                            string xmlItem;
+                            while(true)
+                            {
+                                shepherd.read();
+                                xmlItem = shepherd.processNextXMLItem();
+
+                                if (xmlItem!="")
+                                {
+                                    XmlDocument doc = new XmlDocument();
+                                    doc.LoadXml(xmlItem);
+                                    XmlNode e = doc.DocumentElement;
+                                    string key = e.Name;
+                                    XmlNode message = e.FirstChild;
+                                    if (message.Name == "Progress")
+                                    {
+                                        double progress = Convert.ToDouble(message.InnerText);
+                                        processStatusHandler.setStatus(key, Convert.ToInt32(progress));
+                                    }
+                                    else if (message.Name == "Message")
+                                    {
+                                        processStatusHandler.logProcessMessage(key, message.InnerText);
+                                    }
+                                    else
+                                        if (key == XMLStream.m_defaultMessageType
+                                            && message.InnerText == CJobDispatcher.m_endMessage)
+                                        break;
+                                }
+                            }
+                            processStatusHandler.setAllJobsState("Receiving output files");
+                            shepherd.ReceiveJobResult();
 
 
-                    processStatusHandler.showEndMessage();
+                            processStatusHandler.showEndMessage();
                     
+                        }
+                        owner.isFinished(processes.Count());
+                    }
                 }
-                owner.isFinished(processes.Count());
-            }
-        }
                 catch(Exception ex)
                 {
                     //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
@@ -451,17 +473,18 @@ namespace AppXML.ViewModels
         internal void closeAll()
         {
             if(cts!=null)
-                cts.Cancel();   
-            if(canceler!=null)
+                cts.Cancel();
+            stopRemoteJobs();
+             /*if(canceler!=null)
             {
                 foreach(IPEndPoint ip in canceler)
                 {
-                    UdpClient m_discoverySocket;
+                   UdpClient m_discoverySocket;
                     m_discoverySocket = new UdpClient();
                     var RequestData = Encoding.ASCII.GetBytes("QUIT");
                     m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(ip.Address, CJobDispatcher.m_discoveryPortHerd));
                 }
-            }
+            }*/
 
         }
     }

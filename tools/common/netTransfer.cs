@@ -43,7 +43,8 @@ namespace Herd
         public const string m_discoveryMessage = "Slaves, show yourselves!";
         public const string m_discoveryAnswer = "At your command, my Master";
         public const string m_aquireMessage = "You are mine now!";
-        public const string m_endMessage = "The end";
+        public const string m_endMessage = "Job finished correctly";
+        public const string m_errorMessage = "Error running job";
         public const string m_quitMessage = "Stop";
         public const string m_freeMessage = "You are free";
         public const string m_cleanCacheMessage = "Clean the cache";
@@ -543,48 +544,40 @@ namespace Herd
 
             return true;//if job query properly received. For now, we will assume it
         }
-        private void runOneProcess(Process p, string pipeName, NamedPipeServerStream server, CancellationToken ct, NetworkStream bridge)
+        //private void runOneProcess(Process p, string pipeName, NamedPipeServerStream server, CancellationToken ct, NetworkStream bridge)
+        //{
+        //    //not to read 23.232 as 23232
+        //    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+        //    p.Start();
+
+        //    server.WaitForConnection();
+        //    XMLStream xmlStream = new XMLStream();
+
+        //    string xmlItem;
+        //    while (server.IsConnected)
+        //    {
+        //        xmlStream.readFromNamedPipeStream(server);
+        //        xmlItem = xmlStream.processNextXMLItem();
+        //        if (xmlItem != "")
+        //        {
+        //            checkConnection(m_tcpClient);
+        //            xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
+        //        }
+        //    }
+
+        //    server.Close();
+
+        //}
+
+        public int RunJob(NetworkStream bridgeStream)
         {
-
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-
-            //not to read 23.232 as 23232
-            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            //Task.Delay(1000).Wait();
-
-
-
-            p.Start();
-
-            server.WaitForConnection();
-            XMLStream xmlStream = new XMLStream();
-
-            string xmlItem;
-            while (server.IsConnected)
-            {
-                xmlStream.readFromNamedPipeStream(server);
-                //string sms = reader.ReadLine();
-                xmlItem = xmlStream.processNextXMLItem();
-                if (xmlItem != "")
-                {
-                    checkConnection(m_tcpClient);
-                    xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
-                }
-            }
-
-
-            server.Close();
-
-        }
-
-        public void RunJob(NetworkStream bridgeStream)
-        {
+            int returnCode = 0;
             cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
             po.MaxDegreeOfParallelism = Environment.ProcessorCount;
             po.CancellationToken = cts.Token;
-            //var t = Task.Factory.StartNew(() =>
-            //{
+
             Parallel.ForEach(m_job.comLineArgs, po, (args) =>
             {
                 using (cts.Token.Register(Thread.CurrentThread.Abort))
@@ -595,14 +588,38 @@ namespace Herd
 
                     try
                     {
-
                         myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
                         myProcess.StartInfo.Arguments = args;
                         myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                        Console.WriteLine("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-                        runOneProcess(myProcess, arguments[1], server, cts.Token, bridgeStream);
-                        myProcess.WaitForExit();
-                        Console.WriteLine("Exit code: " + myProcess.ExitCode);
+                        m_logMessageHandler("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                        //runOneProcess(myProcess, arguments[1], server, cts.Token, bridgeStream);
+                        //not to read 23.232 as 23232
+                        Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+                        myProcess.Start();
+
+                        server.WaitForConnection();
+                        XMLStream xmlStream = new XMLStream();
+
+                        string xmlItem;
+                        while (server.IsConnected)
+                        {
+                            xmlStream.readFromNamedPipeStream(server);
+                            xmlItem = xmlStream.processNextXMLItem();
+                            if (xmlItem != "")
+                            {
+                                checkConnection(m_tcpClient);
+                                xmlStream.writeMessage(bridgeStream, "<" + arguments[1] + ">" + xmlItem + "</" + arguments[1] + ">", false);
+                            }
+                        }
+
+                        server.Close();
+
+                        //not needed: we are looping while the server is connected so... this makes no sense
+                        //myProcess.WaitForExit();
+
+                        if (myProcess.ExitCode < 0) returnCode = -1;
+                        m_logMessageHandler("Exit code: " + myProcess.ExitCode);
                     }
                     catch (Exception ex)
                     {
@@ -612,13 +629,13 @@ namespace Herd
                             myProcess.Kill();
                             myProcess.Dispose();
                         }
+                        returnCode= -1;
                     }
 
                 }
-            });
-
-            // }, cts.Token);          
-            //  t.Wait();
+            }
+            );
+            return returnCode;
         }
 
         public void stop()
