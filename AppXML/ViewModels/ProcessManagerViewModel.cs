@@ -260,10 +260,9 @@ namespace AppXML.ViewModels
             Shepherd shepherd = null; 
             
             
-            var TcpSocket = new TcpClient();
-
-            TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+            using (var TcpSocket = new TcpClient())
             {
+                TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
                 using (NetworkStream netStream = TcpSocket.GetStream())
                 {
 
@@ -272,7 +271,7 @@ namespace AppXML.ViewModels
                     xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
                     processStatusHandler.setAllJobsState("Sending job query");
                     shepherd.SendJobQuery(job);
-                    processStastusHandler.setAllJobsState("Executing job query")
+                    processStatusHandler.setAllJobsState("Executing job query");
                     string xmlItem;
                     while(true)
                     {
@@ -303,19 +302,14 @@ namespace AppXML.ViewModels
                     }
                     processStatusHandler.setAllJobsState("Receiving output files");
                     shepherd.ReceiveJobResult();
-                    }
-                    catch(Exception ex)
-                    {
-                        Console.WriteLine(ex.Message + ex.StackTrace);
-                    }
+
 
                     processStatusHandler.showEndMessage();
                     
                 }
-                TcpSocket.Close();
                 owner.isFinished(processes.Count());
             }
-                 }
+        }
                 catch(Exception ex)
                 {
                     //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
