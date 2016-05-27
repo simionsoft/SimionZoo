@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Herd
 {
@@ -60,7 +62,10 @@ namespace Herd
         protected int m_numOutputFilesRead;
         protected int m_numTasksRead;
 
-        public CJobDispatcher(TcpClient client, string dirPath)
+        public delegate void LogMessageHandler(string logMessage);
+        protected LogMessageHandler m_logMessageHandler;
+
+        public CJobDispatcher(TcpClient client, string dirPath,LogMessageHandler logMessageHandler)
         {
             m_tcpClient = client;
             m_job = new CJob();
@@ -70,6 +75,7 @@ namespace Herd
             m_numOutputFilesRead = 0;
             m_numTasksRead = 0;
             m_tempDir = dirPath;
+            m_logMessageHandler = logMessageHandler;
         }
         public static void checkConnection(TcpClient client)
         {
@@ -99,8 +105,22 @@ namespace Herd
         }
 
         protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
-        protected void SendInputFiles(bool sendContent) { foreach (string file in m_job.inputFiles) SendFile(file, FileType.INPUT, sendContent, false); }
-        protected void SendOutputFiles(bool sendContent) { foreach (string file in m_job.outputFiles) SendFile(file, FileType.OUTPUT, sendContent, true); }
+        protected void SendInputFiles(bool sendContent)
+        {
+            foreach (string file in m_job.inputFiles)
+            {
+                m_logMessageHandler("Sending input file " + file);
+                SendFile(file, FileType.INPUT, sendContent, false);
+            }
+        }
+        protected void SendOutputFiles(bool sendContent)
+        {
+            foreach (string file in m_job.outputFiles)
+            {
+                m_logMessageHandler("Sending output file " + file);
+                SendFile(file, FileType.OUTPUT, sendContent, true);
+            }
+        }
         protected void SendJobHeader()
         {
             string header = "<Job Name=\"" + m_job.name + "\" NumTasks=\""
@@ -111,7 +131,6 @@ namespace Herd
             {
                 args += "<Arg>" + arg + "</Arg>";
             }
-            // args += "</Args>";
             header += args;
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             checkConnection(m_tcpClient);
@@ -174,7 +193,14 @@ namespace Herd
                         lastReadBytes = fileStream.Read(buffer, 0, m_xmlStream.getBufferSize());
                         readBytes += lastReadBytes;
                         checkConnection(m_tcpClient);
-                        m_netStream.Write(buffer, 0, (int)lastReadBytes);
+                        try
+                        {
+                            m_netStream.Write(buffer, 0, (int)lastReadBytes);
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine(ex.Message + ex.StackTrace);
+                        }
                     }
                     fileStream.Close();
                 }
@@ -257,7 +283,9 @@ namespace Herd
         protected void ReceiveInputFiles(bool receiveContent, bool inCachedDir)
         {
             for (int i = 0; i < m_numInputFilesRead; i++)
+            {
                 ReceiveFile(FileType.INPUT, receiveContent, inCachedDir);
+            }
         }
         protected void ReceiveOutputFiles(bool receiveContent, bool inCachedDir)
         {
@@ -270,6 +298,7 @@ namespace Herd
             ReceiveFileHeader(type, receiveContent,inCachedDir);
             if (receiveContent)
             {
+                m_logMessageHandler("Receiving input file: " + m_nextFileName);
                 ReceiveFileData(inCachedDir);
                 ReceiveFileFooter(type);
             }
@@ -388,12 +417,71 @@ namespace Herd
     }
     public class Shepherd : CJobDispatcher
     {
-        public Shepherd(TcpClient tcpClient, NetworkStream netStream, string dirPath)
-            : base(tcpClient, dirPath)
+        private static Dictionary<IPEndPoint, int> myList;
+
+        public Shepherd(TcpClient tcpClient, NetworkStream netStream, string dirPath,LogMessageHandler logMessageHandler)
+            : base(tcpClient, dirPath,logMessageHandler)
         {
             m_netStream = netStream;
-            m_xmlStream.resizeBuffer( tcpClient.SendBufferSize);
+            m_xmlStream.resizeBuffer(tcpClient.SendBufferSize);
         }
+
+        public static void DiscoveryCallback(IAsyncResult ar)
+        {
+
+            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).client;
+            IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).ip;
+
+            try
+            {
+                Byte[] receiveBytes = u.EndReceive(ar, ref e);
+                string receiveString = Encoding.ASCII.GetString(receiveBytes);
+                if (!myList.ContainsKey(e))
+                {
+                    myList.Add(e, Int32.Parse(XElement.Parse(receiveString).Value));
+                }
+                u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+        public static Dictionary<IPEndPoint, int> getSlaves(out int cores)
+        {
+            if (myList == null)
+                myList = new Dictionary<IPEndPoint, int>();
+            else
+                myList.Clear();
+            cores = 0;
+
+            UdpClient m_discoverySocket;
+            m_discoverySocket = new UdpClient();
+            m_discoverySocket.EnableBroadcast = true;
+            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
+
+            m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
+
+            UdpState u = new UdpState();
+            IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
+            u.ip = xxx;
+            u.client = m_discoverySocket;
+            m_discoverySocket.BeginReceive(DiscoveryCallback, u);
+
+            //We wait 2 secs for herd agents to reply
+            Thread.Sleep(3000);
+
+            cores = myList.Values.ToList().Sum(od => od);
+            if (myList != null && myList.Count > 1)
+            {
+                return (from entry in myList orderby entry.Value ascending select entry).ToDictionary(x => x.Key, x => x.Value);
+            }
+            return myList;
+
+
+
+        }
+
         public void SendJobQuery(CJob job)
         {
             m_job = job;
@@ -424,8 +512,8 @@ namespace Herd
     {
         private CancellationTokenSource cts;
 
-        public HerdAgent(TcpClient tcpClient, NetworkStream netStream, string dirPath)
-            : base(tcpClient, dirPath)
+        public HerdAgent(TcpClient tcpClient, NetworkStream netStream, string dirPath,LogMessageHandler logMessageHandler)
+            : base(tcpClient, dirPath,logMessageHandler)
         {
             m_netStream = netStream;
             m_xmlStream.resizeBuffer(tcpClient.ReceiveBufferSize);
@@ -460,7 +548,6 @@ namespace Herd
         {
 
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            Object lockObject = new Object();
 
             //not to read 23.232 as 23232
             Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -481,14 +568,9 @@ namespace Herd
                 xmlItem = xmlStream.processNextXMLItem();
                 if (xmlItem != "")
                 {
-
-                    lock (lockObject)
-                    {
-                        checkConnection(m_tcpClient);
-                        xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
-                    }
+                    checkConnection(m_tcpClient);
+                    xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
                 }
-
             }
 
 
@@ -555,37 +637,36 @@ namespace Herd
     {
         public IPEndPoint ip { get; set; }
     }
-    public class PipesBridgeClient
-    {
-        private HerdAgent myHerdAgent;
+    //public class PipesBridgeClient
+    //{
+    //    private HerdAgent myHerdAgent;
 
-        public PipesBridgeClient(IPAddress server, HerdAgent agent)
-        {
-            myHerdAgent = agent;
-            server = IPAddress.Any;
-            IPEndPoint e = new IPEndPoint(server, 8888);
-            UdpClient u = new UdpClient(e);
-            UdpState s = new UdpState();
-            s.ip = e;
-            s.client = u;
-            Console.WriteLine("PipesBridgeClient is listening for messages");
-            u.BeginReceive(new AsyncCallback(ReceiveCallback), s);
-        }
-        private void ReceiveCallback(IAsyncResult ar)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                IPEndPoint e = (IPEndPoint)((UdpState)ar.AsyncState).ip;
-                UdpClient client = (UdpClient)((UdpState)ar).client;
-                Byte[] receiveBytes = client.EndReceive(ar, ref e);
-                string receiveString = Encoding.ASCII.GetString(receiveBytes);
-                if (receiveString.Equals("QUIT"))
-                {
-                    myHerdAgent.CancelRunningProcesses();
-                }
-            });
-        }
-    }
+    //    public PipesBridgeClient(IPAddress server, HerdAgent agent)
+    //    {
+    //        myHerdAgent = agent;
+    //        server = IPAddress.Any;
+    //        IPEndPoint e = new IPEndPoint(server, CJobDispatcher.m_discoveryPortHerd);
+    //        UdpClient u = new UdpClient(e);
+    //        UdpState s = new UdpState();
+    //        s.ip = e;
+    //        s.client = u;
+    //        Console.WriteLine("PipesBridgeClient is listening for messages");
+    //        u.BeginReceive(ReceiveCallback, s);
+    //    }
+    //    private void ReceiveCallback(IAsyncResult ar)
+    //    {
+    //        IPEndPoint e = (IPEndPoint)((UdpState)ar.AsyncState).ip;
+    //        UdpClient client = (UdpClient)((UdpState)ar).client;
+    //        Byte[] receiveBytes = client.EndReceive(ar, ref e);
+    //        string receiveString = Encoding.ASCII.GetString(receiveBytes);
+    //        if (receiveString.Equals("QUIT"))
+    //        {
+    //            myHerdAgent.CancelRunningProcesses();
+    //            return;
+    //        }
+    //        client.BeginReceive(ReceiveCallback, ar);
+    //    }
+    //}
     public class XMLStream
     {
         private int m_bufferOffset;

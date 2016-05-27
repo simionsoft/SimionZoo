@@ -70,7 +70,7 @@ namespace Herd
                 try
                 {
                     m_state = AgentState.BUSY;
-                    herdAgent = new HerdAgent(comSocket, netStream, m_dirPath);
+                    herdAgent = new HerdAgent(comSocket, netStream, m_dirPath,Log);
                     herdAgent.read();
                     string xmlItem = herdAgent.processNextXMLItem();
                     string xmlItemContent;
