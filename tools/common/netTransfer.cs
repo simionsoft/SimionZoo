@@ -511,6 +511,7 @@ namespace Herd
     public class HerdAgent : CJobDispatcher
     {
         private CancellationTokenSource cts;
+        private List<Process> m_spawnedProcesses= new List<Process>();
 
         public HerdAgent(TcpClient tcpClient, NetworkStream netStream, string dirPath,LogMessageHandler logMessageHandler)
             : base(tcpClient, dirPath,logMessageHandler)
@@ -521,6 +522,12 @@ namespace Herd
 
         public void CancelRunningProcesses()
         {
+            foreach (Process p in m_spawnedProcesses)
+            {
+                p.Kill();
+                p.Dispose();
+            }
+            m_spawnedProcesses.Clear();
             if (cts != null)
                 cts.Cancel();
         }
@@ -585,7 +592,6 @@ namespace Herd
                     string[] arguments = args.Split(' ');
                     NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
                     Process myProcess = new Process();
-
                     try
                     {
                         myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
@@ -597,6 +603,7 @@ namespace Herd
                         Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
                         myProcess.Start();
+                        m_spawnedProcesses.Add(myProcess);
 
                         server.WaitForConnection();
                         XMLStream xmlStream = new XMLStream();

@@ -27,9 +27,9 @@ namespace AppXML.ViewModels
         
         private CancellationTokenSource cts;
         private ObservableCollection<ProcessStateViewModel> _processes;
-        private List<Process> ids = new List<Process>();
-        private List<object> readers = new List<object>();
-        private List<NetworkStream> m_tcpNetStreams = new List<NetworkStream>();
+        //private List<Process> ids = new List<Process>();
+        //private List<object> readers = new List<object>();
+        private List<NetworkStream> m_herdAgentNetStreams = new List<NetworkStream>();
         public ProcessesWindowViewModel owner;
         private int indexOffset = 0;
         public ObservableCollection<ProcessStateViewModel> Processes
@@ -46,13 +46,13 @@ namespace AppXML.ViewModels
         {
             lock(m_networkStreamLockObject)
             {
-                m_tcpNetStreams.Add(netStream);
+                m_herdAgentNetStreams.Add(netStream);
             }
         }
         private void stopRemoteJobs()
         {
             XMLStream xmlStream = new XMLStream();
-            foreach (NetworkStream netStream in m_tcpNetStreams)
+            foreach (NetworkStream netStream in m_herdAgentNetStreams)
             {
                 try
                 {
@@ -137,7 +137,7 @@ namespace AppXML.ViewModels
                     }
                     else
                     {
-                        m_tcpNetStreams.Clear();
+                        m_herdAgentNetStreams.Clear();
                         //if (canceler == null)
                         //    canceler = new List<IPEndPoint>(slaves.Keys);
                         //else
@@ -295,6 +295,7 @@ namespace AppXML.ViewModels
                             shepherd.SendJobQuery(job);
                             processStatusHandler.setAllJobsState("Executing job query");
                             string xmlItem;
+                            bool bSuccess;
                             while(true)
                             {
                                 shepherd.read();
@@ -317,19 +318,28 @@ namespace AppXML.ViewModels
                                         processStatusHandler.logProcessMessage(key, message.InnerText);
                                     }
                                     else
-                                        if (key == XMLStream.m_defaultMessageType
-                                            && message.InnerText == CJobDispatcher.m_endMessage)
-                                        break;
+                                    {
+                                        if (key == XMLStream.m_defaultMessageType)
+                                        {
+                                            if (message.InnerText == CJobDispatcher.m_endMessage)
+                                            { bSuccess = true; break; }
+                                            else if (message.InnerText == CJobDispatcher.m_errorMessage)
+                                            { bSuccess = false; break; }
+                                        }
+                                    }
                                 }
                             }
-                            processStatusHandler.setAllJobsState("Receiving output files");
-                            shepherd.ReceiveJobResult();
+                            if (bSuccess)
+                            {
+                                processStatusHandler.setAllJobsState("Receiving output files");
+                                shepherd.ReceiveJobResult();
 
-
-                            processStatusHandler.showEndMessage();
-                    
+                                processStatusHandler.showEndMessage();
+                                owner.isFinished(processes.Count());
+                            }
+                            else processStatusHandler.setAllJobsState("Error in job");
                         }
-                        owner.isFinished(processes.Count());
+
                     }
                 }
                 catch(Exception ex)
@@ -417,7 +427,7 @@ namespace AppXML.ViewModels
             p.StartInfo = startInfo;
             p.Start();
 
-            this.ids.Add(p);
+            //this.ids.Add(p);
             
             server.WaitForConnection();
 
