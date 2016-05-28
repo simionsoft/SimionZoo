@@ -589,11 +589,13 @@ namespace Herd
             {
                 using (cts.Token.Register(Thread.CurrentThread.Abort))
                 {
-                    string[] arguments = args.Split(' ');
-                    NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
                     Process myProcess = new Process();
                     try
                     {
+                        string[] arguments = args.Split(' ');
+                        NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
+                        
+
                         myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
                         myProcess.StartInfo.Arguments = args;
                         myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
@@ -623,7 +625,7 @@ namespace Herd
                         server.Close();
 
                         //not needed: we are looping while the server is connected so... this makes no sense
-                        //myProcess.WaitForExit();
+                        myProcess.WaitForExit();
 
                         if (myProcess.ExitCode < 0) returnCode = -1;
                         m_logMessageHandler("Exit code: " + myProcess.ExitCode);
@@ -713,6 +715,7 @@ namespace Herd
         public int getBytesInBuffer() { return m_bytesInBuffer; }
         public int getBufferOffset() { return m_bufferOffset; }
         public byte[] getBuffer() { return m_buffer; }
+        public void addBytesRead(int bytesReadInBuffer) { m_bytesInBuffer += bytesReadInBuffer; }
         public void addProcessedBytes(int processedBytes) { m_bufferOffset += processedBytes; }
         private void discardProcessedData()
         {
@@ -785,9 +788,13 @@ namespace Herd
             }
             return "";
         }
+        public string peekNextXMLTag()
+        {
+            return processNextXMLTag(false);
+        }
         //returns the next complete xml element (NO ATTRIBUTES!!) in the stream
         //empty string if there was none
-        public string processNextXMLTag()
+        public string processNextXMLTag(bool bMarkAsProcessed=true)
         {
             if (m_bytesInBuffer > 0)
             {
@@ -799,9 +806,16 @@ namespace Herd
 
                 if (m_match.Success)
                 {
-                    m_bufferOffset += m_match.Index + m_match.Length;
-                    m_lastXMLItem = m_match.Value;
-                    return m_match.Value;
+                    if (bMarkAsProcessed)
+                    {
+                        m_bufferOffset += m_match.Index + m_match.Length;
+                        m_lastXMLItem = m_match.Value;
+                        return m_match.Value;
+                    }
+                    else
+                    {
+                        return m_match.Value;
+                    }
                 }
             }
             return "";
