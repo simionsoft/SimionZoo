@@ -26,6 +26,7 @@ namespace Herd
         private static TcpListener m_listener;
         private static string m_dirPath;
         private static AgentState m_state;
+        private static object m_logFileLock= new object();
 
         public HerdService()
         {
@@ -44,41 +45,52 @@ namespace Herd
         public static void cleanLog()
         {
             string logFile = getLogFilename();
-            FileStream file= File.Create(logFile);
-            file.Close();
+            lock (m_logFileLock)
+            {
+                FileStream file = File.Create(logFile);
+                file.Close();
+            }
         }
         public static void Log(string logMessage)
         {
-            if (File.Exists(getLogFilename()))
+            lock (m_logFileLock)
             {
-                string text= DateTime.Now.ToLongTimeString() + " " +
-                    DateTime.Now.ToLongDateString() + ": " + logMessage;
-                StreamWriter w = File.AppendText(getLogFilename());
-                
-                w.WriteLine(text);
-                w.Close();
-                Console.WriteLine(text);
+                if (File.Exists(getLogFilename()))
+                {
+                    string text = DateTime.Now.ToLongTimeString() + " " +
+                        DateTime.Now.ToLongDateString() + ": " + logMessage;
+                    StreamWriter w = File.AppendText(getLogFilename());
+
+                    w.WriteLine(text);
+                    w.Close();
+                    Console.WriteLine(text);
+                }
             }
         }
         public class TCPCallbackInfo
         {
             public HerdAgent herdAgent { get; set; }
-            public TcpClient tcpClient { get; set; }
+            public NetworkStream netStream { get; set; }
+            public XMLStream xmlStream { get; set; }
         }
         public static void QuitCallback(IAsyncResult callbackInfo)
         {
-            HerdAgent herdAgent= ((TCPCallbackInfo)callbackInfo).herdAgent;
-            TcpClient comSocket = ((TCPCallbackInfo)callbackInfo).tcpClient;
-            NetworkStream netStream = comSocket.GetStream();
-            XMLStream xmlStream = new XMLStream();
+            HerdAgent herdAgent= ((TCPCallbackInfo)callbackInfo.AsyncState).herdAgent;
+            XMLStream xmlStream= ((TCPCallbackInfo)callbackInfo.AsyncState).xmlStream;
+            NetworkStream netStream = ((TCPCallbackInfo)callbackInfo.AsyncState).netStream;
 
-            xmlStream.readFromNetworkStream(comSocket, netStream);
-            string xmlItem = xmlStream.processNextXMLItem();
+            int bytes = netStream.EndRead(callbackInfo);
+
+            xmlStream.addBytesRead(bytes); // we let the xmlstream object know that some bytes have been read in its buffer
+            string xmlItem = xmlStream.peekNextXMLTag();
             if (xmlItem!="")
             {
                 string xmlItemContent = xmlStream.getLastXMLItemContent();
                 if (xmlItemContent == CJobDispatcher.m_quitMessage)
+                {
+                    Log("Job was remotely stopped");
                     herdAgent.CancelRunningProcesses();
+                }
             }
         }
         public static void CommunicationCallback(IAsyncResult ar)
@@ -114,7 +126,9 @@ namespace Herd
                                 TCPCallbackInfo callbackInfo= new TCPCallbackInfo();
                                 callbackInfo.herdAgent = herdAgent;
                                 callbackInfo.tcpClient = comSocket;
-                                netStream.BeginRead(new byte[1024], 0, 1024, QuitCallback, (object)callbackInfo);
+                                callbackInfo.xmlStream = new XMLStream();
+                                netStream.BeginRead(callbackInfo.xmlStream.getBuffer(), 0, callbackInfo.xmlStream.getBufferSize()
+                                    , QuitCallback, (object)callbackInfo);
 
                                 //run the job
                                 Log("Running job");
@@ -156,7 +170,7 @@ namespace Herd
                     netStream.Dispose();
                     comSocket.Close();
                     m_state = AgentState.AVAILABLE;
-                    Log(ex.StackTrace);
+                    Log(ex.Message + ex.InnerException + ex.StackTrace);
                     //try to recover
                     //start listening again
                     TCPState tcpState = new TCPState();
