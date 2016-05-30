@@ -16,6 +16,7 @@ using Herd;
 
 namespace Herd
 {
+
     public class CJob
     {
         public string name;
@@ -34,7 +35,7 @@ namespace Herd
             outputFiles = new List<string>();
         }
     }
-    public enum AgentState { BUSY, AVAILABLE, DISCOVERED, CANCELING };
+
     public enum FileType { EXE, INPUT, OUTPUT };
     public class CJobDispatcher
     {
@@ -53,12 +54,13 @@ namespace Herd
 
         protected NetworkStream m_netStream;
         protected TcpClient m_tcpClient;
+        protected TcpClient getTcpClient() { return m_tcpClient; }
 
         //used for reading
         protected int m_nextFileSize;
         protected string m_nextFileName;
 
-        protected string m_tempDir;
+        protected static string m_tempDir;
         protected CJob m_job;
         protected int m_numInputFilesRead;
         protected int m_numOutputFilesRead;
@@ -67,23 +69,22 @@ namespace Herd
         public delegate void LogMessageHandler(string logMessage);
         protected LogMessageHandler m_logMessageHandler;
 
-        public CJobDispatcher(TcpClient client, string dirPath,LogMessageHandler logMessageHandler)
+        public CJobDispatcher()
         {
-            m_tcpClient = client;
             m_job = new CJob();
             m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
             m_numInputFilesRead = 0;
             m_numOutputFilesRead = 0;
             m_numTasksRead = 0;
-            m_tempDir = dirPath;
-            m_logMessageHandler = logMessageHandler;
+            m_tempDir = "";
+            m_logMessageHandler = null;
         }
-        //public static void //checkConnection(TcpClient client)
-        //{
-        //    if (!client.Connected)
-        //        throw new Exception("TCP connection closed");
-        //}
+
+        public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
+        public void setDirPath(string dirPath) { m_tempDir = dirPath; }
+        public void setLogMessageHandler(LogMessageHandler logMessageHandler) { m_logMessageHandler = logMessageHandler; }
+        protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
         public void writeMessage(string message, bool addDefaultMessageType = false)
         {
             m_xmlStream.writeMessage(m_netStream, message, addDefaultMessageType);
@@ -169,7 +170,7 @@ namespace Herd
             {
                 FileStream fileStream;
                 long fileSize = 0;
-                m_logMessageHandler("Sending file " + fileName);
+                logMessage("Sending file " + fileName);
 
                 if (fromCachedDir)
                     fileName = getCachedFilename(fileName);
@@ -299,7 +300,7 @@ namespace Herd
             ReceiveFileHeader(type, receiveContent,inCachedDir);
             if (receiveContent)
             {
-                m_logMessageHandler("Receiving file: " + m_nextFileName);
+                logMessage("Receiving file: " + m_nextFileName);
                 ReceiveFileData(inCachedDir);
                 ReceiveFileFooter(type);
             }
@@ -414,97 +415,6 @@ namespace Herd
             outputFile.Close();
 
             ReadFromStream(); //discard processed data
-        }
-    }
-    public class Shepherd : CJobDispatcher
-    {
-        private static Dictionary<IPEndPoint, int> myList;
-
-        public Shepherd(TcpClient tcpClient, NetworkStream netStream, string dirPath,LogMessageHandler logMessageHandler)
-            : base(tcpClient, dirPath,logMessageHandler)
-        {
-            m_netStream = netStream;
-            m_xmlStream.resizeBuffer(tcpClient.SendBufferSize);
-        }
-
-        public static void DiscoveryCallback(IAsyncResult ar)
-        {
-
-            UdpClient u = (UdpClient)((UdpState)(ar.AsyncState)).client;
-            IPEndPoint e = (IPEndPoint)((UdpState)(ar.AsyncState)).ip;
-
-            try
-            {
-                Byte[] receiveBytes = u.EndReceive(ar, ref e);
-                string receiveString = Encoding.ASCII.GetString(receiveBytes);
-                if (!myList.ContainsKey(e))
-                {
-                    myList.Add(e, Int32.Parse(XElement.Parse(receiveString).Value));
-                }
-                u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-            }
-        }
-        public static Dictionary<IPEndPoint, int> getSlaves(out int cores)
-        {
-            if (myList == null)
-                myList = new Dictionary<IPEndPoint, int>();
-            else
-                myList.Clear();
-            cores = 0;
-
-            UdpClient m_discoverySocket;
-            m_discoverySocket = new UdpClient();
-            m_discoverySocket.EnableBroadcast = true;
-            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
-
-            m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
-
-            UdpState u = new UdpState();
-            IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
-            u.ip = xxx;
-            u.client = m_discoverySocket;
-            m_discoverySocket.BeginReceive(DiscoveryCallback, u);
-
-            //We wait 2 secs for herd agents to reply
-            Thread.Sleep(3000);
-
-            cores = myList.Values.ToList().Sum(od => od);
-            if (myList != null && myList.Count > 1)
-            {
-                return (from entry in myList orderby entry.Value ascending select entry).ToDictionary(x => x.Key, x => x.Value);
-            }
-            return myList;
-
-
-
-        }
-
-        public void SendJobQuery(CJob job)
-        {
-            m_job = job;
-            SendJobHeader();
-            SendExeFiles(true);
-            SendInputFiles(true);
-            SendOutputFiles(false);
-            SendJobFooter();
-        }
-        public bool ReceiveJobResult()
-        {
-            m_job.comLineArgs.Clear();
-            m_job.inputFiles.Clear();
-            m_job.outputFiles.Clear();
-
-            ReceiveJobHeader();
-            ReceiveExeFiles(false,false);
-            ReceiveInputFiles(false,false);
-            ReceiveOutputFiles(true,false);
-            ReceiveJobFooter();
-
-            return true;//if job result properly received. For now, we will assume it}
         }
     }
     
@@ -638,6 +548,16 @@ namespace Herd
             if (m_lastXMLItem != "")
             {
                 m_match = Regex.Match(m_lastXMLItem, @"<[^>]*>([^<]*?)<");
+                if (m_match.Success)
+                    return m_match.Groups[1].Value;
+            }
+            return "";
+        }
+        public string getLastXMLItemTag()
+        {
+            if (m_lastXMLItem != "")
+            {
+                m_match = Regex.Match(m_lastXMLItem, @"<([^>]*)>[^<]*?<");
                 if (m_match.Success)
                     return m_match.Groups[1].Value;
             }
