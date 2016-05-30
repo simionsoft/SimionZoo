@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\common\herdAgent.cs">
+      <Link>herdAgent.cs</Link>
+    </Compile>
     <Compile Include="..\common\netTransfer.cs">
       <Link>netTransfer.cs</Link>
     </Compile>

@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Herd;
 
 namespace Herd
 {
@@ -78,18 +79,18 @@ namespace Herd
             m_tempDir = dirPath;
             m_logMessageHandler = logMessageHandler;
         }
-        public static void checkConnection(TcpClient client)
-        {
-            if (!client.Connected)
-                throw new Exception("TCP connection closed");
-        }
+        //public static void //checkConnection(TcpClient client)
+        //{
+        //    if (!client.Connected)
+        //        throw new Exception("TCP connection closed");
+        //}
         public void writeMessage(string message, bool addDefaultMessageType = false)
         {
             m_xmlStream.writeMessage(m_netStream, message, addDefaultMessageType);
         }
         public void read()
         {
-            checkConnection(m_tcpClient);
+            ////checkConnection(m_tcpClient);
             m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
         public string processNextXMLItem()
@@ -132,14 +133,14 @@ namespace Herd
             }
             header += args;
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
-            checkConnection(m_tcpClient);
+            //checkConnection(m_tcpClient);
             m_netStream.Write(headerbytes, 0, headerbytes.Length);
         }
         protected void SendJobFooter()
         {
             string footer = "</Job>";
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
-            checkConnection(m_tcpClient);
+            //checkConnection(m_tcpClient);
             m_netStream.Write(footerbytes, 0, footerbytes.Length);
         }
         protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
@@ -179,7 +180,7 @@ namespace Herd
 
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
-                checkConnection(m_tcpClient);
+                //checkConnection(m_tcpClient);
                 m_netStream.Write(headerBytes, 0, headerBytes.Length);
 
                 //send the content if it has to be sent
@@ -192,7 +193,7 @@ namespace Herd
                     {
                         lastReadBytes = fileStream.Read(buffer, 0, m_xmlStream.getBufferSize());
                         readBytes += lastReadBytes;
-                        checkConnection(m_tcpClient);
+                        //checkConnection(m_tcpClient);
                         try
                         {
                             m_netStream.Write(buffer, 0, (int)lastReadBytes);
@@ -207,7 +208,7 @@ namespace Herd
 
                 //Send the footer: </Exe>, </Input> or </Output>
                 byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
-                checkConnection(m_tcpClient);
+                //checkConnection(m_tcpClient);
                 m_netStream.Write(footerBytes, 0, footerBytes.Length);
 
                 m_netStream.Flush();
@@ -217,7 +218,7 @@ namespace Herd
                 header += "/>";
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
-                checkConnection(m_tcpClient);
+                //checkConnection(m_tcpClient);
                 m_netStream.Write(headerBytes, 0, headerBytes.Length);
 
 
@@ -228,7 +229,7 @@ namespace Herd
 
         public void ReadFromStream()
         {
-            checkConnection(m_tcpClient);
+            //checkConnection(m_tcpClient);
             m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
         public void ReceiveJobHeader()
@@ -505,193 +506,9 @@ namespace Herd
 
             return true;//if job result properly received. For now, we will assume it}
         }
-
-
     }
-    public class HerdAgent : CJobDispatcher
-    {
-        private CancellationTokenSource cts;
-        private List<Process> m_spawnedProcesses= new List<Process>();
-
-        public HerdAgent(TcpClient tcpClient, NetworkStream netStream, string dirPath,LogMessageHandler logMessageHandler)
-            : base(tcpClient, dirPath,logMessageHandler)
-        {
-            m_netStream = netStream;
-            m_xmlStream.resizeBuffer(tcpClient.ReceiveBufferSize);
-        }
-
-        public void CancelRunningProcesses()
-        {
-            foreach (Process p in m_spawnedProcesses)
-            {
-                p.Kill();
-                p.Dispose();
-            }
-            m_spawnedProcesses.Clear();
-            if (cts != null)
-                cts.Cancel();
-        }
-        public void SendJobResult()
-        {
-            SendJobHeader();
-            SendExeFiles(false);
-            SendInputFiles(false);
-            SendOutputFiles(true);
-            SendJobFooter();
-        }
-        public bool ReceiveJobQuery()
-        {
-
-            ReceiveJobHeader();
-            //ReceiveJobArgs();
-            ReceiveExeFiles(true,true);
-            ReceiveInputFiles(true,true);
-            ReceiveOutputFiles(false,true);
-            ReceiveJobFooter();
-
-            return true;//if job query properly received. For now, we will assume it
-        }
-        //private void runOneProcess(Process p, string pipeName, NamedPipeServerStream server, CancellationToken ct, NetworkStream bridge)
-        //{
-        //    //not to read 23.232 as 23232
-        //    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-        //    p.Start();
-
-        //    server.WaitForConnection();
-        //    XMLStream xmlStream = new XMLStream();
-
-        //    string xmlItem;
-        //    while (server.IsConnected)
-        //    {
-        //        xmlStream.readFromNamedPipeStream(server);
-        //        xmlItem = xmlStream.processNextXMLItem();
-        //        if (xmlItem != "")
-        //        {
-        //            checkConnection(m_tcpClient);
-        //            xmlStream.writeMessage(bridge, "<" + pipeName + ">" + xmlItem + "</" + pipeName + ">", false);
-        //        }
-        //    }
-
-        //    server.Close();
-
-        //}
-
-        public int RunJob(NetworkStream bridgeStream)
-        {
-            int returnCode = 0;
-            cts = new CancellationTokenSource();
-            ParallelOptions po = new ParallelOptions();
-            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
-            po.CancellationToken = cts.Token;
-
-            Parallel.ForEach(m_job.comLineArgs, po, (args) =>
-            {
-                using (cts.Token.Register(Thread.CurrentThread.Abort))
-                {
-                    Process myProcess = new Process();
-                    try
-                    {
-                        string[] arguments = args.Split(' ');
-                        NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
-                        
-
-                        myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
-                        myProcess.StartInfo.Arguments = args;
-                        myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                        m_logMessageHandler("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-                        //runOneProcess(myProcess, arguments[1], server, cts.Token, bridgeStream);
-                        //not to read 23.232 as 23232
-                        Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-                        myProcess.Start();
-                        m_spawnedProcesses.Add(myProcess);
-
-                        server.WaitForConnection();
-                        XMLStream xmlStream = new XMLStream();
-
-                        string xmlItem;
-                        while (server.IsConnected)
-                        {
-                            xmlStream.readFromNamedPipeStream(server);
-                            xmlItem = xmlStream.processNextXMLItem();
-                            if (xmlItem != "")
-                            {
-                                checkConnection(m_tcpClient);
-                                xmlStream.writeMessage(bridgeStream, "<" + arguments[1] + ">" + xmlItem + "</" + arguments[1] + ">", false);
-                            }
-                        }
-
-                        server.Close();
-
-                        //not needed: we are looping while the server is connected so... this makes no sense
-                        myProcess.WaitForExit();
-
-                        if (myProcess.ExitCode < 0) returnCode = -1;
-                        m_logMessageHandler("Exit code: " + myProcess.ExitCode);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Exception thrown: " + ex.ToString());
-                        if (myProcess != null && !myProcess.HasExited)
-                        {
-                            myProcess.Kill();
-                            myProcess.Dispose();
-                        }
-                        returnCode= -1;
-                    }
-
-                }
-            }
-            );
-            return returnCode;
-        }
-
-        public void stop()
-        {
-            if (cts != null)
-                cts.Cancel();
-        }
-    }
-    public class UdpState
-    {
-        public UdpClient client { get; set; }
-        public IPEndPoint ip { get; set; }
-    }
-    public class TCPState
-    {
-        public IPEndPoint ip { get; set; }
-    }
-    //public class PipesBridgeClient
-    //{
-    //    private HerdAgent myHerdAgent;
-
-    //    public PipesBridgeClient(IPAddress server, HerdAgent agent)
-    //    {
-    //        myHerdAgent = agent;
-    //        server = IPAddress.Any;
-    //        IPEndPoint e = new IPEndPoint(server, CJobDispatcher.m_discoveryPortHerd);
-    //        UdpClient u = new UdpClient(e);
-    //        UdpState s = new UdpState();
-    //        s.ip = e;
-    //        s.client = u;
-    //        Console.WriteLine("PipesBridgeClient is listening for messages");
-    //        u.BeginReceive(ReceiveCallback, s);
-    //    }
-    //    private void ReceiveCallback(IAsyncResult ar)
-    //    {
-    //        IPEndPoint e = (IPEndPoint)((UdpState)ar.AsyncState).ip;
-    //        UdpClient client = (UdpClient)((UdpState)ar).client;
-    //        Byte[] receiveBytes = client.EndReceive(ar, ref e);
-    //        string receiveString = Encoding.ASCII.GetString(receiveBytes);
-    //        if (receiveString.Equals("QUIT"))
-    //        {
-    //            myHerdAgent.CancelRunningProcesses();
-    //            return;
-    //        }
-    //        client.BeginReceive(ReceiveCallback, ar);
-    //    }
-    //}
+    
+   
     public class XMLStream
     {
         private int m_bufferOffset;
@@ -717,7 +534,7 @@ namespace Herd
         public byte[] getBuffer() { return m_buffer; }
         public void addBytesRead(int bytesReadInBuffer) { m_bytesInBuffer += bytesReadInBuffer; }
         public void addProcessedBytes(int processedBytes) { m_bufferOffset += processedBytes; }
-        private void discardProcessedData()
+        public void discardProcessedData()
         {
             //shift left unprocessed bytes to discard processed data
             if (m_bufferOffset != 0)
@@ -751,7 +568,7 @@ namespace Herd
             //read if there's something to read and if we have available storage
             do
             {
-                CJobDispatcher.checkConnection(client);
+                //CJobDispatcher.checkConnection(client);
                 if (stream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
                 {
                     m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
@@ -766,10 +583,13 @@ namespace Herd
             if (m_bytesInBuffer < m_maxChunkSize)
                 m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
         }
-
+        public string peekNextXMLItem()
+        {
+            return processNextXMLItem(false);
+        }
         //returns the next complete xml element (NO ATTRIBUTES!!) in the stream
         //empty string if there was none
-        public string processNextXMLItem()
+        public string processNextXMLItem(bool bMarkAsProcessed=true)
         {
             if (m_bytesInBuffer > 0)
             {
@@ -781,7 +601,7 @@ namespace Herd
 
                 if (m_match.Success)
                 {
-                    m_bufferOffset += m_match.Index + m_match.Length;
+                    if (bMarkAsProcessed) m_bufferOffset += m_match.Index + m_match.Length;
                     m_lastXMLItem = m_match.Value;
                     return m_match.Value;
                 }
@@ -806,16 +626,9 @@ namespace Herd
 
                 if (m_match.Success)
                 {
-                    if (bMarkAsProcessed)
-                    {
-                        m_bufferOffset += m_match.Index + m_match.Length;
-                        m_lastXMLItem = m_match.Value;
-                        return m_match.Value;
-                    }
-                    else
-                    {
-                        return m_match.Value;
-                    }
+                    if (bMarkAsProcessed) m_bufferOffset += m_match.Index + m_match.Length;
+                    m_lastXMLItem = m_match.Value;
+                    return m_match.Value;
                 }
             }
             return "";

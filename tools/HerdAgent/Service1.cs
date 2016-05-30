@@ -7,6 +7,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
@@ -21,7 +22,7 @@ namespace Herd
     
     public partial class HerdService : ServiceBase
     {
-        private static HerdAgent herdAgent;
+        private static HerdAgent m_herdAgent;
         private static UdpClient m_discoveryClient;
         private static TcpListener m_listener;
         private static string m_dirPath;
@@ -73,44 +74,98 @@ namespace Herd
             public NetworkStream netStream { get; set; }
             public XMLStream xmlStream { get; set; }
         }
-        public static void QuitCallback(IAsyncResult callbackInfo)
+        public static async Task asyncReadFromClient(NetworkStream netStream, CancellationToken ct)
         {
-            HerdAgent herdAgent= ((TCPCallbackInfo)callbackInfo.AsyncState).herdAgent;
-            XMLStream xmlStream= ((TCPCallbackInfo)callbackInfo.AsyncState).xmlStream;
-            NetworkStream netStream = ((TCPCallbackInfo)callbackInfo.AsyncState).netStream;
+            XMLStream inputXMLStream= new XMLStream();
+            int bytes = 0;
 
-            int bytes = netStream.EndRead(callbackInfo);
-
-            xmlStream.addBytesRead(bytes); // we let the xmlstream object know that some bytes have been read in its buffer
-            string xmlItem = xmlStream.peekNextXMLTag();
-            if (xmlItem!="")
+            try
             {
-                string xmlItemContent = xmlStream.getLastXMLItemContent();
-                if (xmlItemContent == CJobDispatcher.m_quitMessage)
+                while (true)
                 {
-                    Log("Job was remotely stopped");
-                    herdAgent.CancelRunningProcesses();
-                }
+                    bytes = await netStream.ReadAsync(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
+                        , inputXMLStream.getBufferSize()-inputXMLStream.getBufferOffset(), ct);
+
+                    inputXMLStream.addBytesRead(bytes);
+                    //we let the xmlstream object know that some bytes have been read in its buffer
+                    string xmlItem = inputXMLStream.peekNextXMLItem();
+                    if (xmlItem != "")
+                    {
+                        string xmlItemContent = inputXMLStream.getLastXMLItemContent();
+                        if (xmlItemContent == CJobDispatcher.m_quitMessage)
+                        {
+                            inputXMLStream.addProcessedBytes(bytes);
+                            inputXMLStream.discardProcessedData();
+                            Log("Stopping job execution");
+                            m_herdAgent.Stop();
+                        }
+                    }
+                };
+            }
+            catch (OperationCanceledException)
+            {
+                Log("Thread finished gracefully");
+            }
+            catch(ObjectDisposedException)
+            {
+                Log("Network stream closed: async read finished");
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
             }
         }
+        //public static void QuitCallback(IAsyncResult callbackInfo)
+        //{
+        //    HerdAgent herdAgent= ((TCPCallbackInfo)callbackInfo.AsyncState).herdAgent;
+        //    XMLStream xmlStream= ((TCPCallbackInfo)callbackInfo.AsyncState).xmlStream;
+        //    NetworkStream netStream = ((TCPCallbackInfo)callbackInfo.AsyncState).netStream;
+        //    try
+        //    {
+        //        int bytes = netStream.EndRead(callbackInfo);
+        //        if (bytes == 0)
+        //        {
+        //            netStream.Close();
+        //            netStream.Dispose();
+        //            return;
+        //        }
+
+        //        xmlStream.addBytesRead(bytes); // we let the xmlstream object know that some bytes have been read in its buffer
+        //        string xmlItem = xmlStream.peekNextXMLItem();
+        //        if (xmlItem != "")
+        //        {
+        //            string xmlItemContent = xmlStream.getLastXMLItemContent();
+        //            if (xmlItemContent == CJobDispatcher.m_quitMessage)
+        //            {
+        //                Log("Stopping job execution");
+        //                m_herdAgent.Stop();
+        //            }
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Log("Error reading from the client");
+        //    }
+        //}
         public static void CommunicationCallback(IAsyncResult ar)
         {
             if (m_state != AgentState.BUSY)
             {
                 TcpClient comSocket = m_listener.EndAcceptTcpClient(ar);
                 NetworkStream netStream = comSocket.GetStream();
-
+                CancellationTokenSource cancelToken = new CancellationTokenSource();
                 try
                 {
                     m_state = AgentState.BUSY;
-                    herdAgent = new HerdAgent(comSocket, netStream, m_dirPath,Log);
-                    herdAgent.read();
-                    string xmlItem = herdAgent.processNextXMLItem();
+                    m_herdAgent = new HerdAgent(comSocket, netStream, m_dirPath,Log);
+                    m_herdAgent.read();
+                    string xmlItem = m_herdAgent.processNextXMLItem();
                     string xmlItemContent;
                     int returnCode;
+
                     if (xmlItem != "")
                     {
-                        xmlItemContent = herdAgent.getLastXMLItemContent();
+                        xmlItemContent = m_herdAgent.getLastXMLItemContent();
                         if (xmlItemContent==CJobDispatcher.m_cleanCacheMessage)
                         {
                             //not yet implemented in the herd client, just in case...
@@ -120,57 +175,55 @@ namespace Herd
                         else if (xmlItemContent == CJobDispatcher.m_aquireMessage)
                         {
                             Log("Receiving job data from" + comSocket.Client.RemoteEndPoint.ToString());
-                            if (herdAgent.ReceiveJobQuery())
+                            if (m_herdAgent.ReceiveJobQuery())
                             {
                                 //Listen for a "quit" message from the client
-                                TCPCallbackInfo callbackInfo= new TCPCallbackInfo();
-                                callbackInfo.herdAgent = herdAgent;
-                                callbackInfo.tcpClient = comSocket;
-                                callbackInfo.xmlStream = new XMLStream();
-                                netStream.BeginRead(callbackInfo.xmlStream.getBuffer(), 0, callbackInfo.xmlStream.getBufferSize()
-                                    , QuitCallback, (object)callbackInfo);
+                                //TCPCallbackInfo callbackInfo= new TCPCallbackInfo();
+                                //callbackInfo.herdAgent = m_herdAgent;
+                                //callbackInfo.netStream = netStream;
+                                //callbackInfo.xmlStream = new XMLStream();
+                                //netStream.BeginRead(callbackInfo.xmlStream.getBuffer(), 0, callbackInfo.xmlStream.getBufferSize()
+                                //    , QuitCallback, (object)callbackInfo);
+                                Task.Factory.StartNew(() => asyncReadFromClient(netStream,cancelToken.Token));
 
                                 //run the job
                                 Log("Running job");
-                                returnCode= herdAgent.RunJob(netStream);
+                                returnCode= m_herdAgent.RunJob(netStream);
 
-                                if (returnCode >= 0)
+                                if (returnCode == HerdAgent.m_noErrorCode)
                                 {
                                     Log("Job finished");
-                                    herdAgent.writeMessage(CJobDispatcher.m_endMessage, true);
+                                    m_herdAgent.writeMessage(CJobDispatcher.m_endMessage, true);
 
                                     Log("Sending job results");
-                                    herdAgent.SendJobResult();
+                                    m_herdAgent.SendJobResult();
 
                                     Log("Job results sent");
                                 }
-                                else
+                                else if (returnCode==HerdAgent.m_jobInternalErrorCode)
                                 {
                                     Log("The job returned an error code");
-                                    herdAgent.writeMessage(CJobDispatcher.m_errorMessage, true);
+                                    m_herdAgent.writeMessage(CJobDispatcher.m_errorMessage, true);
+                                }
+                                else if (returnCode==HerdAgent.m_remotelyCancelledErrorCode)
+                                {
+                                    Log("The job was remotely cancelled");
                                 }
                             }
                         }
                     }
-                    netStream.Close();
-                    netStream.Dispose();
-                    m_listener.Stop();
-                    comSocket.Close();
-                    m_state = AgentState.AVAILABLE;
-
-                    //start listening again
-                    TCPState tcpState = new TCPState();
-                    tcpState.ip = new IPEndPoint(0, 0);
-                    m_listener.Start();
-                    m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
                 catch (Exception ex)
                 {
-                    netStream.Close();
-                    netStream.Dispose();
+                    Log(ex.ToString() + ex.InnerException + ex.StackTrace);
+                }
+                finally
+                {
+                    cancelToken.Cancel();
+                    cancelToken.Dispose();
                     comSocket.Close();
                     m_state = AgentState.AVAILABLE;
-                    Log(ex.Message + ex.InnerException + ex.StackTrace);
+
                     //try to recover
                     //start listening again
                     TCPState tcpState = new TCPState();
@@ -180,6 +233,7 @@ namespace Herd
                 }
             }
         }
+
         public static void DiscoveryCallback(IAsyncResult ar)
         {
             IPEndPoint ip = ((UdpState)ar.AsyncState).ip;
@@ -192,7 +246,6 @@ namespace Herd
             {
                 if (m_state == AgentState.AVAILABLE)
                 {
-
                     Log("Agent discovered by " + ip.ToString());
                     byte[] data = Encoding.ASCII.GetBytes("<Cores>" + Environment.ProcessorCount + "</Cores>");
                     m_discoveryClient.Send(data, data.Length, ip);
@@ -214,6 +267,7 @@ namespace Herd
         {
             m_state = AgentState.AVAILABLE;
             cleanLog();
+            Log("Herd agent started");
 
             //UPD broadcast client
 
@@ -240,6 +294,7 @@ namespace Herd
         }
         public void DoStop()
         {
+            Log("Herd Agent stopped");
             m_discoveryClient.Close();
             m_listener.Stop();
         }
