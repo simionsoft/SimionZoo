@@ -47,10 +47,12 @@ namespace HerdShepherd
             m_shepherd = new Shepherd();
 
             m_timer = new System.Timers.Timer(m_updateTime);
+            m_shepherd.sendBroadcastHerdAgentQuery();
+            m_shepherd.beginListeningHerdAgentQueryResponses();
             //Task.Factory.StartNew(fillListOfHerdAgents);
-            //m_timer.AutoReset = true;
-            //m_timer.Elapsed += new System.Timers.ElapsedEventHandler(fillListOfHerdAgents);
-            //m_timer.Start();
+            m_timer.AutoReset = true;
+            m_timer.Elapsed += new System.Timers.ElapsedEventHandler(fillListOfHerdAgents);
+            m_timer.Start();
            
         }
 
@@ -58,15 +60,14 @@ namespace HerdShepherd
         {
             Dictionary<IPEndPoint, HerdAgentDescription> agentList;
             
-            m_shepherd.sendBroadcastHerdAgentQuery();
-            m_shepherd.beginListeningHerdAgentQueryResponses();
+
             System.Threading.Thread.Sleep(2000);
             agentList = m_shepherd.getHerdAgentList();
             herdAgentListBox.BeginUpdate();
             herdAgentListBox.Items.Clear();
             foreach (var agent in agentList)
             {
-                herdAgentListBox.Items.Add(agent.Key.ToString() + " " + agent.Value.ToString());
+                herdAgentListBox.Items.Add(agent.Key.Address.ToString() + " " + agent.Value.ToString());
             }
             herdAgentListBox.EndUpdate();
         }

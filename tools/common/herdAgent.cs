@@ -309,7 +309,7 @@ namespace Herd
                             herdAgent.logMessage("Cleaning cache directory");
                             herdAgent.cleanCacheDir();
                         }
-                        else if (xmlItemContent == CJobDispatcher.m_aquireMessage)
+                        else if (xmlItemContent == CJobDispatcher.m_acquireMessage)
                         {
                             herdAgent.logMessage("Receiving job data from" 
                                 + herdAgent.getTcpClient().Client.RemoteEndPoint.ToString());

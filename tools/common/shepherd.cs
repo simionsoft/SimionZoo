@@ -81,56 +81,6 @@ namespace Herd
             m_discoverySocket.EnableBroadcast = true;
         }
 
-     /*   public static async Task asyncListHerdAgents(UdpClient udpClient, CancellationToken ct)
-        {
-            XMLStream inputXMLStream = new XMLStream();
-            XElement xElement;
-            HerdAgentDescription herdAgentDescription;
-
-            int bytes = 0;
-            Dictionary<IPAddress, HerdAgentDescription> herdAgentList
-                = new Dictionary<IPAddress, HerdAgentDescription>();
-
-            try
-            {
-                while (true)
-                {
-                    bytes = await udpClient.ReceiveAsync();
-
-                    inputXMLStream.addBytesRead(bytes);
-                    //we let the xmlstream object know that some bytes have been read in its buffer
-                    string xmlItem = inputXMLStream.processNextXMLItem();
-                    if (xmlItem != "")
-                    {
-                        string xmlItemTag = inputXMLStream.getLastXMLItemTag();
-                        string xmlItemContent = inputXMLStream.getLastXMLItemContent();
-                        if (xmlItemTag == CJobDispatcher.m_discoveryAnswer)
-                        {
-                            herdAgentDescription = new HerdAgentDescription();
-                            xElement= XElement.Parse(xmlItemContent);//xmlItemContent);
-                            foreach (XElement child in xElement.Elements())
-                            {
-                                herdAgentDescription.addProperty(child.Name.ToString()
-                                    , child.Value);
-                            }
-                        }
-                    }
-                };
-            }
-            catch (OperationCanceledException)
-            {
-                int a = 3;
-                //Log("Thread finished gracefully");
-            }
-            catch (ObjectDisposedException)
-            {
-                //Log("Network stream closed: async read finished");
-            }
-            catch (Exception ex)
-            {
-               // Log(ex.ToString());
-            }
-        }*/
 
         public static void DiscoveryCallback(IAsyncResult ar)
         {
@@ -175,39 +125,43 @@ namespace Herd
             u.client = m_discoverySocket;
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
         }
-        public void connectToHerdAgent(IPEndPoint ip)
+        public void connectToHerdAgent(IPEndPoint endPoint)
         {
-           
+            m_tcpClient = new TcpClient();
+            m_tcpClient.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+            m_netStream= m_tcpClient.GetStream();
+            //send slave acquire message
+            m_xmlStream.writeMessage(m_netStream, CJobDispatcher.m_acquireMessage, true);
         }
         public Dictionary<IPEndPoint, HerdAgentDescription> getHerdAgentList()
         {
             return m_herdAgentList;
         }
-        //public static Dictionary<IPEndPoint, HerdAgentDescription> getSlaves(out int cores)
-        //{
-
-        //    cores = 0;
-
-        //    beginListeningHerdAgentQueryResponses();
-
-        //    //CancellationTokenSource m_cancellationTokenSource;
-        //    //Task.Factory.StartNew(()=>asyncListHerdAgents(m_discoverySocket.GetStream()
-        //    //    , m_cancellationTokenSource.Token));
-
-        //    //We wait 2 secs for herd agents to reply
-        //    Thread.Sleep(3000);
-        //    //m_cancellationTokenSource.Cancel();
-
-        //    cores = myList.Values.ToList().Sum(od => od);
-        //    if (myList != null && myList.Count > 1)
-        //    {
-        //        return (from entry in myList orderby entry.Value ascending select entry).ToDictionary(x => x.Key, x => x.Value);
-        //    }
-        //    return myList;
-
-
-
-        //}
+        public int getAvailableHerdAgentListAndCores(ref Dictionary<IPEndPoint,int> outHerdAgentList)
+        {
+            int numCores;
+            int numCoresTotal= 0;
+            outHerdAgentList.Clear();
+            foreach(var agent in m_herdAgentList)
+            {
+                string numCoresString = agent.Value.getProperty("NumberOfProcessors");
+                if (numCoresString!="n/a")
+                {
+                    try
+                    {
+                        numCores = Int32.Parse(numCoresString);
+                        numCoresTotal += numCores;
+                        outHerdAgentList.Add(agent.Key, numCores);
+                    }
+                    catch (Exception)
+                    {
+                        //we ignore possible errors parsing the string
+                    }
+                }
+            }
+            return numCoresTotal;
+        }
+        
 
         public void SendJobQuery(CJob job)
         {

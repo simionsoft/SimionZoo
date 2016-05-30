@@ -122,54 +122,44 @@ namespace AppXML.ViewModels
         {
             int coreNumbers = Environment.ProcessorCount;
             indexOffset = 0;
-            /*if(coreNumbers>=_processes.Count)
-                runLocally(new List<ProcessStateViewModel>(Processes));
-            else*/
+            //antes de nada se lanzan los n primero experimentos
+            Shepherd shepherd = new Shepherd();
+            shepherd.sendBroadcastHerdAgentQuery();
+            shepherd.beginListeningHerdAgentQueryResponses();
+            Dictionary<IPEndPoint,int > slaves = new Dictionary<IPEndPoint,int>();
+            int totalCores;
+            System.Threading.Thread.Sleep(2000);
+            totalCores= shepherd.getAvailableHerdAgentListAndCores(ref slaves);
+
+            if ((slaves == null || slaves.Count == 0)) runLocally(Processes);
+            else
             {
-                //antes de nada se lanzan los n primero experimentos
+                m_herdAgentNetStreams.Clear();
 
-                    Dictionary<IPEndPoint, int> slaves = null;
-                    int totalCores;
-                    slaves=Herd.Shepherd.getSlaves(out totalCores);
-                    if ((slaves == null || slaves.Count == 0))
+                double proportion = (double)Processes.Count/totalCores;
+                if (cts == null)
+                    cts = new CancellationTokenSource();
+                ParallelOptions po = new ParallelOptions();
+                po.CancellationToken = cts.Token;
+                po.MaxDegreeOfParallelism = Environment.ProcessorCount;
+                Parallel.ForEach(slaves.Keys, po, (key) =>
+                {
+                    if (indexOffset < Processes.Count)
                     {
-                            runLocally(Processes);  
-                    }
-                    else
-                    {
-                        m_herdAgentNetStreams.Clear();
-                        //if (canceler == null)
-                        //    canceler = new List<IPEndPoint>(slaves.Keys);
-                        //else
-                        //    canceler.Clear();
-                        double proportion = (double)Processes.Count/totalCores;
-                        if (cts == null)
-                            cts = new CancellationTokenSource();
-                        ParallelOptions po = new ParallelOptions();
-                        po.CancellationToken = cts.Token;
-                        po.MaxDegreeOfParallelism = Environment.ProcessorCount;
-                        Parallel.ForEach
-                            (slaves.Keys, po, (key) =>
-                            {
-                                if (indexOffset < Processes.Count)
-                                {
 
-                                    int cores = slaves[key];
-                                    int amount = (int)Math.Ceiling(cores * proportion);
-                                    if (indexOffset + amount > Processes.Count)
-                                        amount = Processes.Count - indexOffset;
-                                    IEnumerable<ProcessStateViewModel> myPro = getMines(amount);
-                                    using (cts.Token.Register(Thread.CurrentThread.Abort))
-                                    {
-                                        try { runOneJob(myPro, key, cts.Token); }
+                        int cores = slaves[key];
+                        int amount = (int)Math.Ceiling(cores * proportion);
+                        if (indexOffset + amount > Processes.Count)
+                            amount = Processes.Count - indexOffset;
+                        IEnumerable<ProcessStateViewModel> myPro = getMines(amount);
+                        using (cts.Token.Register(Thread.CurrentThread.Abort))
+                        {
+                            try { runOneJob(myPro, key, cts.Token); }
 
-                                        catch (Exception ex) { Console.WriteLine(ex.StackTrace); }
-                                    }
-                                }
-                                                    
-                            }
-                            );
-                    }
+                            catch (Exception ex) { Console.WriteLine(ex.StackTrace); }
+                        }
+                    }                               
+                });
             }
         }
         public void addProcess(ProcessStateViewModel process)
@@ -256,7 +246,6 @@ namespace AppXML.ViewModels
             ProcessStatusHandler processStatusHandler = new ProcessStatusHandler(processes);
             processStatusHandler.m_ip= endPoint.Address.ToString();
             
-            //Dictionary<string, ProcessStateViewModel> myPipes = new Dictionary<string, ProcessStateViewModel>();
             Task.Factory.StartNew(() => {
                 try
                 {
@@ -278,69 +267,61 @@ namespace AppXML.ViewModels
                         //myPipes.Add(process.pipeName, process);
                     }
 
-                    Shepherd shepherd = null; 
-            
-            
-                    using (var TcpSocket = new TcpClient())
+                    Shepherd shepherd = new Shepherd();
+                    shepherd.connectToHerdAgent(endPoint);
+                    shepherd.setLogMessageHandler(processStatusHandler.logShepherdMessage);
+
+                    addTcpNetStream(shepherd.getNetworkStream());
+
+
+
+                    processStatusHandler.setAllJobsState("Sending job query");
+                    shepherd.SendJobQuery(job);
+                    processStatusHandler.setAllJobsState("Executing job query");
+                    string xmlItem;
+                    bool bSuccess;
+                    while(true)
                     {
-                        TcpSocket.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
-                        using (NetworkStream netStream = TcpSocket.GetStream())
+                        shepherd.read();
+                        xmlItem = shepherd.processNextXMLItem();
+
+                        if (xmlItem!="")
                         {
-                            addTcpNetStream(netStream);
-
-                            shepherd = new Shepherd(TcpSocket, netStream, "", processStatusHandler.logShepherdMessage);
-                            XMLStream xmlStream = new XMLStream();
-                            xmlStream.writeMessage(netStream,CJobDispatcher.m_aquireMessage,true);
-                            processStatusHandler.setAllJobsState("Sending job query");
-                            shepherd.SendJobQuery(job);
-                            processStatusHandler.setAllJobsState("Executing job query");
-                            string xmlItem;
-                            bool bSuccess;
-                            while(true)
+                            XmlDocument doc = new XmlDocument();
+                            doc.LoadXml(xmlItem);
+                            XmlNode e = doc.DocumentElement;
+                            string key = e.Name;
+                            XmlNode message = e.FirstChild;
+                            if (message.Name == "Progress")
                             {
-                                shepherd.read();
-                                xmlItem = shepherd.processNextXMLItem();
-
-                                if (xmlItem!="")
+                                double progress = Convert.ToDouble(message.InnerText);
+                                processStatusHandler.setStatus(key, Convert.ToInt32(progress));
+                            }
+                            else if (message.Name == "Message")
+                            {
+                                processStatusHandler.logProcessMessage(key, message.InnerText);
+                            }
+                            else
+                            {
+                                if (key == XMLStream.m_defaultMessageType)
                                 {
-                                    XmlDocument doc = new XmlDocument();
-                                    doc.LoadXml(xmlItem);
-                                    XmlNode e = doc.DocumentElement;
-                                    string key = e.Name;
-                                    XmlNode message = e.FirstChild;
-                                    if (message.Name == "Progress")
-                                    {
-                                        double progress = Convert.ToDouble(message.InnerText);
-                                        processStatusHandler.setStatus(key, Convert.ToInt32(progress));
-                                    }
-                                    else if (message.Name == "Message")
-                                    {
-                                        processStatusHandler.logProcessMessage(key, message.InnerText);
-                                    }
-                                    else
-                                    {
-                                        if (key == XMLStream.m_defaultMessageType)
-                                        {
-                                            if (message.InnerText == CJobDispatcher.m_endMessage)
-                                            { bSuccess = true; break; }
-                                            else if (message.InnerText == CJobDispatcher.m_errorMessage)
-                                            { bSuccess = false; break; }
-                                        }
-                                    }
+                                    if (message.InnerText == CJobDispatcher.m_endMessage)
+                                    { bSuccess = true; break; }
+                                    else if (message.InnerText == CJobDispatcher.m_errorMessage)
+                                    { bSuccess = false; break; }
                                 }
                             }
-                            if (bSuccess)
-                            {
-                                processStatusHandler.setAllJobsState("Receiving output files");
-                                shepherd.ReceiveJobResult();
-
-                                processStatusHandler.showEndMessage();
-                                owner.isFinished(processes.Count());
-                            }
-                            else processStatusHandler.setAllJobsState("Error in job");
                         }
-
                     }
+                    if (bSuccess)
+                    {
+                        processStatusHandler.setAllJobsState("Receiving output files");
+                        shepherd.ReceiveJobResult();
+
+                        processStatusHandler.showEndMessage();
+                        owner.isFinished(processes.Count());
+                    }
+                    else processStatusHandler.setAllJobsState("Error in job");
                 }
                 catch(Exception ex)
                 {

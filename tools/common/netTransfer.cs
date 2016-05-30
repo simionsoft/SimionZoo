@@ -39,12 +39,12 @@ namespace Herd
     public enum FileType { EXE, INPUT, OUTPUT };
     public class CJobDispatcher
     {
-        protected XMLStream m_xmlStream;
+        public XMLStream m_xmlStream;
         public const int m_discoveryPortHerd = 2333;
         public const int m_comPortHerd = 2335;
         public const string m_discoveryMessage = "Slaves, show yourselves!";
         public const string m_discoveryAnswer = "At your command, my Master";
-        public const string m_aquireMessage = "You are mine now!";
+        public const string m_acquireMessage = "You are mine now!";
         public const string m_endMessage = "Job finished correctly";
         public const string m_errorMessage = "Error running job";
         public const string m_quitMessage = "Stop";
@@ -54,7 +54,8 @@ namespace Herd
 
         protected NetworkStream m_netStream;
         protected TcpClient m_tcpClient;
-        protected TcpClient getTcpClient() { return m_tcpClient; }
+        public TcpClient getTcpClient() { return m_tcpClient; }
+        public NetworkStream getNetworkStream() { return m_netStream; }
 
         //used for reading
         protected int m_nextFileSize;
