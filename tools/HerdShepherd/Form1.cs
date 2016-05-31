@@ -25,14 +25,15 @@ namespace HerdShepherd
 
         private void fillListOfHerdAgents(object sender, System.Timers.ElapsedEventArgs e)
         {
-            Dictionary<IPEndPoint, HerdAgentDescription> agentList;
+            m_shepherd.sendBroadcastHerdAgentQuery();
+          //  Dictionary<IPEndPoint, HerdAgentDescription> agentList;
 
 
            
             
             //while(true)
             {
-                agentList = m_shepherd.getHerdAgentList();
+              //  agentList = m_shepherd.getHerdAgentList();
                 //herdAgentListBox.BeginUpdate();
                 //foreach(var agent in agentList)
                 //{
@@ -49,6 +50,7 @@ namespace HerdShepherd
             m_timer = new System.Timers.Timer(m_updateTime);
             m_shepherd.sendBroadcastHerdAgentQuery();
             m_shepherd.beginListeningHerdAgentQueryResponses();
+           // m_shepherd.setLogMessageHandler(outputTextBox.AppendText);
             //Task.Factory.StartNew(fillListOfHerdAgents);
             m_timer.AutoReset = true;
             m_timer.Elapsed += new System.Timers.ElapsedEventHandler(fillListOfHerdAgents);
@@ -58,11 +60,12 @@ namespace HerdShepherd
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Dictionary<IPEndPoint, HerdAgentDescription> agentList;
+            Dictionary<IPEndPoint, HerdAgentDescription> agentList=
+                new Dictionary<IPEndPoint,HerdAgentDescription>();
             
 
-            System.Threading.Thread.Sleep(2000);
-            agentList = m_shepherd.getHerdAgentList();
+           // System.Threading.Thread.Sleep(2000);
+            m_shepherd.getHerdAgentList(ref agentList);
             herdAgentListBox.BeginUpdate();
             herdAgentListBox.Items.Clear();
             foreach (var agent in agentList)
@@ -70,6 +73,57 @@ namespace HerdShepherd
                 herdAgentListBox.Items.Add(agent.Key.Address.ToString() + " " + agent.Value.ToString());
             }
             herdAgentListBox.EndUpdate();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            CJob updateJob= new CJob();
+            CTask updateTask = new CTask();
+            updateTask.name = "RunServiceUpdater";
+            updateTask.arguments = "";
+            updateTask.pipe = "";
+            updateTask.exe = "../Debug/HerdAgentUnattendedUpdater.msi";
+            updateJob.name = "HerdAgentServiceUpdate";
+            updateJob.tasks.Add(updateTask);
+            updateJob.inputFiles.Add(updateTask.exe);
+            Dictionary<IPEndPoint, HerdAgentDescription> agentList=
+                new Dictionary<IPEndPoint,HerdAgentDescription>();
+            m_shepherd.getHerdAgentList(ref agentList);
+           Task.Factory.StartNew(() =>
+            {
+                foreach (var agent in agentList)
+                {
+                    if (agent.Value.getProperty("State") == "available")
+                    {
+                        m_shepherd.connectToHerdAgent(agent.Key);
+                        m_shepherd.SendJobQuery(updateJob);
+                        while (true)
+                        {
+                            m_shepherd.read();
+                            string xmlItem = m_shepherd.m_xmlStream.processNextXMLItem();
+                            string xmlMessageType = m_shepherd.m_xmlStream.getLastXMLItemTag();
+                            string xmlMessage = m_shepherd.m_xmlStream.getLastXMLItemContent();
+                            if (xmlMessageType == XMLStream.m_defaultMessageType)
+                            {
+                                if (xmlMessage == CJobDispatcher.m_endMessage)
+                                {
+                                    //outputTextBox.AppendText(agent.Key.Address + ": Update correct");
+                                    m_shepherd.ReceiveJobResult();
+                                    //outputTextBox.AppendText(agent.Key.Address + ": Job finished");
+                                    break;
+                                }
+                                else if (xmlMessage == CJobDispatcher.m_errorMessage)
+                                {
+                                    //outputTextBox.AppendText(agent.Key.Address + ": Update error");
+                                    break;
+                                }
+                                //else outputTextBox.AppendText("can't understand message: " + xmlMessage);
+                            }
+                        }
+                        m_shepherd.disconnect();
+                    }
+                }
+            });
         }
     }
 }

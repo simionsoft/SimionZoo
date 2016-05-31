@@ -49,6 +49,16 @@ namespace AppXML.ViewModels
                 m_herdAgentNetStreams.Add(netStream);
             }
         }
+        void removeTcpNetStream(NetworkStream netStream)
+        {
+            lock(m_networkStreamLockObject)
+            {
+                if (m_herdAgentNetStreams.Contains(netStream))
+                {
+                    m_herdAgentNetStreams.Remove(netStream);
+                }
+            }
+        }
         private void stopRemoteJobs()
         {
             XMLStream xmlStream = new XMLStream();
@@ -246,34 +256,43 @@ namespace AppXML.ViewModels
             ProcessStatusHandler processStatusHandler = new ProcessStatusHandler(processes);
             processStatusHandler.m_ip= endPoint.Address.ToString();
             
-            Task.Factory.StartNew(() => {
+            Task.Factory.StartNew(() =>
+            {
+                Shepherd shepherd = new Shepherd(); 
                 try
                 {
                     Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-                    //hay que preparar cada trabajo y lanzarlo
+
+
                     CJob job = new CJob();
-                    job.name = "xxxxx";
-                    job.exeFile = Models.CApp.EXE;
+                    job.name = "AppXML job";
+                    //prerrequisites
                     if(Models.CApp.pre!=null)
                     {
                         foreach (string prerec in Models.CApp.pre)
                             job.inputFiles.Add(prerec);
                     }
+                    int taskNumber= 0;
                     foreach (ProcessStateViewModel process in processes)
                     {
-                        job.comLineArgs.Add(process.Label + " "+ process.pipeName);
-                        job.inputFiles.Add(process.Label);
+                        CTask task = new CTask();
+                        task.name="Task " + taskNumber;
+                        taskNumber++;
+                        task.exe = Models.CApp.EXE;
+                        task.arguments = process.Label + " " + process.pipeName;
+                        task.pipe = process.pipeName;
+                        job.tasks.Add(task);
+                        if (!job.inputFiles.Contains(task.exe)) job.inputFiles.Add(task.exe);
+                        if (!job.inputFiles.Contains(process.Label)) job.inputFiles.Add(process.Label);
                         Utility.getInputsAndOutputs(process.Label, ref job);
                         //myPipes.Add(process.pipeName, process);
                     }
 
-                    Shepherd shepherd = new Shepherd();
+
                     shepherd.connectToHerdAgent(endPoint);
                     shepherd.setLogMessageHandler(processStatusHandler.logShepherdMessage);
 
                     addTcpNetStream(shepherd.getNetworkStream());
-
-
 
                     processStatusHandler.setAllJobsState("Sending job query");
                     shepherd.SendJobQuery(job);
@@ -283,7 +302,7 @@ namespace AppXML.ViewModels
                     while(true)
                     {
                         shepherd.read();
-                        xmlItem = shepherd.processNextXMLItem();
+                        xmlItem = shepherd.m_xmlStream.processNextXMLItem();
 
                         if (xmlItem!="")
                         {
@@ -329,6 +348,11 @@ namespace AppXML.ViewModels
                     //mandar a cualquier maquina que este libre
                     //this.reRun(myPipes.Values);
                     Console.WriteLine(ex.StackTrace);
+                }
+                finally
+                {
+                    removeTcpNetStream(shepherd.getNetworkStream());
+                    shepherd.disconnect();
                 }
             });
             

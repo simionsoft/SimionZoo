@@ -17,13 +17,13 @@ namespace Herd
 {
     public class HerdAgentUdpState
     {
-        public HerdAgent herdAgent { get; set; }
+    //    public HerdAgent herdAgent { get; set; }
         public UdpClient client { get; set; }
         public IPEndPoint ip { get; set; }
     }
     public class HerdAgentTcpState
     {
-        public HerdAgent herdAgent { get; set; }
+    //    public HerdAgent herdAgent { get; set; }
         public IPEndPoint ip { get; set; }
     }
 
@@ -111,23 +111,42 @@ namespace Herd
         public void SendJobResult()
         {
             SendJobHeader();
-            SendExeFiles(false);
-            SendInputFiles(false);
+            //SendExeFiles(false);
+            //SendInputFiles(false);
             SendOutputFiles(true);
             SendJobFooter();
         }
         public bool ReceiveJobQuery()
         {
+            bool bFooterPeeked = false;
+            string xmlTag = "";
+            m_job.tasks.Clear();
+            m_job.inputFiles.Clear();
+            m_job.outputFiles.Clear();
 
             ReceiveJobHeader();
-            //ReceiveJobArgs();
-            ReceiveExeFiles(true, true);
-            ReceiveInputFiles(true, true);
-            ReceiveOutputFiles(false, true);
+
+            do
+            {
+                ReadFromStream();
+                xmlTag = m_xmlStream.peekNextXMLTag();
+                switch (xmlTag)
+                {
+                    case "Task": ReceiveTask(); break;
+                    case "Input": ReceiveFile(FileType.INPUT,true, true); break;
+                    case "Output": ReceiveFile(FileType.OUTPUT, false, true); break;
+                    case "/Job": bFooterPeeked = true; break;
+                }
+            } while (!bFooterPeeked);
+
+            //ReceiveExeFiles(false, false);
+            //ReceiveInputFiles(false, false);
+            //ReceiveOutputFiles(true, false);
             ReceiveJobFooter();
 
-            return true;//if job query properly received. For now, we will assume it
+            return true;//if job result properly received. For now, we will assume it}
         }
+
 
         public int RunJob()
         {
@@ -138,61 +157,67 @@ namespace Herd
             po.CancellationToken = cts.Token;
             try
             {
-                Parallel.ForEach(m_job.comLineArgs, po, (args) =>
+                Parallel.ForEach(m_job.tasks, po, (task) =>
                 {
-                    //using (cts.Token.Register(Thread.CurrentThread.Abort))
+
+                NamedPipeServerStream server= null;
+                Process myProcess = new Process();
+                //string[] arguments = args.Split(' ');
+                if (task.pipe!="")
+                        server= new NamedPipeServerStream(task.pipe);//arguments[1]);
+
+                try
+                {
+                    myProcess.StartInfo.FileName = getCachedFilename(task.exe);
+                    myProcess.StartInfo.Arguments = task.arguments;
+                    myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+                    m_logMessageHandler("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+
+                    //not to read 23.232 as 23232
+                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+                    myProcess.Start();
+                    addSpawnedProcessToList(myProcess);//m_spawnedProcesses.Add(myProcess);
+
+                            
+                    XMLStream xmlStream = new XMLStream();
+
+                    string xmlItem;
+                    if (server != null)
                     {
-                        Process myProcess = new Process();
-                        string[] arguments = args.Split(' ');
-                        NamedPipeServerStream server = new NamedPipeServerStream(arguments[1]);
-                        try
+                        server.WaitForConnection();
+
+                        while (server.IsConnected)
                         {
-                            myProcess.StartInfo.FileName = getCachedFilename(m_job.exeFile);
-                            myProcess.StartInfo.Arguments = args;
-                            myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                            m_logMessageHandler("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+                            //check if we have been asked to cancel
+                            po.CancellationToken.ThrowIfCancellationRequested();
 
-                            //not to read 23.232 as 23232
-                            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-                            myProcess.Start();
-                            addSpawnedProcessToList(myProcess);//m_spawnedProcesses.Add(myProcess);
-
-                            server.WaitForConnection();
-                            XMLStream xmlStream = new XMLStream();
-
-                            string xmlItem;
-                            while (server.IsConnected)
+                            xmlStream.readFromNamedPipeStream(server);
+                            xmlItem = xmlStream.processNextXMLItem();
+                            if (xmlItem != "")
                             {
-                                //check if we have asked to cancel
-                                po.CancellationToken.ThrowIfCancellationRequested();
-
-                                xmlStream.readFromNamedPipeStream(server);
-                                xmlItem = xmlStream.processNextXMLItem();
-                                if (xmlItem != "")
-                                {
-                                    //checkConnection(m_tcpClient);
-                                    xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + arguments[1] + ">" + xmlItem + "</" + arguments[1] + ">", false);
-                                }
+                                //checkConnection(m_tcpClient);
+                                xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + ">" + xmlItem + "</" + task.pipe + ">", false);
                             }
                             po.CancellationToken.ThrowIfCancellationRequested();
-                            myProcess.WaitForExit();
-
-                            if (myProcess.ExitCode < 0)
-                                returnCode = m_jobInternalErrorCode;
-                            m_logMessageHandler("Exit code: " + myProcess.ExitCode);
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            m_logMessageHandler("Thread finished gracefully");
-                            returnCode = m_remotelyCancelledErrorCode;
-                        }
-                        finally
-                        {
-                            removeSpawnedProcessFromList(myProcess);
-                            server.Close();
                         }
                     }
+                    myProcess.WaitForExit();
+
+                    if (myProcess.ExitCode < 0)
+                        returnCode = m_jobInternalErrorCode;
+                    m_logMessageHandler("Exit code: " + myProcess.ExitCode);
+                }
+                catch (OperationCanceledException)
+                {
+                    m_logMessageHandler("Thread finished gracefully");
+                    returnCode = m_remotelyCancelledErrorCode;
+                }
+                finally
+                {
+                    removeSpawnedProcessFromList(myProcess);
+                    if (server!=null) server.Close();
+                }                    
                 });
             }
             catch (OperationCanceledException)
@@ -283,62 +308,62 @@ namespace Herd
             //Listen for a "quit" message from the client
             Task.Factory.StartNew(() => asyncReadFromClient(m_netStream, token));
         }
-        public static void CommunicationCallback(IAsyncResult ar)
+        public void CommunicationCallback(IAsyncResult ar)
         {
-            HerdAgent herdAgent = ((HerdAgentTcpState)(ar.AsyncState)).herdAgent;
-            if (herdAgent.getState() != AgentState.BUSY)
+            //HerdAgent herdAgent = ((HerdAgentTcpState)(ar.AsyncState)).herdAgent;
+            if (getState() != AgentState.BUSY)
             {
-                herdAgent.acceptJobQuery(ar);
+                acceptJobQuery(ar);
  
                 CancellationTokenSource cancelToken = new CancellationTokenSource();
                 try
                 {
-                    herdAgent.setState(AgentState.BUSY);
+                    setState(AgentState.BUSY);
 
-                    herdAgent.read();
-                    string xmlItem = herdAgent.processNextXMLItem();
+                    read();
+                    string xmlItem = m_xmlStream.processNextXMLItem();
                     string xmlItemContent;
                     int returnCode;
 
                     if (xmlItem != "")
                     {
-                        xmlItemContent = herdAgent.getLastXMLItemContent();
+                        xmlItemContent = m_xmlStream.getLastXMLItemContent();
                         if (xmlItemContent == CJobDispatcher.m_cleanCacheMessage)
                         {
                             //not yet implemented in the herd client, just in case...
-                            herdAgent.logMessage("Cleaning cache directory");
-                            herdAgent.cleanCacheDir();
+                            logMessage("Cleaning cache directory");
+                            cleanCacheDir();
                         }
                         else if (xmlItemContent == CJobDispatcher.m_acquireMessage)
                         {
-                            herdAgent.logMessage("Receiving job data from" 
-                                + herdAgent.getTcpClient().Client.RemoteEndPoint.ToString());
-                            if (herdAgent.ReceiveJobQuery())
+                            logMessage("Receiving job data from" 
+                                + getTcpClient().Client.RemoteEndPoint.ToString());
+                            if (ReceiveJobQuery())
                             {
-                                herdAgent.listenForQuitCommand(cancelToken.Token);
+                                listenForQuitCommand(cancelToken.Token);
 
                                 //run the job
-                                herdAgent.logMessage("Running job");
-                                returnCode = herdAgent.RunJob();
+                                logMessage("Running job");
+                                returnCode = RunJob();
 
-                                if (returnCode == HerdAgent.m_noErrorCode)
+                                if (returnCode == m_noErrorCode)
                                 {
-                                    herdAgent.logMessage("Job finished");
-                                    herdAgent.writeMessage(CJobDispatcher.m_endMessage, true);
+                                    logMessage("Job finished");
+                                    writeMessage(CJobDispatcher.m_endMessage, true);
 
-                                    herdAgent.logMessage("Sending job results");
-                                    herdAgent.SendJobResult();
+                                    logMessage("Sending job results");
+                                    SendJobResult();
 
-                                    herdAgent.logMessage("Job results sent");
+                                    logMessage("Job results sent");
                                 }
-                                else if (returnCode == HerdAgent.m_jobInternalErrorCode)
+                                else if (returnCode == m_jobInternalErrorCode)
                                 {
-                                    herdAgent.logMessage("The job returned an error code");
-                                    herdAgent.writeMessage(CJobDispatcher.m_errorMessage, true);
+                                    logMessage("The job returned an error code");
+                                    writeMessage(CJobDispatcher.m_errorMessage, true);
                                 }
-                                else if (returnCode == HerdAgent.m_remotelyCancelledErrorCode)
+                                else if (returnCode == m_remotelyCancelledErrorCode)
                                 {
-                                    herdAgent.logMessage("The job was remotely cancelled");
+                                    logMessage("The job was remotely cancelled");
                                 }
                             }
                         }
@@ -346,47 +371,47 @@ namespace Herd
                 }
                 catch (Exception ex)
                 {
-                    herdAgent.logMessage(ex.ToString() + ex.InnerException + ex.StackTrace);
+                    logMessage(ex.ToString() + ex.InnerException + ex.StackTrace);
                 }
                 finally
                 {
                     cancelToken.Cancel();
                     cancelToken.Dispose();
-                    herdAgent.getTcpClient().Close();
-                    herdAgent.setState(AgentState.AVAILABLE);
+                    getTcpClient().Close();
+                    setState(AgentState.AVAILABLE);
 
                     //try to recover
                     //start listening again
                     HerdAgentTcpState tcpState = new HerdAgentTcpState();
                     tcpState.ip = new IPEndPoint(0, 0);
-                    herdAgent.getTcpServer().Start();
-                    herdAgent.getTcpServer().BeginAcceptTcpClient(CommunicationCallback, tcpState);
+                    getTcpServer().Start();
+                    getTcpServer().BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
             }
         }
 
-        public static void DiscoveryCallback(IAsyncResult ar)
+        public void DiscoveryCallback(IAsyncResult ar)
         {
             IPEndPoint ip = ((HerdAgentUdpState)ar.AsyncState).ip;
-            HerdAgent herdAgent = ((HerdAgentUdpState)ar.AsyncState).herdAgent;
+            //HerdAgent herdAgent = ((HerdAgentUdpState)ar.AsyncState).herdAgent;
 
-            Byte[] receiveBytes = herdAgent.getUdpClient().EndReceive(ar, ref ip);
+            Byte[] receiveBytes = getUdpClient().EndReceive(ar, ref ip);
             string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
             if (receiveString == CJobDispatcher.m_discoveryMessage)
             {
-                if (herdAgent.getState() == AgentState.AVAILABLE)
+                //if (getState() == AgentState.AVAILABLE)
                 {
-                    herdAgent.logMessage("Agent discovered by " + ip.ToString());
-                    string agentDescription = herdAgent.getAgentDescription();
+                    logMessage("Agent discovered by " + ip.ToString() + ". Current state=" + getStateString());
+                    string agentDescription = getAgentDescription();
                     byte[] data = Encoding.ASCII.GetBytes(agentDescription);
-                    herdAgent.getUdpClient().Send(data, data.Length, ip);
+                    getUdpClient().Send(data, data.Length, ip);
                 }
-                else herdAgent.logMessage("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
+                //else logMessage("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
             }
-            else herdAgent.logMessage("Message received by " + ip.ToString() + " not understood: " + receiveString);
+            else logMessage("Message received by " + ip.ToString() + " not understood: " + receiveString);
 
-            herdAgent.getUdpClient().BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
+            getUdpClient().BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
         }
         public void startListening()
         {
@@ -395,7 +420,7 @@ namespace Herd
             HerdAgentUdpState state = new HerdAgentUdpState();
             IPEndPoint shepherd = new IPEndPoint(0, 0);
             state.ip = shepherd;
-            state.herdAgent = this;
+           // state.herdAgent = this;
             m_discoveryClient.BeginReceive(DiscoveryCallback, state);
             
 
@@ -404,7 +429,7 @@ namespace Herd
             m_listener.Start();
             HerdAgentTcpState tcpState = new HerdAgentTcpState();
             tcpState.ip = shepherd;
-            tcpState.herdAgent = this;
+            //tcpState.herdAgent = this;
             
             m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
         }

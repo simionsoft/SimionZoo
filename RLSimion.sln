@@ -58,6 +58,11 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "HerdAgentInstaller", "tools
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerdShepherd", "tools\HerdShepherd\HerdShepherd.csproj", "{68708FE6-2C6F-4817-B20E-96E294A15565}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "HerdAgentUnattendedUpdater", "tools\HerdAgentUnattendedUpdater\HerdAgentUnattendedUpdater.wixproj", "{DE422EA9-87E7-4870-9493-5EC44239F293}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3917EF51-812D-40C0-A742-DB73CAFC0918} = {3917EF51-812D-40C0-A742-DB73CAFC0918}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -247,6 +252,22 @@ Global
 		{68708FE6-2C6F-4817-B20E-96E294A15565}.Release|Win32.ActiveCfg = Release|Any CPU
 		{68708FE6-2C6F-4817-B20E-96E294A15565}.Release|x64.ActiveCfg = Release|Any CPU
 		{68708FE6-2C6F-4817-B20E-96E294A15565}.Release|x86.ActiveCfg = Release|Any CPU
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|Win32.ActiveCfg = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|Win32.Build.0 = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|x64.ActiveCfg = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|x86.ActiveCfg = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Debug|x86.Build.0 = Debug|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|Any CPU.ActiveCfg = Release|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|Mixed Platforms.Build.0 = Release|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|Win32.ActiveCfg = Release|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|Win32.Build.0 = Release|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|x64.ActiveCfg = Release|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|x86.ActiveCfg = Release|x86
+		{DE422EA9-87E7-4870-9493-5EC44239F293}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -261,5 +282,6 @@ Global
 		{1ADDBF7A-4064-42FB-846F-7D22E8BB9B5B} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
 		{E0549B29-972D-42D6-BC5F-DDC6838FCA82} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
 		{68708FE6-2C6F-4817-B20E-96E294A15565} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
+		{DE422EA9-87E7-4870-9493-5EC44239F293} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
 	EndGlobalSection
 EndGlobal

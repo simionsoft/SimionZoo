@@ -67,6 +67,7 @@ namespace Herd
 
     public class Shepherd : CJobDispatcher
     {
+        private object m_agentListLock= new object();
         private static Dictionary<IPEndPoint,HerdAgentDescription> m_herdAgentList
             = new Dictionary<IPEndPoint,HerdAgentDescription>();
         UdpClient m_discoverySocket;
@@ -82,7 +83,7 @@ namespace Herd
         }
 
 
-        public static void DiscoveryCallback(IAsyncResult ar)
+        public void DiscoveryCallback(IAsyncResult ar)
         {
             XMLStream inputXMLStream = new XMLStream();
             UdpClient u = (UdpClient)((ShepherdUdpState)(ar.AsyncState)).client;
@@ -97,10 +98,14 @@ namespace Herd
                 xmlDescription = XElement.Parse(herdAgentXMLDescription);
                 HerdAgentDescription herdAgentDescription = new HerdAgentDescription();
                 herdAgentDescription.parse(xmlDescription);
-                if (!m_herdAgentList.ContainsKey(ip))
-                    m_herdAgentList.Add(ip, herdAgentDescription);
-                else
-                    m_herdAgentList[ip] = herdAgentDescription;
+
+                lock (m_agentListLock)
+                {
+                    if (!m_herdAgentList.ContainsKey(ip))
+                        m_herdAgentList.Add(ip, herdAgentDescription);
+                    else
+                        m_herdAgentList[ip] = herdAgentDescription;
+                }
 
                 u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
             }
@@ -133,55 +138,85 @@ namespace Herd
             //send slave acquire message
             m_xmlStream.writeMessage(m_netStream, CJobDispatcher.m_acquireMessage, true);
         }
-        public Dictionary<IPEndPoint, HerdAgentDescription> getHerdAgentList()
+        public void disconnect()
         {
-            return m_herdAgentList;
+            m_tcpClient.Close();
+            m_tcpClient = null;
         }
-        public int getAvailableHerdAgentListAndCores(ref Dictionary<IPEndPoint,int> outHerdAgentList)
+        public void getHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentDescription> outDictionary)
+        {
+            outDictionary.Clear();
+            lock (m_agentListLock)
+            {
+                foreach (var agent in m_herdAgentList)
+                    outDictionary.Add(agent.Key, agent.Value);
+            }
+        }
+        public int getAvailableHerdAgentListAndCores(ref Dictionary<IPEndPoint, int> outHerdAgentList)
         {
             int numCores;
-            int numCoresTotal= 0;
+            int numCoresTotal = 0;
             outHerdAgentList.Clear();
-            foreach(var agent in m_herdAgentList)
+            lock (m_agentListLock)
             {
-                string numCoresString = agent.Value.getProperty("NumberOfProcessors");
-                if (numCoresString!="n/a")
+                foreach (var agent in m_herdAgentList)
                 {
-                    try
+                    string state = agent.Value.getProperty("State");
+                    string numCoresString = agent.Value.getProperty("NumberOfProcessors");
+                    if (state == "available" && numCoresString != "n/a")
                     {
-                        numCores = Int32.Parse(numCoresString);
-                        numCoresTotal += numCores;
-                        outHerdAgentList.Add(agent.Key, numCores);
-                    }
-                    catch (Exception)
-                    {
-                        //we ignore possible errors parsing the string
+                        try
+                        {
+                            numCores = Int32.Parse(numCoresString);
+                            numCoresTotal += numCores;
+                            outHerdAgentList.Add(agent.Key, numCores);
+                        }
+                        catch (Exception)
+                        {
+                            //we ignore possible errors parsing the string
+                        }
                     }
                 }
+                return numCoresTotal;
             }
-            return numCoresTotal;
-        }
-        
+        }        
 
         public void SendJobQuery(CJob job)
         {
             m_job = job;
             SendJobHeader();
-            SendExeFiles(true);
+            SendTasks();
+            //SendExeFiles(true);
             SendInputFiles(true);
             SendOutputFiles(false);
             SendJobFooter();
         }
         public bool ReceiveJobResult()
         {
-            m_job.comLineArgs.Clear();
+            bool bFooterPeeked= false;
+            string xmlTag = "";
+            m_job.tasks.Clear();
             m_job.inputFiles.Clear();
             m_job.outputFiles.Clear();
 
             ReceiveJobHeader();
-            ReceiveExeFiles(false, false);
-            ReceiveInputFiles(false, false);
-            ReceiveOutputFiles(true, false);
+
+            do
+            {
+                ReadFromStream();
+                xmlTag= m_xmlStream.peekNextXMLTag();
+                switch(xmlTag)
+                {
+                    case "Task": ReceiveTask(); break;
+                    case "Input": ReceiveFile(FileType.INPUT, false, false); break;
+                    case "Output": ReceiveFile(FileType.OUTPUT, true, false); break;
+                    case "/Job": bFooterPeeked= true; break;
+                }
+            } while (!bFooterPeeked);
+
+            //ReceiveExeFiles(false, false);
+            //ReceiveInputFiles(false, false);
+            //ReceiveOutputFiles(true, false);
             ReceiveJobFooter();
 
             return true;//if job result properly received. For now, we will assume it}

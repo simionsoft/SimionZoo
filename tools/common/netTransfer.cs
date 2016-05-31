@@ -16,27 +16,41 @@ using Herd;
 
 namespace Herd
 {
-
+    public class CTask
+    {
+        public string exe;
+        public string arguments;
+        public string pipe;
+        public string name;
+        public CTask()
+        {
+            name = "";
+            exe = "";
+            arguments = "";
+            pipe = "";
+        }
+    }
     public class CJob
     {
         public string name;
+        public List<CTask> tasks;
         public List<string> inputFiles;
         public List<string> outputFiles;
-        public string exeFile;
-        public List<string> comLineArgs;
+        //public List<string> pipes;
+        //public string exeFile;
+        //public List<string> comLineArgs;
 
         public CJob()
         {
             //comLineArgs = "";
             name = "";
-            exeFile = "";
-            comLineArgs = new List<string>();
+            tasks = new List<CTask>();
             inputFiles = new List<string>();
             outputFiles = new List<string>();
         }
     }
 
-    public enum FileType { EXE, INPUT, OUTPUT };
+    public enum FileType { INPUT, OUTPUT };
     public class CJobDispatcher
     {
         public XMLStream m_xmlStream;
@@ -63,9 +77,6 @@ namespace Herd
 
         protected static string m_tempDir;
         protected CJob m_job;
-        protected int m_numInputFilesRead;
-        protected int m_numOutputFilesRead;
-        protected int m_numTasksRead;
 
         public delegate void LogMessageHandler(string logMessage);
         protected LogMessageHandler m_logMessageHandler;
@@ -75,9 +86,6 @@ namespace Herd
             m_job = new CJob();
             m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
-            m_numInputFilesRead = 0;
-            m_numOutputFilesRead = 0;
-            m_numTasksRead = 0;
             m_tempDir = "";
             m_logMessageHandler = null;
         }
@@ -95,20 +103,8 @@ namespace Herd
             ////checkConnection(m_tcpClient);
             m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
-        public string processNextXMLItem()
-        {
-            return m_xmlStream.processNextXMLItem();
-        }
-        public string processNextXMLTag()
-        {
-            return m_xmlStream.processNextXMLTag();
-        }
-        public string getLastXMLItemContent()
-        {
-            return m_xmlStream.getLastXMLItemContent();
-        }
 
-        protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
+        //protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
         protected void SendInputFiles(bool sendContent)
         {
             foreach (string file in m_job.inputFiles)
@@ -123,17 +119,32 @@ namespace Herd
                 SendFile(file, FileType.OUTPUT, sendContent, true);
             }
         }
+        protected void SendTasks() { foreach (CTask task in m_job.tasks) SendTask(task); }
+        protected void SendTask(CTask task)
+        {
+            string taskXML = "<Task Name=\"" + task.name + "\"";
+            taskXML += " Exe=\"" + task.exe + "\"";
+            taskXML += " Arguments=\"" + task.arguments + "\"";
+            taskXML += " Pipe=\"" + task.pipe + "\"";
+            taskXML += "/>";
+            byte[] bytes= Encoding.ASCII.GetBytes(taskXML);
+            m_netStream.Write(bytes, 0, bytes.Length);
+        }
+        public void ReceiveTask()
+        {
+            CTask task = new CTask();
+            Match match;
+            match= ReadUntilMatch("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>");
+            task.name = match.Groups[1].Value;
+            task.exe = match.Groups[2].Value;
+            task.arguments = match.Groups[3].Value;
+            task.pipe = match.Groups[4].Value;
+            m_job.tasks.Add(task);
+        }
+ 
         protected void SendJobHeader()
         {
-            string header = "<Job Name=\"" + m_job.name + "\" NumTasks=\""
-                + m_job.comLineArgs.Count + "\" NumInputFiles=\"" + m_job.inputFiles.Count + "\" NumOutputFiles=\""
-                + m_job.outputFiles.Count + "\">";
-            string args = "";// "<Args>";
-            foreach (string arg in m_job.comLineArgs)
-            {
-                args += "<Arg>" + arg + "</Arg>";
-            }
-            header += args;
+            string header = "<Job Name=\"" + m_job.name + "\">";
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             //checkConnection(m_tcpClient);
             m_netStream.Write(headerbytes, 0, headerbytes.Length);
@@ -151,12 +162,12 @@ namespace Herd
             byte[] headerBytes;
             string footer = "";
 
-            if (type == FileType.EXE)
+           /* if (type == FileType.EXE)
             {
                 header = "<Exe Name=\"" + fileName + "\" ComLineArgs=\"" + m_job.comLineArgs + "\"";
                 if (sendContent) footer = "</Exe>";
             }
-            else if (type == FileType.INPUT)
+            else */if (type == FileType.INPUT)
             {
                 header = "<Input Name=\"" + fileName + "\"";
                 if (sendContent) footer = "</Input>";
@@ -234,7 +245,7 @@ namespace Herd
             //checkConnection(m_tcpClient);
             m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
-        public void ReceiveJobHeader()
+        public Match ReadUntilMatch(string pattern)
         {
             Match match;
             string header;
@@ -244,30 +255,33 @@ namespace Herd
                 ReadFromStream();
                 header = m_xmlStream.processNextXMLTag();//Encoding.ASCII.GetString(m_buffer);
 
-                match = Regex.Match(header, "<Job Name=\"([^\"]*)\" NumTasks=\"([^\"]*)\" NumInputFiles=\"([^\"]*)\" NumOutputFiles=\"([^\"]*)\">");
+                match = Regex.Match(header, pattern);
             }
             while (!match.Success);
 
+            return match;
+        }
+        public void ReceiveJobHeader()
+        {
+            Match match;
+            match= ReadUntilMatch("<Job Name=\"([^\"]*)\">");
+
             m_job.name = match.Groups[1].Value;
-            m_numTasksRead = Int32.Parse(match.Groups[2].Value);
-            m_numInputFilesRead = Int32.Parse(match.Groups[3].Value);
-            m_numOutputFilesRead = Int32.Parse(match.Groups[4].Value);
 
-            //read arguments
-            for (int i = 0; i < m_numTasksRead; i++)
-            {
-                ReadFromStream();
-                header = m_xmlStream.processNextXMLItem();//Encoding.ASCII.GetString(m_buffer);
+            ////read arguments
+            //for (int i = 0; i < m_numTasksRead; i++)
+            //{
+            //    ReadFromStream();
+            //    header = m_xmlStream.processNextXMLItem();//Encoding.ASCII.GetString(m_buffer);
 
-                match = Regex.Match(header, "<Arg>([^<]*)</Arg>");
+            //    match = Regex.Match(header, "<Arg>([^<]*)</Arg>");
 
-                m_job.comLineArgs.Add(match.Groups[1].Value);
-                //m_bufferOffset += match.Index + match.Length;
-            }
+            //    m_job.comLineArgs.Add(match.Groups[1].Value);
+            //}
 
             ReadFromStream(); //we shift the buffer to the left skipping the processed header
         }
-
+   
         protected void ReceiveJobFooter()
         {
             Match match;
@@ -282,8 +296,8 @@ namespace Herd
             while (!match.Success);
             // m_bufferOffset += match.Index + match.Length;
         }
-        protected void ReceiveExeFiles(bool receiveContent,bool inCachedDir) { ReceiveFile(FileType.EXE, receiveContent, inCachedDir); }
-        protected void ReceiveInputFiles(bool receiveContent, bool inCachedDir)
+        //protected void ReceiveExeFiles(bool receiveContent,bool inCachedDir) { ReceiveFile(FileType.EXE, receiveContent, inCachedDir); }
+        /*protected void ReceiveInputFiles(bool receiveContent, bool inCachedDir)
         {
             for (int i = 0; i < m_numInputFilesRead; i++)
             {
@@ -294,7 +308,7 @@ namespace Herd
         {
             for (int i = 0; i < m_numOutputFilesRead; i++)
                 ReceiveFile(FileType.OUTPUT, receiveContent, inCachedDir);
-        }
+        }*/
 
         protected void ReceiveFile(FileType type, bool receiveContent, bool inCachedDir)
         {
@@ -310,50 +324,21 @@ namespace Herd
         {
             Match match;
 
-            do
-            {
-                ReadFromStream();
-                string header = m_xmlStream.processNextXMLTag();// Encoding.ASCII.GetString(m_buffer);
+            if (receiveContent)
+                match = ReadUntilMatch("<(Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">");
+            else match = ReadUntilMatch("<(Input|Output) Name=\"([^\"]*)\"/>");
 
-                if (type == FileType.EXE)
-                {
-                    if (receiveContent)
-                        match = Regex.Match(header, "<(Exe) Name=\"([^\"]*)\" ComLineArgs=\"([^\"]*)\" Size=\"([^\"]*)\">");
-                    else match = Regex.Match(header, "<(Exe) Name=\"([^\"]*)\" ComLineArgs=\"([^\"]*)\"/>");
-                }
-                else
-                {
-                    if (receiveContent)
-                        match = Regex.Match(header, "<(Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">");
-                    else match = Regex.Match(header, "<(Input|Output) Name=\"([^\"]*)\"/>");
-                }
-            }
-            while (!match.Success);
-
-
-            if ((match.Groups[1].Value == "Exe" && type != FileType.EXE)
-                || (match.Groups[1].Value == "Input" && type != FileType.INPUT)
+            if ( (match.Groups[1].Value == "Input" && type != FileType.INPUT)
                 || (match.Groups[1].Value == "Output" && type != FileType.OUTPUT))
                 Debug.Assert(false, "The type of the file received missmatches the expected file type");
+           
+            if (type == FileType.INPUT) m_job.inputFiles.Add(match.Groups[2].Value);
+            else m_job.outputFiles.Add(match.Groups[2].Value);
 
-            if (type == FileType.EXE)
-            {
+            m_nextFileName = match.Groups[2].Value;
 
-                m_job.exeFile = match.Groups[2].Value;
-                m_nextFileName = match.Groups[2].Value;
-                if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[4].Value);
-                else m_nextFileSize = 0;
-            }
-            else
-            {
-                if (type == FileType.INPUT) m_job.inputFiles.Add(match.Groups[2].Value);
-                else m_job.outputFiles.Add(match.Groups[2].Value);
-
-                m_nextFileName = match.Groups[2].Value;
-
-                if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
-                else m_nextFileSize = 0;
-            }
+            if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
+            else m_nextFileSize = 0;
 
             //We create the necessary directories for the file, be it an exe, an input or an output file
             string outputFilename;
@@ -368,19 +353,7 @@ namespace Herd
         protected void ReceiveFileFooter(FileType type)
         {
             Match match;
-
-            do
-            {
-                ReadFromStream();
-                string header = m_xmlStream.processNextXMLTag();// Encoding.ASCII.GetString(m_buffer);
-
-                if (type == FileType.EXE) match = Regex.Match(header, "</Exe>");
-                else if (type == FileType.INPUT) match = Regex.Match(header, "</Input>");
-                else match = Regex.Match(header, "</Output>");
-            }
-            while (!match.Success);
-
-            //m_bufferOffset += match.Length + match.Index;
+            match = ReadUntilMatch("</(Input|Output)>");
         }
         protected int SaveBufferToFile(FileStream outputFile, int bytesLeft)
         {
@@ -426,7 +399,7 @@ namespace Herd
         private int m_bytesInBuffer;
         private byte[] m_buffer;
         private Match m_match;
-        private int m_maxChunkSize = 1024;
+        private int m_maxChunkSize = 65536;
         private string m_asciiBuffer;
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
@@ -521,11 +494,24 @@ namespace Herd
         }
         public string peekNextXMLTag()
         {
-            return processNextXMLTag(false);
+            if (m_bytesInBuffer > 0)
+            {
+                m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
+
+                //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
+                ////this should return the whole message
+                m_match = Regex.Match(m_asciiBuffer, @"<([^\s>]*)");
+
+                if (m_match.Success)
+                {
+                    return m_match.Groups[1].Value;
+                }
+            }
+            return "";
         }
         //returns the next complete xml element (NO ATTRIBUTES!!) in the stream
         //empty string if there was none
-        public string processNextXMLTag(bool bMarkAsProcessed=true)
+        public string processNextXMLTag()
         {
             if (m_bytesInBuffer > 0)
             {
@@ -537,7 +523,7 @@ namespace Herd
 
                 if (m_match.Success)
                 {
-                    if (bMarkAsProcessed) m_bufferOffset += m_match.Index + m_match.Length;
+                    m_bufferOffset += m_match.Index + m_match.Length;
                     m_lastXMLItem = m_match.Value;
                     return m_match.Value;
                 }
@@ -554,11 +540,21 @@ namespace Herd
             }
             return "";
         }
+        public string getLastXMLItemTagAndAttributes()
+        {
+            if (m_lastXMLItem != "")
+            {
+                m_match = Regex.Match(m_lastXMLItem, @"<([^\s]*)[^\>]*>");//@"<([^>]*)>[^<]*?<");
+                if (m_match.Success)
+                    return m_match.Groups[1].Value;
+            }
+            return "";
+        }
         public string getLastXMLItemTag()
         {
             if (m_lastXMLItem != "")
             {
-                m_match = Regex.Match(m_lastXMLItem, @"<([^>]*)>[^<]*?<");
+                m_match = Regex.Match(m_lastXMLItem, @"<([^\s\>]*)");
                 if (m_match.Success)
                     return m_match.Groups[1].Value;
             }
