@@ -168,8 +168,8 @@ namespace Herd
                         try
                         {
                             numCores = Int32.Parse(numCoresString);
-                            numCoresTotal += numCores;
-                            outHerdAgentList.Add(agent.Key, numCores);
+                            numCoresTotal += numCores-1;
+                            outHerdAgentList.Add(agent.Key, numCores-1);
                         }
                         catch (Exception)
                         {
