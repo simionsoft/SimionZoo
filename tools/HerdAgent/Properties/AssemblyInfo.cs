@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("HerdAgent")]
 [assembly: AssemblyDescription("Herd agent service that receives distributed jobs and returns output files.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("GIC-SimionSoft")]
+[assembly: AssemblyCompany("GCI-SimionSoft")]
 [assembly: AssemblyProduct("HerdAgent")]
-[assembly: AssemblyCopyright("Copyright GIC-SimionSoft ©  2016")]
+[assembly: AssemblyCopyright("Copyright GCI-SimionSoft ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
