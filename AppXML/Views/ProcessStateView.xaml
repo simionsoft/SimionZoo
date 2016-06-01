@@ -4,15 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel Orientation="Vertical" >
-        <Label x:Name="Label"></Label>
-        <StackPanel Orientation="Horizontal">      
-            <Label x:Name="SMS"></Label> 
-            <Button x:Name="OpenSMS"  Width="27" Height="27" Visibility="{Binding OpenVisible}">
-                <Image Source="./images/lupa.jpg" Width="25" Height="25"></Image>
-            </Button>
+             d:DesignHeight="100" d:DesignWidth="300">
+    <GroupBox BorderThickness="1" BorderBrush="DimGray">
+        <StackPanel Orientation="Vertical" Margin="0,3">
+            <Label x:Name="Label" Margin="30,0"/>
+            <StackPanel Orientation="Horizontal">
+                <Label x:Name="SMS" Margin="30,0,10,0" Width="200"/>
+                <Button x:Name="OpenSMS"  Width="27" Height="27" Visibility="{Binding OpenVisible}">
+                    <Image Source="./images/lupa.jpg" Width="25" Height="25"></Image>
+                </Button>
         </StackPanel>
-        <ProgressBar Minimum="0" Maximum="100" x:Name="Status" Height="25"></ProgressBar>
+
+        <ProgressBar Minimum="0" Maximum="100" x:Name="Status" Height="15" Margin="30,0"></ProgressBar>
+       
     </StackPanel>
+    </GroupBox>
 </UserControl>

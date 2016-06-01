@@ -16,7 +16,7 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
+    <StackPanel Orientation="Vertical" Margin="-15,0,15,0">
         <StackPanel Orientation="Horizontal">
             <ItemsControl x:Name="AddedXml">
                 <ItemsControl.ItemsPanel>

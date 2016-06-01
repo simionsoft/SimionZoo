@@ -76,8 +76,6 @@ namespace Herd
         public Shepherd()
         {
 
-            //m_xmlStream.resizeBuffer(tcpClient.SendBufferSize);
-
             m_discoverySocket = new UdpClient();
             m_discoverySocket.EnableBroadcast = true;
         }
@@ -134,6 +132,7 @@ namespace Herd
         {
             m_tcpClient = new TcpClient();
             m_tcpClient.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+            m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
             m_netStream= m_tcpClient.GetStream();
             //send slave acquire message
             m_xmlStream.writeMessage(m_netStream, CJobDispatcher.m_acquireMessage, true);

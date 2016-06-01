@@ -13,10 +13,10 @@
             <Label Margin="10,0,10,0" x:Name="Message">
             </Label>
             <TextBox Margin="10,0,10,0" x:Name="Text" Height="auto" Visibility="{Binding AnswerVisibility}"></TextBox>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,10,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,10,0">
                 
-                <Button Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
-                <Button Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
+                <Button Focusable="True" TabIndex="1" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
+                <Button Focusable="True" TabIndex="0" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

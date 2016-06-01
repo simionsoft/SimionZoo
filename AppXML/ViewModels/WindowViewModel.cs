@@ -385,7 +385,7 @@ namespace AppXML.ViewModels
             NotifyOfPropertyChange(() => Graf);
             NotifyOfPropertyChange(() => RemoveChildVisible);
         }
-        public void SaveAll()
+        public void RunExperiments()
         {
             //List<NodeAndName> myList = Graf.getAllLeafs();
             List<string> paths = null;

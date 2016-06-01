@@ -71,7 +71,7 @@
                 <Button Margin="5" x:Name="ModifySelectedLeaf"  Content="Modify" Width="75" Visibility="{Binding IsSelectedNodeLeaf}"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="2" Grid.Column="2">
-                <Button Margin="5,5,5,15" Content="Run"  Width="75" Height="25" Visibility="{Binding AddChildVisible}"  cal:Message.Attach="[Event Click]=[Action SaveAll()]"/>
+                <Button Margin="5,5,5,15" Content="Run"  Width="75" Height="25" Visibility="{Binding AddChildVisible}"  cal:Message.Attach="[Event Click]=[Action RunExperiments()]"/>
                 <Button Margin="5,5,5,15" x:Name="LoadTree" Content="Load tree" Width="75" Height="25"/>
                 <Button Margin="5,5,5,15" x:Name="SaveAllTheNodes" Content="Save tree"  Width="75" Height="25" Visibility="{Binding RemoveChildVisible}"/>
             </StackPanel>

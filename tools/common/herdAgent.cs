@@ -46,7 +46,7 @@ namespace Herd
         public HerdAgent()
         {
             m_state = AgentState.AVAILABLE;
-            //m_xmlStream.resizeBuffer(tcpClient.ReceiveBufferSize);
+            
         }
         public string getDirPath() { return m_dirPath; }
         private void killSpawnedProcesses()
@@ -153,7 +153,7 @@ namespace Herd
             int returnCode = 0;
             cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
-            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            po.MaxDegreeOfParallelism = Environment.ProcessorCount-1;
             po.CancellationToken = cts.Token;
             try
             {
@@ -260,6 +260,7 @@ namespace Herd
         public void acceptJobQuery(IAsyncResult ar)
         {
             m_tcpClient= m_listener.EndAcceptTcpClient(ar);
+            m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
             m_netStream = m_tcpClient.GetStream();
         }
         public async Task asyncReadFromClient(NetworkStream netStream, CancellationToken ct)

@@ -151,7 +151,7 @@ namespace AppXML.ViewModels
                     cts = new CancellationTokenSource();
                 ParallelOptions po = new ParallelOptions();
                 po.CancellationToken = cts.Token;
-                po.MaxDegreeOfParallelism = Environment.ProcessorCount;
+                po.MaxDegreeOfParallelism = Environment.ProcessorCount -1;
                 Parallel.ForEach(slaves.Keys, po, (key) =>
                 {
                     if (indexOffset < Processes.Count)
@@ -364,7 +364,7 @@ namespace AppXML.ViewModels
             if(cts==null)
                 cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
-            po.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            po.MaxDegreeOfParallelism = Environment.ProcessorCount -1;
             po.CancellationToken = cts.Token;
             var t=Task.Factory.StartNew(() =>
             {        

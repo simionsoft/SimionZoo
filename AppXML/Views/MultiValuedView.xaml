@@ -7,6 +7,7 @@
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:v="clr-namespace:AppXML.Views"
              xmlns:help="clr-namespace:AppXML.Views.Help"
+             d:DesignWidth="300"
              mc:Ignorable="d" 
              >
     <UserControl.Resources>
@@ -19,12 +20,11 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
+
         <StackPanel Orientation="Vertical">
             <Label x:Name="Label" ToolTip="{Binding Comment}"/>
-            <ItemsControl x:Name="AdedClasses" />
+        <ItemsControl x:Name="AdedClasses"  Margin="-15,0,15,0"/>
             <ContentControl  x:Name="HeaderClass"/>
         </StackPanel>
        
-    </StackPanel>
 </UserControl>

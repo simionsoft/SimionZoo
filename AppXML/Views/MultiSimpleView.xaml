@@ -8,6 +8,7 @@
              xmlns:v="clr-namespace:AppXML.Views"
              xmlns:help="clr-namespace:AppXML.Views.Help"
              mc:Ignorable="d" 
+             d:DesignWidht="300"
              >
     <UserControl.Resources>
         <ResourceDictionary>

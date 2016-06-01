@@ -7,13 +7,13 @@
              xmlns:z="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" Width="655.224" Height="409.776"
              ResizeMode="CanMinimize"
-             WindowState="Maximized"
+        Background="WhiteSmoke"
         >
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
             <ContentControl x:Name="Manager" />
-            <Button x:Name="CloseWindow" IsEnabled="{Binding isOver}" Content="Close" Width="50"/>
+            <Button Margin="0,10,0,10" x:Name="CloseWindow" IsEnabled="{Binding isOver}" Content="Close" Width="50"/>
         </StackPanel>
     </ScrollViewer>
 </Window>

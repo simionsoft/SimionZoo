@@ -5,15 +5,17 @@
          also provides a different itemspanel for their child items. -->
   <Style TargetType="TreeViewItem">
     <Style.Resources>
-      <LinearGradientBrush x:Key="ItemAreaBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
+
+
+            <LinearGradientBrush x:Key="ItemAreaBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
         <GradientStop Color="#66000000" Offset="0" />
         <GradientStop Color="#22000000" Offset="1" />
-      </LinearGradientBrush>
-      <LinearGradientBrush x:Key="SelectedItemAreaBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
-        <GradientStop Color="Orange" Offset="0" />
-        <GradientStop Color="OrangeRed" Offset="1" />
-      </LinearGradientBrush>
-      <LinearGradientBrush x:Key="ItemBorderBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
+            </LinearGradientBrush>
+                <LinearGradientBrush x:Key="SelectedItemAreaBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
+                    <GradientStop Color="Orange" Offset="0" />
+                    <GradientStop Color="OrangeRed" Offset="1" />
+                </LinearGradientBrush>
+                <LinearGradientBrush x:Key="ItemBorderBrush" StartPoint="0.5, 0" EndPoint="0.5, 1">
         <GradientStop Color="LightGray" Offset="0" />
         <GradientStop Color="Gray" Offset="1" />
       </LinearGradientBrush>

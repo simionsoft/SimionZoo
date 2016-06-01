@@ -7,13 +7,14 @@
              xmlns:vm="clr-namespace:AppXML.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="AppXML.Views.BranchView"
              mc:Ignorable="d" 
+d:DesignHeight="50" d:DesignWidth="300"
              Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
              >
     <UserControl.Resources>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00000000"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#00000000"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#00000000"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#00000000"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="White"/>
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
     
     </UserControl.Resources>
     <Grid>
@@ -21,12 +22,9 @@
             <TreeViewItem IsExpanded="True" >
                 <TreeViewItem.Header>
                     <StackPanel Orientation="Horizontal" Focusable="False">
-                        
-
-                            <Label Content="{Binding Name}" ToolTip="{Binding Comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
+                        <Label Content="{Binding Name}" ToolTip="{Binding Comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
                             <Label.ContextMenu>
                                 <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
-
                                     <MenuItem Header="Copy" cal:Message.Attach="[Event Click]=[Action Copy()]" >
                                         <MenuItem.Icon>
                                             <Image Source="./images/copy.png"></Image>
@@ -39,7 +37,6 @@
                                     </MenuItem>
                                 </ContextMenu>
                             </Label.ContextMenu>
-                            
                         </Label>
                         <CheckBox Content="Used" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsSet}" VerticalAlignment="Center" />
                     </StackPanel>
