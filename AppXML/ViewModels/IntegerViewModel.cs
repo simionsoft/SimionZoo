@@ -66,14 +66,14 @@ namespace AppXML.ViewModels
                 _tag = tag;
             if(param.type== validTypes.DirPathValue)
             {
-                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/folder.jpg", "folder",_comment,param.isOptional);
+                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "/views/images/folder.png", "folder",_comment,param.isOptional);
                 List<TextBoxWithFile> t = new List<TextBoxWithFile>();
                 t.Add(t1);
                 _textBoxFile = new ObservableCollection<TextBoxWithFile>(t);
             }
             else if (param.type==validTypes.FilePathValue)
             {
-                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "images/file.jpg", "file",_comment,param.isOptional);
+                TextBoxWithFile t1 = new TextBoxWithFile(label, param.defaultValue, "/views/images/folder.png", "file",_comment,param.isOptional);
                 List<TextBoxWithFile> t = new List<TextBoxWithFile>();
                 t.Add(t1);
                 _textBoxFile = new ObservableCollection<TextBoxWithFile>(t);

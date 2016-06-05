@@ -22,7 +22,8 @@
     </UserControl.Resources>
 
         <StackPanel Orientation="Vertical">
-            <Label x:Name="Label" ToolTip="{Binding Comment}"/>
+        <Label Foreground="Gray" HorizontalContentAlignment="Left" Width="150" 
+               x:Name="Label" ToolTip="{Binding Comment}"/>
         <ItemsControl x:Name="AdedClasses"  Margin="-15,0,15,0"/>
             <ContentControl  x:Name="HeaderClass"/>
         </StackPanel>

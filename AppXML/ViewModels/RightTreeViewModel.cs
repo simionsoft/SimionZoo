@@ -36,21 +36,21 @@ namespace AppXML.ViewModels
 
         public TreeNode RootNode { get { return rootNode; } set { } }
 
-        public void Change(object sender)
-        {
-            var x = sender as System.Windows.Controls.TreeView;
-            if(selectedTreeNode!=x.SelectedValue as TreeNode)
-            {
-                selectedTreeNode = x.SelectedValue as TreeNode;
-                father.LoadSelectedNode();
-                if (selectedTreeNode!=null && !selectedTreeNode.hasChildren())
-                    father.IsSelectedNodeLeafBool = true;
-                else
-                    father.IsSelectedNodeLeafBool = false;
-            }
+        //public void Change(object sender)
+        //{
+        //    var x = sender as System.Windows.Controls.TreeView;
+        //    if(selectedTreeNode!=x.SelectedValue as TreeNode)
+        //    {
+        //        selectedTreeNode = x.SelectedValue as TreeNode;
+        //        father.LoadSelectedNode();
+        //        if (selectedTreeNode!=null && !selectedTreeNode.hasChildren())
+        //            father.IsSelectedNodeLeafBool = true;
+        //        else
+        //            father.IsSelectedNodeLeafBool = false;
+        //    }
             
             
-        }
+        //}
         public RightTreeViewModel(TreeNode tree, WindowViewModel father)
         {
             _treeItems = new ObservableCollection<TreeNode>();

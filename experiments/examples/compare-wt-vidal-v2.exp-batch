@@ -1,0 +1,10 @@
+<Experiments>
+  <vidal-50 Path="../experiments/examples/compare-wt-vidal-v2/vidal-50/vidal-50.experiment" />
+  <vidal-60 Path="../experiments/examples/compare-wt-vidal-v2/vidal-60/vidal-60.experiment" />
+  <vidal-70 Path="../experiments/examples/compare-wt-vidal-v2/vidal-70/vidal-70.experiment" />
+  <vidal-80 Path="../experiments/examples/compare-wt-vidal-v2/vidal-80/vidal-80.experiment" />
+  <vidal-50-linear Path="../experiments/examples/compare-wt-vidal-v2/vidal-50-linear/vidal-50-linear.experiment" />
+  <vidal-60-linear Path="../experiments/examples/compare-wt-vidal-v2/vidal-60-linear/vidal-60-linear.experiment" />
+  <vidal-70-linear Path="../experiments/examples/compare-wt-vidal-v2/vidal-70-linear/vidal-70-linear.experiment" />
+  <vidal-80-linear Path="../experiments/examples/compare-wt-vidal-v2/vidal-80-linear/vidal-80-linear.experiment" />
+</Experiments>

@@ -99,9 +99,11 @@
     <Compile Include="Models\CIntegerValue.cs" />
     <Compile Include="Models\CMultiValued.cs" />
     <Compile Include="Models\CNode.cs" />
+    <Compile Include="Models\ExperimentStack.cs" />
     <Compile Include="Models\TreeNode.cs" />
     <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\ChoiceViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentStackViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
@@ -196,9 +198,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Views\images\file.JPG" />
-  </ItemGroup>
-  <ItemGroup>
+    <Page Include="Views\ExperimentStackView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\LoadDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -269,14 +272,22 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Views\images\folder.JPG" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Views\images\lupa.JPG" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Views\images\add.png" />
+    <Resource Include="Views\images\cancel.png" />
+    <Resource Include="Views\images\clear.png" />
+    <Resource Include="Views\images\comments.png" />
     <Resource Include="Views\images\copy.png" />
+    <Resource Include="Views\images\folder.png" />
+    <Resource Include="Views\images\info.png" />
+    <Resource Include="Views\images\load.png" />
+    <Resource Include="Views\images\modify.png" />
     <Resource Include="Views\images\paste.png" />
+    <Resource Include="Views\images\play.png" />
+    <Resource Include="Views\images\remove.png" />
+    <Resource Include="Views\images\right.png" />
+    <Resource Include="Views\images\save.png" />
+    <Resource Include="Views\images\stop.png" />
+    <Resource Include="Views\images\tag.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

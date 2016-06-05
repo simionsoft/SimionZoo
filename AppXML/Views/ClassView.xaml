@@ -27,21 +27,22 @@
             <DataTemplate DataType="{x:Type vm:BranchViewModel}">
                 <v:BranchView/>
             </DataTemplate>
+
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical" Margin="-15,0,15,0">
+    <StackPanel Orientation="Vertical" Margin="0">
         <StackPanel Orientation="Horizontal" Visibility="{Binding ResumeVisible}">
             <Button Content="{Binding ItemName}" cal:Message.Attach="[Event Click]=[OpenForm()]" Background="{Binding ButtonColor}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
                 <Button.ContextMenu>
                     <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
                         <MenuItem Header="Copy" cal:Message.Attach="[Event Click]=[Action Copy()]" >
                             <MenuItem.Icon>
-                                <Image Source="./images/copy.png"></Image>
+                                <Image Source="/views/images/copy.png" ToolTip="Copy"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Paste" cal:Message.Attach="[Event Click]=[Action Paste()]" IsEnabled="{Binding PasteEnabled}" >
                             <MenuItem.Icon>
-                                <Image Source="./images/paste.png"></Image>
+                                <Image Source="/views/images/paste.png" ToolTip="Paste"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                     </ContextMenu>
@@ -52,7 +53,7 @@
         <Border BorderThickness="{Binding Border}" CornerRadius="4" BorderBrush="Black">
         <StackPanel Orientation="Horizontal" Margin="{Binding Margin}">
                 <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}"/>
-                <Button x:Name="MultiAction" Content="{Binding MultiButton.content}" Visibility="{Binding MultiButton.visible}" Height="25" VerticalAlignment="Top" ></Button>
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" x:Name="MultiAction" Content="{Binding MultiButton.content}" Visibility="{Binding MultiButton.visible}" Height="25" VerticalAlignment="Top" ></Button>
             </StackPanel>
         </Border>
     </StackPanel>

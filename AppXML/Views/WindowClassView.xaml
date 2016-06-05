@@ -10,10 +10,18 @@
              d:Height="300" d:Width="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel>
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                    <GradientStop Color="#fafafa" Offset="0"/>
+                    <GradientStop Color="#fcfcfc" Offset="0.567"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
             <ContentControl x:Name="Class">
 
             </ContentControl>
-            <Button Width="100" cal:Message.Attach="[Event Click]=[Save()]">Save</Button>
+            <Button Width="30" Height="30" Background="Transparent" cal:Message.Attach="[Event Click]=[Save()]" BorderBrush="{x:Null}" BorderThickness="0">
+                <Image Source="/views/images/save.png" Width="25" Height="25" ></Image>
+            </Button>
         </StackPanel>
     </ScrollViewer>
     

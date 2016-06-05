@@ -15,9 +15,10 @@
         <ItemsControl ItemsSource="{Binding TextBox}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="-15,0,15,0">
-                        <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}" />
-                        <TextBox Text="{Binding Default, Mode=TwoWay}" HorizontalContentAlignment="Right" Width="150" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0">
+                        <Label Content="{Binding Label}" Foreground="Gray" VerticalContentAlignment="Center"
+                               HorizontalContentAlignment="Right" Width="150" ToolTip="{Binding Comment}" FontFamily="Segoe UI Light" />
+                        <TextBox Text="{Binding Default, Mode=TwoWay}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}" BorderThickness="0" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding TextColor}"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -26,8 +27,9 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="-15,0,15,0">
-                        <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}"/>
-                       <ComboBox x:Name="ComboValues" ItemsSource="{Binding ComboValues}"  SelectedItem="{Binding SelectedComboValue}" Width="150" HorizontalContentAlignment="Center"  />
+                        <Label Content="{Binding Label}" Foreground="Gray" VerticalContentAlignment="Center"
+                               HorizontalContentAlignment="Right" Width="150" ToolTip="{Binding Comment}"/>
+                       <ComboBox x:Name="ComboValues" HorizontalContentAlignment="Left" ItemsSource="{Binding ComboValues}"  SelectedItem="{Binding SelectedComboValue}" Width="150" />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -36,12 +38,13 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding Label}" Width="150" ToolTip="{Binding Comment}" />
-                        <Button Width="30"  cal:Message.Attach="[Event Click]=[Action FindPath()]">
-                            <Image Source="{Binding ButtonImage}" Width="20" Height="20"></Image>
-                        </Button>
-                        <Label Content="{Binding Default}" HorizontalAlignment="Right" Width="120"   Background="{Binding TextColor}"/>
-                        
+                        <Label Content="{Binding Label}" Foreground="Gray" VerticalContentAlignment="Center"
+                               HorizontalContentAlignment="Right" Width="150"  ToolTip="{Binding Comment}" />
+
+                        <Label Content="{Binding Default}" HorizontalContentAlignment="Left" Width="100" Background="{Binding TextColor}"/>
+                        <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"  cal:Message.Attach="[Event Click]=[Action FindPath()]">
+                            <Image Source="/views/images/folder.png" Width="25" Height="25"></Image>
+                        </Button>                        
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

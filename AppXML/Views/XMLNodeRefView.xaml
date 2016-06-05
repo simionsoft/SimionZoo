@@ -11,7 +11,8 @@
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
 
-        <Label x:Name="Label" Width="200"/>
+        <Label Foreground="Gray" VerticalContentAlignment="Center"
+                               HorizontalContentAlignment="Right" Width="150"  x:Name="Label" />
         <ComboBox x:Name="Options" SelectedItem="{Binding SelectedOption}" ItemsSource="{Binding Options}" Width="100"/>
     </StackPanel>
 </UserControl>

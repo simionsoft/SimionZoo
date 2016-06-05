@@ -9,14 +9,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-    <StackPanel>
-            <Label Margin="10,0,10,0" x:Name="Message">
+        <ScrollViewer.Background>
+            <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                <GradientStop Color="#fafafa" Offset="0"/>
+                <GradientStop Color="#fcfcfc" Offset="0.567"/>
+            </LinearGradientBrush>
+        </ScrollViewer.Background>
+        <StackPanel>
+            <Label Margin="10,0,10,0" Foreground="Black" VerticalContentAlignment="Center"
+                             FontFamily="Segoe UI Semibold"  HorizontalContentAlignment="Right" Width="100" x:Name="Message" FontSize="16">
             </Label>
             <TextBox Margin="10,0,10,0" x:Name="Text" Height="auto" Visibility="{Binding AnswerVisibility}"></TextBox>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,10,0">
-                
-                <Button Focusable="True" TabIndex="1" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
-                <Button Focusable="True" TabIndex="0" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0,10,0">
+
+
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" Focusable="True" TabIndex="1" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" Focusable="True" TabIndex="0" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>
