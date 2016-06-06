@@ -15,14 +15,23 @@ namespace AppXML.ViewModels
     {
 
         private ButtonToWindowedClassViewModel _father;
-
-        public ClassViewModel Class { get { return _father.windowedClassVM; }
-            set { _father.windowedClassVM = value; }
+        private ClassViewModel m_Class;
+        public ClassViewModel Class { get { return m_Class; }
+            set { m_Class = value; }
         }
 
-        public WindowClassViewModel(string className,ButtonToWindowedClassViewModel father,XmlDocument doc)
+        public bool validate()
+        {
+            return m_Class.validate(true);
+        }
+
+        public WindowClassViewModel(string className,string name,ButtonToWindowedClassViewModel father,XmlDocument doc)
         {
             _father = father;
+            m_Class = new ClassViewModel(className, name, false, doc);
+            validate();
+
+            Models.CApp.addNewClass(m_Class);
 
             //if (father.windowedClassVM == null)
             //{
@@ -40,7 +49,7 @@ namespace AppXML.ViewModels
         {
             
            // _father.ResumeClass = this.Class;
-            bool ok = Class.validate(false);
+            bool ok = validate();
             //string c = _father.ResumeClass.Multis[0].HeaderClass.Choice.Class.XMLNODE[0].SelectedOption;
             if (!ok)
             {

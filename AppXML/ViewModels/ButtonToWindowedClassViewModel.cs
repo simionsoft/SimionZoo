@@ -17,8 +17,8 @@ namespace AppXML.ViewModels
         private string m_buttonColor= "Transparent";
         public string buttonColor { get { return m_buttonColor; } set { m_buttonColor = value; } }
         
-        private ClassViewModel m_windowedClassVM;
-        public ClassViewModel windowedClassVM { get { return m_windowedClassVM; } set { m_windowedClassVM = value; } }
+        private WindowClassViewModel m_windowedClassVM;
+        public WindowClassViewModel windowedClassVM { get { return m_windowedClassVM; } set { m_windowedClassVM = value; } }
 
         private string _tag;
 
@@ -26,17 +26,17 @@ namespace AppXML.ViewModels
 
         private string m_name = "";
         public string name { get { return m_name; } set { m_name = value; } }
-        public ClassViewModel Class { get { return m_windowedClassVM; } set { m_windowedClassVM = value; } }
+        public WindowClassViewModel Class { get { return m_windowedClassVM; } set { m_windowedClassVM = value; } }
 
         public ButtonToWindowedClassViewModel(XmlNode xmlNode,XmlDocument doc)
         {
             m_name = xmlNode.Attributes["Name"].Value;
             m_className= xmlNode.Attributes["Class"].Value;
 
-            m_windowedClassVM= new ClassViewModel(m_className,m_name,doc);
-            m_windowedClassVM.validate(true);
+            m_windowedClassVM= new WindowClassViewModel(m_className,m_name,this,doc);
+            bool val= m_windowedClassVM.validate();
 
-            Models.CApp.addNewClass(m_windowedClassVM);
+            
             _tag = xmlNode.Attributes["Name"].Value;
             m_buttonColor = "Transparent";
             _doc = doc;
@@ -59,46 +59,17 @@ namespace AppXML.ViewModels
 
 
         }
-        //public void Save()
-        //{
 
-        //    // _father.ResumeClass = this.Class;
-        //    bool ok = Class.validate(false);
-        //    //string c = _father.ResumeClass.Multis[0].HeaderClass.Choice.Class.XMLNODE[0].SelectedOption;
-        //    if (!ok)
-        //    {
-        //        m_buttonColor = "Red";
-        //        DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);
-        //        dynamic settings = new ExpandoObject();
-        //        settings.WindowStyle = WindowStyle.ToolWindow;
-        //        settings.ShowInTaskbar = true;
-        //        settings.Title = "WARNING";
-
-        //        new WindowManager().ShowDialog(dvm, null, settings);
-
-        //        if (dvm.DialogResult == DialogViewModel.Result.OK)
-        //        {
-        //            //TryClose();
-        //        }
-        //    }
-        //    else
-        //    {
-
-        //        m_buttonColor = "Transparent";
-        //       // TryClose();
-        //    }
-
-        //}
         public override bool validate()
         {
 
-            return Class.validate(true);//
+            return m_windowedClassVM.validate();//
         }
         public override List<XmlNode> getXmlNode()
         {
             XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
             XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
-            foreach (XmlNode child in Class.getXmlNodes())
+            foreach (XmlNode child in m_windowedClassVM.Class.getXmlNodes())
             {
                 if (child != null)
                     lastChild.AppendChild(child);
