@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="AppXML.Views.ButtonToWindowedClassView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:vm="clr-namespace:AppXML.ViewModels"
+             xmlns:v="clr-namespace:AppXML.Views"
+             mc:Ignorable="d" 
+             d:Height="300" d:Width="300">
+
+    <StackPanel Orientation="Horizontal">
+        <!--<StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                    <GradientStop Color="#fafafa" Offset="0"/>
+                    <GradientStop Color="#fcfcfc" Offset="0.567"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>-->
+        <Label Content="{Binding name}" Width="150" HorizontalContentAlignment="Right"></Label>
+        <Button Width="30" Height="30" Background="Transparent" cal:Message.Attach="[Event Click]=[showWindow()]" BorderBrush="{x:Null}" BorderThickness="0">
+            <Image Source="/views/images/modify.png" Width="25" Height="25" ></Image>
+        </Button>
+    </StackPanel>
+
+</UserControl>

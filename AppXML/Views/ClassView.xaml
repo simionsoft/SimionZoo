@@ -12,6 +12,8 @@
              >
     <UserControl.Resources>
         <ResourceDictionary>
+            
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <DataTemplate DataType="{x:Type vm:MultiValuedViewModel}">
                 <v:MultiValuedView/>
             </DataTemplate>
@@ -30,6 +32,7 @@
 
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <StackPanel Orientation="Vertical" Margin="0">
         <StackPanel Orientation="Horizontal" Visibility="{Binding ResumeVisible}">
             <Button Content="{Binding ItemName}" cal:Message.Attach="[Event Click]=[OpenForm()]" Background="{Binding ButtonColor}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
@@ -50,11 +53,39 @@
             </Button>
             
         </StackPanel>
-        <Border BorderThickness="{Binding Border}" CornerRadius="4" BorderBrush="Black">
-        <StackPanel Orientation="Horizontal" Margin="{Binding Margin}">
-                <ItemsControl x:Name="AllItems" Visibility="{Binding ClassViewVisible}"/>
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" x:Name="MultiAction" Content="{Binding MultiButton.content}" Visibility="{Binding MultiButton.visible}" Height="25" VerticalAlignment="Top" ></Button>
+        <!--BorderThickness="{Binding Border}"-->
+        <!--<Border Padding="0" Background="Transparent" CornerRadius="0">-->
+
+            <StackPanel Orientation="Horizontal" Margin="{Binding Margin}">
+
+            <ItemsControl x:Name="AllItems" />
+
+
+            <Rectangle VerticalAlignment="Stretch" Width="5" Margin="1" Stroke="Gray" 
+                       Visibility="{Binding Path=bIsInMultiValued,Converter={StaticResource BoolToVis}}">
+                <Rectangle.Fill>
+                    <LinearGradientBrush EndPoint="0.5,0.9" StartPoint="0.5,0">
+                        <GradientStop Color="LightBlue" Offset="0.9"/>
+                        <GradientStop Color="CadetBlue"/>
+                    </LinearGradientBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+                <StackPanel Orientation="Vertical">
+                    <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Add" 
+                            cal:Message.Attach="[Event Click]=[remove]"
+                            Visibility="{Binding Path=bAddVisible, Converter={StaticResource BoolToVis}}"
+                            Width="30" Height="30" >
+                        <Image Source="/views/images/add.png" Width="25" Height="25"></Image>
+                    </Button>
+                    <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}"
+                            cal:Message.Attach="[Event Click]=[add]"
+                            x:Name="Remove" 
+                            Visibility="{Binding Path=bRemoveVisible, Converter={StaticResource BoolToVis}}"
+                            Width="30" Height="30" >
+                        <Image Source="/views/images/remove.png" Width="25" Height="25"></Image>
+                    </Button>
+                </StackPanel>
             </StackPanel>
-        </Border>
+        <!--</Border>-->
     </StackPanel>
 </UserControl>

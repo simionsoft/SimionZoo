@@ -26,7 +26,7 @@
         <ItemsControl ItemsSource="{Binding ComboBox}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="-15,0,15,0">
+                    <StackPanel Orientation="Horizontal" Margin="0">
                         <Label Content="{Binding Label}" Foreground="Gray" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right" Width="150" ToolTip="{Binding Comment}"/>
                        <ComboBox x:Name="ComboValues" HorizontalContentAlignment="Left" ItemsSource="{Binding ComboValues}"  SelectedItem="{Binding SelectedComboValue}" Width="150" />

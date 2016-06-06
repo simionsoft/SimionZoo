@@ -102,6 +102,7 @@
     <Compile Include="Models\ExperimentStack.cs" />
     <Compile Include="Models\TreeNode.cs" />
     <Compile Include="ViewModels\BranchViewModel.cs" />
+    <Compile Include="ViewModels\ButtonToWindowedClassViewModel.cs" />
     <Compile Include="ViewModels\ChoiceViewModel.cs" />
     <Compile Include="ViewModels\ExperimentStackViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
@@ -198,6 +199,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\ButtonToWindowedClassView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ExperimentStackView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -15,15 +15,15 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal">
+    <StackPanel Orientation="Vertical" Margin="0">
+        <StackPanel Orientation="Horizontal" Margin="0">
             <Label x:Name="Label" Width="150" Foreground="Gray" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right"></Label>
             <ComboBox Background="White" ItemsSource="{Binding Combo}"  SelectedItem="{Binding SelectedItem}">  
             </ComboBox>
         </StackPanel>
-        <StackPanel Orientation="Vertical">
-            <ContentControl x:Name="Class" Margin="10,0,0,0">
+        <StackPanel Orientation="Vertical" >
+            <ContentControl x:Name="Class" HorizontalContentAlignment="Left" Margin="10,0,0,0">
             </ContentControl>
         </StackPanel>
     </StackPanel>

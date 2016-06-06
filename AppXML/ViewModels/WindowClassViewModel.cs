@@ -14,24 +14,24 @@ namespace AppXML.ViewModels
     public class WindowClassViewModel: Screen
     {
 
-        private ClassViewModel _father;
-       
-        private XmlDocument _doc;
+        private ButtonToWindowedClassViewModel _father;
 
-        public ClassViewModel Class { get { return _father.ResumeClass; } set { _father.ResumeClass = value; } }
+        public ClassViewModel Class { get { return _father.windowedClassVM; }
+            set { _father.windowedClassVM = value; }
+        }
 
-        public WindowClassViewModel(string className,ClassViewModel father,XmlDocument doc)
+        public WindowClassViewModel(string className,ButtonToWindowedClassViewModel father,XmlDocument doc)
         {
             _father = father;
-            _doc = doc;
-            if (father.ResumeClass == null)
-            {
-                _father.ResumeClass = new ClassViewModel(className, className, false, doc,_father);
-                _father.ResumeClass.validate(true);
-                Models.CApp.addNewClass(father);
-                //_father.ButtonColor = _father.ResumeClass.ButtonColor;
 
-            }
+            //if (father.windowedClassVM == null)
+            //{
+            //    _father.windowedClassVM = new ClassViewModel(className, className, false, doc, _father);
+            //    _father.windowedClassVM.validate(true);
+            //    Models.CApp.addNewClass(father);
+            //    //_father.ButtonColor = _father.ResumeClass.ButtonColor;
+
+            //}
 
             
            
@@ -44,7 +44,7 @@ namespace AppXML.ViewModels
             //string c = _father.ResumeClass.Multis[0].HeaderClass.Choice.Class.XMLNODE[0].SelectedOption;
             if (!ok)
             {
-                _father.ButtonColor = "Red";
+                _father.buttonColor = "Red";
                 DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);
                 dynamic settings = new ExpandoObject();
                 settings.WindowStyle = WindowStyle.ToolWindow;
@@ -61,19 +61,10 @@ namespace AppXML.ViewModels
             else
             {
                 
-                _father.ButtonColor = "White";
+                _father.buttonColor = "White";
                 TryClose();
             }
-                /*
-            else
-            {
-                XmlNode c = _father.ResumeClass.getXmlNode();
-                XmlNode resume = _father.ResumeClass.resume;
-                string result = obteinResume(c, resume);
-                string test = "_RESUME: " + result;
-                _father.Resume = test;
-                TryClose();
-            }*/
+
         }
 
         private string obteinResume(XmlNode c, XmlNode resume)

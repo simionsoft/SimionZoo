@@ -72,10 +72,9 @@ namespace AppXML.ViewModels
                         //es una clase
                         this.label = label;
                         this.clas = clas;
-                        //List<ClassViewModel> list = new List<ClassViewModel>();
-                        //list.Add(new ClassViewModel(clas));
-                        _headerClass = new ClassViewModel(clas,label,doc);
-                        _headerClass.setMultiButtonInfo(MultibuttonInfo.MultiType.header, this);
+
+                        _headerClass = new ClassViewModel(clas,label,doc,this,true);
+                       // _headerClass.setMultiButtonInfo(MultibuttonInfo.MultiType.header, this);
                        //new ObservableCollection<ClassViewModel>(list);
                         _adedClasses = new ObservableCollection<ClassViewModel>();
 
@@ -170,8 +169,8 @@ namespace AppXML.ViewModels
         }
         public void Add()
         {
-            ClassViewModel cvm = new ClassViewModel(this.clas,label,_doc);
-            cvm.setMultiButtonInfo(MultibuttonInfo.MultiType.added, this);
+            ClassViewModel cvm = new ClassViewModel(this.clas,label,_doc,this,false);
+            //cvm.setMultiButtonInfo(MultibuttonInfo.MultiType.added, this);
             //int index = _adedClasses.Count;
             //_adedClasses.Add(new ClassViewWithIndex(cvm,index));
             _adedClasses.Add(cvm);

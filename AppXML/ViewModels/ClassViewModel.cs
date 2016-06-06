@@ -33,11 +33,11 @@ namespace AppXML.ViewModels
     }
     public class ClassViewModel:PropertyChangedBase
     {
-        public string Border { get; set; }
-        public string Margin { get; set; }
+        //public string Border { get; set; }
+        //public string Margin { get; set; }
         private MultiValuedViewModel _father;
         private ClassViewModel _resumeClassViewModel;
-        public MultibuttonInfo MultiButton { get; set; }
+       // public MultibuttonInfo MultiButton { get; set; }
         private readonly ClassViewModel owner;
         public ClassViewModel ResumeClass { get { return _resumeClassViewModel; } set { _resumeClassViewModel = value; NotifyOfPropertyChange(() => ResumeClass); } }
         private ObservableCollection<ValidableAndNodeViewModel> _allItems = new ObservableCollection<ValidableAndNodeViewModel>();
@@ -51,16 +51,42 @@ namespace AppXML.ViewModels
         private XmlDocument _doc;
         public XmlNode resume;
 
-        public void MultiAction()
+        private bool m_bAddVisible= false;
+        public bool bAddVisible { get { return m_bAddVisible; } set { m_bAddVisible = value; } }
+        private bool m_bRemoveVisible= false;
+        public bool bRemoveVisible { get { return m_bRemoveVisible; } set { m_bRemoveVisible = value; } }
+
+        public bool bIsInMultiValued { get { return _father != null; } }
+        public void remove()
         {
-            if(_father!=null && MultiButton!=null)
+            if (_father != null)
             {
-                if (MultiButton.type == MultibuttonInfo.MultiType.header)
-                    _father.Add();
-                else
-                    _father.DeleteClass(this);
+                _father.DeleteClass(this);
+                NotifyOfPropertyChange(() => bIsInMultiValued);
+                NotifyOfPropertyChange(() => bAddVisible);
+                NotifyOfPropertyChange(() => bRemoveVisible);
             }
         }
+        public void add()
+        {
+            if (_father != null)
+            {
+                _father.Add();
+                NotifyOfPropertyChange(() => bIsInMultiValued);
+                NotifyOfPropertyChange(() => bAddVisible);
+                NotifyOfPropertyChange(() => bRemoveVisible);
+            }
+        }
+        //public void MultiAction()
+        //{
+        //    if(_father!=null && MultiButton!=null)
+        //    {
+        //        if (MultiButton.type == MultibuttonInfo.MultiType.header)
+        //            _father.Add();
+        //        else
+        //            _father.DeleteClass(this);
+        //    }
+        //}
 
         public void setResumeInClassView()
         {
@@ -68,59 +94,79 @@ namespace AppXML.ViewModels
         }
         public ClassViewModel(string clasName,string itemName, Boolean ignoreWindow,XmlDocument doc, ClassViewModel owner)
         {
-            this.MultiButton = new MultibuttonInfo();
-            this.Border = "0";
-            this.Margin = "0";
+            //this.MultiButton = new MultibuttonInfo();
+            //this.Border = "0";
+            //this.Margin = "0";
             _doc = doc;
             this.owner = owner;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
-            if (ignoreWindow&&node.Attributes["Window"] != null)
+
+            construc(node);
+        }
+
+        //this constructor is the one which has to be called from a multivaluedclass
+        public ClassViewModel(string clasName, string itemName, XmlDocument doc, MultiValuedViewModel owner,bool bHeader)
+        {
+            _doc = doc;
+            _father = owner;
+            _className = clasName;
+            XmlNode node = CNode.definitions[clasName];
+
+            if (bHeader)
             {
-
-                this._itemName = itemName;
-                _wclvm = new WindowClassViewModel(clasName, this, _doc);
-                //CApp.addNewClass(this);
-
+                m_bAddVisible = true;
+                m_bRemoveVisible = false;
             }
             else
             {
-                construc(node);
+                m_bAddVisible = false;
+                m_bRemoveVisible = true;
             }
+            NotifyOfPropertyChange(() => bAddVisible);
+            NotifyOfPropertyChange(() => bRemoveVisible);
+
+            construc(node);
         }
         public void setMultiButtonInfo(AppXML.ViewModels.MultibuttonInfo.MultiType type,MultiValuedViewModel mvvm)
         {
-            this.Border = "1";
-            this.Margin = "5";
-            this._father = mvvm;
-            this.MultiButton.type = type;
-            this.MultiButton.visible = "Visible";
+            //this.Border = "1";
+            //this.Margin = "5";
+            //this._father = mvvm;
+            //this.MultiButton.type = type;
+            //this.MultiButton.visible = "Visible";
             if(type==AppXML.ViewModels.MultibuttonInfo.MultiType.header)
             {
-                MultiButton.content = "Add";
+                m_bAddVisible = true;
+                m_bRemoveVisible = false;
+                //MultiButton.content = "Add";
             }
             else
             {
-                MultiButton.content = "Remove";
+                m_bAddVisible = true;
+                m_bRemoveVisible = false;
+                //MultiButton.content = "Remove";
             }
+            NotifyOfPropertyChange(() => bAddVisible);
+            NotifyOfPropertyChange(() => bRemoveVisible);
 
         }
         public ClassViewModel(string clasName,string itemName,  XmlDocument doc)
         {
-            this.MultiButton = new MultibuttonInfo();
-            this.Border = "0";
-            this.Margin = "0";
+            //this.MultiButton = new MultibuttonInfo();
+            //this.Border = "0";
+            //this.Margin = "0";
             _doc = doc;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
-            if (node.Attributes["Window"] != null)
-            {
+            //if (node.Attributes["Window"] != null)
+            //{
 
-                this._itemName = itemName;
-                _wclvm = new WindowClassViewModel(clasName, this,_doc);
+            //    this._itemName = itemName;
+            //    _wclvm = new WindowClassViewModel(clasName, this,_doc);
                
-            }
-            else
+            //}
+            //else
             {
                 construc(node);
             }
@@ -183,9 +229,6 @@ namespace AppXML.ViewModels
                 }
                 else if (child.Name == "BRANCH")
                 {
-
-                    //if (_branches == null)
-                    //    _branches = new ObservableCollection<BranchViewModel>();
                     bool isOptional = false;
                     if (child.Attributes["Optional"] != null)
                         isOptional = Convert.ToBoolean(child.Attributes["Optional"].Value);
@@ -195,8 +238,19 @@ namespace AppXML.ViewModels
                     string tag = null;
                     if (child.Attributes["XMLTag"] != null)
                         tag = child.Attributes["XMLTag"].Value;
-                    BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, _doc, tag);
-                    _allItems.Add(bvm);
+                    {
+                        if (isClassWindowed(child.Attributes["Class"].Value))
+                        {
+                            ButtonToWindowedClassViewModel btowvm = new ButtonToWindowedClassViewModel(child, _doc);
+                            _allItems.Add(btowvm); 
+                        }
+                        else
+                        {
+                            BranchViewModel bvm = new BranchViewModel(child.Attributes["Name"].Value, child.Attributes["Class"].Value, comment, isOptional, _doc, tag);
+                            _allItems.Add(bvm);
+                        }
+
+                    }
                 }
                 else if (child.Name == "XML-NODE-REF")
                 {
@@ -217,17 +271,36 @@ namespace AppXML.ViewModels
                 }
             }
         }
+        private bool isClassWindowed(string className)
+        {
+            XmlNode definition;
+            if (CNode.definitions.ContainsKey(className))
+            {
+                definition = CNode.definitions[className];
+                if (definition.Attributes["Window"] != null)
+                    return true;
+            }
+            //foreach (XmlNode definition in CNode.definitions)
+            //{
+            //    if 
+            //}
+            //if (node == null ) return false;
+            //XmlNode definition = node.ChildNodes.[className];
+            //if (node.Attributes["Window"] != null)
+            //    return true;
+            return false;
+        }
         public ClassViewModel(string clasName, string itemName,Boolean ignoreWindow, XmlDocument doc)
         {
             _doc = doc;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
-            if (ignoreWindow && node.Attributes["Window"] != null)
-            {
-                _itemName = itemName;
-                _wclvm = new WindowClassViewModel(clasName, this,_doc);
-            }
-            else
+            //if (ignoreWindow && node.Attributes["Window"] != null)
+            //{
+            //    _itemName = itemName;
+            //    _wclvm = new WindowClassViewModel(clasName, this,_doc);
+            //}
+            //else
             {
                 construc(node);  
             }
