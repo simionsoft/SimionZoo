@@ -463,6 +463,46 @@ namespace AppXML.Data
                                 }
                             }
                         }
+                        ButtonToWindowedClassViewModel itemButtonToWindowedClass
+                            = view as ButtonToWindowedClassViewModel;
+                        if (!dataSet && itemButtonToWindowedClass != null)
+                        {
+                            string itemTag = itemButtonToWindowedClass.Tag;
+                            splitedTag = itemTag.Split('/');
+                            XmlNode tmp = data;
+                            foreach (string tag in splitedTag)
+                            {
+                                if (itemTag == dataTag)
+                                {
+                                    if (tag == splitedTag[splitedTag.Length - 1])
+                                    {
+                                        if (tmp.HasChildNodes)
+                                        {
+                                            //itemButtonToWindowedClass.IsNull = false;
+
+                                            if (itemButtonToWindowedClass.Class.name == null)
+                                                fillTheClass(itemButtonToWindowedClass.Class.Class, tmp);
+                                            else
+                                            {
+                                                fillTheClass(itemButtonToWindowedClass.Class.Class, tmp);
+                                                itemButtonToWindowedClass.Class.validate();
+                                            }
+                                            dataSet = true;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (data.HasChildNodes)
+                                        {
+                                            tmp = data.FirstChild;
+                                            dataTag = tmp.Name;
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
                         if (dataSet)
                             break;
                     }

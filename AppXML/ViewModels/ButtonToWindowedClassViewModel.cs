@@ -14,13 +14,14 @@ namespace AppXML.ViewModels
     public class ButtonToWindowedClassViewModel :ValidableAndNodeViewModel
     {
         private XmlDocument _doc;
-        private string m_buttonColor= "Transparent";
-        public string buttonColor { get { return m_buttonColor; } set { m_buttonColor = value; } }
+        private string m_validationColor= "Transparent";
+        public string validationColor { get { return m_validationColor; } set { m_validationColor = value; } }
         
         private WindowClassViewModel m_windowedClassVM;
         public WindowClassViewModel windowedClassVM { get { return m_windowedClassVM; } set { m_windowedClassVM = value; } }
 
         private string _tag;
+        public string Tag { get { return _tag; } set { _tag = value; } }
 
         private string m_className;
 
@@ -33,12 +34,14 @@ namespace AppXML.ViewModels
             m_name = xmlNode.Attributes["Name"].Value;
             m_className= xmlNode.Attributes["Class"].Value;
 
-            m_windowedClassVM= new WindowClassViewModel(m_className,m_name,this,doc);
-            bool val= m_windowedClassVM.validate();
+            m_validationColor = "Transparent";
 
-            
+            m_windowedClassVM= new WindowClassViewModel(m_className,m_name,this,doc);
+            validate();
+
+      
             _tag = xmlNode.Attributes["Name"].Value;
-            m_buttonColor = "Transparent";
+
             _doc = doc;
         }
         public void showWindow()
@@ -63,7 +66,14 @@ namespace AppXML.ViewModels
         public override bool validate()
         {
 
-            return m_windowedClassVM.validate();//
+            bool ok= m_windowedClassVM.validate();
+            if (ok)
+                m_validationColor = "Gray";
+            else
+                m_validationColor = "Red";
+            NotifyOfPropertyChange(() => validationColor);
+
+            return ok;
         }
         public override List<XmlNode> getXmlNode()
         {

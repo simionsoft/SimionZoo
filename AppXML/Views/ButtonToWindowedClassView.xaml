@@ -16,7 +16,7 @@
                     <GradientStop Color="#fcfcfc" Offset="0.567"/>
                 </LinearGradientBrush>
             </StackPanel.Background>-->
-        <Label Content="{Binding name}" Width="150" HorizontalContentAlignment="Right"></Label>
+        <Label Foreground="{Binding Path=validationColor}" Content="{Binding name}" Width="150" HorizontalContentAlignment="Right"></Label>
         <Button Width="30" Height="30" Background="Transparent" cal:Message.Attach="[Event Click]=[showWindow()]" BorderBrush="{x:Null}" BorderThickness="0">
             <Image Source="/views/images/modify.png" Width="25" Height="25" ></Image>
         </Button>

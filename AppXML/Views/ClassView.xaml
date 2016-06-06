@@ -57,19 +57,18 @@
         <!--<Border Padding="0" Background="Transparent" CornerRadius="0">-->
 
             <StackPanel Orientation="Horizontal" Margin="{Binding Margin}">
+            <Border  BorderThickness="{Binding Path=nIsInMultiValued}">
+                    <Border.BorderBrush>
+                        <LinearGradientBrush EndPoint="0.5,0.9" StartPoint="0.5,0">
+                            <GradientStop Color="LightGray" Offset="0.9"/>
+                            <GradientStop Color="CadetBlue"/>
+                        </LinearGradientBrush>
+                    </Border.BorderBrush>
 
-            <ItemsControl x:Name="AllItems" />
+                <ItemsControl x:Name="AllItems" />
+            </Border>
 
-
-            <Rectangle VerticalAlignment="Stretch" Width="5" Margin="1" Stroke="Gray" 
-                       Visibility="{Binding Path=bIsInMultiValued,Converter={StaticResource BoolToVis}}">
-                <Rectangle.Fill>
-                    <LinearGradientBrush EndPoint="0.5,0.9" StartPoint="0.5,0">
-                        <GradientStop Color="LightBlue" Offset="0.9"/>
-                        <GradientStop Color="CadetBlue"/>
-                    </LinearGradientBrush>
-                </Rectangle.Fill>
-            </Rectangle>
+           
                 <StackPanel Orientation="Vertical">
                     <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Add" 
                             cal:Message.Attach="[Event Click]=[remove]"

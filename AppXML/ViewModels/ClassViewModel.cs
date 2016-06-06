@@ -57,12 +57,16 @@ namespace AppXML.ViewModels
         public bool bRemoveVisible { get { return m_bRemoveVisible; } set { m_bRemoveVisible = value; } }
 
         public bool bIsInMultiValued { get { return _father != null; } }
+
+        private int m_classFrameBorderThickness = 2;
+        public int nIsInMultiValued { get { if (_father != null) return m_classFrameBorderThickness; return 0; } }
         public void remove()
         {
             if (_father != null)
             {
                 _father.DeleteClass(this);
                 NotifyOfPropertyChange(() => bIsInMultiValued);
+                NotifyOfPropertyChange(() => nIsInMultiValued);
                 NotifyOfPropertyChange(() => bAddVisible);
                 NotifyOfPropertyChange(() => bRemoveVisible);
             }
@@ -72,6 +76,7 @@ namespace AppXML.ViewModels
             if (_father != null)
             {
                 _father.Add();
+                NotifyOfPropertyChange(() => nIsInMultiValued);
                 NotifyOfPropertyChange(() => bIsInMultiValued);
                 NotifyOfPropertyChange(() => bAddVisible);
                 NotifyOfPropertyChange(() => bRemoveVisible);
@@ -125,32 +130,34 @@ namespace AppXML.ViewModels
             }
             NotifyOfPropertyChange(() => bAddVisible);
             NotifyOfPropertyChange(() => bRemoveVisible);
+            NotifyOfPropertyChange(() => nIsInMultiValued);
+            NotifyOfPropertyChange(() => bIsInMultiValued);
 
             construc(node);
         }
-        public void setMultiButtonInfo(AppXML.ViewModels.MultibuttonInfo.MultiType type,MultiValuedViewModel mvvm)
-        {
-            //this.Border = "1";
-            //this.Margin = "5";
-            //this._father = mvvm;
-            //this.MultiButton.type = type;
-            //this.MultiButton.visible = "Visible";
-            if(type==AppXML.ViewModels.MultibuttonInfo.MultiType.header)
-            {
-                m_bAddVisible = true;
-                m_bRemoveVisible = false;
-                //MultiButton.content = "Add";
-            }
-            else
-            {
-                m_bAddVisible = true;
-                m_bRemoveVisible = false;
-                //MultiButton.content = "Remove";
-            }
-            NotifyOfPropertyChange(() => bAddVisible);
-            NotifyOfPropertyChange(() => bRemoveVisible);
+        //public void setMultiButtonInfo(AppXML.ViewModels.MultibuttonInfo.MultiType type,MultiValuedViewModel mvvm)
+        //{
+        //    //this.Border = "1";
+        //    //this.Margin = "5";
+        //    //this._father = mvvm;
+        //    //this.MultiButton.type = type;
+        //    //this.MultiButton.visible = "Visible";
+        //    if(type==AppXML.ViewModels.MultibuttonInfo.MultiType.header)
+        //    {
+        //        m_bAddVisible = true;
+        //        m_bRemoveVisible = false;
+        //        //MultiButton.content = "Add";
+        //    }
+        //    else
+        //    {
+        //        m_bAddVisible = true;
+        //        m_bRemoveVisible = false;
+        //        //MultiButton.content = "Remove";
+        //    }
+        //    NotifyOfPropertyChange(() => bAddVisible);
+        //    NotifyOfPropertyChange(() => bRemoveVisible);
 
-        }
+        //}
         public ClassViewModel(string clasName,string itemName,  XmlDocument doc)
         {
             //this.MultiButton = new MultibuttonInfo();

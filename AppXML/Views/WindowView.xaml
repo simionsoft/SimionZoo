@@ -19,7 +19,7 @@
 
 
     <Window.Resources>
-        
+
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
         <DataTemplate DataType="{x:Type vm:BranchViewModel}">
@@ -31,11 +31,11 @@
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <Grid Width="958" Height="540" >
+        <Grid Width="965" Height="545" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" MinHeight="41" />
                 <RowDefinition />
-                <RowDefinition Height="auto" MinHeight="40" />
+                <RowDefinition Height="auto" MinHeight="18" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="663"/>
@@ -45,8 +45,8 @@
 
             <StackPanel Grid.Row="0" Grid.Column="0" Margin="15,10,10,0" Orientation="Horizontal">
                 <Label Content="Experiment Editor" Width="340" FontSize="16" FontWeight="Bold" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
-                <Label Content="APP"/>
-                <ComboBox x:Name="Apps" HorizontalAlignment="Right" Height="22" SelectedItem="{Binding SelectedApp}"/>
+                <Label Content="APP" VerticalContentAlignment="Center"/>
+                <ComboBox x:Name="Apps" Width="140" Margin="0,0,60,0" HorizontalAlignment="Right" Height="22" SelectedItem="{Binding SelectedApp}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="3,5">
 
                     <Button Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperiment()]" >
@@ -60,18 +60,26 @@
             <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Width="195">
                 <Label Content="Experiment Queue" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Width="195" Margin="0,10,0,0"/>
             </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Orientation="Horizontal" MaxHeight="50" Margin="308,0,356,0" Width="0">
+            <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Orientation="Horizontal" MaxHeight="50" Margin="308,0,355,0" Width="0">
 
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="0">
+            <StackPanel Grid.Row="1" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
+                <StackPanel.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-0.515"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </StackPanel.RenderTransform>
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                         <GradientStop Color="#fafafa" Offset="0"/>
                         <GradientStop Color="#f0f0f0" Offset="1"/>
                     </LinearGradientBrush>
                 </StackPanel.Background>
-               
+
                 <StackPanel Grid.Row="1" Grid.Column="0" Height="408">
                     <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="390">
 
@@ -96,7 +104,7 @@
 
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="1" Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" Height="0" Margin="0,251,0,232"/>
+            <StackPanel Grid.Row="1" Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" Height="0" Margin="0,249,0,223"/>
 
             <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0" Height="331" Width="230">
                 <StackPanel.Background>

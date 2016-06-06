@@ -18,7 +18,7 @@ d:DesignHeight="50" d:DesignWidth="300"
     
     </UserControl.Resources>
     <Grid>
-        <TreeView BorderThickness="0">
+        <TreeView BorderThickness="0" Background="Transparent" Margin="-15,0,15,0">
             <TreeViewItem IsExpanded="True" >
                 <TreeViewItem.Header>
                     <StackPanel Orientation="Horizontal" Focusable="False">

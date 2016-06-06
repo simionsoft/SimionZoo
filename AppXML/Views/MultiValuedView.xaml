@@ -22,7 +22,7 @@
     </UserControl.Resources>
 
         <StackPanel Orientation="Vertical">
-        <Label Foreground="DarkGray" HorizontalAlignment="Left" VerticalContentAlignment="Center"
+        <Label Foreground="DarkGray" HorizontalAlignment="Right" VerticalContentAlignment="Center"
                HorizontalContentAlignment="Left" Width="150" 
                x:Name="Label" ToolTip="{Binding Comment}"/>
         <ItemsControl x:Name="AdedClasses"/>
