@@ -13,6 +13,7 @@ namespace AppXML.ViewModels
 
     public class ExperimentQueueViewModel : PropertyChangedBase
     {
+        
         private WindowViewModel m_parent;
 
         public bool isEmpty() { return m_experimentQueue.Count == 0; }
@@ -20,7 +21,7 @@ namespace AppXML.ViewModels
         private bool m_bModified = false;
         public bool bModified { get { return m_bModified; } set { m_bModified = value; } }
 
-        private BindableCollection<Experiment> m_experimentQueue= null;
+        private BindableCollection<Experiment> m_experimentQueue= new BindableCollection<Experiment>();
         public BindableCollection<Experiment> experimentQueue { get { return m_experimentQueue; } set { m_experimentQueue = value; } }
 
         private int m_selectedIndex= -1;
@@ -46,10 +47,11 @@ namespace AppXML.ViewModels
             m_experimentQueue.Clear();
             NotifyOfPropertyChange(()=>experimentQueue);
         }
+
         public ExperimentQueueViewModel()
         {
-            m_experimentQueue = new BindableCollection<Experiment>();
-            //m_selectedExperiment = null; 
+            m_selectedIndex = -1;
+
         }
         public void setParent(WindowViewModel parent)
         {

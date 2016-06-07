@@ -43,6 +43,12 @@ namespace Herd
         public TcpListener getTcpServer() {return m_listener;}
         private string m_dirPath="";
 
+        public const string m_herdDescriptionXMLTag = "HerdAgent";
+        public const string m_versionXMLTag="HerdAgentVersion";
+        public const string m_numProcessorsXMLTag= "NumberOfProcessors";
+        public const string m_stateXMLTag= "State";
+
+
         public HerdAgent()
         {
             m_state = AgentState.AVAILABLE;
@@ -249,11 +255,12 @@ namespace Herd
         public void setState(AgentState s) { m_state = s; }
         public string getAgentDescription()
         {
-            string description = "<HerdAgent>";
-            description += "<HerdAgentVersion>" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version + "</HerdAgentVersion>";
-            description += "<NumberOfProcessors>" + Environment.ProcessorCount + "</NumberOfProcessors>";
-            description += "<State>" + getStateString() + "</State>";
-            description += "</HerdAgent>";
+            string description = "<" + m_herdDescriptionXMLTag + ">";
+            description += "<" + m_versionXMLTag +">" + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                + "</" + m_versionXMLTag + ">";
+            description += "<" + m_numProcessorsXMLTag + ">" + Environment.ProcessorCount + "</" + m_numProcessorsXMLTag + ">";
+            description += "<" + m_stateXMLTag + ">" + getStateString() + "</" + m_stateXMLTag + ">";
+            description += "</" + m_herdDescriptionXMLTag + ">";
             return description;
         }
 

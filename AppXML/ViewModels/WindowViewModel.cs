@@ -78,12 +78,15 @@ namespace AppXML.ViewModels
 
             } 
         }
-        private ExperimentQueueViewModel m_experimentQueue= new ExperimentQueueViewModel();
+        private ExperimentQueueViewModel m_experimentQueue = new ExperimentQueueViewModel();
         public ExperimentQueueViewModel experimentQueue { get { return m_experimentQueue; }
             set { m_experimentQueue = value;
             NotifyOfPropertyChange(() => experimentQueue);
             }
         }
+        private ShepherdViewModel m_shepherd = new ShepherdViewModel();
+        public ShepherdViewModel shepherd { get { return m_shepherd; } set { } }
+
         private bool m_bIsExperimentQueueNotEmpty = false;
         public bool bIsExperimentQueueNotEmpty
         {
@@ -107,7 +110,13 @@ namespace AppXML.ViewModels
         {
             get { return m_bIsExperimentRunning; }
             set{m_bIsExperimentRunning= value;
-            NotifyOfPropertyChange(()=>bIsExperimentRunning);} }    
+            NotifyOfPropertyChange(()=>bIsExperimentRunning);
+            NotifyOfPropertyChange(()=>bIsExperimentNotRunning);} }
+        public bool bIsExperimentNotRunning
+        {
+            get { return !m_bIsExperimentRunning; }
+            set { }
+        }
 
         private ObservableCollection<string> _apps = new ObservableCollection<string>();
         public ObservableCollection<string> Apps { get { return _apps; } set { } }
@@ -436,6 +445,7 @@ namespace AppXML.ViewModels
                     if (dvm.DialogResult != DialogViewModel.Result.OK)
                         return;
                 }
+                bIsExperimentRunning = true;
                 m_experimentQueue.markModified(false);
                 ProcessManagerViewModel pwvm = new ProcessManagerViewModel(paths);
                 ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
@@ -451,6 +461,7 @@ namespace AppXML.ViewModels
                 windowSettings.Title = "Process Manager";
                 new WindowManager().ShowDialog(pwvm2, null, windowSettings);
                 pwvm2.Manager.closeAll();
+                bIsExperimentRunning = false;
             }
                
         }

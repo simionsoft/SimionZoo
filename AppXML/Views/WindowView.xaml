@@ -30,8 +30,8 @@
         </DataTemplate>
     </Window.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <Grid Width="965" Height="545" >
+    <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
+        <Grid Width="964" Height="587" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" MinHeight="41" />
                 <RowDefinition />
@@ -65,14 +65,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
-                <StackPanel.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="-0.515"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </StackPanel.RenderTransform>
+               
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                         <GradientStop Color="#fafafa" Offset="0"/>
@@ -81,9 +74,9 @@
                 </StackPanel.Background>
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Height="408">
-                    <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="390">
+                    <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="390" RenderTransformOrigin="0.5,0.5">
 
-                        <TreeView HorizontalAlignment="Center" Height="379" Width="643"   VerticalAlignment="Top" BorderThickness="0" Margin="9,0" >
+                        <TreeView HorizontalAlignment="Center" Height="494" Width="644"   VerticalAlignment="Top" BorderThickness="0" Margin="9,0,9,-106" >
                             <TreeView.Background>
                                 <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                                     <GradientStop Color="#fafafa" Offset="0"/>
@@ -106,7 +99,7 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" Height="0" Margin="0,249,0,223"/>
 
-            <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0" Height="331" Width="230">
+            <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0" Height="476" Width="230">
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                         <GradientStop Color="#fafafa" Offset="0"/>
@@ -149,11 +142,15 @@
                         <Image Source="/Views/images/play.png" Width="25" Height="25"/>
                     </Button>
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
-                            Visibility="{Binding bisExperimentRunning}"  
+                            Visibility="{Binding bisExperimentNotRunning}"  
                             cal:Message.Attach="[Event Click]=[Action stopExperiments()]">
                         <Image Source="/Views/images/cancel.png" Width="25" Height="25"/>
                     </Button>
                 </StackPanel>
+                <Border BorderBrush="Black" Height="130" Width="170" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="15,0">
+
+                    <ContentControl x:Name="shepherd"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="110"/>
+                </Border>
             </StackPanel>
 
 

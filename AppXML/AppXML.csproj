@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
@@ -104,7 +104,7 @@
     <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\ButtonToWindowedClassViewModel.cs" />
     <Compile Include="ViewModels\ChoiceViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentStackViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentQueueViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
@@ -115,6 +115,7 @@
     <Compile Include="ViewModels\ProcessManagerViewModel.cs" />
     <Compile Include="ViewModels\ProcessStateViewModel.cs" />
     <Compile Include="ViewModels\RightTreeViewModel.cs" />
+    <Compile Include="ViewModels\ShepherdViewModel.cs" />
     <Compile Include="ViewModels\ValidableAndNodeViewModel.cs" />
     <Compile Include="ViewModels\WindowClassViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
@@ -203,9 +204,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ExperimentStackView.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Views\ExperimentQueueView.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LoadDialogView.xaml">
       <SubType>Designer</SubType>
@@ -262,6 +263,10 @@
     <Page Include="Views\RightTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ShepherdView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\WindowClassView.xaml">
       <SubType>Designer</SubType>

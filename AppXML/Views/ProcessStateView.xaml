@@ -10,7 +10,7 @@
             <Label x:Name="Label" Margin="30,0"/>
             <StackPanel Orientation="Horizontal">
                 <Label x:Name="SMS" Margin="30,0,10,0" Width="200"/>
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" x:Name="OpenSMS"  Width="27" Height="27" Visibility="{Binding OpenVisible}">
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" x:Name="OpenSMS"  Width="30" Height="30" Visibility="{Binding OpenVisible}">
                     <Image Source="/views/images/info.png" Width="25" Height="25"></Image>
                 </Button>
         </StackPanel>

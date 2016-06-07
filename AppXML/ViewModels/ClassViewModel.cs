@@ -47,7 +47,7 @@ namespace AppXML.ViewModels
         public string ButtonColor { get { return _buttonColor; } set { _buttonColor = value; NotifyOfPropertyChange(() => ButtonColor); } }
         private string _itemName;
         private string _className;
-        private WindowClassViewModel _wclvm;
+        //private WindowClassViewModel _wclvm;
         private XmlDocument _doc;
         public XmlNode resume;
 
@@ -93,10 +93,10 @@ namespace AppXML.ViewModels
         //    }
         //}
 
-        public void setResumeInClassView()
-        {
-            _wclvm.Save();
-        }
+        //public void setResumeInClassView()
+        //{
+        //    _wclvm.Save();
+        //}
         public ClassViewModel(string clasName,string itemName, Boolean ignoreWindow,XmlDocument doc, ClassViewModel owner)
         {
             //this.MultiButton = new MultibuttonInfo();
@@ -404,24 +404,24 @@ namespace AppXML.ViewModels
           //  }
                 
         }
-        public void OpenForm()
-        {
+        //public void OpenForm()
+        //{
             
 
-           WindowManager windowManager = new WindowManager();
-           dynamic settings = new ExpandoObject();
-           settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-           settings.ShowInTaskbar = true;
-           settings.Title = this._className;
-           settings.WindowState = WindowState.Normal;
-            settings.ResizeMode = ResizeMode.CanMinimize;
+        //   WindowManager windowManager = new WindowManager();
+        //   dynamic settings = new ExpandoObject();
+        //   settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+        //   settings.ShowInTaskbar = true;
+        //   settings.Title = this._className;
+        //   settings.WindowState = WindowState.Normal;
+        //    settings.ResizeMode = ResizeMode.CanMinimize;
 
            
-           windowManager.ShowDialog(this._wclvm,null,settings);
+        //   windowManager.ShowDialog(this._wclvm,null,settings);
            
 
             
-        }
+        //}
         public bool validate(bool isCallByContructor)
         {
             if(_itemName==null || _itemName=="")
