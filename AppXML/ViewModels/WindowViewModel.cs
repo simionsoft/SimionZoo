@@ -20,6 +20,7 @@ using System.Xml.XPath;
 using System.Windows.Media;
 using System.Threading;
 using Herd;
+using AppXML.ViewModels;
 
 namespace AppXML.ViewModels
 {
@@ -369,7 +370,7 @@ namespace AppXML.ViewModels
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
             //document.Save("copia.tree");
-            AppXML.Models.ExperimentViewModel experiment = new AppXML.Models.ExperimentViewModel("New", document);
+            AppXML.ViewModels.ExperimentViewModel experiment = new AppXML.ViewModels.ExperimentViewModel("New Experiment", document);
             m_experimentQueueViewModel.addExperiment(experiment);
             NotifyOfPropertyChange(() => experimentQueueViewModel);
             checkStackEmpty();
@@ -926,7 +927,7 @@ namespace AppXML.ViewModels
 
         public void saveExperimentQueue()
         {
-            m_experimentQueueViewModel.saveExperimentQueue();
+            m_experimentQueueViewModel.save();
          }
       
         public List<string> ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)

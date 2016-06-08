@@ -11,9 +11,10 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <ListView x:Name="HerdAgentList" IsEnabled="False" IsManipulationEnabled="False" HorizontalContentAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" ItemsSource="{Binding herdAgentList}" >
+    <!--<ListView x:Name="HerdAgentList" IsEnabled="False" IsManipulationEnabled="False" HorizontalContentAlignment="Center" 
+              BorderBrush="{x:Null}" BorderThickness="0" ItemsSource="{Binding herdAgentList}" >
         <ListView.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate>-->
 
                 <StackPanel Orientation="Vertical" Margin="0">
                     <StackPanel.Background>
@@ -24,8 +25,8 @@
                     </StackPanel.Background>
                     <ItemsControl x:Name="herdAgentList"></ItemsControl>
                 </StackPanel>
-            </DataTemplate>
+            <!--</DataTemplate>
         </ListView.ItemTemplate>
-    </ListView>
+    </ListView>-->
   
 </UserControl>

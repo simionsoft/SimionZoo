@@ -16,13 +16,12 @@ using System.Windows.Shapes;
 namespace AppXML.Views
 {
     /// <summary>
-    /// Lógica de interacción para IntegerView.xaml
+    /// Interaction logic for HerdAgentView.xaml
     /// </summary>
-    public partial class IntegerView : UserControl
+    public partial class HerdAgentView : UserControl
     {
-        public IntegerView()
+        public HerdAgentView()
         {
-          
             InitializeComponent();
         }
     }

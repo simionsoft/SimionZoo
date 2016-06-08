@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:data="clr-namespace:AppXML.Models"
-             xmlns:cal="http://www.caliburnproject.org"
-             mc:Ignorable="d"  
+             xmlns:vm="clr-namespace:AppXML.ViewModels"
+            xmlns:v="clr-namespace:AppXML.Views"
+             mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-   
+
     <Border Margin="0" BorderThickness="2">
         <Border.BorderBrush>
             <LinearGradientBrush EndPoint="0.5,0.9" StartPoint="0.5,0">
@@ -32,7 +32,4 @@
 
         </StackPanel>
     </Border>
-
-
-  
 </UserControl>

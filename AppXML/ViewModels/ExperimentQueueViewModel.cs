@@ -190,7 +190,8 @@ namespace AppXML.ViewModels
             {
                 if (experimentVM.name==experimentName)
                 {
-
+                    experimentVM.addStatusInfoLine(status + "\n");
+                    break;
                 }
             }
         }

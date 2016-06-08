@@ -132,8 +132,7 @@
                     </Button>
                 </StackPanel>
                 <Border BorderBrush="Black" Height="230" Width="170" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="15,0">
-
-                    <ContentControl x:Name="experimentQueue"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="210"/>
+                    <ContentControl x:Name="experimentQueueViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="210"/>
                 </Border>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="70,0,55,0" Height="40" Width="60" >
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
@@ -149,7 +148,7 @@
                 </StackPanel>
                 <Border BorderBrush="Black" Height="130" Width="170" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="15,0">
 
-                    <ContentControl x:Name="shepherd"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="110"/>
+                    <ContentControl x:Name="shepherdViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="110"/>
                 </Border>
             </StackPanel>
 
