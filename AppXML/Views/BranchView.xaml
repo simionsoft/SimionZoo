@@ -18,8 +18,9 @@ d:DesignHeight="50" d:DesignWidth="300"
     
     </UserControl.Resources>
     <Grid>
-        <TreeView BorderThickness="0" Background="Transparent" Margin="-15,0,15,0">
+        <TreeView BorderThickness="0" Background="Transparent" Margin="-15,0,0,0">
             <TreeViewItem IsExpanded="True" >
+
                 <TreeViewItem.Header>
                     <StackPanel Orientation="Horizontal" Focusable="False">
                         <Label Content="{Binding Name}" ToolTip="{Binding Comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
@@ -41,8 +42,9 @@ d:DesignHeight="50" d:DesignWidth="300"
                         <CheckBox Content="Used" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsSet}" VerticalAlignment="Center" />
                     </StackPanel>
                 </TreeViewItem.Header>
-                <ContentControl x:Name="Class" IsEnabled="{Binding IsEnabled}"/>
+                <ContentControl x:Name="Class" Margin="-10,0,0,0" IsEnabled="{Binding IsEnabled}"/>
             </TreeViewItem>
+            
 
         </TreeView>
 

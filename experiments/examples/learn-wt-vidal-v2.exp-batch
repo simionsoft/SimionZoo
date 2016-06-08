@@ -1,10 +1,10 @@
 <Experiments>
-  <vidal-80 Path="../experiments/examples/learn-wt-vidal-v2/vidal-80/vidal-80.experiment" />
-  <vidal-70 Path="../experiments/examples/learn-wt-vidal-v2/vidal-70/vidal-70.experiment" />
-  <vidal-60 Path="../experiments/examples/learn-wt-vidal-v2/vidal-60/vidal-60.experiment" />
-  <vidal-50 Path="../experiments/examples/learn-wt-vidal-v2/vidal-50/vidal-50.experiment" />
-  <vidal-80-linear Path="../experiments/examples/learn-wt-vidal-v2/vidal-80-linear/vidal-80-linear.experiment" />
-  <vidal-70-linear Path="../experiments/examples/learn-wt-vidal-v2/vidal-70-linear/vidal-70-linear.experiment" />
-  <vidal-60-linear Path="../experiments/examples/learn-wt-vidal-v2/vidal-60-linear/vidal-60-linear.experiment" />
-  <vidal-50-linear Path="../experiments/examples/learn-wt-vidal-v2/vidal-50-linear/vidal-50-linear.experiment" />
+  <f80-linear Path="../experiments/examples/learn-wt-vidal-v2/f80-linear/f80-linear.experiment" />
+  <f70-linear Path="../experiments/examples/learn-wt-vidal-v2/f70-linear/f70-linear.experiment" />
+  <f60-linear Path="../experiments/examples/learn-wt-vidal-v2/f60-linear/f60-linear.experiment" />
+  <f50-linear Path="../experiments/examples/learn-wt-vidal-v2/f50-linear/f50-linear.experiment" />
+  <f80-cubic Path="../experiments/examples/learn-wt-vidal-v2/f80-cubic/f80-cubic.experiment" />
+  <f70-cubic Path="../experiments/examples/learn-wt-vidal-v2/f70-cubic/f70-cubic.experiment" />
+  <f60-cubic Path="../experiments/examples/learn-wt-vidal-v2/f60-cubic/f60-cubic.experiment" />
+  <f50-cubic Path="../experiments/examples/learn-wt-vidal-v2/f50-cubic/f50-cubic.experiment" />
 </Experiments>

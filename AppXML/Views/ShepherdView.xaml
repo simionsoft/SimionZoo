@@ -22,33 +22,7 @@
                             <GradientStop Color="#f0f0f0" Offset="1"/>
                         </LinearGradientBrush>
                     </StackPanel.Background>
-                    <Border Margin="0" BorderThickness="2">
-                        <Border.BorderBrush>
-                            <LinearGradientBrush EndPoint="0.5,0.9" StartPoint="0.5,0">
-                                <GradientStop Color="LightGray" Offset="0.9"/>
-                                <GradientStop Color="CadetBlue"/>
-                            </LinearGradientBrush>
-                        </Border.BorderBrush>
-
-                        <StackPanel>
-                            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center" Margin="10,0">
-                                <TextBlock IsEnabled="False" Width="70" Text="{Binding ipAddressString}" FontSize="10" VerticalAlignment="Center" />
-                                <TextBlock IsEnabled="False" Text="{Binding version}" Foreground="Gray" VerticalAlignment="Center" FontSize="8"/>
-                            </StackPanel>
-                            <StackPanel  Margin="5,0" Orientation="Horizontal" Height="15" VerticalAlignment="Center" >
-                                <TextBlock IsEnabled="False" Text="{Binding state}" Width="50" Foreground="Gray" FontSize="8" />
-                                <TextBlock IsEnabled="False" Text="{Binding numProcessors}" Foreground="Gray" FontSize="8" />
-                            </StackPanel>
-
-                            <!--<StackPanel Orientation="Vertical" Visibility="{Binding Path=isExperimentRunning,Converter={StaticResource BoolToVis}}">
-                        <ProgressBar Minimum="0" Maximum="100" x:Name="Progress" Height="15" Margin="30,0"></ProgressBar>
-                        <Button Background="{x:Null}" BorderBrush="{x:Null}" x:Name="OpenSMS"  Width="30" Height="30" Visibility="{Binding OpenVisible}">
-                            <Image Source="/views/images/info.png" Width="25" Height="25"></Image>
-                        </Button>
-                    </StackPanel>-->
-
-                        </StackPanel>
-                    </Border>
+                    <ItemsControl x:Name="herdAgentList"></ItemsControl>
                 </StackPanel>
             </DataTemplate>
         </ListView.ItemTemplate>

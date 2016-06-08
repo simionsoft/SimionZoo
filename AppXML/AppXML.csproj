@@ -99,7 +99,8 @@
     <Compile Include="Models\CIntegerValue.cs" />
     <Compile Include="Models\CMultiValued.cs" />
     <Compile Include="Models\CNode.cs" />
-    <Compile Include="Models\ExperimentStack.cs" />
+    <Compile Include="ViewModels\ExperimentView.xaml.cs" />
+    <Compile Include="ViewModels\ExperimentViewModel.cs" />
     <Compile Include="Models\TreeNode.cs" />
     <Compile Include="ViewModels\BranchViewModel.cs" />
     <Compile Include="ViewModels\ButtonToWindowedClassViewModel.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="ViewModels\ExperimentQueueViewModel.cs" />
     <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
+    <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
@@ -205,6 +207,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ExperimentQueueView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ExperimentView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\HerdAgentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

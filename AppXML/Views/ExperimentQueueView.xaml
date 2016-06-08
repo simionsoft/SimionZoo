@@ -9,6 +9,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
+            <v:ExperimentModel/>
+        </DataTemplate>
     </UserControl.Resources>
 
     <ListView x:Name="experimentQueue" BorderBrush="{x:Null}" BorderThickness="0" ItemsSource="{Binding experimentQueue}" 
@@ -17,14 +20,10 @@
               cal:Message.Attach="[Event SelectedItemChanged]=[Action changeSelected($source)]">
         <ListView.ItemTemplate>
             <DataTemplate>
-                <StackPanel>
-                        <TextBox Text="{Binding name}" Width="100" Focusable="True" FontFamily="Segoe UI Semibold"/>
-                    <StackPanel Orientation="Vertical" Visibility="{Binding Path=isExperimentRunning,Converter={StaticResource BoolToVis}}">
-                        <ProgressBar Minimum="0" Maximum="100" x:Name="Progress" Height="15" Margin="30,0"></ProgressBar>
-                        <Button Background="{x:Null}" BorderBrush="{x:Null}" x:Name="OpenSMS"  Width="30" Height="30" Visibility="{Binding OpenVisible}">
-                            <Image Source="/views/images/info.png" Width="25" Height="25"></Image>
-                        </Button>
-                    </StackPanel>
+                <StackPanel Orientation="Vertical">
+                    <Border BorderThickness="1" BorderBrush="LightGray">
+                        <ItemsControl x:Name="experimentQueue"></ItemsControl>
+                    </Border>
                 </StackPanel>
             </DataTemplate>
         </ListView.ItemTemplate>

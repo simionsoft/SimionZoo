@@ -191,64 +191,7 @@ namespace AppXML.ViewModels
             return myPro;
         }
 
-        class ProcessStatusHandler
-        {
-            private IEnumerable<ProcessStateViewModel> m_processStateViewList;
-            public string m_ip { get; set; }
-            public string m_message { get; set; }
-
-            public ProcessStatusHandler(IEnumerable<ProcessStateViewModel> processStateViewList)
-            { m_processStateViewList = processStateViewList; m_ip = "";}
-
-            public string completeMessage(ProcessStateViewModel p,string message)
-            {
-                return m_ip + " (" + p.pipeName + "): " + message;
-            }
-            public void setStatus(string processName,int progress)
-            {
-                foreach (ProcessStateViewModel p in m_processStateViewList)
-                {
-                    if (p.pipeName == processName)
-                    {
-                        p.Status = progress;
-                        if (progress == 100)
-                            p.SMS= completeMessage(p, "Job finished and waiting for output files.");
-                        return;
-                    }
-                }
-            }
-            public void logProcessMessage(string processName,string message)
-            {
-                foreach (ProcessStateViewModel p in m_processStateViewList)
-                {
-                    if (p.pipeName==processName)
-                    {
-                        p.addMessage( completeMessage(p, message));
-                        return;
-                    }
-                }
-            }
-            public void logShepherdMessage(string message)
-            {
-                foreach (ProcessStateViewModel p in m_processStateViewList) p.addMessage(completeMessage(p, message));
-            }
-            public void setAllJobsState(string message)
-            {
-                foreach (ProcessStateViewModel p in m_processStateViewList)
-                    p.SMS = m_ip + ": " + message;
-                
-            }
-            public void showEndMessage()
-            {
-                foreach (ProcessStateViewModel p in m_processStateViewList)
-                {
-                    if (p.Status == 100)
-                        p.SMS = "Output files received";
-                    else
-                        p.SMS = "Error";
-                }
-            }
-        }
+      
 
         private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
         {
@@ -490,17 +433,66 @@ namespace AppXML.ViewModels
             if(cts!=null)
                 cts.Cancel();
             stopRemoteJobs();
-             /*if(canceler!=null)
-            {
-                foreach(IPEndPoint ip in canceler)
-                {
-                   UdpClient m_discoverySocket;
-                    m_discoverySocket = new UdpClient();
-                    var RequestData = Encoding.ASCII.GetBytes("QUIT");
-                    m_discoverySocket.Send(RequestData, RequestData.Length, new IPEndPoint(ip.Address, CJobDispatcher.m_discoveryPortHerd));
-                }
-            }*/
+        }
+    }
 
+
+    class ProcessStatusHandler
+    {
+        private IEnumerable<ProcessStateViewModel> m_processStateViewList;
+        public string m_ip { get; set; }
+        public string m_message { get; set; }
+
+        public ProcessStatusHandler(IEnumerable<ProcessStateViewModel> processStateViewList)
+        { m_processStateViewList = processStateViewList; m_ip = ""; }
+
+        public string completeMessage(ProcessStateViewModel p, string message)
+        {
+            return m_ip + " (" + p.pipeName + "): " + message;
+        }
+        public void setStatus(string processName, int progress)
+        {
+            foreach (ProcessStateViewModel p in m_processStateViewList)
+            {
+                if (p.pipeName == processName)
+                {
+                    p.Status = progress;
+                    if (progress == 100)
+                        p.SMS = completeMessage(p, "Job finished and waiting for output files.");
+                    return;
+                }
+            }
+        }
+        public void logProcessMessage(string processName, string message)
+        {
+            foreach (ProcessStateViewModel p in m_processStateViewList)
+            {
+                if (p.pipeName == processName)
+                {
+                    p.addMessage(completeMessage(p, message));
+                    return;
+                }
+            }
+        }
+        public void logShepherdMessage(string message)
+        {
+            foreach (ProcessStateViewModel p in m_processStateViewList) p.addMessage(completeMessage(p, message));
+        }
+        public void setAllJobsState(string message)
+        {
+            foreach (ProcessStateViewModel p in m_processStateViewList)
+                p.SMS = m_ip + ": " + message;
+
+        }
+        public void showEndMessage()
+        {
+            foreach (ProcessStateViewModel p in m_processStateViewList)
+            {
+                if (p.Status == 100)
+                    p.SMS = "Output files received";
+                else
+                    p.SMS = "Error";
+            }
         }
     }
 }

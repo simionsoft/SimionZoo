@@ -16,9 +16,11 @@ namespace AppXML.ViewModels
         System.Timers.Timer m_timer;
 
         private Shepherd m_shepherd;
+        public Shepherd shepherd { get { return m_shepherd; } set{}}
         
-        private BindableCollection <HerdAgentDescription> m_herdAgentList= new BindableCollection<HerdAgentDescription>();
-        public BindableCollection <HerdAgentDescription> herdAgentList
+        private BindableCollection <HerdAgentViewModel> m_herdAgentList
+            = new BindableCollection<HerdAgentViewModel>();
+        public BindableCollection<HerdAgentViewModel> herdAgentList
         {
             get { return m_herdAgentList;  }
             set { }

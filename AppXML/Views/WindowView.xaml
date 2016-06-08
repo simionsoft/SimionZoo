@@ -49,7 +49,7 @@
                 <ComboBox x:Name="Apps" Width="140" Margin="0,0,60,0" HorizontalAlignment="Right" Height="22" SelectedItem="{Binding SelectedApp}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="3,5">
 
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperiment()]" >
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperimentInEditor()]" >
                         <Image Source="/Views/images/save.png" Width="25" Height="25"/>
                     </Button>
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action loadExperiment()]">

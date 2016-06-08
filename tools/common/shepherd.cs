@@ -14,58 +14,10 @@ using System.Xml;
 using System.Xml.Linq;
 using Herd;
 using Caliburn.Micro;
+using AppXML.ViewModels;
 
 namespace Herd
 {
-    public class HerdAgentDescription
-    {
-        private IPAddress m_ipAddress;
-        public IPAddress ipAddress{get{return m_ipAddress;} set{m_ipAddress= value;}}
-        public string ipAddressString { get { return m_ipAddress.ToString(); } set { } }
-        private DateTime m_lastACK;
-        public DateTime lastACK { get { return m_lastACK; } set { m_lastACK = value; } }
-
-
-        public string state { get { return getProperty(Herd.HerdAgent.m_stateXMLTag); } set { } }
-        public string version { get { return "(v" +getProperty(Herd.HerdAgent.m_versionXMLTag) +")"; } set { } }
-        public string numProcessors { get { return getProperty(Herd.HerdAgent.m_numProcessorsXMLTag) + " cores"; } set { } }
-
-        private Dictionary<string,string> m_properties;
-        public HerdAgentDescription()
-        {
-            m_properties = new Dictionary<string, string>();
-        }
-        public void addProperty(string name,string value)
-        {
-            m_properties.Add(name, value);
-        }
-        public string getProperty(string name)
-        {
-            if (m_properties.ContainsKey(name))
-                return m_properties[name];
-            else return "n/a";
-        }
-        public void parse(XElement xmlDescription)
-        {
-            if (xmlDescription.Name.ToString()=="HerdAgent")
-            {
-                m_properties.Clear();
-                foreach (XElement child in xmlDescription.Elements())
-                {
-                    addProperty(child.Name.ToString(),child.Value);
-                }
-            }
-        }
-        public override string ToString()
-        {
-            string res = "";
-            foreach(var property in m_properties)
-            {
-                res += property.Key + "=\"" + property.Value + "\";";
-            }
-            return res;
-        }
-    }
 
     public class ShepherdUdpState
     {
@@ -80,9 +32,9 @@ namespace Herd
     public class Shepherd : CJobDispatcher
     {
         private object m_agentListLock= new object();
-        private Dictionary<IPEndPoint,HerdAgentDescription> m_herdAgentList
-            = new Dictionary<IPEndPoint,HerdAgentDescription>();
-        public Dictionary<IPEndPoint, HerdAgentDescription> herdAgentList { get { return m_herdAgentList; } set { } } 
+        private Dictionary<IPEndPoint,HerdAgentViewModel> m_herdAgentList
+            = new Dictionary<IPEndPoint,HerdAgentViewModel>();
+        public Dictionary<IPEndPoint, HerdAgentViewModel> herdAgentList { get { return m_herdAgentList; } set { } } 
         UdpClient m_discoverySocket;
 
         public delegate void NotifyAgentListChanged();
@@ -114,19 +66,19 @@ namespace Herd
                 Byte[] receiveBytes = u.EndReceive(ar, ref ip);
                 herdAgentXMLDescription = Encoding.ASCII.GetString(receiveBytes);
                 xmlDescription = XElement.Parse(herdAgentXMLDescription);
-                HerdAgentDescription herdAgentDescription = new HerdAgentDescription();
-                herdAgentDescription.parse(xmlDescription);
+                HerdAgentViewModel HerdAgentViewModel = new HerdAgentViewModel();
+                HerdAgentViewModel.parse(xmlDescription);
                 //we copy the ip address into the properties
-                herdAgentDescription.ipAddress = ip.Address;
+                HerdAgentViewModel.ipAddress = ip;
                 //we update the ack time
-                herdAgentDescription.lastACK = System.DateTime.Now;
+                HerdAgentViewModel.lastACK = System.DateTime.Now;
 
                 lock (m_agentListLock)
                 {
                     if (!m_herdAgentList.ContainsKey(ip))
-                        m_herdAgentList.Add(ip, herdAgentDescription);
+                        m_herdAgentList.Add(ip, HerdAgentViewModel);
                     else
-                        m_herdAgentList[ip] = herdAgentDescription;
+                        m_herdAgentList[ip] = HerdAgentViewModel;
                 }
                 //notify, if we have to, that the agent list has probably changed
                 if (m_notifyAgentListChanged != null)
@@ -169,7 +121,7 @@ namespace Herd
             m_tcpClient.Close();
             m_tcpClient = null;
         }
-        public void getHerdAgentList(ref BindableCollection <HerdAgentDescription> outHerdAgentList, int timeoutSeconds)
+        public void getHerdAgentList(ref BindableCollection <HerdAgentViewModel> outHerdAgentList, int timeoutSeconds= 10)
         {
             outHerdAgentList.Clear();
             lock (m_agentListLock)
@@ -179,7 +131,7 @@ namespace Herd
                         outHerdAgentList.Add(agent.Value);
             }
         }
-        public void getHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentDescription> outDictionary)
+        public void getHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentViewModel> outDictionary)
         {
             outDictionary.Clear();
             lock (m_agentListLock)
