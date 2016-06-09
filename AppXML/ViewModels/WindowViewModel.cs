@@ -434,22 +434,18 @@ namespace AppXML.ViewModels
 
         void runExperimentQueue()
         {
-            
-            if (shepherdViewModel.herdAgentList.Count > 0)
-            {
-                //RUN REMOTELY
-
-                //group experiments as jobs
-                //set message callbacks
-                //send them through the shepherd
-                //receive results
-                runExperimentQueueRemotely();
-                //run remotely
-            }
-            else
-            {
-                //RUN LOCALLY
-            }
+            Task.Factory.StartNew(() =>
+                {
+                    if (shepherdViewModel.herdAgentList.Count > 0)
+                    {
+                        //RUN REMOTELY
+                        runExperimentQueueRemotely();
+                    }
+                    else
+                    {
+                        //RUN LOCALLY
+                    }
+                });
         }
 
         
@@ -484,7 +480,7 @@ namespace AppXML.ViewModels
                 List<ExperimentViewModel> assignedExperiments
                     = new List<ExperimentViewModel>();
                 for (int i= 0; i<amount; i++)
-                    assignedExperiments.Add(experimentQueueViewModel.experimentQueue[i]);
+                    assignedExperiments.Add(experimentQueueViewModel.experimentQueue[offset+i]);
                 offset+= amount;
 
                 //assignedExperiments=(experimentQueueViewModel.experimentQueue.Skip(numAssignedExperiments).Take(amount));
@@ -499,8 +495,6 @@ namespace AppXML.ViewModels
             {
                 HerdAgentViewModel herdAgentVM = KeyValuePair.Key;
                 List<ExperimentViewModel> experimentsVM = KeyValuePair.Value;
-                foreach (ExperimentViewModel exp in experimentsVM)
-                    exp.state = ExperimentViewModel.ExperimentState.RUNNING;
                 CJob job = createJob(experimentQueueViewModel.name, KeyValuePair.Value);
 
                 using (m_cancelTokenSource.Token.Register(Thread.CurrentThread.Abort))
@@ -513,8 +507,10 @@ namespace AppXML.ViewModels
 
                         shepherd.connectToHerdAgent(KeyValuePair.Key.ipAddress);
 
+                        experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.SENDING);
                         herdAgentVM.status="Sending job query";
                         shepherd.SendJobQuery(job);
+                        experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RUNNING);
                         herdAgentVM.status="Executing job query";
 
                         string xmlItem;
@@ -543,23 +539,30 @@ namespace AppXML.ViewModels
                                     {
                                         experimentVM.addStatusInfoLine(content);
                                     }
-                                    else
+                                    else if (message.Name=="End")
                                     {
-                                        if (key == XMLStream.m_defaultMessageType)
+                                        if (content == "Ok")
+                                            experimentVM.state = ExperimentViewModel.ExperimentState.FINISHED;
+                                        else experimentVM.state = ExperimentViewModel.ExperimentState.ERROR;
+                                    }
+                                }
+                                else
+                                {
+                                    if (key == XMLStream.m_defaultMessageType)
+                                    {
+                                        if (content == CJobDispatcher.m_endMessage)
                                         {
-                                            if (content == CJobDispatcher.m_endMessage)
-                                            {
-                                                herdAgentVM.status = "Receiving output files";
-                                                shepherd.ReceiveJobResult();
-                                                experimentVM.state = ExperimentViewModel.ExperimentState.FINISHED;
-                                                break;
-                                            }
-                                            else if (content == CJobDispatcher.m_errorMessage)
-                                            {
-                                                herdAgentVM.status = "Error in job";
-                                                experimentVM.state = ExperimentViewModel.ExperimentState.ERROR;
-                                                break;
-                                            }
+                                            experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RECEIVING);
+                                            herdAgentVM.status = "Receiving output files";
+                                            shepherd.ReceiveJobResult();
+                                            experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.FINISHED);
+                                            break;
+                                        }
+                                        else if (content == CJobDispatcher.m_errorMessage)
+                                        {
+                                            herdAgentVM.status = "Error in job";
+                                            experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.ERROR);
+                                            break;
                                         }
                                     }
                                 }

@@ -211,7 +211,12 @@ namespace Herd
                     myProcess.WaitForExit();
 
                     if (myProcess.ExitCode < 0)
+                    {
+                        xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Error</End></" + task.pipe + ">", false);
                         returnCode = m_jobInternalErrorCode;
+                    }
+                    else
+                        xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">", false);
                     m_logMessageHandler("Exit code: " + myProcess.ExitCode);
                 }
                 catch (OperationCanceledException)

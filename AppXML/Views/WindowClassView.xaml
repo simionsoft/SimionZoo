@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:Height="300" d:Width="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel>
+        <StackPanel Margin="10">
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                     <GradientStop Color="#fafafa" Offset="0"/>

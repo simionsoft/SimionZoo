@@ -78,7 +78,7 @@ CLogger::~CLogger()
 
 	if (m_outputDir) delete[] m_outputDir;
 
-	CloseHandle(m_outputPipe);
+	closeOutputPipe();
 
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 		delete *it;
@@ -321,7 +321,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Error:
 			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message);
 			WriteFile(m_outputPipe, messageLine, strlen(messageLine), &bytesWritten, 0);
-			FlushFileBuffers(m_outputPipe);
+			closeOutputPipe();
 		}
 	}
 	else

@@ -11,24 +11,20 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
-            <v:ExperimentView/>
-        </DataTemplate>
+
+
     </UserControl.Resources>
 
-    <!--<ListView x:Name="experimentQueue" BorderBrush="{x:Null}" BorderThickness="0" ItemsSource="{Binding experimentQueue}" 
+    <ListView x:Name="experimentQueue" BorderBrush="{x:Null}" BorderThickness="0" 
+              ItemsSource="{Binding Path=experimentQueue}"
               SelectedItem="{Binding selectedExperiment}" 
               SelectedIndex="{Binding selectedIndex}" SelectionMode="Single"
-              cal:Message.Attach="[Event SelectedItemChanged]=[Action changeSelected($source)]">
-        <ListView.ItemTemplate>
-            <DataTemplate>-->
-                <StackPanel Orientation="Vertical">
-                    <Border BorderThickness="1" BorderBrush="LightGray">
-                        <ItemsControl x:Name="experimentQueue"></ItemsControl>
-                    </Border>
-                </StackPanel>
-            <!--</DataTemplate>
-        </ListView.ItemTemplate>
-    </ListView>-->
+              cal:Message.Attach="[Event SelectedItemChanged]=[Action changeSelected($source)]" Margin="0">
+        <ListView.Resources>
+            <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
+                <v:ExperimentView/>
+            </DataTemplate>
+        </ListView.Resources>
+    </ListView>
 
 </UserControl>

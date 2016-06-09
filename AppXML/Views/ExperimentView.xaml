@@ -5,27 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:vm="clr-namespace:AppXML.ViewModels"
             xmlns:v="clr-namespace:AppXML.Views"
-
+            xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-
-        <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
-            <v:ExperimentView/>
-        </DataTemplate>
     </UserControl.Resources>
 
-    <StackPanel Margin="2">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="150">
-            <TextBlock Text="Name" Margin="5,0" Foreground="Gray"></TextBlock>
-            <TextBox BorderBrush="LightGray" Text="{Binding name,Mode=TwoWay}"  Width="100" Focusable="True" FontFamily="Segoe UI" FontSize="10"/>
-        </StackPanel>
-        <StackPanel Orientation="Vertical" Visibility="{Binding Path=bIsExperimentRunning,Converter={StaticResource BoolToVis}}">
-            <ProgressBar Minimum="0" Maximum="100" x:Name="Progress" Height="15" Margin="30,0"></ProgressBar>
-            <Button Background="{x:Null}" BorderBrush="{x:Null}" x:Name="OpenSMS"  Width="30" Height="30" Visibility="{Binding OpenVisible}">
-                <Image Source="/views/images/info.png" Width="25" Height="25"></Image>
-            </Button>
-        </StackPanel>
+    <StackPanel Orientation="Vertical" >
+        <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
+            <!--<ItemsControl ItemsSource="{Binding Path=experimentQueue}"></ItemsControl>-->
+            <StackPanel Margin="2">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="177" >
+                    <TextBlock Text="Name" Width="40" Margin="0" Foreground="Gray"></TextBlock>
+                    <TextBox BorderBrush="LightGray" Text="{Binding name,Mode=TwoWay}"  Width="80" Focusable="True" FontFamily="Segoe UI" FontSize="10"/>
+                    <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}" Width="50"></TextBlock>
+                </StackPanel>
+                <StackPanel Width="200" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bIsExperimentRunning,Converter={StaticResource BoolToVis}}">
+                    <ProgressBar Height="10" Width="80" Minimum="0" Maximum="100" x:Name="Progress" Margin="52,0,0,0" Value="{Binding Path=progress}"></ProgressBar>
+                    <Button Background="{x:Null}" Margin="3,0,0,0" BorderBrush="{x:Null}" x:Name="showStatusInfoInNewWindow" 
+                                cal:Message.Attach="[Event Click]=[showStatusInfoInNewWindow()]"
+                                Width="20" Height="20" Visibility="{Binding OpenVisible}">
+                        <Image Source="/views/images/info.png" Width="15" Height="15"></Image>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </StackPanel>
 </UserControl>

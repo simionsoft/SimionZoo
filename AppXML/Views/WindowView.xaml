@@ -65,7 +65,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
-               
+
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                         <GradientStop Color="#fafafa" Offset="0"/>
@@ -99,7 +99,7 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" Height="0" Margin="0,249,0,223"/>
 
-            <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0" Height="476" Width="230">
+            <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="476" Width="265">
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                         <GradientStop Color="#fafafa" Offset="0"/>
@@ -131,8 +131,8 @@
                         <Image Source="/Views/images/load.png"/>
                     </Button>
                 </StackPanel>
-                <Border BorderBrush="Black" Height="230" Width="170" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="15,0">
-                    <ContentControl x:Name="experimentQueueViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="210"/>
+                <Border BorderBrush="Black" Height="243" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="10,0">
+                    <ContentControl x:Name="experimentQueueViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="9,15,9,9" Height="217"/>
                 </Border>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="70,0,55,0" Height="40" Width="60" >
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
@@ -146,7 +146,7 @@
                         <Image Source="/Views/images/cancel.png" Width="25" Height="25"/>
                     </Button>
                 </StackPanel>
-                <Border BorderBrush="Black" Height="130" Width="170" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="15,0">
+                <Border BorderBrush="Black" Height="130" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="10,0">
 
                     <ContentControl x:Name="shepherdViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="110"/>
                 </Border>

@@ -118,7 +118,8 @@ namespace Herd
         }
         public void disconnect()
         {
-            m_tcpClient.Close();
+            if (m_netStream!=null) m_netStream.Dispose();
+            if (m_tcpClient!=null) m_tcpClient.Close();
             m_tcpClient = null;
         }
         public void getHerdAgentList(ref BindableCollection <HerdAgentViewModel> outHerdAgentList, int timeoutSeconds= 10)
