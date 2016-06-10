@@ -37,7 +37,7 @@ namespace AppXML.ViewModels
             m_validationColor = "Transparent";
 
             m_windowedClassVM= new WindowClassViewModel(m_className,m_name,this,doc);
-            validate();
+            //validate(true);
 
       
             _tag = xmlNode.Attributes["Name"].Value;

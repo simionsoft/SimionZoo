@@ -35,6 +35,12 @@ namespace AppXML.ViewModels
             = new BindableCollection<ExperimentViewModel>();
         public BindableCollection<ExperimentViewModel> experimentQueue { get { return m_experimentQueue; } set { m_experimentQueue = value; } }
 
+        public void resetState()
+        {
+            foreach (ExperimentViewModel experiment in m_experimentQueue)
+                experiment.resetState();
+        }
+
         private int m_selectedIndex= -1;
         public int selectedIndex
         {

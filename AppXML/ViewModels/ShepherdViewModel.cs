@@ -17,18 +17,30 @@ namespace AppXML.ViewModels
 
         private Shepherd m_shepherd;
         public Shepherd shepherd { get { return m_shepherd; } set{}}
-        
+
+        private object m_herdAgentListLock = new object();
+        private BindableCollection<HerdAgentViewModel> m_innerHerdAgentList =
+            new BindableCollection<HerdAgentViewModel>();
         private BindableCollection <HerdAgentViewModel> m_herdAgentList
             = new BindableCollection<HerdAgentViewModel>();
         public BindableCollection<HerdAgentViewModel> herdAgentList
         {
-            get { return m_herdAgentList;  }
+            get
+            { 
+                lock(m_herdAgentListLock)
+                {
+                    m_herdAgentList.Clear();
+                    foreach (HerdAgentViewModel agent in m_innerHerdAgentList)
+                        m_herdAgentList.Add(agent);
+                    return m_herdAgentList;
+                }
+            }
             set { }
         }
         private void notifyHerdAgentChanged()
         {
             //we get the agents that sent an ack less than m_agentTimeoutSeconds seconds ago
-            lock (m_herdAgentList) { m_shepherd.getHerdAgentList(ref m_herdAgentList, m_agentTimeoutSeconds); }
+            m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
             NotifyOfPropertyChange(() => herdAgentList);
         }
         private void resendBroadcast(object sender, System.Timers.ElapsedEventArgs e)

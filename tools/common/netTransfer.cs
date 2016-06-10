@@ -50,7 +50,8 @@ namespace Herd
         }
     }
 
-    public enum FileType { INPUT, OUTPUT };
+
+
     public class CJobDispatcher
     {
         public XMLStream m_xmlStream;
@@ -80,7 +81,16 @@ namespace Herd
 
         public delegate void LogMessageHandler(string logMessage);
         protected LogMessageHandler m_logMessageHandler;
-
+        
+        public enum FileType { INPUT, OUTPUT };
+        public string getFileTypeXMLTag(FileType type)
+        {
+            if (type == FileType.INPUT)
+                return "Input";
+            else if (type == FileType.OUTPUT) return "Output";
+            logMessage("Can't determine the XML tag of the unkwown file type");
+            return "UnkwnownType";
+        }
         public CJobDispatcher()
         {
             m_job = new CJob();
@@ -156,74 +166,59 @@ namespace Herd
             //checkConnection(m_tcpClient);
             m_netStream.Write(footerbytes, 0, footerbytes.Length);
         }
-        protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
+        protected bool SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
         {
+            string fileTypeXMLTag;
             string header;
             byte[] headerBytes;
             string footer = "";
 
-           /* if (type == FileType.EXE)
-            {
-                header = "<Exe Name=\"" + fileName + "\" ComLineArgs=\"" + m_job.comLineArgs + "\"";
-                if (sendContent) footer = "</Exe>";
-            }
-            else */if (type == FileType.INPUT)
-            {
-                header = "<Input Name=\"" + fileName + "\"";
-                if (sendContent) footer = "</Input>";
-            }
-            else //output
-            {
-                header = "<Output Name=\"" + fileName + "\"";
-                if (sendContent) footer = "</Output>";
-            }
+            fileTypeXMLTag = getFileTypeXMLTag(type);
+            header = "<" + fileTypeXMLTag + " Name=\"" + fileName + "\"";
+            if (sendContent) footer = "</" + fileTypeXMLTag + ">";
 
             if (sendContent)
             {
-                FileStream fileStream;
+                FileStream fileStream= null;
                 long fileSize = 0;
                 logMessage("Sending file " + fileName);
 
                 if (fromCachedDir)
                     fileName = getCachedFilename(fileName);
 
-                fileStream = File.OpenRead(fileName);
+                try { fileStream = File.OpenRead(fileName); }
+                catch { return false; }
                 fileSize = fileStream.Length;
                 header += " Size=\"" + fileSize + "\">";
 
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
-                //checkConnection(m_tcpClient);
                 m_netStream.Write(headerBytes, 0, headerBytes.Length);
 
-                //send the content if it has to be sent
-                if (sendContent)
+
+                long readBytes = 0;
+                int lastReadBytes;
+                byte[] buffer = new byte[m_xmlStream.getBufferSize()];
+                while (readBytes < fileSize)
                 {
-                    long readBytes = 0;
-                    int lastReadBytes;
-                    byte[] buffer = new byte[m_xmlStream.getBufferSize()];
-                    while (readBytes < fileSize)
+                    lastReadBytes = fileStream.Read(buffer, 0, m_xmlStream.getBufferSize());
+                    readBytes += lastReadBytes;
+
+                    try
                     {
-                        lastReadBytes = fileStream.Read(buffer, 0, m_xmlStream.getBufferSize());
-                        readBytes += lastReadBytes;
-                        //checkConnection(m_tcpClient);
-                        try
-                        {
-                            m_netStream.Write(buffer, 0, (int)lastReadBytes);
-                        }
-                        catch(Exception ex)
-                        {
-                            Console.WriteLine(ex.Message + ex.StackTrace);
-                        }
+                        m_netStream.Write(buffer, 0, (int)lastReadBytes);
                     }
-                    fileStream.Close();
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message + ex.StackTrace);
+                    }
                 }
+                fileStream.Close();
 
                 //Send the footer: </Exe>, </Input> or </Output>
                 byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
                 //checkConnection(m_tcpClient);
                 m_netStream.Write(footerBytes, 0, footerBytes.Length);
-
                 m_netStream.Flush();
             }
             else
@@ -237,12 +232,11 @@ namespace Herd
 
                 m_netStream.Flush();
             }
-
+            return true;
         }
 
         public void ReadFromStream()
         {
-            //checkConnection(m_tcpClient);
             m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
         public Match ReadUntilMatch(string pattern)
@@ -268,17 +262,6 @@ namespace Herd
 
             m_job.name = match.Groups[1].Value;
 
-            ////read arguments
-            //for (int i = 0; i < m_numTasksRead; i++)
-            //{
-            //    ReadFromStream();
-            //    header = m_xmlStream.processNextXMLItem();//Encoding.ASCII.GetString(m_buffer);
-
-            //    match = Regex.Match(header, "<Arg>([^<]*)</Arg>");
-
-            //    m_job.comLineArgs.Add(match.Groups[1].Value);
-            //}
-
             ReadFromStream(); //we shift the buffer to the left skipping the processed header
         }
    
@@ -296,19 +279,6 @@ namespace Herd
             while (!match.Success);
             // m_bufferOffset += match.Index + match.Length;
         }
-        //protected void ReceiveExeFiles(bool receiveContent,bool inCachedDir) { ReceiveFile(FileType.EXE, receiveContent, inCachedDir); }
-        /*protected void ReceiveInputFiles(bool receiveContent, bool inCachedDir)
-        {
-            for (int i = 0; i < m_numInputFilesRead; i++)
-            {
-                ReceiveFile(FileType.INPUT, receiveContent, inCachedDir);
-            }
-        }
-        protected void ReceiveOutputFiles(bool receiveContent, bool inCachedDir)
-        {
-            for (int i = 0; i < m_numOutputFilesRead; i++)
-                ReceiveFile(FileType.OUTPUT, receiveContent, inCachedDir);
-        }*/
 
         protected void ReceiveFile(FileType type, bool receiveContent, bool inCachedDir)
         {

@@ -370,7 +370,7 @@ namespace AppXML.ViewModels
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
             //document.Save("copia.tree");
-            AppXML.ViewModels.ExperimentViewModel experiment = new AppXML.ViewModels.ExperimentViewModel("New Experiment", document);
+            AppXML.ViewModels.ExperimentViewModel experiment = new AppXML.ViewModels.ExperimentViewModel("Experiment", document);
             m_experimentQueueViewModel.addExperiment(experiment);
             NotifyOfPropertyChange(() => experimentQueueViewModel);
             checkStackEmpty();
@@ -382,44 +382,7 @@ namespace AppXML.ViewModels
 
             if (bSuccesfulSave)
             {
-                //right now this doesn't make much sense: logs are output inside the experiment
-                //folder and RLSimion doesn't load a weight matrix to initialise the actor
-
-                //Dictionary<string, List<string>> problems = Utility.findIOProblems(experimentFiles);
-                //if (problems.Count > 0)
-                //{
-                //    string sms = "Some output files could be overwritten during the experiment. \n";
-                //    foreach (string file in problems.Keys)
-                //    {
-                //        sms += file + " file is the output of these experiments: ";
-                //        foreach (string node in problems[file])
-                //            sms += "\n\t" + node;
-                //        sms += "\n";
-                //    }
-                //    sms += "Do you want to continue with the experiment?";
-                //    DialogViewModel dvm = new DialogViewModel(null, sms, DialogViewModel.DialogType.YesNo);
-                //    dynamic settings = new ExpandoObject();
-                //    settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-                //    settings.ShowInTaskbar = true;
-                //    settings.Title = "WARNING";
-                //    new WindowManager().ShowDialog(dvm, null, settings);
-                //    if (dvm.DialogResult != DialogViewModel.Result.OK)
-                //        return;
-                //}
                 bIsExperimentRunning = true;
-
-                //ProcessManagerViewModel pwvm = new ProcessManagerViewModel(experimentFiles);
-                //ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
-                //pwvm.owner = pwvm2;
- 
-                //pwvm.run();
-
-                //dynamic windowSettings = new ExpandoObject();
-                //windowSettings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-                //windowSettings.ShowInTaskbar = true;
-                //windowSettings.Title = "Process Manager";
-                //new WindowManager().ShowDialog(pwvm2, null, windowSettings);
-                //pwvm2.Manager.closeAll();
 
                 runExperimentQueue();
 
@@ -427,10 +390,15 @@ namespace AppXML.ViewModels
             }
                
         }
-        public void stopExperiments()
-        { }
 
-        private CancellationTokenSource m_cancelTokenSource= new CancellationTokenSource();
+        private CancellationTokenSource m_cancelTokenSource = new CancellationTokenSource();
+        
+        public void stopExperiments()
+        {
+            if (m_cancelTokenSource != null)
+                m_cancelTokenSource.Cancel();
+            experimentQueueViewModel.resetState();
+        }
 
         void runExperimentQueue()
         {
@@ -487,37 +455,41 @@ namespace AppXML.ViewModels
                 experimentAssignments.Add(agent, assignedExperiments);
                 numAssignedExperiments += amount;
             }
+            
 
             ParallelOptions po = new ParallelOptions();
             po.CancellationToken = m_cancelTokenSource.Token;
             po.MaxDegreeOfParallelism = Environment.ProcessorCount - 1;
-            Parallel.ForEach(experimentAssignments,po, KeyValuePair  =>
+            try
             {
-                HerdAgentViewModel herdAgentVM = KeyValuePair.Key;
-                List<ExperimentViewModel> experimentsVM = KeyValuePair.Value;
-                CJob job = createJob(experimentQueueViewModel.name, KeyValuePair.Value);
-
-                using (m_cancelTokenSource.Token.Register(Thread.CurrentThread.Abort))
+                Parallel.ForEach(experimentAssignments, po, KeyValuePair =>
                 {
+                    HerdAgentViewModel herdAgentVM = KeyValuePair.Key;
+                    List<ExperimentViewModel> experimentsVM = KeyValuePair.Value;
+
+                    experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.WAITING_EXECUTION);
+                    CJob job = createJob(experimentQueueViewModel.name, KeyValuePair.Value);
+
+                    Shepherd shepherd = new Shepherd();
+                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
                     try
                     {
-                        Shepherd shepherd = new Shepherd();
-
-                        Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
                         shepherd.connectToHerdAgent(KeyValuePair.Key.ipAddress);
 
                         experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.SENDING);
-                        herdAgentVM.status="Sending job query";
+                        herdAgentVM.status = "Sending job query";
                         shepherd.SendJobQuery(job);
                         experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RUNNING);
-                        herdAgentVM.status="Executing job query";
+                        herdAgentVM.status = "Executing job query";
 
                         string xmlItem;
                         while (true)
                         {
                             shepherd.read();
                             xmlItem = shepherd.m_xmlStream.processNextXMLItem();
+
+                            po.CancellationToken.ThrowIfCancellationRequested();
 
                             if (xmlItem != "")
                             {
@@ -539,10 +511,10 @@ namespace AppXML.ViewModels
                                     {
                                         experimentVM.addStatusInfoLine(content);
                                     }
-                                    else if (message.Name=="End")
+                                    else if (message.Name == "End")
                                     {
                                         if (content == "Ok")
-                                            experimentVM.state = ExperimentViewModel.ExperimentState.FINISHED;
+                                            experimentVM.state = ExperimentViewModel.ExperimentState.WAITING_RESULT;
                                         else experimentVM.state = ExperimentViewModel.ExperimentState.ERROR;
                                     }
                                 }
@@ -556,6 +528,7 @@ namespace AppXML.ViewModels
                                             herdAgentVM.status = "Receiving output files";
                                             shepherd.ReceiveJobResult();
                                             experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.FINISHED);
+                                            herdAgentVM.status = "Finished";
                                             break;
                                         }
                                         else if (content == CJobDispatcher.m_errorMessage)
@@ -569,6 +542,12 @@ namespace AppXML.ViewModels
                             }
                         }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        //quit remote jobs
+                        shepherd.writeMessage(Shepherd.m_quitMessage, true);
+                        herdAgentVM.status = "";
+                    }
                     catch (Exception ex)
                     {
                         //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
@@ -578,11 +557,19 @@ namespace AppXML.ViewModels
                     }
                     finally
                     {
-                        //removeTcpNetStream(shepherdViewModel.getNetworkStream());
                         shepherdViewModel.shepherd.disconnect();
                     }
-                }
-            });
+
+                });
+            }
+            catch (OperationCanceledException)
+            {
+                //because the operation will be rethrown. No need to do anything
+            }
+            catch (Exception) 
+            {
+                Console.WriteLine("exceptionally unexpected exception");
+            }
         }
 
         private CJob createJob(string experimentName,List<ExperimentViewModel> experiments)
@@ -614,232 +601,7 @@ namespace AppXML.ViewModels
             }
             return job;
         }
-        //public string AddChildVisible { get { if (_graf!=null && _graf.Tree != null) return "Visible"; else return "Hidden"; } set { } }
-        //public string RemoveChildVisible { get { if (_graf!=null &&  _graf.Tree!=null && _graf.Tree[0].hasChildren()) return "Visible"; else return "Hidden"; } }
-        //public void AddChild()
-        //{
-        //    if (!validate() || Graf.SelectedTreeNode==null)
-        //        return;
-        //    DialogViewModel dvm = new DialogViewModel(null, "Which name do you want for the new node?", DialogViewModel.DialogType.Answer);
-        //    dynamic settings = new ExpandoObject();
-        //    settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-        //    settings.ShowInTaskbar = true;
-        //    settings.Title = "Info";
-        //    WindowManager wm = new WindowManager();
-        //    string name = null;
-        //    do
-        //    {
-        //        wm.ShowDialog(dvm, null, settings);
-        //        if (dvm.DialogResult == DialogViewModel.Result.OK)
-        //            name = dvm.Text;
-        //        else
-        //            return;
-               
-                    
-        //        dvm.Text = "The name "+name+" is not valid. ";
-        //    } while (name==null||!Utility.checkName(name,Graf.SelectedTreeNode));
-            
-        //    XmlDocument document = new XmlDocument();
-        //    XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
-        //    document.AppendChild(newRoot);
-        //    Models.TreeNode node = new Models.TreeNode(name, document, Graf.SelectedTreeNode);
-        //    Graf.AddNode(node);
-        //    NotifyOfPropertyChange(() => Graf.Tree);
-        //    NotifyOfPropertyChange(() => RemoveChildVisible);
-           
-        //}
-        //public void RemoveChild()
-        //{
-        //    Graf.RemoveSelectedNode();
-        //    NotifyOfPropertyChange(() => Graf);
-        //    NotifyOfPropertyChange(() => RemoveChildVisible);
-        //}
-        //public void runExperiments()
-        //{
-        //    //List<NodeAndName> myList = Graf.getAllLeafs();
-        //    List<string> paths = null;
-        //    if (!Graf.Loaded)
-        //        paths=SaveAllTheNodes(true);
-        //    else if (Graf.LoadedAndModified)
-        //        paths = SaveAllTheNodes(true);
-        //    else
-        //        paths = SaveAllTheNodes(false);
-        //    if (paths!=null && paths.Count > 0)
-        //    {
-               
-        //        Dictionary<string, List<string>> problems = Utility.findIOProblems(paths);
-        //        if (problems.Count > 0)
-        //        {
-        //            string sms = "Some output files could be overwritten during the experiment. \n";
-        //            foreach(string file in problems.Keys)
-        //            {
-        //                sms += file + " file is the output of these experiments: ";
-        //                foreach (string node in problems[file])
-        //                    sms += "\n\t" + node;
-        //                sms += "\n";
-        //            }
-        //            sms += "Do you want to continue with the experiment?";
-        //            DialogViewModel dvm = new DialogViewModel(null, sms, DialogViewModel.DialogType.YesNo);
-        //            dynamic settings = new ExpandoObject();
-        //            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-        //            settings.ShowInTaskbar = true;
-        //            settings.Title = "WARNING";
-        //            new WindowManager().ShowDialog(dvm, null, settings);
-        //            if (dvm.DialogResult != DialogViewModel.Result.OK)
-        //                return;
-        //        }
-        //        //Utility.method(paths);
-        //        Graf.Loaded = true;
-        //        Graf.LoadedAndModified = false;
-        //        initExperimentas(paths);
-        //    }
-               
-         
-        //}
-        //private void executeLoad(string fileDoc)
-        //{
-         
-            
-        //        XmlDocument treeDoc = new XmlDocument();
-        //        treeDoc.Load(fileDoc);
-        //        XmlElement fileRoot = treeDoc.DocumentElement;
-        //        if (fileRoot.Name != "ExperimentsTree")
-        //            return;
-        //        if (fileRoot.Attributes["App"] == null || !_apps.Contains(fileRoot.Attributes["App"].Value))
-        //            return;
-        //        SelectedApp = fileRoot.Attributes["App"].Value;
-        //        NotifyOfPropertyChange(() => SelectedApp);
-        //        foreach (XmlElement element in fileRoot.ChildNodes)
-        //        {
-        //            try
-        //            {
-
-
-        //                if (element.Name == "Root")
-        //                {
-        //                    string path = element.Attributes["Path"].Value;
-        //                    if (File.Exists(path))
-        //                    {
-        //                        XmlDocument rootDocument = new XmlDocument();
-        //                        rootDocument.Load(path);
-        //                        LoadDocument(rootDocument.DocumentElement);
-        //                        this._graf = null;
-        //                       // SetAsRoot();
-        //                    }
-        //                }
-        //                else if (element.Name == "Experiments" && element.HasChildNodes)
-        //                {
-        //                    Models.TreeNode top = Graf.SelectedTreeNode;
-        //                    foreach (XmlElement exp in element.ChildNodes)
-        //                    {
-        //                        string nodeName = exp.Name;
-        //                        string path = exp.Attributes["Path"].Value;
-        //                        if (File.Exists(path))
-        //                        {
-        //                            XmlDocument leafDoc = new XmlDocument();
-        //                            leafDoc.Load(path);
-        //                            Models.TreeNode treeNode = new Models.TreeNode(nodeName, leafDoc, top);
-        //                            Graf.SelectedTreeNode = top;
-        //                            Graf.AddNode(treeNode);
-        //                            if (exp.HasChildNodes)
-        //                            {
-        //                                foreach (XmlElement child in exp.ChildNodes)
-        //                                {
-        //                                    LoadChildren(child, treeNode);
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                    NotifyOfPropertyChange(() => RemoveChildVisible);
-                           
-        //                }
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                Console.WriteLine(e.StackTrace);
-        //            }
-        //        }
-            
-        //}
-        //public void LoadTree()
-        //{
-        //    string fileDoc = null;
-        //    OpenFileDialog ofd = new OpenFileDialog();
-        //    ofd.Filter = "Tree | *.tree";
-        //    ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-        //    if (ofd.ShowDialog() == DialogResult.OK)
-        //    {
-        //        fileDoc = ofd.FileName;
-        //    }
-        //    else
-        //        return;
-        //    Cursor.Current = Cursors.WaitCursor;
-        //    System.Windows.Forms.Application.DoEvents();
-           
-        //    executeLoad(fileDoc);
-        //    Cursor.Current = Cursors.Default;
-        //    if (_graf != null)
-        //    {
-        //        Graf.Loaded = true;
-        //        Graf.LoadedAndModified = false;
-        //        Graf.LoadedXmlFile = fileDoc;
-        //    }
-
-        //}
-
-        //private void LoadChildren(XmlElement child, Models.TreeNode father)
-        //{
-        //    try
-        //    {
-        //        Graf.SelectedTreeNode = father;
-        //        string name = child.Name;
-        //        string path = child.Attributes["Path"].Value;
-        //        if (File.Exists(path))
-        //        {
-        //            XmlDocument leafDoc = new XmlDocument();
-        //            leafDoc.Load(path);
-        //            Models.TreeNode treeNode = new Models.TreeNode(name, leafDoc, father);
-        //            Graf.AddNode(treeNode);
-        //            if (child.HasChildNodes)
-        //            {
-        //                foreach (XmlElement node in child.ChildNodes)
-        //                {
-        //                    LoadChildren(node, treeNode);
-        //                }
-        //            }
-        //        }
-
-
-        //    }catch(Exception e)
-        //    {
-        //        Console.WriteLine(e.StackTrace);
-        //    }
-
-        //}
-        
-        //private List<String> getPaths(List<NodeAndName> myList)
-        //{
-        //    List<string> pahts = new List<string>();
-        //    string folderName = "../experiments/" + "experiment" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
-        //    string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), folderName);
-        //    Directory.CreateDirectory(CombinedPath);
-        //    List<string> names = new List<string>();
-        //    foreach (NodeAndName item in myList)
-        //    {
-        //        string path = CombinedPath + "/" + item.name;
-        //        while (names.Contains(path.ToUpper()))
-        //        {
-        //            path += 'c';
-        //        }
-        //        names.Add(path.ToUpper());
-        //        path += ".xml";
-        //        item.doc.Save(path);
-        //        pahts.Add(Path.GetFullPath(path));
-        //    }
-        //    return pahts;
-
-        //}
-
+     
         public void loadExperimentQueue()
         {
             string fileDoc = null;
@@ -862,10 +624,7 @@ namespace AppXML.ViewModels
             XmlElement fileRoot = batchDoc.DocumentElement;
             if (fileRoot.Name != "Experiments")
                 return;
-            //if (fileRoot.Attributes["App"] == null || !_apps.Contains(fileRoot.Attributes["App"].Value))
-            //    return;
-            //SelectedApp = fileRoot.Attributes["App"].Value;
-            //NotifyOfPropertyChange(() => SelectedApp);
+
             foreach (XmlElement element in fileRoot.ChildNodes)
             {
                 try
@@ -879,44 +638,6 @@ namespace AppXML.ViewModels
                         m_experimentQueueViewModel.addExperiment(element.Name, expDocument);
                         checkStackEmpty();
                     }
-                    //if (element.Name == "Root")
-                    //{
-                    //    string path = element.Attributes["Path"].Value;
-                    //    if (File.Exists(path))
-                    //    {
-                    //        XmlDocument rootDocument = new XmlDocument();
-                    //        rootDocument.Load(path);
-                    //        LoadDocument(rootDocument.DocumentElement);
-                    //        this._graf = null;
-                    //        // SetAsRoot();
-                    //    }
-                    //}
-                    //else if (element.Name == "Experiments" && element.HasChildNodes)
-                    //{
-                    //    Models.TreeNode top = Graf.SelectedTreeNode;
-                    //    foreach (XmlElement exp in element.ChildNodes)
-                    //    {
-                    //        string nodeName = exp.Name;
-                    //        string path = exp.Attributes["Path"].Value;
-                    //        if (File.Exists(path))
-                    //        {
-                    //            XmlDocument leafDoc = new XmlDocument();
-                    //            leafDoc.Load(path);
-                    //            Models.TreeNode treeNode = new Models.TreeNode(nodeName, leafDoc, top);
-                    //            Graf.SelectedTreeNode = top;
-                    //            Graf.AddNode(treeNode);
-                    //            if (exp.HasChildNodes)
-                    //            {
-                    //                foreach (XmlElement child in exp.ChildNodes)
-                    //                {
-                    //                    LoadChildren(child, treeNode);
-                    //                }
-                    //            }
-                    //        }
-                    //    }
-                    //    NotifyOfPropertyChange(() => RemoveChildVisible);
-
-                    //}
                 }
                 catch (Exception e)
                 {
@@ -932,51 +653,6 @@ namespace AppXML.ViewModels
         {
             m_experimentQueueViewModel.save();
          }
-      
-        public List<string> ResolverChildNode(Models.TreeNode node,string fatherPath, XmlElement father)
-        {
-            string name = node.Text;
-            XmlDocument docume = node.Doc;
-            List<string> names = new List<string>();
-            while (names.Contains(name))
-                name += "c";
-            XmlDocument xmlDocument = father.OwnerDocument;
-            //crear la carpeta que va a contener el xml y sus hijos si los tuviera
-            string folderPath = fatherPath+"/"+name;
-            Directory.CreateDirectory(folderPath);
-            string filePath = folderPath + "/" + name + ".node";
-            docume.Save(filePath);
-            //crear el xmlElement y añadirlo al padre
-            XmlElement element = xmlDocument.CreateElement(name);
-            element.SetAttribute("Path", filePath);
-
-            //element.InnerText = filePath;
-            father.AppendChild(element);
-            List<string> result = new List<string>();
-            if (node.hasChildren())
-            {
-                foreach (Models.TreeNode child in node.ChildNodes)
-                    result.AddRange(ResolverChildNode(child, folderPath, element));
-            }
-            else
-                result.Add(filePath);
-            return result;
-                
-
-        }
-        //public void LoadExperiment(XmlDocument experiment)
-        //{
-        //    //if (Graf.SelectedTreeNode == null || Graf.SelectedTreeNode.Doc==null)
-        //    //    return;
-        //    //XmlDocument doc = Graf.SelectedTreeNode.Doc;
-        //    //XmlNode loadedDocumentRoot = doc.DocumentElement;
-        //    //LoadDocument(loadedDocumentRoot);
-
-        //    if (experiment!=null)
-        //    {
-        //        LoadExperimentInEditor(experiment.DocumentElement);
-        //    }
-        //}
        
     }
 }

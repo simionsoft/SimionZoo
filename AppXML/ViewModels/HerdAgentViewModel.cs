@@ -15,9 +15,13 @@ namespace AppXML.ViewModels
         private IPEndPoint m_ipAddress;
         public IPEndPoint ipAddress { get { return m_ipAddress; } set { m_ipAddress = value; } }
         public string ipAddressString { get { return m_ipAddress.Address.ToString(); } set { } }
+
         private DateTime m_lastACK;
         public DateTime lastACK { get { return m_lastACK; } set { m_lastACK = value; } }
 
+        //not sure i'll use this
+        //private bool m_bWorkingForMe = false;
+        //public bool bWorkingForMe { get { return m_bWorkingForMe; } set { m_bWorkingForMe = value; NotifyOfPropertyChange(() => bWorkingForMe); } }
 
         public string state { get { return getProperty(Herd.HerdAgent.m_stateXMLTag); } set { } }
         public string version { get { return getProperty(Herd.HerdAgent.m_versionXMLTag); } set { } }
