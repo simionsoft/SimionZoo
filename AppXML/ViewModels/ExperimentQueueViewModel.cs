@@ -35,10 +35,25 @@ namespace AppXML.ViewModels
             = new BindableCollection<ExperimentViewModel>();
         public BindableCollection<ExperimentViewModel> experimentQueue { get { return m_experimentQueue; } set { m_experimentQueue = value; } }
 
+        public void getEnqueuedExperimentList(ref List<ExperimentViewModel> outList)
+        {
+            outList.Clear();
+            foreach (ExperimentViewModel experiment in m_experimentQueue)
+            {
+                if (experiment.isEnqueued)
+                    outList.Add(experiment);
+            }
+        }
+
         public void resetState()
         {
             foreach (ExperimentViewModel experiment in m_experimentQueue)
                 experiment.resetState();
+        }
+        public void enableEdition(bool bEnable)
+        {
+            foreach (ExperimentViewModel experiment in m_experimentQueue)
+                experiment.enableEdition(bEnable);
         }
 
         private int m_selectedIndex= -1;
@@ -77,7 +92,9 @@ namespace AppXML.ViewModels
 
         public void addExperiment(ExperimentViewModel exp)
         {
-            m_experimentQueue.Add(exp);
+            if (m_selectedIndex >= 0)
+                m_experimentQueue.Insert(m_selectedIndex + 1, exp);
+            else m_experimentQueue.Add(exp);
             markModified(true);
 
             NotifyOfPropertyChange(() => experimentQueue);

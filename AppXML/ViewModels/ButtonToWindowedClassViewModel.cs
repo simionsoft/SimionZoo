@@ -13,8 +13,11 @@ namespace AppXML.ViewModels
 {
     public class ButtonToWindowedClassViewModel :ValidableAndNodeViewModel
     {
+        private const string m_colorValidated= "Gray";
+        private const string m_colorNotValidated="Red";
+
         private XmlDocument _doc;
-        private string m_validationColor= "Transparent";
+        private string m_validationColor;
         public string validationColor { get { return m_validationColor; } set { m_validationColor = value; } }
         
         private WindowClassViewModel m_windowedClassVM;
@@ -34,7 +37,7 @@ namespace AppXML.ViewModels
             m_name = xmlNode.Attributes["Name"].Value;
             m_className= xmlNode.Attributes["Class"].Value;
 
-            m_validationColor = "Transparent";
+            m_validationColor = m_colorValidated;
 
             m_windowedClassVM= new WindowClassViewModel(m_className,m_name,this,doc);
             //validate(true);
@@ -68,9 +71,9 @@ namespace AppXML.ViewModels
 
             bool ok= m_windowedClassVM.validate();
             if (ok)
-                m_validationColor = "Gray";
+                m_validationColor = m_colorValidated;
             else
-                m_validationColor = "Red";
+                m_validationColor = m_colorNotValidated;
             NotifyOfPropertyChange(() => validationColor);
 
             return ok;

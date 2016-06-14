@@ -164,7 +164,8 @@ namespace AppXML.ViewModels
                         IEnumerable<ProcessStateViewModel> myPro = getMines(amount);
                         using (cts.Token.Register(Thread.CurrentThread.Abort))
                         {
-                            try { runOneJob(myPro, key, cts.Token); }
+                            try { //runOneJob(myPro, key, cts.Token); 
+                            }
 
                             catch (Exception ex) { Console.WriteLine(ex.StackTrace); }
                         }
@@ -193,114 +194,114 @@ namespace AppXML.ViewModels
 
       
 
-        private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
-        {
-            //set the process logger class
-            ProcessStatusHandler processStatusHandler = new ProcessStatusHandler(processes);
-            processStatusHandler.m_ip= endPoint.Address.ToString();
+        //private void runOneJob(IEnumerable<ProcessStateViewModel> processes,IPEndPoint endPoint, CancellationToken ct)
+        //{
+        //    //set the process logger class
+        //    ProcessStatusHandler processStatusHandler = new ProcessStatusHandler(processes);
+        //    processStatusHandler.m_ip= endPoint.Address.ToString();
             
-            Task.Factory.StartNew(() =>
-            {
-                Shepherd shepherd = new Shepherd(); 
-                try
-                {
-                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+        //    Task.Factory.StartNew(() =>
+        //    {
+        //        Shepherd shepherd = new Shepherd(); 
+        //        try
+        //        {
+        //            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
 
-                    CJob job = new CJob();
-                    job.name = "AppXML job";
-                    //prerrequisites
-                    if(Models.CApp.pre!=null)
-                    {
-                        foreach (string prerec in Models.CApp.pre)
-                            job.inputFiles.Add(prerec);
-                    }
-                    int taskNumber= 0;
-                    foreach (ProcessStateViewModel process in processes)
-                    {
-                        CTask task = new CTask();
-                        task.name="Task " + taskNumber;
-                        taskNumber++;
-                        task.exe = Models.CApp.EXE;
-                        task.arguments = process.Label + " " + process.pipeName;
-                        task.pipe = process.pipeName;
-                        job.tasks.Add(task);
-                        if (!job.inputFiles.Contains(task.exe)) job.inputFiles.Add(task.exe);
-                        if (!job.inputFiles.Contains(process.Label)) job.inputFiles.Add(process.Label);
-                        Utility.getInputsAndOutputs(process.Label, ref job);
-                        //myPipes.Add(process.pipeName, process);
-                    }
+        //            CJob job = new CJob();
+        //            job.name = "AppXML job";
+        //            //prerrequisites
+        //            if(Models.CApp.pre!=null)
+        //            {
+        //                foreach (string prerec in Models.CApp.pre)
+        //                    job.inputFiles.Add(prerec);
+        //            }
+        //            int taskNumber= 0;
+        //            foreach (ProcessStateViewModel process in processes)
+        //            {
+        //                CTask task = new CTask();
+        //                task.name="Task " + taskNumber;
+        //                taskNumber++;
+        //                task.exe = Models.CApp.EXE;
+        //                task.arguments = process.Label + " " + process.pipeName;
+        //                task.pipe = process.pipeName;
+        //                job.tasks.Add(task);
+        //                if (!job.inputFiles.Contains(task.exe)) job.inputFiles.Add(task.exe);
+        //                if (!job.inputFiles.Contains(process.Label)) job.inputFiles.Add(process.Label);
+        //                Utility.getInputsAndOutputs(process.Label, ref job);
+        //                //myPipes.Add(process.pipeName, process);
+        //            }
 
 
-                    shepherd.connectToHerdAgent(endPoint);
-                    shepherd.setLogMessageHandler(processStatusHandler.logShepherdMessage);
+        //            shepherd.connectToHerdAgent(endPoint);
+        //            shepherd.setLogMessageHandler(processStatusHandler.logShepherdMessage);
 
-                    addTcpNetStream(shepherd.getNetworkStream());
+        //            addTcpNetStream(shepherd.getNetworkStream());
 
-                    processStatusHandler.setAllJobsState("Sending job query");
-                    shepherd.SendJobQuery(job);
-                    processStatusHandler.setAllJobsState("Executing job query");
-                    string xmlItem;
-                    bool bSuccess;
-                    while(true)
-                    {
-                        shepherd.read();
-                        xmlItem = shepherd.m_xmlStream.processNextXMLItem();
+        //            processStatusHandler.setAllJobsState("Sending job query");
+        //            shepherd.SendJobQuery(job);
+        //            processStatusHandler.setAllJobsState("Executing job query");
+        //            string xmlItem;
+        //            bool bSuccess;
+        //            while(true)
+        //            {
+        //                await shepherd.readAsync();
+        //                xmlItem = shepherd.m_xmlStream.processNextXMLItem();
 
-                        if (xmlItem!="")
-                        {
-                            XmlDocument doc = new XmlDocument();
-                            doc.LoadXml(xmlItem);
-                            XmlNode e = doc.DocumentElement;
-                            string key = e.Name;
-                            XmlNode message = e.FirstChild;
-                            if (message.Name == "Progress")
-                            {
-                                double progress = Convert.ToDouble(message.InnerText);
-                                processStatusHandler.setStatus(key, Convert.ToInt32(progress));
-                            }
-                            else if (message.Name == "Message")
-                            {
-                                processStatusHandler.logProcessMessage(key, message.InnerText);
-                            }
-                            else
-                            {
-                                if (key == XMLStream.m_defaultMessageType)
-                                {
-                                    if (message.InnerText == CJobDispatcher.m_endMessage)
-                                    { bSuccess = true; break; }
-                                    else if (message.InnerText == CJobDispatcher.m_errorMessage)
-                                    { bSuccess = false; break; }
-                                }
-                            }
-                        }
-                    }
-                    if (bSuccess)
-                    {
-                        processStatusHandler.setAllJobsState("Receiving output files");
-                        shepherd.ReceiveJobResult();
+        //                if (xmlItem!="")
+        //                {
+        //                    XmlDocument doc = new XmlDocument();
+        //                    doc.LoadXml(xmlItem);
+        //                    XmlNode e = doc.DocumentElement;
+        //                    string key = e.Name;
+        //                    XmlNode message = e.FirstChild;
+        //                    if (message.Name == "Progress")
+        //                    {
+        //                        double progress = Convert.ToDouble(message.InnerText);
+        //                        processStatusHandler.setStatus(key, Convert.ToInt32(progress));
+        //                    }
+        //                    else if (message.Name == "Message")
+        //                    {
+        //                        processStatusHandler.logProcessMessage(key, message.InnerText);
+        //                    }
+        //                    else
+        //                    {
+        //                        if (key == XMLStream.m_defaultMessageType)
+        //                        {
+        //                            if (message.InnerText == CJobDispatcher.m_endMessage)
+        //                            { bSuccess = true; break; }
+        //                            else if (message.InnerText == CJobDispatcher.m_errorMessage)
+        //                            { bSuccess = false; break; }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            if (bSuccess)
+        //            {
+        //                processStatusHandler.setAllJobsState("Receiving output files");
+        //                shepherd.ReceiveJobResult();
 
-                        processStatusHandler.showEndMessage();
-                        owner.isFinished(processes.Count());
-                    }
-                    else processStatusHandler.setAllJobsState("Error in job");
-                }
-                catch(Exception ex)
-                {
-                    //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
-                    //mandar a cualquier maquina que este libre
-                    //this.reRun(myPipes.Values);
-                    Console.WriteLine(ex.StackTrace);
-                }
-                finally
-                {
-                    removeTcpNetStream(shepherd.getNetworkStream());
-                    shepherd.disconnect();
-                }
-            });
+        //                processStatusHandler.showEndMessage();
+        //                owner.isFinished(processes.Count());
+        //            }
+        //            else processStatusHandler.setAllJobsState("Error in job");
+        //        }
+        //        catch(Exception ex)
+        //        {
+        //            //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
+        //            //mandar a cualquier maquina que este libre
+        //            //this.reRun(myPipes.Values);
+        //            Console.WriteLine(ex.StackTrace);
+        //        }
+        //        finally
+        //        {
+        //            removeTcpNetStream(shepherd.getNetworkStream());
+        //            shepherd.disconnect();
+        //        }
+        //    });
             
 
-        }
+        //}
         public void runLocally(IEnumerable<ProcessStateViewModel> Processes)
         {
             //isWorking = true;

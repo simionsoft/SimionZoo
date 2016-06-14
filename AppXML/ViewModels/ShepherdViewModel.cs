@@ -35,8 +35,26 @@ namespace AppXML.ViewModels
                     return m_herdAgentList;
                 }
             }
-            set { }
+            set {}
         }
+        public int getAvailableHerdAgents(ref List<HerdAgentViewModel> outList)
+        {
+            int numAvailableCores = 0;
+            lock (m_herdAgentListLock)
+            {
+                outList.Clear();
+                foreach (HerdAgentViewModel agent in m_innerHerdAgentList)
+                {
+                    if (agent.isAvailable)
+                    {
+                        outList.Add(agent);
+                        numAvailableCores += agent.numProcessors;
+                    }
+                }
+            }
+            return numAvailableCores;
+        }
+
         private void notifyHerdAgentChanged()
         {
             //we get the agents that sent an ack less than m_agentTimeoutSeconds seconds ago

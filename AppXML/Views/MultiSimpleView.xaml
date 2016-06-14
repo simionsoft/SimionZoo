@@ -30,7 +30,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
-                            <Button Width="30" Height="30"  BorderBrush="{x:Null}" BorderThickness="0" cal:Message.Attach="[Event Click]=[Delete($this)]">
+                            <Button Width="30" Height="30" Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0" cal:Message.Attach="[Event Click]=[Delete($this)]">
                                 <Image Source="/views/images/remove.png" Width="25" Height="25"/>
                             </Button>
                         </StackPanel>

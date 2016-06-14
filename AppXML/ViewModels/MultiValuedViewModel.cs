@@ -12,7 +12,7 @@ namespace AppXML.ViewModels
 {
     public class MultiValuedViewModel: ValidableAndNodeViewModel
     {
-        private ObservableCollection<IntegerViewModel> _aded;
+        private ObservableCollection<IntegerViewModel> _added;
         private IntegerViewModel _header;
         private CIntegerValue original;
         private string label;
@@ -20,15 +20,15 @@ namespace AppXML.ViewModels
         public string Comment { get { return _comment; } set { } }
         private XmlDocument _doc;
         private ClassViewModel _headerClass;
-        private ObservableCollection<ClassViewModel> _adedClasses;
-        private string clas;
+        private ObservableCollection<ClassViewModel> _addedClasses;
+        private string m_class;
         private string tag;
         public string Tag { get { return tag; } set { } }
        
         public string simpleVisible { get { 
-            if (_aded != null)
+            if (_added != null)
                 return "Visible"; 
-            else 
+            else
                 return "Hidden"; }
             set { }
         }
@@ -64,19 +64,19 @@ namespace AppXML.ViewModels
                         original = new CIntegerValue(nodo); 
                         _header = new IntegerViewModel(label, original,_doc,tag);
                         this.label = label;
-                        _aded = new ObservableCollection<IntegerViewModel>();
+                        _added = new ObservableCollection<IntegerViewModel>();
 
                     }
                     else
                     {
                         //es una clase
                         this.label = label;
-                        this.clas = clas;
+                        this.m_class = clas;
 
                         _headerClass = new ClassViewModel(clas,label,doc,this,true);
                        // _headerClass.setMultiButtonInfo(MultibuttonInfo.MultiType.header, this);
                        //new ObservableCollection<ClassViewModel>(list);
-                        _adedClasses = new ObservableCollection<ClassViewModel>();
+                        _addedClasses = new ObservableCollection<ClassViewModel>();
 
                     }
                 }
@@ -87,7 +87,7 @@ namespace AppXML.ViewModels
                     original = new CIntegerValue(clas);
                     _header = new IntegerViewModel(label, original,_doc,tag);
                     this.label = label;
-                    _aded = new ObservableCollection<IntegerViewModel>();
+                    _added = new ObservableCollection<IntegerViewModel>();
                 }
                 
             }
@@ -99,34 +99,34 @@ namespace AppXML.ViewModels
         public IntegerViewModel Header { get { return _header; } set { } }
 
         public ClassViewModel HeaderClass { get { return _headerClass; } set { _headerClass = value; NotifyOfPropertyChange(() => HeaderClass); } }
-        public ObservableCollection<ClassViewModel> AdedClasses { get { return _adedClasses; } set { _adedClasses = value; NotifyOfPropertyChange(()=> AdedClasses); } }
+        public ObservableCollection<ClassViewModel> AdedClasses { get { return _addedClasses; } set { _addedClasses = value; NotifyOfPropertyChange(()=> AdedClasses); } }
 
         public ObservableCollection<IntegerViewModel> Aded 
         {
-            get { return _aded; }
+            get { return _added; }
             set
             {
-                _aded = value;
+                _added = value;
                 NotifyOfPropertyChange(() => Aded ); 
             }
         }
         public String RowCount { get { if (AdedClasses != null)return "" + AdedClasses.Count; else return "0"; } set { } }
         public void Delete(IntegerViewModel delete)
         {
-            _aded.Remove(delete);
+            _added.Remove(delete);
             NotifyOfPropertyChange(() => Aded);
 
         }
         public void DeleteClass(ClassViewModel delete)
         {
-            _adedClasses.Remove(delete);
+            _addedClasses.Remove(delete);
             delete.removeFromNewClass();
             /*int index = delete.index;
             for (int i = index; i < _adedClasses.Count;i++)
             {
                 _adedClasses[i].index--;
             }*/
-            if (_adedClasses.Count == 0)
+            if (_addedClasses.Count == 0)
                 NotifyOfPropertyChange(() => DeleteVisible);
             NotifyOfPropertyChange(() => AdedClasses);
 
@@ -158,23 +158,23 @@ namespace AppXML.ViewModels
             {
                 t.TextBoxFile[0].copyDefault = Header.TextBoxFile[0].copyDefault;
             }
-            _aded.Add(t);
+            _added.Add(t);
         }
         public void DeleteLast()
         {
-            _adedClasses[AdedClasses.Count - 1].removeFromNewClass();
-            _adedClasses.RemoveAt(_adedClasses.Count - 1);
-            if (_adedClasses.Count == 0)
+            _addedClasses[AdedClasses.Count - 1].removeFromNewClass();
+            _addedClasses.RemoveAt(_addedClasses.Count - 1);
+            if (_addedClasses.Count == 0)
                 NotifyOfPropertyChange(() => DeleteVisible);
         }
         public void Add()
         {
-            ClassViewModel cvm = new ClassViewModel(this.clas,label,_doc,this,false);
+            ClassViewModel cvm = new ClassViewModel(this.m_class,label,_doc,this,false);
             //cvm.setMultiButtonInfo(MultibuttonInfo.MultiType.added, this);
             //int index = _adedClasses.Count;
             //_adedClasses.Add(new ClassViewWithIndex(cvm,index));
-            _adedClasses.Add(cvm);
-            if (_adedClasses.Count == 1)
+            _addedClasses.Add(cvm);
+            if (_addedClasses.Count == 1)
                 NotifyOfPropertyChange(() => DeleteVisible);
            
         }
@@ -182,16 +182,16 @@ namespace AppXML.ViewModels
         {
             if (this._headerClass != null)
                 _headerClass.removeViews();
-            if(this._adedClasses!=null)
+            if(this._addedClasses!=null)
             {
-                foreach(ClassViewModel clas in _adedClasses)
+                foreach(ClassViewModel clas in _addedClasses)
                 {
                     clas.removeViews();
                 }
             }
         }
     
-        public String DeleteVisible { get { if (_adedClasses != null && _adedClasses.Count > 0) return "Visible"; else return "Hidden"; } set { } }
+        public String DeleteVisible { get { if (_addedClasses != null && _addedClasses.Count > 0) return "Visible"; else return "Hidden"; } set { } }
 
         public override bool validate()
         {
@@ -271,14 +271,14 @@ namespace AppXML.ViewModels
                 HeaderClass.setAsNull();
             else
                 Header.Value = "";
-            if(_adedClasses!=null)
+            if(_addedClasses!=null)
             {
-                foreach (ClassViewModel cvm in _adedClasses)
+                foreach (ClassViewModel cvm in _addedClasses)
                     cvm.setAsNull();
             }
-            if (_aded != null)
+            if (_added != null)
             {
-                foreach (IntegerViewModel ivm in _aded)
+                foreach (IntegerViewModel ivm in _added)
                     ivm.Value = "";
             }
         }

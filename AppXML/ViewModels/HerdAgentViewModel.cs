@@ -26,7 +26,10 @@ namespace AppXML.ViewModels
         public string state { get { return getProperty(Herd.HerdAgent.m_stateXMLTag); } set { } }
         public string version { get { return getProperty(Herd.HerdAgent.m_versionXMLTag); } set { } }
         public int numProcessors { get { return Int32.Parse(getProperty(Herd.HerdAgent.m_numProcessorsXMLTag)); } set { } }
-
+        public bool isAvailable {
+            get { if (getProperty(Herd.HerdAgent.m_stateXMLTag) == "available") return true; return false; }
+            set { }
+        }
         private Dictionary<string, string> m_properties;
         public HerdAgentViewModel()
         {

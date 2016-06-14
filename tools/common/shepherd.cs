@@ -107,14 +107,22 @@ namespace Herd
             u.client = m_discoverySocket;
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
         }
-        public void connectToHerdAgent(IPEndPoint endPoint)
+        public bool connectToHerdAgent(IPEndPoint endPoint)
         {
-            m_tcpClient = new TcpClient();
-            m_tcpClient.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
-            m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
-            m_netStream= m_tcpClient.GetStream();
-            //send slave acquire message
-            m_xmlStream.writeMessage(m_netStream, CJobDispatcher.m_acquireMessage, true);
+            try
+            {
+                m_tcpClient = new TcpClient();
+                m_tcpClient.Connect(endPoint.Address, Herd.CJobDispatcher.m_comPortHerd);
+                m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
+                m_netStream = m_tcpClient.GetStream();
+                //send slave acquire message
+                m_xmlStream.writeMessage(m_netStream, CJobDispatcher.m_acquireMessage, true);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
         public void disconnect()
         {
@@ -180,7 +188,7 @@ namespace Herd
             SendOutputFiles(false);
             SendJobFooter();
         }
-        public bool ReceiveJobResult()
+        public void ReceiveJobResult()
         {
             bool bFooterPeeked= false;
             string xmlTag = "";
@@ -203,12 +211,9 @@ namespace Herd
                 }
             } while (!bFooterPeeked);
 
-            //ReceiveExeFiles(false, false);
-            //ReceiveInputFiles(false, false);
-            //ReceiveOutputFiles(true, false);
             ReceiveJobFooter();
 
-            return true;//if job result properly received. For now, we will assume it}
+            //if job result properly received. For now, we will assume it}
         }
     }
 }

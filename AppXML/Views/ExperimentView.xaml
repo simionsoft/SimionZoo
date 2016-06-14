@@ -18,14 +18,14 @@
             <StackPanel Margin="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="170" >
                     <!--<TextBlock Text="Name" Width="40" Margin="0" Foreground="Gray"></TextBlock>-->
-                    <TextBox x:Name="ExperimentName" BorderBrush="LightGray" Text="{Binding name,Mode=TwoWay}"  Width="80" Focusable="True" FontFamily="Segoe UI" FontSize="10"/>
-                    <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}" Width="50"></TextBlock>
+                    <TextBox x:Name="ExperimentName" IsEnabled="{Binding Path=isEditionEnabled,Converter={StaticResource BoolToVis}}" BorderBrush="LightGray" Text="{Binding name,Mode=TwoWay}"  Width="80" Focusable="True" FontFamily="Segoe UI" FontSize="10"/>
+                    <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}" Width="73"></TextBlock>
                 </StackPanel>
-                <StackPanel Width="170" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bIsExperimentRunning,Converter={StaticResource BoolToVis}}">
+                <StackPanel Width="170" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}">
                     <ProgressBar Height="10" Width="80" Minimum="0" Maximum="100" x:Name="Progress" Margin="0,0,0,0" Value="{Binding Path=progress}"></ProgressBar>
                     <Button Background="{x:Null}" Margin="3,0,0,0" BorderBrush="{x:Null}" x:Name="showStatusInfoInNewWindow" 
                                 cal:Message.Attach="[Event Click]=[showStatusInfoInNewWindow()]"
-                                Width="20" Height="20" Visibility="{Binding Path=StatusInfo,Converter={StaticResource BoolToVis}}">
+                                Width="20" Height="20" Visibility="{Binding Path=isStatusInfo,Converter={StaticResource BoolToVis}}">
                         <Image Source="/views/images/info.png" Width="15" Height="15"></Image>
                     </Button>
                 </StackPanel>

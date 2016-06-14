@@ -113,6 +113,12 @@ namespace Herd
             ////checkConnection(m_tcpClient);
             m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
+        public async Task<int> readAsync()
+        {
+            ////checkConnection(m_tcpClient);
+            int numBytesRead= await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream);
+            return numBytesRead;
+        }
 
         //protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
         protected void SendInputFiles(bool sendContent)
@@ -430,12 +436,33 @@ namespace Herd
                 if (m_bytesInBuffer == 0) Thread.Sleep(200);
             } while (m_bytesInBuffer == 0);
         }
+        public async Task<int> readFromNetworkStreamAsync(TcpClient client, NetworkStream stream)
+        {
+            int numBytesRead;
+            discardProcessedData();
+            //read if there's something to read and if we have available storage
+            numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+            m_bytesInBuffer += numBytesRead;
+            return numBytesRead;
+        }
         public void readFromNamedPipeStream(NamedPipeServerStream stream)
         {
             discardProcessedData();
             //read if there's something to read and if we have available storage
             if (m_bytesInBuffer < m_maxChunkSize)
                 m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+        }
+        public async Task< int> readFromNamedPipeStreamAsync(NamedPipeServerStream stream)
+        {
+            int numBytesRead= 0;
+            discardProcessedData();
+            //read if there's something to read and if we have available storage
+            if (m_bytesInBuffer < m_maxChunkSize)
+            {
+                numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+                m_bytesInBuffer += numBytesRead;
+            }
+            return numBytesRead;
         }
         public string peekNextXMLItem()
         {
@@ -447,6 +474,7 @@ namespace Herd
         {
             if (m_bytesInBuffer > 0)
             {
+                discardProcessedData();
                 m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
 
                 //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
@@ -466,6 +494,7 @@ namespace Herd
         {
             if (m_bytesInBuffer > 0)
             {
+                discardProcessedData();
                 m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
 
                 //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
@@ -485,6 +514,7 @@ namespace Herd
         {
             if (m_bytesInBuffer > 0)
             {
+                discardProcessedData();
                 m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
 
                 //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"

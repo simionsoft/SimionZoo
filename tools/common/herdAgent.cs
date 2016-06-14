@@ -145,12 +145,9 @@ namespace Herd
                 }
             } while (!bFooterPeeked);
 
-            //ReceiveExeFiles(false, false);
-            //ReceiveInputFiles(false, false);
-            //ReceiveOutputFiles(true, false);
             ReceiveJobFooter();
-
-            return true;//if job result properly received. For now, we will assume it}
+            //we will assume everything went ok for now
+            return true;
         }
 
 
