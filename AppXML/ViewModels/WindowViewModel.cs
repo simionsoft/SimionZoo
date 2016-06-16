@@ -36,21 +36,6 @@ namespace AppXML.ViewModels
     {
         List<XmlNode> getXmlNode();
     }
-    public static class ParallelAsync
-    {
-        public static bool ForEachAsync<T>(this IEnumerable<T> source, int dop, Func<T, Task> body)
-        {
-            Task.WhenAll(
-                from partition in Partitioner.Create(source).GetPartitions(dop)
-                select Task.Run(async delegate
-                {
-                    using (partition)
-                        while (partition.MoveNext())
-                            await body(partition.Current);
-                }));
-            return true;
-        }
-    }
 
     public class WindowViewModel : PropertyChangedBase
     {
@@ -83,7 +68,8 @@ namespace AppXML.ViewModels
             NotifyOfPropertyChange(() => experimentQueueViewModel);
             }
         }
-        private ShepherdViewModel m_shepherdViewModel = new ShepherdViewModel();
+        private CancellationTokenSource m_cancelTokenSource;
+        private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
 
         private bool m_bIsExperimentQueueNotEmpty = false;
@@ -150,8 +136,7 @@ namespace AppXML.ViewModels
         }
         public WindowViewModel()
         {
-           
-             
+            m_shepherdViewModel = new ShepherdViewModel();
              //_windowManager = windowManager;
             CApp.IsInitializing = true;
             apps = Directory.GetFiles("..\\config\\apps");
@@ -250,11 +235,7 @@ namespace AppXML.ViewModels
             XmlDocument loadedDocument = new XmlDocument();
             loadedDocument.Load(fileDoc);
 
-            loadExperimentInEditor(loadedDocument);
-            //Graf = null;
-            
-           
-           
+            loadExperimentInEditor(loadedDocument);       
         }
        
         public void loadExperimentInEditor(XmlDocument experimentXML)
@@ -356,8 +337,6 @@ namespace AppXML.ViewModels
             }
                
         }
-
-        private CancellationTokenSource m_cancelTokenSource = new CancellationTokenSource();
         
         public void stopExperiments()
         {
@@ -370,22 +349,17 @@ namespace AppXML.ViewModels
         {
             Task.Factory.StartNew(() =>
                 {
-                    if (shepherdViewModel.herdAgentList.Count > 0)
+                   // if (shepherdViewModel.herdAgentList.Count > 0)
                     {
                         //RUN REMOTELY
                         runExperimentQueueRemotely();
                     }
-                    else
+                    //else
                     {
                         //RUN LOCALLY
                     }
                 });
         }
-
-
-
-
-        
 
         private async void runExperimentQueueRemotely()
         {
@@ -395,7 +369,7 @@ namespace AppXML.ViewModels
             List<ExperimentViewModel> assignedExperiments = new List<ExperimentViewModel>();
             List<Badger> badgers = new List<Badger>();
 
-
+            m_cancelTokenSource = new CancellationTokenSource();
             //get experiment list
             experimentQueueViewModel.getEnqueuedExperimentList(ref pendingExperiments);
             experimentQueueViewModel.enableEdition(false);
@@ -409,11 +383,17 @@ namespace AppXML.ViewModels
                 , ref badgers, m_cancelTokenSource.Token);
             try
             {
-                while (pendingExperiments.Count>0 && !m_cancelTokenSource.IsCancellationRequested)
+                while ((badgerList.Count>0 || pendingExperiments.Count>0) && !m_cancelTokenSource.IsCancellationRequested)
                 {
                     foreach(Badger badger in badgers)
                     {
                         badgerList.Add( badger.sendJobAndMonitor(experimentQueueViewModel.name));
+                    }
+                    //all pending experiments sent? then we await completion to retry in case something fails
+                    if (pendingExperiments.Count == 0)
+                    {
+                        Task.WhenAll(badgerList).Wait();
+                        break;
                     }
 
                     //wait for the first agent to finish and give it something to do
@@ -427,8 +407,8 @@ namespace AppXML.ViewModels
                             pendingExperiments.Add(exp);
                     }
 
-                    //get available herd agents list. Inside the loop to update the list
-                    shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
+                    ////get available herd agents list. Inside the loop to update the list
+                    //shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                     //just in case the freed agent hasn't still been discovered by the shepherd
                     if (!freeHerdAgents.Contains(finishedTaskResult.herdAgent))
                         freeHerdAgents.Add(finishedTaskResult.herdAgent);
@@ -437,13 +417,18 @@ namespace AppXML.ViewModels
                     Badger.assignExperiments(ref pendingExperiments, ref freeHerdAgents
                         , ref badgers, m_cancelTokenSource.Token);
                 }
-                Task.WhenAll(badgerList).Wait();
+                
             }
             catch (Exception ex)
             {
-                int a= 6;
+                Console.WriteLine(ex.StackTrace);
             }
-            experimentQueueViewModel.enableEdition(true);
+            finally
+            {
+                experimentQueueViewModel.enableEdition(true);
+                m_cancelTokenSource.Dispose();
+            }
+            
         }
 
         

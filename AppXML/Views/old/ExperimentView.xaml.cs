@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace AppXML.Views
 {
     /// <summary>
-    /// Lógica de interacción para ProcessStateView.xaml
+    /// Interaction logic for ExperimentView.xaml
     /// </summary>
-    public partial class ProcessStateView : UserControl
+    public partial class ExperimentView : UserControl
     {
-        public ProcessStateView()
+        public ExperimentView()
         {
             InitializeComponent();
         }

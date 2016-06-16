@@ -91,10 +91,10 @@ namespace Herd
             logMessage("Can't determine the XML tag of the unkwown file type");
             return "UnkwnownType";
         }
-        public CJobDispatcher()
+        public CJobDispatcher(CancellationToken cancelToken)
         {
             m_job = new CJob();
-            m_xmlStream = new XMLStream();
+            m_xmlStream = new XMLStream(cancelToken);
             m_nextFileSize = 0;
             m_tempDir = "";
             m_logMessageHandler = null;
@@ -126,6 +126,7 @@ namespace Herd
         public async Task waitAsyncWriteOpsToFinish()
         {
             await Task.WhenAll(m_pendingAsyncWrites);
+            m_pendingAsyncWrites.Clear();
         }
 
         //protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
@@ -389,6 +390,7 @@ namespace Herd
    
     public class XMLStream
     {
+        private CancellationToken m_cancelToken;
         private int m_bufferOffset;
         private int m_bytesInBuffer;
         private byte[] m_buffer;
@@ -397,8 +399,9 @@ namespace Herd
         private string m_asciiBuffer;
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
-        public XMLStream()
+        public XMLStream(CancellationToken cancelToken)
         {
+            m_cancelToken = cancelToken;
             m_buffer = new byte[m_maxChunkSize];
         }
         public int getBufferSize() { return m_maxChunkSize; }
@@ -459,7 +462,7 @@ namespace Herd
             int numBytesRead;
             discardProcessedData();
             //read if there's something to read and if we have available storage
-            numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+            numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer,m_cancelToken);
             m_bytesInBuffer += numBytesRead;
             return numBytesRead;
         }
@@ -477,7 +480,7 @@ namespace Herd
             //read if there's something to read and if we have available storage
             if (m_bytesInBuffer < m_maxChunkSize)
             {
-                numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+                numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer,m_cancelToken);
                 m_bytesInBuffer += numBytesRead;
             }
             return numBytesRead;

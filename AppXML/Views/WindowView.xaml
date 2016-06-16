@@ -26,9 +26,7 @@
         <DataTemplate DataType="{x:Type vm:BranchViewModel}">
             <v:BranchView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:RightTreeViewModel}">
-            <v:RightTreeView/>
-        </DataTemplate>
+
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">

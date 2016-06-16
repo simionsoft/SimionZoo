@@ -47,10 +47,12 @@ namespace Herd
         public const string m_versionXMLTag="HerdAgentVersion";
         public const string m_numProcessorsXMLTag= "NumberOfProcessors";
         public const string m_stateXMLTag= "State";
+        private CancellationTokenSource m_cancelTokenSource;
 
 
-        public HerdAgent()
+        public HerdAgent(CancellationTokenSource cancelTokenSource): base(cancelTokenSource.Token)
         {
+            m_cancelTokenSource= cancelTokenSource;
             m_state = AgentState.AVAILABLE;
             
         }
@@ -154,10 +156,9 @@ namespace Herd
         public int RunJob()
         {
             int returnCode = 0;
-            cts = new CancellationTokenSource();
             ParallelOptions po = new ParallelOptions();
             po.MaxDegreeOfParallelism = Environment.ProcessorCount-1;
-            po.CancellationToken = cts.Token;
+            po.CancellationToken = m_cancelTokenSource.Token;
             try
             {
                 Parallel.ForEach(m_job.tasks, po, (task) =>
@@ -183,7 +184,7 @@ namespace Herd
                     addSpawnedProcessToList(myProcess);//m_spawnedProcesses.Add(myProcess);
 
                             
-                    XMLStream xmlStream = new XMLStream();
+                    XMLStream xmlStream = new XMLStream(cts.Token);
 
                     string xmlItem;
                     if (server != null)
@@ -274,7 +275,7 @@ namespace Herd
         }
         public async Task asyncReadFromClient(NetworkStream netStream, CancellationToken ct)
         {
-            XMLStream inputXMLStream = new XMLStream();
+            XMLStream inputXMLStream = new XMLStream(ct);
             int bytes = 0;
 
             try
@@ -320,12 +321,10 @@ namespace Herd
         }
         public void CommunicationCallback(IAsyncResult ar)
         {
-            //HerdAgent herdAgent = ((HerdAgentTcpState)(ar.AsyncState)).herdAgent;
             if (getState() != AgentState.BUSY)
             {
                 acceptJobQuery(ar);
  
-                CancellationTokenSource cancelToken = new CancellationTokenSource();
                 try
                 {
                     setState(AgentState.BUSY);
@@ -350,7 +349,7 @@ namespace Herd
                                 + getTcpClient().Client.RemoteEndPoint.ToString());
                             if (ReceiveJobQuery())
                             {
-                                listenForQuitCommand(cancelToken.Token);
+                                listenForQuitCommand(m_cancelTokenSource.Token);
 
                                 //run the job
                                 logMessage("Running job");
@@ -385,8 +384,8 @@ namespace Herd
                 }
                 finally
                 {
-                    cancelToken.Cancel();
-                    cancelToken.Dispose();
+                    //cancelToken.Cancel();
+                    //cancelToken.Dispose();
                     getTcpClient().Close();
                     setState(AgentState.AVAILABLE);
 

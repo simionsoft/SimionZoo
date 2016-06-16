@@ -21,6 +21,7 @@ namespace Herd
 
     public class ShepherdUdpState
     {
+        public CancellationToken cancelToken { get; set; }
         public UdpClient client { get; set; }
         public IPEndPoint ip { get; set; }
     }
@@ -31,10 +32,10 @@ namespace Herd
 
     public class Shepherd : CJobDispatcher
     {
-        private object m_agentListLock= new object();
+        private object m_listLock = new object();
         private Dictionary<IPEndPoint,HerdAgentViewModel> m_herdAgentList
             = new Dictionary<IPEndPoint,HerdAgentViewModel>();
-        public Dictionary<IPEndPoint, HerdAgentViewModel> herdAgentList { get { return m_herdAgentList; } set { } } 
+        //public Dictionary<IPEndPoint, HerdAgentViewModel> herdAgentList { get { return m_herdAgentList; } set { } } 
         UdpClient m_discoverySocket;
 
         public delegate void NotifyAgentListChanged();
@@ -44,9 +45,8 @@ namespace Herd
             m_notifyAgentListChanged = func;
         }
 
-        public Shepherd()
+        public Shepherd(CancellationToken cancelToken): base(cancelToken)
         {
-
             m_discoverySocket = new UdpClient();
             m_discoverySocket.EnableBroadcast = true;
             m_notifyAgentListChanged = null;
@@ -77,9 +77,10 @@ namespace Herd
 
         public void DiscoveryCallback(IAsyncResult ar)
         {
-            XMLStream inputXMLStream = new XMLStream();
             UdpClient u = (UdpClient)((ShepherdUdpState)(ar.AsyncState)).client;
             IPEndPoint ip = (IPEndPoint)((ShepherdUdpState)(ar.AsyncState)).ip;
+            CancellationToken ct = (CancellationToken)((ShepherdUdpState)(ar.AsyncState)).cancelToken;
+            XMLStream inputXMLStream = new XMLStream(ct);
             //IPEndPoint ip= new IPEndPoint();
             XElement xmlDescription;
             string herdAgentXMLDescription;
@@ -97,7 +98,7 @@ namespace Herd
                     //we update the ack time
                     HerdAgentViewModel.lastACK = System.DateTime.Now;
 
-                    lock (m_agentListLock)
+                    lock (m_listLock)
                     {
                         if (!m_herdAgentList.ContainsKey(ip))
                             m_herdAgentList.Add(ip, HerdAgentViewModel);
@@ -128,6 +129,7 @@ namespace Herd
         {
             ShepherdUdpState u = new ShepherdUdpState();
             IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
+            u.cancelToken = new CancellationToken();
             u.ip = xxx;
             u.client = m_discoverySocket;
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
@@ -157,9 +159,10 @@ namespace Herd
         }
         public void getHerdAgentList(ref BindableCollection <HerdAgentViewModel> outHerdAgentList, int timeoutSeconds= 10)
         {
-            outHerdAgentList.Clear();
-            lock (m_agentListLock)
+            lock (m_listLock)
             {
+                outHerdAgentList.Clear();
+
                 foreach (var agent in m_herdAgentList)
                     if (System.DateTime.Now.Subtract(agent.Value.lastACK).TotalSeconds < timeoutSeconds)
                         outHerdAgentList.Add(agent.Value);
@@ -167,9 +170,10 @@ namespace Herd
         }
         public void getHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentViewModel> outDictionary)
         {
-            outDictionary.Clear();
-            lock (m_agentListLock)
+            lock (m_listLock)
             {
+                outDictionary.Clear();
+
                 foreach (var agent in m_herdAgentList)
                     outDictionary.Add(agent.Key, agent.Value);
             }
@@ -178,9 +182,10 @@ namespace Herd
         {
             int numCores;
             int numCoresTotal = 0;
-            outHerdAgentList.Clear();
-            lock (m_agentListLock)
+            lock (m_listLock)
             {
+                outHerdAgentList.Clear();
+
                 foreach (var agent in m_herdAgentList)
                 {
                     string state = agent.Value.getProperty("State");
@@ -190,8 +195,8 @@ namespace Herd
                         try
                         {
                             numCores = Int32.Parse(numCoresString);
-                            numCoresTotal += numCores-1;
-                            outHerdAgentList.Add(agent.Key, numCores-1);
+                            numCoresTotal += numCores - 1;
+                            outHerdAgentList.Add(agent.Key, numCores - 1);
                         }
                         catch (Exception)
                         {
@@ -201,7 +206,7 @@ namespace Herd
                 }
                 return numCoresTotal;
             }
-        }        
+        }
 
         public void SendJobQuery(CJob job)
         {

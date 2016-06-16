@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Herd;
 using Caliburn.Micro;
 using System.Net;
+using System.Threading;
 
 namespace AppXML.ViewModels
 {
@@ -18,7 +19,7 @@ namespace AppXML.ViewModels
         private Shepherd m_shepherd;
         public Shepherd shepherd { get { return m_shepherd; } set{}}
 
-        private object m_herdAgentListLock = new object();
+        private object m_listsLock = new object();
         private BindableCollection<HerdAgentViewModel> m_innerHerdAgentList =
             new BindableCollection<HerdAgentViewModel>();
         private BindableCollection <HerdAgentViewModel> m_herdAgentList
@@ -26,21 +27,25 @@ namespace AppXML.ViewModels
         public BindableCollection<HerdAgentViewModel> herdAgentList
         {
             get
-            { 
-                lock(m_herdAgentListLock)
+            {
+                //return m_herdAgentList;
+                lock (m_listsLock)
                 {
+                    m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
+
                     m_herdAgentList.Clear();
                     foreach (HerdAgentViewModel agent in m_innerHerdAgentList)
                         m_herdAgentList.Add(agent);
-                    return m_herdAgentList;
                 }
+                return m_herdAgentList;
             }
             set {}
         }
         public int getAvailableHerdAgents(ref List<HerdAgentViewModel> outList)
         {
+            //we assume outList needs no synchronization
             int numAvailableCores = 0;
-            lock (m_herdAgentListLock)
+            lock (m_listsLock)
             {
                 outList.Clear();
                 foreach (HerdAgentViewModel agent in m_innerHerdAgentList)
@@ -58,7 +63,10 @@ namespace AppXML.ViewModels
         private void notifyHerdAgentChanged()
         {
             //we get the agents that sent an ack less than m_agentTimeoutSeconds seconds ago
-            m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
+//            lock (m_listsLock)
+            //{
+            //    m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
+            //}
             NotifyOfPropertyChange(() => herdAgentList);
         }
         private void resendBroadcast(object sender, System.Timers.ElapsedEventArgs e)
@@ -68,7 +76,7 @@ namespace AppXML.ViewModels
 
         public ShepherdViewModel()
         {
-            m_shepherd = new Shepherd();
+            m_shepherd = new Shepherd(new CancellationToken()); //dummy cancellation token because there is no point cancelling the monitoring task
             m_shepherd.setNotifyAgentListChangedFunc(notifyHerdAgentChanged);
 
             m_timer = new System.Timers.Timer(m_updateTimeSeconds*1000);
