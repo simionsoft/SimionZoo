@@ -16,13 +16,15 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.IO.Pipes;
 using System.Xml.Linq;
+using System.Linq;
 using System.Xml.XPath;
 using System.Windows.Media;
 using System.Threading;
 using System.Globalization;
+using System.Collections.Concurrent;
 using Herd;
 using AppXML.ViewModels;
-
+using System.Threading.Tasks.Dataflow;
 
 namespace AppXML.ViewModels
 {
@@ -34,7 +36,22 @@ namespace AppXML.ViewModels
     {
         List<XmlNode> getXmlNode();
     }
-    //[Export(typeof(WindowViewModel))]
+    public static class ParallelAsync
+    {
+        public static bool ForEachAsync<T>(this IEnumerable<T> source, int dop, Func<T, Task> body)
+        {
+            Task.WhenAll(
+                from partition in Partitioner.Create(source).GetPartitions(dop)
+                select Task.Run(async delegate
+                {
+                    using (partition)
+                        while (partition.MoveNext())
+                            await body(partition.Current);
+                }));
+            return true;
+        }
+    }
+
     public class WindowViewModel : PropertyChangedBase
     {
         public double ControlHeight
@@ -53,37 +70,13 @@ namespace AppXML.ViewModels
             }
             set { }
         }
-        //public int MaxHeight
-        //{
-        //    get
-        //    {
-        //        return (int)System.Windows.SystemParameters.PrimaryScreenHeight-200;
-        //    }
-        //    set { }
-        //}
-        //public double MaxWidth 
-        //{
-        //    get 
-        //    {
-        //        return (System.Windows.SystemParameters.PrimaryScreenWidth - 220)/2; 
-        //    } 
-        //    set { } 
-        //}
+
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
         private XmlDocument _doc;
         //private RightTreeViewModel _graf;
         public ObservableCollection<ValidableAndNodeViewModel> Branch { get { return _branches[0].Class.AllItems; } set { } }
-        //public RightTreeViewModel Graf { get { return _graf; }
-        //    set 
-        //    {
-        //        _graf = value; 
-        //        NotifyOfPropertyChange(() => Graf); 
-        //        NotifyOfPropertyChange(()=> AddChildVisible);
-        //        NotifyOfPropertyChange(()=> RemoveChildVisible);
 
-        //    } 
-        //}
         private ExperimentQueueViewModel m_experimentQueueViewModel = new ExperimentQueueViewModel();
         public ExperimentQueueViewModel experimentQueueViewModel { get { return m_experimentQueueViewModel; }
             set { m_experimentQueueViewModel = value;
@@ -126,16 +119,10 @@ namespace AppXML.ViewModels
 
         private ObservableCollection<string> _apps = new ObservableCollection<string>();
         public ObservableCollection<string> Apps { get { return _apps; } set { } }
-        private bool _isSelectedNodeLeaf = false;
-        public bool IsSelectedNodeLeafBool { get { return _isSelectedNodeLeaf; } set { _isSelectedNodeLeaf = value; NotifyOfPropertyChange(() => IsSelectedNodeLeaf); } }
-        public string IsSelectedNodeLeaf { get { if (_isSelectedNodeLeaf)return "Visible"; else return "Hidden"; } set { } }
-
-
-        
+      
         private string[] apps;
         private string selectedApp;
-        //public SolidColorBrush Color { get { return new SolidColorBrush((Color)ColorConverter.ConvertFromString("White")); } set { } }
- 
+
         public string SelectedApp { get { return selectedApp; } 
             set 
             {
@@ -150,14 +137,9 @@ namespace AppXML.ViewModels
                 _rootnode = Utility.getRootNode(apps[index]);
                 _branches = _rootnode.children;
                 _doc = (this._rootnode as CApp).document;
-               // _graf = null;
                 CApp.IsInitializing = false;
                 NotifyOfPropertyChange(() => Branch);
-               // NotifyOfPropertyChange(() => Graf);
                 NotifyOfPropertyChange(() => rootnode);
-             //   NotifyOfPropertyChange(() => RemoveChildVisible);
-             //   NotifyOfPropertyChange(() => AddChildVisible);
-
             } 
         }
        
@@ -193,20 +175,7 @@ namespace AppXML.ViewModels
             
             }
         }
-        //public void ModifySelectedLeaf()
-        //{
-        //    if (!validate())
-        //        return;
-        //    XmlDocument document = new XmlDocument();
-        //    XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
-        //    document.AppendChild(newRoot);
-        //    if ( Utility.findDifferences(document, Graf.SelectedTreeNode.Doc)==null)
-        //        return;
-        //    Graf.SelectedTreeNode.Doc = document;
-        //    Graf.SelectedTreeNode.updateDif();
-        //    NotifyOfPropertyChange(() => Graf.Tree);
-        //    Graf.LoadedAndModified = true;
-        //}
+
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
         public CNode rootnode
         {
@@ -218,7 +187,6 @@ namespace AppXML.ViewModels
             {
                 _rootnode = value;
             }
-
         }
 
         public void saveExperimentInEditor()
@@ -236,9 +204,6 @@ namespace AppXML.ViewModels
             {
                 _doc.Save(sfd.FileName);
             }
-
-
-
         }
         
         private bool validate()
@@ -249,14 +214,13 @@ namespace AppXML.ViewModels
             {
                 if (!branch.validate())
                 {
-                    DialogViewModel dvm = new DialogViewModel(null, "Error validating de form. Please check form", DialogViewModel.DialogType.Info);
+                    DialogViewModel dvm = new DialogViewModel(null, "Error validating the form. Please check form", DialogViewModel.DialogType.Info);
                     dynamic settings = new ExpandoObject();
                     settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
                     settings.ShowInTaskbar = true;
                     settings.Title = "ERROR";
 
                     new WindowManager().ShowDialog(dvm, null, settings);
-
 
                     return false;
                 }
@@ -418,333 +382,71 @@ namespace AppXML.ViewModels
                 });
         }
 
-        async Task<bool> sendJobAsync(HerdAgentViewModel herdAgentVM,List<ExperimentViewModel> experimentsVM, CancellationToken cancelToken)
-        {
-            Shepherd shepherd = new Shepherd();
-            //Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-            bool bSuccess= false;
-
-            try
-            {
-                experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.WAITING_EXECUTION);
-                CJob job = createJob(experimentQueueViewModel.name, experimentsVM);
-
-                bool bConnected= shepherd.connectToHerdAgent(herdAgentVM.ipAddress);
-                if (bConnected)
-                {
-                    experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.SENDING);
-                    herdAgentVM.status = "Sending job query";
-                    shepherd.SendJobQuery(job);
-                    experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RUNNING);
-                    herdAgentVM.status = "Executing job query";
-
-                    while (true)
-                    {
-                        int numBytesRead= await shepherd.readAsync();
-                        string xmlItem= shepherd.m_xmlStream.processNextXMLItem();
-                        
-                        while (xmlItem != "")
-                        {
-
-                            cancelToken.ThrowIfCancellationRequested();
-
-                            XmlDocument doc = new XmlDocument();
-                            doc.LoadXml(xmlItem);
-                            XmlNode e = doc.DocumentElement;
-                            string key = e.Name;
-                            XmlNode message = e.FirstChild;
-                            ExperimentViewModel experimentVM = experimentsVM.Find(exp => exp.name == key);
-                            string content = message.InnerText;
-                            if (experimentVM != null)
-                            {
-                                if (message.Name == "Progress")
-                                {
 
 
-                                    double progress = double.Parse(content, CultureInfo.InvariantCulture);
 
+        
 
-                                    //double progress = Convert.ToDouble(content);
-                                    experimentVM.progress = Convert.ToInt32(progress);
-                                }
-                                else if (message.Name == "Message")
-                                {
-                                    experimentVM.addStatusInfoLine(content);
-                                }
-                                else if (message.Name == "End")
-                                {
-                                    if (content == "Ok")
-                                        experimentVM.state = ExperimentViewModel.ExperimentState.WAITING_RESULT;
-                                    else experimentVM.state = ExperimentViewModel.ExperimentState.ERROR;
-                                }
-                            }
-                            else
-                            {
-                                if (key == XMLStream.m_defaultMessageType)
-                                {
-                                    if (content == CJobDispatcher.m_endMessage)
-                                    {
-                                        experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RECEIVING);
-                                        herdAgentVM.status = "Receiving output files";
-                                        shepherd.ReceiveJobResult();
-                                        experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.FINISHED);
-                                        herdAgentVM.status = "Finished";
-                                        bSuccess = true;
-                                        break;
-                                    }
-                                    else if (content == CJobDispatcher.m_errorMessage)
-                                    {
-                                        herdAgentVM.status = "Error in job";
-                                        experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.ERROR);
-                                        bSuccess = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            xmlItem= shepherd.m_xmlStream.processNextXMLItem();
-                        }
-                    }
-                }
-            }        
-            catch (OperationCanceledException)
-            {
-                //quit remote jobs
-                shepherd.writeMessage(Shepherd.m_quitMessage, true);
-                experimentsVM.ForEach((exp) => exp.resetState());
-                herdAgentVM.status = "";
-                bSuccess = false;
-            }
-            catch (Exception ex)
-            {
-                //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
-                //mandar a cualquier maquina que este libre
-                //this.reRun(myPipes.Values);
-                Console.WriteLine(ex.StackTrace);
-                bSuccess = false;
-            }
-            finally
-            {
-                shepherdViewModel.shepherd.disconnect();
-            }
-            return bSuccess;
-        }
-
-       //void assignExperiments(List<HerdAgentViewModel> agents
-       //    ,ref List<ExperimentViewModel> pendingExperiments
-       //    ,ref List<ExperimentViewModel> assignedExperiments
-       //    ,ref Dictionary<HerdAgentViewModel, List<ExperimentViewModel>> assignments)
-       // {
-       //     assignments.Clear();
-
-       //     int numAssignedExperiments = 0;
-
-       //     foreach (HerdAgentViewModel agent in agents)
-       //     {
-       //         if (pendingExperiments.Count==0) break;
-
-       //         List<ExperimentViewModel> agentExperiments
-       //             = new List<ExperimentViewModel>();
-
-       //         int amount= agent.numProcessors - 1;
-       //         for (int i = 0; pendingExperiments.Count>0 && i < amount; i++)
-       //         {
-       //             agentExperiments.Add(pendingExperiments[0]);
-       //             assignedExperiments.Add(pendingExperiments[0]); 
-       //             pendingExperiments.RemoveAt(0);
-       //         }
-
-       //         assignments.Add(agent, agentExperiments);
-       //         numAssignedExperiments += amount;
-       //     }
-       // }
-
-        //bool sendJobAndMonitor(HerdAgentViewModel herdAgentVM, List<ExperimentViewModel> experimentsVM, CancellationToken cancelToken)
-        //{
-        //    bool bSuccess = false;
-        //    experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.WAITING_EXECUTION);
-        //    CJob job = createJob(experimentQueueViewModel.name, experimentsVM);
-
-        //    Shepherd shepherd = new Shepherd();
-        //    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-        //    try
-        //    {
-        //        shepherd.connectToHerdAgent(herdAgentVM.ipAddress);
-
-        //        experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.SENDING);
-        //        herdAgentVM.status = "Sending job query";
-        //        shepherd.SendJobQuery(job);
-        //        experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RUNNING);
-        //        herdAgentVM.status = "Executing job query";
-
-        //        string xmlItem;
-        //        while (true)
-        //        {
-        //            shepherd.read();
-        //            xmlItem = shepherd.m_xmlStream.processNextXMLItem();
-
-        //            cancelToken.ThrowIfCancellationRequested();
-
-        //            if (xmlItem != "")
-        //            {
-        //                XmlDocument doc = new XmlDocument();
-        //                doc.LoadXml(xmlItem);
-        //                XmlNode e = doc.DocumentElement;
-        //                string key = e.Name;
-        //                XmlNode message = e.FirstChild;
-        //                ExperimentViewModel experimentVM = experimentsVM.Find(exp => exp.name == key);
-        //                string content = message.InnerText;
-        //                if (experimentVM != null)
-        //                {
-        //                    if (message.Name == "Progress")
-        //                    {
-        //                        double progress = Convert.ToDouble(content);
-        //                        experimentVM.progress = Convert.ToInt32(progress);
-        //                    }
-        //                    else if (message.Name == "Message")
-        //                    {
-        //                        experimentVM.addStatusInfoLine(content);
-        //                    }
-        //                    else if (message.Name == "End")
-        //                    {
-        //                        if (content == "Ok")
-        //                            experimentVM.state = ExperimentViewModel.ExperimentState.WAITING_RESULT;
-        //                        else experimentVM.state = ExperimentViewModel.ExperimentState.ERROR;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    if (key == XMLStream.m_defaultMessageType)
-        //                    {
-        //                        if (content == CJobDispatcher.m_endMessage)
-        //                        {
-        //                            experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RECEIVING);
-        //                            herdAgentVM.status = "Receiving output files";
-        //                            shepherd.ReceiveJobResult();
-        //                            experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.FINISHED);
-        //                            herdAgentVM.status = "Finished";
-        //                            bSuccess = true;
-        //                            break;
-        //                        }
-        //                        else if (content == CJobDispatcher.m_errorMessage)
-        //                        {
-        //                            herdAgentVM.status = "Error in job";
-        //                            experimentsVM.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.ERROR);
-        //                            bSuccess = false;
-        //                            break;
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (OperationCanceledException)
-        //    {
-        //        //quit remote jobs
-        //        shepherd.writeMessage(Shepherd.m_quitMessage, true);
-        //        experimentsVM.ForEach((exp) => exp.resetState());
-        //        herdAgentVM.status = "";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
-        //        //mandar a cualquier maquina que este libre
-        //        //this.reRun(myPipes.Values);
-        //        Console.WriteLine(ex.StackTrace);
-        //    }
-        //    finally
-        //    {
-        //        shepherdViewModel.shepherd.disconnect();
-        //    }
-        //    return bSuccess;
-        //}
-
-        //private object m_queueLock = new object();
-        //void enqueueExperiments(ref List<ExperimentViewModel> experimentList, List<ExperimentViewModel> experiments)
-        //{
-        //    lock(m_queueLock)
-        //    {
-        //        experimentList.AddRange(experiments);
-        //    }
-        //}
-
-        async void runExperimentQueueRemotely()
+        private async void runExperimentQueueRemotely()
         {
             List<HerdAgentViewModel> freeHerdAgents= new List<HerdAgentViewModel>();
             List<HerdAgentViewModel> usedHerdAgents= new List<HerdAgentViewModel>();
             List<ExperimentViewModel> pendingExperiments = new List<ExperimentViewModel>();
             List<ExperimentViewModel> assignedExperiments = new List<ExperimentViewModel>();
+            List<Badger> badgers = new List<Badger>();
+
 
             //get experiment list
             experimentQueueViewModel.getEnqueuedExperimentList(ref pendingExperiments);
             experimentQueueViewModel.enableEdition(false);
 
-            List<Task<bool>> remoteTasks = new List<Task<bool>>();
-            while (pendingExperiments.Count>0 && !m_cancelTokenSource.IsCancellationRequested)
+            List<Task<Badger>> badgerList = new List<Task<Badger>>();
+            //get available herd agents list. Inside the loop to update the list
+            shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
+
+            //assign experiments to free agents
+            Badger.assignExperiments(ref pendingExperiments, ref freeHerdAgents
+                , ref badgers, m_cancelTokenSource.Token);
+            try
             {
-                //get available herd agents list. Inside the loop to update the list
-                shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
-
-                List<ExperimentViewModel> experimentList;
-                //assign experiments to free agents
-                while (pendingExperiments.Count>0 && freeHerdAgents.Count>0)
+                while (pendingExperiments.Count>0 && !m_cancelTokenSource.IsCancellationRequested)
                 {
-                    HerdAgentViewModel agentVM= freeHerdAgents[0];
-                    freeHerdAgents.RemoveAt(0);
-                    usedHerdAgents.Add(agentVM);
-                    int numProcessors= Math.Max(1,agentVM.numProcessors -1); //we free one processor
-
-                    experimentList= new List<ExperimentViewModel>();
-                    for (int i = 0; i < Math.Min(numProcessors, pendingExperiments.Count); i++ )
+                    foreach(Badger badger in badgers)
                     {
-                        experimentList.Add(pendingExperiments[0]);
-                        assignedExperiments.Add(pendingExperiments[0]);
-                        pendingExperiments.RemoveAt(0);
+                        badgerList.Add( badger.sendJobAndMonitor(experimentQueueViewModel.name));
                     }
-                    remoteTasks.Add(sendJobAsync(agentVM,experimentList,m_cancelTokenSource.Token));
+
+                    //wait for the first agent to finish and give it something to do
+                    Task<Badger> finishedTask= await Task.WhenAny(badgerList);
+                    Badger finishedTaskResult = await finishedTask;
+                    badgerList.Remove(finishedTask);
+                    
+                    if (finishedTaskResult.failedExperiments.Count>0)
+                    {
+                        foreach (ExperimentViewModel exp in finishedTaskResult.failedExperiments)
+                            pendingExperiments.Add(exp);
+                    }
+
+                    //get available herd agents list. Inside the loop to update the list
+                    shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
+                    //just in case the freed agent hasn't still been discovered by the shepherd
+                    if (!freeHerdAgents.Contains(finishedTaskResult.herdAgent))
+                        freeHerdAgents.Add(finishedTaskResult.herdAgent);
+
+                    //assign experiments to free agents
+                    Badger.assignExperiments(ref pendingExperiments, ref freeHerdAgents
+                        , ref badgers, m_cancelTokenSource.Token);
                 }
-                //wait for any of the tasks to finish to check if we have to send any more jobs
-                Task<bool> finishedTask = await Task.WhenAny(remoteTasks);
-
-                bool bReturnValue = await finishedTask;
-
-                if (bReturnValue || m_cancelTokenSource.IsCancellationRequested)
-                    remoteTasks.Remove(finishedTask);
-                else
-                    finishedTask.Start();
+                Task.WhenAll(badgerList).Wait();
+            }
+            catch (Exception ex)
+            {
+                int a= 6;
             }
             experimentQueueViewModel.enableEdition(true);
         }
 
-        private CJob createJob(string experimentName,List<ExperimentViewModel> experiments)
-        {
-            CJob job = new CJob();
-            job.name = experimentName;
-            //prerrequisites
-            if (Models.CApp.pre != null)
-            {
-                foreach (string prerec in Models.CApp.pre)
-                    job.inputFiles.Add(prerec);
-            }
-            //tasks, inputs and outputs
-            foreach (ExperimentViewModel experiment in experiments)
-            {
-                CTask task = new CTask();
-                task.name = experiment.name;
-                task.exe = Models.CApp.EXE;
-                task.arguments = experiment.filePath + " " + experiment.pipeName;
-                task.pipe = experiment.pipeName;
-                job.tasks.Add(task);
-                //add exe file to inputs
-                if (!job.inputFiles.Contains(task.exe))
-                    job.inputFiles.Add(task.exe);
-                //add experiment file to inputs
-                if (!job.inputFiles.Contains(experiment.filePath))
-                    job.inputFiles.Add(experiment.filePath);
-                Utility.getInputsAndOutputs(experiment.filePath, ref job);
-            }
-            return job;
-        }
+        
      
         public void loadExperimentQueue()
         {

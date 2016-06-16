@@ -51,7 +51,29 @@ namespace Herd
             m_discoverySocket.EnableBroadcast = true;
             m_notifyAgentListChanged = null;
         }
+        public static bool IsLocalIpAddress(string host)
+        {
+            try
+            { // get host IP addresses
+                IPAddress[] hostIPs = Dns.GetHostAddresses(host);
+                // get local IP addresses
+                IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
 
+                // test if any host IP equals to any local IP or to localhost
+                foreach (IPAddress hostIP in hostIPs)
+                {
+                    // is localhost
+                    if (IPAddress.IsLoopback(hostIP)) return true;
+                    // is local address
+                    foreach (IPAddress localIP in localIPs)
+                    {
+                        if (hostIP.Equals(localIP)) return true;
+                    }
+                }
+            }
+            catch { }
+            return false;
+        }
 
         public void DiscoveryCallback(IAsyncResult ar)
         {
@@ -64,25 +86,28 @@ namespace Herd
             try
             {
                 Byte[] receiveBytes = u.EndReceive(ar, ref ip);
-                herdAgentXMLDescription = Encoding.ASCII.GetString(receiveBytes);
-                xmlDescription = XElement.Parse(herdAgentXMLDescription);
-                HerdAgentViewModel HerdAgentViewModel = new HerdAgentViewModel();
-                HerdAgentViewModel.parse(xmlDescription);
-                //we copy the ip address into the properties
-                HerdAgentViewModel.ipAddress = ip;
-                //we update the ack time
-                HerdAgentViewModel.lastACK = System.DateTime.Now;
-
-                lock (m_agentListLock)
+                //if (!IsLocalIpAddress(ip.Address.ToString()))
                 {
-                    if (!m_herdAgentList.ContainsKey(ip))
-                        m_herdAgentList.Add(ip, HerdAgentViewModel);
-                    else
-                        m_herdAgentList[ip] = HerdAgentViewModel;
+                    herdAgentXMLDescription = Encoding.ASCII.GetString(receiveBytes);
+                    xmlDescription = XElement.Parse(herdAgentXMLDescription);
+                    HerdAgentViewModel HerdAgentViewModel = new HerdAgentViewModel();
+                    HerdAgentViewModel.parse(xmlDescription);
+                    //we copy the ip address into the properties
+                    HerdAgentViewModel.ipAddress = ip;
+                    //we update the ack time
+                    HerdAgentViewModel.lastACK = System.DateTime.Now;
+
+                    lock (m_agentListLock)
+                    {
+                        if (!m_herdAgentList.ContainsKey(ip))
+                            m_herdAgentList.Add(ip, HerdAgentViewModel);
+                        else
+                            m_herdAgentList[ip] = HerdAgentViewModel;
+                    }
+                    //notify, if we have to, that the agent list has probably changed
+                    if (m_notifyAgentListChanged != null)
+                        m_notifyAgentListChanged();
                 }
-                //notify, if we have to, that the agent list has probably changed
-                if (m_notifyAgentListChanged != null)
-                    m_notifyAgentListChanged();
 
                 u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
             }

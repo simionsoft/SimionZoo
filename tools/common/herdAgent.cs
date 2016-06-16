@@ -356,7 +356,7 @@ namespace Herd
                                 logMessage("Running job");
                                 returnCode = RunJob();
 
-                                if (returnCode == m_noErrorCode)
+                                if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
                                     logMessage("Job finished");
                                     writeMessage(CJobDispatcher.m_endMessage, true);
@@ -366,11 +366,11 @@ namespace Herd
 
                                     logMessage("Job results sent");
                                 }
-                                else if (returnCode == m_jobInternalErrorCode)
-                                {
-                                    logMessage("The job returned an error code");
-                                    writeMessage(CJobDispatcher.m_errorMessage, true);
-                                }
+                                //else if (returnCode == m_jobInternalErrorCode)
+                                //{
+                                //    logMessage("The job returned an error code");
+                                //    writeMessage(CJobDispatcher.m_errorMessage, true);
+                                //}
                                 else if (returnCode == m_remotelyCancelledErrorCode)
                                 {
                                     logMessage("The job was remotely cancelled");

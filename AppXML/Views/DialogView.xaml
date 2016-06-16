@@ -17,7 +17,7 @@
         </ScrollViewer.Background>
         <StackPanel>
             <Label Margin="10" Foreground="Black" VerticalContentAlignment="Center"
-                   HorizontalContentAlignment="Center" Width="100" x:Name="Message" FontSize="10">
+                   HorizontalContentAlignment="Center" x:Name="Message" FontSize="10">
             </Label>
             <TextBox Margin="10,0,10,0" x:Name="Text" Height="auto" Visibility="{Binding AnswerVisibility}"></TextBox>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0,10,0">

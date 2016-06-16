@@ -99,7 +99,7 @@ namespace Herd
             m_tempDir = "";
             m_logMessageHandler = null;
         }
-
+        private List<Task> m_pendingAsyncWrites = new List<Task>();
         public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
         public void setDirPath(string dirPath) { m_tempDir = dirPath; }
         public void setLogMessageHandler(LogMessageHandler logMessageHandler) { m_logMessageHandler = logMessageHandler; }
@@ -119,6 +119,14 @@ namespace Herd
             int numBytesRead= await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream);
             return numBytesRead;
         }
+        public void writeAsync(byte[]buffer, int offset, int length)
+        {
+            m_pendingAsyncWrites.Add(m_netStream.WriteAsync(buffer, offset, length));
+        }
+        public async Task waitAsyncWriteOpsToFinish()
+        {
+            await Task.WhenAll(m_pendingAsyncWrites);
+        }
 
         //protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
         protected void SendInputFiles(bool sendContent)
@@ -132,10 +140,19 @@ namespace Herd
         {
             foreach (string file in m_job.outputFiles)
             {
-                SendFile(file, FileType.OUTPUT, sendContent, true);
+                //some output files may not be ther if a task failed
+                //we still want to try sending the rest of files
+                if (!sendContent || File.Exists(getCachedFilename(file)))
+                    SendFile(file, FileType.OUTPUT, sendContent, true);
+                else
+                    m_job.outputFiles.Remove(file);
             }
         }
-        protected void SendTasks() { foreach (CTask task in m_job.tasks) SendTask(task); }
+        protected void SendTasks()
+        {
+            foreach (CTask task in m_job.tasks)
+                SendTask(task);
+        }
         protected void SendTask(CTask task)
         {
             string taskXML = "<Task Name=\"" + task.name + "\"";
@@ -144,7 +161,8 @@ namespace Herd
             taskXML += " Pipe=\"" + task.pipe + "\"";
             taskXML += "/>";
             byte[] bytes= Encoding.ASCII.GetBytes(taskXML);
-            m_netStream.Write(bytes, 0, bytes.Length);
+
+            writeAsync(bytes, 0, bytes.Length);
         }
         public void ReceiveTask()
         {
@@ -163,16 +181,16 @@ namespace Herd
             string header = "<Job Name=\"" + m_job.name + "\">";
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             //checkConnection(m_tcpClient);
-            m_netStream.Write(headerbytes, 0, headerbytes.Length);
+            writeAsync(headerbytes, 0, headerbytes.Length);
         }
         protected void SendJobFooter()
         {
             string footer = "</Job>";
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
             //checkConnection(m_tcpClient);
-            m_netStream.Write(footerbytes, 0, footerbytes.Length);
+            writeAsync(footerbytes, 0, footerbytes.Length);
         }
-        protected bool SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
+        protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
         {
             string fileTypeXMLTag;
             string header;
@@ -193,26 +211,27 @@ namespace Herd
                     fileName = getCachedFilename(fileName);
 
                 try { fileStream = File.OpenRead(fileName); }
-                catch { return false; }
+                catch { return; }
                 fileSize = fileStream.Length;
                 header += " Size=\"" + fileSize + "\">";
 
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
-                m_netStream.Write(headerBytes, 0, headerBytes.Length);
+                writeAsync(headerBytes, 0, headerBytes.Length);
 
 
                 long readBytes = 0;
                 int lastReadBytes;
-                byte[] buffer = new byte[m_xmlStream.getBufferSize()];
+                
                 while (readBytes < fileSize)
                 {
+                    byte[] buffer = new byte[m_xmlStream.getBufferSize()];
                     lastReadBytes = fileStream.Read(buffer, 0, m_xmlStream.getBufferSize());
                     readBytes += lastReadBytes;
 
                     try
                     {
-                        m_netStream.Write(buffer, 0, (int)lastReadBytes);
+                        writeAsync(buffer, 0, (int)lastReadBytes);
                     }
                     catch(Exception ex)
                     {
@@ -224,7 +243,7 @@ namespace Herd
                 //Send the footer: </Exe>, </Input> or </Output>
                 byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
                 //checkConnection(m_tcpClient);
-                m_netStream.Write(footerBytes, 0, footerBytes.Length);
+                writeAsync(footerBytes, 0, footerBytes.Length);
                 m_netStream.Flush();
             }
             else
@@ -233,12 +252,11 @@ namespace Herd
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
                 //checkConnection(m_tcpClient);
-                m_netStream.Write(headerBytes, 0, headerBytes.Length);
-
+                writeAsync(headerBytes, 0, headerBytes.Length);
 
                 m_netStream.Flush();
             }
-            return true;
+            //return true;
         }
 
         public void ReadFromStream()

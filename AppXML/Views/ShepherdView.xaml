@@ -15,7 +15,7 @@
               BorderBrush="{x:Null}" BorderThickness="0" ItemsSource="{Binding herdAgentList}" >
         <ListView.ItemTemplate>
             <DataTemplate>-->
-
+    <ScrollViewer >
                 <StackPanel Orientation="Vertical" Margin="0">
                     <StackPanel.Background>
                         <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
@@ -28,5 +28,5 @@
             <!--</DataTemplate>
         </ListView.ItemTemplate>
     </ListView>-->
-  
+    </ScrollViewer>
 </UserControl>
