@@ -79,7 +79,7 @@ namespace Herd
         }
         public void DoStart()
         {
-            m_herdAgent = new HerdAgent();
+            m_herdAgent = new HerdAgent(new CancellationTokenSource());
 
             m_dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp";
             Directory.CreateDirectory(m_dirPath);

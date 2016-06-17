@@ -29,7 +29,7 @@ namespace Herd
 
     public class HerdAgent : CJobDispatcher
     {
-        private CancellationTokenSource cts;
+        //private CancellationTokenSource cts;
         private List<Process> m_spawnedProcesses = new List<Process>();
         private object m_quitExecutionLock = new object();
         public const int m_remotelyCancelledErrorCode = -1;
@@ -50,11 +50,10 @@ namespace Herd
         private CancellationTokenSource m_cancelTokenSource;
 
 
-        public HerdAgent(CancellationTokenSource cancelTokenSource): base(cancelTokenSource.Token)
+        public HerdAgent(CancellationTokenSource cancelTokenSource)
         {
             m_cancelTokenSource= cancelTokenSource;
             m_state = AgentState.AVAILABLE;
-            
         }
         public string getDirPath() { return m_dirPath; }
         private void killSpawnedProcesses()
@@ -72,7 +71,7 @@ namespace Herd
                         }
                         catch
                         {
-                            m_logMessageHandler("Exception received while killing process");
+                            logMessage("Exception: can't kill process");
                             //do nothing
                         }
                     }
@@ -96,15 +95,16 @@ namespace Herd
         }
         public void stop()
         {
-            if (cts != null)
+            if (m_cancelTokenSource != null)
             {
                 try
                 { 
-                    cts.Cancel(); 
+                    m_cancelTokenSource.Cancel(); 
                 }
                 catch (Exception ex)
                 {
-                    m_logMessageHandler(ex.ToString());
+                    logMessage("Exception stopping processes");
+                    logMessage(ex.ToString());
                 }
             }
             killSpawnedProcesses();
@@ -116,13 +116,11 @@ namespace Herd
             Directory.CreateDirectory(m_dirPath);
         }
 
-        public void SendJobResult()
+        public void SendJobResult(CancellationToken cancelToken)
         {
-            SendJobHeader();
-            //SendExeFiles(false);
-            //SendInputFiles(false);
-            SendOutputFiles(true);
-            SendJobFooter();
+            SendJobHeader(cancelToken);
+            SendOutputFiles(true,cancelToken);
+            SendJobFooter(cancelToken);
         }
         public bool ReceiveJobQuery()
         {
@@ -151,100 +149,237 @@ namespace Herd
             //we will assume everything went ok for now
             return true;
         }
+        //public static Task runProcessAsync(Process process, CancellationToken cancelToken)
+        //{
+        //    var tcs = new TaskCompletionSource<object>();
 
-
-        public int RunJob()
+        //    process.Exited += (sender, args) =>
+        //    {
+        //        if (process.ExitCode != 0)
+        //        {
+        //            var errorMessage = process.StandardError.ReadToEnd();
+        //            tcs.SetException(new InvalidOperationException("The process did not exit correctly. " +
+        //                "The corresponding error message was: " + errorMessage));
+        //        }
+        //        else
+        //        {
+        //            tcs.SetResult(null);
+        //        }
+        //        process.Dispose();
+        //    };
+        //    process.Start();
+        //    return tcs.Task;
+        //}
+        public static Task waitForExitAsync(Process process, CancellationToken cancellationToken)
         {
-            int returnCode = 0;
-            ParallelOptions po = new ParallelOptions();
-            po.MaxDegreeOfParallelism = Environment.ProcessorCount-1;
-            po.CancellationToken = m_cancelTokenSource.Token;
-            try
+            var tcs = new TaskCompletionSource<object>();
+            process.EnableRaisingEvents = true;
+            process.Exited += (sender, args) => { tcs.TrySetResult(null); };
+            //if(cancellationToken != default(CancellationToken))
+            cancellationToken.Register(tcs.SetCanceled);
+            return tcs.Task;
+        }
+        public async Task<int> runTaskAsync(CTask task, CancellationToken cancelToken)
+        {
+            int returnCode= m_noErrorCode;
+            NamedPipeServerStream server = null;
+            Process myProcess = new Process();
+            if (task.pipe != "")
+                server = new NamedPipeServerStream(task.pipe);
+
+            try 
             {
-                Parallel.ForEach(m_job.tasks, po, (task) =>
+                myProcess.StartInfo.FileName = getCachedFilename(task.exe);
+                myProcess.StartInfo.Arguments = task.arguments;
+                myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+                logMessage("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+
+                //not to read 23.232 as 23232
+                Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+                myProcess.Start();
+                addSpawnedProcessToList(myProcess);
+
+                XMLStream xmlStream = new XMLStream();
+
+                string xmlItem;
+                if (server != null)
                 {
+                    server.WaitForConnection();
 
-                NamedPipeServerStream server= null;
-                Process myProcess = new Process();
-                //string[] arguments = args.Split(' ');
-                if (task.pipe!="")
-                        server= new NamedPipeServerStream(task.pipe);//arguments[1]);
-
-                try
-                {
-                    myProcess.StartInfo.FileName = getCachedFilename(task.exe);
-                    myProcess.StartInfo.Arguments = task.arguments;
-                    myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                    m_logMessageHandler("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-
-                    //not to read 23.232 as 23232
-                    Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
-
-                    myProcess.Start();
-                    addSpawnedProcessToList(myProcess);//m_spawnedProcesses.Add(myProcess);
-
-                            
-                    XMLStream xmlStream = new XMLStream(cts.Token);
-
-                    string xmlItem;
-                    if (server != null)
+                    while (server.IsConnected)
                     {
-                        server.WaitForConnection();
+                        //check if we have been asked to cancel
+                        cancelToken.ThrowIfCancellationRequested();
 
-                        while (server.IsConnected)
+                        int numBytes= await xmlStream.readFromNamedPipeStreamAsync(server,cancelToken);
+                        xmlItem = xmlStream.processNextXMLItem();
+                        while (xmlItem != "")
                         {
-                            //check if we have been asked to cancel
-                            po.CancellationToken.ThrowIfCancellationRequested();
-
-                            xmlStream.readFromNamedPipeStream(server);
+                            await xmlStream.writeMessageAsync(m_tcpClient.GetStream(), "<" + task.pipe + ">" + xmlItem + "</" + task.pipe + ">"
+                                , cancelToken, false);
+                            
                             xmlItem = xmlStream.processNextXMLItem();
-                            if (xmlItem != "")
-                            {
-                                //checkConnection(m_tcpClient);
-                                xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + ">" + xmlItem + "</" + task.pipe + ">", false);
-                            }
-                            po.CancellationToken.ThrowIfCancellationRequested();
                         }
                     }
-                    myProcess.WaitForExit();
+                }
+                
+                await waitForExitAsync(myProcess,cancelToken);
+                int exitCode = myProcess.ExitCode;
+                //myProcess.WaitForExit();
 
-                    if (myProcess.ExitCode < 0)
-                    {
-                        xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Error</End></" + task.pipe + ">", false);
-                        returnCode = m_jobInternalErrorCode;
-                    }
-                    else
-                        xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">", false);
-                    m_logMessageHandler("Exit code: " + myProcess.ExitCode);
-                }
-                catch (OperationCanceledException)
+                if (exitCode < 0)
                 {
-                    m_logMessageHandler("Thread finished gracefully");
-                    returnCode = m_remotelyCancelledErrorCode;
+                    xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Error</End></" + task.pipe + ">", false);
+                    returnCode = m_jobInternalErrorCode;
                 }
-                finally
-                {
-                    removeSpawnedProcessFromList(myProcess);
-                    if (server!=null) server.Close();
-                }                    
-                });
+                else
+                    xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">", false);
+                logMessage("Exit code: " + myProcess.ExitCode);
             }
             catch (OperationCanceledException)
             {
-                m_logMessageHandler("Job cancelled gracefully");
-            }
-            catch (Exception ex)
-            {
-                m_logMessageHandler(ex.ToString());
+                logMessage("Thread finished gracefully");
                 returnCode = m_remotelyCancelledErrorCode;
+            }
+                catch(Exception ex)
+            {
+                logMessage("unhandled exception");
             }
             finally
             {
-                cts.Dispose();
-                cts = null;
+                logMessage("Task " + task.name + " finished");
+                removeSpawnedProcessFromList(myProcess);
+                if (server!=null) server.Close();
             }
             return returnCode;
         }
+        public async Task<int> runJobAsync()
+        {
+            int returnCode= m_noErrorCode;
+            try
+            {
+                List<Task<int>> taskList = new List<Task<int>>();
+                foreach (CTask task in m_job.tasks)
+                    taskList.Add(runTaskAsync(task, m_cancelTokenSource.Token));
+                int[] exitCodes = await Task.WhenAll(taskList);
+                if (exitCodes.Any((code) => code == m_remotelyCancelledErrorCode))
+                    returnCode = m_remotelyCancelledErrorCode;
+                else if (exitCodes.All((code) =>  code != m_noErrorCode))
+                    returnCode = m_jobInternalErrorCode;
+
+                logMessage("All processes finished");
+            }
+            catch (OperationCanceledException)
+            {
+                returnCode = m_remotelyCancelledErrorCode;
+                logMessage("Job cancelled gracefully");
+            }
+            catch (Exception ex)
+            {
+                logMessage(ex.ToString());
+                returnCode = m_jobInternalErrorCode;
+            }
+            finally
+            {
+                m_cancelTokenSource.Dispose();
+                m_cancelTokenSource = new CancellationTokenSource();
+            }
+            return returnCode;
+        }
+
+        //public int RunJob()
+        //{
+        //    int returnCode = 0;
+        //    ParallelOptions po = new ParallelOptions();
+        //    po.MaxDegreeOfParallelism = Environment.ProcessorCount-1;
+        //    po.CancellationToken = m_cancelTokenSource.Token;
+        //    try
+        //    {
+        //        Parallel.ForEach(m_job.tasks, po, (task) =>
+        //        {
+
+        //        NamedPipeServerStream server= null;
+        //        Process myProcess = new Process();
+        //        //string[] arguments = args.Split(' ');
+        //        if (task.pipe!="")
+        //                server= new NamedPipeServerStream(task.pipe);//arguments[1]);
+
+        //        try
+        //        {
+        //            myProcess.StartInfo.FileName = getCachedFilename(task.exe);
+        //            myProcess.StartInfo.Arguments = task.arguments;
+        //            myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+        //            m_logMessageHandler("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+
+        //            //not to read 23.232 as 23232
+        //            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
+        //            myProcess.Start();
+        //            addSpawnedProcessToList(myProcess);//m_spawnedProcesses.Add(myProcess);
+
+                            
+        //            XMLStream xmlStream = new XMLStream(cts.Token);
+
+        //            string xmlItem;
+        //            if (server != null)
+        //            {
+        //                server.WaitForConnection();
+
+        //                while (server.IsConnected)
+        //                {
+        //                    //check if we have been asked to cancel
+        //                    po.CancellationToken.ThrowIfCancellationRequested();
+
+        //                    xmlStream.readFromNamedPipeStream(server);
+        //                    xmlItem = xmlStream.processNextXMLItem();
+        //                    if (xmlItem != "")
+        //                    {
+        //                        //checkConnection(m_tcpClient);
+        //                        xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + ">" + xmlItem + "</" + task.pipe + ">", false);
+        //                    }
+        //                    po.CancellationToken.ThrowIfCancellationRequested();
+        //                }
+        //            }
+        //            myProcess.WaitForExit();
+
+        //            if (myProcess.ExitCode < 0)
+        //            {
+        //                xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Error</End></" + task.pipe + ">", false);
+        //                returnCode = m_jobInternalErrorCode;
+        //            }
+        //            else
+        //                xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">", false);
+        //            m_logMessageHandler("Exit code: " + myProcess.ExitCode);
+        //        }
+        //        catch (OperationCanceledException)
+        //        {
+        //            m_logMessageHandler("Thread finished gracefully");
+        //            returnCode = m_remotelyCancelledErrorCode;
+        //        }
+        //        finally
+        //        {
+        //            removeSpawnedProcessFromList(myProcess);
+        //            if (server!=null) server.Close();
+        //        }                    
+        //        });
+        //    }
+        //    catch (OperationCanceledException)
+        //    {
+        //        m_logMessageHandler("Job cancelled gracefully");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        m_logMessageHandler(ex.ToString());
+        //        returnCode = m_remotelyCancelledErrorCode;
+        //    }
+        //    finally
+        //    {
+        //        cts.Dispose();
+        //        cts = null;
+        //    }
+        //    return returnCode;
+        //}
 
 
         public AgentState getState() { return m_state; }
@@ -275,7 +410,7 @@ namespace Herd
         }
         public async Task asyncReadFromClient(NetworkStream netStream, CancellationToken ct)
         {
-            XMLStream inputXMLStream = new XMLStream(ct);
+            XMLStream inputXMLStream = new XMLStream();
             int bytes = 0;
 
             try
@@ -284,6 +419,8 @@ namespace Herd
                 {
                     bytes = await netStream.ReadAsync(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
                         , inputXMLStream.getBufferSize() - inputXMLStream.getBufferOffset(), ct);
+
+                    ct.ThrowIfCancellationRequested();
 
                     inputXMLStream.addBytesRead(bytes);
                     //we let the xmlstream object know that some bytes have been read in its buffer
@@ -311,6 +448,7 @@ namespace Herd
             }
             catch (Exception ex)
             {
+                logMessage("Unhandled exception in asyncReadFromClient");
                 logMessage(ex.ToString());
             }
         }
@@ -319,7 +457,7 @@ namespace Herd
             //Listen for a "quit" message from the client
             Task.Factory.StartNew(() => asyncReadFromClient(m_netStream, token));
         }
-        public void CommunicationCallback(IAsyncResult ar)
+        public async void CommunicationCallback(IAsyncResult ar)
         {
             if (getState() != AgentState.BUSY)
             {
@@ -353,7 +491,7 @@ namespace Herd
 
                                 //run the job
                                 logMessage("Running job");
-                                returnCode = RunJob();
+                                returnCode = await runJobAsync();
 
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
@@ -361,7 +499,7 @@ namespace Herd
                                     writeMessage(CJobDispatcher.m_endMessage, true);
 
                                     logMessage("Sending job results");
-                                    SendJobResult();
+                                    SendJobResult(m_cancelTokenSource.Token);
 
                                     logMessage("Job results sent");
                                 }
@@ -384,8 +522,6 @@ namespace Herd
                 }
                 finally
                 {
-                    //cancelToken.Cancel();
-                    //cancelToken.Dispose();
                     getTcpClient().Close();
                     setState(AgentState.AVAILABLE);
 
@@ -403,24 +539,31 @@ namespace Herd
         {
             IPEndPoint ip = ((HerdAgentUdpState)ar.AsyncState).ip;
             //HerdAgent herdAgent = ((HerdAgentUdpState)ar.AsyncState).herdAgent;
-
-            Byte[] receiveBytes = getUdpClient().EndReceive(ar, ref ip);
-            string receiveString = Encoding.ASCII.GetString(receiveBytes);
-
-            if (receiveString == CJobDispatcher.m_discoveryMessage)
+            try
             {
-                //if (getState() == AgentState.AVAILABLE)
-                {
-                    logMessage("Agent discovered by " + ip.ToString() + ". Current state=" + getStateString());
-                    string agentDescription = getAgentDescription();
-                    byte[] data = Encoding.ASCII.GetBytes(agentDescription);
-                    getUdpClient().Send(data, data.Length, ip);
-                }
-                //else logMessage("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
-            }
-            else logMessage("Message received by " + ip.ToString() + " not understood: " + receiveString);
+                Byte[] receiveBytes = getUdpClient().EndReceive(ar, ref ip);
+                string receiveString = Encoding.ASCII.GetString(receiveBytes);
 
-            getUdpClient().BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
+                if (receiveString == CJobDispatcher.m_discoveryMessage)
+                {
+                    //if (getState() == AgentState.AVAILABLE)
+                    {
+                        logMessage("Agent discovered by " + ip.ToString() + ". Current state=" + getStateString());
+                        string agentDescription = getAgentDescription();
+                        byte[] data = Encoding.ASCII.GetBytes(agentDescription);
+                        getUdpClient().Send(data, data.Length, ip);
+                    }
+                    //else logMessage("Agent contacted by " + ip.ToString() + " but rejected connection because it was busy");
+                }
+                else logMessage("Message received by " + ip.ToString() + " not understood: " + receiveString);
+
+                getUdpClient().BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
+            }
+            catch (Exception ex)
+            {
+                logMessage("Unhandled exception in DiscoveryCallback");
+                logMessage(ex.ToString());
+            }
         }
         public void startListening()
         {

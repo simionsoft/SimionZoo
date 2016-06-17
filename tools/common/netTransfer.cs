@@ -91,10 +91,10 @@ namespace Herd
             logMessage("Can't determine the XML tag of the unkwown file type");
             return "UnkwnownType";
         }
-        public CJobDispatcher(CancellationToken cancelToken)
+        public CJobDispatcher()
         {
             m_job = new CJob();
-            m_xmlStream = new XMLStream(cancelToken);
+            m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
             m_tempDir = "";
             m_logMessageHandler = null;
@@ -102,7 +102,11 @@ namespace Herd
         private List<Task> m_pendingAsyncWrites = new List<Task>();
         public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
         public void setDirPath(string dirPath) { m_tempDir = dirPath; }
-        public void setLogMessageHandler(LogMessageHandler logMessageHandler) { m_logMessageHandler = logMessageHandler; }
+        public void setLogMessageHandler(LogMessageHandler logMessageHandler)
+        { 
+            m_logMessageHandler = logMessageHandler;
+            m_xmlStream.setLogMessageHandler(logMessageHandler);
+        }
         protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
         public void writeMessage(string message, bool addDefaultMessageType = false)
         {
@@ -113,15 +117,25 @@ namespace Herd
             ////checkConnection(m_tcpClient);
             m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
         }
-        public async Task<int> readAsync()
+        public async Task<int> readAsync(CancellationToken cancelToken)
         {
-            ////checkConnection(m_tcpClient);
-            int numBytesRead= await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream);
+            int numBytesRead= 0;
+            try { numBytesRead = await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken); }
+            catch { logMessage("async read operation cancelled"); }
             return numBytesRead;
         }
-        public void writeAsync(byte[]buffer, int offset, int length)
+        public void writeAsync(byte[]buffer, int offset, int length, CancellationToken cancelToken, bool bEnqueue= false)
         {
-            m_pendingAsyncWrites.Add(m_netStream.WriteAsync(buffer, offset, length));
+            if (bEnqueue)
+            {
+                try { m_netStream.WriteAsync(buffer, offset, length, cancelToken); }
+                catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
+            }
+            else
+            {
+                try { m_pendingAsyncWrites.Add(m_netStream.WriteAsync(buffer, offset, length)); }
+                catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
+            }
         }
         public async Task waitAsyncWriteOpsToFinish()
         {
@@ -130,31 +144,31 @@ namespace Herd
         }
 
         //protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
-        protected void SendInputFiles(bool sendContent)
+        protected void SendInputFiles(bool sendContent,CancellationToken cancelToken)
         {
             foreach (string file in m_job.inputFiles)
             {
-                SendFile(file, FileType.INPUT, sendContent, false);
+                SendFile(file, FileType.INPUT, sendContent, false,cancelToken);
             }
         }
-        protected void SendOutputFiles(bool sendContent)
+        protected void SendOutputFiles(bool sendContent,CancellationToken cancelToken)
         {
             foreach (string file in m_job.outputFiles)
             {
                 //some output files may not be ther if a task failed
                 //we still want to try sending the rest of files
                 if (!sendContent || File.Exists(getCachedFilename(file)))
-                    SendFile(file, FileType.OUTPUT, sendContent, true);
+                    SendFile(file, FileType.OUTPUT, sendContent,true, cancelToken);
                 else
                     m_job.outputFiles.Remove(file);
             }
         }
-        protected void SendTasks()
+        protected void SendTasks(CancellationToken cancelToken)
         {
             foreach (CTask task in m_job.tasks)
-                SendTask(task);
+                SendTask(task,cancelToken);
         }
-        protected void SendTask(CTask task)
+        protected void SendTask(CTask task,CancellationToken cancelToken)
         {
             string taskXML = "<Task Name=\"" + task.name + "\"";
             taskXML += " Exe=\"" + task.exe + "\"";
@@ -163,7 +177,7 @@ namespace Herd
             taskXML += "/>";
             byte[] bytes= Encoding.ASCII.GetBytes(taskXML);
 
-            writeAsync(bytes, 0, bytes.Length);
+            writeAsync(bytes, 0, bytes.Length,cancelToken);
         }
         public void ReceiveTask()
         {
@@ -177,21 +191,21 @@ namespace Herd
             m_job.tasks.Add(task);
         }
  
-        protected void SendJobHeader()
+        protected void SendJobHeader(CancellationToken cancelToken)
         {
             string header = "<Job Name=\"" + m_job.name + "\">";
             byte[] headerbytes = Encoding.ASCII.GetBytes(header);
             //checkConnection(m_tcpClient);
-            writeAsync(headerbytes, 0, headerbytes.Length);
+            writeAsync(headerbytes, 0, headerbytes.Length,cancelToken);
         }
-        protected void SendJobFooter()
+        protected void SendJobFooter(CancellationToken cancelToken)
         {
             string footer = "</Job>";
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
             //checkConnection(m_tcpClient);
-            writeAsync(footerbytes, 0, footerbytes.Length);
+            writeAsync(footerbytes, 0, footerbytes.Length,cancelToken);
         }
-        protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir)
+        protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir,CancellationToken cancelToken)
         {
             string fileTypeXMLTag;
             string header;
@@ -218,7 +232,7 @@ namespace Herd
 
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
-                writeAsync(headerBytes, 0, headerBytes.Length);
+                writeAsync(headerBytes, 0, headerBytes.Length,cancelToken);
 
 
                 long readBytes = 0;
@@ -232,7 +246,7 @@ namespace Herd
 
                     try
                     {
-                        writeAsync(buffer, 0, (int)lastReadBytes);
+                        writeAsync(buffer, 0, (int)lastReadBytes,cancelToken);
                     }
                     catch(Exception ex)
                     {
@@ -244,7 +258,7 @@ namespace Herd
                 //Send the footer: </Exe>, </Input> or </Output>
                 byte[] footerBytes = Encoding.ASCII.GetBytes(footer);
                 //checkConnection(m_tcpClient);
-                writeAsync(footerBytes, 0, footerBytes.Length);
+                writeAsync(footerBytes, 0, footerBytes.Length,cancelToken);
                 m_netStream.Flush();
             }
             else
@@ -253,7 +267,7 @@ namespace Herd
                 //send the header
                 headerBytes = Encoding.ASCII.GetBytes(header);
                 //checkConnection(m_tcpClient);
-                writeAsync(headerBytes, 0, headerBytes.Length);
+                writeAsync(headerBytes, 0, headerBytes.Length,cancelToken);
 
                 m_netStream.Flush();
             }
@@ -390,7 +404,6 @@ namespace Herd
    
     public class XMLStream
     {
-        private CancellationToken m_cancelToken;
         private int m_bufferOffset;
         private int m_bytesInBuffer;
         private byte[] m_buffer;
@@ -399,9 +412,13 @@ namespace Herd
         private string m_asciiBuffer;
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
-        public XMLStream(CancellationToken cancelToken)
+
+        protected CJobDispatcher.LogMessageHandler m_logMessageHandler;
+        public void setLogMessageHandler(CJobDispatcher.LogMessageHandler logMessageHandler) { m_logMessageHandler = logMessageHandler; }
+        protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
+
+        public XMLStream()
         {
-            m_cancelToken = cancelToken;
             m_buffer = new byte[m_maxChunkSize];
         }
         public int getBufferSize() { return m_maxChunkSize; }
@@ -434,6 +451,22 @@ namespace Herd
                 msg = Encoding.ASCII.GetBytes(message);
             stream.Write(msg, 0, msg.Length);
         }
+        public async Task writeMessageAsync(NetworkStream stream, string message, CancellationToken cancelToken, bool addDefaultMessageType = false)
+        {
+            byte[] msg;
+            if (addDefaultMessageType)
+                msg = Encoding.ASCII.GetBytes("<" + m_defaultMessageType + ">" + message + "</" + m_defaultMessageType + ">");
+            else
+                msg = Encoding.ASCII.GetBytes(message);
+            try
+            {
+                await stream.WriteAsync(msg, 0, msg.Length,cancelToken);
+            }
+            catch(OperationCanceledException)
+            {
+                logMessage("Write operation cancelled");
+            }
+        }
         public void writeMessage(NamedPipeServerStream stream, string message, bool addDefaultMessageType = false)
         {
             byte[] msg;
@@ -442,6 +475,22 @@ namespace Herd
             else
                 msg = Encoding.ASCII.GetBytes(message);
             stream.Write(msg, 0, msg.Length);
+        }
+        public async Task writeMessageAsync(NamedPipeServerStream stream, string message, CancellationToken cancelToken,bool addDefaultMessageType = false)
+        {
+            byte[] msg;
+            if (addDefaultMessageType)
+                msg = Encoding.ASCII.GetBytes("<" + m_defaultMessageType + ">" + message + "</" + m_defaultMessageType + ">");
+            else
+                msg = Encoding.ASCII.GetBytes(message);
+            try
+            {
+                await stream.WriteAsync(msg, 0, msg.Length,cancelToken);
+            }
+            catch
+            {
+                logMessage("write operation cancelled");
+            }
         }
         public void readFromNetworkStream(TcpClient client, NetworkStream stream)
         {
@@ -457,12 +506,13 @@ namespace Herd
                 if (m_bytesInBuffer == 0) Thread.Sleep(200);
             } while (m_bytesInBuffer == 0);
         }
-        public async Task<int> readFromNetworkStreamAsync(TcpClient client, NetworkStream stream)
+        public async Task<int> readFromNetworkStreamAsync(TcpClient client, NetworkStream stream,CancellationToken cancelToken)
         {
-            int numBytesRead;
+            int numBytesRead= 0;
             discardProcessedData();
             //read if there's something to read and if we have available storage
-            numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer,m_cancelToken);
+            try { numBytesRead = await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer, cancelToken); }
+            catch (OperationCanceledException) { logMessage("async read from network stream cancelled"); }
             m_bytesInBuffer += numBytesRead;
             return numBytesRead;
         }
@@ -473,14 +523,21 @@ namespace Herd
             if (m_bytesInBuffer < m_maxChunkSize)
                 m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
         }
-        public async Task< int> readFromNamedPipeStreamAsync(NamedPipeServerStream stream)
+        public async Task< int> readFromNamedPipeStreamAsync(NamedPipeServerStream stream,CancellationToken cancelToken)
         {
             int numBytesRead= 0;
             discardProcessedData();
             //read if there's something to read and if we have available storage
             if (m_bytesInBuffer < m_maxChunkSize)
             {
-                numBytesRead= await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer,m_cancelToken);
+                try
+                {
+                    numBytesRead = await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer, cancelToken);
+                }
+                catch(OperationCanceledException)
+                {
+                    logMessage("async read from pipe opeartion cancelled");
+                }
                 m_bytesInBuffer += numBytesRead;
             }
             return numBytesRead;

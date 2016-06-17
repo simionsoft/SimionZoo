@@ -21,7 +21,6 @@ namespace Herd
 
     public class ShepherdUdpState
     {
-        public CancellationToken cancelToken { get; set; }
         public UdpClient client { get; set; }
         public IPEndPoint ip { get; set; }
     }
@@ -45,7 +44,7 @@ namespace Herd
             m_notifyAgentListChanged = func;
         }
 
-        public Shepherd(CancellationToken cancelToken): base(cancelToken)
+        public Shepherd(CancellationToken cancelToken)
         {
             m_discoverySocket = new UdpClient();
             m_discoverySocket.EnableBroadcast = true;
@@ -79,8 +78,8 @@ namespace Herd
         {
             UdpClient u = (UdpClient)((ShepherdUdpState)(ar.AsyncState)).client;
             IPEndPoint ip = (IPEndPoint)((ShepherdUdpState)(ar.AsyncState)).ip;
-            CancellationToken ct = (CancellationToken)((ShepherdUdpState)(ar.AsyncState)).cancelToken;
-            XMLStream inputXMLStream = new XMLStream(ct);
+
+            XMLStream inputXMLStream = new XMLStream();
             //IPEndPoint ip= new IPEndPoint();
             XElement xmlDescription;
             string herdAgentXMLDescription;
@@ -114,6 +113,7 @@ namespace Herd
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Exception in discovery callback function");
                 Console.WriteLine(ex.StackTrace);
             }
         }
@@ -129,7 +129,6 @@ namespace Herd
         {
             ShepherdUdpState u = new ShepherdUdpState();
             IPEndPoint xxx = new IPEndPoint(0, CJobDispatcher.m_discoveryPortHerd);
-            u.cancelToken = new CancellationToken();
             u.ip = xxx;
             u.client = m_discoverySocket;
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
@@ -208,15 +207,15 @@ namespace Herd
             }
         }
 
-        public void SendJobQuery(CJob job)
+        public void SendJobQuery(CJob job,CancellationToken cancelToken)
         {
             m_job = job;
-            SendJobHeader();
-            SendTasks();
+            SendJobHeader(cancelToken);
+            SendTasks(cancelToken);
             //SendExeFiles(true);
-            SendInputFiles(true);
-            SendOutputFiles(false);
-            SendJobFooter();
+            SendInputFiles(true,cancelToken);
+            SendOutputFiles(false,cancelToken);
+            SendJobFooter(cancelToken);
         }
         public void ReceiveJobResult()
         {
