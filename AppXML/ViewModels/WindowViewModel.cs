@@ -427,25 +427,25 @@ namespace AppXML.ViewModels
             List<HerdAgentViewModel> usedHerdAgents= new List<HerdAgentViewModel>();
             List<ExperimentViewModel> pendingExperiments = new List<ExperimentViewModel>();
             List<ExperimentViewModel> assignedExperiments = new List<ExperimentViewModel>();
-            List<Badger> badgers = new List<Badger>();
+            List<RemoteJob> badgers = new List<RemoteJob>();
             logToFile("Running experiment queue remotely");
             m_cancelTokenSource = new CancellationTokenSource();
             //get experiment list
             experimentQueueViewModel.getEnqueuedExperimentList(ref pendingExperiments);
             experimentQueueViewModel.enableEdition(false);
             logToFile("Running " + pendingExperiments.Count + " experiments");
-            List<Task<Badger>> badgerList = new List<Task<Badger>>();
+            List<Task<RemoteJob>> badgerList = new List<Task<RemoteJob>>();
             //get available herd agents list. Inside the loop to update the list
             shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
             logToFile("Using " + freeHerdAgents.Count + " agents");
             //assign experiments to free agents
-            Badger.assignExperiments(ref pendingExperiments, ref freeHerdAgents
+            RemoteJob.assignExperiments(ref pendingExperiments, ref freeHerdAgents
                 , ref badgers, m_cancelTokenSource.Token, logToFile);
             try
             {
                 while ((badgerList.Count>0 || pendingExperiments.Count>0) && !m_cancelTokenSource.IsCancellationRequested)
                 {
-                    foreach(Badger badger in badgers)
+                    foreach(RemoteJob badger in badgers)
                     {
                         badgerList.Add( badger.sendJobAndMonitor(experimentQueueViewModel.name));
                     }
@@ -458,8 +458,8 @@ namespace AppXML.ViewModels
                     }
 
                     //wait for the first agent to finish and give it something to do
-                    Task<Badger> finishedTask= await Task.WhenAny(badgerList);
-                    Badger finishedTaskResult = await finishedTask;
+                    Task<RemoteJob> finishedTask= await Task.WhenAny(badgerList);
+                    RemoteJob finishedTaskResult = await finishedTask;
                     logToFile("Job finished: " + finishedTaskResult.ToString());
                     badgerList.Remove(finishedTask);
                     
@@ -477,7 +477,7 @@ namespace AppXML.ViewModels
                         freeHerdAgents.Add(finishedTaskResult.herdAgent);
 
                     //assign experiments to free agents
-                    Badger.assignExperiments(ref pendingExperiments, ref freeHerdAgents
+                    RemoteJob.assignExperiments(ref pendingExperiments, ref freeHerdAgents
                         , ref badgers, m_cancelTokenSource.Token, logToFile);
                 }
                 

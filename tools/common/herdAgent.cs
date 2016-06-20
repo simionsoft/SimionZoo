@@ -484,7 +484,7 @@ namespace Herd
                                 + getTcpClient().Client.RemoteEndPoint.ToString());
                             if (ReceiveJobQuery())
                             {
-                                listenForQuitCommand(m_cancelTokenSource.Token);
+                                await listenForQuitCommand(m_cancelTokenSource.Token);
 
                                 //run the job
                                 logMessage("Running job");

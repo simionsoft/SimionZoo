@@ -29,7 +29,7 @@ bld/
 [Oo]bj/
 [Ii]pch/
 logs/
-data/
+/data/
 
 # Roslyn cache directories
 *.ide/
