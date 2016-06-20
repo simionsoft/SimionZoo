@@ -386,16 +386,21 @@ namespace AppXML.ViewModels
                 foreach (var agent in agentList)
                 {
                     Shepherd shepherd= new Shepherd();
-                    shepherd.bEnqueueAsyncWrites = true; //we enqueue them to be able to wait for them to finish in waitAsyncWriteOpsToFinish()
+                    
                     if (agent.isAvailable)
                     {
                         if (shepherd.connectToHerdAgent(agent.ipAddress))
                         {
-                            try { shepherd.SendJobQuery(updateJob, m_cancelTokenSource.Token);
-                            shepherd.waitAsyncWriteOpsToFinish();
+                            try
+                            {
+                                shepherd.startEnqueueingAsyncWriteOps(); //we enqueue them to be able to wait for them to finish in waitAsyncWriteOpsToFinish()
+                                shepherd.SendJobQuery(updateJob, m_cancelTokenSource.Token);
+                                shepherd.waitAsyncWriteOpsToFinish();
                             }
                             catch (Exception ex)
-                            { logToFile("Exception in update task"); }
+                            {
+                                logToFile("Exception in update task");
+                            }
                             Thread.Sleep(1000);
                             shepherd.disconnect();
                         }

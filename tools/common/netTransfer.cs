@@ -69,8 +69,6 @@ namespace Herd
 
         protected NetworkStream m_netStream;
         protected TcpClient m_tcpClient;
-        public TcpClient getTcpClient() { return m_tcpClient; }
-        public NetworkStream getNetworkStream() { return m_netStream; }
 
         //used for reading
         protected int m_nextFileSize;
@@ -101,8 +99,9 @@ namespace Herd
             m_logMessageHandler = null;
         }
         
-        private bool m_bEnqueueAsyncWrites = true;
-        public bool bEnqueueAsyncWrites { get { return m_bEnqueueAsyncWrites; } set { m_bEnqueueAsyncWrites = value; } }
+        private bool m_bEnqueueAsyncWrites = false;
+        public void startEnqueueingAsyncWriteOps(){m_bEnqueueAsyncWrites= true;}
+
         private List<Task> m_pendingAsyncWrites = new List<Task>();
 
         public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
@@ -131,7 +130,7 @@ namespace Herd
         }
         public void writeAsync(byte[]buffer, int offset, int length, CancellationToken cancelToken)
         {
-            if (bEnqueueAsyncWrites)
+            if (!m_bEnqueueAsyncWrites)
             {
                 try { m_netStream.WriteAsync(buffer, offset, length, cancelToken); }
                 catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
@@ -146,6 +145,7 @@ namespace Herd
         {
             Task.WhenAll(m_pendingAsyncWrites).Wait();
             m_pendingAsyncWrites.Clear();
+            m_bEnqueueAsyncWrites= false;
         }
 
         //protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
