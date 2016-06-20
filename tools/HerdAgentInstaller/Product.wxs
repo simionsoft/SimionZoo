@@ -9,7 +9,7 @@
            Language="1033">
     <Package InstallerVersion="200" 
              Compressed="yes" InstallScope="perMachine"/>
-    <Icon Id="InstallerIcon" SourceFile="herdagent-head.png"></Icon>
+    <Icon Id="InstallerIcon" SourceFile="../HerdAgent/herdagent.ico"></Icon>
     <Property Id="ARPPRODUCTICON" Value="InstallerIcon" />
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
