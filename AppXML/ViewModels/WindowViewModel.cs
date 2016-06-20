@@ -134,6 +134,25 @@ namespace AppXML.ViewModels
             var x = sender as System.Windows.Controls.TreeView;
             var y = x.SelectedItem;
         }
+        private object m_logFileLock = new object();
+        public const string logFilename= "badger-log.txt";
+        
+        public void logToFile(string logMessage)
+        {
+            lock (m_logFileLock)
+            {
+                if (File.Exists(logFilename))
+                {
+                    string text = DateTime.Now.ToShortDateString() + " " +
+                        DateTime.Now.ToShortTimeString() + ": " + logMessage;
+                    StreamWriter w = File.AppendText(logFilename);
+
+                    w.WriteLine(text);
+                    w.Close();
+                    Console.WriteLine(text);
+                }
+            }
+        }
         public WindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
@@ -344,7 +363,46 @@ namespace AppXML.ViewModels
                 m_cancelTokenSource.Cancel();
             experimentQueueViewModel.resetState();
         }
+        public void updateHerdAgents()
+        {
+            CJob updateJob= new CJob();
+            CTask updateTask = new CTask();
+            updateTask.name = "RunServiceUpdater";
+            updateTask.arguments = "";
+            updateTask.pipe = "";
+            updateTask.exe = "../Debug/HerdAgentUnattendedUpdater.msi";
+            updateJob.name = "HerdAgentServiceUpdate";
+            updateJob.tasks.Add(updateTask);
+            updateJob.inputFiles.Add(updateTask.exe);
+            List<HerdAgentViewModel> agentList= new List<HerdAgentViewModel>();
+            m_shepherdViewModel.getAvailableHerdAgents(ref agentList);
 
+            m_cancelTokenSource = new CancellationTokenSource();
+
+           Task.Factory.StartNew(() =>
+            {
+                foreach (var agent in agentList)
+                {
+                    Shepherd shepherd= new Shepherd();
+                    shepherd.bEnqueueAsyncWrites = true; //we enqueue them to be able to wait for them to finish in waitAsyncWriteOpsToFinish()
+                    if (agent.isAvailable)
+                    {
+                        if (shepherd.connectToHerdAgent(agent.ipAddress))
+                        {
+                            try { shepherd.SendJobQuery(updateJob, m_cancelTokenSource.Token);
+                            shepherd.waitAsyncWriteOpsToFinish();
+                            }
+                            catch (Exception ex)
+                            { logToFile("Exception in update task"); }
+                            Thread.Sleep(1000);
+                            shepherd.disconnect();
+                        }
+                    }
+                }
+            });
+           m_cancelTokenSource.Dispose();
+           m_cancelTokenSource = new CancellationTokenSource();
+        }
         void runExperimentQueue()
         {
             Task.Factory.StartNew(() =>
@@ -368,19 +426,19 @@ namespace AppXML.ViewModels
             List<ExperimentViewModel> pendingExperiments = new List<ExperimentViewModel>();
             List<ExperimentViewModel> assignedExperiments = new List<ExperimentViewModel>();
             List<Badger> badgers = new List<Badger>();
-
+            logToFile("Running experiment queue remotely");
             m_cancelTokenSource = new CancellationTokenSource();
             //get experiment list
             experimentQueueViewModel.getEnqueuedExperimentList(ref pendingExperiments);
             experimentQueueViewModel.enableEdition(false);
-
+            logToFile("Running " + pendingExperiments.Count + " experiments");
             List<Task<Badger>> badgerList = new List<Task<Badger>>();
             //get available herd agents list. Inside the loop to update the list
             shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
-
+            logToFile("Using " + freeHerdAgents.Count + " agents");
             //assign experiments to free agents
             Badger.assignExperiments(ref pendingExperiments, ref freeHerdAgents
-                , ref badgers, m_cancelTokenSource.Token);
+                , ref badgers, m_cancelTokenSource.Token, logToFile);
             try
             {
                 while ((badgerList.Count>0 || pendingExperiments.Count>0) && !m_cancelTokenSource.IsCancellationRequested)
@@ -393,18 +451,21 @@ namespace AppXML.ViewModels
                     if (pendingExperiments.Count == 0)
                     {
                         Task.WhenAll(badgerList).Wait();
+                        logToFile("All the experiments have finished");
                         break;
                     }
 
                     //wait for the first agent to finish and give it something to do
                     Task<Badger> finishedTask= await Task.WhenAny(badgerList);
                     Badger finishedTaskResult = await finishedTask;
+                    logToFile("Job finished: " + finishedTaskResult.ToString());
                     badgerList.Remove(finishedTask);
                     
                     if (finishedTaskResult.failedExperiments.Count>0)
                     {
                         foreach (ExperimentViewModel exp in finishedTaskResult.failedExperiments)
                             pendingExperiments.Add(exp);
+                        logToFile(finishedTaskResult.failedExperiments.Count + " failed experiments enqueued again for further trials");
                     }
 
                     ////get available herd agents list. Inside the loop to update the list
@@ -415,18 +476,20 @@ namespace AppXML.ViewModels
 
                     //assign experiments to free agents
                     Badger.assignExperiments(ref pendingExperiments, ref freeHerdAgents
-                        , ref badgers, m_cancelTokenSource.Token);
+                        , ref badgers, m_cancelTokenSource.Token, logToFile);
                 }
                 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                logToFile("Exception in runExperimentQueueRemotely()");
+                logToFile(ex.StackTrace);
             }
             finally
             {
                 experimentQueueViewModel.enableEdition(true);
                 m_cancelTokenSource.Dispose();
+                m_cancelTokenSource = new CancellationTokenSource();
             }
             
         }
@@ -472,7 +535,8 @@ namespace AppXML.ViewModels
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.StackTrace);
+                    logToFile("Exception in loadExperimentQueue()");
+                    logToFile(e.ToString());
                 }
             }
 
@@ -482,7 +546,9 @@ namespace AppXML.ViewModels
 
         public void saveExperimentQueue()
         {
-            m_experimentQueueViewModel.save();
+            bool result= m_experimentQueueViewModel.save();
+            if (result) logToFile("Succesfully saved " + m_experimentQueueViewModel.experimentQueue.Count + " experiments");
+            else logToFile("Error saving the experiment queue");
          }
        
     }

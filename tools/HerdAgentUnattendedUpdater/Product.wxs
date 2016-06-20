@@ -4,11 +4,13 @@
   <Product Name="HerdAgent"
            Id="*"
            UpgradeCode="{c0968319-0746-40a4-96a4-ca3fffda95aa}"
-           Manufacturer="GIC-SimionSoft"
+           Manufacturer="GCI-SimionSoft"
            Version="!(bind.FileVersion.HerdAgent.exe)"
-           Language="1033">
+           Language="1033">    
     <Package InstallerVersion="200" 
              Compressed="yes" InstallScope="perMachine"/>
+    <Icon Id="InstallerIcon" SourceFile="../HerdAgentInstaller/herdagent-head.png"></Icon>
+    <Property Id="ARPPRODUCTICON" Value="InstallerIcon" />
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR"

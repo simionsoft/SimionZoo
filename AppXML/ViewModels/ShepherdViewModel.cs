@@ -76,7 +76,7 @@ namespace AppXML.ViewModels
 
         public ShepherdViewModel()
         {
-            m_shepherd = new Shepherd(new CancellationToken()); //dummy cancellation token because there is no point cancelling the monitoring task
+            m_shepherd = new Shepherd();
             m_shepherd.setNotifyAgentListChangedFunc(notifyHerdAgentChanged);
 
             m_timer = new System.Timers.Timer(m_updateTimeSeconds*1000);

@@ -44,7 +44,7 @@ namespace Herd
             m_notifyAgentListChanged = func;
         }
 
-        public Shepherd(CancellationToken cancelToken)
+        public Shepherd()
         {
             m_discoverySocket = new UdpClient();
             m_discoverySocket.EnableBroadcast = true;

@@ -81,6 +81,7 @@ namespace Herd
 
         public delegate void LogMessageHandler(string logMessage);
         protected LogMessageHandler m_logMessageHandler;
+
         
         public enum FileType { INPUT, OUTPUT };
         public string getFileTypeXMLTag(FileType type)
@@ -99,7 +100,11 @@ namespace Herd
             m_tempDir = "";
             m_logMessageHandler = null;
         }
+        
+        private bool m_bEnqueueAsyncWrites = true;
+        public bool bEnqueueAsyncWrites { get { return m_bEnqueueAsyncWrites; } set { m_bEnqueueAsyncWrites = value; } }
         private List<Task> m_pendingAsyncWrites = new List<Task>();
+
         public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
         public void setDirPath(string dirPath) { m_tempDir = dirPath; }
         public void setLogMessageHandler(LogMessageHandler logMessageHandler)
@@ -124,9 +129,9 @@ namespace Herd
             catch { logMessage("async read operation cancelled"); }
             return numBytesRead;
         }
-        public void writeAsync(byte[]buffer, int offset, int length, CancellationToken cancelToken, bool bEnqueue= false)
+        public void writeAsync(byte[]buffer, int offset, int length, CancellationToken cancelToken)
         {
-            if (bEnqueue)
+            if (bEnqueueAsyncWrites)
             {
                 try { m_netStream.WriteAsync(buffer, offset, length, cancelToken); }
                 catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
@@ -137,9 +142,9 @@ namespace Herd
                 catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
             }
         }
-        public async Task waitAsyncWriteOpsToFinish()
+        public void waitAsyncWriteOpsToFinish()
         {
-            await Task.WhenAll(m_pendingAsyncWrites);
+            Task.WhenAll(m_pendingAsyncWrites).Wait();
             m_pendingAsyncWrites.Clear();
         }
 

@@ -46,7 +46,7 @@ namespace Herd
                 file.Close();
             }
         }
-        public void Log(string logMessage)
+        public void logToFile(string logMessage)
         {
             lock (m_logFileLock)
             {
@@ -84,9 +84,9 @@ namespace Herd
             m_dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp";
             Directory.CreateDirectory(m_dirPath);
             m_herdAgent.setDirPath(m_dirPath);
-            m_herdAgent.setLogMessageHandler(Log);
+            m_herdAgent.setLogMessageHandler(logToFile);
             cleanLog();
-            Log("Herd agent started");
+            logToFile("Herd agent started");
 
             m_herdAgent.startListening();
         }
@@ -97,7 +97,7 @@ namespace Herd
         }
         public void DoStop()
         {
-            Log("Herd Agent stopped");
+            logToFile("Herd Agent stopped");
             m_herdAgent.stopListening();
         }
     }

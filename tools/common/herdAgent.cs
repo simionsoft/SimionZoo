@@ -242,7 +242,7 @@ namespace Herd
                 logMessage("Thread finished gracefully");
                 returnCode = m_remotelyCancelledErrorCode;
             }
-                catch(Exception ex)
+            catch(Exception ex)
             {
                 logMessage("unhandled exception");
             }
@@ -408,35 +408,32 @@ namespace Herd
             m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
             m_netStream = m_tcpClient.GetStream();
         }
-        public async Task asyncReadFromClient(NetworkStream netStream, CancellationToken ct)
+        public async Task readFromClientAsync(NetworkStream netStream, CancellationToken ct)
         {
             XMLStream inputXMLStream = new XMLStream();
             int bytes = 0;
 
             try
             {
-                while (true)
+                bytes = await netStream.ReadAsync(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
+                    , inputXMLStream.getBufferSize() - inputXMLStream.getBufferOffset(), ct);
+
+                ct.ThrowIfCancellationRequested();
+
+                inputXMLStream.addBytesRead(bytes);
+                //we let the xmlstream object know that some bytes have been read in its buffer
+                string xmlItem = inputXMLStream.peekNextXMLItem();
+                if (xmlItem != "")
                 {
-                    bytes = await netStream.ReadAsync(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
-                        , inputXMLStream.getBufferSize() - inputXMLStream.getBufferOffset(), ct);
-
-                    ct.ThrowIfCancellationRequested();
-
-                    inputXMLStream.addBytesRead(bytes);
-                    //we let the xmlstream object know that some bytes have been read in its buffer
-                    string xmlItem = inputXMLStream.peekNextXMLItem();
-                    if (xmlItem != "")
+                    string xmlItemContent = inputXMLStream.getLastXMLItemContent();
+                    if (xmlItemContent == CJobDispatcher.m_quitMessage)
                     {
-                        string xmlItemContent = inputXMLStream.getLastXMLItemContent();
-                        if (xmlItemContent == CJobDispatcher.m_quitMessage)
-                        {
-                            inputXMLStream.addProcessedBytes(bytes);
-                            inputXMLStream.discardProcessedData();
-                            logMessage("Stopping job execution");
-                            stop();
-                        }
+                        inputXMLStream.addProcessedBytes(bytes);
+                        inputXMLStream.discardProcessedData();
+                        logMessage("Stopping job execution");
+                        stop();
                     }
-                };
+                }
             }
             catch (OperationCanceledException)
             {
@@ -452,10 +449,10 @@ namespace Herd
                 logMessage(ex.ToString());
             }
         }
-        private void listenForQuitCommand(CancellationToken token)
+        private async Task listenForQuitCommand(CancellationToken token)
         {
             //Listen for a "quit" message from the client
-            Task.Factory.StartNew(() => asyncReadFromClient(m_netStream, token));
+            await readFromClientAsync(m_netStream, token);
         }
         public async void CommunicationCallback(IAsyncResult ar)
         {
@@ -483,7 +480,7 @@ namespace Herd
                         }
                         else if (xmlItemContent == CJobDispatcher.m_acquireMessage)
                         {
-                            logMessage("Receiving job data from" 
+                            logMessage("Receiving job data from " 
                                 + getTcpClient().Client.RemoteEndPoint.ToString());
                             if (ReceiveJobQuery())
                             {
