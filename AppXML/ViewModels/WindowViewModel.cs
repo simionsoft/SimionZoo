@@ -141,16 +141,18 @@ namespace AppXML.ViewModels
         {
             lock (m_logFileLock)
             {
-                if (File.Exists(logFilename))
+                string text = DateTime.Now.ToShortDateString() + " " +
+                                DateTime.Now.ToShortTimeString() + ": " + logMessage;
+                FileStream file;
+                if (!File.Exists(logFilename))
+                    file = File.Create(logFilename);
+                else file = File.Open(logFilename, FileMode.Append);
+                if (file != null)
                 {
-                    string text = DateTime.Now.ToShortDateString() + " " +
-                        DateTime.Now.ToShortTimeString() + ": " + logMessage;
-                    StreamWriter w = File.AppendText(logFilename);
-
-                    w.WriteLine(text);
-                    w.Close();
-                    Console.WriteLine(text);
+                    file.Write(Encoding.ASCII.GetBytes(text), 0, Encoding.ASCII.GetByteCount(text));
+                    file.Close();
                 }
+                Console.WriteLine(text);
             }
         }
         public WindowViewModel()
