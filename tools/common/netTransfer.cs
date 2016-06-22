@@ -116,6 +116,10 @@ namespace Herd
         {
             m_xmlStream.writeMessage(m_netStream, message, addDefaultMessageType);
         }
+        public async Task writeMessageAsync(string message, CancellationToken cancelToken, bool addDefaultMessageType= false)
+        {
+            await m_xmlStream.writeMessageAsync(m_netStream, message, cancelToken, addDefaultMessageType);
+        }
         public void read()
         {
             ////checkConnection(m_tcpClient);

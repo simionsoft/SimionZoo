@@ -24,7 +24,7 @@ using System.Globalization;
 using System.Collections.Concurrent;
 using Herd;
 using AppXML.ViewModels;
-using System.Threading.Tasks.Dataflow;
+
 
 namespace AppXML.ViewModels
 {
@@ -142,7 +142,7 @@ namespace AppXML.ViewModels
             lock (m_logFileLock)
             {
                 string text = DateTime.Now.ToShortDateString() + " " +
-                                DateTime.Now.ToShortTimeString() + ": " + logMessage;
+                                DateTime.Now.ToShortTimeString() + ": " + logMessage + "\n";
                 FileStream file;
                 if (!File.Exists(logFilename))
                     file = File.Create(logFilename);
@@ -363,6 +363,7 @@ namespace AppXML.ViewModels
         {
             if (m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
+
             experimentQueueViewModel.resetState();
         }
         public void updateHerdAgents()

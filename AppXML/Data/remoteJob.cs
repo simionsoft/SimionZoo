@@ -179,11 +179,14 @@ namespace AppXML.Data
             catch (OperationCanceledException)
             {
                 //quit remote jobs
+
                 logMessage("Cancellation requested by user");
                 m_shepherd.writeMessage(Shepherd.m_quitMessage, true);
-                Thread.Sleep(1000); // we give the agents one second to process the quit request before closing the socket
-                m_experiments.ForEach((exp) => {
-                    exp.resetState(); if (!m_failedExperiments.Contains(exp)) m_failedExperiments.Add(exp); });
+                m_shepherd.read(); //we wait until we get the ack from the client
+
+                //Thread.Sleep(1000); // we give the agents one second to process the quit request before closing the socket
+                m_experiments.ForEach((exp) => {exp.resetState();});
+                    //exp.resetState(); if (!m_failedExperiments.Contains(exp)) m_failedExperiments.Add(exp); });
                 m_herdAgent.status = "";
             }
             catch (Exception ex)

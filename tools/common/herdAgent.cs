@@ -30,7 +30,7 @@ namespace Herd
     public class HerdAgent : CJobDispatcher
     {
         //private CancellationTokenSource cts;
-        private List<Process> m_spawnedProcesses = new List<Process>();
+        //private List<Process> m_spawnedProcesses = new List<Process>();
         private object m_quitExecutionLock = new object();
         public const int m_remotelyCancelledErrorCode = -1;
         public const int m_jobInternalErrorCode = -2;
@@ -56,59 +56,59 @@ namespace Herd
             m_state = AgentState.AVAILABLE;
         }
         public string getDirPath() { return m_dirPath; }
-        private void killSpawnedProcesses()
-        {
-            lock (m_quitExecutionLock)
-            {
-                foreach (Process p in m_spawnedProcesses)
-                {
-                    if (!p.HasExited)
-                    {
-                        try
-                        {
-                            p.Kill();
-                            p.Dispose();
-                        }
-                        catch
-                        {
-                            logMessage("Exception: can't kill process");
-                            //do nothing
-                        }
-                    }
-                }
-                m_spawnedProcesses.Clear();
-            }
-        }
-        private void addSpawnedProcessToList(Process p)
-        {
-            lock (m_quitExecutionLock)
-            {
-                m_spawnedProcesses.Add(p);
-            }
-        }
-        private void removeSpawnedProcessFromList(Process p)
-        {
-            lock (m_quitExecutionLock)
-            {
-                m_spawnedProcesses.Remove(p);
-            }
-        }
-        public void stop()
-        {
-            if (m_cancelTokenSource != null)
-            {
-                try
-                { 
-                    m_cancelTokenSource.Cancel(); 
-                }
-                catch (Exception ex)
-                {
-                    logMessage("Exception stopping processes");
-                    logMessage(ex.ToString());
-                }
-            }
-            killSpawnedProcesses();
-        }
+        //private void killSpawnedProcesses()
+        //{
+        //    lock (m_quitExecutionLock)
+        //    {
+        //        foreach (Process p in m_spawnedProcesses)
+        //        {
+        //            if (!p.HasExited)
+        //            {
+        //                try
+        //                {
+        //                    p.Kill();
+        //                    p.Dispose();
+        //                }
+        //                catch
+        //                {
+        //                    logMessage("Exception: can't kill process");
+        //                    //do nothing
+        //                }
+        //            }
+        //        }
+        //        m_spawnedProcesses.Clear();
+        //    }
+        //}
+        //private void addSpawnedProcessToList(Process p)
+        //{
+        //    lock (m_quitExecutionLock)
+        //    {
+        //        m_spawnedProcesses.Add(p);
+        //    }
+        //}
+        //private void removeSpawnedProcessFromList(Process p)
+        //{
+        //    lock (m_quitExecutionLock)
+        //    {
+        //        m_spawnedProcesses.Remove(p);
+        //    }
+        //}
+        //public void stop()
+        //{
+        //    if (m_cancelTokenSource != null)
+        //    {
+        //        try
+        //        { 
+        //            m_cancelTokenSource.Cancel(); 
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            logMessage("Exception stopping processes");
+        //            logMessage(ex.ToString());
+        //        }
+        //    }
+        //    killSpawnedProcesses();
+        //}
 
         public void cleanCacheDir()
         {
@@ -198,17 +198,22 @@ namespace Herd
                 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
                 myProcess.Start();
-                addSpawnedProcessToList(myProcess);
+                //addSpawnedProcessToList(myProcess);
 
                 XMLStream xmlStream = new XMLStream();
 
                 string xmlItem;
+
                 if (pipeServer != null)
                 {
                     pipeServer.WaitForConnection();
 
                     while (pipeServer.IsConnected)
                     {
+                        //check if the herd agent sent us a quit message
+                        //in case it did, the function will cancel the cancellation token
+                        checkCancellationRequests();
+                        
                         //check if we have been asked to cancel
                         cancelToken.ThrowIfCancellationRequested();
 
@@ -223,33 +228,37 @@ namespace Herd
                         }
                     }
                 }
-                
+
                 await waitForExitAsync(myProcess,cancelToken);
+
                 int exitCode = myProcess.ExitCode;
                 //myProcess.WaitForExit();
 
                 if (exitCode < 0)
                 {
-                    xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Error</End></" + task.pipe + ">", false);
+                    await xmlStream.writeMessageAsync(m_netStream, "<" + task.pipe + "><End>Error</End></" + task.pipe + ">"
+                        , cancelToken,false);
                     returnCode = m_jobInternalErrorCode;
                 }
                 else
-                    xmlStream.writeMessage(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">", false);
+                    await xmlStream.writeMessageAsync(m_netStream, "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">"
+                        , cancelToken,false);
                 logMessage("Exit code: " + myProcess.ExitCode);
             }
             catch (OperationCanceledException)
             {
                 logMessage("Thread finished gracefully");
+                myProcess.Kill();
                 returnCode = m_remotelyCancelledErrorCode;
             }
             catch(Exception ex)
             {
-                logMessage("unhandled exception");
+                logMessage("unhandled exception in runTaskRemotely()");
             }
             finally
             {
                 logMessage("Task " + task.name + " finished");
-                removeSpawnedProcessFromList(myProcess);
+                //removeSpawnedProcessFromList(myProcess);
                 if (pipeServer!=null) pipeServer.Close();
             }
             return returnCode;
@@ -266,7 +275,7 @@ namespace Herd
 
                 if (exitCodes.Any((code) => code == m_remotelyCancelledErrorCode))
                     returnCode = m_remotelyCancelledErrorCode;
-                else if (exitCodes.All((code) =>  code != m_noErrorCode))
+                else if (exitCodes.All((code) => code != m_noErrorCode))
                     returnCode = m_jobInternalErrorCode;
 
                 logMessage("All processes finished");
@@ -316,15 +325,17 @@ namespace Herd
             m_xmlStream.resizeBuffer(m_tcpClient.ReceiveBufferSize);
             m_netStream = m_tcpClient.GetStream();
         }
-        public async Task readFromShepherdAsync(NetworkStream netStream, CancellationToken ct)
+        public void checkCancellationRequests()
         {
-            XMLStream inputXMLStream = new XMLStream();
             int bytes = 0;
 
             try
             {
-                bytes = await netStream.ReadAsync(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
-                    , inputXMLStream.getBufferSize() - inputXMLStream.getBufferOffset(), ct);
+                if (!m_netStream.DataAvailable) return;
+
+                XMLStream inputXMLStream = new XMLStream();
+                bytes = m_netStream.Read(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
+                    , inputXMLStream.getBufferSize() - inputXMLStream.getBufferOffset());
 
                 inputXMLStream.addBytesRead(bytes);
                 //we let the xmlstream object know that some bytes have been read in its buffer
@@ -337,13 +348,13 @@ namespace Herd
                         inputXMLStream.addProcessedBytes(bytes);
                         inputXMLStream.discardProcessedData();
                         logMessage("Stopping job execution");
-                        stop();
+                        m_cancelTokenSource.Cancel();
                     }
                 }
             }
-            catch(IOException)
+            catch (IOException)
             {
-                logMessage("could not read from socket in readFromShepherdAsync()");
+                logMessage("IOException in readFromShepherd()");
             }
             catch (OperationCanceledException)
             {
@@ -355,15 +366,59 @@ namespace Herd
             }
             catch (Exception ex)
             {
-                logMessage("Unhandled exception in asyncReadFromClient");
+                logMessage("Unhandled exception in readFromShepherd");
                 logMessage(ex.ToString());
             }
         }
-        private void listenForQuitCommand(CancellationToken token)
-        {
-            //Listen for a "quit" message from the client
-            Task.Run(()=> readFromShepherdAsync(m_netStream, token));
-        }
+
+        //public async Task readFromShepherdAsync(CancellationToken ct)
+        //{
+        //    XMLStream inputXMLStream = new XMLStream();
+        //    int bytes = 0;
+
+        //    try
+        //    {
+        //        bytes = await m_netStream.ReadAsync(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
+        //            , inputXMLStream.getBufferSize() - inputXMLStream.getBufferOffset(), ct);
+
+        //        inputXMLStream.addBytesRead(bytes);
+        //        //we let the xmlstream object know that some bytes have been read in its buffer
+        //        string xmlItem = inputXMLStream.peekNextXMLItem();
+        //        if (xmlItem != "")
+        //        {
+        //            string xmlItemContent = inputXMLStream.getLastXMLItemContent();
+        //            if (xmlItemContent == CJobDispatcher.m_quitMessage)
+        //            {
+        //                inputXMLStream.addProcessedBytes(bytes);
+        //                inputXMLStream.discardProcessedData();
+        //                logMessage("Stopping job execution");
+        //                stop();
+        //            }
+        //        }
+        //    }
+        //    catch(IOException)
+        //    {
+        //        logMessage("could not read from socket in readFromShepherdAsync()");
+        //    }
+        //    catch (OperationCanceledException)
+        //    {
+        //        logMessage("Thread finished gracefully");
+        //    }
+        //    catch (ObjectDisposedException)
+        //    {
+        //        logMessage("Network stream closed: async read finished");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logMessage("Unhandled exception in asyncReadFromClient");
+        //        logMessage(ex.ToString());
+        //    }
+        //}
+        //private void listenForQuitCommand(CancellationToken token)
+        //{
+        //    //Listen for a "quit" message from the client
+        //    Task.Run(() => readFromShepherdAsync(token));
+        //}
         public async void CommunicationCallback(IAsyncResult ar)
         {
             if (getState() != AgentState.BUSY)
@@ -394,7 +449,7 @@ namespace Herd
                                 + m_tcpClient.Client.RemoteEndPoint.ToString());
                             if (ReceiveJobQuery())
                             {
-                               listenForQuitCommand(m_cancelTokenSource.Token);
+                               //listenForQuitCommand(m_cancelTokenSource.Token);
 
                                 //run the job
                                 logMessage("Running job");
@@ -403,7 +458,7 @@ namespace Herd
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
                                     logMessage("Job finished");
-                                    writeMessage(CJobDispatcher.m_endMessage, true);
+                                    await writeMessageAsync(CJobDispatcher.m_endMessage, m_cancelTokenSource.Token,true);
 
                                     logMessage("Sending job results");
                                     //we will have to enqueue async write operations to wait for them to finish before closing the tcpClient
@@ -412,14 +467,10 @@ namespace Herd
 
                                     logMessage("Job results sent");
                                 }
-                                //else if (returnCode == m_jobInternalErrorCode)
-                                //{
-                                //    logMessage("The job returned an error code");
-                                //    writeMessage(CJobDispatcher.m_errorMessage, true);
-                                //}
                                 else if (returnCode == m_remotelyCancelledErrorCode)
                                 {
                                     logMessage("The job was remotely cancelled");
+                                    writeMessage(CJobDispatcher.m_errorMessage, false);
                                 }
                             }
                         }
@@ -427,6 +478,7 @@ namespace Herd
                 }
                 catch (Exception ex)
                 {
+                    logMessage("Unhandled exception in the herd agent's communication callback function");
                     logMessage(ex.ToString() + ex.InnerException + ex.StackTrace);
                 }
                 finally
