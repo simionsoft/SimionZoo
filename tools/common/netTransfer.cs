@@ -475,6 +475,11 @@ namespace Herd
             {
                 logMessage("Write operation cancelled");
             }
+            catch(Exception ex)
+            {
+                logMessage("Unhandled exception in writeMessageAsync");
+                logMessage(ex.ToString());
+            }
         }
         public void writeMessage(NamedPipeServerStream stream, string message, bool addDefaultMessageType = false)
         {

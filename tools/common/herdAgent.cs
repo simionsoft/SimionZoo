@@ -35,7 +35,7 @@ namespace Herd
         public const int m_remotelyCancelledErrorCode = -1;
         public const int m_jobInternalErrorCode = -2;
         public const int m_noErrorCode = 0;
-        public enum AgentState { BUSY, AVAILABLE, CANCELING };
+        public enum AgentState { BUSY, AVAILABLE, CANCELLING };
         public AgentState m_state;
         private UdpClient m_discoveryClient;
         public UdpClient getUdpClient() { return m_discoveryClient; }
@@ -56,59 +56,6 @@ namespace Herd
             m_state = AgentState.AVAILABLE;
         }
         public string getDirPath() { return m_dirPath; }
-        //private void killSpawnedProcesses()
-        //{
-        //    lock (m_quitExecutionLock)
-        //    {
-        //        foreach (Process p in m_spawnedProcesses)
-        //        {
-        //            if (!p.HasExited)
-        //            {
-        //                try
-        //                {
-        //                    p.Kill();
-        //                    p.Dispose();
-        //                }
-        //                catch
-        //                {
-        //                    logMessage("Exception: can't kill process");
-        //                    //do nothing
-        //                }
-        //            }
-        //        }
-        //        m_spawnedProcesses.Clear();
-        //    }
-        //}
-        //private void addSpawnedProcessToList(Process p)
-        //{
-        //    lock (m_quitExecutionLock)
-        //    {
-        //        m_spawnedProcesses.Add(p);
-        //    }
-        //}
-        //private void removeSpawnedProcessFromList(Process p)
-        //{
-        //    lock (m_quitExecutionLock)
-        //    {
-        //        m_spawnedProcesses.Remove(p);
-        //    }
-        //}
-        //public void stop()
-        //{
-        //    if (m_cancelTokenSource != null)
-        //    {
-        //        try
-        //        { 
-        //            m_cancelTokenSource.Cancel(); 
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            logMessage("Exception stopping processes");
-        //            logMessage(ex.ToString());
-        //        }
-        //    }
-        //    killSpawnedProcesses();
-        //}
 
         public void cleanCacheDir()
         {
@@ -149,27 +96,8 @@ namespace Herd
             //we will assume everything went ok for now
             return true;
         }
-        //public static Task runProcessAsync(Process process, CancellationToken cancelToken)
-        //{
-        //    var tcs = new TaskCompletionSource<object>();
 
-        //    process.Exited += (sender, args) =>
-        //    {
-        //        if (process.ExitCode != 0)
-        //        {
-        //            var errorMessage = process.StandardError.ReadToEnd();
-        //            tcs.SetException(new InvalidOperationException("The process did not exit correctly. " +
-        //                "The corresponding error message was: " + errorMessage));
-        //        }
-        //        else
-        //        {
-        //            tcs.SetResult(null);
-        //        }
-        //        process.Dispose();
-        //    };
-        //    process.Start();
-        //    return tcs.Task;
-        //}
+
         public static Task waitForExitAsync(Process process, CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource<object>();
@@ -228,32 +156,36 @@ namespace Herd
                         }
                     }
                 }
-
+                logMessage("Named pipe has been closed for task " + task.name);
                 await waitForExitAsync(myProcess,cancelToken);
-
+                
                 int exitCode = myProcess.ExitCode;
+                logMessage("Process exited in task " + task.name + ". Return code=" + exitCode);
                 //myProcess.WaitForExit();
 
                 if (exitCode < 0)
                 {
-                    await xmlStream.writeMessageAsync(m_netStream, "<" + task.pipe + "><End>Error</End></" + task.pipe + ">"
+                    await xmlStream.writeMessageAsync(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Error</End></" + task.pipe + ">"
                         , cancelToken,false);
                     returnCode = m_jobInternalErrorCode;
                 }
                 else
-                    await xmlStream.writeMessageAsync(m_netStream, "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">"
+                    await xmlStream.writeMessageAsync(m_tcpClient.GetStream(), "<" + task.pipe + "><End>Ok</End></" + task.pipe + ">"
                         , cancelToken,false);
                 logMessage("Exit code: " + myProcess.ExitCode);
             }
             catch (OperationCanceledException)
             {
                 logMessage("Thread finished gracefully");
-                myProcess.Kill();
+                if (myProcess!=null) myProcess.Kill();
                 returnCode = m_remotelyCancelledErrorCode;
             }
             catch(Exception ex)
             {
-                logMessage("unhandled exception in runTaskRemotely()");
+                logMessage("unhandled exception in runTaskAsync()");
+                logMessage(ex.ToString());
+                if (myProcess != null) myProcess.Kill();
+                returnCode = m_jobInternalErrorCode;
             }
             finally
             {
@@ -304,7 +236,7 @@ namespace Herd
         {
             if (m_state == AgentState.AVAILABLE) return "available";
             if (m_state == AgentState.BUSY) return "busy";
-            if (m_state == AgentState.CANCELING) return "canceling";
+            if (m_state == AgentState.CANCELLING) return "cancelling";
             return "error";
         }
         public void setState(AgentState s) { m_state = s; }

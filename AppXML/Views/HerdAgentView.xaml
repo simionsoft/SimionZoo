@@ -21,7 +21,7 @@
 
         <StackPanel Orientation="Horizontal">
             <StackPanel VerticalAlignment="Center" Margin="0,0,20,0">
-                <Image Width="30" Height="30" Source="/views/images/herdagent-head.png"></Image>
+                <Image Width="30" Height="30" Source="/images/herdagent-head.png"></Image>
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">

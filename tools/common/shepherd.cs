@@ -39,6 +39,11 @@ namespace Herd
 
         public delegate void NotifyAgentListChanged();
         private NotifyAgentListChanged m_notifyAgentListChanged;
+
+        private DateTime m_lastHerdAgentListUpdate = DateTime.Now;
+        private double m_herdAgentListUpdateTime = 1.0; //update freq. of the herd-agent list (seconds)
+
+
         public void setNotifyAgentListChangedFunc(NotifyAgentListChanged func)
         {
             m_notifyAgentListChanged = func;
@@ -95,7 +100,8 @@ namespace Herd
                     //we copy the ip address into the properties
                     HerdAgentViewModel.ipAddress = ip;
                     //we update the ack time
-                    HerdAgentViewModel.lastACK = System.DateTime.Now;
+                    DateTime now = DateTime.Now;
+                    HerdAgentViewModel.lastACK = now;
 
                     lock (m_listLock)
                     {
@@ -104,9 +110,16 @@ namespace Herd
                         else
                             m_herdAgentList[ip] = HerdAgentViewModel;
                     }
+                    //check how much time ago the agent list was updated
+                    double lastUpdateElapsedTime = (now - m_lastHerdAgentListUpdate).TotalSeconds;
                     //notify, if we have to, that the agent list has probably changed
-                    if (m_notifyAgentListChanged != null)
-                        m_notifyAgentListChanged();
+                    if (lastUpdateElapsedTime > m_herdAgentListUpdateTime)
+                    {
+                        m_lastHerdAgentListUpdate = now;
+
+                        if (m_notifyAgentListChanged != null)
+                            m_notifyAgentListChanged();
+                    }
                 }
 
                 u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);

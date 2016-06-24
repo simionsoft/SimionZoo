@@ -449,7 +449,8 @@ namespace AppXML.ViewModels
                 , ref badgers, m_cancelTokenSource.Token, logToFile);
             try
             {
-                while ((badgerList.Count>0 || pendingExperiments.Count>0) && !m_cancelTokenSource.IsCancellationRequested)
+                while ((badgers.Count>0 || badgerList.Count>0 || pendingExperiments.Count>0) 
+                    && !m_cancelTokenSource.IsCancellationRequested)
                 {
                     foreach(RemoteJob badger in badgers)
                     {

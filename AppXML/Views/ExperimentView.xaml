@@ -26,7 +26,7 @@
                     <Button Background="{x:Null}" Margin="3,0,0,0" BorderBrush="{x:Null}" x:Name="showStatusInfoInNewWindow" 
                                 cal:Message.Attach="[Event Click]=[showStatusInfoInNewWindow()]"
                                 Width="20" Height="20" Visibility="{Binding Path=isStatusInfo,Converter={StaticResource BoolToVis}}">
-                        <Image Source="/views/images/info.png" Width="15" Height="15"></Image>
+                        <Image Source="/images/info.png" Width="15" Height="15"></Image>
                     </Button>
                 </StackPanel>
             </StackPanel>

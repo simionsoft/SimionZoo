@@ -18,7 +18,7 @@
             </StackPanel.Background>-->
         <Label Foreground="{Binding Path=validationColor}" Content="{Binding name}" Width="150" HorizontalContentAlignment="Right"></Label>
         <Button Width="30" Height="30" Background="Transparent" cal:Message.Attach="[Event Click]=[showWindow()]" BorderBrush="{x:Null}" BorderThickness="0">
-            <Image Source="/views/images/modify.png" Width="25" Height="25" ></Image>
+            <Image Source="/images/modify.png" Width="25" Height="25" ></Image>
         </Button>
     </StackPanel>
 
