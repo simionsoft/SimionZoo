@@ -12,34 +12,6 @@
 
 void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 {
-	//the list of log files depends on the experiment parameters and the logger parameters, so instead of introducing a dependency between them
-	//i thought it best to code it here
-	char filepath[CFilePathList::m_filePathMaxSize];
-	bool bEvaluation;
-
-	//episode log files
-	for (CApp::get()->Experiment.nextEpisode(); CApp::get()->Experiment.isValidEpisode(); CApp::get()->Experiment.nextEpisode())
-	{
-		bEvaluation = Experiment.isEvaluationEpisode();
-		if (Logger.isEpisodeTypeLogged(bEvaluation))
-		{
-			Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, true, bEvaluation, Experiment.getRelativeEpisodeIndex());
-			filePathList.addFilePath(filepath);
-		}
-	}
-	//experiment log files
-	bool bExperimentType = true;
-	if (Logger.isExperimentTypeLogged(bExperimentType))
-	{
-		Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bExperimentType, 0);
-		filePathList.addFilePath(filepath);
-	}
-	bExperimentType = false;
-	if (Logger.isExperimentTypeLogged(bExperimentType))
-	{
-		Logger.getLogFilename(filepath, CFilePathList::m_filePathMaxSize, false, bExperimentType, 0);
-		filePathList.addFilePath(filepath);
-	}
 	SimGod.getOutputFiles(filePathList);
 }
 
@@ -83,11 +55,6 @@ void RLSimionApp::run()
 	CState *s = pApp->World.getDynamicModel()->getStateDescriptor()->getInstance();
 	CState *s_p = pApp->World.getDynamicModel()->getStateDescriptor()->getInstance();
 	CAction *a = pApp->World.getDynamicModel()->getActionDescriptor()->getInstance();
-	//register the state and action vectors in the logger
-	pApp->Logger.addVarSetToStats("State", s);
-	pApp->Logger.addVarSetToStats("Action", a);
-	pApp->Logger.addVarToStats("Reward", "sum", pApp->World.getScalarReward());
-	pApp->Logger.addVarSetToStats("Reward", pApp->World.getReward());
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pApp->SimGod.delayedLoad();

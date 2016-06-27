@@ -12,11 +12,16 @@ class CFilePathList;
 
 enum MessageType {Progress,Info,Warning, Error};
 enum MessageOutputMode {Console,NamedPipe};
+enum Output{Pipe,LogFile};
 
 class CLogger
 {
-	char *m_outputDir;
-
+	static const int MAX_FILENAME_LENGTH = 1024;
+	static const int BUFFER_SIZE = 10000;
+	
+	//log file
+	char* m_pFullLogFilename;
+	static void *m_hLogFile;
 
 	bool m_bLogEvaluationEpisodes;
 	bool m_bLogTrainingEpisodes;
@@ -31,19 +36,16 @@ class CLogger
 
 	double m_lastLogSimulationT;
 
+	void openLogFile(const char* fullLogFilename);
+	void closeLogFile();
 
+	char* getExperimentTypeName(bool evalEpisode);
 
-	//opens the experiment log file
-	//if create=true, the output file is created ("w" mode), writes the header and closes the file. Returns 0
-	//otherwise, the file is opened to append the new info ("a" mode). Returns the file just opened
-	//evalEpisode determines whether it is evaluation or training log data
-	FILE* openLogFile(bool create, bool episodeLog, bool evalEpisode, unsigned int episodeIndex);
-	void writeLogFileHeader(FILE* pFile, bool episodeLog, bool evalEpisode);
+	void logStepData(unsigned int stepIndex, CState* s, CAction* a, CState* s_p, CReward* r);
+	void logNamedVarSetToBuffer(char* pOutBuffer,CNamedVarSet* pNamedVarSet, const char* id);
+	void logStatsToBuffer(char* pOutBuffer);
 
-	//adds current experiment data to the experiment log file
-	void writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex);
-	//adds current experiment data to the experiment log file
-	void writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex);
+	static void writeLogBuffer(Output output, const char* pBuffer);
 
 	//stats
 	std::vector<CStats*> m_stats;
@@ -52,8 +54,6 @@ public:
 	virtual ~CLogger();
 	void init(CParameters* pParameters);
 
-	//declared public to be accesed from CApp::get()->getOutputFiles() avoiding including a dependency with CEpisode
-	void getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation, unsigned int episodeIndex);
 	//returns whether a specific type of episode is going to be logged
 	bool isEpisodeTypeLogged(bool evaluation);
 	bool isExperimentTypeLogged(bool evaluation);
@@ -85,5 +85,5 @@ protected:
 	//called to log steps
 	void firstStep(bool evalEpisode, unsigned int episodeIndex);
 	void lastStep(bool evalEpisode, unsigned int episodeIndex);
-	void timestep(bool evalEpisode, unsigned int episodeIndex);
+	void timestep(bool evalEpisode, unsigned int episodeIndex,CState* s, CAction* a, CState* s_p,CReward* r);
 };

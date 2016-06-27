@@ -161,7 +161,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	//update stats
 	//output step-stats
-	CApp::get()->Logger.timestep(evalEpisode, episodeIndex);
+	CApp::get()->Logger.timestep(evalEpisode, episodeIndex, s, a, s_p, r);
 
 	if (isLastStep())
 		CApp::get()->Logger.lastStep(evalEpisode, episodeIndex);
