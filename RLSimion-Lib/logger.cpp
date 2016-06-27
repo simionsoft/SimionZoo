@@ -369,7 +369,7 @@ void CLogger::writeLogBuffer(Output output, const char* pBuffer)
 	if (output==Output::LogFile && m_hLogFile)
 		WriteFile(m_hLogFile, pBuffer, strlen(pBuffer),&numBytesWritten,0);
 	else if (output==Output::Pipe && m_outputPipe)
-		WriteFile(m_hLogFile, pBuffer, strlen(pBuffer),&numBytesWritten,0);
+		WriteFile(m_outputPipe, pBuffer, strlen(pBuffer),&numBytesWritten,0);
 }
 
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
