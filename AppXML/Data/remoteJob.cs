@@ -100,6 +100,7 @@ namespace AppXML.Data
                 else
                 {
                     foreach(ExperimentViewModel exp in m_experiments) m_failedExperiments.Add(exp);
+                    m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.ERROR);
                     logMessage("Failed to connect to herd agent " + m_herdAgent.ipAddress);
                     return this;
                 }
