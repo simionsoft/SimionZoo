@@ -39,23 +39,7 @@ namespace AppXML.ViewModels
 
     public class WindowViewModel : PropertyChangedBase
     {
-        public double ControlHeight
-        {
-            get
-            {
-                return (int)System.Windows.SystemParameters.PrimaryScreenHeight;
-            }
-            set { }
-        }
-        public double ControlWidth
-        {
-            get
-            {
-                return System.Windows.SystemParameters.PrimaryScreenWidth;
-            }
-            set { }
-        }
-
+        
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
         private XmlDocument _doc;
@@ -68,7 +52,7 @@ namespace AppXML.ViewModels
             NotifyOfPropertyChange(() => experimentQueueViewModel);
             }
         }
-        private CancellationTokenSource m_cancelTokenSource;
+
         private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
 
@@ -347,7 +331,6 @@ namespace AppXML.ViewModels
         {
             bool bSuccesfulSave= experimentQueueViewModel.save();
 
-
             if (bSuccesfulSave)
             {
                 bIsExperimentRunning = true;
@@ -355,17 +338,10 @@ namespace AppXML.ViewModels
                 runExperimentQueue();
 
                 bIsExperimentRunning = false;
-            }
-               
+            }      
         }
         
-        public void stopExperiments()
-        {
-            if (m_cancelTokenSource != null)
-                m_cancelTokenSource.Cancel();
 
-            experimentQueueViewModel.resetState();
-        }
         public void updateHerdAgents()
         {
             CJob updateJob= new CJob();
@@ -411,99 +387,41 @@ namespace AppXML.ViewModels
            m_cancelTokenSource.Dispose();
            m_cancelTokenSource = new CancellationTokenSource();
         }
-        void runExperimentQueue()
-        {
-            Task.Factory.StartNew(() =>
-                {
-                   // if (shepherdViewModel.herdAgentList.Count > 0)
-                    {
-                        //RUN REMOTELY
-                        runExperimentQueueRemotely();
-                    }
-                    //else
-                    {
-                        //RUN LOCALLY
-                    }
-                });
-        }
 
-        private async void runExperimentQueueRemotely()
+
+        private void runExperimentQueue()
         {
             List<HerdAgentViewModel> freeHerdAgents= new List<HerdAgentViewModel>();
-            List<HerdAgentViewModel> usedHerdAgents= new List<HerdAgentViewModel>();
             List<ExperimentViewModel> pendingExperiments = new List<ExperimentViewModel>();
-            List<ExperimentViewModel> assignedExperiments = new List<ExperimentViewModel>();
-            List<RemoteJob> badgers = new List<RemoteJob>();
+
             logToFile("Running experiment queue remotely");
-            m_cancelTokenSource = new CancellationTokenSource();
+
             //get experiment list
             experimentQueueViewModel.getEnqueuedExperimentList(ref pendingExperiments);
             experimentQueueViewModel.enableEdition(false);
             logToFile("Running " + pendingExperiments.Count + " experiments");
-            List<Task<RemoteJob>> badgerList = new List<Task<RemoteJob>>();
+
             //get available herd agents list. Inside the loop to update the list
             shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
             logToFile("Using " + freeHerdAgents.Count + " agents");
-            //assign experiments to free agents
-            RemoteJob.assignExperiments(ref pendingExperiments, ref freeHerdAgents
-                , ref badgers, m_cancelTokenSource.Token, logToFile);
-            try
-            {
-                while ((badgers.Count>0 || badgerList.Count>0 || pendingExperiments.Count>0) 
-                    && !m_cancelTokenSource.IsCancellationRequested)
-                {
-                    foreach(RemoteJob badger in badgers)
-                    {
-                        badgerList.Add( badger.sendJobAndMonitor(experimentQueueViewModel.name));
-                    }
-                    //all pending experiments sent? then we await completion to retry in case something fails
-                    if (pendingExperiments.Count == 0)
-                    {
-                        Task.WhenAll(badgerList).Wait();
-                        logToFile("All the experiments have finished");
-                        break;
-                    }
 
-                    //wait for the first agent to finish and give it something to do
-                    Task<RemoteJob> finishedTask= await Task.WhenAny(badgerList);
-                    RemoteJob finishedTaskResult = await finishedTask;
-                    logToFile("Job finished: " + finishedTaskResult.ToString());
-                    badgerList.Remove(finishedTask);
-                    
-                    if (finishedTaskResult.failedExperiments.Count>0)
-                    {
-                        foreach (ExperimentViewModel exp in finishedTaskResult.failedExperiments)
-                            pendingExperiments.Add(exp);
-                        logToFile(finishedTaskResult.failedExperiments.Count + " failed experiments enqueued again for further trials");
-                    }
+            //ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
+            //dynamic settings = new ExpandoObject();
+            //settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            //settings.ShowInTaskbar = false;
+            //settings.Title = "Process Manager";
+            //ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
+            //new WindowManager().ShowDialog(pwvm2, null, settings);
+            //pwvm2.Manager.closeAll();
+            ExperimentQueueMonitorViewModel monitorVM = new ExperimentQueueMonitorViewModel(freeHerdAgents,pendingExperiments);
+            monitorVM.setLogFunction(logToFile);
 
-                    ////get available herd agents list. Inside the loop to update the list
-                    //shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
-                    //just in case the freed agent hasn't still been discovered by the shepherd
-                    if (!freeHerdAgents.Contains(finishedTaskResult.herdAgent))
-                        freeHerdAgents.Add(finishedTaskResult.herdAgent);
-
-                    //assign experiments to free agents
-                    RemoteJob.assignExperiments(ref pendingExperiments, ref freeHerdAgents
-                        , ref badgers, m_cancelTokenSource.Token, logToFile);
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                logToFile("Exception in runExperimentQueueRemotely()");
-                logToFile(ex.StackTrace);
-            }
-            finally
-            {
-                experimentQueueViewModel.enableEdition(true);
-                m_cancelTokenSource.Dispose();
-                m_cancelTokenSource = new CancellationTokenSource();
-            }
-            
+            dynamic settings = new ExpandoObject();
+            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            settings.ShowInTaskbar = false;
+            settings.Title = "Experiment Monitor";
+            new WindowManager().ShowDialog(monitorVM, null, settings);
         }
-
-        
      
         public void loadExperimentQueue()
         {

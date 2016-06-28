@@ -155,7 +155,7 @@ namespace AppXML.Data
                                 //if (content == CJobDispatcher.m_endMessage)
                                 {
                                     //job results can be expected to be sent back even if some of the tasks failed
-                                    logMessage("Receiveing job results");
+                                    logMessage("Receiving job results");
                                     m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RECEIVING);
                                     m_herdAgent.status = "Receiving output files";
                                     m_shepherd.ReceiveJobResult();

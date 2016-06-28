@@ -104,6 +104,8 @@
     <Compile Include="Models\CIntegerValue.cs" />
     <Compile Include="Models\CMultiValued.cs" />
     <Compile Include="Models\CNode.cs" />
+    <Compile Include="ViewModels\ExperimentMonitorViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\ExperimentViewModel.cs" />
     <Compile Include="Models\TreeNode.cs" />
     <Compile Include="ViewModels\BranchViewModel.cs" />
@@ -135,6 +137,12 @@
     </Compile>
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExperimentMonitorView.xaml.cs">
+      <DependentUpon>ExperimentMonitorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
+      <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ExperimentQueueView.xaml.cs">
       <DependentUpon>ExperimentQueueView.xaml</DependentUpon>
@@ -203,6 +211,14 @@
     <Page Include="Views\ButtonToWindowedClassView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ExperimentMonitorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ExperimentQueueMonitorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ExperimentQueueView.xaml">
       <Generator>MSBuild:Compile</Generator>
