@@ -18,9 +18,9 @@ namespace AppXML.Views
     /// <summary>
     /// Interaction logic for ExperimentView.xaml
     /// </summary>
-    public partial class ExperimentView : UserControl
+    public partial class ExperimentBatchMonitorView : UserControl
     {
-        public ExperimentView()
+        public ExperimentBatchMonitorView()
         {
             InitializeComponent();
         }

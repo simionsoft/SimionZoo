@@ -30,71 +30,83 @@ namespace AppXML.ViewModels
 {
     public class ExperimentQueueMonitorViewModel : PropertyChangedBase
     {
+        private List<HerdAgentViewModel> m_herdAgentList;
+        private ObservableCollection<ExperimentBatchMonitorViewModel> m_monitoredExperimentBatchList;
+        public ObservableCollection<ExperimentBatchMonitorViewModel> monitoredExperimentBatchList
+            { get { return m_monitoredExperimentBatchList; } }
+        private List<ExperimentViewModel> m_pendingExperiments;
 
-
-        private ExperimentQueueViewModel m_experimentQueueViewModel = new ExperimentQueueViewModel();
-        public ExperimentQueueViewModel experimentQueueViewModel { get { return m_experimentQueueViewModel; }
-            set { m_experimentQueueViewModel = value;
-            NotifyOfPropertyChange(() => experimentQueueViewModel);
-            }
-        }
         private CancellationTokenSource m_cancelTokenSource;
 
+        //log stuff: a delegate log function must be passed via setLogFunction
         public delegate void LogFunction(string message);
         private LogFunction m_logFunction= null;
         public void setLogFunction(LogFunction function){m_logFunction= function;}
         private void logFunction (string message) { if (m_logFunction!=null) m_logFunction(message);}
 
-        public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents, List<ExperimentViewModel> pendingExperiments)
+        public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
+            , List<ExperimentViewModel> pendingExperiments)
         {
-            Task.Run(() => runExperimentsAndMonitor(freeHerdAgents, pendingExperiments));
+            m_herdAgentList = freeHerdAgents;
+            m_pendingExperiments = pendingExperiments;
+            m_monitoredExperimentBatchList = new ObservableCollection<ExperimentBatchMonitorViewModel>();
+            //foreach (ExperimentViewModel exp in pendingExperiments)
+            //    m_monitoredExperimentList.Add(new ExperimentMonitorViewModel(exp));
         }
 
-        private async void runExperimentsAndMonitor(List<HerdAgentViewModel> freeHerdAgents, List<ExperimentViewModel> pendingExperiments)
+        public void runExperiments(string batchName, bool monitorProgress= true, bool receiveJobResults= true)
+        {
+            Task.Run(() => runExperimentsAsync(batchName,monitorProgress,receiveJobResults));
+        }
+
+        private async void runExperimentsAsync(string batchName, bool monitorProgress, bool receiveJobResults)
         {
             m_cancelTokenSource = new CancellationTokenSource();
-            List<RemoteJob> badgers = new List<RemoteJob>();
-            List<Task<RemoteJob>> badgerTaskList = new List<Task<RemoteJob>>();
+            //List<ExperimentMonitorViewModel> experimentMonitorViewModels
+            //    = new List<ExperimentMonitorViewModel>();
+            List<Task<ExperimentBatchMonitorViewModel>> experimentMonitorViewModelTaskList
+                = new List<Task<ExperimentBatchMonitorViewModel>>();
+
             //assign experiments to free agents
-            RemoteJob.assignExperiments(ref pendingExperiments, ref freeHerdAgents
-                , ref badgers, m_cancelTokenSource.Token, logFunction);
+            assignExperiments(ref m_pendingExperiments, ref m_herdAgentList
+                , m_cancelTokenSource.Token, logFunction);
             try
             {
-                while ((badgers.Count > 0 || badgerTaskList.Count > 0 || pendingExperiments.Count > 0)
+                while ((m_monitoredExperimentBatchList.Count > 0 || experimentMonitorViewModelTaskList.Count > 0
+                    || m_pendingExperiments.Count > 0)
                     && !m_cancelTokenSource.IsCancellationRequested)
                 {
-                    foreach (RemoteJob badger in badgers)
+                    foreach (ExperimentBatchMonitorViewModel ExperimentMonitorViewModel in m_monitoredExperimentBatchList)
                     {
-                        badgerTaskList.Add(badger.sendJobAndMonitor(experimentQueueViewModel.name));
+                        experimentMonitorViewModelTaskList.Add(ExperimentMonitorViewModel.sendJobAndMonitor(batchName));
                     }
                     //all pending experiments sent? then we await completion to retry in case something fails
-                    if (pendingExperiments.Count == 0)
+                    if (m_pendingExperiments.Count == 0)
                     {
-                        Task.WhenAll(badgerTaskList).Wait();
+                        Task.WhenAll(experimentMonitorViewModelTaskList).Wait();
                         logFunction("All the experiments have finished");
                         break;
                     }
 
                     //wait for the first agent to finish and give it something to do
-                    Task<RemoteJob> finishedTask = await Task.WhenAny(badgerTaskList);
-                    RemoteJob finishedTaskResult = await finishedTask;
+                    Task<ExperimentBatchMonitorViewModel> finishedTask = await Task.WhenAny(experimentMonitorViewModelTaskList);
+                    ExperimentBatchMonitorViewModel finishedTaskResult = await finishedTask;
                     logFunction("Job finished: " + finishedTaskResult.ToString());
-                    badgerTaskList.Remove(finishedTask);
+                    experimentMonitorViewModelTaskList.Remove(finishedTask);
 
                     if (finishedTaskResult.failedExperiments.Count > 0)
                     {
                         foreach (ExperimentViewModel exp in finishedTaskResult.failedExperiments)
-                            pendingExperiments.Add(exp);
+                            m_pendingExperiments.Add(exp);
                         logFunction(finishedTaskResult.failedExperiments.Count + " failed experiments enqueued again for further trials");
                     }
 
                     //just in case the freed agent hasn't still been discovered by the shepherd
-                    if (!freeHerdAgents.Contains(finishedTaskResult.herdAgent))
-                        freeHerdAgents.Add(finishedTaskResult.herdAgent);
+                    if (!m_herdAgentList.Contains(finishedTaskResult.herdAgent))
+                        m_herdAgentList.Add(finishedTaskResult.herdAgent);
 
                     //assign experiments to free agents
-                    RemoteJob.assignExperiments(ref pendingExperiments, ref freeHerdAgents
-                        , ref badgers, m_cancelTokenSource.Token, logFunction);
+                    assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, m_cancelTokenSource.Token, logFunction);
                 }
 
             }
@@ -105,7 +117,6 @@ namespace AppXML.ViewModels
             }
             finally
             {
-                experimentQueueViewModel.enableEdition(true);
                 m_cancelTokenSource.Dispose();
             }
         }
@@ -114,8 +125,32 @@ namespace AppXML.ViewModels
         {
             if (m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
+        }
 
-            experimentQueueViewModel.resetState();
+        public void assignExperiments(ref List<ExperimentViewModel> pendingExperiments
+            , ref List<HerdAgentViewModel> freeHerdAgents
+            , CancellationToken cancelToken, LogFunction logFunction = null)
+        {
+            bool bListModified = false;
+            List<ExperimentViewModel> experimentBatch;
+            while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
+            {
+                HerdAgentViewModel agentVM = freeHerdAgents[0];
+                freeHerdAgents.RemoveAt(0);
+                //usedHerdAgents.Add(agentVM);
+                int numProcessors = Math.Max(1, agentVM.numProcessors - 1); //we free one processor
+
+                experimentBatch = new List<ExperimentViewModel>();
+                int numPendingExperiments = pendingExperiments.Count;
+                for (int i = 0; i < Math.Min(numProcessors, numPendingExperiments); i++)
+                {
+                    experimentBatch.Add(pendingExperiments[0]);
+                    pendingExperiments.RemoveAt(0);
+                }
+                m_monitoredExperimentBatchList.Add(new ExperimentBatchMonitorViewModel(agentVM,experimentBatch,cancelToken,logFunction));
+                bListModified = true;
+            }
+            if (bListModified) NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
     }
 }

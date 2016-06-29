@@ -96,7 +96,6 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
-    <Compile Include="Data\remoteJob.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Models\CApp.cs" />
     <Compile Include="Models\CBranch.cs" />
@@ -104,7 +103,7 @@
     <Compile Include="Models\CIntegerValue.cs" />
     <Compile Include="Models\CMultiValued.cs" />
     <Compile Include="Models\CNode.cs" />
-    <Compile Include="ViewModels\ExperimentMonitorViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentBatchMonitorViewModel.cs" />
     <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\ExperimentViewModel.cs" />
     <Compile Include="Models\TreeNode.cs" />
@@ -138,8 +137,8 @@
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ExperimentMonitorView.xaml.cs">
-      <DependentUpon>ExperimentMonitorView.xaml</DependentUpon>
+    <Compile Include="Views\ExperimentBatchMonitorView.xaml.cs">
+      <DependentUpon>ExperimentBatchMonitorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
       <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
@@ -212,7 +211,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ExperimentMonitorView.xaml">
+    <Page Include="Views\ExperimentBatchMonitorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

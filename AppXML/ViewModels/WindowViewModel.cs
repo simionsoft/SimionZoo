@@ -356,7 +356,7 @@ namespace AppXML.ViewModels
             List<HerdAgentViewModel> agentList= new List<HerdAgentViewModel>();
             m_shepherdViewModel.getAvailableHerdAgents(ref agentList);
 
-            m_cancelTokenSource = new CancellationTokenSource();
+            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
 
            Task.Factory.StartNew(() =>
             {
@@ -371,7 +371,7 @@ namespace AppXML.ViewModels
                             try
                             {
                                 shepherd.startEnqueueingAsyncWriteOps(); //we enqueue them to be able to wait for them to finish in waitAsyncWriteOpsToFinish()
-                                shepherd.SendJobQuery(updateJob, m_cancelTokenSource.Token);
+                                shepherd.SendJobQuery(updateJob, cancelTokenSource.Token);
                                 shepherd.waitAsyncWriteOpsToFinish();
                             }
                             catch (Exception ex)
@@ -384,8 +384,7 @@ namespace AppXML.ViewModels
                     }
                 }
             });
-           m_cancelTokenSource.Dispose();
-           m_cancelTokenSource = new CancellationTokenSource();
+           cancelTokenSource.Dispose();
         }
 
 
@@ -398,7 +397,6 @@ namespace AppXML.ViewModels
 
             //get experiment list
             experimentQueueViewModel.getEnqueuedExperimentList(ref pendingExperiments);
-            experimentQueueViewModel.enableEdition(false);
             logToFile("Running " + pendingExperiments.Count + " experiments");
 
             //get available herd agents list. Inside the loop to update the list
@@ -415,6 +413,7 @@ namespace AppXML.ViewModels
             //pwvm2.Manager.closeAll();
             ExperimentQueueMonitorViewModel monitorVM = new ExperimentQueueMonitorViewModel(freeHerdAgents,pendingExperiments);
             monitorVM.setLogFunction(logToFile);
+            monitorVM.runExperiments(experimentQueueViewModel.name, true, true);
 
             dynamic settings = new ExpandoObject();
             settings.WindowStyle = WindowStyle.ThreeDBorderWindow;

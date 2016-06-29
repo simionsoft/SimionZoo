@@ -1,21 +1,146 @@
-﻿using System;
+﻿using AppXML.Models;
+using AppXML.Data;
+using System.Collections.ObjectModel;
+using System.Xml;
+using System.Windows;
+using Caliburn.Micro;
+using System.Windows.Forms;
+using System.IO;
+using System.Dynamic;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.Composition;
+using System;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+using System.IO.Pipes;
+using System.Xml.Linq;
+using System.Linq;
+using System.Xml.XPath;
+using System.Windows.Media;
+using System.Threading;
+using System.Globalization;
+using System.Collections.Concurrent;
 using Herd;
 using AppXML.ViewModels;
-using System.Threading;
-using System.Xml;
-using System.Globalization;
 
-namespace AppXML.Data
+
+namespace AppXML.ViewModels
 {
-    class RemoteJob
+    public class ExperimentBatchMonitorViewModel : PropertyChangedBase
     {
+        //STATE
+        public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
+        private ExperimentState m_state = ExperimentState.ENQUEUED;
+        public ExperimentState state
+        {
+            get { return m_state; }
+            set
+            {
+                //if a task within a job fails, we don't want to overwrite it's state when the job finishes
+                //we don't update state in case new state is not RUNNING or SENDING
+                if (m_state != ExperimentState.ERROR || value == ExperimentState.WAITING_EXECUTION)
+                    m_state = value;
+                NotifyOfPropertyChange(() => state);
+                NotifyOfPropertyChange(() => isRunning);
+                NotifyOfPropertyChange(() => stateString);
+                NotifyOfPropertyChange(() => stateColor);
+            }
+        }
+
+        public void resetState()
+        {
+            state = ExperimentState.ENQUEUED;
+            NotifyOfPropertyChange(() => state);
+        }
+        public bool isRunning
+        {
+            get { return m_state == ExperimentState.RUNNING; }
+            set { }
+        }
+        public bool isEnqueued
+        {
+            get { return m_state == ExperimentState.ENQUEUED; }
+            set { }
+        }
+
+        public string stateString
+        {
+            get
+            {
+                switch (m_state)
+                {
+                    case ExperimentState.RUNNING: return "Running";
+                    case ExperimentState.FINISHED: return "Finished";
+                    case ExperimentState.ERROR: return "Error";
+                    case ExperimentState.SENDING: return "Sending";
+                    case ExperimentState.RECEIVING: return "Receiving";
+                    case ExperimentState.WAITING_EXECUTION: return "Awaiting";
+                    case ExperimentState.WAITING_RESULT: return "Awaiting";
+                }
+                return "";
+            }
+        }
+
+        public string stateColor
+        {
+            get
+            {
+                switch (m_state)
+                {
+                    case ExperimentState.ENQUEUED:
+                    case ExperimentState.RUNNING:
+                    case ExperimentState.SENDING:
+                    case ExperimentState.RECEIVING:
+                    case ExperimentState.WAITING_EXECUTION:
+                    case ExperimentState.WAITING_RESULT:
+                        return "Black";
+                    case ExperimentState.FINISHED: return "DarkGreen";
+                    case ExperimentState.ERROR: return "Red";
+                }
+                return "Black";
+            }
+        }
+
+        private double m_progress;
+        public double progress
+        {
+            get { return m_progress; }
+            set
+            {
+                m_progress = value; NotifyOfPropertyChange(() => progress);
+            }
+        }
+
+        private string m_statusInfo;
+        public string statusInfo
+        {
+            get { return m_statusInfo; }
+            set
+            {
+                m_statusInfo = value;
+                NotifyOfPropertyChange(() => statusInfo);
+                NotifyOfPropertyChange(() => isStatusInfo);
+            }
+        }
+        public void addStatusInfoLine(string line)
+        { statusInfo += line + "\n"; }
+        public void showStatusInfoInNewWindow()
+        {
+            DialogViewModel dvm = new DialogViewModel("Experiment status info", this.m_statusInfo, DialogViewModel.DialogType.Info);
+            dynamic settings = new ExpandoObject();
+            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            settings.ShowInTaskbar = true;
+            settings.Title = "Experiment status info";
+            settings.WindowState = WindowState.Normal;
+            settings.WindowResize = ResizeMode.CanMinimize;
+            new WindowManager().ShowWindow(dvm, null, settings);
+        }
+        public bool isStatusInfo { get { return m_statusInfo != ""; } set { } }
+
         //log stuff
-        public delegate void LogFunction(string message);
-        private LogFunction m_logFunction = null;
+        private ExperimentQueueMonitorViewModel.LogFunction m_logFunction = null;
         public void logMessage(string message)
         {
             if (m_logFunction != null)
@@ -31,8 +156,9 @@ namespace AppXML.Data
         private List<ExperimentViewModel> m_failedExperiments;
         public List<ExperimentViewModel> failedExperiments { get { return m_failedExperiments; } set { } }
 
-        public RemoteJob(HerdAgentViewModel agent, List<ExperimentViewModel> experiments
-            , CancellationToken cancelToken,LogFunction logFunction= null)
+        private ExperimentViewModel m_experiment;
+        public ExperimentBatchMonitorViewModel(HerdAgentViewModel agent, List<ExperimentViewModel> experiments
+            , CancellationToken cancelToken, ExperimentQueueMonitorViewModel.LogFunction logFunction = null)
         {
             m_herdAgent = agent;
             m_experiments = experiments;
@@ -76,31 +202,31 @@ namespace AppXML.Data
             return job;
         }
 
-        public async Task<RemoteJob> sendJobAndMonitor(string experimentName)
+        public async Task<ExperimentBatchMonitorViewModel> sendJobAndMonitor(string experimentName)
         {
             m_failedExperiments.Clear();
             try
             {
                 //SEND THE JOB DATA
-                m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.WAITING_EXECUTION);
+                state = ExperimentState.WAITING_EXECUTION;// m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.WAITING_EXECUTION);
                 CJob job = getJob(experimentName, m_experiments);
 
                 bool bConnected = m_shepherd.connectToHerdAgent(m_herdAgent.ipAddress);
                 if (bConnected)
                 {
                     logMessage("Sending job to herd agent " + m_herdAgent.ipAddress);
-                    m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.SENDING);
+                    state = ExperimentState.SENDING;// m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.SENDING);
                     m_herdAgent.status = "Sending job query";
-                    m_shepherd.SendJobQuery(job,m_cancelToken);
+                    m_shepherd.SendJobQuery(job, m_cancelToken);
                     logMessage("Job sent to herd agent " + m_herdAgent.ipAddress);
                     //await m_shepherd.waitAsyncWriteOpsToFinish();
-                    m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RUNNING);
+                    state = ExperimentState.RUNNING;// m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RUNNING);
                     m_herdAgent.status = "Executing job query";
                 }
                 else
                 {
-                    foreach(ExperimentViewModel exp in m_experiments) m_failedExperiments.Add(exp);
-                    m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.ERROR);
+                    foreach (ExperimentViewModel exp in m_experiments) m_failedExperiments.Add(exp);
+                    state = ExperimentState.ERROR;// m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.ERROR);
                     logMessage("Failed to connect to herd agent " + m_herdAgent.ipAddress);
                     return this;
                 }
@@ -108,9 +234,9 @@ namespace AppXML.Data
                 //MONITOR THE REMOTE JOB
                 while (true)
                 {
-                    int numBytesRead= await m_shepherd.readAsync(m_cancelToken);
-                    string xmlItem= m_shepherd.m_xmlStream.processNextXMLItem();
-                        
+                    int numBytesRead = await m_shepherd.readAsync(m_cancelToken);
+                    string xmlItem = m_shepherd.m_xmlStream.processNextXMLItem();
+
                     while (xmlItem != "")
                     {
                         m_cancelToken.ThrowIfCancellationRequested();
@@ -127,24 +253,24 @@ namespace AppXML.Data
                             if (message.Name == "Progress")
                             {
                                 double progress = double.Parse(content, CultureInfo.InvariantCulture);
-                                experimentVM.progress = Convert.ToInt32(progress);
+                                progress = Convert.ToInt32(progress); // experimentVM.progress = Convert.ToInt32(progress);
                             }
                             else if (message.Name == "Message")
                             {
-                                experimentVM.addStatusInfoLine(content);
+                                addStatusInfoLine(content);// experimentVM.addStatusInfoLine(content);
                             }
                             else if (message.Name == "End")
                             {
                                 if (content == "Ok")
                                 {
                                     logMessage("Job finished sucessfully");
-                                    experimentVM.state = ExperimentViewModel.ExperimentState.WAITING_RESULT;
+                                    state = ExperimentState.WAITING_RESULT;// experimentVM.state = ExperimentViewModel.ExperimentState.WAITING_RESULT;
                                 }
                                 else
                                 {
                                     logMessage("Remote job execution wasn't successful");
                                     m_failedExperiments.Add(experimentVM);
-                                    experimentVM.state = ExperimentViewModel.ExperimentState.ERROR;
+                                    state = ExperimentState.ERROR;// experimentVM.state = ExperimentViewModel.ExperimentState.ERROR;
                                 }
                             }
                         }
@@ -156,27 +282,21 @@ namespace AppXML.Data
                                 {
                                     //job results can be expected to be sent back even if some of the tasks failed
                                     logMessage("Receiving job results");
-                                    m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RECEIVING);
+                                    state = ExperimentState.RECEIVING;// m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.RECEIVING);
                                     m_herdAgent.status = "Receiving output files";
                                     m_shepherd.ReceiveJobResult();
-                                    m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.FINISHED);
+                                    state = ExperimentState.FINISHED;// m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.FINISHED);
                                     m_herdAgent.status = "Finished";
                                     logMessage("Job results received");
                                     return this;
                                 }
-                                //else if (content == CJobDispatcher.m_errorMessage)
-                                //{
-                                //    m_herdAgent.status = "Finished";
-                                //    m_experiments.ForEach((exp) => exp.state = ExperimentViewModel.ExperimentState.ERROR);
-                                //    return failedExperiments;
-                                //}
                             }
                         }
-                        xmlItem= m_shepherd.m_xmlStream.processNextXMLItem();
+                        xmlItem = m_shepherd.m_xmlStream.processNextXMLItem();
                     }
                 }
             }
-     
+
             catch (OperationCanceledException)
             {
                 //quit remote jobs
@@ -186,8 +306,8 @@ namespace AppXML.Data
                 m_shepherd.read(); //we wait until we get the ack from the client
 
                 //Thread.Sleep(1000); // we give the agents one second to process the quit request before closing the socket
-                m_experiments.ForEach((exp) => {exp.resetState();});
-                    //exp.resetState(); if (!m_failedExperiments.Contains(exp)) m_failedExperiments.Add(exp); });
+                resetState();// m_experiments.ForEach((exp) => { exp.resetState(); });
+                //exp.resetState(); if (!m_failedExperiments.Contains(exp)) m_failedExperiments.Add(exp); });
                 m_herdAgent.status = "";
             }
             catch (Exception ex)
@@ -197,7 +317,7 @@ namespace AppXML.Data
                 //this.reRun(myPipes.Values);
                 logMessage("Unhandled exception in Badger.sendJobAndMonitor(). Agent " + m_herdAgent.ipAddress);
                 m_failedExperiments.Clear();
-                foreach(ExperimentViewModel exp in m_experiments) m_failedExperiments.Add(exp);
+                foreach (ExperimentViewModel exp in m_experiments) m_failedExperiments.Add(exp);
                 Console.WriteLine(ex.StackTrace);
             }
             finally
@@ -207,35 +327,5 @@ namespace AppXML.Data
             }
             return this;
         }
-
-        public static void assignExperiments(ref List<ExperimentViewModel> pendingExperiments
-            , ref List<HerdAgentViewModel> freeHerdAgents
-            , ref List<RemoteJob> assignments
-            , CancellationToken cancelToken
-            , LogFunction logFunction= null)
-        {
-            //lock (pendingExperiments)
-            {
-                assignments.Clear();
-                List<ExperimentViewModel> experimentList;
-                while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
-                {
-                    HerdAgentViewModel agentVM = freeHerdAgents[0];
-                    freeHerdAgents.RemoveAt(0);
-                    //usedHerdAgents.Add(agentVM);
-                    int numProcessors = Math.Max(1, agentVM.numProcessors - 1); //we free one processor
-
-                    experimentList = new List<ExperimentViewModel>();
-                    int numPendingExperiments= pendingExperiments.Count;
-                    for (int i = 0; i < Math.Min(numProcessors, numPendingExperiments); i++)
-                    {
-                        experimentList.Add(pendingExperiments[0]);
-                        pendingExperiments.RemoveAt(0);
-                    }
-                    assignments.Add(new RemoteJob(agentVM, experimentList, cancelToken,logFunction));
-
-                }
-            }
-        }
     }
-}
+ }

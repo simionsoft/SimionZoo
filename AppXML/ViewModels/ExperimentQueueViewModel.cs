@@ -40,21 +40,11 @@ namespace AppXML.ViewModels
             outList.Clear();
             foreach (ExperimentViewModel experiment in m_experimentQueue)
             {
-                if (experiment.isEnqueued)
-                    outList.Add(experiment);
+                //(for now,) all the experiments are in the queue are considered ready for execution
+                outList.Add(experiment);
             }
         }
 
-        public void resetState()
-        {
-            foreach (ExperimentViewModel experiment in m_experimentQueue)
-                experiment.resetState();
-        }
-        public void enableEdition(bool bEnable)
-        {
-            foreach (ExperimentViewModel experiment in m_experimentQueue)
-                experiment.enableEdition(bEnable);
-        }
 
         private int m_selectedIndex= -1;
         public int selectedIndex
@@ -207,16 +197,16 @@ namespace AppXML.ViewModels
             return true;
         }
 
-        void setStatus(string experimentName, string status)
-        {
-            foreach(ExperimentViewModel experimentVM in m_experimentQueue)
-            {
-                if (experimentVM.name==experimentName)
-                {
-                    experimentVM.addStatusInfoLine(status + "\n");
-                    break;
-                }
-            }
-        }
+        //void setStatus(string experimentName, string status)
+        //{
+        //    foreach(ExperimentViewModel experimentVM in m_experimentQueue)
+        //    {
+        //        if (experimentVM.name==experimentName)
+        //        {
+        //            experimentVM.addStatusInfoLine(status + "\n");
+        //            break;
+        //        }
+        //    }
+        //}
     }
 }
