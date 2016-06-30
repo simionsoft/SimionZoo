@@ -14,6 +14,7 @@ namespace AppXML.ViewModels
     {
         private string m_filePath;
         public string filePath { get { return m_filePath; } set { m_filePath = value; } }
+        public string pipeName { get { return m_name; } }
 
         private static string RemoveSpecialCharacters(string str)
         {
@@ -35,8 +36,6 @@ namespace AppXML.ViewModels
         public string name { get { return m_name; }
             set { m_name = RemoveSpecialCharacters(value); NotifyOfPropertyChange(() => name); }
         }
-
-        public string pipeName { get { return m_name; } }
 
 
         private XmlDocument m_experimentXML;
