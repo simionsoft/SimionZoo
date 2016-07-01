@@ -204,13 +204,14 @@ namespace AppXML.ViewModels
             {
                 if (!branch.validate())
                 {
-                    DialogViewModel dvm = new DialogViewModel(null, "Error validating the form. Please check form", DialogViewModel.DialogType.Info);
-                    dynamic settings = new ExpandoObject();
-                    settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-                    settings.ShowInTaskbar = true;
-                    settings.Title = "ERROR";
+                    CaliburnUtility.showWarningDialog("Error validating the form. Please check form", "ERROR");
+                    //DialogViewModel dvm = new DialogViewModel(null, "Error validating the form. Please check form", DialogViewModel.DialogType.Info);
+                    //dynamic settings = new ExpandoObject();
+                    //settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                    //settings.ShowInTaskbar = true;
+                    //settings.Title = "ERROR";
 
-                    new WindowManager().ShowDialog(dvm, null, settings);
+                    //new WindowManager().ShowDialog(dvm, null, settings);
 
                     return false;
                 }
@@ -408,11 +409,7 @@ namespace AppXML.ViewModels
             monitorVM.setLogFunction(logToFile);
             monitorVM.runExperiments(experimentQueueViewModel.name, true, true);
 
-            dynamic settings = new ExpandoObject();
-            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-            settings.ShowInTaskbar = false;
-            settings.Title = "Experiment Monitor";
-            new WindowManager().ShowDialog(monitorVM, null, settings);
+            CaliburnUtility.showVMDialog(monitorVM, "Experiment execution Monitor");
         }
      
         public void loadExperimentQueue()

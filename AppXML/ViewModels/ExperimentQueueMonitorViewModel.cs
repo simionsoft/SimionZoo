@@ -1,6 +1,4 @@
-﻿using AppXML.Models;
-using AppXML.Data;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Xml;
 using System.Windows;
 using Caliburn.Micro;
@@ -23,7 +21,9 @@ using System.Threading;
 using System.Globalization;
 using System.Collections.Concurrent;
 using Herd;
+using AppXML.Models;
 using AppXML.ViewModels;
+using AppXML.Data;
 
 
 namespace AppXML.ViewModels
@@ -40,7 +40,7 @@ namespace AppXML.ViewModels
         private List<MonitoredExperimentViewModel> m_failedExperiments= new List<MonitoredExperimentViewModel>();
         public List<MonitoredExperimentViewModel> failedExperiments { get { return m_failedExperiments; } set { } }
 
-        private ExperimentQueueMonitorViewModel.LogFunction m_logFunction = null;
+        private Utility.LogFunction m_logFunction = null;
         private void logMessage(string message)
         {
             if (m_logFunction != null)
@@ -48,13 +48,15 @@ namespace AppXML.ViewModels
         }
 
         public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments,HerdAgentViewModel herdAgent
-            ,ExperimentQueueMonitorViewModel.LogFunction logFunction)
+            ,CancellationToken cancelToken, Utility.LogFunction logFunction)
         {
             m_name = name;
             m_monitoredExperiments = experiments;
             m_herdAgent = herdAgent;
             m_logFunction = logFunction;
             m_shepherd = new Shepherd();
+            m_shepherd.setLogMessageHandler(logFunction);
+            m_cancelToken = cancelToken;
         }
 
         private CJob getJob()
@@ -214,7 +216,7 @@ namespace AppXML.ViewModels
         }
 
     }
-    public class ExperimentQueueMonitorViewModel : PropertyChangedBase
+    public class ExperimentQueueMonitorViewModel : Caliburn.Micro.Screen
     {
         private List<HerdAgentViewModel> m_herdAgentList;
         private ObservableCollection<MonitoredExperimentViewModel> m_monitoredExperimentBatchList
@@ -227,9 +229,9 @@ namespace AppXML.ViewModels
         private CancellationTokenSource m_cancelTokenSource;
 
         //log stuff: a delegate log function must be passed via setLogFunction
-        public delegate void LogFunction(string message);
-        private LogFunction m_logFunction= null;
-        public void setLogFunction(LogFunction function){m_logFunction= function;}
+       
+        private Utility.LogFunction m_logFunction= null;
+        public void setLogFunction(Utility.LogFunction function){m_logFunction= function;}
         private void logFunction (string message) { if (m_logFunction!=null) m_logFunction(message);}
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
@@ -312,6 +314,12 @@ namespace AppXML.ViewModels
                 m_cancelTokenSource.Dispose();
             }
         }
+        protected override void OnDeactivate(bool close)
+        {
+            if (close)
+                stopExperiments();
+            base.OnDeactivate(close);
+        }
 
         public void stopExperiments()
         {
@@ -322,7 +330,7 @@ namespace AppXML.ViewModels
         public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments
             , ref List<HerdAgentViewModel> freeHerdAgents
             , ref  List<ExperimentBatch> experimentAssignments
-            , CancellationToken cancelToken, LogFunction logFunction = null)
+            , CancellationToken cancelToken, Utility.LogFunction logFunction = null)
         {
             experimentAssignments.Clear();
             List<MonitoredExperimentViewModel> experimentBatch;
@@ -340,7 +348,7 @@ namespace AppXML.ViewModels
                     experimentBatch.Add(pendingExperiments[0]);
                     pendingExperiments.RemoveAt(0);
                 }
-                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch, agentVM, logFunction));
+                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch, agentVM, cancelToken, logFunction));
                 ++batchId;
             }
         }

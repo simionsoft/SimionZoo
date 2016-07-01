@@ -151,13 +151,16 @@ namespace AppXML.ViewModels
                 }
                 catch
                 {
-                    DialogViewModel dvm = new DialogViewModel(null, "It has not been possible to remove the directory: " + xmlFileName + ". Make sure that it's not been using for other app.", DialogViewModel.DialogType.Info);
-                    dynamic settings = new ExpandoObject();
-                    settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-                    settings.ShowInTaskbar = true;
-                    settings.Title = "ERROR";
+                    CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
+                        + xmlFileName + ". Make sure that it's not been using for other app."
+                        , "ERROR");
+                    //DialogViewModel dvm = new DialogViewModel(null, "It has not been possible to remove the directory: " + xmlFileName + ". Make sure that it's not been using for other app.", DialogViewModel.DialogType.Info);
+                    //dynamic settings = new ExpandoObject();
+                    //settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+                    //settings.ShowInTaskbar = true;
+                    //settings.Title = "ERROR";
 
-                    new WindowManager().ShowDialog(dvm, null, settings);
+                    //new WindowManager().ShowDialog(dvm, null, settings);
                     return false;
                 }
             }

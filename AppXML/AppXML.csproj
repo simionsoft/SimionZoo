@@ -96,6 +96,7 @@
     </Compile>
     <Compile Include="AppBootstrapper.cs" />
     <Compile Include="AppWindowManager.cs" />
+    <Compile Include="Data\caliburnUtility.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Models\CApp.cs" />
     <Compile Include="Models\CBranch.cs" />

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using Herd;
+using AppXML.Data;
 
 namespace Herd
 {
@@ -77,8 +78,7 @@ namespace Herd
         protected static string m_tempDir;
         protected CJob m_job;
 
-        public delegate void LogMessageHandler(string logMessage);
-        protected LogMessageHandler m_logMessageHandler;
+        protected Utility.LogFunction m_logMessageHandler;
 
         
         public enum FileType { INPUT, OUTPUT };
@@ -106,7 +106,7 @@ namespace Herd
 
         public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
         public void setDirPath(string dirPath) { m_tempDir = dirPath; }
-        public void setLogMessageHandler(LogMessageHandler logMessageHandler)
+        public void setLogMessageHandler(Utility.LogFunction logMessageHandler)
         { 
             m_logMessageHandler = logMessageHandler;
             m_xmlStream.setLogMessageHandler(logMessageHandler);
@@ -422,8 +422,8 @@ namespace Herd
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
 
-        protected CJobDispatcher.LogMessageHandler m_logMessageHandler;
-        public void setLogMessageHandler(CJobDispatcher.LogMessageHandler logMessageHandler) { m_logMessageHandler = logMessageHandler; }
+        protected Utility.LogFunction m_logMessageHandler;
+        public void setLogMessageHandler(Utility.LogFunction logMessageHandler) { m_logMessageHandler = logMessageHandler; }
         protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
 
         public XMLStream()

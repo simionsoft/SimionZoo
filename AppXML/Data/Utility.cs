@@ -21,6 +21,8 @@ namespace AppXML.Data
 {
     public static class Utility
     {
+        public delegate void LogFunction(string message);
+
         [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
         

@@ -7,27 +7,36 @@
             xmlns:v="clr-namespace:AppXML.Views"
             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="400">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical" >
+    <StackPanel Orientation="Vertical">
         <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
-            <!--<ItemsControl ItemsSource="{Binding Path=experimentQueue}"></ItemsControl>-->
-            <StackPanel Margin="2">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="170" >
-                    <!--<TextBlock Text="Name" Width="40" Margin="0" Foreground="Gray"></TextBlock>-->
-                    <TextBox x:Name="ExperimentName" IsEnabled="False" BorderBrush="LightGray" Text="{Binding name}"  Width="80" FontFamily="Segoe UI" FontSize="10"/>
-                    <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}" Width="73"></TextBlock>
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                <!--<ItemsControl ItemsSource="{Binding Path=experimentQueue}"></ItemsControl>-->
+                    <StackPanel Margin="2" Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel>
+                                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}"  Width="100" FontFamily="Segoe UI" FontSize="10"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}" FontSize="8" Width="100"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel>
+                            <ScrollViewer>
+                                <TextBlock Text="{Binding statusInfo}" Width="200" MaxHeight="50" FontSize="8" Foreground="Gray"/>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Width="170" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}">
-                    <ProgressBar Height="10" Width="80" Minimum="0" Maximum="100" x:Name="Progress" Margin="0,0,0,0" Value="{Binding Path=progress}"></ProgressBar>
-                    <Button Background="{x:Null}" Margin="3,0,0,0" BorderBrush="{x:Null}" x:Name="showStatusInfoInNewWindow" 
-                                cal:Message.Attach="[Event Click]=[showStatusInfoInNewWindow()]"
-                                Width="20" Height="20" Visibility="{Binding Path=isStatusInfo,Converter={StaticResource BoolToVis}}">
-                        <Image Source="/images/info.png" Width="15" Height="15"></Image>
-                    </Button>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}">
+                    <ProgressBar Height="10" Width="380" Minimum="0" Maximum="100" x:Name="Progress" 
+                                 Margin="0,0,0,0" Value="{Binding Path=progress}"></ProgressBar>
                 </StackPanel>
             </StackPanel>
         </Border>

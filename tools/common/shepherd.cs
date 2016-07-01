@@ -124,10 +124,15 @@ namespace Herd
 
                 u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
             }
+            catch(TaskCanceledException ex)
+            {
+                logMessage("Task canceled exception in Shepherd");
+                logMessage(ex.ToString());
+            }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception in discovery callback function");
-                Console.WriteLine(ex.StackTrace);
+                logMessage("Exception in discovery callback function");
+                logMessage(ex.StackTrace);
             }
         }
         public void sendBroadcastHerdAgentQuery()

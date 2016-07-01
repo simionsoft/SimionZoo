@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Caliburn.Micro;
 using System.Windows.Threading;
 using System.Dynamic;
 using System.Windows;
 using System.Xml;
+using Caliburn.Micro;
+using AppXML.Data;
 
 namespace AppXML.ViewModels
 {
@@ -50,20 +51,17 @@ namespace AppXML.ViewModels
         public void showWindow()
         {
 
-
-            WindowManager windowManager = new WindowManager();
-            dynamic settings = new ExpandoObject();
-            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-            settings.ShowInTaskbar = true;
-            settings.Title = m_name;
-            settings.WindowState = WindowState.Normal;
-            settings.ResizeMode = ResizeMode.CanMinimize;
-
-
-            windowManager.ShowDialog(m_windowedClassVM, null, settings);
+            CaliburnUtility.showVMDialog(m_windowedClassVM, m_name);
+            //WindowManager windowManager = new WindowManager();
+            //dynamic settings = new ExpandoObject();
+            //settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
+            //settings.ShowInTaskbar = true;
+            //settings.Title = m_name;
+            //settings.WindowState = WindowState.Normal;
+            //settings.ResizeMode = ResizeMode.CanMinimize;
 
 
-
+            //windowManager.ShowDialog(m_windowedClassVM, null, settings);
         }
 
         public override bool validate()

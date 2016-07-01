@@ -131,26 +131,16 @@ namespace AppXML.ViewModels
             {
                 m_statusInfo = value;
                 NotifyOfPropertyChange(() => statusInfo);
-                NotifyOfPropertyChange(() => isStatusInfo);
+                //NotifyOfPropertyChange(() => isStatusInfo);
             }
         }
         public void addStatusInfoLine(string line)
         { statusInfo += line + "\n"; }
-        public void showStatusInfoInNewWindow()
-        {
-            DialogViewModel dvm = new DialogViewModel("Experiment status info", this.m_statusInfo, DialogViewModel.DialogType.Info);
-            dynamic settings = new ExpandoObject();
-            settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-            settings.ShowInTaskbar = true;
-            settings.Title = "Experiment status info";
-            settings.WindowState = WindowState.Normal;
-            settings.WindowResize = ResizeMode.CanMinimize;
-            new WindowManager().ShowWindow(dvm, null, settings);
-        }
-        public bool isStatusInfo { get { return m_statusInfo != ""; } set { } }
+
+        //public bool isStatusInfo { get { return m_statusInfo != ""; } set { } }
 
         //log stuff
-        private ExperimentQueueMonitorViewModel.LogFunction m_logFunction = null;
+        private Utility.LogFunction m_logFunction = null;
         private void logMessage(string message)
         {
             if (m_logFunction != null)

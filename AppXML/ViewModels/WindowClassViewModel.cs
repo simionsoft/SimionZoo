@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Caliburn.Micro;
 using System.Windows.Threading;
 using System.Dynamic;
 using System.Windows;
 using System.Xml;
+using Caliburn.Micro;
+using AppXML.Data;
 
 namespace AppXML.ViewModels
 {
@@ -44,15 +45,18 @@ namespace AppXML.ViewModels
             
             if (!ok)
             {
-                DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);
-                dynamic settings = new ExpandoObject();
-                settings.WindowStyle = WindowStyle.ToolWindow;
-                settings.ShowInTaskbar = true;
-                settings.Title = "WARNING";
+                DialogViewModel.Result result=
+                    CaliburnUtility.showWarningDialog("The form is not validated. Do you want to save it?", "WARNING");
+                //DialogViewModel dvm = new DialogViewModel(null, "The form is not validated. Do you want to save it?", DialogViewModel.DialogType.YesNo);
+                //dynamic settings = new ExpandoObject();
+                //settings.WindowStyle = WindowStyle.ToolWindow;
+                //settings.ShowInTaskbar = true;
+                //settings.Title = "WARNING";
 
-                new WindowManager().ShowDialog(dvm, null, settings);
+                //new WindowManager().ShowDialog(dvm, null, settings);
 
-                if (dvm.DialogResult == DialogViewModel.Result.OK)
+                //if (dvm.DialogResult == DialogViewModel.Result.OK)
+                if (result==DialogViewModel.Result.OK)
                 {
                     TryClose();
                 }

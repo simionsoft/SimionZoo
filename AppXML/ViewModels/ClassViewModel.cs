@@ -287,14 +287,7 @@ namespace AppXML.ViewModels
                 if (definition.Attributes["Window"] != null)
                     return true;
             }
-            //foreach (XmlNode definition in CNode.definitions)
-            //{
-            //    if 
-            //}
-            //if (node == null ) return false;
-            //XmlNode definition = node.ChildNodes.[className];
-            //if (node.Attributes["Window"] != null)
-            //    return true;
+
             return false;
         }
         public ClassViewModel(string clasName, string itemName,Boolean ignoreWindow, XmlDocument doc)
@@ -302,12 +295,7 @@ namespace AppXML.ViewModels
             _doc = doc;
             _className = clasName;
             XmlNode node = CNode.definitions[clasName];
-            //if (ignoreWindow && node.Attributes["Window"] != null)
-            //{
-            //    _itemName = itemName;
-            //    _wclvm = new WindowClassViewModel(clasName, this,_doc);
-            //}
-            //else
+
             {
                 construc(node);  
             }
@@ -317,16 +305,7 @@ namespace AppXML.ViewModels
 
         public string ClassViewVisible { get { if (_itemName != null)return "Hidden"; else return "Visible"; } set { } }
         public string ResumeVisible { get { if (_itemName == null)return "Hidden"; else return "Visible"; } set { } }
-        //public string ItemsVisible { get { if(Items == null || _resume!=null )return "Hidden";else return "Visible"; } set { } }
-        //public string ChoiceVisible { get { if (Choice == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
-        //public string BranchesVisible { get { if (Branches == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
-        //public string MultisVisible { get { if (Multis == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
-       // public string XMLNodeVisible { get { if (_XMLNODE == null || _resume != null)return "Hidden"; else return "Visible"; } set { } }
         public ChoiceViewModel Choice { get { return _choice; } set { _choice = value; } }
-        //public ObservableCollection<IntegerViewModel> Items { get { return _items; } set { } }
-        //public ObservableCollection<MultiValuedViewModel> Multis { get { return _multis; } set { } }
-        //public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
-        //public ObservableCollection<XMLNodeRefViewModel> XMLNODE { get { return _XMLNODE; } set { } }
         public ObservableCollection<ValidableAndNodeViewModel> AllItems { get { return _allItems; } set { } }
         public string ItemName { get { return _itemName; } set { _itemName = value; NotifyOfPropertyChange(() => ItemName); } }
         public void Copy()
@@ -382,46 +361,10 @@ namespace AppXML.ViewModels
                 if (item is MultiXmlNodeRefViewModel)
                     (item as MultiXmlNodeRefViewModel).removeViews();
             }
-            //if(_XMLNODE!=null)
-              //  CApp.removeViews(_XMLNODE.ToList());
-            //if (_branches != null)
-           // {
-             //   foreach(BranchViewModel branch in _branches)
-               // {
-                 //   branch.removeViews();
-                //}
-            //}
-            //if(_choice!=null)
-            //{
-              //  _choice.removeViews();
-           // }
-            //if(_multis!=null)
-           // {
-             //   foreach(MultiValuedViewModel multi in _multis)
-              //  {
-              //      multi.removeViews();
-              //  }
-          //  }
                 
         }
-        //public void OpenForm()
-        //{
-            
 
-        //   WindowManager windowManager = new WindowManager();
-        //   dynamic settings = new ExpandoObject();
-        //   settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-        //   settings.ShowInTaskbar = true;
-        //   settings.Title = this._className;
-        //   settings.WindowState = WindowState.Normal;
-        //    settings.ResizeMode = ResizeMode.CanMinimize;
 
-           
-        //   windowManager.ShowDialog(this._wclvm,null,settings);
-           
-
-            
-        //}
         public bool validate(bool isCallByContructor)
         {
             if(_itemName==null || _itemName=="")
