@@ -14,8 +14,7 @@
         Background="#eeeeee"
         WindowState="Normal"
         Title="Badger"
-        Icon="/badger-head.ico"
-            >
+        Icon="/badger-head.ico">
 
 
 
@@ -60,9 +59,9 @@
             <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Width="195">
                 <Label Content="Experiment Queue" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Width="195" Margin="0,10,0,0"/>
             </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Orientation="Horizontal" MaxHeight="50" Margin="308,0,355,0" Width="0">
+            <!--<StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Orientation="Horizontal" MaxHeight="50" Margin="308,0,355,0" Width="0">
 
-            </StackPanel>
+            </StackPanel>-->
 
             <StackPanel Grid.Row="1" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
 
@@ -75,7 +74,6 @@
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Height="408">
                     <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="390" RenderTransformOrigin="0.5,0.5">
-
                         <TreeView HorizontalAlignment="Center" Height="494" Width="644"   VerticalAlignment="Top" BorderThickness="0" Margin="9,0,9,-106" >
                             <TreeView.Background>
                                 <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">

@@ -14,7 +14,7 @@ namespace AppXML.ViewModels
     {
         private string m_filePath;
         public string filePath { get { return m_filePath; } set { m_filePath = value; } }
-        public string pipeName { get { return m_name; } }
+
 
         private static string RemoveSpecialCharacters(string str)
         {

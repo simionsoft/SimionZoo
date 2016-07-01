@@ -8,22 +8,21 @@
               xmlns:vm="clr-namespace:AppXML.ViewModels"
             xmlns:v="clr-namespace:AppXML.Views"
              mc:Ignorable="d"  
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="400" d:DesignWidth="440">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-
-
     </UserControl.Resources>
+    <ScrollViewer>
+        <ListView x:Name="monitoredExperiments" BorderBrush="{x:Null}" BorderThickness="0" 
+                  ItemsSource="{Binding Path=monitoredExperimentBatchList}"
+                  Margin="20" Width="400" MaxHeight="500">
 
-    <ListView x:Name="experimentQueue" BorderBrush="{x:Null}" BorderThickness="0" 
-              ItemsSource="{Binding Path=experimentQueue}"
-              SelectedIndex="{Binding selectedIndex}" SelectionMode="Single"
-              cal:Message.Attach="[Event SelectedItemChanged]=[Action changeSelected($source)]" Margin="0">
-        <ListView.Resources>
-            <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
-                <v:ExperimentView/>
-            </DataTemplate>
-        </ListView.Resources>
-    </ListView>
+            <ListView.Resources>
+                <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
+                    <v:MonitoredExperimentView/>
+                </DataTemplate>
+            </ListView.Resources>
+        </ListView>
+    </ScrollViewer>
 
 </UserControl>

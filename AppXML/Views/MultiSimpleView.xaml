@@ -31,7 +31,7 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <Button Width="30" Height="30" Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0" cal:Message.Attach="[Event Click]=[Delete($this)]">
-                                <Image Source="/views/images/remove.png" Width="25" Height="25"/>
+                                <Image Source="/images/remove.png" Width="25" Height="25"/>
                             </Button>
                         </StackPanel>
                     </DataTemplate>
@@ -43,7 +43,7 @@
         <StackPanel Orientation="Horizontal" >
             <ContentControl x:Name="Header" ToolTip="{Binding Comment}"/>
             <Button x:Name="AddNew" Width="30" Height="30" Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0">
-                <Image Source="/views/images/add.png" Width="25" Height="25"/>
+                <Image Source="/images/add.png" Width="25" Height="25"/>
             </Button>
         </StackPanel>
     </StackPanel>

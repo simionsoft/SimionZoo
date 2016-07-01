@@ -43,7 +43,7 @@
 
                         <Label Content="{Binding Default}" HorizontalContentAlignment="Left" Width="100" Background="{Binding TextColor}"/>
                         <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"  cal:Message.Attach="[Event Click]=[Action FindPath()]">
-                            <Image Source="/views/images/folder.png" Width="25" Height="25"></Image>
+                            <Image Source="/images/folder.png" Width="25" Height="25"></Image>
                         </Button>                        
                     </StackPanel>
                 </DataTemplate>

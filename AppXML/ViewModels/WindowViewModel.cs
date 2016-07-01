@@ -104,9 +104,9 @@ namespace AppXML.ViewModels
                     return;
                 selectedApp = value;
                 CApp.IsInitializing = true;
-                _rootnode = Utility.getRootNode(apps[index]);
-                _branches = _rootnode.children;
-                _doc = (this._rootnode as CApp).document;
+                //_rootnode = Utility.getRootNode(apps[index]);
+                //_branches = _rootnode.children;
+                //_doc = (this._rootnode as CApp).document;
                 CApp.IsInitializing = false;
                 NotifyOfPropertyChange(() => Branch);
                 NotifyOfPropertyChange(() => rootnode);
@@ -377,6 +377,7 @@ namespace AppXML.ViewModels
                             catch (Exception ex)
                             {
                                 logToFile("Exception in update task");
+                                logToFile(ex.ToString());
                             }
                             Thread.Sleep(1000);
                             shepherd.disconnect();
@@ -403,14 +404,6 @@ namespace AppXML.ViewModels
             shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
             logToFile("Using " + freeHerdAgents.Count + " agents");
 
-            //ProcessManagerViewModel pwvm = new ProcessManagerViewModel(myList);
-            //dynamic settings = new ExpandoObject();
-            //settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-            //settings.ShowInTaskbar = false;
-            //settings.Title = "Process Manager";
-            //ProcessesWindowViewModel pwvm2 = new ProcessesWindowViewModel(pwvm);
-            //new WindowManager().ShowDialog(pwvm2, null, settings);
-            //pwvm2.Manager.closeAll();
             ExperimentQueueMonitorViewModel monitorVM = new ExperimentQueueMonitorViewModel(freeHerdAgents,pendingExperiments);
             monitorVM.setLogFunction(logToFile);
             monitorVM.runExperiments(experimentQueueViewModel.name, true, true);

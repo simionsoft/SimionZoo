@@ -28,12 +28,12 @@ d:DesignHeight="50" d:DesignWidth="300"
                                 <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
                                     <MenuItem Header="Copy" cal:Message.Attach="[Event Click]=[Action Copy()]" >
                                         <MenuItem.Icon>
-                                            <Image Source="/views/images/copy.png" ToolTip="Copy"></Image>
+                                            <Image Source="/images/copy.png" ToolTip="Copy"></Image>
                                         </MenuItem.Icon>
                                     </MenuItem>
                                     <MenuItem Header="Paste" cal:Message.Attach="[Event Click]=[Action Paste()]" IsEnabled="{Binding PasteEnabled}" >
                                         <MenuItem.Icon>
-                                            <Image Source="/views/images/paste.png" ToolTip="Paste"></Image>
+                                            <Image Source="/images/paste.png" ToolTip="Paste"></Image>
                                         </MenuItem.Icon>
                                     </MenuItem>
                                 </ContextMenu>

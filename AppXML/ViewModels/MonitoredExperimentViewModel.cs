@@ -32,6 +32,14 @@ namespace AppXML.ViewModels
     {
         private string m_name;
         public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
+
+        public string pipeName { get { return m_name; } }
+
+        private string m_filePath;
+        public string filePath { get { return m_filePath; } set { m_filePath = value; } }
+
+        private XmlDocument m_experimentXML;
+        public XmlDocument experimentXML { get { return m_experimentXML; } set { m_experimentXML = value; } }
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
         private ExperimentState m_state = ExperimentState.ENQUEUED;
@@ -149,11 +157,11 @@ namespace AppXML.ViewModels
                 m_logFunction(message);
         }
 
-        private ExperimentViewModel m_experiment;
-        public ExperimentViewModel experiment { get { return m_experiment; } }
         public MonitoredExperimentViewModel(ExperimentViewModel experiment)
         {
-            m_experiment = experiment;
+            name = experiment.name;
+            filePath = experiment.filePath;
+            experimentXML= experiment.experimentXML;
         }
         //public MonitoredExperimentViewModel(HerdAgentViewModel agent, List<ExperimentViewModel> experiments
         //    , CancellationToken cancelToken, ExperimentQueueMonitorViewModel.LogFunction logFunction = null)
@@ -165,10 +173,10 @@ namespace AppXML.ViewModels
         //    m_failedExperiments = new List<ExperimentViewModel>();
         //    m_logFunction = logFunction;
         //}
-        public override string ToString()
-        {
-            return "IP= " + m_herdAgent.ipAddressString + ", " + m_experiments.Count + " task(s)";
-        }
+        //public override string ToString()
+        //{
+        //    return "IP= " + m_herdAgent.ipAddressString + ", " + m_experiments.Count + " task(s)";
+        //}
 
     }
  }

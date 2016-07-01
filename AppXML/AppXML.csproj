@@ -137,8 +137,8 @@
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ExperimentBatchMonitorView.xaml.cs">
-      <DependentUpon>ExperimentBatchMonitorView.xaml</DependentUpon>
+    <Compile Include="Views\MonitoredExperimentView.xaml.cs">
+      <DependentUpon>MonitoredExperimentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
       <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
@@ -211,7 +211,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ExperimentBatchMonitorView.xaml">
+    <Page Include="Views\MonitoredExperimentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

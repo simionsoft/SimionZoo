@@ -32,11 +32,12 @@ namespace AppXML.ViewModels
     {
         private List<MonitoredExperimentViewModel> m_monitoredExperiments;
         private HerdAgentViewModel m_herdAgent;
+        public HerdAgentViewModel herdAgent { get { return m_herdAgent; } }
         private string m_name;
         public CancellationToken m_cancelToken;
         private Shepherd m_shepherd;
 
-        private List<MonitoredExperimentViewModel> m_failedExperiments;
+        private List<MonitoredExperimentViewModel> m_failedExperiments= new List<MonitoredExperimentViewModel>();
         public List<MonitoredExperimentViewModel> failedExperiments { get { return m_failedExperiments; } set { } }
 
         private ExperimentQueueMonitorViewModel.LogFunction m_logFunction = null;
@@ -46,7 +47,7 @@ namespace AppXML.ViewModels
                 m_logFunction(message);
         }
 
-        ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments,HerdAgentViewModel herdAgent
+        public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments,HerdAgentViewModel herdAgent
             ,ExperimentQueueMonitorViewModel.LogFunction logFunction)
         {
             m_name = name;
@@ -72,16 +73,16 @@ namespace AppXML.ViewModels
                 CTask task = new CTask();
                 task.name = monitoredExperiment.name;
                 task.exe = Models.CApp.EXE;
-                task.arguments = monitoredExperiment.experiment.filePath + " " + monitoredExperiment.experiment.pipeName;
-                task.pipe = monitoredExperiment.experiment.pipeName;
+                task.arguments = monitoredExperiment.filePath + " " + monitoredExperiment.pipeName;
+                task.pipe = monitoredExperiment.pipeName;
                 job.tasks.Add(task);
                 //add exe file to inputs
                 if (!job.inputFiles.Contains(task.exe))
                     job.inputFiles.Add(task.exe);
                 //add experiment file to inputs
-                if (!job.inputFiles.Contains(monitoredExperiment.experiment.filePath))
-                    job.inputFiles.Add(monitoredExperiment.experiment.filePath);
-                Utility.getInputsAndOutputs(monitoredExperiment.experiment.filePath, ref job);
+                if (!job.inputFiles.Contains(monitoredExperiment.filePath))
+                    job.inputFiles.Add(monitoredExperiment.filePath);
+                Utility.getInputsAndOutputs(monitoredExperiment.filePath, ref job);
             }
             return job;
         }
@@ -137,7 +138,7 @@ namespace AppXML.ViewModels
                             if (message.Name == "Progress")
                             {
                                 double progress = double.Parse(content, CultureInfo.InvariantCulture);
-                                progress = Convert.ToInt32(progress); // experimentVM.progress = Convert.ToInt32(progress);
+                                experimentVM.progress = Convert.ToInt32(progress);
                             }
                             else if (message.Name == "Message")
                             {
@@ -240,8 +241,9 @@ namespace AppXML.ViewModels
             {
                 MonitoredExperimentViewModel monitoredExperiment= new MonitoredExperimentViewModel(exp);
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
-                m_pendingExperiments.Add(monitoredExperiment)
+                m_pendingExperiments.Add(monitoredExperiment);
             }
+            NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
         public void runExperiments(string batchName, bool monitorProgress= true, bool receiveJobResults= true)
@@ -267,7 +269,7 @@ namespace AppXML.ViewModels
                 {
                     foreach (ExperimentBatch batch in experimentBatchList)
                     {
-                        experimentBatchTaskList.Add(ExperimentMonitorViewModel.sendJobAndMonitor(batchName));
+                        experimentBatchTaskList.Add(batch.sendJobAndMonitor(batchName));
                     }
                     //all pending experiments sent? then we await completion to retry in case something fails
                     if (m_pendingExperiments.Count == 0)
@@ -278,14 +280,14 @@ namespace AppXML.ViewModels
                     }
 
                     //wait for the first agent to finish and give it something to do
-                    Task<MonitoredExperimentViewModel> finishedTask = await Task.WhenAny(experimentBatchTaskList);
-                    MonitoredExperimentViewModel finishedTaskResult = await finishedTask;
+                    Task<ExperimentBatch> finishedTask = await Task.WhenAny(experimentBatchTaskList);
+                    ExperimentBatch finishedTaskResult = await finishedTask;
                     logFunction("Job finished: " + finishedTaskResult.ToString());
                     experimentBatchTaskList.Remove(finishedTask);
 
                     if (finishedTaskResult.failedExperiments.Count > 0)
                     {
-                        foreach (ExperimentViewModel exp in finishedTaskResult.failedExperiments)
+                        foreach (MonitoredExperimentViewModel exp in finishedTaskResult.failedExperiments)
                             m_pendingExperiments.Add(exp);
                         logFunction(finishedTaskResult.failedExperiments.Count + " failed experiments enqueued again for further trials");
                     }
@@ -295,7 +297,8 @@ namespace AppXML.ViewModels
                         m_herdAgentList.Add(finishedTaskResult.herdAgent);
 
                     //assign experiments to free agents
-                    assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, m_cancelTokenSource.Token, logFunction);
+                    assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList
+                        ,m_cancelTokenSource.Token, logFunction);
                 }
 
             }

@@ -17,7 +17,7 @@
             <!--<ItemsControl ItemsSource="{Binding Path=experimentQueue}"></ItemsControl>-->
             <StackPanel Margin="2">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="170" >
-                    <TextBox x:Name="ExperimentName" BorderBrush="LightGray" Text="{Binding name,Mode=TwoWay}"  Width="80" Focusable="True" FontFamily="Segoe UI" FontSize="10"/>
+                    <TextBox x:Name="ExperimentName" HorizontalAlignment="Center" BorderBrush="LightGray" Text="{Binding name,Mode=TwoWay}"  Width="150" Focusable="True" FontFamily="Segoe UI" FontSize="10"/>
                     <!--<TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}" Width="73"></TextBlock>-->
                 </StackPanel>
                 <!--<StackPanel Width="170" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}">

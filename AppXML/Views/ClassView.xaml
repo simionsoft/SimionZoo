@@ -40,12 +40,12 @@
                     <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" >
                         <MenuItem Header="Copy" cal:Message.Attach="[Event Click]=[Action Copy()]" >
                             <MenuItem.Icon>
-                                <Image Source="/views/images/copy.png" ToolTip="Copy"></Image>
+                                <Image Source="/images/copy.png" ToolTip="Copy"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="Paste" cal:Message.Attach="[Event Click]=[Action Paste()]" IsEnabled="{Binding PasteEnabled}" >
                             <MenuItem.Icon>
-                                <Image Source="/views/images/paste.png" ToolTip="Paste"></Image>
+                                <Image Source="/images/paste.png" ToolTip="Paste"></Image>
                             </MenuItem.Icon>
                         </MenuItem>
                     </ContextMenu>
@@ -74,14 +74,14 @@
                             cal:Message.Attach="[Event Click]=[remove]"
                             Visibility="{Binding Path=bAddVisible, Converter={StaticResource BoolToVis}}"
                             Width="30" Height="30" >
-                        <Image Source="/views/images/add.png" Width="25" Height="25"></Image>
+                        <Image Source="/images/add.png" Width="25" Height="25"></Image>
                     </Button>
                     <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}"
                             cal:Message.Attach="[Event Click]=[add]"
                             x:Name="Remove" 
                             Visibility="{Binding Path=bRemoveVisible, Converter={StaticResource BoolToVis}}"
                             Width="30" Height="30" >
-                        <Image Source="/views/images/remove.png" Width="25" Height="25"></Image>
+                        <Image Source="/images/remove.png" Width="25" Height="25"></Image>
                     </Button>
                 </StackPanel>
             </StackPanel>
