@@ -16,15 +16,15 @@
         <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-
-                <!--<ItemsControl ItemsSource="{Binding Path=experimentQueue}"></ItemsControl>-->
                     <StackPanel Margin="2" Orientation="Horizontal">
                         <StackPanel Orientation="Vertical">
                             <StackPanel>
-                                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}"  Width="100" FontFamily="Segoe UI" FontSize="10"/>
+                                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}"  
+                                           Width="100" FontFamily="Segoe UI" FontSize="10"/>
                             </StackPanel>
                             <StackPanel>
-                                <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}" FontSize="8" Width="100"></TextBlock>
+                                <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
+                                           FontSize="8" Width="100"></TextBlock>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel>
@@ -35,8 +35,15 @@
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}">
-                    <ProgressBar Height="10" Width="380" Minimum="0" Maximum="100" x:Name="Progress" 
-                                 Margin="0,0,0,0" Value="{Binding Path=progress}"></ProgressBar>
+                    <StackPanel>
+                        <ProgressBar Height="10" Width="380" Minimum="0" Maximum="100" x:Name="Progress" 
+                                 Margin="0,0,0,0" Value="{Binding Path=progress}"/>
+                    </StackPanel>
+                    <!--<StackPanel>
+                        <oxy:PlotView x:Name="PlotView" Model="{Binding evaluationPlot}">
+                           --><!--<oxy:PlotView. ItemsSource="{Binding evaluationResults}"/>--><!--
+                        </oxy:PlotView>
+                    </StackPanel>-->
                 </StackPanel>
             </StackPanel>
         </Border>

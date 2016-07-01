@@ -51,6 +51,18 @@
       <HintPath>..\packages\Caliburn.Micro.3.0.0-beta2\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0-unstable2100\lib\net45\OxyPlot.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OxyPlot.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=75e952ba404cdbb0, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.1.0.0-unstable2100\lib\net45\OxyPlot.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="OxyPlot.Xps, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Wpf.1.0.0-unstable2100\lib\net45\OxyPlot.Xps.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RLSimionInterfaceDLL, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\debug\RLSimionInterfaceDLL.dll</HintPath>
@@ -104,6 +116,7 @@
     <Compile Include="Models\CIntegerValue.cs" />
     <Compile Include="Models\CMultiValued.cs" />
     <Compile Include="Models\CNode.cs" />
+    <Compile Include="ViewModels\EvaluationPlotViewModel.cs" />
     <Compile Include="ViewModels\MonitoredExperimentViewModel.cs" />
     <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\ExperimentViewModel.cs" />
@@ -117,6 +130,7 @@
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\IntegerViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
+    <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
     <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
     <Compile Include="ViewModels\RightTreeViewModel.cs" />
@@ -159,6 +173,9 @@
     </Compile>
     <Compile Include="Views\LoadDialogView.xaml.cs">
       <DependentUpon>LoadDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MonitorWindowView.xaml.cs">
+      <DependentUpon>MonitorWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MultiSimpleView.xaml.cs">
       <DependentUpon>MultiSimpleView.xaml</DependentUpon>
@@ -212,6 +229,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\EvaluationPlotView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MonitoredExperimentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -235,6 +256,10 @@
     <Page Include="Views\LoadDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MonitorWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MultiSimpleView.xaml">
       <SubType>Designer</SubType>

@@ -122,12 +122,12 @@ namespace AppXML.ViewModels
                 while (true)
                 {
                     int numBytesRead = await m_shepherd.readAsync(m_cancelToken);
+                    m_cancelToken.ThrowIfCancellationRequested();
+
                     string xmlItem = m_shepherd.m_xmlStream.processNextXMLItem();
 
                     while (xmlItem != "")
                     {
-                        m_cancelToken.ThrowIfCancellationRequested();
-
                         XmlDocument doc = new XmlDocument();
                         doc.LoadXml(xmlItem);
                         XmlNode e = doc.DocumentElement;
@@ -141,6 +141,10 @@ namespace AppXML.ViewModels
                             {
                                 double progress = double.Parse(content, CultureInfo.InvariantCulture);
                                 experimentVM.progress = Convert.ToInt32(progress);
+                            }
+                            else if (message.Name=="Evaluation")
+                            {
+
                             }
                             else if (message.Name == "Message")
                             {
@@ -216,7 +220,7 @@ namespace AppXML.ViewModels
         }
 
     }
-    public class ExperimentQueueMonitorViewModel : Caliburn.Micro.Screen
+    public class ExperimentQueueMonitorViewModel : PropertyChangedBase
     {
         private List<HerdAgentViewModel> m_herdAgentList;
         private ObservableCollection<MonitoredExperimentViewModel> m_monitoredExperimentBatchList
@@ -230,30 +234,25 @@ namespace AppXML.ViewModels
 
         //log stuff: a delegate log function must be passed via setLogFunction
        
-        private Utility.LogFunction m_logFunction= null;
-        public void setLogFunction(Utility.LogFunction function){m_logFunction= function;}
-        private void logFunction (string message) { if (m_logFunction!=null) m_logFunction(message);}
+        private Utility.LogFunction logFunction= null;
+
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<ExperimentViewModel> pendingExperiments)
+            , List<ExperimentViewModel> pendingExperiments, MonitorWindowViewModel evaluationMonitor
+            , Utility.LogFunction logFunctionDelegate)
         {
             m_herdAgentList = freeHerdAgents;
-
+            logFunction = logFunctionDelegate;
             foreach (ExperimentViewModel exp in pendingExperiments)
             {
-                MonitoredExperimentViewModel monitoredExperiment= new MonitoredExperimentViewModel(exp);
+                MonitoredExperimentViewModel monitoredExperiment= new MonitoredExperimentViewModel(exp,evaluationMonitor);
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
                 m_pendingExperiments.Add(monitoredExperiment);
             }
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
-        public void runExperiments(string batchName, bool monitorProgress= true, bool receiveJobResults= true)
-        {
-            Task.Run(() => runExperimentsAsync(batchName,monitorProgress,receiveJobResults));
-        }
-
-        private async void runExperimentsAsync(string batchName, bool monitorProgress, bool receiveJobResults)
+        public async void runExperimentsAsync(string batchName, bool monitorProgress, bool receiveJobResults)
         {
             m_cancelTokenSource = new CancellationTokenSource();
 
@@ -313,12 +312,6 @@ namespace AppXML.ViewModels
             {
                 m_cancelTokenSource.Dispose();
             }
-        }
-        protected override void OnDeactivate(bool close)
-        {
-            if (close)
-                stopExperiments();
-            base.OnDeactivate(close);
         }
 
         public void stopExperiments()

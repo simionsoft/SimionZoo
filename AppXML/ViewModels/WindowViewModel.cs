@@ -405,8 +405,8 @@ namespace AppXML.ViewModels
             shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
             logToFile("Using " + freeHerdAgents.Count + " agents");
 
-            ExperimentQueueMonitorViewModel monitorVM = new ExperimentQueueMonitorViewModel(freeHerdAgents,pendingExperiments);
-            monitorVM.setLogFunction(logToFile);
+            MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents,pendingExperiments,logToFile);
+
             monitorVM.runExperiments(experimentQueueViewModel.name, true, true);
 
             CaliburnUtility.showVMDialog(monitorVM, "Experiment execution Monitor");
@@ -465,7 +465,6 @@ namespace AppXML.ViewModels
             bool result= m_experimentQueueViewModel.save();
             if (result) logToFile("Succesfully saved " + m_experimentQueueViewModel.experimentQueue.Count + " experiments");
             else logToFile("Error saving the experiment queue");
-         }
-       
+        }
     }
 }

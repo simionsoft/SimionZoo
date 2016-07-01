@@ -40,6 +40,8 @@ namespace AppXML.ViewModels
 
         private XmlDocument m_experimentXML;
         public XmlDocument experimentXML { get { return m_experimentXML; } set { m_experimentXML = value; } }
+
+
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
         private ExperimentState m_state = ExperimentState.ENQUEUED;
@@ -147,26 +149,22 @@ namespace AppXML.ViewModels
                 m_logFunction(message);
         }
 
-        public MonitoredExperimentViewModel(ExperimentViewModel experiment)
+        public MonitoredExperimentViewModel(ExperimentViewModel experiment, EvaluationPlotViewModel evaluationMonitorVM)
         {
             name = experiment.name;
             filePath = experiment.filePath;
             experimentXML= experiment.experimentXML;
+            evaluationMonitor = evaluationMonitorVM;
         }
-        //public MonitoredExperimentViewModel(HerdAgentViewModel agent, List<ExperimentViewModel> experiments
-        //    , CancellationToken cancelToken, ExperimentQueueMonitorViewModel.LogFunction logFunction = null)
-        //{
-        //    m_herdAgent = agent;
-        //    m_experiments = experiments;
-        //    m_cancelToken = cancelToken;
-        //    m_shepherd = new Shepherd();
-        //    m_failedExperiments = new List<ExperimentViewModel>();
-        //    m_logFunction = logFunction;
-        //}
-        //public override string ToString()
-        //{
-        //    return "IP= " + m_herdAgent.ipAddressString + ", " + m_experiments.Count + " task(s)";
-        //}
 
+        //evaluation plot stuff
+        private int evaluationSeriesId = 0;
+        private EvaluationPlotViewModel evaluationMonitor= null;
+        public void addEvaluationValue(double xNorm, double y)
+        {
+            if (evaluationSeriesId == 0) //series not yet added
+                evaluationSeriesId = evaluationMonitor.addLineSeries(name);
+            evaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
+        }
     }
  }
