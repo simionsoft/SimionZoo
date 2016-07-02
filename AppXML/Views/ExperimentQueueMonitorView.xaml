@@ -12,16 +12,14 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <ScrollViewer>
-        <ListView x:Name="monitoredExperiments" BorderBrush="{x:Null}" BorderThickness="0" 
-                  ItemsSource="{Binding Path=monitoredExperimentBatchList}"
-                  Margin="20" Width="400" MaxHeight="500">
-            <ListView.Resources>
-                <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
-                    <v:MonitoredExperimentView/>
-                </DataTemplate>
-            </ListView.Resources>
-        </ListView>
-    </ScrollViewer>
 
+    <ListView HorizontalContentAlignment="Center" x:Name="monitoredExperiments" BorderBrush="{x:Null}" BorderThickness="0" 
+                  ItemsSource="{Binding Path=monitoredExperimentBatchList}"
+                  Margin="20">
+        <ListView.Resources>
+            <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
+                <v:MonitoredExperimentView/>
+            </DataTemplate>
+        </ListView.Resources>
+    </ListView>
 </UserControl>

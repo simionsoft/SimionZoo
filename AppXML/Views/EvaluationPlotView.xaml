@@ -8,14 +8,13 @@
              xmlns:oxy="http://oxyplot.org/wpf"
             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="300" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel>
-     
-        <StackPanel Width="300" Height="300">
+    
+        <StackPanel HorizontalAlignment="Center">
             <!--<oxy:Plot x:Name="PlotView" Background="Yellow" Width="200" Height="200">
                 <oxy:Plot.Series>
                     <oxy:LineSeries Title="Value" DataFieldX="xNorm"
@@ -24,8 +23,8 @@
                         StrokeThickness="2" Color="Blue" />
                 </oxy:Plot.Series>
             </oxy:Plot>-->
-            <oxy:PlotView Model="{Binding evaluationPlot}" Width="300" Height="100"/>
-        </StackPanel>
+            <oxy:PlotView Model="{Binding evaluationPlot}" Width="580" Height="300"/>
+    
 
     </StackPanel>
 </UserControl>

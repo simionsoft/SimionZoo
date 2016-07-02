@@ -35,7 +35,6 @@ namespace AppXML.Data
             settings.WindowState = WindowState.Normal;
             settings.ResizeMode = ResizeMode.CanMinimize;
 
-
             windowManager.ShowDialog(viewmodel, null, settings);
         }
     }

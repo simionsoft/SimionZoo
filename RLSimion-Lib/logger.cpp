@@ -227,6 +227,9 @@ char* CLogger::getExperimentTypeName(bool evalEpisode)
 
 void CLogger::firstStep(bool evalEpisode, unsigned int episodeIndex)
 {
+	//initialise the episode reward
+	m_episodeRewardSum = 0.0;
+
 	if (!isEpisodeTypeLogged(evalEpisode)) return;
 
 	//set episode start time
@@ -242,8 +245,16 @@ void CLogger::firstStep(bool evalEpisode, unsigned int episodeIndex)
 	writeLogBuffer(Output::LogFile, buffer);
 }
 
-void CLogger::lastStep(bool evalEpisode, unsigned int episodeIndex)
+void CLogger::lastStep(bool evalEpisode, unsigned int episodeIndex, unsigned int numEpisodes, unsigned int numSteps)
 {
+	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
+	char buffer[BUFFER_SIZE];
+	if (evalEpisode && numEpisodes>0 && numSteps>0)
+	{
+		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (double)(numEpisodes - 1)
+			, m_episodeRewardSum / (double)numSteps);
+		logMessage(MessageType::Evaluation, buffer);
+	}
 	if (!isEpisodeTypeLogged(evalEpisode)) return;
 
 	writeLogBuffer(Output::LogFile, "  </Episode>\n");
@@ -251,6 +262,9 @@ void CLogger::lastStep(bool evalEpisode, unsigned int episodeIndex)
 
 void CLogger::timestep(bool evalEpisode, unsigned int episodeIndex,CState* s, CAction* a, CState* s_p, CReward* r)
 {
+	//we add the scalar reward in evaluation episodes for monitoring purposes, no matter if we are logging this type of episode or not
+	if (evalEpisode) m_episodeRewardSum += r->getSumValue();
+
 	if (!isEpisodeTypeLogged(evalEpisode)) return;
 
 	bool bLog = isEpisodeTypeLogged(evalEpisode);
@@ -387,6 +401,8 @@ void CLogger::logMessage(MessageType type, const char* message)
 			sprintf_s(messageLine, 1024, "<Message>WARNING: %s</Message>", message); break;
 		case Progress:
 			sprintf_s(messageLine, 1024, "<Progress>%s</Progress>", message); break;
+		case Evaluation:
+			sprintf_s(messageLine, 1024, "<Evaluation>%s</Evaluation>", message); break;
 		case Info:
 			sprintf_s(messageLine, 1024, "<Message>%s</Message>", message); break;
 		case Error:
@@ -403,6 +419,9 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Progress:
 			//extra spaces to avoid overwriting only partially previous message
 			printf("PROGRESS: %s                     \r", message); break;
+		case Evaluation:
+			//extra spaces to avoid overwriting only partially previous message
+			printf("EVALUATION: %s\n", message); break;
 		case Info:
 			printf("%s\n", message); break;
 		case Error:

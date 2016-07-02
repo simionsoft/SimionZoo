@@ -164,7 +164,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	CApp::get()->Logger.timestep(evalEpisode, episodeIndex, s, a, s_p, r);
 
 	if (isLastStep())
-		CApp::get()->Logger.lastStep(evalEpisode, episodeIndex);
+		CApp::get()->Logger.lastStep(evalEpisode, episodeIndex,m_numEvaluationEpisodes, m_numSteps);
 
 	if (isLastEpisode() && isLastStep())
 		CApp::get()->Logger.lastEpisode(evalEpisode);

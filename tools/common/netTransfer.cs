@@ -626,9 +626,12 @@ namespace Herd
         {
             if (m_lastXMLItem != "")
             {
-                m_match = Regex.Match(m_lastXMLItem, @"<[^>]*>([^<]*?)<");
+                m_match = Regex.Match(m_lastXMLItem, @"<([^>]*?)>(.*?)</(\1)>"); //@"<[^>]*?>([^<]*?)<");
                 if (m_match.Success)
-                    return m_match.Groups[1].Value;
+                {
+                    m_lastXMLItem = m_match.Groups[2].Value;
+                    return m_match.Groups[2].Value;
+                }
             }
             return "";
         }

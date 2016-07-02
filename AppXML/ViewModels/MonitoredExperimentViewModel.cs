@@ -158,11 +158,11 @@ namespace AppXML.ViewModels
         }
 
         //evaluation plot stuff
-        private int evaluationSeriesId = 0;
+        private int evaluationSeriesId = -1;
         private EvaluationPlotViewModel evaluationMonitor= null;
         public void addEvaluationValue(double xNorm, double y)
         {
-            if (evaluationSeriesId == 0) //series not yet added
+            if (evaluationSeriesId == -1) //series not yet added
                 evaluationSeriesId = evaluationMonitor.addLineSeries(name);
             evaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
         }

@@ -30,8 +30,8 @@ namespace AppXML.ViewModels
 {
     public class MonitorWindowViewModel : Caliburn.Micro.Screen
     {
-        public ExperimentQueueMonitorViewModel experimentQueueMonitor;
-        public EvaluationPlotViewModel evaluationPlot;
+        public ExperimentQueueMonitorViewModel experimentQueueMonitor{get;set;}
+        public EvaluationPlotViewModel evaluationPlot{get;set;}
 
         public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents
             , List<ExperimentViewModel> pendingExperiments, Utility.LogFunction logFunction)

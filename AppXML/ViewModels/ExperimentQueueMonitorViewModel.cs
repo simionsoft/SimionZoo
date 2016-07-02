@@ -37,6 +37,9 @@ namespace AppXML.ViewModels
         public CancellationToken m_cancelToken;
         private Shepherd m_shepherd;
 
+        private EvaluationPlotViewModel m_evaluationPlot;
+        private Dictionary<string, int> m_experimentSeriesId;
+
         private List<MonitoredExperimentViewModel> m_failedExperiments= new List<MonitoredExperimentViewModel>();
         public List<MonitoredExperimentViewModel> failedExperiments { get { return m_failedExperiments; } set { } }
 
@@ -48,7 +51,7 @@ namespace AppXML.ViewModels
         }
 
         public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments,HerdAgentViewModel herdAgent
-            ,CancellationToken cancelToken, Utility.LogFunction logFunction)
+            ,EvaluationPlotViewModel evaluationPlot,CancellationToken cancelToken, Utility.LogFunction logFunction)
         {
             m_name = name;
             m_monitoredExperiments = experiments;
@@ -57,6 +60,8 @@ namespace AppXML.ViewModels
             m_shepherd = new Shepherd();
             m_shepherd.setLogMessageHandler(logFunction);
             m_cancelToken = cancelToken;
+            m_evaluationPlot = evaluationPlot;
+            m_experimentSeriesId = new Dictionary<string, int>();
         }
 
         private CJob getJob()
@@ -128,31 +133,44 @@ namespace AppXML.ViewModels
 
                     while (xmlItem != "")
                     {
-                        XmlDocument doc = new XmlDocument();
-                        doc.LoadXml(xmlItem);
-                        XmlNode e = doc.DocumentElement;
-                        string key = e.Name;
-                        XmlNode message = e.FirstChild;
-                        MonitoredExperimentViewModel experimentVM = m_monitoredExperiments.Find(exp => exp.name == key);
-                        string content = message.InnerText;
+                        string experimentId = m_shepherd.m_xmlStream.getLastXMLItemTag();
+                        string message = m_shepherd.m_xmlStream.getLastXMLItemContent();
+                        MonitoredExperimentViewModel experimentVM = m_monitoredExperiments.Find(exp => exp.name == experimentId);
+                        string messageId = m_shepherd.m_xmlStream.getLastXMLItemTag(); //previous call to getLastXMLItemContent reset lastXMLItem
+                        string messageContent = m_shepherd.m_xmlStream.getLastXMLItemContent();
                         if (experimentVM != null)
                         {
-                            if (message.Name == "Progress")
+                            if (messageId == "Progress")
                             {
-                                double progress = double.Parse(content, CultureInfo.InvariantCulture);
+                                double progress = double.Parse(messageContent, CultureInfo.InvariantCulture);
                                 experimentVM.progress = Convert.ToInt32(progress);
                             }
-                            else if (message.Name=="Evaluation")
+                            else if (messageId=="Evaluation")
                             {
+                                //<Evaluation>0.0,-1.23</Evaluation>
+                                string [] values= messageContent.Split(',');
+                                string seriesName= experimentVM.name;
+                                int seriesId;
+                                if (values.Length==2)
+                                {
+                                    if (!m_experimentSeriesId.Keys.Contains(experimentVM.name))
+                                    {
+                                        seriesId = m_evaluationPlot.addLineSeries(seriesName);
+                                        m_experimentSeriesId.Add(seriesName, seriesId);
+                                    }
+                                    else seriesId = m_experimentSeriesId[seriesName];
 
+                                    m_evaluationPlot.addLineSeriesValue(seriesId,double.Parse(values[0], CultureInfo.InvariantCulture)
+                                        ,double.Parse(values[1], CultureInfo.InvariantCulture));
+                                }
                             }
-                            else if (message.Name == "Message")
+                            else if (messageId == "Message")
                             {
-                                experimentVM.addStatusInfoLine(content);
+                                experimentVM.addStatusInfoLine(messageContent);
                             }
-                            else if (message.Name == "End")
+                            else if (messageId == "End")
                             {
-                                if (content == "Ok")
+                                if (messageContent == "Ok")
                                 {
                                     logMessage("Job finished sucessfully");
                                     experimentVM.state = MonitoredExperimentViewModel.ExperimentState.WAITING_RESULT;
@@ -167,7 +185,7 @@ namespace AppXML.ViewModels
                         }
                         else
                         {
-                            if (key == XMLStream.m_defaultMessageType)
+                            if (experimentId == XMLStream.m_defaultMessageType)
                             {
                                 //if (content == CJobDispatcher.m_endMessage)
                                 {
@@ -235,12 +253,14 @@ namespace AppXML.ViewModels
         //log stuff: a delegate log function must be passed via setLogFunction
        
         private Utility.LogFunction logFunction= null;
+        private EvaluationPlotViewModel m_evaluationMonitor;
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<ExperimentViewModel> pendingExperiments, MonitorWindowViewModel evaluationMonitor
+            , List<ExperimentViewModel> pendingExperiments, EvaluationPlotViewModel evaluationMonitor
             , Utility.LogFunction logFunctionDelegate)
         {
+            m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
             foreach (ExperimentViewModel exp in pendingExperiments)
@@ -252,8 +272,10 @@ namespace AppXML.ViewModels
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
+        private bool m_bRunningExperiments = false;
         public async void runExperimentsAsync(string batchName, bool monitorProgress, bool receiveJobResults)
         {
+            m_bRunningExperiments = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
             List<Task<ExperimentBatch>> experimentBatchTaskList= new List<Task<ExperimentBatch>>();
@@ -310,13 +332,14 @@ namespace AppXML.ViewModels
             }
             finally
             {
+                m_bRunningExperiments = false;
                 m_cancelTokenSource.Dispose();
             }
         }
 
         public void stopExperiments()
         {
-            if (m_cancelTokenSource != null)
+            if (m_bRunningExperiments && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
         }
         private int batchId = 0;
@@ -341,7 +364,8 @@ namespace AppXML.ViewModels
                     experimentBatch.Add(pendingExperiments[0]);
                     pendingExperiments.RemoveAt(0);
                 }
-                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch, agentVM, cancelToken, logFunction));
+                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch, agentVM,m_evaluationMonitor
+                    , cancelToken, logFunction));
                 ++batchId;
             }
         }

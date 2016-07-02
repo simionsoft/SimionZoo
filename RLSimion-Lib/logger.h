@@ -10,7 +10,7 @@ class CStats;
 class CTimer;
 class CFilePathList;
 
-enum MessageType {Progress,Info,Warning, Error};
+enum MessageType {Progress,Evaluation,Info,Warning, Error};
 enum MessageOutputMode {Console,NamedPipe};
 enum Output{Pipe,LogFile};
 
@@ -33,6 +33,7 @@ class CLogger
 	CTimer *m_pEpisodeTimer;
 	CTimer *m_pExperimentTimer;
 
+	double m_episodeRewardSum;
 
 	double m_lastLogSimulationT;
 
@@ -84,6 +85,6 @@ protected:
 	void lastEpisode(bool evalEpisode);
 	//called to log steps
 	void firstStep(bool evalEpisode, unsigned int episodeIndex);
-	void lastStep(bool evalEpisode, unsigned int episodeIndex);
+	void lastStep(bool evalEpisode, unsigned int episodeIndex, unsigned int numEpisodes= 0, unsigned int numSteps= 0);
 	void timestep(bool evalEpisode, unsigned int episodeIndex,CState* s, CAction* a, CState* s_p,CReward* r);
 };
