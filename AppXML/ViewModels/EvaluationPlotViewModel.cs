@@ -22,12 +22,12 @@ namespace AppXML.ViewModels
         double m_minY = double.MaxValue;
         double m_maxY = double.MinValue;
 
-        int m_numSeries= 0;
+        private int m_numSeries= 0;
 
         private PlotModel m_evaluationPlot;
         public PlotModel evaluationPlot { get { return m_evaluationPlot; } set { } }
 
-        public EvaluationPlotViewModel()
+        public EvaluationPlotViewModel(bool bRefresh=true)
         {
             m_evaluationPlot = new PlotModel { Title="Evaluation episodes"};
             var xAxis = new LinearAxis();
@@ -43,8 +43,11 @@ namespace AppXML.ViewModels
             yAxis.Maximum = 1.0;
             m_evaluationPlot.Axes.Add(yAxis);
 
-            m_timer = new Timer(updatePlot);
-            m_timer.Change(m_updateFreq, m_updateFreq);
+            if (bRefresh)
+            {
+                m_timer = new Timer(updatePlot);
+                m_timer.Change(m_updateFreq, m_updateFreq);
+            }
         }
 
         private void updatePlot(object state)
@@ -71,23 +74,11 @@ namespace AppXML.ViewModels
             OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries) m_evaluationPlot.Series[seriesIndex];
             updatePlotBounds(xValue, yValue);
             series.Points.Add(new DataPoint(xValue,yValue));
-
-            //NotifyOfPropertyChange(() => evaluationPlot);
         }
         private void updatePlotBounds(double x,double y)
         {
-            //bool bMustUpdateX = false;
             bool bMustUpdateY = false;
-            //if (x<m_minX)
-            //{
-            //    m_minX = x;
-            //    bMustUpdateX = true;
-            //}
-            //if (x>m_maxX)
-            //{
-            //    m_maxX = x;
-            //    bMustUpdateX = true;
-            //}
+
             if (y<m_minY)
             {
                 m_minY = y;
@@ -98,11 +89,7 @@ namespace AppXML.ViewModels
                 m_maxY = y;
                 bMustUpdateY = true;
             }
-            //if (bMustUpdateX)
-            //{
-            //    m_evaluationPlot.Axes[0].Maximum = m_maxX;
-            //    m_evaluationPlot.Axes[0].Minimum = m_minX;
-            //}
+
             if (bMustUpdateY)
             {
                 double tmpMaxY = m_maxY;
