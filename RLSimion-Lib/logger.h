@@ -12,21 +12,20 @@ class CFilePathList;
 
 enum MessageType {Progress,Evaluation,Info,Warning, Error};
 enum MessageOutputMode {Console,NamedPipe};
-enum Output{Pipe,LogFile};
 
 class CLogger
 {
 	static const int MAX_FILENAME_LENGTH = 1024;
 	static const int BUFFER_SIZE = 10000;
+
 	
 	//log file
+	char m_outputDir[MAX_FILENAME_LENGTH];
 	char* m_pFullLogFilename;
 	static void *m_hLogFile;
 
 	bool m_bLogEvaluationEpisodes;
 	bool m_bLogTrainingEpisodes;
-	bool m_bLogEvaluationExperiment;
-	bool m_bLogTrainingExperiment;
 
 	double m_logFreq; //in seconds: time between file logs
 
@@ -37,27 +36,38 @@ class CLogger
 
 	double m_lastLogSimulationT;
 
-	void openLogFile(const char* fullLogFilename);
-	void closeLogFile();
+	void* openLogFile(const char* fullLogFilename);
+	void closeLogFile(void* fileHandle);
 
-	char* getExperimentTypeName(bool evalEpisode);
+	void logStepData(CState* s, CAction* a, CState* s_p, CReward* r);
 
-	void logStepData(unsigned int stepIndex, CState* s, CAction* a, CState* s_p, CReward* r);
-	void logNamedVarSetToBuffer(char* pOutBuffer,CNamedVarSet* pNamedVarSet, const char* id);
-	void logStatsToBuffer(char* pOutBuffer);
+	static void writeLogBuffer(void* fileHandle, const char* pBuffer, int numBytes);
 
-	static void writeLogBuffer(Output output, const char* pBuffer);
+	void writeLogFileXMLDescriptor(const char* filename);
+
+	void writeNamedVarSetDescriptorToBuffer(char* buffer, const char* id, const CNamedVarSet* pNamedVarSet);
+	void writeStatDescriptorToBuffer(char* buffer);
+	void writeEpisodeTypesToBuffer(char* buffer);
+
+	void writeExperimentHeader();
+	void writeEpisodeHeader();
+	int writeStepHeaderToBuffer(char* buffer, int offset);
+	void writeStepData(CState* s, CAction* a, CState* s_p, CReward* r);
+	int writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarSet* pNamedVarSet);
+	int writeStatsToBuffer(char* buffer, int offset);
 
 	//stats
 	std::vector<CStats*> m_stats;
 public:
+	static const unsigned int BIN_FILE_VERSION = 1;
+
+
 	CLogger();
 	virtual ~CLogger();
 	void init(CParameters* pParameters);
 
 	//returns whether a specific type of episode is going to be logged
 	bool isEpisodeTypeLogged(bool evaluation);
-	bool isExperimentTypeLogged(bool evaluation);
 
 	//METHODS CALLED FROM ANY CLASS
 	void addVarToStats(const char* key, const char* subkey, double* variable);
@@ -81,10 +91,10 @@ protected:
 	friend class CExperiment;
 	//METHODS CALLED FROM CExperiment
 	//called to log episodes
-	void firstEpisode(bool evalEpisode);
-	void lastEpisode(bool evalEpisode);
+	void firstEpisode();
+	void lastEpisode();
 	//called to log steps
-	void firstStep(bool evalEpisode, unsigned int episodeIndex);
-	void lastStep(bool evalEpisode, unsigned int episodeIndex, unsigned int numEpisodes= 0, unsigned int numSteps= 0);
-	void timestep(bool evalEpisode, unsigned int episodeIndex,CState* s, CAction* a, CState* s_p,CReward* r);
+	void firstStep();
+	void lastStep();
+	void timestep(CState* s, CAction* a, CState* s_p,CReward* r);
 };

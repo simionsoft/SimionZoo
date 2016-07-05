@@ -12,6 +12,46 @@
 
 void *CLogger::m_hLogFile= 0;
 
+#define OUTPUT_LOG_XML_DESCRIPTOR_FILENAME "experiment-log.xml"
+#define OUTPUT_LOG_FILENAME "experiment-log.bin"
+
+struct ExperimentHeader
+{
+	unsigned int fileVersion = CLogger::BIN_FILE_VERSION;
+	unsigned int numEpisodes = 0;
+	char padding[64 - 8]; //extra space
+	ExperimentHeader()
+	{
+		memset(padding, 0, sizeof(padding));
+	}
+};
+
+struct EpisodeHeader
+{
+	unsigned int episodeType;
+	unsigned int episodeIndex;
+	unsigned int numSteps;
+	char padding[64 - 12]; //extra space
+	EpisodeHeader()
+	{
+		memset(padding, 0, sizeof(padding));
+	}
+};
+
+struct StepHeader
+{
+	unsigned int stepIndex;
+	
+	double ExperimentRealTime;
+	double EpisodeSimTime;
+	double EpisodeRealTime;
+	char padding[64 - 16]; //extra space
+	StepHeader()
+	{
+		memset(padding, 0, sizeof(padding));
+	}
+};
+
 CLASS_INIT(CLogger)
 {
 	if (!pParameters) return;
@@ -21,10 +61,6 @@ CLASS_INIT(CLogger)
 	m_bLogEvaluationEpisodes = !strcmp(boolStr, "True");
 	ENUM_VALUE(boolStr, Boolean, "Log-training-episodes", "False","Log training episodes?");
 	m_bLogTrainingEpisodes = !strcmp(boolStr, "True");
-	ENUM_VALUE(boolStr,Boolean, "Log-eval-experiment", "True","Log the stats of the evaluation episodes?");
-	m_bLogEvaluationExperiment = !strcmp(boolStr, "True");
-	ENUM_VALUE(boolStr,Boolean, "Log-training-experiment", "False","Log the stats of the training episodes?");
-	m_bLogTrainingExperiment = !strcmp(boolStr, "True");
 
 	CONST_DOUBLE_VALUE(m_logFreq,"Log-Freq", 0.25,"Log frequency. Simulation time in seconds.");
 
@@ -38,28 +74,30 @@ CLASS_INIT(CLogger)
 	END_CLASS();
 }
 
-#define OUTPUT_LOG_FILENAME "experiment-log.xml"
+
+
 void CLogger::setLogDirectory(const char* xmlFilePath)
 {
 	if (!xmlFilePath)
 		throw(std::exception("CLogger. No output directory provided."));
 
-	char outputDir[MAX_FILENAME_LENGTH];// char* outputDir = new char[strlen(xmlFilePath) + 1];
-	strcpy_s(outputDir, MAX_FILENAME_LENGTH, xmlFilePath);// strlen(xmlFilePath) + 1, xmlFilePath);
+	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, xmlFilePath);
 
-	int i = strlen(outputDir)-1;
-	while (i > 0 && outputDir[i] != '/' && outputDir[i] != '\\')
+	int i = strlen(m_outputDir)-1;
+	while (i > 0 && m_outputDir[i] != '/' && m_outputDir[i] != '\\')
 		i--;
 
-	if (i > 0) outputDir[i] = 0;
+	if (i > 0) m_outputDir[i] = 0;
 	
-	char fullLogFilename[MAX_FILENAME_LENGTH];
-
-	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", outputDir, OUTPUT_LOG_FILENAME);
 	//we register the name for input/output stuff
+	char fullLogFilename[MAX_FILENAME_LENGTH];
+	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_XML_DESCRIPTOR_FILENAME);
+	CApp::get()->SimGod.registerOutputFile(fullLogFilename);
+	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_FILENAME);
 	CApp::get()->SimGod.registerOutputFile(fullLogFilename);
 
-	openLogFile(fullLogFilename);
+	//open the log file
+	m_hLogFile = openLogFile(fullLogFilename);
 }
 
 CLogger::CLogger()
@@ -67,9 +105,7 @@ CLogger::CLogger()
 	//default values for safety
 
 	m_bLogEvaluationEpisodes = false;
-	m_bLogEvaluationExperiment = false;
 	m_bLogTrainingEpisodes = true;
-	m_bLogTrainingExperiment = false;
 	m_logFreq = 0.0;
 	m_pEpisodeTimer = 0;
 	m_pExperimentTimer = 0;
@@ -86,114 +122,8 @@ CLogger::~CLogger()
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 		delete *it;
 
-	closeLogFile();
+	closeLogFile(m_hLogFile);
 }
-
-
-/*
-void CLogger::getLogFilename(char* buffer, int bufferSize, bool episodeLog, bool evaluation,unsigned int index)
-{
-	if (episodeLog)
-	{
-		if (!evaluation)
-			sprintf_s(buffer, bufferSize, "%s/log-train-epis-%d.txt", m_outputDir, index);
-		else
-			sprintf_s(buffer, bufferSize, "%s/log-eval-epis-%d.txt", m_outputDir, index);
-	}
-	else
-	{
-		if (!evaluation)
-			sprintf_s(buffer, bufferSize, "%s/log-train-exp.txt", m_outputDir);
-		else
-			sprintf_s(buffer, bufferSize, "%s/log-eval-exp.txt", m_outputDir);
-	}
-}*/
-/*
-FILE* CLogger::openLogFile(bool create)// , bool episodeLog, bool evalEpisode, unsigned int episodeIndex)
-{
-	FILE* pFile;
-	//char filename[1024];
-
-	//getLogFilename(filename, 1024, episodeLog, evalEpisode, episodeIndex);
-
-	if (create)
-	{
-		fopen_s(&pFile, m_outputLogFilename, "w");
-		if (pFile)
-		{
-			//writeLogFileHeader(pFile, episodeLog, evalEpisode);
-			fclose(pFile);
-		}
-		return 0;
-	}
-	else
-	{
-		fopen_s(&pFile, filename, "a");
-		return pFile;
-	}
-}*/
-/*
-void CLogger::writeLogFileHeader(FILE* pFile, bool episodeLog, bool evaluationLog)
-{
-	if (!pFile) return;
-	if (episodeLog)
-		fprintf_s(pFile, "Time ");
-	else
-		fprintf_s(pFile, "Episode Experiment-Time Episode-Duration ");
-
-	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
-	{
-		fprintf_s(pFile, "%s\\%s ", (*it)->getKey(), (*it)->getSubkey());
-	}
-	fprintf_s(pFile, "\n");
-}*/
-/*
-void CLogger::writeExperimentLogData(bool evalEpisode, unsigned int episodeIndex)
-{
-	if (isExperimentTypeLogged(evalEpisode))
-	{
-		FILE* pFile = openLogFile(false, false, evalEpisode, episodeIndex);
-
-		if (pFile)
-		{
-			//output the episode index, the elapsed time since the experiment started and the last episode's time length
-			//__int64 currentCounter;
-			//QueryPerformanceCounter((LARGE_INTEGER*)&currentCounter);
-			double experimentTime = m_pExperimentTimer->getElapsedTime(false);//(double)(currentCounter - m_experimentStartCounter) / (double)m_counterFreq;
-			double episodeDuration = m_pEpisodeTimer->getElapsedTime(false);// (double)(currentCounter - m_episodeStartCounter) / (double)m_counterFreq;
-
-			fprintf(pFile, "%d %.3f %.3f ", episodeIndex, experimentTime, episodeDuration);
-			//output the stats
-			for (auto it = m_stats.begin(); it != m_stats.end(); it++)
-			{
-				fprintf(pFile, "%.3f(%.3f) ", (*it)->getStatsInfo()->getAvg(), (*it)->getStatsInfo()->getStdDev());
-			}
-			fprintf(pFile, "\n");
-			fclose(pFile);
-		}
-	}
-}
-*/
-/*
-void CLogger::writeEpisodeLogData(bool evalEpisode, unsigned int episodeIndex)
-{
-	if (isEpisodeTypeLogged(evalEpisode))
-	{
-		FILE* pFile = openLogFile(false, true, evalEpisode, episodeIndex);
-
-		if (pFile)
-		{
-			fprintf(pFile, "%.3f ", CApp::get()->World.getT());
-
-			for (auto it = m_stats.begin(); it != m_stats.end(); it++)
-			{
-				fprintf(pFile, "%.3f ", (*it)->getValue());
-			}
-			fprintf(pFile, "\n");
-			fclose(pFile);
-		}
-	}
-}*/
 
 
 bool CLogger::isEpisodeTypeLogged(bool evalEpisode)
@@ -201,73 +131,115 @@ bool CLogger::isEpisodeTypeLogged(bool evalEpisode)
 	return (evalEpisode && m_bLogEvaluationEpisodes) || (!evalEpisode && m_bLogTrainingEpisodes);
 }
 
-bool CLogger::isExperimentTypeLogged(bool evalEpisode)
+
+
+void CLogger::writeLogFileXMLDescriptor(const char* filename)
 {
-	return (evalEpisode && m_bLogEvaluationExperiment) || (!evalEpisode && m_bLogTrainingExperiment);
+	char buffer[BUFFER_SIZE];
+
+	void * logXMLDescriptorFile= openLogFile(filename);
+	sprintf_s(buffer,BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\">\n",OUTPUT_LOG_FILENAME);
+	writeEpisodeTypesToBuffer(buffer);
+	writeNamedVarSetDescriptorToBuffer(buffer, "State", CApp::get()->World.getDynamicModel()->getStateDescriptor()); //state
+	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CApp::get()->World.getDynamicModel()->getActionDescriptor()); //action
+	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CApp::get()->World.getReward());
+	writeStatDescriptorToBuffer(buffer);
+	strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
+	writeLogBuffer(logXMLDescriptorFile, buffer, strlen(buffer));
+	
+	closeLogFile(logXMLDescriptorFile);
 }
 
-void CLogger::firstEpisode(bool evalEpisode)
+void CLogger::writeEpisodeTypesToBuffer(char* pOutBuffer)
+{
+	if (m_bLogEvaluationEpisodes) strcat_s(pOutBuffer, BUFFER_SIZE, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
+	if (m_bLogTrainingEpisodes) strcat_s(pOutBuffer, BUFFER_SIZE, "  <Episode-Type Id=\"0\">Training</Episode-Type>\n");
+}
+
+void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
+{
+	char buffer[BUFFER_SIZE];
+
+	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
+	{
+		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey(),(*iterator)->getSubkey());
+		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+	}
+}
+void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const CNamedVarSet* pVarSet)
+{
+	char buffer[BUFFER_SIZE];
+	for (int i = 0; i < pVarSet->getNumVars(); i++)
+	{
+		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable>%s</%s-variable>\n", id, pVarSet->getName(i), id);
+		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+	}
+}
+
+void CLogger::firstEpisode()
 {
 	//set episode start time
 	m_pEpisodeTimer->startTimer();
 
-	writeLogBuffer(Output::LogFile, "<Experiment>\n");
+	char fullLogFilename[MAX_FILENAME_LENGTH];
+
+	//generate the xml descriptor of the log file
+	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_XML_DESCRIPTOR_FILENAME);
+	writeLogFileXMLDescriptor(fullLogFilename);
+
+	//write the log file header
+	writeExperimentHeader();
 }
 
-void CLogger::lastEpisode(bool evalEpisode)
+void CLogger::lastEpisode()
 {
-	writeLogBuffer(Output::LogFile, "</Experiment>\n");
+	//writeLogBuffer(Output::LogFile, "</Experiment>\n");
 }
 
-char* CLogger::getExperimentTypeName(bool evalEpisode)
-{
-	if (evalEpisode) return "Evaluation";
-	else return "Training";
-}
-
-void CLogger::firstStep(bool evalEpisode, unsigned int episodeIndex)
+void CLogger::firstStep()
 {
 	//initialise the episode reward
 	m_episodeRewardSum = 0.0;
-
-	if (!isEpisodeTypeLogged(evalEpisode)) return;
 
 	//set episode start time
 	m_pEpisodeTimer->startTimer();
 
 	m_lastLogSimulationT = 0.0;
+
+	bool bEvalEpisode = CApp::get()->Experiment.isEvaluationEpisode();
+	if (bEvalEpisode) return;
+
 	//reset stats
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 		(*it)->reset();
 
-	char buffer[BUFFER_SIZE];
-	sprintf_s(buffer, BUFFER_SIZE, "  <Episode Index=\"%d\" Type=\"%s\">\n", episodeIndex, getExperimentTypeName(evalEpisode));
-	writeLogBuffer(Output::LogFile, buffer);
+	if (isEpisodeTypeLogged(bEvalEpisode))
+		writeEpisodeHeader();
 }
 
-void CLogger::lastStep(bool evalEpisode, unsigned int episodeIndex, unsigned int numEpisodes, unsigned int numSteps)
+void CLogger::lastStep()
 {
 	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
 	char buffer[BUFFER_SIZE];
-	if (evalEpisode && numEpisodes>0 && numSteps>0)
+	unsigned int episodeIndex = CApp::get()->Experiment.getEvaluationEpisodeIndex();
+	unsigned int numEpisodes = CApp::get()->Experiment.getNumEvaluationEpisodes();
+	unsigned int numSteps = CApp::get()->Experiment.getNumSteps();
+
+	if (CApp::get()->Experiment.isEvaluationEpisode() && numEpisodes>0 && numSteps>0)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (double)(numEpisodes - 1)
+		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (std::max(1.0, (double)numEpisodes - 1))
 			, m_episodeRewardSum / (double)numSteps);
 		logMessage(MessageType::Evaluation, buffer);
 	}
-	if (!isEpisodeTypeLogged(evalEpisode)) return;
-
-	writeLogBuffer(Output::LogFile, "  </Episode>\n");
 }
 
-void CLogger::timestep(bool evalEpisode, unsigned int episodeIndex,CState* s, CAction* a, CState* s_p, CReward* r)
+void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
+	bool bEvalEpisode = CApp::get()->Experiment.isEvaluationEpisode();
 	//we add the scalar reward in evaluation episodes for monitoring purposes, no matter if we are logging this type of episode or not
-	if (evalEpisode) m_episodeRewardSum += r->getSumValue();
+	if (bEvalEpisode) m_episodeRewardSum += r->getSumValue();
 
-	if (!isEpisodeTypeLogged(evalEpisode)) return;
-
-	bool bLog = isEpisodeTypeLogged(evalEpisode);
+	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
 	//update experiment stats
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
@@ -276,56 +248,83 @@ void CLogger::timestep(bool evalEpisode, unsigned int episodeIndex,CState* s, CA
 	}
 
 	//output episode log data
-	if (bLog && (CApp::get()->World.getStepStartT() - m_lastLogSimulationT >= m_logFreq))
+	if (CApp::get()->World.getStepStartT() - m_lastLogSimulationT >= m_logFreq)
 	{
-		logStepData(episodeIndex, s, a, s_p, r);
-		//writeEpisodeLogData(evalEpisode, episodeIndex);
+		writeStepData(s, a, s_p, r);
 		m_lastLogSimulationT = CApp::get()->World.getStepStartT();
 	}
 }
 
-void CLogger::logStepData(unsigned int stepIndex,CState* s, CAction* a, CState* s_p, CReward* r)
+void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 {
+	int offset = 0;
 	char buffer[BUFFER_SIZE];
 	buffer[0] = 0;
 	double simTime = CApp::get()->World.getT();
 	double realTime = m_pExperimentTimer->getElapsedTime();
-	sprintf_s(buffer, BUFFER_SIZE, "    <Step Index=\"%d\" SimTime=\"%f\" RealTime=\"%f\">\n", stepIndex, simTime, realTime);
+
+	offset += writeStepHeaderToBuffer(buffer, offset);
 	
-	logNamedVarSetToBuffer(buffer, s, "State");
-	logNamedVarSetToBuffer(buffer, a, "Action");
-	logNamedVarSetToBuffer(buffer, r, "Reward");
-	logStatsToBuffer(buffer);
-	strcat_s(buffer, BUFFER_SIZE, "    </Step>\n");
+	offset += writeNamedVarSetToBuffer(buffer, offset, s);
+	offset += writeNamedVarSetToBuffer(buffer, offset, a);
+	offset += writeNamedVarSetToBuffer(buffer, offset, r);
+	offset += writeStatsToBuffer(buffer, offset);
 
-	writeLogBuffer(Output::LogFile, buffer);
+	writeLogBuffer(m_hLogFile, buffer, offset);
 }
 
-
-void CLogger::logStatsToBuffer(char* pOutBuffer)
+void CLogger::writeExperimentHeader()
 {
-	char buffer[BUFFER_SIZE];
+	ExperimentHeader header;
 
-	strcat_s(pOutBuffer, BUFFER_SIZE, "    <Stats>\n");
-	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
-	{
-		sprintf_s(buffer, BUFFER_SIZE,"      <%s>%f</%s>\n", (*iterator)->getKey(), (*iterator)->getValue(), (*iterator)->getKey());
-		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
-	}
-	strcat_s(pOutBuffer, BUFFER_SIZE, "    </Stats>\n");
+	if (m_bLogEvaluationEpisodes) header.numEpisodes += CApp::get()->Experiment.getNumEvaluationEpisodes();
+	if (m_bLogTrainingEpisodes) header.numEpisodes += CApp::get()->Experiment.getNumTrainingEpisodes();
+
+	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(ExperimentHeader));
 }
-void CLogger::logNamedVarSetToBuffer(char* pOutBuffer, CNamedVarSet* pVarSet, const char* id)
+
+void CLogger::writeEpisodeHeader()
 {
-	char buffer[BUFFER_SIZE];
-	sprintf_s(buffer, BUFFER_SIZE, "    <%s>\n", id);
-	strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
-	for (int i = 0; i < pVarSet->getNumVars(); i++)
+	EpisodeHeader header;
+
+	header.episodeIndex = CApp::get()->Experiment.getEpisodeIndex();
+	header.episodeType = (CApp::get()->Experiment.isEvaluationEpisode() ? 0 : 1);
+	header.numSteps = CApp::get()->Experiment.getNumSteps();
+
+	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(EpisodeHeader));
+}
+
+int CLogger::writeStepHeaderToBuffer(char* buffer, int offset)
+{
+	StepHeader header;
+	header.EpisodeRealTime = m_pEpisodeTimer->getElapsedTime();
+	header.EpisodeSimTime = CApp::get()->World.getT();
+	header.ExperimentRealTime = m_pExperimentTimer->getElapsedTime();
+
+	memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(header));
+	return sizeof(header);
+}
+
+int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarSet* pNamedVarSet)
+{
+	int numVars = pNamedVarSet->getNumVars();
+	double* pDoubleBuffer = (double*)buffer;
+	for (int i = 0; i < numVars; ++i)
+		pDoubleBuffer[i] = pNamedVarSet->getValue(i);
+	return numVars* sizeof(double);
+}
+
+int CLogger::writeStatsToBuffer(char* buffer, int offset)
+{
+	int numVars = m_stats.size();
+	double* pDoubleBuffer = (double*)buffer;
+	int i = 0;
+	for (auto it = m_stats.begin(); it != m_stats.end(); ++it)
 	{
-		sprintf_s(buffer, BUFFER_SIZE,"        <%s>%f</%s>\n",pVarSet->getName(i), pVarSet->getValue(i),pVarSet->getName(i));
-		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+		pDoubleBuffer[i] = (*it)->getValue();
+		++i;
 	}
-	sprintf_s(buffer, BUFFER_SIZE, "    </%s>\n", id);
-	strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
+	return numVars* sizeof(double);
 }
 
 
@@ -362,7 +361,7 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 #include <windows.h>
 #include <string>
 
-void CLogger::openLogFile(const char* logFilename)
+void* CLogger::openLogFile(const char* logFilename)
 {
 	size_t convertedChars;
 
@@ -370,20 +369,19 @@ void CLogger::openLogFile(const char* logFilename)
 
 	mbstowcs_s(&convertedChars, w_filename, BUFFER_SIZE, logFilename, BUFFER_SIZE);
 
-	m_hLogFile = CreateFile(w_filename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0,0);
+	return CreateFile(w_filename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0,0);
 }
-void CLogger::closeLogFile()
+void CLogger::closeLogFile(void* fileHandle)
 {
-	if (m_hLogFile) CloseHandle(m_hLogFile);
+	if (fileHandle) CloseHandle(fileHandle);
+	else logMessage(MessageType::Warning, "Could not close log file because it wasn't opened.");
 }
 
-void CLogger::writeLogBuffer(Output output, const char* pBuffer)
+void CLogger::writeLogBuffer(void* fileHandle, const char* pBuffer, int numBytes)
 {
 	unsigned long numBytesWritten = 0;
-	if (output==Output::LogFile && m_hLogFile)
-		WriteFile(m_hLogFile, pBuffer, strlen(pBuffer),&numBytesWritten,0);
-	else if (output==Output::Pipe && m_outputPipe)
-		WriteFile(m_outputPipe, pBuffer, strlen(pBuffer),&numBytesWritten,0);
+	if (fileHandle)
+		WriteFile(fileHandle, pBuffer, numBytes, &numBytesWritten,0);
 }
 
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
@@ -408,7 +406,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Error:
 			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
 		}
-		writeLogBuffer(Output::Pipe, messageLine);
+		writeLogBuffer(m_outputPipe, messageLine, strlen(messageLine));
 	}
 	else
 	{

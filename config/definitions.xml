@@ -204,8 +204,6 @@
     <DOUBLE-VALUE Name="Log-Freq" Default="0.25" Comment="Log frequency. Simulation time in seconds."/>
     <ENUM-VALUE Name="Log-eval-episodes" Class="Boolean" Default="False" Comment="Log evaluation episodes?"/>
     <ENUM-VALUE Name="Log-training-episodes" Class="Boolean" Default="False" Comment="Log training episodes?"/>
-    <ENUM-VALUE Name="Log-eval-experiment" Class="Boolean" Default="True" Comment="Log the stats of the evaluation episodes?"/>
-    <ENUM-VALUE Name="Log-training-experiment" Class="Boolean" Default="False" Comment="Log the stats of the training episodes?"/>
   </CLASS>
 
   <CLASS Name="CNoise-Factory">

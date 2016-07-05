@@ -153,19 +153,19 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
-		CApp::get()->Logger.firstEpisode(evalEpisode);
+		CApp::get()->Logger.firstEpisode();
 
 	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
-		CApp::get()->Logger.firstStep(evalEpisode, episodeIndex);
+		CApp::get()->Logger.firstStep();
 
 	//update stats
 	//output step-stats
-	CApp::get()->Logger.timestep(evalEpisode, episodeIndex, s, a, s_p, r);
+	CApp::get()->Logger.timestep(s, a, s_p, r);
 
 	if (isLastStep())
-		CApp::get()->Logger.lastStep(evalEpisode, episodeIndex,m_numEvaluationEpisodes, m_numSteps);
+		CApp::get()->Logger.lastStep();
 
 	if (isLastEpisode() && isLastStep())
-		CApp::get()->Logger.lastEpisode(evalEpisode);
+		CApp::get()->Logger.lastEpisode();
 }

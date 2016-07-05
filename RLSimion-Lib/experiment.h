@@ -77,6 +77,8 @@ public:
 
 	bool isEvaluationEpisode();
 
+	unsigned int getNumEvaluationEpisodes(){ return m_numEvaluationEpisodes; }
+	unsigned int getNumTrainingEpisodes(){ return m_numTrainingEpisodes; }
 	unsigned int getTotalNumEpisodes(){ return m_totalNumEpisodes; }
 	unsigned int getNumSteps(){ return m_numSteps; }
 	void setNumSteps(unsigned int numSteps){ m_numSteps = numSteps; }
