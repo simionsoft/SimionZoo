@@ -17,8 +17,6 @@ namespace AppXML.ViewModels
         private const int m_updateFreq= 1000; //plot refresh freq in millseconds
         private Timer m_timer;
 
-        double m_minX = double.MaxValue;
-        double m_maxX = double.MinValue;
         double m_minY = double.MaxValue;
         double m_maxY = double.MinValue;
 

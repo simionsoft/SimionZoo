@@ -389,7 +389,6 @@ namespace AppXML.ViewModels
            cancelTokenSource.Dispose();
         }
 
-
         private void runExperimentQueue()
         {
             List<HerdAgentViewModel> freeHerdAgents= new List<HerdAgentViewModel>();
@@ -409,55 +408,21 @@ namespace AppXML.ViewModels
 
             monitorVM.runExperiments(experimentQueueViewModel.name, true, true);
 
-            CaliburnUtility.showVMDialog(monitorVM, "Experiment execution Monitor");
+            CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
         }
      
         public void loadExperimentQueue()
         {
-            string fileDoc = null;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment batch | *.exp-batch";
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-            if (ofd.ShowDialog() == DialogResult.OK)
+            try
             {
-                fileDoc = ofd.FileName;
+                m_experimentQueueViewModel.load();
             }
-            else
-                return;
-            //this doesn't seem to work
-            //Cursor.Current = Cursors.WaitCursor;
-            //System.Windows.Forms.Application.DoEvents();
-
-            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
-            XmlDocument batchDoc = new XmlDocument();
-            batchDoc.Load(fileDoc);
-            XmlElement fileRoot = batchDoc.DocumentElement;
-            if (fileRoot.Name != "Experiments")
-                return;
-
-            foreach (XmlElement element in fileRoot.ChildNodes)
+            catch (Exception e)
             {
-                try
-                {
-                    string expName = element.Name;
-                    string path = element.Attributes["Path"].Value;
-                    if (File.Exists(path))
-                    {
-                        XmlDocument expDocument = new XmlDocument();
-                        expDocument.Load(path);
-                        m_experimentQueueViewModel.addExperiment(element.Name, expDocument);
-                        checkStackEmpty();
-                    }
-                }
-                catch (Exception e)
-                {
-                    logToFile("Exception in loadExperimentQueue()");
-                    logToFile(e.ToString());
-                }
+                logToFile("Exception in loadExperimentQueue()");
+                logToFile(e.ToString());
             }
-
-            m_experimentQueueViewModel.markModified(true);
-
+            checkStackEmpty();
         }
 
         public void saveExperimentQueue()
@@ -465,6 +430,14 @@ namespace AppXML.ViewModels
             bool result= m_experimentQueueViewModel.save();
             if (result) logToFile("Succesfully saved " + m_experimentQueueViewModel.experimentQueue.Count + " experiments");
             else logToFile("Error saving the experiment queue");
+        }
+
+        public void showPlotWindow()
+        {
+            List<ExperimentViewModel> experiments= new List<ExperimentViewModel>();
+            experimentQueueViewModel.getLoggedExperimentList(ref experiments);
+            PlotEditorWindowViewModel plotEditor = new PlotEditorWindowViewModel(experiments);
+            CaliburnUtility.showVMDialog(plotEditor, "Plot editor");
         }
     }
 }

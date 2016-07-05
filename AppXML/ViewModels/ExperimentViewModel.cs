@@ -7,14 +7,18 @@ using System.Xml;
 using System.Dynamic;
 using System.Windows;
 using Caliburn.Micro;
+using System.IO;
 
 namespace AppXML.ViewModels
 {
     public class ExperimentViewModel:Caliburn.Micro.PropertyChangedBase
     {
-        private string m_filePath;
-        public string filePath { get { return m_filePath; } set { m_filePath = value; } }
+        private bool m_bDataAvailable = false;
+        public bool bDataAvailable { get { return m_bDataAvailable; }
+            set{ m_bDataAvailable= value; NotifyOfPropertyChange(()=>bDataAvailable);} }
 
+        private string m_filePath= "";
+        public string filePath { get { return m_filePath; } set { m_filePath = value; } }
 
         private static string RemoveSpecialCharacters(string str)
         {
@@ -29,9 +33,6 @@ namespace AppXML.ViewModels
             return sb.ToString();
         }
 
-        //private string m_tags;
-        //public string tags { get { return m_tags; } set { m_tags = value; } }
-
         private string m_name;
         public string name { get { return m_name; }
             set { m_name = RemoveSpecialCharacters(value); NotifyOfPropertyChange(() => name); }
@@ -41,10 +42,46 @@ namespace AppXML.ViewModels
         private XmlDocument m_experimentXML;
         public XmlDocument experimentXML{get{return m_experimentXML;} set{m_experimentXML=value;}}
 
-        public ExperimentViewModel(string name, XmlDocument experimentXML)
+        public ExperimentViewModel(string name, XmlDocument experimentXML, string path="")
         {
             m_name = name;
             m_experimentXML = experimentXML;
+            if (path != "")
+                m_filePath = path;
+        }
+
+        public bool checkLogFilesAlreadyExist()
+        {
+            //for now, i'd rather hardcode the log filenames than go through the dll... doesn't seem worth the effort
+            if (m_filePath != "")
+            {
+                try
+                {
+                    //the hard way because the elegant way didn't seem to work
+                    int lastPos1, lastPos2, lastPos;
+                    lastPos1 = m_filePath.LastIndexOf("/");
+                    lastPos2 = m_filePath.LastIndexOf("\\");
+
+                    lastPos = Math.Max(lastPos1, lastPos2);
+                    if (lastPos > 0)
+                    {
+                        string directory = m_filePath.Substring(0, lastPos+1);
+
+                        string logFile1 = directory + "experiment-log.xml";
+                        string logFile2 = directory + "experiment-log.bin";
+
+                        if (File.Exists(logFile1) && File.Exists(logFile2))
+                        {
+                            bDataAvailable = true;
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine("Exception looking for the experiment log files");
+                }
+            }
+            return bDataAvailable;
         }
     }
  

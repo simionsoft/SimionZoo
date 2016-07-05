@@ -133,6 +133,7 @@
     <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
     <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
+    <Compile Include="ViewModels\PlotEditorWindowViewModel.cs" />
     <Compile Include="ViewModels\RightTreeViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
     <Compile Include="ViewModels\ValidableAndNodeViewModel.cs" />
@@ -185,6 +186,9 @@
     </Compile>
     <Compile Include="Views\MultiXmlNodeRefView.xaml.cs">
       <DependentUpon>MultiXmlNodeRefView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlotEditorWindowView.xaml.cs">
+      <DependentUpon>PlotEditorWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowClassView.xaml.cs">
       <DependentUpon>WindowClassView.xaml</DependentUpon>
@@ -293,6 +297,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\PlotEditorWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ShepherdView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -326,6 +334,7 @@
     <Content Include="images\copy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="images\data.png" />
     <Content Include="images\folder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -344,6 +353,7 @@
     <Content Include="images\play.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="images\plot.png" />
     <Content Include="images\remove.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -44,7 +44,15 @@ namespace AppXML.ViewModels
                 outList.Add(experiment);
             }
         }
-
+        public void getLoggedExperimentList(ref List<ExperimentViewModel> outList)
+        {
+            outList.Clear();
+            foreach (ExperimentViewModel experiment in m_experimentQueue)
+            {
+                if (experiment.bDataAvailable)
+                    outList.Add(experiment);
+            }
+        }
 
         private int m_selectedIndex= -1;
         public int selectedIndex
@@ -89,11 +97,12 @@ namespace AppXML.ViewModels
 
             NotifyOfPropertyChange(() => experimentQueue);
         }
-        public void addExperiment(string name,XmlDocument expXML)
+        public void addExperiment(string name,XmlDocument expXML, string path= "")
         {
-            ExperimentViewModel newExperiment = new ExperimentViewModel(name, expXML);
+            ExperimentViewModel newExperiment = new ExperimentViewModel(name, expXML, path);
             m_experimentQueue.Add(newExperiment);
             markModified(true);
+            Task.Run(() => newExperiment.checkLogFilesAlreadyExist());
 
             NotifyOfPropertyChange(() => experimentQueue);
         }
@@ -200,16 +209,55 @@ namespace AppXML.ViewModels
             return true;
         }
 
-        //void setStatus(string experimentName, string status)
-        //{
-        //    foreach(ExperimentViewModel experimentVM in m_experimentQueue)
-        //    {
-        //        if (experimentVM.name==experimentName)
-        //        {
-        //            experimentVM.addStatusInfoLine(status + "\n");
-        //            break;
-        //        }
-        //    }
-        //}
+        public void load()
+        {
+            string fileDoc = null;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Experiment batch | *.exp-batch";
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                fileDoc = ofd.FileName;
+            }
+            else return;
+            //this doesn't seem to work
+            //Cursor.Current = Cursors.WaitCursor;
+            //System.Windows.Forms.Application.DoEvents();
+
+            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
+            XmlDocument batchDoc = new XmlDocument();
+            batchDoc.Load(fileDoc);
+            XmlElement fileRoot = batchDoc.DocumentElement;
+            if (fileRoot.Name != "Experiments")
+                return;
+
+            foreach (XmlElement element in fileRoot.ChildNodes)
+            {
+                string expName = element.Name;
+                string path = element.Attributes["Path"].Value;
+                if (File.Exists(path))
+                {
+                    XmlDocument expDocument = new XmlDocument();
+                    expDocument.Load(path);
+                    addExperiment(element.Name, expDocument, path);
+                }
+            }
+            markModified(true);
+        }
+
+        private bool m_bLogFilesAvailable= false;
+        public bool bLogFilesAvailable { get { return m_bLogFilesAvailable; }
+            set { m_bLogFilesAvailable = value; NotifyOfPropertyChange(()=> bLogFilesAvailable); }
+        }
+
+        public void checkLogFilesAlreadyExist()
+        {
+            bool anyLogFile = false;
+            foreach (ExperimentViewModel experiment in experimentQueue)
+            {
+                anyLogFile = anyLogFile || experiment.checkLogFilesAlreadyExist();
+            }
+            if (anyLogFile != m_bLogFilesAvailable) bLogFilesAvailable = anyLogFile;
+        }
     }
 }
