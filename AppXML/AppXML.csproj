@@ -134,6 +134,7 @@
     <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
     <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
     <Compile Include="ViewModels\PlotEditorWindowViewModel.cs" />
+    <Compile Include="ViewModels\PlotTabViewModel.cs" />
     <Compile Include="ViewModels\RightTreeViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
     <Compile Include="ViewModels\ValidableAndNodeViewModel.cs" />
@@ -189,6 +190,9 @@
     </Compile>
     <Compile Include="Views\PlotEditorWindowView.xaml.cs">
       <DependentUpon>PlotEditorWindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PlotTabView.xaml.cs">
+      <DependentUpon>PlotTabView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowClassView.xaml.cs">
       <DependentUpon>WindowClassView.xaml</DependentUpon>
@@ -298,6 +302,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PlotEditorWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PlotTabView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

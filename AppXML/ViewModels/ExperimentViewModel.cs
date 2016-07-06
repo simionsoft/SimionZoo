@@ -49,39 +49,53 @@ namespace AppXML.ViewModels
             if (path != "")
                 m_filePath = path;
         }
+        public string getLogDescriptorsFilePath()
+        {
+            if (m_filePath != "")
+            {
+                //the hard way because the elegant way didn't seem to work
+                int lastPos1, lastPos2, lastPos;
+                lastPos1 = m_filePath.LastIndexOf("/");
+                lastPos2 = m_filePath.LastIndexOf("\\");
 
+                lastPos = Math.Max(lastPos1, lastPos2);
+                if (lastPos > 0)
+                {
+                    string directory = m_filePath.Substring(0, lastPos + 1);
+
+                    return directory + "experiment-log.xml";
+                }
+            }
+            return "";
+        }
+        public string getLogFilePath()
+        {
+            if (m_filePath != "")
+            {
+                //the hard way because the elegant way didn't seem to work
+                int lastPos1, lastPos2, lastPos;
+                lastPos1 = m_filePath.LastIndexOf("/");
+                lastPos2 = m_filePath.LastIndexOf("\\");
+
+                lastPos = Math.Max(lastPos1, lastPos2);
+                if (lastPos > 0)
+                {
+                    string directory = m_filePath.Substring(0, lastPos + 1);
+
+                    return directory + "experiment-log.xml";
+                }
+            }
+            return "";
+        }
         public bool checkLogFilesAlreadyExist()
         {
             //for now, i'd rather hardcode the log filenames than go through the dll... doesn't seem worth the effort
             if (m_filePath != "")
             {
-                try
-                {
-                    //the hard way because the elegant way didn't seem to work
-                    int lastPos1, lastPos2, lastPos;
-                    lastPos1 = m_filePath.LastIndexOf("/");
-                    lastPos2 = m_filePath.LastIndexOf("\\");
-
-                    lastPos = Math.Max(lastPos1, lastPos2);
-                    if (lastPos > 0)
-                    {
-                        string directory = m_filePath.Substring(0, lastPos+1);
-
-                        string logFile1 = directory + "experiment-log.xml";
-                        string logFile2 = directory + "experiment-log.bin";
-
-                        if (File.Exists(logFile1) && File.Exists(logFile2))
-                        {
-                            bDataAvailable = true;
-                        }
-                    }
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine("Exception looking for the experiment log files");
-                }
+                if (File.Exists(getLogDescriptorsFilePath()) && File.Exists(getLogFilePath()))
+                    return true;
             }
-            return bDataAvailable;
+            return false;
         }
     }
  
