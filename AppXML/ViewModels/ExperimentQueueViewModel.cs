@@ -58,9 +58,13 @@ namespace AppXML.ViewModels
         public int selectedIndex
         {
             get { return m_selectedIndex; }
-            set { m_selectedIndex = value;
+            set
+            {
+                if (m_selectedIndex >= 0) m_experimentQueue[m_selectedIndex].bIsSelected = false;
+                m_selectedIndex = value;
             if (m_selectedIndex >= 0)
             {
+                m_experimentQueue[m_selectedIndex].bIsSelected = true;
                 m_parent.loadExperimentInEditor(m_experimentQueue[m_selectedIndex].experimentXML);
                 m_parent.bIsExperimentQueueNotEmpty = true;
             }

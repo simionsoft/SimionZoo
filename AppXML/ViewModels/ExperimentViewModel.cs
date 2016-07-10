@@ -17,6 +17,9 @@ namespace AppXML.ViewModels
         public bool bDataAvailable { get { return m_bDataAvailable; }
             set{ m_bDataAvailable= value; NotifyOfPropertyChange(()=>bDataAvailable);} }
 
+        private bool m_bIsSelected = false;
+        public bool bIsSelected { get { return m_bIsSelected; }set {m_bIsSelected= value;NotifyOfPropertyChange(()=>bIsSelected); }}
+
         private string m_filePath= "";
         public string filePath { get { return m_filePath; } set { m_filePath = value; } }
 
@@ -82,7 +85,7 @@ namespace AppXML.ViewModels
                 {
                     string directory = m_filePath.Substring(0, lastPos + 1);
 
-                    return directory + "experiment-log.xml";
+                    return directory + "experiment-log.bin";
                 }
             }
             return "";
@@ -93,7 +96,10 @@ namespace AppXML.ViewModels
             if (m_filePath != "")
             {
                 if (File.Exists(getLogDescriptorsFilePath()) && File.Exists(getLogFilePath()))
+                {
+                    bDataAvailable = true;
                     return true;
+                }
             }
             return false;
         }

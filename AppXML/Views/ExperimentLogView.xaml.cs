@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace AppXML.Views
 {
     /// <summary>
-    /// Lógica de interacción para PlotTabView.xaml
+    /// Interaction logic for ExperimentView.xaml
     /// </summary>
-    public partial class PlotTabView : UserControl
+    public partial class ExperimentLogView : UserControl
     {
-        public PlotTabView()
+        public ExperimentLogView()
         {
             InitializeComponent();
         }

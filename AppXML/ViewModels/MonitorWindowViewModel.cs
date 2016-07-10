@@ -31,12 +31,12 @@ namespace AppXML.ViewModels
     public class MonitorWindowViewModel : Caliburn.Micro.Screen
     {
         public ExperimentQueueMonitorViewModel experimentQueueMonitor{get;set;}
-        public EvaluationPlotViewModel evaluationPlot{get;set;}
+        public PlotViewModel evaluationPlot{get;set;}
 
         public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents
             , List<ExperimentViewModel> pendingExperiments, Utility.LogFunction logFunction)
         {
-            evaluationPlot = new EvaluationPlotViewModel();
+            evaluationPlot = new PlotViewModel("Evaluation episodes");
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(freeHerdAgents, pendingExperiments
                 , evaluationPlot,logFunction);
         }
@@ -52,7 +52,5 @@ namespace AppXML.ViewModels
                 experimentQueueMonitor.stopExperiments();
             base.OnDeactivate(close);
         }
-
-   
     }
 }

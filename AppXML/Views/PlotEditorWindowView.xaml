@@ -9,7 +9,7 @@
             xmlns:v="clr-namespace:AppXML.Views"
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowStyle="ThreeDBorderWindow"
-        Width="600"
+        Width="1000"
         Height="600"
         Background="#eeeeee"
         WindowState="Normal"
@@ -18,11 +18,79 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
-            <v:ExperimentView/>
+        <DataTemplate DataType="{x:Type vm:ExperimentLogViewModel}">
+            <v:ExperimentLogView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:LoggedVariableViewModel}">
+            <v:LoggedVariableView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PlotViewModel}">
+            <v:PlotView/>
         </DataTemplate>
     </Window.Resources>
-    <TabControl ItemsSource="{Binding plots}">
-
-    </TabControl>
+    <StackPanel Orientation="Horizontal" Margin="2">
+        <StackPanel Orientation="Vertical" Width="300">
+            <StackPanel>
+                <StackPanel Height="20" HorizontalAlignment="Center">
+                    <Label Content="{Binding Path=logListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
+                </StackPanel>
+                <ListView x:Name="Logs" BorderBrush="{x:Null}" BorderThickness="0" 
+                  ItemsSource="{Binding Path=experimentLogs}" SelectionMode="Multiple" Height="250" Margin="2">
+                    <ListView.Resources>
+                        <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
+                            <v:ExperimentView/>
+                        </DataTemplate>
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </StackPanel>
+            <StackPanel>
+                <StackPanel Height="20" HorizontalAlignment="Center">
+                    <Label Content="{Binding Path=variableListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
+                </StackPanel>
+                <ListView ItemsSource="{Binding Path=availableVariables}" Height="250" Margin="2">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Margin="2">
+            <StackPanel Width="680">
+                <StackPanel Orientation="Horizontal" Width="480" Margin="2">
+                    <Label Margin="10 0 10 0">Source</Label>
+                    <ComboBox Width="200" ItemsSource="{Binding Path=sourceOptions}" SelectedItem="{Binding Path=selectedSource}"/>
+                    <StackPanel Width="300" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <StackPanel>
+                            <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
+                            cal:Message.Attach="[Event Click]=[Action generatePlots()]"
+                            Visibility="{Binding Path=bCanGeneratePlots, Converter={StaticResource BoolToVis}}">
+                                <Image Source="/images/plot.png" Width="25" Height="25"/>
+                            </Button>
+                        </StackPanel>
+                        <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
+                            cal:Message.Attach="[Event Click]=[Action savePlots()]"
+                            Visibility="{Binding Path=bCanSavePlots, Converter={StaticResource BoolToVis}}">
+                            <Image Source="/images/save-all.png" Width="25" Height="25"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel>
+                <TabControl ItemsSource="{Binding Path=plots}" SelectedItem="{Binding Path=selectedPlot}" Height="510">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentControl Content="{Binding name}"/>
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                </TabControl>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
 </Window>

@@ -11,8 +11,6 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-
-
     </UserControl.Resources>
 
     <ListView x:Name="experimentQueue" BorderBrush="{x:Null}" BorderThickness="0" 

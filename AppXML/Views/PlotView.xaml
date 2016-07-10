@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AppXML.Views.EvaluationPlotView"
+﻿<UserControl x:Class="AppXML.Views.PlotView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,18 +13,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    
-        <StackPanel HorizontalAlignment="Center">
-            <!--<oxy:Plot x:Name="PlotView" Background="Yellow" Width="200" Height="200">
-                <oxy:Plot.Series>
-                    <oxy:LineSeries Title="Value" DataFieldX="xNorm"
-                        DataFieldY="yValue"
-                        ItemsSource="{Binding evaluationData}"
-                        StrokeThickness="2" Color="Blue" />
-                </oxy:Plot.Series>
-            </oxy:Plot>-->
-            <oxy:PlotView Model="{Binding evaluationPlot}" Width="580" Height="300"/>
-    
-
+    <StackPanel HorizontalAlignment="Center">
+        <oxy:PlotView Model="{Binding plot}" Width="580" Height="300"/>
     </StackPanel>
 </UserControl>

@@ -15,11 +15,19 @@ void *CLogger::m_hLogFile= 0;
 #define OUTPUT_LOG_XML_DESCRIPTOR_FILENAME "experiment-log.xml"
 #define OUTPUT_LOG_FILENAME "experiment-log.bin"
 
+#define HEADER_MAX_SIZE 16
+#define EXPERIMENT_HEADER 1
+#define EPISODE_HEADER 2
+#define STEP_HEADER 3
+#define EPISODE_END_HEADER 4
+
 struct ExperimentHeader
 {
-	unsigned int fileVersion = CLogger::BIN_FILE_VERSION;
-	unsigned int numEpisodes = 0;
-	char padding[64 - 8]; //extra space
+	__int64 magicNumber = EXPERIMENT_HEADER;
+	__int64 fileVersion = CLogger::BIN_FILE_VERSION;
+	__int64 numEpisodes = 0;
+
+	__int64 padding[HEADER_MAX_SIZE - 3]; //extra space
 	ExperimentHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -28,10 +36,12 @@ struct ExperimentHeader
 
 struct EpisodeHeader
 {
-	unsigned int episodeType;
-	unsigned int episodeIndex;
-	unsigned int numSteps;
-	char padding[64 - 12]; //extra space
+	__int64 magicNumber = EPISODE_HEADER;
+	__int64 episodeType;
+	__int64 episodeIndex;
+	__int64 numVariablesLogged;
+
+	__int64 padding[HEADER_MAX_SIZE - 4]; //extra space
 	EpisodeHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -40,12 +50,14 @@ struct EpisodeHeader
 
 struct StepHeader
 {
-	unsigned int stepIndex;
-	
-	double ExperimentRealTime;
-	double EpisodeSimTime;
-	double EpisodeRealTime;
-	char padding[64 - 16]; //extra space
+	__int64 magicNumber = STEP_HEADER;
+	__int64 stepIndex;
+
+	double experimentRealTime;
+	double episodeSimTime;
+	double episodeRealTime;
+
+	__int64 padding[HEADER_MAX_SIZE - 5]; //extra space
 	StepHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -207,7 +219,6 @@ void CLogger::firstStep()
 	m_lastLogSimulationT = 0.0;
 
 	bool bEvalEpisode = CApp::get()->Experiment.isEvaluationEpisode();
-	if (bEvalEpisode) return;
 
 	//reset stats
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
@@ -219,11 +230,17 @@ void CLogger::firstStep()
 
 void CLogger::lastStep()
 {
+	bool bEvalEpisode = CApp::get()->Experiment.isEvaluationEpisode();
+	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
+
+	//log the end of the episode: this way we don't have to precalculate the number of steps logged per episode
+	writeEpisodeEndHeader();
+
 	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
 	char buffer[BUFFER_SIZE];
-	unsigned int episodeIndex = CApp::get()->Experiment.getEvaluationEpisodeIndex();
-	unsigned int numEpisodes = CApp::get()->Experiment.getNumEvaluationEpisodes();
-	unsigned int numSteps = CApp::get()->Experiment.getNumSteps();
+	int episodeIndex = CApp::get()->Experiment.getEvaluationEpisodeIndex();
+	int numEpisodes = CApp::get()->Experiment.getNumEvaluationEpisodes();
+	int numSteps = CApp::get()->Experiment.getNumSteps();
 
 	if (CApp::get()->Experiment.isEvaluationEpisode() && numEpisodes>0 && numSteps>0)
 	{
@@ -248,7 +265,8 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	}
 
 	//output episode log data
-	if (CApp::get()->World.getStepStartT() - m_lastLogSimulationT >= m_logFreq)
+	if (CApp::get()->World.getStepStartT() - m_lastLogSimulationT >= m_logFreq
+		|| CApp::get()->Experiment.isFirstStep())
 	{
 		writeStepData(s, a, s_p, r);
 		m_lastLogSimulationT = CApp::get()->World.getStepStartT();
@@ -260,8 +278,6 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 	int offset = 0;
 	char buffer[BUFFER_SIZE];
 	buffer[0] = 0;
-	double simTime = CApp::get()->World.getT();
-	double realTime = m_pExperimentTimer->getElapsedTime();
 
 	offset += writeStepHeaderToBuffer(buffer, offset);
 	
@@ -287,28 +303,42 @@ void CLogger::writeEpisodeHeader()
 {
 	EpisodeHeader header;
 
-	header.episodeIndex = CApp::get()->Experiment.getEpisodeIndex();
+	header.episodeIndex = CApp::get()->Experiment.getRelativeEpisodeIndex();
 	header.episodeType = (CApp::get()->Experiment.isEvaluationEpisode() ? 0 : 1);
-	header.numSteps = CApp::get()->Experiment.getNumSteps();
+	header.numVariablesLogged =
+		CApp::get()->World.getDynamicModel()->getActionDescriptor()->getNumVars()
+		+ CApp::get()->World.getDynamicModel()->getStateDescriptor()->getNumVars()
+		+ CApp::get()->World.getReward()->getNumVars()
+		+ m_stats.size();
 
 	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(EpisodeHeader));
+}
+
+void CLogger::writeEpisodeEndHeader()
+{
+	StepHeader episodeEndHeader;
+	memset(&episodeEndHeader, 0, sizeof(StepHeader));
+	episodeEndHeader.magicNumber = EPISODE_END_HEADER;
+	writeLogBuffer(m_hLogFile, (char*)&episodeEndHeader, sizeof(StepHeader));
 }
 
 int CLogger::writeStepHeaderToBuffer(char* buffer, int offset)
 {
 	StepHeader header;
-	header.EpisodeRealTime = m_pEpisodeTimer->getElapsedTime();
-	header.EpisodeSimTime = CApp::get()->World.getT();
-	header.ExperimentRealTime = m_pExperimentTimer->getElapsedTime();
+	header.stepIndex = CApp::get()->Experiment.getStep();
+	header.episodeRealTime = m_pEpisodeTimer->getElapsedTime();
+	header.episodeSimTime = CApp::get()->World.getT();
+	header.experimentRealTime = m_pExperimentTimer->getElapsedTime();
 
-	memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(header));
+	memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));
+
 	return sizeof(header);
 }
 
 int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarSet* pNamedVarSet)
 {
 	int numVars = pNamedVarSet->getNumVars();
-	double* pDoubleBuffer = (double*)buffer;
+	double* pDoubleBuffer = (double*)(buffer + offset);
 	for (int i = 0; i < numVars; ++i)
 		pDoubleBuffer[i] = pNamedVarSet->getValue(i);
 	return numVars* sizeof(double);
@@ -317,7 +347,7 @@ int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarS
 int CLogger::writeStatsToBuffer(char* buffer, int offset)
 {
 	int numVars = m_stats.size();
-	double* pDoubleBuffer = (double*)buffer;
+	double* pDoubleBuffer = (double*)(buffer + offset);
 	int i = 0;
 	for (auto it = m_stats.begin(); it != m_stats.end(); ++it)
 	{

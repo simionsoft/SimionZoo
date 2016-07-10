@@ -51,6 +51,7 @@ class CLogger
 
 	void writeExperimentHeader();
 	void writeEpisodeHeader();
+	void writeEpisodeEndHeader();
 	int writeStepHeaderToBuffer(char* buffer, int offset);
 	void writeStepData(CState* s, CAction* a, CState* s_p, CReward* r);
 	int writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarSet* pNamedVarSet);

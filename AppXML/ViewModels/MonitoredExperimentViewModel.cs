@@ -149,7 +149,7 @@ namespace AppXML.ViewModels
                 m_logFunction(message);
         }
 
-        public MonitoredExperimentViewModel(ExperimentViewModel experiment, EvaluationPlotViewModel evaluationMonitorVM)
+        public MonitoredExperimentViewModel(ExperimentViewModel experiment, PlotViewModel evaluationMonitorVM)
         {
             name = experiment.name;
             filePath = experiment.filePath;
@@ -159,7 +159,7 @@ namespace AppXML.ViewModels
 
         //evaluation plot stuff
         private int evaluationSeriesId = -1;
-        private EvaluationPlotViewModel evaluationMonitor= null;
+        private PlotViewModel evaluationMonitor= null;
         public void addEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added

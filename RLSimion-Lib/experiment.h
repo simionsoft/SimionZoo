@@ -64,6 +64,7 @@ public:
 	void nextStep();
 
 	//EPISODES
+	double getEpisodeLength(){ return m_episodeLength; }//seconds
 	unsigned int getEpisodeIndex(){ return m_episodeIndex; }
 	unsigned int getRelativeEpisodeIndex(){ if (!isEvaluationEpisode()) return m_trainingEpisodeIndex; return m_evalEpisodeIndex; }
 	unsigned int getTrainingEpisodeIndex(){ return m_trainingEpisodeIndex; }

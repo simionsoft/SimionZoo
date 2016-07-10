@@ -79,8 +79,11 @@ void CExperiment::nextEpisode()
 
 bool CExperiment::isFirstEpisode()
 {
-	if (isEvaluationEpisode()) return m_evalEpisodeIndex == 1;
-	return m_trainingEpisodeIndex == 1;
+	//this would result in two calls
+	/*if (isEvaluationEpisode()) return m_evalEpisodeIndex == 1;
+	return m_trainingEpisodeIndex == 1;*/
+	//for now, we may assume that the first episode will be an evaluation one
+	return m_episodeIndex == 1;
 }
 
 bool CExperiment::isLastEpisode()

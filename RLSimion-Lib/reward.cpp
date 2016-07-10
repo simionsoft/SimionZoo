@@ -45,7 +45,7 @@ CLASS_CONSTRUCTOR(CRewardFunctionComponent) : CParamObject(pParameters)
 	//m_componentIndex= -1;
 	STATE_VARIABLE_REF(m_sVariable, "Variable","Input state variable");
 	const char* varName = pParameters->getConstString("Variable");
-	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r//%s)", varName);
+	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r/%s)", varName);
 	
 	NUMERIC_VALUE(m_pTolerance,"Tolerance","Tolerance value: errors greater will result in a negative reward");
 	NUMERIC_VALUE(m_pWeight,"Weight","Weight of this reward function component (in case more than one is used)");

@@ -37,7 +37,7 @@ namespace AppXML.ViewModels
         public CancellationToken m_cancelToken;
         private Shepherd m_shepherd;
 
-        private EvaluationPlotViewModel m_evaluationPlot;
+        private PlotViewModel m_evaluationPlot;
         private Dictionary<string, int> m_experimentSeriesId;
 
         private List<MonitoredExperimentViewModel> m_failedExperiments= new List<MonitoredExperimentViewModel>();
@@ -51,7 +51,7 @@ namespace AppXML.ViewModels
         }
 
         public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments,HerdAgentViewModel herdAgent
-            ,EvaluationPlotViewModel evaluationPlot,CancellationToken cancelToken, Utility.LogFunction logFunction)
+            ,PlotViewModel evaluationPlot,CancellationToken cancelToken, Utility.LogFunction logFunction)
         {
             m_name = name;
             m_monitoredExperiments = experiments;
@@ -253,11 +253,11 @@ namespace AppXML.ViewModels
         //log stuff: a delegate log function must be passed via setLogFunction
        
         private Utility.LogFunction logFunction= null;
-        private EvaluationPlotViewModel m_evaluationMonitor;
+        private PlotViewModel m_evaluationMonitor;
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<ExperimentViewModel> pendingExperiments, EvaluationPlotViewModel evaluationMonitor
+            , List<ExperimentViewModel> pendingExperiments, PlotViewModel evaluationMonitor
             , Utility.LogFunction logFunctionDelegate)
         {
             m_evaluationMonitor = evaluationMonitor;

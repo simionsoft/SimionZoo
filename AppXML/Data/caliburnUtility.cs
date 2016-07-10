@@ -7,6 +7,7 @@ using System.Dynamic;
 using System.Windows;
 using Caliburn.Micro;
 using AppXML.ViewModels;
+using System.Windows.Forms;
 
 namespace AppXML.Data
 {
@@ -36,6 +37,18 @@ namespace AppXML.Data
             settings.ResizeMode = ResizeMode.CanMinimize;
 
             windowManager.ShowDialog(viewmodel, null, settings);
+        }
+
+        public static string selectFolder(string initialDirectory)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.SelectedPath = initialDirectory;
+
+            if (fbd.ShowDialog() == DialogResult.OK)
+            {
+                return fbd.SelectedPath;
+            }
+            return "";
         }
     }
 }

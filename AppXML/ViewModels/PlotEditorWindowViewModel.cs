@@ -4,96 +4,181 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Collections.ObjectModel;
 using Caliburn.Micro;
+using AppXML.ViewModels;
+using AppXML.Data;
 
 namespace AppXML.ViewModels
 {
     public class PlotEditorWindowViewModel : Screen
     {        
+        //private List<string> m_episodeTypeList = new List<string>();
 
-        private const string m_descriptorRootNodeName = "ExperimentLogDescriptor";
-        private Dictionary<ExperimentViewModel, XmlDocument> m_logDescriptors = new Dictionary<ExperimentViewModel, XmlDocument>();
+        private ObservableCollection<PlotViewModel> m_plots = new ObservableCollection<PlotViewModel>();
+        public ObservableCollection<PlotViewModel> plots { get { return m_plots; } set { } }
 
-        private List<string> m_variableList = new List<string>();
-        private List<string> m_episodeTypeList = new List<string>();
+        private bool m_bCanGeneratePlots = false;
+        public bool bCanGeneratePlots { get { return m_bCanGeneratePlots; }
+            set { m_bCanGeneratePlots = value; NotifyOfPropertyChange(() => bCanGeneratePlots); } }
 
-        private List<PlotTabViewModel> m_plots = new List<PlotTabViewModel>();
-        public List<PlotTabViewModel> plots { get { return m_plots; } set { } }
+        //SOURCE OPTIONS
+        public const string m_optionLastEvalEpisode = "Last evaluation episode";
+        public const string m_optionAllEvalEpisodes = "All evaluation episodes";
 
-        public PlotEditorWindowViewModel(List<ExperimentViewModel> experimentList)
+        private ObservableCollection<string> m_sourceOptions = new ObservableCollection<string>();
+        public ObservableCollection<string> sourceOptions { get { return m_sourceOptions; } set { } }
+
+        private string m_selectedSource= "";
+        public string selectedSource
+        {
+            get { return m_selectedSource; }
+            set { m_selectedSource = value; updateCanGeneratePlots();}
+        }
+
+        //the list of variables we can plot
+        private ObservableCollection<LoggedVariableViewModel> m_availableVariables = new ObservableCollection<LoggedVariableViewModel>();
+        public ObservableCollection<LoggedVariableViewModel> availableVariables { get { return m_availableVariables; }
+            set {}
+        }
+        private string m_variableListHeader = "";
+        public string variableListHeader
+        {
+            get { return m_variableListHeader; }
+            set { m_variableListHeader = value; NotifyOfPropertyChange(() => variableListHeader); }
+        }
+
+        //the list of logs we have
+        private ObservableCollection<ExperimentLogViewModel> m_experimentLogs = new ObservableCollection<ExperimentLogViewModel>();
+        public ObservableCollection<ExperimentLogViewModel> experimentLogs
+        {
+            get { return m_experimentLogs; }
+            set { m_experimentLogs = value; NotifyOfPropertyChange(() => experimentLogs); }
+        }
+        private string m_logListHeader = "";
+        public string logListHeader
+        {
+            get { return m_logListHeader; }
+            set { m_logListHeader = value; NotifyOfPropertyChange(() => logListHeader); }
+        }
+        private List<ExperimentLogViewModel> m_selectedLogs = new List<ExperimentLogViewModel>();
+        private int m_numLogsSelected= 0;
+        public void updateLogListHeader()
+        {
+            m_selectedLogs.Clear();
+            foreach(ExperimentLogViewModel exp in m_experimentLogs)
+            {
+                if (exp.bIsSelected)
+                    m_selectedLogs.Add(exp);
+            }
+            m_numLogsSelected = m_selectedLogs.Count();
+            m_logListHeader = m_experimentLogs.Count + " logs (" + m_numLogsSelected + " selected)";
+            NotifyOfPropertyChange(() => logListHeader);
+            updateCanGeneratePlots();
+        }
+        private List<LoggedVariableViewModel> m_selectedVariables = new List<LoggedVariableViewModel>();
+        private int m_numVarsSelected = 0;
+        public void updateVariableListHeader()
+        {
+            m_selectedVariables.Clear();
+            foreach (LoggedVariableViewModel var in m_availableVariables)
+            {
+                if (var.bIsSelected)
+                    m_selectedVariables.Add(var);
+            }
+            m_numVarsSelected = m_selectedVariables.Count();
+            m_variableListHeader = m_experimentLogs.Count + " variables (" + m_numVarsSelected + " selected)";
+            NotifyOfPropertyChange(() => variableListHeader);
+            updateCanGeneratePlots();
+        }
+        private void updateCanGeneratePlots()
+        {
+            if (m_numVarsSelected > 0 && m_numLogsSelected > 0 && m_selectedSource!="")
+                bCanGeneratePlots = true;
+        }
+
+        public PlotEditorWindowViewModel(List<ExperimentViewModel> experimentLogs)
         {
             //maybe this initialization should be run as a background task?
-            foreach(ExperimentViewModel exp in experimentList)
+            foreach (ExperimentViewModel exp in experimentLogs)
             {
                 string logDescriptorFilePath = exp.getLogDescriptorsFilePath();
-                XmlDocument logDescriptor = new XmlDocument();
-                logDescriptor.LoadXml(logDescriptorFilePath);
 
-                m_logDescriptors.Add(exp, logDescriptor);
-                processDescriptor(logDescriptor);
+                ExperimentLogViewModel newLog = new ExperimentLogViewModel(exp.name, exp.getLogDescriptorsFilePath()
+                    , exp.getLogFilePath(), this);
+
+                m_experimentLogs.Add(newLog);
             }
-            //we add the initial plot
-            m_plots.Add(new PlotTabViewModel(this));
-            NotifyOfPropertyChange(() => plots);
+            m_sourceOptions.Add(m_optionAllEvalEpisodes);
+            m_sourceOptions.Add(m_optionLastEvalEpisode);
+            NotifyOfPropertyChange(() => sourceOptions);
+
+            //we do not initialise the list of variables
+            //when an experiment is selected, its variables will be displayed for the user to select
+            NotifyOfPropertyChange(() => experimentLogs);
+            updateVariableListHeader();
+            updateLogListHeader();
         }
-        private void processDescriptor(XmlDocument descriptor)
+        public void updateAvailableVariableList()
         {
-            XmlNode node = descriptor.FirstChild;
-            if (node.Name==m_descriptorRootNodeName)
+            //get selected experiments
+            m_availableVariables.Clear();
+            foreach (ExperimentLogViewModel exp in m_experimentLogs)
             {
-                foreach(XmlNode child in node.ChildNodes)
+                if (exp.bIsSelected)
+                    exp.addVariablesToList(ref m_availableVariables);
+            }
+            NotifyOfPropertyChange(() => availableVariables);
+        }
+        public void generatePlots()
+        {
+            List<PlotViewModel> newPlots = new List<PlotViewModel>();
+            //create a new plot for each variable
+            foreach(LoggedVariableViewModel variable in m_selectedVariables)
+            {
+                newPlots.Add(new PlotViewModel(variable.name, false));
+            }
+
+            //draw data from each log
+            foreach (ExperimentLogViewModel log in m_selectedLogs)
+            {
+                log.plotData(newPlots, m_selectedSource);
+            }
+            //update plots
+            foreach (PlotViewModel plot in newPlots)
+            {
+                plots.Add(plot);
+                plot.updatePlot();
+            }
+            //plot tabs can't be closed yet, so we can simplify it for now
+            bCanSavePlots = true;
+        }
+
+        //plot selection in tab control
+        private PlotViewModel m_selectedPlot = null;
+        public PlotViewModel selectedPlot 
+        {
+            get { return m_selectedPlot; }
+            set
+            {
+                m_selectedPlot = value;
+                m_selectedPlot.updatePlot();
+            }
+        }
+
+        private bool m_bCanSavePlots = false;
+        public bool bCanSavePlots { get { return m_bCanSavePlots; } set { m_bCanSavePlots = value; NotifyOfPropertyChange(() => bCanSavePlots); } }
+
+        public void savePlots()
+        {
+            string outputFolder= CaliburnUtility.selectFolder("../images");
+            if (outputFolder!="")
+            {
+                foreach(PlotViewModel plot in m_plots)
                 {
-                    if (child.Name=="State-variable" || child.Name=="Action-variable" || child.Name=="Reward-variable"
-                        || child.Name=="Stat-variable")
-                    {
-                        string varName = child.InnerText;
-                        if (!m_variableList.Contains(varName)) m_variableList.Add(varName);
-                    }
+                    plot.export(outputFolder);
                 }
             }
-        }
-        private bool descriptorIncludesVariable(XmlDocument descriptor, string variable)
-        {
-            //this method returns whether a log contains info about the given variable
-            //it does not check the type of variable: state, action, reward, ...
-            XmlNode node = descriptor.FirstChild;
-            if (node != null && node.Name==m_descriptorRootNodeName)
-            {
-                foreach(XmlNode child in node.ChildNodes)
-                {
-                    if (child.InnerText == variable)
-                        return true;
-                }
-            }
-            return false;
-        }
-        public void getExperimentList(string variable, ref List<ExperimentViewModel> experimentList)
-        {
-            foreach(KeyValuePair<ExperimentViewModel,XmlDocument> descriptor in m_logDescriptors)
-            {
-                if (descriptorIncludesVariable(descriptor.Value, variable))
-                    experimentList.Add(descriptor.Key);
-            }
-        }
-        public int getVariableIndex(ExperimentViewModel experiment, string variable, ref uint numVariables)
-        {
-            XmlDocument descriptor= m_logDescriptors[experiment];
-            if (descriptor == null) return -1;
-            int index = 0;
-            bool bFound = false;
-            numVariables = 0;
-            XmlNode rootNode = descriptor.FirstChild;
-            if (rootNode == null) return -1;
-            foreach(XmlNode child in rootNode.ChildNodes)
-            {
-                if (child.InnerText == variable) bFound = true;
-                if (child.Name.Contains("-variable"))
-                {
-                    if (!bFound) ++index;
-                    ++numVariables;
-                }
-            }
-            return -1;
         }
     }
 }
