@@ -145,6 +145,7 @@
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
+    <ClCompile Include="world-balancingpole.cpp" />
     <ClCompile Include="world-magneticlevitation.cpp" />
     <ClCompile Include="world-pitchcontrol.cpp" />
     <ClCompile Include="world-underwatervehicle.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="vfa-critic.h" />
     <ClInclude Include="policy.h" />
     <ClInclude Include="vfa.h" />
+    <ClInclude Include="world-balancingpole.h" />
     <ClInclude Include="world-magneticlevitation.h" />
     <ClInclude Include="world-pitchcontrol.h" />
     <ClInclude Include="world-underwatervehicle.h" />

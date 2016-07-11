@@ -5,6 +5,7 @@
 #include "world-underwatervehicle.h"
 #include "world-pitchcontrol.h"
 #include "world-magneticlevitation.h"
+#include "world-balancingpole.h"
 #include "reward.h"
 #include "parameters.h"
 #include "globals.h"
@@ -167,6 +168,7 @@ CLASS_FACTORY(CDynamicModel)
 	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml","A two-mass model of a VS Wind Turbine");
 	CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml","An underwater vehicle control task");
 	CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml","An airplane pitch control task");
+	CHOICE_ELEMENT_XML("Balancing-pole", CBalancingPole, "../config/world/balancing-pole.xml", "The balancing pole control problem (Sutton)");
 	//CHOICE _ ELEMENT _ XML("Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml");
 	END_CHOICE();
 	return 0;

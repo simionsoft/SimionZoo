@@ -93,9 +93,6 @@
     <ClCompile Include="world-windturbine.cpp">
       <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="world.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stats.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -149,6 +146,12 @@
     </ClCompile>
     <ClCompile Include="logger.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="world-balancingpole.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>world</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -218,9 +221,6 @@
     <ClInclude Include="logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="world.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stats.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -271,6 +271,12 @@
     </ClInclude>
     <ClInclude Include="delayed-load.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world-balancingpole.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="world.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

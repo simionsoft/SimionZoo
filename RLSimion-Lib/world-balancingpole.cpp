@@ -1,0 +1,70 @@
+#include "stdafx.h"
+#include "world-balancingpole.h"
+#include "named-var-set.h"
+#include "globals.h"
+#include "parameters.h"
+#include "app.h"
+
+CLASS_CONSTRUCTOR(CBalancingPole, const char* worldDefinition)
+: CDynamicModel(worldDefinition)
+{
+	CState *pStateDescriptor = getStateDescriptor();
+	m_sX = pStateDescriptor->getVarIndex("x");
+	m_sX_dot = pStateDescriptor->getVarIndex("x_dot");
+	m_sTheta = pStateDescriptor->getVarIndex("theta");
+	m_sTheta_dot = pStateDescriptor->getVarIndex("theta_dot");
+
+	CAction *pActionDescriptor = getActionDescriptor();
+	m_aPitch = pActionDescriptor->getVarIndex("force");
+
+	
+	END_CLASS();
+}
+
+CBalancingPole::~CBalancingPole()
+{
+}
+
+void CBalancingPole::reset(CState *s)
+{
+	s->setValue(m_sX,0.0);
+	s->setValue(m_sX_dot,0.0);
+	s->setValue(m_sTheta,0.0);
+	s->setValue(m_sTheta_dot,0.0);
+}
+
+#define GRAVITY 9.8
+#define MASSCART 1.0
+#define MASSPOLE 0.1
+#define TOTAL_MASS (MASSPOLE + MASSCART)
+#define LENGTH 0.5		  /* actually half the pole's length */
+#define POLEMASS_LENGTH (MASSPOLE * LENGTH)
+#define FORCE_MAG 10.0
+#define TAU 0.02		  /* seconds between state updates */
+#define FOURTHIRDS 1.3333333333333
+
+void CBalancingPole::executeAction(CState *s, CAction *a, double dt)
+{
+	double force = a->getValue(m_aPitch);
+	double theta = s->getValue(m_sTheta);
+	double theta_dot = s->getValue(m_sTheta_dot);
+	double x = a->getValue(m_sX);
+	double x_dot = s->getValue(m_sX_dot);
+	double costheta = cos(theta);
+	double sintheta = sin(theta);
+
+	double temp = (force + POLEMASS_LENGTH * theta_dot * theta_dot * sintheta)
+		/ TOTAL_MASS;
+
+	double thetaacc = (GRAVITY * sintheta - costheta* temp)
+		/ (LENGTH * (FOURTHIRDS - MASSPOLE * costheta * costheta
+		/ TOTAL_MASS));
+
+	double xacc = temp - POLEMASS_LENGTH * thetaacc* costheta / TOTAL_MASS;
+
+	/*** Update the four state variables, using Euler's method. ***/
+	s->setValue(m_sX, x + x_dot*dt);
+	s->setValue(m_sX_dot, x_dot + xacc*dt);
+	s->setValue(m_sTheta, theta + theta_dot*dt);
+	s->setValue(m_sTheta_dot, theta_dot + thetaacc*dt);
+}
