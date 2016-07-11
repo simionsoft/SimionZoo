@@ -60,21 +60,22 @@ void RLSimionApp::run()
 	pApp->SimGod.delayedLoad();
 
 	double r = 0.0;
-
+	bool bFailureState;
 
 	//episodes
 	for (pApp->Experiment.nextEpisode(); pApp->Experiment.isValidEpisode(); pApp->Experiment.nextEpisode())
 	{
 		pApp->World.reset(s);
+		bFailureState = false;
 
 		//steps per episode
-		for (pApp->Experiment.nextStep(); pApp->Experiment.isValidStep(); pApp->Experiment.nextStep())
+		for (pApp->Experiment.nextStep(); !bFailureState && pApp->Experiment.isValidStep(); pApp->Experiment.nextStep())
 		{
 			//a= pi(s)
 			pApp->SimGod.selectAction(s, a);
 
 			//s_p= f(s,a); r= R(s');
-			r = pApp->World.executeAction(s, a, s_p);
+			r = pApp->World.executeAction(s, a, s_p, bFailureState);
 
 			//update god's policy and value estimation
 			pApp->SimGod.update(s, a, s_p, r);

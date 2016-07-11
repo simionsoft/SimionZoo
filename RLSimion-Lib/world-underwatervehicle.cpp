@@ -44,7 +44,7 @@ void CUnderwaterVehicle::reset(CState *s)
 	s->setValue(m_sV,0.0);
 }
 
-void CUnderwaterVehicle::executeAction(CState *s,CAction *a,double dt)
+void CUnderwaterVehicle::executeAction(CState *s,CAction *a,double dt, bool& bFailureState)
 {
 	double newSetpoint = m_pSetpoint->getPointSet(CApp::get()->World.getT());
 	double v= s->getValue(m_sV);

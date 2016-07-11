@@ -1,4 +1,4 @@
-<RLSimion>
+<RLSimion FileVersion="0">
   <RLSimion>
     <Log>
       <Log-Freq>0.25</Log-Freq>
@@ -50,14 +50,14 @@
       <Simion>
         <Type>
           <Q-Learning>
-	    <Gamma>
+            <Gamma>
               <Schedule>
                 <Constant>
                   <Value>0.9</Value>
                 </Constant>
               </Schedule>
             </Gamma>
-	    <Alpha>
+            <Alpha>
               <Schedule>
                 <Constant>
                   <Value>0.1</Value>

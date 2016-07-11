@@ -33,8 +33,8 @@ public:
 
 	void reset(CState *s);
 
-	//this function returns the reward of the tuple <s,a,s_p>
-	double executeAction(CState *s,CAction *a,CState *s_p);
+	//this function returns the reward of the tuple <s,a,s_p> and whether the resultant state is a failure state or not
+	double executeAction(CState *s,CAction *a,CState *s_p, bool& bFailureState);
 
 	double getAvgReward();
 	double getLastReward();
@@ -55,7 +55,7 @@ public:
 	virtual ~CDynamicModel();
 
 	virtual void reset(CState *s)= 0;
-	virtual void executeAction(CState *s,CAction *a,double dt)= 0;
+	virtual void executeAction(CState *s,CAction *a,double dt, bool& bFailureState)= 0;
 
 	CState* getStateDescriptor();
 	CAction* getActionDescriptor();

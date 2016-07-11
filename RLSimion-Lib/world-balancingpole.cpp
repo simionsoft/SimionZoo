@@ -43,7 +43,7 @@ void CBalancingPole::reset(CState *s)
 #define TAU 0.02		  /* seconds between state updates */
 #define FOURTHIRDS 1.3333333333333
 
-void CBalancingPole::executeAction(CState *s, CAction *a, double dt)
+void CBalancingPole::executeAction(CState *s, CAction *a, double dt, bool& bFailureState)
 {
 	double force = a->getValue(m_aPitch);
 	double theta = s->getValue(m_sTheta);

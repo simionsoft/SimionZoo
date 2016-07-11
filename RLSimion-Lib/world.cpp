@@ -81,7 +81,7 @@ void CWorld::reset(CState *s)
 		m_pDynamicModel->reset(s);
 }
 
-double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
+double CWorld::executeAction(CState *s,CAction *a,CState *s_p, bool& bFailureState)
 {
 	double dt= m_dt/m_numIntegrationSteps;
 
@@ -90,9 +90,9 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 	if (m_pDynamicModel)
 	{
 		s_p->copy(s);
-		for (int i= 0; i<m_numIntegrationSteps; i++)
+		for (int i= 0; !bFailureState && i<m_numIntegrationSteps; i++)
 		{
-			m_pDynamicModel->executeAction(s_p,a,dt);
+			m_pDynamicModel->executeAction(s_p,a,dt,bFailureState);
 			m_t+= dt;
 		}
 	}

@@ -52,7 +52,7 @@ void CPitchControl::reset(CState *s)
 	s->setValue(m_sControlDeviation,m_pSetpoint->getPointSet(0.0));
 }
 
-void CPitchControl::executeAction(CState *s, CAction *a, double dt)
+void CPitchControl::executeAction(CState *s, CAction *a, double dt, bool& bFailureState)
 {
 	double setpoint_pitch;
 	

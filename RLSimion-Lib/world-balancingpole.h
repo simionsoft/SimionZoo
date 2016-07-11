@@ -18,5 +18,5 @@ public:
 	virtual ~CBalancingPole();
 
 	void reset(CState *s);
-	void executeAction(CState *s,CAction *a,double dt);
+	void executeAction(CState *s,CAction *a,double dt, bool& bFailureState);
 };

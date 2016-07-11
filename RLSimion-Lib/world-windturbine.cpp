@@ -275,7 +275,7 @@ void CWindTurbine::reset(CState *s)
 }
 
 
-void CWindTurbine::executeAction(CState *s, CAction *a, double dt)
+void CWindTurbine::executeAction(CState *s, CAction *a, double dt, bool& bFailureState)
 {
 	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CApp::get()->World.getT()));
 	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CApp::get()->World.getT()));
