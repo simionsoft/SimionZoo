@@ -3,6 +3,7 @@
 #include "world.h"
 
 class CSetPoint;
+class CRewardFunction;
 
 class CUnderwaterVehicle : public CDynamicModel
 {
@@ -15,5 +16,5 @@ public:
 	virtual ~CUnderwaterVehicle();
 
 	void reset(CState *s);
-	void executeAction(CState *s,CAction *a,double dt, bool& bFailureState);
+	void executeAction(CState *s, const CAction *a, double dt);
 };

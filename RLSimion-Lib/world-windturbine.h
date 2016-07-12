@@ -31,5 +31,5 @@ public:
 	virtual ~CWindTurbine();
 
 	void reset(CState *s);
-	void executeAction(CState *s,CAction *a,double dt, bool& bFailureState);
+	void executeAction(CState *s, const CAction *a,double dt);
 };

@@ -6,8 +6,8 @@ typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 
 class CDynamicModel;
-class CRewardFunction;
 class CParameters;
+class CRewardFunction;
 
 class CWorld
 {
@@ -16,8 +16,6 @@ class CWorld
 	double m_dt;
 	double m_t;
 	double m_step_start_t;
-	CRewardFunction* m_pRewardFunction;
-	double m_scalarReward;
 
 public:
 	double getDT();
@@ -36,11 +34,7 @@ public:
 	//this function returns the reward of the tuple <s,a,s_p> and whether the resultant state is a failure state or not
 	double executeAction(CState *s,CAction *a,CState *s_p, bool& bFailureState);
 
-	double getAvgReward();
-	double getLastReward();
-
-	CReward *getReward();
-	double *getScalarReward(){ return &m_scalarReward; }
+	CReward *getRewardVector();
 };
 
 class CDynamicModel
@@ -49,18 +43,23 @@ private:
 	CState *m_pStateDescriptor;
 	CAction *m_pActionDescriptor;
 	CParameters *m_pConstants;
-
+protected:
+	CRewardFunction* m_pRewardFunction;
 public:
 	CDynamicModel(const char* pWorldDefinitionFile);
 	virtual ~CDynamicModel();
 
 	virtual void reset(CState *s)= 0;
-	virtual void executeAction(CState *s,CAction *a,double dt, bool& bFailureState)= 0;
+	virtual void executeAction(CState *s, const CAction *a,double dt)= 0;
+	
+	double getReward(const CState *s, const CAction *a, const CState *s_p, bool& bFailureState);
+	CReward* getRewardVector();
 
 	CState* getStateDescriptor();
-	CAction* getActionDescriptor();
 	CState* getStateInstance();
+	CAction* getActionDescriptor();
 	CAction* getActionInstance();
+
 	double* getConstant(const char* constantName);
 
 	static CDynamicModel* getInstance(CParameters* pParameters);

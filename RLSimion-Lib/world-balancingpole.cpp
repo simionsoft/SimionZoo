@@ -3,6 +3,7 @@
 #include "named-var-set.h"
 #include "globals.h"
 #include "parameters.h"
+#include "reward.h"
 #include "app.h"
 
 CLASS_CONSTRUCTOR(CBalancingPole, const char* worldDefinition)
@@ -17,12 +18,16 @@ CLASS_CONSTRUCTOR(CBalancingPole, const char* worldDefinition)
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aPitch = pActionDescriptor->getVarIndex("force");
 
+	//the reward function
+	m_pRewardFunction->addRewardComponent(new CBalancingPoleReward());
+	m_pRewardFunction->initialize();
 	
 	END_CLASS();
 }
 
 CBalancingPole::~CBalancingPole()
 {
+
 }
 
 void CBalancingPole::reset(CState *s)
@@ -43,7 +48,7 @@ void CBalancingPole::reset(CState *s)
 #define TAU 0.02		  /* seconds between state updates */
 #define FOURTHIRDS 1.3333333333333
 
-void CBalancingPole::executeAction(CState *s, CAction *a, double dt, bool& bFailureState)
+void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
 {
 	double force = a->getValue(m_aPitch);
 	double theta = s->getValue(m_sTheta);
@@ -67,4 +72,22 @@ void CBalancingPole::executeAction(CState *s, CAction *a, double dt, bool& bFail
 	s->setValue(m_sX_dot, x_dot + xacc*dt);
 	s->setValue(m_sTheta, theta + theta_dot*dt);
 	s->setValue(m_sTheta_dot, theta_dot + thetaacc*dt);
+}
+
+#define twelve_degrees 0.2094384
+double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const CState* s_p, bool& bFailureState)
+{
+	double theta = s_p->getValue("theta");
+	double x = s_p->getValue("x");
+
+	if (x < -2.4 ||
+		x > 2.4 ||
+		theta < -twelve_degrees ||
+		theta > twelve_degrees)
+	{
+		bFailureState = true;
+		return -1.0;
+	}
+
+	return 0.0;
 }

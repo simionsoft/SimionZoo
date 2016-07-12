@@ -8,6 +8,7 @@
 #include "parameters.h"
 #include "logger.h"
 #include "app.h"
+#include "reward.h"
 
 //[1]
 //"Torque and pitch angle control for VSWT in all operating regimes"
@@ -216,6 +217,21 @@ CLASS_CONSTRUCTOR(CWindTurbine,const char* worldDefinition)
 	CAction* pActionDescriptor = getActionDescriptor();
 	m_aD_beta = pActionDescriptor->getVarIndex("d_beta");
 	m_aD_T_g = pActionDescriptor->getVarIndex("d_T_g");
+
+	//the reward function
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("d_T_g",12000.0,1.0));
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 10.0, 1.0));
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_omega_r", 0.02, 1.0));
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("d_beta", 0.1745, 1.0));
+	m_pRewardFunction->initialize();
+
+	/*
+	values from the ICAE paper:
+		d_T_g, 12000, 1
+		E_p, 10, 1
+		E_omega_r, 0.02, 1
+		d_beta,0.1745,1
+	*/
 	END_CLASS();
 }
 
@@ -275,7 +291,7 @@ void CWindTurbine::reset(CState *s)
 }
 
 
-void CWindTurbine::executeAction(CState *s, CAction *a, double dt, bool& bFailureState)
+void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 {
 	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CApp::get()->World.getT()));
 	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CApp::get()->World.getT()));

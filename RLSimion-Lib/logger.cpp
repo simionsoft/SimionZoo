@@ -154,7 +154,7 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	writeEpisodeTypesToBuffer(buffer);
 	writeNamedVarSetDescriptorToBuffer(buffer, "State", CApp::get()->World.getDynamicModel()->getStateDescriptor()); //state
 	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CApp::get()->World.getDynamicModel()->getActionDescriptor()); //action
-	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CApp::get()->World.getReward());
+	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CApp::get()->World.getRewardVector());
 	writeStatDescriptorToBuffer(buffer);
 	strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 	writeLogBuffer(logXMLDescriptorFile, buffer, strlen(buffer));
@@ -308,7 +308,7 @@ void CLogger::writeEpisodeHeader()
 	header.numVariablesLogged =
 		CApp::get()->World.getDynamicModel()->getActionDescriptor()->getNumVars()
 		+ CApp::get()->World.getDynamicModel()->getStateDescriptor()->getNumVars()
-		+ CApp::get()->World.getReward()->getNumVars()
+		+ CApp::get()->World.getRewardVector()->getNumVars()
 		+ m_stats.size();
 
 	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(EpisodeHeader));

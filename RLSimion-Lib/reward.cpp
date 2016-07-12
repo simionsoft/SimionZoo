@@ -6,139 +6,89 @@
 #include "world.h"
 #include "globals.h"
 #include "parameters-numeric.h"
+#include "app.h"
+#include "logger.h"
 
-#define NUM_MAX_REWARD_COMPONENTS 10
-
-#define VARIABLE_DIFFERENCE 0
-#define DEVIATION_VARIABLE 1
-#define CONSTANT_DIFFERENCE 2
-#define PUNISH_IF_ABOVE 3
-#define PUNISH_IF_BELOW 4
-
-double CRewardFunction::m_minReward;
-double CRewardFunction::m_maxReward;
-#define MAX_REWARD_NAME_SIZE 128
-class CRewardFunctionComponent : public CParamObject
+CToleranceRegionReward::CToleranceRegionReward(char* variable, double tolerance, double scale)
 {
-	char m_name[MAX_REWARD_NAME_SIZE];
-	int m_sVariable;
-	CNumericValue *m_pTolerance;
-	CNumericValue *m_pWeight;
-	double m_lastReward;
-public:
-	CRewardFunctionComponent(CParameters* pParameters);
-	~CRewardFunctionComponent();
-
-//	void init(CParameters* pParameters/*,int componentIndex*/);
-	double getRewardComponent(CState *state);
-	double getLastRewardComponent(){return m_lastReward;}
-	const char* getName();
-};
-
-CLASS_CONSTRUCTOR(CRewardFunctionComponent) : CParamObject(pParameters)
+	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r/%s)", variable);
+	m_pVariableName = variable;
+	m_tolerance = tolerance;
+	m_scale = scale;
+}
+double CToleranceRegionReward::getReward(const CState *s, const CAction* a, const CState *s_p, bool& bFailureState)
 {
-	//m_errorComponentType[0]= 0;
-	//m_controlledVariable[0]= 0;
-	//m_setpointVariable[0]= 0;
-	//m_controlErrorVariable[0]= 0;
-	//m_weight= 0.0;
-	//m_componentIndex= -1;
-	STATE_VARIABLE_REF(m_sVariable, "Variable","Input state variable");
-	const char* varName = pParameters->getConstString("Variable");
-	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r/%s)", varName);
+	double rew, error;
+
+	error = s_p->getValue(m_pVariableName);
+
+	error = (error) / m_tolerance;
+
+	rew = m_maxReward - fabs(error);
 	
-	NUMERIC_VALUE(m_pTolerance,"Tolerance","Tolerance value: errors greater will result in a negative reward");
-	NUMERIC_VALUE(m_pWeight,"Weight","Weight of this reward function component (in case more than one is used)");
-	m_lastReward= 0.0;
-	END_CLASS();
-}
-
-CRewardFunctionComponent::~CRewardFunctionComponent()
-{
-	delete m_pTolerance;
-	delete m_pWeight;
-}
-
-const char* CRewardFunctionComponent::getName()
-{
-	return m_name;
-}
-
-
-
-double CRewardFunctionComponent::getRewardComponent(CState* state)
-{
-	double rew,error;
-
-	error = state->getValue(m_sVariable);
-
-
-	error= (error)/(m_pTolerance->getValue());
-
-	rew = CRewardFunction::m_maxReward - fabs(error);
-	//rew= exp(-(error*error));
-	
-
-
-	//rew = CReward::m_maxReward - fabs(error);// *error;
-
-	//rew= m_weight*rew;
-
-	//rew= std::max(CReward::m_minReward,rew);
-
-	m_lastReward= rew;
+	rew = std::max(m_minReward, rew);
 
 	return rew;
 }
 
+const char* CToleranceRegionReward::getName(){ return m_name; }
 
-CLASS_CONSTRUCTOR_NEW_WINDOW(CRewardFunction) : CParamObject(pParameters)
+
+CRewardFunction::CRewardFunction()
 {
-	CONST_DOUBLE_VALUE(m_minReward,"Min",-100.0,"Minimum output of the reward function");
-	CONST_DOUBLE_VALUE(m_maxReward,"Max",1.0,"Maximum output of the reward function");
-
-	m_lastReward= 0.0;
-
-	m_numRewardComponents = m_pParameters->countChildren("Reward-Component");
-
-	//the vector of reward functions
-	CParameters* pRewardComponents = m_pParameters->getChild("Reward-Component");
-	m_pRewardComponents = new CRewardFunctionComponent*[m_numRewardComponents];
-	//the reward vector (named variables)
-	m_pReward = new CReward(m_numRewardComponents);
-
-	for (int i= 0; i<m_numRewardComponents; i++)
-	{
-		MULTI_VALUED(m_pRewardComponents[i], "Reward-Component", "A component of the reward function",CRewardFunctionComponent, pRewardComponents);
-		m_pReward->setName(i, m_pRewardComponents[i]->getName());
-
-		pRewardComponents = pRewardComponents->getNextChild("Reward-Component");
-	}
-	END_CLASS();
+	m_bInitialized = false;
 }
 
 CRewardFunction::~CRewardFunction()
 {
-	for (int i = 0; i < m_numRewardComponents; i++) delete m_pRewardComponents[i];
-	delete [] m_pRewardComponents;
-	delete m_pReward;
+	//we have to delete the reward components
+	for (auto it = m_rewardComponents.begin(); it != m_rewardComponents.end(); ++it) delete *it;
 }
 
-
-double CRewardFunction::calculateReward(CState *s, CAction *a, CState *s_p)
+void CRewardFunction::addRewardComponent(IRewardComponent* rewardComponent)
 {
-	for (int i= 0; i<m_numRewardComponents; i++)
+	m_rewardComponents.push_back(rewardComponent);
+}
+
+double CRewardFunction::getReward(const CState* s, const CAction* a, const CState* s_p, bool &bFailureState)
+{
+	if (!m_bInitialized)
+		CApp::get()->Logger.logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
+
+	double reward = 0.0, r_i;
+	int i = 0;
+	for (auto it = m_rewardComponents.begin(); it != m_rewardComponents.end(); ++it)
 	{
-		m_pReward->setValue(i, m_pRewardComponents[i]->getRewardComponent(s_p));
+		r_i = (*it)->getReward(s, a, s_p, bFailureState);
+		m_pRewardVector->setValue(i, r_i);
+		reward += r_i;
+		++i;
 	}
-
-	//rew*= (m_maxReward-m_minReward);
-	//rew+= m_minReward;
-
-	return m_pReward->getSumValue();
+	return reward;
 }
 
-CReward* CRewardFunction::getReward()
+void CRewardFunction::initialize()
 {
-	return m_pReward;
+	int numComponents;
+	if (!m_bInitialized)
+	{
+		//create the reward vector and set names
+		numComponents = m_rewardComponents.size();
+		m_pRewardVector = new CReward(numComponents);
+		for (int i = 0; i < numComponents; ++i)
+		{
+			m_pRewardVector->setName(i, m_rewardComponents[i]->getName());
+		}
+		m_bInitialized = true;
+	}
+	else CApp::get()->Logger.logMessage(MessageType::Warning, "Reward function already initialized. Can't initialize again");
+}
+
+
+CReward* CRewardFunction::getRewardVector()
+{
+	if (!m_bInitialized)
+		CApp::get()->Logger.logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
+
+	return m_pRewardVector;
 }

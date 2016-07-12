@@ -2,6 +2,7 @@
 
 #include "world.h"
 class CSetPoint;
+class CRewardFunction;
 
 //AIRPLANE PITCH CONTROL
 class CPitchControl: public CDynamicModel
@@ -10,11 +11,10 @@ class CPitchControl: public CDynamicModel
 	int m_sPitch, m_sPitchRate, m_sControlDeviation;
 	int m_aPitch;
 	CSetPoint *m_pSetpoint;
-
 public:
 	CPitchControl(CParameters* pParameters,const char* worldDefinition);
 	virtual ~CPitchControl();
 
 	void reset(CState *s);
-	void executeAction(CState *s,CAction *a,double dt, bool& bFailureState);
+	void executeAction(CState *s, const CAction *a, double dt);
 };

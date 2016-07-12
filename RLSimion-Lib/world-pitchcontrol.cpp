@@ -4,6 +4,7 @@
 #include "named-var-set.h"
 #include "setpoint.h"
 #include "globals.h"
+#include "reward.h"
 #include "experiment.h"
 #include "parameters.h"
 #include "app.h"
@@ -24,6 +25,10 @@ CLASS_CONSTRUCTOR(CPitchControl,const char* worldDefinition)
 	const char* filename;
 	FILE_PATH_VALUE(filename, "Set-Point-File", "../config/world/pitch-control/setpoint.txt","The setpoint file");
 	m_pSetpoint = new CFileSetPoint(filename);
+
+	m_pRewardFunction = new CRewardFunction();
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("control-deviation", 0.02, 1.0));
+	m_pRewardFunction->initialize();
 	
 	END_CLASS();
 }
@@ -52,7 +57,7 @@ void CPitchControl::reset(CState *s)
 	s->setValue(m_sControlDeviation,m_pSetpoint->getPointSet(0.0));
 }
 
-void CPitchControl::executeAction(CState *s, CAction *a, double dt, bool& bFailureState)
+void CPitchControl::executeAction(CState *s, const CAction *a, double dt)
 {
 	double setpoint_pitch;
 	

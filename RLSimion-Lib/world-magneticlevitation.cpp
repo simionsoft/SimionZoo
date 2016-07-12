@@ -7,6 +7,7 @@
 #include "experiment.h"
 #include "parameters.h"
 #include "app.h"
+#include "reward.h"
 
 
 CLASS_CONSTRUCTOR(CMagneticLevitation,const char* worldDefinition)
@@ -38,6 +39,10 @@ CLASS_CONSTRUCTOR(CMagneticLevitation,const char* worldDefinition)
 	m_pEvalSetPoint = new CFileSetPoint(filename);
 
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
+
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("position-deviation", 0.001, 1.0));
+	m_pRewardFunction->initialize();
+
 	END_CLASS();
 }
 

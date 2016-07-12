@@ -81,7 +81,7 @@ void RLSimionApp::run()
 			pApp->SimGod.update(s, a, s_p, r);
 
 			//log tuple <s,a,s',r>
-			pApp->Experiment.timestep(s, a, s_p, pApp->World.getReward()); //we need the complete reward vector for logging
+			pApp->Experiment.timestep(s, a, s_p, pApp->World.getRewardVector()); //we need the complete reward vector for logging
 
 			//s= s'
 			s->copy(s_p);

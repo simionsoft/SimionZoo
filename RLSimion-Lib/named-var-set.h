@@ -42,11 +42,10 @@ public:
 
 	void setProperties(int i,const char* name, double min, double max);
 
-private:
-	//private to force the use of indices instead of names. How much more efficient?
+public:
+
 	double getValue(const char* varName) const;
 	void setValue(const char* varName, double value);
-public:
 
 	double* getValueVector(){return m_pValues;}
 

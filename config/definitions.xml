@@ -290,18 +290,6 @@
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
 
-  <CLASS Name="CRewardFunctionComponent">
-    <XML-NODE-REF Name="Variable" XMLFile="WORLD-DEFINITION" HangingFrom="State"/>
-    <BRANCH Name="Tolerance" Class="CNumericValue-Factory" Comment="Tolerance value: errors greater will result in a negative reward"/>
-    <BRANCH Name="Weight" Class="CNumericValue-Factory" Comment="Weight of this reward function component (in case more than one is used)"/>
-  </CLASS>
-
-  <CLASS Name="CRewardFunction" Window="New">
-    <DOUBLE-VALUE Name="Min" Default="-100.0" Comment="Minimum output of the reward function"/>
-    <DOUBLE-VALUE Name="Max" Default="1.0" Comment="Maximum output of the reward function"/>
-    <MULTI-VALUED Name="Reward-Component" Class="CRewardFunctionComponent" Comment="A component of the reward function"/>
-  </CLASS>
-
   <CLASS Name="CSimGod">
     <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: agents and controllers"/>
   </CLASS>
@@ -401,7 +389,6 @@
     <INTEGER-VALUE Name="Num-Integration-Steps" Default="4" Comment="The number of integration steps performed each simulation time-step"/>
     <DOUBLE-VALUE Name="Delta-T" Default="0.01" Comment="The delta-time between simulation steps"/>
     <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model" Optional="false"/>
-    <BRANCH Name="Reward" Class="CRewardFunction" Comment="The reward function" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">

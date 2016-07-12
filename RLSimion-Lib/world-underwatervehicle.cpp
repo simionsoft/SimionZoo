@@ -6,8 +6,7 @@
 #include "world.h"
 #include "globals.h"
 #include "app.h"
-
-#define NUM_STATE_VARIABLES 3
+#include "reward.h"
 
 
 CLASS_CONSTRUCTOR(CUnderwaterVehicle,const char* worldDefinition)
@@ -23,9 +22,13 @@ CLASS_CONSTRUCTOR(CUnderwaterVehicle,const char* worldDefinition)
 
 	const char* setpointFile;
 	FILE_PATH_VALUE(setpointFile, "Set-Point-File", "../config/world/underwater-vehicle/setpoint.txt","The setpoint file");
+
 	if (setpointFile)
 		m_pSetpoint= new CFileSetPoint(setpointFile);
 	else m_pSetpoint = 0;
+
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("v-deviation", 0.1, 1.0));
+	m_pRewardFunction->initialize();
 	
 	END_CLASS();
 }
@@ -44,7 +47,7 @@ void CUnderwaterVehicle::reset(CState *s)
 	s->setValue(m_sV,0.0);
 }
 
-void CUnderwaterVehicle::executeAction(CState *s,CAction *a,double dt, bool& bFailureState)
+void CUnderwaterVehicle::executeAction(CState *s,const CAction *a,double dt)
 {
 	double newSetpoint = m_pSetpoint->getPointSet(CApp::get()->World.getT());
 	double v= s->getValue(m_sV);
