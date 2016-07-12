@@ -8,10 +8,16 @@
 #include "app.h"
 #include "delayed-load.h"
 #include "utils.h"
+#include "featuremap.h"
 
 CLASS_INIT(CSimGod)
 {
 	if (!pParameters) return;
+
+	//the global parameterizations of the state/action spaces
+	CHILD_CLASS_FACTORY(m_pGlobalStateFeatureMap, "State-Feature-Map", "The state feature map", false, CStateFeatureMap);
+	CHILD_CLASS_FACTORY(m_pGlobalActionFeatureMap, "Action-Feature-Map", "The action feature map", true, CActionFeatureMap);
+
 	m_numSimions = pParameters->countChildren("Simion");
 	m_pSimions = new CSimion*[m_numSimions];
 	CParameters* pChild = pParameters->getChild("Simion");
@@ -22,8 +28,6 @@ CLASS_INIT(CSimGod)
 		pChild = pChild->getNextChild("Simion");
 	}
 	
-	//m_td = 0.0;
-	//CApp::get()->Logger.addVarToStats("Critic", "TD-error", &m_td);
 	END_CLASS();
 }
 
@@ -36,6 +40,8 @@ CSimGod::CSimGod()
 
 CSimGod::~CSimGod()
 {
+	if (m_pGlobalStateFeatureMap) delete m_pGlobalStateFeatureMap;
+	if (m_pGlobalActionFeatureMap) delete m_pGlobalActionFeatureMap;
 	if (m_pSimions)
 	{
 		for (int i = 0; i < m_numSimions; i++)

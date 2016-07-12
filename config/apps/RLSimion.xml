@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<APP Name="RLSimion">
+<APP Name="RLSimion" FileVersion="1">
   <EXE>../Release/RLSimion.exe</EXE>
   <PRE>../Release/msvcp120.dll</PRE>
   <PRE>../Release/msvcr120.dll</PRE>

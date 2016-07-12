@@ -12,9 +12,14 @@ class CFilePathList;
 
 #include <vector>
 
+class CStateFeatureMap;
+class CActionFeatureMap;
 
 class CSimGod
 {
+	CStateFeatureMap* m_pGlobalStateFeatureMap;
+	CActionFeatureMap* m_pGlobalActionFeatureMap;
+
 	int m_numSimions= 0;
 	CSimion** m_pSimions = 0;
 
@@ -32,13 +37,19 @@ public:
 	void selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r);
 
+	//delayed load
 	void registerDelayedLoadObj(CDeferredLoad* pObj,unsigned int orderLoad);
 	void delayedLoad();
 
+	//input/output files
 	void registerInputFile(const char* filepath);
 	void getInputFiles(CFilePathList& filepathList);
 
 	void registerOutputFile(const char* filepath);
 	void getOutputFiles(CFilePathList& filepathList);
+
+	//global feature maps
+	CStateFeatureMap* getGlobalStateFeatureMap(){ return m_pGlobalStateFeatureMap; }
+	CActionFeatureMap* getGlobalActionStateFeatureMap(){ return m_pGlobalActionFeatureMap; }
 };
 

@@ -90,7 +90,7 @@ namespace AppXML.ViewModels
                 }
             }
         }
-        public struct VarPlotInfo
+        public class VarPlotInfo
         {
             public int seriesId;
             public int varIndexInLogFile;
@@ -125,6 +125,8 @@ namespace AppXML.ViewModels
                 FileStream logFile = File.OpenRead(m_logFilePath);
                 using (BinaryReader binaryReader = new BinaryReader(logFile))
                 {
+                    foreach (VarPlotInfo varInfo in varInfoList) varInfo.avg = 0.0;
+
                     readExperimentLogHeader(binaryReader, ref numEpisodes, ref fileFormatVersion);
                     for (int i = 0; i < numEpisodes; i++)
                     {
@@ -162,7 +164,7 @@ namespace AppXML.ViewModels
                                         , ref expRealTime, ref episodeSimTime, ref episodeRealTime);
                         }
                         //end of episode
-                        if (sourceOption == PlotEditorWindowViewModel.m_optionAllEvalEpisodes)
+                        if (episodeType == m_episodeTypeEvaluation && sourceOption == PlotEditorWindowViewModel.m_optionAllEvalEpisodes)
                         {
                             for (int var = 0; var < varInfoList.Count; var++ )
                             {

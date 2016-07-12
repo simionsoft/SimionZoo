@@ -1,11 +1,9 @@
-<RLSimion FileVersion="0">
+<RLSimion>
   <RLSimion>
     <Log>
       <Log-Freq>0.25</Log-Freq>
-      <Log-eval-episodes>False</Log-eval-episodes>
+      <Log-eval-episodes>True</Log-eval-episodes>
       <Log-training-episodes>False</Log-training-episodes>
-      <Log-eval-experiment>True</Log-eval-experiment>
-      <Log-training-experiment>False</Log-training-experiment>
     </Log>
     <World>
       <Num-Integration-Steps>4</Num-Integration-Steps>
@@ -24,78 +22,6 @@
           </Wind-turbine>
         </Model>
       </Dynamic-Model>
-      <Reward>
-        <Min>-100.0</Min>
-        <Max>1.0</Max>
-        <Reward-Component>
-          <Variable>d_T_g</Variable>
-          <Tolerance>
-            <Schedule>
-              <Constant>
-                <Value>12000</Value>
-              </Constant>
-            </Schedule>
-          </Tolerance>
-          <Weight>
-            <Schedule>
-              <Constant>
-                <Value>1</Value>
-              </Constant>
-            </Schedule>
-          </Weight>
-        </Reward-Component>
-        <Reward-Component>
-          <Variable>E_p</Variable>
-          <Tolerance>
-            <Schedule>
-              <Constant>
-                <Value>10</Value>
-              </Constant>
-            </Schedule>
-          </Tolerance>
-          <Weight>
-            <Schedule>
-              <Constant>
-                <Value>1</Value>
-              </Constant>
-            </Schedule>
-          </Weight>
-        </Reward-Component>
-        <Reward-Component>
-          <Variable>E_omega_r</Variable>
-          <Tolerance>
-            <Schedule>
-              <Constant>
-                <Value>1</Value>
-              </Constant>
-            </Schedule>
-          </Tolerance>
-          <Weight>
-            <Schedule>
-              <Constant>
-                <Value>1</Value>
-              </Constant>
-            </Schedule>
-          </Weight>
-        </Reward-Component>
-        <Reward-Component>
-          <Variable>d_beta</Variable>
-          <Tolerance>
-            <Schedule>
-              <Constant>
-                <Value>0.1745</Value>
-              </Constant>
-            </Schedule>
-          </Tolerance>
-          <Weight>
-            <Schedule>
-              <Constant>
-                <Value>1</Value>
-              </Constant>
-            </Schedule>
-          </Weight>
-        </Reward-Component>
-      </Reward>
     </World>
     <Experiment>
       <Progress-Update-Freq>1</Progress-Update-Freq>
@@ -130,34 +56,7 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <Explicit>
-                                <State-Feature-Map>
-                                  <Type>
-                                    <RBF-State-Grid>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>T_g</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>linear</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>omega_r</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>cubic</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>d_omega_r</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>cubic</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>E_p</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>cubic</Distribution>
-                                      </RBF-Grid-Dimension>
-                                    </RBF-State-Grid>
-                                  </Type>
-                                </State-Feature-Map>
-                              </Explicit>
+                              <Explicit />
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
@@ -221,34 +120,7 @@
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
                             <Parameterization>
-                              <Explicit>
-                                <State-Feature-Map>
-                                  <Type>
-                                    <RBF-State-Grid>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>T_g</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>linear</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>omega_r</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>cubic</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>d_omega_r</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>cubic</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>E_p</Variable>
-                                        <Num-Features>80</Num-Features>
-                                        <Distribution>cubic</Distribution>
-                                      </RBF-Grid-Dimension>
-                                    </RBF-State-Grid>
-                                  </Type>
-                                </State-Feature-Map>
-                              </Explicit>
+                              <Explicit />
                             </Parameterization>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
@@ -357,34 +229,7 @@
                   </Gamma>
                   <V-Function>
                     <Parameterization>
-                      <Explicit>
-                        <State-Feature-Map>
-                          <Type>
-                            <RBF-State-Grid>
-                              <RBF-Grid-Dimension>
-                                <Variable>T_g</Variable>
-                                <Num-Features>80</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>omega_r</Variable>
-                                <Num-Features>80</Num-Features>
-                                <Distribution>cubic</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>d_omega_r</Variable>
-                                <Num-Features>80</Num-Features>
-                                <Distribution>cubic</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>E_p</Variable>
-                                <Num-Features>80</Num-Features>
-                                <Distribution>cubic</Distribution>
-                              </RBF-Grid-Dimension>
-                            </RBF-State-Grid>
-                          </Type>
-                        </State-Feature-Map>
-                      </Explicit>
+                      <Explicit />
                     </Parameterization>
                   </V-Function>
                 </TD-Lambda>
@@ -393,6 +238,32 @@
           </Actor-Critic>
         </Type>
       </Simion>
+      <State-Feature-Map>
+        <Type>
+          <RBF-State-Grid>
+            <RBF-Grid-Dimension>
+              <Variable>T_g</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>omega_r</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>cubic</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>d_omega_r</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>cubic</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>E_p</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>cubic</Distribution>
+            </RBF-Grid-Dimension>
+          </RBF-State-Grid>
+        </Type>
+      </State-Feature-Map>
     </SimGod>
   </RLSimion>
 </RLSimion>

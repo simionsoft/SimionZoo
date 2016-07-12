@@ -205,13 +205,6 @@ namespace AppXML.ViewModels
                 if (!branch.validate())
                 {
                     CaliburnUtility.showWarningDialog("Error validating the form. Please check form", "ERROR");
-                    //DialogViewModel dvm = new DialogViewModel(null, "Error validating the form. Please check form", DialogViewModel.DialogType.Info);
-                    //dynamic settings = new ExpandoObject();
-                    //settings.WindowStyle = WindowStyle.ThreeDBorderWindow;
-                    //settings.ShowInTaskbar = true;
-                    //settings.Title = "ERROR";
-
-                    //new WindowManager().ShowDialog(dvm, null, settings);
 
                     return false;
                 }
@@ -339,6 +332,8 @@ namespace AppXML.ViewModels
                 runExperimentQueue();
 
                 bIsExperimentRunning = false;
+
+                experimentQueueViewModel.checkLogFilesAlreadyExist();
             }      
         }
         

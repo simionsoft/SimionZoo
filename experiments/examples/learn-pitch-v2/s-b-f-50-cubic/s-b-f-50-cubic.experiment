@@ -1,4 +1,4 @@
-<RLSimion FileVersion="0">
+<RLSimion FileVersion="1">
   <RLSimion>
     <Log>
       <Log-Freq>0.25</Log-Freq>
@@ -17,27 +17,6 @@
           </Pitch-control>
         </Model>
       </Dynamic-Model>
-      <Reward>
-        <Min>-100.0</Min>
-        <Max>1.0</Max>
-        <Reward-Component>
-          <Variable>control-deviation</Variable>
-          <Tolerance>
-            <Schedule>
-              <Constant>
-                <Value>0.02</Value>
-              </Constant>
-            </Schedule>
-          </Tolerance>
-          <Weight>
-            <Schedule>
-              <Constant>
-                <Value>1</Value>
-              </Constant>
-            </Schedule>
-          </Weight>
-        </Reward-Component>
-      </Reward>
     </World>
     <Experiment>
       <Progress-Update-Freq>0.5</Progress-Update-Freq>
@@ -47,6 +26,27 @@
       <Episode-Length>50</Episode-Length>
     </Experiment>
     <SimGod>
+      <State-Feature-Map>
+        <Type>
+          <RBF-State-Grid>
+            <RBF-Grid-Dimension>
+              <Variable>attack-angle</Variable>
+              <Num-Features>50</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>control-deviation</Variable>
+              <Num-Features>50</Num-Features>
+              <Distribution>cubic</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>pitch-rate</Variable>
+              <Num-Features>50</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+          </RBF-State-Grid>
+        </Type>
+      </State-Feature-Map>
       <Simion>
         <Type>
           <Actor-Critic>
@@ -73,27 +73,6 @@
                           <Deterministic-Policy-VFA>
                             <Parameterization>
                               <Explicit>
-                                <State-Feature-Map>
-                                  <Type>
-                                    <RBF-State-Grid>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>attack-angle</Variable>
-                                        <Num-Features>50</Num-Features>
-                                        <Distribution>linear</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>control-deviation</Variable>
-                                        <Num-Features>50</Num-Features>
-                                        <Distribution>cubic</Distribution>
-                                      </RBF-Grid-Dimension>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>pitch-rate</Variable>
-                                        <Num-Features>50</Num-Features>
-                                        <Distribution>linear</Distribution>
-                                      </RBF-Grid-Dimension>
-                                    </RBF-State-Grid>
-                                  </Type>
-                                </State-Feature-Map>
                               </Explicit>
                             </Parameterization>
                           </Deterministic-Policy-VFA>
@@ -182,27 +161,6 @@
                   <V-Function>
                     <Parameterization>
                       <Explicit>
-                        <State-Feature-Map>
-                          <Type>
-                            <RBF-State-Grid>
-                              <RBF-Grid-Dimension>
-                                <Variable>attack-angle</Variable>
-                                <Num-Features>50</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>control-deviation</Variable>
-                                <Num-Features>50</Num-Features>
-                                <Distribution>cubic</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>pitch-rate</Variable>
-                                <Num-Features>50</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                            </RBF-State-Grid>
-                          </Type>
-                        </State-Feature-Map>
                       </Explicit>
                     </Parameterization>
                   </V-Function>

@@ -126,7 +126,8 @@ void CLinearStateVFA::save(const char* pFilename)
 
 CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(pParameters), CDeferredLoad()
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
+	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	//CHILD_ CLASS_ FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = 0;
@@ -206,7 +207,8 @@ CLASS_FACTORY(CLinearStateVFA)
 
 CLinearStateVFA::~CLinearStateVFA()
 {
-	if (m_pStateFeatureMap) delete m_pStateFeatureMap;
+	//now SimGod owns the feature map, his duty to free the memory
+	//if (m_pStateFeatureMap) delete m_pStateFeatureMap;
 	if (m_pAux) delete m_pAux;
 }
 
@@ -266,8 +268,10 @@ double CLinearStateVFA::getValue(const CState *s)
 
 CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters), CDeferredLoad()
 {
-	CHILD_CLASS_FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CStateFeatureMap);
-	CHILD_CLASS_FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CActionFeatureMap);
+	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionStateFeatureMap();
+	//CHILD_CLASS_ FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CStateFeatureMap);
+	//CHILD_CLASS_ FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CActionFeatureMap);
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -291,8 +295,9 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters), CDeferredLoa
 
 CLinearStateActionVFA::~CLinearStateActionVFA()
 {
-	delete m_pStateFeatureMap;
-	delete m_pActionFeatureMap;
+	//now SimGod owns the feature maps -> his responsability to free memory
+	//delete m_pStateFeatureMap;
+	//delete m_pActionFeatureMap;
 	if (m_pWeights) delete[] m_pWeights;
 	delete m_pAux;
 	delete m_pAux2;

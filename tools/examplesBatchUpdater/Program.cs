@@ -12,11 +12,18 @@ namespace examplesBatchUpdater
     {
         static void Main(string[] args)
         {
-            IEnumerable<string> experimentFiles= Directory.EnumerateFiles("../experiments/examples", "*.experiment", SearchOption.AllDirectories);
-            foreach (string file in experimentFiles)
+            if (args.Length == 0)
             {
-                updateExperimentFile(file);
-    
+                //process all the experiment files
+                IEnumerable<string> experimentFiles = Directory.EnumerateFiles("../experiments", "*.experiment", SearchOption.AllDirectories);
+                foreach (string file in experimentFiles)
+                {
+                    updateExperimentFile(file);
+                }
+            }
+            else
+            {
+                updateExperimentFile(args[0]);
             }
         }
         
@@ -32,8 +39,8 @@ namespace examplesBatchUpdater
             int version = getExperimentFileVersion(experimentXML);
             for (int updater= version+1; updater<updaters.Count; updater++)
             {
-                updaters[updater](experimentXML);
-                setVersion(experimentXML, updater);
+                if (updaters[updater](experimentXML))
+                    setVersion(experimentXML, updater);
             }
             experimentXML.Save(filename);
         }
@@ -47,21 +54,50 @@ namespace examplesBatchUpdater
             return -1;
         }
 
-        private delegate void updateXMLConfigFile(XmlDocument XMLConfigFile);
+        private delegate bool updateXMLConfigFile(XmlDocument XMLConfigFile);
         static List<updateXMLConfigFile> updaters = new List<updateXMLConfigFile>()
-        {update0 /*, update1*/};
+        {update0 , update1};
 
-        static void update0(XmlDocument XMLConfigFile)
+        static bool update0(XmlDocument XMLConfigFile)
         {
+            return true;
         }
-        //static void update1(XmlDocument XMLConfigFile)
-        //{ }
+        static bool update1(XmlDocument XMLConfigFile)
+        {
+            //we move the first state-feature-map below SimGod to be global
+            XmlNode root = XMLConfigFile.FirstChild;
+            XmlNodeList stateFeatureMapNodes = XMLConfigFile.GetElementsByTagName("State-Feature-Map");
+            XmlNodeList simGodNodes = XMLConfigFile.GetElementsByTagName("SimGod");
+            if (stateFeatureMapNodes.Count != 0 && simGodNodes.Count != 0)
+            {
+                //move the first appeareance to all the simion nodes
+                foreach (XmlNode simgodNode in simGodNodes)
+                    simgodNode.PrependChild(stateFeatureMapNodes[0]);
+                //remove the rest
+                for (int i = 1; i < stateFeatureMapNodes.Count; i++)
+                    stateFeatureMapNodes[i].ParentNode.RemoveChild(stateFeatureMapNodes[i]);
+            }
+            else return false;
+            //we remove the reward node, it's now hard-coded inside the dynamic model
+            XmlNodeList rewardNodes = XMLConfigFile.GetElementsByTagName("Reward");
+            if (rewardNodes.Count>=0)
+                rewardNodes[0].ParentNode.RemoveChild(rewardNodes[0]);
+            return true;
+        }
 
         static void setVersion(XmlDocument XMLConfigFile, int version)
         {
             XmlNode root = XMLConfigFile.FirstChild;
+            XmlAttribute versionAttribute;
 
-            XmlAttribute versionAttribute = XMLConfigFile.CreateAttribute("FileVersion");
+            if (root.Attributes["FileVersion"] == null)
+            {
+                versionAttribute = XMLConfigFile.CreateAttribute("FileVersion");
+            }
+            else
+            {
+                versionAttribute = root.Attributes["FileVersion"];
+            }
             versionAttribute.Value = version.ToString();
             root.Attributes.SetNamedItem(versionAttribute);
         }
