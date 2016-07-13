@@ -60,7 +60,7 @@ namespace AppXML.ViewModels
             m_plot.InvalidatePlot(true);
         }
 
-        public void updatePlot()
+        public void update()
         {
             m_plot.InvalidatePlot(true);
         }

@@ -125,11 +125,12 @@ namespace AppXML.ViewModels
                 FileStream logFile = File.OpenRead(m_logFilePath);
                 using (BinaryReader binaryReader = new BinaryReader(logFile))
                 {
-                    foreach (VarPlotInfo varInfo in varInfoList) varInfo.avg = 0.0;
-
                     readExperimentLogHeader(binaryReader, ref numEpisodes, ref fileFormatVersion);
                     for (int i = 0; i < numEpisodes; i++)
                     {
+                        //reset the averaged data
+                        foreach (VarPlotInfo varInfo in varInfoList) varInfo.avg = 0.0;
+
                         readEpisodeHeader(binaryReader, ref episodeType, ref episodeIndex
                             , ref numVariablesLogged);
                         numLoggedSteps = 0;

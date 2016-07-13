@@ -148,7 +148,7 @@ namespace AppXML.ViewModels
             foreach (PlotViewModel plot in newPlots)
             {
                 plots.Add(plot);
-                plot.updatePlot();
+                plot.update();
             }
             //plot tabs can't be closed yet, so we can simplify it for now
             bCanSavePlots = true;
@@ -162,7 +162,7 @@ namespace AppXML.ViewModels
             set
             {
                 m_selectedPlot = value;
-                m_selectedPlot.updatePlot();
+                m_selectedPlot.update();
             }
         }
 
