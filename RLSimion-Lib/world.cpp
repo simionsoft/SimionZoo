@@ -71,7 +71,7 @@ void CWorld::reset(CState *s)
 		m_pDynamicModel->reset(s);
 }
 
-double CWorld::executeAction(CState *s,CAction *a,CState *s_p, bool& bFailureState)
+double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 {
 	double dt= m_dt/m_numIntegrationSteps;
 
@@ -80,19 +80,20 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p, bool& bFailureSta
 	if (m_pDynamicModel)
 	{
 		s_p->copy(s);
-		for (int i= 0; !bFailureState && i<m_numIntegrationSteps; i++)
+		for (int i= 0; i<m_numIntegrationSteps; i++)
 		{
 			m_pDynamicModel->executeAction(s_p,a,dt);
 			m_t+= dt;
 		}
 	}
-	return m_pDynamicModel->getReward(s, a, s_p, bFailureState);
+	return m_pDynamicModel->getReward(s, a, s_p);
 }
 
 
 
 CDynamicModel::~CDynamicModel()
-{ 
+{
+	if (m_pWorldConfigXMLDoc) delete m_pWorldConfigXMLDoc;
 	if (m_pStateDescriptor) delete m_pStateDescriptor;
 	if (m_pActionDescriptor) delete m_pActionDescriptor;
 	if (m_pRewardFunction) delete m_pRewardFunction;
@@ -101,16 +102,16 @@ CDynamicModel::~CDynamicModel()
 
 CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 {
-	tinyxml2::XMLDocument configXMLDoc;
+	m_pWorldConfigXMLDoc= new tinyxml2::XMLDocument();
 	CParameters *rootNode;
 	if (pWorldDefinitionFile)
 	{
 		CApp::get()->SimGod.registerInputFile(pWorldDefinitionFile);
-		configXMLDoc.LoadFile(pWorldDefinitionFile);
-		if (!configXMLDoc.Error())
+		m_pWorldConfigXMLDoc->LoadFile(pWorldDefinitionFile);
+		if (!m_pWorldConfigXMLDoc->Error())
 		{
 			m_pRewardFunction = new CRewardFunction();
-			rootNode = (CParameters*)configXMLDoc.FirstChildElement("World-Definition");
+			rootNode = (CParameters*)m_pWorldConfigXMLDoc->FirstChildElement("World-Definition");
 			m_pStateDescriptor = new CState(rootNode->getChild("State"));
 			m_pActionDescriptor = new CAction(rootNode->getChild("Action"));
 
@@ -120,6 +121,25 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 		else
 			CLogger::logMessage(MessageType::Error, "Could not load the world definition file.");
 	}
+}
+
+double CDynamicModel::getConstant(const char* constantName)
+{
+	CParameters* pNode = m_pConstants->getChild("Constant");
+	CParameters* pChild;
+	while (pNode)
+	{
+		pChild = pNode->getChild("Name");
+		if (pChild && !strcmp(constantName, pChild->getConstString()))
+			return pNode->getConstDouble("Value");
+
+		pNode = pNode->getNextChild("Constant");
+	}
+	char message[1024];
+	sprintf_s(message, 1024, "Missing constant in world definition file: %s", constantName);
+	CApp::get()->Logger.logMessage(MessageType::Error, message);
+
+	return -1.0;// will never reach this, but if this makes the compiler happy, so be it
 }
 
 CState* CDynamicModel::getStateDescriptor()
@@ -153,9 +173,9 @@ CLASS_FACTORY(CDynamicModel)
 	END_CLASS();
 }
 
-double CDynamicModel::getReward(const CState *s, const CAction *a, const CState *s_p, bool& bFailureState)
+double CDynamicModel::getReward(const CState *s, const CAction *a, const CState *s_p)
 {
-	return m_pRewardFunction->getReward(s, a, s_p, bFailureState);
+	return m_pRewardFunction->getReward(s, a, s_p);
 }
 
 CReward* CDynamicModel::getRewardVector()

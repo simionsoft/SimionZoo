@@ -10,6 +10,13 @@ class CSetPoint;
 //BALANCING POLE
 class CBalancingPole: public CDynamicModel
 {
+	double GRAVITY;
+	double MASSCART;
+	double MASSPOLE;
+	double TOTAL_MASS;
+	double LENGTH;
+	double POLEMASS_LENGTH;
+
 	int m_sX, m_sX_dot;
 	int m_sTheta, m_sTheta_dot;
 	int m_aPitch;
@@ -26,6 +33,6 @@ public:
 class CBalancingPoleReward : public IRewardComponent
 {
 public:
-	double getReward(const CState *s, const CAction *a, const CState *s_p, bool& bFailureState);
+	double getReward(const CState *s, const CAction *a, const CState *s_p);
 	const char* getName(){ return "reward"; }
 };

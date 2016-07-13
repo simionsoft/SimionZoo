@@ -21,6 +21,8 @@ void *CLogger::m_hLogFile= 0;
 #define STEP_HEADER 3
 #define EPISODE_END_HEADER 4
 
+//we pack every int/double as 64bit data to avoid struct-padding issues (the size of the struct might not be the same in C++ and C#
+
 struct ExperimentHeader
 {
 	__int64 magicNumber = EXPERIMENT_HEADER;
@@ -69,7 +71,7 @@ CLASS_INIT(CLogger)
 	if (!pParameters) return;
 
 	const char* boolStr;
-	ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "False","Log evaluation episodes?");
+	ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "True","Log evaluation episodes?");
 	m_bLogEvaluationEpisodes = !strcmp(boolStr, "True");
 	ENUM_VALUE(boolStr, Boolean, "Log-training-episodes", "False","Log training episodes?");
 	m_bLogTrainingEpisodes = !strcmp(boolStr, "True");
@@ -240,12 +242,11 @@ void CLogger::lastStep()
 	char buffer[BUFFER_SIZE];
 	int episodeIndex = CApp::get()->Experiment.getEvaluationEpisodeIndex();
 	int numEpisodes = CApp::get()->Experiment.getNumEvaluationEpisodes();
-	int numSteps = CApp::get()->Experiment.getNumSteps();
 
-	if (CApp::get()->Experiment.isEvaluationEpisode() && numEpisodes>0 && numSteps>0)
+	if (CApp::get()->Experiment.isEvaluationEpisode() && numEpisodes>0)
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (std::max(1.0, (double)numEpisodes - 1))
-			, m_episodeRewardSum / (double)numSteps);
+			, m_episodeRewardSum / (double)CApp::get()->Experiment.getStep());
 		logMessage(MessageType::Evaluation, buffer);
 	}
 }

@@ -17,5 +17,5 @@ public:
 	virtual ~CMagneticLevitation();
 
 	void reset(CState *s);
-	void executeAction(CState *s,CAction *a,double dt, bool& bFailureState);
+	void executeAction(CState *s,CAction *a,double dt);
 };

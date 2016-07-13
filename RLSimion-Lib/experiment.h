@@ -40,11 +40,10 @@ class CExperiment
 	unsigned int m_evalFreq;
 	//steps
 	unsigned int m_numSteps;
+	bool m_bTerminalState;
 
 	double m_progUpdateFreq; //in seconds: time between progress updates
 	CTimer* m_pProgressTimer;
-	/*__int64 m_counterFreq;
-	__int64 m_lastProgressReportCounter;*/
 
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
 	void reset();
@@ -57,10 +56,11 @@ public:
 
 
 	//STEP
-	bool isValidStep(){ return m_step > 0 && m_step <= m_numSteps; }
+	bool isValidStep(){ return !m_bTerminalState && m_step > 0 && m_step <= m_numSteps; }
 	unsigned int getStep(){ return m_step; }
 	bool isFirstStep(){ return m_step == 1; }
-	bool isLastStep(){ return m_step == m_numSteps; }
+	bool isLastStep(){ return (m_bTerminalState || m_step == m_numSteps); }
+	void setTerminalState(){ m_bTerminalState = true; }
 	void nextStep();
 
 	//EPISODES

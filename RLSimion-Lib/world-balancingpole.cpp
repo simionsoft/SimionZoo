@@ -18,6 +18,13 @@ CLASS_CONSTRUCTOR(CBalancingPole, const char* worldDefinition)
 	CAction *pActionDescriptor = getActionDescriptor();
 	m_aPitch = pActionDescriptor->getVarIndex("force");
 
+	GRAVITY= getConstant("GRAVITY");
+	MASSCART= getConstant("MASSCART");
+	MASSPOLE = getConstant("MASSPOLE");
+	TOTAL_MASS= getConstant("TOTAL_MASS");
+	LENGTH= getConstant("LENGTH");
+	POLEMASS_LENGTH= getConstant("POLEMASS_LENGTH");
+
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CBalancingPoleReward());
 	m_pRewardFunction->initialize();
@@ -34,18 +41,18 @@ void CBalancingPole::reset(CState *s)
 {
 	s->setValue(m_sX,0.0);
 	s->setValue(m_sX_dot,0.0);
-	s->setValue(m_sTheta,0.0);
-	s->setValue(m_sTheta_dot,0.0);
+	s->setValue(m_sTheta,-0.1);
+	s->setValue(m_sTheta_dot,-0.01);
 }
 
-#define GRAVITY 9.8
-#define MASSCART 1.0
-#define MASSPOLE 0.1
-#define TOTAL_MASS (MASSPOLE + MASSCART)
-#define LENGTH 0.5		  /* actually half the pole's length */
-#define POLEMASS_LENGTH (MASSPOLE * LENGTH)
-#define FORCE_MAG 10.0
-#define TAU 0.02		  /* seconds between state updates */
+//#define GRAVITY 9.8
+//#define MASSCART 1.0
+//#define MASSPOLE 0.1
+//#define TOTAL_MASS (MASSPOLE + MASSCART)
+//#define LENGTH 0.5		  /* actually half the pole's length */
+//#define POLEMASS_LENGTH (MASSPOLE * LENGTH)
+//#define FORCE_MAG 10.0
+//#define TAU 0.02		  /* seconds between state updates */
 #define FOURTHIRDS 1.3333333333333
 
 void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
@@ -75,8 +82,10 @@ void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
 }
 
 #define twelve_degrees 0.2094384
-double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const CState* s_p, bool& bFailureState)
+double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
+	bool bEval = CApp::get()->Experiment.isEvaluationEpisode();
+	int step = CApp::get()->Experiment.getStep();
 	double theta = s_p->getValue("theta");
 	double x = s_p->getValue("x");
 
@@ -85,7 +94,7 @@ double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const 
 		theta < -twelve_degrees ||
 		theta > twelve_degrees)
 	{
-		bFailureState = true;
+		CApp::get()->Experiment.setTerminalState();
 		return -1.0;
 	}
 

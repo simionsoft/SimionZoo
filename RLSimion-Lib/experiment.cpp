@@ -59,12 +59,13 @@ void CExperiment::reset()
 	m_evalEpisodeIndex= 0; //[1..1+m_numTrainingEpisodes/ evalFreq]
 	m_episodeIndex= 0; //[1..g_numEpisodes]
 	m_step= 0; //]1..g_numStepsPerEpisode]
+	m_bTerminalState = false;
 }
 
 
 void CExperiment::nextStep()
 {
-	if (m_step<m_numSteps)
+	if (!m_bTerminalState && m_step<m_numSteps)
 		m_step ++;
 
 	else m_step = 0;
@@ -72,6 +73,9 @@ void CExperiment::nextStep()
 
 void CExperiment::nextEpisode()
 {
+	//reset the terminal state flag at the beginning of every episode
+	m_bTerminalState = false;
+
 	m_episodeIndex++;
 	if (isEvaluationEpisode()) m_evalEpisodeIndex++;
 	else m_trainingEpisodeIndex++;
@@ -145,6 +149,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
 	char msg[1024];
 
+
 	double time = m_pProgressTimer->getElapsedTime();//(double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
 
 	if (time>m_progUpdateFreq || (isLastStep() && isLastEpisode()))
@@ -169,6 +174,6 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	if (isLastStep())
 		CApp::get()->Logger.lastStep();
 
-	if (isLastEpisode() && isLastStep())
+	if (isLastEpisode() && (isLastStep()))
 		CApp::get()->Logger.lastEpisode();
 }

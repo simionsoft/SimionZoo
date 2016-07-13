@@ -106,7 +106,7 @@ double CParameters::getConstDouble(const char* paramName, double defaultValue)
 	{
 		return atof(pParameter->GetText());
 	}
-	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+	else throw std::exception((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %f", getName(), paramName, defaultValue);

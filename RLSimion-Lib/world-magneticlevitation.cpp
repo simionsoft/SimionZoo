@@ -84,7 +84,7 @@ void CMagneticLevitation::reset(CState *s)
 #define xi 0.001599
 #define G 9.8
 
-void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt, bool& bFailureState)
+void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 {
 	double d= s->getValue(m_sPosition);
 	double d_dot= s->getValue(m_sVelocity);

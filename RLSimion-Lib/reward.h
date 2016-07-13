@@ -14,7 +14,7 @@ class CParameters;
 class IRewardComponent
 {
 public:
-	virtual double getReward(const CState *s, const CAction* a, const CState *s_p, bool& bFailureState) = 0;
+	virtual double getReward(const CState *s, const CAction* a, const CState *s_p) = 0;
 	virtual const char* getName()= 0;
 };
 
@@ -33,7 +33,7 @@ public:
 	const double m_maxReward = 1.0;
 
 	CToleranceRegionReward(char* variable, double tolerance, double scale);
-	double getReward(const CState *s, const CAction* a, const CState *s_p, bool& bFailureState);
+	double getReward(const CState *s, const CAction* a, const CState *s_p);
 	const char* getName();
 };
 
@@ -53,7 +53,7 @@ public:
 	virtual ~CRewardFunction();
 
 	CReward* getRewardVector();
-	double getReward(const CState *s, const CAction *a, const CState *s_p, bool& bFailureState);
+	double getReward(const CState *s, const CAction *a, const CState *s_p);
 	
 	//int getNumRewardComponents(){ return m_rewardComponents.size(); }
 	//double getLastRewardComponent(int i);

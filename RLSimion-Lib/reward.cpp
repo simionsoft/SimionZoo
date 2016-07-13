@@ -16,7 +16,7 @@ CToleranceRegionReward::CToleranceRegionReward(char* variable, double tolerance,
 	m_tolerance = tolerance;
 	m_scale = scale;
 }
-double CToleranceRegionReward::getReward(const CState *s, const CAction* a, const CState *s_p, bool& bFailureState)
+double CToleranceRegionReward::getReward(const CState *s, const CAction* a, const CState *s_p)
 {
 	double rew, error;
 
@@ -50,7 +50,7 @@ void CRewardFunction::addRewardComponent(IRewardComponent* rewardComponent)
 	m_rewardComponents.push_back(rewardComponent);
 }
 
-double CRewardFunction::getReward(const CState* s, const CAction* a, const CState* s_p, bool &bFailureState)
+double CRewardFunction::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
 	if (!m_bInitialized)
 		CApp::get()->Logger.logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
@@ -59,7 +59,7 @@ double CRewardFunction::getReward(const CState* s, const CAction* a, const CStat
 	int i = 0;
 	for (auto it = m_rewardComponents.begin(); it != m_rewardComponents.end(); ++it)
 	{
-		r_i = (*it)->getReward(s, a, s_p, bFailureState);
+		r_i = (*it)->getReward(s, a, s_p);
 		m_pRewardVector->setValue(i, r_i);
 		reward += r_i;
 		++i;

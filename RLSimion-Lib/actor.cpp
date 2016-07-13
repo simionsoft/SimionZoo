@@ -50,9 +50,10 @@ void CActor::deferredLoadStep()
 	double *pWeights;
 	CState* s= CApp::get()->World.getDynamicModel()->getStateInstance();
 	CAction* a= CApp::get()->World.getDynamicModel()->getActionInstance();
-	int numActionDims = std::min(m_pInitController->getNumOutputs(), m_numOutputs);
+	
 	if (m_pInitController)
 	{
+		int numActionDims = std::min(m_pInitController->getNumOutputs(), m_numOutputs);
 		CLogger::logMessage(MessageType::Info, "Initializing the policy weights using the base controller");
 		//initialize the weights using the controller's output at each center point in state space
 		for (int actionIndex = 0; actionIndex < numActionDims; actionIndex++)

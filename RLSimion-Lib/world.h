@@ -8,6 +8,7 @@ typedef CNamedVarSet CReward;
 class CDynamicModel;
 class CParameters;
 class CRewardFunction;
+#include "../tinyxml2/tinyxml2.h"
 
 class CWorld
 {
@@ -32,7 +33,7 @@ public:
 	void reset(CState *s);
 
 	//this function returns the reward of the tuple <s,a,s_p> and whether the resultant state is a failure state or not
-	double executeAction(CState *s,CAction *a,CState *s_p, bool& bFailureState);
+	double executeAction(CState *s,CAction *a,CState *s_p);
 
 	CReward *getRewardVector();
 };
@@ -43,6 +44,7 @@ private:
 	CState *m_pStateDescriptor;
 	CAction *m_pActionDescriptor;
 	CParameters *m_pConstants;
+	tinyxml2::XMLDocument* m_pWorldConfigXMLDoc;
 protected:
 	CRewardFunction* m_pRewardFunction;
 public:
@@ -52,7 +54,7 @@ public:
 	virtual void reset(CState *s)= 0;
 	virtual void executeAction(CState *s, const CAction *a,double dt)= 0;
 	
-	double getReward(const CState *s, const CAction *a, const CState *s_p, bool& bFailureState);
+	double getReward(const CState *s, const CAction *a, const CState *s_p);
 	CReward* getRewardVector();
 
 	CState* getStateDescriptor();
@@ -60,7 +62,7 @@ public:
 	CAction* getActionDescriptor();
 	CAction* getActionInstance();
 
-	double* getConstant(const char* constantName);
+	double getConstant(const char* constantName);
 
 	static CDynamicModel* getInstance(CParameters* pParameters);
 };
