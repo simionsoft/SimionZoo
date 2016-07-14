@@ -267,7 +267,7 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	//output episode log data
 	if (CApp::get()->World.getStepStartT() - m_lastLogSimulationT >= m_logFreq
-		|| CApp::get()->Experiment.isFirstStep())
+		|| CApp::get()->Experiment.isFirstStep() || CApp::get()->Experiment.isLastStep())
 	{
 		writeStepData(s, a, s_p, r);
 		m_lastLogSimulationT = CApp::get()->World.getStepStartT();
