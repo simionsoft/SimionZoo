@@ -298,7 +298,7 @@ CLinearStateActionVFA::~CLinearStateActionVFA()
 	//now SimGod owns the feature maps -> his responsability to free memory
 	//delete m_pStateFeatureMap;
 	//delete m_pActionFeatureMap;
-	if (m_pWeights) delete[] m_pWeights;
+
 	delete m_pAux;
 	delete m_pAux2;
 }
