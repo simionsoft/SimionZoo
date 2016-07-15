@@ -256,12 +256,14 @@ namespace AppXML.ViewModels
 
         public void checkLogFilesAlreadyExist()
         {
-            bool anyLogFile = false;
+            int numAvailableLogs = 0;
             foreach (ExperimentViewModel experiment in experimentQueue)
             {
-                anyLogFile = anyLogFile || experiment.checkLogFilesAlreadyExist();
+                if (experiment.checkLogFilesAlreadyExist())
+                    numAvailableLogs++;
             }
-            if (anyLogFile != m_bLogFilesAvailable) bLogFilesAvailable = anyLogFile;
+            if (numAvailableLogs > 0) bLogFilesAvailable = true;
+            else bLogFilesAvailable = false;
         }
     }
 }
