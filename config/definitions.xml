@@ -8,7 +8,7 @@
 
   <CLASS Name="CIncrementalNaturalActorCritic">
     <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The Policy"/>
-    <BRANCH Name="VFunction" Class="CLinearStateVFA-Factory" Comment="The Value-function" Optional=" false"/>
+    <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function" Optional=" false"/>
     <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="true"/>
     <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="true"/>
     <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
@@ -33,16 +33,8 @@
     <BRANCH Name="Base-Controller" Class="CController-Factory" Comment="The base controller used to initialize the weights of the actor" Optional=" true"/>
   </CLASS>
 
-  <CLASS Name="CompareControllerVFAApp">
-    <INTEGER-VALUE Name="Num-Samples" Default="100000" Comment="The number of samples taken to compare the controller and the approximation"/>
-    <MULTI-VALUED Name="Policy" Class="CLinearStateVFAFromFile" Comment="The VFAs used to approximate the controller"/>
-    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model's definition" Optional=" false"/>
-    <BRANCH Name="Controller" Class="CController-Factory" Comment="The controller to be approximated" Optional=" false"/>
-    <BRANCH Name="Output-DirFile" Class="CDirFileOutput" Comment="The output directory and file" Optional=" false"/>
-  </CLASS>
-
   <CLASS Name="ControllerToVFAApp">
-    <MULTI-VALUED Name="Policy" Class="CLinearStateVFA-Factory" Comment="The VFAs used to approximate the controller"/>
+    <MULTI-VALUED Name="Policy" Class="CLinearStateVFA" Comment="The VFAs used to approximate the controller"/>
     <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model's definition" Optional=" false"/>
     <BRANCH Name="Controller" Class="CController-Factory" Comment="The controller to be approximated" Optional=" false"/>
     <BRANCH Name="Output-DirFile" Class="CDirFileOutput" Comment="The output directory and file" Optional=" false"/>
@@ -118,7 +110,7 @@
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CTDCLambdaCritic">
@@ -132,11 +124,11 @@
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="true"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
-    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CCritic">
-    <BRANCH Name="V-Function" Class="CLinearStateVFA-Factory" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
+    <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The parameterization of the V-Function to be learned" Optional="false"/>
   </CLASS>
 
   <CLASS Name="CCritic-Factory">
@@ -151,6 +143,11 @@
     <DOUBLE-VALUE Name="Threshold" Default="0.001" Comment="Threshold applied to trace factors"/>
     <DOUBLE-VALUE Name="Lambda" Default="0.9" Comment="Lambda parameter"/>
     <ENUM-VALUE Name="Replace" Class="Boolean" Default="True" Comment="Replace existing traces? Or add?"/>
+  </CLASS>
+
+  <CLASS Name="CExperienceReplay">
+    <INTEGER-VALUE Name="Buffer-Size" Default="1000" Comment="Size of the buffer used to store experience tuples"/>
+    <INTEGER-VALUE Name="Update-Batch-Size" Default="10" Comment="Number of tuples used each time-step in the update"/>
   </CLASS>
 
   <CLASS Name="CExperiment">
@@ -282,6 +279,15 @@
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
 
+  <CLASS Name="CDoubleQLearning">
+    <INTEGER-VALUE Name="Target-Update-Freq" Default="100" Comment="The number of steps between updates of the target Q-Function"/>
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional=" true"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
+    <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
+  </CLASS>
+
   <CLASS Name="CSARSA">
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function" Optional=" false"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed" Optional=" false"/>
@@ -294,13 +300,15 @@
     <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: agents and controllers"/>
     <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map" Optional=" false"/>
     <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The action feature map" Optional=" true"/>
+    <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional=" true"/>
   </CLASS>
 
   <CLASS Name="CSimion-Factory">
     <CHOICE Name="Type" Comment="The Simion class">
-      <CHOICE-ELEMENT Name="Controller" Class="CController-Factory" Comment="A controller"/>
-      <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic" Comment="An Actor-Critic agent"/>
-      <CHOICE-ELEMENT Name="Q-Learning" Class="CQLearning" Comment="A Q-Learning agent"/>
+      <CHOICE-ELEMENT Name="Controller" Class="CController-Factory" Comment="Controller"/>
+      <CHOICE-ELEMENT Name="Actor-Critic" Class="CActorCritic" Comment="Actor-Critic agent"/>
+      <CHOICE-ELEMENT Name="Q-Learning" Class="CQLearning" Comment="Q-Learning agent"/>
+      <CHOICE-ELEMENT Name="Double-Q-Learning" Class="CDoubleQLearning" Comment="Double-Q-Learning agent"/>
       <CHOICE-ELEMENT Name="SARSA" Class="CSARSA" Comment="A SARSA agent"/>
       <CHOICE-ELEMENT Name="Inc-Natural-Actor-Critic" Class="CIncrementalNaturalActorCritic" Comment="Incremental-Natural-Actor-Critic as in 'Model-free Reinforcement Learning with Continuous Action in Practice'"/>
     </CHOICE>
@@ -335,28 +343,18 @@
   </CLASS>
 
   <CLASS Name="CDeterministicPolicyGaussianNoise">
-    <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
+    <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
     <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration" Optional="false"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
   </CLASS>
 
   <CLASS Name="CStochasticPolicyGaussianNoise">
-    <BRANCH Name="Mean-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
-    <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA-Factory" Comment="The parameterized VFA that approximates variance(s)" Optional=" false"/>
+    <BRANCH Name="Mean-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function" Optional=" false"/>
+    <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates variance(s)" Optional=" false"/>
     <XML-NODE-REF Name="Output-Action" XMLFile="WORLD-DEFINITION" HangingFrom="Action"/>
   </CLASS>
 
   <CLASS Name="CLinearStateVFA">
-  </CLASS>
-
-  <CLASS Name="CLinearStateVFAFromFile">
-    <FILE-PATH-VALUE Name="Load" Default="../data/*.fmap" Comment="The VFA will be loaded from this file"/>
-  </CLASS>
-
-  <CLASS Name="CLinearStateVFA-Factory">
-    <CHOICE Name="Parameterization" Comment= "Do we want to define the vfa explicitly or load it from file?">
-      <CHOICE-ELEMENT Name="Explicit" Class="CLinearStateVFA" Comment="The parameterization is explicitly given and no weights loaded."/>
-    </CHOICE>
   </CLASS>
 
   <CLASS Name="CLinearStateActionVFA">

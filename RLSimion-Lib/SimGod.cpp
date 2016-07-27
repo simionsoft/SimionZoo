@@ -9,6 +9,7 @@
 #include "delayed-load.h"
 #include "utils.h"
 #include "featuremap.h"
+#include "experience-replay.h"
 
 CLASS_INIT(CSimGod)
 {
@@ -17,6 +18,7 @@ CLASS_INIT(CSimGod)
 	//the global parameterizations of the state/action spaces
 	CHILD_CLASS_FACTORY(m_pGlobalStateFeatureMap, "State-Feature-Map", "The state feature map", false, CStateFeatureMap);
 	CHILD_CLASS_FACTORY(m_pGlobalActionFeatureMap, "Action-Feature-Map", "The action feature map", true, CActionFeatureMap);
+	CHILD_CLASS(m_pExperienceReplay, "Experience-Replay", "The experience replay parameters", true, CExperienceReplay);
 
 	m_numSimions = pParameters->countChildren("Simion");
 	m_pSimions = new CSimion*[m_numSimions];
@@ -42,6 +44,7 @@ CSimGod::~CSimGod()
 {
 	if (m_pGlobalStateFeatureMap) delete m_pGlobalStateFeatureMap;
 	if (m_pGlobalActionFeatureMap) delete m_pGlobalActionFeatureMap;
+	if (m_pExperienceReplay) delete m_pExperienceReplay;
 	if (m_pSimions)
 	{
 		for (int i = 0; i < m_numSimions; i++)
@@ -65,15 +68,24 @@ void CSimGod::selectAction(CState* s, CAction* a)
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
+	CExperienceTuple* pExperienceTuple;
+
 	if (CApp::get()->Experiment.isEvaluationEpisode()) return;
 
-	//update critic
-	for (int i = 0; i < m_numSimions; i++)
-		m_pSimions[i]->updateValue(s, a,s_p,r);
+	m_pExperienceReplay->addTuple(s, a, s_p, r);
 
-	//update actor: might be the controller
-	for (int i = 0; i < m_numSimions; i++)
-		m_pSimions[i]->updatePolicy(s, a,s_p,r);
+	int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
+	for (int tuple = 0; tuple < updateBatchSize; ++tuple)
+	{
+		pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
+		//update critic
+		for (int i = 0; i < m_numSimions; i++)
+			m_pSimions[i]->updateValue(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
+
+		//update actor: might be the controller
+		for (int i = 0; i < m_numSimions; i++)
+			m_pSimions[i]->updatePolicy(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
+	}
 }
 
 void CSimGod::registerDelayedLoadObj(CDeferredLoad* pObj,unsigned int loadOrder)

@@ -20,8 +20,8 @@ CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic)
 
 
 	//critic's stuff
-
-	CHILD_CLASS_FACTORY(m_pVFunction, "VFunction", "The Value-function", false, CLinearStateVFA);
+	m_pVFunction = new CLinearStateVFA(new CLinearStateVFA());
+	CHILD_CLASS(m_pVFunction, "VFunction", "The Value-function", false, CLinearStateVFA);
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");
 	NUMERIC_VALUE(m_pAlphaV, "Alpha-v","Learning gain used by the critic");

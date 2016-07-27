@@ -43,7 +43,7 @@ CPolicy::~CPolicy()
 CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)
 	: EXTENDS(CPolicy, pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pDeterministicVFA, "Deterministic-Policy-VFA", "The parameterized VFA that approximates the function", false, CLinearStateVFA);
+	CHILD_CLASS(m_pDeterministicVFA, "Deterministic-Policy-VFA", "The parameterized VFA that approximates the function", false, CLinearStateVFA);
 	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise","Parameters of the noise used as exploration",false,CNoise);
 
 	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
@@ -102,8 +102,8 @@ double CDeterministicPolicyGaussianNoise::getDeterministicOutput(const CFeatureL
 CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)
 	: EXTENDS(CPolicy, pParameters)
 {
-	CHILD_CLASS_FACTORY(m_pMeanVFA, "Mean-VFA", "The parameterized VFA that approximates the function", false, CLinearStateVFA);
-	CHILD_CLASS_FACTORY(m_pSigmaVFA, "Sigma-VFA", "The parameterized VFA that approximates variance(s)", false, CLinearStateVFA);
+	CHILD_CLASS(m_pMeanVFA, "Mean-VFA", "The parameterized VFA that approximates the function", false, CLinearStateVFA);
+	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", "The parameterized VFA that approximates variance(s)", false, CLinearStateVFA);
 	m_pSigmaVFA->setIndexOffset(m_pMeanVFA->getNumWeights());
 	m_pMeanFeatures = new CFeatureList("Sto-Policy/mean-features");
 	m_pSigmaFeatures = new CFeatureList("Sto-Policy/sigma-features");

@@ -9,6 +9,7 @@ class CParameters;
 class CSimion;
 class CDeferredLoad;
 class CFilePathList;
+class CExperienceReplay;
 
 #include <vector>
 
@@ -28,6 +29,8 @@ class CSimGod
 
 	std::vector<const char*> m_inputFiles;
 	std::vector<const char*> m_outputFiles;
+
+	CExperienceReplay* m_pExperienceReplay;
 public:
 	CSimGod();
 	virtual ~CSimGod();

@@ -44,7 +44,7 @@ CLASS_CONSTRUCTOR(ControllerToVFAApp)
 	m_pVFAs = new CLinearStateVFA*[m_numVFAs];
 	for (int i = 0; i < m_numVFAs; i++)
 	{
-		MULTI_VALUED_FACTORY(m_pVFAs[i], "Policy", "The VFAs used to approximate the controller", CLinearStateVFA, pPolicyParameters);
+		MULTI_VALUED(m_pVFAs[i], "Policy", "The VFAs used to approximate the controller", CLinearStateVFA, pPolicyParameters);
 		pPolicyParameters = pPolicyParameters->getNextChild("Policy");
 	}
 

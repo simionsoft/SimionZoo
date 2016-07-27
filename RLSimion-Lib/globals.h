@@ -24,8 +24,8 @@
 
 //The child class is given a name according to the context from the parent class, so the parameter node should include
 //the appropriate hierarchy (i.e., pParameters->getChild("VFA"))
-#define CHILD_CLASS(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= new className(pParameters->getChild(name),__VA_ARGS__); else variable= new className(0,__VA_ARGS__);
-#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance(0,__VA_ARGS__);
+#define CHILD_CLASS(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= new className(pParameters->getChild(name),__VA_ARGS__); else variable= new className((CParameters*)0,__VA_ARGS__);
+#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance((CParameters*)0,__VA_ARGS__);
 #define CHILD_CLASS_INIT(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable.init(pParameters->getChild(name),__VA_ARGS__); else variable.init(0,__VA_ARGS__);
 
 #define CHOICE(name,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);

@@ -49,7 +49,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
-    <CustomBuildAfterTargets>..\config\definitions.xml</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -100,6 +101,7 @@
       <Command>..\Debug\CustomXMLBuilder.exe $(ProjectDir)</Command>
       <Message>RLSimion XML preprocess</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
+      <Outputs>..\config\definitions.xml</Outputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -107,12 +109,12 @@
     <ClCompile Include="actor-critic-inac.cpp" />
     <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
-    <ClCompile Include="app-compare-controller-vfa.cpp" />
     <ClCompile Include="app-controller-to-vfa.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="delayed-load.cpp" />
     <ClCompile Include="etraces.cpp" />
+    <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="logger.cpp" />
@@ -158,11 +160,11 @@
     <ClInclude Include="app-controller-to-vfa.h" />
     <ClInclude Include="app-rlsimion.h" />
     <ClInclude Include="app.h" />
-    <ClInclude Include="app-compare-controller-vfa.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="delayed-load.h" />
     <ClInclude Include="etraces.h" />
+    <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />
     <ClInclude Include="featuremap.h" />
     <ClInclude Include="features.h" />

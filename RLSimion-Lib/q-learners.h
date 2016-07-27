@@ -64,12 +64,30 @@ public:
 	CQLearning(CParameters* pParameters);
 	virtual ~CQLearning();
 
-	//the Q-Function (and thus, the value estimate and the policy) is updated in this method
+	//the Q-Function is updated in this method (and thus, any policy derived from it such as epsilon-greedy or soft-max) 
 	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 
 	void selectAction(const CState *s, CAction *a);
 	//this method does nothing
 	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r){};
+};
+
+////////////////////////
+//Double Q-Learning
+//
+//Deep Reinforcement Learning with Double Q-learning
+//Hado van Hasselt, Arthur Guez and David Silver
+
+class CDoubleQLearning : public CQLearning
+{
+	CLinearStateActionVFA* m_pTargetQFunction;
+	int m_targetUpdateFreq;
+	int m_numStepsSinceLastTargetUpdate;
+public:
+	CDoubleQLearning(CParameters* pParameters);
+	virtual ~CDoubleQLearning();
+
+	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 
 ////////////////////////

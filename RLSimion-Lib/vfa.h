@@ -14,7 +14,7 @@ class CParameterFile;
 //CLinearVFA////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
-class CLinearVFA : public CParamObject
+class CLinearVFA
 {
 
 protected:
@@ -28,7 +28,7 @@ protected:
 	unsigned int m_minIndex;
 	unsigned int m_maxIndex;
 public:
-	CLinearVFA(CParameters* pParameters);
+	CLinearVFA();
 	virtual ~CLinearVFA();
 	double getValue(const CFeatureList *features);
 	double *getWeightPtr(){ return m_pWeights; }
@@ -38,7 +38,7 @@ public:
 
 	void setIndexOffset(unsigned int offset);
 
-	bool saveWeights(const char* pFilename);
+	bool saveWeights(const char* pFilename) const;
 	bool loadWeights(const char* pFilename);
 
 };
@@ -52,6 +52,7 @@ protected:
 public:
 	CLinearStateVFA();
 	CLinearStateVFA(CParameters* pParameters);
+	CLinearStateVFA(CLinearStateVFA* pSourceVFA);
 	virtual ~CLinearStateVFA();
 	using CLinearVFA::getValue;
 	double getValue(const CState *s);
@@ -60,25 +61,10 @@ public:
 	void getFeatureState(unsigned int feature, CState* s);
 	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 
-	void save(const char* pFilename);
+	void save(const char* pFilename) const;
 	//void load(const char* pFilename);
 
-	static CLinearStateVFA* getInstance(CParameters* pParameters);
-
 	CStateFeatureMap* getStateFeatureMap(){ return m_pStateFeatureMap; }
-};
-
-class CLinearStateVFAFromFile: public CLinearStateVFA
-{
-	CParameterFile* m_mapFeatureParameterFile;
-	CParameters* m_mapFeatureParameters;
-	const char* m_loadFilename;
-	char m_weightFilename[1024];
-
-	virtual void deferredLoadStep();
-public:
-	virtual ~CLinearStateVFAFromFile();
-	CLinearStateVFAFromFile(CParameters* pParameters);
 };
 
 
@@ -101,6 +87,7 @@ public:
 	CActionFeatureMap* getActionFeatureMap() const{ return m_pActionFeatureMap; }
 
 	CLinearStateActionVFA(CParameters* pParameters);
+	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA);
 	virtual ~CLinearStateActionVFA();
 	using CLinearVFA::getValue;
 	double getValue(const CState *s, const CAction *a);
@@ -122,7 +109,6 @@ public:
 
 	void save(const char* pFilename) const;
 	void load(const char* pFilename);
-
 
 	void deferredLoadStep();
 };

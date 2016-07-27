@@ -141,6 +141,44 @@ void CQLearning::selectAction(const CState *s, CAction *a)
 	m_pQPolicy->selectAction(m_pQFunction, s, a);
 }
 
+///////////////////////////////////////////////////
+//Q-Learning
+CLASS_CONSTRUCTOR(CDoubleQLearning) : EXTENDS(CQLearning,pParameters)
+{
+	m_pTargetQFunction= new CLinearStateActionVFA(m_pQFunction);
+	CONST_INTEGER_VALUE(m_targetUpdateFreq, "Target-Update-Freq", 100, "The number of steps between updates of the target Q-Function");
+	m_numStepsSinceLastTargetUpdate = 0;
+
+	END_CLASS();
+}
+
+CDoubleQLearning::~CDoubleQLearning()
+{
+	delete m_pTargetQFunction;
+}
+
+void CDoubleQLearning::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+{
+	m_eTraces->update();
+
+	//update the target
+	if (m_numStepsSinceLastTargetUpdate > m_targetUpdateFreq)
+	{
+		//copy the weights from the online function to the target function
+		memcpy_s(m_pTargetQFunction->getWeightPtr(), m_pTargetQFunction->getNumWeights()*sizeof(double)
+			, m_pQFunction->getWeightPtr(), m_pQFunction->getNumWeights()*sizeof(double));
+		m_numStepsSinceLastTargetUpdate = 0;
+	}
+	else m_numStepsSinceLastTargetUpdate++;
+
+	m_pQFunction->getFeatures(s, a, m_pAux);
+	m_eTraces->addFeatureList(m_pAux, m_pGamma->getValue());
+
+	double td = r + m_pGamma->getValue()*m_pQFunction->max(s_p) - m_pTargetQFunction->getValue(s, a);
+
+	m_pQFunction->add(m_eTraces, td*m_pAlpha->getValue());
+}
+
 /////////////////////////////////////////////////
 //SARSA
 CLASS_CONSTRUCTOR(CSARSA) : EXTENDS(CQLearning,pParameters)

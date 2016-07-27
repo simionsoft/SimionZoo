@@ -9,10 +9,11 @@
 #include "simgod.h"
 
 //LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
-CLinearVFA::CLinearVFA(CParameters* pParameters) : CParamObject(pParameters)
+CLinearVFA::CLinearVFA()
 {
 	m_pWeights = 0;
 }
+
 CLinearVFA::~CLinearVFA()
 {
 	if (m_pWeights) delete[] m_pWeights;
@@ -45,7 +46,7 @@ void CLinearVFA::setIndexOffset(unsigned int offset)
 	m_maxIndex = offset + m_numWeights;
 }
 
-bool CLinearVFA::saveWeights(const char* pFilename)
+bool CLinearVFA::saveWeights(const char* pFilename) const
 {
 	FILE* pFile;
 	assert(m_pWeights && m_numWeights >= 0);
@@ -85,7 +86,7 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 	return false;
 }
 
-void CLinearStateVFA::save(const char* pFilename)
+void CLinearStateVFA::save(const char* pFilename) const
 {
 	CParameters* pFeatureMapParameters;
 	char msg[128];
@@ -93,7 +94,7 @@ void CLinearStateVFA::save(const char* pFilename)
 	char xmlDescFile[512];
 	FILE* pXMLFile;
 
-	if ( pFilename == 0 || pFilename[0] == 0) return;
+	if (pFilename == 0 || pFilename[0] == 0) return;
 
 	sprintf_s(msg, 128, "Saving Policy to \"%s\" (.fmap/.weights)...", pFilename);
 	CLogger::logMessage(Info, msg);
@@ -106,7 +107,7 @@ void CLinearStateVFA::save(const char* pFilename)
 	fopen_s(&pXMLFile, xmlDescFile, "w");
 	if (pXMLFile)
 	{
-		pFeatureMapParameters= m_pStateFeatureMap->getParameters();
+		pFeatureMapParameters = m_pStateFeatureMap->getParameters();
 
 		if (pFeatureMapParameters)
 			pFeatureMapParameters->saveFile(pXMLFile);
@@ -121,10 +122,9 @@ void CLinearStateVFA::save(const char* pFilename)
 }
 
 
-
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(pParameters), CDeferredLoad()
+CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
 {
 	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
 	//CHILD_ CLASS_ FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
@@ -146,64 +146,15 @@ void CLinearStateVFA::deferredLoadStep()
 	m_pWeights = new double[m_numWeights];
 }
 
-CLinearStateVFA::CLinearStateVFA() : CLinearVFA(0)
+CLinearStateVFA::CLinearStateVFA() : CLinearVFA()
 {}
 
-CLASS_CONSTRUCTOR(CLinearStateVFAFromFile) :CLinearStateVFA()
+CLinearStateVFA::CLinearStateVFA(CLinearStateVFA* pSourceVFA)
 {
-	//load the map feature description from an xml file
-	FILE_PATH_VALUE(m_loadFilename, "Load", "../data/*.fmap", "The VFA will be loaded from this file");
-	CApp::get()->SimGod.registerInputFile(m_loadFilename);
 
-	strcpy_s(m_weightFilename, 1024, m_loadFilename);
-	char* extension = strstr(m_weightFilename, "fmap");
-	if (extension)
-		strcpy_s(extension, 1024 - (extension - m_weightFilename + 1), "weights");
-	CApp::get()->SimGod.registerInputFile(m_weightFilename);
-
-
-	m_pAux = new CFeatureList("LinearStateVFA/aux");
-	m_mapFeatureParameterFile = 0;
-	m_mapFeatureParameters = 0;
-	m_minIndex= m_maxIndex= m_numWeights = 0;
-	m_pStateFeatureMap = 0;
-	m_bSaturateOutput = false;
-	m_minOutput = 0.0;
-	m_maxOutput = 0.0;
-	END_CLASS();
-}
-void CLinearStateVFAFromFile::deferredLoadStep()
-{
-	char message[1024];
-	sprintf_s(message, 1024, "Loaded %s file", m_loadFilename);
-	CLogger::logMessage(MessageType::Info, message);
-
-	m_mapFeatureParameterFile = new CParameterFile();
-	m_mapFeatureParameters = m_mapFeatureParameterFile->loadFile(m_loadFilename);
-	m_pStateFeatureMap = new CGaussianRBFStateGridFeatureMap(m_mapFeatureParameters);
-
-	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
-	m_pWeights = new double[m_numWeights];
-	m_minIndex = 0;
-	m_maxIndex = m_numWeights;
-
-	//load the weigths from the binary file
-	loadWeights(m_weightFilename);
 }
 
-CLinearStateVFAFromFile::~CLinearStateVFAFromFile()
-{
-	delete m_mapFeatureParameterFile;
-}
 
-CLASS_FACTORY(CLinearStateVFA)
-{
-	CHOICE("Parameterization", "Do we want to define the vfa explicitly or load it from file?");
-	CHOICE_ELEMENT("Explicit", CLinearStateVFA,"The parameterization is explicitly given and no weights loaded.");
-	//CHOICE_jELEMEN("From-File", CLinearStateVFAFromFile, "The parameterization and weights are read from a file.");
-	END_CHOICE();
-	END_CLASS();
-}
 
 CLinearStateVFA::~CLinearStateVFA()
 {
@@ -266,12 +217,10 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters), CDeferredLoad()
+CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 {
 	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
 	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionStateFeatureMap();
-	//CHILD_CLASS_ FACTORY(m_pStateFeatureMap,"State-Feature-Map","The state feature map",false,CStateFeatureMap);
-	//CHILD_CLASS_ FACTORY(m_pActionFeatureMap,"Action-Feature-Map","The action feature map",false,CActionFeatureMap);
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -291,6 +240,30 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(pParameters), CDeferredLoa
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
 	END_CLASS();
+}
+
+CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA) : CLinearVFA(), CDeferredLoad()
+{
+	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionStateFeatureMap();
+
+	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
+	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
+	m_numWeights = m_numStateWeights * m_numActionWeights;
+	m_pWeights = 0;
+	m_minIndex = 0;
+	m_maxIndex = m_numWeights;
+
+	//this is used in "high-level" methods
+	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
+	//this is used in "lower-level" methods
+	m_pAux2 = new CFeatureList("LinearStateActionVFA/aux2");
+
+	m_initValue = pSourceVFA->m_initValue;
+
+	m_bSaturateOutput = false;
+	m_minOutput = 0.0;
+	m_maxOutput = 0.0;
 }
 
 CLinearStateActionVFA::~CLinearStateActionVFA()
