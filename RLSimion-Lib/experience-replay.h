@@ -34,7 +34,7 @@ public:
 	~CExperienceReplay();
 
 	void addTuple(CState* s, CAction* a, CState* s_p, double r);
-	int getUpdateBatchSize(){ return m_updateBatchSize; }
+	int getUpdateBatchSize();
 	CExperienceTuple* getRandomTupleFromBuffer();
 
 	void deferredLoadStep();

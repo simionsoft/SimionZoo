@@ -44,13 +44,18 @@ CExperienceReplay::~CExperienceReplay()
 		delete[] m_pTupleBuffer;
 }
 
+int CExperienceReplay::getUpdateBatchSize()
+{
+	return std::min(m_updateBatchSize, m_numTuples);
+}
+
 void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r)
 {
 	if (m_bufferSize<=0)
 		CApp::get()->Logger.logMessage(MessageType::Error, "Tried to access the experience replay buffer before initialising it");
 	//add the experience tuple to the buffer
 
-	if (m_numTuples < m_bufferSize)
+	if (m_numTuples < m_bufferSize-1)
 	{
 		//the buffer is not yet full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r);
