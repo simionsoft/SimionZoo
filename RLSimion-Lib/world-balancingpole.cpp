@@ -60,7 +60,7 @@ void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
 	double force = a->getValue(m_aPitch);
 	double theta = s->getValue(m_sTheta);
 	double theta_dot = s->getValue(m_sTheta_dot);
-	double x = a->getValue(m_sX);
+	double x = s->getValue(m_sX);
 	double x_dot = s->getValue(m_sX_dot);
 	double costheta = cos(theta);
 	double sintheta = sin(theta);

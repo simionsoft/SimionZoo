@@ -411,6 +411,7 @@ namespace AppXML.ViewModels
             try
             {
                 m_experimentQueueViewModel.load();
+                Task.Run(() => m_experimentQueueViewModel.checkLogFilesAlreadyExist());
             }
             catch (Exception e)
             {

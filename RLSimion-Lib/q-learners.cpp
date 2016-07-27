@@ -65,6 +65,12 @@ CQSoftMaxPolicy::~CQSoftMaxPolicy()
 
 void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
 {
+	if (m_pTau->getValue() == 0.0)
+	{
+		pQFunction->argMax(s, a);
+		return;
+	}
+
 	unsigned int numActionWeights = pQFunction->getNumActionWeights();
 	//allocate the probability array if we have to
 	if (!m_pProbabilities)
