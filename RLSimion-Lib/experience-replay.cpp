@@ -24,11 +24,20 @@ void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r)
 
 CLASS_CONSTRUCTOR(CExperienceReplay) : CDeferredLoad(), CParamObject(pParameters)
 {
-	CONST_INTEGER_VALUE(m_bufferSize, "Buffer-Size", 1000, "Size of the buffer used to store experience tuples");
-	CONST_INTEGER_VALUE(m_updateBatchSize, "Update-Batch-Size", 10, "Number of tuples used each time-step in the update");
+	if (pParameters)
+	{
+		CONST_INTEGER_VALUE(m_bufferSize, "Buffer-Size", 1000, "Size of the buffer used to store experience tuples");
+		CONST_INTEGER_VALUE(m_updateBatchSize, "Update-Batch-Size", 10, "Number of tuples used each time-step in the update");
+	}
+	else
+	{
+		//not very elegant, but simple enough... we want the system to work even if experience replay is not used
+		m_bufferSize = 1;
+		m_updateBatchSize = 1;
+	}
 	m_pTupleBuffer = 0;
-	m_currentPosition= 0;
-	m_numTuples= 0;
+	m_currentPosition = 0;
+	m_numTuples = 0;
 
 	END_CLASS();
 }
@@ -55,19 +64,18 @@ void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r)
 		CApp::get()->Logger.logMessage(MessageType::Error, "Tried to access the experience replay buffer before initialising it");
 	//add the experience tuple to the buffer
 
-	if (m_numTuples < m_bufferSize-1)
+	if (m_numTuples < m_bufferSize)
 	{
 		//the buffer is not yet full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r);
 		++m_numTuples;
-		++m_currentPosition;
 	}
 	else
 	{
 		//the buffer is full
-		m_currentPosition = ++m_currentPosition % m_bufferSize;
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r);
 	}
+	m_currentPosition = ++m_currentPosition % m_bufferSize;
 }
 
 CExperienceTuple* CExperienceReplay::getRandomTupleFromBuffer()

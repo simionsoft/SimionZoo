@@ -5,6 +5,7 @@
 #include "parameters.h"
 #include "reward.h"
 #include "app.h"
+#include "noise.h"
 
 CLASS_CONSTRUCTOR(CBalancingPole, const char* worldDefinition)
 : CDynamicModel(worldDefinition)
@@ -39,10 +40,23 @@ CBalancingPole::~CBalancingPole()
 
 void CBalancingPole::reset(CState *s)
 {
-	s->setValue(m_sX,0.0);
-	s->setValue(m_sX_dot,0.0);
-	s->setValue(m_sTheta,-0.1);
-	s->setValue(m_sTheta_dot,-0.01);
+
+	if (CApp::get()->Experiment.isEvaluationEpisode())
+	{
+		//fixed setting in evaluation episodes
+		s->setValue(m_sTheta, -0.1);
+		s->setValue(m_sTheta_dot, -0.01);
+		s->setValue(m_sX, 0.0);
+		s->setValue(m_sX_dot, 0.0);
+	}
+	else
+	{
+		//random setting in training episodes
+		s->setValue(m_sTheta, -0.2 + getRandomValue()*0.4);
+		s->setValue(m_sTheta_dot, -0.05 + getRandomValue()*0.1);
+		s->setValue(m_sX, -0.5 + getRandomValue());
+		s->setValue(m_sX_dot, -0.1 + getRandomValue()*0.2);
+	}
 }
 
 //#define GRAVITY 9.8
