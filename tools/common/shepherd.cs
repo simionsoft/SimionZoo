@@ -235,7 +235,7 @@ namespace Herd
             SendOutputFiles(false,cancelToken);
             SendJobFooter(cancelToken);
         }
-        public void ReceiveJobResult()
+        public async Task<bool> ReceiveJobResult(CancellationToken cancelToken)
         {
             bool bFooterPeeked= false;
             string xmlTag = "";
@@ -243,24 +243,30 @@ namespace Herd
             m_job.inputFiles.Clear();
             m_job.outputFiles.Clear();
 
-            ReceiveJobHeader();
-
+            int ret= await ReceiveJobHeader(cancelToken);
+            bool bret;
             do
             {
-                ReadFromStream();
                 xmlTag= m_xmlStream.peekNextXMLTag();
+                while (xmlTag=="")
+                {
+                    ret = await readAsync(cancelToken);
+                    xmlTag = m_xmlStream.peekNextXMLTag();
+                }
+
                 switch(xmlTag)
                 {
-                    case "Task": ReceiveTask(); break;
-                    case "Input": ReceiveFile(FileType.INPUT, false, false); break;
-                    case "Output": ReceiveFile(FileType.OUTPUT, true, false); break;
+                    case "Task": bret= await ReceiveTask(cancelToken); break;
+                    case "Input": bret= await ReceiveFile(FileType.INPUT, false, false,cancelToken); break;
+                    case "Output": bret= await ReceiveFile(FileType.OUTPUT, true, false,cancelToken); break;
                     case "/Job": bFooterPeeked= true; break;
                 }
             } while (!bFooterPeeked);
 
-            ReceiveJobFooter();
+            bret= await ReceiveJobFooter(cancelToken);
 
-            //if job result properly received. For now, we will assume it}
+            //if job result properly received. For now, we will assume it
+            return true;
         }
     }
 }

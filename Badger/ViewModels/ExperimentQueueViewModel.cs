@@ -60,15 +60,17 @@ namespace AppXML.ViewModels
             get { return m_selectedIndex; }
             set
             {
-                if (m_selectedIndex >= 0) m_experimentQueue[m_selectedIndex].bIsSelected = false;
-                m_selectedIndex = value;
-            if (m_selectedIndex >= 0)
-            {
-                m_experimentQueue[m_selectedIndex].bIsSelected = true;
-                m_parent.loadExperimentInEditor(m_experimentQueue[m_selectedIndex].experimentXML);
-                m_parent.bIsExperimentQueueNotEmpty = true;
+                if (value >= 0 && value < m_experimentQueue.Count)
+                {
+                    m_experimentQueue[value].bIsSelected = false;
+                    m_selectedIndex = value;
+
+                    m_experimentQueue[m_selectedIndex].bIsSelected = true;
+                    m_parent.loadExperimentInEditor(m_experimentQueue[m_selectedIndex].experimentXML);
+                    m_parent.bIsExperimentQueueNotEmpty = true;
+                }
+            NotifyOfPropertyChange(()=>selectedIndex);
             }
-            NotifyOfPropertyChange(()=>selectedIndex);}
         }
 
         public void markModified(bool modified)
@@ -94,7 +96,7 @@ namespace AppXML.ViewModels
 
         public void addExperiment(ExperimentViewModel exp)
         {
-            if (m_selectedIndex >= 0)
+            if (m_selectedIndex >= 0 && m_selectedIndex < m_experimentQueue.Count)
                 m_experimentQueue.Insert(m_selectedIndex + 1, exp);
             else m_experimentQueue.Add(exp);
             markModified(true);
@@ -113,17 +115,18 @@ namespace AppXML.ViewModels
 
         public void removeSelectedExperiments()
         {
-            if (m_selectedIndex>=0)
+            if (m_selectedIndex>=0 && m_selectedIndex<m_experimentQueue.Count)
             {
                 markModified(true);
 
                 m_experimentQueue.RemoveAt(m_selectedIndex);
+                m_selectedIndex = -1;
                 NotifyOfPropertyChange(() => experimentQueue);
             }
         }
         public void modifySelectedExperiment(XmlDocument modifiedExperimentXML)
         {
-            if(m_selectedIndex>=0)
+            if (m_selectedIndex >= 0 && m_selectedIndex < m_experimentQueue.Count)
             {
                 markModified(true);
 

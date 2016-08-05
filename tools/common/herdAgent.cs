@@ -69,7 +69,7 @@ namespace Herd
             SendOutputFiles(true,cancelToken);
             SendJobFooter(cancelToken);
         }
-        public bool ReceiveJobQuery()
+        public async Task<bool> ReceiveJobQuery(CancellationToken cancelToken)
         {
             bool bFooterPeeked = false;
             string xmlTag = "";
@@ -77,23 +77,28 @@ namespace Herd
             m_job.inputFiles.Clear();
             m_job.outputFiles.Clear();
 
-            ReceiveJobHeader();
-
+            int ret= await ReceiveJobHeader(cancelToken);
+            bool bret;
             do
             {
-                ReadFromStream();
+                //ReadFromStream();
                 xmlTag = m_xmlStream.peekNextXMLTag();
+                while (xmlTag == "")
+                {
+                    ret = await ReadFromStreamAsync(cancelToken);
+                    xmlTag = m_xmlStream.peekNextXMLTag();
+                }
                 switch (xmlTag)
                 {
-                    case "Task": ReceiveTask(); break;
-                    case "Input": ReceiveFile(FileType.INPUT,true, true); break;
-                    case "Output": ReceiveFile(FileType.OUTPUT, false, true); break;
+                    case "Task": bret= await ReceiveTask(cancelToken); break;
+                    case "Input": bret= await ReceiveFile(FileType.INPUT, true, true, cancelToken); break;
+                    case "Output": bret= await ReceiveFile(FileType.OUTPUT, false, true, cancelToken); break;
                     case "/Job": bFooterPeeked = true; break;
                 }
             } while (!bFooterPeeked);
 
-            ReceiveJobFooter();
-            //we will assume everything went ok for now
+            bret= await ReceiveJobFooter(cancelToken);
+
             return true;
         }
 
@@ -361,7 +366,7 @@ namespace Herd
                 {
                     setState(AgentState.BUSY);
 
-                    read();
+                    int ret= await readAsync(m_cancelTokenSource.Token);
                     string xmlItem = m_xmlStream.processNextXMLItem();
                     string xmlItemContent;
                     int returnCode;
@@ -379,10 +384,9 @@ namespace Herd
                         {
                             logMessage("Receiving job data from " 
                                 + m_tcpClient.Client.RemoteEndPoint.ToString());
-                            if (ReceiveJobQuery())
+                            bool bret= await ReceiveJobQuery(m_cancelTokenSource.Token);
+                            if (bret)
                             {
-                               //listenForQuitCommand(m_cancelTokenSource.Token);
-
                                 //run the job
                                 logMessage("Running job");
                                 returnCode = await runJobAsync(m_cancelTokenSource.Token);

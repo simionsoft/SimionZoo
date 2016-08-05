@@ -193,7 +193,7 @@ namespace AppXML.ViewModels
                                     logMessage("Receiving job results");
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.RECEIVING);
                                     m_herdAgent.status = "Receiving output files";
-                                    m_shepherd.ReceiveJobResult();
+                                    bool bret= await m_shepherd.ReceiveJobResult(m_cancelToken);
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.FINISHED);
                                     m_herdAgent.status = "Finished";
                                     logMessage("Job results received");
@@ -212,18 +212,15 @@ namespace AppXML.ViewModels
 
                 logMessage("Cancellation requested by user");
                 m_shepherd.writeMessage(Shepherd.m_quitMessage, true);
-                m_shepherd.read(); //we wait until we get the ack from the client
-
-                //Thread.Sleep(1000); // we give the agents one second to process the quit request before closing the socket
+                m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
+                
                 m_monitoredExperiments.ForEach((exp) => { exp.resetState(); });
-                //exp.resetState(); if (!m_failedExperiments.Contains(exp)) m_failedExperiments.Add(exp); });
                 m_herdAgent.status = "";
             }
             catch (Exception ex)
             {
                 //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
                 //mandar a cualquier maquina que este libre
-                //this.reRun(myPipes.Values);
                 logMessage("Unhandled exception in Badger.sendJobAndMonitor(). Agent " + m_herdAgent.ipAddress);
                 m_failedExperiments.Clear();
                 foreach (MonitoredExperimentViewModel exp in m_monitoredExperiments) m_failedExperiments.Add(exp);

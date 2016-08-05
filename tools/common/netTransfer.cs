@@ -120,11 +120,12 @@ namespace Herd
         {
             await m_xmlStream.writeMessageAsync(m_netStream, message, cancelToken, addDefaultMessageType);
         }
-        public void read()
-        {
-            ////checkConnection(m_tcpClient);
-            m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
-        }
+
+        //public void read()
+        //{
+        //    ////checkConnection(m_tcpClient);
+        //    m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream,new CancellationToken());
+        //}
         public async Task<int> readAsync(CancellationToken cancelToken)
         {
             int numBytesRead= 0;
@@ -132,7 +133,7 @@ namespace Herd
             catch { logMessage("async read operation cancelled"); }
             return numBytesRead;
         }
-        public void writeAsync(byte[]buffer, int offset, int length, CancellationToken cancelToken)
+        public bool writeAsync(byte[]buffer, int offset, int length, CancellationToken cancelToken)
         {
             if (!m_bEnqueueAsyncWrites)
             {
@@ -144,6 +145,7 @@ namespace Herd
                 try { m_pendingAsyncWrites.Add(m_netStream.WriteAsync(buffer, offset, length)); }
                 catch (OperationCanceledException) { logMessage("async write operation cancelled"); }
             }
+            return true;
         }
         public void waitAsyncWriteOpsToFinish()
         {
@@ -188,16 +190,17 @@ namespace Herd
 
             writeAsync(bytes, 0, bytes.Length,cancelToken);
         }
-        public void ReceiveTask()
+        public async Task<bool> ReceiveTask(CancellationToken cancelToken)
         {
             CTask task = new CTask();
             Match match;
-            match= ReadUntilMatch("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>");
+            match= await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>",cancelToken);
             task.name = match.Groups[1].Value;
             task.exe = match.Groups[2].Value;
             task.arguments = match.Groups[3].Value;
             task.pipe = match.Groups[4].Value;
             m_job.tasks.Add(task);
+            return true;
         }
  
         protected void SendJobHeader(CancellationToken cancelToken)
@@ -283,19 +286,44 @@ namespace Herd
             //return true;
         }
 
-        public void ReadFromStream()
+        //public void ReadFromStream()
+        //{
+        //    m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
+        //}
+        public async Task<int> ReadFromStreamAsync(CancellationToken cancelToken)
         {
-            m_xmlStream.readFromNetworkStream(m_tcpClient, m_netStream);
+            int ret= await m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream, cancelToken);
+            return ret;
         }
-        public Match ReadUntilMatch(string pattern)
+        //public Match ReadUntilMatch(string pattern)
+        //{
+        //    Match match;
+        //    string header;
+
+        //    do
+        //    {
+        //        ReadFromStream();
+        //        header = m_xmlStream.processNextXMLTag();//Encoding.ASCII.GetString(m_buffer);
+
+        //        match = Regex.Match(header, pattern);
+        //    }
+        //    while (!match.Success);
+
+        //    return match;
+        //}
+
+        //this method reads asynchronously until a matching XML tag is read
+        //CAN ONLY BE USED with tags, i.e. "<Job Name=\"([^\"]*)\">"
+        public async Task<Match> ReadUntilMatchAsync(string pattern, CancellationToken cancelToken)
         {
             Match match;
             string header;
-
+            int ret;
             do
             {
-                ReadFromStream();
-                header = m_xmlStream.processNextXMLTag();//Encoding.ASCII.GetString(m_buffer);
+                header = m_xmlStream.processNextXMLTag();
+                if (header == "") //there's nothing in the buffer or incomplete tags
+                    ret = await ReadFromStreamAsync(cancelToken);
 
                 match = Regex.Match(header, pattern);
             }
@@ -303,48 +331,43 @@ namespace Herd
 
             return match;
         }
-        public void ReceiveJobHeader()
+        public async Task<int> ReceiveJobHeader(CancellationToken cancelToken)
         {
             Match match;
-            match= ReadUntilMatch("<Job Name=\"([^\"]*)\">");
+            match= await ReadUntilMatchAsync("<Job Name=\"([^\"]*)\">", cancelToken);
 
             m_job.name = match.Groups[1].Value;
 
-            ReadFromStream(); //we shift the buffer to the left skipping the processed header
+            return 1;
+
+            //i think this is just a bug
+            //return await ReadFromStreamAsync(cancelToken); //we shift the buffer to the left skipping the processed header
         }
    
-        protected void ReceiveJobFooter()
+        protected async Task<bool> ReceiveJobFooter(CancellationToken cancelToken)
         {
-            Match match;
-
-            string header;
-            do
-            {
-                ReadFromStream();
-                header = m_xmlStream.processNextXMLTag();//Encoding.ASCII.GetString(m_buffer);
-                match = Regex.Match(header, "</Job>");
-            }
-            while (!match.Success);
-            // m_bufferOffset += match.Index + match.Length;
+            Match ret= await ReadUntilMatchAsync("</Job>",cancelToken);
+            return true;
         }
 
-        protected void ReceiveFile(FileType type, bool receiveContent, bool inCachedDir)
+        protected async Task<bool> ReceiveFile(FileType type, bool receiveContent, bool inCachedDir, CancellationToken cancelToken)
         {
-            ReceiveFileHeader(type, receiveContent,inCachedDir);
+            bool ret= await ReceiveFileHeader(type, receiveContent,inCachedDir,cancelToken);
             if (receiveContent)
             {
                 logMessage("Receiving file: " + m_nextFileName);
-                ReceiveFileData(inCachedDir);
-                ReceiveFileFooter(type);
+                ret= await ReceiveFileData(inCachedDir,cancelToken);
+                ret= await ReceiveFileFooter(type,cancelToken);
             }
+            return true;
         }
-        protected void ReceiveFileHeader(FileType type, bool receiveContent, bool inCachedDir)
+        protected async Task<bool> ReceiveFileHeader(FileType type, bool receiveContent, bool inCachedDir, CancellationToken cancelToken)
         {
             Match match;
 
             if (receiveContent)
-                match = ReadUntilMatch("<(Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">");
-            else match = ReadUntilMatch("<(Input|Output) Name=\"([^\"]*)\"/>");
+                match = await ReadUntilMatchAsync("<(Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">", cancelToken);
+            else match = await ReadUntilMatchAsync("<(Input|Output) Name=\"([^\"]*)\"/>",cancelToken);
 
             if ( (match.Groups[1].Value == "Input" && type != FileType.INPUT)
                 || (match.Groups[1].Value == "Output" && type != FileType.OUTPUT))
@@ -366,12 +389,13 @@ namespace Herd
             string outputDir = Path.GetDirectoryName(outputFilename);
             System.IO.Directory.CreateDirectory(outputDir);
 
-            // m_bufferOffset += match.Index + match.Length;
+            return true;
         }
-        protected void ReceiveFileFooter(FileType type)
+        protected async Task<bool> ReceiveFileFooter(FileType type,CancellationToken cancelToken)
         {
             Match match;
-            match = ReadUntilMatch("</(Input|Output)>");
+            match = await ReadUntilMatchAsync("</(Input|Output)>",cancelToken);
+            return true;
         }
         protected int SaveBufferToFile(FileStream outputFile, int bytesLeft)
         {
@@ -387,7 +411,7 @@ namespace Herd
             string outputFilename = m_tempDir.TrimEnd('/', '\\') + "\\" + originalFilename.TrimStart('.', '/', '\\');
             return outputFilename;
         }
-        protected void ReceiveFileData(bool inCachedDir)
+        protected async Task<bool> ReceiveFileData(bool inCachedDir,CancellationToken cancelToken)
         {
             int bytesLeft = m_nextFileSize;
 
@@ -398,15 +422,15 @@ namespace Herd
                 outputFilename = m_nextFileName;
 
             FileStream outputFile = File.Open(outputFilename, FileMode.Create);
-
+            int ret;
             do
             {
-                ReadFromStream();
+                ret= await ReadFromStreamAsync(cancelToken);
                 bytesLeft -= SaveBufferToFile(outputFile, bytesLeft);
             } while (bytesLeft > 0);
             outputFile.Close();
 
-            ReadFromStream(); //discard processed data
+            return true;
         }
     }
     
@@ -506,20 +530,20 @@ namespace Herd
                 logMessage("write operation cancelled");
             }
         }
-        public void readFromNetworkStream(TcpClient client, NetworkStream stream)
-        {
-            discardProcessedData();
-            //read if there's something to read and if we have available storage
-            do
-            {
-                //CJobDispatcher.checkConnection(client);
-                if (stream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
-                {
-                    m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
-                }
-                if (m_bytesInBuffer == 0) Thread.Sleep(200);
-            } while (m_bytesInBuffer == 0);
-        }
+        //public void readFromNetworkStream(TcpClient client, NetworkStream stream)
+        //{
+        //    discardProcessedData();
+        //    //read if there's something to read and if we have available storage
+        //    do
+        //    {
+        //        //CJobDispatcher.checkConnection(client);
+        //        if (stream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
+        //        {
+        //            m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+        //        }
+        //        if (m_bytesInBuffer == 0) Thread.Sleep(200);
+        //    } while (m_bytesInBuffer == 0);
+        //}
         public async Task<int> readFromNetworkStreamAsync(TcpClient client, NetworkStream stream,CancellationToken cancelToken)
         {
             int numBytesRead= 0;
@@ -530,13 +554,13 @@ namespace Herd
             m_bytesInBuffer += numBytesRead;
             return numBytesRead;
         }
-        public void readFromNamedPipeStream(NamedPipeServerStream stream)
-        {
-            discardProcessedData();
-            //read if there's something to read and if we have available storage
-            if (m_bytesInBuffer < m_maxChunkSize)
-                m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
-        }
+        //public void readFromNamedPipeStream(NamedPipeServerStream stream)
+        //{
+        //    discardProcessedData();
+        //    //read if there's something to read and if we have available storage
+        //    if (m_bytesInBuffer < m_maxChunkSize)
+        //        m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
+        //}
         public async Task< int> readFromNamedPipeStreamAsync(NamedPipeServerStream stream,CancellationToken cancelToken)
         {
             int numBytesRead= 0;
@@ -582,6 +606,8 @@ namespace Herd
             }
             return "";
         }
+        //If message "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>" is received
+        ////this method should return "pipe1", not marking those bytes as processed
         public string peekNextXMLTag()
         {
             if (m_bytesInBuffer > 0)
@@ -589,8 +615,6 @@ namespace Herd
                 discardProcessedData();
                 m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
 
-                //For "<pipe1><message>kasjdlfj kljasdkljf </message></pipe1>"
-                ////this should return the whole message
                 m_match = Regex.Match(m_asciiBuffer, @"<([^\s>]*)");
 
                 if (m_match.Success)
@@ -622,6 +646,8 @@ namespace Herd
             }
             return "";
         }
+        //instead of parsing pending info in the buffer, it parses m_lastXMLItem
+        //, which is set after a call to processNextXMLTag()
         public string getLastXMLItemContent()
         {
             if (m_lastXMLItem != "")
