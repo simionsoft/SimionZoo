@@ -5,7 +5,7 @@
 #include "RLSimionInterfaceDLL.h"
 #include "../../RLSimion-Lib/app-rlsimion.h"
 #include "../../RLSimion-Lib/app-controller-to-vfa.h"
-#include "../../RLSimion-Lib/app-compare-controller-vfa.h"
+//#include "../../RLSimion-Lib/app-compare-controller-vfa.h"
 #include "../../RLSimion-Lib/logger.h"
 #include "../../RLSimion-Lib/parameters.h"
 #include "../../RLSimion-Lib/utils.h"
@@ -34,8 +34,8 @@ extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* p
 			pApp = new RLSimionApp(pParameters, xmlFilename);
 		else if (!strcmp("ControllerToVFA", pParameters->getName()))
 			pApp = new ControllerToVFAApp(pParameters);
-		else if (!strcmp("CompareControllerVFA", pParameters->getName()))
-			pApp = new CompareControllerVFAApp(pParameters);
+		//else if (!strcmp("CompareControllerVFA", pParameters->getName()))
+		//	pApp = new CompareControllerVFAApp(pParameters);
 
 		if (pApp)
 		{
