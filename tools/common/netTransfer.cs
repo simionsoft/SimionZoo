@@ -164,15 +164,21 @@ namespace Herd
         }
         protected void SendOutputFiles(bool sendContent,CancellationToken cancelToken)
         {
+            List<string> unknownFiles= new List<string>();
             foreach (string file in m_job.outputFiles)
             {
                 //some output files may not be ther if a task failed
                 //we still want to try sending the rest of files
                 if (!sendContent || File.Exists(getCachedFilename(file)))
-                    SendFile(file, FileType.OUTPUT, sendContent,true, cancelToken);
+                    SendFile(file, FileType.OUTPUT, sendContent, true, cancelToken);
                 else
-                    m_job.outputFiles.Remove(file);
+                {
+                    unknownFiles.Add(file);
+                    logMessage("File " + file + " not found. Cannot be sent back to the client.");
+                }
             }
+            foreach(string file in unknownFiles)
+                m_job.outputFiles.Remove(file);
         }
         protected void SendTasks(CancellationToken cancelToken)
         {

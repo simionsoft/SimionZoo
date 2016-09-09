@@ -368,6 +368,9 @@
     <FILE-PATH-VALUE Name="Evaluation-Set-Point" Default="../config/world/magnetic-levitation/setpoint.txt" Comment="The setpoint file"/>
   </CLASS>
 
+  <CLASS Name="CMountainCar">
+  </CLASS>
+
   <CLASS Name="CPitchControl">
     <FILE-PATH-VALUE Name="Set-Point-File" Default="../config/world/pitch-control/setpoint.txt" Comment="The setpoint file"/>
   </CLASS>
@@ -394,6 +397,7 @@
       <CHOICE-ELEMENT Name="Underwater-vehicle" Class="CUnderwaterVehicle" XML="../config/world/underwater-vehicle.xml" Comment="An underwater vehicle control task"/>
       <CHOICE-ELEMENT Name="Pitch-control" Class="CPitchControl" XML="../config/world/pitch-control.xml" Comment="An airplane pitch control task"/>
       <CHOICE-ELEMENT Name="Balancing-pole" Class="CBalancingPole" XML="../config/world/balancing-pole.xml" Comment="The balancing pole control problem (Sutton)"/>
+      <CHOICE-ELEMENT Name="Mountain-car" Class="CMountainCar" XML="../config/world/mountain-car.xml" Comment="The mountain-car task as implemented by Sutton"/>
     </CHOICE>
   </CLASS>
 

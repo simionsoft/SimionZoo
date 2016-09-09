@@ -153,6 +153,9 @@
     <ClCompile Include="experience-replay.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="world-mountaincar.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -277,6 +280,9 @@
     </ClInclude>
     <ClInclude Include="experience-replay.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world-mountaincar.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
