@@ -43,15 +43,14 @@ namespace AppXML.ViewModels
         private List<MonitoredExperimentViewModel> m_failedExperiments= new List<MonitoredExperimentViewModel>();
         public List<MonitoredExperimentViewModel> failedExperiments { get { return m_failedExperiments; } set { } }
 
-        private Utility.LogFunction m_logFunction = null;
+        private Logger.LogFunction m_logFunction = null;
         private void logMessage(string message)
         {
-            if (m_logFunction != null)
-                m_logFunction(message);
+            m_logFunction?.Invoke(message);
         }
 
         public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments,HerdAgentViewModel herdAgent
-            ,PlotViewModel evaluationPlot,CancellationToken cancelToken, Utility.LogFunction logFunction)
+            ,PlotViewModel evaluationPlot,CancellationToken cancelToken, Logger.LogFunction logFunction)
         {
             m_name = name;
             m_monitoredExperiments = experiments;
@@ -249,13 +248,13 @@ namespace AppXML.ViewModels
 
         //log stuff: a delegate log function must be passed via setLogFunction
        
-        private Utility.LogFunction logFunction= null;
+        private Logger.LogFunction logFunction= null;
         private PlotViewModel m_evaluationMonitor;
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
             , List<ExperimentViewModel> pendingExperiments, PlotViewModel evaluationMonitor
-            , Utility.LogFunction logFunctionDelegate)
+            , Logger.LogFunction logFunctionDelegate)
         {
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
@@ -343,7 +342,7 @@ namespace AppXML.ViewModels
         public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments
             , ref List<HerdAgentViewModel> freeHerdAgents
             , ref  List<ExperimentBatch> experimentAssignments
-            , CancellationToken cancelToken, Utility.LogFunction logFunction = null)
+            , CancellationToken cancelToken, Logger.LogFunction logFunction = null)
         {
             experimentAssignments.Clear();
             List<MonitoredExperimentViewModel> experimentBatch;

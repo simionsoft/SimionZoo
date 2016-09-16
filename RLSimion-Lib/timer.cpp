@@ -4,17 +4,17 @@
 
 CTimer::CTimer()
 {
-	m_startTimePoint = std::chrono::steady_clock::now();
+	m_startTimePoint = std::chrono::system_clock::now();
 }
 
 void CTimer::startTimer()
 {
-	m_startTimePoint= std::chrono::steady_clock::now();
+	m_startTimePoint= std::chrono::system_clock::now();
 }
 
 double CTimer::getElapsedTime(bool resetTimer)
 {
-	std::chrono::system_clock::time_point timePointNow = std::chrono::steady_clock::now();
+	std::chrono::system_clock::time_point timePointNow = std::chrono::system_clock::now();
 
 	auto timeDiff = timePointNow - m_startTimePoint;
 

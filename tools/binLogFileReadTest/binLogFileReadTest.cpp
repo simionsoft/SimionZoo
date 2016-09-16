@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include <stdio.h>
 #include <memory>
+#include "../../RLSimion-Lib/logger.h"
 
 #define HEADER_MAX_SIZE 16
 #define EXPERIMENT_HEADER 1
@@ -79,7 +80,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			while (stepHeader.magicNumber != EPISODE_END_HEADER)
 			{
-				fread_s((void*)loggedVariables, sizeof(double)*1000, sizeof(double), stepHeader.numVariablesLogged, pFile);
+				fread_s((void*)loggedVariables, sizeof(double)*1000, sizeof(double), (size_t)episodeHeader.numVariablesLogged, pFile);
 				fread_s((void*)&stepHeader, sizeof(StepHeader), sizeof(StepHeader), 1, pFile);
 			}
 		}

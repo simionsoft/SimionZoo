@@ -44,12 +44,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\common\herdAgent.cs">
-      <Link>herdAgent.cs</Link>
-    </Compile>
-    <Compile Include="..\common\netTransfer.cs">
-      <Link>netTransfer.cs</Link>
-    </Compile>
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -75,6 +69,12 @@
     <EmbeddedResource Include="Service1.resx">
       <DependentUpon>Service1.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Herd\Herd.csproj">
+      <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
+      <Name>Herd</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

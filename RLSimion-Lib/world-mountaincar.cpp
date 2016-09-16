@@ -64,8 +64,16 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
     if (mcar_position < mcar_min_position) mcar_position = mcar_min_position;
     if (mcar_position==mcar_min_position && mcar_velocity<0) mcar_velocity = 0;}
 	*/
-	velocity += (pedal - 1.0)*0.001 + cos(3 * position)*(-0.0025);
-	position += velocity;
+	if (position > s->getMin(m_sPosition))
+	{
+		velocity += pedal*0.001 + cos(3 * position)*(-0.0025);
+		s->setValue(m_sVelocity, velocity); //saturate
+		velocity = s->getValue(m_sVelocity);
+		position += velocity;
+	}
+	else
+		velocity = 0.0;
+
 	s->setValue(m_sPosition, position);
 	s->setValue(m_sVelocity, velocity);
 }

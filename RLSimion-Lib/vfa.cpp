@@ -117,7 +117,7 @@ void CLinearStateVFA::save(const char* pFilename) const
 		return;
 	}
 
-	sprintf_s(msg, 128, "Couldn't save the policy", binFile);
+	sprintf_s(msg, 128, "Couldn't save the policy in file %s", binFile);
 	CLogger::logMessage(Warning, msg);
 }
 

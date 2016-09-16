@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Herd;
 using Caliburn.Micro;
-using System.Net;
-using System.Threading;
+
 
 namespace AppXML.ViewModels
 {
@@ -20,8 +15,8 @@ namespace AppXML.ViewModels
         public Shepherd shepherd { get { return m_shepherd; } set{}}
 
         private object m_listsLock = new object();
-        private BindableCollection<HerdAgentViewModel> m_innerHerdAgentList =
-            new BindableCollection<HerdAgentViewModel>();
+        private List<HerdAgentInfo> m_innerHerdAgentList =
+            new List<HerdAgentInfo>();
         private BindableCollection <HerdAgentViewModel> m_herdAgentList
             = new BindableCollection<HerdAgentViewModel>();
         public BindableCollection<HerdAgentViewModel> herdAgentList
@@ -34,8 +29,8 @@ namespace AppXML.ViewModels
                     m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
 
                     m_herdAgentList.Clear();
-                    foreach (HerdAgentViewModel agent in m_innerHerdAgentList)
-                        m_herdAgentList.Add(agent);
+                    foreach (HerdAgentInfo agent in m_innerHerdAgentList)
+                        m_herdAgentList.Add(new HerdAgentViewModel(agent));
                 }
                 return m_herdAgentList;
             }
@@ -48,11 +43,11 @@ namespace AppXML.ViewModels
             lock (m_listsLock)
             {
                 outList.Clear();
-                foreach (HerdAgentViewModel agent in m_innerHerdAgentList)
+                foreach (HerdAgentInfo agent in m_innerHerdAgentList)
                 {
                     if (agent.isAvailable)
                     {
-                        outList.Add(agent);
+                        outList.Add(new HerdAgentViewModel(agent));
                         numAvailableCores += agent.numProcessors;
                     }
                 }
@@ -62,11 +57,6 @@ namespace AppXML.ViewModels
 
         private void notifyHerdAgentChanged()
         {
-            //we get the agents that sent an ack less than m_agentTimeoutSeconds seconds ago
-//            lock (m_listsLock)
-            //{
-            //    m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
-            //}
             NotifyOfPropertyChange(() => herdAgentList);
         }
         private void resendBroadcast(object sender, System.Timers.ElapsedEventArgs e)

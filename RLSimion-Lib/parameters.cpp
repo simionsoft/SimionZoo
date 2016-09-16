@@ -66,7 +66,7 @@ bool CParameters::getConstBoolean(const char* paramName, bool defaultValue)
 	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
-	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %b", getName(), paramName, defaultValue);
+	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
 	CLogger::logMessage(Warning, msg);
 
 	return defaultValue;

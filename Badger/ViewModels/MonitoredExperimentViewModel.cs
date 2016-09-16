@@ -142,11 +142,10 @@ namespace AppXML.ViewModels
         //public bool isStatusInfo { get { return m_statusInfo != ""; } set { } }
 
         //log stuff
-        private Utility.LogFunction m_logFunction = null;
+        private Logger.LogFunction m_logFunction = null;
         private void logMessage(string message)
         {
-            if (m_logFunction != null)
-                m_logFunction(message);
+            m_logFunction?.Invoke(message);
         }
 
         public MonitoredExperimentViewModel(ExperimentViewModel experiment, PlotViewModel evaluationMonitorVM)

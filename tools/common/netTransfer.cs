@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using Herd;
-using AppXML.Data;
+
 
 namespace Herd
 {
@@ -78,7 +73,7 @@ namespace Herd
         protected static string m_tempDir;
         protected CJob m_job;
 
-        protected Utility.LogFunction m_logMessageHandler;
+        protected Logger.LogFunction m_logMessageHandler;
 
         
         public enum FileType { INPUT, OUTPUT };
@@ -106,12 +101,12 @@ namespace Herd
 
         public void setTCPClient(TcpClient client) { m_tcpClient = client; m_netStream = client.GetStream(); }
         public void setDirPath(string dirPath) { m_tempDir = dirPath; }
-        public void setLogMessageHandler(Utility.LogFunction logMessageHandler)
+        public void setLogMessageHandler(Logger.LogFunction logMessageHandler)
         { 
             m_logMessageHandler = logMessageHandler;
             m_xmlStream.setLogMessageHandler(logMessageHandler);
         }
-        protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
+        protected void logMessage(string message) { m_logMessageHandler?.Invoke(message); }
         public void writeMessage(string message, bool addDefaultMessageType = false)
         {
             m_xmlStream.writeMessage(m_netStream, message, addDefaultMessageType);
@@ -121,11 +116,6 @@ namespace Herd
             await m_xmlStream.writeMessageAsync(m_netStream, message, cancelToken, addDefaultMessageType);
         }
 
-        //public void read()
-        //{
-        //    ////checkConnection(m_tcpClient);
-        //    m_xmlStream.readFromNetworkStreamAsync(m_tcpClient, m_netStream,new CancellationToken());
-        //}
         public async Task<int> readAsync(CancellationToken cancelToken)
         {
             int numBytesRead= 0;
@@ -154,7 +144,6 @@ namespace Herd
             m_bEnqueueAsyncWrites= false;
         }
 
-        //protected void SendExeFiles(bool sendContent) { if (m_job.exeFile != "") SendFile(m_job.exeFile, FileType.EXE, sendContent, false); }
         protected void SendInputFiles(bool sendContent,CancellationToken cancelToken)
         {
             foreach (string file in m_job.inputFiles)
@@ -452,8 +441,8 @@ namespace Herd
         private string m_lastXMLItem;
         public const string m_defaultMessageType = "Internal";
 
-        protected Utility.LogFunction m_logMessageHandler;
-        public void setLogMessageHandler(Utility.LogFunction logMessageHandler) { m_logMessageHandler = logMessageHandler; }
+        protected Logger.LogFunction m_logMessageHandler;
+        public void setLogMessageHandler(Logger.LogFunction logMessageHandler) { m_logMessageHandler = logMessageHandler; }
         protected void logMessage(string message) { if (m_logMessageHandler != null) m_logMessageHandler(message); }
 
         public XMLStream()
