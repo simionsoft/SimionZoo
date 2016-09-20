@@ -1,19 +1,11 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Collections.ObjectModel;
-using AppXML.Models;
 using Caliburn.Micro;
 using System.Windows.Forms;
-using System.Windows;
 using System.IO;
-using System.Dynamic;
-using System.Threading;
 using AppXML.Data;
-using Herd;
 
 namespace AppXML.ViewModels
 {
