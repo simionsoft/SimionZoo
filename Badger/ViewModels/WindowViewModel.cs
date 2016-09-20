@@ -49,7 +49,7 @@ namespace AppXML.ViewModels
         private ExperimentQueueViewModel m_experimentQueueViewModel = new ExperimentQueueViewModel();
         public ExperimentQueueViewModel experimentQueueViewModel { get { return m_experimentQueueViewModel; }
             set { m_experimentQueueViewModel = value;
-            NotifyOfPropertyChange(() => experimentQueueViewModel);
+            NotifyOfPropertyChange(() => experimentQueueViewModel);            
             }
         }
 
