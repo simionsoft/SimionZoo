@@ -2,28 +2,15 @@
 using AppXML.Data;
 using System.Collections.ObjectModel;
 using System.Xml;
-using System.Windows;
 using Caliburn.Micro;
 using System.Windows.Forms;
 using System.IO;
-using System.Dynamic;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System;
-using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.IO.Pipes;
-using System.Xml.Linq;
-using System.Linq;
-using System.Xml.XPath;
-using System.Windows.Media;
 using System.Threading;
-using System.Globalization;
-using System.Collections.Concurrent;
 using Herd;
-using AppXML.ViewModels;
 
 
 namespace AppXML.ViewModels
@@ -335,53 +322,6 @@ namespace AppXML.ViewModels
 
                 experimentQueueViewModel.checkLogFilesAlreadyExist();
             }      
-        }
-        
-
-        public void updateHerdAgents()
-        {
-            CJob updateJob= new CJob();
-            CTask updateTask = new CTask();
-            updateTask.name = "RunServiceUpdater";
-            updateTask.arguments = "";
-            updateTask.pipe = "";
-            updateTask.exe = "../Debug/HerdAgentUnattendedUpdater.msi";
-            updateJob.name = "HerdAgentServiceUpdate";
-            updateJob.tasks.Add(updateTask);
-            updateJob.inputFiles.Add(updateTask.exe);
-            List<HerdAgentViewModel> agentList= new List<HerdAgentViewModel>();
-            m_shepherdViewModel.getAvailableHerdAgents(ref agentList);
-
-            CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-
-           Task.Factory.StartNew(() =>
-            {
-                foreach (var agent in agentList)
-                {
-                    Shepherd shepherd= new Shepherd();
-                    
-                    if (agent.isAvailable)
-                    {
-                        if (shepherd.connectToHerdAgent(agent.ipAddress))
-                        {
-                            try
-                            {
-                                shepherd.startEnqueueingAsyncWriteOps(); //we enqueue them to be able to wait for them to finish in waitAsyncWriteOpsToFinish()
-                                shepherd.SendJobQuery(updateJob, cancelTokenSource.Token);
-                                shepherd.waitAsyncWriteOpsToFinish();
-                            }
-                            catch (Exception ex)
-                            {
-                                logToFile("Exception in update task");
-                                logToFile(ex.ToString());
-                            }
-                            Thread.Sleep(1000);
-                            shepherd.disconnect();
-                        }
-                    }
-                }
-            });
-           cancelTokenSource.Dispose();
         }
 
         private void runExperimentQueue()
