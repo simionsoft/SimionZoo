@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
 using System.Configuration.Install;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ServiceProcess;
 
 namespace Herd
 {
@@ -18,7 +15,7 @@ namespace Herd
 
         private void serviceInstaller1_AfterInstall(object sender, InstallEventArgs e)
         {
-
+            new ServiceController(serviceInstaller1.ServiceName).Start();
         }
     }
 }

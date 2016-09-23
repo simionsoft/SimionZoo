@@ -150,10 +150,6 @@
                             Visibility="{Binding Path=experimentQueueViewModel.bLogFilesAvailable,Converter={StaticResource BoolToVis}}">
                         <Image Source="/images/plot.png" Width="25" Height="25"/>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
-                            cal:Message.Attach="[Event Click]=[Action updateHerdAgents()]">
-                        <Image Source="/images/update.png" Width="25" Height="25"/>
-                    </Button>
                 </StackPanel>
                 <Border BorderBrush="Black" Height="130" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="10,0">
                     <ContentControl x:Name="shepherdViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="110"/>
