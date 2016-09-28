@@ -49,6 +49,7 @@ RLSimionApp::~RLSimionApp()
 
 void RLSimionApp::run()
 {
+	CLogger::logMessage(MessageType::Info, "Simulation starting");
 	CApp* pApp = CApp::get();
 
 	//create state and action vectors
@@ -58,6 +59,7 @@ void RLSimionApp::run()
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pApp->SimGod.delayedLoad();
+	CLogger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
 
 	double r = 0.0;
 
@@ -86,6 +88,7 @@ void RLSimionApp::run()
 			s->copy(s_p);
 		}
 	}
+	CLogger::logMessage(MessageType::Info, "Simulation finished");
 
 	delete s;
 	delete s_p;

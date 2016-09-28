@@ -62,13 +62,14 @@ void CDeterministicPolicyGaussianNoise::getNaturalGradient(const CState* s, cons
 	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
 	m_pDeterministicVFA->getFeatures(s, pOutGradient);
 
-	//TXAPUZAAAA^2!!!
-	double sigma = ((CGaussianNoise*)m_pExpNoise)->getSigma();
+	double sigma = std::max(0.0000001,m_pExpNoise->getSigma());
 
 	double noise = a->getValue(m_outputActionIndex) - m_pDeterministicVFA->getValue((const CFeatureList*)pOutGradient);
 
-	double unscaled_noise = ((CGaussianNoise*)m_pExpNoise)->unscale(noise);
+	double unscaled_noise = m_pExpNoise->unscale(noise);
 	double factor = unscaled_noise / (sigma*sigma);
+
+	pOutGradient->mult(factor);
 }
 
 void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
@@ -104,6 +105,7 @@ CLASS_CONSTRUCTOR(CStochasticPolicyGaussianNoise)
 {
 	CHILD_CLASS(m_pMeanVFA, "Mean-VFA", "The parameterized VFA that approximates the function", false, CLinearStateVFA);
 	CHILD_CLASS(m_pSigmaVFA, "Sigma-VFA", "The parameterized VFA that approximates variance(s)", false, CLinearStateVFA);
+	m_pSigmaVFA->saturateOutput(0.0, 1.0);
 	m_pSigmaVFA->setIndexOffset(m_pMeanVFA->getNumWeights());
 	m_pMeanFeatures = new CFeatureList("Sto-Policy/mean-features");
 	m_pSigmaFeatures = new CFeatureList("Sto-Policy/sigma-features");
@@ -133,7 +135,7 @@ void CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 	a->setValue(m_outputActionIndex, output);
 }
 
-//returns the factor by which the state features have to be multiplied to get the policy gradient
+
 void CStochasticPolicyGaussianNoise::getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
 	m_pMeanVFA->getFeatures(s, m_pMeanFeatures);

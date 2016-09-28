@@ -17,7 +17,7 @@ class CPolicy : public CParamObject
 {
 protected:
 	int m_outputActionIndex;
-	//const char* m_outputAction;
+
 public:
 	CPolicy(CParameters* pParameters);
 	virtual ~CPolicy();
@@ -30,7 +30,6 @@ public:
 
 	virtual void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
 
-//	const char* getOutputAction(){ return m_outputAction; }
 	int getOutputActionIndex(){ return m_outputActionIndex; }
 
 	static CPolicy* getInstance(CParameters* pParameters);

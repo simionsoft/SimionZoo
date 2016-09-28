@@ -355,6 +355,7 @@
   </CLASS>
 
   <CLASS Name="CLinearStateVFA">
+    <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the weights on initialization"/>
   </CLASS>
 
   <CLASS Name="CLinearStateActionVFA">

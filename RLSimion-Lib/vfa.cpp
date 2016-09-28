@@ -22,13 +22,17 @@ CLinearVFA::~CLinearVFA()
 double CLinearVFA::getValue(const CFeatureList *pFeatures)
 {
 	double value = 0.0;
+	unsigned int localIndex;
 	assert(pFeatures);
 	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 	{
-		assert(pFeatures->m_pFeatures[i].m_index<m_numWeights);
-		assert(pFeatures->m_pFeatures[i].m_factor >= 0.0 && pFeatures->m_pFeatures[i].m_factor <= 1.0);
+		if (m_minIndex <= pFeatures->m_pFeatures[i].m_index && m_maxIndex > pFeatures->m_pFeatures[i].m_index)
+		{
+			//offset
+			localIndex = pFeatures->m_pFeatures[i].m_index - m_minIndex;
 
-		value += m_pWeights[pFeatures->m_pFeatures[i].m_index] * pFeatures->m_pFeatures[i].m_factor;
+			value += m_pWeights[localIndex] * pFeatures->m_pFeatures[i].m_factor;
+		}
 	}
 	return value;
 }
@@ -135,6 +139,7 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
 	m_maxIndex = m_numWeights;
 
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
+	CONST_DOUBLE_VALUE(m_initValue, "Init-Value", 0.0, "The initial value given to the weights on initialization");
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
@@ -144,6 +149,8 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
 void CLinearStateVFA::deferredLoadStep()
 {
 	m_pWeights = new double[m_numWeights];
+	for (unsigned int i = 0; i < m_numWeights; i++)
+		m_pWeights[i] = m_initValue;
 }
 
 CLinearStateVFA::CLinearStateVFA() : CLinearVFA()
@@ -208,7 +215,7 @@ void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
 double CLinearStateVFA::getValue(const CState *s)
 {
 	getFeatures(s, m_pAux);
-	m_pAux->offsetIndices(-(int)m_minIndex);
+
 	return CLinearVFA::getValue(m_pAux);
 }
 
