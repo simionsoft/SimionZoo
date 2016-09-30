@@ -139,12 +139,7 @@
                             ToolTip="Run experiments in queue">
                         <Image Source="/images/play.png" Width="25" Height="25"/>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
-                            Visibility="{Binding Path=bIsExperimentNotRunning,Converter={StaticResource BoolToVis}}"  
-                            cal:Message.Attach="[Event Click]=[Action stopExperiments()]"
-                            ToolTip="Stop running experiments">
-                        <Image Source="/images/cancel.png" Width="25" Height="25"/>
-                    </Button>
+
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
                             cal:Message.Attach="[Event Click]=[Action showPlotWindow()]"
                             Visibility="{Binding Path=experimentQueueViewModel.bLogFilesAvailable,Converter={StaticResource BoolToVis}}">

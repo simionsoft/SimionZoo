@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Herd;
-using AppXML.Models;
-using AppXML.ViewModels;
-using AppXML.Data;
 
 
 namespace AppXML.ViewModels
