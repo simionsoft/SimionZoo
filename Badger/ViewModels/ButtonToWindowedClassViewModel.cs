@@ -8,9 +8,9 @@ using System.Dynamic;
 using System.Windows;
 using System.Xml;
 using Caliburn.Micro;
-using AppXML.Data;
+using Badger.Data;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class ButtonToWindowedClassViewModel :ValidableAndNodeViewModel
     {
@@ -78,8 +78,8 @@ namespace AppXML.ViewModels
         }
         public override List<XmlNode> getXmlNode()
         {
-            XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
-            XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
+            XmlNode result = Badger.Data.Utility.resolveTag(_tag, _doc);
+            XmlNode lastChild = Badger.Data.Utility.getLastChild(result);
             foreach (XmlNode child in m_windowedClassVM.Class.getXmlNodes())
             {
                 if (child != null)

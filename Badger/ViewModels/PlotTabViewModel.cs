@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using Caliburn.Micro;
 
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class PlotTabViewModel : PropertyChangedBase
     {

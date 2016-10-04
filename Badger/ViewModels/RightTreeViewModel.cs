@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using System.Collections.ObjectModel;
-using AppXML.Models;
+using Badger.Models;
 using System.Xml;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class NodeAndName
     {

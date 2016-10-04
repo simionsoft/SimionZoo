@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppXML.Models
+namespace Badger.Models
 {
     public class CMultiValued: CNode
     {

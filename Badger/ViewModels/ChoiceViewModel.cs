@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using AppXML.Models;
+using Badger.Models;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Windows.Controls;
 
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class ChoiceViewModel:ValidableAndNodeViewModel
     {
@@ -133,11 +133,11 @@ namespace AppXML.ViewModels
 
         public override List<XmlNode> getXmlNode()
         {
-            XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
-            XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
+            XmlNode result = Badger.Data.Utility.resolveTag(_tag, _doc);
+            XmlNode lastChild = Badger.Data.Utility.getLastChild(result);
             //se asume que el tag para el interior del choice class es el nombre
-            XmlNode itemResult = AppXML.Data.Utility.resolveTag(SelectedItem.tag, _doc);
-            XmlNode itemLastChild = AppXML.Data.Utility.getLastChild(itemResult);
+            XmlNode itemResult = Badger.Data.Utility.resolveTag(SelectedItem.tag, _doc);
+            XmlNode itemLastChild = Badger.Data.Utility.getLastChild(itemResult);
             foreach (XmlNode child in _Class.getXmlNodes())
                 itemLastChild.AppendChild(child);
             lastChild.AppendChild(itemResult);

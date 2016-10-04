@@ -1,5 +1,5 @@
-﻿using AppXML.Models;
-using AppXML.ViewModels;
+﻿using Badger.Models;
+using Badger.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +17,7 @@ using System.Threading;
 using System.Runtime.CompilerServices;
 
 
-namespace AppXML.Data
+namespace Badger.Data
 {
     public static class Utility
     {

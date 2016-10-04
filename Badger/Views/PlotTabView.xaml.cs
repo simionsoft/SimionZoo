@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AppXML.Views
+namespace Badger.Views
 {
     /// <summary>
     /// Lógica de interacción para PlotTabView.xaml

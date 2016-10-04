@@ -5,9 +5,9 @@ using System.Xml;
 using Caliburn.Micro;
 using System.Windows.Forms;
 using System.IO;
-using AppXML.Data;
+using Badger.Data;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
 
     public class ExperimentQueueViewModel : PropertyChangedBase

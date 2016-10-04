@@ -8,9 +8,9 @@ using System.Dynamic;
 using System.Windows;
 using System.Xml;
 using Caliburn.Micro;
-using AppXML.Data;
+using Badger.Data;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class WindowClassViewModel : Screen
     {

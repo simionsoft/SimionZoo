@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace AppXML.Models
+namespace Badger.Models
 {
     public class TreeNode:Caliburn.Micro.PropertyChangedBase
     {

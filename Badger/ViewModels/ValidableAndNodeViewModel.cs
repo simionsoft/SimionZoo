@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public abstract  class ValidableAndNodeViewModel:Caliburn.Micro.PropertyChangedBase,IValidable,IGetXml
     {

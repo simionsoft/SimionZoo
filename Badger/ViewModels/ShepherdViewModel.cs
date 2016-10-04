@@ -3,7 +3,7 @@ using Herd;
 using Caliburn.Micro;
 
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class ShepherdViewModel : PropertyChangedBase
     {

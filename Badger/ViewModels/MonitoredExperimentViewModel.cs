@@ -1,5 +1,5 @@
-﻿using AppXML.Models;
-using AppXML.Data;
+﻿using Badger.Models;
+using Badger.Data;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Windows;
@@ -23,10 +23,10 @@ using System.Threading;
 using System.Globalization;
 using System.Collections.Concurrent;
 using Herd;
-using AppXML.ViewModels;
+using Badger.ViewModels;
 
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {

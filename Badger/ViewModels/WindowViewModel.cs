@@ -1,19 +1,18 @@
-﻿using AppXML.Models;
-using AppXML.Data;
+﻿using Badger.Models;
+using Badger.Data;
 using System.Collections.ObjectModel;
 using System.Xml;
 using Caliburn.Micro;
-using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using System.Windows.Forms;
 using System.Threading.Tasks;
-using System.Threading;
-using Herd;
+using Simion;
 
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public interface IValidable
     {
@@ -26,11 +25,23 @@ namespace AppXML.ViewModels
 
     public class WindowViewModel : PropertyChangedBase
     {
-        
+        private AppViewModel m_appViewModel;
+        public AppViewModel appViewModel { get { return m_appViewModel; }
+            set { m_appViewModel = value; NotifyOfPropertyChange(() => appViewModel); } }
+        public ObservableCollection<ConfigNodeViewModel> appConfigNodes
+        {
+            get { if (m_appViewModel !=null)
+                    return m_appViewModel.children;
+                return null; }
+            set { }
+        }
+
+
+
         private CNode _rootnode;
         private ObservableCollection<BranchViewModel> _branches;
         private XmlDocument _doc;
-        //private RightTreeViewModel _graf;
+
         public ObservableCollection<ValidableAndNodeViewModel> Branch { get { return _branches[0].Class.AllItems; } set { } }
 
         private ExperimentQueueViewModel m_experimentQueueViewModel = new ExperimentQueueViewModel();
@@ -74,30 +85,35 @@ namespace AppXML.ViewModels
             set { }
         }
 
-        private ObservableCollection<string> _apps = new ObservableCollection<string>();
-        public ObservableCollection<string> Apps { get { return _apps; } set { } }
+        private ObservableCollection<string> _appNames = new ObservableCollection<string>();
+        public ObservableCollection<string> appNames { get { return _appNames; } set { } }
       
-        private string[] apps;
-        private string selectedApp;
+        //key element is the apps name, and the value is the .xml definition file
+        private Dictionary<string,string> apps= new Dictionary<string,string>();
 
-        public string SelectedApp { get { return selectedApp; } 
+        private string m_selectedApp;
+
+        public string selectedApp { get { return m_selectedApp; } 
             set 
             {
-                CNode.cleanAll();
-                CApp.cleanApp();
+                //CNode.cleanAll();
+               // CApp.cleanApp();
 
-                int index = _apps.IndexOf(value);
+                int index = _appNames.IndexOf(value);
                 if (index == -1)
                     return;
-                selectedApp = value;
-                CApp.IsInitializing = true;
-                //_rootnode = Utility.getRootNode(apps[index]);
-                //_branches = _rootnode.children;
-                //_doc = (this._rootnode as CApp).document;
-                CApp.IsInitializing = false;
-                NotifyOfPropertyChange(() => Branch);
-                NotifyOfPropertyChange(() => rootnode);
+                m_selectedApp = value;
+                NotifyOfPropertyChange(() => selectedApp);
+
+                //NotifyOfPropertyChange(() => Branch);
+                //NotifyOfPropertyChange(() => rootnode);
             } 
+        }
+        public void newExperiment()
+        {
+            string xmlDefinitionFile = apps[m_selectedApp];
+            appViewModel = new AppViewModel(xmlDefinitionFile);
+            NotifyOfPropertyChange(()=>appConfigNodes);
         }
        
         public void Change(object sender)
@@ -129,28 +145,29 @@ namespace AppXML.ViewModels
         public WindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-             //_windowManager = windowManager;
             CApp.IsInitializing = true;
-            apps = Directory.GetFiles("..\\config\\apps");
+
             getAppsNames();
-            selectedApp = Apps[0];
-            _rootnode = Utility.getRootNode(apps[0]);
-            _branches = _rootnode.children;
-            _doc = (this._rootnode as CApp).document;
+           
+            //_rootnode = Utility.getRootNode(apps[0]);
+            //_branches = _rootnode.children;
+            //_doc = (this._rootnode as CApp).document;
             CApp.IsInitializing = false;
             m_experimentQueueViewModel.setParent(this);
         }
         private void getAppsNames()
         {
-            foreach(string app in apps)
+            foreach(string app in Directory.GetFiles("..\\config\\apps"))
             {
                 char[] spliter = "\\".ToCharArray();
                 string[] tmp = app.Split(spliter);
                 tmp = tmp[tmp.Length - 1].Split('.');
                 string name =tmp[0];
-                _apps.Add(name);
-            
+                apps.Add(name, app);
+                _appNames.Add(name);
             }
+            selectedApp = _appNames[0];
+            NotifyOfPropertyChange(() => appNames);
         }
 
         public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
@@ -165,7 +182,7 @@ namespace AppXML.ViewModels
                 _rootnode = value;
             }
         }
-
+        
         public void saveExperimentInEditor()
         {
             if (!validate())
@@ -230,10 +247,10 @@ namespace AppXML.ViewModels
 
             //update the app if we need to
             XmlNode experimentNode = experimentXML.FirstChild;
-            if (!experimentNode.Name.Equals(selectedApp))
+            if (!experimentNode.Name.Equals(m_selectedApp))
             {
-                SelectedApp = experimentNode.Name;
-                NotifyOfPropertyChange(() => SelectedApp);
+                selectedApp = experimentNode.Name;
+                NotifyOfPropertyChange(() => selectedApp);
 
             }
             foreach (BranchViewModel branch in _branches)
@@ -303,7 +320,7 @@ namespace AppXML.ViewModels
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
             //document.Save("copia.tree");
-            AppXML.ViewModels.ExperimentViewModel experiment = new AppXML.ViewModels.ExperimentViewModel("Experiment", document);
+            Badger.ViewModels.ExperimentViewModel experiment = new Badger.ViewModels.ExperimentViewModel("Experiment", document);
             m_experimentQueueViewModel.addExperiment(experiment);
             NotifyOfPropertyChange(() => experimentQueueViewModel);
             checkStackEmpty();

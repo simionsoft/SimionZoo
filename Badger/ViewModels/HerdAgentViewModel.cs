@@ -3,7 +3,7 @@ using System.Net;
 using Caliburn.Micro;
 using Herd;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class HerdAgentViewModel : PropertyChangedBase
     {

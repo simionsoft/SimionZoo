@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
-using AppXML.Models;
+using Badger.Models;
 using System.Collections.ObjectModel;
 using System.Xml;
 using System.Windows.Controls;
-using AppXML.Data;
+using Badger.Data;
 using System.Dynamic;
 using System.Windows;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class MultibuttonInfo
     {
@@ -135,14 +135,14 @@ namespace AppXML.ViewModels
 
             construc(node);
         }
-        //public void setMultiButtonInfo(AppXML.ViewModels.MultibuttonInfo.MultiType type,MultiValuedViewModel mvvm)
+        //public void setMultiButtonInfo(Badger.ViewModels.MultibuttonInfo.MultiType type,MultiValuedViewModel mvvm)
         //{
         //    //this.Border = "1";
         //    //this.Margin = "5";
         //    //this._father = mvvm;
         //    //this.MultiButton.type = type;
         //    //this.MultiButton.visible = "Visible";
-        //    if(type==AppXML.ViewModels.MultibuttonInfo.MultiType.header)
+        //    if(type==Badger.ViewModels.MultibuttonInfo.MultiType.header)
         //    {
         //        m_bAddVisible = true;
         //        m_bRemoveVisible = false;
@@ -330,7 +330,7 @@ namespace AppXML.ViewModels
                     if (doc.DocumentElement.Name.Equals(this._className))
                     {
                         this.setAsNull();
-                        AppXML.Data.Utility.fillTheClass(this, doc.DocumentElement.FirstChild);
+                        Badger.Data.Utility.fillTheClass(this, doc.DocumentElement.FirstChild);
                     }
                     else
                     {

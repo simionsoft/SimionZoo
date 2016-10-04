@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Collections.ObjectModel;
 using Caliburn.Micro;
-using AppXML.ViewModels;
-using AppXML.Data;
+using Badger.ViewModels;
+using Badger.Data;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class PlotEditorWindowViewModel : Screen
     {        

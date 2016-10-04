@@ -9,7 +9,7 @@ using System.Windows;
 using Caliburn.Micro;
 using System.IO;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class LoggedVariableViewModel:PropertyChangedBase
     {

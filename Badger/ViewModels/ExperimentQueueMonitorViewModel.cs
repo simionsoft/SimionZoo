@@ -21,12 +21,12 @@ using System.Threading;
 using System.Globalization;
 using System.Collections.Concurrent;
 using Herd;
-using AppXML.Models;
-using AppXML.ViewModels;
-using AppXML.Data;
+using Badger.Models;
+using Badger.ViewModels;
+using Badger.Data;
 
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class ExperimentBatch
     {

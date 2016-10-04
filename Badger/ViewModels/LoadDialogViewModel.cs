@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class LoadDialogViewModel:Caliburn.Micro.Screen
     {

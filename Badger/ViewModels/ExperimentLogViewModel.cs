@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 using Caliburn.Micro;
 using System.IO;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class ExperimentLogViewModel:PropertyChangedBase
     {

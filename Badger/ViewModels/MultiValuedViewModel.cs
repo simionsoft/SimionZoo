@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Caliburn.Micro;
 using System.Collections.ObjectModel;
-using AppXML.Models;
+using Badger.Models;
 using System.Xml;
 using System.Windows.Controls;
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class MultiValuedViewModel: ValidableAndNodeViewModel
     {
@@ -229,8 +229,8 @@ namespace AppXML.ViewModels
             List<XmlNode> nodes = new List<XmlNode>();
             if(HeaderClass!=null)
             {
-                XmlNode nodo = AppXML.Data.Utility.resolveTag(tag, _doc);
-                XmlNode lastChild = AppXML.Data.Utility.getLastChild(nodo);
+                XmlNode nodo = Badger.Data.Utility.resolveTag(tag, _doc);
+                XmlNode lastChild = Badger.Data.Utility.getLastChild(nodo);
                 List<XmlNode> nodos = HeaderClass.getXmlNodes();
                 foreach (XmlNode child in nodos)
                     lastChild.AppendChild(child);
@@ -239,8 +239,8 @@ namespace AppXML.ViewModels
                 {
                     foreach(ClassViewModel cvm in AdedClasses)
                     {
-                        XmlNode nodo2 = AppXML.Data.Utility.resolveTag(tag, _doc);
-                        XmlNode lastChild2 = AppXML.Data.Utility.getLastChild(nodo2);
+                        XmlNode nodo2 = Badger.Data.Utility.resolveTag(tag, _doc);
+                        XmlNode lastChild2 = Badger.Data.Utility.getLastChild(nodo2);
                         List<XmlNode> nodos2 = cvm.getXmlNodes();
                         foreach (XmlNode child2 in nodos2)
                             lastChild2.AppendChild(child2);

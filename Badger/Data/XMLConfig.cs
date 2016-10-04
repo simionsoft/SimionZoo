@@ -30,8 +30,13 @@ namespace Simion
         public const string commentAttribute = "Comment";
         public const string classAttribute = "Class";
         public const string windowAttribute = "Window";
+        public const string defaultAttribute = "Default";
+        public const string optionalAttribute = "Optional";
 
         //Attribute special values
         public const string newWindowValue = "New";
+        public const string exeNodeTag = "EXE";
+        public const string preNodeTag = "PRE";
+        public const string includeNodeTag = "INCLUDE";
     }
 }

@@ -10,10 +10,10 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows.Forms;
-using AppXML.Models;
+using Badger.Models;
 using System.Xml;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class IntegerViewModel: ValidableAndNodeViewModel
     {
@@ -158,8 +158,8 @@ namespace AppXML.ViewModels
         }
         public override List<XmlNode> getXmlNode()
         {
-            XmlNode result = AppXML.Data.Utility.resolveTag(_tag, _doc);
-            XmlNode lastChild = AppXML.Data.Utility.getLastChild(result);
+            XmlNode result = Badger.Data.Utility.resolveTag(_tag, _doc);
+            XmlNode lastChild = Badger.Data.Utility.getLastChild(result);
             if(_textBox!=null)
             {
                 lastChild.InnerText = _textBox[0].Default;
@@ -242,7 +242,7 @@ namespace AppXML.ViewModels
                 TextColor = "White";
                 return;
             }
-            Boolean isValid = AppXML.Data.Utility.validate(Default, type);
+            Boolean isValid = Badger.Data.Utility.validate(Default, type);
             if(!isValid)
             {
                 TextColor = "Red";
@@ -265,7 +265,7 @@ namespace AppXML.ViewModels
         { 
             get 
             {
-                return AppXML.Data.Utility.getFileName(defaultValue);
+                return Badger.Data.Utility.getFileName(defaultValue);
             } 
             set 
             {

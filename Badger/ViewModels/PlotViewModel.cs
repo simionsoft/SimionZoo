@@ -11,7 +11,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class PlotViewModel: PropertyChangedBase
     {

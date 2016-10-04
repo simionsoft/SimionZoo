@@ -1,4 +1,4 @@
-﻿using AppXML.ViewModels;
+﻿using Badger.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace AppXML.Models
+namespace Badger.Models
 {
     public class CApp:CNode
     {

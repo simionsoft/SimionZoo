@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace AppXML.Views.Help
+namespace Badger.Views.Help
 {
 
     public class ComboBoxToMaxItemWidthConverter : IValueConverter

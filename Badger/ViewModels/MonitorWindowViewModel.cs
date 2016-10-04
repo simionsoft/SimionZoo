@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Herd;
 
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class MonitorWindowViewModel : Caliburn.Micro.Screen
     {

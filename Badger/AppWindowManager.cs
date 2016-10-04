@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using System.Windows;
 
-namespace AppXML
+namespace Badger
 {
     public class AppWindowManager: WindowManager
     {

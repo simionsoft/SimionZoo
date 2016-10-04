@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AppXML.Properties
+namespace Badger.Properties
 {
 
 

@@ -119,11 +119,11 @@
     <Compile Include="Models\CIntegerValue.cs" />
     <Compile Include="Models\CMultiValued.cs" />
     <Compile Include="Models\CNode.cs" />
-    <Compile Include="Data\ConfigNode.cs" />
-    <Compile Include="ViewModels\AppViewModel.cs" />
-    <Compile Include="ViewModels\BranchConfigViewModel.cs" />
-    <Compile Include="ViewModels\DoubleValueConfigViewModel.cs" />
-    <Compile Include="ViewModels\IntegerValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\ConfigNodeViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\AppViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\BranchConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\DoubleValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\IntegerValueConfigViewModel.cs" />
     <Compile Include="ViewModels\PlotViewModel.cs" />
     <Compile Include="ViewModels\ExperimentLogViewModel.cs" />
     <Compile Include="ViewModels\LoggedVariableViewModel.cs" />
@@ -252,6 +252,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\AppView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\BranchConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ExperimentLogView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -259,6 +271,10 @@
     <Page Include="Views\ButtonToWindowedClassView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\IntegerValueConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\PlotView.xaml">
       <Generator>MSBuild:Compile</Generator>

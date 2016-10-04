@@ -1,5 +1,5 @@
-﻿using AppXML.Data;
-using AppXML.ViewModels;
+﻿using Badger.Data;
+using Badger.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace AppXML.Models
+namespace Badger.Models
 {
     public class CNode
     {

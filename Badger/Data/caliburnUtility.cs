@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Dynamic;
 using System.Windows;
 using Caliburn.Micro;
-using AppXML.ViewModels;
+using Badger.ViewModels;
 using System.Windows.Forms;
 
-namespace AppXML.Data
+namespace Badger.Data
 {
     class CaliburnUtility
     {

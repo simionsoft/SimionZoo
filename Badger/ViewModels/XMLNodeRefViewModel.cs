@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class XMLNodeRefViewModel:ValidableAndNodeViewModel
     {
@@ -36,14 +36,14 @@ namespace AppXML.ViewModels
             else
                 this.tag = tag;
             _doc = doc;
-            List<string> names =AppXML.Data.Utility.getComboFromXML(file, action);
+            List<string> names =Badger.Data.Utility.getComboFromXML(file, action);
             _options = new ObservableCollection<string>(names);
-            AppXML.Models.CApp.addView(this);
+            Badger.Models.CApp.addView(this);
             
        }
         public void update()
         {
-            List<string> names = AppXML.Data.Utility.getComboFromXML(_XMLFile, _action);
+            List<string> names = Badger.Data.Utility.getComboFromXML(_XMLFile, _action);
             _options = new ObservableCollection<string>(names);
             NotifyOfPropertyChange(() => Options);
         }
@@ -56,8 +56,8 @@ namespace AppXML.ViewModels
 
         public override List<XmlNode> getXmlNode()
         {
-            XmlNode nodo = AppXML.Data.Utility.resolveTag(tag, _doc);
-            XmlNode lastChild = AppXML.Data.Utility.getLastChild(nodo);
+            XmlNode nodo = Badger.Data.Utility.resolveTag(tag, _doc);
+            XmlNode lastChild = Badger.Data.Utility.getLastChild(nodo);
             lastChild.InnerText = SelectedOption;
             List<XmlNode> result = new List<XmlNode>();
             result.Add(nodo);

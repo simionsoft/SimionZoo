@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Caliburn.Micro;
 using System.Xml;
 using System.Windows.Media;
-namespace AppXML.ViewModels
+namespace Badger.ViewModels
 {
     public class BranchViewModel:ValidableAndNodeViewModel
     {
@@ -81,7 +81,7 @@ namespace AppXML.ViewModels
                 if(doc.DocumentElement.Name.Equals(this.className))
                 {
                     this._class.setAsNull();
-                    AppXML.Data.Utility.fillTheClass(this._class, doc.DocumentElement.FirstChild);
+                    Badger.Data.Utility.fillTheClass(this._class, doc.DocumentElement.FirstChild);
                 }
                 else
                 {
@@ -145,8 +145,8 @@ namespace AppXML.ViewModels
         {
             if(IsNull)
                 return null;
-            XmlNode result = AppXML.Data.Utility.resolveTag(_tag,_doc);
-            XmlNode lastChild = AppXML.Data.Utility.getLastChild(result); 
+            XmlNode result = Badger.Data.Utility.resolveTag(_tag,_doc);
+            XmlNode lastChild = Badger.Data.Utility.getLastChild(result); 
             foreach (XmlNode child in Class.getXmlNodes())
             {
                 if(child!=null)
