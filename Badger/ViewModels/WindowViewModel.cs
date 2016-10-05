@@ -28,13 +28,13 @@ namespace Badger.ViewModels
         private AppViewModel m_appViewModel;
         public AppViewModel appViewModel { get { return m_appViewModel; }
             set { m_appViewModel = value; NotifyOfPropertyChange(() => appViewModel); } }
-        public ObservableCollection<ConfigNodeViewModel> appConfigNodes
-        {
-            get { if (m_appViewModel !=null)
-                    return m_appViewModel.children;
-                return null; }
-            set { }
-        }
+        //public ObservableCollection<ConfigNodeViewModel> appConfigNodes
+        //{
+        //    get { if (m_appViewModel !=null)
+        //            return m_appViewModel.children;
+        //        return null; }
+        //    set { }
+        //}
 
 
 
@@ -113,7 +113,7 @@ namespace Badger.ViewModels
         {
             string xmlDefinitionFile = apps[m_selectedApp];
             appViewModel = new AppViewModel(xmlDefinitionFile);
-            NotifyOfPropertyChange(()=>appConfigNodes);
+            NotifyOfPropertyChange(()=>appViewModel);
         }
        
         public void Change(object sender)

@@ -14,19 +14,20 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="White"/>
         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
-    </UserControl.Resources>
-    <TreeView BorderThickness="0" Background="Transparent" Margin="-15,0,0,0">
-        <TreeViewItem IsExpanded="True" >
-            <TreeViewItem.Header>
-                <StackPanel Orientation="Horizontal" Focusable="False">
-                    <Label Content="{Binding name}" ToolTip="{Binding comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
-                    </Label>
-                </StackPanel>
-            </TreeViewItem.Header>
 
-            <ContentControl Name="children"></ContentControl>
-        </TreeViewItem>
-    </TreeView>
+    </UserControl.Resources>
+    <!--<Label Foreground="Red" Content="harl"></Label>-->
+    <TreeViewItem IsExpanded="True" >
+        <TreeViewItem.Header>
+            <StackPanel Orientation="Horizontal" Focusable="False">
+                <Label Content="{Binding name}" ToolTip="{Binding comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
+                </Label>
+            </StackPanel>
+        </TreeViewItem.Header>
+
+        <ItemsControl x:Name="children"/>
+    </TreeViewItem>
+
     <!--<ContentControl x:Name="Class" Margin="-10,0,0,0" IsEnabled="{Binding IsEnabled}"/>-->
     <!--</StackPanel>-->
     <!--<Grid>

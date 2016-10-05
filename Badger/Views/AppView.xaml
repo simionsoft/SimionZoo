@@ -6,18 +6,32 @@
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.AppView"
-             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300"
-             Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
-    <Grid Background="Yellow">
-        <TreeView BorderThickness="0" Background="Red" Margin="-15,0,0,0" ItemsSource="{Binding children}">
-            <TreeViewItem IsExpanded="True" >
-                <TreeViewItem.Header>
-                    <StackPanel Orientation="Horizontal" Focusable="False">
-                        <Label Background="AliceBlue" Content="{Binding name}" ToolTip="{Binding comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}"/>
-                    </StackPanel>
-                </TreeViewItem.Header>
-                <!--<ContentControl x:Name="children" Margin="-10,0,0,0"/>-->
-            </TreeViewItem>
-        </TreeView>
-    </Grid>
+             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
+    <!--Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"-->
+    
+    <!--<UserControl.Resources>
+        <ResourceDictionary>
+        <DataTemplate DataType="{x:Type vm:BranchConfigViewModel}">
+            <v:BranchConfigView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:IntegerValueConfigViewModel}">
+            <v:IntegerValueConfigView></v:IntegerValueConfigView>
+        </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>-->
+    <!--<StackPanel Orientation="Vertical">
+        <Label Content ="{Binding name}"/>
+        <ItemsControl x:Name="children"></ItemsControl>
+        <TreeView  BorderThickness="0" Background="Transparent" Margin="-15,0,0,0" x:Name="children">
+    </StackPanel>-->
+
+
+    <TreeViewItem IsExpanded="True" >
+        <TreeViewItem.Header>
+            <StackPanel Orientation="Horizontal" Focusable="False">
+                <Label Background="AliceBlue" Content="{Binding name}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}"/>
+            </StackPanel>
+        </TreeViewItem.Header>
+        <ItemsControl x:Name="children" Margin="-10,0,0,0"/>
+    </TreeViewItem>
 </UserControl>

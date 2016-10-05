@@ -1,9 +1,10 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using Simion;
 
 namespace Badger.ViewModels
 {
-    class BranchConfigViewModel: NestedConfigNode
+    public class BranchConfigViewModel: NestedConfigNode
     {
         private string m_class = "";
         private string m_window = "";
@@ -22,6 +23,15 @@ namespace Badger.ViewModels
             else m_bOptional = false;
 
             childrenInit(appDefinition,definitionNode, m_xPath, configNode);
+        }
+
+        public override bool validate()
+        {
+            foreach (ConfigNodeViewModel child in children)
+            {
+                if (!child.validate()) return false;
+            }
+            return true;
         }
 
         public override string getXMLHeader(){ return "<" + name + ">"; }

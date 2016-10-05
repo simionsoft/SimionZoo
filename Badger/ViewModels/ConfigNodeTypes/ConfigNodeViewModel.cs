@@ -7,6 +7,17 @@ namespace Badger.ViewModels
 {
     abstract public class ConfigNodeViewModel: PropertyChangedBase
     {
+        private string m_value = "";
+        public string value
+        {
+            get { return m_value; }
+            set { m_value = value; m_bIsValid= validate();
+                NotifyOfPropertyChange(() => bIsValid);
+                NotifyOfPropertyChange(() => value); }
+        }
+
+        abstract public bool validate();
+
         static public XmlNode nodeDefinition { get; set; }
 
         //Comment
@@ -31,6 +42,7 @@ namespace Badger.ViewModels
         //Initialization stuff common to all types of configuration nodes
         protected void commonInit(XmlNode definitionNode, string parentXPath)
         {
+            nodeDefinition = definitionNode;
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
             xPath = parentXPath + "/" + name;
         }
@@ -50,10 +62,12 @@ namespace Badger.ViewModels
             return null;
         }
     }
-    abstract class NestedConfigNode: ConfigNodeViewModel
+    abstract public class NestedConfigNode: ConfigNodeViewModel
     {
         //Children
-        protected List<ConfigNodeViewModel> m_children;
+        protected BindableCollection<ConfigNodeViewModel> m_children= new BindableCollection<ConfigNodeViewModel>();
+        public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
+            set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
         public override string getXML()
         { return getXMLHeader() + getChildrenXML() + getXMLFooter(); }
@@ -69,10 +83,15 @@ namespace Badger.ViewModels
 
         protected void childrenInit(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode= null)
         {
-            foreach (XmlNode child in definitionNode.ChildNodes)
+            XmlNode classDefinition = appDefinition.getClassDefinition(definitionNode.Attributes[XMLConfig.classAttribute].Value);
+            if (classDefinition != null)
             {
-                ConfigNodeViewModel childNode = ConfigNodeViewModel.getInstance(appDefinition, child, parentXPath, configNode);
-                m_children.Add(childNode);
+                foreach (XmlNode child in classDefinition.ChildNodes)
+                {
+                    ConfigNodeViewModel childNode = ConfigNodeViewModel.getInstance(appDefinition, child, parentXPath, configNode);
+                    if (childNode!=null)
+                        m_children.Add(childNode);
+                }
             }
         }
     }

@@ -1,18 +1,11 @@
 ﻿using Simion;
 using System.Xml;
-
+using System;
 
 namespace Badger.ViewModels
 {
     class IntegerValueConfigViewModel: ConfigNodeViewModel
     {
-        private int m_value= 0;
-        public int value
-        {
-            get { return m_value; }
-            set { m_value = value; NotifyOfPropertyChange(()=>value); }
-        }
-
         public IntegerValueConfigViewModel(XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(definitionNode, parentXPath);
@@ -20,18 +13,26 @@ namespace Badger.ViewModels
             if (configNode == null)
             {
                 //default init
-                value = int.Parse(definitionNode.Attributes[XMLConfig.defaultAttribute].Value);
+                value = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
             }
             else
             {
                 //init from config file
-                value= int.Parse(configNode[name].InnerText);
+                value= configNode[name].InnerText;
             }
+        }
+
+        public override bool validate()
+        {
+            int parsedValue;
+            if (int.TryParse(value, out parsedValue))
+                return true;
+            return false;
         }
 
         public override string getXML()
         {
-            return "<" + name + ">" + value.ToString() + "</" + name + ">";
+            return "<" + name + ">" + value + "</" + name + ">";
         }
     }
 }

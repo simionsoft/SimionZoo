@@ -5,12 +5,6 @@ namespace Badger.ViewModels
 {
     class DoubleValueConfigViewModel: ConfigNodeViewModel
     {
-        private double m_value = 0.0;
-        public double value
-        {
-            get { return m_value; }
-            set { m_value = value; NotifyOfPropertyChange(() => value); }
-        }
 
         public DoubleValueConfigViewModel(XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
@@ -19,13 +13,21 @@ namespace Badger.ViewModels
             if (configNode == null)
             {
                 //default init
-                value = double.Parse(definitionNode.Attributes[XMLConfig.defaultAttribute].Value);
+                value = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
             }
             else
             {
                 //init from config file
-                value = double.Parse(configNode[name].InnerText);
+                value = configNode[name].InnerText;
             }
+        }
+
+        public override bool validate()
+        {
+            double parsedValue;
+            if (double.TryParse(value, out parsedValue))
+                return true;
+            return false;
         }
 
         public override string getXML()

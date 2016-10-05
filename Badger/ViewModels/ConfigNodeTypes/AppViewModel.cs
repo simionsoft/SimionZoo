@@ -1,12 +1,12 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using Caliburn.Micro;
 
 using Simion;
 
 namespace Badger.ViewModels
 {
-    public class AppViewModel
+    public class AppViewModel: PropertyChangedBase
     {
         private List<string> m_preFiles= new List<string>();
         private List<string> m_exeFiles = new List<string>();
@@ -27,8 +27,9 @@ namespace Badger.ViewModels
         public string name { get { return m_name; }set { m_name = name; } }
         private string m_version;
 
-        private ObservableCollection<ConfigNodeViewModel> m_children= new ObservableCollection<ConfigNodeViewModel>();
-        public ObservableCollection<ConfigNodeViewModel> children { get { return m_children; } set { m_children = value;} }
+        private BindableCollection<ConfigNodeViewModel> m_children= new BindableCollection<ConfigNodeViewModel>();
+        public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
+            set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
         //This constructor does not build the whole tree of ConfigNodes. It just initializes the root node
         //To build the whole tree, use load(configNode) or defaultInit()
@@ -53,7 +54,7 @@ namespace Badger.ViewModels
                         else if (child.Name == XMLConfig.preNodeTag) m_preFiles.Add(child.InnerText);
                         else if (child.Name == XMLConfig.includeNodeTag)
                             loadIncludedDefinitionFile(child.InnerText);
-                        else
+                        else 
                             m_children.Add(ConfigNodeViewModel.getInstance(this,child, m_name));
                             //here we assume definitions are before the children
                     }
