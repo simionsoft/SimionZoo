@@ -11,6 +11,7 @@ double getRandomValue()
 
 double getNormalDistributionSample(double mu, double sigma)
 {
+	if (sigma == 0.0) return 0.0;
 	double x1 = (double) (rand() + 1) / ((double) RAND_MAX + 1);
 	double x2 = (double) rand() / (double) RAND_MAX;
 	assert(x1 != 0.0);

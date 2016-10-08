@@ -20,7 +20,6 @@ CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic)
 
 
 	//critic's stuff
-	m_pVFunction = new CLinearStateVFA(new CLinearStateVFA());
 	CHILD_CLASS(m_pVFunction, "VFunction", "The Value-function", false, CLinearStateVFA);
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");
@@ -38,7 +37,7 @@ CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic)
 	for (int i = 0; i < m_numPolicies; i++)
 	{
 		MULTI_VALUED_FACTORY(m_pPolicies[i], "Policy", "The Policy", CPolicy, pChild);
-		assert(0);
+
 		//there's something 
 		m_w[i] = new CFeatureList("INAC-w",false,true);
 		pChild = pChild->getNextChild("Policy");
@@ -79,6 +78,8 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 
 void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
+	if (CApp::get()->Experiment.isFirstStep())
+		m_avg_r = 0.0;
 	// Incremental Natural Actor - Critic(INAC)
 	//Critic update:
 	//td= r - avg_r + gamma*V(s_p) - V(s)
@@ -132,6 +133,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 			m_w[i]->clear();
 
 		m_pPolicies[i]->getNaturalGradient(s, a, m_grad_u);
+		m_grad_u->normalize();
 
 		//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
 		m_e_u->update(gamma);
@@ -142,7 +144,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		m_grad_u->applyThreshold(0.0001);
 		m_w[i]->addFeatureList(m_grad_u);
 		m_w[i]->addFeatureList(m_e_u, alpha_v*m_td);
-		m_w[i]->applyThreshold(0.0001);
+//		m_w[i]->applyThreshold(0.0001);
 		//3. u= u + alpha_u * w
 		m_pPolicies[i]->addFeatures(m_w[i], alpha_u);
 	}

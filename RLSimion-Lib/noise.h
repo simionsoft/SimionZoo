@@ -16,10 +16,12 @@ protected:
 	CNoise();
 	double m_lastValue;
 public:
-	virtual double getValue()= 0;
-
 	static CNoise* getInstance(CParameters* pParameters);
-	virtual ~CNoise(){}
+	virtual ~CNoise() {}
+
+	virtual double getSigma() { return 0.0; }
+	virtual double unscale(double noise) { return noise; }
+	virtual double getValue()= 0;
 };
 
 

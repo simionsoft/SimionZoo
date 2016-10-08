@@ -5,7 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLSimion-Lib", "RLSimion-Lib\RL-Lib.vcxproj", "{A97CFEAC-DBE2-433C-9454-6D1D2749C591}"
 	ProjectSection(ProjectDependencies) = postProject
-		{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4} = {E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}
 		{D1C528B6-AA02-4D29-9D61-DC08E317A70D} = {D1C528B6-AA02-4D29-9D61-DC08E317A70D}
 	EndProjectSection
 EndProject
@@ -39,6 +38,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerdAgentService", "tools\HerdAgent\HerdAgentService.csproj", "{3917EF51-812D-40C0-A742-DB73CAFC0918}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomXMLBuilder", "tools\CustomXMLBuilder\CustomXMLBuilder.csproj", "{E19A21A4-12E4-4BE4-9DAB-B56B609E5BC4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A97CFEAC-DBE2-433C-9454-6D1D2749C591} = {A97CFEAC-DBE2-433C-9454-6D1D2749C591}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TESTHerdAgent", "tools\TESTHerdAgent\TESTHerdAgent.csproj", "{1ADDBF7A-4064-42FB-846F-7D22E8BB9B5B}"
 EndProject
@@ -51,6 +53,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badger", "Badger\Badger.csproj", "{575C1FF1-8401-4EC8-8E58-4A09D2659DED}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FD9AE56D-DF2C-4B8E-B0FE-4787DEA87BC8} = {FD9AE56D-DF2C-4B8E-B0FE-4787DEA87BC8}
+		{A97CFEAC-DBE2-433C-9454-6D1D2749C591} = {A97CFEAC-DBE2-433C-9454-6D1D2749C591}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sutton-mountaincar-sarsa", "tools\sutton-mountaincar-sarsa\sutton-mountaincar-sarsa.vcxproj", "{764CDB80-F8B0-47EF-8733-022DD51BE931}"

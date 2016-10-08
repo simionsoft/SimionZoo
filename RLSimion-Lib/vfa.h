@@ -48,6 +48,7 @@ class CLinearStateVFA: public CLinearVFA, public CDeferredLoad
 protected:
 	CStateFeatureMap* m_pStateFeatureMap;
 	CFeatureList *m_pAux;
+	double m_initValue;
 	virtual void deferredLoadStep();
 public:
 	CLinearStateVFA();

@@ -147,7 +147,7 @@
                     </Button>
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
                             cal:Message.Attach="[Event Click]=[Action showPlotWindow()]"
-                            Visibility="{Binding Path=bLogFilesAvailable,Converter={StaticResource BoolToVis}}">
+                            Visibility="{Binding Path=experimentQueueViewModel.bLogFilesAvailable,Converter={StaticResource BoolToVis}}">
                         <Image Source="/images/plot.png" Width="25" Height="25"/>
                     </Button>
                 </StackPanel>
