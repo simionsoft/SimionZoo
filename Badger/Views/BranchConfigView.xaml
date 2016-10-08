@@ -7,8 +7,8 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.BranchConfigView"
              mc:Ignorable="d" 
-                d:DesignHeight="50" d:DesignWidth="300"
-    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">
+                d:DesignHeight="50" d:DesignWidth="300">
+    <!--Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">-->
     <UserControl.Resources>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
@@ -20,7 +20,7 @@
     <TreeViewItem IsExpanded="True" >
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal" Focusable="False">
-                <Label Content="{Binding name}" ToolTip="{Binding comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
+                <Label Content="{Binding name}" ToolTip="{Binding comment}"><!--Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">-->
                 </Label>
             </StackPanel>
         </TreeViewItem.Header>

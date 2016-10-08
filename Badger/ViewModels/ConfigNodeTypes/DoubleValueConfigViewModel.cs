@@ -13,26 +13,26 @@ namespace Badger.ViewModels
             if (configNode == null)
             {
                 //default init
-                value = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
+                content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
             }
             else
             {
                 //init from config file
-                value = configNode[name].InnerText;
+                content = configNode[name].InnerText;
             }
         }
 
         public override bool validate()
         {
             double parsedValue;
-            if (double.TryParse(value, out parsedValue))
+            if (double.TryParse(content, out parsedValue))
                 return true;
             return false;
         }
 
         public override string getXML()
         {
-            return "<" + name + ">" + value.ToString() + "</" + name + ">";
+            return "<" + name + ">" + content.ToString() + "</" + name + ">";
         }
     }
 }

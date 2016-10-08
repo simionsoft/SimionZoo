@@ -7,14 +7,17 @@ namespace Badger.ViewModels
 {
     abstract public class ConfigNodeViewModel: PropertyChangedBase
     {
-        private string m_value = "";
-        public string value
+        private string m_content = "";
+        public string content
         {
-            get { return m_value; }
-            set { m_value = value; m_bIsValid= validate();
+            get { return m_content; }
+            set { m_content = value; m_bIsValid= validate();
                 NotifyOfPropertyChange(() => bIsValid);
-                NotifyOfPropertyChange(() => value); }
+                NotifyOfPropertyChange(() => content); }
         }
+
+        private string m_textColor = "Black";
+        public string textColor { get { return m_textColor; }set { m_textColor = value; NotifyOfPropertyChange(() => textColor); } }
 
         abstract public bool validate();
 

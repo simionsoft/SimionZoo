@@ -1,6 +1,5 @@
 ﻿using Simion;
 using System.Xml;
-using System;
 
 namespace Badger.ViewModels
 {
@@ -13,26 +12,26 @@ namespace Badger.ViewModels
             if (configNode == null)
             {
                 //default init
-                value = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
+                content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
             }
             else
             {
                 //init from config file
-                value= configNode[name].InnerText;
+                content= configNode[name].InnerText;
             }
         }
 
         public override bool validate()
         {
             int parsedValue;
-            if (int.TryParse(value, out parsedValue))
+            if (int.TryParse(content, out parsedValue))
                 return true;
             return false;
         }
 
         public override string getXML()
         {
-            return "<" + name + ">" + value + "</" + name + ">";
+            return "<" + name + ">" + content + "</" + name + ">";
         }
     }
 }
