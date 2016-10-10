@@ -126,6 +126,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\BranchConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\DirPathValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\DoubleValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\EnumeratedValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\FilePathValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\IntegerValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
@@ -278,6 +279,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ConfigNodeTypes\DoubleValueConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\EnumeratedValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

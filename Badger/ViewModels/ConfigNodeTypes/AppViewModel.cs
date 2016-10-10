@@ -8,17 +8,36 @@ namespace Badger.ViewModels
 {
     public class AppViewModel: PropertyChangedBase
     {
+        //deferred load step
+        public delegate void deferredLoadStep();
+
+        private List<deferredLoadStep> m_deferredLoadSteps= new List<deferredLoadStep>();
+        public void registerDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
+
         private List<string> m_preFiles= new List<string>();
         private List<string> m_exeFiles = new List<string>();
         private Dictionary<string,XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
-        private Dictionary<string,XmlNode> m_enumDefinitions = new Dictionary<string, XmlNode>();
+        private Dictionary<string,List<string>> m_enumDefinitions 
+            = new Dictionary<string, List<string>>();
         private XmlDocument m_configDocument = new XmlDocument();
 
         public XmlNode getClassDefinition(string className)
         {
             return m_classDefinitions[className];
         }
-        public XmlNode getEnumDefinition(string enumName)
+
+        public void addEnumeratedType(XmlNode definition)
+        {
+            List<string> enumeratedValues = new List<string>();
+            foreach (XmlNode child in definition)
+            {
+                enumeratedValues.Add(child.InnerText);
+            }
+
+            m_enumDefinitions.Add(definition.Attributes[XMLConfig.nameAttribute].Value
+                ,enumeratedValues);
+        }
+        public List<string> getEnumeratedType(string enumName)
         {
             return m_enumDefinitions[enumName];
         }
@@ -60,6 +79,9 @@ namespace Badger.ViewModels
                     }
                 }
             }
+            //deferred load step: enumerated types
+            foreach (deferredLoadStep deferredStep in m_deferredLoadSteps)
+                deferredStep();
         }
         private void loadIncludedDefinitionFile(string appDefinitionFile)
         {
@@ -75,7 +97,7 @@ namespace Badger.ViewModels
                         if (definition.Name == XMLConfig.classDefinitionNodeTag)
                             m_classDefinitions.Add(name, definition);
                         else if (definition.Name == XMLConfig.enumDefinitionNodeTag)
-                            m_enumDefinitions.Add(name, definition);
+                            addEnumeratedType(definition);
                     }
                 }
             }
@@ -113,6 +135,8 @@ namespace Badger.ViewModels
                     }
                 }
             }
+
+
         }
 
     }

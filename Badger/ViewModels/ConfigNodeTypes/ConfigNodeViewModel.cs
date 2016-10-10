@@ -70,6 +70,7 @@ namespace Badger.ViewModels
                 case XMLConfig.branchNodeTag: return new BranchConfigViewModel(appDefinition,definitionNode,parentXPath,configNode);
                 case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
                 case XMLConfig.choiceElementNodeTag: return new ChoiceElementConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
+                case XMLConfig.enumNodeTag: return new EnumeratedValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
             }
 
             return null;
