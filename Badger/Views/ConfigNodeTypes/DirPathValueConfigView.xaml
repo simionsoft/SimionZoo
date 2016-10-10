@@ -1,0 +1,22 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:v="clr-namespace:Badger.Views"
+             xmlns:vm="clr-namespace:Badger.ViewModels"
+             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.DirPathValueConfigView"
+             mc:Ignorable="d" 
+d:DesignHeight="50" d:DesignWidth="300">
+
+    <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
+        <Label Content="{Binding name}" Foreground="Gray" VerticalContentAlignment="Center"
+                               HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light" />
+        <TextBlock Text="{Binding content}" Width="150" 
+                 Foreground="{Binding textColor}" TextWrapping="WrapWithOverflow"/>
+        <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"  cal:Message.Attach="[Event Click]=[Action selectFolder()]">
+            <Image Source="/images/folder.png" Width="25" Height="25"></Image>
+        </Button>
+    </StackPanel>
+  
+</UserControl>

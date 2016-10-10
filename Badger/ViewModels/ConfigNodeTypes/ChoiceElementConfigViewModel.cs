@@ -4,13 +4,13 @@ using Simion;
 
 namespace Badger.ViewModels
 {
-    public class BranchConfigViewModel: NestedConfigNode
+    public class ChoiceElementConfigViewModel: NestedConfigNode
     {
         private string m_className = "";
         private string m_window = "";
         private bool m_bOptional = false;
 
-        public BranchConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
+        public ChoiceElementConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
             commonInit(definitionNode,parentXPath);
 

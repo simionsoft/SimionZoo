@@ -7,6 +7,7 @@ namespace Badger.ViewModels
 {
     abstract public class ConfigNodeViewModel: PropertyChangedBase
     {
+        protected string m_default = "";
         private string m_content = "";
         public string content
         {
@@ -48,6 +49,10 @@ namespace Badger.ViewModels
             nodeDefinition = definitionNode;
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
             xPath = parentXPath + "/" + name;
+            if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute)!=null)
+            {
+                m_default = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
+            }
         }
 
 
@@ -57,9 +62,14 @@ namespace Badger.ViewModels
             switch (definitionNode.Name)
             {
                 case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(definitionNode,parentXPath,configNode);
-                    //get parent from caller and spread it to be able to get definitions
                 case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(definitionNode,parentXPath,configNode);
+                case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(definitionNode, parentXPath, configNode);
+                case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(definitionNode, parentXPath, configNode);
+                case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(definitionNode, parentXPath, configNode);
+
                 case XMLConfig.branchNodeTag: return new BranchConfigViewModel(appDefinition,definitionNode,parentXPath,configNode);
+                case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
+                case XMLConfig.choiceElementNodeTag: return new ChoiceElementConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
             }
 
             return null;
@@ -84,9 +94,8 @@ namespace Badger.ViewModels
         public abstract string getXMLHeader();
         public abstract string getXMLFooter();
 
-        protected void childrenInit(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode= null)
+        protected void childrenInit(AppViewModel appDefinition, XmlNode classDefinition, string parentXPath, XmlNode configNode= null)
         {
-            XmlNode classDefinition = appDefinition.getClassDefinition(definitionNode.Attributes[XMLConfig.classAttribute].Value);
             if (classDefinition != null)
             {
                 foreach (XmlNode child in classDefinition.ChildNodes)
