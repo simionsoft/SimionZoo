@@ -113,9 +113,10 @@ namespace CustomXMLBuilder
 
             numCharsProcessed += fileContents.Length;
 
-            string parsedXMLFile= parseClasses(fileContents);
-
-            parsedXMLFile += parseEnumerations(fileContents);
+            //first, enumerations to avoid references to yet undefined enumerations
+            string parsedXMLFile= parseEnumerations(fileContents);
+            //then classes
+            parsedXMLFile += parseClasses(fileContents);
 
             return parsedXMLFile;
         }

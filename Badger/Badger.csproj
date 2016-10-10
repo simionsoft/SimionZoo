@@ -256,11 +256,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\BranchConfigView.xaml">
+    <Page Include="Views\ConfigNodeTypes\BranchConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\DoubleValueConfigView.xaml">
+    <Page Include="Views\ConfigNodeTypes\DoubleValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -272,7 +272,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\IntegerValueConfigView.xaml">
+    <Page Include="Views\ConfigNodeTypes\IntegerValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
