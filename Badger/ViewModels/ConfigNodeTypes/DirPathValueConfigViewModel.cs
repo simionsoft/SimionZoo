@@ -7,9 +7,9 @@ namespace Badger.ViewModels
 {
     class DirPathValueConfigViewModel: ConfigNodeViewModel
     {
-        public DirPathValueConfigViewModel(XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public DirPathValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(definitionNode, parentXPath);
+            commonInit(appDefinition, definitionNode, parentXPath);
             comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
             if (configNode == null)
             {

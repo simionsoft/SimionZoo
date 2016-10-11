@@ -129,6 +129,8 @@
     <Compile Include="ViewModels\ConfigNodeTypes\EnumeratedValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\FilePathValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\IntegerValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\PlotViewModel.cs" />
     <Compile Include="ViewModels\ExperimentLogViewModel.cs" />
@@ -287,6 +289,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ConfigNodeTypes\FilePathValueConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\MultiValuedConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\MultiValuedItemConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

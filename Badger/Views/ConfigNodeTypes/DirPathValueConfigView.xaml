@@ -14,7 +14,8 @@ d:DesignHeight="50" d:DesignWidth="300">
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light" />
         <TextBlock Text="{Binding content}" Width="150" 
                  Foreground="{Binding textColor}" TextWrapping="WrapWithOverflow"/>
-        <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"  cal:Message.Attach="[Event Click]=[Action selectFolder()]">
+        <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"
+                cal:Message.Attach="[Event Click]=[Action selectFolder()]">
             <Image Source="/images/folder.png" Width="25" Height="25"></Image>
         </Button>
     </StackPanel>

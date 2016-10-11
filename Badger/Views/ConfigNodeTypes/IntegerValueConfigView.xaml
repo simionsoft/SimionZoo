@@ -15,7 +15,7 @@ d:DesignHeight="50" d:DesignWidth="300">
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light" />
         <TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
-                 BorderThickness="0" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]"
+                 BorderThickness="0"
                  Foreground="{Binding textColor}"/>
 
         <!--<ItemsControl ItemsSource="{Binding value}">

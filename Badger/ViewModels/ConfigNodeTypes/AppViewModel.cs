@@ -14,6 +14,7 @@ namespace Badger.ViewModels
         private List<deferredLoadStep> m_deferredLoadSteps= new List<deferredLoadStep>();
         public void registerDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
 
+        //app properties: prerrequisites, exe files, definitions...
         private List<string> m_preFiles= new List<string>();
         private List<string> m_exeFiles = new List<string>();
         private Dictionary<string,XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
@@ -80,8 +81,13 @@ namespace Badger.ViewModels
                 }
             }
             //deferred load step: enumerated types
+            doDeferredLoadSteps();
+        }
+        public void doDeferredLoadSteps()
+        {
             foreach (deferredLoadStep deferredStep in m_deferredLoadSteps)
                 deferredStep();
+            m_deferredLoadSteps.Clear();
         }
         private void loadIncludedDefinitionFile(string appDefinitionFile)
         {

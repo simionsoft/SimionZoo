@@ -7,22 +7,27 @@ namespace Badger.ViewModels
 {
     abstract public class ConfigNodeViewModel: PropertyChangedBase
     {
+        //access to the root node
+        protected AppViewModel m_appViewModel;
+        protected XmlNode m_definitionNode;
+
         protected string m_default = "";
         private string m_content = "";
         public string content
         {
             get { return m_content; }
-            set { m_content = value; m_bIsValid= validate();
+            set {
+                m_content = value;
+                m_bIsValid = validate();
                 NotifyOfPropertyChange(() => bIsValid);
-                NotifyOfPropertyChange(() => content); }
+                NotifyOfPropertyChange(() => content);
+            }
         }
 
         private string m_textColor = "Black";
         public string textColor { get { return m_textColor; }set { m_textColor = value; NotifyOfPropertyChange(() => textColor); } }
 
         abstract public bool validate();
-
-        static public XmlNode nodeDefinition { get; set; }
 
         //Comment
         private string m_comment= "";
@@ -44,9 +49,10 @@ namespace Badger.ViewModels
         public string name { get { return m_name; } set { m_name = value; } }
         
         //Initialization stuff common to all types of configuration nodes
-        protected void commonInit(XmlNode definitionNode, string parentXPath)
+        protected void commonInit(AppViewModel appViewModel,XmlNode definitionNode, string parentXPath)
         {
-            nodeDefinition = definitionNode;
+            m_appViewModel = appViewModel;
+            m_definitionNode = definitionNode;
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
             xPath = parentXPath + "/" + name;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute)!=null)
@@ -61,20 +67,22 @@ namespace Badger.ViewModels
         {
             switch (definitionNode.Name)
             {
-                case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(definitionNode,parentXPath,configNode);
-                case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(definitionNode,parentXPath,configNode);
-                case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(definitionNode, parentXPath, configNode);
-                case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(definitionNode, parentXPath, configNode);
-                case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(definitionNode, parentXPath, configNode);
+                case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(appDefinition, definitionNode,parentXPath,configNode);
+                case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(appDefinition, definitionNode, parentXPath,configNode);
+                case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
+                case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
+                case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
 
                 case XMLConfig.branchNodeTag: return new BranchConfigViewModel(appDefinition,definitionNode,parentXPath,configNode);
                 case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
                 case XMLConfig.choiceElementNodeTag: return new ChoiceElementConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
                 case XMLConfig.enumNodeTag: return new EnumeratedValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
+                case XMLConfig.multiValuedNodeTag: return new MultiValuedConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
             }
 
             return null;
         }
+
     }
     abstract public class NestedConfigNode: ConfigNodeViewModel
     {

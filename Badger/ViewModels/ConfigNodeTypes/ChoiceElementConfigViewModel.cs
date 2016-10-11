@@ -12,7 +12,7 @@ namespace Badger.ViewModels
 
         public ChoiceElementConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
-            commonInit(definitionNode,parentXPath);
+            commonInit(appDefinition,definitionNode,parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)

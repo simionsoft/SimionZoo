@@ -5,9 +5,9 @@ namespace Badger.ViewModels
 {
     class StringValueConfigViewModel: ConfigNodeViewModel
     {
-        public StringValueConfigViewModel(XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public StringValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(definitionNode, parentXPath);
+            commonInit(appDefinition, definitionNode, parentXPath);
             comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
             if (configNode == null)
             {

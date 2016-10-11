@@ -36,7 +36,7 @@ namespace Badger.ViewModels
 
         public ChoiceConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(definitionNode, parentXPath);
+            commonInit(appDefinition,definitionNode, parentXPath);
             comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
 
             childrenInit(appDefinition, definitionNode, parentXPath, configNode);

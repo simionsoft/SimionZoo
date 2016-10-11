@@ -19,7 +19,7 @@ namespace Badger.ViewModels
         string m_class;
         public EnumeratedValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(definitionNode, parentXPath);
+            commonInit(appDefinition, definitionNode, parentXPath);
             comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
             m_class = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             m_appDefinition = appDefinition;

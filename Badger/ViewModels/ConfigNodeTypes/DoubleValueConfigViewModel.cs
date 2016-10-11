@@ -6,9 +6,9 @@ namespace Badger.ViewModels
     class DoubleValueConfigViewModel: ConfigNodeViewModel
     {
 
-        public DoubleValueConfigViewModel(XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public DoubleValueConfigViewModel(AppViewModel appViewModel, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(definitionNode, parentXPath);
+            commonInit(appViewModel,definitionNode, parentXPath);
             comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
             if (configNode == null)
             {
