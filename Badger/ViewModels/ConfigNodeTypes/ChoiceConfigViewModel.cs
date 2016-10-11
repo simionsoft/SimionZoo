@@ -6,11 +6,8 @@ namespace Badger.ViewModels
 {
     public class ChoiceConfigViewModel : NestedConfigNode
     {
-        //aux xml definitions stuff
-        private string m_xmlDefinitionId="";
-
         //choices
-        private string m_selectedChoiceName = "";
+        private string m_selectedChoiceName= null;
         private ConfigNodeViewModel m_selectedChoice = null;
         public ConfigNodeViewModel selectedChoice
         {

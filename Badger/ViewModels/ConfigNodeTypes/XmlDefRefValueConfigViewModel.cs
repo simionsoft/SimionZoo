@@ -38,9 +38,10 @@ namespace Badger.ViewModels
         public void updateXMLDefRef()
         {
             enumeratedNames = m_appDefinition.getAuxDefinition(m_hangingFrom);
+            //selectedEnumeratedName = "";
             //why not leave it unselected so that validation fails?
-            //if (enumeratedNames.Count>0)
-            //selectedEnumeratedName = enumeratedNames[0];
+            //if (enumeratedNames.Count > 0)
+            //    selectedEnumeratedName = enumeratedNames[0];
         }
 
         public override bool validate()

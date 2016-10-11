@@ -30,7 +30,12 @@ namespace Badger.ViewModels
             if (configNode != null)
             {
                 //init from config file
-                m_default= configNode[name].InnerText;
+                content = configNode[name].InnerText;
+            }
+            else
+            {
+                content = m_default;
+                textColor = XMLConfig.colorDefaultValue;
             }
 
             appDefinition.registerDeferredLoadStep(deferredLoad);
@@ -39,7 +44,7 @@ namespace Badger.ViewModels
         public void deferredLoad()
         {
             enumeratedNames = m_appDefinition.getEnumeratedType(m_class);
-            content = m_default;
+            //content = m_default;
         }
 
         public override bool validate()

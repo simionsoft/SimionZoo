@@ -11,7 +11,7 @@
    
     <StackPanel Orientation="Vertical" Margin="0">
         <StackPanel Orientation="Horizontal" Margin="0">
-            <Label x:Name="name" Width="150" Foreground="Gray" VerticalContentAlignment="Center"
+            <Label x:Name="name" Width="150" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right"></Label>
             <ComboBox Background="White" ItemsSource="{Binding enumeratedNames}"  SelectedValue="{Binding selectedEnumeratedName}"/>
         </StackPanel>

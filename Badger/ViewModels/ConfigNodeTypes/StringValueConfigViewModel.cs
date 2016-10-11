@@ -13,6 +13,7 @@ namespace Badger.ViewModels
             {
                 //default init
                 content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
+                textColor = XMLConfig.colorDefaultValue;
             }
             else
             {

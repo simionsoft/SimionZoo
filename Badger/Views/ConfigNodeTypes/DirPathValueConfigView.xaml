@@ -10,10 +10,10 @@
 d:DesignHeight="50" d:DesignWidth="300">
 
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
-        <Label Content="{Binding name}" Foreground="Gray" VerticalContentAlignment="Center"
+        <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light" />
         <TextBlock Text="{Binding content}" Width="150" 
-                 Foreground="{Binding textColor}" TextWrapping="WrapWithOverflow"/>
+                 TextWrapping="WrapWithOverflow"/>
         <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"
                 cal:Message.Attach="[Event Click]=[Action selectFolder()]">
             <Image Source="/images/folder.png" Width="25" Height="25"></Image>

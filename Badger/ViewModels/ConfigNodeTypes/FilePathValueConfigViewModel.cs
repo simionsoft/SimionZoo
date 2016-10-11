@@ -16,6 +16,7 @@ namespace Badger.ViewModels
             {
                 //default init
                 content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
+                textColor = XMLConfig.colorDefaultValue;
             }
             else
             {
@@ -26,7 +27,7 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            return Directory.Exists(content);
+            return File.Exists(content);
         }
 
         public override string getXML()

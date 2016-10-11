@@ -11,12 +11,11 @@ d:DesignHeight="50" d:DesignWidth="300">
     <!--Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">-->
 
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
-        <Label Content="{Binding name}" Foreground="Gray" VerticalContentAlignment="Center"
+        <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light" />
         <TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
-                 BorderThickness="0"
-                 Foreground="{Binding textColor}"/>
+                 BorderThickness="0"/>
 
         <!--<ItemsControl ItemsSource="{Binding value}">
             <ItemsControl.ItemTemplate>

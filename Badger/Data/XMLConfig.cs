@@ -41,5 +41,10 @@ namespace Simion
         public const string exeNodeTag = "EXE";
         public const string preNodeTag = "PRE";
         public const string includeNodeTag = "INCLUDE";
+
+        //Text colors
+        public const string colorDefaultValue = "DarkRed";
+        public const string colorValidValue = "Gray";
+        public const string colorInvalidValue = "Red";
     }
 }

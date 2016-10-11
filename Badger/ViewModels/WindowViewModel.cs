@@ -96,17 +96,11 @@ namespace Badger.ViewModels
         public string selectedApp { get { return m_selectedApp; } 
             set 
             {
-                //CNode.cleanAll();
-               // CApp.cleanApp();
-
                 int index = _appNames.IndexOf(value);
                 if (index == -1)
                     return;
                 m_selectedApp = value;
                 NotifyOfPropertyChange(() => selectedApp);
-
-                //NotifyOfPropertyChange(() => Branch);
-                //NotifyOfPropertyChange(() => rootnode);
             } 
         }
         public void newExperiment()
@@ -149,9 +143,6 @@ namespace Badger.ViewModels
 
             getAppsNames();
            
-            //_rootnode = Utility.getRootNode(apps[0]);
-            //_branches = _rootnode.children;
-            //_doc = (this._rootnode as CApp).document;
             CApp.IsInitializing = false;
             m_experimentQueueViewModel.setParent(this);
         }

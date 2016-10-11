@@ -19,12 +19,14 @@ namespace Badger.ViewModels
             set {
                 m_content = value;
                 m_bIsValid = validate();
+                if (m_bIsValid) textColor = XMLConfig.colorValidValue;
+                else textColor = XMLConfig.colorInvalidValue;
                 NotifyOfPropertyChange(() => bIsValid);
                 NotifyOfPropertyChange(() => content);
             }
         }
 
-        private string m_textColor = "Black";
+        private string m_textColor = XMLConfig.colorDefaultValue;
         public string textColor { get { return m_textColor; }set { m_textColor = value; NotifyOfPropertyChange(() => textColor); } }
 
         abstract public bool validate();
