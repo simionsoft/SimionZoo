@@ -227,12 +227,15 @@ namespace Badger.ViewModels
             else
                 return;
             
-            XmlDocument loadedDocument = new XmlDocument();
-            loadedDocument.Load(fileDoc);
+            XmlDocument configDocument = new XmlDocument();
+            configDocument.Load(fileDoc);
+            XmlNode rootNode = configDocument.LastChild;
+            m_appViewModel = new AppViewModel(apps[rootNode.Name], configDocument);
+            //loadedDocument.Load(fileDoc);
 
-            loadExperimentInEditor(loadedDocument);       
+            //loadExperimentInEditor(loadedDocument);       
         }
-       
+
         public void loadExperimentInEditor(XmlDocument experimentXML)
         {
             _doc.RemoveAll();
@@ -254,7 +257,7 @@ namespace Badger.ViewModels
                     {
                         if (dataNode.Name == branch.Name)
                         {
-                           Utility.fillTheClass(branch.Class, dataNode);
+                            Utility.fillTheClass(branch.Class, dataNode);
                         }
                     }
                 }
