@@ -51,9 +51,10 @@ namespace Badger.ViewModels
         public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
-        //This constructor does not build the whole tree of ConfigNodes. It just initializes the root node
-        //To build the whole tree, use load(configNode) or defaultInit()
-        public AppViewModel(string fileName)
+        //This constructor builds the whole tree of ConfigNodes either
+        // -with default values ("New")
+        // -with a configuration file ("Load")
+        public AppViewModel(string fileName,XmlDocument configFile= null)
         {
             m_configDocument.Load(fileName);
 
@@ -75,7 +76,7 @@ namespace Badger.ViewModels
                         else if (child.Name == XMLConfig.includeNodeTag)
                             loadIncludedDefinitionFile(child.InnerText);
                         else 
-                            m_children.Add(ConfigNodeViewModel.getInstance(this,child, m_name));
+                            m_children.Add(ConfigNodeViewModel.getInstance(this,child, m_name,configFile));
                             //here we assume definitions are before the children
                     }
                 }
@@ -108,42 +109,5 @@ namespace Badger.ViewModels
                 }
             }
         }
-
-        //This method can be called to initialize the configuration tree, either providing a configuration file
-        //or the default values
-        public void init(string configFile= null)
-        {
-            //Load the config XML file
-            XmlDocument configDocument= null;
-            if (configFile!=null && configFile!="")
-            {
-                configDocument = new XmlDocument();
-                configDocument.Load(configFile);
-            }
-
-            //initialize the config tree
-            ConfigNodeViewModel configNode;
-            m_children.Clear();
-            foreach (XmlNode rootChild in m_configDocument.ChildNodes)
-            {
-                if (rootChild.Name == XMLConfig.appNodeTag)
-                {
-                    foreach (XmlNode child in rootChild.ChildNodes)
-                    {
-                        if (child.Name != XMLConfig.exeNodeTag && child.Name != XMLConfig.includeNodeTag
-                            && child.Name != XMLConfig.preNodeTag)
-                        {
-                            //the base xPath is the app's name
-                            configNode = ConfigNodeViewModel.getInstance(this,child, name, configDocument);
-                            if (configNode!=null)
-                                m_children.Add(configNode);
-                        }
-                    }
-                }
-            }
-
-
-        }
-
     }
 }
