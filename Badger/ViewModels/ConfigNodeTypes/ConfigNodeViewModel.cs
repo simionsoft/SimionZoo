@@ -44,6 +44,9 @@ namespace Badger.ViewModels
         protected string m_xPath;
         public string xPath { get{ return m_xPath; }  set { m_xPath = value; } }
 
+        //Selection (only overriden by ChoiceElementConfigViewModel
+        public virtual void setSelected() { }
+
         //Name
         private string m_name;
         public string name { get { return m_name; } set { m_name = value; } }
@@ -59,6 +62,10 @@ namespace Badger.ViewModels
             {
                 m_default = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
             }
+            if (definitionNode.Attributes.GetNamedItem(XMLConfig.commentAttribute) != null)
+            {
+                comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
+            }   
         }
 
 
@@ -72,6 +79,7 @@ namespace Badger.ViewModels
                 case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
                 case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
                 case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
+                case XMLConfig.xmlRefNodeTag: return new XmlDefRefValueConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
 
                 case XMLConfig.branchNodeTag: return new BranchConfigViewModel(appDefinition,definitionNode,parentXPath,configNode);
                 case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(appDefinition, definitionNode, parentXPath, configNode);
@@ -103,7 +111,8 @@ namespace Badger.ViewModels
         public abstract string getXMLHeader();
         public abstract string getXMLFooter();
 
-        protected void childrenInit(AppViewModel appDefinition, XmlNode classDefinition, string parentXPath, XmlNode configNode= null)
+        protected void childrenInit(AppViewModel appDefinition, XmlNode classDefinition
+            , string parentXPath, XmlNode configNode= null)
         {
             if (classDefinition != null)
             {

@@ -6,6 +6,10 @@ namespace Badger.ViewModels
 {
     public class ChoiceConfigViewModel : NestedConfigNode
     {
+        //aux xml definitions stuff
+        private string m_xmlDefinitionId="";
+
+        //choices
         private string m_selectedChoiceName = "";
         private ConfigNodeViewModel m_selectedChoice = null;
         public ConfigNodeViewModel selectedChoice
@@ -22,6 +26,7 @@ namespace Badger.ViewModels
                 foreach (ConfigNodeViewModel child in m_children)
                     if (child.name == value)
                     {
+                        child.setSelected();
                         selectedChoice = child;
                         NotifyOfPropertyChange(() => selectedChoiceName);
                         NotifyOfPropertyChange(() => selectedChoice);
@@ -37,7 +42,10 @@ namespace Badger.ViewModels
         public ChoiceConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition,definitionNode, parentXPath);
-            comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
+
+            // currently we ignore the xml definition Id and assume we will only use one
+            //if (definitionNode.Attributes.GetNamedItem(XMLConfig.xmlDefinitionId) != null)
+            //    m_xmlDefinitionId = definitionNode.Attributes[XMLConfig.xmlDefinitionId].Value;
 
             childrenInit(appDefinition, definitionNode, parentXPath, configNode);
 

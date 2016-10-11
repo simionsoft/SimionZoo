@@ -8,8 +8,12 @@ namespace Badger.ViewModels
     class EnumeratedValueConfigViewModel: ConfigNodeViewModel
     {
         private AppViewModel m_appDefinition;
-        private List<string> m_enumeratedType;
-        public List<string> enumeratedNames { get { return m_enumeratedType; } }
+        private List<string> m_enumeratedNames;
+        public List<string> enumeratedNames
+        {
+            get { return m_enumeratedNames; }
+            set { m_enumeratedNames = value; NotifyOfPropertyChange(() => enumeratedNames); }
+        }
 
         public string selectedEnumeratedName
         {
@@ -20,7 +24,7 @@ namespace Badger.ViewModels
         public EnumeratedValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
-            comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
+
             m_class = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             m_appDefinition = appDefinition;
             if (configNode != null)
@@ -34,7 +38,7 @@ namespace Badger.ViewModels
 
         public void deferredLoad()
         {
-            m_enumeratedType = m_appDefinition.getEnumeratedType(m_class);
+            enumeratedNames = m_appDefinition.getEnumeratedType(m_class);
             content = m_default;
         }
 

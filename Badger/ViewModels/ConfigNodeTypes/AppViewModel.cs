@@ -13,6 +13,12 @@ namespace Badger.ViewModels
 
         private List<deferredLoadStep> m_deferredLoadSteps= new List<deferredLoadStep>();
         public void registerDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
+        public void doDeferredLoadSteps()
+        {
+            foreach (deferredLoadStep deferredStep in m_deferredLoadSteps)
+                deferredStep();
+            m_deferredLoadSteps.Clear();
+        }
 
         //app properties: prerrequisites, exe files, definitions...
         private List<string> m_preFiles= new List<string>();
@@ -51,6 +57,51 @@ namespace Badger.ViewModels
         public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
+        //Auxiliary XML definition files: Worlds (states and actions)
+        private XmlNode m_auxDefinitions= null;
+
+        public void loadAuxDefinitions(string fileName)
+        {
+            XmlDocument doc = new XmlDocument();
+
+            doc.Load(fileName);
+            m_auxDefinitions= doc.LastChild; //we take here the last node to skip the <?xml ...> initial tag
+            updateXMLDefRefs();
+        }
+        public List<string> getAuxDefinition(string hangingFrom)
+        {
+            //HARD-CODED: the list is filled with the contents of the nodes from: ../<hangingFrom>/Variable/Name
+            List<string> definedValues = new List<string>();
+
+            foreach (XmlNode child in m_auxDefinitions.ChildNodes)
+            {
+                if (child.Name==hangingFrom)
+                {
+                    foreach(XmlNode child2 in child.ChildNodes)
+                    {
+                        if (child2.Name=="Variable")
+                        {
+                            foreach (XmlNode child3 in child2.ChildNodes)
+                            {
+                                if (child3.Name == "Name")
+                                    definedValues.Add(child3.InnerText);
+                            }
+                        }
+                    }
+                }
+            }
+            return definedValues;
+        }
+
+        //XMLDefRefs
+        private List<deferredLoadStep> m_XMLDefRefListeners = new List<deferredLoadStep>();
+        public void registerXMLDefRef(deferredLoadStep func) { m_XMLDefRefListeners.Add(func); }
+        public void updateXMLDefRefs()
+        {
+            foreach (deferredLoadStep func in m_XMLDefRefListeners)
+                func();
+        }
+
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
@@ -84,12 +135,7 @@ namespace Badger.ViewModels
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
-        public void doDeferredLoadSteps()
-        {
-            foreach (deferredLoadStep deferredStep in m_deferredLoadSteps)
-                deferredStep();
-            m_deferredLoadSteps.Clear();
-        }
+
         private void loadIncludedDefinitionFile(string appDefinitionFile)
         {
             XmlDocument definitionFile = new XmlDocument();

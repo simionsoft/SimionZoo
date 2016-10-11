@@ -32,6 +32,9 @@ namespace Simion
         public const string windowAttribute = "Window";
         public const string defaultAttribute = "Default";
         public const string optionalAttribute = "Optional";
+        public const string xmlDefinitionIdAttribute = "LoadXML";
+        public const string loadXMLFileAttribute = "XML";
+        public const string hangingFromAttribute = "HangingFrom";
 
         //Attribute special values
         public const string newWindowValue = "New";

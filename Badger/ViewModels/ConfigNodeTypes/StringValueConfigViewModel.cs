@@ -8,7 +8,7 @@ namespace Badger.ViewModels
         public StringValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
-            comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
+
             if (configNode == null)
             {
                 //default init

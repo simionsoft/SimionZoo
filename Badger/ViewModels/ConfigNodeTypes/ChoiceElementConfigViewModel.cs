@@ -9,6 +9,7 @@ namespace Badger.ViewModels
         private string m_className = "";
         private string m_window = "";
         private bool m_bOptional = false;
+        private string m_loadXML;
 
         public ChoiceElementConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
@@ -21,6 +22,9 @@ namespace Badger.ViewModels
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
                 m_bOptional = definitionNode.Attributes[XMLConfig.optionalAttribute].Value == "true";
             else m_bOptional = false;
+            if (definitionNode.Attributes.GetNamedItem(XMLConfig.loadXMLFileAttribute) != null)
+                m_loadXML = definitionNode.Attributes[XMLConfig.loadXMLFileAttribute].Value;
+            else m_loadXML = "";
 
             childrenInit(appDefinition, appDefinition.getClassDefinition(m_className)
                 , m_xPath, configNode);
@@ -33,6 +37,14 @@ namespace Badger.ViewModels
                 bIsValid &= child.validate();
             }
             return bIsValid;
+        }
+
+        public override void setSelected()
+        {
+            if (m_loadXML != "")
+            {
+                m_appViewModel.loadAuxDefinitions(m_loadXML);
+            }
         }
 
         public override string getXMLHeader(){ return "<" + name + ">"; }
