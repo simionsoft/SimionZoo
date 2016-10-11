@@ -12,7 +12,8 @@ namespace Badger.ViewModels
         public ConfigNodeViewModel selectedChoice
         {
             get { return m_selectedChoice; }
-            set { m_selectedChoice = value; NotifyOfPropertyChange(() => selectedChoice); }
+            set { m_selectedChoice = value;
+                NotifyOfPropertyChange(() => selectedChoice); }
         }
         public string selectedChoiceName
         {
@@ -20,6 +21,7 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedChoiceName = value;
+                content = m_selectedChoiceName;
                 foreach (ConfigNodeViewModel child in m_children)
                     if (child.name == value)
                     {
@@ -55,6 +57,7 @@ namespace Badger.ViewModels
             {
                 selectedChoiceName = m_children[0].name;
                 selectedChoice = m_children[0];
+                textColor = XMLConfig.colorDefaultValue;
             }
             else
             {
@@ -68,15 +71,13 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            return (selectedChoice == null) || selectedChoice.validate();
+            return (selectedChoice != null) && selectedChoice.validate();
         }
 
-        public override string getXMLHeader() { return "<" + name + ">"; }
-        public override string getXMLFooter() { return "</" + name + ">"; }
-        public override string getXML()
+        public override string getXML(string leftSpace)
         {
-
-            return selectedChoice.getXML();
+            return leftSpace + getXMLHeader() + selectedChoice.getXML(leftSpace + "  ") + leftSpace + getXMLFooter();
         }
+
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
 using Caliburn.Micro;
-
+using System.IO;
 using Simion;
 
 namespace Badger.ViewModels
@@ -152,6 +152,31 @@ namespace Badger.ViewModels
                         else if (definition.Name == XMLConfig.enumDefinitionNodeTag)
                             addEnumeratedType(definition);
                     }
+                }
+            }
+        }
+
+        public bool validate()
+        {
+            foreach (ConfigNodeViewModel node in m_children)
+                if (!node.validate()) return false;
+            return true;
+        }
+
+        public void save(string filename)
+        {
+            using (FileStream stream = File.Create(filename))
+            {
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write("<" + name + " Version=\"" + m_version + "\">\n");
+
+                    foreach (ConfigNodeViewModel node in m_children)
+                    {
+                        writer.Write(node.getXML("  "));
+                    }
+
+                    writer.Write( "</" + name + ">");
                 }
             }
         }

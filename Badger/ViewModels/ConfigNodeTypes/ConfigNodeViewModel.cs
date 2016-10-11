@@ -18,16 +18,14 @@ namespace Badger.ViewModels
             get { return m_content; }
             set {
                 m_content = value;
-                m_bIsValid = validate();
-                if (m_bIsValid) textColor = XMLConfig.colorValidValue;
-                else textColor = XMLConfig.colorInvalidValue;
-                NotifyOfPropertyChange(() => bIsValid);
+                bIsValid= validate();
                 NotifyOfPropertyChange(() => content);
             }
         }
 
         private string m_textColor = XMLConfig.colorDefaultValue;
-        public string textColor { get { return m_textColor; }set { m_textColor = value; NotifyOfPropertyChange(() => textColor); } }
+        public string textColor { get { return m_textColor; }
+            set { m_textColor = value; NotifyOfPropertyChange(() => textColor); } }
 
         abstract public bool validate();
 
@@ -37,10 +35,23 @@ namespace Badger.ViewModels
 
         //Validation
         private bool m_bIsValid = false;
-        public bool bIsValid { get { return m_bIsValid; } set { m_bIsValid = value; } }
+        public bool bIsValid
+        {
+            get { return m_bIsValid; }
+            set
+            {
+                m_bIsValid = value;
+                if (m_bIsValid) textColor = XMLConfig.colorValidValue;
+                else textColor = XMLConfig.colorInvalidValue;
+                NotifyOfPropertyChange(() => bIsValid);
+            }
+        }
 
         //XML output methods
-        public abstract string getXML();
+        public virtual string getXML(string leftSpace)
+        {
+            return leftSpace + "<" + name + ">" + content + "</" + name + ">\n";
+        }
 
         //XPath methods
         protected string m_xPath;
@@ -101,17 +112,17 @@ namespace Badger.ViewModels
         public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
-        public override string getXML()
-        { return getXMLHeader() + getChildrenXML() + getXMLFooter(); }
+        public override string getXML(string leftSpace)
+        { return leftSpace + getXMLHeader() + getChildrenXML(leftSpace + "  ") + leftSpace + getXMLFooter(); }
 
-        public string getChildrenXML()
+        public string getChildrenXML(string leftSpace)
         {
             string xml = "";
-            foreach (ConfigNodeViewModel child in m_children) xml += child.getXML();
+            foreach (ConfigNodeViewModel child in m_children) xml += child.getXML(leftSpace);
             return xml;
         }
-        public abstract string getXMLHeader();
-        public abstract string getXMLFooter();
+        public virtual string getXMLHeader() { return "<" + name + ">\n"; }
+        public virtual string getXMLFooter() { return "</" + name + ">\n"; }
 
         protected void childrenInit(AppViewModel appDefinition, XmlNode classDefinition
             , string parentXPath, XmlNode configNode= null)
@@ -125,6 +136,18 @@ namespace Badger.ViewModels
                         m_children.Add(childNode);
                 }
             }
+        }
+        public override bool validate()
+        {
+            bIsValid = true;
+            foreach (ConfigNodeViewModel child in children)
+            {
+                if (!child.validate())
+                {
+                    bIsValid = false;
+                }
+            }
+            return bIsValid;
         }
     }
 }

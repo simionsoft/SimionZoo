@@ -38,6 +38,7 @@ namespace Badger.ViewModels
         public void updateXMLDefRef()
         {
             enumeratedNames = m_appDefinition.getAuxDefinition(m_hangingFrom);
+            textColor = XMLConfig.colorInvalidValue;
             //selectedEnumeratedName = "";
             //why not leave it unselected so that validation fails?
             //if (enumeratedNames.Count > 0)
@@ -48,11 +49,6 @@ namespace Badger.ViewModels
         {
             List<string> enumeration = m_appDefinition.getAuxDefinition(m_hangingFrom);
             return enumeration.Exists(id => (id==content));
-        }
-
-        public override string getXML()
-        {
-            return "<" + name + ">" + content + "</" + name + ">";
         }
     }
 }

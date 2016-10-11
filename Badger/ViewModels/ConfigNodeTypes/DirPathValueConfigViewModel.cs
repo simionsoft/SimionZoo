@@ -28,10 +28,6 @@ namespace Badger.ViewModels
             return Directory.Exists(content);
         }
 
-        public override string getXML()
-        {
-            return "<" + name + ">" + content + "</" + name + ">";
-        }
 
         public void selectFolder()
         {

@@ -44,6 +44,7 @@ namespace Badger.ViewModels
         public void deferredLoad()
         {
             enumeratedNames = m_appDefinition.getEnumeratedType(m_class);
+            bIsValid= validate();
             //content = m_default;
         }
 
@@ -51,11 +52,6 @@ namespace Badger.ViewModels
         {
             List<string> enumeration = m_appDefinition.getEnumeratedType(m_class);
             return enumeration.Exists(id => (id==content));
-        }
-
-        public override string getXML()
-        {
-            return "<" + name + ">" + content + "</" + name + ">";
         }
     }
 }

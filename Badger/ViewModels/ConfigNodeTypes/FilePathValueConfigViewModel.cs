@@ -30,10 +30,6 @@ namespace Badger.ViewModels
             return File.Exists(content);
         }
 
-        public override string getXML()
-        {
-            return "<" + name + ">" + content + "</" + name + ">";
-        }
 
         public void selectFile()
         {

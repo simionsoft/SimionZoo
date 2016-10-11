@@ -37,17 +37,5 @@ namespace Badger.ViewModels
                 m_parent.removeChild(this);
         }
 
-        public override bool validate()
-        {
-            foreach (ConfigNodeViewModel child in children)
-            {
-                bIsValid &= child.validate();
-            }
-            return bIsValid;
-        }
-
-        public override string getXMLHeader(){ return "<" + name + ">"; }
-        public override string getXMLFooter() { return "</" + name + ">"; }
-
     }
 }

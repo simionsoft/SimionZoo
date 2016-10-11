@@ -30,9 +30,5 @@ namespace Badger.ViewModels
             return false;
         }
 
-        public override string getXML()
-        {
-            return "<" + name + ">" + content + "</" + name + ">";
-        }
     }
 }

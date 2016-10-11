@@ -30,14 +30,6 @@ namespace Badger.ViewModels
                 , m_xPath, configNode);
         }
 
-        public override bool validate()
-        {
-            foreach (ConfigNodeViewModel child in children)
-            {
-                bIsValid &= child.validate();
-            }
-            return bIsValid;
-        }
 
         public override void setSelected()
         {
@@ -46,9 +38,6 @@ namespace Badger.ViewModels
                 m_appViewModel.loadAuxDefinitions(m_loadXML);
             }
         }
-
-        public override string getXMLHeader(){ return "<" + name + ">"; }
-        public override string getXMLFooter() { return "</" + name + ">"; }
 
     }
 }

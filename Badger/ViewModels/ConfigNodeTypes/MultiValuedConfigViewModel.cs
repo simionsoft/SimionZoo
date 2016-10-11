@@ -45,15 +45,8 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            foreach (ConfigNodeViewModel child in children)
-            {
-                bIsValid &= child.validate();
-            }
-            return bIsValid;
+            if (!m_bOptional && children.Count == 0) return false;
+            return base.validate();
         }
-
-        public override string getXMLHeader(){ return "<" + name + ">"; }
-        public override string getXMLFooter() { return "</" + name + ">"; }
-
     }
 }

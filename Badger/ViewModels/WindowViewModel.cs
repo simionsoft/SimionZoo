@@ -176,7 +176,7 @@ namespace Badger.ViewModels
         
         public void saveExperimentInEditor()
         {
-            if (!validate())
+            if (!appViewModel.validate())
                 return;
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *.experiment";
@@ -187,7 +187,8 @@ namespace Badger.ViewModels
             sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                _doc.Save(sfd.FileName);
+                appViewModel.save(sfd.FileName);
+               // _doc.Save(sfd.FileName);
             }
         }
         

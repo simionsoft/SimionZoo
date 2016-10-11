@@ -43,7 +43,7 @@ namespace Simion
         public const string includeNodeTag = "INCLUDE";
 
         //Text colors
-        public const string colorDefaultValue = "DarkRed";
+        public const string colorDefaultValue = "DarkOrange";
         public const string colorValidValue = "Gray";
         public const string colorInvalidValue = "Red";
     }
