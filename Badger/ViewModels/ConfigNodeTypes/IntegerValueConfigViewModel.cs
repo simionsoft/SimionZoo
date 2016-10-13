@@ -8,7 +8,6 @@ namespace Badger.ViewModels
         public IntegerValueConfigViewModel(AppViewModel appViewModel, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appViewModel, definitionNode, parentXPath);
-            System.Console.WriteLine("loading " + name);
 
             if (configNode == null || configNode[name] == null)
             {

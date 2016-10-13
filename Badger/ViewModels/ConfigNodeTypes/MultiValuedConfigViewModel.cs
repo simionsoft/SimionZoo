@@ -12,7 +12,6 @@ namespace Badger.ViewModels
         public MultiValuedConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
             commonInit(appDefinition, definitionNode,parentXPath);
-            System.Console.WriteLine("loading " + name);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
@@ -51,5 +50,15 @@ namespace Badger.ViewModels
             if (!m_bOptional && children.Count == 0) return false;
             return base.validate();
         }
+
+        //the base method is overriden because we don't want the MultiValuedConfigViewModel to add
+        //any header or footer... those will be added by the MultiValuedItemConfigViewModel children,
+        //only once per child
+        public override string getXML(string leftSpace)
+        {
+            System.Console.WriteLine("Exporting " + name);
+            return getChildrenXML(leftSpace);
+        }
+
     }
 }

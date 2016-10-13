@@ -13,7 +13,6 @@ namespace Badger.ViewModels
             ,XmlNode definitionNode, string parentXPath, XmlNode configNode=null)
         {
             commonInit(appDefinition,definitionNode,parentXPath);
-            System.Console.WriteLine("loading " + name);
 
             m_parent = parent;
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;

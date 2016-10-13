@@ -463,7 +463,7 @@ namespace CustomXMLBuilder
                 parsedXML += getLevelIndent() + "<BRANCH Name=" + parameterMatches[1].Value.Trim(' ')
                     + " Class=\"" + referencedClass + "\" Comment=" + parameterMatches[2].Value.Trim(' ');
                 if (parameterMatches[3].Value.Trim(' ') != "\"\"") //Window
-                    parsedXML += " Optional=\"" + parameterMatches[3].Value + "\"";
+                    parsedXML += " Optional=\"" + parameterMatches[3].Value.Trim(' ') + "\"";
                 parsedXML+= "/>\n";                
             }
             decreaseIndent();

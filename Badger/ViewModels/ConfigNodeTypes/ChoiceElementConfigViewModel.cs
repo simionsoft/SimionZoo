@@ -14,7 +14,6 @@ namespace Badger.ViewModels
         public ChoiceElementConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
             commonInit(appDefinition,definitionNode,parentXPath);
-            System.Console.WriteLine("loading " + name);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)

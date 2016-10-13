@@ -63,7 +63,7 @@ namespace Badger.ViewModels
         
         //Initialization stuff common to all types of configuration nodes
         protected void commonInit(AppViewModel appViewModel,XmlNode definitionNode, string parentXPath)
-        {
+        { 
             m_appViewModel = appViewModel;
             m_definitionNode = definitionNode;
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
@@ -75,7 +75,8 @@ namespace Badger.ViewModels
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.commentAttribute) != null)
             {
                 comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
-            }   
+            }
+            System.Console.WriteLine("loading " + name + ". XPath=" + m_xPath);
         }
 
 
@@ -110,7 +111,9 @@ namespace Badger.ViewModels
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
         public override string getXML(string leftSpace)
-        { return leftSpace + getXMLHeader() + getChildrenXML(leftSpace + "  ") + leftSpace + getXMLFooter(); }
+        {
+            System.Console.WriteLine("Exporting " + name);
+            return leftSpace + getXMLHeader() + getChildrenXML(leftSpace + "  ") + leftSpace + getXMLFooter(); }
 
         public string getChildrenXML(string leftSpace)
         {

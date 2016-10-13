@@ -27,7 +27,6 @@ namespace Badger.ViewModels
         public XmlDefRefValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
-            System.Console.WriteLine("loading " + name);
 
             m_hangingFrom = definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
 

@@ -8,45 +8,20 @@
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.BranchConfigView"
              mc:Ignorable="d" 
                 d:DesignHeight="50" d:DesignWidth="300">
-    <!--Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}">-->
     <UserControl.Resources>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="White"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="White"/>
-        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
-
-    </UserControl.Resources>
-    
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>    
     <TreeViewItem IsExpanded="True" Margin="-15,0,0,0">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal" Focusable="False">
-                <Label Content="{Binding name}" ToolTip="{Binding comment}">
-                </Label>
+                <CheckBox  VerticalAlignment="Center" 
+                          Visibility="{Binding Path=bIsOptional,Converter={StaticResource BoolToVis}}"
+                           IsChecked="{Binding bIsUsed}"/>
+                <Label Content="{Binding name}" ToolTip="{Binding comment}"/>
             </StackPanel>
         </TreeViewItem.Header>
 
-        <ItemsControl x:Name="children"/>
+        <ItemsControl x:Name="children"
+                      Visibility="{Binding Path=bIsUsed,Converter={StaticResource BoolToVis}}"/>
     </TreeViewItem>
-
-    <!--<ContentControl x:Name="Class" Margin="-10,0,0,0" IsEnabled="{Binding IsEnabled}"/>-->
-    <!--</StackPanel>-->
-    <!--<Grid>
-        <TreeView BorderThickness="0" Background="Transparent" Margin="-15,0,0,0" ItemsSource="{Binding children}">
-            <TreeViewItem IsExpanded="True" >
-
-                <TreeViewItem.Header>
-                    <StackPanel Orientation="Horizontal" Focusable="False">
-                        <Label Content="{Binding name}" ToolTip="{Binding comment}" Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
-                                
-                        </Label>
-                        <CheckBox Content="" Visibility="{Binding IsOptionalVisible}" IsChecked="{Binding IsSet}" VerticalAlignment="Center" />
-                    </StackPanel>
-                </TreeViewItem.Header>
-                --><!--<ContentControl x:Name="children" Margin="-10,0,0,0" IsEnabled="{Binding IsEnabled}"/>--><!--
-            </TreeViewItem>
-            
-
-        </TreeView>
-
-    </Grid>-->
 </UserControl>

@@ -49,7 +49,6 @@ namespace Badger.ViewModels
         {
             string choiceElementName;
             commonInit(appDefinition,definitionNode, parentXPath);
-            System.Console.WriteLine("loading " + name);
 
             if (configNode != null) configNode = configNode[name];
 
