@@ -7,7 +7,6 @@ namespace Badger.ViewModels
 {
     class XmlDefRefValueConfigViewModel: ConfigNodeViewModel
     {
-        private AppViewModel m_appDefinition;
         private List<string> m_enumeratedNames= null;
         public List<string> enumeratedNames
         {
@@ -23,34 +22,34 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => selectedEnumeratedName);
             }
         }
-        string m_hangingFrom;
+        private string m_hangingFrom;
+
         public XmlDefRefValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
             System.Console.WriteLine("loading " + name);
 
             m_hangingFrom = definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
-            m_appDefinition = appDefinition;
 
             if (configNode!=null)
             {
                 configNode = configNode[name];
-                content = configNode.InnerText;
+                selectedEnumeratedName = configNode.InnerText;
+                //the xml definition file may not be yet loaded. We defer this step
+                m_appViewModel.registerDeferredLoadStep(updateXMLDefRef);
             }
 
-            appDefinition.registerXMLDefRef(updateXMLDefRef);
+            m_appViewModel.registerXMLDefRef(updateXMLDefRef);
         }
 
         public void updateXMLDefRef()
         {
-            enumeratedNames = m_appDefinition.getAuxDefinition(m_hangingFrom);
-            textColor = XMLConfig.colorInvalidValue;
-
+            enumeratedNames = m_appViewModel.getAuxDefinition(m_hangingFrom);
         }
 
         public override bool validate()
         {
-            List<string> enumeration = m_appDefinition.getAuxDefinition(m_hangingFrom);
+            List<string> enumeration = m_appViewModel.getAuxDefinition(m_hangingFrom);
             return enumeration.Exists(id => (id==content));
         }
     }

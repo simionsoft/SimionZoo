@@ -93,7 +93,8 @@ namespace Badger.ViewModels
 
         //XMLDefRefs
         private List<deferredLoadStep> m_XMLDefRefListeners = new List<deferredLoadStep>();
-        public void registerXMLDefRef(deferredLoadStep func) { m_XMLDefRefListeners.Add(func); }
+        public void registerXMLDefRef(deferredLoadStep func)
+        { m_XMLDefRefListeners.Add(func); }
         public void updateXMLDefRefs()
         {
             foreach (deferredLoadStep func in m_XMLDefRefListeners)
