@@ -12,6 +12,7 @@ namespace Badger.ViewModels
         public MultiValuedConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
             commonInit(appDefinition, definitionNode,parentXPath);
+            System.Console.WriteLine("loading " + name);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
@@ -20,9 +21,11 @@ namespace Badger.ViewModels
             
             if (configNode!=null)
             {
-                foreach(XmlNode child in configNode.ChildNodes)
+               // configNode = configNode[name];
+                foreach(XmlNode configChild in configNode.ChildNodes)
                 {
-                    children.Add(new MultiValuedItemConfigViewModel(appDefinition, this,definitionNode, m_xPath, child));
+                    if (configChild.Name==name)
+                        children.Add(new MultiValuedItemConfigViewModel(appDefinition, this,definitionNode, m_xPath, configChild));
                 }
             }
             else //default initialization

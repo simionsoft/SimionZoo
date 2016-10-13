@@ -13,6 +13,8 @@ namespace Badger.ViewModels
             ,XmlNode definitionNode, string parentXPath, XmlNode configNode=null)
         {
             commonInit(appDefinition,definitionNode,parentXPath);
+            System.Console.WriteLine("loading " + name);
+
             m_parent = parent;
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
 
@@ -24,6 +26,7 @@ namespace Badger.ViewModels
                 case XMLConfig.filePathNodeTag: children.Add(new FilePathValueConfigViewModel(appDefinition, definitionNode, m_xPath, configNode));break ;
                 case XMLConfig.dirPathNodeTag: children.Add(new DirPathValueConfigViewModel(appDefinition, definitionNode, m_xPath, configNode));break ;
                 default:
+                    //if (configNode != null) configNode = configNode[name];
                     XmlNode classDefinition = appDefinition.getClassDefinition(m_className);
                     if (classDefinition != null)
                         childrenInit(appDefinition, appDefinition.getClassDefinition(m_className), m_xPath, configNode);

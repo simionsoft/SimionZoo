@@ -16,11 +16,11 @@
         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
 
     </UserControl.Resources>
-    <!--<Label Foreground="Red" Content="harl"></Label>-->
+    
     <TreeViewItem IsExpanded="True" Margin="-15,0,0,0">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal" Focusable="False">
-                <Label Content="{Binding name}" ToolTip="{Binding comment}"><!--Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">-->
+                <Label Content="{Binding name}" ToolTip="{Binding comment}">
                 </Label>
             </StackPanel>
         </TreeViewItem.Header>

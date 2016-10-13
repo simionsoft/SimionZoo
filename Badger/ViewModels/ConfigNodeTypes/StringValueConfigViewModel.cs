@@ -8,8 +8,9 @@ namespace Badger.ViewModels
         public StringValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
+            System.Console.WriteLine("loading " + name);
 
-            if (configNode == null)
+            if (configNode == null || configNode[name] == null)
             {
                 //default init
                 content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
@@ -18,7 +19,7 @@ namespace Badger.ViewModels
             else
             {
                 //init from config file
-                content= configNode[name].InnerText;
+                content = configNode[name].InnerText;
             }
         }
 

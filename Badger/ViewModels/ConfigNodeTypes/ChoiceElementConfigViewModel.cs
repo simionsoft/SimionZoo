@@ -14,6 +14,7 @@ namespace Badger.ViewModels
         public ChoiceElementConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
             commonInit(appDefinition,definitionNode,parentXPath);
+            System.Console.WriteLine("loading " + name);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)
@@ -26,18 +27,18 @@ namespace Badger.ViewModels
                 m_loadXML = definitionNode.Attributes[XMLConfig.loadXMLFileAttribute].Value;
             else m_loadXML = "";
 
+            if (m_loadXML != "")
+            {
+                m_appViewModel.loadAuxDefinitions(m_loadXML);
+            }
+
+            if (configNode != null)
+                configNode = configNode[name];
             childrenInit(appDefinition, appDefinition.getClassDefinition(m_className)
                 , m_xPath, configNode);
         }
 
 
-        public override void setSelected()
-        {
-            if (m_loadXML != "")
-            {
-                m_appViewModel.loadAuxDefinitions(m_loadXML);
-            }
-        }
 
     }
 }

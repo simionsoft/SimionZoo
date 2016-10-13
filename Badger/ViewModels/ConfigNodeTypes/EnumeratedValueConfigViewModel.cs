@@ -7,7 +7,6 @@ namespace Badger.ViewModels
 {
     class EnumeratedValueConfigViewModel: ConfigNodeViewModel
     {
-        private AppViewModel m_appDefinition;
         private List<string> m_enumeratedNames;
         public List<string> enumeratedNames
         {
@@ -24,33 +23,27 @@ namespace Badger.ViewModels
         public EnumeratedValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
+            System.Console.WriteLine("loading " + name);
 
             m_class = definitionNode.Attributes[XMLConfig.classAttribute].Value;
-            m_appDefinition = appDefinition;
-            if (configNode != null)
-            {
-                //init from config file
-                content = configNode[name].InnerText;
-            }
-            else
+            enumeratedNames = m_appViewModel.getEnumeratedType(m_class);
+
+            if (configNode == null || configNode[name] == null)
             {
                 content = m_default;
                 textColor = XMLConfig.colorDefaultValue;
             }
+            else
+            {
+                //init from config file
+                content = configNode[name].InnerText;
+            }
 
-            appDefinition.registerDeferredLoadStep(deferredLoad);
-        }
-
-        public void deferredLoad()
-        {
-            enumeratedNames = m_appDefinition.getEnumeratedType(m_class);
-            bIsValid= validate();
-            //content = m_default;
         }
 
         public override bool validate()
         {
-            List<string> enumeration = m_appDefinition.getEnumeratedType(m_class);
+            List<string> enumeration = m_appViewModel.getEnumeratedType(m_class);
             return enumeration.Exists(id => (id==content));
         }
     }

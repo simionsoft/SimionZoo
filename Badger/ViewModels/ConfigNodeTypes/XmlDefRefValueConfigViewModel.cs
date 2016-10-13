@@ -27,11 +27,17 @@ namespace Badger.ViewModels
         public XmlDefRefValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
-            
+            System.Console.WriteLine("loading " + name);
+
             m_hangingFrom = definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
             m_appDefinition = appDefinition;
 
-            appDefinition.registerDeferredLoadStep(updateXMLDefRef);
+            if (configNode!=null)
+            {
+                configNode = configNode[name];
+                content = configNode.InnerText;
+            }
+
             appDefinition.registerXMLDefRef(updateXMLDefRef);
         }
 
@@ -39,10 +45,7 @@ namespace Badger.ViewModels
         {
             enumeratedNames = m_appDefinition.getAuxDefinition(m_hangingFrom);
             textColor = XMLConfig.colorInvalidValue;
-            //selectedEnumeratedName = "";
-            //why not leave it unselected so that validation fails?
-            //if (enumeratedNames.Count > 0)
-            //    selectedEnumeratedName = enumeratedNames[0];
+
         }
 
         public override bool validate()

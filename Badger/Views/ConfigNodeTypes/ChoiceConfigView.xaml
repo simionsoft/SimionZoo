@@ -11,7 +11,7 @@
    
     <StackPanel Orientation="Vertical" Margin="0">
         <StackPanel Orientation="Horizontal" Margin="0">
-            <Label x:Name="name" Width="150" VerticalContentAlignment="Center"
+            <Label x:Name="name" Width="150" ToolTip="{Binding comment}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right" Foreground="{Binding textColor}"></Label>
             <ComboBox Background="White" ItemsSource="{Binding choiceNames}" SelectedValue="{Binding selectedChoiceName}"/>
         </StackPanel>

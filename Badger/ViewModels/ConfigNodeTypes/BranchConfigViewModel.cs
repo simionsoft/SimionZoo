@@ -13,6 +13,7 @@ namespace Badger.ViewModels
         public BranchConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
             commonInit(appDefinition,definitionNode,parentXPath);
+            System.Console.WriteLine("loading " + name);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)
@@ -21,6 +22,9 @@ namespace Badger.ViewModels
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
                 m_bOptional = definitionNode.Attributes[XMLConfig.optionalAttribute].Value == "true";
             else m_bOptional = false;
+
+            if (configNode != null)
+                configNode = configNode[name];
 
             childrenInit(appDefinition, appDefinition.getClassDefinition(m_className)
                 , m_xPath, configNode);

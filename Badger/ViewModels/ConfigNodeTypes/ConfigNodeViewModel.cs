@@ -57,9 +57,6 @@ namespace Badger.ViewModels
         protected string m_xPath;
         public string xPath { get{ return m_xPath; }  set { m_xPath = value; } }
 
-        //Selection (only overriden by ChoiceElementConfigViewModel
-        public virtual void setSelected() { }
-
         //Name
         private string m_name;
         public string name { get { return m_name; } set { m_name = value; } }
@@ -124,16 +121,16 @@ namespace Badger.ViewModels
         public virtual string getXMLHeader() { return "<" + name + ">\n"; }
         public virtual string getXMLFooter() { return "</" + name + ">\n"; }
 
-        protected void childrenInit(AppViewModel appDefinition, XmlNode classDefinition
+        protected void childrenInit(AppViewModel appViewModel, XmlNode classDefinition
             , string parentXPath, XmlNode configNode= null)
         {
             if (classDefinition != null)
             {
                 foreach (XmlNode child in classDefinition.ChildNodes)
                 {
-                    ConfigNodeViewModel childNode = ConfigNodeViewModel.getInstance(appDefinition, child, parentXPath, configNode);
+                    ConfigNodeViewModel childNode = ConfigNodeViewModel.getInstance(appViewModel, child, parentXPath, configNode);
                     if (childNode!=null)
-                        m_children.Add(childNode);
+                        children.Add(childNode);
                 }
             }
         }

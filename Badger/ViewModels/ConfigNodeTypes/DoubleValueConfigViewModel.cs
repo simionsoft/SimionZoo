@@ -9,8 +9,9 @@ namespace Badger.ViewModels
         public DoubleValueConfigViewModel(AppViewModel appViewModel, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appViewModel,definitionNode, parentXPath);
+            System.Console.WriteLine("loading " + name);
 
-            if (configNode == null)
+            if (configNode == null || configNode[name]==null)
             {
                 //default init
                 content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;

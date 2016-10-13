@@ -10,7 +10,9 @@ namespace Badger.ViewModels
         public DirPathValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, definitionNode, parentXPath);
-            if (configNode == null)
+            System.Console.WriteLine("loading " + name);
+
+            if (configNode == null || configNode[name] == null)
             {
                 //default init
                 content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
@@ -19,7 +21,7 @@ namespace Badger.ViewModels
             else
             {
                 //init from config file
-                content= configNode[name].InnerText;
+                content = configNode[name].InnerText;
             }
         }
 

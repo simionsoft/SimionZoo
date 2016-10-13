@@ -107,7 +107,6 @@ namespace Badger.ViewModels
         {
             string xmlDefinitionFile = apps[m_selectedApp];
             appViewModel = new AppViewModel(xmlDefinitionFile);
-            NotifyOfPropertyChange(()=>appViewModel);
         }
        
         public void Change(object sender)
@@ -230,7 +229,7 @@ namespace Badger.ViewModels
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            m_appViewModel = new AppViewModel(apps[rootNode.Name], configDocument);
+            appViewModel = new AppViewModel(apps[rootNode.Name], configDocument);
             //loadedDocument.Load(fileDoc);
 
             //loadExperimentInEditor(loadedDocument);       

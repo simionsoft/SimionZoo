@@ -26,7 +26,7 @@ namespace Badger.ViewModels
         private Dictionary<string,XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
         private Dictionary<string,List<string>> m_enumDefinitions 
             = new Dictionary<string, List<string>>();
-        private XmlDocument m_configDocument = new XmlDocument();
+        private XmlDocument m_appDefinitionDoc = new XmlDocument();
 
         public XmlNode getClassDefinition(string className)
         {
@@ -58,39 +58,37 @@ namespace Badger.ViewModels
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
         //Auxiliary XML definition files: Worlds (states and actions)
-        private XmlNode m_auxDefinitions= null;
+        private Dictionary<string, List<string>> m_auxDefinitions = new Dictionary<string, List<string>>();
 
         public void loadAuxDefinitions(string fileName)
         {
             XmlDocument doc = new XmlDocument();
 
             doc.Load(fileName);
-            m_auxDefinitions= doc.LastChild; //we take here the last node to skip the <?xml ...> initial tag
+            XmlNode rootNode= doc.LastChild; //we take here the last node to skip the <?xml ...> initial tag
+            //HARD-CODED: the list is filled with the contents of the nodes from: ../<hangingFrom>/Variable/Name
+            foreach (XmlNode child in rootNode.ChildNodes)
+            {
+                List<string> definedValues = new List<string>();
+                string hangingFrom = child.Name;
+                foreach (XmlNode child2 in child.ChildNodes)
+                {
+                    if (child2.Name == "Variable")
+                    {
+                        foreach (XmlNode child3 in child2.ChildNodes)
+                        {
+                            if (child3.Name == "Name")
+                                definedValues.Add(child3.InnerText);
+                        }
+                    }
+                }
+                m_auxDefinitions[hangingFrom] = definedValues;
+            }
             updateXMLDefRefs();
         }
         public List<string> getAuxDefinition(string hangingFrom)
         {
-            //HARD-CODED: the list is filled with the contents of the nodes from: ../<hangingFrom>/Variable/Name
-            List<string> definedValues = new List<string>();
-
-            foreach (XmlNode child in m_auxDefinitions.ChildNodes)
-            {
-                if (child.Name==hangingFrom)
-                {
-                    foreach(XmlNode child2 in child.ChildNodes)
-                    {
-                        if (child2.Name=="Variable")
-                        {
-                            foreach (XmlNode child3 in child2.ChildNodes)
-                            {
-                                if (child3.Name == "Name")
-                                    definedValues.Add(child3.InnerText);
-                            }
-                        }
-                    }
-                }
-            }
-            return definedValues;
+            return m_auxDefinitions[hangingFrom];
         }
 
         //XMLDefRefs
@@ -107,9 +105,9 @@ namespace Badger.ViewModels
         // -with a configuration file ("Load")
         public AppViewModel(string fileName,XmlDocument configFile= null)
         {
-            m_configDocument.Load(fileName);
+            m_appDefinitionDoc.Load(fileName);
 
-            foreach (XmlNode rootChild in m_configDocument.ChildNodes)
+            foreach (XmlNode rootChild in m_appDefinitionDoc.ChildNodes)
             {
                 if (rootChild.Name == XMLConfig.appNodeTag)
                 {
@@ -126,9 +124,16 @@ namespace Badger.ViewModels
                         else if (child.Name == XMLConfig.preNodeTag) m_preFiles.Add(child.InnerText);
                         else if (child.Name == XMLConfig.includeNodeTag)
                             loadIncludedDefinitionFile(child.InnerText);
-                        else 
-                            m_children.Add(ConfigNodeViewModel.getInstance(this,child, m_name,configFile));
+                        else
+                        {
+                            XmlNode configRootNode = null;
+                            if (configFile != null)
+                            {
+                                configRootNode = configFile.LastChild;
+                            }
+                            children.Add(ConfigNodeViewModel.getInstance(this, child, m_name, configRootNode));
                             //here we assume definitions are before the children
+                        }
                     }
                 }
             }

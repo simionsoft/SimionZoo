@@ -22,56 +22,60 @@ namespace Badger.ViewModels
             {
                 m_selectedChoiceName = value;
                 content = m_selectedChoiceName;
-                foreach (ConfigNodeViewModel child in m_children)
-                    if (child.name == value)
-                    {
-                        child.setSelected();
-                        selectedChoice = child;
-                        NotifyOfPropertyChange(() => selectedChoiceName);
-                        NotifyOfPropertyChange(() => selectedChoice);
-                        break;
-                    }
+                NotifyOfPropertyChange(() => selectedChoiceName);
+
+                initSelectedChoiceElement();
             }
+        }
+
+        private void initSelectedChoiceElement(XmlNode configNode=null)
+        {
+            foreach (XmlNode choiceElement in m_definitionNode.ChildNodes)
+                if (choiceElement.Attributes[XMLConfig.nameAttribute].Value == m_selectedChoiceName)
+                {
+                    selectedChoice = getInstance(m_appViewModel
+                        ,choiceElement, m_xPath, configNode);
+                    m_children.Clear();
+                    children.Add(selectedChoice);
+                    break;
+                }
         }
 
         private BindableCollection<string> m_choiceNames = new BindableCollection<string>();
         public BindableCollection<string> choiceNames { get { return m_choiceNames; } }
 
-
+        
         public ChoiceConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
+            string choiceElementName;
             commonInit(appDefinition,definitionNode, parentXPath);
+            System.Console.WriteLine("loading " + name);
 
-            // currently we ignore the xml definition Id and assume we will only use one
-            //if (definitionNode.Attributes.GetNamedItem(XMLConfig.xmlDefinitionId) != null)
-            //    m_xmlDefinitionId = definitionNode.Attributes[XMLConfig.xmlDefinitionId].Value;
+            if (configNode != null) configNode = configNode[name];
 
-            childrenInit(appDefinition, definitionNode, parentXPath, configNode);
-
-            //init the list of choices
-            foreach (ConfigNodeViewModel child in m_children)
-                m_choiceNames.Add(child.name);
-            NotifyOfPropertyChange(() => choiceNames);
-
-            if (configNode == null && m_children.Count > 0)
+            foreach (XmlNode choiceElement in definitionNode.ChildNodes)
             {
-                selectedChoiceName = m_children[0].name;
-                selectedChoice = m_children[0];
-                textColor = XMLConfig.colorDefaultValue;
-            }
-            else
-            {
-                //init from config file
-                selectedChoiceName = configNode.ChildNodes[0].Name;
-                foreach (ConfigNodeViewModel child in m_children)
-                    if (child.name == selectedChoiceName)
-                        selectedChoice = child;
+                choiceElementName = choiceElement.Attributes[XMLConfig.nameAttribute].Value;
+                
+                m_choiceNames.Add(choiceElementName);
+                
+                if (configNode!=null && choiceElementName==configNode.ChildNodes[0].Name)
+                {
+                    m_selectedChoiceName = choiceElementName;
+                    NotifyOfPropertyChange(() => selectedChoiceName);
+                    initSelectedChoiceElement(configNode);
+                }
             }
         }
 
+
         public override bool validate()
         {
-            return (selectedChoice != null) && selectedChoice.validate();
+            if (selectedChoiceName == null || selectedChoiceName == "") return false;
+            foreach (XmlNode choiceElement in m_definitionNode)
+                if (selectedChoiceName == choiceElement.Attributes[XMLConfig.nameAttribute].Value)
+                    return true;
+            return false;
         }
 
         public override string getXML(string leftSpace)
