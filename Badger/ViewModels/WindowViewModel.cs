@@ -175,8 +175,12 @@ namespace Badger.ViewModels
         
         public void saveExperimentInEditor()
         {
-            if (!appViewModel.validate())
+            if (appViewModel==null || !appViewModel.validate())
+            {
+                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.","Error");
                 return;
+            }
+
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *.experiment";
             sfd.InitialDirectory = "../experiments";
@@ -187,30 +191,9 @@ namespace Badger.ViewModels
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 appViewModel.save(sfd.FileName);
-               // _doc.Save(sfd.FileName);
             }
         }
         
-        private bool validate()
-        {
-            _doc.RemoveAll();
-            XmlNode rootNode = _doc.CreateElement(_rootnode.name);
-            foreach (BranchViewModel branch in _branches)
-            {
-                if (!branch.validate())
-                {
-                    CaliburnUtility.showWarningDialog("Error validating the form. Please check form", "ERROR");
-
-                    return false;
-                }
-                else
-                {
-                    rootNode.AppendChild(branch.getXmlNode()[0]);
-                }
-            }
-            _doc.AppendChild(rootNode);
-            return true;
-        }
        
         public void loadExperiment()
         {
@@ -229,10 +212,7 @@ namespace Badger.ViewModels
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            appViewModel = new AppViewModel(apps[rootNode.Name], configDocument);
-            //loadedDocument.Load(fileDoc);
-
-            //loadExperimentInEditor(loadedDocument);       
+            appViewModel = new AppViewModel(apps[rootNode.Name], configDocument);      
         }
 
         public void loadExperimentInEditor(XmlDocument experimentXML)
@@ -282,8 +262,11 @@ namespace Badger.ViewModels
         }
         public void modifySelectedExperiment()
         {
-            if (!validate())
+            if (appViewModel == null || !appViewModel.validate())
+            {
+                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
                 return;
+            }
             if (m_experimentQueueViewModel!= null)
             {
                 XmlDocument document = new XmlDocument();
@@ -306,9 +289,12 @@ namespace Badger.ViewModels
         }
         public void addExperiment()
         {
-            if (!validate())
+            if (appViewModel == null || !appViewModel.validate())
+            {
+                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
                 return;
-            
+            }
+
             XmlDocument document = new XmlDocument();
 
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);

@@ -24,15 +24,19 @@ namespace Badger.ViewModels
                 content = m_selectedChoiceName;
                 NotifyOfPropertyChange(() => selectedChoiceName);
 
-                initSelectedChoiceElement();
+                loadSelectedChoiceElement(selectedChoiceName);
             }
         }
 
-        private void initSelectedChoiceElement(XmlNode configNode=null)
+        private void loadSelectedChoiceElement(string selectedChoiceElementName, XmlNode configNode=null)
         {
             foreach (XmlNode choiceElement in m_definitionNode.ChildNodes)
-                if (choiceElement.Attributes[XMLConfig.nameAttribute].Value == m_selectedChoiceName)
+                if (choiceElement.Attributes[XMLConfig.nameAttribute].Value == selectedChoiceElementName)
                 {
+                    //forces validation if it's called with a configNode
+                    if (configNode != null)
+                        selectedChoiceName = selectedChoiceElementName;
+
                     selectedChoice = getInstance(m_appViewModel
                         ,choiceElement, m_xPath, configNode);
                     m_children.Clear();
@@ -60,9 +64,7 @@ namespace Badger.ViewModels
                 
                 if (configNode!=null && choiceElementName==configNode.ChildNodes[0].Name)
                 {
-                    m_selectedChoiceName = choiceElementName;
-                    NotifyOfPropertyChange(() => selectedChoiceName);
-                    initSelectedChoiceElement(configNode);
+                    loadSelectedChoiceElement(choiceElementName,configNode);
                 }
             }
         }
