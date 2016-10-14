@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
-using System.Dynamic;
-using System.Windows;
 using Caliburn.Micro;
 using System.IO;
 
 namespace Badger.ViewModels
 {
-    public class ExperimentViewModel:Caliburn.Micro.PropertyChangedBase
+    public class ExperimentViewModel:PropertyChangedBase
     {
         private bool m_bDataAvailable = false;
         public bool bDataAvailable { get { return m_bDataAvailable; }

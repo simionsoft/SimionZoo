@@ -17,9 +17,6 @@ namespace Badger.ViewModels
         private string m_filePath;
         public string filePath { get { return m_filePath; } set { m_filePath = value; } }
 
-        private XmlDocument m_experimentXML;
-        public XmlDocument experimentXML { get { return m_experimentXML; } set { m_experimentXML = value; } }
-
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -131,7 +128,6 @@ namespace Badger.ViewModels
         {
             name = experiment.name;
             filePath = experiment.filePath;
-            experimentXML= experiment.experimentXML;
             evaluationMonitor = evaluationMonitorVM;
         }
 

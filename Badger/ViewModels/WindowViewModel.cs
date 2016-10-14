@@ -300,7 +300,7 @@ namespace Badger.ViewModels
             XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
             document.AppendChild(newRoot);
             //document.Save("copia.tree");
-            Badger.ViewModels.ExperimentViewModel experiment = new Badger.ViewModels.ExperimentViewModel("Experiment", document);
+            ExperimentViewModel experiment = new ExperimentViewModel("Experiment", document);
             m_experimentQueueViewModel.addExperiment(experiment);
             NotifyOfPropertyChange(() => experimentQueueViewModel);
             checkStackEmpty();
