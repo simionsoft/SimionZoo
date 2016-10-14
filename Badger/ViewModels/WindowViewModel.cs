@@ -25,9 +25,15 @@ namespace Badger.ViewModels
 
     public class WindowViewModel : PropertyChangedBase
     {
-        private AppViewModel m_appViewModel;
-        public AppViewModel appViewModel { get { return m_appViewModel; }
-            set { m_appViewModel = value; NotifyOfPropertyChange(() => appViewModel); } }
+        private BindableCollection<AppViewModel> m_appViewModels= new BindableCollection<AppViewModel>();
+        public BindableCollection<AppViewModel> appViewModels { get { return m_appViewModels; }
+            set { m_appViewModels = value; NotifyOfPropertyChange(() => appViewModels); } }
+        private AppViewModel m_selectedAppViewModel;
+        public AppViewModel selectedAppViewModel
+        {
+            get { return m_selectedAppViewModel; }
+            set { m_selectedAppViewModel = value;  NotifyOfPropertyChange(() => selectedAppViewModel); }
+        }
         //public ObservableCollection<ConfigNodeViewModel> appConfigNodes
         //{
         //    get { if (m_appViewModel !=null)
@@ -106,7 +112,9 @@ namespace Badger.ViewModels
         public void newExperiment()
         {
             string xmlDefinitionFile = apps[m_selectedApp];
-            appViewModel = new AppViewModel(xmlDefinitionFile);
+            AppViewModel newApp = new AppViewModel(xmlDefinitionFile);
+            appViewModels.Add( newApp);
+            selectedAppViewModel = newApp;
         }
        
         public void Change(object sender)
@@ -175,7 +183,7 @@ namespace Badger.ViewModels
         
         public void saveExperimentInEditor()
         {
-            if (appViewModel==null || !appViewModel.validate())
+            if (selectedAppViewModel==null || !selectedAppViewModel.validate())
             {
                 CaliburnUtility.showWarningDialog("The app can't be validated. See error log.","Error");
                 return;
@@ -190,7 +198,7 @@ namespace Badger.ViewModels
             sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                appViewModel.save(sfd.FileName);
+                selectedAppViewModel.save(sfd.FileName);
             }
         }
         
@@ -212,7 +220,7 @@ namespace Badger.ViewModels
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            appViewModel = new AppViewModel(apps[rootNode.Name], configDocument);      
+            appViewModels.Add( new AppViewModel(apps[rootNode.Name], configDocument));
         }
 
         public void loadExperimentInEditor(XmlDocument experimentXML)
@@ -262,7 +270,7 @@ namespace Badger.ViewModels
         }
         public void modifySelectedExperiment()
         {
-            if (appViewModel == null || !appViewModel.validate())
+            if (selectedAppViewModel == null || !selectedAppViewModel.validate())
             {
                 CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
                 return;
@@ -289,7 +297,7 @@ namespace Badger.ViewModels
         }
         public void addExperiment()
         {
-            if (appViewModel == null || !appViewModel.validate())
+            if (selectedAppViewModel == null || !selectedAppViewModel.validate())
             {
                 CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
                 return;

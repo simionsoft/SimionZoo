@@ -17,21 +17,10 @@
         Icon="/badger-head.ico">
 
     <Window.Resources>
-
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <!--<HierarchicalDataTemplate ItemsSource="{Binding children}" DataType="{x:Type vm:BranchConfigViewModel}">
-            <v:BranchConfigView/>
-        </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate ItemsSource="{Binding children}" DataType="{x:Type vm:AppViewModel}">
+        <DataTemplate DataType="{x:Type vm:AppViewModel}">
             <v:AppView/>
-        </HierarchicalDataTemplate>
-        <DataTemplate DataType="{x:Type vm:IntegerValueConfigViewModel}">
-            <v:IntegerValueConfigView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:BranchViewModel}">
-            <v:BranchView/>
-        </DataTemplate>-->
-
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
@@ -67,9 +56,6 @@
             <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Left" Width="195">
                 <Label Content="Experiment Queue" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Width="195" Margin="0,10,0,0"/>
             </StackPanel>
-            <!--<StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" Orientation="Horizontal" MaxHeight="50" Margin="308,0,355,0" Width="0">
-
-            </StackPanel>-->
 
             <StackPanel Grid.Row="1" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
 
@@ -82,48 +68,14 @@
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Height="408">
                     <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="390" RenderTransformOrigin="0.5,0.5">
-                        <ContentControl x:Name="appViewModel"></ContentControl>
-                        <!--<TreeView HorizontalAlignment="Center" ItemsSource="{Binding Path=appViewModel}"
-                                  Height="494" Width="644" 
-                                  VerticalAlignment="Top" BorderThickness="0" Margin="9,0,9,-106" >
-                            <TreeView.ItemTemplate>
-                                <HierarchicalDataTemplate ItemsSource="{Binding Path=appViewModel}" DataType="{x:Type vm:AppViewModel}">
-                                    <HierarchicalDataTemplate.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Path=name}"></TextBlock>
-                                        </DataTemplate>
-                                    </HierarchicalDataTemplate.ItemTemplate>
-                                </HierarchicalDataTemplate>
-                            </TreeView.ItemTemplate>-->
-                            
-                            <!--<TreeView.Background>
-                                <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
-                                    <GradientStop Color="#fafafa" Offset="0"/>
-                                    <GradientStop Color="#fcfcfc" Offset="0.567"/>
-                                </LinearGradientBrush>
-                            </TreeView.Background>
-                            <TreeView.Resources>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#00000000"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#00000000"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#00000000"/>
-                                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#00000000"/>
-                            </TreeView.Resources>-->
-
-                            <!--<TreeViewItem x:Name ="appConfig" ItemsSource="{Binding appViewModel}" 
-                                          Header="{Binding appViewModel.name}" 
-                                          IsExpanded="True"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                                          ScrollViewer.VerticalScrollBarVisibility="Auto"  
-                                          Padding="0" VerticalContentAlignment="Top">-->
-                                <!--<HierarchicalDataTemplate DataType="{x:Type vm:BranchConfigViewModel}"  ItemsSource="{Binding appViewModel}">
-                                    <HierarchicalDataTemplate.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding name}"></TextBlock>
-                                        </DataTemplate>
-                                    </HierarchicalDataTemplate.ItemTemplate>
-                                </HierarchicalDataTemplate>-->
-                            <!--</TreeViewItem>-->
-                        <!--</TreeView>-->
+                        <TabControl x:Name="appViewModels" SelectedItem="{Binding Path=selectedAppViewModel}">
+                            <TabControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding name}"/>
+                                </DataTemplate>
+                            </TabControl.ItemTemplate>
+                        </TabControl>
+                        <!--<ContentControl x:Name="selectedAppViewModel"></ContentControl>-->
                     </Border>
 
                 </StackPanel>
@@ -189,18 +141,4 @@
         </Grid>
     </ScrollViewer>
 
-    <!-- 
-    <DockPanel LastChildFill="False">
-        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="3*">
-            
-            
-            
-        </DockPanel>
-        
-        <DockPanel LastChildFill="True" DockPanel.Dock="Left">
-            
-            
-        </DockPanel> 
-        
-    </DockPanel>-->
 </Window>
