@@ -115,7 +115,7 @@
                     </Button>
                 </StackPanel>
                 <Border BorderBrush="Black" Height="243" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="10,0">
-                    <ContentControl x:Name="experimentQueueViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="9,15,9,9" Height="217"/>
+                    <ContentControl x:Name="appQueue" DataContext="" VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="9,15,9,9" Height="217"/>
                 </Border>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="70,0,55,0" Height="40" >
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 

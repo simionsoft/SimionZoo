@@ -28,6 +28,7 @@ namespace Badger.ViewModels
         private BindableCollection<AppViewModel> m_appViewModels= new BindableCollection<AppViewModel>();
         public BindableCollection<AppViewModel> appViewModels { get { return m_appViewModels; }
             set { m_appViewModels = value; NotifyOfPropertyChange(() => appViewModels); } }
+        public BindableCollection<AppViewModel> appQueue { get { return m_appViewModels; } }
         private AppViewModel m_selectedAppViewModel;
         public AppViewModel selectedAppViewModel
         {
