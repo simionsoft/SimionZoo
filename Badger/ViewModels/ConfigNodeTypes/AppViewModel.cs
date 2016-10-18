@@ -60,7 +60,11 @@ namespace Badger.ViewModels
         //experiment's name
         private static int m_lastId = -1;
         private string m_name;
-        public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
+        public string name
+        {
+            get { return m_name; }
+            set { m_name = WindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => name); }
+        }
         //file name (not null if it has been saved)
         private string m_fileName= null;
         public string fileName
@@ -69,13 +73,6 @@ namespace Badger.ViewModels
             set { m_fileName = value; NotifyOfPropertyChange(() => fileName); }
         }
 
-        private string newName()
-        {
-            m_lastId++;
-            if (m_lastId == 0)
-                return "New";
-            return "New-" + m_lastId;
-        }
         private string m_version;
 
         private BindableCollection<ConfigNodeViewModel> m_children= new BindableCollection<ConfigNodeViewModel>();
@@ -147,9 +144,9 @@ namespace Badger.ViewModels
 
                     if (configFilename != null)
                         //if a config file is provided, the name of the experiment is the filename without extension
-                        m_name = Utility.getFileName(configFilename, true);
+                        name = Utility.getFileName(configFilename, true);
                     else
-                        m_name = newName();
+                        name = "New";
                     if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
                     else m_version = "0";

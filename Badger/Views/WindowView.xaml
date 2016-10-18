@@ -114,8 +114,8 @@
                         <Image Source="/images/load.png"/>
                     </Button>
                 </StackPanel>
-                
-                <ListView ItemsSource="{Binding Path=appQueue}" cal:View.Context="Queue" Height="250" Margin="2">
+
+                <ListView ItemsSource="{Binding Path=appQueue}" SelectedItem="{Binding selectedAppInQueue}" cal:View.Context="Queue" Height="250" Margin="2">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />

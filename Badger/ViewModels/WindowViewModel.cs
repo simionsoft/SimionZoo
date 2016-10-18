@@ -25,7 +25,7 @@ namespace Badger.ViewModels
 
     public class WindowViewModel : PropertyChangedBase
     {
-        private BindableCollection<AppViewModel> m_appViewModels= new BindableCollection<AppViewModel>();
+        static private BindableCollection<AppViewModel> m_appViewModels= new BindableCollection<AppViewModel>();
         public BindableCollection<AppViewModel> appViewModels { get { return m_appViewModels; }
             set { m_appViewModels = value; NotifyOfPropertyChange(() => appViewModels); NotifyOfPropertyChange(() => appQueue); } }
         public BindableCollection<AppViewModel> appQueue { get { return m_appViewModels; } set { } }
@@ -33,10 +33,44 @@ namespace Badger.ViewModels
         public AppViewModel selectedAppViewModel
         {
             get { return m_selectedAppViewModel; }
-            set { m_selectedAppViewModel = value;  NotifyOfPropertyChange(() => selectedAppViewModel); }
+            set
+            {
+                m_selectedAppViewModel = value;
+                NotifyOfPropertyChange(() => selectedAppViewModel);
+                NotifyOfPropertyChange(() => selectedAppInQueue);
+            }
+        }
+        public AppViewModel selectedAppInQueue
+        {
+            get { return m_selectedAppViewModel; }
+            set { m_selectedAppViewModel = value;
+                NotifyOfPropertyChange(() => selectedAppViewModel);
+                NotifyOfPropertyChange(() => selectedAppInQueue);
+                }
         }
 
-       
+        static private bool appNameExists(string name)
+        {
+            foreach(AppViewModel app in m_appViewModels)
+            {
+                if (app.name == name)
+                    return true;
+            }
+            return false;
+        }
+        static public string getValidAppName(string originalName)
+        {
+            int id = 1;
+            string newName = originalName;
+            bool bNameExists = appNameExists(newName);
+            while (bNameExists)
+            {
+                newName = originalName + "-" + id;
+                id++;
+                bNameExists = appNameExists(newName);
+            }
+            return newName;
+        }
 
         private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
