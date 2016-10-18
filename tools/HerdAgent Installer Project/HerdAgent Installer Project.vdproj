@@ -15,19 +15,19 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_A50292738138EFB22296F3B601266CDD"
+        "MsmKey" = "8:_2BB081A04AB17A798A2227463E715722"
         "OwnerKey" = "8:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+        "MsmKey" = "8:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
+        "MsmKey" = "8:_E4E7899838FF4D96B80702F88B320483"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -40,13 +40,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A50292738138EFB22296F3B601266CDD"
+        "OwnerKey" = "8:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
+        "OwnerKey" = "8:_2BB081A04AB17A798A2227463E715722"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -67,6 +67,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.5"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.5 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.5"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -83,12 +99,34 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_368DE8EA149844E5ACFFF2234602F7E3"
+            {
+            "Name" = "8:Primary output from HerdAgentService (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
+            "FileType" = "3:2"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_B7F84BDD_FE02_46A7_B428_60672BCCD4A9"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
             "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_A64EFDCBCD4B4CFEA9A1418991BAC88D"
             {
             "Name" = "8:Primary output from HerdAgentService (Active)"
@@ -126,14 +164,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A50292738138EFB22296F3B601266CDD"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2BB081A04AB17A798A2227463E715722"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Herd, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Herd, Version=0.0.1.1, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_A50292738138EFB22296F3B601266CDD"
+                    "_2BB081A04AB17A798A2227463E715722"
                     {
                     "Name" = "8:Herd.dll"
                     "Attributes" = "3:512"
@@ -157,9 +195,9 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4E7899838FF4D96B80702F88B320483"
             {
-            "SourcePath" = "8:..\\HerdAgentInstaller\\herdagent-banner.bmp"
+            "SourcePath" = "8:herdagent-banner.bmp"
             "TargetName" = "8:herdagent-banner.bmp"
             "Tag" = "8:"
             "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
@@ -224,6 +262,17 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_76D26949A0594AB48BD7F8D42C48D4DB"
+                    {
+                    "Name" = "8:Temp"
+                    "AlwaysCreate" = "11:TRUE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_71E0C42F441345D3B86D657C25FC1504"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_9FC5D22A66E144709BB203406B6996A1"
@@ -254,7 +303,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HerdAgent"
         "ProductCode" = "8:{9FCD7399-2349-4AB9-B726-157036931102}"
-        "PackageCode" = "8:{9399A229-3E19-40CA-A059-BA0ADAC527A5}"
+        "PackageCode" = "8:{B1E98813-D060-4F07-B610-D19DB372CE2E}"
         "UpgradeCode" = "8:{836F307A-52F0-4BA7-A3C7-7D44954226A0}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -402,7 +451,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "UpdateText"
@@ -453,7 +502,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -502,7 +551,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "InstallAllUsersVisible"
@@ -538,7 +587,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -570,7 +619,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -621,7 +670,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "ShowProgress"
@@ -666,7 +715,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -698,7 +747,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -747,7 +796,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -770,7 +819,7 @@
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
                             "Setting" = "3:2"
-                            "Value" = "8:_B7BFFDE321DC4050A18EA9D31D03B1E1"
+                            "Value" = "8:_E4E7899838FF4D96B80702F88B320483"
                             "UsePlugInResources" = "11:TRUE"
                             }
                         }
@@ -785,7 +834,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
             {
-            "SourcePath" = "8:..\\HerdAgent\\obj\\Release\\HerdAgent.exe"
+            "SourcePath" = "8:..\\HerdAgent\\obj\\Debug\\HerdAgent.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
