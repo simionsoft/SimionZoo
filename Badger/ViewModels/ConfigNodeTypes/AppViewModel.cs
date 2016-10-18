@@ -4,6 +4,7 @@ using Caliburn.Micro;
 using System.IO;
 using Simion;
 using Badger.Data;
+using System;
 
 namespace Badger.ViewModels
 {
@@ -24,7 +25,9 @@ namespace Badger.ViewModels
 
         //app properties: prerrequisites, exe files, definitions...
         private List<string> m_preFiles= new List<string>();
-        private List<string> m_exeFiles = new List<string>();
+        public List<string> getPrerrequisites() { return m_preFiles; }
+        private string m_exeFile;
+        public string getExeFilename() { return m_exeFile; }
         private Dictionary<string,XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
         private Dictionary<string,List<string>> m_enumDefinitions 
             = new Dictionary<string, List<string>>();
@@ -58,6 +61,14 @@ namespace Badger.ViewModels
         private static int m_lastId = -1;
         private string m_name;
         public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
+        //file name (not null if it has been saved)
+        private string m_fileName= null;
+        public string fileName
+        {
+            get { return m_fileName; }
+            set { m_fileName = value; NotifyOfPropertyChange(() => fileName); }
+        }
+
         private string newName()
         {
             m_lastId++;
@@ -132,7 +143,6 @@ namespace Badger.ViewModels
                 {
                     //APP node
                     m_preFiles.Clear();
-                    m_exeFiles.Clear();
                     m_appName = rootChild.Attributes[XMLConfig.nameAttribute].Value;
 
                     if (configFilename != null)
@@ -147,7 +157,7 @@ namespace Badger.ViewModels
                     foreach (XmlNode child in rootChild.ChildNodes)
                     {
                         //Only EXE, PRE, INCLUDE and BRANCH children nodes
-                        if (child.Name == XMLConfig.exeNodeTag) m_exeFiles.Add(child.InnerText);
+                        if (child.Name == XMLConfig.exeNodeTag) m_exeFile= child.InnerText;
                         else if (child.Name == XMLConfig.preNodeTag) m_preFiles.Add(child.InnerText);
                         else if (child.Name == XMLConfig.includeNodeTag)
                             loadIncludedDefinitionFile(child.InnerText);
@@ -211,6 +221,65 @@ namespace Badger.ViewModels
                     writer.Write( "</" + appName + ">");
                 }
             }
+        }
+
+
+        public string getLogDescriptorsFilePath()
+        {
+            if (m_fileName != "")
+            {
+                //the hard way because the elegant way didn't seem to work
+                int lastPos1, lastPos2, lastPos;
+                lastPos1 = m_fileName.LastIndexOf("/");
+                lastPos2 = m_fileName.LastIndexOf("\\");
+
+                lastPos = Math.Max(lastPos1, lastPos2);
+                if (lastPos > 0)
+                {
+                    string directory = m_fileName.Substring(0, lastPos + 1);
+
+                    return directory + "experiment-log.xml";
+                }
+            }
+            return "";
+        }
+        public string getLogFilePath()
+        {
+            if (m_fileName != "")
+            {
+                //the hard way because the elegant way didn't seem to work
+                int lastPos1, lastPos2, lastPos;
+                lastPos1 = m_fileName.LastIndexOf("/");
+                lastPos2 = m_fileName.LastIndexOf("\\");
+
+                lastPos = Math.Max(lastPos1, lastPos2);
+                if (lastPos > 0)
+                {
+                    string directory = m_fileName.Substring(0, lastPos + 1);
+
+                    return directory + "experiment-log.bin";
+                }
+            }
+            return "";
+        }
+        private bool m_bLogDataAvailable = false;
+        public bool bLogDataAvailable
+        {
+            get { return m_bLogDataAvailable; }
+            set { m_bLogDataAvailable = value; NotifyOfPropertyChange(() => bLogDataAvailable); }
+        }
+        public bool checkLogFilesAlreadyExist()
+        {
+            //for now, i'd rather hardcode the log filenames than go through the dll... doesn't seem worth the effort
+            if (m_fileName != "")
+            {
+                if (File.Exists(getLogDescriptorsFilePath()) && File.Exists(getLogFilePath()))
+                {
+                    bLogDataAvailable = true;
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

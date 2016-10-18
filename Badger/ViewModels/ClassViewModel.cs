@@ -378,7 +378,7 @@ namespace Badger.ViewModels
                         return false;
                     }    
                 }
-                if (CApp.IsInitializing)
+                if (false)//CApp.IsInitializing)
                 {
                     if (this.owner != null)
                         owner.ButtonColor = "Orange";

@@ -58,7 +58,7 @@ namespace Badger.ViewModels
                     m_selectedIndex = value;
 
                     m_experimentQueue[m_selectedIndex].bIsSelected = true;
-                    m_parent.loadExperimentInEditor(m_experimentQueue[m_selectedIndex].experimentXML);
+                    //m_parent.loadExperimentInEditor(m_experimentQueue[m_selectedIndex].experimentXML);
                     m_parent.bIsExperimentQueueNotEmpty = true;
                 }
             NotifyOfPropertyChange(()=>selectedIndex);

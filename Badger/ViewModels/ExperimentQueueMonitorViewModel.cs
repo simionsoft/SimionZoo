@@ -1,28 +1,12 @@
 ﻿using System.Collections.ObjectModel;
-using System.Xml;
-using System.Windows;
 using Caliburn.Micro;
-using System.Windows.Forms;
-using System.IO;
-using System.Dynamic;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System;
-using System.Diagnostics;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.IO.Pipes;
-using System.Xml.Linq;
 using System.Linq;
-using System.Xml.XPath;
-using System.Windows.Media;
 using System.Threading;
 using System.Globalization;
-using System.Collections.Concurrent;
 using Herd;
-using Badger.Models;
-using Badger.ViewModels;
 using Badger.Data;
 
 
@@ -67,24 +51,25 @@ namespace Badger.ViewModels
         {
             CJob job = new CJob();
             job.name = m_name;
-            //prerrequisites
-            if (Models.CApp.pre != null)
-            {
-                foreach (string prerec in Models.CApp.pre)
-                    job.inputFiles.Add(prerec);
-            }
+
             //tasks, inputs and outputs
             foreach (MonitoredExperimentViewModel monitoredExperiment in m_monitoredExperiments)
             {
                 CTask task = new CTask();
                 task.name = monitoredExperiment.name;
-                task.exe = Models.CApp.EXE;
+                task.exe = monitoredExperiment.experiment.getExeFilename();
                 task.arguments = monitoredExperiment.filePath + " " + monitoredExperiment.pipeName;
                 task.pipe = monitoredExperiment.pipeName;
                 job.tasks.Add(task);
-                //add exe file to inputs
+                //add EXE files
+                
                 if (!job.inputFiles.Contains(task.exe))
-                    job.inputFiles.Add(task.exe);
+                        job.inputFiles.Add(task.exe);
+                //add prerrequisites
+                foreach (string pre in monitoredExperiment.experiment.getPrerrequisites())
+                    if (!job.inputFiles.Contains(pre))
+                        job.inputFiles.Add(pre);
+
                 //add experiment file to inputs
                 if (!job.inputFiles.Contains(monitoredExperiment.filePath))
                     job.inputFiles.Add(monitoredExperiment.filePath);
@@ -253,15 +238,16 @@ namespace Badger.ViewModels
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<ExperimentViewModel> pendingExperiments, PlotViewModel evaluationMonitor
+            , List<AppViewModel> pendingExperiments, PlotViewModel evaluationMonitor
             , Logger.LogFunction logFunctionDelegate)
         {
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
-            foreach (ExperimentViewModel exp in pendingExperiments)
+            foreach (AppViewModel exp in pendingExperiments)
             {
-                MonitoredExperimentViewModel monitoredExperiment= new MonitoredExperimentViewModel(exp,evaluationMonitor);
+                MonitoredExperimentViewModel monitoredExperiment= 
+                    new MonitoredExperimentViewModel(exp,evaluationMonitor);
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
                 m_pendingExperiments.Add(monitoredExperiment);
             }

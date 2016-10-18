@@ -90,7 +90,7 @@ namespace Badger.ViewModels
             {
                 comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
             }
-            System.Console.WriteLine("loading " + name + ". XPath=" + m_xPath);
+            //System.Console.WriteLine("loading " + name + ". XPath=" + m_xPath);
         }
 
 
@@ -127,7 +127,8 @@ namespace Badger.ViewModels
         public override string getXML(string leftSpace)
         {
             System.Console.WriteLine("Exporting " + name);
-            return leftSpace + getXMLHeader() + getChildrenXML(leftSpace + "  ") + leftSpace + getXMLFooter(); }
+            return leftSpace + getXMLHeader() + getChildrenXML(leftSpace + "  ") + leftSpace + getXMLFooter();
+        }
 
         public string getChildrenXML(string leftSpace)
         {

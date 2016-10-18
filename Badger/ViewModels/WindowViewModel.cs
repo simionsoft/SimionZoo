@@ -35,28 +35,8 @@ namespace Badger.ViewModels
             get { return m_selectedAppViewModel; }
             set { m_selectedAppViewModel = value;  NotifyOfPropertyChange(() => selectedAppViewModel); }
         }
-        //public ObservableCollection<ConfigNodeViewModel> appConfigNodes
-        //{
-        //    get { if (m_appViewModel !=null)
-        //            return m_appViewModel.children;
-        //        return null; }
-        //    set { }
-        //}
 
-
-
-        private CNode _rootnode;
-        private ObservableCollection<BranchViewModel> _branches;
-        private XmlDocument _doc;
-
-        public ObservableCollection<ValidableAndNodeViewModel> Branch { get { return _branches[0].Class.AllItems; } set { } }
-
-        private ExperimentQueueViewModel m_experimentQueueViewModel = new ExperimentQueueViewModel();
-        public ExperimentQueueViewModel experimentQueueViewModel { get { return m_experimentQueueViewModel; }
-            set { m_experimentQueueViewModel = value;
-            NotifyOfPropertyChange(() => experimentQueueViewModel);            
-            }
-        }
+       
 
         private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
@@ -69,62 +49,52 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => bIsExperimentQueueNotEmpty);
             }
         }
-        private void checkStackEmpty()
+        private void checkEmptyQueue()
         {
             bool wasEmpty = !m_bIsExperimentQueueNotEmpty;
-            if (wasEmpty != m_experimentQueueViewModel.isEmpty())
+            if (wasEmpty != (m_appViewModels.Count==0))
             {
-                m_bIsExperimentQueueNotEmpty = !m_experimentQueueViewModel.isEmpty();
+                m_bIsExperimentQueueNotEmpty = !(m_appViewModels.Count == 0);
                 NotifyOfPropertyChange(() => bIsExperimentQueueNotEmpty);
             }
         }
 
-        private bool m_bIsExperimentRunning = false;
-        public bool bIsExperimentRunning
-        {
-            get { return m_bIsExperimentRunning; }
-            set{m_bIsExperimentRunning= value;
-            NotifyOfPropertyChange(()=>bIsExperimentRunning);
-            NotifyOfPropertyChange(()=>bIsExperimentNotRunning);} }
-        public bool bIsExperimentNotRunning
-        {
-            get { return !m_bIsExperimentRunning; }
-            set { }
-        }
-
-        private ObservableCollection<string> _appNames = new ObservableCollection<string>();
-        public ObservableCollection<string> appNames { get { return _appNames; } set { } }
+        private ObservableCollection<string> m_appNames= new ObservableCollection<string>();
+        public ObservableCollection<string> appNames { get { return m_appNames; } set { } }
       
         //key element is the apps name, and the value is the .xml definition file
-        private Dictionary<string,string> apps= new Dictionary<string,string>();
+        private Dictionary<string,string> appDefinitions= new Dictionary<string,string>();
 
-        private string m_selectedApp;
+        private string m_selectedAppName;
 
-        public string selectedApp { get { return m_selectedApp; } 
+        public string selectedAppName { get { return m_selectedAppName; } 
             set 
             {
-                int index = _appNames.IndexOf(value);
+                int index = m_appNames.IndexOf(value);
                 if (index == -1)
                     return;
-                m_selectedApp = value;
-                NotifyOfPropertyChange(() => selectedApp);
+                m_selectedAppName = value;
+                NotifyOfPropertyChange(() => selectedAppName);
             } 
         }
         public void newExperiment()
         {
-            string xmlDefinitionFile = apps[m_selectedApp];
+            if (m_selectedAppName == null) return;
+
+            string xmlDefinitionFile = appDefinitions[m_selectedAppName];
             AppViewModel newApp = new AppViewModel(xmlDefinitionFile);
             appViewModels.Add( newApp);
             NotifyOfPropertyChange(() => appViewModels);
             NotifyOfPropertyChange(() => appQueue);
+            checkEmptyQueue();
             selectedAppViewModel = newApp;
         }
        
-        public void Change(object sender)
-        {
-            var x = sender as System.Windows.Controls.TreeView;
-            var y = x.SelectedItem;
-        }
+        //public void Change(object sender)
+        //{
+        //    var x = sender as System.Windows.Controls.TreeView;
+        //    var y = x.SelectedItem;
+        //}
         private object m_logFileLock = new object();
         public const string logFilename= "badger-log.txt";
         
@@ -149,14 +119,10 @@ namespace Badger.ViewModels
         public WindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-            CApp.IsInitializing = true;
 
-            getAppsNames();
-           
-            CApp.IsInitializing = false;
-            m_experimentQueueViewModel.setParent(this);
+            loadAppDefinitions();
         }
-        private void getAppsNames()
+        private void loadAppDefinitions()
         {
             foreach(string app in Directory.GetFiles("..\\config\\apps"))
             {
@@ -164,26 +130,13 @@ namespace Badger.ViewModels
                 string[] tmp = app.Split(spliter);
                 tmp = tmp[tmp.Length - 1].Split('.');
                 string name =tmp[0];
-                apps.Add(name, app);
-                _appNames.Add(name);
+                appDefinitions.Add(name, app);
+                m_appNames.Add(name);
             }
-            selectedApp = _appNames[0];
+            selectedAppName = m_appNames[0];
             NotifyOfPropertyChange(() => appNames);
         }
 
-        public ObservableCollection<BranchViewModel> Branches { get { return _branches; } set { } }
-        public CNode rootnode
-        {
-            get
-            {
-                return _rootnode;
-            }
-            set
-            {
-                _rootnode = value;
-            }
-        }
-        
         public void saveExperimentInEditor()
         {
             if (selectedAppViewModel==null || !selectedAppViewModel.validate())
@@ -224,124 +177,185 @@ namespace Badger.ViewModels
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            appViewModels.Add( new AppViewModel(apps[rootNode.Name], fileDoc));
+            AppViewModel newApp = new AppViewModel(appDefinitions[rootNode.Name], fileDoc);
+            appViewModels.Add(newApp);
+            checkEmptyQueue();
+            selectedAppViewModel = newApp;
         }
-
-        public void loadExperimentInEditor(XmlDocument experimentXML)
-        {
-            _doc.RemoveAll();
-
-            //update the app if we need to
-            XmlNode experimentNode = experimentXML.FirstChild;
-            if (!experimentNode.Name.Equals(m_selectedApp))
-            {
-                selectedApp = experimentNode.Name;
-                NotifyOfPropertyChange(() => selectedApp);
-
-            }
-            foreach (BranchViewModel branch in _branches)
-            {
-                //we have to find the correct data input for every branch we have in the form. If we do not have data we do nothing
-                if (experimentNode.HasChildNodes)
-                {
-                    foreach (XmlNode dataNode in experimentNode.ChildNodes)
-                    {
-                        if (dataNode.Name == branch.Name)
-                        {
-                            Utility.fillTheClass(branch.Class, dataNode);
-                        }
-                    }
-                }
-            }
-
-        }
-
-        private void setAsNull()
-        {
-            foreach(BranchViewModel branch in _branches)
-            {
-                branch.setAsNull();
-            }
-        }
+        
 
         public void clearExperimentQueue()
         {
-            if (m_experimentQueueViewModel!=null)
+            if (appViewModels!=null)
             {
-                m_experimentQueueViewModel.clear();
-                NotifyOfPropertyChange(() => experimentQueueViewModel);
+                appViewModels.Clear();
             }
         }
-        public void modifySelectedExperiment()
-        {
-            if (selectedAppViewModel == null || !selectedAppViewModel.validate())
-            {
-                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
-                return;
-            }
-            if (m_experimentQueueViewModel!= null)
-            {
-                XmlDocument document = new XmlDocument();
-                XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
-                document.AppendChild(newRoot);
 
-                m_experimentQueueViewModel.modifySelectedExperiment(document);
-                NotifyOfPropertyChange(() => experimentQueueViewModel);
-            }
-        }
         public void removeSelectedExperiments()
         {
-            if (m_experimentQueueViewModel != null)
+            if (selectedAppViewModel != null)
             {
-                m_experimentQueueViewModel.removeSelectedExperiments();
-                NotifyOfPropertyChange(() => experimentQueueViewModel);
-                checkStackEmpty();
+                appViewModels.Remove(selectedAppViewModel);
+               // NotifyOfPropertyChange(() => experimentQueueViewModel);
+                checkEmptyQueue();
+            }
+        }
+
+        private bool saveExperimentQueue(out string batchFilename)
+        {
+            batchFilename = "";
+
+            if (appViewModels.Count == 0) return false;
+
+            //Save dialog -> returns the experiment queue file
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Experiment batch | *.exp-batch";
+            sfd.InitialDirectory = "../experiments";
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
+            if (!Directory.Exists(CombinedPath))
+                System.IO.Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
+
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                batchFilename = sfd.FileName;
+            }
+            else
+            {
+                logToFile("Error saving the experiment queue");
+                return false;
             }
 
-        }
-        public void addExperiment()
-        {
-            if (selectedAppViewModel == null || !selectedAppViewModel.validate())
+            //clean output directory if it exists
+            batchFilename = batchFilename.Split('.')[0];
+            batchFilename = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFilename);
+            if (Directory.Exists(batchFilename))
             {
-                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
+                try
+                {
+                    Directory.Delete(batchFilename, true);
+                }
+                catch
+                {
+                    CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
+                        + batchFilename + ". Make sure that it's not been using for other app."
+                        , "ERROR");
+                    logToFile("Error saving the experiment queue");
+                    return false;
+                }
+            }
+
+            XmlDocument experimentXMLDoc = new XmlDocument();
+            XmlElement experimentBatchesNode = experimentXMLDoc.CreateElement("Experiments");
+            experimentXMLDoc.AppendChild(experimentBatchesNode);
+
+            List<string> names = new List<string>();
+
+            foreach (AppViewModel experiment in appViewModels)
+            {
+                string folderPath = batchFilename + "/" + experiment.name;
+                Directory.CreateDirectory(folderPath);
+                string filePath = folderPath + "/" + experiment.name + ".experiment";
+                experiment.save(filePath);
+                //folders for the batch file and its children experiments
+                XmlElement experimentNode = experimentXMLDoc.CreateElement(experiment.name);
+                experimentNode.SetAttribute("Path", filePath);
+                experimentBatchesNode.AppendChild(experimentNode);
+
+                experiment.fileName = filePath;
+            }
+
+            experimentXMLDoc.Save(batchFilename + ".exp-batch");
+            logToFile("Succesfully saved " + appViewModels.Count + " experiments");
+            
+            return true;
+        }
+
+        public void loadExperimentQueue()
+        {
+            string fileDoc = null;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Experiment batch | *.exp-batch";
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                fileDoc = ofd.FileName;
+            }
+            else return;
+            //this doesn't seem to work
+            //Cursor.Current = Cursors.WaitCursor;
+            //System.Windows.Forms.Application.DoEvents();
+
+            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
+            XmlDocument batchDoc = new XmlDocument();
+            batchDoc.Load(fileDoc);
+            XmlElement fileRoot = batchDoc.DocumentElement;
+            if (fileRoot.Name != "Experiments")
+            {
+                logToFile("ERROR: malformed XML in experiment batch file.");
                 return;
             }
 
-            XmlDocument document = new XmlDocument();
+            foreach (XmlElement element in fileRoot.ChildNodes)
+            {
+                string expName = element.Name;
+                string path = element.Attributes[XMLConfig.pathAttribute].Value;
+                if (File.Exists(path))
+                    appViewModels.Add( new AppViewModel(appDefinitions[element.Name], path));
+            }
 
-            XmlNode newRoot = document.ImportNode(_doc.DocumentElement, true);
-            document.AppendChild(newRoot);
-            //document.Save("copia.tree");
-            ExperimentViewModel experiment = new ExperimentViewModel("Experiment", document);
-            m_experimentQueueViewModel.addExperiment(experiment);
-            NotifyOfPropertyChange(() => experimentQueueViewModel);
-            checkStackEmpty();
+            Task.Run(() => checkLogFilesAlreadyExist());
+            checkEmptyQueue();
         }
+
         public void runExperiments()
         {
-            bool bSuccesfulSave= experimentQueueViewModel.save();
+            string batchFilename;
+            bool bSuccesfulSave= saveExperimentQueue(out batchFilename);
 
             if (bSuccesfulSave)
             {
-                bIsExperimentRunning = true;
+                runExperimentQueue(batchFilename);
 
-                runExperimentQueue();
-
-                bIsExperimentRunning = false;
-
-                experimentQueueViewModel.checkLogFilesAlreadyExist();
+                checkLogFilesAlreadyExist();
             }      
         }
 
-        private void runExperimentQueue()
+        private bool m_bLogFilesAvailable = false;
+        public bool bLogFilesAvailable { get { return m_bLogFilesAvailable; }
+        set { m_bLogFilesAvailable = value; NotifyOfPropertyChange(()=>bLogFilesAvailable); }
+        }
+        private void checkLogFilesAlreadyExist()
+        {
+            int numAvailableLogs = 0;
+            foreach (AppViewModel experiment in appViewModels)
+            {
+                if (experiment.checkLogFilesAlreadyExist())
+                    numAvailableLogs++;
+            }
+            if (numAvailableLogs > 0) bLogFilesAvailable = true;
+            else bLogFilesAvailable = false;
+        }
+
+        private void getEnqueuedExperimentList(ref List<AppViewModel> outList)
+        {
+            outList.Clear();
+            foreach (AppViewModel experiment in appViewModels)
+            {
+                //(for now,) all the experiments are in the queue are considered ready for execution
+                outList.Add(experiment);
+            }
+        }
+        private void runExperimentQueue(string batchFilename)
         {
             List<HerdAgentViewModel> freeHerdAgents= new List<HerdAgentViewModel>();
-            List<ExperimentViewModel> pendingExperiments = new List<ExperimentViewModel>();
+            List<AppViewModel> pendingExperiments = new List<AppViewModel>();
 
             logToFile("Running experiment queue remotely");
 
             //get experiment list
-            experimentQueueViewModel.getEnqueuedExperimentList(ref pendingExperiments);
+            getEnqueuedExperimentList(ref pendingExperiments);
             logToFile("Running " + pendingExperiments.Count + " experiments");
 
             //get available herd agents list. Inside the loop to update the list
@@ -350,37 +364,29 @@ namespace Badger.ViewModels
 
             MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents,pendingExperiments,logToFile);
 
-            monitorVM.runExperiments(experimentQueueViewModel.name, true, true);
+            monitorVM.runExperiments(batchFilename, true, true);
 
             CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
         }
-     
-        public void loadExperimentQueue()
+
+
+        public void getLoggedExperimentList(ref List<AppViewModel> outList)
         {
-            try
+            outList.Clear();
+            foreach (AppViewModel experiment in m_appViewModels)
             {
-                m_experimentQueueViewModel.load();
-                Task.Run(() => m_experimentQueueViewModel.checkLogFilesAlreadyExist());
+                if (experiment.bLogDataAvailable)
+                    outList.Add(experiment);
             }
-            catch (Exception e)
-            {
-                logToFile("Exception in loadExperimentQueue()");
-                logToFile(e.ToString());
-            }
-            checkStackEmpty();
         }
 
-        public void saveExperimentQueue()
-        {
-            bool result= m_experimentQueueViewModel.save();
-            if (result) logToFile("Succesfully saved " + m_experimentQueueViewModel.experimentQueue.Count + " experiments");
-            else logToFile("Error saving the experiment queue");
-        }
+
+
 
         public void showPlotWindow()
         {
-            List<ExperimentViewModel> experiments= new List<ExperimentViewModel>();
-            experimentQueueViewModel.getLoggedExperimentList(ref experiments);
+            List<AppViewModel> experiments= new List<AppViewModel>();
+            getLoggedExperimentList(ref experiments);
             PlotEditorWindowViewModel plotEditor = new PlotEditorWindowViewModel(experiments);
             CaliburnUtility.showVMDialog(plotEditor, "Plot editor");
         }

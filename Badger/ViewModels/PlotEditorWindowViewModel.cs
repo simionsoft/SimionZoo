@@ -97,10 +97,10 @@ namespace Badger.ViewModels
                 bCanGeneratePlots = true;
         }
 
-        public PlotEditorWindowViewModel(List<ExperimentViewModel> experimentLogs)
+        public PlotEditorWindowViewModel(List<AppViewModel> experimentLogs)
         {
             //maybe this initialization should be run as a background task?
-            foreach (ExperimentViewModel exp in experimentLogs)
+            foreach (AppViewModel exp in experimentLogs)
             {
                 string logDescriptorFilePath = exp.getLogDescriptorsFilePath();
 

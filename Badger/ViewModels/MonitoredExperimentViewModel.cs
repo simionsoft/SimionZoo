@@ -9,14 +9,16 @@ namespace Badger.ViewModels
 {
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {
-        private string m_name;
-        public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
+        public string pipeName { get { return experiment.name; } }
+        public string name { get { return experiment.name; } }
+        public string filePath { get { return experiment.fileName; } }
 
-        public string pipeName { get { return m_name; } }
-
-        private string m_filePath;
-        public string filePath { get { return m_filePath; } set { m_filePath = value; } }
-
+        private AppViewModel m_experiment;
+        public AppViewModel experiment
+        {
+            get { return m_experiment; }
+            set { m_experiment = value; NotifyOfPropertyChange(() => experiment); }
+        }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -109,13 +111,11 @@ namespace Badger.ViewModels
             {
                 m_statusInfo = value;
                 NotifyOfPropertyChange(() => statusInfo);
-                //NotifyOfPropertyChange(() => isStatusInfo);
             }
         }
         public void addStatusInfoLine(string line)
         { statusInfo += line + "\n"; }
 
-        //public bool isStatusInfo { get { return m_statusInfo != ""; } set { } }
 
         //log stuff
         private Logger.LogFunction m_logFunction = null;
@@ -124,10 +124,9 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        public MonitoredExperimentViewModel(ExperimentViewModel experiment, PlotViewModel evaluationMonitorVM)
+        public MonitoredExperimentViewModel(AppViewModel appViewModel, PlotViewModel evaluationMonitorVM)
         {
-            name = experiment.name;
-            filePath = experiment.filePath;
+            experiment = appViewModel;
             evaluationMonitor = evaluationMonitorVM;
         }
 

@@ -56,7 +56,7 @@ namespace Badger.ViewModels
         //only once per child
         public override string getXML(string leftSpace)
         {
-            System.Console.WriteLine("Exporting " + name);
+            //System.Console.WriteLine("Exporting " + name);
             return getChildrenXML(leftSpace);
         }
 

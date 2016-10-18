@@ -41,7 +41,8 @@ namespace Badger.ViewModels
                 if (configNode != null && bIsOptional)
                     bIsUsed = true;
             }
-            else if (bIsOptional) bIsUsed = true;
+            else if (bIsOptional)
+                bIsUsed = true;
 
             childrenInit(appDefinition, appDefinition.getClassDefinition(m_className)
                 , m_xPath, configNode);
@@ -49,6 +50,14 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
+            if (bIsOptional && !bIsUsed) return true; // don't need to validate children if its optional and not used
+
+            foreach (ConfigNodeViewModel child in children)
+                if (!child.validate())
+                {
+                    //Console.WriteLine(child.name);
+                    return false;
+                }
             return true;
         }
 

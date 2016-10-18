@@ -12,7 +12,7 @@ namespace Badger.ViewModels
         public PlotViewModel evaluationPlot{get;set;}
 
         public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<ExperimentViewModel> pendingExperiments, Logger.LogFunction logFunction)
+            , List<AppViewModel> pendingExperiments, Logger.LogFunction logFunction)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(freeHerdAgents, pendingExperiments
