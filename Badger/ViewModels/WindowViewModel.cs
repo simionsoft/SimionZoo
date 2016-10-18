@@ -27,8 +27,8 @@ namespace Badger.ViewModels
     {
         private BindableCollection<AppViewModel> m_appViewModels= new BindableCollection<AppViewModel>();
         public BindableCollection<AppViewModel> appViewModels { get { return m_appViewModels; }
-            set { m_appViewModels = value; NotifyOfPropertyChange(() => appViewModels); } }
-        public BindableCollection<AppViewModel> appQueue { get { return m_appViewModels; } }
+            set { m_appViewModels = value; NotifyOfPropertyChange(() => appViewModels); NotifyOfPropertyChange(() => appQueue); } }
+        public BindableCollection<AppViewModel> appQueue { get { return m_appViewModels; } set { } }
         private AppViewModel m_selectedAppViewModel;
         public AppViewModel selectedAppViewModel
         {
@@ -115,6 +115,8 @@ namespace Badger.ViewModels
             string xmlDefinitionFile = apps[m_selectedApp];
             AppViewModel newApp = new AppViewModel(xmlDefinitionFile);
             appViewModels.Add( newApp);
+            NotifyOfPropertyChange(() => appViewModels);
+            NotifyOfPropertyChange(() => appQueue);
             selectedAppViewModel = newApp;
         }
        

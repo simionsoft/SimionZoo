@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:vm="clr-namespace:Badger.ViewModels"
-             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.DoubleValueConfig.Queue"
-             mc:Ignorable="d" 
-d:DesignHeight="50" d:DesignWidth="300">
-    <!--<ListView ItemsSource="{Binding Path=children}">
+             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.BranchConfig.Queue"
+             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
+
+    <ListView ItemsSource="{Binding Path=children}">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />
             </DataTemplate>
         </ListView.ItemTemplate>
-    </ListView>-->
+    </ListView>
 
 </UserControl>

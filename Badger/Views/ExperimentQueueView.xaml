@@ -13,7 +13,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <ListView x:Name="experimentQueue" BorderBrush="{x:Null}" BorderThickness="0" 
+    <ListView x:Name="ExperimentQueue" BorderBrush="{x:Null}" BorderThickness="0" 
               ItemsSource="{Binding Path=experimentQueue}"
               SelectedIndex="{Binding selectedIndex}" SelectionMode="Single"
               cal:Message.Attach="[Event SelectedItemChanged]=[Action changeSelected($source)]" Margin="0">

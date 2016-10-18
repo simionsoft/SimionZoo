@@ -49,8 +49,15 @@ namespace Badger.ViewModels
             return m_enumDefinitions[enumName];
         }
 
-        private string m_name;
-        public string name { get { return m_name; }set { m_name = name; } }
+        //the app node's name: RLSimion, ...
+        private string m_appName;
+        public string appName { get { return m_appName; }set { m_appName = value; NotifyOfPropertyChange(() => appName); } }
+        //name of the file in case it is saved. Not yet used but might be useful
+        private string m_fileName;
+        public string fileName { get { return m_fileName; } set { m_fileName = value; NotifyOfPropertyChange(()=>fileName); } }
+        //experiment's name
+        private string m_name = "New";
+        public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
         private string m_version;
 
         private BindableCollection<ConfigNodeViewModel> m_children= new BindableCollection<ConfigNodeViewModel>();
@@ -115,7 +122,7 @@ namespace Badger.ViewModels
                     //APP node
                     m_preFiles.Clear();
                     m_exeFiles.Clear();
-                    m_name = rootChild.Attributes["Name"].Value;
+                    m_appName = rootChild.Attributes["Name"].Value;
                     m_version = rootChild.Attributes["FileVersion"].Value;
 
                     foreach (XmlNode child in rootChild.ChildNodes)
@@ -132,7 +139,7 @@ namespace Badger.ViewModels
                             {
                                 configRootNode = configFile.LastChild;
                             }
-                            children.Add(ConfigNodeViewModel.getInstance(this, child, m_name, configRootNode));
+                            children.Add(ConfigNodeViewModel.getInstance(this, child, m_appName, configRootNode));
                             //here we assume definitions are before the children
                         }
                     }
@@ -175,14 +182,14 @@ namespace Badger.ViewModels
             {
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    writer.Write("<" + name + " Version=\"" + m_version + "\">\n");
+                    writer.Write("<" + appName + " Version=\"" + m_version + "\">\n");
 
                     foreach (ConfigNodeViewModel node in m_children)
                     {
                         writer.Write(node.getXML("  "));
                     }
 
-                    writer.Write( "</" + name + ">");
+                    writer.Write( "</" + appName + ">");
                 }
             }
         }
