@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using Caliburn.Micro;
 using System.IO;
 using Simion;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
+
     public class AppViewModel: PropertyChangedBase
     {
         //deferred load step
@@ -52,12 +54,17 @@ namespace Badger.ViewModels
         //the app node's name: RLSimion, ...
         private string m_appName;
         public string appName { get { return m_appName; }set { m_appName = value; NotifyOfPropertyChange(() => appName); } }
-        //name of the file in case it is saved. Not yet used but might be useful
-        private string m_fileName;
-        public string fileName { get { return m_fileName; } set { m_fileName = value; NotifyOfPropertyChange(()=>fileName); } }
         //experiment's name
-        private string m_name = "New";
+        private static int m_lastId = -1;
+        private string m_name;
         public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
+        private string newName()
+        {
+            m_lastId++;
+            if (m_lastId == 0)
+                return "New";
+            return "New-" + m_lastId;
+        }
         private string m_version;
 
         private BindableCollection<ConfigNodeViewModel> m_children= new BindableCollection<ConfigNodeViewModel>();
@@ -111,8 +118,12 @@ namespace Badger.ViewModels
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
-        public AppViewModel(string fileName,XmlDocument configFile= null)
+        public AppViewModel(string fileName,string configFilename= null)
         {
+            //Load the configFile if a configFilename is provided
+            XmlDocument configDoc = new XmlDocument();
+            if (configFilename != null) configDoc.Load(configFilename);
+
             m_appDefinitionDoc.Load(fileName);
 
             foreach (XmlNode rootChild in m_appDefinitionDoc.ChildNodes)
@@ -122,8 +133,16 @@ namespace Badger.ViewModels
                     //APP node
                     m_preFiles.Clear();
                     m_exeFiles.Clear();
-                    m_appName = rootChild.Attributes["Name"].Value;
-                    m_version = rootChild.Attributes["FileVersion"].Value;
+                    m_appName = rootChild.Attributes[XMLConfig.nameAttribute].Value;
+
+                    if (configFilename != null)
+                        //if a config file is provided, the name of the experiment is the filename without extension
+                        m_name = Utility.getFileName(configFilename, true);
+                    else
+                        m_name = newName();
+                    if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
+                        m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
+                    else m_version = "0";
 
                     foreach (XmlNode child in rootChild.ChildNodes)
                     {
@@ -135,9 +154,9 @@ namespace Badger.ViewModels
                         else
                         {
                             XmlNode configRootNode = null;
-                            if (configFile != null)
+                            if (configFilename != null)
                             {
-                                configRootNode = configFile.LastChild;
+                                configRootNode = configDoc.LastChild;
                             }
                             children.Add(ConfigNodeViewModel.getInstance(this, child, m_appName, configRootNode));
                             //here we assume definitions are before the children

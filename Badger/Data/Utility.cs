@@ -889,13 +889,26 @@ namespace Badger.Data
             xmlDic.Clear();
         }
 
-        public static string getFileName(string Default)
+        //returns the file's name from the full path
+        //if removeExtension==true: c:\jander\clander.txt ->clander.txt
+        //else: c:\jander\clander.txt ->clander
+        public static string getFileName(string Default,bool removeExtension=false)
         {
+            string filename;
             if (Default == null)
                 return null;
             char[] separators = {'/','\\'};
             string[] tmp = Default.Split(separators);
-            return tmp[tmp.Length - 1];
+            filename = tmp[tmp.Length - 1];
+
+            if (!removeExtension)
+                //we return the filename untouched
+                return filename;
+
+            //we have to remove the extension
+            int index = filename.LastIndexOf('.');
+            filename = filename.Remove(index);
+            return filename;
         }
     }
 }

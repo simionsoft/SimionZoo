@@ -220,10 +220,11 @@ namespace Badger.ViewModels
             else
                 return;
             
+            //open the config file to retrive the app's name before loading it
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            appViewModels.Add( new AppViewModel(apps[rootNode.Name], configDocument));
+            appViewModels.Add( new AppViewModel(apps[rootNode.Name], fileDoc));
         }
 
         public void loadExperimentInEditor(XmlDocument experimentXML)
