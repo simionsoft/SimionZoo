@@ -7,15 +7,12 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.ForkedNodeView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
-
-    <StackPanel Orientation="Vertical" Height="20">
+    <Border BorderBrush="Orange">
         <StackPanel Orientation="Horizontal">
-            <StackPanel Margin="10,0,0,0" Background="Black" Width="22">
-                <Image Source="/images/fork.png" Width="20" Height="20"/>
+            <ContentControl x:Name="selectedForkValue" />
+            <StackPanel  Margin="10,0,0,0" Background="Orange" Width="22">
+                <Image  Source="/images/fork.png" Width="20"/>
             </StackPanel>
-            <Label Margin="4,0,0,0" Content="{Binding name}" FontSize="8"></Label>
         </StackPanel>
-        <ContentControl x:Name="selectedForkValue" />
-        <Label Content="lask jdf"></Label>
-    </StackPanel>
+    </Border>
 </UserControl>
