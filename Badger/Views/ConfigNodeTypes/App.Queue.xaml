@@ -8,14 +8,12 @@
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.App.Queue"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <StackPanel HorizontalAlignment="left">
-        <TextBox Margin="2" Width="240" Text="{Binding Path=name,Mode=TwoWay}"/>
-        <!--<ListView ItemsSource="{Binding Path=children}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>-->
+        <TextBox Margin="2" Width="240" x:Name="name"/>
+        <ListView Margin="10,0,0,0" BorderBrush="Transparent">
+            <ItemsControl x:Name="forks"/>
+        </ListView>
+        
+
     </StackPanel>
     <!--<TreeViewItem IsExpanded="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                         HorizontalAlignment="Left" VerticalAlignment="Top"

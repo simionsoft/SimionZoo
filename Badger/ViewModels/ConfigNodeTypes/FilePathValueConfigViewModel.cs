@@ -8,9 +8,9 @@ namespace Badger.ViewModels
 {
     class FilePathValueConfigViewModel: ConfigNodeViewModel
     {
-        public FilePathValueConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public FilePathValueConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appDefinition, definitionNode, parentXPath);
+            commonInit(appDefinition, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name] == null)
             {

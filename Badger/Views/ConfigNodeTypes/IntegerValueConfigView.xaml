@@ -16,18 +16,6 @@ d:DesignHeight="50" d:DesignWidth="300">
         <TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
                  BorderThickness="0"/>
-
-        <!--<ItemsControl ItemsSource="{Binding value}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0">
-                        <Label Content="{Binding name}" Foreground="Gray" VerticalContentAlignment="Center"
-                               HorizontalContentAlignment="Right" Width="150" ToolTip="{Binding comment}" FontFamily="Segoe UI Light" />
-                        <TextBox Text="{Binding Default, Mode=TwoWay}" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}" BorderThickness="0" cal:Message.Attach="[Event LostFocus]=[Action Validate($this)]" Background="{Binding textColor}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
     </StackPanel>
   
 </UserControl>

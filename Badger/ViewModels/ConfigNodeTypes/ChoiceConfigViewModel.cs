@@ -37,7 +37,7 @@ namespace Badger.ViewModels
                     if (configNode != null)
                         selectedChoiceName = selectedChoiceElementName;
 
-                    selectedChoice = getInstance(m_appViewModel
+                    selectedChoice = getInstance(m_appViewModel,this
                         ,choiceElement, m_xPath, configNode);
                     m_children.Clear();
                     children.Add(selectedChoice);
@@ -49,10 +49,10 @@ namespace Badger.ViewModels
         public BindableCollection<string> choiceNames { get { return m_choiceNames; } }
 
         
-        public ChoiceConfigViewModel(AppViewModel appDefinition, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public ChoiceConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             string choiceElementName;
-            commonInit(appDefinition,definitionNode, parentXPath);
+            commonInit(appDefinition, parent, definitionNode, parentXPath);
 
             if (configNode != null) configNode = configNode[name];
 

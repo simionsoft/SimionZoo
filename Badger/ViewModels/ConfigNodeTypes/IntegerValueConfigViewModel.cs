@@ -5,9 +5,9 @@ namespace Badger.ViewModels
 {
     class IntegerValueConfigViewModel: ConfigNodeViewModel
     {
-        public IntegerValueConfigViewModel(AppViewModel appViewModel, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public IntegerValueConfigViewModel(AppViewModel appViewModel, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appViewModel, definitionNode, parentXPath);
+            commonInit(appViewModel, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name] == null)
             {

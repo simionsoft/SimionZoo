@@ -128,6 +128,9 @@
     <Compile Include="ViewModels\ConfigNodeTypes\DoubleValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\EnumeratedValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\FilePathValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\ForkedNodeViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\ForkValueViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\ForkViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\IntegerValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
@@ -269,10 +272,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ConfigNodeTypes\BranchConfig.Queue.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\ConfigNodeTypes\BranchConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -289,10 +288,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ConfigNodeTypes\DoubleConfig.Queue.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\ConfigNodeTypes\DoubleValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -302,6 +297,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ConfigNodeTypes\FilePathValueConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\ForkedNodeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\ForkValueView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\ForkView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -446,6 +453,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="images\folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\fork.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="images\info.png">

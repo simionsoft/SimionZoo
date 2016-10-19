@@ -23,9 +23,9 @@ namespace Badger.ViewModels
             set { m_bIsUsed = value; NotifyOfPropertyChange(() => bIsUsed); }
         }
 
-        public BranchConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
+        public BranchConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
-            commonInit(appDefinition,definitionNode,parentXPath);
+            commonInit(appDefinition,parent, definitionNode,parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)

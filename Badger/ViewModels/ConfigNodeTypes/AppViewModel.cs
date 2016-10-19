@@ -58,7 +58,6 @@ namespace Badger.ViewModels
         private string m_appName;
         public string appName { get { return m_appName; }set { m_appName = value; NotifyOfPropertyChange(() => appName); } }
         //experiment's name
-        private static int m_lastId = -1;
         private string m_name;
         public string name
         {
@@ -165,7 +164,7 @@ namespace Badger.ViewModels
                             {
                                 configRootNode = configDoc.LastChild;
                             }
-                            children.Add(ConfigNodeViewModel.getInstance(this, child, m_appName, configRootNode));
+                            children.Add(ConfigNodeViewModel.getInstance(this, null,child, m_appName, configRootNode));
                             //here we assume definitions are before the children
                         }
                     }
@@ -278,5 +277,25 @@ namespace Badger.ViewModels
             }
             return false;
         }
+
+        //FORKS
+        private BindableCollection<ForkViewModel> m_forks = new BindableCollection<ForkViewModel>();
+        public BindableCollection<ForkViewModel> forks
+        {
+            get { return m_forks; }
+            set { m_forks = value; NotifyOfPropertyChange(() => forks); }
+        }
+
+        public ForkViewModel addFork(ConfigNodeViewModel forkedNode,ForkedNodeViewModel forkNode)
+        {
+            ForkViewModel newFork;
+
+            newFork= new ForkViewModel(forkedNode, forkNode);
+            forks.Add(newFork);
+            NotifyOfPropertyChange(() => forks);
+            return newFork;
+        }
     }
+
+
 }

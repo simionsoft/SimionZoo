@@ -9,9 +9,9 @@ namespace Badger.ViewModels
         private string m_className = "";
         private bool m_bOptional;
 
-        public MultiValuedConfigViewModel(AppViewModel appDefinition,XmlNode definitionNode, string parentXPath, XmlNode configNode)
+        public MultiValuedConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode)
         {
-            commonInit(appDefinition, definitionNode,parentXPath);
+            commonInit(appDefinition,parent, definitionNode,parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
