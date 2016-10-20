@@ -11,7 +11,12 @@ namespace Badger.ViewModels
         public ConfigNodeViewModel selectedForkValue
         {
             get { return fork.selectedForkValue.forkValue; }
-            set { fork.selectedForkValue.forkValue = value;NotifyOfPropertyChange(() => selectedForkValue); }
+            set
+            {
+                //we don't need to set it (the actual value will be set within the ForkViewModel class)
+                //we just notify that the selection has changed
+                NotifyOfPropertyChange(() => selectedForkValue);
+            }
         }
 
         private ForkViewModel m_fork;

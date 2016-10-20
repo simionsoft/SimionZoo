@@ -9,9 +9,7 @@
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <StackPanel HorizontalAlignment="left">
         <TextBox Margin="2" Width="240" x:Name="name"/>
-        <ListView Margin="10,0,0,0" BorderBrush="Transparent">
-            <ItemsControl x:Name="forks"/>
-        </ListView>
+        <ItemsControl x:Name="forks" Margin="10,0,0,0" BorderBrush="Transparent"/>
     </StackPanel>
 
 

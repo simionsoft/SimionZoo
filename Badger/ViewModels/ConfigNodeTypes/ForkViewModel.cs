@@ -9,7 +9,7 @@ namespace Badger.ViewModels
         private AppViewModel m_parent;
         private string m_name;
         public string name { get { return m_name; } set { m_name = value; } }
-        public ForkedNodeViewModel forkNode;
+        private ForkedNodeViewModel m_forkNode;
 
         private BindableCollection<ForkValueViewModel> m_values = new BindableCollection<ForkValueViewModel>();
         public BindableCollection<ForkValueViewModel> values
@@ -22,8 +22,10 @@ namespace Badger.ViewModels
         public ForkValueViewModel selectedForkValue
         {
             get { return m_selectedForkValue; }
-            set { m_selectedForkValue = value;
+            set {
+                m_selectedForkValue = value;
                 NotifyOfPropertyChange(() => selectedForkValue);
+                m_forkNode.selectedForkValue= selectedForkValue.forkValue;
             }
         }
 
@@ -34,6 +36,7 @@ namespace Badger.ViewModels
         {
             m_parent = parent;
             name = forkedNode.name;
+            m_forkNode = forkNode;
             ForkValueViewModel newForkValue = new ForkValueViewModel(this, forkedNode,m_values.Count);
             values.Add(newForkValue);
             selectedForkValue = newForkValue;

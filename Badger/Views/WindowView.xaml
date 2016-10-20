@@ -114,14 +114,20 @@
                         <Image Source="/images/load.png"/>
                     </Button>
                 </StackPanel>
-
-                <ListView ItemsSource="{Binding Path=appQueue}" SelectedItem="{Binding selectedAppInQueue}" cal:View.Context="Queue" Height="250" Margin="2">
+                <ItemsControl ItemsSource="{Binding Path=appQueue}" Height="250" Margin="2">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <!--<ListView ItemsSource="{Binding Path=appQueue}" SelectedItem="{Binding selectedAppInQueue}" cal:View.Context="Queue" Height="250" Margin="2">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                </ListView>
+                </ListView>-->
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="70,0,55,0" Height="40" >
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
