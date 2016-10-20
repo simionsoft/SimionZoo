@@ -8,11 +8,18 @@
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.ForkView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <ListViewItem>
-        <StackPanel Orientation="Horizontal" Height="20">
-            <StackPanel Margin="10,0,0,0" Background="Black" Width="22">
-                <Image Source="/images/fork.png" Width="20" Height="20"/>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Height="20">
+                <StackPanel Margin="10,0,0,0" Background="Black" Width="22">
+                    <Image Source="/images/fork.png" Width="20" Height="20"/>
+                </StackPanel>
+                <Label Margin="4,0,0,0" Content="{Binding name}" FontSize="8"></Label>
             </StackPanel>
-            <Label Margin="4,0,0,0" Content="{Binding name}" FontSize="8"></Label>
+            <StackPanel>
+                <ListView  Margin="10,0,0,0" BorderBrush="Transparent">
+                    <ItemsControl x:Name="values"/>
+                </ListView>
+            </StackPanel>
         </StackPanel>
     </ListViewItem>
 </UserControl>
