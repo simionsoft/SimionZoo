@@ -290,7 +290,7 @@ namespace Badger.ViewModels
         {
             ForkViewModel newFork;
 
-            newFork= new ForkViewModel(forkedNode, forkNode);
+            newFork= new ForkViewModel(this,forkedNode, forkNode);
             forks.Add(newFork);
             NotifyOfPropertyChange(() => forks);
             return newFork;

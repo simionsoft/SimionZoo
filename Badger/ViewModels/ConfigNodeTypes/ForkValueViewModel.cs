@@ -9,6 +9,7 @@ namespace Badger.ViewModels
 {
     public class ForkValueViewModel:PropertyChangedBase
     {
+        private ForkViewModel m_parent;
         private string m_name;
         public string name { get { return m_name; }set { m_name = value;NotifyOfPropertyChange(() => name); } }
 
@@ -29,11 +30,24 @@ namespace Badger.ViewModels
             get { return m_forkValue; }
             set { m_forkValue = value; NotifyOfPropertyChange(() => forkValue); }
         }
-
-        public ForkValueViewModel(ConfigNodeViewModel forkedValue, int valueId)
+        //main constructor method
+        public ForkValueViewModel(ForkViewModel parent, ConfigNodeViewModel forkedValue, int valueId)
         {
+            m_parent = parent;
             forkValue = forkedValue;
             id = valueId;
+        }
+        //constructor used to clone ConfigNodes
+        public ForkValueViewModel(ForkViewModel parent, ForkValueViewModel originalValue, int valueId)
+        {
+            m_parent = parent;
+            forkValue = originalValue.forkValue.clone();
+            id = valueId;
+        }
+
+        public void removeThisValue()
+        {
+            m_parent.removeValue(this);
         }
     }
 }

@@ -14,9 +14,14 @@
                     <Image Source="/images/fork.png" Width="20" Height="20"/>
                 </StackPanel>
                 <Label Margin="4,0,0,0" Content="{Binding name}" FontSize="8"></Label>
+                <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Add" 
+                            cal:Message.Attach="addValue"
+                            Width="15" Height="15" >
+                    <Image Source="/images/add.png" Width="10" Height="10"></Image>
+                </Button>
             </StackPanel>
             <StackPanel>
-                <ListView  Margin="10,0,0,0" BorderBrush="Transparent">
+                <ListView  Margin="10,0,0,0" BorderBrush="Transparent" SelectedItem="{Binding selectedForkValue}">
                     <ItemsControl x:Name="values"/>
                 </ListView>
             </StackPanel>
