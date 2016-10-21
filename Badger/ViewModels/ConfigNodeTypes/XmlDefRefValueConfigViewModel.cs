@@ -34,8 +34,10 @@ namespace Badger.ViewModels
             {
                 configNode = configNode[name];
                 selectedEnumeratedName = configNode.InnerText;
-                //the xml definition file may not be yet loaded. We defer this step
-                m_appViewModel.registerDeferredLoadStep(updateXMLDefRef);
+                //the xml definition file may not be yet loaded
+                enumeratedNames = m_appViewModel.getAuxDefinition(m_hangingFrom);
+                if (enumeratedNames==null)
+                    m_appViewModel.registerDeferredLoadStep(updateXMLDefRef);
             }
 
             m_appViewModel.registerXMLDefRef(updateXMLDefRef);

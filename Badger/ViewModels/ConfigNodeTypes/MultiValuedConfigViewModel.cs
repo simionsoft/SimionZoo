@@ -37,7 +37,7 @@ namespace Badger.ViewModels
 
         public void addChild()
         {
-            children.Add(new MultiValuedItemConfigViewModel(m_appViewModel,this, m_definitionNode, m_xPath));
+            children.Add(new MultiValuedItemConfigViewModel(m_appViewModel,this, nodeDefinition, m_xPath));
             m_appViewModel.doDeferredLoadSteps();
         }
         public void removeChild(MultiValuedItemConfigViewModel child)

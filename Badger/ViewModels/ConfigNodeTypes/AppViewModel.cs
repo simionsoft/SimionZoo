@@ -134,8 +134,14 @@ namespace Badger.ViewModels
         public AppViewModel(string fileName,string configFilename= null)
         {
             //Load the configFile if a configFilename is provided
-            XmlDocument configDoc = new XmlDocument();
-            if (configFilename != null) configDoc.Load(configFilename);
+            XmlDocument configDoc= null;
+            XmlNode configRootNode = null;
+            if (configFilename != null)
+            {
+                configDoc = new XmlDocument();
+                configDoc.Load(configFilename);
+                configRootNode = configDoc.LastChild;
+            }
 
             m_appDefinitionDoc.Load(fileName);
 
@@ -148,8 +154,10 @@ namespace Badger.ViewModels
                     m_appName = rootChild.Attributes[XMLConfig.nameAttribute].Value;
 
                     if (configFilename != null)
+                    {
                         //if a config file is provided, the name of the experiment is the filename without extension
                         name = Utility.getFileName(configFilename, true);
+                    }
                     else
                         name = "New";
                     if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
@@ -165,11 +173,6 @@ namespace Badger.ViewModels
                             loadIncludedDefinitionFile(child.InnerText);
                         else
                         {
-                            XmlNode configRootNode = null;
-                            if (configFilename != null)
-                            {
-                                configRootNode = configDoc.LastChild;
-                            }
                             children.Add(ConfigNodeViewModel.getInstance(this, null,child, m_appName, configRootNode));
                             //here we assume definitions are before the children
                         }
@@ -219,13 +222,6 @@ namespace Badger.ViewModels
                     foreach (ConfigNodeViewModel node in m_children)
                     {
                         node.outputXML(writer,"  ");
-                    }
-                    if (saveMode == SaveMode.SaveForks)
-                    {
-                        foreach (ForkViewModel fork in m_forks)
-                        {
-                            fork.outputXML(writer, "  ");
-                        }
                     }
                     writer.Write( "</" + appName + ">");
                 }
@@ -303,7 +299,14 @@ namespace Badger.ViewModels
         {
             ForkViewModel newFork;
 
-            newFork= new ForkViewModel(this,forkedNode, forkNode);
+            newFork= new ForkViewModel(this,forkedNode.name, forkNode);
+
+            ForkValueViewModel newForkValue = new ForkValueViewModel(newFork);
+            newForkValue.configNode = forkedNode;
+            newForkValue.name = "Value-0";
+            newFork.values.Add(newForkValue);
+            newFork.selectedForkValue = newForkValue;
+
             forks.Add(newFork);
             NotifyOfPropertyChange(() => forks);
             return newFork;

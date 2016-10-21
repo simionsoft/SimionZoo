@@ -31,7 +31,7 @@ namespace Badger.ViewModels
 
         private void loadSelectedChoiceElement(string selectedChoiceElementName, XmlNode configNode=null)
         {
-            foreach (XmlNode choiceElement in m_definitionNode.ChildNodes)
+            foreach (XmlNode choiceElement in nodeDefinition.ChildNodes)
                 if (choiceElement.Attributes[XMLConfig.nameAttribute].Value == selectedChoiceElementName)
                 {
                     //forces validation if it's called with a configNode
@@ -74,7 +74,7 @@ namespace Badger.ViewModels
         public override bool validate()
         {
             if (selectedChoiceName == null || selectedChoiceName == "") return false;
-            foreach (XmlNode choiceElement in m_definitionNode)
+            foreach (XmlNode choiceElement in nodeDefinition)
                 if (selectedChoiceName == choiceElement.Attributes[XMLConfig.nameAttribute].Value)
                     return true;
             return false;

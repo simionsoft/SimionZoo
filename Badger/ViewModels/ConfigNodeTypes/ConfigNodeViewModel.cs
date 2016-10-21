@@ -11,7 +11,7 @@ namespace Badger.ViewModels
     {
         //access to the root node
         protected AppViewModel m_appViewModel;
-        protected XmlNode m_definitionNode;
+        public XmlNode nodeDefinition;
 
         protected string m_default = "";
         private string m_content = "";
@@ -67,7 +67,7 @@ namespace Badger.ViewModels
         //clone
         public ConfigNodeViewModel clone()
         {
-            return getInstance(m_appViewModel, m_parent, m_definitionNode, "");
+            return getInstance(m_appViewModel, m_parent, nodeDefinition, "");
         }
 
         //XML output methods
@@ -92,7 +92,7 @@ namespace Badger.ViewModels
         {
             m_parent = parent;
             m_appViewModel = appViewModel;
-            m_definitionNode = definitionNode;
+            nodeDefinition = definitionNode;
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
             xPath = parentXPath + "/" + name;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute)!=null)
@@ -130,41 +130,62 @@ namespace Badger.ViewModels
         }
 
     }
-    abstract public class NestedConfigNode: ConfigNodeViewModel
+    abstract public class NestedConfigNode : ConfigNodeViewModel
     {
         //Children
-        protected BindableCollection<ConfigNodeViewModel> m_children= new BindableCollection<ConfigNodeViewModel>();
+        protected BindableCollection<ConfigNodeViewModel> m_children = new BindableCollection<ConfigNodeViewModel>();
         public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
-        public override void outputXML(StreamWriter writer,string leftSpace)
+        public override void outputXML(StreamWriter writer, string leftSpace)
         {
             //System.Console.WriteLine("Exporting " + name);
             writer.Write(leftSpace + getXMLHeader());
-            outputChildrenXML(writer,leftSpace + "  ");
-            writer.Write( leftSpace + getXMLFooter());
+            outputChildrenXML(writer, leftSpace + "  ");
+            writer.Write(leftSpace + getXMLFooter());
         }
 
-        public void outputChildrenXML(StreamWriter writer,string leftSpace)
+        public void outputChildrenXML(StreamWriter writer, string leftSpace)
         {
             foreach (ConfigNodeViewModel child in m_children)
-                child.outputXML(writer,leftSpace);
+                child.outputXML(writer, leftSpace);
         }
         public virtual string getXMLHeader() { return "<" + name + ">\n"; }
         public virtual string getXMLFooter() { return "</" + name + ">\n"; }
 
         protected void childrenInit(AppViewModel appViewModel, XmlNode classDefinition
-            , string parentXPath, XmlNode configNode= null)
+            , string parentXPath, XmlNode configNode = null)
         {
             if (classDefinition != null)
             {
                 foreach (XmlNode child in classDefinition.ChildNodes)
                 {
-                    ConfigNodeViewModel childNode = ConfigNodeViewModel.getInstance(appViewModel, this, child, parentXPath, configNode);
-                    if (childNode!=null)
-                        children.Add(childNode);
+                    ConfigNodeViewModel childNode;
+                    if (isChildForked(child.Attributes[XMLConfig.nameAttribute].Value, configNode))
+                    {
+                        children.Add(new ForkedNodeViewModel(appViewModel, child, configNode));
+                    }
+                    else
+                    {
+                        childNode = ConfigNodeViewModel.getInstance(appViewModel, this, child, parentXPath, configNode);
+                        if (childNode != null)
+                            children.Add(childNode);
+                    }
                 }
             }
+        }
+
+        private bool isChildForked(string childName, XmlNode configNode)
+        {
+            if (configNode == null)
+                return false;
+            foreach(XmlNode configChildNode in configNode)
+            {
+                if (configChildNode.Name == XMLConfig.forkedNodeTag
+                    && configChildNode.Attributes[XMLConfig.nameAttribute].Value == childName)
+                    return true;
+            }
+            return false;
         }
         public override bool validate()
         {

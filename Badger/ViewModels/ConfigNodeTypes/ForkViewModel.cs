@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using Caliburn.Micro;
 using Simion;
+using System.Xml;
 
 namespace Badger.ViewModels
 {
     public class ForkViewModel : PropertyChangedBase
     {
-        private AppViewModel m_parent;
+        private AppViewModel m_appViewModel;
         private string m_name;
         public string name { get { return m_name; } set { m_name = value; } }
         private ForkedNodeViewModel m_forkNode;
@@ -25,22 +26,19 @@ namespace Badger.ViewModels
             set {
                 m_selectedForkValue = value;
                 NotifyOfPropertyChange(() => selectedForkValue);
-                m_forkNode.selectedForkValue= selectedForkValue.forkValue;
+                m_forkNode.selectedForkValue= selectedForkValue.configNode;
             }
         }
 
-        //the forked node is the old node, which has already been replaced by the forkNode
-        //the forkNode will reference to this Fork
-        //the forkedNode will be added as the first value of this Fork
-        public ForkViewModel(AppViewModel parent, ConfigNodeViewModel forkedNode, ForkedNodeViewModel forkNode)
+        
+        
+        public ForkViewModel(AppViewModel appViewModel,string forkName, ForkedNodeViewModel forkConfigNode)
         {
-            m_parent = parent;
-            name = forkedNode.name;
-            m_forkNode = forkNode;
-            ForkValueViewModel newForkValue = new ForkValueViewModel(this, forkedNode,m_values.Count);
-            values.Add(newForkValue);
-            selectedForkValue = newForkValue;
+            m_appViewModel = appViewModel;
+            name = forkName;
+            m_forkNode = forkConfigNode;
         }
+
 
         public void removeValue(ForkValueViewModel forkValue)
         {
@@ -56,11 +54,19 @@ namespace Badger.ViewModels
                     selectedForkValue = values[index + 1];
             }
             values.Remove(forkValue);
+            int i = 0;
+            foreach(ForkValueViewModel fValue in values)
+            {
+                fValue.name= "Value-" + i;
+                i++;
+            }
         }
         public void addValue()
         {
             int valueId = values.Count;
-            ForkValueViewModel newForkValue = new ForkValueViewModel(this, values[values.Count - 1], valueId);
+            ForkValueViewModel newForkValue = new ForkValueViewModel(this);
+            newForkValue.configNode = selectedForkValue.configNode.clone();
+            newForkValue.name = "Value-" + values.Count;
             values.Add(newForkValue);
         }
 
@@ -70,7 +76,8 @@ namespace Badger.ViewModels
                 + name + "\">");
             foreach (ForkValueViewModel forkValue in m_values)
             {
-                forkValue.outputXML(writer, leftSpace + "  ");
+                forkValue.outputXML(writer, leftSpace + "  "
+                    ,m_appViewModel.saveMode==SaveMode.SaveForks);
             }
             writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + "/>");
         }
