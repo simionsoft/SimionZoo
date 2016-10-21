@@ -188,7 +188,7 @@ namespace Badger.ViewModels
             sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                selectedAppViewModel.save(sfd.FileName);
+                selectedAppViewModel.save(sfd.FileName,SaveMode.SaveForks);
             }
         }
         
@@ -291,7 +291,7 @@ namespace Badger.ViewModels
                 string folderPath = batchFilename + "/" + experiment.name;
                 Directory.CreateDirectory(folderPath);
                 string filePath = folderPath + "/" + experiment.name + ".experiment";
-                experiment.save(filePath);
+                experiment.save(filePath,SaveMode.CombineForks);
                 //folders for the batch file and its children experiments
                 XmlElement experimentNode = experimentXMLDoc.CreateElement(experiment.name);
                 experimentNode.SetAttribute("Path", filePath);

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using Simion;
 
 namespace Badger.ViewModels
 {
@@ -21,8 +18,9 @@ namespace Badger.ViewModels
 
         private ForkViewModel m_fork;
         public ForkViewModel fork { get { return m_fork; } set { m_fork = value; } }
-        public ForkedNodeViewModel(ConfigNodeViewModel forkedNode)
+        public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel forkedNode)
         {
+            m_appViewModel = appViewModel;
             name = forkedNode.name;
             NotifyOfPropertyChange(() => selectedForkValue);
         }
@@ -34,6 +32,19 @@ namespace Badger.ViewModels
                 if (!value.forkValue.validate()) return false;
             }
             return true;
+        }
+
+        public override void outputXML(StreamWriter writer,string leftSpace)
+        {
+            if (m_appViewModel.saveMode == SaveMode.SaveForks)
+            {
+                writer.Write(leftSpace + "<" + XMLConfig.forkedNodeTag + " " 
+                    +XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\">");
+                writer.Write(fork.selectedForkValue.name);
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + ">");
+            }
+            else
+                selectedForkValue.outputXML(writer, leftSpace);
         }
     }
 }

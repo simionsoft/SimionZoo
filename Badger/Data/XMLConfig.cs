@@ -24,6 +24,9 @@ namespace Simion
         public const string enumNodeTag = "ENUM-VALUE";
         public const string multiValuedNodeTag = "MULTI-VALUED";
         public const string xmlRefNodeTag = "XML-NODE-REF";
+        public const string forkTag = "FORK";
+        public const string forkedNodeTag = "FORKED-NODE";
+        public const string forkValueTag = "FORK-VALUE";
 
         //Attributes
         public const string nameAttribute = "Name";

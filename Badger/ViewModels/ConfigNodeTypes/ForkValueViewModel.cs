@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using Simion;
 using Caliburn.Micro;
 
 namespace Badger.ViewModels
@@ -20,7 +17,7 @@ namespace Badger.ViewModels
             set
             {
                 m_id = value; NotifyOfPropertyChange(() => id);
-                name = "Value(" + m_id + ")";
+                name = "Value-" + m_id;
             }
         }
 
@@ -48,6 +45,14 @@ namespace Badger.ViewModels
         public void removeThisValue()
         {
             m_parent.removeValue(this);
+        }
+
+        public void outputXML(StreamWriter writer, string leftSpace)
+        {
+            writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
+                    + name + "\">");
+            forkValue.outputXML(writer, leftSpace + "  ");
+            writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + "/>");
         }
     }
 }

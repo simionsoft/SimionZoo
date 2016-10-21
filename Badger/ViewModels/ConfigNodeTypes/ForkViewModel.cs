@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.IO;
 using Caliburn.Micro;
+using Simion;
 
 namespace Badger.ViewModels
 {
@@ -62,6 +62,17 @@ namespace Badger.ViewModels
             int valueId = values.Count;
             ForkValueViewModel newForkValue = new ForkValueViewModel(this, values[values.Count - 1], valueId);
             values.Add(newForkValue);
+        }
+
+        public void outputXML(StreamWriter writer,string leftSpace)
+        {
+            writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute + "=\""
+                + name + "\">");
+            foreach (ForkValueViewModel forkValue in m_values)
+            {
+                forkValue.outputXML(writer, leftSpace + "  ");
+            }
+            writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + "/>");
         }
     }
 }

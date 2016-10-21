@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using System.Xml;
 using Simion;
 
@@ -61,11 +61,10 @@ namespace Badger.ViewModels
             return true;
         }
 
-        public override string getXML(string leftSpace)
+        public override void outputXML(StreamWriter writer,string leftSpace)
         {
             if (bIsUsed)
-                return base.getXML(leftSpace);
-            return "";
+                base.outputXML(writer,leftSpace);
         }
     }
 }

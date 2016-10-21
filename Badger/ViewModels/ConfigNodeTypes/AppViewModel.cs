@@ -8,9 +8,15 @@ using System;
 
 namespace Badger.ViewModels
 {
+    //two modes:
+    //-CombineForks: for each combination of fork values, a different experiment will be saved
+    //-SaveForks: forkedNodes and forks will be saved as a unique experiment
+    public enum SaveMode { CombineForks,SaveForks};
 
     public class AppViewModel: PropertyChangedBase
     {
+        public SaveMode saveMode= SaveMode.SaveForks;
+
         //deferred load step
         public delegate void deferredLoadStep();
 
@@ -201,8 +207,9 @@ namespace Badger.ViewModels
             return true;
         }
 
-        public void save(string filename)
+        public void save(string filename,SaveMode mode)
         {
+            saveMode = mode;
             using (FileStream stream = File.Create(filename))
             {
                 using (StreamWriter writer = new StreamWriter(stream))
@@ -211,9 +218,15 @@ namespace Badger.ViewModels
 
                     foreach (ConfigNodeViewModel node in m_children)
                     {
-                        writer.Write(node.getXML("  "));
+                        node.outputXML(writer,"  ");
                     }
-
+                    if (saveMode == SaveMode.SaveForks)
+                    {
+                        foreach (ForkViewModel fork in m_forks)
+                        {
+                            fork.outputXML(writer, "  ");
+                        }
+                    }
                     writer.Write( "</" + appName + ">");
                 }
             }

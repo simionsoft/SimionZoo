@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using System.Xml;
 using Simion;
 
@@ -54,11 +54,9 @@ namespace Badger.ViewModels
         //the base method is overriden because we don't want the MultiValuedConfigViewModel to add
         //any header or footer... those will be added by the MultiValuedItemConfigViewModel children,
         //only once per child
-        public override string getXML(string leftSpace)
+        public override void outputXML(StreamWriter writer,string leftSpace)
         {
-            //System.Console.WriteLine("Exporting " + name);
-            return getChildrenXML(leftSpace);
+            outputChildrenXML(writer,leftSpace);
         }
-
     }
 }

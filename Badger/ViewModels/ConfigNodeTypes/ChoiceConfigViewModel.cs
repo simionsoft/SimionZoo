@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using System.Xml;
 using Simion;
+using System.IO;
 
 namespace Badger.ViewModels
 {
@@ -79,9 +80,11 @@ namespace Badger.ViewModels
             return false;
         }
 
-        public override string getXML(string leftSpace)
+        public override void outputXML(StreamWriter writer, string leftSpace)
         {
-            return leftSpace + getXMLHeader() + selectedChoice.getXML(leftSpace + "  ") + leftSpace + getXMLFooter();
+            writer.Write(leftSpace + getXMLHeader());
+            selectedChoice.outputXML(writer, leftSpace + "  ");
+            writer.Write(leftSpace + getXMLFooter());
         }
 
     }

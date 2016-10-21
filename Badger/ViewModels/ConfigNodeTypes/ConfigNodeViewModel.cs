@@ -71,9 +71,9 @@ namespace Badger.ViewModels
         }
 
         //XML output methods
-        public virtual string getXML(string leftSpace)
+        public virtual void outputXML(StreamWriter writer,string leftSpace)
         {
-            return leftSpace + "<" + name + ">" + content + "</" + name + ">\n";
+            writer.Write( leftSpace + "<" + name + ">" + content + "</" + name + ">\n");
         }
 
         //XPath methods
@@ -137,17 +137,18 @@ namespace Badger.ViewModels
         public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
-        public override string getXML(string leftSpace)
+        public override void outputXML(StreamWriter writer,string leftSpace)
         {
-            System.Console.WriteLine("Exporting " + name);
-            return leftSpace + getXMLHeader() + getChildrenXML(leftSpace + "  ") + leftSpace + getXMLFooter();
+            //System.Console.WriteLine("Exporting " + name);
+            writer.Write(leftSpace + getXMLHeader());
+            outputChildrenXML(writer,leftSpace + "  ");
+            writer.Write( leftSpace + getXMLFooter());
         }
 
-        public string getChildrenXML(string leftSpace)
+        public void outputChildrenXML(StreamWriter writer,string leftSpace)
         {
-            string xml = "";
-            foreach (ConfigNodeViewModel child in m_children) xml += child.getXML(leftSpace);
-            return xml;
+            foreach (ConfigNodeViewModel child in m_children)
+                child.outputXML(writer,leftSpace);
         }
         public virtual string getXMLHeader() { return "<" + name + ">\n"; }
         public virtual string getXMLFooter() { return "</" + name + ">\n"; }
@@ -186,7 +187,7 @@ namespace Badger.ViewModels
             if (m_appViewModel!=null)
             {
                 //cross-reference
-                newForkNode = new ForkedNodeViewModel(forkedChild);
+                newForkNode = new ForkedNodeViewModel(m_appViewModel,forkedChild);
                 newFork= m_appViewModel.addFork(forkedChild, newForkNode);
                 newForkNode.fork = newFork;
                 if (newFork != null)
