@@ -15,28 +15,24 @@ namespace Badger.ViewModels
         public string name { get { return m_name; }set { m_name = value;NotifyOfPropertyChange(() => name); } }
 
         private ConfigNodeViewModel m_forkValue;
-        public ConfigNodeViewModel configNode
+        public ConfigNodeViewModel forkValue
         {
             get { return m_forkValue; }
-            set { m_forkValue = value; NotifyOfPropertyChange(() => configNode); }
+            set { m_forkValue = value; NotifyOfPropertyChange(() => forkValue); }
         }
-        //constructor used when a node is forked or a node is cloned
-        public ForkValueViewModel(ForkViewModel parent)
+        public ForkValueViewModel(AppViewModel appVieModel,ForkViewModel parentFork)
         {
-            m_parentFork = parent;
+            m_parentFork = parentFork;
         }
-        //constructor used to clone ConfigNodes (values are added to a fork node)
-        //public ForkValueViewModel(ForkViewModel parent, ForkValueViewModel originalValue)
-        //{
-        //    m_parent = parent;
-        //    forkValue = originalValue.forkValue.clone();
-        //}
-        //constructor used when forks are read from a config file
-        public ForkValueViewModel(AppViewModel appViewModel,ForkViewModel parent, XmlNode configNode)
+        public ForkValueViewModel(AppViewModel appViewModel,XmlNode classDefinition
+            , ConfigNodeViewModel parentNode
+            , ForkViewModel parentFork, XmlNode configNode)
         {
-            m_parentFork = parent;
+            name = configNode.Attributes[XMLConfig.nameAttribute].Value;
+            m_parentFork = parentFork;
             //not sure how to do this in a more elegant way
-            this.configNode = ConfigNodeViewModel.getInstance(appViewModel, null, configNode, "");
+            this.forkValue = ConfigNodeViewModel.getInstance(appViewModel, parentNode
+                , classDefinition, parentNode.xPath, configNode);
         }
 
         public void removeThisValue()
@@ -51,9 +47,9 @@ namespace Badger.ViewModels
             if (addHeader)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
                     + name + "\">");
-            configNode.outputXML(writer, leftSpace + "  ");
+            forkValue.outputXML(writer, leftSpace + "  ");
             if (addHeader)
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + "/>");
+                writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
         }
     }
 }

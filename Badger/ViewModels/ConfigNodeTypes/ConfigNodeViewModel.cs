@@ -54,13 +54,13 @@ namespace Badger.ViewModels
             if (m_parent != null)
             {
                 m_parent.forkChild(this);
-                System.Console.WriteLine("Forked node: " + name);
+                //System.Console.WriteLine("Forked node: " + name);
             }
             else System.Console.WriteLine("Can't fork this node because it has no parent: " + name);
         }
         virtual public void forkChild(ConfigNodeViewModel forkedChild)
         {
-            System.Console.WriteLine("Error: non-nested config node asked to forka child");
+            System.Console.WriteLine("Error: non-nested config node asked to fork a child");
         }
 
 
@@ -90,10 +90,13 @@ namespace Badger.ViewModels
         //Initialization stuff common to all types of configuration nodes
         protected void commonInit(AppViewModel appViewModel,ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)
         {
+            name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
+            //System.Console.WriteLine("loading " + name);
+
             m_parent = parent;
             m_appViewModel = appViewModel;
             nodeDefinition = definitionNode;
-            name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
+            
             xPath = parentXPath + "/" + name;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute)!=null)
             {
@@ -103,7 +106,6 @@ namespace Badger.ViewModels
             {
                 comment = definitionNode.Attributes[XMLConfig.commentAttribute].Value;
             }
-            //System.Console.WriteLine("loading " + name + ". XPath=" + m_xPath);
         }
 
 
@@ -156,18 +158,21 @@ namespace Badger.ViewModels
         protected void childrenInit(AppViewModel appViewModel, XmlNode classDefinition
             , string parentXPath, XmlNode configNode = null)
         {
+            ConfigNodeViewModel childNode;
+            XmlNode forkNode;
             if (classDefinition != null)
             {
                 foreach (XmlNode child in classDefinition.ChildNodes)
                 {
-                    ConfigNodeViewModel childNode;
-                    if (isChildForked(child.Attributes[XMLConfig.nameAttribute].Value, configNode))
+                    forkNode = getForkChild(child.Attributes[XMLConfig.nameAttribute].Value, configNode);
+                    if (forkNode!=null)
                     {
-                        children.Add(new ForkedNodeViewModel(appViewModel, child, configNode));
+                        children.Add(new ForkedNodeViewModel(appViewModel, this,child, forkNode));
                     }
                     else
                     {
-                        childNode = ConfigNodeViewModel.getInstance(appViewModel, this, child, parentXPath, configNode);
+                        childNode = ConfigNodeViewModel.getInstance(appViewModel, this, child
+                            , parentXPath, configNode);
                         if (childNode != null)
                             children.Add(childNode);
                     }
@@ -175,17 +180,20 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool isChildForked(string childName, XmlNode configNode)
+        //this method is used to search for fork nodes
+        private XmlNode getForkChild(string childName, XmlNode configNode)
         {
             if (configNode == null)
-                return false;
+                return null;
             foreach(XmlNode configChildNode in configNode)
             {
                 if (configChildNode.Name == XMLConfig.forkedNodeTag
                     && configChildNode.Attributes[XMLConfig.nameAttribute].Value == childName)
-                    return true;
+                {
+                    return configChildNode;
+                }
             }
-            return false;
+            return null;
         }
         public override bool validate()
         {

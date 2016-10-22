@@ -26,7 +26,7 @@ namespace Badger.ViewModels
             set {
                 m_selectedForkValue = value;
                 NotifyOfPropertyChange(() => selectedForkValue);
-                m_forkNode.selectedForkValue= selectedForkValue.configNode;
+                m_forkNode.selectedForkValue= selectedForkValue.forkValue;
             }
         }
 
@@ -64,22 +64,22 @@ namespace Badger.ViewModels
         public void addValue()
         {
             int valueId = values.Count;
-            ForkValueViewModel newForkValue = new ForkValueViewModel(this);
-            newForkValue.configNode = selectedForkValue.configNode.clone();
+            ForkValueViewModel newForkValue = new ForkValueViewModel(m_appViewModel,this);
+            newForkValue.forkValue = selectedForkValue.forkValue.clone();
             newForkValue.name = "Value-" + values.Count;
             values.Add(newForkValue);
         }
 
         public void outputXML(StreamWriter writer,string leftSpace)
         {
-            writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute + "=\""
-                + name + "\">");
+            //writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute + "=\""
+            //    + name + "\">");
             foreach (ForkValueViewModel forkValue in m_values)
             {
                 forkValue.outputXML(writer, leftSpace + "  "
                     ,m_appViewModel.saveMode==SaveMode.SaveForks);
             }
-            writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + "/>");
+            //writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + "/>");
         }
     }
 }

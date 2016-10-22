@@ -295,14 +295,19 @@ namespace Badger.ViewModels
             set { m_forks = value; NotifyOfPropertyChange(() => forks); }
         }
 
+        //called on experiment load from forkedNodeViewModel
+        public void addFork(ForkViewModel newFork)
+        {
+            forks.Add(newFork);
+        }
         public ForkViewModel addFork(ConfigNodeViewModel forkedNode,ForkedNodeViewModel forkNode)
         {
             ForkViewModel newFork;
 
             newFork= new ForkViewModel(this,forkedNode.name, forkNode);
 
-            ForkValueViewModel newForkValue = new ForkValueViewModel(newFork);
-            newForkValue.configNode = forkedNode;
+            ForkValueViewModel newForkValue = new ForkValueViewModel(this,newFork);
+            newForkValue.forkValue = forkedNode;
             newForkValue.name = "Value-0";
             newFork.values.Add(newForkValue);
             newFork.selectedForkValue = newForkValue;

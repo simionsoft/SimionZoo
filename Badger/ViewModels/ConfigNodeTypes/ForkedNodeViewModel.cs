@@ -8,7 +8,7 @@ namespace Badger.ViewModels
     {
         public ConfigNodeViewModel selectedForkValue
         {
-            get { return fork.selectedForkValue.configNode; }
+            get { return fork.selectedForkValue.forkValue; }
             set
             {
                 //we don't need to set it (the actual value will be set within the ForkViewModel class)
@@ -28,20 +28,28 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => selectedForkValue);
         }
         //Constructor called when loading an experiment config file
-        public ForkedNodeViewModel(AppViewModel appViewModel,XmlNode classDefinition,XmlNode configNode)
+        public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel parentNode
+            ,XmlNode classDefinition,XmlNode configNode)
         {
+            m_appViewModel = appViewModel;
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             fork = new ForkViewModel(appViewModel,name,this);
-            foreach (XmlNode forkValueConfig in configNode)
+            foreach (XmlNode forkValueConfig in configNode.ChildNodes)
             {
-                fork.values.Add(new ForkValueViewModel(appViewModel, fork, forkValueConfig));
+                fork.values.Add(new ForkValueViewModel(appViewModel, classDefinition,parentNode
+                    ,fork, forkValueConfig));
             }
+            //notify changes
+            if (fork.values.Count > 0)
+                fork.selectedForkValue = fork.values[0];
+            fork.NotifyOfPropertyChange(() => fork.values);
+            m_appViewModel.addFork(fork);
         }
         public override bool validate()
         {
             foreach (ForkValueViewModel value in fork.values)
             {
-                if (!value.configNode.validate()) return false;
+                if (!value.forkValue.validate()) return false;
             }
             return true;
         }
@@ -50,10 +58,10 @@ namespace Badger.ViewModels
         {
             if (m_appViewModel.saveMode == SaveMode.SaveForks)
             {
-                writer.Write(leftSpace + "<" + XMLConfig.forkedNodeTag + " " 
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + " " 
                     +XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\">");
                 fork.outputXML(writer, leftSpace + "  ");
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + ">");
+                writer.WriteLine(leftSpace + "</" + XMLConfig.forkedNodeTag + ">");
             }
             else
                 selectedForkValue.outputXML(writer, leftSpace);
