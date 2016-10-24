@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Collections.ObjectModel;
 using Caliburn.Micro;
-using Badger.ViewModels;
 using Badger.Data;
 
 namespace Badger.ViewModels
 {
     public class PlotEditorWindowViewModel : Screen
-    {        
-        //private List<string> m_episodeTypeList = new List<string>();
+    {
 
         private ObservableCollection<PlotViewModel> m_plots = new ObservableCollection<PlotViewModel>();
         public ObservableCollection<PlotViewModel> plots { get { return m_plots; } set { } }

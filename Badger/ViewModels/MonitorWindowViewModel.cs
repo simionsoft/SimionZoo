@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Herd;
-
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -12,7 +12,7 @@ namespace Badger.ViewModels
         public PlotViewModel evaluationPlot{get;set;}
 
         public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<AppViewModel> pendingExperiments, Logger.LogFunction logFunction)
+            , List<Experiment> pendingExperiments, Logger.LogFunction logFunction)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(freeHerdAgents, pendingExperiments

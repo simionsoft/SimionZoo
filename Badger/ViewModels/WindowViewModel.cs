@@ -227,11 +227,12 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool saveExperimentsAsBatch(out string batchFilename)
+        private List<Experiment> saveExperimentsAsBatch()
         {
-            batchFilename = "";
+            List<Experiment> experimentBatch = new List<Experiment>();
 
-            if (appViewModels.Count == 0) return false;
+            if (appViewModels.Count == 0) return experimentBatch;
+            string batchFilename;
 
             //Save dialog -> returns the experiment batch file
             SaveFileDialog sfd = new SaveFileDialog();
@@ -249,7 +250,7 @@ namespace Badger.ViewModels
             else
             {
                 logToFile("Error saving the experiment queue");
-                return false;
+                return null;
             }
 
             //clean output directory if it exists
@@ -267,7 +268,7 @@ namespace Badger.ViewModels
                         + batchFilename + ". Make sure that it's not been using for other app."
                         , "ERROR");
                     logToFile("Error saving the experiment queue");
-                    return false;
+                    return null;
                 }
             }
 
@@ -278,6 +279,7 @@ namespace Badger.ViewModels
             List<string> names = new List<string>();
             int numCombinations;
             string filePath, folderPath;
+            string experimentName;
 
             foreach (AppViewModel experiment in appViewModels)
             {
@@ -285,23 +287,25 @@ namespace Badger.ViewModels
                 for (int i = 0; i < numCombinations; i++)
                 {
                     experiment.setForkCombination(i);
-
-                    folderPath = batchFilename + "/" + experiment.getForkCombinationBaseName(i);
+                    experimentName = experiment.getForkCombinationBaseName(i);
+                    folderPath = batchFilename + "/" + experimentName;
                     Directory.CreateDirectory(folderPath);
-                    filePath = folderPath + "/" + experiment.getForkCombinationBaseName(i) 
-                        + "." + XMLConfig.experimentExtension;
+                    filePath = folderPath + "/" + experimentName + "." + XMLConfig.experimentExtension;
                     experiment.save(filePath, SaveMode.CombineForks);
                     //folders for the batch file and its children experiments
                     XmlElement experimentNode = experimentXMLDoc.CreateElement(experiment.name);
                     experimentNode.SetAttribute(XMLConfig.pathAttribute, filePath);
                     experimentBatchesNode.AppendChild(experimentNode);
+
+                    experimentBatch.Add(new Experiment(experimentName, filePath, experiment.getExeFilename()
+                        , experiment.getPrerrequisites()));
                 }
             }
 
             experimentXMLDoc.Save(batchFilename + "." + XMLConfig.experimentBatchExtension);
             logToFile("Succesfully saved " + appViewModels.Count + " experiments");
             
-            return true;
+            return experimentBatch;
         }
 
         //public void loadExperimentQueue()
@@ -343,32 +347,26 @@ namespace Badger.ViewModels
 
         public void runExperiments()
         {
-            string batchFilename;
-            bool bSuccesfulSave= saveExperimentsAsBatch(out batchFilename);
+            List<Experiment> experiments= saveExperimentsAsBatch();
 
-            if (bSuccesfulSave)
+            if (experiments!=null && experiments.Count>0)
             {
-                runExperimentBatch(batchFilename);
+                List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
 
-                checkLogFilesAlreadyExist();
+                logToFile("Running experiment queue remotely: " + experiments.Count + " experiments");
+
+                //get available herd agents list. Inside the loop to update the list
+                shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
+                logToFile("Using " + freeHerdAgents.Count + " agents");
+
+                MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents, experiments, logToFile);
+
+                monitorVM.runExperiments(true, true);
+
+                CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
             }      
         }
 
-        private bool m_bLogFilesAvailable = false;
-        public bool bLogFilesAvailable { get { return m_bLogFilesAvailable; }
-        set { m_bLogFilesAvailable = value; NotifyOfPropertyChange(()=>bLogFilesAvailable); }
-        }
-        private void checkLogFilesAlreadyExist()
-        {
-            int numAvailableLogs = 0;
-            foreach (AppViewModel experiment in appViewModels)
-            {
-                if (experiment.checkLogFilesAlreadyExist())
-                    numAvailableLogs++;
-            }
-            if (numAvailableLogs > 0) bLogFilesAvailable = true;
-            else bLogFilesAvailable = false;
-        }
 
         private void getEnqueuedExperimentList(ref List<AppViewModel> outList)
         {
@@ -379,27 +377,7 @@ namespace Badger.ViewModels
                 outList.Add(experiment);
             }
         }
-        private void runExperimentBatch(string batchFilename)
-        {
-            List<HerdAgentViewModel> freeHerdAgents= new List<HerdAgentViewModel>();
-            List<AppViewModel> pendingExperiments = new List<AppViewModel>();
 
-            logToFile("Running experiment queue remotely");
-
-            //get experiment list
-            getEnqueuedExperimentList(ref pendingExperiments);
-            logToFile("Running " + pendingExperiments.Count + " experiments");
-
-            //get available herd agents list. Inside the loop to update the list
-            shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
-            logToFile("Using " + freeHerdAgents.Count + " agents");
-
-            MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents,pendingExperiments,logToFile);
-
-            monitorVM.runExperiments(true, true);
-
-            CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
-        }
 
 
         public void getLoggedExperimentList(ref List<AppViewModel> outList)

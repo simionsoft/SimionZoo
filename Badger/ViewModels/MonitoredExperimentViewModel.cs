@@ -2,23 +2,20 @@
 using System.Xml;
 using Caliburn.Micro;
 using Herd;
+using System.Collections.Generic;
 
-
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {
-        public string pipeName { get { return experiment.name; } }
-        public string name { get { return experiment.name; } }
-        public string filePath { get { return experiment.fileName; } }
-
-        private AppViewModel m_experiment;
-        public AppViewModel experiment
-        {
-            get { return m_experiment; }
-            set { m_experiment = value; NotifyOfPropertyChange(() => experiment); }
-        }
+        private Experiment m_experiment;
+        public string pipeName { get { return m_experiment.pipeName; } }
+        public string name { get { return m_experiment.name; } }
+        public string filePath { get { return m_experiment.configFilePath; } }
+        public string exeFile { get { return m_experiment.exeFile; } }
+        public List<string> prerrequisites { get { return m_experiment.prerrequisites; } }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -124,15 +121,15 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        public MonitoredExperimentViewModel(AppViewModel appViewModel, PlotViewModel evaluationMonitorVM)
+        public MonitoredExperimentViewModel(Experiment experiment,PlotViewModel plot)
         {
-            experiment = appViewModel;
-            evaluationMonitor = evaluationMonitorVM;
+            evaluationMonitor = plot;
+            m_experiment = experiment;
         }
 
         //evaluation plot stuff
         private int evaluationSeriesId = -1;
-        private PlotViewModel evaluationMonitor= null;
+        public PlotViewModel evaluationMonitor= null;
         public void addEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added

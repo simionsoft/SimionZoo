@@ -53,27 +53,29 @@ namespace Badger.ViewModels
             job.name = m_name;
 
             //tasks, inputs and outputs
-            foreach (MonitoredExperimentViewModel monitoredExperiment in m_monitoredExperiments)
+            foreach (MonitoredExperimentViewModel experiment in m_monitoredExperiments)
             {
                 CTask task = new CTask();
-                task.name = monitoredExperiment.name;
-                task.exe = monitoredExperiment.experiment.getExeFilename();
-                task.arguments = monitoredExperiment.filePath + " " + monitoredExperiment.pipeName;
-                task.pipe = monitoredExperiment.pipeName;
+                //we are assuming the same exe file is used in all the experiments!!!
+                //IMPORTANT
+                task.name = experiment.name;
+                task.exe = experiment.exeFile;
+                task.arguments = experiment.filePath + " " + experiment.pipeName;
+                task.pipe = experiment.pipeName;
                 job.tasks.Add(task);
                 //add EXE files
                 
                 if (!job.inputFiles.Contains(task.exe))
                         job.inputFiles.Add(task.exe);
                 //add prerrequisites
-                foreach (string pre in monitoredExperiment.experiment.getPrerrequisites())
+                foreach (string pre in experiment.prerrequisites)
                     if (!job.inputFiles.Contains(pre))
                         job.inputFiles.Add(pre);
 
                 //add experiment file to inputs
-                if (!job.inputFiles.Contains(monitoredExperiment.filePath))
-                    job.inputFiles.Add(monitoredExperiment.filePath);
-                Utility.getInputsAndOutputs(monitoredExperiment.filePath, ref job);
+                if (!job.inputFiles.Contains(experiment.filePath))
+                    job.inputFiles.Add(experiment.filePath);
+                Utility.getInputsAndOutputs(experiment.filePath, ref job);
             }
             return job;
         }
@@ -238,13 +240,13 @@ namespace Badger.ViewModels
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<AppViewModel> pendingExperiments, PlotViewModel evaluationMonitor
+            , List<Experiment> experiments, PlotViewModel evaluationMonitor
             , Logger.LogFunction logFunctionDelegate)
         {
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
-            foreach (AppViewModel exp in pendingExperiments)
+            foreach (Experiment exp in experiments)
             {
                 MonitoredExperimentViewModel monitoredExperiment= 
                     new MonitoredExperimentViewModel(exp,evaluationMonitor);
