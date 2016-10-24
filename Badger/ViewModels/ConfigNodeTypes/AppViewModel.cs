@@ -210,20 +210,26 @@ namespace Badger.ViewModels
             return true;
         }
 
+        //this method saves an experiment. Depending on the mode:
+        //  -SaveMode.CombineForks -> the caller should iterate on i= [0..getNumForkCombinations) and call
+        //setCombination(i). This method will then save the i-th combination
+        //  -SaveMode.SaveForks -> this method should be called only once per experiment. All the forks will be saved embedded
+        //in the config file
         public void save(string filename,SaveMode mode)
         {
             saveMode = mode;
+
             using (FileStream stream = File.Create(filename))
             {
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    writer.Write("<" + appName + " Version=\"" + m_version + "\">\n");
+                    writer.Write("<" + appName + " Version=\"" + XMLConfig.XMLConfigVersion + "\">\n");
 
                     foreach (ConfigNodeViewModel node in m_children)
                     {
-                        node.outputXML(writer,"  ");
+                        node.outputXML(writer, "  ");
                     }
-                    writer.Write( "</" + appName + ">");
+                    writer.Write("</" + appName + ">");
                 }
             }
         }
@@ -315,6 +321,37 @@ namespace Badger.ViewModels
             forks.Add(newFork);
             NotifyOfPropertyChange(() => forks);
             return newFork;
+        }
+        public int getNumForkCombinations()
+        {
+            int numCombinations = 1;
+            foreach (ForkViewModel fork in forks)
+                numCombinations *= fork.values.Count; //so far, we assume, forks can't contain forks inside
+            return numCombinations;
+        }
+        public void setForkCombination(int combination)
+        {
+            int valueId;
+            foreach(ForkViewModel fork in forks)
+            {
+                //set the correct value for the fork
+                valueId= combination % fork.values.Count;
+                fork.selectedForkValue = fork.values[valueId];
+                //remove the valueId from the combinationId
+                combination = combination / fork.values.Count;
+            }
+        }
+        public string getForkCombinationBaseName(int combination)
+        {
+            string combinationName = name;
+            foreach (ForkViewModel fork in forks)
+            {
+                //set the correct value for the fork
+                combinationName += "-" + (combination % fork.values.Count);
+                //remove the valueId from the combinationId
+                combination = combination / fork.values.Count;
+            }
+            return combinationName;
         }
     }
 

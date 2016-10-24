@@ -113,12 +113,6 @@
     <Compile Include="Data\caliburnUtility.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\XMLConfig.cs" />
-    <Compile Include="Models\CApp.cs" />
-    <Compile Include="Models\CBranch.cs" />
-    <Compile Include="Models\ChoiceElement.cs" />
-    <Compile Include="Models\CIntegerValue.cs" />
-    <Compile Include="Models\CMultiValued.cs" />
-    <Compile Include="Models\CNode.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceElementConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ConfigNodeViewModel.cs" />
@@ -136,6 +130,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\XmlDefRefValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentViewModel.cs" />
     <Compile Include="ViewModels\PlotViewModel.cs" />
     <Compile Include="ViewModels\ExperimentLogViewModel.cs" />
     <Compile Include="ViewModels\LoggedVariableViewModel.cs" />
@@ -144,38 +139,14 @@
     </Compile>
     <Compile Include="ViewModels\MonitoredExperimentViewModel.cs" />
     <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentViewModel.cs" />
-    <Compile Include="Models\TreeNode.cs" />
-    <Compile Include="ViewModels\BranchViewModel.cs" />
-    <Compile Include="ViewModels\ButtonToWindowedClassViewModel.cs" />
-    <Compile Include="ViewModels\ChoiceViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentQueueViewModel.cs" />
-    <Compile Include="ViewModels\ClassViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
-    <Compile Include="ViewModels\IntegerViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
-    <Compile Include="ViewModels\MultiSimpleViewModel.cs" />
-    <Compile Include="ViewModels\MultiXmlNodeRefViewModel.cs" />
     <Compile Include="ViewModels\PlotEditorWindowViewModel.cs" />
     <Compile Include="ViewModels\PlotTabViewModel.cs" />
-    <Compile Include="ViewModels\RightTreeViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
-    <Compile Include="ViewModels\ValidableAndNodeViewModel.cs" />
-    <Compile Include="ViewModels\WindowClassViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
-    <Compile Include="ViewModels\MultiValuedViewModel.cs" />
-    <Compile Include="ViewModels\XMLNodeRefViewModel.cs" />
-    <Compile Include="Views\ChoiceView.xaml.cs">
-      <DependentUpon>ChoiceView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ClassView.xaml.cs">
-      <DependentUpon>ClassView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\BranchView.xaml.cs">
-      <DependentUpon>BranchView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
@@ -191,18 +162,9 @@
     <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
       <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ExperimentQueueView.xaml.cs">
-      <DependentUpon>ExperimentQueueView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ExperimentView.xaml.cs">
-      <DependentUpon>ExperimentView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Help\ComboBoxToMaxItemWidthConverter.cs" />
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\IntegerView.xaml.cs">
-      <DependentUpon>IntegerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\LoadDialogView.xaml.cs">
       <DependentUpon>LoadDialogView.xaml</DependentUpon>
@@ -210,23 +172,11 @@
     <Compile Include="Views\MonitorWindowView.xaml.cs">
       <DependentUpon>MonitorWindowView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MultiSimpleView.xaml.cs">
-      <DependentUpon>MultiSimpleView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MultiValuedView.xaml.cs">
-      <DependentUpon>MultiValuedView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MultiXmlNodeRefView.xaml.cs">
-      <DependentUpon>MultiXmlNodeRefView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\PlotEditorWindowView.xaml.cs">
       <DependentUpon>PlotEditorWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PlotTabView.xaml.cs">
       <DependentUpon>PlotTabView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\WindowClassView.xaml.cs">
-      <DependentUpon>WindowClassView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowView.xaml.cs">
       <DependentUpon>WindowView.xaml</DependentUpon>
@@ -332,11 +282,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ButtonToWindowedClassView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ConfigNodeTypes\IntegerValueConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ExperimentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -356,14 +306,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ExperimentQueueView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ExperimentView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\HerdAgentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -376,35 +318,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MultiSimpleView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MultiXmlNodeRefView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ChoiceView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ClassView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\BranchView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\DialogView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\IntegerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MultiValuedView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -419,10 +333,6 @@
     <Page Include="Views\ShepherdView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\WindowClassView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\WindowView.xaml">
       <SubType>Designer</SubType>

@@ -75,7 +75,6 @@
                                 </DataTemplate>
                             </TabControl.ItemTemplate>
                         </TabControl>
-                        <!--<ContentControl x:Name="selectedAppViewModel"></ContentControl>-->
                     </Border>
 
                 </StackPanel>
@@ -90,9 +89,7 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15,5">
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action addExperiment()]" >
-                        <Image Source="/images/add.png" ToolTip="Enqueue experiment" Width="25" Height="25"></Image>
-                    </Button>
+                    <!--<Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action addExperiment()]" />-->
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30"
                             cal:Message.Attach="[Event Click]=[Action clearExperimentQueue()]" >
                         <Image Source="/images/clear.png"  ToolTip="Clear experiment queue" Width="25" Height="25" ></Image>
@@ -102,33 +99,23 @@
                             cal:Message.Attach="[Event Click]=[Action removeSelectedExperiments()]" >
                         <Image Source="/images/remove.png" ToolTip="Remove experiment" Width="25" Height="25" ></Image>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30"
+                    <!--<Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30"
                             Visibility="{Binding Path=bIsExperimentQueueNotEmpty, Converter={StaticResource BoolToVis}}"
                             cal:Message.Attach="[Event Click]=[Action modifySelectedExperiment()]" >
                         <Image Source="/images/modify.png"  ToolTip="Save changes" Width="25" Height="25" ></Image>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperimentQueue()]" >
-                        <Image Source="/images/save.png" Width="25" Height="25"/>
-                    </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action loadExperimentQueue()]">
-                        <Image Source="/images/load.png"/>
-                    </Button>
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperimentQueue()]" />
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action loadExperimentQueue()]"/>-->
                 </StackPanel>
-                <ItemsControl ItemsSource="{Binding Path=appQueue}" Height="250" Margin="2">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <!--<ListView ItemsSource="{Binding Path=appQueue}" SelectedItem="{Binding selectedAppInQueue}" cal:View.Context="Queue" Height="250" Margin="2">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>-->
-
+                <Border BorderBrush="Black" Height="250" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="10,0">
+                    <ItemsControl ItemsSource="{Binding Path=appQueue}" Margin="2">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ContentControl cal:View.Context="Queue" cal:View.Model="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="70,0,55,0" Height="40" >
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
                          Visibility="{Binding Path=bIsExperimentQueueNotEmpty, Converter={StaticResource BoolToVis}}"
@@ -138,8 +125,7 @@
                     </Button>
 
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 
-                            cal:Message.Attach="[Event Click]=[Action showPlotWindow()]"
-                            Visibility="{Binding Path=bLogFilesAvailable,Converter={StaticResource BoolToVis}}">
+                            cal:Message.Attach="[Event Click]=[Action showPlotWindow()]">
                         <Image Source="/images/plot.png" Width="25" Height="25"/>
                     </Button>
                 </StackPanel>

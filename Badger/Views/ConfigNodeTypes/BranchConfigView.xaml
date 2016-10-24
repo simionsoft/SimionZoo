@@ -31,7 +31,7 @@
             </StackPanel>
         </TreeViewItem.Header>
 
-        <ItemsControl x:Name="children"
+        <ItemsControl x:Name="children" Margin="-15,0,0,0"
                       Visibility="{Binding Path=bIsUsed,Converter={StaticResource BoolToVis}}"/>
     </TreeViewItem>
 </UserControl>

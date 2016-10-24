@@ -19,9 +19,9 @@ namespace Badger.ViewModels
                 , evaluationPlot,logFunction);
         }
 
-        public void runExperiments(string batchName, bool monitorProgress= true, bool receiveJobResults= true)
+        public void runExperiments(bool monitorProgress= true, bool receiveJobResults= true)
         {
-            Task.Run(() => experimentQueueMonitor.runExperimentsAsync(batchName,monitorProgress,receiveJobResults));
+            Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress,receiveJobResults));
         }
 
         protected override void OnDeactivate(bool close)

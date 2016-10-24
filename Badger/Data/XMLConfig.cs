@@ -4,6 +4,11 @@ namespace Simion
 {
     public class XMLConfig
     {
+        public const int XMLConfigVersion = 2;
+
+        public const string experimentExtension = "experiment";
+        public const string experimentBatchExtension = "exp-batch";
+
         public const string definitionNodeTag = "DEFINITIONS";
         public const string classDefinitionNodeTag = "CLASS";
         public const string enumDefinitionNodeTag = "ENUMERATION";

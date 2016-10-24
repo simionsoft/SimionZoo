@@ -1,5 +1,4 @@
-﻿using Badger.Models;
-using Badger.Data;
+﻿using Badger.Data;
 using System.Collections.ObjectModel;
 using System.Xml;
 using Caliburn.Micro;
@@ -14,14 +13,6 @@ using Simion;
 
 namespace Badger.ViewModels
 {
-    public interface IValidable
-    {
-        bool validate();
-    }
-    public interface IGetXml
-    {
-        List<XmlNode> getXmlNode();
-    }
 
     public class WindowViewModel : PropertyChangedBase
     {
@@ -180,7 +171,7 @@ namespace Badger.ViewModels
             }
 
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment | *.experiment";
+            sfd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
             sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
@@ -198,7 +189,7 @@ namespace Badger.ViewModels
             
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment | *.experiment";
+            ofd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()),"experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -236,15 +227,15 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool saveExperimentQueue(out string batchFilename)
+        private bool saveExperimentsAsBatch(out string batchFilename)
         {
             batchFilename = "";
 
             if (appViewModels.Count == 0) return false;
 
-            //Save dialog -> returns the experiment queue file
+            //Save dialog -> returns the experiment batch file
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment batch | *.exp-batch";
+            sfd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
             sfd.InitialDirectory = "../experiments";
             string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
             if (!Directory.Exists(CombinedPath))
@@ -285,72 +276,79 @@ namespace Badger.ViewModels
             experimentXMLDoc.AppendChild(experimentBatchesNode);
 
             List<string> names = new List<string>();
+            int numCombinations;
+            string filePath, folderPath;
 
             foreach (AppViewModel experiment in appViewModels)
             {
-                string folderPath = batchFilename + "/" + experiment.name;
-                Directory.CreateDirectory(folderPath);
-                string filePath = folderPath + "/" + experiment.name + ".experiment";
-                experiment.save(filePath,SaveMode.CombineForks);
-                //folders for the batch file and its children experiments
-                XmlElement experimentNode = experimentXMLDoc.CreateElement(experiment.name);
-                experimentNode.SetAttribute("Path", filePath);
-                experimentBatchesNode.AppendChild(experimentNode);
+                numCombinations = experiment.getNumForkCombinations();
+                for (int i = 0; i < numCombinations; i++)
+                {
+                    experiment.setForkCombination(i);
 
-                experiment.fileName = filePath;
+                    folderPath = batchFilename + "/" + experiment.getForkCombinationBaseName(i);
+                    Directory.CreateDirectory(folderPath);
+                    filePath = folderPath + "/" + experiment.getForkCombinationBaseName(i) 
+                        + "." + XMLConfig.experimentExtension;
+                    experiment.save(filePath, SaveMode.CombineForks);
+                    //folders for the batch file and its children experiments
+                    XmlElement experimentNode = experimentXMLDoc.CreateElement(experiment.name);
+                    experimentNode.SetAttribute(XMLConfig.pathAttribute, filePath);
+                    experimentBatchesNode.AppendChild(experimentNode);
+                }
             }
 
-            experimentXMLDoc.Save(batchFilename + ".exp-batch");
+            experimentXMLDoc.Save(batchFilename + "." + XMLConfig.experimentBatchExtension);
             logToFile("Succesfully saved " + appViewModels.Count + " experiments");
             
             return true;
         }
 
-        public void loadExperimentQueue()
-        {
-            string fileDoc = null;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment batch | *.exp-batch";
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                fileDoc = ofd.FileName;
-            }
-            else return;
-            //this doesn't seem to work
-            //Cursor.Current = Cursors.WaitCursor;
-            //System.Windows.Forms.Application.DoEvents();
+        //public void loadExperimentQueue()
+        //{
+        //    string fileDoc = null;
+        //    OpenFileDialog ofd = new OpenFileDialog();
+        //    ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
+        //    ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+        //    if (ofd.ShowDialog() == DialogResult.OK)
+        //    {
+        //        fileDoc = ofd.FileName;
+        //    }
+        //    else return;
+        //    //this doesn't seem to work
+        //    //Cursor.Current = Cursors.WaitCursor;
+        //    //System.Windows.Forms.Application.DoEvents();
 
-            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
-            XmlDocument batchDoc = new XmlDocument();
-            batchDoc.Load(fileDoc);
-            XmlElement fileRoot = batchDoc.DocumentElement;
-            if (fileRoot.Name != "Experiments")
-            {
-                logToFile("ERROR: malformed XML in experiment batch file.");
-                return;
-            }
+        //    //LOAD THE EXPERIMENT BATCH IN THE QUEUE
+        //    XmlDocument batchDoc = new XmlDocument();
+        //    batchDoc.Load(fileDoc);
+        //    XmlElement fileRoot = batchDoc.DocumentElement;
+        //    if (fileRoot.Name != "Experiments")
+        //    {
+        //        logToFile("ERROR: malformed XML in experiment batch file.");
+        //        return;
+        //    }
 
-            foreach (XmlElement element in fileRoot.ChildNodes)
-            {
-                string expName = element.Name;
-                string path = element.Attributes[XMLConfig.pathAttribute].Value;
-                if (File.Exists(path))
-                    appViewModels.Add( new AppViewModel(appDefinitions[element.Name], path));
-            }
+        //    foreach (XmlElement element in fileRoot.ChildNodes)
+        //    {
+        //        string expName = element.Name;
+        //        string path = element.Attributes[XMLConfig.pathAttribute].Value;
+        //        if (File.Exists(path))
+        //            appViewModels.Add( new AppViewModel(appDefinitions[element.Name], path));
+        //    }
 
-            Task.Run(() => checkLogFilesAlreadyExist());
-            checkEmptyQueue();
-        }
+        //    Task.Run(() => checkLogFilesAlreadyExist());
+        //    checkEmptyQueue();
+        //}
 
         public void runExperiments()
         {
             string batchFilename;
-            bool bSuccesfulSave= saveExperimentQueue(out batchFilename);
+            bool bSuccesfulSave= saveExperimentsAsBatch(out batchFilename);
 
             if (bSuccesfulSave)
             {
-                runExperimentQueue(batchFilename);
+                runExperimentBatch(batchFilename);
 
                 checkLogFilesAlreadyExist();
             }      
@@ -377,11 +375,11 @@ namespace Badger.ViewModels
             outList.Clear();
             foreach (AppViewModel experiment in appViewModels)
             {
-                //(for now,) all the experiments are in the queue are considered ready for execution
+                //(for now) all the experiments are in the queue are considered ready for execution
                 outList.Add(experiment);
             }
         }
-        private void runExperimentQueue(string batchFilename)
+        private void runExperimentBatch(string batchFilename)
         {
             List<HerdAgentViewModel> freeHerdAgents= new List<HerdAgentViewModel>();
             List<AppViewModel> pendingExperiments = new List<AppViewModel>();
@@ -398,7 +396,7 @@ namespace Badger.ViewModels
 
             MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents,pendingExperiments,logToFile);
 
-            monitorVM.runExperiments(batchFilename, true, true);
+            monitorVM.runExperiments(true, true);
 
             CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
         }
