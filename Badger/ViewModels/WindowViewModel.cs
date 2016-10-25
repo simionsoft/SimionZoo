@@ -166,76 +166,18 @@ namespace Badger.ViewModels
                 return;
             }
 
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
-            sfd.InitialDirectory = "../experiments";
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
-            if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); 
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                selectedTabControlExperiment.save(sfd.FileName,SaveMode.SaveForks);
-            }
+            SimionFileData.saveExperiment(selectedTabControlExperiment);
         }
+
         public void saveExperiments()
         {
-            foreach (AppViewModel app in m_appViewModels)
-            {
-                if (!app.validate())
-                {
-                    CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
-                    return;
-                }
-            }
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment | *." + XMLConfig.badgerExtension;
-            sfd.InitialDirectory = "../experiments";
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
-            if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string leftSpace;
-                using (FileStream outputFile = File.Create(sfd.FileName))
-                {
-                    using (StreamWriter writer = new StreamWriter(outputFile))
-                    {
-                        writer.WriteLine("<" + XMLConfig.badgerNodeTag + ">");
-                        leftSpace = "  ";
-                        foreach (AppViewModel app in m_appViewModels)
-                        {
-                            writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag + " Name=\"" + app.name + "\">");
-                            app.saveToStream(writer, SaveMode.SaveForks, leftSpace + "  ");
-                            writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
-                        }
-                        writer.WriteLine("</" + XMLConfig.badgerNodeTag + ">");
-                    }
-                }
-            }
+            SimionFileData.saveExperiments(m_appViewModels);
         }
 
 
         public void loadExperiment()
         {
-            
-            string fileDoc = null;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()),"experiments");
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                fileDoc = ofd.FileName;
-            }
-            else
-                return;
-            
-            //open the config file to retrive the app's name before loading it
-            XmlDocument configDocument = new XmlDocument();
-            configDocument.Load(fileDoc);
-            XmlNode rootNode = configDocument.LastChild;
-            AppViewModel newApp = new AppViewModel(appDefinitions[rootNode.Name], fileDoc);
+            AppViewModel newApp = SimionFileData.loadExperiment(appDefinitions);
             tabControlExperiments.Add(newApp);
             checkEmptyExperimentList();
             selectedTabControlExperiment = newApp;
@@ -244,7 +186,9 @@ namespace Badger.ViewModels
 
         public void clearExperimentQueue()
         {
-            if (tabControlExperiments!=null) tabControlExperiments.Clear();  
+            selectedTabControlExperiment = null;
+            if (tabControlExperiments != null) tabControlExperiments.Clear();
+            if (listControlExperiments != null) listControlExperiments.Clear();
         }
 
         public void removeSelectedExperiments()
@@ -252,142 +196,25 @@ namespace Badger.ViewModels
             if (selectedTabControlExperiment != null)
             {
                 tabControlExperiments.Remove(selectedTabControlExperiment);
+                NotifyOfPropertyChange(() => listControlExperiments);
                 checkEmptyExperimentList();
             }
         }
 
-        private List<Experiment> saveExperimentsAsBatch()
-        {
-            List<Experiment> experimentBatch = new List<Experiment>();
-
-            if (tabControlExperiments.Count == 0) return experimentBatch;
-            string batchFilename;
-
-            //Save dialog -> returns the experiment batch file
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-            sfd.InitialDirectory = "../experiments";
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
-            if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
-
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                batchFilename = sfd.FileName;
-            }
-            else
-            {
-                logToFile("Error saving the experiment queue");
-                return null;
-            }
-
-            //clean output directory if it exists
-            batchFilename = batchFilename.Split('.')[0];
-            batchFilename = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFilename);
-            if (Directory.Exists(batchFilename))
-            {
-                try
-                {
-                    Directory.Delete(batchFilename, true);
-                }
-                catch
-                {
-                    CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
-                        + batchFilename + ". Make sure that it's not been using for other app."
-                        , "ERROR");
-                    logToFile("Error saving the experiment queue");
-                    return null;
-                }
-            }
-
-            using (FileStream batchFile = File.Create(batchFilename + "." + XMLConfig.experimentBatchExtension))
-            {
-                using (StreamWriter batchFileWriter = new StreamWriter(batchFile))
-                {
-                    //batch file header
-                    batchFileWriter.WriteLine("<" + XMLConfig.batchNodeTag + ">");
-
-                    int numCombinations;
-                    string filePath, folderPath;
-                    string experimentName;
-
-                    foreach (AppViewModel experiment in tabControlExperiments)
-                    {
-                        numCombinations = experiment.getNumForkCombinations();
-                        for (int i = 0; i < numCombinations; i++)
-                        {
-
-                            //Save the combination of forks as a new experiment
-                            experiment.setForkCombination(i);
-                            experimentName = experiment.getForkCombinationBaseName(i);
-                            folderPath = batchFilename + "/" + experimentName;
-                            Directory.CreateDirectory(folderPath);
-                            filePath = folderPath + "/" + experimentName + "." + XMLConfig.experimentExtension;
-                            experiment.save(filePath, SaveMode.CombineForks);
-
-                            //Save the experiment reference in the batch file
-                            batchFileWriter.WriteLine("<" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
-                                + "=\"" + experimentName + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\"/>");
-
-
-                            //Add the experiment to the output list
-                            experimentBatch.Add(new Experiment(experimentName, filePath, experiment.getExeFilename()
-                                , experiment.getPrerrequisites()));
-                        }
-                    }
-                    //batch file footer
-                    batchFileWriter.WriteLine("</" + XMLConfig.batchNodeTag + ">");
-                    logToFile("Succesfully saved " + tabControlExperiments.Count + " experiments");
-                }
-            }
-            
-            return experimentBatch;
-        }
-
+        //BADGER files
         public void loadExperiments()
         {
-            string fileDoc = null;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment batch | *." + XMLConfig.badgerExtension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                fileDoc = ofd.FileName;
-            }
-            else return;
+            SimionFileData.loadExperiments(ref m_appViewModels, appDefinitions, logToFile);
+            NotifyOfPropertyChange(() => tabControlExperiments);
+            NotifyOfPropertyChange(() => listControlExperiments);
 
-            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
-            XmlDocument batchDoc = new XmlDocument();
-            batchDoc.Load(fileDoc);
-            XmlElement fileRoot = batchDoc.DocumentElement;
-            if (fileRoot.Name != XMLConfig.badgerNodeTag)
-            {
-                CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
-                logToFile("ERROR: malformed XML in experiment queue file. No badger node.");
-                return;
-            }
-            XmlNode configNode;
-            foreach (XmlNode experiment in fileRoot.ChildNodes)
-            {
-                if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count > 0)
-                {
-                    configNode = experiment.FirstChild;
-                    tabControlExperiments.Add(new AppViewModel(appDefinitions[configNode.Name], configNode
-                        , experiment.Attributes[XMLConfig.nameAttribute].Value));
-                }
-                else
-                {
-                    CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
-                    logToFile("ERROR: malformed XML in experiment queue file");
-                }
-            }
             checkEmptyExperimentList();
         }
 
         public void runExperiments()
         {
-            List<Experiment> experiments= saveExperimentsAsBatch();
+            List<Experiment> experiments = new List<Experiment>();
+            experiments= SimionFileData.saveExperimentBatchFile(tabControlExperiments, logToFile);
 
             if (experiments!=null && experiments.Count>0)
             {

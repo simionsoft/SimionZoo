@@ -15,11 +15,7 @@ namespace Badger.Data
         [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
         private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
         
-        
-        //used to avoid readings of worl-denitions xml
-        private static Dictionary<string, List<string>> xmlDic = new Dictionary<string, List<string>>();
-        
-        
+              
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void getInputsAndOutputs(string path, ref CJob job)
         {
@@ -83,61 +79,6 @@ namespace Badger.Data
             }
                    
         }
-
-        public static Dictionary<string, List<string>> findIOProblems(List<string> pahts)
-        {
-           
-            Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
-            Dictionary<string, string> myDic = new Dictionary<string, string>();
-            foreach(string path in pahts)
-            {
-                StringBuilder myResult = new StringBuilder(204800);
-                int error = getIOFiles(path, myResult, 204800);
-                if(error==-1)
-                {
-                    //mostrar error
-                }
-                else
-                {
-                    XDocument doc = XDocument.Parse(myResult.ToString());
-                    /*XElement[] inputFiles = doc
-                    .Descendants()
-                    .Where(e => e.Name=="Input")
-                    .ToArray();*/
-                    XElement[] outputFiles = doc
-                    .Descendants()
-                    .Where(e => e.Name == "Output")
-                    .ToArray();
-                   /* foreach(XElement e in inputFiles)
-                    {
-                        Console.WriteLine(e.Value);
-                    }*/
-                    foreach (XElement e in outputFiles)
-                    {
-                        if(!myDic.ContainsKey(e.Value))
-                            myDic.Add(e.Value, path);
-                        else if(!myDic[e.Value].Equals(path))
-                        {
-                            if(result.ContainsKey(e.Value))
-                            {
-                                List<string> tmp =result[e.Value];
-                                if(!tmp.Contains(path))
-                                {
-                                    tmp.Add(path);
-                                    result[e.Value] = tmp;
-                                }
-                            }
-                            else
-                            result.Add(e.Value, new List<string> { myDic[e.Value], path });
-                        }
-                   
-                    }
-                }
-                myResult.Clear();
-            }      
-            return result;
-        }
-
      
         private static string GetPath(XElement element)
         {

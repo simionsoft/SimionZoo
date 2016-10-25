@@ -140,6 +140,7 @@ namespace Badger.ViewModels
             }
             //plot tabs can't be closed yet, so we can simplify it for now
             bCanSavePlots = true;
+            selectedPlot = plots[plots.Count - 1]; //select the last plot generated
         }
 
         //plot selection in tab control
@@ -151,6 +152,7 @@ namespace Badger.ViewModels
             {
                 m_selectedPlot = value;
                 m_selectedPlot.update();
+                NotifyOfPropertyChange(() => selectedPlot);
             }
         }
 
@@ -159,7 +161,7 @@ namespace Badger.ViewModels
 
         public void savePlots()
         {
-            string outputFolder= CaliburnUtility.selectFolder("../images");
+            string outputFolder= CaliburnUtility.selectFolder(SimionFileData.imageDir);
             if (outputFolder!="")
             {
                 foreach(PlotViewModel plot in m_plots)
@@ -169,45 +171,21 @@ namespace Badger.ViewModels
             }
         }
 
+        private void batchNodeLoadFunction(XmlNode node)
+        {
+            string experimentName = node.Attributes[XMLConfig.nameAttribute].Value;
+            string experimentFilePath = node.Attributes[XMLConfig.pathAttribute].Value;
+            string logDescFile = ExperimentViewModel.getLogDescriptorsFilePath(experimentFilePath);
+            string logFile = ExperimentViewModel.getLogFilePath(experimentFilePath);
+            if (File.Exists(logDescFile) && File.Exists(logFile))
+            {
+                experimentLogs.Add(new ExperimentLogViewModel(experimentName, logDescFile, logFile, this));
+            }
+        }
+
         public void loadExperimentBatch()
         {
-            string fileDoc = null;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                fileDoc = ofd.FileName;
-            }
-            else return;
-
-            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
-            XmlDocument batchDoc = new XmlDocument();
-            batchDoc.Load(fileDoc);
-            XmlElement fileRoot = batchDoc.DocumentElement;
-            string experimentName;
-            string experimentFilePath;
-            string logDescFile;
-            string logFile;
-            if (fileRoot.Name == XMLConfig.batchNodeTag)
-            {
-                foreach (XmlNode experiment in fileRoot.ChildNodes)
-                {
-                    if (experiment.Name == XMLConfig.experimentNodeTag)
-                    {
-                        experimentName = experiment.Attributes[XMLConfig.nameAttribute].Value;
-                        experimentFilePath = experiment.Attributes[XMLConfig.pathAttribute].Value;
-                        logDescFile = ExperimentViewModel.getLogDescriptorsFilePath(experimentFilePath);
-                        logFile = ExperimentViewModel.getLogFilePath(experimentFilePath);
-                        if (File.Exists(logDescFile) && File.Exists(logFile))
-                        {
-                            experimentLogs.Add(new ExperimentLogViewModel(experimentName, logDescFile, logFile, this));
-                        }
-                    }
-                }
-            }
-            CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.","ERROR");
-            return;
+            SimionFileData.loadExperimentBatch(batchNodeLoadFunction);
         }
     }
 }

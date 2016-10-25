@@ -112,6 +112,7 @@
     <Compile Include="AppWindowManager.cs" />
     <Compile Include="Data\caliburnUtility.cs" />
     <Compile Include="Data\Experiment.cs" />
+    <Compile Include="Data\SimionFileData.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\XMLConfig.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
