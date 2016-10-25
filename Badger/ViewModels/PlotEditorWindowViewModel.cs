@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Collections.ObjectModel;
-using Caliburn.Micro;
 using Badger.Data;
+using System.Windows.Forms;
+using Simion;
+using System.IO;
 
 namespace Badger.ViewModels
 {
-    public class PlotEditorWindowViewModel : Screen
+    public class PlotEditorWindowViewModel : Caliburn.Micro.Screen
     {
 
         private ObservableCollection<PlotViewModel> m_plots = new ObservableCollection<PlotViewModel>();
@@ -95,18 +95,8 @@ namespace Badger.ViewModels
                 bCanGeneratePlots = true;
         }
 
-        public PlotEditorWindowViewModel(List<AppViewModel> experimentLogs)
+        public PlotEditorWindowViewModel()
         {
-            //maybe this initialization should be run as a background task?
-            foreach (AppViewModel exp in experimentLogs)
-            {
-                string logDescriptorFilePath = exp.getLogDescriptorsFilePath();
-
-                ExperimentLogViewModel newLog = new ExperimentLogViewModel(exp.name, exp.getLogDescriptorsFilePath()
-                    , exp.getLogFilePath(), this);
-
-                m_experimentLogs.Add(newLog);
-            }
             m_sourceOptions.Add(m_optionAllEvalEpisodes);
             m_sourceOptions.Add(m_optionLastEvalEpisode);
             NotifyOfPropertyChange(() => sourceOptions);
@@ -177,6 +167,47 @@ namespace Badger.ViewModels
                     plot.export(outputFolder);
                 }
             }
+        }
+
+        public void loadExperimentBatch()
+        {
+            string fileDoc = null;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                fileDoc = ofd.FileName;
+            }
+            else return;
+
+            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
+            XmlDocument batchDoc = new XmlDocument();
+            batchDoc.Load(fileDoc);
+            XmlElement fileRoot = batchDoc.DocumentElement;
+            string experimentName;
+            string experimentFilePath;
+            string logDescFile;
+            string logFile;
+            if (fileRoot.Name == XMLConfig.batchNodeTag)
+            {
+                foreach (XmlNode experiment in fileRoot.ChildNodes)
+                {
+                    if (experiment.Name == XMLConfig.experimentNodeTag)
+                    {
+                        experimentName = experiment.Attributes[XMLConfig.nameAttribute].Value;
+                        experimentFilePath = experiment.Attributes[XMLConfig.pathAttribute].Value;
+                        logDescFile = ExperimentViewModel.getLogDescriptorsFilePath(experimentFilePath);
+                        logFile = ExperimentViewModel.getLogFilePath(experimentFilePath);
+                        if (File.Exists(logDescFile) && File.Exists(logFile))
+                        {
+                            experimentLogs.Add(new ExperimentLogViewModel(experimentName, logDescFile, logFile, this));
+                        }
+                    }
+                }
+            }
+            CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.","ERROR");
+            return;
         }
     }
 }

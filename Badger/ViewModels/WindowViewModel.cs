@@ -301,37 +301,46 @@ namespace Badger.ViewModels
                 }
             }
 
-            XmlDocument experimentXMLDoc = new XmlDocument();
-            XmlElement experimentBatchesNode = experimentXMLDoc.CreateElement("Experiments");
-            experimentXMLDoc.AppendChild(experimentBatchesNode);
-
-            int numCombinations;
-            string filePath, folderPath;
-            string experimentName;
-
-            foreach (AppViewModel experiment in tabControlExperiments)
+            using (FileStream batchFile = File.Create(batchFilename + "." + XMLConfig.experimentBatchExtension))
             {
-                numCombinations = experiment.getNumForkCombinations();
-                for (int i = 0; i < numCombinations; i++)
+                using (StreamWriter batchFileWriter = new StreamWriter(batchFile))
                 {
-                    experiment.setForkCombination(i);
-                    experimentName = experiment.getForkCombinationBaseName(i);
-                    folderPath = batchFilename + "/" + experimentName;
-                    Directory.CreateDirectory(folderPath);
-                    filePath = folderPath + "/" + experimentName + "." + XMLConfig.experimentExtension;
-                    experiment.save(filePath, SaveMode.CombineForks);
-                    //folders for the batch file and its children experiments
-                    XmlElement experimentNode = experimentXMLDoc.CreateElement(experiment.name);
-                    experimentNode.SetAttribute(XMLConfig.pathAttribute, filePath);
-                    experimentBatchesNode.AppendChild(experimentNode);
+                    //batch file header
+                    batchFileWriter.WriteLine("<" + XMLConfig.batchNodeTag + ">");
 
-                    experimentBatch.Add(new Experiment(experimentName, filePath, experiment.getExeFilename()
-                        , experiment.getPrerrequisites()));
+                    int numCombinations;
+                    string filePath, folderPath;
+                    string experimentName;
+
+                    foreach (AppViewModel experiment in tabControlExperiments)
+                    {
+                        numCombinations = experiment.getNumForkCombinations();
+                        for (int i = 0; i < numCombinations; i++)
+                        {
+
+                            //Save the combination of forks as a new experiment
+                            experiment.setForkCombination(i);
+                            experimentName = experiment.getForkCombinationBaseName(i);
+                            folderPath = batchFilename + "/" + experimentName;
+                            Directory.CreateDirectory(folderPath);
+                            filePath = folderPath + "/" + experimentName + "." + XMLConfig.experimentExtension;
+                            experiment.save(filePath, SaveMode.CombineForks);
+
+                            //Save the experiment reference in the batch file
+                            batchFileWriter.WriteLine("<" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
+                                + "=\"" + experimentName + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\"/>");
+
+
+                            //Add the experiment to the output list
+                            experimentBatch.Add(new Experiment(experimentName, filePath, experiment.getExeFilename()
+                                , experiment.getPrerrequisites()));
+                        }
+                    }
+                    //batch file footer
+                    batchFileWriter.WriteLine("</" + XMLConfig.batchNodeTag + ">");
+                    logToFile("Succesfully saved " + tabControlExperiments.Count + " experiments");
                 }
             }
-
-            experimentXMLDoc.Save(batchFilename + "." + XMLConfig.experimentBatchExtension);
-            logToFile("Succesfully saved " + tabControlExperiments.Count + " experiments");
             
             return experimentBatch;
         }
@@ -354,19 +363,24 @@ namespace Badger.ViewModels
             XmlElement fileRoot = batchDoc.DocumentElement;
             if (fileRoot.Name != XMLConfig.badgerNodeTag)
             {
+                CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
                 logToFile("ERROR: malformed XML in experiment queue file. No badger node.");
                 return;
             }
             XmlNode configNode;
             foreach (XmlNode experiment in fileRoot.ChildNodes)
             {
-                if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count>0)
+                if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count > 0)
                 {
                     configNode = experiment.FirstChild;
                     tabControlExperiments.Add(new AppViewModel(appDefinitions[configNode.Name], configNode
                         , experiment.Attributes[XMLConfig.nameAttribute].Value));
                 }
-                else logToFile("ERROR: malformed XML in experiment queue file");
+                else
+                {
+                    CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
+                    logToFile("ERROR: malformed XML in experiment queue file");
+                }
             }
             checkEmptyExperimentList();
         }
@@ -394,24 +408,10 @@ namespace Badger.ViewModels
         }
 
 
-        public void getLoggedExperimentList(ref List<AppViewModel> outList)
-        {
-            outList.Clear();
-            foreach (AppViewModel experiment in m_appViewModels)
-            {
-                if (experiment.bLogDataAvailable)
-                    outList.Add(experiment);
-            }
-        }
-
-
-
 
         public void showPlotWindow()
         {
-            List<AppViewModel> experiments= new List<AppViewModel>();
-            getLoggedExperimentList(ref experiments);
-            PlotEditorWindowViewModel plotEditor = new PlotEditorWindowViewModel(experiments);
+            PlotEditorWindowViewModel plotEditor = new PlotEditorWindowViewModel();
             CaliburnUtility.showVMDialog(plotEditor, "Plot editor");
         }
     }

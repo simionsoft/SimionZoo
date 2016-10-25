@@ -17,6 +17,7 @@ namespace Simion
         //App-level tags: APP, PRE, EXE, INCLUDE
         public const string badgerNodeTag = "BADGER";
         public const string experimentNodeTag = "EXPERIMENT";
+        public const string batchNodeTag = "EXPERIMENT-BATCH";
         public const string appNodeTag = "APP";
 
         //Class-level tags: BRANCH, CHOICE, CHOICE-ELEMENT, DOUBLE-VALUE, INTEGER-VALUE, STRING-VALUE
@@ -34,7 +35,7 @@ namespace Simion
         public const string xmlRefNodeTag = "XML-NODE-REF";
         public const string forkTag = "FORK";
         public const string forkedNodeTag = "FORKED-NODE";
-        public const string forkValueTag = "FORK-VALUE";
+        public const string forkValueTag = "FORK-VALUE";     
 
         //Attributes
         public const string nameAttribute = "Name";

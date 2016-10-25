@@ -282,25 +282,7 @@ namespace Badger.ViewModels
             }
             return "";
         }
-        private bool m_bLogDataAvailable = false;
-        public bool bLogDataAvailable
-        {
-            get { return m_bLogDataAvailable; }
-            set { m_bLogDataAvailable = value; NotifyOfPropertyChange(() => bLogDataAvailable); }
-        }
-        public bool checkLogFilesAlreadyExist()
-        {
-            //for now, i'd rather hardcode the log filenames than go through the dll... doesn't seem worth the effort
-            if (m_fileName != "")
-            {
-                if (File.Exists(getLogDescriptorsFilePath()) && File.Exists(getLogFilePath()))
-                {
-                    bLogDataAvailable = true;
-                    return true;
-                }
-            }
-            return false;
-        }
+
 
         //FORKS
         private BindableCollection<ForkViewModel> m_forks = new BindableCollection<ForkViewModel>();

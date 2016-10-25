@@ -47,57 +47,65 @@ namespace Badger.ViewModels
             if (path != "")
                 m_filePath = path;
         }
-        public string getLogDescriptorsFilePath()
+        static public string getLogDescriptorsFilePath(string logDescriptorFilePath)
         {
-            if (m_filePath != "")
+            if (logDescriptorFilePath != "")
             {
                 //the hard way because the elegant way didn't seem to work
                 int lastPos1, lastPos2, lastPos;
-                lastPos1 = m_filePath.LastIndexOf("/");
-                lastPos2 = m_filePath.LastIndexOf("\\");
+                lastPos1 = logDescriptorFilePath.LastIndexOf("/");
+                lastPos2 = logDescriptorFilePath.LastIndexOf("\\");
 
                 lastPos = Math.Max(lastPos1, lastPos2);
                 if (lastPos > 0)
                 {
-                    string directory = m_filePath.Substring(0, lastPos + 1);
+                    string directory = logDescriptorFilePath.Substring(0, lastPos + 1);
 
                     return directory + "experiment-log.xml";
                 }
             }
             return "";
         }
-        public string getLogFilePath()
+        public string getLogDescriptorsFilePath()
         {
-            if (m_filePath != "")
+            return getLogDescriptorsFilePath(m_filePath);
+        }
+        static public string getLogFilePath(string experimentConfigFilePath)
+        {
+            if (experimentConfigFilePath != "")
             {
                 //the hard way because the elegant way didn't seem to work
                 int lastPos1, lastPos2, lastPos;
-                lastPos1 = m_filePath.LastIndexOf("/");
-                lastPos2 = m_filePath.LastIndexOf("\\");
+                lastPos1 = experimentConfigFilePath.LastIndexOf("/");
+                lastPos2 = experimentConfigFilePath.LastIndexOf("\\");
 
                 lastPos = Math.Max(lastPos1, lastPos2);
                 if (lastPos > 0)
                 {
-                    string directory = m_filePath.Substring(0, lastPos + 1);
+                    string directory = experimentConfigFilePath.Substring(0, lastPos + 1);
 
                     return directory + "experiment-log.bin";
                 }
             }
             return "";
         }
-        public bool checkLogFilesAlreadyExist()
+        public string getLogFilePath()
         {
-            //for now, i'd rather hardcode the log filenames than go through the dll... doesn't seem worth the effort
-            if (m_filePath != "")
-            {
-                if (File.Exists(getLogDescriptorsFilePath()) && File.Exists(getLogFilePath()))
-                {
-                    bDataAvailable = true;
-                    return true;
-                }
-            }
-            return false;
+            return getLogFilePath(m_filePath);
         }
+        //public bool checkLogFilesAlreadyExist()
+        //{
+        //    //for now, i'd rather hardcode the log filenames than go through the dll... doesn't seem worth the effort
+        //    if (m_filePath != "")
+        //    {
+        //        if (File.Exists(getLogDescriptorsFilePath()) && File.Exists(getLogFilePath()))
+        //        {
+        //            bDataAvailable = true;
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
     }
  
 }
