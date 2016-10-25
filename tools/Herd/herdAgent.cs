@@ -82,8 +82,9 @@ namespace Herd
 
     public class HerdAgent : CJobDispatcher
     {
-        //private CancellationTokenSource cts;
-        //private List<Process> m_spawnedProcesses = new List<Process>();
+
+        public const string FirewallExceptionNameTCP= "HerdAgentFirewallExceptionTCP";
+        public const string FirewallExceptionNameUDP = "HerdAgentFirewallExceptionUDP";
         private object m_quitExecutionLock = new object();
         public const int m_remotelyCancelledErrorCode = -1;
         public const int m_jobInternalErrorCode = -2;
@@ -361,54 +362,7 @@ namespace Herd
             }
         }
 
-        //public async Task readFromShepherdAsync(CancellationToken ct)
-        //{
-        //    XMLStream inputXMLStream = new XMLStream();
-        //    int bytes = 0;
-
-        //    try
-        //    {
-        //        bytes = await m_netStream.ReadAsync(inputXMLStream.getBuffer(), inputXMLStream.getBufferOffset()
-        //            , inputXMLStream.getBufferSize() - inputXMLStream.getBufferOffset(), ct);
-
-        //        inputXMLStream.addBytesRead(bytes);
-        //        //we let the xmlstream object know that some bytes have been read in its buffer
-        //        string xmlItem = inputXMLStream.peekNextXMLItem();
-        //        if (xmlItem != "")
-        //        {
-        //            string xmlItemContent = inputXMLStream.getLastXMLItemContent();
-        //            if (xmlItemContent == CJobDispatcher.m_quitMessage)
-        //            {
-        //                inputXMLStream.addProcessedBytes(bytes);
-        //                inputXMLStream.discardProcessedData();
-        //                logMessage("Stopping job execution");
-        //                stop();
-        //            }
-        //        }
-        //    }
-        //    catch(IOException)
-        //    {
-        //        logMessage("could not read from socket in readFromShepherdAsync()");
-        //    }
-        //    catch (OperationCanceledException)
-        //    {
-        //        logMessage("Thread finished gracefully");
-        //    }
-        //    catch (ObjectDisposedException)
-        //    {
-        //        logMessage("Network stream closed: async read finished");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        logMessage("Unhandled exception in asyncReadFromClient");
-        //        logMessage(ex.ToString());
-        //    }
-        //}
-        //private void listenForQuitCommand(CancellationToken token)
-        //{
-        //    //Listen for a "quit" message from the client
-        //    Task.Run(() => readFromShepherdAsync(token));
-        //}
+ 
         public async void CommunicationCallback(IAsyncResult ar)
         {
             if (getState() != AgentState.BUSY)
