@@ -17,17 +17,18 @@ namespace Badger.ViewModels
     public class WindowViewModel : PropertyChangedBase
     {
         static private BindableCollection<AppViewModel> m_appViewModels= new BindableCollection<AppViewModel>();
-        public BindableCollection<AppViewModel> appViewModels { get { return m_appViewModels; }
-            set { m_appViewModels = value; NotifyOfPropertyChange(() => appViewModels); NotifyOfPropertyChange(() => appQueue); } }
-        public BindableCollection<AppViewModel> appQueue { get { return m_appViewModels; } set { } }
+        //these two properties interface to the same hidden attribute
+        public BindableCollection<AppViewModel> tabControlExperiments { get { return m_appViewModels; }
+            set { m_appViewModels = value; NotifyOfPropertyChange(() => tabControlExperiments); NotifyOfPropertyChange(() => listControlExperiments); } }
+        public BindableCollection<AppViewModel> listControlExperiments { get { return m_appViewModels; } set { } }
         private AppViewModel m_selectedAppViewModel;
-        public AppViewModel selectedAppViewModel
+        public AppViewModel selectedTabControlExperiment
         {
             get { return m_selectedAppViewModel; }
             set
             {
                 m_selectedAppViewModel = value;
-                NotifyOfPropertyChange(() => selectedAppViewModel);
+                NotifyOfPropertyChange(() => selectedTabControlExperiment);
                 NotifyOfPropertyChange(() => selectedAppInQueue);
             }
         }
@@ -35,7 +36,7 @@ namespace Badger.ViewModels
         {
             get { return m_selectedAppViewModel; }
             set { m_selectedAppViewModel = value;
-                NotifyOfPropertyChange(() => selectedAppViewModel);
+                NotifyOfPropertyChange(() => selectedTabControlExperiment);
                 NotifyOfPropertyChange(() => selectedAppInQueue);
                 }
         }
@@ -66,21 +67,21 @@ namespace Badger.ViewModels
         private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
 
-        private bool m_bIsExperimentQueueNotEmpty = false;
-        public bool bIsExperimentQueueNotEmpty
+        private bool m_bIsExperimentListNotEmpty = false;
+        public bool bIsExperimentListNotEmpty
         {
-            get { return m_bIsExperimentQueueNotEmpty; }
-            set { m_bIsExperimentQueueNotEmpty = value;
-            NotifyOfPropertyChange(() => bIsExperimentQueueNotEmpty);
+            get { return m_bIsExperimentListNotEmpty; }
+            set { m_bIsExperimentListNotEmpty = value;
+            NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
-        private void checkEmptyQueue()
+        private void checkEmptyExperimentList()
         {
-            bool wasEmpty = !m_bIsExperimentQueueNotEmpty;
+            bool wasEmpty = !m_bIsExperimentListNotEmpty;
             if (wasEmpty != (m_appViewModels.Count==0))
             {
-                m_bIsExperimentQueueNotEmpty = !(m_appViewModels.Count == 0);
-                NotifyOfPropertyChange(() => bIsExperimentQueueNotEmpty);
+                m_bIsExperimentListNotEmpty = !(m_appViewModels.Count == 0);
+                NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
 
@@ -107,19 +108,14 @@ namespace Badger.ViewModels
             if (m_selectedAppName == null) return;
 
             string xmlDefinitionFile = appDefinitions[m_selectedAppName];
-            AppViewModel newApp = new AppViewModel(xmlDefinitionFile);
-            appViewModels.Add( newApp);
-            NotifyOfPropertyChange(() => appViewModels);
-            NotifyOfPropertyChange(() => appQueue);
-            checkEmptyQueue();
-            selectedAppViewModel = newApp;
+            AppViewModel newApp = new AppViewModel(xmlDefinitionFile,"New");
+            tabControlExperiments.Add( newApp);
+            NotifyOfPropertyChange(() => tabControlExperiments);
+            NotifyOfPropertyChange(() => listControlExperiments);
+            checkEmptyExperimentList();
+            selectedTabControlExperiment = newApp;
         }
        
-        //public void Change(object sender)
-        //{
-        //    var x = sender as System.Windows.Controls.TreeView;
-        //    var y = x.SelectedItem;
-        //}
         private object m_logFileLock = new object();
         public const string logFilename= "badger-log.txt";
         
@@ -164,7 +160,7 @@ namespace Badger.ViewModels
 
         public void saveExperimentInEditor()
         {
-            if (selectedAppViewModel==null || !selectedAppViewModel.validate())
+            if (selectedTabControlExperiment==null || !selectedTabControlExperiment.validate())
             {
                 CaliburnUtility.showWarningDialog("The app can't be validated. See error log.","Error");
                 return;
@@ -179,11 +175,48 @@ namespace Badger.ViewModels
             sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath); 
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                selectedAppViewModel.save(sfd.FileName,SaveMode.SaveForks);
+                selectedTabControlExperiment.save(sfd.FileName,SaveMode.SaveForks);
             }
         }
-        
-       
+        public void saveExperiments()
+        {
+            foreach (AppViewModel app in m_appViewModels)
+            {
+                if (!app.validate())
+                {
+                    CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
+                    return;
+                }
+            }
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Experiment | *." + XMLConfig.badgerExtension;
+            sfd.InitialDirectory = "../experiments";
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "../experiments");
+            if (!Directory.Exists(CombinedPath))
+                System.IO.Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
+            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string leftSpace;
+                using (FileStream outputFile = File.Create(sfd.FileName))
+                {
+                    using (StreamWriter writer = new StreamWriter(outputFile))
+                    {
+                        writer.WriteLine("<" + XMLConfig.badgerNodeTag + ">");
+                        leftSpace = "  ";
+                        foreach (AppViewModel app in m_appViewModels)
+                        {
+                            writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag + " Name=\"" + app.name + "\">");
+                            app.saveToStream(writer, SaveMode.SaveForks, leftSpace + "  ");
+                            writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
+                        }
+                        writer.WriteLine("</" + XMLConfig.badgerNodeTag + ">");
+                    }
+                }
+            }
+        }
+
+
         public void loadExperiment()
         {
             
@@ -203,27 +236,23 @@ namespace Badger.ViewModels
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
             AppViewModel newApp = new AppViewModel(appDefinitions[rootNode.Name], fileDoc);
-            appViewModels.Add(newApp);
-            checkEmptyQueue();
-            selectedAppViewModel = newApp;
+            tabControlExperiments.Add(newApp);
+            checkEmptyExperimentList();
+            selectedTabControlExperiment = newApp;
         }
         
 
         public void clearExperimentQueue()
         {
-            if (appViewModels!=null)
-            {
-                appViewModels.Clear();
-            }
+            if (tabControlExperiments!=null) tabControlExperiments.Clear();  
         }
 
         public void removeSelectedExperiments()
         {
-            if (selectedAppViewModel != null)
+            if (selectedTabControlExperiment != null)
             {
-                appViewModels.Remove(selectedAppViewModel);
-               // NotifyOfPropertyChange(() => experimentQueueViewModel);
-                checkEmptyQueue();
+                tabControlExperiments.Remove(selectedTabControlExperiment);
+                checkEmptyExperimentList();
             }
         }
 
@@ -231,7 +260,7 @@ namespace Badger.ViewModels
         {
             List<Experiment> experimentBatch = new List<Experiment>();
 
-            if (appViewModels.Count == 0) return experimentBatch;
+            if (tabControlExperiments.Count == 0) return experimentBatch;
             string batchFilename;
 
             //Save dialog -> returns the experiment batch file
@@ -276,12 +305,11 @@ namespace Badger.ViewModels
             XmlElement experimentBatchesNode = experimentXMLDoc.CreateElement("Experiments");
             experimentXMLDoc.AppendChild(experimentBatchesNode);
 
-            List<string> names = new List<string>();
             int numCombinations;
             string filePath, folderPath;
             string experimentName;
 
-            foreach (AppViewModel experiment in appViewModels)
+            foreach (AppViewModel experiment in tabControlExperiments)
             {
                 numCombinations = experiment.getNumForkCombinations();
                 for (int i = 0; i < numCombinations; i++)
@@ -303,47 +331,45 @@ namespace Badger.ViewModels
             }
 
             experimentXMLDoc.Save(batchFilename + "." + XMLConfig.experimentBatchExtension);
-            logToFile("Succesfully saved " + appViewModels.Count + " experiments");
+            logToFile("Succesfully saved " + tabControlExperiments.Count + " experiments");
             
             return experimentBatch;
         }
 
-        //public void loadExperimentQueue()
-        //{
-        //    string fileDoc = null;
-        //    OpenFileDialog ofd = new OpenFileDialog();
-        //    ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-        //    ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-        //    if (ofd.ShowDialog() == DialogResult.OK)
-        //    {
-        //        fileDoc = ofd.FileName;
-        //    }
-        //    else return;
-        //    //this doesn't seem to work
-        //    //Cursor.Current = Cursors.WaitCursor;
-        //    //System.Windows.Forms.Application.DoEvents();
+        public void loadExperiments()
+        {
+            string fileDoc = null;
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "Experiment batch | *." + XMLConfig.badgerExtension;
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                fileDoc = ofd.FileName;
+            }
+            else return;
 
-        //    //LOAD THE EXPERIMENT BATCH IN THE QUEUE
-        //    XmlDocument batchDoc = new XmlDocument();
-        //    batchDoc.Load(fileDoc);
-        //    XmlElement fileRoot = batchDoc.DocumentElement;
-        //    if (fileRoot.Name != "Experiments")
-        //    {
-        //        logToFile("ERROR: malformed XML in experiment batch file.");
-        //        return;
-        //    }
-
-        //    foreach (XmlElement element in fileRoot.ChildNodes)
-        //    {
-        //        string expName = element.Name;
-        //        string path = element.Attributes[XMLConfig.pathAttribute].Value;
-        //        if (File.Exists(path))
-        //            appViewModels.Add( new AppViewModel(appDefinitions[element.Name], path));
-        //    }
-
-        //    Task.Run(() => checkLogFilesAlreadyExist());
-        //    checkEmptyQueue();
-        //}
+            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
+            XmlDocument batchDoc = new XmlDocument();
+            batchDoc.Load(fileDoc);
+            XmlElement fileRoot = batchDoc.DocumentElement;
+            if (fileRoot.Name != XMLConfig.badgerNodeTag)
+            {
+                logToFile("ERROR: malformed XML in experiment queue file. No badger node.");
+                return;
+            }
+            XmlNode configNode;
+            foreach (XmlNode experiment in fileRoot.ChildNodes)
+            {
+                if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count>0)
+                {
+                    configNode = experiment.FirstChild;
+                    tabControlExperiments.Add(new AppViewModel(appDefinitions[configNode.Name], configNode
+                        , experiment.Attributes[XMLConfig.nameAttribute].Value));
+                }
+                else logToFile("ERROR: malformed XML in experiment queue file");
+            }
+            checkEmptyExperimentList();
+        }
 
         public void runExperiments()
         {
@@ -366,18 +392,6 @@ namespace Badger.ViewModels
                 CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
             }      
         }
-
-
-        private void getEnqueuedExperimentList(ref List<AppViewModel> outList)
-        {
-            outList.Clear();
-            foreach (AppViewModel experiment in appViewModels)
-            {
-                //(for now) all the experiments are in the queue are considered ready for execution
-                outList.Add(experiment);
-            }
-        }
-
 
 
         public void getLoggedExperimentList(ref List<AppViewModel> outList)

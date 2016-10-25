@@ -8,12 +8,15 @@ namespace Simion
 
         public const string experimentExtension = "experiment";
         public const string experimentBatchExtension = "exp-batch";
+        public const string badgerExtension = "badger";
 
         public const string definitionNodeTag = "DEFINITIONS";
         public const string classDefinitionNodeTag = "CLASS";
         public const string enumDefinitionNodeTag = "ENUMERATION";
 
         //App-level tags: APP, PRE, EXE, INCLUDE
+        public const string badgerNodeTag = "BADGER";
+        public const string experimentNodeTag = "EXPERIMENT";
         public const string appNodeTag = "APP";
 
         //Class-level tags: BRANCH, CHOICE, CHOICE-ELEMENT, DOUBLE-VALUE, INTEGER-VALUE, STRING-VALUE

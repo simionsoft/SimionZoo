@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:vm="clr-namespace:Badger.ViewModels"
-             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.App.Queue"
+             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.App.List"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <StackPanel HorizontalAlignment="left">
         <TextBox Margin="2" Width="240" x:Name="name"/>

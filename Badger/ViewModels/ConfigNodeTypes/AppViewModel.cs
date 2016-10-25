@@ -37,7 +37,7 @@ namespace Badger.ViewModels
         private Dictionary<string,XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
         private Dictionary<string,List<string>> m_enumDefinitions 
             = new Dictionary<string, List<string>>();
-        private XmlDocument m_appDefinitionDoc = new XmlDocument();
+        
 
         public XmlNode getClassDefinition(string className)
         {
@@ -127,11 +127,47 @@ namespace Badger.ViewModels
             foreach (deferredLoadStep func in m_XMLDefRefListeners)
                 func();
         }
+        public void init(string appDefinitionFileName, XmlNode configRootNode,string experimentName)
+        {
+            XmlDocument appDefinition = new XmlDocument();
+            appDefinition.Load(appDefinitionFileName);
 
+            foreach (XmlNode rootChild in appDefinition.ChildNodes)
+            {
+                if (rootChild.Name == XMLConfig.appNodeTag)
+                {
+                    //APP node
+                    m_preFiles.Clear();
+                    m_appName = rootChild.Attributes[XMLConfig.nameAttribute].Value;
+
+                    name = experimentName;
+
+                    if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
+                        m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
+                    else m_version = "0";
+
+                    foreach (XmlNode child in rootChild.ChildNodes)
+                    {
+                        //Only EXE, PRE, INCLUDE and BRANCH children nodes
+                        if (child.Name == XMLConfig.exeNodeTag) m_exeFile = child.InnerText;
+                        else if (child.Name == XMLConfig.preNodeTag) m_preFiles.Add(child.InnerText);
+                        else if (child.Name == XMLConfig.includeNodeTag)
+                            loadIncludedDefinitionFile(child.InnerText);
+                        else
+                        {
+                            children.Add(ConfigNodeViewModel.getInstance(this, null, child, m_appName, configRootNode));
+                            //here we assume definitions are before the children
+                        }
+                    }
+                }
+            }
+            //deferred load step: enumerated types
+            doDeferredLoadSteps();
+        }
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
-        public AppViewModel(string fileName,string configFilename= null)
+        public AppViewModel(string appDefinitionFileName, string configFilename)
         {
             //Load the configFile if a configFilename is provided
             XmlDocument configDoc= null;
@@ -143,44 +179,13 @@ namespace Badger.ViewModels
                 configRootNode = configDoc.LastChild;
             }
 
-            m_appDefinitionDoc.Load(fileName);
-
-            foreach (XmlNode rootChild in m_appDefinitionDoc.ChildNodes)
-            {
-                if (rootChild.Name == XMLConfig.appNodeTag)
-                {
-                    //APP node
-                    m_preFiles.Clear();
-                    m_appName = rootChild.Attributes[XMLConfig.nameAttribute].Value;
-
-                    if (configFilename != null)
-                    {
-                        //if a config file is provided, the name of the experiment is the filename without extension
-                        name = Utility.getFileName(configFilename, true);
-                    }
-                    else
-                        name = "New";
-                    if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
-                        m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
-                    else m_version = "0";
-
-                    foreach (XmlNode child in rootChild.ChildNodes)
-                    {
-                        //Only EXE, PRE, INCLUDE and BRANCH children nodes
-                        if (child.Name == XMLConfig.exeNodeTag) m_exeFile= child.InnerText;
-                        else if (child.Name == XMLConfig.preNodeTag) m_preFiles.Add(child.InnerText);
-                        else if (child.Name == XMLConfig.includeNodeTag)
-                            loadIncludedDefinitionFile(child.InnerText);
-                        else
-                        {
-                            children.Add(ConfigNodeViewModel.getInstance(this, null,child, m_appName, configRootNode));
-                            //here we assume definitions are before the children
-                        }
-                    }
-                }
-            }
-            //deferred load step: enumerated types
-            doDeferredLoadSteps();
+            init(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true));
+        }
+        //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
+        //XML file, the calling method will be passing XML nodes belonging to the single XML file instead of filenames
+        public AppViewModel(string appDefinitionFileName, XmlNode configRootNode,string experimentName)
+        {
+            init(appDefinitionFileName, configRootNode,experimentName);
         }
 
         private void loadIncludedDefinitionFile(string appDefinitionFile)
@@ -215,23 +220,27 @@ namespace Badger.ViewModels
         //setCombination(i). This method will then save the i-th combination
         //  -SaveMode.SaveForks -> this method should be called only once per experiment. All the forks will be saved embedded
         //in the config file
-        public void save(string filename,SaveMode mode)
+        public void save(string filename,SaveMode mode, string leftSpace="")
         {
-            saveMode = mode;
-
             using (FileStream stream = File.Create(filename))
             {
                 using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    writer.Write("<" + appName + " Version=\"" + XMLConfig.XMLConfigVersion + "\">\n");
-
-                    foreach (ConfigNodeViewModel node in m_children)
-                    {
-                        node.outputXML(writer, "  ");
-                    }
-                    writer.Write("</" + appName + ">");
+                    saveToStream(writer, mode, leftSpace);
                 }
             }
+        }
+        public void saveToStream(StreamWriter writer, SaveMode mode, string leftSpace)
+        {
+            saveMode = mode;
+
+            writer.WriteLine(leftSpace + "<" + appName + " Version=\"" + XMLConfig.XMLConfigVersion + "\">");
+
+            foreach (ConfigNodeViewModel node in m_children)
+            {
+                node.outputXML(writer, leftSpace + "  ");
+            }
+            writer.WriteLine(leftSpace + "</" + appName + ">");
         }
 
 

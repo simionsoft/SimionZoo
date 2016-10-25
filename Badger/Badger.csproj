@@ -215,7 +215,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\ConfigNodeTypes\App.Queue.xaml">
+    <Page Include="Views\ConfigNodeTypes\App.List.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
