@@ -1,26 +1,26 @@
-<Experiments>
-  <f80-linear-s-a Path="../experiments/examples/learn-wt-vidal-v2/f80-linear-s-a/f80-linear-s-a.experiment" />
-  <f80-linear-s-b Path="../experiments/examples/learn-wt-vidal-v2/f80-linear-s-b/f80-linear-s-b.experiment" />
-  <f80-linear-s-c Path="../experiments/examples/learn-wt-vidal-v2/f80-linear-s-c/f80-linear-s-c.experiment" />
-  <f70-linear-s-a Path="../experiments/examples/learn-wt-vidal-v2/f70-linear-s-a/f70-linear-s-a.experiment" />
-  <f70-linear-s-b Path="../experiments/examples/learn-wt-vidal-v2/f70-linear-s-b/f70-linear-s-b.experiment" />
-  <f70-linear-s-c Path="../experiments/examples/learn-wt-vidal-v2/f70-linear-s-c/f70-linear-s-c.experiment" />
-  <f60-linear-s-a Path="../experiments/examples/learn-wt-vidal-v2/f60-linear-s-a/f60-linear-s-a.experiment" />
-  <f60-linear-s-b Path="../experiments/examples/learn-wt-vidal-v2/f60-linear-s-b/f60-linear-s-b.experiment" />
-  <f60-linear-s-c Path="../experiments/examples/learn-wt-vidal-v2/f60-linear-s-c/f60-linear-s-c.experiment" />
-  <f50-linear-s-a Path="../experiments/examples/learn-wt-vidal-v2/f50-linear-s-a/f50-linear-s-a.experiment" />
-  <f50-linear-s-b Path="../experiments/examples/learn-wt-vidal-v2/f50-linear-s-b/f50-linear-s-b.experiment" />
-  <f50-linear-s-c Path="../experiments/examples/learn-wt-vidal-v2/f50-linear-s-c/f50-linear-s-c.experiment" />
-  <f80-cubic-s-a Path="../experiments/examples/learn-wt-vidal-v2/f80-cubic-s-a/f80-cubic-s-a.experiment" />
-  <f80-cubic-s-b Path="../experiments/examples/learn-wt-vidal-v2/f80-cubic-s-b/f80-cubic-s-b.experiment" />
-  <f80-cubic-s-c Path="../experiments/examples/learn-wt-vidal-v2/f80-cubic-s-c/f80-cubic-s-c.experiment" />
-  <f70-cubic-s-a Path="../experiments/examples/learn-wt-vidal-v2/f70-cubic-s-a/f70-cubic-s-a.experiment" />
-  <f70-cubic-s-b Path="../experiments/examples/learn-wt-vidal-v2/f70-cubic-s-b/f70-cubic-s-b.experiment" />
-  <f70-cubic-s-c Path="../experiments/examples/learn-wt-vidal-v2/f70-cubic-s-c/f70-cubic-s-c.experiment" />
-  <f60-cubic-s-a Path="../experiments/examples/learn-wt-vidal-v2/f60-cubic-s-a/f60-cubic-s-a.experiment" />
-  <f60-cubic-s-b Path="../experiments/examples/learn-wt-vidal-v2/f60-cubic-s-b/f60-cubic-s-b.experiment" />
-  <f60-cubic-s-c Path="../experiments/examples/learn-wt-vidal-v2/f60-cubic-s-c/f60-cubic-s-c.experiment" />
-  <f50-cubic-s-a Path="../experiments/examples/learn-wt-vidal-v2/f50-cubic-s-a/f50-cubic-s-a.experiment" />
-  <f50-cubic-s-b Path="../experiments/examples/learn-wt-vidal-v2/f50-cubic-s-b/f50-cubic-s-b.experiment" />
-  <f50-cubic-s-c Path="../experiments/examples/learn-wt-vidal-v2/f50-cubic-s-c/f50-cubic-s-c.experiment" />
-</Experiments>
+<EXPERIMENT-BATCH>
+  <EXPERIMENT Name="f80-linear-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f80-linear-s-a/f80-linear-s-a.experiment" />
+  <EXPERIMENT Name="f80-linear-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f80-linear-s-b/f80-linear-s-b.experiment" />
+  <EXPERIMENT Name="f80-linear-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f80-linear-s-c/f80-linear-s-c.experiment" />
+  <EXPERIMENT Name="f70-linear-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f70-linear-s-a/f70-linear-s-a.experiment" />
+  <EXPERIMENT Name="f70-linear-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f70-linear-s-b/f70-linear-s-b.experiment" />
+  <EXPERIMENT Name="f70-linear-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f70-linear-s-c/f70-linear-s-c.experiment" />
+  <EXPERIMENT Name="f60-linear-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f60-linear-s-a/f60-linear-s-a.experiment" />
+  <EXPERIMENT Name="f60-linear-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f60-linear-s-b/f60-linear-s-b.experiment" />
+  <EXPERIMENT Name="f60-linear-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f60-linear-s-c/f60-linear-s-c.experiment" />
+  <EXPERIMENT Name="f50-linear-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f50-linear-s-a/f50-linear-s-a.experiment" />
+  <EXPERIMENT Name="f50-linear-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f50-linear-s-b/f50-linear-s-b.experiment" />
+  <EXPERIMENT Name="f50-linear-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f50-linear-s-c/f50-linear-s-c.experiment" />
+  <EXPERIMENT Name="f80-cubic-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f80-cubic-s-a/f80-cubic-s-a.experiment" />
+  <EXPERIMENT Name="f80-cubic-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f80-cubic-s-b/f80-cubic-s-b.experiment" />
+  <EXPERIMENT Name="f80-cubic-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f80-cubic-s-c/f80-cubic-s-c.experiment" />
+  <EXPERIMENT Name="f70-cubic-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f70-cubic-s-a/f70-cubic-s-a.experiment" />
+  <EXPERIMENT Name="f70-cubic-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f70-cubic-s-b/f70-cubic-s-b.experiment" />
+  <EXPERIMENT Name="f70-cubic-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f70-cubic-s-c/f70-cubic-s-c.experiment" />
+  <EXPERIMENT Name="f60-cubic-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f60-cubic-s-a/f60-cubic-s-a.experiment" />
+  <EXPERIMENT Name="f60-cubic-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f60-cubic-s-b/f60-cubic-s-b.experiment" />
+  <EXPERIMENT Name="f60-cubic-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f60-cubic-s-c/f60-cubic-s-c.experiment" />
+  <EXPERIMENT Name="f50-cubic-s-a" Path="../experiments/examples/learn-wt-vidal-v2/f50-cubic-s-a/f50-cubic-s-a.experiment" />
+  <EXPERIMENT Name="f50-cubic-s-b" Path="../experiments/examples/learn-wt-vidal-v2/f50-cubic-s-b/f50-cubic-s-b.experiment" />
+  <EXPERIMENT Name="f50-cubic-s-c" Path="../experiments/examples/learn-wt-vidal-v2/f50-cubic-s-c/f50-cubic-s-c.experiment" />
+</EXPERIMENT-BATCH>

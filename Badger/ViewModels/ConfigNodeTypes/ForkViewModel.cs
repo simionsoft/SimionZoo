@@ -72,14 +72,11 @@ namespace Badger.ViewModels
 
         public void outputXML(StreamWriter writer,string leftSpace)
         {
-            //writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute + "=\""
-            //    + name + "\">");
             foreach (ForkValueViewModel forkValue in m_values)
             {
                 forkValue.outputXML(writer, leftSpace + "  "
                     ,m_appViewModel.saveMode==SaveMode.SaveForks);
             }
-            //writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + "/>");
         }
     }
 }

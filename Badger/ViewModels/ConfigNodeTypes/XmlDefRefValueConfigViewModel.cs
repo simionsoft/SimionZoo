@@ -30,14 +30,20 @@ namespace Badger.ViewModels
 
             m_hangingFrom = definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
 
-            if (configNode!=null)
+            if (configNode != null)
             {
                 configNode = configNode[name];
                 selectedEnumeratedName = configNode.InnerText;
-                //the xml definition file may not be yet loaded
-                enumeratedNames = m_appViewModel.getAuxDefinition(m_hangingFrom);
-                if (enumeratedNames==null)
-                    m_appViewModel.registerDeferredLoadStep(updateXMLDefRef);
+            }
+
+            //the xml definition file may not be yet loaded
+            enumeratedNames = m_appViewModel.getAuxDefinition(m_hangingFrom);
+
+            if (enumeratedNames == null)
+            {
+                //Either we have loaded the config but the list is of values has not yet been loaded
+                //or no config file has been loaded. In Either case, we register for a deferred load step
+                m_appViewModel.registerDeferredLoadStep(updateXMLDefRef);
             }
 
             m_appViewModel.registerXMLDefRef(updateXMLDefRef);

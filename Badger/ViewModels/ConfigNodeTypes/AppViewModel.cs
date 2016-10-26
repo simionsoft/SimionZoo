@@ -41,6 +41,11 @@ namespace Badger.ViewModels
 
         public XmlNode getClassDefinition(string className)
         {
+            if (!m_classDefinitions.ContainsKey(className))
+            {
+                CaliburnUtility.showWarningDialog("Undefined class" + className, "ERROR");
+                return null;
+            }
             return m_classDefinitions[className];
         }
 
@@ -57,6 +62,11 @@ namespace Badger.ViewModels
         }
         public List<string> getEnumeratedType(string enumName)
         {
+            if (!m_enumDefinitions.ContainsKey(enumName))
+            {
+                CaliburnUtility.showWarningDialog("Undefined enumeratedType: " + enumName, "ERROR");
+                return null;
+            }
             return m_enumDefinitions[enumName];
         }
 
@@ -115,6 +125,11 @@ namespace Badger.ViewModels
         }
         public List<string> getAuxDefinition(string hangingFrom)
         {
+            if (!m_auxDefinitions.ContainsKey(hangingFrom))
+            {
+                CaliburnUtility.showWarningDialog("Undefined XMLDefRef: " + hangingFrom, "ERROR");
+                return null;
+            }
             return m_auxDefinitions[hangingFrom];
         }
 

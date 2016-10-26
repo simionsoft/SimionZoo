@@ -1,11 +1,9 @@
-<RLSimion FileVersion="1">
+<RLSimion Version="2">
   <RLSimion>
     <Log>
       <Log-Freq>0.25</Log-Freq>
       <Log-eval-episodes>False</Log-eval-episodes>
       <Log-training-episodes>False</Log-training-episodes>
-      <Log-eval-experiment>True</Log-eval-experiment>
-      <Log-training-experiment>False</Log-training-experiment>
     </Log>
     <World>
       <Num-Integration-Steps>4</Num-Integration-Steps>
@@ -15,12 +13,27 @@
           <Wind-turbine>
             <Evaluation-Wind-Data>../config/world/wind-turbine/TurbSim-10.25.hh</Evaluation-Wind-Data>
             <Power-Set-Point>../config/world/wind-turbine/power-setpoint.txt</Power-Set-Point>
-            <Training-Wind-Data>../config/world/wind-turbine/TurbSim-12.hh</Training-Wind-Data>
-            <Training-Wind-Data>../config/world/wind-turbine/TurbSim-9.hh</Training-Wind-Data>
-            <Training-Wind-Data>../config/world/wind-turbine/TurbSim-10.hh</Training-Wind-Data>
-            <Training-Wind-Data>../config/world/wind-turbine/TurbSim-10.5.hh</Training-Wind-Data>
-            <Training-Wind-Data>../config/world/wind-turbine/TurbSim-11.hh</Training-Wind-Data>
-            <Training-Wind-Data>../config/world/wind-turbine/TurbSim-11.5.hh</Training-Wind-Data>
+            <Training-Wind-Data>
+              <Training-Wind-Data>../config/world/wind-turbine/TurbSim-9.hh</Training-Wind-Data>
+            </Training-Wind-Data>
+            <Training-Wind-Data>
+              <Training-Wind-Data>../config/world/wind-turbine/TurbSim-9.5.hh</Training-Wind-Data>
+            </Training-Wind-Data>
+            <Training-Wind-Data>
+              <Training-Wind-Data>../config/world/wind-turbine/TurbSim-10.hh</Training-Wind-Data>
+            </Training-Wind-Data>
+            <Training-Wind-Data>
+              <Training-Wind-Data>../config/world/wind-turbine/TurbSim-10.5.hh</Training-Wind-Data>
+            </Training-Wind-Data>
+            <Training-Wind-Data>
+              <Training-Wind-Data>../config/world/wind-turbine/TurbSim-11.hh</Training-Wind-Data>
+            </Training-Wind-Data>
+            <Training-Wind-Data>
+              <Training-Wind-Data>../config/world/wind-turbine/TurbSim-11.5.hh</Training-Wind-Data>
+            </Training-Wind-Data>
+            <Training-Wind-Data>
+              <Training-Wind-Data>../config/world/wind-turbine/TurbSim-12.hh</Training-Wind-Data>
+            </Training-Wind-Data>
           </Wind-turbine>
         </Model>
       </Dynamic-Model>
@@ -33,32 +46,6 @@
       <Episode-Length>360</Episode-Length>
     </Experiment>
     <SimGod>
-      <State-Feature-Map>
-        <Type>
-          <RBF-State-Grid>
-            <RBF-Grid-Dimension>
-              <Variable>T_g</Variable>
-              <Num-Features>80</Num-Features>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-            <RBF-Grid-Dimension>
-              <Variable>omega_r</Variable>
-              <Num-Features>80</Num-Features>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-            <RBF-Grid-Dimension>
-              <Variable>d_omega_r</Variable>
-              <Num-Features>80</Num-Features>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-            <RBF-Grid-Dimension>
-              <Variable>E_p</Variable>
-              <Num-Features>3</Num-Features>
-              <Distribution>linear</Distribution>
-            </RBF-Grid-Dimension>
-          </RBF-State-Grid>
-        </Type>
-      </State-Feature-Map>
       <Simion>
         <Type>
           <Actor-Critic>
@@ -83,10 +70,7 @@
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
-                            <Parameterization>
-                              <Explicit>
-                              </Explicit>
-                            </Parameterization>
+                            <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
                             <Noise>
@@ -148,10 +132,7 @@
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
                           <Deterministic-Policy-VFA>
-                            <Parameterization>
-                              <Explicit>
-                              </Explicit>
-                            </Parameterization>
+                            <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
                             <Noise>
@@ -258,36 +239,7 @@
                     </Schedule>
                   </Gamma>
                   <V-Function>
-                    <Parameterization>
-                      <Explicit>
-                        <State-Feature-Map>
-                          <Type>
-                            <RBF-State-Grid>
-                              <RBF-Grid-Dimension>
-                                <Variable>T_g</Variable>
-                                <Num-Features>80</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>omega_r</Variable>
-                                <Num-Features>80</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>d_omega_r</Variable>
-                                <Num-Features>80</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                              <RBF-Grid-Dimension>
-                                <Variable>E_p</Variable>
-                                <Num-Features>3</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                            </RBF-State-Grid>
-                          </Type>
-                        </State-Feature-Map>
-                      </Explicit>
-                    </Parameterization>
+                    <Init-Value>0.0</Init-Value>
                   </V-Function>
                 </TD-Lambda>
               </Critic>
@@ -295,6 +247,32 @@
           </Actor-Critic>
         </Type>
       </Simion>
+      <State-Feature-Map>
+        <Type>
+          <RBF-State-Grid>
+            <RBF-Grid-Dimension>
+              <Variable>T_g</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>omega_r</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>d_omega_r</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Variable>E_p</Variable>
+              <Num-Features>80</Num-Features>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+          </RBF-State-Grid>
+        </Type>
+      </State-Feature-Map>
     </SimGod>
   </RLSimion>
 </RLSimion>
