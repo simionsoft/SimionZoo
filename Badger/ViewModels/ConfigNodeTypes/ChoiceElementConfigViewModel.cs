@@ -11,7 +11,8 @@ namespace Badger.ViewModels
         private bool m_bOptional = false;
         private string m_loadXML;
 
-        public ChoiceElementConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode)
+        public ChoiceElementConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode
+            , string parentXPath, XmlNode configNode= null)
         {
             commonInit(appDefinition,parent,definitionNode,parentXPath);
 
@@ -37,7 +38,19 @@ namespace Badger.ViewModels
                 , m_xPath, configNode);
         }
 
+        //Choice elements cannot be forked, so no need to fork them
+        public override ConfigNodeViewModel clone()
+        {
+            ChoiceElementConfigViewModel newInstance =
+                new ChoiceElementConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
 
+            newInstance.m_className = m_className;
+            newInstance.m_bOptional = m_bOptional;
+            newInstance.m_loadXML = m_loadXML;
+            newInstance.m_window = m_window;
+            
+            return newInstance;
+        }
 
     }
 }

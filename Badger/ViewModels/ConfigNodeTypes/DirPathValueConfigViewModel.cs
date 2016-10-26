@@ -24,6 +24,17 @@ namespace Badger.ViewModels
             }
         }
 
+        public override ConfigNodeViewModel clone()
+        {
+            DirPathValueConfigViewModel newInstance =
+                new DirPathValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+           
+            newInstance.content = content;
+            newInstance.textColor = textColor;
+            return newInstance;
+        }
+
+
         public override bool validate()
         {
             return Directory.Exists(content);

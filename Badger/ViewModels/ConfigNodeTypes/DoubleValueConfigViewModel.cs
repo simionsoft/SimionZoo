@@ -23,6 +23,16 @@ namespace Badger.ViewModels
             }
         }
 
+        public override ConfigNodeViewModel clone()
+        {
+            DoubleValueConfigViewModel newInstance =
+                new DoubleValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+
+            newInstance.content = content;
+            newInstance.textColor = textColor;
+            return newInstance;
+        }
+
         public override bool validate()
         {
             double parsedValue;

@@ -67,10 +67,8 @@ namespace Badger.ViewModels
 
 
         //clone
-        public ConfigNodeViewModel clone()
-        {
-            return getInstance(m_appViewModel, m_parent, nodeDefinition, "");
-        }
+        public abstract ConfigNodeViewModel clone();
+
 
         //XML output methods
         public virtual void outputXML(StreamWriter writer,string leftSpace)
@@ -209,6 +207,16 @@ namespace Badger.ViewModels
             }
             return bIsValid;
         }
+        public override ConfigNodeViewModel clone()
+        {
+            NestedConfigNode newNestedCopy = getInstance(m_appViewModel, m_parent
+                , nodeDefinition, m_parent.xPath) as NestedConfigNode;
+            foreach (ConfigNodeViewModel child in children)
+            {
+                newNestedCopy.children.Add(child.clone());
+            }
+            return newNestedCopy;
+        }
 
         //FORKS
         public override void forkChild(ConfigNodeViewModel forkedChild)
@@ -228,6 +236,11 @@ namespace Badger.ViewModels
                     children.Insert(oldIndex, newForkNode);
                 }
             }
+        }
+        public void removeChild(ConfigNodeViewModel child)
+        {
+            if (children != null && child != null)
+                children.Remove(child);
         }
     }
 

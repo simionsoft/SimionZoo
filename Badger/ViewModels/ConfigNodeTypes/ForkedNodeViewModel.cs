@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Simion;
 using System.Xml;
+using System;
 
 namespace Badger.ViewModels
 {
@@ -45,6 +46,18 @@ namespace Badger.ViewModels
             fork.NotifyOfPropertyChange(() => fork.values);
             m_appViewModel.addFork(fork);
         }
+
+        public void removeThisForkedNode()
+        {
+            NestedConfigNode parent = m_parent as NestedConfigNode;
+            parent.removeChild(this);
+        }
+
+        public override ConfigNodeViewModel clone()
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool validate()
         {
             foreach (ForkValueViewModel value in fork.values)

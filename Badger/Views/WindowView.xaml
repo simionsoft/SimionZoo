@@ -112,13 +112,16 @@
                     </Button>
                 </StackPanel>
                 <Border BorderBrush="Black" Height="250" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="10,0">
-                    <ItemsControl ItemsSource="{Binding Path=listControlExperiments}" Margin="2">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ContentControl cal:View.Context="List" cal:View.Model="{Binding}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    <ScrollViewer>
+                        <ItemsControl ItemsSource="{Binding Path=listControlExperiments}" Margin="2"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl cal:View.Context="List" cal:View.Model="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
                 </Border>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="70,0,55,0" Height="40" >
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" 

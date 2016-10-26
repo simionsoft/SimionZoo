@@ -32,7 +32,17 @@ namespace Badger.ViewModels
                 if (!m_bOptional)
                     children.Add(new MultiValuedItemConfigViewModel(appDefinition, this,definitionNode, m_xPath));
             }
+        }
 
+        public override ConfigNodeViewModel clone()
+        {
+            MultiValuedConfigViewModel newNestedCopy = getInstance(m_appViewModel, m_parent
+                , nodeDefinition, m_parent.xPath) as MultiValuedConfigViewModel;
+            foreach (ConfigNodeViewModel child in children)
+            {
+                newNestedCopy.children.Add(child.clone());
+            }
+            return newNestedCopy;
         }
 
         public void addChild()

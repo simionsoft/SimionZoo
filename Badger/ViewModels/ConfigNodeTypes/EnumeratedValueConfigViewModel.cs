@@ -40,6 +40,19 @@ namespace Badger.ViewModels
 
         }
 
+        public override ConfigNodeViewModel clone()
+        {
+            EnumeratedValueConfigViewModel newInstance =
+                new EnumeratedValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+            
+            newInstance.m_class = m_class;
+            newInstance.enumeratedNames = enumeratedNames;
+            newInstance.content = content;
+            newInstance.textColor = textColor;
+            return newInstance;
+        }
+
+
         public override bool validate()
         {
             List<string> enumeration = m_appViewModel.getEnumeratedType(m_class);

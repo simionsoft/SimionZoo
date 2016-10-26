@@ -22,6 +22,16 @@ namespace Badger.ViewModels
             }
         }
 
+        public override ConfigNodeViewModel clone()
+        {
+            IntegerValueConfigViewModel newInstance =
+                new IntegerValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+
+            newInstance.content = content;
+            newInstance.textColor = textColor;
+            return newInstance;
+        }
+
         public override bool validate()
         {
             int parsedValue;

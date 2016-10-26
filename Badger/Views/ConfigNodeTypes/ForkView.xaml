@@ -13,16 +13,14 @@
                 <Image Source="/images/fork.png" Width="20" Height="20"/>
             </StackPanel>
             <Label Margin="4,0,0,0" Content="{Binding name}" FontSize="8"></Label>
-            <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Add" 
-                        cal:Message.Attach="addValue"
+
+            <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Remove" 
+                        cal:Message.Attach="removeThisFork" ToolTip="Remove this fork and its values"
                         Width="15" Height="15" >
-                <Image Source="/images/add.png" Width="10" Height="10"></Image>
+                <Image Source="/images/remove.png" Width="10" Height="10"></Image>
             </Button>
         </StackPanel>
         <StackPanel>
-            <!--<ListView SelectedItem="{Binding selectedForkValue}">
-            <ItemsControl x:Name="values"></ItemsControl>
-            </ListView>-->
             <ListView x:Name="Values" ItemsSource="{Binding Path=values}" 
                       SelectionMode="Single"
                       SelectedItem="{Binding selectedForkValue}"
@@ -30,15 +28,15 @@
                       Margin="10,0,0,0" BorderBrush="Transparent">
                 <ListView.Resources>
                     <DataTemplate DataType="{x:Type vm:ForkValueViewModel}">
-                    <ContentControl cal:View.Model="{Binding}" />
+                        <ContentControl cal:View.Model="{Binding}" />
                     </DataTemplate>
-                    <!--<DataTemplate DataType="{x:Type vm:ForkValueViewModel}">
-                        <v:ForkValueView ></v:ForkValueView>
-
-                    </DataTemplate>-->
                 </ListView.Resources>
-
             </ListView>
+            <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Add" 
+                        cal:Message.Attach="addValue" ToolTip="Add a new value (clone the selected value)"
+                        Width="15" Height="15" >
+                <Image Source="/images/add.png" Width="10" Height="10"></Image>
+            </Button>
         </StackPanel>
     </StackPanel>
 </UserControl>

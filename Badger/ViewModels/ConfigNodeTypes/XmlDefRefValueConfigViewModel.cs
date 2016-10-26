@@ -49,6 +49,17 @@ namespace Badger.ViewModels
             m_appViewModel.registerXMLDefRef(updateXMLDefRef);
         }
 
+        public override ConfigNodeViewModel clone()
+        {
+            XmlDefRefValueConfigViewModel newInstance=
+                new XmlDefRefValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+            m_appViewModel.registerXMLDefRef(newInstance.updateXMLDefRef);
+            newInstance.m_hangingFrom = m_hangingFrom;
+            newInstance.enumeratedNames = enumeratedNames;
+            newInstance.selectedEnumeratedName = selectedEnumeratedName;
+            return newInstance;
+        }
+
         public void updateXMLDefRef()
         {
             enumeratedNames = m_appViewModel.getAuxDefinition(m_hangingFrom);

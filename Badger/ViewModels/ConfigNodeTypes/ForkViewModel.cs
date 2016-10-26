@@ -39,6 +39,11 @@ namespace Badger.ViewModels
             m_forkNode = forkConfigNode;
         }
 
+        public void removeThisFork()
+        {
+            m_forkNode.removeThisForkedNode();
+            m_appViewModel.forks.Remove(this);
+        }
 
         public void removeValue(ForkValueViewModel forkValue)
         {
