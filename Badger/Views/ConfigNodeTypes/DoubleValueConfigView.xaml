@@ -8,12 +8,15 @@
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.DoubleValueConfigView"
              mc:Ignorable="d" 
 d:DesignHeight="50" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
         <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light">
             <Label.ContextMenu>
-            <ContextMenu>
-                <MenuItem Header="Fork" cal:Message.Attach="forkThisNode" >
+                <ContextMenu  Visibility="{Binding Path=bCanBeForked,Converter={StaticResource BoolToVis}}">
+                <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                     <MenuItem.Icon>
                         <Image Source="/images/fork.png"></Image>
                     </MenuItem.Icon>

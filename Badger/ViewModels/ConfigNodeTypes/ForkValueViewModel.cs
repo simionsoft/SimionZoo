@@ -31,8 +31,9 @@ namespace Badger.ViewModels
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             m_parentFork = parentFork;
             //not sure how to do this in a more elegant way
-            this.forkValue = ConfigNodeViewModel.getInstance(appViewModel, parentNode
+            forkValue = ConfigNodeViewModel.getInstance(appViewModel, parentNode
                 , classDefinition, parentNode.xPath, configNode);
+            forkValue.bCanBeForked = false; //already belongs to a fork
         }
 
         public void removeThisValue()

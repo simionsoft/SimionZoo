@@ -18,9 +18,9 @@
                           Visibility="{Binding Path=bIsOptional,Converter={StaticResource BoolToVis}}"
                            IsChecked="{Binding bIsUsed}"/>
                 <Label Content="{Binding name}" ToolTip="{Binding comment}" >
-                    <Label.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Fork" cal:Message.Attach="forkThisNode" >
+                    <Label.ContextMenu >
+                        <ContextMenu Visibility="{Binding Path=bCanBeForked,Converter={StaticResource BoolToVis}}">
+                            <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                                 <MenuItem.Icon>
                                     <Image Source="/images/fork.png"></Image>
                                 </MenuItem.Icon>

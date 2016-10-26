@@ -7,7 +7,7 @@ using System;
 
 namespace Badger.ViewModels
 {
-    abstract public class ConfigNodeViewModel: PropertyChangedBase
+    abstract public class ConfigNodeViewModel : PropertyChangedBase
     {
         //access to the root node
         protected AppViewModel m_appViewModel;
@@ -20,7 +20,7 @@ namespace Badger.ViewModels
             get { return m_content; }
             set {
                 m_content = value;
-                bIsValid= validate();
+                bIsValid = validate();
                 NotifyOfPropertyChange(() => content);
             }
         }
@@ -32,7 +32,7 @@ namespace Badger.ViewModels
         abstract public bool validate();
 
         //Comment
-        private string m_comment= "";
+        private string m_comment = "";
         public string comment { get { return m_comment; } set { m_comment = value; } }
 
         //Validation
@@ -49,12 +49,14 @@ namespace Badger.ViewModels
             }
         }
 
+        private bool m_bCanBeForked = true;
+        public bool bCanBeForked { get { return m_bCanBeForked; } set { m_bCanBeForked = value; NotifyOfPropertyChange(() => bCanBeForked); } }
         public void forkThisNode()
         {
+            bCanBeForked = false;
             if (m_parent != null)
             {
                 m_parent.forkChild(this);
-                //System.Console.WriteLine("Forked node: " + name);
             }
             else System.Console.WriteLine("Can't fork this node because it has no parent: " + name);
         }

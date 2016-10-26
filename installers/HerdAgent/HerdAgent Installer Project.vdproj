@@ -27,13 +27,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_E4E7899838FF4D96B80702F88B320483"
+        "MsmKey" = "8:_C9FB232016A7471CB949E4F3BFD89E92"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_F99AF1CC38924E4B809FCE130114C419"
+        "MsmKey" = "8:_E4E7899838FF4D96B80702F88B320483"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -203,10 +203,10 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4E7899838FF4D96B80702F88B320483"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C9FB232016A7471CB949E4F3BFD89E92"
             {
-            "SourcePath" = "8:herdagent-banner.bmp"
-            "TargetName" = "8:herdagent-banner.bmp"
+            "SourcePath" = "8:..\\..\\tools\\HerdAgent\\herdagent.ico"
+            "TargetName" = "8:herdagent.ico"
             "Tag" = "8:"
             "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
             "Condition" = "8:"
@@ -223,10 +223,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F99AF1CC38924E4B809FCE130114C419"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4E7899838FF4D96B80702F88B320483"
             {
-            "SourcePath" = "8:..\\HerdAgent\\herdagent.ico"
-            "TargetName" = "8:herdagent.ico"
+            "SourcePath" = "8:herdagent-banner.bmp"
+            "TargetName" = "8:herdagent-banner.bmp"
             "Tag" = "8:"
             "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
             "Condition" = "8:"
@@ -306,7 +306,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:HerdAgent service installer for distributed computation."
         "ARPURLINFOABOUT" = "8:http://www.ehu.eus/ccwintco"
-        "ARPPRODUCTICON" = "8:_F99AF1CC38924E4B809FCE130114C419"
+        "ARPPRODUCTICON" = "8:_C9FB232016A7471CB949E4F3BFD89E92"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -820,7 +820,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
             {
-            "SourcePath" = "8:..\\HerdAgent\\obj\\Debug\\HerdAgent.exe"
+            "SourcePath" = "8:..\\..\\tools\\HerdAgent\\obj\\Debug\\HerdAgent.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"
