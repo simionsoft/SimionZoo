@@ -23,6 +23,10 @@ namespace Badger.ViewModels
         //Constructor used from the experiment editor
         public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel forkedNode)
         {
+            //the config node forked now hangs from this ForkedNode's child
+            m_parent = forkedNode.parent;
+            forkedNode.parent = this;
+
             m_appViewModel = appViewModel;
             nodeDefinition = forkedNode.nodeDefinition;
             name = forkedNode.name;
@@ -33,11 +37,13 @@ namespace Badger.ViewModels
             ,XmlNode classDefinition,XmlNode configNode)
         {
             m_appViewModel = appViewModel;
+            nodeDefinition = classDefinition;
+            m_parent = parentNode;
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             fork = new ForkViewModel(appViewModel,name,this);
             foreach (XmlNode forkValueConfig in configNode.ChildNodes)
             {
-                fork.values.Add(new ForkValueViewModel(appViewModel, classDefinition,parentNode
+                fork.values.Add(new ForkValueViewModel(appViewModel, classDefinition,this
                     ,fork, forkValueConfig));
             }
             //notify changes
@@ -50,7 +56,9 @@ namespace Badger.ViewModels
         public void removeThisForkedNode()
         {
             NestedConfigNode parent = m_parent as NestedConfigNode;
+            int childIndex = parent.children.IndexOf(this);
             parent.removeChild(this);
+            parent.children.Insert(childIndex,fork.selectedForkValue.forkValue);
         }
 
         public override ConfigNodeViewModel clone()

@@ -86,6 +86,11 @@ namespace Badger.ViewModels
 
         //Parent
         protected ConfigNodeViewModel m_parent;
+        public ConfigNodeViewModel parent
+        {
+            get { return m_parent; }
+            set { m_parent = value; }
+        }
         
         //Initialization stuff common to all types of configuration nodes
         protected void commonInit(AppViewModel appViewModel,ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)

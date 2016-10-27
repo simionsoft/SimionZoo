@@ -207,7 +207,8 @@ namespace Badger.ViewModels
             SimionFileData.loadExperiments(ref m_appViewModels, appDefinitions, logToFile);
             NotifyOfPropertyChange(() => tabControlExperiments);
             NotifyOfPropertyChange(() => listControlExperiments);
-
+            if (m_appViewModels.Count > 0)
+                selectedTabControlExperiment = m_appViewModels[0];
             checkEmptyExperimentList();
         }
 
