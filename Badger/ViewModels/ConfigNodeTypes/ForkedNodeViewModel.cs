@@ -108,7 +108,8 @@ namespace Badger.ViewModels
             {
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + " " 
                     +XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\">");
-                outputXML(writer, leftSpace + "  ");
+                foreach(ForkValueViewModel child in children)
+                    child.outputXML(writer, leftSpace + "  ", true);
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkedNodeTag + ">");
             }
             else
@@ -172,17 +173,18 @@ namespace Badger.ViewModels
             return numForkCombinations;
         }
 
-        public override void setForkCombination(ref int id)
+        public override void setForkCombination(ref int id, ref string combinationName)
         {
             int valueId;
             //set the correct value for the fork
             valueId = id % children.Count;
+            combinationName += "-" + valueId;
             selectedForkValue = children[valueId] as ForkValueViewModel;
             id = id / children.Count;
 
             foreach (ConfigNodeViewModel child in children)
             {
-                child.setForkCombination(ref id);
+                child.setForkCombination(ref id, ref combinationName);
             }
         }
     }

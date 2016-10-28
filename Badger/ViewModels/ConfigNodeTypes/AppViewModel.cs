@@ -340,28 +340,15 @@ namespace Badger.ViewModels
             return numForkCombinations;
         }
 
-        public void setForkCombination(int combination)
+        public string setForkCombination(int combination)
         {
+            string combinationName = name;
             int combinationId= combination;
             foreach(ConfigNodeViewModel child in children)
             {
-                child.setForkCombination(ref combinationId);
+                child.setForkCombination(ref combinationId,ref combinationName);
             }
-        }
-        public string getForkCombinationBaseName(int combination)
-        {
-            throw new NotImplementedException();
-            //string combinationName = name;
-            //foreach (ForkViewModel fork in forks)
-            //{
-            //    //set the correct value for the fork
-            //    combinationName += "-" + (combination % fork.values.Count);
-            //    //remove the valueId from the combinationId
-            //    combination = combination / fork.values.Count;
-            //}
-            //return combinationName;
+            return combinationName;
         }
     }
-
-
 }

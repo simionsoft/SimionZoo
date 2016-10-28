@@ -140,7 +140,9 @@ namespace Badger.ViewModels
         {
             return 1;
         }
-        public virtual void setForkCombination(ref int id) { } //we do nothing by default
+        //we do nothing by default
+        public virtual void setForkCombination(ref int id, ref string combinationName) { } 
+        
 
         //Lambda Traverse functions
         public virtual int traverseRetInt(Func<ConfigNodeViewModel,int> simpleNodeFunc
@@ -218,6 +220,20 @@ namespace Badger.ViewModels
             }
             return null;
         }
+        public override void forkChild(ConfigNodeViewModel forkedChild)
+        {
+            ForkedNodeViewModel newForkNode;
+            if (m_appViewModel != null)
+            {
+                //cross-reference
+                newForkNode = new ForkedNodeViewModel(m_appViewModel, forkedChild);
+
+                int oldIndex = children.IndexOf(forkedChild);
+                children.Remove(forkedChild);
+                children.Insert(oldIndex, newForkNode);
+            }
+        }
+
         public override bool validate()
         {
             bIsValid = true;
@@ -259,10 +275,10 @@ namespace Badger.ViewModels
                 numForkCombinations *= child.getNumForkCombinations();
             return numForkCombinations;
         }
-        public override void setForkCombination(ref int id)
+        public override void setForkCombination(ref int id, ref string combinationName)
         {
             foreach (ConfigNodeViewModel child in children)
-                child.setForkCombination(ref id);
+                child.setForkCombination(ref id,ref combinationName);
         }
     }
 

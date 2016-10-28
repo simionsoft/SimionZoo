@@ -114,8 +114,8 @@ namespace Badger.Data
                         {
 
                             //Save the combination of forks as a new experiment
-                            experiment.setForkCombination(i);
-                            experimentName = experiment.getForkCombinationBaseName(i);
+                            experimentName= experiment.setForkCombination(i);
+                            
                             folderPath = batchFilename + "/" + experimentName;
                             Directory.CreateDirectory(folderPath);
                             filePath = folderPath + "/" + experimentName + "." + XMLConfig.experimentExtension;
