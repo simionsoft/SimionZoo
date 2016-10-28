@@ -299,65 +299,42 @@ namespace Badger.ViewModels
         }
 
 
-        //FORKS
-        private BindableCollection<ForkViewModel> m_forks = new BindableCollection<ForkViewModel>();
-        public BindableCollection<ForkViewModel> forks
-        {
-            get { return m_forks; }
-            set { m_forks = value; NotifyOfPropertyChange(() => forks); }
-        }
 
-        //called on experiment load from forkedNodeViewModel
-        public void addFork(ForkViewModel newFork)
-        {
-            forks.Add(newFork);
-        }
-        public ForkViewModel addFork(ConfigNodeViewModel forkedNode,ForkedNodeViewModel forkNode)
-        {
-            ForkViewModel newFork;
-
-            newFork= new ForkViewModel(this,forkedNode.name, forkNode);
-
-            ForkValueViewModel newForkValue = new ForkValueViewModel(this,newFork);
-            newForkValue.forkValue = forkedNode;
-            newForkValue.name = "Value-0";
-            newFork.values.Add(newForkValue);
-            newFork.selectedForkValue = newForkValue;
-
-            forks.Add(newFork);
-            NotifyOfPropertyChange(() => forks);
-            return newFork;
-        }
         public int getNumForkCombinations()
         {
-            int numCombinations = 1;
-            foreach (ForkViewModel fork in forks)
-                numCombinations *= fork.values.Count; //so far, we assume, forks can't contain forks inside
-            return numCombinations;
+            throw new NotImplementedException();
+            return 1;
+            //int numCombinations = 1;
+            //foreach (ForkViewModel fork in forks)
+            //    numCombinations *= fork.values.Count; //so far, we assume, forks can't contain forks inside
+            //return numCombinations;
         }
         public void setForkCombination(int combination)
         {
-            int valueId;
-            foreach(ForkViewModel fork in forks)
-            {
-                //set the correct value for the fork
-                valueId= combination % fork.values.Count;
-                fork.selectedForkValue = fork.values[valueId];
-                //remove the valueId from the combinationId
-                combination = combination / fork.values.Count;
-            }
+            throw new NotImplementedException();
+        //    int valueId;
+        //    foreach(ForkViewModel fork in forks)
+        //    {
+        //        //set the correct value for the fork
+        //        valueId= combination % fork.values.Count;
+        //        fork.selectedForkValue = fork.values[valueId];
+        //        //remove the valueId from the combinationId
+        //        combination = combination / fork.values.Count;
+        //    }
         }
         public string getForkCombinationBaseName(int combination)
         {
-            string combinationName = name;
-            foreach (ForkViewModel fork in forks)
-            {
-                //set the correct value for the fork
-                combinationName += "-" + (combination % fork.values.Count);
-                //remove the valueId from the combinationId
-                combination = combination / fork.values.Count;
-            }
-            return combinationName;
+            throw new NotImplementedException();
+            return "";
+            //string combinationName = name;
+            //foreach (ForkViewModel fork in forks)
+            //{
+            //    //set the correct value for the fork
+            //    combinationName += "-" + (combination % fork.values.Count);
+            //    //remove the valueId from the combinationId
+            //    combination = combination / fork.values.Count;
+            //}
+            //return combinationName;
         }
     }
 

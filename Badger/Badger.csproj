@@ -126,7 +126,6 @@
     <Compile Include="ViewModels\ConfigNodeTypes\FilePathValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ForkedNodeViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ForkValueViewModel.cs" />
-    <Compile Include="ViewModels\ConfigNodeTypes\ForkViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\IntegerValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
@@ -260,10 +259,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ConfigNodeTypes\ForkView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\ConfigNodeTypes\MultiValuedConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -373,6 +368,9 @@
     <Content Include="images\info.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="images\left-arrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="images\load.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -389,6 +387,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="images\remove.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\right-arrow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="images\right.png">

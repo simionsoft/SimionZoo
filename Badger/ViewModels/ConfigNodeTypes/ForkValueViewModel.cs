@@ -7,39 +7,35 @@ namespace Badger.ViewModels
 {
     public class ForkValueViewModel:PropertyChangedBase
     {
-        private ForkViewModel m_parentFork;
-        public ForkViewModel parentFork { get { return m_parentFork; }
-        set { m_parentFork = value;  }
-        }
         private string m_name;
         public string name { get { return m_name; }set { m_name = value;NotifyOfPropertyChange(() => name); } }
 
-        private ConfigNodeViewModel m_forkValue;
-        public ConfigNodeViewModel forkValue
+        private ConfigNodeViewModel m_configNode;
+        public ConfigNodeViewModel configNode
         {
-            get { return m_forkValue; }
-            set { m_forkValue = value; NotifyOfPropertyChange(() => forkValue); }
-        }
-        public ForkValueViewModel(AppViewModel appVieModel,ForkViewModel parentFork)
-        {
-            m_parentFork = parentFork;
-        }
-        public ForkValueViewModel(AppViewModel appViewModel,XmlNode classDefinition
-            , ConfigNodeViewModel parentNode
-            , ForkViewModel parentFork, XmlNode configNode)
-        {
-            name = configNode.Attributes[XMLConfig.nameAttribute].Value;
-            m_parentFork = parentFork;
-            //not sure how to do this in a more elegant way
-            forkValue = ConfigNodeViewModel.getInstance(appViewModel, parentNode
-                , classDefinition, parentNode.xPath, configNode);
-            forkValue.bCanBeForked = false; //already belongs to a fork
+            get { return m_configNode; }
+            set { m_configNode = value; NotifyOfPropertyChange(() => configNode); }
         }
 
-        public void removeThisValue()
+        private ForkedNodeViewModel m_parent;
+
+        public ForkValueViewModel(string valueName, ForkedNodeViewModel parent, ConfigNodeViewModel forkedNode)
         {
-            m_parentFork.removeValue(this);
+            name = valueName;
+            m_parent = parent;
+            configNode = forkedNode;
         }
+
+        public ForkValueViewModel(AppViewModel appViewModel,XmlNode classDefinition
+            , ConfigNodeViewModel parentNode, XmlNode configNode)
+        {
+            name = configNode.Attributes[XMLConfig.nameAttribute].Value;
+            //not sure how to do this in a more elegant way
+            this.configNode = ConfigNodeViewModel.getInstance(appViewModel, parentNode
+                , classDefinition, parentNode.xPath, configNode);
+            this.configNode.bCanBeForked = false; //already belongs to a fork
+        }
+
 
         //addHeader should be true if we are in SaveMode.SaveForks mode
         //else it should be false: the fork is completely hidden
@@ -48,7 +44,7 @@ namespace Badger.ViewModels
             if (addHeader)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
                     + name + "\">");
-            forkValue.outputXML(writer, leftSpace + "  ");
+            configNode.outputXML(writer, leftSpace + "  ");
             if (addHeader)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
         }

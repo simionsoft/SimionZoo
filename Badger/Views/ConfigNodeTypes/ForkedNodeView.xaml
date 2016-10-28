@@ -9,9 +9,37 @@
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <Border BorderBrush="Orange">
         <StackPanel Orientation="Horizontal">
-            <ContentControl x:Name="selectedForkValue" />
-            <StackPanel  Margin="10,0,0,0" Background="Orange" Width="22">
-                <Image  Source="/images/fork.png" Width="20"/>
+            <ContentControl x:Name="selectedValueConfigNode" />
+            <StackPanel  Margin="10,0,0,0" Background="Orange" Width="46" Orientation="Vertical">
+                <StackPanel>
+                    <Image  Source="/images/fork.png" Width="20"/>
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center">
+                    <Label HorizontalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Background="Transparent" BorderBrush="Transparent" Width="20" Padding="0"
+                                cal:Message.Attach="[Event Click]=[Action previousValue()]"
+                            Opacity="{Binding bIsTherePreviousValue}">
+                        <Image Source="/images/left-arrow.png"  ToolTip="Set previous value" Width="10"></Image>
+                    </Button>
+                    <Button Background="Transparent" BorderBrush="Transparent" Width="20" Height="20" Padding="0"
+                                cal:Message.Attach="[Event Click]=[Action nextValue()]"
+                            Opacity="{Binding bIsThereNextValue}">
+                        <Image Source="/images/right-arrow.png"  ToolTip="Set next value" Width="10"></Image>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
+                                    cal:Message.Attach="[Event Click]=[Action addValue()]">
+                        <Image Source="/images/add.png"  ToolTip="Add a new value" Width="10"></Image>
+                    </Button>
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
+                                    cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
+                                Opacity="{Binding bIsThereMoreValues}">
+                        <Image Source="/images/cancel.png"  ToolTip="Remove this value" Width="10"></Image>
+                    </Button>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
     </Border>

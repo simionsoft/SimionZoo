@@ -188,8 +188,8 @@ namespace Badger.ViewModels
         //this method is used to search for fork nodes
         private XmlNode getForkChild(string childName, XmlNode configNode)
         {
-            if (configNode == null)
-                return null;
+            if (configNode == null) return null;
+
             foreach(XmlNode configChildNode in configNode)
             {
                 if (configChildNode.Name == XMLConfig.forkedNodeTag
@@ -221,31 +221,6 @@ namespace Badger.ViewModels
                 newNestedCopy.children.Add(child.clone());
             }
             return newNestedCopy;
-        }
-
-        //FORKS
-        public override void forkChild(ConfigNodeViewModel forkedChild)
-        {
-            ForkedNodeViewModel newForkNode;
-            ForkViewModel newFork;
-            if (m_appViewModel!=null)
-            {
-                //cross-reference
-                newForkNode = new ForkedNodeViewModel(m_appViewModel,forkedChild);
-                newFork= m_appViewModel.addFork(forkedChild, newForkNode);
-                newForkNode.fork = newFork;
-                if (newFork != null)
-                {
-                    int oldIndex = children.IndexOf(forkedChild);
-                    children.Remove(forkedChild);
-                    children.Insert(oldIndex, newForkNode);
-                }
-            }
-        }
-        public void removeChild(ConfigNodeViewModel child)
-        {
-            if (children != null && child != null)
-                children.Remove(child);
         }
     }
 
