@@ -5,6 +5,7 @@ using System.IO;
 using Simion;
 using Badger.Data;
 using System;
+using System.Linq;
 
 namespace Badger.ViewModels
 {
@@ -302,30 +303,54 @@ namespace Badger.ViewModels
 
         public int getNumForkCombinations()
         {
-            throw new NotImplementedException();
-            return 1;
-            //int numCombinations = 1;
-            //foreach (ForkViewModel fork in forks)
-            //    numCombinations *= fork.values.Count; //so far, we assume, forks can't contain forks inside
-            //return numCombinations;
+            ////lambda functions for simple nodes and nested nodes
+            //Func<ConfigNodeViewModel, int> getNumForkCombinationsSimpleNode = null;
+            //getNumForkCombinationsSimpleNode=
+            //    (sNode) =>
+            //    {
+            //        ForkValueViewModel forkValue = sNode as ForkValueViewModel;
+            //        if (forkValue != null)
+            //        {
+            //            return 1*getNumForkCombinationsSimpleNode(forkValue.configNode);
+            //        }
+            //        return 0;
+            //    };
+            //Func<ConfigNodeViewModel, int> getNumForkCombinationsNestedNode = null;
+            //getNumForkCombinationsNestedNode=
+            //    (nestedNode) => {
+            //        ForkedNodeViewModel fork = nestedNode as ForkedNodeViewModel;
+            //        if (fork != null)
+            //        {
+            //            int numForkCombinationsBeneath = 1;
+            //            //set the correct value for the fork
+            //            foreach (ConfigNodeViewModel child in fork.children)
+            //                numForkCombinationsBeneath *= getNumForkCombinationsNestedNode(child);
+
+            //            return numForkCombinationsBeneath;
+            //            }
+            //        else return 1;
+            //    };
+
+            int numForkCombinations= 1;
+            //call to the traverse function: this is messy as fuck
+            foreach (ConfigNodeViewModel child in children)
+                // numForkCombinations*= child.traverseRetInt(getNumForkCombinationsSimpleNode,getNumForkCombinationsNestedNode);
+                numForkCombinations *= child.getNumForkCombinations();
+                    
+            return numForkCombinations;
         }
+
         public void setForkCombination(int combination)
         {
-            throw new NotImplementedException();
-        //    int valueId;
-        //    foreach(ForkViewModel fork in forks)
-        //    {
-        //        //set the correct value for the fork
-        //        valueId= combination % fork.values.Count;
-        //        fork.selectedForkValue = fork.values[valueId];
-        //        //remove the valueId from the combinationId
-        //        combination = combination / fork.values.Count;
-        //    }
+            int combinationId= combination;
+            foreach(ConfigNodeViewModel child in children)
+            {
+                child.setForkCombination(ref combinationId);
+            }
         }
         public string getForkCombinationBaseName(int combination)
         {
             throw new NotImplementedException();
-            return "";
             //string combinationName = name;
             //foreach (ForkViewModel fork in forks)
             //{

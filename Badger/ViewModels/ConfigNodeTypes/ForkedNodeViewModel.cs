@@ -6,15 +6,8 @@ using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    public class ForkedNodeViewModel : ConfigNodeViewModel
+    public class ForkedNodeViewModel : NestedConfigNode
     {
-        private BindableCollection<ForkValueViewModel> m_values = new BindableCollection<ForkValueViewModel>();
-        public BindableCollection<ForkValueViewModel> values
-        {
-            get { return m_values; }
-            set { m_values = value; NotifyOfPropertyChange(() => values); }
-        }
-
         private ForkValueViewModel m_selectedForkValue = null;
         public ForkValueViewModel selectedForkValue
         {
@@ -34,12 +27,12 @@ namespace Badger.ViewModels
         }
         const double disabledOpacity = 0.5;
         const double enabledOpacity = 1.0;
-        public string currentValueIndex { get { return (values.IndexOf(selectedForkValue)+1) + "/" + values.Count; } }
-        public double bIsTherePreviousValue { get { if( values.IndexOf(selectedForkValue) > 0)
+        public string currentValueIndex { get { return (children.IndexOf(selectedForkValue)+1) + "/" + children.Count; } }
+        public double bIsTherePreviousValue { get { if( children.IndexOf(selectedForkValue) > 0)
                     return enabledOpacity; return disabledOpacity; } }
-        public double bIsThereNextValue { get { if (values.IndexOf(selectedForkValue) < values.Count - 1)
+        public double bIsThereNextValue { get { if (children.IndexOf(selectedForkValue) < children.Count - 1)
                     return enabledOpacity; return disabledOpacity; } }
-        public double bIsThereMoreValues { get { if (values.Count > 1)
+        public double bIsThereMoreValues { get { if (children.Count > 1)
                     return enabledOpacity; return disabledOpacity; } }
 
         private void updateBoolFlags()
@@ -53,7 +46,7 @@ namespace Badger.ViewModels
         private void renameValues()
         {
             int i = 0;
-            foreach (ForkValueViewModel fValue in values)
+            foreach (ForkValueViewModel fValue in children)
             {
                 fValue.name = "Value-" + i;
                 i++;
@@ -68,7 +61,7 @@ namespace Badger.ViewModels
             forkedNode.parent = this;
 
             ForkValueViewModel newForkValue= new ForkValueViewModel("Value-0", this, forkedNode);
-            values.Add(newForkValue);
+            children.Add(newForkValue);
             selectedForkValue = newForkValue;
 
             m_appViewModel = appViewModel;
@@ -87,12 +80,12 @@ namespace Badger.ViewModels
             //fork = new ForkViewModel(appViewModel,name,this);
             foreach (XmlNode forkValueConfig in configNode.ChildNodes)
             {
-                values.Add(new ForkValueViewModel(appViewModel, classDefinition,this, forkValueConfig));
+                children.Add(new ForkValueViewModel(appViewModel, classDefinition,this, forkValueConfig));
             }
             //notify changes
-            if (values.Count > 0)
-                selectedForkValue = values[0];
-            NotifyOfPropertyChange(() => values);
+            if (children.Count > 0)
+                selectedForkValue = children[0] as ForkValueViewModel;
+            NotifyOfPropertyChange(() => children);
         }
 
         public override ConfigNodeViewModel clone()
@@ -102,7 +95,7 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            foreach (ForkValueViewModel value in values)
+            foreach (ForkValueViewModel value in children)
             {
                 if (!value.configNode.validate()) return false;
             }
@@ -124,9 +117,9 @@ namespace Badger.ViewModels
 
         public void addValue()
         {
-            string newValueName= "Value-" + values.Count;
+            string newValueName= "Value-" + children.Count;
             ForkValueViewModel newForkValue = new ForkValueViewModel(newValueName,this,selectedValueConfigNode.clone());
-            values.Add(newForkValue);
+            children.Add(newForkValue);
             updateBoolFlags();
         }
 
@@ -141,16 +134,16 @@ namespace Badger.ViewModels
         public void removeSelectedValue()
         {
             //we don't remove the value if there is no other value
-            if (values.Count == 1) return;
+            if (children.Count == 1) return;
 
             ForkValueViewModel removedValue = selectedForkValue;
-            int index = values.IndexOf(selectedForkValue);
-            if (index == values.Count - 1)
-                selectedForkValue = values[index - 1];
+            int index = children.IndexOf(selectedForkValue);
+            if (index == children.Count - 1)
+                selectedForkValue = children[index - 1] as ForkValueViewModel;
             else
-                selectedForkValue = values[index + 1];
+                selectedForkValue = children[index + 1] as ForkValueViewModel;
 
-            values.Remove(removedValue);
+            children.Remove(removedValue);
 
             renameValues();
             updateBoolFlags();
@@ -158,17 +151,39 @@ namespace Badger.ViewModels
 
         public void nextValue()
         {
-            int index = values.IndexOf(selectedForkValue);
-            if (index < values.Count - 1)
-                selectedForkValue = values[index + 1];
+            int index = children.IndexOf(selectedForkValue);
+            if (index < children.Count - 1)
+                selectedForkValue = children[index + 1] as ForkValueViewModel;
             updateBoolFlags();
         }
         public void previousValue()
         {
-            int index = values.IndexOf(selectedForkValue);
+            int index = children.IndexOf(selectedForkValue);
             if (index >0)
-                selectedForkValue = values[index - 1];
+                selectedForkValue = children[index - 1] as ForkValueViewModel;
             updateBoolFlags();
+        }
+
+        public override int getNumForkCombinations()
+        {
+            int numForkCombinations= 0;
+            foreach (ConfigNodeViewModel child in children)
+                numForkCombinations += child.getNumForkCombinations();
+            return numForkCombinations;
+        }
+
+        public override void setForkCombination(ref int id)
+        {
+            int valueId;
+            //set the correct value for the fork
+            valueId = id % children.Count;
+            selectedForkValue = children[valueId] as ForkValueViewModel;
+            id = id / children.Count;
+
+            foreach (ConfigNodeViewModel child in children)
+            {
+                child.setForkCombination(ref id);
+            }
         }
     }
 }

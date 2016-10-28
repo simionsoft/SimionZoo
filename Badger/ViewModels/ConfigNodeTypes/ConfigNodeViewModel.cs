@@ -136,6 +136,24 @@ namespace Badger.ViewModels
             return null;
         }
 
+        public virtual int getNumForkCombinations()
+        {
+            return 1;
+        }
+        public virtual void setForkCombination(ref int id) { } //we do nothing by default
+
+        //Lambda Traverse functions
+        public virtual int traverseRetInt(Func<ConfigNodeViewModel,int> simpleNodeFunc
+            , Func<ConfigNodeViewModel,int> nestedNodeFunc)
+        {
+            return simpleNodeFunc(this);
+        }
+        public virtual void traverseDoAction(Action<ConfigNodeViewModel> simpleNodeAction
+            , Action<NestedConfigNode> nestedNodeAction)
+        {
+            simpleNodeAction(this);
+        }
+
     }
     abstract public class NestedConfigNode : ConfigNodeViewModel
     {
@@ -222,7 +240,30 @@ namespace Badger.ViewModels
             }
             return newNestedCopy;
         }
-    }
+        //Lambda Traverse functions
+        public override int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc
+            , Func<ConfigNodeViewModel, int> nestedNodeFunc)
+        {
+            return nestedNodeFunc(this);
+        }
+        public override void traverseDoAction(Action<ConfigNodeViewModel> simpleNodeFunc
+            , Action<NestedConfigNode> nestedNodeAction)
+        {
+            nestedNodeAction(this);
+        }
 
+        public override int getNumForkCombinations()
+        {
+            int numForkCombinations = 1;
+            foreach (ConfigNodeViewModel child in children)
+                numForkCombinations *= child.getNumForkCombinations();
+            return numForkCombinations;
+        }
+        public override void setForkCombination(ref int id)
+        {
+            foreach (ConfigNodeViewModel child in children)
+                child.setForkCombination(ref id);
+        }
+    }
 
 }

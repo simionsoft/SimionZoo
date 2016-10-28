@@ -2,13 +2,12 @@
 using Simion;
 using Caliburn.Micro;
 using System.Xml;
+using System;
 
 namespace Badger.ViewModels
 {
-    public class ForkValueViewModel:PropertyChangedBase
+    public class ForkValueViewModel:ConfigNodeViewModel
     {
-        private string m_name;
-        public string name { get { return m_name; }set { m_name = value;NotifyOfPropertyChange(() => name); } }
 
         private ConfigNodeViewModel m_configNode;
         public ConfigNodeViewModel configNode
@@ -16,8 +15,6 @@ namespace Badger.ViewModels
             get { return m_configNode; }
             set { m_configNode = value; NotifyOfPropertyChange(() => configNode); }
         }
-
-        private ForkedNodeViewModel m_parent;
 
         public ForkValueViewModel(string valueName, ForkedNodeViewModel parent, ConfigNodeViewModel forkedNode)
         {
@@ -47,6 +44,17 @@ namespace Badger.ViewModels
             configNode.outputXML(writer, leftSpace + "  ");
             if (addHeader)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
+        }
+
+        public override bool validate()
+        {
+            return configNode.validate();
+        }
+
+        public override ConfigNodeViewModel clone()
+        {
+            //can't clone this type of node
+            throw new NotImplementedException();
         }
     }
 }
