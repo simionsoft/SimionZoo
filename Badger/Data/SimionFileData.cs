@@ -148,8 +148,7 @@ namespace Badger.Data
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Experiment batch | *." + XMLConfig.badgerExtension;
-            ofd.InitialDirectory = experimentDir;
-                                // Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 fileDoc = ofd.FileName;
@@ -194,7 +193,6 @@ namespace Badger.Data
             }
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *." + XMLConfig.badgerExtension;
-            sfd.InitialDirectory = experimentDir;
             string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
             if (!Directory.Exists(CombinedPath))
                 Directory.CreateDirectory(CombinedPath);
