@@ -87,10 +87,21 @@ namespace Badger.ViewModels
                 selectedForkValue = children[0] as ForkValueViewModel;
             NotifyOfPropertyChange(() => children);
         }
+        //constructor used in clone()
+        public ForkedNodeViewModel() { }
 
         public override ConfigNodeViewModel clone()
         {
-            throw new NotImplementedException();
+            ForkedNodeViewModel newForkedNode = new ForkedNodeViewModel();
+            newForkedNode.m_appViewModel = m_appViewModel;
+            newForkedNode.m_parent = m_parent;
+            foreach (ConfigNodeViewModel child in children)
+            {
+                newForkedNode.children.Add(child.clone());
+            }
+            if (newForkedNode.children.Count>0)
+                newForkedNode.selectedForkValue = newForkedNode.children[0] as ForkValueViewModel;
+            return newForkedNode;
         }
 
         public override bool validate()

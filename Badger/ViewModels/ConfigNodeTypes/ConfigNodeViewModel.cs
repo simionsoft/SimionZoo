@@ -250,6 +250,7 @@ namespace Badger.ViewModels
         {
             NestedConfigNode newNestedCopy = getInstance(m_appViewModel, m_parent
                 , nodeDefinition, m_parent.xPath) as NestedConfigNode;
+            newNestedCopy.children.Clear();
             foreach (ConfigNodeViewModel child in children)
             {
                 newNestedCopy.children.Add(child.clone());
