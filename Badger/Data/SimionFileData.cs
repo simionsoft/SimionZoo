@@ -195,11 +195,11 @@ namespace Badger.Data
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *." + XMLConfig.badgerExtension;
             sfd.InitialDirectory = experimentDir;
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
+            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
             if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string leftSpace;
                 using (FileStream outputFile = File.Create(sfd.FileName))

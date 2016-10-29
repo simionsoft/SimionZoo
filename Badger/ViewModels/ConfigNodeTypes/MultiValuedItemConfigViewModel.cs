@@ -38,5 +38,19 @@ namespace Badger.ViewModels
                 parent.removeChild(this);
         }
 
+        public override ConfigNodeViewModel clone()
+        {
+            MultiValuedItemConfigViewModel newItem = new MultiValuedItemConfigViewModel(m_appViewModel
+                , parent as MultiValuedConfigViewModel
+                , nodeDefinition, parent.xPath);
+            foreach (ConfigNodeViewModel child in children)
+            {
+                ConfigNodeViewModel clonedChild = child.clone();
+                clonedChild.parent = newItem;
+                newItem.children.Add(clonedChild);
+            }
+            return newItem;
+        }
+
     }
 }

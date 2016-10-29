@@ -22,6 +22,8 @@ namespace Badger.ViewModels
             name = valueName;
             m_parent = parent;
             configNode = forkedNode;
+            //the config node now hangs from this fork value
+            configNode.parent = this;
         }
 
         //constructor called when loading a fork from a .badger file

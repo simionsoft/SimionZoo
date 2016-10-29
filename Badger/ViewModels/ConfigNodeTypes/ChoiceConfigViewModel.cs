@@ -50,22 +50,27 @@ namespace Badger.ViewModels
         public BindableCollection<string> choiceNames { get { return m_choiceNames; } }
 
         
-        public ChoiceConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public ChoiceConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent
+            , XmlNode definitionNode
+            , string parentXPath, XmlNode configNode = null, bool initChildren= true)
         {
             string choiceElementName;
             commonInit(appDefinition, parent, definitionNode, parentXPath);
 
             if (configNode != null) configNode = configNode[name];
 
-            foreach (XmlNode choiceElement in definitionNode.ChildNodes)
+            if (initChildren)
             {
-                choiceElementName = choiceElement.Attributes[XMLConfig.nameAttribute].Value;
-                
-                m_choiceNames.Add(choiceElementName);
-                
-                if (configNode!=null && choiceElementName==configNode.ChildNodes[0].Name)
+                foreach (XmlNode choiceElement in definitionNode.ChildNodes)
                 {
-                    loadSelectedChoiceElement(choiceElementName,configNode);
+                    choiceElementName = choiceElement.Attributes[XMLConfig.nameAttribute].Value;
+
+                    m_choiceNames.Add(choiceElementName);
+
+                    if (configNode != null && choiceElementName == configNode.ChildNodes[0].Name)
+                    {
+                        loadSelectedChoiceElement(choiceElementName, configNode);
+                    }
                 }
             }
         }
@@ -85,6 +90,20 @@ namespace Badger.ViewModels
             writer.Write(leftSpace + getXMLHeader());
             selectedChoice.outputXML(writer, leftSpace + "  ");
             writer.Write(leftSpace + getXMLFooter());
+        }
+
+        public override ConfigNodeViewModel clone()
+        {
+            ChoiceConfigViewModel newChoice= new ChoiceConfigViewModel(m_appViewModel, parent
+                , nodeDefinition, parent.xPath, null);
+            foreach (ConfigNodeViewModel child in children)
+            {
+                ConfigNodeViewModel clonedChild = child.clone();
+                clonedChild.parent = newChoice;
+                newChoice.children.Add(clonedChild);
+            }
+            newChoice.selectedChoiceName = selectedChoiceName;
+            return newChoice;
         }
 
     }

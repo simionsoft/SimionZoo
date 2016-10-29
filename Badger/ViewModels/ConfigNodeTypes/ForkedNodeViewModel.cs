@@ -56,9 +56,7 @@ namespace Badger.ViewModels
         //Constructor used from the experiment editor
         public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel forkedNode)
         {
-            //the config node forked now hangs from this ForkedNode's child
             m_parent = forkedNode.parent;
-            forkedNode.parent = this;
 
             ForkValueViewModel newForkValue= new ForkValueViewModel("Value-0", this, forkedNode);
             children.Add(newForkValue);
@@ -71,16 +69,19 @@ namespace Badger.ViewModels
         }
         //Constructor called when loading an experiment config file
         public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel parentNode
-            ,XmlNode classDefinition,XmlNode configNode)
+            ,XmlNode classDefinition,XmlNode configNode= null, bool initChildren= true)
         {
             m_appViewModel = appViewModel;
             nodeDefinition = classDefinition;
             m_parent = parentNode;
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
-            //fork = new ForkViewModel(appViewModel,name,this);
-            foreach (XmlNode forkValueConfig in configNode.ChildNodes)
+
+            if (initChildren)
             {
-                children.Add(new ForkValueViewModel(appViewModel, classDefinition,this, forkValueConfig));
+                foreach (XmlNode forkValueConfig in configNode.ChildNodes)
+                {
+                    children.Add(new ForkValueViewModel(appViewModel, classDefinition, this, forkValueConfig));
+                }
             }
             //notify changes
             if (children.Count > 0)
@@ -95,9 +96,12 @@ namespace Badger.ViewModels
             ForkedNodeViewModel newForkedNode = new ForkedNodeViewModel();
             newForkedNode.m_appViewModel = m_appViewModel;
             newForkedNode.m_parent = m_parent;
+            newForkedNode.name = name;
             foreach (ConfigNodeViewModel child in children)
             {
-                newForkedNode.children.Add(child.clone());
+                ConfigNodeViewModel clonedChild = child.clone();
+                clonedChild.parent = newForkedNode;
+                newForkedNode.children.Add(clonedChild);
             }
             if (newForkedNode.children.Count>0)
                 newForkedNode.selectedForkValue = newForkedNode.children[0] as ForkValueViewModel;

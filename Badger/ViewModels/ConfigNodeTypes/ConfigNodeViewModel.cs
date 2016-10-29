@@ -229,8 +229,11 @@ namespace Badger.ViewModels
                 newForkNode = new ForkedNodeViewModel(m_appViewModel, forkedChild);
 
                 int oldIndex = children.IndexOf(forkedChild);
-                children.Remove(forkedChild);
-                children.Insert(oldIndex, newForkNode);
+                if (oldIndex >= 0)
+                {
+                    children.Remove(forkedChild);
+                    children.Insert(oldIndex, newForkNode);
+                }
             }
         }
 
@@ -246,17 +249,19 @@ namespace Badger.ViewModels
             }
             return bIsValid;
         }
-        public override ConfigNodeViewModel clone()
-        {
-            NestedConfigNode newNestedCopy = getInstance(m_appViewModel, m_parent
-                , nodeDefinition, m_parent.xPath) as NestedConfigNode;
-            newNestedCopy.children.Clear();
-            foreach (ConfigNodeViewModel child in children)
-            {
-                newNestedCopy.children.Add(child.clone());
-            }
-            return newNestedCopy;
-        }
+        //public override ConfigNodeViewModel clone()
+        //{
+        //    NestedConfigNode newNestedCopy = getInstance(m_appViewModel, m_parent
+        //        , nodeDefinition, m_parent.xPath) as NestedConfigNode;
+        //    newNestedCopy.children.Clear();
+        //    foreach (ConfigNodeViewModel child in children)
+        //    {
+        //        ConfigNodeViewModel newChild = child.clone();
+        //        child.parent = this;
+        //        newNestedCopy.children.Add(newChild);
+        //    }
+        //    return newNestedCopy;
+        //}
         //Lambda Traverse functions
         public override int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc
             , Func<ConfigNodeViewModel, int> nestedNodeFunc)
