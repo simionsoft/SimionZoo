@@ -9,7 +9,8 @@ namespace Badger.ViewModels
         private string m_className = "";
         private bool m_bOptional;
 
-        public MultiValuedConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode)
+        public MultiValuedConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent
+            , XmlNode definitionNode, string parentXPath, XmlNode configNode= null, bool initChildren= true)
         {
             commonInit(appDefinition,parent, definitionNode,parentXPath);
 
@@ -20,7 +21,6 @@ namespace Badger.ViewModels
             
             if (configNode!=null)
             {
-               // configNode = configNode[name];
                 foreach(XmlNode configChild in configNode.ChildNodes)
                 {
                     if (configChild.Name==name)
@@ -29,7 +29,7 @@ namespace Badger.ViewModels
             }
             else //default initialization
             {
-                if (!m_bOptional)
+                if (initChildren && !m_bOptional)
                     children.Add(new MultiValuedItemConfigViewModel(appDefinition, this,definitionNode, m_xPath));
             }
         }

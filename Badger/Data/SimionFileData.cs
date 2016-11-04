@@ -116,8 +116,8 @@ namespace Badger.Data
                         {
 
                             //Save the combination of forks as a new experiment
-                            experiment.setForkCombination(i);
-                            experimentName = experiment.getForkCombinationBaseName(i);
+                            experimentName= experiment.setForkCombination(i);
+                            
                             folderPath = batchFilename + "/" + experimentName;
                             Directory.CreateDirectory(folderPath);
                             filePath = folderPath + "/" + experimentName + "." + XMLConfig.experimentExtension;
@@ -150,8 +150,7 @@ namespace Badger.Data
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Experiment batch | *." + XMLConfig.badgerExtension;
-            ofd.InitialDirectory = experimentDir;
-                                // Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 fileDoc = ofd.FileName;
@@ -196,12 +195,11 @@ namespace Badger.Data
             }
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *." + XMLConfig.badgerExtension;
-            sfd.InitialDirectory = experimentDir;
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
+            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
             if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                Directory.CreateDirectory(CombinedPath);
+            sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string leftSpace;
                 using (FileStream outputFile = File.Create(sfd.FileName))

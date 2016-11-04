@@ -23,7 +23,8 @@ namespace Badger.ViewModels
             set { m_bIsUsed = value; NotifyOfPropertyChange(() => bIsUsed); }
         }
 
-        public BranchConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode)
+        public BranchConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent
+            , XmlNode definitionNode, string parentXPath, XmlNode configNode= null, bool initChildren= true)
         {
             commonInit(appDefinition,parent, definitionNode,parentXPath);
 
@@ -44,8 +45,8 @@ namespace Badger.ViewModels
             else if (bIsOptional)
                 bIsUsed = true;
 
-            childrenInit(appDefinition, appDefinition.getClassDefinition(m_className)
-                , m_xPath, configNode);
+            if (initChildren)
+                childrenInit(appDefinition, appDefinition.getClassDefinition(m_className), m_xPath, configNode);
         }
 
         public override bool validate()
@@ -65,6 +66,18 @@ namespace Badger.ViewModels
         {
             if (bIsUsed)
                 base.outputXML(writer,leftSpace);
+        }
+        public override ConfigNodeViewModel clone()
+        {
+            BranchConfigViewModel newBranch = new BranchConfigViewModel(m_appViewModel,parent
+                ,nodeDefinition,parent.xPath,null, false);
+            foreach (ConfigNodeViewModel child in children)
+            {
+                ConfigNodeViewModel clonedChild = child.clone();
+                clonedChild.parent = newBranch;
+                newBranch.children.Add(clonedChild);
+            }
+            return newBranch;
         }
     }
 }

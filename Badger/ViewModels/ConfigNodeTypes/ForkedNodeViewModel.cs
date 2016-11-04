@@ -56,9 +56,7 @@ namespace Badger.ViewModels
         //Constructor used from the experiment editor
         public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel forkedNode)
         {
-            //the config node forked now hangs from this ForkedNode's child
             m_parent = forkedNode.parent;
-            forkedNode.parent = this;
 
             ForkValueViewModel newForkValue= new ForkValueViewModel("Value-0", this, forkedNode);
             children.Add(newForkValue);
@@ -71,26 +69,43 @@ namespace Badger.ViewModels
         }
         //Constructor called when loading an experiment config file
         public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel parentNode
-            ,XmlNode classDefinition,XmlNode configNode)
+            ,XmlNode classDefinition,XmlNode configNode= null, bool initChildren= true)
         {
             m_appViewModel = appViewModel;
             nodeDefinition = classDefinition;
             m_parent = parentNode;
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
-            //fork = new ForkViewModel(appViewModel,name,this);
-            foreach (XmlNode forkValueConfig in configNode.ChildNodes)
+
+            if (initChildren)
             {
-                children.Add(new ForkValueViewModel(appViewModel, classDefinition,this, forkValueConfig));
+                foreach (XmlNode forkValueConfig in configNode.ChildNodes)
+                {
+                    children.Add(new ForkValueViewModel(appViewModel, classDefinition, this, forkValueConfig));
+                }
             }
             //notify changes
             if (children.Count > 0)
                 selectedForkValue = children[0] as ForkValueViewModel;
             NotifyOfPropertyChange(() => children);
         }
+        //constructor used in clone()
+        public ForkedNodeViewModel() { }
 
         public override ConfigNodeViewModel clone()
         {
-            throw new NotImplementedException();
+            ForkedNodeViewModel newForkedNode = new ForkedNodeViewModel();
+            newForkedNode.m_appViewModel = m_appViewModel;
+            newForkedNode.m_parent = m_parent;
+            newForkedNode.name = name;
+            foreach (ConfigNodeViewModel child in children)
+            {
+                ConfigNodeViewModel clonedChild = child.clone();
+                clonedChild.parent = newForkedNode;
+                newForkedNode.children.Add(clonedChild);
+            }
+            if (newForkedNode.children.Count>0)
+                newForkedNode.selectedForkValue = newForkedNode.children[0] as ForkValueViewModel;
+            return newForkedNode;
         }
 
         public override bool validate()
@@ -108,7 +123,8 @@ namespace Badger.ViewModels
             {
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + " " 
                     +XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\">");
-                outputXML(writer, leftSpace + "  ");
+                foreach(ForkValueViewModel child in children)
+                    child.outputXML(writer, leftSpace + "  ", true);
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkedNodeTag + ">");
             }
             else
@@ -172,17 +188,18 @@ namespace Badger.ViewModels
             return numForkCombinations;
         }
 
-        public override void setForkCombination(ref int id)
+        public override void setForkCombination(ref int id, ref string combinationName)
         {
             int valueId;
             //set the correct value for the fork
             valueId = id % children.Count;
+            combinationName += "-" + valueId;
             selectedForkValue = children[valueId] as ForkValueViewModel;
             id = id / children.Count;
 
             foreach (ConfigNodeViewModel child in children)
             {
-                child.setForkCombination(ref id);
+                child.setForkCombination(ref id, ref combinationName);
             }
         }
     }

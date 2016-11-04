@@ -16,13 +16,17 @@ namespace Badger.ViewModels
             set { m_configNode = value; NotifyOfPropertyChange(() => configNode); }
         }
 
+        //constructor called from the editor on forking a node
         public ForkValueViewModel(string valueName, ForkedNodeViewModel parent, ConfigNodeViewModel forkedNode)
         {
             name = valueName;
             m_parent = parent;
             configNode = forkedNode;
+            //the config node now hangs from this fork value
+            configNode.parent = this;
         }
 
+        //constructor called when loading a fork from a .badger file
         public ForkValueViewModel(AppViewModel appViewModel,XmlNode classDefinition
             , ConfigNodeViewModel parentNode, XmlNode configNode)
         {
@@ -53,8 +57,8 @@ namespace Badger.ViewModels
 
         public override ConfigNodeViewModel clone()
         {
-            //can't clone this type of node
-            throw new NotImplementedException();
+            return new ForkValueViewModel(name,parent as ForkedNodeViewModel
+                ,configNode.clone());
         }
     }
 }
