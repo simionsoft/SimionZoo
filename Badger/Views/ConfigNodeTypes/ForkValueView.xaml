@@ -7,13 +7,15 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.ForkValueView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
-
+    <UserControl.Resources>
+        <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
+    </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <Label Margin="4,0,0,0" Content="{Binding name}" FontSize="8"></Label>
         <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Add" 
                             cal:Message.Attach="removeThisValue"
                             Width="15" Height="15" >
-            <Image Source="/images/remove.png" Width="10" Height="10"></Image>
+            <Image Source="{StaticResource remove}" Width="10" Height="10"></Image>
         </Button>
     </StackPanel>
 

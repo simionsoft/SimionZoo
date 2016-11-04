@@ -10,6 +10,7 @@
                 d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
     </UserControl.Resources>    
     <TreeViewItem IsExpanded="True" Margin="-15,0,0,0">
         <TreeViewItem.Header>
@@ -22,7 +23,7 @@
                         <ContextMenu Visibility="{Binding Path=bCanBeForked,Converter={StaticResource BoolToVis}}">
                             <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                                 <MenuItem.Icon>
-                                    <Image Source="/images/fork.png"></Image>
+                                    <Image Source="{StaticResource fork}"></Image>
                                 </MenuItem.Icon>
                             </MenuItem>
                         </ContextMenu>

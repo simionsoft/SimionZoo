@@ -27,7 +27,9 @@
         <DataTemplate DataType="{x:Type vm:PlotViewModel}">
             <v:PlotView/>
         </DataTemplate>
-
+        <BitmapImage x:Key="load" UriSource="/images/load.png" />
+        <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
+        <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
     </Window.Resources>
     
     <StackPanel Orientation="Horizontal" Margin="2">
@@ -68,7 +70,7 @@
                 <StackPanel Orientation="Horizontal" Width="480" Margin="2">
                     <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
                             cal:Message.Attach="[Event Click]=[Action loadExperimentBatch()]">
-                        <Image Source="/images/load.png" Width="25" Height="25"/>
+                        <Image Source="{StaticResource load}" Width="25" Height="25"/>
                     </Button>
                     <Label Margin="10 0 10 0">Source</Label>
                     <ComboBox Width="200" ItemsSource="{Binding Path=sourceOptions}" SelectedItem="{Binding Path=selectedSource}"/>
@@ -77,13 +79,13 @@
                             <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
                             cal:Message.Attach="[Event Click]=[Action generatePlots()]"
                             Visibility="{Binding Path=bCanGeneratePlots, Converter={StaticResource BoolToVis}}">
-                                <Image Source="/images/plot.png" Width="25" Height="25"/>
+                                <Image Source="{StaticResource plot}" Width="25" Height="25"/>
                             </Button>
                         </StackPanel>
                         <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
                             cal:Message.Attach="[Event Click]=[Action savePlots()]"
                             Visibility="{Binding Path=bCanSavePlots, Converter={StaticResource BoolToVis}}">
-                            <Image Source="/images/save-all.png" Width="25" Height="25"/>
+                            <Image Source="{StaticResource save-all}" Width="25" Height="25"/>
                         </Button>
                     </StackPanel>
                 </StackPanel>

@@ -10,6 +10,8 @@
 d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
+        <BitmapImage x:Key="folder" UriSource="/images/folder.png" />
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
@@ -19,7 +21,7 @@ d:DesignHeight="50" d:DesignWidth="300">
                 <ContextMenu Visibility="{Binding Path=bCanBeForked,Converter={StaticResource BoolToVis}}">
                     <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                         <MenuItem.Icon>
-                            <Image Source="/images/fork.png"></Image>
+                            <Image Source="{StaticResource fork}"></Image>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -29,7 +31,7 @@ d:DesignHeight="50" d:DesignWidth="300">
                  TextWrapping="WrapWithOverflow"/>
 
         <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"  cal:Message.Attach="[Event Click]=[Action selectFile()]">
-            <Image Source="/images/folder.png" Width="25" Height="25"></Image>
+            <Image Source="{StaticResource folder}" Width="25" Height="25"></Image>
         </Button>
 
     </StackPanel>

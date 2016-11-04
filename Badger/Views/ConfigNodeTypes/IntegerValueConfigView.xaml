@@ -10,6 +10,7 @@
 d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
         <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
@@ -18,7 +19,7 @@ d:DesignHeight="50" d:DesignWidth="300">
                 <ContextMenu Visibility="{Binding Path=bCanBeForked,Converter={StaticResource BoolToVis}}">
                     <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                         <MenuItem.Icon>
-                            <Image Source="/images/fork.png"></Image>
+                            <Image Source="{StaticResource fork}"></Image>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>

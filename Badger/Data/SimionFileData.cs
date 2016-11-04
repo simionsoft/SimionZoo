@@ -11,8 +11,10 @@ namespace Badger.Data
 {
     public static class SimionFileData
     {
+        public const string appConfigDir = "../config/apps";
         public const string experimentDir = "../experiments";
         public const string imageDir = "../images";
+        public const string badgerLogFile = "badger-log.txt";
 
         public delegate void logFunction(string message);
         public delegate void XmlNodeFunction(XmlNode node);

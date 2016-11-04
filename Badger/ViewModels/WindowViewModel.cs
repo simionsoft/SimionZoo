@@ -6,9 +6,6 @@ using System.IO;
 using System.Collections.Generic;
 using System;
 using System.Text;
-using System.Windows.Forms;
-using System.Threading.Tasks;
-using Simion;
 
 
 namespace Badger.ViewModels
@@ -108,7 +105,7 @@ namespace Badger.ViewModels
             if (m_selectedAppName == null) return;
 
             string xmlDefinitionFile = appDefinitions[m_selectedAppName];
-            AppViewModel newApp = new AppViewModel(xmlDefinitionFile,"New");
+            AppViewModel newApp = new AppViewModel(xmlDefinitionFile,null,"New");
             tabControlExperiments.Add( newApp);
             NotifyOfPropertyChange(() => tabControlExperiments);
             NotifyOfPropertyChange(() => listControlExperiments);
@@ -117,7 +114,7 @@ namespace Badger.ViewModels
         }
        
         private object m_logFileLock = new object();
-        public const string logFilename= "badger-log.txt";
+        public const string logFilename= SimionFileData.badgerLogFile;
         
         public void logToFile(string logMessage)
         {
@@ -145,7 +142,7 @@ namespace Badger.ViewModels
         }
         private void loadAppDefinitions()
         {
-            foreach(string app in Directory.GetFiles("..\\config\\apps"))
+            foreach(string app in Directory.GetFiles(SimionFileData.appConfigDir))
             {
                 char[] spliter = "\\".ToCharArray();
                 string[] tmp = app.Split(spliter);

@@ -9,6 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BitmapImage x:Key="herdagent-head" UriSource="/images/herdagent-head.png" />
     </UserControl.Resources>
 
     <Border Margin="0" BorderThickness="2">
@@ -21,7 +22,7 @@
 
         <StackPanel Orientation="Horizontal">
             <StackPanel VerticalAlignment="Center" Margin="0,0,20,0">
-                <Image Width="30" Height="30" Source="/images/herdagent-head.png"></Image>
+                <Image Width="30" Height="30" Source="{StaticResource herdagent-head}"></Image>
             </StackPanel>
             <StackPanel Orientation="Vertical" Width="230">
                 <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">

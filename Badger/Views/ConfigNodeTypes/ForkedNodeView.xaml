@@ -7,12 +7,19 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.ForkedNodeView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
+        <BitmapImage x:Key="left-arrow" UriSource="/images/left-arrow.png" />
+        <BitmapImage x:Key="right-arrow" UriSource="/images/right-arrow.png" />
+        <BitmapImage x:Key="add" UriSource="/images/add.png" />
+        <BitmapImage x:Key="cancel" UriSource="/images/cancel.png" />
+    </UserControl.Resources>
     <Border BorderBrush="Orange">
         <StackPanel Orientation="Horizontal">
             <ContentControl x:Name="selectedValueConfigNode" />
             <StackPanel  Margin="10,0,0,0" Background="Orange" Width="46" Orientation="Vertical">
                 <StackPanel>
-                    <Image  Source="/images/fork.png" Width="20"/>
+                    <Image  Source="{StaticResource fork}" Width="20"/>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center">
                     <Label HorizontalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
@@ -21,23 +28,23 @@
                     <Button Background="Transparent" BorderBrush="Transparent" Width="20" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action previousValue()]"
                             Opacity="{Binding bIsTherePreviousValue}">
-                        <Image Source="/images/left-arrow.png"  ToolTip="Set previous value" Width="10"></Image>
+                        <Image Source="{StaticResource left-arrow}"  ToolTip="Set previous value" Width="10"></Image>
                     </Button>
                     <Button Background="Transparent" BorderBrush="Transparent" Width="20" Height="20" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action nextValue()]"
                             Opacity="{Binding bIsThereNextValue}">
-                        <Image Source="/images/right-arrow.png"  ToolTip="Set next value" Width="10"></Image>
+                        <Image Source="{StaticResource right-arrow}"  ToolTip="Set next value" Width="10"></Image>
                     </Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action addValue()]">
-                        <Image Source="/images/add.png"  ToolTip="Add a new value" Width="10"></Image>
+                        <Image Source="{StaticResource add}"  ToolTip="Add a new value" Width="10"></Image>
                     </Button>
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
                                 Opacity="{Binding bIsThereMoreValues}">
-                        <Image Source="/images/cancel.png"  ToolTip="Remove this value" Width="10"></Image>
+                        <Image Source="{StaticResource cancel}"  ToolTip="Remove this value" Width="10"></Image>
                     </Button>
                 </StackPanel>
             </StackPanel>

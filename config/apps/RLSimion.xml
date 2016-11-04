@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <APP Name="RLSimion" FileVersion="1">
-  <EXE>../Release/RLSimion.exe</EXE>
-  <PRE>../Release/msvcp120.dll</PRE>
-  <PRE>../Release/msvcr120.dll</PRE>
-  <PRE>../Release/msvcp140.dll</PRE>
-  <PRE>../Release/vcruntime140.dll</PRE>
+  <EXE>../bin/RLSimion.exe</EXE>
+  <PRE>../bin/msvcp120.dll</PRE>
+  <PRE>../bin/msvcr120.dll</PRE>
+  <PRE>../bin/msvcp140.dll</PRE>
+  <PRE>../bin/vcruntime140.dll</PRE>
   
   <INCLUDE>../config/definitions.xml</INCLUDE>
 
