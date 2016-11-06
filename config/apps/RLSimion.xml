@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <APP Name="RLSimion" FileVersion="1">
   <EXE>../bin/RLSimion.exe</EXE>
-  <PRE>../bin/msvcp120.dll</PRE>
-  <PRE>../bin/msvcr120.dll</PRE>
   <PRE>../bin/msvcp140.dll</PRE>
   <PRE>../bin/vcruntime140.dll</PRE>
   

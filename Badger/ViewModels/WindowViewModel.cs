@@ -142,7 +142,7 @@ namespace Badger.ViewModels
         }
         private void loadAppDefinitions()
         {
-            foreach(string app in Directory.GetFiles(SimionFileData.appConfigDir))
+            foreach(string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
             {
                 char[] spliter = "\\".ToCharArray();
                 string[] tmp = app.Split(spliter);

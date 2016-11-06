@@ -161,7 +161,7 @@ namespace Badger.ViewModels
 
         public void savePlots()
         {
-            string outputFolder= CaliburnUtility.selectFolder(SimionFileData.imageDir);
+            string outputFolder= CaliburnUtility.selectFolder(SimionFileData.imageRelativeDir);
             if (outputFolder!="")
             {
                 foreach(PlotViewModel plot in m_plots)

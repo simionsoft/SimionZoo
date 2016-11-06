@@ -18,12 +18,14 @@ namespace Badger
 
         public override void Install(IDictionary stateSaver)
         {
+            base.Install(stateSaver);
+            string installDir = this.Context.Parameters["installDir"];
+
             foreach (string dir in new string[] { SimionFileData.experimentDir
-                                                , SimionFileData.imageDir })
+                                                , SimionFileData.imageDir, SimionFileData.binDir})
             {
-
-
-                DirectoryInfo dirInfo = new DirectoryInfo(dir);
+                string targetDir= Path.Combine(installDir,dir);
+                DirectoryInfo dirInfo = new DirectoryInfo(targetDir);
 
                 // Now apply user access permissions to the folder
                 if (dirInfo != null)

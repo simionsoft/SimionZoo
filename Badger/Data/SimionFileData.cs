@@ -11,9 +11,12 @@ namespace Badger.Data
 {
     public static class SimionFileData
     {
-        public const string appConfigDir = "../config/apps";
-        public const string experimentDir = "../experiments";
-        public const string imageDir = "../images";
+        public const string binDir = "bin";
+        public const string experimentDir = "experiments";
+        public const string imageDir = "images";
+        public const string appConfigRelativeDir = "../config/apps";
+        public const string experimentRelativeDir = "../" + experimentDir;
+        public const string imageRelativeDir = "../" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
 
         public delegate void logFunction(string message);
@@ -63,8 +66,8 @@ namespace Badger.Data
             //Save dialog -> returns the experiment batch file
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-            sfd.InitialDirectory = experimentDir;
-            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
+            sfd.InitialDirectory = experimentRelativeDir;
+            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
             if (!Directory.Exists(CombinedPath))
                 Directory.CreateDirectory(CombinedPath);
             sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
@@ -195,7 +198,7 @@ namespace Badger.Data
             }
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *." + XMLConfig.badgerExtension;
-            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
+            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
             if (!Directory.Exists(CombinedPath))
                 Directory.CreateDirectory(CombinedPath);
             sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
@@ -246,8 +249,8 @@ namespace Badger.Data
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
-            sfd.InitialDirectory = experimentDir;
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), experimentDir);
+            sfd.InitialDirectory = experimentRelativeDir;
+            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
             if (!Directory.Exists(CombinedPath))
                 System.IO.Directory.CreateDirectory(CombinedPath);
             sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
