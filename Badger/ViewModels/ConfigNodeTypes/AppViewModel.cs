@@ -300,41 +300,10 @@ namespace Badger.ViewModels
         }
 
 
-
         public int getNumForkCombinations()
         {
-            ////lambda functions for simple nodes and nested nodes
-            //Func<ConfigNodeViewModel, int> getNumForkCombinationsSimpleNode = null;
-            //getNumForkCombinationsSimpleNode=
-            //    (sNode) =>
-            //    {
-            //        ForkValueViewModel forkValue = sNode as ForkValueViewModel;
-            //        if (forkValue != null)
-            //        {
-            //            return 1*getNumForkCombinationsSimpleNode(forkValue.configNode);
-            //        }
-            //        return 0;
-            //    };
-            //Func<ConfigNodeViewModel, int> getNumForkCombinationsNestedNode = null;
-            //getNumForkCombinationsNestedNode=
-            //    (nestedNode) => {
-            //        ForkedNodeViewModel fork = nestedNode as ForkedNodeViewModel;
-            //        if (fork != null)
-            //        {
-            //            int numForkCombinationsBeneath = 1;
-            //            //set the correct value for the fork
-            //            foreach (ConfigNodeViewModel child in fork.children)
-            //                numForkCombinationsBeneath *= getNumForkCombinationsNestedNode(child);
-
-            //            return numForkCombinationsBeneath;
-            //            }
-            //        else return 1;
-            //    };
-
             int numForkCombinations= 1;
-            //call to the traverse function: this is messy as fuck
             foreach (ConfigNodeViewModel child in children)
-                // numForkCombinations*= child.traverseRetInt(getNumForkCombinationsSimpleNode,getNumForkCombinationsNestedNode);
                 numForkCombinations *= child.getNumForkCombinations();
                     
             return numForkCombinations;

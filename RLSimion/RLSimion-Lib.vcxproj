@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{55258748-663F-49F6-A6B8-125D6D80A444}</ProjectGuid>
-    <RootNamespace>RLLibtest</RootNamespace>
+    <RootNamespace>RLSimion</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>RLSimion</ProjectName>
   </PropertyGroup>
