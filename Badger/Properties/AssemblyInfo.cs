@@ -8,9 +8,9 @@ using System.Windows;
 // conjunto de atributos. Cambie estos atributos para modificar la información
 // asociada con un ensamblado.
 [assembly: AssemblyTitle("Badger")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Distributed batch execution of Simion apps")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("SimionSoft - GIC (UPV/EHU)")]
 [assembly: AssemblyProduct("Badger")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]

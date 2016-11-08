@@ -346,13 +346,10 @@ namespace Herd
                 return false;
             }
 
-            if (type == FileType.INPUT)
-            {
-                m_job.inputFiles.Add(match.Groups[2].Value);
-                m_nextFileName = match.Groups[2].Value;
-            }
+            if (type == FileType.INPUT) m_job.inputFiles.Add(match.Groups[2].Value);
             else m_job.outputFiles.Add(match.Groups[2].Value);
 
+            m_nextFileName = match.Groups[2].Value;
             if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
             else m_nextFileSize = 0;
 
@@ -510,37 +507,23 @@ namespace Herd
                 logMessage("write operation cancelled");
             }
         }
-        //public void readFromNetworkStream(TcpClient client, NetworkStream stream)
-        //{
-        //    discardProcessedData();
-        //    //read if there's something to read and if we have available storage
-        //    do
-        //    {
-        //        //CJobDispatcher.checkConnection(client);
-        //        if (stream.DataAvailable && m_bytesInBuffer < m_maxChunkSize)
-        //        {
-        //            m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
-        //        }
-        //        if (m_bytesInBuffer == 0) Thread.Sleep(200);
-        //    } while (m_bytesInBuffer == 0);
-        //}
+
         public async Task<int> readFromNetworkStreamAsync(TcpClient client, NetworkStream stream,CancellationToken cancelToken)
         {
             int numBytesRead= 0;
             discardProcessedData();
             //read if there's something to read and if we have available storage
-            try { numBytesRead = await stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer, cancelToken); }
-            catch (OperationCanceledException) { logMessage("async read from network stream cancelled"); }
+            try
+            {
+                numBytesRead = await 
+                    stream.ReadAsync(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer, cancelToken);
+            }
+            catch (OperationCanceledException)
+            { logMessage("async read from network stream cancelled"); }
             m_bytesInBuffer += numBytesRead;
             return numBytesRead;
         }
-        //public void readFromNamedPipeStream(NamedPipeServerStream stream)
-        //{
-        //    discardProcessedData();
-        //    //read if there's something to read and if we have available storage
-        //    if (m_bytesInBuffer < m_maxChunkSize)
-        //        m_bytesInBuffer += stream.Read(m_buffer, m_bytesInBuffer, m_maxChunkSize - m_bytesInBuffer);
-        //}
+
         public async Task< int> readFromNamedPipeStreamAsync(NamedPipeServerStream stream,CancellationToken cancelToken)
         {
             int numBytesRead= 0;

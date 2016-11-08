@@ -242,7 +242,7 @@ namespace Herd
                 xmlTag= m_xmlStream.peekNextXMLTag();
                 while (xmlTag=="")
                 {
-                    ret = await readAsync(cancelToken);
+                    ret = await ReadFromStreamAsync(cancelToken);
                     xmlTag = m_xmlStream.peekNextXMLTag();
                 }
 

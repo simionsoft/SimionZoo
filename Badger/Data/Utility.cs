@@ -13,6 +13,7 @@ namespace Badger.Data
     public static class Utility
     {
         [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+
         private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
         
               

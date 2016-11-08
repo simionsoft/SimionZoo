@@ -198,16 +198,15 @@ namespace Badger.ViewModels
 
                 logMessage("Cancellation requested by user");
                 m_shepherd.writeMessage(Shepherd.m_quitMessage, true);
-                m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
+                await m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
                 
                 m_monitoredExperiments.ForEach((exp) => { exp.resetState(); });
                 m_herdAgent.status = "";
             }
             catch (Exception ex)
             {
-                //to do: aqui salta cuando hay cualquier problema. Si hay problema hay que volver a lanzarlo
-                //mandar a cualquier maquina que este libre
                 logMessage("Unhandled exception in Badger.sendJobAndMonitor(). Agent " + m_herdAgent.ipAddress);
+                logMessage(ex.ToString());
                 m_failedExperiments.Clear();
                 foreach (MonitoredExperimentViewModel exp in m_monitoredExperiments) m_failedExperiments.Add(exp);
                 Console.WriteLine(ex.StackTrace);

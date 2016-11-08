@@ -137,6 +137,7 @@ namespace Badger.ViewModels
             ForkValueViewModel newForkValue = new ForkValueViewModel(newValueName,this,selectedValueConfigNode.clone());
             children.Add(newForkValue);
             updateBoolFlags();
+            m_appViewModel.updateNumForkCombinations();
         }
 
         public void removeFork()
@@ -145,6 +146,7 @@ namespace Badger.ViewModels
             int childIndex = parent.children.IndexOf(this);
             parent.children.Remove(this);
             parent.children.Insert(childIndex, selectedForkValue.configNode);
+            m_appViewModel.updateNumForkCombinations();
         }
 
         public void removeSelectedValue()
@@ -163,6 +165,7 @@ namespace Badger.ViewModels
 
             renameValues();
             updateBoolFlags();
+            m_appViewModel.updateNumForkCombinations();
         }
 
         public void nextValue()

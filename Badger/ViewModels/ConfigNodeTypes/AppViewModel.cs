@@ -299,6 +299,15 @@ namespace Badger.ViewModels
             return "";
         }
 
+        public string numForkCombinations
+        {
+            get { return "(" + getNumForkCombinations() + " experiments)"; }
+        }
+
+        public void updateNumForkCombinations()
+        {
+            NotifyOfPropertyChange(() => numForkCombinations);
+        }
 
         public int getNumForkCombinations()
         {

@@ -9,7 +9,8 @@
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <Border BorderThickness="2" BorderBrush="DarkGray">
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-            <TextBox Margin="2" Width="200" x:Name="name"/>
+            <TextBox Text="" Margin="2" Width="100" x:Name="name"/>
+            <Label Content="{Binding numForkCombinations}" FontSize="8"/>
         </StackPanel>
     </Border>
 
