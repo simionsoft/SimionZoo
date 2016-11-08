@@ -319,11 +319,6 @@
     <ENUM-VALUE Name="Distribution" Class="Distribution" Default="linear" Comment="The manner in which the points are distributed on the action variable's grid"/>
   </CLASS>
 
-  <CLASS Name="CDirFileOutput">
-    <DIR-PATH-VALUE Name="Output-Dir" Default="../data" Comment="The output directory"/>
-    <STRING-VALUE Name="File-Prefix" Default="" Comment="The prefix given to all the output files"/>
-  </CLASS>
-
   <CLASS Name="CPolicy-Factory">
     <CHOICE Name="Policy" Comment="The policy type">
       <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise" Comment="A deterministic policy pi(s) to which some noise is added"/>
@@ -349,10 +344,22 @@
 
   <CLASS Name="CLinearStateVFA">
     <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the weights on initialization"/>
+    <CHOICE Name="Feature-Map" Comment= "Choose from an explicit feature map or the global feature map">
+      <CHOICE-ELEMENT Name="Global" Class="" Comment="Use the global state feature map"/>
+      <CHOICE-ELEMENT Name="Explicit" Class="CStateFeatureMap-Factory" Comment="Define an explicit feature map"/>
+    </CHOICE>
   </CLASS>
 
   <CLASS Name="CLinearStateActionVFA">
     <DOUBLE-VALUE Name="Init-Value" Default="0.0" Comment="The initial value given to the weights on initialization"/>
+    <CHOICE Name="State-Feature-Map" Comment= "Choose from an explicit feature map or the global feature map">
+      <CHOICE-ELEMENT Name="Global" Class="" Comment="Use the global state feature map"/>
+      <CHOICE-ELEMENT Name="Explicit" Class="CStateFeatureMap-Factory" Comment="Define an explicit feature map"/>
+    </CHOICE>
+    <CHOICE Name="Action-Feature-Map" Comment= "Choose from an explicit feature map or the global feature map">
+      <CHOICE-ELEMENT Name="Global" Class="" Comment="Use the global action feature map"/>
+      <CHOICE-ELEMENT Name="Explicit" Class="CActionFeatureMap-Factory" Comment="Define an explicit feature map"/>
+    </CHOICE>
   </CLASS>
 
   <CLASS Name="CBalancingPole">

@@ -54,6 +54,6 @@ public:
 
 	//global feature maps
 	CStateFeatureMap* getGlobalStateFeatureMap(){ return m_pGlobalStateFeatureMap; }
-	CActionFeatureMap* getGlobalActionStateFeatureMap(){ return m_pGlobalActionFeatureMap; }
+	CActionFeatureMap* getGlobalActionFeatureMap(){ return m_pGlobalActionFeatureMap; }
 };
 

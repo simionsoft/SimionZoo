@@ -40,11 +40,12 @@ namespace Badger.ViewModels
             = new Dictionary<string, List<string>>();
         
 
-        public XmlNode getClassDefinition(string className)
+        public XmlNode getClassDefinition(string className, bool bCanBeNull= false)
         {
             if (!m_classDefinitions.ContainsKey(className))
             {
-                CaliburnUtility.showWarningDialog("Undefined class" + className, "ERROR");
+                if (!bCanBeNull)
+                    CaliburnUtility.showWarningDialog("Undefined class" + className, "ERROR");
                 return null;
             }
             return m_classDefinitions[className];

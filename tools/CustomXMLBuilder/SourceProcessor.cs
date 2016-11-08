@@ -182,7 +182,7 @@ namespace CustomXMLBuilder
             //#define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment)
             //-> <CHOICE Name="" Comment =""><CHOICE-ELEMENT Name="".../></CHOICE>
 
-            string sPattern = @"(CHOICE_ELEMENT|CHOICE_ELEMENT_FACTORY)\s*\(" + extractTokenRegex + @"\)";
+            string sPattern = @"(CHOICE_ELEMENT|CHOICE_ELEMENT_FACTORY|CHOICE_ELEMENT_INLINE|CHOICE_ELEMENT_INLINE_FACTORY)\s*\(" + extractTokenRegex + @"\)";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
@@ -193,9 +193,10 @@ namespace CustomXMLBuilder
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 string referencedClass;
-                if (match.Groups[1].Value.Trim(' ') == "CHOICE_ELEMENT")
-                    referencedClass = parameterMatches[1].Value.Trim(' ');
-                else referencedClass = parameterMatches[1].Value.Trim(' ') + "-Factory";
+                if (match.Groups[1].Value.Trim(' ').EndsWith("_FACTORY"))
+                    referencedClass = parameterMatches[1].Value.Trim(' ') + "-Factory";
+                else referencedClass = parameterMatches[1].Value.Trim(' ');
+                
                 m_checker.addClassReference(new classReference(referencedClass,m_currentFile,0));
                 parsedXML += getLevelIndent() + "<CHOICE-ELEMENT Name=" + parameterMatches[0].Value.Trim(' ') + " Class=\""
                         + referencedClass + "\" Comment=" + parameterMatches[2].Value.Trim(' ') + "/>\n";
@@ -231,23 +232,20 @@ namespace CustomXMLBuilder
             //#define END_CHOICE()
             increaseIndent();
 
-            string sPattern = @"(CHOICE|CHOICE_XML)\s*\(" + extractTokenRegex + @"\)(.*?)END_CHOICE\(\)";
+            string sPattern = @"(CHOICE|CHOICE_INLINE)\s*\(" + extractTokenRegex + @"\)(.*?)END_CHOICE";
 
             string parsedXML = "";
             foreach (Match match in Regex.Matches(text, sPattern))
             {
                 //Console.WriteLine(match.Value);
-                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CHOICE|CHOICE_XML)\(" + extractTokenRegex + @"\)");
+                var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, @"(CHOICE|CHOICE_INLINE)\(" + extractTokenRegex + @"\)");
                 string arguments = functionArgumentsMatch.Groups[0].Value;
 
                 var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
 
                 parsedXML += getLevelIndent() + "<CHOICE Name=" + parameterMatches[1].Value;
 
-                if (parameterMatches.Count>3)
-                    parsedXML +=  " Comment=" + parameterMatches[3].Value + @" LoadXML=" + parameterMatches[2].Value;
-                else 
-                    parsedXML+=" Comment=" + parameterMatches[2].Value;
+                parsedXML+=" Comment=" + parameterMatches[2].Value;
                 parsedXML += ">\n";
 
                 parsedXML += parseChoiceElementsLoadXML(match.Groups[2].Value);

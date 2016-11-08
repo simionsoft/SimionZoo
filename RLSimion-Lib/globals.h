@@ -27,9 +27,15 @@
 #define CHOICE(name,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
 #define END_CHOICE() return 0;
 
+#define CHOICE_INLINE(name,comment) CParameters* pChild= 0;if (pParameters) pChild= pParameters->getChild(name);
+#define END_CHOICE_INLINE()
+
+
 #define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment,...) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),XMLFilename,__VA_ARGS__);
-#define CHOICE_ELEMENT(checkLiteral,className,comment,...) if (pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),__VA_ARGS__);
+#define CHOICE_ELEMENT(checkLiteral,className,comment) if (pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral));
 #define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment,...) if(pChild->getChild(checkLiteral)) return className::getInstance(pChild->getChild(checkLiteral),__VA_ARGS__);
+#define CHOICE_ELEMENT_INLINE(checkLiteral,className,comment,variable,value) if (pChild && pChild->getChild(checkLiteral)) variable= value;
+#define CHOICE_ELEMENT_INLINE_FACTORY(checkLiteral,className,comment,variable,value) if (pChild && pChild->getChild(checkLiteral)) variable= value;
 
 #define NUMERIC_VALUE(variable,parameterName,comment) variable= CNumericValue::getInstance(pParameters->getChild(parameterName));
 #define CONST_INTEGER_VALUE(variable,parameterName,defaultValue,comment) variable= pParameters->getConstInteger(parameterName,defaultValue);

@@ -130,8 +130,14 @@ void CLinearStateVFA::save(const char* pFilename) const
 
 CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
 {
-	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
-	//CHILD_ CLASS_ FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
+	m_pStateFeatureMap = 0;
+	CHOICE_INLINE("Feature-Map", "Choose from an explicit feature map or the global feature map");
+		CHOICE_ELEMENT_INLINE("Global", ,"Use the global state feature map",m_pStateFeatureMap,CApp::get()->SimGod.getGlobalStateFeatureMap());
+		CHOICE_ELEMENT_INLINE_FACTORY("Explicit",CStateFeatureMap,"Define an explicit feature map",m_pStateFeatureMap,CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
+	END_CHOICE_INLINE();
+	//default initialization
+	if (m_pStateFeatureMap == 0)
+		m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_pWeights = 0;
@@ -153,13 +159,7 @@ void CLinearStateVFA::deferredLoadStep()
 		m_pWeights[i] = m_initValue;
 }
 
-CLinearStateVFA::CLinearStateVFA() : CLinearVFA()
-{}
 
-CLinearStateVFA::CLinearStateVFA(CLinearStateVFA* pSourceVFA)
-{
-
-}
 
 
 
@@ -226,8 +226,23 @@ double CLinearStateVFA::getValue(const CState *s)
 
 CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 {
-	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
-	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionStateFeatureMap();
+	m_pStateFeatureMap = 0;
+	CHOICE_INLINE("State-Feature-Map", "Choose from an explicit feature map or the global feature map");
+	CHOICE_ELEMENT_INLINE("Global", , "Use the global state feature map", m_pStateFeatureMap, CApp::get()->SimGod.getGlobalStateFeatureMap());
+	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CStateFeatureMap, "Define an explicit feature map", m_pStateFeatureMap, CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
+	END_CHOICE_INLINE();
+	//default initialization
+	if (m_pStateFeatureMap == 0)
+		m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+
+	m_pActionFeatureMap = 0;
+	CHOICE_INLINE("Action-Feature-Map", "Choose from an explicit feature map or the global feature map");
+	CHOICE_ELEMENT_INLINE("Global", , "Use the global action feature map", m_pActionFeatureMap, CApp::get()->SimGod.getGlobalActionFeatureMap());
+	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CActionFeatureMap, "Define an explicit feature map", m_pActionFeatureMap, CActionFeatureMap::getInstance(pChild->getChild("Explicit")););
+	END_CHOICE_INLINE();
+	//default initialization
+	if (m_pActionFeatureMap == 0)
+		m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionFeatureMap();
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -252,7 +267,7 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA) : CLinearVFA(), CDeferredLoad()
 {
 	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
-	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionStateFeatureMap();
+	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionFeatureMap();
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();

@@ -98,7 +98,7 @@
       <OutputFile>../Release/$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <CustomBuildStep>
-      <Command>..\Debug\CustomXMLBuilder.exe $(ProjectDir)</Command>
+      <Command>..\Release\CustomXMLBuilder.exe $(ProjectDir)</Command>
       <Message>RLSimion XML preprocess</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Outputs>..\config\definitions.xml</Outputs>
