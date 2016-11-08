@@ -4,7 +4,9 @@ namespace Simion
 {
     public class XMLConfig
     {
-        public const int XMLConfigVersion = 2;
+        public const string experimentConfigVersion = "1.0.0.0";
+        public const string BadgerConfigVersion = "1.0.0.0";
+        public const string BatchConfigVersion = "1.0.0.0";
 
         public const string experimentExtension = "experiment";
         public const string experimentBatchExtension = "exp-batch";

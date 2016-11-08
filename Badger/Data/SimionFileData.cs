@@ -209,7 +209,8 @@ namespace Badger.Data
                 {
                     using (StreamWriter writer = new StreamWriter(outputFile))
                     {
-                        writer.WriteLine("<" + XMLConfig.badgerNodeTag + ">");
+                        writer.WriteLine("<" + XMLConfig.badgerNodeTag +  " " + XMLConfig.versionAttribute 
+                            + "=\"" + XMLConfig.BadgerConfigVersion + "\">");
                         leftSpace = "  ";
                         foreach (AppViewModel app in appViewModelList)
                         {

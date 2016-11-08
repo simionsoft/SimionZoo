@@ -160,7 +160,12 @@ namespace Badger.ViewModels
 
                     if (rootChild.Attributes.GetNamedItem(XMLConfig.versionAttribute) != null)
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
-                    else m_version = "0";
+                    else
+                    {
+                        CaliburnUtility.showWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
+                            ,"ERROR");
+                        m_version = "0.0.0.0";
+                    }
 
                     foreach (XmlNode child in rootChild.ChildNodes)
                     {
@@ -250,7 +255,8 @@ namespace Badger.ViewModels
         {
             saveMode = mode;
 
-            writer.WriteLine(leftSpace + "<" + appName + " Version=\"" + XMLConfig.XMLConfigVersion + "\">");
+            writer.WriteLine(leftSpace + "<" + appName + " " + XMLConfig.versionAttribute 
+                + "=\"" + XMLConfig.experimentConfigVersion + "\">");
 
             foreach (ConfigNodeViewModel node in m_children)
             {
