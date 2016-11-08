@@ -25,15 +25,18 @@ class CSimGod
 	CSimion** m_pSimions = 0;
 
 	CReward *m_pReward;
-	std::vector<std::pair<CDeferredLoad*, unsigned int>> m_delayedLoadObjects;
 
+	//lists that must be initialized before the constructor is actually called
+	std::vector<std::pair<CDeferredLoad*, unsigned int>> m_delayedLoadObjects;
 	std::vector<const char*> m_inputFiles;
 	std::vector<const char*> m_outputFiles;
 
 	CExperienceReplay* m_pExperienceReplay;
 public:
-	CSimGod(CParameters* pParameters);
+	CSimGod();
 	virtual ~CSimGod();
+
+	void init(CParameters* pParameters);
 
 	void selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r);

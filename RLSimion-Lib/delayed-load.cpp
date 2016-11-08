@@ -5,7 +5,7 @@
 
 CDeferredLoad::CDeferredLoad(unsigned int loadOrder)
 {
-	CApp::get()->pSimGod->registerDelayedLoadObj(this,loadOrder);
+	CApp::get()->SimGod.registerDelayedLoadObj(this,loadOrder);
 }
 
 CDeferredLoad::~CDeferredLoad()

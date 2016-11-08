@@ -106,9 +106,9 @@ void CLogger::setLogDirectory(const char* xmlFilePath)
 	//we register the name for input/output stuff
 	char fullLogFilename[MAX_FILENAME_LENGTH];
 	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_XML_DESCRIPTOR_FILENAME);
-	CApp::get()->pSimGod->registerOutputFile(fullLogFilename);
+	CApp::get()->SimGod.registerOutputFile(fullLogFilename);
 	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_FILENAME);
-	CApp::get()->pSimGod->registerOutputFile(fullLogFilename);
+	CApp::get()->SimGod.registerOutputFile(fullLogFilename);
 
 	//open the log file
 	m_hLogFile = openLogFile(fullLogFilename);

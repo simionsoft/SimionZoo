@@ -1,10 +1,11 @@
 // binLogFileReadTest.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include <stdio.h>
 #include <memory>
 #include "../../RLSimion-Lib/logger.h"
+#include <stdio.h>
+#include <tchar.h>
 
 #define HEADER_MAX_SIZE 16
 #define EXPERIMENT_HEADER 1

@@ -12,12 +12,12 @@
 
 void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 {
-	pSimGod->getOutputFiles(filePathList);
+	SimGod.getOutputFiles(filePathList);
 }
 
 void RLSimionApp::getInputFiles(CFilePathList& filePathList)
 {
-	pSimGod->getInputFiles(filePathList);
+	SimGod.getInputFiles(filePathList);
 }
 
 CLASS_CONSTRUCTOR(RLSimionApp, const char* xmlConfigPath)
@@ -37,7 +37,7 @@ CLASS_CONSTRUCTOR(RLSimionApp, const char* xmlConfigPath)
 	CHILD_CLASS(pExperiment, "Experiment", "The parameters of the experiment", false, CExperiment);	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
 
 	//Last, the SimGod was created to create and control all the simions
-	CHILD_CLASS(pSimGod, "SimGod", "The god class that controls all aspects of the simulation process", false, CSimGod);
+	CHILD_CLASS_INIT(SimGod, "SimGod", "The god class that controls all aspects of the simulation process", false, CSimGod);
 
 
 	END_CLASS();
@@ -58,7 +58,7 @@ void RLSimionApp::run()
 	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor()->getInstance();
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
-	pApp->pSimGod->delayedLoad();
+	pApp->SimGod.delayedLoad();
 	CLogger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
 
 	double r = 0.0;
@@ -72,13 +72,13 @@ void RLSimionApp::run()
 		for (pApp->pExperiment->nextStep(); pApp->pExperiment->isValidStep(); pApp->pExperiment->nextStep())
 		{
 			//a= pi(s)
-			pApp->pSimGod->selectAction(s, a);
+			pApp->SimGod.selectAction(s, a);
 
 			//s_p= f(s,a); r= R(s');
 			r = pApp->pWorld->executeAction(s, a, s_p);
 
 			//update god's policy and value estimation
-			pApp->pSimGod->update(s, a, s_p, r);
+			pApp->SimGod.update(s, a, s_p, r);
 
 			//log tuple <s,a,s',r>
 			pApp->pExperiment->timestep(s, a, s_p, pApp->pWorld->getRewardVector());

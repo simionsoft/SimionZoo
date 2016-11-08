@@ -11,7 +11,8 @@
 #include "featuremap.h"
 #include "experience-replay.h"
 
-CLASS_CONSTRUCTOR(CSimGod)
+
+CLASS_INIT(CSimGod)
 {
 	if (!pParameters) return;
 
@@ -31,6 +32,12 @@ CLASS_CONSTRUCTOR(CSimGod)
 	}
 	
 	END_CLASS();
+}
+
+CSimGod::CSimGod()
+{
+	m_numSimions = 0;
+	m_pSimions = 0;
 }
 
 

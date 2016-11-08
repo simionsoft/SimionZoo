@@ -26,7 +26,7 @@ public:
 	CLogger *pLogger;
 	CWorld *pWorld;
 	CExperiment *pExperiment;
-	CSimGod *pSimGod;
+	CSimGod SimGod;
 
 	virtual void getInputFiles(CFilePathList& filePathList) = 0;
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
