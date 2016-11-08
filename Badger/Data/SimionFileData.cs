@@ -146,7 +146,8 @@ namespace Badger.Data
         }
 
         //BADGER files: LOAD
-        static public void loadExperiments(ref BindableCollection<AppViewModel> appViewModelList
+        static public void loadExperiments(WindowViewModel parentWindow
+            ,ref BindableCollection<AppViewModel> appViewModelList
             ,Dictionary<string,string> appDefinitions
             ,logFunction log)
         {
@@ -175,7 +176,7 @@ namespace Badger.Data
                 if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count > 0)
                 {
                     configNode = experiment.FirstChild;
-                    appViewModelList.Add(new AppViewModel(appDefinitions[configNode.Name], configNode
+                    appViewModelList.Add(new AppViewModel(parentWindow,appDefinitions[configNode.Name], configNode
                         , experiment.Attributes[XMLConfig.nameAttribute].Value));
                 }
                 else
@@ -226,7 +227,7 @@ namespace Badger.Data
         }
 
         //EXPERIMENT file: LOAD
-        static public AppViewModel loadExperiment(Dictionary<string,string> appDefinitions)
+        static public AppViewModel loadExperiment(WindowViewModel parentWindow,Dictionary<string,string> appDefinitions)
         {
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
@@ -242,7 +243,7 @@ namespace Badger.Data
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            AppViewModel newApp = new AppViewModel(appDefinitions[rootNode.Name], fileDoc);
+            AppViewModel newApp = new AppViewModel(parentWindow,appDefinitions[rootNode.Name], fileDoc);
             return newApp;
         }
 

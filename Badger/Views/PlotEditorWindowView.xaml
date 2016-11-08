@@ -30,6 +30,7 @@
         <BitmapImage x:Key="load" UriSource="/images/load.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
+        <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
     </Window.Resources>
     
     <StackPanel Orientation="Horizontal" Margin="2">
@@ -94,7 +95,12 @@
                 <TabControl ItemsSource="{Binding Path=plots}" SelectedItem="{Binding Path=selectedPlot}" Height="510">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
-                            <ContentControl Content="{Binding name}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{Binding name}"/>
+                                <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
+                                    <Image Source="{StaticResource close}" Width="10"/>
+                                </Button>
+                            </StackPanel>
                         </DataTemplate>
                     </TabControl.ItemTemplate>
                 </TabControl>

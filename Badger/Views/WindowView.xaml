@@ -27,6 +27,7 @@
         <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
         <BitmapImage x:Key="play" UriSource="/images/play.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
+        <BitmapImage x:Key="close" UriSource="/images/cancel.png" />
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
@@ -76,8 +77,14 @@
                     <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="390" RenderTransformOrigin="0.5,0.5">
                         <TabControl x:Name="tabControlExperiments" SelectedItem="{Binding Path=selectedTabControlExperiment}">
                             <TabControl.ItemTemplate>
+
                                 <DataTemplate>
-                                    <ContentControl Content="{Binding name}"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="{Binding name}"/>
+                                        <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
+                                            <Image Source="{StaticResource close}" Width="10" />
+                                        </Button>
+                                    </StackPanel>
                                 </DataTemplate>
                             </TabControl.ItemTemplate>
                         </TabControl>

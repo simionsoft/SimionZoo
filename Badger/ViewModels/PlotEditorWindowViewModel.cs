@@ -124,7 +124,9 @@ namespace Badger.ViewModels
             //create a new plot for each variable
             foreach(LoggedVariableViewModel variable in m_selectedVariables)
             {
-                newPlots.Add(new PlotViewModel(variable.name, false));
+                PlotViewModel newPlot = new PlotViewModel(variable.name, false);
+                newPlot.parent = this;
+                newPlots.Add(newPlot);
             }
 
             //draw data from each log
@@ -151,7 +153,7 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedPlot = value;
-                m_selectedPlot.update();
+                if (m_selectedPlot!=null) m_selectedPlot.update();
                 NotifyOfPropertyChange(() => selectedPlot);
             }
         }
@@ -186,6 +188,11 @@ namespace Badger.ViewModels
         public void loadExperimentBatch()
         {
             SimionFileData.loadExperimentBatch(batchNodeLoadFunction);
+        }
+
+        public void close(PlotViewModel plot)
+        {
+            plots.Remove(plot);
         }
     }
 }

@@ -105,7 +105,7 @@ namespace Badger.ViewModels
             if (m_selectedAppName == null) return;
 
             string xmlDefinitionFile = appDefinitions[m_selectedAppName];
-            AppViewModel newApp = new AppViewModel(xmlDefinitionFile,null,"New");
+            AppViewModel newApp = new AppViewModel(this,xmlDefinitionFile,null,"New");
             tabControlExperiments.Add( newApp);
             NotifyOfPropertyChange(() => tabControlExperiments);
             NotifyOfPropertyChange(() => listControlExperiments);
@@ -178,7 +178,7 @@ namespace Badger.ViewModels
 
         public void loadExperiment()
         {
-            AppViewModel newApp = SimionFileData.loadExperiment(appDefinitions);
+            AppViewModel newApp = SimionFileData.loadExperiment(this,appDefinitions);
             tabControlExperiments.Add(newApp);
             checkEmptyExperimentList();
             selectedTabControlExperiment = newApp;
@@ -191,7 +191,12 @@ namespace Badger.ViewModels
             if (tabControlExperiments != null) tabControlExperiments.Clear();
             if (listControlExperiments != null) listControlExperiments.Clear();
         }
-
+        public void close(AppViewModel app)
+        {
+            tabControlExperiments.Remove(app);
+            NotifyOfPropertyChange(() => listControlExperiments);
+            checkEmptyExperimentList();
+        }
         public void removeSelectedExperiments()
         {
             if (selectedTabControlExperiment != null)
@@ -205,7 +210,7 @@ namespace Badger.ViewModels
         //BADGER files
         public void loadExperiments()
         {
-            SimionFileData.loadExperiments(ref m_appViewModels, appDefinitions, logToFile);
+            SimionFileData.loadExperiments(this,ref m_appViewModels, appDefinitions, logToFile);
             NotifyOfPropertyChange(() => tabControlExperiments);
             NotifyOfPropertyChange(() => listControlExperiments);
             if (m_appViewModels.Count > 0)

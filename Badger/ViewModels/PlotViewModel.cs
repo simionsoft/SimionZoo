@@ -135,5 +135,17 @@ namespace Badger.ViewModels
             var svgExporter = new OxyPlot.Wpf.SvgExporter { Width = 600, Height = 400 };
             svgExporter.ExportToFile(m_plot, fileName);
         }
+
+        private PlotEditorWindowViewModel m_parent= null;
+        public PlotEditorWindowViewModel parent
+        {
+            get { return m_parent; }
+            set { m_parent = value; }
+        }
+        public void close()
+        {
+            if (m_parent != null)
+                m_parent.close(this);
+        }
     }
 }

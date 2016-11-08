@@ -186,11 +186,15 @@ namespace Badger.ViewModels
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
+        private WindowViewModel m_parent;
+        public WindowViewModel parent { get { return m_parent; }set { m_parent = value; } }
+
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
-        public AppViewModel(string appDefinitionFileName, string configFilename)
+        public AppViewModel(WindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
         {
+            m_parent = parentWindow;
             //Load the configFile if a configFilename is provided
             XmlDocument configDoc= null;
             XmlNode configRootNode = null;
@@ -205,8 +209,9 @@ namespace Badger.ViewModels
         }
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
         //XML file, the calling method will be passing XML nodes belonging to the single XML file instead of filenames
-        public AppViewModel(string appDefinitionFileName, XmlNode configRootNode,string experimentName)
+        public AppViewModel(WindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode,string experimentName)
         {
+            m_parent = parentWindow;
             init(appDefinitionFileName, configRootNode,experimentName);
         }
 
@@ -334,6 +339,12 @@ namespace Badger.ViewModels
                 child.setForkCombination(ref combinationId,ref combinationName);
             }
             return combinationName;
+        }
+
+        public void close()
+        {
+            if (m_parent != null)
+                m_parent.close(this);
         }
     }
 }
