@@ -32,10 +32,8 @@ class CSimGod
 
 	CExperienceReplay* m_pExperienceReplay;
 public:
-	CSimGod();
+	CSimGod(CParameters* pParameters);
 	virtual ~CSimGod();
-
-	void init(CParameters* pParameters);
 
 	void selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r);

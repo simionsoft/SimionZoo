@@ -25,10 +25,8 @@ public:
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel; }
 	static void setDynamicModel(CDynamicModel* model){ m_pDynamicModel = model; }
 
-	CWorld();
+	CWorld(CParameters* pParameters);
 	virtual ~CWorld();
-
-	void init(CParameters* pParameters);
 
 	void reset(CState *s);
 

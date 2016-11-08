@@ -41,7 +41,7 @@ CBalancingPole::~CBalancingPole()
 void CBalancingPole::reset(CState *s)
 {
 
-	if (CApp::get()->Experiment.isEvaluationEpisode())
+	if (CApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
 		s->setValue(m_sTheta, -0.1);
@@ -98,8 +98,8 @@ void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
 #define twelve_degrees 0.2094384
 double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
-	bool bEval = CApp::get()->Experiment.isEvaluationEpisode();
-	int step = CApp::get()->Experiment.getStep();
+	bool bEval = CApp::get()->pExperiment->isEvaluationEpisode();
+	int step = CApp::get()->pExperiment->getStep();
 	double theta = s_p->getValue("theta");
 	double x = s_p->getValue("x");
 
@@ -108,7 +108,7 @@ double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const 
 		theta < -twelve_degrees ||
 		theta > twelve_degrees)
 	{
-		CApp::get()->Experiment.setTerminalState();
+		CApp::get()->pExperiment->setTerminalState();
 		return -1.0;
 	}
 

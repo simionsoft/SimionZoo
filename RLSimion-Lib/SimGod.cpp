@@ -11,7 +11,7 @@
 #include "featuremap.h"
 #include "experience-replay.h"
 
-CLASS_INIT(CSimGod)
+CLASS_CONSTRUCTOR(CSimGod)
 {
 	if (!pParameters) return;
 
@@ -31,12 +31,6 @@ CLASS_INIT(CSimGod)
 	}
 	
 	END_CLASS();
-}
-
-CSimGod::CSimGod()
-{
-	m_numSimions = 0;
-	m_pSimions = 0;
 }
 
 
@@ -70,7 +64,7 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
 	CExperienceTuple* pExperienceTuple;
 
-	if (CApp::get()->Experiment.isEvaluationEpisode()) return;
+	if (CApp::get()->pExperiment->isEvaluationEpisode()) return;
 
 	m_pExperienceReplay->addTuple(s, a, s_p, r);
 

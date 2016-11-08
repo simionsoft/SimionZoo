@@ -4,7 +4,6 @@
 #include "stdafx.h"
 
 #include "../RLSimion-Lib/app-rlsimion.h"
-#include "../RLSimion-Lib/app-controller-to-vfa.h"
 #include "../RLSimion-Lib/logger.h"
 #include "../RLSimion-Lib/parameters.h"
 
@@ -29,8 +28,8 @@ int main(int argc, char* argv[])
 
 		if (!strcmp("RLSimion", pParameters->getName()))
 			pApp = new RLSimionApp(pParameters, argv[1]);
-		else if (!strcmp("ControllerToVFA", pParameters->getName()))
-			pApp = new ControllerToVFAApp(pParameters);
+		//else if (!strcmp("ControllerToVFA", pParameters->getName()))
+		//	pApp = new ControllerToVFAApp(pParameters);
 		
 		if (pApp)
 		{

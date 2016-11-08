@@ -53,7 +53,7 @@ void CRewardFunction::addRewardComponent(IRewardComponent* rewardComponent)
 double CRewardFunction::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
 	if (!m_bInitialized)
-		CApp::get()->Logger.logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
+		CApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
 
 	double reward = 0.0, r_i;
 	int i = 0;
@@ -81,14 +81,14 @@ void CRewardFunction::initialize()
 		}
 		m_bInitialized = true;
 	}
-	else CApp::get()->Logger.logMessage(MessageType::Warning, "Reward function already initialized. Can't initialize again");
+	else CApp::get()->pLogger->logMessage(MessageType::Warning, "Reward function already initialized. Can't initialize again");
 }
 
 
 CReward* CRewardFunction::getRewardVector()
 {
 	if (!m_bInitialized)
-		CApp::get()->Logger.logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
+		CApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
 
 	return m_pRewardVector;
 }

@@ -12,12 +12,12 @@
 
 void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 {
-	SimGod.getOutputFiles(filePathList);
+	pSimGod->getOutputFiles(filePathList);
 }
 
 void RLSimionApp::getInputFiles(CFilePathList& filePathList)
 {
-	SimGod.getInputFiles(filePathList);
+	pSimGod->getInputFiles(filePathList);
 }
 
 CLASS_CONSTRUCTOR(RLSimionApp, const char* xmlConfigPath)
@@ -27,17 +27,17 @@ CLASS_CONSTRUCTOR(RLSimionApp, const char* xmlConfigPath)
 
 
 	//In the beginning, a logger was created so that we could know about creation itself
-	CHILD_CLASS_INIT(Logger, "Log", "The logger class", false, CLogger);
-	Logger.setLogDirectory(xmlConfigPath); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
+	CHILD_CLASS(pLogger, "Log", "The logger class", false, CLogger);
+	pLogger->setLogDirectory(xmlConfigPath); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
 
 	//Then the world was created by chance
-	CHILD_CLASS_INIT(World, "World", "The simulation environment and its parameters", false, CWorld);
+	CHILD_CLASS(pWorld, "World", "The simulation environment and its parameters", false, CWorld);
 
 	//Then, the experiment.
-	CHILD_CLASS_INIT(Experiment, "Experiment", "The parameters of the experiment", false, CExperiment);	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
+	CHILD_CLASS(pExperiment, "Experiment", "The parameters of the experiment", false, CExperiment);	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
 
 	//Last, the SimGod was created to create and control all the simions
-	CHILD_CLASS_INIT(SimGod, "SimGod", "The god class that controls all aspects of the simulation process", false, CSimGod);
+	CHILD_CLASS(pSimGod, "SimGod", "The god class that controls all aspects of the simulation process", false, CSimGod);
 
 
 	END_CLASS();
@@ -53,35 +53,35 @@ void RLSimionApp::run()
 	CApp* pApp = CApp::get();
 
 	//create state and action vectors
-	CState *s = pApp->World.getDynamicModel()->getStateDescriptor()->getInstance();
-	CState *s_p = pApp->World.getDynamicModel()->getStateDescriptor()->getInstance();
-	CAction *a = pApp->World.getDynamicModel()->getActionDescriptor()->getInstance();
+	CState *s = pApp->pWorld->getDynamicModel()->getStateDescriptor()->getInstance();
+	CState *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor()->getInstance();
+	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor()->getInstance();
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
-	pApp->SimGod.delayedLoad();
+	pApp->pSimGod->delayedLoad();
 	CLogger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
 
 	double r = 0.0;
 
 	//episodes
-	for (pApp->Experiment.nextEpisode(); pApp->Experiment.isValidEpisode(); pApp->Experiment.nextEpisode())
+	for (pApp->pExperiment->nextEpisode(); pApp->pExperiment->isValidEpisode(); pApp->pExperiment->nextEpisode())
 	{
-		pApp->World.reset(s);
+		pApp->pWorld->reset(s);
 
 		//steps per episode
-		for (pApp->Experiment.nextStep(); pApp->Experiment.isValidStep(); pApp->Experiment.nextStep())
+		for (pApp->pExperiment->nextStep(); pApp->pExperiment->isValidStep(); pApp->pExperiment->nextStep())
 		{
 			//a= pi(s)
-			pApp->SimGod.selectAction(s, a);
+			pApp->pSimGod->selectAction(s, a);
 
 			//s_p= f(s,a); r= R(s');
-			r = pApp->World.executeAction(s, a, s_p);
+			r = pApp->pWorld->executeAction(s, a, s_p);
 
 			//update god's policy and value estimation
-			pApp->SimGod.update(s, a, s_p, r);
+			pApp->pSimGod->update(s, a, s_p, r);
 
 			//log tuple <s,a,s',r>
-			pApp->Experiment.timestep(s, a, s_p, pApp->World.getRewardVector());
+			pApp->pExperiment->timestep(s, a, s_p, pApp->pWorld->getRewardVector());
 			//we need the complete reward vector for logging
 
 			//s= s'

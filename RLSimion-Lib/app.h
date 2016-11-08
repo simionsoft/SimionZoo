@@ -23,10 +23,10 @@ public:
 
 	static CApp* get();
 
-	CLogger Logger;
-	CWorld World;
-	CExperiment Experiment;
-	CSimGod SimGod;
+	CLogger *pLogger;
+	CWorld *pWorld;
+	CExperiment *pExperiment;
+	CSimGod *pSimGod;
 
 	virtual void getInputFiles(CFilePathList& filePathList) = 0;
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;

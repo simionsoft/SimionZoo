@@ -130,7 +130,7 @@ void CLinearStateVFA::save(const char* pFilename) const
 
 CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
 {
-	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	m_pStateFeatureMap = CApp::get()->pSimGod->getGlobalStateFeatureMap();
 	//CHILD_ CLASS_ FACTORY(m_pStateFeatureMap,"State-Feature-Map","The feature map fuction: state->features",false,CStateFeatureMap);
 
 	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
@@ -226,8 +226,8 @@ double CLinearStateVFA::getValue(const CState *s)
 
 CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 {
-	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
-	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionStateFeatureMap();
+	m_pStateFeatureMap = CApp::get()->pSimGod->getGlobalStateFeatureMap();
+	m_pActionFeatureMap = CApp::get()->pSimGod->getGlobalActionStateFeatureMap();
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -251,8 +251,8 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 
 CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA) : CLinearVFA(), CDeferredLoad()
 {
-	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
-	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionStateFeatureMap();
+	m_pStateFeatureMap = CApp::get()->pSimGod->getGlobalStateFeatureMap();
+	m_pActionFeatureMap = CApp::get()->pSimGod->getGlobalActionStateFeatureMap();
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();

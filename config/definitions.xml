@@ -33,13 +33,6 @@
     <BRANCH Name="Base-Controller" Class="CController-Factory" Comment="The base controller used to initialize the weights of the actor" Optional="true"/>
   </CLASS>
 
-  <CLASS Name="ControllerToVFAApp">
-    <MULTI-VALUED Name="Policy" Class="CLinearStateVFA" Comment="The VFAs used to approximate the controller"/>
-    <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model's definition" Optional="false"/>
-    <BRANCH Name="Controller" Class="CController-Factory" Comment="The controller to be approximated" Optional="false"/>
-    <BRANCH Name="Output-DirFile" Class="CDirFileOutput" Comment="The output directory and file" Optional="false"/>
-  </CLASS>
-
   <CLASS Name="RLSimionApp">
     <BRANCH Name="Log" Class="CLogger" Comment="The logger class" Optional="false"/>
     <BRANCH Name="World" Class="CWorld" Comment="The simulation environment and its parameters" Optional="false"/>
@@ -158,7 +151,7 @@
     <DOUBLE-VALUE Name="Episode-Length" Default="1.0" Comment="Length of an episode (seconds)"/>
   </CLASS>
 
-  <CLASS Name="CGaussianRBFStateGridFeatureMap" Window="New">
+  <CLASS Name="CGaussianRBFStateGridFeatureMap">
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
   </CLASS>
 
@@ -237,7 +230,7 @@
     <ENUM-VALUE Name="Time-reference" Class="TimeReference" Default="linear" Comment="Time reference"/>
   </CLASS>
 
-  <CLASS Name="CNumericValue-Factory" Window="New">
+  <CLASS Name="CNumericValue-Factory">
     <CHOICE Name="Schedule" Comment="Schedule-type">
       <CHOICE-ELEMENT Name="Constant" Class="CConstantValue" Comment="Constant value"/>
       <CHOICE-ELEMENT Name="Linear-Schedule" Class="CInterpolatedValue" Comment="Linear schedule"/>
@@ -383,7 +376,7 @@
   <CLASS Name="CWindTurbine">
     <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Default="../config/world/wind-turbine/TurbSim-10.25.hh" Comment="The wind file used for evaluation"/>
     <FILE-PATH-VALUE Name="Power-Set-Point" Default="../config/world/wind-turbine/power-setpoint.txt" Comment="The power setpoint file"/>
-    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE" Comment="The wind files used for training" Default="../config/world/wind-turbine/TurbSim-10.5.hh"/>
+    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE" Comment="../config/world/wind-turbine/TurbSim-10.5.hh" Default="The wind files used for training"/>
   </CLASS>
 
   <CLASS Name="CWorld">
@@ -393,7 +386,7 @@
   </CLASS>
 
   <CLASS Name="CDynamicModel-Factory">
-    <CHOICE Name="Model" Comment="The world" LoadXML= "WORLD-DEFINITION">
+    <CHOICE Name="Model" Comment="The world">
       <CHOICE-ELEMENT Name="Wind-turbine" Class="CWindTurbine" XML="../config/world/wind-turbine.xml" Comment="A two-mass model of a VS Wind Turbine"/>
       <CHOICE-ELEMENT Name="Underwater-vehicle" Class="CUnderwaterVehicle" XML="../config/world/underwater-vehicle.xml" Comment="An underwater vehicle control task"/>
       <CHOICE-ELEMENT Name="Pitch-control" Class="CPitchControl" XML="../config/world/pitch-control.xml" Comment="An airplane pitch control task"/>

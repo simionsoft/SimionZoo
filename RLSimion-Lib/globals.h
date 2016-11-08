@@ -10,11 +10,6 @@
 #define APP_CLASS(name,...) name::name(int argc, char* argv[],__VA_ARGS__): CApp(argc,argv)
 #define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
 #define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
-#define CLASS_INIT(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
-
-#define CLASS_FACTORY_NEW_WINDOW(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
-#define CLASS_CONSTRUCTOR_NEW_WINDOW(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
-#define CLASS_INIT_NEW_WINDOW(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
 
 #define END_CLASS()
 
@@ -26,10 +21,8 @@
 //the appropriate hierarchy (i.e., pParameters->getChild("VFA"))
 #define CHILD_CLASS(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= new className(pParameters->getChild(name),__VA_ARGS__); else variable= new className((CParameters*)0,__VA_ARGS__);
 #define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance((CParameters*)0,__VA_ARGS__);
-#define CHILD_CLASS_INIT(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable.init(pParameters->getChild(name),__VA_ARGS__); else variable.init(0,__VA_ARGS__);
 
 #define CHOICE(name,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
-#define CHOICE_XML(name,loadXML,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
 #define END_CHOICE() return 0;
 
 #define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment,...) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),XMLFilename,__VA_ARGS__);
@@ -46,10 +39,10 @@
 #define MULTI_VALUED(indexedVariable,name,comment,className,...) indexedVariable= new className(__VA_ARGS__);
 #define MULTI_VALUED_FACTORY(indexedVariable,name,comment,className,...) indexedVariable= className::getInstance(__VA_ARGS__);
 
-#define MULTI_VALUED_STRING(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
-#define MULTI_VALUED_DOUBLE(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstDouble(0,defaultValue);
-#define MULTI_VALUED_INTEGER(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstInteger(0,defaultValue);
-#define MULTI_VALUED_FILE_PATH(variable,parameterName,comment,defaultValue,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
+#define MULTI_VALUED_STRING(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
+#define MULTI_VALUED_DOUBLE(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstDouble(0,defaultValue);
+#define MULTI_VALUED_INTEGER(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstInteger(0,defaultValue);
+#define MULTI_VALUED_FILE_PATH(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
 #define MULTI_VALUED_STATE_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
 #define MULTI_VALUED_ACTION_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
 

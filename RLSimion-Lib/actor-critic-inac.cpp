@@ -78,7 +78,7 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 
 void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
-	if (CApp::get()->Experiment.isFirstStep())
+	if (CApp::get()->pExperiment->isFirstStep())
 		m_avg_r = 0.0;
 	// Incremental Natural Actor - Critic(INAC)
 	//Critic update:
@@ -129,7 +129,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 
 	for (int i = 0; i < m_numPolicies; i++)
 	{
-		if (CApp::get()->Experiment.isFirstStep())
+		if (CApp::get()->pExperiment->isFirstStep())
 			m_w[i]->clear();
 
 		m_pPolicies[i]->getNaturalGradient(s, a, m_grad_u);

@@ -63,9 +63,8 @@ public:
 	static const unsigned int BIN_FILE_VERSION = 1;
 
 
-	CLogger();
+	CLogger(CParameters* pParameters);
 	virtual ~CLogger();
-	void init(CParameters* pParameters);
 
 	//returns whether a specific type of episode is going to be logged
 	bool isEpisodeTypeLogged(bool evaluation);

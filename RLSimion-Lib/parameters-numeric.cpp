@@ -60,15 +60,15 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (CApp::get()->Experiment.isEvaluationEpisode())
+	if (CApp::get()->pExperiment->isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	if (!strcmp(m_timeReference, "experiment"))
-		progress = CApp::get()->Experiment.getExperimentProgress();
+		progress = CApp::get()->pExperiment->getExperimentProgress();
 	else if (!strcmp(m_timeReference, "episode"))
-		progress = CApp::get()->Experiment.getEpisodeProgress();
+		progress = CApp::get()->pExperiment->getEpisodeProgress();
 	/*else if (!strcmp(m_timeReference, "episode"))
-	progress = CApp::get()->Experiment.get();*/
+	progress = CApp::get()->pExperiment->get();*/
 	else assert(0);
 
 	if (m_startOffset != 0.0)
@@ -120,21 +120,21 @@ double CBhatnagarSchedule::getValue()
 	double t;
 
 	//evalution episode?
-	if (CApp::get()->Experiment.isEvaluationEpisode())
+	if (CApp::get()->pExperiment->isEvaluationEpisode())
 		return m_evaluationValue;
 	//time reference
 	if (!strcmp(m_timeReference, "experiment"))
-		t = CApp::get()->Experiment.getStep()
-		+ (CApp::get()->Experiment.getEpisodeIndex() - 1) * CApp::get()->Experiment.getNumSteps();
+		t = CApp::get()->pExperiment->getStep()
+		+ (CApp::get()->pExperiment->getEpisodeIndex() - 1) * CApp::get()->pExperiment->getNumSteps();
 	else if (!strcmp(m_timeReference, "episode"))
-		t = CApp::get()->Experiment.getStep();
+		t = CApp::get()->pExperiment->getStep();
 	else assert(0);
 
 	return m_alpha_0*m_alpha_c / (m_alpha_c + pow(t, m_t_exp));
 }
 
 
-CLASS_FACTORY_NEW_WINDOW(CNumericValue)
+CLASS_FACTORY(CNumericValue)
 {
 	CHOICE("Schedule","Schedule-type");
 	CHOICE_ELEMENT("Constant", CConstantValue,"Constant value");

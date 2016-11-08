@@ -8,9 +8,9 @@
 
 CExperienceTuple::CExperienceTuple()
 {
-	s = CApp::get()->World.getDynamicModel()->getStateInstance();
-	a = CApp::get()->World.getDynamicModel()->getActionInstance();
-	s_p = CApp::get()->World.getDynamicModel()->getStateInstance();
+	s = CApp::get()->pWorld->getDynamicModel()->getStateInstance();
+	a = CApp::get()->pWorld->getDynamicModel()->getActionInstance();
+	s_p = CApp::get()->pWorld->getDynamicModel()->getStateInstance();
 }
 
 void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r)
@@ -61,7 +61,7 @@ int CExperienceReplay::getUpdateBatchSize()
 void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r)
 {
 	if (m_bufferSize<=0)
-		CApp::get()->Logger.logMessage(MessageType::Error, "Tried to access the experience replay buffer before initialising it");
+		CApp::get()->pLogger->logMessage(MessageType::Error, "Tried to access the experience replay buffer before initialising it");
 	//add the experience tuple to the buffer
 
 	if (m_numTuples < m_bufferSize)

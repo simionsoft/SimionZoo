@@ -33,7 +33,7 @@ CETraces::~CETraces()
 
 void CETraces::update(double factor)
 {
-	if (!CApp::get()->Experiment.isFirstStep() && m_bUse)
+	if (!CApp::get()->pExperiment->isFirstStep() && m_bUse)
 	{
 		mult(factor* m_lambda);
 		applyThreshold(m_threshold);

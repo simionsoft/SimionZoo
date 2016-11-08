@@ -101,7 +101,7 @@ CExperiment::~CExperiment()
 	if (m_pProgressTimer) delete m_pProgressTimer;
 }
 
-CLASS_INIT(CExperiment)
+CLASS_CONSTRUCTOR(CExperiment)
 {
 	if (!pParameters) return;
 
@@ -122,7 +122,7 @@ CLASS_INIT(CExperiment)
 		m_totalNumEpisodes = m_numTrainingEpisodes;
 	}
 	CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
-	setNumSteps((unsigned int)(m_episodeLength / CApp::get()->World.getDT()));
+	setNumSteps((unsigned int)(m_episodeLength / CApp::get()->pWorld->getDT()));
 	reset();
 
 
@@ -131,17 +131,6 @@ CLASS_INIT(CExperiment)
 	srand(m_randomSeed);
 
 	END_CLASS();
-}
-
-CExperiment::CExperiment()
-{
-	m_randomSeed = 0;
-	m_numEvaluationEpisodes = 0;
-	m_totalNumEpisodes = 0;
-	m_numTrainingEpisodes = 0;
-	m_evalFreq = 0;
-	setNumSteps(0);
-	m_pProgressTimer = 0;
 }
 
 
@@ -154,26 +143,26 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	if (time>m_progUpdateFreq || (isLastStep() && isLastEpisode()))
 	{
-		sprintf_s(msg, 1024, "%f", CApp::get()->Experiment.getExperimentProgress()*100.0);
+		sprintf_s(msg, 1024, "%f", CApp::get()->pExperiment->getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);
 		m_pProgressTimer->startTimer();
 	}
 
 	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
-		CApp::get()->Logger.firstEpisode();
+		CApp::get()->pLogger->firstEpisode();
 
 	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
-		CApp::get()->Logger.firstStep();
+		CApp::get()->pLogger->firstStep();
 
 	//update stats
 	//output step-stats
-	CApp::get()->Logger.timestep(s, a, s_p, r);
+	CApp::get()->pLogger->timestep(s, a, s_p, r);
 
 	if (isLastStep())
-		CApp::get()->Logger.lastStep();
+		CApp::get()->pLogger->lastStep();
 
 	if (isLastEpisode() && (isLastStep()))
-		CApp::get()->Logger.lastEpisode();
+		CApp::get()->pLogger->lastEpisode();
 }

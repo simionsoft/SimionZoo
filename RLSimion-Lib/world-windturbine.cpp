@@ -185,7 +185,7 @@ CLASS_CONSTRUCTOR(CWindTurbine,const char* worldDefinition)
 
 	for (int i = 0; i<m_numDataFiles; i++)
 	{
-		MULTI_VALUED_FILE_PATH(filename, "Training-Wind-Data","The wind files used for training", "../config/world/wind-turbine/TurbSim-10.5.hh", trainingWindFiles);
+		MULTI_VALUED_FILE_PATH(filename, "Training-Wind-Data","../config/world/wind-turbine/TurbSim-10.5.hh", "The wind files used for training", trainingWindFiles);
 		m_pTrainingWindData[i]= new CHHFileSetPoint(filename);
 
 		trainingWindFiles = trainingWindFiles->getNextChild(trainingDataId);
@@ -252,7 +252,7 @@ CWindTurbine::~CWindTurbine()
 
 void CWindTurbine::reset(CState *s)
 {
-	if (CApp::get()->Experiment.isEvaluationEpisode())
+	if (CApp::get()->pExperiment->isEvaluationEpisode())
 		m_pCurrentWindData = m_pEvaluationWindData;
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
@@ -293,8 +293,8 @@ void CWindTurbine::reset(CState *s)
 
 void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 {
-	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CApp::get()->World.getT()));
-	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CApp::get()->World.getT()));
+	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CApp::get()->pWorld->getT()));
+	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CApp::get()->pWorld->getT()));
 
 	//beta= beta + d(beta)/dt
 	double beta = s->getValue(m_sBeta);

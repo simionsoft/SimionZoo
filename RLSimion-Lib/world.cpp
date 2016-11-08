@@ -16,14 +16,7 @@
 
 CDynamicModel* CWorld::m_pDynamicModel = 0;
 
-CWorld::CWorld()
-{
-	m_pDynamicModel = 0;
-	m_numIntegrationSteps = 0;
-	m_dt = 0.0;
-}
-
-CLASS_INIT(CWorld)
+CLASS_CONSTRUCTOR(CWorld)
 {
 	if (!pParameters) return;
 	assert(pParameters);
@@ -107,7 +100,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	CParameters *rootNode;
 	if (pWorldDefinitionFile)
 	{
-		CApp::get()->SimGod.registerInputFile(pWorldDefinitionFile);
+		CApp::get()->pSimGod->registerInputFile(pWorldDefinitionFile);
 		m_pWorldConfigXMLDoc->LoadFile(pWorldDefinitionFile);
 		if (!m_pWorldConfigXMLDoc->Error())
 		{
@@ -138,7 +131,7 @@ double CDynamicModel::getConstant(const char* constantName)
 	}
 	char message[1024];
 	sprintf_s(message, 1024, "Missing constant in world definition file: %s", constantName);
-	CApp::get()->Logger.logMessage(MessageType::Error, message);
+	CApp::get()->pLogger->logMessage(MessageType::Error, message);
 
 	return -1.0;// will never reach this, but if this makes the compiler happy, so be it
 }
@@ -162,7 +155,7 @@ CAction* CDynamicModel::getActionInstance()
 
 CLASS_FACTORY(CDynamicModel)
 {
-	CHOICE_XML("Model", "WORLD-DEFINITION","The world");
+	CHOICE("Model","The world");
 	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml","A two-mass model of a VS Wind Turbine");
 	CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml","An underwater vehicle control task");
 	CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml","An airplane pitch control task");
