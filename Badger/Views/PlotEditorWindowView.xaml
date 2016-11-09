@@ -36,11 +36,12 @@
     <StackPanel Orientation="Horizontal" Margin="2">
         <StackPanel Orientation="Vertical" Width="300">
             <StackPanel>
-                <StackPanel Height="20" HorizontalAlignment="Center">
-                    <Label Content="{Binding Path=logListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
+                <StackPanel Height="20" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Label Content="Experiment logs " FontSize="8"></Label>
+                    <Label Content="{Binding Path=logListHeader}" FontSize="8"/>
                 </StackPanel>
                 <ListView x:Name="Logs" BorderBrush="{x:Null}" BorderThickness="0" 
-                  ItemsSource="{Binding Path=experimentLogs}" SelectionMode="Multiple" Height="250" Margin="2">
+                  ItemsSource="{Binding Path=experimentLogs}" SelectionMode="Multiple" Height="250" Margin="1">
                     <ListView.Resources>
                         <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
                             <v:ExperimentView/>
@@ -55,9 +56,10 @@
             </StackPanel>
             <StackPanel>
                 <StackPanel Height="20" HorizontalAlignment="Center">
+                    <Label Content="Variables in log " FontSize="8"></Label>
                     <Label Content="{Binding Path=variableListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
                 </StackPanel>
-                <ListView ItemsSource="{Binding Path=availableVariables}" Height="250" Margin="2">
+                <ListView ItemsSource="{Binding Path=availableVariables}" Height="250" Margin="1">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />

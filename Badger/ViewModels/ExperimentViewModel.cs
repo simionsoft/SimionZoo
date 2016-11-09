@@ -93,19 +93,6 @@ namespace Badger.ViewModels
         {
             return getLogFilePath(m_filePath);
         }
-        //public bool checkLogFilesAlreadyExist()
-        //{
-        //    //for now, i'd rather hardcode the log filenames than go through the dll... doesn't seem worth the effort
-        //    if (m_filePath != "")
-        //    {
-        //        if (File.Exists(getLogDescriptorsFilePath()) && File.Exists(getLogFilePath()))
-        //        {
-        //            bDataAvailable = true;
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
     }
  
 }
