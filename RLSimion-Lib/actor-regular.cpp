@@ -4,7 +4,7 @@
 #include "named-var-set.h"
 #include "features.h"
 #include "etraces.h"
-#include "parameters.h"
+#include "config.h"
 #include "policy-learner.h"
 #include "globals.h"
 #include "parameters-numeric.h"

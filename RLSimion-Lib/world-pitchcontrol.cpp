@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "reward.h"
 #include "experiment.h"
-#include "parameters.h"
+#include "config.h"
 #include "app.h"
 
 CLASS_CONSTRUCTOR(CPitchControl,const char* worldDefinition)

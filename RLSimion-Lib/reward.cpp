@@ -2,7 +2,7 @@
 #include "reward.h"
 #include "named-var-set.h"
 #include "parameterized-object.h"
-#include "parameters.h"
+#include "config.h"
 #include "world.h"
 #include "globals.h"
 #include "parameters-numeric.h"

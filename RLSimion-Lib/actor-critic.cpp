@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "actor-critic.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "actor.h"
 #include "critic.h"
 
 CLASS_CONSTRUCTOR(CActorCritic) : CParamObject(pParameters)
 {
-	CParameters* pChild = pParameters->getChild();
+	CConfigNode* pChild = pParameters->getChild();
 	const char* type = pChild->getName();
 	m_td = 0.0;
 

@@ -30,7 +30,7 @@ class CExperienceReplay: public CParamObject, public CDeferredLoad
 	int m_numTuples;
 
 public:
-	CExperienceReplay(CParameters* pParameters);
+	CExperienceReplay(CConfigNode* pParameters);
 	~CExperienceReplay();
 
 	void addTuple(CState* s, CAction* a, CState* s_p, double r);

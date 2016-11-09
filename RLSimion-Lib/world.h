@@ -6,7 +6,7 @@ typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 
 class CDynamicModel;
-class CParameters;
+class CConfigNode;
 class CRewardFunction;
 #include "../tinyxml2/tinyxml2.h"
 
@@ -25,7 +25,7 @@ public:
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel; }
 	static void setDynamicModel(CDynamicModel* model){ m_pDynamicModel = model; }
 
-	CWorld(CParameters* pParameters);
+	CWorld(CConfigNode* pParameters);
 	virtual ~CWorld();
 
 	void reset(CState *s);
@@ -41,7 +41,7 @@ class CDynamicModel
 private:
 	CState *m_pStateDescriptor;
 	CAction *m_pActionDescriptor;
-	CParameters *m_pConstants;
+	CConfigNode *m_pConstants;
 	tinyxml2::XMLDocument* m_pWorldConfigXMLDoc;
 protected:
 	CRewardFunction* m_pRewardFunction;
@@ -62,5 +62,5 @@ public:
 
 	double getConstant(const char* constantName);
 
-	static CDynamicModel* getInstance(CParameters* pParameters);
+	static CDynamicModel* getInstance(CConfigNode* pParameters);
 };

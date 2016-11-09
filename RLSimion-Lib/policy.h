@@ -8,7 +8,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class CParameters;
+class CConfigNode;
 class CFeatureList;
 
 
@@ -19,7 +19,7 @@ protected:
 	int m_outputActionIndex;
 
 public:
-	CPolicy(CParameters* pParameters);
+	CPolicy(CConfigNode* pParameters);
 	virtual ~CPolicy();
 
 	virtual void getFeatures(const CState* state, CFeatureList* outFeatureList)= 0;
@@ -32,7 +32,7 @@ public:
 
 	int getOutputActionIndex(){ return m_outputActionIndex; }
 
-	static CPolicy* getInstance(CParameters* pParameters);
+	static CPolicy* getInstance(CConfigNode* pParameters);
 
 	virtual CLinearStateVFA* getDetPolicyStateVFA()= 0;
 };
@@ -47,7 +47,7 @@ protected:
 	CNoise *m_pExpNoise;
 
 public:
-	CDeterministicPolicyGaussianNoise(CParameters* pParameters);
+	CDeterministicPolicyGaussianNoise(CConfigNode* pParameters);
 	virtual ~CDeterministicPolicyGaussianNoise();
 
 	void getFeatures(const CState* state, CFeatureList* outFeatureList);
@@ -75,7 +75,7 @@ protected:
 	//Auxiliar feature lists
 	CFeatureList *m_pMeanFeatures,*m_pSigmaFeatures;
 public:
-	CStochasticPolicyGaussianNoise(CParameters* pParameters);
+	CStochasticPolicyGaussianNoise(CConfigNode* pParameters);
 	virtual ~CStochasticPolicyGaussianNoise();
 
 	void getFeatures(const CState* state, CFeatureList* outFeatureList);

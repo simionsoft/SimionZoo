@@ -4,13 +4,13 @@
 #include "globals.h"
 #include "world.h"
 #include "features.h"
-#include "parameters.h"
+#include "config.h"
 #include "single-dimension-grid.h"
 
 #define ACTIVATION_THRESHOLD 0.0001
 
 
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
+CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CConfigNode* pParameters)
 {
 }
 

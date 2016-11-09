@@ -4,7 +4,7 @@
 #include "world.h"
 #include "experiment.h"
 #include "simgod.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 
 

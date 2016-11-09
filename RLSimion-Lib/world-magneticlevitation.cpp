@@ -5,7 +5,7 @@
 #include "setpoint.h"
 #include "globals.h"
 #include "experiment.h"
-#include "parameters.h"
+#include "config.h"
 #include "app.h"
 #include "reward.h"
 

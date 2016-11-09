@@ -2,7 +2,7 @@
 #include <vector>
 #include "simion.h"
 #include "parameterized-object.h"
-class CParameters;
+class CConfigNode;
 class CActor;
 class CCritic;
 class CPolicy;
@@ -17,7 +17,7 @@ class CActorCritic: public CSimion, public CParamObject
 	CActor *m_pActor;
 	CCritic *m_pCritic;
 public:
-	CActorCritic(CParameters* pParameters);
+	CActorCritic(CConfigNode* pParameters);
 	virtual ~CActorCritic();
 
 	virtual void selectAction(const CState *s, CAction *a);
@@ -26,7 +26,7 @@ public:
 
 	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
 
-	CActorCritic* getInstance(CParameters* pParameters);
+	CActorCritic* getInstance(CConfigNode* pParameters);
 };
 
 
@@ -55,7 +55,7 @@ class CIncrementalNaturalActorCritic : public CSimion
 
 public:
 
-	CIncrementalNaturalActorCritic(CParameters *pParameters);
+	CIncrementalNaturalActorCritic(CConfigNode *pParameters);
 	virtual ~CIncrementalNaturalActorCritic();
 
 	virtual void selectAction(const CState *s, CAction *a);

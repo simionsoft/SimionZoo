@@ -6,7 +6,7 @@
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "etraces.h"
-#include "parameters.h"
+#include "config.h"
 #include "parameters-numeric.h"
 
 CLASS_CONSTRUCTOR(CTDLambdaCritic)

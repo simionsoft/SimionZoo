@@ -3,7 +3,7 @@
 #include "named-var-set.h"
 #include "vfa.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "parameters-numeric.h"
 #include "noise.h"
 #include "etraces.h"

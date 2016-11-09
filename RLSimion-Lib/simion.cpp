@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "simion.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "controller.h"
 #include "actor-critic.h"
 #include "q-learners.h"

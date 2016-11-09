@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "critic.h"
 #include "vfa-critic.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 #include "logger.h"
 #include "vfa.h"

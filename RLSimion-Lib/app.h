@@ -1,7 +1,7 @@
 #pragma once
 
-class CParameters;
-class CParameterFile;
+class CConfigNode;
+class CConfigFile;
 
 class CFilePathList;
 
@@ -15,7 +15,7 @@ class CApp
 private:
 	static CApp* m_pAppInstance;
 protected:
-	CParameterFile* m_pConfigDoc;
+	CConfigFile* m_pConfigDoc;
 public:
 
 	CApp();

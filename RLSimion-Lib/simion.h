@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class CParameters;
+class CConfigNode;
 
 class CSimion
 {
@@ -18,5 +18,5 @@ public:
 	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r)= 0;
 
 
-	static CSimion* getInstance(CParameters* pParameters);
+	static CSimion* getInstance(CConfigNode* pParameters);
 };

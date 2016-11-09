@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "setpoint.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 #include "logger.h"
 #include "app.h"

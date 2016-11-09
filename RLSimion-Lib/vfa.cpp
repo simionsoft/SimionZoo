@@ -2,7 +2,7 @@
 #include "vfa.h"
 #include "featuremap.h"
 #include "features.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 #include "logger.h"
 #include "app.h"
@@ -92,7 +92,7 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 
 void CLinearStateVFA::save(const char* pFilename) const
 {
-	CParameters* pFeatureMapParameters;
+	CConfigNode* pFeatureMapParameters;
 	char msg[128];
 	char binFile[512];
 	char xmlDescFile[512];

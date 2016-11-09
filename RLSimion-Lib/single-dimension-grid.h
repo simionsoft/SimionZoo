@@ -3,7 +3,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CFeatureList;
-class CParameters;
+class CConfigNode;
 
 class CSingleDimensionGrid
 {
@@ -36,7 +36,7 @@ public:
 class CStateVariableGrid : public CSingleDimensionGrid
 {
 public:
-	CStateVariableGrid(CParameters* pParameters);
+	CStateVariableGrid(CConfigNode* pParameters);
 	double getVariableValue(const CState* s, const CAction* a);
 	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
 };
@@ -44,7 +44,7 @@ public:
 class CActionVariableGrid : public CSingleDimensionGrid
 {
 public:
-	CActionVariableGrid(CParameters* pParameters);
+	CActionVariableGrid(CConfigNode* pParameters);
 	double getVariableValue(const CState* s, const CAction* a);
 	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
 };

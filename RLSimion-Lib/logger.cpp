@@ -2,7 +2,7 @@
 #include "logger.h"
 #include "world.h"
 #include "named-var-set.h"
-#include "parameters.h"
+#include "config.h"
 #include "stats.h"
 #include "globals.h"
 #include "timer.h"

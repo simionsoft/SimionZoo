@@ -16,6 +16,9 @@
     <Filter Include="world">
       <UniqueIdentifier>{9b7239a9-61c7-456b-882b-4bac6eda4432}</UniqueIdentifier>
     </Filter>
+    <Filter Include="parameters">
+      <UniqueIdentifier>{6a5fa884-f3e3-4de0-a675-65340642e183}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp">
@@ -99,16 +102,10 @@
     <ClCompile Include="named-var-set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="parameters.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="single-dimension-grid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="parameters-numeric.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="simgod.cpp">
@@ -153,6 +150,15 @@
     <ClCompile Include="world-mountaincar.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="parameters-numeric.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="parameters.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="actor.h">
@@ -194,9 +200,6 @@
     <ClInclude Include="vfa.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameterized-object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vfa-critic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -227,16 +230,10 @@
     <ClInclude Include="named-var-set.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="parameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="single-dimension-grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="parameters-numeric.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="simgod.h">
@@ -277,6 +274,18 @@
     </ClInclude>
     <ClInclude Include="world-mountaincar.h">
       <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="parameterized-object.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters-numeric.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="parameters.h">
+      <Filter>parameters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

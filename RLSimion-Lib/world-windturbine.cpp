@@ -5,7 +5,7 @@
 #include "named-var-set.h"
 #include "experiment.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "logger.h"
 #include "app.h"
 #include "reward.h"
@@ -181,7 +181,7 @@ CLASS_CONSTRUCTOR(CWindTurbine,const char* worldDefinition)
 	const char trainingDataId[] = "Training-Wind-Data";
 	m_numDataFiles = pParameters->countChildren(trainingDataId);
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
-	CParameters* trainingWindFiles = pParameters->getChild(trainingDataId);
+	CConfigNode* trainingWindFiles = pParameters->getChild(trainingDataId);
 
 	for (int i = 0; i<m_numDataFiles; i++)
 	{

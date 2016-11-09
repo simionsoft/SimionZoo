@@ -4,7 +4,7 @@ class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class CParameters;
+class CConfigNode;
 class CSingleDimensionGrid;
 #include "parameterized-object.h"
 #include <vector>
@@ -16,7 +16,7 @@ class CSingleDimensionGrid;
 class CStateFeatureMap: public CParamObject
 {
 public:
-	CStateFeatureMap(CParameters* pParameters);
+	CStateFeatureMap(CConfigNode* pParameters);
 	virtual ~CStateFeatureMap(){};
 
 	virtual void getFeatures(const CState* s,CFeatureList* outFeatures)= 0;
@@ -25,13 +25,13 @@ public:
 	virtual unsigned int getTotalNumFeatures()= 0;
 	virtual unsigned int getMaxNumActiveFeatures()= 0;
 
-	static CStateFeatureMap* getInstance(CParameters* pParameters);
+	static CStateFeatureMap* getInstance(CConfigNode* pParameters);
 };
 
 class CActionFeatureMap : public CParamObject
 {
 public:
-	CActionFeatureMap(CParameters* pParameters);
+	CActionFeatureMap(CConfigNode* pParameters);
 	virtual ~CActionFeatureMap(){};
 
 	virtual void getFeatures(const CAction* a, CFeatureList* outFeatures) = 0;
@@ -40,7 +40,7 @@ public:
 	virtual unsigned int getTotalNumFeatures() = 0;
 	virtual unsigned int getMaxNumActiveFeatures() = 0;
 
-	static CActionFeatureMap* getInstance(CParameters* pParameters);
+	static CActionFeatureMap* getInstance(CConfigNode* pParameters);
 };
 
 
@@ -59,7 +59,7 @@ protected:
 
 	std::vector<CSingleDimensionGrid*> m_grid;
 
-	CGaussianRBFGridFeatureMap(CParameters* pParameters);
+	CGaussianRBFGridFeatureMap(CConfigNode* pParameters);
 public:
 
 	virtual ~CGaussianRBFGridFeatureMap();
@@ -72,7 +72,7 @@ public:
 class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap, public CStateFeatureMap
 {
 public:
-	CGaussianRBFStateGridFeatureMap(CParameters* pParameters);
+	CGaussianRBFStateGridFeatureMap(CConfigNode* pParameters);
 
 	void getFeatures(const CState* s, CFeatureList* outFeatures){ CGaussianRBFGridFeatureMap::getFeatures(s, 0, outFeatures); }
 	void getFeatureState(unsigned int feature, CState* s){ CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, s, 0); }
@@ -84,7 +84,7 @@ public:
 class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap, public CActionFeatureMap
 {
 public:
-	CGaussianRBFActionGridFeatureMap(CParameters* pParameters);
+	CGaussianRBFActionGridFeatureMap(CConfigNode* pParameters);
 	
 	void getFeatures(const CAction* a, CFeatureList* outFeatures){ CGaussianRBFGridFeatureMap::getFeatures(0, a, outFeatures); }
 	void getFeatureAction(unsigned int feature, CAction* a){ CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, 0, a); }

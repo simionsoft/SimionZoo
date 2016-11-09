@@ -17,7 +17,7 @@ class CQPolicy
 {
 public:
 	virtual ~CQPolicy(){}
-	static CQPolicy* getInstance(CParameters* pParameters);
+	static CQPolicy* getInstance(CConfigNode* pParameters);
 
 	virtual void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)= 0;
 };
@@ -26,7 +26,7 @@ class CQEGreedyPolicy : public CQPolicy
 {
 	CNumericValue* m_pEpsilon;
 public:
-	CQEGreedyPolicy(CParameters* pParameters);
+	CQEGreedyPolicy(CConfigNode* pParameters);
 	virtual ~CQEGreedyPolicy();
 
 	void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a);
@@ -40,7 +40,7 @@ class CQSoftMaxPolicy : public CQPolicy
 	double *m_pProbabilities;
 	CNumericValue* m_pTau;
 public:
-	CQSoftMaxPolicy(CParameters* pParameters);
+	CQSoftMaxPolicy(CConfigNode* pParameters);
 	virtual ~CQSoftMaxPolicy();
 	void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a);
 };
@@ -61,7 +61,7 @@ protected:
 	CNumericValue *m_pGamma;
 	CFeatureList *m_pAux;
 public:
-	CQLearning(CParameters* pParameters);
+	CQLearning(CConfigNode* pParameters);
 	virtual ~CQLearning();
 
 	//the Q-Function is updated in this method (and thus, any policy derived from it such as epsilon-greedy or soft-max) 
@@ -84,7 +84,7 @@ class CDoubleQLearning : public CQLearning
 	int m_targetUpdateFreq;
 	int m_numStepsSinceLastTargetUpdate;
 public:
-	CDoubleQLearning(CParameters* pParameters);
+	CDoubleQLearning(CConfigNode* pParameters);
 	virtual ~CDoubleQLearning();
 
 	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
@@ -99,7 +99,7 @@ class CSARSA : public CQLearning
 	CAction *m_nextA;
 	bool m_bNextActionSelected;
 public:
-	CSARSA(CParameters* pParameters);
+	CSARSA(CConfigNode* pParameters);
 	virtual ~CSARSA();
 	void selectAction(const CState *s, CAction *a);
 	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);

@@ -3,7 +3,7 @@
 #include "noise.h"
 #include "vfa.h"
 #include "policy-learner.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 #include "world.h"
 #include "features.h"

@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
-class CParameters;
+class CConfigNode;
 #include <vector>
 class CStats;
 class CTimer;
@@ -63,7 +63,7 @@ public:
 	static const unsigned int BIN_FILE_VERSION = 1;
 
 
-	CLogger(CParameters* pParameters);
+	CLogger(CConfigNode* pParameters);
 	virtual ~CLogger();
 
 	//returns whether a specific type of episode is going to be logged

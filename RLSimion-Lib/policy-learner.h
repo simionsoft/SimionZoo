@@ -8,7 +8,7 @@ typedef CNamedVarSet CAction;
 class CFeatureList;
 class CETraces;
 class CPolicy;
-class CParameters;
+class CConfigNode;
 class CNumericValue;
 
 class CPolicyLearner: public CParamObject
@@ -17,14 +17,14 @@ protected:
 	CPolicy* m_pPolicy;
 
 public:
-	CPolicyLearner(CParameters* pParameters);
+	CPolicyLearner(CConfigNode* pParameters);
 	virtual ~CPolicyLearner();
 
 	virtual void updatePolicy(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
 
 	CPolicy* getPolicy(){ return m_pPolicy; }
 
-	static CPolicyLearner* getInstance(CParameters* pParameters);
+	static CPolicyLearner* getInstance(CConfigNode* pParameters);
 };
 
 
@@ -38,7 +38,7 @@ class CCACLALearner : public CPolicyLearner
 	CNumericValue* m_pAlpha;
 public:
 
-	CCACLALearner(CParameters *pParameters);
+	CCACLALearner(CConfigNode *pParameters);
 	virtual ~CCACLALearner();
 
 	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
@@ -51,7 +51,7 @@ class CRegularPolicyGradientLearner :public CPolicyLearner
 	CNumericValue* m_pAlpha;
 public:
 
-	CRegularPolicyGradientLearner(CParameters *pParameters);
+	CRegularPolicyGradientLearner(CConfigNode *pParameters);
 	virtual ~CRegularPolicyGradientLearner();
 
 	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);

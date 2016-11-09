@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "utils.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 
 
 CFilePathList::CFilePathList()

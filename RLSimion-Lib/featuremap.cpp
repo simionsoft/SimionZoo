@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "featuremap.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 
-CStateFeatureMap::CStateFeatureMap(CParameters* pParameters) : CParamObject(pParameters)
+CStateFeatureMap::CStateFeatureMap(CConfigNode* pParameters) : CParamObject(pParameters)
 {}
 
 CLASS_FACTORY(CStateFeatureMap)
@@ -16,7 +16,7 @@ CLASS_FACTORY(CStateFeatureMap)
 	return 0;
 }
 
-CActionFeatureMap::CActionFeatureMap(CParameters* pParameters) : CParamObject(pParameters)
+CActionFeatureMap::CActionFeatureMap(CConfigNode* pParameters) : CParamObject(pParameters)
 {}
 
 CLASS_FACTORY(CActionFeatureMap)

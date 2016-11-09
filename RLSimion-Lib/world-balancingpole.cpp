@@ -2,7 +2,7 @@
 #include "world-balancingpole.h"
 #include "named-var-set.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "reward.h"
 #include "app.h"
 #include "noise.h"

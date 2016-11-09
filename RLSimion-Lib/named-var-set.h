@@ -2,7 +2,7 @@
 
 #define VAR_NAME_MAX_LENGTH 128
 
-class CParameters;
+class CConfigNode;
 
 struct CNamedVarProperties
 {
@@ -21,7 +21,7 @@ class CNamedVarSet
 	double *m_pValues;
 	int m_numVars;
 public:
-	CNamedVarSet(CParameters* pDescription);
+	CNamedVarSet(CConfigNode* pDescription);
 	CNamedVarSet(int numVars);
 	virtual ~CNamedVarSet();
 

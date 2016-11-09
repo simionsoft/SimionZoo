@@ -2,7 +2,7 @@
 #include "etraces.h"
 #include "experiment.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "app.h"
 
 CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name), CParamObject(pParameters)

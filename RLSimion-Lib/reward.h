@@ -9,7 +9,7 @@ class CRewardFunctionComponent;
 
 #include <vector>
 
-class CParameters;
+class CConfigNode;
 
 class IRewardComponent
 {

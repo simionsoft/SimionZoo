@@ -7,7 +7,7 @@
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "parameters-numeric.h"
-#include "parameters.h"
+#include "config.h"
 #include "app.h"
 
 CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)

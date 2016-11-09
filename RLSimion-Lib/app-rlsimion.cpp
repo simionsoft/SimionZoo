@@ -3,7 +3,7 @@
 #include "world.h"
 #include "experiment.h"
 #include "SimGod.h"
-#include "parameters.h"
+#include "config.h"
 #include "logger.h"
 #include "named-var-set.h"
 #include "globals.h"

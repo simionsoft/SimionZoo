@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class CParameters;
+class CConfigNode;
 class CPolicyLearner;
 #include "parameterized-object.h"
 #include "delayed-load.h"
@@ -18,7 +18,7 @@ protected:
 	std::vector<CPolicyLearner*> m_policyLearners;
 
 public:
-	CActor(CParameters* pParameters);
+	CActor(CConfigNode* pParameters);
 	virtual ~CActor();
 
 	virtual void selectAction(const CState *s, CAction *a);

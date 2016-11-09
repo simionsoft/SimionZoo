@@ -7,7 +7,7 @@
 #include "noise.h"
 #include "named-var-set.h"
 #include "vfa-critic.h"
-#include "parameters.h"
+#include "config.h"
 #include "experiment.h"
 #include "parameters-numeric.h"
 #include "policy.h"

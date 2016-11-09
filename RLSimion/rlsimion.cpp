@@ -5,7 +5,7 @@
 
 #include "../RLSimion-Lib/app-rlsimion.h"
 #include "../RLSimion-Lib/logger.h"
-#include "../RLSimion-Lib/parameters.h"
+#include "../RLSimion-Lib/config.h"
 
 
 int main(int argc, char* argv[])
@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	//_CrtSetBreakAlloc(157);
 	try
 	{
-		CParameterFile configXMLFile;
+		CConfigFile configXMLFile;
 		CApp* pApp = 0;
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
 		if (argc > 2)
@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 		if (argc <= 1)
 			CLogger::logMessage(MessageType::Error, "Too few parameters");
 
-		CParameters* pParameters= configXMLFile.loadFile(argv[1]);
+		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
 		if (!strcmp("RLSimion", pParameters->getName()))

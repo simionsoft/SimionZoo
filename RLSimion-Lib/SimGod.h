@@ -5,7 +5,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
-class CParameters;
+class CConfigNode;
 class CSimion;
 class CDeferredLoad;
 class CFilePathList;
@@ -35,7 +35,7 @@ public:
 	CSimGod();
 	virtual ~CSimGod();
 
-	void init(CParameters* pParameters);
+	void init(CConfigNode* pParameters);
 
 	void selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r);

@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class CParameters;
+class CConfigNode;
 class CLinearStateVFA;
 #include "parameterized-object.h"
 
@@ -15,11 +15,11 @@ protected:
 	CLinearStateVFA* m_pVFunction; //value function approximator
 
 public:
-	CCritic(CParameters* pParameters);
+	CCritic(CConfigNode* pParameters);
 	virtual ~CCritic();
 
 	virtual double updateValue(const CState *s, const CAction *a, const CState *s_p, double r) = 0;
 
-	static CCritic *getInstance(CParameters* pParameters);
+	static CCritic *getInstance(CConfigNode* pParameters);
 };
 

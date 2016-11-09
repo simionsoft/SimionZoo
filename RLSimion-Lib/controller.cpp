@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "named-var-set.h"
 #include "world.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 #include "parameters-numeric.h"
 #include "app.h"

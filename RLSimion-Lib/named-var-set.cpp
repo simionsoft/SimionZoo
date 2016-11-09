@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "named-var-set.h"
-#include "parameters.h"
+#include "config.h"
 
 CNamedVarProperties::CNamedVarProperties()
 {
@@ -10,13 +10,13 @@ CNamedVarProperties::CNamedVarProperties()
 	max = std::numeric_limits<double>::max();
 }
 
-CNamedVarSet::CNamedVarSet(CParameters* pDescription)
+CNamedVarSet::CNamedVarSet(CConfigNode* pDescription)
 {
 	m_numVars = pDescription->countChildren("Variable");
 	m_pProperties = new CNamedVarProperties[m_numVars];
 	m_pValues = new double[m_numVars];
 
-	CParameters* pVariable = pDescription->getChild("Variable");
+	CConfigNode* pVariable = pDescription->getChild("Variable");
 	int numVars= 0;
 
 	while (pVariable)

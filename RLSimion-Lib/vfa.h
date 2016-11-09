@@ -6,8 +6,8 @@ class CFeatureList;
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
-class CParameters;
-class CParameterFile;
+class CConfigNode;
+class CConfigFile;
 
 #include "parameterized-object.h"
 #include "delayed-load.h"
@@ -52,7 +52,7 @@ protected:
 	virtual void deferredLoadStep();
 public:
 	CLinearStateVFA();
-	CLinearStateVFA(CParameters* pParameters);
+	CLinearStateVFA(CConfigNode* pParameters);
 	CLinearStateVFA(CLinearStateVFA* pSourceVFA);
 	virtual ~CLinearStateVFA();
 	using CLinearVFA::getValue;
@@ -87,7 +87,7 @@ public:
 	CStateFeatureMap* getStateFeatureMap() const{ return m_pStateFeatureMap; }
 	CActionFeatureMap* getActionFeatureMap() const{ return m_pActionFeatureMap; }
 
-	CLinearStateActionVFA(CParameters* pParameters);
+	CLinearStateActionVFA(CConfigNode* pParameters);
 	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA);
 	virtual ~CLinearStateActionVFA();
 	using CLinearVFA::getValue;

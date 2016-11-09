@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "experiment.h"
 #include "named-var-set.h"
-#include "parameters.h"
+#include "config.h"
 #include "simion.h"
 #include "app.h"
 #include "delayed-load.h"

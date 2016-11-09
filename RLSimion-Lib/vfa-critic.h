@@ -6,7 +6,7 @@
 class CLinearStateVFA;
 class CETraces;
 class CFeatureList;
-class CParameters;
+class CConfigNode;
 class CNumericValue;
 
 
@@ -20,7 +20,7 @@ class CTDLambdaCritic : public CCritic
 	CNumericValue* m_pAlpha;
 	CNumericValue* m_pGamma;
 public:
-	CTDLambdaCritic(CParameters *pParameters);
+	CTDLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTDLambdaCritic();
 
 	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
@@ -38,7 +38,7 @@ class CTrueOnlineTDLambdaCritic : public CCritic
 	CNumericValue* m_pAlpha;
 	CNumericValue* m_pGamma;
 public:
-	CTrueOnlineTDLambdaCritic(CParameters *pParameters);
+	CTrueOnlineTDLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTrueOnlineTDLambdaCritic();
 
 	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
@@ -60,7 +60,7 @@ class CTDCLambdaCritic : public CCritic
 	
 
 public:
-	CTDCLambdaCritic(CParameters *pParameters);
+	CTDCLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTDCLambdaCritic();
 
 	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);

@@ -2,7 +2,7 @@
 
 #include "parameterized-object.h"
 
-class CParameters;
+class CConfigNode;
 class CNumericValue;
 
 double getRandomValue();// returns a random value in range [0,1]
@@ -16,7 +16,7 @@ protected:
 	CNoise();
 	double m_lastValue;
 public:
-	static CNoise* getInstance(CParameters* pParameters);
+	static CNoise* getInstance(CConfigNode* pParameters);
 	virtual ~CNoise() {}
 
 	virtual double getSigma() { return 0.0; }
@@ -32,7 +32,7 @@ class CGaussianNoise: public CNoise, public CParamObject
 	CNumericValue* m_pAlpha;
 	CNumericValue* m_pScale;
 public:
-	CGaussianNoise(CParameters* pParameters);
+	CGaussianNoise(CConfigNode* pParameters);
 	virtual ~CGaussianNoise();
 	double getSigma();
 	double unscale(double noise);

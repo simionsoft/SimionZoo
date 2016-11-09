@@ -2,7 +2,7 @@
 #include "experience-replay.h"
 #include "app.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "logger.h"
 #include "named-var-set.h"
 

@@ -4,7 +4,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
-class CParameters;
+class CConfigNode;
 class CTimer;
 
 #define MAX_PROGRESS_MSG_LEN 1024
@@ -48,7 +48,7 @@ class CExperiment
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
 	void reset();
 public:
-	CExperiment(CParameters* pParameters);
+	CExperiment(CConfigNode* pParameters);
 	virtual ~CExperiment();
 
 	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }

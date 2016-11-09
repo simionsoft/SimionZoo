@@ -1,17 +1,17 @@
 #pragma once
 #include <vector>
 
-class CParameters;
+class CConfigNode;
 
 class CParamObject
 {
 protected:
-	CParameters* m_pParameters;
+	CConfigNode* m_pParameters;
 public:
-	CParamObject(CParameters* pParameters){ m_pParameters = pParameters; }
+	CParamObject(CConfigNode* pParameters){ m_pParameters = pParameters; }
 	virtual ~CParamObject(){}
 
-	CParameters* getParameters(){ return m_pParameters; }
+	CConfigNode* getParameters(){ return m_pParameters; }
 
 
 };

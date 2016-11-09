@@ -7,7 +7,7 @@
 //#include "../../RLSimion-Lib/app-controller-to-vfa.h"
 //#include "../../RLSimion-Lib/app-compare-controller-vfa.h"
 #include "../../RLSimion-Lib/logger.h"
-#include "../../RLSimion-Lib/parameters.h"
+#include "../../RLSimion-Lib/config.h"
 #include "../../RLSimion-Lib/utils.h"
 
 // This is an example of an exported variable
@@ -16,7 +16,7 @@ RLSIMIONINTERFACEDLL_API int nRLSimionInterfaceDLL=0;
 // This is an example of an exported function.
 extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* pBuffer, int bufferSize)
 {
-	CParameterFile configXMLFile;
+	CConfigFile configXMLFile;
 	CApp* pApp = 0;
 	CFilePathList InputFileList;
 	CFilePathList OutputFileList;
@@ -27,7 +27,7 @@ extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* p
 		InputFileList.clear();
 		OutputFileList.clear();
 
-		CParameters* pParameters = configXMLFile.loadFile(xmlFilename);
+		CConfigNode* pParameters = configXMLFile.loadFile(xmlFilename);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
 		if (!strcmp("RLSimion", pParameters->getName()))

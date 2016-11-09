@@ -7,7 +7,7 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class CParameters;
+class CConfigNode;
 class CNumericValue;
 
 class CController : public CSimion
@@ -18,7 +18,7 @@ public:
 	virtual int getNumOutputs()= 0;
 	virtual int getOutputActionIndex(int output)= 0;
 
-	static CController* getInstance(CParameters* pParameters);
+	static CController* getInstance(CConfigNode* pParameters);
 
 	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r){ }
 
@@ -30,7 +30,7 @@ public:
 class CLQRGain
 {
 public:
-	CLQRGain(CParameters* pParameters);
+	CLQRGain(CConfigNode* pParameters);
 	virtual ~CLQRGain(){}
 	unsigned int m_variableIndex;
 	double m_gain;
@@ -41,7 +41,7 @@ class CLQRController : public CController, public CParamObject
 	std::vector<CLQRGain*> m_gains;
 	int m_outputActionIndex;
 public:
-	CLQRController(CParameters* pParameters);
+	CLQRController(CConfigNode* pParameters);
 	virtual ~CLQRController();
 
 	int getNumOutputs();
@@ -57,7 +57,7 @@ class CPIDController : public CController, public CParamObject
 	double m_intError;
 	int m_errorVariableIndex;
 public:
-	CPIDController(CParameters* pParameters);
+	CPIDController(CConfigNode* pParameters);
 	virtual ~CPIDController();
 
 	int getNumOutputs();
@@ -76,7 +76,7 @@ class CWindTurbineVidalController : public CController, public CParamObject
 	int m_d_beta_index, m_d_T_g_index;
 	CNumericValue *m_pA, *m_pK_alpha, *m_pKP, *m_pKI, *m_P_s;
 public:
-	CWindTurbineVidalController(CParameters* pParameters);
+	CWindTurbineVidalController(CConfigNode* pParameters);
 	virtual ~CWindTurbineVidalController();
 
 	int getNumOutputs();
@@ -98,7 +98,7 @@ class CWindTurbineBoukhezzarController : public CController, public CParamObject
 	CNumericValue *m_pC_0, *m_pKP, *m_pKI;
 	double m_K_t, m_J_t;
 public:
-	CWindTurbineBoukhezzarController(CParameters* pParameters);
+	CWindTurbineBoukhezzarController(CConfigNode* pParameters);
 	virtual ~CWindTurbineBoukhezzarController();
 
 	int getNumOutputs();
@@ -123,7 +123,7 @@ class CWindTurbineJonkmanController : public CController, public CParamObject
 	CNumericValue *m_PC_KK, *m_PC_KP, *m_PC_KI;
 	double m_PC_RefSpd;
 public:
-	CWindTurbineJonkmanController(CParameters* pParameters);
+	CWindTurbineJonkmanController(CConfigNode* pParameters);
 	virtual ~CWindTurbineJonkmanController();
 
 	int getNumOutputs();

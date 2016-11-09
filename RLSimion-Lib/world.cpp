@@ -8,7 +8,7 @@
 #include "world-balancingpole.h"
 #include "world-mountaincar.h"
 #include "reward.h"
-#include "parameters.h"
+#include "config.h"
 #include "globals.h"
 #include "app.h"
 #include "simgod.h"
@@ -97,7 +97,7 @@ CDynamicModel::~CDynamicModel()
 CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 {
 	m_pWorldConfigXMLDoc= new tinyxml2::XMLDocument();
-	CParameters *rootNode;
+	CConfigNode *rootNode;
 	if (pWorldDefinitionFile)
 	{
 		CApp::get()->SimGod.registerInputFile(pWorldDefinitionFile);
@@ -105,7 +105,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 		if (!m_pWorldConfigXMLDoc->Error())
 		{
 			m_pRewardFunction = new CRewardFunction();
-			rootNode = (CParameters*)m_pWorldConfigXMLDoc->FirstChildElement("World-Definition");
+			rootNode = (CConfigNode*)m_pWorldConfigXMLDoc->FirstChildElement("World-Definition");
 			m_pStateDescriptor = new CState(rootNode->getChild("State"));
 			m_pActionDescriptor = new CAction(rootNode->getChild("Action"));
 
@@ -119,8 +119,8 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 
 double CDynamicModel::getConstant(const char* constantName)
 {
-	CParameters* pNode = m_pConstants->getChild("Constant");
-	CParameters* pChild;
+	CConfigNode* pNode = m_pConstants->getChild("Constant");
+	CConfigNode* pChild;
 	while (pNode)
 	{
 		pChild = pNode->getChild("Name");

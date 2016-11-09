@@ -6,7 +6,7 @@
 #include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
-#include "parameters.h"
+#include "config.h"
 #include "parameters-numeric.h"
 #include "app.h"
 

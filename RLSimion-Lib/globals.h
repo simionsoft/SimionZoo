@@ -8,9 +8,9 @@
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
 #define APP_CLASS(name,...) name::name(int argc, char* argv[],__VA_ARGS__): CApp(argc,argv)
-#define CLASS_FACTORY(name,...) name* name::getInstance(CParameters* pParameters,__VA_ARGS__)
-#define CLASS_CONSTRUCTOR(name,...) name::name(CParameters* pParameters,__VA_ARGS__)
-#define CLASS_INIT(name,...) void name::init(CParameters* pParameters,__VA_ARGS__)
+#define CLASS_FACTORY(name,...) name* name::getInstance(CConfigNode* pParameters,__VA_ARGS__)
+#define CLASS_CONSTRUCTOR(name,...) name::name(CConfigNode* pParameters,__VA_ARGS__)
+#define CLASS_INIT(name,...) void name::init(CConfigNode* pParameters,__VA_ARGS__)
 
 #define END_CLASS()
 
@@ -20,14 +20,14 @@
 
 //The child class is given a name according to the context from the parent class, so the parameter node should include
 //the appropriate hierarchy (i.e., pParameters->getChild("VFA"))
-#define CHILD_CLASS(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= new className(pParameters->getChild(name),__VA_ARGS__); else variable= new className((CParameters*)0,__VA_ARGS__);
-#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance((CParameters*)0,__VA_ARGS__);
+#define CHILD_CLASS(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= new className(pParameters->getChild(name),__VA_ARGS__); else variable= new className((CConfigNode*)0,__VA_ARGS__);
+#define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance((CConfigNode*)0,__VA_ARGS__);
 #define CHILD_CLASS_INIT(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable.init(pParameters->getChild(name),__VA_ARGS__); else variable.init(0,__VA_ARGS__);
 
-#define CHOICE(name,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
+#define CHOICE(name,comment) if (!pParameters) return 0; CConfigNode* pChild = pParameters->getChild(name);
 #define END_CHOICE() return 0;
 
-#define CHOICE_INLINE(name,comment) {CParameters* pChild= 0;if (pParameters) pChild= pParameters->getChild(name);
+#define CHOICE_INLINE(name,comment) {CConfigNode* pChild= 0;if (pParameters) pChild= pParameters->getChild(name);
 #define END_CHOICE_INLINE() }
 
 #define CHOICE_ELEMENT_ACTION_ON_LOAD(checkLiteral,className,action,comment,...) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),__VA_ARGS__);
@@ -47,7 +47,7 @@
 #define MULTI_VALUED(vec,name,comment,className,...) \
 { \
 	int numChildren = pParameters->countChildren(name); \
-	CParameters* pChildParameters = pParameters->getChild(name);\
+	CConfigNode* pChildParameters = pParameters->getChild(name);\
 	for (int i = 0; i<numChildren; i++)\
 	{\
 		vec.push_back(new className(pChildParameters,__VA_ARGS__));\
@@ -57,7 +57,7 @@
 #define MULTI_VALUED_FACTORY(vec,name,comment,className,...) \
 { \
 	int numChildren = pParameters->countChildren(name); \
-	CParameters* pChildParameters = pParameters->getChild(name);\
+	CConfigNode* pChildParameters = pParameters->getChild(name);\
 	for (int i = 0; i<numChildren; i++)\
 	{\
 		vec.push_back(className::getInstance(pChildParameters,__VA_ARGS__));\

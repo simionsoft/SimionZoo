@@ -2,7 +2,7 @@
 #include "features.h"
 #include "parameterized-object.h"
 
-class CParameters;
+class CConfigNode;
 
 class CETraces : public CFeatureList, public CParamObject
 {
@@ -11,7 +11,7 @@ class CETraces : public CFeatureList, public CParamObject
 	double m_lambda;
 
 public:
-	CETraces(CParameters* pParameters, const char* name);
+	CETraces(CConfigNode* pParameters, const char* name);
 	virtual ~CETraces();
 
 	//traces will be multiplied by factor*lambda

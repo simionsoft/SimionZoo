@@ -22,7 +22,7 @@ class CBalancingPole: public CDynamicModel
 	int m_aPitch;
 
 public:
-	CBalancingPole(CParameters* pParameters, const char* worldDefinition);
+	CBalancingPole(CConfigNode* pParameters, const char* worldDefinition);
 	virtual ~CBalancingPole();
 
 	void reset(CState *s);

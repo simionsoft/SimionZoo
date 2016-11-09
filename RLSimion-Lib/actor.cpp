@@ -6,7 +6,7 @@
 #include "policy.h"
 #include "globals.h"
 #include "named-var-set.h"
-#include "parameters.h"
+#include "config.h"
 #include "policy-learner.h"
 #include "app.h"
 #include "vfa.h"

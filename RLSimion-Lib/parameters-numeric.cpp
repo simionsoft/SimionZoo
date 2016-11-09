@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "parameters-numeric.h"
 #include "globals.h"
-#include "parameters.h"
+#include "config.h"
 #include "experiment.h"
 #include "app.h"
 
@@ -11,7 +11,7 @@ class CConstantValue : public CNumericValue
 {
 	double m_value;
 public:
-	CConstantValue(CParameters* pParameters);
+	CConstantValue(CConfigNode* pParameters);
 	double getValue(){ return m_value; }
 };
 
@@ -34,7 +34,7 @@ class CInterpolatedValue : public CNumericValue
 	const char* m_interpolation;
 	const char* m_timeReference;
 public:
-	CInterpolatedValue(CParameters* pParameters);
+	CInterpolatedValue(CConfigNode* pParameters);
 	double getValue();
 };
 
@@ -98,7 +98,7 @@ class CBhatnagarSchedule : public CNumericValue
 	const char* m_timeReference;
 public:
 	//alpha_t= alpha_0*alpha_c / (alpha_c+t^{exp})
-	CBhatnagarSchedule(CParameters* pParameters);
+	CBhatnagarSchedule(CConfigNode* pParameters);
 	double getValue();
 };
 

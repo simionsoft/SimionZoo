@@ -2,7 +2,7 @@
 #include "world-underwatervehicle.h"
 #include "named-var-set.h"
 #include "setpoint.h"
-#include "parameters.h"
+#include "config.h"
 #include "world.h"
 #include "globals.h"
 #include "app.h"

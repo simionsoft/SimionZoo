@@ -1,6 +1,6 @@
 #pragma once
 
-class CParameters;
+class CConfigNode;
 
 class CSetPoint
 {

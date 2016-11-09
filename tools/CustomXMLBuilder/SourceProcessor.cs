@@ -59,7 +59,7 @@ namespace CustomXMLBuilder
         {
             foreach (classReference classRef in m_classReferences)
             {
-                if (!m_classDefinitions.Contains(classRef))
+                if (classRef.className!="" && !m_classDefinitions.Contains(classRef))
                 {
                     Console.WriteLine("../config/definitions.xml : error: Reference to undefined class found: " + classRef.className);
                     //m_classReferences.RemoveAll(c => c==classRef);
