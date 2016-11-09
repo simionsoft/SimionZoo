@@ -31,7 +31,7 @@ public:
 	const char* getConstString(const char* paramName= 0, const char* defaultValue= (const char*)0);
 
 	CParameters* getChild(const char* paramName = (const char*)0);
-	CParameters* getNextChild(const char* paramName = (const char*)0);
+	CParameters* getNextSibling(const char* paramName = (const char*)0);
 	int countChildren(const char* paramName = 0);
 
 	const char* getName();

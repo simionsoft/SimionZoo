@@ -12,33 +12,22 @@
 
 CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CParameters* pParameters)
 {
-	m_numDimensions = 0;
-	m_pGrid = 0;
 }
 
 CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters), CStateFeatureMap(pParameters)
 {
 	m_pVarFeatures= new CFeatureList("RBFGrid/var");
 
-	m_numDimensions = pParameters->countChildren("RBF-Grid-Dimension");
-	m_pGrid = new CSingleDimensionGrid*[m_numDimensions];
-
-	CParameters* dimension = pParameters->getChild("RBF-Grid-Dimension");
-	for (int i = 0; i < m_numDimensions; i++)
-	{
-		MULTI_VALUED(m_pGrid[i], "RBF-Grid-Dimension", "Parameters of the state-dimension's grid",CStateVariableGrid,dimension);
-
-		dimension= dimension->getNextChild("RBF-Grid-Dimension");
-	}
+	MULTI_VALUED(m_grid,"RBF-Grid-Dimension","Parameters of the state-dimension's grid",CStateVariableGrid);
 
 	//pre-calculate number of features
 	m_totalNumFeatures= 1;
 
-	for (int i = 0; i < m_numDimensions; i++)
-		m_totalNumFeatures *= m_pGrid[i]->getNumCenters();// m_pNumCenters[i];
+	for (unsigned int i = 0; i < m_grid.size(); i++)
+		m_totalNumFeatures *= m_grid[i]->getNumCenters();// m_pNumCenters[i];
 
 	m_maxNumActiveFeatures= 1;
-	for (int i = 0; i<m_numDimensions; i++)
+	for (unsigned int i = 0; i<m_grid.size(); i++)
 		m_maxNumActiveFeatures*= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 	END_CLASS();
 }
@@ -49,25 +38,16 @@ CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap
 {
 	m_pVarFeatures = new CFeatureList("RBFGrid/var");
 
-	m_numDimensions = pParameters->countChildren("RBF-Grid-Dimension");
-	m_pGrid = new CSingleDimensionGrid*[m_numDimensions];
-
-	CParameters* dimension = pParameters->getChild("RBF-Grid-Dimension");
-	for (int i = 0; i < m_numDimensions; i++)
-	{
-		MULTI_VALUED(m_pGrid[i], "RBF-Grid-Dimension", "Parameters of the action-dimension's grid", CActionVariableGrid, dimension);
-
-		dimension = dimension->getNextChild("RBF-Grid-Dimension");
-	}
+	MULTI_VALUED(m_grid, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid", CActionVariableGrid);
 
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
 
-	for (int i = 0; i < m_numDimensions; i++)
-		m_totalNumFeatures *= m_pGrid[i]->getNumCenters();// m_pNumCenters[i];
+	for (unsigned int i = 0; i < m_grid.size(); i++)
+		m_totalNumFeatures *= m_grid[i]->getNumCenters();// m_pNumCenters[i];
 
 	m_maxNumActiveFeatures = 1;
-	for (int i = 0; i<m_numDimensions; i++)
+	for (unsigned int i = 0; i<m_grid.size(); i++)
 		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 	END_CLASS();
 }
@@ -76,9 +56,8 @@ CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap
 
 CGaussianRBFGridFeatureMap::~CGaussianRBFGridFeatureMap()
 {
-	for (int i = 0; i < m_numDimensions; i++)
-		delete m_pGrid[i];
-	delete [] m_pGrid;
+	for (unsigned int i = 0; i < m_grid.size(); i++)
+		delete m_grid[i];
 
 	delete m_pVarFeatures;
 }
@@ -89,16 +68,16 @@ void CGaussianRBFGridFeatureMap::getFeatures(const CState* s,const CAction* a,CF
 	unsigned int offset= 1;
 
 	outFeatures->clear();
-	if (m_numDimensions == 0) return;
+	if (m_grid.size() == 0) return;
 	//features of the 0th variable in m_pBuffer
-	m_pGrid[0]->getFeatures(s,a,outFeatures);
+	m_grid[0]->getFeatures(s,a,outFeatures);
 	
-	for (int i= 1; i<m_numDimensions; i++)
+	for (unsigned int i= 1; i<m_grid.size(); i++)
 	{
-		offset *= m_pGrid[i - 1]->getNumCenters();
+		offset *= m_grid[i - 1]->getNumCenters();
 
 		//we calculate the features of i-th variable
-		m_pGrid[i]->getFeatures(s,a,m_pVarFeatures);
+		m_grid[i]->getFeatures(s,a,m_pVarFeatures);
 		//spawn features in buffer with the i-th variable's features
 		outFeatures->spawn(m_pVarFeatures,offset);
 	}
@@ -110,12 +89,12 @@ void CGaussianRBFGridFeatureMap::getFeatureStateAction(unsigned int feature, CSt
 {
 	unsigned int dimFeature;
 
-	for (int i= 0; i<m_numDimensions; i++)
+	for (unsigned int i= 0; i<m_grid.size(); i++)
 	{
-		dimFeature= feature % m_pGrid[i]->getNumCenters();
+		dimFeature= feature % m_grid[i]->getNumCenters();
 
-		m_pGrid[i]->setFeatureStateAction(dimFeature,s, a);
+		m_grid[i]->setFeatureStateAction(dimFeature,s, a);
 
-		feature = feature / m_pGrid[i]->getNumCenters();
+		feature = feature / m_grid[i]->getNumCenters();
 	}
 }

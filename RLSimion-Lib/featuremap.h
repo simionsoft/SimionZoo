@@ -7,6 +7,7 @@ typedef CNamedVarSet CAction;
 class CParameters;
 class CSingleDimensionGrid;
 #include "parameterized-object.h"
+#include <vector>
 
 //enum VariableType{StateVariable,ActionVariable};
 
@@ -56,8 +57,7 @@ protected:
 	unsigned int m_totalNumFeatures;
 	unsigned int m_maxNumActiveFeatures;
 
-	int m_numDimensions;
-	CSingleDimensionGrid **m_pGrid;
+	std::vector<CSingleDimensionGrid*> m_grid;
 
 	CGaussianRBFGridFeatureMap(CParameters* pParameters);
 public:

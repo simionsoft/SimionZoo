@@ -27,15 +27,15 @@
 #define CHOICE(name,comment) if (!pParameters) return 0; CParameters* pChild = pParameters->getChild(name);
 #define END_CHOICE() return 0;
 
-#define CHOICE_INLINE(name,comment) CParameters* pChild= 0;if (pParameters) pChild= pParameters->getChild(name);
-#define END_CHOICE_INLINE()
+#define CHOICE_INLINE(name,comment) {CParameters* pChild= 0;if (pParameters) pChild= pParameters->getChild(name);
+#define END_CHOICE_INLINE() }
 
-
+#define CHOICE_ELEMENT_ACTION_ON_LOAD(checkLiteral,className,action,comment,...) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),__VA_ARGS__);
 #define CHOICE_ELEMENT_XML(checkLiteral,className,XMLFilename,comment,...) if(pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral),XMLFilename,__VA_ARGS__);
 #define CHOICE_ELEMENT(checkLiteral,className,comment) if (pChild->getChild(checkLiteral)) return new className(pChild->getChild(checkLiteral));
 #define CHOICE_ELEMENT_FACTORY(checkLiteral, className,comment,...) if(pChild->getChild(checkLiteral)) return className::getInstance(pChild->getChild(checkLiteral),__VA_ARGS__);
-#define CHOICE_ELEMENT_INLINE(checkLiteral,className,comment,variable,value) if (pChild && pChild->getChild(checkLiteral)) variable= value;
-#define CHOICE_ELEMENT_INLINE_FACTORY(checkLiteral,className,comment,variable,value) if (pChild && pChild->getChild(checkLiteral)) variable= value;
+#define CHOICE_ELEMENT_INLINE(checkLiteral,className,comment,action) if (pChild && pChild->getChild(checkLiteral)) action;
+#define CHOICE_ELEMENT_INLINE_FACTORY(checkLiteral,className,comment,action) if (pChild && pChild->getChild(checkLiteral)) action;
 
 #define NUMERIC_VALUE(variable,parameterName,comment) variable= CNumericValue::getInstance(pParameters->getChild(parameterName));
 #define CONST_INTEGER_VALUE(variable,parameterName,defaultValue,comment) variable= pParameters->getConstInteger(parameterName,defaultValue);
@@ -44,15 +44,35 @@
 #define DIR_PATH_VALUE(variable,variableName,defaultValue,comment) variable= (char*)pParameters->getConstString(variableName,defaultValue);
 #define FILE_PATH_VALUE(variable,variableName,defaultValue,comment) variable= (char*)pParameters->getConstString(variableName,defaultValue);
 
-#define MULTI_VALUED(indexedVariable,name,comment,className,...) indexedVariable= new className(__VA_ARGS__);
-#define MULTI_VALUED_FACTORY(indexedVariable,name,comment,className,...) indexedVariable= className::getInstance(__VA_ARGS__);
-
-#define MULTI_VALUED_STRING(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
-#define MULTI_VALUED_DOUBLE(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstDouble(0,defaultValue);
-#define MULTI_VALUED_INTEGER(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstInteger(0,defaultValue);
+#define MULTI_VALUED(vec,name,comment,className,...) \
+{ \
+	int numChildren = pParameters->countChildren(name); \
+	CParameters* pChildParameters = pParameters->getChild(name);\
+	for (int i = 0; i<numChildren; i++)\
+	{\
+		vec.push_back(new className(pChildParameters,__VA_ARGS__));\
+		pChildParameters = pChildParameters->getNextSibling(name);\
+	}\
+}
+#define MULTI_VALUED_FACTORY(vec,name,comment,className,...) \
+{ \
+	int numChildren = pParameters->countChildren(name); \
+	CParameters* pChildParameters = pParameters->getChild(name);\
+	for (int i = 0; i<numChildren; i++)\
+	{\
+		vec.push_back(className::getInstance(pChildParameters,__VA_ARGS__));\
+		pChildParameters = pChildParameters->getNextSibling(name);\
+	}\
+}
+//#define MULTI_VALUED(indexedVariable,name,comment,className,...) indexedVariable= new className(__VA_ARGS__);
+//#define MULTI_VALUED_FACTORY(indexedVariable,name,comment,className,...) indexedVariable= className::getInstance(__VA_ARGS__);
+//
+//#define MULTI_VALUED_STRING(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
+//#define MULTI_VALUED_DOUBLE(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstDouble(0,defaultValue);
+//#define MULTI_VALUED_INTEGER(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstInteger(0,defaultValue);
 #define MULTI_VALUED_FILE_PATH(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
-#define MULTI_VALUED_STATE_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
-#define MULTI_VALUED_ACTION_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
+//#define MULTI_VALUED_STATE_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
+//#define MULTI_VALUED_ACTION_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
 
 #define STATE_VARIABLE_REF(variable,variableName,comment) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(pParameters->getConstString(variableName));
 #define ACTION_VARIABLE_REF(variable,variableName,comment) variable= CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(pParameters->getConstString(variableName));

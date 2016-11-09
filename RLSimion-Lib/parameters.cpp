@@ -38,8 +38,8 @@ int CParameters::countChildren(const char* name)
 		count++;
 
 		if (name)
-			p = p->getNextChild(name);
-		else p = p->getNextChild();
+			p = p->getNextSibling(name);
+		else p = p->getNextSibling();
 	}
 	return count;
 }
@@ -146,7 +146,7 @@ CParameters* CParameters::getChild(const char* paramName)
 	return static_cast<CParameters*> (child);
 }
 
-CParameters* CParameters::getNextChild(const char* paramName)
+CParameters* CParameters::getNextSibling(const char* paramName)
 {
 	if (!this)
 		throw std::exception("Illegal access to child parameter ");

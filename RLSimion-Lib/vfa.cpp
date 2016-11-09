@@ -132,8 +132,8 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
 {
 	m_pStateFeatureMap = 0;
 	CHOICE_INLINE("Feature-Map", "Choose from an explicit feature map or the global feature map");
-		CHOICE_ELEMENT_INLINE("Global", ,"Use the global state feature map",m_pStateFeatureMap,CApp::get()->SimGod.getGlobalStateFeatureMap());
-		CHOICE_ELEMENT_INLINE_FACTORY("Explicit",CStateFeatureMap,"Define an explicit feature map",m_pStateFeatureMap,CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
+		CHOICE_ELEMENT_INLINE("Global", ,"Use the global state feature map",m_pStateFeatureMap=CApp::get()->SimGod.getGlobalStateFeatureMap());
+		CHOICE_ELEMENT_INLINE_FACTORY("Explicit",CStateFeatureMap,"Define an explicit feature map",m_pStateFeatureMap=CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
 	END_CHOICE_INLINE();
 	//default initialization
 	if (m_pStateFeatureMap == 0)
@@ -228,8 +228,8 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 {
 	m_pStateFeatureMap = 0;
 	CHOICE_INLINE("State-Feature-Map", "Choose from an explicit feature map or the global feature map");
-	CHOICE_ELEMENT_INLINE("Global", , "Use the global state feature map", m_pStateFeatureMap, CApp::get()->SimGod.getGlobalStateFeatureMap());
-	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CStateFeatureMap, "Define an explicit feature map", m_pStateFeatureMap, CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
+	CHOICE_ELEMENT_INLINE("Global", , "Use the global state feature map", m_pStateFeatureMap= CApp::get()->SimGod.getGlobalStateFeatureMap());
+	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CStateFeatureMap, "Define an explicit feature map", CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
 	END_CHOICE_INLINE();
 	//default initialization
 	if (m_pStateFeatureMap == 0)
@@ -237,8 +237,8 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 
 	m_pActionFeatureMap = 0;
 	CHOICE_INLINE("Action-Feature-Map", "Choose from an explicit feature map or the global feature map");
-	CHOICE_ELEMENT_INLINE("Global", , "Use the global action feature map", m_pActionFeatureMap, CApp::get()->SimGod.getGlobalActionFeatureMap());
-	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CActionFeatureMap, "Define an explicit feature map", m_pActionFeatureMap, CActionFeatureMap::getInstance(pChild->getChild("Explicit")););
+	CHOICE_ELEMENT_INLINE("Global", , "Use the global action feature map", m_pActionFeatureMap= CApp::get()->SimGod.getGlobalActionFeatureMap());
+	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CActionFeatureMap, "Define an explicit feature map", CActionFeatureMap::getInstance(pChild->getChild("Explicit")););
 	END_CHOICE_INLINE();
 	//default initialization
 	if (m_pActionFeatureMap == 0)

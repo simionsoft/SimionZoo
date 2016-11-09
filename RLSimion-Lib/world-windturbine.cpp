@@ -188,7 +188,7 @@ CLASS_CONSTRUCTOR(CWindTurbine,const char* worldDefinition)
 		MULTI_VALUED_FILE_PATH(filename, "Training-Wind-Data","../config/world/wind-turbine/TurbSim-10.5.hh", "The wind files used for training", trainingWindFiles);
 		m_pTrainingWindData[i]= new CHHFileSetPoint(filename);
 
-		trainingWindFiles = trainingWindFiles->getNextChild(trainingDataId);
+		trainingWindFiles = trainingWindFiles->getNextSibling(trainingDataId);
 	}
 	FILE_PATH_VALUE(filename, "Power-Set-Point", "../config/world/wind-turbine/power-setpoint.txt","The power setpoint file");
 	m_pPowerSetpoint = new CFileSetPoint(filename);

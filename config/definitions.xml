@@ -7,7 +7,7 @@
   </CLASS>
 
   <CLASS Name="CIncrementalNaturalActorCritic">
-    <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The Policy"/>
+    <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="A policy"/>
     <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function" Optional="false"/>
     <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="true"/>
     <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="true"/>
@@ -290,7 +290,7 @@
   </CLASS>
 
   <CLASS Name="CSimGod">
-    <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: agents and controllers"/>
+    <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: learning agents and controllers"/>
     <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map" Optional="false"/>
     <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The action feature map" Optional="true"/>
     <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="true"/>

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include "globals.h"
 #include "features.h"
 #include "etraces.h"
 #include "vfa.h"
@@ -8,7 +8,6 @@
 #include "named-var-set.h"
 #include "vfa-critic.h"
 #include "parameters.h"
-#include "globals.h"
 #include "experiment.h"
 #include "parameters-numeric.h"
 #include "policy.h"
@@ -29,19 +28,11 @@ CLASS_CONSTRUCTOR(CIncrementalNaturalActorCritic)
 	CHILD_CLASS(m_e_v,"V-ETraces","Traces used by the critic",true,CETraces,"Critic/e_v");
 
 	//actor's stuff
-	m_numPolicies = pParameters->countChildren("Policy");
-	if (!m_numPolicies) throw std::exception("No policy defined for the INAC Simion");
-	CParameters* pChild = pParameters->getChild("Policy");
-	m_pPolicies = new CPolicy*[m_numPolicies];
-	m_w = new CFeatureList*[m_numPolicies];
-	for (int i = 0; i < m_numPolicies; i++)
-	{
-		MULTI_VALUED_FACTORY(m_pPolicies[i], "Policy", "The Policy", CPolicy, pChild);
+	MULTI_VALUED_FACTORY(m_policies, "Policy", "A policy", CPolicy);
+	m_w = new CFeatureList*[m_policies.size()];
+	for (unsigned int i = 0; i < m_policies.size(); i++)
+		m_w[i] = new CFeatureList("INAC-w", false, true);
 
-		//there's something 
-		m_w[i] = new CFeatureList("INAC-w",false,true);
-		pChild = pChild->getNextChild("Policy");
-	}
 
 	m_grad_u = new CFeatureList("Actor/grad-u");
 	NUMERIC_VALUE(m_pAlphaU, "Alpha-u","Learning gain used by the actor");
@@ -65,10 +56,9 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 
 	for (int i = 0; i < m_numPolicies; i++)
 	{
-		delete m_pPolicies[i];
+		delete m_policies[i];
 		delete m_w[i];
 	}
-	delete[] m_pPolicies;
 	delete[]m_w;
 
 	delete m_grad_u;
@@ -132,7 +122,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		if (CApp::get()->pExperiment->isFirstStep())
 			m_w[i]->clear();
 
-		m_pPolicies[i]->getNaturalGradient(s, a, m_grad_u);
+		m_policies[i]->getNaturalGradient(s, a, m_grad_u);
 		m_grad_u->normalize();
 
 		//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
@@ -146,7 +136,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		m_w[i]->addFeatureList(m_e_u, alpha_v*m_td);
 //		m_w[i]->applyThreshold(0.0001);
 		//3. u= u + alpha_u * w
-		m_pPolicies[i]->addFeatures(m_w[i], alpha_u);
+		m_policies[i]->addFeatures(m_w[i], alpha_u);
 	}
 }
 
@@ -154,6 +144,6 @@ void CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
 {
 	for (int i = 0; i < m_numPolicies; i++)
 	{
-		m_pPolicies[i]->selectAction(s, a);
+		m_policies[i]->selectAction(s, a);
 	}
 }

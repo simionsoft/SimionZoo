@@ -1,5 +1,5 @@
 #pragma once
-
+#include <vector>
 #include "simion.h"
 #include "parameterized-object.h"
 class CParameters;
@@ -39,7 +39,7 @@ class CIncrementalNaturalActorCritic : public CSimion
 
 	CLinearStateVFA* m_pVFunction;
 	int m_numPolicies;
-	CPolicy** m_pPolicies;
+	std::vector<CPolicy*> m_policies;
 
 	double m_avg_r; 
 	CETraces *m_e_u;

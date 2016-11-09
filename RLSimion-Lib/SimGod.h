@@ -21,8 +21,7 @@ class CSimGod
 	CStateFeatureMap* m_pGlobalStateFeatureMap;
 	CActionFeatureMap* m_pGlobalActionFeatureMap;
 
-	int m_numSimions= 0;
-	CSimion** m_pSimions = 0;
+	std::vector<CSimion*> m_simions;
 
 	CReward *m_pReward;
 

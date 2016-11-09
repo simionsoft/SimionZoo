@@ -8,14 +8,14 @@ class CParameters;
 class CPolicyLearner;
 #include "parameterized-object.h"
 #include "delayed-load.h"
+#include <vector>
 class CController;
 
 class CActor: public CParamObject, public CDeferredLoad
 {
 	CController* m_pInitController;
 protected:
-	CPolicyLearner **m_pPolicyLearners;
-	int m_numOutputs;
+	std::vector<CPolicyLearner*> m_policyLearners;
 
 public:
 	CActor(CParameters* pParameters);

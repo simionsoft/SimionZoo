@@ -127,7 +127,7 @@ double CDynamicModel::getConstant(const char* constantName)
 		if (pChild && !strcmp(constantName, pChild->getConstString()))
 			return pNode->getConstDouble("Value");
 
-		pNode = pNode->getNextChild("Constant");
+		pNode = pNode->getNextSibling("Constant");
 	}
 	char message[1024];
 	sprintf_s(message, 1024, "Missing constant in world definition file: %s", constantName);

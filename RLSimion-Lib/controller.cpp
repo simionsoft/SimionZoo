@@ -42,36 +42,24 @@ CLASS_CONSTRUCTOR(CLQRController) : CParamObject(pParameters)
 {
 	ACTION_VARIABLE_REF(m_outputActionIndex,"Output-Action","The output action");
 	
-	/*m_outputActionIndex = CApp::get()->pWorld->getActionDescriptor()->getVarIndex(outputAction);*/
-
-	m_numVars = pParameters->countChildren("LQR-Gain");
-
-	m_pGains = new CLQRGain*[m_numVars];
-	CParameters* pGain = pParameters->getChild("LQR-Gain");
-	for (int i = 0; i < m_numVars; i++)
-	{
-		//m_pGains[i] = new CLQRGain(pGain);
-
-		MULTI_VALUED(m_pGains[i],"LQR-Gain","An LQR gain on an input state variable",CLQRGain,pGain);
-		pGain = pGain->getNextChild("LQR-Gain");
-	}
+	MULTI_VALUED(m_gains, "LQR-Gain", "An LQR gain on an input state variable", CLQRGain);
+	
 
 	END_CLASS();
 }
 
 CLQRController::~CLQRController()
 {
-	for (int i = 0; i < m_numVars; i++) delete m_pGains[i];
-	delete [] m_pGains;
+	for (unsigned int i = 0; i < m_gains.size(); i++) delete m_gains[i];
 }
 
 void CLQRController::selectAction(const CState *s, CAction *a)
 {
 	double output= 0.0; // only 1-dimension so far
 
-	for (int i= 0; i<m_numVars; i++)
+	for (unsigned int i= 0; i<m_gains.size(); i++)
 	{
-		output+= s->getValue(m_pGains[i]->m_variableIndex)*m_pGains[i]->m_gain;
+		output+= s->getValue(m_gains[i]->m_variableIndex)*m_gains[i]->m_gain;
 	}
 	// delta= -K*x
 	a->setValue(m_outputActionIndex, -output);

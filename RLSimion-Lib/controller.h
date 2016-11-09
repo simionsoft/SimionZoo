@@ -2,7 +2,7 @@
 
 #include "simion.h"
 #include "parameterized-object.h"
-
+#include <vector>
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -38,9 +38,8 @@ public:
 
 class CLQRController : public CController, public CParamObject
 {
-	CLQRGain** m_pGains;
+	std::vector<CLQRGain*> m_gains;
 	int m_outputActionIndex;
-	int m_numVars;
 public:
 	CLQRController(CParameters* pParameters);
 	virtual ~CLQRController();

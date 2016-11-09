@@ -27,7 +27,7 @@ CNamedVarSet::CNamedVarSet(CParameters* pDescription)
 		m_pProperties[numVars].max = pVariable->getConstDouble("Max");
 
 		numVars++;
-		pVariable = pVariable->getNextChild("Variable");
+		pVariable = pVariable->getNextSibling("Variable");
 	}
 }
 

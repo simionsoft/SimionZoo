@@ -21,23 +21,15 @@ CLASS_INIT(CSimGod)
 	CHILD_CLASS_FACTORY(m_pGlobalActionFeatureMap, "Action-Feature-Map", "The action feature map", true, CActionFeatureMap);
 	CHILD_CLASS(m_pExperienceReplay, "Experience-Replay", "The experience replay parameters", true, CExperienceReplay);
 
-	m_numSimions = pParameters->countChildren("Simion");
-	m_pSimions = new CSimion*[m_numSimions];
-	CParameters* pChild = pParameters->getChild("Simion");
-	for (int i = 0; i < m_numSimions; i++)
-	{
-		m_pSimions[i] = 0;
-		MULTI_VALUED_FACTORY(m_pSimions[i], "Simion", "Simions: agents and controllers",CSimion, pChild);
-		pChild = pChild->getNextChild("Simion");
-	}
+	MULTI_VALUED_FACTORY(m_simions, "Simion", "Simions: learning agents and controllers", CSimion);
+
 	
 	END_CLASS();
 }
 
 CSimGod::CSimGod()
 {
-	m_numSimions = 0;
-	m_pSimions = 0;
+
 }
 
 
@@ -46,14 +38,12 @@ CSimGod::~CSimGod()
 	if (m_pGlobalStateFeatureMap) delete m_pGlobalStateFeatureMap;
 	if (m_pGlobalActionFeatureMap) delete m_pGlobalActionFeatureMap;
 	if (m_pExperienceReplay) delete m_pExperienceReplay;
-	if (m_pSimions)
+
+	for (unsigned int i = 0; i < m_simions.size(); i++)
 	{
-		for (int i = 0; i < m_numSimions; i++)
-		{
-			if (m_pSimions[i]) delete m_pSimions[i];
-		}
-		delete[] m_pSimions;
+		if (m_simions[i]) delete m_simions[i];
 	}
+
 	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
 	m_inputFiles.clear();
 	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);
@@ -63,8 +53,8 @@ CSimGod::~CSimGod()
 
 void CSimGod::selectAction(CState* s, CAction* a)
 {
-	for (int i = 0; i < m_numSimions; i++)
-		m_pSimions[i]->selectAction(s, a);
+	for (unsigned int i = 0; i < m_simions.size(); i++)
+		m_simions[i]->selectAction(s, a);
 }
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
@@ -80,12 +70,12 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 	{
 		pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
 		//update critic
-		for (int i = 0; i < m_numSimions; i++)
-			m_pSimions[i]->updateValue(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
+		for (unsigned int i = 0; i < m_simions.size(); i++)
+			m_simions[i]->updateValue(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
 
 		//update actor: might be the controller
-		for (int i = 0; i < m_numSimions; i++)
-			m_pSimions[i]->updatePolicy(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
+		for (unsigned int i = 0; i < m_simions.size(); i++)
+			m_simions[i]->updatePolicy(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
 	}
 }
 

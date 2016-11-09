@@ -1,5 +1,5 @@
 #pragma once
-
+#include <vector>
 
 class CParameters;
 
@@ -12,4 +12,6 @@ public:
 	virtual ~CParamObject(){}
 
 	CParameters* getParameters(){ return m_pParameters; }
+
+
 };
