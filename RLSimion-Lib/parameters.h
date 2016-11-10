@@ -40,9 +40,37 @@ class testClass{};
 MULTI_VALUED<testClass> test("haderasdlkf");
 
 template <typename DataType>
-class CHOICE_CONSTRUCTOR
+class CHOICE_CLASS
 {
+	const char* m_name;
 	DataType* m_pValue;
 public:
-	CHOICE_CONSTRUCTOR(const char* parameterName, const char*);
+	CHOICE_CLASS(const char* parameterName, const char* properties) { m_name = name; }
+	void init(CConfigNode* pConfigNode) { m_pValue = new DataType(pConfigNode); }
+	//this compiles but it's not what i want
 };
+
+template <typename DataType>
+class CHOICE_FACTORY
+{
+	const char* m_name;
+	DataType* m_pValue;
+public:
+	CHOICE_FACTORY(const char* parameterName, const char* properties) { m_name = name; }
+	void init(CConfigNode* pConfigNode) { m_pValue = DataType::getInstance(pConfigNode); }
+	//i think this would work...all but inline choices are inside a getInstance() method
+	//
+	//BUT:
+	//1. in some choices, some of the branches use getInstance, others don't
+	//2. we have inline choices
+};
+
+class model
+{
+public:
+	model(CConfigNode* pConfigNode) {}
+	model* getInstance(CConfigNode* pConfigNode, const char* name) { return 0; }
+};
+
+CHOICE_CLASS<model> varmodel("name", "hander");
+CHOICE_FACTORY<model> varmodel2("name", "my properties");
