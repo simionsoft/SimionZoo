@@ -2,7 +2,7 @@
 #include "parameters.h"
 
 
-template<class DataType> DataType& CLASS_PARAM<DataType>::get()
-{
-	return m_value;
-}
+//template<class DataType> DataType& CSimpleParam<DataType>::get()
+//{
+//	return m_value;
+//}
