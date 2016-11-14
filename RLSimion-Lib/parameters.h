@@ -9,57 +9,60 @@ enum PropertyName { Comment, Default, Optional };
 
 class CBaseParam
 {
+protected:
 	template <typename... propertyTypes>
-	void parseProperty(PropertyName propName,const char* value,propertyTypes... properties)
+	void parseProperty(PropertyName propName, const char* value, propertyTypes... properties)
 	{
-		if (propName==Optional)
+		if (propName == Optional)
 		{
 			if (strcmp(value, "true") == 0) m_bOptional = true;
 		}
 	}
-protected:
 	bool m_bOptional = false;
 	const char* m_comment = "No comment";
+	const char* m_name = "Unnamed";
 
 	template<typename ... propertyTypes>
-	void parseProperties(PropertyName propName,const char* value,propertyTypes... properties)
+	void parseProperties(PropertyName propName, const char* value, propertyTypes... properties)
 	{
-		parseProperty(propName,value,properties...);
+		parseProperty(propName, value, properties...);
 	}
 };
 
 template<typename DataType>
 class CSimpleParam: public CBaseParam
 {
-
-	const char* m_name;
 	DataType m_value;
+	DataType m_default;
+	
 	void initValue(CConfigNode* pConfigNode, int& value)
 	{
-		value = pConfigNode->getConstInteger(m_name);
+		value = pConfigNode->getConstInteger(m_name,m_default);
 	}
+	
 	void initValue(CConfigNode* pConfigNode, double& value)
 	{
-		value = pConfigNode->getConstDouble(m_name);
+		value = pConfigNode->getConstDouble(m_name,m_default);
 	}
+	
 	void initValue(CConfigNode* pConfigNode, const char& value)
 	{
-		value = pConfigNode->getConstString(m_name);
+		value = pConfigNode->getConstString(m_name,m_default);
 	}
+	
 	void initValue(CConfigNode* pConfigNode, bool& value)
 	{
 		value = pConfigNode->getConstBoolean(m_name);
 	}
 
-
 public:
 	CSimpleParam() = default;
-	template <typename... propertyTypes>
-	CSimpleParam(CConfigNode* pConfigNode,const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	template <typename... propertyTypes> CSimpleParam(CConfigNode* pConfigNode, const char* name, PropertyName propName
+		, const char* value, propertyTypes... properties)
 	{
 		m_name = name;
-		parseProperties(propName,value,properties...);
-		initValue(pConfigNode,m_value);
+		parseProperties(propName, value, properties...);
+		initValue(pConfigNode, m_value);
 	}
 
 	DataType& get() { return m_value; }
@@ -72,41 +75,68 @@ using STRING_PARAM = CSimpleParam<const char*>;
 using DIR_PATH_PARAM = CSimpleParam<const char*>;
 using FILE_PATH_PARAM = CSimpleParam<const char*>;
 
-template<typename DataType>
-class CHILD_CLASS: public CBaseParam
+class STATE_VARIABLE: public CBaseParam
 {
+	int m_hVariable= -1;
+public:
+	STATE_VARIABLE() = default;
 
-	const char* m_name;
+	template <typename... propertyTypes>
+	STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	{
+		m_hVariable = CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(pParameters->getConstString(name));
+		m_name = name;
+		parseProperties(propName, value, properties...);
+	}
+	int get() { return m_hVariable; }
+};
+
+class ACTION_VARIABLE : public CBaseParam
+{
+	int m_hVariable = -1;
+public:
+	ACTION_VARIABLE() = default;
+
+	template <typename... propertyTypes>
+	ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	{
+		m_hVariable = CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(pParameters->getConstString(name));
+		m_name = name;
+		parseProperties(propName, value, properties...);
+	}
+	int get() { return m_hVariable; }
+};
+
+template<typename DataType>
+class CHILD_OBJECT: public CBaseParam
+{
 	DataType* m_pValue;
 public:
-	CHILD_CLASS() = default;
+	CHILD_OBJECT() = default;
 	template <typename... propertyTypes>
-	CHILD_CLASS(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	CHILD_OBJECT(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
 	{
 		m_name = name;
-		parseProperties(propName,value,properties...);
+		parseProperties(propName, value, properties...);
 
 		if (!m_bOptional || pConfigNode->getChild(name))
-			m_pValue = new DataType(pConfigNode->getChild(name));
+			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
 		else m_pValue = new DataType((CConfigNode*)0);
 	}
-
 	DataType& get() { return m_pValue; }
 };
 
 template<typename DataType>
-class CHILD_CLASS_FACTORY : public CBaseParam
+class CHILD_OBJECT_FACTORY : public CBaseParam
 {
-
-	const char* m_name;
 	DataType* m_pValue;
 public:
-	CHILD_CLASS_FACTORY() = default;
+	CHILD_OBJECT_FACTORY() = default;
 	template <typename... propertyTypes>
-	CHILD_CLASS_FACTORY(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	CHILD_OBJECT_FACTORY(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
 	{
 		m_name = name;
-		parseProperties(propName,value,properties...);
+		parseProperties(propName, value, properties...);
 
 		if (!m_bOptional || pConfigNode->getChild(name))
 			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
@@ -117,20 +147,19 @@ public:
 };
 
 template <typename DataType>
-class MULTI_VALUED: public CBaseParam
+class MULTI_VALUE: public CBaseParam
 {
-	const char* m_name;
 	std::vector<DataType*> m_values;
 public:
-	MULTI_VALUED() = default;
+	MULTI_VALUE() = default;
 
 	template<typename... propertyTypes>
-	MULTI_VALUED(CConfigNode* pConfigNode,const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	MULTI_VALUE(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
 	{
 		m_name = name;
 		parseProperties(propName, value, properties...);
 		CConfigNode* pChildParameters = pConfigNode->getChild(name);
-		while(pChildParameters!=0)
+		while (pChildParameters != 0)
 		{
 			m_values.push_back(new DataType(pChildParameters));
 			pChildParameters = pChildParameters->getNextSibling(name);
@@ -144,12 +173,9 @@ public:
 template<typename DataType>
 using choiceFunc= std::function<DataType*(CConfigNode*)>;
 
-//template<typename DataType>
-//using FACTORY = std::function<DataType*(CConfigNode* pConfig, const char* name, const char* comment
-//						, std::map<const char*, choiceFunc<DataType>> choices)>;
-//
+
 template<typename DataType>
-DataType* FACTORY_FUNC(CConfigNode* pConfig, std::map<const char*,choiceFunc<DataType>> choices)
+DataType* FACTORY_FUNC(CConfigNode* pConfig, std::map<const char*, choiceFunc<DataType>> choices)
 {
 	if (!pConfig) return 0;
 	for each (auto var in choices)
@@ -169,11 +195,11 @@ public:
 
 	static testClass* getInstance(CConfigNode* pConfigNode)
 	{
-		if (!pConfigNode) return 0;
-		CConfigNode* pChild = pConfigNode->getChild("OPTION_NAME");
-		if (pChild == 0) return 0;
-		if (pChild->getChild("option1") != 0) return new testClass(pChild->getChild("option1"));
-		if (pChild->getChild("option2") != 0) return new testClass(pChild->getChild("option2"));
+		return FACTORY_FUNC<testClass>(pConfigNode,
+		{
+			{ "option1",[](CConfigNode* pConfigNode) {return new testClass(pConfigNode); } }
+		,{ "option2",[](CConfigNode* pConfigNode) {return new testClass(pConfigNode); } }
+		});
 	}
 };
 
@@ -183,16 +209,16 @@ class test
 
 	INT_PARAM intparam;
 	DOUBLE_PARAM dparam;
-	MULTI_VALUED<testClass> multiparam;
-	CHILD_CLASS<testClass> child;
-	CHILD_CLASS_FACTORY<testClass> childFac;
+	MULTI_VALUE<testClass> multiparam;
+	CHILD_OBJECT<testClass> child;
+	CHILD_OBJECT_FACTORY<testClass> childFac;
 
-	static testClass* getInstance(CConfigNode* pConfigNode)
+	static test* getInstance(CConfigNode* pConfigNode)
 	{
-		return FACTORY_FUNC<testClass>(pConfigNode, 
+		return FACTORY_FUNC<test>(pConfigNode, 
 		{
-			{"option1",[](CConfigNode* pConfigNode) {return new testClass(pConfigNode); }}
-			,{ "option2",[](CConfigNode* pConfigNode) {return new testClass(pConfigNode); } }
+			{"option1",[](CConfigNode* pConfigNode) {return new test(pConfigNode); }}
+			,{ "option2",[](CConfigNode* pConfigNode) {return new test(pConfigNode); } }
 		});
 	}
 
@@ -201,9 +227,9 @@ public:
 	{
 		intparam = INT_PARAM(pConfigNode, "jandermor", Comment,"Nik zer dakit");
 		dparam = DOUBLE_PARAM(pConfigNode, "test", Comment,"pitikan", Optional,"true", Default,"3");
-		multiparam = MULTI_VALUED<testClass>(pConfigNode, "controllers", Comment,"comment=kjaral",Optional,"Visible=false");
-		child = CHILD_CLASS<testClass>(pConfigNode, "my child", Comment,"his properties");
-		childFac = CHILD_CLASS_FACTORY<testClass>(pConfigNode, "Factory child",Comment,"my other child from the factory");
+		multiparam = MULTI_VALUE<testClass>(pConfigNode, "controllers", Comment,"comment=kjaral",Optional,"Visible=false");
+		child = CHILD_OBJECT<testClass>(pConfigNode, "my child", Comment,"his properties");
+		childFac = CHILD_OBJECT_FACTORY<testClass>(pConfigNode, "Factory child",Comment,"my other child from the factory");
 	}
 
 };

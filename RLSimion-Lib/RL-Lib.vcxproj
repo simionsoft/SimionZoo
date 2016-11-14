@@ -118,7 +118,6 @@
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
-    <ClCompile Include="parameters.cpp" />
     <ClCompile Include="q-learners.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />

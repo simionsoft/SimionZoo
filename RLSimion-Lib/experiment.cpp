@@ -46,9 +46,9 @@ const char* CExperiment::getProgressString()
 
 bool CExperiment::isEvaluationEpisode()
 {
-	if (m_evalFreq > 0)
+	if (m_evalFreq.get() > 0)
 	{
-		return (m_episodeIndex - 1) % (m_evalFreq + 1) == 0;
+		return (m_episodeIndex - 1) % (m_evalFreq.get() + 1) == 0;
 	}
 	return false;
 }
@@ -93,7 +93,7 @@ bool CExperiment::isFirstEpisode()
 bool CExperiment::isLastEpisode()
 {
 	if (isEvaluationEpisode()) return m_evalEpisodeIndex == m_numEvaluationEpisodes;
-	return m_trainingEpisodeIndex == m_numTrainingEpisodes;
+	return m_trainingEpisodeIndex == m_numTrainingEpisodes.get();
 }
 
 CExperiment::~CExperiment()
@@ -105,30 +105,36 @@ CLASS_CONSTRUCTOR(CExperiment)
 {
 	if (!pParameters) return;
 
-	CONST_DOUBLE_VALUE(m_progUpdateFreq ,"Progress-Update-Freq", 0.5,"Progress update frequency (seconds)");
-	CONST_INTEGER_VALUE(m_randomSeed ,"Random-Seed", 1,"Random seed used to generate random sequences of numbers");
 
-	CONST_INTEGER_VALUE(m_numTrainingEpisodes, "Num-Episodes", 1,"Number of episodes");
-	CONST_INTEGER_VALUE(m_evalFreq, "Eval-Freq", 0,"Evaluation frequency (in episodes)");
+	m_progUpdateFreq = DOUBLE_PARAM(pParameters, "Progress-Update-Freq", Default, "0.5", Comment, "Progress update frequency (seconds)");
+	//CONST_DOUBLE_VALUE(m_progUpdateFreq ,"Progress-Update-Freq", 0.5,"Progress update frequency (seconds)");
+	m_randomSeed = INT_PARAM(pParameters, "Random-Seed", Default, "1", Comment, "Random seed used to generate random sequences of numbers");
+		//CONST_INTEGER_VALUE(m_randomSeed ,"Random-Seed", 1,"Random seed used to generate random sequences of numbers");
+
+	m_numTrainingEpisodes = INT_PARAM(pParameters, "Num-Episodes", Default, "1", Comment, "Number of episodes");
+	//CONST_INTEGER_VALUE(m_numTrainingEpisodes, "Num-Episodes", 1,"Number of episodes");
+	m_evalFreq = INT_PARAM(pParameters,"Eval-Freq", Default,"0",Comment, "Evaluation frequency (in episodes)");
+	//CONST_INTEGER_VALUE(m_evalFreq, "Eval-Freq", 0,"Evaluation frequency (in episodes)");
 	
-	if (m_evalFreq != 0)
+	if (m_evalFreq.get() != 0)
 	{
-		m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes / m_evalFreq;
-		m_totalNumEpisodes = m_numTrainingEpisodes + m_numEvaluationEpisodes;
+		m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes.get() / m_evalFreq.get();
+		m_totalNumEpisodes = m_numTrainingEpisodes.get() + m_numEvaluationEpisodes;
 	}
 	else
 	{
 		m_numEvaluationEpisodes = 0;
-		m_totalNumEpisodes = m_numTrainingEpisodes;
+		m_totalNumEpisodes = (unsigned int)m_numTrainingEpisodes.get();
 	}
-	CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
-	setNumSteps((unsigned int)(m_episodeLength / CApp::get()->pWorld->getDT()));
+	m_episodeLength = DOUBLE_PARAM(pParameters, "Episode-Length", Default, "1.0", Comment, "Length of an episode(seconds)");
+	//CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
+	setNumSteps((unsigned int)(m_episodeLength.get() / CApp::get()->pWorld->getDT()));
 	reset();
 
 
 	m_pProgressTimer = new CTimer();
-	//QueryPerformanceFrequency((LARGE_INTEGER*)&m_counterFreq);
-	srand(m_randomSeed);
+
+	srand((unsigned int)m_randomSeed.get());
 
 	END_CLASS();
 }
@@ -141,7 +147,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	double time = m_pProgressTimer->getElapsedTime();//(double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
 
-	if (time>m_progUpdateFreq || (isLastStep() && isLastEpisode()))
+	if (time>m_progUpdateFreq.get() || (isLastStep() && isLastEpisode()))
 	{
 		sprintf_s(msg, 1024, "%f", CApp::get()->pExperiment->getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);

@@ -1,5 +1,5 @@
 #pragma once
-
+#include "parameters.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -32,17 +32,19 @@ class CExperiment
 	unsigned int m_trainingEpisodeIndex; //[1..m_numTrainingEpisodes]
 	unsigned int m_evalEpisodeIndex; //[1..1+m_numTrainingEpisodes/ evalFreq]
 
+	INT_PARAM m_randomSeed;
+
 	//episode stuff
-	double m_episodeLength;
+	DOUBLE_PARAM m_episodeLength;
 	unsigned int m_totalNumEpisodes;
-	unsigned int m_numTrainingEpisodes;
+	INT_PARAM m_numTrainingEpisodes;
 	unsigned int m_numEvaluationEpisodes;
-	unsigned int m_evalFreq;
+	INT_PARAM m_evalFreq;
 	//steps
 	unsigned int m_numSteps;
 	bool m_bTerminalState;
 
-	double m_progUpdateFreq; //in seconds: time between progress updates
+	DOUBLE_PARAM m_progUpdateFreq; //in seconds: time between progress updates
 	CTimer* m_pProgressTimer;
 
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
@@ -63,7 +65,7 @@ public:
 	void nextStep();
 
 	//EPISODES
-	double getEpisodeLength(){ return m_episodeLength; }//seconds
+	double getEpisodeLength(){ return m_episodeLength.get(); }//seconds
 	unsigned int getEpisodeIndex(){ return m_episodeIndex; }
 	unsigned int getRelativeEpisodeIndex(){ if (!isEvaluationEpisode()) return m_trainingEpisodeIndex; return m_evalEpisodeIndex; }
 	unsigned int getTrainingEpisodeIndex(){ return m_trainingEpisodeIndex; }
@@ -78,7 +80,7 @@ public:
 	bool isEvaluationEpisode();
 
 	unsigned int getNumEvaluationEpisodes(){ return m_numEvaluationEpisodes; }
-	unsigned int getNumTrainingEpisodes(){ return m_numTrainingEpisodes; }
+	unsigned int getNumTrainingEpisodes(){ return m_numTrainingEpisodes.get(); }
 	unsigned int getTotalNumEpisodes(){ return m_totalNumEpisodes; }
 	unsigned int getNumSteps(){ return m_numSteps; }
 	void setNumSteps(unsigned int numSteps){ m_numSteps = numSteps; }
@@ -89,7 +91,7 @@ public:
 	const char* getProgressString();
 
 
-	unsigned int m_randomSeed;
+
 
 	void timestep(CState *s, CAction *a,CState *s_p, CReward* pReward);
 };
