@@ -1,11 +1,11 @@
 #pragma once
 
-#include "parameterized-object.h"
 #include "delayed-load.h"
 
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
+class CConfigNode;
 
 class CExperienceTuple
 {
@@ -20,7 +20,7 @@ public:
 	void copy(CState* s, CAction* a, CState* s_p, double r);
 };
 
-class CExperienceReplay: public CParamObject, public CDeferredLoad
+class CExperienceReplay: public CDeferredLoad
 {
 	CExperienceTuple* m_pTupleBuffer;
 	int m_bufferSize;

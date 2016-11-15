@@ -6,15 +6,14 @@ typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CConfigNode;
 class CSingleDimensionGrid;
-#include "parameterized-object.h"
+#include "parameters.h"
 #include <vector>
-
-//enum VariableType{StateVariable,ActionVariable};
 
 //CFeatureMap//////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
-class CStateFeatureMap: public CParamObject
+class CStateFeatureMap
 {
+	CConfigNode* m_pParameters;
 public:
 	CStateFeatureMap(CConfigNode* pParameters);
 	virtual ~CStateFeatureMap(){};
@@ -25,11 +24,14 @@ public:
 	virtual unsigned int getTotalNumFeatures()= 0;
 	virtual unsigned int getMaxNumActiveFeatures()= 0;
 
-	static CStateFeatureMap* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CStateFeatureMap> getInstance(CConfigNode* pParameters);
+
+	CConfigNode* getParameters() { return m_pParameters; }
 };
 
-class CActionFeatureMap : public CParamObject
+class CActionFeatureMap
 {
+	CConfigNode* m_pParameters;
 public:
 	CActionFeatureMap(CConfigNode* pParameters);
 	virtual ~CActionFeatureMap(){};
@@ -40,7 +42,9 @@ public:
 	virtual unsigned int getTotalNumFeatures() = 0;
 	virtual unsigned int getMaxNumActiveFeatures() = 0;
 
-	static CActionFeatureMap* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CActionFeatureMap> getInstance(CConfigNode* pParameters);
+	
+	CConfigNode* getParameters() { return m_pParameters; }
 };
 
 

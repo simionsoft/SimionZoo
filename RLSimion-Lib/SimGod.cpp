@@ -78,7 +78,7 @@ void CSimGod::registerDelayedLoadObj(CDeferredLoad* pObj,unsigned int loadOrder)
 	m_delayedLoadObjects.push_back(std::pair<CDeferredLoad*,unsigned int>(pObj,loadOrder));
 }
 
-bool myComparison(const std::pair<CDeferredLoad*, int> &a, const std::pair<CDeferredLoad*, int> &b)
+bool myComparison(const std::pair<CDeferredLoad*, unsigned int> &a, const std::pair<CDeferredLoad*, unsigned int> &b)
 {
 	return a.second<b.second;
 }

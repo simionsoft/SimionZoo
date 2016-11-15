@@ -53,7 +53,7 @@ public:
 	void getOutputFiles(CFilePathList& filepathList);
 
 	//global feature maps
-	CStateFeatureMap* getGlobalStateFeatureMap(){ return m_pGlobalStateFeatureMap.ptr(); }
-	CActionFeatureMap* getGlobalActionFeatureMap(){ return m_pGlobalActionFeatureMap.ptr(); }
+	std::shared_ptr<CStateFeatureMap> getGlobalStateFeatureMap(){ return m_pGlobalStateFeatureMap.ptr(); }
+	std::shared_ptr<CActionFeatureMap> getGlobalActionFeatureMap(){ return m_pGlobalActionFeatureMap.ptr(); }
 };
 

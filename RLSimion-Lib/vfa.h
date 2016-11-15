@@ -9,8 +9,9 @@ typedef CNamedVarSet CAction;
 class CConfigNode;
 class CConfigFile;
 
-#include "parameterized-object.h"
+#include "parameters.h"
 #include "delayed-load.h"
+#include <memory>
 //CLinearVFA////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -19,8 +20,8 @@ class CLinearVFA
 
 protected:
 
-	double* m_pWeights;
-	unsigned int m_numWeights;
+	std::unique_ptr<double> m_pWeights= nullptr;
+	unsigned int m_numWeights= 0;
 
 	bool m_bSaturateOutput;
 	double m_minOutput, m_maxOutput;
@@ -28,10 +29,10 @@ protected:
 	unsigned int m_minIndex;
 	unsigned int m_maxIndex;
 public:
-	CLinearVFA();
-	virtual ~CLinearVFA();
+	CLinearVFA() = default;
+	virtual ~CLinearVFA() = default;
 	double getValue(const CFeatureList *features);
-	double *getWeightPtr(){ return m_pWeights; }
+	double *getWeightPtr(){ return m_pWeights.get(); }
 	unsigned int getNumWeights(){ return m_numWeights; }
 
 	void saturateOutput(double min, double max);
@@ -46,7 +47,7 @@ public:
 class CLinearStateVFA: public CLinearVFA, public CDeferredLoad
 {
 protected:
-	CStateFeatureMap* m_pStateFeatureMap;
+	std::shared_ptr<CStateFeatureMap> m_pStateFeatureMap;
 	CFeatureList *m_pAux;
 	double m_initValue;
 	virtual void deferredLoadStep();
@@ -54,6 +55,7 @@ public:
 	CLinearStateVFA();
 	CLinearStateVFA(CConfigNode* pParameters);
 	CLinearStateVFA(CLinearStateVFA* pSourceVFA);
+
 	virtual ~CLinearStateVFA();
 	using CLinearVFA::getValue;
 	double getValue(const CState *s);
@@ -65,7 +67,7 @@ public:
 	void save(const char* pFilename) const;
 	//void load(const char* pFilename);
 
-	CStateFeatureMap* getStateFeatureMap(){ return m_pStateFeatureMap; }
+	std::shared_ptr<CStateFeatureMap> getStateFeatureMap(){ return m_pStateFeatureMap; }
 };
 
 
@@ -73,8 +75,8 @@ class CLinearStateActionVFA : public CLinearVFA, public CDeferredLoad
 {
 protected:
 
-	CStateFeatureMap* m_pStateFeatureMap;
-	CActionFeatureMap* m_pActionFeatureMap;
+	std::shared_ptr<CStateFeatureMap> m_pStateFeatureMap;
+	std::shared_ptr<CActionFeatureMap> m_pActionFeatureMap;
 	unsigned int m_numStateWeights;
 	unsigned int m_numActionWeights;
 
@@ -84,11 +86,12 @@ protected:
 public:
 	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
 	unsigned int getNumActionWeights() const { return m_numActionWeights; }
-	CStateFeatureMap* getStateFeatureMap() const{ return m_pStateFeatureMap; }
-	CActionFeatureMap* getActionFeatureMap() const{ return m_pActionFeatureMap; }
+	std::shared_ptr<CStateFeatureMap> getStateFeatureMap() { return m_pStateFeatureMap; }
+	std::shared_ptr<CActionFeatureMap> getActionFeatureMap() { return m_pActionFeatureMap; }
 
 	CLinearStateActionVFA(CConfigNode* pParameters);
-	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA);
+	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA); //used in double q-learning to get a copy of the target function
+
 	virtual ~CLinearStateActionVFA();
 	using CLinearVFA::getValue;
 	double getValue(const CState *s, const CAction *a);

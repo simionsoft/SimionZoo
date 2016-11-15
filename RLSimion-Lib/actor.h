@@ -6,12 +6,11 @@ typedef CNamedVarSet CAction;
 
 class CConfigNode;
 class CPolicyLearner;
-#include "parameterized-object.h"
 #include "delayed-load.h"
 #include <vector>
 class CController;
 
-class CActor: public CParamObject, public CDeferredLoad
+class CActor: public CDeferredLoad
 {
 	CController* m_pInitController;
 protected:

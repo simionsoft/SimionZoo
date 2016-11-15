@@ -6,7 +6,7 @@
 #include "logger.h"
 #include "vfa.h"
 
-CLASS_CONSTRUCTOR(CCritic) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CCritic)
 {
 	CHILD_CLASS(m_pVFunction, "V-Function","The parameterization of the V-Function to be learned",false, CLinearStateVFA);
 

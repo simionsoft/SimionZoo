@@ -1,7 +1,6 @@
 #pragma once
 
 #include "critic.h"
-#include "parameterized-object.h"
 
 class CLinearStateVFA;
 class CETraces;

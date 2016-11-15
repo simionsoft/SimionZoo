@@ -1,5 +1,5 @@
 #pragma once
-#include "parameterized-object.h"
+
 
 class CNamedVarSet;
 typedef CNamedVarSet CState;

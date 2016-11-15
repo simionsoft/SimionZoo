@@ -10,7 +10,7 @@
 #include "logger.h"
 
 
-CLASS_CONSTRUCTOR(CPolicyLearner) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CPolicyLearner)
 {
 	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", "The policy to be learned",false,CPolicy);
 	END_CLASS();

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "parameterized-object.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -11,7 +10,7 @@ class CPolicy;
 class CConfigNode;
 class CNumericValue;
 
-class CPolicyLearner: public CParamObject
+class CPolicyLearner
 {
 protected:
 	CPolicy* m_pPolicy;

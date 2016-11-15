@@ -13,7 +13,7 @@
 #include "featuremap.h"
 
 
-CLASS_CONSTRUCTOR(CActor) : CParamObject(pParameters), CDeferredLoad(10)//if initialized, it has to be done after allocating memory for the weights
+CLASS_CONSTRUCTOR(CActor) : CDeferredLoad(10)//if initialized, it has to be done after allocating memory for the weights
 {
 	MULTI_VALUED_FACTORY(m_policyLearners,"Output","The outputs of the actor. One for each output dimension",CPolicyLearner);
 	CHILD_CLASS_FACTORY(m_pInitController, "Base-Controller", "The base controller used to initialize the weights of the actor", true, CController);

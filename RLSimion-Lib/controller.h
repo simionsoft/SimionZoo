@@ -1,7 +1,6 @@
 #pragma once
 
 #include "simion.h"
-#include "parameterized-object.h"
 #include <vector>
 class CNamedVarSet;
 typedef CNamedVarSet CState;
@@ -36,7 +35,7 @@ public:
 	double m_gain;
 };
 
-class CLQRController : public CController, public CParamObject
+class CLQRController : public CController
 {
 	std::vector<CLQRGain*> m_gains;
 	int m_outputActionIndex;
@@ -50,7 +49,7 @@ public:
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CPIDController : public CController, public CParamObject
+class CPIDController : public CController
 {
 	CNumericValue *m_pKP, *m_pKI, *m_pKD;
 	int m_outputActionIndex;
@@ -66,7 +65,7 @@ public:
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CWindTurbineVidalController : public CController, public CParamObject
+class CWindTurbineVidalController : public CController
 {
 	//state variable indices
 	int m_omega_r_index, m_d_omega_r_index;
@@ -85,7 +84,7 @@ public:
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CWindTurbineBoukhezzarController : public CController, public CParamObject
+class CWindTurbineBoukhezzarController : public CController
 {
 	//state variable indices
 	int m_omega_r_index, m_d_omega_r_index;
@@ -107,7 +106,7 @@ public:
 	void selectAction(const CState *s,CAction *a);
 };
 
-class CWindTurbineJonkmanController : public CController, public CParamObject
+class CWindTurbineJonkmanController : public CController
 {
 	int m_omega_g_index, m_d_omega_r_index;
 	int m_E_p_index, m_T_g_index, m_beta_index;

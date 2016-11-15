@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "simion.h"
-#include "parameterized-object.h"
 class CConfigNode;
 class CActor;
 class CCritic;
@@ -11,7 +10,7 @@ class CNumericValue;
 class CFeatureList;
 class CLinearStateVFA;
 
-class CActorCritic: public CSimion, public CParamObject
+class CActorCritic: public CSimion
 {
 	double m_td;
 	CActor *m_pActor;

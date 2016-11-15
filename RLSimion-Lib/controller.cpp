@@ -38,7 +38,7 @@ CLASS_CONSTRUCTOR(CLQRGain)
 	
 	END_CLASS();
 }
-CLASS_CONSTRUCTOR(CLQRController) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CLQRController)
 {
 	ACTION_VARIABLE_REF(m_outputActionIndex,"Output-Action","The output action");
 	
@@ -80,7 +80,7 @@ int CLQRController::getOutputActionIndex(int output)
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CPIDController) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CPIDController)
 {
 	ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action");
 
@@ -148,7 +148,7 @@ CWindTurbineVidalController::~CWindTurbineVidalController()
 	delete m_P_s;
 }
 
-CLASS_CONSTRUCTOR(CWindTurbineVidalController) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineVidalController)
 {
 	NUMERIC_VALUE(m_pA, "A", "A parameter of the torque controller");
 	NUMERIC_VALUE(m_pK_alpha, "K_alpha", "K_alpha parameter of the torque controller");
@@ -228,7 +228,7 @@ CWindTurbineBoukhezzarController::~CWindTurbineBoukhezzarController()
 	delete m_pKI;
 }
 
-CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineBoukhezzarController)
 {
 
 	NUMERIC_VALUE(m_pC_0,"C_0", "C_0 parameter");
@@ -303,7 +303,7 @@ CWindTurbineJonkmanController::~CWindTurbineJonkmanController()
 	delete m_PC_KI;
 }
 
-CLASS_CONSTRUCTOR(CWindTurbineJonkmanController) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CWindTurbineJonkmanController)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
 	CONST_DOUBLE_VALUE(m_CornerFreq,"CornerFreq",0.0,"Corner Freq. parameter");

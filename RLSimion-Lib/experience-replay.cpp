@@ -22,7 +22,7 @@ void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r)
 }
 
 
-CLASS_CONSTRUCTOR(CExperienceReplay) : CDeferredLoad(), CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CExperienceReplay)
 {
 	if (pParameters)
 	{

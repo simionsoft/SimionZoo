@@ -5,7 +5,7 @@
 #include "actor.h"
 #include "critic.h"
 
-CLASS_CONSTRUCTOR(CActorCritic) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CActorCritic)
 {
 	CConfigNode* pChild = pParameters->getChild();
 	const char* type = pChild->getName();

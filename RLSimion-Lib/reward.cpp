@@ -1,13 +1,12 @@
 #include "stdafx.h"
 #include "reward.h"
-#include "named-var-set.h"
-#include "parameterized-object.h"
 #include "config.h"
 #include "world.h"
 #include "globals.h"
 #include "parameters-numeric.h"
 #include "app.h"
 #include "logger.h"
+#include "named-var-set.h"
 
 CToleranceRegionReward::CToleranceRegionReward(char* variable, double tolerance, double scale)
 {

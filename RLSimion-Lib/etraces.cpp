@@ -5,7 +5,7 @@
 #include "config.h"
 #include "app.h"
 
-CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name), CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name)
 {
 	if (pParameters)
 	{

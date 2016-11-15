@@ -2,7 +2,7 @@
 #include <vector>
 
 class CConfigNode;
-
+/*
 class CParamObject
 {
 protected:
@@ -14,4 +14,4 @@ public:
 	CConfigNode* getParameters(){ return m_pParameters; }
 
 
-};
+};*/

@@ -22,7 +22,6 @@ CLASS_FACTORY(CPolicy)
 }
 
 CLASS_CONSTRUCTOR(CPolicy)
-: CParamObject(pParameters)
 {
 	
 	ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action variable");

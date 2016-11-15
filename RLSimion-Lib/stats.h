@@ -1,10 +1,6 @@
 #pragma once
 
 #include <vector>
-#include "parameterized-object.h"
-
-
-
 
 
 class CStatsInfo

@@ -6,9 +6,8 @@ typedef CNamedVarSet CAction;
 
 class CConfigNode;
 class CLinearStateVFA;
-#include "parameterized-object.h"
 
-class CCritic: public CParamObject
+class CCritic
 {
 
 protected:

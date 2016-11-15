@@ -1,6 +1,5 @@
 #pragma once
 
-#include "parameterized-object.h"
 
 class CConfigNode;
 class CNumericValue;
@@ -26,7 +25,7 @@ public:
 
 
 
-class CGaussianNoise: public CNoise, public CParamObject
+class CGaussianNoise: public CNoise
 {
 	CNumericValue* m_pSigma;
 	CNumericValue* m_pAlpha;

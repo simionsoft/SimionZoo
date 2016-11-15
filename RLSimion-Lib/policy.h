@@ -1,5 +1,4 @@
 #pragma once
-#include "parameterized-object.h"
 
 class CLinearStateVFA;
 class CNoise;
@@ -13,7 +12,7 @@ class CFeatureList;
 
 
 //The interface class. One State-Function that represents a deterministic function output to some action
-class CPolicy : public CParamObject
+class CPolicy 
 {
 protected:
 	int m_outputActionIndex;

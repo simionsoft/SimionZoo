@@ -9,15 +9,7 @@
 #include "simgod.h"
 
 //LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
-CLinearVFA::CLinearVFA()
-{
-	m_pWeights = 0;
-}
 
-CLinearVFA::~CLinearVFA()
-{
-	if (m_pWeights) delete[] m_pWeights;
-}
 
 double CLinearVFA::getValue(const CFeatureList *pFeatures)
 {
@@ -31,7 +23,7 @@ double CLinearVFA::getValue(const CFeatureList *pFeatures)
 			//offset
 			localIndex = pFeatures->m_pFeatures[i].m_index - m_minIndex;
 
-			value += m_pWeights[localIndex] * pFeatures->m_pFeatures[i].m_factor;
+			value += m_pWeights.get()[localIndex] * pFeatures->m_pFeatures[i].m_factor;
 		}
 	}
 	return value;
@@ -59,7 +51,7 @@ bool CLinearVFA::saveWeights(const char* pFilename) const
 	if (pFile)
 	{
 		fwrite(&m_numWeights, sizeof(unsigned int), 1, (FILE*)pFile);
-		fwrite(m_pWeights, sizeof(double), m_numWeights, (FILE*)pFile);
+		fwrite(m_pWeights.get(), sizeof(double), m_numWeights, (FILE*)pFile);
 		fclose(pFile);
 		return true;
 	}
@@ -80,7 +72,7 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 
 		assert(m_numWeights == numWeightsRead);
 
-		fread_s(m_pWeights, numWeightsRead*sizeof(double), sizeof(double), numWeightsRead, (FILE*)pFile);
+		fread_s(m_pWeights.get(), numWeightsRead*sizeof(double), sizeof(double), numWeightsRead, (FILE*)pFile);
 
 		fclose(pFile);
 		return true;
@@ -111,7 +103,7 @@ void CLinearStateVFA::save(const char* pFilename) const
 	fopen_s(&pXMLFile, xmlDescFile, "w");
 	if (pXMLFile)
 	{
-		pFeatureMapParameters = m_pStateFeatureMap->getParameters();
+		pFeatureMapParameters = m_pStateFeatureMap.get()->getParameters();
 
 		if (pFeatureMapParameters)
 			pFeatureMapParameters->saveFile(pXMLFile);
@@ -128,18 +120,18 @@ void CLinearStateVFA::save(const char* pFilename) const
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
+CLASS_CONSTRUCTOR(CLinearStateVFA): CDeferredLoad()
 {
-	m_pStateFeatureMap = 0;
-	CHOICE_INLINE("Feature-Map", "Choose from an explicit feature map or the global feature map");
-		CHOICE_ELEMENT_INLINE("Global", ,"Use the global state feature map",m_pStateFeatureMap=CApp::get()->SimGod.getGlobalStateFeatureMap());
-		CHOICE_ELEMENT_INLINE_FACTORY("Explicit",CStateFeatureMap,"Define an explicit feature map",m_pStateFeatureMap=CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
-	END_CHOICE_INLINE();
+	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	//CHOICE_INLINE("Feature-Map", "Choose from an explicit feature map or the global feature map");
+	//	CHOICE_ELEMENT_INLINE("Global", ,"Use the global state feature map",m_pStateFeatureMap=CApp::get()->SimGod.getGlobalStateFeatureMap());
+	//	CHOICE_ELEMENT_INLINE_FACTORY("Explicit",CStateFeatureMap,"Define an explicit feature map",m_pStateFeatureMap=CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
+	//END_CHOICE_INLINE();
 	//default initialization
-	if (m_pStateFeatureMap == 0)
-		m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	//if (m_pStateFeatureMap == 0)
+	//	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
 
-	m_numWeights = m_pStateFeatureMap->getTotalNumFeatures();
+	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
@@ -154,9 +146,9 @@ CLASS_CONSTRUCTOR(CLinearStateVFA) : CLinearVFA(), CDeferredLoad()
 }
 void CLinearStateVFA::deferredLoadStep()
 {
-	m_pWeights = new double[m_numWeights];
+	m_pWeights = std::unique_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights[i] = m_initValue;
+		m_pWeights.get()[i] = m_initValue;
 }
 
 
@@ -197,17 +189,17 @@ void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
 		{
 			//IF instead of assert because some features may not belong to this specific VFA (for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
 			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
-				m_pWeights[pFeatures->m_pFeatures[i].m_index]+= alpha* pFeatures->m_pFeatures[i].m_factor;
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index]+= alpha* pFeatures->m_pFeatures[i].m_factor;
 		}
 	else
 		for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 		{
 			//IF instead of assert because some features may not belong to this specific VFA (for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
 			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
-				m_pWeights[pFeatures->m_pFeatures[i].m_index] = 
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] = 
 					std::min(m_maxOutput,
 						std::max(m_minOutput
-								, m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
+								, m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
 		}
 }
 
@@ -224,25 +216,27 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
+CLASS_CONSTRUCTOR(CLinearStateActionVFA)
 {
-	m_pStateFeatureMap = 0;
-	CHOICE_INLINE("State-Feature-Map", "Choose from an explicit feature map or the global feature map");
-	CHOICE_ELEMENT_INLINE("Global", , "Use the global state feature map", m_pStateFeatureMap= CApp::get()->SimGod.getGlobalStateFeatureMap());
-	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CStateFeatureMap, "Define an explicit feature map", CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
-	END_CHOICE_INLINE();
-	//default initialization
-	if (m_pStateFeatureMap == 0)
-		m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
+	//m_pStateFeatureMap = 0;
+	//CHOICE_INLINE("State-Feature-Map", "Choose from an explicit feature map or the global feature map");
+	//CHOICE_ELEMENT_INLINE("Global", , "Use the global state feature map", m_pStateFeatureMap= CApp::get()->SimGod.getGlobalStateFeatureMap());
+	//CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CStateFeatureMap, "Define an explicit feature map", CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
+	//END_CHOICE_INLINE();
+	////default initialization
+	//if (m_pStateFeatureMap == 0)
+	//	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
 
-	m_pActionFeatureMap = 0;
-	CHOICE_INLINE("Action-Feature-Map", "Choose from an explicit feature map or the global feature map");
-	CHOICE_ELEMENT_INLINE("Global", , "Use the global action feature map", m_pActionFeatureMap= CApp::get()->SimGod.getGlobalActionFeatureMap());
-	CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CActionFeatureMap, "Define an explicit feature map", CActionFeatureMap::getInstance(pChild->getChild("Explicit")););
-	END_CHOICE_INLINE();
-	//default initialization
-	if (m_pActionFeatureMap == 0)
-		m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionFeatureMap();
+	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionFeatureMap();
+	//m_pActionFeatureMap = 0;
+	//CHOICE_INLINE("Action-Feature-Map", "Choose from an explicit feature map or the global feature map");
+	//CHOICE_ELEMENT_INLINE("Global", , "Use the global action feature map", m_pActionFeatureMap= CApp::get()->SimGod.getGlobalActionFeatureMap());
+	//CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CActionFeatureMap, "Define an explicit feature map", CActionFeatureMap::getInstance(pChild->getChild("Explicit")););
+	//END_CHOICE_INLINE();
+	////default initialization
+	//if (m_pActionFeatureMap == 0)
+	//	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionFeatureMap();
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -264,7 +258,7 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA) : CLinearVFA(), CDeferredLoad()
 	END_CLASS();
 }
 
-CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA) : CLinearVFA(), CDeferredLoad()
+CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA)
 {
 	m_pStateFeatureMap = CApp::get()->SimGod.getGlobalStateFeatureMap();
 	m_pActionFeatureMap = CApp::get()->SimGod.getGlobalActionFeatureMap();
@@ -300,9 +294,9 @@ CLinearStateActionVFA::~CLinearStateActionVFA()
 
 void CLinearStateActionVFA::deferredLoadStep()
 {
-	m_pWeights= new double[m_numWeights];
+	m_pWeights= std::unique_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights[i] = m_initValue;
+		m_pWeights.get()[i] = m_initValue;
 }
 
 void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
@@ -354,14 +348,14 @@ void CLinearStateActionVFA::add(const CFeatureList* pFeatures, double alpha)
 		{
 			if (!m_bSaturateOutput)
 			{
-				m_pWeights[pFeatures->m_pFeatures[i].m_index] += alpha* pFeatures->m_pFeatures[i].m_factor;
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] += alpha* pFeatures->m_pFeatures[i].m_factor;
 			}
 			else
 			{
-				m_pWeights[pFeatures->m_pFeatures[i].m_index] =
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] =
 					std::min(m_maxOutput,
 					std::max(m_minOutput
-					, m_pWeights[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
+					, m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
 			}
 		}
 	}

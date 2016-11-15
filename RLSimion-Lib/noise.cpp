@@ -55,7 +55,7 @@ CLASS_FACTORY(CNoise)
 	return 0;
 }
 
-CLASS_CONSTRUCTOR(CGaussianNoise) : CParamObject(pParameters)
+CLASS_CONSTRUCTOR(CGaussianNoise)
 {
 	NUMERIC_VALUE(m_pSigma,"Sigma","Width of the gaussian bell");
 	NUMERIC_VALUE(m_pAlpha,"Alpha","Low-pass first-order filter's gain [0...1]. 1=no filter");

@@ -1,10 +1,9 @@
 #pragma once
 #include "features.h"
-#include "parameterized-object.h"
 
 class CConfigNode;
 
-class CETraces : public CFeatureList, public CParamObject
+class CETraces : public CFeatureList
 {
 	bool m_bUse;
 	double m_threshold;

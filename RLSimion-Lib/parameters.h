@@ -3,7 +3,9 @@ class CConfigNode;
 #include <vector>
 #include <initializer_list>
 #include "config.h"
-
+#include <memory>
+#include <map>
+#include <functional>
 
 enum PropertyName { Comment, Default, Optional };
 
@@ -110,7 +112,7 @@ public:
 template<typename DataType>
 class CHILD_OBJECT: public CBaseParam
 {
-	DataType* m_pValue= 0;
+	std::shared_ptr<DataType> m_pValue= 0;
 public:
 	CHILD_OBJECT() = default;
 	template <typename... propertyTypes>
@@ -120,22 +122,19 @@ public:
 		parseProperties(propName, value, properties...);
 
 		if (!m_bOptional || pConfigNode->getChild(name))
-			m_pValue = new DataType(pConfigNode->getChild(name));
-		else m_pValue = new DataType((CConfigNode*)0);
+			m_pValue = std::shared_ptr<DataType>(new DataType(pConfigNode->getChild(name)));
+		else m_pValue = std::shared_ptr<DataType>(0);
 	}
 	
-	~CHILD_OBJECT()
-	{
-		if (m_pValue) delete m_pValue;
-	}
-	DataType* operator->() { return m_pValue; }
-	DataType* ptr() { return m_pValue; }
+	~CHILD_OBJECT() {}
+	DataType* operator->() { return m_pValue.get(); }
+	std::shared_ptr<DataType> ptr() { return m_pValue; }
 };
 
 template<typename DataType>
 class CHILD_OBJECT_FACTORY : public CBaseParam
 {
-	DataType* m_pValue= 0;
+	std::shared_ptr<DataType> m_pValue = 0;
 public:
 	CHILD_OBJECT_FACTORY() = default;
 	template <typename... propertyTypes>
@@ -145,16 +144,14 @@ public:
 		parseProperties(propName, value, properties...);
 
 		if (!m_bOptional || pConfigNode->getChild(name))
-			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
-		else m_pValue = 0;
+			m_pValue = std::shared_ptr<DataType>(DataType::getInstance(pConfigNode->getChild(name)));
+		else m_pValue = std::shared_ptr<DataType>(0);
 	}
 	~CHILD_OBJECT_FACTORY()
-	{
-		if (m_pValue) delete m_pValue;
-	}
+	{}
 
-	DataType* operator->() { return m_pValue; }
-	DataType* ptr() { return m_pValue; }
+	DataType* operator->() { return m_pValue.get(); }
+	std::shared_ptr<DataType> ptr() { return m_pValue; }
 };
 
 template <typename DataType>
@@ -208,21 +205,24 @@ public:
 };
 
 
-#include <map>
-#include <functional>
+
 template<typename DataType>
-using choiceFunc= std::function<DataType*(CConfigNode*)>;
+using choiceFunc= std::function<std::shared_ptr<DataType>(CConfigNode*)>;
 
 
 template<typename DataType>
-DataType* FACTORY_FUNC(CConfigNode* pConfig, std::map<const char*, choiceFunc<DataType>> choices)
+std::shared_ptr<DataType> CHOICE_FUNC(CConfigNode* pConfig, const char* choiceName, const char* comment
+	, std::map<const char*, choiceFunc<DataType>> choices)
 {
 	if (!pConfig) return 0;
+	pConfig = pConfig->getChild(choiceName);
+	if (!pConfig) return 0;
+
 	for each (auto var in choices)
 	{
 		CConfigNode* pChoiceConfig = pConfig->getChild(var.first);
 		if (pChoiceConfig != 0)
-			return (DataType*)var.second(pChoiceConfig);
+			return var.second(pChoiceConfig);
 	}
 	return 0;
 }
@@ -233,12 +233,12 @@ public:
 	testClass(CConfigNode* pConfigNode)
 	{}
 
-	static testClass* getInstance(CConfigNode* pConfigNode)
+	static std::shared_ptr<testClass> getInstance(CConfigNode* pConfigNode)
 	{
-		return FACTORY_FUNC<testClass>(pConfigNode,
+		return CHOICE_FUNC<testClass>(pConfigNode,"choice-name","explanation of its role",
 		{
-			{ "option1",[](CConfigNode* pConfigNode) {return new testClass(pConfigNode); } }
-		,{ "option2",[](CConfigNode* pConfigNode) {return new testClass(pConfigNode); } }
+			{ "option1",[](CConfigNode* pConfigNode) {return std::shared_ptr<testClass>(new testClass(pConfigNode)); } }
+		,{ "option2",[](CConfigNode* pConfigNode) {return std::shared_ptr<testClass>(new testClass(pConfigNode)); } }
 		});
 	}
 };
@@ -253,12 +253,12 @@ class test
 	CHILD_OBJECT<testClass> child;
 	CHILD_OBJECT_FACTORY<testClass> childFac;
 
-	static test* getInstance(CConfigNode* pConfigNode)
+	static std::shared_ptr<test> getInstance(CConfigNode* pConfigNode)
 	{
-		return FACTORY_FUNC<test>(pConfigNode, 
+		return CHOICE_FUNC<test>(pConfigNode, "myname","why do you care about my name?",
 		{
-			{"option1",[](CConfigNode* pConfigNode) {return new test(pConfigNode); }}
-			,{ "option2",[](CConfigNode* pConfigNode) {return new test(pConfigNode); } }
+			{"option1",[](CConfigNode* pConfigNode) {return std::shared_ptr<test>(new test(pConfigNode)); }}
+			,{ "option2",[](CConfigNode* pConfigNode) {return std::shared_ptr<test>(new test(pConfigNode)); } }
 		});
 	}
 
