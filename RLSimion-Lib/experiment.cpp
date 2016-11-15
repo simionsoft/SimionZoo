@@ -126,7 +126,7 @@ CLASS_CONSTRUCTOR(CExperiment)
 		m_numEvaluationEpisodes = 0;
 		m_totalNumEpisodes = (unsigned int)m_numTrainingEpisodes.get();
 	}
-	m_episodeLength = DOUBLE_PARAM(pParameters, "Episode-Length", Default, "1.0", Comment, "Length of an episode(seconds)");
+	m_episodeLength = DOUBLE_PARAM(pParameters, "Episode -Length", Default, "1.0", Comment, "Length of an episode(seconds)");
 	//CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
 	setNumSteps((unsigned int)(m_episodeLength.get() / CApp::get()->pWorld->getDT()));
 	reset();

@@ -110,7 +110,7 @@ public:
 template<typename DataType>
 class CHILD_OBJECT: public CBaseParam
 {
-	DataType* m_pValue;
+	DataType* m_pValue= 0;
 public:
 	CHILD_OBJECT() = default;
 	template <typename... propertyTypes>
@@ -120,16 +120,22 @@ public:
 		parseProperties(propName, value, properties...);
 
 		if (!m_bOptional || pConfigNode->getChild(name))
-			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
+			m_pValue = new DataType(pConfigNode->getChild(name));
 		else m_pValue = new DataType((CConfigNode*)0);
 	}
-	DataType& get() { return m_pValue; }
+	
+	~CHILD_OBJECT()
+	{
+		if (m_pValue) delete m_pValue;
+	}
+	DataType* operator->() { return m_pValue; }
+	DataType* ptr() { return m_pValue; }
 };
 
 template<typename DataType>
 class CHILD_OBJECT_FACTORY : public CBaseParam
 {
-	DataType* m_pValue;
+	DataType* m_pValue= 0;
 public:
 	CHILD_OBJECT_FACTORY() = default;
 	template <typename... propertyTypes>
@@ -140,21 +146,28 @@ public:
 
 		if (!m_bOptional || pConfigNode->getChild(name))
 			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
-		else m_pValue = new DataType((CConfigNode*)0);
+		else m_pValue = 0;
+	}
+	~CHILD_OBJECT_FACTORY()
+	{
+		if (m_pValue) delete m_pValue;
 	}
 
-	DataType& get() { return m_value; }
+	DataType* operator->() { return m_pValue; }
+	DataType* ptr() { return m_pValue; }
 };
 
 template <typename DataType>
 class MULTI_VALUE: public CBaseParam
 {
+protected:
 	std::vector<DataType*> m_values;
 public:
 	MULTI_VALUE() = default;
 
 	template<typename... propertyTypes>
-	MULTI_VALUE(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	MULTI_VALUE(CConfigNode* pConfigNode, const char* name, PropertyName propName
+		, const char* value, propertyTypes... properties)
 	{
 		m_name = name;
 		parseProperties(propName, value, properties...);
@@ -162,6 +175,33 @@ public:
 		while (pChildParameters != 0)
 		{
 			m_values.push_back(new DataType(pChildParameters));
+			pChildParameters = pChildParameters->getNextSibling(name);
+		}
+	}
+	~MULTI_VALUE()
+	{
+		for (std::size_t i = 0; i < m_values.size(); i++)
+			delete m_values[i];
+	}
+	std::size_t size() { return m_values.size(); }
+	DataType* operator[] (std::size_t index) { return m_values[index]; }
+};
+
+template <typename DataType>
+class MULTI_VALUE_FACTORY : public MULTI_VALUE<DataType>
+{
+public:
+	MULTI_VALUE_FACTORY() = default;
+	template<typename... propertyTypes>
+	MULTI_VALUE_FACTORY(CConfigNode* pConfigNode, const char* name, PropertyName propName
+		, const char* value, propertyTypes... properties)
+	{
+		m_name = name;
+		parseProperties(propName, value, properties...);
+		CConfigNode* pChildParameters = pConfigNode->getChild(name);
+		while (pChildParameters != 0)
+		{
+			m_values.push_back( DataType::getInstance(pChildParameters));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}

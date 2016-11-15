@@ -10,18 +10,21 @@
 #include "utils.h"
 #include "featuremap.h"
 #include "experience-replay.h"
-
+#include "parameters.h"
 
 CLASS_INIT(CSimGod)
 {
 	if (!pParameters) return;
 
 	//the global parameterizations of the state/action spaces
-	CHILD_CLASS_FACTORY(m_pGlobalStateFeatureMap, "State-Feature-Map", "The state feature map", false, CStateFeatureMap);
-	CHILD_CLASS_FACTORY(m_pGlobalActionFeatureMap, "Action-Feature-Map", "The action feature map", true, CActionFeatureMap);
-	CHILD_CLASS(m_pExperienceReplay, "Experience-Replay", "The experience replay parameters", true, CExperienceReplay);
-
-	MULTI_VALUED_FACTORY(m_simions, "Simion", "Simions: learning agents and controllers", CSimion);
+	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<CStateFeatureMap>(pParameters,"State-Feature-Map",Comment,"The state feature map", Optional,false);
+	//CHILD_CLASS_FACTORY(m_pGlobalStateFeatureMap, "State-Feature-Map", "The state feature map", false, CStateFeatureMap);
+	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<CActionFeatureMap>(pParameters, "Action-Feature-Map", Comment, "The state feature map", Optional, TRUE);
+	//CHILD_CLASS_FACTORY(m_pGlobalActionFeatureMap, "Action-Feature-Map", "The action feature map", true, CActionFeatureMap);
+	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pParameters, "Experience-Replay", Comment, "The experience replay parameters", Optional, true);
+	//CHILD_CLASS(m_pExperienceReplay, "Experience-Replay", "The experience replay parameters", true, CExperienceReplay);
+	m_simions= MULTI_VALUE_FACTORY<CSimion>(pParameters,"Simion",Comment, "Simions: learning agents and controllers")
+	//MULTI_VALUED_FACTORY(m_simions, "Simion", "Simions: learning agents and controllers", CSimion);
 
 	
 	END_CLASS();
@@ -35,15 +38,6 @@ CSimGod::CSimGod()
 
 CSimGod::~CSimGod()
 {
-	if (m_pGlobalStateFeatureMap) delete m_pGlobalStateFeatureMap;
-	if (m_pGlobalActionFeatureMap) delete m_pGlobalActionFeatureMap;
-	if (m_pExperienceReplay) delete m_pExperienceReplay;
-
-	for (unsigned int i = 0; i < m_simions.size(); i++)
-	{
-		if (m_simions[i]) delete m_simions[i];
-	}
-
 	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
 	m_inputFiles.clear();
 	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);

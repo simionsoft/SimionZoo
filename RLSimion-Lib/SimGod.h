@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include "parameters.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -18,10 +18,11 @@ class CActionFeatureMap;
 
 class CSimGod
 {
-	CStateFeatureMap* m_pGlobalStateFeatureMap;
-	CActionFeatureMap* m_pGlobalActionFeatureMap;
+	CHILD_OBJECT_FACTORY<CStateFeatureMap> m_pGlobalStateFeatureMap;
+	CHILD_OBJECT_FACTORY<CActionFeatureMap> m_pGlobalActionFeatureMap;
 
-	std::vector<CSimion*> m_simions;
+	MULTI_VALUE_FACTORY<CSimion> m_simions;
+		//std::vector<CSimion*> m_simions;
 
 	CReward *m_pReward;
 
@@ -30,7 +31,7 @@ class CSimGod
 	std::vector<const char*> m_inputFiles;
 	std::vector<const char*> m_outputFiles;
 
-	CExperienceReplay* m_pExperienceReplay;
+	CHILD_OBJECT<CExperienceReplay> m_pExperienceReplay;
 public:
 	CSimGod();
 	virtual ~CSimGod();
@@ -52,7 +53,7 @@ public:
 	void getOutputFiles(CFilePathList& filepathList);
 
 	//global feature maps
-	CStateFeatureMap* getGlobalStateFeatureMap(){ return m_pGlobalStateFeatureMap; }
-	CActionFeatureMap* getGlobalActionFeatureMap(){ return m_pGlobalActionFeatureMap; }
+	CStateFeatureMap* getGlobalStateFeatureMap(){ return m_pGlobalStateFeatureMap.ptr(); }
+	CActionFeatureMap* getGlobalActionFeatureMap(){ return m_pGlobalActionFeatureMap.ptr(); }
 };
 
