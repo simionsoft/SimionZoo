@@ -170,7 +170,6 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
-    <ClInclude Include="parameterized-object.h" />
     <ClInclude Include="parameters-numeric.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="q-learners.h" />

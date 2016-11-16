@@ -272,9 +272,6 @@
     <ClInclude Include="world-mountaincar.h">
       <Filter>world</Filter>
     </ClInclude>
-    <ClInclude Include="parameterized-object.h">
-      <Filter>parameters</Filter>
-    </ClInclude>
     <ClInclude Include="parameters-numeric.h">
       <Filter>parameters</Filter>
     </ClInclude>
