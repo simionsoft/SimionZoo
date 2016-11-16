@@ -12,7 +12,13 @@
 #include "experience-replay.h"
 #include "parameters.h"
 
-CLASS_INIT(CSimGod)
+std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_delayedLoadObjects;
+std::vector<const char*> CSimGod::m_inputFiles;
+std::vector<const char*> CSimGod::m_outputFiles;
+CHILD_OBJECT_FACTORY<CStateFeatureMap> CSimGod::m_pGlobalStateFeatureMap;
+CHILD_OBJECT_FACTORY<CActionFeatureMap> CSimGod::m_pGlobalActionFeatureMap;
+
+CLASS_CONSTRUCTOR(CSimGod)
 {
 	if (!pParameters) return;
 
@@ -28,11 +34,6 @@ CLASS_INIT(CSimGod)
 
 	
 	END_CLASS();
-}
-
-CSimGod::CSimGod()
-{
-
 }
 
 
@@ -121,4 +122,13 @@ void CSimGod::getOutputFiles(CFilePathList& filepathList)
 	{
 		filepathList.addFilePath(*it);
 	}
+}
+
+std::shared_ptr<CStateFeatureMap> CSimGod::getGlobalStateFeatureMap()
+{ 
+	return m_pGlobalStateFeatureMap.ptr(); 
+}
+std::shared_ptr<CActionFeatureMap> CSimGod::getGlobalActionFeatureMap()
+{
+	return m_pGlobalActionFeatureMap.ptr(); 
 }

@@ -11,7 +11,7 @@
 #include "config.h"
 #include "globals.h"
 #include "app.h"
-#include "simgod.h"
+#include "SimGod.h"
 #include "logger.h"
 
 CDynamicModel* CWorld::m_pDynamicModel = 0;
@@ -100,7 +100,7 @@ CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
 	CConfigNode *rootNode;
 	if (pWorldDefinitionFile)
 	{
-		CApp::get()->SimGod.registerInputFile(pWorldDefinitionFile);
+		CSimGod::registerInputFile(pWorldDefinitionFile);
 		m_pWorldConfigXMLDoc->LoadFile(pWorldDefinitionFile);
 		if (!m_pWorldConfigXMLDoc->Error())
 		{

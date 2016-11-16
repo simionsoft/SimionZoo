@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "delayed-load.h"
-#include "simgod.h"
+#include "SimGod.h"
 #include "app.h"
 
 CDeferredLoad::CDeferredLoad(unsigned int loadOrder)
 {
-	CApp::get()->SimGod.registerDelayedLoadObj(this,loadOrder);
+	CSimGod::registerDelayedLoadObj(this,loadOrder);
 }
 
 CDeferredLoad::~CDeferredLoad()

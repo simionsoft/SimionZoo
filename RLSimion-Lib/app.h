@@ -8,7 +8,7 @@ class CFilePathList;
 #include "world.h"
 #include "logger.h"
 #include "experiment.h"
-#include "simgod.h"
+#include "SimGod.h"
 
 class CApp
 {
@@ -26,7 +26,7 @@ public:
 	CLogger *pLogger;
 	CWorld *pWorld;
 	CExperiment *pExperiment;
-	CSimGod SimGod;
+	CSimGod *pSimGod;
 
 	virtual void getInputFiles(CFilePathList& filePathList) = 0;
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
