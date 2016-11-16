@@ -158,7 +158,7 @@ template <typename DataType>
 class MULTI_VALUE: public CBaseParam
 {
 protected:
-	std::vector<DataType*> m_values;
+	std::vector<std::shared_ptr<DataType>> m_values;
 public:
 	MULTI_VALUE() = default;
 
@@ -171,17 +171,13 @@ public:
 		CConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
-			m_values.push_back(new DataType(pChildParameters));
+			m_values.push_back(std::shared_ptr<DataType>(new DataType(pChildParameters)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
-	~MULTI_VALUE()
-	{
-		for (std::size_t i = 0; i < m_values.size(); i++)
-			delete m_values[i];
-	}
+	~MULTI_VALUE() {}
 	std::size_t size() { return m_values.size(); }
-	DataType* operator[] (std::size_t index) { return m_values[index]; }
+	DataType* operator[] (std::size_t index) { return m_values[index].get(); }
 };
 
 template <typename DataType>
@@ -198,7 +194,7 @@ public:
 		CConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
-			m_values.push_back( DataType::getInstance(pChildParameters));
+			m_values.push_back( std::shared_ptr<DataType>(DataType::getInstance(pChildParameters)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
