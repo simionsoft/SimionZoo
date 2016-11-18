@@ -33,8 +33,8 @@ public:
 class CCACLALearner : public CPolicyLearner
 {
 	CFeatureList *m_pStateFeatures;
-	CETraces *m_e;
-	CNumericValue* m_pAlpha;
+	CHILD_OBJECT<CETraces> m_e;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
 public:
 
 	CCACLALearner(CConfigNode *pParameters);
@@ -46,8 +46,8 @@ public:
 class CRegularPolicyGradientLearner :public CPolicyLearner
 {
 	CFeatureList *m_pStateFeatures;
-	CETraces *m_e;
-	CNumericValue* m_pAlpha;
+	CHILD_OBJECT<CETraces> m_e;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
 public:
 
 	CRegularPolicyGradientLearner(CConfigNode *pParameters);

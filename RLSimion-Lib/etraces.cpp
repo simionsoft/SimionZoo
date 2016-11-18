@@ -5,23 +5,24 @@
 #include "config.h"
 #include "app.h"
 
-CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name)
+CETraces::CETraces(CConfigNode* pConfigNode) : CFeatureList()
 {
-	if (pParameters)
+	if (pConfigNode)
 	{
 		m_bUse = true;
-		CONST_DOUBLE_VALUE(m_threshold,"Threshold",0.001,"Threshold applied to trace factors");
-		CONST_DOUBLE_VALUE(m_lambda,"Lambda",0.9,"Lambda parameter");
-		const char* replace;
-		ENUM_VALUE(replace, Boolean, "Replace", "True","Replace existing traces? Or add?");
-		m_bReplaceIfExists = !strcmp(replace, "True");
+		m_threshold = DOUBLE_PARAM(pConfigNode,"Threshold", "Threshold applied to trace factors", 0.001);
+		//CONST_DOUBLE_VALUE(m_threshold,"Threshold",0.001,"Threshold applied to trace factors");
+		m_lambda = DOUBLE_PARAM(pConfigNode,"Lambda", "Lambda parameter", 0.9);
+		//CONST_DOUBLE_VALUE(m_lambda,"Lambda",0.9,"Lambda parameter");
+		m_bReplace= BOOL_PARAM(pConfigNode,"Replace", "Replace existing traces? Or add?",true);
+		//ENUM_VALUE(replace, Boolean, "Replace", "True","Replace existing traces? Or add?");
+		m_bReplaceIfExists = m_bReplace.get();
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
 	else
 	{
 		m_bUse = false;
-		m_threshold = 0.0;
-		m_lambda = 1.0;
+
 		m_bReplaceIfExists = false;
 		m_bAddIfExists = false;
 	}
@@ -31,12 +32,13 @@ CLASS_CONSTRUCTOR(CETraces, const char* name) : CFeatureList(name)
 CETraces::~CETraces()
 {}
 
+
 void CETraces::update(double factor)
 {
-	if (!CApp::get()->pExperiment->isFirstStep() && m_bUse)
+	if (!CSimionApp::get()->pExperiment->isFirstStep() && m_bUse)
 	{
-		mult(factor* m_lambda);
-		applyThreshold(m_threshold);
+		mult(factor* m_lambda.get());
+		applyThreshold(m_threshold.get());
 	}
 	else
 		clear();

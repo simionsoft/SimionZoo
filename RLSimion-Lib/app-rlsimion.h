@@ -3,7 +3,7 @@
 #include "app.h"
 
 
-class RLSimionApp : public CApp
+class RLSimionApp : public CSimionApp
 {
 public:
 

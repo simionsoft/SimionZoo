@@ -9,7 +9,7 @@
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
 
 
-CFeatureList::CFeatureList(const char* name, bool addIfExists, bool replaceIfExists)//(int type= LIST_UNSORTED);
+CFeatureList::CFeatureList(bool addIfExists, bool replaceIfExists)
 {
 	m_type= LIST_UNSORTED;
 	m_numAllocFeatures= FEATURE_BLOCK_SIZE;
@@ -17,13 +17,18 @@ CFeatureList::CFeatureList(const char* name, bool addIfExists, bool replaceIfExi
 	m_numFeatures= 0;
 	m_bAddIfExists = addIfExists;
 	m_bReplaceIfExists = replaceIfExists;
-	strcpy_s(m_name, MAX_NAME_SIZE, name);
-	CApp::get()->pLogger->addVarToStats("Features",m_name, &m_numFeatures);
 }
 
 CFeatureList::~CFeatureList()
 {
 	delete [] m_pFeatures;
+}
+
+//we only add the number of features of named feature lists (e-traces most probably)
+void CFeatureList::setName(const char* name)
+{
+	m_name = name;
+	CSimionApp::get()->pLogger->addVarToStats("Features", m_name, &m_numFeatures);
 }
 
 void CFeatureList::clear()

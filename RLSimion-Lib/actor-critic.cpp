@@ -4,23 +4,17 @@
 #include "config.h"
 #include "actor.h"
 #include "critic.h"
+#include "app.h"
 
-CLASS_CONSTRUCTOR(CActorCritic)
+CActorCritic::CActorCritic(CConfigNode* pConfigNode)
 {
-	CConfigNode* pChild = pParameters->getChild();
-	const char* type = pChild->getName();
 	m_td = 0.0;
-
-	CHILD_CLASS(m_pActor, "Actor", "The actor",false,CActor);
-	CHILD_CLASS_FACTORY(m_pCritic, "Critic","The critic", false,CCritic);
-	END_CLASS();
-
-}
-
-CActorCritic::~CActorCritic()
-{
-	if (m_pActor) delete m_pActor;
-	if (m_pCritic) delete m_pCritic;
+	m_pActor = CHILD_OBJECT<CActor>(pConfigNode, "Actor", "The actor");
+	//CHILD_CLASS(m_pActor, "Actor", "The actor",false,CActor);
+	m_pCritic = CHILD_OBJECT_FACTORY<CCritic>(pConfigNode, "Critic", "The critic");
+	//CHILD_CLASS_FACTORY(m_pCritic, "Critic","The critic", false,CCritic);
+	//END_CLASS();
+	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", &m_td);
 }
 
 void CActorCritic::selectAction(const CState *s, CAction *a)

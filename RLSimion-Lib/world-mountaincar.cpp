@@ -32,7 +32,7 @@ CMountainCar::~CMountainCar()
 void CMountainCar::reset(CState *s)
 {
 
-	//if (CApp::get()->pExperiment->isEvaluationEpisode())
+	//if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
 		s->setValue(m_sPosition, -0.5);
@@ -86,14 +86,14 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 	//reached the goal?
 	if (position == s_p->getMax("position"))
 	{
-		CApp::get()->pExperiment->setTerminalState();
+		CSimionApp::get()->pExperiment->setTerminalState();
 		/*printf("goal reached\n");*/
 		return 1.0;
 	}
 	//reached the minimum position to the left?
 	if (position == s_p->getMin("position"))
 	{
-		CApp::get()->pExperiment->setTerminalState();
+		CSimionApp::get()->pExperiment->setTerminalState();
 		return -100.0;
 	}
 	return -1.0;

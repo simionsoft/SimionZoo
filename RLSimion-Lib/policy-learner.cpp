@@ -49,7 +49,7 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 	double var_i; //action's i-th dimension's variance
 	double output;
 
-	if (CApp::get()->pExperiment->isEvaluationEpisode())
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 		return 1.0;
 	//http://en.wikipedia.org/wiki/Multivariate_normal_distribution
 

@@ -9,21 +9,21 @@
 #include "globals.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CRegularPolicyGradientLearner)
-	: EXTENDS(CPolicyLearner,pParameters)
+CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(CConfigNode* pConfigNode)
+	: CPolicyLearner(pConfigNode)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
-	CHILD_CLASS(m_e,"E-Traces","Eligibility traces used by the regular Pol.Grad. learner",true,CETraces,"Actor/E-Traces");
-	NUMERIC_VALUE(m_pAlpha,"Alpha","The learning gain");
+	m_e= CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces used by the regular Pol.Grad. learner", true);
+	m_e.ptr()->setName("Actor/e");
+	//CHILD_CLASS(m_e,"E-Traces","Eligibility traces used by the regular Pol.Grad. learner",true,CETraces,"Actor/E-Traces");
+	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain");
+	//NUMERIC_VALUE(m_pAlpha,"Alpha","The learning gain");
 
-	END_CLASS();
 }
 
 CRegularPolicyGradientLearner::~CRegularPolicyGradientLearner()
 {
 	delete m_pStateFeatures;
-	delete m_e;
-	delete m_pAlpha;
 }
 
 void CRegularPolicyGradientLearner::updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td)

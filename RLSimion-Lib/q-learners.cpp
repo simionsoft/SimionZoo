@@ -184,7 +184,7 @@ void CDoubleQLearning::updateValue(const CState *s, const CAction *a, const CSta
 CLASS_CONSTRUCTOR(CSARSA) : EXTENDS(CQLearning,pParameters)
 {
 	m_bNextActionSelected = false;
-	m_nextA = CApp::get()->pWorld->getDynamicModel()->getActionInstance();
+	m_nextA = CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
 	END_CLASS();
 }
 

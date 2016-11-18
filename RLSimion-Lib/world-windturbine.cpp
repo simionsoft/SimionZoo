@@ -252,7 +252,7 @@ CWindTurbine::~CWindTurbine()
 
 void CWindTurbine::reset(CState *s)
 {
-	if (CApp::get()->pExperiment->isEvaluationEpisode())
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 		m_pCurrentWindData = m_pEvaluationWindData;
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
@@ -293,8 +293,8 @@ void CWindTurbine::reset(CState *s)
 
 void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 {
-	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CApp::get()->pWorld->getT()));
-	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CApp::get()->pWorld->getT()));
+	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CSimionApp::get()->pWorld->getT()));
+	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getT()));
 
 	//beta= beta + d(beta)/dt
 	double beta = s->getValue(m_sBeta);

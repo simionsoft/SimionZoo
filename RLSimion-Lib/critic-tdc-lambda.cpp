@@ -44,7 +44,7 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 {
 	if (m_pAlpha->getValue()==0.0) return 0.0;
 	
-	if (CApp::get()->pExperiment->isFirstStep())
+	if (CSimionApp::get()->pExperiment->isFirstStep())
 	{
 		m_omega->clear();
 	}

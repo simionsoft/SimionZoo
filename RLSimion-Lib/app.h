@@ -10,18 +10,18 @@ class CFilePathList;
 #include "experiment.h"
 #include "SimGod.h"
 
-class CApp
+class CSimionApp
 {
 private:
-	static CApp* m_pAppInstance;
+	static CSimionApp* m_pAppInstance;
 protected:
 	CConfigFile* m_pConfigDoc;
 public:
 
-	CApp();
-	virtual ~CApp();
+	CSimionApp();
+	virtual ~CSimionApp();
 
-	static CApp* get();
+	static CSimionApp* get();
 
 	CLogger *pLogger;
 	CWorld *pWorld;

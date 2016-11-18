@@ -62,13 +62,13 @@ double CInterpolatedValue::getValue()
 	double progress;
 
 	//evalution episode?
-	if (CApp::get()->pExperiment->isEvaluationEpisode())
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 		return m_evaluationValue.get();
 	//time reference
 	if (m_timeReference.get()==TimeReference::experiment)
-		progress = CApp::get()->pExperiment->getExperimentProgress();
+		progress = CSimionApp::get()->pExperiment->getExperimentProgress();
 	else if (m_timeReference.get()==TimeReference::episode)
-		progress = CApp::get()->pExperiment->getEpisodeProgress();
+		progress = CSimionApp::get()->pExperiment->getEpisodeProgress();
 
 	if (m_startOffset.get() != 0.0)
 	{
@@ -125,14 +125,14 @@ double CBhatnagarSchedule::getValue()
 	double t;
 
 	//evalution episode?
-	if (CApp::get()->pExperiment->isEvaluationEpisode())
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 		return m_evaluationValue.get();
 	//time reference
 	if (m_timeReference.get()==TimeReference::experiment)
-		t = CApp::get()->pExperiment->getStep()
-		+ (CApp::get()->pExperiment->getEpisodeIndex() - 1) * CApp::get()->pExperiment->getNumSteps();
+		t = CSimionApp::get()->pExperiment->getStep()
+		+ (CSimionApp::get()->pExperiment->getEpisodeIndex() - 1) * CSimionApp::get()->pExperiment->getNumSteps();
 	else if (m_timeReference.get()==TimeReference::episode)
-		t = CApp::get()->pExperiment->getStep();
+		t = CSimionApp::get()->pExperiment->getStep();
 	else assert(0);
 
 	return m_alpha_0.get()*m_alpha_c.get() / (m_alpha_c.get() + pow(t, m_t_exp.get()));

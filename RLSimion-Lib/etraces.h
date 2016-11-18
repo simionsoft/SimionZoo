@@ -1,4 +1,5 @@
 #pragma once
+#include "parameters.h"
 #include "features.h"
 
 class CConfigNode;
@@ -6,11 +7,11 @@ class CConfigNode;
 class CETraces : public CFeatureList
 {
 	bool m_bUse;
-	double m_threshold;
-	double m_lambda;
-
+	DOUBLE_PARAM m_threshold;
+	DOUBLE_PARAM m_lambda;
+	BOOL_PARAM m_bReplace;
 public:
-	CETraces(CConfigNode* pParameters, const char* name);
+	CETraces(CConfigNode* pConfigNode);
 	virtual ~CETraces();
 
 	//traces will be multiplied by factor*lambda
@@ -19,5 +20,5 @@ public:
 
 	void addFeatureList(CFeatureList *inList, double factor = 1.0);
 
-	double getLambda(){ return m_lambda; };
+	double getLambda(){ return m_lambda.get(); };
 };

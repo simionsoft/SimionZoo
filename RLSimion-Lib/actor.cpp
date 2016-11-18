@@ -26,10 +26,10 @@ void CActor::deferredLoadStep()
 	unsigned int controllerActionIndex, actorActionIndex;
 	unsigned int numWeights;
 	double *pWeights;
-	CState* s= CApp::get()->pWorld->getDynamicModel()->getStateInstance();
-	CAction* a= CApp::get()->pWorld->getDynamicModel()->getActionInstance();
+	CState* s= CSimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
+	CAction* a= CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
 	
-	if (m_pInitController.ptr())
+	if (m_pInitController.shared_ptr())
 	{
 		int numActionDims = std::min(m_pInitController->getNumOutputs(), (int)m_policyLearners.size());
 		CLogger::logMessage(MessageType::Info, "Initializing the policy weights using the base controller");

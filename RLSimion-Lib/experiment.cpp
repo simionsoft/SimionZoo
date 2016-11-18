@@ -128,7 +128,7 @@ CLASS_CONSTRUCTOR(CExperiment)
 	}
 	m_episodeLength = DOUBLE_PARAM(pParameters, "Episode-Length", "Length of an episode(seconds)",10.0);
 	//CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
-	setNumSteps((unsigned int)(m_episodeLength.get() / CApp::get()->pWorld->getDT()));
+	setNumSteps((unsigned int)(m_episodeLength.get() / CSimionApp::get()->pWorld->getDT()));
 	reset();
 
 
@@ -149,26 +149,26 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	if (time>m_progUpdateFreq.get() || (isLastStep() && isLastEpisode()))
 	{
-		sprintf_s(msg, 1024, "%f", CApp::get()->pExperiment->getExperimentProgress()*100.0);
+		sprintf_s(msg, 1024, "%f", CSimionApp::get()->pExperiment->getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);
 		m_pProgressTimer->startTimer();
 	}
 
 	bool evalEpisode = isEvaluationEpisode();
 	if (isFirstEpisode() && isFirstStep())
-		CApp::get()->pLogger->firstEpisode();
+		CSimionApp::get()->pLogger->firstEpisode();
 
 	unsigned int episodeIndex = getRelativeEpisodeIndex();
 	if (isFirstStep())
-		CApp::get()->pLogger->firstStep();
+		CSimionApp::get()->pLogger->firstStep();
 
 	//update stats
 	//output step-stats
-	CApp::get()->pLogger->timestep(s, a, s_p, r);
+	CSimionApp::get()->pLogger->timestep(s, a, s_p, r);
 
 	if (isLastStep())
-		CApp::get()->pLogger->lastStep();
+		CSimionApp::get()->pLogger->lastStep();
 
 	if (isLastEpisode() && (isLastStep()))
-		CApp::get()->pLogger->lastEpisode();
+		CSimionApp::get()->pLogger->lastEpisode();
 }

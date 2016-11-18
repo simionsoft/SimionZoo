@@ -10,19 +10,17 @@
 #include "globals.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CCACLALearner): EXTENDS(CPolicyLearner,pParameters)
+CCACLALearner::CCACLALearner(CConfigNode* pConfigNode): CPolicyLearner(pConfigNode)
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
-	CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA",true,CETraces, "Actor/E-Traces");
-	NUMERIC_VALUE(m_pAlpha, "Alpha","Learning gain [0..1]");
-
-	END_CLASS();
+	m_e = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces used by CACLA", true);
+	//CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA",true,CETraces, "Actor/E-Traces");
+	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Learning gain [0..1]");
+	//NUMERIC_VALUE(m_pAlpha, "Alpha","Learning gain [0..1]");
 }
 
 CCACLALearner::~CCACLALearner()
 {
-	delete m_pAlpha;
-	delete m_e;
 	delete m_pStateFeatures;
 }
 

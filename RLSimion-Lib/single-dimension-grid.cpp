@@ -59,8 +59,8 @@ CLASS_CONSTRUCTOR(CStateVariableGrid)
 	m_numCenters = INT_PARAM(pParameters, "Num-Features","The number of points that form the grid",3);
 	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
 
-	m_min= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex.get());
-	m_max= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex.get());
+	m_min= CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex.get());
+	m_max= CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex.get());
 	m_distributionType = ENUM_PARAM<Distribution>(pParameters,"Distribution"
 		, "The manner in which the points are distributed on the state variable's grid"
 		,Distribution::linear);
@@ -86,8 +86,8 @@ CLASS_CONSTRUCTOR(CActionVariableGrid)
 	m_numCenters = INT_PARAM(pParameters, "Num-Features","The number of points that form the grid",3);
 	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
 
-	m_min = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex.get());
-	m_max = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex.get());
+	m_min = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex.get());
+	m_max = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex.get());
 
 	m_distributionType = ENUM_PARAM<Distribution>(pParameters, "Distribution"
 		, "The manner in which the points are distributed on the action variable's grid",Distribution::linear);

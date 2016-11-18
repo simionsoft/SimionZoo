@@ -9,19 +9,19 @@
 
 
 
-CApp* CApp::m_pAppInstance = 0;
+CSimionApp* CSimionApp::m_pAppInstance = 0;
 
-CApp::CApp()
+CSimionApp::CSimionApp()
 {
 	m_pAppInstance = this;
 }
 
-CApp::~CApp()
+CSimionApp::~CSimionApp()
 {
 	m_pAppInstance = 0;
 }
 
-CApp* CApp::get()
+CSimionApp* CSimionApp::get()
 {
 	return m_pAppInstance;
 }

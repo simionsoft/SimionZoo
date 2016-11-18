@@ -55,7 +55,7 @@ CMagneticLevitation::~CMagneticLevitation()
 void CMagneticLevitation::reset(CState *s)
 {
 	CSetPoint *pSetPoint;
-	if (CApp::get()->pExperiment->isEvaluationEpisode())
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 		pSetPoint= m_pEvalSetPoint;
 	else
 		pSetPoint= m_pLearnSetPoint;
@@ -69,7 +69,7 @@ void CMagneticLevitation::reset(CState *s)
 
 
 	//initialization procedure: 0.5 seconds with 15V
-	/*CAction *a= CApp::get()->pWorld->getActionDescriptor();
+	/*CAction *a= CSimionApp::get()->pWorld->getActionDescriptor();
 	a->setValue("voltage",15.0);
 	double t= 0.0;
 	double dt= 0.01;
@@ -91,10 +91,10 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double I= s->getValue(m_sCurrent);
 	double setpoint;
 	
-	if (CApp::get()->pExperiment->isEvaluationEpisode())
-		setpoint = m_pEvalSetPoint->getPointSet(CApp::get()->pWorld->getT());
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+		setpoint = m_pEvalSetPoint->getPointSet(CSimionApp::get()->pWorld->getT());
 	else
-		setpoint = m_pLearnSetPoint->getPointSet(CApp::get()->pWorld->getT());
+		setpoint = m_pLearnSetPoint->getPointSet(CSimionApp::get()->pWorld->getT());
 
 
 

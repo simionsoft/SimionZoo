@@ -139,9 +139,9 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	void * logXMLDescriptorFile= openLogFile(filename);
 	sprintf_s(buffer,BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\">\n",OUTPUT_LOG_FILENAME);
 	writeEpisodeTypesToBuffer(buffer);
-	writeNamedVarSetDescriptorToBuffer(buffer, "State", CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()); //state
-	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()); //action
-	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CApp::get()->pWorld->getRewardVector());
+	writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()); //state
+	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()); //action
+	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector());
 	writeStatDescriptorToBuffer(buffer);
 	strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 	writeLogBuffer(logXMLDescriptorFile, buffer, strlen(buffer));
@@ -207,7 +207,7 @@ void CLogger::firstStep()
 
 	m_lastLogSimulationT = 0.0;
 
-	bool bEvalEpisode = CApp::get()->pExperiment->isEvaluationEpisode();
+	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 
 	//reset stats
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
@@ -219,7 +219,7 @@ void CLogger::firstStep()
 
 void CLogger::lastStep()
 {
-	bool bEvalEpisode = CApp::get()->pExperiment->isEvaluationEpisode();
+	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
 	//log the end of the episode: this way we don't have to precalculate the number of steps logged per episode
@@ -227,20 +227,20 @@ void CLogger::lastStep()
 
 	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
 	char buffer[BUFFER_SIZE];
-	int episodeIndex = CApp::get()->pExperiment->getEvaluationEpisodeIndex();
-	int numEpisodes = CApp::get()->pExperiment->getNumEvaluationEpisodes();
+	int episodeIndex = CSimionApp::get()->pExperiment->getEvaluationEpisodeIndex();
+	int numEpisodes = CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
 
-	if (CApp::get()->pExperiment->isEvaluationEpisode() && numEpisodes>0)
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode() && numEpisodes>0)
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (std::max(1.0, (double)numEpisodes - 1))
-			, m_episodeRewardSum / (double)CApp::get()->pExperiment->getStep());
+			, m_episodeRewardSum / (double)CSimionApp::get()->pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
 	}
 }
 
 void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 {
-	bool bEvalEpisode = CApp::get()->pExperiment->isEvaluationEpisode();
+	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 	//we add the scalar reward in evaluation episodes for monitoring purposes, no matter if we are logging this type of episode or not
 	if (bEvalEpisode) m_episodeRewardSum += r->getSumValue();
 
@@ -253,11 +253,11 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	}
 
 	//output episode log data
-	if (CApp::get()->pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq.get()
-		|| CApp::get()->pExperiment->isFirstStep() || CApp::get()->pExperiment->isLastStep())
+	if (CSimionApp::get()->pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq.get()
+		|| CSimionApp::get()->pExperiment->isFirstStep() || CSimionApp::get()->pExperiment->isLastStep())
 	{
 		writeStepData(s, a, s_p, r);
-		m_lastLogSimulationT = CApp::get()->pWorld->getStepStartT();
+		m_lastLogSimulationT = CSimionApp::get()->pWorld->getStepStartT();
 	}
 }
 
@@ -281,8 +281,8 @@ void CLogger::writeExperimentHeader()
 {
 	ExperimentHeader header;
 
-	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CApp::get()->pExperiment->getNumEvaluationEpisodes();
-	if (m_bLogTrainingEpisodes.get()) header.numEpisodes += CApp::get()->pExperiment->getNumTrainingEpisodes();
+	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
+	if (m_bLogTrainingEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumTrainingEpisodes();
 
 	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(ExperimentHeader));
 }
@@ -291,12 +291,12 @@ void CLogger::writeEpisodeHeader()
 {
 	EpisodeHeader header;
 
-	header.episodeIndex = CApp::get()->pExperiment->getRelativeEpisodeIndex();
-	header.episodeType = (CApp::get()->pExperiment->isEvaluationEpisode() ? 0 : 1);
+	header.episodeIndex = CSimionApp::get()->pExperiment->getRelativeEpisodeIndex();
+	header.episodeType = (CSimionApp::get()->pExperiment->isEvaluationEpisode() ? 0 : 1);
 	header.numVariablesLogged =
-		CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getNumVars()
-		+ CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getNumVars()
-		+ CApp::get()->pWorld->getRewardVector()->getNumVars()
+		CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getNumVars()
+		+ CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getNumVars()
+		+ CSimionApp::get()->pWorld->getRewardVector()->getNumVars()
 		+ m_stats.size();
 
 	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(EpisodeHeader));
@@ -313,9 +313,9 @@ void CLogger::writeEpisodeEndHeader()
 int CLogger::writeStepHeaderToBuffer(char* buffer, int offset)
 {
 	StepHeader header;
-	header.stepIndex = CApp::get()->pExperiment->getStep();
+	header.stepIndex = CSimionApp::get()->pExperiment->getStep();
 	header.episodeRealTime = m_pEpisodeTimer->getElapsedTime();
-	header.episodeSimTime = CApp::get()->pWorld->getT();
+	header.episodeSimTime = CSimionApp::get()->pWorld->getT();
 	header.experimentRealTime = m_pExperimentTimer->getElapsedTime();
 
 	memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));

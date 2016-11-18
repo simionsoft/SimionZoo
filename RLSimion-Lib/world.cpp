@@ -131,7 +131,7 @@ double CDynamicModel::getConstant(const char* constantName)
 	}
 	char message[1024];
 	sprintf_s(message, 1024, "Missing constant in world definition file: %s", constantName);
-	CApp::get()->pLogger->logMessage(MessageType::Error, message);
+	CSimionApp::get()->pLogger->logMessage(MessageType::Error, message);
 
 	return -1.0;// will never reach this, but if this makes the compiler happy, so be it
 }

@@ -50,7 +50,7 @@ RLSimionApp::~RLSimionApp()
 void RLSimionApp::run()
 {
 	CLogger::logMessage(MessageType::Info, "Simulation starting");
-	CApp* pApp = CApp::get();
+	CSimionApp* pApp = CSimionApp::get();
 
 	//create state and action vectors
 	CState *s = pApp->pWorld->getDynamicModel()->getStateDescriptor()->getInstance();

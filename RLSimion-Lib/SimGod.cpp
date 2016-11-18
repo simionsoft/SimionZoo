@@ -56,7 +56,7 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 {
 	CExperienceTuple* pExperienceTuple;
 
-	if (CApp::get()->pExperiment->isEvaluationEpisode()) return;
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
 	m_pExperienceReplay->addTuple(s, a, s_p, r);
 
@@ -126,9 +126,9 @@ void CSimGod::getOutputFiles(CFilePathList& filepathList)
 
 std::shared_ptr<CStateFeatureMap> CSimGod::getGlobalStateFeatureMap()
 { 
-	return m_pGlobalStateFeatureMap.ptr(); 
+	return m_pGlobalStateFeatureMap.shared_ptr(); 
 }
 std::shared_ptr<CActionFeatureMap> CSimGod::getGlobalActionFeatureMap()
 {
-	return m_pGlobalActionFeatureMap.ptr(); 
+	return m_pGlobalActionFeatureMap.shared_ptr(); 
 }

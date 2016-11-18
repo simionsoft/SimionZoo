@@ -2,7 +2,7 @@
 
 //this class is used to defer time-consuming initialization code
 //just by calling the constructor from the subclasses constructor,
-//the object registers itself in the list hold by CApp::get()->SimGod
+//the object registers itself in the list hold by CSimionApp::get()->SimGod
 //The member funcion deferredLoadStep() is called after construction
 //of all the objects
 //MOTIVATION: be able to construct quickly the objects needed in an experiment

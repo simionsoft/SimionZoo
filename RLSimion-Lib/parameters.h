@@ -183,16 +183,16 @@ public:
 
 		if (!m_bOptional || pConfigNode->getChild(name))
 			m_pValue = std::shared_ptr<DataType>(new DataType(pConfigNode->getChild(name)));
-
 		else
 		{
 			//we create the object without config info for default behaviour
-			m_pValue = std::shared_ptr<DataType>(new DataType(0));
+			m_pValue = std::shared_ptr<DataType>(new DataType((CConfigNode*)nullptr));
 		}
 	}
 
 	DataType* operator->() { return m_pValue.get(); }
-	std::shared_ptr<DataType> ptr() { return m_pValue; }
+	std::shared_ptr<DataType> shared_ptr() { return m_pValue; }
+	DataType* ptr() { return m_pValue.get(); }
 };
 
 template<typename DataType>
@@ -217,7 +217,8 @@ public:
 	}
 
 	DataType* operator->() { return m_pValue.get(); }
-	std::shared_ptr<DataType> ptr() { return m_pValue; }
+	std::shared_ptr<DataType> shared_ptr() { return m_pValue; }
+	DataType* ptr() { return m_pValue.get(); }
 };
 
 template <typename DataType>
