@@ -13,22 +13,12 @@
 #include "featuremap.h"
 
 
-CLASS_CONSTRUCTOR(CActor) : CDeferredLoad(10)//if initialized, it has to be done after allocating memory for the weights
+CActor::CActor(CConfigNode* pConfigNode) : CDeferredLoad(10)//if initialized, it has to be done after allocating memory for the weights
 {
-	MULTI_VALUED_FACTORY(m_policyLearners,"Output","The outputs of the actor. One for each output dimension",CPolicyLearner);
-	CHILD_CLASS_FACTORY(m_pInitController, "Base-Controller", "The base controller used to initialize the weights of the actor", true, CController);
-	END_CLASS();
-}
-
-
-
-CActor::~CActor()
-{
-	delete m_pInitController;
-	for (unsigned int i = 0; i < m_policyLearners.size(); i++)
-	{
-		delete m_policyLearners[i];
-	}
+	m_policyLearners= MULTI_VALUE_FACTORY<CPolicyLearner>(pConfigNode, "Output", "The outputs of the actor. One for each output dimension");
+	//MULTI_VALUED_FACTORY(m_policyLearners,"Output","The outputs of the actor. One for each output dimension",CPolicyLearner);
+	m_pInitController= CHILD_OBJECT_FACTORY<CController>(pConfigNode, "Base-Controller", "The base controller used to initialize the weights of the actor", true);
+	//CHILD_CLASS_FACTORY(m_pInitController, "Base-Controller", "The base controller used to initialize the weights of the actor", true, CController);
 }
 
 void CActor::deferredLoadStep()
@@ -39,7 +29,7 @@ void CActor::deferredLoadStep()
 	CState* s= CApp::get()->pWorld->getDynamicModel()->getStateInstance();
 	CAction* a= CApp::get()->pWorld->getDynamicModel()->getActionInstance();
 	
-	if (m_pInitController)
+	if (m_pInitController.ptr())
 	{
 		int numActionDims = std::min(m_pInitController->getNumOutputs(), (int)m_policyLearners.size());
 		CLogger::logMessage(MessageType::Info, "Initializing the policy weights using the base controller");

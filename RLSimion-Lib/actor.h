@@ -4,21 +4,21 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
-class CConfigNode;
-class CPolicyLearner;
+#include "parameters.h"
 #include "delayed-load.h"
+#include "policy-learner.h"
+#include "controller.h"
 #include <vector>
-class CController;
 
 class CActor: public CDeferredLoad
 {
-	CController* m_pInitController;
+	CHILD_OBJECT_FACTORY<CController> m_pInitController;
 protected:
-	std::vector<CPolicyLearner*> m_policyLearners;
+	MULTI_VALUE_FACTORY<CPolicyLearner> m_policyLearners;
 
 public:
-	CActor(CConfigNode* pParameters);
-	virtual ~CActor();
+	CActor(CConfigNode* pConfigNode);
+	virtual ~CActor()= default;
 
 	virtual void selectAction(const CState *s, CAction *a);
 

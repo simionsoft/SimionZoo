@@ -15,7 +15,7 @@ protected:
 	INT_PARAM m_numCenters;
 	double *m_pCenters;
 
-	varType m_variableIndex;
+	varType m_hVariable;
 	double m_min;
 	double m_max;
 	ENUM_PARAM<Distribution> m_distributionType;
