@@ -58,12 +58,13 @@ bool CConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 
 	if (pParameter)
 	{
-		if (!strcmp(pParameter->GetText(), "true"))
+		const char* text = pParameter->GetText();
+		if (!strcmp(text, "true") || !strcmp(text,"True"))
 			return true;
-		if (!strcmp(pParameter->GetText(), "false"))
+		if (!strcmp(text, "false") || !strcmp(text,"False"))
 			return false;
 	}
-	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+	//else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
@@ -85,7 +86,7 @@ int CConfigNode::getConstInteger(const char* paramName, int defaultValue)
 	{
 		return atoi(pParameter->GetText());
 	}
-	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+//	else throw std::exception((std::string("Illegal access to int parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
@@ -106,7 +107,7 @@ double CConfigNode::getConstDouble(const char* paramName, double defaultValue)
 	{
 		return atof(pParameter->GetText());
 	}
-	else throw std::exception((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
+//	else throw std::exception((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %f", getName(), paramName, defaultValue);
@@ -128,7 +129,7 @@ const char* CConfigNode::getConstString(const char* paramName, const char* defau
 	{
 		return pParameter->GetText();
 	}
-	else throw std::exception((std::string("Illegal access to boolean parameter") + std::string(paramName)).c_str());
+//	else throw std::exception((std::string("Illegal access to string parameter") + std::string(paramName)).c_str());
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %s", getName(), paramName, defaultValue);

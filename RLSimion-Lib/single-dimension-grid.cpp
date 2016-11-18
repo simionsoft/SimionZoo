@@ -7,45 +7,43 @@
 #include "named-var-set.h"
 #include "app.h"
 
-#define ACTIVATION_THRESHOLD 0.0001
 
-CSingleDimensionGrid::CSingleDimensionGrid()
+
+template<typename varType>
+CSingleDimensionGrid<varType>::CSingleDimensionGrid()
 {
 	m_pCenters = 0;
-	m_numCenters = 0;
-	m_variableIndex = -1;
 	m_min = 0.0;
 	m_max = 0.0;
-	m_distributionType = 0;
 }
 
-CSingleDimensionGrid::~CSingleDimensionGrid()
+template<typename varType>
+CSingleDimensionGrid<varType>::~CSingleDimensionGrid()
 {
 	delete[] m_pCenters;
 }
 
-void CSingleDimensionGrid::initCenterPoints()
+template<typename varType>
+void CSingleDimensionGrid<varType>::initCenterPoints()
 {
-	m_pCenters = new double[m_numCenters];
+	m_pCenters = new double[m_numCenters.get()];
 
-
-
-	if (!strcmp(m_distributionType, "linear"))
+	if (m_distributionType.get()== Distribution::linear)
 	{
-		for (int i = 0; i<m_numCenters; i++)
-			m_pCenters[i] = m_min + (((double)i) / (m_numCenters - 1))*(m_max - m_min);
+		for (int i = 0; i<m_numCenters.get(); i++)
+			m_pCenters[i] = m_min + (((double)i) / (m_numCenters.get() - 1))*(m_max - m_min);
 	}
 	else
 	{
 		double normalisedPos;
-		double ncenters = (double)m_numCenters;
-		for (int i = 0; i<m_numCenters; i++)
+		double ncenters = (double)m_numCenters.get();
+		for (int i = 0; i<m_numCenters.get(); i++)
 		{
 			normalisedPos = ((double)i - ncenters*.5) / (ncenters*.5);
 
-			if (!strcmp(m_distributionType, "cubic"))
+			if (m_distributionType.get()==Distribution::cubic)
 				normalisedPos = pow(normalisedPos, 3.0);
-			else if (!strcmp(m_distributionType, "quadratic"))
+			else if (m_distributionType.get()==Distribution::quadratic)
 				normalisedPos = pow(normalisedPos, 2.0);
 			else assert(0);
 
@@ -56,132 +54,57 @@ void CSingleDimensionGrid::initCenterPoints()
 
 CLASS_CONSTRUCTOR(CStateVariableGrid)
 {
-	STATE_VARIABLE_REF(m_variableIndex, "Variable","The state variable");
-	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
+	m_variableIndex = STATE_VARIABLE(pParameters,"Variable", Comment, "The state variable");
+	//STATE_VARIABLE_REF(m_variableIndex, "Variable","The state variable");
+	m_numCenters = INT_PARAM(pParameters, "Num-Features",Default, "3"
+		,Comment, "The number of points that form the grid");
+	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
 
-	m_min= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex);
-	m_max= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex);
+	m_min= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex.get());
+	m_max= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex.get());
+	m_distributionType = ENUM_PARAM<Distribution>(pParameters,"Distribution"
+		, Default,"linear"
+		, Comment,"The manner in which the points are distributed on the state variable's grid");
 
-	ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
+	//ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
 	initCenterPoints();
 	END_CLASS();
 }
 void CStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
-	s->setValue(m_variableIndex, m_pCenters[feature]);
+	s->setValue(m_variableIndex.get(), m_pCenters[feature]);
 }
 
 double CStateVariableGrid::getVariableValue(const CState* s, const CAction* a)
 {
-	return s->getValue(m_variableIndex);
+	return s->getValue(m_variableIndex.get());
 }
-
 
 CLASS_CONSTRUCTOR(CActionVariableGrid)
 {
-	ACTION_VARIABLE_REF(m_variableIndex, "Variable", "The action variable");
-	CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
+	m_variableIndex = ACTION_VARIABLE(pParameters,"Variable", Comment, "The action variable");
+	//ACTION_VARIABLE_REF(m_variableIndex, "Variable", "The action variable");
+	m_numCenters = INT_PARAM(pParameters, "Num-Features", Default, "3"
+		, Comment, "The number of points that form the grid");
+	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
 
-	m_min = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex);
-	m_max = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex);
+	m_min = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex.get());
+	m_max = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex.get());
 
-	ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
+	m_distributionType = ENUM_PARAM<Distribution>(pParameters, "Distribution"
+		, Default, "linear"
+		, Comment, "The manner in which the points are distributed on the action variable's grid");
+	//ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
 	initCenterPoints();
 	END_CLASS();
 }
 
 void CActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
-	a->setValue(m_variableIndex, m_pCenters[feature]);
+	a->setValue(m_variableIndex.get(), m_pCenters[feature]);
 }
 
 double CActionVariableGrid::getVariableValue(const CState* s, const CAction* a)
 {
-	return a->getValue(m_variableIndex);
-}
-
-
-
-double CSingleDimensionGrid::getFeatureFactor(int feature, double value)
-{
-	double range, dist;
-	assert(feature >= 0 && feature <= m_numCenters - 1);
-	if (value>m_pCenters[feature])
-	{
-		dist = value - m_pCenters[feature];
-		if (feature != m_numCenters - 1)
-			range = m_pCenters[feature + 1] - m_pCenters[feature];
-		else
-			range = m_pCenters[feature] - m_pCenters[feature - 1];
-	}
-	else
-	{
-		dist = m_pCenters[feature] - value;
-		if (feature != 0)
-			range = m_pCenters[feature] - m_pCenters[feature - 1];
-		else
-			range = m_pCenters[1] - m_pCenters[0];
-	}
-
-	//f_gauss(x)= a*exp(-(x-b)^2 / 2c^2 )
-	//instead of 2c^2, we use the distance to the next feature
-	double f = 2 * dist / range;
-	double factor = exp(-(f*f));
-	return factor;
-
-	//the original feature factor calculation code in RLToolbox:
-	//double distance = fabs(difference);
-	//return my_exp(- pow(distance / diffNextPart * 2, 2)) ;
-}
-
-void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures)
-{
-	double u;
-	int i;
-
-	outDimFeatures->clear();
-
-	unsigned int numCenters = m_numCenters;
-
-	assert(numCenters >= 2);
-	double value = getVariableValue(s, a);
-
-	if (value <= m_pCenters[1])
-	{
-		outDimFeatures->add(0, getFeatureFactor(0, value));
-		outDimFeatures->add(1, getFeatureFactor(1, value));
-		outDimFeatures->add(2, getFeatureFactor(2, value));
-	}
-	else if (value >= m_pCenters[numCenters - 2])
-	{
-		outDimFeatures->add(numCenters - 3, getFeatureFactor(numCenters - 3, value));
-		outDimFeatures->add(numCenters - 2, getFeatureFactor(numCenters - 2, value));
-		outDimFeatures->add(numCenters - 1, getFeatureFactor(numCenters - 1, value));
-	}
-	else
-	{
-		i = 1;
-
-		while (value>m_pCenters[i + 1]) i++;
-
-		u = (value - m_pCenters[i]) / (m_pCenters[i + 1] - m_pCenters[i]);
-
-		if (u<0.5)
-		{
-			outDimFeatures->add(i, getFeatureFactor(i, value));
-			outDimFeatures->add(i + 1, getFeatureFactor(i + 1, value));
-		}
-		else
-		{
-			outDimFeatures->add(i + 1, getFeatureFactor(i + 1, value));
-			outDimFeatures->add(i, getFeatureFactor(i, value));
-		}
-
-		if (value - m_pCenters[i - 1] < m_pCenters[i + 2] - value)
-			outDimFeatures->add(i - 1, getFeatureFactor(i - 1, value));
-		else
-			outDimFeatures->add(i + 2, getFeatureFactor(i + 2, value));
-	}
-	outDimFeatures->applyThreshold(ACTIVATION_THRESHOLD);
-	outDimFeatures->normalize();
+	return a->getValue(m_variableIndex.get());
 }

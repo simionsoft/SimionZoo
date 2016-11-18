@@ -6,6 +6,7 @@ typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CConfigNode;
 #include <vector>
+#include "parameters.h"
 class CStats;
 class CTimer;
 class CFilePathList;
@@ -24,10 +25,10 @@ class CLogger
 	char* m_pFullLogFilename;
 	static void *m_hLogFile;
 
-	bool m_bLogEvaluationEpisodes;
-	bool m_bLogTrainingEpisodes;
+	BOOL_PARAM m_bLogEvaluationEpisodes;
+	BOOL_PARAM m_bLogTrainingEpisodes;
 
-	double m_logFreq; //in seconds: time between file logs
+	DOUBLE_PARAM m_logFreq; //in seconds: time between file logs
 
 	CTimer *m_pEpisodeTimer;
 	CTimer *m_pExperimentTimer;

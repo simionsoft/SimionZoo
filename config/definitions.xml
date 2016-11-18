@@ -191,9 +191,6 @@
     <VALUE>experimentTime</VALUE>
   </ENUMERATION>
   <CLASS Name="CLogger">
-    <DOUBLE-VALUE Name="Log-Freq" Default="0.25" Comment="Log frequency. Simulation time in seconds."/>
-    <ENUM-VALUE Name="Log-eval-episodes" Class="Boolean" Default="True" Comment="Log evaluation episodes?"/>
-    <ENUM-VALUE Name="Log-training-episodes" Class="Boolean" Default="False" Comment="Log training episodes?"/>
   </CLASS>
 
   <CLASS Name="CNoise-Factory">

@@ -9,8 +9,8 @@
 
 #define ACTIVATION_THRESHOLD 0.0001
 
-
-CGaussianRBFGridFeatureMap::CGaussianRBFGridFeatureMap(CConfigNode* pParameters)
+template<typename varType>
+CGaussianRBFGridFeatureMap<varType>::CGaussianRBFGridFeatureMap(CConfigNode* pParameters)
 {
 }
 
@@ -53,8 +53,8 @@ CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap
 }
 
 
-
-CGaussianRBFGridFeatureMap::~CGaussianRBFGridFeatureMap()
+template <typename varType>
+CGaussianRBFGridFeatureMap<varType>::~CGaussianRBFGridFeatureMap()
 {
 	for (unsigned int i = 0; i < m_grid.size(); i++)
 		delete m_grid[i];
@@ -62,8 +62,8 @@ CGaussianRBFGridFeatureMap::~CGaussianRBFGridFeatureMap()
 	delete m_pVarFeatures;
 }
 
-
-void CGaussianRBFGridFeatureMap::getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures)
+template <typename varType>
+void CGaussianRBFGridFeatureMap<varType>::getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures)
 {
 	unsigned int offset= 1;
 
@@ -85,7 +85,8 @@ void CGaussianRBFGridFeatureMap::getFeatures(const CState* s,const CAction* a,CF
 	outFeatures->normalize();
 }
 
-void CGaussianRBFGridFeatureMap::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
+template <typename varType>
+void CGaussianRBFGridFeatureMap<varType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
 {
 	unsigned int dimFeature;
 

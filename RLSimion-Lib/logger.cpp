@@ -70,13 +70,14 @@ CLASS_CONSTRUCTOR(CLogger)
 {
 	if (!pParameters) return;
 
-	const char* boolStr;
-	ENUM_VALUE(boolStr,Boolean,"Log-eval-episodes", "True","Log evaluation episodes?");
-	m_bLogEvaluationEpisodes = !strcmp(boolStr, "True");
-	ENUM_VALUE(boolStr, Boolean, "Log-training-episodes", "False","Log training episodes?");
-	m_bLogTrainingEpisodes = !strcmp(boolStr, "True");
+	m_bLogEvaluationEpisodes= BOOL_PARAM(pParameters,"Log-eval-episodes", Default,"true"
+		,Comment,"Log evaluation episodes?");
 
-	CONST_DOUBLE_VALUE(m_logFreq,"Log-Freq", 0.25,"Log frequency. Simulation time in seconds.");
+	m_bLogTrainingEpisodes= BOOL_PARAM(pParameters,"Log-training-episodes", Default,"False"
+		,Comment,"Log training episodes?");
+
+	m_logFreq= DOUBLE_PARAM(pParameters,"Log-Freq",Default,"0.25"
+		,Comment,"Log frequency. Simulation time in seconds.");
 
 	//_mkdir(m_outputDir);
 
@@ -131,7 +132,7 @@ CLogger::~CLogger()
 
 bool CLogger::isEpisodeTypeLogged(bool evalEpisode)
 {
-	return (evalEpisode && m_bLogEvaluationEpisodes) || (!evalEpisode && m_bLogTrainingEpisodes);
+	return (evalEpisode && m_bLogEvaluationEpisodes.get()) || (!evalEpisode && m_bLogTrainingEpisodes.get());
 }
 
 
@@ -155,8 +156,10 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 
 void CLogger::writeEpisodeTypesToBuffer(char* pOutBuffer)
 {
-	if (m_bLogEvaluationEpisodes) strcat_s(pOutBuffer, BUFFER_SIZE, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
-	if (m_bLogTrainingEpisodes) strcat_s(pOutBuffer, BUFFER_SIZE, "  <Episode-Type Id=\"0\">Training</Episode-Type>\n");
+	if (m_bLogEvaluationEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
+		, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
+	if (m_bLogTrainingEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
+		, "  <Episode-Type Id=\"0\">Training</Episode-Type>\n");
 }
 
 void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
@@ -255,7 +258,7 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	}
 
 	//output episode log data
-	if (CApp::get()->pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq
+	if (CApp::get()->pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq.get()
 		|| CApp::get()->pExperiment->isFirstStep() || CApp::get()->pExperiment->isLastStep())
 	{
 		writeStepData(s, a, s_p, r);
@@ -283,8 +286,8 @@ void CLogger::writeExperimentHeader()
 {
 	ExperimentHeader header;
 
-	if (m_bLogEvaluationEpisodes) header.numEpisodes += CApp::get()->pExperiment->getNumEvaluationEpisodes();
-	if (m_bLogTrainingEpisodes) header.numEpisodes += CApp::get()->pExperiment->getNumTrainingEpisodes();
+	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CApp::get()->pExperiment->getNumEvaluationEpisodes();
+	if (m_bLogTrainingEpisodes.get()) header.numEpisodes += CApp::get()->pExperiment->getNumTrainingEpisodes();
 
 	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(ExperimentHeader));
 }

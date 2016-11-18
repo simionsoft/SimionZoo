@@ -5,8 +5,9 @@ class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 class CConfigNode;
-class CSingleDimensionGrid;
+
 #include "parameters.h"
+#include "single-dimension-grid.h"
 #include <vector>
 
 //CFeatureMap//////////////////////////////////////////////////
@@ -52,7 +53,7 @@ public:
 /////////////////////////////////////////////////////////////////
 #define MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION 3
 
-
+template<typename varType>
 class CGaussianRBFGridFeatureMap
 {
 protected:
@@ -61,7 +62,7 @@ protected:
 	unsigned int m_totalNumFeatures;
 	unsigned int m_maxNumActiveFeatures;
 
-	std::vector<CSingleDimensionGrid*> m_grid;
+	std::vector<CSingleDimensionGrid<varType>*> m_grid;
 
 	CGaussianRBFGridFeatureMap(CConfigNode* pParameters);
 public:
@@ -73,7 +74,8 @@ public:
 
 };
 
-class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap, public CStateFeatureMap
+class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap<STATE_VARIABLE>
+	, public CStateFeatureMap
 {
 public:
 	CGaussianRBFStateGridFeatureMap(CConfigNode* pParameters);
@@ -85,7 +87,8 @@ public:
 
 };
 
-class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap, public CActionFeatureMap
+class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap<ACTION_VARIABLE>
+	, public CActionFeatureMap
 {
 public:
 	CGaussianRBFActionGridFeatureMap(CConfigNode* pParameters);

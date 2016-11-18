@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 			CLogger::createOutputPipe(argv[2]);
 
 		if (argc <= 1)
-			CLogger::logMessage(MessageType::Error, "Too few parameters");
+			CLogger::logMessage(MessageType::Error, "Too few parameters: no config file provided");
 
 		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");

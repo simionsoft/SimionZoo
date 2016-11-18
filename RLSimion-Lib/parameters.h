@@ -31,9 +31,15 @@ protected:
 	}
 };
 
+//Enumerated types
+enum class Distribution { linear, quadratic, cubic };
+enum class Interpolation { linear, quadratic, cubic };
+enum class TimeReference { episode, experiment, experimentTime };
+
 template<typename DataType>
 class CSimpleParam: public CBaseParam
 {
+protected:
 	DataType m_value;
 	DataType m_default;
 	
@@ -41,22 +47,39 @@ class CSimpleParam: public CBaseParam
 	{
 		value = pConfigNode->getConstInteger(m_name,m_default);
 	}
-	
 	void initValue(CConfigNode* pConfigNode, double& value)
 	{
 		value = pConfigNode->getConstDouble(m_name,m_default);
 	}
-	
 	void initValue(CConfigNode* pConfigNode, const char& value)
 	{
 		value = pConfigNode->getConstString(m_name,m_default);
 	}
-	
 	void initValue(CConfigNode* pConfigNode, bool& value)
 	{
 		value = pConfigNode->getConstBoolean(m_name);
 	}
-
+	void initValue(CConfigNode* pConfigNode, TimeReference& value)
+	{
+		const char* strValue = pConfigNode->getConstString(m_name);
+		if (!strcmp(strValue, "episode")) value = TimeReference::episode;
+		else if (!strcmp(strValue, "experiment")) value = TimeReference::experiment;
+		else if (!strcmp(strValue, "experimentTime")) value = TimeReference::experimentTime;
+	}
+	void initValue(CConfigNode* pConfigNode,Distribution& value)
+	{
+		const char* strValue = pConfigNode->getConstString(m_name);
+		if (!strcmp(strValue, "linear")) value = Distribution::linear;
+		else if (!strcmp(strValue, "quadratic")) value = Distribution::quadratic;
+		else if (!strcmp(strValue, "cubic")) value = Distribution::cubic;
+	}
+	void initValue(CConfigNode* pConfigNode, Interpolation& value)
+	{
+		const char* strValue = pConfigNode->getConstString(m_name);
+		if (!strcmp(strValue, "linear")) value = Interpolation::linear;
+		else if (!strcmp(strValue, "quadratic")) value = Interpolation::quadratic;
+		else if (!strcmp(strValue, "cubic")) value = Interpolation::cubic;
+	}
 public:
 	CSimpleParam() = default;
 	template <typename... propertyTypes> CSimpleParam(CConfigNode* pConfigNode, const char* name, PropertyName propName
@@ -77,6 +100,22 @@ using STRING_PARAM = CSimpleParam<const char*>;
 using DIR_PATH_PARAM = CSimpleParam<const char*>;
 using FILE_PATH_PARAM = CSimpleParam<const char*>;
 
+
+template <typename EnumType>
+class ENUM_PARAM: public CSimpleParam<EnumType>
+{
+public:
+	ENUM_PARAM() = default;
+	template <typename... propertyTypes>
+	ENUM_PARAM(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
+	{
+		m_name = name;
+		parseProperties(propName, value, properties...);
+		initValue(pConfigNode,m_value);
+	}
+};
+
+
 class STATE_VARIABLE: public CBaseParam
 {
 	int m_hVariable= -1;
@@ -86,7 +125,8 @@ public:
 	template <typename... propertyTypes>
 	STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
 	{
-		m_hVariable = CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(pParameters->getConstString(name));
+		m_hVariable = CWorld::getDynamicModel()->getStateDescriptor()
+			->getVarIndex(pConfigNode->getConstString(name));
 		m_name = name;
 		parseProperties(propName, value, properties...);
 	}
@@ -102,7 +142,8 @@ public:
 	template <typename... propertyTypes>
 	ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, PropertyName propName, const char* value, propertyTypes... properties)
 	{
-		m_hVariable = CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(pParameters->getConstString(name));
+		m_hVariable = CWorld::getDynamicModel()->getActionDescriptor()
+			->getVarIndex(pConfigNode->getConstString(name));
 		m_name = name;
 		parseProperties(propName, value, properties...);
 	}
