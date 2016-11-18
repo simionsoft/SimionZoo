@@ -23,13 +23,13 @@ CLASS_CONSTRUCTOR(CSimGod)
 	if (!pParameters) return;
 
 	//the global parameterizations of the state/action spaces
-	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<CStateFeatureMap>(pParameters,"State-Feature-Map",Comment,"The state feature map", Optional,false);
+	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<CStateFeatureMap>(pParameters,"State-Feature-Map","The state feature map", false);
 	//CHILD_CLASS_FACTORY(m_pGlobalStateFeatureMap, "State-Feature-Map", "The state feature map", false, CStateFeatureMap);
-	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<CActionFeatureMap>(pParameters, "Action-Feature-Map", Comment, "The state feature map", Optional, TRUE);
+	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<CActionFeatureMap>(pParameters, "Action-Feature-Map", "The state feature map", true);
 	//CHILD_CLASS_FACTORY(m_pGlobalActionFeatureMap, "Action-Feature-Map", "The action feature map", true, CActionFeatureMap);
-	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pParameters, "Experience-Replay", Comment, "The experience replay parameters", Optional, true);
+	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pParameters, "Experience-Replay", "The experience replay parameters", true);
 	//CHILD_CLASS(m_pExperienceReplay, "Experience-Replay", "The experience replay parameters", true, CExperienceReplay);
-	m_simions= MULTI_VALUE_FACTORY<CSimion>(pParameters,"Simion",Comment, "Simions: learning agents and controllers")
+	m_simions= MULTI_VALUE_FACTORY<CSimion>(pParameters,"Simion","Simions: learning agents and controllers")
 	//MULTI_VALUED_FACTORY(m_simions, "Simion", "Simions: learning agents and controllers", CSimion);
 
 	

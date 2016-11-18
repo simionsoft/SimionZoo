@@ -70,16 +70,11 @@ CLASS_CONSTRUCTOR(CLogger)
 {
 	if (!pParameters) return;
 
-	m_bLogEvaluationEpisodes= BOOL_PARAM(pParameters,"Log-eval-episodes", Default,"true"
-		,Comment,"Log evaluation episodes?");
+	m_bLogEvaluationEpisodes= BOOL_PARAM(pParameters,"Log-eval-episodes", "Log evaluation episodes?",true);
 
-	m_bLogTrainingEpisodes= BOOL_PARAM(pParameters,"Log-training-episodes", Default,"False"
-		,Comment,"Log training episodes?");
+	m_bLogTrainingEpisodes= BOOL_PARAM(pParameters,"Log-training-episodes", "Log training episodes?",false);
 
-	m_logFreq= DOUBLE_PARAM(pParameters,"Log-Freq",Default,"0.25"
-		,Comment,"Log frequency. Simulation time in seconds.");
-
-	//_mkdir(m_outputDir);
+	m_logFreq= DOUBLE_PARAM(pParameters,"Log-Freq","Log frequency. Simulation time in seconds.",0.25);
 
 
 	m_pEpisodeTimer = new CTimer();

@@ -106,14 +106,14 @@ CLASS_CONSTRUCTOR(CExperiment)
 	if (!pParameters) return;
 
 
-	m_progUpdateFreq = DOUBLE_PARAM(pParameters, "Progress-Update-Freq", Default, "0.5", Comment, "Progress update frequency (seconds)");
+	m_progUpdateFreq = DOUBLE_PARAM(pParameters, "Progress-Update-Freq", "Progress update frequency (seconds)",1.0);
 	//CONST_DOUBLE_VALUE(m_progUpdateFreq ,"Progress-Update-Freq", 0.5,"Progress update frequency (seconds)");
-	m_randomSeed = INT_PARAM(pParameters, "Random-Seed", Default, "1", Comment, "Random seed used to generate random sequences of numbers");
+	m_randomSeed = INT_PARAM(pParameters, "Random-Seed","Random seed used to generate random sequences of numbers",1);
 		//CONST_INTEGER_VALUE(m_randomSeed ,"Random-Seed", 1,"Random seed used to generate random sequences of numbers");
 
-	m_numTrainingEpisodes = INT_PARAM(pParameters, "Num-Episodes", Default, "1", Comment, "Number of episodes");
+	m_numTrainingEpisodes = INT_PARAM(pParameters, "Num-Episodes","Number of episodes",1000);
 	//CONST_INTEGER_VALUE(m_numTrainingEpisodes, "Num-Episodes", 1,"Number of episodes");
-	m_evalFreq = INT_PARAM(pParameters,"Eval-Freq", Default,"0",Comment, "Evaluation frequency (in episodes)");
+	m_evalFreq = INT_PARAM(pParameters,"Eval-Freq", "Evaluation frequency (in episodes)",10);
 	//CONST_INTEGER_VALUE(m_evalFreq, "Eval-Freq", 0,"Evaluation frequency (in episodes)");
 	
 	if (m_evalFreq.get() != 0)
@@ -126,7 +126,7 @@ CLASS_CONSTRUCTOR(CExperiment)
 		m_numEvaluationEpisodes = 0;
 		m_totalNumEpisodes = (unsigned int)m_numTrainingEpisodes.get();
 	}
-	m_episodeLength = DOUBLE_PARAM(pParameters, "Episode-Length", Default, "1.0", Comment, "Length of an episode(seconds)");
+	m_episodeLength = DOUBLE_PARAM(pParameters, "Episode-Length", "Length of an episode(seconds)",10.0);
 	//CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
 	setNumSteps((unsigned int)(m_episodeLength.get() / CApp::get()->pWorld->getDT()));
 	reset();

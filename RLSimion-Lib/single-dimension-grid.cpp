@@ -54,17 +54,16 @@ void CSingleDimensionGrid<varType>::initCenterPoints()
 
 CLASS_CONSTRUCTOR(CStateVariableGrid)
 {
-	m_variableIndex = STATE_VARIABLE(pParameters,"Variable", Comment, "The state variable");
+	m_variableIndex = STATE_VARIABLE(pParameters,"Variable", "The state variable");
 	//STATE_VARIABLE_REF(m_variableIndex, "Variable","The state variable");
-	m_numCenters = INT_PARAM(pParameters, "Num-Features",Default, "3"
-		,Comment, "The number of points that form the grid");
+	m_numCenters = INT_PARAM(pParameters, "Num-Features","The number of points that form the grid",3);
 	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
 
 	m_min= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex.get());
 	m_max= CApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex.get());
 	m_distributionType = ENUM_PARAM<Distribution>(pParameters,"Distribution"
-		, Default,"linear"
-		, Comment,"The manner in which the points are distributed on the state variable's grid");
+		, "The manner in which the points are distributed on the state variable's grid"
+		,Distribution::linear);
 
 	//ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
 	initCenterPoints();
@@ -82,18 +81,16 @@ double CStateVariableGrid::getVariableValue(const CState* s, const CAction* a)
 
 CLASS_CONSTRUCTOR(CActionVariableGrid)
 {
-	m_variableIndex = ACTION_VARIABLE(pParameters,"Variable", Comment, "The action variable");
+	m_variableIndex = ACTION_VARIABLE(pParameters,"Variable", "The action variable");
 	//ACTION_VARIABLE_REF(m_variableIndex, "Variable", "The action variable");
-	m_numCenters = INT_PARAM(pParameters, "Num-Features", Default, "3"
-		, Comment, "The number of points that form the grid");
+	m_numCenters = INT_PARAM(pParameters, "Num-Features","The number of points that form the grid",3);
 	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
 
 	m_min = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex.get());
 	m_max = CApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex.get());
 
 	m_distributionType = ENUM_PARAM<Distribution>(pParameters, "Distribution"
-		, Default, "linear"
-		, Comment, "The manner in which the points are distributed on the action variable's grid");
+		, "The manner in which the points are distributed on the action variable's grid",Distribution::linear);
 	//ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the action variable's grid");
 	initCenterPoints();
 	END_CLASS();

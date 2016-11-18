@@ -142,6 +142,7 @@ CLASS_CONSTRUCTOR(CLinearStateVFA): CDeferredLoad()
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
+
 	END_CLASS();
 }
 void CLinearStateVFA::deferredLoadStep()
