@@ -14,8 +14,9 @@ std::shared_ptr<CStateFeatureMap> CStateFeatureMap::getInstance(CConfigNode* pCo
 {
 	return CHOICE_FUNC<CStateFeatureMap>(pConfigNode,"Type", "Feature map type",
 	{
-		{ "RBF-State-Grid",[](CConfigNode* pConfigNode) 
-			{return std::shared_ptr<CStateFeatureMap>(new CGaussianRBFStateGridFeatureMap(pConfigNode)); } }
+		{ "RBF-State-Grid",[](CConfigNode* pChild) 
+			{return std::shared_ptr<CStateFeatureMap>(new CGaussianRBFStateGridFeatureMap(pChild)); }
+		}
 	});
 }
 //CLASS_FACTORY(CStateFeatureMap)

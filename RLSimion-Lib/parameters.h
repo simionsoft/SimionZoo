@@ -12,7 +12,7 @@ class CConfigNode;
 //Enumerated types
 enum class Distribution { linear, quadratic, cubic };
 enum class Interpolation { linear, quadratic, cubic };
-enum class TimeReference { episode, experiment, experimentTime };
+enum class TimeReference { episode, experiment };
 
 template<typename DataType>
 class CSimpleParam
@@ -49,11 +49,6 @@ protected:
 		else if (!strcmp(strValue, "experiment"))
 		{
 			value = TimeReference::experiment; return;
-		}
-		else if (!strcmp(strValue, "experimentTime"))
-		{
-			value = TimeReference::experimentTime;
-			return;
 		}
 		value = m_default;
 	}
@@ -123,8 +118,7 @@ class ENUM_PARAM: public CSimpleParam<EnumType>
 public:
 	ENUM_PARAM() = default;
 	template <typename... propertyTypes>
-	ENUM_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment
-	,EnumType default)
+	ENUM_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment,EnumType default)
 	{
 		m_name = name;
 		m_comment = comment;

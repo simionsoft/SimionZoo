@@ -1,5 +1,5 @@
 #pragma once
-
+#include "parameters.h"
 
 class CConfigNode;
 class CNumericValue;
@@ -27,12 +27,12 @@ public:
 
 class CGaussianNoise: public CNoise
 {
-	CNumericValue* m_pSigma;
-	CNumericValue* m_pAlpha;
-	CNumericValue* m_pScale;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pSigma;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pScale;
 public:
 	CGaussianNoise(CConfigNode* pParameters);
-	virtual ~CGaussianNoise();
+	~CGaussianNoise()= default;
 	double getSigma();
 	double unscale(double noise);
 

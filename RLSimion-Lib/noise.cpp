@@ -55,20 +55,16 @@ CLASS_FACTORY(CNoise)
 	return 0;
 }
 
-CLASS_CONSTRUCTOR(CGaussianNoise)
+CGaussianNoise::CGaussianNoise(CConfigNode* pConfigNode)
 {
-	NUMERIC_VALUE(m_pSigma,"Sigma","Width of the gaussian bell");
-	NUMERIC_VALUE(m_pAlpha,"Alpha","Low-pass first-order filter's gain [0...1]. 1=no filter");
-	NUMERIC_VALUE(m_pScale,"Scale","Scale factor applied to the noise signal before adding it to the policy's output");
-	END_CLASS();
+	m_pSigma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Sigma", "Width of the gaussian bell");
+	//NUMERIC_VALUE(m_pSigma,"Sigma","Width of the gaussian bell");
+	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Low-pass first-order filter's gain [0...1]. 1=no filter");
+	//NUMERIC_VALUE(m_pAlpha,"Alpha","Low-pass first-order filter's gain [0...1]. 1=no filter");
+	m_pScale = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Scale", "Scale factor applied to the noise signal before adding it to the policy's output");
+	//NUMERIC_VALUE(m_pScale,"Scale","Scale factor applied to the noise signal before adding it to the policy's output");
 }
 
-CGaussianNoise::~CGaussianNoise()
-{
-	delete m_pSigma;
-	delete m_pAlpha;
-	delete m_pScale;
-}
 
 double CGaussianNoise::getValue()
 {
