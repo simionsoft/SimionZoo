@@ -141,7 +141,7 @@ double CBhatnagarSchedule::getValue()
 
 std::shared_ptr<CNumericValue> CNumericValue::getInstance(CConfigNode* pConfigNode)
 {
-	return CHOICE_FUNC<CNumericValue>(pConfigNode, "Schedule", "Schedule-type",
+	return CHOICE<CNumericValue>(pConfigNode, "Schedule", "Schedule-type",
 	{
 		{"Constant",[](CConfigNode* pChild)
 			{return std::shared_ptr<CNumericValue>(new CConstantValue(pChild)); }

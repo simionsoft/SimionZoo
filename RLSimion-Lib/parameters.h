@@ -277,12 +277,20 @@ public:
 
 
 template<typename DataType>
-using choiceFunc= std::function<std::shared_ptr<DataType>(CConfigNode*)>;
+using choiceElement= std::function<std::shared_ptr<DataType>(CConfigNode*)>;
 
+//template<typename Class>
+//std::shared_ptr<Class> CHOICE_ELEMENT_NEW(CConfigNode* pConfigNode)
+//{
+//	return std::shared_ptr<Class>(new Class(pChildsConfig));
+//}
+#define CHOICE_ELEMENT_NEW(pConfigNode,className,name,comment,badgerInfo) {name,[](CConfigNode* pConfigNode) {return std::shared_ptr<className>(new className(pConfigNode->getChild(name)));}}
+#define CHOICE_ELEMENT_FACTORY(pConfigNode,className,name,comment,badgerInfo) {name,[](CConfigNode* pConfigNode) {return className::getInstance(pConfigNode->getChild(name));}}
 
-template<typename DataType>
-std::shared_ptr<DataType> CHOICE_FUNC(CConfigNode* pConfig, const char* choiceName, const char* comment
-	, std::map<const char*, choiceFunc<DataType>> choices)
+#include <list>
+template<typename BaseClass>
+std::shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const char* comment
+	, std::map<const char*, choiceElement<BaseClass>> choices)
 {
 	if (!pConfig) return 0;
 	pConfig = pConfig->getChild(choiceName);
@@ -297,6 +305,8 @@ std::shared_ptr<DataType> CHOICE_FUNC(CConfigNode* pConfig, const char* choiceNa
 	return 0;
 }
 
+//#define CHOICE_NEW(returnBaseClass,createdSubClass,name,comment) \
+//	{name,[](CConfigNode* pChild){return std::shared_ptr<returnBaseClass>(new createdSubClass(pChild));}}
 
 //simple tests:
 //class testClass
@@ -307,7 +317,7 @@ std::shared_ptr<DataType> CHOICE_FUNC(CConfigNode* pConfig, const char* choiceNa
 //
 //	static std::shared_ptr<testClass> getInstance(CConfigNode* pConfigNode)
 //	{
-//		return CHOICE_FUNC<testClass>(pConfigNode,"choice-name","explanation of its role",
+//		return CHOICE<testClass>(pConfigNode,"choice-name","explanation of its role",
 //		{
 //			{ "option1",[](CConfigNode* pConfigNode) {return std::shared_ptr<testClass>(new testClass(pConfigNode)); } }
 //		,{ "option2",[](CConfigNode* pConfigNode) {return std::shared_ptr<testClass>(new testClass(pConfigNode)); } }
@@ -327,7 +337,7 @@ std::shared_ptr<DataType> CHOICE_FUNC(CConfigNode* pConfig, const char* choiceNa
 //
 //	static std::shared_ptr<test> getInstance(CConfigNode* pConfigNode)
 //	{
-//		return CHOICE_FUNC<test>(pConfigNode, "myname","why do you care about my name?",
+//		return CHOICE<test>(pConfigNode, "myname","why do you care about my name?",
 //		{
 //			{"option1",[](CConfigNode* pConfigNode) {return std::shared_ptr<test>(new test(pConfigNode)); }}
 //			,{ "option2",[](CConfigNode* pConfigNode) {return std::shared_ptr<test>(new test(pConfigNode)); } }

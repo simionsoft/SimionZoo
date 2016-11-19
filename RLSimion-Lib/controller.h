@@ -1,7 +1,7 @@
 #pragma once
 
 #include "simion.h"
-#include <vector>
+#include "parameters.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -17,7 +17,7 @@ public:
 	virtual int getNumOutputs()= 0;
 	virtual int getOutputActionIndex(int output)= 0;
 
-	static CController* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CController> getInstance(CConfigNode* pConfigNode);
 
 	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r){ }
 
@@ -29,18 +29,18 @@ public:
 class CLQRGain
 {
 public:
-	CLQRGain(CConfigNode* pParameters);
+	CLQRGain(CConfigNode* pConfigNode);
 	virtual ~CLQRGain(){}
-	unsigned int m_variableIndex;
-	double m_gain;
+	STATE_VARIABLE m_variableIndex;
+	DOUBLE_PARAM m_gain;
 };
 
 class CLQRController : public CController
 {
-	std::vector<CLQRGain*> m_gains;
-	int m_outputActionIndex;
+	MULTI_VALUE<CLQRGain> m_gains;
+	ACTION_VARIABLE m_outputActionIndex;
 public:
-	CLQRController(CConfigNode* pParameters);
+	CLQRController(CConfigNode* pConfigNode);
 	virtual ~CLQRController();
 
 	int getNumOutputs();
@@ -51,12 +51,14 @@ public:
 
 class CPIDController : public CController
 {
-	CNumericValue *m_pKP, *m_pKI, *m_pKD;
-	int m_outputActionIndex;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pKP;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pKI;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pKD;
+	ACTION_VARIABLE m_outputActionIndex;
 	double m_intError;
-	int m_errorVariableIndex;
+	STATE_VARIABLE m_errorVariableIndex;
 public:
-	CPIDController(CConfigNode* pParameters);
+	CPIDController(CConfigNode* pConfigNode);
 	virtual ~CPIDController();
 
 	int getNumOutputs();
@@ -73,9 +75,9 @@ class CWindTurbineVidalController : public CController
 	int m_E_int_omega_r_index;
 	//action variable indices
 	int m_d_beta_index, m_d_T_g_index;
-	CNumericValue *m_pA, *m_pK_alpha, *m_pKP, *m_pKI, *m_P_s;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pA, m_pK_alpha, m_pKP, m_pKI, m_P_s;
 public:
-	CWindTurbineVidalController(CConfigNode* pParameters);
+	CWindTurbineVidalController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineVidalController();
 
 	int getNumOutputs();
@@ -93,11 +95,11 @@ class CWindTurbineBoukhezzarController : public CController
 
 	//action variable indices
 	int m_d_beta_index, m_d_T_g_index;
-
-	CNumericValue *m_pC_0, *m_pKP, *m_pKI;
+	
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
 public:
-	CWindTurbineBoukhezzarController(CConfigNode* pParameters);
+	CWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineBoukhezzarController();
 
 	int getNumOutputs();
@@ -113,16 +115,18 @@ class CWindTurbineJonkmanController : public CController
 	int m_d_beta_index, m_d_T_g_index;
 
 	//generator speed filter's parameters and variables
-	double m_CornerFreq, m_GenSpeedF;
+	DOUBLE_PARAM m_CornerFreq;
+	double m_GenSpeedF;
 	//generator torque controller's parameters and variables
-	double m_VS_RtGnSp, m_VS_SlPc, m_VS_Rgn2K, m_VS_Rgn2Sp, m_VS_CtInSp, m_VS_RtPwr;
-	double m_VS_TrGnSp, m_VS_SySp, m_VS_Slope15, m_VS_Slope25, m_VS_Rgn3MP;
+	DOUBLE_PARAM m_VS_RtGnSp, m_VS_SlPc, m_VS_Rgn2K, m_VS_Rgn2Sp, m_VS_CtInSp, m_VS_RtPwr;
+	DOUBLE_PARAM m_VS_Rgn3MP;
+	double m_VS_SySp, m_VS_Slope15, m_VS_Slope25, m_VS_TrGnSp;
 	//pitch controller's parameters and variables
 	double m_IntSpdErr;
-	CNumericValue *m_PC_KK, *m_PC_KP, *m_PC_KI;
-	double m_PC_RefSpd;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_PC_KK, m_PC_KP, m_PC_KI;
+	DOUBLE_PARAM m_PC_RefSpd;
 public:
-	CWindTurbineJonkmanController(CConfigNode* pParameters);
+	CWindTurbineJonkmanController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineJonkmanController();
 
 	int getNumOutputs();

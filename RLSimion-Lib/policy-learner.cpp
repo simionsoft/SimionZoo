@@ -21,15 +21,22 @@ CPolicyLearner::~CPolicyLearner()
 	delete m_pPolicy;
 }
 
-CLASS_FACTORY(CPolicyLearner)
+std::shared_ptr<CPolicyLearner> CPolicyLearner::getInstance(CConfigNode* pConfigNode)
 {
-	CHOICE("Policy-Learner","The algorith used to learn the policy");
-	CHOICE_ELEMENT("CACLA", CCACLALearner,"CACLA algorithm");
-	CHOICE_ELEMENT("Regular-Gradient", CRegularPolicyGradientLearner,"A regular policy-gradient learning algorithm");
-	END_CHOICE();
+	return CHOICE(pConfigNode,"Policy-Learner", "The algorithm used to learn the policy",
+	{
+		CHOICE_ELEMENT_NEW(pConfigNode,CCACLALearner, "CACLA", "CACLA algorithm"),
+	CHOICE_ELEMENT_NEW(pConfigNode,CRegularPolicyGradientLearner,"Regular-Gradient", "A regular policy-gradient learning algorithm")
+	}
+		);
 
-	END_CLASS();
-	return 0;
+	//CHOICE("Policy-Learner","The algorith used to learn the policy");
+	//CHOICE_ELEMENT("CACLA", CCACLALearner,"CACLA algorithm");
+	//CHOICE_ELEMENT("Regular-Gradient", CRegularPolicyGradientLearner,"A regular policy-gradient learning algorithm");
+	//END_CHOICE();
+
+	//END_CLASS();
+	//return 0;
 }
 
 

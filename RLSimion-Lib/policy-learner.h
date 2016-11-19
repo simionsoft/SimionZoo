@@ -1,5 +1,5 @@
 #pragma once
-
+#include "parameters.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -23,7 +23,7 @@ public:
 
 	CPolicy* getPolicy(){ return m_pPolicy; }
 
-	static CPolicyLearner* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CPolicyLearner> getInstance(CConfigNode* pParameters);
 };
 
 

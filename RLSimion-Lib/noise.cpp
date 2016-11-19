@@ -44,14 +44,17 @@ CNoise::CNoise()
 	m_lastValue = 0.0;
 }
 
-CLASS_FACTORY(CNoise)
+std::shared_ptr<CNoise> CNoise::getInstance(CConfigNode* pConfigNode)
 {
-	CHOICE("Noise","Noise type");
-	CHOICE_ELEMENT("GaussianNoise", CGaussianNoise,"Gaussian noise");
-	END_CHOICE();
+	return CHOICE<CNoise>(pConfigNode, "Noise", "Noise type",
+	{ CHOICE_ELEMENT_NEW(pConfigNode,CGaussianNoise,"GaussianNoise","Gaussian noise","") }
+	);
+	//CHOICE("Noise","Noise type");
+	//CHOICE_ELEMENT("GaussianNoise", CGaussianNoise,"Gaussian noise");
+	//END_CHOICE();
 
-	END_CLASS();
-	assert(0);
+	//END_CLASS();
+	//assert(0);
 	return 0;
 }
 

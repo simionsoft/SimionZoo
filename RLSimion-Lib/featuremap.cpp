@@ -12,10 +12,9 @@ CStateFeatureMap::CStateFeatureMap(CConfigNode* pConfigNode)
 
 std::shared_ptr<CStateFeatureMap> CStateFeatureMap::getInstance(CConfigNode* pConfigNode)
 {
-	return CHOICE_FUNC<CStateFeatureMap>(pConfigNode,"Type", "Feature map type",
+	return CHOICE<CStateFeatureMap>(pConfigNode,"Type", "Feature map type",
 	{
-		{ "RBF-State-Grid",[](CConfigNode* pChild) 
-			{return std::shared_ptr<CStateFeatureMap>(new CGaussianRBFStateGridFeatureMap(pChild)); }
+		CHOICE_ELEMENT_NEW(pConfigNode,"RBF-State-Grid",CGaussianRBFStateGridFeatureMap);
 		}
 	});
 }
@@ -36,10 +35,9 @@ CActionFeatureMap::CActionFeatureMap(CConfigNode* pConfigNode)
 
 std::shared_ptr<CActionFeatureMap> CActionFeatureMap::getInstance(CConfigNode* pConfigNode)
 {
-	return CHOICE_FUNC<CActionFeatureMap>(pConfigNode, "Type", "Feature map type",
+	return CHOICE<CActionFeatureMap>(pConfigNode, "Type", "Feature map type",
 	{
-		{ "RBF-Action-Grid",[](CConfigNode* pConfigNode)
-	{return std::shared_ptr<CActionFeatureMap>(new CGaussianRBFActionGridFeatureMap(pConfigNode)); } }
+		CHOICE_ELEMENT_NEW(pConfigNode,"RBF-Action-Grid",CGaussianRBFActionGridFeatureMap);
 	});
 }
 //CLASS_FACTORY(CActionFeatureMap)

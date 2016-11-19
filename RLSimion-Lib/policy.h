@@ -1,5 +1,5 @@
 #pragma once
-
+#include "parameters.h"
 class CLinearStateVFA;
 class CNoise;
 
@@ -15,10 +15,10 @@ class CFeatureList;
 class CPolicy 
 {
 protected:
-	int m_outputActionIndex;
+	ACTION_VARIABLE m_outputActionIndex;
 
 public:
-	CPolicy(CConfigNode* pParameters);
+	CPolicy(CConfigNode* pConfigNode);
 	virtual ~CPolicy();
 
 	virtual void getFeatures(const CState* state, CFeatureList* outFeatureList)= 0;
@@ -31,7 +31,7 @@ public:
 
 	int getOutputActionIndex(){ return m_outputActionIndex; }
 
-	static CPolicy* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CPolicy> getInstance(CConfigNode* pParameters);
 
 	virtual CLinearStateVFA* getDetPolicyStateVFA()= 0;
 };

@@ -52,42 +52,42 @@ void CSingleDimensionGrid<varType>::initCenterPoints()
 	}
 }
 
-CLASS_CONSTRUCTOR(CStateVariableGrid)
+CStateVariableGrid::CStateVariableGrid(CConfigNode* pConfigNode)
 {
-	m_variableIndex = STATE_VARIABLE(pParameters,"Variable", "The state variable");
-	//STATE_VARIABLE_REF(m_variableIndex, "Variable","The state variable");
-	m_numCenters = INT_PARAM(pParameters, "Num-Features","The number of points that form the grid",3);
+	m_hVariable = STATE_VARIABLE(pConfigNode,"Variable", "The state variable");
+	//STATE_VARIABLE_REF(m_hVariable, "Variable","The state variable");
+	m_numCenters = INT_PARAM(pConfigNode, "Num-Features","The number of points that form the grid",3);
 	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3,"The number of points that form the grid");
 
-	m_min= CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMin(m_variableIndex.get());
-	m_max= CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMax(m_variableIndex.get());
-	m_distributionType = ENUM_PARAM<Distribution>(pParameters,"Distribution"
+	m_min= CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMin(m_hVariable.get());
+	m_max= CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getMax(m_hVariable.get());
+	m_distributionType = ENUM_PARAM<Distribution>(pConfigNode,"Distribution"
 		, "The manner in which the points are distributed on the state variable's grid"
 		,Distribution::linear);
 
 	//ENUM_VALUE(m_distributionType, Distribution,"Distribution", "linear","The manner in which the points are distributed on the state variable's grid");
 	initCenterPoints();
-	END_CLASS();
+	//END_CLASS();
 }
 void CStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
-	s->setValue(m_variableIndex.get(), m_pCenters[feature]);
+	s->setValue(m_hVariable.get(), m_pCenters[feature]);
 }
 
 double CStateVariableGrid::getVariableValue(const CState* s, const CAction* a)
 {
-	return s->getValue(m_variableIndex.get());
+	return s->getValue(m_hVariable.get());
 }
 
 CLASS_CONSTRUCTOR(CActionVariableGrid)
 {
-	m_variableIndex = ACTION_VARIABLE(pParameters,"Variable", "The action variable");
-	//ACTION_VARIABLE_REF(m_variableIndex, "Variable", "The action variable");
+	m_hVariable = ACTION_VARIABLE(pParameters,"Variable", "The action variable");
+	//ACTION_VARIABLE_REF(m_hVariable, "Variable", "The action variable");
 	m_numCenters = INT_PARAM(pParameters, "Num-Features","The number of points that form the grid",3);
 	//CONST_INTEGER_VALUE(m_numCenters, "Num-Features", 3, "The number of points that form the grid");
 
-	m_min = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMin(m_variableIndex.get());
-	m_max = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMax(m_variableIndex.get());
+	m_min = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMin(m_hVariable.get());
+	m_max = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getMax(m_hVariable.get());
 
 	m_distributionType = ENUM_PARAM<Distribution>(pParameters, "Distribution"
 		, "The manner in which the points are distributed on the action variable's grid",Distribution::linear);
@@ -98,10 +98,10 @@ CLASS_CONSTRUCTOR(CActionVariableGrid)
 
 void CActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
-	a->setValue(m_variableIndex.get(), m_pCenters[feature]);
+	a->setValue(m_hVariable.get(), m_pCenters[feature]);
 }
 
 double CActionVariableGrid::getVariableValue(const CState* s, const CAction* a)
 {
-	return a->getValue(m_variableIndex.get());
+	return a->getValue(m_hVariable.get());
 }

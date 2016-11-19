@@ -1,4 +1,5 @@
 #pragma once
+#include "parameters.h"
 
 class CNamedVarSet;
 typedef CNamedVarSet CState;
@@ -11,7 +12,7 @@ class CCritic
 {
 
 protected:
-	CLinearStateVFA* m_pVFunction; //value function approximator
+	CHILD_OBJECT<CLinearStateVFA> m_pVFunction; //value function approximator
 
 public:
 	CCritic(CConfigNode* pParameters);
@@ -19,6 +20,6 @@ public:
 
 	virtual double updateValue(const CState *s, const CAction *a, const CState *s_p, double r) = 0;
 
-	static CCritic *getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CCritic> getInstance(CConfigNode* pParameters);
 };
 

@@ -6,24 +6,31 @@
 #include "logger.h"
 #include "vfa.h"
 
-CLASS_CONSTRUCTOR(CCritic)
+CCritic::CCritic(CConfigNode* pConfigNode)
 {
-	CHILD_CLASS(m_pVFunction, "V-Function","The parameterization of the V-Function to be learned",false, CLinearStateVFA);
+	m_pVFunction = CHILD_OBJECT<CCritic>(pConfigNode, "V-Function", "The V-function to be learned");
+	//CHILD_CLASS(m_pVFunction, "V-Function","The parameterization of the V-Function to be learned",false, CLinearStateVFA);
 
-	END_CLASS();
+	//END_CLASS();
 }
 
-CLASS_FACTORY(CCritic)
+std::shared_ptr<CCritic> CCritic::getInstance(CConfigNode* pConfigNode)
 {
-	CHOICE("Critic","Critic type");
-	CHOICE_ELEMENT("TD-Lambda", CTDLambdaCritic,"TD-Lambda algorithm");
-	CHOICE_ELEMENT("True-Online-TD-Lambda", CTrueOnlineTDLambdaCritic,"True-online TD-Lambda algorithm");
-	CHOICE_ELEMENT("TDC-Lambda", CTDCLambdaCritic,"TDC-Lambda algorithm");
-	END_CHOICE();
+	return CHOICE<CCritic>(pConfigNode, "Critic", "Critic type",
+	{
+		CHOICE_ELEMENT_NEW(pConfigNode, CTDLambdaCritic,"TD-Lambda","TD-Lambda algorithm",""),
+		CHOICE_ELEMENT_NEW(pConfigNode, CTrueOnlineTDLambdaCritic,"True-Online-TD-Lambda","True-online TD-Lambda algorithm",""),
+		CHOICE_ELEMENT_NEW(pConfigNode,CTDCLambdaCritic,"TDC-Lambda", "TDC-Lambda algorithm","")
+	});
+	//CHOICE("Critic","Critic type");
+	//CHOICE_ELEMENT("TD-Lambda", CTDLambdaCritic,"TD-Lambda algorithm");
+	//CHOICE_ELEMENT("True-Online-TD-Lambda", CTrueOnlineTDLambdaCritic,"True-online TD-Lambda algorithm");
+	//CHOICE_ELEMENT("TDC-Lambda", CTDCLambdaCritic,"TDC-Lambda algorithm");
+	//END_CHOICE();
 
-	END_CLASS();
+	//END_CLASS();
 
-	return 0;
+	//return 0;
 }
 
 CCritic::~CCritic()

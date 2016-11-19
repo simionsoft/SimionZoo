@@ -11,20 +11,22 @@ class CETraces;
 class CNumericValue;
 class CFeatureList;
 
+#include "parameters.h"
+
 ////////////////////////////////////////////////////
 //Q-function based policies: abstract/factory class
 class CQPolicy
 {
 public:
 	virtual ~CQPolicy(){}
-	static CQPolicy* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CQPolicy> getInstance(CConfigNode* pParameters);
 
 	virtual void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)= 0;
 };
 //Epsilon-greedy policy
 class CQEGreedyPolicy : public CQPolicy
 {
-	CNumericValue* m_pEpsilon;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pEpsilon;
 public:
 	CQEGreedyPolicy(CConfigNode* pParameters);
 	virtual ~CQEGreedyPolicy();
@@ -38,7 +40,7 @@ class CQSoftMaxPolicy : public CQPolicy
 {
 
 	double *m_pProbabilities;
-	CNumericValue* m_pTau;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pTau;
 public:
 	CQSoftMaxPolicy(CConfigNode* pParameters);
 	virtual ~CQSoftMaxPolicy();
@@ -53,12 +55,12 @@ public:
 class CQLearning : public CSimion
 {
 protected:
-	CQPolicy* m_pQPolicy;
-	CLinearStateActionVFA* m_pQFunction;
+	CHILD_OBJECT_FACTORY<CQPolicy> m_pQPolicy;
+	CHILD_OBJECT<CLinearStateActionVFA> m_pQFunction;
 	
-	CETraces *m_eTraces;
-	CNumericValue *m_pAlpha;
-	CNumericValue *m_pGamma;
+	CHILD_OBJECT<CETraces> m_eTraces;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pGamma;
 	CFeatureList *m_pAux;
 public:
 	CQLearning(CConfigNode* pParameters);
@@ -81,7 +83,7 @@ public:
 class CDoubleQLearning : public CQLearning
 {
 	CLinearStateActionVFA* m_pTargetQFunction;
-	int m_targetUpdateFreq;
+	INT_PARAM m_targetUpdateFreq;
 	int m_numStepsSinceLastTargetUpdate;
 public:
 	CDoubleQLearning(CConfigNode* pParameters);

@@ -15,7 +15,7 @@ protected:
 	CNoise();
 	double m_lastValue;
 public:
-	static CNoise* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CNoise> getInstance(CConfigNode* pParameters);
 	virtual ~CNoise() {}
 
 	virtual double getSigma() { return 0.0; }

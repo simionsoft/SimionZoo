@@ -4,29 +4,32 @@
 #include "vfa.h"
 #include "policy-learner.h"
 #include "config.h"
-#include "globals.h"
 #include "world.h"
 #include "features.h"
 #include "policy.h"
 
-CLASS_FACTORY(CPolicy)
+std::shared_ptr<CPolicy> CPolicy::CPolicy(CConfigNode* pConfigNode)
 {
-	CHOICE("Policy","The policy type");
+	return CHOICE(pConfigNode,"Policy", "The policy type",""
+		, {
+	CHOICE_ELEMENT("Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise, "A deterministic policy pi(s) to which some noise is added"),
+	CHOICE_ELEMENT("Stochastic-Policy-Gaussian-Noise", CStochasticPolicyGaussianNoise, "An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))")
+		});
+	//CHOICE("Policy","The policy type");
 
-	CHOICE_ELEMENT("Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise,"A deterministic policy pi(s) to which some noise is added");
-	CHOICE_ELEMENT("Stochastic-Policy-Gaussian-Noise", CStochasticPolicyGaussianNoise,"An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))");
+	//CHOICE_ELEMENT("Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise,"A deterministic policy pi(s) to which some noise is added");
+	//CHOICE_ELEMENT("Stochastic-Policy-Gaussian-Noise", CStochasticPolicyGaussianNoise,"An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))");
 
-	END_CHOICE();
-	END_CLASS();
-	return 0;
+	//END_CHOICE();
+	//END_CLASS();
+	//return 0;
 }
 
-CLASS_CONSTRUCTOR(CPolicy)
+CPolicy::CPolicy(CConfigNode* pConfigNode)
 {
 	
-	ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action variable");
+	m_outputActionIndex= ACTION_VARIABLE(pConfigNode,"Output-Action","The output action variable");
 
-	END_CLASS();
 }
 
 CPolicy::~CPolicy()
@@ -39,8 +42,8 @@ CPolicy::~CPolicy()
 //CDetPolicyGaussianNoise////////////////////////////////
 /////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CDeterministicPolicyGaussianNoise)
-	: EXTENDS(CPolicy, pParameters)
+CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CConfigNode* pConfigNode)
+	: CPolicy(pConfigNode)
 {
 	CHILD_CLASS(m_pDeterministicVFA, "Deterministic-Policy-VFA", "The parameterized VFA that approximates the function", false, CLinearStateVFA);
 	CHILD_CLASS_FACTORY(m_pExpNoise,"Exploration-Noise","Parameters of the noise used as exploration",false,CNoise);

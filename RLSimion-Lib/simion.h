@@ -1,5 +1,5 @@
 #pragma once
-
+#include "parameters.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -18,5 +18,5 @@ public:
 	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r)= 0;
 
 
-	static CSimion* getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<CSimion> getInstance(CConfigNode* pParameters);
 };
