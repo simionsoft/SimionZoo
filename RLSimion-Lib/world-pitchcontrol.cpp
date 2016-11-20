@@ -3,34 +3,27 @@
 #include "world-pitchcontrol.h"
 #include "named-var-set.h"
 #include "setpoint.h"
-#include "globals.h"
 #include "reward.h"
 #include "experiment.h"
 #include "config.h"
 #include "app.h"
 
-CLASS_CONSTRUCTOR(CPitchControl,const char* worldDefinition)
-: CDynamicModel(worldDefinition)
+CPitchControl::CPitchControl(CConfigNode* pConfigNode)
 {
-	CState *pStateDescriptor = getStateDescriptor();
-	m_sSetpointPitch = pStateDescriptor->getVarIndex("setpoint-pitch");
-	m_sAttackAngle = pStateDescriptor->getVarIndex("attack-angle");
-	m_sPitch= pStateDescriptor->getVarIndex("pitch");
-	m_sPitchRate = pStateDescriptor->getVarIndex("pitch-rate");
-	m_sControlDeviation = pStateDescriptor->getVarIndex("control-deviation");
+	m_sSetpointPitch = addStateVariable("setpoint-pitch","rad", -3.14159265, 3.14159265);
+	m_sAttackAngle = addStateVariable("attack-angle","rad", -3.14159265, 3.14159265);
+	m_sPitch= addStateVariable("pitch","rad", -3.14159265, 3.14159265);
+	m_sPitchRate = addStateVariable("pitch-rate","rad/s",-0.1,0.1);
+	m_sControlDeviation = addStateVariable("control-deviation","rad",-6.5,6.5);
 
-	CAction *pActionDescriptor = getActionDescriptor();
-	m_aPitch = pActionDescriptor->getVarIndex("pitch");
+	m_aPitch = addActionVariable("pitch","rad",-1.4,1.4);
 
-	const char* filename;
-	FILE_PATH_VALUE(filename, "Set-Point-File", "../config/world/pitch-control/setpoint.txt","The setpoint file");
-	m_pSetpoint = new CFileSetPoint(filename);
+	FILE_PATH_PARAM filename= FILE_PATH_PARAM(pConfigNode, "Set-Point-File","The setpoint file", "../config/world/pitch-control/setpoint.txt");
+	m_pSetpoint = new CFileSetPoint(filename.get());
 
 	m_pRewardFunction = new CRewardFunction();
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("control-deviation", 0.02, 1.0));
 	m_pRewardFunction->initialize();
-	
-	END_CLASS();
 }
 
 CPitchControl::~CPitchControl()

@@ -9,38 +9,31 @@
 #include "world-mountaincar.h"
 #include "reward.h"
 #include "config.h"
-#include "globals.h"
 #include "app.h"
 #include "SimGod.h"
 #include "logger.h"
 
-CDynamicModel* CWorld::m_pDynamicModel = 0;
+CHILD_OBJECT_FACTORY<CDynamicModel> CWorld::m_pDynamicModel;
 
-CLASS_CONSTRUCTOR(CWorld)
+CWorld::CWorld(CConfigNode* pConfigNode)
 {
-	if (!pParameters) return;
-	assert(pParameters);
+	if (!pConfigNode) return;
 	m_t= 0.0;
 
-	CHILD_CLASS_FACTORY(m_pDynamicModel, "Dynamic-Model","The dynamic model",false, CDynamicModel);
+	m_pDynamicModel=CHILD_OBJECT_FACTORY<CDynamicModel>(pConfigNode, "Dynamic-Model","The dynamic model");
 
-	CONST_INTEGER_VALUE(m_numIntegrationSteps,"Num-Integration-Steps",4,"The number of integration steps performed each simulation time-step");
-	CONST_DOUBLE_VALUE(m_dt,"Delta-T",0.01,"The delta-time between simulation steps");
-
-	END_CLASS();
+	m_numIntegrationSteps= INT_PARAM(pConfigNode,"Num-Integration-Steps"
+		,"The number of integration steps performed each simulation time-step",4);
+	m_dt= DOUBLE_PARAM(pConfigNode,"Delta-T","The delta-time between simulation steps", 0.01);
 }
 
 CWorld::~CWorld()
 {
-	if (m_pDynamicModel)
-	{
-		delete m_pDynamicModel; m_pDynamicModel = 0;
-	}
 }
 
 double CWorld::getDT()
 {
-	return m_dt;
+	return m_dt.get();
 }
 
 double CWorld::getT()
@@ -61,7 +54,7 @@ CReward* CWorld::getRewardVector()
 void CWorld::reset(CState *s)
 {
 	m_t= 0.0;
-	if (m_pDynamicModel)
+	if (m_pDynamicModel.ptr())
 		m_pDynamicModel->reset(s);
 }
 
@@ -71,10 +64,10 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 
 	m_step_start_t= m_t;
 
-	if (m_pDynamicModel)
+	if (m_pDynamicModel.ptr())
 	{
 		s_p->copy(s);
-		for (int i= 0; i<m_numIntegrationSteps; i++)
+		for (int i= 0; i<m_numIntegrationSteps.get(); i++)
 		{
 			m_pDynamicModel->executeAction(s_p,a,dt);
 			m_t+= dt;
@@ -87,53 +80,36 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 
 CDynamicModel::~CDynamicModel()
 {
-	if (m_pWorldConfigXMLDoc) delete m_pWorldConfigXMLDoc;
 	if (m_pStateDescriptor) delete m_pStateDescriptor;
 	if (m_pActionDescriptor) delete m_pActionDescriptor;
 	if (m_pRewardFunction) delete m_pRewardFunction;
 }
 
 
-CDynamicModel::CDynamicModel(const char* pWorldDefinitionFile)
+CDynamicModel::CDynamicModel()
 {
-	m_pWorldConfigXMLDoc= new tinyxml2::XMLDocument();
-	CConfigNode *rootNode;
-	if (pWorldDefinitionFile)
-	{
-		CSimGod::registerInputFile(pWorldDefinitionFile);
-		m_pWorldConfigXMLDoc->LoadFile(pWorldDefinitionFile);
-		if (!m_pWorldConfigXMLDoc->Error())
-		{
-			m_pRewardFunction = new CRewardFunction();
-			rootNode = (CConfigNode*)m_pWorldConfigXMLDoc->FirstChildElement("World-Definition");
-			m_pStateDescriptor = new CState(rootNode->getChild("State"));
-			m_pActionDescriptor = new CAction(rootNode->getChild("Action"));
+	m_pStateDescriptor = new CState();
+	m_pActionDescriptor = new CAction();
+}
 
-			//we only copy the pointer because we are assuming the xml config document won't be deleted until the main program ends
-			m_pConstants = rootNode->getChild("Constants");
-		}
-		else
-			CLogger::logMessage(MessageType::Error, "Could not load the world definition file.");
-	}
+int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max)
+{
+	return m_pStateDescriptor->addVariable(name, units, min, max);
+}
+
+int CDynamicModel::addActionVariable(const char* name, const char* units, double min, double max)
+{
+	return m_pActionDescriptor->addVariable(name, units, min, max);
+}
+
+void CDynamicModel::addConstant(const char* name, double value)
+{
+	m_pConstants[name] = value;
 }
 
 double CDynamicModel::getConstant(const char* constantName)
 {
-	CConfigNode* pNode = m_pConstants->getChild("Constant");
-	CConfigNode* pChild;
-	while (pNode)
-	{
-		pChild = pNode->getChild("Name");
-		if (pChild && !strcmp(constantName, pChild->getConstString()))
-			return pNode->getConstDouble("Value");
-
-		pNode = pNode->getNextSibling("Constant");
-	}
-	char message[1024];
-	sprintf_s(message, 1024, "Missing constant in world definition file: %s", constantName);
-	CSimionApp::get()->pLogger->logMessage(MessageType::Error, message);
-
-	return -1.0;// will never reach this, but if this makes the compiler happy, so be it
+	return m_pConstants[constantName];
 }
 
 CState* CDynamicModel::getStateDescriptor()
@@ -153,19 +129,23 @@ CAction* CDynamicModel::getActionInstance()
 	return m_pActionDescriptor->getInstance();
 }
 
-CLASS_FACTORY(CDynamicModel)
+std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNode)
 {
-	CHOICE("Model","The world");
-	CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml","A two-mass model of a VS Wind Turbine");
-	CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml","An underwater vehicle control task");
-	CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml","An airplane pitch control task");
-	CHOICE_ELEMENT_XML("Balancing-pole", CBalancingPole, "../config/world/balancing-pole.xml", "The balancing pole control problem (Sutton)");
-	CHOICE_ELEMENT_XML("Mountain-car", CMountainCar, "../config/world/mountain-car.xml", "The mountain-car task as implemented by Sutton")
-	//CHOICE _ ELEMENT _ XML("Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml");
-	END_CHOICE();
-	return 0;
-
-	END_CLASS();
+	return CHOICE<CDynamicModel>(pConfigNode,"Model", "The world",
+	CHOICE_ELEMENT_NEW(pConfigNode, CWindTurbine, "Wind-turbine","A two-mass model of a VS Wind Turbine","World=Wind-turbine"),
+	CHOICE_ELEMENT_NEW(pConfigNode, CUnderwaterVehicle, "Underwater-vehicle", "An underwater vehicle control task","World=Underwater-vehicle"),
+	CHOICE_ELEMENT_NEW(pConfigNode, CPitchControl, "Pitch-control", "An airplane pitch control task","World=Pitch-control"),
+	CHOICE_ELEMENT_NEW(pConfigNode, CBalancingPole, "Balancing-pole", "The balancing pole control problem (Sutton)","World=Balancing-pole")
+		);
+	//CHOICE("Model","The world");
+	//CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml","A two-mass model of a VS Wind Turbine");
+	//CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml","An underwater vehicle control task");
+	//CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml","An airplane pitch control task");
+	//CHOICE_ELEMENT_XML("Balancing-pole", CBalancingPole, "../config/world/balancing-pole.xml", "The balancing pole control problem (Sutton)");
+	//CHOICE_ELEMENT_XML("Mountain-car", CMountainCar, "../config/world/mountain-car.xml", "The mountain-car task as implemented by Sutton")
+	////CHOICE _ ELEMENT _ XML("Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml");
+	//END_CHOICE();
+	//return 0;
 }
 
 double CDynamicModel::getReward(const CState *s, const CAction *a, const CState *s_p)

@@ -29,7 +29,7 @@ public:
 
 	virtual void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
 
-	int getOutputActionIndex(){ return m_outputActionIndex; }
+	int getOutputActionIndex(){ return m_outputActionIndex.get(); }
 
 	static std::shared_ptr<CPolicy> getInstance(CConfigNode* pParameters);
 
@@ -42,8 +42,8 @@ public:
 class CDeterministicPolicyGaussianNoise : public CPolicy
 {
 protected:
-	CLinearStateVFA *m_pDeterministicVFA;
-	CNoise *m_pExpNoise;
+	CHILD_OBJECT<CLinearStateVFA> m_pDeterministicVFA;
+	CHILD_OBJECT_FACTORY<CNoise> m_pExpNoise;
 
 public:
 	CDeterministicPolicyGaussianNoise(CConfigNode* pParameters);
@@ -57,7 +57,7 @@ public:
 
 	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 
-	CLinearStateVFA* getDetPolicyStateVFA(){ return m_pDeterministicVFA; }
+	CLinearStateVFA* getDetPolicyStateVFA(){ return m_pDeterministicVFA.ptr(); }
 };
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
@@ -68,9 +68,9 @@ class CStochasticPolicyGaussianNoise : public CPolicy
 {
 protected:
 	//The deterministic output. The indices of the weights start from 0
-	CLinearStateVFA *m_pMeanVFA;
+	CHILD_OBJECT<CLinearStateVFA> m_pMeanVFA;
 	//the sigma parameter of the Gaussian noise added to the deterministic output. The indices of the VFA's start from m_pMeanVFA->getNumWeigths()
-	CLinearStateVFA *m_pSigmaVFA;
+	CHILD_OBJECT<CLinearStateVFA> m_pSigmaVFA;
 	//Auxiliar feature lists
 	CFeatureList *m_pMeanFeatures,*m_pSigmaFeatures;
 public:
@@ -85,5 +85,5 @@ public:
 
 	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 
-	CLinearStateVFA* getDetPolicyStateVFA(){ return m_pMeanVFA; }
+	CLinearStateVFA* getDetPolicyStateVFA(){ return m_pMeanVFA.ptr(); }
 };

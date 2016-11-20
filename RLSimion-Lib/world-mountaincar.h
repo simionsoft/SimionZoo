@@ -14,7 +14,7 @@ class CMountainCar: public CDynamicModel
 	int m_aPedal;
 
 public:
-	CMountainCar(CConfigNode* pParameters, const char* worldDefinition);
+	CMountainCar(CConfigNode* pParameters);
 	virtual ~CMountainCar();
 
 	void reset(CState *s);

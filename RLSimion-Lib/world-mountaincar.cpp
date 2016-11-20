@@ -1,27 +1,20 @@
 #include "stdafx.h"
 #include "world-mountaincar.h"
 #include "named-var-set.h"
-#include "globals.h"
 #include "config.h"
 #include "reward.h"
 #include "app.h"
-#include "noise.h"
 
-CLASS_CONSTRUCTOR(CMountainCar, const char* worldDefinition)
-: CDynamicModel(worldDefinition)
+CMountainCar::CMountainCar(CConfigNode* pConfigNode)
 {
-	CState *pStateDescriptor = getStateDescriptor();
-	m_sPosition = pStateDescriptor->getVarIndex("position");
-	m_sVelocity = pStateDescriptor->getVarIndex("velocity");
+	m_sPosition = addStateVariable("position","m",-1.2,0.6);
+	m_sVelocity = addStateVariable("velocity","m/s",-0.07,0.07);
 
-	CAction *pActionDescriptor = getActionDescriptor();
-	m_aPedal = pActionDescriptor->getVarIndex("pedal");
+	m_aPedal = addActionVariable("pedal","m",-1.0,1.0);
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CMountainCarReward());
 	m_pRewardFunction->initialize();
-	
-	END_CLASS();
 }
 
 CMountainCar::~CMountainCar()
@@ -64,7 +57,7 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
     if (mcar_position < mcar_min_position) mcar_position = mcar_min_position;
     if (mcar_position==mcar_min_position && mcar_velocity<0) mcar_velocity = 0;}
 	*/
-	if (position > s->getMin(m_sPosition))
+	if (position > s->getProperties(m_sPosition).getMin())
 	{
 		velocity += pedal*0.001 + cos(3 * position)*(-0.0025);
 		s->setValue(m_sVelocity, velocity); //saturate
@@ -84,14 +77,14 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 	double position = s_p->getValue("position");
 
 	//reached the goal?
-	if (position == s_p->getMax("position"))
+	if (position == s_p->getProperties("position").getMax())
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
 		/*printf("goal reached\n");*/
 		return 1.0;
 	}
 	//reached the minimum position to the left?
-	if (position == s_p->getMin("position"))
+	if (position == s_p->getProperties("position").getMin())
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -100.0;

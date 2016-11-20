@@ -3,47 +3,31 @@
 #include "world-magneticlevitation.h"
 #include "named-var-set.h"
 #include "setpoint.h"
-#include "globals.h"
 #include "experiment.h"
 #include "config.h"
 #include "app.h"
 #include "reward.h"
 
 
-CLASS_CONSTRUCTOR(CMagneticLevitation,const char* worldDefinition)
-: CDynamicModel(worldDefinition)
-{/*
-	m_pStateDescriptor= new CState(5);
-	
-	m_pStateDescriptor->setProperties(0,"position-setpoint",0.0,0.013);
-	m_pStateDescriptor->setProperties(1,"position",0.0,0.013);
-	m_pStateDescriptor->setProperties(2,"velocity",-100.0,100.0);//??????????????
-	m_pStateDescriptor->setProperties(3,"current",-100,100);//?????????????
-	m_pStateDescriptor->setProperties(4,"position-deviation",-0.13,0.13);
+CMagneticLevitation::CMagneticLevitation(CConfigNode* pConfigNode)
+{
+	m_sPositionSetpoint= addStateVariable("position-setpoint","m",0.0,0.013);
+	m_sPosition= addStateVariable("position","m",0.0,0.013);
+	m_sVelocity= addStateVariable("velocity","m/s",-100.0,100.0);//??????????????
+	m_sCurrent= addStateVariable("current","A",-100,100);//?????????????
+	m_sPositionDeviation = addStateVariable("position-deviation","m",-0.13,0.13);
 
-	m_pActionDescriptor= new CAction(1);
-	m_pActionDescriptor->setProperties(0,"voltage",-60,60);*/
+	addActionVariable("voltage","V,",-60,60);
 
-	CState *pStateDescriptor= getStateDescriptor();
-	m_sPosition = pStateDescriptor->getVarIndex("position");
-	m_sVelocity = pStateDescriptor->getVarIndex("velocity");
-	m_sCurrent = pStateDescriptor->getVarIndex("current");
-	m_sPositionSetpoint = pStateDescriptor->getVarIndex("position-setpoint");
-	m_sPositionDeviation = pStateDescriptor->getVarIndex("position-deviation");
 
-	CAction *pActionDescriptor = getActionDescriptor();
-	m_aVoltage= pActionDescriptor->getVarIndex("voltage");
-
-	const char* filename;
-	FILE_PATH_VALUE(filename, "Evaluation-Set-Point", "../config/world/magnetic-levitation/setpoint.txt","The setpoint file");
-	m_pEvalSetPoint = new CFileSetPoint(filename);
+	FILE_PATH_PARAM filename= FILE_PATH_PARAM(pConfigNode, "Evaluation-Set-Point"
+		,"The setpoint file", "../config/world/magnetic-levitation/setpoint.txt");
+	m_pEvalSetPoint = new CFileSetPoint(filename.get());
 
 	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
 
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("position-deviation", 0.001, 1.0));
 	m_pRewardFunction->initialize();
-
-	END_CLASS();
 }
 
 CMagneticLevitation::~CMagneticLevitation()

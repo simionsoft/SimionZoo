@@ -22,8 +22,8 @@ class CBalancingPole: public CDynamicModel
 	int m_aPitch;
 
 public:
-	CBalancingPole(CConfigNode* pParameters, const char* worldDefinition);
-	virtual ~CBalancingPole();
+	CBalancingPole(CConfigNode* pParameters);
+	virtual ~CBalancingPole() = default;
 
 	void reset(CState *s);
 

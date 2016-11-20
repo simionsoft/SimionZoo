@@ -1,46 +1,49 @@
 #pragma once
 
 #define VAR_NAME_MAX_LENGTH 128
+#include <vector>
 
-class CConfigNode;
-
-struct CNamedVarProperties
+class CNamedVarProperties
 {
-	char name[VAR_NAME_MAX_LENGTH];
-	char units[VAR_NAME_MAX_LENGTH];
-	double min;
-	double max;
-	CNamedVarProperties();
+	char m_name[VAR_NAME_MAX_LENGTH];
+	char m_units[VAR_NAME_MAX_LENGTH];
+	double m_min;
+	double m_max;
+public:
+	CNamedVarProperties(const char* name, const char* units, double min, double max);
+	char* getName() { return m_name; }
+	double getMin() const { return m_min; }
+	double getMax() const { return m_max; }
+	//double getMin(const char* name) const;
+	//double getMax(const char* name) const;
+	double getRangeWidth(int i) const;
 };
 
+class CNamedVarSet;
 
+class CDescriptor
+{
+	std::vector<CNamedVarProperties> m_pProperties;
+public:
+	CNamedVarSet* getInstance();
+	int size() { return m_pProperties.size(); }
+	CNamedVarProperties& operator[](std::size_t i) { return m_pProperties[i]; }
+	int addVariable(const char* name, const char* units, double min, double max);
+	int getVarIndex(const char* name);
+};
 
 class CNamedVarSet
 {
-	CNamedVarProperties *m_pProperties;
+	CDescriptor &m_pProperties;
 	double *m_pValues;
 	int m_numVars;
 public:
-	CNamedVarSet(CConfigNode* pDescription);
-	CNamedVarSet(int numVars);
+	CNamedVarSet(CDescriptor& descriptor);
 	virtual ~CNamedVarSet();
 
 	int getNumVars() const{ return m_numVars; }
 
 	int getVarIndex(const char* name) const;
-
-	char* getName(int i) const;
-	double getMin(int i) const;
-	double getMax(int i) const;
-	double getMin(const char* name) const;
-	double getMax(const char* name) const;
-	double getRangeWidth(int i) const;
-
-	void setName(int i,const char* name);
-	void setMin(int i,double min);
-	void setMax(int i,double max);
-
-	void setProperties(int i,const char* name, double min, double max);
 
 public:
 
@@ -56,11 +59,11 @@ public:
 	double getSumValue() const; //to get the scalarised reward easily
 
 	void copy(CNamedVarSet* nvs);
-
-	CNamedVarSet* getInstance();
+	CNamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
+	CNamedVarProperties& getProperties(const char* varName) const;
 };
 
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
-typedef CNamedVarSet CReward;
+using CState= CNamedVarSet;
+using CAction= CNamedVarSet;
+using CReward= CNamedVarSet;
 

@@ -3,7 +3,6 @@ class CConfigNode;
 #include <vector>
 #include <initializer_list>
 #include "config.h"
-#include "world.h"
 #include "named-var-set.h"
 #include <memory>
 #include <map>
@@ -31,7 +30,7 @@ protected:
 	{
 		value = pConfigNode->getConstDouble(m_name,m_default);
 	}
-	void initValue(CConfigNode* pConfigNode, const char& value)
+	void initValue(CConfigNode* pConfigNode, const char*& value)
 	{
 		value = pConfigNode->getConstString(m_name,m_default);
 	}
@@ -137,13 +136,7 @@ protected:
 public:
 	STATE_VARIABLE() = default;
 
-	STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment)
-	{
-		m_hVariable = CWorld::getDynamicModel()->getStateDescriptor()
-			->getVarIndex(pConfigNode->getConstString(name));
-		m_name = name;
-		m_comment = comment;
-	}
+	STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
 };
 
@@ -155,13 +148,7 @@ class ACTION_VARIABLE
 public:
 	ACTION_VARIABLE() = default;
 
-	ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment)
-	{
-		m_hVariable = CWorld::getDynamicModel()->getActionDescriptor()
-			->getVarIndex(pConfigNode->getConstString(name));
-		m_name = name;
-		m_comment = comment;
-	}
+	ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
 };
 

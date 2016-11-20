@@ -1,42 +1,32 @@
 #include "stdafx.h"
 #include "world-balancingpole.h"
 #include "named-var-set.h"
-#include "globals.h"
 #include "config.h"
 #include "reward.h"
 #include "app.h"
 #include "noise.h"
 
-CLASS_CONSTRUCTOR(CBalancingPole, const char* worldDefinition)
-: CDynamicModel(worldDefinition)
+CBalancingPole::CBalancingPole(CConfigNode* pConfigNode)
 {
-	CState *pStateDescriptor = getStateDescriptor();
-	m_sX = pStateDescriptor->getVarIndex("x");
-	m_sX_dot = pStateDescriptor->getVarIndex("x_dot");
-	m_sTheta = pStateDescriptor->getVarIndex("theta");
-	m_sTheta_dot = pStateDescriptor->getVarIndex("theta_dot");
+	m_sX = addStateVariable("x", "m", -3.0, 3.0);
+	m_sX_dot = addStateVariable("x_dot","m/s",-1.0,1.0);
+	m_sTheta = addStateVariable("theta","rad",-0.22,0.22);
+	m_sTheta_dot = addStateVariable("theta_dot","rad/s",-1.0,1.0);
 
-	CAction *pActionDescriptor = getActionDescriptor();
-	m_aPitch = pActionDescriptor->getVarIndex("force");
+	m_aPitch = addActionVariable("force","N",-10.0,10.0);
 
-	GRAVITY= getConstant("GRAVITY");
-	MASSCART= getConstant("MASSCART");
-	MASSPOLE = getConstant("MASSPOLE");
-	TOTAL_MASS= getConstant("TOTAL_MASS");
-	LENGTH= getConstant("LENGTH");
-	POLEMASS_LENGTH= getConstant("POLEMASS_LENGTH");
+	GRAVITY = 9.8;
+	MASSCART = 1.0;
+	MASSPOLE = 0.1;
+	TOTAL_MASS = 1.1;
+	LENGTH = 0.5;
+	POLEMASS_LENGTH = 0.05;
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CBalancingPoleReward());
 	m_pRewardFunction->initialize();
-	
-	END_CLASS();
 }
 
-CBalancingPole::~CBalancingPole()
-{
-
-}
 
 void CBalancingPole::reset(CState *s)
 {

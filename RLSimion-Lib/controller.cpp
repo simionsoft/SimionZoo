@@ -254,10 +254,9 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* 
 	m_pC_0	= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"C_0", "C_0 parameter");
 	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"KP", "Proportional gain of the pitch controller");
 	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"KI", "Integral gain of the pitch controller");
-#define K_t 400.0 //N*m/rad/s [thesis boukhezzar]
-#define J_t 3.92e5 //kg*m^2
-	m_J_t = J_t;
-	m_K_t = K_t;
+
+	m_J_t = CWorld::getDynamicModel()->getConstant("J_t");
+	m_K_t = CWorld::getDynamicModel()->getConstant("K_t");
 	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
 	m_d_omega_r_index = pStateDescriptor->getVarIndex("d_omega_r");

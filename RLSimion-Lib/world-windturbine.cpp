@@ -4,7 +4,6 @@
 #include "setpoint.h"
 #include "named-var-set.h"
 #include "experiment.h"
-#include "globals.h"
 #include "config.h"
 #include "logger.h"
 #include "app.h"
@@ -165,59 +164,63 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 }
 
 
-CLASS_CONSTRUCTOR(CWindTurbine,const char* worldDefinition)
-: CDynamicModel(worldDefinition)
+CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 {
 	
 	//load all the wind data files
 	m_currentDataFile = 0;
 
 	//evaluation file
-	const char* filename;
-	FILE_PATH_VALUE(filename, "Evaluation-Wind-Data", "../config/world/wind-turbine/TurbSim-10.25.hh","The wind file used for evaluation");
-	m_pEvaluationWindData = new CHHFileSetPoint(filename);
+	FILE_PATH_PARAM evalFile= FILE_PATH_PARAM(pConfigNode, "Evaluation-Wind-Data"
+		, "The wind file used for evaluation", "../config/world/wind-turbine/TurbSim-10.25.hh");
+	m_pEvaluationWindData = new CHHFileSetPoint(evalFile.get());
 
 	//training files
-	const char trainingDataId[] = "Training-Wind-Data";
-	m_numDataFiles = pParameters->countChildren(trainingDataId);
+	MULTI_VALUE<FILE_PATH_PARAM> trainingFiles = MULTI_VALUE<FILE_PATH_PARAM>(pConfigNode, "Training-Wind-Data", "The wind files used for training", "../config/world/wind-turbine/TurbSim-10.5.hh");
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
-	CConfigNode* trainingWindFiles = pParameters->getChild(trainingDataId);
+	for (int i= 0; i<trainingFiles.size(); i++)
+		m_pTrainingWindData[i] = new CHHFileSetPoint((trainingFiles[i]).get());
+	//const char trainingDataId[] = "Training-Wind-Data";
+	//m_numDataFiles = pParameters->countChildren(trainingDataId);
+	//m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
+	//CConfigNode* trainingWindFiles = pParameters->getChild(trainingDataId);
 
-	for (int i = 0; i<m_numDataFiles; i++)
-	{
-		MULTI_VALUED_FILE_PATH(filename, "Training-Wind-Data","../config/world/wind-turbine/TurbSim-10.5.hh", "The wind files used for training", trainingWindFiles);
-		m_pTrainingWindData[i]= new CHHFileSetPoint(filename);
+	//for (int i = 0; i<m_numDataFiles; i++)
+	//{
+	//	MULTI_VALUED_FILE_PATH(filename, "Training-Wind-Data","../config/world/wind-turbine/TurbSim-10.5.hh", "The wind files used for training", trainingWindFiles);
+	//	m_pTrainingWindData[i]= new CHHFileSetPoint(filename);
 
-		trainingWindFiles = trainingWindFiles->getNextSibling(trainingDataId);
-	}
-	FILE_PATH_VALUE(filename, "Power-Set-Point", "../config/world/wind-turbine/power-setpoint.txt","The power setpoint file");
-	m_pPowerSetpoint = new CFileSetPoint(filename);
+	//	trainingWindFiles = trainingWindFiles->getNextSibling(trainingDataId);
+	//}
+	FILE_PATH_PARAM powerSetpoint= FILE_PATH_PARAM(pConfigNode, "Power-Set-Point", "The power setpoint file", "../config/world/wind-turbine/power-setpoint.txt");
+	m_pPowerSetpoint = new CFileSetPoint(powerSetpoint.get());
 
 	double initial_T_g= P_e_nom/NOMINAL_ROTOR_SPEED;
 	m_initial_torque= initial_T_g + K_t*NOMINAL_ROTOR_SPEED;
 	m_initial_blade_angle= 0.0;
 
 	//state handlers
-	CState* pStateDescriptor = getStateDescriptor();
-	m_sT_a = pStateDescriptor->getVarIndex("T_a");
-	m_sP_a = pStateDescriptor->getVarIndex("P_a");
-	m_sP_s = pStateDescriptor->getVarIndex("P_s");
-	m_sP_e = pStateDescriptor->getVarIndex("P_e");
-	m_sE_p = pStateDescriptor->getVarIndex("E_p"); 
-	m_sV = pStateDescriptor->getVarIndex("v");
-	m_sOmega_r = pStateDescriptor->getVarIndex("omega_r");
-	m_sE_omega_r = pStateDescriptor->getVarIndex("E_omega_r");
-	m_sD_omega_r = pStateDescriptor->getVarIndex("d_omega_r");
-	m_sBeta = pStateDescriptor->getVarIndex("beta");
-	m_sD_beta = pStateDescriptor->getVarIndex("d_beta");
-	m_sT_g = pStateDescriptor->getVarIndex("T_g");
-	m_sD_T_g = pStateDescriptor->getVarIndex("d_T_g");
-	m_sE_int_omega_r = pStateDescriptor->getVarIndex("E_int_omega_r");
+	m_sT_a = addStateVariable("T_a","N/m",0.0,400000.0);
+	m_sP_a = addStateVariable("P_a","W",0.0,1600000.0);
+	m_sP_s = addStateVariable("P_s","W",500000.0,700000.0);
+	m_sP_e = addStateVariable("P_e","W",500000.0,700000.0);
+	m_sE_p = addStateVariable("E_p","W",-100000,100000); 
+	m_sV = addStateVariable("v","m/s",1.0,50.0);
+	m_sOmega_r = addStateVariable("omega_r","rad/s",2.39823,6.39823);
+	m_sE_omega_r = addStateVariable("E_omega_r","rad/s",-4.0,4.0);
+	m_sD_omega_r = addStateVariable("d_omega_r","rad/s^2",-2.0,2.0);
+	m_sBeta = addStateVariable("beta","rad", -0.3490658504, 0.5235987756);
+	m_sD_beta = addStateVariable("d_beta","rad/s", -0.1745329252, 0.1745329252);
+	m_sT_g = addStateVariable("T_g","N/m",100000,162000);
+	m_sD_T_g = addStateVariable("d_T_g","N/m/s",-100000,100000);
+	m_sE_int_omega_r = addStateVariable("E_int_omega_r","rad",-100.0,100.0);
 	//action handlers
-	CAction* pActionDescriptor = getActionDescriptor();
-	m_aD_beta = pActionDescriptor->getVarIndex("d_beta");
-	m_aD_T_g = pActionDescriptor->getVarIndex("d_T_g");
+	m_aD_beta = addActionVariable("d_beta","rad/s",-10,10);
+	m_aD_T_g = addActionVariable("d_T_g","N/m/s",-100000,100000);
 
+	//constants: used by some of the controllers
+	addConstant("K_t", K_t);
+	addConstant("J_t", J_t);
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("d_T_g",12000.0,1.0));
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 10.0, 1.0));
@@ -232,7 +235,6 @@ CLASS_CONSTRUCTOR(CWindTurbine,const char* worldDefinition)
 		E_omega_r, 0.02, 1
 		d_beta,0.1745,1
 	*/
-	END_CLASS();
 }
 
 CWindTurbine::~CWindTurbine()

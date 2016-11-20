@@ -4,33 +4,25 @@
 #include "setpoint.h"
 #include "config.h"
 #include "world.h"
-#include "globals.h"
 #include "app.h"
 #include "reward.h"
 
 
-CLASS_CONSTRUCTOR(CUnderwaterVehicle,const char* worldDefinition)
-: CDynamicModel(worldDefinition)
+CUnderwaterVehicle::CUnderwaterVehicle(CConfigNode* pConfigNode)
 {
-	CState *pStateDescriptor = getStateDescriptor();
-	m_sVSetpoint = pStateDescriptor->getVarIndex("v-setpoint");
-	m_sV = pStateDescriptor->getVarIndex("v");
-	m_sVDeviation = pStateDescriptor->getVarIndex("v-deviation");
+	m_sVSetpoint = addStateVariable("v-setpoint","m/s",-5.0,5.0);
+	m_sV = addStateVariable("v","m/s",-5.0,5.0);
+	m_sVDeviation = addStateVariable("v-deviation","m/s",-10.0,10.0);
 
-	CAction *pActionDescriptor = getActionDescriptor();
-	m_aUThrust = pActionDescriptor->getVarIndex("u-thrust");
+	m_aUThrust = addActionVariable("u-thrust","N",-30.0,30.0);
 
-	const char* setpointFile;
-	FILE_PATH_VALUE(setpointFile, "Set-Point-File", "../config/world/underwater-vehicle/setpoint.txt","The setpoint file");
+	FILE_PATH_PARAM setpointFile= FILE_PATH_PARAM(pConfigNode, "Set-Point-File"
+		,"The setpoint file", "../config/world/underwater-vehicle/setpoint.txt");
 
-	if (setpointFile)
-		m_pSetpoint= new CFileSetPoint(setpointFile);
-	else m_pSetpoint = 0;
+	m_pSetpoint= new CFileSetPoint(setpointFile.get());
 
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("v-deviation", 0.1, 1.0));
 	m_pRewardFunction->initialize();
-	
-	END_CLASS();
 }
 
 CUnderwaterVehicle::~CUnderwaterVehicle()
