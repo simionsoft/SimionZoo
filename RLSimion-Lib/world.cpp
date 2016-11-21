@@ -60,7 +60,7 @@ void CWorld::reset(CState *s)
 
 double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 {
-	double dt= m_dt/m_numIntegrationSteps;
+	double dt= m_dt.get()/(double)m_numIntegrationSteps.get();
 
 	m_step_start_t= m_t;
 
@@ -88,8 +88,8 @@ CDynamicModel::~CDynamicModel()
 
 CDynamicModel::CDynamicModel()
 {
-	m_pStateDescriptor = new CState();
-	m_pActionDescriptor = new CAction();
+	m_pStateDescriptor = new CDescriptor();
+	m_pActionDescriptor = new CDescriptor();
 }
 
 int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max)
@@ -112,13 +112,13 @@ double CDynamicModel::getConstant(const char* constantName)
 	return m_pConstants[constantName];
 }
 
-CState* CDynamicModel::getStateDescriptor()
+CDescriptor& CDynamicModel::getStateDescriptor()
 {
-	return m_pStateDescriptor;
+	return *m_pStateDescriptor;
 }
-CAction* CDynamicModel::getActionDescriptor()
+CDescriptor& CDynamicModel::getActionDescriptor()
 {
-	return m_pActionDescriptor;
+	return *m_pActionDescriptor;
 }
 CState* CDynamicModel::getStateInstance()
 {
@@ -132,11 +132,12 @@ CAction* CDynamicModel::getActionInstance()
 std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNode)
 {
 	return CHOICE<CDynamicModel>(pConfigNode,"Model", "The world",
+	{
 	CHOICE_ELEMENT_NEW(pConfigNode, CWindTurbine, "Wind-turbine","A two-mass model of a VS Wind Turbine","World=Wind-turbine"),
 	CHOICE_ELEMENT_NEW(pConfigNode, CUnderwaterVehicle, "Underwater-vehicle", "An underwater vehicle control task","World=Underwater-vehicle"),
 	CHOICE_ELEMENT_NEW(pConfigNode, CPitchControl, "Pitch-control", "An airplane pitch control task","World=Pitch-control"),
 	CHOICE_ELEMENT_NEW(pConfigNode, CBalancingPole, "Balancing-pole", "The balancing pole control problem (Sutton)","World=Balancing-pole")
-		);
+	});
 	//CHOICE("Model","The world");
 	//CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml","A two-mass model of a VS Wind Turbine");
 	//CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml","An underwater vehicle control task");

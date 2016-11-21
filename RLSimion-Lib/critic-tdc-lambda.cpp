@@ -3,17 +3,16 @@
 #include "vfa.h"
 #include "features.h"
 #include "etraces.h"
-#include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "config.h"
 #include "parameters-numeric.h"
 #include "app.h"
 
-CLASS_CONSTRUCTOR(CTDCLambdaCritic)
-	: CCritic(pParameters)
+CTDCLambdaCritic::CTDCLambdaCritic(CConfigNode* pConfigNode): CCritic(pConfigNode)
 {
-	CHILD_CLASS(m_z,"E-Traces","Elilgibility traces of the critic",true,CETraces,"Critic/E-Traces");
+	m_z= CHILD_OBJECT<CETraces>(pConfigNode,"E-Traces","Elilgibility traces of the critic",true);
+	m_z->setName("Critic/E-Traces");
 
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");
@@ -21,23 +20,18 @@ CLASS_CONSTRUCTOR(CTDCLambdaCritic)
 	m_b= new CFeatureList("Critic/b");
 	m_omega = new CFeatureList("Critic/omega");
 
-	NUMERIC_VALUE(m_pAlpha,"Alpha","Learning gain of the critic");
-	NUMERIC_VALUE(m_pBeta,"Beta","Learning gain applied to the omega vector");
-	NUMERIC_VALUE(m_pGamma,"Gamma","Gamma parameter");
-	END_CLASS();
+	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Alpha","Learning gain of the critic");
+	m_pBeta = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Beta","Learning gain applied to the omega vector");
+	m_pGamma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma","Gamma parameter");
 }
 
 CTDCLambdaCritic::~CTDCLambdaCritic()
 {
-	delete m_z;
 	delete m_b;
 	delete m_s_features;
 	delete m_s_p_features;
 	delete m_a;
 	delete m_omega;
-	delete m_pAlpha;
-	delete m_pBeta;
-	delete m_pGamma;
 }
 
 double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
@@ -71,10 +65,10 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 	double innerprod1= m_a->innerProduct(m_omega);
 	//innerprod2= z_{t+1}^T*w_t
 	m_a->clear();
-	m_a->copy(m_z);
+	m_a->copy(m_z.ptr());
 	double innerprod2 = m_a->innerProduct(m_omega);
 	//theta_{t+1}=theta_t+alpha(z_t*delta_t)
-	m_pVFunction->add(m_z, m_pAlpha->getValue() *td);
+	m_pVFunction->add(m_z.ptr(), m_pAlpha->getValue() *td);
 	//theta_{t+1}= theta_t - gamma*rho(1-\lambda)*phi_t*innerprod2
 
 	double lambda = m_z->getLambda();
@@ -82,7 +76,7 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 
 	//omega_{t+1}=omega_t+beta(z_{t+1}*td - phi_{t+1}(phi{t+1}^T * omega_t)
 	double beta = m_pBeta->getValue();
-	m_omega->addFeatureList(m_z, beta*td);
+	m_omega->addFeatureList(m_z.ptr(), beta*td);
 	m_omega->addFeatureList(m_s_p_features,- innerprod1);
 	m_omega->applyThreshold(0.0001);
 

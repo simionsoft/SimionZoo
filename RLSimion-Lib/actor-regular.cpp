@@ -6,7 +6,6 @@
 #include "etraces.h"
 #include "config.h"
 #include "policy-learner.h"
-#include "globals.h"
 #include "parameters-numeric.h"
 
 CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(CConfigNode* pConfigNode)

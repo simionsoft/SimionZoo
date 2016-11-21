@@ -46,7 +46,7 @@ class CLogger
 
 	void writeLogFileXMLDescriptor(const char* filename);
 
-	void writeNamedVarSetDescriptorToBuffer(char* buffer, const char* id, const CNamedVarSet* pNamedVarSet);
+	void writeNamedVarSetDescriptorToBuffer(char* buffer, const char* id, const CDescriptor& pNamedVarSet);
 	void writeStatDescriptorToBuffer(char* buffer);
 	void writeEpisodeTypesToBuffer(char* buffer);
 

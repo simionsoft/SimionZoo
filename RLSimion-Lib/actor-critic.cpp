@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "actor-critic.h"
-#include "globals.h"
 #include "config.h"
 #include "actor.h"
 #include "critic.h"

@@ -4,7 +4,6 @@
 #include "named-var-set.h"
 #include "config.h"
 #include "stats.h"
-#include "globals.h"
 #include "timer.h"
 #include "app.h"
 #include "utils.h"
@@ -66,22 +65,20 @@ struct StepHeader
 	}
 };
 
-CLASS_CONSTRUCTOR(CLogger)
+CLogger::CLogger(CConfigNode* pConfigNode)
 {
-	if (!pParameters) return;
+	if (!pConfigNode) return;
 
-	m_bLogEvaluationEpisodes= BOOL_PARAM(pParameters,"Log-eval-episodes", "Log evaluation episodes?",true);
+	m_bLogEvaluationEpisodes= BOOL_PARAM(pConfigNode,"Log-eval-episodes", "Log evaluation episodes?",true);
 
-	m_bLogTrainingEpisodes= BOOL_PARAM(pParameters,"Log-training-episodes", "Log training episodes?",false);
+	m_bLogTrainingEpisodes= BOOL_PARAM(pConfigNode,"Log-training-episodes", "Log training episodes?",false);
 
-	m_logFreq= DOUBLE_PARAM(pParameters,"Log-Freq","Log frequency. Simulation time in seconds.",0.25);
+	m_logFreq= DOUBLE_PARAM(pConfigNode,"Log-Freq","Log frequency. Simulation time in seconds.",0.25);
 
 
 	m_pEpisodeTimer = new CTimer();
 	m_pExperimentTimer = new CTimer();
 	m_lastLogSimulationT = 0.0;
-	
-	END_CLASS();
 }
 
 
@@ -141,7 +138,7 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	writeEpisodeTypesToBuffer(buffer);
 	writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()); //state
 	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()); //action
-	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector());
+	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getProperties());
 	writeStatDescriptorToBuffer(buffer);
 	strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 	writeLogBuffer(logXMLDescriptorFile, buffer, strlen(buffer));
@@ -167,12 +164,12 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
-void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const CNamedVarSet* pVarSet)
+void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const CDescriptor& descriptor)
 {
 	char buffer[BUFFER_SIZE];
-	for (int i = 0; i < pVarSet->getNumVars(); i++)
+	for (unsigned int i = 0; i < descriptor.size(); i++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable>%s</%s-variable>\n", id, pVarSet->getName(i), id);
+		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable>%s</%s-variable>\n", id, descriptor[i].getName(), id);
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
@@ -294,8 +291,8 @@ void CLogger::writeEpisodeHeader()
 	header.episodeIndex = CSimionApp::get()->pExperiment->getRelativeEpisodeIndex();
 	header.episodeType = (CSimionApp::get()->pExperiment->isEvaluationEpisode() ? 0 : 1);
 	header.numVariablesLogged =
-		CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()->getNumVars()
-		+ CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()->getNumVars()
+		CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor().size()
+		+ CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor().size()
 		+ CSimionApp::get()->pWorld->getRewardVector()->getNumVars()
 		+ m_stats.size();
 
@@ -371,7 +368,7 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 {
 	for (int i = 0; i < varset->getNumVars(); i++)
 	{
-		m_stats.push_back(new CStats(key, varset->getName(i), varset->getValuePtr(i), Double));
+		m_stats.push_back(new CStats(key, varset->getProperties()[i].getName(), varset->getValuePtr(i), Double));
 	}
 }
 

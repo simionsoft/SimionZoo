@@ -5,38 +5,26 @@
 #include "vfa.h"
 #include "policy.h"
 #include "actor.h"
-#include "globals.h"
 #include "config.h"
 #include "logger.h"
 
 
-CLASS_CONSTRUCTOR(CPolicyLearner)
+CPolicyLearner::CPolicyLearner(CConfigNode* pConfigNode)
 {
-	CHILD_CLASS_FACTORY(m_pPolicy, "Policy", "The policy to be learned",false,CPolicy);
-	END_CLASS();
+	m_pPolicy= CHILD_OBJECT_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy to be learned");
 }
 
 CPolicyLearner::~CPolicyLearner()
 {
-	delete m_pPolicy;
 }
 
 std::shared_ptr<CPolicyLearner> CPolicyLearner::getInstance(CConfigNode* pConfigNode)
 {
-	return CHOICE(pConfigNode,"Policy-Learner", "The algorithm used to learn the policy",
+	return CHOICE<CPolicyLearner>(pConfigNode,"Policy-Learner", "The algorithm used to learn the policy",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode,CCACLALearner, "CACLA", "CACLA algorithm"),
-	CHOICE_ELEMENT_NEW(pConfigNode,CRegularPolicyGradientLearner,"Regular-Gradient", "A regular policy-gradient learning algorithm")
-	}
-		);
-
-	//CHOICE("Policy-Learner","The algorith used to learn the policy");
-	//CHOICE_ELEMENT("CACLA", CCACLALearner,"CACLA algorithm");
-	//CHOICE_ELEMENT("Regular-Gradient", CRegularPolicyGradientLearner,"A regular policy-gradient learning algorithm");
-	//END_CHOICE();
-
-	//END_CLASS();
-	//return 0;
+		CHOICE_ELEMENT_NEW(pConfigNode,CCACLALearner, "CACLA", "CACLA algorithm",""),
+		CHOICE_ELEMENT_NEW(pConfigNode,CRegularPolicyGradientLearner,"Regular-Gradient", "A regular policy-gradient learning algorithm","")
+	});
 }
 
 

@@ -50,8 +50,9 @@ CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CConfigNode
 	m_pExpNoise= CHILD_OBJECT_FACTORY<CNoise>(pConfigNode,"Exploration-Noise"
 		,"Parameters of the noise used as exploration");
 
-	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
-	m_pDeterministicVFA->saturateOutput(pActionDescriptor->getMin(m_outputActionIndex.get()), pActionDescriptor->getMax(m_outputActionIndex.get()));
+	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	m_pDeterministicVFA->saturateOutput(pActionDescriptor[m_outputActionIndex.get()].getMin()
+		, pActionDescriptor[m_outputActionIndex.get()].getMax());
 }
 
 CDeterministicPolicyGaussianNoise::~CDeterministicPolicyGaussianNoise()

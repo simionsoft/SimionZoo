@@ -2,8 +2,6 @@
 #include "vfa.h"
 #include "featuremap.h"
 #include "features.h"
-#include "config.h"
-#include "globals.h"
 #include "logger.h"
 #include "app.h"
 #include "SimGod.h"
@@ -120,16 +118,9 @@ void CLinearStateVFA::save(const char* pFilename) const
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateVFA): CDeferredLoad()
+CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 {
 	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
-	//CHOICE_INLINE("Feature-Map", "Choose from an explicit feature map or the global feature map");
-	//	CHOICE_ELEMENT_INLINE("Global", ,"Use the global state feature map",m_pStateFeatureMap=CSimionApp::get()->pSimGod->getGlobalStateFeatureMap());
-	//	CHOICE_ELEMENT_INLINE_FACTORY("Explicit",CStateFeatureMap,"Define an explicit feature map",m_pStateFeatureMap=CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
-	//END_CHOICE_INLINE();
-	//default initialization
-	//if (m_pStateFeatureMap == 0)
-	//	m_pStateFeatureMap = CSimionApp::get()->pSimGod->getGlobalStateFeatureMap();
 
 	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();
 	m_pWeights = 0;
@@ -137,19 +128,17 @@ CLASS_CONSTRUCTOR(CLinearStateVFA): CDeferredLoad()
 	m_maxIndex = m_numWeights;
 
 	m_pAux = new CFeatureList("LinearStateVFA/aux");
-	CONST_DOUBLE_VALUE(m_initValue, "Init-Value", 0.0, "The initial value given to the weights on initialization");
+	m_initValue= DOUBLE_PARAM(pConfigNode, "Init-Value", "The initial value given to the weights on initialization", 0.0);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
-
-	END_CLASS();
 }
 void CLinearStateVFA::deferredLoadStep()
 {
 	m_pWeights = std::unique_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights.get()[i] = m_initValue;
+		m_pWeights.get()[i] = m_initValue.get();
 }
 
 
@@ -217,27 +206,11 @@ double CLinearStateVFA::getValue(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLASS_CONSTRUCTOR(CLinearStateActionVFA)
+CLinearStateActionVFA::CLinearStateActionVFA(CConfigNode* pConfigNode)
 {
 	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
-	//m_pStateFeatureMap = 0;
-	//CHOICE_INLINE("State-Feature-Map", "Choose from an explicit feature map or the global feature map");
-	//CHOICE_ELEMENT_INLINE("Global", , "Use the global state feature map", m_pStateFeatureMap= CSimionApp::get()->pSimGod->getGlobalStateFeatureMap());
-	//CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CStateFeatureMap, "Define an explicit feature map", CStateFeatureMap::getInstance(pChild->getChild("Explicit")););
-	//END_CHOICE_INLINE();
-	////default initialization
-	//if (m_pStateFeatureMap == 0)
-	//	m_pStateFeatureMap = CSimionApp::get()->pSimGod->getGlobalStateFeatureMap();
 
 	m_pActionFeatureMap = CSimGod::getGlobalActionFeatureMap();
-	//m_pActionFeatureMap = 0;
-	//CHOICE_INLINE("Action-Feature-Map", "Choose from an explicit feature map or the global feature map");
-	//CHOICE_ELEMENT_INLINE("Global", , "Use the global action feature map", m_pActionFeatureMap= CSimionApp::get()->pSimGod->getGlobalActionFeatureMap());
-	//CHOICE_ELEMENT_INLINE_FACTORY("Explicit", CActionFeatureMap, "Define an explicit feature map", CActionFeatureMap::getInstance(pChild->getChild("Explicit")););
-	//END_CHOICE_INLINE();
-	////default initialization
-	//if (m_pActionFeatureMap == 0)
-	//	m_pActionFeatureMap = CSimionApp::get()->pSimGod->getGlobalActionFeatureMap();
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -251,12 +224,11 @@ CLASS_CONSTRUCTOR(CLinearStateActionVFA)
 	//this is used in "lower-level" methods
 	m_pAux2 = new CFeatureList("LinearStateActionVFA/aux2");
 
-	CONST_DOUBLE_VALUE(m_initValue, "Init-Value", 0.0,"The initial value given to the weights on initialization");
+	m_initValue= DOUBLE_PARAM(pConfigNode, "Init-Value","The initial value given to the weights on initialization", 0.0);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
-	END_CLASS();
 }
 
 CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA)
@@ -297,7 +269,7 @@ void CLinearStateActionVFA::deferredLoadStep()
 {
 	m_pWeights= std::unique_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights.get()[i] = m_initValue;
+		m_pWeights.get()[i] = m_initValue.get();
 }
 
 void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)

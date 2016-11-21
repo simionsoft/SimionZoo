@@ -2,13 +2,12 @@
 #include "critic.h"
 #include "vfa-critic.h"
 #include "config.h"
-#include "globals.h"
 #include "logger.h"
 #include "vfa.h"
 
 CCritic::CCritic(CConfigNode* pConfigNode)
 {
-	m_pVFunction = CHILD_OBJECT<CCritic>(pConfigNode, "V-Function", "The V-function to be learned");
+	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "V-Function", "The V-function to be learned");
 	//CHILD_CLASS(m_pVFunction, "V-Function","The parameterization of the V-Function to be learned",false, CLinearStateVFA);
 
 	//END_CLASS();
@@ -35,6 +34,4 @@ std::shared_ptr<CCritic> CCritic::getInstance(CConfigNode* pConfigNode)
 
 CCritic::~CCritic()
 {
-
-	delete m_pVFunction;
 }

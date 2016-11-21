@@ -176,22 +176,13 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	m_pEvaluationWindData = new CHHFileSetPoint(evalFile.get());
 
 	//training files
-	MULTI_VALUE<FILE_PATH_PARAM> trainingFiles = MULTI_VALUE<FILE_PATH_PARAM>(pConfigNode, "Training-Wind-Data", "The wind files used for training", "../config/world/wind-turbine/TurbSim-10.5.hh");
+	MULTI_VALUE_SIMPLE_PARAM<FILE_PATH_PARAM, const char*> trainingFiles 
+		= MULTI_VALUE_SIMPLE_PARAM<FILE_PATH_PARAM,const char*>(pConfigNode
+		, "Training-Wind-Data", "The wind files used for training","../config/world/wind-turbine/TurbSim-10.5.hh");
 	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
-	for (int i= 0; i<trainingFiles.size(); i++)
-		m_pTrainingWindData[i] = new CHHFileSetPoint((trainingFiles[i]).get());
-	//const char trainingDataId[] = "Training-Wind-Data";
-	//m_numDataFiles = pParameters->countChildren(trainingDataId);
-	//m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
-	//CConfigNode* trainingWindFiles = pParameters->getChild(trainingDataId);
+	for (unsigned int i= 0; i<trainingFiles.size(); i++)
+		m_pTrainingWindData[i] = new CHHFileSetPoint(trainingFiles[i]->get());
 
-	//for (int i = 0; i<m_numDataFiles; i++)
-	//{
-	//	MULTI_VALUED_FILE_PATH(filename, "Training-Wind-Data","../config/world/wind-turbine/TurbSim-10.5.hh", "The wind files used for training", trainingWindFiles);
-	//	m_pTrainingWindData[i]= new CHHFileSetPoint(filename);
-
-	//	trainingWindFiles = trainingWindFiles->getNextSibling(trainingDataId);
-	//}
 	FILE_PATH_PARAM powerSetpoint= FILE_PATH_PARAM(pConfigNode, "Power-Set-Point", "The power setpoint file", "../config/world/wind-turbine/power-setpoint.txt");
 	m_pPowerSetpoint = new CFileSetPoint(powerSetpoint.get());
 

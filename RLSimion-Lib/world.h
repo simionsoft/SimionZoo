@@ -16,8 +16,8 @@ class CRewardFunction;
 class CDynamicModel
 {
 private:
-	CState *m_pStateDescriptor;
-	CAction *m_pActionDescriptor;
+	CDescriptor *m_pStateDescriptor;
+	CDescriptor *m_pActionDescriptor;
 	std::map<const char*, double> m_pConstants;
 protected:
 	CRewardFunction* m_pRewardFunction;
@@ -34,9 +34,9 @@ public:
 	double getReward(const CState *s, const CAction *a, const CState *s_p);
 	CReward* getRewardVector();
 
-	CState* getStateDescriptor();
+	CDescriptor& getStateDescriptor();
 	CState* getStateInstance();
-	CAction* getActionDescriptor();
+	CDescriptor& getActionDescriptor();
 	CAction* getActionInstance();
 
 	double getConstant(const char* constantName);

@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "noise.h"
-#include "globals.h"
 #include "config.h"
 #include "parameters-numeric.h"
 

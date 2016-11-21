@@ -2,29 +2,25 @@
 #include "critic.h"
 #include "vfa.h"
 #include "features.h"
-#include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "etraces.h"
 #include "config.h"
 #include "parameters-numeric.h"
 
-CLASS_CONSTRUCTOR(CTDLambdaCritic)
-	: EXTENDS(CCritic,pParameters)
+CTDLambdaCritic::CTDLambdaCritic(CConfigNode* pConfigNode)
+	: CCritic(pConfigNode)
 {
-	CHILD_CLASS(m_z, "E-Traces","Eligibility traces of the critic",true, CETraces,"Critic/E-Traces" );
+	m_z = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
+	m_z->setName("Critic/E-Traces" );
 	m_aux= new CFeatureList("Critic/aux");
-	NUMERIC_VALUE(m_pAlpha, "Alpha","Learning gain");
-	NUMERIC_VALUE(m_pGamma,"Gamma","Gamma parameter");
-	END_CLASS();
+	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Alpha","Learning gain");
+	m_pGamma= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Gamma","Gamma parameter");
 }
 
 CTDLambdaCritic::~CTDLambdaCritic()
 {
-	delete m_z;
 	delete m_aux;
-	delete m_pAlpha;
-	delete m_pGamma;
 }
 
 double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
@@ -51,7 +47,7 @@ double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CSt
 	double newValue= m_pVFunction->getValue(m_aux);
 	double td = rho*r + gamma*newValue - oldValue;
 	
-	m_pVFunction->add(m_z,td);
+	m_pVFunction->add(m_z.ptr(),td);
 
 	return td;
 }

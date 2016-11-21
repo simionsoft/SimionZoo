@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "etraces.h"
 #include "experiment.h"
-#include "globals.h"
 #include "config.h"
 #include "app.h"
 
@@ -26,7 +25,6 @@ CETraces::CETraces(CConfigNode* pConfigNode) : CFeatureList()
 		m_bReplaceIfExists = false;
 		m_bAddIfExists = false;
 	}
-	END_CLASS();
 }
 
 CETraces::~CETraces()

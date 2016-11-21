@@ -13,7 +13,7 @@ class CNumericValue;
 class CPolicyLearner
 {
 protected:
-	CPolicy* m_pPolicy;
+	CHILD_OBJECT_FACTORY<CPolicy> m_pPolicy;
 
 public:
 	CPolicyLearner(CConfigNode* pParameters);
@@ -21,7 +21,7 @@ public:
 
 	virtual void updatePolicy(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
 
-	CPolicy* getPolicy(){ return m_pPolicy; }
+	CPolicy* getPolicy(){ return m_pPolicy.ptr(); }
 
 	static std::shared_ptr<CPolicyLearner> getInstance(CConfigNode* pParameters);
 };

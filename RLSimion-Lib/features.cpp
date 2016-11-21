@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "features.h"
-#include "globals.h"
 #include "experiment.h"
 #include "logger.h"
 #include "app.h"

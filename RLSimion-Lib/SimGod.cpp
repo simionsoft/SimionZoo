@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SimGod.h"
-#include "globals.h"
 #include "experiment.h"
 #include "named-var-set.h"
 #include "config.h"
@@ -18,22 +17,15 @@ std::vector<const char*> CSimGod::m_outputFiles;
 CHILD_OBJECT_FACTORY<CStateFeatureMap> CSimGod::m_pGlobalStateFeatureMap;
 CHILD_OBJECT_FACTORY<CActionFeatureMap> CSimGod::m_pGlobalActionFeatureMap;
 
-CLASS_CONSTRUCTOR(CSimGod)
+CSimGod::CSimGod(CConfigNode* pConfigNode)
 {
-	if (!pParameters) return;
+	if (!pConfigNode) return;
 
 	//the global parameterizations of the state/action spaces
-	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<CStateFeatureMap>(pParameters,"State-Feature-Map","The state feature map", false);
-	//CHILD_CLASS_FACTORY(m_pGlobalStateFeatureMap, "State-Feature-Map", "The state feature map", false, CStateFeatureMap);
-	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<CActionFeatureMap>(pParameters, "Action-Feature-Map", "The state feature map", true);
-	//CHILD_CLASS_FACTORY(m_pGlobalActionFeatureMap, "Action-Feature-Map", "The action feature map", true, CActionFeatureMap);
-	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pParameters, "Experience-Replay", "The experience replay parameters", true);
-	//CHILD_CLASS(m_pExperienceReplay, "Experience-Replay", "The experience replay parameters", true, CExperienceReplay);
-	m_simions= MULTI_VALUE_FACTORY<CSimion>(pParameters,"Simion","Simions: learning agents and controllers")
-	//MULTI_VALUED_FACTORY(m_simions, "Simion", "Simions: learning agents and controllers", CSimion);
-
-	
-	END_CLASS();
+	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<CStateFeatureMap>(pConfigNode,"State-Feature-Map","The state feature map");
+	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<CActionFeatureMap>(pConfigNode, "Action-Feature-Map", "The state feature map", true);
+	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "Experience-Replay", "The experience replay parameters", true);
+	m_simions = MULTI_VALUE_FACTORY<CSimion>(pConfigNode, "Simion", "Simions: learning agents and controllers");
 }
 
 

@@ -4,7 +4,6 @@
 #include "controller.h"
 #include "actor.h"
 #include "policy.h"
-#include "globals.h"
 #include "named-var-set.h"
 #include "config.h"
 #include "policy-learner.h"

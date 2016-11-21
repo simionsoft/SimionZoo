@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "setpoint.h"
 #include "config.h"
-#include "globals.h"
 #include "logger.h"
 #include "app.h"
 #include "SimGod.h"
@@ -73,7 +72,6 @@ CFileSetPoint::CFileSetPoint(const char* filename)
 	}
 
 	m_totalTime= m_pTimes[m_numSteps-1];
-	END_CLASS();
 }
 
 
@@ -158,7 +156,6 @@ CHHFileSetPoint::CHHFileSetPoint(const char* filename) : CFileSetPoint()
 	{
 		throw std::exception((std::string("Couldn't open setpoint file: ") + std::string(filename)).c_str());
 	}
-	END_CLASS();
 }
 
 

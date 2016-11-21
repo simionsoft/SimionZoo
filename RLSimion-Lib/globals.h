@@ -7,12 +7,11 @@
 
 
 //MACROS USED TO PRODUCE THE CONFIGURATION FILES
-#define APP_CLASS(name,...) name::name(int argc, char* argv[],__VA_ARGS__): CSimionApp(argc,argv)
-#define CLASS_FACTORY(name,...) name* name::getInstance(CConfigNode* pParameters,__VA_ARGS__)
-#define CLASS_CONSTRUCTOR(name,...) name::name(CConfigNode* pParameters,__VA_ARGS__)
-#define CLASS_INIT(name,...) void name::init(CConfigNode* pParameters,__VA_ARGS__)
-
-#define END_CLASS()
+//#define APP_CLASS(name,...) name::name(int argc, char* argv[],__VA_ARGS__): CSimionApp(argc,argv)
+//#define CLASS_FACTORY(name,...) name* name::getInstance(CConfigNode* pParameters,__VA_ARGS__)
+//#define CLASS_CONSTRUCTOR(name,...) name::name(CConfigNode* pParameters,__VA_ARGS__)
+//
+//#define END_CLASS()
 
 //The superclass' parameters are embedded inline within the subclass' definition, so the superclass' parameters
 //should not include any hierarchy (no getChild)
@@ -24,8 +23,8 @@
 #define CHILD_CLASS_FACTORY(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable= className::getInstance(pParameters->getChild(name),__VA_ARGS__); else variable= className::getInstance((CConfigNode*)0,__VA_ARGS__);
 #define CHILD_CLASS_INIT(variable,name,comment,optional,className,...) if (!optional || pParameters->getChild(name)) variable.init(pParameters->getChild(name),__VA_ARGS__); else variable.init(0,__VA_ARGS__);
 
-#define CHOICE(name,comment) if (!pParameters) return 0; CConfigNode* pChild = pParameters->getChild(name);
-#define END_CHOICE() return 0;
+//#define CHOICE(name,comment) if (!pParameters) return 0; CConfigNode* pChild = pParameters->getChild(name);
+//#define END_CHOICE() return 0;
 
 #define CHOICE_INLINE(name,comment) {CConfigNode* pChild= 0;if (pParameters) pChild= pParameters->getChild(name);
 #define END_CHOICE_INLINE() }
@@ -71,10 +70,10 @@
 //#define MULTI_VALUED_DOUBLE(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstDouble(0,defaultValue);
 //#define MULTI_VALUED_INTEGER(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstInteger(0,defaultValue);
 #define MULTI_VALUED_FILE_PATH(variable,parameterName,defaultValue,comment,parameterNode) variable= parameterNode->getConstString(0,defaultValue);
-//#define MULTI_VALUED_STATE_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
+//#define MULTI_VALUED_STATE_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) variable= CWorld::getDynamicModel()->getStateDescriptor().getVarIndex(parameterNode->getConstString(variableName));
 //#define MULTI_VALUED_ACTION_VAR_REF(variable,parameterName,defaultValue,comment,parameterNode) CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(parameterNode->getConstString(variableName));
 
-#define STATE_VARIABLE_REF(variable,variableName,comment) variable= CWorld::getDynamicModel()->getStateDescriptor()->getVarIndex(pParameters->getConstString(variableName));
+#define STATE_VARIABLE_REF(variable,variableName,comment) variable= CWorld::getDynamicModel()->getStateDescriptor().getVarIndex(pParameters->getConstString(variableName));
 #define ACTION_VARIABLE_REF(variable,variableName,comment) variable= CWorld::getDynamicModel()->getActionDescriptor()->getVarIndex(pParameters->getConstString(variableName));
 
 #define ENUMERATION(typeName,...) const char* typeName[]= {__VA_ARGS__};

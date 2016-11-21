@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "globals.h"
 #include "features.h"
 #include "etraces.h"
 #include "vfa.h"

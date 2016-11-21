@@ -91,3 +91,7 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 	}
 	return -1.0;
 }
+
+double CMountainCarReward::getMin() { return -100.0; }
+
+double CMountainCarReward::getMax() { return 1.0; }

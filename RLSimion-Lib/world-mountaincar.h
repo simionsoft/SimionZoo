@@ -27,4 +27,6 @@ class CMountainCarReward : public IRewardComponent
 public:
 	double getReward(const CState *s, const CAction *a, const CState *s_p);
 	const char* getName(){ return "reward"; }
+	double getMin();
+	double getMax();
 };

@@ -1,10 +1,7 @@
 #pragma once
 
 
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
-typedef CNamedVarSet CReward;
+#include "named-var-set.h"
 class CRewardFunctionComponent;
 
 #include <vector>
@@ -16,6 +13,8 @@ class IRewardComponent
 public:
 	virtual double getReward(const CState *s, const CAction* a, const CState *s_p) = 0;
 	virtual const char* getName()= 0;
+	virtual double getMin() = 0;
+	virtual double getMax() = 0;
 };
 
 
@@ -35,13 +34,15 @@ public:
 	CToleranceRegionReward(char* variable, double tolerance, double scale);
 	double getReward(const CState *s, const CAction* a, const CState *s_p);
 	const char* getName();
+	double getMin() { return m_minReward; }
+	double getMax() { return m_maxReward; }
 };
 
 class CRewardFunction
 {
 	std::vector<IRewardComponent*> m_rewardComponents;
 
-	//after calling getReward(), the full reward vector is stored here in case we want to observe the different components
+	CDescriptor rewardDescriptor;
 	CReward* m_pRewardVector;
 	bool m_bInitialized;
 public:

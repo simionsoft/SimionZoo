@@ -11,7 +11,8 @@ class CNamedVarProperties
 	double m_max;
 public:
 	CNamedVarProperties(const char* name, const char* units, double min, double max);
-	char* getName() { return m_name; }
+	const char* getName() const { return m_name; }
+	void setName(const char* name);
 	double getMin() const { return m_min; }
 	double getMax() const { return m_max; }
 	//double getMin(const char* name) const;
@@ -26,10 +27,11 @@ class CDescriptor
 	std::vector<CNamedVarProperties> m_pProperties;
 public:
 	CNamedVarSet* getInstance();
-	int size() { return m_pProperties.size(); }
-	CNamedVarProperties& operator[](std::size_t i) { return m_pProperties[i]; }
+	int size() const { return m_pProperties.size(); }
+	CNamedVarProperties& operator[](int idx) { return m_pProperties[idx]; }
+	const CNamedVarProperties& operator[](int idx) const { return m_pProperties[idx]; }
 	int addVariable(const char* name, const char* units, double min, double max);
-	int getVarIndex(const char* name);
+	int getVarIndex (const char* name);
 };
 
 class CNamedVarSet
@@ -61,6 +63,7 @@ public:
 	void copy(CNamedVarSet* nvs);
 	CNamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
 	CNamedVarProperties& getProperties(const char* varName) const;
+	CDescriptor& getProperties() { return m_pProperties; }
 };
 
 using CState= CNamedVarSet;

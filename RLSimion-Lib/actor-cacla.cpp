@@ -7,7 +7,6 @@
 #include "features.h"
 #include "etraces.h"
 #include "config.h"
-#include "globals.h"
 #include "parameters-numeric.h"
 
 CCACLALearner::CCACLALearner(CConfigNode* pConfigNode): CPolicyLearner(pConfigNode)

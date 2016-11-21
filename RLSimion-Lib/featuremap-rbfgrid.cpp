@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "featuremap.h"
 #include "named-var-set.h"
-#include "globals.h"
 #include "world.h"
 #include "features.h"
 #include "config.h"
@@ -14,31 +13,33 @@ CGaussianRBFGridFeatureMap<varType>::CGaussianRBFGridFeatureMap(CConfigNode* pPa
 {
 }
 
-CLASS_CONSTRUCTOR(CGaussianRBFStateGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters), CStateFeatureMap(pParameters)
+CGaussianRBFStateGridFeatureMap::CGaussianRBFStateGridFeatureMap(CConfigNode* pConfigNode)
+	: CGaussianRBFGridFeatureMap(pConfigNode), CStateFeatureMap(pConfigNode)
 {
 	m_pVarFeatures= new CFeatureList("RBFGrid/var");
 
-	MULTI_VALUED(m_grid,"RBF-Grid-Dimension","Parameters of the state-dimension's grid",CStateVariableGrid);
+	m_grid= MULTI_VALUE<CStateVariableGrid>(pConfigNode,"RBF-Grid-Dimension","Parameters of the state-dimension's grid");
+
 
 	//pre-calculate number of features
 	m_totalNumFeatures= 1;
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_totalNumFeatures *= m_grid[i]->getNumCenters();// m_pNumCenters[i];
+		m_totalNumFeatures *= m_grid[i]->getNumCenters();
 
 	m_maxNumActiveFeatures= 1;
 	for (unsigned int i = 0; i<m_grid.size(); i++)
 		m_maxNumActiveFeatures*= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
-	END_CLASS();
 }
 
 
 
-CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap(pParameters), CActionFeatureMap(pParameters)
+CGaussianRBFActionGridFeatureMap::CGaussianRBFActionGridFeatureMap(CConfigNode* pConfigNode)
+	: CGaussianRBFGridFeatureMap(pConfigNode), CActionFeatureMap(pConfigNode)
 {
 	m_pVarFeatures = new CFeatureList("RBFGrid/var");
 
-	MULTI_VALUED(m_grid, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid", CActionVariableGrid);
+	m_grid= MULTI_VALUE<CActionVariableGrid>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid");
 
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
@@ -49,16 +50,12 @@ CLASS_CONSTRUCTOR(CGaussianRBFActionGridFeatureMap) : CGaussianRBFGridFeatureMap
 	m_maxNumActiveFeatures = 1;
 	for (unsigned int i = 0; i<m_grid.size(); i++)
 		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
-	END_CLASS();
 }
 
 
 template <typename varType>
 CGaussianRBFGridFeatureMap<varType>::~CGaussianRBFGridFeatureMap()
 {
-	for (unsigned int i = 0; i < m_grid.size(); i++)
-		delete m_grid[i];
-
 	delete m_pVarFeatures;
 }
 

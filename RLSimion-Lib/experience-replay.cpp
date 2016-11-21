@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "experience-replay.h"
 #include "app.h"
-#include "globals.h"
 #include "config.h"
 #include "logger.h"
 #include "named-var-set.h"
@@ -22,29 +21,21 @@ void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r)
 }
 
 
-CLASS_CONSTRUCTOR(CExperienceReplay)
+CExperienceReplay::CExperienceReplay(CConfigNode* pConfigNode)
 {
-	if (pParameters)
-	{
-		CONST_INTEGER_VALUE(m_bufferSize, "Buffer-Size", 1000, "Size of the buffer used to store experience tuples");
-		CONST_INTEGER_VALUE(m_updateBatchSize, "Update-Batch-Size", 10, "Number of tuples used each time-step in the update");
-	}
-	else
-	{
-		//not very elegant, but simple enough... we want the system to work even if experience replay is not used
-		m_bufferSize = 1;
-		m_updateBatchSize = 1;
-	}
+	m_bufferSize = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1);
+	m_updateBatchSize = INT_PARAM(pConfigNode, "Update-Batch-Size", "Number of tuples used each time-step in the update", 1);
+
+	CLogger::logMessage(MessageType::Info, "Experience replay buffer initialized");
+
 	m_pTupleBuffer = 0;
 	m_currentPosition = 0;
 	m_numTuples = 0;
-
-	END_CLASS();
 }
 
 void CExperienceReplay::deferredLoadStep()
 {
-	m_pTupleBuffer = new CExperienceTuple[m_bufferSize];
+	m_pTupleBuffer = new CExperienceTuple[m_bufferSize.get()];
 }
 
 CExperienceReplay::~CExperienceReplay()
@@ -55,16 +46,14 @@ CExperienceReplay::~CExperienceReplay()
 
 int CExperienceReplay::getUpdateBatchSize()
 {
-	return std::min(m_updateBatchSize, m_numTuples);
+	return std::min(m_updateBatchSize.get(), m_numTuples);
 }
 
 void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r)
 {
-	if (m_bufferSize<=0)
-		CSimionApp::get()->pLogger->logMessage(MessageType::Error, "Tried to access the experience replay buffer before initialising it");
 	//add the experience tuple to the buffer
 
-	if (m_numTuples < m_bufferSize)
+	if (m_numTuples < m_bufferSize.get())
 	{
 		//the buffer is not yet full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r);
@@ -75,7 +64,7 @@ void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r)
 		//the buffer is full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r);
 	}
-	m_currentPosition = ++m_currentPosition % m_bufferSize;
+	m_currentPosition = ++m_currentPosition % m_bufferSize.get();
 }
 
 CExperienceTuple* CExperienceReplay::getRandomTupleFromBuffer()

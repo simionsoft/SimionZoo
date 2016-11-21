@@ -3,30 +3,25 @@
 #include "vfa.h"
 #include "features.h"
 #include "etraces.h"
-#include "globals.h"
 #include "experiment.h"
 #include "vfa-critic.h"
 #include "parameters-numeric.h"
 #include "config.h"
 #include "app.h"
 
-CLASS_CONSTRUCTOR(CTrueOnlineTDLambdaCritic)
-	: EXTENDS(CCritic,pParameters)
+CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CConfigNode* pConfigNode): CCritic(pConfigNode)
 {
-	CHILD_CLASS(m_e, "E-Traces","Eligibility traces of the critic",true, CETraces,"Critic/E-Traces" );
+	m_e = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
+	m_e->setName("Critic/E-Traces" );
 	m_aux= new CFeatureList("Critic/aux");
 	m_v_s= 0.0;
-	NUMERIC_VALUE(m_pAlpha, "Alpha", "Learning gain of the critic");
-	NUMERIC_VALUE(m_pGamma, "Gamma","Gamma parameter");
-	END_CLASS();
+	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Learning gain of the critic");
+	m_pGamma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma","Gamma parameter");
 }
 
 CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 {
-	delete m_e;
 	delete m_aux;
-	delete m_pAlpha;
-	delete m_pGamma;
 }
 
 double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,const CState *s_p, double r)
@@ -62,7 +57,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,
 	m_e->addFeatureList(m_aux,alpha *(1-gamma*lambda*e_T_phi_s));
 
 	//theta= theta + delta*e + alpha[v_s - theta^T*phi(s)]* phi(s)
-	m_pVFunction->add(m_e,td);
+	m_pVFunction->add(m_e.ptr(),td);
 	double theta_T_phi_s= m_pVFunction->getValue(m_aux);
 	m_pVFunction->add(m_aux,alpha *(m_v_s - theta_T_phi_s));
 	//v_s= v_s_p

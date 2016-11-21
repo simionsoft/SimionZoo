@@ -2,7 +2,6 @@
 #include "reward.h"
 #include "config.h"
 #include "world.h"
-#include "globals.h"
 #include "parameters-numeric.h"
 #include "app.h"
 #include "logger.h"
@@ -73,11 +72,14 @@ void CRewardFunction::initialize()
 	{
 		//create the reward vector and set names
 		numComponents = m_rewardComponents.size();
-		m_pRewardVector = new CReward(numComponents);
+
 		for (int i = 0; i < numComponents; ++i)
 		{
-			m_pRewardVector->setName(i, m_rewardComponents[i]->getName());
+			rewardDescriptor.addVariable(m_rewardComponents[i]->getName(), "unitless"
+				, m_rewardComponents[i]->getMin(), m_rewardComponents[i]->getMax());
+			m_pRewardVector->getProperties(i).setName(m_rewardComponents[i]->getName());
 		}
+		m_pRewardVector = rewardDescriptor.getInstance();
 		m_bInitialized = true;
 	}
 	else CSimionApp::get()->pLogger->logMessage(MessageType::Warning, "Reward function already initialized. Can't initialize again");

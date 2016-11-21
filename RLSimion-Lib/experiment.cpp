@@ -3,7 +3,6 @@
 #include "config.h"
 #include "logger.h"
 #include "world.h"
-#include "globals.h"
 #include "stats.h"
 #include "timer.h"
 #include "app.h"
@@ -101,20 +100,16 @@ CExperiment::~CExperiment()
 	if (m_pProgressTimer) delete m_pProgressTimer;
 }
 
-CLASS_CONSTRUCTOR(CExperiment)
+CExperiment::CExperiment(CConfigNode* pConfigNode)
 {
-	if (!pParameters) return;
+	if (!pConfigNode) return;
 
 
-	m_progUpdateFreq = DOUBLE_PARAM(pParameters, "Progress-Update-Freq", "Progress update frequency (seconds)",1.0);
-	//CONST_DOUBLE_VALUE(m_progUpdateFreq ,"Progress-Update-Freq", 0.5,"Progress update frequency (seconds)");
-	m_randomSeed = INT_PARAM(pParameters, "Random-Seed","Random seed used to generate random sequences of numbers",1);
-		//CONST_INTEGER_VALUE(m_randomSeed ,"Random-Seed", 1,"Random seed used to generate random sequences of numbers");
+	m_progUpdateFreq = DOUBLE_PARAM(pConfigNode, "Progress-Update-Freq", "Progress update frequency (seconds)",1.0);
+	m_randomSeed = INT_PARAM(pConfigNode, "Random-Seed","Random seed used to generate random sequences of numbers",1);
 
-	m_numTrainingEpisodes = INT_PARAM(pParameters, "Num-Episodes","Number of episodes",1000);
-	//CONST_INTEGER_VALUE(m_numTrainingEpisodes, "Num-Episodes", 1,"Number of episodes");
-	m_evalFreq = INT_PARAM(pParameters,"Eval-Freq", "Evaluation frequency (in episodes)",10);
-	//CONST_INTEGER_VALUE(m_evalFreq, "Eval-Freq", 0,"Evaluation frequency (in episodes)");
+	m_numTrainingEpisodes = INT_PARAM(pConfigNode, "Num-Episodes","Number of episodes",1000);
+	m_evalFreq = INT_PARAM(pConfigNode,"Eval-Freq", "Evaluation frequency (in episodes)",10);
 	
 	if (m_evalFreq.get() != 0)
 	{
@@ -126,7 +121,7 @@ CLASS_CONSTRUCTOR(CExperiment)
 		m_numEvaluationEpisodes = 0;
 		m_totalNumEpisodes = (unsigned int)m_numTrainingEpisodes.get();
 	}
-	m_episodeLength = DOUBLE_PARAM(pParameters, "Episode-Length", "Length of an episode(seconds)",10.0);
+	m_episodeLength = DOUBLE_PARAM(pConfigNode, "Episode-Length", "Length of an episode(seconds)",10.0);
 	//CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
 	setNumSteps((unsigned int)(m_episodeLength.get() / CSimionApp::get()->pWorld->getDT()));
 	reset();
@@ -135,8 +130,6 @@ CLASS_CONSTRUCTOR(CExperiment)
 	m_pProgressTimer = new CTimer();
 
 	srand((unsigned int)m_randomSeed.get());
-
-	END_CLASS();
 }
 
 

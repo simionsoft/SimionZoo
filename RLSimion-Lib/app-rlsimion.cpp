@@ -6,7 +6,6 @@
 #include "config.h"
 #include "logger.h"
 #include "named-var-set.h"
-#include "globals.h"
 #include "utils.h"
 #include "app.h"
 
@@ -20,27 +19,31 @@ void RLSimionApp::getInputFiles(CFilePathList& filePathList)
 	pSimGod->getInputFiles(filePathList);
 }
 
-CLASS_CONSTRUCTOR(RLSimionApp, const char* xmlConfigPath)
+void RLSimionApp::setOutputDirectory(const char* pOutputDir)
 {
-	pParameters = pParameters->getChild("RLSimion");
-	if (!pParameters) throw std::exception("Wrong experiment configuration file");
+	//we provide the path to the xml configuration file so that the logger saves its log files in the directory
+	pLogger->setLogDirectory(pOutputDir);
+}
 
+RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)
+{
+	pConfigNode = pConfigNode->getChild("RLSimion");
+	if (!pConfigNode) throw std::exception("Wrong experiment configuration file");
 
-	//In the beginning, a logger was created so that we could know about creation itself
-	CHILD_CLASS(pLogger, "Log", "The logger class", false, CLogger);
-	pLogger->setLogDirectory(xmlConfigPath); //we provide the path to the xml configuration file so that the logger saves its log files in the directory
+	//In the beginning, a logger was created so that we could tell about creation itself
+	pLogger= CHILD_OBJECT<CLogger>(pConfigNode, "Log", "The logger class");
 
-	//Then the world was created by chance
-	CHILD_CLASS(pWorld, "World", "The simulation environment and its parameters", false, CWorld);
+	//Then the world was created by sheer chance
+	pWorld = CHILD_OBJECT<CWorld>(pConfigNode, "World", "The simulation environment and its parameters");
 
 	//Then, the experiment.
-	CHILD_CLASS(pExperiment, "Experiment", "The parameters of the experiment", false, CExperiment);	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
+	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
+	pExperiment = CHILD_OBJECT<CExperiment>(pConfigNode, "Experiment", "The parameters of the experiment");
+
 
 	//Last, the SimGod was created to create and control all the simions
-	CHILD_CLASS(pSimGod, "SimGod", "The god class that controls all aspects of the simulation process", false, CSimGod);
-
-
-	END_CLASS();
+	pSimGod= CHILD_OBJECT<CSimGod>(pConfigNode,"SimGod"
+		, "The omniscient class that controls all aspects of the simulation process");
 }
 
 RLSimionApp::~RLSimionApp()
@@ -53,9 +56,9 @@ void RLSimionApp::run()
 	CSimionApp* pApp = CSimionApp::get();
 
 	//create state and action vectors
-	CState *s = pApp->pWorld->getDynamicModel()->getStateDescriptor()->getInstance();
-	CState *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor()->getInstance();
-	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor()->getInstance();
+	CState *s = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
+	CState *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
+	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor().getInstance();
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pApp->pSimGod->delayedLoad();

@@ -104,3 +104,13 @@ double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const 
 
 	return 0.0;
 }
+
+double CBalancingPoleReward::getMin()
+{
+	return -1.0;
+}
+
+double CBalancingPoleReward::getMax()
+{
+	return 0.0;
+}

@@ -261,6 +261,28 @@ public:
 	}
 };
 
+template <typename DataType, typename baseDataType>
+class MULTI_VALUE_SIMPLE_PARAM : public MULTI_VALUE<DataType>
+{
+protected:
+	const char* m_name;
+	const char* m_comment;
+public:
+	MULTI_VALUE_SIMPLE_PARAM() = default;
+
+	MULTI_VALUE_SIMPLE_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment, baseDataType default)
+	{
+		m_name = name;
+		m_comment = comment;
+
+		CConfigNode* pChildParameters = pConfigNode->getChild(name);
+		while (pChildParameters != 0)
+		{
+			m_values.push_back(std::shared_ptr<DataType>(new DataType(pChildParameters,name,comment,default)));
+			pChildParameters = pChildParameters->getNextSibling(name);
+		}
+	}
+};
 
 
 template<typename DataType>

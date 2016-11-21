@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "featuremap.h"
 #include "config.h"
-#include "globals.h"
 #include "app.h"
 
 
@@ -14,19 +13,10 @@ std::shared_ptr<CStateFeatureMap> CStateFeatureMap::getInstance(CConfigNode* pCo
 {
 	return CHOICE<CStateFeatureMap>(pConfigNode,"Type", "Feature map type",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode,"RBF-State-Grid",CGaussianRBFStateGridFeatureMap);
-		}
+		CHOICE_ELEMENT_NEW(pConfigNode,CGaussianRBFStateGridFeatureMap,"RBF-State-Grid","An RBF state-grid","")
 	});
 }
-//CLASS_FACTORY(CStateFeatureMap)
-//{
-//	CHOICE("Type","Feature map type");
-//	CHOICE_ELEMENT("RBF-State-Grid", CGaussianRBFStateGridFeatureMap,"Grid on the state-space");
-//	END_CHOICE();
-//
-//	END_CLASS();
-//	return 0;
-//}
+
 
 CActionFeatureMap::CActionFeatureMap(CConfigNode* pConfigNode)
 {
@@ -37,15 +27,7 @@ std::shared_ptr<CActionFeatureMap> CActionFeatureMap::getInstance(CConfigNode* p
 {
 	return CHOICE<CActionFeatureMap>(pConfigNode, "Type", "Feature map type",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode,"RBF-Action-Grid",CGaussianRBFActionGridFeatureMap);
+		CHOICE_ELEMENT_NEW(pConfigNode,CGaussianRBFActionGridFeatureMap,"RBF-Action-Grid","An RBF action-grid","")
 	});
 }
-//CLASS_FACTORY(CActionFeatureMap)
-//{
-//	CHOICE("Type", "Feature map type");
-//	CHOICE_ELEMENT("RBF-Action-Grid", CGaussianRBFActionGridFeatureMap, "Grid on the action-space");
-//	END_CHOICE();
-//
-//	END_CLASS();
-//	return 0;
-//}
+

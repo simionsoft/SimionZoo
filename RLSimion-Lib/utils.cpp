@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "utils.h"
-#include "globals.h"
 #include "config.h"
 
 

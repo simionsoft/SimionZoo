@@ -1,30 +1,22 @@
 #include "stdafx.h"
 #include "controller.h"
-#include "globals.h"
 #include "named-var-set.h"
 #include "world.h"
 #include "config.h"
-#include "globals.h"
 #include "parameters-numeric.h"
 #include "app.h"
 
 std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 {
 	return CHOICE<CController>(pConfigNode, "Controller", "The specific controller to be used"
-		, { CHOICE_ELEMENT_NEW(pConfigNode,CPIDController,"PID")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CLQRController,"LQR")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineJonkmanController,"Jonkman")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineVidalController,"Vidal")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineBoukhezzarController,"Boukhezzar")	}	);
-	//CHOICE("Controller","The specific controller to be used");
-	//CHOICE_ELEMENT("PID", CPIDController,"A PID controller");
-	//CHOICE_ELEMENT("LQR", CLQRController,"An LQR controller");
-	//CHOICE_ELEMENT("Jonkman", CWindTurbineJonkmanController, "The Jonkman wind-turbine controller. Outputs: d_T_g and d_beta");
-	//CHOICE_ELEMENT("Vidal", CWindTurbineVidalController, "The Vidal wind-turbine controller. Outputs: d_T_g and d_beta");
-	//CHOICE_ELEMENT("Boukhezzar", CWindTurbineBoukhezzarController, "The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta");
-	//END_CHOICE();
-
-	return 0;
+		, { CHOICE_ELEMENT_NEW(pConfigNode,CPIDController,"PID","A PID controller","")
+		,CHOICE_ELEMENT_NEW(pConfigNode,CLQRController,"LQR","An LQR controller","")
+		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineJonkmanController,"Jonkman"
+			,"Jonkman's wind-turbine controller. Outputs: d_T_g and d_beta","")
+		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineVidalController,"Vidal"
+			,"Vidal's wind-turbine controller. Outputs: d_T_g and d_beta","")
+		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineBoukhezzarController,"Boukhezzar"
+			,"The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta","")	}	);
 }
 
 
@@ -38,20 +30,13 @@ std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 CLQRGain::CLQRGain(CConfigNode* pConfigNode)
 {
 	m_variableIndex = STATE_VARIABLE(pConfigNode, "Variable", "The input state variable");
-	//STATE_VARIABLE_REF(m_variableIndex, "Variable", "The input state variable");
 	m_gain = DOUBLE_PARAM(pConfigNode, "Gain", "The gain applied to the input state variable", 0.1);
-	//CONST_DOUBLE_VALUE(m_gain, "Gain", 0.0,"The gain applied to the input state variable");
-	
-//	END_CLASS();
 }
 CLQRController::CLQRController(CConfigNode* pConfigNode)
 {
-	//ACTION_VARIABLE_REF(m_outputActionIndex,"Output-Action","The output action");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Actionn", "The output action");
-	//MULTI_VALUED(m_gains, "LQR-Gain", "An LQR gain on an input state variable", CLQRGain);
 	m_gains = MULTI_VALUE<CLQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
 
-	//END_CLASS();
 }
 
 CLQRController::~CLQRController()
@@ -88,29 +73,18 @@ int CLQRController::getOutputActionIndex(int output)
 
 CPIDController::CPIDController(CConfigNode* pConfigNode)
 {
-	//ACTION_VARIABLE_REF(m_outputActionIndex, "Output-Action","The output action");
 	m_outputActionIndex= ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
-	//NUMERIC_VALUE(m_pKP,"KP", "Proportional gain");
 	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KP", "Proportional gain");
-	//NUMERIC_VALUE(m_pKI, "KI","Integral gain");
 	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KI", "Integral gain");
-	//NUMERIC_VALUE(m_pKD,"KD","Derivative gain");
 	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KD", "Derivative gain");
 
-	//STATE_VARIABLE_REF(m_errorVariableIndex, "Input-Variable","The input state variable");
 	m_errorVariableIndex = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
-
-	//END_CLASS();
 
 	m_intError= 0.0;
 }
 
 CPIDController::~CPIDController()
-{
-	//delete m_pKP;
-	//delete m_pKI;
-	//delete m_pKD;
-}
+{}
 
 int CPIDController::getNumOutputs()
 {
@@ -151,11 +125,6 @@ double sgn(double value)
 
 CWindTurbineVidalController::~CWindTurbineVidalController()
 {
-	//delete m_pA;
-	//delete m_pK_alpha;
-	//delete m_pKP;
-	//delete m_pKI;
-	//delete m_P_s;
 }
 
 CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNode)
@@ -165,25 +134,19 @@ CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNod
 	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KP", "Proportional gain of the pitch controller");
 	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KI", "Integral gain of the pitch controller");
 	m_P_s = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "P_s", "Power setpoint for the torque controller");
-	/*
-	NUMERIC_VALUE(m_pA, "A", "A parameter of the torque controller");
-	NUMERIC_VALUE(m_pK_alpha, "K_alpha", "K_alpha parameter of the torque controller");
-	NUMERIC_VALUE(m_pKP, "KP", "Proportional gain of the pitch controller");
-	NUMERIC_VALUE(m_pKI, "KI", "Integral gain of the pitch controller");
-	NUMERIC_VALUE(m_P_s, "P_s", "Power setpoint for the torque controller");*/
-	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
-	m_d_omega_r_index = pStateDescriptor->getVarIndex("d_omega_r");
-	m_E_p_index = pStateDescriptor->getVarIndex("E_p");
-	m_T_g_index = pStateDescriptor->getVarIndex("T_g");
-	m_beta_index = pStateDescriptor->getVarIndex("beta");
-	m_E_int_omega_r_index = pStateDescriptor->getVarIndex("E_int_omega_r");
 
-	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
+	m_omega_r_index = pStateDescriptor.getVarIndex("omega_r");
+	m_d_omega_r_index = pStateDescriptor.getVarIndex("d_omega_r");
+	m_E_p_index = pStateDescriptor.getVarIndex("E_p");
+	m_T_g_index = pStateDescriptor.getVarIndex("T_g");
+	m_beta_index = pStateDescriptor.getVarIndex("beta");
+	m_E_int_omega_r_index = pStateDescriptor.getVarIndex("E_int_omega_r");
 
-	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
-	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
-//	END_CLASS();
+	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+
+	m_d_beta_index = pActionDescriptor.getVarIndex("d_beta");
+	m_d_T_g_index = pActionDescriptor.getVarIndex("d_T_g");
 }
 
 int CWindTurbineVidalController::getNumOutputs()
@@ -238,38 +201,29 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 
 CWindTurbineBoukhezzarController::~CWindTurbineBoukhezzarController()
 {
-	//delete m_pC_0;
-	//delete m_pKP;
-	//delete m_pKI;
+
 }
 
 CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* pConfigNode)
 {
-
-	//NUMERIC_VALUE(m_pC_0,"C_0", "C_0 parameter");
-	//NUMERIC_VALUE(m_pKP,"KP","Proportional gain of the pitch controller");
-	//NUMERIC_VALUE(m_pKI,"KI", "Integral gain of the pitch controller");
-	//CONST_DOUBLE_VALUE(m_J_t,"J_t",0.0,"Wind turbine model's J_t parameter (kg*m^2)");
-	//CONST_DOUBLE_VALUE(m_K_t,"K_t",0.0,"Wind turbine model's K_t parameter");
 	m_pC_0	= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"C_0", "C_0 parameter");
 	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"KP", "Proportional gain of the pitch controller");
 	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"KI", "Integral gain of the pitch controller");
 
 	m_J_t = CWorld::getDynamicModel()->getConstant("J_t");
 	m_K_t = CWorld::getDynamicModel()->getConstant("K_t");
-	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_r_index = pStateDescriptor->getVarIndex("omega_r");
-	m_d_omega_r_index = pStateDescriptor->getVarIndex("d_omega_r");
-	m_E_p_index = pStateDescriptor->getVarIndex("E_p");
-	m_T_g_index = pStateDescriptor->getVarIndex("T_g");
-	m_T_a_index = pStateDescriptor->getVarIndex("T_a");
-	m_beta_index = pStateDescriptor->getVarIndex("beta");
+	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
+	m_omega_r_index = pStateDescriptor.getVarIndex("omega_r");
+	m_d_omega_r_index = pStateDescriptor.getVarIndex("d_omega_r");
+	m_E_p_index = pStateDescriptor.getVarIndex("E_p");
+	m_T_g_index = pStateDescriptor.getVarIndex("T_g");
+	m_T_a_index = pStateDescriptor.getVarIndex("T_a");
+	m_beta_index = pStateDescriptor.getVarIndex("beta");
 
-	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
-	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
-	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
-	//END_CLASS();
+	m_d_beta_index = pActionDescriptor.getVarIndex("d_beta");
+	m_d_T_g_index = pActionDescriptor.getVarIndex("d_T_g");
 }
 
 int CWindTurbineBoukhezzarController::getNumOutputs()
@@ -294,13 +248,13 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 	//d(Tg)/dt= (1/omega_r)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_r*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_r)
 
-	double omega_r= s->getValue(m_omega_r_index);	// state->getContinuousState(DIM_omega_r);
-	double C_0= m_pC_0->getValue();					//getParameter("C0");
-	double error_P= -s->getValue(m_E_p_index);		//-state->getContinuousState(DIM_P_error);
-	double T_a= s->getValue(m_T_a_index);			//state->getContinuousState(DIM_T_a);
+	double omega_r= s->getValue(m_omega_r_index);
+	double C_0= m_pC_0->getValue();		
+	double error_P= -s->getValue(m_E_p_index);	
+	double T_a= s->getValue(m_T_a_index);		
 
-	double T_g= s->getValue(m_T_g_index);			//state->getContinuousState(DIM_T_g);
-	double beta= s->getValue(m_beta_index);		//state->getContinuousState(DIM_beta);
+	double T_g= s->getValue(m_T_g_index);	
+	double beta= s->getValue(m_beta_index);	
 	
 	double d_T_g= (1.0/omega_r)*(C_0*error_P - (1.0/m_J_t)
 		*(T_a*T_g - m_K_t*omega_r*T_g - T_g*T_g));
@@ -318,24 +272,10 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 
 CWindTurbineJonkmanController::~CWindTurbineJonkmanController()
 {
-	//delete m_PC_KK;
-	//delete m_PC_KP;
-	//delete m_PC_KI;
 }
 
 CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfigNode)
 {
-	////GENERATOR SPEED FILTER PARAMETERS
-	//CONST_DOUBLE_VALUE(m_CornerFreq,"CornerFreq",0.0,"Corner Freq. parameter");
-
-	////TORQUE CONTROLLER'S PARAMETERS
-	//CONST_DOUBLE_VALUE(m_VS_RtGnSp,"VSRtGnSp",0.0,"Rated Generator Speed");
-	//CONST_DOUBLE_VALUE(m_VS_SlPc,"VS_SlPc",0.0,"SIPc parameter");
-	//CONST_DOUBLE_VALUE(m_VS_Rgn2K,"VS_Rgn2K",0.0,"Rgn2K parameter");
-	//CONST_DOUBLE_VALUE(m_VS_Rgn2Sp,"VS_Rgn2Sp",0.0,"Rgn2Sp parameter");
-	//CONST_DOUBLE_VALUE(m_VS_CtInSp,"VS_CtInSp",0.0,"CtlnSp parameter");
-	//CONST_DOUBLE_VALUE(m_VS_RtPwr,"VS_RtPwr",0.0,"Rated power");
-	//CONST_DOUBLE_VALUE(m_VS_Rgn3MP,"VS_Rgn3MP",0.0,"Rgn3MP parameter");
 	//GENERATOR SPEED FILTER PARAMETERS
 	m_CornerFreq = DOUBLE_PARAM(pConfigNode, "CornerFreq", "Corner Freq. parameter", 0.0);
 
@@ -365,18 +305,17 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfi
 
 	m_IntSpdErr= 0.0;
 
-	CState* pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_g_index = pStateDescriptor->getVarIndex("omega_g");
+	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
+	m_omega_g_index = pStateDescriptor.getVarIndex("omega_g");
 
-	m_E_p_index = pStateDescriptor->getVarIndex("E_p");
-	m_T_g_index = pStateDescriptor->getVarIndex("T_g");
-	m_beta_index = pStateDescriptor->getVarIndex("beta");
+	m_E_p_index = pStateDescriptor.getVarIndex("E_p");
+	m_T_g_index = pStateDescriptor.getVarIndex("T_g");
+	m_beta_index = pStateDescriptor.getVarIndex("beta");
 
-	CAction* pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
-	m_d_beta_index = pActionDescriptor->getVarIndex("d_beta");
-	m_d_T_g_index = pActionDescriptor->getVarIndex("d_T_g");
-	//END_CLASS();
+	m_d_beta_index = pActionDescriptor.getVarIndex("d_beta");
+	m_d_T_g_index = pActionDescriptor.getVarIndex("d_T_g");
 }
 
 int CWindTurbineJonkmanController::getNumOutputs()
@@ -422,7 +361,7 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	else                                                                       //We are in region 2 1/2 - simple induction generator transition region
 		GenTrq = m_VS_Slope25*( m_GenSpeedF - m_VS_SySp   );
 
-	GenTrq  = std::min( GenTrq, s->getMax("T_g")  );   //Saturate the command using the maximum torque limit
+	GenTrq  = std::min( GenTrq, s->getProperties("T_g").getMax()  );   //Saturate the command using the maximum torque limit
 
 	double TrqRate;
 	TrqRate = (GenTrq - s->getValue(m_T_g_index)) / CSimionApp::get()->pWorld->getDT(); //Torque rate (unsaturated)
@@ -436,8 +375,8 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	double SpdErr    = m_GenSpeedF - m_PC_RefSpd.get();                                 //Current speed error
 	m_IntSpdErr = m_IntSpdErr + SpdErr*CSimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
-	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getMax(m_beta_index)/( GK*m_PC_KI->getValue() ) )
-		, s->getMin("beta")/( GK*m_PC_KI->getValue() ));
+	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta_index).getMax()/( GK*m_PC_KI->getValue() ) )
+		, s->getProperties("beta").getMin()/( GK*m_PC_KI->getValue() ));
   
 	//Compute the pitch commands associated with the proportional and integral
 	//  gains:
@@ -447,7 +386,8 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	//Superimpose the individual commands to get the total pitch command;
 	//  saturate the overall command using the pitch angle limits:
 	double PitComT   = PitComP + PitComI;                                     //Overall command (unsaturated)
-	PitComT   = std::min( std::max( PitComT, s->getMin(m_beta_index) ), s->getMax(m_beta_index) );           //Saturate the overall command using the pitch angle limits
+	PitComT   = std::min( std::max( PitComT, s->getProperties(m_beta_index).getMin() )
+		, s->getProperties(m_beta_index).getMax() );           //Saturate the overall command using the pitch angle limits
 
 	//Saturate the overall commanded pitch using the pitch rate limit:
 	//NOTE: Since the current pitch angle may be different for each blade

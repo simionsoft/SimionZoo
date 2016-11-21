@@ -62,7 +62,7 @@ protected:
 	unsigned int m_totalNumFeatures;
 	unsigned int m_maxNumActiveFeatures;
 
-	std::vector<CSingleDimensionGrid<varType>*> m_grid;
+	MULTI_VALUE<CSingleDimensionGrid<varType>> m_grid;
 
 	CGaussianRBFGridFeatureMap(CConfigNode* pParameters);
 public:

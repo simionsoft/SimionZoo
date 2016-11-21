@@ -5,8 +5,6 @@
 #include "experiment.h"
 #include "SimGod.h"
 #include "config.h"
-#include "globals.h"
-
 
 
 CSimionApp* CSimionApp::m_pAppInstance = 0;

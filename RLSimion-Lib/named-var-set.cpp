@@ -9,6 +9,11 @@ CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, do
 	max = max;
 }
 
+void CNamedVarProperties::setName(const char* name)
+{
+	strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
+}
+
 int CDescriptor::getVarIndex(const char* name)
 {
 	for (unsigned int i = 0; i<m_pProperties.size(); i++)

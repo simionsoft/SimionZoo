@@ -49,7 +49,7 @@ class CLinearStateVFA: public CLinearVFA, public CDeferredLoad
 protected:
 	std::shared_ptr<CStateFeatureMap> m_pStateFeatureMap;
 	CFeatureList *m_pAux;
-	double m_initValue;
+	DOUBLE_PARAM m_initValue;
 	virtual void deferredLoadStep();
 public:
 	CLinearStateVFA();
@@ -82,7 +82,7 @@ protected:
 
 	CFeatureList *m_pAux;
 	CFeatureList *m_pAux2;
-	double m_initValue;
+	DOUBLE_PARAM m_initValue;
 public:
 	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
 	unsigned int getNumActionWeights() const { return m_numActionWeights; }

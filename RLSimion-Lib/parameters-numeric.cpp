@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "parameters-numeric.h"
-#include "globals.h"
 #include "config.h"
 #include "experiment.h"
 #include "app.h"
@@ -143,16 +142,9 @@ std::shared_ptr<CNumericValue> CNumericValue::getInstance(CConfigNode* pConfigNo
 {
 	return CHOICE<CNumericValue>(pConfigNode, "Schedule", "Schedule-type",
 	{
-		{"Constant",[](CConfigNode* pChild)
-			{return std::shared_ptr<CNumericValue>(new CConstantValue(pChild)); }
-		}
-		,{"Linear-Schedule",[](CConfigNode* pChild)
-			{return std::shared_ptr<CNumericValue>(new CInterpolatedValue(pChild)); }
-		}
-		,{"Bhatnagar-Schedule",[](CConfigNode* pChild)
-			{return std::shared_ptr<CNumericValue>(new CBhatnagarSchedule(pChild)); }
-		}
-
+		CHOICE_ELEMENT_NEW(pConfigNode,CConstantValue,"Constant","Constant value",""),
+		CHOICE_ELEMENT_NEW(pConfigNode, CInterpolatedValue, "Linear-Schedule", "Linearly interpolated schedule", ""),
+		CHOICE_ELEMENT_NEW(pConfigNode, CBhatnagarSchedule, "Bhatnagar-Schedule", "Bhatnagar's schedule", "")
 	});
 	//CHOICE("Schedule","Schedule-type");
 	//CHOICE_ELEMENT("Constant", CConstantValue,"Constant value");
@@ -161,5 +153,4 @@ std::shared_ptr<CNumericValue> CNumericValue::getInstance(CConfigNode* pConfigNo
 	//END_CHOICE();
 	//END_CLASS();
 
-	return 0;
 }
