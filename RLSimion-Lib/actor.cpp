@@ -12,7 +12,7 @@
 #include "featuremap.h"
 #include "simgod.h"
 
-CActor::CActor(CConfigNode* pConfigNode)
+CActor::CActor(CConfigNode* pConfigNode): CDeferredLoad(10)
 {
 	m_policyLearners= MULTI_VALUE_FACTORY<CPolicyLearner>(pConfigNode, "Output", "The outputs of the actor. One for each output dimension");
 	m_pInitController= CHILD_OBJECT_FACTORY<CController>(pConfigNode, "Base-Controller", "The base controller used to initialize the weights of the actor", true);
