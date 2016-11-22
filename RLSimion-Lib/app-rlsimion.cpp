@@ -61,7 +61,7 @@ void RLSimionApp::run()
 	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor().getInstance();
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
-	pApp->pSimGod->delayedLoad();
+	pApp->pSimGod->deferredLoad();
 	CLogger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
 
 	double r = 0.0;

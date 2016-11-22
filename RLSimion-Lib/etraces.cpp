@@ -4,7 +4,7 @@
 #include "config.h"
 #include "app.h"
 
-CETraces::CETraces(CConfigNode* pConfigNode) : CFeatureList()
+CETraces::CETraces(CConfigNode* pConfigNode)
 {
 	if (pConfigNode)
 	{
@@ -18,13 +18,15 @@ CETraces::CETraces(CConfigNode* pConfigNode) : CFeatureList()
 		m_bReplaceIfExists = m_bReplace.get();
 		m_bAddIfExists = !m_bReplaceIfExists;
 	}
-	else
-	{
-		m_bUse = false;
 
-		m_bReplaceIfExists = false;
-		m_bAddIfExists = false;
-	}
+}
+
+CETraces::CETraces()
+{
+	m_bUse = false;
+
+	m_bReplaceIfExists = false;
+	m_bAddIfExists = false;
 }
 
 CETraces::~CETraces()

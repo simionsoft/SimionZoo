@@ -18,7 +18,8 @@ protected:
 
 public:
 	CActor(CConfigNode* pConfigNode);
-	virtual ~CActor()= default;
+	CActor() = default;
+	virtual ~CActor();
 
 	virtual void selectAction(const CState *s, CAction *a);
 

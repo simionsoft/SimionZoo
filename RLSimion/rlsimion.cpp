@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-
+#include "../RLSimion-Lib/app.h"
 #include "../RLSimion-Lib/app-rlsimion.h"
 #include "../RLSimion-Lib/logger.h"
 #include "../RLSimion-Lib/config.h"
@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		CConfigFile configXMLFile;
-		CApp* pApp = 0;
+		CSimionApp* pApp = 0;
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
 		if (argc > 2)
 			CLogger::createOutputPipe(argv[2]);
@@ -27,12 +27,12 @@ int main(int argc, char* argv[])
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
 		if (!strcmp("RLSimion", pParameters->getName()))
-			pApp = new RLSimionApp(pParameters, argv[1]);
-		//else if (!strcmp("ControllerToVFA", pParameters->getName()))
-		//	pApp = new ControllerToVFAApp(pParameters);
-		
+			pApp = new RLSimionApp(pParameters);
+				
 		if (pApp)
 		{
+			pApp->setOutputDirectory(argv[1]);
+
 			pApp->run();
 
 			delete pApp;

@@ -17,7 +17,7 @@ RLSIMIONINTERFACEDLL_API int nRLSimionInterfaceDLL=0;
 extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* pBuffer, int bufferSize)
 {
 	CConfigFile configXMLFile;
-	CApp* pApp = 0;
+	CSimionApp* pApp = 0;
 	CFilePathList InputFileList;
 	CFilePathList OutputFileList;
 	char* pBufferEnd = pBuffer + bufferSize;
@@ -31,14 +31,11 @@ extern "C" __declspec(dllexport) int getIOFiles(const char* xmlFilename, char* p
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
 		if (!strcmp("RLSimion", pParameters->getName()))
-			pApp = new RLSimionApp(pParameters, xmlFilename);
-		/*else if (!strcmp("ControllerToVFA", pParameters->getName()))
-			pApp = new ControllerToVFAApp(pParameters);*/
-		//else if (!strcmp("CompareControllerVFA", pParameters->getName()))
-		//	pApp = new CompareControllerVFAApp(pParameters);
+			pApp = new RLSimionApp(pParameters);
 
 		if (pApp)
 		{
+			pApp->setOutputDirectory(xmlFilename);
 			strcpy_s(pBuffer, pBufferEnd - pBuffer, "<Files>\n");
 			pBuffer += strlen("<Files>\n");
 			pApp->getInputFiles(InputFileList);

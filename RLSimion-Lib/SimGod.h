@@ -1,18 +1,16 @@
 #pragma once
 
 #include "parameters.h"
+#include <vector>
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CConfigNode;
 class CSimion;
-class CDeferredLoad;
 class CFilePathList;
 class CExperienceReplay;
-
-#include <vector>
-
+class CDeferredLoad;
 class CStateFeatureMap;
 class CActionFeatureMap;
 
@@ -27,21 +25,22 @@ class CSimGod
 	CReward *m_pReward;
 
 	//lists that must be initialized before the constructor is actually called
-	static std::vector<std::pair<CDeferredLoad*, unsigned int>> m_delayedLoadObjects;
+	static std::vector<std::pair<CDeferredLoad*, unsigned int>> m_deferredLoadSteps;
 	static std::vector<const char*> m_inputFiles;
 	static std::vector<const char*> m_outputFiles;
 
 	CHILD_OBJECT<CExperienceReplay> m_pExperienceReplay;
 public:
 	CSimGod(CConfigNode* pParameters);
+	CSimGod() = default;
 	virtual ~CSimGod();
 
 	void selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r);
 
 	//delayed load
-	static void registerDelayedLoadObj(CDeferredLoad* pObj,unsigned int orderLoad);
-	void delayedLoad();
+	static void registerDeferredLoadStep(CDeferredLoad* deferredLoadObject,unsigned int orderLoad);
+	void deferredLoad();
 
 	//input/output files
 	static void registerInputFile(const char* filepath);

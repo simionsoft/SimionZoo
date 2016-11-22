@@ -46,7 +46,9 @@ CNoise::CNoise()
 std::shared_ptr<CNoise> CNoise::getInstance(CConfigNode* pConfigNode)
 {
 	return CHOICE<CNoise>(pConfigNode, "Noise", "Noise type",
-	{ CHOICE_ELEMENT_NEW(pConfigNode,CGaussianNoise,"GaussianNoise","Gaussian noise","") }
+	{
+		{"GaussianNoise",CHOICE_ELEMENT_NEW<CGaussianNoise>}
+	}
 	);
 	//CHOICE("Noise","Noise type");
 	//CHOICE_ELEMENT("GaussianNoise", CGaussianNoise,"Gaussian noise");

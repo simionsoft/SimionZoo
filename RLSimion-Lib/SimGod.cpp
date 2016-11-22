@@ -11,7 +11,7 @@
 #include "experience-replay.h"
 #include "parameters.h"
 
-std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_delayedLoadObjects;
+std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_deferredLoadSteps;
 std::vector<const char*> CSimGod::m_inputFiles;
 std::vector<const char*> CSimGod::m_outputFiles;
 CHILD_OBJECT_FACTORY<CStateFeatureMap> CSimGod::m_pGlobalStateFeatureMap;
@@ -66,9 +66,9 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 	}
 }
 
-void CSimGod::registerDelayedLoadObj(CDeferredLoad* pObj,unsigned int loadOrder)
+void CSimGod::registerDeferredLoadStep(CDeferredLoad* deferredLoadObject, unsigned int orderLoad)
 {
-	m_delayedLoadObjects.push_back(std::pair<CDeferredLoad*,unsigned int>(pObj,loadOrder));
+	m_deferredLoadSteps.push_back(std::pair<CDeferredLoad*,unsigned int>(deferredLoadObject, orderLoad));
 }
 
 bool myComparison(const std::pair<CDeferredLoad*, unsigned int> &a, const std::pair<CDeferredLoad*, unsigned int> &b)
@@ -76,11 +76,11 @@ bool myComparison(const std::pair<CDeferredLoad*, unsigned int> &a, const std::p
 	return a.second<b.second;
 }
 
-void CSimGod::delayedLoad()
+void CSimGod::deferredLoad()
 {
-	std::sort(m_delayedLoadObjects.begin(), m_delayedLoadObjects.end(),myComparison);
+	std::sort(m_deferredLoadSteps.begin(), m_deferredLoadSteps.end(),myComparison);
 
-	for (auto it = m_delayedLoadObjects.begin(); it != m_delayedLoadObjects.end(); it++)
+	for (auto it = m_deferredLoadSteps.begin(); it != m_deferredLoadSteps.end(); it++)
 	{
 		(*it).first->deferredLoadStep();
 	}

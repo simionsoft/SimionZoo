@@ -10,15 +10,15 @@
 #include "app.h"
 #include "vfa.h"
 #include "featuremap.h"
+#include "simgod.h"
 
-
-CActor::CActor(CConfigNode* pConfigNode) : CDeferredLoad(10)//if initialized, it has to be done after allocating memory for the weights
+CActor::CActor(CConfigNode* pConfigNode)
 {
 	m_policyLearners= MULTI_VALUE_FACTORY<CPolicyLearner>(pConfigNode, "Output", "The outputs of the actor. One for each output dimension");
-	//MULTI_VALUED_FACTORY(m_policyLearners,"Output","The outputs of the actor. One for each output dimension",CPolicyLearner);
 	m_pInitController= CHILD_OBJECT_FACTORY<CController>(pConfigNode, "Base-Controller", "The base controller used to initialize the weights of the actor", true);
-	//CHILD_CLASS_FACTORY(m_pInitController, "Base-Controller", "The base controller used to initialize the weights of the actor", true, CController);
 }
+
+CActor::~CActor() {}
 
 void CActor::deferredLoadStep()
 {
@@ -52,7 +52,7 @@ void CActor::deferredLoadStep()
 				}
 			}
 		}
-		CLogger::logMessage(MessageType::Info, "Initialization finished");
+		CLogger::logMessage(MessageType::Info, "Initialization done");
 	}
 	else
 	{
@@ -61,6 +61,8 @@ void CActor::deferredLoadStep()
 		{
 			numWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
 			pWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeightPtr();
+			assert(pWeights);
+
 			for (unsigned int i = 0; i < numWeights; i++)
 			{
 				pWeights[i] = 0.0;

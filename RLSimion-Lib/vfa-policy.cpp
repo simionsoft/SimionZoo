@@ -10,19 +10,11 @@
 
 std::shared_ptr<CPolicy> CPolicy::getInstance(CConfigNode* pConfigNode)
 {
-	return CHOICE<CPolicy>(pConfigNode,"Policy", "The policy type"
-		, {
-	CHOICE_ELEMENT_NEW(pConfigNode,CDeterministicPolicyGaussianNoise,"Deterministic-Policy-Gaussian-Noise", "A deterministic policy pi(s) to which some noise is added",""),
-	CHOICE_ELEMENT_NEW(pConfigNode,CStochasticPolicyGaussianNoise,"Stochastic-Policy-Gaussian-Noise", "An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))","")
-		});
-	//CHOICE("Policy","The policy type");
-
-	//CHOICE_ELEMENT("Deterministic-Policy-Gaussian-Noise", CDeterministicPolicyGaussianNoise,"A deterministic policy pi(s) to which some noise is added");
-	//CHOICE_ELEMENT("Stochastic-Policy-Gaussian-Noise", CStochasticPolicyGaussianNoise,"An stochastic policy pi(s)= N(pi_mean(s),pi_variance(s))");
-
-	//END_CHOICE();
-	//END_CLASS();
-	//return 0;
+	return CHOICE<CPolicy>(pConfigNode,"Policy", "The policy type",
+	{
+		{"Deterministic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<CDeterministicPolicyGaussianNoise>},
+		{"Stochastic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<CStochasticPolicyGaussianNoise>}
+	});
 }
 
 CPolicy::CPolicy(CConfigNode* pConfigNode)

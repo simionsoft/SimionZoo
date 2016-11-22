@@ -12,6 +12,7 @@ class CETraces : public CFeatureList
 	BOOL_PARAM m_bReplace;
 public:
 	CETraces(CConfigNode* pConfigNode);
+	CETraces();
 	virtual ~CETraces();
 
 	//traces will be multiplied by factor*lambda

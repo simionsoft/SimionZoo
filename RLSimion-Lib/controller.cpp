@@ -8,15 +8,14 @@
 
 std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 {
-	return CHOICE<CController>(pConfigNode, "Controller", "The specific controller to be used"
-		, { CHOICE_ELEMENT_NEW(pConfigNode,CPIDController,"PID","A PID controller","")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CLQRController,"LQR","An LQR controller","")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineJonkmanController,"Jonkman"
-			,"Jonkman's wind-turbine controller. Outputs: d_T_g and d_beta","")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineVidalController,"Vidal"
-			,"Vidal's wind-turbine controller. Outputs: d_T_g and d_beta","")
-		,CHOICE_ELEMENT_NEW(pConfigNode,CWindTurbineBoukhezzarController,"Boukhezzar"
-			,"The Boukhezzar wind-turbine controller. Outputs: d_T_g and d_beta","")	}	);
+	return CHOICE<CController>(pConfigNode, "Controller", "The specific controller to be used",
+	{
+		{"PID",CHOICE_ELEMENT_NEW<CPIDController>},
+		{"LQR",CHOICE_ELEMENT_NEW<CLQRController>},
+		{"Jonkman",CHOICE_ELEMENT_NEW<CWindTurbineJonkmanController>},
+		{"Vidal",CHOICE_ELEMENT_NEW<CWindTurbineVidalController>},
+		{"Boukhezzar",CHOICE_ELEMENT_NEW<CWindTurbineBoukhezzarController>}
+	});
 }
 
 

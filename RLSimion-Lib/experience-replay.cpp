@@ -4,6 +4,7 @@
 #include "config.h"
 #include "logger.h"
 #include "named-var-set.h"
+#include "simgod.h"
 
 CExperienceTuple::CExperienceTuple()
 {
@@ -23,10 +24,23 @@ void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r)
 
 CExperienceReplay::CExperienceReplay(CConfigNode* pConfigNode)
 {
-	m_bufferSize = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1);
-	m_updateBatchSize = INT_PARAM(pConfigNode, "Update-Batch-Size", "Number of tuples used each time-step in the update", 1);
+	m_bufferSize = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1000);
+	m_updateBatchSize = INT_PARAM(pConfigNode, "Update-Batch-Size", "Number of tuples used each time-step in the update", 10);
 
 	CLogger::logMessage(MessageType::Info, "Experience replay buffer initialized");
+
+	m_pTupleBuffer = 0;
+	m_currentPosition = 0;
+	m_numTuples = 0;
+}
+
+CExperienceReplay::CExperienceReplay() : CDeferredLoad()
+{
+	//default behaviour when experience replay is not used
+	m_bufferSize.set(1);
+	m_updateBatchSize.set(1);
+
+	CLogger::logMessage(MessageType::Info, "Dummy experience replay buffer used because no config info could be retrieved");
 
 	m_pTupleBuffer = 0;
 	m_currentPosition = 0;

@@ -5,6 +5,7 @@ typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CConfigNode;
+class CDescriptor;
 #include <vector>
 #include "parameters.h"
 class CStats;
@@ -46,7 +47,7 @@ class CLogger
 
 	void writeLogFileXMLDescriptor(const char* filename);
 
-	void writeNamedVarSetDescriptorToBuffer(char* buffer, const char* id, const CDescriptor& pNamedVarSet);
+	void writeNamedVarSetDescriptorToBuffer(char* buffer, const char* id, const CDescriptor* pNamedVarSet);
 	void writeStatDescriptorToBuffer(char* buffer);
 	void writeEpisodeTypesToBuffer(char* buffer);
 
@@ -65,6 +66,7 @@ public:
 
 
 	CLogger(CConfigNode* pParameters);
+	CLogger() = default;
 	virtual ~CLogger();
 
 	//returns whether a specific type of episode is going to be logged

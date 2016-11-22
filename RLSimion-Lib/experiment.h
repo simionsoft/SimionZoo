@@ -51,6 +51,7 @@ class CExperiment
 	void reset();
 public:
 	CExperiment(CConfigNode* pParameters);
+	CExperiment() = default;
 	virtual ~CExperiment();
 
 	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }

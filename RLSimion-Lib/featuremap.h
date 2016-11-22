@@ -52,8 +52,7 @@ public:
 //CFeatureMap////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 #define MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION 3
-
-template<typename varType>
+template <typename dimensionGridType>
 class CGaussianRBFGridFeatureMap
 {
 protected:
@@ -62,7 +61,7 @@ protected:
 	unsigned int m_totalNumFeatures;
 	unsigned int m_maxNumActiveFeatures;
 
-	MULTI_VALUE<CSingleDimensionGrid<varType>> m_grid;
+	MULTI_VALUE<dimensionGridType> m_grid;
 
 	CGaussianRBFGridFeatureMap(CConfigNode* pParameters);
 public:
@@ -74,7 +73,7 @@ public:
 
 };
 
-class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap<STATE_VARIABLE>
+class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap<CStateVariableGrid>
 	, public CStateFeatureMap
 {
 public:
@@ -87,7 +86,7 @@ public:
 
 };
 
-class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap<ACTION_VARIABLE>
+class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap<CActionVariableGrid>
 	, public CActionFeatureMap
 {
 public:

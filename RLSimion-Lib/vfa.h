@@ -20,7 +20,7 @@ class CLinearVFA
 
 protected:
 
-	std::unique_ptr<double> m_pWeights= nullptr;
+	std::shared_ptr<double> m_pWeights= nullptr;
 	unsigned int m_numWeights= 0;
 
 	bool m_bSaturateOutput;
@@ -74,7 +74,6 @@ public:
 class CLinearStateActionVFA : public CLinearVFA, public CDeferredLoad
 {
 protected:
-
 	std::shared_ptr<CStateFeatureMap> m_pStateFeatureMap;
 	std::shared_ptr<CActionFeatureMap> m_pActionFeatureMap;
 	unsigned int m_numStateWeights;
@@ -89,6 +88,7 @@ public:
 	std::shared_ptr<CStateFeatureMap> getStateFeatureMap() { return m_pStateFeatureMap; }
 	std::shared_ptr<CActionFeatureMap> getActionFeatureMap() { return m_pActionFeatureMap; }
 
+	CLinearStateActionVFA()= default;
 	CLinearStateActionVFA(CConfigNode* pParameters);
 	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA); //used in double q-learning to get a copy of the target function
 

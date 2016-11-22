@@ -8,59 +8,21 @@
 
 #define ACTIVATION_THRESHOLD 0.0001
 
-template<typename varType>
-CGaussianRBFGridFeatureMap<varType>::CGaussianRBFGridFeatureMap(CConfigNode* pParameters)
+template <typename dimensionGridType>
+CGaussianRBFGridFeatureMap<dimensionGridType>::CGaussianRBFGridFeatureMap(CConfigNode* pParameters)
 {
 }
 
-CGaussianRBFStateGridFeatureMap::CGaussianRBFStateGridFeatureMap(CConfigNode* pConfigNode)
-	: CGaussianRBFGridFeatureMap(pConfigNode), CStateFeatureMap(pConfigNode)
-{
-	m_pVarFeatures= new CFeatureList("RBFGrid/var");
-
-	m_grid= MULTI_VALUE<CStateVariableGrid>(pConfigNode,"RBF-Grid-Dimension","Parameters of the state-dimension's grid");
 
 
-	//pre-calculate number of features
-	m_totalNumFeatures= 1;
-
-	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_totalNumFeatures *= m_grid[i]->getNumCenters();
-
-	m_maxNumActiveFeatures= 1;
-	for (unsigned int i = 0; i<m_grid.size(); i++)
-		m_maxNumActiveFeatures*= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
-}
-
-
-
-CGaussianRBFActionGridFeatureMap::CGaussianRBFActionGridFeatureMap(CConfigNode* pConfigNode)
-	: CGaussianRBFGridFeatureMap(pConfigNode), CActionFeatureMap(pConfigNode)
-{
-	m_pVarFeatures = new CFeatureList("RBFGrid/var");
-
-	m_grid= MULTI_VALUE<CActionVariableGrid>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid");
-
-	//pre-calculate number of features
-	m_totalNumFeatures = 1;
-
-	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_totalNumFeatures *= m_grid[i]->getNumCenters();// m_pNumCenters[i];
-
-	m_maxNumActiveFeatures = 1;
-	for (unsigned int i = 0; i<m_grid.size(); i++)
-		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
-}
-
-
-template <typename varType>
-CGaussianRBFGridFeatureMap<varType>::~CGaussianRBFGridFeatureMap()
+template <typename dimensionGridType>
+CGaussianRBFGridFeatureMap<dimensionGridType>::~CGaussianRBFGridFeatureMap()
 {
 	delete m_pVarFeatures;
 }
 
-template <typename varType>
-void CGaussianRBFGridFeatureMap<varType>::getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures)
+template <typename dimensionGridType>
+void CGaussianRBFGridFeatureMap<dimensionGridType>::getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures)
 {
 	unsigned int offset= 1;
 
@@ -82,8 +44,8 @@ void CGaussianRBFGridFeatureMap<varType>::getFeatures(const CState* s,const CAct
 	outFeatures->normalize();
 }
 
-template <typename varType>
-void CGaussianRBFGridFeatureMap<varType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
+template <typename dimensionGridType>
+void CGaussianRBFGridFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
 {
 	unsigned int dimFeature;
 
@@ -95,4 +57,42 @@ void CGaussianRBFGridFeatureMap<varType>::getFeatureStateAction(unsigned int fea
 
 		feature = feature / m_grid[i]->getNumCenters();
 	}
+}
+
+CGaussianRBFStateGridFeatureMap::CGaussianRBFStateGridFeatureMap(CConfigNode* pConfigNode)
+	: CGaussianRBFGridFeatureMap(pConfigNode), CStateFeatureMap(pConfigNode)
+{
+	m_pVarFeatures = new CFeatureList("RBFGrid/var");
+
+	m_grid = MULTI_VALUE<CStateVariableGrid>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the state-dimension's grid");
+
+	//pre-calculate number of features
+	m_totalNumFeatures = 1;
+
+	for (unsigned int i = 0; i < m_grid.size(); i++)
+		m_totalNumFeatures *= m_grid[i]->getNumCenters();
+
+	m_maxNumActiveFeatures = 1;
+	for (unsigned int i = 0; i<m_grid.size(); i++)
+		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
+}
+
+
+
+CGaussianRBFActionGridFeatureMap::CGaussianRBFActionGridFeatureMap(CConfigNode* pConfigNode)
+	: CGaussianRBFGridFeatureMap(pConfigNode), CActionFeatureMap(pConfigNode)
+{
+	m_pVarFeatures = new CFeatureList("RBFGrid/var");
+
+	m_grid = MULTI_VALUE<CActionVariableGrid>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid");
+
+	//pre-calculate number of features
+	m_totalNumFeatures = 1;
+
+	for (unsigned int i = 0; i < m_grid.size(); i++)
+		m_totalNumFeatures *= m_grid[i]->getNumCenters();// m_pNumCenters[i];
+
+	m_maxNumActiveFeatures = 1;
+	for (unsigned int i = 0; i<m_grid.size(); i++)
+		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 }

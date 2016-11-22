@@ -5,10 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
@@ -79,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="vfa-policy.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="world-magneticlevitation.cpp">
@@ -161,54 +154,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="actor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="controller.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="critic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="experiment.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="featuremap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="features.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="globals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="noise.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="reward.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="setpoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vfa.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vfa-critic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="actor-critic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="etraces.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="world-magneticlevitation.h">
       <Filter>world</Filter>
     </ClInclude>
@@ -221,56 +166,11 @@
     <ClInclude Include="world-windturbine.h">
       <Filter>world</Filter>
     </ClInclude>
-    <ClInclude Include="logger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stats.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="named-var-set.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="single-dimension-grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="simgod.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="simion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="policy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="policy-learner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="q-learners.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="app-rlsimion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="app.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="delayed-load.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="world-balancingpole.h">
       <Filter>world</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
       <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="experience-replay.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="world-mountaincar.h">
       <Filter>world</Filter>
@@ -283,6 +183,96 @@
     </ClInclude>
     <ClInclude Include="parameters.h">
       <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa-critic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="actor-critic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app-rlsimion.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="controller.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="critic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="delayed-load.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="etraces.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="experience-replay.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="experiment.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="featuremap.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="features.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="logger.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="named-var-set.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="noise.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="policy.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="policy-learner.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="q-learners.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="reward.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="setpoint.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simgod.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simion.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-grid.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stats.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vfa.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

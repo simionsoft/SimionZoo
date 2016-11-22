@@ -72,14 +72,18 @@ void CRewardFunction::initialize()
 	{
 		//create the reward vector and set names
 		numComponents = m_rewardComponents.size();
-
+		
 		for (int i = 0; i < numComponents; ++i)
 		{
 			rewardDescriptor.addVariable(m_rewardComponents[i]->getName(), "unitless"
 				, m_rewardComponents[i]->getMin(), m_rewardComponents[i]->getMax());
-			m_pRewardVector->getProperties(i).setName(m_rewardComponents[i]->getName());
 		}
 		m_pRewardVector = rewardDescriptor.getInstance();
+		for (int i= 0; i<numComponents; ++i)
+		{
+			m_pRewardVector->getProperties(i).setName(m_rewardComponents[i]->getName());
+		}
+		
 		m_bInitialized = true;
 	}
 	else CSimionApp::get()->pLogger->logMessage(MessageType::Warning, "Reward function already initialized. Can't initialize again");

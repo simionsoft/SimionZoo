@@ -45,6 +45,7 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
@@ -115,7 +116,6 @@
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="featuremap.cpp" />
-    <ClCompile Include="globals.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
     <ClCompile Include="parameters.cpp" />
@@ -168,7 +168,6 @@
     <ClInclude Include="experiment.h" />
     <ClInclude Include="featuremap.h" />
     <ClInclude Include="features.h" />
-    <ClInclude Include="globals.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameters-numeric.h" />

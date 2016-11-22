@@ -136,9 +136,9 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	void * logXMLDescriptorFile= openLogFile(filename);
 	sprintf_s(buffer,BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\">\n",OUTPUT_LOG_FILENAME);
 	writeEpisodeTypesToBuffer(buffer);
-	writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor()); //state
-	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()); //action
-	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getProperties());
+	writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
+	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
+	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
 	writeStatDescriptorToBuffer(buffer);
 	strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 	writeLogBuffer(logXMLDescriptorFile, buffer, strlen(buffer));
@@ -164,12 +164,12 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
-void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const CDescriptor& descriptor)
+void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const CDescriptor* descriptor)
 {
 	char buffer[BUFFER_SIZE];
-	for (unsigned int i = 0; i < descriptor.size(); i++)
+	for (int i = 0; i < descriptor->size(); i++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable>%s</%s-variable>\n", id, descriptor[i].getName(), id);
+		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable>%s</%s-variable>\n", id, (*descriptor)[i].getName(), id);
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }

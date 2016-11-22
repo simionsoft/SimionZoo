@@ -142,15 +142,9 @@ std::shared_ptr<CNumericValue> CNumericValue::getInstance(CConfigNode* pConfigNo
 {
 	return CHOICE<CNumericValue>(pConfigNode, "Schedule", "Schedule-type",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode,CConstantValue,"Constant","Constant value",""),
-		CHOICE_ELEMENT_NEW(pConfigNode, CInterpolatedValue, "Linear-Schedule", "Linearly interpolated schedule", ""),
-		CHOICE_ELEMENT_NEW(pConfigNode, CBhatnagarSchedule, "Bhatnagar-Schedule", "Bhatnagar's schedule", "")
+		{"Constant",CHOICE_ELEMENT_NEW<CConstantValue>},
+		{"Linear-Schedule",CHOICE_ELEMENT_NEW<CInterpolatedValue>},
+		{"Bhatnagar-Schedule",CHOICE_ELEMENT_NEW<CBhatnagarSchedule>}
 	});
-	//CHOICE("Schedule","Schedule-type");
-	//CHOICE_ELEMENT("Constant", CConstantValue,"Constant value");
-	//CHOICE_ELEMENT("Linear-Schedule", CInterpolatedValue,"Linear schedule");
-	//CHOICE_ELEMENT("Bhatnagar-Schedule", CBhatnagarSchedule,"Bhatnagar's schedule");
-	//END_CHOICE();
-	//END_CLASS();
 
 }

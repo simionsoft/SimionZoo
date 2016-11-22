@@ -8,10 +8,10 @@ typedef CNamedVarSet CReward;
 class CDynamicModel;
 class CConfigNode;
 class CRewardFunction;
+
 #include "../tinyxml2/tinyxml2.h"
 #include "parameters.h"
-#include <map>
-#include <memory>
+#include "named-var-set.h"
 
 class CDynamicModel
 {
@@ -35,8 +35,10 @@ public:
 	CReward* getRewardVector();
 
 	CDescriptor& getStateDescriptor();
+	CDescriptor* getStateDescriptorPtr();
 	CState* getStateInstance();
 	CDescriptor& getActionDescriptor();
+	CDescriptor* getActionDescriptorPtr();
 	CAction* getActionInstance();
 
 	double getConstant(const char* constantName);
@@ -59,6 +61,7 @@ public:
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel.ptr(); }
 
 	CWorld(CConfigNode* pConfigNode);
+	CWorld() = default;
 	virtual ~CWorld();
 
 	void reset(CState *s);

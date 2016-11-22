@@ -140,7 +140,7 @@ const char* CConfigNode::getConstString(const char* paramName, const char* defau
 CConfigNode* CConfigNode::getChild(const char* paramName)
 {
 	if (!this)
-		throw std::exception("Illegal access to child parameter ");
+		throw std::exception((std::string("Illegal access to child parameter ") + std::string(paramName)).c_str());
 
 	tinyxml2::XMLElement* child = FirstChildElement(paramName);
 	return static_cast<CConfigNode*> (child);
@@ -149,7 +149,7 @@ CConfigNode* CConfigNode::getChild(const char* paramName)
 CConfigNode* CConfigNode::getNextSibling(const char* paramName)
 {
 	if (!this)
-		throw std::exception("Illegal access to child parameter ");
+		throw std::exception((std::string("Illegal access to child parameter ") + std::string(paramName)).c_str());
 
 	tinyxml2::XMLElement* child = NextSiblingElement(paramName);
 	return static_cast<CConfigNode*> (child);

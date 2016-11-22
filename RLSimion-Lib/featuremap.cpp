@@ -13,7 +13,7 @@ std::shared_ptr<CStateFeatureMap> CStateFeatureMap::getInstance(CConfigNode* pCo
 {
 	return CHOICE<CStateFeatureMap>(pConfigNode,"Type", "Feature map type",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode,CGaussianRBFStateGridFeatureMap,"RBF-State-Grid","An RBF state-grid","")
+		{"RBF-State-Grid",CHOICE_ELEMENT_NEW<CGaussianRBFStateGridFeatureMap>}
 	});
 }
 
@@ -27,7 +27,7 @@ std::shared_ptr<CActionFeatureMap> CActionFeatureMap::getInstance(CConfigNode* p
 {
 	return CHOICE<CActionFeatureMap>(pConfigNode, "Type", "Feature map type",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode,CGaussianRBFActionGridFeatureMap,"RBF-Action-Grid","An RBF action-grid","")
+		{"RBF-Action-Grid",CHOICE_ELEMENT_NEW<CGaussianRBFActionGridFeatureMap>}
 	});
 }
 

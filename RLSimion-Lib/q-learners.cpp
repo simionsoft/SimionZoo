@@ -16,10 +16,8 @@ std::shared_ptr<CQPolicy> CQPolicy::getInstance(CConfigNode* pConfigNode)
 {
 	return CHOICE<CQPolicy>(pConfigNode,"Policy", "The exploration policy used to learn",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode, CQEGreedyPolicy,"Epsilon-Greedy"
-			, "Epsilon-greedy: with probability epsilon the action with the highest Q-value. With probability 1-epsilon a random action",""),
-		CHOICE_ELEMENT_NEW(pConfigNode, CQSoftMaxPolicy,"Soft-Max"
-			, "Soft-Max policy: higher probability to actions with higher Q-values. The temperature parameter tau balances the difference of probabilities.","")
+		{"Epsilon-Greedy",CHOICE_ELEMENT_NEW<CQEGreedyPolicy>},
+		{"Soft-Max",CHOICE_ELEMENT_NEW<CQSoftMaxPolicy>}
 	});
 }
 

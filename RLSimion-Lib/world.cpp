@@ -90,6 +90,7 @@ CDynamicModel::CDynamicModel()
 {
 	m_pStateDescriptor = new CDescriptor();
 	m_pActionDescriptor = new CDescriptor();
+	m_pRewardFunction = new CRewardFunction();
 }
 
 int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max)
@@ -120,6 +121,14 @@ CDescriptor& CDynamicModel::getActionDescriptor()
 {
 	return *m_pActionDescriptor;
 }
+CDescriptor* CDynamicModel::getStateDescriptorPtr()
+{
+	return m_pStateDescriptor;
+}
+CDescriptor* CDynamicModel::getActionDescriptorPtr()
+{
+	return m_pActionDescriptor;
+}
 CState* CDynamicModel::getStateInstance()
 {
 	return m_pStateDescriptor->getInstance(); 
@@ -133,20 +142,12 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 {
 	return CHOICE<CDynamicModel>(pConfigNode,"Model", "The world",
 	{
-	CHOICE_ELEMENT_NEW(pConfigNode, CWindTurbine, "Wind-turbine","A two-mass model of a VS Wind Turbine","World=Wind-turbine"),
-	CHOICE_ELEMENT_NEW(pConfigNode, CUnderwaterVehicle, "Underwater-vehicle", "An underwater vehicle control task","World=Underwater-vehicle"),
-	CHOICE_ELEMENT_NEW(pConfigNode, CPitchControl, "Pitch-control", "An airplane pitch control task","World=Pitch-control"),
-	CHOICE_ELEMENT_NEW(pConfigNode, CBalancingPole, "Balancing-pole", "The balancing pole control problem (Sutton)","World=Balancing-pole")
+		{make_tuple("Wind-turbine",CHOICE_ELEMENT_NEW<CWindTurbine>,"World=Wind-turbine")},
+		{make_tuple("Underwater-vehicle", CHOICE_ELEMENT_NEW<CUnderwaterVehicle>,"World=Underwater-vehicle")},
+		{make_tuple("Pitch-control",CHOICE_ELEMENT_NEW<CPitchControl>,"World=Pitch-control")},
+		{make_tuple("Balancing-pole",CHOICE_ELEMENT_NEW<CBalancingPole>,"World=Balancing-pole")},
+		{make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") }
 	});
-	//CHOICE("Model","The world");
-	//CHOICE_ELEMENT_XML("Wind-turbine", CWindTurbine, "../config/world/wind-turbine.xml","A two-mass model of a VS Wind Turbine");
-	//CHOICE_ELEMENT_XML("Underwater-vehicle", CUnderwaterVehicle, "../config/world/underwater-vehicle.xml","An underwater vehicle control task");
-	//CHOICE_ELEMENT_XML("Pitch-control", CPitchControl, "../config/world/pitch-control.xml","An airplane pitch control task");
-	//CHOICE_ELEMENT_XML("Balancing-pole", CBalancingPole, "../config/world/balancing-pole.xml", "The balancing pole control problem (Sutton)");
-	//CHOICE_ELEMENT_XML("Mountain-car", CMountainCar, "../config/world/mountain-car.xml", "The mountain-car task as implemented by Sutton")
-	////CHOICE _ ELEMENT _ XML("Magnetic-leviation", CMagneticLevitation, "../config/world/magnetic-levitation.xml");
-	//END_CHOICE();
-	//return 0;
 }
 
 double CDynamicModel::getReward(const CState *s, const CAction *a, const CState *s_p)

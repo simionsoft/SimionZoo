@@ -8,7 +8,6 @@
 //MOTIVATION: be able to construct quickly the objects needed in an experiment
 //and get the input/output files without loading matrices from file or doing any heavy-weight lifting
 
-
 class CDeferredLoad
 {
 public:
@@ -16,7 +15,7 @@ public:
 	//
 	//For example, CActor::deferredLoad() AFTER allocating the memory for
 	//the weights in LinearStateVFA::deferredLoad()
-	CDeferredLoad(unsigned int loadOrder= 5);
+	CDeferredLoad(unsigned int loadOrder = 5);
 	virtual ~CDeferredLoad();
 	virtual void deferredLoadStep() = 0;
 };

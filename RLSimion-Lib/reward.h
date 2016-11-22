@@ -11,6 +11,8 @@ class CConfigNode;
 class IRewardComponent
 {
 public:
+	IRewardComponent() = default;
+	virtual ~IRewardComponent()= default;
 	virtual double getReward(const CState *s, const CAction* a, const CState *s_p) = 0;
 	virtual const char* getName()= 0;
 	virtual double getMin() = 0;

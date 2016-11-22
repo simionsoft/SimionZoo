@@ -17,9 +17,9 @@ std::shared_ptr<CCritic> CCritic::getInstance(CConfigNode* pConfigNode)
 {
 	return CHOICE<CCritic>(pConfigNode, "Critic", "Critic type",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode, CTDLambdaCritic,"TD-Lambda","TD-Lambda algorithm",""),
-		CHOICE_ELEMENT_NEW(pConfigNode, CTrueOnlineTDLambdaCritic,"True-Online-TD-Lambda","True-online TD-Lambda algorithm",""),
-		CHOICE_ELEMENT_NEW(pConfigNode,CTDCLambdaCritic,"TDC-Lambda", "TDC-Lambda algorithm","")
+		{"TD-Lambda",CHOICE_ELEMENT_NEW<CTDLambdaCritic>},
+		{"True-Online-TD-Lambda",CHOICE_ELEMENT_NEW<CTrueOnlineTDLambdaCritic>},
+		{"TDC-Lambda",CHOICE_ELEMENT_NEW<CTDCLambdaCritic>}
 	});
 	//CHOICE("Critic","Critic type");
 	//CHOICE_ELEMENT("TD-Lambda", CTDLambdaCritic,"TD-Lambda algorithm");

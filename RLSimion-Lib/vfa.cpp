@@ -136,13 +136,14 @@ CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 }
 void CLinearStateVFA::deferredLoadStep()
 {
-	m_pWeights = std::unique_ptr<double>(new double[m_numWeights]);
+	m_pWeights = std::shared_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights.get()[i] = m_initValue.get();
 }
 
 
-
+CLinearStateVFA::CLinearStateVFA()
+{}
 
 
 CLinearStateVFA::~CLinearStateVFA()

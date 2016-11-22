@@ -22,8 +22,8 @@ std::shared_ptr<CPolicyLearner> CPolicyLearner::getInstance(CConfigNode* pConfig
 {
 	return CHOICE<CPolicyLearner>(pConfigNode,"Policy-Learner", "The algorithm used to learn the policy",
 	{
-		CHOICE_ELEMENT_NEW(pConfigNode,CCACLALearner, "CACLA", "CACLA algorithm",""),
-		CHOICE_ELEMENT_NEW(pConfigNode,CRegularPolicyGradientLearner,"Regular-Gradient", "A regular policy-gradient learning algorithm","")
+		{"CACLA",CHOICE_ELEMENT_NEW<CCACLALearner>},
+		{"Regular-Gradient",CHOICE_ELEMENT_NEW<CRegularPolicyGradientLearner>}
 	});
 }
 

@@ -24,12 +24,12 @@ class CNamedVarSet;
 
 class CDescriptor
 {
-	std::vector<CNamedVarProperties> m_pProperties;
+	std::vector<CNamedVarProperties*> m_pProperties;
 public:
 	CNamedVarSet* getInstance();
 	int size() const { return m_pProperties.size(); }
-	CNamedVarProperties& operator[](int idx) { return m_pProperties[idx]; }
-	const CNamedVarProperties& operator[](int idx) const { return m_pProperties[idx]; }
+	CNamedVarProperties& operator[](int idx) { return *m_pProperties[idx]; }
+	const CNamedVarProperties& operator[](int idx) const { return *m_pProperties[idx]; }
 	int addVariable(const char* name, const char* units, double min, double max);
 	int getVarIndex (const char* name);
 };
@@ -64,6 +64,7 @@ public:
 	CNamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
 	CNamedVarProperties& getProperties(const char* varName) const;
 	CDescriptor& getProperties() { return m_pProperties; }
+	CDescriptor* getPropertiesPtr() { return &m_pProperties; }
 };
 
 using CState= CNamedVarSet;

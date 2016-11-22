@@ -26,11 +26,12 @@ class CExperienceReplay: public CDeferredLoad
 	INT_PARAM m_bufferSize;
 	INT_PARAM m_updateBatchSize;
 
-	int m_currentPosition;
-	int m_numTuples;
+	int m_currentPosition= 0;
+	int m_numTuples= 0;
 
 public:
 	CExperienceReplay(CConfigNode* pParameters);
+	CExperienceReplay();
 	~CExperienceReplay();
 
 	void addTuple(CState* s, CAction* a, CState* s_p, double r);

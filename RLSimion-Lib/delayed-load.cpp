@@ -5,7 +5,7 @@
 
 CDeferredLoad::CDeferredLoad(unsigned int loadOrder)
 {
-	CSimGod::registerDelayedLoadObj(this,loadOrder);
+	CSimGod::registerDeferredLoadStep(this,loadOrder);
 }
 
 CDeferredLoad::~CDeferredLoad()

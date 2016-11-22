@@ -5,8 +5,8 @@ CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, do
 {
 	sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
 	sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
-	min = min;
-	max = max;
+	m_min = min;
+	m_max = max;
 }
 
 void CNamedVarProperties::setName(const char* name)
@@ -18,10 +18,17 @@ int CDescriptor::getVarIndex(const char* name)
 {
 	for (unsigned int i = 0; i<m_pProperties.size(); i++)
 	{
-		if (strcmp(m_pProperties[i].getName(), name) == 0)
+		if (strcmp(m_pProperties[i]->getName(), name) == 0)
 			return i;
 	}
 	return -1; //error return value
+}
+
+int CDescriptor::addVariable(const char* name, const char* units, double min, double max)
+{
+	int index = m_pProperties.size();
+	m_pProperties.push_back(new CNamedVarProperties(name, units, min, max));
+	return index;
 }
 
 CNamedVarSet* CDescriptor::getInstance()
