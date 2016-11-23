@@ -3,25 +3,6 @@
   <CLASS Name="m_pCritic-Factory">
   </CLASS>
 
-  <ENUMERATION Name="Boolean">
-    <VALUE>False</VALUE>
-    <VALUE>True</VALUE>
-  </ENUMERATION>
-  <ENUMERATION Name="Distribution">
-    <VALUE>linear</VALUE>
-    <VALUE>quadratic</VALUE>
-    <VALUE>cubic</VALUE>
-  </ENUMERATION>
-  <ENUMERATION Name="Interpolation">
-    <VALUE>linear</VALUE>
-    <VALUE>quadratic</VALUE>
-    <VALUE>cubic</VALUE>
-  </ENUMERATION>
-  <ENUMERATION Name="TimeReference">
-    <VALUE>episode</VALUE>
-    <VALUE>experiment</VALUE>
-    <VALUE>experimentTime</VALUE>
-  </ENUMERATION>
   <CLASS Name="m_pQPolicy-Factory">
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="true"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>

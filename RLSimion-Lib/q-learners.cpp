@@ -107,13 +107,6 @@ CQLearning::CQLearning(CConfigNode* pConfigNode)
 	m_pGamma= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma", "The gamma parameter of the MDP");
 	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain [0-1]");
 	m_pAux = new CFeatureList("QLearning/aux");
-	//CHILD_CLASS(m_pQFunction, "Q-Function", "The parameterization of the Q-Function", false, CLinearStateActionVFA);
-	//CHILD_CLASS_FACTORY(m_pQPolicy, "Policy", "The policy to be followed", false, CQPolicy);
-	//CHILD_CLASS(m_eTraces, "E-Traces", "E-Traces", true, CETraces, "Q-Learning/traces");
-	//NUMERIC_VALUE(m_pGamma, "Gamma", "The gamma parameter of the MDP");
-	//NUMERIC_VALUE(m_pAlpha, "Alpha", "The learning gain [0-1]");
-	//m_pAux = new CFeatureList("QLearning/aux");
-	//END_CLASS();
 }
 CQLearning::~CQLearning()
 {

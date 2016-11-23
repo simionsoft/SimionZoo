@@ -10,7 +10,6 @@
 *.sln.docstates
 experiments/*
 !experiments/examples
-experiment/examples/experiment-log.*
 
 *.VC.opendb
 *.VC.db
@@ -80,6 +79,7 @@ dlldata.c
 *.pidb
 *.svclog
 *.scc
+*.bin
 
 # Chutzpah Test files
 _Chutzpah*

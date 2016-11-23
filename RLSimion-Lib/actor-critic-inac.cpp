@@ -18,21 +18,17 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 
 	//critic's stuff
 	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
-	//CHILD_CLASS(m_pVFunction, "VFunction", "The Value-function", false, CLinearStateVFA);
 	m_s_features = new CFeatureList("Critic/s");
 	m_s_p_features = new CFeatureList("Critic/s_p");
 	m_pAlphaV = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
-	//NUMERIC_VALUE(m_pAlphaV, "Alpha-v","Learning gain used by the critic");
 	m_pAlphaR = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-r", "Learning gain used to average the reward");
-	//NUMERIC_VALUE(m_pAlphaR,"Alpha-r","Learning gain used to average the reward");
 	m_pGamma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma", "Gamma parameter of the MDP");
-	//NUMERIC_VALUE(m_pGamma, "Gamma","Gamma parameter of the MDP");
 	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
-	//CHILD_CLASS(m_e_v,"V-ETraces","Traces used by the critic",true,CETraces,"Critic/e_v");
+	m_e_v->setName("Critic/e_v");
 
 	//actor's stuff
 	m_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy");
-	//MULTI_VALUED_FACTORY(m_policies, "Policy", "A policy", CPolicy);
+
 	m_w = new CFeatureList*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
@@ -44,10 +40,9 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 	m_grad_u = new CFeatureList();
 	m_grad_u->setName("Actor/grad-u");
 	m_pAlphaU = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha-u", "Learning gain used by the actor");
-	//NUMERIC_VALUE(m_pAlphaU, "Alpha-u","Learning gain used by the actor");
+
 	m_e_u = CHILD_OBJECT<CETraces>(pConfigNode, "U-ETraces", "Traces used by the actor", true);
-	//CHILD_CLASS(m_e_u, "U-ETraces","Traces used by the actor",true, CETraces, "Actor/E-Traces");
-	//END_CLASS();
+	m_e_u->setName("Actor/E-Traces");
 }
 
 CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()

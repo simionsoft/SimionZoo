@@ -13,9 +13,8 @@ CCACLALearner::CCACLALearner(CConfigNode* pConfigNode): CPolicyLearner(pConfigNo
 {
 	m_pStateFeatures = new CFeatureList("Actor/s");
 	m_e = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces used by CACLA", true);
-	//CHILD_CLASS(m_e, "E-Traces","Eligibility traces used by CACLA",true,CETraces, "Actor/E-Traces");
+	m_e->setName("Actor/E-Traces");
 	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Learning gain [0..1]");
-	//NUMERIC_VALUE(m_pAlpha, "Alpha","Learning gain [0..1]");
 }
 
 CCACLALearner::~CCACLALearner()

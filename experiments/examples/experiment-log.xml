@@ -6,11 +6,6 @@
   <State-variable>theta_dot</State-variable>
   <Action-variable>force</Action-variable>
   <Reward-variable>reward</Reward-variable>
-  <Stat-variable>Features/RBFGrid/var</Stat-variable>
-  <Stat-variable>Features/LinearStateVFA/aux</Stat-variable>
-  <Stat-variable>Features/Actor/s</Stat-variable>
-  <Stat-variable>Features/Actor/E-Traces</Stat-variable>
-  <Stat-variable>Features/LinearStateVFA/aux</Stat-variable>
   <Stat-variable>Features/Critic/E-Traces</Stat-variable>
-  <Stat-variable>Features/Critic/aux</Stat-variable>
+  <Stat-variable>TD-error/TD-error</Stat-variable>
 </ExperimentLogDescriptor>

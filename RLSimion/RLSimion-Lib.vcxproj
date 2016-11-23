@@ -73,7 +73,8 @@
       <ManifestFile>$(OutDir)$(TargetName)$(TargetExt).manifest</ManifestFile>
     </Link>
     <CustomBuildStep>
-      <Command>dumpbin $(ProjectName).exe</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
