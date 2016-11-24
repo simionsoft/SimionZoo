@@ -1,13 +1,1 @@
 <?xml version="1.0"?>
-<DEFINITIONS>
-  <CLASS Name="m_pCritic-Factory">
-  </CLASS>
-
-  <CLASS Name="m_pQPolicy-Factory">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="true"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
-    <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
-  </CLASS>
-
-
-</DEFINITIONS>
