@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace SimionSrcParser
 {
+    class Choice
+    {
+
+    }
     class FactoryParser
     {
     }

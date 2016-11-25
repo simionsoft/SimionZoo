@@ -13,8 +13,9 @@ namespace SimionSrcParser
     class SimionSrcParser
     {
         //PRIVATE stuff///////////////////////////////////////////////////
+        
         string m_currentFile = "";
-        List<Constructor> m_constructors;
+        List<Constructor> m_constructors= new List<Constructor>();
 
         void getEnclosedBody(string content, int startIndex,string openChar,string closeChar
             , out string definition, out string prefix)
@@ -48,7 +49,7 @@ namespace SimionSrcParser
                 paramName = match.Groups[2].Value;
                 getEnclosedBody(content,match.Index + match.Length,"{","}"
                     , out definition, out prefix);
-                m_constructors.Add(new Constructor(className, paramName, prefix, definition));
+                m_constructors.Add(new Constructor(className, paramName, definition, prefix));
             }
         }
         void parseFactories(string content)
