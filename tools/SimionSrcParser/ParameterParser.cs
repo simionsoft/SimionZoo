@@ -52,12 +52,12 @@ namespace SimionSrcParser
         {
             foreach (ParameterType parType in m_parameterTypes)
             {
-                string sPattern = parType.m_inSrcTemplateName + @"\s*\" + extractTokenRegex + @"\)";
+                string sPattern = parType.m_inSrcTemplateName + @"\s*\(" + extractTokenRegex + @"\)";
 
                 foreach (Match match in Regex.Matches(body, sPattern))
                 {
                     var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                    string arguments = functionArgumentsMatch.Groups[1].Value;
+                    string arguments = functionArgumentsMatch.Groups[2].Value;
                     var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
                     Parameter newParameter = new Parameter();
                     newParameter.m_type = parType;
