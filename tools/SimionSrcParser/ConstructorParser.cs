@@ -10,10 +10,15 @@ namespace SimionSrcParser
         private string m_className;
         List<string> m_baseClassConstructors = new List<string>();
         List<Parameter> m_parameters = new List<Parameter>();
+        bool m_bDefinesWorldClass;
         public Constructor(string className, string paramName, string body, string bodyPrefix)
         {
             m_className = className;
             g_parameterParser.parse(body, ref m_parameters);
+
+            if (m_parameters.Exists(p => p.definesWorldClass()))
+                m_bDefinesWorldClass = true;
+            else m_bDefinesWorldClass = false;
         }
         public string outputXML(int level)
         {

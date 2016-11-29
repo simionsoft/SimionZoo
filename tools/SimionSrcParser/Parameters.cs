@@ -1,4 +1,5 @@
-﻿using Simion;
+﻿using System;
+using Simion;
 
 namespace SimionSrcParser
 {
@@ -6,6 +7,7 @@ namespace SimionSrcParser
     public abstract class Parameter
     {
         public abstract string outputXML(int level);
+        public abstract bool definesWorldClass()
     }
     public class SimpleParameter: Parameter
     {
@@ -20,6 +22,10 @@ namespace SimionSrcParser
             for (int i = 0; i < level; i++) output += "  ";
             output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\"" + m_default + "\">\n";
             return output;
+        }
+        public override bool definesWorldClass()
+        {
+            return false;
         }
     }
     public class IntParameter: SimpleParameter
