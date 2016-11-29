@@ -98,7 +98,8 @@ namespace SimionSrcParser
 
             //// encoding=\"utf-8\"
             outputFile.WriteLine("<?xml version=\"1.0\"?>");//\n<DEFINITIONS>\n");
-
+            foreach (Constructor classConstructor in m_constructors)
+                outputFile.Write(classConstructor.outputXML(0));
             //outputFile.Write(@"</DEFINITIONS>");
             outputFile.Close();
         }

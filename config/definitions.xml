@@ -1,1 +1,148 @@
 <?xml version="1.0"?>
+<CLASS Name="CCACLALearner>
+</CLASS>
+<CLASS Name="CIncrementalNaturalActorCritic>
+</CLASS>
+<CLASS Name="CActorCritic>
+</CLASS>
+<CLASS Name="CRegularPolicyGradientLearner>
+</CLASS>
+<CLASS Name="CActor>
+</CLASS>
+<CLASS Name="RLSimionApp>
+</CLASS>
+<CLASS Name="CLQRGain>
+  <DOUBLE-VALUE Name="Gain" Comment="The gain applied to the input state variable" Default="0.1">
+</CLASS>
+<CLASS Name="CLQRController>
+</CLASS>
+<CLASS Name="CPIDController>
+</CLASS>
+<CLASS Name="CWindTurbineVidalController>
+</CLASS>
+<CLASS Name="CWindTurbineBoukhezzarController>
+</CLASS>
+<CLASS Name="CWindTurbineJonkmanController>
+  <DOUBLE-VALUE Name="CornerFreq" Comment="Corner Freq. parameter" Default="0.0">
+  <DOUBLE-VALUE Name="VSRtGnSp" Comment="Rated Generator Speed" Default="0.0">
+  <DOUBLE-VALUE Name="VS_SlPc" Comment="SIPc parameter" Default="0.0">
+  <DOUBLE-VALUE Name="VS_Rgn2K" Comment="Rgn2K parameter" Default="0.0">
+  <DOUBLE-VALUE Name="VS_Rgn2Sp" Comment="Rgn2Sp parameter" Default="0.0">
+  <DOUBLE-VALUE Name="VS_CtInSp" Comment="CtlnSp parameter" Default="0.0">
+  <DOUBLE-VALUE Name="VS_RtPwr" Comment="Rated power" Default="0.0">
+  <DOUBLE-VALUE Name="VS_Rgn3MP" Comment="Rgn3MP parameter" Default="0.0">
+  <DOUBLE-VALUE Name="PC_RefSpd" Comment="Pitch control reference speed" Default="0.0">
+</CLASS>
+<CLASS Name="CTDLambdaCritic>
+</CLASS>
+<CLASS Name="CTDCLambdaCritic>
+</CLASS>
+<CLASS Name="CTrueOnlineTDLambdaCritic>
+</CLASS>
+<CLASS Name="CCritic>
+</CLASS>
+<CLASS Name="CETraces>
+  <DOUBLE-VALUE Name="Threshold" Comment="Threshold applied to trace factors" Default="0.001">
+  <DOUBLE-VALUE Name="Lambda" Comment="Lambda parameter" Default="0.9">
+  <DOUBLE-VALUE Name="Replace" Comment="Replace existing traces? Or add?" Default="true">
+</CLASS>
+<CLASS Name="CExperienceReplay>
+  <INTEGER-VALUE Name="Buffer-Size" Comment="Size of the buffer used to store experience tuples" Default="1000">
+  <INTEGER-VALUE Name="Update-Batch-Size" Comment="Number of tuples used each time-step in the update" Default="10">
+</CLASS>
+<CLASS Name="CExperiment>
+  <INTEGER-VALUE Name="Random-Seed" Comment="Random seed used to generate random sequences of numbers" Default="1">
+  <INTEGER-VALUE Name="Num-Episodes" Comment="Number of episodes" Default="1000">
+  <INTEGER-VALUE Name="Eval-Freq" Comment="Evaluation frequency (in episodes)" Default="10">
+  <DOUBLE-VALUE Name="Progress-Update-Freq" Comment="Progress update frequency (seconds)" Default="1.0">
+  <DOUBLE-VALUE Name="Episode-Length" Comment="Length of an episode(seconds)" Default="10.0">
+</CLASS>
+<CLASS Name="CGaussianRBFStateGridFeatureMap>
+</CLASS>
+<CLASS Name="CGaussianRBFActionGridFeatureMap>
+</CLASS>
+<CLASS Name="CStateFeatureMap>
+</CLASS>
+<CLASS Name="CActionFeatureMap>
+</CLASS>
+<CLASS Name="CLogger>
+  <DOUBLE-VALUE Name="Log-Freq" Comment="Log frequency. Simulation time in seconds." Default="0.25">
+  <DOUBLE-VALUE Name="Log-eval-episodes" Comment="Log evaluation episodes?" Default="true">
+  <DOUBLE-VALUE Name="Log-training-episodes" Comment="Log training episodes?" Default="false">
+</CLASS>
+<CLASS Name="CGaussianNoise>
+</CLASS>
+<CLASS Name="CConstantValue>
+  <DOUBLE-VALUE Name="Value" Comment="Constant value" Default="0.0">
+</CLASS>
+<CLASS Name="CInterpolatedValue>
+  <DOUBLE-VALUE Name="Start-Offset" Comment="Normalized time from which the schedule will begin [0...1]" Default="0.0">
+  <DOUBLE-VALUE Name="Pre-Offset-Value" Comment="Output value before the schedule begins" Default="0.1">
+  <DOUBLE-VALUE Name="Initial-Value" Comment="Output value at the beginning of the schedule" Default="0.1">
+  <DOUBLE-VALUE Name="End-Value" Comment="Output value at the end of the schedule" Default="0.0">
+  <DOUBLE-VALUE Name="Evaluation-Value" Comment="Output value during evaluation episodes" Default="0.0">
+</CLASS>
+<CLASS Name="CBhatnagarSchedule>
+  <DOUBLE-VALUE Name="Alpha-0" Comment="Alpha-0 parameter in Bhatnagar's schedule" Default="1.0">
+  <DOUBLE-VALUE Name="Alpha-c" Comment="Alpha-c parameter in Bhatnagar's schedule" Default="1.0">
+  <DOUBLE-VALUE Name="Time-Exponent" Comment="Time exponent in Bhatnagar's schedule" Default="1.0">
+  <DOUBLE-VALUE Name="Evaluation-Value" Comment="Output value during evaluation episodes" Default="0.0">
+</CLASS>
+<CLASS Name="STATE_VARIABLE>
+</CLASS>
+<CLASS Name="ACTION_VARIABLE>
+</CLASS>
+<CLASS Name="CPolicyLearner>
+</CLASS>
+<CLASS Name="CQEGreedyPolicy>
+</CLASS>
+<CLASS Name="CQSoftMaxPolicy>
+</CLASS>
+<CLASS Name="CQLearning>
+</CLASS>
+<CLASS Name="CDoubleQLearning>
+  <INTEGER-VALUE Name="Target-Update-Freq" Comment="The number of steps between updates of the target Q-Function" Default="100">
+</CLASS>
+<CLASS Name="CSARSA>
+</CLASS>
+<CLASS Name="CSimGod>
+</CLASS>
+<CLASS Name="CStateVariableGrid>
+  <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3">
+</CLASS>
+<CLASS Name="CActionVariableGrid>
+  <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3">
+</CLASS>
+<CLASS Name="CPolicy>
+</CLASS>
+<CLASS Name="CDeterministicPolicyGaussianNoise>
+</CLASS>
+<CLASS Name="CStochasticPolicyGaussianNoise>
+</CLASS>
+<CLASS Name="CLinearStateVFA>
+  <DOUBLE-VALUE Name="Init-Value" Comment="The initial value given to the weights on initialization" Default="0.0">
+</CLASS>
+<CLASS Name="CLinearStateActionVFA>
+  <DOUBLE-VALUE Name="Init-Value" Comment="The initial value given to the weights on initialization" Default="0.0">
+</CLASS>
+<CLASS Name="CBalancingPole>
+</CLASS>
+<CLASS Name="CMagneticLevitation>
+  <FILE-PATH-VALUE Name="Evaluation-Set-Point" Comment="The setpoint file" Default="../config/world/magnetic-levitation/setpoint.txt">
+</CLASS>
+<CLASS Name="CMountainCar>
+</CLASS>
+<CLASS Name="CPitchControl>
+  <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/pitch-control/setpoint.txt">
+</CLASS>
+<CLASS Name="CUnderwaterVehicle>
+  <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/underwater-vehicle/setpoint.txt">
+</CLASS>
+<CLASS Name="CWindTurbine>
+  <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Comment="The wind file used for evaluation" Default="../config/world/wind-turbine/TurbSim-10.25.hh">
+  <FILE-PATH-VALUE Name="Power-Set-Point" Comment="The power setpoint file" Default="../config/world/wind-turbine/power-setpoint.txt">
+</CLASS>
+<CLASS Name="CWorld>
+  <INTEGER-VALUE Name="Num-Integration-Steps" Comment="The number of integration steps performed each simulation time-step" Default="4">
+  <DOUBLE-VALUE Name="Delta-T" Comment="The delta-time between simulation steps" Default="0.01">
+</CLASS>

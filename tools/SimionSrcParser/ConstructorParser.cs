@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Simion;
 
 namespace SimionSrcParser
 {
@@ -16,6 +14,16 @@ namespace SimionSrcParser
         {
             m_className = className;
             g_parameterParser.parse(body, ref m_parameters);
+        }
+        public string outputXML(int level)
+        {
+            string output = "";
+            for (int i = 0; i < level; i++) output += "  ";
+            output += "<" + XMLConfig.classDefinitionNodeTag + " Name=\"" + m_className + ">\n";
+            foreach (Parameter param in m_parameters)
+                output+= param.outputXML(level+1);
+            output += "</" + XMLConfig.classDefinitionNodeTag + ">\n";
+            return output;
         }
     }
     public class Factory
