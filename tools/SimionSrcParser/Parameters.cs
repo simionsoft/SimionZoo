@@ -179,4 +179,52 @@ namespace SimionSrcParser
     {
         public ActionVarRefParameter(string name, string comment) : base(VarType.ActionVariable, name, comment) { }
     }
+    public class MultiValueParameter : Parameter
+    {
+        string m_className, m_objectName, m_comment;
+        bool m_bOptional;
+        public MultiValueParameter(string className, string objectName, string comment, bool optional)
+        {
+            m_className = className;
+            m_objectName = objectName;
+            m_comment = comment;
+            m_bOptional = optional;
+        }
+        public override string outputXML(int level)
+        {
+            string output = "";
+            addIndentation(ref output, level);
+            output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
+                + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
+                + "=\"" + m_comment + "\">\n";
+            return output;
+        }
+        public override bool definesWorldClass()
+        {
+            return false;
+        }
+    }
+    public class MultiValueFactoryParameter : Parameter
+    {
+        string m_className, m_objectName, m_comment, m_badgerInfo;
+        bool m_bOptional;
+        public MultiValueFactoryParameter(string className, string objectName, string comment, bool optional)
+        {
+            m_className = className;
+            m_objectName = objectName;
+            m_comment = comment;
+            m_bOptional = optional;
+        }
+        public override string outputXML(int level)
+        {
+            string output = "";
+            addIndentation(ref output, level);
+            output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
+                + "-Factory\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
+                + "=\"" + m_comment + "\">\n";
+            return output;
+        }
+        public override bool definesWorldClass() { return false; }
+    }
+
 }

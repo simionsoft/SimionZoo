@@ -35,6 +35,8 @@
 </CLASS>
 <CLASS Name="CLQRController>
   <ACTION-VAR-REF Name="Output-Actionn Comment="The output action">
+  <MULTI-VALUED Class="CLQRGain" Name="LQR-Gain" Comment="An LQR gain on an input state variable">
+  <MULTI-VALUED Class="CLQRGain-Factory" Name="LQR-Gain" Comment="An LQR gain on an input state variable">
 </CLASS>
 <CLASS Name="CPIDController>
   <BRANCH Class="CNumericValue-Factory" Name="KP" Comment="Proportional gain">
@@ -105,8 +107,12 @@
   <DOUBLE-VALUE Name="Episode-Length" Comment="Length of an episode(seconds)" Default="10.0">
 </CLASS>
 <CLASS Name="CGaussianRBFStateGridFeatureMap>
+  <MULTI-VALUED Class="CStateVariableGrid" Name="RBF-Grid-Dimension" Comment="Parameters of the state-dimension's grid">
+  <MULTI-VALUED Class="CStateVariableGrid-Factory" Name="RBF-Grid-Dimension" Comment="Parameters of the state-dimension's grid">
 </CLASS>
 <CLASS Name="CGaussianRBFActionGridFeatureMap>
+  <MULTI-VALUED Class="CActionVariableGrid" Name="RBF-Grid-Dimension" Comment="Parameters of the action-dimension's grid">
+  <MULTI-VALUED Class="CActionVariableGrid-Factory" Name="RBF-Grid-Dimension" Comment="Parameters of the action-dimension's grid">
 </CLASS>
 <CLASS Name="CStateFeatureMap>
 </CLASS>

@@ -142,4 +142,30 @@ namespace SimionSrcParser
             parsedParameters.Add(new ActionVarRefParameter(parsedArguments[1], parsedArguments[2]));
         }
     }
+    public class MultiValueParameterParser : Parser
+    {
+        public MultiValueParameterParser() : base("MULTI_VALUE", true) { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            bool bOptional = false; //default value
+            if (parsedArguments.Count > 4)
+                bOptional = bool.Parse(parsedArguments[4]);
+
+            parsedParameters.Add(new MultiValueParameter(parsedArguments[0], parsedArguments[2]
+                , parsedArguments[3], bOptional));
+        }
+    }
+    public class MultiValueFactoryParameterParser : Parser
+    {
+        public MultiValueFactoryParameterParser() : base("MULTI_VALUE", true) { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            bool bOptional = false; //default value
+            if (parsedArguments.Count > 4)
+                bOptional = bool.Parse(parsedArguments[4]);
+
+            parsedParameters.Add(new MultiValueFactoryParameter(parsedArguments[0], parsedArguments[2]
+                , parsedArguments[3], bOptional));
+        }
+    }
 }
