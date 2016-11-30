@@ -38,8 +38,9 @@ namespace Simion
         public const string xmlRefNodeTag = "XML-NODE-REF";
         public const string forkTag = "FORK";
         public const string forkedNodeTag = "FORKED-NODE";
-        public const string forkValueTag = "FORK-VALUE";     
-
+        public const string forkValueTag = "FORK-VALUE";
+        public const string stateVarRefTag = "STATE-VAR-REF";
+        public const string actionVarRefTag = "ACTION-VAR-REF";
         //Attributes
         public const string nameAttribute = "Name";
         public const string commentAttribute = "Comment";
@@ -52,6 +53,7 @@ namespace Simion
         public const string hangingFromAttribute = "HangingFrom";
         public const string versionAttribute = "FileVersion";
         public const string pathAttribute = "Path";
+        public const string badgerInfoAttribute = "BadgerInfo";
 
         //Attribute special values
         public const string newWindowValue = "New";

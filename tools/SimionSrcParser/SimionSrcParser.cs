@@ -13,7 +13,6 @@ namespace SimionSrcParser
     class SimionSrcParser
     {
         //PRIVATE stuff///////////////////////////////////////////////////
-        
         string m_currentFile = "";
         List<Constructor> m_constructors= new List<Constructor>();
 

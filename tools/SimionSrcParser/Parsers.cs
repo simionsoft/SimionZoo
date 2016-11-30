@@ -8,7 +8,6 @@ namespace SimionSrcParser
     abstract public class Parser
     {
         protected List<string> parsedArguments;
-        protected string templateArgument;
         protected string m_inSrcTemplateName;
         protected bool m_bUseTemplateArgument;
         protected string m_templateArgument;
@@ -20,12 +19,18 @@ namespace SimionSrcParser
         }
         public void parse(string content, ref List<Parameter> parsedParameters)
         {
-            string sPattern = m_inSrcTemplateName + @"\s*\(" + ParameterParser.extractTokenRegex + @"\)";
+            string sPattern;
+            if (!m_bUseTemplateArgument)
+                sPattern= m_inSrcTemplateName + @"\s*\(" + ParameterParser.extractTokenRegex + @"\)";
+            else
+                sPattern = m_inSrcTemplateName + @"\s*<\s*(\w+?)\s*>\s*?\(" + ParameterParser.extractTokenRegex + @"\)";
 
             foreach (Match match in Regex.Matches(content, sPattern))
             {
                 string strippedArgumentValue;
                 parsedArguments.Clear();
+                if (m_bUseTemplateArgument)
+                    parsedArguments.Add(match.Groups[1].Value);
 
                 var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, ParameterParser.extractFuncRegex);
                 string arguments = functionArgumentsMatch.Groups[2].Value;
@@ -89,6 +94,52 @@ namespace SimionSrcParser
         public override void addParameter(ref List<Parameter> parsedParameters)
         {
             parsedParameters.Add(new DirPathParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
+        }
+    }
+    public class ChildObjectParameterParser : Parser
+    {
+        public ChildObjectParameterParser() : base("CHILD_OBJECT", true) { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            bool bOptional = false; //default value
+            string badgerInfo = "";
+            if (parsedArguments.Count > 4)
+                bOptional = bool.Parse(parsedArguments[4]);
+            if (parsedArguments.Count>5)
+                badgerInfo= parsedArguments[5];
+            parsedParameters.Add(new ChildObjectParameter(parsedArguments[0], parsedArguments[2]
+                , parsedArguments[3],bOptional ,badgerInfo));
+        }
+    }
+    public class ChildObjectFactoryParameterParser : Parser
+    {
+        public ChildObjectFactoryParameterParser() : base("CHILD_OBJECT_FACTORY", true) { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            bool bOptional = false; //default value
+            string badgerInfo = "";
+            if (parsedArguments.Count > 4)
+                bOptional = bool.Parse(parsedArguments[4]);
+            if (parsedArguments.Count > 5)
+                badgerInfo = parsedArguments[5];
+            parsedParameters.Add(new ChildObjectFactoryParameter(parsedArguments[0], parsedArguments[2]
+                , parsedArguments[3], bOptional, badgerInfo));
+        }
+    }
+    public class StateVarRefParser : Parser
+    {
+        public StateVarRefParser() : base("STATE_VARIABLE", false) { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            parsedParameters.Add(new StateVarRefParameter(parsedArguments[1], parsedArguments[2]));
+        }
+    }
+    public class ActionVarRefParser : Parser
+    {
+        public ActionVarRefParser() : base("ACTION_VARIABLE", false) { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            parsedParameters.Add(new ActionVarRefParameter(parsedArguments[1], parsedArguments[2]));
         }
     }
 }
