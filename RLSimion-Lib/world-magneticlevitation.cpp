@@ -17,7 +17,7 @@ CMagneticLevitation::CMagneticLevitation(CConfigNode* pConfigNode)
 	m_sCurrent= addStateVariable("current","A",-100,100);//?????????????
 	m_sPositionDeviation = addStateVariable("position-deviation","m",-0.13,0.13);
 
-	addActionVariable("voltage","V,",-60,60);
+	addActionVariable("voltage","V",-60,60);
 
 
 	FILE_PATH_PARAM filename= FILE_PATH_PARAM(pConfigNode, "Evaluation-Set-Point"

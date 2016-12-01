@@ -168,4 +168,40 @@ namespace SimionSrcParser
                 , parsedArguments[3], bOptional));
         }
     }
+    public abstract class WorldParser : Parser
+    {
+        public enum WorldParameterType { StateVariable, ActionVariable, Constant };
+        WorldParameterType m_type;
+        public WorldParser(WorldParameterType type, string srcTag) : base(srcTag, false)
+        {
+            m_type = type;
+        }
+    }
+    public class StateVariableParser: WorldParser
+    { 
+        public StateVariableParser() : base(WorldParser.WorldParameterType.StateVariable, "addStateVariable") { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            parsedParameters.Add(new WorldParameter(WorldParser.WorldParameterType.StateVariable
+                ,parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]),parsedArguments[1]));
+        }
+    }
+    public class ActionVariableParser : WorldParser
+    {
+        public ActionVariableParser() : base(WorldParser.WorldParameterType.ActionVariable, "addActionVariable") { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            parsedParameters.Add(new WorldParameter(WorldParser.WorldParameterType.ActionVariable
+                , parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]), parsedArguments[1]));
+        }
+    }
+    public class ConstantParser : WorldParser
+    {
+        public ConstantParser() : base(WorldParser.WorldParameterType.StateVariable, "addConstant") { }
+        public override void addParameter(ref List<Parameter> parsedParameters)
+        {
+            parsedParameters.Add(new WorldParameter(WorldParser.WorldParameterType.Constant
+                , parsedArguments[0]));
+        }
+    }
 }

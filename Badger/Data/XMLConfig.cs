@@ -15,6 +15,7 @@ namespace Simion
         public const string definitionNodeTag = "DEFINITIONS";
         public const string classDefinitionNodeTag = "CLASS";
         public const string enumDefinitionNodeTag = "ENUMERATION";
+        public const string worldDefinitionNodeTag = "WORLD";
 
         //App-level tags: APP, PRE, EXE, INCLUDE
         public const string badgerNodeTag = "BADGER";
@@ -41,6 +42,9 @@ namespace Simion
         public const string forkValueTag = "FORK-VALUE";
         public const string stateVarRefTag = "STATE-VAR-REF";
         public const string actionVarRefTag = "ACTION-VAR-REF";
+        public const string stateVarTag = "STATE-VAR";
+        public const string actionVarTag = "ACTION-VAR";
+        public const string constantTag = "CONSTANT";
         //Attributes
         public const string nameAttribute = "Name";
         public const string commentAttribute = "Comment";
@@ -54,7 +58,10 @@ namespace Simion
         public const string versionAttribute = "FileVersion";
         public const string pathAttribute = "Path";
         public const string badgerInfoAttribute = "BadgerInfo";
-
+        public const string minValueAttribute = "Min";
+        public const string maxValueAttribute = "Max";
+        public const string unitAttribute = "Unit";
+        public const string valueAttribute = "Value";
         //Attribute special values
         public const string newWindowValue = "New";
         public const string exeNodeTag = "EXE";

@@ -226,5 +226,46 @@ namespace SimionSrcParser
         }
         public override bool definesWorldClass() { return false; }
     }
-
+    public class WorldParameter : Parameter
+    {
+        WorldParser.WorldParameterType m_type;
+        string m_name;
+        double m_min, m_max;
+        string m_unit;
+        public WorldParameter(WorldParser.WorldParameterType type, string name, double min,double max,string unit)
+        {
+            //used for state variables and action variables
+            m_type = type;
+            m_name = name;
+            m_min = min;
+            m_max = max;
+            m_unit = unit;
+        }
+        public WorldParameter(WorldParser.WorldParameterType type, string name)
+        {
+            //used for constants
+            m_type = type;
+            m_name = name;
+        }
+        public override string outputXML(int level)
+        {
+            string output = "";
+            addIndentation(ref output, level);
+            string typeTag;
+            switch (m_type)
+            {
+                case WorldParser.WorldParameterType.StateVariable: typeTag = XMLConfig.stateVarTag;break;
+                case WorldParser.WorldParameterType.ActionVariable: typeTag= XMLConfig.actionVarTag; break;
+                default: typeTag= XMLConfig.constantTag; break;
+            }
+            output += "<" + typeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name + "\"";
+            if (m_type != WorldParser.WorldParameterType.Constant)
+                output += " " + XMLConfig.minValueAttribute
+                + "=\"" + m_min + "\" " + XMLConfig.maxValueAttribute + "=\"" + m_max + "\" "
+                + XMLConfig.unitAttribute + "=\"" + m_unit + "\">\n";
+            else output += ">\n";
+            return output;
+        }
+        public override bool definesWorldClass() { return true; }
+    }
 }
