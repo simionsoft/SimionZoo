@@ -191,7 +191,7 @@ namespace SimionSrcParser
     }
     public class MultiValueFactoryParameter : Parameter
     {
-        string m_className, m_objectName, m_comment, m_badgerInfo;
+        string m_className, m_objectName, m_comment;
         bool m_bOptional;
         public MultiValueFactoryParameter(string className, string objectName, string comment, bool optional)
         {
@@ -207,6 +207,27 @@ namespace SimionSrcParser
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "-Factory\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\">\n";
+            return output;
+        }
+    }
+    public class MultiValueSimpleParameter : Parameter
+    {
+        string m_className, m_objectName, m_comment, m_default;
+        
+        public MultiValueSimpleParameter(string className, string objectName, string comment, string defaultValue)
+        {
+            m_className = className;
+            m_objectName = objectName;
+            m_comment = comment;
+            m_default = defaultValue;
+        }
+        public override string outputXML(int level)
+        {
+            string output = "";
+            addIndentation(ref output, level);
+            output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
+                + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
+                + "=\"" + m_comment + "\" " + XMLConfig.defaultAttribute + "=\"" + m_default + ">\n";
             return output;
         }
     }

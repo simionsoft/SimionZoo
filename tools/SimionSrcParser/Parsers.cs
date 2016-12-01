@@ -23,14 +23,14 @@ namespace SimionSrcParser
             if (!m_bUseTemplateArgument)
                 sPattern= m_inSrcTemplateName + @"\s*\(" + ParameterParser.extractTokenRegex + @"\)";
             else
-                sPattern = m_inSrcTemplateName + @"\s*<\s*(\w+?)\s*>\s*?\(" + ParameterParser.extractTokenRegex + @"\)";
+                sPattern = m_inSrcTemplateName + @"\s*<([^>]+)>\s*?\(" + ParameterParser.extractTokenRegex + @"\)";
 
             foreach (Match match in Regex.Matches(content, sPattern))
             {
                 string strippedArgumentValue;
                 parsedArguments.Clear();
                 if (m_bUseTemplateArgument)
-                    parsedArguments.Add(match.Groups[1].Value);
+                    parsedArguments.Add(match.Groups[1].Value.Trim(' '));
 
                 var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, ParameterParser.extractFuncRegex);
                 string arguments = functionArgumentsMatch.Groups[2].Value;
@@ -166,6 +166,16 @@ namespace SimionSrcParser
 
             parent.addParameter(new MultiValueFactoryParameter(parsedArguments[0], parsedArguments[2]
                 , parsedArguments[3], bOptional));
+        }
+    }
+    public class MultiValueSimpleParameterParser : Parser
+    {
+        public MultiValueSimpleParameterParser() : base("MULTI_VALUE_SIMPLE_PARAM", true) { }
+        public override void processParameter(ParameterContainer parent)
+        {
+            string simpleParameterType= parsedArguments[0].Substring(0,parsedArguments[0].IndexOf(",")-1);
+            parent.addParameter(new MultiValueSimpleParameter(simpleParameterType, parsedArguments[2]
+                , parsedArguments[3], parsedArguments[4]));
         }
     }
     public abstract class WorldParser : Parser
