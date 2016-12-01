@@ -11,6 +11,7 @@
 
 CMagneticLevitation::CMagneticLevitation(CConfigNode* pConfigNode)
 {
+	METADATA("World", "Magnetic-levitation");
 	m_sPositionSetpoint= addStateVariable("position-setpoint","m",0.0,0.013);
 	m_sPosition= addStateVariable("position","m",0.0,0.013);
 	m_sVelocity= addStateVariable("velocity","m/s",-100.0,100.0);//??????????????

@@ -166,7 +166,7 @@ void FindSuitableParameters(double initial_wind_speed,double initial_rotor_speed
 
 CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 {
-	
+	METADATA("World", "Wind-turbine");
 	//load all the wind data files
 	m_currentDataFile = 0;
 

@@ -8,6 +8,7 @@
 
 CBalancingPole::CBalancingPole(CConfigNode* pConfigNode)
 {
+	METADATA("World", "Balancing-pole");
 	m_sX = addStateVariable("x", "m", -3.0, 3.0);
 	m_sX_dot = addStateVariable("x_dot","m/s",-1.0,1.0);
 	m_sTheta = addStateVariable("theta","rad",-0.22,0.22);

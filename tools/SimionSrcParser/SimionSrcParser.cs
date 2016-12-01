@@ -7,9 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace SimionSrcParser
 {
-
-
-
+    
     class SimionSrcParser
     {
         //PRIVATE stuff///////////////////////////////////////////////////

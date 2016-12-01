@@ -62,6 +62,7 @@ namespace Simion
         public const string maxValueAttribute = "Max";
         public const string unitAttribute = "Unit";
         public const string valueAttribute = "Value";
+        public const string worldAttribute = "World";
         //Attribute special values
         public const string newWindowValue = "New";
         public const string exeNodeTag = "EXE";

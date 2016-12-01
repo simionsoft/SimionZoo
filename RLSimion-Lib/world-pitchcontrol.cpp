@@ -10,6 +10,7 @@
 
 CPitchControl::CPitchControl(CConfigNode* pConfigNode)
 {
+	METADATA("World", "Pitch-control");
 	m_sSetpointPitch = addStateVariable("setpoint-pitch","rad", -3.14159265, 3.14159265);
 	m_sAttackAngle = addStateVariable("attack-angle","rad", -3.14159265, 3.14159265);
 	m_sPitch= addStateVariable("pitch","rad", -3.14159265, 3.14159265);

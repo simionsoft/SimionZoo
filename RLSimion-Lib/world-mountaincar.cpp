@@ -7,6 +7,7 @@
 
 CMountainCar::CMountainCar(CConfigNode* pConfigNode)
 {
+	METADATA("World", "Mountain-car");
 	m_sPosition = addStateVariable("position","m",-1.2,0.6);
 	m_sVelocity = addStateVariable("velocity","m/s",-0.07,0.07);
 

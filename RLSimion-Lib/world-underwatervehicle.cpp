@@ -10,6 +10,7 @@
 
 CUnderwaterVehicle::CUnderwaterVehicle(CConfigNode* pConfigNode)
 {
+	METADATA("World", "Underwater-vehicle");
 	m_sVSetpoint = addStateVariable("v-setpoint","m/s",-5.0,5.0);
 	m_sV = addStateVariable("v","m/s",-5.0,5.0);
 	m_sVDeviation = addStateVariable("v-deviation","m/s",-10.0,10.0);

@@ -7,7 +7,6 @@ namespace SimionSrcParser
     public abstract class Parameter
     {
         public abstract string outputXML(int level);
-        public abstract bool definesWorldClass();
         public static void addIndentation(ref string definition,int level)
         {
             for (int i = 0; i < level; i++) definition += "  ";
@@ -26,10 +25,6 @@ namespace SimionSrcParser
             addIndentation(ref output, level);
             output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\"" + m_default + "\">\n";
             return output;
-        }
-        public override bool definesWorldClass()
-        {
-            return false;
         }
     }
     public class IntParameter: SimpleParameter
@@ -117,10 +112,6 @@ namespace SimionSrcParser
             output+= ">\n";
             return output;
         }
-        public override bool definesWorldClass()
-        {
-            return false;
-        }
     }
     public class ChildObjectFactoryParameter : Parameter
     {
@@ -146,7 +137,6 @@ namespace SimionSrcParser
             output += ">\n";
             return output;
         }
-        public override bool definesWorldClass() {return false;}
     }
     public class VarRefParameter : Parameter
     {
@@ -160,7 +150,6 @@ namespace SimionSrcParser
             m_name = name;
             m_comment = comment;
         }
-        public override bool definesWorldClass() { return false; }
         public override string outputXML(int level)
         {
             string output = "";
@@ -199,10 +188,6 @@ namespace SimionSrcParser
                 + "=\"" + m_comment + "\">\n";
             return output;
         }
-        public override bool definesWorldClass()
-        {
-            return false;
-        }
     }
     public class MultiValueFactoryParameter : Parameter
     {
@@ -224,7 +209,6 @@ namespace SimionSrcParser
                 + "=\"" + m_comment + "\">\n";
             return output;
         }
-        public override bool definesWorldClass() { return false; }
     }
     public class WorldParameter : Parameter
     {
@@ -266,6 +250,5 @@ namespace SimionSrcParser
             else output += ">\n";
             return output;
         }
-        public override bool definesWorldClass() { return true; }
     }
 }

@@ -29,24 +29,13 @@ namespace SimionSrcParser
             m_parsers.Add(new StateVariableParser());
             m_parsers.Add(new ActionVariableParser());
             m_parsers.Add(new ConstantParser());
+            m_parsers.Add(new MetadataParser());
         }
-        public void parse(string body, ref List<Parameter> outParameterList)
+        public void parse(ParameterContainer parent,string body)
         {
             foreach (Parser parser in m_parsers)
             {
-                parser.parse(body, ref outParameterList);
-                //string sPattern = parser.inSrcTemplateName + @"\s*\(" + extractTokenRegex + @"\)";
-
-                //foreach (Match match in Regex.Matches(body, sPattern))
-                //{
-                //    var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, extractFuncRegex);
-                //    string arguments = functionArgumentsMatch.Groups[2].Value;
-                //    var parameterMatches = Regex.Matches(arguments, extractArgsRegex);
-                //    Parser newParameter = new Parser();
-                //    newParameter.m_type = parser;
-
-                //    Console.WriteLine("Parameter: " + parameterMatches[1].Value + "(" + parser.m_outXmlTag + ")");
-                //}
+                parser.parse(body, parent);
             }
         }
 

@@ -341,3 +341,5 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 	}
 	return 0;
 }
+
+#define METADATA(name, value)
