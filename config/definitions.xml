@@ -71,6 +71,8 @@
   <BRANCH Class="CNumericValue-Factory" Name="PC_KP" Comment="PC_KP">
   <BRANCH Class="CNumericValue-Factory" Name="PC_KI" Comment="PC_KI">
 </CLASS>
+<CLASS Name="CController-Factory">
+</CLASS>
 <CLASS Name="CTDLambdaCritic">
   <BRANCH Class="CETraces" Name="E-Traces" Comment="Eligibility traces of the critic">
   <BRANCH Class="CNumericValue-Factory" Name="Alpha" Comment="Learning gain">
@@ -89,6 +91,8 @@
 </CLASS>
 <CLASS Name="CCritic">
   <BRANCH Class="CLinearStateVFA" Name="V-Function" Comment="The V-function to be learned">
+</CLASS>
+<CLASS Name="CCritic-Factory">
 </CLASS>
 <CLASS Name="CETraces">
   <DOUBLE-VALUE Name="Threshold" Comment="Threshold applied to trace factors" Default="0.001">
@@ -118,6 +122,10 @@
 </CLASS>
 <CLASS Name="CActionFeatureMap">
 </CLASS>
+<CLASS Name="CStateFeatureMap-Factory">
+</CLASS>
+<CLASS Name="CActionFeatureMap-Factory">
+</CLASS>
 <CLASS Name="CLogger">
   <DOUBLE-VALUE Name="Log-Freq" Comment="Log frequency. Simulation time in seconds." Default="0.25">
   <DOUBLE-VALUE Name="Log-eval-episodes" Comment="Log evaluation episodes?" Default="true">
@@ -127,6 +135,8 @@
   <BRANCH Class="CNumericValue-Factory" Name="Sigma" Comment="Width of the gaussian bell">
   <BRANCH Class="CNumericValue-Factory" Name="Alpha" Comment="Low-pass first-order filter's gain [0...1]. 1=no filter">
   <BRANCH Class="CNumericValue-Factory" Name="Scale" Comment="Scale factor applied to the noise signal before adding it to the policy's output">
+</CLASS>
+<CLASS Name="CNoise-Factory">
 </CLASS>
 <CLASS Name="CConstantValue">
   <DOUBLE-VALUE Name="Value" Comment="Constant value" Default="0.0">
@@ -144,12 +154,16 @@
   <DOUBLE-VALUE Name="Time-Exponent" Comment="Time exponent in Bhatnagar's schedule" Default="1.0">
   <DOUBLE-VALUE Name="Evaluation-Value" Comment="Output value during evaluation episodes" Default="0.0">
 </CLASS>
+<CLASS Name="CNumericValue-Factory">
+</CLASS>
 <CLASS Name="STATE_VARIABLE">
 </CLASS>
 <CLASS Name="ACTION_VARIABLE">
 </CLASS>
 <CLASS Name="CPolicyLearner">
   <BRANCH Class="CPolicy-Factory" Name="Policy" Comment="The policy to be learned">
+</CLASS>
+<CLASS Name="CPolicyLearner-Factory">
 </CLASS>
 <CLASS Name="CQEGreedyPolicy">
   <BRANCH Class="CNumericValue-Factory" Name="Epsilon" Comment="The epsilon parameter that balances exploitation and exploration">
@@ -169,10 +183,14 @@
 </CLASS>
 <CLASS Name="CSARSA">
 </CLASS>
+<CLASS Name="CQPolicy-Factory">
+</CLASS>
 <CLASS Name="CSimGod">
   <BRANCH Class="CExperienceReplay" Name="Experience-Replay" Comment="The experience replay parameters">
   <BRANCH Class="CStateFeatureMap-Factory" Name="State-Feature-Map" Comment="The state feature map">
   <BRANCH Class="CActionFeatureMap-Factory" Name="Action-Feature-Map" Comment="The state feature map">
+</CLASS>
+<CLASS Name="CSimion-Factory">
 </CLASS>
 <CLASS Name="CStateVariableGrid">
   <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3">
@@ -192,6 +210,8 @@
 <CLASS Name="CStochasticPolicyGaussianNoise">
   <BRANCH Class="CLinearStateVFA" Name="Mean-VFA" Comment="The parameterized VFA that approximates the function">
   <BRANCH Class="CLinearStateVFA" Name="Sigma-VFA" Comment="The parameterized VFA that approximates variance(s)">
+</CLASS>
+<CLASS Name="CPolicy-Factory">
 </CLASS>
 <CLASS Name="CLinearStateVFA">
   <DOUBLE-VALUE Name="Init-Value" Comment="The initial value given to the weights on initialization" Default="0.0">
@@ -263,4 +283,6 @@
   <INTEGER-VALUE Name="Num-Integration-Steps" Comment="The number of integration steps performed each simulation time-step" Default="4">
   <DOUBLE-VALUE Name="Delta-T" Comment="The delta-time between simulation steps" Default="0.01">
   <BRANCH Class="CDynamicModel-Factory" Name="Dynamic-Model" Comment="The dynamic model">
+</CLASS>
+<CLASS Name="CDynamicModel-Factory">
 </CLASS>

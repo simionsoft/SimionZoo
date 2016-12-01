@@ -5,14 +5,14 @@ using System.Text.RegularExpressions;
 namespace SimionSrcParser
 {
 
-    public class ParameterParser
+    public class ConstructorParameterParser
     {
         public const string extractTokenRegex = @"(?>[^()]+|\((?<open>)|\)(?<-open>))*";
         public const string extractFuncRegex = @"(.+?)\((.*)\)$";
         public const string extractArgsRegex = @"(?:[^,()]+((?:\((?>[^""()]+|\((?<open>)|\)(?<-open>))*\)))*)+";
         private List<Parser> m_parsers= new List<Parser>();
 
-        public ParameterParser()
+        public ConstructorParameterParser()
         {
             m_parsers.Add(new IntParameterParser());
             m_parsers.Add(new DoubleParameterParser());
@@ -32,7 +32,7 @@ namespace SimionSrcParser
             m_parsers.Add(new ConstantParser());
             m_parsers.Add(new MetadataParser());
         }
-        public void parse(ParameterContainer parent,string body)
+        public void parse(Constructor parent,string body)
         {
             foreach (Parser parser in m_parsers)
             {

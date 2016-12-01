@@ -46,6 +46,7 @@
     <Compile Include="ConstructorParser.cs" />
     <Compile Include="FactoryParser.cs" />
     <Compile Include="main.cs" />
+    <Compile Include="ParameterizedObject.cs" />
     <Compile Include="ParameterParser.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Parsers.cs" />

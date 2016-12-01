@@ -4,25 +4,22 @@ using Simion;
 namespace SimionSrcParser
 {
  
-    public abstract class Parameter
+    public interface  IParameter
     {
-        public abstract string outputXML(int level);
-        public static void addIndentation(ref string definition,int level)
-        {
-            for (int i = 0; i < level; i++) definition += "  ";
-        }
+        string outputXML(int level);
+
     }
-    public class SimpleParameter: Parameter
+    public class SimpleParameter: IParameter
     {
         protected string m_xmlTag;
         protected string m_name;
         protected string m_comment;
         protected string m_default;
 
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output= "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\"" + m_default + "\">\n";
             return output;
         }
@@ -88,7 +85,7 @@ namespace SimionSrcParser
         }
     }
 
-    public class ChildObjectParameter : Parameter
+    public class ChildObjectParameter : IParameter
     {
         string m_className, m_objectName, m_comment, m_badgerInfo;
         bool m_bOptional;
@@ -100,10 +97,10 @@ namespace SimionSrcParser
             m_badgerInfo = badgerInfo;
             m_bOptional = optional;
         }
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className 
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute 
                 + "=\"" + m_comment + "\"";
@@ -113,7 +110,7 @@ namespace SimionSrcParser
             return output;
         }
     }
-    public class ChildObjectFactoryParameter : Parameter
+    public class ChildObjectFactoryParameter : IParameter
     {
         string m_className, m_objectName, m_comment, m_badgerInfo;
         bool m_bOptional;
@@ -125,10 +122,10 @@ namespace SimionSrcParser
             m_badgerInfo = badgerInfo;
             m_bOptional = optional;
         }
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "-Factory\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\"";
@@ -138,7 +135,7 @@ namespace SimionSrcParser
             return output;
         }
     }
-    public class VarRefParameter : Parameter
+    public class VarRefParameter : IParameter
     {
         protected string m_name;
         protected string m_comment;
@@ -150,10 +147,10 @@ namespace SimionSrcParser
             m_name = name;
             m_comment = comment;
         }
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             if (m_type == VarType.StateVariable) output += "<" + XMLConfig.stateVarRefTag;
             else output+= "<" + XMLConfig.actionVarRefTag;
             output += " " + XMLConfig.nameAttribute + "=\"" + m_name + " " + XMLConfig.commentAttribute + "=\"" + m_comment + "\">\n";
@@ -168,7 +165,7 @@ namespace SimionSrcParser
     {
         public ActionVarRefParameter(string name, string comment) : base(VarType.ActionVariable, name, comment) { }
     }
-    public class MultiValueParameter : Parameter
+    public class MultiValueParameter : IParameter
     {
         string m_className, m_objectName, m_comment;
         bool m_bOptional;
@@ -179,17 +176,17 @@ namespace SimionSrcParser
             m_comment = comment;
             m_bOptional = optional;
         }
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\">\n";
             return output;
         }
     }
-    public class MultiValueFactoryParameter : Parameter
+    public class MultiValueFactoryParameter : IParameter
     {
         string m_className, m_objectName, m_comment;
         bool m_bOptional;
@@ -200,17 +197,17 @@ namespace SimionSrcParser
             m_comment = comment;
             m_bOptional = optional;
         }
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "-Factory\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\">\n";
             return output;
         }
     }
-    public class MultiValueSimpleParameter : Parameter
+    public class MultiValueSimpleParameter : IParameter
     {
         string m_className, m_objectName, m_comment, m_default;
         
@@ -221,17 +218,17 @@ namespace SimionSrcParser
             m_comment = comment;
             m_default = defaultValue;
         }
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\" " + XMLConfig.defaultAttribute + "=\"" + m_default + ">\n";
             return output;
         }
     }
-    public class WorldParameter : Parameter
+    public class WorldParameter : IParameter
     {
         WorldParser.WorldParameterType m_type;
         string m_name;
@@ -252,10 +249,10 @@ namespace SimionSrcParser
             m_type = type;
             m_name = name;
         }
-        public override string outputXML(int level)
+        public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            Constructor.addIndentation(ref output, level);
             string typeTag;
             switch (m_type)
             {
@@ -272,4 +269,32 @@ namespace SimionSrcParser
             return output;
         }
     }
+    public class ChoiceParameter : Constructor, IParameter
+    {
+        ChoiceElementParser m_choiceElementParser= new ChoiceElementParser();
+        string m_className, m_name, m_comment;
+        public ChoiceParameter(string className, string objectName, string comment,string body):base(className,"",body,"")
+        {
+            m_className = className;
+            m_name = objectName;
+            m_comment = comment;
+            m_choiceElementParser.parse(body, this);
+        }
+        public string outputXML(int level)
+        {
+            string output = "";
+            addIndentation(ref output, level);
+            output += "<" + XMLConfig.choiceNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
+                + "\" " + XMLConfig.nameAttribute + "=\"" + m_name + "\" " + XMLConfig.commentAttribute
+                + "=\"" + m_comment + "\">\n";
+            foreach(IParameter parameter in m_parameters)
+            {
+                output+= parameter.outputXML(level + 1);
+            }
+            addIndentation(ref output, level);
+            output += "</" + XMLConfig.choiceNodeTag + ">";
+            return output;
+        }
+    }
+
 }

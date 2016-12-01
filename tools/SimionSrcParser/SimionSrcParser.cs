@@ -12,9 +12,9 @@ namespace SimionSrcParser
     {
         //PRIVATE stuff///////////////////////////////////////////////////
         string m_currentFile = "";
-        List<Constructor> m_constructors= new List<Constructor>();
+        List<ParameterizedObject> m_parameterizedObjects= new List<ParameterizedObject>();
 
-        void getEnclosedBody(string content, int startIndex,string openChar,string closeChar
+        public static void getEnclosedBody(string content, int startIndex,string openChar,string closeChar
             , out string definition, out string prefix)
         {
             int contentLenght = content.Length;
@@ -47,12 +47,23 @@ namespace SimionSrcParser
                 paramName = match.Groups[2].Value;
                 getEnclosedBody(content,match.Index + match.Length,"{","}"
                     , out definition, out prefix);
-                m_constructors.Add(new Constructor(className, paramName, definition, prefix));
+                m_parameterizedObjects.Add(new Constructor(className, paramName, definition, prefix));
             }
         }
         void parseFactories(string content)
         {
+            string sPattern = @"(\w+)::getInstance\(\s*CConfigNode\s*\*\s*([^)]+)\)";
 
+            string className, paramName, prefix, definition;
+            foreach (Match match in Regex.Matches(content, sPattern))
+            {
+                className = match.Groups[1].Value + "-Factory";
+                Console.WriteLine("Found factory definition: " + className);
+                paramName = match.Groups[2].Value;
+                getEnclosedBody(content, match.Index + match.Length, "{", "}"
+                    , out definition, out prefix);
+                m_parameterizedObjects.Add(new Factory(className, paramName, definition, prefix));
+            }
         }
         void parseEnumerations(string content)
         {
@@ -95,8 +106,8 @@ namespace SimionSrcParser
 
             //// encoding=\"utf-8\"
             outputFile.WriteLine("<?xml version=\"1.0\"?>");//\n<DEFINITIONS>\n");
-            foreach (Constructor classConstructor in m_constructors)
-                outputFile.Write(classConstructor.outputXML(0));
+            foreach (Constructor paramObj in m_parameterizedObjects)
+                outputFile.Write(paramObj.outputXML(0));
             //outputFile.Write(@"</DEFINITIONS>");
             outputFile.Close();
         }
