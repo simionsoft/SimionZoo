@@ -96,6 +96,19 @@ namespace SimionSrcParser
             parent.addParameter(new DirPathParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
     }
+    public class EnumParameterParser : Parser
+    {
+        public EnumParameterParser() : base("ENUM_PARAM", true) { }
+        public override void processParameter(ParameterizedObject parent)
+        {
+            string className = parsedArguments[0];
+            string name = parsedArguments[2];
+            string comment = parsedArguments[3];
+            string defaultValue = parsedArguments[4];
+            defaultValue= defaultValue.Trim(' ').Substring(className.Length + 2); //Remove the namespace
+            parent.addParameter(new EnumParameter(className, name, comment,defaultValue));
+        }
+    }
     public class ChildObjectParameterParser : Parser
     {
         public ChildObjectParameterParser() : base("CHILD_OBJECT", true) { }

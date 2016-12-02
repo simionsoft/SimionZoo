@@ -163,12 +163,15 @@
   <DOUBLE-VALUE Name="Initial-Value" Comment="Output value at the beginning of the schedule" Default="0.1"/>
   <DOUBLE-VALUE Name="End-Value" Comment="Output value at the end of the schedule" Default="0.0"/>
   <DOUBLE-VALUE Name="Evaluation-Value" Comment="Output value during evaluation episodes" Default="0.0"/>
+  <ENUM-VALUE Name="Interpolation" ClassInterpolation" Comment="Interpolation type" Default="linear"/>
+  <ENUM-VALUE Name="Time-reference" ClassTimeReference" Comment="The time-reference type" Default="experiment"/>
 </CLASS>
 <CLASS Name="CBhatnagarSchedule">
   <DOUBLE-VALUE Name="Alpha-0" Comment="Alpha-0 parameter in Bhatnagar's schedule" Default="1.0"/>
   <DOUBLE-VALUE Name="Alpha-c" Comment="Alpha-c parameter in Bhatnagar's schedule" Default="1.0"/>
   <DOUBLE-VALUE Name="Time-Exponent" Comment="Time exponent in Bhatnagar's schedule" Default="1.0"/>
   <DOUBLE-VALUE Name="Evaluation-Value" Comment="Output value during evaluation episodes" Default="0.0"/>
+  <ENUM-VALUE Name="Time-reference" ClassTimeReference" Comment="The time reference" Default="episode"/>
 </CLASS>
 <CLASS Name="CNumericValue-Factory">
   <CHOICE Class="CNumericValue" Name="Schedule" Comment="Schedule-type">
@@ -228,10 +231,12 @@
 <CLASS Name="CStateVariableGrid">
   <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
   <STATE-VAR-REF Name="Variable Comment="The state variable"/>
+  <ENUM-VALUE Name="Distribution" ClassDistribution" Comment="The manner in which the points are distributed on the state variable's grid" Default="linear"/>
 </CLASS>
 <CLASS Name="CActionVariableGrid">
   <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
   <ACTION-VAR-REF Name="Variable Comment="The action variable"/>
+  <ENUM-VALUE Name="Distribution" ClassDistribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
 </CLASS>
 <CLASS Name="CPolicy">
   <ACTION-VAR-REF Name="Output-Action Comment="The output action variable"/>

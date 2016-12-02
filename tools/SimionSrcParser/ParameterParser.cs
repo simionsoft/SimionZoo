@@ -31,6 +31,7 @@ namespace SimionSrcParser
             m_parsers.Add(new ActionVariableParser());
             m_parsers.Add(new ConstantParser());
             m_parsers.Add(new MetadataParser());
+            m_parsers.Add(new EnumParameterParser());
         }
         public void parse(Constructor parent,string body)
         {

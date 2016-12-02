@@ -86,6 +86,27 @@ namespace SimionSrcParser
             m_xmlTag = XMLConfig.dirPathNodeTag;
         }
     }
+    public class EnumParameter :IParameter
+    {
+        string m_name, m_className, m_comment, m_default;
+        public EnumParameter(string className,string name,  string comment, string defaultValue)
+        {
+            m_className = className;
+            m_name = name;
+            m_comment = comment;
+            m_default = defaultValue;
+        }
+        public string outputXML(int level)
+        {
+            string output = "";
+            SimionSrcParser.addIndentation(ref output, level);
+            output += "<" + XMLConfig.enumNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name 
+                + "\" " + XMLConfig.classAttribute + m_className
+                + "\" " + XMLConfig.commentAttribute + "=\"" + m_comment + "\" " + XMLConfig.defaultAttribute 
+                + "=\"" + m_default + "\"/>\n";
+            return output;
+        }
+    }
 
     public class ChildObjectParameter : IParameter
     {
