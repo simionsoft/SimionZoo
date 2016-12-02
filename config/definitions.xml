@@ -328,3 +328,17 @@
     <CHOICE-ELEMENT Class="CBalancingPole" Name="Balancing-pole" BadgerMetadata="World=Balancing-pole"/>
     <CHOICE-ELEMENT Class="CMountainCar" Name="Mountain-car" BadgerMetadata="World=Mountain-car"/>
   </CHOICE></CLASS>
+<ENUMERATION Name="Distribution">
+  <ENUM-VALUE>linear</ENUM-VALUE>
+  <ENUM-VALUE>quadratic</ENUM-VALUE>
+  <ENUM-VALUE>cubic</ENUM-VALUE>
+</ENUMERATION>
+<ENUMERATION Name="Interpolation">
+  <ENUM-VALUE>linear</ENUM-VALUE>
+  <ENUM-VALUE>quadratic</ENUM-VALUE>
+  <ENUM-VALUE>cubic</ENUM-VALUE>
+</ENUMERATION>
+<ENUMERATION Name="TimeReference">
+  <ENUM-VALUE>episode</ENUM-VALUE>
+  <ENUM-VALUE>experiment</ENUM-VALUE>
+</ENUMERATION>

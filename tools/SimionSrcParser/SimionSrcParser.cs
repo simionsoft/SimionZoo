@@ -73,12 +73,13 @@ namespace SimionSrcParser
         {
             string sPattern = @"enum class\s*(\w+)\s*{([^}]+)}";
 
-            string className, paramName, prefix, definition;
+            string enumName, prefix, definition;
             foreach (Match match in Regex.Matches(content, sPattern))
             {
-                className = match.Groups[1].Value + "-Factory";
-
+                enumName = match.Groups[1].Value;
+                m_parameterizedObjects.Add(new Enumeration(match.Groups[1].Value, match.Groups[2].Value));
             }
+        }
         //PUBLIC methods//////////////////////////////////////////////////
         public int numCharsProcessed = 0;
         public SimionSrcParser() { }

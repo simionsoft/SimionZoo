@@ -1,24 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Simion;
 
 namespace SimionSrcParser
 {
-    public class Enumeration: IParameter
+    public class Enumeration: ParameterizedObject
     {
-        string m_name;
         static EnumerationParser enumerationParser= new EnumerationParser();
         List<string> m_enumerationValues= new List<string>();
-        Enumeration(string name,string content)
+        public Enumeration(string name,string content)
         {
             m_name = name;
             enumerationParser.parse(content, ref m_enumerationValues);
         }
-        public string outputXML(int level)
+        public override string outputXML(int level)
         {
             string output = "";
+            SimionSrcParser.addIndentation(ref output,level);
+            output += "<" + XMLConfig.enumDefinitionNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name + "\">\n";
+            output+= outputChildrenXML(level + 1);
+            foreach (string value in m_enumerationValues)
+            {
+                SimionSrcParser.addIndentation(ref output, level + 1);
+                output += "<" + XMLConfig.enumNodeTag + ">" + value + "</" + XMLConfig.enumNodeTag + ">\n";
+            }
+            output += "</" + XMLConfig.enumDefinitionNodeTag + ">\n";
             return output;
         }
     }
@@ -29,6 +35,10 @@ namespace SimionSrcParser
 
         }
         public void parse(string content,ref List<string> valueList)
-        { }
+        {
+            string [] values= content.Split(',');
+            foreach (string value in values)
+                valueList.Add(value.Trim(' '));
+        }
     }
 }
