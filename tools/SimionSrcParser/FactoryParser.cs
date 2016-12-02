@@ -1,65 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using Simion;
 
 namespace SimionSrcParser
 {
-    public class ChoiceParser : Parser
+    public class ChoiceParser
     {
         protected List<IParameter> choices = new List<IParameter>();
-        public ChoiceParser() : base("CHOICE", true) { }
-        public override void processParameter(Constructor parent)
+        public ChoiceParser(){ }
+        public void parse(ParameterizedObject parent, string srcCode)
         {
-            ChoiceParameter choiceParameter = new ChoiceParameter(parsedArguments[0], parsedArguments[2]
-                , parsedArguments[3], parsedArguments[4]);
-        }
-    }
-    public class ChoiceElementParser
-    {
-        protected List<string> parsedArguments;
+            string sPattern = @"CHOICE\s*<\s*(\w+)\s*>\(([^,]+),([^,]+),([^,]+),([^)]*?)\)";
 
-        public ChoiceElementParser()
-        {
-            parsedArguments = new List<string>();
-        }
-        public void parse(string content, Constructor parent)
-        {
-            string sPattern;
-            sPattern = @"{([^,]+),([^}]+)}";
-
-            foreach (Match match in Regex.Matches(content, sPattern))
+            foreach (Match match in Regex.Matches(srcCode, sPattern))
             {
-                string choiceElementName = match.Groups[1].Value.Trim(' ', '"');
-                string choiceValue = match.Groups[2].Value.Trim(' ', '"');
-                parsedArguments.Clear();
+                string className = match.Groups[1].Value.Trim(' ', '"');
+                string choiceName = match.Groups[3].Value.Trim(' ', '"');
+                string comment = match.Groups[4].Value.Trim(' ', '"');
+                string choiceElements,prefix;
+                choiceElements = match.Groups[5].Value.Trim(' ', '"', '\t', '\n');
+                SimionSrcParser.getEnclosedBody(match.Groups[5].Value.Trim(' ', '"','\t','\n'),0,"{","}",out choiceElements,out prefix);
+                choiceElements= choiceElements.Trim(' ', '"', '\t', '\n');
+                ChoiceParameter newChoice = new ChoiceParameter(className,choiceName, comment);
 
-                //var functionArgumentsMatch = Regex.Match(match.Groups[0].Value, ParameterParser.extractFuncRegex);
-                //string arguments = functionArgumentsMatch.Groups[2].Value;
-                //var argumentMatches = Regex.Matches(arguments, ParameterParser.extractArgsRegex);
-                //foreach (Match argMatch in argumentMatches)
-                //{
-                //    strippedArgumentValue = argMatch.Value.Trim(' ', '\"', '\n', '\t');
+                string sChoiceElementPattern = @"{\s*([^,]+),\s*CHOICE_ELEMENT_(NEW|FACTORY)\s*<(\w+)>\s*}";
+                foreach (Match choiceElementMatch in Regex.Matches(choiceElements, sChoiceElementPattern))
+                {
+                    string choiceElementName = choiceElementMatch.Groups[1].Value.Trim(' ', '"');
+                    string choiceElementClass= choiceElementMatch.Groups[3].Value.Trim(' ', '"');
+                    string choiceElementType= choiceElementMatch.Groups[2].Value.Trim(' ', '"');
+                    ChoiceElementParameter.Type type;
+                    if (choiceElementType == "NEW") type = ChoiceElementParameter.Type.New;
+                    else type = ChoiceElementParameter.Type.Factory;
 
-                //    parsedArguments.Add(strippedArgumentValue);
-                //}
-                //processParameter(parent);
+                    ChoiceElementParameter choiceElement = new ChoiceElementParameter(choiceElementName
+                        , choiceElementClass, type);
+                    newChoice.addParameter(choiceElement);
+                }
+                parent.addParameter(newChoice);
             }
         }
-
     }
+ 
 
     public class Factory: ParameterizedObject
     {
+        private ChoiceParser m_choiceParser= new ChoiceParser();
+
         public Factory(string className, string paramName, string body, string bodyPrefix)
         {
             m_name = className;
-            //g_parameterParser.parse(this, body);
+            m_choiceParser.parse(this, body);
         }
+
         public override string outputXML(int level)
         {
-            throw new NotImplementedException();
+            string output = "";
+            SimionSrcParser.addIndentation(ref output, level);
+            output += "<" + XMLConfig.classDefinitionNodeTag + " Name=\"" + m_name + "\">\n";
+            base.outputXML(level + 1);
+            output += "</" + XMLConfig.classDefinitionNodeTag + ">\n";
+            return output;
         }
     }
 }

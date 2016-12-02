@@ -17,13 +17,13 @@ namespace SimionSrcParser
         public static void getEnclosedBody(string content, int startIndex,string openChar,string closeChar
             , out string definition, out string prefix)
         {
-            int contentLenght = content.Length;
+            int contentLength = content.Length;
             int numOpenChars= 0;
             int firstOpenPos = content.IndexOf(openChar, startIndex);
             prefix = content.Substring(startIndex, firstOpenPos-startIndex);
             int pos = firstOpenPos+1;
             string c = content.Substring(pos, 1);
-            while (pos<contentLenght && (c!=closeChar || numOpenChars!=0))
+            while (pos<contentLength && (c!=closeChar || numOpenChars!=0))
             {
                 if (c ==openChar)
                     numOpenChars++;
@@ -33,6 +33,10 @@ namespace SimionSrcParser
                 c = content.Substring(pos, 1);
             }
             definition = content.Substring(firstOpenPos + 1, pos -firstOpenPos- 1);
+        }
+        public static void addIndentation(ref string definition, int level)
+        {
+            for (int i = 0; i < level; i++) definition += "  ";
         }
 
         void parseConstructors(string content)

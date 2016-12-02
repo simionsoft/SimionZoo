@@ -1,5 +1,6 @@
 ﻿using System;
 using Simion;
+using System.Collections.Generic;
 
 namespace SimionSrcParser
 {
@@ -19,8 +20,9 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output= "";
-            Constructor.addIndentation(ref output, level);
-            output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\"" + m_default + "\">\n";
+            SimionSrcParser.addIndentation(ref output, level);
+            output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\"" 
+                + m_default + "\"/>\n";
             return output;
         }
     }
@@ -100,13 +102,13 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output = "";
-            Constructor.addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className 
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute 
                 + "=\"" + m_comment + "\"";
             if (m_badgerInfo != "")
                 output += " " + XMLConfig.badgerInfoAttribute + "=\"" + m_badgerInfo + "\"";
-            output+= ">\n";
+            output+= "/>\n";
             return output;
         }
     }
@@ -125,13 +127,13 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output = "";
-            Constructor.addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "-Factory\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\"";
             if (m_badgerInfo != "")
                 output += " " + XMLConfig.badgerInfoAttribute + "=\"" + m_badgerInfo + "\"";
-            output += ">\n";
+            output += "/>\n";
             return output;
         }
     }
@@ -150,10 +152,11 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output = "";
-            Constructor.addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             if (m_type == VarType.StateVariable) output += "<" + XMLConfig.stateVarRefTag;
             else output+= "<" + XMLConfig.actionVarRefTag;
-            output += " " + XMLConfig.nameAttribute + "=\"" + m_name + " " + XMLConfig.commentAttribute + "=\"" + m_comment + "\">\n";
+            output += " " + XMLConfig.nameAttribute + "=\"" + m_name + " " + XMLConfig.commentAttribute + "=\"" 
+                + m_comment + "\"/>\n";
             return output;
         }
     }
@@ -179,10 +182,10 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output = "";
-            Constructor.addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
-                + "=\"" + m_comment + "\">\n";
+                + "=\"" + m_comment + "\"/>\n";
             return output;
         }
     }
@@ -200,10 +203,10 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output = "";
-            Constructor.addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "-Factory\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
-                + "=\"" + m_comment + "\">\n";
+                + "=\"" + m_comment + "\"/>\n";
             return output;
         }
     }
@@ -221,10 +224,10 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output = "";
-            Constructor.addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
-                + "=\"" + m_comment + "\" " + XMLConfig.defaultAttribute + "=\"" + m_default + ">\n";
+                + "=\"" + m_comment + "\" " + XMLConfig.defaultAttribute + "=\"" + m_default + "/>\n";
             return output;
         }
     }
@@ -252,7 +255,7 @@ namespace SimionSrcParser
         public string outputXML(int level)
         {
             string output = "";
-            Constructor.addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             string typeTag;
             switch (m_type)
             {
@@ -264,26 +267,26 @@ namespace SimionSrcParser
             if (m_type != WorldParser.WorldParameterType.Constant)
                 output += " " + XMLConfig.minValueAttribute
                 + "=\"" + m_min + "\" " + XMLConfig.maxValueAttribute + "=\"" + m_max + "\" "
-                + XMLConfig.unitAttribute + "=\"" + m_unit + "\">\n";
+                + XMLConfig.unitAttribute + "=\"" + m_unit + "\"/>\n";
             else output += ">\n";
             return output;
         }
     }
-    public class ChoiceParameter : Constructor, IParameter
+    public class ChoiceParameter : IParameter
     {
-        ChoiceElementParser m_choiceElementParser= new ChoiceElementParser();
+        private List<IParameter> m_parameters = new List<IParameter>();
         string m_className, m_name, m_comment;
-        public ChoiceParameter(string className, string objectName, string comment,string body):base(className,"",body,"")
+        public ChoiceParameter(string className, string name, string comment)
         {
             m_className = className;
-            m_name = objectName;
+            m_name = name;
             m_comment = comment;
-            m_choiceElementParser.parse(body, this);
         }
+        public void addParameter(IParameter parameter) { m_parameters.Add(parameter); }
         public string outputXML(int level)
         {
             string output = "";
-            addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.choiceNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_name + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\">\n";
@@ -291,10 +294,33 @@ namespace SimionSrcParser
             {
                 output+= parameter.outputXML(level + 1);
             }
-            addIndentation(ref output, level);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "</" + XMLConfig.choiceNodeTag + ">";
             return output;
         }
     }
+    public class ChoiceElementParameter: IParameter
+    {
+        public enum Type { New,Factory};
+        string m_name, m_className;
+        Type m_type;
+        public ChoiceElementParameter(string name,string className,Type type)
+        {
+            m_name = name;
+            m_className = className;
+            m_type = type;
+        }
+        public string outputXML(int level)
+        {
+            string output = "";
+            SimionSrcParser.addIndentation(ref output, level);
+            string className = m_className;
+            if (m_type == Type.Factory)
+                className += "-Factory";
+            output += "<" + XMLConfig.choiceElementNodeTag + " " + XMLConfig.classAttribute + "=\"" + className
+                + "\" " + XMLConfig.nameAttribute + "=\"" + m_name + "\"/>\n";
 
+            return output;
+        }
+    }
 }

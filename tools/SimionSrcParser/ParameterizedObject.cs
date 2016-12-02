@@ -9,7 +9,15 @@ namespace SimionSrcParser
     public abstract class ParameterizedObject
     {
         protected string m_name;
-        protected List<IParameter> m_parameters = new List<IParameter>();
-        public abstract string outputXML(int level);
+        private List<IParameter> m_parameters = new List<IParameter>();
+        public void addParameter(IParameter parameter) { m_parameters.Add(parameter); }
+        
+        public virtual string outputXML(int level)
+        {
+            string output = "";
+            foreach (IParameter parameter in m_parameters)
+                output += parameter.outputXML(level);
+            return output;
+        }
     }
 }
