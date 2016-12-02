@@ -52,12 +52,12 @@ namespace Simion
         public const string windowAttribute = "Window";
         public const string defaultAttribute = "Default";
         public const string optionalAttribute = "Optional";
-        public const string xmlDefinitionIdAttribute = "LoadXML";
+//        public const string xmlDefinitionIdAttribute = "LoadXML";
         public const string loadXMLFileAttribute = "XML";
         public const string hangingFromAttribute = "HangingFrom";
         public const string versionAttribute = "FileVersion";
         public const string pathAttribute = "Path";
-        public const string badgerInfoAttribute = "BadgerInfo";
+        public const string badgerMetadataAttribute = "BadgerMetadata";
         public const string minValueAttribute = "Min";
         public const string maxValueAttribute = "Max";
         public const string unitAttribute = "Unit";

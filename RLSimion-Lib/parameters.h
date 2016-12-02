@@ -164,7 +164,7 @@ class CHILD_OBJECT
 public:
 	CHILD_OBJECT() = default;
 	CHILD_OBJECT(CConfigNode* pConfigNode, const char* name, const char* comment
-		,bool bOptional=false,const char* badgerInfo="")
+		,bool bOptional=false,const char* badgerMetadata="")
 	{
 		m_name = name;
 		m_comment = comment;
@@ -194,7 +194,7 @@ class CHILD_OBJECT_FACTORY
 public:
 	CHILD_OBJECT_FACTORY() = default;
 	CHILD_OBJECT_FACTORY(CConfigNode* pConfigNode, const char* name, const char* comment
-		, bool bOptional= false, const char* badgerInfo= "")
+		, bool bOptional= false, const char* badgerMetadata= "")
 	{
 		m_name = name;
 		m_comment = comment;

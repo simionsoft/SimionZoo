@@ -24,7 +24,7 @@ namespace SimionSrcParser
             if (m_world!=null)
                 output+= " " + XMLConfig.worldAttribute + "=\"" + m_world + "\"";
             output += ">\n";
-            base.outputXML(level + 1);
+            output+= outputChildrenXML(level + 1);
             output += "</" + XMLConfig.classDefinitionNodeTag + ">\n";
             return output;
         }

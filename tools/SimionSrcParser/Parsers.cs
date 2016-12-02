@@ -17,7 +17,7 @@ namespace SimionSrcParser
             m_bUseTemplateArgument = useTemplateArgument;
             parsedArguments = new List<string>();
         }
-        public void parse(string content, Constructor parent)
+        public void parse(string content, ParameterizedObject parent)
         {
             string sPattern;
             if (!m_bUseTemplateArgument)
@@ -45,13 +45,13 @@ namespace SimionSrcParser
             }
         }
 
-        public abstract void processParameter(Constructor parent);
+        public abstract void processParameter(ParameterizedObject parent);
     }
 
     public class IntParameterParser : Parser
     {
         public IntParameterParser() : base("INT_PARAM", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new IntParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
@@ -59,7 +59,7 @@ namespace SimionSrcParser
     public class DoubleParameterParser : Parser
     {
         public DoubleParameterParser() : base("DOUBLE_PARAM", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new DoubleParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
@@ -67,7 +67,7 @@ namespace SimionSrcParser
     public class BoolParameterParser : Parser
     {
         public BoolParameterParser() : base("BOOL_PARAM", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new BoolParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
@@ -75,7 +75,7 @@ namespace SimionSrcParser
     public class StringParameterParser : Parser
     {
         public StringParameterParser() : base("STRING_PARAM", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new StringParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
@@ -83,7 +83,7 @@ namespace SimionSrcParser
     public class FilePathParameterParser : Parser
     {
         public FilePathParameterParser() : base("FILE_PATH_PARAM", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new FilePathParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
@@ -91,7 +91,7 @@ namespace SimionSrcParser
     public class DirPathParameterParser : Parser
     {
         public DirPathParameterParser() : base("DIR_PATH_PARAM", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new DirPathParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
@@ -99,7 +99,7 @@ namespace SimionSrcParser
     public class ChildObjectParameterParser : Parser
     {
         public ChildObjectParameterParser() : base("CHILD_OBJECT", true) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             bool bOptional = false; //default value
             string badgerInfo = "";
@@ -114,7 +114,7 @@ namespace SimionSrcParser
     public class ChildObjectFactoryParameterParser : Parser
     {
         public ChildObjectFactoryParameterParser() : base("CHILD_OBJECT_FACTORY", true) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             bool bOptional = false; //default value
             string badgerInfo = "";
@@ -129,7 +129,7 @@ namespace SimionSrcParser
     public class StateVarRefParser : Parser
     {
         public StateVarRefParser() : base("STATE_VARIABLE", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new StateVarRefParameter(parsedArguments[1], parsedArguments[2]));
         }
@@ -137,7 +137,7 @@ namespace SimionSrcParser
     public class ActionVarRefParser : Parser
     {
         public ActionVarRefParser() : base("ACTION_VARIABLE", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new ActionVarRefParameter(parsedArguments[1], parsedArguments[2]));
         }
@@ -145,7 +145,7 @@ namespace SimionSrcParser
     public class MultiValueParameterParser : Parser
     {
         public MultiValueParameterParser() : base("MULTI_VALUE", true) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             bool bOptional = false; //default value
             if (parsedArguments.Count > 4)
@@ -158,7 +158,7 @@ namespace SimionSrcParser
     public class MultiValueFactoryParameterParser : Parser
     {
         public MultiValueFactoryParameterParser() : base("MULTI_VALUE", true) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             bool bOptional = false; //default value
             if (parsedArguments.Count > 4)
@@ -171,7 +171,7 @@ namespace SimionSrcParser
     public class MultiValueSimpleParameterParser : Parser
     {
         public MultiValueSimpleParameterParser() : base("MULTI_VALUE_SIMPLE_PARAM", true) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             string simpleParameterType = parsedArguments[0].Substring(0, parsedArguments[0].IndexOf(",") - 1);
             parent.addParameter(new MultiValueSimpleParameter(simpleParameterType, parsedArguments[2]
@@ -190,7 +190,7 @@ namespace SimionSrcParser
     public class StateVariableParser : WorldParser
     {
         public StateVariableParser() : base(WorldParser.WorldParameterType.StateVariable, "addStateVariable") { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new WorldParameter(WorldParser.WorldParameterType.StateVariable
                 , parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]), parsedArguments[1]));
@@ -199,7 +199,7 @@ namespace SimionSrcParser
     public class ActionVariableParser : WorldParser
     {
         public ActionVariableParser() : base(WorldParser.WorldParameterType.ActionVariable, "addActionVariable") { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new WorldParameter(WorldParser.WorldParameterType.ActionVariable
                 , parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]), parsedArguments[1]));
@@ -208,7 +208,7 @@ namespace SimionSrcParser
     public class ConstantParser : WorldParser
     {
         public ConstantParser() : base(WorldParser.WorldParameterType.StateVariable, "addConstant") { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
             parent.addParameter(new WorldParameter(WorldParser.WorldParameterType.Constant
                 , parsedArguments[0]));
@@ -217,10 +217,11 @@ namespace SimionSrcParser
     public class MetadataParser : Parser
     {
         public MetadataParser() : base("METADATA", false) { }
-        public override void processParameter(Constructor parent)
+        public override void processParameter(ParameterizedObject parent)
         {
-            if (parsedArguments[0] == "World")
-                parent.m_world = parsedArguments[1];
+            Constructor parentConstructor = parent as Constructor;
+            if (parsedArguments[0] == "World" && parentConstructor!=null)
+                parentConstructor.m_world = parsedArguments[1];
         }
     }
 }

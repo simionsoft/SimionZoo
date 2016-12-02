@@ -11,8 +11,9 @@ namespace SimionSrcParser
         protected string m_name;
         private List<IParameter> m_parameters = new List<IParameter>();
         public void addParameter(IParameter parameter) { m_parameters.Add(parameter); }
-        
-        public virtual string outputXML(int level)
+
+        public abstract string outputXML(int level);
+        public string outputChildrenXML(int level)
         {
             string output = "";
             foreach (IParameter parameter in m_parameters)

@@ -89,14 +89,14 @@ namespace SimionSrcParser
 
     public class ChildObjectParameter : IParameter
     {
-        string m_className, m_objectName, m_comment, m_badgerInfo;
+        string m_className, m_objectName, m_comment, m_badgerMetadata;
         bool m_bOptional;
-        public ChildObjectParameter(string className, string objectName, string comment, bool optional, string badgerInfo)
+        public ChildObjectParameter(string className, string objectName, string comment, bool optional, string badgerMetadata)
         {
             m_className = className;
             m_objectName = objectName;
             m_comment = comment;
-            m_badgerInfo = badgerInfo;
+            m_badgerMetadata = badgerMetadata;
             m_bOptional = optional;
         }
         public string outputXML(int level)
@@ -106,22 +106,22 @@ namespace SimionSrcParser
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className 
                 + "\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute 
                 + "=\"" + m_comment + "\"";
-            if (m_badgerInfo != "")
-                output += " " + XMLConfig.badgerInfoAttribute + "=\"" + m_badgerInfo + "\"";
+            if (m_badgerMetadata != "")
+                output += " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
             output+= "/>\n";
             return output;
         }
     }
     public class ChildObjectFactoryParameter : IParameter
     {
-        string m_className, m_objectName, m_comment, m_badgerInfo;
+        string m_className, m_objectName, m_comment, m_badgerMetadata;
         bool m_bOptional;
-        public ChildObjectFactoryParameter(string className, string objectName, string comment, bool optional, string badgerInfo)
+        public ChildObjectFactoryParameter(string className, string objectName, string comment, bool optional, string badgerMetadata)
         {
             m_className = className;
             m_objectName = objectName;
             m_comment = comment;
-            m_badgerInfo = badgerInfo;
+            m_badgerMetadata = badgerMetadata;
             m_bOptional = optional;
         }
         public string outputXML(int level)
@@ -131,8 +131,8 @@ namespace SimionSrcParser
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.classAttribute + "=\"" + m_className
                 + "-Factory\" " + XMLConfig.nameAttribute + "=\"" + m_objectName + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\"";
-            if (m_badgerInfo != "")
-                output += " " + XMLConfig.badgerInfoAttribute + "=\"" + m_badgerInfo + "\"";
+            if (m_badgerMetadata != "")
+                output += " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
             output += "/>\n";
             return output;
         }
@@ -304,11 +304,19 @@ namespace SimionSrcParser
         public enum Type { New,Factory};
         string m_name, m_className;
         Type m_type;
+        string m_badgerMetadata;
         public ChoiceElementParameter(string name,string className,Type type)
         {
             m_name = name;
             m_className = className;
             m_type = type;
+        }
+        public ChoiceElementParameter(string name, string className, Type type,string badgerMetadata)
+        {
+            m_name = name;
+            m_className = className;
+            m_type = type;
+            m_badgerMetadata = badgerMetadata;
         }
         public string outputXML(int level)
         {
@@ -318,7 +326,10 @@ namespace SimionSrcParser
             if (m_type == Type.Factory)
                 className += "-Factory";
             output += "<" + XMLConfig.choiceElementNodeTag + " " + XMLConfig.classAttribute + "=\"" + className
-                + "\" " + XMLConfig.nameAttribute + "=\"" + m_name + "\"/>\n";
+                + "\" " + XMLConfig.nameAttribute + "=\"" + m_name + "\"";
+            if (m_badgerMetadata!=null)
+                output+= " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
+            output+= "/>\n";
 
             return output;
         }

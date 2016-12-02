@@ -110,7 +110,7 @@ namespace SimionSrcParser
 
             //// encoding=\"utf-8\"
             outputFile.WriteLine("<?xml version=\"1.0\"?>");//\n<DEFINITIONS>\n");
-            foreach (Constructor paramObj in m_parameterizedObjects)
+            foreach (ParameterizedObject paramObj in m_parameterizedObjects)
                 outputFile.Write(paramObj.outputXML(0));
             //outputFile.Write(@"</DEFINITIONS>");
             outputFile.Close();
