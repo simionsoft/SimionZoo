@@ -71,8 +71,14 @@ namespace SimionSrcParser
         }
         void parseEnumerations(string content)
         {
+            string sPattern = @"enum class\s*(\w+)\s*{([^}]+)}";
 
-        }
+            string className, paramName, prefix, definition;
+            foreach (Match match in Regex.Matches(content, sPattern))
+            {
+                className = match.Groups[1].Value + "-Factory";
+
+            }
         //PUBLIC methods//////////////////////////////////////////////////
         public int numCharsProcessed = 0;
         public SimionSrcParser() { }
@@ -87,6 +93,7 @@ namespace SimionSrcParser
             numCharsProcessed += fileContents.Length;
             parseConstructors(fileContents);
             parseFactories(fileContents);
+            parseEnumerations(fileContents);
         }
         public void parseHeaderFile(string filename)
         {

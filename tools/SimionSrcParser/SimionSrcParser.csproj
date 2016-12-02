@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConstructorParser.cs" />
+    <Compile Include="EnumerationParser.cs" />
     <Compile Include="FactoryParser.cs" />
     <Compile Include="main.cs" />
     <Compile Include="ParameterizedObject.cs" />
