@@ -110,6 +110,7 @@ namespace SimionSrcParser
             SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.classDefinitionNodeTag + " Name=\"" + m_name + "\">\n";
             output += outputChildrenXML(level + 1);
+            SimionSrcParser.addIndentation(ref output, level);
             output += "</" + XMLConfig.classDefinitionNodeTag + ">\n";
             return output;
         }

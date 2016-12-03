@@ -69,6 +69,8 @@ namespace Simion
         public const string preNodeTag = "PRE";
         public const string includeNodeTag = "INCLUDE";
 
+        //the name of the configuration class used in the C++ source code
+        public const string srcConfigClassName = "CConfigNode";
         //Text colors
         public const string colorDefaultValue = "DarkOrange";
         public const string colorValidValue = "Gray";

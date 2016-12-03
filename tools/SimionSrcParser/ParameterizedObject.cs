@@ -9,6 +9,7 @@ namespace SimionSrcParser
     public abstract class ParameterizedObject
     {
         protected string m_name;
+        public string name { get { return m_name; } }
         private List<IParameter> m_parameters = new List<IParameter>();
         public void addParameter(IParameter parameter) { m_parameters.Add(parameter); }
 

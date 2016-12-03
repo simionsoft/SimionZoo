@@ -12,7 +12,11 @@ namespace SimionSrcParser
     {
         //PRIVATE stuff///////////////////////////////////////////////////
         string m_currentFile = "";
-        List<ParameterizedObject> m_parameterizedObjects= new List<ParameterizedObject>();
+        static List<ParameterizedObject> m_parameterizedObjects= new List<ParameterizedObject>();
+        public static ParameterizedObject getNamedParamObject(string name)
+        {
+            return m_parameterizedObjects.Find(obj=>obj.name==name);
+        }
 
         public static void getEnclosedBody(string content, int startIndex,string openChar,string closeChar
             , out string definition, out string prefix)
@@ -47,7 +51,7 @@ namespace SimionSrcParser
             foreach (Match match in Regex.Matches(content, sPattern))
             {
                 className = match.Groups[1].Value;
-                Console.WriteLine("Found constructor definition: " + className);
+                //Console.WriteLine("Found constructor definition: " + className);
                 paramName = match.Groups[2].Value;
                 getEnclosedBody(content,match.Index + match.Length,"{","}"
                     , out definition, out prefix);
@@ -62,7 +66,7 @@ namespace SimionSrcParser
             foreach (Match match in Regex.Matches(content, sPattern))
             {
                 className = match.Groups[1].Value + "-Factory";
-                Console.WriteLine("Found factory definition: " + className);
+                //Console.WriteLine("Found factory definition: " + className);
                 paramName = match.Groups[2].Value;
                 getEnclosedBody(content, match.Index + match.Length, "{", "}"
                     , out definition, out prefix);
@@ -73,7 +77,7 @@ namespace SimionSrcParser
         {
             string sPattern = @"enum class\s*(\w+)\s*{([^}]+)}";
 
-            string enumName, prefix, definition;
+            string enumName;
             foreach (Match match in Regex.Matches(content, sPattern))
             {
                 enumName = match.Groups[1].Value;
@@ -85,7 +89,7 @@ namespace SimionSrcParser
         public SimionSrcParser() { }
         public void parseSrcFile(string filename)
         {
-            Console.WriteLine("Parsing source file " + filename);
+            //Console.WriteLine("Parsing source file " + filename);
             m_currentFile = filename;
             string fileContents = File.ReadAllText(filename, Encoding.UTF8);
             fileContents = fileContents.Replace('\r', ' ');
@@ -98,7 +102,7 @@ namespace SimionSrcParser
         }
         public void parseHeaderFile(string filename)
         {
-            Console.WriteLine("Parsing header file " + filename);
+            //Console.WriteLine("Parsing header file " + filename);
             m_currentFile = filename;
             string fileContents = File.ReadAllText(filename, Encoding.UTF8);
             fileContents = fileContents.Replace('\r', ' ');
@@ -117,10 +121,10 @@ namespace SimionSrcParser
             StreamWriter outputFile = new StreamWriter(file);
 
             //// encoding=\"utf-8\"
-            outputFile.WriteLine("<?xml version=\"1.0\"?>");//\n<DEFINITIONS>\n");
+            outputFile.WriteLine("<?xml version=\"1.0\"?>\n<DEFINITIONS>");
             foreach (ParameterizedObject paramObj in m_parameterizedObjects)
-                outputFile.Write(paramObj.outputXML(0));
-            //outputFile.Write(@"</DEFINITIONS>");
+                outputFile.Write(paramObj.outputXML(1));
+            outputFile.Write(@"</DEFINITIONS>");
             outputFile.Close();
         }
     }

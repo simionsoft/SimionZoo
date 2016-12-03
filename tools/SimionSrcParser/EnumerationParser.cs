@@ -24,6 +24,7 @@ namespace SimionSrcParser
                 SimionSrcParser.addIndentation(ref output, level + 1);
                 output += "<" + XMLConfig.enumNodeTag + ">" + value + "</" + XMLConfig.enumNodeTag + ">\n";
             }
+            SimionSrcParser.addIndentation(ref output, level);
             output += "</" + XMLConfig.enumDefinitionNodeTag + ">\n";
             return output;
         }

@@ -170,7 +170,7 @@ namespace SimionSrcParser
     }
     public class MultiValueFactoryParameterParser : Parser
     {
-        public MultiValueFactoryParameterParser() : base("MULTI_VALUE", true) { }
+        public MultiValueFactoryParameterParser() : base("MULTI_VALUE_FACTORY", true) { }
         public override void processParameter(ParameterizedObject parent)
         {
             bool bOptional = false; //default value
