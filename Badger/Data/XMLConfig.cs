@@ -73,5 +73,11 @@ namespace Simion
         public const string colorDefaultValue = "DarkOrange";
         public const string colorValidValue = "Gray";
         public const string colorInvalidValue = "Red";
+
+        //Parameter sorting values
+        public const int sortingValueOptional = 10;
+        public const int sortingValueSimpleParameter = 0;
+        public const int sortingValueChildClass = 5;
+        public const int sortingValueWorldVariable = 20;
     }
 }

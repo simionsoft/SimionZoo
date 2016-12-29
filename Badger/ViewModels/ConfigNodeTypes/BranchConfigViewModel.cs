@@ -33,7 +33,7 @@ namespace Badger.ViewModels
                 m_window = definitionNode.Attributes[XMLConfig.windowAttribute].Value;
             else m_window = "";
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
-                bIsOptional = definitionNode.Attributes[XMLConfig.optionalAttribute].Value == "true";
+                bIsOptional = bool.Parse(definitionNode.Attributes[XMLConfig.optionalAttribute].Value);
             else bIsOptional = false;
 
             if (configNode != null)

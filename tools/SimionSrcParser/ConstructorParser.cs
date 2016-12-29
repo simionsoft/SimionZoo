@@ -32,16 +32,18 @@ namespace SimionSrcParser
             if (m_world!=null)
                 output+= " " + XMLConfig.worldAttribute + "=\"" + m_world + "\"";
             output += ">\n";
-            output+= outputChildrenXML(level + 1);
+
             foreach(string baseClass in m_baseClasses)
             {
                 ParameterizedObject baseClassObject= SimionSrcParser.getNamedParamObject(baseClass);
                 if (baseClassObject != null)
-                    output += baseClassObject.outputChildrenXML(level + 1);
+                    foreach (IParameter param in baseClassObject.parameters)
+                        base.addParameter(param);//output += baseClassObject.outputChildrenXML(level + 1);
                 else
                     Console.WriteLine("Warning." + m_name + " class extends base class " + baseClass
                     + " but definition has not been found. Ignore if the base class is a template class without any parameters.");
             }
+            output += outputChildrenXML(level + 1);
             SimionSrcParser.addIndentation(ref output, level);
             output += "</" + XMLConfig.classDefinitionNodeTag + ">\n";
             return output;

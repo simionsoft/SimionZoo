@@ -8,7 +8,7 @@ namespace SimionSrcParser
     public interface  IParameter
     {
         string outputXML(int level);
-
+        int sortValue();
     }
     public class SimpleParameter: IParameter
     {
@@ -16,6 +16,8 @@ namespace SimionSrcParser
         protected string m_name;
         protected string m_comment;
         protected string m_default;
+
+        public int sortValue() { return XMLConfig.sortingValueSimpleParameter; } //default value
 
         public string outputXML(int level)
         {
@@ -96,6 +98,9 @@ namespace SimionSrcParser
             m_comment = comment;
             m_default = defaultValue;
         }
+
+        public int sortValue() { return XMLConfig.sortingValueSimpleParameter; } //default value
+
         public string outputXML(int level)
         {
             string output = "";
@@ -120,6 +125,13 @@ namespace SimionSrcParser
             m_badgerMetadata = badgerMetadata;
             m_bOptional = optional;
         }
+
+        public int sortValue()
+        {
+            if (!m_bOptional) return XMLConfig.sortingValueChildClass;
+            else return XMLConfig.sortingValueOptional;
+        }
+
         public string outputXML(int level)
         {
             string output = "";
@@ -127,6 +139,8 @@ namespace SimionSrcParser
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name 
                 + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "\" " + XMLConfig.commentAttribute 
                 + "=\"" + m_comment + "\"";
+            if (m_bOptional)
+                output += " " + XMLConfig.optionalAttribute + "=\"True\"";
             if (m_badgerMetadata != "")
                 output += " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
             output+= "/>\n";
@@ -145,6 +159,14 @@ namespace SimionSrcParser
             m_badgerMetadata = badgerMetadata;
             m_bOptional = optional;
         }
+
+        public int sortValue()
+        {
+            if (!m_bOptional) return XMLConfig.sortingValueChildClass;
+            else return XMLConfig.sortingValueOptional;
+        }
+
+
         public string outputXML(int level)
         {
             string output = "";
@@ -152,6 +174,8 @@ namespace SimionSrcParser
             output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
                 + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "-Factory\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\"";
+            if (m_bOptional)
+                output += " " + XMLConfig.optionalAttribute + "=\"True\"";
             if (m_badgerMetadata != "")
                 output += " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
             output += "/>\n";
@@ -170,6 +194,9 @@ namespace SimionSrcParser
             m_name = name;
             m_comment = comment;
         }
+
+        public int sortValue() { return XMLConfig.sortingValueSimpleParameter; }
+
         public string outputXML(int level)
         {
             string output = "";
@@ -200,13 +227,23 @@ namespace SimionSrcParser
             m_comment = comment;
             m_bOptional = optional;
         }
+
+        public int sortValue()
+        {
+            if (!m_bOptional) return XMLConfig.sortingValueChildClass;
+            else return XMLConfig.sortingValueOptional;
+        }
+
         public string outputXML(int level)
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
                 + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "\" " + XMLConfig.commentAttribute
-                + "=\"" + m_comment + "\"/>\n";
+                + "=\"" + m_comment + "\"";
+            if (m_bOptional)
+                output += " " + XMLConfig.optionalAttribute + "=\"True\"";
+            output += "/>\n";
             return output;
         }
     }
@@ -221,13 +258,23 @@ namespace SimionSrcParser
             m_comment = comment;
             m_bOptional = optional;
         }
+
+        public int sortValue()
+        {
+            if (!m_bOptional) return XMLConfig.sortingValueChildClass;
+            else return XMLConfig.sortingValueOptional;
+        }
+
         public string outputXML(int level)
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
             output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
                 + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "-Factory\" " + XMLConfig.commentAttribute
-                + "=\"" + m_comment + "\"/>\n";
+                + "=\"" + m_comment + "\"";
+            if (m_bOptional)
+                output += " " + XMLConfig.optionalAttribute + "=\"True\"";
+            output += "/>\n";
             return output;
         }
     }
@@ -242,6 +289,8 @@ namespace SimionSrcParser
             m_comment = comment;
             m_default = defaultValue;
         }
+        public int sortValue() {return XMLConfig.sortingValueSimpleParameter; }
+
         public string outputXML(int level)
         {
             string output = "";
@@ -272,6 +321,9 @@ namespace SimionSrcParser
             m_type = type;
             m_name = name;
         }
+
+        public int sortValue() { return XMLConfig.sortingValueWorldVariable; }
+
         public string outputXML(int level)
         {
             string output = "";
@@ -303,6 +355,9 @@ namespace SimionSrcParser
             m_comment = comment;
         }
         public void addParameter(IParameter parameter) { m_parameters.Add(parameter); }
+
+        public int sortValue() { return XMLConfig.sortingValueSimpleParameter; }
+
         public string outputXML(int level)
         {
             string output = "";
@@ -325,6 +380,8 @@ namespace SimionSrcParser
         string m_name, m_className;
         Type m_type;
         string m_badgerMetadata;
+        public int sortValue() { return XMLConfig.sortingValueSimpleParameter; }
+
         public ChoiceElementParameter(string name,string className,Type type)
         {
             m_name = name;

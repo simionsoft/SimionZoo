@@ -1,32 +1,32 @@
 <?xml version="1.0"?>
 <DEFINITIONS>
   <CLASS Name="CCACLALearner">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by CACLA"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain [0..1]"/>
     <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by CACLA" Optional="True"/>
   </CLASS>
   <CLASS Name="CIncrementalNaturalActorCritic">
     <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function"/>
-    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic"/>
-    <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor"/>
     <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
     <BRANCH Name="Alpha-r" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter of the MDP"/>
     <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
     <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The policy"/>
+    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="True"/>
+    <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="True"/>
   </CLASS>
   <CLASS Name="CActorCritic">
     <BRANCH Name="Actor" Class="CActor" Comment="The actor"/>
     <BRANCH Name="Critic" Class="CCritic-Factory" Comment="The critic"/>
   </CLASS>
   <CLASS Name="CRegularPolicyGradientLearner">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain"/>
     <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner" Optional="True"/>
   </CLASS>
   <CLASS Name="CActor">
-    <BRANCH Name="Base-Controller" Class="CController-Factory" Comment="The base controller used to initialize the weights of the actor"/>
     <MULTI-VALUED Name="Output" Class="CPolicyLearner-Factory" Comment="The outputs of the actor. One for each output dimension"/>
+    <BRANCH Name="Base-Controller" Class="CController-Factory" Comment="The base controller used to initialize the weights of the actor" Optional="True"/>
   </CLASS>
   <CLASS Name="RLSimionApp">
     <BRANCH Name="Log" Class="CLogger" Comment="The logger class"/>
@@ -43,11 +43,11 @@
     <MULTI-VALUED Name="LQR-Gain" Class="CLQRGain" Comment="An LQR gain on an input state variable"/>
   </CLASS>
   <CLASS Name="CPIDController">
+    <STATE-VAR-REF Name="Input-Variable" Comment="The input state variable"/>
+    <ACTION-VAR-REF Name="Output-Action" Comment="The output action"/>
     <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain"/>
     <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain"/>
     <BRANCH Name="KD" Class="CNumericValue-Factory" Comment="Derivative gain"/>
-    <STATE-VAR-REF Name="Input-Variable" Comment="The input state variable"/>
-    <ACTION-VAR-REF Name="Output-Action" Comment="The output action"/>
   </CLASS>
   <CLASS Name="CWindTurbineVidalController">
     <BRANCH Name="A" Class="CNumericValue-Factory" Comment="A parameter of the torque controller"/>
@@ -85,23 +85,23 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CTDLambdaCritic">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
   </CLASS>
   <CLASS Name="CTDCLambdaCritic">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Elilgibility traces of the critic"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Beta" Class="CNumericValue-Factory" Comment="Learning gain applied to the omega vector"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Elilgibility traces of the critic" Optional="True"/>
   </CLASS>
   <CLASS Name="CTrueOnlineTDLambdaCritic">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
   </CLASS>
   <CLASS Name="CCritic">
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
@@ -238,10 +238,10 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CSimGod">
-    <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters"/>
     <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map"/>
-    <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The state feature map"/>
     <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: learning agents and controllers"/>
+    <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>
+    <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The state feature map" Optional="True"/>
   </CLASS>
   <CLASS Name="CSimion-Factory">
     <CHOICE Name="Type" Class="CSimion" Comment="The Simion class">
@@ -267,14 +267,14 @@
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
   <CLASS Name="CDeterministicPolicyGaussianNoise">
+    <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
     <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
     <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration"/>
-    <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
   <CLASS Name="CStochasticPolicyGaussianNoise">
+    <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
     <BRANCH Name="Mean-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
     <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates variance(s)"/>
-    <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
   <CLASS Name="CPolicy-Factory">
     <CHOICE Name="Policy" Class="CPolicy" Comment="The policy type">
