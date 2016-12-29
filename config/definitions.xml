@@ -116,7 +116,7 @@
   <CLASS Name="CETraces">
     <DOUBLE-VALUE Name="Threshold" Comment="Threshold applied to trace factors" Default="0.001"/>
     <DOUBLE-VALUE Name="Lambda" Comment="Lambda parameter" Default="0.9"/>
-    <DOUBLE-VALUE Name="Replace" Comment="Replace existing traces? Or add?" Default="true"/>
+    <BOOL-VALUE Name="Replace" Comment="Replace existing traces? Or add?" Default="true"/>
   </CLASS>
   <CLASS Name="CExperienceReplay">
     <INTEGER-VALUE Name="Buffer-Size" Comment="Size of the buffer used to store experience tuples" Default="1000"/>
@@ -151,8 +151,8 @@
   </CLASS>
   <CLASS Name="CLogger">
     <DOUBLE-VALUE Name="Log-Freq" Comment="Log frequency. Simulation time in seconds." Default="0.25"/>
-    <DOUBLE-VALUE Name="Log-eval-episodes" Comment="Log evaluation episodes?" Default="true"/>
-    <DOUBLE-VALUE Name="Log-training-episodes" Comment="Log training episodes?" Default="false"/>
+    <BOOL-VALUE Name="Log-eval-episodes" Comment="Log evaluation episodes?" Default="true"/>
+    <BOOL-VALUE Name="Log-training-episodes" Comment="Log training episodes?" Default="false"/>
   </CLASS>
   <CLASS Name="CGaussianNoise">
     <BRANCH Name="Sigma" Class="CNumericValue-Factory" Comment="Width of the gaussian bell"/>

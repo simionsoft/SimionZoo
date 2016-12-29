@@ -120,6 +120,7 @@ namespace Badger.ViewModels
             switch (definitionNode.Name)
             {
                 case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(appDefinition, parent, definitionNode,parentXPath,configNode);
+                case XMLConfig.boolNodeTag: return new BoolValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath,configNode);
                 case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);

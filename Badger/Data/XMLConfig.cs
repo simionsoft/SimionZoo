@@ -29,7 +29,7 @@ namespace Simion
         public const string choiceNodeTag = "CHOICE";
         public const string choiceElementNodeTag = "CHOICE-ELEMENT";
         public const string doubleNodeTag = "DOUBLE-VALUE";
-        public const string boolNodeTag = "DOUBLE-VALUE";
+        public const string boolNodeTag = "BOOL-VALUE";
         public const string integerNodeTag = "INTEGER-VALUE";
         public const string stringNodeTag = "STRING-VALUE";
         public const string filePathNodeTag = "FILE-PATH-VALUE";

@@ -135,6 +135,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\FilePathValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ForkedNodeViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ForkValueViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\BoolValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\IntegerValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
@@ -261,6 +262,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ConfigNodeTypes\ForkValueView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\BoolValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

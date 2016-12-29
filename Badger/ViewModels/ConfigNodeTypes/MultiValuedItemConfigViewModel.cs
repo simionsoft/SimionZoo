@@ -19,6 +19,7 @@ namespace Badger.ViewModels
             switch (m_className)
             {
                 case XMLConfig.integerNodeTag: children.Add(new IntegerValueConfigViewModel(appDefinition, this,definitionNode, m_xPath, configNode));break;
+                case XMLConfig.boolNodeTag: children.Add(new BoolValueConfigViewModel(appDefinition, this, definitionNode, m_xPath, configNode)); break;
                 case XMLConfig.doubleNodeTag: children.Add(new DoubleValueConfigViewModel(appDefinition, this,definitionNode, m_xPath, configNode));break ;
                 case XMLConfig.stringNodeTag: children.Add(new StringValueConfigViewModel(appDefinition, this, definitionNode, m_xPath, configNode));break ;
                 case XMLConfig.filePathNodeTag: children.Add(new FilePathValueConfigViewModel(appDefinition, this,definitionNode, m_xPath, configNode));break ;
