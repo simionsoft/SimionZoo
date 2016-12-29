@@ -13,6 +13,7 @@ namespace Badger.ViewModels
     //-CombineForks: for each combination of fork values, a different experiment will be saved
     //-SaveForks: forkedNodes and forks will be saved as a unique experiment
     public enum SaveMode { CombineForks,SaveForks};
+    public enum WorldVarType { StateVar, ActionVar };
 
     public class AppViewModel: PropertyChangedBase
     {
@@ -97,42 +98,42 @@ namespace Badger.ViewModels
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
         //Auxiliary XML definition files: Worlds (states and actions)
-        private Dictionary<string, List<string>> m_auxDefinitions = new Dictionary<string, List<string>>();
+        private Dictionary<WorldVarType, List<string>> m_auxDefinitions = new Dictionary<WorldVarType, List<string>>();
 
-        public void loadAuxDefinitions(string fileName)
-        {
-            XmlDocument doc = new XmlDocument();
+        //public void loadAuxDefinitions(string fileName)
+        //{
+        //    XmlDocument doc = new XmlDocument();
 
-            doc.Load(fileName);
-            XmlNode rootNode= doc.LastChild; //we take here the last node to skip the <?xml ...> initial tag
-            //HARD-CODED: the list is filled with the contents of the nodes from: ../<hangingFrom>/Variable/Name
-            foreach (XmlNode child in rootNode.ChildNodes)
-            {
-                List<string> definedValues = new List<string>();
-                string hangingFrom = child.Name;
-                foreach (XmlNode child2 in child.ChildNodes)
-                {
-                    if (child2.Name == "Variable")
-                    {
-                        foreach (XmlNode child3 in child2.ChildNodes)
-                        {
-                            if (child3.Name == "Name")
-                                definedValues.Add(child3.InnerText);
-                        }
-                    }
-                }
-                m_auxDefinitions[hangingFrom] = definedValues;
-            }
-            updateXMLDefRefs();
-        }
-        public List<string> getAuxDefinition(string hangingFrom)
+        //    doc.Load(fileName);
+        //    XmlNode rootNode= doc.LastChild; //we take here the last node to skip the <?xml ...> initial tag
+        //    //HARD-CODED: the list is filled with the contents of the nodes from: ../<hangingFrom>/Variable/Name
+        //    foreach (XmlNode child in rootNode.ChildNodes)
+        //    {
+        //        List<string> definedValues = new List<string>();
+        //        string hangingFrom = child.Name;
+        //        foreach (XmlNode child2 in child.ChildNodes)
+        //        {
+        //            if (child2.Name == "Variable")
+        //            {
+        //                foreach (XmlNode child3 in child2.ChildNodes)
+        //                {
+        //                    if (child3.Name == "Name")
+        //                        definedValues.Add(child3.InnerText);
+        //                }
+        //            }
+        //        }
+        //        m_auxDefinitions[hangingFrom] = definedValues;
+        //    }
+        //    updateXMLDefRefs();
+        //}
+        public List<string> getAuxDefinition(WorldVarType varType)
         {
-            if (!m_auxDefinitions.ContainsKey(hangingFrom))
+            if (!m_auxDefinitions.ContainsKey(varType))
             {
-                CaliburnUtility.showWarningDialog("Undefined XMLDefRef: " + hangingFrom, "ERROR");
+                CaliburnUtility.showWarningDialog("Undefined XMLDefRef: " + varType.ToString(), "ERROR");
                 return null;
             }
-            return m_auxDefinitions[hangingFrom];
+            return m_auxDefinitions[varType];
         }
 
         //XMLDefRefs

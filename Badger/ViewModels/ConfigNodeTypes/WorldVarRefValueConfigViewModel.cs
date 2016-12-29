@@ -5,7 +5,7 @@ using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    class XmlDefRefValueConfigViewModel: ConfigNodeViewModel
+    class WorldVarRefValueConfigViewModel: ConfigNodeViewModel
     {
         private List<string> m_enumeratedNames= null;
         public List<string> enumeratedNames
@@ -22,13 +22,14 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => selectedEnumeratedName);
             }
         }
-        private string m_hangingFrom;
+        
+        private WorldVarType m_varType;
 
-        public XmlDefRefValueConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public WorldVarRefValueConfigViewModel(AppViewModel appDefinition, WorldVarType varType, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appDefinition, parent, definitionNode, parentXPath);
 
-            m_hangingFrom = definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
+            m_varType = varType;//definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
 
             if (configNode != null)
             {
@@ -37,37 +38,37 @@ namespace Badger.ViewModels
             }
 
             //the xml definition file may not be yet loaded
-            enumeratedNames = m_appViewModel.getAuxDefinition(m_hangingFrom);
+            enumeratedNames = m_appViewModel.getAuxDefinition(m_varType);
 
             if (enumeratedNames == null)
             {
                 //Either we have loaded the config but the list is of values has not yet been loaded
                 //or no config file has been loaded. In Either case, we register for a deferred load step
-                m_appViewModel.registerDeferredLoadStep(updateXMLDefRef);
+                m_appViewModel.registerDeferredLoadStep(updateValues);
             }
 
-            m_appViewModel.registerXMLDefRef(updateXMLDefRef);
+            m_appViewModel.registerXMLDefRef(updateValues);
         }
 
         public override ConfigNodeViewModel clone()
         {
-            XmlDefRefValueConfigViewModel newInstance=
-                new XmlDefRefValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
-            m_appViewModel.registerXMLDefRef(newInstance.updateXMLDefRef);
-            newInstance.m_hangingFrom = m_hangingFrom;
+            WorldVarRefValueConfigViewModel newInstance=
+                new WorldVarRefValueConfigViewModel(m_appViewModel, m_varType,m_parent, nodeDefinition, m_parent.xPath);
+            m_appViewModel.registerXMLDefRef(newInstance.updateValues);
+            newInstance.m_varType = m_varType;
             newInstance.enumeratedNames = enumeratedNames;
             newInstance.selectedEnumeratedName = selectedEnumeratedName;
             return newInstance;
         }
 
-        public void updateXMLDefRef()
+        public void updateValues()
         {
-            enumeratedNames = m_appViewModel.getAuxDefinition(m_hangingFrom);
+            enumeratedNames = m_appViewModel.getAuxDefinition(m_varType);
         }
 
         public override bool validate()
         {
-            List<string> enumeration = m_appViewModel.getAuxDefinition(m_hangingFrom);
+            List<string> enumeration = m_appViewModel.getAuxDefinition(m_varType);
             return enumeration.Exists(id => (id==content));
         }
     }

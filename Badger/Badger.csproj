@@ -140,7 +140,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
-    <Compile Include="ViewModels\ConfigNodeTypes\XmlDefRefValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ExperimentViewModel.cs" />
     <Compile Include="ViewModels\PlotViewModel.cs" />
     <Compile Include="ViewModels\ExperimentLogViewModel.cs" />
@@ -281,7 +281,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ConfigNodeTypes\XmlDefRefValueConfigViewModel.xaml">
+    <Page Include="Views\ConfigNodeTypes\WorldVarRefValueConfigViewModel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

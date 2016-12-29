@@ -125,7 +125,9 @@ namespace Badger.ViewModels
                 case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.xmlRefNodeTag: return new XmlDefRefValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
+
+                case XMLConfig.stateVarRefTag: return new WorldVarRefValueConfigViewModel(appDefinition, WorldVarType.StateVar,parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.actionVarRefTag: return new WorldVarRefValueConfigViewModel(appDefinition, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode);
 
                 case XMLConfig.branchNodeTag: return new BranchConfigViewModel(appDefinition, parent, definitionNode,parentXPath,configNode);
                 case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
