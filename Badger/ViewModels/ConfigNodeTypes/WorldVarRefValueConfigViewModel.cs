@@ -66,6 +66,9 @@ namespace Badger.ViewModels
         {
             m_appViewModel.getWorldVarNameList(m_varType, ref m_varNames);
             NotifyOfPropertyChange(() => varNames);
+
+            //to force re-validation if the list of variables wasn't available at node creation time
+            selectedEnumeratedName = selectedEnumeratedName;
         }
 
         public override bool validate()

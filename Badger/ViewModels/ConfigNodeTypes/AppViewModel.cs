@@ -162,7 +162,7 @@ namespace Badger.ViewModels
 
         public void getWorldVarNameList(WorldVarType varType,ref List<string> varNameList)
         {
-            if (varNameList!=null && m_selectedWorld!=null)
+            if (varNameList!=null && m_selectedWorld!="")
             {
                 switch(varType)
                 {

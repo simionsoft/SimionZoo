@@ -96,8 +96,9 @@ namespace Badger.ViewModels
         protected void commonInit(AppViewModel appViewModel,ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)
         {
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
-            //System.Console.WriteLine("loading " + name);
-
+#if DEBUG
+            System.Console.WriteLine("loading " + name);
+#endif
             m_parent = parent;
             m_appViewModel = appViewModel;
             nodeDefinition = definitionNode;

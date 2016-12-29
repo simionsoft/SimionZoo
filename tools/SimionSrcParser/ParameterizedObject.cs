@@ -18,7 +18,7 @@ namespace SimionSrcParser
         public string outputChildrenXML(int level)
         {
             string output = "";
-            var orderedList = m_parameters.OrderBy(param => param.sortValue());
+            var orderedList = m_parameters.OrderBy(param => param.parameterClassSortValue()).ThenBy(param=>param.getName());
             foreach (IParameter parameter in orderedList)
                 output += parameter.outputXML(level);
             return output;

@@ -2,18 +2,18 @@
 <DEFINITIONS>
   <CLASS Name="CCACLALearner">
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain [0..1]"/>
-    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by CACLA" Optional="True"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
   </CLASS>
   <CLASS Name="CIncrementalNaturalActorCritic">
-    <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function"/>
-    <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
-    <BRANCH Name="Alpha-r" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter of the MDP"/>
-    <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
     <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The policy"/>
-    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="True"/>
+    <BRANCH Name="Alpha-r" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
+    <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
+    <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter of the MDP"/>
     <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="True"/>
+    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="True"/>
+    <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function"/>
   </CLASS>
   <CLASS Name="CActorCritic">
     <BRANCH Name="Actor" Class="CActor" Comment="The actor"/>
@@ -21,18 +21,18 @@
   </CLASS>
   <CLASS Name="CRegularPolicyGradientLearner">
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain"/>
-    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner" Optional="True"/>
+    <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
   </CLASS>
   <CLASS Name="CActor">
     <MULTI-VALUED Name="Output" Class="CPolicyLearner-Factory" Comment="The outputs of the actor. One for each output dimension"/>
     <BRANCH Name="Base-Controller" Class="CController-Factory" Comment="The base controller used to initialize the weights of the actor" Optional="True"/>
   </CLASS>
   <CLASS Name="RLSimionApp">
-    <BRANCH Name="Log" Class="CLogger" Comment="The logger class"/>
-    <BRANCH Name="World" Class="CWorld" Comment="The simulation environment and its parameters"/>
     <BRANCH Name="Experiment" Class="CExperiment" Comment="The parameters of the experiment"/>
+    <BRANCH Name="Log" Class="CLogger" Comment="The logger class"/>
     <BRANCH Name="SimGod" Class="CSimGod" Comment="The omniscient class that controls all aspects of the simulation process"/>
+    <BRANCH Name="World" Class="CWorld" Comment="The simulation environment and its parameters"/>
   </CLASS>
   <CLASS Name="CLQRGain">
     <DOUBLE-VALUE Name="Gain" Comment="The gain applied to the input state variable" Default="0.1"/>
@@ -45,35 +45,35 @@
   <CLASS Name="CPIDController">
     <STATE-VAR-REF Name="Input-Variable" Comment="The input state variable"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action"/>
-    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain"/>
-    <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain"/>
     <BRANCH Name="KD" Class="CNumericValue-Factory" Comment="Derivative gain"/>
+    <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain"/>
+    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain"/>
   </CLASS>
   <CLASS Name="CWindTurbineVidalController">
     <BRANCH Name="A" Class="CNumericValue-Factory" Comment="A parameter of the torque controller"/>
     <BRANCH Name="K_alpha" Class="CNumericValue-Factory" Comment="K_alpha parameter of the torque controller"/>
-    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain of the pitch controller"/>
     <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain of the pitch controller"/>
+    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain of the pitch controller"/>
     <BRANCH Name="P_s" Class="CNumericValue-Factory" Comment="Power setpoint for the torque controller"/>
   </CLASS>
   <CLASS Name="CWindTurbineBoukhezzarController">
     <BRANCH Name="C_0" Class="CNumericValue-Factory" Comment="C_0 parameter"/>
-    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain of the pitch controller"/>
     <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain of the pitch controller"/>
+    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain of the pitch controller"/>
   </CLASS>
   <CLASS Name="CWindTurbineJonkmanController">
     <DOUBLE-VALUE Name="CornerFreq" Comment="Corner Freq. parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VSRtGnSp" Comment="Rated Generator Speed" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_SlPc" Comment="SIPc parameter" Default="0.0"/>
+    <DOUBLE-VALUE Name="PC_RefSpd" Comment="Pitch control reference speed" Default="0.0"/>
+    <DOUBLE-VALUE Name="VS_CtInSp" Comment="CtlnSp parameter" Default="0.0"/>
     <DOUBLE-VALUE Name="VS_Rgn2K" Comment="Rgn2K parameter" Default="0.0"/>
     <DOUBLE-VALUE Name="VS_Rgn2Sp" Comment="Rgn2Sp parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_CtInSp" Comment="CtlnSp parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_RtPwr" Comment="Rated power" Default="0.0"/>
     <DOUBLE-VALUE Name="VS_Rgn3MP" Comment="Rgn3MP parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="PC_RefSpd" Comment="Pitch control reference speed" Default="0.0"/>
+    <DOUBLE-VALUE Name="VS_RtPwr" Comment="Rated power" Default="0.0"/>
+    <DOUBLE-VALUE Name="VS_SlPc" Comment="SIPc parameter" Default="0.0"/>
+    <DOUBLE-VALUE Name="VSRtGnSp" Comment="Rated Generator Speed" Default="0.0"/>
+    <BRANCH Name="PC_KI" Class="CNumericValue-Factory" Comment="PC_KI"/>
     <BRANCH Name="PC_KK" Class="CNumericValue-Factory" Comment="PC_KK"/>
     <BRANCH Name="PC_KP" Class="CNumericValue-Factory" Comment="PC_KP"/>
-    <BRANCH Name="PC_KI" Class="CNumericValue-Factory" Comment="PC_KI"/>
   </CLASS>
   <CLASS Name="CController-Factory">
     <CHOICE Name="Controller" Class="CController" Comment="The specific controller to be used">
@@ -86,22 +86,22 @@
   </CLASS>
   <CLASS Name="CTDLambdaCritic">
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
   </CLASS>
   <CLASS Name="CTDCLambdaCritic">
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Beta" Class="CNumericValue-Factory" Comment="Learning gain applied to the omega vector"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Elilgibility traces of the critic" Optional="True"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Elilgibility traces of the critic" Optional="True"/>
   </CLASS>
   <CLASS Name="CTrueOnlineTDLambdaCritic">
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
     <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
   </CLASS>
   <CLASS Name="CCritic">
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
@@ -114,20 +114,20 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CETraces">
-    <DOUBLE-VALUE Name="Threshold" Comment="Threshold applied to trace factors" Default="0.001"/>
     <DOUBLE-VALUE Name="Lambda" Comment="Lambda parameter" Default="0.9"/>
     <BOOL-VALUE Name="Replace" Comment="Replace existing traces? Or add?" Default="true"/>
+    <DOUBLE-VALUE Name="Threshold" Comment="Threshold applied to trace factors" Default="0.001"/>
   </CLASS>
   <CLASS Name="CExperienceReplay">
     <INTEGER-VALUE Name="Buffer-Size" Comment="Size of the buffer used to store experience tuples" Default="1000"/>
     <INTEGER-VALUE Name="Update-Batch-Size" Comment="Number of tuples used each time-step in the update" Default="10"/>
   </CLASS>
   <CLASS Name="CExperiment">
-    <INTEGER-VALUE Name="Random-Seed" Comment="Random seed used to generate random sequences of numbers" Default="1"/>
-    <INTEGER-VALUE Name="Num-Episodes" Comment="Number of episodes" Default="1000"/>
-    <INTEGER-VALUE Name="Eval-Freq" Comment="Evaluation frequency (in episodes)" Default="10"/>
-    <DOUBLE-VALUE Name="Progress-Update-Freq" Comment="Progress update frequency (seconds)" Default="1.0"/>
     <DOUBLE-VALUE Name="Episode-Length" Comment="Length of an episode(seconds)" Default="10.0"/>
+    <INTEGER-VALUE Name="Eval-Freq" Comment="Evaluation frequency (in episodes)" Default="10"/>
+    <INTEGER-VALUE Name="Num-Episodes" Comment="Number of episodes" Default="1000"/>
+    <DOUBLE-VALUE Name="Progress-Update-Freq" Comment="Progress update frequency (seconds)" Default="1.0"/>
+    <INTEGER-VALUE Name="Random-Seed" Comment="Random seed used to generate random sequences of numbers" Default="1"/>
   </CLASS>
   <CLASS Name="CGaussianRBFStateGridFeatureMap">
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
@@ -150,14 +150,14 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CLogger">
-    <DOUBLE-VALUE Name="Log-Freq" Comment="Log frequency. Simulation time in seconds." Default="0.25"/>
     <BOOL-VALUE Name="Log-eval-episodes" Comment="Log evaluation episodes?" Default="true"/>
+    <DOUBLE-VALUE Name="Log-Freq" Comment="Log frequency. Simulation time in seconds." Default="0.25"/>
     <BOOL-VALUE Name="Log-training-episodes" Comment="Log training episodes?" Default="false"/>
   </CLASS>
   <CLASS Name="CGaussianNoise">
-    <BRANCH Name="Sigma" Class="CNumericValue-Factory" Comment="Width of the gaussian bell"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Low-pass first-order filter's gain [0...1]. 1=no filter"/>
     <BRANCH Name="Scale" Class="CNumericValue-Factory" Comment="Scale factor applied to the noise signal before adding it to the policy's output"/>
+    <BRANCH Name="Sigma" Class="CNumericValue-Factory" Comment="Width of the gaussian bell"/>
   </CLASS>
   <CLASS Name="CNoise-Factory">
     <CHOICE Name="Noise" Class="CNoise" Comment="Noise type">
@@ -168,19 +168,19 @@
     <DOUBLE-VALUE Name="Value" Comment="Constant value" Default="0.0"/>
   </CLASS>
   <CLASS Name="CInterpolatedValue">
-    <DOUBLE-VALUE Name="Start-Offset" Comment="Normalized time from which the schedule will begin [0...1]" Default="0.0"/>
-    <DOUBLE-VALUE Name="Pre-Offset-Value" Comment="Output value before the schedule begins" Default="0.1"/>
-    <DOUBLE-VALUE Name="Initial-Value" Comment="Output value at the beginning of the schedule" Default="0.1"/>
     <DOUBLE-VALUE Name="End-Value" Comment="Output value at the end of the schedule" Default="0.0"/>
     <DOUBLE-VALUE Name="Evaluation-Value" Comment="Output value during evaluation episodes" Default="0.0"/>
+    <DOUBLE-VALUE Name="Initial-Value" Comment="Output value at the beginning of the schedule" Default="0.1"/>
     <ENUM-VALUE Name="Interpolation" Class="Interpolation" Comment="Interpolation type" Default="linear"/>
+    <DOUBLE-VALUE Name="Pre-Offset-Value" Comment="Output value before the schedule begins" Default="0.1"/>
+    <DOUBLE-VALUE Name="Start-Offset" Comment="Normalized time from which the schedule will begin [0...1]" Default="0.0"/>
     <ENUM-VALUE Name="Time-reference" Class="TimeReference" Comment="The time-reference type" Default="experiment"/>
   </CLASS>
   <CLASS Name="CBhatnagarSchedule">
     <DOUBLE-VALUE Name="Alpha-0" Comment="Alpha-0 parameter in Bhatnagar's schedule" Default="1.0"/>
     <DOUBLE-VALUE Name="Alpha-c" Comment="Alpha-c parameter in Bhatnagar's schedule" Default="1.0"/>
-    <DOUBLE-VALUE Name="Time-Exponent" Comment="Time exponent in Bhatnagar's schedule" Default="1.0"/>
     <DOUBLE-VALUE Name="Evaluation-Value" Comment="Output value during evaluation episodes" Default="0.0"/>
+    <DOUBLE-VALUE Name="Time-Exponent" Comment="Time exponent in Bhatnagar's schedule" Default="1.0"/>
     <ENUM-VALUE Name="Time-reference" Class="TimeReference" Comment="The time reference" Default="episode"/>
   </CLASS>
   <CLASS Name="CNumericValue-Factory">
@@ -210,26 +210,26 @@
     <BRANCH Name="Tau" Class="CNumericValue-Factory" Comment="Temperature parameter"/>
   </CLASS>
   <CLASS Name="CQLearning">
-    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
-    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
   </CLASS>
   <CLASS Name="CDoubleQLearning">
     <INTEGER-VALUE Name="Target-Update-Freq" Comment="The number of steps between updates of the target Q-Function" Default="100"/>
-    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
-    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
   </CLASS>
   <CLASS Name="CSARSA">
-    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
-    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
+    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
   </CLASS>
   <CLASS Name="CQPolicy-Factory">
     <CHOICE Name="Policy" Class="CQPolicy" Comment="The exploration policy used to learn">
@@ -238,10 +238,10 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CSimGod">
-    <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map"/>
     <MULTI-VALUED Name="Simion" Class="CSimion-Factory" Comment="Simions: learning agents and controllers"/>
-    <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>
     <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The state feature map" Optional="True"/>
+    <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>
+    <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map"/>
   </CLASS>
   <CLASS Name="CSimion-Factory">
     <CHOICE Name="Type" Class="CSimion" Comment="The Simion class">
@@ -254,14 +254,14 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CStateVariableGrid">
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the state variable's grid" Default="linear"/>
     <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
     <STATE-VAR-REF Name="Variable" Comment="The state variable"/>
-    <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the state variable's grid" Default="linear"/>
   </CLASS>
   <CLASS Name="CActionVariableGrid">
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
     <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
     <ACTION-VAR-REF Name="Variable" Comment="The action variable"/>
-    <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
   </CLASS>
   <CLASS Name="CPolicy">
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
@@ -289,68 +289,68 @@
     <DOUBLE-VALUE Name="Init-Value" Comment="The initial value given to the weights on initialization" Default="0.0"/>
   </CLASS>
   <CLASS Name="CBalancingPole" World="Balancing-pole">
-    <STATE-VAR Name="x" Min="-30" Max="30" Unit="m"/>
-    <STATE-VAR Name="x_dot" Min="-10" Max="10" Unit="m/s"/>
+    <ACTION-VAR Name="force" Min="-100" Max="100" Unit="N"/>
     <STATE-VAR Name="theta" Min="-22" Max="22" Unit="rad"/>
     <STATE-VAR Name="theta_dot" Min="-10" Max="10" Unit="rad/s"/>
-    <ACTION-VAR Name="force" Min="-100" Max="100" Unit="N"/>
+    <STATE-VAR Name="x" Min="-30" Max="30" Unit="m"/>
+    <STATE-VAR Name="x_dot" Min="-10" Max="10" Unit="m/s"/>
   </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">
     <FILE-PATH-VALUE Name="Evaluation-Set-Point" Comment="The setpoint file" Default="../config/world/magnetic-levitation/setpoint.txt"/>
-    <STATE-VAR Name="position-setpoint" Min="0" Max="13" Unit="m"/>
-    <STATE-VAR Name="position" Min="0" Max="13" Unit="m"/>
-    <STATE-VAR Name="velocity" Min="-1000" Max="1000" Unit="m/s"/>
     <STATE-VAR Name="current" Min="-100" Max="100" Unit="A"/>
+    <STATE-VAR Name="position" Min="0" Max="13" Unit="m"/>
     <STATE-VAR Name="position-deviation" Min="-13" Max="13" Unit="m"/>
+    <STATE-VAR Name="position-setpoint" Min="0" Max="13" Unit="m"/>
+    <STATE-VAR Name="velocity" Min="-1000" Max="1000" Unit="m/s"/>
     <ACTION-VAR Name="voltage" Min="-60" Max="60" Unit="V"/>
   </CLASS>
   <CLASS Name="CMountainCar" World="Mountain-car">
+    <ACTION-VAR Name="pedal" Min="-10" Max="10" Unit="m"/>
     <STATE-VAR Name="position" Min="-12" Max="6" Unit="m"/>
     <STATE-VAR Name="velocity" Min="-7" Max="7" Unit="m/s"/>
-    <ACTION-VAR Name="pedal" Min="-10" Max="10" Unit="m"/>
   </CLASS>
   <CLASS Name="CPitchControl" World="Pitch-control">
     <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/pitch-control/setpoint.txt"/>
-    <STATE-VAR Name="setpoint-pitch" Min="-314159265" Max="314159265" Unit="rad"/>
     <STATE-VAR Name="attack-angle" Min="-314159265" Max="314159265" Unit="rad"/>
-    <STATE-VAR Name="pitch" Min="-314159265" Max="314159265" Unit="rad"/>
-    <STATE-VAR Name="pitch-rate" Min="-1" Max="1" Unit="rad/s"/>
     <STATE-VAR Name="control-deviation" Min="-65" Max="65" Unit="rad"/>
+    <STATE-VAR Name="pitch" Min="-314159265" Max="314159265" Unit="rad"/>
     <ACTION-VAR Name="pitch" Min="-14" Max="14" Unit="rad"/>
+    <STATE-VAR Name="pitch-rate" Min="-1" Max="1" Unit="rad/s"/>
+    <STATE-VAR Name="setpoint-pitch" Min="-314159265" Max="314159265" Unit="rad"/>
   </CLASS>
   <CLASS Name="CUnderwaterVehicle" World="Underwater-vehicle">
     <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/underwater-vehicle/setpoint.txt"/>
-    <STATE-VAR Name="v-setpoint" Min="-50" Max="50" Unit="m/s"/>
+    <ACTION-VAR Name="u-thrust" Min="-300" Max="300" Unit="N"/>
     <STATE-VAR Name="v" Min="-50" Max="50" Unit="m/s"/>
     <STATE-VAR Name="v-deviation" Min="-100" Max="100" Unit="m/s"/>
-    <ACTION-VAR Name="u-thrust" Min="-300" Max="300" Unit="N"/>
+    <STATE-VAR Name="v-setpoint" Min="-50" Max="50" Unit="m/s"/>
   </CLASS>
   <CLASS Name="CWindTurbine" World="Wind-turbine">
     <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Comment="The wind file used for evaluation" Default="../config/world/wind-turbine/TurbSim-10.25.hh"/>
     <FILE-PATH-VALUE Name="Power-Set-Point" Comment="The power setpoint file" Default="../config/world/wind-turbine/power-setpoint.txt"/>
     <MULTI-VALUED Name="Training-Wind-Data" Class="FILE_PATH_PARA" Comment="The wind files used for training" Default="../config/world/wind-turbine/TurbSim-10.5.hh"/>
-    <STATE-VAR Name="T_a" Min="0" Max="4000000" Unit="N/m"/>
-    <STATE-VAR Name="P_a" Min="0" Max="16000000" Unit="W"/>
-    <STATE-VAR Name="P_s" Min="5000000" Max="7000000" Unit="W"/>
-    <STATE-VAR Name="P_e" Min="5000000" Max="7000000" Unit="W"/>
-    <STATE-VAR Name="E_p" Min="-100000" Max="100000" Unit="W"/>
-    <STATE-VAR Name="v" Min="10" Max="500" Unit="m/s"/>
-    <STATE-VAR Name="omega_r" Min="239823" Max="639823" Unit="rad/s"/>
-    <STATE-VAR Name="E_omega_r" Min="-40" Max="40" Unit="rad/s"/>
-    <STATE-VAR Name="d_omega_r" Min="-20" Max="20" Unit="rad/s^2"/>
     <STATE-VAR Name="beta" Min="-3490658504" Max="5235987756" Unit="rad"/>
     <STATE-VAR Name="d_beta" Min="-1745329252" Max="1745329252" Unit="rad/s"/>
-    <STATE-VAR Name="T_g" Min="100000" Max="162000" Unit="N/m"/>
-    <STATE-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
-    <STATE-VAR Name="E_int_omega_r" Min="-1000" Max="1000" Unit="rad"/>
     <ACTION-VAR Name="d_beta" Min="-10" Max="10" Unit="rad/s"/>
+    <STATE-VAR Name="d_omega_r" Min="-20" Max="20" Unit="rad/s^2"/>
+    <STATE-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
     <ACTION-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
-    <CONSTANT Name="K_t"/>
+    <STATE-VAR Name="E_int_omega_r" Min="-1000" Max="1000" Unit="rad"/>
+    <STATE-VAR Name="E_omega_r" Min="-40" Max="40" Unit="rad/s"/>
+    <STATE-VAR Name="E_p" Min="-100000" Max="100000" Unit="W"/>
     <CONSTANT Name="J_t"/>
+    <CONSTANT Name="K_t"/>
+    <STATE-VAR Name="omega_r" Min="239823" Max="639823" Unit="rad/s"/>
+    <STATE-VAR Name="P_a" Min="0" Max="16000000" Unit="W"/>
+    <STATE-VAR Name="P_e" Min="5000000" Max="7000000" Unit="W"/>
+    <STATE-VAR Name="P_s" Min="5000000" Max="7000000" Unit="W"/>
+    <STATE-VAR Name="T_a" Min="0" Max="4000000" Unit="N/m"/>
+    <STATE-VAR Name="T_g" Min="100000" Max="162000" Unit="N/m"/>
+    <STATE-VAR Name="v" Min="10" Max="500" Unit="m/s"/>
   </CLASS>
   <CLASS Name="CWorld">
-    <INTEGER-VALUE Name="Num-Integration-Steps" Comment="The number of integration steps performed each simulation time-step" Default="4"/>
     <DOUBLE-VALUE Name="Delta-T" Comment="The delta-time between simulation steps" Default="0.01"/>
+    <INTEGER-VALUE Name="Num-Integration-Steps" Comment="The number of integration steps performed each simulation time-step" Default="4"/>
     <BRANCH Name="Dynamic-Model" Class="CDynamicModel-Factory" Comment="The dynamic model"/>
   </CLASS>
   <CLASS Name="CDynamicModel-Factory">
