@@ -9,7 +9,7 @@ namespace Badger.ViewModels
         private string m_className = "";
         private string m_window = "";
         private bool m_bOptional = false;
-        //private string m_loadXML;
+        private string m_selectWorld;
 
         public ChoiceElementConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode
             , string parentXPath, XmlNode configNode= null)
@@ -23,14 +23,15 @@ namespace Badger.ViewModels
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.optionalAttribute) != null)
                 m_bOptional = definitionNode.Attributes[XMLConfig.optionalAttribute].Value == "true";
             else m_bOptional = false;
-            //if (definitionNode.Attributes.GetNamedItem(XMLConfig.loadXMLFileAttribute) != null)
-            //    m_loadXML = definitionNode.Attributes[XMLConfig.loadXMLFileAttribute].Value;
-            //else m_loadXML = "";
+            if (definitionNode.Attributes.GetNamedItem(XMLConfig.badgerMetadataAttribute)!=null)
+            {
+                //BadgerMetadata="World=Wind-turbine"
+                string metadata = definitionNode.Attributes[XMLConfig.badgerMetadataAttribute].Value;
+                if (metadata.StartsWith("World="))
+                    m_selectWorld= metadata.Remove(0,"World=".Length);
+                m_appViewModel.selectWorld(m_selectWorld);
+            }
 
-            //if (m_loadXML != "")
-            //{
-            //    m_appViewModel.loadAuxDefinitions(m_loadXML);
-            //}
 
             if (configNode != null)
                 configNode = configNode[name];
@@ -47,7 +48,6 @@ namespace Badger.ViewModels
 
             newInstance.m_className = m_className;
             newInstance.m_bOptional = m_bOptional;
-            //newInstance.m_loadXML = m_loadXML;
             newInstance.m_window = m_window;
             
             return newInstance;

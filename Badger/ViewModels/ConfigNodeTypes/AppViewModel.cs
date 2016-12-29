@@ -128,7 +128,16 @@ namespace Badger.ViewModels
         //}
 
         private Dictionary<string, WorldDefinition> m_worldDefinitions = new Dictionary<string, WorldDefinition>();
-        private string m_selectedWorld;
+        private string m_selectedWorld="";
+
+        public void selectWorld(string worldName)
+        {
+            if (m_worldDefinitions.ContainsKey(worldName))
+            {
+                m_selectedWorld = worldName;
+                updateWorldDefinition();
+            }
+        }
 
         private void parseClassDefinitionMetadata(XmlNode definition)
         {
@@ -171,11 +180,11 @@ namespace Badger.ViewModels
             }
         }
 
-        //XMLDefRefs
+        //WorldVarRefs
         private List<deferredLoadStep> m_WorldVarRefListeners = new List<deferredLoadStep>();
         public void registerWorldVarRef(deferredLoadStep func)
         { m_WorldVarRefListeners.Add(func); }
-        public void updateXMLDefRefs()
+        private void updateWorldDefinition()
         {
             foreach (deferredLoadStep func in m_WorldVarRefListeners)
                 func();
