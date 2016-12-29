@@ -13,7 +13,7 @@ namespace Badger.ViewModels
     //-CombineForks: for each combination of fork values, a different experiment will be saved
     //-SaveForks: forkedNodes and forks will be saved as a unique experiment
     public enum SaveMode { CombineForks,SaveForks};
-    public enum WorldVarType { StateVar, ActionVar };
+    public enum WorldVarType { StateVar, ActionVar,Constant };
 
     public class AppViewModel: PropertyChangedBase
     {
@@ -98,7 +98,7 @@ namespace Badger.ViewModels
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
         //Auxiliary XML definition files: Worlds (states and actions)
-        private Dictionary<WorldVarType, List<string>> m_auxDefinitions = new Dictionary<WorldVarType, List<string>>();
+        //private Dictionary<WorldVarType, List<string>> m_auxDefinitions = new Dictionary<WorldVarType, List<string>>();
 
         //public void loadAuxDefinitions(string fileName)
         //{
@@ -126,23 +126,58 @@ namespace Badger.ViewModels
         //    }
         //    updateXMLDefRefs();
         //}
-        public List<string> getAuxDefinition(WorldVarType varType)
+
+        private Dictionary<string, WorldDefinition> m_worldDefinitions = new Dictionary<string, WorldDefinition>();
+        private string m_selectedWorld;
+
+        private void parseClassDefinitionMetadata(XmlNode definition)
         {
-            if (!m_auxDefinitions.ContainsKey(varType))
+            string worldName;
+            WorldDefinition worldDefinition;
+            if (definition.Attributes.GetNamedItem(XMLConfig.worldAttribute)!=null)
             {
-                CaliburnUtility.showWarningDialog("Undefined XMLDefRef: " + varType.ToString(), "ERROR");
-                return null;
+                worldName = definition.Attributes[XMLConfig.worldAttribute].Value;
+                worldDefinition = new WorldDefinition();
+                foreach(XmlNode child in definition.ChildNodes)
+                {
+                    if (child.Name == XMLConfig.stateVarTag)
+                        worldDefinition.addStateVar(new StateVar(child));
+                    else if (child.Name == XMLConfig.actionVarTag)
+                        worldDefinition.addActionVar(new ActionVar(child));
+                    else if (child.Name == XMLConfig.constantTag)
+                        worldDefinition.addConstant(child.Attributes[XMLConfig.nameAttribute].Value
+                            , double.Parse(child.Attributes[XMLConfig.valueAttribute].Value));
+                }
+                m_worldDefinitions.Add(worldName, worldDefinition);
             }
-            return m_auxDefinitions[varType];
+        }
+
+        public void getWorldVarNameList(WorldVarType varType,ref List<string> varNameList)
+        {
+            if (varNameList!=null && m_selectedWorld!=null)
+            {
+                switch(varType)
+                {
+                    case WorldVarType.StateVar:
+                        m_worldDefinitions[m_selectedWorld].getStateVarNameList(ref varNameList);
+                        break;
+                    case WorldVarType.ActionVar:
+                        m_worldDefinitions[m_selectedWorld].getActionVarNameList(ref varNameList);
+                        break;
+                    case WorldVarType.Constant:
+                        m_worldDefinitions[m_selectedWorld].getConstantNameList(ref varNameList);
+                        break;
+                }
+            }
         }
 
         //XMLDefRefs
-        private List<deferredLoadStep> m_XMLDefRefListeners = new List<deferredLoadStep>();
-        public void registerXMLDefRef(deferredLoadStep func)
-        { m_XMLDefRefListeners.Add(func); }
+        private List<deferredLoadStep> m_WorldVarRefListeners = new List<deferredLoadStep>();
+        public void registerWorldVarRef(deferredLoadStep func)
+        { m_WorldVarRefListeners.Add(func); }
         public void updateXMLDefRefs()
         {
-            foreach (deferredLoadStep func in m_XMLDefRefListeners)
+            foreach (deferredLoadStep func in m_WorldVarRefListeners)
                 func();
         }
         public void init(string appDefinitionFileName, XmlNode configRootNode,string experimentName)
@@ -228,7 +263,10 @@ namespace Badger.ViewModels
                     {
                         string name = definition.Attributes[XMLConfig.nameAttribute].Value;
                         if (definition.Name == XMLConfig.classDefinitionNodeTag)
+                        {
+                            parseClassDefinitionMetadata(definition);
                             m_classDefinitions.Add(name, definition);
+                        }
                         else if (definition.Name == XMLConfig.enumDefinitionNodeTag)
                             addEnumeratedType(definition);
                     }

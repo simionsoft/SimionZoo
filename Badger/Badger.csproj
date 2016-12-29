@@ -123,6 +123,7 @@
     <Compile Include="Data\Experiment.cs" />
     <Compile Include="Data\SimionFileData.cs" />
     <Compile Include="Data\Utility.cs" />
+    <Compile Include="Data\WorldDefinition.cs" />
     <Compile Include="Data\XMLConfig.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceElementConfigViewModel.cs" />

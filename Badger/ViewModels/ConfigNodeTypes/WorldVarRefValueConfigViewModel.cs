@@ -7,11 +7,11 @@ namespace Badger.ViewModels
 {
     class WorldVarRefValueConfigViewModel: ConfigNodeViewModel
     {
-        private List<string> m_enumeratedNames= null;
-        public List<string> enumeratedNames
+        private List<string> m_varNames= null;
+        public List<string> varNames
         {
-            get { return m_enumeratedNames; }
-            set { m_enumeratedNames = value; NotifyOfPropertyChange(() => enumeratedNames); }
+            get { return m_varNames; }
+            set { m_varNames = value; NotifyOfPropertyChange(() => varNames); }
         }
 
         public string selectedEnumeratedName
@@ -38,38 +38,39 @@ namespace Badger.ViewModels
             }
 
             //the xml definition file may not be yet loaded
-            enumeratedNames = m_appViewModel.getAuxDefinition(m_varType);
+            m_appViewModel.getWorldVarNameList(m_varType, ref m_varNames);
+            NotifyOfPropertyChange(() => varNames);
 
-            if (enumeratedNames == null)
+            if (varNames == null)
             {
                 //Either we have loaded the config but the list is of values has not yet been loaded
                 //or no config file has been loaded. In Either case, we register for a deferred load step
                 m_appViewModel.registerDeferredLoadStep(updateValues);
             }
 
-            m_appViewModel.registerXMLDefRef(updateValues);
+            m_appViewModel.registerWorldVarRef(updateValues);
         }
 
         public override ConfigNodeViewModel clone()
         {
             WorldVarRefValueConfigViewModel newInstance=
                 new WorldVarRefValueConfigViewModel(m_appViewModel, m_varType,m_parent, nodeDefinition, m_parent.xPath);
-            m_appViewModel.registerXMLDefRef(newInstance.updateValues);
+            m_appViewModel.registerWorldVarRef(newInstance.updateValues);
             newInstance.m_varType = m_varType;
-            newInstance.enumeratedNames = enumeratedNames;
+            newInstance.varNames = varNames;
             newInstance.selectedEnumeratedName = selectedEnumeratedName;
             return newInstance;
         }
 
         public void updateValues()
         {
-            enumeratedNames = m_appViewModel.getAuxDefinition(m_varType);
+            m_appViewModel.getWorldVarNameList(m_varType, ref m_varNames);
+            NotifyOfPropertyChange(() => varNames);
         }
 
         public override bool validate()
         {
-            List<string> enumeration = m_appViewModel.getAuxDefinition(m_varType);
-            return enumeration.Exists(id => (id==content));
+            return varNames.Exists(id => (id==content));
         }
     }
 }

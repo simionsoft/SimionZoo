@@ -26,7 +26,7 @@
                     </ContextMenu>
                 </Label.ContextMenu>
             </Label>
-            <ComboBox Background="White" ItemsSource="{Binding enumeratedNames}" SelectedValue="{Binding selectedEnumeratedName}"/>
+            <ComboBox Background="White" ItemsSource="{Binding varNames}" SelectedValue="{Binding selectedEnumeratedName}"/>
         </StackPanel>
 
     </StackPanel>
