@@ -29,6 +29,7 @@ namespace Badger.ViewModels
                 string metadata = definitionNode.Attributes[XMLConfig.badgerMetadataAttribute].Value;
                 if (metadata.StartsWith("World="))
                     m_selectWorld= metadata.Remove(0,"World=".Length);
+
                 m_appViewModel.selectWorld(m_selectWorld);
             }
 

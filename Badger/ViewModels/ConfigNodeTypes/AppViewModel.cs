@@ -154,8 +154,7 @@ namespace Badger.ViewModels
                     else if (child.Name == XMLConfig.actionVarTag)
                         worldDefinition.addActionVar(new ActionVar(child));
                     else if (child.Name == XMLConfig.constantTag)
-                        worldDefinition.addConstant(child.Attributes[XMLConfig.nameAttribute].Value
-                            , double.Parse(child.Attributes[XMLConfig.valueAttribute].Value));
+                        worldDefinition.addConstant(child.Attributes[XMLConfig.nameAttribute].Value);
                 }
                 m_worldDefinitions.Add(worldName, worldDefinition);
             }

@@ -29,7 +29,7 @@ namespace Badger.ViewModels
             }
         }
 
-        private void loadSelectedChoiceElement(string selectedChoiceElementName, XmlNode configNode=null)
+        public void loadSelectedChoiceElement(string selectedChoiceElementName, XmlNode configNode=null)
         {
             foreach (XmlNode choiceElement in nodeDefinition.ChildNodes)
                 if (choiceElement.Attributes[XMLConfig.nameAttribute].Value == selectedChoiceElementName)

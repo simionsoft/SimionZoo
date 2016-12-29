@@ -48,11 +48,11 @@ namespace Badger.Data
     {
         List<StateVar> m_stateVars = new List<StateVar>();
         List<ActionVar> m_actionVars = new List<ActionVar>();
-        Dictionary<string, double> m_constants = new Dictionary<string, double>();
+        List<string> m_constants = new List<string>();
 
         public void addStateVar(StateVar var) { m_stateVars.Add(var); }
         public void addActionVar(ActionVar var) { m_actionVars.Add(var); }
-        public void addConstant(string name,double value) { m_constants.Add(name, value); }
+        public void addConstant(string name) { m_constants.Add(name); }
 
         public void getStateVarNameList(ref List<string> varNameList)
         {
@@ -67,7 +67,7 @@ namespace Badger.Data
         public void getConstantNameList(ref List<string> varNameList)
         {
             varNameList.Clear();
-            foreach (string name in m_constants.Keys) varNameList.Add(name);
+            foreach (string name in m_constants) varNameList.Add(name);
         }
     }
 }

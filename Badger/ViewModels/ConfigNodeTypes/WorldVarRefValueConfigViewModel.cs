@@ -7,7 +7,7 @@ namespace Badger.ViewModels
 {
     class WorldVarRefValueConfigViewModel: ConfigNodeViewModel
     {
-        private List<string> m_varNames= null;
+        private List<string> m_varNames= new List<string>();
         public List<string> varNames
         {
             get { return m_varNames; }
@@ -31,17 +31,17 @@ namespace Badger.ViewModels
 
             m_varType = varType;//definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
 
+            //the possible values taken by this world variable
+            m_appViewModel.getWorldVarNameList(m_varType, ref m_varNames);
+            NotifyOfPropertyChange(() => varNames);
+
             if (configNode != null)
             {
                 configNode = configNode[name];
                 selectedEnumeratedName = configNode.InnerText;
             }
 
-            //the xml definition file may not be yet loaded
-            m_appViewModel.getWorldVarNameList(m_varType, ref m_varNames);
-            NotifyOfPropertyChange(() => varNames);
-
-            if (varNames == null)
+            if (m_varNames.Count==0)
             {
                 //Either we have loaded the config but the list is of values has not yet been loaded
                 //or no config file has been loaded. In Either case, we register for a deferred load step
