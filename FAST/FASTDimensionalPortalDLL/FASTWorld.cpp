@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "FASTWorld.h"
 #if _DEBUG
-	#pragma comment(lib,"../../Debug/NamedPipe.lib")
+	#pragma comment(lib,"../../Debug/WindowsUtils.lib")
 	#pragma comment(lib,"../../Debug/RLSimion-Lib.lib")
 #else
-	#pragma comment(lib,"../../Release/NamedPipe.lib")
+	#pragma comment(lib,"../../Release/WindowsUtils.lib")
 	#pragma comment(lib,"../../release/RLSimion-Lib.lib")
 #endif
 

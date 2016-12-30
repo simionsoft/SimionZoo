@@ -7,15 +7,15 @@
 class CSetPoint;
 class CRewardFunction;
 
-class CFASTWorld : public CDynamicModel
+class CFASTWindTurbine : public CDynamicModel
 {
 	CNamedPipeServer m_namedPipeServer;
-	FASTWorld m_world;
+	//FASTWorld m_world;
 	CSetPoint *m_pSetpoint;
 public:
 
-	CFASTWorld(CConfigNode* pParameters);
-	virtual ~CFASTWorld();
+	CFASTWindTurbine(CConfigNode* pParameters);
+	virtual ~CFASTWindTurbine();
 
 	void reset(CState *s);
 	void executeAction(CState *s, const CAction *a, double dt);

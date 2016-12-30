@@ -7,6 +7,7 @@
 #include "world-magneticlevitation.h"
 #include "world-balancingpole.h"
 #include "world-mountaincar.h"
+#include "world-FAST.h"
 #include "reward.h"
 #include "config.h"
 #include "app.h"
@@ -143,6 +144,7 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 	return CHOICE<CDynamicModel>(pConfigNode,"Model", "The world",
 	{
 		{make_tuple("Wind-turbine",CHOICE_ELEMENT_NEW<CWindTurbine>,"World=Wind-turbine")},
+		{make_tuple("FAST-Wind-turbine",CHOICE_ELEMENT_NEW<CFASTWindTurbine>,"World=FAST-Wind-turbine") },
 		{make_tuple("Underwater-vehicle", CHOICE_ELEMENT_NEW<CUnderwaterVehicle>,"World=Underwater-vehicle")},
 		{make_tuple("Pitch-control",CHOICE_ELEMENT_NEW<CPitchControl>,"World=Pitch-control")},
 		{make_tuple("Balancing-pole",CHOICE_ELEMENT_NEW<CBalancingPole>,"World=Balancing-pole")},

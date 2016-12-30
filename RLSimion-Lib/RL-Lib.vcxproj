@@ -45,12 +45,13 @@
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
-    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -67,14 +68,15 @@
       <OutputFile>../Debug/$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <PostBuildEvent>
-      <Command>..\Debug\CustomXMLBuilder.exe $(ProjectDir)</Command>
-      <Message>Custom XML definition build process</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
     <CustomBuildStep>
       <Command>..\Debug\SimionSrcParser.exe $(ProjectDir)</Command>
       <Outputs>..\config\definitions.xml</Outputs>
-      <Inputs>
-      </Inputs>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>RLSimion source code parser</Message>
     </CustomBuildStep>

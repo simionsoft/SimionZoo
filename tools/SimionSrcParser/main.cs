@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace SimionSrcParser
 {
@@ -8,6 +9,9 @@ namespace SimionSrcParser
     {
         static int Main(string[] args)
         {
+            //not to read 23.232 as 23232
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+
             SimionSrcParser sourceProcessor = new SimionSrcParser();
             int numargs = args.GetLength(0);
             if (args.GetLength(0) < 1)

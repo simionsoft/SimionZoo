@@ -6,10 +6,11 @@
 #include "reward.h"
 #include "../tools/WindowsUtils/Process.h"
 
+
 #define FAST_EXE_RELATIVE_PATH "../FAST/bin/fast_win32.exe"
 #define FAST_FILE "../FAST/CertTest/TestRlSimion.fst"
 
-CFASTWorld::CFASTWorld(CConfigNode* pConfigNode)
+CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
 	METADATA("World", "FAST-Wind-turbine");
 
@@ -38,14 +39,14 @@ CFASTWorld::CFASTWorld(CConfigNode* pConfigNode)
 	m_namedPipeServer.openNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 }
 
-CFASTWorld::~CFASTWorld()
+CFASTWindTurbine::~CFASTWindTurbine()
 {
 	m_namedPipeServer.closeServer();
 }
 
 
 
-void CFASTWorld::reset(CState *s)
+void CFASTWindTurbine::reset(CState *s)
 {
 	CProcess FASTprocess;
 	//spawn the FAST exe file
@@ -56,7 +57,7 @@ void CFASTWorld::reset(CState *s)
 	m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
 }
 
-void CFASTWorld::executeAction(CState *s,const CAction *a,double dt)
+void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 {
 	//send(a)
 	//here we have to cheat the compiler (const). We don't want to, but we have to
