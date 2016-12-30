@@ -39,6 +39,10 @@ logs/
 /data/
 /images/
 
+#FAST log files
+*.sum
+
+
 # Roslyn cache directories
 *.ide/
 
@@ -80,6 +84,7 @@ dlldata.c
 *.svclog
 *.scc
 *.bin
+
 
 # Chutzpah Test files
 _Chutzpah*
