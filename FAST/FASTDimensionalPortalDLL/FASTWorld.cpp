@@ -1,7 +1,15 @@
 #include "Stdafx.h"
 #include "FASTWorld.h"
+#if _DEBUG
+	#pragma comment(lib,"../../Debug/NamedPipe.lib")
+	#pragma comment(lib,"../../Debug/RLSimion-Lib.lib")
+#else
+	#pragma comment(lib,"../../Release/NamedPipe.lib")
+	#pragma comment(lib,"../../release/RLSimion-Lib.lib")
+#endif
 
 #define INITIAL_TORQUE 40000.0
+extern bool g_bDummyTest;
 
 FASTWorld::FASTWorld()
 {
@@ -88,4 +96,42 @@ void FASTWorld::setActionVariables(float* FASTdata)
 	FASTdata[43] = (float)desiredBeta; //"
 
 	FASTdata[44] = (float)desiredBeta; //Use the command angle of blade 1 if using collective pitch
+}
+
+void FASTWorld::connectToNamedPipeServer()
+{
+	if (!g_bDummyTest)
+		m_namedPipeClient.connectToServer(DIMENSIONAL_PORTAL_PIPE_NAME);
+}
+
+void FASTWorld::disconnectFromNamedPipeServer()
+{
+	if (!g_bDummyTest)
+		m_namedPipeClient.closeConnection();
+}
+
+void FASTWorld::sendState()
+{
+	double *pValues= m_pS->getValueVector();
+	if (!g_bDummyTest)
+		m_namedPipeClient.writeBuffer(pValues, m_pS->getNumVars()*sizeof(double));
+	else
+	{
+		for (int i = 0; i < m_pS->getNumVars(); i++)
+			printf("%.2f", pValues[i]);
+		printf("\n");
+	}
+}
+
+void FASTWorld::receiveAction()
+{
+	double *pValues = m_pA->getValueVector();
+	if (g_bDummyTest)
+		m_namedPipeClient.readToBuffer(pValues, m_pA->getNumVars() * sizeof(double));
+	else
+	{
+		for (int i = 0; i < m_pA->getNumVars(); i++)
+			printf("%.2f", pValues[i]);
+		printf("\n");
+	}
 }

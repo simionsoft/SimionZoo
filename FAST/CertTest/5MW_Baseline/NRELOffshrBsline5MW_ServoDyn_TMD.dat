@@ -1,0 +1,30 @@
+------- TMD V1.00.* INPUT FILE --------------------------------------------
+Input file for tuned mass damper, module by William La Cava & Matt Lackner (UMass)
+---------------------- TMD DEGREES OF FREEDOM ---------------------------------
+true        TMD_X_DOF  - DOF on or off (flag)
+true        TMD_Y_DOF  - DOF on or off (flag)
+---------------------- TMD INITIAL CONDITIONS ---------------------------------
+  1         TMD_X_DSP  - TMD_X initial displacement (m)
+  1         TMD_Y_DSP  - TMD_Y initial displacement (m)
+---------------------- TMD CONFIGURATION --------------------------------------
+  0         TMD_P_X    - at rest position of TMDs (X) (m)
+  0         TMD_P_Y    - at rest position of TMDs (Y) (m)
+  0         TMD_P_Z    - at rest position of TMDs (Z) (m)
+ 10         TMD_X_DWSP - DW stop position (maximum X mass displacement) (m)
+-10         TMD_X_UWSP - UW stop position (minimum X mass displacement) (m)
+ 10         TMD_Y_PLSP - positive lateral stop position (maximum Y mass displacement) (m)
+-10         TMD_Y_NLSP - negative lateral stop position (minimum Y mass displacement) (m)
+---------------------- TMD MASS, STIFFNESS, & DAMPING -------------------------
+35000       TMD_X_M    - TMD mass (kg)
+35000       TMD_Y_M    - TMD mass (kg)
+15000       TMD_X_K    - TMD stiffness (N/m)
+15000       TMD_Y_K    - TMD stiffness (N/m)
+10000       TMD_X_C    - TMD damping (N/(m/s))
+10000       TMD_Y_C    - TMD damping (N/(m/s))
+15000       TMD_X_KS   - stop spring stiffness (N/m)
+15000       TMD_Y_KS   - stop spring stiffness (N/m)
+10000       TMD_X_CS   - stop spring damping (N/(m/s))
+10000       TMD_Y_CS   - stop spring damping (N/(m/s))
+---------------------- TMD CONTROL --------------------------------------------
+0           TMD_CMODE  - control mode {0:none; 1: simple built-in model} (-)
+---------------------------------------------------------------------------------------

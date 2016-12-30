@@ -5,36 +5,34 @@
 #include "FASTDimensionalPortalDLL.h"
 #include "FASTWorld.h"
 
-
-
 #define NINT(a) ((a) >= 0.0 ? (int)((a)+0.5) : (int)((a)-0.5))
 
 extern "C" {
 
-	static double GenSpeedF;	//Filtered HSS (generator) speed, rad/s.
-	static double IntSpdErr; //Current integral of speed error w.r.t. time, rad.
-	static double LastGenTrq; //Commanded electrical generator torque the last time the controller was called, N-m.
-	static double LastTime; //Last time this DLL was called, sec.
-	static double LastTimePC; //Last time the pitch  controller was called, sec.
-	static double LastTimeVS; //Last time the torque controller was called, sec.
-	static double PitCom[3]; //Commanded pitch of each blade the last time the controller was called, rad.
-	static double LastGenSpeedF;
-	static double LastRotorSpeed;
+	//static double GenSpeedF;	//Filtered HSS (generator) speed, rad/s.
+	//static double IntSpdErr; //Current integral of speed error w.r.t. time, rad.
+	//static double LastGenTrq; //Commanded electrical generator torque the last time the controller was called, N-m.
+	//static double LastTime; //Last time this DLL was called, sec.
+	//static double LastTimePC; //Last time the pitch  controller was called, sec.
+	//static double LastTimeVS; //Last time the torque controller was called, sec.
+	//static double PitCom[3]; //Commanded pitch of each blade the last time the controller was called, rad.
+	//static double LastGenSpeedF;
+	//static double LastRotorSpeed;
 
-
-#define RATED_POWER 5296610.0//5000000
-#define INITIAL_TORQUE 40000.0
-
-	double sgn(double value)
-	{
-		if (value<0.0) return -1.0;
-		else if (value>0.0) return 1.0;
-
-		return 0.0;
-	}
+//
+//#define RATED_POWER 5296610.0//5000000
+//#define INITIAL_TORQUE 40000.0
+//
+//	double sgn(double value)
+//	{
+//		if (value<0.0) return -1.0;
+//		else if (value>0.0) return 1.0;
+//
+//		return 0.0;
+//	}
 
 	FASTWorld g_FASTWorld;
-
+	bool g_bDummyTest= true;	//for debugging
 
 	void __declspec(dllexport) __cdecl DISCON(float *avrSWAP //inout
 		, int *aviFAIL //inout
@@ -48,12 +46,12 @@ extern "C" {
 		{
 			//Ony in first call
 			g_FASTWorld.connectToNamedPipeServer();
-
+			else printf("Dimensional portal opened\n");
 		}
 		if (iStatus>=0)
 		{
 			//Done in all calls but last
-			g_FASTWorld.retrieveStateVariables(avrSWAP,iStatus==0);
+			g_FASTWorld.retrieveStateVariables(avrSWAP,(bool)(iStatus==0));
 			g_FASTWorld.sendState();
 			g_FASTWorld.receiveAction();
 			g_FASTWorld.setActionVariables(avrSWAP);

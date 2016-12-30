@@ -1,0 +1,90 @@
+###################################################################################################################################
+# Registry for TMD in the FAST Modularization Framework
+# This Registry file is used to create MODULE TMD_Types, which contains all of the user-defined types needed in TMD.
+# It also contains copy, destroy, pack, and unpack routines associated with each defined data types.
+# Entries are of the form
+# keyword <TMD/TMD> <TypeName> <FieldType> <FieldName> <Dims> <IO> <DNAME> <DESCRIP> <UNITS>
+#
+# Use ^ as a shortcut for the value from the previous line.
+###################################################################################################################################
+# File last committed: $Date: 2015-03-11 14:34:32 -0600 (Wed, 11 Mar 2015) $
+# (File) Revision #: $Rev: 934 $
+# URL: $HeadURL: https://windsvn.nrel.gov/FAST/branches/FOA_modules/TMD/Source/TMD_Registry.txt $
+###################################################################################################################################
+
+# ..... Input File data .......................................................................................................
+typedef TMD/TMD TMD_InputFile CHARACTER(1024) TMDFileName - - - "Name of the input file; remove if there is no file" -
+typedef	^		^				INTEGER			TMD_CMODE	-	-	-	"control mode {0:none, 1: simple built-in}"	-
+typedef	^		^				LOGICAL			TMD_X_DOF	-	-	-	"DOF on or off"	-
+typedef	^		^				LOGICAL			TMD_Y_DOF	-	-	-	"DOF on or off"	-
+typedef	^		^				ReKi			TMD_X_DSP	-	-	-	"TMD_X initial displacement"	m
+typedef	^		^				ReKi			TMD_Y_DSP	-	-	-	"TMD_Y initial displacement"	m
+typedef	^		^				ReKi			TMD_X_M		-	-	-	"TMD mass"	kg
+typedef	^		^				ReKi			TMD_Y_M		-	-	-	"TMD mass"	kg
+typedef	^		^				ReKi			TMD_X_K		-	-	-	"TMD stiffness"	"N/m"
+typedef	^		^				ReKi			TMD_Y_K		-	-	-	"TMD stiffness"	"N/m"
+typedef	^		^				ReKi			TMD_X_C		-	-	-	"TMD damping"	"N/(m/s)"
+typedef	^		^				ReKi			TMD_Y_C		-	-	-	"TMD damping"	"N/(m/s)"
+typedef	^		^				ReKi			TMD_X_DWSP	-	-	-	"DW stop position (maximum X mass displacement)"	m
+typedef	^		^				ReKi			TMD_X_UWSP	-	-	-	"UW stop position (minimum X mass displacement)"	m
+typedef	^		^				ReKi			TMD_X_KS	-	-	-	"stop spring stiffness"	"N/m"
+typedef	^		^				ReKi			TMD_X_CS	-	-	-	"stop spring damping"	"N/(m/s)"
+typedef	^		^				ReKi			TMD_Y_PLSP	-	-	-	"positive lateral stop position (maximum Y mass displacement)"	m
+typedef	^		^				ReKi			TMD_Y_NLSP	-	-	-	"negative lateral stop position (minimum Y mass displacement)"	m
+typedef	^		^				ReKi			TMD_Y_KS	-	-	-	"stop spring stiffness"	"N/m"
+typedef	^		^				ReKi			TMD_Y_CS	-	-	-	"stop spring damping"	"N/(m/s)"
+typedef	^		^				ReKi			TMD_P_X		-	-	-	"rest position of TMDs w.r.t. nacelle"	m
+typedef	^		^				ReKi			TMD_P_Y		-	-	-	"rest position of TMDs w.r.t. nacelle"	m
+typedef	^		^				ReKi			TMD_P_Z  	-	-	-	"rest position of TMDs w.r.t. nacelle"	m
+# ..... Initialization data .......................................................................................................
+# Define inputs that the initialization routine may need here:
+# e.g., the name of the input file, the file root name, etc.
+typedef   TMD/TMD   InitInputType   CHARACTER(1024)   InputFile   -   -   -   "Name of the input file; remove if there is no file" -
+typedef	^	InitInputType	CHARACTER(1024)	RootName	-	-	-	"RootName for writing output files"	-
+typedef		^		^				ReKi			Gravity	-	-	-	"Gravitational acceleration"	m/s^2
+typedef	^		^				ReKi			r_N_O_G		{3}	-	-	"nacelle origin for setting up mesh"	-
+# Define outputs from the initialization routine here:
+typedef ^ InitOutputType CHARACTER(10) WriteOutputHdr {:} - - "Names of the output-to-file channels" -
+#typedef ^ InitOutputType CHARACTER(10) WriteOutputUnt {:}- - "Units of the output-to-file channels" -
+
+# ..... States ....................................................................................................................
+# Define continuous (differentiable) states here:
+typedef	^		ContinuousStateType	ReKi		tmd_x			{4} - -  "Continuous States" -
+# Define discrete (nondifferentiable) states here:
+typedef ^ DiscreteStateType ReKi DummyDiscState - - - "Remove this variable if you have discrete states" -
+# Define constraint states here:
+typedef ^ ConstraintStateType ReKi DummyConstrState - - - "Remove this variable if you have constraint states" -
+# Define any data that are not considered actual states here:
+# e.g. data used only for efficiency purposes (indices for searching in an array, copies of previous calculations of output
+# at a given time, etc.)
+typedef ^ 		OtherStateType 	Reki 			F_stop   {2} - - "Stop forces" -
+typedef	^		^				ReKi			F_ext	{2}	-	-	"External forces (user defined)"	-
+# ..... Parameters ................................................................................................................
+# Define parameters here:
+# Time step for integration of continuous states (if a fixed-step integrator is used) and update of discrete states:
+typedef ^ ParameterType DbKi DT - - - "Time step for cont. state integration & disc. state update" seconds
+typedef  ^     ^           CHARACTER(1024) RootName   -   -   -   "RootName for writing output files"	-
+typedef	^		^				LOGICAL			TMD_X_DOF	-	-	-	"DOF on or off"	-
+typedef	^		^				LOGICAL			TMD_Y_DOF	-	-	-	"DOF on or off"	-
+typedef	^		^				ReKi			X_DSP	-	-	-	"TMD_X initial displacement"	m
+typedef	^		^				ReKi			Y_DSP	-	-	-	"TMD_Y initial displacement"	m
+typedef	^		^				ReKi			M_X		-	-	-	"TMD mass"	kg
+typedef	^		^				ReKi			M_Y		-	-	-	"TMD mass"	kg
+typedef	^		^				ReKi			K_X		-	-	-	"TMD stiffness"	"N/m"
+typedef	^		^				ReKi			K_Y		-	-	-	"TMD stiffness"	"N/m"
+typedef	^		^				ReKi			C_X		-	-	-	"TMD damping"	"N/(m/s)"
+typedef	^		^				ReKi			C_Y		-	-	-	"TMD damping"	"N/(m/s)"
+typedef	^		^				ReKi			K_S	{2}	-	-	"TMD stop stiffness"	"N/m"
+typedef	^		^				ReKi			C_S	{2}	-	-	"TMD stop damping" "N/(m/s)"	
+typedef	^		^				ReKi			P_SP	{2}	-	-	"Positive stop position (maximum mass displacement)"	m
+typedef	^		^				ReKi			N_SP	{2}	-	-	"Negative stop position (minimum X mass displacement)" m
+typedef	^		^				ReKi			F_ext	{3}	-	-	"External forces (for user modification)"	-
+typedef	^		^				ReKi			Gravity	-	-	-	"Gravitational acceleration"	"m/s^2"
+# ..... Inputs ....................................................................................................................
+# Define inputs that are contained on the mesh here:
+typedef   ^                            InputType                     MeshType                 Mesh                     -         -         -         "Displacements at the TMD reference point P in the inertial frame" -
+# ..... Outputs ...................................................................................................................
+# Define outputs that are contained on the mesh here:
+typedef ^   OutputType          MeshType        Mesh                     -         -         -         "Loads at the TMD reference point in the inertial frame" -
+# Define outputs that are not on this mesh here:
+#typedef	^	OutputType	ReKi	WriteOutput	{:}	-	-	"Data to be written to an output file: see WriteOutputHdr for names of each variable"	"see WriteOutputUnt"

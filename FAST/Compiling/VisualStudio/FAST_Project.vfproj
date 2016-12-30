@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VisualStudioProject ProjectCreator="Intel Fortran" Keyword="Console Application" Version="11.0" ProjectIdGuid="{E1A2433A-82DA-43EC-8A00-59714B9E625F}">
+	<Platforms>
+		<Platform Name="Win32"/></Platforms>
+	<Configurations>
+		<Configuration Name="Debug|Win32" OutputDirectory="..\..\bin\">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" DebugInformationFormat="debugEnabled" Optimization="optimizeDisabled" Preprocess="preprocessYes" StandardWarnings="standardWarningsF03" DisableSpecificDiagnostics="5268,5199" WarnInterfaces="true" Traceback="true" BoundsCheck="true" RuntimeLibrary="rtMultiThreadedDebug" UseMkl="mklSequential"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\FAST_dev_$(ConfigurationName)_$(PlatformName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateManifest="false" GenerateDebugInformation="true" SubSystem="subSystemConsole" StackReserveSize="999999999" LargeAddressAware="addrAwareLarge" AdditionalDependencies="..\..\Source\dependencies\MAP\MAP_$(PlatformName).lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
+		<Configuration Name="Release|Win32" OutputDirectory="..\..\bin\" WholeProgramOptimization="true">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" PreprocessorDefinitions="FPE_TRAP_ENABLED" StandardWarnings="standardWarningsF03" DisableSpecificDiagnostics="5268,5199" UseMkl="mklSequential"/>
+				<Tool Name="VFLinkerTool" OutputFile="$(OutDir)\FAST_dev_$(PlatformName).exe" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" GenerateManifest="false" SubSystem="subSystemConsole" StackReserveSize="999999999" LargeAddressAware="addrAwareLarge" AdditionalDependencies="..\..\Source\dependencies\MAP\MAP_$(PlatformName).lib"/>
+				<Tool Name="VFResourceCompilerTool"/>
+				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
+				<Tool Name="VFCustomBuildTool"/>
+				<Tool Name="VFPreLinkEventTool"/>
+				<Tool Name="VFPreBuildEventTool"/>
+				<Tool Name="VFPostBuildEventTool"/>
+				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
+	<Files>
+		<Filter Name="Header Files" Filter="fi;fd"/>
+		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
+		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<Filter Name="Aero">
+		<Filter Name="AeroDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\AeroDyn_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat AeroDyn" Description="Running Registry for AeroDyn" Outputs="..\..\Source\dependencies\AeroDyn\AeroDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat AeroDyn" Description="Running Registry for AeroDyn" Outputs="..\..\Source\dependencies\AeroDyn\AeroDyn_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\AeroDyn_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\AirfoilInfo_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat AFI" Description="Running Registry for AirfoilInfo" Outputs="..\..\Source\dependencies\AeroDyn\AirfoilInfo_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat AFI" Description="Running Registry for AirfoilInfo" Outputs="..\..\Source\dependencies\AeroDyn\AirfoilInfo_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\AirfoilInfo_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\BEMT_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat BEMT" Description="Running Registry for BEMT" Outputs="..\..\Source\dependencies\AeroDyn\BEMT_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat BEMT" Description="Running Registry for BEMT" Outputs="..\..\Source\dependencies\AeroDyn\BEMT_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\BEMT_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\UnsteadyAero_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat UA" Description="Running Registry for UnsteadyAero" Outputs="..\..\Source\dependencies\AeroDyn\UnsteadyAero_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat UA" Description="Running Registry for UnsteadyAero" Outputs="..\..\Source\dependencies\AeroDyn\UnsteadyAero_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\UnsteadyAero_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\AeroDyn.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\AeroDyn_IO.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\AirfoilInfo.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\BEMT.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\BEMTCoupled.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\BEMTUncoupled.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\BladeElement.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\Brent.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\fmin_fcn.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\mod_root1dim.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\nwtc_bemt_minpack.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn\UnsteadyAero.f90"/></Filter>
+		<Filter Name="AeroDyn14">
+		<Filter Name="DWM">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\DWM_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\Registry-DWM.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat DWM" Description="Running Registry for DWM" Outputs="..\..\Source\dependencies\AeroDyn14\DWM_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat DWM" Description="Running Registry for DWM" Outputs="..\..\Source\dependencies\AeroDyn14\DWM_Types.f90"/></FileConfiguration></File></Filter>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\DWM.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\DWM_Wake_Sub_ver2.f90"/></Filter>
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\AeroDyn14_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\Registry-AD14.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat AeroDyn14" Description="Running Registry for AeroDyn14" Outputs="..\..\Source\dependencies\AeroDyn14\AeroDyn14_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat AeroDyn14" Description="Running Registry for AeroDyn14" Outputs="..\..\Source\dependencies\AeroDyn14\AeroDyn14_Types.f90"/></FileConfiguration></File></Filter>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\AeroDyn14.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\AeroSubs.f90"/>
+		<File RelativePath="..\..\Source\dependencies\AeroDyn14\GenSubs.f90"/></Filter></Filter>
+		<Filter Name="BeamDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\BeamDyn\BeamDyn_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\BeamDyn\Registry_BeamDyn.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat BeamDyn" Description="Running Registry for BeamDyn" Outputs="..\..\Source\dependencies\BeamDyn\BeamDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat BeamDyn" Description="Running Registry for BeamDyn" Outputs="..\..\Source\dependencies\BeamDyn\BeamDyn_Types.f90"/></FileConfiguration></File></Filter>
+		<File RelativePath="..\..\Source\dependencies\BeamDyn\BeamDyn.f90"/>
+		<File RelativePath="..\..\Source\dependencies\BeamDyn\BeamDyn_IO.f90"/>
+		<File RelativePath="..\..\Source\dependencies\BeamDyn\BeamDyn_Subs.f90"/></Filter>
+		<Filter Name="ElastoDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\ElastoDyn\ElastoDyn_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat ElastoDyn" Description="Running Registry for ElastoDyn" Outputs="..\..\Source\dependencies\ElastoDyn\ElastoDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat ElastoDyn" Description="Running Registry for ElastoDyn" Outputs="..\..\Source\dependencies\ElastoDyn\ElastoDyn_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\ElastoDyn\ElastoDyn_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\ElastoDyn\ElastoDyn.f90"/></Filter>
+		<Filter Name="FAST">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\FAST_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat FAST" Description="Running Registry for FAST" Outputs="..\..\Source\FAST_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat FAST" Description="Running Registry for FAST" Outputs="..\..\Source\FAST_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\FAST_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\FAST_Mods.f90"/>
+		<File RelativePath="..\..\Source\FAST_Prog.f90"/>
+		<File RelativePath="..\..\Source\FAST_Subs.f90"/></Filter>
+		<Filter Name="HydroDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Conv_Radiation.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Conv_Radiation" Description="Running Registry for Conv_Radiation" Outputs="..\..\Source\dependencies\HydroDyn\Conv_Radiation_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Conv_Radiation" Description="Running Registry for Conv_Radiation" Outputs="..\..\Source\dependencies\HydroDyn\Conv_Radiation_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Conv_Radiation_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Current.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Current" Description="Running Registry for Current" Outputs="..\..\Source\dependencies\HydroDyn\Current_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Current" Description="Running Registry for Current" Outputs="..\..\Source\dependencies\HydroDyn\Current_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Current_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\HydroDyn.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat HydroDyn" Description="Running Registry for HydroDyn" Outputs="..\..\Source\dependencies\HydroDyn\HydroDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat HydroDyn" Description="Running Registry for HydroDyn" Outputs="..\..\Source\dependencies\HydroDyn\HydroDyn_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\HydroDyn_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Morison.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Morison" Description="Running Registry for Morison" Outputs="..\..\Source\dependencies\HydroDyn\Morison_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Morison" Description="Running Registry for Morison" Outputs="..\..\Source\dependencies\HydroDyn\Morison_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Morison_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\SS_Radiation.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat SS_Radiation" Description="Running Registry for SS_Radiation" Outputs="..\..\Source\dependencies\HydroDyn\SS_Radiation_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat SS_Radiation" Description="Running Registry for SS_Radiation" Outputs="..\..\Source\dependencies\HydroDyn\SS_Radiation_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\SS_Radiation_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat WAMIT" Description="Running Registry for WAMIT" Outputs="..\..\Source\dependencies\HydroDyn\WAMIT_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat WAMIT" Description="Running Registry for WAMIT" Outputs="..\..\Source\dependencies\HydroDyn\WAMIT_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT2.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat WAMIT2" Description="Running Registry for WAMIT2" Outputs="..\..\Source\dependencies\HydroDyn\WAMIT2_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat WAMIT2" Description="Running Registry for WAMIT2" Outputs="..\..\Source\dependencies\HydroDyn\WAMIT2_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT2_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Waves.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Waves" Description="Running Registry for Waves" Outputs="..\..\Source\dependencies\HydroDyn\Waves_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Waves" Description="Running Registry for Waves" Outputs="..\..\Source\dependencies\HydroDyn\Waves_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Waves2.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Waves2" Description="Running Registry for Waves2" Outputs="..\..\Source\dependencies\HydroDyn\Waves2_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Waves2" Description="Running Registry for Waves2" Outputs="..\..\Source\dependencies\HydroDyn\Waves2_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Waves2_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Waves_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Conv_Radiation.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Current.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\HydroDyn.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\HydroDyn_Input.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\HydroDyn_Output.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Morison.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Morison_Output.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\SS_Radiation.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\UserWaves.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT2.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT2_Output.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT_Interp.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\WAMIT_Output.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Waves.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Waves2.f90"/>
+		<File RelativePath="..\..\Source\dependencies\HydroDyn\Waves2_Output.f90"/></Filter>
+		<Filter Name="Ice">
+		<Filter Name="IceDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\IceDyn\IceDyn_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\IceDyn\Registry_IceDyn.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IceDyn" Description="Running Registry for IceDyn" Outputs="..\..\Source\dependencies\IceDyn\IceDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IceDyn" Description="Running Registry for IceDyn" Outputs="..\..\Source\dependencies\IceDyn\IceDyn_Types.f90"/></FileConfiguration></File></Filter>
+		<File RelativePath="..\..\Source\dependencies\IceDyn\IceDyn.f90"/></Filter>
+		<Filter Name="IceFloe">
+		<Filter Name="ExternalCode">
+		<File RelativePath="..\..\Source\dependencies\IceFloe\RANLUX.f90"/></Filter>
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\IceFloe\IceFloe_FASTRegistry.inp">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IceFloe" Description="Running Registry for IceFloe" Outputs="..\..\Source\dependencies\IceFloe\IceFloe_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IceFloe" Description="Running Registry for IceFloe" Outputs="..\..\Source\dependencies\IceFloe\IceFloe_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\IceFloe_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\coupledCrushing.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\crushingIEC.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\crushingISO.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\IceFlexBase.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\IceFlexIEC.f90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\IceFlexISO.f90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\IceFloe.f90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\IceFloeBase.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\iceInput.f90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\iceLog.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\intermittentCrushing.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\lockInISO.F90"/>
+		<File RelativePath="..\..\Source\dependencies\IceFloe\randomCrushing.F90"/></Filter></Filter>
+		<Filter Name="InflowWind">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_BladedFFWind.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_BladedFFWind" Description="Running Registry for IfW_BladedFFWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_BladedFFWind_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_BladedFFWind" Description="Running Registry for IfW_BladedFFWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_BladedFFWind_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_BladedFFWind_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_HAWCWind.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_HAWCWind" Description="Running Registry for IfW_HAWCWindWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_HAWCWind_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_HAWCWind" Description="Running Registry for IfW_HAWCWindWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_HAWCWind_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_HAWCWind_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_TSFFWind.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_TSFFWind" Description="Running Registry for IfW_TSFFWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_TSFFWind_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_TSFFWind" Description="Running Registry for IfW_TSFFWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_TSFFWind_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_TSFFWind_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_UniformWind.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_UniformWind" Description="Running Registry for IfW_UniformWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_UniformWind_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_UniformWind" Description="Running Registry for IfW_UniformWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_UniformWind_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_UniformWind_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_UserWind.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_UserWind" Description="Running Registry for IfW_UserWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_UserWind_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat IfW_UserWind" Description="Running Registry for IfW_UserWind" Outputs="..\..\Source\dependencies\InflowWind\IfW_UserWind_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_UserWind_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\InflowWind.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat InflowWind" Description="Running Registry for InflowWind" Outputs="..\..\Source\dependencies\InflowWind\InflowWind_Types.f90" AdditionalDependencies="..\..\Source\dependencies\InflowWind\Reg-IfW_FFWind.txt;..\..\Source\dependencies\InflowWind\Reg-IfW_HHWind.txt"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat InflowWind" Description="Running Registry for InflowWind" Outputs="..\..\Source\dependencies\InflowWind\InflowWind_Types.f90" AdditionalDependencies="..\..\Source\dependencies\InflowWind\Reg-IfW_FFWind.txt;..\..\Source\dependencies\InflowWind\Reg-IfW_HHWind.txt"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\InflowWind_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\Lidar.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Lidar" Description="Running Registry for Lidar" Outputs="..\..\Source\dependencies\InflowWind\Lidar_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat Lidar" Description="Running Registry for Lidar" Outputs="..\..\Source\dependencies\InflowWind\Lidar_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\Lidar_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_BladedFFWind.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_HAWCWind.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_TSFFWind.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_UniformWind.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\IfW_UserWind.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\InflowWind.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\InflowWind_Subs.f90"/>
+		<File RelativePath="..\..\Source\dependencies\InflowWind\Lidar.f90"/></Filter>
+		<Filter Name="Mooring Lines">
+		<Filter Name="FEAMooring">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\FEAMooring\FEAM_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat FEAMooring" Description="Running Registry for FEAMooring" Outputs="..\..\Source\dependencies\FEAMooring\FEAMooring_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat FEAMooring" Description="Running Registry for FEAMooring" Outputs="..\..\Source\dependencies\FEAMooring\FEAMooring_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\FEAMooring\FEAMooring_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\FEAMooring\FEAM.f90"/></Filter>
+		<Filter Name="MAP">
+		<File RelativePath="..\..\Source\dependencies\MAP\MAP.f90"/>
+		<File RelativePath="..\..\Source\dependencies\MAP\MAP_Types.f90"/></Filter>
+		<Filter Name="MoorDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\MoorDyn\MoorDyn_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat MoorDyn" Description="Running Registry for MoorDyn" Outputs="..\..\Source\dependencies\MoorDyn\MoorDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat MoorDyn" Description="Running Registry for MoorDyn" Outputs="..\..\Source\dependencies\MoorDyn\MoorDyn_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\MoorDyn\MoorDyn_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\MoorDyn\MoorDyn.f90"/>
+		<File RelativePath="..\..\Source\dependencies\MoorDyn\MoorDyn_IO.f90"/></Filter>
+		<Filter Name="OrcaFlex">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\OrcaFlex\OrcaFlexInterface.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat OrcaFlexInterface" Description="Running Registry for OrcaFlex Interface" Outputs="..\..\Source\dependencies\OrcaFlex\OrcaFlexInterface_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat OrcaFlexInterface" Description="Running Registry for OrcaFlex Interface" Outputs="..\..\Source\dependencies\OrcaFlex\OrcaFlexInterface_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\OrcaFlex\OrcaFlexInterface_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\OrcaFlex\OrcaFlexInterface.f90"/></Filter></Filter>
+		<Filter Name="NWTC_Library">
+		<Filter Name="NetLib">
+		<Filter Name="FFTPACK">
+		<File RelativePath="..\..\Source\dependencies\NetLib\fftpack4.1.f">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration></File></Filter>
+		<Filter Name="FitPACK">
+		<File RelativePath="..\..\Source\dependencies\NetLib\dierckx_fitpack.f">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration></File></Filter>
+		<Filter Name="ScaLAPACK">
+		<File RelativePath="..\..\Source\dependencies\NetLib\dlasrt2.f">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\NetLib\slasrt2.f">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFFortranCompilerTool" StandardWarnings="standardWarningsNone"/></FileConfiguration></File></Filter>
+		<File RelativePath="..\..\Source\dependencies\NetLib\NWTC_FFTPACK.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NetLib\NWTC_FitPack.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NetLib\NWTC_LAPACK.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NetLib\NWTC_ScaLAPACK.f90"/></Filter>
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\Registry_NWTC_Library.txt"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\ModMesh.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\ModMesh_Mapping.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\ModMesh_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\NWTC_Base.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\NWTC_IO.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\NWTC_Library.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\NWTC_Library_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\NWTC_Num.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\SingPrec.f90"/>
+		<File RelativePath="..\..\Source\dependencies\NWTC_Library\SysIVF.f90"/></Filter>
+		<Filter Name="OpenFOAM Integration">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\OpenFOAM\OpenFOAM_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat OpenFOAM" Description="Running Registry for OpenFOAM" Outputs="..\..\Source\dependencies\OpenFOAM\OpenFOAM_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat OpenFOAM" Description="Running Registry for OpenFOAM" Outputs="..\..\Source\dependencies\OpenFOAM\OpenFOAM_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\OpenFOAM\OpenFOAM_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\OpenFOAM\OpenFOAM.f90"/></Filter>
+		<Filter Name="ServoDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\ServoDyn_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat ServoDyn" Description="Running Registry for ServoDyn" Outputs="..\..\Source\dependencies\ServoDyn\ServoDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat ServoDyn" Description="Running Registry for ServoDyn" Outputs="..\..\Source\dependencies\ServoDyn\ServoDyn_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\ServoDyn_Types.f90"/>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\TMD_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat TMD" Description="Running Registry for TMD" Outputs="..\..\Source\dependencies\ServoDyn\TMD_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat TMD" Description="Running Registry for TMD" Outputs="..\..\Source\dependencies\ServoDyn\TMD_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\TMD_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\BladedInterface.f90"/>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\PitchCntrl_ACH.f90"/>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\ServoDyn.f90"/>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\TMD.f90"/>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\UserSubs.f90"/>
+		<File RelativePath="..\..\Source\dependencies\ServoDyn\UserVSCont_KP.f90"/></Filter>
+		<Filter Name="SubDyn">
+		<Filter Name="RegistryFiles">
+		<File RelativePath="..\..\Source\dependencies\SubDyn\SubDyn_Registry.txt">
+			<FileConfiguration Name="Debug|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat SubDyn" Description="Running Registry for SubDyn" Outputs="..\..\Source\dependencies\SubDyn\SubDyn_Types.f90"/></FileConfiguration>
+			<FileConfiguration Name="Release|Win32">
+				<Tool Name="VFCustomBuildTool" CommandLine="CALL RunRegistry.bat SubDyn" Description="Running Registry for SubDyn" Outputs="..\..\Source\dependencies\SubDyn\SubDyn_Types.f90"/></FileConfiguration></File>
+		<File RelativePath="..\..\Source\dependencies\SubDyn\SubDyn_Types.f90"/></Filter>
+		<File RelativePath="..\..\Source\dependencies\SubDyn\qsort_c_module.f90"/>
+		<File RelativePath="..\..\Source\dependencies\SubDyn\SD_FEM.f90"/>
+		<File RelativePath="..\..\Source\dependencies\SubDyn\SubDyn.f90"/>
+		<File RelativePath="..\..\Source\dependencies\SubDyn\SubDyn_Output.f90"/></Filter></Filter></Files>
+	<Globals/></VisualStudioProject>

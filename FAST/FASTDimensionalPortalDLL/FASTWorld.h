@@ -1,16 +1,21 @@
 #pragma once
 
 #include "../../RLSimion-Lib/named-var-set.h"
+#include "../../tools/NamedPipe/NamedPipe.h"
+#define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
 
 class FASTWorld
 {
+	CNamedPipeClient m_namedPipeClient;
+
 	double m_lastTime, m_last_omega_r;
 	double m_T_g, m_last_T_g;
+	double m_elapsedTime;
 
 	CDescriptor m_stateDescriptor, m_actionDescriptor;
 	CState *m_pS;
 	CAction *m_pA;
-	double m_elapsedTime;
+
 public:
 	FASTWorld();
 
