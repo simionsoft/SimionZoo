@@ -152,6 +152,9 @@
     <ClCompile Include="parameters.cpp">
       <Filter>parameters</Filter>
     </ClCompile>
+    <ClCompile Include="world-FAST.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -273,6 +276,9 @@
     </ClInclude>
     <ClInclude Include="vfa.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="world-FAST.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

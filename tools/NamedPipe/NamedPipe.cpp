@@ -1,16 +1,19 @@
 #include "NamedPipe.h"
 #include <Windows.h>
 #include <string>
+#include <thread>
+
+#define NUM_MAX_CONNECTION_ATTEMPTS 10
 
 //CNamedPipe: Common stuff
 CNamedPipe::CNamedPipe()
 {
-	m_pipeHandle = 0;
+	m_pipeHandle = INVALID_HANDLE_VALUE;
 }
 
 CNamedPipe::~CNamedPipe()
 {
-	if (m_pipeHandle)
+	if (m_pipeHandle!=INVALID_HANDLE_VALUE)
 		CloseHandle(m_pipeHandle);
 }
 
@@ -31,16 +34,16 @@ void CNamedPipe::setPipeName(const char* pipeName)
 
 int CNamedPipe::writeBuffer(const void* pBuffer, int numBytes)
 {
-	DWORD bytesWritten;
-	if (m_pipeHandle)
+	DWORD bytesWritten= 0;
+	if (m_pipeHandle!=INVALID_HANDLE_VALUE)
 		WriteFile(m_pipeHandle,	pBuffer, numBytes, &bytesWritten,	NULL);
 	return bytesWritten;
 }
 
 int CNamedPipe::readToBuffer(void *pBuffer, int numBytes)
 {
-	DWORD bytesRead;
-	if (m_pipeHandle)
+	DWORD bytesRead= 0;
+	if (m_pipeHandle!= INVALID_HANDLE_VALUE)
 		ReadFile(m_pipeHandle, pBuffer, numBytes, &bytesRead, NULL);
 	return bytesRead;
 }
@@ -57,18 +60,22 @@ CNamedPipeServer::~CNamedPipeServer()
 
 bool CNamedPipeServer::openNamedPipeServer(const char* pipeName)
 {
+	int numAttempts = 0;
 	setPipeName(pipeName);
+
 	m_pipeHandle = CreateNamedPipe(m_pipeFullName,
-		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | FILE_FLAG_FIRST_PIPE_INSTANCE,   // FILE_FLAG_FIRST_PIPE_INSTANCE is not needed but forces CreateNamedPipe(..) to fail if the pipe already exists...
+		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,// | FILE_FLAG_FIRST_PIPE_INSTANCE,
 		PIPE_WAIT,
 		1,
 		1024 * 16,
 		1024 * 16,
 		NMPWAIT_USE_DEFAULT_WAIT,
 		NULL);
-	if (m_pipeHandle == INVALID_HANDLE_VALUE) return false;
-	return true;
 
+	if (m_pipeHandle == INVALID_HANDLE_VALUE)
+		return false;
+
+	return true;
 }
 
 bool CNamedPipeServer::waitForClientConnection()
@@ -98,25 +105,38 @@ CNamedPipeClient::~CNamedPipeClient()
 }
 bool CNamedPipeClient::connectToServer(const char* pipeName)
 {
+	int numAttempts = 0;
+
+	if (m_pipeHandle != INVALID_HANDLE_VALUE)
+		return false;
+
 	setPipeName(pipeName);
+	do
+	{
+		m_pipeHandle = CreateFile(
+			m_pipeFullName,   // pipe name 
+			PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
+			PIPE_WAIT,              // no sharing 
+			NULL,           // default security attributes
+			OPEN_EXISTING,  // opens existing pipe 
+			0,              // default attributes 
+			NULL);
+		numAttempts++;
+		
+		if (m_pipeHandle == INVALID_HANDLE_VALUE)
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-	m_pipeHandle = CreateFile(
-		m_pipeFullName,   // pipe name 
-		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
-		PIPE_WAIT,              // no sharing 
-		NULL,           // default security attributes
-		OPEN_EXISTING,  // opens existing pipe 
-		0,              // default attributes 
-		NULL);          // no template file 
+	} while (m_pipeHandle == INVALID_HANDLE_VALUE && numAttempts<NUM_MAX_CONNECTION_ATTEMPTS);
 
-	if (m_pipeHandle == INVALID_HANDLE_VALUE) return false;
-
+	if (m_pipeHandle == INVALID_HANDLE_VALUE)
+		return false;
+	printf("CLIENT: connected after %d attempts\n", numAttempts);
 	return true;
 }
 
 void CNamedPipeClient::closeConnection()
 {
-	if (m_pipeHandle)
+	if (m_pipeHandle!=INVALID_HANDLE_VALUE)
 	{
 		FlushFileBuffers(m_pipeHandle);
 		CloseHandle(m_pipeHandle);

@@ -3,7 +3,7 @@
 #include <thread>
 #include "../NamedPipe/NamedPipe.h"
 
-#pragma comment(lib,"../../Debug/NamedPipe.lib")
+#pragma comment(lib,"../../Debug/WindowsUtils.lib")
 
 
 void main(char** argv, int argc)
@@ -16,16 +16,18 @@ void main(char** argv, int argc)
 
 	printf("CLIENT: attempting connection to server\n");
 	bool bConnected= client.connectToServer("myPipe");
-	while (!bConnected)
+	if (bConnected)
 	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-		bConnected = client.connectToServer("myPipe");
+		printf("CLIENT: Client connected\n");
+		int numBytes = client.writeBuffer(message, strlen(message) + 1);
+		printf("CLIENT: %d bytes written: %s\n", numBytes, message);
+
+		printf("CLIENT: closing connection");
+		client.closeConnection();
 	}
-
-	printf("CLIENT: Client connected\n");
-	int numBytes = client.writeBuffer(message, strlen(message)+1);
-	printf("CLIENT: %d bytes written: %s\n", numBytes, message);
-
-	printf("CLIENT: closing connection");
-	client.closeConnection();
+	else
+	{
+		printf("CLIENT: failed connection");
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 }

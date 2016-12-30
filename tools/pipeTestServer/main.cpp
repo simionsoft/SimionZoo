@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <string>
+#include <thread>
 #include "../NamedPipe/NamedPipe.h"
 
-#pragma comment(lib,"../../Debug/NamedPipe.lib")
+#pragma comment(lib,"../../Debug/WindowsUtils.lib")
 
 
 void main(char** argv, int argc)
@@ -28,4 +29,5 @@ void main(char** argv, int argc)
 	}
 	printf("SERVER: shutting down");
 	server.closeServer();
+	std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 }

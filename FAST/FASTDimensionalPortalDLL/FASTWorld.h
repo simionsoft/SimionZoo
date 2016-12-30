@@ -4,6 +4,16 @@
 #include "../../tools/NamedPipe/NamedPipe.h"
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
 
+class FASTStateDescriptor : public CDescriptor
+{
+	FASTStateDescriptor();
+};
+
+class FASTActionDescriptor : public CDescriptor
+{
+	FASTActionDescriptor();
+};
+
 class FASTWorld
 {
 	CNamedPipeClient m_namedPipeClient;
