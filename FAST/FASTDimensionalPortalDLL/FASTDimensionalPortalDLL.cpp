@@ -32,7 +32,7 @@ extern "C" {
 //	}
 
 	FASTWorld g_FASTWorld;
-	bool g_bDummyTest= true;	//for debugging
+
 
 	void __declspec(dllexport) __cdecl DISCON(float *avrSWAP //inout
 		, int *aviFAIL //inout
@@ -46,7 +46,7 @@ extern "C" {
 		{
 			//Ony in first call
 			g_FASTWorld.connectToNamedPipeServer();
-			else printf("Dimensional portal opened\n");
+			printf("Dimensional portal opened\n");
 		}
 		if (iStatus>=0)
 		{

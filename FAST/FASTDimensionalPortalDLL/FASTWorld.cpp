@@ -9,7 +9,8 @@
 #endif
 
 #define INITIAL_TORQUE 40000.0
-extern bool g_bDummyTest;
+
+bool g_bDummyTest = true;	//for debugging
 
 FASTWorld::FASTWorld()
 {
@@ -117,21 +118,23 @@ void FASTWorld::sendState()
 		m_namedPipeClient.writeBuffer(pValues, m_pS->getNumVars()*sizeof(double));
 	else
 	{
+		printf("State=[");
 		for (int i = 0; i < m_pS->getNumVars(); i++)
-			printf("%.2f", pValues[i]);
-		printf("\n");
+			printf("%.2f ", pValues[i]);
+		printf("]\n");
 	}
 }
 
 void FASTWorld::receiveAction()
 {
 	double *pValues = m_pA->getValueVector();
-	if (g_bDummyTest)
+	if (!g_bDummyTest)
 		m_namedPipeClient.readToBuffer(pValues, m_pA->getNumVars() * sizeof(double));
 	else
 	{
+		printf("Action=[");
 		for (int i = 0; i < m_pA->getNumVars(); i++)
-			printf("%.2f", pValues[i]);
-		printf("\n");
+			printf("%.2f ", pValues[i]);
+		printf("]\n");
 	}
 }

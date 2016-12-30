@@ -44,6 +44,7 @@ CNamedVarSet::CNamedVarSet(CDescriptor& descriptor): m_pProperties(descriptor)
 
 	//m_pProperties= new CNamedVarProperties[numVars];
 	m_pValues= new double[descriptor.size()];
+	for (int i = 0; i < descriptor.size(); i++) m_pValues[i] = 0.0;
 	m_numVars= descriptor.size();
 }
 
@@ -76,7 +77,11 @@ CNamedVarProperties& CNamedVarSet::getProperties(const char* varName) const
 void CNamedVarSet::setValue(const char* varName, double value)
 {
 	int i = m_pProperties.getVarIndex(varName);
-	if (i >= 0) setValue(i, value);
+	if (i >= 0)
+	{
+		setValue(i, value);
+		return;
+	}
 	
 	assert(0);
 }
