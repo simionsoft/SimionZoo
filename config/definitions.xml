@@ -295,6 +295,25 @@
     <STATE-VAR Name="x" Min="-30" Max="30" Unit="m"/>
     <STATE-VAR Name="x_dot" Min="-10" Max="10" Unit="m/s"/>
   </CLASS>
+  <CLASS Name="CFASTWorld" World="FAST-Wind-turbine">
+    <STATE-VAR Name="beta" Min="-3490658504" Max="5235987756" Unit="rad"/>
+    <STATE-VAR Name="d_beta" Min="-1745329252" Max="1745329252" Unit="rad/s"/>
+    <ACTION-VAR Name="d_beta" Min="-10" Max="10" Unit="rad/s"/>
+    <STATE-VAR Name="d_omega_r" Min="-20" Max="20" Unit="rad/s^2"/>
+    <STATE-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
+    <ACTION-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
+    <STATE-VAR Name="E_int_omega_r" Min="-1000" Max="1000" Unit="rad"/>
+    <STATE-VAR Name="E_omega_r" Min="-40" Max="40" Unit="rad/s"/>
+    <STATE-VAR Name="E_p" Min="-100000" Max="100000" Unit="W"/>
+    <STATE-VAR Name="omega_g" Min="239823" Max="100039823" Unit="rad/s"/>
+    <STATE-VAR Name="omega_r" Min="239823" Max="639823" Unit="rad/s"/>
+    <STATE-VAR Name="P_a" Min="0" Max="16000000" Unit="W"/>
+    <STATE-VAR Name="P_e" Min="5000000" Max="7000000" Unit="W"/>
+    <STATE-VAR Name="P_s" Min="5000000" Max="7000000" Unit="W"/>
+    <STATE-VAR Name="T_a" Min="0" Max="4000000" Unit="N/m"/>
+    <STATE-VAR Name="T_g" Min="100000" Max="162000" Unit="N/m"/>
+    <STATE-VAR Name="v" Min="10" Max="500" Unit="m/s"/>
+  </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">
     <FILE-PATH-VALUE Name="Evaluation-Set-Point" Comment="The setpoint file" Default="../config/world/magnetic-levitation/setpoint.txt"/>
     <STATE-VAR Name="current" Min="-100" Max="100" Unit="A"/>

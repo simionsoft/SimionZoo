@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "world-FAST.h"
 #include "named-var-set.h"
-
 #include "config.h"
 #include "world.h"
-
 #include "reward.h"
+#include "../tools/WindowsUtils/Process.h"
 
+#define FAST_EXE_RELATIVE_PATH "../FAST/bin/fast_win32.exe"
+#define FAST_FILE "../FAST/CertTest/TestRlSimion.fst"
 
 CFASTWorld::CFASTWorld(CConfigNode* pConfigNode)
 {
@@ -46,10 +47,22 @@ CFASTWorld::~CFASTWorld()
 
 void CFASTWorld::reset(CState *s)
 {
-	//CreateProcess()
+	CProcess FASTprocess;
+	//spawn the FAST exe file
+	FASTprocess.spawn(FAST_EXE_RELATIVE_PATH, FAST_FILE);
+	//wait for the client (FASTDimensionalPortalDLL) to connect
+	m_namedPipeServer.waitForClientConnection();
+	//receive(s)
+	m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
 }
 
 void CFASTWorld::executeAction(CState *s,const CAction *a,double dt)
 {
+	//send(a)
+	//here we have to cheat the compiler (const). We don't want to, but we have to
+	double* pActionValues = ((CAction*)a)->getValueVector(); 
+	m_namedPipeServer.writeBuffer(pActionValues, a->getNumVars() * sizeof(double));
 
+	//receive(s')
+	m_namedPipeServer.readToBuffer(s, s->getNumVars() * sizeof(double));
 }

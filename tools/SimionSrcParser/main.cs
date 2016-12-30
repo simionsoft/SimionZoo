@@ -6,14 +6,14 @@ namespace SimionSrcParser
 {
     class main
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             SimionSrcParser sourceProcessor = new SimionSrcParser();
             int numargs = args.GetLength(0);
             if (args.GetLength(0) < 1)
             {
-                Console.WriteLine("CustomXMLBuilder ERROR: the directory where the source files are wasn't provided");
-                return;
+                Console.WriteLine("SimionSrcParser ERROR: the directory where the source files are wasn't provided");
+                return 0;
             }
             Console.WriteLine("Running SimionSrcParser " + args[0]);
             string dirPath = args[0];
@@ -41,6 +41,7 @@ namespace SimionSrcParser
 
                 Console.WriteLine("Source code correctly parsed and XML configuration succesfully built. {0} Kbs of code read.", sourceProcessor.numCharsProcessed / 1000);
             }
+            return 0;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 #include "world.h"
 #include "../FAST/FASTDimensionalPortalDLL/FASTWorld.h"
-#include "../tools/NamedPipe/NamedPipe.h"
+#include "../tools/WindowsUtils/NamedPipe.h"
 
 class CSetPoint;
 class CRewardFunction;

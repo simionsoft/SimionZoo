@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string>
 #include <thread>
-#include "../NamedPipe/NamedPipe.h"
+#include "../WindowsUtils/NamedPipe.h"
 
 #pragma comment(lib,"../../Debug/WindowsUtils.lib")
 

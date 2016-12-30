@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../../RLSimion-Lib/named-var-set.h"
-#include "../../tools/NamedPipe/NamedPipe.h"
+#include "../../tools/WindowsUtils/NamedPipe.h"
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
 
 class FASTStateDescriptor : public CDescriptor
