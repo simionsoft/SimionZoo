@@ -10,7 +10,7 @@
 
 #define INITIAL_TORQUE 40000.0
 
-bool g_bDummyTest = true;	//for debugging
+bool g_bDummyTest = false;	//for debugging
 
 FASTWorld::FASTWorld()
 {

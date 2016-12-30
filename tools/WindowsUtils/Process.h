@@ -7,5 +7,5 @@ public:
 	CProcess();
 	~CProcess();
 
-	bool spawn(const char* exeFile, char* args= 0);
+	bool spawn(char* commandLine);
 };

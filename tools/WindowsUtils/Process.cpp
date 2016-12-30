@@ -15,7 +15,7 @@ CProcess::~CProcess()
 	}
 }
 
-bool CProcess::spawn(const char* exeFile, char* args)
+bool CProcess::spawn(char* commandLine)
 {
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInformation;
@@ -23,7 +23,7 @@ bool CProcess::spawn(const char* exeFile, char* args)
 	memset(&startupInfo, 0, sizeof(STARTUPINFO));
 	startupInfo.wShowWindow = true;
 
-	bool bSuccess = (bool) CreateProcess(exeFile, args, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL
+	bool bSuccess = (bool) CreateProcess(NULL, commandLine, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL
 		, &startupInfo, &processInformation);
 	if (bSuccess)
 		m_handle = processInformation.hProcess;

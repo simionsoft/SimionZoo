@@ -7,8 +7,7 @@
 #include "../tools/WindowsUtils/Process.h"
 
 
-#define FAST_EXE_RELATIVE_PATH "../FAST/bin/fast_win32.exe"
-#define FAST_FILE "../FAST/CertTest/TestRlSimion.fst"
+#define FAST_EXE_COMMAND_LINE "../FAST/bin/fast_win32.exe ../FAST/CertTest/TestRlSimion.fst"
 
 CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
@@ -33,7 +32,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addActionVariable("d_beta", "rad/s", -10, 10);
 	addActionVariable("d_T_g", "N/m/s", -100000, 100000);
 
-	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("v-deviation", 0.1, 1.0));
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
 	m_pRewardFunction->initialize();
 
 	m_namedPipeServer.openNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
@@ -50,7 +49,7 @@ void CFASTWindTurbine::reset(CState *s)
 {
 	CProcess FASTprocess;
 	//spawn the FAST exe file
-	FASTprocess.spawn(FAST_EXE_RELATIVE_PATH, FAST_FILE);
+	FASTprocess.spawn(FAST_EXE_COMMAND_LINE);
 	//wait for the client (FASTDimensionalPortalDLL) to connect
 	m_namedPipeServer.waitForClientConnection();
 	//receive(s)
