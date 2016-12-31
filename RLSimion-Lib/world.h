@@ -42,6 +42,10 @@ public:
 	CAction* getActionInstance();
 
 	double getConstant(const char* constantName);
+	double getConstant(int i);
+	const char* getConstantName(int i);
+	int getNumConstants();
+
 
 	static std::shared_ptr<CDynamicModel> getInstance(CConfigNode* pParameters);
 };

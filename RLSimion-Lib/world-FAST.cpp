@@ -20,7 +20,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addStateVariable("E_p", "W", -100000, 100000);
 	addStateVariable("v", "m/s", 1.0, 50.0);
 	addStateVariable("omega_r", "rad/s", 2.39823, 6.39823);
-	addStateVariable("omega_g", "rad/s", 2.39823, 1000.39823); //what range of values does omega_g take???
+	addStateVariable("omega_g", "rad/s", 0.0, 200.0);
 	addStateVariable("E_omega_r", "rad/s", -4.0, 4.0);
 	addStateVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
 	addStateVariable("beta", "rad", -0.3490658504, 0.5235987756);
@@ -31,6 +31,21 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	//action handlers
 	addActionVariable("d_beta", "rad/s", -10, 10);
 	addActionVariable("d_T_g", "N/m/s", -100000, 100000);
+
+	//model constants
+	addConstant("RatedPower", 5e6);				//W
+	addConstant("HubHeight", 90);				//m
+	addConstant("CutInWindSpeed", 3.0);			//m/s
+	addConstant("RatedWindSpeed", 11.4);		//m/s
+	addConstant("CutOutWindSpeed", 25.0);		//m/s
+	addConstant("CutInRotorSpeed", 0.72256);	//6.9 rpm
+	addConstant("CutOutRotorSpeed", 1.26711);	//12.1 rpm
+	addConstant("RatedTipSpeed", 8.377);		//80 rpm
+	addConstant("RatedGeneratorSpeed", 122.91); //1173.7 rpm
+	addConstant("GearBoxRatio", 97.0);
+	addConstant("ElectricalGeneratorEfficiency",0.944); //%94.4
+	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
+	addConstant("HubInertia", 115926.0);				//kg*m^2
 
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
 	m_pRewardFunction->initialize();

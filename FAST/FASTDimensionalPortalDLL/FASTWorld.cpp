@@ -1,11 +1,14 @@
 #include "Stdafx.h"
 #include "FASTWorld.h"
+#include "../../RLSimion-Lib/world-FAST.h"
 #if _DEBUG
 	#pragma comment(lib,"../../Debug/WindowsUtils.lib")
 	#pragma comment(lib,"../../Debug/RLSimion-Lib.lib")
+	#pragma comment(lib,"../../Debug/tinyxml2.lib")
 #else
 	#pragma comment(lib,"../../Release/WindowsUtils.lib")
-	#pragma comment(lib,"../../release/RLSimion-Lib.lib")
+	#pragma comment(lib,"../../Release/RLSimion-Lib.lib")
+	#pragma comment(lib,"../../Release/tinyxml2.lib")
 #endif
 
 #define INITIAL_TORQUE 40000.0
@@ -14,24 +17,14 @@ bool g_bDummyTest = false;	//for debugging
 
 FASTWorld::FASTWorld()
 {
-	m_stateDescriptor.addVariable("T_a", "N/m", 0.0, 400000.0);
-	m_stateDescriptor.addVariable("P_a", "W", 0.0, 1600000.0);
-	m_stateDescriptor.addVariable("P_s", "W", 500000.0, 700000.0);
-	m_stateDescriptor.addVariable("P_e", "W", 500000.0, 700000.0);
-	m_stateDescriptor.addVariable("E_p", "W", -100000, 100000);
-	m_stateDescriptor.addVariable("v", "m/s", 1.0, 50.0);
-	m_stateDescriptor.addVariable("omega_r", "rad/s", 2.39823, 6.39823);
-	m_stateDescriptor.addVariable("omega_g", "rad/s", 2.39823, 1000.39823); //what range of values does omega_g take???
-	m_stateDescriptor.addVariable("E_omega_r", "rad/s", -4.0, 4.0);
-	m_stateDescriptor.addVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
-	m_stateDescriptor.addVariable("beta", "rad", -0.3490658504, 0.5235987756);
-	m_stateDescriptor.addVariable("d_beta", "rad/s", -0.1745329252, 0.1745329252);
-	m_stateDescriptor.addVariable("T_g", "N/m", 100000, 162000);
-	m_stateDescriptor.addVariable("d_T_g", "N/m/s", -100000, 100000);
-	m_stateDescriptor.addVariable("E_int_omega_r", "rad", -100.0, 100.0);
-	//action handlers
-	m_actionDescriptor.addVariable("d_beta", "rad/s", -10, 10);
-	m_actionDescriptor.addVariable("d_T_g", "N/m/s", -100000, 100000);
+	CFASTWindTurbine *pModel= new CFASTWindTurbine(0);
+	m_stateDescriptor = pModel->getStateDescriptor();
+	m_actionDescriptor = pModel->getActionDescriptor();
+	
+	for (int i= 0; i<pModel->getNumConstants(); i++)
+	{
+		m_constants[pModel->getConstantName(i)]= pModel->getConstant(i);
+	}
 
 	m_pS = m_stateDescriptor.getInstance();
 	m_pA = m_actionDescriptor.getInstance();

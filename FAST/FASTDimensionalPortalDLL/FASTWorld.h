@@ -3,6 +3,7 @@
 #include "../../RLSimion-Lib/named-var-set.h"
 #include "../../tools/WindowsUtils/NamedPipe.h"
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
+#include <map>
 
 class FASTStateDescriptor : public CDescriptor
 {
@@ -23,6 +24,7 @@ class FASTWorld
 	double m_elapsedTime;
 
 	CDescriptor m_stateDescriptor, m_actionDescriptor;
+	std::map<const char*, double> m_constants;
 	CState *m_pS;
 	CAction *m_pA;
 

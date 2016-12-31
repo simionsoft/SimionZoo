@@ -109,6 +109,35 @@ void CDynamicModel::addConstant(const char* name, double value)
 	m_pConstants[name] = value;
 }
 
+int CDynamicModel::getNumConstants()
+{
+	return m_pConstants.size();
+}
+
+double CDynamicModel::getConstant(int i)
+{
+	int j = 0;
+	for (std::map<const char*, double>::iterator it = m_pConstants.begin(); it != m_pConstants.end(); ++it)
+	{
+		if (j == i) return it->second;
+
+		++j;
+	}
+	return 0.0;
+}
+
+const char* CDynamicModel::getConstantName(int i)
+{
+	int j = 0;
+	for (std::map<const char*,double>::iterator it = m_pConstants.begin(); it != m_pConstants.end(); ++it)
+	{
+		if (j == i) return it->first;
+			
+		++j;
+	}
+	return "";
+}
+
 double CDynamicModel::getConstant(const char* constantName)
 {
 	return m_pConstants[constantName];

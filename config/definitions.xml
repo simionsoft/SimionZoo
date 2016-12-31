@@ -297,6 +297,10 @@
   </CLASS>
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
     <STATE-VAR Name="beta" Min="-0.3490658504" Max="0.5235987756" Unit="rad"/>
+    <CONSTANT Name="CutInRotorSpeed"/>
+    <CONSTANT Name="CutInWindSpeed"/>
+    <CONSTANT Name="CutOutRotorSpeed"/>
+    <CONSTANT Name="CutOutWindSpeed"/>
     <STATE-VAR Name="d_beta" Min="-0.1745329252" Max="0.1745329252" Unit="rad/s"/>
     <ACTION-VAR Name="d_beta" Min="-10" Max="10" Unit="rad/s"/>
     <STATE-VAR Name="d_omega_r" Min="-2" Max="2" Unit="rad/s^2"/>
@@ -305,11 +309,20 @@
     <STATE-VAR Name="E_int_omega_r" Min="-100" Max="100" Unit="rad"/>
     <STATE-VAR Name="E_omega_r" Min="-4" Max="4" Unit="rad/s"/>
     <STATE-VAR Name="E_p" Min="-100000" Max="100000" Unit="W"/>
-    <STATE-VAR Name="omega_g" Min="2.39823" Max="1000.39823" Unit="rad/s"/>
+    <CONSTANT Name="ElectricalGeneratorEfficiency"/>
+    <CONSTANT Name="GearBoxRatio"/>
+    <CONSTANT Name="GeneratorInertia"/>
+    <CONSTANT Name="HubHeight"/>
+    <CONSTANT Name="HubInertia"/>
+    <STATE-VAR Name="omega_g" Min="0" Max="200" Unit="rad/s"/>
     <STATE-VAR Name="omega_r" Min="2.39823" Max="6.39823" Unit="rad/s"/>
     <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
     <STATE-VAR Name="P_e" Min="500000" Max="700000" Unit="W"/>
     <STATE-VAR Name="P_s" Min="500000" Max="700000" Unit="W"/>
+    <CONSTANT Name="RatedGeneratorSpeed"/>
+    <CONSTANT Name="RatedPower"/>
+    <CONSTANT Name="RatedTipSpeed"/>
+    <CONSTANT Name="RatedWindSpeed"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
     <STATE-VAR Name="T_g" Min="100000" Max="162000" Unit="N/m"/>
     <STATE-VAR Name="v" Min="1" Max="50" Unit="m/s"/>

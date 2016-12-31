@@ -212,6 +212,7 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	//constants: used by some of the controllers
 	addConstant("K_t", K_t);
 	addConstant("J_t", J_t);
+
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("d_T_g",12000.0,1.0));
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 10.0, 1.0));
