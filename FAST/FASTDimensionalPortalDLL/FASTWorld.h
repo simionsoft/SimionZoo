@@ -23,6 +23,9 @@ class FASTWorld
 	double m_T_g, m_last_T_g;
 	double m_elapsedTime;
 
+	//constants used to calculate not available variables
+	double J_r, J_g, n_g;
+
 	CDescriptor m_stateDescriptor, m_actionDescriptor;
 	std::map<const char*, double> m_constants;
 	CState *m_pS;

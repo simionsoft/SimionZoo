@@ -26,6 +26,10 @@ FASTWorld::FASTWorld()
 		m_constants[pModel->getConstantName(i)]= pModel->getConstant(i);
 	}
 
+	J_r = m_constants["HubInertia"];
+	J_g = m_constants["GeneratorInertia"];
+	n_g = m_constants["GearBoxRatio"];
+
 	m_pS = m_stateDescriptor.getInstance();
 	m_pA = m_actionDescriptor.getInstance();
 }
@@ -58,7 +62,7 @@ void FASTWorld::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	m_pS->setValue("E_p", (double)FASTdata[13]);
 
 	//Aerodynamic torque: T_a
-	//T_a = (J_r + J_g*n_g*n_g)*d_omega_r + measuredPower / GenSpeedF;
+	m_pS->setValue("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + m_pS->getValue("E_p") / m_pS->getValue("omega_g"));
 
 	//Generator torque: T_g
 	//We use d_T_g as the control output, so we have to keep track of the current T_g
