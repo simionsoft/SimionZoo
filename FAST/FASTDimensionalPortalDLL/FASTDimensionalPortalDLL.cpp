@@ -41,20 +41,27 @@ extern "C" {
 		, char *avcMSG) //inout
 	{
 		int iStatus = NINT(avrSWAP[1 - 1]);
+		
+		*aviFAIL = 0;
 
 		if (iStatus==0)
 		{
 			//Ony in first call
+			*aviFAIL = 1;
+			strcpy_s(avcMSG, 512, "Dimensional portal between FAST and RLSimion opened\n");
+
 			g_FASTWorld.connectToNamedPipeServer();
-			printf("Dimensional portal opened\n");
 		}
 		if (iStatus>=0)
 		{
 			//Done in all calls but last
-			g_FASTWorld.retrieveStateVariables(avrSWAP,(bool)(iStatus==0));
-			g_FASTWorld.sendState();
-			g_FASTWorld.receiveAction();
-			g_FASTWorld.setActionVariables(avrSWAP);
+			bool bControlStep= g_FASTWorld.retrieveStateVariables(avrSWAP,(bool)(iStatus==0));
+			if (bControlStep)
+			{
+				g_FASTWorld.sendState();
+				g_FASTWorld.receiveAction();
+				g_FASTWorld.setActionVariables(avrSWAP);
+			}
 		}
 		if (iStatus < 0)
 		{

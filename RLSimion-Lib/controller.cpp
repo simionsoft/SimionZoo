@@ -276,16 +276,16 @@ CWindTurbineJonkmanController::~CWindTurbineJonkmanController()
 CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfigNode)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
-	m_CornerFreq = DOUBLE_PARAM(pConfigNode, "CornerFreq", "Corner Freq. parameter", 0.0);
+	m_CornerFreq = DOUBLE_PARAM(pConfigNode, "CornerFreq", "Corner Freq. parameter", 1.570796);
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	m_VS_RtGnSp = DOUBLE_PARAM(pConfigNode, "VSRtGnSp", "Rated Generator Speed", 0.0);
-	m_VS_SlPc = DOUBLE_PARAM(pConfigNode, "VS_SlPc", "SIPc parameter", 0.0);
-	m_VS_Rgn2K = DOUBLE_PARAM(pConfigNode, "VS_Rgn2K", "Rgn2K parameter", 0.0);
-	m_VS_Rgn2Sp = DOUBLE_PARAM(pConfigNode, "VS_Rgn2Sp", "Rgn2Sp parameter", 0.0);
-	m_VS_CtInSp = DOUBLE_PARAM(pConfigNode, "VS_CtInSp", "CtlnSp parameter", 0.0);
-	m_VS_RtPwr = DOUBLE_PARAM(pConfigNode, "VS_RtPwr", "Rated power", 0.0);
-	m_VS_Rgn3MP = DOUBLE_PARAM(pConfigNode, "VS_Rgn3MP", "Rgn3MP parameter", 0.0);
+	m_VS_RtGnSp = DOUBLE_PARAM(pConfigNode, "VSRtGnSp", "Rated Generator Speed", 121.6805);
+	m_VS_SlPc = DOUBLE_PARAM(pConfigNode, "VS_SlPc", "SIPc parameter", 10.0);
+	m_VS_Rgn2K = DOUBLE_PARAM(pConfigNode, "VS_Rgn2K", "Rgn2K parameter", 2.332287);
+	m_VS_Rgn2Sp = DOUBLE_PARAM(pConfigNode, "VS_Rgn2Sp", "Rgn2Sp parameter", 91.21091);
+	m_VS_CtInSp = DOUBLE_PARAM(pConfigNode, "VS_CtInSp", "CtlnSp parameter", 70.16224);
+	m_VS_RtPwr = DOUBLE_PARAM(pConfigNode, "VS_RtPwr", "Rated power", 5296610.0);
+	m_VS_Rgn3MP = DOUBLE_PARAM(pConfigNode, "VS_Rgn3MP", "Rgn3MP parameter", 0.01745329);
 	
 	m_VS_SySp    = m_VS_RtGnSp.get()/( 1.0 +  0.01*m_VS_SlPc.get() );
 	m_VS_Slope15 = ( m_VS_Rgn2K.get()*m_VS_Rgn2Sp.get()*m_VS_Rgn2Sp.get() )/( m_VS_Rgn2Sp.get() - m_VS_CtInSp.get());
@@ -297,10 +297,10 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfi
 		m_VS_TrGnSp = ( m_VS_Slope25 - sqrt( m_VS_Slope25*( m_VS_Slope25 - 4.0*m_VS_Rgn2K.get()*m_VS_SySp ) ) )/( 2.0*m_VS_Rgn2K.get() );
 
 	//PITCH CONTROLLER'S PARAMETERS
-	m_PC_KK= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"PC_KK","PC_KK");
-	m_PC_KP= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "PC_KP","PC_KP");
-	m_PC_KI= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "PC_KI","PC_KI");
-	m_PC_RefSpd= DOUBLE_PARAM(pConfigNode,"PC_RefSpd","Pitch control reference speed", 0.0);
+	m_PC_KK = DOUBLE_PARAM(pConfigNode,"PC_KK","Pitch angle were the the derivative of the...", 0.1099965);
+	m_PC_KP= DOUBLE_PARAM(pConfigNode, "PC_KP","Proportional gain of the pitch controller",0.01882681);
+	m_PC_KI= DOUBLE_PARAM(pConfigNode, "PC_KI","Integral gain of the pitch controller",0.008068634);
+	m_PC_RefSpd= DOUBLE_PARAM(pConfigNode,"PC_RefSpd","Pitch control reference speed", 122.9096);
 
 	m_IntSpdErr= 0.0;
 
@@ -343,44 +343,46 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 		Alpha= 1.0;
 		m_GenSpeedF= s->getValue(m_omega_g_index);
 	}
-	else Alpha = exp((CSimionApp::get()->pWorld->getDT())*m_CornerFreq.get());
-	m_GenSpeedF = ( 1.0 - Alpha )*s->getValue(m_omega_g_index) + Alpha*m_GenSpeedF;
+	else
+		Alpha = exp(-CSimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
+
+	m_GenSpeedF = (1.0 - Alpha)*s->getValue(m_omega_g_index) + Alpha*m_GenSpeedF;
 
 	//TORQUE CONTROLLER
-	double GenTrq;
+	double DesiredGenTrq;
 	if ( (   m_GenSpeedF >= m_VS_RtGnSp.get() ) 
 		|| (  s->getValue(m_beta_index) >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
-		GenTrq = m_VS_RtPwr.get()/m_GenSpeedF;
+		DesiredGenTrq = m_VS_RtPwr.get()/m_GenSpeedF;
 	else if ( m_GenSpeedF <= m_VS_CtInSp.get() )							//We are in region 1 - torque is zero
-		GenTrq = 0.0;
+		DesiredGenTrq = 0.0;
 	else if ( m_GenSpeedF <  m_VS_Rgn2Sp.get() )                          //We are in region 1 1/2 - linear ramp in torque from zero to optimal
-		GenTrq = m_VS_Slope15*( m_GenSpeedF - m_VS_CtInSp.get() );
+		DesiredGenTrq = m_VS_Slope15*( m_GenSpeedF - m_VS_CtInSp.get() );
 	else if ( m_GenSpeedF <  m_VS_TrGnSp )                                      //We are in region 2 - optimal torque is proportional to the square of the generator speed
-		GenTrq = m_VS_Rgn2K.get()*m_GenSpeedF*m_GenSpeedF;
+		DesiredGenTrq = m_VS_Rgn2K.get()*m_GenSpeedF*m_GenSpeedF;
 	else                                                                       //We are in region 2 1/2 - simple induction generator transition region
-		GenTrq = m_VS_Slope25*( m_GenSpeedF - m_VS_SySp   );
+		DesiredGenTrq = m_VS_Slope25*( m_GenSpeedF - m_VS_SySp   );
 
-	GenTrq  = std::min( GenTrq, s->getProperties("T_g").getMax()  );   //Saturate the command using the maximum torque limit
+	DesiredGenTrq  = std::min( DesiredGenTrq, s->getProperties("T_g").getMax()  );   //Saturate the command using the maximum torque limit
 
 	double TrqRate;
-	TrqRate = (GenTrq - s->getValue(m_T_g_index)) / CSimionApp::get()->pWorld->getDT(); //Torque rate (unsaturated)
+	TrqRate = (DesiredGenTrq - s->getValue(m_T_g_index)) / CSimionApp::get()->pWorld->getDT(); //Torque rate (unsaturated)
 	a->setValue(m_d_T_g_index,TrqRate);
 
 	//PITCH CONTROLLER
-	double GK = 1.0/( 1.0 + s->getValue(m_beta_index)/m_PC_KK->getValue() );
+	double GK = 1.0/( 1.0 + s->getValue(m_beta_index)/m_PC_KK.get() );
 
 	//Compute the current speed error and its integral w.r.t. time; saturate the
 	//  integral term using the pitch angle limits:
 	double SpdErr    = m_GenSpeedF - m_PC_RefSpd.get();                                 //Current speed error
 	m_IntSpdErr = m_IntSpdErr + SpdErr*CSimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
-	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta_index).getMax()/( GK*m_PC_KI->getValue() ) )
-		, s->getProperties("beta").getMin()/( GK*m_PC_KI->getValue() ));
+	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta_index).getMax()/( GK*m_PC_KI.get() ) )
+		, s->getProperties("beta").getMin()/( GK*m_PC_KI.get() ));
   
 	//Compute the pitch commands associated with the proportional and integral
 	//  gains:
-	double PitComP   = GK* m_PC_KP->getValue() *   SpdErr; //Proportional term
-	double PitComI   = GK* m_PC_KI->getValue() * m_IntSpdErr; //Integral term (saturated)
+	double PitComP   = GK* m_PC_KP.get() *   SpdErr; //Proportional term
+	double PitComI   = GK* m_PC_KI.get() * m_IntSpdErr; //Integral term (saturated)
 
 	//Superimpose the individual commands to get the total pitch command;
 	//  saturate the overall command using the pitch angle limits:

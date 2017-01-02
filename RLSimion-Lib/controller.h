@@ -123,7 +123,7 @@ class CWindTurbineJonkmanController : public CController
 	double m_VS_SySp, m_VS_Slope15, m_VS_Slope25, m_VS_TrGnSp;
 	//pitch controller's parameters and variables
 	double m_IntSpdErr;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_PC_KK, m_PC_KP, m_PC_KI;
+	DOUBLE_PARAM m_PC_KK, m_PC_KP, m_PC_KI;
 	DOUBLE_PARAM m_PC_RefSpd;
 public:
 	CWindTurbineJonkmanController(CConfigNode* pConfigNode);

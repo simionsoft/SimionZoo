@@ -62,18 +62,18 @@
     <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain of the pitch controller"/>
   </CLASS>
   <CLASS Name="CWindTurbineJonkmanController">
-    <DOUBLE-VALUE Name="CornerFreq" Comment="Corner Freq. parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="PC_RefSpd" Comment="Pitch control reference speed" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_CtInSp" Comment="CtlnSp parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_Rgn2K" Comment="Rgn2K parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_Rgn2Sp" Comment="Rgn2Sp parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_Rgn3MP" Comment="Rgn3MP parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_RtPwr" Comment="Rated power" Default="0.0"/>
-    <DOUBLE-VALUE Name="VS_SlPc" Comment="SIPc parameter" Default="0.0"/>
-    <DOUBLE-VALUE Name="VSRtGnSp" Comment="Rated Generator Speed" Default="0.0"/>
-    <BRANCH Name="PC_KI" Class="CNumericValue-Factory" Comment="PC_KI"/>
-    <BRANCH Name="PC_KK" Class="CNumericValue-Factory" Comment="PC_KK"/>
-    <BRANCH Name="PC_KP" Class="CNumericValue-Factory" Comment="PC_KP"/>
+    <DOUBLE-VALUE Name="CornerFreq" Comment="Corner Freq. parameter" Default="1.570796"/>
+    <DOUBLE-VALUE Name="PC_KI" Comment="Integral gain of the pitch controller" Default="0.008068634"/>
+    <DOUBLE-VALUE Name="PC_KK" Comment="Pitch angle were the the derivative of the..." Default="0.1099965"/>
+    <DOUBLE-VALUE Name="PC_KP" Comment="Proportional gain of the pitch controller" Default="0.01882681"/>
+    <DOUBLE-VALUE Name="PC_RefSpd" Comment="Pitch control reference speed" Default="122.9096"/>
+    <DOUBLE-VALUE Name="VS_CtInSp" Comment="CtlnSp parameter" Default="70.16224"/>
+    <DOUBLE-VALUE Name="VS_Rgn2K" Comment="Rgn2K parameter" Default="2.332287"/>
+    <DOUBLE-VALUE Name="VS_Rgn2Sp" Comment="Rgn2Sp parameter" Default="91.21091"/>
+    <DOUBLE-VALUE Name="VS_Rgn3MP" Comment="Rgn3MP parameter" Default="0.01745329"/>
+    <DOUBLE-VALUE Name="VS_RtPwr" Comment="Rated power" Default="5296610.0"/>
+    <DOUBLE-VALUE Name="VS_SlPc" Comment="SIPc parameter" Default="10.0"/>
+    <DOUBLE-VALUE Name="VSRtGnSp" Comment="Rated Generator Speed" Default="121.6805"/>
   </CLASS>
   <CLASS Name="CController-Factory">
     <CHOICE Name="Controller" Class="CController" Comment="The specific controller to be used">
@@ -296,16 +296,17 @@
     <STATE-VAR Name="x_dot" Min="-1" Max="1" Unit="m/s"/>
   </CLASS>
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
-    <STATE-VAR Name="beta" Min="-0.3490658504" Max="0.5235987756" Unit="rad"/>
+    <STATE-VAR Name="beta" Min="0" Max="1.570796" Unit="rad"/>
     <CONSTANT Name="CutInRotorSpeed"/>
     <CONSTANT Name="CutInWindSpeed"/>
     <CONSTANT Name="CutOutRotorSpeed"/>
     <CONSTANT Name="CutOutWindSpeed"/>
-    <STATE-VAR Name="d_beta" Min="-0.1745329252" Max="0.1745329252" Unit="rad/s"/>
-    <ACTION-VAR Name="d_beta" Min="-10" Max="10" Unit="rad/s"/>
+    <STATE-VAR Name="d_beta" Min="-0.1396263" Max="0.1396263" Unit="rad/s"/>
+    <ACTION-VAR Name="d_beta" Min="-0.1396263" Max="0.1396263" Unit="rad/s"/>
     <STATE-VAR Name="d_omega_r" Min="-2" Max="2" Unit="rad/s^2"/>
-    <STATE-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
-    <ACTION-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
+    <STATE-VAR Name="d_T_g" Min="-15000" Max="15000" Unit="N/m/s"/>
+    <ACTION-VAR Name="d_T_g" Min="-15000" Max="15000" Unit="N/m/s"/>
+    <CONSTANT Name="DriveTrainTorsionalDamping"/>
     <STATE-VAR Name="E_int_omega_r" Min="-100" Max="100" Unit="rad"/>
     <STATE-VAR Name="E_omega_r" Min="-4" Max="4" Unit="rad/s"/>
     <STATE-VAR Name="E_p" Min="-100000" Max="100000" Unit="W"/>
@@ -320,11 +321,12 @@
     <STATE-VAR Name="P_e" Min="500000" Max="700000" Unit="W"/>
     <STATE-VAR Name="P_s" Min="500000" Max="700000" Unit="W"/>
     <CONSTANT Name="RatedGeneratorSpeed"/>
+    <CONSTANT Name="RatedGeneratorTorque"/>
     <CONSTANT Name="RatedPower"/>
     <CONSTANT Name="RatedTipSpeed"/>
     <CONSTANT Name="RatedWindSpeed"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
-    <STATE-VAR Name="T_g" Min="100000" Max="162000" Unit="N/m"/>
+    <STATE-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
     <STATE-VAR Name="v" Min="1" Max="50" Unit="m/s"/>
   </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">

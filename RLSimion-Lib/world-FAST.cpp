@@ -23,14 +23,14 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addStateVariable("omega_g", "rad/s", 0.0, 200.0);
 	addStateVariable("E_omega_r", "rad/s", -4.0, 4.0);
 	addStateVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
-	addStateVariable("beta", "rad", -0.3490658504, 0.5235987756);
-	addStateVariable("d_beta", "rad/s", -0.1745329252, 0.1745329252);
-	addStateVariable("T_g", "N/m", 100000, 162000);
-	addStateVariable("d_T_g", "N/m/s", -100000, 100000);
+	addStateVariable("beta", "rad", 0.0, 1.570796);
+	addStateVariable("d_beta", "rad/s", -0.1396263, 0.1396263);
+	addStateVariable("T_g", "N/m", 0.0, 47402.91);
+	addStateVariable("d_T_g", "N/m/s", -15000, 15000);
 	addStateVariable("E_int_omega_r", "rad", -100.0, 100.0);
 	//action handlers
-	addActionVariable("d_beta", "rad/s", -10, 10);
-	addActionVariable("d_T_g", "N/m/s", -100000, 100000);
+	addActionVariable("d_beta", "rad/s", -0.1396263, 0.1396263);
+	addActionVariable("d_T_g", "N/m/s", -15000.0, 15000.0);
 
 	//model constants
 	addConstant("RatedPower", 5e6);				//W
@@ -42,6 +42,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addConstant("CutOutRotorSpeed", 1.26711);	//12.1 rpm
 	addConstant("RatedTipSpeed", 8.377);		//80 rpm
 	addConstant("RatedGeneratorSpeed", 122.91); //1173.7 rpm
+	addConstant("RatedGeneratorTorque", 43093.55);
 	addConstant("GearBoxRatio", 97.0);
 	addConstant("ElectricalGeneratorEfficiency",0.944); //%94.4
 	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
@@ -80,5 +81,5 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	m_namedPipeServer.writeBuffer(pActionValues, a->getNumVars() * sizeof(double));
 
 	//receive(s')
-	m_namedPipeServer.readToBuffer(s, s->getNumVars() * sizeof(double));
+	m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
 }

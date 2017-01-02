@@ -58,7 +58,7 @@ public:
 
 
 	//STEP
-	bool isValidStep(){ return !m_bTerminalState && m_step > 0 && m_step <= m_numSteps; }
+	bool isValidStep();
 	unsigned int getStep(){ return m_step; }
 	bool isFirstStep(){ return m_step == 1; }
 	bool isLastStep(){ return (m_bTerminalState || m_step == m_numSteps); }

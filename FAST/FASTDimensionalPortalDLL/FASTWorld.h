@@ -5,6 +5,8 @@
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
 #include <map>
 
+#define CONTROL_DT 0.00125
+
 class FASTStateDescriptor : public CDescriptor
 {
 	FASTStateDescriptor();
@@ -19,8 +21,7 @@ class FASTWorld
 {
 	CNamedPipeClient m_namedPipeClient;
 
-	double m_lastTime, m_last_omega_r;
-	double m_T_g, m_last_T_g;
+	double m_lastTime;
 	double m_elapsedTime;
 
 	//constants used to calculate not available variables
@@ -34,7 +35,9 @@ class FASTWorld
 public:
 	FASTWorld();
 
-	void retrieveStateVariables(float* FASTdata, bool bFirstTime);
+	//retrieves the state variables from the buffer
+	//returns whether this is a control step or no
+	bool retrieveStateVariables(float* FASTdata, bool bFirstTime);
 	void sendState();
 
 	void setActionVariables(float* FASTdata);

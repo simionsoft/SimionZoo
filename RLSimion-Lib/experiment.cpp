@@ -70,6 +70,11 @@ void CExperiment::nextStep()
 	else m_step = 0;
 }
 
+bool CExperiment::isValidStep()
+{
+	return !m_bTerminalState && m_step > 0 && m_step <= m_numSteps;
+}
+
 void CExperiment::nextEpisode()
 {
 	//reset the terminal state flag at the beginning of every episode
@@ -113,7 +118,9 @@ CExperiment::CExperiment(CConfigNode* pConfigNode)
 	
 	if (m_evalFreq.get() != 0)
 	{
-		m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes.get() / m_evalFreq.get();
+		if (m_numTrainingEpisodes.get()>1)
+			m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes.get() / m_evalFreq.get();
+		else m_numEvaluationEpisodes = 0;
 		m_totalNumEpisodes = m_numTrainingEpisodes.get() + m_numEvaluationEpisodes;
 	}
 	else
