@@ -15,7 +15,7 @@ class CFASTWindTurbine : public CDynamicModel, public CDeferredLoad
 
 	char mainConfigFilename[MAX_PATH_SIZE];
 
-	bool loadTemplateConfigFile(const char* templateFilename);
+	char* loadTemplateConfigFile(const char* templateFilename);
 	bool saveTemplateConfigFile(const char* filename);
 
 public:

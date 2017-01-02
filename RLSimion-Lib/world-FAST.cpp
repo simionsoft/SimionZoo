@@ -5,8 +5,10 @@
 #include "world.h"
 #include "reward.h"
 #include "app.h"
-
+#include "app-rlsimion.h"
 #include "../tools/WindowsUtils/Process.h"
+#include <string>
+#include <stdio.h>
 
 
 #define FAST_EXE "../Release/fast_win32.exe"
@@ -57,7 +59,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 
 	if (CSimionApp::get())
 	{
-		//config file
+		//input/output files
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/FAST_win32.exe");
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/MAP_win32.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/configFileTemplate.fst");
@@ -86,7 +88,23 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 
 void CFASTWindTurbine::deferredLoadStep()
 {
-	//bool bLoaded = loadTemplateConfigFile(FAST_CONFIG_TEMPLATE_FILE);
+	std::string outConfigFileName;
+	FILE *pOutConfigFile;
+	char* fileContent= loadTemplateConfigFile("../config/world/FAST/configFileTemplate.fst");
+	if (fileContent)
+	{ 
+		outConfigFileName= std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") + std::string(FAST_CONFIG_FILE);
+
+		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
+		fprintf_s(pOutConfigFile, fileContent, CSimionApp::get()->pExperiment->getEpisodeLength()
+			, CSimionApp::get()->pWorld->getDT());
+		fclose(pOutConfigFile);
+		delete [] fileContent;
+	}
+	else
+	{
+		CLogger::logMessage(MessageType::Error, (std::string("Couldn't load config file: ") + outConfigFileName).c_str());
+	}
 
 	m_namedPipeServer.openNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 }
@@ -102,7 +120,9 @@ void CFASTWindTurbine::reset(CState *s)
 {
 	CProcess FASTprocess;
 	//spawn the FAST exe file
-	FASTprocess.spawn(FAST_EXE);
+	std::string commandLine = std::string(FAST_EXE) + std::string(" ") 
+		+ std::string(CSimionApp::get()->getOutputDirectory())+ std::string("/")+ std::string(FAST_CONFIG_FILE);
+	FASTprocess.spawn((char*)(commandLine).c_str());
 	//wait for the client (FASTDimensionalPortalDLL) to connect
 	m_namedPipeServer.waitForClientConnection();
 	//receive(s)
@@ -118,4 +138,20 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 
 	//receive(s')
 	m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
+}
+
+#define MAX_TEMPLATE_FILE_SIZE 10000
+char* CFASTWindTurbine::loadTemplateConfigFile(const char* filename)
+{
+	FILE *templateFile;
+	int numCharsRead = 0;
+	char *pBuffer= new char[MAX_TEMPLATE_FILE_SIZE];
+	fopen_s(&templateFile, filename, "r");
+	if (templateFile)
+	{
+		numCharsRead= fread_s(pBuffer, MAX_TEMPLATE_FILE_SIZE, sizeof(char), MAX_TEMPLATE_FILE_SIZE, templateFile);
+		pBuffer[numCharsRead] = 0;
+		return pBuffer;
+	}
+	return 0;
 }

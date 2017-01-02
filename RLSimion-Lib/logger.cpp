@@ -89,12 +89,6 @@ void CLogger::setLogDirectory(const char* xmlFilePath)
 		throw(std::exception("CLogger. No output directory provided."));
 
 	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, xmlFilePath);
-
-	int i = strlen(m_outputDir)-1;
-	while (i > 0 && m_outputDir[i] != '/' && m_outputDir[i] != '\\')
-		i--;
-
-	if (i > 0) m_outputDir[i] = 0;
 	
 	//we register the name for input/output stuff
 	char fullLogFilename[MAX_FILENAME_LENGTH];
