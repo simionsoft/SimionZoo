@@ -43,6 +43,6 @@ public:
 	void setActionVariables(float* FASTdata);
 	void receiveAction();
 
-	void connectToNamedPipeServer();
+	void connectToNamedPipeServer(const char* name);
 	void disconnectFromNamedPipeServer();
 };

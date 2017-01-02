@@ -9,10 +9,15 @@
 void main(char** argv, int argc)
 {
 	char message[100] = "my message";
+	char pipename1[100];
+	char pipename2[100];
 	char buffer[100];
 	CNamedPipeServer server;
 
-	server.openNamedPipeServer("myPipe");
+	bool b1= server.openUniqueNamedPipeServer("myPipe");
+	strcpy_s(pipename1, 100, server.getPipeFullName());
+	//bool b2= server.openUniqueNamedPipeServer("myPipe");
+	//strcpy_s(pipename2, 100, server.getPipeFullName());
 
 	printf("waiting for connection");
 	bool bConnected= server.waitForClientConnection();

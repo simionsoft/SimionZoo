@@ -120,10 +120,10 @@ void FASTWorldPortal::setActionVariables(float* FASTdata)
 	FASTdata[81 - 1] = 0.0; //Variable slip current demand
 }
 
-void FASTWorldPortal::connectToNamedPipeServer()
+void FASTWorldPortal::connectToNamedPipeServer(const char* pipeName)
 {
 	if (!g_bDummyTest)
-		m_namedPipeClient.connectToServer(DIMENSIONAL_PORTAL_PIPE_NAME);
+		m_namedPipeClient.connectToServer(pipeName);
 }
 
 void FASTWorldPortal::disconnectFromNamedPipeServer()

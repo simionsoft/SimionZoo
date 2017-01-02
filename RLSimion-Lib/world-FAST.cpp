@@ -13,6 +13,9 @@
 
 #define FAST_EXE "../Release/fast_win32.exe"
 #define FAST_CONFIG_FILE "fast-config.fst"
+#define PORTAL_CONFIG_FILE "FASTDimensionalPortalDLL.xml"
+#define MAX_CONFIG_FILE_SIZE 10000
+#define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
 
 CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
@@ -90,6 +93,8 @@ void CFASTWindTurbine::deferredLoadStep()
 {
 	std::string outConfigFileName;
 	FILE *pOutConfigFile;
+
+	//templated main config file
 	char* fileContent= loadTemplateConfigFile("../config/world/FAST/configFileTemplate.fst");
 	if (fileContent)
 	{ 
@@ -101,12 +106,23 @@ void CFASTWindTurbine::deferredLoadStep()
 		fclose(pOutConfigFile);
 		delete [] fileContent;
 	}
-	else
-	{
-		CLogger::logMessage(MessageType::Error, (std::string("Couldn't load config file: ") + outConfigFileName).c_str());
-	}
+	else CLogger::logMessage(MessageType::Error, (std::string("Couldn't load config file: ") + outConfigFileName).c_str());
 
-	m_namedPipeServer.openNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
+	//FASTDimensionalPortalDLL.xml -> used to pass the pipe's name to the dll
+	bool pipeServerOpened= m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
+	if (pipeServerOpened)
+	{
+		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") + std::string(PORTAL_CONFIG_FILE);
+		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
+		if (pOutConfigFile)
+		{
+			fprintf_s(pOutConfigFile, "<?xml version=\"1.0\"?>\n<FAST-DIMENSIONAL-PORTAL>\n  <PIPE-NAME>%s</PIPE-NAME>\n</FAST-DIMENSIONAL-PORTAL>"
+				, m_namedPipeServer.getPipeFullName());
+			fclose(pOutConfigFile);
+		}
+		else CLogger::logMessage(MessageType::Error, (std::string("Couldn't create config file: ") + outConfigFileName).c_str());
+	}
+	else CLogger::logMessage(MessageType::Error, "Couldn't open named pipe server");
 }
 
 CFASTWindTurbine::~CFASTWindTurbine()
@@ -140,16 +156,16 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
 }
 
-#define MAX_TEMPLATE_FILE_SIZE 10000
+
 char* CFASTWindTurbine::loadTemplateConfigFile(const char* filename)
 {
 	FILE *templateFile;
 	int numCharsRead = 0;
-	char *pBuffer= new char[MAX_TEMPLATE_FILE_SIZE];
+	char *pBuffer= new char[MAX_CONFIG_FILE_SIZE];
 	fopen_s(&templateFile, filename, "r");
 	if (templateFile)
 	{
-		numCharsRead= fread_s(pBuffer, MAX_TEMPLATE_FILE_SIZE, sizeof(char), MAX_TEMPLATE_FILE_SIZE, templateFile);
+		numCharsRead= fread_s(pBuffer, MAX_CONFIG_FILE_SIZE, sizeof(char), MAX_CONFIG_FILE_SIZE, templateFile);
 		pBuffer[numCharsRead] = 0;
 		return pBuffer;
 	}

@@ -10,7 +10,7 @@ protected:
 	//wchar_t m_pipeFullName[MAX_PIPE_NAME_SIZE];
 	//this method appends the pipeName (i.e. "myPipe") to the standard pipe name prefix
 	//and leaves the result in m_pipeFullName
-	void setPipeName(const char* pipeName);
+	void setPipeName(const char* pipeName,int id= -1);
 
 public:
 	CNamedPipe();
@@ -18,6 +18,7 @@ public:
 
 	int writeBuffer(const void* pBuffer, int numBytes);
 	int readToBuffer(void *pBuffer, int numBytes);
+	char* getPipeFullName() { return m_pipeFullName; }
 };
 
 class CNamedPipeServer: public CNamedPipe
@@ -28,6 +29,7 @@ public:
 	virtual ~CNamedPipeServer();
 
 	bool openNamedPipeServer(const char*);
+	bool openUniqueNamedPipeServer(char*);
 	bool waitForClientConnection();
 	void closeServer();
 };

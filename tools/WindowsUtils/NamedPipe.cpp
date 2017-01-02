@@ -17,7 +17,7 @@ CNamedPipe::~CNamedPipe()
 		CloseHandle(m_pipeHandle);
 }
 
-void CNamedPipe::setPipeName(const char* pipeName)
+void CNamedPipe::setPipeName(const char* pipeName,int id)
 {
 	//this method appends the pipeName (i.e. "myPipe") to the standard pipe name prefix
 	//and leaves the result in m_pipeFullName
@@ -29,7 +29,10 @@ void CNamedPipe::setPipeName(const char* pipeName)
 
 	//mbstowcs_s(&convertedChars, w_pipeName, 512, pipeName, 512);
 	//wcscat_s(m_pipeFullName, w_pipeName);
-	sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s", pipeName);
+	if (id<0)
+		sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s", pipeName);
+	else
+		sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s-%d", pipeName,id);
 }
 
 int CNamedPipe::writeBuffer(const void* pBuffer, int numBytes)
@@ -60,17 +63,41 @@ CNamedPipeServer::~CNamedPipeServer()
 
 bool CNamedPipeServer::openNamedPipeServer(const char* pipeName)
 {
-	int numAttempts = 0;
 	setPipeName(pipeName);
 
 	m_pipeHandle = CreateNamedPipe(m_pipeFullName,
-		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,// | FILE_FLAG_FIRST_PIPE_INSTANCE,
+		PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | FILE_FLAG_FIRST_PIPE_INSTANCE,
 		PIPE_WAIT,
 		1,
 		1024 * 16,
 		1024 * 16,
 		NMPWAIT_USE_DEFAULT_WAIT,
 		NULL);
+
+	if (m_pipeHandle == INVALID_HANDLE_VALUE)
+		return false;
+
+	return true;
+}
+
+#define NUM_MAX_PIPE_SERVERS_PER_MACHINE 100
+bool CNamedPipeServer::openUniqueNamedPipeServer(char* pipeName)
+{
+	int id = 0;
+	do
+	{
+		setPipeName(pipeName,id);
+
+		m_pipeHandle = CreateNamedPipe(m_pipeFullName,
+			PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | FILE_FLAG_FIRST_PIPE_INSTANCE,
+			PIPE_WAIT,
+			1,
+			1024 * 16,
+			1024 * 16,
+			NMPWAIT_USE_DEFAULT_WAIT,
+			NULL);
+		++id;
+	} while (m_pipeHandle == INVALID_HANDLE_VALUE && id < NUM_MAX_PIPE_SERVERS_PER_MACHINE);
 
 	if (m_pipeHandle == INVALID_HANDLE_VALUE)
 		return false;
