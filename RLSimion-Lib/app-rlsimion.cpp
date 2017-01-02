@@ -23,6 +23,12 @@ void RLSimionApp::setOutputDirectory(const char* pOutputDir)
 {
 	//we provide the path to the xml configuration file so that the logger saves its log files in the directory
 	pLogger->setLogDirectory(pOutputDir);
+	strcpy_s(m_directory, MAX_PATH_SIZE, pOutputDir);
+}
+
+char* RLSimionApp::getOutputDirectory()
+{
+	return m_directory;
 }
 
 RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)

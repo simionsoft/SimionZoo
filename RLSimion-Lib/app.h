@@ -32,6 +32,7 @@ public:
 	virtual void getInputFiles(CFilePathList& filePathList) = 0;
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
 	virtual void setOutputDirectory(const char*) = 0;
+	virtual char* getOutputDirectory() = 0;
 
 	virtual void run()= 0;
 };

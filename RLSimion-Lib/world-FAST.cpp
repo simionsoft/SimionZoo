@@ -4,10 +4,13 @@
 #include "config.h"
 #include "world.h"
 #include "reward.h"
+#include "app.h"
+
 #include "../tools/WindowsUtils/Process.h"
 
 
-#define FAST_EXE_COMMAND_LINE "../FAST/bin/fast_win32.exe ../FAST/CertTest/TestRlSimion.fst"
+#define FAST_EXE "../Release/fast_win32.exe"
+#define FAST_CONFIG_FILE "fast-config.fst"
 
 CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
@@ -51,11 +54,40 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
 	m_pRewardFunction->initialize();
+
+	if (CSimionApp::get())
+	{
+		//config file
+		CSimionApp::get()->pSimGod->registerInputFile("../Release/FAST_win32.exe");
+		CSimionApp::get()->pSimGod->registerInputFile("../Release/MAP_win32.dll");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/configFileTemplate.fst");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/90m_12mps_twr.bts");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/Cylinder1.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/Cylinder2.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/DU21_A17.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/DU25_A17.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/DU30_A17.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/DU35_A17.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/DU40_A17.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NACA64_A17.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_AeroDyn_blade.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_BeamDyn.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_BeamDyn_Blade.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Blade.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_InflowWind_12mps.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
+	}
 }
 
 
 void CFASTWindTurbine::deferredLoadStep()
 {
+	//bool bLoaded = loadTemplateConfigFile(FAST_CONFIG_TEMPLATE_FILE);
+
 	m_namedPipeServer.openNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 }
 
@@ -70,7 +102,7 @@ void CFASTWindTurbine::reset(CState *s)
 {
 	CProcess FASTprocess;
 	//spawn the FAST exe file
-	FASTprocess.spawn(FAST_EXE_COMMAND_LINE);
+	FASTprocess.spawn(FAST_EXE);
 	//wait for the client (FASTDimensionalPortalDLL) to connect
 	m_namedPipeServer.waitForClientConnection();
 	//receive(s)

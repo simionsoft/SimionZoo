@@ -1,10 +1,11 @@
 #pragma once
 
 #include "app.h"
-
+#define MAX_PATH_SIZE 1024
 
 class RLSimionApp : public CSimionApp
 {
+	char m_directory[MAX_PATH_SIZE];
 public:
 
 	RLSimionApp(CConfigNode* pParameters);
@@ -12,7 +13,8 @@ public:
 
 	void getInputFiles(CFilePathList& filePathList);
 	void getOutputFiles(CFilePathList& filePathList);
-	virtual void setOutputDirectory(const char*);
+	void setOutputDirectory(const char*);
+	char* getOutputDirectory();
 
 	void run();
 };

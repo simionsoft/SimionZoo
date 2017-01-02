@@ -400,13 +400,4 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	double d_beta = (PitComT - s->getValue(m_beta_index)) / CSimionApp::get()->pWorld->getDT();
 	
 	a->setValue(m_d_beta_index,d_beta);
-	/*
-	for (int k=1; k<=NumBl; k++) //Loop through all blades
-	{
-		PitRate[k -1] = ( PitComT - BlPitch[k -1] )/ElapTime; //Pitch rate of blade K (unsaturated)
-		PitRate[k -1] = min( max( PitRate[k -1], -PC_MaxRat ), PC_MaxRat ); //Saturate the pitch rate of blade K using its maximum absolute value
-		PitCom [k -1] = BlPitch[k -1] + PitRate[k -1]*ElapTime; //Saturate the overall command of blade K using the pitch rate limit
-
-		PitCom[k -1]  = min( max( PitCom[k -1], PC_MinPit ), PC_MaxPit ); //Saturate the overall command using the pitch angle limits         
-	}  */
 }
