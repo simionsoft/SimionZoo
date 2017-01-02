@@ -44,14 +44,18 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addConstant("RatedGeneratorSpeed", 122.91); //1173.7 rpm
 	addConstant("RatedGeneratorTorque", 43093.55);
 	addConstant("GearBoxRatio", 97.0);
-	addConstant("ElectricalGeneratorEfficiency",0.944); //%94.4
+	addConstant("ElectricalGeneratorEfficiency", 0.944); //%94.4
 	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
 	addConstant("HubInertia", 115926.0);				//kg*m^2
 	addConstant("DriveTrainTorsionalDamping", 6210000.0); //N*m/(rad/s)
 
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
 	m_pRewardFunction->initialize();
+}
 
+
+void CFASTWindTurbine::deferredLoadStep()
+{
 	m_namedPipeServer.openNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 }
 

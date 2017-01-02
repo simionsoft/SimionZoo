@@ -135,13 +135,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FASTDimensionalPortalDLL.h" />
-    <ClInclude Include="FASTWorld.h" />
+    <ClInclude Include="FASTWorldPortal.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FASTDimensionalPortalDLL.cpp" />
-    <ClCompile Include="FASTWorld.cpp" />
+    <ClCompile Include="FASTWorldPortal.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

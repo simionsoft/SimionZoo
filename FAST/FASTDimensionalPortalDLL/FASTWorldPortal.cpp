@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "FASTWorld.h"
+#include "FASTWorldPortal.h"
 #include "../../RLSimion-Lib/world-FAST.h"
 #if _DEBUG
 	#pragma comment(lib,"../../Debug/WindowsUtils.lib")
@@ -15,7 +15,7 @@
 
 bool g_bDummyTest = false;	//for debugging
 
-FASTWorld::FASTWorld()
+FASTWorldPortal::FASTWorldPortal()
 {
 	CFASTWindTurbine *pModel= new CFASTWindTurbine(0);
 	m_stateDescriptor = pModel->getStateDescriptor();
@@ -34,7 +34,7 @@ FASTWorld::FASTWorld()
 	m_pA = m_actionDescriptor.getInstance();
 }
 
-bool FASTWorld::retrieveStateVariables(float* FASTdata, bool bFirstTime)
+bool FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 {
 	//Time = avrSWAP[2 - 1];
 	double currentTime= (double) FASTdata[1];
@@ -50,7 +50,7 @@ bool FASTWorld::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 
 	//Rotor speed acceleration: d_omega_r
 	double d_omega_r= 0.0;
-	if (!bFirstTime) 
+	if (!bFirstTime)
 		d_omega_r = (omega_r - last_omega_r) / m_elapsedTime;
 	m_pS->setValue("d_omega_r", d_omega_r);
 
@@ -86,7 +86,7 @@ bool FASTWorld::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	return true;
 }
 
-void FASTWorld::setActionVariables(float* FASTdata)
+void FASTWorldPortal::setActionVariables(float* FASTdata)
 {
 	//d_t_g
 	FASTdata[34] = 1.0;          //Generator contactor status: 1=main (high speed) variable-speed generator
@@ -120,19 +120,19 @@ void FASTWorld::setActionVariables(float* FASTdata)
 	FASTdata[81 - 1] = 0.0; //Variable slip current demand
 }
 
-void FASTWorld::connectToNamedPipeServer()
+void FASTWorldPortal::connectToNamedPipeServer()
 {
 	if (!g_bDummyTest)
 		m_namedPipeClient.connectToServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 }
 
-void FASTWorld::disconnectFromNamedPipeServer()
+void FASTWorldPortal::disconnectFromNamedPipeServer()
 {
 	if (!g_bDummyTest)
 		m_namedPipeClient.closeConnection();
 }
 
-void FASTWorld::sendState()
+void FASTWorldPortal::sendState()
 {
 	double *pValues= m_pS->getValueVector();
 	if (!g_bDummyTest)
@@ -146,7 +146,7 @@ void FASTWorld::sendState()
 	}
 }
 
-void FASTWorld::receiveAction()
+void FASTWorldPortal::receiveAction()
 {
 	double *pValues = m_pA->getValueVector();
 	if (!g_bDummyTest)

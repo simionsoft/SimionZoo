@@ -2,7 +2,7 @@
 
 #include "../../RLSimion-Lib/named-var-set.h"
 #include "../../tools/WindowsUtils/NamedPipe.h"
-#define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
+
 #include <map>
 
 #define CONTROL_DT 0.00125
@@ -17,14 +17,14 @@ class FASTActionDescriptor : public CDescriptor
 	FASTActionDescriptor();
 };
 
-class FASTWorld
+class FASTWorldPortal
 {
 	CNamedPipeClient m_namedPipeClient;
 
 	double m_lastTime;
 	double m_elapsedTime;
 
-	//constants used to calculate not available variables
+	//constants used to calculate those variables not available at runtime
 	double J_r, J_g, n_g;
 
 	CDescriptor m_stateDescriptor, m_actionDescriptor;
@@ -33,7 +33,7 @@ class FASTWorld
 	CAction *m_pA;
 
 public:
-	FASTWorld();
+	FASTWorldPortal();
 
 	//retrieves the state variables from the buffer
 	//returns whether this is a control step or no
