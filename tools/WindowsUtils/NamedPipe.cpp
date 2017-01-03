@@ -17,22 +17,25 @@ CNamedPipe::~CNamedPipe()
 		CloseHandle(m_pipeHandle);
 }
 
-void CNamedPipe::setPipeName(const char* pipeName,int id)
+void CNamedPipe::setPipeName(const char* pipeName,bool bAddPrefix,int id)
 {
 	//this method appends the pipeName (i.e. "myPipe") to the standard pipe name prefix
 	//and leaves the result in m_pipeFullName
-	//size_t convertedChars;
-
-	//wchar_t w_pipeName[512];
-	//lstrcpynW(m_pipeFullName, L"\\\\.\\pipe\\", MAX_PIPE_NAME_SIZE);
-
-
-	//mbstowcs_s(&convertedChars, w_pipeName, 512, pipeName, 512);
-	//wcscat_s(m_pipeFullName, w_pipeName);
-	if (id<0)
-		sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s", pipeName);
+	//if id>0, then the base name is appended with the id until a server can be opened with that name
+	if (bAddPrefix)
+	{
+		if (id < 0)
+			sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s", pipeName);
+		else
+			sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s-%d", pipeName, id);
+	}
 	else
-		sprintf_s(m_pipeFullName, "\\\\.\\pipe\\%s-%d", pipeName,id);
+	{
+		if (id < 0)
+			sprintf_s(m_pipeFullName, "%s", pipeName);
+		else
+			sprintf_s(m_pipeFullName, "%s-%d", pipeName, id);
+	}
 }
 
 int CNamedPipe::writeBuffer(const void* pBuffer, int numBytes)
@@ -130,14 +133,14 @@ CNamedPipeClient::~CNamedPipeClient()
 {
 	closeConnection();
 }
-bool CNamedPipeClient::connectToServer(const char* pipeName)
+bool CNamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 {
 	int numAttempts = 0;
 
 	if (m_pipeHandle != INVALID_HANDLE_VALUE)
 		return false;
 
-	setPipeName(pipeName);
+	setPipeName(pipeName, addPipePrefix);
 	do
 	{
 		m_pipeHandle = CreateFile(

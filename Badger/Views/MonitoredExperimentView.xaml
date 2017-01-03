@@ -28,8 +28,8 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel>
-                            <ScrollViewer>
-                                <TextBlock Text="{Binding statusInfo}" Width="200" MaxHeight="50" FontSize="8" Foreground="Gray"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Visible" CanContentScroll="True" Height="50">
+                                <TextBlock Text="{Binding statusInfo}" Width="200" FontSize="8" Foreground="Gray"/>
                             </ScrollViewer>
                         </StackPanel>
                     </StackPanel>

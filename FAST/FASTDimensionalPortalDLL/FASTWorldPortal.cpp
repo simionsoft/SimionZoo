@@ -123,7 +123,7 @@ void FASTWorldPortal::setActionVariables(float* FASTdata)
 void FASTWorldPortal::connectToNamedPipeServer(const char* pipeName)
 {
 	if (!g_bDummyTest)
-		m_namedPipeClient.connectToServer(pipeName);
+		m_namedPipeClient.connectToServer(pipeName,false); //bAddPrefix= false because we are reading the full name from xml config file
 }
 
 void FASTWorldPortal::disconnectFromNamedPipeServer()

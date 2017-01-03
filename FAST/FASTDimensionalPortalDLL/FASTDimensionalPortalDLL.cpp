@@ -48,7 +48,7 @@ extern "C" {
 			}
 			else
 			{
-				printf("errrrorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr\n");
+				printf("Could not open configuration file\n");
 				*aviFAIL = -1;
 			}
 

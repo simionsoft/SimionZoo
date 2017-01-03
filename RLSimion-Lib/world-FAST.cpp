@@ -63,6 +63,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	if (CSimionApp::get())
 	{
 		//input/output files
+		CSimionApp::get()->pSimGod->registerInputFile("../Release/FASTDimensionalPortalDLL.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/FAST_win32.exe");
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/MAP_win32.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/configFileTemplate.fst");
@@ -112,6 +113,17 @@ void CFASTWindTurbine::deferredLoadStep()
 	}
 	else CLogger::logMessage(MessageType::Error,"Couldn't load config file: ../config/world/FAST/configFileTemplate.fst");
 
+	//copy input files to experiment directory to avoid problems with FAST adding base config file's directory
+	std::string commandLine;
+	commandLine= std::string("copy ..\\config\\world\\FAST\\*.dat ") + std::string(CSimionApp::get()->getOutputDirectory());
+	std::replace(commandLine.begin(), commandLine.end(), '/', '\\');
+	system(commandLine.c_str());
+	commandLine= std::string("copy ..\\config\\world\\FAST\\*.bts ") + std::string(CSimionApp::get()->getOutputDirectory());
+	std::replace(commandLine.begin(), commandLine.end(), '/', '\\');
+	system(commandLine.c_str());
+
+	CLogger::logMessage(MessageType::Info, "Input files copied");
+
 	//FASTDimensionalPortalDLL.xml -> used to pass the pipe's name to the dll
 	bool pipeServerOpened= m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 	if (pipeServerOpened)
@@ -127,11 +139,13 @@ void CFASTWindTurbine::deferredLoadStep()
 		else CLogger::logMessage(MessageType::Error, (std::string("Couldn't create config file: ") + outConfigFileName).c_str());
 	}
 	else CLogger::logMessage(MessageType::Error, "Couldn't open named pipe server");
+	CLogger::logMessage(MessageType::Info, "Connected to FASTDimensionalPortalDLL");
 }
 
 CFASTWindTurbine::~CFASTWindTurbine()
 {
 	m_namedPipeServer.closeServer();
+	CLogger::logMessage(MessageType::Info, "Closed connection to FASTDimensionalPortalDLL");
 }
 
 

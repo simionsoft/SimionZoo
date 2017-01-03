@@ -61,7 +61,7 @@ True          GenTiStp     - Method to stop the generator {T: timed using TimGen
 False         CompNTMD     - Compute nacelle tuned mass damper {true/false} (flag)
 "NRELOffshrBsline5MW_ServoDyn_TMD.dat"    NTMDfile     - Name of the file for nacelle tuned mass damper (quoted string) [unused when CompNTMD is false]
 ---------------------- BLADED INTERFACE ----------------------------------------
-"../../../Debug/FASTDimensionalPortalDLL.dll"    DLL_FileName - Name/location of the dynamic library {.dll [Windows] or .so [Linux]} in the Bladed-DLL format (-) [used only with Bladed Interface]
+"../../../Release/FASTDimensionalPortalDLL.dll"    DLL_FileName - Name/location of the dynamic library {.dll [Windows] or .so [Linux]} in the Bladed-DLL format (-) [used only with Bladed Interface]
 "FASTDimensionalPortalDLL.xml"    DLL_InFile   - Name of input file sent to the DLL [used only with Bladed Interface] (-)
 "default"     DLL_DT       - Communication interval for dynamic library [used only with Bladed Interface] (s) (or "default")
 false         DLL_Ramp     - Whether a linear ramp should be used between DLL_DT time steps [introduces time shift when true] (flag)
