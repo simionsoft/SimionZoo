@@ -179,9 +179,12 @@ namespace Badger.ViewModels
         public void loadExperiment()
         {
             AppViewModel newApp = SimionFileData.loadExperiment(this,appDefinitions);
-            tabControlExperiments.Add(newApp);
-            checkEmptyExperimentList();
-            selectedTabControlExperiment = newApp;
+            if (newApp != null)
+            {
+                tabControlExperiments.Add(newApp);
+                checkEmptyExperimentList();
+                selectedTabControlExperiment = newApp;
+            }
         }
         
 

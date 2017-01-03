@@ -101,12 +101,16 @@ void CFASTWindTurbine::deferredLoadStep()
 		outConfigFileName= std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") + std::string(FAST_CONFIG_FILE);
 
 		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
-		fprintf_s(pOutConfigFile, fileContent, CSimionApp::get()->pExperiment->getEpisodeLength()
-			, CSimionApp::get()->pWorld->getDT());
-		fclose(pOutConfigFile);
+		if (pOutConfigFile)
+		{
+			fprintf_s(pOutConfigFile, fileContent, CSimionApp::get()->pExperiment->getEpisodeLength()
+				, CSimionApp::get()->pWorld->getDT());
+			fclose(pOutConfigFile);
+		}
+		else CLogger::logMessage(MessageType::Error, (std::string("Couldn't create file: ") + outConfigFileName).c_str());
 		delete [] fileContent;
 	}
-	else CLogger::logMessage(MessageType::Error, (std::string("Couldn't load config file: ") + outConfigFileName).c_str());
+	else CLogger::logMessage(MessageType::Error,"Couldn't load config file: ../config/world/FAST/configFileTemplate.fst");
 
 	//FASTDimensionalPortalDLL.xml -> used to pass the pipe's name to the dll
 	bool pipeServerOpened= m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
