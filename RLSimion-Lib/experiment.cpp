@@ -120,7 +120,11 @@ CExperiment::CExperiment(CConfigNode* pConfigNode)
 	{
 		if (m_numTrainingEpisodes.get()>1)
 			m_numEvaluationEpisodes = 1 + m_numTrainingEpisodes.get() / m_evalFreq.get();
-		else m_numEvaluationEpisodes = 0;
+		else
+		{
+			m_numEvaluationEpisodes = 1;
+			m_numTrainingEpisodes.set(0);
+		}
 		m_totalNumEpisodes = m_numTrainingEpisodes.get() + m_numEvaluationEpisodes;
 	}
 	else

@@ -221,6 +221,7 @@ void CLogger::lastStep()
 	int episodeIndex = CSimionApp::get()->pExperiment->getEvaluationEpisodeIndex();
 	int numEpisodes = CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
 
+	//log the progress if an evaluation episode has ended
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode() && numEpisodes>0)
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (std::max(1.0, (double)numEpisodes - 1))
