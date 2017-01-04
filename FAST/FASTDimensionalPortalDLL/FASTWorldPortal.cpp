@@ -11,7 +11,6 @@
 	#pragma comment(lib,"../../Release/tinyxml2.lib")
 #endif
 
-#define INITIAL_TORQUE 0.0
 
 bool g_bDummyTest = false;	//for debugging
 
@@ -34,7 +33,7 @@ FASTWorldPortal::FASTWorldPortal()
 	m_pA = m_actionDescriptor.getInstance();
 }
 
-bool FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
+void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 {
 	//Time = avrSWAP[2 - 1];
 	double currentTime= (double) FASTdata[1];
@@ -79,11 +78,7 @@ bool FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	//The blade pitch is measured instead of tracking it
 	m_pS->setValue("beta", (double)FASTdata[4 - 1]);
 
-	if (m_elapsedTime<CONTROL_DT)
-		return false;
-
 	m_lastTime = currentTime;
-	return true;
 }
 
 void FASTWorldPortal::setActionVariables(float* FASTdata)

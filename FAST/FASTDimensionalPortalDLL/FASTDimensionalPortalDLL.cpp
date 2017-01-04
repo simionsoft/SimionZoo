@@ -56,13 +56,11 @@ extern "C" {
 		if (iStatus>=0)
 		{
 			//Done in all calls but last
-			bool bControlStep= g_FASTWorldPortal.retrieveStateVariables(avrSWAP,(bool)(iStatus==0));
-			if (bControlStep)
-			{
-				g_FASTWorldPortal.sendState();
-				g_FASTWorldPortal.receiveAction();
-				g_FASTWorldPortal.setActionVariables(avrSWAP);
-			}
+			g_FASTWorldPortal.retrieveStateVariables(avrSWAP,(bool)(iStatus==0));
+			g_FASTWorldPortal.sendState();
+			g_FASTWorldPortal.receiveAction();
+			g_FASTWorldPortal.setActionVariables(avrSWAP);
+			
 		}
 		if (iStatus < 0)
 		{

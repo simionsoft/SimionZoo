@@ -5,7 +5,6 @@
 
 #include <map>
 
-#define CONTROL_DT 0.00125
 
 class FASTStateDescriptor : public CDescriptor
 {
@@ -37,7 +36,7 @@ public:
 
 	//retrieves the state variables from the buffer
 	//returns whether this is a control step or no
-	bool retrieveStateVariables(float* FASTdata, bool bFirstTime);
+	void retrieveStateVariables(float* FASTdata, bool bFirstTime);
 	void sendState();
 
 	void setActionVariables(float* FASTdata);
