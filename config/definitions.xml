@@ -308,17 +308,17 @@
     <CONSTANT Name="DriveTrainTorsionalDamping"/>
     <STATE-VAR Name="E_int_omega_r" Min="-100" Max="100" Unit="rad"/>
     <STATE-VAR Name="E_omega_r" Min="-4" Max="4" Unit="rad/s"/>
-    <STATE-VAR Name="E_p" Min="-100000" Max="100000" Unit="W"/>
+    <STATE-VAR Name="E_p" Min="-5000000" Max="5000000" Unit="W"/>
     <CONSTANT Name="ElectricalGeneratorEfficiency"/>
     <CONSTANT Name="GearBoxRatio"/>
     <CONSTANT Name="GeneratorInertia"/>
     <CONSTANT Name="HubHeight"/>
     <CONSTANT Name="HubInertia"/>
     <STATE-VAR Name="omega_g" Min="0" Max="200" Unit="rad/s"/>
-    <STATE-VAR Name="omega_r" Min="2.39823" Max="6.39823" Unit="rad/s"/>
+    <STATE-VAR Name="omega_r" Min="0" Max="6" Unit="rad/s"/>
     <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
-    <STATE-VAR Name="P_e" Min="500000" Max="700000" Unit="W"/>
-    <STATE-VAR Name="P_s" Min="500000" Max="700000" Unit="W"/>
+    <STATE-VAR Name="P_e" Min="0" Max="6000000" Unit="W"/>
+    <STATE-VAR Name="P_s" Min="0" Max="6000000" Unit="W"/>
     <CONSTANT Name="RatedGeneratorSpeed"/>
     <CONSTANT Name="RatedGeneratorTorque"/>
     <CONSTANT Name="RatedPower"/>
@@ -326,7 +326,7 @@
     <CONSTANT Name="RatedTipSpeed"/>
     <CONSTANT Name="RatedWindSpeed"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
-    <STATE-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
+    <STATE-VAR Name="T_g" Min="0" Max="50000" Unit="N/m"/>
     <STATE-VAR Name="v" Min="1" Max="50" Unit="m/s"/>
   </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">
