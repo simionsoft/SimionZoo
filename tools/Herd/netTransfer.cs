@@ -416,7 +416,7 @@ namespace Herd
                 ret= await ReadFromStreamAsync(cancelToken);
                 bytesLeft -= SaveBufferToFile(outputFile, bytesLeft,bFileOpen);
             } 
-            outputFile.Close();
+            if (bFileOpen) outputFile.Close();
 
             return true;
         }
