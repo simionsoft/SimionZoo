@@ -369,11 +369,13 @@ namespace Herd
             match = await ReadUntilMatchAsync("</(Input|Output)>",cancelToken);
             return true;
         }
-        protected int SaveBufferToFile(FileStream outputFile, int bytesLeft)
+        protected int SaveBufferToFile(FileStream outputFile, int bytesLeft, bool bFileOpen= true)
         {
             int bytesToWrite = Math.Min(bytesLeft, m_xmlStream.getBytesInBuffer() - m_xmlStream.getBufferOffset());
 
-            outputFile.Write(m_xmlStream.getBuffer(), m_xmlStream.getBufferOffset(), bytesToWrite);
+            //for convenience, this function may be called even if the file wasn't correctly opened
+            if (bFileOpen)
+                outputFile.Write(m_xmlStream.getBuffer(), m_xmlStream.getBufferOffset(), bytesToWrite);
 
             m_xmlStream.addProcessedBytes(bytesToWrite);// m_bufferOffset += bytesToWrite;
             return bytesToWrite;
@@ -393,16 +395,26 @@ namespace Herd
             else
                 outputFilename = m_nextFileName;
 
-            FileStream outputFile = File.Open(outputFilename, FileMode.Create);
+            FileStream outputFile= null;
+            bool bFileOpen = true;
+            try
+            {
+                outputFile = File.Open(outputFilename, FileMode.Create);
+            }
+            catch
+            {
+                bFileOpen = false;
+                logMessage("Failed to create file " + outputFilename);
+            }
             int ret;
             //we may have already in the buffer the data
             if (m_xmlStream.getBytesInBuffer() - m_xmlStream.getBufferOffset() > 0)
-                bytesLeft -= SaveBufferToFile(outputFile, bytesLeft);
+                bytesLeft -= SaveBufferToFile(outputFile, bytesLeft,bFileOpen);
             //read if we have to until the file has been read
             while (bytesLeft > 0)
             {
                 ret= await ReadFromStreamAsync(cancelToken);
-                bytesLeft -= SaveBufferToFile(outputFile, bytesLeft);
+                bytesLeft -= SaveBufferToFile(outputFile, bytesLeft,bFileOpen);
             } 
             outputFile.Close();
 
