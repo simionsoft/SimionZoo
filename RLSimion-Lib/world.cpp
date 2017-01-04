@@ -140,7 +140,11 @@ const char* CDynamicModel::getConstantName(int i)
 
 double CDynamicModel::getConstant(const char* constantName)
 {
-	return m_pConstants[constantName];
+	if (m_pConstants.find(constantName)!=m_pConstants.end())
+		return m_pConstants[constantName];
+	CLogger::logMessage(MessageType::Error
+		, (std::string("CDynamicModel::getConstant() couldn't find constant: ")+std::string(constantName)).c_str());
+	return 0.0;
 }
 
 CDescriptor& CDynamicModel::getStateDescriptor()

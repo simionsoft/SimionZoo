@@ -50,11 +50,13 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	//Rotor speed acceleration: d_omega_r
 	double d_omega_r= 0.0;
 	if (!bFirstTime)
-		d_omega_r = (omega_r - last_omega_r) / m_elapsedTime;
+		d_omega_r = (omega_r - last_omega_r) / std::min(0.0001,m_elapsedTime); //to avoid zero division
 	m_pS->setValue("d_omega_r", d_omega_r);
 
 	//Generator speed: omega_g		//GenSpeed = avrSWAP[20 - 1];
 	m_pS->setValue("omega_g", (double)FASTdata[19]);
+
+	m_pS->setValue("E_omega_r", m_pS->getValue("omega_r") - m_constants["RatedRotorSpeed"]);
 
 	//Wind speed: v					//HorWindV = avrSWAP[27 - 1];
 	m_pS->setValue("v", (double)FASTdata[26]);
@@ -68,21 +70,37 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	//Aerodynamic torque: T_a
 	m_pS->setValue("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + m_pS->getValue("E_p") / m_pS->getValue("omega_g"));
 
+	//Aerodynamic power: P_a
+	m_pS->setValue("P_a", m_pS->getValue("T_a")*m_pS->getValue("omega_r"));
+
+	//Power setpoint: P_s, assumed to be the rated power
+	m_pS->setValue("P_s", m_constants["RatedPower"]);
+
 	//Generator torque: T_g
 	if (bFirstTime)
 		m_pS->setValue("T_g", m_constants["RatedGeneratorTorque"]);
 	else
 		//we have to track it because FAST doesn't actually calculate this value
 		m_pS->setValue("T_g", m_pS->getValue("T_g") + m_pA->getValue("d_T_g")* m_elapsedTime);
+
+	m_pS->setValue("d_T_g", m_pA->getValue("d_T_g"));
 	//Blade pitch: beta
 	//The blade pitch is measured instead of tracking it
-	m_pS->setValue("beta", (double)FASTdata[4 - 1]);
+	double lastBeta = m_pS->getValue("beta");
+	double beta = (double)FASTdata[4 - 1];
+	m_pS->setValue("beta", beta);
+
+	m_pS->setValue("d_beta", (beta-lastBeta)/ std::min(0.0001, m_elapsedTime)); //to avoid zero division
 
 	m_lastTime = currentTime;
 }
 
 void FASTWorldPortal::setActionVariables(float* FASTdata)
 {
+	//For backcompatibility reasons, instead of using absolute torque/pitch angles, we provide change rates from the controller
+	//This forces us to integrate these rates to calculate the absolute values passed to FAST
+
+
 	//d_t_g
 	FASTdata[34] = 1.0;          //Generator contactor status: 1=main (high speed) variable-speed generator
 	FASTdata[55] = 0.0;          //Torque override: 0=yes

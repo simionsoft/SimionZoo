@@ -50,16 +50,15 @@
     <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain"/>
   </CLASS>
   <CLASS Name="CWindTurbineVidalController">
-    <BRANCH Name="A" Class="CNumericValue-Factory" Comment="A parameter of the torque controller"/>
-    <BRANCH Name="K_alpha" Class="CNumericValue-Factory" Comment="K_alpha parameter of the torque controller"/>
-    <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain of the pitch controller"/>
-    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain of the pitch controller"/>
-    <BRANCH Name="P_s" Class="CNumericValue-Factory" Comment="Power setpoint for the torque controller"/>
+    <DOUBLE-VALUE Name="A" Comment="A parameter of the torque controller" Default="1.0"/>
+    <DOUBLE-VALUE Name="K_alpha" Comment="K_alpha parameter of the torque controller" Default="5000000"/>
+    <DOUBLE-VALUE Name="KI" Comment="Integral gain of the pitch controller" Default="0.0"/>
+    <DOUBLE-VALUE Name="KP" Comment="Proportional gain of the pitch controller" Default="1.0"/>
   </CLASS>
   <CLASS Name="CWindTurbineBoukhezzarController">
-    <BRANCH Name="C_0" Class="CNumericValue-Factory" Comment="C_0 parameter"/>
-    <BRANCH Name="KI" Class="CNumericValue-Factory" Comment="Integral gain of the pitch controller"/>
-    <BRANCH Name="KP" Class="CNumericValue-Factory" Comment="Proportional gain of the pitch controller"/>
+    <DOUBLE-VALUE Name="C_0" Comment="C_0 parameter" Default="1.0"/>
+    <DOUBLE-VALUE Name="KI" Comment="Integral gain of the pitch controller" Default="0.0"/>
+    <DOUBLE-VALUE Name="KP" Comment="Proportional gain of the pitch controller" Default="1.0"/>
   </CLASS>
   <CLASS Name="CWindTurbineJonkmanController">
     <DOUBLE-VALUE Name="CornerFreq" Comment="Corner Freq. parameter" Default="1.570796"/>
@@ -323,6 +322,7 @@
     <CONSTANT Name="RatedGeneratorSpeed"/>
     <CONSTANT Name="RatedGeneratorTorque"/>
     <CONSTANT Name="RatedPower"/>
+    <CONSTANT Name="RatedRotorSpeed"/>
     <CONSTANT Name="RatedTipSpeed"/>
     <CONSTANT Name="RatedWindSpeed"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>

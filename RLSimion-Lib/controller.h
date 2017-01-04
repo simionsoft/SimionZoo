@@ -75,7 +75,7 @@ class CWindTurbineVidalController : public CController
 	int m_E_int_omega_r_index;
 	//action variable indices
 	int m_d_beta_index, m_d_T_g_index;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pA, m_pK_alpha, m_pKP, m_pKI, m_P_s;
+	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
 	CWindTurbineVidalController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineVidalController();
@@ -96,7 +96,7 @@ class CWindTurbineBoukhezzarController : public CController
 	//action variable indices
 	int m_d_beta_index, m_d_T_g_index;
 	
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pC_0, m_pKP, m_pKI;
+	DOUBLE_PARAM m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
 public:
 	CWindTurbineBoukhezzarController(CConfigNode* pConfigNode);

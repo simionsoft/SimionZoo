@@ -48,6 +48,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addConstant("CutOutWindSpeed", 25.0);		//m/s
 	addConstant("CutInRotorSpeed", 0.72256);	//6.9 rpm
 	addConstant("CutOutRotorSpeed", 1.26711);	//12.1 rpm
+	addConstant("RatedRotorSpeed", 1.26711);	//12.1 rpm
 	addConstant("RatedTipSpeed", 8.377);		//80 rpm
 	addConstant("RatedGeneratorSpeed", 122.91); //1173.7 rpm
 	addConstant("RatedGeneratorTorque", 43093.55);

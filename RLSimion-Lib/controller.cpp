@@ -128,11 +128,10 @@ CWindTurbineVidalController::~CWindTurbineVidalController()
 
 CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNode)
 {
-	m_pA= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "A", "A parameter of the torque controller");
-	m_pK_alpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,  "K_alpha", "K_alpha parameter of the torque controller");
-	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KP", "Proportional gain of the pitch controller");
-	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KI", "Integral gain of the pitch controller");
-	m_P_s = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "P_s", "Power setpoint for the torque controller");
+	m_pA= DOUBLE_PARAM(pConfigNode, "A", "A parameter of the torque controller",1.0);
+	m_pK_alpha = DOUBLE_PARAM(pConfigNode,  "K_alpha", "K_alpha parameter of the torque controller",5000000);
+	m_pKP = DOUBLE_PARAM(pConfigNode, "KP", "Proportional gain of the pitch controller",1.0);
+	m_pKI = DOUBLE_PARAM(pConfigNode, "KI", "Integral gain of the pitch controller",0.0);
 
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor.getVarIndex("omega_r");
@@ -180,13 +179,13 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	
 	double d_T_g;
 	
-	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*( m_pA->getValue() *omega_r+d_omega_r) 
-		- m_pA->getValue()*m_P_s->getValue() + m_pK_alpha->getValue()*sgn(error_P));
+	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*( m_pA.get() *omega_r+d_omega_r) 
+		- m_pA.get()*CWorld::getDynamicModel()->getConstant("RatedPower") + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
-	double e_omega_r = omega_r - 4.39823; //NOMINAL WIND SPEED
-	double d_beta = m_pKP->getValue()*e_omega_r 
-		+m_pKI->getValue()*s->getValue(m_E_int_omega_r_index);
+	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedRotorSpeed"); //NOMINAL WIND SPEED
+	double d_beta = m_pKP.get()*e_omega_r 
+		+m_pKI.get()*s->getValue(m_E_int_omega_r_index);
 				 /*0.5*K_p*error_omega*(1.0+sgn(error_omega))
 				+ K_i*s->getValue("integrative_omega_r_error);*/
 
@@ -205,9 +204,9 @@ CWindTurbineBoukhezzarController::~CWindTurbineBoukhezzarController()
 
 CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* pConfigNode)
 {
-	m_pC_0	= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"C_0", "C_0 parameter");
-	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"KP", "Proportional gain of the pitch controller");
-	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"KI", "Integral gain of the pitch controller");
+	m_pC_0	= DOUBLE_PARAM(pConfigNode,"C_0", "C_0 parameter",1.0);
+	m_pKP = DOUBLE_PARAM(pConfigNode,"KP", "Proportional gain of the pitch controller",1.0);
+	m_pKI = DOUBLE_PARAM(pConfigNode,"KI", "Integral gain of the pitch controller",0.0);
 
 	m_J_t = CWorld::getDynamicModel()->getConstant("J_t");
 	m_K_t = CWorld::getDynamicModel()->getConstant("K_t");
@@ -248,7 +247,7 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 	//d(beta)/dt= K_p*(omega_ref - omega_r)
 
 	double omega_r= s->getValue(m_omega_r_index);
-	double C_0= m_pC_0->getValue();		
+	double C_0= m_pC_0.get();		
 	double error_P= -s->getValue(m_E_p_index);	
 	double T_a= s->getValue(m_T_a_index);		
 
@@ -259,7 +258,7 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 		*(T_a*T_g - m_K_t*omega_r*T_g - T_g*T_g));
 
 	double e_omega_r = omega_r - 4.39823; //NOMINAL WIND SPEED
-	double d_beta = m_pKP->getValue()*e_omega_r + m_pKI->getValue()*s->getValue(m_E_int_omega_r_index);
+	double d_beta = m_pKP.get()*e_omega_r + m_pKI.get()*s->getValue(m_E_int_omega_r_index);
 
 	a->setValue(m_d_beta_index,d_beta); //action->setActionValue(DIM_A_beta,d_beta);
 	a->setValue(m_d_T_g_index,d_T_g); //action->setActionValue(DIM_A_torque,d_T_g);
