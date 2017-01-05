@@ -208,8 +208,8 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* 
 	m_pKP = DOUBLE_PARAM(pConfigNode,"KP", "Proportional gain of the pitch controller",1.0);
 	m_pKI = DOUBLE_PARAM(pConfigNode,"KI", "Integral gain of the pitch controller",0.0);
 
-	m_J_t = CWorld::getDynamicModel()->getConstant("J_t");
-	m_K_t = CWorld::getDynamicModel()->getConstant("K_t");
+	m_J_t = CWorld::getDynamicModel()->getConstant("HubInertia");
+	m_K_t = CWorld::getDynamicModel()->getConstant("DriveTrainTorsionalDamping");
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r_index = pStateDescriptor.getVarIndex("omega_r");
 	m_d_omega_r_index = pStateDescriptor.getVarIndex("d_omega_r");

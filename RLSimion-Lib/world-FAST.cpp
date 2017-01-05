@@ -170,11 +170,21 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 {
 	//send(a)
 	//here we have to cheat the compiler (const). We don't want to, but we have to
-	double* pActionValues = ((CAction*)a)->getValueVector(); 
-	m_namedPipeServer.writeBuffer(pActionValues, a->getNumVars() * sizeof(double));
+	double* pActionValues = ((CAction*)a)->getValueVector();
+	int numBytesToWrite = a->getNumVars() * sizeof(double);
+	int numBytesWritten= m_namedPipeServer.writeBuffer(pActionValues, numBytesToWrite);
+	if (numBytesToWrite != numBytesWritten)
+	{
+		CLogger::logMessage(MessageType::Error, "The Dimensional Portal has been remotely closed. Probably an error in FAST.");
+	}
 
 	//receive(s')
-	m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
+	int numBytesToRead = s->getNumVars() * sizeof(double);
+	int numBytesRead= m_namedPipeServer.readToBuffer(s->getValueVector(), numBytesToRead);
+	if (numBytesToRead!=numBytesWritten)
+	{
+		CLogger::logMessage(MessageType::Error, "The Dimensional Portal has been remotely closed. Probably an error in FAST.");
+	}
 }
 
 
