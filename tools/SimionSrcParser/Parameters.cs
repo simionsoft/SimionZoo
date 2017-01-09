@@ -9,6 +9,7 @@ namespace SimionSrcParser
     {
         string outputXML(int level);
         int parameterClassSortValue();
+        void setParameterIndexInCode(int index);
         string getName();
     }
     public class SimpleParameter: IParameter
@@ -17,8 +18,10 @@ namespace SimionSrcParser
         protected string m_name;
         protected string m_comment;
         protected string m_default;
+        public int m_parameterIndexInCode;
 
-        public int parameterClassSortValue() { return XMLConfig.sortingValueSimpleParameter; } //default value
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; } //default value
         public string getName() { return m_name; }
         public string outputXML(int level)
         {
@@ -99,8 +102,10 @@ namespace SimionSrcParser
             m_comment = comment;
             m_default = defaultValue;
         }
+        public int m_parameterIndexInCode;
 
-        public int parameterClassSortValue() { return XMLConfig.sortingValueSimpleParameter; } //default value
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; } //default value
         public string getName() { return m_name; }
         public string outputXML(int level)
         {
@@ -126,10 +131,12 @@ namespace SimionSrcParser
             m_badgerMetadata = badgerMetadata;
             m_bOptional = optional;
         }
+        public int m_parameterIndexInCode;
 
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
         public int parameterClassSortValue()
         {
-            return XMLConfig.sortingValueChildClass;
+            return m_parameterIndexInCode + XMLConfig.sortingValueChildClass;
         }
         public string getName() { return m_name; }
 
@@ -161,9 +168,12 @@ namespace SimionSrcParser
             m_bOptional = optional;
         }
         public string getName() { return m_name; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
         public int parameterClassSortValue()
         {
-            return XMLConfig.sortingValueChildClass;
+            return m_parameterIndexInCode + XMLConfig.sortingValueChildClass;
         }
 
 
@@ -195,7 +205,10 @@ namespace SimionSrcParser
             m_comment = comment;
         }
         public string getName() { return m_name; }
-        public int parameterClassSortValue() { return XMLConfig.sortingValueSimpleParameter; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
 
         public string outputXML(int level)
         {
@@ -228,9 +241,12 @@ namespace SimionSrcParser
             m_bOptional = optional;
         }
         public string getName() { return m_name; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
         public int parameterClassSortValue()
         {
-            return XMLConfig.sortingValueMultiParameter;
+            return m_parameterIndexInCode + XMLConfig.sortingValueMultiParameter;
         }
 
         public string outputXML(int level)
@@ -258,9 +274,12 @@ namespace SimionSrcParser
             m_bOptional = optional;
         }
         public string getName() { return m_name; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
         public int parameterClassSortValue()
         {
-            return XMLConfig.sortingValueMultiParameter;
+            return m_parameterIndexInCode + XMLConfig.sortingValueMultiParameter;
         }
 
         public string outputXML(int level)
@@ -288,7 +307,10 @@ namespace SimionSrcParser
             m_default = defaultValue;
         }
         public string getName() { return m_name; }
-        public int parameterClassSortValue() {return XMLConfig.sortingValueSimpleParameter; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() {return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
 
         public string outputXML(int level)
         {
@@ -321,7 +343,10 @@ namespace SimionSrcParser
             m_name = name;
         }
         public string getName() { return m_name; }
-        public int parameterClassSortValue() { return XMLConfig.sortingValueWorldVariable; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueWorldVariable; }
 
         public string outputXML(int level)
         {
@@ -353,9 +378,16 @@ namespace SimionSrcParser
             m_name = name;
             m_comment = comment;
         }
-        public void addParameter(IParameter parameter) { m_parameters.Add(parameter); }
+        public void addParameter(IParameter parameter)
+        {
+            parameter.setParameterIndexInCode(m_parameters.Count);
+            m_parameters.Add(parameter);
+        }
         public string getName() { return m_name; }
-        public int parameterClassSortValue() { return XMLConfig.sortingValueSimpleParameter; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
 
         public string outputXML(int level)
         {
@@ -381,7 +413,10 @@ namespace SimionSrcParser
         string m_badgerMetadata;
 
         public string getName() { return m_name; }
-        public int parameterClassSortValue() { return XMLConfig.sortingValueSimpleParameter; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
 
         public ChoiceElementParameter(string name,string className,Type type)
         {

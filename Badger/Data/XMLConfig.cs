@@ -75,10 +75,10 @@ namespace Simion
         public const string colorInvalidValue = "Red";
 
         //Parameter sorting values
-        public const int sortingValueOptional = 15;
+        public const int sortingValueOptional = 150;
         public const int sortingValueSimpleParameter = 0;
-        public const int sortingValueChildClass = 10;
-        public const int sortingValueMultiParameter = 5;
-        public const int sortingValueWorldVariable = 20;
+        public const int sortingValueChildClass = 50;
+        public const int sortingValueMultiParameter = 100;
+        public const int sortingValueWorldVariable = 200;
     }
 }

@@ -12,7 +12,11 @@ namespace SimionSrcParser
         public string name { get { return m_name; } }
         private List<IParameter> m_parameters = new List<IParameter>();
         public List<IParameter> parameters { get { return m_parameters; } }
-        public void addParameter(IParameter parameter) { m_parameters.Add(parameter); }
+        public void addParameter(IParameter parameter)
+        {
+            parameter.setParameterIndexInCode(m_parameters.Count);
+            m_parameters.Add(parameter);
+        }
 
         public abstract string outputXML(int level);
         public string outputChildrenXML(int level)
