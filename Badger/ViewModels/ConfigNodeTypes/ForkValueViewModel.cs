@@ -60,5 +60,15 @@ namespace Badger.ViewModels
             return new ForkValueViewModel(name,parent as ForkedNodeViewModel
                 ,configNode.clone());
         }
+
+        public override int getNumForkCombinations()
+        {
+            return configNode.getNumForkCombinations();
+        }
+
+        public override void setForkCombination(ref int id, ref string combinationName)
+        {
+            configNode.setForkCombination(ref id, ref combinationName);
+        }
     }
 }
