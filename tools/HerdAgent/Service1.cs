@@ -38,6 +38,54 @@ namespace Herd
                 file.Close();
             }
         }
+        private const double fileRetirementAgeInDays = 15.0;
+        public void cleanDir(string dir)
+        {
+            //clean child files
+            foreach(string file in Directory.GetFiles(dir))
+            {
+                double filesAge = (DateTime.Now - File.GetLastWriteTime(file)).TotalDays;
+                if (filesAge > fileRetirementAgeInDays)
+                {
+                    logToFile("Deleting temporal file: " + file);
+                    File.Delete(file);
+                }
+            }
+            //clean child directories
+            foreach (string subDir in Directory.GetDirectories(dir))
+            {
+                cleanDir(subDir);
+                string[] childDirs = Directory.GetDirectories(subDir);
+                string[] childFiles = Directory.GetFiles(subDir);
+                if (childDirs.Length == 0 && childFiles.Length == 0)
+                {
+                    logToFile("Deleting temporal directory: " + subDir);
+                    Directory.Delete(subDir);
+                }
+            }
+        }
+        public void cleanTempDir()
+        {
+            try
+            {
+                foreach (string dir in Directory.GetDirectories(m_dirPath))
+                {
+                    cleanDir(dir);
+                    string[] childDirs = Directory.GetDirectories(dir);
+                    string[] childFiles = Directory.GetFiles(dir);
+                    if (childDirs.Length == 0 && childFiles.Length == 0)
+                    {
+                        logToFile("Deleting temporal directory: " + dir);
+                        Directory.Delete(dir);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logToFile("Exception cleaning temporal directory");
+                logToFile(ex.ToString());
+            }
+        }
         public void logToFile(string logMessage)
         {
             lock (m_logFileLock)
@@ -72,6 +120,7 @@ namespace Herd
             m_herdAgent.setDirPath(m_dirPath);
             m_herdAgent.setLogMessageHandler(logToFile);
             cleanLog();
+            cleanTempDir();
             logToFile("Herd agent started");
 
             m_herdAgent.startListening();
