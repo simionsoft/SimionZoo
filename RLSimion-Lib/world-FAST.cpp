@@ -155,7 +155,7 @@ CFASTWindTurbine::~CFASTWindTurbine()
 
 void CFASTWindTurbine::reset(CState *s)
 {
-	CProcess FASTprocess;
+
 	//spawn the FAST exe file
 	std::string commandLine = std::string(FAST_EXE) + std::string(" ") 
 		+ std::string(CSimionApp::get()->getOutputDirectory())+ std::string("/")+ std::string(FAST_CONFIG_FILE);
