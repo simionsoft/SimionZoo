@@ -13,12 +13,12 @@ namespace Badger.ViewModels
     public class PlotEditorWindowViewModel : Caliburn.Micro.Screen
     {
 
-        private ObservableCollection<PlotViewModel> m_plots = new ObservableCollection<PlotViewModel>();
-        public ObservableCollection<PlotViewModel> plots { get { return m_plots; } set { } }
+        private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
+        public ObservableCollection<ReportViewModel> reports { get { return m_reports; } set { } }
 
-        private bool m_bCanGeneratePlots = false;
-        public bool bCanGeneratePlots { get { return m_bCanGeneratePlots; }
-            set { m_bCanGeneratePlots = value; NotifyOfPropertyChange(() => bCanGeneratePlots); } }
+        private bool m_bCanGenerateReports = false;
+        public bool bCanGenerateReports { get { return m_bCanGenerateReports; }
+            set { m_bCanGenerateReports = value; NotifyOfPropertyChange(() => bCanGenerateReports); } }
 
         //SOURCE OPTIONS
         public const string m_optionLastEvalEpisode = "Last evaluation episode";
@@ -31,7 +31,7 @@ namespace Badger.ViewModels
         public string selectedSource
         {
             get { return m_selectedSource; }
-            set { m_selectedSource = value; updateCanGeneratePlots();}
+            set { m_selectedSource = value; updateCanGenerateReports();}
         }
 
         //the list of variables we can plot
@@ -72,7 +72,7 @@ namespace Badger.ViewModels
             m_numLogsSelected = m_selectedLogs.Count();
             m_logListHeader = m_experimentLogs.Count + " logs (" + m_numLogsSelected + " selected)";
             NotifyOfPropertyChange(() => logListHeader);
-            updateCanGeneratePlots();
+            updateCanGenerateReports();
         }
         private List<LoggedVariableViewModel> m_selectedVariables = new List<LoggedVariableViewModel>();
         private int m_numVarsSelected = 0;
@@ -87,12 +87,12 @@ namespace Badger.ViewModels
             m_numVarsSelected = m_selectedVariables.Count();
             m_variableListHeader = m_experimentLogs.Count + " variables (" + m_numVarsSelected + " selected)";
             NotifyOfPropertyChange(() => variableListHeader);
-            updateCanGeneratePlots();
+            updateCanGenerateReports();
         }
-        private void updateCanGeneratePlots()
+        private void updateCanGenerateReports()
         {
             if (m_numVarsSelected > 0 && m_numLogsSelected > 0 && m_selectedSource!="")
-                bCanGeneratePlots = true;
+                bCanGenerateReports = true;
         }
 
         public PlotEditorWindowViewModel()
@@ -137,36 +137,38 @@ namespace Badger.ViewModels
             //update plots
             foreach (PlotViewModel plot in newPlots)
             {
-                plots.Add(plot);
-                plot.update();
+                reports.Add(plot);
+                plot.updateView();
             }
             //plot tabs can't be closed yet, so we can simplify it for now
-            bCanSavePlots = true;
-            selectedPlot = plots[plots.Count - 1]; //select the last plot generated
+            bCanSaveReports = true;
+            selectedReport = reports[reports.Count - 1]; //select the last plot generated
         }
+        public void generateStats()
+        { }
 
         //plot selection in tab control
-        private PlotViewModel m_selectedPlot = null;
-        public PlotViewModel selectedPlot 
+        private ReportViewModel m_selectedReport = null;
+        public ReportViewModel selectedReport 
         {
-            get { return m_selectedPlot; }
+            get { return m_selectedReport; }
             set
             {
-                m_selectedPlot = value;
-                if (m_selectedPlot!=null) m_selectedPlot.update();
-                NotifyOfPropertyChange(() => selectedPlot);
+                m_selectedReport = value;
+                if (m_selectedReport!=null) m_selectedReport.updateView();
+                NotifyOfPropertyChange(() => selectedReport);
             }
         }
 
-        private bool m_bCanSavePlots = false;
-        public bool bCanSavePlots { get { return m_bCanSavePlots; } set { m_bCanSavePlots = value; NotifyOfPropertyChange(() => bCanSavePlots); } }
+        private bool m_bCanSaveReports = false;
+        public bool bCanSaveReports { get { return m_bCanSaveReports; } set { m_bCanSaveReports = value; NotifyOfPropertyChange(() => bCanSaveReports); } }
 
-        public void savePlots()
+        public void saveReports()
         {
             string outputFolder= CaliburnUtility.selectFolder(SimionFileData.imageRelativeDir);
             if (outputFolder!="")
-            {
-                foreach(PlotViewModel plot in m_plots)
+            { 
+                foreach(ReportViewModel plot in m_reports)
                 {
                     plot.export(outputFolder);
                 }
@@ -190,9 +192,9 @@ namespace Badger.ViewModels
             SimionFileData.loadExperimentBatch(batchNodeLoadFunction);
         }
 
-        public void close(PlotViewModel plot)
+        public void close(ReportViewModel report)
         {
-            plots.Remove(plot);
+            reports.Remove(report);
         }
     }
 }

@@ -70,7 +70,7 @@
         </StackPanel>
         <StackPanel Orientation="Vertical" Margin="2">
             <StackPanel Width="680">
-                <StackPanel Orientation="Horizontal" Width="480" Margin="2">
+                <StackPanel Orientation="Horizontal" Margin="2">
                     <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
                             cal:Message.Attach="[Event Click]=[Action loadExperimentBatch()]">
                         <Image Source="{StaticResource load}" Width="25" Height="25"/>
@@ -78,23 +78,29 @@
                     <Label Margin="10 0 10 0">Source</Label>
                     <ComboBox Width="200" ItemsSource="{Binding Path=sourceOptions}" SelectedItem="{Binding Path=selectedSource}"/>
                     <StackPanel Width="300" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <StackPanel>
-                            <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
+                        <StackPanel Orientation="Horizontal">
+                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
                             cal:Message.Attach="[Event Click]=[Action generatePlots()]"
-                            Visibility="{Binding Path=bCanGeneratePlots, Converter={StaticResource BoolToVis}}">
-                                <Image Source="{StaticResource plot}" Width="25" Height="25"/>
+                            Visibility="{Binding Path=bCanGenerateReports, Converter={StaticResource BoolToVis}}">
+                                <TextBlock>Plot</TextBlock>
+                            </Button>
+                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
+                            cal:Message.Attach="[Event Click]=[Action generateStats()]"
+                            Visibility="{Binding Path=bCanGenerateReports, Converter={StaticResource BoolToVis}}">
+                                <TextBlock>Stats</TextBlock>
+                            </Button>
+                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
+                            cal:Message.Attach="[Event Click]=[Action saveReports()]"
+                            Visibility="{Binding Path=bCanSaveReports, Converter={StaticResource BoolToVis}}">
+                                <TextBlock>Save All</TextBlock>
                             </Button>
                         </StackPanel>
-                        <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
-                            cal:Message.Attach="[Event Click]=[Action savePlots()]"
-                            Visibility="{Binding Path=bCanSavePlots, Converter={StaticResource BoolToVis}}">
-                            <Image Source="{StaticResource save-all}" Width="25" Height="25"/>
-                        </Button>
+                        
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
             <StackPanel>
-                <TabControl ItemsSource="{Binding Path=plots}" SelectedItem="{Binding Path=selectedPlot}" Height="510">
+                <TabControl ItemsSource="{Binding Path=reports}" SelectedItem="{Binding Path=selectedReport}" Height="510">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

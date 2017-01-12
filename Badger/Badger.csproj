@@ -122,6 +122,7 @@
     <Compile Include="Data\caliburnUtility.cs" />
     <Compile Include="Data\Experiment.cs" />
     <Compile Include="Data\SimionFileData.cs" />
+    <Compile Include="Data\SimionLogFile.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\WorldDefinition.cs" />
     <Compile Include="Data\XMLConfig.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="ViewModels\PlotViewModel.cs" />
     <Compile Include="ViewModels\ExperimentLogViewModel.cs" />
     <Compile Include="ViewModels\LoggedVariableViewModel.cs" />
+    <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="Views\ExperimentLogView.xaml.cs">
       <DependentUpon>ExperimentLogView.xaml</DependentUpon>
     </Compile>
@@ -335,6 +337,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\ShepherdView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\StatsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

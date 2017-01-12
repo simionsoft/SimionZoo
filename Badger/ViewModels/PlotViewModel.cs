@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using Caliburn.Micro;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Threading;
 
 namespace Badger.ViewModels
 {
-    public class PlotViewModel: PropertyChangedBase
+    public class PlotViewModel: ReportViewModel
     {
         private const int m_updateFreq= 1000; //plot refresh freq in millseconds
         private Timer m_timer;
@@ -60,7 +54,7 @@ namespace Badger.ViewModels
             m_plot.InvalidatePlot(true);
         }
 
-        public void update()
+        public override void updateView()
         {
             m_plot.InvalidatePlot(true);
         }
@@ -123,7 +117,7 @@ namespace Badger.ViewModels
                 m_plot.Axes[1].Minimum= minY;
             }
         }
-        public void export(string outputFolder)
+        public override void export(string outputFolder)
         {
             string fileName;
             //as png
