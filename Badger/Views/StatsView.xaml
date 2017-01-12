@@ -5,14 +5,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
             xmlns:vm="clr-namespace:Badger.ViewModels"
             xmlns:v="clr-namespace:Badger.Views"
-             xmlns:oxy="http://oxyplot.org/wpf"
             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <DataGrid Name="stats" CanUserAddRows="False" CanUserResizeColumns="True" CanUserSortColumns="True" IsReadOnly="True">
+    <!--<TabControl>
+        <TabItem Header="General">
+            <DataGrid Name="stats" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Experiment" Binding="{Binding name}" />
+                    <DataGridTextColumn Header="Average" Binding="{Binding avg}" />
+                    <DataGridTextColumn Header="Std.Deviation" Binding="{Binding stdDev}" />
+                    <DataGridTextColumn Header="Min" Binding="{Binding min}" />
+                    <DataGridTextColumn Header="Max" Binding="{Binding max}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </TabItem>
+        <TabItem Header="Security" />
+        <TabItem Header="Details" />
+    </TabControl>-->
+    <StackPanel>
+        <TextBlock>aksdjflkasd</TextBlock>
+    </StackPanel>
+    <!--<DataGrid Name="stats" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
         <DataGrid.Columns>
             <DataGridTextColumn Header="Experiment" Binding="{Binding name}" />
             <DataGridTextColumn Header="Average" Binding="{Binding avg}" />
@@ -20,6 +37,13 @@
             <DataGridTextColumn Header="Min" Binding="{Binding min}" />
             <DataGridTextColumn Header="Max" Binding="{Binding max}" />
         </DataGrid.Columns>
-    </DataGrid>
-
+    </DataGrid>-->
+    <!--<ListView Name="stats" Height="200">
+        <ListViewItem>
+            <TextBlock>alksdjflasjdf</TextBlock>
+        </ListViewItem>
+        <ListViewItem>
+            <TextBlock>alksdjflasjdf</TextBlock>
+        </ListViewItem>
+    </ListView>-->
 </UserControl>

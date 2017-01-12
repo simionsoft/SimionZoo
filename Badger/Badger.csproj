@@ -180,9 +180,6 @@
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\LoadDialogView.xaml.cs">
-      <DependentUpon>LoadDialogView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\MonitorWindowView.xaml.cs">
       <DependentUpon>MonitorWindowView.xaml</DependentUpon>
     </Compile>
@@ -191,9 +188,6 @@
     </Compile>
     <Compile Include="Views\WindowView.xaml.cs">
       <DependentUpon>WindowView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\XMLNodeRefView.xaml.cs">
-      <DependentUpon>XMLNodeRefView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -321,10 +315,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoadDialogView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\MonitorWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -346,10 +336,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\WindowView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\XMLNodeRefView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

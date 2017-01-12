@@ -4,13 +4,13 @@ using System.Linq;
 using System.Xml;
 using System.Collections.ObjectModel;
 using Badger.Data;
-using System.Windows.Forms;
+using Caliburn.Micro;
 using Simion;
 using System.IO;
 
 namespace Badger.ViewModels
 {
-    public class PlotEditorWindowViewModel : Caliburn.Micro.Screen
+    public class PlotEditorWindowViewModel : Conductor<ReportViewModel>.Collection.OneActive
     {
 
         private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
@@ -150,6 +150,9 @@ namespace Badger.ViewModels
             reports.Add(stats);
             bCanSaveReports = true;
             selectedReport = stats;
+            ActivateItem(stats);
+            bool b = stats.IsActive;
+            bool c = stats.IsInitialized;
         }
 
         //plot selection in tab control
