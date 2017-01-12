@@ -19,7 +19,7 @@
             <StackPanel Margin="2">
                 <StackPanel Margin="2" Orientation="Horizontal" HorizontalAlignment="Center" Width="180" >
                     <TextBox x:Name="ExperimentName" HorizontalAlignment="Center" BorderBrush="LightGray" Text="{Binding name,Mode=TwoWay}"  Width="150" Focusable="True" FontFamily="Segoe UI" FontSize="10"/>
-                    <Image Source="{StaticResource data}" Width="25" Height="25" Visibility="{Binding Path=bDataAvailable,Converter={StaticResource BoolToVis}}"/>
+                    <Image Source="{StaticResource data}" Width="25" Height="25" IsEnabled="{Binding Path=bDataAvailable}"/>
                 </StackPanel>
             </StackPanel>
         </Border>

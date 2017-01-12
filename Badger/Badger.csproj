@@ -148,6 +148,7 @@
     <Compile Include="ViewModels\ExperimentLogViewModel.cs" />
     <Compile Include="ViewModels\LoggedVariableViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
+    <Compile Include="ViewModels\StatsViewModel.cs" />
     <Compile Include="Views\ExperimentLogView.xaml.cs">
       <DependentUpon>ExperimentLogView.xaml</DependentUpon>
     </Compile>

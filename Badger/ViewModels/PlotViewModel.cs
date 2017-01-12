@@ -19,9 +19,6 @@ namespace Badger.ViewModels
 
         private int m_numSeries= 0;
 
-        private string m_name;
-        public string name {get{return m_name;} set{m_name=value; NotifyOfPropertyChange(()=> name);}}
-
         private PlotModel m_plot;
         public PlotModel plot { get { return m_plot; } set { } }
 

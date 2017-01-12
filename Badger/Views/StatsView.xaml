@@ -12,8 +12,14 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
+    <DataGrid Name="stats" CanUserAddRows="False" CanUserResizeColumns="True" CanUserSortColumns="True" IsReadOnly="True">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Experiment" Binding="{Binding name}" />
+            <DataGridTextColumn Header="Average" Binding="{Binding avg}" />
+            <DataGridTextColumn Header="Std.Deviation" Binding="{Binding stdDev}" />
+            <DataGridTextColumn Header="Min" Binding="{Binding min}" />
+            <DataGridTextColumn Header="Max" Binding="{Binding max}" />
+        </DataGrid.Columns>
+    </DataGrid>
 
-    <StackPanel HorizontalAlignment="Center">
-        <oxy:PlotView Model="{Binding plot}" Width="580" Height="300"/>
-    </StackPanel>
 </UserControl>

@@ -18,6 +18,7 @@
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
         <DataTemplate DataType="{x:Type vm:ExperimentLogViewModel}">
             <v:ExperimentLogView/>
         </DataTemplate>
@@ -26,6 +27,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:PlotViewModel}">
             <v:PlotView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:StatsViewModel}">
+            <v:StatsView/>
         </DataTemplate>
         <BitmapImage x:Key="load" UriSource="/images/load.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
@@ -81,17 +85,17 @@
                         <StackPanel Orientation="Horizontal">
                             <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
                             cal:Message.Attach="[Event Click]=[Action generatePlots()]"
-                            Visibility="{Binding Path=bCanGenerateReports, Converter={StaticResource BoolToVis}}">
+                            IsEnabled="{Binding Path=bCanGenerateReports}">
                                 <TextBlock>Plot</TextBlock>
                             </Button>
                             <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
                             cal:Message.Attach="[Event Click]=[Action generateStats()]"
-                            Visibility="{Binding Path=bCanGenerateReports, Converter={StaticResource BoolToVis}}">
+                            IsEnabled="{Binding Path=bCanGenerateReports}">
                                 <TextBlock>Stats</TextBlock>
                             </Button>
                             <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
                             cal:Message.Attach="[Event Click]=[Action saveReports()]"
-                            Visibility="{Binding Path=bCanSaveReports, Converter={StaticResource BoolToVis}}">
+                           IsEnabled="{Binding Path=bCanSaveReports}">
                                 <TextBlock>Save All</TextBlock>
                             </Button>
                         </StackPanel>

@@ -140,12 +140,17 @@ namespace Badger.ViewModels
                 reports.Add(plot);
                 plot.updateView();
             }
-            //plot tabs can't be closed yet, so we can simplify it for now
+
             bCanSaveReports = true;
             selectedReport = reports[reports.Count - 1]; //select the last plot generated
         }
         public void generateStats()
-        { }
+        {
+            StatsViewModel stats = new StatsViewModel("Stats");
+            reports.Add(stats);
+            bCanSaveReports = true;
+            selectedReport = stats;
+        }
 
         //plot selection in tab control
         private ReportViewModel m_selectedReport = null;
