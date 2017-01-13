@@ -5,7 +5,7 @@ using OxyPlot.Axes;
 using OxyPlot.Wpf;
 using System.Threading;
 using System.Collections.ObjectModel;
-
+using System.Windows;
 
 namespace Badger.ViewModels
 {
@@ -34,11 +34,26 @@ namespace Badger.ViewModels
         public StatsViewModel(string title)
         {
             name= title;
-            stats.Add(new Stat("test", 0, 1, 0.5, 0.2));
-            stats.Add(new Stat("test-2", 0, 1, 0.5, 0.2));
-            
-            NotifyOfPropertyChange(() => stats);
+
         }
 
+        public void addStat(Stat newStat)
+        {
+            stats.Add(newStat);
+        }
+
+        bool bActivated = false;
+        protected override void OnActivate()
+        {
+            bActivated = true;
+            //MessageBox.Show("Page Two Activated"); //Don't do this in a real VM.
+            base.OnActivate();
+        }
+        bool bLoaded = false;
+        protected override void OnViewLoaded(object view)
+        {
+            bLoaded = true;
+            base.OnViewLoaded(view);
+        }
     }
 }

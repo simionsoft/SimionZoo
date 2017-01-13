@@ -134,6 +134,7 @@ namespace Badger.ViewModels
                 Console.WriteLine(text);
             }
         }
+
         public WindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();

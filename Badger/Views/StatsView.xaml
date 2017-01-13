@@ -26,10 +26,11 @@
         <TabItem Header="Security" />
         <TabItem Header="Details" />
     </TabControl>-->
-    <StackPanel>
-        <TextBlock>aksdjflkasd</TextBlock>
-    </StackPanel>
-    <!--<DataGrid Name="stats" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
+    <!--<StackPanel>
+        <TextBlock>asdjfkjas</TextBlock>
+    </StackPanel>-->
+
+    <DataGrid Name="stats" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
         <DataGrid.Columns>
             <DataGridTextColumn Header="Experiment" Binding="{Binding name}" />
             <DataGridTextColumn Header="Average" Binding="{Binding avg}" />
@@ -37,7 +38,7 @@
             <DataGridTextColumn Header="Min" Binding="{Binding min}" />
             <DataGridTextColumn Header="Max" Binding="{Binding max}" />
         </DataGrid.Columns>
-    </DataGrid>-->
+    </DataGrid>
     <!--<ListView Name="stats" Height="200">
         <ListViewItem>
             <TextBlock>alksdjflasjdf</TextBlock>

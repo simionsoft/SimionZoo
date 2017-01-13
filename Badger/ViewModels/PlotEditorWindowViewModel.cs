@@ -151,8 +151,7 @@ namespace Badger.ViewModels
             bCanSaveReports = true;
             selectedReport = stats;
             ActivateItem(stats);
-            bool b = stats.IsActive;
-            bool c = stats.IsInitialized;
+
         }
 
         //plot selection in tab control

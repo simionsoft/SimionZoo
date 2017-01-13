@@ -20,6 +20,9 @@
         <DataTemplate DataType="{x:Type vm:AppViewModel}">
             <v:AppView/>
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:StatsViewModel}">
+            <v:StatsView/>
+        </DataTemplate>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <BitmapImage x:Key="clear" UriSource="/images/clear.png" />
         <BitmapImage x:Key="save" UriSource="/images/save.png" />
@@ -64,7 +67,7 @@
                 <Label Content="Experiment Queue" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Width="195" Margin="0,10,0,0"/>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" RenderTransformOrigin="0.5,0.5">
+            <StackPanel Grid.Row="1" Grid.Column="0" RenderTransformOrigin="0.5,0.5" Margin="0,0,0,117">
 
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
@@ -77,7 +80,6 @@
                     <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="390" RenderTransformOrigin="0.5,0.5">
                         <TabControl x:Name="tabControlExperiments" SelectedItem="{Binding Path=selectedTabControlExperiment}">
                             <TabControl.ItemTemplate>
-
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
                                         <Label Content="{Binding name}"/>
@@ -93,7 +95,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel Grid.Row="1" Grid.Column="2"  Orientation="Vertical" VerticalAlignment="Center" Height="0" Margin="0,249,0,223"/>
-
+         
             <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Left" Height="476" Width="265">
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
@@ -102,7 +104,7 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15,5">
-                    <!--<Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action addExperiment()]" />-->
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action addExperiment()]" />
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30"
                             cal:Message.Attach="[Event Click]=[Action clearExperimentQueue()]" >
                         <Image Source="{StaticResource clear}"  ToolTip="Clear experiment queue" Width="25" Height="25" ></Image>

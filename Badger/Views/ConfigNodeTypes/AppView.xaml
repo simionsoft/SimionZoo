@@ -8,19 +8,8 @@
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.AppView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
 
-
     <TreeView x:Name="RootNode">
-        <!--<TreeViewItem IsExpanded="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                        HorizontalAlignment="Left" VerticalAlignment="Top"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"  Padding="0" 
-                        VerticalContentAlignment="Top">-->
-            <!--<TreeViewItem.Header>
-                <StackPanel Orientation="Horizontal" Focusable="False">
-                    <Label Background="AliceBlue" Content="{Binding name}"/>
-                </StackPanel>
-            </TreeViewItem.Header>-->
-            <ItemsControl x:Name="children" Margin="-10,0,0,0"/>
-        <!--</TreeViewItem>-->
+        <ItemsControl x:Name="children" Margin="-10,0,0,0"/>
     </TreeView>
 
 </UserControl>

@@ -104,7 +104,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel>
-                <TabControl ItemsSource="{Binding Path=reports}" SelectedItem="{Binding Path=selectedReport}" Height="510">
+                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="510">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
