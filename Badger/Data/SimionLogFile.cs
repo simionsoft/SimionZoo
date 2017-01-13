@@ -38,13 +38,15 @@ namespace Badger.Data
                         episodeData.readEpisodeHeader(binaryReader);
 
                         StepData stepData = new StepData();
-                        episodeData.steps.Add(stepData);
                         bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
 
                         while (!bLastStep)
                         {
-                            stepData = new StepData();
+                            //we only add the step if it's not the last one
+                            //last steps don't contain any info but the end marker
                             episodeData.steps.Add(stepData);
+
+                            stepData = new StepData();
                             bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
                         }
                     }
@@ -151,23 +153,7 @@ namespace Badger.Data
             return Math.Sqrt(sum / episode.steps.Count);
         }
 
-        public void doForEachValue(SimionLogFile.ScalarValueAction action,int varIndex)
-        {
-            foreach (StepData stepData in steps)
-            {
-                action(stepData.data[varIndex]);
-            }
-        }
-        //actionIndex is used to pass an id to the action. For example, the id of the plot to be used
-        public void doForEachValue(SimionLogFile.StepAction action, int actionIndex, int varIndex)
-        {
-            int stepIndex = 0;
-            foreach (StepData stepData in steps)
-            {
-                action(actionIndex,stepIndex,stepData.data[varIndex]);
 
-            }
-        }
     }
     public class ExperimentData
     {
@@ -196,6 +182,18 @@ namespace Badger.Data
                     episodeAction(episode);
                 }
             }
+        }
+        //for each evaluation episode the episodeFunc is performed
+        public double doForEpisodeVar(int episodeIndex,int varIndex,SimionLogFile.EpisodeFunc episodeFunc)
+        {
+            foreach (EpisodeData episode in episodes)
+            {
+                if (episode.index == episodeIndex && episode.type == EpisodeData.episodeTypeEvaluation)
+                {
+                    return episodeFunc(episode,varIndex);
+                }
+            }
+            return 0.0;
         }
         //for the i-th episode, the action is performed for each step data value
         public void doForEpisodeSteps(int episodeIndex,System.Action<StepData> stepAction)

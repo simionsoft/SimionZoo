@@ -98,6 +98,32 @@ namespace Badger.ViewModels
             public double avg;
             public void addValue(double value) { avg += value; }
         }
+        //for now, it doesn't make much sense to calculate stats but from the last evaluation episode, so that's what we will do
+        //regardless of sourceOption
+        public List<Stat> getVariableStats(List<LoggedVariableViewModel> variables)
+        {
+            ExperimentData experimentData = SimionLogFile.load(m_logFilePath);
+            List<Stat> stats = new List<Stat>();
+
+            foreach (LoggedVariableViewModel var in variables)
+            {
+                int varIndex = m_variablesInLog.FindIndex((name) => name == var.name);
+                Stat newStat = new Stat(m_name, var.name);
+                newStat.avg = experimentData.doForEpisodeVar(experimentData.numEpisodes, varIndex,
+                     (episode, vIndex) => { return EpisodeData.calculateVarAvg(episode,vIndex); });
+                newStat.stdDev = experimentData.doForEpisodeVar(experimentData.numEpisodes, varIndex,
+                     (episode, vIndex) => { return EpisodeData.calculateStdDev(episode, vIndex); });
+                newStat.min = experimentData.doForEpisodeVar(experimentData.numEpisodes, varIndex,
+                     (episode, vIndex) => { return EpisodeData.calculateMin(episode, vIndex); });
+                newStat.max = experimentData.doForEpisodeVar(experimentData.numEpisodes, varIndex,
+                     (episode, vIndex) => { return EpisodeData.calculateMax(episode, vIndex); });
+
+                stats.Add(newStat);
+            }
+
+
+            return stats;
+        }
         //we can use directly the name of the plots as the name of the variables
         //it should be enough for now
         public void plotData(List<PlotViewModel> plots, string sourceOption)

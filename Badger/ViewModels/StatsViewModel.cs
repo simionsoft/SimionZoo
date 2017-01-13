@@ -1,11 +1,6 @@
-﻿
-using Caliburn.Micro;
-using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Wpf;
-using System.Threading;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.Windows;
+using System.IO;
 
 namespace Badger.ViewModels
 {
@@ -16,14 +11,21 @@ namespace Badger.ViewModels
         public double max { get; set; }
         public double avg { get; set; }
         public double stdDev { get; set; }
+        public string variable { get; set; }
 
-        public Stat(string _name,double _min,double _max, double _avg, double _stdDev)
+        public Stat(string _name,string _variable, double _min,double _max, double _avg, double _stdDev)
         {
             name = _name;
             min = _min;
             max = _max;
             avg = _avg;
             stdDev = _stdDev;
+            variable = _variable;
+        }
+        public Stat(string _name,string _variable)
+        {
+            name = _name;
+            variable = _variable;
         }
     }
     public class StatsViewModel: ReportViewModel
@@ -34,7 +36,6 @@ namespace Badger.ViewModels
         public StatsViewModel(string title)
         {
             name= title;
-
         }
 
         public void addStat(Stat newStat)
@@ -42,18 +43,26 @@ namespace Badger.ViewModels
             stats.Add(newStat);
         }
 
-        bool bActivated = false;
-        protected override void OnActivate()
+        public override void export(string outputFolder)
         {
-            bActivated = true;
-            //MessageBox.Show("Page Two Activated"); //Don't do this in a real VM.
-            base.OnActivate();
-        }
-        bool bLoaded = false;
-        protected override void OnViewLoaded(object view)
-        {
-            bLoaded = true;
-            base.OnViewLoaded(view);
+            string outputFilename = outputFolder + "\\" + name + ".xml";
+            try
+            {
+                StreamWriter fileWriter = File.CreateText(outputFilename);
+                fileWriter.WriteLine("<Stats>");
+                foreach(Stat stat in stats)
+                {
+                    fileWriter.WriteLine("  <Item Name=\"" + stat.name + "\" Variable=\"" + stat.variable + "\" Avg=\"" + stat.avg
+                        + "\" StdDev=\"" + stat.stdDev + "\" Max=\"" + stat.max + "\" Min=\"" + stat.min + "\"/>");
+                }
+                fileWriter.WriteLine("</Stats>");
+                fileWriter.Close();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Error exporting stats file: " + outputFilename);
+                Console.Write(ex.ToString());
+            }
         }
     }
 }

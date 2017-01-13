@@ -146,12 +146,22 @@ namespace Badger.ViewModels
         }
         public void generateStats()
         {
-            StatsViewModel stats = new StatsViewModel("Stats");
-            reports.Add(stats);
-            bCanSaveReports = true;
-            selectedReport = stats;
-            ActivateItem(stats);
+            StatsViewModel statsViewModel = new StatsViewModel("Stats");
 
+            foreach (ExperimentLogViewModel log in m_selectedLogs)
+            {
+                List<Stat> stats = log.getVariableStats(m_selectedVariables);
+                foreach (Stat stat in stats)
+                {
+                    statsViewModel.addStat(stat);
+                }
+            }
+
+            bCanSaveReports = true;
+
+            reports.Add(statsViewModel);
+            selectedReport = statsViewModel;
+            //ActivateItem(statsViewModel);
         }
 
         //plot selection in tab control

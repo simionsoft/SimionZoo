@@ -32,11 +32,12 @@
 
     <DataGrid Name="stats" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
         <DataGrid.Columns>
-            <DataGridTextColumn Header="Experiment" Binding="{Binding name}" />
-            <DataGridTextColumn Header="Average" Binding="{Binding avg}" />
-            <DataGridTextColumn Header="Std.Deviation" Binding="{Binding stdDev}" />
-            <DataGridTextColumn Header="Min" Binding="{Binding min}" />
-            <DataGridTextColumn Header="Max" Binding="{Binding max}" />
+            <DataGridTextColumn Header="Experiment" Binding="{Binding name}"/>
+            <DataGridTextColumn Header="Variable" Binding="{Binding variable}"/>
+            <DataGridTextColumn Header="Average" Binding="{Binding avg, StringFormat=\{0:#\,#.0\}}" />
+            <DataGridTextColumn Header="Std.Deviation" Binding="{Binding stdDev, StringFormat=\{0:#\,#.0\}}" />
+            <DataGridTextColumn Header="Min" Binding="{Binding min, StringFormat=\{0:#\,#.0\}}" />
+            <DataGridTextColumn Header="Max" Binding="{Binding max, StringFormat=\{0:#\,#.0\}}" />
         </DataGrid.Columns>
     </DataGrid>
     <!--<ListView Name="stats" Height="200">
