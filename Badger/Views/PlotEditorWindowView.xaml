@@ -40,6 +40,12 @@
     <StackPanel Orientation="Horizontal" Margin="2">
         <StackPanel Orientation="Vertical" Width="300">
             <StackPanel>
+                <StackPanel>
+                    <Button  HorizontalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Margin="5"
+                            x:Name="loadExperimentBatch">
+                        <TextBlock>Load batch</TextBlock>
+                    </Button>
+                </StackPanel>
                 <StackPanel Height="20" HorizontalAlignment="Center" Orientation="Horizontal">
                     <Label Content="Experiment logs " FontSize="8"></Label>
                     <Label Content="{Binding Path=logListHeader}" FontSize="8"/>
@@ -63,7 +69,7 @@
                     <Label Content="Variables in log " FontSize="8"></Label>
                     <Label Content="{Binding Path=variableListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
                 </StackPanel>
-                <ListView ItemsSource="{Binding Path=availableVariables}" Height="250" Margin="1">
+                <ListView ItemsSource="{Binding Path=availableVariables}" Height="212" Margin="1">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />
@@ -74,11 +80,8 @@
         </StackPanel>
         <StackPanel Orientation="Vertical" Margin="2">
             <StackPanel Width="680">
-                <StackPanel Orientation="Horizontal" Margin="2">
-                    <Button  HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30"
-                            cal:Message.Attach="[Event Click]=[Action loadExperimentBatch()]">
-                        <Image Source="{StaticResource load}" Width="25" Height="25"/>
-                    </Button>
+                <StackPanel Orientation="Horizontal" Margin="0,60,0,2">
+                    
                     <Label Margin="10 0 10 0">Source</Label>
                     <ComboBox Width="200" ItemsSource="{Binding Path=sourceOptions}" SelectedItem="{Binding Path=selectedSource}"/>
                     <StackPanel Width="300" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -104,7 +107,7 @@
                 </StackPanel>
             </StackPanel>
             <StackPanel>
-                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="510">
+                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="451">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
