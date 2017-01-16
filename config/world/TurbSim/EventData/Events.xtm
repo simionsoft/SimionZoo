@@ -1,0 +1,6 @@
+4.18879		The nondimensional lateral width of the dataset. (DO NOT CHANGE THIS unless you have a new dataset!) 
+6.35475		The nondimensional vertical height of the dataset. (DO NOT CHANGE THIS unless you have a new dataset!)
+1  		Number of Events
+
+First	NumSteps	Length	pkCTKE	deltaT
+99999	1919	69.7266994	0.28345	0.0345323

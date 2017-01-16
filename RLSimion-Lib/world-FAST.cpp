@@ -69,11 +69,14 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/FASTDimensionalPortalDLL.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/FAST_win32.exe");
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/MAP_win32.dll");
+		CSimionApp::get()->pSimGod->registerInputFile("../Release/TurbSim.exe");
 #else
 		CSimionApp::get()->pSimGod->registerInputFile("../bin/FASTDimensionalPortalDLL.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("../bin/FAST_win32.exe");
 		CSimionApp::get()->pSimGod->registerInputFile("../bin/MAP_win32.dll");
+		CSimionApp::get()->pSimGod->registerInputFile("../bin/TurbSim.exe");
 #endif
+		//FAST data files
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/configFileTemplate.fst");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/90m_12mps_twr.bts");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/Cylinder1.dat");
@@ -93,7 +96,27 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
+		
+		//TurbSim data files
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/TurbSimConfigTemplate.inp");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event00000.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event01917.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event02515.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event02800.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event02893.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event03167.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event03219.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event03326.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event03384.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event03613.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event03692.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event03868.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event04110.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event04434.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event04702.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Event99999.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Events.les");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/TurbSim/EventData/Events.xtm");
 	}
 }
 
@@ -112,6 +135,7 @@ void CFASTWindTurbine::deferredLoadStep()
 		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
 		if (pOutConfigFile)
 		{
+			//We do know that the file has two %f that can be substituted by our values
 			fprintf_s(pOutConfigFile, fileContent, CSimionApp::get()->pExperiment->getEpisodeLength()
 				, CSimionApp::get()->pWorld->getDT());
 			fclose(pOutConfigFile);
