@@ -11,7 +11,6 @@
 #include <stdio.h>
 
 
-#define FAST_EXE "../Release/fast_win32.exe"
 #define FAST_CONFIG_FILE "fast-config.fst"
 #define PORTAL_CONFIG_FILE "FASTDimensionalPortalDLL.xml"
 #define MAX_CONFIG_FILE_SIZE 10000
@@ -66,9 +65,15 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	if (CSimionApp::get())
 	{
 		//input/output files
+#ifdef _DEBUG
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/FASTDimensionalPortalDLL.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/FAST_win32.exe");
 		CSimionApp::get()->pSimGod->registerInputFile("../Release/MAP_win32.dll");
+#else
+		CSimionApp::get()->pSimGod->registerInputFile("../bin/FASTDimensionalPortalDLL.dll");
+		CSimionApp::get()->pSimGod->registerInputFile("../bin/FAST_win32.exe");
+		CSimionApp::get()->pSimGod->registerInputFile("../bin/MAP_win32.dll");
+#endif
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/configFileTemplate.fst");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/90m_12mps_twr.bts");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/Cylinder1.dat");
@@ -155,10 +160,15 @@ CFASTWindTurbine::~CFASTWindTurbine()
 
 void CFASTWindTurbine::reset(CState *s)
 {
-
 	//spawn the FAST exe file
-	std::string commandLine = std::string(FAST_EXE) + std::string(" ") 
-		+ std::string(CSimionApp::get()->getOutputDirectory())+ std::string("/")+ std::string(FAST_CONFIG_FILE);
+	std::string commandLine;
+#ifdef _DEBUG
+	commandLine = std::string("../Release/fast_win32.exe");
+#else
+	commandLine= std::string("../bin/fast_win32.exe");
+#endif
+	commandLine+= std::string(" ") + std::string(CSimionApp::get()->getOutputDirectory())+ std::string("/")
+		+ std::string(FAST_CONFIG_FILE);
 	FASTprocess.spawn((char*)(commandLine).c_str());
 	//wait for the client (FASTDimensionalPortalDLL) to connect
 	m_namedPipeServer.waitForClientConnection();

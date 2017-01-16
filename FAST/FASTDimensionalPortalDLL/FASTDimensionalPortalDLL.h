@@ -1,4 +1,0 @@
-// FASTDimensionalPortalDLL.h
-
-#pragma once
-
