@@ -186,7 +186,7 @@ namespace SimionSrcParser
         public MultiValueSimpleParameterParser() : base("MULTI_VALUE_SIMPLE_PARAM", true) { }
         public override void processParameter(ParameterizedObject parent)
         {
-            string simpleParameterType = parsedArguments[0].Substring(0, parsedArguments[0].IndexOf(",") - 1);
+            string simpleParameterType = parsedArguments[0].Substring(0, parsedArguments[0].IndexOf(","));
             parent.addParameter(new MultiValueSimpleParameter(simpleParameterType, parsedArguments[2]
                 , parsedArguments[3], parsedArguments[4]));
         }

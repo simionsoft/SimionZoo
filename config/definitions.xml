@@ -296,7 +296,7 @@
   </CLASS>
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
     <DOUBLE-VALUE Name="Evaluation-Mean-Wind-Speed" Comment="Mean wind speed in evaluation episodes" Default="12.5"/>
-    <MULTI-VALUED Name="Training-Mean-Wind-Speeds" Class="DOUBLE_PARA" Comment="Mean wind speeds used in training episodes" Default="12.5"/>
+    <MULTI-VALUED Name="Training-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds used in training episodes" Default="12.5"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
     <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
     <STATE-VAR Name="P_s" Min="0" Max="6000000" Unit="W"/>
@@ -364,7 +364,7 @@
   <CLASS Name="CWindTurbine" World="Wind-turbine">
     <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Comment="The wind file used for evaluation" Default="../config/world/wind-turbine/TurbSim-10.25.hh"/>
     <FILE-PATH-VALUE Name="Power-Set-Point" Comment="The power setpoint file" Default="../config/world/wind-turbine/power-setpoint.txt"/>
-    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE_PATH_PARA" Comment="The wind files used for training" Default="../config/world/wind-turbine/TurbSim-10.5.hh"/>
+    <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE" Comment="The wind files used for training" Default="../config/world/wind-turbine/TurbSim-10.5.hh"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
     <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
     <STATE-VAR Name="P_s" Min="500000" Max="700000" Unit="W"/>

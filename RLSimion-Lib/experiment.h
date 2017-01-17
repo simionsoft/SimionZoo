@@ -66,6 +66,8 @@ public:
 	void nextStep();
 
 	//EPISODES
+	
+	//Returns the expected episode length in seconds (simulation time)
 	double getEpisodeLength(){ return m_episodeLength.get(); }//seconds
 	unsigned int getEpisodeIndex(){ return m_episodeIndex; }
 	unsigned int getRelativeEpisodeIndex(){ if (!isEvaluationEpisode()) return m_trainingEpisodeIndex; return m_evalEpisodeIndex; }

@@ -301,7 +301,17 @@ namespace SimionSrcParser
         
         public MultiValueSimpleParameter(string className, string objectName, string comment, string defaultValue)
         {
-            m_className = className;
+            switch (className)
+            {
+                case "DOUBLE_PARAM": m_className = XMLConfig.doubleNodeTag; break;
+                case "BOOL_PARAM": m_className = XMLConfig.boolNodeTag; break;
+                case "INT_PARAM": m_className = XMLConfig.integerNodeTag; break;
+                case "STRING_PARAM": m_className = XMLConfig.stringNodeTag; break;
+                case "FILE_PATH_PARAM": m_className = XMLConfig.filePathNodeTag; break;
+                default:
+                case "DIR_PATH_PARAM": m_className = XMLConfig.dirPathNodeTag; break;
+            }
+            
             m_name = objectName;
             m_comment = comment;
             m_default = defaultValue;

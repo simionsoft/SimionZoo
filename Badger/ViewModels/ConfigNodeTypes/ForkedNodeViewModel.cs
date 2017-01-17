@@ -140,7 +140,7 @@ namespace Badger.ViewModels
             m_appViewModel.updateNumForkCombinations();
         }
 
-        public void removeFork()
+        public override void unforkThisNode()
         {
             NestedConfigNode parent = m_parent as NestedConfigNode;
             int childIndex = parent.children.IndexOf(this);

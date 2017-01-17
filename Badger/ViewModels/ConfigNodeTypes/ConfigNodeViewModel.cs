@@ -64,6 +64,9 @@ namespace Badger.ViewModels
         {
             System.Console.WriteLine("Error: non-nested config node asked to fork a child");
         }
+        virtual public void unforkThisNode()
+        {
+        }
 
 
         //clone

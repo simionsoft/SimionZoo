@@ -18,6 +18,16 @@
         <StackPanel Orientation="Horizontal">
             <ContentControl x:Name="selectedValueConfigNode" />
             <StackPanel  Margin="10,0,0,0" Background="Orange" Width="46" Orientation="Vertical">
+                <StackPanel.ContextMenu >
+                    <ContextMenu>
+                        <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode">
+                            <MenuItem.Icon>
+                                <Image Source="{StaticResource fork}"></Image>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+
                 <StackPanel>
                     <Image  Source="{StaticResource fork}" Width="20"/>
                 </StackPanel>

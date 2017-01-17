@@ -28,9 +28,10 @@ bool CProcess::spawn(const char* commandLine, bool bAwait)
 		, &startupInfo, &processInformation));
 	if (bSuccess)
 	{
-		if (bAwait)
-			WaitForSingleObject(m_handle, INFINITE);
 		m_handle = processInformation.hProcess;
+
+		if (bAwait)
+			WaitForSingleObject(m_handle, INFINITE); // so far, no sense using a timeout
 	}
 
 	return bSuccess;

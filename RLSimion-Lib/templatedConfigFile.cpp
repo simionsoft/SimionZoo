@@ -6,7 +6,6 @@
 CTemplatedConfigFile::CTemplatedConfigFile()
 {
 	m_pTemplateConfigFileContent = 0;
-	m_pAuxBuffer = 0;
 	m_pInstantiatedConfigFile = 0;
 	m_bTemplateLoaded = false;
 }
@@ -15,8 +14,6 @@ CTemplatedConfigFile::~CTemplatedConfigFile()
 {
 	if (m_pTemplateConfigFileContent != 0)
 		delete[] m_pTemplateConfigFileContent;
-	if (m_pAuxBuffer)
-		delete[] m_pAuxBuffer;
 	if (m_pInstantiatedConfigFile)
 		delete[] m_pInstantiatedConfigFile;
 }
@@ -28,18 +25,14 @@ bool CTemplatedConfigFile::load(const char* inTemplateConfigFile)
 
 	if (m_bTemplateLoaded) return false;
 
-
 	m_pTemplateConfigFileContent = new char[MAX_CONFIG_FILE_SIZE];
 	m_pInstantiatedConfigFile = new char[MAX_CONFIG_FILE_SIZE];
-	m_pAuxBuffer = new char[MAX_CONFIG_FILE_SIZE];
 	fopen_s(&templateFile, inTemplateConfigFile, "r");
 	if (templateFile)
 	{
 		numCharsRead = fread_s(m_pTemplateConfigFileContent, MAX_CONFIG_FILE_SIZE, sizeof(char)
 			, MAX_CONFIG_FILE_SIZE, templateFile);
 		m_pTemplateConfigFileContent[numCharsRead] = 0;
-		memcpy_s(m_pInstantiatedConfigFile, MAX_CONFIG_FILE_SIZE
-			, m_pTemplateConfigFileContent, MAX_CONFIG_FILE_SIZE);
 
 		m_bTemplateLoaded = true;
 		return true;
@@ -48,42 +41,14 @@ bool CTemplatedConfigFile::load(const char* inTemplateConfigFile)
 }
 
 
-void CTemplatedConfigFile::instantiate(double value)
+
+
+template <typename ...ArgsType>
+bool CTemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConfigFile, ArgsType... args)
 {
-	sprintf_s(m_pAuxBuffer, MAX_CONFIG_FILE_SIZE, m_pInstantiatedConfigFile, value);
+	if (!m_bTemplateLoaded) return false;
 
-	std::swap(m_pInstantiatedConfigFile, m_pAuxBuffer);
-}
-
-void CTemplatedConfigFile::instantiate(int value)
-{
-	sprintf_s(m_pAuxBuffer, MAX_CONFIG_FILE_SIZE, m_pInstantiatedConfigFile, value);
-
-	std::swap(m_pInstantiatedConfigFile, m_pAuxBuffer);
-}
-
-void CTemplatedConfigFile::instantiate(char const* value)
-{
-	sprintf_s(m_pAuxBuffer, MAX_CONFIG_FILE_SIZE, m_pInstantiatedConfigFile, value);
-
-	std::swap(m_pInstantiatedConfigFile, m_pAuxBuffer);
-}
-
-template <typename FirstArgType, typename ...RestArgsType>
-void CTemplatedConfigFile::instantiate(FirstArgType firstArg, RestArgsType... restArgs)
-{
-	instantiate(firstArg);
-	instantiate(restArgs...);
-}
-
-
-template <typename FirstArgType, typename ...RestArgsType>
-bool CTemplatedConfigFile::instantiateConfigFile(char const* outInstantiatedConfigFile, FirstArgType firstArg
-	, RestArgsType... args)
-{
-	if (m_bTemplateLoaded) return false;
-
-	instantiate(firstArg,args...);
+	sprintf_s(m_pInstantiatedConfigFile, MAX_CONFIG_FILE_SIZE, m_pTemplateConfigFileContent, args...);
 
 	FILE* outputInstance;
 	fopen_s(&outputInstance, outInstantiatedConfigFile, "w");
@@ -96,9 +61,27 @@ bool CTemplatedConfigFile::instantiateConfigFile(char const* outInstantiatedConf
 	}
 	return false;
 }
-//
-//void foo()
+
+
+//for some unknown reason, VStudio fails to link to the versions of the templated functions that are only called from an implementation
+//of a virtual function, so this little function foo() with the signatures we use seems like a small price to get it work
+void foo()
+{
+	CTemplatedConfigFile t;
+	t.instantiateConfigFile("a.txt", 32.3);
+	t.instantiateConfigFile("a.txt", 2.3,3.4,13.3);
+	t.instantiateConfigFile("a.txt", 2.3, 5.2, "ajal");
+}
+
+//class CFoo
 //{
-//	CTemplatedConfigFile t;
-//	t.instantiateConfigFile("a.txt", 2.3);
-//}
+//	CTemplatedConfigFile m_t;
+//public :
+//	CFoo()
+//	{
+//		m_t.instantiateConfigFile("a.txt", 2.3);
+//		m_t.instantiateConfigFile("a.txt", 2.3, 5.2, "ajal");
+//	}
+//};
+
+//CFoo f;

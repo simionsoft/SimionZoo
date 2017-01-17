@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include "app.h"
 
+#define TURBSIM_TEMPLATE_CONFIG_FILE "../config/world/TurbSim/TurbSimConfigTemplate.inp"
 #define FAST_TEMPLATE_CONFIG_FILE "../config/world/FAST/configFileTemplate.fst"
 #define FAST_CONFIG_FILE "fast-config.fst"
 #define PORTAL_CONFIG_FILE "FASTDimensionalPortalDLL.xml"
@@ -127,21 +128,24 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 
 void CFASTWindTurbine::deferredLoadStep()
 {
-	std::string outConfigFileName, outConfigBaseFileName, exeFileName;
+	std::string outConfigFileName, exeFileName;
 	FILE *pOutConfigFile;
 	std::string commandLine;
 
 	//Generate templated TurbSim wind profiles
-	bool bLoaded = m_TurbSimConfigTemplate.load(FAST_TEMPLATE_CONFIG_FILE);
+	bool bLoaded = m_TurbSimConfigTemplate.load(TURBSIM_TEMPLATE_CONFIG_FILE);
 	if (bLoaded)
 	{
 		CLogger::logMessage(MessageType::Info, "Generating TurbSim wind files");
 
 		//evaluation wind file's config
-		outConfigBaseFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/")
-			+ std::string(EVALUATION_WIND_FILE_NAME);
-		outConfigFileName = outConfigBaseFileName + std::string(".inp");
-		m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), m_evaluationMeanWindSpeed.get());
+		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/")
+			+ std::string(EVALUATION_WIND_FILE_NAME)+ std::string(".inp");
+
+		m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
+													, CSimionApp::get()->pExperiment->getEpisodeLength()*2	//AnalysisTime
+													, CSimionApp::get()->pExperiment->getEpisodeLength()	//UsableTime
+													, m_evaluationMeanWindSpeed.get());						//URef
 
 		//the wind file itself
 #ifdef _DEBUG
@@ -149,17 +153,20 @@ void CFASTWindTurbine::deferredLoadStep()
 #else
 		exeFileName = std::string("../bin/TurbSim.exe");
 #endif
-		commandLine = exeFileName + std::string(" ") + outConfigBaseFileName + std::string(".hh");
+		commandLine = exeFileName + std::string(" ") + outConfigFileName;
 		TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 
 		//training wind files
 		for (unsigned int i = 0; i < m_trainingMeanWindSpeeds.size(); i++)
 		{
-			outConfigBaseFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") 
-				+ std::string(TRAINING_WIND_BASE_FILE_NAME) + std::string(".inp");
-			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), m_evaluationMeanWindSpeed.get());
+			outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") 
+				+ std::string(TRAINING_WIND_BASE_FILE_NAME) + std::to_string(i) + std::string(".inp");
+			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
+				, CSimionApp::get()->pExperiment->getEpisodeLength()*2	//AnalysisTime
+				, CSimionApp::get()->pExperiment->getEpisodeLength()	//UsableTime
+				, m_trainingMeanWindSpeeds[i]->get());						//URef
 
-			commandLine = exeFileName + std::string(" ") + outConfigBaseFileName + std::string(".hh");
+			commandLine = exeFileName + std::string(" ") + outConfigFileName;
 			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 		}
 	}
