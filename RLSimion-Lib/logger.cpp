@@ -107,7 +107,7 @@ CLogger::~CLogger()
 	if (m_pExperimentTimer) delete m_pExperimentTimer;
 	if (m_pEpisodeTimer) delete m_pEpisodeTimer;
 
-	closeOutputPipe();
+	m_outputPipe.closeConnection();
 
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 		delete *it;
@@ -368,6 +368,7 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 }
 
 //WINDOWS-SPECIFIC STUFF
+//should be redone with c-standard files now that named pipes have been moved to WindowsUtils
 #include <windows.h>
 #include <string>
 
@@ -395,13 +396,13 @@ void CLogger::writeLogBuffer(void* fileHandle, const char* pBuffer, int numBytes
 }
 
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
-void* CLogger::m_outputPipe = 0;
+CNamedPipeClient CLogger::m_outputPipe;
 
 void CLogger::logMessage(MessageType type, const char* message)
 {
 	char messageLine[1024];
 
-	if (m_messageOutputMode == MessageOutputMode::NamedPipe && m_outputPipe)
+	if (m_messageOutputMode == MessageOutputMode::NamedPipe && m_outputPipe.isConnected())
 	{
 		switch (type)
 		{
@@ -416,7 +417,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Error:
 			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
 		}
-		writeLogBuffer(m_outputPipe, messageLine, strlen(messageLine));
+		m_outputPipe.writeBuffer(messageLine, strlen(messageLine)+1);
 	}
 	else
 	{
@@ -436,46 +437,4 @@ void CLogger::logMessage(MessageType type, const char* message)
 			printf("ERROR: %s\n",message); break;
 		}
 	}
-}
-
-void CLogger::closeOutputPipe()
-{
-	if (m_outputPipe)
-	{
-		FlushFileBuffers(m_outputPipe);
-		CloseHandle(m_outputPipe);
-		m_outputPipe = 0;
-	}
-}
-
-void CLogger::createOutputPipe(const char* pipeName)
-{
-	size_t convertedChars;
-	
-	wchar_t w_pipename[512];
-	wchar_t w_completePipename[512] = L"\\\\.\\pipe\\";
-
-	
-	mbstowcs_s(&convertedChars, w_pipename,512, pipeName, 512);
-	wcscat_s(w_completePipename, w_pipename);
-	
-	m_outputPipe = CreateFile(
-		w_completePipename,   // pipe name 
-		GENERIC_WRITE,
-		0,              // no sharing 
-		NULL,           // default security attributes
-		OPEN_EXISTING,  // opens existing pipe 
-		0,              // default attributes 
-		NULL);          // no template file 
-
-	if (m_outputPipe == INVALID_HANDLE_VALUE)
-	{
-		//printf("FAILED\n");
-		logMessage(MessageType::Error, "Could not create pipe");
-		return;
-	}
-	//printf("OK\n");
-
-	m_messageOutputMode = MessageOutputMode::NamedPipe;
-	logMessage(MessageType::Info, "Pipe succesfully created");
 }

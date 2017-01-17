@@ -17,6 +17,11 @@ CNamedPipe::~CNamedPipe()
 		CloseHandle(m_pipeHandle);
 }
 
+bool CNamedPipe::isConnected()
+{
+	return (m_pipeHandle != INVALID_HANDLE_VALUE);
+}
+
 void CNamedPipe::setPipeName(const char* pipeName,bool bAddPrefix,int id)
 {
 	//this method appends the pipeName (i.e. "myPipe") to the standard pipe name prefix

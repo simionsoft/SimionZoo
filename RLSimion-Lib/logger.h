@@ -8,6 +8,7 @@ class CConfigNode;
 class CDescriptor;
 #include <vector>
 #include "parameters.h"
+#include "../tools/WindowsUtils/NamedPipe.h"
 class CStats;
 class CTimer;
 class CFilePathList;
@@ -40,8 +41,6 @@ class CLogger
 
 	void* openLogFile(const char* fullLogFilename);
 	void closeLogFile(void* fileHandle);
-
-	void logStepData(CState* s, CAction* a, CState* s_p, CReward* r);
 
 	static void writeLogBuffer(void* fileHandle, const char* pBuffer, int numBytes);
 
@@ -81,9 +80,8 @@ public:
 	void setLogDirectory(const char* xmlFilePath);
 
 	static MessageOutputMode m_messageOutputMode;
-	static void* m_outputPipe;
-	static void createOutputPipe(const char* pipeName);
-	static void closeOutputPipe();
+
+	static CNamedPipeClient m_outputPipe;
 
 	//Function called to report progress and error messages
 	//static so that it can be called right from the beginning

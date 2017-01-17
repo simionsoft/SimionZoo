@@ -18,7 +18,12 @@ int main(int argc, char* argv[])
 		CSimionApp* pApp = 0;
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
 		if (argc > 2)
-			CLogger::createOutputPipe(argv[2]);
+		{
+			CLogger::m_outputPipe.connectToServer(argv[2]);
+			//if connection with parent process went ok, we set the logger's output mode accordingly
+			if (CLogger::m_outputPipe.isConnected())
+				CLogger::m_messageOutputMode = MessageOutputMode::NamedPipe;
+		}
 
 		if (argc <= 1)
 			CLogger::logMessage(MessageType::Error, "Too few parameters: no config file provided");

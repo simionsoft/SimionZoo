@@ -19,6 +19,7 @@ public:
 	int writeBuffer(const void* pBuffer, int numBytes);
 	int readToBuffer(void *pBuffer, int numBytes);
 	char* getPipeFullName() { return m_pipeFullName; }
+	bool isConnected();
 };
 
 class CNamedPipeServer: public CNamedPipe
