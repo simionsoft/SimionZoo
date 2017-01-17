@@ -15,7 +15,7 @@ class CFASTWindTurbine : public CDynamicModel, public CDeferredLoad
 	CProcess FASTprocess,TurbSimProcess;
 	CNamedPipeServer m_namedPipeServer;
 
-	CTemplatedConfigFile m_FASTConfigTemplate, m_TurbSimConfigTemplate;
+	CTemplatedConfigFile m_FASTConfigTemplate, m_FASTWindConfigTemplate, m_TurbSimConfigTemplate;
 
 	MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM,double> m_trainingMeanWindSpeeds;
 	DOUBLE_PARAM m_evaluationMeanWindSpeed;

@@ -71,6 +71,7 @@ void foo()
 	t.instantiateConfigFile("a.txt", 32.3);
 	t.instantiateConfigFile("a.txt", 2.3,3.4,13.3);
 	t.instantiateConfigFile("a.txt", 2.3, 5.2, "ajal");
+	t.instantiateConfigFile("a.txt", "b");
 }
 
 //class CFoo

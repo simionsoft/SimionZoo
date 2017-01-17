@@ -258,7 +258,7 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 		*(T_a*T_g - m_K_t*omega_r*T_g - T_g*T_g));
 
 	double e_omega_r = omega_r - 4.39823; //NOMINAL WIND SPEED
-	double d_beta = m_pKP.get()*e_omega_r + m_pKI.get()*s->getValue(m_E_int_omega_r_index);
+	double d_beta = m_pKP.get()*e_omega_r;// +m_pKI.get()*s->getValue(m_E_int_omega_r_index);
 
 	a->setValue(m_d_beta_index,d_beta); //action->setActionValue(DIM_A_beta,d_beta);
 	a->setValue(m_d_T_g_index,d_T_g); //action->setActionValue(DIM_A_torque,d_T_g);

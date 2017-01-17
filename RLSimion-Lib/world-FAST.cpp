@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include "app.h"
 
+#define FAST_WIND_CONFIG_FILE "NRELOffshrBsline5MW_InflowWind.dat"
+#define FAST_WIND_CONFIG_TEMPLATE_FILE "../config/world/FAST/NRELOffshrBsline5MW_InflowWindTemplate.dat"
 #define TURBSIM_TEMPLATE_CONFIG_FILE "../config/world/TurbSim/TurbSimConfigTemplate.inp"
 #define FAST_TEMPLATE_CONFIG_FILE "../config/world/FAST/configFileTemplate.fst"
 #define FAST_CONFIG_FILE "fast-config.fst"
@@ -96,7 +98,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_BeamDyn.dat");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_BeamDyn_Blade.dat");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Blade.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_InflowWind_12mps.dat");
+		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_InflowWindTemplate.dat");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
 		CSimionApp::get()->pSimGod->registerInputFile("../config/world/FAST/NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
@@ -170,6 +172,8 @@ void CFASTWindTurbine::deferredLoadStep()
 			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 		}
 	}
+	//Load the template used to tell FAST which wind file to use
+	m_FASTWindConfigTemplate.load(FAST_WIND_CONFIG_TEMPLATE_FILE);
 	
 	//copy input files to experiment directory to avoid problems with FAST adding base config file's directory
 
@@ -212,6 +216,8 @@ CFASTWindTurbine::~CFASTWindTurbine()
 void CFASTWindTurbine::reset(CState *s)
 {
 	std::string outConfigFileName,windFile;
+
+
 	//Instantiate the templated FAST config file
 	bool bLoaded = m_FASTConfigTemplate.load(FAST_TEMPLATE_CONFIG_FILE);
 	if (bLoaded)
@@ -219,20 +225,25 @@ void CFASTWindTurbine::reset(CState *s)
 		//choose the wind file
 		if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 			//evaluation wind file
-			windFile = std::string(EVALUATION_WIND_FILE_NAME);
+			windFile = std::string(EVALUATION_WIND_FILE_NAME) + std::string(".bts");
 		else
 		{
 			//training wind file
 			int index = rand() % m_trainingMeanWindSpeeds.size();
-			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME) + std::to_string(m_trainingMeanWindSpeeds[index]->get());
+			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME) + std::to_string(m_trainingMeanWindSpeeds[index]->get())
+				+ std::string(".bts");
 		}
+		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/")
+			+ std::string(FAST_WIND_CONFIG_FILE);
+		m_FASTWindConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), windFile.c_str());
+
 		CLogger::logMessage(MessageType::Info, "Instantiating FAST config file");
 		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/")
 			+ std::string(FAST_CONFIG_FILE);
 		m_FASTConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
 			, CSimionApp::get()->pExperiment->getEpisodeLength()
 			, CSimionApp::get()->pWorld->getDT()
-			, windFile.c_str()
+			, FAST_WIND_CONFIG_FILE
 		);
 	}
 	else CLogger::logMessage(MessageType::Error, "Couldn't instantiate config file: ../config/world/FAST/configFileTemplate.fst");

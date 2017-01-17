@@ -91,7 +91,7 @@ class CWindTurbineBoukhezzarController : public CController
 	//state variable indices
 	int m_omega_r_index, m_d_omega_r_index;
 	int m_E_p_index, m_T_a_index, m_T_g_index;
-	int m_beta_index, m_E_int_omega_r_index;
+	int m_beta_index;// , m_E_int_omega_r_index;
 
 	//action variable indices
 	int m_d_beta_index, m_d_T_g_index;
