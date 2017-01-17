@@ -9,7 +9,9 @@
 #include "utils.h"
 #include "SimGod.h"
 
-void *CLogger::m_hLogFile= 0;
+FILE *CLogger::m_logFile= 0;
+MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
+CNamedPipeClient CLogger::m_outputPipe;
 
 #define OUTPUT_LOG_XML_DESCRIPTOR_FILENAME "experiment-log.xml"
 #define OUTPUT_LOG_FILENAME "experiment-log.bin"
@@ -98,7 +100,7 @@ void CLogger::setLogDirectory(const char* xmlFilePath)
 	CSimGod::registerOutputFile(fullLogFilename);
 
 	//open the log file
-	m_hLogFile = openLogFile(fullLogFilename);
+	openLogFile(fullLogFilename);
 }
 
 
@@ -112,7 +114,7 @@ CLogger::~CLogger()
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
 		delete *it;
 
-	closeLogFile(m_hLogFile);
+	closeLogFile();
 }
 
 
@@ -127,17 +129,22 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 {
 	char buffer[BUFFER_SIZE];
 
-	void * logXMLDescriptorFile= openLogFile(filename);
-	sprintf_s(buffer,BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\">\n",OUTPUT_LOG_FILENAME);
-	writeEpisodeTypesToBuffer(buffer);
-	writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
-	writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
-	writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
-	writeStatDescriptorToBuffer(buffer);
-	strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
-	writeLogBuffer(logXMLDescriptorFile, buffer, strlen(buffer));
-	
-	closeLogFile(logXMLDescriptorFile);
+	FILE * logXMLDescriptorFile;
+	fopen_s(&logXMLDescriptorFile, filename, "w");
+	if (logXMLDescriptorFile)
+	{
+		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\">\n", OUTPUT_LOG_FILENAME);
+		writeEpisodeTypesToBuffer(buffer);
+		writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
+		writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
+		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
+		writeStatDescriptorToBuffer(buffer);
+		strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
+		fwrite(buffer, 1,strlen(buffer), logXMLDescriptorFile);
+
+		fclose(logXMLDescriptorFile);
+	}
+	else logMessage(MessageType::Warning, "Couldn't save experiment log descriptor");
 }
 
 void CLogger::writeEpisodeTypesToBuffer(char* pOutBuffer)
@@ -266,7 +273,7 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 	offset += writeNamedVarSetToBuffer(buffer, offset, r);
 	offset += writeStatsToBuffer(buffer, offset);
 
-	writeLogBuffer(m_hLogFile, buffer, offset);
+	writeLogBuffer(buffer, offset);
 }
 
 void CLogger::writeExperimentHeader()
@@ -276,7 +283,7 @@ void CLogger::writeExperimentHeader()
 	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
 	if (m_bLogTrainingEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumTrainingEpisodes();
 
-	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(ExperimentHeader));
+	writeLogBuffer((char*) &header, sizeof(ExperimentHeader));
 }
 
 void CLogger::writeEpisodeHeader()
@@ -291,7 +298,7 @@ void CLogger::writeEpisodeHeader()
 		+ CSimionApp::get()->pWorld->getRewardVector()->getNumVars()
 		+ m_stats.size();
 
-	writeLogBuffer(m_hLogFile, (char*) &header, sizeof(EpisodeHeader));
+	writeLogBuffer((char*) &header, sizeof(EpisodeHeader));
 }
 
 void CLogger::writeEpisodeEndHeader()
@@ -299,7 +306,7 @@ void CLogger::writeEpisodeEndHeader()
 	StepHeader episodeEndHeader;
 	memset(&episodeEndHeader, 0, sizeof(StepHeader));
 	episodeEndHeader.magicNumber = EPISODE_END_HEADER;
-	writeLogBuffer(m_hLogFile, (char*)&episodeEndHeader, sizeof(StepHeader));
+	writeLogBuffer((char*)&episodeEndHeader, sizeof(StepHeader));
 }
 
 int CLogger::writeStepHeaderToBuffer(char* buffer, int offset)
@@ -367,36 +374,25 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 	}
 }
 
-//WINDOWS-SPECIFIC STUFF
-//should be redone with c-standard files now that named pipes have been moved to WindowsUtils
-#include <windows.h>
-#include <string>
 
-void* CLogger::openLogFile(const char* logFilename)
+void CLogger::openLogFile(const char* logFilename)
 {
-	size_t convertedChars;
-
-	wchar_t w_filename[BUFFER_SIZE];
-
-	mbstowcs_s(&convertedChars, w_filename, BUFFER_SIZE, logFilename, BUFFER_SIZE);
-
-	return CreateFile(w_filename, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0,0);
+	fopen_s(&m_logFile, logFilename, "wb");
 }
-void CLogger::closeLogFile(void* fileHandle)
+void CLogger::closeLogFile()
 {
-	if (fileHandle) CloseHandle(fileHandle);
+	if (m_logFile) fclose(m_logFile);
 	else logMessage(MessageType::Warning, "Could not close log file because it wasn't opened.");
 }
 
-void CLogger::writeLogBuffer(void* fileHandle, const char* pBuffer, int numBytes)
+void CLogger::writeLogBuffer(const char* pBuffer, int numBytes)
 {
 	unsigned long numBytesWritten = 0;
-	if (fileHandle)
-		WriteFile(fileHandle, pBuffer, numBytes, &numBytesWritten,0);
+	if (m_logFile)
+		fwrite(pBuffer, 1, numBytes, m_logFile);
 }
 
-MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
-CNamedPipeClient CLogger::m_outputPipe;
+
 
 void CLogger::logMessage(MessageType type, const char* message)
 {

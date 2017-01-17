@@ -118,7 +118,7 @@ class ENUM_PARAM: public CSimpleParam<EnumType>
 {
 public:
 	ENUM_PARAM() = default;
-	template <typename... propertyTypes>
+
 	ENUM_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment,EnumType default)
 	{
 		m_name = name;

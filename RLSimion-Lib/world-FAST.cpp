@@ -9,16 +9,22 @@
 #include "../tools/WindowsUtils/Process.h"
 #include <string>
 #include <stdio.h>
+#include "app.h"
 
-
+#define FAST_TEMPLATE_CONFIG_FILE "../config/world/FAST/configFileTemplate.fst"
 #define FAST_CONFIG_FILE "fast-config.fst"
 #define PORTAL_CONFIG_FILE "FASTDimensionalPortalDLL.xml"
-#define MAX_CONFIG_FILE_SIZE 10000
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
+
+#define TRAINING_WIND_BASE_FILE_NAME "training-wind-file-"
+#define EVALUATION_WIND_FILE_NAME "eval-wind-file"
 
 CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
 	METADATA("World", "FAST-Wind-turbine");
+
+	m_trainingMeanWindSpeeds= MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double>(pConfigNode,"Training-Mean-Wind-Speeds","Mean wind speeds used in training episodes",12.5);
+	m_evaluationMeanWindSpeed= DOUBLE_PARAM(pConfigNode,"Evaluation-Mean-Wind-Speed","Mean wind speed in evaluation episodes",12.5);
 
 	//model constants
 	addConstant("RatedPower", 5e6);				//W
@@ -56,8 +62,6 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	//action handlers
 	addActionVariable("d_beta", "rad/s", -0.1396263, 0.1396263);
 	addActionVariable("d_T_g", "N/m/s", -15000.0, 15000.0);
-
-
 
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
 	m_pRewardFunction->initialize();
@@ -123,30 +127,45 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 
 void CFASTWindTurbine::deferredLoadStep()
 {
-	std::string outConfigFileName;
+	std::string outConfigFileName, outConfigBaseFileName, exeFileName;
 	FILE *pOutConfigFile;
-
-	//templated main config file
-	char* fileContent= loadTemplateConfigFile("../config/world/FAST/configFileTemplate.fst");
-	if (fileContent)
-	{ 
-		outConfigFileName= std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") + std::string(FAST_CONFIG_FILE);
-
-		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
-		if (pOutConfigFile)
-		{
-			//We do know that the file has two %f that can be substituted by our values
-			fprintf_s(pOutConfigFile, fileContent, CSimionApp::get()->pExperiment->getEpisodeLength()
-				, CSimionApp::get()->pWorld->getDT());
-			fclose(pOutConfigFile);
-		}
-		else CLogger::logMessage(MessageType::Error, (std::string("Couldn't create file: ") + outConfigFileName).c_str());
-		delete [] fileContent;
-	}
-	else CLogger::logMessage(MessageType::Error,"Couldn't load config file: ../config/world/FAST/configFileTemplate.fst");
-
-	//copy input files to experiment directory to avoid problems with FAST adding base config file's directory
 	std::string commandLine;
+
+	//Generate templated TurbSim wind profiles
+	bool bLoaded = m_TurbSimConfigTemplate.load(FAST_TEMPLATE_CONFIG_FILE);
+	if (bLoaded)
+	{
+		CLogger::logMessage(MessageType::Info, "Generating TurbSim wind files");
+
+		//evaluation wind file's config
+		outConfigBaseFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/")
+			+ std::string(EVALUATION_WIND_FILE_NAME);
+		outConfigFileName = outConfigBaseFileName + std::string(".inp");
+		m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), m_evaluationMeanWindSpeed.get());
+
+		//the wind file itself
+#ifdef _DEBUG
+		exeFileName = std::string("../Release/TurbSim.exe");
+#else
+		exeFileName = std::string("../bin/TurbSim.exe");
+#endif
+		commandLine = exeFileName + std::string(" ") + outConfigBaseFileName + std::string(".hh");
+		TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
+
+		//training wind files
+		for (unsigned int i = 0; i < m_trainingMeanWindSpeeds.size(); i++)
+		{
+			outConfigBaseFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") 
+				+ std::string(TRAINING_WIND_BASE_FILE_NAME) + std::string(".inp");
+			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), m_evaluationMeanWindSpeed.get());
+
+			commandLine = exeFileName + std::string(" ") + outConfigBaseFileName + std::string(".hh");
+			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
+		}
+	}
+	
+	//copy input files to experiment directory to avoid problems with FAST adding base config file's directory
+
 	commandLine= std::string("copy ..\\config\\world\\FAST\\*.dat ") + std::string(CSimionApp::get()->getOutputDirectory());
 	std::replace(commandLine.begin(), commandLine.end(), '/', '\\');
 	system(commandLine.c_str());
@@ -160,7 +179,8 @@ void CFASTWindTurbine::deferredLoadStep()
 	bool pipeServerOpened= m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 	if (pipeServerOpened)
 	{
-		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") + std::string(PORTAL_CONFIG_FILE);
+		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/") 
+			+ std::string(PORTAL_CONFIG_FILE);
 		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
 		if (pOutConfigFile)
 		{
@@ -184,6 +204,33 @@ CFASTWindTurbine::~CFASTWindTurbine()
 
 void CFASTWindTurbine::reset(CState *s)
 {
+	std::string outConfigFileName,windFile;
+	//Instantiate the templated FAST config file
+	bool bLoaded = m_FASTConfigTemplate.load(FAST_TEMPLATE_CONFIG_FILE);
+	if (bLoaded)
+	{
+		//choose the wind file
+		if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+			//evaluation wind file
+			windFile = std::string(EVALUATION_WIND_FILE_NAME);
+		else
+		{
+			//training wind file
+			int index = rand() % m_trainingMeanWindSpeeds.size();
+			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME) + std::to_string(m_trainingMeanWindSpeeds[index]->get());
+		}
+		CLogger::logMessage(MessageType::Info, "Instantiating FAST config file");
+		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/")
+			+ std::string(FAST_CONFIG_FILE);
+		m_FASTConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
+			, CSimionApp::get()->pExperiment->getEpisodeLength()
+			, CSimionApp::get()->pWorld->getDT()
+			, windFile.c_str()
+		);
+	}
+	else CLogger::logMessage(MessageType::Error, "Couldn't instantiate config file: ../config/world/FAST/configFileTemplate.fst");
+
+
 	//spawn the FAST exe file
 	std::string commandLine;
 #ifdef _DEBUG
@@ -219,20 +266,4 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	{
 		CLogger::logMessage(MessageType::Error, "The Dimensional Portal has been remotely closed. Probably an error in FAST.");
 	}
-}
-
-
-char* CFASTWindTurbine::loadTemplateConfigFile(const char* filename)
-{
-	FILE *templateFile;
-	int numCharsRead = 0;
-	char *pBuffer= new char[MAX_CONFIG_FILE_SIZE];
-	fopen_s(&templateFile, filename, "r");
-	if (templateFile)
-	{
-		numCharsRead= fread_s(pBuffer, MAX_CONFIG_FILE_SIZE, sizeof(char), MAX_CONFIG_FILE_SIZE, templateFile);
-		pBuffer[numCharsRead] = 0;
-		return pBuffer;
-	}
-	return 0;
 }

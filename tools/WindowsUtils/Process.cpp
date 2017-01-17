@@ -16,7 +16,7 @@ CProcess::~CProcess()
 	}
 }
 
-bool CProcess::spawn(const char* commandLine)
+bool CProcess::spawn(const char* commandLine, bool bAwait)
 {
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInformation;
@@ -27,7 +27,11 @@ bool CProcess::spawn(const char* commandLine)
 	bool bSuccess = ( TRUE== CreateProcess(NULL,(char*) commandLine, NULL, NULL, FALSE, NORMAL_PRIORITY_CLASS, NULL, NULL
 		, &startupInfo, &processInformation));
 	if (bSuccess)
+	{
+		if (bAwait)
+			WaitForSingleObject(m_handle, INFINITE);
 		m_handle = processInformation.hProcess;
+	}
 
 	return bSuccess;
 }

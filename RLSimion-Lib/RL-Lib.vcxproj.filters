@@ -155,6 +155,9 @@
     <ClCompile Include="world-FAST.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="templatedConfigFile.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -278,6 +281,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="world-FAST.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="templatedConfigFile.h">
       <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>

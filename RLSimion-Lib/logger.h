@@ -11,7 +11,7 @@ class CDescriptor;
 #include "../tools/WindowsUtils/NamedPipe.h"
 class CStats;
 class CTimer;
-class CFilePathList;
+
 
 enum MessageType {Progress,Evaluation,Info,Warning, Error};
 enum MessageOutputMode {Console,NamedPipe};
@@ -21,11 +21,10 @@ class CLogger
 	static const int MAX_FILENAME_LENGTH = 1024;
 	static const int BUFFER_SIZE = 10000;
 
-	
 	//log file
 	char m_outputDir[MAX_FILENAME_LENGTH];
 	char* m_pFullLogFilename;
-	static void *m_hLogFile;
+	static FILE *m_logFile;
 
 	BOOL_PARAM m_bLogEvaluationEpisodes;
 	BOOL_PARAM m_bLogTrainingEpisodes;
@@ -39,10 +38,10 @@ class CLogger
 
 	double m_lastLogSimulationT;
 
-	void* openLogFile(const char* fullLogFilename);
-	void closeLogFile(void* fileHandle);
+	void openLogFile(const char* fullLogFilename);
+	void closeLogFile();
 
-	static void writeLogBuffer(void* fileHandle, const char* pBuffer, int numBytes);
+	static void writeLogBuffer(const char* pBuffer, int numBytes);
 
 	void writeLogFileXMLDescriptor(const char* filename);
 
@@ -80,7 +79,6 @@ public:
 	void setLogDirectory(const char* xmlFilePath);
 
 	static MessageOutputMode m_messageOutputMode;
-
 	static CNamedPipeClient m_outputPipe;
 
 	//Function called to report progress and error messages
