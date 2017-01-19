@@ -24,10 +24,14 @@
 
 CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
+	//This class is used both in the DimensionalPortalDLL (pConfigNode will be nullptr) and in RLSimion (pConfigNode will not be nullptr)
 	METADATA("World", "FAST-Wind-turbine");
 
-	m_trainingMeanWindSpeeds= MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double>(pConfigNode,"Training-Mean-Wind-Speeds","Mean wind speeds used in training episodes",12.5);
-	m_evaluationMeanWindSpeed= DOUBLE_PARAM(pConfigNode,"Evaluation-Mean-Wind-Speed","Mean wind speed in evaluation episodes",12.5);
+	if (pConfigNode)
+	{
+		m_trainingMeanWindSpeeds = MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double>(pConfigNode, "Training-Mean-Wind-Speeds", "Mean wind speeds used in training episodes", 12.5);
+		m_evaluationMeanWindSpeed = DOUBLE_PARAM(pConfigNode, "Evaluation-Mean-Wind-Speed", "Mean wind speed in evaluation episodes", 12.5);
+	}
 
 	//model constants
 	addConstant("RatedPower", 5e6);				//W
