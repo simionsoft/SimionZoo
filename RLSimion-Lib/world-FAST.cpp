@@ -26,6 +26,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
 	//This class is used both in the DimensionalPortalDLL (pConfigNode will be nullptr) and in RLSimion (pConfigNode will not be nullptr)
 	METADATA("World", "FAST-Wind-turbine");
+	
 
 	if (pConfigNode)
 	{
