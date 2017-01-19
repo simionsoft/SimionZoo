@@ -12,7 +12,7 @@
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
         <Label Margin="4,0,0,0" Content="{Binding name}" FontSize="8"></Label>
-        <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" x:Name="Add" 
+        <Button VerticalAlignment="Center" Background="DarkGray" x:Name="Add" 
                             cal:Message.Attach="removeThisValue"
                             Width="15" Height="15" >
             <Image Source="{StaticResource remove}" Width="10" Height="10"></Image>

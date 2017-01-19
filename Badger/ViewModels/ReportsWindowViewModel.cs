@@ -196,8 +196,8 @@ namespace Badger.ViewModels
         {
             string experimentName = node.Attributes[XMLConfig.nameAttribute].Value;
             string experimentFilePath = node.Attributes[XMLConfig.pathAttribute].Value;
-            string logDescFile = ExperimentViewModel.getLogDescriptorsFilePath(experimentFilePath);
-            string logFile = ExperimentViewModel.getLogFilePath(experimentFilePath);
+            string logDescFile = SimionFileData.getLogDescriptorsFilePath(experimentFilePath);
+            string logFile = SimionFileData.getLogFilePath(experimentFilePath);
             if (File.Exists(logDescFile) && File.Exists(logFile))
             {
                 ExperimentLogViewModel newLog = new ExperimentLogViewModel(experimentName, logDescFile, logFile, this);

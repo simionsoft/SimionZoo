@@ -17,7 +17,7 @@
                 <ItemsControl x:Name="children" BorderThickness="1" BorderBrush="LightGray" Margin="0,0,0,3"/>
             </StackPanel>
             <StackPanel Width="20" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}"
+                <Button VerticalAlignment="Center" Background="DarkGray"
                             cal:Message.Attach="[Event Click]=[remove]"
                             x:Name="Remove" 
                             Width="20" Height="20" >

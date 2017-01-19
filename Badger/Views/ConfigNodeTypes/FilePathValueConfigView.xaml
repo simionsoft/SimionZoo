@@ -30,7 +30,7 @@ d:DesignHeight="50" d:DesignWidth="300">
         <TextBlock Text="{Binding content}" Width="150" 
                  TextWrapping="WrapWithOverflow"/>
 
-        <Button Background="Transparent" BorderBrush="{x:Null}" BorderThickness="0"  Width="30"  cal:Message.Attach="[Event Click]=[Action selectFile()]">
+        <Button Background="DarkGray" Width="30"  cal:Message.Attach="[Event Click]=[Action selectFile()]">
             <Image Source="{StaticResource folder}" Width="25" Height="25"></Image>
         </Button>
 

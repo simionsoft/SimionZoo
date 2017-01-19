@@ -31,6 +31,7 @@
         <BitmapImage x:Key="play" UriSource="/images/play.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png" />
+        <BitmapImage x:Key="herdagent-head" UriSource="/images/herdagent-head.png" />
     </Window.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
@@ -52,13 +53,13 @@
                 <Label Content="APP" VerticalContentAlignment="Center"/>
                 <ComboBox x:Name="appNames" Width="140" Margin="0,0,60,0" HorizontalAlignment="Right" Height="22" SelectedItem="{Binding selectedAppName}"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="3,5">
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action newExperiment()]">
+                    <Button Background="DarkGray" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action newExperiment()]">
                         <Image Source="{StaticResource clear}" Width="25" Height="25"/>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperimentInEditor()]" >
+                    <Button Background="DarkGray"  Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperimentInEditor()]" >
                         <Image Source="{StaticResource save}" Width="25" Height="25"/>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action loadExperiment()]">
+                    <Button Background="DarkGray" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action loadExperiment()]">
                         <Image Source="{StaticResource load}" Width="25" Height="25"/>
                     </Button>
                 </StackPanel>
@@ -69,12 +70,18 @@
                          IsEnabled="{Binding Path=bIsExperimentListNotEmpty}"
                          x:Name="runExperiments" VerticalAlignment="Top"
                             ToolTip="Run experiments in queue">
-                        <TextBlock>LAUNCH</TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="0,0,5,0">LAUNCH</Label>
+                            <Image Width="20" Height="20" Source="{StaticResource play}"></Image>
+                        </StackPanel>
                     </Button>
 
                     <Button Width="100" Height="30" Margin="5"
                             x:Name="showPlotWindow" ToolTip="Generate reports from stored experiment results">
-                        <TextBlock Margin="0">REPORTS</TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Margin="0,0,10,0">REPORTS</Label>
+                            <Image Width="20" Height="20" Source="{StaticResource plot}"></Image>
+                        </StackPanel>
                     </Button>
                 </StackPanel>
             </StackPanel>
@@ -118,8 +125,10 @@
                 </StackPanel.Background>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="15,5">
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action addExperiment()]" />
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30"
+                    <StackPanel Margin="0,0,30,0">
+                        <Label FontWeight="Bold">Experiment Queue</Label>
+                    </StackPanel>
+                    <!--<Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30"
                             cal:Message.Attach="[Event Click]=[Action clearExperimentQueue()]" >
                         <Image Source="{StaticResource clear}"  ToolTip="Clear experiment queue" Width="25" Height="25" ></Image>
                     </Button>
@@ -127,15 +136,15 @@
                             IsEnabled="{Binding Path=bIsExperimentListNotEmpty, Converter={StaticResource BoolToVis}}"
                             cal:Message.Attach="[Event Click]=[Action removeSelectedExperiments()]" >
                         <Image Source="{StaticResource remove}" ToolTip="Remove experiment" Width="25" Height="25" ></Image>
-                    </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Height="30" Width="30" cal:Message.Attach="[Event Click]=[Action saveExperiments()]" >
+                    </Button>-->
+                    <Button Background="DarkGray" Height="30" Width="30" x:Name="saveExperiments" >
                         <Image Source="{StaticResource save}"  ToolTip="Save all the experiments" Width="25" Height="25" ></Image>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="30" Height="30" cal:Message.Attach="[Event Click]=[Action loadExperiments()]">
+                    <Button Background="DarkGray" Width="30" Height="30" x:Name="loadExperiments">
                         <Image Source="{StaticResource load}"  ToolTip="Load a set of experiments" Width="25" Height="25" ></Image>
                     </Button>
                 </StackPanel>
-                <Border Margin="5,0,0,5" BorderBrush="Black" Height="250" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2">
+                <Border Margin="5,0,0,5" BorderBrush="Black" Height="220" Width="245" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2">
                     <ScrollViewer Margin="0,0,0,5">
                         <ItemsControl ItemsSource="{Binding Path=listControlExperiments}" Margin="2"
                                   ScrollViewer.VerticalScrollBarVisibility="Auto">
@@ -147,7 +156,10 @@
                         </ItemsControl>
                     </ScrollViewer>
                 </Border>
-
+                <StackPanel Margin="0,0,30,0" HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Image Width="30" Height="30" Source="{StaticResource herdagent-head}"></Image>
+                    <Label FontWeight="Bold">Agent Herd</Label>
+                </StackPanel>
                 <Border BorderBrush="Black" Height="172" Width="246" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="12,0,7,5">
                     <ContentControl x:Name="shepherdViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="110"/>
                 </Border>

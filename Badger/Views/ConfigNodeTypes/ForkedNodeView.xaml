@@ -12,12 +12,12 @@
         <BitmapImage x:Key="left-arrow" UriSource="/images/left-arrow.png" />
         <BitmapImage x:Key="right-arrow" UriSource="/images/right-arrow.png" />
         <BitmapImage x:Key="add" UriSource="/images/add.png" />
-        <BitmapImage x:Key="cancel" UriSource="/images/cancel.png" />
+        <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
     </UserControl.Resources>
     <Border BorderBrush="Orange">
         <StackPanel Orientation="Horizontal">
             <ContentControl x:Name="selectedValueConfigNode" />
-            <StackPanel  Margin="10,0,0,0" Background="Orange" Width="46" Orientation="Vertical">
+            <StackPanel  Margin="10,0,0,0" Background="Black" Width="46" Orientation="Vertical">
                 <StackPanel.ContextMenu >
                     <ContextMenu>
                         <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode">
@@ -54,7 +54,7 @@
                     <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
                                 Opacity="{Binding bIsThereMoreValues}">
-                        <Image Source="{StaticResource cancel}"  ToolTip="Remove this value" Width="10"></Image>
+                        <Image Source="{StaticResource remove}"  ToolTip="Remove this value" Width="10"></Image>
                     </Button>
                 </StackPanel>
             </StackPanel>
