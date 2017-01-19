@@ -13,12 +13,6 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical" Margin="1">
-        <!--<Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
-            <StackPanel Margin="1">-->
-                <!--<StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Center" Width="180" >-->
-                    <Label x:Name="ExperimentName" HorizontalAlignment="Center" BorderBrush="{x:Null}" Content="{Binding name}"  Width="150" FontFamily="Segoe UI" FontSize="10"/>
-                <!--</StackPanel>-->
-            <!--</StackPanel>
-        </Border>-->
+        <Label x:Name="ExperimentName" HorizontalAlignment="Center" BorderBrush="{x:Null}" Content="{Binding name}"  Width="150" FontFamily="Segoe UI" FontSize="10"/>
     </StackPanel>
 </UserControl>
