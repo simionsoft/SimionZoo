@@ -12,14 +12,13 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical" >
-        <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
-       
-            <StackPanel Margin="1">
-                <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Center" Width="180" >
+    <StackPanel Orientation="Vertical" Margin="1">
+        <!--<Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
+            <StackPanel Margin="1">-->
+                <!--<StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Center" Width="180" >-->
                     <Label x:Name="ExperimentName" HorizontalAlignment="Center" BorderBrush="{x:Null}" Content="{Binding name}"  Width="150" FontFamily="Segoe UI" FontSize="10"/>
-                </StackPanel>
-            </StackPanel>
-        </Border>
+                <!--</StackPanel>-->
+            <!--</StackPanel>
+        </Border>-->
     </StackPanel>
 </UserControl>

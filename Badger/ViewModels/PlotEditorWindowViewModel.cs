@@ -200,13 +200,19 @@ namespace Badger.ViewModels
             string logFile = ExperimentViewModel.getLogFilePath(experimentFilePath);
             if (File.Exists(logDescFile) && File.Exists(logFile))
             {
-                experimentLogs.Add(new ExperimentLogViewModel(experimentName, logDescFile, logFile, this));
+                ExperimentLogViewModel newLog = new ExperimentLogViewModel(experimentName, logDescFile, logFile, this);
+                experimentLogs.Add(newLog);
+                newLog.bIsSelected = true;
             }
         }
 
         public void loadExperimentBatch()
         {
             SimionFileData.loadExperimentBatch(batchNodeLoadFunction);
+        }
+        public void loadExperimentBatch(string batchFileName)
+        {
+            SimionFileData.loadExperimentBatch(batchNodeLoadFunction, batchFileName);
         }
 
         public void close(ReportViewModel report)

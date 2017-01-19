@@ -15,6 +15,11 @@
         <StackPanel>
             <ContentControl x:Name="evaluationPlot"/>
         </StackPanel>
+        <StackPanel HorizontalAlignment="Center">
+            <Button x:Name="showReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" Width="60">
+                Reports
+            </Button>
+        </StackPanel>
         <StackPanel>
             <ContentControl x:Name="experimentQueueMonitor" Height="300"/>
         </StackPanel>

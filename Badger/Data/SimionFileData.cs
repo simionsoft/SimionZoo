@@ -22,21 +22,23 @@ namespace Badger.Data
         public delegate void logFunction(string message);
         public delegate void XmlNodeFunction(XmlNode node);
         //LOAD EXPERIMENT BATCH
-        static public void loadExperimentBatch(XmlNodeFunction nodeFunction)
+        static public void loadExperimentBatch(XmlNodeFunction nodeFunction, string batchFilename="")
         { 
-            string fileDoc = null;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-            if (ofd.ShowDialog() == DialogResult.OK)
+            if (batchFilename == "")
             {
-                fileDoc = ofd.FileName;
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
+                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    batchFilename = ofd.FileName;
+                }
+                else return;
             }
-            else return;
 
             //LOAD THE EXPERIMENT BATCH IN THE QUEUE
             XmlDocument batchDoc = new XmlDocument();
-            batchDoc.Load(fileDoc);
+            batchDoc.Load(batchFilename);
             XmlElement fileRoot = batchDoc.DocumentElement;
 
             if (fileRoot.Name == XMLConfig.batchNodeTag)
@@ -51,57 +53,59 @@ namespace Badger.Data
             }
             else CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.","ERROR");
             return;
-    }
+        }
         //SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments without forks
         public static List<Experiment> saveExperimentBatchFile(BindableCollection<AppViewModel> appViewModelList
-            , logFunction log)
+            ,ref string batchFilename, logFunction log)
         {
             List<Experiment> experimentBatch = new List<Experiment>();
-            string batchFilename;
 
             if (appViewModelList.Count == 0)
                 return null;
 
-
-            //Save dialog -> returns the experiment batch file
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-            sfd.InitialDirectory = experimentRelativeDir;
-            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
-            if (!Directory.Exists(CombinedPath))
-                Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
-
-            if (sfd.ShowDialog() == DialogResult.OK)
+            if (batchFilename == "")
             {
-                batchFilename = sfd.FileName;
-            }
-            else
-            {
-                log("Error saving the experiment queue");
-                return null;
+                //Save dialog -> returns the experiment batch file
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
+                sfd.InitialDirectory = experimentRelativeDir;
+                string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
+                if (!Directory.Exists(CombinedPath))
+                    Directory.CreateDirectory(CombinedPath);
+                sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    batchFilename = sfd.FileName;
+                }
+                else
+                {
+                    log("Error saving the experiment queue");
+                    return null;
+                }
             }
 
             //clean output directory if it exists
-            batchFilename = batchFilename.Split('.')[0];
-            batchFilename = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFilename);
-            if (Directory.Exists(batchFilename))
+            string batchFileDir;
+            batchFileDir = batchFilename.Split('.')[0];
+            batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
+            if (Directory.Exists(batchFileDir))
             {
                 try
                 {
-                    Directory.Delete(batchFilename, true);
+                    Directory.Delete(batchFileDir, true);
                 }
                 catch
                 {
                     CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
-                        + batchFilename + ". Make sure that it's not been using for other app."
+                        + batchFileDir + ". Make sure that it's not been using for other app."
                         , "ERROR");
                     log("Error saving the experiment queue");
                     return null;
                 }
             }
 
-            using (FileStream batchFile = File.Create(batchFilename + "." + XMLConfig.experimentBatchExtension))
+            using (FileStream batchFile = File.Create(batchFileDir + "." + XMLConfig.experimentBatchExtension))
             {
                 using (StreamWriter batchFileWriter = new StreamWriter(batchFile))
                 {
@@ -121,7 +125,7 @@ namespace Badger.Data
                             //Save the combination of forks as a new experiment
                             experimentName= experiment.setForkCombination(i);
                             
-                            folderPath = batchFilename + "/" + experimentName;
+                            folderPath = batchFileDir + "/" + experimentName;
                             Directory.CreateDirectory(folderPath);
                             filePath = folderPath + "/" + experimentName + "." + XMLConfig.experimentExtension;
                             experiment.save(filePath, SaveMode.CombineForks);

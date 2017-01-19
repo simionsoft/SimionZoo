@@ -224,8 +224,9 @@ namespace Badger.ViewModels
 
         public void runExperiments()
         {
+            string batchFilename = "";
             List<Experiment> experiments = new List<Experiment>();
-            experiments= SimionFileData.saveExperimentBatchFile(tabControlExperiments, logToFile);
+            experiments= SimionFileData.saveExperimentBatchFile(tabControlExperiments, ref batchFilename,logToFile);
 
             if (experiments!=null && experiments.Count>0)
             {
@@ -237,7 +238,7 @@ namespace Badger.ViewModels
                 shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 
-                MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents, experiments, logToFile);
+                MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents, experiments, logToFile, batchFilename);
 
                 monitorVM.runExperiments(true, true);
 

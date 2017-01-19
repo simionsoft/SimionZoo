@@ -10,13 +10,15 @@ namespace Badger.ViewModels
     {
         public ExperimentQueueMonitorViewModel experimentQueueMonitor{get;set;}
         public PlotViewModel evaluationPlot{get;set;}
+        private string m_batchFilename = null;
 
         public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<Experiment> pendingExperiments, Logger.LogFunction logFunction)
+            , List<Experiment> pendingExperiments, Logger.LogFunction logFunction, string batchFilename)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(freeHerdAgents, pendingExperiments
                 , evaluationPlot,logFunction);
+            m_batchFilename = batchFilename;
         }
 
         public void runExperiments(bool monitorProgress= true, bool receiveJobResults= true)
@@ -29,6 +31,13 @@ namespace Badger.ViewModels
             if (close)
                 experimentQueueMonitor.stopExperiments();
             base.OnDeactivate(close);
+        }
+
+        public void showReports()
+        {
+            PlotEditorWindowViewModel plotEditor = new PlotEditorWindowViewModel();
+            plotEditor.loadExperimentBatch(m_batchFilename);
+            CaliburnUtility.showVMDialog(plotEditor, "Plot editor");
         }
     }
 }

@@ -164,6 +164,9 @@ namespace Badger.ViewModels
                                 else
                                 {
                                     logMessage("Remote job execution wasn't successful");
+                                    //Right now, my view on adding failed experiments back to the pending exp. list:
+                                    //Some experiments may fail because the parameters are just invalid (i.e. FAST)
+                                    //Much more likely than a network-related error or some other user-related problem
                                     //m_failedExperiments.Add(experimentVM);
                                     experimentVM.state = MonitoredExperimentViewModel.ExperimentState.ERROR;
                                 }
@@ -255,10 +258,14 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
-        private bool m_bRunningExperiments = false;
+        private bool m_bRunning = false;
+        private bool m_bFinished = false;
+        public bool bFinished { get { return m_bFinished; }
+            set { m_bFinished = value; NotifyOfPropertyChange(() => bFinished); } }
+
         public async void runExperimentsAsync(bool monitorProgress, bool receiveJobResults)
         {
-            m_bRunningExperiments = true;
+            m_bRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
             List<Task<ExperimentBatch>> experimentBatchTaskList= new List<Task<ExperimentBatch>>();
@@ -315,14 +322,16 @@ namespace Badger.ViewModels
             }
             finally
             {
-                m_bRunningExperiments = false;
+                if (m_pendingExperiments.Count == 0)
+                    bFinished = true; // used to enable the "View reports" button
+                m_bRunning = false;
                 m_cancelTokenSource.Dispose();
             }
         }
 
         public void stopExperiments()
         {
-            if (m_bRunningExperiments && m_cancelTokenSource != null)
+            if (m_bRunning && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
         }
         private int batchId = 0;
