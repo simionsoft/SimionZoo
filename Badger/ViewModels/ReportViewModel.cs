@@ -11,8 +11,8 @@ namespace Badger.ViewModels
         public virtual void updateView() { }
         public virtual void export(string outputFolder) { }
 
-        private PlotEditorWindowViewModel m_parent = null;
-        public PlotEditorWindowViewModel parent
+        private ReportsWindowViewModel m_parent = null;
+        public ReportsWindowViewModel parent
         {
             get { return m_parent; }
             set { m_parent = value; }

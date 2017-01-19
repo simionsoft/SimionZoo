@@ -1,4 +1,4 @@
-﻿<Window x:Class="Badger.Views.PlotEditorWindowView"
+﻿<Window x:Class="Badger.Views.ReportsWindowView"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -35,22 +35,31 @@
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
+        <BitmapImage x:Key="checkAll" UriSource="/images/checkAll.png"/>
+        <BitmapImage x:Key="checkNone" UriSource="/images/checkNone.png"/>
     </Window.Resources>
     
     <StackPanel Orientation="Horizontal" Margin="2">
         <StackPanel Orientation="Vertical" Width="300">
             <StackPanel>
-                <StackPanel>
-                    <Button  HorizontalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}"  Height="30" Margin="5"
+                <Button  HorizontalAlignment="Center" Height="30" Width="75" Margin="5"
                             x:Name="loadExperimentBatch">
-                        <TextBlock>Load batch</TextBlock>
-                    </Button>
-                </StackPanel>
-                <StackPanel Height="20" HorizontalAlignment="Center" Orientation="Horizontal">
-                    <Label Content="Experiment logs " FontSize="8"></Label>
-                    <Label Content="{Binding Path=logListHeader}" FontSize="8"/>
-                </StackPanel>
-                <ListView x:Name="Logs" BorderBrush="{x:Null}" BorderThickness="0" 
+                    <TextBlock>Load batch</TextBlock>
+                </Button>
+            </StackPanel>
+            <Border BorderThickness="1" BorderBrush="DarkGray">
+                <StackPanel>
+                    <StackPanel Height="25" HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Button x:Name="checkAllLogs" Background="DarkGray">
+                            <Image Source="{StaticResource checkAll}"  ToolTip="Check all the logs" Width="20" Height="20" />
+                        </Button>
+                        <Button x:Name="uncheckAllLogs" Background="DarkGray">
+                            <Image Source="{StaticResource checkNone}"  ToolTip="Uncheck all the logs" Width="20" Height="20" />
+                        </Button>
+                        <Label Content="Experiment logs " FontSize="8" Margin="60,0,0,0"></Label>
+                        <Label Content="{Binding Path=logListHeader}" FontSize="8"/>
+                    </StackPanel>
+                    <ListView x:Name="Logs" BorderBrush="{x:Null}" BorderThickness="0" 
                   ItemsSource="{Binding Path=experimentLogs}" SelectionMode="Multiple" Height="250" Margin="1">
                     <ListView.Resources>
                         <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
@@ -64,19 +73,30 @@
                     </ListView.ItemContainerStyle>
                 </ListView>
             </StackPanel>
-            <StackPanel>
-                <StackPanel Height="20" HorizontalAlignment="Center">
-                    <Label Content="Variables in log " FontSize="8"></Label>
-                    <Label Content="{Binding Path=variableListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
+            </Border>
+            <Border BorderThickness="1" BorderBrush="DarkGray">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button x:Name="checkAllVariables" Background="DarkGray">
+                                <Image Source="{StaticResource checkAll}"  ToolTip="Check all the logs" Width="20" Height="20" />
+                            </Button>
+                            <Button x:Name="uncheckAllVariables"  Background="DarkGray">
+                                <Image Source="{StaticResource checkNone}"  ToolTip="Uncheck all the logs" Width="20" Height="20" />
+                            </Button>
+                            <Label Content="Variables in log " FontSize="8" Margin="60,0,0,0"></Label>
+                            <Label Content="{Binding Path=variableListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
+                        </StackPanel>
+                    </StackPanel>
+                    <ListView ItemsSource="{Binding Path=availableVariables}" Height="212" Margin="1">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </ListView>
                 </StackPanel>
-                <ListView ItemsSource="{Binding Path=availableVariables}" Height="212" Margin="1">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-            </StackPanel>
+            </Border>
         </StackPanel>
         <StackPanel Orientation="Vertical" Margin="2">
             <StackPanel Width="680">

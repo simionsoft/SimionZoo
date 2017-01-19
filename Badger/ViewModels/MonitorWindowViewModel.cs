@@ -35,7 +35,7 @@ namespace Badger.ViewModels
 
         public void showReports()
         {
-            PlotEditorWindowViewModel plotEditor = new PlotEditorWindowViewModel();
+            ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
             plotEditor.loadExperimentBatch(m_batchFilename);
             CaliburnUtility.showVMDialog(plotEditor, "Plot editor");
         }

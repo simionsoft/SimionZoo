@@ -10,7 +10,7 @@ using System.IO;
 
 namespace Badger.ViewModels
 {
-    public class PlotEditorWindowViewModel : Conductor<ReportViewModel>.Collection.OneActive
+    public class ReportsWindowViewModel : Conductor<ReportViewModel>.Collection.OneActive
     {
 
         private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
@@ -95,7 +95,7 @@ namespace Badger.ViewModels
                 bCanGenerateReports = true;
         }
 
-        public PlotEditorWindowViewModel()
+        public ReportsWindowViewModel()
         {
             m_sourceOptions.Add(m_optionAllEvalEpisodes);
             m_sourceOptions.Add(m_optionLastEvalEpisode);
@@ -218,6 +218,28 @@ namespace Badger.ViewModels
         public void close(ReportViewModel report)
         {
             reports.Remove(report);
+        }
+
+        //check all/none buttons
+        public void checkAllLogs()
+        {
+            foreach (ExperimentLogViewModel experiment in m_experimentLogs)
+                experiment.bIsSelected = true;
+        }
+        public void uncheckAllLogs()
+        {
+            foreach (ExperimentLogViewModel experiment in m_experimentLogs)
+                experiment.bIsSelected = false;
+        }
+        public void checkAllVariables()
+        {
+            foreach (LoggedVariableViewModel variable in m_availableVariables)
+                variable.bIsSelected = true;
+        }
+        public void uncheckAllVariables()
+        {
+            foreach (LoggedVariableViewModel variable in m_availableVariables)
+                variable.bIsSelected = false;
         }
     }
 }

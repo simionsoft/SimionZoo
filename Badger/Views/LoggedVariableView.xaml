@@ -16,7 +16,7 @@
         <StackPanel Margin="1">
             <StackPanel Margin="1" Orientation="Horizontal" HorizontalAlignment="Center" Width="180" >
                 <Label x:Name="VariableName" HorizontalAlignment="Center" BorderBrush="LightGray"
-                           Content="{Binding name}"  Width="150" FontFamily="Segoe UI" FontSize="8"/>
+                           Content="{Binding name}"  Width="150" FontFamily="Segoe UI" FontSize="10" Foreground="Black"/>
             </StackPanel>
         </StackPanel>
     </StackPanel>

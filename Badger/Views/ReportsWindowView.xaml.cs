@@ -18,9 +18,9 @@ namespace Badger.Views
     /// <summary>
     /// Lógica de interacción para PlotEditorWindowView.xaml
     /// </summary>
-    public partial class PlotEditorWindowView : Window
+    public partial class ReportsWindowView : Window
     {
-        public PlotEditorWindowView()
+        public ReportsWindowView()
         {
             InitializeComponent();
         }

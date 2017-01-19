@@ -26,9 +26,9 @@ namespace Badger.ViewModels
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
 
-        private PlotEditorWindowViewModel m_parent = null;
+        private ReportsWindowViewModel m_parent = null;
 
-        public LoggedVariableViewModel(string name,PlotEditorWindowViewModel parent)
+        public LoggedVariableViewModel(string name,ReportsWindowViewModel parent)
         {
             m_parent = parent;
             m_name = name;

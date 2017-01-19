@@ -36,10 +36,10 @@ namespace Badger.ViewModels
 
         private List<string> m_variablesInLog = new List<string>();
 
-        private PlotEditorWindowViewModel m_parent = null;
+        private ReportsWindowViewModel m_parent = null;
 
         public ExperimentLogViewModel(string name, string logDescriptorFilePath
-            , string logFilePath, PlotEditorWindowViewModel parent)
+            , string logFilePath, ReportsWindowViewModel parent)
         {
             m_parent = parent;
             m_name = name;
@@ -149,13 +149,13 @@ namespace Badger.ViewModels
                 {
                     int varIndex = var.varIndexInLogFile;
 
-                    if (sourceOption == PlotEditorWindowViewModel.m_optionAllEvalEpisodes)
+                    if (sourceOption == ReportsWindowViewModel.m_optionAllEvalEpisodes)
                         experimentData.doForEachEvalEpisode(episode =>
                                 {
                                     double avg = EpisodeData.calculateVarAvg(episode, varIndex);
                                     var.plot.addLineSeriesValue(var.seriesId, episode.index, avg);
                                 });
-                    else if (sourceOption == PlotEditorWindowViewModel.m_optionLastEvalEpisode)
+                    else if (sourceOption == ReportsWindowViewModel.m_optionLastEvalEpisode)
                         experimentData.doForEpisodeSteps(experimentData.numEpisodes,
                             step =>
                             {

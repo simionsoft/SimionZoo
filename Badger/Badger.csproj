@@ -158,7 +158,7 @@
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
-    <Compile Include="ViewModels\PlotEditorWindowViewModel.cs" />
+    <Compile Include="ViewModels\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
@@ -183,8 +183,8 @@
     <Compile Include="Views\MonitorWindowView.xaml.cs">
       <DependentUpon>MonitorWindowView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlotEditorWindowView.xaml.cs">
-      <DependentUpon>PlotEditorWindowView.xaml</DependentUpon>
+    <Compile Include="Views\ReportsWindowView.xaml.cs">
+      <DependentUpon>ReportsWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowView.xaml.cs">
       <DependentUpon>WindowView.xaml</DependentUpon>
@@ -323,7 +323,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PlotEditorWindowView.xaml">
+    <Page Include="Views\ReportsWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -448,6 +448,14 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\checkAll.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\checkNone.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
