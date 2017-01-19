@@ -94,7 +94,7 @@ bool CNamedPipeServer::openUniqueNamedPipeServer(char* pipeName)
 	int id = 0;
 	do
 	{
-		setPipeName(pipeName,id);
+		setPipeName(pipeName,true,id);
 
 		m_pipeHandle = CreateNamedPipe(m_pipeFullName,
 			PIPE_ACCESS_DUPLEX | PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | FILE_FLAG_FIRST_PIPE_INSTANCE,
@@ -165,7 +165,7 @@ bool CNamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 
 	if (m_pipeHandle == INVALID_HANDLE_VALUE)
 		return false;
-	printf("CLIENT: connected after %d attempts\n", numAttempts);
+	printf("CLIENT: connected after %d attempt(s)\n", numAttempts);
 	return true;
 }
 

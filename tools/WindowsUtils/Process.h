@@ -8,4 +8,5 @@ public:
 	~CProcess();
 
 	bool spawn(const char* commandLine, bool bAwait= false);
+	bool isRunning();
 };

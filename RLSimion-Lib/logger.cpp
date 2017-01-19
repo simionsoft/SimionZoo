@@ -433,4 +433,6 @@ void CLogger::logMessage(MessageType type, const char* message)
 			printf("ERROR: %s\n",message); break;
 		}
 	}
+	if (type == MessageType::Error)
+		ExitProcess(-1);
 }

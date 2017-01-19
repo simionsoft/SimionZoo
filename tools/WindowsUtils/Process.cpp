@@ -36,3 +36,11 @@ bool CProcess::spawn(const char* commandLine, bool bAwait)
 
 	return bSuccess;
 }
+
+bool CProcess::isRunning()
+{
+	DWORD returnCode;
+	GetExitCodeProcess(m_handle, &returnCode);
+
+	return returnCode == STILL_ACTIVE;
+}

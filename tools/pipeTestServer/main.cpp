@@ -3,14 +3,19 @@
 #include <thread>
 #include "../WindowsUtils/NamedPipe.h"
 
+
+#ifdef _DEBUG
 #pragma comment(lib,"../../Debug/WindowsUtils.lib")
+#else
+#pragma comment(lib,"../../Release/WindowsUtils.lib")
+#endif
 
 
 void main(char** argv, int argc)
 {
 	char message[100] = "my message";
 	char pipename1[100];
-	char pipename2[100];
+
 	char buffer[100];
 	CNamedPipeServer server;
 

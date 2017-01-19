@@ -7,7 +7,7 @@ False         Echo           - Echo input data to "<RootName>.ech" (flag)
 2             quadrature     - 1: Gauss; 2: Trapezoidal
 DEFAULT       refine         - Refinement factor for quadrature 2. DEFAULT = 1
 DEFAULT       n_fact         - Factorization frequency: The Jacobian is computed every n_fact steps in N-R iteration. DEFAULT = 5
-DEFAULT       DTBeam         - Time step size
+0.0001       DTBeam         - Time step size
 DEFAULT       NRMax          - Max number of iterations in Newton-Ralphson algorithm
 DEFAULT       stop_tol       - Tolerance for stopping criterion
 ---------------------- GEOMETRY PARAMETER --------------------------------------

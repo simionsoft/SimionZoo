@@ -164,7 +164,7 @@ namespace Badger.ViewModels
                                 else
                                 {
                                     logMessage("Remote job execution wasn't successful");
-                                    m_failedExperiments.Add(experimentVM);
+                                    //m_failedExperiments.Add(experimentVM);
                                     experimentVM.state = MonitoredExperimentViewModel.ExperimentState.ERROR;
                                 }
                             }
