@@ -34,6 +34,16 @@
     <BRANCH Name="Experiment" Class="CExperiment" Comment="The parameters of the experiment"/>
     <BRANCH Name="SimGod" Class="CSimGod" Comment="The omniscient class that controls all aspects of the simulation process"/>
   </CLASS>
+  <CLASS Name="CExtendedWindTurbineVidalController">
+    <DOUBLE-VALUE Name="A" Comment="A parameter of the torque controller" Default="1.0"/>
+    <DOUBLE-VALUE Name="K_alpha" Comment="K_alpha parameter of the torque controller" Default="5000000"/>
+    <DOUBLE-VALUE Name="KP" Comment="Proportional gain of the pitch controller" Default="1.0"/>
+    <DOUBLE-VALUE Name="KI" Comment="Integral gain of the pitch controller" Default="0.0"/>
+    <BRANCH Name="Critic" Class="CCritic-Factory" Comment="The critic used to learn"/>
+    <BRANCH Name="A-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter A"/>
+    <BRANCH Name="KAlpha-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter K_alpha"/>
+    <BRANCH Name="KP-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter KP"/>
+  </CLASS>
   <CLASS Name="CLQRGain">
     <DOUBLE-VALUE Name="Gain" Comment="The gain applied to the input state variable" Default="0.1"/>
     <STATE-VAR-REF Name="Variable" Comment="The input state variable"/>
@@ -81,6 +91,7 @@
       <CHOICE-ELEMENT Name="Jonkman" Class="CWindTurbineJonkmanController"/>
       <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController"/>
       <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController"/>
+      <CHOICE-ELEMENT Name="Extended-Vidal" Class="CExtendedWindTurbineVidalController"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CTDLambdaCritic">

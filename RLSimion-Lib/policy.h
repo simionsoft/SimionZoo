@@ -25,7 +25,11 @@ public:
 	virtual void addFeatures(const CFeatureList* pFeatureList, double factor) = 0;
 	virtual double getDeterministicOutput(const CFeatureList* pFeatureList) = 0;
 
+	//this method is used when we want the policy to plug directly its output into the environment
 	virtual void selectAction(const CState *s, CAction *a) = 0;
+	//this method is used when we want to get the output of the controller (exploration noise too) and use for some internal stuff
+	//i.e., use the output of the policy learner within an adaptive controller: CExtendedWindTurbine...
+	virtual double getOutput(const CState *s) = 0;
 
 	virtual void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
 
@@ -54,6 +58,7 @@ public:
 	double getDeterministicOutput(const CFeatureList* pFeatureList);
 
 	void selectAction(const CState *s, CAction *a);
+	double getOutput(const CState *s);
 
 	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 
@@ -82,6 +87,7 @@ public:
 	double getDeterministicOutput(const CFeatureList* pFeatureList);
 
 	void selectAction(const CState *s, CAction *a);
+	double getOutput(const CState *s);
 
 	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 

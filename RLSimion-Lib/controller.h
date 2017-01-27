@@ -69,6 +69,10 @@ public:
 
 class CWindTurbineVidalController : public CController
 {
+protected:
+	//aux function
+	double sgn(double value);
+
 	//state variable indices
 	int m_omega_r_index, m_d_omega_r_index;
 	int m_E_p_index, m_T_g_index, m_beta_index;
@@ -83,11 +87,12 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	void selectAction(const CState *s,CAction *a);
+	virtual void selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineBoukhezzarController : public CController
 {
+protected:
 	//state variable indices
 	int m_omega_r_index, m_d_omega_r_index;
 	int m_E_p_index, m_T_a_index, m_T_g_index;
@@ -105,11 +110,12 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	void selectAction(const CState *s,CAction *a);
+	virtual void selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineJonkmanController : public CController
 {
+protected:
 	int m_omega_g_index, m_d_omega_r_index;
 	int m_E_p_index, m_T_g_index, m_beta_index;
 	int m_d_beta_index, m_d_T_g_index;
@@ -132,5 +138,5 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	void selectAction(const CState *s,CAction *a);
+	virtual void selectAction(const CState *s,CAction *a);
 };

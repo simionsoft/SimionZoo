@@ -4,7 +4,10 @@
 #include "world.h"
 #include "config.h"
 #include "parameters-numeric.h"
+#include "controller-adaptive.h"
 #include "app.h"
+
+
 
 std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 {
@@ -14,7 +17,8 @@ std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 		{"LQR",CHOICE_ELEMENT_NEW<CLQRController>},
 		{"Jonkman",CHOICE_ELEMENT_NEW<CWindTurbineJonkmanController>},
 		{"Vidal",CHOICE_ELEMENT_NEW<CWindTurbineVidalController>},
-		{"Boukhezzar",CHOICE_ELEMENT_NEW<CWindTurbineBoukhezzarController>}
+		{"Boukhezzar",CHOICE_ELEMENT_NEW<CWindTurbineBoukhezzarController>},
+		{"Extended-Vidal",CHOICE_ELEMENT_NEW<CExtendedWindTurbineVidalController>}
 	});
 }
 
@@ -111,13 +115,7 @@ void CPIDController::selectAction(const CState *s, CAction *a)
 
 }
 
-double sgn(double value)
-{
-	if (value<0.0) return -1.0;
-	else if (value>0.0) return 1.0;
 
-	return 0.0;
-}
 
 //VIDAL////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -161,6 +159,15 @@ int CWindTurbineVidalController::getOutputActionIndex(int output)
 	}
 	
 	return -1;
+}
+
+//aux function used in WindTurbineVidal controller
+double CWindTurbineVidalController::sgn(double value)
+{
+	if (value<0.0) return -1.0;
+	else if (value>0.0) return 1.0;
+
+	return 0.0;
 }
 
 void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)

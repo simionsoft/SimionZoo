@@ -69,14 +69,16 @@ void CDeterministicPolicyGaussianNoise::getNaturalGradient(const CState* s, cons
 
 void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 {
-	double noise;
-	double output;
+	a->setValue(m_outputActionIndex.get(), getOutput(s));
+}
 
-	noise = m_pExpNoise->getValue();
+double CDeterministicPolicyGaussianNoise::getOutput(const CState* s)
+{
+	double noise = m_pExpNoise->getValue();
 
-	output = m_pDeterministicVFA->getValue(s);
+	double output = m_pDeterministicVFA->getValue(s);
 
-	a->setValue(m_outputActionIndex.get(), output + noise);
+	return noise + output;
 }
 
 void CDeterministicPolicyGaussianNoise::getFeatures(const CState* state, CFeatureList* outFeatureList)
@@ -114,20 +116,17 @@ CStochasticPolicyGaussianNoise::~CStochasticPolicyGaussianNoise()
 
 void CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 {
-	double sigma;
-	double mean;
-	double output;
-
-	sigma = m_pSigmaVFA->getValue(s);
-
-	mean = m_pMeanVFA->getValue(s);
-
-	output = getNormalDistributionSample(mean, sigma);
-
-	a->setValue(m_outputActionIndex.get(), output);
+	a->setValue(m_outputActionIndex.get(), getOutput(s));
 }
 
+double CStochasticPolicyGaussianNoise::getOutput(const CState *s)
+{
+	double sigma = m_pSigmaVFA->getValue(s);
 
+	double mean = m_pMeanVFA->getValue(s);
+
+	return getNormalDistributionSample(mean, sigma);
+}
 void CStochasticPolicyGaussianNoise::getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
 	m_pMeanVFA->getFeatures(s, m_pMeanFeatures);

@@ -158,6 +158,9 @@
     <ClCompile Include="templatedConfigFile.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="controller-adaptive.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -285,6 +288,9 @@
     </ClInclude>
     <ClInclude Include="templatedConfigFile.h">
       <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="controller-adaptive.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

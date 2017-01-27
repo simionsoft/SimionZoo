@@ -54,7 +54,9 @@ protected:
 public:
 	CLinearStateVFA();
 	CLinearStateVFA(CConfigNode* pParameters);
-	CLinearStateVFA(CLinearStateVFA* pSourceVFA);
+	//CLinearStateVFA(CLinearStateVFA* pSourceVFA);
+
+	void setInitValue(double initValue);
 
 	virtual ~CLinearStateVFA();
 	using CLinearVFA::getValue;
@@ -91,6 +93,8 @@ public:
 	CLinearStateActionVFA()= default;
 	CLinearStateActionVFA(CConfigNode* pParameters);
 	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA); //used in double q-learning to get a copy of the target function
+
+	void setInitValue(double initValue);
 
 	virtual ~CLinearStateActionVFA();
 	using CLinearVFA::getValue;

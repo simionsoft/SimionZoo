@@ -25,8 +25,6 @@ public:
 	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 
 	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
-
-	CActorCritic* getInstance(CConfigNode* pParameters);
 };
 
 

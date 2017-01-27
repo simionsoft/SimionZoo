@@ -141,6 +141,10 @@ void CLinearStateVFA::deferredLoadStep()
 		m_pWeights.get()[i] = m_initValue.get();
 }
 
+void CLinearStateVFA::setInitValue(double initValue)
+{
+	m_initValue.set(initValue);
+}
 
 CLinearStateVFA::CLinearStateVFA()
 {}
@@ -264,6 +268,11 @@ CLinearStateActionVFA::~CLinearStateActionVFA()
 
 	delete m_pAux;
 	delete m_pAux2;
+}
+
+void CLinearStateActionVFA::setInitValue(double initValue)
+{
+	m_initValue.set(initValue);
 }
 
 void CLinearStateActionVFA::deferredLoadStep()

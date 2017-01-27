@@ -110,6 +110,7 @@
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="delayed-load.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="actor.h" />
     <ClInclude Include="app-rlsimion.h" />
     <ClInclude Include="app.h" />
+    <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="delayed-load.h" />
