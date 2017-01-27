@@ -17,9 +17,10 @@ int main(int argc, char* argv[])
 		CConfigFile configXMLFile;
 		CSimionApp* pApp = 0;
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
-		if (argc > 2)
+		const char* pPipename = CSimionApp::getArgValue(argc, argv, "pipe");
+		if (pPipename)
 		{
-			CLogger::m_outputPipe.connectToServer(argv[2]);
+			CLogger::m_outputPipe.connectToServer(pPipename);
 			//if connection with parent process went ok, we set the logger's output mode accordingly
 			if (CLogger::m_outputPipe.isConnected())
 				CLogger::m_messageOutputMode = MessageOutputMode::NamedPipe;
@@ -38,7 +39,9 @@ int main(int argc, char* argv[])
 		{
 			pApp->setOutputDirectory(argv[1]);
 
-			pApp->run();
+			if (CSimionApp::flagPassed(argc,argv,"printIOfiles"))
+				pApp->printInputOutputFiles();
+			else pApp->run();
 
 			delete pApp;
 		}

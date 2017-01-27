@@ -6,38 +6,54 @@ using System.Runtime.InteropServices;
 using Herd;
 using System.Threading;
 using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 
 namespace Badger.Data
 {
     public static class Utility
     {
-#if DEBUG
-        [DllImport(@"./Debug/RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
-#else
-        [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
-#endif
+//#if DEBUG
+//        [DllImport(@"./Debug/RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+//#else
+//        [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+//#endif
 
-        private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
+        //private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
         
               
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void getInputsAndOutputs(string path, ref CJob job)
+        //[MethodImpl(MethodImplOptions.Synchronized)]
+        public static void getInputsAndOutputs(string exe,string args, ref CJob job)
         {
-            StringBuilder myResult = new StringBuilder(204800);
-            object o = myResult;
-            Monitor.Enter(o);
-            
-           
             //StringBuilder myResult = new StringBuilder(204800);
-            int error = getIOFiles(path, myResult, 204800);
-            if (error == -1)
+            //object o = myResult;
+            //Monitor.Enter(o);
+
+            var process = new Process
             {
-                return;
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = exe,
+                    Arguments = args + " -printIOfiles",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true
+                }
+            };
+
+            string processOutput= "";
+            process.Start();
+            while(!process.StandardOutput.EndOfStream)
+            {
+                processOutput += process.StandardOutput.ReadLine();
             }
-            else
+            int startPos = processOutput.IndexOf("<Files>");
+            int endPos = processOutput.IndexOf("</Files>");
+            if (startPos>0 && endPos>0)
             {
-                XDocument doc = XDocument.Parse(myResult.ToString());
+                string xml = processOutput.Substring(startPos, endPos - startPos + ("</Files>").Length);
+
+                XDocument doc = XDocument.Parse(xml);
                 XElement[] inputFiles = doc.Descendants()
                                         .Where(e => e.Name == "Input")
                                         .ToArray();
@@ -46,42 +62,71 @@ namespace Badger.Data
                                             .ToArray();
                 foreach (XElement e in inputFiles)
                 {
-                    if(!job.inputFiles.Contains(e.Value))
+                    if (!job.inputFiles.Contains(e.Value))
                         job.inputFiles.Add(e.Value);
                 }
                 foreach (XElement e in outputFiles)
                 {
-                    if(!job.outputFiles.Contains(e.Value))
+                    if (!job.outputFiles.Contains(e.Value))
                         job.outputFiles.Add(e.Value);
                 }
             }
-            Monitor.Exit(o);
+
+        
+
+            //StringBuilder myResult = new StringBuilder(204800);
+            //int error = getIOFiles(path, myResult, 204800);
+            //if (error == -1)
+            //{
+            //    return;
+            //}
+            //else
+            //{
+            //    XDocument doc = XDocument.Parse(myResult.ToString());
+            //    XElement[] inputFiles = doc.Descendants()
+            //                            .Where(e => e.Name == "Input")
+            //                            .ToArray();
+            //    XElement[] outputFiles = doc.Descendants()
+            //                                .Where(e => e.Name == "Output")
+            //                                .ToArray();
+            //    foreach (XElement e in inputFiles)
+            //    {
+            //        if(!job.inputFiles.Contains(e.Value))
+            //            job.inputFiles.Add(e.Value);
+            //    }
+            //    foreach (XElement e in outputFiles)
+            //    {
+            //        if(!job.outputFiles.Contains(e.Value))
+            //            job.outputFiles.Add(e.Value);
+            //    }
+            //}
+           // Monitor.Exit(o);
         }
 
-        public static List<string> getInputs(string path)
-        {
-             StringBuilder myResult = new StringBuilder(204800);
-            int error = getIOFiles(path, myResult, 204800);
-            if (error == -1)
-            {
-                return null;
-            }
-            else
-            {
-                XDocument doc = XDocument.Parse(myResult.ToString());
-                XElement[] inputFiles = doc
-                .Descendants()
-                .Where(e => e.Name == "Input")
-                .ToArray();
-                List<string> returnList = new List<string>();
-                foreach(XElement e in inputFiles)
-                {
-                    returnList.Add(e.Value);
-                }
-                return returnList;
-            }
+        //public static List<string> getInputs(string path)
+        //{
+        //     StringBuilder myResult = new StringBuilder(204800);
+        //    int error = getIOFiles(path, myResult, 204800);
+        //    if (error == -1)
+        //    {
+        //        return null;
+        //    }
+        //    else
+        //    {
+        //        XDocument doc = XDocument.Parse(myResult.ToString());
+        //        XElement[] inputFiles = doc
+        //        .Descendants()
+        //        .Where(e => e.Name == "Input")
+        //        .ToArray();
+        //        List<string> returnList = new List<string>();
+        //        foreach(XElement e in inputFiles)
+        //        {
+        //            returnList.Add(e.Value);
+        //        }
+        //        return returnList;
+        //    }
                    
-        }
+        //}
      
         private static string GetPath(XElement element)
         {

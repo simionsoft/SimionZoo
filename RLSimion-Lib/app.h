@@ -15,6 +15,7 @@ class CSimionApp
 {
 private:
 	static CSimionApp* m_pAppInstance;
+	
 protected:
 	CConfigFile* m_pConfigDoc;
 public:
@@ -33,6 +34,10 @@ public:
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
 	virtual void setOutputDirectory(const char*) = 0;
 	virtual char* getOutputDirectory() = 0;
+	void printInputOutputFiles();
+
+	static const char* getArgValue(int argc, char** argv, char* argName);
+	static bool flagPassed(int argc, char** argv, char* flagName);
 
 	virtual void run()= 0;
 };

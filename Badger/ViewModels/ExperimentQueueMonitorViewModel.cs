@@ -60,7 +60,7 @@ namespace Badger.ViewModels
                 //IMPORTANT
                 task.name = experiment.name;
                 task.exe = experiment.exeFile;
-                task.arguments = experiment.filePath + " " + experiment.pipeName;
+                task.arguments = experiment.filePath + " -pipe=" + experiment.pipeName;
                 task.pipe = experiment.pipeName;
                 job.tasks.Add(task);
                 //add EXE files
@@ -75,7 +75,8 @@ namespace Badger.ViewModels
                 //add experiment file to inputs
                 if (!job.inputFiles.Contains(experiment.filePath))
                     job.inputFiles.Add(experiment.filePath);
-                Utility.getInputsAndOutputs(experiment.filePath, ref job);
+
+                Utility.getInputsAndOutputs(experiment.exeFile, experiment.filePath,ref job);
             }
             return job;
         }
