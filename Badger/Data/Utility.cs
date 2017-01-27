@@ -12,7 +12,11 @@ namespace Badger.Data
 {
     public static class Utility
     {
+#if DEBUG
+        [DllImport(@"./Debug/RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+#else
         [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
+#endif
 
         private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
         
@@ -34,14 +38,12 @@ namespace Badger.Data
             else
             {
                 XDocument doc = XDocument.Parse(myResult.ToString());
-                XElement[] inputFiles = doc
-                .Descendants()
-                .Where(e => e.Name == "Input")
-                .ToArray();
-                XElement[] outputFiles = doc
-                .Descendants()
-                .Where(e => e.Name == "Output")
-                .ToArray();
+                XElement[] inputFiles = doc.Descendants()
+                                        .Where(e => e.Name == "Input")
+                                        .ToArray();
+                XElement[] outputFiles = doc.Descendants()
+                                            .Where(e => e.Name == "Output")
+                                            .ToArray();
                 foreach (XElement e in inputFiles)
                 {
                     if(!job.inputFiles.Contains(e.Value))

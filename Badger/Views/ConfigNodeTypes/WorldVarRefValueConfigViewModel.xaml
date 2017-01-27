@@ -17,7 +17,7 @@
             <Label x:Name="name" Width="150" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right">
                 <Label.ContextMenu>
-                    <ContextMenu Visibility="{Binding Path=bCanBeForked,Converter={StaticResource BoolToVis}}">
+                    <ContextMenu Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                         <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource fork}"></Image>
