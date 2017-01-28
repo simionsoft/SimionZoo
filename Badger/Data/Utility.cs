@@ -13,22 +13,8 @@ namespace Badger.Data
 {
     public static class Utility
     {
-//#if DEBUG
-//        [DllImport(@"./Debug/RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
-//#else
-//        [DllImport(@"./RLSimionInterfaceDLL.dll", CallingConvention = CallingConvention.Cdecl)]
-//#endif
-
-        //private static extern int getIOFiles(string xmlFilename, StringBuilder pBuffer, int bufferSize);
-        
-              
-        //[MethodImpl(MethodImplOptions.Synchronized)]
         public static void getInputsAndOutputs(string exe,string args, ref CJob job)
         {
-            //StringBuilder myResult = new StringBuilder(204800);
-            //object o = myResult;
-            //Monitor.Enter(o);
-
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -71,62 +57,7 @@ namespace Badger.Data
                         job.outputFiles.Add(e.Value);
                 }
             }
-
-        
-
-            //StringBuilder myResult = new StringBuilder(204800);
-            //int error = getIOFiles(path, myResult, 204800);
-            //if (error == -1)
-            //{
-            //    return;
-            //}
-            //else
-            //{
-            //    XDocument doc = XDocument.Parse(myResult.ToString());
-            //    XElement[] inputFiles = doc.Descendants()
-            //                            .Where(e => e.Name == "Input")
-            //                            .ToArray();
-            //    XElement[] outputFiles = doc.Descendants()
-            //                                .Where(e => e.Name == "Output")
-            //                                .ToArray();
-            //    foreach (XElement e in inputFiles)
-            //    {
-            //        if(!job.inputFiles.Contains(e.Value))
-            //            job.inputFiles.Add(e.Value);
-            //    }
-            //    foreach (XElement e in outputFiles)
-            //    {
-            //        if(!job.outputFiles.Contains(e.Value))
-            //            job.outputFiles.Add(e.Value);
-            //    }
-            //}
-           // Monitor.Exit(o);
         }
-
-        //public static List<string> getInputs(string path)
-        //{
-        //     StringBuilder myResult = new StringBuilder(204800);
-        //    int error = getIOFiles(path, myResult, 204800);
-        //    if (error == -1)
-        //    {
-        //        return null;
-        //    }
-        //    else
-        //    {
-        //        XDocument doc = XDocument.Parse(myResult.ToString());
-        //        XElement[] inputFiles = doc
-        //        .Descendants()
-        //        .Where(e => e.Name == "Input")
-        //        .ToArray();
-        //        List<string> returnList = new List<string>();
-        //        foreach(XElement e in inputFiles)
-        //        {
-        //            returnList.Add(e.Value);
-        //        }
-        //        return returnList;
-        //    }
-                   
-        //}
      
         private static string GetPath(XElement element)
         {
