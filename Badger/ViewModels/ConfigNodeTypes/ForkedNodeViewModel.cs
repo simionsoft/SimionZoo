@@ -193,17 +193,35 @@ namespace Badger.ViewModels
 
         public override void setForkCombination(ref int id, ref string combinationName)
         {
-            int valueId;
-            //set the correct value for the fork
-            valueId = id % children.Count;
-            combinationName += "-" + valueId;
-            selectedForkValue = children[valueId] as ForkValueViewModel;
-            id = id / children.Count;
+            int valueId= 0;
+            ForkValueViewModel currentValue = children[0] as ForkValueViewModel;
+            //set the correct value for this fork
 
-            foreach (ConfigNodeViewModel child in children)
+            if (getNumForkCombinations() != children.Count)
             {
-                child.setForkCombination(ref id, ref combinationName);
+                //at least there's one fork beneath this one
+                while (valueId < children.Count - 1 && currentValue != null && id >= currentValue.getNumForkCombinations())
+                {
+                    id -= currentValue.getNumForkCombinations();
+                    ++valueId;
+                    if (valueId < children.Count)
+                        currentValue = children[valueId] as ForkValueViewModel;
+                }
             }
+            else
+            {
+                //leaf
+                valueId = id % children.Count;
+                id = id / children.Count;
+                currentValue= children[valueId] as ForkValueViewModel;
+            }
+
+            combinationName += "-" + valueId;
+            selectedForkValue = currentValue;
+
+            //set correct values for child forked nodes
+            if (currentValue.getNumForkCombinations() > 1)
+                currentValue.setForkCombination(ref id, ref combinationName);
         }
     }
 }
