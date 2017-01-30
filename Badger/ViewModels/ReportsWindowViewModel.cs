@@ -221,6 +221,18 @@ namespace Badger.ViewModels
         }
 
         //check all/none buttons
+        private bool m_bCheckAllVariables = false;
+        public bool bCheckAllVariables
+        {
+            set { m_bCheckAllVariables = value; if (value) checkAllVariables(); else uncheckAllVariables(); }
+            get { return m_bCheckAllVariables; }
+        }
+        private bool m_bCheckAllLogs = false;
+        public bool bCheckAllLogs
+        {
+            set { m_bCheckAllLogs = value; if (value) checkAllLogs(); else uncheckAllLogs(); }
+            get { return m_bCheckAllLogs; }
+        }
         public void checkAllLogs()
         {
             foreach (ExperimentLogViewModel experiment in m_experimentLogs)

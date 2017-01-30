@@ -10,15 +10,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <ScrollViewer >
-        <StackPanel Orientation="Vertical" Margin="0">
-            <StackPanel.Background>
-                <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
-                    <GradientStop Color="#fafafa" Offset="0"/>
-                    <GradientStop Color="#f0f0f0" Offset="1"/>
-                </LinearGradientBrush>
-            </StackPanel.Background>
-            <ItemsControl x:Name="herdAgentList"></ItemsControl>
-        </StackPanel>
+    <ScrollViewer>
+        <ItemsControl x:Name="herdAgentList"></ItemsControl>
     </ScrollViewer>
 </UserControl>

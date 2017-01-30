@@ -50,13 +50,8 @@
             <Border BorderThickness="1" BorderBrush="DarkGray">
                 <StackPanel>
                     <StackPanel Height="25" HorizontalAlignment="Left" Orientation="Horizontal">
-                        <Button x:Name="checkAllLogs" Background="DarkGray">
-                            <Image Source="{StaticResource checkAll}"  ToolTip="Check all the logs" Width="20" Height="20" />
-                        </Button>
-                        <Button x:Name="uncheckAllLogs" Background="DarkGray">
-                            <Image Source="{StaticResource checkNone}"  ToolTip="Uncheck all the logs" Width="20" Height="20" />
-                        </Button>
-                        <Label Content="Experiment logs " FontSize="8" Margin="60,0,0,0"></Label>
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding bCheckAllLogs}"></CheckBox>
+                        <Label Content="Experiments " FontSize="8" Margin="0"></Label>
                         <Label Content="{Binding Path=logListHeader}" FontSize="8"/>
                     </StackPanel>
                     <ListView x:Name="Logs" BorderBrush="{x:Null}" BorderThickness="0" 
@@ -73,13 +68,8 @@
                 <StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button x:Name="checkAllVariables" Background="DarkGray">
-                                <Image Source="{StaticResource checkAll}"  ToolTip="Check all the logs" Width="20" Height="20" />
-                            </Button>
-                            <Button x:Name="uncheckAllVariables"  Background="DarkGray">
-                                <Image Source="{StaticResource checkNone}"  ToolTip="Uncheck all the logs" Width="20" Height="20" />
-                            </Button>
-                            <Label Content="Variables in log " FontSize="8" Margin="60,0,0,0"></Label>
+                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding bCheckAllVariables}"></CheckBox>
+                            <Label Content="Variables" FontSize="8" Margin="0"></Label>
                             <Label Content="{Binding Path=variableListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
                         </StackPanel>
                     </StackPanel>

@@ -97,7 +97,7 @@
 
                 <StackPanel Grid.Row="1" Grid.Column="0" Height="476">
                     <Border BorderThickness="1" CornerRadius="2" Margin="0,0" Height="500" RenderTransformOrigin="0.5,0.5">
-                        
+
                         <TabControl x:Name="tabControlExperiments" SelectedItem="{Binding Path=selectedTabControlExperiment}" Margin="0,0,0,9">
                             <TabControl.ItemTemplate>
                                 <DataTemplate>
@@ -161,7 +161,7 @@
                     <Label FontWeight="Bold">Agent Herd</Label>
                 </StackPanel>
                 <Border BorderBrush="Black" Height="172" Width="246" HorizontalAlignment="Center" BorderThickness="1" CornerRadius="2" Margin="12,0,7,5">
-                    <ContentControl x:Name="shepherdViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0" Height="110"/>
+                    <ContentControl x:Name="shepherdViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Margin="0,9" Height="152"/>
                 </Border>
             </StackPanel>
 

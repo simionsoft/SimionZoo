@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.BoolValueConfigView"
              mc:Ignorable="d" 
-d:DesignHeight="50" d:DesignWidth="300">
+            d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
@@ -25,9 +25,10 @@ d:DesignHeight="50" d:DesignWidth="300">
                 </ContextMenu>
             </Label.ContextMenu>
         </Label>
-        <TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
+        <CheckBox VerticalAlignment="Center" IsChecked="{Binding bContentAsBool,Mode=TwoWay}"></CheckBox>
+        <!--<TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
-                 BorderThickness="0"/>
+                 BorderThickness="0"/>-->
     </StackPanel>
   
 </UserControl>

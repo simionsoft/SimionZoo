@@ -17,7 +17,7 @@
     <Border BorderBrush="Orange">
         <StackPanel Orientation="Horizontal">
             <ContentControl x:Name="selectedValueConfigNode" />
-            <StackPanel  Margin="10,0,0,0" Background="Black" Width="46" Orientation="Vertical">
+            <StackPanel  Margin="10,0,0,0" Background="Orange" Width="46" Orientation="Vertical">
                 <StackPanel.ContextMenu >
                     <ContextMenu>
                         <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode">
@@ -29,7 +29,7 @@
                 </StackPanel.ContextMenu>
 
                 <StackPanel>
-                    <Image  Source="{StaticResource fork}" Width="20"/>
+                    <Image  Source="{StaticResource fork}" Width="20" Margin="13,0"/>
                 </StackPanel>
                 <StackPanel HorizontalAlignment="Center">
                     <Label HorizontalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>

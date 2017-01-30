@@ -5,6 +5,19 @@ namespace Badger.ViewModels
 {
     class BoolValueConfigViewModel: ConfigNodeViewModel
     {
+        public bool bContentAsBool
+        {
+            get
+            {
+                if (content.ToLower() == "true") return true;
+                return false;
+            }
+            set
+            {
+                if (value) content = "true";
+                else content = "false";
+            }
+        }
         public BoolValueConfigViewModel(AppViewModel appViewModel, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(appViewModel, parent, definitionNode, parentXPath);

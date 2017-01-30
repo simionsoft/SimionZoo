@@ -11,31 +11,13 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <Border Margin="0" BorderThickness="2">
-        <Border.BorderBrush>
-            <LinearGradientBrush EndPoint="0.5,0.9" StartPoint="0.5,0">
-                <GradientStop Color="LightGray" Offset="0.9"/>
-                <GradientStop Color="CadetBlue"/>
-            </LinearGradientBrush>
-        </Border.BorderBrush>
-
-        <StackPanel Orientation="Horizontal">
-            <StackPanel VerticalAlignment="Center" Margin="0,0,20,0">
-                
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Width="230">
-                <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Center">
-                    <!--<Label Foreground="LightGray" Content="IP=" FontSize="8"/>-->
-                    <TextBlock IsEnabled="False" Width="70" Text="{Binding ipAddressString,FallbackValue=''}" FontSize="10" Margin="0,0,5,0" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock IsEnabled="False" Text="{Binding version,FallbackValue=''}" Foreground="Black" FontSize="8" Margin="0,0,5,0" Width="30"/>
-                    <TextBlock IsEnabled="False" Text="{Binding status,FallbackValue=''}" Foreground="Black" FontSize="8" Margin="0,0,5,0" Width="30"/>
-                    <TextBlock IsEnabled="False" Text="{Binding numProcessors,FallbackValue='0'}" Foreground="Black" FontSize="8" Margin="0,0,5,0" Width="10"/>
-                </StackPanel>
-                <!--<StackPanel Orientation="Horizontal">
-                    <TextBlock IsEnabled="False" Text="{Binding status}" Foreground="Black" FontSize="8" />
-                </StackPanel>-->
+    <Border Margin="0" BorderThickness="1">
+        <StackPanel Orientation="Vertical" Width="230">
+            <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" HorizontalAlignment="Center">
+                <TextBlock IsEnabled="False" Width="80" Text="{Binding ipAddressString,FallbackValue=''}" FontSize="10" Margin="0,0,5,0" />
+                <TextBlock IsEnabled="False" Text="{Binding version,FallbackValue=''}" Foreground="Black" FontSize="8" Margin="0,0,5,0" Width="30"/>
+                <TextBlock IsEnabled="False" Text="{Binding status,FallbackValue=''}" Foreground="Black" FontSize="8" Margin="0,0,5,0" Width="30"/>
+                <TextBlock IsEnabled="False" Text="{Binding numProcessors,FallbackValue=''}" Foreground="Black" FontSize="8" Margin="0,0,5,0" Width="10"/>
             </StackPanel>
         </StackPanel>
     </Border>
