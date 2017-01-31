@@ -4,7 +4,7 @@
 #ifdef _DEBUG
 #pragma comment(lib,"../../Debug/FASTDimensionalPortalDLL.lib")
 #else
-#pragma comment(lib,"../../Release/FASTDimensionalPortalDLL.lib")
+#pragma comment(lib,"../../bin/FASTDimensionalPortalDLL.lib")
 #endif
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

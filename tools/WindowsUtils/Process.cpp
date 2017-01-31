@@ -40,7 +40,12 @@ bool CProcess::spawn(const char* commandLine, bool bAwait)
 bool CProcess::isRunning()
 {
 	DWORD returnCode;
-	GetExitCodeProcess(m_handle, &returnCode);
 
-	return returnCode == STILL_ACTIVE;
+	if (m_handle != INVALID_HANDLE_VALUE)
+	{
+		GetExitCodeProcess(m_handle, &returnCode);
+
+		return returnCode == STILL_ACTIVE;
+	}
+	return false;
 }

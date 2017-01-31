@@ -15,9 +15,10 @@ class CSimionApp
 {
 private:
 	static CSimionApp* m_pAppInstance;
-	
+	bool m_bRemoteExecution = false;
 protected:
 	CConfigFile* m_pConfigDoc;
+	
 public:
 
 	CSimionApp();
@@ -38,6 +39,10 @@ public:
 
 	static const char* getArgValue(int argc, char** argv, char* argName);
 	static bool flagPassed(int argc, char** argv, char* flagName);
+
+	//is this app being run remotely?
+	bool getRemoteExecution() { return m_bRemoteExecution; }
+	void setRemoteExecution(bool bRemote) { m_bRemoteExecution = bRemote; }
 
 	virtual void run()= 0;
 };

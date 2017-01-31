@@ -77,17 +77,11 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	if (CSimionApp::get())
 	{
 		//input/output files
-#ifdef _DEBUG
-		CSimionApp::get()->pSimGod->registerInputFile("..\\Release\\FASTDimensionalPortalDLL.dll");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\Release\\FAST_win32.exe");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\Release\\MAP_win32.dll");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\Release\\TurbSim.exe");
-#else
 		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\FASTDimensionalPortalDLL.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\FAST_win32.exe");
 		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\MAP_win32.dll");
 		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\TurbSim.exe");
-#endif
+
 		//FAST data files
 		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\configFileTemplate.fst");
 		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\Cylinder1.dat");
@@ -155,11 +149,8 @@ void CFASTWindTurbine::deferredLoadStep()
 													, m_evaluationMeanWindSpeed.get());						//URef
 
 		//the wind file itself
-#ifdef _DEBUG
-		exeFileName = std::string("..\\Release\\TurbSim.exe");
-#else
 		exeFileName = std::string("..\\bin\\TurbSim.exe");
-#endif
+
 		commandLine = exeFileName + std::string(" ") + outConfigFileName;
 		TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 
@@ -257,17 +248,16 @@ void CFASTWindTurbine::reset(CState *s)
 
 	//spawn the FAST exe file
 	std::string commandLine;
-#ifdef _DEBUG
-	commandLine = std::string("..\\Release\\fast_win32.exe");
-#else
+
 	commandLine= std::string("..\\bin\\fast_win32.exe");
-#endif
+
 	commandLine+= std::string(" ") + std::string(CSimionApp::get()->getOutputDirectory())+ std::string("\\")
 		+ std::string(FAST_CONFIG_FILE);
-	FASTprocess.spawn((char*)(commandLine).c_str());
+	bool bSpawned= FASTprocess.spawn((char*)(commandLine).c_str());
 	//wait for the client (FASTDimensionalPortalDLL) to connect
-	if (FASTprocess.isRunning())
+	if (bSpawned && FASTprocess.isRunning())
 	{
+		CLogger::logMessage(MessageType::Info, "Waiting for the client to connect");
 		m_namedPipeServer.waitForClientConnection();
 		//receive(s)
 		m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));

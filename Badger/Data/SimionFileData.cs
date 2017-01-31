@@ -14,9 +14,9 @@ namespace Badger.Data
         public const string binDir = "bin";
         public const string experimentDir = "experiments";
         public const string imageDir = "images";
-        public const string appConfigRelativeDir = "../config/apps";
-        public const string experimentRelativeDir = "../" + experimentDir;
-        public const string imageRelativeDir = "../" + imageDir;
+        public const string appConfigRelativeDir = "..\\config\\apps";
+        public const string experimentRelativeDir = "..\\" + experimentDir;
+        public const string imageRelativeDir = "..\\" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
 
         public delegate void logFunction(string message);

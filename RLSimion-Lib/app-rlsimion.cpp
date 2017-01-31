@@ -53,7 +53,6 @@ RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)
 	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
 	pExperiment = CHILD_OBJECT<CExperiment>(pConfigNode, "Experiment", "The parameters of the experiment");
 
-
 	//Last, the SimGod was created to create and control all the simions
 	pSimGod= CHILD_OBJECT<CSimGod>(pConfigNode,"SimGod"
 		, "The omniscient class that controls all aspects of the simulation process");

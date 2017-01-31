@@ -6,7 +6,7 @@
 #ifdef _DEBUG
 #pragma comment(lib,"../../Debug/WindowsUtils.lib")
 #else
-#pragma comment(lib,"../../Release/WindowsUtils.lib")
+#pragma comment(lib,"../../bin/WindowsUtils.lib")
 #endif
 
 

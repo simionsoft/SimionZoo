@@ -15,6 +15,7 @@
     <RootNamespace>RLLib</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>RLSimion-Lib</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -48,7 +49,7 @@
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
@@ -94,10 +95,10 @@
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
-      <OutputFile>../Release/$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>../bin/$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <CustomBuildStep>
-      <Command>..\Release\SimionSrcParser.exe $(ProjectDir)</Command>
+      <Command>..\bin\SimionSrcParser.exe $(ProjectDir)</Command>
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Outputs>..\config\definitions.xml</Outputs>
