@@ -4,14 +4,19 @@ using System.Text;
 using System.Xml.Linq;
 using Herd;
 using System.Diagnostics;
-
+using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace Badger.Data
 {
     public static class Utility
     {
+        //this function is called from several tasks and needs to be synchronized
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public static void getInputsAndOutputs(string exe,string args, ref CJob job)
         {
+            object o = new object();
+            Monitor.Enter(o);
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -54,6 +59,7 @@ namespace Badger.Data
                         job.outputFiles.Add(e.Value);
                 }
             }
+            Monitor.Exit(o);
         }
      
         private static string GetPath(XElement element)

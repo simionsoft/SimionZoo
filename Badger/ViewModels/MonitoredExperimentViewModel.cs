@@ -90,6 +90,8 @@ namespace Badger.ViewModels
             }
         }
 
+        private const double m_globalProgressUpdateRate = 10.0;
+        private double m_lastProgressUpdate = -m_globalProgressUpdateRate;
         private double m_progress;
         public double progress
         {
@@ -97,6 +99,11 @@ namespace Badger.ViewModels
             set
             {
                 m_progress = value; NotifyOfPropertyChange(() => progress);
+                if (m_progress-m_lastProgressUpdate>=m_globalProgressUpdateRate)
+                {
+                    m_parent.updateGlobalProgress();
+                    m_lastProgressUpdate = m_progress;
+                }
             }
         }
 
@@ -121,10 +128,12 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        public MonitoredExperimentViewModel(Experiment experiment,PlotViewModel plot)
+        private MonitorWindowViewModel m_parent;
+        public MonitoredExperimentViewModel(Experiment experiment,PlotViewModel plot,MonitorWindowViewModel parent)
         {
             evaluationMonitor = plot;
             m_experiment = experiment;
+            m_parent = parent;
         }
 
         //evaluation plot stuff

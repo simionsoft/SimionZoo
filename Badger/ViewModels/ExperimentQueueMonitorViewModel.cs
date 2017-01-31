@@ -241,10 +241,20 @@ namespace Badger.ViewModels
         private Logger.LogFunction logFunction= null;
         private PlotViewModel m_evaluationMonitor;
 
+        public double calculateGlobalProgress()
+        {
+            double sum = 0.0;
+            foreach(MonitoredExperimentViewModel exp in m_monitoredExperimentBatchList)
+            {
+                sum += exp.progress;
+            }
+            return sum / (m_monitoredExperimentBatchList.Count*100);
+        }
+
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
             , List<Experiment> experiments, PlotViewModel evaluationMonitor
-            , Logger.LogFunction logFunctionDelegate)
+            , Logger.LogFunction logFunctionDelegate,MonitorWindowViewModel parent)
         {
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
@@ -252,7 +262,7 @@ namespace Badger.ViewModels
             foreach (Experiment exp in experiments)
             {
                 MonitoredExperimentViewModel monitoredExperiment= 
-                    new MonitoredExperimentViewModel(exp,evaluationMonitor);
+                    new MonitoredExperimentViewModel(exp,evaluationMonitor,parent);
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
                 m_pendingExperiments.Add(monitoredExperiment);
             }

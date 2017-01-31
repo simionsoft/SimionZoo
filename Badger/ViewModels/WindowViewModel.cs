@@ -115,6 +115,7 @@ namespace Badger.ViewModels
        
         private object m_logFileLock = new object();
         public const string logFilename= SimionFileData.badgerLogFile;
+        private bool m_bFirstLog= true;
         
         public void logToFile(string logMessage)
         {
@@ -123,8 +124,11 @@ namespace Badger.ViewModels
                 string text = DateTime.Now.ToShortDateString() + " " +
                                 DateTime.Now.ToShortTimeString() + ": " + logMessage + "\n";
                 FileStream file;
-                if (!File.Exists(logFilename))
+                if (m_bFirstLog)
+                {
                     file = File.Create(logFilename);
+                    m_bFirstLog = false;
+                }
                 else file = File.Open(logFilename, FileMode.Append);
                 if (file != null)
                 {
@@ -143,11 +147,12 @@ namespace Badger.ViewModels
         }
         private void loadAppDefinitions()
         {
-#if DEBUG
-            foreach(string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir,"*.Debug.xml"))
-#else
+            //No distinction needed anymore since release versions are always to be sent to remote machines
+//#if DEBUG
+//            foreach(string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir,"*.Debug.xml"))
+//#else
             foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
-#endif
+//#endif
             {
                 char[] spliter = "\\".ToCharArray();
                 string[] tmp = app.Split(spliter);

@@ -12,12 +12,24 @@ namespace Badger.ViewModels
         public PlotViewModel evaluationPlot{get;set;}
         private string m_batchFilename = null;
 
+        private double m_globalProgress = 0.0;
+        public double globalProgress
+        {
+            get { return m_globalProgress; }
+            set { m_globalProgress = value; NotifyOfPropertyChange(() => globalProgress); }
+        }
+
+        public void updateGlobalProgress()
+        {
+            globalProgress = experimentQueueMonitor.calculateGlobalProgress();
+        }
+
         public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents
             , List<Experiment> pendingExperiments, Logger.LogFunction logFunction, string batchFilename)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(freeHerdAgents, pendingExperiments
-                , evaluationPlot,logFunction);
+                , evaluationPlot,logFunction,this);
             m_batchFilename = batchFilename;
         }
 
