@@ -74,11 +74,11 @@ protected:
 	double sgn(double value);
 
 	//state variable indices
-	int m_omega_r_index, m_d_omega_r_index;
+	int m_omega_g_index, m_d_omega_g_index, m_omega_r_index;
 	int m_E_p_index, m_T_g_index, m_beta_index;
 	int m_E_int_omega_r_index;
 	//action variable indices
-	int m_d_beta_index, m_d_T_g_index;
+	int m_a_beta, m_a_T_g;
 	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
 	CWindTurbineVidalController(CConfigNode* pConfigNode);
@@ -94,12 +94,12 @@ class CWindTurbineBoukhezzarController : public CController
 {
 protected:
 	//state variable indices
-	int m_omega_r_index, m_d_omega_r_index;
+	int m_omega_g_index, m_d_omega_g_index;
 	int m_E_p_index, m_T_a_index, m_T_g_index;
 	int m_beta_index;// , m_E_int_omega_r_index;
 
 	//action variable indices
-	int m_d_beta_index, m_d_T_g_index;
+	int m_a_beta, m_a_T_g;
 	
 	DOUBLE_PARAM m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
@@ -116,9 +116,9 @@ public:
 class CWindTurbineJonkmanController : public CController
 {
 protected:
-	int m_omega_g_index, m_d_omega_r_index;
+	int m_omega_g_index, m_d_omega_g_index;
 	int m_E_p_index, m_T_g_index, m_beta_index;
-	int m_d_beta_index, m_d_T_g_index;
+	int m_a_beta, m_a_T_g;
 
 	//generator speed filter's parameters and variables
 	DOUBLE_PARAM m_CornerFreq;
@@ -131,6 +131,7 @@ protected:
 	double m_IntSpdErr;
 	DOUBLE_PARAM m_PC_KK, m_PC_KP, m_PC_KI;
 	DOUBLE_PARAM m_PC_RefSpd;
+	double m_lastDemandedPitch;
 public:
 	CWindTurbineJonkmanController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineJonkmanController();

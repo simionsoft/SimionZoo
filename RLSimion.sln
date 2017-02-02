@@ -24,7 +24,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLSimion", "RLSimion\RLSimi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerdAgentService", "tools\HerdAgent\HerdAgentService.csproj", "{3917EF51-812D-40C0-A742-DB73CAFC0918}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandaloneAppHerdAgent", "tools\TESTHerdAgent\StandaloneAppHerdAgent.csproj", "{1ADDBF7A-4064-42FB-846F-7D22E8BB9B5B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StandaloneHerdAgent", "tools\TESTHerdAgent\StandaloneHerdAgent.csproj", "{1ADDBF7A-4064-42FB-846F-7D22E8BB9B5B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "binLogFileReadTest", "tools\binLogFileReadTest\binLogFileReadTest.vcxproj", "{052D07D1-0F65-484A-AA8E-E4F9F627C631}"
 EndProject

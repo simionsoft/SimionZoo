@@ -315,16 +315,19 @@
     <STATE-VAR Name="E_p" Min="-5000000" Max="5000000" Unit="W"/>
     <STATE-VAR Name="v" Min="1" Max="50" Unit="m/s"/>
     <STATE-VAR Name="omega_r" Min="0" Max="6" Unit="rad/s"/>
-    <STATE-VAR Name="omega_g" Min="0" Max="200" Unit="rad/s"/>
-    <STATE-VAR Name="E_omega_r" Min="-4" Max="4" Unit="rad/s"/>
     <STATE-VAR Name="d_omega_r" Min="-2" Max="2" Unit="rad/s^2"/>
+    <STATE-VAR Name="E_omega_r" Min="-4" Max="4" Unit="rad/s"/>
+    <STATE-VAR Name="omega_g" Min="0" Max="200" Unit="rad/s"/>
+    <STATE-VAR Name="d_omega_g" Min="-2" Max="2" Unit="rad/s^2"/>
+    <STATE-VAR Name="E_omega_g" Min="-4" Max="4" Unit="rad/s"/>
     <STATE-VAR Name="beta" Min="0" Max="1.570796" Unit="rad"/>
     <STATE-VAR Name="d_beta" Min="-0.1396263" Max="0.1396263" Unit="rad/s"/>
-    <STATE-VAR Name="T_g" Min="0" Max="50000" Unit="N/m"/>
+    <STATE-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
     <STATE-VAR Name="d_T_g" Min="-15000" Max="15000" Unit="N/m/s"/>
     <STATE-VAR Name="E_int_omega_r" Min="-100" Max="100" Unit="rad"/>
-    <ACTION-VAR Name="d_beta" Min="-0.1396263" Max="0.1396263" Unit="rad/s"/>
-    <ACTION-VAR Name="d_T_g" Min="-15000" Max="15000" Unit="N/m/s"/>
+    <STATE-VAR Name="SimTime" Min="0" Max="10000" Unit="s"/>
+    <ACTION-VAR Name="beta" Min="0" Max="1.570796" Unit="rad"/>
+    <ACTION-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
     <CONSTANT Name="RatedPower"/>
     <CONSTANT Name="HubHeight"/>
     <CONSTANT Name="CutInWindSpeed"/>

@@ -23,13 +23,15 @@ class FASTWorldPortal
 	double m_lastTime;
 	double m_elapsedTime;
 
+	double m_prevPitch, m_prevGenTorque;
+
 	//constants used to calculate those variables not available at runtime
 	double J_r, J_g, n_g;
 
 	CDescriptor m_stateDescriptor, m_actionDescriptor;
 	std::map<const char*, double> m_constants;
-	CState *m_pS;
-	CAction *m_pA;
+	CState *s;
+	CAction *a;
 
 public:
 	FASTWorldPortal();
@@ -39,9 +41,9 @@ public:
 	void retrieveStateVariables(float* FASTdata, bool bFirstTime);
 	void sendState();
 
-	void setActionVariables(float* FASTdata);
+	void setActionVariables(float* FASTdata, bool bFirstTime);
 	void receiveAction();
 
-	void connectToNamedPipeServer(const char* name);
+	bool connectToNamedPipeServer(const char* name);
 	void disconnectFromNamedPipeServer();
 };

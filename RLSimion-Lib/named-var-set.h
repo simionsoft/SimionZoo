@@ -17,7 +17,7 @@ public:
 	double getMax() const { return m_max; }
 	//double getMin(const char* name) const;
 	//double getMax(const char* name) const;
-	double getRangeWidth(int i) const;
+	double getRangeWidth(int i) const { return m_max - m_min; }
 };
 
 class CNamedVarSet;

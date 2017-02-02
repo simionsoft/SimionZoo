@@ -48,8 +48,5 @@ False         TowerFile      - Have tower file (.twr) [flag]
 ====================== OUTPUT ==================================================================================
 False         SumPrint     - Print summary data to <RootName>.IfW.sum (flag)
               OutList      - The next line(s) contains a list of output parameters.  See OutListParameters.xlsx for a listing of available output channels, (-)
-"Wind1VelX"               X-direction wind velocity at point WindList(1)
-"Wind1VelY"               Y-direction wind velocity at point WindList(1)
-"Wind1VelZ"               Z-direction wind velocity at point WindList(1)
 END of input file (the word "END" must appear in the first 3 columns of this last OutList line)
 ---------------------------------------------------------------------------------------------------------------

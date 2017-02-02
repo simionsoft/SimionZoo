@@ -12,8 +12,6 @@
 #endif
 
 
-bool g_bDummyTest = false;	//for debugging
-
 FASTWorldPortal::FASTWorldPortal()
 {
 	CFASTWindTurbine *pModel= new CFASTWindTurbine(0);
@@ -29,8 +27,8 @@ FASTWorldPortal::FASTWorldPortal()
 	J_g = m_constants["GeneratorInertia"];
 	n_g = m_constants["GearBoxRatio"];
 
-	m_pS = m_stateDescriptor.getInstance();
-	m_pA = m_actionDescriptor.getInstance();
+	s = m_stateDescriptor.getInstance();
+	a = m_actionDescriptor.getInstance();
 }
 
 void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
@@ -38,80 +36,116 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	//Time = avrSWAP[2 - 1];
 	double currentTime= (double) FASTdata[1];
 	if (bFirstTime)
+	{
 		m_lastTime = currentTime;
-	m_elapsedTime = currentTime - m_lastTime;
+		m_elapsedTime = 0.00000001; //this avoids zero divisions in the first step
+	}
+	else
+		m_elapsedTime = currentTime - m_lastTime;
 
 	//Rotor speed: omega_r
 	//RotorSpeed = avrSWAP[21 - 1];
-	double last_omega_r = m_pS->getValue("omega_r");
+	double last_omega_r = s->getValue("omega_r");
 	double omega_r = (double)FASTdata[20];
-	m_pS->setValue("omega_r",omega_r);
+	s->setValue("omega_r",omega_r);
 
 	//Rotor speed acceleration: d_omega_r
 	double d_omega_r= 0.0;
 	if (!bFirstTime)
-		d_omega_r = (omega_r - last_omega_r) / std::min(0.0001,m_elapsedTime); //to avoid zero division
-	m_pS->setValue("d_omega_r", d_omega_r);
+		d_omega_r = (omega_r - last_omega_r) / m_elapsedTime;
+	s->setValue("d_omega_r", d_omega_r);
+
+	s->setValue("E_omega_r", s->getValue("omega_r") - m_constants["RatedRotorSpeed"]);
 
 	//Generator speed: omega_g		//GenSpeed = avrSWAP[20 - 1];
-	m_pS->setValue("omega_g", (double)FASTdata[19]);
+	double last_omega_g = s->getValue("omega_g");
+	double omega_g = (double)FASTdata[19];
+	s->setValue("omega_g", omega_g);
 
-	m_pS->setValue("E_omega_r", m_pS->getValue("omega_r") - m_constants["RatedRotorSpeed"]);
+	double d_omega_g = 0.0;
+	if (!bFirstTime)
+		d_omega_g = (omega_g - last_omega_g) / m_elapsedTime; //to avoid zero division
+	s->setValue("d_omega_g", d_omega_r);
+
+	s->setValue("E_omega_g", s->getValue("omega_g") - m_constants["RatedGeneratorSpeed"]);
 
 	//Wind speed: v					//HorWindV = avrSWAP[27 - 1];
-	m_pS->setValue("v", (double)FASTdata[26]);
+	s->setValue("v", (double)FASTdata[26]);
 
 	//Mesaured electrical power: P_e
-	m_pS->setValue("P_e", (double)FASTdata[13]);
+	s->setValue("P_e", (double)FASTdata[13]);
 
 	//Power error: E_p
-	m_pS->setValue("E_p", (double)FASTdata[13] - m_constants["RatedPower"]);
+	s->setValue("E_p", (double)FASTdata[13] - m_constants["RatedPower"]);
 
 	//Aerodynamic torque: T_a
-	m_pS->setValue("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + m_pS->getValue("E_p") / m_pS->getValue("omega_g"));
+	s->setValue("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->getValue("E_p") / s->getValue("omega_g"));
 
 	//Aerodynamic power: P_a
-	m_pS->setValue("P_a", m_pS->getValue("T_a")*m_pS->getValue("omega_r"));
+	s->setValue("P_a", s->getValue("T_a")*s->getValue("omega_r"));
 
 	//Power setpoint: P_s, assumed to be the rated power
-	m_pS->setValue("P_s", m_constants["RatedPower"]);
+	s->setValue("P_s", m_constants["RatedPower"]);
 
 	//Generator torque: T_g
 	if (bFirstTime)
-		m_pS->setValue("T_g", m_constants["RatedGeneratorTorque"]);
+	{
+		m_prevGenTorque = m_constants["RatedGeneratorTorque"];
+		s->setValue("T_g", m_constants["RatedGeneratorTorque"]);
+		s->setValue("d_T_g", 0.0);
+	}
 	else
-		//we have to track it because FAST doesn't actually calculate this value
-		m_pS->setValue("T_g", m_pS->getValue("T_g") + m_pA->getValue("d_T_g")* m_elapsedTime);
-
-	m_pS->setValue("d_T_g", m_pA->getValue("d_T_g"));
+	{
+		m_prevGenTorque = s->getValue("T_g");
+		//s->setValue("T_g", a->getValue("T_g"));
+		//s->setValue("d_T_g", (a->getValue("T_g") - m_prevGenTorque) / m_elapsedTime);
+	}
 	//Blade pitch: beta
-	//The blade pitch is measured instead of tracking it
-	double lastBeta = m_pS->getValue("beta");
-	double beta = (double)FASTdata[4 - 1];
-	m_pS->setValue("beta", beta);
+	double beta = (double)FASTdata[3];
 
-	m_pS->setValue("d_beta", (beta-lastBeta)/ std::min(0.0001, m_elapsedTime)); //to avoid zero division
+	if (bFirstTime)
+	{
+		m_prevPitch = s->getValue("beta");
+		s->setValue("beta", beta);
+		s->setValue("d_beta", 0.0);
+	}
+	else
+	{
+		m_prevPitch = beta;
+		//s->setValue("beta", beta);
+		//s->setValue("d_beta", (beta - m_prevPitch) / m_elapsedTime);
+	}
 
 	m_lastTime = currentTime;
 }
 
-void FASTWorldPortal::setActionVariables(float* FASTdata)
+void FASTWorldPortal::setActionVariables(float* FASTdata, bool bFirstTime)
 {
-	//For backcompatibility reasons, instead of using absolute torque/pitch angles, we provide change rates from the controller
-	//This forces us to integrate these rates to calculate the absolute values passed to FAST
+	//We saturate here the desired pitch/torque rates to avoid discrepancies between RLSimion::D_t and FAST::DT
 
-
-	//d_t_g
+	//T_g
 	FASTdata[34] = 1.0;          //Generator contactor status: 1=main (high speed) variable-speed generator
 	FASTdata[55] = 0.0;          //Torque override: 0=yes
-	double demanded_T_g = m_pS->getValue("T_g") + m_pA->getValue("d_T_g")*m_elapsedTime;
-	demanded_T_g = std::min(std::max(demanded_T_g, m_pS->getProperties("T_g").getMin()), m_pS->getProperties("T_g").getMax());
+
+	double demanded_T_g = a->getValue("T_g");
+	if (!bFirstTime)
+	{
+		s->setValue("d_T_g",(demanded_T_g - m_prevGenTorque) / m_elapsedTime);
+		demanded_T_g = s->getValue("T_g") + s->getValue("d_T_g")*m_elapsedTime;
+		demanded_T_g = std::min(std::max(demanded_T_g, s->getProperties("T_g").getMin()), s->getProperties("T_g").getMax());
+		s->setValue("T_g", demanded_T_g);
+	}
 	FASTdata[46] = (float)demanded_T_g;// (float)m_last_T_g;   //Demanded generator torque
 
-	//d_beta
-	double demanded_beta= m_pS->getValue("beta") + m_pA->getValue("d_beta")*m_elapsedTime;
-	demanded_beta = std::min(std::max(demanded_beta, m_pS->getProperties("beta").getMin()), m_pS->getProperties("beta").getMax());
-       
+	//beta
+	double demanded_beta = a->getValue("beta");
+	if (!bFirstTime)
+	{
+		s->setValue("d_beta",(demanded_beta - m_prevPitch) / m_elapsedTime);
+		demanded_beta = s->getValue("beta") + s->getValue("d_beta")*m_elapsedTime;
+		demanded_beta = std::min(std::max(demanded_beta, s->getProperties("beta").getMin()), s->getProperties("beta").getMax());
+		s->setValue("beta", demanded_beta);
+	}
 	FASTdata[54] = 0.0;       //Pitch override: 0=yes
 
 	FASTdata[41] = (float)demanded_beta; //Use the command angles of all blades if using individual pitch
@@ -133,42 +167,24 @@ void FASTWorldPortal::setActionVariables(float* FASTdata)
 	FASTdata[81 - 1] = 0.0; //Variable slip current demand
 }
 
-void FASTWorldPortal::connectToNamedPipeServer(const char* pipeName)
+bool  FASTWorldPortal::connectToNamedPipeServer(const char* pipeName)
 {
-	if (!g_bDummyTest)
-		m_namedPipeClient.connectToServer(pipeName,false); //bAddPrefix= false because we are reading the full name from xml config file
+	return m_namedPipeClient.connectToServer(pipeName,false); //bAddPrefix= false because we are reading the full name from xml config file
 }
 
 void FASTWorldPortal::disconnectFromNamedPipeServer()
 {
-	if (!g_bDummyTest)
-		m_namedPipeClient.closeConnection();
+	m_namedPipeClient.closeConnection();
 }
 
 void FASTWorldPortal::sendState()
 {
-	double *pValues= m_pS->getValueVector();
-	if (!g_bDummyTest)
-		m_namedPipeClient.writeBuffer(pValues, m_pS->getNumVars()*sizeof(double));
-	else
-	{
-		printf("State=[");
-		for (int i = 0; i < m_pS->getNumVars(); i++)
-			printf("%.2f ", pValues[i]);
-		printf("]\n");
-	}
+	double *pValues= s->getValueVector();
+	m_namedPipeClient.writeBuffer(pValues, s->getNumVars()*sizeof(double));
 }
 
 void FASTWorldPortal::receiveAction()
 {
-	double *pValues = m_pA->getValueVector();
-	if (!g_bDummyTest)
-		m_namedPipeClient.readToBuffer(pValues, m_pA->getNumVars() * sizeof(double));
-	else
-	{
-		printf("Action=[");
-		for (int i = 0; i < m_pA->getNumVars(); i++)
-			printf("%.2f ", pValues[i]);
-		printf("]\n");
-	}
+	double *pValues = a->getValueVector();
+	m_namedPipeClient.readToBuffer(pValues, a->getNumVars() * sizeof(double));
 }

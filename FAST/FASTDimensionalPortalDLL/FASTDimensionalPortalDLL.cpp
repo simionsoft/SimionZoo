@@ -31,7 +31,7 @@ extern "C" {
 		{
 			//Only in first call
 			*aviFAIL = 1;
-			strcpy_s(avcMSG, 512, "Dimensional portal between FAST and RLSimion opened\n");
+			strcpy_s(avcMSG, 512, "Opening dimensional portal between FAST and RLSimion\n");
 			tinyxml2::XMLDocument configFile;
 			const char* pipeName;
 
@@ -42,8 +42,13 @@ extern "C" {
 				pNode = configFile.FirstChildElement("FAST-DIMENSIONAL-PORTAL");
 				pipeName= pNode->FirstChildElement("PIPE-NAME")->GetText();
 				
-				g_FASTWorldPortal.connectToNamedPipeServer(pipeName);
-				printf("Connected to master process via pipe %s\n", pipeName);
+				if (g_FASTWorldPortal.connectToNamedPipeServer(pipeName))
+					printf("Connected to master process via pipe %s\n", pipeName);
+				else
+				{
+					printf("Failed to connect to master process via pipe %s\n", pipeName);
+					*aviFAIL = -1;
+				}
 			}
 			else
 			{
@@ -58,7 +63,7 @@ extern "C" {
 			g_FASTWorldPortal.retrieveStateVariables(avrSWAP,(bool)(iStatus==0));
 			g_FASTWorldPortal.sendState();
 			g_FASTWorldPortal.receiveAction();
-			g_FASTWorldPortal.setActionVariables(avrSWAP);
+			g_FASTWorldPortal.setActionVariables(avrSWAP,(bool)(iStatus == 0));
 			
 		}
 		if (iStatus < 0)

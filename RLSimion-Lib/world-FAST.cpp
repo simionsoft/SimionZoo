@@ -59,17 +59,20 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addStateVariable("E_p", "W", -5e6,5e6);
 	addStateVariable("v", "m/s", 1.0, 50.0);
 	addStateVariable("omega_r", "rad/s", 0.0, 6.0);
-	addStateVariable("omega_g", "rad/s", 0.0, 200.0);
-	addStateVariable("E_omega_r", "rad/s", -4.0, 4.0);
 	addStateVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
+	addStateVariable("E_omega_r", "rad/s", -4.0, 4.0);
+	addStateVariable("omega_g", "rad/s", 0.0, 200.0);
+	addStateVariable("d_omega_g", "rad/s^2", -2.0, 2.0);
+	addStateVariable("E_omega_g", "rad/s", -4.0, 4.0);
 	addStateVariable("beta", "rad", 0.0, 1.570796);
 	addStateVariable("d_beta", "rad/s", -0.1396263, 0.1396263);
-	addStateVariable("T_g", "N/m", 0.0, 50000.0);
+	addStateVariable("T_g", "N/m", 0.0, 47402.91);
 	addStateVariable("d_T_g", "N/m/s", -15000, 15000);
 	addStateVariable("E_int_omega_r", "rad", -100.0, 100.0);
+	addStateVariable("SimTime", "s", 0.0, 10000.0); //added to avoid precision issues between FAST and RLSimion
 	//action handlers
-	addActionVariable("d_beta", "rad/s", -0.1396263, 0.1396263);
-	addActionVariable("d_T_g", "N/m/s", -15000.0, 15000.0);
+	addActionVariable("beta", "rad", 0.0, 1.570796);
+	addActionVariable("T_g", "N/m", 0.0, 47402.91);
 
 	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
 	m_pRewardFunction->initialize();
@@ -259,6 +262,7 @@ void CFASTWindTurbine::reset(CState *s)
 	{
 		CLogger::logMessage(MessageType::Info, "Waiting for the client to connect");
 		m_namedPipeServer.waitForClientConnection();
+		CLogger::logMessage(MessageType::Info, "Client connected");
 		//receive(s)
 		m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
 	}
