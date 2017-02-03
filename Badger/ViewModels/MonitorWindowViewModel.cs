@@ -1,4 +1,4 @@
-﻿
+﻿using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Herd;
@@ -18,10 +18,25 @@ namespace Badger.ViewModels
             get { return m_globalProgress; }
             set { m_globalProgress = value; NotifyOfPropertyChange(() => globalProgress); }
         }
+        private Stopwatch m_experimentTimer= new Stopwatch();
+        
+        private string m_estimatedEndTimeText = "";
+        public string estimatedEndTime
+        {
+            get { return m_estimatedEndTimeText; }
+            set { m_estimatedEndTimeText = value;  NotifyOfPropertyChange(() => estimatedEndTime); }
+        }
 
         public void updateGlobalProgress()
         {
             globalProgress = experimentQueueMonitor.calculateGlobalProgress();
+
+            if (globalProgress > 0.0)
+                estimatedEndTime = "Estimated time to end: "
+                    + System.TimeSpan.FromSeconds(m_experimentTimer.Elapsed.TotalSeconds
+                    * ((100 - globalProgress) / globalProgress)).ToString(@"hh\:mm\:ss");
+            else
+                estimatedEndTime = "";
         }
 
         public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents
@@ -35,6 +50,7 @@ namespace Badger.ViewModels
 
         public void runExperiments(bool monitorProgress= true, bool receiveJobResults= true)
         {
+            m_experimentTimer.Start();
             Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress,receiveJobResults));
         }
 
