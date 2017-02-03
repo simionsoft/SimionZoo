@@ -94,12 +94,8 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 		s->setValue("T_g", m_constants["RatedGeneratorTorque"]);
 		s->setValue("d_T_g", 0.0);
 	}
-	else
-	{
-		m_prevGenTorque = s->getValue("T_g");
-		//s->setValue("T_g", a->getValue("T_g"));
-		//s->setValue("d_T_g", (a->getValue("T_g") - m_prevGenTorque) / m_elapsedTime);
-	}
+	else m_prevGenTorque = s->getValue("T_g");
+	
 	//Blade pitch: beta
 	double beta = (double)FASTdata[3];
 
@@ -109,12 +105,7 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 		s->setValue("beta", beta);
 		s->setValue("d_beta", 0.0);
 	}
-	else
-	{
-		m_prevPitch = beta;
-		//s->setValue("beta", beta);
-		//s->setValue("d_beta", (beta - m_prevPitch) / m_elapsedTime);
-	}
+	else m_prevPitch = beta;
 
 	m_lastTime = currentTime;
 }

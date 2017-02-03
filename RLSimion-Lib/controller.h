@@ -79,6 +79,7 @@ protected:
 	int m_E_int_omega_r_index;
 	//action variable indices
 	int m_a_beta, m_a_T_g;
+	double m_ratedPower;
 	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
 	CWindTurbineVidalController(CConfigNode* pConfigNode);
@@ -94,7 +95,7 @@ class CWindTurbineBoukhezzarController : public CController
 {
 protected:
 	//state variable indices
-	int m_omega_g_index, m_d_omega_g_index;
+	int m_omega_r_index, m_d_omega_r_index;
 	int m_E_p_index, m_T_a_index, m_T_g_index;
 	int m_beta_index;// , m_E_int_omega_r_index;
 
@@ -124,8 +125,9 @@ protected:
 	DOUBLE_PARAM m_CornerFreq;
 	double m_GenSpeedF;
 	//generator torque controller's parameters and variables
-	DOUBLE_PARAM m_VS_RtGnSp, m_VS_SlPc, m_VS_Rgn2K, m_VS_Rgn2Sp, m_VS_CtInSp, m_VS_RtPwr;
+	DOUBLE_PARAM m_VS_SlPc, m_VS_Rgn2K, m_VS_Rgn2Sp, m_VS_CtInSp;
 	DOUBLE_PARAM m_VS_Rgn3MP;
+	double m_ratedGenSpeed, m_ratedPower;
 	double m_VS_SySp, m_VS_Slope15, m_VS_Slope25, m_VS_TrGnSp;
 	//pitch controller's parameters and variables
 	double m_IntSpdErr;

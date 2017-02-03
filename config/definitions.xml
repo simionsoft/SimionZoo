@@ -72,12 +72,10 @@
   </CLASS>
   <CLASS Name="CWindTurbineJonkmanController">
     <DOUBLE-VALUE Name="CornerFreq" Comment="Corner Freq. parameter" Default="1.570796"/>
-    <DOUBLE-VALUE Name="VSRtGnSp" Comment="Rated Generator Speed" Default="121.6805"/>
     <DOUBLE-VALUE Name="VS_SlPc" Comment="SIPc parameter" Default="10.0"/>
     <DOUBLE-VALUE Name="VS_Rgn2K" Comment="Rgn2K parameter" Default="2.332287"/>
     <DOUBLE-VALUE Name="VS_Rgn2Sp" Comment="Rgn2Sp parameter" Default="91.21091"/>
     <DOUBLE-VALUE Name="VS_CtInSp" Comment="CtlnSp parameter" Default="70.16224"/>
-    <DOUBLE-VALUE Name="VS_RtPwr" Comment="Rated power" Default="5296610.0"/>
     <DOUBLE-VALUE Name="VS_Rgn3MP" Comment="Rgn3MP parameter" Default="0.01745329"/>
     <DOUBLE-VALUE Name="PC_KK" Comment="Pitch angle were the the derivative of the..." Default="0.1099965"/>
     <DOUBLE-VALUE Name="PC_KP" Comment="Proportional gain of the pitch controller" Default="0.01882681"/>
