@@ -7,45 +7,36 @@
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="100" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical">
-        <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <StackPanel Margin="2" Orientation="Horizontal">
-                        <StackPanel Orientation="Vertical">
-                            <StackPanel>
-                                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}"  
-                                           Width="100" FontFamily="Segoe UI" FontSize="10"/>
-                            </StackPanel>
-                            <StackPanel>
-                                <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
-                                           FontSize="8" Width="100"></TextBlock>
-                            </StackPanel>
+    <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0" Width="578">
+                <StackPanel Margin="2" Orientation="Horizontal">
+                    <StackPanel Orientation="Vertical" Width="159">
+                        <StackPanel>
+                            <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}" FontFamily="Segoe UI" FontSize="10"/>
                         </StackPanel>
                         <StackPanel>
-                            <ScrollViewer VerticalScrollBarVisibility="Visible" CanContentScroll="True" Height="50">
-                                <TextBlock Text="{Binding statusInfo}" Width="200" FontSize="8" Foreground="Gray"/>
-                            </ScrollViewer>
+                            <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
+                                           FontSize="8" Width="100"></TextBlock>
                         </StackPanel>
                     </StackPanel>
-                </StackPanel>
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}">
                     <StackPanel>
-                        <ProgressBar Height="10" Width="380" Minimum="0" Maximum="100" x:Name="Progress" 
-                                 Margin="0,0,0,0" Value="{Binding Path=progress}"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Visible" CanContentScroll="True" Height="50" Width="415">
+                            <TextBlock Text="{Binding statusInfo}" Width="397" FontSize="8" Foreground="Gray"/>
+                        </ScrollViewer>
                     </StackPanel>
-                    <!--<StackPanel>
-                        <oxy:PlotView x:Name="PlotView" Model="{Binding evaluationPlot}">
-                           --><!--<oxy:PlotView. ItemsSource="{Binding evaluationResults}"/>--><!--
-                        </oxy:PlotView>
-                    </StackPanel>-->
                 </StackPanel>
             </StackPanel>
-        </Border>
-    </StackPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}" Margin="10,0" Width="578">
+                <ProgressBar Height="10" Width="380" Minimum="0" Maximum="100" x:Name="Progress" 
+                                     Margin="0,0,0,0" Value="{Binding Path=progress}"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+
 </UserControl>

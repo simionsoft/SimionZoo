@@ -202,7 +202,6 @@ namespace Badger.ViewModels
             {
                 ExperimentLogViewModel newLog = new ExperimentLogViewModel(experimentName, logDescFile, logFile, this);
                 experimentLogs.Add(newLog);
-                newLog.bIsSelected = true;
             }
         }
 

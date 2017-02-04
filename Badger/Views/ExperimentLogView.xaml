@@ -7,12 +7,13 @@
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical" Margin="1">
-        <Label x:Name="ExperimentName" HorizontalAlignment="Center" BorderBrush="{x:Null}" Content="{Binding name}"  Width="150" FontFamily="Segoe UI" FontSize="10"/>
+    <StackPanel Orientation="Horizontal" Margin="0">
+        <CheckBox IsChecked="{Binding bIsSelected,Mode=TwoWay}" VerticalAlignment="Center"></CheckBox>
+        <Label x:Name="ExperimentName" VerticalAlignment="Center" HorizontalAlignment="Center" BorderBrush="{x:Null}" Content="{Binding name}"  Width="273" FontFamily="Segoe UI" FontSize="10"/>
     </StackPanel>
 </UserControl>

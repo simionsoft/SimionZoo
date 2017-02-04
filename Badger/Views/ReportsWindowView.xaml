@@ -35,8 +35,6 @@
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
-        <BitmapImage x:Key="checkAll" UriSource="/images/checkAll.png"/>
-        <BitmapImage x:Key="checkNone" UriSource="/images/checkNone.png"/>
     </Window.Resources>
     
     <StackPanel Orientation="Horizontal" Margin="2">
@@ -51,14 +49,15 @@
                 <StackPanel>
                     <StackPanel Height="25" HorizontalAlignment="Left" Orientation="Horizontal">
                         <CheckBox VerticalAlignment="Center" IsChecked="{Binding bCheckAllLogs}"></CheckBox>
-                        <Label Content="Experiments " FontSize="8" Margin="0"></Label>
+                        <Label Content="Experiments" FontSize="8" Margin="0"></Label>
                         <Label Content="{Binding Path=logListHeader}" FontSize="8"/>
                     </StackPanel>
                     <ListView x:Name="Logs" BorderBrush="{x:Null}" BorderThickness="0" 
                   ItemsSource="{Binding Path=experimentLogs}" SelectionMode="Multiple" Height="250" Margin="1">
                         <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />
+                                <Setter Property="Focusable" Value="false"/>
+                                <!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=OneWay}" />-->
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
@@ -76,7 +75,8 @@
                     <ListView ItemsSource="{Binding Path=availableVariables}" Height="212" Margin="1">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />
+                                <Setter Property="Focusable" Value="false"/>
+                                <!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />-->
                             </Style>
                         </ListView.ItemContainerStyle>
                     </ListView>

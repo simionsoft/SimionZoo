@@ -18,7 +18,7 @@ namespace Badger.Views
     /// <summary>
     /// Interaction logic for ExperimentQueueView.xaml
     /// </summary>
-    public partial class MonitorWindowView : UserControl
+    public partial class MonitorWindowView : Window
     {
         public MonitorWindowView()
         {
