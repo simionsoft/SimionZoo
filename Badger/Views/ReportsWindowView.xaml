@@ -86,8 +86,8 @@
         <StackPanel Orientation="Vertical" Margin="2">
             <StackPanel Width="680">
                 <StackPanel Orientation="Horizontal" Margin="0,60,0,2">
-                    
-                    <Label Margin="10 0 10 0">Source</Label>
+
+                    <Label Margin="10 0 10 0">Episodes</Label>
                     <ComboBox Width="200" ItemsSource="{Binding Path=sourceOptions}" SelectedItem="{Binding Path=selectedSource}"/>
                     <StackPanel Width="300" Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal">

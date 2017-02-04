@@ -118,11 +118,11 @@ namespace Badger.ViewModels
         {
             string fileName;
             //as png
-            fileName = outputFolder + "/" + name + ".png";
+            fileName = outputFolder + "\\" + name + ".png";
             var pngExporter = new PngExporter { Width = 600, Height = 400, Background = OxyColors.Transparent };
             pngExporter.ExportToFile(m_plot, fileName);
             //as svg
-            fileName = outputFolder + "/" + name + ".svg";
+            fileName = outputFolder + "\\" + name + ".svg";
             var svgExporter = new OxyPlot.Wpf.SvgExporter { Width = 600, Height = 400 };
             svgExporter.ExportToFile(m_plot, fileName);
         }

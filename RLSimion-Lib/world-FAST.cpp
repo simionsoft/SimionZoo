@@ -143,7 +143,7 @@ void CFASTWindTurbine::deferredLoadStep()
 		CLogger::logMessage(MessageType::Info, "Generating TurbSim wind files");
 
 		//evaluation wind file's config
-		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("/")
+		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
 			+ std::string(EVALUATION_WIND_FILE_NAME)+ std::string(".inp");
 
 		m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()

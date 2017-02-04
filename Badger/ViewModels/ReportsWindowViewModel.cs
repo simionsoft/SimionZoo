@@ -99,6 +99,7 @@ namespace Badger.ViewModels
         {
             m_sourceOptions.Add(m_optionAllEvalEpisodes);
             m_sourceOptions.Add(m_optionLastEvalEpisode);
+            selectedSource = m_optionLastEvalEpisode; //by default, we take the last evaluation episode
             NotifyOfPropertyChange(() => sourceOptions);
 
             //we do not initialise the list of variables

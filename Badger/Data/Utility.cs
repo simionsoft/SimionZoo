@@ -72,7 +72,7 @@ namespace Badger.Data
                 node = node.Parent;
             }
 
-            return string.Join("/", Enumerable.Reverse(nodes));
+            return string.Join("\\", Enumerable.Reverse(nodes));
         }
 
 
