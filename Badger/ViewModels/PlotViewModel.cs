@@ -1,5 +1,5 @@
 ﻿
-using Caliburn.Micro;
+using System.Collections.Generic;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
@@ -7,6 +7,15 @@ using System.Threading;
 
 namespace Badger.ViewModels
 {
+    /*
+     * plot properties:
+     * x in/out
+     * show legend
+     * 
+     * line series properties:
+     * -visible
+     * -[color, thickness,...]
+     */
     public class PlotViewModel: ReportViewModel
     {
         private const int m_updateFreq= 1000; //plot refresh freq in millseconds
@@ -17,12 +26,13 @@ namespace Badger.ViewModels
         double m_minY = double.MaxValue;
         double m_maxY = double.MinValue;
 
-        private int m_numSeries= 0;
-
         private PlotModel m_plot;
         public PlotModel plot { get { return m_plot; } set { } }
 
-        public PlotViewModel(string title, bool bRefresh=true)
+        private List<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties;
+        public List<PlotLineSeriesPropertiesViewModel> lineSeriesProperties { get { return m_lineSeriesProperties; } set { } }
+
+        public PlotViewModel(string title, bool bRefresh=true, bool bShowOptions=false)
         {
             name= title;
             m_plot = new PlotModel { Title=title};
@@ -44,6 +54,11 @@ namespace Badger.ViewModels
                 m_timer = new Timer(updatePlot);
                 m_timer.Change(m_updateFreq, m_updateFreq);
             }
+            m_bShowOptions = bShowOptions;
+            if (bShowOptions)
+            {
+                m_lineSeriesProperties = new List<PlotLineSeriesPropertiesViewModel>();
+            }
         }
 
         private void updatePlot(object state)
@@ -60,9 +75,14 @@ namespace Badger.ViewModels
         {
             var newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
             m_plot.Series.Add(newSeries);
-            int newSeriesId = m_numSeries;
-            m_numSeries++;
-            return newSeriesId;
+
+            if (bShowOptions)
+            {
+                //if options are displayed in this view, then we have to store the properties
+                m_lineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(title, m_plot.Series.Count - 1, this));
+            }
+
+            return m_plot.Series.Count-1;
         }
         public void addLineSeriesValue(int seriesIndex,double xValue, double yValue)
         {
@@ -127,6 +147,23 @@ namespace Badger.ViewModels
             svgExporter.ExportToFile(m_plot, fileName);
         }
 
+        private bool m_bShowOptions = false;
+        public bool bShowOptions { get { return m_bShowOptions; } set { m_bShowOptions = value; NotifyOfPropertyChange(() => bShowOptions); } }
 
+        public void updateLineSeriesVisibility(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
+        {
+            m_plot.Series[lineSeriesProperties.lineSeriesId].IsVisible= lineSeriesProperties.bVisible;
+            updateView();
+        }
+
+        public void soloLineSeries(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
+        {
+            foreach(PlotLineSeriesPropertiesViewModel seriesProperties in m_lineSeriesProperties)
+            {
+                seriesProperties.bVisible = (seriesProperties.lineSeriesId == lineSeriesProperties.lineSeriesId);
+                m_plot.Series[seriesProperties.lineSeriesId].IsVisible = seriesProperties.bVisible;
+            }
+            updateView();
+        }
     }
 }

@@ -125,7 +125,7 @@ namespace Badger.ViewModels
             //create a new plot for each variable
             foreach(LoggedVariableViewModel variable in m_selectedVariables)
             {
-                PlotViewModel newPlot = new PlotViewModel(variable.name, false);
+                PlotViewModel newPlot = new PlotViewModel(variable.name, false,true);
                 newPlot.parent = this;
                 newPlots.Add(newPlot);
             }
