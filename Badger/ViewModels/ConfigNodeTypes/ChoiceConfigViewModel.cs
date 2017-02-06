@@ -78,18 +78,22 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
+            bool bChoiceNameIsValid = false;
             if (selectedChoiceName == null || selectedChoiceName == "") return false;
             foreach (XmlNode choiceElement in nodeDefinition)
                 if (selectedChoiceName == choiceElement.Attributes[XMLConfig.nameAttribute].Value)
-                    return true;
-            return false;
+                    bChoiceNameIsValid= true;
+
+            return bChoiceNameIsValid && base.validate();
         }
 
-        public override void outputXML(StreamWriter writer, string leftSpace)
+        public override void outputXML(StreamWriter writer,SaveMode mode, string leftSpace)
         {
-            writer.Write(leftSpace + getXMLHeader());
-            selectedChoice.outputXML(writer, leftSpace + "  ");
-            writer.Write(leftSpace + getXMLFooter());
+            if (mode!=SaveMode.OnlyForks)
+                writer.Write(leftSpace + getXMLHeader());
+            selectedChoice.outputXML(writer,mode, leftSpace + "  ");
+            if (mode!=SaveMode.OnlyForks)
+                writer.Write(leftSpace + getXMLFooter());
         }
 
         public override ConfigNodeViewModel clone()

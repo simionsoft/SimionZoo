@@ -62,10 +62,10 @@ namespace Badger.ViewModels
             return true;
         }
 
-        public override void outputXML(StreamWriter writer,string leftSpace)
+        public override void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
         {
             if (bIsUsed)
-                base.outputXML(writer,leftSpace);
+                base.outputXML(writer,mode,leftSpace);
         }
         public override ConfigNodeViewModel clone()
         {

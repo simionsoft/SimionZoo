@@ -34,6 +34,12 @@ namespace Badger.ViewModels
         public XmlDocument logDescriptor{get{return m_logDescriptor;} 
             set{m_logDescriptor=value;}}
 
+        private Dictionary<string, string> forkTags = new Dictionary<string, string>();
+        public void addForkTag(string forkName,string value)
+        {
+            forkTags.Add(forkName, value);
+        }
+
         private List<string> m_variablesInLog = new List<string>();
 
         private ReportsWindowViewModel m_parent = null;

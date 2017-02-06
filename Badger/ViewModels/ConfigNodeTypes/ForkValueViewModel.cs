@@ -38,15 +38,13 @@ namespace Badger.ViewModels
         }
 
 
-        //addHeader should be true if we are in SaveMode.SaveForks mode
-        //else it should be false: the fork is completely hidden
-        public void outputXML(StreamWriter writer, string leftSpace, bool addHeader)
+        public override void outputXML(StreamWriter writer, SaveMode mode,string leftSpace)
         {
-            if (addHeader)
+            if (mode==SaveMode.SaveForks)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
                     + name + "\">");
-            configNode.outputXML(writer, leftSpace + "  ");
-            if (addHeader)
+            configNode.outputXML(writer, mode,leftSpace + "  ");
+            if (mode==SaveMode.SaveForks)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
         }
 

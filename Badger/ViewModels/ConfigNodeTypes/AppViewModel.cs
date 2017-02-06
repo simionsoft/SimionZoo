@@ -12,7 +12,7 @@ namespace Badger.ViewModels
     //two modes:
     //-CombineForks: for each combination of fork values, a different experiment will be saved
     //-SaveForks: forkedNodes and forks will be saved as a unique experiment
-    public enum SaveMode { CombineForks,SaveForks};
+    public enum SaveMode { CombineForks,SaveForks, OnlyForks};
     public enum WorldVarType { StateVar, ActionVar,Constant };
 
     public class AppViewModel: PropertyChangedBase
@@ -294,6 +294,8 @@ namespace Badger.ViewModels
         //setCombination(i). This method will then save the i-th combination
         //  -SaveMode.SaveForks -> this method should be called only once per experiment. All the forks will be saved embedded
         //in the config file
+        //  -SaveMode.OnlyForks -> this method is called from saveExperimentBatchFile and saves only the information related to forks
+        //   We need this to know later which value were given to each fork
         public void save(string filename,SaveMode mode, string leftSpace="")
         {
             using (FileStream stream = File.Create(filename))
@@ -308,14 +310,16 @@ namespace Badger.ViewModels
         {
             saveMode = mode;
 
-            writer.WriteLine(leftSpace + "<" + appName + " " + XMLConfig.versionAttribute 
+            if (mode!=SaveMode.OnlyForks)
+                writer.WriteLine(leftSpace + "<" + appName + " " + XMLConfig.versionAttribute 
                 + "=\"" + XMLConfig.experimentConfigVersion + "\">");
 
             foreach (ConfigNodeViewModel node in m_children)
             {
-                node.outputXML(writer, leftSpace + "  ");
+                node.outputXML(writer, mode,leftSpace + "  ");
             }
-            writer.WriteLine(leftSpace + "</" + appName + ">");
+            if (mode != SaveMode.OnlyForks)
+                writer.WriteLine(leftSpace + "</" + appName + ">");
         }
 
 

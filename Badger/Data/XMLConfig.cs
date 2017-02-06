@@ -47,6 +47,7 @@ namespace Simion
         public const string constantTag = "CONSTANT";
         //Attributes
         public const string nameAttribute = "Name";
+        public const string aliasAttribute = "Alias";
         public const string commentAttribute = "Comment";
         public const string classAttribute = "Class";
         public const string windowAttribute = "Window";

@@ -63,6 +63,16 @@ namespace Badger.Data
             if (appViewModelList.Count == 0)
                 return null;
 
+            foreach(AppViewModel experiment in appViewModelList)
+            {
+                if (!experiment.validate())
+                {
+                    CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name 
+                        + ". Please check it", "VALIDATION ERROR");
+                    return experimentBatch;
+                }
+            }
+
             if (batchFilename == "")
             {
                 //Save dialog -> returns the experiment batch file
@@ -91,10 +101,7 @@ namespace Badger.Data
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             if (Directory.Exists(batchFileDir))
             {
-                try
-                {
-                    Directory.Delete(batchFileDir, true);
-                }
+                try {Directory.Delete(batchFileDir, true);}
                 catch
                 {
                     CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
@@ -121,7 +128,6 @@ namespace Badger.Data
                         numCombinations = experiment.getNumForkCombinations();
                         for (int i = 0; i < numCombinations; i++)
                         {
-
                             //Save the combination of forks as a new experiment
                             experimentName= experiment.setForkCombination(i);
                             
@@ -131,8 +137,10 @@ namespace Badger.Data
                             experiment.save(filePath, SaveMode.CombineForks);
 
                             //Save the experiment reference in the batch file
-                            batchFileWriter.WriteLine("<" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
-                                + "=\"" + experimentName + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\"/>");
+                            batchFileWriter.WriteLine("  <" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
+                                + "=\"" + experimentName + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
+                            experiment.saveToStream(batchFileWriter,SaveMode.OnlyForks,"    ");
+                            batchFileWriter.WriteLine("  </" + XMLConfig.experimentNodeTag + ">");
 
 
                             //Add the experiment to the output list
@@ -196,10 +204,9 @@ namespace Badger.Data
             foreach (AppViewModel app in appViewModelList)
             {
                 if (!app.validate())
-                {
-                    CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
-                    return;
-                }
+                    CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + app.name 
+                        + ". Please check it", "VALIDATION ERROR");
+                return;
             }
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *." + XMLConfig.badgerExtension;
@@ -253,6 +260,13 @@ namespace Badger.Data
 
         static public void saveExperiment(AppViewModel experiment)
         {
+            if (!experiment.validate())
+            {
+                CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name 
+                    + ". Please check it", "VALIDATION ERROR");
+                return;
+            }
+
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
             sfd.InitialDirectory = experimentRelativeDir;

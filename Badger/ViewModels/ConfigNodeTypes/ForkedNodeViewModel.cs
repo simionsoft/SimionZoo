@@ -53,6 +53,9 @@ namespace Badger.ViewModels
             }
         }
 
+        private string m_alias = "Name";
+        public string alias { get { return m_alias; } set { m_alias = value; NotifyOfPropertyChange(() => alias); } }
+
         //Constructor used from the experiment editor
         public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel forkedNode)
         {
@@ -71,10 +74,13 @@ namespace Badger.ViewModels
         public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel parentNode
             ,XmlNode classDefinition,XmlNode configNode= null, bool initChildren= true)
         {
+            //configNode must be non-null since no ForkedNodeVM can be created from the app defintion
             m_appViewModel = appViewModel;
             nodeDefinition = classDefinition;
             m_parent = parentNode;
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
+            if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
+                alias = configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute).Value;
 
             if (initChildren)
             {
@@ -110,6 +116,8 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
+            if (name == "Name" || name=="")
+                return false;
             foreach (ForkValueViewModel value in children)
             {
                 if (!value.configNode.validate()) return false;
@@ -117,18 +125,29 @@ namespace Badger.ViewModels
             return true;
         }
 
-        public override void outputXML(StreamWriter writer,string leftSpace)
+        public override void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
         {
-            if (m_appViewModel.saveMode == SaveMode.SaveForks)
+            if (mode == SaveMode.SaveForks)
             {
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + " " 
-                    +XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\">");
-                foreach(ForkValueViewModel child in children)
-                    child.outputXML(writer, leftSpace + "  ", true);
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + " "
+                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute 
+                    + "=\"" + alias + "\">");
+                foreach (ForkValueViewModel child in children)
+                    child.outputXML(writer, mode, leftSpace + "  ");
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkedNodeTag + ">");
             }
             else
-                selectedForkValue.configNode.outputXML(writer, leftSpace);
+            {
+                selectedForkValue.configNode.outputXML(writer, mode, leftSpace);
+
+                if (mode == SaveMode.OnlyForks)
+                {
+                    writer.WriteLine("    <" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute + "=\"" + name
+                        + "\" " + XMLConfig.aliasAttribute + "=\"" + alias + "\">" + selectedForkValue.configNode.content 
+                        + "</" + XMLConfig.forkTag + ">");
+                }
+            }
+
         }
 
         public void addValue()

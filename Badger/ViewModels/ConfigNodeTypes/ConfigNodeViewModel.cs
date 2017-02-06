@@ -74,9 +74,10 @@ namespace Badger.ViewModels
 
 
         //XML output methods
-        public virtual void outputXML(StreamWriter writer,string leftSpace)
+        public virtual void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
         {
-            writer.Write( leftSpace + "<" + name + ">" + content + "</" + name + ">\n");
+            if (mode!=SaveMode.OnlyForks)
+                writer.Write( leftSpace + "<" + name + ">" + content + "</" + name + ">\n");
         }
 
         //XPath methods
@@ -171,18 +172,17 @@ namespace Badger.ViewModels
         public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
-        public override void outputXML(StreamWriter writer, string leftSpace)
+        public override void outputXML(StreamWriter writer,SaveMode mode, string leftSpace)
         {
-            //System.Console.WriteLine("Exporting " + name);
-            writer.Write(leftSpace + getXMLHeader());
-            outputChildrenXML(writer, leftSpace + "  ");
-            writer.Write(leftSpace + getXMLFooter());
+            if (mode!=SaveMode.OnlyForks) writer.Write(leftSpace + getXMLHeader());
+            outputChildrenXML(writer, mode,leftSpace + "  ");
+            if (mode != SaveMode.OnlyForks) writer.Write(leftSpace + getXMLFooter());
         }
 
-        public void outputChildrenXML(StreamWriter writer, string leftSpace)
+        public void outputChildrenXML(StreamWriter writer, SaveMode mode,string leftSpace)
         {
             foreach (ConfigNodeViewModel child in m_children)
-                child.outputXML(writer, leftSpace);
+                child.outputXML(writer,mode, leftSpace);
         }
         public virtual string getXMLHeader() { return "<" + name + ">\n"; }
         public virtual string getXMLFooter() { return "</" + name + ">\n"; }

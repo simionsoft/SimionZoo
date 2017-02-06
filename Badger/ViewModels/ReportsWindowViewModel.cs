@@ -202,6 +202,14 @@ namespace Badger.ViewModels
             if (File.Exists(logDescFile) && File.Exists(logFile))
             {
                 ExperimentLogViewModel newLog = new ExperimentLogViewModel(experimentName, logDescFile, logFile, this);
+                foreach (XmlNode child in node.ChildNodes)
+                {
+                    if (child.Name==XMLConfig.forkTag && child.Attributes.GetNamedItem(XMLConfig.aliasAttribute)!=null)
+                    {
+                        newLog.addForkTag(child.Attributes[XMLConfig.aliasAttribute].Value
+                            , child.InnerText);
+                    }
+                }
                 experimentLogs.Add(newLog);
             }
         }
