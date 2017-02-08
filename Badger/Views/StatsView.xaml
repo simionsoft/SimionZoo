@@ -11,41 +11,15 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <!--<TabControl>
-        <TabItem Header="General">
-            <DataGrid Name="stats" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Experiment" Binding="{Binding name}" />
-                    <DataGridTextColumn Header="Average" Binding="{Binding avg}" />
-                    <DataGridTextColumn Header="Std.Deviation" Binding="{Binding stdDev}" />
-                    <DataGridTextColumn Header="Min" Binding="{Binding min}" />
-                    <DataGridTextColumn Header="Max" Binding="{Binding max}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </TabItem>
-        <TabItem Header="Security" />
-        <TabItem Header="Details" />
-    </TabControl>-->
-    <!--<StackPanel>
-        <TextBlock>asdjfkjas</TextBlock>
-    </StackPanel>-->
 
-    <DataGrid Name="stats" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
+    <DataGrid Name="StatsDataGrid" ItemsSource="{Binding stats}" CanUserAddRows="False" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="True" IsReadOnly="True" >
         <DataGrid.Columns>
             <DataGridTextColumn Header="Experiment" Binding="{Binding name}"/>
             <DataGridTextColumn Header="Variable" Binding="{Binding variable}"/>
-            <DataGridTextColumn Header="Average" Binding="{Binding avg, StringFormat=\{0:#\,#.0\}}" />
-            <DataGridTextColumn Header="Std.Deviation" Binding="{Binding stdDev, StringFormat=\{0:#\,#.0\}}" />
-            <DataGridTextColumn Header="Min" Binding="{Binding min, StringFormat=\{0:#\,#.0\}}" />
-            <DataGridTextColumn Header="Max" Binding="{Binding max, StringFormat=\{0:#\,#.0\}}" />
+            <DataGridTextColumn Header="Average" Binding="{Binding avg, StringFormat=\{0:#\,#0.00\}}" />
+            <DataGridTextColumn Header="Std.Deviation" Binding="{Binding stdDev, StringFormat=\{0:#\,#0.00\}}" />
+            <DataGridTextColumn Header="Min" Binding="{Binding min, StringFormat=\{0:#\,#0.00\}}" />
+            <DataGridTextColumn Header="Max" Binding="{Binding max, StringFormat=\{0:#\,#0.00\}}" />
         </DataGrid.Columns>
     </DataGrid>
-    <!--<ListView Name="stats" Height="200">
-        <ListViewItem>
-            <TextBlock>alksdjflasjdf</TextBlock>
-        </ListViewItem>
-        <ListViewItem>
-            <TextBlock>alksdjflasjdf</TextBlock>
-        </ListViewItem>
-    </ListView>-->
 </UserControl>

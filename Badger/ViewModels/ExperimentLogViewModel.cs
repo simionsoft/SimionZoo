@@ -39,6 +39,18 @@ namespace Badger.ViewModels
         {
             forkTags.Add(forkName, value);
         }
+        public List<string> getForks()
+        {
+            List<string> forks = new List<string>();
+            foreach (string forkname in forkTags.Keys)
+                forks.Add(forkname);
+            return forks;
+        }
+        public string getForkValue(string forkName)
+        {
+            if (forkTags.ContainsKey(forkName)) return forkTags[forkName];
+            return "";
+        }
 
         private List<string> m_variablesInLog = new List<string>();
 

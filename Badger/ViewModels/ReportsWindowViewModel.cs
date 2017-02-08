@@ -148,6 +148,7 @@ namespace Badger.ViewModels
         public void generateStats()
         {
             StatsViewModel statsViewModel = new StatsViewModel("Stats");
+            statsViewModel.parent = this;
 
             foreach (ExperimentLogViewModel log in m_selectedLogs)
             {
