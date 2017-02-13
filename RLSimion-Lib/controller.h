@@ -74,9 +74,9 @@ protected:
 	double sgn(double value);
 
 	//state variable indices
-	int m_omega_g_index, m_d_omega_g_index, m_omega_r_index;
-	int m_E_p_index, m_T_g_index, m_beta_index;
-	int m_E_int_omega_r_index;
+	int m_omega_g, m_d_omega_g;
+	int m_E_p, m_T_g, m_beta;
+	int m_E_int_omega_r;
 	//action variable indices
 	int m_a_beta, m_a_T_g;
 	double m_ratedPower;
@@ -95,9 +95,9 @@ class CWindTurbineBoukhezzarController : public CController
 {
 protected:
 	//state variable indices
-	int m_omega_r_index, m_d_omega_r_index;
-	int m_E_p_index, m_T_a_index, m_T_g_index;
-	int m_beta_index;// , m_E_int_omega_r_index;
+	int m_omega_g, m_d_omega_g;
+	int m_E_p, m_T_a_index, m_T_g;
+	int m_beta;// , m_E_int_omega_r;
 
 	//action variable indices
 	int m_a_beta, m_a_T_g;
@@ -117,8 +117,8 @@ public:
 class CWindTurbineJonkmanController : public CController
 {
 protected:
-	int m_omega_g_index, m_d_omega_g_index;
-	int m_E_p_index, m_T_g_index, m_beta_index;
+	int m_omega_g, m_d_omega_g;
+	int m_E_p, m_T_g, m_beta;
 	int m_a_beta, m_a_T_g;
 
 	//generator speed filter's parameters and variables

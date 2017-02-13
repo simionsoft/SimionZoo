@@ -132,13 +132,12 @@ CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNod
 	m_pKI = DOUBLE_PARAM(pConfigNode, "KI", "Integral gain of the pitch controller",0.0);
 
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_g_index = pStateDescriptor.getVarIndex("omega_g");
-	m_d_omega_g_index = pStateDescriptor.getVarIndex("d_omega_g");
-	m_omega_r_index = pStateDescriptor.getVarIndex("omega_r");
-	m_E_p_index = pStateDescriptor.getVarIndex("E_p");
-	m_T_g_index = pStateDescriptor.getVarIndex("T_g");
-	m_beta_index = pStateDescriptor.getVarIndex("beta");
-	m_E_int_omega_r_index = pStateDescriptor.getVarIndex("E_int_omega_r");
+	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
+	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_g");
+	m_E_p = pStateDescriptor.getVarIndex("E_p");
+	m_T_g = pStateDescriptor.getVarIndex("T_g");
+	m_beta = pStateDescriptor.getVarIndex("beta");
+	m_E_int_omega_r = pStateDescriptor.getVarIndex("E_int_omega_r");
 
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
@@ -181,12 +180,12 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
 
-	double omega_g= s->getValue(m_omega_g_index);
-	double d_omega_g= s->getValue(m_d_omega_g_index);
+	double omega_g= s->getValue(m_omega_g);
+	double d_omega_g= s->getValue(m_d_omega_g);
 
-	double error_P= s->getValue(m_E_p_index);
+	double error_P= s->getValue(m_E_p);
 
-	double T_g= s->getValue(m_T_g_index);
+	double T_g= s->getValue(m_T_g);
 	
 	double d_T_g;
 	
@@ -194,11 +193,12 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
-	double omega_r = s->getValue(m_omega_r_index);
-	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed"); //NOMINAL WIND SPEED
-	double beta = 0.5*m_pKP.get()*e_omega_r*(1.0+sgn(e_omega_r))
+//	double omega_g = s->getValue(m_omega_r_index);
+	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed"); //NOMINAL WIND SPEED
+	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0+sgn(e_omega_g))
 				+ m_pKI.get()*s->getValue("E_int_omega_r");
 
+	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
 	a->setValue(m_a_beta,beta);
 	a->setValue(m_a_T_g,T_g + d_T_g* CSimionApp::get()->pWorld->getDT());
 
@@ -221,12 +221,12 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* 
 	m_J_t = CWorld::getDynamicModel()->getConstant("HubInertia");
 	m_K_t = CWorld::getDynamicModel()->getConstant("DriveTrainTorsionalDamping");
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_r_index = pStateDescriptor.getVarIndex("omega_r");
-	m_d_omega_r_index = pStateDescriptor.getVarIndex("d_omega_r");
-	m_E_p_index = pStateDescriptor.getVarIndex("E_p");
-	m_T_g_index = pStateDescriptor.getVarIndex("T_g");
+	m_omega_g = pStateDescriptor.getVarIndex("omega_r");
+	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_r");
+	m_E_p = pStateDescriptor.getVarIndex("E_p");
+	m_T_g = pStateDescriptor.getVarIndex("T_g");
 	m_T_a_index = pStateDescriptor.getVarIndex("T_a");
-	m_beta_index = pStateDescriptor.getVarIndex("beta");
+	m_beta = pStateDescriptor.getVarIndex("beta");
 
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
@@ -253,22 +253,22 @@ int CWindTurbineBoukhezzarController::getOutputActionIndex(int output)
 
 void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 {
-	//d(Tg)/dt= (1/omega_r)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_r*T_g - T_g*T_g))
-	//d(beta)/dt= K_p*(omega_ref - omega_r)
+	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
+	//d(beta)/dt= K_p*(omega_ref - omega_g)
 
-	double omega_r= s->getValue(m_omega_r_index);
+	double omega_g= s->getValue(m_omega_g);
 	double C_0= m_pC_0.get();		
-	double error_P= -s->getValue(m_E_p_index);	
+	double error_P= -s->getValue(m_E_p);	
 	double T_a= s->getValue(m_T_a_index);		
 
-	double T_g= s->getValue(m_T_g_index);	
-	double beta= s->getValue(m_beta_index);	
+	double T_g= s->getValue(m_T_g);	
+	double beta= s->getValue(m_beta);	
 	
-	double d_T_g= (1.0/omega_r)*(C_0*error_P - (1.0/m_J_t)
-		*(T_a*T_g - m_K_t*omega_r*T_g - T_g*T_g));
+	double d_T_g= (1.0/omega_g)*(C_0*error_P - (1.0/m_J_t)
+		*(T_a*T_g - m_K_t*omega_g*T_g - T_g*T_g));
 
-	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedRotorSpeed"); //NOMINAL WIND SPEED
-	double d_beta = m_pKP.get()*e_omega_r;
+	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
+	double d_beta = m_pKP.get()*e_omega_g;
 
 	a->setValue(m_a_beta,beta + d_beta*CSimionApp::get()->pWorld->getDT());
 	a->setValue(m_a_T_g,T_g + d_T_g*CSimionApp::get()->pWorld->getDT());
@@ -315,11 +315,11 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfi
 	m_IntSpdErr= 0.0;
 
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_g_index = pStateDescriptor.getVarIndex("omega_g");
+	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
 
-	m_E_p_index = pStateDescriptor.getVarIndex("E_p");
-	m_T_g_index = pStateDescriptor.getVarIndex("T_g");
-	m_beta_index = pStateDescriptor.getVarIndex("beta");
+	m_E_p = pStateDescriptor.getVarIndex("E_p");
+	m_T_g = pStateDescriptor.getVarIndex("T_g");
+	m_beta = pStateDescriptor.getVarIndex("beta");
 
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
@@ -353,18 +353,18 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	if (CSimionApp::get()->pWorld->getT() == 0.0)
 	{
 		lowPassFilterAlpha= 1.0;
-		m_GenSpeedF= s->getValue(m_omega_g_index);
-		m_lastDemandedPitch = s->getValue(m_beta_index);
+		m_GenSpeedF= s->getValue(m_omega_g);
+		m_lastDemandedPitch = s->getValue(m_beta);
 		m_IntSpdErr = 0.0;
 	}
 	else
 		lowPassFilterAlpha = exp(-CSimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
 
-	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->getValue(m_omega_g_index) + lowPassFilterAlpha*m_GenSpeedF;
+	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->getValue(m_omega_g) + lowPassFilterAlpha*m_GenSpeedF;
 
 	//TORQUE CONTROLLER
 	double DesiredGenTrq;
-	if ( (m_GenSpeedF >= m_ratedGenSpeed ) || (  s->getValue(m_beta_index) >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
+	if ( (m_GenSpeedF >= m_ratedGenSpeed ) || (  s->getValue(m_beta) >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
 		DesiredGenTrq = m_ratedPower/m_GenSpeedF;
 	else if ( m_GenSpeedF <= m_VS_CtInSp.get() )							//We are in region 1 - torque is zero
 		DesiredGenTrq = 0.0;
@@ -381,14 +381,14 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	a->setValue(m_a_T_g, DesiredGenTrq);
 
 	//PITCH CONTROLLER
-	double GK= 1.0 / (1.0 + s->getValue(m_beta_index) / m_PC_KK.get());
+	double GK= 1.0 / (1.0 + s->getValue(m_beta) / m_PC_KK.get());
 
 	//Compute the current speed error and its integral w.r.t. time; saturate the
 	//  integral term using the pitch angle limits:
 	double SpdErr= m_GenSpeedF - m_PC_RefSpd.get();                                 //Current speed error
 	m_IntSpdErr = m_IntSpdErr + SpdErr*CSimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
-	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta_index).getMin()/( GK*m_PC_KI.get() ) )
+	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta).getMin()/( GK*m_PC_KI.get() ) )
 		, s->getProperties("beta").getMax()/( GK*m_PC_KI.get() ));
   
 	//Compute the pitch commands associated with the proportional and integral  gains:
@@ -398,8 +398,8 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	//Superimpose the individual commands to get the total pitch command;
 	//  saturate the overall command using the pitch angle limits:
 	double PitComT   = PitComP + PitComI;                                     //Overall command (unsaturated)
-	PitComT   = std::min( std::max( PitComT, s->getProperties(m_beta_index).getMin() )
-		, s->getProperties(m_beta_index).getMax() );           //Saturate the overall command using the pitch angle limits
+	PitComT   = std::min( std::max( PitComT, s->getProperties(m_beta).getMin() )
+		, s->getProperties(m_beta).getMax() );           //Saturate the overall command using the pitch angle limits
 
 	//we pass the desired blade pitch angle to the world
 	a->setValue(m_a_beta,PitComT);

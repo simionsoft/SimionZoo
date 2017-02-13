@@ -55,6 +55,8 @@ namespace Badger.Data
             return;
         }
         //SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments without forks
+        // and a .exp-batch file in the root directory referencing them all and the forks/values each one 
+        // took
         public static List<Experiment> saveExperimentBatchFile(BindableCollection<AppViewModel> appViewModelList
             ,ref string batchFilename, logFunction log)
         {
@@ -136,7 +138,7 @@ namespace Badger.Data
                             filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
                             experiment.save(filePath, SaveMode.CombineForks);
 
-                            //Save the experiment reference in the batch file
+                            //Save the experiment reference in the root batch file
                             batchFileWriter.WriteLine("  <" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
                                 + "=\"" + experimentName + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
                             experiment.saveToStream(batchFileWriter,SaveMode.OnlyForks,"    ");

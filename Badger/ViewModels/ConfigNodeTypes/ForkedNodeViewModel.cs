@@ -68,6 +68,7 @@ namespace Badger.ViewModels
             m_appViewModel = appViewModel;
             nodeDefinition = forkedNode.nodeDefinition;
             name = forkedNode.name;
+            alias = forkedNode.name;
             NotifyOfPropertyChange(() => selectedForkValue);
         }
         //Constructor called when loading an experiment config file
