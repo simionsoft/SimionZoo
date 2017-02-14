@@ -1,11 +1,9 @@
-<RLSimion FileVersion="0">
+<RLSimion FileVersion="1.0.0.0">
   <RLSimion>
     <Log>
       <Log-Freq>0.25</Log-Freq>
       <Log-eval-episodes>True</Log-eval-episodes>
       <Log-training-episodes>False</Log-training-episodes>
-      <Log-eval-experiment>True</Log-eval-experiment>
-      <Log-training-experiment>False</Log-training-experiment>
     </Log>
     <World>
       <Num-Integration-Steps>4</Num-Integration-Steps>
@@ -17,40 +15,59 @@
           </Underwater-vehicle>
         </Model>
       </Dynamic-Model>
-      <Reward>
-        <Min>-100.0</Min>
-        <Max>1.0</Max>
-        <Reward-Component>
-          <Variable>v-deviation</Variable>
-          <Tolerance>
-            <Schedule>
-              <Constant>
-                <Value>0.1</Value>
-              </Constant>
-            </Schedule>
-          </Tolerance>
-          <Weight>
-            <Schedule>
-              <Constant>
-                <Value>1</Value>
-              </Constant>
-            </Schedule>
-          </Weight>
-        </Reward-Component>
-      </Reward>
     </World>
     <Experiment>
-      <Progress-Update-Freq>0.5</Progress-Update-Freq>
       <Random-Seed>1</Random-Seed>
       <Num-Episodes>1000</Num-Episodes>
       <Eval-Freq>25</Eval-Freq>
+      <Progress-Update-Freq>0.5</Progress-Update-Freq>
       <Episode-Length>200.0</Episode-Length>
     </Experiment>
     <SimGod>
+      <State-Feature-Map>
+        <Type>
+          <RBF-State-Grid>
+            <RBF-Grid-Dimension>
+              <Num-Features>5000</Num-Features>
+              <Variable>v-deviation</Variable>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+          </RBF-State-Grid>
+        </Type>
+      </State-Feature-Map>
       <Simion>
         <Type>
           <Actor-Critic>
             <Actor>
+              <Base-Controller>
+                <Controller>
+                  <PID>
+                    <Input-Variable>v-deviation</Input-Variable>
+                    <Output-Action>u-thrust</Output-Action>
+                    <KP>
+                      <Schedule>
+                        <Constant>
+                          <Value>100</Value>
+                        </Constant>
+                      </Schedule>
+                    </KP>
+                    <KI>
+                      <Schedule>
+                        <Constant>
+                          <Value>0.0</Value>
+                        </Constant>
+                      </Schedule>
+                    </KI>
+                    <KD>
+                      <Schedule>
+                        <Constant>
+                          <Value>0.0</Value>
+                        </Constant>
+                      </Schedule>
+                    </KD>
+                  </PID>
+                </Controller>
+              </Base-Controller>
               <Output>
                 <Policy-Learner>
                   <CACLA>
@@ -59,7 +76,17 @@
                         <Linear-Schedule>
                           <Start-Offset>0.0</Start-Offset>
                           <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                          <Initial-Value>0.001</Initial-Value>
+                          <FORKED-NODE Name="Initial-Value" Alias="Actor-Alpha">
+                            <FORK-VALUE Name="Value-0">
+                              <Initial-Value>0.001</Initial-Value>
+                            </FORK-VALUE>
+                            <FORK-VALUE Name="Value-1">
+                              <Initial-Value>0.0025</Initial-Value>
+                            </FORK-VALUE>
+                            <FORK-VALUE Name="Value-2">
+                              <Initial-Value>0.005</Initial-Value>
+                            </FORK-VALUE>
+                          </FORKED-NODE>
                           <End-Value>0.0</End-Value>
                           <Evaluation-Value>0.0</Evaluation-Value>
                           <Interpolation>linear</Interpolation>
@@ -70,22 +97,9 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
+                          <Output-Action>u-thrust</Output-Action>
                           <Deterministic-Policy-VFA>
-                            <Parameterization>
-                              <Explicit>
-                                <State-Feature-Map>
-                                  <Type>
-                                    <RBF-State-Grid>
-                                      <RBF-Grid-Dimension>
-                                        <Variable>v-deviation</Variable>
-                                        <Num-Features>7500</Num-Features>
-                                        <Distribution>linear</Distribution>
-                                      </RBF-Grid-Dimension>
-                                    </RBF-State-Grid>
-                                  </Type>
-                                </State-Feature-Map>
-                              </Explicit>
-                            </Parameterization>
+                            <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
                             <Noise>
@@ -109,7 +123,17 @@
                                     <Linear-Schedule>
                                       <Start-Offset>0.0</Start-Offset>
                                       <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                                      <Initial-Value>0.05</Initial-Value>
+                                      <FORKED-NODE Name="Initial-Value" Alias="Noise-Width">
+                                        <FORK-VALUE Name="Value-0">
+                                          <Initial-Value>0.01</Initial-Value>
+                                        </FORK-VALUE>
+                                        <FORK-VALUE Name="Value-1">
+                                          <Initial-Value>0.025</Initial-Value>
+                                        </FORK-VALUE>
+                                        <FORK-VALUE Name="Value-2">
+                                          <Initial-Value>0.05</Initial-Value>
+                                        </FORK-VALUE>
+                                      </FORKED-NODE>
                                       <End-Value>0.0</End-Value>
                                       <Evaluation-Value>0.0</Evaluation-Value>
                                       <Interpolation>linear</Interpolation>
@@ -120,42 +144,12 @@
                               </GaussianNoise>
                             </Noise>
                           </Exploration-Noise>
-                          <Output-Action>u-thrust</Output-Action>
                         </Deterministic-Policy-Gaussian-Noise>
                       </Policy>
                     </Policy>
                   </CACLA>
                 </Policy-Learner>
               </Output>
-              <Base-Controller>
-                <Controller>
-                  <PID>
-                    <Output-Action>u-thrust</Output-Action>
-                    <Input-Variable>v-deviation</Input-Variable>
-                    <KP>
-                      <Schedule>
-                        <Constant>
-                          <Value>100</Value>
-                        </Constant>
-                      </Schedule>
-                    </KP>
-                    <KI>
-                      <Schedule>
-                        <Constant>
-                          <Value>0.1</Value>
-                        </Constant>
-                      </Schedule>
-                    </KI>
-                    <KD>
-                      <Schedule>
-                        <Constant>
-                          <Value>0.0</Value>
-                        </Constant>
-                      </Schedule>
-                    </KD>
-                  </PID>
-                </Controller>
-              </Base-Controller>
             </Actor>
             <Critic>
               <Critic>
@@ -186,21 +180,7 @@
                     </Schedule>
                   </Gamma>
                   <V-Function>
-                    <Parameterization>
-                      <Explicit>
-                        <State-Feature-Map>
-                          <Type>
-                            <RBF-State-Grid>
-                              <RBF-Grid-Dimension>
-                                <Variable>v-deviation</Variable>
-                                <Num-Features>7500</Num-Features>
-                                <Distribution>linear</Distribution>
-                              </RBF-Grid-Dimension>
-                            </RBF-State-Grid>
-                          </Type>
-                        </State-Feature-Map>
-                      </Explicit>
-                    </Parameterization>
+                    <Init-Value>0.0</Init-Value>
                   </V-Function>
                 </TD-Lambda>
               </Critic>
