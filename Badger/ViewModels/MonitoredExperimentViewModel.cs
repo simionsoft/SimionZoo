@@ -90,6 +90,7 @@ namespace Badger.ViewModels
             }
         }
 
+        //progress is expressed as a percentage
         private const double m_globalProgressUpdateRate = 10.0;
         private double m_lastProgressUpdate = -m_globalProgressUpdateRate;
         private double m_progress;

@@ -241,14 +241,15 @@ namespace Badger.ViewModels
         private Logger.LogFunction logFunction= null;
         private PlotViewModel m_evaluationMonitor;
 
+        //returns the progress as a percentage
         public double calculateGlobalProgress()
         {
             double sum = 0.0;
             foreach(MonitoredExperimentViewModel exp in m_monitoredExperimentBatchList)
             {
-                sum += exp.progress;
+                sum += exp.progress; //<- these are expressed as percentages
             }
-            return sum / (m_monitoredExperimentBatchList.Count*100);
+            return 100*(sum / (m_monitoredExperimentBatchList.Count*100));
         }
 
 

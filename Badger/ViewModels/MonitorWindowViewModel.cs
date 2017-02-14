@@ -27,11 +27,12 @@ namespace Badger.ViewModels
             set { m_estimatedEndTimeText = value;  NotifyOfPropertyChange(() => estimatedEndTime); }
         }
 
+        //progress expressed as a percentage
         public void updateGlobalProgress()
         {
             globalProgress = experimentQueueMonitor.calculateGlobalProgress();
 
-            if (globalProgress > 0.0)
+            if (globalProgress > 0.0 && globalProgress<100.0)
                 estimatedEndTime = "Estimated time to end: "
                     + System.TimeSpan.FromSeconds(m_experimentTimer.Elapsed.TotalSeconds
                     * ((100 - globalProgress) / globalProgress)).ToString(@"hh\:mm\:ss");
