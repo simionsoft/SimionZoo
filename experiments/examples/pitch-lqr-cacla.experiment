@@ -1,11 +1,9 @@
-<RLSimion FileVersion="1">
+<RLSimion FileVersion="1.0.0.0">
   <RLSimion>
     <Log>
       <Log-Freq>0.25</Log-Freq>
-      <Log-eval-episodes>True</Log-eval-episodes>
-      <Log-training-episodes>False</Log-training-episodes>
-      <Log-eval-experiment>True</Log-eval-experiment>
-      <Log-training-experiment>False</Log-training-experiment>
+      <Log-eval-episodes>true</Log-eval-episodes>
+      <Log-training-episodes>false</Log-training-episodes>
     </Log>
     <World>
       <Num-Integration-Steps>4</Num-Integration-Steps>
@@ -19,10 +17,10 @@
       </Dynamic-Model>
     </World>
     <Experiment>
-      <Progress-Update-Freq>0.5</Progress-Update-Freq>
       <Random-Seed>1</Random-Seed>
       <Num-Episodes>1000</Num-Episodes>
       <Eval-Freq>25</Eval-Freq>
+      <Progress-Update-Freq>1</Progress-Update-Freq>
       <Episode-Length>50</Episode-Length>
     </Experiment>
     <SimGod>
@@ -30,18 +28,18 @@
         <Type>
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
+              <Num-Features>100</Num-Features>
               <Variable>attack-angle</Variable>
-              <Num-Features>150</Num-Features>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
+              <Num-Features>100</Num-Features>
               <Variable>control-deviation</Variable>
-              <Num-Features>150</Num-Features>
-              <Distribution>cubic</Distribution>
+              <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
+              <Num-Features>100</Num-Features>
               <Variable>pitch-rate</Variable>
-              <Num-Features>150</Num-Features>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
           </RBF-State-Grid>
@@ -51,6 +49,25 @@
         <Type>
           <Actor-Critic>
             <Actor>
+              <Base-Controller>
+                <Controller>
+                  <LQR>
+                    <Output-Actionn>pitch</Output-Actionn>
+                    <LQR-Gain>
+                      <Gain>-7.0711</Gain>
+                      <Variable>control-deviation</Variable>
+                    </LQR-Gain>
+                    <LQR-Gain>
+                      <Gain>-0.6435</Gain>
+                      <Variable>attack-angle</Variable>
+                    </LQR-Gain>
+                    <LQR-Gain>
+                      <Gain>169.695</Gain>
+                      <Variable>pitch-rate</Variable>
+                    </LQR-Gain>
+                  </LQR>
+                </Controller>
+              </Base-Controller>
               <Output>
                 <Policy-Learner>
                   <CACLA>
@@ -59,7 +76,17 @@
                         <Linear-Schedule>
                           <Start-Offset>0.0</Start-Offset>
                           <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                          <Initial-Value>0.01</Initial-Value>
+                          <FORKED-NODE Name="Initial-Value" Alias="Actor-Alpha">
+                            <FORK-VALUE Name="Value-0">
+                              <Initial-Value>0.001</Initial-Value>
+                            </FORK-VALUE>
+                            <FORK-VALUE Name="Value-1">
+                              <Initial-Value>0.002</Initial-Value>
+                            </FORK-VALUE>
+                            <FORK-VALUE Name="Value-2">
+                              <Initial-Value>0.003</Initial-Value>
+                            </FORK-VALUE>
+                          </FORKED-NODE>
                           <End-Value>0.0</End-Value>
                           <Evaluation-Value>0.0</Evaluation-Value>
                           <Interpolation>linear</Interpolation>
@@ -70,11 +97,9 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
+                          <Output-Action>pitch</Output-Action>
                           <Deterministic-Policy-VFA>
-                            <Parameterization>
-                              <Explicit>
-                              </Explicit>
-                            </Parameterization>
+                            <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
                           <Exploration-Noise>
                             <Noise>
@@ -98,7 +123,17 @@
                                     <Linear-Schedule>
                                       <Start-Offset>0.0</Start-Offset>
                                       <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                                      <Initial-Value>0.001</Initial-Value>
+                                      <FORKED-NODE Name="Initial-Value" Alias="Noise-Width">
+                                        <FORK-VALUE Name="Value-0">
+                                          <Initial-Value>0.001</Initial-Value>
+                                        </FORK-VALUE>
+                                        <FORK-VALUE Name="Value-1">
+                                          <Initial-Value>0.002</Initial-Value>
+                                        </FORK-VALUE>
+                                        <FORK-VALUE Name="Value-2">
+                                          <Initial-Value>0.003</Initial-Value>
+                                        </FORK-VALUE>
+                                      </FORKED-NODE>
                                       <End-Value>0.0</End-Value>
                                       <Evaluation-Value>0.0</Evaluation-Value>
                                       <Interpolation>linear</Interpolation>
@@ -109,32 +144,12 @@
                               </GaussianNoise>
                             </Noise>
                           </Exploration-Noise>
-                          <Output-Action>pitch</Output-Action>
                         </Deterministic-Policy-Gaussian-Noise>
                       </Policy>
                     </Policy>
                   </CACLA>
                 </Policy-Learner>
               </Output>
-              <Base-Controller>
-                <Controller>
-                  <LQR>
-                    <Output-Action>pitch</Output-Action>
-                    <LQR-Gain>
-                      <Variable>control-deviation</Variable>
-                      <Gain>-7.0711</Gain>
-                    </LQR-Gain>
-                    <LQR-Gain>
-                      <Variable>attack-angle</Variable>
-                      <Gain>-0.6435</Gain>
-                    </LQR-Gain>
-                    <LQR-Gain>
-                      <Variable>pitch-rate</Variable>
-                      <Gain>169.695</Gain>
-                    </LQR-Gain>
-                  </LQR>
-                </Controller>
-              </Base-Controller>
             </Actor>
             <Critic>
               <Critic>
@@ -142,13 +157,29 @@
                   <E-Traces>
                     <Threshold>0.001</Threshold>
                     <Lambda>0.9</Lambda>
-                    <Replace>True</Replace>
+                    <Replace>true</Replace>
                   </E-Traces>
                   <Alpha>
                     <Schedule>
-                      <Constant>
-                        <Value>0.1</Value>
-                      </Constant>
+                      <Linear-Schedule>
+                        <Start-Offset>0.0</Start-Offset>
+                        <Pre-Offset-Value>0.1</Pre-Offset-Value>
+                        <FORKED-NODE Name="Initial-Value" Alias="Critic-Alpha">
+                          <FORK-VALUE Name="Value-0">
+                            <Initial-Value>0.05</Initial-Value>
+                          </FORK-VALUE>
+                          <FORK-VALUE Name="Value-1">
+                            <Initial-Value>0.1</Initial-Value>
+                          </FORK-VALUE>
+                          <FORK-VALUE Name="Value-2">
+                            <Initial-Value>0.15</Initial-Value>
+                          </FORK-VALUE>
+                        </FORKED-NODE>
+                        <End-Value>0.0</End-Value>
+                        <Evaluation-Value>0.0</Evaluation-Value>
+                        <Interpolation>linear</Interpolation>
+                        <Time-reference>experiment</Time-reference>
+                      </Linear-Schedule>
                     </Schedule>
                   </Alpha>
                   <Gamma>
@@ -159,10 +190,7 @@
                     </Schedule>
                   </Gamma>
                   <V-Function>
-                    <Parameterization>
-                      <Explicit>
-                      </Explicit>
-                    </Parameterization>
+                    <Init-Value>0.0</Init-Value>
                   </V-Function>
                 </TD-Lambda>
               </Critic>
