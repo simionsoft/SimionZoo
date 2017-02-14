@@ -79,7 +79,7 @@ CPIDController::CPIDController(CConfigNode* pConfigNode)
 	m_outputActionIndex= ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
 	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KP", "Proportional gain");
 	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KI", "Integral gain");
-	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KD", "Derivative gain");
+	m_pKD = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KD", "Derivative gain");
 
 	m_errorVariableIndex = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
 
