@@ -147,7 +147,7 @@ CStateVariableGrid::CStateVariableGrid(CConfigNode* pConfigNode)
 }
 void CStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
-	s->setValue(m_hVariable.get(), m_pCenters[feature]);
+	s->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
 double CStateVariableGrid::getVariableValue(const CState* s, const CAction* a)
@@ -171,7 +171,7 @@ CActionVariableGrid::CActionVariableGrid(CConfigNode* pConfigNode)
 
 void CActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
-	a->setValue(m_hVariable.get(), m_pCenters[feature]);
+	a->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
 double CActionVariableGrid::getVariableValue(const CState* s, const CAction* a)

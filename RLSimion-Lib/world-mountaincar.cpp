@@ -29,14 +29,14 @@ void CMountainCar::reset(CState *s)
 	//if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
-		s->setValue(m_sPosition, -0.5);
-		s->setValue(m_sVelocity, 0.0);
+		s->set(m_sPosition, -0.5);
+		s->set(m_sVelocity, 0.0);
 	}
 	//else
 	//{
 	//	//random setting in training episodes
-	//	s->setValue(m_sPosition, -1.0 + getRandomValue()*0.8); //[-1.0, -0.2]
-	//	s->setValue(m_sVelocity, -0.02 + getRandomValue()*0.04); //[-0.02,0.02]
+	//	s->set(m_sPosition, -1.0 + getRandomValue()*0.8); //[-1.0, -0.2]
+	//	s->set(m_sVelocity, -0.02 + getRandomValue()*0.04); //[-0.02,0.02]
 	//}
 }
 
@@ -61,15 +61,15 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
 	if (position > s->getProperties(m_sPosition).getMin())
 	{
 		velocity += pedal*0.001 + cos(3 * position)*(-0.0025);
-		s->setValue(m_sVelocity, velocity); //saturate
+		s->set(m_sVelocity, velocity); //saturate
 		velocity = s->get(m_sVelocity);
 		position += velocity;
 	}
 	else
 		velocity = 0.0;
 
-	s->setValue(m_sPosition, position);
-	s->setValue(m_sVelocity, velocity);
+	s->set(m_sPosition, position);
+	s->set(m_sVelocity, velocity);
 }
 
 

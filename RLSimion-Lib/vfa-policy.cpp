@@ -69,7 +69,7 @@ void CDeterministicPolicyGaussianNoise::getNaturalGradient(const CState* s, cons
 
 void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 {
-	a->setValue(m_outputActionIndex.get(), getOutput(s));
+	a->set(m_outputActionIndex.get(), getOutput(s));
 }
 
 double CDeterministicPolicyGaussianNoise::getOutput(const CState* s)
@@ -116,7 +116,7 @@ CStochasticPolicyGaussianNoise::~CStochasticPolicyGaussianNoise()
 
 void CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 {
-	a->setValue(m_outputActionIndex.get(), getOutput(s));
+	a->set(m_outputActionIndex.get(), getOutput(s));
 }
 
 double CStochasticPolicyGaussianNoise::getOutput(const CState *s)

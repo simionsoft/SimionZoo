@@ -74,12 +74,12 @@ CNamedVarProperties& CNamedVarSet::getProperties(const char* varName) const
 	return m_pProperties[varIndex];
 }
 
-void CNamedVarSet::setValue(const char* varName, double value)
+void CNamedVarSet::set(const char* varName, double value)
 {
 	int i = m_pProperties.getVarIndex(varName);
 	if (i >= 0)
 	{
-		setValue(i, value);
+		set(i, value);
 		return;
 	}
 	
@@ -102,7 +102,7 @@ double* CNamedVarSet::getValuePtr(int i)
 	return 0;
 }
 
-void CNamedVarSet::setValue(int i, double value)
+void CNamedVarSet::set(int i, double value)
 {
 	if (i >= 0 && i < m_numVars)
 	{
@@ -125,6 +125,6 @@ void CNamedVarSet::copy(CNamedVarSet* nvs)
 
 	for (int i= 0; i<m_numVars; i++)
 	{
-		setValue(i,nvs->get(i));
+		set(i,nvs->get(i));
 	}
 }

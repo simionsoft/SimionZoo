@@ -35,18 +35,18 @@ void CBalancingPole::reset(CState *s)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
-		s->setValue(m_sTheta, -0.1);
-		s->setValue(m_sTheta_dot, -0.01);
-		s->setValue(m_sX, 0.0);
-		s->setValue(m_sX_dot, 0.0);
+		s->set(m_sTheta, -0.1);
+		s->set(m_sTheta_dot, -0.01);
+		s->set(m_sX, 0.0);
+		s->set(m_sX_dot, 0.0);
 	}
 	else
 	{
 		//random setting in training episodes
-		s->setValue(m_sTheta, -0.2 + getRandomValue()*0.4);
-		s->setValue(m_sTheta_dot, -0.05 + getRandomValue()*0.1);
-		s->setValue(m_sX, -0.5 + getRandomValue());
-		s->setValue(m_sX_dot, -0.1 + getRandomValue()*0.2);
+		s->set(m_sTheta, -0.2 + getRandomValue()*0.4);
+		s->set(m_sTheta_dot, -0.05 + getRandomValue()*0.1);
+		s->set(m_sX, -0.5 + getRandomValue());
+		s->set(m_sX_dot, -0.1 + getRandomValue()*0.2);
 	}
 }
 
@@ -80,10 +80,10 @@ void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
 	double xacc = temp - POLEMASS_LENGTH * thetaacc* costheta / TOTAL_MASS;
 
 	/*** Update the four state variables, using Euler's method. ***/
-	s->setValue(m_sX, x + x_dot*dt);
-	s->setValue(m_sX_dot, x_dot + xacc*dt);
-	s->setValue(m_sTheta, theta + theta_dot*dt);
-	s->setValue(m_sTheta_dot, theta_dot + thetaacc*dt);
+	s->set(m_sX, x + x_dot*dt);
+	s->set(m_sX_dot, x_dot + xacc*dt);
+	s->set(m_sTheta, theta + theta_dot*dt);
+	s->set(m_sTheta_dot, theta_dot + thetaacc*dt);
 }
 
 #define twelve_degrees 0.2094384

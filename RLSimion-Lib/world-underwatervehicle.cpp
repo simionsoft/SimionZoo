@@ -35,9 +35,9 @@ CUnderwaterVehicle::~CUnderwaterVehicle()
 
 void CUnderwaterVehicle::reset(CState *s)
 {
-	s->setValue(m_sVSetpoint,m_pSetpoint->getPointSet(0.0));
-	s->setValue(m_sVDeviation,m_pSetpoint->getPointSet(0.0));
-	s->setValue(m_sV,0.0);
+	s->set(m_sVSetpoint,m_pSetpoint->getPointSet(0.0));
+	s->set(m_sVDeviation,m_pSetpoint->getPointSet(0.0));
+	s->set(m_sV,0.0);
 }
 
 void CUnderwaterVehicle::executeAction(CState *s,const CAction *a,double dt)
@@ -49,7 +49,7 @@ void CUnderwaterVehicle::executeAction(CState *s,const CAction *a,double dt)
 		- (1.2+0.2*sin(fabs(v)))*v*fabs(v))	/(3.0+1.5*sin(fabs(v)));
 	double newV= v + dot_v*dt;
 
-	s->setValue(m_sV,newV);
-	s->setValue(m_sVSetpoint,newSetpoint);
-	s->setValue(m_sVDeviation,newSetpoint-newV);
+	s->set(m_sV,newV);
+	s->set(m_sVSetpoint,newSetpoint);
+	s->set(m_sVDeviation,newSetpoint-newV);
 }

@@ -45,7 +45,7 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 
 	//Rotor speed: omega_r
 	//RotorSpeed = avrSWAP[21 - 1];
-	double last_omega_r = s->getValue("omega_r");
+	double last_omega_r = s->get("omega_r");
 	double omega_r = (double)FASTdata[20];
 	s->setValue("omega_r",omega_r);
 
@@ -55,10 +55,10 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 		d_omega_r = (omega_r - last_omega_r) / m_elapsedTime;
 	s->setValue("d_omega_r", d_omega_r);
 
-	s->setValue("E_omega_r", s->getValue("omega_r") - m_constants["RatedRotorSpeed"]);
+	s->setValue("E_omega_r", s->get("omega_r") - m_constants["RatedRotorSpeed"]);
 
 	//Generator speed: omega_g		//GenSpeed = avrSWAP[20 - 1];
-	double last_omega_g = s->getValue("omega_g");
+	double last_omega_g = s->get("omega_g");
 	double omega_g = (double)FASTdata[19];
 	s->setValue("omega_g", omega_g);
 
@@ -67,7 +67,7 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 		d_omega_g = (omega_g - last_omega_g) / m_elapsedTime; //to avoid zero division
 	s->setValue("d_omega_g", d_omega_r);
 
-	s->setValue("E_omega_g", s->getValue("omega_g") - m_constants["RatedGeneratorSpeed"]);
+	s->setValue("E_omega_g", s->get("omega_g") - m_constants["RatedGeneratorSpeed"]);
 
 	//Wind speed: v					//HorWindV = avrSWAP[27 - 1];
 	s->setValue("v", (double)FASTdata[26]);
@@ -79,10 +79,10 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	s->setValue("E_p", (double)FASTdata[13] - m_constants["RatedPower"]);
 
 	//Aerodynamic torque: T_a
-	s->setValue("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->getValue("E_p") / s->getValue("omega_g"));
+	s->setValue("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->get("E_p") / s->get("omega_g"));
 
 	//Aerodynamic power: P_a
-	s->setValue("P_a", s->getValue("T_a")*s->getValue("omega_r"));
+	s->setValue("P_a", s->get("T_a")*s->get("omega_r"));
 
 	//Power setpoint: P_s, assumed to be the rated power
 	s->setValue("P_s", m_constants["RatedPower"]);
@@ -94,14 +94,14 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 		s->setValue("T_g", m_constants["RatedGeneratorTorque"]);
 		s->setValue("d_T_g", 0.0);
 	}
-	else m_prevGenTorque = s->getValue("T_g");
+	else m_prevGenTorque = s->get("T_g");
 	
 	//Blade pitch: beta
 	double beta = (double)FASTdata[3];
 
 	if (bFirstTime)
 	{
-		m_prevPitch = s->getValue("beta");
+		m_prevPitch = s->get("beta");
 		s->setValue("beta", beta);
 		s->setValue("d_beta", 0.0);
 	}
@@ -118,22 +118,22 @@ void FASTWorldPortal::setActionVariables(float* FASTdata, bool bFirstTime)
 	FASTdata[34] = 1.0;          //Generator contactor status: 1=main (high speed) variable-speed generator
 	FASTdata[55] = 0.0;          //Torque override: 0=yes
 
-	double demanded_T_g = a->getValue("T_g");
+	double demanded_T_g = a->get("T_g");
 	if (!bFirstTime)
 	{
 		s->setValue("d_T_g",(demanded_T_g - m_prevGenTorque) / m_elapsedTime);
-		demanded_T_g = s->getValue("T_g") + s->getValue("d_T_g")*m_elapsedTime;
+		demanded_T_g = s->get("T_g") + s->get("d_T_g")*m_elapsedTime;
 		demanded_T_g = std::min(std::max(demanded_T_g, s->getProperties("T_g").getMin()), s->getProperties("T_g").getMax());
 		s->setValue("T_g", demanded_T_g);
 	}
 	FASTdata[46] = (float)demanded_T_g;// (float)m_last_T_g;   //Demanded generator torque
 
 	//beta
-	double demanded_beta = a->getValue("beta");
+	double demanded_beta = a->get("beta");
 	if (!bFirstTime)
 	{
 		s->setValue("d_beta",(demanded_beta - m_prevPitch) / m_elapsedTime);
-		demanded_beta = s->getValue("beta") + s->getValue("d_beta")*m_elapsedTime;
+		demanded_beta = s->get("beta") + s->get("d_beta")*m_elapsedTime;
 		demanded_beta = std::min(std::max(demanded_beta, s->getProperties("beta").getMin()), s->getProperties("beta").getMax());
 		s->setValue("beta", demanded_beta);
 	}

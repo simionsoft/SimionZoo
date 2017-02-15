@@ -46,16 +46,16 @@ void CMagneticLevitation::reset(CState *s)
 		pSetPoint= m_pLearnSetPoint;
 
 	double setpoint= pSetPoint->getPointSet(0.0);
-	s->setValue(m_sPositionSetpoint,setpoint);
-	s->setValue(m_sPosition,0.013);
-	s->setValue(m_sVelocity,0.0);
-	s->setValue(m_sCurrent,2.1285389233672252);//0.0);
-	s->setValue(m_sPositionDeviation,0.013-setpoint);
+	s->set(m_sPositionSetpoint,setpoint);
+	s->set(m_sPosition,0.013);
+	s->set(m_sVelocity,0.0);
+	s->set(m_sCurrent,2.1285389233672252);//0.0);
+	s->set(m_sPositionDeviation,0.013-setpoint);
 
 
 	//initialization procedure: 0.5 seconds with 15V
 	/*CAction *a= CSimionApp::get()->pWorld->getActionDescriptor();
-	a->setValue("voltage",15.0);
+	a->set("voltage",15.0);
 	double t= 0.0;
 	double dt= 0.01;
 	for (t= 0.0; t<0.5; t+= dt)
@@ -88,10 +88,10 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double I_dot_ii= (x_inf+d)/(xi + L_inf*(x_inf+d));
 	double I_dot= I_dot_i + a->get(m_aVoltage)*I_dot_ii;
 
-	s->setValue(m_sPosition, d + d_dot*dt);
-	s->setValue(m_sVelocity, d_dot + d_dot_dot*dt);
-	s->setValue(m_sCurrent, I + I_dot*dt);
+	s->set(m_sPosition, d + d_dot*dt);
+	s->set(m_sVelocity, d_dot + d_dot_dot*dt);
+	s->set(m_sCurrent, I + I_dot*dt);
 
-	s->setValue(m_sPositionSetpoint,setpoint);
-	s->setValue(m_sPositionDeviation,s->get(m_sPosition)-setpoint);
+	s->set(m_sPositionSetpoint,setpoint);
+	s->set(m_sPositionDeviation,s->get(m_sPosition)-setpoint);
 }

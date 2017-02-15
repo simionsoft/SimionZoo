@@ -266,29 +266,29 @@ void CWindTurbine::reset(CState *s)
 
 	double tsr= initial_rotor_speed*D*0.5/initial_wind_speed;
 
-	s->setValue(m_sT_a,AerodynamicTorque(tsr,m_initial_blade_angle,initial_wind_speed));
-	s->setValue(m_sP_a, s->get(m_sT_a)*initial_rotor_speed);
-	s->setValue(m_sP_s,m_pPowerSetpoint->getPointSet(0.0));
+	s->set(m_sT_a,AerodynamicTorque(tsr,m_initial_blade_angle,initial_wind_speed));
+	s->set(m_sP_a, s->get(m_sT_a)*initial_rotor_speed);
+	s->set(m_sP_s,m_pPowerSetpoint->getPointSet(0.0));
 
-	s->setValue(m_sP_e, P_e_nom);
-	s->setValue(m_sE_p, s->get(m_sP_e) - s->get(m_sP_s));
-	s->setValue(m_sV,initial_wind_speed);
+	s->set(m_sP_e, P_e_nom);
+	s->set(m_sE_p, s->get(m_sP_e) - s->get(m_sP_s));
+	s->set(m_sV,initial_wind_speed);
 
-	s->setValue(m_sOmega_r,initial_rotor_speed);
-	s->setValue(m_sE_omega_r,initial_rotor_speed-NOMINAL_ROTOR_SPEED);
-	s->setValue(m_sD_omega_r,0.0);
-	s->setValue(m_sBeta,m_initial_blade_angle);
-	s->setValue(m_sD_beta,0.0);
-	s->setValue(m_sT_g,P_e_nom/initial_rotor_speed);
-	s->setValue(m_sD_T_g,0.0);
-	s->setValue(m_sE_int_omega_r, 0.0);
+	s->set(m_sOmega_r,initial_rotor_speed);
+	s->set(m_sE_omega_r,initial_rotor_speed-NOMINAL_ROTOR_SPEED);
+	s->set(m_sD_omega_r,0.0);
+	s->set(m_sBeta,m_initial_blade_angle);
+	s->set(m_sD_beta,0.0);
+	s->set(m_sT_g,P_e_nom/initial_rotor_speed);
+	s->set(m_sD_T_g,0.0);
+	s->set(m_sE_int_omega_r, 0.0);
 }
 
 
 void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 {
-	s->setValue(m_sP_s, m_pPowerSetpoint->getPointSet(CSimionApp::get()->pWorld->getT()));
-	s->setValue(m_sV, m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getT()));
+	s->set(m_sP_s, m_pPowerSetpoint->getPointSet(CSimionApp::get()->pWorld->getT()));
+	s->set(m_sV, m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getT()));
 
 	//beta= beta + d(beta)/dt
 	double beta = s->get(m_sBeta);
@@ -297,8 +297,8 @@ void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 	double omega_r = s->get(m_sOmega_r);
 	double T_g = s->get(m_sT_g);
 
-	s->setValue(m_sP_e,T_g*omega_r);
-	s->setValue(m_sE_p, s->get(m_sP_e) - s->get(m_sP_s));
+	s->set(m_sP_e,T_g*omega_r);
+	s->set(m_sE_p, s->get(m_sP_e) - s->get(m_sP_s));
 
 	double tip_speed_ratio = (s->get(m_sOmega_r)*D*0.5) / s->get(m_sV);
 	
@@ -306,25 +306,25 @@ void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 	//double power_coef=C_p(tip_speed_ratio,beta);
 	//P_a= 0.5*rho*pi*R^2*C_p(lambda,beta)v^3
 	double P_a = AerodynamicPower(tip_speed_ratio, beta, s->get(m_sV));
-	s->setValue(m_sP_a,P_a);
+	s->set(m_sP_a,P_a);
 	//T_a= P_a/omega_r
 	double T_a= P_a/omega_r;//AerodynamicTorque(tip_speed_ratio,beta,state->getContinuousState(DIM_v));
-	s->setValue(m_sT_a,T_a);
-	s->setValue(m_sE_omega_r, s->get(m_sOmega_r)-NOMINAL_ROTOR_SPEED);
-	s->setValue(m_sE_int_omega_r, s->get(m_sE_int_omega_r) + s->get(m_sE_omega_r)*dt);
+	s->set(m_sT_a,T_a);
+	s->set(m_sE_omega_r, s->get(m_sOmega_r)-NOMINAL_ROTOR_SPEED);
+	s->set(m_sE_int_omega_r, s->get(m_sE_int_omega_r) + s->get(m_sE_omega_r)*dt);
 
 	//d(omega_r)= (T_a - K_t*omega_r - T_g) / J_t
 	double d_omega_r= (T_a - K_t*omega_r - T_g) / J_t;
 
-	s->setValue(m_sD_omega_r,d_omega_r);
+	s->set(m_sD_omega_r,d_omega_r);
 
-	s->setValue(m_sOmega_r,omega_r + d_omega_r*dt);
+	s->set(m_sOmega_r,omega_r + d_omega_r*dt);
 	
-	s->setValue(m_sD_T_g, a->get(m_aD_T_g));
+	s->set(m_sD_T_g, a->get(m_aD_T_g));
 	T_g = s->get(m_sT_g) + a->get(m_aD_T_g)*dt;
-	s->setValue(m_sD_beta, a->get(m_aD_beta));
+	s->set(m_sD_beta, a->get(m_aD_beta));
 	beta = s->get(m_sBeta) + a->get(m_aD_beta)*dt;
 
-	s->setValue(m_sT_g,T_g);
-	s->setValue(m_sBeta, beta);
+	s->set(m_sT_g,T_g);
+	s->set(m_sBeta, beta);
 }

@@ -58,7 +58,7 @@ double CRewardFunction::getReward(const CState* s, const CAction* a, const CStat
 	for (auto it = m_rewardComponents.begin(); it != m_rewardComponents.end(); ++it)
 	{
 		r_i = (*it)->getReward(s, a, s_p);
-		m_pRewardVector->setValue(i, r_i);
+		m_pRewardVector->set(i, r_i);
 		reward += r_i;
 		++i;
 	}

@@ -56,7 +56,7 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 		output+= s->get(m_gains[i]->m_variableIndex.get())*m_gains[i]->m_gain.get();
 	}
 	// delta= -K*x
-	a->setValue(m_outputActionIndex.get(), -output);
+	a->set(m_outputActionIndex.get(), -output);
 }
 
 int CLQRController::getNumOutputs()
@@ -110,7 +110,7 @@ void CPIDController::selectAction(const CState *s, CAction *a)
 	double dError = error*CSimionApp::get()->pWorld->getDT();
 	m_intError += error*CSimionApp::get()->pWorld->getDT();
 
-	a->setValue(m_outputActionIndex.get()
+	a->set(m_outputActionIndex.get()
 		,error*m_pKP->get() + m_intError*m_pKI->get() + dError*m_pKD->get());
 
 }
@@ -200,8 +200,8 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 			//up there, it should be "E_int_omega_g", which is currently not defined/set
 
 	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
-	a->setValue(m_a_beta,beta);
-	a->setValue(m_a_T_g,T_g + d_T_g* CSimionApp::get()->pWorld->getDT());
+	a->set(m_a_beta,beta);
+	a->set(m_a_T_g,T_g + d_T_g* CSimionApp::get()->pWorld->getDT());
 
 }
 
@@ -273,8 +273,8 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.get()*s->get("E_int_omega_g");
 		//up there, it should be "E_int_omega_g", which is currently not defined/set
 
-	a->setValue(m_a_beta,desiredBeta);
-	a->setValue(m_a_T_g,T_g + d_T_g*CSimionApp::get()->pWorld->getDT());
+	a->set(m_a_beta,desiredBeta);
+	a->set(m_a_T_g,T_g + d_T_g*CSimionApp::get()->pWorld->getDT());
 
 }
 
@@ -381,7 +381,7 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	DesiredGenTrq  = std::min( DesiredGenTrq, s->getProperties("T_g").getMax()  );   //Saturate the command using the maximum torque limit
 
 	//we pass the desired generator torque instead of the rate
-	a->setValue(m_a_T_g, DesiredGenTrq);
+	a->set(m_a_T_g, DesiredGenTrq);
 
 	//PITCH CONTROLLER
 	double GK= 1.0 / (1.0 + s->get(m_beta) / m_PC_KK.get());
@@ -405,5 +405,5 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 		, s->getProperties(m_beta).getMax() );           //Saturate the overall command using the pitch angle limits
 
 	//we pass the desired blade pitch angle to the world
-	a->setValue(m_a_beta,PitComT);
+	a->set(m_a_beta,PitComT);
 }

@@ -50,13 +50,13 @@ public:
 public:
 
 	double get(const char* varName) const;
-	void set(const char* varName, double value);
+	void setValue(const char* varName, double value);
 
 	double* getValueVector(){return m_pValues;}
 
 	double get(int i) const;
 	double* getValuePtr(int i);
-	void set(int i, double value);
+	void setValue(int i, double value);
 
 	double getSumValue() const; //to get the scalarised reward easily
 
