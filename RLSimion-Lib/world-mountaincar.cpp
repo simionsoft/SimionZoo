@@ -45,9 +45,9 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
 {
 	//this simulation model ignores dt!!
 
-	double position= s->getValue(m_sPosition);
-	double velocity = s->getValue(m_sVelocity);
-	double pedal = a->getValue(m_aPedal);
+	double position= s->get(m_sPosition);
+	double velocity = s->get(m_sVelocity);
+	double pedal = a->get(m_aPedal);
 
 	/*
 	mcar_velocity += (a-1)*0.001 + cos(3*mcar_position)*(-0.0025);
@@ -62,7 +62,7 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
 	{
 		velocity += pedal*0.001 + cos(3 * position)*(-0.0025);
 		s->setValue(m_sVelocity, velocity); //saturate
-		velocity = s->getValue(m_sVelocity);
+		velocity = s->get(m_sVelocity);
 		position += velocity;
 	}
 	else
@@ -75,7 +75,7 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
 
 double CMountainCarReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
-	double position = s_p->getValue("position");
+	double position = s_p->get("position");
 
 	//reached the goal?
 	if (position == s_p->getProperties("position").getMax())

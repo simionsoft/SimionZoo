@@ -18,7 +18,7 @@ public:
 	bool log();
 
 	void reset();
-	double getValue(); //the value in the last step
+	double get(); //the value in the last step
 
 	double getMin();
 	double getMax();
@@ -46,7 +46,7 @@ public:
 
 	const char* getKey();
 	const char* getSubkey();
-	double getValue();
+	double get();
 
 	CStatsInfo* getStatsInfo();
 

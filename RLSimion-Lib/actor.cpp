@@ -47,7 +47,7 @@ void CActor::deferredLoadStep()
 					{
 						m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getStateFeatureMap()->getFeatureState(i, s);
 						m_pInitController->selectAction(s, a);
-						pWeights[i] = a->getValue(controllerActionIndex);//m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getValue(s);
+						pWeights[i] = a->get(controllerActionIndex);//m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->get(s);
 					}
 				}
 			}

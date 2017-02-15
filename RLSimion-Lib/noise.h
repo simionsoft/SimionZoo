@@ -20,15 +20,15 @@ public:
 
 	virtual double getSigma() { return 0.0; }
 	virtual double unscale(double noise) { return noise; }
-	virtual double getValue()= 0;
+	virtual double get()= 0;
 };
 
 
 
 class CGaussianNoise: public CNoise
 {
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pSigma;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	DOUBLE_PARAM m_pSigma;
+	DOUBLE_PARAM m_pAlpha;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pScale;
 public:
 	CGaussianNoise(CConfigNode* pParameters);
@@ -36,5 +36,5 @@ public:
 	double getSigma();
 	double unscale(double noise);
 
-	double getValue();
+	double get();
 };

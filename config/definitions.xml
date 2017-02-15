@@ -163,8 +163,8 @@
     <BOOL-VALUE Name="Log-training-episodes" Comment="Log training episodes?" Default="false"/>
   </CLASS>
   <CLASS Name="CGaussianNoise">
-    <BRANCH Name="Sigma" Class="CNumericValue-Factory" Comment="Width of the gaussian bell"/>
-    <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Low-pass first-order filter's gain [0...1]. 1=no filter"/>
+    <DOUBLE-VALUE Name="Sigma" Comment="Width of the gaussian bell" Default="1.0"/>
+    <DOUBLE-VALUE Name="Alpha" Comment="Low-pass first-order filter's gain [0...1]. 1=no filter" Default="1.0"/>
     <BRANCH Name="Scale" Class="CNumericValue-Factory" Comment="Scale factor applied to the noise signal before adding it to the policy's output"/>
   </CLASS>
   <CLASS Name="CNoise-Factory">

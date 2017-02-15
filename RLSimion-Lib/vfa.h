@@ -31,7 +31,7 @@ protected:
 public:
 	CLinearVFA() = default;
 	virtual ~CLinearVFA() = default;
-	double getValue(const CFeatureList *features);
+	double get(const CFeatureList *features);
 	double *getWeightPtr(){ return m_pWeights.get(); }
 	unsigned int getNumWeights(){ return m_numWeights; }
 
@@ -59,8 +59,8 @@ public:
 	void setInitValue(double initValue);
 
 	virtual ~CLinearStateVFA();
-	using CLinearVFA::getValue;
-	double getValue(const CState *s);
+	using CLinearVFA::get;
+	double get(const CState *s);
 
 	void getFeatures(const CState* s,CFeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, CState* s);
@@ -97,8 +97,8 @@ public:
 	void setInitValue(double initValue);
 
 	virtual ~CLinearStateActionVFA();
-	using CLinearVFA::getValue;
-	double getValue(const CState *s, const CAction *a);
+	using CLinearVFA::get;
+	double get(const CState *s, const CAction *a);
 
 	void argMax(const CState *s, CAction* a);
 	double max(const CState *s);

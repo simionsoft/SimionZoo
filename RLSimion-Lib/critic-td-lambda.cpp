@@ -25,7 +25,7 @@ CTDLambdaCritic::~CTDLambdaCritic()
 
 double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
-	double alpha = m_pAlpha->getValue();
+	double alpha = m_pAlpha->get();
 	if (alpha==0.0) return 0.0;
 
 	//using sample importance
@@ -33,7 +33,7 @@ double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CSt
 
 	double rho = 1.0;
 
-	double gamma = m_pGamma->getValue();
+	double gamma = m_pGamma->get();
 	m_z->update(gamma*rho);
 
 	m_pVFunction->getFeatures(s, m_aux);
@@ -41,10 +41,10 @@ double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CSt
 
 
 	//theta= theta + alpha(r + gamma*newValue - oldValue)*z
-	double oldValue= m_pVFunction->getValue(m_aux);
+	double oldValue= m_pVFunction->get(m_aux);
 
 	m_pVFunction->getFeatures(s_p, m_aux);
-	double newValue= m_pVFunction->getValue(m_aux);
+	double newValue= m_pVFunction->get(m_aux);
 	double td = rho*r + gamma*newValue - oldValue;
 	
 	m_pVFunction->add(m_z.ptr(),td);

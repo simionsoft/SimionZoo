@@ -49,12 +49,12 @@ public:
 
 public:
 
-	double getValue(const char* varName) const;
+	double get(const char* varName) const;
 	void setValue(const char* varName, double value);
 
 	double* getValueVector(){return m_pValues;}
 
-	double getValue(int i) const;
+	double get(int i) const;
 	double* getValuePtr(int i);
 	void setValue(int i, double value);
 

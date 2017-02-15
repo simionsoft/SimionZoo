@@ -18,7 +18,7 @@ double CToleranceRegionReward::getReward(const CState *s, const CAction* a, cons
 {
 	double rew, error;
 
-	error = s_p->getValue(m_pVariableName);
+	error = s_p->get(m_pVariableName);
 
 	error = (error) / m_tolerance;
 

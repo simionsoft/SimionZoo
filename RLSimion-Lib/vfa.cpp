@@ -6,10 +6,10 @@
 #include "app.h"
 #include "SimGod.h"
 
-//LINEAR VFA. Common functionalities: getValue (CFeatureList*), saturate, save, load, ....
+//LINEAR VFA. Common functionalities: get (CFeatureList*), saturate, save, load, ....
 
 
-double CLinearVFA::getValue(const CFeatureList *pFeatures)
+double CLinearVFA::get(const CFeatureList *pFeatures)
 {
 	double value = 0.0;
 	unsigned int localIndex;
@@ -199,11 +199,11 @@ void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
 }
 
 
-double CLinearStateVFA::getValue(const CState *s)
+double CLinearStateVFA::get(const CState *s)
 {
 	getFeatures(s, m_pAux);
 
-	return CLinearVFA::getValue(m_pAux);
+	return CLinearVFA::get(m_pAux);
 }
 
 
@@ -347,11 +347,11 @@ void CLinearStateActionVFA::add(const CFeatureList* pFeatures, double alpha)
 
 
 
-double CLinearStateActionVFA::getValue(const CState *s, const CAction* a)
+double CLinearStateActionVFA::get(const CState *s, const CAction* a)
 {
 	getFeatures(s, a, m_pAux);
 
-	return CLinearVFA::getValue(m_pAux);
+	return CLinearVFA::get(m_pAux);
 }
 
 
@@ -367,7 +367,7 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
-		value= getValue(m_pAux);
+		value= get(m_pAux);
 		if (value>maxValue)
 		{
 			maxValue = value;
@@ -392,7 +392,7 @@ double CLinearStateActionVFA::max(const CState* s)
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
-		value = getValue(m_pAux);
+		value = get(m_pAux);
 		if (value>maxValue)
 			maxValue = value;
 	
@@ -412,7 +412,7 @@ void CLinearStateActionVFA::getActionValues(const CState* s,double *outActionVal
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
-		outActionValues[i] = getValue(m_pAux);
+		outActionValues[i] = get(m_pAux);
 
 		m_pAux->offsetIndices(m_numStateWeights);
 	}

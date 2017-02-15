@@ -30,12 +30,12 @@ void CRegularPolicyGradientLearner::updatePolicy(const CState *s, const CAction 
 	//Regular gradient actor update
 	//theta= theta + alpha*(lastNoise)*phi_pi(s)*td
 
-	alpha = m_pAlpha->getValue();
+	alpha = m_pAlpha->get();
 
 
 	m_pPolicy->getFeatures(s, m_pStateFeatures);
 
-	lastNoise = a->getValue(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);// m_pOutput->getValue(i);
+	lastNoise = a->get(m_pPolicy->getOutputActionIndex()) - m_pPolicy->getDeterministicOutput(m_pStateFeatures);// m_pOutput->get(i);
 
 
 	if (alpha != 0.0)

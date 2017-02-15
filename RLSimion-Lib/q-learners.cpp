@@ -33,7 +33,7 @@ CQEGreedyPolicy::~CQEGreedyPolicy()
 
 void CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
 {
-	double epsilon = m_pEpsilon->getValue();
+	double epsilon = m_pEpsilon->get();
 	double randomValue = getRandomValue();
 
 	if (randomValue < epsilon)
@@ -60,7 +60,7 @@ CQSoftMaxPolicy::~CQSoftMaxPolicy()
 
 void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
 {
-	if (m_pTau->getValue() == 0.0)
+	if (m_pTau->get() == 0.0)
 	{
 		pQFunction->argMax(s, a);
 		return;
@@ -73,7 +73,7 @@ void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 		if (numActionWeights > 0)
 			m_pProbabilities = new double[numActionWeights];
 	}
-	double inv_tau = 1.0/std::max(0.000001,m_pTau->getValue());
+	double inv_tau = 1.0/std::max(0.000001,m_pTau->get());
 	pQFunction->getActionValues(s, m_pProbabilities);
 	double sum = 0.0;
 	unsigned int i;
@@ -119,11 +119,11 @@ void CQLearning::updateValue(const CState *s, const CAction *a, const CState *s_
 	m_eTraces->update();
 
 	m_pQFunction->getFeatures(s, a, m_pAux);
-	m_eTraces->addFeatureList(m_pAux, m_pGamma->getValue());
+	m_eTraces->addFeatureList(m_pAux, m_pGamma->get());
 
-	double td = r + m_pGamma->getValue()*m_pQFunction->max(s_p) - m_pQFunction->getValue(s,a);
+	double td = r + m_pGamma->get()*m_pQFunction->max(s_p) - m_pQFunction->get(s,a);
 
-	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->getValue());
+	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 }
 
 void CQLearning::selectAction(const CState *s, CAction *a)
@@ -165,11 +165,11 @@ void CDoubleQLearning::updateValue(const CState *s, const CAction *a, const CSta
 	else m_numStepsSinceLastTargetUpdate++;
 
 	m_pQFunction->getFeatures(s, a, m_pAux);
-	m_eTraces->addFeatureList(m_pAux, m_pGamma->getValue());
+	m_eTraces->addFeatureList(m_pAux, m_pGamma->get());
 
-	double td = r + m_pGamma->getValue()*m_pQFunction->max(s_p) - m_pTargetQFunction->getValue(s, a);
+	double td = r + m_pGamma->get()*m_pQFunction->max(s_p) - m_pTargetQFunction->get(s, a);
 
-	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->getValue());
+	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 }
 
 /////////////////////////////////////////////////
@@ -208,8 +208,8 @@ void CSARSA::updateValue(const CState* s, const CAction* a, const CState* s_p, d
 	m_bNextActionSelected = true;
 
 	m_pQFunction->getFeatures(s, a, m_pAux);
-	m_eTraces->addFeatureList(m_pAux, m_pGamma->getValue());
+	m_eTraces->addFeatureList(m_pAux, m_pGamma->get());
 
-	double td = r + m_pGamma->getValue()*m_pQFunction->getValue(s_p,m_nextA) - m_pQFunction->getValue(s, a);
-	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->getValue());
+	double td = r + m_pGamma->get()*m_pQFunction->get(s_p,m_nextA) - m_pQFunction->get(s, a);
+	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 }

@@ -71,9 +71,9 @@ void CMagneticLevitation::reset(CState *s)
 
 void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 {
-	double d= s->getValue(m_sPosition);
-	double d_dot= s->getValue(m_sVelocity);
-	double I= s->getValue(m_sCurrent);
+	double d= s->get(m_sPosition);
+	double d_dot= s->get(m_sVelocity);
+	double I= s->get(m_sCurrent);
 	double setpoint;
 	
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
@@ -86,12 +86,12 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double d_dot_dot= G - (xi*I*I/(2*M*pow(x_inf+d,2.0)));
 	double I_dot_i= I*(xi*d_dot-R*pow(x_inf+d,2.0))/(xi*(x_inf+d) + L_inf*pow(x_inf+d,2.0));
 	double I_dot_ii= (x_inf+d)/(xi + L_inf*(x_inf+d));
-	double I_dot= I_dot_i + a->getValue(m_aVoltage)*I_dot_ii;
+	double I_dot= I_dot_i + a->get(m_aVoltage)*I_dot_ii;
 
 	s->setValue(m_sPosition, d + d_dot*dt);
 	s->setValue(m_sVelocity, d_dot + d_dot_dot*dt);
 	s->setValue(m_sCurrent, I + I_dot*dt);
 
 	s->setValue(m_sPositionSetpoint,setpoint);
-	s->setValue(m_sPositionDeviation,s->getValue(m_sPosition)-setpoint);
+	s->setValue(m_sPositionDeviation,s->get(m_sPosition)-setpoint);
 }

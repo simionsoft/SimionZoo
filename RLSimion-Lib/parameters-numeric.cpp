@@ -11,7 +11,7 @@ class CConstantValue : public CNumericValue
 	DOUBLE_PARAM m_value;
 public:
 	CConstantValue(CConfigNode* pConfigNode);
-	double getValue(){ return m_value.get(); }
+	double get(){ return m_value.get(); }
 };
 
 CConstantValue::CConstantValue(CConfigNode* pConfigNode)
@@ -34,7 +34,7 @@ class CInterpolatedValue : public CNumericValue
 	ENUM_PARAM<TimeReference> m_timeReference;
 public:
 	CInterpolatedValue(CConfigNode* pParameters);
-	double getValue();
+	double get();
 };
 
 CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
@@ -56,7 +56,7 @@ CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
 }
 
 
-double CInterpolatedValue::getValue()
+double CInterpolatedValue::get()
 {
 	double progress;
 
@@ -100,7 +100,7 @@ class CBhatnagarSchedule : public CNumericValue
 public:
 	//alpha_t= alpha_0*alpha_c / (alpha_c+t^{exp})
 	CBhatnagarSchedule(CConfigNode* pParameters);
-	double getValue();
+	double get();
 };
 
 
@@ -119,7 +119,7 @@ CBhatnagarSchedule::CBhatnagarSchedule(CConfigNode* pConfigNode)
 }
 
 
-double CBhatnagarSchedule::getValue()
+double CBhatnagarSchedule::get()
 {
 	double t;
 

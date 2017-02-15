@@ -105,7 +105,7 @@ void CStats::addExperimentSample()
 	else	assert(0);
 }
 
-double CStats::getValue()
+double CStats::get()
 {
 	if (m_variable)
 	{

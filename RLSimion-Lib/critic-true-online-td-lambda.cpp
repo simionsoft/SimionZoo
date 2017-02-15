@@ -28,22 +28,22 @@ double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,
 {
 	double v_s_p;
 
-	if (m_pAlpha->getValue()==0.0) return 0.0;
+	if (m_pAlpha->get()==0.0) return 0.0;
 	double rho = 0.0;
 	
 	if (CSimionApp::get()->pExperiment->isFirstStep())
 	{
 		//vs= theta^T * phi(s)
 		m_pVFunction->getFeatures(s,m_aux);
-		m_v_s= m_pVFunction->getValue(m_aux);
+		m_v_s= m_pVFunction->get(m_aux);
 	}
 		
 	//vs_p= theta^T * phi(s_p)
 	m_pVFunction->getFeatures(s_p,m_aux);
-	v_s_p= m_pVFunction->getValue(m_aux);
+	v_s_p= m_pVFunction->get(m_aux);
 
-	double gamma = m_pGamma->getValue();
-	double alpha = m_pAlpha->getValue();
+	double gamma = m_pGamma->get();
+	double alpha = m_pAlpha->get();
 	//delta= R + gamma* v_s_p - v_s
 	double td = r + gamma*v_s_p - m_v_s;
 
@@ -58,7 +58,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,
 
 	//theta= theta + delta*e + alpha[v_s - theta^T*phi(s)]* phi(s)
 	m_pVFunction->add(m_e.ptr(),td);
-	double theta_T_phi_s= m_pVFunction->getValue(m_aux);
+	double theta_T_phi_s= m_pVFunction->get(m_aux);
 	m_pVFunction->add(m_aux,alpha *(m_v_s - theta_T_phi_s));
 	//v_s= v_s_p
 	m_v_s= v_s_p;

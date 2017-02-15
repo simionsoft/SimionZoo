@@ -62,11 +62,11 @@ void CBalancingPole::reset(CState *s)
 
 void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
 {
-	double force = a->getValue(m_aPitch);
-	double theta = s->getValue(m_sTheta);
-	double theta_dot = s->getValue(m_sTheta_dot);
-	double x = s->getValue(m_sX);
-	double x_dot = s->getValue(m_sX_dot);
+	double force = a->get(m_aPitch);
+	double theta = s->get(m_sTheta);
+	double theta_dot = s->get(m_sTheta_dot);
+	double x = s->get(m_sX);
+	double x_dot = s->get(m_sX_dot);
 	double costheta = cos(theta);
 	double sintheta = sin(theta);
 
@@ -91,8 +91,8 @@ double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const 
 {
 	bool bEval = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 	int step = CSimionApp::get()->pExperiment->getStep();
-	double theta = s_p->getValue("theta");
-	double x = s_p->getValue("x");
+	double theta = s_p->get("theta");
+	double x = s_p->get("x");
 
 	if (x < -2.4 ||
 		x > 2.4 ||

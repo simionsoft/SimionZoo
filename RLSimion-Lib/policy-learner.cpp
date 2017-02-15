@@ -53,11 +53,11 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 
 	for (int i = 0; i<m_numOutputs; i++)
 	{
-		output = m_pPolicyLearners[i]->getPolicy()->getVFA()->getValue(s, a);
+		output = m_pPolicyLearners[i]->getPolicy()->getVFA()->get(s, a);
 
 		var_i = std::max(0.000000001, m_pPolicyLearners[i]->getPolicy()->getExpNoise()->getSigma());
 
-		noiseWidth = fabs((a->getValue(i) - output) 
+		noiseWidth = fabs((a->get(i) - output) 
 			/ a->getRangeHalfWidth(m_pPolicyLearners[i]->getPolicy()->getOutputActionIndex()));
 
 		if (noiseWidth != 0.0)

@@ -53,7 +53,7 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 
 	for (unsigned int i= 0; i<m_gains.size(); i++)
 	{
-		output+= s->getValue(m_gains[i]->m_variableIndex.get())*m_gains[i]->m_gain.get();
+		output+= s->get(m_gains[i]->m_variableIndex.get())*m_gains[i]->m_gain.get();
 	}
 	// delta= -K*x
 	a->setValue(m_outputActionIndex.get(), -output);
@@ -106,12 +106,12 @@ void CPIDController::selectAction(const CState *s, CAction *a)
 	if (CSimionApp::get()->pWorld->getT()== 0.0)
 		m_intError= 0.0;
 
-	double error= s->getValue(m_errorVariableIndex.get());
+	double error= s->get(m_errorVariableIndex.get());
 	double dError = error*CSimionApp::get()->pWorld->getDT();
 	m_intError += error*CSimionApp::get()->pWorld->getDT();
 
 	a->setValue(m_outputActionIndex.get()
-		,error*m_pKP->getValue() + m_intError*m_pKI->getValue() + dError*m_pKD->getValue());
+		,error*m_pKP->get() + m_intError*m_pKI->get() + dError*m_pKD->get());
 
 }
 
@@ -180,12 +180,12 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
 
-	double omega_g= s->getValue(m_omega_g);
-	double d_omega_g= s->getValue(m_d_omega_g);
+	double omega_g= s->get(m_omega_g);
+	double d_omega_g= s->get(m_d_omega_g);
 
-	double error_P= s->getValue(m_E_p);
+	double error_P= s->get(m_E_p);
 
-	double T_g= s->getValue(m_T_g);
+	double T_g= s->get(m_T_g);
 	
 	double d_T_g;
 	
@@ -193,10 +193,10 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
-//	double omega_g = s->getValue(m_omega_r_index);
+//	double omega_g = s->get(m_omega_r_index);
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed"); //NOMINAL WIND SPEED
 	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0+sgn(e_omega_g))
-				+ m_pKI.get()*s->getValue("E_int_omega_r");
+				+ m_pKI.get()*s->get("E_int_omega_r");
 
 	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
 	a->setValue(m_a_beta,beta);
@@ -256,13 +256,13 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
 
-	double omega_g= s->getValue(m_omega_g);
+	double omega_g= s->get(m_omega_g);
 	double C_0= m_pC_0.get();		
-	double error_P= -s->getValue(m_E_p);	
-	double T_a= s->getValue(m_T_a_index);		
+	double error_P= -s->get(m_E_p);	
+	double T_a= s->get(m_T_a_index);		
 
-	double T_g= s->getValue(m_T_g);	
-	double beta= s->getValue(m_beta);	
+	double T_g= s->get(m_T_g);	
+	double beta= s->get(m_beta);	
 	
 	double d_T_g= (1.0/omega_g)*(C_0*error_P - (1.0/m_J_t)
 		*(T_a*T_g - m_K_t*omega_g*T_g - T_g*T_g));
@@ -353,18 +353,18 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	if (CSimionApp::get()->pWorld->getT() == 0.0)
 	{
 		lowPassFilterAlpha= 1.0;
-		m_GenSpeedF= s->getValue(m_omega_g);
-		m_lastDemandedPitch = s->getValue(m_beta);
+		m_GenSpeedF= s->get(m_omega_g);
+		m_lastDemandedPitch = s->get(m_beta);
 		m_IntSpdErr = 0.0;
 	}
 	else
 		lowPassFilterAlpha = exp(-CSimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
 
-	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->getValue(m_omega_g) + lowPassFilterAlpha*m_GenSpeedF;
+	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get(m_omega_g) + lowPassFilterAlpha*m_GenSpeedF;
 
 	//TORQUE CONTROLLER
 	double DesiredGenTrq;
-	if ( (m_GenSpeedF >= m_ratedGenSpeed ) || (  s->getValue(m_beta) >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
+	if ( (m_GenSpeedF >= m_ratedGenSpeed ) || (  s->get(m_beta) >= m_VS_Rgn3MP.get() ) )   //We are in region 3 - power is constant
 		DesiredGenTrq = m_ratedPower/m_GenSpeedF;
 	else if ( m_GenSpeedF <= m_VS_CtInSp.get() )							//We are in region 1 - torque is zero
 		DesiredGenTrq = 0.0;
@@ -381,7 +381,7 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	a->setValue(m_a_T_g, DesiredGenTrq);
 
 	//PITCH CONTROLLER
-	double GK= 1.0 / (1.0 + s->getValue(m_beta) / m_PC_KK.get());
+	double GK= 1.0 / (1.0 + s->get(m_beta) / m_PC_KK.get());
 
 	//Compute the current speed error and its integral w.r.t. time; saturate the
 	//  integral term using the pitch angle limits:

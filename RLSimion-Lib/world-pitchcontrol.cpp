@@ -61,11 +61,11 @@ void CPitchControl::executeAction(CState *s, const CAction *a, double dt)
 		s->setValue(m_sSetpointPitch, setpoint_pitch);
 	}
 	else
-		setpoint_pitch = s->getValue(m_sSetpointPitch);
+		setpoint_pitch = s->get(m_sSetpointPitch);
 
-	double angle_attack= s->getValue(m_sAttackAngle);
-	double pitch_rate= s->getValue(m_sPitchRate);
-	double u= a->getValue(m_aPitch);
+	double angle_attack= s->get(m_sAttackAngle);
+	double pitch_rate= s->get(m_sPitchRate);
+	double u= a->get(m_aPitch);
 
 	double angle_attack_dot= -0.313*angle_attack + 56.7*pitch_rate + 0.232*u;
 	double pitch_rate_dot= -0.0139*angle_attack -0.426*pitch_rate + 0.0203*u;
@@ -73,6 +73,6 @@ void CPitchControl::executeAction(CState *s, const CAction *a, double dt)
 
 	s->setValue(m_sAttackAngle,angle_attack + angle_attack_dot*dt);
 	s->setValue(m_sPitchRate,pitch_rate + pitch_rate_dot*dt);
-	s->setValue(m_sPitch, s->getValue(m_sPitch) + pitch_angle_dot*dt);
-	s->setValue(m_sControlDeviation,setpoint_pitch - s->getValue(m_sPitch));
+	s->setValue(m_sPitch, s->get(m_sPitch) + pitch_angle_dot*dt);
+	s->setValue(m_sControlDeviation,setpoint_pitch - s->get(m_sPitch));
 }

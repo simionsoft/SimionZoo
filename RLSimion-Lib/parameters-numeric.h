@@ -5,7 +5,7 @@ class CConfigNode;
 class CNumericValue
 {
 public:
-	virtual double getValue() = 0;
+	virtual double get() = 0;
 
 	static std::shared_ptr<CNumericValue> getInstance(CConfigNode* pConfigNode);
 };

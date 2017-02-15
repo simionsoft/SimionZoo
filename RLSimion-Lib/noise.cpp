@@ -50,36 +50,28 @@ std::shared_ptr<CNoise> CNoise::getInstance(CConfigNode* pConfigNode)
 		{"GaussianNoise",CHOICE_ELEMENT_NEW<CGaussianNoise>}
 	}
 	);
-	//CHOICE("Noise","Noise type");
-	//CHOICE_ELEMENT("GaussianNoise", CGaussianNoise,"Gaussian noise");
-	//END_CHOICE();
 
-	//END_CLASS();
-	//assert(0);
 	return 0;
 }
 
 CGaussianNoise::CGaussianNoise(CConfigNode* pConfigNode)
 {
-	m_pSigma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Sigma", "Width of the gaussian bell");
-	//NUMERIC_VALUE(m_pSigma,"Sigma","Width of the gaussian bell");
-	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Low-pass first-order filter's gain [0...1]. 1=no filter");
-	//NUMERIC_VALUE(m_pAlpha,"Alpha","Low-pass first-order filter's gain [0...1]. 1=no filter");
+	m_pSigma = DOUBLE_PARAM(pConfigNode, "Sigma", "Width of the gaussian bell",1.0);
+	m_pAlpha = DOUBLE_PARAM(pConfigNode, "Alpha", "Low-pass first-order filter's gain [0...1]. 1=no filter",1.0);
 	m_pScale = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Scale", "Scale factor applied to the noise signal before adding it to the policy's output");
-	//NUMERIC_VALUE(m_pScale,"Scale","Scale factor applied to the noise signal before adding it to the policy's output");
 }
 
 
-double CGaussianNoise::getValue()
+double CGaussianNoise::get()
 {
 	double randValue = 0.0;
-	double sigma = m_pSigma->getValue();
-	double alpha = m_pAlpha->getValue();
+	double sigma = m_pSigma.get();
+	double alpha = m_pAlpha.get();
 
 	if (sigma > 0.00000000001)
 		randValue = getNormalDistributionSample(0.0,sigma);
 
-	randValue*= m_pScale->getValue();
+	randValue*= m_pScale->get();
 
 	randValue = alpha*randValue + (1.0 - alpha)*m_lastValue;
 
@@ -91,10 +83,10 @@ double CGaussianNoise::getValue()
 
 double CGaussianNoise::getSigma()
 {
-	return m_pSigma->getValue(); 
+	return m_pSigma.get(); 
 }
 
 double CGaussianNoise::unscale(double noise)
 {
-	return noise / m_pScale->getValue();
+	return noise / m_pScale->get();
 }

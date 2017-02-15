@@ -327,7 +327,7 @@ int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarS
 	int numVars = pNamedVarSet->getNumVars();
 	double* pDoubleBuffer = (double*)(buffer + offset);
 	for (int i = 0; i < numVars; ++i)
-		pDoubleBuffer[i] = pNamedVarSet->getValue(i);
+		pDoubleBuffer[i] = pNamedVarSet->get(i);
 	return numVars* sizeof(double);
 }
 
@@ -338,7 +338,7 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 	int i = 0;
 	for (auto it = m_stats.begin(); it != m_stats.end(); ++it)
 	{
-		pDoubleBuffer[i] = (*it)->getValue();
+		pDoubleBuffer[i] = (*it)->get();
 		++i;
 	}
 	return numVars* sizeof(double);

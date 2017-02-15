@@ -71,16 +71,16 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	//avg_r= avg_r + alpha_r * td
 	//e_v= gamma* lambda*e_v + phi(s)
 	//v = v + alpha_v*td*e_v
-	double alpha_v = m_pAlphaV->getValue();
-	double gamma = m_pGamma->getValue();
+	double alpha_v = m_pAlphaV->get();
+	double gamma = m_pGamma->get();
 	m_pVFunction->getFeatures(s, m_s_features);
 	m_pVFunction->getFeatures(s_p, m_s_p_features);
 	//1. td= r - avg_r + gamma*V(s_p) - V(s)
-	m_td = r - m_avg_r + gamma * m_pVFunction->getValue(m_s_p_features)
-		- m_pVFunction->getValue(m_s_features);
+	m_td = r - m_avg_r + gamma * m_pVFunction->get(m_s_p_features)
+		- m_pVFunction->get(m_s_features);
 
 	//2. avg_r= avg_r + alpha_r * td
-	m_avg_r += m_td * m_pAlphaR->getValue();
+	m_avg_r += m_td * m_pAlphaR->get();
 
 	//3. e_v= gamma* lambda*e_v + phi(s)
 	m_e_v->update(gamma);
@@ -108,9 +108,9 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	// \Psi_sa= \delta log pi(s,a)= (a_t-\pi(s_t)) * phi(s_t) / sigma^2
 
 
-	double gamma = m_pGamma->getValue();
-	double alpha_v = m_pAlphaV->getValue();
-	double alpha_u = m_pAlphaU->getValue();
+	double gamma = m_pGamma->get();
+	double alpha_v = m_pAlphaV->get();
+	double alpha_u = m_pAlphaU->get();
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
