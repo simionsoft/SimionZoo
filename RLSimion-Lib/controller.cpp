@@ -195,8 +195,9 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 
 //	double omega_g = s->get(m_omega_r_index);
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed"); //NOMINAL WIND SPEED
-	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0+sgn(e_omega_g))
-				+ m_pKI.get()*s->get("E_int_omega_r");
+	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0 + sgn(e_omega_g));
+				//+ m_pKI.get()*s->get("E_int_omega_r");
+			//up there, it should be "E_int_omega_g", which is currently not defined/set
 
 	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
 	a->setValue(m_a_beta,beta);
@@ -266,11 +267,13 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 	
 	double d_T_g= (1.0/omega_g)*(C_0*error_P - (1.0/m_J_t)
 		*(T_a*T_g - m_K_t*omega_g*T_g - T_g*T_g));
+	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
 
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double d_beta = m_pKP.get()*e_omega_g;
+	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.get()*s->get("E_int_omega_g");
+		//up there, it should be "E_int_omega_g", which is currently not defined/set
 
-	a->setValue(m_a_beta,beta + d_beta*CSimionApp::get()->pWorld->getDT());
+	a->setValue(m_a_beta,desiredBeta);
 	a->setValue(m_a_T_g,T_g + d_T_g*CSimionApp::get()->pWorld->getDT());
 
 }
