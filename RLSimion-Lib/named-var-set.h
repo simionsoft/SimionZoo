@@ -15,8 +15,6 @@ public:
 	void setName(const char* name);
 	double getMin() const { return m_min; }
 	double getMax() const { return m_max; }
-	//double getMin(const char* name) const;
-	//double getMax(const char* name) const;
 	double getRangeWidth(int i) const { return m_max - m_min; }
 };
 
@@ -58,7 +56,8 @@ public:
 	double* getValuePtr(int i);
 	void set(int i, double value);
 
-	double getSumValue() const; //to get the scalarised reward easily
+	//returns the sum of all the values, i.e. used to scalarise a reward vector
+	double getSumValue() const;
 
 	void copy(CNamedVarSet* nvs);
 	CNamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
