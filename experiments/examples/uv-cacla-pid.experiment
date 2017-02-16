@@ -73,10 +73,8 @@
                   <CACLA>
                     <Alpha>
                       <Schedule>
-                        <Linear-Schedule>
-                          <Start-Offset>0.0</Start-Offset>
-                          <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                          <FORKED-NODE Name="Initial-Value" Alias="Actor-Alpha">
+                        <Simple-Linear-Decay>
+                          <FORKED-NODE Name="Initial-Value" Alias="Initial-Value">
                             <FORK-VALUE Name="Value-0">
                               <Initial-Value>0.001</Initial-Value>
                             </FORK-VALUE>
@@ -88,10 +86,7 @@
                             </FORK-VALUE>
                           </FORKED-NODE>
                           <End-Value>0.0</End-Value>
-                          <Evaluation-Value>0.0</Evaluation-Value>
-                          <Interpolation>linear</Interpolation>
-                          <Time-reference>experiment</Time-reference>
-                        </Linear-Schedule>
+                        </Simple-Linear-Decay>
                       </Schedule>
                     </Alpha>
                     <Policy>
@@ -104,26 +99,12 @@
                           <Exploration-Noise>
                             <Noise>
                               <GaussianNoise>
-                                <Sigma>
-                                  <Schedule>
-                                    <Constant>
-                                      <Value>1</Value>
-                                    </Constant>
-                                  </Schedule>
-                                </Sigma>
-                                <Alpha>
-                                  <Schedule>
-                                    <Constant>
-                                      <Value>1</Value>
-                                    </Constant>
-                                  </Schedule>
-                                </Alpha>
+                                <Sigma>1</Sigma>
+                                <Alpha>1</Alpha>
                                 <Scale>
                                   <Schedule>
-                                    <Linear-Schedule>
-                                      <Start-Offset>0.0</Start-Offset>
-                                      <Pre-Offset-Value>0.0</Pre-Offset-Value>
-                                      <FORKED-NODE Name="Initial-Value" Alias="Noise-Width">
+                                    <Simple-Linear-Decay>
+                                      <FORKED-NODE Name="Initial-Value" Alias="Initial-Value">
                                         <FORK-VALUE Name="Value-0">
                                           <Initial-Value>0.01</Initial-Value>
                                         </FORK-VALUE>
@@ -135,10 +116,7 @@
                                         </FORK-VALUE>
                                       </FORKED-NODE>
                                       <End-Value>0.0</End-Value>
-                                      <Evaluation-Value>0.0</Evaluation-Value>
-                                      <Interpolation>linear</Interpolation>
-                                      <Time-reference>experiment</Time-reference>
-                                    </Linear-Schedule>
+                                    </Simple-Linear-Decay>
                                   </Schedule>
                                 </Scale>
                               </GaussianNoise>
@@ -161,15 +139,10 @@
                   </E-Traces>
                   <Alpha>
                     <Schedule>
-                      <Linear-Schedule>
-                        <Start-Offset>0.0</Start-Offset>
-                        <Pre-Offset-Value>0.0</Pre-Offset-Value>
+                      <Simple-Linear-Decay>
                         <Initial-Value>0.1</Initial-Value>
                         <End-Value>0.0</End-Value>
-                        <Evaluation-Value>0.0</Evaluation-Value>
-                        <Interpolation>linear</Interpolation>
-                        <Time-reference>experiment</Time-reference>
-                      </Linear-Schedule>
+                      </Simple-Linear-Decay>
                     </Schedule>
                   </Alpha>
                   <Gamma>

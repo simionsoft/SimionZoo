@@ -21,7 +21,29 @@ CConstantValue::CConstantValue(CConfigNode* pConfigNode)
 	// CONST_DOUBLE_VALUE(m_value, "Value", 0.0, "Constant value");
 }
 
+class CSimpleEpisodeLinearSchedule : public CNumericValue
+{
+	DOUBLE_PARAM m_startValue;
+	DOUBLE_PARAM m_endValue;
+public:
+	CSimpleEpisodeLinearSchedule(CConfigNode* pParameters);
+	double get();
+};
 
+CSimpleEpisodeLinearSchedule::CSimpleEpisodeLinearSchedule(CConfigNode* pConfigNode)
+{
+	m_startValue = DOUBLE_PARAM(pConfigNode, "Initial-Value", "Value at the beginning of the experiment",0.1);
+	m_endValue = DOUBLE_PARAM(pConfigNode, "End-Value", "Value at the end of the experiment", 0.0);
+}
+
+double CSimpleEpisodeLinearSchedule::get()
+{
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return 0.0;
+
+	double progress = CSimionApp::get()->pExperiment->getExperimentProgress();
+
+	return m_startValue.get() + (m_endValue.get() - m_startValue.get())* progress;
+}
 
 class CInterpolatedValue : public CNumericValue
 {
@@ -40,19 +62,12 @@ public:
 CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
 {
 	m_startOffset = DOUBLE_PARAM(pConfigNode, "Start-Offset", "Normalized time from which the schedule will begin [0...1]", 0.0);
-	//CONST_DOUBLE_VALUE(m_startOffset, "Start-Offset", 0.0,"Normalized time from which the schedule will begin [0...1]");
 	m_preOffsetValue = DOUBLE_PARAM(pConfigNode, "Pre-Offset-Value", "Output value before the schedule begins", 0.1);
-	//CONST_DOUBLE_VALUE(m_preOffsetValue, "Pre-Offset-Value", 0.0,"Output value before the schedule begins");
 	m_interpolation = ENUM_PARAM<Interpolation>(pConfigNode, "Interpolation", "Interpolation type", Interpolation::linear);
-	//ENUM_VALUE(m_interpolation, Interpolation, "Interpolation", "linear","Interpolation type");
 	m_timeReference = ENUM_PARAM<TimeReference>(pConfigNode, "Time-reference", "The time-reference type", TimeReference::experiment);
-	//ENUM_VALUE(m_timeReference, TimeReference, "Time-reference", "experiment","Time reference");
 	m_startValue = DOUBLE_PARAM(pConfigNode,"Initial-Value", "Output value at the beginning of the schedule", 0.1);
-	//CONST_DOUBLE_VALUE(m_startValue, "Initial-Value", 0.0,"Output value at the beginning of the schedule");
 	m_endValue = DOUBLE_PARAM(pConfigNode, "End-Value", "Output value at the end of the schedule", 0.0);
-	//CONST_DOUBLE_VALUE(m_endValue, "End-Value", 1.0,"Output value at the end of the schedule");
 	m_evaluationValue = DOUBLE_PARAM(pConfigNode, "Evaluation-Value", "Output value during evaluation episodes", 0.0);
-	//CONST_DOUBLE_VALUE(m_evaluationValue, "Evaluation-Value", 0.0,"Output value during evaluation episodes");
 }
 
 
@@ -107,15 +122,10 @@ public:
 CBhatnagarSchedule::CBhatnagarSchedule(CConfigNode* pConfigNode)
 {
 	m_timeReference = ENUM_PARAM<TimeReference>(pConfigNode, "Time-reference", "The time reference", TimeReference::episode);
-	//ENUM_VALUE(m_timeReference, TimeReference,  "Time-reference", "linear","Time reference"); //<- "linear" was a bug
 	m_alpha_0 = DOUBLE_PARAM(pConfigNode, "Alpha-0", "Alpha-0 parameter in Bhatnagar's schedule", 1.0);
-	//CONST_DOUBLE_VALUE(m_alpha_0,  "Alpha-0", 1.0,"Alpha-0 parameter in Bhatnagar's schedule");
 	m_alpha_c = DOUBLE_PARAM(pConfigNode, "Alpha-c", "Alpha-c parameter in Bhatnagar's schedule", 1.0);
-	//CONST_DOUBLE_VALUE(m_alpha_c, "Alpha-c", 1.0, "Alpha-c parameter in Bhatnagar's schedule");
 	m_t_exp = DOUBLE_PARAM(pConfigNode, "Time-Exponent", "Time exponent in Bhatnagar's schedule", 1.0);
-	//CONST_DOUBLE_VALUE(m_t_exp, "Time-Exponent", 1.0, "Time exponent in Bhatnagar's schedule");
 	m_evaluationValue= DOUBLE_PARAM(pConfigNode, "Evaluation-Value", "Output value during evaluation episodes", 0.0);
-	//CONST_DOUBLE_VALUE(m_evaluationValue, "Evaluation-Value", 0.0,"Output value during evaluation episodes");
 }
 
 
@@ -144,6 +154,7 @@ std::shared_ptr<CNumericValue> CNumericValue::getInstance(CConfigNode* pConfigNo
 	{
 		{"Constant",CHOICE_ELEMENT_NEW<CConstantValue>},
 		{"Linear-Schedule",CHOICE_ELEMENT_NEW<CInterpolatedValue>},
+		{"Simple-Linear-Decay",CHOICE_ELEMENT_NEW<CSimpleEpisodeLinearSchedule>},
 		{"Bhatnagar-Schedule",CHOICE_ELEMENT_NEW<CBhatnagarSchedule>}
 	});
 
