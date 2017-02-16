@@ -17,11 +17,11 @@
                 <ItemsControl x:Name="children" BorderThickness="1" BorderBrush="LightGray" Margin="0,0,0,3"/>
             </StackPanel>
             <StackPanel Width="20" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button VerticalAlignment="Center" Background="DarkGray"
+                <Button VerticalAlignment="Center" Background="Transparent" BorderBrush="{x:Null}"
                             cal:Message.Attach="[Event Click]=[remove]"
                             x:Name="Remove" 
-                            Width="20" Height="20" >
-                    <Image Source="{StaticResource remove}" Width="15" Height="15"></Image>
+                            Width="25" Height="25" >
+                    <Image Source="{StaticResource remove}"></Image>
                 </Button>
             </StackPanel>
         </StackPanel>

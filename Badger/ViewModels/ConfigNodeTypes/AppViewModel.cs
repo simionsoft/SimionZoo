@@ -97,36 +97,6 @@ namespace Badger.ViewModels
         public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); } }
 
-        //Auxiliary XML definition files: Worlds (states and actions)
-        //private Dictionary<WorldVarType, List<string>> m_auxDefinitions = new Dictionary<WorldVarType, List<string>>();
-
-        //public void loadAuxDefinitions(string fileName)
-        //{
-        //    XmlDocument doc = new XmlDocument();
-
-        //    doc.Load(fileName);
-        //    XmlNode rootNode= doc.LastChild; //we take here the last node to skip the <?xml ...> initial tag
-        //    //HARD-CODED: the list is filled with the contents of the nodes from: ../<hangingFrom>/Variable/Name
-        //    foreach (XmlNode child in rootNode.ChildNodes)
-        //    {
-        //        List<string> definedValues = new List<string>();
-        //        string hangingFrom = child.Name;
-        //        foreach (XmlNode child2 in child.ChildNodes)
-        //        {
-        //            if (child2.Name == "Variable")
-        //            {
-        //                foreach (XmlNode child3 in child2.ChildNodes)
-        //                {
-        //                    if (child3.Name == "Name")
-        //                        definedValues.Add(child3.InnerText);
-        //                }
-        //            }
-        //        }
-        //        m_auxDefinitions[hangingFrom] = definedValues;
-        //    }
-        //    updateXMLDefRefs();
-        //}
-
         private Dictionary<string, WorldDefinition> m_worldDefinitions = new Dictionary<string, WorldDefinition>();
         private string m_selectedWorld="";
 
@@ -364,7 +334,7 @@ namespace Badger.ViewModels
 
         public string numForkCombinations
         {
-            get { return "(" + getNumForkCombinations() + " experiments)"; }
+            get { return "(" + getNumForkCombinations() + ")"; }
         }
 
         public void updateNumForkCombinations()

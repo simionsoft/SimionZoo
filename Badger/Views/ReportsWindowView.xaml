@@ -31,7 +31,7 @@
         <DataTemplate DataType="{x:Type vm:StatsViewModel}">
             <v:StatsView/>
         </DataTemplate>
-        <BitmapImage x:Key="load" UriSource="/images/load.png" />
+        <BitmapImage x:Key="open-project" UriSource="/images/open-project.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
@@ -40,9 +40,13 @@
     <StackPanel Orientation="Horizontal" Margin="2">
         <StackPanel Orientation="Vertical" Width="300">
             <StackPanel>
-                <Button  HorizontalAlignment="Center" Height="30" Width="75" Margin="5"
+                <Button  HorizontalAlignment="Center" Height="40" Width="120" Margin="5"
                             x:Name="loadExperimentBatch">
-                    <TextBlock>Load batch</TextBlock>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center">Load batch</TextBlock>
+                        <Image Width="25" Height="25" Source="{StaticResource open-project}"/>
+                    </StackPanel>
+
                 </Button>
             </StackPanel>
             <Border BorderThickness="1" BorderBrush="DarkGray">
@@ -102,9 +106,9 @@
                                 <TextBlock>Stats</TextBlock>
                             </Button>
                             <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
-                            cal:Message.Attach="[Event Click]=[Action saveReports()]"
+                                     cal:Message.Attach="[Event Click]=[Action saveReports()]"
                            IsEnabled="{Binding Path=bCanSaveReports}">
-                                <TextBlock>Save All</TextBlock>
+                                <Image Width="25" Height="25" Source="{StaticResource save-all}"/>
                             </Button>
                         </StackPanel>
                         

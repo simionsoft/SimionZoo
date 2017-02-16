@@ -15,9 +15,8 @@
         <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
     </UserControl.Resources>
     <Border BorderBrush="Orange">
-        <StackPanel Orientation="Horizontal">
-            <ContentControl x:Name="selectedValueConfigNode"/>
-            <StackPanel  Margin="10,0,0,0" Background="LightGray" Width="46" Orientation="Vertical">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal" Background="LightGray">
                 <StackPanel.ContextMenu >
                     <ContextMenu>
                         <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode">
@@ -27,40 +26,41 @@
                         </MenuItem>
                     </ContextMenu>
                 </StackPanel.ContextMenu>
+                <Image  Source="{StaticResource fork}" Width="30"/>
 
-                <StackPanel>
-                    <Image  Source="{StaticResource fork}" Width="20" Margin="13,0"/>
-                </StackPanel>
-                <StackPanel>
-                    <TextBox Text="{Binding alias}" Foreground="{Binding textColor}" MaxLength="20" FontSize="8" MaxWidth="40"
-                             HorizontalAlignment="Center" Background="Transparent" BorderThickness="1"/>
-                </StackPanel>
-                <StackPanel HorizontalAlignment="Center">
-                    <Label HorizontalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Background="Transparent" BorderBrush="Transparent" Width="20" Padding="0"
+                <TextBox Text="{Binding alias}" Foreground="{Binding textColor}" MaxLength="20" FontSize="10" MaxWidth="80" Width="80"
+                             VerticalAlignment="Center" Background="Transparent" BorderThickness="0"/>
+
+                <Button Background="Transparent" BorderBrush="Transparent" Width="25" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action previousValue()]"
                             Opacity="{Binding bIsTherePreviousValue}">
-                        <Image Source="{StaticResource left-arrow}"  ToolTip="Set previous value" Width="10"></Image>
-                    </Button>
-                    <Button Background="Transparent" BorderBrush="Transparent" Width="20" Height="20" Padding="0"
+                    <Image Source="{StaticResource left-arrow}"  ToolTip="Set previous value" Width="10"></Image>
+                </Button>
+                <Label VerticalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
+                <Button Background="Transparent" BorderBrush="Transparent" Width="25" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action nextValue()]"
                             Opacity="{Binding bIsThereNextValue}">
-                        <Image Source="{StaticResource right-arrow}"  ToolTip="Set next value" Width="10"></Image>
-                    </Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
+                    <Image Source="{StaticResource right-arrow}"  ToolTip="Set next value" Width="10"></Image>
+                </Button>
+
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action addValue()]">
-                        <Image Source="{StaticResource add}"  ToolTip="Add a new value" Width="10"></Image>
-                    </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
+                    <Image Source="{StaticResource add}"  ToolTip="Add a new value"></Image>
+                </Button>
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
                                 Opacity="{Binding bIsThereMoreValues}">
-                        <Image Source="{StaticResource remove}"  ToolTip="Remove this value" Width="10"></Image>
-                    </Button>
-                </StackPanel>
+                    <Image Source="{StaticResource remove}"  ToolTip="Remove this value"></Image>
+                </Button>
+            </StackPanel>
+            <StackPanel>
+                <StackPanel.Background>
+                    <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                        <GradientStop Color="#fafafa" Offset="0"/>
+                        <GradientStop Color="#f0f0f0" Offset="1"/>
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+                <ContentControl x:Name="selectedValueConfigNode"/>
             </StackPanel>
         </StackPanel>
     </Border>
