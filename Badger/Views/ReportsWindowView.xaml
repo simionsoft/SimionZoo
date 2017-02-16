@@ -34,6 +34,7 @@
         <BitmapImage x:Key="open-project" UriSource="/images/open-project.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
+        <BitmapImage x:Key="spreadsheet" UriSource="/images/spreadsheet.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
     </Window.Resources>
     
@@ -95,20 +96,29 @@
                     <ComboBox Width="200" ItemsSource="{Binding Path=sourceOptions}" SelectedItem="{Binding Path=selectedSource}"/>
                     <StackPanel Width="300" Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal">
-                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
+                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30"
                             cal:Message.Attach="[Event Click]=[Action generatePlots()]"
                             IsEnabled="{Binding Path=bCanGenerateReports}">
-                                <TextBlock>Plot</TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Plot</TextBlock>
+                                    <Image Source="{StaticResource plot}" Width="30" Margin="3,0,3,0"></Image>
+                                </StackPanel>
                             </Button>
-                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
+                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30"
                             cal:Message.Attach="[Event Click]=[Action generateStats()]"
                             IsEnabled="{Binding Path=bCanGenerateReports}">
-                                <TextBlock>Stats</TextBlock>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Stats</TextBlock>
+                                    <Image Source="{StaticResource spreadsheet}" Width="30" Margin="3,0,3,0"/>
+                                </StackPanel>
                             </Button>
-                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30" Width="50"
+                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30"
                                      cal:Message.Attach="[Event Click]=[Action saveReports()]"
                            IsEnabled="{Binding Path=bCanSaveReports}">
-                                <Image Width="25" Height="25" Source="{StaticResource save-all}"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Save all</TextBlock>
+                                    <Image Width="25" Height="25" Source="{StaticResource save-all}"  Margin="3,0,3,0"/>
+                                </StackPanel>
                             </Button>
                         </StackPanel>
                         

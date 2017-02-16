@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.ForkValueView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
-    <UserControl.Resources>
+    <!--<UserControl.Resources>
         <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
@@ -17,6 +17,6 @@
                             Width="15" Height="15" >
             <Image Source="{StaticResource remove}" Width="10" Height="10"></Image>
         </Button>
-    </StackPanel>
+    </StackPanel>-->
 
 </UserControl>
