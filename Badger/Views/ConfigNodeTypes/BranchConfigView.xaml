@@ -12,7 +12,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
     </UserControl.Resources>    
-    <TreeViewItem IsExpanded="True" Margin="-15,0,0,0">
+    <TreeViewItem IsExpanded="True" Margin="0,0,0,0">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal" Focusable="False">
                 <CheckBox  VerticalAlignment="Center" 
@@ -32,7 +32,7 @@
             </StackPanel>
         </TreeViewItem.Header>
 
-        <ItemsControl x:Name="children" Margin="-15,0,0,0"
+        <ItemsControl x:Name="children" Margin="-17,0,0,0"
                       Visibility="{Binding Path=bIsUsed,Converter={StaticResource BoolToVis}}"/>
     </TreeViewItem>
 </UserControl>
