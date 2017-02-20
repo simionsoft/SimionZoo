@@ -79,7 +79,7 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	s->set("E_p", (double)FASTdata[13] - m_constants["RatedPower"]);
 
 	//Aerodynamic torque: T_a
-	s->set("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->get("E_p") / s->get("omega_g"));
+	s->set("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->get("P_e") / s->get("omega_g"));
 
 	//Aerodynamic power: P_a
 	s->set("P_a", s->get("T_a")*s->get("omega_r"));
