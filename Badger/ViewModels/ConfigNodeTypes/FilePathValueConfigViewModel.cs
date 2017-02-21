@@ -1,4 +1,4 @@
-﻿using Simion;
+﻿using Badger.Simion;
 using System.Xml;
 using System.IO;
 using System.Linq;
@@ -8,9 +8,9 @@ namespace Badger.ViewModels
 {
     class FilePathValueConfigViewModel: ConfigNodeViewModel
     {
-        public FilePathValueConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public FilePathValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appDefinition, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name] == null)
             {
@@ -28,7 +28,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             FilePathValueConfigViewModel newInstance =
-                new FilePathValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+                new FilePathValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
 
             newInstance.content = content;
             newInstance.textColor = textColor;

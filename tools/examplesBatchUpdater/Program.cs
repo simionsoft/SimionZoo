@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml;
+using Badger.Simion;
 
 namespace examplesBatchUpdater
 {
@@ -15,7 +16,9 @@ namespace examplesBatchUpdater
             if (args.Length == 0)
             {
                 //process all the experiment files
-                IEnumerable<string> experimentFiles = Directory.EnumerateFiles("../experiments", "*.experiment", SearchOption.AllDirectories);
+                IEnumerable<string> experimentFiles = Directory.EnumerateFiles("../experiments"
+                    , "*." + XMLConfig.experimentExtension
+                    , SearchOption.AllDirectories);
                 foreach (string file in experimentFiles)
                 {
                     updateExperimentFile(file);

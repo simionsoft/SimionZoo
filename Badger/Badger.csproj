@@ -124,13 +124,14 @@
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceElementConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ConfigNodeViewModel.cs" />
-    <Compile Include="ViewModels\ConfigNodeTypes\AppViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\ExperimentViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\BranchConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\DirPathValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\DoubleValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\EnumeratedValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\FilePathValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ForkedNodeViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\ForkRegistry.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ForkValueViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\BoolValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\IntegerValueConfigViewModel.cs" />
@@ -138,9 +139,12 @@
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\LoggedExperiment\LoggedExperimentalUnitViewModel.cs" />
+    <Compile Include="ViewModels\LoggedExperiment\LoggedForkViewModel.cs" />
+    <Compile Include="ViewModels\LoggedExperiment\LoggedForkValueViewModel.cs" />
     <Compile Include="ViewModels\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\PlotViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentLogViewModel.cs" />
+    <Compile Include="ViewModels\LoggedExperiment\LoggedExperimentViewModel.cs" />
     <Compile Include="ViewModels\LoggedVariableViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="ViewModels\StatsViewModel.cs" />
@@ -214,7 +218,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\ConfigNodeTypes\AppView.xaml">
+    <Page Include="Views\ConfigNodeTypes\ExperimentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

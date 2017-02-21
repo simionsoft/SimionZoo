@@ -7,29 +7,43 @@
     </Log>
     <World>
       <Num-Integration-Steps>4</Num-Integration-Steps>
-      <Delta-T>0.01</Delta-T>
+      <Delta-T>0.02</Delta-T>
       <Dynamic-Model>
         <Model>
-          <Underwater-vehicle>
-            <Set-Point-File>../config/world/underwater-vehicle/setpoint.txt</Set-Point-File>
-          </Underwater-vehicle>
+          <Balancing-pole>
+          </Balancing-pole>
         </Model>
       </Dynamic-Model>
     </World>
     <Experiment>
       <Random-Seed>1</Random-Seed>
-      <Num-Episodes>1000</Num-Episodes>
-      <Eval-Freq>25</Eval-Freq>
+      <Num-Episodes>100000</Num-Episodes>
+      <Eval-Freq>1000</Eval-Freq>
       <Progress-Update-Freq>0.5</Progress-Update-Freq>
-      <Episode-Length>200.0</Episode-Length>
+      <Episode-Length>100</Episode-Length>
     </Experiment>
     <SimGod>
       <State-Feature-Map>
         <Type>
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
-              <Num-Features>5000</Num-Features>
-              <Variable>v-deviation</Variable>
+              <Num-Features>20</Num-Features>
+              <Variable>theta_dot</Variable>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Num-Features>20</Num-Features>
+              <Variable>x</Variable>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Num-Features>20</Num-Features>
+              <Variable>x_dot</Variable>
+              <Distribution>linear</Distribution>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
+              <Num-Features>20</Num-Features>
+              <Variable>theta</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
           </RBF-State-Grid>
@@ -39,50 +53,24 @@
         <Type>
           <Actor-Critic>
             <Actor>
-              <Base-Controller>
-                <Controller>
-                  <PID>
-                    <Input-Variable>v-deviation</Input-Variable>
-                    <Output-Action>u-thrust</Output-Action>
-                    <KP>
-                      <Schedule>
-                        <Constant>
-                          <Value>100</Value>
-                        </Constant>
-                      </Schedule>
-                    </KP>
-                    <KI>
-                      <Schedule>
-                        <Constant>
-                          <Value>0.0</Value>
-                        </Constant>
-                      </Schedule>
-                    </KI>
-                    <KD>
-                      <Schedule>
-                        <Constant>
-                          <Value>0.0</Value>
-                        </Constant>
-                      </Schedule>
-                    </KD>
-                  </PID>
-                </Controller>
-              </Base-Controller>
               <Output>
                 <Policy-Learner>
                   <CACLA>
                     <Alpha>
                       <Schedule>
                         <Simple-Linear-Decay>
-                          <FORKED-NODE Name="Initial-Value" Alias="Initial-Value">
+                          <FORKED-NODE Name="Initial-Value" Alias="Actor-Gain">
                             <FORK-VALUE Name="Value-0">
-                              <Initial-Value>0.001</Initial-Value>
+                              <Initial-Value>0.1</Initial-Value>
                             </FORK-VALUE>
                             <FORK-VALUE Name="Value-1">
-                              <Initial-Value>0.0025</Initial-Value>
+                              <Initial-Value>0.075</Initial-Value>
                             </FORK-VALUE>
                             <FORK-VALUE Name="Value-2">
-                              <Initial-Value>0.005</Initial-Value>
+                              <Initial-Value>0.05</Initial-Value>
+                            </FORK-VALUE>
+                            <FORK-VALUE Name="Value-3">
+                              <Initial-Value>0.025</Initial-Value>
                             </FORK-VALUE>
                           </FORKED-NODE>
                           <End-Value>0.0</End-Value>
@@ -92,7 +80,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>u-thrust</Output-Action>
+                          <Output-Action>force</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
@@ -100,19 +88,22 @@
                             <Noise>
                               <GaussianNoise>
                                 <Sigma>1</Sigma>
-                                <Alpha>1</Alpha>
+                                <Alpha>1.0</Alpha>
                                 <Scale>
                                   <Schedule>
                                     <Simple-Linear-Decay>
-                                      <FORKED-NODE Name="Initial-Value" Alias="Initial-Value">
+                                      <FORKED-NODE Name="Initial-Value" Alias="Noise-Width">
                                         <FORK-VALUE Name="Value-0">
-                                          <Initial-Value>0.01</Initial-Value>
+                                          <Initial-Value>0.1</Initial-Value>
                                         </FORK-VALUE>
                                         <FORK-VALUE Name="Value-1">
-                                          <Initial-Value>0.025</Initial-Value>
+                                          <Initial-Value>0.075</Initial-Value>
                                         </FORK-VALUE>
                                         <FORK-VALUE Name="Value-2">
                                           <Initial-Value>0.05</Initial-Value>
+                                        </FORK-VALUE>
+                                        <FORK-VALUE Name="Value-3">
+                                          <Initial-Value>0.025</Initial-Value>
                                         </FORK-VALUE>
                                       </FORKED-NODE>
                                       <End-Value>0.0</End-Value>
@@ -139,10 +130,22 @@
                   </E-Traces>
                   <Alpha>
                     <Schedule>
-                      <Simple-Linear-Decay>
-                        <Initial-Value>0.1</Initial-Value>
-                        <End-Value>0.0</End-Value>
-                      </Simple-Linear-Decay>
+                      <Constant>
+                        <FORKED-NODE Name="Value" Alias="Critic-Gain">
+                          <FORK-VALUE Name="Value-0">
+                            <Value>0.1</Value>
+                          </FORK-VALUE>
+                          <FORK-VALUE Name="Value-1">
+                            <Value>0.075</Value>
+                          </FORK-VALUE>
+                          <FORK-VALUE Name="Value-2">
+                            <Value>0.05</Value>
+                          </FORK-VALUE>
+                          <FORK-VALUE Name="Value-3">
+                            <Value>0.025</Value>
+                          </FORK-VALUE>
+                        </FORKED-NODE>
+                      </Constant>
                     </Schedule>
                   </Alpha>
                   <Gamma>

@@ -1,4 +1,4 @@
-﻿using Simion;
+﻿using Badger.Simion;
 using System.Xml;
 using System.Collections.Generic;
 using Caliburn.Micro;
@@ -20,12 +20,12 @@ namespace Badger.ViewModels
             set { content = value; }
         }
         string m_class;
-        public EnumeratedValueConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public EnumeratedValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appDefinition, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             m_class = definitionNode.Attributes[XMLConfig.classAttribute].Value;
-            enumeratedNames = m_appViewModel.getEnumeratedType(m_class);
+            enumeratedNames = m_parentExperiment.getEnumeratedType(m_class);
 
             if (configNode == null || configNode[name] == null)
             {
@@ -43,7 +43,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             EnumeratedValueConfigViewModel newInstance =
-                new EnumeratedValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+                new EnumeratedValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
             
             newInstance.m_class = m_class;
             newInstance.enumeratedNames = enumeratedNames;
@@ -55,7 +55,7 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            List<string> enumeration = m_appViewModel.getEnumeratedType(m_class);
+            List<string> enumeration = m_parentExperiment.getEnumeratedType(m_class);
             return enumeration.Exists(id => (id==content));
         }
     }

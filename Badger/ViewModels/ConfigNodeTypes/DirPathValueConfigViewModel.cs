@@ -1,4 +1,4 @@
-﻿using Simion;
+﻿using Badger.Simion;
 using System.Xml;
 using System.IO;
 using System.Windows.Forms;
@@ -7,9 +7,9 @@ namespace Badger.ViewModels
 {
     class DirPathValueConfigViewModel: ConfigNodeViewModel
     {
-        public DirPathValueConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public DirPathValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appDefinition, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name] == null)
             {
@@ -27,7 +27,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             DirPathValueConfigViewModel newInstance =
-                new DirPathValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+                new DirPathValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
            
             newInstance.content = content;
             newInstance.textColor = textColor;

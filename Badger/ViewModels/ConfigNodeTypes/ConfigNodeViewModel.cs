@@ -1,8 +1,7 @@
 ﻿using System.IO;
 using System.Xml;
 using Caliburn.Micro;
-using Simion;
-using System.Runtime.Serialization.Formatters.Binary;
+using Badger.Simion;
 using System;
 
 namespace Badger.ViewModels
@@ -10,7 +9,7 @@ namespace Badger.ViewModels
     abstract public class ConfigNodeViewModel : PropertyChangedBase
     {
         //access to the root node
-        protected AppViewModel m_appViewModel;
+        protected ExperimentViewModel m_parentExperiment;
         public XmlNode nodeDefinition;
 
         protected string m_default = "";
@@ -76,7 +75,7 @@ namespace Badger.ViewModels
         //XML output methods
         public virtual void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
         {
-            if (mode!=SaveMode.OnlyForks)
+            if (mode==SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
                 writer.Write( leftSpace + "<" + name + ">" + content + "</" + name + ">\n");
         }
 
@@ -97,14 +96,12 @@ namespace Badger.ViewModels
         }
         
         //Initialization stuff common to all types of configuration nodes
-        protected void commonInit(AppViewModel appViewModel,ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)
+        protected void commonInit(ExperimentViewModel parentExperiment,ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)
         {
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
-//#if DEBUG
-//            System.Console.WriteLine("loading " + name);
-//#endif
+
             m_parent = parent;
-            m_appViewModel = appViewModel;
+            m_parentExperiment = parentExperiment;
             nodeDefinition = definitionNode;
             
             xPath = parentXPath + "\\" + name;
@@ -120,25 +117,26 @@ namespace Badger.ViewModels
 
 
         //FACTORY
-        public static ConfigNodeViewModel getInstance(AppViewModel appDefinition,ConfigNodeViewModel parent,XmlNode definitionNode, string parentXPath, XmlNode configNode= null)
+        public static ConfigNodeViewModel getInstance(ExperimentViewModel parentExperiment,ConfigNodeViewModel parent
+            ,XmlNode definitionNode, string parentXPath, XmlNode configNode= null)
         {
             switch (definitionNode.Name)
             {
-                case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(appDefinition, parent, definitionNode,parentXPath,configNode);
-                case XMLConfig.boolNodeTag: return new BoolValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath,configNode);
-                case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode,parentXPath,configNode);
+                case XMLConfig.boolNodeTag: return new BoolValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath,configNode);
+                case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
 
-                case XMLConfig.stateVarRefTag: return new WorldVarRefValueConfigViewModel(appDefinition, WorldVarType.StateVar,parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.actionVarRefTag: return new WorldVarRefValueConfigViewModel(appDefinition, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.stateVarRefTag: return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar,parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.actionVarRefTag: return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode);
 
-                case XMLConfig.branchNodeTag: return new BranchConfigViewModel(appDefinition, parent, definitionNode,parentXPath,configNode);
-                case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.choiceElementNodeTag: return new ChoiceElementConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.enumNodeTag: return new EnumeratedValueConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.multiValuedNodeTag: return new MultiValuedConfigViewModel(appDefinition, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.branchNodeTag: return new BranchConfigViewModel(parentExperiment, parent, definitionNode,parentXPath,configNode);
+                case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.choiceElementNodeTag: return new ChoiceElementConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.enumNodeTag: return new EnumeratedValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.multiValuedNodeTag: return new MultiValuedConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
             }
 
             return null;
@@ -174,9 +172,11 @@ namespace Badger.ViewModels
 
         public override void outputXML(StreamWriter writer,SaveMode mode, string leftSpace)
         {
-            if (mode!=SaveMode.OnlyForks) writer.Write(leftSpace + getXMLHeader());
+            if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
+                writer.Write(leftSpace + getXMLHeader());
             outputChildrenXML(writer, mode,leftSpace + "  ");
-            if (mode != SaveMode.OnlyForks) writer.Write(leftSpace + getXMLFooter());
+            if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
+                writer.Write(leftSpace + getXMLFooter());
         }
 
         public void outputChildrenXML(StreamWriter writer, SaveMode mode,string leftSpace)
@@ -187,7 +187,7 @@ namespace Badger.ViewModels
         public virtual string getXMLHeader() { return "<" + name + ">\n"; }
         public virtual string getXMLFooter() { return "</" + name + ">\n"; }
 
-        protected void childrenInit(AppViewModel appViewModel, XmlNode classDefinition
+        protected void childrenInit(ExperimentViewModel parentExperiment, XmlNode classDefinition
             , string parentXPath, XmlNode configNode = null)
         {
             ConfigNodeViewModel childNode;
@@ -199,11 +199,11 @@ namespace Badger.ViewModels
                     forkNode = getForkChild(child.Attributes[XMLConfig.nameAttribute].Value, configNode);
                     if (forkNode!=null)
                     {
-                        children.Add(new ForkedNodeViewModel(appViewModel, this,child, forkNode));
+                        children.Add(new ForkedNodeViewModel(parentExperiment, this,child, forkNode));
                     }
                     else
                     {
-                        childNode = ConfigNodeViewModel.getInstance(appViewModel, this, child
+                        childNode = ConfigNodeViewModel.getInstance(parentExperiment, this, child
                             , parentXPath, configNode);
                         if (childNode != null)
                             children.Add(childNode);
@@ -230,10 +230,10 @@ namespace Badger.ViewModels
         public override void forkChild(ConfigNodeViewModel forkedChild)
         {
             ForkedNodeViewModel newForkNode;
-            if (m_appViewModel != null)
+            if (m_parentExperiment != null)
             {
                 //cross-reference
-                newForkNode = new ForkedNodeViewModel(m_appViewModel, forkedChild);
+                newForkNode = new ForkedNodeViewModel(m_parentExperiment, forkedChild);
 
                 int oldIndex = children.IndexOf(forkedChild);
                 if (oldIndex >= 0)
@@ -256,19 +256,7 @@ namespace Badger.ViewModels
             }
             return bIsValid;
         }
-        //public override ConfigNodeViewModel clone()
-        //{
-        //    NestedConfigNode newNestedCopy = getInstance(m_appViewModel, m_parent
-        //        , nodeDefinition, m_parent.xPath) as NestedConfigNode;
-        //    newNestedCopy.children.Clear();
-        //    foreach (ConfigNodeViewModel child in children)
-        //    {
-        //        ConfigNodeViewModel newChild = child.clone();
-        //        child.parent = this;
-        //        newNestedCopy.children.Add(newChild);
-        //    }
-        //    return newNestedCopy;
-        //}
+
         //Lambda Traverse functions
         public override int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc
             , Func<ConfigNodeViewModel, int> nestedNodeFunc)

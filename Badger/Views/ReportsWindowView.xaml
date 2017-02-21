@@ -19,7 +19,7 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
-        <DataTemplate DataType="{x:Type vm:ExperimentLogViewModel}">
+        <DataTemplate DataType="{x:Type vm:LoggedExperimentViewModel}">
             <v:ExperimentLogView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:LoggedVariableViewModel}">

@@ -5,7 +5,7 @@ using System.Xml;
 using System.Collections.ObjectModel;
 using Badger.Data;
 using Caliburn.Micro;
-using Simion;
+using Badger.Simion;
 using System.IO;
 
 namespace Badger.ViewModels
@@ -47,8 +47,8 @@ namespace Badger.ViewModels
         }
 
         //the list of logs we have
-        private ObservableCollection<ExperimentLogViewModel> m_experimentLogs = new ObservableCollection<ExperimentLogViewModel>();
-        public ObservableCollection<ExperimentLogViewModel> experimentLogs
+        private ObservableCollection<LoggedExperimentViewModel> m_experimentLogs = new ObservableCollection<LoggedExperimentViewModel>();
+        public ObservableCollection<LoggedExperimentViewModel> experimentLogs
         {
             get { return m_experimentLogs; }
             set { m_experimentLogs = value; NotifyOfPropertyChange(() => experimentLogs); }
@@ -59,12 +59,12 @@ namespace Badger.ViewModels
             get { return m_logListHeader; }
             set { m_logListHeader = value; NotifyOfPropertyChange(() => logListHeader); }
         }
-        private List<ExperimentLogViewModel> m_selectedLogs = new List<ExperimentLogViewModel>();
+        private List<LoggedExperimentViewModel> m_selectedLogs = new List<LoggedExperimentViewModel>();
         private int m_numLogsSelected= 0;
         public void updateLogListHeader()
         {
             m_selectedLogs.Clear();
-            foreach(ExperimentLogViewModel exp in m_experimentLogs)
+            foreach(LoggedExperimentViewModel exp in m_experimentLogs)
             {
                 if (exp.bIsSelected)
                     m_selectedLogs.Add(exp);
@@ -111,13 +111,13 @@ namespace Badger.ViewModels
         public void updateAvailableVariableList()
         {
             //get selected experiments
-            m_availableVariables.Clear();
-            foreach (ExperimentLogViewModel exp in m_experimentLogs)
-            {
-                if (exp.bIsSelected)
-                    exp.addVariablesToList(ref m_availableVariables);
-            }
-            NotifyOfPropertyChange(() => availableVariables);
+            //m_availableVariables.Clear();
+            //foreach (LoggedExperimentViewModel exp in m_experimentLogs)
+            //{
+            //    if (exp.bIsSelected)
+            //        exp.addVariablesToList(ref m_availableVariables);
+            //}
+            //NotifyOfPropertyChange(() => availableVariables);
         }
         public void generatePlots()
         {
@@ -131,9 +131,9 @@ namespace Badger.ViewModels
             }
 
             //draw data from each log
-            foreach (ExperimentLogViewModel log in m_selectedLogs)
+            foreach (LoggedExperimentViewModel log in m_selectedLogs)
             {
-                log.plotData(newPlots, m_selectedSource);
+                //log.plotData(newPlots, m_selectedSource);
             }
             //update plots
             foreach (PlotViewModel plot in newPlots)
@@ -150,20 +150,19 @@ namespace Badger.ViewModels
             StatsViewModel statsViewModel = new StatsViewModel("Stats");
             statsViewModel.parent = this;
 
-            foreach (ExperimentLogViewModel log in m_selectedLogs)
+            foreach (LoggedExperimentViewModel log in m_selectedLogs)
             {
-                List<Stat> stats = log.getVariableStats(m_selectedVariables);
-                foreach (Stat stat in stats)
-                {
-                    statsViewModel.addStat(stat);
-                }
+                //List<Stat> stats = log.getVariableStats(m_selectedVariables);
+                //foreach (Stat stat in stats)
+                //{
+                //    statsViewModel.addStat(stat);
+                //}
             }
 
             bCanSaveReports = true;
 
             reports.Add(statsViewModel);
             selectedReport = statsViewModel;
-            //ActivateItem(statsViewModel);
         }
 
         //plot selection in tab control
@@ -194,34 +193,41 @@ namespace Badger.ViewModels
             }
         }
 
-        private void batchNodeLoadFunction(XmlNode node)
+        private List<LoggedExperimentViewModel> m_loggedExperiments = new List<LoggedExperimentViewModel>();
+        public List<LoggedExperimentViewModel> loggedExperiments
         {
-            string experimentName = node.Attributes[XMLConfig.nameAttribute].Value;
-            string experimentFilePath = node.Attributes[XMLConfig.pathAttribute].Value;
-            string logDescFile = SimionFileData.getLogDescriptorsFilePath(experimentFilePath);
-            string logFile = SimionFileData.getLogFilePath(experimentFilePath);
-            if (File.Exists(logDescFile) && File.Exists(logFile))
-            {
-                ExperimentLogViewModel newLog = new ExperimentLogViewModel(experimentName, logDescFile, logFile, this);
-                foreach (XmlNode child in node.ChildNodes)
-                {
-                    if (child.Name==XMLConfig.forkTag && child.Attributes.GetNamedItem(XMLConfig.aliasAttribute)!=null)
-                    {
-                        newLog.addForkTag(child.Attributes[XMLConfig.aliasAttribute].Value
-                            , child.InnerText);
-                    }
-                }
-                experimentLogs.Add(newLog);
-            }
+            get { return m_loggedExperiments; }
+            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => loggedExperiments); }
+        }
+
+        private void loadLoggedExperiment(XmlNode node)
+        {
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, this);
+            loggedExperiments.Add(newExperiment);
+
+            //if (File.Exists(logDescFile) && File.Exists(logFile))
+            //{
+            //    LoggedExperimentViewModel newLog 
+            //        = new LoggedExperimentViewModel(experimentName, logDescFile, logFile, this);
+            //    foreach (XmlNode child in node.ChildNodes)
+            //    {
+            //        if (child.Name==XMLConfig.forkTag && child.Attributes.GetNamedItem(XMLConfig.aliasAttribute)!=null)
+            //        {
+            //            newLog.addForkTag(child.Attributes[XMLConfig.aliasAttribute].Value
+            //                , child.InnerText);
+            //        }
+            //    }
+            //    experimentLogs.Add(newLog);
+            //}
         }
 
         public void loadExperimentBatch()
         {
-            SimionFileData.loadExperimentBatch(batchNodeLoadFunction);
+            SimionFileData.loadExperimentBatch(loadLoggedExperiment);
         }
         public void loadExperimentBatch(string batchFileName)
         {
-            SimionFileData.loadExperimentBatch(batchNodeLoadFunction, batchFileName);
+            SimionFileData.loadExperimentBatch(loadLoggedExperiment, batchFileName);
         }
 
         public void close(ReportViewModel report)
@@ -244,12 +250,12 @@ namespace Badger.ViewModels
         }
         public void checkAllLogs()
         {
-            foreach (ExperimentLogViewModel experiment in m_experimentLogs)
+            foreach (LoggedExperimentViewModel experiment in m_experimentLogs)
                 experiment.bIsSelected = true;
         }
         public void uncheckAllLogs()
         {
-            foreach (ExperimentLogViewModel experiment in m_experimentLogs)
+            foreach (LoggedExperimentViewModel experiment in m_experimentLogs)
                 experiment.bIsSelected = false;
         }
         public void checkAllVariables()

@@ -120,7 +120,7 @@ namespace Badger.Data
         //returns the file's name from the full path
         //if removeExtension==true: c:\jander\clander.txt ->clander.txt
         //else: c:\jander\clander.txt ->clander
-        public static string getFileName(string Default,bool removeExtension=false)
+        public static string getFileName(string Default,bool removeExtension=false, int numExtensionDots=1)
         {
             string filename;
             if (Default == null)
@@ -134,8 +134,11 @@ namespace Badger.Data
                 return filename;
 
             //we have to remove the extension
-            int index = filename.LastIndexOf('.');
-            filename = filename.Remove(index);
+            for (int i = 0; i < numExtensionDots; i++)
+            {
+                int index = filename.LastIndexOf('.');
+                filename = filename.Remove(index);
+            }
             return filename;
         }
     }

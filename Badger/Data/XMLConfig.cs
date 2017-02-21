@@ -1,16 +1,17 @@
 ﻿
 
-namespace Simion
+namespace Badger.Simion
 {
     public class XMLConfig
     {
         public const string experimentConfigVersion = "1.0.0.0";
-        public const string BadgerConfigVersion = "1.0.0.0";
+        public const string BadgerProjectConfigVersion = "1.0.0.0";
         public const string BatchConfigVersion = "1.0.0.0";
 
-        public const string experimentExtension = "experiment";
-        public const string experimentBatchExtension = "exp-batch";
-        public const string badgerExtension = "badger";
+        public const string experimentExtension = "simion.exp";
+        public const string experimentalUnitExtension = "simion.unit.exp";
+        public const string experimentBatchExtension = "simion.batch";
+        public const string badgerProjectExtension = "badger.proj";
 
         public const string definitionNodeTag = "DEFINITIONS";
         public const string classDefinitionNodeTag = "CLASS";
@@ -18,9 +19,10 @@ namespace Simion
         public const string worldDefinitionNodeTag = "WORLD";
 
         //App-level tags: APP, PRE, EXE, INCLUDE
-        public const string badgerNodeTag = "BADGER";
-        public const string experimentNodeTag = "EXPERIMENT";
-        public const string batchNodeTag = "EXPERIMENT-BATCH";
+        public const string badgerNodeTag = "BADGER-PROJECT";
+        public const string experimentNodeTag = "EXPERIMENT"; //a experiment which can have forks within
+        public const string experimentalUnitNodeTag = "EXPERIMENTAL-UNIT"; //an experiment within a batch without any forks
+        public const string experimentBatchNodeTag = "EXPERIMENT-BATCH";
         public const string appNodeTag = "APP";
 
         //Class-level tags: BRANCH, CHOICE, CHOICE-ELEMENT, DOUBLE-VALUE, INTEGER-VALUE, STRING-VALUE

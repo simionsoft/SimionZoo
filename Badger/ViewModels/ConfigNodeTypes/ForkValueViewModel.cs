@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Simion;
+using Badger.Simion;
 using Caliburn.Micro;
 using System.Xml;
 using System;
@@ -27,12 +27,12 @@ namespace Badger.ViewModels
         }
 
         //constructor called when loading a fork from a .badger file
-        public ForkValueViewModel(AppViewModel appViewModel,XmlNode classDefinition
+        public ForkValueViewModel(ExperimentViewModel parentExperiment,XmlNode classDefinition
             , ConfigNodeViewModel parentNode, XmlNode configNode)
         {
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             //not sure how to do this in a more elegant way
-            this.configNode = ConfigNodeViewModel.getInstance(appViewModel, parentNode
+            this.configNode = ConfigNodeViewModel.getInstance(parentExperiment, parentNode
                 , classDefinition, parentNode.xPath, configNode);
             this.configNode.bCanBeForked = false; //already belongs to a fork
         }
@@ -40,11 +40,17 @@ namespace Badger.ViewModels
 
         public override void outputXML(StreamWriter writer, SaveMode mode,string leftSpace)
         {
-            if (mode==SaveMode.SaveForks)
+            //header
+            if (mode == SaveMode.AsProject || mode==SaveMode.ForkHierarchy || mode==SaveMode.ForkValues)
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + ">" + configNode.content
+                    + "</" + XMLConfig.forkValueTag + ">");
+            if (mode==SaveMode.AsExperiment)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
                     + name + "\">");
+            //body: children
             configNode.outputXML(writer, mode,leftSpace + "  ");
-            if (mode==SaveMode.SaveForks)
+            //footer
+            if (mode==SaveMode.AsExperiment)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
         }
 

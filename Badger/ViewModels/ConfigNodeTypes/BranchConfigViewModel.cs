@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Xml;
-using Simion;
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {
@@ -23,10 +23,10 @@ namespace Badger.ViewModels
             set { m_bIsUsed = value; NotifyOfPropertyChange(() => bIsUsed); }
         }
 
-        public BranchConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent
+        public BranchConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
             , XmlNode definitionNode, string parentXPath, XmlNode configNode= null, bool initChildren= true)
         {
-            commonInit(appDefinition,parent, definitionNode,parentXPath);
+            commonInit(parentExperiment,parent, definitionNode,parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)
@@ -46,7 +46,7 @@ namespace Badger.ViewModels
                 bIsUsed = true;
 
             if (initChildren)
-                childrenInit(appDefinition, appDefinition.getClassDefinition(m_className), m_xPath, configNode);
+                childrenInit(parentExperiment, parentExperiment.getClassDefinition(m_className), m_xPath, configNode);
         }
 
         public override bool validate()
@@ -69,7 +69,7 @@ namespace Badger.ViewModels
         }
         public override ConfigNodeViewModel clone()
         {
-            BranchConfigViewModel newBranch = new BranchConfigViewModel(m_appViewModel,parent
+            BranchConfigViewModel newBranch = new BranchConfigViewModel(m_parentExperiment,parent
                 ,nodeDefinition,parent.xPath,null, false);
             foreach (ConfigNodeViewModel child in children)
             {

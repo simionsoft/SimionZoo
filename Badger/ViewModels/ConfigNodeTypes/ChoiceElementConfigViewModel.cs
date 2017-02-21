@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml;
-using Simion;
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {
@@ -11,10 +11,10 @@ namespace Badger.ViewModels
         private bool m_bOptional = false;
         private string m_selectWorld;
 
-        public ChoiceElementConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent, XmlNode definitionNode
+        public ChoiceElementConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode
             , string parentXPath, XmlNode configNode= null)
         {
-            commonInit(appDefinition,parent,definitionNode,parentXPath);
+            commonInit(parentExperiment,parent,definitionNode,parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)
@@ -30,14 +30,14 @@ namespace Badger.ViewModels
                 if (metadata.StartsWith("World="))
                     m_selectWorld= metadata.Remove(0,"World=".Length);
 
-                m_appViewModel.selectWorld(m_selectWorld);
+                m_parentExperiment.selectWorld(m_selectWorld);
             }
 
 
             if (configNode != null)
                 configNode = configNode[name];
             //we allow an undefined class ("", most likely) and we just ignore children
-            childrenInit(appDefinition, appDefinition.getClassDefinition(m_className,true)
+            childrenInit(parentExperiment, parentExperiment.getClassDefinition(m_className,true)
                 , m_xPath, configNode);
         }
 
@@ -45,7 +45,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             ChoiceElementConfigViewModel newInstance =
-                new ChoiceElementConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+                new ChoiceElementConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
 
             newInstance.m_className = m_className;
             newInstance.m_bOptional = m_bOptional;

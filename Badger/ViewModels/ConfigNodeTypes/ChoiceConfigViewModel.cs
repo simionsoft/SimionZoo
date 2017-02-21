@@ -1,6 +1,6 @@
 ﻿using Caliburn.Micro;
 using System.Xml;
-using Simion;
+using Badger.Simion;
 using System.IO;
 
 namespace Badger.ViewModels
@@ -38,7 +38,7 @@ namespace Badger.ViewModels
                     if (configNode != null)
                         selectedChoiceName = selectedChoiceElementName;
 
-                    selectedChoice = getInstance(m_appViewModel,this
+                    selectedChoice = getInstance(m_parentExperiment,this
                         ,choiceElement, m_xPath, configNode);
                     m_children.Clear();
                     children.Add(selectedChoice);
@@ -50,12 +50,12 @@ namespace Badger.ViewModels
         public BindableCollection<string> choiceNames { get { return m_choiceNames; } }
 
         
-        public ChoiceConfigViewModel(AppViewModel appDefinition, ConfigNodeViewModel parent
+        public ChoiceConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
             , XmlNode definitionNode
             , string parentXPath, XmlNode configNode = null, bool initChildren= true)
         {
             string choiceElementName;
-            commonInit(appDefinition, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode != null) configNode = configNode[name];
 
@@ -89,16 +89,16 @@ namespace Badger.ViewModels
 
         public override void outputXML(StreamWriter writer,SaveMode mode, string leftSpace)
         {
-            if (mode!=SaveMode.OnlyForks)
+            if (mode==SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLHeader());
             selectedChoice.outputXML(writer,mode, leftSpace + "  ");
-            if (mode!=SaveMode.OnlyForks)
+            if (mode==SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLFooter());
         }
 
         public override ConfigNodeViewModel clone()
         {
-            ChoiceConfigViewModel newChoice= new ChoiceConfigViewModel(m_appViewModel, parent
+            ChoiceConfigViewModel newChoice= new ChoiceConfigViewModel(m_parentExperiment, parent
                 , nodeDefinition, parent.xPath, null);
             foreach (ConfigNodeViewModel child in children)
             {

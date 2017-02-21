@@ -1,13 +1,13 @@
-﻿using Simion;
+﻿using Badger.Simion;
 using System.Xml;
 
 namespace Badger.ViewModels
 {
     class IntegerValueConfigViewModel: ConfigNodeViewModel
     {
-        public IntegerValueConfigViewModel(AppViewModel appViewModel, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public IntegerValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appViewModel, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name] == null)
             {
@@ -25,7 +25,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             IntegerValueConfigViewModel newInstance =
-                new IntegerValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+                new IntegerValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
 
             newInstance.content = content;
             newInstance.textColor = textColor;

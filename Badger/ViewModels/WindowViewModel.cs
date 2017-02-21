@@ -13,34 +13,26 @@ namespace Badger.ViewModels
 
     public class WindowViewModel : PropertyChangedBase
     {
-        static private BindableCollection<AppViewModel> m_appViewModels= new BindableCollection<AppViewModel>();
+        static private BindableCollection<ExperimentViewModel> m_experiments= new BindableCollection<ExperimentViewModel>();
         //these two properties interface to the same hidden attribute
-        public BindableCollection<AppViewModel> tabControlExperiments { get { return m_appViewModels; }
-            set { m_appViewModels = value; NotifyOfPropertyChange(() => tabControlExperiments); NotifyOfPropertyChange(() => listControlExperiments); } }
-        public BindableCollection<AppViewModel> listControlExperiments { get { return m_appViewModels; } set { } }
-        private AppViewModel m_selectedAppViewModel;
-        public AppViewModel selectedTabControlExperiment
+        public BindableCollection<ExperimentViewModel> experiments { get { return m_experiments; }
+            set { m_experiments = value; NotifyOfPropertyChange(() => experiments); } }
+
+        private ExperimentViewModel m_selectedExperiment;
+        public ExperimentViewModel selectedExperiment
         {
-            get { return m_selectedAppViewModel; }
+            get { return m_selectedExperiment; }
             set
             {
-                m_selectedAppViewModel = value;
-                NotifyOfPropertyChange(() => selectedTabControlExperiment);
-                NotifyOfPropertyChange(() => selectedAppInQueue);
+                m_selectedExperiment = value;
+                NotifyOfPropertyChange(() => selectedExperiment);
             }
         }
-        public AppViewModel selectedAppInQueue
-        {
-            get { return m_selectedAppViewModel; }
-            set { m_selectedAppViewModel = value;
-                NotifyOfPropertyChange(() => selectedTabControlExperiment);
-                NotifyOfPropertyChange(() => selectedAppInQueue);
-                }
-        }
+
 
         static private bool appNameExists(string name)
         {
-            foreach(AppViewModel app in m_appViewModels)
+            foreach(ExperimentViewModel app in m_experiments)
             {
                 if (app.name == name)
                     return true;
@@ -75,9 +67,9 @@ namespace Badger.ViewModels
         private void checkEmptyExperimentList()
         {
             bool wasEmpty = !m_bIsExperimentListNotEmpty;
-            if (wasEmpty != (m_appViewModels.Count==0))
+            if (wasEmpty != (m_experiments.Count==0))
             {
-                m_bIsExperimentListNotEmpty = !(m_appViewModels.Count == 0);
+                m_bIsExperimentListNotEmpty = !(m_experiments.Count == 0);
                 NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
@@ -105,12 +97,11 @@ namespace Badger.ViewModels
             if (m_selectedAppName == null) return;
 
             string xmlDefinitionFile = appDefinitions[m_selectedAppName];
-            AppViewModel newApp = new AppViewModel(this,xmlDefinitionFile,null,"New");
-            tabControlExperiments.Add( newApp);
-            NotifyOfPropertyChange(() => tabControlExperiments);
-            NotifyOfPropertyChange(() => listControlExperiments);
+            ExperimentViewModel newExperiment = new ExperimentViewModel(this,xmlDefinitionFile,null,"New");
+            experiments.Add( newExperiment);
+            NotifyOfPropertyChange(() => experiments);
             checkEmptyExperimentList();
-            selectedTabControlExperiment = newApp;
+            selectedExperiment = newExperiment;
         }
        
         private object m_logFileLock = new object();
@@ -147,12 +138,7 @@ namespace Badger.ViewModels
         }
         private void loadAppDefinitions()
         {
-            //No distinction needed anymore since release versions are always to be sent to remote machines
-//#if DEBUG
-//            foreach(string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir,"*.Debug.xml"))
-//#else
             foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
-//#endif
             {
                 char[] spliter = "\\".ToCharArray();
                 string[] tmp = app.Split(spliter);
@@ -167,51 +153,48 @@ namespace Badger.ViewModels
 
         public void saveExperimentInEditor()
         {
-            if (selectedTabControlExperiment==null || !selectedTabControlExperiment.validate())
+            if (selectedExperiment==null || !selectedExperiment.validate())
             {
                 CaliburnUtility.showWarningDialog("The app can't be validated. See error log.","Error");
                 return;
             }
 
-            SimionFileData.saveExperiment(selectedTabControlExperiment);
+            SimionFileData.saveExperiment(selectedExperiment);
         }
 
         public void saveExperiments()
         {
-            SimionFileData.saveExperiments(m_appViewModels);
+            SimionFileData.saveExperiments(m_experiments);
         }
 
 
         public void loadExperiment()
         {
-            AppViewModel newApp = SimionFileData.loadExperiment(this,appDefinitions);
+            ExperimentViewModel newApp = SimionFileData.loadExperiment(this,appDefinitions);
             if (newApp != null)
             {
-                tabControlExperiments.Add(newApp);
+                experiments.Add(newApp);
                 checkEmptyExperimentList();
-                selectedTabControlExperiment = newApp;
+                selectedExperiment = newApp;
             }
         }
         
 
         public void clearExperimentQueue()
         {
-            selectedTabControlExperiment = null;
-            if (tabControlExperiments != null) tabControlExperiments.Clear();
-            if (listControlExperiments != null) listControlExperiments.Clear();
+            selectedExperiment = null;
+            if (experiments != null) experiments.Clear();
         }
-        public void close(AppViewModel app)
+        public void close(ExperimentViewModel app)
         {
-            tabControlExperiments.Remove(app);
-            NotifyOfPropertyChange(() => listControlExperiments);
+            experiments.Remove(app);
             checkEmptyExperimentList();
         }
         public void removeSelectedExperiments()
         {
-            if (selectedTabControlExperiment != null)
+            if (selectedExperiment != null)
             {
-                tabControlExperiments.Remove(selectedTabControlExperiment);
-                NotifyOfPropertyChange(() => listControlExperiments);
+                experiments.Remove(selectedExperiment);
                 checkEmptyExperimentList();
             }
         }
@@ -219,11 +202,10 @@ namespace Badger.ViewModels
         //BADGER files
         public void loadExperiments()
         {
-            SimionFileData.loadExperiments(this,ref m_appViewModels, appDefinitions, logToFile);
-            NotifyOfPropertyChange(() => tabControlExperiments);
-            NotifyOfPropertyChange(() => listControlExperiments);
-            if (m_appViewModels.Count > 0)
-                selectedTabControlExperiment = m_appViewModels[0];
+            SimionFileData.loadExperiments(this,ref m_experiments, appDefinitions, logToFile);
+            NotifyOfPropertyChange(() => experiments);
+            if (m_experiments.Count > 0)
+                selectedExperiment = m_experiments[0];
             checkEmptyExperimentList();
         }
 
@@ -236,7 +218,7 @@ namespace Badger.ViewModels
             }
             string batchFilename = "";
             List<Experiment> experiments = new List<Experiment>();
-            experiments= SimionFileData.saveExperimentBatchFile(tabControlExperiments, ref batchFilename,logToFile);
+            experiments= SimionFileData.saveExperimentBatchFile(this.experiments, ref batchFilename, this.logToFile);
 
             if (experiments!=null && experiments.Count>0)
             {

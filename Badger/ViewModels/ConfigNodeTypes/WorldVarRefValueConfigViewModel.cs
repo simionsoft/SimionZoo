@@ -1,4 +1,4 @@
-﻿using Simion;
+﻿using Badger.Simion;
 using System.Xml;
 using System.Collections.Generic;
 using Caliburn.Micro;
@@ -25,14 +25,14 @@ namespace Badger.ViewModels
         
         private WorldVarType m_varType;
 
-        public WorldVarRefValueConfigViewModel(AppViewModel appDefinition, WorldVarType varType, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public WorldVarRefValueConfigViewModel(ExperimentViewModel parentExperiment, WorldVarType varType, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appDefinition, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             m_varType = varType;//definitionNode.Attributes[XMLConfig.hangingFromAttribute].Value;
 
             //the possible values taken by this world variable
-            m_appViewModel.getWorldVarNameList(m_varType, ref m_varNames);
+            m_parentExperiment.getWorldVarNameList(m_varType, ref m_varNames);
             NotifyOfPropertyChange(() => varNames);
 
             if (configNode != null)
@@ -45,17 +45,17 @@ namespace Badger.ViewModels
             {
                 //Either we have loaded the config but the list is of values has not yet been loaded
                 //or no config file has been loaded. In Either case, we register for a deferred load step
-                m_appViewModel.registerDeferredLoadStep(updateValues);
+                m_parentExperiment.registerDeferredLoadStep(updateValues);
             }
 
-            m_appViewModel.registerWorldVarRef(updateValues);
+            m_parentExperiment.registerWorldVarRef(updateValues);
         }
 
         public override ConfigNodeViewModel clone()
         {
             WorldVarRefValueConfigViewModel newInstance=
-                new WorldVarRefValueConfigViewModel(m_appViewModel, m_varType,m_parent, nodeDefinition, m_parent.xPath);
-            m_appViewModel.registerWorldVarRef(newInstance.updateValues);
+                new WorldVarRefValueConfigViewModel(m_parentExperiment, m_varType,m_parent, nodeDefinition, m_parent.xPath);
+            m_parentExperiment.registerWorldVarRef(newInstance.updateValues);
             newInstance.m_varType = m_varType;
             newInstance.varNames = varNames;
             newInstance.selectedEnumeratedName = selectedEnumeratedName;
@@ -64,7 +64,7 @@ namespace Badger.ViewModels
 
         public void updateValues()
         {
-            m_appViewModel.getWorldVarNameList(m_varType, ref m_varNames);
+            m_parentExperiment.getWorldVarNameList(m_varType, ref m_varNames);
             NotifyOfPropertyChange(() => varNames);
 
             //to force re-validation if the list of variables wasn't available at node creation time

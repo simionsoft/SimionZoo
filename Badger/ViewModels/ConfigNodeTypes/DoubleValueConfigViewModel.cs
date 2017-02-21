@@ -1,4 +1,4 @@
-﻿using Simion;
+﻿using Badger.Simion;
 using System.Xml;
 
 namespace Badger.ViewModels
@@ -6,9 +6,9 @@ namespace Badger.ViewModels
     class DoubleValueConfigViewModel: ConfigNodeViewModel
     {
 
-        public DoubleValueConfigViewModel(AppViewModel appViewModel, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public DoubleValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appViewModel, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name]==null)
             {
@@ -26,7 +26,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             DoubleValueConfigViewModel newInstance =
-                new DoubleValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+                new DoubleValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
 
             newInstance.content = content;
             newInstance.textColor = textColor;

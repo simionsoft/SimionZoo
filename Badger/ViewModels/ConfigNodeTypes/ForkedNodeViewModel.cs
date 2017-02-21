@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Simion;
+using Badger.Simion;
 using System.Xml;
 using System;
 using Caliburn.Micro;
@@ -57,7 +57,7 @@ namespace Badger.ViewModels
         public string alias { get { return m_alias; } set { m_alias = value; NotifyOfPropertyChange(() => alias); } }
 
         //Constructor used from the experiment editor
-        public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel forkedNode)
+        public ForkedNodeViewModel(ExperimentViewModel parentExperiment,ConfigNodeViewModel forkedNode)
         {
             m_parent = forkedNode.parent;
 
@@ -65,35 +65,42 @@ namespace Badger.ViewModels
             children.Add(newForkValue);
             selectedForkValue = newForkValue;
 
-            m_appViewModel = appViewModel;
+            m_parentExperiment = parentExperiment;
             nodeDefinition = forkedNode.nodeDefinition;
             name = forkedNode.name;
             alias = forkedNode.name;
             NotifyOfPropertyChange(() => selectedForkValue);
+
+            //register this fork
+            m_parentExperiment.forkRegistry.Add(this);
         }
         //Constructor called when loading an experiment config file
-        public ForkedNodeViewModel(AppViewModel appViewModel,ConfigNodeViewModel parentNode
+        public ForkedNodeViewModel(ExperimentViewModel parentExperiment,ConfigNodeViewModel parentNode
             ,XmlNode classDefinition,XmlNode configNode= null, bool initChildren= true)
         {
             //configNode must be non-null since no ForkedNodeVM can be created from the app defintion
-            m_appViewModel = appViewModel;
+            m_parentExperiment = parentExperiment;
             nodeDefinition = classDefinition;
             m_parent = parentNode;
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
                 alias = configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute).Value;
+            else alias = name;
 
             if (initChildren)
             {
                 foreach (XmlNode forkValueConfig in configNode.ChildNodes)
                 {
-                    children.Add(new ForkValueViewModel(appViewModel, classDefinition, this, forkValueConfig));
+                    children.Add(new ForkValueViewModel(parentExperiment, classDefinition, this, forkValueConfig));
                 }
             }
             //notify changes
             if (children.Count > 0)
                 selectedForkValue = children[0] as ForkValueViewModel;
             NotifyOfPropertyChange(() => children);
+
+            //register this fork
+            m_parentExperiment.forkRegistry.Add(this);
         }
         //constructor used in clone()
         public ForkedNodeViewModel() { }
@@ -101,7 +108,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             ForkedNodeViewModel newForkedNode = new ForkedNodeViewModel();
-            newForkedNode.m_appViewModel = m_appViewModel;
+            newForkedNode.m_parentExperiment = m_parentExperiment;
             newForkedNode.m_parent = m_parent;
             newForkedNode.name = name;
             foreach (ConfigNodeViewModel child in children)
@@ -110,6 +117,11 @@ namespace Badger.ViewModels
                 clonedChild.parent = newForkedNode;
                 newForkedNode.children.Add(clonedChild);
             }
+
+            //register this fork
+            m_parentExperiment.forkRegistry.Add(newForkedNode);
+
+
             if (newForkedNode.children.Count>0)
                 newForkedNode.selectedForkValue = newForkedNode.children[0] as ForkValueViewModel;
             return newForkedNode;
@@ -117,7 +129,7 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            if (name == "Name" || name=="")
+            if (name=="" || !m_parentExperiment.forkRegistry.validate(alias))
                 return false;
             foreach (ForkValueViewModel value in children)
             {
@@ -128,7 +140,7 @@ namespace Badger.ViewModels
 
         public override void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
         {
-            if (mode == SaveMode.SaveForks)
+            if (mode == SaveMode.AsProject || mode== SaveMode.AsExperiment)
             {
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + " "
                     + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute 
@@ -137,18 +149,27 @@ namespace Badger.ViewModels
                     child.outputXML(writer, mode, leftSpace + "  ");
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkedNodeTag + ">");
             }
-            else
+            else if (mode == SaveMode.AsExperimentalUnit)
             {
                 selectedForkValue.configNode.outputXML(writer, mode, leftSpace);
-
-                if (mode == SaveMode.OnlyForks)
-                {
-                    writer.WriteLine("    <" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute + "=\"" + name
-                        + "\" " + XMLConfig.aliasAttribute + "=\"" + alias + "\">" + selectedForkValue.configNode.content 
-                        + "</" + XMLConfig.forkTag + ">");
-                }
             }
-
+            else if (mode == SaveMode.ForkHierarchy)
+            {
+                writer.WriteLine("    <" + XMLConfig.forkTag + " "
+                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
+                    + "=\"" + alias + "\">");
+                foreach (ForkValueViewModel child in children)
+                    child.outputXML(writer, mode, "      ");
+                writer.WriteLine("    </" + XMLConfig.forkTag + ">");
+            }
+            else if( mode == SaveMode.ForkValues)
+            {
+                writer.WriteLine("      <" + XMLConfig.forkTag + " "
+                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
+                    + "=\"" + alias + "\">");
+                selectedForkValue.outputXML(writer, mode, "        ");
+                writer.WriteLine("      </" + XMLConfig.forkTag + ">");
+            }
         }
 
         public void addValue()
@@ -157,16 +178,19 @@ namespace Badger.ViewModels
             ForkValueViewModel newForkValue = new ForkValueViewModel(newValueName,this,selectedValueConfigNode.clone());
             children.Add(newForkValue);
             updateBoolFlags();
-            m_appViewModel.updateNumForkCombinations();
+            m_parentExperiment.updateNumForkCombinations();
         }
 
         public override void unforkThisNode()
         {
+            //unregister this fork
+            m_parentExperiment.forkRegistry.Remove(this);
+
             NestedConfigNode parent = m_parent as NestedConfigNode;
             int childIndex = parent.children.IndexOf(this);
             parent.children.Remove(this);
             parent.children.Insert(childIndex, selectedForkValue.configNode);
-            m_appViewModel.updateNumForkCombinations();
+            m_parentExperiment.updateNumForkCombinations();
         }
 
         public void removeSelectedValue()
@@ -185,7 +209,7 @@ namespace Badger.ViewModels
 
             renameValues();
             updateBoolFlags();
-            m_appViewModel.updateNumForkCombinations();
+            m_parentExperiment.updateNumForkCombinations();
         }
 
         public void nextValue()
@@ -243,5 +267,6 @@ namespace Badger.ViewModels
             if (currentValue.getNumForkCombinations() > 1)
                 currentValue.setForkCombination(ref id, ref combinationName);
         }
+
     }
 }

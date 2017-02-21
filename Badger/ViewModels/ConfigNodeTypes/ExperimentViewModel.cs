@@ -2,22 +2,28 @@
 using System.Collections.Generic;
 using Caliburn.Micro;
 using System.IO;
-using Simion;
+using Badger.Simion;
 using Badger.Data;
 using System;
 using System.Linq;
 
 namespace Badger.ViewModels
 {
-    //two modes:
-    //-CombineForks: for each combination of fork values, a different experiment will be saved
-    //-SaveForks: forkedNodes and forks will be saved as a unique experiment
-    public enum SaveMode { CombineForks,SaveForks, OnlyForks};
+    //Save modes:
+    //  -AsExperiment: all forks and all values are saved
+    //  -AsExperimentalUnit: for each combination of fork values, a different experiment will be saved
+    //              , meaning no forked nodes will be actually saved
+    //              , but only the currently selected value
+    //  -AsProject: in a single file, all the forks, values and the rest of nodes are saved
+    //  -ForkHierarchy: forkedNodes and forks will be saved as a unique experiment
+    //  -ForkValues: only the selected values for each fork are saved
+
+    public enum SaveMode { AsExperiment, AsExperimentalUnit, AsProject, ForkValues, ForkHierarchy};
     public enum WorldVarType { StateVar, ActionVar,Constant };
 
-    public class AppViewModel: PropertyChangedBase
+    public class ExperimentViewModel: PropertyChangedBase
     {
-        public SaveMode saveMode= SaveMode.SaveForks;
+        public SaveMode saveMode= SaveMode.AsExperiment;
 
         //deferred load step
         public delegate void deferredLoadStep();
@@ -206,7 +212,7 @@ namespace Badger.ViewModels
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
-        public AppViewModel(WindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
+        public ExperimentViewModel(WindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
         {
             m_parent = parentWindow;
             //Load the configFile if a configFilename is provided
@@ -219,11 +225,12 @@ namespace Badger.ViewModels
                 configRootNode = configDoc.LastChild;
             }
 
-            init(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true));
+            init(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
+                                                        //we remove the two extensions in "simion.exp"
         }
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
         //XML file, the calling method will be passing XML nodes belonging to the single XML file instead of filenames
-        public AppViewModel(WindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode,string experimentName)
+        public ExperimentViewModel(WindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode,string experimentName)
         {
             m_parent = parentWindow;
             init(appDefinitionFileName, configRootNode,experimentName);
@@ -260,11 +267,11 @@ namespace Badger.ViewModels
         }
 
         //this method saves an experiment. Depending on the mode:
-        //  -SaveMode.CombineForks -> the caller should iterate on i= [0..getNumForkCombinations) and call
+        //  -SaveMode.AsExperimentUnit -> the caller should iterate on i= [0..getNumForkCombinations) and call
         //setCombination(i). This method will then save the i-th combination
-        //  -SaveMode.SaveForks -> this method should be called only once per experiment. All the forks will be saved embedded
+        //  -SaveMode.AsExperiment -> this method should be called only once per experiment. All the forks will be saved embedded
         //in the config file
-        //  -SaveMode.OnlyForks -> this method is called from saveExperimentBatchFile and saves only the information related to forks
+        //  -SaveMode.AsExperimentBatch -> this method is called from saveExperimentBatchFile and saves only the information related to forks
         //   We need this to know later which value were given to each fork
         public void save(string filename,SaveMode mode, string leftSpace="")
         {
@@ -279,17 +286,22 @@ namespace Badger.ViewModels
         public void saveToStream(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             saveMode = mode;
-
-            if (mode!=SaveMode.OnlyForks)
-                writer.WriteLine(leftSpace + "<" + appName + " " + XMLConfig.versionAttribute 
-                + "=\"" + XMLConfig.experimentConfigVersion + "\">");
-
-            foreach (ConfigNodeViewModel node in m_children)
+            //header
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
             {
-                node.outputXML(writer, mode,leftSpace + "  ");
+                //We are saving the config file as an experiment, experiment unit, or a badger file
+                writer.WriteLine(leftSpace + "<" + appName + " " + XMLConfig.versionAttribute
+                + "=\"" + XMLConfig.experimentConfigVersion + "\">");
             }
-            if (mode != SaveMode.OnlyForks)
+            
+            //body
+            foreach (ConfigNodeViewModel node in m_children)
+                node.outputXML(writer, mode,leftSpace + "  ");
+
+            //footer
+            if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
                 writer.WriteLine(leftSpace + "</" + appName + ">");
+            //else writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
         }
 
 
@@ -360,6 +372,14 @@ namespace Badger.ViewModels
                 child.setForkCombination(ref combinationId,ref combinationName);
             }
             return combinationName;
+        }
+
+        //the list of forks hanging directly from the main experiment
+        private ForkRegistry m_forkRegistry = new ForkRegistry();
+        public ForkRegistry forkRegistry
+        {
+            get { return m_forkRegistry; }
+            set { m_forkRegistry = value;  NotifyOfPropertyChange(() => forkRegistry); }
         }
 
         public void close()

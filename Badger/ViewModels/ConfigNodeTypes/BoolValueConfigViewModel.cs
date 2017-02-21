@@ -1,4 +1,4 @@
-﻿using Simion;
+﻿using Badger.Simion;
 using System.Xml;
 
 namespace Badger.ViewModels
@@ -18,9 +18,9 @@ namespace Badger.ViewModels
                 else content = "false";
             }
         }
-        public BoolValueConfigViewModel(AppViewModel appViewModel, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public BoolValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
-            commonInit(appViewModel, parent, definitionNode, parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             if (configNode == null || configNode[name] == null)
             {
@@ -38,7 +38,7 @@ namespace Badger.ViewModels
         public override ConfigNodeViewModel clone()
         {
             BoolValueConfigViewModel newInstance =
-                new BoolValueConfigViewModel(m_appViewModel, m_parent, nodeDefinition, m_parent.xPath);
+                new BoolValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
 
             newInstance.content = content;
             newInstance.textColor = textColor;
