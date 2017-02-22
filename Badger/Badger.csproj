@@ -142,6 +142,7 @@
     <Compile Include="ViewModels\LoggedExperiment\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\LoggedExperiment\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\LoggedExperiment\LoggedForkValueViewModel.cs" />
+    <Compile Include="ViewModels\LoggedExperiment\SelectableTreeItem.cs" />
     <Compile Include="ViewModels\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\PlotViewModel.cs" />
     <Compile Include="ViewModels\LoggedExperiment\LoggedExperimentViewModel.cs" />

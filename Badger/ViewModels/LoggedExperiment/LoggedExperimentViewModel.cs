@@ -6,20 +6,8 @@ using Badger.Simion;
 
 namespace Badger.ViewModels
 {
-    public class LoggedExperimentViewModel: PropertyChangedBase
+    public class LoggedExperimentViewModel: SelectableTreeItem
     {
-        private bool m_bIsSelected = false;
-        public bool bIsSelected {
-            get { return m_bIsSelected; }
-            set 
-            {
-                m_bIsSelected= value;
-                m_parent.updateAvailableVariableList();
-                m_parent.updateVariableListHeader();
-                m_parent.updateLogListHeader();
-                NotifyOfPropertyChange(()=>bIsSelected); }}
-
-
         private string m_name = "";
         public string name
         {
@@ -35,12 +23,18 @@ namespace Badger.ViewModels
             set { m_forks = value; }
         }
 
+        public override void OnSelectedChange(bool bSelected)
+        {
+            foreach (LoggedForkViewModel fork in m_forks) fork.bIsSelected = bSelected;
+        }
+
         private List<LoggedExperimentalUnitViewModel> m_expUnits = new List<LoggedExperimentalUnitViewModel>();
         public List<LoggedExperimentalUnitViewModel> expUnits
         {
             get { return m_expUnits; }
             set { m_expUnits = value; }
         }
+
 
         public LoggedExperimentViewModel(XmlNode configNode,ReportsWindowViewModel parent)
         {

@@ -11,7 +11,7 @@ using System.IO;
 
 namespace Badger.ViewModels
 {
-    public class LoggedVariableViewModel:PropertyChangedBase
+    public class LoggedVariableViewModel:SelectableTreeItem
     {
         private bool m_bIsSelected = false;
         public bool bIsSelected {

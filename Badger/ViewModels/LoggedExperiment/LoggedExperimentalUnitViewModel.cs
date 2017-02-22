@@ -6,7 +6,7 @@ using Badger.Data;
 
 namespace Badger.ViewModels
 {
-    public class LoggedExperimentalUnitViewModel: PropertyChangedBase
+    public class LoggedExperimentalUnitViewModel: SelectableTreeItem
     {
         private string m_logFilePath = "";
         public string logFilePath { get { return m_logFilePath; } set { m_logFilePath = value; } }

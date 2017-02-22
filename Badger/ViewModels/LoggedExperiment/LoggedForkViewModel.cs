@@ -4,7 +4,7 @@ using Badger.Simion;
 
 namespace Badger.ViewModels
 {
-    public class LoggedForkViewModel
+    public class LoggedForkViewModel: SelectableTreeItem
     {
         private string m_name = "unnamed";
         public string name
@@ -26,6 +26,12 @@ namespace Badger.ViewModels
             set { m_forks = value; }
         }
 
+        public override void OnSelectedChange(bool bSelected)
+        {
+            foreach(LoggedForkValueViewModel value in m_values) value.bIsSelected= bSelected;
+            foreach (LoggedForkViewModel fork in m_forks) fork.bIsSelected = bSelected;
+        }
+
         public LoggedForkViewModel(XmlNode configNode)
         {
             if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
@@ -44,6 +50,8 @@ namespace Badger.ViewModels
                     values.Add(newValue);
                 }
             }
+
+            if (forks.Count == 0) bVisible = false;
         }
     }
 }

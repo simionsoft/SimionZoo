@@ -15,11 +15,12 @@
     <TreeViewItem IsExpanded="True" Margin="0,0,0,0">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal">
-                <Label Content="{Binding name}"/>
+                <CheckBox IsChecked="{Binding bIsSelected}" 
+                          Content="{Binding name}" FontSize="10" FontFamily="Segoe UI Light"/>
             </StackPanel>
         </TreeViewItem.Header>
 
         <ItemsControl x:Name="values" Margin="-17,0,0,0"/>
-        <ItemsControl x:Name="forks" Margin="0,0,0,0"/>
+        <ItemsControl x:Name="forks" Margin="0,0,0,0" Visibility="{Binding Path=bVisible,Converter={StaticResource BoolToVis}}"/>
     </TreeViewItem>
 </UserControl>
