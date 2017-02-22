@@ -9,7 +9,7 @@ namespace Badger.Simion
         public const string BatchConfigVersion = "1.0.0.0";
 
         public const string experimentExtension = "simion.exp";
-        public const string experimentalUnitExtension = "simion.unit.exp";
+        //public const string experimentalUnitExtension = "simion.unit.exp";
         public const string experimentBatchExtension = "simion.batch";
         public const string badgerProjectExtension = "badger.proj";
 
@@ -83,5 +83,12 @@ namespace Badger.Simion
         public const int sortingValueChildClass = 50;
         public const int sortingValueMultiParameter = 100;
         public const int sortingValueWorldVariable = 200;
+
+        //Log descriptors/files
+        public const string descriptorRootNodeName = "ExperimentLogDescriptor";
+        public const string descriptorStateVarNodeName = "State-variable";
+        public const string descriptorActionVarNodeName = "Action-variable";
+        public const string descriptorRewardVarNodeName = "Reward-variable";
+        public const string descriptorStatVarNodeName = "Stat-variable";
     }
 }

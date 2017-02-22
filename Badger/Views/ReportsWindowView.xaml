@@ -5,7 +5,6 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:vm="clr-namespace:Badger.ViewModels"
             xmlns:cal="http://www.caliburnproject.org"
-            xmlns:local="clr-namespace:Badger.Views.Help"
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowStyle="ThreeDBorderWindow"
@@ -20,7 +19,13 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
         <DataTemplate DataType="{x:Type vm:LoggedExperimentViewModel}">
-            <v:ExperimentLogView/>
+            <v:LoggedExperimentView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:LoggedExperimentalUnitViewModel}">
+            <v:LoggedExperimentalUnitView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:LoggedForkViewModel}">
+            <v:LoggedForkView/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:LoggedVariableViewModel}">
             <v:LoggedVariableView/>
@@ -50,7 +55,10 @@
 
                 </Button>
             </StackPanel>
-            <Border BorderThickness="1" BorderBrush="DarkGray">
+            <TreeView x:Name="Experiments" Height="280">
+                <ItemsControl x:Name="loggedExperiments"></ItemsControl>
+            </TreeView>
+            <!--<Border BorderThickness="1" BorderBrush="DarkGray">
                 <StackPanel>
                     <StackPanel Height="25" HorizontalAlignment="Left" Orientation="Horizontal">
                         <CheckBox VerticalAlignment="Center" IsChecked="{Binding bCheckAllLogs}"></CheckBox>
@@ -62,7 +70,7 @@
                         <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="Focusable" Value="false"/>
-                                <!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=OneWay}" />-->
+                                --><!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=OneWay}" />--><!--
                         </Style>
                     </ListView.ItemContainerStyle>
                 </ListView>
@@ -81,12 +89,12 @@
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="Focusable" Value="false"/>
-                                <!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />-->
+                                --><!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />--><!--
                             </Style>
                         </ListView.ItemContainerStyle>
                     </ListView>
                 </StackPanel>
-            </Border>
+            </Border>-->
         </StackPanel>
         <StackPanel Orientation="Vertical" Margin="2">
             <StackPanel Width="680">

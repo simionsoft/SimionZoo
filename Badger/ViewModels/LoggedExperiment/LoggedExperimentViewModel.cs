@@ -8,8 +8,6 @@ namespace Badger.ViewModels
 {
     public class LoggedExperimentViewModel: PropertyChangedBase
     {
-        //private const string m_descriptorRootNodeName = "ExperimentLogDescriptor";
-
         private bool m_bIsSelected = false;
         public bool bIsSelected {
             get { return m_bIsSelected; }
@@ -66,42 +64,6 @@ namespace Badger.ViewModels
         }
 
      }
-        //private void processDescriptor()
-        //{
-        //    XmlNode node = m_logDescriptor.FirstChild;
-        //    if (node.Name==m_descriptorRootNodeName)
-        //    {
-        //        foreach (XmlNode child in node.ChildNodes)
-        //        {
-        //            if (child.Name == "State-variable" || child.Name == "Action-variable" || child.Name == "Reward-variable"
-        //                || child.Name == "Stat-variable")
-        //            {
-        //                string varName = child.InnerText;                
-        //                m_variablesInLog.Add(varName);
-        //            }
-        //        }
-        //    }
-        //}
-        //public void addVariablesToList(ref ObservableCollection<LoggedVariableViewModel> variableList)
-        //{
-        //    if (variableList.Count==0)
-        //    {
-        //        //if the list is empty, we add all the variables available in this log
-        //        foreach(string var in m_variablesInLog)
-        //        {
-        //            variableList.Add(new LoggedVariableViewModel(var, m_parent));
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //else, we intersect both sets: remove all variables not present in this log
-        //        foreach(LoggedVariableViewModel variable in variableList)
-        //        {
-        //            if (!m_variablesInLog.Contains(variable.name))
-        //                variableList.Remove(variable);
-        //        }
-        //    }
-        //}
 
 
   

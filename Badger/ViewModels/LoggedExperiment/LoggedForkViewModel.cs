@@ -6,6 +6,12 @@ namespace Badger.ViewModels
 {
     public class LoggedForkViewModel
     {
+        private string m_name = "unnamed";
+        public string name
+        {
+            get { return m_name; }
+            set { m_name = value; }
+        }
         private List<LoggedForkValueViewModel> m_values = new List<LoggedForkValueViewModel>();
         public List<LoggedForkValueViewModel> values
         {
@@ -16,12 +22,15 @@ namespace Badger.ViewModels
         private List<LoggedForkViewModel> m_forks = new List<LoggedForkViewModel>();
         public List<LoggedForkViewModel> forks
         {
-            get { return forks; }
+            get { return m_forks; }
             set { m_forks = value; }
         }
 
         public LoggedForkViewModel(XmlNode configNode)
         {
+            if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
+                name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
+
             foreach(XmlNode child in configNode.ChildNodes)
             {
                 if (child.Name==XMLConfig.forkTag)

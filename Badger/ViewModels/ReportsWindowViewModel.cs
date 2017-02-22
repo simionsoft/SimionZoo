@@ -47,8 +47,9 @@ namespace Badger.ViewModels
         }
 
         //the list of logs we have
-        private ObservableCollection<LoggedExperimentViewModel> m_experimentLogs = new ObservableCollection<LoggedExperimentViewModel>();
-        public ObservableCollection<LoggedExperimentViewModel> experimentLogs
+        private BindableCollection<LoggedExperimentViewModel> m_experimentLogs
+            = new BindableCollection<LoggedExperimentViewModel>();
+        public BindableCollection<LoggedExperimentViewModel> experimentLogs
         {
             get { return m_experimentLogs; }
             set { m_experimentLogs = value; NotifyOfPropertyChange(() => experimentLogs); }
@@ -193,8 +194,9 @@ namespace Badger.ViewModels
             }
         }
 
-        private List<LoggedExperimentViewModel> m_loggedExperiments = new List<LoggedExperimentViewModel>();
-        public List<LoggedExperimentViewModel> loggedExperiments
+        private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
+            = new BindableCollection<LoggedExperimentViewModel>();
+        public BindableCollection<LoggedExperimentViewModel> loggedExperiments
         {
             get { return m_loggedExperiments; }
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => loggedExperiments); }

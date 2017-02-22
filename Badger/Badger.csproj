@@ -145,12 +145,9 @@
     <Compile Include="ViewModels\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\PlotViewModel.cs" />
     <Compile Include="ViewModels\LoggedExperiment\LoggedExperimentViewModel.cs" />
-    <Compile Include="ViewModels\LoggedVariableViewModel.cs" />
+    <Compile Include="ViewModels\LoggedExperiment\LoggedVariableViewModel.cs" />
     <Compile Include="ViewModels\ReportViewModel.cs" />
     <Compile Include="ViewModels\StatsViewModel.cs" />
-    <Compile Include="Views\ExperimentLogView.xaml.cs">
-      <DependentUpon>ExperimentLogView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\MonitoredExperimentViewModel.cs" />
     <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
@@ -166,7 +163,7 @@
     <Compile Include="Views\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\LoggedVariableView.xaml.cs">
+    <Compile Include="Views\LoggedExperiment\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MonitoredExperimentView.xaml.cs">
@@ -175,7 +172,6 @@
     <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
       <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Help\ComboBoxToMaxItemWidthConverter.cs" />
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
@@ -278,11 +274,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ExperimentLogView.xaml">
+    <Page Include="Views\ConfigNodeTypes\IntegerValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ConfigNodeTypes\IntegerValueConfigView.xaml">
+    <Page Include="Views\LoggedExperiment\LoggedExperimentalUnitView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LoggedExperiment\LoggedExperimentView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LoggedExperiment\LoggedForkValueView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LoggedExperiment\LoggedForkView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -294,7 +302,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoggedVariableView.xaml">
+    <Page Include="Views\LoggedExperiment\LoggedVariableView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -436,6 +444,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

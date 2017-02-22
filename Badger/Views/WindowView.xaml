@@ -5,7 +5,6 @@
             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:vm="clr-namespace:Badger.ViewModels"
             xmlns:cal="http://www.caliburnproject.org"
-            xmlns:local="clr-namespace:Badger.Views.Help"
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowStyle="ThreeDBorderWindow"
