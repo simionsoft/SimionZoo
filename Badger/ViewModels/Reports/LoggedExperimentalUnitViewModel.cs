@@ -40,8 +40,11 @@ namespace Badger.ViewModels
 
         private List<string> m_variablesInLog = new List<string>();
 
-        public LoggedExperimentalUnitViewModel(XmlNode configNode)
+        public LoggedExperimentalUnitViewModel(XmlNode configNode, ReportsWindowViewModel parent)
         {
+            m_parentWindow = parent;
+
+
             if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute)!=null)
                 name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             if (configNode.Attributes.GetNamedItem(XMLConfig.pathAttribute) != null)
@@ -56,7 +59,7 @@ namespace Badger.ViewModels
             //load the value of each fork used in this experimental unit
             foreach(XmlNode child in configNode.ChildNodes)
             {
-                LoggedForkViewModel newFork = new LoggedForkViewModel(child);
+                LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
                 forkValues.Add(newFork);
             }
         }
@@ -74,7 +77,10 @@ namespace Badger.ViewModels
                         || child.Name == XMLConfig.descriptorStatVarNodeName)
                     {
                         string varName = child.InnerText;
+                        //add the variable to the local list
                         m_variablesInLog.Add(varName);
+                        //add the variable to the list managed by the parent window
+                        m_parentWindow.addVariable(varName);
                     }
                 }
             }

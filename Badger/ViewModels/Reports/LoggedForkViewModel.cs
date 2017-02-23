@@ -32,8 +32,10 @@ namespace Badger.ViewModels
             foreach (LoggedForkViewModel fork in m_forks) fork.bIsSelected = bSelected;
         }
 
-        public LoggedForkViewModel(XmlNode configNode)
+
+        public LoggedForkViewModel(XmlNode configNode, ReportsWindowViewModel parent)
         {
+            m_parentWindow = parent;
             if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
                 name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
 
@@ -41,17 +43,24 @@ namespace Badger.ViewModels
             {
                 if (child.Name==XMLConfig.forkTag)
                 {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
+                    LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
                     forks.Add(newFork);
                 }
                 else if (child.Name==XMLConfig.forkValueTag)
                 {
-                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child);
+                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child, parent);
                     values.Add(newValue);
                 }
             }
 
             if (forks.Count == 0) bVisible = false;
+        }
+
+        public void groupByThisFork()
+        {
+            //this method is called from the context menu
+            //informs the parent window that results should be grouped by this fork
+            m_parentWindow.addGroupBy(name);
         }
     }
 }

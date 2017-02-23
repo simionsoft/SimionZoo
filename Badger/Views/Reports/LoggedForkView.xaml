@@ -16,7 +16,15 @@
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal">
                 <CheckBox IsChecked="{Binding bIsSelected}" 
-                          Content="{Binding name}" FontSize="10" FontFamily="Segoe UI Light"/>
+                          Content="{Binding name}" FontSize="10" FontFamily="Segoe UI Light">
+                    <CheckBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Group By this fork" cal:Message.Attach="groupByThisFork">
+
+                            </MenuItem>
+                        </ContextMenu>
+                    </CheckBox.ContextMenu>
+                </CheckBox>
             </StackPanel>
         </TreeViewItem.Header>
 

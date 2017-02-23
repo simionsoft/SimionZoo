@@ -18,7 +18,7 @@ namespace Badger.ViewModels
             get { return m_bIsSelected; }
             set {m_bIsSelected= value;
                 NotifyOfPropertyChange(()=>bIsSelected);
-                m_parent.updateVariableListHeader();
+                //m_parent.updateVariableListHeader();
             }}
 
         private string m_name;

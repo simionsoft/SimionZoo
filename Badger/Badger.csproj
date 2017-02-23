@@ -139,23 +139,24 @@
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
-    <Compile Include="ViewModels\LoggedExperiment\LoggedExperimentalUnitViewModel.cs" />
-    <Compile Include="ViewModels\LoggedExperiment\LoggedForkViewModel.cs" />
-    <Compile Include="ViewModels\LoggedExperiment\LoggedForkValueViewModel.cs" />
-    <Compile Include="ViewModels\LoggedExperiment\SelectableTreeItem.cs" />
+    <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
+    <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
+    <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
+    <Compile Include="Data\LogQuery.cs" />
+    <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />
     <Compile Include="ViewModels\PlotLineSeriesPropertiesViewModel.cs" />
-    <Compile Include="ViewModels\PlotViewModel.cs" />
-    <Compile Include="ViewModels\LoggedExperiment\LoggedExperimentViewModel.cs" />
-    <Compile Include="ViewModels\LoggedExperiment\LoggedVariableViewModel.cs" />
-    <Compile Include="ViewModels\ReportViewModel.cs" />
-    <Compile Include="ViewModels\StatsViewModel.cs" />
+    <Compile Include="ViewModels\Reports\PlotViewModel.cs" />
+    <Compile Include="ViewModels\Reports\LoggedExperimentViewModel.cs" />
+    <Compile Include="ViewModels\Reports\LoggedVariableViewModel.cs" />
+    <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
+    <Compile Include="ViewModels\Reports\StatsViewModel.cs" />
     <Compile Include="ViewModels\MonitoredExperimentViewModel.cs" />
     <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
-    <Compile Include="ViewModels\ReportsWindowViewModel.cs" />
+    <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
@@ -164,7 +165,7 @@
     <Compile Include="Views\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\LoggedExperiment\LoggedVariableView.xaml.cs">
+    <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MonitoredExperimentView.xaml.cs">
@@ -179,7 +180,7 @@
     <Compile Include="Views\MonitorWindowView.xaml.cs">
       <DependentUpon>MonitorWindowView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ReportsWindowView.xaml.cs">
+    <Compile Include="Views\Reports\ReportsWindowView.xaml.cs">
       <DependentUpon>ReportsWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WindowView.xaml.cs">
@@ -279,19 +280,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoggedExperiment\LoggedExperimentalUnitView.xaml">
+    <Page Include="Views\Reports\LoggedExperimentalUnitView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoggedExperiment\LoggedExperimentView.xaml">
+    <Page Include="Views\Reports\LoggedExperimentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoggedExperiment\LoggedForkValueView.xaml">
+    <Page Include="Views\Reports\LoggedForkValueView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoggedExperiment\LoggedForkView.xaml">
+    <Page Include="Views\Reports\LoggedForkView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -303,7 +304,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoggedExperiment\LoggedVariableView.xaml">
+    <Page Include="Views\Reports\LoggedVariableView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -327,7 +328,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ReportsWindowView.xaml">
+    <Page Include="Views\Reports\ReportsWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

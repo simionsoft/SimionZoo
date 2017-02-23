@@ -8,7 +8,7 @@
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowStyle="ThreeDBorderWindow"
-        Width="1000"
+        Width="800"
         Height="600"
         Background="#eeeeee"
         WindowState="Normal"
@@ -45,19 +45,55 @@
     
     <StackPanel Orientation="Horizontal" Margin="2">
         <StackPanel Orientation="Vertical" Width="300">
-            <StackPanel>
-                <Button  HorizontalAlignment="Center" Height="40" Width="120" Margin="5"
-                            x:Name="loadExperimentBatch">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button  HorizontalAlignment="Center" Width="70" Margin="5"
+                            x:Name="loadExperimentBatch" ToolTip="Load a batch: results from an experiment execution">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center">Load batch</TextBlock>
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,5,0">Load</TextBlock>
                         <Image Width="25" Height="25" Source="{StaticResource open-project}"/>
                     </StackPanel>
-
+                </Button>
+                <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30"
+                                     cal:Message.Attach="[Event Click]=[Action saveReports()]"
+                                    IsEnabled="{Binding Path=bCanSaveReports}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Save all</TextBlock>
+                        <Image Width="25" Height="25" Source="{StaticResource save-all}"  Margin="3,0,3,0"/>
+                    </StackPanel>
                 </Button>
             </StackPanel>
             <TreeView x:Name="Experiments" Height="280">
                 <ItemsControl x:Name="loggedExperiments"></ItemsControl>
             </TreeView>
+            <Border Margin="0,20,0,0">
+                <StackPanel Orientation="Vertical"  IsEnabled="{Binding Path=bLogsLoaded,Converter={StaticResource BoolToVis}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="70" Margin="0,0,10,0">SELECT</Label>
+                        <ComboBox x:Name="functionOptions" Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
+                        <ComboBox x:Name="variables" Width="80" HorizontalAlignment="Center"></ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="70" Margin="0,0,10,0">FROM</Label>
+                        <ComboBox x:Name="fromOptions" Width="80" HorizontalAlignment="Center"></ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="70" Margin="0,0,10,0">GROUP BY</Label>
+                        <TextBlock x:Name="groupBy" MaxWidth="180" Width="180"></TextBlock>
+                        <Button x:Name="resetGroupBy">
+                            <Image Source="{StaticResource close}" Width="20"></Image>
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="generateReport"  HorizontalAlignment="Center" BorderBrush="SlateGray" Margin="0,0" Height="30"
+                            IsEnabled="{Binding Path=bCanGenerateReports}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Make report</TextBlock>
+                                <Image Source="{StaticResource plot}" Width="30" Margin="3,0,3,0"></Image>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
             <!--<Border BorderThickness="1" BorderBrush="DarkGray">
                 <StackPanel>
                     <StackPanel Height="25" HorizontalAlignment="Left" Orientation="Horizontal">
@@ -99,35 +135,10 @@
         <StackPanel Orientation="Vertical" Margin="2">
             <StackPanel Width="680">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-
-                    <Label Margin="10 0 10 0">Episodes</Label>
-                    <ComboBox Width="200" ItemsSource="{Binding Path=sourceOptions}" SelectedItem="{Binding Path=selectedSource}"/>
                     <StackPanel Width="300" Orientation="Horizontal" HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal">
-                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30"
-                            cal:Message.Attach="[Event Click]=[Action generatePlots()]"
-                            IsEnabled="{Binding Path=bCanGenerateReports}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Plot</TextBlock>
-                                    <Image Source="{StaticResource plot}" Width="30" Margin="3,0,3,0"></Image>
-                                </StackPanel>
-                            </Button>
-                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30"
-                            cal:Message.Attach="[Event Click]=[Action generateStats()]"
-                            IsEnabled="{Binding Path=bCanGenerateReports}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Stats</TextBlock>
-                                    <Image Source="{StaticResource spreadsheet}" Width="30" Margin="3,0,3,0"/>
-                                </StackPanel>
-                            </Button>
-                            <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Margin="10,0" Height="30"
-                                     cal:Message.Attach="[Event Click]=[Action saveReports()]"
-                           IsEnabled="{Binding Path=bCanSaveReports}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Save all</TextBlock>
-                                    <Image Width="25" Height="25" Source="{StaticResource save-all}"  Margin="3,0,3,0"/>
-                                </StackPanel>
-                            </Button>
+                           
+                            
                         </StackPanel>
                         
                     </StackPanel>

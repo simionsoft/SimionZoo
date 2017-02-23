@@ -45,13 +45,13 @@ namespace Badger.ViewModels
             {
                 if (child.Name==XMLConfig.forkTag)
                 {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
+                    LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
                     forks.Add(newFork);
                 }
                 else if (child.Name==XMLConfig.experimentalUnitNodeTag)
                 {
                     LoggedExperimentalUnitViewModel newExpUnit
-                        = new LoggedExperimentalUnitViewModel(child);
+                        = new LoggedExperimentalUnitViewModel(child, parent);
                     expUnits.Add(newExpUnit);
                 }
             }

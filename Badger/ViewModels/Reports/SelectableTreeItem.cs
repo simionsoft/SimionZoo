@@ -20,5 +20,7 @@ namespace Badger.ViewModels
 
         public virtual void OnSelectedChange(bool bSelected)
         { }
+
+        protected ReportsWindowViewModel m_parentWindow;
     }
 }
