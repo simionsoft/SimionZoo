@@ -14,12 +14,23 @@ namespace Badger.ViewModels
     public class LoggedVariableViewModel:PropertyChangedBase
     {
         private bool m_bIsSelected = true;
-        public bool bIsSelected {
+        public bool bIsSelected
+        {
             get { return m_bIsSelected; }
-            set {m_bIsSelected= value;
+            set
+            {
+                m_bIsSelected = value;
                 m_parent.validateQuery();
                 NotifyOfPropertyChange(()=>bIsSelected);
-            }}
+            }
+        }
+
+        private bool m_bCheckIsVisible = true;
+        public bool bCheckIsVisible
+        {
+            get { return m_bCheckIsVisible; }
+            set { m_bCheckIsVisible = value;  NotifyOfPropertyChange(() => bCheckIsVisible); }
+        }
 
         private string m_name;
         public string name { get { return m_name; }

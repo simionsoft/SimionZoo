@@ -23,9 +23,10 @@ namespace Badger.ViewModels
             set { m_forks = value; }
         }
 
-        public override void OnSelectedChange(bool bSelected)
+        public override void TraverseAction(bool doActionLocally, System.Action<SelectableTreeItem> action)
         {
-            foreach (LoggedForkViewModel fork in m_forks) fork.bIsSelected = bSelected;
+            if (doActionLocally) LocalTraverseAction(action);
+            foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true,action);
         }
 
         private List<LoggedExperimentalUnitViewModel> m_expUnits = new List<LoggedExperimentalUnitViewModel>();

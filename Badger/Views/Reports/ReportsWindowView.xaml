@@ -8,7 +8,7 @@
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowStyle="ThreeDBorderWindow"
-        Width="800"
+        Width="1014.5"
         Height="600"
         Background="#eeeeee"
         WindowState="Normal"
@@ -67,7 +67,7 @@
                 <ItemsControl x:Name="loggedExperiments"></ItemsControl>
             </TreeView>
             <Border Margin="0,20,0,0" BorderBrush="DarkGray" BorderThickness="1">
-                <StackPanel Orientation="Vertical"  IsEnabled="{Binding Path=bLogsLoaded,Converter={StaticResource BoolToVis}}">
+                <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}">
                     <StackPanel Orientation="Horizontal">
                         <Label Width="70" Margin="0,0,10,0" VerticalAlignment="Center">SELECT</Label>
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -78,14 +78,14 @@
                         <Label Width="70" Margin="0,0,10,0">FROM</Label>
                         <ComboBox x:Name="fromOptions" SelectedValue="{Binding Path=selectedFrom}" Width="80" HorizontalAlignment="Center"></ComboBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal"  IsEnabled="{Binding bGroupsEnabled}">
                         <Label Width="70" Margin="0,0,10,0">GROUP BY</Label>
                         <TextBlock Text="{Binding Path=groupBy}" MaxWidth="180" Width="180"></TextBlock>
                         <Button x:Name="resetGroupBy">
                             <Image Source="{StaticResource close}" Width="20"></Image>
                         </Button>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}">
                         <Label Width="70" Margin="0,0,10,0">HAVING</Label>
                         <ComboBox x:Name="havingFunctions" SelectedValue="{Binding Path=selectedHavingFunction}"
                                   Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
@@ -106,62 +106,14 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <!--<Border BorderThickness="1" BorderBrush="DarkGray">
-                <StackPanel>
-                    <StackPanel Height="25" HorizontalAlignment="Left" Orientation="Horizontal">
-                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding bCheckAllLogs}"></CheckBox>
-                        <Label Content="Experiments" FontSize="8" Margin="0"></Label>
-                        <Label Content="{Binding Path=logListHeader}" FontSize="8"/>
-                    </StackPanel>
-                    <ListView x:Name="Logs" BorderBrush="{x:Null}" BorderThickness="0" 
-                  ItemsSource="{Binding Path=experimentLogs}" SelectionMode="Multiple" Height="250" Margin="1">
-                        <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="Focusable" Value="false"/>
-                                --><!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=OneWay}" />--><!--
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-            </StackPanel>
-            </Border>
-            <Border BorderThickness="1" BorderBrush="DarkGray">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <CheckBox VerticalAlignment="Center" IsChecked="{Binding bCheckAllVariables}"></CheckBox>
-                            <Label Content="Variables" FontSize="8" Margin="0"></Label>
-                            <Label Content="{Binding Path=variableListHeader}" FontSize="8" HorizontalAlignment="Center" Height="20"></Label>
-                        </StackPanel>
-                    </StackPanel>
-                    <ListView ItemsSource="{Binding Path=availableVariables}" Height="212" Margin="1">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="Focusable" Value="false"/>
-                                --><!--<Setter Property="IsSelected" Value="{Binding bIsSelected, Mode=TwoWay}" />--><!--
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                    </ListView>
-                </StackPanel>
-            </Border>-->
         </StackPanel>
         <StackPanel Orientation="Vertical" Margin="2">
-            <StackPanel Width="680">
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                    <StackPanel Width="300" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <StackPanel Orientation="Horizontal">
-                           
-                            
-                        </StackPanel>
-                        
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel>
-                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="451">
+            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto" Width="694" Height="550">
+                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="540">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Label Content="{Binding name}"/>
+                                <TextBox Text="{Binding name}" BorderBrush="{x:Null}"/>
                                 <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
                                     <Image Source="{StaticResource close}" Width="10"/>
                                 </Button>

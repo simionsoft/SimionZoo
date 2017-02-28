@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using System.Xml;
+using System;
 
 namespace Badger.ViewModels
 {
@@ -13,6 +14,11 @@ namespace Badger.ViewModels
         {
             m_parentWindow = parent;
             value = configNode.InnerText;
+        }
+
+        public override void TraverseAction(bool doActionLocally,System.Action<SelectableTreeItem> action)
+        {
+            if (doActionLocally) LocalTraverseAction(action);
         }
     }
 }

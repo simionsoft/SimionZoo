@@ -4,7 +4,7 @@ namespace Badger.ViewModels
 {
     public class ReportViewModel : Screen
     {
-        private string m_name;
+        private string m_name= "Unnamed";
         public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
 
         //plots

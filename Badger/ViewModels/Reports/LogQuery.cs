@@ -6,10 +6,8 @@ namespace Badger.ViewModels
 {
     public class LogQuery: PropertyChangedBase
     {
-        public const string FunctionNone = "";
         public const string FunctionMax = "Max";
         public const string FunctionMin = "Min";
-        //public const string FunctionAvg = "Avg";
 
         public const string FromAll = "*";
         public const string FromSelection = "Selection";
@@ -150,7 +148,7 @@ namespace Badger.ViewModels
             }
             //if groups are used, we have to select one of them using the havingFunction
             //-max(avg(havingVariable)) or min(avg(havingVariable))
-            if (groupBy.Count>0 && havingFunction!= FunctionNone)
+            if (groupBy.Count>0)
             {
                 foreach (LogQueryResultTrackViewModel track in resultTracks)
                     track.applyHavingSelection(havingFunction, havingVariable);

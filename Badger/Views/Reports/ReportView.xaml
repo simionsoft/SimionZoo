@@ -11,9 +11,10 @@
              d:DesignHeight="300" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
     </UserControl.Resources>
 
-    <TabControl x:Name="plots" SelectedItem="{Binding Path=selectedPlot}" Height="451">
+    <TabControl x:Name="plots" SelectedItem="{Binding Path=selectedPlot}">
         <TabControl.ItemTemplate>
             <DataTemplate>
                 <StackPanel Orientation="Horizontal">

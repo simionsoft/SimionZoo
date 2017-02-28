@@ -15,8 +15,9 @@
     <TreeViewItem IsExpanded="True" Margin="0,0,0,0">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal">
-                <CheckBox IsChecked="{Binding bIsSelected}"  FontSize="10" FontFamily="Segoe UI Light"
-                          Content="{Binding name}"/>
+                <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
+                          Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
+                <Label x:Name="name" FontSize="10" FontFamily="Segoe UI Light" Content="{Binding name}"/>
             </StackPanel>
         </TreeViewItem.Header>
 

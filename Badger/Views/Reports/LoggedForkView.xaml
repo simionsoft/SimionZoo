@@ -15,16 +15,17 @@
     <TreeViewItem IsExpanded="True" Margin="0,0,0,0">
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal">
-                <CheckBox IsChecked="{Binding bIsSelected}" 
-                          Content="{Binding name}" FontSize="10" FontFamily="Segoe UI Light">
-                    <CheckBox.ContextMenu>
+                <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
+                          Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}">
+                </CheckBox>
+                <Label x:Name="name" FontSize="10" FontFamily="Segoe UI Light" Content="{Binding name}">
+                    <Label.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Group By this fork" cal:Message.Attach="groupByThisFork">
-
                             </MenuItem>
                         </ContextMenu>
-                    </CheckBox.ContextMenu>
-                </CheckBox>
+                    </Label.ContextMenu>
+                </Label>
             </StackPanel>
         </TreeViewItem.Header>
 

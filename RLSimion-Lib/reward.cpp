@@ -9,7 +9,7 @@
 
 CToleranceRegionReward::CToleranceRegionReward(char* variable, double tolerance, double scale)
 {
-	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r/%s)", variable);
+	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r/(%s)", variable);
 	m_pVariableName = variable;
 	m_tolerance = tolerance;
 	m_scale = scale;

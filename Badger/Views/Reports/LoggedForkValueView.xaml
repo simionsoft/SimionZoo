@@ -12,8 +12,9 @@ d:DesignHeight="50" d:DesignWidth="300">
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal">
-        <CheckBox IsChecked="{Binding bIsSelected}"  FontSize="8" FontFamily="Segoe UI Light"
-                  Content="{Binding value}" />
+        <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
+                  Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
+        <Label x:Name="value" FontSize="8" FontFamily="Segoe UI Light"/>
     </StackPanel>
   
 </UserControl>

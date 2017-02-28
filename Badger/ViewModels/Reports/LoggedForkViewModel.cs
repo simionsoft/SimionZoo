@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
 using Badger.Simion;
+using System;
 
 namespace Badger.ViewModels
 {
@@ -24,12 +25,6 @@ namespace Badger.ViewModels
         {
             get { return m_forks; }
             set { m_forks = value; }
-        }
-
-        public override void OnSelectedChange(bool bSelected)
-        {
-            foreach(LoggedForkValueViewModel value in m_values) value.bIsSelected= bSelected;
-            foreach (LoggedForkViewModel fork in m_forks) fork.bIsSelected = bSelected;
         }
 
 
@@ -61,6 +56,15 @@ namespace Badger.ViewModels
             //this method is called from the context menu
             //informs the parent window that results should be grouped by this fork
             m_parentWindow.addGroupBy(name);
+        }
+
+
+
+        public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
+        {
+            if (doActionLocally) LocalTraverseAction(action);
+            foreach (LoggedForkValueViewModel value in m_values) value.TraverseAction(true,action);
+            foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true,action);
         }
     }
 }

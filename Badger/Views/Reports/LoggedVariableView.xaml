@@ -13,8 +13,9 @@
     </UserControl.Resources>
 
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
-        <CheckBox IsChecked="{Binding bIsSelected,Mode=TwoWay}" VerticalAlignment="Center"></CheckBox>
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0">
+        <CheckBox IsChecked="{Binding bIsSelected,Mode=TwoWay}" VerticalAlignment="Center"
+                  Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
         <Label x:Name="name" HorizontalAlignment="Left"
                     FontFamily="Segoe UI" FontSize="8" Foreground="Black"/>
     </StackPanel>
