@@ -12,7 +12,7 @@
         Height="600"
         Background="#eeeeee"
         WindowState="Normal"
-        Title="Plot editor"
+        Title="Report Viewer"
         Icon="/badger-head.ico">
 
     <Window.Resources>
@@ -41,6 +41,7 @@
         <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
         <BitmapImage x:Key="spreadsheet" UriSource="/images/spreadsheet.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
+        <BitmapImage x:Key="add" UriSource="/images/add.png"/>
     </Window.Resources>
     
     <StackPanel Orientation="Horizontal" Margin="2">
@@ -62,30 +63,41 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
-            <TreeView x:Name="Experiments" Height="280">
+            <TreeView x:Name="Experiments" Height="280" BorderBrush="DarkGray" BorderThickness="1">
                 <ItemsControl x:Name="loggedExperiments"></ItemsControl>
             </TreeView>
-            <Border Margin="0,20,0,0">
+            <Border Margin="0,20,0,0" BorderBrush="DarkGray" BorderThickness="1">
                 <StackPanel Orientation="Vertical"  IsEnabled="{Binding Path=bLogsLoaded,Converter={StaticResource BoolToVis}}">
                     <StackPanel Orientation="Horizontal">
-                        <Label Width="70" Margin="0,0,10,0">SELECT</Label>
-                        <ComboBox x:Name="functionOptions" Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
-                        <ComboBox x:Name="variables" Width="80" HorizontalAlignment="Center"></ComboBox>
+                        <Label Width="70" Margin="0,0,10,0" VerticalAlignment="Center">SELECT</Label>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="variables" MaxHeight="80" Width="190"/>
+                        </ScrollViewer>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Width="70" Margin="0,0,10,0">FROM</Label>
-                        <ComboBox x:Name="fromOptions" Width="80" HorizontalAlignment="Center"></ComboBox>
+                        <ComboBox x:Name="fromOptions" SelectedValue="{Binding Path=selectedFrom}" Width="80" HorizontalAlignment="Center"></ComboBox>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Label Width="70" Margin="0,0,10,0">GROUP BY</Label>
-                        <TextBlock x:Name="groupBy" MaxWidth="180" Width="180"></TextBlock>
+                        <TextBlock Text="{Binding Path=groupBy}" MaxWidth="180" Width="180"></TextBlock>
                         <Button x:Name="resetGroupBy">
                             <Image Source="{StaticResource close}" Width="20"></Image>
                         </Button>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="generateReport"  HorizontalAlignment="Center" BorderBrush="SlateGray" Margin="0,0" Height="30"
-                            IsEnabled="{Binding Path=bCanGenerateReports}">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="70" Margin="0,0,10,0">HAVING</Label>
+                        <ComboBox x:Name="havingFunctions" SelectedValue="{Binding Path=selectedHavingFunction}"
+                                  Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
+                        <ComboBox x:Name="havingVariables" SelectedValue="{Binding Path=selectedHavingVariable}"
+                                  IsEnabled="{Binding bHavingVariablesEnabled}"
+                                  Width="80" HorizontalAlignment="Center"></ComboBox>
+
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
+                        <Button x:Name="makeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
+                                Margin="0,0" Height="30"
+                            IsEnabled="{Binding Path=bCanGenerateReports}" >
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Make report</TextBlock>
                                 <Image Source="{StaticResource plot}" Width="30" Margin="3,0,3,0"></Image>

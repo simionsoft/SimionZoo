@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
+﻿using System.Xml;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using Badger.Data;
 using Caliburn.Micro;
-using Badger.Data;
-using System.IO;
+
 
 namespace Badger.ViewModels
 {
@@ -20,12 +17,39 @@ namespace Badger.ViewModels
         public bool bCanGenerateReports { get { return m_bCanGenerateReports; }
             set { m_bCanGenerateReports = value; NotifyOfPropertyChange(() => bCanGenerateReports); } }
 
-        //Function options
-        private BindableCollection<string> m_functionOptions = new BindableCollection<string>();
-        public BindableCollection<string> functionOptions
+
+        //Having
+        private string m_selectedHavingFunction = "";
+        public string selectedHavingFunction
         {
-            get { return m_functionOptions; }
-            set { m_functionOptions = value;  NotifyOfPropertyChange(() => functionOptions); }
+            get { return m_selectedHavingFunction; }
+            set { m_selectedHavingFunction = value;
+                validateQuery();
+                NotifyOfPropertyChange(() => selectedHavingFunction); }
+        }
+        private string m_selectedHavingVariable = "";
+        public string selectedHavingVariable
+        {
+            get { return m_selectedHavingVariable; }
+            set { m_selectedHavingVariable = value; validateQuery(); NotifyOfPropertyChange(() => selectedHavingVariable); }
+        }
+        private BindableCollection<string> m_havingFunctions = new BindableCollection<string>();
+        public BindableCollection<string> havingFunctions
+        {
+            get { return m_havingFunctions; }
+            set { m_havingFunctions = value; validateQuery(); NotifyOfPropertyChange(() => havingFunctions); }
+        }
+        private BindableCollection<string> m_havingVariables = new BindableCollection<string>();
+        public BindableCollection<string> havingVariables
+        {
+            get { return m_havingVariables; }
+            set { m_havingVariables = value;  NotifyOfPropertyChange(() => havingVariables); }
+        }
+        private bool m_bHavingVariablesEnabled = true;
+        public bool bHavingVariablesEnabled
+        {
+            get { return m_bHavingVariablesEnabled; }
+            set { m_bHavingVariablesEnabled = value; NotifyOfPropertyChange(() => bHavingVariablesEnabled); }
         }
 
         //Group By
@@ -36,18 +60,15 @@ namespace Badger.ViewModels
             {
                 string s = "";
                 for (int i = 0; i < m_groupByForks.Count - 1; i++) s += m_groupByForks[i] + ",";
-                if (m_groupByForks.Count > 0) s += m_groupByForks[m_groupByForks.Count-1];
+                if (m_groupByForks.Count > 0) s += m_groupByForks[m_groupByForks.Count - 1];
                 return s;
             }
-            set { }
         }
-        public void addGroupBy(string forkAlias)
+        public void addGroupBy(string forkName)
         {
-            if (!m_groupByForks.Contains(forkAlias))
-            {
-                m_groupByForks.Add(forkAlias);
-                NotifyOfPropertyChange(() => groupBy);
-            }
+            m_groupByForks.Add(forkName);
+            validateQuery();
+            NotifyOfPropertyChange(() => groupBy);
         }
         public void resetGroupBy()
         {
@@ -56,8 +77,12 @@ namespace Badger.ViewModels
         }
 
         //From
-
-
+        private string m_selectedFrom = "";
+        public string selectedFrom
+        {
+            get { return m_selectedFrom; }
+            set { m_selectedFrom = value; validateQuery(); NotifyOfPropertyChange(() => selectedFrom); }
+        }
         private BindableCollection<string> m_fromOptions = new BindableCollection<string>();
         public BindableCollection<string> fromOptions
         {
@@ -66,16 +91,23 @@ namespace Badger.ViewModels
         }
 
         //Variables
-        private BindableCollection<string> m_variables = new BindableCollection<string>();
-        public BindableCollection<string> variables
+        private BindableCollection<LoggedVariableViewModel> m_variables
+            = new BindableCollection<LoggedVariableViewModel>();
+        public BindableCollection<LoggedVariableViewModel> variables
         {
             get { return m_variables; }
             set { m_variables = value; NotifyOfPropertyChange(() => variables); }
         }
+        //to be called by children experimental units after reading their log file descriptor
         public void addVariable(string variable)
         {
-            if (!variables.Contains(variable))
-                variables.Add(variable);
+            bool bVarExists = false;
+            foreach (LoggedVariableViewModel var in variables) if (var.name == variable) bVarExists= true;
+            if (!bVarExists)
+            {
+                variables.Add(new LoggedVariableViewModel(variable, this));
+                havingVariables.Add(variable);
+            }
         }
 
         private bool m_bLogsLoaded= false;
@@ -152,11 +184,18 @@ namespace Badger.ViewModels
         //    NotifyOfPropertyChange(() => variableListHeader);
         //    updateCanGenerateReports();
         //}
-        //private void updateCanGenerateReports()
-        //{
-        //    if (m_numVarsSelected > 0 && m_numLogsSelected > 0 && m_selectedSource!="")
-        //        bCanGenerateReports = true;
-        //}
+        public void validateQuery()
+        {
+            //validate the current query
+            int numSelectedVars = 0;
+            foreach (LoggedVariableViewModel variable in variables) if (variable.bIsSelected) ++numSelectedVars;
+            if (numSelectedVars==0 || (selectedHavingFunction != LogQuery.FunctionNone && selectedHavingVariable==""))
+                bCanGenerateReports = false;
+            else bCanGenerateReports = true;
+
+            //update the "enabled" property of the variable used to select a group
+            bHavingVariablesEnabled = m_selectedHavingFunction != LogQuery.FunctionNone;
+        }
 
         public ReportsWindowViewModel()
         {
@@ -166,58 +205,59 @@ namespace Badger.ViewModels
             //NotifyOfPropertyChange(() => sourceOptions);
 
             //add the function options
-            functionOptions.Add(LogQuery.FunctionNone);
-            functionOptions.Add(LogQuery.FunctionMax);
-            functionOptions.Add(LogQuery.FunctionMin);
-            functionOptions.Add(LogQuery.FunctionAvg);
+            havingFunctions.Add(LogQuery.FunctionNone);
+            havingFunctions.Add(LogQuery.FunctionMax);
+            havingFunctions.Add(LogQuery.FunctionMin);
+            selectedHavingFunction = LogQuery.FunctionMax;
 
             //add the from options
             fromOptions.Add(LogQuery.FromAll);
             fromOptions.Add(LogQuery.FromSelection);
-
-            //we do not initialise the list of variables
-            //when an experiment is selected, its variables will be displayed for the user to select
-            //NotifyOfPropertyChange(() => experimentLogs);
-            //updateVariableListHeader();
-            //updateLogListHeader();
+            selectedFrom = LogQuery.FromAll;
         }
-        public void updateAvailableVariableList()
+
+        public void makeReport()
         {
-            //get selected experiments
-            //m_availableVariables.Clear();
-            //foreach (LoggedExperimentViewModel exp in m_experimentLogs)
-            //{
-            //    if (exp.bIsSelected)
-            //        exp.addVariablesToList(ref m_availableVariables);
-            //}
-            //NotifyOfPropertyChange(() => availableVariables);
-        }
-        public void generatePlots()
-        {
-            //List<PlotViewModel> newPlots = new List<PlotViewModel>();
-            ////create a new plot for each variable
-            //foreach(LoggedVariableViewModel variable in m_selectedVariables)
-            //{
-            //    PlotViewModel newPlot = new PlotViewModel(variable.name, false,true);
-            //    newPlot.parent = this;
-            //    newPlots.Add(newPlot);
-            //}
+            LogQuery query= new LogQuery();
+            query.from = selectedFrom;
+            //group by
+            foreach (string fork in m_groupByForks) query.groupBy.Add(fork);
+            //having
+            query.havingFunction = selectedHavingFunction;
+            if (query.havingFunction != LogQuery.FunctionNone)
+                query.havingVariable = selectedHavingVariable;
 
-            ////draw data from each log
-            //foreach (LoggedExperimentViewModel log in m_selectedLogs)
-            //{
-            //    //log.plotData(newPlots, m_selectedSource);
-            //}
-            ////update plots
-            //foreach (PlotViewModel plot in newPlots)
-            //{
-            //    reports.Add(plot);
-            //    plot.updateView();
-            //}
+            query.execute(loggedExperiments,variables);
 
-            //bCanSaveReports = true;
-            //selectedReport = reports[reports.Count - 1]; //select the last plot generated
+            reports.Add(new ReportViewModel(query));
         }
+
+        //public void generatePlots(LogQuery query)
+        //{
+        //    List<PlotViewModel> newPlots = new List<PlotViewModel>();
+        //    //create a new plot for each variable
+        //    foreach (string variable in query.variables)
+        //    {
+        //        PlotViewModel newPlot = new PlotViewModel(variable, false, true);
+        //        newPlot.parent = this;
+        //        newPlots.Add(newPlot);
+        //    }
+
+        //    //draw data from each log
+        //    foreach (LoggedExperimentViewModel log in m_selectedLogs)
+        //    {
+        //        //log.plotData(newPlots, m_selectedSource);
+        //    }
+        //    //update plots
+        //    foreach (PlotViewModel plot in newPlots)
+        //    {
+        //        reports.Add(plot);
+        //        plot.updateView();
+        //    }
+
+        //    bCanSaveReports = true;
+        //    selectedReport = reports[reports.Count - 1]; //select the last plot generated
+        //}
         public void generateStats()
         {
             //StatsViewModel statsViewModel = new StatsViewModel("Stats");
@@ -279,21 +319,6 @@ namespace Badger.ViewModels
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, this);
             loggedExperiments.Add(newExperiment);
             bLogsLoaded = true;
-
-            //if (File.Exists(logDescFile) && File.Exists(logFile))
-            //{
-            //    LoggedExperimentViewModel newLog 
-            //        = new LoggedExperimentViewModel(experimentName, logDescFile, logFile, this);
-            //    foreach (XmlNode child in node.ChildNodes)
-            //    {
-            //        if (child.Name==XMLConfig.forkTag && child.Attributes.GetNamedItem(XMLConfig.aliasAttribute)!=null)
-            //        {
-            //            newLog.addForkTag(child.Attributes[XMLConfig.aliasAttribute].Value
-            //                , child.InnerText);
-            //        }
-            //    }
-            //    experimentLogs.Add(newLog);
-            //}
         }
 
         public void loadExperimentBatch()
@@ -309,39 +334,5 @@ namespace Badger.ViewModels
         {
             reports.Remove(report);
         }
-
-        ////check all/none buttons
-        //private bool m_bCheckAllVariables = false;
-        //public bool bCheckAllVariables
-        //{
-        //    set { m_bCheckAllVariables = value; if (value) checkAllVariables(); else uncheckAllVariables(); }
-        //    get { return m_bCheckAllVariables; }
-        //}
-        //private bool m_bCheckAllLogs = false;
-        //public bool bCheckAllLogs
-        //{
-        //    set { m_bCheckAllLogs = value; if (value) checkAllLogs(); else uncheckAllLogs(); }
-        //    get { return m_bCheckAllLogs; }
-        //}
-        //public void checkAllLogs()
-        //{
-        //    foreach (LoggedExperimentViewModel experiment in m_experimentLogs)
-        //        experiment.bIsSelected = true;
-        //}
-        //public void uncheckAllLogs()
-        //{
-        //    foreach (LoggedExperimentViewModel experiment in m_experimentLogs)
-        //        experiment.bIsSelected = false;
-        //}
-        //public void checkAllVariables()
-        //{
-        //    foreach (LoggedVariableViewModel variable in m_availableVariables)
-        //        variable.bIsSelected = true;
-        //}
-        //public void uncheckAllVariables()
-        //{
-        //    foreach (LoggedVariableViewModel variable in m_availableVariables)
-        //        variable.bIsSelected = false;
-        //}
     }
 }

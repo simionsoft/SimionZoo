@@ -142,7 +142,8 @@
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
-    <Compile Include="Data\LogQuery.cs" />
+    <Compile Include="ViewModels\Reports\LogQuery.cs" />
+    <Compile Include="ViewModels\Reports\LogQueryResultTrackViewModel.cs" />
     <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />
     <Compile Include="ViewModels\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\PlotViewModel.cs" />
@@ -162,7 +163,7 @@
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PlotView.xaml.cs">
+    <Compile Include="Views\Reports\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
@@ -300,7 +301,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PlotView.xaml">
+    <Page Include="Views\Reports\PlotView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -329,6 +330,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Reports\ReportsWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Reports\ReportView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

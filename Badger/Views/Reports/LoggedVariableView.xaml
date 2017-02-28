@@ -12,13 +12,11 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical" >
-        <StackPanel Margin="1">
-            <StackPanel Margin="10,1" Orientation="Horizontal" HorizontalAlignment="Center" Width="278" >
-                <CheckBox IsChecked="{Binding bIsSelected,Mode=TwoWay}" VerticalAlignment="Center"></CheckBox>
-                <Label x:Name="VariableName" HorizontalAlignment="Center" BorderBrush="LightGray"
-                           Content="{Binding name}"  Width="150" FontFamily="Segoe UI" FontSize="10" Foreground="Black"/>
-            </StackPanel>
-        </StackPanel>
+
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" >
+        <CheckBox IsChecked="{Binding bIsSelected,Mode=TwoWay}" VerticalAlignment="Center"></CheckBox>
+        <Label x:Name="name" HorizontalAlignment="Left"
+                    FontFamily="Segoe UI" FontSize="8" Foreground="Black"/>
     </StackPanel>
+
 </UserControl>

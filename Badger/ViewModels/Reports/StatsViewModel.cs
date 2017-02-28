@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
@@ -28,14 +29,16 @@ namespace Badger.ViewModels
             variable = _variable;
         }
     }
-    public class StatsViewModel: ReportViewModel
+    public class StatsViewModel: PropertyChangedBase
     {
+        
         private ObservableCollection<Stat> m_stats = new ObservableCollection<Stat>();
         public ObservableCollection<Stat> stats { get { return m_stats; } set { } }
 
-        public StatsViewModel(string title)
+        private ReportViewModel m_parent;
+        public StatsViewModel(ReportViewModel parent)
         {
-            name= title;
+            m_parent = parent;
         }
 
         public void addStat(Stat newStat)
@@ -43,9 +46,9 @@ namespace Badger.ViewModels
             stats.Add(newStat);
         }
 
-        public override void export(string outputFolder)
+        public  void export(string outputFolder)
         {
-            string outputFilename = outputFolder + "\\" + name + ".xml";
+            string outputFilename = outputFolder + "\\" + m_parent.name + ".xml";
             try
             {
                 StreamWriter fileWriter = File.CreateText(outputFilename);

@@ -31,11 +31,11 @@ namespace Badger.ViewModels
             set { m_logDescriptor = value; }
         }
 
-        List<LoggedForkViewModel> m_forkValues= new List<LoggedForkViewModel>();
-        List<LoggedForkViewModel> forkValues
+        private Dictionary<string, string> m_forkValues = new Dictionary<string, string>();
+        public Dictionary<string,string> forkValues
         {
             get { return m_forkValues; }
-            set { m_forkValues = value; }
+            set { m_forkValues = value; NotifyOfPropertyChange(() => forkValues); }
         }
 
         private List<string> m_variablesInLog = new List<string>();
@@ -43,7 +43,6 @@ namespace Badger.ViewModels
         public LoggedExperimentalUnitViewModel(XmlNode configNode, ReportsWindowViewModel parent)
         {
             m_parentWindow = parent;
-
 
             if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute)!=null)
                 name = configNode.Attributes[XMLConfig.nameAttribute].Value;
@@ -57,10 +56,14 @@ namespace Badger.ViewModels
             processDescriptor();
 
             //load the value of each fork used in this experimental unit
-            foreach(XmlNode child in configNode.ChildNodes)
+            foreach(XmlNode fork in configNode.ChildNodes)
             {
-                LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
-                forkValues.Add(newFork);
+                string forkName = fork.Attributes[XMLConfig.aliasAttribute].Value;
+                foreach(XmlNode value in fork.ChildNodes)
+                {
+                    string forkValue = value.InnerText;
+                    forkValues[forkName] = forkValue;
+                }
             }
         }
 
@@ -85,26 +88,33 @@ namespace Badger.ViewModels
                 }
             }
         }
-        //public void addVariablesToList(ref ObservableCollection<LoggedVariableViewModel> variableList)
-        //{
-        //    if (variableList.Count == 0)
-        //    {
-        //        //if the list is empty, we add all the variables available in this log
-        //        foreach (string var in m_variablesInLog)
-        //        {
-        //            variableList.Add(new LoggedVariableViewModel(var, m_parent));
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //else, we intersect both sets: remove all variables not present in this log
-        //        foreach (LoggedVariableViewModel variable in variableList)
-        //        {
-        //            if (!m_variablesInLog.Contains(variable.name))
-        //                variableList.Remove(variable);
-        //        }
-        //    }
-        //}
+        //loads the log file and then returns the data of the requested variable as an array of TrackData
+        //not the most efficient way, but the easiest right now
+        public TrackData loadTrackData(List<string> varNames)
+        {
+            ExperimentData experimentData= SimionLogFile.load(m_logFilePath);
 
+            EpisodeData lastEvalEpisode = experimentData.episodes[experimentData.episodes.Count - 1];
+
+            int numSteps = lastEvalEpisode.steps.Count;
+            TrackData data = new TrackData(numSteps,varNames);
+
+            int i = 0;
+            foreach (StepData step in lastEvalEpisode.steps)
+            {
+                data.realTime[i] = step.episodeRealTime;
+                data.simTime[i] = step.episodeSimTime;
+                foreach (string variable in varNames)
+                {
+                    int variableIndex = m_variablesInLog.IndexOf(variable);
+                    data.variables[variable].data[i] = step.data[variableIndex];
+                }
+                ++i;
+            }
+            //calculate each variable's stats
+            foreach (string variable in varNames) data.variables[variable].calculateStats();
+
+            return data;
+        }
     }
 }

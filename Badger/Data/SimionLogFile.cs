@@ -85,6 +85,15 @@ namespace Badger.Data
             Buffer.BlockCopy(buffer, 0, data, 0, numLoggedVariables * sizeof(double));
             return false;
         }
+        //static bool skipStep(BinaryReader logReader, int numLoggedVariables)
+        //{
+        //    int magicNumber = (int)logReader.ReadInt64();
+        //    if (magicNumber == SimionLogFile.EPISODE_END_HEADER) return true;
+
+        //    logReader.BaseStream.Seek((SimionLogFile.HEADER_MAX_SIZE + numLoggedVariables -1)*sizeof(double)
+        //        , SeekOrigin.Current);
+        //    return false;
+        //}
     }
     public class EpisodeData
     {
@@ -170,8 +179,6 @@ namespace Badger.Data
             byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 3));
         }
 
-       // public delegate System.Action EpisodeAction(EpisodeData episode,int varIndex);
-
         //for each evaluation episode the episodeAction is performed
         public void doForEachEvalEpisode(System.Action<EpisodeData> episodeAction)
         {
@@ -207,16 +214,6 @@ namespace Badger.Data
                 }
             }
         }
-        //public void doForEachEvalStep(SimionLogFile.ScalarValueAction action, int varIndex)
-        //{
-        //    foreach (EpisodeData episode in episodes)
-        //    {
-        //        if (episode.type == EpisodeData.episodeTypeEvaluation)
-        //        {
-        //            episode.doForEachValue(action,varIndex);
-        //        }
-        //    }
-        //}
     }
 
         /*

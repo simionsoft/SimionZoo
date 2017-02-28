@@ -11,14 +11,14 @@ using System.IO;
 
 namespace Badger.ViewModels
 {
-    public class LoggedVariableViewModel:SelectableTreeItem
+    public class LoggedVariableViewModel:PropertyChangedBase
     {
-        private bool m_bIsSelected = false;
+        private bool m_bIsSelected = true;
         public bool bIsSelected {
             get { return m_bIsSelected; }
             set {m_bIsSelected= value;
+                m_parent.validateQuery();
                 NotifyOfPropertyChange(()=>bIsSelected);
-                //m_parent.updateVariableListHeader();
             }}
 
         private string m_name;

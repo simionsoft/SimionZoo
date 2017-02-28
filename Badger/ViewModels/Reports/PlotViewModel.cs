@@ -4,6 +4,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
 using System.Threading;
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
@@ -16,8 +17,14 @@ namespace Badger.ViewModels
      * -visible
      * -[color, thickness,...]
      */
-    public class PlotViewModel: ReportViewModel
+    public class PlotViewModel: PropertyChangedBase
     {
+        string m_name = "";
+        public string name
+        {
+            get { return m_name; }
+            set { m_name = value; NotifyOfPropertyChange(() => name); }
+        }
         private const int m_updateFreq= 1000; //plot refresh freq in millseconds
         private Timer m_timer;
 
@@ -66,7 +73,7 @@ namespace Badger.ViewModels
             m_plot.InvalidatePlot(true);
         }
 
-        public override void updateView()
+        public void updateView()
         {
             m_plot.InvalidatePlot(true);
         }
@@ -134,7 +141,7 @@ namespace Badger.ViewModels
                 m_plot.Axes[1].Minimum= minY;
             }
         }
-        public override void export(string outputFolder)
+        public void export(string outputFolder)
         {
             string fileName;
             //as png
