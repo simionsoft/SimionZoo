@@ -68,37 +68,37 @@
             </TreeView>
             <Border Margin="0,20,0,0" BorderBrush="DarkGray" BorderThickness="1">
                 <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Width="70" Margin="0,0,10,0" VerticalAlignment="Center">SELECT</Label>
+                    <StackPanel Orientation="Horizontal" ToolTip="Which variables do we want to display?">
+                        <Label Width="70" Margin="0,0,10,0" VerticalAlignment="Center">Variables</Label>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="80">
                             <ItemsControl x:Name="variables" Width="190"/>
                         </ScrollViewer>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Width="70" Margin="0,0,10,0">FROM</Label>
+                    <StackPanel Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
+                        <Label Width="70" Margin="0,0,10,0">From</Label>
                         <ComboBox x:Name="fromOptions" SelectedValue="{Binding Path=selectedFrom}" Width="80" HorizontalAlignment="Center"></ComboBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal"  IsEnabled="{Binding bGroupsEnabled}">
-                        <Label Width="70" Margin="0,0,10,0">GROUP BY</Label>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="Forks currently used to group results">
+                        <Label Width="70" Margin="0,0,10,0">Group by</Label>
                         <TextBlock Text="{Binding Path=groupBy}" MaxWidth="180" Width="180"></TextBlock>
                         <Button x:Name="resetGroupBy">
                             <Image Source="{StaticResource close}" Width="20"></Image>
                         </Button>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}">
-                        <Label Width="70" Margin="0,0,10,0">HAVING</Label>
-                        <ComboBox x:Name="havingFunctions" SelectedValue="{Binding Path=selectedHavingFunction}"
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
+                        <Label Width="70" Margin="0,0,10,0">Pick</Label>
+                        <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding Path=selectedHavingFunction}"
                                   Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
-                        <ComboBox x:Name="havingVariables" SelectedValue="{Binding Path=selectedHavingVariable}"
+                        <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding Path=selectedHavingVariable}"
                                   Width="80" HorizontalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Width="70" Margin="0,0,10,0">LIMIT TO</Label>
+                    <StackPanel Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
+                        <Label Width="70" Margin="0,0,10,0">Limit to</Label>
                         <ComboBox x:Name="limitToOptions" SelectedValue="{Binding Path=selectedLimitToOption}"
                                   Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding bIsOrderByEnabled}">
-                        <Label Width="70" Margin="0,0,10,0">ORDER BY</Label>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding bIsOrderByEnabled}" ToolTip="Sets the criteria by which tracks are sorted before limiting">
+                        <Label Width="70" Margin="0,0,10,0">Order by</Label>
                         <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding Path=selectedOrderByFunction}"
                                   Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
                         <ComboBox x:Name="orderByVariables" SelectedValue="{Binding Path=selectedOrderByVariable}"

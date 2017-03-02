@@ -139,6 +139,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
@@ -166,7 +167,7 @@
     <Compile Include="Views\Reports\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
+    <Compile Include="Views\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MonitoredExperimentView.xaml.cs">
@@ -281,6 +282,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\MultiStateButtonView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Reports\LoggedExperimentalUnitView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -305,7 +310,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Reports\LoggedVariableView.xaml">
+    <Page Include="Views\LoggedVariableView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

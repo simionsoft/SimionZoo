@@ -1,9 +1,25 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
 using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
+    public class AscComparer : IComparer<double>
+    {
+        public int Compare(double x, double y)
+        {
+            if (x >= y) return 1;
+            else return -1;
+        }
+    }
+    public class DescComparer : IComparer<double>
+    {
+        public int Compare(double x, double y)
+        {
+            if (x <= y) return 1;
+            else return -1;
+        }
+    }
     public class LogQuery: PropertyChangedBase
     {
         public const string functionMax = "Max";
@@ -17,17 +33,35 @@ namespace Badger.ViewModels
         public const string fromAll = "*";
         public const string fromSelection = "Selection";
 
-        private string m_havingFunction = "";
-        public string havingFunction
+        private string m_inGroupSelectionFunction = "";
+        public string inGroupSelectionFunction
         {
-            get { return m_havingFunction; }
-            set { m_havingFunction = value;}
+            get { return m_inGroupSelectionFunction; }
+            set { m_inGroupSelectionFunction = value;}
         }
-        private string m_havingVariable = "";
-        public string havingVariable
+        private string m_inGroupSelectionVariable = "";
+        public string inGroupSelectionVariable
         {
-            get { return m_havingVariable; }
-            set { m_havingVariable = value;}
+            get { return m_inGroupSelectionVariable; }
+            set { m_inGroupSelectionVariable = value;}
+        }
+        private string m_orderByFunction = "";
+        public string orderByFunction
+        {
+            get { return m_orderByFunction; }
+            set { m_orderByFunction = value;  NotifyOfPropertyChange(() => orderByFunction); }
+        }
+        private string m_orderByVariable = "";
+        public string orderByVariable
+        {
+            get { return m_orderByVariable; }
+            set { m_orderByVariable = value;  NotifyOfPropertyChange(() => orderByVariable); }
+        }
+        private string m_limitToOption = "";
+        public string limitToOption
+        {
+            get { return m_limitToOption; }
+            set { m_limitToOption = value; NotifyOfPropertyChange(() => limitToOption); }
         }
 
         private List<string> m_variables
@@ -49,18 +83,6 @@ namespace Badger.ViewModels
         public LogQuery()
         {
         }
-
-        //public override string ToString()
-        //{
-        //    string query = "";
-        //    query = "SELECT ";
-        //    if (m_havingFunction != "") query += m_havingFunction + "(" + m_variable + ")";
-        //    else query += m_variable;
-        //    query+= " FROM " + m_from;
-        //    if (m_groupBy.Count != 0) query += " GROUP BY " + groupByAsString;
-            
-        //    return query;
-        //}
 
         public void addGroupBy(string name)
         {
@@ -104,23 +126,30 @@ namespace Badger.ViewModels
             return null;
         }
 
+        private BindableCollection<LoggedVariableViewModel> m_loggedVariables;
+        public BindableCollection<LoggedVariableViewModel> loggedVariables
+        {
+            get { return m_loggedVariables; }
+            set{ m_loggedVariables = value; }
+        }
+
         public void execute(BindableCollection<LoggedExperimentViewModel> experiments
-            ,BindableCollection<LoggedVariableViewModel> loggedVariables)
+            ,BindableCollection<LoggedVariableViewModel> loggedVariablesVM)
         {
             LogQueryResultTrackViewModel resultTrack= null;
+            loggedVariables = loggedVariablesVM;
 
             //add all selected variables to the list of variables
-            foreach (LoggedVariableViewModel variable in loggedVariables)
+            foreach (LoggedVariableViewModel variable in loggedVariablesVM)
                 if (from == fromSelection || variable.bIsSelected)
                     variables.Add(variable.name);
-
 
             //traverse the experimental units within each experiment
             foreach (LoggedExperimentViewModel exp in experiments)
             {
                 foreach (LoggedExperimentalUnitViewModel expUnit in exp.expUnits)
                 {
-                    //do take selection into account? is this exp. unit selected?
+                    //take selection into account? is this exp. unit selected?
                     if (from == fromAll || (from == fromSelection && expUnit.bIsSelected))
                     {
                         if (groupBy.Count != 0)
@@ -139,10 +168,16 @@ namespace Badger.ViewModels
                             LogQueryResultTrackViewModel newResultTrack = new LogQueryResultTrackViewModel(exp.name);
                             newResultTrack.forkValues = expUnit.forkValues;
 
-                            //if the having selection function requires a variable not selected for the report
+                            //if the in-group selection function requires a variable not selected for the report
                             //we add it too to the list of variables read from the log
-                            if (havingVariable != "" && !variables.Contains(havingVariable))
-                                variables.Add(m_havingVariable);
+                            if (inGroupSelectionVariable != "" && !variables.Contains(inGroupSelectionVariable))
+                                variables.Add(inGroupSelectionVariable);
+
+                            //if we use some sorting function to select only some tracks, we need to add the variable
+                            // to the list too
+                            if (limitToOption!= noLimitOnResults && !variables.Contains(orderByVariable))
+                                variables.Add(orderByVariable);
+
                             //load data from the log file
                             newResultTrack.addTrackData(expUnit.loadTrackData(variables));
 
@@ -151,12 +186,44 @@ namespace Badger.ViewModels
                     }
                 }
             }
-            //if groups are used, we have to select one of them using the havingFunction
-            //-max(avg(havingVariable)) or min(avg(havingVariable))
+            //if groups are used, we have to select a single track in each group using the in-group selection function
+            //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
             if (groupBy.Count>0)
             {
                 foreach (LogQueryResultTrackViewModel track in resultTracks)
-                    track.applyHavingSelection(havingFunction, havingVariable);
+                    track.consolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable);
+            }
+
+            //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
+            if (limitToOption!=LogQuery.noLimitOnResults)
+            {
+                int numMaxTracks = int.Parse(limitToOption);
+
+                if (resultTracks.Count > numMaxTracks)
+                {
+                    SortedList<double, LogQueryResultTrackViewModel> sortedList;
+
+                    if (orderByFunction == orderAsc)
+                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
+                            ,new AscComparer());
+                    else
+                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
+                            ,new DescComparer());
+
+                    foreach (LogQueryResultTrackViewModel track in resultTracks)
+                    {
+                        double sortValue= 0.0;
+                        TrackVariableData variableData = track.trackData.getVariableData(orderByVariable);
+                        if (variableData != null)
+                            sortValue = variableData.avg;
+                        sortedList.Add(sortValue, track);
+                    }
+
+                    //set the sorted list as resultTracks
+                    resultTracks.Clear();
+                    for (int i= 0; i<numMaxTracks; i++)
+                        resultTracks.Add(sortedList.Values[i]);
+                }
             }
         }
     }

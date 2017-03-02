@@ -6,50 +6,61 @@ namespace Badger.ViewModels
 {
     public class TrackVariableData
     {
-        public TrackVariableData(int numSteps)
+        public TrackVariableData(int numSteps,int numEpisodes)
         {
-            data = new double[numSteps];
+            lastEpisodeValues = new double[numSteps];
+            avgEpisodeValues = new double[numEpisodes];
         }
-        public double[] data= null;
+        public double[] lastEpisodeValues= null;
+        public double[] avgEpisodeValues = null;
         public double min= 0.0, max= 0.0, avg= 0.0, stdDev= 0.0;
         public void calculateStats()
         {
-            if (data == null || data.Length==0) return;
+            if (lastEpisodeValues == null || lastEpisodeValues.Length==0) return;
             //calculate avg, min and max
             double sum = 0.0;
-            min = data[0]; max = data[0];
-            foreach (double val in data)
+            min = lastEpisodeValues[0]; max = lastEpisodeValues[0];
+            foreach (double val in lastEpisodeValues)
             {
                 sum += val;
                 if (val > max) max = val;
                 if (val < min) min = val;
             }
-            avg = sum / data.Length;
+            avg = sum / lastEpisodeValues.Length;
             //calculate std. deviation
             double diff;
             sum = 0.0;
-            foreach(double val in data)
+            foreach(double val in lastEpisodeValues)
             {
                 diff = val - avg;
                 sum += diff*diff;
             }
-            stdDev = Math.Sqrt(sum / data.Length);
+            stdDev = Math.Sqrt(sum / lastEpisodeValues.Length);
         }
     }
     public class TrackData
     {
         public double []simTime;
         public double []realTime;
-        public Dictionary<string,TrackVariableData>variables= new Dictionary<string,TrackVariableData>();
+        private Dictionary<string,TrackVariableData>variablesData= new Dictionary<string,TrackVariableData>();
 
-        public TrackData(int numSteps, List<string> variables)
+        public TrackData(int numSteps,int numEpisodes, List<string> variables)
         {
             simTime = new double[numSteps];
             realTime = new double[numSteps];
             foreach (string variable in variables)
             {
-                this.variables[variable] = new TrackVariableData(numSteps);
+                this.variablesData[variable] = new TrackVariableData(numSteps,numEpisodes);
             }
+        }
+        private void addVariableData(string variable,TrackVariableData variableData)
+        {
+            this.variablesData.Add(variable, variableData);
+        }
+        public TrackVariableData getVariableData(string variable)
+        {
+            if (variablesData.ContainsKey(variable)) return variablesData[variable];
+            else return null;
         }
     }
     public class LogQueryResultTrackViewModel: PropertyChangedBase
@@ -96,7 +107,8 @@ namespace Badger.ViewModels
             m_trackData.Add(newTrackData);
         }
 
-        public void applyHavingSelection(string function,string variable)
+        //this function selects a unique track fromm each group (if there's more than one track)
+        public void consolidateGroups(string function,string variable)
         {
             if (m_trackData.Count>1)
             {
@@ -104,15 +116,19 @@ namespace Badger.ViewModels
                 double min= double.MaxValue, max= double.MinValue;
                 for (int i= 0; i< m_trackData.Count; i++)
                 {
-                    if (function==LogQuery.functionMax && m_trackData[i].variables[variable].avg> max)
+                    TrackVariableData variableData = m_trackData[i].getVariableData(variable);
+                    if (variableData != null)
                     {
-                        max = m_trackData[i].variables[variable].avg;
-                        selectedTrack = i;
-                    }
-                    if (function == LogQuery.functionMin && m_trackData[i].variables[variable].avg < min)
-                    {
-                        min = m_trackData[i].variables[variable].avg;
-                        selectedTrack = i;
+                        if (function == LogQuery.functionMax && variableData.avg > max)
+                        {
+                            max = variableData.avg;
+                            selectedTrack = i;
+                        }
+                        if (function == LogQuery.functionMin && variableData.avg < min)
+                        {
+                            min = variableData.avg;
+                            selectedTrack = i;
+                        }
                     }
                 }
                 TrackData selectedTrackData = m_trackData[selectedTrack];

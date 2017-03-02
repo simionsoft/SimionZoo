@@ -97,8 +97,29 @@ namespace Badger.ViewModels
             EpisodeData lastEvalEpisode = experimentData.episodes[experimentData.episodes.Count - 1];
 
             int numSteps = lastEvalEpisode.steps.Count;
-            TrackData data = new TrackData(numSteps,varNames);
+            TrackData data = new TrackData(numSteps,experimentData.numEpisodes,varNames);
 
+            //experiment-long average values
+            foreach(EpisodeData episode in experimentData.episodes)
+            {
+                foreach (string variable in varNames)
+                {
+                    double avg = 0.0;
+                    int variableIndex = m_variablesInLog.IndexOf(variable);
+                    TrackVariableData variableData = data.getVariableData(variable);
+                    if (variableData!=null && episode.steps.Count>0)
+                    {
+                        foreach (StepData step in episode.steps)
+                        {
+                            avg += step.data[variableIndex];
+                        }
+                        avg /= episode.steps.Count;
+                        variableData.avgEpisodeValues[episode.index-1] = avg;
+                    }
+                }
+            }
+
+            //last evaluation Episode
             int i = 0;
             foreach (StepData step in lastEvalEpisode.steps)
             {
@@ -107,12 +128,19 @@ namespace Badger.ViewModels
                 foreach (string variable in varNames)
                 {
                     int variableIndex = m_variablesInLog.IndexOf(variable);
-                    data.variables[variable].data[i] = step.data[variableIndex];
+                    TrackVariableData variableData = data.getVariableData(variable);
+                    if (variableData!=null)
+                        variableData.lastEpisodeValues[i] = step.data[variableIndex];
                 }
                 ++i;
             }
-            //calculate each variable's stats
-            foreach (string variable in varNames) data.variables[variable].calculateStats();
+            //calculate each variable's last episode stats
+            foreach (string variable in varNames)
+            {
+                TrackVariableData variableData = data.getVariableData(variable);
+                if (variableData != null)
+                    variableData.calculateStats();
+            }
 
             return data;
         }

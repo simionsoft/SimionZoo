@@ -18,32 +18,32 @@ namespace Badger.ViewModels
             set { m_bCanGenerateReports = value; NotifyOfPropertyChange(() => bCanGenerateReports); } }
 
 
-        //Having
-        private string m_selectedHavingFunction = "";
-        public string selectedHavingFunction
+        //In-Group selection
+        private string m_selectedInGroupSelectionFunction = "";
+        public string selectedInGroupSelectionFunction
         {
-            get { return m_selectedHavingFunction; }
-            set { m_selectedHavingFunction = value;
+            get { return m_selectedInGroupSelectionFunction; }
+            set { m_selectedInGroupSelectionFunction = value;
                 validateQuery();
-                NotifyOfPropertyChange(() => selectedHavingFunction); }
+                NotifyOfPropertyChange(() => selectedInGroupSelectionFunction); }
         }
-        private string m_selectedHavingVariable = "";
-        public string selectedHavingVariable
+        private string m_selectedInGroupSelectionVariable = "";
+        public string selectedInGroupSelectionVariable
         {
-            get { return m_selectedHavingVariable; }
-            set { m_selectedHavingVariable = value; validateQuery(); NotifyOfPropertyChange(() => selectedHavingVariable); }
+            get { return m_selectedInGroupSelectionVariable; }
+            set { m_selectedInGroupSelectionVariable = value; validateQuery(); NotifyOfPropertyChange(() => selectedInGroupSelectionVariable); }
         }
-        private BindableCollection<string> m_havingFunctions = new BindableCollection<string>();
-        public BindableCollection<string> havingFunctions
+        private BindableCollection<string> m_inGroupSelectionFunctions = new BindableCollection<string>();
+        public BindableCollection<string> inGroupSelectionFunctions
         {
-            get { return m_havingFunctions; }
-            set { m_havingFunctions = value; validateQuery(); NotifyOfPropertyChange(() => havingFunctions); }
+            get { return m_inGroupSelectionFunctions; }
+            set { m_inGroupSelectionFunctions = value; validateQuery(); NotifyOfPropertyChange(() => inGroupSelectionFunctions); }
         }
-        private BindableCollection<string> m_havingVariables = new BindableCollection<string>();
-        public BindableCollection<string> havingVariables
+        private BindableCollection<string> m_inGroupSelectionVariables = new BindableCollection<string>();
+        public BindableCollection<string> inGroupSelectionVariables
         {
-            get { return m_havingVariables; }
-            set { m_havingVariables = value;  NotifyOfPropertyChange(() => havingVariables); }
+            get { return m_inGroupSelectionVariables; }
+            set { m_inGroupSelectionVariables = value;  NotifyOfPropertyChange(() => inGroupSelectionVariables); }
         }
         private bool m_bGroupsEnabled = false; //no groups by default
         public bool bGroupsEnabled
@@ -113,7 +113,7 @@ namespace Badger.ViewModels
             if (!bVarExists)
             {
                 variables.Add(new LoggedVariableViewModel(variable, this));
-                havingVariables.Add(variable);
+                inGroupSelectionVariables.Add(variable);
                 orderByVariables.Add(variable);
             }
         }
@@ -183,7 +183,7 @@ namespace Badger.ViewModels
             //validate the current query
             int numSelectedVars = 0;
             foreach (LoggedVariableViewModel variable in variables) if (variable.bIsSelected) ++numSelectedVars;
-            if (numSelectedVars==0 || selectedHavingVariable=="")
+            if (numSelectedVars==0 || selectedInGroupSelectionVariable=="")
                 bCanGenerateReports = false;
             else bCanGenerateReports = true;
 
@@ -194,9 +194,9 @@ namespace Badger.ViewModels
         public ReportsWindowViewModel()
         {
             //add the function options
-            havingFunctions.Add(LogQuery.functionMax);
-            havingFunctions.Add(LogQuery.functionMin);
-            selectedHavingFunction = LogQuery.functionMax;
+            inGroupSelectionFunctions.Add(LogQuery.functionMax);
+            inGroupSelectionFunctions.Add(LogQuery.functionMin);
+            selectedInGroupSelectionFunction = LogQuery.functionMax;
 
             //add the from options
             fromOptions.Add(LogQuery.fromAll);
@@ -225,6 +225,7 @@ namespace Badger.ViewModels
 
         public void makeReport()
         {
+            //FILL the LogQuery data
             LogQuery query= new LogQuery();
             query.from = selectedFrom;
             //group by
@@ -232,20 +233,27 @@ namespace Badger.ViewModels
             //having
             if (query.groupBy.Count > 0)
             {
-                query.havingFunction = selectedHavingFunction;
-                query.havingVariable = selectedHavingVariable;
+                query.inGroupSelectionFunction = selectedInGroupSelectionFunction;
+                query.inGroupSelectionVariable = selectedInGroupSelectionVariable;
             }
+            //orderBy
+            query.limitToOption = selectedLimitToOption;
+            if (selectedLimitToOption!=LogQuery.noLimitOnResults)
+            {
+                query.orderByFunction = selectedOrderByFunction;
+                query.orderByVariable = selectedOrderByVariable;
+            }
+
             //EXECUTE the query
             query.execute(loggedExperiments,variables);
 
-            //Show the report
+            //DISPLAY the report
             ReportViewModel newReport = new ReportViewModel(query);
             reports.Add(newReport);
             selectedReport = newReport;
             bCanSaveReports = true;
         }
 
-  
         //plot selection in tab control
         private ReportViewModel m_selectedReport = null;
         public ReportViewModel selectedReport
@@ -289,7 +297,7 @@ namespace Badger.ViewModels
             bLogsLoaded = true;
             if (variables.Count > 0)
             {
-                selectedHavingVariable = variables[0].name;
+                selectedInGroupSelectionVariable = variables[0].name;
                 selectedOrderByVariable = variables[0].name;
             }
         }

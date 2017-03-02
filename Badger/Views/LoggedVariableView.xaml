@@ -17,7 +17,9 @@
         <CheckBox IsChecked="{Binding bIsSelected,Mode=TwoWay}" VerticalAlignment="Center"
                   Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
         <Label x:Name="name" HorizontalAlignment="Left"
-                    FontFamily="Segoe UI" FontSize="8" Foreground="Black"/>
+                    FontFamily="Segoe UI" FontSize="8" Width="120" Foreground="Black"
+               IsEnabled="{Binding bIsSelected,Mode=TwoWay}"/>
+        <ContentControl x:Name="stateButton" IsEnabled="{Binding bIsSelected,Mode=TwoWay}"/>
     </StackPanel>
 
 </UserControl>

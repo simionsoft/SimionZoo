@@ -21,7 +21,7 @@
                 <Label x:Name="name" FontSize="10" FontFamily="Segoe UI Light" Content="{Binding name}">
                     <Label.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Group By this fork" cal:Message.Attach="groupByThisFork">
+                            <MenuItem Header="Group by value" cal:Message.Attach="groupByThisFork">
                             </MenuItem>
                         </ContextMenu>
                     </Label.ContextMenu>

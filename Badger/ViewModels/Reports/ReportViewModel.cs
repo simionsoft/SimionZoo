@@ -30,24 +30,62 @@ namespace Badger.ViewModels
             get { return m_parent; }
             set { m_parent = value; }
         }
+
+        private string getVariablePlotType(LogQuery query,string variable)
+        {
+            foreach (LoggedVariableViewModel var in query.loggedVariables)
+            {
+                if (var.name == variable)
+                    return var.stateButton.state;
+            }
+            return null;
+        }
+
         public ReportViewModel(LogQuery query)
         {
-            foreach(string variable in query.variables)
+            foreach (string variable in query.variables)
             {
-                //create a new plot for each variable in the result data
-                PlotViewModel newPlot = new PlotViewModel(variable, false, true);
-                //plot data
+                PlotViewModel newPlot;
                 int lineSeriesId;
-                for(int i= 0; i<query.resultTracks.Count; i++)
-                {
-                    lineSeriesId= newPlot.addLineSeries(query.resultTracks[i].trackId);
-                    for (int x = 0; x < query.resultTracks[i].trackData.realTime.Length; ++x)
+                string plotType = getVariablePlotType(query, variable);
+
+                if (plotType == LoggedVariableViewModel.PlotType.Last.ToString()
+                    || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
+                { 
+                    //LAST EVALUATION values: create a new plot for each variable in the result data          
+                    newPlot = new PlotViewModel(variable, false, true);
+                    //plot data
+
+                    for (int i = 0; i < query.resultTracks.Count; i++)
                     {
-                        newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x]
-                            , query.resultTracks[i].trackData.variables[variable].data[x]);
+                        TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
+                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].trackId);
+                        for (int x = 0; x < query.resultTracks[i].trackData.realTime.Length; ++x)
+                        {
+                            newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x]
+                                , variableData.lastEpisodeValues[x]);
+                        }
                     }
+                    plots.Add(newPlot);
                 }
-                plots.Add(newPlot);             
+                if (plotType == LoggedVariableViewModel.PlotType.All.ToString()
+                      || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
+                {
+                    //AVERAGED EVALUATION values: create a new plot for each variable in the result data
+                    newPlot = new PlotViewModel(variable + "-episode", false, true);
+                    //plot data
+                    for (int i = 0; i < query.resultTracks.Count; i++)
+                    {
+                        TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
+                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].trackId);
+                        for (int x = 0; x < variableData.avgEpisodeValues.Length; ++x)
+                        {
+                            newPlot.addLineSeriesValue(lineSeriesId, x
+                                , variableData.avgEpisodeValues[x]);
+                        }
+                    }
+                    plots.Add(newPlot);
+                }
             }
             if (plots.Count > 0)
             {
