@@ -104,12 +104,12 @@ namespace Badger.ViewModels
                 double min= double.MaxValue, max= double.MinValue;
                 for (int i= 0; i< m_trackData.Count; i++)
                 {
-                    if (function==LogQuery.FunctionMax && m_trackData[i].variables[variable].avg> max)
+                    if (function==LogQuery.functionMax && m_trackData[i].variables[variable].avg> max)
                     {
                         max = m_trackData[i].variables[variable].avg;
                         selectedTrack = i;
                     }
-                    if (function == LogQuery.FunctionMin && m_trackData[i].variables[variable].avg < min)
+                    if (function == LogQuery.functionMin && m_trackData[i].variables[variable].avg < min)
                     {
                         min = m_trackData[i].variables[variable].avg;
                         selectedTrack = i;

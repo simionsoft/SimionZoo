@@ -27,6 +27,14 @@ namespace Badger.ViewModels
             set { m_forks = value; }
         }
 
+        //this is used to hide the space given to display children forks in case there is none
+        private bool m_bHasForks = false;
+        public bool bHasForks
+        {
+            get { return m_bHasForks; }
+            set { m_bHasForks = value;  NotifyOfPropertyChange(() => bHasForks); }
+        }
+
 
         public LoggedForkViewModel(XmlNode configNode, ReportsWindowViewModel parent)
         {
@@ -48,7 +56,8 @@ namespace Badger.ViewModels
                 }
             }
 
-            if (forks.Count == 0) bVisible = false;
+            //hide the area used to display children forks?
+            bHasForks = forks.Count!=0;
         }
 
         public void groupByThisFork()
@@ -57,8 +66,6 @@ namespace Badger.ViewModels
             //informs the parent window that results should be grouped by this fork
             m_parentWindow.addGroupBy(name);
         }
-
-
 
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {

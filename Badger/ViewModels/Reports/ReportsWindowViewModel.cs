@@ -87,7 +87,7 @@ namespace Badger.ViewModels
                 m_selectedFrom = value; validateQuery(); NotifyOfPropertyChange(() => selectedFrom);
                 foreach (LoggedExperimentViewModel exp in loggedExperiments)
                     exp.TraverseAction(true,(child) => 
-                    { child.bCheckIsVisible = (selectedFrom == LogQuery.FromSelection); });
+                    { child.bCheckIsVisible = (selectedFrom == LogQuery.fromSelection); });
             }
         }
         private BindableCollection<string> m_fromOptions = new BindableCollection<string>();
@@ -114,6 +114,60 @@ namespace Badger.ViewModels
             {
                 variables.Add(new LoggedVariableViewModel(variable, this));
                 havingVariables.Add(variable);
+                orderByVariables.Add(variable);
+            }
+        }
+
+        //Order by
+        private bool m_bIsOrderByEnabled = false;
+        public bool bIsOrderByEnabled
+        {
+            get { return m_bIsOrderByEnabled; }
+            set { m_bIsOrderByEnabled = value;  NotifyOfPropertyChange(() => bIsOrderByEnabled); }
+        }
+        private BindableCollection<string> m_orderByFunctions = new BindableCollection<string>();
+        public BindableCollection<string> orderByFunctions
+        {
+            get { return m_orderByFunctions; }
+            set { m_orderByFunctions = value; NotifyOfPropertyChange(() => orderByFunctions); }
+        }
+        private string m_selectedOrderByFunction = "";
+        public string selectedOrderByFunction
+        {
+            get { return m_selectedOrderByFunction; }
+            set { m_selectedOrderByFunction = value; NotifyOfPropertyChange(() => selectedOrderByFunction); }
+        }
+
+        private BindableCollection<string> m_orderByVariables = new BindableCollection<string>();
+        public BindableCollection<string> orderByVariables
+        {
+            get { return m_orderByVariables; }
+            set { m_orderByVariables = value; NotifyOfPropertyChange(() => orderByVariables); }
+        }
+        private string m_selectedOrderByVariable = "";
+        public string selectedOrderByVariable
+        {
+            get { return m_selectedOrderByVariable; }
+            set { m_selectedOrderByVariable = value;  NotifyOfPropertyChange(() => selectedOrderByVariable); }
+        }
+
+        //Limit to
+        private BindableCollection<string> m_limitToOptions = new BindableCollection<string>();
+        public BindableCollection<string> limitToOptions
+        {
+            get { return m_limitToOptions; }
+            set { m_limitToOptions = value;  NotifyOfPropertyChange(() => limitToOptions); }
+        }
+        private string m_selectedLimitToOption;
+        public string selectedLimitToOption
+        {
+            get { return m_selectedLimitToOption; }
+            set
+            {
+                m_selectedLimitToOption = value;
+                //ordering results only makes sense if results are limited
+                bIsOrderByEnabled = (value != LogQuery.noLimitOnResults); 
+                NotifyOfPropertyChange(() => selectedLimitToOption);
             }
         }
 
@@ -140,14 +194,33 @@ namespace Badger.ViewModels
         public ReportsWindowViewModel()
         {
             //add the function options
-            havingFunctions.Add(LogQuery.FunctionMax);
-            havingFunctions.Add(LogQuery.FunctionMin);
-            selectedHavingFunction = LogQuery.FunctionMax;
+            havingFunctions.Add(LogQuery.functionMax);
+            havingFunctions.Add(LogQuery.functionMin);
+            selectedHavingFunction = LogQuery.functionMax;
 
             //add the from options
-            fromOptions.Add(LogQuery.FromAll);
-            fromOptions.Add(LogQuery.FromSelection);
-            selectedFrom = LogQuery.FromAll;
+            fromOptions.Add(LogQuery.fromAll);
+            fromOptions.Add(LogQuery.fromSelection);
+            selectedFrom = LogQuery.fromAll;
+
+            //add the limit to options
+            limitToOptions.Add(LogQuery.noLimitOnResults);
+            limitToOptions.Add("1");
+            limitToOptions.Add("2");
+            limitToOptions.Add("3");
+            limitToOptions.Add("4");
+            limitToOptions.Add("5");
+            limitToOptions.Add("6");
+            limitToOptions.Add("7");
+            limitToOptions.Add("8");
+            limitToOptions.Add("9");
+            limitToOptions.Add("10");
+            selectedLimitToOption = LogQuery.noLimitOnResults;
+
+            //order by functions
+            orderByFunctions.Add(LogQuery.orderAsc);
+            orderByFunctions.Add(LogQuery.orderDesc);
+            selectedOrderByFunction = LogQuery.orderDesc;
         }
 
         public void makeReport()
@@ -173,26 +246,6 @@ namespace Badger.ViewModels
         }
 
   
-        public void generateStats()
-        {
-            //StatsViewModel statsViewModel = new StatsViewModel("Stats");
-            //statsViewModel.parent = this;
-
-            //foreach (LoggedExperimentViewModel log in m_selectedLogs)
-            //{
-            //    //List<Stat> stats = log.getVariableStats(m_selectedVariables);
-            //    //foreach (Stat stat in stats)
-            //    //{
-            //    //    statsViewModel.addStat(stat);
-            //    //}
-            //}
-
-            //bCanSaveReports = true;
-
-            //reports.Add(statsViewModel);
-            //selectedReport = statsViewModel;
-        }
-
         //plot selection in tab control
         private ReportViewModel m_selectedReport = null;
         public ReportViewModel selectedReport
@@ -234,7 +287,11 @@ namespace Badger.ViewModels
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, this);
             loggedExperiments.Add(newExperiment);
             bLogsLoaded = true;
-            if (variables.Count>0) selectedHavingVariable = variables[0].name;
+            if (variables.Count > 0)
+            {
+                selectedHavingVariable = variables[0].name;
+                selectedOrderByVariable = variables[0].name;
+            }
         }
 
         public void loadExperimentBatch()

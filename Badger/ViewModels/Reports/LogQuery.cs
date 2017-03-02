@@ -6,11 +6,16 @@ namespace Badger.ViewModels
 {
     public class LogQuery: PropertyChangedBase
     {
-        public const string FunctionMax = "Max";
-        public const string FunctionMin = "Min";
+        public const string functionMax = "Max";
+        public const string functionMin = "Min";
 
-        public const string FromAll = "*";
-        public const string FromSelection = "Selection";
+        public const string noLimitOnResults = "-";
+
+        public const string orderAsc = "Asc";
+        public const string orderDesc = "Desc";
+
+        public const string fromAll = "*";
+        public const string fromSelection = "Selection";
 
         private string m_havingFunction = "";
         public string havingFunction
@@ -106,7 +111,7 @@ namespace Badger.ViewModels
 
             //add all selected variables to the list of variables
             foreach (LoggedVariableViewModel variable in loggedVariables)
-                if (from == FromSelection || variable.bIsSelected)
+                if (from == fromSelection || variable.bIsSelected)
                     variables.Add(variable.name);
 
 
@@ -116,7 +121,7 @@ namespace Badger.ViewModels
                 foreach (LoggedExperimentalUnitViewModel expUnit in exp.expUnits)
                 {
                     //do take selection into account? is this exp. unit selected?
-                    if (from == FromAll || (from == FromSelection && expUnit.bIsSelected))
+                    if (from == fromAll || (from == fromSelection && expUnit.bIsSelected))
                     {
                         if (groupBy.Count != 0)
                         {

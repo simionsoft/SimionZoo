@@ -63,15 +63,15 @@
                     </StackPanel>
                 </Button>
             </StackPanel>
-            <TreeView x:Name="Experiments" Height="280" BorderBrush="DarkGray" BorderThickness="1">
+            <TreeView x:Name="Experiments" Height="200" BorderBrush="DarkGray" BorderThickness="1">
                 <ItemsControl x:Name="loggedExperiments"></ItemsControl>
             </TreeView>
             <Border Margin="0,20,0,0" BorderBrush="DarkGray" BorderThickness="1">
                 <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}">
                     <StackPanel Orientation="Horizontal">
                         <Label Width="70" Margin="0,0,10,0" VerticalAlignment="Center">SELECT</Label>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="variables" MaxHeight="80" Width="190"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="80">
+                            <ItemsControl x:Name="variables" Width="190"/>
                         </ScrollViewer>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
@@ -90,10 +90,21 @@
                         <ComboBox x:Name="havingFunctions" SelectedValue="{Binding Path=selectedHavingFunction}"
                                   Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
                         <ComboBox x:Name="havingVariables" SelectedValue="{Binding Path=selectedHavingVariable}"
-                                  IsEnabled="{Binding bHavingVariablesEnabled}"
-                                  Width="80" HorizontalAlignment="Center"></ComboBox>
-
+                                  Width="80" HorizontalAlignment="Center"/>
                     </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="70" Margin="0,0,10,0">LIMIT TO</Label>
+                        <ComboBox x:Name="limitToOptions" SelectedValue="{Binding Path=selectedLimitToOption}"
+                                  Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" IsEnabled="{Binding bIsOrderByEnabled}">
+                        <Label Width="70" Margin="0,0,10,0">ORDER BY</Label>
+                        <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding Path=selectedOrderByFunction}"
+                                  Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
+                        <ComboBox x:Name="orderByVariables" SelectedValue="{Binding Path=selectedOrderByVariable}"
+                                  Width="80" HorizontalAlignment="Center"></ComboBox>
+                    </StackPanel>
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="4">
                         <Button x:Name="makeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
                                 Margin="0,0" Height="30"
