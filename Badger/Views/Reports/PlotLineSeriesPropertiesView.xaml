@@ -23,7 +23,7 @@
                 </ContextMenu>
             </StackPanel.ContextMenu>
             <CheckBox IsChecked="{Binding Path=bVisible,Mode=TwoWay}" VerticalAlignment="Center"/>
-            <Label Content="{Binding Path=name}" Width="270" VerticalAlignment="Center"></Label>
+            <Label Content="{Binding Path=name}" VerticalAlignment="Center"></Label>
         </StackPanel>
     </StackPanel>
 </UserControl>

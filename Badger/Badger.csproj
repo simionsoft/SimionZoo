@@ -146,7 +146,7 @@
     <Compile Include="ViewModels\Reports\LogQuery.cs" />
     <Compile Include="ViewModels\Reports\LogQueryResultTrackViewModel.cs" />
     <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />
-    <Compile Include="ViewModels\PlotLineSeriesPropertiesViewModel.cs" />
+    <Compile Include="ViewModels\Reports\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\PlotViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedExperimentViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedVariableViewModel.cs" />
@@ -159,6 +159,7 @@
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
+    <Compile Include="ViewModels\Reports\StatViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
     <Compile Include="ViewModels\WindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
@@ -302,7 +303,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PlotLineSeriesPropertiesView.xaml">
+    <Page Include="Views\Reports\PlotLineSeriesPropertiesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -342,11 +343,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Reports\StatView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ShepherdView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\StatsView.xaml">
+    <Page Include="Views\Reports\StatsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

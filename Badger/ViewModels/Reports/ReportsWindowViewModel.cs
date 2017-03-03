@@ -17,6 +17,18 @@ namespace Badger.ViewModels
         public bool bCanGenerateReports { get { return m_bCanGenerateReports; }
             set { m_bCanGenerateReports = value; NotifyOfPropertyChange(() => bCanGenerateReports); } }
 
+        //plot selection in tab control
+        private ReportViewModel m_selectedReport = null;
+        public ReportViewModel selectedReport
+        {
+            get { return m_selectedReport; }
+            set
+            {
+                m_selectedReport = value;
+                if (m_selectedReport != null) m_selectedReport.updateView();
+                NotifyOfPropertyChange(() => selectedReport);
+            }
+        }
 
         //In-Group selection
         private string m_selectedInGroupSelectionFunction = "";
@@ -254,18 +266,6 @@ namespace Badger.ViewModels
             bCanSaveReports = true;
         }
 
-        //plot selection in tab control
-        private ReportViewModel m_selectedReport = null;
-        public ReportViewModel selectedReport
-        {
-            get { return m_selectedReport; }
-            set
-            {
-                m_selectedReport = value;
-                if (m_selectedReport != null) m_selectedReport.updateView();
-                NotifyOfPropertyChange(() => selectedReport);
-            }
-        }
 
         private bool m_bCanSaveReports = false;
         public bool bCanSaveReports { get { return m_bCanSaveReports; } set { m_bCanSaveReports = value; NotifyOfPropertyChange(() => bCanSaveReports); } }

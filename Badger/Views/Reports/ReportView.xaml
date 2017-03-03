@@ -13,14 +13,24 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
     </UserControl.Resources>
-
-    <TabControl x:Name="plots" SelectedItem="{Binding Path=selectedPlot}">
-        <TabControl.ItemTemplate>
-            <DataTemplate>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="{Binding name}" FontSize="8" FontFamily="Segoe UI Light"/>
-                </StackPanel>
-            </DataTemplate>
-        </TabControl.ItemTemplate>
-    </TabControl>
+    <StackPanel Orientation="Vertical">
+        <TabControl x:Name="plots" SelectedItem="{Binding Path=selectedPlot,Mode=TwoWay}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding name}" FontSize="8" FontFamily="Segoe UI Light"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
+        <TabControl x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding variable}" FontSize="8" FontFamily="Segoe UI Light"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
+    </StackPanel>
 </UserControl>

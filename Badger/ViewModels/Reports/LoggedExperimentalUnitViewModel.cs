@@ -114,7 +114,7 @@ namespace Badger.ViewModels
                             avg += step.data[variableIndex];
                         }
                         avg /= episode.steps.Count;
-                        variableData.avgEpisodeValues[episode.index-1] = avg;
+                        variableData.experimentData.values[episode.index-1] = avg;
                     }
                 }
             }
@@ -130,7 +130,7 @@ namespace Badger.ViewModels
                     int variableIndex = m_variablesInLog.IndexOf(variable);
                     TrackVariableData variableData = data.getVariableData(variable);
                     if (variableData!=null)
-                        variableData.lastEpisodeValues[i] = step.data[variableIndex];
+                        variableData.lastEpisodeData.values[i] = step.data[variableIndex];
                 }
                 ++i;
             }

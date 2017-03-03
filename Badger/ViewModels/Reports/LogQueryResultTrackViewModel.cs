@@ -4,38 +4,53 @@ using System;
 
 namespace Badger.ViewModels
 {
+    public class DataSeries
+    {
+        public double[] values = null;
+        public StatData stats= new StatData();
+
+        public DataSeries(int numValues)
+        {
+            values = new double[numValues];
+        }
+        public void calculateStats()
+        {
+            if (values == null) return;
+            //calculate avg, min and max
+            double sum = 0.0;
+            stats.min = values[0]; stats.max = values[0];
+            foreach (double val in values)
+            {
+                sum += val;
+                if (val > stats.max) stats.max = val;
+                if (val < stats.min) stats.min = val;
+            }
+            stats.avg = sum / values.Length;
+            //calculate std. deviation
+            double diff;
+            sum = 0.0;
+            foreach (double val in values)
+            {
+                diff = val - stats.avg;
+                sum += diff * diff;
+            }
+            stats.stdDev = Math.Sqrt(sum / values.Length);
+        }
+    }
     public class TrackVariableData
     {
         public TrackVariableData(int numSteps,int numEpisodes)
         {
-            lastEpisodeValues = new double[numSteps];
-            avgEpisodeValues = new double[numEpisodes];
+            if (numSteps>0) lastEpisodeData = new DataSeries(numSteps);
+            if (numEpisodes>0) experimentData = new DataSeries(numEpisodes);
         }
-        public double[] lastEpisodeValues= null;
-        public double[] avgEpisodeValues = null;
-        public double min= 0.0, max= 0.0, avg= 0.0, stdDev= 0.0;
+        public DataSeries lastEpisodeData;
+        public DataSeries experimentData;
+
         public void calculateStats()
         {
-            if (lastEpisodeValues == null || lastEpisodeValues.Length==0) return;
-            //calculate avg, min and max
-            double sum = 0.0;
-            min = lastEpisodeValues[0]; max = lastEpisodeValues[0];
-            foreach (double val in lastEpisodeValues)
-            {
-                sum += val;
-                if (val > max) max = val;
-                if (val < min) min = val;
-            }
-            avg = sum / lastEpisodeValues.Length;
-            //calculate std. deviation
-            double diff;
-            sum = 0.0;
-            foreach(double val in lastEpisodeValues)
-            {
-                diff = val - avg;
-                sum += diff*diff;
-            }
-            stdDev = Math.Sqrt(sum / lastEpisodeValues.Length);
+            if (lastEpisodeData != null) lastEpisodeData.calculateStats();
+            if (experimentData != null) experimentData.calculateStats();
         }
     }
     public class TrackData
@@ -119,14 +134,14 @@ namespace Badger.ViewModels
                     TrackVariableData variableData = m_trackData[i].getVariableData(variable);
                     if (variableData != null)
                     {
-                        if (function == LogQuery.functionMax && variableData.avg > max)
+                        if (function == LogQuery.functionMax && variableData.lastEpisodeData.stats.avg > max)
                         {
-                            max = variableData.avg;
+                            max = variableData.lastEpisodeData.stats.avg;
                             selectedTrack = i;
                         }
-                        if (function == LogQuery.functionMin && variableData.avg < min)
+                        if (function == LogQuery.functionMin && variableData.lastEpisodeData.stats.avg < min)
                         {
-                            min = variableData.avg;
+                            min = variableData.lastEpisodeData.stats.avg;
                             selectedTrack = i;
                         }
                     }

@@ -36,8 +36,12 @@ namespace Badger.ViewModels
         private PlotModel m_plot;
         public PlotModel plot { get { return m_plot; } set { } }
 
-        private List<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties;
-        public List<PlotLineSeriesPropertiesViewModel> lineSeriesProperties { get { return m_lineSeriesProperties; } set { } }
+        private BindableCollection<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties;
+        public BindableCollection<PlotLineSeriesPropertiesViewModel> lineSeriesProperties
+        {
+            get { return m_lineSeriesProperties; }
+            set { m_lineSeriesProperties = value;NotifyOfPropertyChange(() => lineSeriesProperties); }
+        }
 
         public PlotViewModel(string title, bool bRefresh=true, bool bShowOptions=false)
         {
@@ -64,7 +68,7 @@ namespace Badger.ViewModels
             m_bShowOptions = bShowOptions;
             if (bShowOptions)
             {
-                m_lineSeriesProperties = new List<PlotLineSeriesPropertiesViewModel>();
+                m_lineSeriesProperties = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
             }
         }
 
@@ -159,8 +163,8 @@ namespace Badger.ViewModels
 
         public void updateLineSeriesVisibility(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
         {
-            m_plot.Series[lineSeriesProperties.lineSeriesId].IsVisible= lineSeriesProperties.bVisible;
-            updateView();
+            m_plot.Series[lineSeriesProperties.lineSeriesId].IsVisible = lineSeriesProperties.bVisible;
+            //updateView();
         }
 
         public void soloLineSeries(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
@@ -170,7 +174,7 @@ namespace Badger.ViewModels
                 seriesProperties.bVisible = (seriesProperties.lineSeriesId == lineSeriesProperties.lineSeriesId);
                 m_plot.Series[seriesProperties.lineSeriesId].IsVisible = seriesProperties.bVisible;
             }
-            updateView();
+            //updateView();
         }
     }
 }

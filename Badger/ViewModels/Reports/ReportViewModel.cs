@@ -18,10 +18,25 @@ namespace Badger.ViewModels
         public PlotViewModel selectedPlot
         {
             get { return m_selectedPlot; }
-            set { m_selectedPlot = value;  NotifyOfPropertyChange(() => selectedPlot); }
+            set { m_selectedPlot = value;m_selectedPlot.updateView();  NotifyOfPropertyChange(() => selectedPlot); }
         }
 
         public void updateView() { }
+
+        //stats
+        private BindableCollection<StatsViewModel> m_stats = new BindableCollection<StatsViewModel>();
+        public BindableCollection<StatsViewModel> stats
+        {
+            get { return m_stats; }
+            set { m_stats = value;  NotifyOfPropertyChange(() => stats); }
+        }
+        private StatsViewModel m_selectedStat;
+        public StatsViewModel selectedStat
+        {
+            get { return m_selectedStat; }
+            set { m_selectedStat = value; NotifyOfPropertyChange(() => selectedStat); }
+        }
+
         public void export(string outputFolder) { }
 
         private ReportsWindowViewModel m_parent = null;
@@ -43,9 +58,33 @@ namespace Badger.ViewModels
 
         public ReportViewModel(LogQuery query)
         {
+            //stats
+            StatsViewModel newStat;
+            foreach (string variable in query.variables)
+            {
+                newStat = new StatsViewModel(variable, this);
+                foreach(LogQueryResultTrackViewModel track in query.resultTracks)
+                {
+                    TrackVariableData trackData = track.trackData.getVariableData(variable);
+                    if (trackData != null)
+                    {
+                        //code below can be improved: organize forks hierarchically instead of a single string
+                        StatViewModel trackStats = new StatViewModel(track.trackId);
+                        trackStats.lastEpisodeStats = trackData.lastEpisodeData.stats;
+                        trackStats.experimentStats = trackData.experimentData.stats;
+                        newStat.addStat(trackStats);
+                    }
+                }
+
+                stats.Add(newStat);
+            }
+            if (stats.Count > 0)
+                selectedStat = stats[0];
+            //plots
             foreach (string variable in query.variables)
             {
                 PlotViewModel newPlot;
+
                 int lineSeriesId;
                 string plotType = getVariablePlotType(query, variable);
 
@@ -63,7 +102,7 @@ namespace Badger.ViewModels
                         for (int x = 0; x < query.resultTracks[i].trackData.realTime.Length; ++x)
                         {
                             newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x]
-                                , variableData.lastEpisodeValues[x]);
+                                , variableData.lastEpisodeData.values[x]);
                         }
                     }
                     plots.Add(newPlot);
@@ -78,10 +117,10 @@ namespace Badger.ViewModels
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
                         lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].trackId);
-                        for (int x = 0; x < variableData.avgEpisodeValues.Length; ++x)
+                        for (int x = 0; x < variableData.experimentData.values.Length; ++x)
                         {
                             newPlot.addLineSeriesValue(lineSeriesId, x
-                                , variableData.avgEpisodeValues[x]);
+                                , variableData.experimentData.values[x]);
                         }
                     }
                     plots.Add(newPlot);
