@@ -52,7 +52,7 @@ namespace Badger.Data
                     }
                 }
                 logFile.Close();
-
+                //TODO: we should be able to know somehow if the experiment failed (i.e.: early end of FAST)
             }
             catch (Exception ex)
             {
@@ -168,6 +168,7 @@ namespace Badger.Data
     {
         public int numEpisodes = 0;
         public int fileFormatVersion = 0;
+        public bool bSuccesful = true; //true if it finished correctly: the number of episodes in the header must match the number of episodes read from the log file
 
         public List<EpisodeData> episodes = new List<EpisodeData>();
 

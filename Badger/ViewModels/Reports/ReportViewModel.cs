@@ -39,12 +39,7 @@ namespace Badger.ViewModels
 
         public void export(string outputFolder) { }
 
-        private ReportsWindowViewModel m_parent = null;
-        public ReportsWindowViewModel parent
-        {
-            get { return m_parent; }
-            set { m_parent = value; }
-        }
+        private ReportsWindowViewModel m_parent { get; set; }
 
         private string getVariablePlotType(LogQuery query,string variable)
         {
@@ -56,8 +51,9 @@ namespace Badger.ViewModels
             return null;
         }
 
-        public ReportViewModel(LogQuery query)
+        public ReportViewModel(LogQuery query, ReportsWindowViewModel parent)
         {
+            m_parent = parent;
             //stats
             StatsViewModel newStat;
             foreach (string variable in query.variables)

@@ -260,7 +260,7 @@ namespace Badger.ViewModels
             query.execute(loggedExperiments,variables);
 
             //DISPLAY the report
-            ReportViewModel newReport = new ReportViewModel(query);
+            ReportViewModel newReport = new ReportViewModel(query,this);
             reports.Add(newReport);
             selectedReport = newReport;
             bCanSaveReports = true;
