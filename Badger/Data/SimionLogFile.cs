@@ -56,7 +56,8 @@ namespace Badger.Data
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                experimentData.bSuccesful = false;
+                Console.WriteLine("Exception reading " + logFilename + "\n" + ex.ToString());
             }
             return experimentData;
         }
@@ -81,6 +82,8 @@ namespace Badger.Data
 
             //not the final step, we have to read the logged variables
             byte[] buffer = logReader.ReadBytes(sizeof(double) * (int)numLoggedVariables);
+            if (buffer.Length == 0)
+                return true;
             data = new double[numLoggedVariables];
             Buffer.BlockCopy(buffer, 0, data, 0, numLoggedVariables * sizeof(double));
             return false;

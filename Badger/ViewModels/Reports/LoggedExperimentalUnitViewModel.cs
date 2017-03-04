@@ -98,9 +98,10 @@ namespace Badger.ViewModels
 
             int numSteps = lastEvalEpisode.steps.Count;
             TrackData data = new TrackData(numSteps,experimentData.numEpisodes,varNames);
+            data.bSuccesful = experimentData.bSuccesful;
 
             //experiment-long average values
-            foreach(EpisodeData episode in experimentData.episodes)
+            foreach (EpisodeData episode in experimentData.episodes)
             {
                 foreach (string variable in varNames)
                 {

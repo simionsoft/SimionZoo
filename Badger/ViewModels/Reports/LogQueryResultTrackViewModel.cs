@@ -55,6 +55,7 @@ namespace Badger.ViewModels
     }
     public class TrackData
     {
+        public bool bSuccesful;
         public double []simTime;
         public double []realTime;
         private Dictionary<string,TrackVariableData>variablesData= new Dictionary<string,TrackVariableData>();

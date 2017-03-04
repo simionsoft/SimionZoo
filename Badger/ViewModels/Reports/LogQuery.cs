@@ -179,7 +179,12 @@ namespace Badger.ViewModels
                                 variables.Add(orderByVariable);
 
                             //load data from the log file
-                            newResultTrack.addTrackData(expUnit.loadTrackData(variables));
+                            TrackData trackData = expUnit.loadTrackData(variables);
+
+                            //for now, we just ignore failed experiments. Maybe we could do something more sofisticated
+                            //to know, for example, what variations lead to failed experiments
+                            if (trackData.bSuccesful)
+                                newResultTrack.addTrackData(trackData);
 
                             resultTracks.Add(newResultTrack);
                         }
