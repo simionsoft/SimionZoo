@@ -18,7 +18,7 @@ class CTDLambdaCritic : public CCritic
 	CHILD_OBJECT<CETraces> m_z; //traces
 	CFeatureList* m_aux;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pGamma;
+
 public:
 	CTDLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTDLambdaCritic();
@@ -36,7 +36,6 @@ class CTrueOnlineTDLambdaCritic : public CCritic
 	CFeatureList* m_aux;
 	double m_v_s;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pGamma;
 public:
 	CTrueOnlineTDLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTrueOnlineTDLambdaCritic();
@@ -55,7 +54,6 @@ class CTDCLambdaCritic : public CCritic
 	CFeatureList* m_b;
 
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pGamma;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pBeta;
 	
 

@@ -60,7 +60,6 @@ protected:
 	
 	CHILD_OBJECT<CETraces> m_eTraces;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pGamma;
 	CFeatureList *m_pAux;
 public:
 	CQLearning(CConfigNode* pParameters);

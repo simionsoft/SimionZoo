@@ -26,6 +26,9 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<CActionFeatureMap>(pConfigNode, "Action-Feature-Map", "The state feature map", true);
 	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "Experience-Replay", "The experience replay parameters", true);
 	m_simions = MULTI_VALUE_FACTORY<CSimion>(pConfigNode, "Simion", "Simions: learning agents and controllers");
+	
+	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
+	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter",0.9);
 }
 
 
@@ -123,4 +126,10 @@ std::shared_ptr<CStateFeatureMap> CSimGod::getGlobalStateFeatureMap()
 std::shared_ptr<CActionFeatureMap> CSimGod::getGlobalActionFeatureMap()
 {
 	return m_pGlobalActionFeatureMap.shared_ptr(); 
+}
+
+
+double CSimGod::getGamma()
+{
+	return m_gamma.get();
 }

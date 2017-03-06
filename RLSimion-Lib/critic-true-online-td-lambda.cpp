@@ -16,7 +16,6 @@ CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CConfigNode* pConfigNode): 
 	m_aux= new CFeatureList("Critic/aux");
 	m_v_s= 0.0;
 	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Learning gain of the critic");
-	m_pGamma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma","Gamma parameter");
 }
 
 CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
@@ -42,7 +41,7 @@ double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,
 	m_pVFunction->getFeatures(s_p,m_aux);
 	v_s_p= m_pVFunction->get(m_aux);
 
-	double gamma = m_pGamma->get();
+	double gamma = CSimionApp::get()->pSimGod->getGamma();
 	double alpha = m_pAlpha->get();
 	//delta= R + gamma* v_s_p - v_s
 	double td = r + gamma*v_s_p - m_v_s;

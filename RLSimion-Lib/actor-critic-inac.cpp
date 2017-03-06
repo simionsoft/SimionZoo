@@ -22,7 +22,7 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 	m_s_p_features = new CFeatureList("Critic/s_p");
 	m_pAlphaV = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
 	m_pAlphaR = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-r", "Learning gain used to average the reward");
-	m_pGamma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma", "Gamma parameter of the MDP");
+
 	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
 	m_e_v->setName("Critic/e_v");
 
@@ -72,7 +72,7 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	//e_v= gamma* lambda*e_v + phi(s)
 	//v = v + alpha_v*td*e_v
 	double alpha_v = m_pAlphaV->get();
-	double gamma = m_pGamma->get();
+	double gamma = CSimionApp::get()->pSimGod->getGamma();
 	m_pVFunction->getFeatures(s, m_s_features);
 	m_pVFunction->getFeatures(s_p, m_s_p_features);
 	//1. td= r - avg_r + gamma*V(s_p) - V(s)
@@ -108,7 +108,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	// \Psi_sa= \delta log pi(s,a)= (a_t-\pi(s_t)) * phi(s_t) / sigma^2
 
 
-	double gamma = m_pGamma->get();
+	double gamma = CSimionApp::get()->pSimGod->getGamma();
 	double alpha_v = m_pAlphaV->get();
 	double alpha_u = m_pAlphaU->get();
 

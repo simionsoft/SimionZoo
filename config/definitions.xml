@@ -11,7 +11,6 @@
     <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="True"/>
     <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
     <BRANCH Name="Alpha-r" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter of the MDP"/>
     <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
     <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The policy"/>
   </CLASS>
@@ -95,20 +94,17 @@
   <CLASS Name="CTDLambdaCritic">
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
   </CLASS>
   <CLASS Name="CTDCLambdaCritic">
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Elilgibility traces of the critic" Optional="True"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="Beta" Class="CNumericValue-Factory" Comment="Learning gain applied to the omega vector"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
   </CLASS>
   <CLASS Name="CTrueOnlineTDLambdaCritic">
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces of the critic" Optional="True"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="Gamma parameter"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
   </CLASS>
   <CLASS Name="CCritic">
@@ -226,7 +222,6 @@
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CDoubleQLearning">
@@ -234,14 +229,12 @@
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CSARSA">
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
-    <BRANCH Name="Gamma" Class="CNumericValue-Factory" Comment="The gamma parameter of the MDP"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CQPolicy-Factory">
@@ -251,6 +244,7 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CSimGod">
+    <DOUBLE-VALUE Name="Gamma" Comment="Gamma parameter" Default="0.9"/>
     <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>
     <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map" Optional="True"/>
     <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The state feature map" Optional="True"/>

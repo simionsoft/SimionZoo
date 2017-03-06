@@ -20,7 +20,8 @@ class CSimGod
 	static CHILD_OBJECT_FACTORY<CActionFeatureMap> m_pGlobalActionFeatureMap;
 
 	MULTI_VALUE_FACTORY<CSimion> m_simions;
-		//std::vector<CSimion*> m_simions;
+	
+	DOUBLE_PARAM m_gamma;
 
 	CReward *m_pReward;
 
@@ -52,5 +53,8 @@ public:
 	//global feature maps
 	static std::shared_ptr<CStateFeatureMap> getGlobalStateFeatureMap();
 	static std::shared_ptr<CActionFeatureMap> getGlobalActionFeatureMap();
+
+	//global learning parameters
+	double getGamma();
 };
 

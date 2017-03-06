@@ -22,7 +22,6 @@ CTDCLambdaCritic::CTDCLambdaCritic(CConfigNode* pConfigNode): CCritic(pConfigNod
 
 	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Alpha","Learning gain of the critic");
 	m_pBeta = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Beta","Learning gain applied to the omega vector");
-	m_pGamma = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma","Gamma parameter");
 }
 
 CTDCLambdaCritic::~CTDCLambdaCritic()
@@ -51,7 +50,7 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 	double oldValue = m_pVFunction->get(m_s_features);
 	double newValue = m_pVFunction->get(m_s_p_features);
 
-	double gamma = m_pGamma->get();
+	double gamma = CSimionApp::get()->pSimGod->getGamma();
 	double td= rho*r + gamma * newValue - oldValue;
 
 	//z_{k+1}= rho*gamma*lambda*z_k + omega(x_t)

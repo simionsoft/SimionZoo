@@ -104,7 +104,6 @@ CQLearning::CQLearning(CConfigNode* pConfigNode)
 	m_pQPolicy= CHILD_OBJECT_FACTORY<CQPolicy>(pConfigNode, "Policy", "The policy to be followed");
 	m_eTraces= CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "E-Traces");
 	m_eTraces->setName("Q-Learning/traces");
-	m_pGamma= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Gamma", "The gamma parameter of the MDP");
 	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain [0-1]");
 	m_pAux = new CFeatureList("QLearning/aux");
 }
@@ -118,10 +117,11 @@ void CQLearning::updateValue(const CState *s, const CAction *a, const CState *s_
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
 	m_eTraces->update();
 
+	double gamma= CSimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
-	m_eTraces->addFeatureList(m_pAux, m_pGamma->get());
+	m_eTraces->addFeatureList(m_pAux, gamma);
 
-	double td = r + m_pGamma->get()*m_pQFunction->max(s_p) - m_pQFunction->get(s,a);
+	double td = r + gamma*m_pQFunction->max(s_p) - m_pQFunction->get(s,a);
 
 	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 }
@@ -164,12 +164,13 @@ void CDoubleQLearning::updateValue(const CState *s, const CAction *a, const CSta
 	}
 	else m_numStepsSinceLastTargetUpdate++;
 
+	double gamma= CSimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
-	m_eTraces->addFeatureList(m_pAux, m_pGamma->get());
+	m_eTraces->addFeatureList(m_pAux, gamma);
 
-	double td = r + m_pGamma->get()*m_pQFunction->max(s_p) - m_pTargetQFunction->get(s, a);
+	double td = r + gamma*m_pQFunction->max(s_p) - m_pTargetQFunction->get(s, a);
 
-	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
+	m_pQFunction->add(m_eTraces.ptr(), td);
 }
 
 /////////////////////////////////////////////////
@@ -207,9 +208,10 @@ void CSARSA::updateValue(const CState* s, const CAction* a, const CState* s_p, d
 	m_pQPolicy->selectAction(m_pQFunction.ptr(), s_p, m_nextA);
 	m_bNextActionSelected = true;
 
+	double gamma= CSimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
-	m_eTraces->addFeatureList(m_pAux, m_pGamma->get());
+	m_eTraces->addFeatureList(m_pAux, gamma);
 
-	double td = r + m_pGamma->get()*m_pQFunction->get(s_p,m_nextA) - m_pQFunction->get(s, a);
+	double td = r + gamma*m_pQFunction->get(s_p,m_nextA) - m_pQFunction->get(s, a);
 	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 }

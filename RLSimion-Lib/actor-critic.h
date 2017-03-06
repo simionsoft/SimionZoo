@@ -45,7 +45,7 @@ class CIncrementalNaturalActorCritic : public CSimion
 	CFeatureList *m_s_features;
 	CFeatureList *m_s_p_features;
 	CFeatureList **m_w;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pGamma;
+
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaU;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaV;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaR;

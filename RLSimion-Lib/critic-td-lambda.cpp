@@ -7,6 +7,7 @@
 #include "etraces.h"
 #include "config.h"
 #include "parameters-numeric.h"
+#include "app-rlsimion.h"
 
 CTDLambdaCritic::CTDLambdaCritic(CConfigNode* pConfigNode)
 	: CCritic(pConfigNode)
@@ -15,7 +16,6 @@ CTDLambdaCritic::CTDLambdaCritic(CConfigNode* pConfigNode)
 	m_z->setName("Critic/E-Traces" );
 	m_aux= new CFeatureList("Critic/aux");
 	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Alpha","Learning gain");
-	m_pGamma= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Gamma","Gamma parameter");
 }
 
 CTDLambdaCritic::~CTDLambdaCritic()
@@ -33,7 +33,7 @@ double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CSt
 
 	double rho = 1.0;
 
-	double gamma = m_pGamma->get();
+	double gamma = CSimionApp::get()->pSimGod->getGamma();
 	m_z->update(gamma*rho);
 
 	m_pVFunction->getFeatures(s, m_aux);
