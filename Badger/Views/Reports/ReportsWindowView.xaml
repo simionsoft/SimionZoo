@@ -9,7 +9,7 @@
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowStyle="ThreeDBorderWindow"
         Width="1014.5"
-        Height="672"
+        Height="844.1"
         Background="#eeeeee"
         WindowState="Normal"
         Title="Report Viewer"
@@ -69,6 +69,7 @@
             <Border Margin="0,20,0,0" BorderBrush="DarkGray" BorderThickness="1">
                 <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}">
                     <StackPanel Orientation="Horizontal" ToolTip="Which variables do we want to display?">
+                        <CheckBox x:Name="bVariableSelection" VerticalAlignment="Center"></CheckBox>
                         <Label Width="70" Margin="0,0,10,0" VerticalAlignment="Center">Variables</Label>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="80">
                             <ItemsControl x:Name="variables" Width="190"/>
@@ -87,9 +88,9 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
                         <Label Width="70" Margin="0,0,10,0">Pick</Label>
-                        <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding Path=selectedHavingFunction}"
+                        <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding Path=selectedInGroupSelectionFunction}"
                                   Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
-                        <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding Path=selectedHavingVariable}"
+                        <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding Path=selectedInGroupSelectionVariable}"
                                   Width="80" HorizontalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
@@ -119,8 +120,8 @@
             </Border>
         </StackPanel>
         <StackPanel Orientation="Vertical" Margin="2">
-            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto" Width="694" Height="630">
-                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="620">
+            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto" Width="694" Height="800">
+                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="790">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

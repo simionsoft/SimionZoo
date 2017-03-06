@@ -10,25 +10,19 @@ namespace Badger.ViewModels
             set {
                 m_bVisible = value;
                 NotifyOfPropertyChange(() => bVisible);
-                m_parent.updateLineSeriesVisibility(this); } }
+                m_series.IsVisible= bVisible; } }
 
         private string m_name;
         public string name { get { return m_name; } }
 
-        private int m_lineSeriesId;
-        public int lineSeriesId { get { return m_lineSeriesId; }set { } }
+        OxyPlot.Series.LineSeries m_series;
 
         private PlotViewModel m_parent= null;
-        public PlotLineSeriesPropertiesViewModel(string lineSeriesName, int id,PlotViewModel parentPlot)
+        public PlotLineSeriesPropertiesViewModel(string lineSeriesName, OxyPlot.Series.LineSeries series,PlotViewModel parentPlot)
         {
             m_name = lineSeriesName;
-            m_lineSeriesId = id;
+            m_series = series;
             m_parent = parentPlot;
-        }
-
-        public void solo()
-        {
-            m_parent.soloLineSeries(this);
         }
     }
 }

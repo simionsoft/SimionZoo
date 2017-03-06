@@ -129,6 +129,16 @@ namespace Badger.ViewModels
                 orderByVariables.Add(variable);
             }
         }
+        private bool m_bVariableSelection = true;
+        public bool bVariableSelection
+        {
+            get { return m_bVariableSelection; }
+            set
+            {
+                m_bVariableSelection = value;
+                foreach (LoggedVariableViewModel var in variables) var.bIsSelected = value;
+            }
+        }
 
         //Order by
         private bool m_bIsOrderByEnabled = false;

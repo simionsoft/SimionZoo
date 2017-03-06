@@ -58,6 +58,7 @@ namespace Badger.ViewModels
         public bool bSuccesful;
         public double []simTime;
         public double []realTime;
+        public Dictionary<string, string> forkValues;
         private Dictionary<string,TrackVariableData>variablesData= new Dictionary<string,TrackVariableData>();
 
         public TrackData(int numSteps,int numEpisodes, List<string> variables)
@@ -88,6 +89,10 @@ namespace Badger.ViewModels
         {
             get { if (m_trackData.Count == 1) return m_trackData[0]; return null; }
             set { }
+        }
+        public bool bHasData
+        {
+            get { return m_trackData.Count > 0; }
         }
 
         //fork values given to this group
@@ -128,28 +133,28 @@ namespace Badger.ViewModels
         {
             if (m_trackData.Count>1)
             {
-                int selectedTrack = -1;
+                TrackData selectedTrack= null;
                 double min= double.MaxValue, max= double.MinValue;
-                for (int i= 0; i< m_trackData.Count; i++)
+                foreach (TrackData track in m_trackData)
                 {
-                    TrackVariableData variableData = m_trackData[i].getVariableData(variable);
+                    TrackVariableData variableData = track.getVariableData(variable);
                     if (variableData != null)
                     {
-                        if (function == LogQuery.functionMax && variableData.lastEpisodeData.stats.avg > max)
+                        if (function == LogQuery.functionMax && Math.Abs(variableData.lastEpisodeData.stats.avg) > max)
                         {
-                            max = variableData.lastEpisodeData.stats.avg;
-                            selectedTrack = i;
+                            max = Math.Abs(variableData.lastEpisodeData.stats.avg);
+                            selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMin && variableData.lastEpisodeData.stats.avg < min)
+                        if (function == LogQuery.functionMin && Math.Abs(variableData.lastEpisodeData.stats.avg) < min)
                         {
-                            min = variableData.lastEpisodeData.stats.avg;
-                            selectedTrack = i;
+                            min = Math.Abs(variableData.lastEpisodeData.stats.avg);
+                            selectedTrack = track;
                         }
                     }
                 }
-                TrackData selectedTrackData = m_trackData[selectedTrack];
                 m_trackData.Clear();
-                m_trackData.Add(selectedTrackData);
+                m_trackData.Add(selectedTrack);
+                forkValues = selectedTrack.forkValues;
             }
         }
     }

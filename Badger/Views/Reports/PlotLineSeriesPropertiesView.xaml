@@ -15,13 +15,6 @@
 
     <StackPanel HorizontalAlignment="Left" Width="290">
         <StackPanel Orientation="Horizontal">
-            <StackPanel.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Solo" cal:Message.Attach="solo">
-                        
-                    </MenuItem>
-                </ContextMenu>
-            </StackPanel.ContextMenu>
             <CheckBox IsChecked="{Binding Path=bVisible,Mode=TwoWay}" VerticalAlignment="Center"/>
             <Label Content="{Binding Path=name}" VerticalAlignment="Center"></Label>
         </StackPanel>

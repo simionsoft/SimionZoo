@@ -5,18 +5,12 @@ using OxyPlot.Axes;
 using OxyPlot.Wpf;
 using System.Threading;
 using Caliburn.Micro;
+using System.Windows.Forms;
+using System.IO;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
-    /*
-     * plot properties:
-     * x in/out
-     * show legend
-     * 
-     * line series properties:
-     * -visible
-     * -[color, thickness,...]
-     */
     public class PlotViewModel: PropertyChangedBase
     {
         string m_name = "";
@@ -26,7 +20,7 @@ namespace Badger.ViewModels
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
         private const int m_updateFreq= 1000; //plot refresh freq in millseconds
-        private Timer m_timer;
+        private System.Threading.Timer m_timer;
 
         double m_minX = double.MaxValue;
         double m_maxX = double.MinValue;
@@ -36,11 +30,10 @@ namespace Badger.ViewModels
         private PlotModel m_plot;
         public PlotModel plot { get { return m_plot; } set { } }
 
-        private BindableCollection<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties;
-        public BindableCollection<PlotLineSeriesPropertiesViewModel> lineSeriesProperties
+        private PlotPropertiesViewModel m_properties = new PlotPropertiesViewModel();
+        public PlotPropertiesViewModel properties
         {
-            get { return m_lineSeriesProperties; }
-            set { m_lineSeriesProperties = value;NotifyOfPropertyChange(() => lineSeriesProperties); }
+            get { return m_properties; }
         }
 
         public PlotViewModel(string title, bool bRefresh=true, bool bShowOptions=false)
@@ -62,14 +55,11 @@ namespace Badger.ViewModels
 
             if (bRefresh)
             {
-                m_timer = new Timer(updatePlot);
+                m_timer = new System.Threading.Timer(updatePlot);
                 m_timer.Change(m_updateFreq, m_updateFreq);
             }
             m_bShowOptions = bShowOptions;
-            if (bShowOptions)
-            {
-                m_lineSeriesProperties = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
-            }
+
         }
 
         private void updatePlot(object state)
@@ -84,14 +74,10 @@ namespace Badger.ViewModels
         
         public int addLineSeries(string title)
         {
-            var newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+            OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
             m_plot.Series.Add(newSeries);
 
-            if (bShowOptions)
-            {
-                //if options are displayed in this view, then we have to store the properties
-                m_lineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(title, m_plot.Series.Count - 1, this));
-            }
+            properties.addLineSeries(title, newSeries, this);
 
             return m_plot.Series.Count-1;
         }
@@ -145,6 +131,30 @@ namespace Badger.ViewModels
                 m_plot.Axes[1].Minimum= minY;
             }
         }
+        public void saveImage()
+        {
+            FolderBrowserDialog sfd = new FolderBrowserDialog();
+
+            sfd.ShowNewFolderButton = true;
+            //sfd.RootFolder = new Environment.SpecialFolder(Path.Combine(Directory.GetCurrentDirectory(), SimionFileData.experimentRelativeDir));
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                export(sfd.SelectedPath);
+            }
+        }
+
+        public void showProperties()
+        {
+            CaliburnUtility.showVMDialog(properties,"Plot properties");
+            setProperties();
+        }
+
+        public void setProperties()
+        {
+            //plot.LegendPosition = OxyPlot.LegendPosition(properties.selectedLegendOption);
+            plot.IsLegendVisible = properties.bLegendVisible;
+            updateView();
+        }
         public void export(string outputFolder)
         {
             string fileName;
@@ -161,20 +171,6 @@ namespace Badger.ViewModels
         private bool m_bShowOptions = false;
         public bool bShowOptions { get { return m_bShowOptions; } set { m_bShowOptions = value; NotifyOfPropertyChange(() => bShowOptions); } }
 
-        public void updateLineSeriesVisibility(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
-        {
-            m_plot.Series[lineSeriesProperties.lineSeriesId].IsVisible = lineSeriesProperties.bVisible;
-            //updateView();
-        }
 
-        public void soloLineSeries(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
-        {
-            foreach(PlotLineSeriesPropertiesViewModel seriesProperties in m_lineSeriesProperties)
-            {
-                seriesProperties.bVisible = (seriesProperties.lineSeriesId == lineSeriesProperties.lineSeriesId);
-                m_plot.Series[seriesProperties.lineSeriesId].IsVisible = seriesProperties.bVisible;
-            }
-            //updateView();
-        }
     }
 }

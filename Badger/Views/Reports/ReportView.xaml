@@ -23,14 +23,16 @@
                 </DataTemplate>
             </TabControl.ItemTemplate>
         </TabControl>
-        <TabControl x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding variable}" FontSize="8" FontFamily="Segoe UI Light"/>
-                    </StackPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-        </TabControl>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="100" Height="100">
+            <TabControl x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{Binding variable}" FontSize="8" FontFamily="Segoe UI Light"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
+        </ScrollViewer>
     </StackPanel>
 </UserControl>

@@ -156,17 +156,18 @@ namespace Badger.ViewModels
                         {
                             resultTrack = getTrack(expUnit.forkValues);
                             if (resultTrack != null)
-                            {
                                 //the track exists and we are using forks to group results
                                 resultTrack.addTrackData(expUnit.loadTrackData(variables));
-                            }
                         }
                         if (resultTrack==null) //New track
                         {
                             //No groups (each experimental unit is a track) or the track doesn't exist
                             //Either way, we create a new track
                             LogQueryResultTrackViewModel newResultTrack = new LogQueryResultTrackViewModel(exp.name);
-                            newResultTrack.forkValues = expUnit.forkValues;
+
+                            if (groupBy.Count==0) newResultTrack.forkValues = expUnit.forkValues;
+                            else foreach (string group in groupBy)
+                                    newResultTrack.forkValues[group] = expUnit.forkValues[group];
 
                             //if the in-group selection function requires a variable not selected for the report
                             //we add it too to the list of variables read from the log
@@ -181,12 +182,14 @@ namespace Badger.ViewModels
                             //load data from the log file
                             TrackData trackData = expUnit.loadTrackData(variables);
 
-                            //for now, we just ignore failed experiments. Maybe we could do something more sofisticated
-                            //to know, for example, what variations lead to failed experiments
+                            //for now, we just ignore failed experiments. Maybe we could do something more sophisticated
+                            //for example, allow to choose only those parameter variations that lead to failed experiments
                             if (trackData.bSuccesful)
                                 newResultTrack.addTrackData(trackData);
 
-                            resultTracks.Add(newResultTrack);
+                            //we only consider those tracks with data loaded
+                            if (newResultTrack.bHasData)
+                                resultTracks.Add(newResultTrack);
                         }
                     }
                 }

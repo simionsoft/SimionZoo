@@ -8,17 +8,23 @@
              xmlns:oxy="http://oxyplot.org/wpf"
             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
+        <BitmapImage UriSource="/images/settings.png" x:Key="settings"/>
+        <BitmapImage UriSource="/images/save.png" x:Key="save"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel HorizontalAlignment="Center">
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
         <oxy:PlotView Model="{Binding plot}" Width="580" Height="300"/>
-        <StackPanel Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
-            <ScrollViewer  VerticalScrollBarVisibility="Visible" CanContentScroll="True" Height="100" Width="580">
-                <ItemsControl x:Name="lineSeriesProperties"></ItemsControl>
-            </ScrollViewer>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
+            <Button x:Name="showProperties" Width="25" Height="25">
+                <Image Source="{StaticResource settings}" Width="22" Height="22"/>
+            </Button>
+            <Button x:Name="saveImage" Width="25" Height="25">
+                <Image Source="{StaticResource save}" Width="22" Height="22"/>
+            </Button>
         </StackPanel>
+        
     </StackPanel>
 </UserControl>
