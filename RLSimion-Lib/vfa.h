@@ -93,6 +93,8 @@ public:
 	CLinearStateActionVFA()= default;
 	CLinearStateActionVFA(CConfigNode* pParameters);
 	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA); //used in double q-learning to get a copy of the target function
+	CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> pStateFeatureMap
+		, std::shared_ptr<CActionFeatureMap> pActionFeatureMap);
 
 	void setInitValue(double initValue);
 

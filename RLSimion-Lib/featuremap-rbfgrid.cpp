@@ -90,7 +90,7 @@ CGaussianRBFActionGridFeatureMap::CGaussianRBFActionGridFeatureMap(CConfigNode* 
 	m_totalNumFeatures = 1;
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_totalNumFeatures *= m_grid[i]->getNumCenters();// m_pNumCenters[i];
+		m_totalNumFeatures *= m_grid[i]->getNumCenters();
 
 	m_maxNumActiveFeatures = 1;
 	for (unsigned int i = 0; i<m_grid.size(); i++)

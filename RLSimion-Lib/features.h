@@ -49,12 +49,15 @@ public:
 	void add(unsigned int index, double value);
 
 	//spawn: all features (indices and values) are spawned by those in inList
-	//and ([2,3],[1,2,3]) => [2*indexOffset + 1, 2*indexOffset + 2, 2*indexOffset+3
+	//[2,3].spawn([1,2,3]) => [2*indexOffset + 1, 2*indexOffset + 2, 2*indexOffset+3
 	//                        , 3*indexOffset+1, 3*indexOffset+2, 3*indexOffset+3]
 	void spawn(const CFeatureList *inList, unsigned int indexOffset);
 
-	//adds an offset to all feature indices in a feature list. Used in State-Action-Function::argMax to make it faster
+	//adds an offset to all feature indices in a feature list.
 	void offsetIndices(int offset);
+
+	//multiplies all indices by a factor
+	void multIndices(int mult);
 
 	void applyThreshold(double threshold);
 	void normalize();

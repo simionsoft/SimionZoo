@@ -174,7 +174,11 @@ namespace Badger.ViewModels
         {
             if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLHeader());
-            outputChildrenXML(writer, mode,leftSpace + "  ");
+            //output children. If we are only exporting forks, we don't want to add indentations
+            if (mode == SaveMode.ForkHierarchy || mode==SaveMode.ForkValues)
+                outputChildrenXML(writer, mode, leftSpace);
+            else
+                outputChildrenXML(writer, mode,leftSpace + "  ");
             if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLFooter());
         }

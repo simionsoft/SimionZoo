@@ -121,7 +121,6 @@ namespace Badger.ViewModels
             //register this fork
             m_parentExperiment.forkRegistry.Add(newForkedNode);
 
-
             if (newForkedNode.children.Count>0)
                 newForkedNode.selectedForkValue = newForkedNode.children[0] as ForkValueViewModel;
             return newForkedNode;
@@ -155,20 +154,25 @@ namespace Badger.ViewModels
             }
             else if (mode == SaveMode.ForkHierarchy)
             {
-                writer.WriteLine("    <" + XMLConfig.forkTag + " "
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " "
                     + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
                     + "=\"" + alias + "\">");
                 foreach (ForkValueViewModel child in children)
-                    child.outputXML(writer, mode, "      ");
-                writer.WriteLine("    </" + XMLConfig.forkTag + ">");
+                    child.outputXML(writer, mode, leftSpace + "  ");
+                writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
             }
             else if( mode == SaveMode.ForkValues)
             {
-                writer.WriteLine("      <" + XMLConfig.forkTag + " "
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " "
                     + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
                     + "=\"" + alias + "\">");
-                selectedForkValue.outputXML(writer, mode, "        ");
-                writer.WriteLine("      </" + XMLConfig.forkTag + ">");
+                //we take this nasty shortcut to allow children to be exported, while keeping
+                //each fork value as an element in a list instead of nested values
+                writer.WriteLine(leftSpace + "  <" + XMLConfig.forkValueTag 
+                    + " " + XMLConfig.valueAttribute + "=\"" + selectedForkValue.configNode.content
+                    + "\"/>");
+                writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
+                selectedForkValue.outputXML(writer, mode, leftSpace);
             }
         }
 

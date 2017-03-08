@@ -24,6 +24,7 @@ namespace Badger.Simion
         public const string experimentalUnitNodeTag = "EXPERIMENTAL-UNIT"; //an experiment within a batch without any forks
         public const string experimentBatchNodeTag = "EXPERIMENT-BATCH";
         public const string appNodeTag = "APP";
+        public const string statisticsFileTag = "STATISTICS";
 
         //Class-level tags: BRANCH, CHOICE, CHOICE-ELEMENT, DOUBLE-VALUE, INTEGER-VALUE, STRING-VALUE
         //FILE-PATH-VALUE, DIR-PATH-VALUE, ENUM-VALUE, MULTI-VALUED, XML-NODE-REF
@@ -47,6 +48,8 @@ namespace Badger.Simion
         public const string stateVarTag = "STATE-VAR";
         public const string actionVarTag = "ACTION-VAR";
         public const string constantTag = "CONSTANT";
+        public const string statVariableTag = "VARIABLE";
+        public const string statVariableItemTag = "STATISTIC-ITEM";
         //Attributes
         public const string nameAttribute = "Name";
         public const string aliasAttribute = "Alias";
@@ -64,6 +67,8 @@ namespace Badger.Simion
         public const string unitAttribute = "Unit";
         public const string valueAttribute = "Value";
         public const string worldAttribute = "World";
+        public const string groupIdAttribute = "Group";
+        public const string trackIdAttribute = "Track";
         //Attribute special values
         public const string newWindowValue = "New";
         public const string exeNodeTag = "EXE";

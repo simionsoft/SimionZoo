@@ -220,20 +220,20 @@
   </CLASS>
   <CLASS Name="CQLearning">
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="True"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CDoubleQLearning">
     <INTEGER-VALUE Name="Target-Update-Freq" Comment="The number of steps between updates of the target Q-Function" Default="100"/>
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="True"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CSARSA">
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="True"/>
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>

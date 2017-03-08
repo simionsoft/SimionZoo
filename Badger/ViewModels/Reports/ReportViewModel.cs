@@ -1,4 +1,7 @@
-﻿using Caliburn.Micro;
+﻿using System;
+using Caliburn.Micro;
+using System.IO;
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {
@@ -37,7 +40,30 @@ namespace Badger.ViewModels
             set { m_selectedStat = value; NotifyOfPropertyChange(() => selectedStat); }
         }
 
-        public void export(string outputFolder) { }
+        public void export(string outputFolder)
+        {
+            //set culture as invariant to write numbers as in english
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+            //export plots
+            foreach (PlotViewModel plot in plots) plot.export(outputFolder);
+            //export stats
+            string statsFile = outputFolder + "\\" + name + ".xml";
+            try
+            {
+                using (StreamWriter fileWriter = File.CreateText(statsFile))
+                {
+                    fileWriter.WriteLine("<" + XMLConfig.statisticsFileTag + ">");
+                    foreach (StatsViewModel stat in stats) stat.export(fileWriter, "  ");
+                    fileWriter.WriteLine("</" + XMLConfig.statisticsFileTag + ">");
+                    fileWriter.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error exporting stats file: " + statsFile);
+                Console.Write(ex.ToString());
+            }
+        }
 
         private ReportsWindowViewModel m_parent { get; set; }
 
@@ -65,7 +91,7 @@ namespace Badger.ViewModels
                     if (trackData != null)
                     {
                         //code below can be improved: organize forks hierarchically instead of a single string
-                        StatViewModel trackStats = new StatViewModel(track.trackId);
+                        StatViewModel trackStats = new StatViewModel(track.groupId,track.trackId);
                         trackStats.lastEpisodeStats = trackData.lastEpisodeData.stats;
                         trackStats.experimentStats = trackData.experimentData.stats;
                         newStat.addStat(trackStats);
@@ -94,7 +120,7 @@ namespace Badger.ViewModels
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
-                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].trackId);
+                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].groupId);
                         for (int x = 0; x < query.resultTracks[i].trackData.realTime.Length; ++x)
                         {
                             newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x]
@@ -112,7 +138,7 @@ namespace Badger.ViewModels
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
-                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].trackId);
+                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].groupId);
                         for (int x = 0; x < variableData.experimentData.values.Length; ++x)
                         {
                             newPlot.addLineSeriesValue(lineSeriesId, x

@@ -199,7 +199,7 @@ namespace Badger.ViewModels
             if (groupBy.Count>0)
             {
                 foreach (LogQueryResultTrackViewModel track in resultTracks)
-                    track.consolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable);
+                    track.consolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
             }
 
             //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria

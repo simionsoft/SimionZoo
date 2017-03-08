@@ -211,11 +211,10 @@ double CLinearStateVFA::get(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLinearStateActionVFA::CLinearStateActionVFA(CConfigNode* pConfigNode)
+CLinearStateActionVFA::CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> pStateFeatureMap, std::shared_ptr<CActionFeatureMap> pActionFeatureMap)
 {
-	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
-
-	m_pActionFeatureMap = CSimGod::getGlobalActionFeatureMap();
+	m_pStateFeatureMap = pStateFeatureMap;
+	m_pActionFeatureMap = pActionFeatureMap;
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
@@ -228,44 +227,27 @@ CLinearStateActionVFA::CLinearStateActionVFA(CConfigNode* pConfigNode)
 	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
 	//this is used in "lower-level" methods
 	m_pAux2 = new CFeatureList("LinearStateActionVFA/aux2");
-
-	m_initValue= DOUBLE_PARAM(pConfigNode, "Init-Value","The initial value given to the weights on initialization", 0.0);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
 }
 
-CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA)
+CLinearStateActionVFA::CLinearStateActionVFA(CConfigNode* pConfigNode)
+	:CLinearStateActionVFA(CSimGod::getGlobalStateFeatureMap(),CSimGod::getGlobalActionFeatureMap())
 {
-	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
-	m_pActionFeatureMap = CSimGod::getGlobalActionFeatureMap();
+	m_initValue= DOUBLE_PARAM(pConfigNode, "Init-Value","The initial value given to the weights on initialization", 0.0);
+}
 
-	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
-	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
-	m_numWeights = m_numStateWeights * m_numActionWeights;
-	m_pWeights = 0;
-	m_minIndex = 0;
-	m_maxIndex = m_numWeights;
-
-	//this is used in "high-level" methods
-	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
-	//this is used in "lower-level" methods
-	m_pAux2 = new CFeatureList("LinearStateActionVFA/aux2");
-
+CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA)
+	: CLinearStateActionVFA(CSimGod::getGlobalStateFeatureMap(), CSimGod::getGlobalActionFeatureMap())
+{
 	m_initValue = pSourceVFA->m_initValue;
-
-	m_bSaturateOutput = false;
-	m_minOutput = 0.0;
-	m_maxOutput = 0.0;
 }
 
 CLinearStateActionVFA::~CLinearStateActionVFA()
 {
 	//now SimGod owns the feature maps -> his responsability to free memory
-	//delete m_pStateFeatureMap;
-	//delete m_pActionFeatureMap;
-
 	delete m_pAux;
 	delete m_pAux2;
 }
@@ -284,16 +266,13 @@ void CLinearStateActionVFA::deferredLoadStep()
 
 void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
 {
-	unsigned int oldindex;
 	assert(outFeatures);
 
 	if (a)
 	{
 		m_pStateFeatureMap->getFeatures(s, outFeatures);
-		oldindex = outFeatures->m_pFeatures[0].m_index;
 
 		m_pActionFeatureMap->getFeatures(a, m_pAux2);
-		assert(outFeatures->m_pFeatures[0].m_index == oldindex);
 
 		outFeatures->spawn(m_pAux2, m_numStateWeights);
 

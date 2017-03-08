@@ -169,7 +169,7 @@
     <Compile Include="Views\Reports\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\LoggedVariableView.xaml.cs">
+    <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MonitoredExperimentView.xaml.cs">
@@ -316,7 +316,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoggedVariableView.xaml">
+    <Page Include="Views\Reports\LoggedVariableView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

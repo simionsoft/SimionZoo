@@ -11,10 +11,14 @@ d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal">
-        <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
-                  Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
-        <Label x:Name="value" FontSize="8" FontFamily="Segoe UI Light"/>
-    </StackPanel>
-  
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal">
+            <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
+                      Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
+            <Label x:Name="value" FontSize="8" FontFamily="Segoe UI Light"/>
+        </StackPanel>
+        <StackPanel>
+            <ItemsControl x:Name="forks" Margin="-17,0,0,0" Visibility="{Binding Path=bHasForks,Converter={StaticResource BoolToVis}}"/>
+        </StackPanel>
+    </StackPanel>  
 </UserControl>

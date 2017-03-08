@@ -84,7 +84,7 @@ namespace Badger.ViewModels
     {
         //data read fromm the log files: might be more than one track before applying a group function
         private List<TrackData> m_trackData = new List<TrackData>();
-        //public merged track data: cannot be accessed before calling merge()
+        //public merged track data: cannot be accessed before calling consolidateGroups()
         public TrackData trackData
         {
             get { if (m_trackData.Count == 1) return m_trackData[0]; return null; }
@@ -118,9 +118,15 @@ namespace Badger.ViewModels
                 {
                     id += entry.Key + "=" + entry.Value + ",";
                 }
-                id.TrimEnd(',');
+                id= id.Trim(',');
                 return id;
             }
+        }
+        private string m_groupId = null;
+        public string groupId
+        {
+            get { if (m_groupId!=null) return m_groupId; return trackId; }
+            set { m_groupId = value;  NotifyOfPropertyChange(()=>groupId); }
         }
 
         public void addTrackData(TrackData newTrackData)
@@ -129,7 +135,7 @@ namespace Badger.ViewModels
         }
 
         //this function selects a unique track fromm each group (if there's more than one track)
-        public void consolidateGroups(string function,string variable)
+        public void consolidateGroups(string function,string variable,List<string> groupBy)
         {
             if (m_trackData.Count>1)
             {
@@ -155,6 +161,19 @@ namespace Badger.ViewModels
                 m_trackData.Clear();
                 m_trackData.Add(selectedTrack);
                 forkValues = selectedTrack.forkValues;
+
+                if (groupBy.Count>0)
+                {
+                    //we remove those forks used to group from the forkValues
+                    //because *hopefully* we only use them to name the track
+                    m_groupId = "";
+                    foreach (string group in groupBy)
+                    {
+                        m_groupId += group + "=" + forkValues[group] + ",";
+                        forkValues.Remove(group);
+                    }
+                    groupId = m_groupId.TrimEnd(',');
+                }
             }
         }
     }

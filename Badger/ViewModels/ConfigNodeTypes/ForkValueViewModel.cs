@@ -41,16 +41,19 @@ namespace Badger.ViewModels
         public override void outputXML(StreamWriter writer, SaveMode mode,string leftSpace)
         {
             //header
-            if (mode == SaveMode.AsProject || mode==SaveMode.ForkHierarchy || mode==SaveMode.ForkValues)
+            if (mode == SaveMode.AsProject)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + ">" + configNode.content
                     + "</" + XMLConfig.forkValueTag + ">");
+            if (mode == SaveMode.ForkHierarchy)
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag
+                    + " " + XMLConfig.valueAttribute + "=\"" + configNode.content + "\">");
             if (mode==SaveMode.AsExperiment)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
                     + name + "\">");
             //body: children
             configNode.outputXML(writer, mode,leftSpace + "  ");
             //footer
-            if (mode==SaveMode.AsExperiment)
+            if (mode==SaveMode.AsExperiment || mode==SaveMode.ForkHierarchy)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
         }
 

@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 		{
 			pApp->setOutputDirectory(argv[1]);
 			//remote execution?? Most likely yes if an output pipename has been given
-			if (pPipename) pApp->setRemoteExecution(true);
+			if (pPipename) pApp->setExecutedRemotely(true);
 
 			if (CSimionApp::flagPassed(argc,argv,"printIOfiles"))
 				pApp->printInputOutputFiles();

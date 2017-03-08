@@ -1,6 +1,6 @@
 ﻿using System;
-using Badger.Simion;
 using System.Collections.Generic;
+using Badger.Simion;
 
 namespace SimionSrcParser
 {

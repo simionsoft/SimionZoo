@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Dynamic;
 using System.Windows;
 using Caliburn.Micro;
@@ -42,7 +38,7 @@ namespace Badger.Data
         public static string selectFolder(string initialDirectory)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.SelectedPath = initialDirectory;
+            fbd.SelectedPath = Path.Combine(Directory.GetCurrentDirectory(), initialDirectory);
 
             if (fbd.ShowDialog() == DialogResult.OK)
             {

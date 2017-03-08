@@ -41,8 +41,8 @@ public:
 	static bool flagPassed(int argc, char** argv, char* flagName);
 
 	//is this app being run remotely?
-	bool getRemoteExecution() { return m_bRemoteExecution; }
-	void setRemoteExecution(bool bRemote) { m_bRemoteExecution = bRemote; }
+	bool isExecutedRemotely() { return m_bRemoteExecution; }
+	void setExecutedRemotely(bool bRemote) { m_bRemoteExecution = bRemote; }
 
 	virtual void run()= 0;
 };

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Badger.Simion;
 using System.Text.RegularExpressions;
+using Badger.Simion;
 
 namespace SimionSrcParser
 {

@@ -226,3 +226,10 @@ void CFeatureList::offsetIndices(int offset)
 	for (unsigned int i = 0; i < m_numFeatures; i++)
 		m_pFeatures[i].m_index += offset;
 }
+
+void CFeatureList::multIndices(int mult)
+{
+	if (mult <=1) return;
+	for (unsigned int i = 0; i < m_numFeatures; i++)
+		m_pFeatures[i].m_index *= mult;
+}

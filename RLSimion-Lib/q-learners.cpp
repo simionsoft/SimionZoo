@@ -68,6 +68,7 @@ void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 
 	unsigned int numActionWeights = pQFunction->getNumActionWeights();
 	//allocate the probability array if we have to
+	//we don't use DeferredLoadStep, because we need pQFunction
 	if (!m_pProbabilities)
 	{
 		if (numActionWeights > 0)
@@ -82,16 +83,16 @@ void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 		m_pProbabilities[i] = exp(m_pProbabilities[i] * inv_tau);
 		sum += m_pProbabilities[i];
 	}
-	sum = 1.0 / sum;
-	double randomValue = getRandomValue();
-	double searchSum = m_pProbabilities[0] * sum;
+
+	double randomValue = getRandomValue() * sum;
+	double searchSum = m_pProbabilities[0];
 	i= 1;
 	while (randomValue>searchSum && i<numActionWeights - 1)
 	{
-		searchSum += m_pProbabilities[i] * sum;
+		searchSum += m_pProbabilities[i];
 		i++;
 	}
-	pQFunction->getActionFeatureMap()->getFeatureAction(i, a);
+	pQFunction->getActionFeatureMap()->getFeatureAction(i-1, a);
 	assert(i < numActionWeights);
 }
 
@@ -102,7 +103,7 @@ CQLearning::CQLearning(CConfigNode* pConfigNode)
 {
 	m_pQFunction= CHILD_OBJECT<CLinearStateActionVFA>(pConfigNode, "Q-Function", "The parameterization of the Q-Function");
 	m_pQPolicy= CHILD_OBJECT_FACTORY<CQPolicy>(pConfigNode, "Policy", "The policy to be followed");
-	m_eTraces= CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "E-Traces");
+	m_eTraces= CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "E-Traces",true);
 	m_eTraces->setName("Q-Learning/traces");
 	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain [0-1]");
 	m_pAux = new CFeatureList("QLearning/aux");

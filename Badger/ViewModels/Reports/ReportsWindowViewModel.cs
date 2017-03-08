@@ -1,6 +1,6 @@
 ﻿using System.Xml;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
+using System.IO;
 using Badger.Data;
 using Caliburn.Micro;
 
@@ -282,12 +282,25 @@ namespace Badger.ViewModels
 
         public void saveReports()
         {
-            string outputFolder= CaliburnUtility.selectFolder(SimionFileData.imageRelativeDir);
-            if (outputFolder!="")
+            if (m_reports.Count == 0) return;
+
+            string outputBaseFolder=
+                CaliburnUtility.selectFolder(SimionFileData.imageRelativeDir);
+
+            if (outputBaseFolder!="")
             { 
-                foreach(ReportViewModel plot in m_reports)
+                foreach(ReportViewModel report in m_reports)
                 {
-                    plot.export(outputFolder);
+                    //if there is more than one report, we store each one in a subfolder
+                    string outputFolder;
+                    if (m_reports.Count > 1)
+                    {
+                        outputFolder = outputBaseFolder + "\\" + Utility.removeSpecialCharacters(report.name);
+                        Directory.CreateDirectory(outputFolder);
+                    }
+                    else outputFolder = outputBaseFolder;
+
+                    report.export(outputFolder);
                 }
             }
         }

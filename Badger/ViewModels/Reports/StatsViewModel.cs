@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using Caliburn.Micro;
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {
@@ -31,39 +32,19 @@ namespace Badger.ViewModels
             stats.Add(newStat);
         }
 
-        public void export(string outputFolder)
+        public void export(StreamWriter fileWriter, string leftSpace)
         {
-            string outputFilename = outputFolder + "\\" + m_parent.name + ".xml";
-            try
+            fileWriter.WriteLine(leftSpace + "<" + XMLConfig.statVariableTag 
+                + " " + XMLConfig.nameAttribute + "=\"" + variable + "\">");
+            foreach(StatViewModel stat in stats)
             {
-                StreamWriter fileWriter = File.CreateText(outputFilename);
-                fileWriter.WriteLine("<Stats>");
-                foreach(StatViewModel stat in stats)
-                {
-                    fileWriter.WriteLine("  <Item Name=\"" + stat.name
-                        + "\" Variable=\"" + stat.variable + "/>");
-                    fileWriter.WriteLine("    <Last-Episode>");
-                    fileWriter.WriteLine("      <Avg=\"" + stat.lastEpisodeStats.avg + "\"/>");
-                    fileWriter.WriteLine("      <StdDev=\"" + stat.lastEpisodeStats.stdDev + "\"/>");
-                    fileWriter.WriteLine("      <Max=\"" + stat.lastEpisodeStats.max + "\"/>");
-                    fileWriter.WriteLine("      <Min=\"" + stat.lastEpisodeStats.min + "\"/>");
-                    fileWriter.WriteLine("    </Last-Episode>");
-                    fileWriter.WriteLine("    <Experiment>");
-                    fileWriter.WriteLine("      <Avg=\"" + stat.experimentStats.avg + "\"/>");
-                    fileWriter.WriteLine("      <StdDev=\"" + stat.experimentStats.stdDev + "\"/>");
-                    fileWriter.WriteLine("      <Max=\"" + stat.experimentStats.max + "\"/>");
-                    fileWriter.WriteLine("      <Min=\"" + stat.experimentStats.min + "\"/>");
-                    fileWriter.WriteLine("    </Experiment>");
-                    fileWriter.WriteLine("  </Item>");
-                }
-                fileWriter.WriteLine("</Stats>");
-                fileWriter.Close();
+                fileWriter.WriteLine(leftSpace + "  <" + XMLConfig.statVariableItemTag 
+                    + " " + XMLConfig.groupIdAttribute + "=\"" + stat.groupId + "\" "
+                    + XMLConfig.trackIdAttribute + "=\"" + stat.trackId + "\">");
+                stat.export(fileWriter, leftSpace + "    ");
+                fileWriter.WriteLine(leftSpace + "  </" + XMLConfig.statVariableItemTag + ">");
             }
-            catch(Exception ex)
-            {
-                Console.WriteLine("Error exporting stats file: " + outputFilename);
-                Console.Write(ex.ToString());
-            }
+            fileWriter.WriteLine(leftSpace + "</" + XMLConfig.statVariableTag + ">");
         }
     }
 }

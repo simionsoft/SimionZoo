@@ -6,6 +6,7 @@ using Herd;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.IO;
 
 namespace Badger.Data
 {
@@ -138,6 +139,16 @@ namespace Badger.Data
             {
                 int index = filename.LastIndexOf('.');
                 filename = filename.Remove(index);
+            }
+            return filename;
+        }
+        public static string removeSpecialCharacters(string filename)
+        {
+            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+
+            foreach (char c in invalid)
+            {
+                filename = filename.Replace(c.ToString(), "");
             }
             return filename;
         }
