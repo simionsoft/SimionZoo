@@ -50,3 +50,14 @@ public:
 	double unscale(double noise);
 	double get();
 };
+
+class COrlsteinUhlenbeckNoise : public CNoise
+{
+	DOUBLE_PARAM m_theta, m_sigma,m_mu;
+public:
+	COrlsteinUhlenbeckNoise(CConfigNode* pParameters);
+	~COrlsteinUhlenbeckNoise();
+	double getSigma();
+	double unscale(double noise);
+	double get();
+};

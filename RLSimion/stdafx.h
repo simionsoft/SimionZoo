@@ -15,12 +15,3 @@
 #include <stdio.h>
 #include <exception>
 
-#ifdef _DEBUG
-#pragma comment (lib,"../Debug/RLSimion-Lib.lib")
-#pragma comment (lib,"../Debug/tinyxml2.lib")
-#pragma comment(lib,"../Debug/WindowsUtils.lib")
-#else
-#pragma comment (lib,"../bin/RLSimion-Lib.lib")
-#pragma comment (lib,"../bin/tinyxml2.lib")
-#pragma comment(lib,"../bin/WindowsUtils.lib")
-#endif

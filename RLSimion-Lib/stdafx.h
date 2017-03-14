@@ -6,7 +6,7 @@
 #pragma once
 
 #include "targetver.h"
-#include "../tinyxml2/tinyxml2.h"
+#include "../3rd-party/tinyxml2/tinyxml2.h"
 
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 

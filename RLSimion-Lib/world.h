@@ -9,7 +9,7 @@ class CDynamicModel;
 class CConfigNode;
 class CRewardFunction;
 
-#include "../tinyxml2/tinyxml2.h"
+#include "../3rd-party/tinyxml2/tinyxml2.h"
 #include "parameters.h"
 #include "named-var-set.h"
 

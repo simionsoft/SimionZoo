@@ -5,11 +5,7 @@
 #include "FASTDimensionalPortalDLL.h"
 #include "FASTWorldPortal.h"
 #include "../../tinyxml2/tinyxml2.h"
-#if _DEBUG
-	#pragma comment(lib,"../../Debug/tinyxml2.lib")
-#else
-	#pragma comment(lib,"../../bin/tinyxml2.lib")
-#endif
+
 
 #define NINT(a) ((a) >= 0.0 ? (int)((a)+0.5) : (int)((a)-0.5))
 

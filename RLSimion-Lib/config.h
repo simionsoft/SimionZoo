@@ -1,6 +1,6 @@
 #pragma once
 //#include <list>
-#include "../tinyxml2/tinyxml2.h"
+#include "../3rd-party/tinyxml2/tinyxml2.h"
 class CConfigNode;
 
 

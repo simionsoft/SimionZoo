@@ -1,15 +1,7 @@
 #include "Stdafx.h"
 #include "FASTWorldPortal.h"
-#include "../../RLSimion-Lib/world-FAST.h"
-#if _DEBUG
-	#pragma comment(lib,"../../Debug/WindowsUtils.lib")
-	#pragma comment(lib,"../../Debug/RLSimion-Lib.lib")
-	#pragma comment(lib,"../../Debug/tinyxml2.lib")
-#else
-	#pragma comment(lib,"../../bin/WindowsUtils.lib")
-	#pragma comment(lib,"../../bin/RLSimion-Lib.lib")
-	#pragma comment(lib,"../../bin/tinyxml2.lib")
-#endif
+#include "../../../RLSimion-Lib/world-FAST.h"
+
 
 
 FASTWorldPortal::FASTWorldPortal()

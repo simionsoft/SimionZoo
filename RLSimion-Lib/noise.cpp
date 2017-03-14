@@ -3,6 +3,7 @@
 #include "config.h"
 #include "parameters-numeric.h"
 #include "app-rlsimion.h"
+#include <math.h>
 
 double getRandomValue()
 {
@@ -123,4 +124,36 @@ double CSinusoidalNoise::get()
 	double noise = m_scale->get()* wave;
 
 	return noise;
+}
+
+COrlsteinUhlenbeckNoise::COrlsteinUhlenbeckNoise(CConfigNode* pParameters)
+{
+	//https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
+	m_lastValue = 0.0;
+	m_mu = DOUBLE_PARAM(pParameters, "Mu", "Mean value of the generated noise", 0.0);
+	m_sigma = DOUBLE_PARAM(pParameters, "Sigma", "Degree of volatility around it caused by shocks", 0.0);
+	m_theta = DOUBLE_PARAM(pParameters, "Theta", "Rate by which noise shocks dissipate and the variable reverts towards the mean", 0.0);
+}
+
+COrlsteinUhlenbeckNoise::~COrlsteinUhlenbeckNoise()
+{}
+
+double COrlsteinUhlenbeckNoise::getSigma()
+{
+	return m_mu.get()*m_mu.get() /( 2 * m_theta.get());
+}
+double COrlsteinUhlenbeckNoise::unscale(double noise)
+{
+	//does this method really make sense????
+	return 1.0;
+}
+double COrlsteinUhlenbeckNoise::get()
+{
+	//http://math.stackexchange.com/questions/1287634/implementing-ornstein-uhlenbeck-in-matlab
+	//x(i + 1) = x(i) + th*(mu - x(i))*dt + sig*sqrt(dt)*randn;
+	double dt = CSimionApp::get()->pWorld->getDT();
+	double newNoise = m_lastValue + m_theta.get()*(m_mu.get() - m_lastValue)*dt
+		+ m_sigma.get()*sqrt(dt)*getNormalDistributionSample(0, 1);
+	m_lastValue = newNoise;
+	return newNoise;
 }

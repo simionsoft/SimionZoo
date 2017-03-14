@@ -4,15 +4,7 @@
 #include "../../../RLSimion-Lib/app-rlsimion.h"
 #include "../../../RLSimion-Lib/features.h"
 #include <iostream>
-#ifdef _DEBUG
-#pragma comment (lib,"../../../Debug/RLSimion-Lib.lib")
-#pragma comment (lib,"../../../Debug/tinyxml2.lib")
-#pragma comment (lib,"../../../Debug/WindowsUtils.lib")
-#else
-#pragma comment (lib,"../../../bin/RLSimion-Lib.lib")
-#pragma comment (lib,"../../../bin/tinyxml2.lib")
-#pragma comment (lib,"../../../bin/WindowsUtils.lib")
-#endif
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -49,7 +41,7 @@ namespace StateActionVFA
 			pFeatures->mult(100);
 			pVFA->add(pFeatures);
 
-			for (int i = 0; i < pFeatures->m_numFeatures; i++)
+			for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
 				pFeatures->m_pFeatures[i].m_factor = 1.0;
 			double value = pVFA->get(pFeatures);
 

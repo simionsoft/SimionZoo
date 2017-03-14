@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../RLSimion-Lib/named-var-set.h"
-#include "../../tools/WindowsUtils/NamedPipe.h"
+#include "../../../RLSimion-Lib/named-var-set.h"
+#include "../../../tools/WindowsUtils/NamedPipe.h"
 
 #include <map>
 
