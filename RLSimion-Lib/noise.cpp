@@ -51,6 +51,7 @@ std::shared_ptr<CNoise> CNoise::getInstance(CConfigNode* pConfigNode)
 	{
 		{"GaussianNoise",CHOICE_ELEMENT_NEW<CGaussianNoise>}
 		,{"SinusoidalNoise",CHOICE_ELEMENT_NEW<CSinusoidalNoise>}
+		,{"Orlstein-Uhlenbeck",CHOICE_ELEMENT_NEW<COrlsteinUhlenbeckNoise>}
 	}
 	);
 

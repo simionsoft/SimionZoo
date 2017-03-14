@@ -176,6 +176,7 @@
     <CHOICE Name="Noise" Class="CNoise" Comment="Noise type">
       <CHOICE-ELEMENT Name="GaussianNoise" Class="CGaussianNoise"/>
       <CHOICE-ELEMENT Name="SinusoidalNoise" Class="CSinusoidalNoise"/>
+      <CHOICE-ELEMENT Name="Orlstein-Uhlenbeck" Class="COrlsteinUhlenbeckNoise"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CConstantValue">

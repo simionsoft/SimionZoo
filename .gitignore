@@ -19,19 +19,21 @@ experiments/*
 [Dd]ebugPublic/
 **/[Rr]elease/*
 [Rr]eleases/
-!Release/msvcp120.dll
-!Release/msvcr120.dll
+[Bb]in/*
+**/[Bb]in/*
+!bin/msvcp120.dll
+!bin/msvcr120.dll
 !Debug/msvcp120d.dll
 !Debug/msvcr120d.dll
-!Release/msvcp140.dll
-!Release/vcruntime140.dll
+!bin/msvcp140.dll
+!bin/vcruntime140.dll
 !Debug/msvcp140d.dll
 !Debug/vcruntime140d.dll
 x64/
 x86/
 build/
 bld/
-[Bb]in/*
+
 
 [Oo]bj/
 [Ii]pch/
