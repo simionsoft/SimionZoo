@@ -19,7 +19,8 @@ CHILD_OBJECT_FACTORY<CDynamicModel> CWorld::m_pDynamicModel;
 CWorld::CWorld(CConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
-	m_t= 0.0;
+	m_episodeSimTime= 0.0;
+	m_totalSimTime = 0.0;
 
 	m_pDynamicModel=CHILD_OBJECT_FACTORY<CDynamicModel>(pConfigNode, "Dynamic-Model","The dynamic model");
 
@@ -37,14 +38,19 @@ double CWorld::getDT()
 	return m_dt.get();
 }
 
-double CWorld::getT()
+double CWorld::getEpisodeSimTime()
 {
-	return m_t;
+	return m_episodeSimTime;
 }
 
-double CWorld::getStepStartT()
+double CWorld::getTotalSimTime()
 {
-	return m_step_start_t;
+	return m_totalSimTime;
+}
+
+double CWorld::getStepStartSimTime()
+{
+	return m_stepStartSimTime;
 }
 
 CReward* CWorld::getRewardVector()
@@ -54,7 +60,7 @@ CReward* CWorld::getRewardVector()
 
 void CWorld::reset(CState *s)
 {
-	m_t= 0.0;
+	m_episodeSimTime= 0.0;
 	if (m_pDynamicModel.ptr())
 		m_pDynamicModel->reset(s);
 }
@@ -63,7 +69,7 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 {
 	double dt= m_dt.get()/(double)m_numIntegrationSteps.get();
 
-	m_step_start_t= m_t;
+	m_stepStartSimTime= m_episodeSimTime;
 
 	if (m_pDynamicModel.ptr())
 	{
@@ -71,7 +77,8 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 		for (int i= 0; i<m_numIntegrationSteps.get(); i++)
 		{
 			m_pDynamicModel->executeAction(s_p,a,dt);
-			m_t+= dt;
+			m_episodeSimTime+= dt;
+			m_totalSimTime += dt;
 		}
 	}
 	return m_pDynamicModel->getReward(s, a, s_p);

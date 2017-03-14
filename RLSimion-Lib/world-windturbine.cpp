@@ -287,8 +287,8 @@ void CWindTurbine::reset(CState *s)
 
 void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 {
-	s->set(m_sP_s, m_pPowerSetpoint->getPointSet(CSimionApp::get()->pWorld->getT()));
-	s->set(m_sV, m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getT()));
+	s->set(m_sP_s, m_pPowerSetpoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime()));
+	s->set(m_sV, m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime()));
 
 	//beta= beta + d(beta)/dt
 	double beta = s->get(m_sBeta);

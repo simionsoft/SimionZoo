@@ -162,6 +162,8 @@ namespace Badger.ViewModels
             simpleNodeAction(this);
         }
 
+        public virtual void onRemoved()
+        { }
     }
     abstract public class NestedConfigNode : ConfigNodeViewModel
     {
@@ -284,6 +286,11 @@ namespace Badger.ViewModels
         {
             foreach (ConfigNodeViewModel child in children)
                 child.setForkCombination(ref id,ref combinationName);
+        }
+
+        public override void onRemoved()
+        {
+            foreach (ConfigNodeViewModel child in children) child.onRemoved();
         }
     }
 

@@ -42,7 +42,7 @@ void CUnderwaterVehicle::reset(CState *s)
 
 void CUnderwaterVehicle::executeAction(CState *s,const CAction *a,double dt)
 {
-	double newSetpoint = m_pSetpoint->getPointSet(CSimionApp::get()->pWorld->getT());
+	double newSetpoint = m_pSetpoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
 	double v= s->get(m_sV);
 	double u= a->get(m_aUThrust); //thrust
 	double dot_v= (u*(-0.5*tanh((fabs((1.2+0.2*sin(fabs(v)))*v*fabs(v) - u) -30.0)*0.1) + 0.5) 

@@ -252,11 +252,11 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	}
 
 	//output episode log data
-	if (CSimionApp::get()->pWorld->getStepStartT() - m_lastLogSimulationT >= m_logFreq.get()
+	if (CSimionApp::get()->pWorld->getStepStartSimTime() - m_lastLogSimulationT >= m_logFreq.get()
 		|| CSimionApp::get()->pExperiment->isFirstStep() || CSimionApp::get()->pExperiment->isLastStep())
 	{
 		writeStepData(s, a, s_p, r);
-		m_lastLogSimulationT = CSimionApp::get()->pWorld->getStepStartT();
+		m_lastLogSimulationT = CSimionApp::get()->pWorld->getStepStartSimTime();
 	}
 }
 
@@ -314,7 +314,7 @@ int CLogger::writeStepHeaderToBuffer(char* buffer, int offset)
 	StepHeader header;
 	header.stepIndex = CSimionApp::get()->pExperiment->getStep();
 	header.episodeRealTime = m_pEpisodeTimer->getElapsedTime();
-	header.episodeSimTime = CSimionApp::get()->pWorld->getT();
+	header.episodeSimTime = CSimionApp::get()->pWorld->getEpisodeSimTime();
 	header.experimentRealTime = m_pExperimentTimer->getElapsedTime();
 
 	memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));

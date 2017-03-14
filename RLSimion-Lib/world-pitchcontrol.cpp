@@ -57,7 +57,7 @@ void CPitchControl::executeAction(CState *s, const CAction *a, double dt)
 	
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		setpoint_pitch = m_pSetpoint->getPointSet(CSimionApp::get()->pWorld->getT());
+		setpoint_pitch = m_pSetpoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
 		s->set(m_sSetpointPitch, setpoint_pitch);
 	}
 	else

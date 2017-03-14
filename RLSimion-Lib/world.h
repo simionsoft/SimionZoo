@@ -55,13 +55,17 @@ class CWorld
 	static CHILD_OBJECT_FACTORY<CDynamicModel> m_pDynamicModel;
 	INT_PARAM m_numIntegrationSteps;
 	DOUBLE_PARAM m_dt;
-	double m_t;
-	double m_step_start_t;
+
+	//these times below are based on dt, that is, simulated time, not real time
+	double m_episodeSimTime; // simulated time since the episode started
+	double m_totalSimTime; // simulated time since the experiment started
+	double m_stepStartSimTime; // the simulated time when last step started
 
 public:
 	double getDT();
-	double getT();
-	double getStepStartT();
+	double getEpisodeSimTime();
+	double getTotalSimTime();
+	double getStepStartSimTime();
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel.ptr(); }
 
 	CWorld(CConfigNode* pConfigNode);

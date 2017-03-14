@@ -272,5 +272,9 @@ namespace Badger.ViewModels
                 currentValue.setForkCombination(ref id, ref combinationName);
         }
 
+        public override void onRemoved()
+        {
+            m_parentExperiment.forkRegistry.Remove(this);
+        }
     }
 }

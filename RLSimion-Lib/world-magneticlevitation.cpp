@@ -77,9 +77,9 @@ void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
 	double setpoint;
 	
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
-		setpoint = m_pEvalSetPoint->getPointSet(CSimionApp::get()->pWorld->getT());
+		setpoint = m_pEvalSetPoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
 	else
-		setpoint = m_pLearnSetPoint->getPointSet(CSimionApp::get()->pWorld->getT());
+		setpoint = m_pLearnSetPoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
 
 
 

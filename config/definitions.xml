@@ -163,9 +163,14 @@
     <DOUBLE-VALUE Name="Alpha" Comment="Low-pass first-order filter's gain [0...1]. 1=no filter" Default="1.0"/>
     <BRANCH Name="Scale" Class="CNumericValue-Factory" Comment="Scale factor applied to the noise signal before adding it to the policy's output"/>
   </CLASS>
+  <CLASS Name="CSinusoidalNoise">
+    <DOUBLE-VALUE Name="Time-Frequency" Comment="Frequency of the signal in 1/simulation seconds" Default="0.5"/>
+    <BRANCH Name="Amplitude-Scale" Class="CNumericValue-Factory" Comment="Scaling factor applied to the sinusoidal"/>
+  </CLASS>
   <CLASS Name="CNoise-Factory">
     <CHOICE Name="Noise" Class="CNoise" Comment="Noise type">
       <CHOICE-ELEMENT Name="GaussianNoise" Class="CGaussianNoise"/>
+      <CHOICE-ELEMENT Name="SinusoidalNoise" Class="CSinusoidalNoise"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CConstantValue">

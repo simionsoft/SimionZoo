@@ -13,7 +13,10 @@ namespace Badger.ViewModels
         public ConfigNodeViewModel selectedChoice
         {
             get { return m_selectedChoice; }
-            set { m_selectedChoice = value;
+            set {
+                if (m_selectedChoice != null)
+                    m_selectedChoice.onRemoved(); //this is called to unregister forks beneath this node
+                m_selectedChoice = value;
                 NotifyOfPropertyChange(() => selectedChoice); }
         }
         public string selectedChoiceName

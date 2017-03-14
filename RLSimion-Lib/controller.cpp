@@ -103,7 +103,7 @@ int CPIDController::getOutputActionIndex(int output)
 
 void CPIDController::selectAction(const CState *s, CAction *a)
 {
-	if (CSimionApp::get()->pWorld->getT()== 0.0)
+	if (CSimionApp::get()->pWorld->getEpisodeSimTime()== 0.0)
 		m_intError= 0.0;
 
 	double error= s->get(m_errorVariableIndex.get());
@@ -351,9 +351,9 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	//Filter the generator speed
 	double lowPassFilterAlpha;
 
-	double time = CSimionApp::get()->pWorld->getT();
+	double time = CSimionApp::get()->pWorld->getEpisodeSimTime();
 
-	if (CSimionApp::get()->pWorld->getT() == 0.0)
+	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 	{
 		lowPassFilterAlpha= 1.0;
 		m_GenSpeedF= s->get(m_omega_g);

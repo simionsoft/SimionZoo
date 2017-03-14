@@ -76,12 +76,12 @@ void foo()
 
 //class CFoo
 //{
-//	CTemplatedConfigFile m_t;
+//	CTemplatedConfigFile m_episodeSimTime;
 //public :
 //	CFoo()
 //	{
-//		m_t.instantiateConfigFile("a.txt", 2.3);
-//		m_t.instantiateConfigFile("a.txt", 2.3, 5.2, "ajal");
+//		m_episodeSimTime.instantiateConfigFile("a.txt", 2.3);
+//		m_episodeSimTime.instantiateConfigFile("a.txt", 2.3, 5.2, "ajal");
 //	}
 //};
 
