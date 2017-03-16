@@ -71,15 +71,18 @@ namespace Badger.ViewModels
         {
             m_plot.InvalidatePlot(true);
         }
-        
+        private object m_lineSeriesLock = new object();
         public int addLineSeries(string title)
         {
-            OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
-            m_plot.Series.Add(newSeries);
+            lock (m_lineSeriesLock)
+            {
+                OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+                m_plot.Series.Add(newSeries);
 
-            properties.addLineSeries(title, newSeries, this);
+                properties.addLineSeries(title, newSeries, this);
 
-            return m_plot.Series.Count-1;
+                return m_plot.Series.Count - 1;
+            }
         }
         public void addLineSeriesValue(int seriesIndex,double xValue, double yValue)
         {

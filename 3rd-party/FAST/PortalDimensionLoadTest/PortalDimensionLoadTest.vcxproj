@@ -163,6 +163,11 @@
     </ClCompile>
     <ClCompile Include="loadTest.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FASTDimensionalPortalDLL\FASTDimensionalPortalDLL.vcxproj">
+      <Project>{53399a66-b859-4cb6-bcac-a9a15b80dfd4}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

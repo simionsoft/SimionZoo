@@ -7,6 +7,7 @@
 #include "world.h"
 #include "features.h"
 #include "policy.h"
+#include "app-rlsimion.h"
 
 std::shared_ptr<CPolicy> CPolicy::getInstance(CConfigNode* pConfigNode)
 {
@@ -74,7 +75,11 @@ void CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a
 
 double CDeterministicPolicyGaussianNoise::getOutput(const CState* s)
 {
-	double noise = m_pExpNoise->get();
+	double noise;
+	
+	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+		noise= m_pExpNoise->get();
+	else noise = 0.0;
 
 	double output = m_pDeterministicVFA->get(s);
 
