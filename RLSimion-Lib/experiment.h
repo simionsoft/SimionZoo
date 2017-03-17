@@ -35,13 +35,14 @@ class CExperiment
 	INT_PARAM m_randomSeed;
 
 	//episode stuff
-	DOUBLE_PARAM m_episodeLength;
-	unsigned int m_totalNumEpisodes;
-	INT_PARAM m_numTrainingEpisodes;
-	unsigned int m_numEvaluationEpisodes;
-	INT_PARAM m_evalFreq;
+	DOUBLE_PARAM m_episodeLength;			//length in seconds of an episode
+	unsigned int m_totalNumEpisodes;		//total number of episodes (training + evaluation)
+	INT_PARAM m_numTrainingEpisodes;		//total number of training episodes
+	unsigned int m_numEvaluationEpisodes;	//total number of evaluation episodes
+	INT_PARAM m_evalFreq;					//frequeny (in episodes) at which an evaluation episode will be done
 	//steps
 	unsigned int m_numSteps;
+	unsigned int m_experimentStep;
 	bool m_bTerminalState;
 
 	DOUBLE_PARAM m_progUpdateFreq; //in seconds: time between progress updates
@@ -55,7 +56,6 @@ public:
 	virtual ~CExperiment();
 
 	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }
-
 
 	//STEP
 	bool isValidStep();
@@ -86,6 +86,7 @@ public:
 	unsigned int getNumTrainingEpisodes(){ return m_numTrainingEpisodes.get(); }
 	unsigned int getTotalNumEpisodes(){ return m_totalNumEpisodes; }
 	unsigned int getNumSteps(){ return m_numSteps; }
+	unsigned int getExperimentStep() { return m_experimentStep; } //returns the current step since the experiment began
 	void setNumSteps(unsigned int numSteps){ m_numSteps = numSteps; }
 
 	double getExperimentProgress(); //[0,1]

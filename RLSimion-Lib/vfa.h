@@ -17,7 +17,7 @@ class CConfigFile;
 
 class CLinearVFA
 {
-
+	CFeatureList *m_pDeferredUpdates;
 protected:
 
 	std::shared_ptr<double> m_pWeights= nullptr;
@@ -26,14 +26,20 @@ protected:
 	bool m_bSaturateOutput;
 	double m_minOutput, m_maxOutput;
 
+	bool m_bCanUseDeferredUpdates= false;
+
 	unsigned int m_minIndex;
 	unsigned int m_maxIndex;
 public:
-	CLinearVFA() = default;
-	virtual ~CLinearVFA() = default;
-	double get(const CFeatureList *features);
+	CLinearVFA();
+	virtual ~CLinearVFA();
+	double get(const CFeatureList *features,bool bUseDeferredUpdates= false);
 	double *getWeightPtr(){ return m_pWeights.get(); }
 	unsigned int getNumWeights(){ return m_numWeights; }
+
+	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates) { m_bCanUseDeferredUpdates = bCanUseDeferredUpdates; }
+	
+	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 
 	void saturateOutput(double min, double max);
 
@@ -54,7 +60,6 @@ protected:
 public:
 	CLinearStateVFA();
 	CLinearStateVFA(CConfigNode* pParameters);
-	//CLinearStateVFA(CLinearStateVFA* pSourceVFA);
 
 	void setInitValue(double initValue);
 
@@ -64,10 +69,8 @@ public:
 
 	void getFeatures(const CState* s,CFeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, CState* s);
-	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 
 	void save(const char* pFilename) const;
-	//void load(const char* pFilename);
 
 	std::shared_ptr<CStateFeatureMap> getStateFeatureMap(){ return m_pStateFeatureMap; }
 };
@@ -114,11 +117,6 @@ public:
 	//features are built using the two feature maps: the state and action feature maps
 	//the input is a feature in state-action space
 	void getFeatureStateAction(unsigned int feature,CState* s, CAction* a);
-
-	void add(const CFeatureList* pFeatures, double alpha = 1.0);
-
-	void save(const char* pFilename) const;
-	void load(const char* pFilename);
 
 	void deferredLoadStep();
 };

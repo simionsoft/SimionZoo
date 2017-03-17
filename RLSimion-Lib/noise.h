@@ -27,11 +27,12 @@ public:
 
 class CGaussianNoise: public CNoise
 {
-	DOUBLE_PARAM m_pSigma;
-	DOUBLE_PARAM m_pAlpha;
+	DOUBLE_PARAM m_sigma;
+	DOUBLE_PARAM m_alpha;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_scale;
 public:
 	CGaussianNoise(CConfigNode* pParameters);
+	CGaussianNoise(double sigma, double alpha, CNumericValue* scale);
 	~CGaussianNoise()= default;
 	double getSigma();
 	double unscale(double noise);
@@ -45,6 +46,7 @@ class CSinusoidalNoise : public CNoise
 	DOUBLE_PARAM m_timeFreq;
 public:
 	CSinusoidalNoise(CConfigNode* pParameters);
+	CSinusoidalNoise(CNumericValue* scale, double timeFreq);
 	~CSinusoidalNoise() = default;
 	double getSigma();
 	double unscale(double noise);
@@ -54,8 +56,10 @@ public:
 class COrlsteinUhlenbeckNoise : public CNoise
 {
 	DOUBLE_PARAM m_theta, m_sigma,m_mu;
+	double m_dt;
 public:
 	COrlsteinUhlenbeckNoise(CConfigNode* pParameters);
+	COrlsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt);
 	~COrlsteinUhlenbeckNoise();
 	double getSigma();
 	double unscale(double noise);

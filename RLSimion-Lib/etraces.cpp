@@ -4,7 +4,7 @@
 #include "config.h"
 #include "app.h"
 
-CETraces::CETraces(CConfigNode* pConfigNode)
+CETraces::CETraces(CConfigNode* pConfigNode): CFeatureList("ETraces")
 {
 	if (pConfigNode)
 	{
@@ -15,18 +15,16 @@ CETraces::CETraces(CConfigNode* pConfigNode)
 		//CONST_DOUBLE_VALUE(m_lambda,"Lambda",0.9,"Lambda parameter");
 		m_bReplace= BOOL_PARAM(pConfigNode,"Replace", "Replace existing traces? Or add?",true);
 		//ENUM_VALUE(replace, Boolean, "Replace", "True","Replace existing traces? Or add?");
-		m_bReplaceIfExists = m_bReplace.get();
-		m_bAddIfExists = !m_bReplaceIfExists;
+		if (m_bReplace.get()) m_overwriteMode = OverwriteMode::Replace;
+		else m_overwriteMode = OverwriteMode::Add;
 	}
 
 }
 
-CETraces::CETraces()
+CETraces::CETraces():CFeatureList("ETraces")
 {
 	m_bUse = false;
-
-	m_bReplaceIfExists = false;
-	m_bAddIfExists = false;
+	m_overwriteMode = OverwriteMode::Replace;
 }
 
 CETraces::~CETraces()

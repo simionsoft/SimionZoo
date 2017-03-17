@@ -60,17 +60,23 @@ std::shared_ptr<CNoise> CNoise::getInstance(CConfigNode* pConfigNode)
 
 CGaussianNoise::CGaussianNoise(CConfigNode* pConfigNode)
 {
-	m_pSigma = DOUBLE_PARAM(pConfigNode, "Sigma", "Width of the gaussian bell",1.0);
-	m_pAlpha = DOUBLE_PARAM(pConfigNode, "Alpha", "Low-pass first-order filter's gain [0...1]. 1=no filter",1.0);
+	m_sigma = DOUBLE_PARAM(pConfigNode, "Sigma", "Width of the gaussian bell",1.0);
+	m_alpha = DOUBLE_PARAM(pConfigNode, "Alpha", "Low-pass first-order filter's gain [0...1]. 1=no filter",1.0);
 	m_scale = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Scale", "Scale factor applied to the noise signal before adding it to the policy's output");
 }
 
+CGaussianNoise::CGaussianNoise(double sigma, double alpha, CNumericValue* scale)
+{
+	m_sigma.set(sigma);
+	m_alpha.set(alpha);
+	m_scale= CHILD_OBJECT_FACTORY<CNumericValue>(scale);
+}
 
 double CGaussianNoise::get()
 {
 	double randValue = 0.0;
-	double sigma = m_pSigma.get();
-	double alpha = m_pAlpha.get();
+	double sigma = m_sigma.get();
+	double alpha = m_alpha.get();
 
 	if (sigma > 0.00000000001)
 		randValue = getNormalDistributionSample(0.0,sigma);
@@ -87,7 +93,7 @@ double CGaussianNoise::get()
 
 double CGaussianNoise::getSigma()
 {
-	return m_pSigma.get(); 
+	return m_sigma.get(); 
 }
 
 double CGaussianNoise::unscale(double noise)
@@ -99,6 +105,12 @@ CSinusoidalNoise::CSinusoidalNoise(CConfigNode* pConfigNode)
 {
 	m_scale = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Amplitude-Scale", "Scaling factor applied to the sinusoidal");
 	m_timeFreq = DOUBLE_PARAM(pConfigNode, "Time-Frequency", "Frequency of the signal in 1/simulation seconds", 0.5);
+}
+
+CSinusoidalNoise::CSinusoidalNoise(CNumericValue* scale, double timeFreq)
+{
+	m_scale = CHILD_OBJECT_FACTORY<CNumericValue>(scale);
+	m_timeFreq.set(timeFreq);
 }
 
 double CSinusoidalNoise::getSigma()
@@ -134,6 +146,18 @@ COrlsteinUhlenbeckNoise::COrlsteinUhlenbeckNoise(CConfigNode* pParameters)
 	m_mu = DOUBLE_PARAM(pParameters, "Mu", "Mean value of the generated noise", 0.0);
 	m_sigma = DOUBLE_PARAM(pParameters, "Sigma", "Degree of volatility around it caused by shocks", 0.0);
 	m_theta = DOUBLE_PARAM(pParameters, "Theta", "Rate by which noise shocks dissipate and the variable reverts towards the mean", 0.0);
+
+	if (CSimionApp::get() != nullptr && CSimionApp::get()->pWorld.ptr() != nullptr)
+		m_dt = CSimionApp::get()->pWorld->getDT();
+	else throw std::exception("COrlsteinUhlenbeckNoise initialization problem");
+}
+
+COrlsteinUhlenbeckNoise::COrlsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt)
+{
+	m_theta.set(theta);
+	m_sigma.set(sigma);
+	m_mu.set(mu);
+	m_dt = dt;
 }
 
 COrlsteinUhlenbeckNoise::~COrlsteinUhlenbeckNoise()
@@ -141,7 +165,7 @@ COrlsteinUhlenbeckNoise::~COrlsteinUhlenbeckNoise()
 
 double COrlsteinUhlenbeckNoise::getSigma()
 {
-	return m_mu.get()*m_mu.get() /( 2 * m_theta.get());
+	return sqrt(m_sigma.get()*m_sigma.get() /( 2 * m_theta.get()));
 }
 double COrlsteinUhlenbeckNoise::unscale(double noise)
 {
@@ -152,9 +176,9 @@ double COrlsteinUhlenbeckNoise::get()
 {
 	//http://math.stackexchange.com/questions/1287634/implementing-ornstein-uhlenbeck-in-matlab
 	//x(i + 1) = x(i) + th*(mu - x(i))*dt + sig*sqrt(dt)*randn;
-	double dt = CSimionApp::get()->pWorld->getDT();
-	double newNoise = m_lastValue + m_theta.get()*(m_mu.get() - m_lastValue)*dt
-		+ m_sigma.get()*sqrt(dt)*getNormalDistributionSample(0, 1);
+
+	double newNoise = m_lastValue + m_theta.get()*(m_mu.get() - m_lastValue)*m_dt
+		+ m_sigma.get()*sqrt(m_dt)*getNormalDistributionSample(0, 1);
 	m_lastValue = newNoise;
 	return newNoise;
 }

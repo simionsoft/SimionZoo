@@ -58,15 +58,17 @@ void CExperiment::reset()
 	m_evalEpisodeIndex= 0; //[1..1+m_numTrainingEpisodes/ evalFreq]
 	m_episodeIndex= 0; //[1..g_numEpisodes]
 	m_step= 0; //]1..g_numStepsPerEpisode]
+	m_experimentStep = 0;
 	m_bTerminalState = false;
 }
 
 
 void CExperiment::nextStep()
 {
+	m_experimentStep++;
+
 	if (!m_bTerminalState && m_step<m_numSteps)
 		m_step ++;
-
 	else m_step = 0;
 }
 
@@ -133,7 +135,7 @@ CExperiment::CExperiment(CConfigNode* pConfigNode)
 		m_totalNumEpisodes = (unsigned int)m_numTrainingEpisodes.get();
 	}
 	m_episodeLength = DOUBLE_PARAM(pConfigNode, "Episode-Length", "Length of an episode(seconds)",10.0);
-	//CONST_DOUBLE_VALUE(m_episodeLength, "Episode-Length", 1.0, "Length of an episode (seconds)");
+
 	setNumSteps((unsigned int)(m_episodeLength.get() / CSimionApp::get()->pWorld->getDT()));
 	reset();
 

@@ -32,13 +32,12 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 	m_w = new CFeatureList*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_w[i] = new CFeatureList(false, true);
-		m_w[i]->setName("INAC-w");
+		m_w[i] = new CFeatureList("INAC/Actor/w");
 	}
 
 
-	m_grad_u = new CFeatureList();
-	m_grad_u->setName("Actor/grad-u");
+	m_grad_u = new CFeatureList("INAC/Actor/grad-u");
+
 	m_pAlphaU = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha-u", "Learning gain used by the actor");
 
 	m_e_u = CHILD_OBJECT<CETraces>(pConfigNode, "U-ETraces", "Traces used by the actor", true);

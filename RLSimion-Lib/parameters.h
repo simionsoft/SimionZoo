@@ -132,8 +132,8 @@ public:
 class STATE_VARIABLE
 {
 protected:
-	const char* m_name;
-	const char* m_comment;
+	const char* m_name= 0;
+	const char* m_comment= 0;
 	int m_hVariable= -1;
 public:
 	STATE_VARIABLE() = default;
@@ -157,12 +157,16 @@ public:
 template<typename DataType>
 class CHILD_OBJECT
 {
-	const char* m_name;
-	const char* m_comment;
-	bool m_bOptional;
+	const char* m_name= 0;
+	const char* m_comment= 0;
+	bool m_bOptional= false;
 	shared_ptr<DataType> m_pValue;
 public:
 	CHILD_OBJECT() = default;
+	template <typename DataType> CHILD_OBJECT(DataType* value)
+	{
+		m_pValue = std::shared_ptr<DataType> (value);
+	}
 	CHILD_OBJECT(CConfigNode* pConfigNode, const char* name, const char* comment
 		,bool bOptional=false,const char* badgerMetadata="")
 	{
@@ -187,12 +191,16 @@ public:
 template<typename DataType>
 class CHILD_OBJECT_FACTORY
 {
-	const char* m_name;
-	const char* m_comment;
-	bool m_bOptional;
+	const char* m_name= 0;
+	const char* m_comment= 0;
+	bool m_bOptional= false;
 	shared_ptr<DataType> m_pValue = 0;
 public:
 	CHILD_OBJECT_FACTORY() = default;
+	template <typename DataType> CHILD_OBJECT_FACTORY(DataType* value)
+	{
+		m_pValue = std::shared_ptr<DataType>(value);
+	}
 	CHILD_OBJECT_FACTORY(CConfigNode* pConfigNode, const char* name, const char* comment
 		, bool bOptional= false, const char* badgerMetadata= "")
 	{
@@ -202,7 +210,6 @@ public:
 
 		if (!m_bOptional || pConfigNode->getChild(name))
 			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
-		//else m_pValue = shared_ptr<DataType>(nullptr);
 	}
 
 	DataType* operator->() { return m_pValue.get(); }
@@ -214,9 +221,9 @@ template <typename DataType>
 class MULTI_VALUE
 {
 protected:
-	const char* m_name;
-	const char* m_comment;
-	bool m_bOptional;
+	const char* m_name= 0;
+	const char* m_comment= 0;
+	bool m_bOptional= false;
 	vector<shared_ptr<DataType>> m_values;
 public:
 	MULTI_VALUE() = default;
@@ -242,9 +249,9 @@ template <typename DataType>
 class MULTI_VALUE_FACTORY : public MULTI_VALUE<DataType>
 {
 protected:
-	const char* m_name;
-	const char* m_comment;
-	bool m_bOptional;
+	const char* m_name= 0;
+	const char* m_comment= 0;
+	bool m_bOptional= false;
 public:
 	MULTI_VALUE_FACTORY() = default;
 
@@ -267,8 +274,8 @@ template <typename DataType, typename baseDataType>
 class MULTI_VALUE_SIMPLE_PARAM : public MULTI_VALUE<DataType>
 {
 protected:
-	const char* m_name;
-	const char* m_comment;
+	const char* m_name= 0;
+	const char* m_comment= 0;
 public:
 	MULTI_VALUE_SIMPLE_PARAM() = default;
 

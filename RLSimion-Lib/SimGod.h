@@ -14,6 +14,8 @@ class CDeferredLoad;
 class CStateFeatureMap;
 class CActionFeatureMap;
 
+//This class is the Simion God: it controls the learning agents and holds global learning parameters
+//Some members are declared static because they are requested by children before the SimGod object is actually constructed
 class CSimGod
 {
 	static CHILD_OBJECT_FACTORY<CStateFeatureMap> m_pGlobalStateFeatureMap;
@@ -22,6 +24,9 @@ class CSimGod
 	MULTI_VALUE_FACTORY<CSimion> m_simions;
 	
 	DOUBLE_PARAM m_gamma;
+
+	BOOL_PARAM m_bFreezeVFunctionUpdates;
+	INT_PARAM m_vFunctionUpdateFreq;
 
 	CReward *m_pReward;
 
@@ -56,5 +61,9 @@ public:
 
 	//global learning parameters
 	double getGamma();
+
+	//V-Function freeze
+	//returns the freq. (in steps) at which the V-functions should be updated (0 if they aren't deferred)
+	int getVFunctionUpdateFreq(); 
 };
 

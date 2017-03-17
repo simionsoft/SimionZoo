@@ -29,6 +29,9 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 	
 	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
 	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter",0.9);
+
+	m_bFreezeVFunctionUpdates= BOOL_PARAM(pConfigNode,"Freeze-V-Function","Defers updates on the V-functions to improve stability",false);
+	m_vFunctionUpdateFreq= INT_PARAM(pConfigNode,"V-Function-Update-Freq","Update frequency at which v-function updates will be done. Only used if Freeze-V-Function=true",100);
 }
 
 
@@ -132,4 +135,13 @@ std::shared_ptr<CActionFeatureMap> CSimGod::getGlobalActionFeatureMap()
 double CSimGod::getGamma()
 {
 	return m_gamma.get();
+}
+
+//Returns the number of steps after which deferred V-Function updates are to be done
+//0 if we don't use Freeze-V-Function
+int CSimGod::getVFunctionUpdateFreq()
+{
+	if (m_bFreezeVFunctionUpdates.get())
+		return m_vFunctionUpdateFreq.get();
+	return 0;
 }
