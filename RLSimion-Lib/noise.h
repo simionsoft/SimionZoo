@@ -53,14 +53,14 @@ public:
 	double get();
 };
 
-class COrlsteinUhlenbeckNoise : public CNoise
+class COrnsteinUhlenbeckNoise : public CNoise
 {
 	DOUBLE_PARAM m_theta, m_sigma,m_mu;
 	double m_dt;
 public:
-	COrlsteinUhlenbeckNoise(CConfigNode* pParameters);
-	COrlsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt);
-	~COrlsteinUhlenbeckNoise();
+	COrnsteinUhlenbeckNoise(CConfigNode* pParameters);
+	COrnsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt);
+	~COrnsteinUhlenbeckNoise();
 	double getSigma();
 	double unscale(double noise);
 	double get();

@@ -51,7 +51,7 @@ std::shared_ptr<CNoise> CNoise::getInstance(CConfigNode* pConfigNode)
 	{
 		{"GaussianNoise",CHOICE_ELEMENT_NEW<CGaussianNoise>}
 		,{"SinusoidalNoise",CHOICE_ELEMENT_NEW<CSinusoidalNoise>}
-		,{"Orlstein-Uhlenbeck",CHOICE_ELEMENT_NEW<COrlsteinUhlenbeckNoise>}
+		,{"Ornstein-Uhlenbeck",CHOICE_ELEMENT_NEW<COrnsteinUhlenbeckNoise>}
 	}
 	);
 
@@ -139,7 +139,7 @@ double CSinusoidalNoise::get()
 	return noise;
 }
 
-COrlsteinUhlenbeckNoise::COrlsteinUhlenbeckNoise(CConfigNode* pParameters)
+COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(CConfigNode* pParameters)
 {
 	//https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
 	m_lastValue = 0.0;
@@ -149,10 +149,10 @@ COrlsteinUhlenbeckNoise::COrlsteinUhlenbeckNoise(CConfigNode* pParameters)
 
 	if (CSimionApp::get() != nullptr && CSimionApp::get()->pWorld.ptr() != nullptr)
 		m_dt = CSimionApp::get()->pWorld->getDT();
-	else throw std::exception("COrlsteinUhlenbeckNoise initialization problem");
+	else throw std::exception("COrnsteinUhlenbeckNoise initialization problem");
 }
 
-COrlsteinUhlenbeckNoise::COrlsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt)
+COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt)
 {
 	m_theta.set(theta);
 	m_sigma.set(sigma);
@@ -160,19 +160,19 @@ COrlsteinUhlenbeckNoise::COrlsteinUhlenbeckNoise(double theta, double sigma, dou
 	m_dt = dt;
 }
 
-COrlsteinUhlenbeckNoise::~COrlsteinUhlenbeckNoise()
+COrnsteinUhlenbeckNoise::~COrnsteinUhlenbeckNoise()
 {}
 
-double COrlsteinUhlenbeckNoise::getSigma()
+double COrnsteinUhlenbeckNoise::getSigma()
 {
 	return sqrt(m_sigma.get()*m_sigma.get() /( 2 * m_theta.get()));
 }
-double COrlsteinUhlenbeckNoise::unscale(double noise)
+double COrnsteinUhlenbeckNoise::unscale(double noise)
 {
 	//does this method really make sense????
 	return 1.0;
 }
-double COrlsteinUhlenbeckNoise::get()
+double COrnsteinUhlenbeckNoise::get()
 {
 	//http://math.stackexchange.com/questions/1287634/implementing-ornstein-uhlenbeck-in-matlab
 	//x(i + 1) = x(i) + th*(mu - x(i))*dt + sig*sqrt(dt)*randn;
