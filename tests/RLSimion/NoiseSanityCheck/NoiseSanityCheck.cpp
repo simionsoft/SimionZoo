@@ -14,7 +14,7 @@ int main()
 #define MU 0.0 //mean value
 
 	
-	COrlsteinUhlenbeckNoise brownianNoise(THETA,SIGMA, MU,0.01);
+	COrnsteinUhlenbeckNoise brownianNoise(THETA,SIGMA, MU,0.01);
 	double sum = 0.0, avg, max= numeric_limits<double>::min(),min= numeric_limits<double>::max();
 	double *pNoiseSamples = new double[NUM_SAMPLES];
 	for (int i = 0; i < NUM_SAMPLES; i++)
