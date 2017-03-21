@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="examples">
+      <UniqueIdentifier>{62F3E243-A557-BB4C-A21D-A891A74DEC06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs">
+      <UniqueIdentifier>{FA6607C3-C1C0-B042-98AE-1D2E8D8A55D8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Glew">
+      <UniqueIdentifier>{ABC5CB8B-B572-6949-93DF-19BE9CB9FB93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen">
+      <UniqueIdentifier>{8B665389-9329-B849-8A14-E681C4D7B711}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Controls">
+      <UniqueIdentifier>{CA399DA1-0CD4-D54E-BB5D-EFE116A2F78A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Controls\Dialog">
+      <UniqueIdentifier>{FAADD08E-774D-C049-96C7-AEECD5B806DB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Controls\Dialogs">
+      <UniqueIdentifier>{3BB663F5-64F8-7743-8E83-1CFCEF2B5B86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Controls\Layout">
+      <UniqueIdentifier>{612C6F45-03A8-0C45-B69E-E4B643B670B7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Controls\Property">
+      <UniqueIdentifier>{73B77795-CE9C-4D47-8E01-1EDF8BA8A5F2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Input">
+      <UniqueIdentifier>{A9BCEB58-FD4C-5443-A782-B45757816236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Platforms">
+      <UniqueIdentifier>{AC9ADC4E-BDFF-C94D-8E65-CC094886F4A8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Renderers">
+      <UniqueIdentifier>{17C310CA-DE52-7542-9E92-268ECF934425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="examples\ThirdPartyLibs\Gwen\Skins">
+      <UniqueIdentifier>{8F6E00BB-825F-744B-B721-408E41291006}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Align.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Anim.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\BaseRender.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Config.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\DragAndDrop.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Events.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Exports.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Font.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Gwen.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Hook.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\InputHandler.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Macros.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Platform.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Skin.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Structures.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\TextObject.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Texture.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\ToolTip.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Utility.h">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Base.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Button.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Canvas.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\CheckBox.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ColorControls.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ColorPicker.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ComboBox.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\CrossSplitter.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\DockBase.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\DockedTabControl.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dragger.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\GroupBox.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Highlight.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\HorizontalScrollBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\HorizontalSlider.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\HSVColorPicker.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ImagePanel.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Label.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\LabelClickable.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ListBox.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Menu.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\MenuItem.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\MenuStrip.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Modal.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\NumericUpDown.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\PanelListPanel.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ProgressBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Properties.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\PropertyTree.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\RadioButton.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\RadioButtonController.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ResizableControl.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Resizer.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\RichLabel.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollBarBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollBarButton.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollControl.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Slider.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\SplitterBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\StatusBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Symbol.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TabButton.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TabControl.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TabStrip.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TabTitleBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Text.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TextBox.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ToolBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TreeControl.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TreeNode.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\VerticalScrollBar.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\VerticalSlider.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\WindowControl.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dialogs\FileOpen.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dialogs\FileSave.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dialogs\Query.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Layout\Splitter.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Layout\Table.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Property\BaseProperty.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Property\ColorSelector.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Property\Text.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Property</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Input\SDL13.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Input\SFML.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Input\Windows.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Skins\Simple.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Skins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Skins\TexturedBase.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Skins</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\examples\ThirdPartyLibs\Gwen\Skins\Texturing.h">
+      <Filter>examples\ThirdPartyLibs\Gwen\Skins</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Glew\glew.c">
+      <Filter>examples\ThirdPartyLibs\Glew</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Anim.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\BaseRender.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\DragAndDrop.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\events.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Gwen.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Hook.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\inputhandler.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Skin.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\ToolTip.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Utility.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Base.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Button.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Canvas.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\CheckBox.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ColorControls.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ColorPicker.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ComboBox.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\CrossSplitter.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\DockBase.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\DockedTabControl.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dragger.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\GroupBox.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\HorizontalScrollBar.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\HorizontalSlider.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\HSVColorPicker.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ImagePanel.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Label.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\LabelClickable.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ListBox.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Menu.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\MenuItem.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\MenuStrip.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\NumericUpDown.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\PanelListPanel.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ProgressBar.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Properties.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\RadioButton.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\RadioButtonController.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ResizableControl.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Resizer.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\RichLabel.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollBar.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollBarBar.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollBarButton.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\ScrollControl.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Slider.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\SplitterBar.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TabButton.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TabControl.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TabStrip.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Text.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TextBox.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TextBoxNumeric.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TreeControl.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\TreeNode.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\VerticalScrollBar.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\VerticalSlider.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\WindowControl.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dialog\FileOpen.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dialog\FileSave.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Controls\Dialog\Query.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Controls\Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Platforms\Null.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Platforms\Windows.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\examples\ThirdPartyLibs\Gwen\Renderers\OpenGL_DebugFont.cpp">
+      <Filter>examples\ThirdPartyLibs\Gwen\Renderers</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

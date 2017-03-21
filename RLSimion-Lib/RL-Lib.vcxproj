@@ -111,6 +111,7 @@
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="delayed-load.cpp" />
     <ClCompile Include="etraces.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
+    <ClCompile Include="Robot.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="config.cpp" />
     <ClCompile Include="templatedConfigFile.cpp" />
@@ -149,9 +151,11 @@
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
     <ClCompile Include="world-balancingpole.cpp" />
+    <ClCompile Include="world-box1robot.cpp" />
     <ClCompile Include="world-FAST.cpp" />
     <ClCompile Include="world-magneticlevitation.cpp" />
     <ClCompile Include="world-mountaincar.cpp" />
+    <ClCompile Include="world-movebox2robots.cpp" />
     <ClCompile Include="world-pitchcontrol.cpp" />
     <ClCompile Include="world-underwatervehicle.cpp" />
     <ClCompile Include="world-windturbine.cpp" />
@@ -162,6 +166,7 @@
     <ClInclude Include="actor.h" />
     <ClInclude Include="app-rlsimion.h" />
     <ClInclude Include="app.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
@@ -171,6 +176,7 @@
     <ClInclude Include="experiment.h" />
     <ClInclude Include="featuremap.h" />
     <ClInclude Include="features.h" />
+    <ClInclude Include="Robot.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="parameters-numeric.h" />
@@ -194,9 +200,11 @@
     <ClInclude Include="policy.h" />
     <ClInclude Include="vfa.h" />
     <ClInclude Include="world-balancingpole.h" />
+    <ClInclude Include="world-box1robot.h" />
     <ClInclude Include="world-FAST.h" />
     <ClInclude Include="world-magneticlevitation.h" />
     <ClInclude Include="world-mountaincar.h" />
+    <ClInclude Include="world-movebox2robots.h" />
     <ClInclude Include="world-pitchcontrol.h" />
     <ClInclude Include="world-underwatervehicle.h" />
     <ClInclude Include="world-windturbine.h" />

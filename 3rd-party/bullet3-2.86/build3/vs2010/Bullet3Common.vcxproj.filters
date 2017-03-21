@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{53FD3B97-30FF-5F40-B846-D5DFCD33BAE1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Bullet3Common">
+      <UniqueIdentifier>{AF37CDC8-F44E-0744-A029-969DDE957476}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\Bullet3Common\b3AlignedAllocator.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3AlignedObjectArray.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3CommandLineArgs.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3FileUtils.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3HashMap.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3Logging.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3Matrix3x3.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3MinMax.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3PoolAllocator.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3QuadWord.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3Quaternion.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3Random.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3Scalar.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3StackAlloc.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3Transform.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3TransformUtil.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Bullet3Common\b3Vector3.h">
+      <Filter>src\Bullet3Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Bullet3Common\b3AlignedAllocator.cpp">
+      <Filter>src\Bullet3Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Bullet3Common\b3Logging.cpp">
+      <Filter>src\Bullet3Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\Bullet3Common\b3Vector3.cpp">
+      <Filter>src\Bullet3Common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

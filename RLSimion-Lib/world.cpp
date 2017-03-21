@@ -6,6 +6,8 @@
 #include "world-pitchcontrol.h"
 #include "world-magneticlevitation.h"
 #include "world-balancingpole.h"
+#include "world-box1robot.h"
+#include "world-movebox2robots.h"
 #include "world-mountaincar.h"
 #include "world-FAST.h"
 #include "reward.h"
@@ -188,6 +190,8 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 		{make_tuple("Underwater-vehicle", CHOICE_ELEMENT_NEW<CUnderwaterVehicle>,"World=Underwater-vehicle")},
 		{make_tuple("Pitch-control",CHOICE_ELEMENT_NEW<CPitchControl>,"World=Pitch-control")},
 		{make_tuple("Balancing-pole",CHOICE_ELEMENT_NEW<CBalancingPole>,"World=Balancing-pole")},
+		{make_tuple("MoveBox-2Robots",CHOICE_ELEMENT_NEW<CMoveBox2Robots>,"World=MoveBox-2Robots")},
+		{make_tuple("MoveBoxOneRobot",CHOICE_ELEMENT_NEW<CMoveBoxOneRobot>,"World=MoveBoxOneRobot")},
 		{make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") }
 	});
 }
