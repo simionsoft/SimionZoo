@@ -32,7 +32,7 @@ protected:
 public:
 	CLinearVFA();
 	virtual ~CLinearVFA();
-	double get(const CFeatureList *features,bool bUseDeferredUpdates= false);
+	double get(const CFeatureList *features,bool bUseFrozenWeights= true);
 	double *getWeightPtr(){ return m_pWeights.get(); }
 	unsigned int getNumWeights(){ return m_numWeights; }
 

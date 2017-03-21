@@ -15,14 +15,14 @@ CLinearVFA::~CLinearVFA()
 {
 }
 
-double CLinearVFA::get(const CFeatureList *pFeatures,bool bFrozenTarget)
+double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
 	unsigned int localIndex;
 	double pendingFeatureUpdate= 0.0;
 	double *pWeights;
 
-	if (bFrozenTarget || !m_bCanBeFrozen)
+	if (!bUseFrozenWeights || !m_bCanBeFrozen)
 		pWeights = m_pWeights.get();
 	else
 		pWeights = m_pFrozenWeights.get();

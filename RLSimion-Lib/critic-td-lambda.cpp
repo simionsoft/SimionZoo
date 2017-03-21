@@ -40,7 +40,7 @@ double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CSt
 	m_z->addFeatureList(m_aux,alpha);
 
 	//theta= theta + alpha(r + gamma*v_s_p - v_s)*z
-	double v_s= m_pVFunction->get(m_aux,true); //if the v-function has deferred updates, we want to get the actual values here
+	double v_s= m_pVFunction->get(m_aux,false); //if the v-function has deferred updates, we want to get the actual values here
 
 	m_pVFunction->getFeatures(s_p, m_aux);
 	double v_s_p= m_pVFunction->get(m_aux);
