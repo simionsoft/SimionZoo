@@ -39,12 +39,12 @@ double CTDLambdaCritic::updateValue(const CState *s, const CAction *a, const CSt
 	m_pVFunction->getFeatures(s, m_aux);
 	m_z->addFeatureList(m_aux,alpha);
 
-	//theta= theta + alpha(r + gamma*newValue - oldValue)*z
-	double oldValue= m_pVFunction->get(m_aux,true); //if deferred updates are being used, we want to consider them here
+	//theta= theta + alpha(r + gamma*v_s_p - v_s)*z
+	double v_s= m_pVFunction->get(m_aux,true); //if the v-function has deferred updates, we want to get the actual values here
 
 	m_pVFunction->getFeatures(s_p, m_aux);
-	double newValue= m_pVFunction->get(m_aux);
-	double td = rho*r + gamma*newValue - oldValue;
+	double v_s_p= m_pVFunction->get(m_aux);
+	double td = rho*r + gamma*v_s_p - v_s;
 	
 	m_pVFunction->add(m_z.ptr(),td);
 

@@ -167,7 +167,7 @@
     <DOUBLE-VALUE Name="Time-Frequency" Comment="Frequency of the signal in 1/simulation seconds" Default="0.5"/>
     <BRANCH Name="Amplitude-Scale" Class="CNumericValue-Factory" Comment="Scaling factor applied to the sinusoidal"/>
   </CLASS>
-  <CLASS Name="COrlsteinUhlenbeckNoise">
+  <CLASS Name="COrnsteinUhlenbeckNoise">
     <DOUBLE-VALUE Name="Mu" Comment="Mean value of the generated noise" Default="0.0"/>
     <DOUBLE-VALUE Name="Sigma" Comment="Degree of volatility around it caused by shocks" Default="0.0"/>
     <DOUBLE-VALUE Name="Theta" Comment="Rate by which noise shocks dissipate and the variable reverts towards the mean" Default="0.0"/>
@@ -176,7 +176,7 @@
     <CHOICE Name="Noise" Class="CNoise" Comment="Noise type">
       <CHOICE-ELEMENT Name="GaussianNoise" Class="CGaussianNoise"/>
       <CHOICE-ELEMENT Name="SinusoidalNoise" Class="CSinusoidalNoise"/>
-      <CHOICE-ELEMENT Name="Orlstein-Uhlenbeck" Class="COrlsteinUhlenbeckNoise"/>
+      <CHOICE-ELEMENT Name="Ornstein-Uhlenbeck" Class="COrnsteinUhlenbeckNoise"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CConstantValue">

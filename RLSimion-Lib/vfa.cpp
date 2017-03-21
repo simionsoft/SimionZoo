@@ -9,31 +9,32 @@
 //LINEAR VFA. Common functionalities: get (CFeatureList*), saturate, save, load, ....
 CLinearVFA::CLinearVFA()
 {
-	//AllowDuplicates because it's more efficient (?)
-	m_pDeferredUpdates = new CFeatureList("LinearVFA/Deferred-Updates",OverwriteMode::AllowDuplicates);
 }
 
 CLinearVFA::~CLinearVFA()
 {
-	if (m_pDeferredUpdates) delete m_pDeferredUpdates;
 }
 
-double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseDeferredUpdates)
+double CLinearVFA::get(const CFeatureList *pFeatures,bool bFrozenTarget)
 {
 	double value = 0.0;
 	unsigned int localIndex;
 	double pendingFeatureUpdate= 0.0;
-	assert(pFeatures);
+	double *pWeights;
+
+	if (bFrozenTarget || !m_bCanBeFrozen)
+		pWeights = m_pWeights.get();
+	else
+		pWeights = m_pFrozenWeights.get();
+
 	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 	{
 		if (m_minIndex <= pFeatures->m_pFeatures[i].m_index && m_maxIndex > pFeatures->m_pFeatures[i].m_index)
 		{
-			if (bUseDeferredUpdates && m_bCanUseDeferredUpdates)
-				pendingFeatureUpdate= m_pDeferredUpdates->getFactor(pFeatures->m_pFeatures[i].m_index);
 			//offset
 			localIndex = pFeatures->m_pFeatures[i].m_index - m_minIndex;
 
-			value += (m_pWeights.get()[localIndex]+pendingFeatureUpdate) * pFeatures->m_pFeatures[i].m_factor;
+			value += pWeights[localIndex] * pFeatures->m_pFeatures[i].m_factor;
 		}
 	}
 	return value;
@@ -130,46 +131,38 @@ void CLinearStateVFA::save(const char* pFilename) const
 
 void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 {
-	assert(pFeatures);
-	
-	//for simplicity, we add updates to the list of deferred updates and then decide whether
-	//to apply the udpates immediately or defer them
-	m_pDeferredUpdates->addFeatureList(pFeatures, alpha);
-
 	int vUpdateFreq = 0;
 	int experimentStep = 0;
-	//apply the updates now??
-	if (m_bCanUseDeferredUpdates)
+
+	//then we apply all the feature updates
+	for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
+	{
+		//IF instead of assert because some features may not belong to this specific VFA
+		//and would still be a valid operation
+		//(for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
+		if (!m_bSaturateOutput)
+		{
+			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index < m_maxIndex)
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] += alpha*pFeatures->m_pFeatures[i].m_factor;	
+		}
+		else
+		{
+			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index < m_maxIndex)
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] =
+				std::min(m_maxOutput,std::max(m_minOutput
+					, m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] + alpha * pFeatures->m_pFeatures[i].m_factor));
+		}
+	}
+	//if we are deferring updates, check whether we have to update frozen weights
+	if (m_bCanBeFrozen)
 	{
 		vUpdateFreq = CSimionApp::get()->pSimGod->getVFunctionUpdateFreq();
 		experimentStep = CSimionApp::get()->pExperiment->getExperimentStep();
-	}
-	//if we have to apply immediately all the updates
-	if (!m_bCanUseDeferredUpdates || 
-		//or we are deferring them and it's time to apply them
-		(m_bCanUseDeferredUpdates && (vUpdateFreq == 0 || experimentStep % vUpdateFreq == 0)))
-	{
-		//then we apply all the feature updates
-		for (unsigned int i = 0; i < m_pDeferredUpdates->m_numFeatures; i++)
+
+		if (vUpdateFreq == 0 || experimentStep % vUpdateFreq == 0)
 		{
-			//IF instead of assert because some features may not belong to this specific VFA
-			//and would still be a valid operation
-			//(for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
-			if (!m_bSaturateOutput)
-			{
-				if (m_pDeferredUpdates->m_pFeatures[i].m_index >= m_minIndex && m_pDeferredUpdates->m_pFeatures[i].m_index < m_maxIndex)
-					m_pWeights.get()[m_pDeferredUpdates->m_pFeatures[i].m_index] += m_pDeferredUpdates->m_pFeatures[i].m_factor;	
-			}
-			else
-			{
-				if (m_pDeferredUpdates->m_pFeatures[i].m_index >= m_minIndex && m_pDeferredUpdates->m_pFeatures[i].m_index < m_maxIndex)
-					m_pWeights.get()[m_pDeferredUpdates->m_pFeatures[i].m_index] =
-					std::min(m_maxOutput,
-						std::max(m_minOutput
-							, m_pWeights.get()[m_pDeferredUpdates->m_pFeatures[i].m_index] + m_pDeferredUpdates->m_pFeatures[i].m_factor));
-			}
+			memcpy(m_pFrozenWeights.get(), m_pWeights.get(), m_numWeights * sizeof(double));
 		}
-		m_pDeferredUpdates->clear();
 	}
 }
 
@@ -194,9 +187,18 @@ CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 }
 void CLinearStateVFA::deferredLoadStep()
 {
+	//weights
 	m_pWeights = std::shared_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights.get()[i] = m_initValue.get();
+
+	//frozen weights
+	if (m_bCanBeFrozen)
+	{
+		m_pFrozenWeights = std::shared_ptr<double>(new double[m_numWeights]);
+		for (unsigned int i = 0; i < m_numWeights; i++)
+			m_pFrozenWeights.get()[i] = m_initValue.get();
+	}
 }
 
 void CLinearStateVFA::setInitValue(double initValue)
@@ -291,9 +293,18 @@ void CLinearStateActionVFA::setInitValue(double initValue)
 
 void CLinearStateActionVFA::deferredLoadStep()
 {
+	//weights
 	m_pWeights= std::unique_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights.get()[i] = m_initValue.get();
+
+	//frozen weights
+	if (m_bCanBeFrozen)
+	{
+		m_pFrozenWeights = std::shared_ptr<double>(new double[m_numWeights]);
+		for (unsigned int i = 0; i < m_numWeights; i++)
+			m_pFrozenWeights.get()[i] = m_initValue.get();
+	}
 }
 
 void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)

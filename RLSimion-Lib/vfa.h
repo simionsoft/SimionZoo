@@ -17,16 +17,15 @@ class CConfigFile;
 
 class CLinearVFA
 {
-	CFeatureList *m_pDeferredUpdates;
 protected:
-
+	std::shared_ptr<double> m_pFrozenWeights = nullptr;
 	std::shared_ptr<double> m_pWeights= nullptr;
 	unsigned int m_numWeights= 0;
 
 	bool m_bSaturateOutput;
 	double m_minOutput, m_maxOutput;
 
-	bool m_bCanUseDeferredUpdates= false;
+	bool m_bCanBeFrozen= false;
 
 	unsigned int m_minIndex;
 	unsigned int m_maxIndex;
@@ -37,7 +36,7 @@ public:
 	double *getWeightPtr(){ return m_pWeights.get(); }
 	unsigned int getNumWeights(){ return m_numWeights; }
 
-	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates) { m_bCanUseDeferredUpdates = bCanUseDeferredUpdates; }
+	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates) { m_bCanBeFrozen = bCanUseDeferredUpdates; }
 	
 	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 
