@@ -2,9 +2,11 @@
 
 #include "world.h"
 #include "reward.h"
+#define ATTRIBUTE_ALIGNED16(a) a
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 class btCollisionShape;
-
+class Robot;
+class Box;
 
 
 //Move box with 2 robots
@@ -33,9 +35,10 @@ class CMoveBox2Robots : public CDynamicModel
 	btConstraintSolver*	m_solver;
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
-	btAlignedObjectArray<btCollisionShape*>	m_collisionShapes;
 
-
+	Robot *m_pRobot1;
+	Robot *m_pRobot2;
+	Box *m_box;
 public:
 	CMoveBox2Robots(CConfigNode* pParameters);
 	virtual ~CMoveBox2Robots() = default;

@@ -166,8 +166,8 @@ class	btIDebugDraw
 	virtual void drawTransform(const btTransform& transform, btScalar orthoLen)
 	{
 		btVector3 start = transform.getOrigin();
-		drawLine(start, start+transform.getBasis() * btVector3(orthoLen, 0, 0), btVector3(1.f,0.3,0.3));
-		drawLine(start, start+transform.getBasis() * btVector3(0, orthoLen, 0), btVector3(0.3,1.f, 0.3));
+		drawLine(start, start+transform.getBasis() * btVector3(orthoLen, 0, 0), btVector3(1.0,0.3,0.3));
+		drawLine(start, start+transform.getBasis() * btVector3(0, orthoLen, 0), btVector3(0.3,1.0, 0.3));
 		drawLine(start, start+transform.getBasis() * btVector3(0, 0, orthoLen), btVector3(0.3, 0.3,1.f));
 	}
 

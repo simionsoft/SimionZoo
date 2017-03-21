@@ -1,14 +1,10 @@
 #include "stdafx.h"
 #include "world-movebox2robots.h"
 #include "app.h"
-#include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 #include "noise.h"
 #include "Robot.h"
 #include "Box.h"
 
-Robot *m_pRobot1;
-Robot *m_pRobot2;
-Box *m_box;
 
 CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 {

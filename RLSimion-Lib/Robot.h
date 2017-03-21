@@ -1,13 +1,10 @@
 #pragma once
-class btRigidBody;
-class btVector3;
-class btDefaultMotionState;
-class btCollisionShape;
+#include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
 
 class Robot {
 public:
-	Robot(double mass, btDefaultMotionState* motionState, btCollisionShape* shape, btVector3 inertia);
+	Robot(double mass, btDefaultMotionState* motionState, btCollisionShape* shape, btVector3& inertia);
 	virtual ~Robot() { }
 
 	void setAppliedForce(btVector3 &applied_force);

@@ -1,13 +1,13 @@
 #pragma once
 class btRigidBody;
 class btVector3;
-class btDefaultMotionState;
+struct btDefaultMotionState;
 class btCollisionShape;
 
 
 class Box {
 public:
-	Box(double mass, btDefaultMotionState* motionState, btCollisionShape* shape, btVector3 inertia);
+	Box(double mass, btDefaultMotionState* motionState, btCollisionShape* shape, btVector3& inertia);
 	virtual ~Box() { }
 
 	btRigidBody* Box::getBody();
