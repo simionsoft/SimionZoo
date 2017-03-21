@@ -154,7 +154,6 @@ namespace Badger.ViewModels
 
         public void setProperties()
         {
-            //plot.LegendPosition = OxyPlot.LegendPosition(properties.selectedLegendOption);
             plot.IsLegendVisible = properties.bLegendVisible;
             updateView();
         }
