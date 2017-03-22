@@ -6,6 +6,12 @@
 #include "Box.h"
 
 
+
+double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
+	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+	return distance;
+}
+
 CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 {
 	METADATA("World", "MoveBox-2Robots");
@@ -17,8 +23,10 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 	rob2_Y = addStateVariable("ry2", "m", -50.0, 50.0);
 	box_X  = addStateVariable("bx", "m", -50.0, 50.0);
 	box_Y  = addStateVariable("by", "m", -50.0, 50.0);
-	addConstant("TargetPointX", getRandomForTarget());
-	addConstant("TargetPointY", getRandomForTarget());
+
+	// En un futuro se pondrá para que se meta a mano desde el Badger
+	addConstant("TargetPointX", 32.4);
+	addConstant("TargetPointY", 17.0);
 
 	rob1_forceX = addActionVariable("r1forceX", "N", -8.0, 8.0);
 	rob1_forceY = addActionVariable("r1forceY", "N", -8.0, 8.0);
@@ -190,7 +198,7 @@ double CMoveBox2RobotsReward::getReward(const CState* s, const CAction* a, const
 	double boxAfterX = s_p->get("bx");
 	double boxAfterY = s_p->get("by");
 
-	double distance = getDistanceBetweenPoints(tX, tY, boxAfterX, boxAfterY);
+	double distance = (double) getDistanceBetweenPoints(tX, tY, boxAfterX, boxAfterY);
 	if (distance < 2) {
 		return 0.9;
 	}
@@ -209,14 +217,4 @@ double CMoveBox2RobotsReward::getMin()
 double CMoveBox2RobotsReward::getMax()
 {
 	return 1.0;
-}
-
-double getRandomForTarget()
-{
-	return double(rand() % 50);
-}
-
-double getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
-	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-	return distance;
 }

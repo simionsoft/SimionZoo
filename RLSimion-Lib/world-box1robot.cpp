@@ -1,14 +1,15 @@
 #include "stdafx.h"
 #include "world-box1robot.h"
 #include "app.h"
-#include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 #include "noise.h"
 #include "Robot.h"
 #include "Box.h"
 
-Robot *m_pRobot1;
-Robot *m_pRobot2;
-Box *m_box;
+
+double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
+	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+	return distance;
+}
 
 CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 {
@@ -19,8 +20,10 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
 	box_X = addStateVariable("bx", "m", -50.0, 50.0);
 	box_Y = addStateVariable("by", "m", -50.0, 50.0);
-	addConstant("TargetPointX", getRandomForTarget());
-	addConstant("TargetPointY", getRandomForTarget());
+
+	// En un futuro se pondrá para que se meta a mano desde el Badger
+	addConstant("TargetPointX", 32.4);
+	addConstant("TargetPointY", 17.0);
 
 	rob1_forceX = addActionVariable("r1forceX", "N", -8.0, 8.0);
 	rob1_forceY = addActionVariable("r1forceY", "N", -8.0, 8.0);
@@ -175,14 +178,4 @@ double CMoveBoxOneRobotReward::getMin()
 double CMoveBoxOneRobotReward::getMax()
 {
 	return 1.0;
-}
-
-double getRandomForTarget()
-{
-	return (double)(rand() % 50);
-}
-
-double getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
-	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-	return distance;
 }

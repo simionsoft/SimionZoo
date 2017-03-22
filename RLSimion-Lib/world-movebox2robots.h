@@ -91,3 +91,5 @@ public:
 	double getMin();
 	double getMax();
 };
+
+double getRandomForTarget();

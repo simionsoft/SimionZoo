@@ -111,6 +111,21 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">
+      <Project>{039b76ca-bc1b-b94d-a520-7e71cca3ded2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Geometry.vcxproj">
+      <Project>{4e8b0499-8628-8943-b9c8-2a391cffff80}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletCollision.vcxproj">
+      <Project>{91650844-3a27-904e-9b55-79ab50c2531b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
+      <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
+      <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\3rd-party\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
     </ProjectReference>
