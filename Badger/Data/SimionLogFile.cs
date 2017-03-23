@@ -20,47 +20,6 @@ namespace Badger.Data
         public delegate void StepAction(int auxId, int stepIndex, double value);
         public delegate void ScalarValueAction(double action);
         public delegate double EpisodeFunc(EpisodeData episode,int varIndex);
-
-        public static ExperimentData load(string logFilename)
-        {
-            ExperimentData experimentData = new ExperimentData();
-            try
-            {
-                FileStream logFile = File.OpenRead(logFilename);
-                using (BinaryReader binaryReader = new BinaryReader(logFile))
-                {
-                    experimentData.readExperimentLogHeader(binaryReader);
-                    for (int i = 0; i < experimentData.numEpisodes; i++)
-                    {
-                        EpisodeData episodeData = new EpisodeData();
-                        experimentData.episodes.Add(episodeData);
-
-                        episodeData.readEpisodeHeader(binaryReader);
-
-                        StepData stepData = new StepData();
-                        bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
-
-                        while (!bLastStep)
-                        {
-                            //we only add the step if it's not the last one
-                            //last steps don't contain any info but the end marker
-                            episodeData.steps.Add(stepData);
-
-                            stepData = new StepData();
-                            bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
-                        }
-                    }
-                }
-                logFile.Close();
-                //TODO: we should be able to know somehow if the experiment failed (i.e.: early end of FAST)
-            }
-            catch (Exception ex)
-            {
-                experimentData.bSuccesful = false;
-                Console.WriteLine("Exception reading " + logFilename + "\n" + ex.ToString());
-            }
-            return experimentData;
-        }
     }
  
     public class StepData
@@ -171,10 +130,55 @@ namespace Badger.Data
     public class ExperimentData
     {
         public int numEpisodes = 0;
+        public int numEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
         public int fileFormatVersion = 0;
         public bool bSuccesful = true; //true if it finished correctly: the number of episodes in the header must match the number of episodes read from the log file
 
         public List<EpisodeData> episodes = new List<EpisodeData>();
+
+        public bool load(string logFilename)
+        {
+            try
+            {
+                FileStream logFile = File.OpenRead(logFilename);
+                using (BinaryReader binaryReader = new BinaryReader(logFile))
+                {
+                    readExperimentLogHeader(binaryReader);
+                    for (int i = 0; i < numEpisodes; i++)
+                    {
+                        EpisodeData episodeData = new EpisodeData();
+                        episodes.Add(episodeData);
+
+                        episodeData.readEpisodeHeader(binaryReader);
+                        //if we find an episode subindex greater than the current max, we update it
+                        //Episode subindex= Episode within an evaluation
+                        if (episodeData.subIndex > numEpisodesPerEvaluation)
+                            numEpisodesPerEvaluation = episodeData.subIndex;
+
+                        StepData stepData = new StepData();
+                        bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+
+                        while (!bLastStep)
+                        {
+                            //we only add the step if it's not the last one
+                            //last steps don't contain any info but the end marker
+                            episodeData.steps.Add(stepData);
+
+                            stepData = new StepData();
+                            bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+                        }
+                    }
+                }
+                logFile.Close();
+                //TODO: we should be able to know somehow if the experiment failed (i.e.: early end of FAST)
+            }
+            catch (Exception ex)
+            {
+                bSuccesful = false;
+                Console.WriteLine("Exception reading " + logFilename + "\n" + ex.ToString());
+            }
+            return bSuccesful;
+        }
 
         public void readExperimentLogHeader(BinaryReader logReader)
         {
@@ -200,7 +204,8 @@ namespace Badger.Data
         {
             foreach (EpisodeData episode in episodes)
             {
-                if (episode.index == episodeIndex && episode.type == EpisodeData.episodeTypeEvaluation)
+                if (episode.index == episodeIndex && episode.subIndex==1 // <- this obviously is not the right way to do it
+                    && episode.type == EpisodeData.episodeTypeEvaluation)
                 {
                     return episodeFunc(episode,varIndex);
                 }

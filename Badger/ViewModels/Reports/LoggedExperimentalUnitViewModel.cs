@@ -92,7 +92,8 @@ namespace Badger.ViewModels
         //not the most efficient way, but the easiest right now
         public TrackData loadTrackData(List<string> varNames)
         {
-            ExperimentData experimentData= SimionLogFile.load(m_logFilePath);
+            ExperimentData experimentData = new ExperimentData();
+            experimentData.load(m_logFilePath);
 
             EpisodeData lastEvalEpisode = experimentData.episodes[experimentData.episodes.Count - 1];
 
