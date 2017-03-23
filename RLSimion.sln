@@ -64,6 +64,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PortalDimensionLoadTest", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NoiseSanityCheck", "tests\RLSimion\NoiseSanityCheck\NoiseSanityCheck.vcxproj", "{20ED0A43-661F-445C-87F5-3E2666AE31F5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExperimentEpisodesSteps", "tests\ExperimentEpisodesSteps\ExperimentEpisodesSteps.vcxproj", "{B9CAE020-B273-4BB8-8369-B51DE976893A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -350,6 +352,24 @@ Global
 		{20ED0A43-661F-445C-87F5-3E2666AE31F5}.Release|x64.Build.0 = Release|x64
 		{20ED0A43-661F-445C-87F5-3E2666AE31F5}.Release|x86.ActiveCfg = Release|Win32
 		{20ED0A43-661F-445C-87F5-3E2666AE31F5}.Release|x86.Build.0 = Release|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|Win32.Build.0 = Debug|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|x64.ActiveCfg = Debug|x64
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|x64.Build.0 = Debug|x64
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|x86.ActiveCfg = Debug|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Debug|x86.Build.0 = Debug|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|Win32.ActiveCfg = Release|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|Win32.Build.0 = Release|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|x64.ActiveCfg = Release|x64
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|x64.Build.0 = Release|x64
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|x86.ActiveCfg = Release|Win32
+		{B9CAE020-B273-4BB8-8369-B51DE976893A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -371,5 +391,6 @@ Global
 		{53399A66-B859-4CB6-BCAC-A9A15B80DFD4} = {777B2C37-B5AE-4030-BB7F-5BBABC4AEA99}
 		{B7440D4E-C1F0-4780-8D7F-C05302F663A2} = {29A69066-0F79-44B7-BBED-13C73A1A1494}
 		{20ED0A43-661F-445C-87F5-3E2666AE31F5} = {009D9677-0544-429B-9B50-B314A34CA972}
+		{B9CAE020-B273-4BB8-8369-B51DE976893A} = {BF490352-B518-4726-BA16-BC447F2D7A37}
 	EndGlobalSection
 EndGlobal

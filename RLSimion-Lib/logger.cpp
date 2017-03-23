@@ -225,8 +225,8 @@ void CLogger::lastStep()
 
 	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
 	char buffer[BUFFER_SIZE];
-	int episodeIndex = CSimionApp::get()->pExperiment->getEvaluationEpisodeIndex();
-	int numEpisodes = CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
+	int episodeIndex = CSimionApp::get()->pExperiment->getEvaluationIndex();
+	int numEpisodes = CSimionApp::get()->pExperiment->getNumEvaluations();
 
 	//log the progress if an evaluation episode has ended
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode() && numEpisodes>0)
@@ -280,7 +280,7 @@ void CLogger::writeExperimentHeader()
 {
 	ExperimentHeader header;
 
-	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
+	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumEvaluations();
 	if (m_bLogTrainingEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumTrainingEpisodes();
 
 	writeLogBuffer((char*) &header, sizeof(ExperimentHeader));
