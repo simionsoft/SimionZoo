@@ -27,6 +27,15 @@ double CExperiment::getExperimentProgress()
 	return progress;
 }
 
+double CExperiment::getTrainingProgress()
+{
+	if (m_trainingEpisodeIndex == 0) //not a single training episode yet
+		return 0.0;
+	double progress = ((double)m_step - 1 + (m_trainingEpisodeIndex - 1)*m_numSteps)
+		/ ((double)m_numSteps*m_numTrainingEpisodes.get() - 1);
+	return progress;
+}
+
 double CExperiment::getEpisodeProgress()
 {
 	double progress = ((double)m_step - 1)	/ ((double)m_numSteps - 1);

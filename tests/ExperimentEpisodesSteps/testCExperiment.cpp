@@ -8,9 +8,10 @@ namespace ExperimentEpisodesSteps
 {		
 	TEST_CLASS(CExperimentTest)
 	{
+		//These tests check the functionality of the CExperiment class
 	public:
 		
-		TEST_METHOD(TestEvaluationSubEpisodes)
+		TEST_METHOD(ExperimentEpisodes)
 		{
 			// init
 			CExperiment *pExperiment = new CExperiment();
@@ -88,7 +89,7 @@ namespace ExperimentEpisodesSteps
 			Assert::AreEqual((unsigned int)4, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			delete pExperiment;
 		}
-		TEST_METHOD(TestEvaluationSubEpisodes2)
+		TEST_METHOD(ExperimentEpisodes2)
 		{
 			// init
 			CExperiment *pExperiment = new CExperiment();
@@ -168,6 +169,65 @@ namespace ExperimentEpisodesSteps
 				, L"isEvaluationEpisode() failed");
 			Assert::AreEqual((unsigned int)6, pExperiment->getRelativeEpisodeIndex()
 				, L"getRelativeEpisodeIndex() failed");
+			delete pExperiment;
+		}
+		TEST_METHOD(ExperimentProgress)
+		{
+			// init
+			CExperiment *pExperiment = new CExperiment();
+			pExperiment->setEpisodeLength(2.0);
+			pExperiment->setNumTrainingEpisodes(10);
+			pExperiment->setEvaluationFreq(2);
+			pExperiment->setNumEpisodesPerEvaluation(2); //2 subepisodes per evaluation
+			pExperiment->setNumSteps(1000); //because the world hasn't been initialized, this should be used
+			pExperiment->reset();
+
+			//test
+			if (pExperiment->getNumSteps() != 1000)
+				Assert::Fail();
+			//1 evaluation episode
+			pExperiment->nextEpisode();
+			pExperiment->nextStep();
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.0, L"getTrainingProgress() failed");
+			pExperiment->nextEpisode();
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.0, L"getTrainingProgress() failed");
+			//1st training episode
+			pExperiment->nextEpisode();
+			Assert::AreEqual(pExperiment->isEvaluationEpisode(), false, L"");
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.0, L"getTrainingProgress() failed");
+			Assert::AreEqual(pExperiment->getTrainingEpisodeIndex(),(unsigned int) 1
+				, L"getTrainingEpisodeIndex() failed");
+			//2nd training episode
+			pExperiment->nextEpisode();
+			Assert::AreEqual(pExperiment->isEvaluationEpisode(), false, L"");
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.1,0.001, L"getTrainingProgress() failed");
+			Assert::AreEqual(pExperiment->getTrainingEpisodeIndex(), (unsigned int)2
+				, L"getTrainingEpisodeIndex() failed");
+			//2nd evaluation
+			pExperiment->nextEpisode();
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.1, 0.001, L"getTrainingProgress() failed");
+			pExperiment->nextEpisode();
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.1, 0.001, L"getTrainingProgress() failed");
+			//3rd training episode
+			pExperiment->nextEpisode();
+			Assert::AreEqual(pExperiment->isEvaluationEpisode(), false, L"");
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.2, 0.001, L"getTrainingProgress() failed");
+			Assert::AreEqual(pExperiment->getTrainingEpisodeIndex(), (unsigned int)3
+				, L"getTrainingEpisodeIndex() failed");
+			//4th training episode
+			pExperiment->nextEpisode();
+			Assert::AreEqual(pExperiment->isEvaluationEpisode(), false, L"");
+			Assert::AreEqual(pExperiment->getTrainingProgress()
+				, 0.3, 0.001, L"getTrainingProgress() failed");
+			Assert::AreEqual(pExperiment->getTrainingEpisodeIndex(), (unsigned int)4
+				, L"getTrainingEpisodeIndex() failed");
 			delete pExperiment;
 		}
 	};

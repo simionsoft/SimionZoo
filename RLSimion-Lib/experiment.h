@@ -96,7 +96,9 @@ public:
 	void setNumSteps(int numSteps) { m_numSteps = numSteps; }
 	unsigned int getExperimentStep() { return m_experimentStep; } //returns the current step since the experiment began
 
+	//Progress is normalized
 	double getExperimentProgress(); //[0,1]
+	double getTrainingProgress(); //[0,1]
 	double getEpisodeProgress(); //[0,1]
 
 	const char* getProgressString();

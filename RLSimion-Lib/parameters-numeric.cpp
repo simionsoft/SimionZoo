@@ -21,7 +21,7 @@ double CSimpleEpisodeLinearSchedule::get()
 {
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return 0.0;
 
-	double progress = CSimionApp::get()->pExperiment->getExperimentProgress();
+	double progress = CSimionApp::get()->pExperiment->getTrainingProgress();
 
 	return m_startValue.get() + (m_endValue.get() - m_startValue.get())* progress;
 }
@@ -48,7 +48,7 @@ double CInterpolatedValue::get()
 		return m_evaluationValue.get();
 	//time reference
 	if (m_timeReference.get()==TimeReference::experiment)
-		progress = CSimionApp::get()->pExperiment->getExperimentProgress();
+		progress = CSimionApp::get()->pExperiment->getTrainingProgress();
 	else if (m_timeReference.get()==TimeReference::episode)
 		progress = CSimionApp::get()->pExperiment->getEpisodeProgress();
 
