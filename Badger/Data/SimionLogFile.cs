@@ -105,6 +105,7 @@ namespace Badger.Data
 
         public int type = 0;
         public int index = 0;
+        public int subIndex = 0;
         public int numVariablesLogged = 0;
         public List<StepData> steps = new List<StepData>();
         public void readEpisodeHeader(BinaryReader logReader)
@@ -113,8 +114,8 @@ namespace Badger.Data
             type = (int)logReader.ReadInt64();
             index = (int)logReader.ReadInt64();
             numVariablesLogged = (int)logReader.ReadInt64();
-
-            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 4));
+            subIndex = (int)logReader.ReadInt64();
+            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 5));
         }
         public static double calculateMin(EpisodeData episode, int varIndex)
         {
@@ -220,51 +221,54 @@ namespace Badger.Data
         }
     }
 
-        /*
-    struct ExperimentHeader
-    {
-    __int64 magicNumber = EXPERIMENT_HEADER;
-    __int64 fileVersion = CLogger::BIN_FILE_VERSION;
-    __int64 numEpisodes = 0;
+    /*
+struct ExperimentHeader
+{
+__int64 magicNumber = EXPERIMENT_HEADER;
+__int64 fileVersion = CLogger::BIN_FILE_VERSION;
+__int64 numEpisodes = 0;
 
-    __int64 padding[HEADER_MAX_SIZE - 3]; //extra space
-    ExperimentHeader()
-    {
-     memset(padding, 0, sizeof(padding));
-    }
-    };
-    */
+__int64 padding[HEADER_MAX_SIZE - 3]; //extra space
+ExperimentHeader()
+{
+ memset(padding, 0, sizeof(padding));
+}
+};
+*/
 
 
-        /*
+    /*
     struct EpisodeHeader
     {
     __int64 magicNumber = EPISODE_HEADER;
     __int64 episodeType;
     __int64 episodeIndex;
     __int64 numVariablesLogged;
+    //Added in version 2: if the episode belongs to an evaluation, the number of episodes per evaluation might be >1
+    //the episodeSubIndex will be in [1..numEpisodesPerEvaluation]
+    __int64 episodeSubIndex;
 
-    __int64 padding[HEADER_MAX_SIZE - 4]; //extra space
+    __int64 padding[HEADER_MAX_SIZE - 5]; //extra space
     EpisodeHeader()
     {
         memset(padding, 0, sizeof(padding));
     }
-    };*/
+};*/
 
-        /*
-    struct StepHeader
-    {
-    __int64 magicNumber = STEP_HEADER;
-    __int64 stepIndex;
-    double experimentRealTime;
-    double episodeSimTime;
-    double episodeRealTime;
+    /*
+struct StepHeader
+{
+__int64 magicNumber = STEP_HEADER;
+__int64 stepIndex;
+double experimentRealTime;
+double episodeSimTime;
+double episodeRealTime;
 
-    __int64 padding[HEADER_MAX_SIZE - 5]; //extra space
-    StepHeader()
-    {
-        memset(padding, 0, sizeof(padding));
-    }
-    };
-        */
+__int64 padding[HEADER_MAX_SIZE - 5]; //extra space
+StepHeader()
+{
+    memset(padding, 0, sizeof(padding));
+}
+};
+    */
 }
