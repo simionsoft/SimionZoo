@@ -44,7 +44,11 @@ struct EpisodeHeader
 	__int64 episodeIndex;
 	__int64 numVariablesLogged;
 
-	__int64 padding[HEADER_MAX_SIZE - 4]; //extra space
+	//Added in version 2: if the episode belongs to an evaluation, the number of episodes per evaluation might be >1
+	//the episodeSubIndex will be in [1..numEpisodesPerEvaluation]
+	__int64 episodeSubIndex;
+
+	__int64 padding[HEADER_MAX_SIZE - 5]; //extra space
 	EpisodeHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -76,7 +80,6 @@ CLogger::CLogger(CConfigNode* pConfigNode)
 	m_bLogTrainingEpisodes= BOOL_PARAM(pConfigNode,"Log-training-episodes", "Log training episodes?",false);
 
 	m_logFreq= DOUBLE_PARAM(pConfigNode,"Log-Freq","Log frequency. Simulation time in seconds.",0.25);
-
 
 	m_pEpisodeTimer = new CTimer();
 	m_pExperimentTimer = new CTimer();
@@ -279,9 +282,13 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 void CLogger::writeExperimentHeader()
 {
 	ExperimentHeader header;
+	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
 
-	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumEvaluations();
-	if (m_bLogTrainingEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumTrainingEpisodes();
+	if (m_bLogEvaluationEpisodes.get())
+		header.numEpisodes +=
+			pExperiment->getNumEvaluations()*pExperiment->getNumEpisodesPerEvaluation();
+	if (m_bLogTrainingEpisodes.get())
+		header.numEpisodes += pExperiment->getNumTrainingEpisodes();
 
 	writeLogBuffer((char*) &header, sizeof(ExperimentHeader));
 }
@@ -289,13 +296,19 @@ void CLogger::writeExperimentHeader()
 void CLogger::writeEpisodeHeader()
 {
 	EpisodeHeader header;
+	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
+	CWorld* pWorld = CSimionApp::get()->pWorld.ptr();
 
-	header.episodeIndex = CSimionApp::get()->pExperiment->getRelativeEpisodeIndex();
-	header.episodeType = (CSimionApp::get()->pExperiment->isEvaluationEpisode() ? 0 : 1);
+	header.episodeIndex = pExperiment->getRelativeEpisodeIndex();
+	if (pExperiment->isEvaluationEpisode())
+		header.episodeSubIndex = pExperiment->getEpisodeInEvaluationIndex();
+	else
+		header.episodeSubIndex = 1; // training episodes cannot have sub-episodes
+	header.episodeType = (pExperiment->isEvaluationEpisode() ? 0 : 1);
 	header.numVariablesLogged =
-		CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor().size()
-		+ CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor().size()
-		+ CSimionApp::get()->pWorld->getRewardVector()->getNumVars()
+		pWorld->getDynamicModel()->getActionDescriptor().size()
+		+ pWorld->getDynamicModel()->getStateDescriptor().size()
+		+ pWorld->getRewardVector()->getNumVars()
 		+ m_stats.size();
 
 	writeLogBuffer((char*) &header, sizeof(EpisodeHeader));
@@ -348,21 +361,18 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 void CLogger::addVarToStats(const char* key, const char* subkey, double* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*) variable, Double));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, int* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*) variable, Int));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, unsigned int* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*)variable, UnsignedInt));
 }
 

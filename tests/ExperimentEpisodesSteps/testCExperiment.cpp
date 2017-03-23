@@ -34,6 +34,7 @@ namespace ExperimentEpisodesSteps
 				, L"getEvaluationSubEpisodeIndex() failed");
 			Assert::AreEqual(true, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)1, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)1, pExperiment->getEvaluationIndex()
 				, L"getEvaluationEpisode() failed");
@@ -41,17 +42,20 @@ namespace ExperimentEpisodesSteps
 				, L"getEvaluationSubEpisodeIndex() failed");
 			Assert::AreEqual(true, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)1, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			//2 training episodes
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)1, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)1, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)2, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)2, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			//2 evaluation episodes
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)2, pExperiment->getEvaluationIndex()
@@ -60,6 +64,7 @@ namespace ExperimentEpisodesSteps
 				, L"getEvaluationSubEpisodeIndex() failed");
 			Assert::AreEqual(true, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)2, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)2, pExperiment->getEvaluationIndex()
 				, L"getEvaluationEpisode() failed");
@@ -67,17 +72,20 @@ namespace ExperimentEpisodesSteps
 				, L"getEvaluationSubEpisodeIndex() failed");
 			Assert::AreEqual(true, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
-			//2 training episodes
+			Assert::AreEqual((unsigned int)2, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
+			////2 training episodes
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)3, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)3, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)4, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)4, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			delete pExperiment;
 		}
 		TEST_METHOD(TestEvaluationSubEpisodes2)
@@ -104,22 +112,30 @@ namespace ExperimentEpisodesSteps
 				, L"getEvaluationSubEpisodeIndex() failed");
 			Assert::AreEqual(true, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)1, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			//3 training episodes
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)1, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)1, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)2, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)2, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)3, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)3, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			//1 evaluation episode
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)2, pExperiment->getEvaluationIndex()
@@ -128,22 +144,30 @@ namespace ExperimentEpisodesSteps
 				, L"getEvaluationSubEpisodeIndex() failed");
 			Assert::AreEqual(true, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)2, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			//3 training episodes
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)4, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)4, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)5, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)5, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			pExperiment->nextEpisode();
 			Assert::AreEqual((unsigned int)6, pExperiment->getTrainingEpisodeIndex()
 				, L"getEvaluationEpisode() failed");
 			Assert::AreEqual(false, pExperiment->isEvaluationEpisode()
 				, L"isEvaluationEpisode() failed");
+			Assert::AreEqual((unsigned int)6, pExperiment->getRelativeEpisodeIndex()
+				, L"getRelativeEpisodeIndex() failed");
 			delete pExperiment;
 		}
 	};

@@ -73,7 +73,7 @@ public:
 	double getEpisodeLength(){ return m_episodeLength.get(); }//seconds
 	void setEpisodeLength(double length) { m_episodeLength.set(length); }
 	unsigned int getEpisodeIndex(){ return m_episodeIndex; }
-	unsigned int getRelativeEpisodeIndex(){ if (!isEvaluationEpisode()) return m_trainingEpisodeIndex; return m_evalEpisodeIndex; }
+	unsigned int getRelativeEpisodeIndex();
 	unsigned int getTrainingEpisodeIndex(){ return m_trainingEpisodeIndex; }
 	unsigned int getEvaluationIndex();
 	unsigned int getEpisodeInEvaluationIndex();
@@ -88,6 +88,7 @@ public:
 	unsigned int getNumEvaluations(){ return m_numEvaluations; }
 	void setEvaluationFreq(int evalFreq) { m_evalFreq.set(evalFreq); }
 	void setNumEpisodesPerEvaluation(int numEpisodes) { m_numEpisodesPerEvaluation = numEpisodes; }
+	unsigned int getNumEpisodesPerEvaluation() { return m_numEpisodesPerEvaluation; }
 	unsigned int getNumTrainingEpisodes(){ return m_numTrainingEpisodes.get(); }
 	void setNumTrainingEpisodes(int numEpisodes) { m_numTrainingEpisodes.set(numEpisodes); }
 	unsigned int getTotalNumEpisodes(){ return m_totalNumEpisodes; }

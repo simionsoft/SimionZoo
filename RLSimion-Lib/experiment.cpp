@@ -65,7 +65,12 @@ unsigned int CExperiment::getEvaluationIndex()
 	//the last episode within last evaluation
 	return 1+( (m_evalEpisodeIndex-1) / m_numEpisodesPerEvaluation);
 }
-
+unsigned int CExperiment::getRelativeEpisodeIndex()
+{
+	if (!isEvaluationEpisode())
+		return m_trainingEpisodeIndex;
+	return getEvaluationIndex();
+}
 
 void CExperiment::reset()
 {
