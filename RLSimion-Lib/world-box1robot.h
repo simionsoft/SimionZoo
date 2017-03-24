@@ -18,11 +18,11 @@ class CMoveBoxOneRobot : public CDynamicModel
 	double MASS_GROUND;
 
 	/// Episode variables
-	double rob1_X, rob1_Y;
-	double box_X, box_Y;
+	int rob1_X, rob1_Y;
+	int box_X, box_Y;
 
 	// Action variables
-	double rob1_forceX, rob1_forceY;
+	int rob1_forceX, rob1_forceY;
 
 	///inicialización
 	btAlignedObjectArray<btCollisionShape*>	m_collisionShapes;

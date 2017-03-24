@@ -19,14 +19,14 @@ class CMoveBox2Robots : public CDynamicModel
 	double MASS_GROUND;
 
 	/// Episode variables
-	double rob1_X, rob1_Y;
-	double rob2_X, rob2_Y;
-	double box_X, box_Y;
+	int rob1_X, rob1_Y;
+	int rob2_X, rob2_Y;
+	int box_X, box_Y;
 	
 
 	// Action variables
-	double rob1_forceX, rob1_forceY;
-	double rob2_forceX, rob2_forceY;	
+	int rob1_forceX, rob1_forceY;
+	int rob2_forceX, rob2_forceY;	
 
 	///inicialización
 	btAlignedObjectArray<btCollisionShape*>	m_collisionShapes;

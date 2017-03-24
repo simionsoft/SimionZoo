@@ -11,19 +11,17 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
+#define TargetX 32.4
+#define TargetY 17.0
+
 CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 {
 	METADATA("World", "MoveBoxOneRobot");
-
 
 	rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
 	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
 	box_X = addStateVariable("bx", "m", -50.0, 50.0);
 	box_Y = addStateVariable("by", "m", -50.0, 50.0);
-
-	// En un futuro se pondrá para que se meta a mano desde el Badger
-	addConstant("TargetPointX", 32.4);
-	addConstant("TargetPointY", 17.0);
 
 	rob1_forceX = addActionVariable("r1forceX", "N", -8.0, 8.0);
 	rob1_forceY = addActionVariable("r1forceY", "N", -8.0, 8.0);
@@ -122,8 +120,8 @@ void CMoveBoxOneRobot::reset(CState *s)
 void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 {
 
-	double rob1force_x = a->get(rob1_forceX);
-	double rob1force_y = a->get(rob1force_y);
+	double rob1forcex = a->get("r1forceX");
+	double rob1forcey = a->get("r1forceY");
 
 	btVector3 applied_force1;
 
@@ -138,12 +136,12 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	s->set(box_Y, float(box_trans.getOrigin().getZ()));
 
 	//Update Robot1
-	m_pRobot1->setAppliedForce(btVector3(rob1force_x, 0, rob1force_y));
+	m_pRobot1->setAppliedForce(btVector3(rob1forcex, 0, rob1forcey));
 	m_pRobot1->getAppliedForce(applied_force1);
 	m_pRobot1->getBody()->applyCentralForce(applied_force1);
 	m_pRobot1->getBody()->getMotionState()->getWorldTransform(r1_trans);
-	s->set(rob1_X, float(r1_trans.getOrigin().getX()));
-	s->set(rob1_Y, float(r1_trans.getOrigin().getZ()));
+	s->set(rob1_X, double(r1_trans.getOrigin().getX()));
+	s->set(rob1_Y, double(r1_trans.getOrigin().getZ()));
 
 }
 
@@ -152,14 +150,10 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	bool bEval = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 	int step = CSimionApp::get()->pExperiment->getStep();
 
-	// get goal coordinates (constant)
-	double tX = s->get("TargetPointX");
-	double tY = s->get("TargetPointY");
-
 	double boxAfterX = s_p->get("bx");
 	double boxAfterY = s_p->get("by");
 
-	double distance = getDistanceBetweenPoints(tX, tY, boxAfterX, boxAfterY);
+	double distance = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
 	if (distance < 2) {
 		return 0.9;
 	}
