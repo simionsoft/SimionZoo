@@ -317,8 +317,8 @@
     <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
     <STATE-VAR Name="bx" Min="-50" Max="50" Unit="m"/>
     <STATE-VAR Name="by" Min="-50" Max="50" Unit="m"/>
-    <ACTION-VAR Name="r1forceX" Min="-8" Max="8" Unit="N"/>
-    <ACTION-VAR Name="r1forceY" Min="-8" Max="8" Unit="N"/>
+    <ACTION-VAR Name="r1forceX" Min="-20" Max="20" Unit="N"/>
+    <ACTION-VAR Name="r1forceY" Min="-20" Max="20" Unit="N"/>
   </CLASS>
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
     <DOUBLE-VALUE Name="Evaluation-Mean-Wind-Speed" Comment="Mean wind speed in evaluation episodes" Default="12.5"/>

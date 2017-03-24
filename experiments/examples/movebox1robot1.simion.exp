@@ -20,7 +20,7 @@
       <Num-Episodes>1000</Num-Episodes>
       <Eval-Freq>10</Eval-Freq>
       <Progress-Update-Freq>1.0</Progress-Update-Freq>
-      <Episode-Length>10.0</Episode-Length>
+      <Episode-Length>100.0</Episode-Length>
     </Experiment>
     <SimGod>
       <Gamma>0.9</Gamma>
@@ -32,22 +32,22 @@
         <Type>
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
-              <Num-Features>3</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>rx1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>3</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>ry1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>3</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>bx</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>3</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>by</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
@@ -64,7 +64,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.01</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -83,7 +83,7 @@
                                 <Scale>
                                   <Schedule>
                                     <Constant>
-                                      <Value>0.1</Value>
+                                      <Value>15</Value>
                                     </Constant>
                                   </Schedule>
                                 </Scale>
@@ -102,7 +102,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.01</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -121,7 +121,7 @@
                                 <Scale>
                                   <Schedule>
                                     <Constant>
-                                      <Value>0.1</Value>
+                                      <Value>15</Value>
                                     </Constant>
                                   </Schedule>
                                 </Scale>
