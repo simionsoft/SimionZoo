@@ -71,7 +71,7 @@ public:
 	
 	//Returns the expected episode length in seconds (simulation time)
 	double getEpisodeLength(){ return m_episodeLength.get(); }//seconds
-	void setEpisodeLength(double length) { m_episodeLength.set(length); }
+	void setEpisodeLength(double length);
 	unsigned int getEpisodeIndex(){ return m_episodeIndex; }
 	unsigned int getRelativeEpisodeIndex();
 	unsigned int getTrainingEpisodeIndex(){ return m_trainingEpisodeIndex; }
@@ -86,14 +86,14 @@ public:
 	bool isEvaluationEpisode();
 
 	unsigned int getNumEvaluations(){ return m_numEvaluations; }
-	void setEvaluationFreq(int evalFreq) { m_evalFreq.set(evalFreq); }
-	void setNumEpisodesPerEvaluation(int numEpisodes) { m_numEpisodesPerEvaluation = numEpisodes; }
+	void setEvaluationFreq(int evalFreq);
+	void setNumEpisodesPerEvaluation(int numEpisodes);
 	unsigned int getNumEpisodesPerEvaluation() { return m_numEpisodesPerEvaluation; }
 	unsigned int getNumTrainingEpisodes(){ return m_numTrainingEpisodes.get(); }
-	void setNumTrainingEpisodes(int numEpisodes) { m_numTrainingEpisodes.set(numEpisodes); }
+	void setNumTrainingEpisodes(int numEpisodes);
 	unsigned int getTotalNumEpisodes(){ return m_totalNumEpisodes; }
 	unsigned int getNumSteps(){ return m_numSteps; }
-	void setNumSteps(int numSteps) { m_numSteps = numSteps; }
+	void setNumSteps(int numSteps);
 	unsigned int getExperimentStep() { return m_experimentStep; } //returns the current step since the experiment began
 
 	//Progress is normalized

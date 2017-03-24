@@ -220,7 +220,8 @@ void CLogger::firstStep()
 
 void CLogger::lastStep()
 {
-	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
+	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
+	bool bEvalEpisode = pExperiment->isEvaluationEpisode();
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
 	//log the end of the episode: this way we don't have to precalculate the number of steps logged per episode
@@ -228,14 +229,19 @@ void CLogger::lastStep()
 
 	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
 	char buffer[BUFFER_SIZE];
-	int episodeIndex = CSimionApp::get()->pExperiment->getEvaluationIndex();
-	int numEpisodes = CSimionApp::get()->pExperiment->getNumEvaluations();
+	int episodeIndex = pExperiment->getEvaluationIndex();
+	int numEvaluations = pExperiment->getNumEvaluations();
+	int numEpisodesPerEvaluation = pExperiment->getNumEpisodesPerEvaluation();
+	int numRelativeEpisodeIndex = pExperiment->getRelativeEpisodeIndex();
 
 	//log the progress if an evaluation episode has ended
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode() && numEpisodes>0)
+	if (pExperiment->isEvaluationEpisode() 
+		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (std::max(1.0, (double)numEpisodes - 1))
-			, m_episodeRewardSum / (double)CSimionApp::get()->pExperiment->getStep());
+		sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
+			, (double)(numRelativeEpisodeIndex - 1) 
+			/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
+			, m_episodeRewardSum / (double)pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
 	}
 }
@@ -444,5 +450,5 @@ void CLogger::logMessage(MessageType type, const char* message)
 		}
 	}
 	if (type == MessageType::Error)
-		ExitProcess(-1);
+		throw std::exception(message);
 }

@@ -230,5 +230,31 @@ namespace ExperimentEpisodesSteps
 				, L"getTrainingEpisodeIndex() failed");
 			delete pExperiment;
 		}
+
+		TEST_METHOD(ExperimentOnlyOneEpisode)
+		{
+			// init: only one episode (evaluation) and 2 episodes per evaluation
+			CExperiment *pExperiment = new CExperiment();
+			pExperiment->setEpisodeLength(2.0);
+			pExperiment->setNumTrainingEpisodes(1);
+			pExperiment->setEvaluationFreq(2);
+			pExperiment->setNumEpisodesPerEvaluation(2); //2 subepisodes per evaluation
+			pExperiment->setNumSteps(1000); //because the world hasn't been initialized, this should be used
+			pExperiment->reset();
+
+			//test
+			Assert::AreEqual((unsigned int)2, pExperiment->getTotalNumEpisodes()
+				, L"getTotalNumEpisodes() not correctly calculated");
+			Assert::AreEqual(pExperiment->getTotalNumEpisodes(), (unsigned int)2, L"failed");
+			
+			//init: only one episode (evaluation) and 1 episode per evaluation
+			pExperiment->setNumEpisodesPerEvaluation(1);
+			pExperiment->reset();
+
+			Assert::AreEqual((unsigned int)1, pExperiment->getTotalNumEpisodes()
+				, L"getTotalNumEpisodes() not correctly calculated");
+			Assert::AreEqual(pExperiment->getTotalNumEpisodes(), (unsigned int)1, L"failed");
+			delete pExperiment;
+		}
 	};
 }

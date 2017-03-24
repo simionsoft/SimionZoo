@@ -51,12 +51,37 @@ const char* CExperiment::getProgressString()
 	return m_progressMsg;
 }
 
+void CExperiment::setEpisodeLength(double length)
+{
+	m_episodeLength.set(length);
+	reset();
+}
+void CExperiment::setEvaluationFreq(int evalFreq)
+{
+	m_evalFreq.set(evalFreq);
+	reset();
+}
+void CExperiment::setNumEpisodesPerEvaluation(int numEpisodes)
+{
+	m_numEpisodesPerEvaluation = numEpisodes;
+	reset();
+}
+void CExperiment::setNumTrainingEpisodes(int numEpisodes)
+{
+	m_numTrainingEpisodes.set(numEpisodes);
+	reset();
+}
+void CExperiment::setNumSteps(int numSteps)
+{
+	m_numSteps = numSteps;
+	reset();
+}
 
 bool CExperiment::isEvaluationEpisode()
 {
 	if (m_evalFreq.get() > 0)
 	{
-		int episodeInEvalTrainingCycle = (m_episodeIndex-1)
+		unsigned int episodeInEvalTrainingCycle = (m_episodeIndex-1)
 			% ( m_numEpisodesPerEvaluation + m_evalFreq.get());
 		return episodeInEvalTrainingCycle < m_numEpisodesPerEvaluation;
 	//	return (m_episodeIndex - 1) % (m_evalFreq.get() + 1) == 0;
@@ -93,7 +118,7 @@ void CExperiment::reset()
 	//calculate the number of episodes
 	if (m_evalFreq.get() != 0)
 	{
-		if (m_numTrainingEpisodes.get() > 0)
+		if (m_numTrainingEpisodes.get() > 1)
 		{	//general case: training and evaluation
 			m_numEvaluations = 1 + m_numTrainingEpisodes.get() / m_evalFreq.get();
 			m_totalNumEpisodes = m_numTrainingEpisodes.get()
@@ -102,6 +127,7 @@ void CExperiment::reset()
 		else
 		{	//no training, just one evaluation
 			m_numEvaluations = 1;
+			m_numTrainingEpisodes.set(0);//no training
 			m_totalNumEpisodes = m_numEvaluations*m_numEpisodesPerEvaluation;
 		}
 	}
@@ -113,7 +139,7 @@ void CExperiment::reset()
 	//number of steps
 	if (CSimionApp::get() != nullptr && CSimionApp::get()->pWorld.ptr() != nullptr 
 		&& CSimionApp::get()->pWorld->getDT()>0.0)
-		setNumSteps((unsigned int)(m_episodeLength.get() / CSimionApp::get()->pWorld->getDT()));
+		m_numSteps= ((unsigned int)(m_episodeLength.get() / CSimionApp::get()->pWorld->getDT()));
 	else
 	{
 		CLogger::logMessage(MessageType::Warning, "CExperiment: Failed to get DT. m_numSteps will be used instead");

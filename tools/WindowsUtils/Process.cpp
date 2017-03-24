@@ -9,10 +9,17 @@ CProcess::CProcess()
 
 CProcess::~CProcess()
 {
+	//If the process is still running when the owner "dies", kill it
+	kill();
+}
+
+void CProcess::kill()
+{
 	if (m_handle != INVALID_HANDLE_VALUE)
 	{
 		TerminateProcess(m_handle, 0);
 		CloseHandle(m_handle);
+		m_handle = INVALID_HANDLE_VALUE;
 	}
 }
 

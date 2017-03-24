@@ -7,6 +7,7 @@ public:
 	CProcess();
 	~CProcess();
 
+	void kill();
 	bool spawn(const char* commandLine, bool bAwait= false);
 	bool isRunning();
 };

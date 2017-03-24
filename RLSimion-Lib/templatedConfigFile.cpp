@@ -23,7 +23,7 @@ bool CTemplatedConfigFile::load(const char* inTemplateConfigFile)
 	FILE *templateFile;
 	int numCharsRead = 0;
 
-	if (m_bTemplateLoaded) return false;
+	if (m_bTemplateLoaded) return true;
 
 	m_pTemplateConfigFileContent = new char[MAX_CONFIG_FILE_SIZE];
 	m_pInstantiatedConfigFile = new char[MAX_CONFIG_FILE_SIZE];

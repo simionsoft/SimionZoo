@@ -18,7 +18,7 @@ class CFASTWindTurbine : public CDynamicModel, public CDeferredLoad
 	CTemplatedConfigFile m_FASTConfigTemplate, m_FASTWindConfigTemplate, m_TurbSimConfigTemplate;
 
 	MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM,double> m_trainingMeanWindSpeeds;
-	DOUBLE_PARAM m_evaluationMeanWindSpeed;
+	MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double> m_evaluationMeanWindSpeeds;
 
 public:
 

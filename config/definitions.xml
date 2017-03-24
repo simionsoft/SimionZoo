@@ -316,8 +316,8 @@
     <ACTION-VAR Name="force" Min="-10" Max="10" Unit="N"/>
   </CLASS>
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
-    <DOUBLE-VALUE Name="Evaluation-Mean-Wind-Speed" Comment="Mean wind speed in evaluation episodes" Default="12.5"/>
     <MULTI-VALUED Name="Training-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds used in training episodes" Default="12.5"/>
+    <MULTI-VALUED Name="Evaluation-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds in evaluation episodes" Default="12.5"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
     <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
     <STATE-VAR Name="P_s" Min="0" Max="6000000" Unit="W"/>
