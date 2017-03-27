@@ -33,6 +33,9 @@ build/
 bld/
 [Bb]in/*
 
+# Third party bin directories
+bin/
+
 [Oo]bj/
 [Ii]pch/
 logs/
@@ -148,6 +151,9 @@ DocProject/Help/html
 
 # Click-Once directory
 publish/
+
+# Third party bin directories
+3rd-party/bullet3-2.86/bin
 
 # Publish Web Output
 *.[Pp]ublish.xml

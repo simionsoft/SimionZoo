@@ -136,9 +136,6 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	double rob1forcex = a->get("r1forceX");
 	double rob1forcey = a->get("r1forceY");
 
-	btVector3 applied_force1;
-
-
 	btTransform box_trans;
 	btTransform r1_trans;
 
@@ -149,9 +146,7 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	s->set(box_Y, float(box_trans.getOrigin().getZ()));
 
 	//Update Robot1
-	m_pRobot1->setAppliedForce(btVector3(rob1forcex, 0, rob1forcey));
-	m_pRobot1->getAppliedForce(applied_force1);
-	m_pRobot1->getBody()->applyCentralForce(applied_force1);
+	m_pRobot1->getBody()->applyCentralForce(btVector3(rob1forcex, 0, rob1forcey));
 
 	m_dynamicsWorld->stepSimulation(dt);
 
