@@ -16,7 +16,6 @@ experiments/*
 
 # Third party bin directories
 **3rd-party/**/bin/**
-bin/tinyxml2.lib
 # Build results
 **/[Dd]ebug/*
 [Dd]ebugPublic/
