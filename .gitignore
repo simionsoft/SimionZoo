@@ -34,7 +34,7 @@ bld/
 [Bb]in/*
 
 # Third party bin directories
-bin/
+3rd-party/bullet3-2.86/bin/
 
 [Oo]bj/
 [Ii]pch/
