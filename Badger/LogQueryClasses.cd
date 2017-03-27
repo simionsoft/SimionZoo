@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Badger.ViewModels.TrackVariableData">
+    <Position X="22" Y="10.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAgAAAAAAAEAAAA=</HashCode>
+      <FileName>ViewModels\Reports\LogQueryResultTrackViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="lastEpisodeData" />
+      <Field Name="experimentData" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Badger.ViewModels.TrackData">
+    <Position X="19.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QQAAAAAAAAAAAAAAAAAAAVAAAAAAAAAAAAAAACAIAAA=</HashCode>
+      <FileName>ViewModels\Reports\LogQueryResultTrackViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="variablesData" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Badger.ViewModels.LogQueryResultTrackViewModel">
+    <Position X="15.75" Y="10.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEABAAEBAAAAAAAADQAAAAAAAAIAAEAAAAIAAA=</HashCode>
+      <FileName>ViewModels\Reports\LogQueryResultTrackViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="m_trackData" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Badger.ViewModels.DataSeries">
+    <Position X="25.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Reports\LogQueryResultTrackViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
