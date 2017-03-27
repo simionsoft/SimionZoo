@@ -104,15 +104,35 @@ void CMoveBoxOneRobot::reset(CState *s)
 	btTransform robotTransform;
 	btTransform boxTransform;
 
+
+	
+
+
 //	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
-		m_pRobot1->getBody()->getMotionState()->getWorldTransform(robotTransform);
-		m_box->getBody()->getMotionState()->getWorldTransform(boxTransform);
+
+		/// New update due to correct the reset
+		m_pRobot1->getBody()->clearForces();
+		btVector3 zeroVector(0, 0, 0);
+		m_pRobot1->getBody()->setLinearVelocity(zeroVector);
+		m_pRobot1->getBody()->setAngularVelocity(zeroVector);
+
+
+//		m_pRobot1->getBody()->getMotionState()->getWorldTransform(robotTransform);
+//		m_box->getBody()->getMotionState()->getWorldTransform(boxTransform);
+
+		/// reset robot
 		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
 		m_pRobot1->getBody()->setWorldTransform(robotTransform);
+		m_pRobot1->getBody()->getMotionState()->setWorldTransform(robotTransform);
+
+		///reset box
 		boxTransform.setOrigin(btVector3(boxOrigin_x, 0.0, boxOrigin_y));
-		m_box->getBody()->setWorldTransform(robotTransform);
+		m_box->getBody()->setWorldTransform(boxTransform);
+		m_box->getBody()->getMotionState()->setWorldTransform(boxTransform);
+
+		///set initial values to state variables
 		s->set(rob1_X, robotOrigin_x);
 		s->set(rob1_Y, robotOrigin_y);
 		s->set(box_X, boxOrigin_x);
