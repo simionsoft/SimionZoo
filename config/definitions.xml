@@ -397,6 +397,12 @@
     <STATE-VAR Name="control-deviation" Min="-6.5" Max="6.5" Unit="rad"/>
     <ACTION-VAR Name="pitch" Min="-1.4" Max="1.4" Unit="rad"/>
   </CLASS>
+  <CLASS Name="COnlyRobot" World="MoveRobotOnly">
+    <STATE-VAR Name="rx1" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
+    <ACTION-VAR Name="r1forceX" Min="-20" Max="20" Unit="N"/>
+    <ACTION-VAR Name="r1forceY" Min="-20" Max="20" Unit="N"/>
+  </CLASS>
   <CLASS Name="CUnderwaterVehicle" World="Underwater-vehicle">
     <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/underwater-vehicle/setpoint.txt"/>
     <STATE-VAR Name="v-setpoint" Min="-5" Max="5" Unit="m/s"/>
@@ -441,6 +447,7 @@
       <CHOICE-ELEMENT Name="Balancing-pole" Class="CBalancingPole" BadgerMetadata="World=Balancing-pole"/>
       <CHOICE-ELEMENT Name="MoveBox-2Robots" Class="CMoveBox2Robots" BadgerMetadata="World=MoveBox-2Robots"/>
       <CHOICE-ELEMENT Name="MoveBoxOneRobot" Class="CMoveBoxOneRobot" BadgerMetadata="World=MoveBoxOneRobot"/>
+      <CHOICE-ELEMENT Name="MoveRobotOnly" Class="COnlyRobot" BadgerMetadata="World=MoveRobotOnly"/>
       <CHOICE-ELEMENT Name="Mountain-car" Class="CMountainCar" BadgerMetadata="World=Mountain-car"/>
     </CHOICE>
   </CLASS>

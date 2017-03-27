@@ -16,6 +16,7 @@ experiments/*
 
 # Third party bin directories
 **3rd-party/**/bin/**
+bin/
 # Build results
 **/[Dd]ebug/*
 [Dd]ebugPublic/
@@ -29,11 +30,6 @@ experiments/*
 !bin/vcruntime140.dll
 !Debug/msvcp140d.dll
 !Debug/vcruntime140d.dll
-
-!Release/msvcp120.dll
-!Release/msvcr120.dll
-!Release/msvcp140.dll
-!Release/vcruntime140.dll
 
 x64/
 x86/

@@ -157,6 +157,7 @@
     <ClCompile Include="world-mountaincar.cpp" />
     <ClCompile Include="world-movebox2robots.cpp" />
     <ClCompile Include="world-pitchcontrol.cpp" />
+    <ClCompile Include="world-robotonly.cpp" />
     <ClCompile Include="world-underwatervehicle.cpp" />
     <ClCompile Include="world-windturbine.cpp" />
     <ClCompile Include="world.cpp" />
@@ -206,6 +207,7 @@
     <ClInclude Include="world-mountaincar.h" />
     <ClInclude Include="world-movebox2robots.h" />
     <ClInclude Include="world-pitchcontrol.h" />
+    <ClInclude Include="world-robotonly.h" />
     <ClInclude Include="world-underwatervehicle.h" />
     <ClInclude Include="world-windturbine.h" />
     <ClInclude Include="world.h" />
