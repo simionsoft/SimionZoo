@@ -169,17 +169,13 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 		s->set(box_Y, float(box_trans.getOrigin().getZ()));
 
 		//Update Robot1
-		m_pRobot1->setAppliedForce(btVector3(rob1force_x, 0, rob1force_y));
-		m_pRobot1->getAppliedForce(applied_force1);
-		m_pRobot1->getBody()->applyCentralForce(applied_force1);
+		m_pRobot1->getBody()->applyCentralForce(btVector3(rob1force_x, 0, rob1force_y));
 		m_pRobot1->getBody()->getMotionState()->getWorldTransform(r1_trans);
 		s->set(rob1_X, float(r1_trans.getOrigin().getX()));
 		s->set(rob1_Y, float(r1_trans.getOrigin().getZ()));
 
 		//Update Robot2
-		m_pRobot2->setAppliedForce(btVector3(rob2force_x, 0, rob2force_y));
-		m_pRobot2->getAppliedForce(applied_force2);
-		m_pRobot2->getBody()->applyCentralForce(applied_force2);
+		m_pRobot2->getBody()->applyCentralForce(btVector3(rob2force_x, 0, rob2force_y));
 		m_pRobot2->getBody()->getMotionState()->getWorldTransform(r2_trans);
 		s->set(rob2_X, float(r2_trans.getOrigin().getX()));
 		s->set(rob2_Y, float(r2_trans.getOrigin().getZ()));
