@@ -315,6 +315,14 @@
     <STATE-VAR Name="theta_dot" Min="-1" Max="1" Unit="rad/s"/>
     <ACTION-VAR Name="force" Min="-10" Max="10" Unit="N"/>
   </CLASS>
+  <CLASS Name="CMoveBoxOneRobot" World="MoveBoxOneRobot">
+    <STATE-VAR Name="rx1" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="bx" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="by" Min="-50" Max="50" Unit="m"/>
+    <ACTION-VAR Name="r1forceX" Min="-20" Max="20" Unit="N"/>
+    <ACTION-VAR Name="r1forceY" Min="-20" Max="20" Unit="N"/>
+  </CLASS>
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
     <MULTI-VALUED Name="Training-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds used in training episodes" Default="12.5"/>
     <MULTI-VALUED Name="Evaluation-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds in evaluation episodes" Default="12.5"/>
@@ -369,6 +377,20 @@
     <STATE-VAR Name="velocity" Min="-0.07" Max="0.07" Unit="m/s"/>
     <ACTION-VAR Name="pedal" Min="-1" Max="1" Unit="m"/>
   </CLASS>
+  <CLASS Name="CMoveBox2Robots" World="MoveBox-2Robots">
+    <STATE-VAR Name="rx1" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="rx2" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="ry2" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="bx" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="by" Min="-50" Max="50" Unit="m"/>
+    <ACTION-VAR Name="r1forceX" Min="-8" Max="8" Unit="N"/>
+    <ACTION-VAR Name="r1forceY" Min="-8" Max="8" Unit="N"/>
+    <ACTION-VAR Name="r2forceX" Min="-8" Max="8" Unit="N"/>
+    <ACTION-VAR Name="r2forceY" Min="-8" Max="8" Unit="N"/>
+    <CONSTANT Name="TargetPointX"/>
+    <CONSTANT Name="TargetPointY"/>
+  </CLASS>
   <CLASS Name="CPitchControl" World="Pitch-control">
     <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/pitch-control/setpoint.txt"/>
     <STATE-VAR Name="setpoint-pitch" Min="-3.14159265" Max="3.14159265" Unit="rad"/>
@@ -377,6 +399,12 @@
     <STATE-VAR Name="pitch-rate" Min="-0.1" Max="0.1" Unit="rad/s"/>
     <STATE-VAR Name="control-deviation" Min="-6.5" Max="6.5" Unit="rad"/>
     <ACTION-VAR Name="pitch" Min="-1.4" Max="1.4" Unit="rad"/>
+  </CLASS>
+  <CLASS Name="COnlyRobot" World="MoveRobotOnly">
+    <STATE-VAR Name="rx1" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
+    <ACTION-VAR Name="r1forceX" Min="-20" Max="20" Unit="N"/>
+    <ACTION-VAR Name="r1forceY" Min="-20" Max="20" Unit="N"/>
   </CLASS>
   <CLASS Name="CUnderwaterVehicle" World="Underwater-vehicle">
     <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/underwater-vehicle/setpoint.txt"/>
@@ -420,6 +448,9 @@
       <CHOICE-ELEMENT Name="Underwater-vehicle" Class="CUnderwaterVehicle" BadgerMetadata="World=Underwater-vehicle"/>
       <CHOICE-ELEMENT Name="Pitch-control" Class="CPitchControl" BadgerMetadata="World=Pitch-control"/>
       <CHOICE-ELEMENT Name="Balancing-pole" Class="CBalancingPole" BadgerMetadata="World=Balancing-pole"/>
+      <CHOICE-ELEMENT Name="MoveBox-2Robots" Class="CMoveBox2Robots" BadgerMetadata="World=MoveBox-2Robots"/>
+      <CHOICE-ELEMENT Name="MoveBoxOneRobot" Class="CMoveBoxOneRobot" BadgerMetadata="World=MoveBoxOneRobot"/>
+      <CHOICE-ELEMENT Name="MoveRobotOnly" Class="COnlyRobot" BadgerMetadata="World=MoveRobotOnly"/>
       <CHOICE-ELEMENT Name="Mountain-car" Class="CMountainCar" BadgerMetadata="World=Mountain-car"/>
     </CHOICE>
   </CLASS>

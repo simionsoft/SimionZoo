@@ -1,0 +1,14 @@
+<ExperimentLogDescriptor BinaryDataFile="experiment-log.bin">
+  <Episode-Type Id="0">Evaluation</Episode-Type>
+  <State-variable>rx1</State-variable>
+  <State-variable>ry1</State-variable>
+  <State-variable>bx</State-variable>
+  <State-variable>by</State-variable>
+  <Action-variable>r1forceX</Action-variable>
+  <Action-variable>r1forceY</Action-variable>
+  <Reward-variable>reward</Reward-variable>
+  <Stat-variable>Features/Actor/E-Traces</Stat-variable>
+  <Stat-variable>Features/Actor/E-Traces</Stat-variable>
+  <Stat-variable>Features/Critic/E-Traces</Stat-variable>
+  <Stat-variable>TD-error/TD-error</Stat-variable>
+</ExperimentLogDescriptor>

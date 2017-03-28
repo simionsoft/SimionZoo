@@ -15,6 +15,12 @@
     <Filter Include="parameters">
       <UniqueIdentifier>{6a5fa884-f3e3-4de0-a675-65340642e183}</UniqueIdentifier>
     </Filter>
+    <Filter Include="world\Move2RobotsUtils">
+      <UniqueIdentifier>{f2676abb-8538-43d3-b448-7414a627e60e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world\BulletWorlds">
+      <UniqueIdentifier>{9fdcd276-d72c-4a03-81c0-2714f2f39d20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp">
@@ -161,6 +167,21 @@
     <ClCompile Include="controller-adaptive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>world\Move2RobotsUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>world\Move2RobotsUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="world-box1robot.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="world-movebox2robots.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="world-robotonly.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -291,6 +312,21 @@
     </ClInclude>
     <ClInclude Include="controller-adaptive.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Robot.h">
+      <Filter>world\Move2RobotsUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>world\Move2RobotsUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="world-box1robot.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="world-movebox2robots.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="world-robotonly.h">
+      <Filter>world\BulletWorlds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
