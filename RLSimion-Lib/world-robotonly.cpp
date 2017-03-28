@@ -11,7 +11,7 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 }
 
 #define TargetX 12.4
-#define TargetY .0
+#define TargetY 0.0
 
 #define robotOrigin_x 3.0
 #define robotOrigin_y 0.0
@@ -94,11 +94,12 @@ void COnlyRobot::reset(CState *s)
 		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
 		m_pRobot1->getBody()->setWorldTransform(robotTransform);
 		m_pRobot1->getBody()->getMotionState()->setWorldTransform(robotTransform);
-
 	
 		///set initial values to state variables
 		s->set(rob1_X, robotOrigin_x);
 		s->set(rob1_Y, robotOrigin_y);
+		printf("");
+
 	}
 	//else
 	//{
@@ -118,7 +119,6 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	double rob1forcex = a->get("r1forceX");
 	double rob1forcey = a->get("r1forceY");
 
-	btTransform box_trans;
 	btTransform r1_trans;
 
 	//Update Robot1
@@ -145,21 +145,21 @@ double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CSta
 
 	if (robotAfterX == 50.0 || robotAfterX == -50.0 || robotAfterY == 50.0 || robotAfterY == -50.0)
 	{
-		/*if(robotAfterX == 50.0)
+		if(robotAfterX == 50.0)
 		printf("me he caido hacia adelante\n");
 		if(robotAfterX == -50.0)
 		printf("me he caido hacia atras\n");
 		if(robotAfterY == 50.0)
 		printf("me he caido hacia la derecha\n");
 		if(robotAfterY == -50.0)
-		printf("me he caido hacia la izquierda\n");*/
+		printf("me he caido hacia la izquierda\n");
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
 	if (distance < 0.5)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
-		//printf("llego\n");
+		printf("llego\n");
 		return 1;
 	}
 	return 1 / (distance*distance);
