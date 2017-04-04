@@ -51,8 +51,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
-    <CustomBuildAfterTargets>
-    </CustomBuildAfterTargets>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,6 +101,7 @@
       <Message>RLSimion source code parser</Message>
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Outputs>..\config\definitions.xml</Outputs>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
