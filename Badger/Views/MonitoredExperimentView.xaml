@@ -15,7 +15,7 @@
         <StackPanel Orientation="Vertical">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseEnter">
-                    <cal:ActionMessage MethodName="HandleMouseLeaveEnter" >
+                    <cal:ActionMessage MethodName="HandleMouseEnter" >
                         <cal:Parameter Value="{Binding name}" />
                     </cal:ActionMessage>
                 </i:EventTrigger>

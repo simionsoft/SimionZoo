@@ -18,6 +18,7 @@ namespace Badger.ViewModels
         //per-line series properties
         private BindableCollection<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties
             = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
+
         public BindableCollection<PlotLineSeriesPropertiesViewModel> lineSeriesProperties
         {
             get { return m_lineSeriesProperties; }
@@ -26,10 +27,10 @@ namespace Badger.ViewModels
 
         // private OxyPlot.Series.LineSeries m_lineSeries;
 
-        public void addLineSeries(string title, OxyPlot.Series.LineSeries series, PlotViewModel parent)
+        public void addLineSeries(OxyPlot.Series.LineSeries series, PlotViewModel parent)
         {
             // m_lineSeries = series;
-            lineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(title, series, parent));
+            lineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(series, parent));
         }
 
         private BindableCollection<string> m_legendOptions = new BindableCollection<string>();

@@ -83,7 +83,7 @@ namespace Badger.ViewModels
                     new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
                 m_plot.Series.Add(newSeries);
 
-                properties.addLineSeries(title, newSeries, this);
+                properties.addLineSeries(newSeries, this);
 
                 return m_plot.Series.Count - 1; ;
             }
@@ -115,7 +115,7 @@ namespace Badger.ViewModels
 
             foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
             {
-                if (!p.name.Equals(name))
+                if (!p.lineSeries.Title.Equals(name))
                     properties.dimLineSeriesColor(p);
                 else { 
                     properties.removeLineSeriesColorOpacity(p);
