@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:vm="clr-namespace:Badger.ViewModels"
-            xmlns:v="clr-namespace:Badger.Views"
-            xmlns:cal="http://www.caliburnproject.org"
-             mc:Ignorable="d" 
+             xmlns:cal="http://www.caliburnproject.org"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+            mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -14,6 +13,17 @@
 
     <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
         <StackPanel Orientation="Vertical">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <cal:ActionMessage MethodName="HandleMouseLeaveEnter" >
+                        <cal:Parameter Value="{Binding name}" />
+                    </cal:ActionMessage>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <cal:ActionMessage MethodName="HandleMouseLeave" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0" Width="578">
                 <StackPanel Margin="2" Orientation="Horizontal">
                     <StackPanel Orientation="Vertical" Width="159">

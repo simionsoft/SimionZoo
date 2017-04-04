@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using OxyPlot;
 
 namespace Badger.ViewModels
 {
@@ -23,11 +24,11 @@ namespace Badger.ViewModels
             set { m_lineSeriesProperties = value; NotifyOfPropertyChange(() => lineSeriesProperties); }
         }
 
-        private OxyPlot.Series.LineSeries m_lineSeries;
+        // private OxyPlot.Series.LineSeries m_lineSeries;
 
         public void addLineSeries(string title, OxyPlot.Series.LineSeries series, PlotViewModel parent)
         {
-            m_lineSeries = series;
+            // m_lineSeries = series;
             lineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(title, series, parent));
         }
 
@@ -75,5 +76,26 @@ namespace Badger.ViewModels
         //    }
         //    updateView();
         //}
+
+        /// <summary>
+        ///     Apply some opacity to the original color of the LineSeries.  
+        /// </summary>
+        /// <param name="lineSeriesProperties"></param>
+        public void dimLineSeriesColor(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
+        {
+            OxyColor color = lineSeriesProperties.lineSeries.ActualColor;
+            // Apply an opacity of 15% over the original color
+            lineSeriesProperties.lineSeries.Color = OxyColor.FromArgb(0x26, color.R, color.G, color.B);
+        }
+
+        /// <summary>
+        ///     Remove opacity in the original color of the LineSeries.  
+        /// </summary>
+        /// <param name="lineSeriesProperties"></param>
+        public void removeLineSeriesColorOpacity(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
+        {
+            OxyColor color = lineSeriesProperties.lineSeries.ActualColor;
+            lineSeriesProperties.lineSeries.Color = OxyColor.FromRgb(color.R, color.G, color.B);
+        }
     }
 }

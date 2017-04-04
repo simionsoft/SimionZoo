@@ -146,5 +146,17 @@ namespace Badger.ViewModels
                 evaluationSeriesId = evaluationMonitor.addLineSeries(name);
             evaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
         }
+
+        public void HandleMouseEnter(string name)
+        {
+            System.Console.WriteLine("Getting MouseEnter event from View in " + name);
+            evaluationMonitor.highlightLineSeries(name);
+        }
+
+        public void HandleMouseLeave()
+        {
+            System.Console.WriteLine("Getting MouseLeave event from View");
+            evaluationMonitor.resetLineSeriesColors();
+        }
     }
  }

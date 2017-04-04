@@ -14,6 +14,7 @@ namespace Badger.ViewModels
     public class PlotViewModel: PropertyChangedBase
     {
         string m_name = "";
+
         public string name
         {
             get { return m_name; }
@@ -71,20 +72,24 @@ namespace Badger.ViewModels
         {
             m_plot.InvalidatePlot(true);
         }
+
         private object m_lineSeriesLock = new object();
+
         public int addLineSeries(string title)
         {
             lock (m_lineSeriesLock)
             {
-                OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+                OxyPlot.Series.LineSeries newSeries = 
+                    new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
                 m_plot.Series.Add(newSeries);
 
                 properties.addLineSeries(title, newSeries, this);
 
-                return m_plot.Series.Count - 1;
+                return m_plot.Series.Count - 1; ;
             }
         }
-        public void addLineSeriesValue(int seriesIndex,double xValue, double yValue)
+
+        public void addLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
             if (seriesIndex < 0 || seriesIndex >= m_plot.Series.Count)
             {
@@ -94,9 +99,46 @@ namespace Badger.ViewModels
 
             OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries) m_plot.Series[seriesIndex];
             updatePlotBounds(xValue, yValue);
-            series.Points.Add(new DataPoint(xValue,yValue));
+            series.Points.Add(new DataPoint(xValue, yValue));
         }
-        private void updatePlotBounds(double x,double y)
+
+        /// <summary>
+        ///     Identify which LineSeries is hovered and make a call to the dimLineSeriesColor method 
+        ///     passing the correct LineSeriesProperties object as parameter.
+        ///     In order to highlight a LineSeries what we actually do is to dim, that is, apply
+        ///     certain opacity, to all the other LineSeries.
+        /// </summary>
+        /// <param name="name">Name of the hovered LineSeries which is gonna be highlighted</param>
+        public void highlightLineSeries(string name)
+        {
+            bool found = false;
+
+            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
+            {
+                if (!p.name.Equals(name))
+                    properties.dimLineSeriesColor(p);
+                else { 
+                    properties.removeLineSeriesColorOpacity(p);
+                    found = true;
+                }
+            }
+
+            if (!found)
+                resetLineSeriesColors();
+        }
+
+        /// <summary>
+        ///     Reset all LineSeries color to its original, removing the opacity in case that some
+        ///     was applied before by the highlightLineSeries method.  
+        /// </summary>
+        public void resetLineSeriesColors()
+        {
+            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
+                properties.removeLineSeriesColorOpacity(p);
+        }
+
+
+        private void updatePlotBounds(double x, double y)
         {
             bool bMustUpdate = false;
             if (x < m_minX)
