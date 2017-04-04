@@ -8,15 +8,15 @@ using Badger.ViewModels;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
- 
+
 
 namespace Badger
 {
-        public class AppBootstrapper: BootstrapperBase {
+    public class AppBootstrapper : BootstrapperBase
+    {
 
-
-        
-        public AppBootstrapper() {
+        public AppBootstrapper()
+        {
             Initialize();
         }
 
@@ -25,7 +25,5 @@ namespace Badger
             DisplayRootViewFor<WindowViewModel>();
         }
 
-      }
-    
-  
+    }
 }

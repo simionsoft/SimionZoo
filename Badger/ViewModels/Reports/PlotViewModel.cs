@@ -11,7 +11,7 @@ using Badger.Data;
 
 namespace Badger.ViewModels
 {
-    public class PlotViewModel: PropertyChangedBase
+    public class PlotViewModel : PropertyChangedBase
     {
         string m_name = "";
 
@@ -20,7 +20,7 @@ namespace Badger.ViewModels
             get { return m_name; }
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
-        private const int m_updateFreq= 1000; //plot refresh freq in millseconds
+        private const int m_updateFreq = 1000; //plot refresh freq in millseconds
         private System.Threading.Timer m_timer;
 
         double m_minX = double.MaxValue;
@@ -37,10 +37,10 @@ namespace Badger.ViewModels
             get { return m_properties; }
         }
 
-        public PlotViewModel(string title, bool bRefresh=true, bool bShowOptions=false)
+        public PlotViewModel(string title, bool bRefresh = true, bool bShowOptions = false)
         {
-            name= title;
-            m_plot = new PlotModel { Title=title};
+            name = title;
+            m_plot = new PlotModel { Title = title };
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
@@ -79,7 +79,7 @@ namespace Badger.ViewModels
         {
             lock (m_lineSeriesLock)
             {
-                OxyPlot.Series.LineSeries newSeries = 
+                OxyPlot.Series.LineSeries newSeries =
                     new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
                 m_plot.Series.Add(newSeries);
 
@@ -97,7 +97,7 @@ namespace Badger.ViewModels
                 return;
             }
 
-            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries) m_plot.Series[seriesIndex];
+            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)m_plot.Series[seriesIndex];
             updatePlotBounds(xValue, yValue);
             series.Points.Add(new DataPoint(xValue, yValue));
         }
@@ -117,7 +117,8 @@ namespace Badger.ViewModels
             {
                 if (!p.lineSeries.Title.Equals(name))
                     properties.dimLineSeriesColor(p);
-                else { 
+                else
+                {
                     properties.removeLineSeriesColorOpacity(p);
                     found = true;
                 }
@@ -151,12 +152,12 @@ namespace Badger.ViewModels
                 m_maxX = x;
                 bMustUpdate = true;
             }
-            if (y<m_minY)
+            if (y < m_minY)
             {
                 m_minY = y;
                 bMustUpdate = true;
             }
-            if (y>m_maxY)
+            if (y > m_maxY)
             {
                 m_maxY = y;
                 bMustUpdate = true;
@@ -169,11 +170,11 @@ namespace Badger.ViewModels
                 double maxY = m_maxY;
                 double minY = m_minY;
                 if (maxX - minX == 0.0) { minX -= 0.01; maxX += 0.01; }
-                if (maxY - minY==0.0) { minY -= 0.01; maxY += 0.01; }
+                if (maxY - minY == 0.0) { minY -= 0.01; maxY += 0.01; }
                 m_plot.Axes[0].Maximum = maxX;
                 m_plot.Axes[0].Minimum = minX;
-                m_plot.Axes[1].Maximum= maxY;
-                m_plot.Axes[1].Minimum= minY;
+                m_plot.Axes[1].Maximum = maxY;
+                m_plot.Axes[1].Minimum = minY;
             }
         }
         public void saveImage()
@@ -190,7 +191,7 @@ namespace Badger.ViewModels
 
         public void showProperties()
         {
-            CaliburnUtility.showVMDialog(properties,"Plot properties");
+            CaliburnUtility.showVMDialog(properties, "Plot properties");
             setProperties();
         }
 

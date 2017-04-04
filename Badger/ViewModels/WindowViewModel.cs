@@ -13,10 +13,13 @@ namespace Badger.ViewModels
 
     public class WindowViewModel : PropertyChangedBase
     {
-        static private BindableCollection<ExperimentViewModel> m_experiments= new BindableCollection<ExperimentViewModel>();
+        static private BindableCollection<ExperimentViewModel> m_experiments = new BindableCollection<ExperimentViewModel>();
         //these two properties interface to the same hidden attribute
-        public BindableCollection<ExperimentViewModel> experiments { get { return m_experiments; }
-            set { m_experiments = value; NotifyOfPropertyChange(() => experiments); } }
+        public BindableCollection<ExperimentViewModel> experiments
+        {
+            get { return m_experiments; }
+            set { m_experiments = value; NotifyOfPropertyChange(() => experiments); }
+        }
 
         private ExperimentViewModel m_selectedExperiment;
         public ExperimentViewModel selectedExperiment
@@ -32,7 +35,7 @@ namespace Badger.ViewModels
 
         static private bool appNameExists(string name)
         {
-            foreach(ExperimentViewModel app in m_experiments)
+            foreach (ExperimentViewModel app in m_experiments)
             {
                 if (app.name == name)
                     return true;
@@ -53,6 +56,10 @@ namespace Badger.ViewModels
             return newName;
         }
 
+        private MonitorWindowViewModel m_monitorWindowViewModel;
+
+        public MonitorWindowViewModel monitorWindowViewModel { get { return m_monitorWindowViewModel; } }
+
         private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
 
@@ -60,54 +67,58 @@ namespace Badger.ViewModels
         public bool bIsExperimentListNotEmpty
         {
             get { return m_bIsExperimentListNotEmpty; }
-            set { m_bIsExperimentListNotEmpty = value;
-            NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
+            set
+            {
+                m_bIsExperimentListNotEmpty = value;
+                NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
         private void checkEmptyExperimentList()
         {
             bool wasEmpty = !m_bIsExperimentListNotEmpty;
-            if (wasEmpty != (m_experiments.Count==0))
+            if (wasEmpty != (m_experiments.Count == 0))
             {
                 m_bIsExperimentListNotEmpty = !(m_experiments.Count == 0);
                 NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
 
-        private ObservableCollection<string> m_appNames= new ObservableCollection<string>();
+        private ObservableCollection<string> m_appNames = new ObservableCollection<string>();
         public ObservableCollection<string> appNames { get { return m_appNames; } set { } }
-      
+
         //key element is the apps name, and the value is the .xml definition file
-        private Dictionary<string,string> appDefinitions= new Dictionary<string,string>();
+        private Dictionary<string, string> appDefinitions = new Dictionary<string, string>();
 
         private string m_selectedAppName;
 
-        public string selectedAppName { get { return m_selectedAppName; } 
-            set 
+        public string selectedAppName
+        {
+            get { return m_selectedAppName; }
+            set
             {
                 int index = m_appNames.IndexOf(value);
                 if (index == -1)
                     return;
                 m_selectedAppName = value;
                 NotifyOfPropertyChange(() => selectedAppName);
-            } 
+            }
         }
         public void newExperiment()
         {
             if (m_selectedAppName == null) return;
 
             string xmlDefinitionFile = appDefinitions[m_selectedAppName];
-            ExperimentViewModel newExperiment = new ExperimentViewModel(this,xmlDefinitionFile,null,"New");
-            experiments.Add( newExperiment);
+            ExperimentViewModel newExperiment = new ExperimentViewModel(this, xmlDefinitionFile, null, "New");
+            experiments.Add(newExperiment);
             NotifyOfPropertyChange(() => experiments);
             checkEmptyExperimentList();
             selectedExperiment = newExperiment;
         }
-       
+
         private object m_logFileLock = new object();
-        public const string logFilename= SimionFileData.badgerLogFile;
-        private bool m_bFirstLog= true;
-        
+        public const string logFilename = SimionFileData.badgerLogFile;
+        private bool m_bFirstLog = true;
+
         public void logToFile(string logMessage)
         {
             lock (m_logFileLock)
@@ -133,9 +144,11 @@ namespace Badger.ViewModels
         public WindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
+            m_monitorWindowViewModel = new MonitorWindowViewModel(null, null, null, null, this);
 
             loadAppDefinitions();
         }
+
         private void loadAppDefinitions()
         {
             foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
@@ -143,19 +156,20 @@ namespace Badger.ViewModels
                 char[] spliter = "\\".ToCharArray();
                 string[] tmp = app.Split(spliter);
                 tmp = tmp[tmp.Length - 1].Split('.');
-                string name =tmp[0];
+                string name = tmp[0];
                 appDefinitions.Add(name, app);
                 m_appNames.Add(name);
             }
+
             selectedAppName = m_appNames[0];
             NotifyOfPropertyChange(() => appNames);
         }
 
         public void saveExperimentInEditor()
         {
-            if (selectedExperiment==null || !selectedExperiment.validate())
+            if (selectedExperiment == null || !selectedExperiment.validate())
             {
-                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.","Error");
+                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
                 return;
             }
 
@@ -170,7 +184,7 @@ namespace Badger.ViewModels
 
         public void loadExperiment()
         {
-            ExperimentViewModel newApp = SimionFileData.loadExperiment(this,appDefinitions);
+            ExperimentViewModel newApp = SimionFileData.loadExperiment(this, appDefinitions);
             if (newApp != null)
             {
                 experiments.Add(newApp);
@@ -178,7 +192,7 @@ namespace Badger.ViewModels
                 selectedExperiment = newApp;
             }
         }
-        
+
 
         public void clearExperimentQueue()
         {
@@ -202,7 +216,7 @@ namespace Badger.ViewModels
         //BADGER files
         public void loadExperiments()
         {
-            SimionFileData.loadExperiments(this,ref m_experiments, appDefinitions, logToFile);
+            SimionFileData.loadExperiments(this, ref m_experiments, appDefinitions, logToFile);
             NotifyOfPropertyChange(() => experiments);
             if (m_experiments.Count > 0)
                 selectedExperiment = m_experiments[0];
@@ -211,16 +225,16 @@ namespace Badger.ViewModels
 
         public void runExperiments()
         {
-            if (m_shepherdViewModel.herdAgentList.Count==0)
+            if (m_shepherdViewModel.herdAgentList.Count == 0)
             {
                 CaliburnUtility.showWarningDialog("No Herd agents were detected, so experiments cannot be sent. Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
                 return;
             }
             string batchFilename = "";
             List<Experiment> experiments = new List<Experiment>();
-            experiments= SimionFileData.saveExperimentBatchFile(this.experiments, ref batchFilename, this.logToFile);
+            experiments = SimionFileData.saveExperimentBatchFile(this.experiments, ref batchFilename, this.logToFile);
 
-            if (experiments!=null && experiments.Count>0)
+            if (experiments != null && experiments.Count > 0)
             {
                 List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
 
@@ -230,12 +244,16 @@ namespace Badger.ViewModels
                 shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 
-                MonitorWindowViewModel monitorVM = new MonitorWindowViewModel(freeHerdAgents, experiments, logToFile, batchFilename);
+                m_monitorWindowViewModel.FreeHerdAgents = freeHerdAgents;
+                m_monitorWindowViewModel.PendingExperiments = experiments;
+                m_monitorWindowViewModel.LogFunction = logToFile;
+                m_monitorWindowViewModel.BatchFileName = batchFilename;
+                 //   = new MonitorWindowViewModel(freeHerdAgents, experiments, logToFile, batchFilename);
 
-                monitorVM.runExperiments(true, true);
+                m_monitorWindowViewModel.runExperiments(true, true);
 
-                CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
-            }      
+                //CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
+            }
         }
 
 

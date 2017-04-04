@@ -255,7 +255,7 @@ namespace Badger.ViewModels
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
             , List<Experiment> experiments, PlotViewModel evaluationMonitor
-            , Logger.LogFunction logFunctionDelegate,MonitorWindowViewModel parent)
+            , Logger.LogFunction logFunctionDelegate, WindowViewModel parent)
         {
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;

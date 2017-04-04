@@ -100,9 +100,9 @@ namespace Badger.ViewModels
             set
             {
                 m_progress = value; NotifyOfPropertyChange(() => progress);
-                if (m_progress-m_lastProgressUpdate>=m_globalProgressUpdateRate)
+                if (m_progress - m_lastProgressUpdate >= m_globalProgressUpdateRate)
                 {
-                    m_parent.updateGlobalProgress();
+                    m_parent.monitorWindowViewModel.updateGlobalProgress();
                     m_lastProgressUpdate = m_progress;
                 }
             }
@@ -129,8 +129,8 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private MonitorWindowViewModel m_parent;
-        public MonitoredExperimentViewModel(Experiment experiment,PlotViewModel plot,MonitorWindowViewModel parent)
+        private WindowViewModel m_parent;
+        public MonitoredExperimentViewModel(Experiment experiment, PlotViewModel plot, WindowViewModel parent)
         {
             evaluationMonitor = plot;
             m_experiment = experiment;
@@ -139,7 +139,7 @@ namespace Badger.ViewModels
 
         //evaluation plot stuff
         private int evaluationSeriesId = -1;
-        public PlotViewModel evaluationMonitor= null;
+        public PlotViewModel evaluationMonitor = null;
         public void addEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added
@@ -147,16 +147,21 @@ namespace Badger.ViewModels
             evaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
         }
 
+        /// <summary>
+        ///     Get MouseEnter event from View and process it.
+        /// </summary>
+        /// <param name="name">The name of the component which trigger the event</param>
         public void HandleMouseEnter(string name)
         {
-            System.Console.WriteLine("Getting MouseEnter event from View in " + name);
             evaluationMonitor.highlightLineSeries(name);
         }
 
+        /// <summary>
+        ///     Get MouseLeave event from View and process it.
+        /// </summary>
         public void HandleMouseLeave()
         {
-            System.Console.WriteLine("Getting MouseLeave event from View");
             evaluationMonitor.resetLineSeriesColors();
         }
     }
- }
+}

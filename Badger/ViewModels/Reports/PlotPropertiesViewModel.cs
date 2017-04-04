@@ -3,7 +3,7 @@ using OxyPlot;
 
 namespace Badger.ViewModels
 {
-    public class PlotPropertiesViewModel: PropertyChangedBase
+    public class PlotPropertiesViewModel : PropertyChangedBase
     {
         /*
          * plot properties:
@@ -37,7 +37,7 @@ namespace Badger.ViewModels
         public BindableCollection<string> legendOptions
         {
             get { return m_legendOptions; }
-            set { m_legendOptions = value;NotifyOfPropertyChange(() => legendOptions); }
+            set { m_legendOptions = value; NotifyOfPropertyChange(() => legendOptions); }
         }
         public string selectedLegendOption { get; set; }
         private bool m_bLegendVisible = true;
@@ -50,7 +50,7 @@ namespace Badger.ViewModels
         public bool bLegendBorder
         {
             get { return m_bLegendBorder; }
-            set { m_bLegendBorder = value;  NotifyOfPropertyChange(() => m_bLegendBorder); }
+            set { m_bLegendBorder = value; NotifyOfPropertyChange(() => m_bLegendBorder); }
         }
 
         public PlotPropertiesViewModel()
@@ -59,7 +59,7 @@ namespace Badger.ViewModels
             m_legendOptions.Add(OxyPlot.LegendPosition.BottomRight.ToString());
             m_legendOptions.Add(OxyPlot.LegendPosition.TopLeft.ToString());
             m_legendOptions.Add(OxyPlot.LegendPosition.TopRight.ToString());
-            selectedLegendOption= OxyPlot.LegendPosition.TopRight.ToString();
+            selectedLegendOption = OxyPlot.LegendPosition.TopRight.ToString();
         }
 
         //public void updateLineSeriesVisibility(PlotLineSeriesPropertiesViewModel lineSeriesProperties)

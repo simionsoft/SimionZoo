@@ -10,7 +10,7 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <ScrollViewer>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <ItemsControl x:Name="herdAgentList"></ItemsControl>
     </ScrollViewer>
 </UserControl>
