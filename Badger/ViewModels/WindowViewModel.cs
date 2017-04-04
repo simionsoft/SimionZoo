@@ -56,9 +56,22 @@ namespace Badger.ViewModels
             return newName;
         }
 
-        private MonitorWindowViewModel m_monitorWindowViewModel;
+        private ExperimentMonitorViewModel m_monitorWindowViewModel;
 
-        public MonitorWindowViewModel monitorWindowViewModel { get { return m_monitorWindowViewModel; } }
+        public ExperimentMonitorViewModel monitorWindowViewModel { get { return m_monitorWindowViewModel; } }
+
+        // This is need it in order to enable/disable the StopExperiments button
+        private bool m_bExperimentRunning = false;
+
+        public bool IsExperimentRunning
+        {
+            get { return m_bExperimentRunning; }
+            set
+            {
+                m_bExperimentRunning = value;
+                NotifyOfPropertyChange(() => IsExperimentRunning);
+            }
+        }
 
         private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
@@ -144,7 +157,7 @@ namespace Badger.ViewModels
         public WindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-            m_monitorWindowViewModel = new MonitorWindowViewModel(null, null, null, null, this);
+            m_monitorWindowViewModel = new ExperimentMonitorViewModel(null, null, null, null);
 
             loadAppDefinitions();
         }
@@ -248,15 +261,23 @@ namespace Badger.ViewModels
                 m_monitorWindowViewModel.PendingExperiments = experiments;
                 m_monitorWindowViewModel.LogFunction = logToFile;
                 m_monitorWindowViewModel.BatchFileName = batchFilename;
-                 //   = new MonitorWindowViewModel(freeHerdAgents, experiments, logToFile, batchFilename);
 
                 m_monitorWindowViewModel.runExperiments(true, true);
-
-                //CaliburnUtility.showVMDialog(monitorVM, "Experiment execution monitor");
+                IsExperimentRunning = true;
             }
         }
 
-
+        /// <summary>
+        ///     Stops all experiments in progress.
+        /// </summary>
+        public void stopExperiments()
+        {
+            if (IsExperimentRunning)
+            {
+                m_monitorWindowViewModel.stopExperiments();
+                IsExperimentRunning = false;
+            }
+        }
 
         public void showPlotWindow()
         {

@@ -158,7 +158,7 @@
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
-    <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentMonitorViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
@@ -181,8 +181,8 @@
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MonitorWindowView.xaml.cs">
-      <DependentUpon>MonitorWindowView.xaml</DependentUpon>
+    <Compile Include="Views\ExperimentMonitorView.xaml.cs">
+      <DependentUpon>ExperimentMonitorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\ReportsWindowView.xaml.cs">
       <DependentUpon>ReportsWindowView.xaml</DependentUpon>
@@ -333,7 +333,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MonitorWindowView.xaml">
+    <Page Include="Views\ExperimentMonitorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

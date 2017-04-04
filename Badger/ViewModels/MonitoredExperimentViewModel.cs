@@ -102,7 +102,7 @@ namespace Badger.ViewModels
                 m_progress = value; NotifyOfPropertyChange(() => progress);
                 if (m_progress - m_lastProgressUpdate >= m_globalProgressUpdateRate)
                 {
-                    m_parent.monitorWindowViewModel.updateGlobalProgress();
+                    m_parent.updateGlobalProgress();
                     m_lastProgressUpdate = m_progress;
                 }
             }
@@ -129,8 +129,8 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private WindowViewModel m_parent;
-        public MonitoredExperimentViewModel(Experiment experiment, PlotViewModel plot, WindowViewModel parent)
+        private ExperimentMonitorViewModel m_parent;
+        public MonitoredExperimentViewModel(Experiment experiment, PlotViewModel plot, ExperimentMonitorViewModel parent)
         {
             evaluationMonitor = plot;
             m_experiment = experiment;

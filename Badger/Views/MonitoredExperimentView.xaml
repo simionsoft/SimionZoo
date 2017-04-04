@@ -6,12 +6,12 @@
              xmlns:cal="http://www.caliburnproject.org"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
             mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="600">
+             d:DesignHeight="100" d:DesignWidth="450">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <Border BorderThickness="1" BorderBrush="LightGray" Margin="0">
+    <Border BorderThickness="1" BorderBrush="LightGray">
         <StackPanel Orientation="Vertical">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseEnter">
@@ -23,28 +23,26 @@
                     <cal:ActionMessage MethodName="HandleMouseLeave" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0" Width="578">
-                <StackPanel Margin="2" Orientation="Horizontal">
-                    <StackPanel Orientation="Vertical" Width="159">
-                        <StackPanel>
-                            <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}" FontFamily="Segoe UI" FontSize="10"/>
-                        </StackPanel>
-                        <StackPanel>
+
+            <StackPanel Orientation="Horizontal" >
+                <StackPanel Orientation="Vertical" Margin="5">
+                            <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}" FontFamily="Segoe UI" FontSize="10"
+                                        VerticalAlignment="Center"/>
                             <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
-                                           FontSize="8" Width="100"></TextBlock>
-                        </StackPanel>
+                                           FontSize="10" Width="Auto" MinWidth="100" VerticalAlignment="Center" />
                     </StackPanel>
                     <StackPanel>
-                        <ScrollViewer VerticalScrollBarVisibility="Visible" CanContentScroll="True" Height="50" Width="415">
-                            <TextBlock Text="{Binding statusInfo}" Width="397" FontSize="8" Foreground="Gray"/>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Height="Auto"
+                                      MinHeight="50" MaxHeight="50" Width="Auto">
+                            <TextBlock Text="{Binding statusInfo}" Width="Auto" MinWidth="350" FontSize="10" Foreground="Gray"/>
                         </ScrollViewer>
                     </StackPanel>
-                </StackPanel>
             </StackPanel>
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Visibility="{Binding Path=isRunning,Converter={StaticResource BoolToVis}}" Margin="10,0" Width="578">
-                <ProgressBar Height="10" Width="380" Minimum="0" Maximum="100" x:Name="Progress" 
-                                     Margin="0,0,0,0" Value="{Binding Path=progress}"/>
+            
+            <StackPanel Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}"
+                        Margin="5">
+                <ProgressBar Height="10" Width="Auto" MinWidth="450" Minimum="0" Maximum="100" x:Name="Progress" 
+                                      Value="{Binding Path = progress}"/>
             </StackPanel>
         </StackPanel>
     </Border>

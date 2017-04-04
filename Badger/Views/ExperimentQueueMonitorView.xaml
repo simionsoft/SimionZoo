@@ -13,8 +13,7 @@
     </UserControl.Resources>
 
     <ListView HorizontalContentAlignment="Center" x:Name="monitoredExperiments" BorderBrush="{x:Null}" BorderThickness="0" 
-                  ItemsSource="{Binding Path=monitoredExperimentBatchList}"
-                  Margin="20">
+                  ItemsSource="{Binding Path=monitoredExperimentBatchList}" >
         <ListView.Resources>
             <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
                 <v:MonitoredExperimentView/>

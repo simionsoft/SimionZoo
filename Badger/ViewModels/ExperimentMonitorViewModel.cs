@@ -7,7 +7,7 @@ using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    public class MonitorWindowViewModel : PropertyChangedBase
+    public class ExperimentMonitorViewModel : PropertyChangedBase
     {
         private ExperimentQueueMonitorViewModel m_experimentQueueMonitorViewModel;
 
@@ -86,10 +86,9 @@ namespace Badger.ViewModels
                 estimatedEndTime = "";
         }
 
-        private WindowViewModel m_parent;
 
-        public MonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            List<Experiment> pendingExperiments, Logger.LogFunction logFunction, string batchFilename, WindowViewModel parent)
+        public ExperimentMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
+            List<Experiment> pendingExperiments, Logger.LogFunction logFunction, string batchFilename)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
             evaluationPlot.bShowOptions = false;
@@ -100,24 +99,21 @@ namespace Badger.ViewModels
             m_pendingExperiments = pendingExperiments;
             m_logFunction = logFunction;
             m_batchFilename = batchFilename;
-            m_parent = parent;
         }
 
         public void runExperiments(bool monitorProgress = true, bool receiveJobResults = true)
         {
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents, m_pendingExperiments,
-                evaluationPlot, m_logFunction, m_parent);
+                evaluationPlot, m_logFunction, this);
 
             m_experimentTimer.Start();
             Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress, receiveJobResults));
         }
 
-        /*protected override void OnDeactivate(bool close)
+        public void stopExperiments()
         {
-            if (close)
-                experimentQueueMonitor.stopExperiments();
-            base.OnDeactivate(close);
-        }*/
+            experimentQueueMonitor.stopExperiments();
+        }
 
         public void showReports()
         {
