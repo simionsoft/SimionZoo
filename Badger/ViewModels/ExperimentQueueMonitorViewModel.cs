@@ -341,12 +341,18 @@ namespace Badger.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Stops all experiments in progress.
+        /// </summary>
         public void stopExperiments()
         {
+    
             if (m_bRunning && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
         }
+
         private int batchId = 0;
+
         public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments
             , ref List<HerdAgentViewModel> freeHerdAgents
             , ref  List<ExperimentBatch> experimentAssignments

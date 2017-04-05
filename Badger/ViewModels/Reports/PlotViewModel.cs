@@ -102,6 +102,13 @@ namespace Badger.ViewModels
             series.Points.Add(new DataPoint(xValue, yValue));
         }
 
+        public void clearLineSeries()
+        {
+            m_plot.Series.Clear();
+            updateView();
+            
+        }
+
         /// <summary>
         ///     Identify which LineSeries is hovered and make a call to the dimLineSeriesColor method 
         ///     passing the correct LineSeriesProperties object as parameter.
@@ -177,6 +184,7 @@ namespace Badger.ViewModels
                 m_plot.Axes[1].Minimum = minY;
             }
         }
+
         public void saveImage()
         {
             FolderBrowserDialog sfd = new FolderBrowserDialog();
@@ -200,6 +208,7 @@ namespace Badger.ViewModels
             plot.IsLegendVisible = properties.bLegendVisible;
             updateView();
         }
+
         public void export(string outputFolder)
         {
             string fileName;

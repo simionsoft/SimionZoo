@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Badger.Views
 {
     /// <summary>
-    /// Interaction logic for ExperimentQueueView.xaml
+    /// Interaction logic for ExperimentMonitorView.xaml
     /// </summary>
-    public partial class MonitorWindowView : UserControl
+    public partial class ExperimentMonitorView : UserControl
     {
-        public MonitorWindowView()
+        public ExperimentMonitorView()
         {
             InitializeComponent();
         }

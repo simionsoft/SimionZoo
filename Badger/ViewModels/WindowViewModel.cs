@@ -212,11 +212,13 @@ namespace Badger.ViewModels
             selectedExperiment = null;
             if (experiments != null) experiments.Clear();
         }
+
         public void close(ExperimentViewModel app)
         {
             experiments.Remove(app);
             checkEmptyExperimentList();
         }
+
         public void removeSelectedExperiments()
         {
             if (selectedExperiment != null)
@@ -268,15 +270,13 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        ///     Stops all experiments in progress.
+        ///     Stops all experiments in progress if there is some.
         /// </summary>
         public void stopExperiments()
         {
-            if (IsExperimentRunning)
-            {
-                m_monitorWindowViewModel.stopExperiments();
-                IsExperimentRunning = false;
-            }
+            if (!IsExperimentRunning) return;
+            m_monitorWindowViewModel.stopExperiments();
+            IsExperimentRunning = false;
         }
 
         public void showPlotWindow()
