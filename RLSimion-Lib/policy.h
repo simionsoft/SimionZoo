@@ -26,7 +26,7 @@ public:
 	virtual double getDeterministicOutput(const CFeatureList* pFeatureList) = 0;
 
 	//this method is used when we want the policy to plug directly its output into the environment
-	virtual void selectAction(const CState *s, CAction *a) = 0;
+	virtual double selectAction(const CState *s, CAction *a) = 0;
 	//this method is used when we want to getSample the output of the controller (exploration noise too) and use for some internal stuff
 	//i.e., use the output of the policy learner within an adaptive controller: CExtendedWindTurbine...
 	virtual double getOutput(const CState *s) = 0;
@@ -60,7 +60,7 @@ public:
 	void addFeatures(const CFeatureList* pFeatureList, double factor);
 	double getDeterministicOutput(const CFeatureList* pFeatureList);
 
-	void selectAction(const CState *s, CAction *a);
+	double selectAction(const CState *s, CAction *a);
 	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 
@@ -90,7 +90,7 @@ public:
 	void addFeatures(const CFeatureList* pFeatureList, double factor);
 	double getDeterministicOutput(const CFeatureList* pFeatureList);
 
-	void selectAction(const CState *s, CAction *a);
+	double selectAction(const CState *s, CAction *a);
 	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 

@@ -19,9 +19,11 @@ public:
 
 	static std::shared_ptr<CController> getInstance(CConfigNode* pConfigNode);
 
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r){ }
+	//regular controllers need not update. Default implementation does nothing but it can be overriden
+	//by adaptive controllers if need to
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb){ }
 
-	virtual void selectAction(const CState *s, CAction *a)= 0;
+	virtual double selectAction(const CState *s, CAction *a)= 0;
 };
 
 class CLQRGain
@@ -44,7 +46,7 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	void selectAction(const CState *s,CAction *a);
+	double selectAction(const CState *s,CAction *a);
 };
 
 class CPIDController : public CController
@@ -62,7 +64,7 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	void selectAction(const CState *s,CAction *a);
+	double selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineVidalController : public CController
@@ -86,7 +88,7 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	virtual void selectAction(const CState *s,CAction *a);
+	virtual double selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineBoukhezzarController : public CController
@@ -109,7 +111,7 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	virtual void selectAction(const CState *s,CAction *a);
+	virtual double selectAction(const CState *s,CAction *a);
 };
 
 class CWindTurbineJonkmanController : public CController
@@ -139,5 +141,5 @@ public:
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	virtual void selectAction(const CState *s,CAction *a);
+	virtual double selectAction(const CState *s,CAction *a);
 };

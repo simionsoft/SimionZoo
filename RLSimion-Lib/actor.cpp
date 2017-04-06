@@ -74,13 +74,15 @@ void CActor::deferredLoadStep()
 	delete a;
 }
 
-void CActor::selectAction(const CState *s, CAction *a)
+double CActor::selectAction(const CState *s, CAction *a)
 {
+	double prob = 1.0;
 	for (unsigned int i = 0; i<m_policyLearners.size(); i++)
 	{
 		//each uni-dimensional policy sets its own action's value
-		m_policyLearners[i]->getPolicy()->selectAction(s, a);
+		prob*= m_policyLearners[i]->getPolicy()->selectAction(s, a);
 	}
+	return prob;
 }
 
 double CActor::getActionProbability(const CState *s, const CAction *a, bool bStochastic)

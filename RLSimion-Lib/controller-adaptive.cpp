@@ -19,7 +19,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 CExtendedWindTurbineVidalController::~CExtendedWindTurbineVidalController()
 {}
 
-void CExtendedWindTurbineVidalController::selectAction(const CState *s, CAction *a)
+double CExtendedWindTurbineVidalController::selectAction(const CState *s, CAction *a)
 {
 	//A= f_a(v)
 	//K_alpha= f_k_alpha(v)
@@ -29,6 +29,8 @@ void CExtendedWindTurbineVidalController::selectAction(const CState *s, CAction 
 	m_pKP.set(m_pAdpParamKP->getPolicy()->getOutput(s));
 
 	CWindTurbineVidalController::selectAction(s, a);
+
+	return 1.0;
 }
 void CExtendedWindTurbineVidalController::update(const CState *s, const CAction *a, const CState *s_p, double r)
 {

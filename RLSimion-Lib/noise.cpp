@@ -5,8 +5,8 @@
 #include "app-rlsimion.h"
 #include <math.h>
 
-#define MARGINAL_SIGMA 0.001
-#define MINIMAL_PROBABILITY 0.0001
+#define MARGINAL_SIGMA 0.1
+#define MINIMAL_PROBABILITY 0.000001
 #define PROBABILITY_INTEGRATION_WIDTH 0.001
 
 double getRandomValue()
@@ -19,10 +19,7 @@ double CGaussianNoise::getNormalDistributionSample(double mean, double sigma)
 	if (sigma == 0.0) return 0.0;
 	double x1 = (double) (rand() + 1) / ((double) RAND_MAX + 1);
 	double x2 = (double) rand() / (double) RAND_MAX;
-	assert(x1 != 0.0);
-	assert(-2 * log(x1) >= 0.0);
 	double z = sqrt(- 2 * log(x1)) * cos(2 * M_PI * x2);
-	assert(sigma != 0.0);
 	return z * sqrt(sigma) + mean;
 }
 

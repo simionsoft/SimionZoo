@@ -20,9 +20,9 @@ public:
 	CActorCritic(CConfigNode* pParameters);
 	virtual ~CActorCritic() = default;
 
-	virtual void selectAction(const CState *s, CAction *a);
+	virtual double selectAction(const CState *s, CAction *a);
 
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };
 
 
@@ -56,7 +56,7 @@ public:
 	CIncrementalNaturalActorCritic(CConfigNode *pParameters);
 	virtual ~CIncrementalNaturalActorCritic();
 
-	virtual void selectAction(const CState *s, CAction *a);
+	virtual double selectAction(const CState *s, CAction *a);
 
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };

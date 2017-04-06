@@ -42,8 +42,8 @@ public:
 	CSimGod() = default;
 	virtual ~CSimGod();
 
-	void selectAction(CState* s,CAction* a);
-	void update(CState* s, CAction* a, CState* s_p, double r);
+	double selectAction(CState* s,CAction* a);
+	void update(CState* s, CAction* a, CState* s_p, double r, double probability);
 
 	//delayed load
 	static void registerDeferredLoadStep(CDeferredLoad* deferredLoadObject,unsigned int orderLoad);

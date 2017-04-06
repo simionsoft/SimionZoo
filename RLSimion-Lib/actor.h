@@ -22,7 +22,7 @@ public:
 	virtual ~CActor();
 
 	//this methods sets its output pi(s) in a
-	virtual void selectAction(const CState *s, CAction *a);
+	virtual double selectAction(const CState *s, CAction *a);
 
 	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 

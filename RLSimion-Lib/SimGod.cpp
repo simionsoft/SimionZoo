@@ -45,21 +45,22 @@ CSimGod::~CSimGod()
 }
 
 
-void CSimGod::selectAction(CState* s, CAction* a)
+double CSimGod::selectAction(CState* s, CAction* a)
 {
-	double sampleImportanceWeight = 1.0;
+	double probability = 1.0;
 	for (unsigned int i = 0; i < m_simions.size(); i++)
-		m_simions[i]->selectAction(s, a);
+		probability*= m_simions[i]->selectAction(s, a);
+	return probability;
 }
 
-void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
+void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probability)
 {
 	CExperienceTuple* pExperienceTuple;
 	double actionImportanceWeight= 1.0;
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
-	m_pExperienceReplay->addTuple(s, a, s_p, r);
+	m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
 
 	int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
 	for (int tuple = 0; tuple < updateBatchSize; ++tuple)
@@ -68,7 +69,8 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
 
 		//update step
 		for (unsigned int i = 0; i < m_simions.size(); i++)
-			m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
+			m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
+				, pExperienceTuple->r, pExperienceTuple->probability);
 	}
 }
 
