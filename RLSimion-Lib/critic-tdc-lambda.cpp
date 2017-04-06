@@ -33,7 +33,7 @@ CTDCLambdaCritic::~CTDCLambdaCritic()
 	delete m_omega;
 }
 
-double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+double CTDCLambdaCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double rho)
 {
 	if (m_pAlpha->get()==0.0) return 0.0;
 	
@@ -41,7 +41,7 @@ double CTDCLambdaCritic::updateValue(const CState *s, const CAction *a, const CS
 	{
 		m_omega->clear();
 	}
-	double rho = 1.0;
+	//double rho = 1.0;
 
 	m_pVFunction->getFeatures(s, m_s_features);
 	m_pVFunction->getFeatures(s_p, m_s_p_features);

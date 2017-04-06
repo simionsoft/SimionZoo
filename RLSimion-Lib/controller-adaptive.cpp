@@ -30,13 +30,11 @@ void CExtendedWindTurbineVidalController::selectAction(const CState *s, CAction 
 
 	CWindTurbineVidalController::selectAction(s, a);
 }
-void CExtendedWindTurbineVidalController::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void CExtendedWindTurbineVidalController::update(const CState *s, const CAction *a, const CState *s_p, double r)
 {
-	m_td= m_pCritic->updateValue(s, a, s_p, r);
-}
-void CExtendedWindTurbineVidalController::updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r)
-{
-	m_pAdpParamA->updatePolicy(s, a, s_p, r, m_td);
-	m_pAdpParamK_alpha->updatePolicy(s, a, s_p, r, m_td);
-	m_pAdpParamKP->updatePolicy(s, a, s_p, r, m_td);
+	m_td= m_pCritic->update(s, a, s_p, r);
+
+	m_pAdpParamA->update(s, a, s_p, r, m_td);
+	m_pAdpParamK_alpha->update(s, a, s_p, r, m_td);
+	m_pAdpParamKP->update(s, a, s_p, r, m_td);
 }

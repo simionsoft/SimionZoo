@@ -193,10 +193,10 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
-//	double omega_g = s->get(m_omega_r_index);
+//	double omega_g = s->getSample(m_omega_r_index);
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed"); //NOMINAL WIND SPEED
 	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0 + sgn(e_omega_g));
-				//+ m_pKI.get()*s->get("E_int_omega_r");
+				//+ m_pKI.getSample()*s->getSample("E_int_omega_r");
 			//up there, it should be "E_int_omega_g", which is currently not defined/set
 
 	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
@@ -270,7 +270,7 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
 
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.get()*s->get("E_int_omega_g");
+	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.getSample()*s->getSample("E_int_omega_g");
 		//up there, it should be "E_int_omega_g", which is currently not defined/set
 
 	a->set(m_a_beta,desiredBeta);
@@ -398,7 +398,7 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	double PitComP   = GK* m_PC_KP.get() *   SpdErr; //Proportional term
 	double PitComI   = GK* m_PC_KI.get() * m_IntSpdErr; //Integral term (saturated)
 
-	//Superimpose the individual commands to get the total pitch command;
+	//Superimpose the individual commands to getSample the total pitch command;
 	//  saturate the overall command using the pitch angle limits:
 	double PitComT   = PitComP + PitComI;                                     //Overall command (unsaturated)
 	PitComT   = std::min( std::max( PitComT, s->getProperties(m_beta).getMin() )

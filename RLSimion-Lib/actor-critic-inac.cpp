@@ -134,6 +134,12 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	}
 }
 
+void CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r)
+{
+	updateValue(s, a, s_p, r);
+	updatePolicy(s, a, s_p, r);
+}
+
 void CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
 {
 	for (unsigned int i = 0; i < m_policies.size(); i++)

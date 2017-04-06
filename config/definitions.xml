@@ -258,6 +258,7 @@
     <INTEGER-VALUE Name="V-Function-Update-Freq" Comment="Update frequency at which v-function updates will be done. Only used if Freeze-V-Function=true" Default="100"/>
     <DOUBLE-VALUE Name="Gamma" Comment="Gamma parameter" Default="0.9"/>
     <BOOL-VALUE Name="Freeze-V-Function" Comment="Defers updates on the V-functions to improve stability" Default="false"/>
+    <BOOL-VALUE Name="Use-Importance-Weights" Comment="Use sample importance weights to allow off-policy learning -experimental-" Default="false"/>
     <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>
     <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map" Optional="True"/>
     <BRANCH Name="Action-Feature-Map" Class="CActionFeatureMap-Factory" Comment="The state feature map" Optional="True"/>

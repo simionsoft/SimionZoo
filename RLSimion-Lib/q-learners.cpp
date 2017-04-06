@@ -113,7 +113,7 @@ CQLearning::~CQLearning()
 	delete m_pAux;
 }
 
-void CQLearning::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void CQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
 	m_eTraces->update();
@@ -151,7 +151,7 @@ CDoubleQLearning::~CDoubleQLearning()
 	delete m_pTargetQFunction;
 }
 
-void CDoubleQLearning::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r)
 {
 	m_eTraces->update();
 
@@ -200,7 +200,7 @@ void CSARSA::selectAction(const CState *s, CAction *a)
 	}
 }
 
-void CSARSA::updateValue(const CState* s, const CAction* a, const CState* s_p, double r)
+void CSARSA::update(const CState* s, const CAction* a, const CState* s_p, double r)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node77.html
 	m_eTraces->update();

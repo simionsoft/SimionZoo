@@ -22,7 +22,7 @@ CCACLALearner::~CCACLALearner()
 	delete m_pStateFeatures;
 }
 
-void CCACLALearner::updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td)
+void CCACLALearner::update(const CState *s, const CAction *a, const CState *s_p, double r, double td)
 {
 	double lastNoise;
 	double alpha;

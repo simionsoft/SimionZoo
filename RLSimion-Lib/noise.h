@@ -6,8 +6,6 @@ class CNumericValue;
 
 double getRandomValue();// returns a random value in range [0,1]
 
-double getNormalDistributionSample(double mu, double sigma);
-
 
 class CNoise
 {
@@ -20,7 +18,11 @@ public:
 
 	virtual double getSigma() { return 0.0; }
 	virtual double unscale(double noise) { return noise; }
-	virtual double get()= 0;
+	virtual double getSample()= 0;
+	//bUseMarginal= true means that the internal parameters should be neglected and, instead
+	//, a very thin noise source should be used. This is used to simulate the calculation of
+	//the probability of a sample belonging to a deterministic policy
+	virtual double getSampleProbability(double sample, bool bUseMarginalNoise= false) = 0;
 };
 
 
@@ -36,8 +38,12 @@ public:
 	~CGaussianNoise()= default;
 	double getSigma();
 	double unscale(double noise);
+	double getSample();
+	double getSampleProbability(double sample, bool bUseMarginalNoise = false);
 
-	double get();
+	static double getSampleProbability(double mean, double sigma, double value, double scale = 1.0);
+	static double getNormalDistributionSample(double mean, double sigma);
+	static double getPDF(double mean, double sigma, double value,double scaleFactor=1.0);
 };
 
 class CSinusoidalNoise : public CNoise
@@ -50,7 +56,8 @@ public:
 	~CSinusoidalNoise() = default;
 	double getSigma();
 	double unscale(double noise);
-	double get();
+	double getSample();
+	double getSampleProbability(double sample, bool bUseMarginalNoise = false) { throw std::exception("not implemented"); }
 };
 
 class COrnsteinUhlenbeckNoise : public CNoise
@@ -63,5 +70,6 @@ public:
 	~COrnsteinUhlenbeckNoise();
 	double getSigma();
 	double unscale(double noise);
-	double get();
+	double getSample();
+	double getSampleProbability(double sample, bool bUseMarginalNoise = false) { throw std::exception("not implemented"); }
 };

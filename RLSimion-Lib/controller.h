@@ -19,11 +19,9 @@ public:
 
 	static std::shared_ptr<CController> getInstance(CConfigNode* pConfigNode);
 
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r){ }
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r){ }
 
 	virtual void selectAction(const CState *s, CAction *a)= 0;
-
-	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r){}
 };
 
 class CLQRGain

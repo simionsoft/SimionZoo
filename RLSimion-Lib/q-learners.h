@@ -66,11 +66,9 @@ public:
 	virtual ~CQLearning();
 
 	//the Q-Function is updated in this method (and thus, any policy derived from it such as epsilon-greedy or soft-max) 
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
 
 	void selectAction(const CState *s, CAction *a);
-	//this method does nothing
-	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r){};
 };
 
 ////////////////////////
@@ -88,7 +86,7 @@ public:
 	CDoubleQLearning(CConfigNode* pParameters);
 	virtual ~CDoubleQLearning();
 
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 
 ////////////////////////
@@ -103,5 +101,5 @@ public:
 	CSARSA(CConfigNode* pParameters);
 	virtual ~CSARSA();
 	void selectAction(const CState *s, CAction *a);
-	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	void update(const CState *s, const CAction *a, const CState *s_p, double r);
 };

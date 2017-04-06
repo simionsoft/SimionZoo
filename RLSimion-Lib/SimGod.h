@@ -27,6 +27,7 @@ class CSimGod
 
 	BOOL_PARAM m_bFreezeVFunctionUpdates;
 	INT_PARAM m_vFunctionUpdateFreq;
+	BOOL_PARAM m_bUseImportanceWeights;
 
 	CReward *m_pReward;
 
@@ -64,6 +65,9 @@ public:
 
 	//V-Function freeze
 	//returns the freq. (in steps) at which the V-functions should be updated (0 if they aren't deferred)
-	int getVFunctionUpdateFreq(); 
+	int getVFunctionUpdateFreq();
+
+	//Use sample importance weights for off-policy learning?
+	bool useSampleImportanceWeights();
 };
 

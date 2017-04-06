@@ -19,7 +19,7 @@ int main()
 	double *pNoiseSamples = new double[NUM_SAMPLES];
 	for (int i = 0; i < NUM_SAMPLES; i++)
 	{
-		pNoiseSamples[i] = brownianNoise.get();
+		pNoiseSamples[i] = brownianNoise.getSample();
 		sum += pNoiseSamples[i];
 		if (pNoiseSamples[i] > max)max = pNoiseSamples[i];
 		if (pNoiseSamples[i] < min) min = pNoiseSamples[i];

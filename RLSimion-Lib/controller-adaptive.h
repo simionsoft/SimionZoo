@@ -16,8 +16,7 @@ public:
 	virtual ~CExtendedWindTurbineVidalController();
 
 	void selectAction(const CState *s, CAction *a);
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
-	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 
 class CExtendedWindTurbineBoukhezzarController : public CWindTurbineBoukhezzarController
@@ -31,8 +30,7 @@ public:
 	virtual ~CExtendedWindTurbineBoukhezzarController();
 
 	void selectAction(const CState *s, CAction *a);
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
-	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 
 class CExtendedWindTurbineJonkmanController : public CWindTurbineJonkmanController
@@ -46,6 +44,5 @@ public:
 	virtual ~CExtendedWindTurbineJonkmanController();
 
 	void selectAction(const CState *s, CAction *a);
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
-	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
 };

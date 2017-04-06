@@ -22,9 +22,7 @@ public:
 
 	virtual void selectAction(const CState *s, CAction *a);
 
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
-
-	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
 };
 
 
@@ -50,6 +48,9 @@ class CIncrementalNaturalActorCritic : public CSimion
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaV;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaR;
 
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
+
+	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
 public:
 
 	CIncrementalNaturalActorCritic(CConfigNode *pParameters);
@@ -57,7 +58,5 @@ public:
 
 	virtual void selectAction(const CState *s, CAction *a);
 
-	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
-
-	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
 };

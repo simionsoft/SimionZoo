@@ -78,12 +78,23 @@ double CDeterministicPolicyGaussianNoise::getOutput(const CState* s)
 	double noise;
 	
 	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
-		noise= m_pExpNoise->get();
+		noise = m_pExpNoise->getSample();
 	else noise = 0.0;
 
 	double output = m_pDeterministicVFA->get(s);
 
 	return noise + output;
+}
+
+double CDeterministicPolicyGaussianNoise::getProbability(const CState* s, const CAction* a, bool bStochastic)
+{
+	double noise;
+	if (CSimionApp::get()->pSimGod->useSampleImportanceWeights())
+	{
+		noise = a->get(m_outputActionIndex.get()) - m_pDeterministicVFA->get(s);
+		return m_pExpNoise->getSampleProbability(noise, !bStochastic);
+	}
+	return 1.0;
 }
 
 void CDeterministicPolicyGaussianNoise::getFeatures(const CState* state, CFeatureList* outFeatureList)
@@ -126,12 +137,31 @@ void CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 
 double CStochasticPolicyGaussianNoise::getOutput(const CState *s)
 {
-	double sigma = m_pSigmaVFA->get(s);
+	double mean = m_pMeanVFA->get(s);
+	double sigma = 0.0;
+	double output= mean;
+	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		//Training: add noise
+		sigma = m_pSigmaVFA->get(s);
+		output += CGaussianNoise::getNormalDistributionSample(mean, sigma);
+	}
 
+	return output;
+}
+
+double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CState *a, bool bStochastic)
+{
 	double mean = m_pMeanVFA->get(s);
 
-	return getNormalDistributionSample(mean, sigma);
+	if (bStochastic && CSimionApp::get()->pSimGod->useSampleImportanceWeights())
+	{
+		double noise = a->get(m_outputActionIndex.get()) - mean;
+		return CGaussianNoise::getSampleProbability(mean, m_pSigmaVFA->get(s), noise);
+	}
+	return 1.0;
 }
+
 void CStochasticPolicyGaussianNoise::getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
 	m_pMeanVFA->getFeatures(s, m_pMeanFeatures);
