@@ -6,45 +6,51 @@
              xmlns:cal="http://www.caliburnproject.org"
             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
             mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="450">
+             d:DesignHeight="75" d:DesignWidth="450"
+             Background="Transparent">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <Border BorderThickness="1" BorderBrush="LightGray">
-        <StackPanel Orientation="Vertical">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseEnter">
-                    <cal:ActionMessage MethodName="HandleMouseEnter" >
-                        <cal:Parameter Value="{Binding name}" />
-                    </cal:ActionMessage>
-                </i:EventTrigger>
-                <i:EventTrigger EventName="MouseLeave">
-                    <cal:ActionMessage MethodName="HandleMouseLeave" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="MouseEnter">
+            <cal:ActionMessage MethodName="HandleMouseEnter" >
+                <cal:Parameter Value="{Binding name}" />
+            </cal:ActionMessage>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="MouseLeave">
+            <cal:ActionMessage MethodName="HandleMouseLeave" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
-            <StackPanel Orientation="Horizontal" >
-                <StackPanel Orientation="Vertical" Margin="5">
-                            <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}" FontFamily="Segoe UI" FontSize="10"
-                                        VerticalAlignment="Center"/>
-                            <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
+    <Border BorderThickness="1" BorderBrush="LightGray">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <WrapPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Height="Auto" Margin="5,0,5,0">
+                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}" FontFamily="Segoe UI"
+                               FontSize="10" VerticalAlignment="Center"/>
+                <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
                                            FontSize="10" Width="Auto" MinWidth="100" VerticalAlignment="Center" />
-                    </StackPanel>
-                    <StackPanel>
-                        <ScrollViewer VerticalScrollBarVisibility="Auto" CanContentScroll="True" Height="Auto"
-                                      MinHeight="50" MaxHeight="50" Width="Auto">
-                            <TextBlock Text="{Binding statusInfo}" Width="Auto" MinWidth="350" FontSize="10" Foreground="Gray"/>
-                        </ScrollViewer>
-                    </StackPanel>
-            </StackPanel>
-            
-            <StackPanel Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}"
-                        Margin="5">
+            </WrapPanel>
+
+            <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto" CanContentScroll="True" Height="50" Width="Auto">
+                <TextBlock Text="{Binding statusInfo}" Width="Auto" MinWidth="350" FontSize="10" Foreground="Gray"/>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}">
                 <ProgressBar Height="10" Width="Auto" MinWidth="450" Minimum="0" Maximum="100" x:Name="Progress" 
-                                      Value="{Binding Path = progress}"/>
+                                      Value="{Binding Path = progress}" Margin="5"/>
             </StackPanel>
-        </StackPanel>
+        </Grid>
     </Border>
 
 </UserControl>

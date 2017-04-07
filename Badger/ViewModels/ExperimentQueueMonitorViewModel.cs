@@ -24,7 +24,7 @@ namespace Badger.ViewModels
         private PlotViewModel m_evaluationPlot;
         private Dictionary<string, int> m_experimentSeriesId;
 
-        private List<MonitoredExperimentViewModel> m_failedExperiments= new List<MonitoredExperimentViewModel>();
+        private List<MonitoredExperimentViewModel> m_failedExperiments = new List<MonitoredExperimentViewModel>();
         public List<MonitoredExperimentViewModel> failedExperiments { get { return m_failedExperiments; } set { } }
 
         private Logger.LogFunction m_logFunction = null;
@@ -33,8 +33,8 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments,HerdAgentViewModel herdAgent
-            ,PlotViewModel evaluationPlot,CancellationToken cancelToken, Logger.LogFunction logFunction)
+        public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments, HerdAgentViewModel herdAgent
+            , PlotViewModel evaluationPlot, CancellationToken cancelToken, Logger.LogFunction logFunction)
         {
             m_name = name;
             m_monitoredExperiments = experiments;
@@ -64,9 +64,9 @@ namespace Badger.ViewModels
                 task.pipe = experiment.pipeName;
                 job.tasks.Add(task);
                 //add EXE files
-                
+
                 if (!job.inputFiles.Contains(task.exe))
-                        job.inputFiles.Add(task.exe);
+                    job.inputFiles.Add(task.exe);
                 //add prerrequisites
                 foreach (string pre in experiment.prerrequisites)
                     if (!job.inputFiles.Contains(pre))
@@ -76,7 +76,7 @@ namespace Badger.ViewModels
                 if (!job.inputFiles.Contains(experiment.filePath))
                     job.inputFiles.Add(experiment.filePath);
 
-                Utility.getInputsAndOutputs(experiment.exeFile, experiment.filePath,ref job);
+                Utility.getInputsAndOutputs(experiment.exeFile, experiment.filePath, ref job);
             }
             return job;
         }
@@ -132,13 +132,13 @@ namespace Badger.ViewModels
                                 double progress = double.Parse(messageContent, CultureInfo.InvariantCulture);
                                 experimentVM.progress = Convert.ToInt32(progress);
                             }
-                            else if (messageId=="Evaluation")
+                            else if (messageId == "Evaluation")
                             {
                                 //<Evaluation>0.0,-1.23</Evaluation>
-                                string [] values= messageContent.Split(',');
-                                string seriesName= experimentVM.name;
+                                string[] values = messageContent.Split(',');
+                                string seriesName = experimentVM.name;
                                 int seriesId;
-                                if (values.Length==2)
+                                if (values.Length == 2)
                                 {
                                     if (!m_experimentSeriesId.Keys.Contains(experimentVM.name))
                                     {
@@ -147,8 +147,8 @@ namespace Badger.ViewModels
                                     }
                                     else seriesId = m_experimentSeriesId[seriesName];
 
-                                    m_evaluationPlot.addLineSeriesValue(seriesId,double.Parse(values[0], CultureInfo.InvariantCulture)
-                                        ,double.Parse(values[1], CultureInfo.InvariantCulture));
+                                    m_evaluationPlot.addLineSeriesValue(seriesId, double.Parse(values[0], CultureInfo.InvariantCulture)
+                                        , double.Parse(values[1], CultureInfo.InvariantCulture));
                                 }
                             }
                             else if (messageId == "Message")
@@ -183,7 +183,7 @@ namespace Badger.ViewModels
                                     logMessage("Receiving job results");
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.RECEIVING);
                                     m_herdAgent.status = "Receiving output files";
-                                    bool bret= await m_shepherd.ReceiveJobResult(m_cancelToken);
+                                    bool bret = await m_shepherd.ReceiveJobResult(m_cancelToken);
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.FINISHED);
                                     m_herdAgent.status = "Finished";
                                     logMessage("Job results received");
@@ -203,7 +203,7 @@ namespace Badger.ViewModels
                 logMessage("Cancellation requested by user");
                 m_shepherd.writeMessage(Shepherd.m_quitMessage, true);
                 await m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
-                
+
                 m_monitoredExperiments.ForEach((exp) => { exp.resetState(); });
                 m_herdAgent.status = "";
             }
@@ -230,26 +230,26 @@ namespace Badger.ViewModels
         private ObservableCollection<MonitoredExperimentViewModel> m_monitoredExperimentBatchList
             = new ObservableCollection<MonitoredExperimentViewModel>();
         public ObservableCollection<MonitoredExperimentViewModel> monitoredExperimentBatchList
-            { get { return m_monitoredExperimentBatchList; } }
+        { get { return m_monitoredExperimentBatchList; } }
         private List<MonitoredExperimentViewModel> m_pendingExperiments
             = new List<MonitoredExperimentViewModel>();
 
         private CancellationTokenSource m_cancelTokenSource;
 
         //log stuff: a delegate log function must be passed via setLogFunction
-       
-        private Logger.LogFunction logFunction= null;
+
+        private Logger.LogFunction logFunction = null;
         private PlotViewModel m_evaluationMonitor;
 
         //returns the progress as a percentage
         public double calculateGlobalProgress()
         {
             double sum = 0.0;
-            foreach(MonitoredExperimentViewModel exp in m_monitoredExperimentBatchList)
+            foreach (MonitoredExperimentViewModel exp in m_monitoredExperimentBatchList)
             {
                 sum += exp.progress; //<- these are expressed as percentages
             }
-            return 100*(sum / (m_monitoredExperimentBatchList.Count*100));
+            return 100 * (sum / (m_monitoredExperimentBatchList.Count * 100));
         }
 
 
@@ -262,8 +262,8 @@ namespace Badger.ViewModels
             logFunction = logFunctionDelegate;
             foreach (Experiment exp in experiments)
             {
-                MonitoredExperimentViewModel monitoredExperiment= 
-                    new MonitoredExperimentViewModel(exp,evaluationMonitor,parent);
+                MonitoredExperimentViewModel monitoredExperiment =
+                    new MonitoredExperimentViewModel(exp, evaluationMonitor, parent);
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
                 m_pendingExperiments.Add(monitoredExperiment);
             }
@@ -272,16 +272,19 @@ namespace Badger.ViewModels
 
         private bool m_bRunning = false;
         private bool m_bFinished = false;
-        public bool bFinished { get { return m_bFinished; }
-            set { m_bFinished = value; NotifyOfPropertyChange(() => bFinished); } }
+        public bool bFinished
+        {
+            get { return m_bFinished; }
+            set { m_bFinished = value; NotifyOfPropertyChange(() => bFinished); }
+        }
 
         public async void runExperimentsAsync(bool monitorProgress, bool receiveJobResults)
         {
             m_bRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
-            List<Task<ExperimentBatch>> experimentBatchTaskList= new List<Task<ExperimentBatch>>();
-            List<ExperimentBatch> experimentBatchList= new List<ExperimentBatch>();
+            List<Task<ExperimentBatch>> experimentBatchTaskList = new List<Task<ExperimentBatch>>();
+            List<ExperimentBatch> experimentBatchList = new List<ExperimentBatch>();
 
             //assign experiments to free agents
             assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList
@@ -323,7 +326,7 @@ namespace Badger.ViewModels
 
                     //assign experiments to free agents
                     assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList
-                        ,m_cancelTokenSource.Token, logFunction);
+                        , m_cancelTokenSource.Token, logFunction);
                 }
 
             }
@@ -346,7 +349,6 @@ namespace Badger.ViewModels
         /// </summary>
         public void stopExperiments()
         {
-    
             if (m_bRunning && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
         }
@@ -355,7 +357,7 @@ namespace Badger.ViewModels
 
         public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments
             , ref List<HerdAgentViewModel> freeHerdAgents
-            , ref  List<ExperimentBatch> experimentAssignments
+            , ref List<ExperimentBatch> experimentAssignments
             , CancellationToken cancelToken, Logger.LogFunction logFunction = null)
         {
             experimentAssignments.Clear();
@@ -374,7 +376,7 @@ namespace Badger.ViewModels
                     experimentBatch.Add(pendingExperiments[0]);
                     pendingExperiments.RemoveAt(0);
                 }
-                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch, agentVM,m_evaluationMonitor
+                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch, agentVM, m_evaluationMonitor
                     , cancelToken, logFunction));
                 ++batchId;
             }

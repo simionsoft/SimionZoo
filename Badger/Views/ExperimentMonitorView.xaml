@@ -10,26 +10,31 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
     </UserControl.Resources>
-    
+
     <StackPanel Orientation="Vertical">
-        <StackPanel>
-            <ContentControl x:Name="evaluationPlot"/>
-        </StackPanel>
-        <StackPanel HorizontalAlignment="Center">
-            <StackPanel Orientation="Horizontal">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="10" Foreground="DarkGray"/>
-                    <ProgressBar x:Name="globalProgress" Height="10" Width="200" Minimum="0" Maximum="100" Margin="10,0,30,0"></ProgressBar>
-                </StackPanel>
-                <Button x:Name="showReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" Width="90">
-                    <StackPanel Orientation="Horizontal">
-                        <Label>REPORTS</Label>
-                        <Image Source="{StaticResource plot}" Width="25"/>
-                    </StackPanel>
-                </Button>
+        <ContentControl x:Name="evaluationPlot"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
+                <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="10" Foreground="DarkGray" Margin="5,5,5,0"/>
+                <ProgressBar x:Name="globalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100" Margin="5"></ProgressBar>
             </StackPanel>
-        </StackPanel>
-        
+            <Button Grid.Row="0" Grid.Column="1" x:Name="showReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" 
+                    Margin="0,5,5,5" Width="90" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <Label>REPORTS</Label>
+                    <Image Source="{StaticResource plot}" Width="25"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
         <StackPanel>
             <ContentControl x:Name="experimentQueueMonitor" Height="300"/>
         </StackPanel>

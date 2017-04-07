@@ -111,6 +111,10 @@ namespace Badger.ViewModels
             Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress, receiveJobResults));
         }
 
+        /// <summary>
+        ///     Stop all experiments in progress and clean up the plot, that is,
+        ///     remove all previous LineSeries.
+        /// </summary>
         public void stopExperiments()
         {
             experimentQueueMonitor.stopExperiments();
