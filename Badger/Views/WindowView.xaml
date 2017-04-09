@@ -25,7 +25,7 @@
         <BitmapImage x:Key="saveAll" UriSource="/images/save-all.png" />
         <BitmapImage x:Key="load" UriSource="/images/load.png" />
         <BitmapImage x:Key="loadProject" UriSource="/images/open-project.png" />
-        <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
+        <BitmapImage x:Key="stop" UriSource="/images/stop.png" />
         <BitmapImage x:Key="play" UriSource="/images/play.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png" />
@@ -86,7 +86,7 @@
                             ToolTip="Stop experiments in queue">
                         <StackPanel Orientation="Horizontal">
                             <Label Margin="0,0,5,0">STOP</Label>
-                            <Image Width="20" Height="20" Source="{StaticResource close}"></Image>
+                            <Image Width="20" Height="20" Source="{StaticResource stop}"></Image>
                         </StackPanel>
                     </Button>
 

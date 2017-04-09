@@ -253,14 +253,15 @@ namespace Badger.ViewModels
         }
 
 
-        public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents
-            , List<Experiment> experiments, PlotViewModel evaluationMonitor
-            , Logger.LogFunction logFunctionDelegate, ExperimentMonitorViewModel parent)
+        public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
+            List<Experiment> experiments, PlotViewModel evaluationMonitor,
+            Logger.LogFunction logFunctionDelegate, ExperimentMonitorViewModel parent)
         {
             m_bRunning = false;
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
+
             foreach (Experiment exp in experiments)
             {
                 MonitoredExperimentViewModel monitoredExperiment =
@@ -295,13 +296,12 @@ namespace Badger.ViewModels
             List<ExperimentBatch> experimentBatchList = new List<ExperimentBatch>();
 
             //assign experiments to free agents
-            assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList
-                , m_cancelTokenSource.Token, logFunction);
+            assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList,
+                m_cancelTokenSource.Token, logFunction);
             try
             {
                 while ((experimentBatchList.Count > 0 || experimentBatchTaskList.Count > 0
-                    || m_pendingExperiments.Count > 0)
-                    && !m_cancelTokenSource.IsCancellationRequested)
+                    || m_pendingExperiments.Count > 0) && !m_cancelTokenSource.IsCancellationRequested)
                 {
                     foreach (ExperimentBatch batch in experimentBatchList)
                     {
@@ -333,8 +333,8 @@ namespace Badger.ViewModels
                         m_herdAgentList.Add(finishedTaskResult.herdAgent);
 
                     //assign experiments to free agents
-                    assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList
-                        , m_cancelTokenSource.Token, logFunction);
+                    assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList,
+                        m_cancelTokenSource.Token, logFunction);
                 }
 
             }
@@ -364,13 +364,13 @@ namespace Badger.ViewModels
 
         private int batchId = 0;
 
-        public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments
-            , ref List<HerdAgentViewModel> freeHerdAgents
-            , ref List<ExperimentBatch> experimentAssignments
-            , CancellationToken cancelToken, Logger.LogFunction logFunction = null)
+        public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments,
+            ref List<HerdAgentViewModel> freeHerdAgents, ref List<ExperimentBatch> experimentAssignments,
+            CancellationToken cancelToken, Logger.LogFunction logFunction = null)
         {
             experimentAssignments.Clear();
             List<MonitoredExperimentViewModel> experimentBatch;
+
             while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
             {
                 HerdAgentViewModel agentVM = freeHerdAgents[0];
@@ -380,13 +380,15 @@ namespace Badger.ViewModels
 
                 experimentBatch = new List<MonitoredExperimentViewModel>();
                 int numPendingExperiments = pendingExperiments.Count;
+
                 for (int i = 0; i < Math.Min(numProcessors, numPendingExperiments); i++)
                 {
                     experimentBatch.Add(pendingExperiments[0]);
                     pendingExperiments.RemoveAt(0);
                 }
-                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch, agentVM, m_evaluationMonitor
-                    , cancelToken, logFunction));
+
+                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch,
+                    agentVM, m_evaluationMonitor, cancelToken, logFunction));
                 ++batchId;
             }
         }

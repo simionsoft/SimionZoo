@@ -103,6 +103,7 @@ namespace Badger.ViewModels
 
         public void runExperiments(bool monitorProgress = true, bool receiveJobResults = true)
         {
+            evaluationPlot.clearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents, m_pendingExperiments,
                 evaluationPlot, m_logFunction, this);
