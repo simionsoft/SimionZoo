@@ -257,6 +257,7 @@ namespace Badger.ViewModels
             , List<Experiment> experiments, PlotViewModel evaluationMonitor
             , Logger.LogFunction logFunctionDelegate, ExperimentMonitorViewModel parent)
         {
+            m_bRunning = false;
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
@@ -267,10 +268,17 @@ namespace Badger.ViewModels
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
                 m_pendingExperiments.Add(monitoredExperiment);
             }
+
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
-        private bool m_bRunning = false;
+        private bool m_bRunning;
+
+        public bool bRunning
+        {
+            get { return m_bRunning; }
+            set { m_bRunning = value; NotifyOfPropertyChange(() => bRunning); }
+        }
         private bool m_bFinished = false;
         public bool bFinished
         {
@@ -280,7 +288,7 @@ namespace Badger.ViewModels
 
         public async void runExperimentsAsync(bool monitorProgress, bool receiveJobResults)
         {
-            m_bRunning = true;
+            bRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
             List<Task<ExperimentBatch>> experimentBatchTaskList = new List<Task<ExperimentBatch>>();
@@ -339,7 +347,8 @@ namespace Badger.ViewModels
             {
                 if (m_pendingExperiments.Count == 0)
                     bFinished = true; // used to enable the "View reports" button
-                m_bRunning = false;
+
+                bRunning = false;
                 m_cancelTokenSource.Dispose();
             }
         }

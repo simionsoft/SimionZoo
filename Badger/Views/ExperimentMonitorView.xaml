@@ -21,10 +21,12 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            
+
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
-                <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="10" Foreground="DarkGray" Margin="5,5,5,0"/>
-                <ProgressBar x:Name="globalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100" Margin="5"></ProgressBar>
+                <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="10" Foreground="DarkGray" Margin="5,5,5,0"
+                           Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
+                <ProgressBar x:Name="globalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100" Margin="5"
+                             Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
             </StackPanel>
             <Button Grid.Row="0" Grid.Column="1" x:Name="showReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" 
                     Margin="0,5,5,5" Width="90" HorizontalAlignment="Right">
