@@ -103,6 +103,7 @@ namespace Badger.ViewModels
 
         public void runExperiments(bool monitorProgress = true, bool receiveJobResults = true)
         {
+            evaluationPlot.clearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents, m_pendingExperiments,
                 evaluationPlot, m_logFunction, this);
@@ -111,6 +112,10 @@ namespace Badger.ViewModels
             Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress, receiveJobResults));
         }
 
+        /// <summary>
+        ///     Stop all experiments in progress and clean up the plot, that is,
+        ///     remove all previous LineSeries.
+        /// </summary>
         public void stopExperiments()
         {
             experimentQueueMonitor.stopExperiments();

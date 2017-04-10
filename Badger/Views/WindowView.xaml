@@ -25,7 +25,7 @@
         <BitmapImage x:Key="saveAll" UriSource="/images/save-all.png" />
         <BitmapImage x:Key="load" UriSource="/images/load.png" />
         <BitmapImage x:Key="loadProject" UriSource="/images/open-project.png" />
-        <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
+        <BitmapImage x:Key="stop" UriSource="/images/stop.png" />
         <BitmapImage x:Key="play" UriSource="/images/play.png" />
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
         <BitmapImage x:Key="close" UriSource="/images/cancel.png" />
@@ -39,9 +39,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="2*" MinWidth="450"/>
-                <ColumnDefinition Width="2*" MinWidth="450"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*" MinWidth="450"/>
+                <ColumnDefinition Width="3*" MinWidth="450"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
@@ -86,7 +86,7 @@
                             ToolTip="Stop experiments in queue">
                         <StackPanel Orientation="Horizontal">
                             <Label Margin="0,0,5,0">STOP</Label>
-                            <Image Width="20" Height="20" Source="{StaticResource close}"></Image>
+                            <Image Width="20" Height="20" Source="{StaticResource stop}"></Image>
                         </StackPanel>
                     </Button>
 
@@ -102,18 +102,18 @@
 
             <StackPanel Grid.Row="1" Grid.Column="1">
                 <TabControl x:Name="experiments" SelectedItem="{Binding Path = selectedExperiment}" Height="500">
-                        <TabControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" >
-                                    <TextBox Text="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent" VerticalAlignment="Center"/>
-                                    <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
-                                    <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
-                                        <Image Source="{StaticResource close}" Width="10" />
-                                    </Button>
-                                </StackPanel>
-                            </DataTemplate>
-                        </TabControl.ItemTemplate>
-                    </TabControl>
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBox Text="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent" VerticalAlignment="Center"/>
+                                <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
+                                <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
+                                    <Image Source="{StaticResource close}" Width="10" />
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+                </TabControl>
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Background="#FAFAFA">
@@ -121,11 +121,11 @@
                     <Image Width="30" Height="30" Source="{StaticResource herdagent-head}"></Image>
                     <Label FontWeight="Bold">Agent Herd</Label>
                 </StackPanel>
-                    <ContentControl x:Name="shepherdViewModel" />
+                <ContentControl x:Name="shepherdViewModel" />
             </StackPanel>
 
             <StackPanel Grid.Row="1" Grid.Column="2">
-                <ContentControl x:Name="monitorWindowViewModel"  VerticalAlignment="Center" BorderBrush="{x:Null}" BorderThickness="0" Height="Auto" HorizontalAlignment="Right" Width="Auto"/>
+                <ContentControl x:Name="monitorWindowViewModel" />
             </StackPanel>
         </Grid>
     </ScrollViewer>
