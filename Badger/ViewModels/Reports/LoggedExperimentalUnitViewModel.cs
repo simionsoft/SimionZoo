@@ -61,7 +61,7 @@ namespace Badger.ViewModels
                 string forkName = fork.Attributes[XMLConfig.aliasAttribute].Value;
                 foreach(XmlNode value in fork.ChildNodes)
                 {
-                    string forkValue = value.InnerText;
+                    string forkValue = value.Attributes.Item(0).InnerText;
                     forkValues[forkName] = forkValue;
                 }
             }
