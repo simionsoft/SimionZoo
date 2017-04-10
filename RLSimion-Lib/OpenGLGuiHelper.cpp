@@ -1,19 +1,19 @@
+#include "stdafx.h"
 #include "OpenGLGuiHelper.h"
+#include "../3rd-party/bullet3-2.86/examples/ExampleBrowser/OpenGLGuiHelper.h"
 
-#include "../../src/btBulletDynamicsCommon.h"
+#include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
-#include "../CommonInterfaces/CommonGraphicsAppInterface.h"
-#include "../CommonInterfaces/CommonRenderInterface.h"
-#include "../../src/Bullet3Common/b3Scalar.h"
-#include "../../src/btBulletDynamicsCommon.h"
-
-#include "CollisionShape2TriangleMesh.h"
+#include "../3rd-party/bullet3-2.86/examples/CommonInterfaces/CommonGraphicsAppInterface.h"
+#include "../3rd-party/bullet3-2.86/examples/CommonInterfaces/CommonRenderInterface.h"
+#include "Bullet3Common/b3Scalar.h"
+#include "../3rd-party/bullet3-2.86/examples/ExampleBrowser/CollisionShape2TriangleMesh.h"
 
 
-#include "../OpenGLWindow/SimpleCamera.h"
-#include "../OpenGLWindow/GLInstanceGraphicsShape.h"
+#include "../3rd-party/bullet3-2.86/examples/OpenGLWindow/SimpleCamera.h"
+#include "../3rd-party/bullet3-2.86/examples/OpenGLWindow/GLInstanceGraphicsShape.h"
 //backwards compatibility
-#include "GL_ShapeDrawer.h"
+#include "../3rd-party/bullet3-2.86/examples/ExampleBrowser/GL_ShapeDrawer.h"
 
 
 #define BT_LINE_BATCH_SIZE 512

@@ -12,40 +12,37 @@ subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-
 #ifdef _WIN32 //needed for glut.h
 #include <windows.h>
 #endif
 
 #include "../OpenGLWindow/OpenGL2Include.h"
-
-
 #include "GL_ShapeDrawer.h"
-#include "BulletCollision/CollisionShapes/btPolyhedralConvexShape.h"
-#include "BulletCollision/CollisionShapes/btTriangleMeshShape.h"
-#include "BulletCollision/CollisionShapes/btBoxShape.h"
-#include "BulletCollision/CollisionShapes/btSphereShape.h"
-#include "BulletCollision/CollisionShapes/btConeShape.h"
-#include "BulletCollision/CollisionShapes/btCylinderShape.h"
-#include "BulletCollision/CollisionShapes/btTetrahedronShape.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollision/CollisionShapes/btCapsuleShape.h"
-#include "BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h"
-#include "BulletCollision/CollisionShapes/btUniformScalingShape.h"
-#include "BulletCollision/CollisionShapes/btStaticPlaneShape.h"
-#include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
-#include "BulletCollision/CollisionShapes/btConvexPolyhedron.h"
-#include "BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
-#include "BulletDynamics/Dynamics/btRigidBody.h"
-#include "LinearMath/btDefaultMotionState.h"
+#include "../../src/BulletCollision/CollisionShapes/btPolyhedralConvexShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btTriangleMeshShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btBoxShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btSphereShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btConeShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btCylinderShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btTetrahedronShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btCompoundShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btCapsuleShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btUniformScalingShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btStaticPlaneShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btMultiSphereShape.h"
+#include "../../src/BulletCollision/CollisionShapes/btConvexPolyhedron.h"
+#include "../../src/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
+#include "../../src/BulletDynamics/Dynamics/btRigidBody.h"
+#include "../../src/LinearMath/btDefaultMotionState.h"
 
 ///
-#include "BulletCollision/CollisionShapes/btShapeHull.h"
+#include "../../src/BulletCollision/CollisionShapes/btShapeHull.h"
 
-#include "LinearMath/btTransformUtil.h"
+#include "../../src/LinearMath/btTransformUtil.h"
 
 
-#include "LinearMath/btIDebugDraw.h"
+#include "../../src/LinearMath/btIDebugDraw.h"
 //for debugmodes
 
 #include <stdio.h> //printf debugging

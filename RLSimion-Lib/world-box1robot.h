@@ -7,6 +7,7 @@
 class btCollisionShape;
 class Box;
 class Robot;
+class BulletBody;
 
 //Move box with 2 robots
 class CMoveBoxOneRobot : public CDynamicModel
@@ -32,7 +33,8 @@ class CMoveBoxOneRobot : public CDynamicModel
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
 
-	Robot *m_pRobot1;
+	//Robot *m_pRobot1;
+	BulletBody *m_Robot;
 	Box *m_box;
 
 public:

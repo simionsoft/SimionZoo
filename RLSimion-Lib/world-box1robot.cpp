@@ -4,7 +4,7 @@
 #include "noise.h"
 #include "Robot.h"
 #include "Box.h"
-
+#include "BulletBody.h"
 
 double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
 	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
@@ -50,11 +50,11 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	///Creating static object, ground
 	{
 		btBoxShape* groundShape = createBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-		m_collisionShapes.push_back(groundShape);
 		btTransform groundTransform;
 		groundTransform.setIdentity();
 		groundTransform.setOrigin(btVector3(0, -50, 0));
 		btScalar mass(MASS_GROUND);
+		m_collisionShapes.push_back(groundShape);
 		createRigidBody(mass, groundTransform, groundShape, btVector4(0, 0, 1, 1));
 	}
 
@@ -79,19 +79,11 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 	///creating a dynamic robot obj2 
 	{
+		
 		btCollisionShape* robot1Shape = new btSphereShape(btScalar(0.5));
+		m_Robot = new BulletBody(MASS_ROBOT, robotOrigin_x, robotOrigin_y, robot1Shape);
 		m_collisionShapes.push_back(robot1Shape);
-		btTransform robot1startTransform;
-		robot1startTransform.setIdentity();
-		robot1startTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		// if mass != 0.f object is dynamic
-		btScalar robot1mass(MASS_ROBOT);
-		btVector3 robot1localInertia(0, 0, 0);
-		robot1Shape->calculateLocalInertia(robot1mass, robot1localInertia);
-		btDefaultMotionState* robot1MotionState = new btDefaultMotionState(robot1startTransform);
-
-		m_pRobot1 = new Robot(robot1mass, robot1MotionState, robot1Shape, robot1localInertia);
-		m_dynamicsWorld->addRigidBody(m_pRobot1->getBody());
+		m_dynamicsWorld->addRigidBody(m_Robot->getBody());
 	}
 
 	//the reward function
@@ -109,19 +101,19 @@ void CMoveBoxOneRobot::reset(CState *s)
 		//fixed setting in evaluation episodes
 
 		/// New update due to correct the reset
-		m_pRobot1->getBody()->clearForces();
+		m_Robot->getBody()->clearForces();
 		btVector3 zeroVector(0, 0, 0);
-		m_pRobot1->getBody()->setLinearVelocity(zeroVector);
-		m_pRobot1->getBody()->setAngularVelocity(zeroVector);
+		m_Robot->getBody()->setLinearVelocity(zeroVector);
+		m_Robot->getBody()->setAngularVelocity(zeroVector);
 
 
-		m_pRobot1->getBody()->getMotionState()->getWorldTransform(robotTransform);
+		m_Robot->getBody()->getMotionState()->getWorldTransform(m_Robot->getTransform());
 		m_box->getBody()->getMotionState()->getWorldTransform(boxTransform);
 
 		/// reset robot
-		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		m_pRobot1->getBody()->setWorldTransform(robotTransform);
-		m_pRobot1->getBody()->getMotionState()->setWorldTransform(robotTransform);
+		m_Robot->getTransform().setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
+		m_Robot->getBody()->setWorldTransform(m_Robot->getTransform());
+		m_Robot->getBody()->getMotionState()->setWorldTransform(m_Robot->getTransform());
 
 		///reset box
 		boxTransform.setOrigin(btVector3(boxOrigin_x, 0.0, boxOrigin_y));
@@ -162,13 +154,13 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	s->set(box_Y, float(box_trans.getOrigin().getZ()));
 
 	//Update Robot1
-	m_pRobot1->getBody()->applyCentralForce(btVector3(rob1forcex, 0, rob1forcey));
+	m_Robot->getBody()->applyCentralForce(btVector3(rob1forcex, 0, rob1forcey));
 
 	m_dynamicsWorld->stepSimulation(dt);
 
 	int numCollision = m_dynamicsWorld->getDispatcher()->getNumManifolds();
 
-	m_pRobot1->getBody()->getMotionState()->getWorldTransform(r1_trans);
+	m_Robot->getBody()->getMotionState()->getWorldTransform(r1_trans);
 	s->set(rob1_X, double(r1_trans.getOrigin().getX()));
 	s->set(rob1_Y, double(r1_trans.getOrigin().getZ()));
 	double rob1x = s->get(rob1_X);

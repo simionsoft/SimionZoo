@@ -47,6 +47,7 @@
     <IntDir>$(Configuration)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
@@ -64,6 +65,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../3rd-party\bullet3-2.86\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>../Debug/$(TargetName)$(TargetExt)</OutputFile>
@@ -111,13 +113,19 @@
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="b3Clock.cpp" />
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BulletBody.cpp" />
+    <ClCompile Include="CollisionShape2TriangleMesh.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="delayed-load.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="featuremap.cpp" />
+    <ClCompile Include="GLShapeDrawer.cpp" />
+    <ClCompile Include="GraphicSettings.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="OpenGLGuiHelper.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="q-learners.cpp" />
@@ -167,7 +175,10 @@
     <ClInclude Include="actor.h" />
     <ClInclude Include="app-rlsimion.h" />
     <ClInclude Include="app.h" />
+    <ClInclude Include="b3Clock.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="BulletBody.h" />
+    <ClInclude Include="CollisionShape2TriangleMesh.h" />
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
@@ -177,6 +188,9 @@
     <ClInclude Include="experiment.h" />
     <ClInclude Include="featuremap.h" />
     <ClInclude Include="features.h" />
+    <ClInclude Include="GL_ShapeDrawer.h" />
+    <ClInclude Include="GraphicSettings.h" />
+    <ClInclude Include="OpenGLGuiHelper.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
@@ -217,6 +231,26 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">
+      <Project>{039b76ca-bc1b-b94d-a520-7e71cca3ded2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Geometry.vcxproj">
+      <Project>{4e8b0499-8628-8943-b9c8-2a391cffff80}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletCollision.vcxproj">
+      <Project>{91650844-3a27-904e-9b55-79ab50c2531b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
+      <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
+      <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\OpenGL_Window.vcxproj">
+      <Project>{12820605-a402-f444-954e-ff051a08a3f3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
