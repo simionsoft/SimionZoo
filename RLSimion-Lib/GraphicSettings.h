@@ -14,15 +14,13 @@
 class GraphicSettings : public CommonRigidBodyBase
 {
 
-//	CommonExampleInterface* OpenGLInterface;
-
 public:
 
 	GraphicSettings(struct GUIHelperInterface* helper)
 		:CommonRigidBodyBase(helper)
 	{
 	}
-	~GraphicSettings() {}
+	~GraphicSettings();
 	SimpleOpenGL3App* m_pOpenGLApp;
 	void setOpenGLApp(SimpleOpenGL3App* app) { m_pOpenGLApp = app; }
 	virtual void initPhysics();

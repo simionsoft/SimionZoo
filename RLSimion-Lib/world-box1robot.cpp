@@ -81,7 +81,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	{
 		
 		btCollisionShape* robot1Shape = new btSphereShape(btScalar(0.5));
-		m_Robot = new BulletBody(MASS_ROBOT, robotOrigin_x, robotOrigin_y, robot1Shape);
+		m_Robot = new BulletBody(MASS_ROBOT, robotOrigin_x, 0, robotOrigin_y, robot1Shape,true);
 		m_collisionShapes.push_back(robot1Shape);
 		m_dynamicsWorld->addRigidBody(m_Robot->getBody());
 	}

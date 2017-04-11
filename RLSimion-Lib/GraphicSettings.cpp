@@ -82,3 +82,8 @@ GUIHelperInterface* GraphicSettings::getGuiHelper()
 	return m_guiHelper;
 }
 
+GraphicSettings::~GraphicSettings()
+{
+	deleteGraphicOptions();
+}
+

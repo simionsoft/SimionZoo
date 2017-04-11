@@ -4,7 +4,7 @@
 class BulletBody {
 
 public:
-	BulletBody(double mass, double xPos, double yPos, btCollisionShape* shape);
+	BulletBody(double mass, double xPos, double yPos, double zPos, btCollisionShape* shape, bool moving_obj);
 	virtual ~BulletBody() { }
 
 	btRigidBody* BulletBody::getBody();

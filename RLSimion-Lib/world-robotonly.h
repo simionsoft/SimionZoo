@@ -2,10 +2,11 @@
 
 #include "world.h"
 #include "reward.h"
-#define ATTRIBUTE_ALIGNED16(a) a
+#define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
 class Robot;
+class BulletBody;
 class SimpleOpenGL3App;
 class GraphicSettings;
 
@@ -27,7 +28,8 @@ class COnlyRobot : public CDynamicModel
 	SimpleOpenGL3App* app;
 	GraphicSettings* robotOnlyGraphs;
 
-	Robot *m_pRobot1;
+	BulletBody* robot_bb;
+	BulletBody* ground_bb;
 
 public:
 	COnlyRobot(CConfigNode* pParameters);

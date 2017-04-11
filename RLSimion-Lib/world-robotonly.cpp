@@ -4,6 +4,7 @@
 #include "noise.h"
 #include "Robot.h"
 #include "GraphicSettings.h"
+#include "BulletBody.h"
 #pragma comment(lib,"opengl32.lib")
 
 #define GLEW_STATIC
@@ -18,6 +19,10 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 
 #define robotOrigin_x 3.0
 #define robotOrigin_y 0.0
+
+#define ground_x 0.0
+#define ground_y -50.0
+#define ground_z 0.0 
 
 
 OpenGLGuiHelper *gui;
@@ -51,40 +56,20 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	///Creating static object, ground
 	{
 		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-		robotOnlyGraphs->getCollisionShape().push_back(groundShape);
-		btTransform groundTransform;
-		groundTransform.setIdentity();
-		groundTransform.setOrigin(btVector3(0, -50, 0));
-		btScalar mass(MASS_GROUND);
-		bool isDynamic = (mass != 0.f);
-		btVector3 localInertia(0, 0, 0);
-		btVector3 robot1localInertia(0, 0, 0);
-		btDefaultMotionState* groundMotionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo groundInfo(mass, groundMotionState, groundShape, localInertia);
-		btRigidBody* ground = new btRigidBody(groundInfo);
-		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(ground);
+		ground_bb = new BulletBody(MASS_GROUND, ground_x, ground_y, ground_z, groundShape, false);
+		robotOnlyGraphs->getCollisionShape().push_back(ground_bb->getShape());
+		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
 	}
 
 	///creating a dynamic robot obj1
 	{
-		btCollisionShape* robot1Shape = new btSphereShape(btScalar(0.5));
-		btTransform robot1startTransform;
-		robot1startTransform.setIdentity();
-		robot1startTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		// if mass != 0.f object is dynamic
-		btScalar robot1mass(MASS_ROBOT);
-		btVector3 robot1localInertia(0, 0, 0);
-		robot1Shape->calculateLocalInertia(robot1mass, robot1localInertia);
-		btDefaultMotionState* robot1MotionState = new btDefaultMotionState(robot1startTransform);
-
-		m_pRobot1 = new Robot(robot1mass, robot1MotionState, robot1Shape, robot1localInertia);
-		m_pRobot1->getBody()->setActivationState(DISABLE_DEACTIVATION);
-		robotOnlyGraphs->getCollisionShape().push_back(robot1Shape);
-		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(m_pRobot1->getBody());
+		//btCollisionShape* robot1Shape = new btSphereShape(btScalar(0.5));
+		robot_bb = new BulletBody(MASS_ROBOT, robotOrigin_x, 0, robotOrigin_y, new btSphereShape(btScalar(0.5)), true);
+		robotOnlyGraphs->getCollisionShape().push_back(robot_bb->getShape());
+		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(robot_bb->getBody());
 	}
 
 	///Graphic init
-	//help = robotOnlyGraphs->getGuiHelper();
 	robotOnlyGraphs->generateGraphics(robotOnlyGraphs->getGuiHelper());
 
 	//the reward function
@@ -101,18 +86,18 @@ void COnlyRobot::reset(CState *s)
 		//fixed setting in evaluation episodes
 
 		/// New update due to correct the reset
-		m_pRobot1->getBody()->clearForces();
+		robot_bb->getBody()->clearForces();
 		btVector3 zeroVector(0, 0, 0);
-		m_pRobot1->getBody()->setLinearVelocity(zeroVector);
-		m_pRobot1->getBody()->setAngularVelocity(zeroVector);
+		robot_bb->getBody()->setLinearVelocity(zeroVector);
+		robot_bb->getBody()->setAngularVelocity(zeroVector);
 
 
-		m_pRobot1->getBody()->getMotionState()->getWorldTransform(robotTransform);
+		robot_bb->getBody()->getMotionState()->getWorldTransform(robotTransform);
 
 		/// reset robot
 		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		m_pRobot1->getBody()->setWorldTransform(robotTransform);
-		m_pRobot1->getBody()->getMotionState()->setWorldTransform(robotTransform);
+		robot_bb->getBody()->setWorldTransform(robotTransform);
+		robot_bb->getBody()->getMotionState()->setWorldTransform(robotTransform);
 	
 		///set initial values to state variables
 		s->set(rob1_X, robotOrigin_x);
@@ -139,14 +124,14 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	btTransform r1_trans;
 
 	//Update Robot1
-	m_pRobot1->getBody()->applyCentralForce(btVector3(rob1forcex, 0, rob1forcey));
+	robot_bb->getBody()->applyCentralForce(btVector3(rob1forcex, 0, rob1forcey));
 
 	robotOnlyGraphs->simulate(dt);
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 		robotOnlyGraphs->draw();
 
 
-	m_pRobot1->getBody()->getMotionState()->getWorldTransform(r1_trans);
+	robot_bb->getBody()->getMotionState()->getWorldTransform(r1_trans);
 	s->set(rob1_X, double(r1_trans.getOrigin().getX()));
 	s->set(rob1_Y, double(r1_trans.getOrigin().getZ()));
 	double rob1x = s->get(rob1_X);
@@ -167,22 +152,12 @@ double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CSta
 
 	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
 	{
-		//if(robotAfterX == 50.0)
-		//printf("me he caido hacia adelante\n");
-		//if(robotAfterX == -50.0)
-		//printf("me he caido hacia atras\n");
-		//if(robotAfterY == 50.0)
-		//printf("me he caido hacia la derecha\n");
-		//if(robotAfterY == -50.0)
-		//printf("me he caido hacia la izquierda\n");
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
 	if (distance < 0.5)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
-		//printf("llego\n");
-		//return 1;
 	}
 	distance = std::max(distance, 0.0001);
 	return 1 / (distance);
@@ -202,6 +177,5 @@ COnlyRobot::~COnlyRobot()
 {
 	delete options;
 	delete gui;
-	robotOnlyGraphs->deleteGraphicOptions();
 }
 
