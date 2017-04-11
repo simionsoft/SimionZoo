@@ -19,10 +19,7 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 #define robotOrigin_x 3.0
 #define robotOrigin_y 0.0
 
-//GraphicSettings* robotOnlyGraphs;
-//GUIHelperInterface* guiHelper;
 
-//GUIHelperInterface*	help;
 OpenGLGuiHelper *gui;
 CommonExampleOptions *options;
 
@@ -48,7 +45,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 
 	robotOnlyGraphs = new GraphicSettings(options->m_guiHelper);
 	robotOnlyGraphs->initializeGraphicProccess();
-	
+	robotOnlyGraphs->setOpenGLApp(app);
 	
 	
 	///Creating static object, ground
@@ -141,20 +138,20 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	btTransform r1_trans;
 
-	///create graphs
-	//help = robotOnlyGraphs->getGuiHelper();
-	robotOnlyGraphs->updateGLApp(app);
-
 	//Update Robot1
 	m_pRobot1->getBody()->applyCentralForce(btVector3(rob1forcex, 0, rob1forcey));
-	robotOnlyGraphs->getDynamicsWorld()->stepSimulation(dt);
+
+	robotOnlyGraphs->simulate(dt);
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+		robotOnlyGraphs->draw();
+
+
 	m_pRobot1->getBody()->getMotionState()->getWorldTransform(r1_trans);
 	s->set(rob1_X, double(r1_trans.getOrigin().getX()));
 	s->set(rob1_Y, double(r1_trans.getOrigin().getZ()));
 	double rob1x = s->get(rob1_X);
 	double rob1y = s->get(rob1_Y);
 
-	robotOnlyGraphs->renderScene();
 }
 
 double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
@@ -205,6 +202,6 @@ COnlyRobot::~COnlyRobot()
 {
 	delete options;
 	delete gui;
-	robotOnlyGraphs->deteleGraphicOptions(app);
+	robotOnlyGraphs->deleteGraphicOptions();
 }
 

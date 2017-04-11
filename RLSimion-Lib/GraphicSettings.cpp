@@ -30,12 +30,12 @@ void GraphicSettings::initPhysics()
 // create OpenGL window
 void GraphicSettings::initializeGraphicProccess()
 {
-	//LessDummyGuiHelper gui(app);
+	//LessDummyGuiHelper gui(m_pOpenGLApp);
 	//DummyGUIHelper gui;
 //	m_guiHelper = helper;
 	initPhysics();
 	resetCamera();
-	//return app;
+	//return m_pOpenGLApp;
 }
 
 /// Create graphics after adding bodies to the world
@@ -44,38 +44,31 @@ void GraphicSettings::generateGraphics(GUIHelperInterface*	helper)
 	helper->autogenerateGraphicsObjects(m_dynamicsWorld);
 }
 
-int GraphicSettings::deteleGraphicOptions(SimpleOpenGL3App* app)
+void GraphicSettings::deleteGraphicOptions()
 {
 	exitPhysics();
-//	delete OpenGLInterface;
-	delete app;
-	return 0;
 }
 
-void GraphicSettings::updateGLApp(SimpleOpenGL3App* app)
+void GraphicSettings::simulate(double dt)
 {
-	b3Clock clock;
-	do
-	{
-		app->m_instancingRenderer->init();
-		app->m_instancingRenderer->updateCamera(app->getUpAxis());
+	m_pOpenGLApp->m_instancingRenderer->init();
+	m_pOpenGLApp->m_instancingRenderer->updateCamera(m_pOpenGLApp->getUpAxis());
 
-		btScalar dtSec = btScalar(clock.getTimeInSeconds());
-		if (dtSec<0.1)
-			dtSec = 0.1;
-
-		stepSimulation(dtSec);
-		clock.reset();
-
-		renderScene();
-
-		DrawGridData dg;
-		dg.upAxis = app->getUpAxis();
-		app->drawGrid(dg);
-
-		app->swapBuffer();
-	} while (!app->m_window->requestedExit());
+	stepSimulation(dt);
 }
+
+void GraphicSettings::draw()
+{
+	renderScene();
+
+	DrawGridData dg;
+	dg.upAxis = m_pOpenGLApp->getUpAxis();
+	m_pOpenGLApp->drawGrid(dg);
+
+	m_pOpenGLApp->swapBuffer();
+}
+
+
 
 btAlignedObjectArray<btCollisionShape*> GraphicSettings::getCollisionShape()
 {
