@@ -19,7 +19,7 @@ public:
 	CPolicyLearner(CConfigNode* pParameters);
 	virtual ~CPolicyLearner();
 
-	virtual void updatePolicy(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
+	virtual void update(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
 
 	CPolicy* getPolicy(){ return m_pPolicy.ptr(); }
 
@@ -40,7 +40,7 @@ public:
 	CCACLALearner(CConfigNode *pParameters);
 	virtual ~CCACLALearner();
 
-	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
+	void update(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };
 
 class CRegularPolicyGradientLearner :public CPolicyLearner
@@ -53,5 +53,5 @@ public:
 	CRegularPolicyGradientLearner(CConfigNode *pParameters);
 	virtual ~CRegularPolicyGradientLearner();
 
-	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
+	void update(const CState *s, const CAction *a, const CState *s_p, double r, double td);
 };

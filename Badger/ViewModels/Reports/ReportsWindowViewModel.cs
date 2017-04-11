@@ -227,16 +227,7 @@ namespace Badger.ViewModels
 
             //add the limit to options
             limitToOptions.Add(LogQuery.noLimitOnResults);
-            limitToOptions.Add("1");
-            limitToOptions.Add("2");
-            limitToOptions.Add("3");
-            limitToOptions.Add("4");
-            limitToOptions.Add("5");
-            limitToOptions.Add("6");
-            limitToOptions.Add("7");
-            limitToOptions.Add("8");
-            limitToOptions.Add("9");
-            limitToOptions.Add("10");
+            for (int i = 1; i <= 10; i++) limitToOptions.Add(i.ToString());
             selectedLimitToOption = LogQuery.noLimitOnResults;
 
             //order by functions

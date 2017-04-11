@@ -60,7 +60,7 @@ class CLogger
 	//stats
 	std::vector<CStats*> m_stats;
 public:
-	static const unsigned int BIN_FILE_VERSION = 1;
+	static const unsigned int BIN_FILE_VERSION = 2;
 
 
 	CLogger(CConfigNode* pParameters);

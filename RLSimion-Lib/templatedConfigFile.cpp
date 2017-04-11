@@ -23,7 +23,7 @@ bool CTemplatedConfigFile::load(const char* inTemplateConfigFile)
 	FILE *templateFile;
 	int numCharsRead = 0;
 
-	if (m_bTemplateLoaded) return false;
+	if (m_bTemplateLoaded) return true;
 
 	m_pTemplateConfigFileContent = new char[MAX_CONFIG_FILE_SIZE];
 	m_pInstantiatedConfigFile = new char[MAX_CONFIG_FILE_SIZE];
@@ -64,7 +64,7 @@ bool CTemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConf
 
 
 //for some unknown reason, VStudio fails to link to the versions of the templated functions that are only called from an implementation
-//of a virtual function, so this little function foo() with the signatures we use seems like a small price to get it work
+//of a virtual function, so this little function foo() with the signatures we use seems like a small price to getSample it work
 void foo()
 {
 	CTemplatedConfigFile t;

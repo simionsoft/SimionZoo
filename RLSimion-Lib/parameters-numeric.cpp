@@ -4,31 +4,12 @@
 #include "experiment.h"
 #include "app.h"
 
-//std::list<INumericValue*> INumericValue::m_handlers;
-
-class CConstantValue : public CNumericValue
-{
-	DOUBLE_PARAM m_value;
-public:
-	CConstantValue(CConfigNode* pConfigNode);
-	double get(){ return m_value.get(); }
-};
 
 CConstantValue::CConstantValue(CConfigNode* pConfigNode)
 {
-	//<ALPHA>0.1</ALPHA>
 	m_value = DOUBLE_PARAM(pConfigNode, "Value", "Constant value", 0.0);
-	// CONST_DOUBLE_VALUE(m_value, "Value", 0.0, "Constant value");
 }
 
-class CSimpleEpisodeLinearSchedule : public CNumericValue
-{
-	DOUBLE_PARAM m_startValue;
-	DOUBLE_PARAM m_endValue;
-public:
-	CSimpleEpisodeLinearSchedule(CConfigNode* pParameters);
-	double get();
-};
 
 CSimpleEpisodeLinearSchedule::CSimpleEpisodeLinearSchedule(CConfigNode* pConfigNode)
 {
@@ -40,24 +21,11 @@ double CSimpleEpisodeLinearSchedule::get()
 {
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return 0.0;
 
-	double progress = CSimionApp::get()->pExperiment->getExperimentProgress();
+	double progress = CSimionApp::get()->pExperiment->getTrainingProgress();
 
 	return m_startValue.get() + (m_endValue.get() - m_startValue.get())* progress;
 }
 
-class CInterpolatedValue : public CNumericValue
-{
-	DOUBLE_PARAM m_startOffset; //normalized offset to start
-	DOUBLE_PARAM m_preOffsetValue; //value before the start of the schedule
-	DOUBLE_PARAM m_startValue;
-	DOUBLE_PARAM m_endValue;
-	DOUBLE_PARAM m_evaluationValue;
-	ENUM_PARAM<Interpolation> m_interpolation;
-	ENUM_PARAM<TimeReference> m_timeReference;
-public:
-	CInterpolatedValue(CConfigNode* pParameters);
-	double get();
-};
 
 CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
 {
@@ -80,7 +48,7 @@ double CInterpolatedValue::get()
 		return m_evaluationValue.get();
 	//time reference
 	if (m_timeReference.get()==TimeReference::experiment)
-		progress = CSimionApp::get()->pExperiment->getExperimentProgress();
+		progress = CSimionApp::get()->pExperiment->getTrainingProgress();
 	else if (m_timeReference.get()==TimeReference::episode)
 		progress = CSimionApp::get()->pExperiment->getEpisodeProgress();
 
@@ -105,18 +73,7 @@ double CInterpolatedValue::get()
 	return 0.0;
 }
 
-class CBhatnagarSchedule : public CNumericValue
-{
-	DOUBLE_PARAM m_alpha_0; //alpha_0
-	DOUBLE_PARAM m_alpha_c; //alpha_c
-	DOUBLE_PARAM m_t_exp; // exp
-	DOUBLE_PARAM m_evaluationValue; //value returned during evaluation episodes
-	ENUM_PARAM<TimeReference> m_timeReference;
-public:
-	//alpha_t= alpha_0*alpha_c / (alpha_c+t^{exp})
-	CBhatnagarSchedule(CConfigNode* pParameters);
-	double get();
-};
+
 
 
 CBhatnagarSchedule::CBhatnagarSchedule(CConfigNode* pConfigNode)

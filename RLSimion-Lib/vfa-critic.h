@@ -23,7 +23,7 @@ public:
 	CTDLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTDLambdaCritic();
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho = 1.0);
 };
 
 class CTrueOnlineTDLambdaCritic : public CCritic
@@ -40,7 +40,7 @@ public:
 	CTrueOnlineTDLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTrueOnlineTDLambdaCritic();
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho = 1.0);
 
 };
 
@@ -61,7 +61,7 @@ public:
 	CTDCLambdaCritic(CConfigNode *pParameters);
 	virtual ~CTDCLambdaCritic();
 
-	double updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho= 1.0);
 };
 
 

@@ -29,7 +29,7 @@ namespace StateActionVFA
 			pVFA->setInitValue(0.0);
 			pVFA->deferredLoadStep();
 
-			CFeatureList *pFeatures= new CFeatureList();
+			CFeatureList *pFeatures= new CFeatureList("features");
 
 			CState* pState= pApp->pWorld->getDynamicModel()->getStateInstance();
 			CAction* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
@@ -79,7 +79,7 @@ namespace StateActionVFA
 			pVFA->setInitValue(0.0);
 			pVFA->deferredLoadStep();
 
-			CFeatureList *pFeatures = new CFeatureList();
+			CFeatureList *pFeatures = new CFeatureList("features");
 
 			CState* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
 			CAction* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();

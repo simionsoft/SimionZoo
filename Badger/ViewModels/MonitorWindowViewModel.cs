@@ -44,6 +44,9 @@ namespace Badger.ViewModels
             , List<Experiment> pendingExperiments, Logger.LogFunction logFunction, string batchFilename)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
+            evaluationPlot.bShowOptions = false;
+            evaluationPlot.properties.bLegendVisible = false;
+            evaluationPlot.setProperties();
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(freeHerdAgents, pendingExperiments
                 , evaluationPlot,logFunction,this);
             m_batchFilename = batchFilename;

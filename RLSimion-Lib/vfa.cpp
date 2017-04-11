@@ -6,14 +6,27 @@
 #include "app.h"
 #include "SimGod.h"
 
-//LINEAR VFA. Common functionalities: get (CFeatureList*), saturate, save, load, ....
+//LINEAR VFA. Common functionalities: getSample (CFeatureList*), saturate, save, load, ....
+CLinearVFA::CLinearVFA()
+{
+}
 
+CLinearVFA::~CLinearVFA()
+{
+}
 
-double CLinearVFA::get(const CFeatureList *pFeatures)
+double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
 	unsigned int localIndex;
-	assert(pFeatures);
+	double pendingFeatureUpdate= 0.0;
+	double *pWeights;
+
+	if (!bUseFrozenWeights || !m_bCanBeFrozen)
+		pWeights = m_pWeights.get();
+	else
+		pWeights = m_pFrozenWeights.get();
+
 	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 	{
 		if (m_minIndex <= pFeatures->m_pFeatures[i].m_index && m_maxIndex > pFeatures->m_pFeatures[i].m_index)
@@ -21,7 +34,7 @@ double CLinearVFA::get(const CFeatureList *pFeatures)
 			//offset
 			localIndex = pFeatures->m_pFeatures[i].m_index - m_minIndex;
 
-			value += m_pWeights.get()[localIndex] * pFeatures->m_pFeatures[i].m_factor;
+			value += pWeights[localIndex] * pFeatures->m_pFeatures[i].m_factor;
 		}
 	}
 	return value;
@@ -116,6 +129,44 @@ void CLinearStateVFA::save(const char* pFilename) const
 }
 
 
+void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
+{
+	int vUpdateFreq = 0;
+	int experimentStep = 0;
+
+	//then we apply all the feature updates
+	for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
+	{
+		//IF instead of assert because some features may not belong to this specific VFA
+		//and would still be a valid operation
+		//(for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
+		if (!m_bSaturateOutput)
+		{
+			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index < m_maxIndex)
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] += alpha*pFeatures->m_pFeatures[i].m_factor;	
+		}
+		else
+		{
+			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index < m_maxIndex)
+				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] =
+				std::min(m_maxOutput,std::max(m_minOutput
+					, m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] + alpha * pFeatures->m_pFeatures[i].m_factor));
+		}
+	}
+	//if we are deferring updates, check whether we have to update frozen weights
+	if (m_bCanBeFrozen)
+	{
+		vUpdateFreq = CSimionApp::get()->pSimGod->getVFunctionUpdateFreq();
+		experimentStep = CSimionApp::get()->pExperiment->getExperimentStep();
+
+		if (vUpdateFreq == 0 || experimentStep % vUpdateFreq == 0)
+		{
+			memcpy(m_pFrozenWeights.get(), m_pWeights.get(), m_numWeights * sizeof(double));
+		}
+	}
+}
+
+
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
 CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
@@ -136,9 +187,18 @@ CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 }
 void CLinearStateVFA::deferredLoadStep()
 {
+	//weights
 	m_pWeights = std::shared_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights.get()[i] = m_initValue.get();
+
+	//frozen weights
+	if (m_bCanBeFrozen)
+	{
+		m_pFrozenWeights = std::shared_ptr<double>(new double[m_numWeights]);
+		for (unsigned int i = 0; i < m_numWeights; i++)
+			m_pFrozenWeights.get()[i] = m_initValue.get();
+	}
 }
 
 void CLinearStateVFA::setInitValue(double initValue)
@@ -147,7 +207,8 @@ void CLinearStateVFA::setInitValue(double initValue)
 }
 
 CLinearStateVFA::CLinearStateVFA()
-{}
+{
+}
 
 
 CLinearStateVFA::~CLinearStateVFA()
@@ -171,33 +232,6 @@ void CLinearStateVFA::getFeatureState(unsigned int feature, CState* s)
 	if (feature>=m_minIndex && feature<m_maxIndex)
 		m_pStateFeatureMap->getFeatureState(feature,s);
 }
-
-
-void CLinearStateVFA::add(const CFeatureList* pFeatures, double alpha)
-{
-	assert(pFeatures);
-
-
-	//replicating code because i think it will be more efficient avoiding the per-iteration if
-	if (!m_bSaturateOutput)
-		for (unsigned int i= 0; i<pFeatures->m_numFeatures; i++)
-		{
-			//IF instead of assert because some features may not belong to this specific VFA (for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
-			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
-				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index]+= alpha* pFeatures->m_pFeatures[i].m_factor;
-		}
-	else
-		for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
-		{
-			//IF instead of assert because some features may not belong to this specific VFA (for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
-			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index<m_maxIndex)
-				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] = 
-					std::min(m_maxOutput,
-						std::max(m_minOutput
-								, m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
-		}
-}
-
 
 double CLinearStateVFA::get(const CState *s)
 {
@@ -259,9 +293,18 @@ void CLinearStateActionVFA::setInitValue(double initValue)
 
 void CLinearStateActionVFA::deferredLoadStep()
 {
+	//weights
 	m_pWeights= std::unique_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
 		m_pWeights.get()[i] = m_initValue.get();
+
+	//frozen weights
+	if (m_bCanBeFrozen)
+	{
+		m_pFrozenWeights = std::shared_ptr<double>(new double[m_numWeights]);
+		for (unsigned int i = 0; i < m_numWeights; i++)
+			m_pFrozenWeights.get()[i] = m_initValue.get();
+	}
 }
 
 void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
@@ -297,32 +340,6 @@ void CLinearStateActionVFA::getFeatureStateAction(unsigned int feature, CState* 
 			m_pActionFeatureMap->getFeatureAction(feature / m_numStateWeights, a);
 	}
 }
-
-
-
-void CLinearStateActionVFA::add(const CFeatureList* pFeatures, double alpha)
-{
-	assert(pFeatures);
-
-	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
-	{
-		if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index < m_maxIndex)
-		{
-			if (!m_bSaturateOutput)
-			{
-				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] += alpha* pFeatures->m_pFeatures[i].m_factor;
-			}
-			else
-			{
-				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] =
-					std::min(m_maxOutput,
-					std::max(m_minOutput
-					, m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] + alpha* pFeatures->m_pFeatures[i].m_factor));
-			}
-		}
-	}
-}
-
 
 
 

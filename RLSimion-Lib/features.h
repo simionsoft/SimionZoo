@@ -15,11 +15,7 @@ struct CFeature
 //CFeatureList/////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-#define LIST_UNSORTED 0
-#define LIST_SORTED_BY_VALUE 1
-#define LIST_SORTED_BY_ABS_VALUE 2
-#define LIST_SORTED_BY_INDEX 3
-
+enum OverwriteMode{Replace,Add,AllowDuplicates};
 
 class CFeatureList
 {
@@ -29,14 +25,12 @@ class CFeatureList
 	void resize(unsigned int newSize, bool bKeepFeatures= true);
 	int getFeaturePos(unsigned int index);
 protected:
-	bool m_bAddIfExists;
-	bool m_bReplaceIfExists;
+	OverwriteMode m_overwriteMode;
 public:
-	int m_type;
 	CFeature* m_pFeatures;
 	unsigned int m_numFeatures;
 
-	CFeatureList(bool addIfExists= true, bool replaceIfExists= false);
+	CFeatureList(const char* pName,OverwriteMode overwriteMode=OverwriteMode::Add);
 	virtual ~CFeatureList();
 
 	void setName(const char* name);

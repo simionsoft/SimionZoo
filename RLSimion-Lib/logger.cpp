@@ -44,7 +44,11 @@ struct EpisodeHeader
 	__int64 episodeIndex;
 	__int64 numVariablesLogged;
 
-	__int64 padding[HEADER_MAX_SIZE - 4]; //extra space
+	//Added in version 2: if the episode belongs to an evaluation, the number of episodes per evaluation might be >1
+	//the episodeSubIndex will be in [1..numEpisodesPerEvaluation]
+	__int64 episodeSubIndex;
+
+	__int64 padding[HEADER_MAX_SIZE - 5]; //extra space
 	EpisodeHeader()
 	{
 		memset(padding, 0, sizeof(padding));
@@ -76,7 +80,6 @@ CLogger::CLogger(CConfigNode* pConfigNode)
 	m_bLogTrainingEpisodes= BOOL_PARAM(pConfigNode,"Log-training-episodes", "Log training episodes?",false);
 
 	m_logFreq= DOUBLE_PARAM(pConfigNode,"Log-Freq","Log frequency. Simulation time in seconds.",0.25);
-
 
 	m_pEpisodeTimer = new CTimer();
 	m_pExperimentTimer = new CTimer();
@@ -217,7 +220,8 @@ void CLogger::firstStep()
 
 void CLogger::lastStep()
 {
-	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
+	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
+	bool bEvalEpisode = pExperiment->isEvaluationEpisode();
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
 	//log the end of the episode: this way we don't have to precalculate the number of steps logged per episode
@@ -225,14 +229,19 @@ void CLogger::lastStep()
 
 	//in case this is the last step of an evaluation episode, we log it and send the info to the host if there is one
 	char buffer[BUFFER_SIZE];
-	int episodeIndex = CSimionApp::get()->pExperiment->getEvaluationEpisodeIndex();
-	int numEpisodes = CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
+	int episodeIndex = pExperiment->getEvaluationIndex();
+	int numEvaluations = pExperiment->getNumEvaluations();
+	int numEpisodesPerEvaluation = pExperiment->getNumEpisodesPerEvaluation();
+	int numRelativeEpisodeIndex = pExperiment->getRelativeEpisodeIndex();
 
 	//log the progress if an evaluation episode has ended
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode() && numEpisodes>0)
+	if (pExperiment->isEvaluationEpisode() 
+		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "%f,%f", (double)(episodeIndex - 1) / (std::max(1.0, (double)numEpisodes - 1))
-			, m_episodeRewardSum / (double)CSimionApp::get()->pExperiment->getStep());
+		sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
+			, (double)(numRelativeEpisodeIndex - 1) 
+			/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
+			, m_episodeRewardSum / (double)pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
 	}
 }
@@ -279,9 +288,13 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 void CLogger::writeExperimentHeader()
 {
 	ExperimentHeader header;
+	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
 
-	if (m_bLogEvaluationEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumEvaluationEpisodes();
-	if (m_bLogTrainingEpisodes.get()) header.numEpisodes += CSimionApp::get()->pExperiment->getNumTrainingEpisodes();
+	if (m_bLogEvaluationEpisodes.get())
+		header.numEpisodes +=
+			pExperiment->getNumEvaluations()*pExperiment->getNumEpisodesPerEvaluation();
+	if (m_bLogTrainingEpisodes.get())
+		header.numEpisodes += pExperiment->getNumTrainingEpisodes();
 
 	writeLogBuffer((char*) &header, sizeof(ExperimentHeader));
 }
@@ -289,13 +302,19 @@ void CLogger::writeExperimentHeader()
 void CLogger::writeEpisodeHeader()
 {
 	EpisodeHeader header;
+	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
+	CWorld* pWorld = CSimionApp::get()->pWorld.ptr();
 
-	header.episodeIndex = CSimionApp::get()->pExperiment->getRelativeEpisodeIndex();
-	header.episodeType = (CSimionApp::get()->pExperiment->isEvaluationEpisode() ? 0 : 1);
+	header.episodeIndex = pExperiment->getRelativeEpisodeIndex();
+	if (pExperiment->isEvaluationEpisode())
+		header.episodeSubIndex = pExperiment->getEpisodeInEvaluationIndex();
+	else
+		header.episodeSubIndex = 1; // training episodes cannot have sub-episodes
+	header.episodeType = (pExperiment->isEvaluationEpisode() ? 0 : 1);
 	header.numVariablesLogged =
-		CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor().size()
-		+ CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptor().size()
-		+ CSimionApp::get()->pWorld->getRewardVector()->getNumVars()
+		pWorld->getDynamicModel()->getActionDescriptor().size()
+		+ pWorld->getDynamicModel()->getStateDescriptor().size()
+		+ pWorld->getRewardVector()->getNumVars()
 		+ m_stats.size();
 
 	writeLogBuffer((char*) &header, sizeof(EpisodeHeader));
@@ -348,21 +367,18 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 void CLogger::addVarToStats(const char* key, const char* subkey, double* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*) variable, Double));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, int* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*) variable, Int));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, unsigned int* variable)
 {
 	//all stats added by the loaded classes are calculated
-	//if (m_pParameters->getChild(key))
 	m_stats.push_back(new CStats(key, subkey, (void*)variable, UnsignedInt));
 }
 
@@ -434,5 +450,5 @@ void CLogger::logMessage(MessageType type, const char* message)
 		}
 	}
 	if (type == MessageType::Error)
-		ExitProcess(-1);
+		throw std::exception(message);
 }

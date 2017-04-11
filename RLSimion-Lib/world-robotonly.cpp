@@ -13,8 +13,8 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-#define TargetX 12.4
-#define TargetY 0.0
+#define TargetX 8.0
+#define TargetY 2.0
 
 #define robotOrigin_x 3.0
 #define robotOrigin_y 0.0
@@ -115,7 +115,6 @@ void COnlyRobot::reset(CState *s)
 		///set initial values to state variables
 		s->set(rob1_X, robotOrigin_x);
 		s->set(rob1_Y, robotOrigin_y);
-
 	}
 	//else
 	//{
@@ -164,9 +163,9 @@ double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CSta
 
 	double distance = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
 
-	if (robotAfterX == 50.0 || robotAfterX == -50.0 || robotAfterY == 50.0 || robotAfterY == -50.0)
+	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
 	{
-		if(robotAfterX == 50.0)
+		//if(robotAfterX == 50.0)
 		//printf("me he caido hacia adelante\n");
 		//if(robotAfterX == -50.0)
 		//printf("me he caido hacia atras\n");
@@ -180,10 +179,11 @@ double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CSta
 	if (distance < 0.5)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
-		printf("llego\n");
-		return 1;
+		//printf("llego\n");
+		//return 1;
 	}
-	return 1 / (distance*distance);
+	distance = std::max(distance, 0.0001);
+	return 1 / (distance);
 }
 
 double COnlyRobotReward::getMin()

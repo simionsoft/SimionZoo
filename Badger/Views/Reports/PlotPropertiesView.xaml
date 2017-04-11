@@ -30,7 +30,7 @@
            
         </StackPanel>
         
-        <GroupBox Name="Visibility">
+        <GroupBox Name="VisibilityProperties">
             <ContentControl x:Name="lineSeriesProperties"></ContentControl>
         </GroupBox>
     </StackPanel>

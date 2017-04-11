@@ -8,6 +8,7 @@
 CCritic::CCritic(CConfigNode* pConfigNode)
 {
 	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "V-Function", "The V-function to be learned");
+	m_pVFunction->setCanUseDeferredUpdates(true);
 }
 
 std::shared_ptr<CCritic> CCritic::getInstance(CConfigNode* pConfigNode)

@@ -20,18 +20,17 @@
 #define DIMENSIONAL_PORTAL_PIPE_NAME "FASTDimensionalPortal"
 
 #define TRAINING_WIND_BASE_FILE_NAME "training-wind-file-"
-#define EVALUATION_WIND_FILE_NAME "eval-wind-file"
+#define EVALUATION_WIND_BASE_FILE_NAME "eval-wind-file-"
 
 CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 {
 	//This class is used both in the DimensionalPortalDLL (pConfigNode will be nullptr) and in RLSimion (pConfigNode will not be nullptr)
 	METADATA("World", "FAST-Wind-turbine");
 	
-
 	if (pConfigNode)
 	{
 		m_trainingMeanWindSpeeds = MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double>(pConfigNode, "Training-Mean-Wind-Speeds", "Mean wind speeds used in training episodes", 12.5);
-		m_evaluationMeanWindSpeed = DOUBLE_PARAM(pConfigNode, "Evaluation-Mean-Wind-Speed", "Mean wind speed in evaluation episodes", 12.5);
+		m_evaluationMeanWindSpeeds = MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double>(pConfigNode, "Evaluation-Mean-Wind-Speeds", "Mean wind speeds in evaluation episodes", 12.5);
 	}
 
 	//model constants
@@ -142,20 +141,23 @@ void CFASTWindTurbine::deferredLoadStep()
 	{
 		CLogger::logMessage(MessageType::Info, "Generating TurbSim wind files");
 
-		//evaluation wind file's config
-		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
-			+ std::string(EVALUATION_WIND_FILE_NAME)+ std::string(".inp");
-
-		m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
-													, CSimionApp::get()->pExperiment->getEpisodeLength()+30	//AnalysisTime
-													, CSimionApp::get()->pExperiment->getEpisodeLength()+30	//UsableTime
-													, m_evaluationMeanWindSpeed.get());						//URef
-
-		//the wind file itself
 		exeFileName = std::string("..\\bin\\TurbSim.exe");
 
-		commandLine = exeFileName + std::string(" ") + outConfigFileName;
-		TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
+		//evaluation wind files
+		for (unsigned int i = 0; i < m_evaluationMeanWindSpeeds.size(); i++)
+		{
+			outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
+				+ std::string(EVALUATION_WIND_BASE_FILE_NAME) + std::to_string(i) + std::string(".inp");
+			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
+				, CSimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//AnalysisTime
+				, CSimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//UsableTime
+				, m_evaluationMeanWindSpeeds[i]->get());						//URef
+
+			commandLine = exeFileName + std::string(" ") + outConfigFileName;
+			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
+		}
+		//set the number of episodes per evaluation
+		CSimionApp::get()->pExperiment->setNumEpisodesPerEvaluation(m_evaluationMeanWindSpeeds.size());
 
 		//training wind files
 		for (unsigned int i = 0; i < m_trainingMeanWindSpeeds.size(); i++)
@@ -179,30 +181,8 @@ void CFASTWindTurbine::deferredLoadStep()
 	commandLine= std::string("copy ..\\config\\world\\FAST\\*.dat ") + std::string(CSimionApp::get()->getOutputDirectory());
 	std::replace(commandLine.begin(), commandLine.end(), '/', '\\');
 	system(commandLine.c_str());
-	//commandLine= std::string("copy ..\\config\\world\\FAST\\FASTDimensionalPortalDLL.dll ") + std::string(CSimionApp::get()->getOutputDirectory());
-	//std::replace(commandLine.begin(), commandLine.end(), '/', '\\');
-	//system(commandLine.c_str());
 
 	CLogger::logMessage(MessageType::Info, "Input files copied");
-
-	//FASTDimensionalPortalDLL.xml -> used to pass the pipe's name to the dll
-	bool pipeServerOpened= m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
-	if (pipeServerOpened)
-	{
-		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\") 
-			+ std::string(PORTAL_CONFIG_FILE);
-		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
-		if (pOutConfigFile)
-		{
-			fprintf_s(pOutConfigFile, "<?xml version=\"1.0\"?>\n<FAST-DIMENSIONAL-PORTAL>\n  <PIPE-NAME>%s</PIPE-NAME>\n</FAST-DIMENSIONAL-PORTAL>"
-				, m_namedPipeServer.getPipeFullName());
-			fclose(pOutConfigFile);
-			CLogger::logMessage(MessageType::Info, "FASTDimensionalPortalDLL: pipe server created");
-		}
-		else CLogger::logMessage(MessageType::Error, (std::string("Couldn't create config file: ") + outConfigFileName).c_str());
-	}
-	else CLogger::logMessage(MessageType::Error, "Couldn't open named pipe server");
-
 }
 
 CFASTWindTurbine::~CFASTWindTurbine()
@@ -216,6 +196,33 @@ CFASTWindTurbine::~CFASTWindTurbine()
 void CFASTWindTurbine::reset(CState *s)
 {
 	std::string outConfigFileName,windFile;
+	FILE *pOutConfigFile;
+
+	//Check if a previous instance of FAST is running and, if it is, kill the process
+	//This may happen for slight inaccuracies of DT
+	if (FASTprocess.isRunning())
+		FASTprocess.kill();
+	//If the named pipe is already open, close it
+	m_namedPipeServer.closeServer();
+
+	//Open the named pipe server
+	//FASTDimensionalPortalDLL.xml -> used to pass the pipe's name to the dll
+	bool pipeServerOpened = m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
+	if (pipeServerOpened)
+	{
+		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
+			+ std::string(PORTAL_CONFIG_FILE);
+		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
+		if (pOutConfigFile)
+		{
+			fprintf_s(pOutConfigFile, "<?xml version=\"1.0\"?>\n<FAST-DIMENSIONAL-PORTAL>\n  <PIPE-NAME>%s</PIPE-NAME>\n</FAST-DIMENSIONAL-PORTAL>"
+				, m_namedPipeServer.getPipeFullName());
+			fclose(pOutConfigFile);
+			CLogger::logMessage(MessageType::Info, "FASTDimensionalPortalDLL: pipe server created");
+		}
+		else CLogger::logMessage(MessageType::Error, (std::string("Couldn't create config file: ") + outConfigFileName).c_str());
+	}
+	else CLogger::logMessage(MessageType::Error, "Couldn't open named pipe server");
 
 
 	//Instantiate the templated FAST config file
@@ -223,15 +230,20 @@ void CFASTWindTurbine::reset(CState *s)
 	if (bLoaded)
 	{
 		//choose the wind file
+		int index;
 		if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+		{
 			//evaluation wind file
-			windFile = std::string(EVALUATION_WIND_FILE_NAME) + std::string(".bts");
+			index = CSimionApp::get()->pExperiment->getEpisodeInEvaluationIndex()-1; //names are 0-based and indices are 1-based
+			windFile = std::string(EVALUATION_WIND_BASE_FILE_NAME)
+				+ std::to_string(index) + std::string(".bts");
+		}
 		else
 		{
 			//training wind file
-			int index = rand() % m_trainingMeanWindSpeeds.size();
-			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME) + std::to_string(m_trainingMeanWindSpeeds[index]->get())
-				+ std::string(".bts");
+			index = rand() % m_trainingMeanWindSpeeds.size();
+			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME)
+				+ std::to_string(m_trainingMeanWindSpeeds[index]->get()) + std::string(".bts");
 		}
 		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
 			+ std::string(FAST_WIND_CONFIG_FILE);
@@ -246,7 +258,8 @@ void CFASTWindTurbine::reset(CState *s)
 			, FAST_WIND_CONFIG_FILE
 		);
 	}
-	else CLogger::logMessage(MessageType::Error, "Couldn't instantiate config file: ../config/world/FAST/configFileTemplate.fst");
+	else
+		CLogger::logMessage(MessageType::Error, "Couldn't instantiate config file: ../config/world/FAST/configFileTemplate.fst");
 
 
 	//spawn the FAST exe file
@@ -266,14 +279,23 @@ void CFASTWindTurbine::reset(CState *s)
 		//receive(s)
 		m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
 	}
-	else CLogger::logMessage(MessageType::Error, "FAST process ended prematurely");
+	else
+	{
+		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		CSimionApp::get()->pExperiment->setTerminalState();
+		return;
+	}
 }
 
 void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 {
 	//Check FAST is still running
 	if (!FASTprocess.isRunning())
-		CLogger::logMessage(MessageType::Error, "FAST process ended prematurely");
+	{
+		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		CSimionApp::get()->pExperiment->setTerminalState();
+		return;
+	}
 
 	//send(a)
 	//here we have to cheat the compiler (const). We don't want to, but we have to
@@ -282,7 +304,9 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	int numBytesWritten= m_namedPipeServer.writeBuffer(pActionValues, numBytesToWrite);
 	if (numBytesToWrite != numBytesWritten)
 	{
-		CLogger::logMessage(MessageType::Error, "The Dimensional Portal has been remotely closed. Probably an error in FAST.");
+		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		CSimionApp::get()->pExperiment->setTerminalState();
+		return;
 	}
 
 	//receive(s')
@@ -290,6 +314,8 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	int numBytesRead= m_namedPipeServer.readToBuffer(s->getValueVector(), numBytesToRead);
 	if (numBytesToRead!=numBytesRead)
 	{
-		CLogger::logMessage(MessageType::Error, "The Dimensional Portal has been remotely closed. Probably an error in FAST.");
+		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		CSimionApp::get()->pExperiment->setTerminalState();
+		return;
 	}
 }

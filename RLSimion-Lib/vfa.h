@@ -17,23 +17,28 @@ class CConfigFile;
 
 class CLinearVFA
 {
-
 protected:
-
+	std::shared_ptr<double> m_pFrozenWeights = nullptr;
 	std::shared_ptr<double> m_pWeights= nullptr;
 	unsigned int m_numWeights= 0;
 
 	bool m_bSaturateOutput;
 	double m_minOutput, m_maxOutput;
 
+	bool m_bCanBeFrozen= false;
+
 	unsigned int m_minIndex;
 	unsigned int m_maxIndex;
 public:
-	CLinearVFA() = default;
-	virtual ~CLinearVFA() = default;
-	double get(const CFeatureList *features);
+	CLinearVFA();
+	virtual ~CLinearVFA();
+	double get(const CFeatureList *features,bool bUseFrozenWeights= true);
 	double *getWeightPtr(){ return m_pWeights.get(); }
 	unsigned int getNumWeights(){ return m_numWeights; }
+
+	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates) { m_bCanBeFrozen = bCanUseDeferredUpdates; }
+	
+	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 
 	void saturateOutput(double min, double max);
 
@@ -54,7 +59,6 @@ protected:
 public:
 	CLinearStateVFA();
 	CLinearStateVFA(CConfigNode* pParameters);
-	//CLinearStateVFA(CLinearStateVFA* pSourceVFA);
 
 	void setInitValue(double initValue);
 
@@ -64,10 +68,8 @@ public:
 
 	void getFeatures(const CState* s,CFeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, CState* s);
-	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 
 	void save(const char* pFilename) const;
-	//void load(const char* pFilename);
 
 	std::shared_ptr<CStateFeatureMap> getStateFeatureMap(){ return m_pStateFeatureMap; }
 };
@@ -92,7 +94,7 @@ public:
 
 	CLinearStateActionVFA()= default;
 	CLinearStateActionVFA(CConfigNode* pParameters);
-	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA); //used in double q-learning to get a copy of the target function
+	CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA); //used in double q-learning to getSample a copy of the target function
 	CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> pStateFeatureMap
 		, std::shared_ptr<CActionFeatureMap> pActionFeatureMap);
 
@@ -114,11 +116,6 @@ public:
 	//features are built using the two feature maps: the state and action feature maps
 	//the input is a feature in state-action space
 	void getFeatureStateAction(unsigned int feature,CState* s, CAction* a);
-
-	void add(const CFeatureList* pFeatures, double alpha = 1.0);
-
-	void save(const char* pFilename) const;
-	void load(const char* pFilename);
 
 	void deferredLoadStep();
 };

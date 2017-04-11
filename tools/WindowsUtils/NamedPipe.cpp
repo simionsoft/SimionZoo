@@ -62,7 +62,9 @@ int CNamedPipe::readToBuffer(void *pBuffer, int numBytes)
 
 //CNamedPipeServer
 CNamedPipeServer::CNamedPipeServer()
-{}
+{
+	m_pipeHandle = INVALID_HANDLE_VALUE;
+}
 
 CNamedPipeServer::~CNamedPipeServer()
 {
@@ -123,11 +125,11 @@ bool CNamedPipeServer::waitForClientConnection()
 
 void CNamedPipeServer::closeServer()
 {
-	if (m_pipeHandle)
+	if (m_pipeHandle!= INVALID_HANDLE_VALUE)
 	{
 		DisconnectNamedPipe(m_pipeHandle);
 		CloseHandle(m_pipeHandle);
-		m_pipeHandle = 0;
+		m_pipeHandle = INVALID_HANDLE_VALUE;
 	}
 }
 
@@ -175,6 +177,6 @@ void CNamedPipeClient::closeConnection()
 	{
 		FlushFileBuffers(m_pipeHandle);
 		CloseHandle(m_pipeHandle);
-		m_pipeHandle = 0;
+		m_pipeHandle = INVALID_HANDLE_VALUE;
 	}
 }

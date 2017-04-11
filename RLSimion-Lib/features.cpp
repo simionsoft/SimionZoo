@@ -8,14 +8,13 @@
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
 
 
-CFeatureList::CFeatureList(bool addIfExists, bool replaceIfExists)
+CFeatureList::CFeatureList(const char* pName,OverwriteMode overwriteMode)
 {
-	m_type= LIST_UNSORTED;
+	m_name = pName;
 	m_numAllocFeatures= FEATURE_BLOCK_SIZE;
 	m_pFeatures= new CFeature[m_numAllocFeatures];
 	m_numFeatures= 0;
-	m_bAddIfExists = addIfExists;
-	m_bReplaceIfExists = replaceIfExists;
+	m_overwriteMode = overwriteMode;
 }
 
 CFeatureList::~CFeatureList()
@@ -71,12 +70,16 @@ void CFeatureList::mult(double factor)
 
 double CFeatureList::getFactor(unsigned int index) const
 {
+	double factor = 0.0;
 	for (unsigned int i= 0; i<m_numFeatures; i++)
 	{
-		if (m_pFeatures[i].m_index==index)
-			return m_pFeatures[i].m_factor;
+		if (m_pFeatures[i].m_index == index)
+			if (m_overwriteMode == AllowDuplicates)
+				factor += m_pFeatures[i].m_factor;
+			else
+				return m_pFeatures[i].m_factor;
 	}
-	return 0.0;
+	return factor;
 }
 
 double CFeatureList::innerProduct(const CFeatureList *inList)
@@ -124,7 +127,7 @@ int CFeatureList::getFeaturePos(unsigned int index)
 
 void CFeatureList::add(unsigned int index, double value)
 {
-	bool bCheckIfExists= (m_bAddIfExists || m_bReplaceIfExists);
+	bool bCheckIfExists= m_overwriteMode!= OverwriteMode::AllowDuplicates;
 	int pos;
 	if (bCheckIfExists)
 	{
@@ -132,8 +135,8 @@ void CFeatureList::add(unsigned int index, double value)
 
 		if (pos>=0)
 		{
-			if (m_bAddIfExists) m_pFeatures[pos].m_factor+= value;
-			else m_pFeatures[pos].m_factor= value;
+			if (m_overwriteMode==OverwriteMode::Add) m_pFeatures[pos].m_factor+= value;
+			else if (m_overwriteMode==OverwriteMode::Replace) m_pFeatures[pos].m_factor= value;
 			return;
 		}
 	}
