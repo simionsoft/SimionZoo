@@ -19,10 +19,12 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 #define robotOrigin_x 3.0
 #define robotOrigin_y 0.0
 
-GraphicSettings* robotOnlyGraphs;
-GUIHelperInterface* guiHelper;
-SimpleOpenGL3App* app = new SimpleOpenGL3App("Graphic Example", 1024, 768, true);
-GUIHelperInterface*	help;
+//GraphicSettings* robotOnlyGraphs;
+//GUIHelperInterface* guiHelper;
+
+//GUIHelperInterface*	help;
+OpenGLGuiHelper *gui;
+CommonExampleOptions *options;
 
 COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 {
@@ -38,10 +40,13 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
 
+
+	app = new SimpleOpenGL3App("Graphic Example", 1024, 768, true);
 	///Graphic init
-	OpenGLGuiHelper gui(app, false);
-	CommonExampleOptions options(&gui);
-	robotOnlyGraphs = new GraphicSettings(options.m_guiHelper);
+	gui= new OpenGLGuiHelper(app, false);
+	options= new CommonExampleOptions(gui);
+
+	robotOnlyGraphs = new GraphicSettings(options->m_guiHelper);
 	robotOnlyGraphs->initializeGraphicProccess();
 	
 	
@@ -82,7 +87,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	}
 
 	///Graphic init
-	help = robotOnlyGraphs->getGuiHelper();
+	//help = robotOnlyGraphs->getGuiHelper();
 	robotOnlyGraphs->generateGraphics(robotOnlyGraphs->getGuiHelper());
 
 	//the reward function
@@ -137,7 +142,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	btTransform r1_trans;
 
 	///create graphs
-	help = robotOnlyGraphs->getGuiHelper();
+	//help = robotOnlyGraphs->getGuiHelper();
 	robotOnlyGraphs->updateGLApp(app);
 
 	//Update Robot1
@@ -198,6 +203,8 @@ double COnlyRobotReward::getMax()
 
 COnlyRobot::~COnlyRobot()
 {
+	delete options;
+	delete gui;
 	robotOnlyGraphs->deteleGraphicOptions(app);
 }
 

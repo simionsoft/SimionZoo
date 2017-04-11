@@ -4,8 +4,10 @@
 #include "reward.h"
 #define ATTRIBUTE_ALIGNED16(a) a
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
-class btCollisionShape;
+
 class Robot;
+class SimpleOpenGL3App;
+class GraphicSettings;
 
 //Move box with 2 robots
 class COnlyRobot : public CDynamicModel
@@ -22,12 +24,8 @@ class COnlyRobot : public CDynamicModel
 	int rob1_forceX, rob1_forceY;
 
 	///inicialización
-	btAlignedObjectArray<btCollisionShape*>	m_collisionShapes;
-	btBroadphaseInterface*	m_broadphase;
-	btCollisionDispatcher*	m_dispatcher;
-	btConstraintSolver*	m_solver;
-	btDefaultCollisionConfiguration* m_collisionConfiguration;
-	btDiscreteDynamicsWorld* m_dynamicsWorld;
+	SimpleOpenGL3App* app;
+	GraphicSettings* robotOnlyGraphs;
 
 	Robot *m_pRobot1;
 
