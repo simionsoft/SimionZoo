@@ -64,7 +64,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>../3rd-party\bullet3-2.86\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../3rd-party/bullet3-2.86/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>../Debug/$(TargetName)$(TargetExt)</OutputFile>
@@ -93,6 +93,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../3rd-party/bullet3-2.86/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
