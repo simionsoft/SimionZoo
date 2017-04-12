@@ -39,11 +39,11 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 
 	rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
 	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
-	m_theta = addStateVariable("theta", "rad", -0.22, 0.22);
+	m_theta = addStateVariable("theta", "rad", -3.14, 3.14);
 	rob1_VelX = CNT_VEL;
 	rob1_VelY = CNT_VEL;
 	
-	m_omega = addActionVariable("omega", "rad", -0.22, 0.22);
+	m_omega = addActionVariable("omega", "rad", -1.0, 1.0);
 
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
@@ -147,13 +147,13 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		robotOnlyGraphs->drawText3D("Evaluation episode",printPosition);
-		robotOnlyGraphs->draw();
+		
 	}
 	else
 	{
 		robotOnlyGraphs->drawText3D("Training episode", printPosition);
 	}
-	
+	robotOnlyGraphs->draw();
 	
 	s->set(rob1_X, double(r1_trans.getOrigin().getX()));
 	s->set(rob1_Y, double(r1_trans.getOrigin().getZ()));
