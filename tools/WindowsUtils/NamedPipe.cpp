@@ -135,7 +135,10 @@ void CNamedPipeServer::closeServer()
 
 //CNamedPipeClient
 CNamedPipeClient::CNamedPipeClient()
-{}
+{
+	m_pipeHandle = INVALID_HANDLE_VALUE;
+}
+
 CNamedPipeClient::~CNamedPipeClient()
 {
 	closeConnection();
