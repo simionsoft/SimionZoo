@@ -25,6 +25,7 @@ class COnlyRobot : public CDynamicModel
 
 	// Action variables
 	int rob1_VelX, rob1_VelY;
+	int m_linear_vel;
 
 	///inicialización
 	SimpleOpenGL3App* app;

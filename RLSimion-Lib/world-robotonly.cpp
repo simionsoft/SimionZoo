@@ -26,8 +26,7 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 
 #define theta_o 0.0
 
-#define CNT_VEL 2.0;
-
+#define CNT_VEL 2.0
 
 OpenGLGuiHelper *gui;
 CommonExampleOptions *options;
@@ -40,9 +39,10 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
 	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
 	m_theta = addStateVariable("theta", "rad", -3.14, 3.14);
+
+	m_linear_vel = addActionVariable("lVel", "m/s", -2.0, 2.0);
 	rob1_VelX = CNT_VEL;
 	rob1_VelY = CNT_VEL;
-	
 	m_omega = addActionVariable("omega", "rad", -1.0, 1.0);
 
 	MASS_ROBOT = 0.5f;
@@ -125,6 +125,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	double omega = a->get("omega");
 	double theta = s->get(m_theta);
+	double linear_vel = s->get("lVel");
 
 	theta = theta + omega*dt;
 
@@ -133,8 +134,8 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	btTransform r1_trans;
 
-	rob1_VelX = cos(theta)*CNT_VEL;
-	rob1_VelY = sin(theta)*CNT_VEL;
+	rob1_VelX = cos(theta)*linear_vel;
+	rob1_VelY = sin(theta)*linear_vel;
 
 	robot_bb->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
 	robot_bb->getBody()->setLinearVelocity(btVector3(rob1_VelX, 0.0, rob1_VelY));
