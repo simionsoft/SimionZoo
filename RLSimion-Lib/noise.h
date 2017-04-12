@@ -57,7 +57,7 @@ public:
 	double getSigma();
 	double unscale(double noise);
 	double getSample();
-	double getSampleProbability(double sample, bool bUseMarginalNoise = false) { throw std::exception("not implemented"); }
+	double getSampleProbability(double sample, bool bUseMarginalNoise = false);
 };
 
 class COrnsteinUhlenbeckNoise : public CNoise
@@ -71,5 +71,5 @@ public:
 	double getSigma();
 	double unscale(double noise);
 	double getSample();
-	double getSampleProbability(double sample, bool bUseMarginalNoise = false) { throw std::exception("not implemented"); }
+	double getSampleProbability(double sample, bool bUseMarginalNoise = false);
 };

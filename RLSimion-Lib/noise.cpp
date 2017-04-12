@@ -150,6 +150,11 @@ double CSinusoidalNoise::getSample()
 	return noise;
 }
 
+double CSinusoidalNoise::getSampleProbability(double sample,bool bUseMarginalNoise)
+{
+	return 1.0;
+}
+
 COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(CConfigNode* pParameters)
 {
 	//https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
@@ -192,4 +197,9 @@ double COrnsteinUhlenbeckNoise::getSample()
 		+ m_sigma.get()*sqrt(m_dt)*CGaussianNoise::getNormalDistributionSample(0.0, 1);
 	m_lastValue = newNoise;
 	return newNoise;
+}
+
+double COrnsteinUhlenbeckNoise::getSampleProbability(double sample, bool bUseMarginalNoise)
+{
+	return 1.0; //not implemented
 }

@@ -40,10 +40,10 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
 	m_theta = addStateVariable("theta", "rad", -3.14, 3.14);
 
-	m_linear_vel = addActionVariable("lVel", "m/s", -2.0, 2.0);
+	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
 	rob1_VelX = CNT_VEL;
 	rob1_VelY = CNT_VEL;
-	m_omega = addActionVariable("omega", "rad", -1.0, 1.0);
+	m_omega = addActionVariable("omega", "rad", -3.0, 3.0);
 
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
@@ -125,7 +125,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	double omega = a->get("omega");
 	double theta = s->get(m_theta);
-	double linear_vel = s->get("lVel");
+	double linear_vel = a->get("v");
 
 	theta = theta + omega*dt;
 
