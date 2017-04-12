@@ -16,17 +16,20 @@ class GraphicSettings : public CommonRigidBodyBase
 
 public:
 
+
+	SimpleOpenGL3App* m_pOpenGLApp;
+
 	GraphicSettings(struct GUIHelperInterface* helper)
 		:CommonRigidBodyBase(helper)
 	{
 	}
 	~GraphicSettings();
-	SimpleOpenGL3App* m_pOpenGLApp;
 	void setOpenGLApp(SimpleOpenGL3App* app) { m_pOpenGLApp = app; }
 	virtual void initPhysics();
 	virtual void generateGraphics(GUIHelperInterface*	helper);
 	void simulate(double dt);
 	void draw();
+	void drawText3D(char text[], btVector3 &position);
 	btAlignedObjectArray<btCollisionShape*> GraphicSettings::getCollisionShape();
 	virtual void initializeGraphicProccess();
 	GUIHelperInterface* GraphicSettings::getGuiHelper();

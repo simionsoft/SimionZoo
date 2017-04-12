@@ -68,6 +68,12 @@ void GraphicSettings::draw()
 	m_pOpenGLApp->swapBuffer();
 }
 
+void GraphicSettings::drawText3D(char text[], btVector3 &position)
+{
+	m_pOpenGLApp->drawText3D(text, float(position.getX()), float(position.getY()), float(position.getZ()), 1);
+	//m_pOpenGLApp->drawText(text, float(position.getX()), float(position.getY()), float(position.getZ()));
+}
+
 
 
 btAlignedObjectArray<btCollisionShape*> GraphicSettings::getCollisionShape()
