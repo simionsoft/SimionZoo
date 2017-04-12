@@ -25,8 +25,8 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 {
 	METADATA("World", "MoveBoxOneRobot");
 
-	rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
-	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
+	m_rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
+	m_rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
 	box_X = addStateVariable("bx", "m", -50.0, 50.0);
 	box_Y = addStateVariable("by", "m", -50.0, 50.0);
 
@@ -121,8 +121,8 @@ void CMoveBoxOneRobot::reset(CState *s)
 		m_box->getBody()->getMotionState()->setWorldTransform(boxTransform);
 
 		///set initial values to state variables
-		s->set(rob1_X, robotOrigin_x);
-		s->set(rob1_Y, robotOrigin_y);
+		s->set(m_rob1_X, robotOrigin_x);
+		s->set(m_rob1_Y, robotOrigin_y);
 		s->set(box_X, boxOrigin_x);
 		s->set(box_Y, boxOrigin_y);
 	}
@@ -131,8 +131,8 @@ void CMoveBoxOneRobot::reset(CState *s)
 	//	//random setting in training episodes
 	//	robotTransform.setOrigin(btVector3(robotOrigin_x + getRandomValue()*0.4, 0.0, robotOrigin_y + getRandomValue()*0.4));
 	//	boxTransform.setOrigin(btVector3(boxOrigin_x + getRandomValue()*0.4, 0.0, boxOrigin_y + getRandomValue()*0.2));
-	//	s->set(rob1_X, robotOrigin_x + getRandomValue()*0.4);
-	//	s->set(rob1_Y, robotOrigin_y + getRandomValue()*0.2);
+	//	s->set(m_rob1_X, robotOrigin_x + getRandomValue()*0.4);
+	//	s->set(m_rob1_Y, robotOrigin_y + getRandomValue()*0.2);
 	//	s->set(box_X, boxOrigin_x + getRandomValue()*0.4);
 	//	s->set(box_Y, boxOrigin_y + getRandomValue()*0.2);
 	//}
@@ -161,10 +161,10 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	int numCollision = m_dynamicsWorld->getDispatcher()->getNumManifolds();
 
 	m_Robot->getBody()->getMotionState()->getWorldTransform(r1_trans);
-	s->set(rob1_X, double(r1_trans.getOrigin().getX()));
-	s->set(rob1_Y, double(r1_trans.getOrigin().getZ()));
-	double rob1x = s->get(rob1_X);
-	double rob1y = s->get(rob1_Y);
+	s->set(m_rob1_X, double(r1_trans.getOrigin().getX()));
+	s->set(m_rob1_Y, double(r1_trans.getOrigin().getZ()));
+	double rob1x = s->get(m_rob1_X);
+	double rob1y = s->get(m_rob1_Y);
 
 }
 

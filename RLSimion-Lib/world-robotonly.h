@@ -18,10 +18,10 @@ class COnlyRobot : public CDynamicModel
 	double MASS_ROBOT;
 	double MASS_GROUND;
 
-	/// Episode variables
-	int rob1_X, rob1_Y;
-	double m_omega;
-	btScalar m_theta;
+	/// State variables
+	int m_rob1_X, m_rob1_Y;
+	int m_omega;
+	int m_theta;
 
 	// Action variables
 	int m_linear_vel;

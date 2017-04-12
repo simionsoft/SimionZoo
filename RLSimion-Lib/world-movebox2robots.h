@@ -19,7 +19,7 @@ class CMoveBox2Robots : public CDynamicModel
 	double MASS_GROUND;
 
 	/// Episode variables
-	int rob1_X, rob1_Y;
+	int m_rob1_X, m_rob1_Y;
 	int rob2_X, rob2_Y;
 	int box_X, box_Y;
 	

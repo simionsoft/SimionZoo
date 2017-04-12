@@ -14,8 +14,8 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-#define TargetX 8.0
-#define TargetY 2.0
+#define TargetX 0.0
+#define TargetY 10.0
 
 #define robotOrigin_x 3.0
 #define robotOrigin_y 0.0
@@ -36,9 +36,9 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 
 	METADATA("World", "MoveRobotOnly");
 
-	rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
-	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
-	m_theta = addStateVariable("theta", "rad", -3.14, 3.14);
+	m_rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
+	m_rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
+	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
 	m_omega = addActionVariable("omega", "rad", -3.0, 3.0);
@@ -112,8 +112,8 @@ void COnlyRobot::reset(CState *s)
 		robot_bb->getBody()->getMotionState()->setWorldTransform(robotTransform);
 	
 		///set initial values to state variables
-		s->set(rob1_X, robotOrigin_x);
-		s->set(rob1_Y, robotOrigin_y);
+		s->set(m_rob1_X, robotOrigin_x);
+		s->set(m_rob1_Y, robotOrigin_y);
 		s->set(m_theta, theta_o);
 	}
 }
@@ -129,6 +129,8 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	if (theta > SIMD_2_PI)
 		theta -= SIMD_2_PI;
+	if (theta < SIMD_2_PI)
+		theta += SIMD_2_PI;
 
 	btTransform r1_trans;
 	double rob1_VelX, rob1_VelY;
@@ -136,7 +138,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	rob1_VelX = cos(theta)*linear_vel;
 	rob1_VelY = sin(theta)*linear_vel;
 
-	robot_bb->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
+	//robot_bb->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
 	robot_bb->getBody()->setLinearVelocity(btVector3(rob1_VelX, 0.0, rob1_VelY));
 
 	//Update Robot1
@@ -155,8 +157,8 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	}
 	robotOnlyGraphs->draw();
 	
-	s->set(rob1_X, double(r1_trans.getOrigin().getX()));
-	s->set(rob1_Y, double(r1_trans.getOrigin().getZ()));
+	s->set(m_rob1_X, double(r1_trans.getOrigin().getX()));
+	s->set(m_rob1_Y, double(r1_trans.getOrigin().getZ()));
 	s->set(m_theta, theta);
 
 }

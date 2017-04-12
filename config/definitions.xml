@@ -404,7 +404,7 @@
   <CLASS Name="COnlyRobot" World="MoveRobotOnly">
     <STATE-VAR Name="rx1" Min="-50" Max="50" Unit="m"/>
     <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="theta" Min="-3.14" Max="3.14" Unit="rad"/>
+    <STATE-VAR Name="theta" Min="-3.15" Max="3.15" Unit="rad"/>
     <ACTION-VAR Name="v" Min="-2" Max="2" Unit="m/s"/>
     <ACTION-VAR Name="omega" Min="-3" Max="3" Unit="rad"/>
   </CLASS>

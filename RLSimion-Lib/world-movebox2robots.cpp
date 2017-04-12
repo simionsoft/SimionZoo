@@ -17,8 +17,8 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 	METADATA("World", "MoveBox-2Robots");
 	
 
-	rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
-	rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
+	m_rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
+	m_rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
 	rob2_X = addStateVariable("rx2", "m", -50.0, 50.0);
 	rob2_Y = addStateVariable("ry2", "m", -50.0, 50.0);
 	box_X  = addStateVariable("bx", "m", -50.0, 50.0);
@@ -123,8 +123,8 @@ void CMoveBox2Robots::reset(CState *s)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
-		s->set(rob1_X, 0.5);
-		s->set(rob1_Y, 0.0);
+		s->set(m_rob1_X, 0.5);
+		s->set(m_rob1_Y, 0.0);
 		s->set(rob2_X, 3.0);
 		s->set(rob2_Y, 2.0);
 		s->set(box_X,  3.0);
@@ -136,8 +136,8 @@ void CMoveBox2Robots::reset(CState *s)
 	{
 		//random setting in training episodes
 
-		s->set(rob1_X, 0.2 + getRandomValue()*0.4 );
-		s->set(rob1_Y, 0.7 + getRandomValue()*0.2);
+		s->set(m_rob1_X, 0.2 + getRandomValue()*0.4 );
+		s->set(m_rob1_Y, 0.7 + getRandomValue()*0.2);
 		s->set(rob2_X, 5.0 + getRandomValue()*0.4);
 		s->set(rob2_Y, 2.0 + getRandomValue()*0.2);
 		s->set(box_X,  2.5 + getRandomValue()*0.4);
@@ -171,8 +171,8 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 		//Update Robot1
 		m_pRobot1->getBody()->applyCentralForce(btVector3(rob1force_x, 0, rob1force_y));
 		m_pRobot1->getBody()->getMotionState()->getWorldTransform(r1_trans);
-		s->set(rob1_X, float(r1_trans.getOrigin().getX()));
-		s->set(rob1_Y, float(r1_trans.getOrigin().getZ()));
+		s->set(m_rob1_X, float(r1_trans.getOrigin().getX()));
+		s->set(m_rob1_Y, float(r1_trans.getOrigin().getZ()));
 
 		//Update Robot2
 		m_pRobot2->getBody()->applyCentralForce(btVector3(rob2force_x, 0, rob2force_y));
