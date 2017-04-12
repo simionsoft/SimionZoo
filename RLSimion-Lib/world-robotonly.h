@@ -14,15 +14,17 @@ class GraphicSettings;
 class COnlyRobot : public CDynamicModel
 {
 	/// All-Simulation variables
-	double GRAVITY;
+	double MASS_TARGET;
 	double MASS_ROBOT;
 	double MASS_GROUND;
 
 	/// Episode variables
 	int rob1_X, rob1_Y;
+	double m_omega;
+	btScalar m_theta;
 
 	// Action variables
-	int rob1_forceX, rob1_forceY;
+	int rob1_VelX, rob1_VelY;
 
 	///inicialización
 	SimpleOpenGL3App* app;
@@ -30,6 +32,7 @@ class COnlyRobot : public CDynamicModel
 
 	BulletBody* robot_bb;
 	BulletBody* ground_bb;
+	BulletBody* target_bb;
 
 public:
 	COnlyRobot(CConfigNode* pParameters);
