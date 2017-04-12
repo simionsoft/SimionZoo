@@ -404,8 +404,8 @@
   <CLASS Name="COnlyRobot" World="MoveRobotOnly">
     <STATE-VAR Name="rx1" Min="-50" Max="50" Unit="m"/>
     <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
-    <ACTION-VAR Name="r1forceX" Min="-20" Max="20" Unit="N"/>
-    <ACTION-VAR Name="r1forceY" Min="-20" Max="20" Unit="N"/>
+    <STATE-VAR Name="theta" Min="-0.22" Max="0.22" Unit="rad"/>
+    <ACTION-VAR Name="omega" Min="-0.22" Max="0.22" Unit="rad"/>
   </CLASS>
   <CLASS Name="CUnderwaterVehicle" World="Underwater-vehicle">
     <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/underwater-vehicle/setpoint.txt"/>
