@@ -41,8 +41,6 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	m_theta = addStateVariable("theta", "rad", -3.14, 3.14);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
-	rob1_VelX = CNT_VEL;
-	rob1_VelY = CNT_VEL;
 	m_omega = addActionVariable("omega", "rad", -3.0, 3.0);
 
 	MASS_ROBOT = 0.5f;
@@ -133,6 +131,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 		theta -= SIMD_2_PI;
 
 	btTransform r1_trans;
+	double rob1_VelX, rob1_VelY;
 
 	rob1_VelX = cos(theta)*linear_vel;
 	rob1_VelY = sin(theta)*linear_vel;
