@@ -14,8 +14,8 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-#define TargetX 0.0
-#define TargetY 10.0
+#define TargetX 10.0
+#define TargetY 3.0
 
 #define robotOrigin_x 0.0
 #define robotOrigin_y 0.0
@@ -141,7 +141,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	robot_bb->getBody()->setLinearVelocity(btVector3(rob1_VelX, 0.0, rob1_VelY));
 
 	//Update Robot1
-	robotOnlyGraphs->simulate(dt);
+	robotOnlyGraphs->getDynamicsWorld()->stepSimulation(dt,20);
 
 	robot_bb->getBody()->getMotionState()->getWorldTransform(r1_trans);
 	btVector3 printPosition = btVector3(r1_trans.getOrigin().getX(), r1_trans.getOrigin().getY() + 5, r1_trans.getOrigin().getZ());
@@ -177,10 +177,7 @@ double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CSta
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
-	if (distance < 0.25)
-	{
-		CSimionApp::get()->pExperiment->setTerminalState();
-	}
+
 	distance = std::max(distance, 0.0001);
 	return 1 / (distance);
 }
