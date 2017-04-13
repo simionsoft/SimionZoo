@@ -171,6 +171,7 @@
     <DOUBLE-VALUE Name="Mu" Comment="Mean value of the generated noise" Default="0.0"/>
     <DOUBLE-VALUE Name="Sigma" Comment="Degree of volatility around it caused by shocks" Default="0.0"/>
     <DOUBLE-VALUE Name="Theta" Comment="Rate by which noise shocks dissipate and the variable reverts towards the mean" Default="0.0"/>
+    <BRANCH Name="Scale" Class="CNumericValue-Factory" Comment="Scale factor applied to the noise signal before adding it to the policy's output"/>
   </CLASS>
   <CLASS Name="CNoise-Factory">
     <CHOICE Name="Noise" Class="CNoise" Comment="Noise type">

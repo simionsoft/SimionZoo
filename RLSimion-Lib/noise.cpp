@@ -155,13 +155,14 @@ double CSinusoidalNoise::getSampleProbability(double sample,bool bUseMarginalNoi
 	return 1.0;
 }
 
-COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(CConfigNode* pParameters)
+COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(CConfigNode* pConfigNode)
 {
 	//https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
 	m_lastValue = 0.0;
-	m_mu = DOUBLE_PARAM(pParameters, "Mu", "Mean value of the generated noise", 0.0);
-	m_sigma = DOUBLE_PARAM(pParameters, "Sigma", "Degree of volatility around it caused by shocks", 0.0);
-	m_theta = DOUBLE_PARAM(pParameters, "Theta", "Rate by which noise shocks dissipate and the variable reverts towards the mean", 0.0);
+	m_mu = DOUBLE_PARAM(pConfigNode, "Mu", "Mean value of the generated noise", 0.0);
+	m_sigma = DOUBLE_PARAM(pConfigNode, "Sigma", "Degree of volatility around it caused by shocks", 0.0);
+	m_theta = DOUBLE_PARAM(pConfigNode, "Theta", "Rate by which noise shocks dissipate and the variable reverts towards the mean", 0.0);
+	m_scale = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Scale", "Scale factor applied to the noise signal before adding it to the policy's output");
 
 	if (CSimionApp::get() != nullptr && CSimionApp::get()->pWorld.ptr() != nullptr)
 		m_dt = CSimionApp::get()->pWorld->getDT();
@@ -174,6 +175,7 @@ COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(double theta, double sigma, dou
 	m_sigma.set(sigma);
 	m_mu.set(mu);
 	m_dt = dt;
+	m_scale.set(new CConstantValue(1.0));
 }
 
 COrnsteinUhlenbeckNoise::~COrnsteinUhlenbeckNoise()
@@ -195,7 +197,7 @@ double COrnsteinUhlenbeckNoise::getSample()
 
 	double newNoise = m_lastValue + m_theta.get()*(m_mu.get() - m_lastValue)*m_dt
 		+ m_sigma.get()*sqrt(m_dt)*CGaussianNoise::getNormalDistributionSample(0.0, 1);
-	m_lastValue = newNoise;
+	m_lastValue = newNoise* m_scale->get();
 	return newNoise;
 }
 

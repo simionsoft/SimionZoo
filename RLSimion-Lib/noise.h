@@ -63,6 +63,7 @@ public:
 class COrnsteinUhlenbeckNoise : public CNoise
 {
 	DOUBLE_PARAM m_theta, m_sigma,m_mu;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_scale;
 	double m_dt;
 public:
 	COrnsteinUhlenbeckNoise(CConfigNode* pParameters);
