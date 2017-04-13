@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Badger.ViewModels;
 
 namespace Badger.Data
 {
@@ -19,14 +20,20 @@ namespace Badger.Data
         private List<string> m_prerrequisites;
         public List<string> prerrequisites { get { return m_prerrequisites; } }
         private string m_exeFile;
-        public string exeFile { get{return m_exeFile;} }
+        public string exeFile { get { return m_exeFile; } }
 
-        public Experiment(string expName,string configFile,string exeFile,List<string> prerrequisites)
+        private string m_forks;
+
+        public string Forks { get { return m_forks; } }
+
+        public Experiment(string expName, string configFile, string exeFile,
+            List<string> prerrequisites, string forks)
         {
             m_name = expName;
             m_configFilePath = configFile;
             m_exeFile = exeFile;
             m_prerrequisites = prerrequisites;
+            m_forks = forks;
         }
     }
 }

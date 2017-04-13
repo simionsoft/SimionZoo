@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Xml;
 using Caliburn.Micro;
 using Herd;
@@ -11,11 +12,24 @@ namespace Badger.ViewModels
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {
         private Experiment m_experiment;
-        public string pipeName { get { return m_experiment.pipeName; } }
-        public string name { get { return m_experiment.name; } }
-        public string filePath { get { return m_experiment.configFilePath; } }
+        public string PipeName { get { return m_experiment.pipeName; } }
+        public string Name { get { return m_experiment.name; } }
+        public string FilePath { get { return m_experiment.configFilePath; } }
         public string exeFile { get { return m_experiment.exeFile; } }
         public List<string> prerrequisites { get { return m_experiment.prerrequisites; } }
+
+        private string m_forks;
+
+        public string Forks
+        {
+            get
+            {
+                /*foreach (ForkedNodeViewModel v in m_experiment.Forks)
+                    m_forks += v.alias + ": " + v.selectedForkValue.configNode.content + "\n";
+                    */
+                return m_experiment.Forks;
+            }
+        }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -130,6 +144,7 @@ namespace Badger.ViewModels
         }
 
         private ExperimentMonitorViewModel m_parent;
+
         public MonitoredExperimentViewModel(Experiment experiment, PlotViewModel plot, ExperimentMonitorViewModel parent)
         {
             evaluationMonitor = plot;
@@ -140,10 +155,11 @@ namespace Badger.ViewModels
         //evaluation plot stuff
         private int evaluationSeriesId = -1;
         public PlotViewModel evaluationMonitor = null;
+
         public void addEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added
-                evaluationSeriesId = evaluationMonitor.addLineSeries(name);
+                evaluationSeriesId = evaluationMonitor.addLineSeries(Name);
             evaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
         }
 

@@ -25,15 +25,34 @@ namespace Badger.ViewModels
             get { return selectedForkValue.configNode; }
             set { NotifyOfPropertyChange(() => selectedValueConfigNode); }
         }
+
         const double disabledOpacity = 0.5;
         const double enabledOpacity = 1.0;
-        public string currentValueIndex { get { return (children.IndexOf(selectedForkValue)+1) + "/" + children.Count; } }
-        public double bIsTherePreviousValue { get { if( children.IndexOf(selectedForkValue) > 0)
-                    return enabledOpacity; return disabledOpacity; } }
-        public double bIsThereNextValue { get { if (children.IndexOf(selectedForkValue) < children.Count - 1)
-                    return enabledOpacity; return disabledOpacity; } }
-        public double bIsThereMoreValues { get { if (children.Count > 1)
-                    return enabledOpacity; return disabledOpacity; } }
+        public string currentValueIndex { get { return (children.IndexOf(selectedForkValue) + 1) + "/" + children.Count; } }
+        public double bIsTherePreviousValue
+        {
+            get
+            {
+                if (children.IndexOf(selectedForkValue) > 0)
+                    return enabledOpacity; return disabledOpacity;
+            }
+        }
+        public double bIsThereNextValue
+        {
+            get
+            {
+                if (children.IndexOf(selectedForkValue) < children.Count - 1)
+                    return enabledOpacity; return disabledOpacity;
+            }
+        }
+        public double bIsThereMoreValues
+        {
+            get
+            {
+                if (children.Count > 1)
+                    return enabledOpacity; return disabledOpacity;
+            }
+        }
 
         private void updateBoolFlags()
         {
@@ -57,11 +76,11 @@ namespace Badger.ViewModels
         public string alias { get { return m_alias; } set { m_alias = value; NotifyOfPropertyChange(() => alias); } }
 
         //Constructor used from the experiment editor
-        public ForkedNodeViewModel(ExperimentViewModel parentExperiment,ConfigNodeViewModel forkedNode)
+        public ForkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel forkedNode)
         {
             m_parent = forkedNode.parent;
 
-            ForkValueViewModel newForkValue= new ForkValueViewModel("Value-0", this, forkedNode);
+            ForkValueViewModel newForkValue = new ForkValueViewModel("Value-0", this, forkedNode);
             children.Add(newForkValue);
             selectedForkValue = newForkValue;
 
@@ -75,8 +94,8 @@ namespace Badger.ViewModels
             m_parentExperiment.forkRegistry.Add(this);
         }
         //Constructor called when loading an experiment config file
-        public ForkedNodeViewModel(ExperimentViewModel parentExperiment,ConfigNodeViewModel parentNode
-            ,XmlNode classDefinition,XmlNode configNode= null, bool initChildren= true)
+        public ForkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parentNode,
+            XmlNode classDefinition, XmlNode configNode = null, bool initChildren = true)
         {
             //configNode must be non-null since no ForkedNodeVM can be created from the app defintion
             m_parentExperiment = parentExperiment;
@@ -121,14 +140,14 @@ namespace Badger.ViewModels
             //register this fork
             m_parentExperiment.forkRegistry.Add(newForkedNode);
 
-            if (newForkedNode.children.Count>0)
+            if (newForkedNode.children.Count > 0)
                 newForkedNode.selectedForkValue = newForkedNode.children[0] as ForkValueViewModel;
             return newForkedNode;
         }
 
         public override bool validate()
         {
-            if (name=="" || !m_parentExperiment.forkRegistry.validate(alias))
+            if (name == "" || !m_parentExperiment.forkRegistry.Validate(alias))
                 return false;
             foreach (ForkValueViewModel value in children)
             {
@@ -137,12 +156,12 @@ namespace Badger.ViewModels
             return true;
         }
 
-        public override void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
+        public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
-            if (mode == SaveMode.AsProject || mode== SaveMode.AsExperiment)
+            if (mode == SaveMode.AsProject || mode == SaveMode.AsExperiment)
             {
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkedNodeTag + " "
-                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute 
+                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
                     + "=\"" + alias + "\">");
                 foreach (ForkValueViewModel child in children)
                     child.outputXML(writer, mode, leftSpace + "  ");
@@ -161,14 +180,14 @@ namespace Badger.ViewModels
                     child.outputXML(writer, mode, leftSpace + "  ");
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
             }
-            else if( mode == SaveMode.ForkValues)
+            else if (mode == SaveMode.ForkValues)
             {
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " "
                     + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
                     + "=\"" + alias + "\">");
                 //we take this nasty shortcut to allow children to be exported, while keeping
                 //each fork value as an element in a list instead of nested values
-                writer.WriteLine(leftSpace + "  <" + XMLConfig.forkValueTag 
+                writer.WriteLine(leftSpace + "  <" + XMLConfig.forkValueTag
                     + " " + XMLConfig.valueAttribute + "=\"" + selectedForkValue.configNode.content
                     + "\"/>");
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
@@ -178,8 +197,8 @@ namespace Badger.ViewModels
 
         public void addValue()
         {
-            string newValueName= "Value-" + children.Count;
-            ForkValueViewModel newForkValue = new ForkValueViewModel(newValueName,this,selectedValueConfigNode.clone());
+            string newValueName = "Value-" + children.Count;
+            ForkValueViewModel newForkValue = new ForkValueViewModel(newValueName, this, selectedValueConfigNode.clone());
             children.Add(newForkValue);
             updateBoolFlags();
             m_parentExperiment.updateNumForkCombinations();
@@ -226,14 +245,14 @@ namespace Badger.ViewModels
         public void previousValue()
         {
             int index = children.IndexOf(selectedForkValue);
-            if (index >0)
+            if (index > 0)
                 selectedForkValue = children[index - 1] as ForkValueViewModel;
             updateBoolFlags();
         }
 
         public override int getNumForkCombinations()
         {
-            int numForkCombinations= 0;
+            int numForkCombinations = 0;
             foreach (ConfigNodeViewModel child in children)
                 numForkCombinations += child.getNumForkCombinations();
             return numForkCombinations;
@@ -241,7 +260,7 @@ namespace Badger.ViewModels
 
         public override void setForkCombination(ref int id, ref string combinationName)
         {
-            int valueId= 0;
+            int valueId = 0;
             ForkValueViewModel currentValue = children[0] as ForkValueViewModel;
             //set the correct value for this fork
 
@@ -261,7 +280,7 @@ namespace Badger.ViewModels
                 //leaf
                 valueId = id % children.Count;
                 id = id / children.Count;
-                currentValue= children[valueId] as ForkValueViewModel;
+                currentValue = children[valueId] as ForkValueViewModel;
             }
 
             combinationName += "-" + valueId;

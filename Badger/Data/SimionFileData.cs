@@ -22,8 +22,8 @@ namespace Badger.Data
         public delegate void logFunction(string message);
         public delegate void XmlNodeFunction(XmlNode node);
         //LOAD EXPERIMENT BATCH
-        static public void loadExperimentBatch(XmlNodeFunction perExperimentFunction, string batchFilename="")
-        { 
+        static public void loadExperimentBatch(XmlNodeFunction perExperimentFunction, string batchFilename = "")
+        {
             if (batchFilename == "")
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -51,14 +51,14 @@ namespace Badger.Data
                     }
                 }
             }
-            else CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.","ERROR");
+            else CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
             return;
         }
         //SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments without forks
         // and a .exp-batch file in the root directory referencing them all and the forks/values each one 
         // took
-        public static List<Experiment> saveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments
-            ,ref string batchFilename, logFunction log)
+        public static List<Experiment> saveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
+            ref string batchFilename, logFunction log)
         {
             List<Experiment> experimentBatch = new List<Experiment>();
 
@@ -66,11 +66,11 @@ namespace Badger.Data
                 return null;
 
             //Validate the experiments
-            foreach(ExperimentViewModel experiment in experiments)
+            foreach (ExperimentViewModel experiment in experiments)
             {
                 if (!experiment.validate())
                 {
-                    CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name 
+                    CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name
                         + ". Please check it", "VALIDATION ERROR");
                     return experimentBatch;
                 }
@@ -105,7 +105,7 @@ namespace Badger.Data
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             if (Directory.Exists(batchFileDir))
             {
-                try {Directory.Delete(batchFileDir, true);}
+                try { Directory.Delete(batchFileDir, true); }
                 catch
                 {
                     CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
@@ -127,36 +127,41 @@ namespace Badger.Data
                     string filePath, folderPath;
                     string experimentName;
 
-                    foreach (ExperimentViewModel experiment in experiments)
+                    foreach (ExperimentViewModel experimentViewModel in experiments)
                     {
                         batchFileWriter.WriteLine("  <" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
-                            + "=\"" + experiment.name + "\">");
+                            + "=\"" + experimentViewModel.name + "\">");
 
                         //save the fork hierarchy and values. This makes everything making reports easier
-                        experiment.saveToStream(batchFileWriter,SaveMode.ForkHierarchy, "    ");
+                        experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "    ");
 
-                        numCombinations = experiment.getNumForkCombinations();
+                        numCombinations = experimentViewModel.getNumForkCombinations();
                         for (int i = 0; i < numCombinations; i++)
                         {
-                            //Save the combination of forks as a new experiment
-                            experimentName= experiment.setForkCombination(i);
-                            
+                            // Save the combination of forks as a new experiment
+                            experimentName = experimentViewModel.setForkCombination(i);
+
                             folderPath = batchFileDir + "\\" + experimentName;
                             Directory.CreateDirectory(folderPath);
                             filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
-                            experiment.save(filePath, SaveMode.AsExperimentalUnit);
+                            experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
 
-                            //Save the experiment reference in the root batch file
-                            batchFileWriter.WriteLine("    <" + XMLConfig.experimentalUnitNodeTag + " " + XMLConfig.nameAttribute
-                                + "=\"" + experimentName + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
-                            experiment.saveToStream(batchFileWriter,SaveMode.ForkValues,"      ");
+                            // Save the experiment reference in the root batch file
+                            batchFileWriter.WriteLine("    <" + XMLConfig.experimentalUnitNodeTag
+                                + " " + XMLConfig.nameAttribute + "=\"" + experimentName
+                                + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
+                            experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "      ");
                             batchFileWriter.WriteLine("    </" + XMLConfig.experimentalUnitNodeTag + ">");
 
-
-                            //Add the experiment to the output list
-                            experimentBatch.Add(new Experiment(experimentName, filePath, experiment.getExeFilename()
-                                , experiment.getPrerrequisites()));
+                            string forkAliasValue = "";
+                            // Build a string with the alias and the initial value of this fork for later display
+                            foreach (ForkedNodeViewModel fork in experimentViewModel.forkRegistry.Forks)
+                                forkAliasValue += fork.alias + ": " + fork.selectedForkValue.configNode.content + "\n";
+                            // Add the experiment to the output list
+                            experimentBatch.Add(new Experiment(experimentName, filePath, experimentViewModel.getExeFilename(),
+                                experimentViewModel.getPrerrequisites(), forkAliasValue));
                         }
+
                         batchFileWriter.WriteLine("  </" + XMLConfig.experimentNodeTag + ">");
                     }
                     //batch file footer
@@ -169,10 +174,9 @@ namespace Badger.Data
         }
 
         //BADGER project: LOAD
-        static public void loadExperiments(WindowViewModel parentWindow
-            ,ref BindableCollection<ExperimentViewModel> experiments
-            ,Dictionary<string,string> appDefinitions
-            ,logFunction log)
+        static public void loadExperiments(WindowViewModel parentWindow,
+            ref BindableCollection<ExperimentViewModel> experiments,
+            Dictionary<string, string> appDefinitions, logFunction log)
         {
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
@@ -199,8 +203,8 @@ namespace Badger.Data
                 if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count > 0)
                 {
                     configNode = experiment.FirstChild;
-                    experiments.Add(new ExperimentViewModel(parentWindow,appDefinitions[configNode.Name], configNode
-                        , experiment.Attributes[XMLConfig.nameAttribute].Value));
+                    experiments.Add(new ExperimentViewModel(parentWindow, appDefinitions[configNode.Name],
+                        configNode, experiment.Attributes[XMLConfig.nameAttribute].Value));
                 }
                 else
                 {
@@ -234,16 +238,18 @@ namespace Badger.Data
                 {
                     using (StreamWriter writer = new StreamWriter(outputFile))
                     {
-                        writer.WriteLine("<" + XMLConfig.badgerNodeTag +  " " + XMLConfig.versionAttribute 
+                        writer.WriteLine("<" + XMLConfig.badgerNodeTag + " " + XMLConfig.versionAttribute
                             + "=\"" + XMLConfig.BadgerProjectConfigVersion + "\">");
                         leftSpace = "  ";
+
                         foreach (ExperimentViewModel experiment in experiments)
                         {
-                            writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag 
+                            writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag
                                 + " Name=\"" + experiment.name + "\">");
                             experiment.saveToStream(writer, SaveMode.AsExperiment, leftSpace + "  ");
                             writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
                         }
+
                         writer.WriteLine("</" + XMLConfig.badgerNodeTag + ">");
                     }
                 }
@@ -251,7 +257,8 @@ namespace Badger.Data
         }
 
         //EXPERIMENT file: LOAD
-        static public ExperimentViewModel loadExperiment(WindowViewModel parentWindow,Dictionary<string,string> appDefinitions)
+        static public ExperimentViewModel LoadExperiment(WindowViewModel parentWindow,
+            Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;
             OpenFileDialog ofd = new OpenFileDialog();
@@ -267,15 +274,15 @@ namespace Badger.Data
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            ExperimentViewModel newExperiment = new ExperimentViewModel(parentWindow,appDefinitions[rootNode.Name], fileDoc);
+            ExperimentViewModel newExperiment = new ExperimentViewModel(parentWindow, appDefinitions[rootNode.Name], fileDoc);
             return newExperiment;
         }
 
-        static public void saveExperiment(ExperimentViewModel experiment)
+        static public void SaveExperiment(ExperimentViewModel experiment)
         {
             if (!experiment.validate())
             {
-                CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name 
+                CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name
                     + ". Please check it", "VALIDATION ERROR");
                 return;
             }
@@ -287,6 +294,7 @@ namespace Badger.Data
             if (!Directory.Exists(CombinedPath))
                 System.IO.Directory.CreateDirectory(CombinedPath);
             sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
+
             if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 experiment.save(sfd.FileName, SaveMode.AsExperiment);

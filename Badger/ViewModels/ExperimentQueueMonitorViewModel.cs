@@ -58,10 +58,10 @@ namespace Badger.ViewModels
                 CTask task = new CTask();
                 //we are assuming the same exe file is used in all the experiments!!!
                 //IMPORTANT
-                task.name = experiment.name;
+                task.name = experiment.Name;
                 task.exe = experiment.exeFile;
-                task.arguments = experiment.filePath + " -pipe=" + experiment.pipeName;
-                task.pipe = experiment.pipeName;
+                task.arguments = experiment.FilePath + " -pipe=" + experiment.PipeName;
+                task.pipe = experiment.PipeName;
                 job.tasks.Add(task);
                 //add EXE files
 
@@ -73,10 +73,10 @@ namespace Badger.ViewModels
                         job.inputFiles.Add(pre);
 
                 //add experiment file to inputs
-                if (!job.inputFiles.Contains(experiment.filePath))
-                    job.inputFiles.Add(experiment.filePath);
+                if (!job.inputFiles.Contains(experiment.FilePath))
+                    job.inputFiles.Add(experiment.FilePath);
 
-                Utility.getInputsAndOutputs(experiment.exeFile, experiment.filePath, ref job);
+                Utility.getInputsAndOutputs(experiment.exeFile, experiment.FilePath, ref job);
             }
             return job;
         }
@@ -122,7 +122,7 @@ namespace Badger.ViewModels
                     {
                         string experimentId = m_shepherd.m_xmlStream.getLastXMLItemTag();
                         string message = m_shepherd.m_xmlStream.getLastXMLItemContent();
-                        MonitoredExperimentViewModel experimentVM = m_monitoredExperiments.Find(exp => exp.name == experimentId);
+                        MonitoredExperimentViewModel experimentVM = m_monitoredExperiments.Find(exp => exp.Name == experimentId);
                         string messageId = m_shepherd.m_xmlStream.getLastXMLItemTag(); //previous call to getLastXMLItemContent reset lastXMLItem
                         string messageContent = m_shepherd.m_xmlStream.getLastXMLItemContent();
                         if (experimentVM != null)
@@ -136,11 +136,11 @@ namespace Badger.ViewModels
                             {
                                 //<Evaluation>0.0,-1.23</Evaluation>
                                 string[] values = messageContent.Split(',');
-                                string seriesName = experimentVM.name;
+                                string seriesName = experimentVM.Name;
                                 int seriesId;
                                 if (values.Length == 2)
                                 {
-                                    if (!m_experimentSeriesId.Keys.Contains(experimentVM.name))
+                                    if (!m_experimentSeriesId.Keys.Contains(experimentVM.Name))
                                     {
                                         seriesId = m_evaluationPlot.addLineSeries(seriesName);
                                         m_experimentSeriesId.Add(seriesName, seriesId);

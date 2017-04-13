@@ -17,7 +17,8 @@ namespace Badger.ViewModels
         public string content
         {
             get { return m_content; }
-            set {
+            set
+            {
                 m_content = value;
                 bIsValid = validate();
                 NotifyOfPropertyChange(() => content);
@@ -25,8 +26,11 @@ namespace Badger.ViewModels
         }
 
         private string m_textColor = XMLConfig.colorDefaultValue;
-        public string textColor { get { return m_textColor; }
-            set { m_textColor = value; NotifyOfPropertyChange(() => textColor); } }
+        public string textColor
+        {
+            get { return m_textColor; }
+            set { m_textColor = value; NotifyOfPropertyChange(() => textColor); }
+        }
 
         abstract public bool validate();
 
@@ -73,15 +77,15 @@ namespace Badger.ViewModels
 
 
         //XML output methods
-        public virtual void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
+        public virtual void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
-            if (mode==SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
-                writer.Write( leftSpace + "<" + name + ">" + content + "</" + name + ">\n");
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
+                writer.Write(leftSpace + "<" + name + ">" + content + "</" + name + ">\n");
         }
 
         //XPath methods
         protected string m_xPath;
-        public string xPath { get{ return m_xPath; }  set { m_xPath = value; } }
+        public string xPath { get { return m_xPath; } set { m_xPath = value; } }
 
         //Name
         private string m_name;
@@ -94,18 +98,18 @@ namespace Badger.ViewModels
             get { return m_parent; }
             set { m_parent = value; }
         }
-        
+
         //Initialization stuff common to all types of configuration nodes
-        protected void commonInit(ExperimentViewModel parentExperiment,ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)
+        protected void commonInit(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)
         {
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
 
             m_parent = parent;
             m_parentExperiment = parentExperiment;
             nodeDefinition = definitionNode;
-            
+
             xPath = parentXPath + "\\" + name;
-            if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute)!=null)
+            if (definitionNode.Attributes.GetNamedItem(XMLConfig.defaultAttribute) != null)
             {
                 m_default = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;
             }
@@ -117,22 +121,22 @@ namespace Badger.ViewModels
 
 
         //FACTORY
-        public static ConfigNodeViewModel getInstance(ExperimentViewModel parentExperiment,ConfigNodeViewModel parent
-            ,XmlNode definitionNode, string parentXPath, XmlNode configNode= null)
+        public static ConfigNodeViewModel getInstance(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
+            , XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             switch (definitionNode.Name)
             {
-                case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode,parentXPath,configNode);
+                case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.boolNodeTag: return new BoolValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath,configNode);
+                case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
 
-                case XMLConfig.stateVarRefTag: return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar,parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.stateVarRefTag: return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.actionVarRefTag: return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode);
 
-                case XMLConfig.branchNodeTag: return new BranchConfigViewModel(parentExperiment, parent, definitionNode,parentXPath,configNode);
+                case XMLConfig.branchNodeTag: return new BranchConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.choiceElementNodeTag: return new ChoiceElementConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
                 case XMLConfig.enumNodeTag: return new EnumeratedValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
@@ -147,12 +151,12 @@ namespace Badger.ViewModels
             return 1;
         }
         //we do nothing by default
-        public virtual void setForkCombination(ref int id, ref string combinationName) { } 
-        
+        public virtual void setForkCombination(ref int id, ref string combinationName) { }
+
 
         //Lambda Traverse functions
-        public virtual int traverseRetInt(Func<ConfigNodeViewModel,int> simpleNodeFunc
-            , Func<ConfigNodeViewModel,int> nestedNodeFunc)
+        public virtual int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc
+            , Func<ConfigNodeViewModel, int> nestedNodeFunc)
         {
             return simpleNodeFunc(this);
         }
@@ -169,26 +173,29 @@ namespace Badger.ViewModels
     {
         //Children
         protected BindableCollection<ConfigNodeViewModel> m_children = new BindableCollection<ConfigNodeViewModel>();
-        public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
-            set { m_children = value; NotifyOfPropertyChange(() => children); } }
-
-        public override void outputXML(StreamWriter writer,SaveMode mode, string leftSpace)
+        public BindableCollection<ConfigNodeViewModel> children
         {
-            if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
+            get { return m_children; }
+            set { m_children = value; NotifyOfPropertyChange(() => children); }
+        }
+
+        public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
+        {
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLHeader());
             //output children. If we are only exporting forks, we don't want to add indentations
-            if (mode == SaveMode.ForkHierarchy || mode==SaveMode.ForkValues)
+            if (mode == SaveMode.ForkHierarchy || mode == SaveMode.ForkValues)
                 outputChildrenXML(writer, mode, leftSpace);
             else
-                outputChildrenXML(writer, mode,leftSpace + "  ");
-            if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
+                outputChildrenXML(writer, mode, leftSpace + "  ");
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLFooter());
         }
 
-        public void outputChildrenXML(StreamWriter writer, SaveMode mode,string leftSpace)
+        public void outputChildrenXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             foreach (ConfigNodeViewModel child in m_children)
-                child.outputXML(writer,mode, leftSpace);
+                child.outputXML(writer, mode, leftSpace);
         }
         public virtual string getXMLHeader() { return "<" + name + ">\n"; }
         public virtual string getXMLFooter() { return "</" + name + ">\n"; }
@@ -203,9 +210,9 @@ namespace Badger.ViewModels
                 foreach (XmlNode child in classDefinition.ChildNodes)
                 {
                     forkNode = getForkChild(child.Attributes[XMLConfig.nameAttribute].Value, configNode);
-                    if (forkNode!=null)
+                    if (forkNode != null)
                     {
-                        children.Add(new ForkedNodeViewModel(parentExperiment, this,child, forkNode));
+                        children.Add(new ForkedNodeViewModel(parentExperiment, this, child, forkNode));
                     }
                     else
                     {
@@ -223,7 +230,7 @@ namespace Badger.ViewModels
         {
             if (configNode == null) return null;
 
-            foreach(XmlNode configChildNode in configNode)
+            foreach (XmlNode configChildNode in configNode)
             {
                 if (configChildNode.Name == XMLConfig.forkedNodeTag
                     && configChildNode.Attributes[XMLConfig.nameAttribute].Value == childName)
@@ -285,7 +292,7 @@ namespace Badger.ViewModels
         public override void setForkCombination(ref int id, ref string combinationName)
         {
             foreach (ConfigNodeViewModel child in children)
-                child.setForkCombination(ref id,ref combinationName);
+                child.setForkCombination(ref id, ref combinationName);
         }
 
         public override void onRemoved()

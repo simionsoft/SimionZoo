@@ -15,7 +15,7 @@
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="MouseEnter">
             <cal:ActionMessage MethodName="HandleMouseEnter" >
-                <cal:Parameter Value="{Binding name}" />
+                <cal:Parameter Value="{Binding Name}" />
             </cal:ActionMessage>
         </i:EventTrigger>
         <i:EventTrigger EventName="MouseLeave">
@@ -26,8 +26,8 @@
     <Border BorderThickness="1" BorderBrush="LightGray">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -35,20 +35,24 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <WrapPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Height="Auto" Margin="5,0,5,0">
-                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding name}" FontFamily="Segoe UI"
-                               FontSize="10" VerticalAlignment="Center"/>
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Height="Auto" Margin="5">
+                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
+                           FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
+                <TextBlock IsEnabled="False" Text="{Binding Forks}" FontFamily="Segoe UI"
+                           FontSize="10" VerticalAlignment="Center"/>
                 <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
-                                           FontSize="10" Width="Auto" MinWidth="100" VerticalAlignment="Center" />
-            </WrapPanel>
+                           FontSize="10" Width="Auto" MinWidth="100" VerticalAlignment="Center" />
+            </StackPanel>
 
-            <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto" CanContentScroll="True" Height="50" Width="Auto">
+            <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto" CanContentScroll="True"
+                          Margin="5"  Height="Auto" MaxHeight="60" Width="Auto">
                 <TextBlock Text="{Binding statusInfo}" Width="Auto" MinWidth="350" FontSize="10" Foreground="Gray"/>
             </ScrollViewer>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}">
-                <ProgressBar Height="10" Width="Auto" MinWidth="450" Minimum="0" Maximum="100" x:Name="Progress" 
-                                      Value="{Binding Path = progress}" Margin="5"/>
+            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom"  
+                        Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}">
+                <ProgressBar x:Name="Progress" Height="10" Width="Auto" MinWidth="450" Minimum="0" Maximum="100"  
+                                      Value="{Binding Path = progress}" />
             </StackPanel>
         </Grid>
     </Border>

@@ -186,7 +186,7 @@ namespace Badger.ViewModels
                 return;
             }
 
-            SimionFileData.saveExperiment(selectedExperiment);
+            SimionFileData.SaveExperiment(selectedExperiment);
         }
 
         public void saveExperiments()
@@ -197,7 +197,7 @@ namespace Badger.ViewModels
 
         public void loadExperiment()
         {
-            ExperimentViewModel newApp = SimionFileData.loadExperiment(this, appDefinitions);
+            ExperimentViewModel newApp = SimionFileData.LoadExperiment(this, appDefinitions);
             if (newApp != null)
             {
                 experiments.Add(newApp);
