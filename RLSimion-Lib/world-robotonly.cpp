@@ -17,7 +17,7 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 #define TargetX 0.0
 #define TargetY 10.0
 
-#define robotOrigin_x 3.0
+#define robotOrigin_x 0.0
 #define robotOrigin_y 0.0
 
 #define ground_x 0.0
@@ -41,7 +41,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
-	m_omega = addActionVariable("omega", "rad", -3.0, 3.0);
+	m_omega = addActionVariable("omega", "rad", -8.0, 8.0);
 
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
@@ -120,7 +120,6 @@ void COnlyRobot::reset(CState *s)
 
 void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 {
-
 	double omega = a->get("omega");
 	double theta = s->get(m_theta);
 	double linear_vel = a->get("v");
@@ -129,7 +128,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	if (theta > SIMD_2_PI)
 		theta -= SIMD_2_PI;
-	if (theta < SIMD_2_PI)
+	if (theta < -SIMD_2_PI)
 		theta += SIMD_2_PI;
 
 	btTransform r1_trans;
@@ -138,7 +137,7 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	rob1_VelX = cos(theta)*linear_vel;
 	rob1_VelY = sin(theta)*linear_vel;
 
-	//robot_bb->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
+	robot_bb->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
 	robot_bb->getBody()->setLinearVelocity(btVector3(rob1_VelX, 0.0, rob1_VelY));
 
 	//Update Robot1
@@ -149,7 +148,6 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		robotOnlyGraphs->drawText3D("Evaluation episode",printPosition);
-		
 	}
 	else
 	{
