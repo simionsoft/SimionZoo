@@ -4,6 +4,7 @@
 #include "noise.h"
 #include  "GraphicSettings.h"
 #include "BulletBody.h"
+#pragma comment(lib,"opengl32.lib")
 
 #define GLEW_STATIC
 
