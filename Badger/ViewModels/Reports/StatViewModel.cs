@@ -41,5 +41,12 @@ namespace Badger.ViewModels
             fileWriter.WriteLine(leftSpace + "  <Min>" + experimentStats.min + "</Min>");
             fileWriter.WriteLine(leftSpace + "</Experiment-stats>");
         }
+
+        public string[] groupIdParameters()
+        {
+            char[] separators = { ',' };
+            string[] parameters = groupId.Split(separators);
+            return parameters != null ? parameters : null;
+        }
     }
 }
