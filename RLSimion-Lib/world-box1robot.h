@@ -8,7 +8,7 @@ class SimpleOpenGL3App;
 class BulletBuilder;
 class BulletBody;
 
-//Move box with 2 robots
+//Move box with 1 robot
 class CMoveBoxOneRobot : public CDynamicModel
 {
 	/// All-Simulation variables

@@ -6,25 +6,23 @@
 #include "BulletBody.h"
 #pragma comment(lib,"opengl32.lib")
 
-#define GLEW_STATIC
-
 double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
 	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 	return distance;
 }
 
-#define TargetX 12.4
-#define TargetY .0
+#define TargetX 10.0
+#define TargetY 3.0
 
 #define ground_x 0.0
 #define ground_y -50.0
 #define ground_z 0.0 
 
-#define robotOrigin_x 3.0
+#define robotOrigin_x 0.0
 #define robotOrigin_y 0.0
 
-#define boxOrigin_x 5.0
-#define boxOrigin_y 0.0
+#define boxOrigin_x 3.0
+#define boxOrigin_y 2.0
 
 #define theta_o 0.0
 
@@ -44,12 +42,13 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
 	m_omega = addActionVariable("omega", "rad", -8.0, 8.0);
 
-	MASS_ROBOT = 0.5f;
+	MASS_ROBOT = 1.5f;
 	MASS_BOX = 1.f;
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	window = new SimpleOpenGL3App("Graphic Bullet Interface", 1024, 768, true);
+	window = new SimpleOpenGL3App("Graphic Bullet One Robot Interface", 1024, 768, true);
+
 	///Graphic init
 	guiHelper = new OpenGLGuiHelper(window, false);
 	opt = new CommonExampleOptions(guiHelper);
@@ -57,7 +56,6 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	rBoxBuilder = new BulletBuilder(opt->m_guiHelper);
 	rBoxBuilder->initializeBulletRequirements();
 	rBoxBuilder->setOpenGLApp(window);
-
 
 	///Creating static object, ground
 	{
@@ -76,14 +74,14 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 	///Creating dynamic box
 	{
-		m_Box = new BulletBody(MASS_BOX, boxOrigin_x, 0, boxOrigin_y, new btBoxShape(btVector3(btScalar(1.), btScalar(1.), btScalar(1.))), false);
+		m_Box = new BulletBody(MASS_BOX, boxOrigin_x, 0, boxOrigin_y, new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))), true);
 		rBoxBuilder->getCollisionShape().push_back(m_Box->getShape());
 		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Box->getBody());
 	}
 
 	///creating a dynamic robot  
 	{
-		m_Robot = new BulletBody(MASS_ROBOT, robotOrigin_x, 0, robotOrigin_y, new btSphereShape(btScalar(0.5)) ,true);
+		m_Robot = new BulletBody(MASS_ROBOT, robotOrigin_x, 0, robotOrigin_y, new btSphereShape(btScalar(0.5)), true);
 		rBoxBuilder->getCollisionShape().push_back(m_Robot->getShape());
 		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
 	}
@@ -100,7 +98,7 @@ void CMoveBoxOneRobot::reset(CState *s)
 {
 	btTransform robotTransform;
 	btTransform boxTransform;
-	btTransform targetTransform;
+	//btTransform targetTransform;
 
 	{
 		m_Robot->getBody()->clearForces();
@@ -109,12 +107,12 @@ void CMoveBoxOneRobot::reset(CState *s)
 		m_Robot->getBody()->setAngularVelocity(zeroVector);
 
 
-		m_Robot->getBody()->getMotionState()->getWorldTransform(m_Robot->getTransform());
+		m_Robot->getBody()->getMotionState()->getWorldTransform(robotTransform);
 		m_Box->getBody()->getMotionState()->getWorldTransform(boxTransform);
-		m_Target->getBody()->getMotionState()->getWorldTransform(targetTransform);
+		//m_Target->getBody()->getMotionState()->getWorldTransform(targetTransform);
 
 		/// reset robot
-		m_Robot->getTransform().setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
+		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
 		m_Robot->getBody()->setWorldTransform(robotTransform);
 		m_Robot->getBody()->getMotionState()->setWorldTransform(robotTransform);
 
@@ -123,10 +121,10 @@ void CMoveBoxOneRobot::reset(CState *s)
 		m_Box->getBody()->setWorldTransform(boxTransform);
 		m_Box->getBody()->getMotionState()->setWorldTransform(boxTransform);
 
-		///reset target (maybe not necessary)
-		targetTransform.setOrigin(btVector3(TargetX, 0.0, TargetY));
-		m_Target->getBody()->setWorldTransform(targetTransform);
-		m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
+		/////reset target (maybe not necessary)
+		//targetTransform.setOrigin(btVector3(TargetX, 0.0, TargetY));
+		//m_Target->getBody()->setWorldTransform(targetTransform);
+		//m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
 
 		///set initial values to state variables
 		s->set(m_rob1_X, robotOrigin_x);
@@ -147,7 +145,7 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	double linear_vel = a->get("v");
 
 	double theta = s->get(m_theta);
-	theta = theta + omega*dt;
+	theta+= omega*dt;
 
 	if (theta > SIMD_2_PI)
 		theta -= SIMD_2_PI;
@@ -158,23 +156,10 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	rob_VelY = sin(theta)*linear_vel;
 
 	m_Robot->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
-	m_Robot->getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
+    m_Robot->getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
 
 	//Execute simulation
 	rBoxBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
-
-	btVector3 printPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 5, rob_trans.getOrigin().getZ());
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
-	{
-		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
-	}
-	else
-	{
-		rBoxBuilder->drawText3D("Training episode", printPosition);
-	}
-	if (!CSimionApp::get()->isExecutedRemotely()) {
-		rBoxBuilder->draw();
-	}
 
 	//Update Box
 	{
@@ -188,7 +173,22 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 		m_Robot->getBody()->getMotionState()->getWorldTransform(rob_trans);
 		s->set(m_rob1_X, double(rob_trans.getOrigin().getX()));
 		s->set(m_rob1_Y, double(rob_trans.getOrigin().getZ()));
+
 		s->set(m_theta, theta);
+	}
+
+	//draw
+	btVector3 printPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 5, rob_trans.getOrigin().getZ());
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
+	}
+	else
+	{
+		rBoxBuilder->drawText3D("Training episode", printPosition);
+	}
+	if (!CSimionApp::get()->isExecutedRemotely()) {
+		rBoxBuilder->draw();
 	}
 
 }
