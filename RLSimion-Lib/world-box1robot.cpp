@@ -115,8 +115,8 @@ void CMoveBoxOneRobot::reset(CState *s)
 
 		/// reset robot
 		m_Robot->getTransform().setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		m_Robot->getBody()->setWorldTransform(m_Robot->getTransform());
-		m_Robot->getBody()->getMotionState()->setWorldTransform(m_Robot->getTransform());
+		m_Robot->getBody()->setWorldTransform(robotTransform);
+		m_Robot->getBody()->getMotionState()->setWorldTransform(robotTransform);
 
 		///reset box
 		boxTransform.setOrigin(btVector3(boxOrigin_x, 0.0, boxOrigin_y));
