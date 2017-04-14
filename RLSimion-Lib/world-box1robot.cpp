@@ -27,8 +27,6 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 
 #define theta_o 0.0
 
-#define CNT_VEL 2.0
-
 OpenGLGuiHelper *guiHelper;
 CommonExampleOptions *opt;
 
@@ -50,14 +48,14 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	app = new SimpleOpenGL3App("Graphic Bullet Interface", 1024, 768, true);
+	window = new SimpleOpenGL3App("Graphic Bullet Interface", 1024, 768, true);
 	///Graphic init
-	guiHelper = new OpenGLGuiHelper(app, false);
+	guiHelper = new OpenGLGuiHelper(window, false);
 	opt = new CommonExampleOptions(guiHelper);
 
 	rBoxBuilder = new BulletBuilder(opt->m_guiHelper);
 	rBoxBuilder->initializeBulletRequirements();
-	rBoxBuilder->setOpenGLApp(app);
+	rBoxBuilder->setOpenGLApp(window);
 
 
 	///Creating static object, ground
@@ -134,6 +132,7 @@ void CMoveBoxOneRobot::reset(CState *s)
 		s->set(m_rob1_Y, robotOrigin_y);
 		s->set(m_box_X, boxOrigin_x);
 		s->set(m_box_Y, boxOrigin_y);
+		s->set(m_theta, theta_o);
 	}
 }
 

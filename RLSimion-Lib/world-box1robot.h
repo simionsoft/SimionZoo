@@ -27,7 +27,7 @@ class CMoveBoxOneRobot : public CDynamicModel
 	int m_omega;
 
 	///Graphic initialization
-	SimpleOpenGL3App* app;
+	SimpleOpenGL3App* window;
 	BulletBuilder* rBoxBuilder;
 
 	///Bullet bodies init
