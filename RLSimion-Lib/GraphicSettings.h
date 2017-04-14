@@ -11,28 +11,30 @@
 #include <math.h>
 #pragma comment(lib,"opengl32.lib")
 
-class GraphicSettings : public CommonRigidBodyBase
+class BulletBuilder : public CommonRigidBodyBase
 {
 
 public:
-
-
 	SimpleOpenGL3App* m_pOpenGLApp;
 
-	GraphicSettings(struct GUIHelperInterface* helper)
+	BulletBuilder(struct GUIHelperInterface* helper)
 		:CommonRigidBodyBase(helper)
 	{
 	}
-	~GraphicSettings();
-	void setOpenGLApp(SimpleOpenGL3App* app) { m_pOpenGLApp = app; }
+	~BulletBuilder();
+
+	virtual void initializeBulletRequirements();
 	virtual void initPhysics();
+
 	virtual void generateGraphics(GUIHelperInterface*	helper);
+	void setOpenGLApp(SimpleOpenGL3App* app) { m_pOpenGLApp = app; }
+	virtual void resetCamera();
+	void deleteGraphicOptions();
+
 	void simulate(double dt);
 	void draw();
 	void drawText3D(char text[], btVector3 &position);
-	btAlignedObjectArray<btCollisionShape*> GraphicSettings::getCollisionShape();
-	virtual void initializeGraphicProccess();
-	GUIHelperInterface* GraphicSettings::getGuiHelper();
-	void deleteGraphicOptions();
-	virtual void resetCamera();
+	
+	btAlignedObjectArray<btCollisionShape*> BulletBuilder::getCollisionShape();
+	GUIHelperInterface* BulletBuilder::getGuiHelper();	
 };

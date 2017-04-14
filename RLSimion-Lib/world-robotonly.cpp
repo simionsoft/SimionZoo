@@ -53,8 +53,8 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	gui= new OpenGLGuiHelper(app, false);
 	options= new CommonExampleOptions(gui);
 
-	robotOnlyGraphs = new GraphicSettings(options->m_guiHelper);
-	robotOnlyGraphs->initializeGraphicProccess();
+	robotOnlyGraphs = new BulletBuilder(options->m_guiHelper);
+	robotOnlyGraphs->initializeBulletRequirements();
 	robotOnlyGraphs->setOpenGLApp(app);
 	
 	
@@ -153,11 +153,14 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	{
 		robotOnlyGraphs->drawText3D("Training episode", printPosition);
 	}
-	robotOnlyGraphs->draw();
+	if (!CSimionApp::get()->isExecutedRemotely()) {
+		robotOnlyGraphs->draw();
+	}
+	
 	
 	s->set(m_rob1_X, double(r1_trans.getOrigin().getX()));
 	s->set(m_rob1_Y, double(r1_trans.getOrigin().getZ()));
-	s->set(m_theta, theta);
+	
 
 }
 

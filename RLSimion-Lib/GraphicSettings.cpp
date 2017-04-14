@@ -8,7 +8,7 @@
 
 int gSharedMemoryKey = -1;
 
-void GraphicSettings::resetCamera() {
+void BulletBuilder::resetCamera() {
 	float dist = 25;
 	float pitch = 52;
 	float yaw = 35;
@@ -17,7 +17,7 @@ void GraphicSettings::resetCamera() {
 }
 
 // Inicialization of physics
-void GraphicSettings::initPhysics()
+void BulletBuilder::initPhysics()
 {
 	m_guiHelper->setUpAxis(1);
 	createEmptyDynamicsWorld();
@@ -27,29 +27,21 @@ void GraphicSettings::initPhysics()
 			+ btIDebugDraw::DBG_DrawNormals);
 }
 
-// create OpenGL window
-void GraphicSettings::initializeGraphicProccess()
+// create OpenGL window and Bullet World
+void BulletBuilder::initializeBulletRequirements()
 {
-	//LessDummyGuiHelper gui(m_pOpenGLApp);
-	//DummyGUIHelper gui;
-//	m_guiHelper = helper;
 	initPhysics();
 	resetCamera();
-	//return m_pOpenGLApp;
 }
 
 /// Create graphics after adding bodies to the world
-void GraphicSettings::generateGraphics(GUIHelperInterface*	helper)
+void BulletBuilder::generateGraphics(GUIHelperInterface*	helper)
 {
 	helper->autogenerateGraphicsObjects(m_dynamicsWorld);
 }
 
-void GraphicSettings::deleteGraphicOptions()
-{
-	exitPhysics();
-}
-
-void GraphicSettings::simulate(double dt)
+// Step the simulation 
+void BulletBuilder::simulate(double dt)
 {
 	m_pOpenGLApp->m_instancingRenderer->init();
 	m_pOpenGLApp->m_instancingRenderer->updateCamera(m_pOpenGLApp->getUpAxis());
@@ -57,7 +49,8 @@ void GraphicSettings::simulate(double dt)
 	stepSimulation(dt);
 }
 
-void GraphicSettings::draw()
+// Draw the scene
+void BulletBuilder::draw()
 {
 	renderScene();
 
@@ -68,28 +61,32 @@ void GraphicSettings::draw()
 	m_pOpenGLApp->swapBuffer();
 }
 
-void GraphicSettings::drawText3D(char text[], btVector3 &position)
+// Print 3D text in a determined possition
+void BulletBuilder::drawText3D(char text[], btVector3 &position)
 {
 	m_pOpenGLApp->drawText3D(text, float(position.getX()), float(position.getY()), float(position.getZ()), 1);
-	//m_pOpenGLApp->drawText(text, float(position.getX()), float(position.getY()), float(position.getZ()));
 }
 
-
-
-btAlignedObjectArray<btCollisionShape*> GraphicSettings::getCollisionShape()
+// Needed getter in order to add shapes to the array of bullets collision shapes
+btAlignedObjectArray<btCollisionShape*> BulletBuilder::getCollisionShape()
 {
 	return m_collisionShapes;
 }
 
-B3_STANDALONE_EXAMPLE(StandaloneExampleCreateFunc)
-
-GUIHelperInterface* GraphicSettings::getGuiHelper()
+GUIHelperInterface* BulletBuilder::getGuiHelper()
 {
 	return m_guiHelper;
 }
 
-GraphicSettings::~GraphicSettings()
+// Delete every graphic object from outside
+void BulletBuilder::deleteGraphicOptions()
+{
+	exitPhysics();
+}
+
+BulletBuilder::~BulletBuilder()
 {
 	deleteGraphicOptions();
 }
 
+B3_STANDALONE_EXAMPLE(StandaloneExampleCreateFunc)
