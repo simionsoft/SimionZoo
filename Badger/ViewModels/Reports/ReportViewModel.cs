@@ -94,12 +94,13 @@ namespace Badger.ViewModels
                         StatViewModel trackStats = new StatViewModel(track.groupId,track.trackId);
                         trackStats.lastEpisodeStats = trackData.lastEpisodeData.stats;
                         trackStats.experimentStats = trackData.experimentData.stats;
-                        newStat.addStat(trackStats);
+                        //newStat.addStat(trackStats);
+                        newStat.addOrganized(trackStats);
                     }
                 }
-
                 stats.Add(newStat);
             }
+
             if (stats.Count > 0)
                 selectedStat = stats[0];
             //plots
