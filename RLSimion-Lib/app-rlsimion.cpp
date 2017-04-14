@@ -24,7 +24,7 @@ void RLSimionApp::setOutputDirectory(const char* pOutputDir)
 	//we provide the path to the xml configuration file so that the logger saves its log files in the directory
 	strcpy_s(m_directory, MAX_PATH_SIZE, pOutputDir);
 
-	int i = strlen(m_directory) - 1;
+	size_t i = strlen(m_directory) - 1;
 	while (i > 0 && m_directory[i] != '/' && m_directory[i] != '\\')
 		i--;
 

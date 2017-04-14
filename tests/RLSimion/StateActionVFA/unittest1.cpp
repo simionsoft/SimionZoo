@@ -93,7 +93,7 @@ namespace StateActionVFA
 			double state = 0.0;
 			double action = 0.0;
 
-			for (int i = 0; i < pFeatures->m_numFeatures; i++)
+			for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
 			{
 				pVFA->getFeatureStateAction(pFeatures->m_pFeatures[i].m_index
 					,pOutState,pOutAction);

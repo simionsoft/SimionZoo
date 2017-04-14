@@ -132,7 +132,6 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 void CFASTWindTurbine::deferredLoadStep()
 {
 	std::string outConfigFileName, exeFileName;
-	FILE *pOutConfigFile;
 	std::string commandLine;
 
 	//Generate templated TurbSim wind profiles
@@ -157,7 +156,7 @@ void CFASTWindTurbine::deferredLoadStep()
 			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 		}
 		//set the number of episodes per evaluation
-		CSimionApp::get()->pExperiment->setNumEpisodesPerEvaluation(m_evaluationMeanWindSpeeds.size());
+		CSimionApp::get()->pExperiment->setNumEpisodesPerEvaluation((int)m_evaluationMeanWindSpeeds.size());
 
 		//training wind files
 		for (unsigned int i = 0; i < m_trainingMeanWindSpeeds.size(); i++)
