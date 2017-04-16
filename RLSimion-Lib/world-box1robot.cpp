@@ -6,6 +6,7 @@
 #include "BulletBody.h"
 #pragma comment(lib,"opengl32.lib")
 
+
 double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
 	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 	return distance;
@@ -66,8 +67,8 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 	/// Creating target point, static
 	{
-		m_Target = new BulletBody(MASS_TARGET, TargetX, 0, TargetY + 1, new btConeShape(btScalar(0.5), btScalar(5.5)), false);
-		m_Target->getBody()->setCollisionFlags(2);
+		m_Target = new BulletBody(MASS_TARGET, TargetX, 5, TargetY + 1, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
+		m_Target->getBody()->setCollisionFlags(m_Target->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 		rBoxBuilder->getCollisionShape().push_back(m_Target->getShape());
 		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Target->getBody());
 	}
@@ -98,7 +99,9 @@ void CMoveBoxOneRobot::reset(CState *s)
 {
 	btTransform robotTransform;
 	btTransform boxTransform;
-	//btTransform targetTransform;
+	btTransform targetTransform;
+	btQuaternion orientation = {0.000000000, 0.000000000, 0.000000000, 1.00000000};
+
 
 	{
 		m_Robot->getBody()->clearForces();
@@ -109,7 +112,7 @@ void CMoveBoxOneRobot::reset(CState *s)
 
 		m_Robot->getBody()->getMotionState()->getWorldTransform(robotTransform);
 		m_Box->getBody()->getMotionState()->getWorldTransform(boxTransform);
-		//m_Target->getBody()->getMotionState()->getWorldTransform(targetTransform);
+		m_Target->getBody()->getMotionState()->getWorldTransform(targetTransform);
 
 		/// reset robot
 		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
@@ -118,13 +121,14 @@ void CMoveBoxOneRobot::reset(CState *s)
 
 		///reset box
 		boxTransform.setOrigin(btVector3(boxOrigin_x, 0.0, boxOrigin_y));
+		boxTransform.setRotation(orientation);
 		m_Box->getBody()->setWorldTransform(boxTransform);
 		m_Box->getBody()->getMotionState()->setWorldTransform(boxTransform);
 
 		/////reset target (maybe not necessary)
-		//targetTransform.setOrigin(btVector3(TargetX, 0.0, TargetY));
-		//m_Target->getBody()->setWorldTransform(targetTransform);
-		//m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
+		targetTransform.setOrigin(btVector3(TargetX, 0.0, TargetY));
+		m_Target->getBody()->setWorldTransform(targetTransform);
+		m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
 
 		///set initial values to state variables
 		s->set(m_rob1_X, robotOrigin_x);
