@@ -38,7 +38,7 @@
         </Grid>
 
         <StackPanel>
-            <ContentControl x:Name="experimentQueueMonitor" Height="300"/>
+            <ContentControl x:Name="experimentQueueMonitor"/>
         </StackPanel>
     </StackPanel>
 

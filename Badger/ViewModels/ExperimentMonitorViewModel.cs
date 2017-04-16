@@ -20,6 +20,7 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => experimentQueueMonitor);
             }
         }
+
         public PlotViewModel evaluationPlot { get; set; }
 
         private List<HerdAgentViewModel> m_freeHerdAgents;
@@ -35,10 +36,7 @@ namespace Badger.ViewModels
         public List<Experiment> PendingExperiments
         {
             get { return m_pendingExperiments; }
-            set
-            {
-                m_pendingExperiments = value;
-            }
+            set { m_pendingExperiments = value; }
         }
 
         private Logger.LogFunction m_logFunction;
@@ -101,8 +99,14 @@ namespace Badger.ViewModels
             m_batchFilename = batchFilename;
         }
 
+        /// <summary>
+        ///     Runs the selected experiment in the experiment editor.
+        /// </summary>
+        /// <param name="monitorProgress"></param>
+        /// <param name="receiveJobResults"></param>
         public void runExperiments(bool monitorProgress = true, bool receiveJobResults = true)
         {
+            // Clear old LineSeries to avoid confusion on visualization
             evaluationPlot.clearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents, m_pendingExperiments,
@@ -116,9 +120,9 @@ namespace Badger.ViewModels
         ///     Stop all experiments in progress and clean up the plot, that is,
         ///     remove all previous LineSeries.
         /// </summary>
-        public void stopExperiments()
+        public void StopExperiments()
         {
-            experimentQueueMonitor.stopExperiments();
+            experimentQueueMonitor.StopExperiments();
             evaluationPlot.clearLineSeries();
         }
 

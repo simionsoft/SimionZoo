@@ -42,8 +42,7 @@ namespace Badger.ViewModels
         private string m_exeFile;
         public string getExeFilename() { return m_exeFile; }
         private Dictionary<string, XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
-        private Dictionary<string, List<string>> m_enumDefinitions
-            = new Dictionary<string, List<string>>();
+        private Dictionary<string, List<string>> m_enumDefinitions = new Dictionary<string, List<string>>();
 
 
         public XmlNode getClassDefinition(string className, bool bCanBeNull = false)
@@ -60,14 +59,13 @@ namespace Badger.ViewModels
         public void addEnumeratedType(XmlNode definition)
         {
             List<string> enumeratedValues = new List<string>();
-            foreach (XmlNode child in definition)
-            {
-                enumeratedValues.Add(child.InnerText);
-            }
 
-            m_enumDefinitions.Add(definition.Attributes[XMLConfig.nameAttribute].Value
-                , enumeratedValues);
+            foreach (XmlNode child in definition)
+                enumeratedValues.Add(child.InnerText);
+
+            m_enumDefinitions.Add(definition.Attributes[XMLConfig.nameAttribute].Value, enumeratedValues);
         }
+
         public List<string> getEnumeratedType(string enumName)
         {
             if (!m_enumDefinitions.ContainsKey(enumName))
@@ -285,10 +283,11 @@ namespace Badger.ViewModels
                 }
             }
         }
+
         public void saveToStream(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             saveMode = mode;
-            //header
+            // Header for experiments and experiment units
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
             {
                 //We are saving the config file as an experiment, experiment unit, or a badger file
@@ -296,14 +295,13 @@ namespace Badger.ViewModels
                 + "=\"" + XMLConfig.experimentConfigVersion + "\">");
             }
 
-            //body
+            // Body
             foreach (ConfigNodeViewModel node in m_children)
-                node.outputXML(writer, mode, leftSpace + "  ");
+                node.outputXML(writer, mode, leftSpace);
 
-            //footer
+            // Footer for experiments and experiment units
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.WriteLine(leftSpace + "</" + appName + ">");
-            //else writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
         }
 
 

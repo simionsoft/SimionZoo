@@ -6,7 +6,7 @@ using System;
 
 namespace Badger.ViewModels
 {
-    public class ForkValueViewModel:ConfigNodeViewModel
+    public class ForkValueViewModel : ConfigNodeViewModel
     {
 
         private ConfigNodeViewModel m_configNode;
@@ -27,7 +27,7 @@ namespace Badger.ViewModels
         }
 
         //constructor called when loading a fork from a .badger file
-        public ForkValueViewModel(ExperimentViewModel parentExperiment,XmlNode classDefinition
+        public ForkValueViewModel(ExperimentViewModel parentExperiment, XmlNode classDefinition
             , ConfigNodeViewModel parentNode, XmlNode configNode)
         {
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
@@ -38,7 +38,7 @@ namespace Badger.ViewModels
         }
 
 
-        public override void outputXML(StreamWriter writer, SaveMode mode,string leftSpace)
+        public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             //header
             if (mode == SaveMode.AsProject)
@@ -47,13 +47,13 @@ namespace Badger.ViewModels
             if (mode == SaveMode.ForkHierarchy)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag
                     + " " + XMLConfig.valueAttribute + "=\"" + configNode.content + "\">");
-            if (mode==SaveMode.AsExperiment)
+            if (mode == SaveMode.AsExperiment)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
                     + name + "\">");
             //body: children
-            configNode.outputXML(writer, mode,leftSpace + "  ");
+            configNode.outputXML(writer, mode, leftSpace + "\t");
             //footer
-            if (mode==SaveMode.AsExperiment || mode==SaveMode.ForkHierarchy)
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.ForkHierarchy)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
         }
 
@@ -64,8 +64,8 @@ namespace Badger.ViewModels
 
         public override ConfigNodeViewModel clone()
         {
-            return new ForkValueViewModel(name,parent as ForkedNodeViewModel
-                ,configNode.clone());
+            return new ForkValueViewModel(name, parent as ForkedNodeViewModel
+                , configNode.clone());
         }
 
         public override int getNumForkCombinations()

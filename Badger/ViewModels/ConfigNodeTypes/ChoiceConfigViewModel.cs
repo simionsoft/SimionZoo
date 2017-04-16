@@ -8,16 +8,18 @@ namespace Badger.ViewModels
     public class ChoiceConfigViewModel : NestedConfigNode
     {
         //choices
-        private string m_selectedChoiceName= null;
+        private string m_selectedChoiceName = null;
         private ConfigNodeViewModel m_selectedChoice = null;
         public ConfigNodeViewModel selectedChoice
         {
             get { return m_selectedChoice; }
-            set {
+            set
+            {
                 if (m_selectedChoice != null)
                     m_selectedChoice.onRemoved(); //this is called to unregister forks beneath this node
                 m_selectedChoice = value;
-                NotifyOfPropertyChange(() => selectedChoice); }
+                NotifyOfPropertyChange(() => selectedChoice);
+            }
         }
         public string selectedChoiceName
         {
@@ -32,7 +34,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public void loadSelectedChoiceElement(string selectedChoiceElementName, XmlNode configNode=null)
+        public void loadSelectedChoiceElement(string selectedChoiceElementName, XmlNode configNode = null)
         {
             foreach (XmlNode choiceElement in nodeDefinition.ChildNodes)
                 if (choiceElement.Attributes[XMLConfig.nameAttribute].Value == selectedChoiceElementName)
@@ -41,8 +43,7 @@ namespace Badger.ViewModels
                     if (configNode != null)
                         selectedChoiceName = selectedChoiceElementName;
 
-                    selectedChoice = getInstance(m_parentExperiment,this
-                        ,choiceElement, m_xPath, configNode);
+                    selectedChoice = getInstance(m_parentExperiment, this, choiceElement, m_xPath, configNode);
                     m_children.Clear();
                     children.Add(selectedChoice);
                     break;
@@ -52,10 +53,9 @@ namespace Badger.ViewModels
         private BindableCollection<string> m_choiceNames = new BindableCollection<string>();
         public BindableCollection<string> choiceNames { get { return m_choiceNames; } }
 
-        
-        public ChoiceConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
-            , XmlNode definitionNode
-            , string parentXPath, XmlNode configNode = null, bool initChildren= true)
+
+        public ChoiceConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
+            XmlNode definitionNode, string parentXPath, XmlNode configNode = null, bool initChildren = true)
         {
             string choiceElementName;
             commonInit(parentExperiment, parent, definitionNode, parentXPath);
@@ -85,23 +85,27 @@ namespace Badger.ViewModels
             if (selectedChoiceName == null || selectedChoiceName == "") return false;
             foreach (XmlNode choiceElement in nodeDefinition)
                 if (selectedChoiceName == choiceElement.Attributes[XMLConfig.nameAttribute].Value)
-                    bChoiceNameIsValid= true;
+                    bChoiceNameIsValid = true;
 
             return bChoiceNameIsValid && base.validate();
         }
 
-        public override void outputXML(StreamWriter writer,SaveMode mode, string leftSpace)
+        public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
-            if (mode==SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLHeader());
-            selectedChoice.outputXML(writer,mode, leftSpace + "  ");
-            if (mode==SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
+            // If we don't do this and just take leftSpace value passed as parameter the behaviour
+            // of this variable is a litle bit odd.
+            leftSpace = "\t\t";
+            selectedChoice.outputXML(writer, mode,  leftSpace);
+
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLFooter());
         }
 
         public override ConfigNodeViewModel clone()
         {
-            ChoiceConfigViewModel newChoice= new ChoiceConfigViewModel(m_parentExperiment, parent
+            ChoiceConfigViewModel newChoice = new ChoiceConfigViewModel(m_parentExperiment, parent
                 , nodeDefinition, parent.xPath, null);
             foreach (ConfigNodeViewModel child in children)
             {

@@ -33,8 +33,8 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments, HerdAgentViewModel herdAgent
-            , PlotViewModel evaluationPlot, CancellationToken cancelToken, Logger.LogFunction logFunction)
+        public ExperimentBatch(string name, List<MonitoredExperimentViewModel> experiments, HerdAgentViewModel herdAgent,
+            PlotViewModel evaluationPlot, CancellationToken cancelToken, Logger.LogFunction logFunction)
         {
             m_name = name;
             m_monitoredExperiments = experiments;
@@ -222,35 +222,26 @@ namespace Badger.ViewModels
             }
             return this;
         }
-
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class ExperimentQueueMonitorViewModel : PropertyChangedBase
     {
         private List<HerdAgentViewModel> m_herdAgentList;
         private ObservableCollection<MonitoredExperimentViewModel> m_monitoredExperimentBatchList
             = new ObservableCollection<MonitoredExperimentViewModel>();
+        private List<MonitoredExperimentViewModel> m_pendingExperiments = new List<MonitoredExperimentViewModel>();
+
         public ObservableCollection<MonitoredExperimentViewModel> monitoredExperimentBatchList
         { get { return m_monitoredExperimentBatchList; } }
-        private List<MonitoredExperimentViewModel> m_pendingExperiments
-            = new List<MonitoredExperimentViewModel>();
 
         private CancellationTokenSource m_cancelTokenSource;
 
         //log stuff: a delegate log function must be passed via setLogFunction
-
         private Logger.LogFunction logFunction = null;
         private PlotViewModel m_evaluationMonitor;
-
-        //returns the progress as a percentage
-        public double calculateGlobalProgress()
-        {
-            double sum = 0.0;
-            foreach (MonitoredExperimentViewModel exp in m_monitoredExperimentBatchList)
-            {
-                sum += exp.progress; //<- these are expressed as percentages
-            }
-            return 100 * (sum / (m_monitoredExperimentBatchList.Count * 100));
-        }
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
@@ -273,6 +264,20 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
+        /// <summary>
+        ///     Calculate the global progress of experiments in queue.
+        /// </summary>
+        /// <returns>The progress as a percentage.</returns>
+        public double calculateGlobalProgress()
+        {
+            double sum = 0.0;
+            foreach (MonitoredExperimentViewModel exp in m_monitoredExperimentBatchList)
+                sum += exp.progress; //<- these are expressed as percentages
+
+            return 100 * (sum / (m_monitoredExperimentBatchList.Count * 100));
+        }
+
+
         private bool m_bRunning;
 
         public bool bRunning
@@ -280,6 +285,7 @@ namespace Badger.ViewModels
             get { return m_bRunning; }
             set { m_bRunning = value; NotifyOfPropertyChange(() => bRunning); }
         }
+
         private bool m_bFinished = false;
         public bool bFinished
         {
@@ -336,7 +342,6 @@ namespace Badger.ViewModels
                     assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList,
                         m_cancelTokenSource.Token, logFunction);
                 }
-
             }
             catch (Exception ex)
             {
@@ -356,7 +361,7 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Stops all experiments in progress.
         /// </summary>
-        public void stopExperiments()
+        public void StopExperiments()
         {
             if (m_bRunning && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
@@ -364,6 +369,14 @@ namespace Badger.ViewModels
 
         private int batchId = 0;
 
+        /// <summary>
+        ///     Assigns experiments to availables herd agents.
+        /// </summary>
+        /// <param name="pendingExperiments"></param>
+        /// <param name="freeHerdAgents"></param>
+        /// <param name="experimentAssignments"></param>
+        /// <param name="cancelToken"></param>
+        /// <param name="logFunction"></param>
         public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments,
             ref List<HerdAgentViewModel> freeHerdAgents, ref List<ExperimentBatch> experimentAssignments,
             CancellationToken cancelToken, Logger.LogFunction logFunction = null)

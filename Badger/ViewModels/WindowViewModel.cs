@@ -245,6 +245,7 @@ namespace Badger.ViewModels
                 CaliburnUtility.showWarningDialog("No Herd agents were detected, so experiments cannot be sent. Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
                 return;
             }
+
             string batchFilename = "";
             List<Experiment> experiments = new List<Experiment>();
             experiments = SimionFileData.saveExperimentBatchFile(this.experiments, ref batchFilename, this.logToFile);
@@ -272,10 +273,10 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Stops all experiments in progress if there is some.
         /// </summary>
-        public void stopExperiments()
+        public void StopExperiments()
         {
             if (!IsExperimentRunning) return;
-            m_monitorWindowViewModel.stopExperiments();
+            m_monitorWindowViewModel.StopExperiments();
             IsExperimentRunning = false;
         }
 

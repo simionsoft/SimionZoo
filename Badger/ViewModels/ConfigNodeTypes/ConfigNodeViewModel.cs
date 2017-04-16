@@ -187,7 +187,8 @@ namespace Badger.ViewModels
             if (mode == SaveMode.ForkHierarchy || mode == SaveMode.ForkValues)
                 outputChildrenXML(writer, mode, leftSpace);
             else
-                outputChildrenXML(writer, mode, leftSpace + "  ");
+                outputChildrenXML(writer, mode, leftSpace + "\t");
+
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.Write(leftSpace + getXMLFooter());
         }

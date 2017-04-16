@@ -52,11 +52,19 @@ namespace Badger.Data
                 }
             }
             else CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
+
             return;
         }
-        //SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments without forks
-        // and a .exp-batch file in the root directory referencing them all and the forks/values each one 
-        // took
+
+        /// <summary>
+        ///     SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments
+        ///     without forksand a .exp-batch file in the root directory referencing them all and the forks/values
+        ///     each one took.
+        /// </summary>
+        /// <param name="experiments"></param>
+        /// <param name="batchFilename"></param>
+        /// <param name="log"></param>
+        /// <returns></returns>
         public static List<Experiment> saveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
             ref string batchFilename, logFunction log)
         {
@@ -99,18 +107,16 @@ namespace Badger.Data
                 }
             }
 
-            //clean output directory if it exists
-            string batchFileDir;
-            batchFileDir = batchFilename.Split('.')[0];
+            string batchFileDir = batchFilename.Split('.')[0];
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
+            // Clean output directory if it exists
             if (Directory.Exists(batchFileDir))
             {
                 try { Directory.Delete(batchFileDir, true); }
                 catch
                 {
                     CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
-                        + batchFileDir + ". Make sure that it's not been using for other app."
-                        , "ERROR");
+                        + batchFileDir + ". Make sure that it's not been using for other app.", "ERROR");
                     log("Error saving the experiment queue");
                     return null;
                 }
@@ -120,51 +126,50 @@ namespace Badger.Data
             {
                 using (StreamWriter batchFileWriter = new StreamWriter(batchFile))
                 {
-                    //batch file header
+                    // Write batch file header (i.e. open 'EXPERIMENT-BATCH' tag)
                     batchFileWriter.WriteLine("<" + XMLConfig.experimentBatchNodeTag + ">");
-
-                    int numCombinations;
-                    string filePath, folderPath;
-                    string experimentName;
 
                     foreach (ExperimentViewModel experimentViewModel in experiments)
                     {
-                        batchFileWriter.WriteLine("  <" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
+                        batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
                             + "=\"" + experimentViewModel.name + "\">");
 
-                        //save the fork hierarchy and values. This makes everything making reports easier
-                        experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "    ");
+                        // Save the fork hierarchy and values. This helps to generate reports easier
+                        experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "\t");
 
-                        numCombinations = experimentViewModel.getNumForkCombinations();
+                        int numCombinations = experimentViewModel.getNumForkCombinations();
                         for (int i = 0; i < numCombinations; i++)
                         {
                             // Save the combination of forks as a new experiment
-                            experimentName = experimentViewModel.setForkCombination(i);
+                            string experimentName = experimentViewModel.setForkCombination(i);
 
-                            folderPath = batchFileDir + "\\" + experimentName;
+                            string folderPath = batchFileDir + "\\" + experimentName;
                             Directory.CreateDirectory(folderPath);
-                            filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
+                            string filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
                             experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
 
-                            // Save the experiment reference in the root batch file
-                            batchFileWriter.WriteLine("    <" + XMLConfig.experimentalUnitNodeTag
+                            // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
+                            // with its corresponding attributes.
+                            batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag
                                 + " " + XMLConfig.nameAttribute + "=\"" + experimentName
                                 + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
-                            experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "      ");
-                            batchFileWriter.WriteLine("    </" + XMLConfig.experimentalUnitNodeTag + ">");
+                            // Write fork values in between
+                            experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
+                            // Close 'EXPERIMENTAL-UNIT' tag
+                            batchFileWriter.WriteLine("\t\t</" + XMLConfig.experimentalUnitNodeTag + ">");
 
                             string forkAliasValue = "";
                             // Build a string with the alias and the initial value of this fork for later display
                             foreach (ForkedNodeViewModel fork in experimentViewModel.forkRegistry.Forks)
                                 forkAliasValue += fork.alias + ": " + fork.selectedForkValue.configNode.content + "\n";
-                            // Add the experiment to the output list
+                            // Add this experiment to the output list
                             experimentBatch.Add(new Experiment(experimentName, filePath, experimentViewModel.getExeFilename(),
                                 experimentViewModel.getPrerrequisites(), forkAliasValue));
                         }
-
-                        batchFileWriter.WriteLine("  </" + XMLConfig.experimentNodeTag + ">");
+                        // Close 'EXPERIMENT' tag
+                        batchFileWriter.WriteLine("\t</" + XMLConfig.experimentNodeTag + ">");
                     }
-                    //batch file footer
+                    // Write batch file footer (i.e. close 'EXPERIMENT-BATCH' tag)
                     batchFileWriter.WriteLine("</" + XMLConfig.experimentBatchNodeTag + ">");
                     log("Succesfully saved " + experiments.Count + " experiments");
                 }

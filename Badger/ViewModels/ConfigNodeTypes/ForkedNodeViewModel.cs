@@ -173,24 +173,29 @@ namespace Badger.ViewModels
             }
             else if (mode == SaveMode.ForkHierarchy)
             {
+                // Open 'FORK' tag with its corresponding attributes
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " "
                     + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
                     + "=\"" + alias + "\">");
+                // Fork values inside. 
                 foreach (ForkValueViewModel child in children)
-                    child.outputXML(writer, mode, leftSpace + "  ");
+                    child.outputXML(writer, mode, leftSpace + "\t");
+                // Close 'FORK' tag
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
             }
             else if (mode == SaveMode.ForkValues)
             {
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkTag + " "
-                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute
-                    + "=\"" + alias + "\">");
-                //we take this nasty shortcut to allow children to be exported, while keeping
-                //each fork value as an element in a list instead of nested values
-                writer.WriteLine(leftSpace + "  <" + XMLConfig.forkValueTag
-                    + " " + XMLConfig.valueAttribute + "=\"" + selectedForkValue.configNode.content
-                    + "\"/>");
-                writer.WriteLine(leftSpace + "</" + XMLConfig.forkTag + ">");
+                // Open 'FORK' tag inside experimental unit
+                writer.WriteLine(leftSpace + "\t<" + XMLConfig.forkTag + " " + XMLConfig.nameAttribute
+                    + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.aliasAttribute + "=\"" + alias + "\">");
+                // We take this nasty shortcut to allow children to be exported, while keeping
+                // each fork value as an element in a list instead of nested values
+                writer.WriteLine(leftSpace + "\t\t<" + XMLConfig.forkValueTag + " "
+                    + XMLConfig.valueAttribute + "=\"" + selectedForkValue.configNode.content + "\"/>");
+                // Close 'FORK' tag inside experimental unit
+                writer.WriteLine(leftSpace + "\t</" + XMLConfig.forkTag + ">");
+
+                // TODO: Not sure what is the purpose of this call (Ale)
                 selectedForkValue.outputXML(writer, mode, leftSpace);
             }
         }
