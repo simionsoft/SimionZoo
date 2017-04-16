@@ -23,7 +23,7 @@
                 </DataTemplate>
             </TabControl.ItemTemplate>
         </TabControl>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="100" Height="100">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Height="750">
             <TabControl x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>

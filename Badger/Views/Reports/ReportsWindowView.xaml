@@ -45,7 +45,7 @@
     </Window.Resources>
     
     <StackPanel Orientation="Horizontal" Margin="2">
-        <StackPanel Orientation="Vertical" Width="300" Margin="0,0,0,72">
+        <StackPanel Orientation="Vertical" Width="300" Margin="0,0,0,10">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button  HorizontalAlignment="Center" Width="70" Margin="5"
                             x:Name="loadExperimentBatch" ToolTip="Load a batch: results from an experiment execution">
@@ -119,9 +119,9 @@
                 </StackPanel>
             </Border>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Margin="2,2,2,72">
-            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto" Width="694" Height="738">
-                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="724">
+        <StackPanel Orientation="Vertical" Margin="2,2,2,2">
+            <StackPanel ScrollViewer.VerticalScrollBarVisibility="Auto" Width="694" Height="800">
+                <TabControl x:Name="reports" SelectedItem="{Binding Path=selectedReport}" Height="790">
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

@@ -7,10 +7,10 @@
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="600" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
     <ItemsControl x:Name="stats"></ItemsControl>
-    
+
 </UserControl>
