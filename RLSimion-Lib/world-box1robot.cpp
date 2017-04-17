@@ -214,17 +214,23 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	}
 
 	//draw
+	int numManifolds = rBoxBuilder->getDynamicsWorld()->getDispatcher()->getNumManifolds();
+	char num[10];
+	sprintf(num, "%d", numManifolds);
 	btVector3 printPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 5, rob_trans.getOrigin().getZ());
+	btVector3 printManifoldsPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 8, rob_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
+		rBoxBuilder->drawText3D(num , printManifoldsPosition);
 	}
 	else
 	{
 		rBoxBuilder->drawText3D("Training episode", printPosition);
+		rBoxBuilder->drawText3D(num, printManifoldsPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-	//	rBoxBuilder->draw();
+		rBoxBuilder->draw();
 	}
 
 }
@@ -237,6 +243,8 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	double robotAfterX = s_p->get("rx1");
 	double robotAfterY = s_p->get("ry1");
 
+
+	double distanceRob = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
 	double distance = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
 
 	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
@@ -245,7 +253,8 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 		return -1;
 	}
 	distance = std::max(distance, 0.0001);
-	return 1 / (distance);
+	distanceRob = std::max(distanceRob, 0.0001);
+	return ((1 / distanceRob) + (2 / (distance)));
 }
 
 double CMoveBoxOneRobotReward::getMin()
