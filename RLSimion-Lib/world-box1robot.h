@@ -17,9 +17,16 @@ class CMoveBoxOneRobot : public CDynamicModel
 	double MASS_TARGET;
 	double MASS_GROUND;
 
+	double o_distBrX;
+	double o_distBrY;
+	double o_distBtX;
+	double o_distBtY;
+
 	/// Episode variables
 	int m_rob1_X, m_rob1_Y;
 	int m_box_X, m_box_Y;
+	int m_D_BrX, m_D_BrY;
+	int m_D_BtX, m_D_BtY;
 	int m_theta;
 
 	// Action variables

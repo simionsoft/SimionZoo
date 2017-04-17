@@ -12,6 +12,15 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
+double static getDistanceOneDimension(double x1, double x2) {
+	double dist = x2 - x1;
+	if (dist < 0)
+	{
+		dist = dist * (-1);
+	}
+	return dist;
+}
+
 #define TargetX 10.0
 #define TargetY 3.0
 
@@ -38,6 +47,11 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	m_rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
 	m_box_X = addStateVariable("bx", "m", -50.0, 50.0);
 	m_box_Y = addStateVariable("by", "m", -50.0, 50.0);
+
+	m_D_BrX = addStateVariable("dBrX", "m", -50.0, 50.0);
+	m_D_BrY = addStateVariable("dBrY", "m", -50.0, 50.0);
+	m_D_BtX = addStateVariable("dBtX", "m", -50.0, 50.0);
+	m_D_BtY = addStateVariable("dBtY", "m", -50.0, 50.0);
 	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
@@ -87,6 +101,11 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
 	}
 
+	o_distBrX = getDistanceOneDimension(robotOrigin_x, boxOrigin_x);
+	o_distBrY = getDistanceOneDimension(robotOrigin_y, boxOrigin_y);
+	o_distBtX = getDistanceOneDimension(robotOrigin_x, TargetX);
+	o_distBtY = getDistanceOneDimension(robotOrigin_y, TargetY);
+
 	///Graphic init
 	rBoxBuilder->generateGraphics(rBoxBuilder->getGuiHelper());
 
@@ -131,10 +150,19 @@ void CMoveBoxOneRobot::reset(CState *s)
 		m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
 
 		///set initial values to state variables
+
+		s->set(m_D_BrX, o_distBrX);
+		s->set(m_D_BrY, o_distBrY);
+		s->set(m_D_BtX, o_distBtX);
+		s->set(m_D_BtX, o_distBtY);
+
+		///set initial values to state variables
 		s->set(m_rob1_X, robotOrigin_x);
 		s->set(m_rob1_Y, robotOrigin_y);
 		s->set(m_box_X, boxOrigin_x);
 		s->set(m_box_Y, boxOrigin_y);
+		s->set(m_theta, theta_o);
+
 		s->set(m_theta, theta_o);
 	}
 }
@@ -165,18 +193,22 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	//Execute simulation
 	rBoxBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
 
-	//Update Box
+	//Update
 	{
 		m_Box->getBody()->getMotionState()->getWorldTransform(box_trans);
+		m_Robot->getBody()->getMotionState()->getWorldTransform(rob_trans);
+
 		s->set(m_box_X, float(box_trans.getOrigin().getX()));
 		s->set(m_box_Y, float(box_trans.getOrigin().getZ()));
-	}
 
-	//Update Robot1
-	{
-		m_Robot->getBody()->getMotionState()->getWorldTransform(rob_trans);
 		s->set(m_rob1_X, double(rob_trans.getOrigin().getX()));
 		s->set(m_rob1_Y, double(rob_trans.getOrigin().getZ()));
+
+		s->set(m_D_BrX, getDistanceOneDimension(rob_trans.getOrigin().getX(), box_trans.getOrigin().getX()));
+		s->set(m_D_BrY, getDistanceOneDimension(rob_trans.getOrigin().getY(), box_trans.getOrigin().getY()));
+
+		s->set(m_D_BtX, getDistanceOneDimension(TargetX, box_trans.getOrigin().getX()));
+		s->set(m_D_BtY, getDistanceOneDimension(TargetY, box_trans.getOrigin().getX()));
 
 		s->set(m_theta, theta);
 	}
@@ -192,7 +224,7 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 		rBoxBuilder->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		rBoxBuilder->draw();
+	//	rBoxBuilder->draw();
 	}
 
 }
