@@ -11,35 +11,42 @@
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical">
-        <ContentControl x:Name="evaluationPlot"/>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="100" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical">
-                <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="10" Foreground="DarkGray" Margin="5,5,5,0"
+        <ContentControl Grid.Row="0" Grid.Column="0" x:Name="evaluationPlot"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
+            <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="11" Foreground="#616161" Margin="5,5,5,0"
                            Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
-                <ProgressBar x:Name="globalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100" Margin="5"
-                             Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
-            </StackPanel>
-            <Button Grid.Row="0" Grid.Column="1" x:Name="showReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" 
-                    Margin="0,5,5,5" Width="90" HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal">
-                    <Label>REPORTS</Label>
-                    <Image Source="{StaticResource plot}" Width="25"/>
-                </StackPanel>
-            </Button>
-        </Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-        <StackPanel>
-            <ContentControl x:Name="experimentQueueMonitor"/>
+                <ProgressBar Grid.Column="0"  x:Name="globalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100" Margin="5"
+            		Visibility="{Binding experimentQueueMonitor.bRunning, Converter={StaticResource BoolToVis}}" />
+                <Button Grid.Column="1" x:Name="showReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" 
+            		Margin="0,5,5,5" Width="90" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="REPORTS"/>
+                        <Image Source="{StaticResource plot}" Width="25"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
         </StackPanel>
-    </StackPanel>
+
+        <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <ContentControl x:Name="experimentQueueMonitor"/>
+        </ScrollViewer>
+    </Grid>
 
 </UserControl>

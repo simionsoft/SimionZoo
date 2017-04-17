@@ -7,20 +7,13 @@
              xmlns:v="clr-namespace:Badger.Views"
              mc:Ignorable="d"  
              d:DesignHeight="400" d:DesignWidth="440">
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-    </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <StackPanel>
-            <ListView Width="Auto" x:Name="monitoredExperiments" 
+    <ListView x:Name="monitoredExperiments" 
               ItemsSource="{Binding Path=monitoredExperimentBatchList}" >
-                <ListView.Resources>
-                    <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
-                        <v:MonitoredExperimentView/>
-                    </DataTemplate>
-                </ListView.Resources>
-            </ListView>
-        </StackPanel>
-    </ScrollViewer>
+        <ListView.Resources>
+            <DataTemplate  DataType="{x:Type vm:MonitoredExperimentViewModel}">
+                <v:MonitoredExperimentView Width="Auto"/>
+            </DataTemplate>
+        </ListView.Resources>
+    </ListView>
 </UserControl>

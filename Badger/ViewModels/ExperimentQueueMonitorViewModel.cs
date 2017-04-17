@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
 using System.Globalization;
+using System.Xml;
 using Herd;
 using Badger.Data;
 
@@ -52,18 +53,18 @@ namespace Badger.ViewModels
             CJob job = new CJob();
             job.name = m_name;
 
-            //tasks, inputs and outputs
+            // tasks, inputs and outputs
             foreach (MonitoredExperimentViewModel experiment in m_monitoredExperiments)
             {
                 CTask task = new CTask();
-                //we are assuming the same exe file is used in all the experiments!!!
-                //IMPORTANT
+                // we are assuming the same exe file is used in all the experiments!!!
+                // IMPORTANT
                 task.name = experiment.Name;
                 task.exe = experiment.exeFile;
                 task.arguments = experiment.FilePath + " -pipe=" + experiment.PipeName;
                 task.pipe = experiment.PipeName;
                 job.tasks.Add(task);
-                //add EXE files
+                // add EXE files
 
                 if (!job.inputFiles.Contains(task.exe))
                     job.inputFiles.Add(task.exe);
@@ -243,6 +244,22 @@ namespace Badger.ViewModels
         private Logger.LogFunction logFunction = null;
         private PlotViewModel m_evaluationMonitor;
 
+        // ---- TEST ---- //
+        // TODO: Review this between TEST comment lines!!!
+        private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
+            = new BindableCollection<LoggedExperimentViewModel>();
+        public BindableCollection<LoggedExperimentViewModel> loggedExperiments
+        {
+            get { return m_loggedExperiments; }
+            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => loggedExperiments); }
+        }
+
+        private void loadLoggedExperiment(XmlNode node)
+        {
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, null);
+            loggedExperiments.Add(newExperiment);
+        }
+        // ---- TEST ---- //
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
             List<Experiment> experiments, PlotViewModel evaluationMonitor,
@@ -252,6 +269,8 @@ namespace Badger.ViewModels
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
+
+            // SimionFileData.loadExperimentBatch(loadLoggedExperiment);
 
             foreach (Experiment exp in experiments)
             {

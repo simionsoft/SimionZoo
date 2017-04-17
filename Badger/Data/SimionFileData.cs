@@ -21,7 +21,12 @@ namespace Badger.Data
 
         public delegate void logFunction(string message);
         public delegate void XmlNodeFunction(XmlNode node);
-        //LOAD EXPERIMENT BATCH
+
+        /// <summary>
+        ///     Load experiment batch file.
+        /// </summary>
+        /// <param name="perExperimentFunction"></param>
+        /// <param name="batchFilename"></param>
         static public void loadExperimentBatch(XmlNodeFunction perExperimentFunction, string batchFilename = "")
         {
             if (batchFilename == "")
@@ -29,10 +34,10 @@ namespace Badger.Data
                 OpenFileDialog ofd = new OpenFileDialog();
                 ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
                 ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+
                 if (ofd.ShowDialog() == DialogResult.OK)
-                {
                     batchFilename = ofd.FileName;
-                }
+
                 else return;
             }
 
@@ -46,14 +51,10 @@ namespace Badger.Data
                 foreach (XmlNode experiment in fileRoot.ChildNodes)
                 {
                     if (experiment.Name == XMLConfig.experimentNodeTag)
-                    {
                         perExperimentFunction(experiment);
-                    }
                 }
             }
             else CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
-
-            return;
         }
 
         /// <summary>
