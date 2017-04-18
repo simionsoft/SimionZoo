@@ -43,19 +43,19 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 {
 	METADATA("World", "MoveBoxOneRobot");
 
-	m_rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
-	m_rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
-	m_box_X = addStateVariable("bx", "m", -50.0, 50.0);
-	m_box_Y = addStateVariable("by", "m", -50.0, 50.0);
+	m_rob1_X = addStateVariable("rx1", "m", -20.0, 20.0);
+	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
+	m_box_X = addStateVariable("bx", "m", -20.0, 20.0);
+	m_box_Y = addStateVariable("by", "m", -20.0, 20.0);
 
-	m_D_BrX = addStateVariable("dBrX", "m", -50.0, 50.0);
-	m_D_BrY = addStateVariable("dBrY", "m", -50.0, 50.0);
-	m_D_BtX = addStateVariable("dBtX", "m", -50.0, 50.0);
-	m_D_BtY = addStateVariable("dBtY", "m", -50.0, 50.0);
+	m_D_BrX = addStateVariable("dBrX", "m", -20.0, 20.0);
+	m_D_BrY = addStateVariable("dBrY", "m", -20.0, 20.0);
+	m_D_BtX = addStateVariable("dBtX", "m", -20.0, 20.0);
+	m_D_BtY = addStateVariable("dBtY", "m", -20.0, 20.0);
 	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
-	m_omega = addActionVariable("omega", "rad", -8.0, 8.0);
+	m_omega = addActionVariable("omega", "rad/s", -8.0, 8.0);
 
 	MASS_ROBOT = 1.5f;
 	MASS_BOX = 1.f;
@@ -245,7 +245,7 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 
 
 	double distanceRob = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
-	double distance = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
+	double distance = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
 
 	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
 	{
@@ -264,7 +264,7 @@ double CMoveBoxOneRobotReward::getMin()
 
 double CMoveBoxOneRobotReward::getMax()
 {
-	return 1.0;
+	return 3.0;
 }
 
 CMoveBoxOneRobot::~CMoveBoxOneRobot()

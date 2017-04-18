@@ -318,17 +318,17 @@
     <ACTION-VAR Name="force" Min="-10" Max="10" Unit="N"/>
   </CLASS>
   <CLASS Name="CMoveBoxOneRobot" World="MoveBoxOneRobot">
-    <STATE-VAR Name="rx1" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="ry1" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="bx" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="by" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="dBrX" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="dBrY" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="dBtX" Min="-50" Max="50" Unit="m"/>
-    <STATE-VAR Name="dBtY" Min="-50" Max="50" Unit="m"/>
+    <STATE-VAR Name="rx1" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="ry1" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="bx" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="by" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="dBrX" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="dBrY" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="dBtX" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="dBtY" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="theta" Min="-3.15" Max="3.15" Unit="rad"/>
     <ACTION-VAR Name="v" Min="-2" Max="2" Unit="m/s"/>
-    <ACTION-VAR Name="omega" Min="-8" Max="8" Unit="rad"/>
+    <ACTION-VAR Name="omega" Min="-8" Max="8" Unit="rad/s"/>
   </CLASS>
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
     <MULTI-VALUED Name="Training-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds used in training episodes" Default="12.5"/>
