@@ -20,16 +20,7 @@ namespace Badger.ViewModels
 
         private string m_forks;
 
-        public string Forks
-        {
-            get
-            {
-                /*foreach (ForkedNodeViewModel v in m_experiment.Forks)
-                    m_forks += v.alias + ": " + v.selectedForkValue.configNode.content + "\n";
-                    */
-                return m_experiment.Forks;
-            }
-        }
+        public string Forks { get { return m_experiment.Forks; } }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };

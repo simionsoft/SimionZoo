@@ -11,6 +11,6 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <ItemsControl x:Name="herdAgentList"></ItemsControl>
+        <ItemsControl x:Name="herdAgentList" Background="#FFFFFF" />
     </ScrollViewer>
 </UserControl>

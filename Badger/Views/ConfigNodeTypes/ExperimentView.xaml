@@ -5,7 +5,7 @@
              x:Class="Badger.Views.ExperimentView"
              mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="200">
 
-    <TreeView x:Name="RootNode">
+    <TreeView x:Name="RootNode" Background="Transparent" BorderThickness="0" Margin="0">
         <ItemsControl x:Name="children" />
     </TreeView>
 

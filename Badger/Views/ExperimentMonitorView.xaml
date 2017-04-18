@@ -11,7 +11,7 @@
         <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Background="#FFFFFF">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
