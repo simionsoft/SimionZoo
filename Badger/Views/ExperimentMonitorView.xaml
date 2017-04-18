@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d"  
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d"  
              d:DesignHeight="600" d:DesignWidth="600">
 
     <UserControl.Resources>
@@ -21,8 +22,8 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ContentControl Grid.Row="0" Grid.Column="0" x:Name="evaluationPlot"/>
-
+        <oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding evaluationPlot.Plot}" MinHeight="300" Margin="10"/>
+        
         <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
             <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="11" Foreground="#616161" Margin="5,5,5,0"
                            Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />

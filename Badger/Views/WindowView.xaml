@@ -52,8 +52,8 @@
                 </Button>
             </StackPanel>
 
-            <ComboBox x:Name="appNames" Width="140" HorizontalAlignment="Center" 
-                      Height="22" SelectedItem="{Binding selectedAppName}"/>
+            <ComboBox x:Name="appNames" Width="140" HorizontalAlignment="Center" Margin="5"
+                      Height="24" SelectedItem="{Binding selectedAppName}"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" Height="40">
                 <Button Width="100" Height="30" Margin="5"
@@ -84,7 +84,7 @@
             </StackPanel>
         </StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
             <Grid Background="#EEEEEE">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -92,26 +92,31 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="2.75*" MinWidth="400"/>
+                    <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="3*" MinWidth="400"/>
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
-                            Background="#EEEEEE" HorizontalAlignment="Center" Orientation="Horizontal" Width="162" Height="50">
-                    <Image Width="30" Height="30" Margin="5" Source="{StaticResource herdagent-head}"></Image>
-                    <Label FontSize="14" FontWeight="Bold" VerticalAlignment="Center">Herd Agents</Label>
+                            Background="#EEEEEE" HorizontalAlignment="Center" Orientation="Horizontal" >
+                    <Image Width="30" Height="30" Margin="5" Source="{StaticResource herdagent-head}"/>
+                    <Label FontSize="14" FontWeight="Medium" VerticalAlignment="Center">Herd Agents</Label>
                 </StackPanel>
 
-                <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" BorderBrush="#BDBDBD" Margin="2,0,2,0">
+                <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" BorderBrush="#BDBDBD" >
                     <ContentControl  x:Name="shepherdViewModel" />
                 </Border>
 
-                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" >
+                <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4"
+                              x:Name="gridSplitter" HorizontalAlignment="Stretch" />
+                
+                <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
                     <Label  Content="Experiment Editor" FontSize="14"
-                       FontWeight="Bold" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
+                       FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
 
-                <TabControl Grid.Row="1" Grid.Column="1" x:Name="experiments" SelectedItem="{Binding Path = selectedExperiment}" >
+                <TabControl Grid.Row="1" Grid.Column="2" x:Name="experiments" SelectedItem="{Binding Path = selectedExperiment}" >
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" >
@@ -126,11 +131,14 @@
                     </TabControl.ItemTemplate>
                 </TabControl>
 
-                <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label Content="Experiment Monitor" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"></Label>
+                <GridSplitter Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Width="4"
+                              x:Name="gridSplitter2" HorizontalAlignment="Stretch" />
+                
+                <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Label Content="Experiment Monitor" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <Border Grid.Row="1" Grid.Column="2" BorderThickness="1" BorderBrush="#BDBDBD" Margin="2,0,2,0">
+                <Border Grid.Row="1" Grid.Column="4" BorderThickness="1" BorderBrush="#BDBDBD" >
                     <ContentControl  x:Name="monitorWindowViewModel" />
                 </Border>
             </Grid>

@@ -33,13 +33,15 @@ namespace Badger.ViewModels
         }
 
         private string m_name;
-        public string name { get { return m_name; }
+        public string name
+        {
+            get { return m_name; }
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
 
         private ReportsWindowViewModel m_parent = null;
 
-        public enum PlotType { Last,All,Both};
+        public enum PlotType { Last, All, Both };
 
         private MultiStateButtonViewModel m_stateButton =
             new MultiStateButtonViewModel(new List<string>() { PlotType.Last.ToString()
@@ -52,7 +54,7 @@ namespace Badger.ViewModels
             set { }
         }
 
-        public LoggedVariableViewModel(string name,ReportsWindowViewModel parent)
+        public LoggedVariableViewModel(string name, ReportsWindowViewModel parent)
         {
             m_parent = parent;
             m_name = name;

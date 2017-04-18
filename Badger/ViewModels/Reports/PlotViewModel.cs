@@ -29,7 +29,7 @@ namespace Badger.ViewModels
         double m_maxY = double.MinValue;
 
         private PlotModel m_plot;
-        public PlotModel plot { get { return m_plot; } set { } }
+        public PlotModel Plot { get { return m_plot; } set { } }
 
         private PlotPropertiesViewModel m_properties = new PlotPropertiesViewModel();
         public PlotPropertiesViewModel properties
@@ -205,7 +205,7 @@ namespace Badger.ViewModels
 
         public void setProperties()
         {
-            plot.IsLegendVisible = properties.bLegendVisible;
+            Plot.IsLegendVisible = properties.bLegendVisible;
             updateView();
         }
 
