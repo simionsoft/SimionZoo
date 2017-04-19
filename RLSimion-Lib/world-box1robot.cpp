@@ -47,6 +47,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
 	m_box_X = addStateVariable("bx", "m", -20.0, 20.0);
 	m_box_Y = addStateVariable("by", "m", -20.0, 20.0);
+	m_collide_done = addStateVariable("collide", "bool", 0.0, 1.0);
 
 	m_D_BrX = addStateVariable("dBrX", "m", -20.0, 20.0);
 	m_D_BrY = addStateVariable("dBrY", "m", -20.0, 20.0);
@@ -164,6 +165,8 @@ void CMoveBoxOneRobot::reset(CState *s)
 		s->set(m_theta, theta_o);
 
 		s->set(m_theta, theta_o);
+
+		s->set(m_collide_done, 0.0);
 	}
 }
 
@@ -175,6 +178,7 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	double omega = a->get("omega");
 	double linear_vel = a->get("v");
+	double collide_res = s->get(m_collide_done);
 
 	double theta = s->get(m_theta);
 	theta+= omega*dt;
@@ -215,19 +219,20 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	//draw
 	int numManifolds = rBoxBuilder->getDynamicsWorld()->getDispatcher()->getNumManifolds();
-	char num[10];
-	sprintf(num, "%d", numManifolds);
+	if (numManifolds == 3) {
+		collide_res = 1.0;
+	}
+	else collide_res = 0.0;
+
+	s->set(m_collide_done, collide_res);
 	btVector3 printPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 5, rob_trans.getOrigin().getZ());
-	btVector3 printManifoldsPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 8, rob_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
-		rBoxBuilder->drawText3D(num , printManifoldsPosition);
 	}
 	else
 	{
 		rBoxBuilder->drawText3D("Training episode", printPosition);
-		rBoxBuilder->drawText3D(num, printManifoldsPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
 		rBoxBuilder->draw();
@@ -243,18 +248,26 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	double robotAfterX = s_p->get("rx1");
 	double robotAfterY = s_p->get("ry1");
 
+	double collide = s_p->get("collide");
 
-	double distanceRob = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
-	double distance = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
+	double distance = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
+	double distanceRob = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
 
 	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
-	distance = std::max(distance, 0.0001);
-	distanceRob = std::max(distanceRob, 0.0001);
-	return ((1 / distanceRob) + (2 / (distance)));
+	if (!collide) {
+		return -1;
+	}
+	else
+	{
+		distance = std::max(distance, 0.0001);
+		distanceRob = std::max(distanceRob, 0.0001);
+		return (-(1 / distanceRob) + (2 / (distance)));
+	}
+	
 }
 
 double CMoveBoxOneRobotReward::getMin()

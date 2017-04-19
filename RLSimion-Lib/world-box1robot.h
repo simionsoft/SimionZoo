@@ -43,6 +43,8 @@ class CMoveBoxOneRobot : public CDynamicModel
 	BulletBody *m_Box;
 	BulletBody *m_Target;
 
+	int m_collide_done;
+
 public:
 
 	CMoveBoxOneRobot(CConfigNode* pParameters);

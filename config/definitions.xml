@@ -322,6 +322,7 @@
     <STATE-VAR Name="ry1" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="bx" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="by" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="collide" Min="0" Max="1" Unit="bool"/>
     <STATE-VAR Name="dBrX" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="dBrY" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="dBtX" Min="-20" Max="20" Unit="m"/>
