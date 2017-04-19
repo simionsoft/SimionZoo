@@ -11,7 +11,7 @@ using System.Text;
 namespace Badger.ViewModels
 {
 
-    public class WindowViewModel : PropertyChangedBase
+    public class WindowViewModel : Window
     {
         static private BindableCollection<ExperimentViewModel> m_experiments = new BindableCollection<ExperimentViewModel>();
         //these two properties interface to the same hidden attribute

@@ -36,8 +36,9 @@ namespace Badger.Data
                 ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
 
                 if (ofd.ShowDialog() == DialogResult.OK)
+                {
                     batchFilename = ofd.FileName;
-
+                }
                 else return;
             }
 

@@ -36,6 +36,6 @@ namespace Badger.ViewModels
         public void LocalTraverseAction(System.Action<SelectableTreeItem> action){ action(this); }
         public virtual void TraverseAction(bool doActionLocally,System.Action<SelectableTreeItem> action) { }
 
-        protected ReportsWindowViewModel m_parentWindow;
+        protected Window m_parentWindow;
     }
 }

@@ -14,7 +14,8 @@ namespace Badger.ViewModels
             get { return m_name; }
             set { m_name = value; }
         }
-        private ReportsWindowViewModel m_parent;
+
+        // private Window m_parent;
 
         private List<LoggedForkViewModel> m_forks = new List<LoggedForkViewModel>();
         public List<LoggedForkViewModel> forks
@@ -37,12 +38,12 @@ namespace Badger.ViewModels
         }
 
 
-        public LoggedExperimentViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        public LoggedExperimentViewModel(XmlNode configNode, Window parent)
         {
             if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
                 name = configNode.Attributes[XMLConfig.nameAttribute].Value;
 
-            m_parent = parent;
+            // m_parent = parent;
 
             foreach (XmlNode child in configNode.ChildNodes)
             {

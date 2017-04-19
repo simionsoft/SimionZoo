@@ -40,7 +40,7 @@ namespace Badger.ViewModels
 
         private List<string> m_variablesInLog = new List<string>();
 
-        public LoggedExperimentalUnitViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        public LoggedExperimentalUnitViewModel(XmlNode configNode, Window parent)
         {
             m_parentWindow = parent;
 

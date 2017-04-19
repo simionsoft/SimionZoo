@@ -39,7 +39,7 @@ namespace Badger.ViewModels
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
 
-        private ReportsWindowViewModel m_parent = null;
+        private Window m_parent;
 
         public enum PlotType { Last, All, Both };
 
@@ -54,7 +54,7 @@ namespace Badger.ViewModels
             set { }
         }
 
-        public LoggedVariableViewModel(string name, ReportsWindowViewModel parent)
+        public LoggedVariableViewModel(string name, Window parent)
         {
             m_parent = parent;
             m_name = name;

@@ -36,7 +36,7 @@ namespace Badger.ViewModels
         }
 
 
-        public LoggedForkViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        public LoggedForkViewModel(XmlNode configNode, Window parent)
         {
             m_parentWindow = parent;
             if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)

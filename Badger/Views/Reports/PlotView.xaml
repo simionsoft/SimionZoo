@@ -16,7 +16,7 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-        <oxy:PlotView Model="{Binding plot}" Width="580" Height="300"/>
+        <oxy:PlotView Model="{Binding Plot}" Width="580" Height="300"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
             <Button x:Name="showProperties" Width="25" Height="25">
                 <Image Source="{StaticResource settings}" Width="22" Height="22"/>
