@@ -250,7 +250,7 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 
 	double collide = s_p->get("collide");
 
-	double distance = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
+	double distance = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
 	double distanceRob = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
 
 	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
@@ -265,7 +265,7 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	{
 		distance = std::max(distance, 0.0001);
 		distanceRob = std::max(distanceRob, 0.0001);
-		return (-(1 / distanceRob) + (2 / (distance)));
+		return ((2 / distanceRob) + (1 / (distance)));
 	}
 	
 }
