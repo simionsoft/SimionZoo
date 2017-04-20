@@ -258,14 +258,14 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
-	if (!collide) {
-		return -1;
-	}
-	else
+	//if (!collide) {
+	//	return -1;
+	//}
+	//else
 	{
 		distance = std::max(distance, 0.0001);
 		distanceRob = std::max(distanceRob, 0.0001);
-		return ((2 / distanceRob) + (1 / (distance)));
+		return ((1 / distanceRob) + (2 / (distance)));
 	}
 	
 }
