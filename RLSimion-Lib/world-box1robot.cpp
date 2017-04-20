@@ -47,7 +47,6 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
 	m_box_X = addStateVariable("bx", "m", -20.0, 20.0);
 	m_box_Y = addStateVariable("by", "m", -20.0, 20.0);
-	m_collide_done = addStateVariable("collide", "bool", 0.0, 1.0);
 
 	m_D_BrX = addStateVariable("dBrX", "m", -20.0, 20.0);
 	m_D_BrY = addStateVariable("dBrY", "m", -20.0, 20.0);
@@ -104,8 +103,8 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 	o_distBrX = getDistanceOneDimension(robotOrigin_x, boxOrigin_x);
 	o_distBrY = getDistanceOneDimension(robotOrigin_y, boxOrigin_y);
-	o_distBtX = getDistanceOneDimension(robotOrigin_x, TargetX);
-	o_distBtY = getDistanceOneDimension(robotOrigin_y, TargetY);
+	o_distBtX = getDistanceOneDimension(boxOrigin_x, TargetX);
+	o_distBtY = getDistanceOneDimension(boxOrigin_y, TargetY);
 
 	///Graphic init
 	rBoxBuilder->generateGraphics(rBoxBuilder->getGuiHelper());
@@ -120,7 +119,7 @@ void CMoveBoxOneRobot::reset(CState *s)
 	btTransform robotTransform;
 	btTransform boxTransform;
 	btTransform targetTransform;
-	btQuaternion orientation = {0.000000000, 0.000000000, 0.000000000, 1.00000000};
+	btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
 
 
 	{
@@ -155,7 +154,7 @@ void CMoveBoxOneRobot::reset(CState *s)
 		s->set(m_D_BrX, o_distBrX);
 		s->set(m_D_BrY, o_distBrY);
 		s->set(m_D_BtX, o_distBtX);
-		s->set(m_D_BtX, o_distBtY);
+		s->set(m_D_BtY, o_distBtY);
 
 		///set initial values to state variables
 		s->set(m_rob1_X, robotOrigin_x);
@@ -163,10 +162,6 @@ void CMoveBoxOneRobot::reset(CState *s)
 		s->set(m_box_X, boxOrigin_x);
 		s->set(m_box_Y, boxOrigin_y);
 		s->set(m_theta, theta_o);
-
-		s->set(m_theta, theta_o);
-
-		s->set(m_collide_done, 0.0);
 	}
 }
 
@@ -178,10 +173,9 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	double omega = a->get("omega");
 	double linear_vel = a->get("v");
-	double collide_res = s->get(m_collide_done);
 
 	double theta = s->get(m_theta);
-	theta+= omega*dt;
+	theta += omega*dt;
 
 	if (theta > SIMD_2_PI)
 		theta -= SIMD_2_PI;
@@ -192,7 +186,7 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	rob_VelY = sin(theta)*linear_vel;
 
 	m_Robot->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
-    m_Robot->getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
+	m_Robot->getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
 
 	//Execute simulation
 	rBoxBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
@@ -209,22 +203,15 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 		s->set(m_rob1_Y, double(rob_trans.getOrigin().getZ()));
 
 		s->set(m_D_BrX, getDistanceOneDimension(rob_trans.getOrigin().getX(), box_trans.getOrigin().getX()));
-		s->set(m_D_BrY, getDistanceOneDimension(rob_trans.getOrigin().getY(), box_trans.getOrigin().getY()));
+		s->set(m_D_BrY, getDistanceOneDimension(rob_trans.getOrigin().getZ(), box_trans.getOrigin().getZ()));
 
 		s->set(m_D_BtX, getDistanceOneDimension(TargetX, box_trans.getOrigin().getX()));
-		s->set(m_D_BtY, getDistanceOneDimension(TargetY, box_trans.getOrigin().getX()));
+		s->set(m_D_BtY, getDistanceOneDimension(TargetY, box_trans.getOrigin().getZ()));
 
 		s->set(m_theta, theta);
 	}
 
 	//draw
-	int numManifolds = rBoxBuilder->getDynamicsWorld()->getDispatcher()->getNumManifolds();
-	if (numManifolds == 3) {
-		collide_res = 1.0;
-	}
-	else collide_res = 0.0;
-
-	s->set(m_collide_done, collide_res);
 	btVector3 printPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 5, rob_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
@@ -248,26 +235,17 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	double robotAfterX = s_p->get("rx1");
 	double robotAfterY = s_p->get("ry1");
 
-	double collide = s_p->get("collide");
+	double distanceRob = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
+	double distance = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
 
-	double distance = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
-	double distanceRob = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
-
-	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
+	if (robotAfterX >= 40.0 || robotAfterX <= -40.0 || robotAfterY >= 40.0 || robotAfterY <= -40.0)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
-	if (!collide) {
-		return -1;
-	}
-	else
-	{
-		distance = std::max(distance, 0.0001);
-		distanceRob = std::max(distanceRob, 0.0001);
-		return ((2 / distanceRob) + (1 / (distance)));
-	}
-	
+	distance = std::max(distance, 0.0001);
+	distanceRob = std::max(distanceRob, 0.0001);
+	return ((3 / distanceRob) + (1 / (distance)));
 }
 
 double CMoveBoxOneRobotReward::getMin()
@@ -277,7 +255,7 @@ double CMoveBoxOneRobotReward::getMin()
 
 double CMoveBoxOneRobotReward::getMax()
 {
-	return 3.0;
+	return 4.0;
 }
 
 CMoveBoxOneRobot::~CMoveBoxOneRobot()
