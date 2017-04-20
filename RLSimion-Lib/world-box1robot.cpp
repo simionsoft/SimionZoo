@@ -250,7 +250,7 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 
 	double collide = s_p->get("collide");
 
-	double distance = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
+	double distance = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
 	double distanceRob = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
 
 	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)

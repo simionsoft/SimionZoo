@@ -197,7 +197,8 @@ double COrnsteinUhlenbeckNoise::getSample()
 
 	double newNoise = m_lastValue + m_theta.get()*(m_mu.get() - m_lastValue)*m_dt
 		+ m_sigma.get()*sqrt(m_dt)*CGaussianNoise::getNormalDistributionSample(0.0, 1);
-	m_lastValue = newNoise* m_scale->get();
+	newNoise *= m_scale->get();
+	m_lastValue = newNoise;
 	return newNoise;
 }
 
