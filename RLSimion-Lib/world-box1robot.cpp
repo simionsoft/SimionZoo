@@ -255,7 +255,7 @@ double CMoveBoxOneRobotReward::getMin()
 
 double CMoveBoxOneRobotReward::getMax()
 {
-	return 4.0;
+	return 10.0;
 }
 
 CMoveBoxOneRobot::~CMoveBoxOneRobot()
