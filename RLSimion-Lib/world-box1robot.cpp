@@ -226,7 +226,8 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	}
 
 }
-
+#define BOX_ROBOT_REWARD_WEIGHT 3.0
+#define BOX_TARGET_REWARD_WEIGHT 1.0
 double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
 	double boxAfterX = s_p->get("bx");
@@ -235,17 +236,19 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	double robotAfterX = s_p->get("rx1");
 	double robotAfterY = s_p->get("ry1");
 
-	double distanceRob = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
-	double distance = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
+	double distanceBoxTarget = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
+	double distanceBoxRobot = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
 
 	if (robotAfterX >= 40.0 || robotAfterX <= -40.0 || robotAfterY >= 40.0 || robotAfterY <= -40.0)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
-	distance = std::max(distance, 0.0001);
-	distanceRob = std::max(distanceRob, 0.0001);
-	return ((3 / distanceRob) + (1 / (distance)));
+	distanceBoxRobot = std::max(distanceBoxRobot, 0.0001);
+	distanceBoxTarget = std::max(distanceBoxTarget, 0.0001);
+	double rewardBoxRobot = std::min(BOX_ROBOT_REWARD_WEIGHT*2.0,BOX_ROBOT_REWARD_WEIGHT / distanceBoxRobot);
+	double rewardBoxTarget = std::min(BOX_TARGET_REWARD_WEIGHT*2.0, BOX_TARGET_REWARD_WEIGHT / distanceBoxTarget);
+	return rewardBoxRobot + rewardBoxTarget;
 }
 
 double CMoveBoxOneRobotReward::getMin()
