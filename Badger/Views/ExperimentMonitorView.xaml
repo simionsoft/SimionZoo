@@ -7,11 +7,6 @@
              mc:Ignorable="d"  
              d:DesignHeight="600" d:DesignWidth="600">
 
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
-    </UserControl.Resources>
-
     <Grid Background="#FFFFFF">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -23,27 +18,6 @@
         </Grid.RowDefinitions>
 
         <oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding evaluationPlot.Plot}" MinHeight="300" Margin="10"/>
-        
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical">
-            <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="11" Foreground="#616161" Margin="5,5,5,0"
-                           Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <ProgressBar Grid.Column="0"  x:Name="globalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100" Margin="5"
-            		Visibility="{Binding experimentQueueMonitor.bRunning, Converter={StaticResource BoolToVis}}" />
-                <Button Grid.Column="1" x:Name="showReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" 
-            		Margin="0,5,5,5" Width="90" HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="REPORTS"/>
-                        <Image Source="{StaticResource plot}" Width="25"/>
-                    </StackPanel>
-                </Button>
-            </Grid>
-        </StackPanel>
 
         <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto">
             <ContentControl x:Name="experimentQueueMonitor"/>

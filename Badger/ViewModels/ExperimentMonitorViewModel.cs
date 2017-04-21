@@ -31,9 +31,9 @@ namespace Badger.ViewModels
             set { m_freeHerdAgents = value; }
         }
 
-        private List<Experiment> m_pendingExperiments;
+        private List<ExperimentalUnit> m_pendingExperiments;
 
-        public List<Experiment> PendingExperiments
+        public List<ExperimentalUnit> PendingExperiments
         {
             get { return m_pendingExperiments; }
             set { m_pendingExperiments = value; }
@@ -47,7 +47,7 @@ namespace Badger.ViewModels
             set { m_logFunction = value; }
         }
 
-        private string m_batchFilename = null;
+        private string m_batchFilename;
 
         public string BatchFileName
         {
@@ -55,47 +55,18 @@ namespace Badger.ViewModels
             set { m_batchFilename = value; }
         }
 
-        private double m_globalProgress = 0.0;
-        public double globalProgress
-        {
-            get { return m_globalProgress; }
-            set { m_globalProgress = value; NotifyOfPropertyChange(() => globalProgress); }
-        }
+        
 
-        private Stopwatch m_experimentTimer = new Stopwatch();
-
-        private string m_estimatedEndTimeText = "";
-        public string estimatedEndTime
-        {
-            get { return m_estimatedEndTimeText; }
-            set { m_estimatedEndTimeText = value; NotifyOfPropertyChange(() => estimatedEndTime); }
-        }
-
-        //progress expressed as a percentage
-        public void updateGlobalProgress()
-        {
-            globalProgress = experimentQueueMonitor.calculateGlobalProgress();
-
-            if (globalProgress > 0.0 && globalProgress < 100.0)
-                estimatedEndTime = "Estimated time to end: "
-                    + System.TimeSpan.FromSeconds(m_experimentTimer.Elapsed.TotalSeconds
-                    * ((100 - globalProgress) / globalProgress)).ToString(@"hh\:mm\:ss");
-            else
-                estimatedEndTime = "";
-        }
+        private Window m_parent;
 
 
-        public ExperimentMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            List<Experiment> pendingExperiments, Logger.LogFunction logFunction, string batchFilename)
+        public ExperimentMonitorViewModel(string batchFilename)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
             evaluationPlot.bShowOptions = false;
             evaluationPlot.properties.bLegendVisible = false;
             evaluationPlot.setProperties();
 
-            m_freeHerdAgents = freeHerdAgents;
-            m_pendingExperiments = pendingExperiments;
-            m_logFunction = logFunction;
             m_batchFilename = batchFilename;
         }
 
@@ -104,15 +75,15 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="monitorProgress"></param>
         /// <param name="receiveJobResults"></param>
-        public void runExperiments(bool monitorProgress = true, bool receiveJobResults = true)
+        public void RunExperiments(bool monitorProgress = true, bool receiveJobResults = true)
         {
             // Clear old LineSeries to avoid confusion on visualization
             evaluationPlot.clearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents, m_pendingExperiments,
-                evaluationPlot, m_logFunction, this);
+                evaluationPlot, m_logFunction);
 
-            m_experimentTimer.Start();
+            experimentQueueMonitor.ExperimentTimer.Start();
             Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress, receiveJobResults));
         }
 
@@ -126,7 +97,11 @@ namespace Badger.ViewModels
             evaluationPlot.clearLineSeries();
         }
 
-        public void showReports()
+        /// <summary>
+        ///     Shows a Report window with the data of the currently finished experiment(s)
+        ///     already load and ready to make reports.
+        /// </summary>
+        public void ShowReports()
         {
             ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
             plotEditor.loadExperimentBatch(m_batchFilename);

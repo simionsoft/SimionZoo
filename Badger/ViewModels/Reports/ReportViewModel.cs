@@ -7,7 +7,7 @@ namespace Badger.ViewModels
 {
     public class ReportViewModel : Screen
     {
-        private string m_name= "Unnamed";
+        private string m_name = "Unnamed";
         public string name { get { return m_name; } set { m_name = value; NotifyOfPropertyChange(() => name); } }
 
         //plots
@@ -21,7 +21,7 @@ namespace Badger.ViewModels
         public PlotViewModel selectedPlot
         {
             get { return m_selectedPlot; }
-            set { m_selectedPlot = value;m_selectedPlot.updateView();  NotifyOfPropertyChange(() => selectedPlot); }
+            set { m_selectedPlot = value; m_selectedPlot.updateView(); NotifyOfPropertyChange(() => selectedPlot); }
         }
 
         public void updateView() { }
@@ -31,7 +31,7 @@ namespace Badger.ViewModels
         public BindableCollection<StatsViewModel> stats
         {
             get { return m_stats; }
-            set { m_stats = value;  NotifyOfPropertyChange(() => stats); }
+            set { m_stats = value; NotifyOfPropertyChange(() => stats); }
         }
         private StatsViewModel m_selectedStat;
         public StatsViewModel selectedStat
@@ -67,7 +67,7 @@ namespace Badger.ViewModels
 
         private ReportsWindowViewModel m_parent { get; set; }
 
-        private string getVariablePlotType(LogQuery query,string variable)
+        private string getVariablePlotType(LogQuery query, string variable)
         {
             foreach (LoggedVariableViewModel var in query.loggedVariables)
             {
@@ -85,13 +85,13 @@ namespace Badger.ViewModels
             foreach (string variable in query.variables)
             {
                 newStat = new StatsViewModel(variable, this);
-                foreach(LogQueryResultTrackViewModel track in query.resultTracks)
+                foreach (LogQueryResultTrackViewModel track in query.resultTracks)
                 {
                     TrackVariableData trackData = track.trackData.getVariableData(variable);
                     if (trackData != null)
                     {
                         //code below can be improved: organize forks hierarchically instead of a single string
-                        StatViewModel trackStats = new StatViewModel(track.groupId,track.trackId);
+                        StatViewModel trackStats = new StatViewModel(track.groupId, track.trackId);
                         trackStats.lastEpisodeStats = trackData.lastEpisodeData.stats;
                         trackStats.experimentStats = trackData.experimentData.stats;
                         //newStat.addStat(trackStats);
@@ -113,7 +113,7 @@ namespace Badger.ViewModels
 
                 if (plotType == LoggedVariableViewModel.PlotType.Last.ToString()
                     || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
-                { 
+                {
                     //LAST EVALUATION values: create a new plot for each variable in the result data          
                     newPlot = new PlotViewModel(variable, false, true);
                     //plot data

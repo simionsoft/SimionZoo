@@ -11,16 +11,16 @@ namespace Badger.ViewModels
 {
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {
-        private Experiment m_experiment;
-        public string PipeName { get { return m_experiment.pipeName; } }
-        public string Name { get { return m_experiment.name; } }
-        public string FilePath { get { return m_experiment.configFilePath; } }
-        public string exeFile { get { return m_experiment.exeFile; } }
-        public List<string> prerrequisites { get { return m_experiment.prerrequisites; } }
+        private ExperimentalUnit m_experimentalUnit;
+        public string PipeName { get { return m_experimentalUnit.pipeName; } }
+        public string Name { get { return m_experimentalUnit.name; } }
+        public string FilePath { get { return m_experimentalUnit.configFilePath; } }
+        public string ExeFile { get { return m_experimentalUnit.exeFile; } }
+        public List<string> Prerequisites { get { return m_experimentalUnit.prerrequisites; } }
 
-        private string m_forks;
+        /*private Dictionary<string, string> m_forks;
 
-        public string Forks { get { return m_experiment.Forks; } }
+        public Dictionary<string, string> Forks { get { return m_experimentalUnit.forkValues; } }*/
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -70,8 +70,9 @@ namespace Badger.ViewModels
                     case ExperimentState.RECEIVING: return "Receiving";
                     case ExperimentState.WAITING_EXECUTION: return "Awaiting";
                     case ExperimentState.WAITING_RESULT: return "Awaiting";
+                    default:
+                        return "";
                 }
-                return "";
             }
         }
 
@@ -96,7 +97,7 @@ namespace Badger.ViewModels
         }
 
         //progress is expressed as a percentage
-        private const double m_globalProgressUpdateRate = 10.0;
+        private const double m_globalProgressUpdateRate = 5.0;
         private double m_lastProgressUpdate = -m_globalProgressUpdateRate;
         private double m_progress;
         public double progress
@@ -104,7 +105,9 @@ namespace Badger.ViewModels
             get { return m_progress; }
             set
             {
-                m_progress = value; NotifyOfPropertyChange(() => progress);
+                m_progress = value;
+                NotifyOfPropertyChange(() => progress);
+
                 if (m_progress - m_lastProgressUpdate >= m_globalProgressUpdateRate)
                 {
                     m_parent.updateGlobalProgress();
@@ -123,6 +126,7 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => statusInfo);
             }
         }
+
         public void addStatusInfoLine(string line)
         { statusInfo += line + "\n"; }
 
@@ -134,18 +138,19 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private ExperimentMonitorViewModel m_parent;
+        private ExperimentQueueMonitorViewModel m_parent;
 
-        public MonitoredExperimentViewModel(Experiment experiment, PlotViewModel plot, ExperimentMonitorViewModel parent)
+        public MonitoredExperimentViewModel(ExperimentalUnit expUnit,
+            PlotViewModel plot, ExperimentQueueMonitorViewModel parent)
         {
             evaluationMonitor = plot;
-            m_experiment = experiment;
+            m_experimentalUnit = expUnit;
             m_parent = parent;
         }
 
         //evaluation plot stuff
         private int evaluationSeriesId = -1;
-        public PlotViewModel evaluationMonitor = null;
+        public PlotViewModel evaluationMonitor;
 
         public void addEvaluationValue(double xNorm, double y)
         {

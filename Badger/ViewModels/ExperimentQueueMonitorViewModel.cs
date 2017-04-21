@@ -2,6 +2,7 @@
 using Caliburn.Micro;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
@@ -16,6 +17,7 @@ namespace Badger.ViewModels
     public class ExperimentBatch
     {
         private List<MonitoredExperimentViewModel> m_monitoredExperiments;
+
         private HerdAgentViewModel m_herdAgent;
         public HerdAgentViewModel herdAgent { get { return m_herdAgent; } }
         private string m_name;
@@ -57,19 +59,21 @@ namespace Badger.ViewModels
             foreach (MonitoredExperimentViewModel experiment in m_monitoredExperiments)
             {
                 CTask task = new CTask();
-                // we are assuming the same exe file is used in all the experiments!!!
+                // We are assuming the same exe file is used in all the experiments!!!
                 // IMPORTANT
+
                 task.name = experiment.Name;
-                task.exe = experiment.exeFile;
+                task.exe = experiment.ExeFile;
                 task.arguments = experiment.FilePath + " -pipe=" + experiment.PipeName;
                 task.pipe = experiment.PipeName;
+
                 job.tasks.Add(task);
                 // add EXE files
 
                 if (!job.inputFiles.Contains(task.exe))
                     job.inputFiles.Add(task.exe);
                 //add prerrequisites
-                foreach (string pre in experiment.prerrequisites)
+                foreach (string pre in experiment.Prerequisites)
                     if (!job.inputFiles.Contains(pre))
                         job.inputFiles.Add(pre);
 
@@ -77,7 +81,7 @@ namespace Badger.ViewModels
                 if (!job.inputFiles.Contains(experiment.FilePath))
                     job.inputFiles.Add(experiment.FilePath);
 
-                Utility.getInputsAndOutputs(experiment.exeFile, experiment.FilePath, ref job);
+                Utility.getInputsAndOutputs(experiment.ExeFile, experiment.FilePath, ref job);
             }
             return job;
         }
@@ -244,6 +248,31 @@ namespace Badger.ViewModels
         private Logger.LogFunction logFunction = null;
         private PlotViewModel m_evaluationMonitor;
 
+        private double m_globalProgress;
+        public double GlobalProgress
+        {
+            get { return m_globalProgress; }
+            set
+            {
+                m_globalProgress = value;
+                NotifyOfPropertyChange(() => GlobalProgress);
+            }
+        }
+
+        private Stopwatch m_experimentTimer;
+        public Stopwatch ExperimentTimer { get { return m_experimentTimer; } }
+
+        private string m_estimatedEndTimeText = "";
+        public string estimatedEndTime
+        {
+            get { return m_estimatedEndTimeText; }
+            set
+            {
+                m_estimatedEndTimeText = value;
+                NotifyOfPropertyChange(() => estimatedEndTime);
+            }
+        }
+
         // ---- TEST ---- //
         // TODO: Review this between TEST comment lines!!!
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
@@ -259,28 +288,45 @@ namespace Badger.ViewModels
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, null);
             loggedExperiments.Add(newExperiment);
         }
+
         // ---- TEST ---- //
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            List<Experiment> experiments, PlotViewModel evaluationMonitor,
-            Logger.LogFunction logFunctionDelegate, ExperimentMonitorViewModel parent)
+            List<ExperimentalUnit> experiments, PlotViewModel evaluationMonitor,
+            Logger.LogFunction logFunctionDelegate)
         {
             m_bRunning = false;
+            m_experimentTimer = new Stopwatch();
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
 
             // SimionFileData.loadExperimentBatch(loadLoggedExperiment);
 
-            foreach (Experiment exp in experiments)
+            foreach (ExperimentalUnit exp in experiments)
             {
                 MonitoredExperimentViewModel monitoredExperiment =
-                    new MonitoredExperimentViewModel(exp, evaluationMonitor, parent);
+                    new MonitoredExperimentViewModel(exp, evaluationMonitor, this);
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
                 m_pendingExperiments.Add(monitoredExperiment);
             }
 
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
+        }
+
+        /// <summary>
+        ///     Express progress as a percentage unit to fill the global progress bar.
+        /// </summary>
+        public void updateGlobalProgress()
+        {
+            GlobalProgress = calculateGlobalProgress();
+
+            if (GlobalProgress > 0.0 && GlobalProgress < 100.0)
+                estimatedEndTime = "Estimated time to end: "
+                    + System.TimeSpan.FromSeconds(m_experimentTimer.Elapsed.TotalSeconds
+                    * ((100 - GlobalProgress) / GlobalProgress)).ToString(@"hh\:mm\:ss");
+            else
+                estimatedEndTime = "";
         }
 
         /// <summary>
@@ -401,7 +447,7 @@ namespace Badger.ViewModels
             CancellationToken cancelToken, Logger.LogFunction logFunction = null)
         {
             experimentAssignments.Clear();
-            List<MonitoredExperimentViewModel> experimentBatch;
+            List<MonitoredExperimentViewModel> monitoredExperimentViewModels;
 
             while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
             {
@@ -410,16 +456,16 @@ namespace Badger.ViewModels
                 //usedHerdAgents.Add(agentVM);
                 int numProcessors = Math.Max(1, agentVM.numProcessors - 1); //we free one processor
 
-                experimentBatch = new List<MonitoredExperimentViewModel>();
+                monitoredExperimentViewModels = new List<MonitoredExperimentViewModel>();
                 int numPendingExperiments = pendingExperiments.Count;
 
                 for (int i = 0; i < Math.Min(numProcessors, numPendingExperiments); i++)
                 {
-                    experimentBatch.Add(pendingExperiments[0]);
+                    monitoredExperimentViewModels.Add(pendingExperiments[0]);
                     pendingExperiments.RemoveAt(0);
                 }
 
-                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experimentBatch,
+                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, monitoredExperimentViewModels,
                     agentVM, m_evaluationMonitor, cancelToken, logFunction));
                 ++batchId;
             }

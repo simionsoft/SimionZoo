@@ -5,7 +5,7 @@ using System;
 
 namespace Badger.ViewModels
 {
-    public class LoggedForkViewModel: SelectableTreeItem
+    public class LoggedForkViewModel : SelectableTreeItem
     {
         private string m_name = "unnamed";
         public string name
@@ -32,7 +32,7 @@ namespace Badger.ViewModels
         public bool bHasForks
         {
             get { return m_bHasForks; }
-            set { m_bHasForks = value;  NotifyOfPropertyChange(() => bHasForks); }
+            set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
         }
 
 
@@ -42,14 +42,14 @@ namespace Badger.ViewModels
             if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
                 name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
 
-            foreach(XmlNode child in configNode.ChildNodes)
+            foreach (XmlNode child in configNode.ChildNodes)
             {
-                if (child.Name==XMLConfig.forkTag)
+                if (child.Name == XMLConfig.forkTag)
                 {
                     LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
                     forks.Add(newFork);
                 }
-                else if (child.Name==XMLConfig.forkValueTag)
+                else if (child.Name == XMLConfig.forkValueTag)
                 {
                     LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child, parent);
                     values.Add(newValue);
@@ -57,7 +57,7 @@ namespace Badger.ViewModels
             }
 
             //hide the area used to display children forks?
-            bHasForks = forks.Count!=0;
+            bHasForks = forks.Count != 0;
         }
 
         public void groupByThisFork()
@@ -70,8 +70,8 @@ namespace Badger.ViewModels
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {
             if (doActionLocally) LocalTraverseAction(action);
-            foreach (LoggedForkValueViewModel value in m_values) value.TraverseAction(true,action);
-            foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true,action);
+            foreach (LoggedForkValueViewModel value in m_values) value.TraverseAction(true, action);
+            foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true, action);
         }
     }
 }

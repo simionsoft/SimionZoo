@@ -37,9 +37,12 @@ namespace Badger.ViewModels
         public string selectedInGroupSelectionFunction
         {
             get { return m_selectedInGroupSelectionFunction; }
-            set { m_selectedInGroupSelectionFunction = value;
+            set
+            {
+                m_selectedInGroupSelectionFunction = value;
                 validateQuery();
-                NotifyOfPropertyChange(() => selectedInGroupSelectionFunction); }
+                NotifyOfPropertyChange(() => selectedInGroupSelectionFunction);
+            }
         }
 
         /*
@@ -93,6 +96,7 @@ namespace Badger.ViewModels
             bGroupsEnabled = true;
         }
         */
+
         public void resetGroupBy()
         {
             m_groupByForks.Clear();
@@ -108,8 +112,8 @@ namespace Badger.ViewModels
             {
                 m_selectedFrom = value; validateQuery(); NotifyOfPropertyChange(() => selectedFrom);
                 foreach (LoggedExperimentViewModel exp in loggedExperiments)
-                    exp.TraverseAction(true,(child) => 
-                    { child.bCheckIsVisible = (selectedFrom == LogQuery.fromSelection); });
+                    exp.TraverseAction(true, (child) =>
+                     { child.bCheckIsVisible = (selectedFrom == LogQuery.fromSelection); });
             }
         }
         private BindableCollection<string> m_fromOptions = new BindableCollection<string>();
@@ -159,7 +163,7 @@ namespace Badger.ViewModels
         public bool bIsOrderByEnabled
         {
             get { return m_bIsOrderByEnabled; }
-            set { m_bIsOrderByEnabled = value;  NotifyOfPropertyChange(() => bIsOrderByEnabled); }
+            set { m_bIsOrderByEnabled = value; NotifyOfPropertyChange(() => bIsOrderByEnabled); }
         }
         private BindableCollection<string> m_orderByFunctions = new BindableCollection<string>();
         public BindableCollection<string> orderByFunctions
@@ -187,7 +191,7 @@ namespace Badger.ViewModels
         public string selectedOrderByVariable
         {
             get { return m_selectedOrderByVariable; }
-            set { m_selectedOrderByVariable = value;  NotifyOfPropertyChange(() => selectedOrderByVariable); }
+            set { m_selectedOrderByVariable = value; NotifyOfPropertyChange(() => selectedOrderByVariable); }
         }
 
         //Limit to
@@ -195,7 +199,7 @@ namespace Badger.ViewModels
         public BindableCollection<string> limitToOptions
         {
             get { return m_limitToOptions; }
-            set { m_limitToOptions = value;  NotifyOfPropertyChange(() => limitToOptions); }
+            set { m_limitToOptions = value; NotifyOfPropertyChange(() => limitToOptions); }
         }
         private string m_selectedLimitToOption;
         public string selectedLimitToOption
@@ -205,12 +209,12 @@ namespace Badger.ViewModels
             {
                 m_selectedLimitToOption = value;
                 //ordering results only makes sense if results are limited
-                bIsOrderByEnabled = (value != LogQuery.noLimitOnResults); 
+                bIsOrderByEnabled = (value != LogQuery.noLimitOnResults);
                 NotifyOfPropertyChange(() => selectedLimitToOption);
             }
         }
 
-        private bool m_bLogsLoaded= false;
+        private bool m_bLogsLoaded = false;
         public bool bLogsLoaded
         {
             get { return m_bLogsLoaded; }
@@ -258,7 +262,7 @@ namespace Badger.ViewModels
         public void makeReport()
         {
             //FILL the LogQuery data
-            LogQuery query= new LogQuery();
+            LogQuery query = new LogQuery();
             query.from = selectedFrom;
             //group by
             foreach (string fork in m_groupByForks) query.groupBy.Add(fork);
@@ -270,17 +274,17 @@ namespace Badger.ViewModels
             }
             //orderBy
             query.limitToOption = selectedLimitToOption;
-            if (selectedLimitToOption!=LogQuery.noLimitOnResults)
+            if (selectedLimitToOption != LogQuery.noLimitOnResults)
             {
                 query.orderByFunction = selectedOrderByFunction;
                 query.orderByVariable = selectedOrderByVariable;
             }
 
             //EXECUTE the query
-            query.execute(loggedExperiments,variables);
+            query.execute(loggedExperiments, variables);
 
             //DISPLAY the report
-            ReportViewModel newReport = new ReportViewModel(query,this);
+            ReportViewModel newReport = new ReportViewModel(query, this);
             reports.Add(newReport);
             selectedReport = newReport;
             bCanSaveReports = true;
@@ -294,12 +298,12 @@ namespace Badger.ViewModels
         {
             if (m_reports.Count == 0) return;
 
-            string outputBaseFolder=
+            string outputBaseFolder =
                 CaliburnUtility.selectFolder(SimionFileData.imageRelativeDir);
 
-            if (outputBaseFolder!="")
-            { 
-                foreach(ReportViewModel report in m_reports)
+            if (outputBaseFolder != "")
+            {
+                foreach (ReportViewModel report in m_reports)
                 {
                     //if there is more than one report, we store each one in a subfolder
                     string outputFolder;

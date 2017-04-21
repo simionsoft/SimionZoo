@@ -9,14 +9,16 @@ using System.Linq;
 
 namespace Badger.ViewModels
 {
-    //Save modes:
-    //  -AsExperiment: all forks and all values are saved
-    //  -AsExperimentalUnit: for each combination of fork values, a different experiment will be saved
-    //              , meaning no forked nodes will be actually saved
-    //              , but only the currently selected value
-    //  -AsProject: in a single file, all the forks, values and the rest of nodes are saved
-    //  -ForkHierarchy: forkedNodes and forks will be saved as a unique experiment
-    //  -ForkValues: only the selected values for each fork are saved
+    /// <summary>
+    /// Save modes:
+    ///     - AsExperiment: all forks and all values are saved.
+    ///     - AsExperimentalUnit: for each combination of fork values, a different experimental unit
+    ///         will be saved, meaning no forked nodes will be actually saved, but only the currently
+    ///         selected value.
+    ///     - AsProject: in a single file, all the forks, values and the rest of nodes are saved.
+    ///     - ForkHierarchy: forkedNodes and forks will be saved as a unique experiment.
+    ///     - ForkValues: only the selected values for each fork are saved.
+    /// </summary>
     public enum SaveMode { AsExperiment, AsExperimentalUnit, AsProject, ForkValues, ForkHierarchy };
     public enum WorldVarType { StateVar, ActionVar, Constant };
 
@@ -271,7 +273,7 @@ namespace Badger.ViewModels
         //setCombination(i). This method will then save the i-th combination
         //  -SaveMode.AsExperiment -> this method should be called only once per experiment. All the forks will be saved embedded
         //in the config file
-        //  -SaveMode.AsExperimentBatch -> this method is called from saveExperimentBatchFile and saves only the information related to forks
+        //  -SaveMode.AsExperimentBatch -> this method is called from SaveExperimentBatchFile and saves only the information related to forks
         //   We need this to know later which value were given to each fork
         public void save(string filename, SaveMode mode, string leftSpace = "")
         {

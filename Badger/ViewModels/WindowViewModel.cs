@@ -13,12 +13,13 @@ namespace Badger.ViewModels
 
     public class WindowViewModel : Window
     {
-        static private BindableCollection<ExperimentViewModel> m_experiments = new BindableCollection<ExperimentViewModel>();
+        static private BindableCollection<ExperimentViewModel> m_experimentViewModels
+            = new BindableCollection<ExperimentViewModel>();
         //these two properties interface to the same hidden attribute
-        public BindableCollection<ExperimentViewModel> experiments
+        public BindableCollection<ExperimentViewModel> ExperimentViewModels
         {
-            get { return m_experiments; }
-            set { m_experiments = value; NotifyOfPropertyChange(() => experiments); }
+            get { return m_experimentViewModels; }
+            set { m_experimentViewModels = value; NotifyOfPropertyChange(() => ExperimentViewModels); }
         }
 
         private ExperimentViewModel m_selectedExperiment;
@@ -35,13 +36,14 @@ namespace Badger.ViewModels
 
         static private bool appNameExists(string name)
         {
-            foreach (ExperimentViewModel app in m_experiments)
+            foreach (ExperimentViewModel app in m_experimentViewModels)
             {
                 if (app.name == name)
                     return true;
             }
             return false;
         }
+
         static public string getValidAppName(string originalName)
         {
             int id = 1;
@@ -86,12 +88,13 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
+
         private void checkEmptyExperimentList()
         {
             bool wasEmpty = !m_bIsExperimentListNotEmpty;
-            if (wasEmpty != (m_experiments.Count == 0))
+            if (wasEmpty != (m_experimentViewModels.Count == 0))
             {
-                m_bIsExperimentListNotEmpty = !(m_experiments.Count == 0);
+                m_bIsExperimentListNotEmpty = !(m_experimentViewModels.Count == 0);
                 NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
@@ -116,14 +119,15 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => selectedAppName);
             }
         }
+
         public void newExperiment()
         {
             if (m_selectedAppName == null) return;
 
             string xmlDefinitionFile = appDefinitions[m_selectedAppName];
             ExperimentViewModel newExperiment = new ExperimentViewModel(this, xmlDefinitionFile, null, "New");
-            experiments.Add(newExperiment);
-            NotifyOfPropertyChange(() => experiments);
+            ExperimentViewModels.Add(newExperiment);
+            NotifyOfPropertyChange(() => ExperimentViewModels);
             checkEmptyExperimentList();
             selectedExperiment = newExperiment;
         }
@@ -157,7 +161,7 @@ namespace Badger.ViewModels
         public WindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-            m_monitorWindowViewModel = new ExperimentMonitorViewModel(null, null, null, null);
+            m_monitorWindowViewModel = new ExperimentMonitorViewModel(null);
 
             loadAppDefinitions();
         }
@@ -191,18 +195,22 @@ namespace Badger.ViewModels
 
         public void saveExperiments()
         {
-            SimionFileData.saveExperiments(m_experiments);
+            SimionFileData.saveExperiments(m_experimentViewModels);
         }
 
-
-        public void loadExperiment()
+        /// <summary>
+        ///     Load a single experiment and adds it to the experiment list.
+        ///     Used from WindowView when the Load experiment button is clicked.
+        /// </summary>
+        public void LoadExperiment()
         {
-            ExperimentViewModel newApp = SimionFileData.LoadExperiment(this, appDefinitions);
-            if (newApp != null)
+            ExperimentViewModel newExperiment = SimionFileData.LoadExperiment(this, appDefinitions);
+
+            if (newExperiment != null)
             {
-                experiments.Add(newApp);
+                ExperimentViewModels.Add(newExperiment);
                 checkEmptyExperimentList();
-                selectedExperiment = newApp;
+                selectedExperiment = newExperiment;
             }
         }
 
@@ -210,12 +218,12 @@ namespace Badger.ViewModels
         public void clearExperimentQueue()
         {
             selectedExperiment = null;
-            if (experiments != null) experiments.Clear();
+            if (ExperimentViewModels != null) ExperimentViewModels.Clear();
         }
 
         public void close(ExperimentViewModel app)
         {
-            experiments.Remove(app);
+            ExperimentViewModels.Remove(app);
             checkEmptyExperimentList();
         }
 
@@ -223,21 +231,31 @@ namespace Badger.ViewModels
         {
             if (selectedExperiment != null)
             {
-                experiments.Remove(selectedExperiment);
+                ExperimentViewModels.Remove(selectedExperiment);
                 checkEmptyExperimentList();
             }
         }
 
         //BADGER files
+        /// <summary>
+        ///     Load multiple experiments all at once.
+        ///     Used from WindowView when the Load experiments button is clicked.
+        /// </summary>
         public void loadExperiments()
         {
-            SimionFileData.loadExperiments(this, ref m_experiments, appDefinitions, logToFile);
-            NotifyOfPropertyChange(() => experiments);
-            if (m_experiments.Count > 0)
-                selectedExperiment = m_experiments[0];
+            SimionFileData.loadExperiments(this, ref m_experimentViewModels, appDefinitions, logToFile);
+            NotifyOfPropertyChange(() => ExperimentViewModels);
+
+            if (m_experimentViewModels.Count > 0)
+                selectedExperiment = m_experimentViewModels[0];
+
             checkEmptyExperimentList();
         }
 
+        /// <summary>
+        ///     Pass data to experiment monitor and run experiments defined so far.
+        ///     Used from WindowView when the launch button is clicked.
+        /// </summary>
         public void runExperiments()
         {
             if (m_shepherdViewModel.herdAgentList.Count == 0)
@@ -247,8 +265,8 @@ namespace Badger.ViewModels
             }
 
             string batchFilename = "";
-            List<Experiment> experiments = new List<Experiment>();
-            experiments = SimionFileData.saveExperimentBatchFile(this.experiments, ref batchFilename, this.logToFile);
+            List<ExperimentalUnit> experiments = new List<ExperimentalUnit>();
+            experiments = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFilename, logToFile);
 
             if (experiments != null && experiments.Count > 0)
             {
@@ -265,7 +283,7 @@ namespace Badger.ViewModels
                 m_monitorWindowViewModel.LogFunction = logToFile;
                 m_monitorWindowViewModel.BatchFileName = batchFilename;
 
-                m_monitorWindowViewModel.runExperiments(true, true);
+                m_monitorWindowViewModel.RunExperiments(true, true);
                 IsExperimentRunning = true;
             }
         }

@@ -42,7 +42,7 @@ namespace Badger.Data
                 else return;
             }
 
-            //LOAD THE EXPERIMENT BATCH IN THE QUEUE
+            // LOAD THE EXPERIMENT BATCH IN THE QUEUE
             XmlDocument batchDoc = new XmlDocument();
             batchDoc.Load(batchFilename);
             XmlElement fileRoot = batchDoc.DocumentElement;
@@ -60,17 +60,17 @@ namespace Badger.Data
 
         /// <summary>
         ///     SAVE EXPERIMENT BATCH: the list of (possibly forked) experiments is saved a as set of experiments
-        ///     without forksand a .exp-batch file in the root directory referencing them all and the forks/values
+        ///     without forks and a .exp-batch file in the root directory referencing them all and the forks/values
         ///     each one took.
         /// </summary>
         /// <param name="experiments"></param>
         /// <param name="batchFilename"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        public static List<Experiment> saveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
+        public static List<ExperimentalUnit> SaveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
             ref string batchFilename, logFunction log)
         {
-            List<Experiment> experimentBatch = new List<Experiment>();
+            List<ExperimentalUnit> experimentBatch = new List<ExperimentalUnit>();
 
             if (experiments.Count == 0)
                 return null;
@@ -160,13 +160,9 @@ namespace Badger.Data
                             // Close 'EXPERIMENTAL-UNIT' tag
                             batchFileWriter.WriteLine("\t\t</" + XMLConfig.experimentalUnitNodeTag + ">");
 
-                            string forkAliasValue = "";
-                            // Build a string with the alias and the initial value of this fork for later display
-                            foreach (ForkedNodeViewModel fork in experimentViewModel.forkRegistry.Forks)
-                                forkAliasValue += fork.alias + ": " + fork.selectedForkValue.configNode.content + "\n";
-                            // Add this experiment to the output list
-                            experimentBatch.Add(new Experiment(experimentName, filePath, experimentViewModel.getExeFilename(),
-                                experimentViewModel.getPrerrequisites(), forkAliasValue));
+                            // Add this experimental unit to the output list
+                            experimentBatch.Add(new ExperimentalUnit(experimentName, filePath, experimentViewModel.getExeFilename(),
+                                experimentViewModel.getPrerrequisites()));
                         }
                         // Close 'EXPERIMENT' tag
                         batchFileWriter.WriteLine("\t</" + XMLConfig.experimentNodeTag + ">");
@@ -271,6 +267,7 @@ namespace Badger.Data
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 fileDoc = ofd.FileName;
@@ -284,6 +281,7 @@ namespace Badger.Data
             ExperimentViewModel newExperiment = new ExperimentViewModel(parentWindow, appDefinitions[rootNode.Name], fileDoc);
             return newExperiment;
         }
+
 
         static public void SaveExperiment(ExperimentViewModel experiment)
         {
