@@ -81,7 +81,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 	/// Creating target point, static
 	{
-		m_Target = new BulletBody(MASS_TARGET, TargetX, 5, TargetY + 1, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
+		m_Target = new BulletBody(MASS_TARGET, TargetX, 0, TargetY, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
 		m_Target->getBody()->setCollisionFlags(m_Target->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 		rBoxBuilder->getCollisionShape().push_back(m_Target->getShape());
 		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Target->getBody());
@@ -216,13 +216,14 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
+		rBoxBuilder->draw();
 	}
 	else
 	{
 		rBoxBuilder->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		rBoxBuilder->draw();
+		//rBoxBuilder->draw();
 	}
 
 }
