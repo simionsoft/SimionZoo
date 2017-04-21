@@ -81,7 +81,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 	/// Creating target point, static
 	{
-		m_Target = new BulletBody(MASS_TARGET, TargetX, 5, TargetY + 1, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
+		m_Target = new BulletBody(MASS_TARGET, TargetX, 0, TargetY, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
 		m_Target->getBody()->setCollisionFlags(m_Target->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 		rBoxBuilder->getCollisionShape().push_back(m_Target->getShape());
 		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Target->getBody());
@@ -216,13 +216,14 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
+		rBoxBuilder->draw();
 	}
 	else
 	{
 		rBoxBuilder->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		rBoxBuilder->draw();
+		//rBoxBuilder->draw();
 	}
 
 }
@@ -235,7 +236,7 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	double robotAfterX = s_p->get("rx1");
 	double robotAfterY = s_p->get("ry1");
 
-	double distanceRob = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
+	double distanceBox = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
 	double distance = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
 
 	if (robotAfterX >= 40.0 || robotAfterX <= -40.0 || robotAfterY >= 40.0 || robotAfterY <= -40.0)
@@ -243,9 +244,20 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
-	distance = std::max(distance, 0.0001);
-	distanceRob = std::max(distanceRob, 0.0001);
-	return ((3 / distanceRob) + (1 / (distance)));
+	
+	//max 2
+	if (distance < 1)
+		distance = 1 + (1 - distance);
+	else
+		distance = 1 / distance;
+
+	//max 9
+	if (distanceBox < 1)
+		distanceBox = 8 + (1 - distanceBox);
+	else
+		distanceBox = 8 / distanceBox;
+
+	return (distanceBox + distance);
 }
 
 double CMoveBoxOneRobotReward::getMin()
@@ -255,7 +267,7 @@ double CMoveBoxOneRobotReward::getMin()
 
 double CMoveBoxOneRobotReward::getMax()
 {
-	return 4.0;
+	return 10.0;
 }
 
 CMoveBoxOneRobot::~CMoveBoxOneRobot()
