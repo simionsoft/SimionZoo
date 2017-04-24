@@ -227,8 +227,8 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	}
 
 }
-#define BOX_ROBOT_REWARD_WEIGHT 3.0
-#define BOX_TARGET_REWARD_WEIGHT 1.0
+#define BOX_ROBOT_REWARD_WEIGHT 1.0
+#define BOX_TARGET_REWARD_WEIGHT 3.0
 double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
 	double boxAfterX = s_p->get("bx");
