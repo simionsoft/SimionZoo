@@ -247,9 +247,11 @@ double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, cons
 	}
 	distanceBoxRobot = std::max(distanceBoxRobot, 0.0001);
 	distanceBoxTarget = std::max(distanceBoxTarget, 0.0001);
-	double rewardBoxRobot = std::min(BOX_ROBOT_REWARD_WEIGHT*2.0,BOX_ROBOT_REWARD_WEIGHT / distanceBoxRobot);
+
+	double rewardBoxRobot = std::min(BOX_ROBOT_REWARD_WEIGHT*2.0, BOX_ROBOT_REWARD_WEIGHT / distanceBoxRobot);
 	double rewardBoxTarget = std::min(BOX_TARGET_REWARD_WEIGHT*2.0, BOX_TARGET_REWARD_WEIGHT / distanceBoxTarget);
 	return rewardBoxRobot + rewardBoxTarget;
+
 }
 
 double CMoveBoxOneRobotReward::getMin()
