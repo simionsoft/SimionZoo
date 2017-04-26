@@ -141,49 +141,11 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 void CMoveBox2Robots::reset(CState *s)
 {
 
-	btTransform robot1Transform;
-	btTransform robot2Transform;
-	btTransform boxTransform;
-	btTransform targetTransform;
+	m_Robot1->updateResetVariables(s, false, r1origin_x, r1origin_y, m_rob1_X, m_rob1_Y);
+	m_Robot2->updateResetVariables(s, false, r2origin_x, r2origin_y, m_rob2_X, m_rob2_Y);
+	m_Box->updateResetVariables(s, true, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
 
-	btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
-	btVector3 zeroVector(0, 0, 0);
-
-	m_Robot1->getBody()->clearForces();
-	m_Robot1->getBody()->setLinearVelocity(zeroVector);
-	m_Robot1->getBody()->setAngularVelocity(zeroVector);
-
-	m_Robot2->getBody()->clearForces();
-	m_Robot2->getBody()->setLinearVelocity(zeroVector);
-	m_Robot2->getBody()->setAngularVelocity(zeroVector);
-
-	m_Robot1->getBody()->getMotionState()->getWorldTransform(robot1Transform);
-	m_Robot2->getBody()->getMotionState()->getWorldTransform(robot2Transform);
-	m_Box->getBody()->getMotionState()->getWorldTransform(boxTransform);
-	m_Target->getBody()->getMotionState()->getWorldTransform(targetTransform);
-
-	/// reset robot1
-	robot1Transform.setOrigin(btVector3(r1origin_x, 0.0, r1origin_y));
-	m_Robot1->getBody()->setWorldTransform(robot1Transform);
-	m_Robot1->getBody()->getMotionState()->setWorldTransform(robot1Transform);
-
-	/// reset robot2
-	robot2Transform.setOrigin(btVector3(r2origin_x, 0.0, r2origin_y));
-	m_Robot2->getBody()->setWorldTransform(robot2Transform);
-	m_Robot2->getBody()->getMotionState()->setWorldTransform(robot2Transform);
-
-	///reset box
-	boxTransform.setOrigin(btVector3(boxOrigin_x, 0.0, boxOrigin_y));
-	boxTransform.setRotation(orientation);
-	m_Box->getBody()->setWorldTransform(boxTransform);
-	m_Box->getBody()->getMotionState()->setWorldTransform(boxTransform);
-
-	/////reset target
-	targetTransform.setOrigin(btVector3(TargetX, 0.0, TargetY));
-	m_Target->getBody()->setWorldTransform(targetTransform);
-	m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
-
-	///set initial values to state variables
+	///set initial values to distance variables
 
 	s->set(m_D_Br1X, o_distBr1X);
 	s->set(m_D_Br1Y, o_distBr1Y);
@@ -193,12 +155,6 @@ void CMoveBox2Robots::reset(CState *s)
 	s->set(m_D_BtY, o_distBtY);
 
 	///set initial values to state variables
-	s->set(m_rob1_X, r1origin_x);
-	s->set(m_rob1_Y, r1origin_y);
-	s->set(m_rob2_X, r2origin_x);
-	s->set(m_rob2_Y, r2origin_y);
-	s->set(m_box_X, boxOrigin_x);
-	s->set(m_box_Y, boxOrigin_y);
 	s->set(m_theta_r1, theta_o1);
 	s->set(m_theta_r2, theta_o2);
 
@@ -207,73 +163,26 @@ void CMoveBox2Robots::reset(CState *s)
 void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 {
 
-	btTransform box_trans;
-	btTransform rob1_trans;
-	btTransform rob2_trans;
-	double rob1_VelX, rob1_VelY;
-	double rob2_VelX, rob2_VelY;
-
-	double r1_omega = a->get("omega1");
-	double r1_linear_vel = a->get("v1");
-	double r2_omega = a->get("omega2");
-	double r2_linear_vel = a->get("v2");
-
-	double r1_theta = s->get(m_theta_r1);
-	r1_theta += r1_omega*dt;
-
-	double r2_theta = s->get(m_theta_r2);
-	r2_theta += r2_omega*dt;
-
-	if (r1_theta > SIMD_2_PI)
-		r1_theta -= SIMD_2_PI;
-	if (r1_theta< -SIMD_2_PI)
-		r1_theta += SIMD_2_PI;
-
-	if (r2_theta > SIMD_2_PI)
-		r2_theta -= SIMD_2_PI;
-	if (r2_theta < -SIMD_2_PI)
-		r2_theta += SIMD_2_PI;
-
-
-	rob1_VelX = cos(r1_theta)*r1_linear_vel;
-	rob1_VelY = sin(r1_theta)*r1_linear_vel;
-	m_Robot1->getBody()->setAngularVelocity(btVector3(0.0, r1_omega, 0.0));
-	m_Robot1->getBody()->setLinearVelocity(btVector3(rob1_VelX, 0.0, rob1_VelY));
-
-	rob2_VelX = cos(r2_theta)*r2_linear_vel;
-	rob2_VelY = sin(r2_theta)*r2_linear_vel;
-	m_Robot2->getBody()->setAngularVelocity(btVector3(0.0, r2_omega, 0.0));
-	m_Robot2->getBody()->setLinearVelocity(btVector3(rob2_VelX, 0.0, rob2_VelY));
+	double r1_theta;
+	r1_theta = m_Robot1->updateRobotMovement(a, s, "omega1", "v1", m_theta_r1, dt);
+	double r2_theta;
+	r2_theta = m_Robot1->updateRobotMovement(a, s, "omega2", "v2", m_theta_r2, dt);
 
 	//Execute simulation
 	rob2Builder->getDynamicsWorld()->stepSimulation(dt, 20);
 
 	//Update
-	{
-		m_Box->getBody()->getMotionState()->getWorldTransform(box_trans);
-		m_Robot1->getBody()->getMotionState()->getWorldTransform(rob1_trans);
-		m_Robot2->getBody()->getMotionState()->getWorldTransform(rob2_trans);
 
-		s->set(m_box_X, float(box_trans.getOrigin().getX()));
-		s->set(m_box_Y, float(box_trans.getOrigin().getZ()));
-
-		s->set(m_rob1_X, double(rob1_trans.getOrigin().getX()));
-		s->set(m_rob1_Y, double(rob1_trans.getOrigin().getZ()));
-		s->set(m_rob2_X, double(rob2_trans.getOrigin().getX()));
-		s->set(m_rob2_Y, double(rob2_trans.getOrigin().getZ()));
-
-		s->set(m_D_Br1X, getDistanceOneDimension(rob1_trans.getOrigin().getX(), box_trans.getOrigin().getX()));
-		s->set(m_D_Br1Y, getDistanceOneDimension(rob1_trans.getOrigin().getZ(), box_trans.getOrigin().getZ()));
-
-		s->set(m_D_Br2X, getDistanceOneDimension(rob2_trans.getOrigin().getX(), box_trans.getOrigin().getX()));
-		s->set(m_D_Br2Y, getDistanceOneDimension(rob2_trans.getOrigin().getZ(), box_trans.getOrigin().getZ()));
-
-		s->set(m_D_BtX, getDistanceOneDimension(TargetX, box_trans.getOrigin().getX()));
-		s->set(m_D_BtY, getDistanceOneDimension(TargetY, box_trans.getOrigin().getZ()));
+	btTransform box_trans = m_Box->setAbsoluteActionVariables(s, m_box_X, m_box_Y);
+	m_Robot1->setAbsoluteActionVariables(s, m_rob1_X, m_rob1_Y);
+	m_Robot2->setAbsoluteActionVariables(s, m_rob2_X, m_rob2_Y);
+	
+	m_Robot1->setRelativeActionVariables(s, m_D_Br1X, m_D_Br1X, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
+	m_Robot2->setRelativeActionVariables(s, m_D_Br2X, m_D_Br2Y, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
+	m_Box->setRelativeActionVariables(s, m_D_BtX, m_D_BtY, true, TargetX, TargetY);
 
 		s->set(m_theta_r1, r1_theta);
 		s->set(m_theta_r2, r2_theta);
-	}
 
 	//draw
 	btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
