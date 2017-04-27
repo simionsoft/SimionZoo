@@ -116,40 +116,13 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 void CMoveBoxOneRobot::reset(CState *s)
 {
-	btTransform robotTransform;
-	btTransform boxTransform;
-	btTransform targetTransform;
-	btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
 
-
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		m_Robot->getBody()->clearForces();
-		btVector3 zeroVector(0, 0, 0);
-		m_Robot->getBody()->setLinearVelocity(zeroVector);
-		m_Robot->getBody()->setAngularVelocity(zeroVector);
+		m_Box->updateResetVariables(s, true, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
+		m_Robot->updateResetVariables(s, false, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
 
-
-		m_Robot->getBody()->getMotionState()->getWorldTransform(robotTransform);
-		m_Box->getBody()->getMotionState()->getWorldTransform(boxTransform);
-		m_Target->getBody()->getMotionState()->getWorldTransform(targetTransform);
-
-		/// reset robot
-		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		m_Robot->getBody()->setWorldTransform(robotTransform);
-		m_Robot->getBody()->getMotionState()->setWorldTransform(robotTransform);
-
-		///reset box
-		boxTransform.setOrigin(btVector3(boxOrigin_x, 0.0, boxOrigin_y));
-		boxTransform.setRotation(orientation);
-		m_Box->getBody()->setWorldTransform(boxTransform);
-		m_Box->getBody()->getMotionState()->setWorldTransform(boxTransform);
-
-		/////reset target (maybe not necessary)
-		targetTransform.setOrigin(btVector3(TargetX, 0.0, TargetY));
-		m_Target->getBody()->setWorldTransform(targetTransform);
-		m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
-
-		///set initial values to state variables
+		///set initial values to distance variables
 
 		s->set(m_D_BrX, o_distBrX);
 		s->set(m_D_BrY, o_distBrY);
@@ -157,62 +130,43 @@ void CMoveBoxOneRobot::reset(CState *s)
 		s->set(m_D_BtY, o_distBtY);
 
 		///set initial values to state variables
-		s->set(m_rob1_X, robotOrigin_x);
-		s->set(m_rob1_Y, robotOrigin_y);
-		s->set(m_box_X, boxOrigin_x);
-		s->set(m_box_Y, boxOrigin_y);
 		s->set(m_theta, theta_o);
+	}
+	else
+	{
+		m_Box->updateResetVariables(s, true, boxOrigin_x + getRandomValue()*0.4, boxOrigin_y + getRandomValue()*0.4, m_box_X, m_box_Y);
+		m_Robot->updateResetVariables(s, false, robotOrigin_x + getRandomValue()*0.4, robotOrigin_y + getRandomValue()*0.4, m_rob1_X, m_rob1_Y);
+
+		s->set(m_theta, theta_o + getRandomValue()*0.01);
+
+		s->set(m_D_BrX, getDistanceOneDimension(boxOrigin_x + getRandomValue()*0.4, robotOrigin_x + getRandomValue()*0.4));
+		s->set(m_D_BrY, getDistanceOneDimension(boxOrigin_y + getRandomValue()*0.4, robotOrigin_y + getRandomValue()*0.4));
+		s->set(m_D_BtX, getDistanceOneDimension(boxOrigin_x + getRandomValue()*0.4, TargetX));
+		s->set(m_D_BtY, getDistanceOneDimension(boxOrigin_x + getRandomValue()*0.4, TargetY));
+
 	}
 }
 
 void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 {
-	btTransform box_trans;
-	btTransform rob_trans;
-	double rob_VelX, rob_VelY;
-
-	double omega = a->get("omega");
-	double linear_vel = a->get("v");
-
-	double theta = s->get(m_theta);
-	theta += omega*dt;
-
-	if (theta > SIMD_2_PI)
-		theta -= SIMD_2_PI;
-	if (theta < -SIMD_2_PI)
-		theta += SIMD_2_PI;
-
-	rob_VelX = cos(theta)*linear_vel;
-	rob_VelY = sin(theta)*linear_vel;
-
-	m_Robot->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
-	m_Robot->getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
-
+	double theta;
+	theta = m_Robot->updateRobotMovement(a, s, "omega", "v", m_theta, dt);
+	
 	//Execute simulation
 	rBoxBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
 
 	//Update
-	{
-		m_Box->getBody()->getMotionState()->getWorldTransform(box_trans);
-		m_Robot->getBody()->getMotionState()->getWorldTransform(rob_trans);
 
-		s->set(m_box_X, float(box_trans.getOrigin().getX()));
-		s->set(m_box_Y, float(box_trans.getOrigin().getZ()));
-
-		s->set(m_rob1_X, double(rob_trans.getOrigin().getX()));
-		s->set(m_rob1_Y, double(rob_trans.getOrigin().getZ()));
-
-		s->set(m_D_BrX, getDistanceOneDimension(rob_trans.getOrigin().getX(), box_trans.getOrigin().getX()));
-		s->set(m_D_BrY, getDistanceOneDimension(rob_trans.getOrigin().getZ(), box_trans.getOrigin().getZ()));
-
-		s->set(m_D_BtX, getDistanceOneDimension(TargetX, box_trans.getOrigin().getX()));
-		s->set(m_D_BtY, getDistanceOneDimension(TargetY, box_trans.getOrigin().getZ()));
+		btTransform box_trans = m_Box->setAbsoluteActionVariables(s, m_box_X, m_box_Y);
+		m_Robot->setAbsoluteActionVariables(s, m_rob1_X, m_rob1_Y);
+		
+		m_Robot->setRelativeActionVariables(s, m_D_BrX, m_D_BrY, false, NULL, NULL, box_trans.getOrigin().getX(),box_trans.getOrigin().getZ());
+		m_Box->setRelativeActionVariables(s, m_D_BtX, m_D_BtY, true, TargetX, TargetY);
 
 		s->set(m_theta, theta);
-	}
 
 	//draw
-	btVector3 printPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 5, rob_trans.getOrigin().getZ());
+	btVector3 printPosition = btVector3(TargetX, 5, TargetY);
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
@@ -225,8 +179,8 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	if (!CSimionApp::get()->isExecutedRemotely()) {
 		//rBoxBuilder->draw();
 	}
-
 }
+
 #define BOX_ROBOT_REWARD_WEIGHT 1.0
 #define BOX_TARGET_REWARD_WEIGHT 3.0
 double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
