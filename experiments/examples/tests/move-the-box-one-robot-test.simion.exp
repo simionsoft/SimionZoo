@@ -27,6 +27,7 @@
       <Gamma>0.9</Gamma>
       <Freeze-V-Function>true</Freeze-V-Function>
       <Use-Importance-Weights>false</Use-Importance-Weights>
+
       <State-Feature-Map>
         <Type>
           <RBF-State-Grid>

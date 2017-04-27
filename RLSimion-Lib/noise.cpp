@@ -7,7 +7,7 @@
 
 #define MARGINAL_SIGMA 0.1
 #define MINIMAL_PROBABILITY 0.000001
-#define PROBABILITY_INTEGRATION_WIDTH 0.001
+#define PROBABILITY_INTEGRATION_WIDTH 0.05
 
 double getRandomValue()
 {
@@ -102,7 +102,7 @@ double CGaussianNoise::getSample()
 }
 
 
-double CGaussianNoise::getSigma()
+double CGaussianNoise::getVariance()
 {
 	return m_sigma.get(); 
 }
@@ -124,7 +124,7 @@ CSinusoidalNoise::CSinusoidalNoise(CNumericValue* scale, double timeFreq)
 	m_timeFreq.set(timeFreq);
 }
 
-double CSinusoidalNoise::getSigma()
+double CSinusoidalNoise::getVariance()
 {
 	return 1.0;
 }
@@ -181,7 +181,7 @@ COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(double theta, double sigma, dou
 COrnsteinUhlenbeckNoise::~COrnsteinUhlenbeckNoise()
 {}
 
-double COrnsteinUhlenbeckNoise::getSigma()
+double COrnsteinUhlenbeckNoise::getVariance()
 {
 	return sqrt(m_sigma.get()*m_sigma.get() /( 2 * m_theta.get()));
 }
@@ -204,5 +204,9 @@ double COrnsteinUhlenbeckNoise::getSample()
 
 double COrnsteinUhlenbeckNoise::getSampleProbability(double sample, bool bUseMarginalNoise)
 {
-	return 1.0; //not implemented
+	double sigma;
+	if (!bUseMarginalNoise) sigma = getVariance();
+	else sigma = MARGINAL_SIGMA;
+
+	return CGaussianNoise::getSampleProbability(0.0, sigma, sample, m_scale->get());
 }

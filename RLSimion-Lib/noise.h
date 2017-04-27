@@ -16,7 +16,7 @@ public:
 	static std::shared_ptr<CNoise> getInstance(CConfigNode* pParameters);
 	virtual ~CNoise() {}
 
-	virtual double getSigma() { return 0.0; }
+	virtual double getVariance() = 0;
 	virtual double unscale(double noise) { return noise; }
 	virtual double getSample()= 0;
 	//bUseMarginal= true means that the internal parameters should be neglected and, instead
@@ -36,7 +36,7 @@ public:
 	CGaussianNoise(CConfigNode* pParameters);
 	CGaussianNoise(double sigma, double alpha, CNumericValue* scale);
 	~CGaussianNoise()= default;
-	double getSigma();
+	double getVariance();
 	double unscale(double noise);
 	double getSample();
 	double getSampleProbability(double sample, bool bUseMarginalNoise = false);
@@ -54,7 +54,7 @@ public:
 	CSinusoidalNoise(CConfigNode* pParameters);
 	CSinusoidalNoise(CNumericValue* scale, double timeFreq);
 	~CSinusoidalNoise() = default;
-	double getSigma();
+	double getVariance();
 	double unscale(double noise);
 	double getSample();
 	double getSampleProbability(double sample, bool bUseMarginalNoise = false);
@@ -69,7 +69,7 @@ public:
 	COrnsteinUhlenbeckNoise(CConfigNode* pParameters);
 	COrnsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt);
 	~COrnsteinUhlenbeckNoise();
-	double getSigma();
+	double getVariance();
 	double unscale(double noise);
 	double getSample();
 	double getSampleProbability(double sample, bool bUseMarginalNoise = false);

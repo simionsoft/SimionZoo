@@ -33,7 +33,7 @@ void CActorCritic::update(const CState *s, const CAction *a, const CState *s_p, 
 	if (CSimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
 		policyProb = m_pActor->getActionProbability(s,a,false);
-		sampleWeight = std::min(10.0,std::max(MIN_PROBABILITY,policyProb / behaviorProb));
+		sampleWeight = policyProb;// std::min(10.0, std::max(MIN_PROBABILITY, policyProb / behaviorProb));
 	}
 
 	m_td= m_pCritic->update(s, a, s_p, r,sampleWeight);
