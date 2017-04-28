@@ -236,7 +236,6 @@ namespace Badger.ViewModels
             }
         }
 
-        //BADGER files
         /// <summary>
         ///     Load multiple experiments all at once.
         ///     Used from WindowView when the Load experiments button is clicked.
@@ -260,26 +259,26 @@ namespace Badger.ViewModels
         {
             if (m_shepherdViewModel.herdAgentList.Count == 0)
             {
-                CaliburnUtility.showWarningDialog("No Herd agents were detected, so experiments cannot be sent. Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
+                CaliburnUtility.showWarningDialog(
+                    "No Herd agents were detected, so experiments cannot be sent. " +
+                    "Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
                 return;
             }
 
             string batchFilename = "";
-            List<ExperimentalUnit> experiments = new List<ExperimentalUnit>();
-            experiments = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFilename, logToFile);
+            int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFilename, logToFile);
 
-            if (experiments != null && experiments.Count > 0)
+            if (experimentalUnitsCount > 0)
             {
                 List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
 
-                logToFile("Running experiment queue remotely: " + experiments.Count + " experiments");
+                logToFile("Running experiment queue remotely: " + experimentalUnitsCount + " experiments");
 
                 //get available herd agents list. Inside the loop to update the list
                 shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 
                 m_monitorWindowViewModel.FreeHerdAgents = freeHerdAgents;
-                m_monitorWindowViewModel.PendingExperiments = experiments;
                 m_monitorWindowViewModel.LogFunction = logToFile;
                 m_monitorWindowViewModel.BatchFileName = batchFilename;
 

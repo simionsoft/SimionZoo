@@ -67,13 +67,13 @@ namespace Badger.Data
         /// <param name="batchFilename"></param>
         /// <param name="log"></param>
         /// <returns></returns>
-        public static List<ExperimentalUnit> SaveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
+        public static int SaveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
             ref string batchFilename, logFunction log)
         {
-            List<ExperimentalUnit> experimentBatch = new List<ExperimentalUnit>();
+            int experimentalUnitsCount = 0;
 
             if (experiments.Count == 0)
-                return null;
+                return -1;
 
             //Validate the experiments
             foreach (ExperimentViewModel experiment in experiments)
@@ -82,7 +82,7 @@ namespace Badger.Data
                 {
                     CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name
                         + ". Please check it", "VALIDATION ERROR");
-                    return experimentBatch;
+                    return -1;
                 }
             }
 
@@ -105,7 +105,7 @@ namespace Badger.Data
                 else
                 {
                     log("Error saving the experiment queue");
-                    return null;
+                    return -1;
                 }
             }
 
@@ -120,7 +120,7 @@ namespace Badger.Data
                     CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
                         + batchFileDir + ". Make sure that it's not been using for other app.", "ERROR");
                     log("Error saving the experiment queue");
-                    return null;
+                    return -1;
                 }
             }
 
@@ -160,17 +160,15 @@ namespace Badger.Data
                             // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                             // with its corresponding attributes.
                             batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag + " "
-                                + XMLConfig.nameAttribute + "=\"" + experimentName + "\" " 
+                                + XMLConfig.nameAttribute + "=\"" + experimentName + "\" "
                                 + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
                             // Write fork values in between
                             experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                             // Close 'EXPERIMENTAL-UNIT' tag
                             batchFileWriter.WriteLine("\t\t</" + XMLConfig.experimentalUnitNodeTag + ">");
-
-                            // Add this experimental unit to the output list
-                            experimentBatch.Add(new ExperimentalUnit(experimentName, filePath, /*experimentViewModel.getExeFilename(),*/
-                                experimentViewModel.getPrerrequisites()));
                         }
+
+                        experimentalUnitsCount += numCombinations;
                         // Close 'EXPERIMENT' tag
                         batchFileWriter.WriteLine("\t</" + XMLConfig.experimentNodeTag + ">");
                     }
@@ -180,7 +178,7 @@ namespace Badger.Data
                 }
             }
 
-            return experimentBatch;
+            return experimentalUnitsCount;
         }
 
         //BADGER project: LOAD

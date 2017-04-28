@@ -273,8 +273,7 @@ namespace Badger.ViewModels
             }
         }
 
-        // ---- TEST ---- //
-        // TODO: Review this between TEST comment lines!!!
+
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
             = new BindableCollection<LoggedExperimentViewModel>();
         public BindableCollection<LoggedExperimentViewModel> loggedExperiments
@@ -289,11 +288,9 @@ namespace Badger.ViewModels
             loggedExperiments.Add(newExperiment);
         }
 
-        // ---- TEST ---- //
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            List<ExperimentalUnit> experiments, PlotViewModel evaluationMonitor,
-            Logger.LogFunction logFunctionDelegate, string batchFileName)
+            PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate, string batchFileName)
         {
             m_bRunning = false;
             m_experimentTimer = new Stopwatch();
@@ -318,16 +315,6 @@ namespace Badger.ViewModels
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
             }
-
-            /*
-            foreach (ExperimentalUnit exp in experiments)
-            {
-                MonitoredExperimentViewModel monitoredExperiment =
-                    new MonitoredExperimentViewModel(exp, evaluationMonitor, this);
-                m_monitoredExperimentBatchList.Add(monitoredExperiment);
-                m_pendingExperiments.Add(monitoredExperiment);
-            }
-            */
 
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }

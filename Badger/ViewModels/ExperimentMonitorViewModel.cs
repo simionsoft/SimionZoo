@@ -31,14 +31,6 @@ namespace Badger.ViewModels
             set { m_freeHerdAgents = value; }
         }
 
-        private List<ExperimentalUnit> m_pendingExperiments;
-
-        public List<ExperimentalUnit> PendingExperiments
-        {
-            get { return m_pendingExperiments; }
-            set { m_pendingExperiments = value; }
-        }
-
         private Logger.LogFunction m_logFunction;
 
         public Logger.LogFunction LogFunction
@@ -80,7 +72,7 @@ namespace Badger.ViewModels
             // Clear old LineSeries to avoid confusion on visualization
             evaluationPlot.clearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
-            experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents, m_pendingExperiments,
+            experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents,/* m_pendingExperiments,*/
                 evaluationPlot, m_logFunction, BatchFileName);
 
             experimentQueueMonitor.ExperimentTimer.Start();
