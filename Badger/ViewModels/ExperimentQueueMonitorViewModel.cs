@@ -293,7 +293,7 @@ namespace Badger.ViewModels
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
             List<ExperimentalUnit> experiments, PlotViewModel evaluationMonitor,
-            Logger.LogFunction logFunctionDelegate)
+            Logger.LogFunction logFunctionDelegate, string batchFileName)
         {
             m_bRunning = false;
             m_experimentTimer = new Stopwatch();
@@ -301,8 +301,25 @@ namespace Badger.ViewModels
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
 
-            // SimionFileData.loadExperimentBatch(loadLoggedExperiment);
+            SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
 
+            foreach (var experiment in loggedExperiments)
+            {
+                List<string> prerequisites = new List<string>();
+
+                foreach (var prerequisite in experiment.Prerequisites)
+                    prerequisites.Add(prerequisite.Value);
+
+                foreach (var unit in experiment.expUnits)
+                {
+                    MonitoredExperimentViewModel monitoredExperiment =
+                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, evaluationMonitor, this);
+                    m_monitoredExperimentBatchList.Add(monitoredExperiment);
+                    m_pendingExperiments.Add(monitoredExperiment);
+                }
+            }
+
+            /*
             foreach (ExperimentalUnit exp in experiments)
             {
                 MonitoredExperimentViewModel monitoredExperiment =
@@ -310,6 +327,7 @@ namespace Badger.ViewModels
                 m_monitoredExperimentBatchList.Add(monitoredExperiment);
                 m_pendingExperiments.Add(monitoredExperiment);
             }
+            */
 
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }

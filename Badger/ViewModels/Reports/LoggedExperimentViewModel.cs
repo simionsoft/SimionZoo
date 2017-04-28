@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using Caliburn.Micro;
 using Badger.Simion;
+using Badger.ViewModels.Reports;
 
 namespace Badger.ViewModels
 {
@@ -15,7 +16,22 @@ namespace Badger.ViewModels
             set { m_name = value; }
         }
 
+        private string m_exeFile;
+
+        public string ExeFile
+        {
+            get { return m_exeFile; }
+            set { m_exeFile = value; }
+        }
+
         // private Window m_parent;
+        private List<LoggedPrerequisiteViewModel> m_prerequisites = new List<LoggedPrerequisiteViewModel>();
+
+        public List<LoggedPrerequisiteViewModel> Prerequisites
+        {
+            get { return m_prerequisites; }
+            set { m_prerequisites = value; }
+        }
 
         private List<LoggedForkViewModel> m_forks = new List<LoggedForkViewModel>();
         public List<LoggedForkViewModel> forks
@@ -24,7 +40,7 @@ namespace Badger.ViewModels
             set { m_forks = value; }
         }
 
-        public override void TraverseAction(bool doActionLocally, System.Action<SelectableTreeItem> action)
+        public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {
             if (doActionLocally) LocalTraverseAction(action);
             foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true, action);
@@ -40,8 +56,16 @@ namespace Badger.ViewModels
 
         public LoggedExperimentViewModel(XmlNode configNode, Window parent)
         {
-            if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
-                name = configNode.Attributes[XMLConfig.nameAttribute].Value;
+            XmlAttributeCollection attrs = configNode.Attributes;
+
+            if (attrs != null)
+            {
+                if (attrs.GetNamedItem(XMLConfig.nameAttribute) != null)
+                    name = attrs[XMLConfig.nameAttribute].Value;
+
+                if (attrs.GetNamedItem(XMLConfig.ExeFileNameAttr) != null)
+                    ExeFile = attrs[XMLConfig.ExeFileNameAttr].Value;
+            }
 
             // m_parent = parent;
 
@@ -51,6 +75,11 @@ namespace Badger.ViewModels
                 {
                     LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
                     forks.Add(newFork);
+                }
+                else if (child.Name == XMLConfig.PrerequisiteTag)
+                {
+                    LoggedPrerequisiteViewModel newPrerequisite = new LoggedPrerequisiteViewModel(child, parent);
+                    Prerequisites.Add(newPrerequisite);
                 }
                 else if (child.Name == XMLConfig.experimentalUnitNodeTag)
                 {

@@ -20,15 +20,17 @@ namespace Badger.Data
         private List<string> m_prerrequisites;
         public List<string> prerrequisites { get { return m_prerrequisites; } }
 
+        /*
         private string m_exeFile;
         public string exeFile { get { return m_exeFile; } }
+        */
 
-        public ExperimentalUnit(string expName, string configFile, string exeFile,
+        public ExperimentalUnit(string expName, string configFile, /*string exeFile,*/
             List<string> prerrequisites)
         {
             m_name = expName;
             m_configFilePath = configFile;
-            m_exeFile = exeFile;
+            // m_exeFile = exeFile;
             m_prerrequisites = prerrequisites;
         }
     }

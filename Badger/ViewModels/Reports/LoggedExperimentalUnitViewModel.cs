@@ -44,12 +44,18 @@ namespace Badger.ViewModels
         {
             m_parentWindow = parent;
 
-            if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
-                name = configNode.Attributes[XMLConfig.nameAttribute].Value;
-            if (configNode.Attributes.GetNamedItem(XMLConfig.pathAttribute) != null)
-                experimentFilePath = configNode.Attributes[XMLConfig.pathAttribute].Value;
+            if (configNode.Attributes != null)
+            {
+                if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
+                    name = configNode.Attributes[XMLConfig.nameAttribute].Value;
+
+                if (configNode.Attributes.GetNamedItem(XMLConfig.pathAttribute) != null)
+                    experimentFilePath = configNode.Attributes[XMLConfig.pathAttribute].Value;
+            }
+
             logDescriptorFilePath = SimionFileData.getLogDescriptorsFilePath(experimentFilePath);
             logFilePath = SimionFileData.getLogFilePath(experimentFilePath);
+
 
             if (parent is ReportsWindowViewModel)
             {

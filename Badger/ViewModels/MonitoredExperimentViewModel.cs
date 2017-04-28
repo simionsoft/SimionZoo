@@ -11,12 +11,27 @@ namespace Badger.ViewModels
 {
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {
-        private ExperimentalUnit m_experimentalUnit;
-        public string PipeName { get { return m_experimentalUnit.pipeName; } }
-        public string Name { get { return m_experimentalUnit.name; } }
-        public string FilePath { get { return m_experimentalUnit.configFilePath; } }
-        public string ExeFile { get { return m_experimentalUnit.exeFile; } }
-        public List<string> Prerequisites { get { return m_experimentalUnit.prerrequisites; } }
+        private LoggedExperimentalUnitViewModel m_loggedExperimentalUnit;
+
+        public string PipeName { get { return m_loggedExperimentalUnit.name; } }
+        public string Name { get { return m_loggedExperimentalUnit.name; } }
+        public string FilePath { get { return m_loggedExperimentalUnit.experimentFilePath; } }
+
+        private string m_exeFile;
+
+        public string ExeFile
+        {
+            get { return m_exeFile; }
+            set { m_exeFile = value; }
+        }
+
+        private List<string> m_prerequisites;
+
+        public List<string> Prerequisites
+        {
+            get { return m_prerequisites; }
+            set { m_prerequisites = value; }
+        }
 
         /*private Dictionary<string, string> m_forks;
 
@@ -140,11 +155,13 @@ namespace Badger.ViewModels
 
         private ExperimentQueueMonitorViewModel m_parent;
 
-        public MonitoredExperimentViewModel(ExperimentalUnit expUnit,
-            PlotViewModel plot, ExperimentQueueMonitorViewModel parent)
+        public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
+           List<string> prerequisites, PlotViewModel plot, ExperimentQueueMonitorViewModel parent)
         {
+            m_loggedExperimentalUnit = expUnit;
+            ExeFile = exeFile;
+            Prerequisites = prerequisites;
             evaluationMonitor = plot;
-            m_experimentalUnit = expUnit;
             m_parent = parent;
         }
 

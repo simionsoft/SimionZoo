@@ -27,7 +27,7 @@ namespace Badger.Data
         /// </summary>
         /// <param name="perExperimentFunction"></param>
         /// <param name="batchFilename"></param>
-        static public void loadExperimentBatch(XmlNodeFunction perExperimentFunction, string batchFilename = "")
+        static public void LoadExperimentBatchFile(XmlNodeFunction perExperimentFunction, string batchFilename = "")
         {
             if (batchFilename == "")
             {
@@ -133,8 +133,15 @@ namespace Badger.Data
 
                     foreach (ExperimentViewModel experimentViewModel in experiments)
                     {
-                        batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " " + XMLConfig.nameAttribute
-                            + "=\"" + experimentViewModel.name + "\">");
+                        batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " "
+                            + XMLConfig.nameAttribute + "=\"" + experimentViewModel.name + "\" "
+                            + XMLConfig.ExeFileNameAttr + "=\"" + experimentViewModel.getExeFilename() + "\">");
+
+                        foreach (var prerequisite in experimentViewModel.getPrerrequisites())
+                        {
+                            batchFileWriter.WriteLine("\t\t<" + XMLConfig.PrerequisiteTag + " "
+                               + XMLConfig.valueAttribute + "=\"" + prerequisite + "\" />");
+                        }
 
                         // Save the fork hierarchy and values. This helps to generate reports easier
                         experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "\t");
@@ -152,16 +159,16 @@ namespace Badger.Data
 
                             // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                             // with its corresponding attributes.
-                            batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag
-                                + " " + XMLConfig.nameAttribute + "=\"" + experimentName
-                                + "\" " + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
+                            batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag + " "
+                                + XMLConfig.nameAttribute + "=\"" + experimentName + "\" " 
+                                + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
                             // Write fork values in between
                             experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                             // Close 'EXPERIMENTAL-UNIT' tag
                             batchFileWriter.WriteLine("\t\t</" + XMLConfig.experimentalUnitNodeTag + ">");
 
                             // Add this experimental unit to the output list
-                            experimentBatch.Add(new ExperimentalUnit(experimentName, filePath, experimentViewModel.getExeFilename(),
+                            experimentBatch.Add(new ExperimentalUnit(experimentName, filePath, /*experimentViewModel.getExeFilename(),*/
                                 experimentViewModel.getPrerrequisites()));
                         }
                         // Close 'EXPERIMENT' tag

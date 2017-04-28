@@ -341,11 +341,11 @@ namespace Badger.ViewModels
 
         public void loadExperimentBatch()
         {
-            SimionFileData.loadExperimentBatch(loadLoggedExperiment);
+            SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment);
         }
         public void loadExperimentBatch(string batchFileName)
         {
-            SimionFileData.loadExperimentBatch(loadLoggedExperiment, batchFileName);
+            SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
         }
 
         public void close(ReportViewModel report)

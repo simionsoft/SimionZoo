@@ -81,7 +81,7 @@ namespace Badger.ViewModels
             evaluationPlot.clearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
             experimentQueueMonitor = new ExperimentQueueMonitorViewModel(m_freeHerdAgents, m_pendingExperiments,
-                evaluationPlot, m_logFunction);
+                evaluationPlot, m_logFunction, BatchFileName);
 
             experimentQueueMonitor.ExperimentTimer.Start();
             Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress, receiveJobResults));
