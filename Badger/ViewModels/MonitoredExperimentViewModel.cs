@@ -4,7 +4,7 @@ using System.Xml;
 using Caliburn.Micro;
 using Herd;
 using System.Collections.Generic;
-
+using System.Linq;
 using Badger.Data;
 
 namespace Badger.ViewModels
@@ -33,9 +33,13 @@ namespace Badger.ViewModels
             set { m_prerequisites = value; }
         }
 
-        /*private Dictionary<string, string> m_forks;
+        private List<string> m_forks;
 
-        public Dictionary<string, string> Forks { get { return m_experimentalUnit.forkValues; } }*/
+        public List<string> Forks
+        {
+            get { return m_forks; }
+            set { m_forks = value; }
+        }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -161,6 +165,7 @@ namespace Badger.ViewModels
             m_loggedExperimentalUnit = expUnit;
             ExeFile = exeFile;
             Prerequisites = prerequisites;
+            Forks = expUnit.forkValues.Select(k => k.Key + ": " + k.Value).ToList();
             evaluationMonitor = plot;
             m_parent = parent;
         }
