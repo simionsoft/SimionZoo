@@ -141,9 +141,9 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 void CMoveBox2Robots::reset(CState *s)
 {
 
-	m_Robot1->updateResetVariables(s, false, r1origin_x, r1origin_y, m_rob1_X, m_rob1_Y);
-	m_Robot2->updateResetVariables(s, false, r2origin_x, r2origin_y, m_rob2_X, m_rob2_Y);
-	m_Box->updateResetVariables(s, true, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
+	m_Robot1->updateResetVariables(s, r1origin_x, r1origin_y, m_rob1_X, m_rob1_Y);
+	m_Robot2->updateResetVariables(s, r2origin_x, r2origin_y, m_rob2_X, m_rob2_Y);
+	m_Box->updateResetVariables(s, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
 
 	///set initial values to distance variables
 

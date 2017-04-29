@@ -128,8 +128,8 @@ void CMoveBoxOneRobot::reset(CState *s)
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		m_Box->updateResetVariables(s, true, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
-		m_Robot->updateResetVariables(s, false, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
+		m_Box->updateResetVariables(s, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
+		m_Robot->updateResetVariables(s, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
 
 		///set initial values to distance variables
 
@@ -149,8 +149,8 @@ void CMoveBoxOneRobot::reset(CState *s)
 		double robOrX = robotOrigin_x + getRand();
 		double robOrY = robotOrigin_y + getRand();
 
-		m_Box->updateResetVariables(s, true, boxOrX, boxOrY, m_box_X, m_box_Y);
-		m_Robot->updateResetVariables(s, false, robOrX, robOrY, m_rob1_X, m_rob1_Y);
+		m_Box->updateResetVariables(s, boxOrX, boxOrY, m_box_X, m_box_Y);
+		m_Robot->updateResetVariables(s, robOrX, robOrY, m_rob1_X, m_rob1_Y);
 
 		s->set(m_theta, theta_o + getRand());
 

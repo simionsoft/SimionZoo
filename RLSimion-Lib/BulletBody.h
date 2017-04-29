@@ -11,7 +11,7 @@ public:
 	btRigidBody* BulletBody::getBody();
 	btCollisionShape* BulletBody::getShape();
 	btTransform BulletBody::getTransform();
-	void updateResetVariables(CState* s,bool isBox, double originX, double originY, int idX, int idY);
+	void updateResetVariables(CState* s, double originX, double originY, int idX, int idY);
 	double updateRobotMovement(const CAction *a, CState *s, char *omega, char *vel, int theta, double dt);
 	btTransform setAbsoluteActionVariables(CState* s, double idX, double idY);
 	void setRelativeActionVariables(CState* s, int idX, int idY, bool isBox, double targetX, double targetY, double valX = 0.0, double valY = 0.0);
