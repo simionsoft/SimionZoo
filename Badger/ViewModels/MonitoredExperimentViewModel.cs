@@ -17,29 +17,11 @@ namespace Badger.ViewModels
         public string Name { get { return m_loggedExperimentalUnit.name; } }
         public string FilePath { get { return m_loggedExperimentalUnit.experimentFilePath; } }
 
-        private string m_exeFile;
+        public string ExeFile { get; set; }
 
-        public string ExeFile
-        {
-            get { return m_exeFile; }
-            set { m_exeFile = value; }
-        }
+        public List<string> Prerequisites { get; set; }
 
-        private List<string> m_prerequisites;
-
-        public List<string> Prerequisites
-        {
-            get { return m_prerequisites; }
-            set { m_prerequisites = value; }
-        }
-
-        private List<string> m_forks;
-
-        public List<string> Forks
-        {
-            get { return m_forks; }
-            set { m_forks = value; }
-        }
+        public List<string> Forks { get; set; }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -65,16 +47,10 @@ namespace Badger.ViewModels
             state = ExperimentState.ENQUEUED;
             NotifyOfPropertyChange(() => state);
         }
-        public bool isRunning
-        {
-            get { return m_state == ExperimentState.RUNNING; }
-            set { }
-        }
-        public bool isEnqueued
-        {
-            get { return m_state == ExperimentState.ENQUEUED; }
-            set { }
-        }
+
+        public bool isRunning { get { return m_state == ExperimentState.RUNNING; } }
+
+        public bool isEnqueued { get { return m_state == ExperimentState.ENQUEUED; } }
 
         public string stateString
         {
@@ -157,10 +133,10 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private ExperimentQueueMonitorViewModel m_parent;
+        private ExperimentMonitorViewModel m_parent;
 
         public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
-           List<string> prerequisites, PlotViewModel plot, ExperimentQueueMonitorViewModel parent)
+           List<string> prerequisites, PlotViewModel plot, ExperimentMonitorViewModel parent)
         {
             m_loggedExperimentalUnit = expUnit;
             ExeFile = exeFile;

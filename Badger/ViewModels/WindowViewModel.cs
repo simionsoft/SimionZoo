@@ -160,8 +160,7 @@ namespace Badger.ViewModels
 
         public WindowViewModel()
         {
-            m_shepherdViewModel = new ShepherdViewModel();
-            m_monitorWindowViewModel = new ExperimentMonitorViewModel(null);
+            m_shepherdViewModel = new ShepherdViewModel();            
 
             loadAppDefinitions();
         }
@@ -182,7 +181,7 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => appNames);
         }
 
-        public void saveExperimentInEditor()
+        public void SaveSelectedExperiment()
         {
             if (selectedExperiment == null || !selectedExperiment.validate())
             {
@@ -193,7 +192,7 @@ namespace Badger.ViewModels
             SimionFileData.SaveExperiment(selectedExperiment);
         }
 
-        public void saveExperiments()
+        public void SaveAllExperiments()
         {
             SimionFileData.saveExperiments(m_experimentViewModels);
         }
@@ -240,7 +239,7 @@ namespace Badger.ViewModels
         ///     Load multiple experiments all at once.
         ///     Used from WindowView when the Load experiments button is clicked.
         /// </summary>
-        public void loadExperiments()
+        public void LoadExperiments()
         {
             SimionFileData.loadExperiments(this, ref m_experimentViewModels, appDefinitions, logToFile);
             NotifyOfPropertyChange(() => ExperimentViewModels);
@@ -265,8 +264,8 @@ namespace Badger.ViewModels
                 return;
             }
 
-            string batchFilename = "";
-            int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFilename, logToFile);
+            string batchFileName = "";
+            int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFileName, logToFile);
 
             if (experimentalUnitsCount > 0)
             {
@@ -278,12 +277,12 @@ namespace Badger.ViewModels
                 shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 
-                m_monitorWindowViewModel.FreeHerdAgents = freeHerdAgents;
-                m_monitorWindowViewModel.LogFunction = logToFile;
-                m_monitorWindowViewModel.BatchFileName = batchFilename;
+                m_monitorWindowViewModel = new ExperimentMonitorViewModel(freeHerdAgents, logToFile, batchFileName);
 
                 m_monitorWindowViewModel.RunExperiments(true, true);
                 IsExperimentRunning = true;
+
+                CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
             }
         }
 

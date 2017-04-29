@@ -18,7 +18,7 @@ namespace Badger.Views
     /// <summary>
     /// Interaction logic for ExperimentMonitorView.xaml
     /// </summary>
-    public partial class ExperimentMonitorView : UserControl
+    public partial class ExperimentMonitorView : Window
     {
         public ExperimentMonitorView()
         {
