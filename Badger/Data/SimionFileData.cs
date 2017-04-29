@@ -55,7 +55,7 @@ namespace Badger.Data
                         perExperimentFunction(experiment);
                 }
             }
-            else CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
+            else CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Badger.Data
             {
                 if (!experiment.validate())
                 {
-                    CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name
+                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.name
                         + ". Please check it", "VALIDATION ERROR");
                     return -1;
                 }
@@ -117,7 +117,7 @@ namespace Badger.Data
                 try { Directory.Delete(batchFileDir, true); }
                 catch
                 {
-                    CaliburnUtility.showWarningDialog("It has not been possible to remove the directory: "
+                    CaliburnUtility.ShowWarningDialog("It has not been possible to remove the directory: "
                         + batchFileDir + ". Make sure that it's not been using for other app.", "ERROR");
                     log("Error saving the experiment queue");
                     return -1;
@@ -201,7 +201,7 @@ namespace Badger.Data
             XmlElement fileRoot = badgerDoc.DocumentElement;
             if (fileRoot.Name != XMLConfig.badgerNodeTag)
             {
-                CaliburnUtility.showWarningDialog("Malformed XML in experiment badger project file.", "ERROR");
+                CaliburnUtility.ShowWarningDialog("Malformed XML in experiment badger project file.", "ERROR");
                 log("ERROR: malformed XML in experiment badger project file.");
                 return;
             }
@@ -216,7 +216,7 @@ namespace Badger.Data
                 }
                 else
                 {
-                    CaliburnUtility.showWarningDialog("Malformed XML in experiment queue file.", "ERROR");
+                    CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file.", "ERROR");
                     log("ERROR: malformed XML in experiment queue file.");
                 }
             }
@@ -228,7 +228,7 @@ namespace Badger.Data
             {
                 if (!experiment.validate())
                 {
-                    CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name
+                    CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.name
                         + ". Please check it", "VALIDATION ERROR");
                     return;
                 }
@@ -292,7 +292,7 @@ namespace Badger.Data
         {
             if (!experiment.validate())
             {
-                CaliburnUtility.showWarningDialog("The configuration couldn't be validated in " + experiment.name
+                CaliburnUtility.ShowWarningDialog("The configuration couldn't be validated in " + experiment.name
                     + ". Please check it", "VALIDATION ERROR");
                 return;
             }

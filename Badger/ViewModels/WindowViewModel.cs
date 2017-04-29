@@ -186,7 +186,7 @@ namespace Badger.ViewModels
         {
             if (selectedExperiment == null || !selectedExperiment.validate())
             {
-                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
+                CaliburnUtility.ShowWarningDialog("The app can't be validated. See error log.", "Error");
                 return;
             }
 
@@ -259,7 +259,7 @@ namespace Badger.ViewModels
         {
             if (m_shepherdViewModel.herdAgentList.Count == 0)
             {
-                CaliburnUtility.showWarningDialog(
+                CaliburnUtility.ShowWarningDialog(
                     "No Herd agents were detected, so experiments cannot be sent. " +
                     "Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
                 return;
@@ -300,7 +300,7 @@ namespace Badger.ViewModels
         public void showPlotWindow()
         {
             ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
-            CaliburnUtility.showVMDialog(plotEditor, "Plot editor");
+            CaliburnUtility.ShowPopupWindow(plotEditor, "Plot editor");
         }
     }
 }

@@ -24,7 +24,6 @@ namespace Badger.ViewModels
             set { m_exeFile = value; }
         }
 
-        // private Window m_parent;
         private List<LoggedPrerequisiteViewModel> m_prerequisites = new List<LoggedPrerequisiteViewModel>();
 
         public List<LoggedPrerequisiteViewModel> Prerequisites
@@ -67,8 +66,6 @@ namespace Badger.ViewModels
                     ExeFile = attrs[XMLConfig.ExeFileNameAttr].Value;
             }
 
-            // m_parent = parent;
-
             foreach (XmlNode child in configNode.ChildNodes)
             {
                 if (child.Name == XMLConfig.forkTag)
@@ -78,13 +75,14 @@ namespace Badger.ViewModels
                 }
                 else if (child.Name == XMLConfig.PrerequisiteTag)
                 {
-                    LoggedPrerequisiteViewModel newPrerequisite = new LoggedPrerequisiteViewModel(child, parent);
+                    LoggedPrerequisiteViewModel newPrerequisite = 
+                        new LoggedPrerequisiteViewModel(child, parent);
                     Prerequisites.Add(newPrerequisite);
                 }
                 else if (child.Name == XMLConfig.experimentalUnitNodeTag)
                 {
-                    LoggedExperimentalUnitViewModel newExpUnit
-                        = new LoggedExperimentalUnitViewModel(child, parent);
+                    LoggedExperimentalUnitViewModel newExpUnit =
+                        new LoggedExperimentalUnitViewModel(child, parent);
                     expUnits.Add(newExpUnit);
                 }
             }

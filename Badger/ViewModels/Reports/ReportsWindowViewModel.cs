@@ -299,7 +299,7 @@ namespace Badger.ViewModels
             if (m_reports.Count == 0) return;
 
             string outputBaseFolder =
-                CaliburnUtility.selectFolder(SimionFileData.imageRelativeDir);
+                CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
 
             if (outputBaseFolder != "")
             {

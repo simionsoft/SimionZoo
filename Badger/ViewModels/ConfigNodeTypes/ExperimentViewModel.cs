@@ -53,7 +53,7 @@ namespace Badger.ViewModels
             if (!m_classDefinitions.ContainsKey(className))
             {
                 if (!bCanBeNull)
-                    CaliburnUtility.showWarningDialog("Undefined class" + className, "ERROR");
+                    CaliburnUtility.ShowWarningDialog("Undefined class" + className, "ERROR");
                 return null;
             }
             return m_classDefinitions[className];
@@ -73,7 +73,7 @@ namespace Badger.ViewModels
         {
             if (!m_enumDefinitions.ContainsKey(enumName))
             {
-                CaliburnUtility.showWarningDialog("Undefined enumeratedType: " + enumName, "ERROR");
+                CaliburnUtility.ShowWarningDialog("Undefined enumeratedType: " + enumName, "ERROR");
                 return null;
             }
             return m_enumDefinitions[enumName];
@@ -186,7 +186,7 @@ namespace Badger.ViewModels
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
                     else
                     {
-                        CaliburnUtility.showWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
+                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
                             , "ERROR");
                         m_version = "0.0.0.0";
                     }

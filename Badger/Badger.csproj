@@ -105,7 +105,7 @@
     <Compile Include="badgerInstaller.Designer.cs">
       <DependentUpon>badgerInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\caliburnUtility.cs" />
+    <Compile Include="Data\CaliburnUtility.cs" />
     <Compile Include="Data\SimionFileData.cs" />
     <Compile Include="Data\SimionLogFile.cs" />
     <Compile Include="Data\Utility.cs" />

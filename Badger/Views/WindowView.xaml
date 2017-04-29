@@ -91,7 +91,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="2.75*" MinWidth="400"/>
                     <ColumnDefinition Width="4" />
@@ -104,7 +104,7 @@
                     <Label FontSize="14" FontWeight="Medium" VerticalAlignment="Center">Herd Agents</Label>
                 </StackPanel>
 
-                <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" BorderBrush="#BDBDBD" >
+                <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="4,0,0,4" BorderBrush="#BDBDBD" >
                     <ContentControl  x:Name="shepherdViewModel" />
                 </Border>
 
@@ -116,7 +116,8 @@
                        FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
 
-                <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels" SelectedItem="{Binding Path = selectedExperiment}" >
+                <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels"  Margin="0,0,0,4"
+                            SelectedItem="{Binding Path = selectedExperiment}" >
                     <TabControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" >

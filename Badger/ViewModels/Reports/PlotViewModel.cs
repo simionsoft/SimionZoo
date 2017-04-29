@@ -199,7 +199,7 @@ namespace Badger.ViewModels
 
         public void showProperties()
         {
-            CaliburnUtility.showVMDialog(properties, "Plot properties");
+            CaliburnUtility.ShowPopupWindow(properties, "Plot properties");
             setProperties();
         }
 
