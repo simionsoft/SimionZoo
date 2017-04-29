@@ -6,19 +6,25 @@
 #include "BulletBody.h"
 #pragma comment(lib,"opengl32.lib")
 
-
-double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
+double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2)
+{
 	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 	return distance;
 }
 
-double static getDistanceOneDimension(double x1, double x2) {
+double static getDistanceOneDimension(double x1, double x2)
+{
 	double dist = x2 - x1;
 	if (dist < 0)
 	{
 		dist = dist * (-1);
 	}
 	return dist;
+}
+
+double static getRand()
+{
+	return (-10.0) + (20.0)*getRandomValue();
 }
 
 #define TargetX 10.0
@@ -81,7 +87,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 	/// Creating target point, static
 	{
-		m_Target = new BulletBody(MASS_TARGET, TargetX, 0, TargetY, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
+		m_Target = new BulletBody(MASS_TARGET, TargetX, 0.001, TargetY, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
 		m_Target->getBody()->setCollisionFlags(m_Target->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 		rBoxBuilder->getCollisionShape().push_back(m_Target->getShape());
 		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Target->getBody());
@@ -114,8 +120,11 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	m_pRewardFunction->initialize();
 }
 
+
 void CMoveBoxOneRobot::reset(CState *s)
 {
+
+
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
@@ -134,15 +143,21 @@ void CMoveBoxOneRobot::reset(CState *s)
 	}
 	else
 	{
-		m_Box->updateResetVariables(s, true, boxOrigin_x + getRandomValue()*0.4, boxOrigin_y + getRandomValue()*0.4, m_box_X, m_box_Y);
-		m_Robot->updateResetVariables(s, false, robotOrigin_x + getRandomValue()*0.4, robotOrigin_y + getRandomValue()*0.4, m_rob1_X, m_rob1_Y);
 
-		s->set(m_theta, theta_o + getRandomValue()*0.01);
+		double boxOrX = boxOrigin_x + getRand();
+		double boxOrY = boxOrigin_y + getRand();
+		double robOrX = robotOrigin_x + getRand();
+		double robOrY = robotOrigin_y + getRand();
 
-		s->set(m_D_BrX, getDistanceOneDimension(boxOrigin_x + getRandomValue()*0.4, robotOrigin_x + getRandomValue()*0.4));
-		s->set(m_D_BrY, getDistanceOneDimension(boxOrigin_y + getRandomValue()*0.4, robotOrigin_y + getRandomValue()*0.4));
-		s->set(m_D_BtX, getDistanceOneDimension(boxOrigin_x + getRandomValue()*0.4, TargetX));
-		s->set(m_D_BtY, getDistanceOneDimension(boxOrigin_x + getRandomValue()*0.4, TargetY));
+		m_Box->updateResetVariables(s, true, boxOrX, boxOrY, m_box_X, m_box_Y);
+		m_Robot->updateResetVariables(s, false, robOrX, robOrY, m_rob1_X, m_rob1_Y);
+
+		s->set(m_theta, theta_o + getRand());
+
+		s->set(m_D_BrX, getDistanceOneDimension(boxOrX, robOrX));
+		s->set(m_D_BrY, getDistanceOneDimension(boxOrY, robOrY));
+		s->set(m_D_BtX, getDistanceOneDimension(boxOrX, TargetX));
+		s->set(m_D_BtY, getDistanceOneDimension(boxOrY, TargetY));
 
 	}
 }
