@@ -13,6 +13,7 @@ namespace Badger.ViewModels
     public class StatViewModel : PropertyChangedBase
     {
         public string groupId { get; set; }
+        public string groupIdExp { get { return groupIdShow(); } }
         public string trackId { get; set; }
         public StatData lastEpisodeStats { get; set; }
         public StatData experimentStats { get; set; }
@@ -47,6 +48,11 @@ namespace Badger.ViewModels
             char[] separators = { ',' };
             string[] parameters = groupId.Split(separators);
             return parameters != null ? parameters : null;
+        }
+
+        public string groupIdShow()
+        {
+            return groupId.Replace(',', '\t');
         }
     }
 }
