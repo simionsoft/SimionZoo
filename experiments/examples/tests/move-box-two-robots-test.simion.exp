@@ -31,42 +31,42 @@
         <Type>
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
-              <Num-Features>6</Num-Features>
+              <Num-Features>20</Num-Features>
               <Variable>rx1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>6</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>ry1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>6</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>rx2</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>6</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>ry2</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>6</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>bx</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>6</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>by</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>3</Num-Features>
+              <Num-Features>4</Num-Features>
               <Variable>theta1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>3</Num-Features>
+              <Num-Features>4</Num-Features>
               <Variable>theta2</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
