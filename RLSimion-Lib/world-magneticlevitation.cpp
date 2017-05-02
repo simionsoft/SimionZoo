@@ -54,7 +54,7 @@ void CMagneticLevitation::reset(CState *s)
 
 
 	//initialization procedure: 0.5 seconds with 15V
-	/*CAction *a= CSimionApp::get()->pWorld->getActionDescriptor();
+	/*CAction *a= CSimionApp::getSample()->pWorld->getActionDescriptor();
 	a->set("voltage",15.0);
 	double t= 0.0;
 	double dt= 0.01;

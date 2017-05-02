@@ -6,7 +6,6 @@
 #include "FASTWorldPortal.h"
 #include "../../tinyxml2/tinyxml2.h"
 
-
 #define NINT(a) ((a) >= 0.0 ? (int)((a)+0.5) : (int)((a)-0.5))
 
 extern "C" {

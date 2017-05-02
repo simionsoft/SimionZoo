@@ -13,12 +13,13 @@ CExperienceTuple::CExperienceTuple()
 	s_p = CSimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
 }
 
-void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r)
+void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r, double probability)
 {
 	this->s->copy(s);
 	this->a->copy(a);
 	this->s_p->copy(s_p);
 	this->r = r;
+	this->probability = probability;
 }
 
 
@@ -63,20 +64,20 @@ int CExperienceReplay::getUpdateBatchSize()
 	return std::min(m_updateBatchSize.get(), m_numTuples);
 }
 
-void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r)
+void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r, double probability)
 {
 	//add the experience tuple to the buffer
 
 	if (m_numTuples < m_bufferSize.get())
 	{
 		//the buffer is not yet full
-		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r);
+		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
 		++m_numTuples;
 	}
 	else
 	{
 		//the buffer is full
-		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r);
+		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
 	}
 	m_currentPosition = ++m_currentPosition % m_bufferSize.get();
 }

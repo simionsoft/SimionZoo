@@ -67,13 +67,13 @@ double CRewardFunction::getReward(const CState* s, const CAction* a, const CStat
 
 void CRewardFunction::initialize()
 {
-	int numComponents;
+	size_t numComponents;
 	if (!m_bInitialized)
 	{
 		//create the reward vector and set names
 		numComponents = m_rewardComponents.size();
 		
-		for (int i = 0; i < numComponents; ++i)
+		for (size_t i = 0; i < numComponents; ++i)
 		{
 			rewardDescriptor.addVariable(m_rewardComponents[i]->getName(), "unitless"
 				, m_rewardComponents[i]->getMin(), m_rewardComponents[i]->getMax());

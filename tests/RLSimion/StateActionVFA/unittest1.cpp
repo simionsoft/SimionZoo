@@ -5,7 +5,6 @@
 #include "../../../RLSimion-Lib/features.h"
 #include <iostream>
 
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace StateActionVFA
@@ -69,7 +68,10 @@ namespace StateActionVFA
 			//Because we are mostly only implementing the constructor that takes a CConfigNode,
 			//it is easier to load a config file and then manipulate the classes loaded
 			CConfigFile configFile;
-			CConfigNode* pConfigNode = configFile.loadFile("../tests/q-learning-test.exp");
+			CConfigNode* pConfigNode;
+
+			pConfigNode= configFile.loadFile("..\\tests\\q-learning-test.exp");
+
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
 
 			CLinearStateActionVFA *pVFA = new CLinearStateActionVFA(
@@ -93,7 +95,7 @@ namespace StateActionVFA
 			double state = 0.0;
 			double action = 0.0;
 
-			for (int i = 0; i < pFeatures->m_numFeatures; i++)
+			for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
 			{
 				pVFA->getFeatureStateAction(pFeatures->m_pFeatures[i].m_index
 					,pOutState,pOutAction);

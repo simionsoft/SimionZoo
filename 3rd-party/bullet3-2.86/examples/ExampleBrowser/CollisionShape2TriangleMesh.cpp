@@ -1,8 +1,7 @@
-
 #include "CollisionShape2TriangleMesh.h"
 
-#include "btBulletCollisionCommon.h"
-#include "BulletCollision/CollisionShapes/btShapeHull.h"//to create a tesselation of a generic btConvexShape
+#include "../../src/btBulletCollisionCommon.h"
+#include "../../src/BulletCollision/CollisionShapes/btShapeHull.h" //to create a tesselation of a generic btConvexShape
 
 void CollisionShape2TriangleMesh(btCollisionShape* collisionShape, const btTransform& parentTransform, btAlignedObjectArray<btVector3>& vertexPositions, btAlignedObjectArray<btVector3>& vertexNormals, btAlignedObjectArray<int>& indicesOut)
 

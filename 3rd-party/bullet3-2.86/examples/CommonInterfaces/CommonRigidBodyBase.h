@@ -2,7 +2,6 @@
 #ifndef COMMON_RIGID_BODY_BASE_H
 #define COMMON_RIGID_BODY_BASE_H
 
-
 #include "btBulletDynamicsCommon.h"
 #include "CommonExampleInterface.h"
 #include "CommonGUIHelperInterface.h"

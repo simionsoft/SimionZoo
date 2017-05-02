@@ -21,9 +21,15 @@ public:
 	CActor() = default;
 	virtual ~CActor();
 
-	virtual void selectAction(const CState *s, CAction *a);
+	//this methods sets its output pi(s) in a
+	virtual double selectAction(const CState *s, CAction *a);
 
-	virtual void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r, double td);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double td);
+
+	//Returns the probability of outputting action a in state s
+	//bStochastic= true, if we want to consider exploration
+	//bStochastic= false, if we want to only consider the greedy policy
+	virtual double getActionProbability(const CState *s, const CAction *a, bool bStochastic);
 
 	//CDeferredLoad
 	virtual void deferredLoadStep();

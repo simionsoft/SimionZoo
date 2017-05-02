@@ -2,81 +2,55 @@
 
 #include "world.h"
 #include "reward.h"
-#define ATTRIBUTE_ALIGNED16(a) a
+#define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
-class btCollisionShape;
-class Box;
-class Robot;
+class SimpleOpenGL3App;
+class BulletBuilder;
+class BulletBody;
 
-//Move box with 2 robots
+//Move box with 1 robot
 class CMoveBoxOneRobot : public CDynamicModel
 {
 	/// All-Simulation variables
-	double GRAVITY;
 	double MASS_ROBOT;
 	double MASS_BOX;
+	double MASS_TARGET;
 	double MASS_GROUND;
 
+	double o_distBrX;
+	double o_distBrY;
+	double o_distBtX;
+	double o_distBtY;
+
 	/// Episode variables
-	int rob1_X, rob1_Y;
-	int box_X, box_Y;
+	int m_rob1_X, m_rob1_Y;
+	int m_box_X, m_box_Y;
+	int m_D_BrX, m_D_BrY;
+	int m_D_BtX, m_D_BtY;
+	int m_theta;
 
 	// Action variables
-	int rob1_forceX, rob1_forceY;
+	int m_linear_vel;
+	int m_omega;
 
-	///inicialización
-	btAlignedObjectArray<btCollisionShape*>	m_collisionShapes;
-	btBroadphaseInterface*	m_broadphase;
-	btCollisionDispatcher*	m_dispatcher;
-	btConstraintSolver*	m_solver;
-	btDefaultCollisionConfiguration* m_collisionConfiguration;
-	btDiscreteDynamicsWorld* m_dynamicsWorld;
+	///Graphic initialization
+	SimpleOpenGL3App* window;
+	BulletBuilder* rBoxBuilder;
 
-	Robot *m_pRobot1;
-	Box *m_box;
+	///Bullet bodies init
+	BulletBody *m_Ground;
+	BulletBody *m_Robot;
+	BulletBody *m_Box;
+	BulletBody *m_Target;
 
 public:
+
 	CMoveBoxOneRobot(CConfigNode* pParameters);
-	virtual ~CMoveBoxOneRobot() = default;
+	virtual ~CMoveBoxOneRobot();
 
 	void reset(CState *s);
 	void executeAction(CState *s, const CAction *a, double dt);
 
-	btBoxShape* createBoxShape(const btVector3& halfExtents)
-	{
-		btBoxShape* box = new btBoxShape(halfExtents);
-		return box;
-	}
-
-	btRigidBody*	createRigidBody(float mass, const btTransform& startTransform, btCollisionShape* shape, const btVector4& color = btVector4(1, 0, 0, 1))
-	{
-
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
-
-		btVector3 localInertia(0, 0, 0);
-		if (isDynamic)
-			shape->calculateLocalInertia(mass, localInertia);
-
-		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-
-#define USE_MOTIONSTATE 1
-#ifdef USE_MOTIONSTATE
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-
-		btRigidBody::btRigidBodyConstructionInfo cInfo(mass, myMotionState, shape, localInertia);
-
-		btRigidBody* body = new btRigidBody(cInfo);
-
-#else
-		btRigidBody* body = new btRigidBody(mass, 0, shape, localInertia);
-		body->setWorldTransform(startTransform);
-#endif//
-
-		body->setUserIndex(-1);
-		m_dynamicsWorld->addRigidBody(body);
-		return body;
-	}
 };
 
 class CMoveBoxOneRobotReward : public IRewardComponent

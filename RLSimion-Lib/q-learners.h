@@ -21,7 +21,7 @@ public:
 	virtual ~CQPolicy(){}
 	static std::shared_ptr<CQPolicy> getInstance(CConfigNode* pParameters);
 
-	virtual void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)= 0;
+	virtual double selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)= 0;
 };
 //Epsilon-greedy policy
 class CQEGreedyPolicy : public CQPolicy
@@ -31,7 +31,7 @@ public:
 	CQEGreedyPolicy(CConfigNode* pParameters);
 	virtual ~CQEGreedyPolicy();
 
-	void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a);
+	double selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a);
 };
 //Soft-max policy
 //https://webdocs.cs.ualberta.ca/~sutton/book/2/node4.html
@@ -44,7 +44,7 @@ class CQSoftMaxPolicy : public CQPolicy
 public:
 	CQSoftMaxPolicy(CConfigNode* pParameters);
 	virtual ~CQSoftMaxPolicy();
-	void selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a);
+	double selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a);
 };
 
 
@@ -66,11 +66,9 @@ public:
 	virtual ~CQLearning();
 
 	//the Q-Function is updated in this method (and thus, any policy derived from it such as epsilon-greedy or soft-max) 
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
 
-	void selectAction(const CState *s, CAction *a);
-	//this method does nothing
-	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r){};
+	double selectAction(const CState *s, CAction *a);
 };
 
 ////////////////////////
@@ -88,7 +86,7 @@ public:
 	CDoubleQLearning(CConfigNode* pParameters);
 	virtual ~CDoubleQLearning();
 
-	virtual void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
 };
 
 ////////////////////////
@@ -97,11 +95,12 @@ public:
 
 class CSARSA : public CQLearning
 {
+	double m_nextAProbability;
 	CAction *m_nextA;
 	bool m_bNextActionSelected;
 public:
 	CSARSA(CConfigNode* pParameters);
 	virtual ~CSARSA();
-	void selectAction(const CState *s, CAction *a);
-	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+	double selectAction(const CState *s, CAction *a);
+	void update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
 };

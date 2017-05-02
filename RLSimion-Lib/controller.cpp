@@ -47,7 +47,7 @@ CLQRController::~CLQRController()
 	//for (unsigned int i = 0; i < m_gains.size(); i++) delete m_gains[i];
 }
 
-void CLQRController::selectAction(const CState *s, CAction *a)
+double CLQRController::selectAction(const CState *s, CAction *a)
 {
 	double output= 0.0; // only 1-dimension so far
 
@@ -57,6 +57,8 @@ void CLQRController::selectAction(const CState *s, CAction *a)
 	}
 	// delta= -K*x
 	a->set(m_outputActionIndex.get(), -output);
+
+	return 1.0;
 }
 
 int CLQRController::getNumOutputs()
@@ -101,7 +103,7 @@ int CPIDController::getOutputActionIndex(int output)
 	return -1;
 }
 
-void CPIDController::selectAction(const CState *s, CAction *a)
+double CPIDController::selectAction(const CState *s, CAction *a)
 {
 	if (CSimionApp::get()->pWorld->getEpisodeSimTime()== 0.0)
 		m_intError= 0.0;
@@ -113,6 +115,7 @@ void CPIDController::selectAction(const CState *s, CAction *a)
 	a->set(m_outputActionIndex.get()
 		,error*m_pKP->get() + m_intError*m_pKI->get() + dError*m_pKD->get());
 
+	return 1.0;
 }
 
 
@@ -173,7 +176,7 @@ double CWindTurbineVidalController::sgn(double value)
 	return 0.0;
 }
 
-void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
+double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 {
 	//f(omega_g,T_g,d_omega_g,E_p, E_int_omega_r)
 
@@ -193,16 +196,17 @@ void CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
-//	double omega_g = s->get(m_omega_r_index);
+//	double omega_g = s->getSample(m_omega_r_index);
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed"); //NOMINAL WIND SPEED
 	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0 + sgn(e_omega_g));
-				//+ m_pKI.get()*s->get("E_int_omega_r");
+				//+ m_pKI.getSample()*s->getSample("E_int_omega_r");
 			//up there, it should be "E_int_omega_g", which is currently not defined/set
 
 	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
 	a->set(m_a_beta,beta);
 	a->set(m_a_T_g,T_g + d_T_g* CSimionApp::get()->pWorld->getDT());
 
+	return 1.0;
 }
 
 //BOUKHEZZAR CONTROLLER////////////////////////////////////////////////
@@ -252,7 +256,7 @@ int CWindTurbineBoukhezzarController::getOutputActionIndex(int output)
 }
 
 
-void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
+double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 {
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
@@ -270,12 +274,13 @@ void CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 	d_T_g = std::min(std::max(0.0, d_T_g), s->getProperties("d_T_g").getMax());
 
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.get()*s->get("E_int_omega_g");
+	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.getSample()*s->getSample("E_int_omega_g");
 		//up there, it should be "E_int_omega_g", which is currently not defined/set
 
 	a->set(m_a_beta,desiredBeta);
 	a->set(m_a_T_g,T_g + d_T_g*CSimionApp::get()->pWorld->getDT());
 
+	return 1.0;
 }
 
 //JONKMAN//////////////////////////////////////////////////////////////////////////
@@ -346,7 +351,7 @@ int CWindTurbineJonkmanController::getOutputActionIndex(int output)
 	return -1;
 }
 
-void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
+double CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 {
 	//Filter the generator speed
 	double lowPassFilterAlpha;
@@ -398,7 +403,7 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	double PitComP   = GK* m_PC_KP.get() *   SpdErr; //Proportional term
 	double PitComI   = GK* m_PC_KI.get() * m_IntSpdErr; //Integral term (saturated)
 
-	//Superimpose the individual commands to get the total pitch command;
+	//Superimpose the individual commands to getSample the total pitch command;
 	//  saturate the overall command using the pitch angle limits:
 	double PitComT   = PitComP + PitComI;                                     //Overall command (unsaturated)
 	PitComT   = std::min( std::max( PitComT, s->getProperties(m_beta).getMin() )
@@ -406,4 +411,6 @@ void CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 
 	//we pass the desired blade pitch angle to the world
 	a->set(m_a_beta,PitComT);
+
+	return 1.0;
 }

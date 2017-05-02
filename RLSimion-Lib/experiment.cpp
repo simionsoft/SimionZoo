@@ -84,7 +84,7 @@ bool CExperiment::isEvaluationEpisode()
 		unsigned int episodeInEvalTrainingCycle = (m_episodeIndex-1)
 			% ( m_numEpisodesPerEvaluation + m_evalFreq.get());
 		return episodeInEvalTrainingCycle < m_numEpisodesPerEvaluation;
-	//	return (m_episodeIndex - 1) % (m_evalFreq.get() + 1) == 0;
+	//	return (m_episodeIndex - 1) % (m_evalFreq.getSample() + 1) == 0;
 	}
 	return true;
 }

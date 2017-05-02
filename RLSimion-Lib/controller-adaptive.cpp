@@ -19,7 +19,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 CExtendedWindTurbineVidalController::~CExtendedWindTurbineVidalController()
 {}
 
-void CExtendedWindTurbineVidalController::selectAction(const CState *s, CAction *a)
+double CExtendedWindTurbineVidalController::selectAction(const CState *s, CAction *a)
 {
 	//A= f_a(v)
 	//K_alpha= f_k_alpha(v)
@@ -29,14 +29,14 @@ void CExtendedWindTurbineVidalController::selectAction(const CState *s, CAction 
 	m_pKP.set(m_pAdpParamKP->getPolicy()->getOutput(s));
 
 	CWindTurbineVidalController::selectAction(s, a);
+
+	return 1.0;
 }
-void CExtendedWindTurbineVidalController::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void CExtendedWindTurbineVidalController::update(const CState *s, const CAction *a, const CState *s_p, double r)
 {
-	m_td= m_pCritic->updateValue(s, a, s_p, r);
-}
-void CExtendedWindTurbineVidalController::updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r)
-{
-	m_pAdpParamA->updatePolicy(s, a, s_p, r, m_td);
-	m_pAdpParamK_alpha->updatePolicy(s, a, s_p, r, m_td);
-	m_pAdpParamKP->updatePolicy(s, a, s_p, r, m_td);
+	m_td= m_pCritic->update(s, a, s_p, r);
+
+	m_pAdpParamA->update(s, a, s_p, r, m_td);
+	m_pAdpParamK_alpha->update(s, a, s_p, r, m_td);
+	m_pAdpParamKP->update(s, a, s_p, r, m_td);
 }

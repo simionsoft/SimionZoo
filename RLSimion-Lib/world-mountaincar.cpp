@@ -26,7 +26,7 @@ CMountainCar::~CMountainCar()
 void CMountainCar::reset(CState *s)
 {
 
-	//if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	//if (CSimionApp::getSample()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
 		s->set(m_sPosition, -0.5);

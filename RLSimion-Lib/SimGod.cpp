@@ -32,6 +32,7 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 
 	m_bFreezeVFunctionUpdates= BOOL_PARAM(pConfigNode,"Freeze-V-Function","Defers updates on the V-functions to improve stability",false);
 	m_vFunctionUpdateFreq= INT_PARAM(pConfigNode,"V-Function-Update-Freq","Update frequency at which v-function updates will be done. Only used if Freeze-V-Function=true",100);
+	m_bUseImportanceWeights = BOOL_PARAM(pConfigNode, "Use-Importance-Weights", "Use sample importance weights to allow off-policy learning -experimental-", false);
 }
 
 
@@ -44,31 +45,32 @@ CSimGod::~CSimGod()
 }
 
 
-void CSimGod::selectAction(CState* s, CAction* a)
+double CSimGod::selectAction(CState* s, CAction* a)
 {
+	double probability = 1.0;
 	for (unsigned int i = 0; i < m_simions.size(); i++)
-		m_simions[i]->selectAction(s, a);
+		probability*= m_simions[i]->selectAction(s, a);
+	return probability;
 }
 
-void CSimGod::update(CState* s, CAction* a, CState* s_p, double r)
+void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probability)
 {
 	CExperienceTuple* pExperienceTuple;
+	double actionImportanceWeight= 1.0;
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
-	m_pExperienceReplay->addTuple(s, a, s_p, r);
+	m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
 
 	int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
 	for (int tuple = 0; tuple < updateBatchSize; ++tuple)
 	{
 		pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
-		//update critic
-		for (unsigned int i = 0; i < m_simions.size(); i++)
-			m_simions[i]->updateValue(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
 
-		//update actor: might be the controller
+		//update step
 		for (unsigned int i = 0; i < m_simions.size(); i++)
-			m_simions[i]->updatePolicy(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p, pExperienceTuple->r);
+			m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
+				, pExperienceTuple->r, pExperienceTuple->probability);
 	}
 }
 
@@ -144,4 +146,9 @@ int CSimGod::getVFunctionUpdateFreq()
 	if (m_bFreezeVFunctionUpdates.get())
 		return m_vFunctionUpdateFreq.get();
 	return 0;
+}
+
+bool CSimGod::useSampleImportanceWeights()
+{
+	return m_bUseImportanceWeights.get();
 }

@@ -25,7 +25,7 @@ class CDescriptor
 	std::vector<CNamedVarProperties*> m_pProperties;
 public:
 	CNamedVarSet* getInstance();
-	int size() const { return m_pProperties.size(); }
+	size_t size() const { return m_pProperties.size(); }
 	CNamedVarProperties& operator[](int idx) { return *m_pProperties[idx]; }
 	const CNamedVarProperties& operator[](int idx) const { return *m_pProperties[idx]; }
 	int addVariable(const char* name, const char* units, double min, double max);

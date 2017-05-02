@@ -18,3 +18,4 @@ std::shared_ptr<CSimion> CSimion::getInstance(CConfigNode* pConfigNode)
 		{"Inc-Natural-Actor-Critic",CHOICE_ELEMENT_NEW<CIncrementalNaturalActorCritic>}
 	});
 }
+

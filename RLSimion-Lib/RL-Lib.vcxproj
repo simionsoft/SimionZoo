@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -24,7 +32,18 @@
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -35,7 +54,13 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -43,15 +68,30 @@
     <_ProjectFileVersion>12.0.21005.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Debug\$(Platform)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <OutDir>$(SolutionDir)Debug\$(Platform)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -63,10 +103,10 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <BrowseInformation>true</BrowseInformation>
+      <AdditionalIncludeDirectories>../3rd-party/bullet3-2.86/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
-      <OutputFile>../Debug/$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Lib>
     <PostBuildEvent>
       <Command>
@@ -81,9 +121,34 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>RLSimion source code parser</Message>
     </CustomBuildStep>
-    <Bscmake>
-      <PreserveSbr>true</PreserveSbr>
-    </Bscmake>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../3rd-party/bullet3-2.86/src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
+    </PostBuildEvent>
+    <CustomBuildStep>
+      <Command>..\Debug\SimionSrcParser.exe $(ProjectDir)</Command>
+      <Outputs>..\config\definitions.xml</Outputs>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+      <Message>RLSimion source code parser</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -95,10 +160,36 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../3rd-party/bullet3-2.86/src</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX86</TargetMachine>
-      <OutputFile>../bin/$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+    </Lib>
+    <CustomBuildStep>
+      <Command>..\bin\SimionSrcParser.exe $(ProjectDir)</Command>
+      <Message>RLSimion source code parser</Message>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+      <Outputs>..\config\definitions.xml</Outputs>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
+    </CustomBuildStep>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../3rd-party/bullet3-2.86/src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Lib>
+      <TargetMachine>MachineX64</TargetMachine>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
     </Lib>
     <CustomBuildStep>
       <Command>..\bin\SimionSrcParser.exe $(ProjectDir)</Command>
@@ -115,13 +206,19 @@
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
+    <ClCompile Include="b3Clock.cpp" />
     <ClCompile Include="Box.cpp" />
+    <ClCompile Include="BulletBody.cpp" />
+    <ClCompile Include="CollisionShape2TriangleMesh.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="delayed-load.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="featuremap.cpp" />
+    <ClCompile Include="GLShapeDrawer.cpp" />
+    <ClCompile Include="GraphicSettings.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="OpenGLGuiHelper.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="q-learners.cpp" />
@@ -149,7 +246,9 @@
     <ClCompile Include="named-var-set.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
@@ -171,7 +270,10 @@
     <ClInclude Include="actor.h" />
     <ClInclude Include="app-rlsimion.h" />
     <ClInclude Include="app.h" />
+    <ClInclude Include="b3Clock.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="BulletBody.h" />
+    <ClInclude Include="CollisionShape2TriangleMesh.h" />
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
@@ -181,6 +283,9 @@
     <ClInclude Include="experiment.h" />
     <ClInclude Include="featuremap.h" />
     <ClInclude Include="features.h" />
+    <ClInclude Include="GL_ShapeDrawer.h" />
+    <ClInclude Include="GraphicSettings.h" />
+    <ClInclude Include="OpenGLGuiHelper.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="logger.h" />
     <ClInclude Include="noise.h" />
@@ -221,6 +326,51 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">
+      <Project>{039b76ca-bc1b-b94d-a520-7e71cca3ded2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Geometry.vcxproj">
+      <Project>{4e8b0499-8628-8943-b9c8-2a391cffff80}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletCollision.vcxproj">
+      <Project>{91650844-3a27-904e-9b55-79ab50c2531b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
+      <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
+      <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\OpenGL_Window.vcxproj">
+      <Project>{12820605-a402-f444-954e-ff051a08a3f3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\tinyxml2\tinyxml2.vcxproj">
+      <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\tools\WindowsUtils\WindowsUtils.vcxproj">
+      <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">
+      <Project>{039b76ca-bc1b-b94d-a520-7e71cca3ded2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Geometry.vcxproj">
+      <Project>{4e8b0499-8628-8943-b9c8-2a391cffff80}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletCollision.vcxproj">
+      <Project>{91650844-3a27-904e-9b55-79ab50c2531b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
+      <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
+      <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

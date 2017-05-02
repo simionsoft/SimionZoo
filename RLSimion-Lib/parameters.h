@@ -211,6 +211,10 @@ public:
 		if (!m_bOptional || pConfigNode->getChild(name))
 			m_pValue = DataType::getInstance(pConfigNode->getChild(name));
 	}
+	void set(DataType* newValue)
+	{
+		m_pValue = std::shared_ptr<DataType>(newValue);
+	}
 
 	DataType* operator->() { return m_pValue.get(); }
 	shared_ptr<DataType> shared_ptr() { return m_pValue; }

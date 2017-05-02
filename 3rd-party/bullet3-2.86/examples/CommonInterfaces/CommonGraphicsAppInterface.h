@@ -2,7 +2,6 @@
 #define COMMON_GRAPHICS_APP_H
 
 
-
 #include "Bullet3Common/b3Vector3.h"
 #include "CommonRenderInterface.h"
 #include "CommonWindowInterface.h"

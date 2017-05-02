@@ -18,7 +18,7 @@ public:
 	CCritic(CConfigNode* pParameters);
 	virtual ~CCritic();
 
-	virtual double updateValue(const CState *s, const CAction *a, const CState *s_p, double r) = 0;
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho= 1.0) = 0;
 
 	static std::shared_ptr<CCritic> getInstance(CConfigNode* pParameters);
 };

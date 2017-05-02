@@ -64,7 +64,7 @@ bool CTemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConf
 
 
 //for some unknown reason, VStudio fails to link to the versions of the templated functions that are only called from an implementation
-//of a virtual function, so this little function foo() with the signatures we use seems like a small price to get it work
+//of a virtual function, so this little function foo() with the signatures we use seems like a small price to getSample it work
 void foo()
 {
 	CTemplatedConfigFile t;

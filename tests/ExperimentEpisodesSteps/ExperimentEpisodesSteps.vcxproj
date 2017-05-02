@@ -75,15 +75,25 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>$(ProjectName)$(Platform)</TargetName>
+    <OutDir>$(SolutionDir)Debug\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)bin\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
+    <TargetName>$(ProjectName)$(Platform)</TargetName>
+    <OutDir>$(SolutionDir)bin\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -167,14 +177,8 @@
     <ClCompile Include="testCExperiment.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\3rd-party\tinyxml2\tinyxml2.vcxproj">
-      <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\RLSimion-Lib\RL-Lib.vcxproj">
       <Project>{a97cfeac-dbe2-433c-9454-6d1d2749c591}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\tools\WindowsUtils\WindowsUtils.vcxproj">
-      <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

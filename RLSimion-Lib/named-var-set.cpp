@@ -26,14 +26,13 @@ int CDescriptor::getVarIndex(const char* name)
 
 int CDescriptor::addVariable(const char* name, const char* units, double min, double max)
 {
-	int index = m_pProperties.size();
+	int index = (int) m_pProperties.size();
 	m_pProperties.push_back(new CNamedVarProperties(name, units, min, max));
 	return index;
 }
 
 CNamedVarSet* CDescriptor::getInstance()
 {
-	int numVars = m_pProperties.size();
 	CNamedVarSet* pNew = new CNamedVarSet(*this);
 
 	return pNew;
@@ -45,7 +44,7 @@ CNamedVarSet::CNamedVarSet(CDescriptor& descriptor): m_pProperties(descriptor)
 	//m_pProperties= new CNamedVarProperties[numVars];
 	m_pValues= new double[descriptor.size()];
 	for (int i = 0; i < descriptor.size(); i++) m_pValues[i] = 0.0;
-	m_numVars= descriptor.size();
+	m_numVars= (int)descriptor.size();
 }
 
 CNamedVarSet::~CNamedVarSet()
