@@ -13,7 +13,6 @@ namespace Badger.ViewModels
         private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
         public ObservableCollection<ReportViewModel> reports { get { return m_reports; } set { } }
        
-
         /*
         private bool m_bCanGenerateReports = false;
         public bool bCanGenerateReports { get { return m_bCanGenerateReports; }
@@ -352,17 +351,19 @@ namespace Badger.ViewModels
         public void close(ReportViewModel report)
         {
             reports.Remove(report);
-            resetReportViewer();
         }
 
-        public void resetReportViewer()
+        public void clearReportViewer()
         {
             loggedExperiments.Clear();
             reports.Clear();
             variables.Clear();
+            inGroupSelectionVariables.Clear();
+            orderByVariables.Clear();
             bCanGenerateReports = false;
             bCanSaveReports = false;
             bLogsLoaded = false;
+            bVariableSelection = true;  
             Refresh();
         }
 
