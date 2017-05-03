@@ -16,10 +16,11 @@ namespace Badger.ViewModels
     ///         will be saved, meaning no forked nodes will be actually saved, but only the currently
     ///         selected value.
     ///     - AsProject: in a single file, all the forks, values and the rest of nodes are saved.
-    ///     - ForkHierarchy: forkedNodes and forks will be saved as a unique experiment.
     ///     - ForkValues: only the selected values for each fork are saved.
+    ///     - ForkHierarchy: forkedNodes and forks will be saved as a unique experiment.
+    ///     - Prerequisites: list of files' names that are necessary to execute an experiment.
     /// </summary>
-    public enum SaveMode { AsExperiment, AsExperimentalUnit, AsProject, ForkValues, ForkHierarchy };
+    public enum SaveMode { AsExperiment, AsExperimentalUnit, AsProject, ForkValues, ForkHierarchy, Prerequisites };
     public enum WorldVarType { StateVar, ActionVar, Constant };
 
     public class ExperimentViewModel : PropertyChangedBase
@@ -52,7 +53,7 @@ namespace Badger.ViewModels
             if (!m_classDefinitions.ContainsKey(className))
             {
                 if (!bCanBeNull)
-                    CaliburnUtility.showWarningDialog("Undefined class" + className, "ERROR");
+                    CaliburnUtility.ShowWarningDialog("Undefined class" + className, "ERROR");
                 return null;
             }
             return m_classDefinitions[className];
@@ -72,7 +73,7 @@ namespace Badger.ViewModels
         {
             if (!m_enumDefinitions.ContainsKey(enumName))
             {
-                CaliburnUtility.showWarningDialog("Undefined enumeratedType: " + enumName, "ERROR");
+                CaliburnUtility.ShowWarningDialog("Undefined enumeratedType: " + enumName, "ERROR");
                 return null;
             }
             return m_enumDefinitions[enumName];
@@ -185,7 +186,7 @@ namespace Badger.ViewModels
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
                     else
                     {
-                        CaliburnUtility.showWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
+                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
                             , "ERROR");
                         m_version = "0.0.0.0";
                     }

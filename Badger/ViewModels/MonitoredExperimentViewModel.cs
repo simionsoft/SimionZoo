@@ -4,23 +4,24 @@ using System.Xml;
 using Caliburn.Micro;
 using Herd;
 using System.Collections.Generic;
-
+using System.Linq;
 using Badger.Data;
 
 namespace Badger.ViewModels
 {
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {
-        private ExperimentalUnit m_experimentalUnit;
-        public string PipeName { get { return m_experimentalUnit.pipeName; } }
-        public string Name { get { return m_experimentalUnit.name; } }
-        public string FilePath { get { return m_experimentalUnit.configFilePath; } }
-        public string ExeFile { get { return m_experimentalUnit.exeFile; } }
-        public List<string> Prerequisites { get { return m_experimentalUnit.prerrequisites; } }
+        private LoggedExperimentalUnitViewModel m_loggedExperimentalUnit;
 
-        /*private Dictionary<string, string> m_forks;
+        public string PipeName { get { return m_loggedExperimentalUnit.name; } }
+        public string Name { get { return m_loggedExperimentalUnit.name; } }
+        public string FilePath { get { return m_loggedExperimentalUnit.experimentFilePath; } }
 
-        public Dictionary<string, string> Forks { get { return m_experimentalUnit.forkValues; } }*/
+        public string ExeFile { get; set; }
+
+        public List<string> Prerequisites { get; set; }
+
+        public List<string> Forks { get; set; }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -46,16 +47,10 @@ namespace Badger.ViewModels
             state = ExperimentState.ENQUEUED;
             NotifyOfPropertyChange(() => state);
         }
-        public bool isRunning
-        {
-            get { return m_state == ExperimentState.RUNNING; }
-            set { }
-        }
-        public bool isEnqueued
-        {
-            get { return m_state == ExperimentState.ENQUEUED; }
-            set { }
-        }
+
+        public bool isRunning { get { return m_state == ExperimentState.RUNNING; } }
+
+        public bool isEnqueued { get { return m_state == ExperimentState.ENQUEUED; } }
 
         public string stateString
         {
@@ -138,13 +133,16 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private ExperimentQueueMonitorViewModel m_parent;
+        private ExperimentMonitorViewModel m_parent;
 
-        public MonitoredExperimentViewModel(ExperimentalUnit expUnit,
-            PlotViewModel plot, ExperimentQueueMonitorViewModel parent)
+        public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
+           List<string> prerequisites, PlotViewModel plot, ExperimentMonitorViewModel parent)
         {
+            m_loggedExperimentalUnit = expUnit;
+            ExeFile = exeFile;
+            Prerequisites = prerequisites;
+            Forks = expUnit.forkValues.Select(k => k.Key + ": " + k.Value).ToList();
             evaluationMonitor = plot;
-            m_experimentalUnit = expUnit;
             m_parent = parent;
         }
 

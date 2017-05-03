@@ -14,10 +14,10 @@ public:
 	CAction* a;
 	CState* s_p;
 	double r;
-
+	double probability; //probability under which the actor took action a in state s
 
 	CExperienceTuple();
-	void copy(CState* s, CAction* a, CState* s_p, double r);
+	void copy(CState* s, CAction* a, CState* s_p, double r,double probability);
 };
 
 class CExperienceReplay: public CDeferredLoad
@@ -34,7 +34,7 @@ public:
 	CExperienceReplay();
 	~CExperienceReplay();
 
-	void addTuple(CState* s, CAction* a, CState* s_p, double r);
+	void addTuple(CState* s, CAction* a, CState* s_p, double r, double probability);
 	int getUpdateBatchSize();
 	CExperienceTuple* getRandomTupleFromBuffer();
 

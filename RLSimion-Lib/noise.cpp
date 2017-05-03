@@ -5,40 +5,51 @@
 #include "app-rlsimion.h"
 #include <math.h>
 
+#define MARGINAL_SIGMA 0.1
+#define MINIMAL_PROBABILITY 0.000001
+#define PROBABILITY_INTEGRATION_WIDTH 0.001
+
 double getRandomValue()
 {
 	return (double)(rand() + 1) / ((double)RAND_MAX + 1);
 }
 
-double getNormalDistributionSample(double mu, double sigma)
+double CGaussianNoise::getNormalDistributionSample(double mean, double sigma)
 {
 	if (sigma == 0.0) return 0.0;
 	double x1 = (double) (rand() + 1) / ((double) RAND_MAX + 1);
 	double x2 = (double) rand() / (double) RAND_MAX;
-	assert(x1 != 0.0);
-	assert(-2 * log(x1) >= 0.0);
 	double z = sqrt(- 2 * log(x1)) * cos(2 * M_PI * x2);
-	assert(sigma != 0.0);
-	return z * sqrt(sigma) + mu;
+	return z * sqrt(sigma) + mean;
 }
-////2015/10/09
-//double CGaussianNoiseVariableSigma::getLastValuesProbability()
-//{
-//	//https://en.wikipedia.org/wiki/Normal_distribution
-//	double intwidth= 0.001;
-//	double sample= m_lastValue*3.0;
-//
-//	double sample1= sample+intwidth*0.5;
-//	double sample2= sample-intwidth*0.5;
-//	double val1,val2;
-//
-//	val1= (1/sqrt(2*M_PI))*exp(-(sample1*sample1/2));
-//	val2= (1/sqrt(2*M_PI))*exp(-(sample2*sample2/2));
-//
-//	double prob= fabs(val2-val1)*0.5*intwidth;
-//
-//	return prob;
-//}
+
+double CGaussianNoise::getPDF(double mean, double sigma, double value,double scaleFactor)
+{
+	double diff = (value - mean)/scaleFactor;
+	return (1. / sqrt(2 * M_PI*sigma*sigma))*exp(-(diff*diff / 2*sigma*sigma));
+}
+
+double CGaussianNoise::getSampleProbability(double mean, double sigma, double sample, double scale)
+{
+	//https://en.wikipedia.org/wiki/Normal_distribution
+	double intwidth = PROBABILITY_INTEGRATION_WIDTH;
+
+	double sample1 = getPDF(0.0, sigma, sample + intwidth*0.5, scale);
+	double sample2 = getPDF(0.0, sigma, sample - intwidth*0.5, scale);
+
+	double prob = fabs(sample1 - sample2)*0.5*intwidth;
+
+	return std::max(MINIMAL_PROBABILITY,prob);
+}
+
+double CGaussianNoise::getSampleProbability(double sample, bool bUseMarginalNoise)
+{
+	double sigma;
+	if (!bUseMarginalNoise) sigma = m_sigma.get();
+	else sigma = MARGINAL_SIGMA;
+
+	return getSampleProbability(0.0, sigma, sample, m_scale->get());
+}
 
 CNoise::CNoise()
 {
@@ -72,7 +83,7 @@ CGaussianNoise::CGaussianNoise(double sigma, double alpha, CNumericValue* scale)
 	m_scale= CHILD_OBJECT_FACTORY<CNumericValue>(scale);
 }
 
-double CGaussianNoise::get()
+double CGaussianNoise::getSample()
 {
 	double randValue = 0.0;
 	double sigma = m_sigma.get();
@@ -125,7 +136,7 @@ double CSinusoidalNoise::unscale(double noise)
 	return noise / width;
 }
 
-double CSinusoidalNoise::get()
+double CSinusoidalNoise::getSample()
 {
 	if (m_scale->get() == 0.0) return 0.0;
 
@@ -139,13 +150,19 @@ double CSinusoidalNoise::get()
 	return noise;
 }
 
-COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(CConfigNode* pParameters)
+double CSinusoidalNoise::getSampleProbability(double sample,bool bUseMarginalNoise)
+{
+	return 1.0;
+}
+
+COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(CConfigNode* pConfigNode)
 {
 	//https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process
 	m_lastValue = 0.0;
-	m_mu = DOUBLE_PARAM(pParameters, "Mu", "Mean value of the generated noise", 0.0);
-	m_sigma = DOUBLE_PARAM(pParameters, "Sigma", "Degree of volatility around it caused by shocks", 0.0);
-	m_theta = DOUBLE_PARAM(pParameters, "Theta", "Rate by which noise shocks dissipate and the variable reverts towards the mean", 0.0);
+	m_mu = DOUBLE_PARAM(pConfigNode, "Mu", "Mean value of the generated noise", 0.0);
+	m_sigma = DOUBLE_PARAM(pConfigNode, "Sigma", "Degree of volatility around it caused by shocks", 0.0);
+	m_theta = DOUBLE_PARAM(pConfigNode, "Theta", "Rate by which noise shocks dissipate and the variable reverts towards the mean", 0.0);
+	m_scale = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Scale", "Scale factor applied to the noise signal before adding it to the policy's output");
 
 	if (CSimionApp::get() != nullptr && CSimionApp::get()->pWorld.ptr() != nullptr)
 		m_dt = CSimionApp::get()->pWorld->getDT();
@@ -158,6 +175,7 @@ COrnsteinUhlenbeckNoise::COrnsteinUhlenbeckNoise(double theta, double sigma, dou
 	m_sigma.set(sigma);
 	m_mu.set(mu);
 	m_dt = dt;
+	m_scale.set(new CConstantValue(1.0));
 }
 
 COrnsteinUhlenbeckNoise::~COrnsteinUhlenbeckNoise()
@@ -172,13 +190,19 @@ double COrnsteinUhlenbeckNoise::unscale(double noise)
 	//does this method really make sense????
 	return 1.0;
 }
-double COrnsteinUhlenbeckNoise::get()
+double COrnsteinUhlenbeckNoise::getSample()
 {
 	//http://math.stackexchange.com/questions/1287634/implementing-ornstein-uhlenbeck-in-matlab
-	//x(i + 1) = x(i) + th*(mu - x(i))*dt + sig*sqrt(dt)*randn;
+	//x(i + 1) = x(i) + th*(mean - x(i))*dt + sig*sqrt(dt)*randn;
 
 	double newNoise = m_lastValue + m_theta.get()*(m_mu.get() - m_lastValue)*m_dt
-		+ m_sigma.get()*sqrt(m_dt)*getNormalDistributionSample(0, 1);
+		+ m_sigma.get()*sqrt(m_dt)*CGaussianNoise::getNormalDistributionSample(0.0, 1);
+	newNoise *= m_scale->get();
 	m_lastValue = newNoise;
 	return newNoise;
+}
+
+double COrnsteinUhlenbeckNoise::getSampleProbability(double sample, bool bUseMarginalNoise)
+{
+	return 1.0; //not implemented
 }

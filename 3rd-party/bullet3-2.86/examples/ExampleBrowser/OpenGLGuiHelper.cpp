@@ -1,10 +1,12 @@
 #include "OpenGLGuiHelper.h"
 
-#include "btBulletDynamicsCommon.h"
+#include "../../src/btBulletDynamicsCommon.h"
 
 #include "../CommonInterfaces/CommonGraphicsAppInterface.h"
 #include "../CommonInterfaces/CommonRenderInterface.h"
-#include "Bullet3Common/b3Scalar.h"
+#include "../../src/Bullet3Common/b3Scalar.h"
+#include "../../src/btBulletDynamicsCommon.h"
+
 #include "CollisionShape2TriangleMesh.h"
 
 

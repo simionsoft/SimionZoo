@@ -31,18 +31,22 @@ CQEGreedyPolicy::~CQEGreedyPolicy()
 {
 }
 
-void CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
+double CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
 {
 	double epsilon = m_pEpsilon->get();
 	double randomValue = getRandomValue();
 
 	if (randomValue < epsilon)
+	{
 		pQFunction->argMax(s, a);
+		return epsilon;
+	}
 	else
 	{
 		unsigned int numActionWeights= pQFunction->getNumActionWeights();
 		unsigned int randomActionWeight = rand() % numActionWeights;
 		pQFunction->getActionFeatureMap()->getFeatureAction(randomActionWeight, a);
+		return 1.0 / numActionWeights;
 	}
 }
 
@@ -58,12 +62,12 @@ CQSoftMaxPolicy::~CQSoftMaxPolicy()
 	if (m_pProbabilities) delete[] m_pProbabilities;
 }
 
-void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
+double CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
 {
 	if (m_pTau->get() == 0.0)
 	{
 		pQFunction->argMax(s, a);
-		return;
+		return 1.0;
 	}
 
 	unsigned int numActionWeights = pQFunction->getNumActionWeights();
@@ -86,13 +90,16 @@ void CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CSta
 
 	double randomValue = getRandomValue() * sum;
 	double searchSum = m_pProbabilities[0];
+	double actionProbability = m_pProbabilities[0];
 	i= 1;
 	while (randomValue>searchSum && i<numActionWeights - 1)
 	{
 		searchSum += m_pProbabilities[i];
+		actionProbability = m_pProbabilities[i];
 		i++;
 	}
 	pQFunction->getActionFeatureMap()->getFeatureAction(i-1, a);
+	return actionProbability;
 	assert(i < numActionWeights);
 }
 
@@ -113,7 +120,7 @@ CQLearning::~CQLearning()
 	delete m_pAux;
 }
 
-void CQLearning::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void CQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
 	m_eTraces->update();
@@ -127,9 +134,9 @@ void CQLearning::updateValue(const CState *s, const CAction *a, const CState *s_
 	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 }
 
-void CQLearning::selectAction(const CState *s, CAction *a)
+double CQLearning::selectAction(const CState *s, CAction *a)
 {
-	m_pQPolicy->selectAction(m_pQFunction.ptr(), s, a);
+	return m_pQPolicy->selectAction(m_pQFunction.ptr(), s, a);
 }
 
 ///////////////////////////////////////////////////
@@ -151,7 +158,7 @@ CDoubleQLearning::~CDoubleQLearning()
 	delete m_pTargetQFunction;
 }
 
-void CDoubleQLearning::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
 {
 	m_eTraces->update();
 
@@ -178,6 +185,7 @@ void CDoubleQLearning::updateValue(const CState *s, const CAction *a, const CSta
 //SARSA
 CSARSA::CSARSA(CConfigNode* pConfigNode) : CQLearning(pConfigNode)
 {
+	m_nextAProbability = 0.0;
 	m_bNextActionSelected = false;
 	m_nextA = CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
 }
@@ -187,26 +195,27 @@ CSARSA::~CSARSA()
 	delete m_nextA;
 }
 
-void CSARSA::selectAction(const CState *s, CAction *a)
+double CSARSA::selectAction(const CState *s, CAction *a)
 {
 	if (m_bNextActionSelected)
 	{
 		a->copy(m_nextA);
 		m_bNextActionSelected = false;
+		return m_nextAProbability;
 	}
 	else
 	{
-		m_pQPolicy->selectAction(m_pQFunction.ptr(), s, a);
+		return m_pQPolicy->selectAction(m_pQFunction.ptr(), s, a);
 	}
 }
 
-void CSARSA::updateValue(const CState* s, const CAction* a, const CState* s_p, double r)
+void CSARSA::update(const CState* s, const CAction* a, const CState* s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node77.html
 	m_eTraces->update();
 
 	//select a_t+1
-	m_pQPolicy->selectAction(m_pQFunction.ptr(), s_p, m_nextA);
+	m_nextAProbability= m_pQPolicy->selectAction(m_pQFunction.ptr(), s_p, m_nextA);
 	m_bNextActionSelected = true;
 
 	double gamma= CSimionApp::get()->pSimGod->getGamma();

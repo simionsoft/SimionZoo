@@ -248,33 +248,11 @@ namespace Badger.ViewModels
         private Logger.LogFunction logFunction = null;
         private PlotViewModel m_evaluationMonitor;
 
-        private double m_globalProgress;
-        public double GlobalProgress
-        {
-            get { return m_globalProgress; }
-            set
-            {
-                m_globalProgress = value;
-                NotifyOfPropertyChange(() => GlobalProgress);
-            }
-        }
+       
 
-        private Stopwatch m_experimentTimer;
-        public Stopwatch ExperimentTimer { get { return m_experimentTimer; } }
+        
 
-        private string m_estimatedEndTimeText = "";
-        public string estimatedEndTime
-        {
-            get { return m_estimatedEndTimeText; }
-            set
-            {
-                m_estimatedEndTimeText = value;
-                NotifyOfPropertyChange(() => estimatedEndTime);
-            }
-        }
 
-        // ---- TEST ---- //
-        // TODO: Review this between TEST comment lines!!!
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
             = new BindableCollection<LoggedExperimentViewModel>();
         public BindableCollection<LoggedExperimentViewModel> loggedExperiments
@@ -289,45 +267,38 @@ namespace Badger.ViewModels
             loggedExperiments.Add(newExperiment);
         }
 
-        // ---- TEST ---- //
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            List<ExperimentalUnit> experiments, PlotViewModel evaluationMonitor,
-            Logger.LogFunction logFunctionDelegate)
+            PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate, string batchFileName,
+            ExperimentMonitorViewModel parent)
         {
             m_bRunning = false;
-            m_experimentTimer = new Stopwatch();
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
 
-            // SimionFileData.loadExperimentBatch(loadLoggedExperiment);
+            SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
 
-            foreach (ExperimentalUnit exp in experiments)
+            foreach (var experiment in loggedExperiments)
             {
-                MonitoredExperimentViewModel monitoredExperiment =
-                    new MonitoredExperimentViewModel(exp, evaluationMonitor, this);
-                m_monitoredExperimentBatchList.Add(monitoredExperiment);
-                m_pendingExperiments.Add(monitoredExperiment);
+                List<string> prerequisites = new List<string>();
+
+                foreach (var prerequisite in experiment.Prerequisites)
+                    prerequisites.Add(prerequisite.Value);
+
+                foreach (var unit in experiment.expUnits)
+                {
+                    MonitoredExperimentViewModel monitoredExperiment =
+                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, evaluationMonitor, parent);
+                    m_monitoredExperimentBatchList.Add(monitoredExperiment);
+                    m_pendingExperiments.Add(monitoredExperiment);
+                }
             }
 
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
-        /// <summary>
-        ///     Express progress as a percentage unit to fill the global progress bar.
-        /// </summary>
-        public void updateGlobalProgress()
-        {
-            GlobalProgress = calculateGlobalProgress();
-
-            if (GlobalProgress > 0.0 && GlobalProgress < 100.0)
-                estimatedEndTime = "Estimated time to end: "
-                    + System.TimeSpan.FromSeconds(m_experimentTimer.Elapsed.TotalSeconds
-                    * ((100 - GlobalProgress) / GlobalProgress)).ToString(@"hh\:mm\:ss");
-            else
-                estimatedEndTime = "";
-        }
+        
 
         /// <summary>
         ///     Calculate the global progress of experiments in queue.

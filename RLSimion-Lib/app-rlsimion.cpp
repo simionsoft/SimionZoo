@@ -24,7 +24,7 @@ void RLSimionApp::setOutputDirectory(const char* pOutputDir)
 	//we provide the path to the xml configuration file so that the logger saves its log files in the directory
 	strcpy_s(m_directory, MAX_PATH_SIZE, pOutputDir);
 
-	int i = strlen(m_directory) - 1;
+	size_t i = strlen(m_directory) - 1;
 	while (i > 0 && m_directory[i] != '/' && m_directory[i] != '\\')
 		i--;
 
@@ -76,7 +76,8 @@ void RLSimionApp::run()
 	pApp->pSimGod->deferredLoad();
 	CLogger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
 
-	double r = 0.0;
+	double r;
+	double probability;
 
 	//episodes
 	for (pApp->pExperiment->nextEpisode(); pApp->pExperiment->isValidEpisode(); pApp->pExperiment->nextEpisode())
@@ -87,13 +88,13 @@ void RLSimionApp::run()
 		for (pApp->pExperiment->nextStep(); pApp->pExperiment->isValidStep(); pApp->pExperiment->nextStep())
 		{
 			//a= pi(s)
-			pApp->pSimGod->selectAction(s, a);
+			probability= pApp->pSimGod->selectAction(s, a);
 
 			//s_p= f(s,a); r= R(s');
 			r = pApp->pWorld->executeAction(s, a, s_p);
 
 			//update god's policy and value estimation
-			pApp->pSimGod->update(s, a, s_p, r);
+			pApp->pSimGod->update(s, a, s_p, r, probability);
 
 			//log tuple <s,a,s',r>
 			pApp->pExperiment->timestep(s, a, s_p, pApp->pWorld->getRewardVector());

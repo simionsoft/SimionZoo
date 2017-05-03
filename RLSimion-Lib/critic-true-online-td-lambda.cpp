@@ -23,12 +23,11 @@ CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
 	delete m_aux;
 }
 
-double CTrueOnlineTDLambdaCritic::updateValue(const CState *s,const  CAction *a,const CState *s_p, double r)
+double CTrueOnlineTDLambdaCritic::update(const CState *s,const  CAction *a,const CState *s_p, double r, double rho)
 {
 	double v_s_p;
 
 	if (m_pAlpha->get()==0.0) return 0.0;
-	double rho = 0.0;
 	
 	if (CSimionApp::get()->pExperiment->isFirstStep())
 	{

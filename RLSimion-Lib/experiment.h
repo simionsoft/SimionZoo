@@ -9,7 +9,7 @@ class CTimer;
 
 #define MAX_PROGRESS_MSG_LEN 1024
 
-//utility class to get a experiment time reference
+//utility class to getSample a experiment time reference
 //for example, we can use this reference to know if some feature vector has already been calculated in this time-step
 class CExperimentTime
 {

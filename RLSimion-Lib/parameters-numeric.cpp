@@ -10,11 +10,21 @@ CConstantValue::CConstantValue(CConfigNode* pConfigNode)
 	m_value = DOUBLE_PARAM(pConfigNode, "Value", "Constant value", 0.0);
 }
 
+CConstantValue::CConstantValue(double value)
+{
+	m_value.set(value);
+}
 
 CSimpleEpisodeLinearSchedule::CSimpleEpisodeLinearSchedule(CConfigNode* pConfigNode)
 {
 	m_startValue = DOUBLE_PARAM(pConfigNode, "Initial-Value", "Value at the beginning of the experiment",0.1);
 	m_endValue = DOUBLE_PARAM(pConfigNode, "End-Value", "Value at the end of the experiment", 0.0);
+}
+
+CSimpleEpisodeLinearSchedule::CSimpleEpisodeLinearSchedule(double startValue, double endValue)
+{
+	m_startValue.set(startValue);
+	m_endValue.set(endValue);
 }
 
 double CSimpleEpisodeLinearSchedule::get()
@@ -38,6 +48,17 @@ CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
 	m_evaluationValue = DOUBLE_PARAM(pConfigNode, "Evaluation-Value", "Output value during evaluation episodes", 0.0);
 }
 
+CInterpolatedValue::CInterpolatedValue(double startOffset, double preOffsetValue, double startValue, double endValue, double evaluationValue
+	, Interpolation interpolation, TimeReference timeReference)
+{
+	m_startOffset.set(startOffset);
+	m_preOffsetValue.set(preOffsetValue);
+	m_startValue.set(startValue);
+	m_endValue.set(endValue);
+	m_evaluationValue.set(evaluationValue);
+	m_interpolation.set(interpolation);
+	m_timeReference.set(timeReference);
+}
 
 double CInterpolatedValue::get()
 {
@@ -83,6 +104,16 @@ CBhatnagarSchedule::CBhatnagarSchedule(CConfigNode* pConfigNode)
 	m_alpha_c = DOUBLE_PARAM(pConfigNode, "Alpha-c", "Alpha-c parameter in Bhatnagar's schedule", 1.0);
 	m_t_exp = DOUBLE_PARAM(pConfigNode, "Time-Exponent", "Time exponent in Bhatnagar's schedule", 1.0);
 	m_evaluationValue= DOUBLE_PARAM(pConfigNode, "Evaluation-Value", "Output value during evaluation episodes", 0.0);
+}
+
+CBhatnagarSchedule::CBhatnagarSchedule(double alpha_0, double alpha_c, double t_exp
+	, double evaluationValue, TimeReference timeReference)
+{
+	m_alpha_0.set(alpha_0);
+	m_alpha_c.set(alpha_c);
+	m_t_exp.set(t_exp);
+	m_evaluationValue.set(evaluationValue);
+	m_timeReference.set(timeReference);
 }
 
 

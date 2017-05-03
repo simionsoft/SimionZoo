@@ -27,13 +27,13 @@ namespace Badger.ViewModels
         }
 
         //constructor called when loading a fork from a .badger file
-        public ForkValueViewModel(ExperimentViewModel parentExperiment, XmlNode classDefinition
-            , ConfigNodeViewModel parentNode, XmlNode configNode)
+        public ForkValueViewModel(ExperimentViewModel parentExperiment, XmlNode classDefinition,
+            ConfigNodeViewModel parentNode, XmlNode configNode)
         {
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             //not sure how to do this in a more elegant way
-            this.configNode = ConfigNodeViewModel.getInstance(parentExperiment, parentNode
-                , classDefinition, parentNode.xPath, configNode);
+            this.configNode = getInstance(parentExperiment, parentNode,
+                classDefinition, parentNode.xPath, configNode);
             this.configNode.bCanBeForked = false; //already belongs to a fork
         }
 
@@ -42,19 +42,22 @@ namespace Badger.ViewModels
         {
             //header
             if (mode == SaveMode.AsProject)
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + ">" + configNode.content
-                    + "</" + XMLConfig.forkValueTag + ">");
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + ">" + configNode.content + "/>");
+
             if (mode == SaveMode.ForkHierarchy)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag
-                    + " " + XMLConfig.valueAttribute + "=\"" + configNode.content + "\">");
+                    + " " + XMLConfig.valueAttribute + "=\"" + configNode.content + "\" />");
+
             if (mode == SaveMode.AsExperiment)
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " " + XMLConfig.nameAttribute + "=\""
-                    + name + "\">");
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " "
+                    + XMLConfig.nameAttribute + "=\"" + name + "\" />");
             //body: children
             configNode.outputXML(writer, mode, leftSpace + "\t");
+            /*
             //footer
             if (mode == SaveMode.AsExperiment || mode == SaveMode.ForkHierarchy)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
+            */
         }
 
         public override bool validate()
@@ -64,8 +67,7 @@ namespace Badger.ViewModels
 
         public override ConfigNodeViewModel clone()
         {
-            return new ForkValueViewModel(name, parent as ForkedNodeViewModel
-                , configNode.clone());
+            return new ForkValueViewModel(name, parent as ForkedNodeViewModel, configNode.clone());
         }
 
         public override int getNumForkCombinations()

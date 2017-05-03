@@ -21,6 +21,9 @@
     <Filter Include="world\BulletWorlds">
       <UniqueIdentifier>{9fdcd276-d72c-4a03-81c0-2714f2f39d20}</UniqueIdentifier>
     </Filter>
+    <Filter Include="world\GraphicResources">
+      <UniqueIdentifier>{9ac009a6-05f8-408a-9696-e5ec1696c580}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp">
@@ -182,6 +185,24 @@
     <ClCompile Include="world-robotonly.cpp">
       <Filter>world\BulletWorlds</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicSettings.cpp">
+      <Filter>world\GraphicResources</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGLGuiHelper.cpp">
+      <Filter>world\GraphicResources</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionShape2TriangleMesh.cpp">
+      <Filter>world\GraphicResources</Filter>
+    </ClCompile>
+    <ClCompile Include="GLShapeDrawer.cpp">
+      <Filter>world\GraphicResources</Filter>
+    </ClCompile>
+    <ClCompile Include="b3Clock.cpp">
+      <Filter>world\GraphicResources</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletBody.cpp">
+      <Filter>world\Move2RobotsUtils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -327,6 +348,24 @@
     </ClInclude>
     <ClInclude Include="world-robotonly.h">
       <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicSettings.h">
+      <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenGLGuiHelper.h">
+      <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionShape2TriangleMesh.h">
+      <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="GL_ShapeDrawer.h">
+      <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="b3Clock.h">
+      <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletBody.h">
+      <Filter>world\Move2RobotsUtils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

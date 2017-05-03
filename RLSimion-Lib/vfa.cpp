@@ -6,7 +6,7 @@
 #include "app.h"
 #include "SimGod.h"
 
-//LINEAR VFA. Common functionalities: get (CFeatureList*), saturate, save, load, ....
+//LINEAR VFA. Common functionalities: getSample (CFeatureList*), saturate, save, load, ....
 CLinearVFA::CLinearVFA()
 {
 }

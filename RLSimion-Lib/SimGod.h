@@ -27,6 +27,7 @@ class CSimGod
 
 	BOOL_PARAM m_bFreezeVFunctionUpdates;
 	INT_PARAM m_vFunctionUpdateFreq;
+	BOOL_PARAM m_bUseImportanceWeights;
 
 	CReward *m_pReward;
 
@@ -41,8 +42,8 @@ public:
 	CSimGod() = default;
 	virtual ~CSimGod();
 
-	void selectAction(CState* s,CAction* a);
-	void update(CState* s, CAction* a, CState* s_p, double r);
+	double selectAction(CState* s,CAction* a);
+	void update(CState* s, CAction* a, CState* s_p, double r, double probability);
 
 	//delayed load
 	static void registerDeferredLoadStep(CDeferredLoad* deferredLoadObject,unsigned int orderLoad);
@@ -64,6 +65,9 @@ public:
 
 	//V-Function freeze
 	//returns the freq. (in steps) at which the V-functions should be updated (0 if they aren't deferred)
-	int getVFunctionUpdateFreq(); 
+	int getVFunctionUpdateFreq();
+
+	//Use sample importance weights for off-policy learning?
+	bool useSampleImportanceWeights();
 };
 

@@ -47,7 +47,7 @@ void CActor::deferredLoadStep()
 					{
 						m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getStateFeatureMap()->getFeatureState(i, s);
 						m_pInitController->selectAction(s, a);
-						pWeights[i] = a->get(controllerActionIndex);//m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->get(s);
+						pWeights[i] = a->get(controllerActionIndex);//m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getSample(s);
 					}
 				}
 			}
@@ -74,20 +74,38 @@ void CActor::deferredLoadStep()
 	delete a;
 }
 
-void CActor::selectAction(const CState *s, CAction *a)
+double CActor::selectAction(const CState *s, CAction *a)
 {
+	double prob = 1.0;
 	for (unsigned int i = 0; i<m_policyLearners.size(); i++)
 	{
 		//each uni-dimensional policy sets its own action's value
-		m_policyLearners[i]->getPolicy()->selectAction(s, a);
+		prob*= m_policyLearners[i]->getPolicy()->selectAction(s, a);
 	}
+	return prob;
 }
 
-void CActor::updatePolicy(const CState* s, const CAction* a, const CState* s_p, double r, double td)
+double CActor::getActionProbability(const CState *s, const CAction *a, bool bStochastic)
+{
+	double prob = 1.0;
+	double ret;
+
+	for (unsigned int i = 0; i<m_policyLearners.size(); i++)
+	{
+		//each uni-dimensional policy sets its own action's value
+		ret = m_policyLearners[i]->getPolicy()->getProbability(s, a, bStochastic);
+
+		if (CSimionApp::get()->pSimGod->useSampleImportanceWeights())
+			prob *= ret;
+	}
+	return prob;
+}
+
+void CActor::update(const CState* s, const CAction* a, const CState* s_p, double r, double td)
 {
 	for (unsigned int i = 0; i<m_policyLearners.size(); i++)
 	{
 		//each uni-dimensional policy sets its own action's value
-		m_policyLearners[i]->updatePolicy(s, a, s_p, r, td);
+		m_policyLearners[i]->update(s, a, s_p, r, td);
 	}
 }

@@ -160,8 +160,7 @@ namespace Badger.ViewModels
 
         public WindowViewModel()
         {
-            m_shepherdViewModel = new ShepherdViewModel();
-            m_monitorWindowViewModel = new ExperimentMonitorViewModel(null);
+            m_shepherdViewModel = new ShepherdViewModel();            
 
             loadAppDefinitions();
         }
@@ -182,18 +181,18 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => appNames);
         }
 
-        public void saveExperimentInEditor()
+        public void SaveSelectedExperiment()
         {
             if (selectedExperiment == null || !selectedExperiment.validate())
             {
-                CaliburnUtility.showWarningDialog("The app can't be validated. See error log.", "Error");
+                CaliburnUtility.ShowWarningDialog("The app can't be validated. See error log.", "Error");
                 return;
             }
 
             SimionFileData.SaveExperiment(selectedExperiment);
         }
 
-        public void saveExperiments()
+        public void SaveAllExperiments()
         {
             SimionFileData.saveExperiments(m_experimentViewModels);
         }
@@ -236,12 +235,11 @@ namespace Badger.ViewModels
             }
         }
 
-        //BADGER files
         /// <summary>
         ///     Load multiple experiments all at once.
         ///     Used from WindowView when the Load experiments button is clicked.
         /// </summary>
-        public void loadExperiments()
+        public void LoadExperiments()
         {
             SimionFileData.loadExperiments(this, ref m_experimentViewModels, appDefinitions, logToFile);
             NotifyOfPropertyChange(() => ExperimentViewModels);
@@ -260,31 +258,31 @@ namespace Badger.ViewModels
         {
             if (m_shepherdViewModel.herdAgentList.Count == 0)
             {
-                CaliburnUtility.showWarningDialog("No Herd agents were detected, so experiments cannot be sent. Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
+                CaliburnUtility.ShowWarningDialog(
+                    "No Herd agents were detected, so experiments cannot be sent. " +
+                    "Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
                 return;
             }
 
-            string batchFilename = "";
-            List<ExperimentalUnit> experiments = new List<ExperimentalUnit>();
-            experiments = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFilename, logToFile);
+            string batchFileName = "";
+            int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFileName, logToFile);
 
-            if (experiments != null && experiments.Count > 0)
+            if (experimentalUnitsCount > 0)
             {
                 List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
 
-                logToFile("Running experiment queue remotely: " + experiments.Count + " experiments");
+                logToFile("Running experiment queue remotely: " + experimentalUnitsCount + " experiments");
 
                 //get available herd agents list. Inside the loop to update the list
                 shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 
-                m_monitorWindowViewModel.FreeHerdAgents = freeHerdAgents;
-                m_monitorWindowViewModel.PendingExperiments = experiments;
-                m_monitorWindowViewModel.LogFunction = logToFile;
-                m_monitorWindowViewModel.BatchFileName = batchFilename;
+                m_monitorWindowViewModel = new ExperimentMonitorViewModel(freeHerdAgents, logToFile, batchFileName);
 
                 m_monitorWindowViewModel.RunExperiments(true, true);
                 IsExperimentRunning = true;
+
+                CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
             }
         }
 
@@ -301,7 +299,7 @@ namespace Badger.ViewModels
         public void showPlotWindow()
         {
             ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
-            CaliburnUtility.showVMDialog(plotEditor, "Plot editor");
+            CaliburnUtility.ShowPopupWindow(plotEditor, "Plot editor");
         }
     }
 }

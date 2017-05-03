@@ -4,8 +4,7 @@
         xmlns:vm="clr-namespace:Badger.ViewModels"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
-        WindowStyle="ThreeDBorderWindow"
-        Width="1100"
+        Width="900"
         Height="600"
         WindowState="Normal"
         Title="Badger"
@@ -34,24 +33,29 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Width="Auto" Background="#E0E0E0">
             <StackPanel Orientation="Horizontal" Margin="3,5">
-                <Button Width="40" Height="40" Margin="5,0,20,0"
+                <Button Width="40" Height="40" Margin="5,0,20,0" ToolTip="New Experiment" 
                         cal:Message.Attach="[Event Click]=[Action newExperiment()]">
                     <Image Source="{StaticResource new}" Width="24" Height="24"/>
                 </Button>
-                <Button Height="40" Width="40" cal:Message.Attach="[Event Click]=[Action saveExperimentInEditor()]" >
+                <Button Height="40" Width="40" ToolTip="Save experiment" 
+                        cal:Message.Attach="[Event Click]=[Action SaveSelectedExperiment()]" >
                     <Image Source="{StaticResource save}" Width="24" Height="24"/>
                 </Button>
-                <Button Height="40" Width="40" x:Name="saveExperiments" >
-                    <Image Source="{StaticResource saveAll}"  ToolTip="Save all the experiments" Width="24" Height="24" />
+                <Button Height="40" Width="40" ToolTip="Save All Experiments" 
+                        cal:Message.Attach="[Event Click]=[Action SaveAllExperiments()]">
+                    <Image Source="{StaticResource saveAll}" Width="24" Height="24" />
                 </Button>
-                <Button Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LoadExperiment()]">
+                <Button Width="40" Height="40" ToolTip="Open Experiment" 
+                        cal:Message.Attach="[Event Click]=[Action LoadExperiment()]">
                     <Image Source="{StaticResource load}" Width="24" Height="24"/>
                 </Button>
-                <Button Width="40" Height="40" x:Name="loadExperiments">
-                    <Image Source="{StaticResource loadProject}"  ToolTip="Load a set of experiments" Width="24" Height="24" />
+                <Button Width="40" Height="40" ToolTip="Open Set of Experiments"
+                        cal:Message.Attach="[Event Click]=[Action LoadExperiments()]">
+                    <Image Source="{StaticResource loadProject}" Width="24" Height="24" />
                 </Button>
             </StackPanel>
 
+            <Label VerticalAlignment="Center">App</Label>
             <ComboBox x:Name="appNames" Width="140" HorizontalAlignment="Center" Margin="5"
                       Height="24" SelectedItem="{Binding selectedAppName}"/>
 
@@ -65,7 +69,7 @@
                         <Image Width="20" Height="20" Source="{StaticResource play}"></Image>
                     </StackPanel>
                 </Button>
-                <Button Width="100" Height="30" Margin="5"
+                <!--Button Width="100" Height="30" Margin="5"
                          IsEnabled="{Binding Path = IsExperimentRunning}"
                          x:Name="StopExperiments" VerticalAlignment="Top"
                             ToolTip="Stop experiments in queue">
@@ -73,7 +77,7 @@
                         <Label Margin="0,0,5,0">STOP</Label>
                         <Image Width="20" Height="20" Source="{StaticResource stop}"></Image>
                     </StackPanel>
-                </Button>
+                </Button-->
                 <Button Width="100" Height="30" Margin="5"
                             x:Name="showPlotWindow" ToolTip="Generate reports from stored experiment results">
                     <StackPanel Orientation="Horizontal">
@@ -84,54 +88,54 @@
             </StackPanel>
         </StackPanel>
 
-        <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
-            <Grid Background="#EEEEEE">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="2.75*" MinWidth="400"/>
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="3*" MinWidth="400"/>
-                </Grid.ColumnDefinitions>
+        <Grid Background="#EEEEEE">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="15" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="5*" MinWidth="40" />
+                <!--ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="3*" MinWidth="400"/-->
+            </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+            <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                             Background="#EEEEEE" HorizontalAlignment="Center" Orientation="Horizontal" >
-                    <Image Width="30" Height="30" Margin="5" Source="{StaticResource herdagent-head}"/>
-                    <Label FontSize="14" FontWeight="Medium" VerticalAlignment="Center">Herd Agents</Label>
-                </StackPanel>
+                <Image Width="30" Height="30" Margin="5" Source="{StaticResource herdagent-head}"/>
+                <Label FontSize="14" FontWeight="Medium" VerticalAlignment="Center">Herd Agents</Label>
+            </StackPanel>
 
-                <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" BorderBrush="#BDBDBD" >
-                    <ContentControl  x:Name="shepherdViewModel" />
-                </Border>
+            <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="5,0,0,5" BorderBrush="#BDBDBD" >
+                <ContentControl x:Name="shepherdViewModel" />
+            </Border>
 
-                <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4"
+            <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4"
                               x:Name="gridSplitter" HorizontalAlignment="Stretch" />
-                
-                <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
-                    <Label  Content="Experiment Editor" FontSize="14"
+
+            <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
+                <Label  Content="Experiment Editor" FontSize="14"
                        FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
-                </StackPanel>
+            </StackPanel>
 
-                <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels" SelectedItem="{Binding Path = selectedExperiment}" >
-                    <TabControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" >
-                                <Label Content="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
+            <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels"  Margin="0,0,5,5"
+                            SelectedItem="{Binding Path = selectedExperiment}" >
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" >
+                            <Label Content="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
                                        VerticalAlignment="Center"/>
-                                <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
-                                <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
-                                    <Image Source="{StaticResource close}" Width="10" />
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </TabControl.ItemTemplate>
-                </TabControl>
+                            <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
+                            <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
+                                <Image Source="{StaticResource close}" Width="10" />
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
 
-                <GridSplitter Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Width="4"
+            <!--GridSplitter Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Width="4"
                               x:Name="gridSplitter2" HorizontalAlignment="Stretch" />
                 
                 <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
@@ -140,8 +144,7 @@
 
                 <Border Grid.Row="1" Grid.Column="4" BorderThickness="1" BorderBrush="#BDBDBD" >
                     <ContentControl  x:Name="monitorWindowViewModel" />
-                </Border>
-            </Grid>
-        </ScrollViewer>
+                </Border-->
+        </Grid>
     </DockPanel>
 </Window>

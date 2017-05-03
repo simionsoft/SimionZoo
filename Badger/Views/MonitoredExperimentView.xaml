@@ -38,8 +38,7 @@
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Height="Auto" Margin="5">
                 <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
                            FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
-                <TextBlock IsEnabled="False" Text="{Binding Forks}" FontFamily="Segoe UI"
-                           FontSize="10" VerticalAlignment="Center"/>
+                <ListView ItemsSource="{Binding Path=Forks}" Background="{x:Null}" Margin="0,5" BorderThickness="0" />
                 <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
                            FontSize="10" Width="Auto" MinWidth="100" VerticalAlignment="Center" />
             </StackPanel>

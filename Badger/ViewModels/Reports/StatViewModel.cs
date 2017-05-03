@@ -48,5 +48,7 @@ namespace Badger.ViewModels
             string[] parameters = groupId.Split(separators);
             return parameters != null ? parameters : null;
         }
+
+        
     }
 }

@@ -89,7 +89,6 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 }
 
 
-
 void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
 {
 	//Incremental Natural Actor-Critic (INAC)
@@ -134,10 +133,18 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	}
 }
 
-void CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
+void CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
 {
+	updateValue(s, a, s_p, r);
+	updatePolicy(s, a, s_p, r);
+}
+
+double CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
+{
+	double prob = 1.0;
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_policies[i]->selectAction(s, a);
+		prob*= m_policies[i]->selectAction(s, a);
 	}
+	return prob;
 }

@@ -27,7 +27,7 @@ subject to the following restrictions:
 #ifdef GLEW_STATIC
 #include "CustomGL/glew.h"
 #else
-#include <GL/glew.h>
+#include "../../bullet3-2.86/examples/ThirdPartyLibs/Glew/CustomGL/glew.h"
 #endif//GLEW_STATIC
 
 #ifdef _WINDOWS
