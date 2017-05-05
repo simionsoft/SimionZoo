@@ -361,6 +361,8 @@ namespace Badger.ViewModels
             inGroupSelectionVariables.Clear();
             resetGroupBy();
             orderByVariables.Clear();
+            selectedLimitToOption = "-";
+            selectedFrom = "*";
             bCanGenerateReports = false;
             bCanSaveReports = false;
             bLogsLoaded = false;
