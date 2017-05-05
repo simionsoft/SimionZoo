@@ -11,7 +11,7 @@ using System.Text;
 namespace Badger.ViewModels
 {
 
-    public class WindowViewModel : Window
+    public class MainWindowViewModel : PropertyChangedBase
     {
         static private BindableCollection<ExperimentViewModel> m_experimentViewModels
             = new BindableCollection<ExperimentViewModel>();
@@ -58,9 +58,9 @@ namespace Badger.ViewModels
             return newName;
         }
 
-        private ExperimentMonitorViewModel m_monitorWindowViewModel;
+        private ExperimentMonitorWindowViewModel m_monitorWindowViewModel;
 
-        public ExperimentMonitorViewModel monitorWindowViewModel { get { return m_monitorWindowViewModel; } }
+        public ExperimentMonitorWindowViewModel monitorWindowViewModel { get { return m_monitorWindowViewModel; } }
 
         // This is need it in order to enable/disable the StopExperiments button
         private bool m_bExperimentRunning = false;
@@ -120,7 +120,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public void newExperiment()
+        public void NewExperiment()
         {
             if (m_selectedAppName == null) return;
 
@@ -158,14 +158,14 @@ namespace Badger.ViewModels
             }
         }
 
-        public WindowViewModel()
+        public MainWindowViewModel()
         {
-            m_shepherdViewModel = new ShepherdViewModel();            
+            m_shepherdViewModel = new ShepherdViewModel();
 
-            loadAppDefinitions();
+            LoadAppDefinitions();
         }
 
-        private void loadAppDefinitions()
+        private void LoadAppDefinitions()
         {
             foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
             {
@@ -199,7 +199,7 @@ namespace Badger.ViewModels
 
         /// <summary>
         ///     Load a single experiment and adds it to the experiment list.
-        ///     Used from WindowView when the Load experiment button is clicked.
+        ///     Used from MainWindowView when the Load experiment button is clicked.
         /// </summary>
         public void LoadExperiment()
         {
@@ -237,7 +237,7 @@ namespace Badger.ViewModels
 
         /// <summary>
         ///     Load multiple experiments all at once.
-        ///     Used from WindowView when the Load experiments button is clicked.
+        ///     Used from MainWindowView when the Load experiments button is clicked.
         /// </summary>
         public void LoadExperiments()
         {
@@ -252,9 +252,9 @@ namespace Badger.ViewModels
 
         /// <summary>
         ///     Pass data to experiment monitor and run experiments defined so far.
-        ///     Used from WindowView when the launch button is clicked.
+        ///     Used from MainWindowView when the launch button is clicked.
         /// </summary>
-        public void runExperiments()
+        public void RunExperiments()
         {
             if (m_shepherdViewModel.herdAgentList.Count == 0)
             {
@@ -277,7 +277,7 @@ namespace Badger.ViewModels
                 shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 
-                m_monitorWindowViewModel = new ExperimentMonitorViewModel(freeHerdAgents, logToFile, batchFileName);
+                m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(freeHerdAgents, logToFile, batchFileName);
 
                 m_monitorWindowViewModel.RunExperiments(true, true);
                 IsExperimentRunning = true;
@@ -296,7 +296,7 @@ namespace Badger.ViewModels
             IsExperimentRunning = false;
         }
 
-        public void showPlotWindow()
+        public void ShowReportsWindow()
         {
             ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
             CaliburnUtility.ShowPopupWindow(plotEditor, "Plot editor");

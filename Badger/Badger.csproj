@@ -149,12 +149,12 @@
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentMonitorViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentMonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
-    <Compile Include="ViewModels\Window.cs" />
-    <Compile Include="ViewModels\WindowViewModel.cs" />
+    <Compile Include="Data\Window.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
@@ -173,14 +173,14 @@
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ExperimentMonitorView.xaml.cs">
-      <DependentUpon>ExperimentMonitorView.xaml</DependentUpon>
+    <Compile Include="Views\ExperimentMonitorWindowView.xaml.cs">
+      <DependentUpon>ExperimentMonitorWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\ReportsWindowView.xaml.cs">
       <DependentUpon>ReportsWindowView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WindowView.xaml.cs">
-      <DependentUpon>WindowView.xaml</DependentUpon>
+    <Compile Include="Views\MainWindowView.xaml.cs">
+      <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -325,7 +325,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ExperimentMonitorView.xaml">
+    <Page Include="Views\ExperimentMonitorWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -353,7 +353,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\WindowView.xaml">
+    <Page Include="Views\MainWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -368,25 +368,13 @@
     <Resource Include="images\copy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="images\folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="images\fork.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\left-arrow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="images\load.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="images\paste.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\play.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\plot.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\remove.png">
@@ -399,9 +387,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\save-all.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\save.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\stop.png">
@@ -461,6 +446,33 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-play-arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-graphic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-open-multiple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-save-all.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-new.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

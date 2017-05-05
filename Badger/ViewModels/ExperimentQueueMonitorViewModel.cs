@@ -248,29 +248,29 @@ namespace Badger.ViewModels
         private Logger.LogFunction logFunction = null;
         private PlotViewModel m_evaluationMonitor;
 
-       
 
-        
+
+
 
 
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
             = new BindableCollection<LoggedExperimentViewModel>();
-        public BindableCollection<LoggedExperimentViewModel> loggedExperiments
+        public BindableCollection<LoggedExperimentViewModel> LoggedExperiments
         {
             get { return m_loggedExperiments; }
-            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => loggedExperiments); }
+            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
         private void loadLoggedExperiment(XmlNode node)
         {
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, null);
-            loggedExperiments.Add(newExperiment);
+            LoggedExperiments.Add(newExperiment);
         }
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
             PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate, string batchFileName,
-            ExperimentMonitorViewModel parent)
+            ExperimentMonitorWindowViewModel parent)
         {
             m_bRunning = false;
             m_evaluationMonitor = evaluationMonitor;
@@ -279,7 +279,7 @@ namespace Badger.ViewModels
 
             SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
 
-            foreach (var experiment in loggedExperiments)
+            foreach (var experiment in LoggedExperiments)
             {
                 List<string> prerequisites = new List<string>();
 
@@ -298,7 +298,7 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => monitoredExperimentBatchList);
         }
 
-        
+
 
         /// <summary>
         ///     Calculate the global progress of experiments in queue.
@@ -322,14 +322,14 @@ namespace Badger.ViewModels
             set { m_bRunning = value; NotifyOfPropertyChange(() => bRunning); }
         }
 
-        private bool m_bFinished = false;
+        private bool m_bFinished;
         public bool bFinished
         {
             get { return m_bFinished; }
             set { m_bFinished = value; NotifyOfPropertyChange(() => bFinished); }
         }
 
-        public async void runExperimentsAsync(bool monitorProgress, bool receiveJobResults)
+        public async void RunExperimentsAsync(bool monitorProgress, bool receiveJobResults)
         {
             bRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
@@ -337,8 +337,8 @@ namespace Badger.ViewModels
             List<Task<ExperimentBatch>> experimentBatchTaskList = new List<Task<ExperimentBatch>>();
             List<ExperimentBatch> experimentBatchList = new List<ExperimentBatch>();
 
-            //assign experiments to free agents
-            assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList,
+            // Assign experiments to free agents
+            AssignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList,
                 m_cancelTokenSource.Token, logFunction);
             try
             {
@@ -346,10 +346,9 @@ namespace Badger.ViewModels
                     || m_pendingExperiments.Count > 0) && !m_cancelTokenSource.IsCancellationRequested)
                 {
                     foreach (ExperimentBatch batch in experimentBatchList)
-                    {
                         experimentBatchTaskList.Add(batch.sendJobAndMonitor());
-                    }
-                    //all pending experiments sent? then we await completion to retry in case something fails
+
+                    // All pending experiments sent? Then we await completion to retry in case something fails
                     if (m_pendingExperiments.Count == 0)
                     {
                         Task.WhenAll(experimentBatchTaskList).Wait();
@@ -357,7 +356,7 @@ namespace Badger.ViewModels
                         break;
                     }
 
-                    //wait for the first agent to finish and give it something to do
+                    // Wait for the first agent to finish and give it something to do
                     Task<ExperimentBatch> finishedTask = await Task.WhenAny(experimentBatchTaskList);
                     ExperimentBatch finishedTaskResult = await finishedTask;
                     logFunction("Job finished: " + finishedTaskResult.ToString());
@@ -370,12 +369,12 @@ namespace Badger.ViewModels
                         logFunction(finishedTaskResult.failedExperiments.Count + " failed experiments enqueued again for further trials");
                     }
 
-                    //just in case the freed agent hasn't still been discovered by the shepherd
+                    // Just in case the freed agent hasn't still been discovered by the shepherd
                     if (!m_herdAgentList.Contains(finishedTaskResult.herdAgent))
                         m_herdAgentList.Add(finishedTaskResult.herdAgent);
 
-                    //assign experiments to free agents
-                    assignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList,
+                    // Assign experiments to free agents
+                    AssignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref experimentBatchList,
                         m_cancelTokenSource.Token, logFunction);
                 }
             }
@@ -403,7 +402,7 @@ namespace Badger.ViewModels
                 m_cancelTokenSource.Cancel();
         }
 
-        private int batchId = 0;
+
 
         /// <summary>
         ///     Assigns experiments to availables herd agents.
@@ -413,24 +412,26 @@ namespace Badger.ViewModels
         /// <param name="experimentAssignments"></param>
         /// <param name="cancelToken"></param>
         /// <param name="logFunction"></param>
-        public void assignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments,
+        public void AssignExperiments(ref List<MonitoredExperimentViewModel> pendingExperiments,
             ref List<HerdAgentViewModel> freeHerdAgents, ref List<ExperimentBatch> experimentAssignments,
             CancellationToken cancelToken, Logger.LogFunction logFunction = null)
         {
             experimentAssignments.Clear();
-            List<MonitoredExperimentViewModel> monitoredExperimentViewModels;
+            int batchId = 0;
+            List<MonitoredExperimentViewModel> monitoredExperimentViewModels =
+                new List<MonitoredExperimentViewModel>();
 
             while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
             {
                 HerdAgentViewModel agentVM = freeHerdAgents[0];
                 freeHerdAgents.RemoveAt(0);
                 //usedHerdAgents.Add(agentVM);
-                int numProcessors = Math.Max(1, agentVM.numProcessors - 1); //we free one processor
+                int numProcessors = Math.Max(1, agentVM.numProcessors - 1); // Let's free one processor
 
-                monitoredExperimentViewModels = new List<MonitoredExperimentViewModel>();
-                int numPendingExperiments = pendingExperiments.Count;
+                monitoredExperimentViewModels.Clear();
+                int len = Math.Min(numProcessors, pendingExperiments.Count);
 
-                for (int i = 0; i < Math.Min(numProcessors, numPendingExperiments); i++)
+                for (int i = 0; i < len; i++)
                 {
                     monitoredExperimentViewModels.Add(pendingExperiments[0]);
                     pendingExperiments.RemoveAt(0);

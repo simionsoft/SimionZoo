@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {

@@ -1,4 +1,4 @@
-﻿<Window x:Class="Badger.Views.ExperimentMonitorView"
+﻿<Window x:Class="Badger.Views.ExperimentMonitorWindowView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -31,7 +31,7 @@
         <oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding evaluationPlot.Plot}" MinHeight="300" Margin="10,10,20,10"/>
 
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" FontSize="11" Foreground="#616161" Margin="5,5,5,0"
+            <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" Foreground="#424242" Margin="5,5,5,0"
                            Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
             <Grid>
                 <Grid.ColumnDefinitions>

@@ -87,7 +87,7 @@ namespace Badger.ViewModels
         public string name
         {
             get { return m_name; }
-            set { m_name = WindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => name); }
+            set { m_name = MainWindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => name); }
         }
         //file name (not null if it has been saved)
         private string m_fileName = null;
@@ -209,13 +209,13 @@ namespace Badger.ViewModels
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
-        private WindowViewModel m_parent;
-        public WindowViewModel parent { get { return m_parent; } set { m_parent = value; } }
+        private MainWindowViewModel m_parent;
+        public MainWindowViewModel parent { get { return m_parent; } set { m_parent = value; } }
 
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
-        public ExperimentViewModel(WindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
+        public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
         {
             m_parent = parentWindow;
             //Load the configFile if a configFilename is provided
@@ -233,7 +233,7 @@ namespace Badger.ViewModels
         }
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
         //XML file, the calling method will be passing XML nodes belonging to the single XML file instead of filenames
-        public ExperimentViewModel(WindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode, string experimentName)
+        public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
             m_parent = parentWindow;
             init(appDefinitionFileName, configRootNode, experimentName);
