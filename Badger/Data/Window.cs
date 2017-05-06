@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Badger.ViewModels;
 using Caliburn.Micro;
 
-namespace Badger.ViewModels
+namespace Badger.Data
 {
     public class Window : Conductor<Screen>.Collection.OneActive
     {
@@ -73,6 +74,7 @@ namespace Badger.ViewModels
             get { return m_variables; }
             set { m_variables = value; NotifyOfPropertyChange(() => variables); }
         }
+
         //to be called by children experimental units after reading their log file descriptor
         public void addVariable(string variable)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using Caliburn.Micro;
+using Badger.Data;
 using Badger.Simion;
 using Badger.ViewModels.Reports;
 

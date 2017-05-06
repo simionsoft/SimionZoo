@@ -182,7 +182,7 @@ namespace Badger.Data
         }
 
         //BADGER project: LOAD
-        static public void loadExperiments(WindowViewModel parentWindow,
+        static public void loadExperiments(MainWindowViewModel parentWindow,
             ref BindableCollection<ExperimentViewModel> experiments,
             Dictionary<string, string> appDefinitions, logFunction log)
         {
@@ -265,7 +265,7 @@ namespace Badger.Data
         }
 
         //EXPERIMENT file: LOAD
-        static public ExperimentViewModel LoadExperiment(WindowViewModel parentWindow,
+        static public ExperimentViewModel LoadExperiment(MainWindowViewModel parentWindow,
             Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;

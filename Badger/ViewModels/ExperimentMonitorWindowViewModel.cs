@@ -7,7 +7,7 @@ using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    public class ExperimentMonitorViewModel : Window
+    public class ExperimentMonitorWindowViewModel : Window
     {
         private ExperimentQueueMonitorViewModel m_experimentQueueMonitorViewModel;
 
@@ -59,7 +59,7 @@ namespace Badger.ViewModels
         /// <param name="freeHerdAgents"></param>
         /// <param name="logFunction"></param>
         /// <param name="batchFileName"></param>
-        public ExperimentMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
+        public ExperimentMonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents,
             Logger.LogFunction logFunction, string batchFileName)
         {
             evaluationPlot = new PlotViewModel("Evaluation episodes");
@@ -88,7 +88,7 @@ namespace Badger.ViewModels
                 LogFunction, BatchFileName, this);
 
             ExperimentTimer.Start();
-            Task.Run(() => experimentQueueMonitor.runExperimentsAsync(monitorProgress, receiveJobResults));
+            Task.Run(() => experimentQueueMonitor.RunExperimentsAsync(monitorProgress, receiveJobResults));
         }
 
         /// <summary>

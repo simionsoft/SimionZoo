@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using System.Xml;
+using Badger.Data;
 using Badger.Simion;
 
 namespace Badger.ViewModels

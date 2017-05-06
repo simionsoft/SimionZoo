@@ -5,17 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-    </UserControl.Resources>
 
     <Border Margin="0" BorderThickness="1">
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Margin="5">
             <StackPanel Orientation="Horizontal" Height="20" VerticalAlignment="Top" HorizontalAlignment="Center">
-                <TextBlock IsEnabled="False" Width="Auto" Text="{Binding ipAddressString,FallbackValue=''}" FontSize="11" Margin="0,0,5,0" />
-                <TextBlock IsEnabled="False" Text="{Binding version,FallbackValue=''}" Foreground="Black" FontSize="11" Margin="0,0,5,0" Width="Auto"/>
-                <TextBlock IsEnabled="False" Text="{Binding status,FallbackValue=''}" Foreground="Black" FontSize="11" Margin="0,0,5,0" Width="Auto"/>
-                <TextBlock IsEnabled="False" Text="{Binding numProcessors,FallbackValue=''}" Foreground="Black" FontSize="11" Margin="0,0,5,0" Width="Auto"/>
+                <TextBlock IsEnabled="False" Width="Auto" Text="{Binding ipAddressString,FallbackValue=''}" Margin="0,0,5,0" />
+                <TextBlock IsEnabled="False" Text="{Binding version,FallbackValue=''}" Foreground="Black" Margin="0,0,5,0" Width="Auto"/>
+                <TextBlock IsEnabled="False" Text="{Binding status,FallbackValue=''}" Foreground="Black" Margin="0,0,5,0" Width="Auto"/>
+                <TextBlock IsEnabled="False" Text="{Binding numProcessors,FallbackValue=''}" Foreground="Black" Margin="0,0,5,0" Width="Auto"/>
             </StackPanel>
         </StackPanel>
     </Border>

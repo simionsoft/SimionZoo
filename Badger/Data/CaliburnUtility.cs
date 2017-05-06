@@ -45,7 +45,7 @@ namespace Badger.Data
         ///     with the background window. It also can be an independent window, which does allow
         ///     interaction with any other window of the application.
         /// </summary>
-        /// <param name="viewModel"></param>
+        /// <param name="viewModel">ViewModel to be shown in the pop-up window</param>
         /// <param name="windowHeader">Title of the window.</param>
         /// <param name="isDialog">Whether its a dialog or a window.</param>
         public static void ShowPopupWindow(PropertyChangedBase viewModel, string windowHeader, bool isDialog = true)

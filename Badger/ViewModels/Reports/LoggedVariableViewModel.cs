@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Dynamic;
-using System.Windows;
 using Caliburn.Micro;
 using System.IO;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -44,9 +44,8 @@ namespace Badger.ViewModels
         public enum PlotType { Last, All, Both };
 
         private MultiStateButtonViewModel m_stateButton =
-            new MultiStateButtonViewModel(new List<string>() { PlotType.Last.ToString()
-                                                                , PlotType.All.ToString()
-                                                                , PlotType.Both.ToString()});
+            new MultiStateButtonViewModel(new List<string>() { PlotType.Last.ToString(),
+                PlotType.All.ToString(), PlotType.Both.ToString()});
 
         public MultiStateButtonViewModel stateButton
         {

@@ -1,5 +1,6 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
+using Badger.Data;
 using Badger.Simion;
 using System;
 

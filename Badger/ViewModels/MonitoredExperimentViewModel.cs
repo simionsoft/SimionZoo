@@ -133,10 +133,10 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private ExperimentMonitorViewModel m_parent;
+        private ExperimentMonitorWindowViewModel m_parent;
 
         public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
-           List<string> prerequisites, PlotViewModel plot, ExperimentMonitorViewModel parent)
+           List<string> prerequisites, PlotViewModel plot, ExperimentMonitorWindowViewModel parent)
         {
             m_loggedExperimentalUnit = expUnit;
             ExeFile = exeFile;
