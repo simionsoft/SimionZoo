@@ -46,9 +46,9 @@
 
     <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
         <StackPanel Orientation="Vertical" Width="300" Margin="0,0,0,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="84,0,84,0" Width="140">
                 <Button  HorizontalAlignment="Center" Width="40" Height="40" Margin="5"
-                            x:Name="loadExperimentBatch" ToolTip="Load a batch: results from an experiment execution">
+            		x:Name="loadExperimentBatch" ToolTip="Load a batch: results from an experiment execution">
                     <StackPanel Orientation="Horizontal">
                         <!--
                         <TextBlock VerticalAlignment="Center" Margin="0,0,5,0">Load</TextBlock>
@@ -57,8 +57,8 @@
                     </StackPanel>
                 </Button>
                 <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Width="40" Height="40"
-                                     cal:Message.Attach="[Event Click]=[Action saveReports()]"
-                                    IsEnabled="{Binding Path=bCanSaveReports}">
+            		cal:Message.Attach="[Event Click]=[Action saveReports()]"
+            		IsEnabled="{Binding bCanSaveReports}">
                     <StackPanel Orientation="Horizontal">
                         <!--
                         <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Save all</TextBlock>
@@ -66,12 +66,22 @@
                         <Image Width="24" Height="24" Source="{StaticResource save-all}"  Margin="3,0,3,0"/>
                     </StackPanel>
                 </Button>
+                <Button  HorizontalAlignment="Center" ToolTip="Clear ReportViewer" BorderBrush="SlateGray" Width="40" Height="40" Margin="5"
+            		cal:Message.Attach="[Event Click]=[Action clearReportViewer()]"
+            		IsEnabled="{Binding bLogsLoaded}">
+                    <StackPanel Orientation="Horizontal">
+                        <!--
+                        <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Clear</TextBlock>
+                        -->
+                        <Image Width="24" Height="24" Source="{StaticResource close}"  Margin="3,0,3,0"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
             <StackPanel Margin="4,0,4,6">
                 <Label  Content="Experiment Forks" FontSize="14"
                        FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
                 <TreeView x:Name="Experiments" Margin="0" Height="210" BorderBrush="DarkGray" BorderThickness="1" Background="White">
-                    <ItemsControl x:Name="loggedExperiments"></ItemsControl>
+                    <ItemsControl x:Name="loggedExperiments"/>
                 </TreeView>
             </StackPanel>
             <StackPanel Margin="4,0,4,0">
@@ -80,49 +90,49 @@
                 <Border Margin="0" BorderBrush="DarkGray" BorderThickness="1">
                     <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}" Background="White" Margin="0,2,0,2">
                         <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="Which variables do we want to display?">
-                            <CheckBox x:Name="bVariableSelection" VerticalAlignment="Center" Margin="4,0,0,0"></CheckBox>
-                            <Label Width="70" Margin="0,0,0,0" VerticalAlignment="Center">Variables</Label>
+                            <CheckBox x:Name="bVariableSelection" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                            <Label Width="70" Margin="0,0,0,0" VerticalAlignment="Center" Content="Variables"/>
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Height="180" MaxHeight="180">
                                 <ItemsControl x:Name="variables" Width="183"/>
                             </ScrollViewer>
                         </StackPanel>
                         <StackPanel Margin="0,10,0,2" Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
-                            <Label Width="70" Margin="0,0,10,0">From</Label>
-                            <ComboBox x:Name="fromOptions" SelectedValue="{Binding Path=selectedFrom}" Width="80" HorizontalAlignment="Center"></ComboBox>
+                            <Label Width="70" Margin="0,0,10,0" Content="From"/>
+                            <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" Width="80" HorizontalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="Forks currently used to group results">
-                            <Label Width="70" Margin="0,0,10,0">Group by</Label>
-                            <TextBlock Text="{Binding Path=groupBy}" MaxWidth="164" Width="164" Background="#eeeeee"></TextBlock>
+                            <Label Width="70" Margin="0,0,10,0" Content="Group by"/>
+                            <TextBlock Text="{Binding groupBy}" MaxWidth="164" Width="164" Background="#eeeeee"/>
                             <Button x:Name="resetGroupBy" Margin="4,0,0,0">
-                                <Image Source="{StaticResource close}" Width="20"></Image>
+                                <Image Source="{StaticResource close}" Width="20"/>
                             </Button>
                         </StackPanel>
                         <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
-                            <Label Width="70" Margin="0,0,10,0">Pick</Label>
-                            <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding Path=selectedInGroupSelectionFunction}"
-                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"></ComboBox>
-                            <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding Path=selectedInGroupSelectionVariable}"
+                            <Label Width="70" Margin="0,0,10,0" Content="Pick"/>
+                            <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding selectedInGroupSelectionFunction}"
+                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
+                            <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding selectedInGroupSelectionVariable}"
                                       Width="80" HorizontalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
-                            <Label Width="70" Margin="0,0,10,0">Limit to</Label>
-                            <ComboBox x:Name="limitToOptions" SelectedValue="{Binding Path=selectedLimitToOption}"
-                                      Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"></ComboBox>
+                            <Label Width="70" Margin="0,0,10,0" Content="Limit to"/>
+                            <ComboBox x:Name="limitToOptions" SelectedValue="{Binding selectedLimitToOption}"
+                                      Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"/>
                         </StackPanel>
                         <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bIsOrderByEnabled}" ToolTip="Sets the criteria by which tracks are sorted before limiting">
-                            <Label Width="70" Margin="0,0,10,0">Order by</Label>
-                            <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding Path=selectedOrderByFunction}"
-                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"></ComboBox>
-                            <ComboBox x:Name="orderByVariables" SelectedValue="{Binding Path=selectedOrderByVariable}"
-                                      Width="80" HorizontalAlignment="Center"></ComboBox>
+                            <Label Width="70" Margin="0,0,10,0" Content="Order by"/>
+                            <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding selectedOrderByFunction}"
+                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
+                            <ComboBox x:Name="orderByVariables" SelectedValue="{Binding selectedOrderByVariable}"
+                                      Width="80" HorizontalAlignment="Center"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button x:Name="makeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
                                     Margin="0,0" Height="30"
-                                IsEnabled="{Binding Path=bCanGenerateReports}" >
+                                IsEnabled="{Binding bCanGenerateReports}" >
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Margin="2">Make Report</TextBlock>
+                                    <TextBlock VerticalAlignment="Center" Margin="2"><Run Text="Make Report"/></TextBlock>
                                     <!--
                                     <Image Source="{StaticResource plot}" Width="24" Margin="0"></Image>
                                     -->
