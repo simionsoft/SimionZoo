@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
 using System.Globalization;
+using System.Timers;
 using System.Xml;
 using Herd;
 using Badger.Data;
@@ -115,7 +116,7 @@ namespace Badger.ViewModels
                     return this;
                 }
                 logMessage("Monitoring remote job run by herd agent " + m_herdAgent.ipAddress);
-                //MONITOR THE REMOTE JOB
+                // Monitor the remote job
                 while (true)
                 {
                     int numBytesRead = await m_shepherd.readAsync(m_cancelToken);
@@ -135,7 +136,7 @@ namespace Badger.ViewModels
                             if (messageId == "Progress")
                             {
                                 double progress = double.Parse(messageContent, CultureInfo.InvariantCulture);
-                                experimentVM.progress = Convert.ToInt32(progress);
+                                experimentVM.Progress = Convert.ToInt32(progress);
                             }
                             else if (messageId == "Evaluation")
                             {
@@ -234,13 +235,32 @@ namespace Badger.ViewModels
     /// </summary>
     public class ExperimentQueueMonitorViewModel : PropertyChangedBase
     {
+        // update time estimation according to porgress every half second
+        private const int m_globalProgressUpdateRate = 30;
+        // intial value set to 20 in order to make an initial estimation after
+        // 10s (30 - 20 = 10)
+        private int m_lastProgressUpdate = 20;
+
+        private System.Timers.Timer m_timer;
+        private bool m_bRunning;
+
+        public bool bRunning
+        {
+            get { return m_bRunning; }
+            set { m_bRunning = value; NotifyOfPropertyChange(() => bRunning); }
+        }
+
+        private bool m_bFinished;
+        public bool bFinished
+        {
+            get { return m_bFinished; }
+            set { m_bFinished = value; NotifyOfPropertyChange(() => bFinished); }
+        }
+
         private List<HerdAgentViewModel> m_herdAgentList;
-        private ObservableCollection<MonitoredExperimentViewModel> m_monitoredExperimentBatchList
-            = new ObservableCollection<MonitoredExperimentViewModel>();
         private List<MonitoredExperimentViewModel> m_pendingExperiments = new List<MonitoredExperimentViewModel>();
 
-        public ObservableCollection<MonitoredExperimentViewModel> monitoredExperimentBatchList
-        { get { return m_monitoredExperimentBatchList; } }
+        public ObservableCollection<MonitoredExperimentViewModel> MonitoredExperimentList { get; }
 
         private CancellationTokenSource m_cancelTokenSource;
 
@@ -248,10 +268,41 @@ namespace Badger.ViewModels
         private Logger.LogFunction logFunction = null;
         private PlotViewModel m_evaluationMonitor;
 
+        private string m_estimatedEndTimeText = "";
+        public string EstimatedEndTime
+        {
+            get { return m_estimatedEndTimeText; }
+            set
+            {
+                m_estimatedEndTimeText = value;
+                NotifyOfPropertyChange(() => EstimatedEndTime);
+            }
+        }
 
+        private int m_timeRemaining;
 
+        public int TimeRemaining
+        {
+            get { return m_timeRemaining; }
+            set
+            {
+                m_timeRemaining = value;
+                NotifyOfPropertyChange(() => TimeRemaining);
+            }
+        }
 
+        private double m_globalProgress;
+        public double GlobalProgress
+        {
+            get { return m_globalProgress; }
+            set
+            {
+                m_globalProgress = value;
+                NotifyOfPropertyChange(() => GlobalProgress);
+            }
+        }
 
+        public Stopwatch ExperimentTimer { get; set; }
 
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
             = new BindableCollection<LoggedExperimentViewModel>();
@@ -269,15 +320,17 @@ namespace Badger.ViewModels
 
 
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate, string batchFileName,
-            ExperimentMonitorWindowViewModel parent)
+            PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate, string batchFileName)
         {
             m_bRunning = false;
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
+            ExperimentTimer = new Stopwatch();
 
             SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
+
+            MonitoredExperimentList = new ObservableCollection<MonitoredExperimentViewModel>();
 
             foreach (var experiment in LoggedExperiments)
             {
@@ -289,48 +342,72 @@ namespace Badger.ViewModels
                 foreach (var unit in experiment.expUnits)
                 {
                     MonitoredExperimentViewModel monitoredExperiment =
-                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, evaluationMonitor, parent);
-                    m_monitoredExperimentBatchList.Add(monitoredExperiment);
+                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, evaluationMonitor);
+                    MonitoredExperimentList.Add(monitoredExperiment);
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
             }
 
-            NotifyOfPropertyChange(() => monitoredExperimentBatchList);
+            NotifyOfPropertyChange(() => MonitoredExperimentList);
         }
-
 
 
         /// <summary>
         ///     Calculate the global progress of experiments in queue.
         /// </summary>
         /// <returns>The progress as a percentage.</returns>
-        public double calculateGlobalProgress()
+        public double CalculateGlobalProgress()
         {
             double sum = 0.0;
-            foreach (MonitoredExperimentViewModel exp in m_monitoredExperimentBatchList)
-                sum += exp.progress; //<- these are expressed as percentages
+            foreach (MonitoredExperimentViewModel exp in MonitoredExperimentList)
+                sum += exp.Progress; //<- these are expressed as percentages
 
-            return 100 * (sum / (m_monitoredExperimentBatchList.Count * 100));
+            return 100 * (sum / (MonitoredExperimentList.Count * 100));
         }
 
-
-        private bool m_bRunning;
-
-        public bool bRunning
+        /// <summary>
+        ///     Express progress as a percentage unit to fill the global progress bar.
+        /// </summary>
+        public void UpdateGlobalProgress()
         {
-            get { return m_bRunning; }
-            set { m_bRunning = value; NotifyOfPropertyChange(() => bRunning); }
+            // Recalculate global progress each time
+            GlobalProgress = CalculateGlobalProgress();
+            // Then update the estimated time to end
+            TimeRemaining = (int)(ExperimentTimer.Elapsed.TotalSeconds
+                * ((100 - GlobalProgress) / GlobalProgress));
+            EstimatedEndTime = "Time remaining: "
+                + TimeSpan.FromSeconds(TimeRemaining).ToString(@"hh\:mm\:ss");
         }
 
-        private bool m_bFinished;
-        public bool bFinished
+        /// <summary>
+        ///     Specify what is going to happen when the Elapsed event is raised.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            get { return m_bFinished; }
-            set { m_bFinished = value; NotifyOfPropertyChange(() => bFinished); }
+            if (GlobalProgress >= 0.0 && GlobalProgress < 100.0 && TimeRemaining > 0)
+            {
+                TimeRemaining--;
+                EstimatedEndTime = "Time remaining: "
+                    + TimeSpan.FromSeconds(TimeRemaining).ToString(@"hh\:mm\:ss");
+            }
+
+            m_lastProgressUpdate++;
+
+            if (m_lastProgressUpdate > m_globalProgressUpdateRate)
+            {
+                UpdateGlobalProgress();
+                m_lastProgressUpdate = 0;
+            }
         }
 
         public async void RunExperimentsAsync(bool monitorProgress, bool receiveJobResults)
         {
+            m_timer = new System.Timers.Timer(1000);
+            m_timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            m_timer.Enabled = true;
+
             bRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
@@ -401,8 +478,6 @@ namespace Badger.ViewModels
             if (m_bRunning && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
         }
-
-
 
         /// <summary>
         ///     Assigns experiments to availables herd agents.

@@ -5,15 +5,53 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:v="clr-namespace:Badger.Views"
+             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"  
              d:DesignHeight="400" d:DesignWidth="440">
 
-    <ListView x:Name="monitoredExperiments" 
-              ItemsSource="{Binding Path=monitoredExperimentBatchList}" >
-        <ListView.Resources>
-            <DataTemplate  DataType="{x:Type vm:MonitoredExperimentViewModel}">
-                <v:MonitoredExperimentView Width="Auto"/>
-            </DataTemplate>
-        </ListView.Resources>
-    </ListView>
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="EstimatedEndTime" TextAlignment="Center" Foreground="#424242" 
+                       Margin="5,5,5,0" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
+            <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100"
+                         Margin="5" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
+            <Button Grid.Row="0" Grid.Column="1"  Grid.RowSpan="2"  ToolTip="Show report for this experiment" Width="90"
+                     Margin="0,5,5,5" cal:Message.Attach="[Event Click]=[Action ShowReports()]" IsEnabled="{Binding bFinished}" >
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{StaticResource Plot}" Opacity="0.6" Width="24"/>
+                    <Label Content="Report"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <ListView Grid.Row="2" ItemsSource="{Binding Path = MonitoredExperimentList}" >
+            <ListView.Resources>
+                <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
+                    <v:MonitoredExperimentView />
+                </DataTemplate>
+            </ListView.Resources>
+        </ListView>
+    </Grid>
 </UserControl>

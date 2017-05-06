@@ -38,20 +38,18 @@
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Height="Auto" Margin="5">
                 <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
                            FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
-                <ListView ItemsSource="{Binding Path=Forks}" Background="{x:Null}" Margin="0,5" BorderThickness="0" />
+                <ListView ItemsSource="{Binding Path = Forks}" Background="{x:Null}" Margin="0,5" BorderThickness="0" />
                 <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
                            FontSize="10" Width="Auto" MinWidth="100" VerticalAlignment="Center" />
             </StackPanel>
 
-            <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto" CanContentScroll="True"
-                          Margin="5"  Height="Auto" MaxHeight="60" Width="Auto">
+            <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto" Margin="5">
                 <TextBlock Text="{Binding statusInfo}" Width="Auto" MinWidth="350" FontSize="10" Foreground="Gray"/>
             </ScrollViewer>
 
             <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom"  
                         Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}">
-                <ProgressBar x:Name="Progress" Height="10" Width="Auto" MinWidth="450" Minimum="0" Maximum="100"  
-                                      Value="{Binding Path = progress}" />
+                <ProgressBar Height="10" Width="Auto" Minimum="0" Maximum="100" Value="{Binding Path = Progress}" />
             </StackPanel>
         </Grid>
     </Border>

@@ -92,22 +92,15 @@ namespace Badger.ViewModels
         }
 
         //progress is expressed as a percentage
-        private const double m_globalProgressUpdateRate = 5.0;
-        private double m_lastProgressUpdate = -m_globalProgressUpdateRate;
+
         private double m_progress;
-        public double progress
+        public double Progress
         {
             get { return m_progress; }
             set
             {
                 m_progress = value;
-                NotifyOfPropertyChange(() => progress);
-
-                if (m_progress - m_lastProgressUpdate >= m_globalProgressUpdateRate)
-                {
-                    m_parent.updateGlobalProgress();
-                    m_lastProgressUpdate = m_progress;
-                }
+                NotifyOfPropertyChange(() => Progress);
             }
         }
 
@@ -133,28 +126,26 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private ExperimentMonitorWindowViewModel m_parent;
 
         public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
-           List<string> prerequisites, PlotViewModel plot, ExperimentMonitorWindowViewModel parent)
+           List<string> prerequisites, PlotViewModel plot)
         {
             m_loggedExperimentalUnit = expUnit;
             ExeFile = exeFile;
             Prerequisites = prerequisites;
             Forks = expUnit.forkValues.Select(k => k.Key + ": " + k.Value).ToList();
-            evaluationMonitor = plot;
-            m_parent = parent;
+            m_plotEvaluationMonitor = plot;
         }
 
         //evaluation plot stuff
         private int evaluationSeriesId = -1;
-        public PlotViewModel evaluationMonitor;
+        public PlotViewModel m_plotEvaluationMonitor;
 
         public void addEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added
-                evaluationSeriesId = evaluationMonitor.addLineSeries(Name);
-            evaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
+                evaluationSeriesId = m_plotEvaluationMonitor.addLineSeries(Name);
+            m_plotEvaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
         }
 
         /// <summary>
@@ -163,7 +154,7 @@ namespace Badger.ViewModels
         /// <param name="name">The name of the component which trigger the event</param>
         public void HandleMouseEnter(string name)
         {
-            evaluationMonitor.highlightLineSeries(name);
+            m_plotEvaluationMonitor.highlightLineSeries(name);
         }
 
         /// <summary>
@@ -171,7 +162,7 @@ namespace Badger.ViewModels
         /// </summary>
         public void HandleMouseLeave()
         {
-            evaluationMonitor.resetLineSeriesColors();
+            m_plotEvaluationMonitor.resetLineSeriesColors();
         }
     }
 }

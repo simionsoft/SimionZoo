@@ -13,47 +13,18 @@
         Title="Experiment Monitor"
         Icon="/badger-head.ico">
 
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
-    </Window.Resources>
-    
-    <Grid Background="#FFFFFF">
+    <Grid Background="#FAFAFA">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding evaluationPlot.Plot}" MinHeight="300" Margin="10,10,20,10"/>
+        <oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding EvaluationPlot.Plot}" 
+                      MinHeight="300" Margin="10,10,20,10" Background="#FAFAFA" />
 
-        <StackPanel Grid.Row="1" Grid.Column="0">
-            <TextBlock x:Name="estimatedEndTime" TextAlignment="Center" Foreground="#424242" Margin="5,5,5,0"
-                           Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <ProgressBar Grid.Column="0"  x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100" Margin="5"
-            		Visibility="{Binding experimentQueueMonitor.bRunning, Converter = {StaticResource BoolToVis}}" />
-                <Button Grid.Column="1" x:Name="ShowReports" IsEnabled="{Binding experimentQueueMonitor.bFinished}" 
-            		Margin="0,5,5,5" Width="90" HorizontalAlignment="Right">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="REPORTS"/>
-                        <Image Source="{StaticResource plot}" Width="25"/>
-                    </StackPanel>
-                </Button>
-            </Grid>
-        </StackPanel>
-
-        <ScrollViewer Grid.Row="2" Grid.Column="0" VerticalScrollBarVisibility="Auto">
-            <ContentControl x:Name="experimentQueueMonitor"/>
-        </ScrollViewer>
+        <ContentControl Grid.Row="1" Grid.Column="0" x:Name="ExperimentQueueMonitor" />
     </Grid>
-
 </Window>
