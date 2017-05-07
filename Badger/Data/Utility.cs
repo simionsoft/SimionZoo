@@ -14,7 +14,7 @@ namespace Badger.Data
     {
         //this function is called from several tasks and needs to be synchronized
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void getInputsAndOutputs(string exe,string args, ref CJob job)
+        public static void getInputsAndOutputs(string exe, string args, ref CJob job)
         {
             object o = new object();
             Monitor.Enter(o);
@@ -30,15 +30,15 @@ namespace Badger.Data
                 }
             };
 
-            string processOutput= "";
+            string processOutput = "";
             process.Start();
-            while(!process.StandardOutput.EndOfStream)
+            while (!process.StandardOutput.EndOfStream)
             {
                 processOutput += process.StandardOutput.ReadLine();
             }
             int startPos = processOutput.IndexOf("<Files>");
             int endPos = processOutput.IndexOf("</Files>");
-            if (startPos>0 && endPos>0)
+            if (startPos > 0 && endPos > 0)
             {
                 string xml = processOutput.Substring(startPos, endPos - startPos + ("</Files>").Length);
 
@@ -62,7 +62,7 @@ namespace Badger.Data
             }
             Monitor.Exit(o);
         }
-     
+
         private static string GetPath(XElement element)
         {
             var nodes = new List<string>();
@@ -105,7 +105,7 @@ namespace Badger.Data
                 if (absDirs[index].Length > 0) relativePath.Append("..\\");
             }
             // Add on the folders 
-            if(absDirs.Contains(relDirs[lastCommonRoot])&&(len-1==lastCommonRoot))
+            if (absDirs.Contains(relDirs[lastCommonRoot]) && (len - 1 == lastCommonRoot))
             {
                 relativePath.Append("..\\");
             }
@@ -114,19 +114,19 @@ namespace Badger.Data
                 relativePath.Append(relDirs[index] + "\\");
             }
             relativePath.Append(relDirs[relDirs.Length - 1]);
-            relativePath.Replace('\\','/');
+            relativePath.Replace('\\', '/');
             return relativePath.ToString();
         }
 
         //returns the file's name from the full path
         //if removeExtension==true: c:\jander\clander.txt ->clander.txt
         //else: c:\jander\clander.txt ->clander
-        public static string getFileName(string Default,bool removeExtension=false, int numExtensionDots=1)
+        public static string getFileName(string Default, bool removeExtension = false, int numExtensionDots = 1)
         {
             string filename;
             if (Default == null)
                 return null;
-            char[] separators = {'/','\\'};
+            char[] separators = { '/', '\\' };
             string[] tmp = Default.Split(separators);
             filename = tmp[tmp.Length - 1];
 

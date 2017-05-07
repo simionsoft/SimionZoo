@@ -84,6 +84,7 @@ namespace Badger.ViewModels
 
                 Utility.getInputsAndOutputs(experiment.ExeFile, experiment.FilePath, ref job);
             }
+
             return job;
         }
 
@@ -235,11 +236,10 @@ namespace Badger.ViewModels
     /// </summary>
     public class ExperimentQueueMonitorViewModel : PropertyChangedBase
     {
-        // update time estimation according to porgress every half second
-        private const int m_globalProgressUpdateRate = 30;
-        // intial value set to 20 in order to make an initial estimation after
-        // 10s (30 - 20 = 10)
-        private int m_lastProgressUpdate = 20;
+        // Update time estimation according to porgress every half second
+        private const int m_globalProgressUpdateRate = 15;
+        // Intial value set to 20 in order to make an initial estimation after 10s (15 - 5 = 10)
+        private int m_lastProgressUpdate = 5;
 
         private System.Timers.Timer m_timer;
         private bool m_bRunning;
@@ -312,7 +312,7 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private void loadLoggedExperiment(XmlNode node)
+        private void LoadLoggedExperiment(XmlNode node)
         {
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, null);
             LoggedExperiments.Add(newExperiment);
@@ -328,7 +328,7 @@ namespace Badger.ViewModels
             logFunction = logFunctionDelegate;
             ExperimentTimer = new Stopwatch();
 
-            SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
+            SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
 
             MonitoredExperimentList = new ObservableCollection<MonitoredExperimentViewModel>();
 
@@ -373,10 +373,10 @@ namespace Badger.ViewModels
             // Recalculate global progress each time
             GlobalProgress = CalculateGlobalProgress();
             // Then update the estimated time to end
-            TimeRemaining = (int)(ExperimentTimer.Elapsed.TotalSeconds
-                * ((100 - GlobalProgress) / GlobalProgress));
+            m_timeRemaining = (int)(ExperimentTimer.Elapsed.TotalSeconds
+                * ((100 - m_globalProgress) / m_globalProgress));
             EstimatedEndTime = "Time remaining: "
-                + TimeSpan.FromSeconds(TimeRemaining).ToString(@"hh\:mm\:ss");
+                + TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
         }
 
         /// <summary>
@@ -386,11 +386,11 @@ namespace Badger.ViewModels
         /// <param name="e"></param>
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            if (GlobalProgress >= 0.0 && GlobalProgress < 100.0 && TimeRemaining > 0)
+            if (m_globalProgress >= 0.0 && m_globalProgress < 100.0 && m_timeRemaining >= 0)
             {
-                TimeRemaining--;
+                m_timeRemaining = m_timeRemaining - 1;
                 EstimatedEndTime = "Time remaining: "
-                    + TimeSpan.FromSeconds(TimeRemaining).ToString(@"hh\:mm\:ss");
+                    + TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
             }
 
             m_lastProgressUpdate++;

@@ -5,7 +5,9 @@ using Caliburn.Micro;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using System.Text;
+using Badger.Simion;
 
 
 namespace Badger.ViewModels
@@ -78,6 +80,18 @@ namespace Badger.ViewModels
         private ShepherdViewModel m_shepherdViewModel;
         public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
 
+        private bool m_bCanLaunchExperiment;
+
+        public bool CanLaunchExperiment
+        {
+            get { return m_bCanLaunchExperiment; }
+            set
+            {
+                m_bCanLaunchExperiment = value;
+                NotifyOfPropertyChange(() => CanLaunchExperiment);
+            }
+        }
+
         private bool m_bIsExperimentListNotEmpty = false;
         public bool bIsExperimentListNotEmpty
         {
@@ -100,9 +114,11 @@ namespace Badger.ViewModels
         }
 
         private ObservableCollection<string> m_appNames = new ObservableCollection<string>();
-        public ObservableCollection<string> appNames { get { return m_appNames; } set { } }
+        public ObservableCollection<string> appNames { get { return m_appNames; } set { m_appNames = value; } }
 
-        //key element is the apps name, and the value is the .xml definition file
+        public ObservableCollection<string> LaunchMode { get; set; }
+
+        // Key element is the apps name, and the value is the .xml definition file
         private Dictionary<string, string> appDefinitions = new Dictionary<string, string>();
 
         private string m_selectedAppName;
@@ -120,6 +136,31 @@ namespace Badger.ViewModels
             }
         }
 
+        private string m_selectedLaunchMode;
+
+        public string SelectedLaunchMode
+        {
+            get { return m_selectedLaunchMode; }
+            set
+            {
+                int index = LaunchMode.IndexOf(value);
+                if (index == -1)
+                    return;
+
+                m_selectedLaunchMode = value;
+
+                if (m_selectedLaunchMode.Equals("Batch File"))
+                    CanLaunchExperiment = true;
+                else if (m_bIsExperimentListNotEmpty)
+                    CanLaunchExperiment = true;
+                else
+                    CanLaunchExperiment = false;
+
+                NotifyOfPropertyChange(() => LaunchMode);
+            }
+        }
+
+
         public void NewExperiment()
         {
             if (m_selectedAppName == null) return;
@@ -129,6 +170,12 @@ namespace Badger.ViewModels
             ExperimentViewModels.Add(newExperiment);
             NotifyOfPropertyChange(() => ExperimentViewModels);
             checkEmptyExperimentList();
+
+            if (m_bIsExperimentListNotEmpty)
+                CanLaunchExperiment = true;
+            else
+                CanLaunchExperiment = false;
+
             selectedExperiment = newExperiment;
         }
 
@@ -161,7 +208,8 @@ namespace Badger.ViewModels
         public MainWindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-
+            LaunchMode = new ObservableCollection<string>() { "Batch File", "Loaded Experiment" };
+            SelectedLaunchMode = LaunchMode[0];
             LoadAppDefinitions();
         }
 
@@ -209,6 +257,12 @@ namespace Badger.ViewModels
             {
                 ExperimentViewModels.Add(newExperiment);
                 checkEmptyExperimentList();
+
+                if (m_bIsExperimentListNotEmpty)
+                    CanLaunchExperiment = true;
+                else
+                    CanLaunchExperiment = false;
+
                 selectedExperiment = newExperiment;
             }
         }
@@ -224,6 +278,10 @@ namespace Badger.ViewModels
         {
             ExperimentViewModels.Remove(app);
             checkEmptyExperimentList();
+            if (m_bIsExperimentListNotEmpty)
+                CanLaunchExperiment = true;
+            else
+                CanLaunchExperiment = false;
         }
 
         public void removeSelectedExperiments()
@@ -250,6 +308,22 @@ namespace Badger.ViewModels
             checkEmptyExperimentList();
         }
 
+
+
+        private List<LoggedExperimentViewModel> m_loggedExperiments = new List<LoggedExperimentViewModel>();
+        public List<LoggedExperimentViewModel> LoggedExperiments
+        {
+            get { return m_loggedExperiments; }
+            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
+        }
+
+        private void LoadLoggedExperiment(XmlNode node)
+        {
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, null);
+            LoggedExperiments.Add(newExperiment);
+        }
+
+
         /// <summary>
         ///     Pass data to experiment monitor and run experiments defined so far.
         ///     Used from MainWindowView when the launch button is clicked.
@@ -264,16 +338,26 @@ namespace Badger.ViewModels
                 return;
             }
 
+            int experimentalUnitsCount = 0;
             string batchFileName = "";
-            int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels, ref batchFileName, logToFile);
 
-            if (experimentalUnitsCount > 0)
+            if (SelectedLaunchMode.Equals("Batch File"))
+            {
+                batchFileName = SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment);
+                experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.expUnits.Count);
+            }
+            else
+                experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
+                    ref batchFileName, logToFile);
+            // Experiments will be launched only if exists any experimental unit and the batch file was 
+            // safed /loaded succesfully
+            if (experimentalUnitsCount > 0 && batchFileName != "")
             {
                 List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
 
                 logToFile("Running experiment queue remotely: " + experimentalUnitsCount + " experiments");
 
-                //get available herd agents list. Inside the loop to update the list
+                // Get available herd agents list. Inside the loop to update the list
                 shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 

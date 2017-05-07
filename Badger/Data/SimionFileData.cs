@@ -27,22 +27,16 @@ namespace Badger.Data
         /// </summary>
         /// <param name="perExperimentFunction"></param>
         /// <param name="batchFilename"></param>
-        static public void LoadExperimentBatchFile(XmlNodeFunction perExperimentFunction, string batchFilename = "")
+        static public string LoadExperimentBatchFile(XmlNodeFunction perExperimentFunction, string batchFilename = "")
         {
             if (batchFilename == "")
             {
-                OpenFileDialog ofd = new OpenFileDialog();
-                ofd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-                ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    batchFilename = ofd.FileName;
-                }
-                else return;
+                bool isOpen = OpenFile(ref batchFilename, "Experiment batch | *.", XMLConfig.experimentBatchExtension);
+                if (!isOpen)
+                    return null;
             }
 
-            // LOAD THE EXPERIMENT BATCH IN THE QUEUE
+            // Load the experiment batch in queue
             XmlDocument batchDoc = new XmlDocument();
             batchDoc.Load(batchFilename);
             XmlElement fileRoot = batchDoc.DocumentElement;
@@ -55,7 +49,13 @@ namespace Badger.Data
                         perExperimentFunction(experiment);
                 }
             }
-            else CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
+            else
+            {
+                CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
+                return null;
+            }
+
+            return batchFilename;
         }
 
         /// <summary>
@@ -187,6 +187,10 @@ namespace Badger.Data
             Dictionary<string, string> appDefinitions, logFunction log)
         {
             string fileDoc = null;
+            bool isOpen = OpenFile(ref fileDoc, "Badger project | *.", XMLConfig.badgerProjectExtension);
+            if (!isOpen)
+                return;
+            /*
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Badger project | *." + XMLConfig.badgerProjectExtension;
             ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
@@ -195,7 +199,7 @@ namespace Badger.Data
                 fileDoc = ofd.FileName;
             }
             else return;
-
+            */
             XmlDocument badgerDoc = new XmlDocument();
             badgerDoc.Load(fileDoc);
             XmlElement fileRoot = badgerDoc.DocumentElement;
@@ -349,6 +353,21 @@ namespace Badger.Data
                 }
             }
             return "";
+        }
+
+        public static bool OpenFile(ref string batchFileName, string filterPrefix, string extension)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = filterPrefix + extension;
+            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                batchFileName = ofd.FileName;
+                return true;
+            }
+
+            return false;
         }
     }
 }

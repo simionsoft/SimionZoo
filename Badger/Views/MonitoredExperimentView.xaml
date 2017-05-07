@@ -23,34 +23,38 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Border BorderThickness="1" BorderBrush="LightGray">
+    <Border BorderThickness="1" BorderBrush="LightGray" Width="Auto">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Height="Auto" Margin="5">
-                <TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
-                           FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center"/>
-                <ListView ItemsSource="{Binding Path = Forks}" Background="{x:Null}" Margin="0,5" BorderThickness="0" />
+                <!--TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
+                           FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center" /-->
+                <ListBox ItemsSource="{Binding Path = Forks}" Background="{x:Null}" BorderThickness="0"
+                          FontSize="11" Padding="0" Margin="0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
                 <TextBlock Foreground="{Binding stateColor}" Text="{Binding stateString}"
-                           FontSize="10" Width="Auto" MinWidth="100" VerticalAlignment="Center" />
+                           FontSize="11" VerticalAlignment="Center" />
             </StackPanel>
 
             <ScrollViewer Grid.Row="0" Grid.Column="1" VerticalScrollBarVisibility="Auto" Margin="5">
-                <TextBlock Text="{Binding statusInfo}" Width="Auto" MinWidth="350" FontSize="10" Foreground="Gray"/>
+                <TextBlock Text="{Binding statusInfo}" FontSize="11" Foreground="Gray"/>
             </ScrollViewer>
 
-            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom"  
-                        Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}">
-                <ProgressBar Height="10" Width="Auto" Minimum="0" Maximum="100" Value="{Binding Path = Progress}" />
-            </StackPanel>
+            <ProgressBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="100" Value="{Binding Path = Progress}" 
+                         Height="10" Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}" />
         </Grid>
     </Border>
 

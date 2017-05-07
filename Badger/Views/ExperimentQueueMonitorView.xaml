@@ -19,26 +19,25 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" x:Name="EstimatedEndTime" TextAlignment="Center" Foreground="#424242" 
+            <StackPanel Grid.Row="0">
+                <TextBlock x:Name="EstimatedEndTime" TextAlignment="Center" Foreground="#424242" 
                        Margin="5,5,5,0" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
-            <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100"
+                <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100"
                          Margin="5" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
-            <Button Grid.Row="0" Grid.Column="1"  Grid.RowSpan="2"  ToolTip="Show report for this experiment" Width="90"
-                     Margin="0,5,5,5" cal:Message.Attach="[Event Click]=[Action ShowReports()]" IsEnabled="{Binding bFinished}" >
+            </StackPanel>
+            
+            <Button Grid.Row="1" ToolTip="Show report for this experiment" Width="90"
+                    cal:Message.Attach="[Event Click]=[Action ShowReports()]" IsEnabled="{Binding bFinished}"
+                    Visibility="{Binding bFinished, Converter = {StaticResource BoolToVis}}">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="{StaticResource Plot}" Opacity="0.6" Width="24"/>
                     <Label Content="Report"/>
@@ -46,12 +45,17 @@
             </Button>
         </Grid>
 
-        <ListView Grid.Row="2" ItemsSource="{Binding Path = MonitoredExperimentList}" >
-            <ListView.Resources>
+        <ListBox Grid.Row="1" ItemsSource="{Binding Path = MonitoredExperimentList}" >
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.Resources>
                 <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
                     <v:MonitoredExperimentView />
                 </DataTemplate>
-            </ListView.Resources>
-        </ListView>
+            </ListBox.Resources>
+        </ListBox>
     </Grid>
 </UserControl>

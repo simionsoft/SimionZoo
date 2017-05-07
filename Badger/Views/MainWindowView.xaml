@@ -5,7 +5,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
         WindowStyle="ThreeDBorderWindow"
-        Width="900"
+        Width="800"
         Height="600"
         Title="Badger"
         Icon="/badger-head.ico">
@@ -52,16 +52,18 @@
             <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
 
             <!--Label VerticalAlignment="Center">App</-->
-            <ComboBox x:Name="appNames" Width="140" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      Margin="5,0" Height="26" SelectedItem="{Binding selectedAppName}" Background="Black"/>
+            <ComboBox x:Name="appNames" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      ToolTip="Apps" Margin="5,0" Height="26" SelectedItem="{Binding selectedAppName}" />
+            <ComboBox x:Name="LaunchMode" MinWidth="140" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      ToolTip="Launch Modes" Margin="5,0" Height="26" SelectedItem="{Binding SelectedLaunchMode}" />
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
-                        IsEnabled="{Binding Path=bIsExperimentListNotEmpty}" ToolTip="Run Experiments"
+                        IsEnabled="{Binding Path = CanLaunchExperiment}" ToolTip="Run Experiments"
                         cal:Message.Attach="[Event Click]=[Action RunExperiments()]">
                     <StackPanel Orientation="Horizontal">
                         <Image Width="24" Height="24" Margin="2,0" Source="{StaticResource Play}" />
-                        <Label Padding="0,4,7,4">Run</Label>
+                        <Label Padding="0,4,7,4">Launch</Label>
                     </StackPanel>
                 </Button>
                 <!--Button Width="100" Height="30" Margin="5"

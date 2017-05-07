@@ -37,6 +37,7 @@ namespace Badger.ViewModels
             Logger.LogFunction logFunction, string batchFileName)
         {
             EvaluationPlot = new PlotViewModel("Evaluation episodes") {bShowOptions = false};
+            EvaluationPlot.Plot.TitleFontSize = 14;
             EvaluationPlot.properties.bLegendVisible = false;
             EvaluationPlot.setProperties();
 
