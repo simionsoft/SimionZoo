@@ -153,7 +153,6 @@
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
-    <Compile Include="Data\Window.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>

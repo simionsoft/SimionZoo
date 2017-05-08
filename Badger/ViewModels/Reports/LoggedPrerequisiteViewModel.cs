@@ -19,7 +19,7 @@ namespace Badger.ViewModels.Reports
             set { m_value = value; }
         }
 
-        public LoggedPrerequisiteViewModel(XmlNode configNode, Window parent)
+        public LoggedPrerequisiteViewModel(XmlNode configNode)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
             if (attrs != null)

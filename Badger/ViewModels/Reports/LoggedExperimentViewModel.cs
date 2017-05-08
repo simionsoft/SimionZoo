@@ -54,7 +54,7 @@ namespace Badger.ViewModels
         }
 
 
-        public LoggedExperimentViewModel(XmlNode configNode, Window parent)
+        public LoggedExperimentViewModel(XmlNode configNode, ReportsWindowViewModel parent)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
 
@@ -76,8 +76,8 @@ namespace Badger.ViewModels
                 }
                 else if (child.Name == XMLConfig.PrerequisiteTag)
                 {
-                    LoggedPrerequisiteViewModel newPrerequisite = 
-                        new LoggedPrerequisiteViewModel(child, parent);
+                    LoggedPrerequisiteViewModel newPrerequisite =
+                        new LoggedPrerequisiteViewModel(child);
                     Prerequisites.Add(newPrerequisite);
                 }
                 else if (child.Name == XMLConfig.experimentalUnitNodeTag)

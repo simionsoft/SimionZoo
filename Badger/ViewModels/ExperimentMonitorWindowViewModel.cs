@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using Herd;
 using Badger.Data;
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    public class ExperimentMonitorWindowViewModel : Window
+    public class ExperimentMonitorWindowViewModel : Screen
     {
         private ExperimentQueueMonitorViewModel m_experimentQueueMonitorViewModel;
 

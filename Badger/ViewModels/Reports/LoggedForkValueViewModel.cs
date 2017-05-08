@@ -26,10 +26,8 @@ namespace Badger.ViewModels
             set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
         }
 
-        public LoggedForkValueViewModel(XmlNode configNode, Window parent)
+        public LoggedForkValueViewModel(XmlNode configNode, ReportsWindowViewModel parent)
         {
-            m_parentWindow = parent;
-
             if (configNode.Attributes.GetNamedItem(XMLConfig.valueAttribute) != null)
                 value = configNode.Attributes[XMLConfig.valueAttribute].Value;
             else

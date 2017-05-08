@@ -7,17 +7,15 @@ using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    public class ReportsWindowViewModel : Window
+    public class ReportsWindowViewModel : Conductor<Screen>.Collection.OneActive
     {
 
         private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
         public ObservableCollection<ReportViewModel> reports { get { return m_reports; } set { } }
        
-        /*
         private bool m_bCanGenerateReports = false;
         public bool bCanGenerateReports { get { return m_bCanGenerateReports; }
             set { m_bCanGenerateReports = value; NotifyOfPropertyChange(() => bCanGenerateReports); } }
-        */
 
         //plot selection in tab control
         private ReportViewModel m_selectedReport = null;
@@ -45,14 +43,12 @@ namespace Badger.ViewModels
             }
         }
 
-        /*
         private string m_selectedInGroupSelectionVariable = "";
         public string selectedInGroupSelectionVariable
         {
             get { return m_selectedInGroupSelectionVariable; }
             set { m_selectedInGroupSelectionVariable = value; validateQuery(); NotifyOfPropertyChange(() => selectedInGroupSelectionVariable); }
         }
-        */
 
         private BindableCollection<string> m_inGroupSelectionFunctions = new BindableCollection<string>();
         public BindableCollection<string> inGroupSelectionFunctions
@@ -61,7 +57,6 @@ namespace Badger.ViewModels
             set { m_inGroupSelectionFunctions = value; validateQuery(); NotifyOfPropertyChange(() => inGroupSelectionFunctions); }
         }
 
-        /*
         private BindableCollection<string> m_inGroupSelectionVariables = new BindableCollection<string>();
         public BindableCollection<string> inGroupSelectionVariables
         {
@@ -95,7 +90,6 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => groupBy);
             bGroupsEnabled = true;
         }
-        */
 
         public void resetGroupBy()
         {
@@ -123,7 +117,6 @@ namespace Badger.ViewModels
             set { m_fromOptions = value; NotifyOfPropertyChange(() => fromOptions); }
         }
 
-        /*
         //Variables
         private BindableCollection<LoggedVariableViewModel> m_variables
             = new BindableCollection<LoggedVariableViewModel>();
@@ -145,7 +138,6 @@ namespace Badger.ViewModels
                 orderByVariables.Add(variable);
             }
         }
-        */
 
         private bool m_bVariableSelection = true;
         public bool bVariableSelection
@@ -178,14 +170,12 @@ namespace Badger.ViewModels
             set { m_selectedOrderByFunction = value; NotifyOfPropertyChange(() => selectedOrderByFunction); }
         }
 
-        /*
         private BindableCollection<string> m_orderByVariables = new BindableCollection<string>();
         public BindableCollection<string> orderByVariables
         {
             get { return m_orderByVariables; }
             set { m_orderByVariables = value; NotifyOfPropertyChange(() => orderByVariables); }
         }
-        */
 
         private string m_selectedOrderByVariable = "";
         public string selectedOrderByVariable
@@ -221,7 +211,6 @@ namespace Badger.ViewModels
             set { m_bLogsLoaded = value; NotifyOfPropertyChange(() => bLogsLoaded); }
         }
 
-        /*
         public void validateQuery()
         {
             //validate the current query
@@ -234,7 +223,6 @@ namespace Badger.ViewModels
             //update the "enabled" property of the variable used to select a group
             bGroupsEnabled = m_groupByForks.Count>0;
         }
-        */
 
         public ReportsWindowViewModel()
         {
@@ -368,8 +356,6 @@ namespace Badger.ViewModels
             bLogsLoaded = false;
             bVariableSelection = true;
             Refresh();
-            
         }
-
     }
 }
