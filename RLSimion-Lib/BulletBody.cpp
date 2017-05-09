@@ -40,7 +40,7 @@ btTransform BulletBody::getTransform()
 	return m_transform;
 }
 
-void BulletBody::reset(CState* s, bool isBox, double originX, double originY, int idX, int idY)
+void BulletBody::reset(CState* s, double originX, double originY, int idX, int idY)
 {
 	btTransform bodyTransform;
 	
