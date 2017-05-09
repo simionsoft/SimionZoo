@@ -38,14 +38,17 @@ CExperienceReplay::CExperienceReplay(CConfigNode* pConfigNode)
 CExperienceReplay::CExperienceReplay() : CDeferredLoad()
 {
 	//default behaviour when experience replay is not used
-	m_bufferSize.set(1);
-	m_updateBatchSize.set(1);
-
-	CLogger::logMessage(MessageType::Info, "Dummy experience replay buffer used because no config info could be retrieved");
+	m_bufferSize.set(0);
+	m_updateBatchSize.set(0);
 
 	m_pTupleBuffer = 0;
 	m_currentPosition = 0;
 	m_numTuples = 0;
+}
+
+bool CExperienceReplay::bUsing()
+{
+	return m_bufferSize.get() != 0;
 }
 
 void CExperienceReplay::deferredLoadStep()

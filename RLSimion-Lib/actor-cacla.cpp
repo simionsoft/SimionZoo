@@ -8,6 +8,7 @@
 #include "etraces.h"
 #include "config.h"
 #include "parameters-numeric.h"
+#include "app.h"
 
 CCACLALearner::CCACLALearner(CConfigNode* pConfigNode): CPolicyLearner(pConfigNode)
 {
@@ -30,8 +31,8 @@ void CCACLALearner::update(const CState *s, const CAction *a, const CState *s_p,
 
 	//CACLA (van Hasselt)
 	//if delta>0: theta= theta + alpha*(lastNoise)*phi_pi(s)
-
-	if (td > 0.0)
+	bool bStateKnown = CSimionApp::get()->pSimGod->isStateKnown(s_p);
+	if (bStateKnown && td > 0.0)
 	{
 		alpha = m_pAlpha->get();
 

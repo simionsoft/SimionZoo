@@ -11,14 +11,6 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-double static getDistanceOneDimension(double x1, double x2) {
-	double dist = x2 - x1;
-	if (dist < 0)
-	{
-		dist = dist * (-1);
-	}
-	return dist;
-}
 
 #define TargetX 12.0
 #define TargetY -2.0
@@ -82,19 +74,19 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 	opt_helper = new CommonExampleOptions(gui_helper);
 
 	rob2Builder = new BulletBuilder(opt_helper->m_guiHelper);
-	rob2Builder->initializeBulletRequirements();
+	rob2Builder->initBullet();
 	rob2Builder->setOpenGLApp(window_app);
 
 	///Creating static object, ground
 	{
-		m_Ground = new BulletBody(MASS_GROUND, ground_x, ground_y, ground_z, new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))), false);
+		m_Ground = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))), false);
 		rob2Builder->getCollisionShape().push_back(m_Ground->getShape());
 		rob2Builder->getDynamicsWorld()->addRigidBody(m_Ground->getBody());
 	}
 
 	/// Creating target point, static
 	{
-		m_Target = new BulletBody(MASS_TARGET, TargetX, 0, TargetY, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
+		m_Target = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY), new btConeShape(btScalar(0.5), btScalar(0.001)), false);
 		m_Target->getBody()->setCollisionFlags(m_Target->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 		rob2Builder->getCollisionShape().push_back(m_Target->getShape());
 		rob2Builder->getDynamicsWorld()->addRigidBody(m_Target->getBody());
@@ -102,33 +94,33 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 
 	///Creating dynamic box
 	{
-		m_Box = new BulletBody(MASS_BOX, boxOrigin_x, 0, boxOrigin_y, new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))), true);
+		m_Box = new BulletBody(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))), true);
 		rob2Builder->getCollisionShape().push_back(m_Box->getShape());
 		rob2Builder->getDynamicsWorld()->addRigidBody(m_Box->getBody());
 	}
 
 	///creating  dynamic robot one
 	{
-		m_Robot1 = new BulletBody(MASS_ROBOT, r1origin_x, 0, r1origin_y, new btSphereShape(btScalar(0.5)), true);
+		m_Robot1 = new BulletBody(MASS_ROBOT, btVector3(r1origin_x, 0, r1origin_y), new btSphereShape(btScalar(0.5)), true);
 		rob2Builder->getCollisionShape().push_back(m_Robot1->getShape());
 		rob2Builder->getDynamicsWorld()->addRigidBody(m_Robot1->getBody());
 	}
 
 	///creating  dynamic robot two
 	{
-		m_Robot2 = new BulletBody(MASS_ROBOT, r2origin_x, 0, r2origin_y, new btSphereShape(btScalar(0.5)), true);
+		m_Robot2 = new BulletBody(MASS_ROBOT, btVector3(r2origin_x, 0, r2origin_y), new btSphereShape(btScalar(0.5)), true);
 		rob2Builder->getCollisionShape().push_back(m_Robot2->getShape());
 		rob2Builder->getDynamicsWorld()->addRigidBody(m_Robot2->getBody());
 	}
 
-	o_distBr1X = getDistanceOneDimension(r1origin_x, boxOrigin_x);
-	o_distBr1Y = getDistanceOneDimension(r1origin_y, boxOrigin_y);
+	o_distBr1X = fabs(r1origin_x- boxOrigin_x);
+	o_distBr1Y = fabs(r1origin_y- boxOrigin_y);
 
-	o_distBr2X = getDistanceOneDimension(r2origin_x, boxOrigin_x);
-	o_distBr2Y = getDistanceOneDimension(r2origin_y, boxOrigin_y);
+	o_distBr2X = fabs(r2origin_x- boxOrigin_x);
+	o_distBr2Y = fabs(r2origin_y- boxOrigin_y);
 	
-	o_distBtX = getDistanceOneDimension(boxOrigin_x, TargetX);
-	o_distBtY = getDistanceOneDimension(boxOrigin_y, TargetY);
+	o_distBtX = fabs(boxOrigin_x- TargetX);
+	o_distBtY = fabs(boxOrigin_y- TargetY);
 
 	///Graphic init
 	rob2Builder->generateGraphics(rob2Builder->getGuiHelper());
@@ -141,9 +133,9 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 void CMoveBox2Robots::reset(CState *s)
 {
 
-	m_Robot1->updateResetVariables(s, false, r1origin_x, r1origin_y, m_rob1_X, m_rob1_Y);
-	m_Robot2->updateResetVariables(s, false, r2origin_x, r2origin_y, m_rob2_X, m_rob2_Y);
-	m_Box->updateResetVariables(s, true, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
+	m_Robot1->reset(s, false, r1origin_x, r1origin_y, m_rob1_X, m_rob1_Y);
+	m_Robot2->reset(s, false, r2origin_x, r2origin_y, m_rob2_X, m_rob2_Y);
+	m_Box->reset(s, true, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
 
 	///set initial values to distance variables
 
@@ -173,13 +165,13 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 
 	//Update
 
-	btTransform box_trans = m_Box->setAbsoluteActionVariables(s, m_box_X, m_box_Y);
-	m_Robot1->setAbsoluteActionVariables(s, m_rob1_X, m_rob1_Y);
-	m_Robot2->setAbsoluteActionVariables(s, m_rob2_X, m_rob2_Y);
+	btTransform box_trans = m_Box->setAbsoluteVariables(s, m_box_X, m_box_Y);
+	m_Robot1->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
+	m_Robot2->setAbsoluteVariables(s, m_rob2_X, m_rob2_Y);
 	
-	m_Robot1->setRelativeActionVariables(s, m_D_Br1X, m_D_Br1X, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
-	m_Robot2->setRelativeActionVariables(s, m_D_Br2X, m_D_Br2Y, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
-	m_Box->setRelativeActionVariables(s, m_D_BtX, m_D_BtY, true, TargetX, TargetY);
+	m_Robot1->setRelativeVariables(s, m_D_Br1X, m_D_Br1X, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
+	m_Robot2->setRelativeVariables(s, m_D_Br2X, m_D_Br2Y, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
+	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY, true, TargetX, TargetY);
 
 		s->set(m_theta_r1, r1_theta);
 		s->set(m_theta_r2, r2_theta);

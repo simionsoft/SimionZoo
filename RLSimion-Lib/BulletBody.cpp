@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "BulletBody.h"
 
-BulletBody::BulletBody(double mass,double xPos, double yPos, double zPos, btCollisionShape* shape, bool moving_obj)
+BulletBody::BulletBody(double mass,btVector3 pos, btCollisionShape* shape, bool moving_obj)
 {
 	m_shape = shape;
 	
 	m_transform.setIdentity();
-	m_transform.setOrigin(btVector3(xPos, yPos, zPos));
+	m_transform.setOrigin(pos);
 	m_mass = mass;
 
 	m_localInertia = btVector3(0, 0, 0);
@@ -40,7 +40,7 @@ btTransform BulletBody::getTransform()
 	return m_transform;
 }
 
-void BulletBody::updateResetVariables(CState* s, bool isBox, double originX, double originY, int idX, int idY)
+void BulletBody::reset(CState* s, bool isBox, double originX, double originY, int idX, int idY)
 {
 	btTransform bodyTransform;
 	if(!isBox)
@@ -93,7 +93,7 @@ double BulletBody::updateRobotMovement(const CAction *a, CState *s, char *omega,
 	return m_theta;
 }
 
-btTransform BulletBody::setAbsoluteActionVariables(CState* s, double idX, double idY)
+btTransform BulletBody::setAbsoluteVariables(CState* s, double idX, double idY)
 {
 	btTransform trans;
 	getBody()->getMotionState()->getWorldTransform(trans);
@@ -104,29 +104,21 @@ btTransform BulletBody::setAbsoluteActionVariables(CState* s, double idX, double
 	return trans;
 }
 
-double static getDistanceOneDimension(double x1, double x2) {
-	double dist = x2 - x1;
-	if (dist < 0)
-	{
-		dist = dist * (-1);
-	}
-	return dist;
-}
 
-void BulletBody::setRelativeActionVariables(CState* s, int idX, int idY, bool isBox, double targetX, double targetY, double valX, double valY)
+void BulletBody::setRelativeVariables(CState* s, int idX, int idY, bool isBox, double targetX, double targetY, double valX, double valY)
 {
 	btTransform bodyTrans;
 	getBody()->getMotionState()->getWorldTransform(bodyTrans);
 	
 	if (!isBox)
 	{
-		s->set(idX, getDistanceOneDimension(bodyTrans.getOrigin().getX(), valX));
-		s->set(idY, getDistanceOneDimension(bodyTrans.getOrigin().getZ(), valY));
+		s->set(idX, fabs(bodyTrans.getOrigin().getX() - valX));
+		s->set(idY, fabs(bodyTrans.getOrigin().getZ() - valY));
 	}
 	else
 	{
-		s->set(idX, getDistanceOneDimension(targetX, bodyTrans.getOrigin().getX()));
-		s->set(idY, getDistanceOneDimension(targetY, bodyTrans.getOrigin().getZ()));
+		s->set(idX, fabs(targetX- bodyTrans.getOrigin().getX()));
+		s->set(idY, fabs(targetY- bodyTrans.getOrigin().getZ()));
 	}
 }
 

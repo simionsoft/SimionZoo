@@ -2,6 +2,7 @@
 
 #include "parameters.h"
 #include <vector>
+#include <memory>
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -13,6 +14,7 @@ class CExperienceReplay;
 class CDeferredLoad;
 class CStateFeatureMap;
 class CActionFeatureMap;
+class CFeatureList;
 
 //This class is the Simion God: it controls the learning agents and holds global learning parameters
 //Some members are declared static because they are requested by children before the SimGod object is actually constructed
@@ -20,6 +22,11 @@ class CSimGod
 {
 	static CHILD_OBJECT_FACTORY<CStateFeatureMap> m_pGlobalStateFeatureMap;
 	static CHILD_OBJECT_FACTORY<CActionFeatureMap> m_pGlobalActionFeatureMap;
+
+	BOOL_PARAM m_bCountVisits;
+	double m_stateConfidenceThreshold = 10.0;
+	std::unique_ptr<double> m_pVisits;
+	CFeatureList *m_pStateFeatures;
 
 	MULTI_VALUE_FACTORY<CSimion> m_simions;
 	
@@ -41,6 +48,8 @@ public:
 	CSimGod(CConfigNode* pParameters);
 	CSimGod() = default;
 	virtual ~CSimGod();
+
+	bool isStateKnown(const CState *s) const;
 
 	double selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r, double probability);

@@ -10,6 +10,7 @@
 #include "featuremap.h"
 #include "experience-replay.h"
 #include "parameters.h"
+#include "features.h"
 
 std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_deferredLoadSteps;
 std::vector<const char*> CSimGod::m_inputFiles;
@@ -27,6 +28,9 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "Experience-Replay", "The experience replay parameters", true);
 	m_simions = MULTI_VALUE_FACTORY<CSimion>(pConfigNode, "Simion", "Simions: learning agents and controllers");
 	
+	m_bCountVisits = BOOL_PARAM(pConfigNode, "Count-State-Visits", "Count the number of times a state is visited", true);
+	m_pStateFeatures = new CFeatureList("SimGod\\state-visits");
+
 	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
 	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter",0.9);
 
@@ -60,18 +64,51 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
-	m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
-
-	int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
-	for (int tuple = 0; tuple < updateBatchSize; ++tuple)
+	//update the number of state visits
+	if (m_bCountVisits.get())
 	{
-		pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
-
-		//update step
-		for (unsigned int i = 0; i < m_simions.size(); i++)
-			m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
-				, pExperienceTuple->r, pExperienceTuple->probability);
+		m_pGlobalStateFeatureMap->getFeatures(s_p, m_pStateFeatures);
+		for (unsigned int i = 0; i < m_pStateFeatures->m_numFeatures; ++i)
+		{
+			if (m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index]<m_stateConfidenceThreshold)
+			m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index] +=
+				m_pStateFeatures->m_pFeatures[i].m_factor;
+		}
 	}
+
+	//update step
+	for (unsigned int i = 0; i < m_simions.size(); i++)
+		m_simions[i]->update(s, a, s_p, r, probability);
+
+	//Experience Replay
+	if (m_pExperienceReplay->bUsing())
+	{
+		m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
+
+		int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
+		for (int tuple = 0; tuple < updateBatchSize; ++tuple)
+		{
+			pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
+
+			//update step
+			for (unsigned int i = 0; i < m_simions.size(); i++)
+				m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
+					, pExperienceTuple->r, pExperienceTuple->probability);
+		}
+	}
+}
+
+bool CSimGod::isStateKnown(const CState* s) const
+{
+	if (!m_bCountVisits.get()) return true;
+
+	m_pGlobalStateFeatureMap->getFeatures(s, m_pStateFeatures);
+	double avgVisits = 0.0;
+	for (unsigned int i = 0; i < m_pStateFeatures->m_numFeatures; ++i)
+	{
+		avgVisits += m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index];
+	}
+	return (avgVisits>=m_stateConfidenceThreshold);
 }
 
 void CSimGod::registerDeferredLoadStep(CDeferredLoad* deferredLoadObject, unsigned int orderLoad)
@@ -86,6 +123,15 @@ bool myComparison(const std::pair<CDeferredLoad*, unsigned int> &a, const std::p
 
 void CSimGod::deferredLoad()
 {
+	if (m_bCountVisits.get())
+	{
+		m_pVisits = std::unique_ptr<double>(new double[m_pGlobalStateFeatureMap->getTotalNumFeatures()]);
+		for (unsigned int i = 0; i < m_pGlobalStateFeatureMap->getTotalNumFeatures(); ++i)
+		{
+			m_pVisits.get()[i] = 0;
+		}
+	}
+
 	std::sort(m_deferredLoadSteps.begin(), m_deferredLoadSteps.end(),myComparison);
 
 	for (auto it = m_deferredLoadSteps.begin(); it != m_deferredLoadSteps.end(); it++)

@@ -258,6 +258,7 @@
   <CLASS Name="CSimGod">
     <INTEGER-VALUE Name="V-Function-Update-Freq" Comment="Update frequency at which v-function updates will be done. Only used if Freeze-V-Function=true" Default="100"/>
     <DOUBLE-VALUE Name="Gamma" Comment="Gamma parameter" Default="0.9"/>
+    <BOOL-VALUE Name="Count-State-Visits" Comment="Count the number of times a state is visited" Default="true"/>
     <BOOL-VALUE Name="Freeze-V-Function" Comment="Defers updates on the V-functions to improve stability" Default="false"/>
     <BOOL-VALUE Name="Use-Importance-Weights" Comment="Use sample importance weights to allow off-policy learning -experimental-" Default="false"/>
     <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>
@@ -318,15 +319,16 @@
     <ACTION-VAR Name="force" Min="-10" Max="10" Unit="N"/>
   </CLASS>
   <CLASS Name="CMoveBoxOneRobot" World="MoveBoxOneRobot">
-    <STATE-VAR Name="rx1" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="ry1" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="bx" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="by" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBrX" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBrY" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBtX" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBtY" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="rx1" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="ry1" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="bx" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="by" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="dBrX" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="dBrY" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="dBtX" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="dBtY" Min="-10" Max="10" Unit="m"/>
     <STATE-VAR Name="theta" Min="-3.15" Max="3.15" Unit="rad"/>
+    <STATE-VAR Name="boxTheta" Min="-3.15" Max="3.15" Unit="rad"/>
     <ACTION-VAR Name="v" Min="-2" Max="2" Unit="m/s"/>
     <ACTION-VAR Name="omega" Min="-8" Max="8" Unit="rad/s"/>
   </CLASS>

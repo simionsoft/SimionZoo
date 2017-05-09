@@ -5,16 +5,16 @@
 class BulletBody {
 
 public:
-	BulletBody(double mass, double xPos, double yPos, double zPos, btCollisionShape* shape, bool moving_obj);
+	BulletBody(double mass, btVector3 pos, btCollisionShape* shape, bool moving_obj);
 	virtual ~BulletBody() { }
 
 	btRigidBody* BulletBody::getBody();
 	btCollisionShape* BulletBody::getShape();
 	btTransform BulletBody::getTransform();
-	void updateResetVariables(CState* s,bool isBox, double originX, double originY, int idX, int idY);
+	void reset(CState* s,bool isBox, double originX, double originY, int idX, int idY);
 	double updateRobotMovement(const CAction *a, CState *s, char *omega, char *vel, int theta, double dt);
-	btTransform setAbsoluteActionVariables(CState* s, double idX, double idY);
-	void setRelativeActionVariables(CState* s, int idX, int idY, bool isBox, double targetX, double targetY, double valX = 0.0, double valY = 0.0);
+	btTransform setAbsoluteVariables(CState* s, double idX, double idY);
+	void setRelativeVariables(CState* s, int idX, int idY, bool isBox, double targetX, double targetY, double valX = 0.0, double valY = 0.0);
 
 protected:
 	btRigidBody* m_pBody;

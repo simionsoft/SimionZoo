@@ -34,6 +34,8 @@ public:
 	CExperienceReplay();
 	~CExperienceReplay();
 
+	bool bUsing();
+
 	void addTuple(CState* s, CAction* a, CState* s_p, double r, double probability);
 	int getUpdateBatchSize();
 	CExperienceTuple* getRandomTupleFromBuffer();

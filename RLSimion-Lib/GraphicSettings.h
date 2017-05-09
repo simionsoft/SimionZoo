@@ -23,7 +23,7 @@ public:
 	}
 	~BulletBuilder();
 
-	virtual void initializeBulletRequirements();
+	virtual void initBullet();
 	virtual void initPhysics();
 
 	virtual void generateGraphics(GUIHelperInterface*	helper);

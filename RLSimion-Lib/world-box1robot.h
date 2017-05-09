@@ -17,17 +17,13 @@ class CMoveBoxOneRobot : public CDynamicModel
 	double MASS_TARGET;
 	double MASS_GROUND;
 
-	double o_distBrX;
-	double o_distBrY;
-	double o_distBtX;
-	double o_distBtY;
-
 	/// Episode variables
 	int m_rob1_X, m_rob1_Y;
 	int m_box_X, m_box_Y;
 	int m_D_BrX, m_D_BrY;
 	int m_D_BtX, m_D_BtY;
 	int m_theta;
+	int m_boxTheta;
 
 	// Action variables
 	int m_linear_vel;
@@ -38,10 +34,11 @@ class CMoveBoxOneRobot : public CDynamicModel
 	BulletBuilder* rBoxBuilder;
 
 	///Bullet bodies init
-	BulletBody *m_Ground;
-	BulletBody *m_Robot;
-	BulletBody *m_Box;
-	BulletBody *m_Target;
+	BulletBody *m_Ground= 0;
+	BulletBody *m_Robot= 0;
+	BulletBody *m_Box= 0;
+	BulletBody *m_Target= 0;
+	BulletBody *m_pWall1= 0, *m_pWall2= 0, *m_pWall3= 0, *m_pWall4= 0;
 
 public:
 

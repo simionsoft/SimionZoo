@@ -28,7 +28,7 @@ void BulletBuilder::initPhysics()
 }
 
 // create OpenGL window and Bullet World
-void BulletBuilder::initializeBulletRequirements()
+void BulletBuilder::initBullet()
 {
 	initPhysics();
 	resetCamera();

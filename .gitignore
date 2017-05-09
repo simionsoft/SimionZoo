@@ -29,10 +29,15 @@ experiments/*
 !bin/vcruntime140.dll
 !Debug/msvcp140d.dll
 !Debug/vcruntime140d.dll
+!bin/FAST_Win32.exe
+!bin/TurbSim.exe
+!bin/MAP_Win32.dll
 x64/
 x86/
 build/
 bld/
+**/experiment-log.xml
+config/definitions.xml
 
 
 [Oo]bj/

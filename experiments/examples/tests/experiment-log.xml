@@ -9,6 +9,7 @@
   <State-variable>dBtX</State-variable>
   <State-variable>dBtY</State-variable>
   <State-variable>theta</State-variable>
+  <State-variable>boxTheta</State-variable>
   <Action-variable>v</Action-variable>
   <Action-variable>omega</Action-variable>
   <Reward-variable>reward</Reward-variable>

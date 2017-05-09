@@ -54,7 +54,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	options= new CommonExampleOptions(gui);
 
 	robotOnlyGraphs = new BulletBuilder(options->m_guiHelper);
-	robotOnlyGraphs->initializeBulletRequirements();
+	robotOnlyGraphs->initBullet();
 	robotOnlyGraphs->setOpenGLApp(app);
 	
 	
@@ -62,7 +62,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	{
 		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
 		// "false" parameter will notify the constructor not to disable activation state
-		ground_bb = new BulletBody(MASS_GROUND, ground_x, ground_y, ground_z, groundShape, false);
+		ground_bb = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), groundShape, false);
 		robotOnlyGraphs->getCollisionShape().push_back(ground_bb->getShape());
 		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
 	}
@@ -70,7 +70,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	/// Creating target point, static
 	{
 		btCollisionShape* targetShape = new btConeShape(btScalar(0.5), btScalar(5.5));
-		target_bb = new BulletBody(MASS_TARGET, TargetX, 0, TargetY+1, targetShape, false);
+		target_bb = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY+1), targetShape, false);
 		target_bb->getBody()->setCollisionFlags(2);
 		robotOnlyGraphs->getCollisionShape().push_back(target_bb->getShape());
 		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(target_bb->getBody());
@@ -79,7 +79,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	///creating a dynamic robot obj1
 	{
 		//btCollisionShape* robot1Shape = new btSphereShape(btScalar(0.5));
-		robot_bb = new BulletBody(MASS_ROBOT, robotOrigin_x, 0, robotOrigin_y, new btSphereShape(btScalar(0.5)), true);
+		robot_bb = new BulletBody(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(btScalar(0.5)), true);
 		robotOnlyGraphs->getCollisionShape().push_back(robot_bb->getShape());
 		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(robot_bb->getBody());
 	}

@@ -101,7 +101,7 @@ public:
 		initValue(pConfigNode, m_value);
 	}
 
-	DataType& get() { return m_value; }
+	DataType get() const { return m_value; }
 	void set(DataType value) { m_value = value; }
 };
 
