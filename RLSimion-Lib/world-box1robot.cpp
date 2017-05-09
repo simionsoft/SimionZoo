@@ -136,8 +136,15 @@ void CMoveBoxOneRobot::reset(CState *s)
 {
 	if (true)//(CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		m_Box->reset(s, true, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
-		m_Robot->reset(s, false, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
+		m_Box->updateResetVariables(s, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
+		m_Robot->updateResetVariables(s, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
+
+		///set initial values to distance variables
+
+		s->set(m_D_BrX, o_distBrX);
+		s->set(m_D_BrY, o_distBrY);
+		s->set(m_D_BtX, o_distBtX);
+		s->set(m_D_BtY, o_distBtY);
 
 		///set initial values to state variables
 		s->set(m_theta, theta_o);

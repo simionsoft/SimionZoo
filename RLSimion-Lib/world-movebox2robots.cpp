@@ -63,7 +63,7 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 	m_omega_r2 = addActionVariable("omega2", "rad/s", -8.0, 8.0);
 
 	MASS_ROBOT = 1.1f;
-	MASS_BOX = 1.5f;
+	MASS_BOX = 6.9;
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
@@ -158,7 +158,7 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 	double r1_theta;
 	r1_theta = m_Robot1->updateRobotMovement(a, s, "omega1", "v1", m_theta_r1, dt);
 	double r2_theta;
-	r2_theta = m_Robot1->updateRobotMovement(a, s, "omega2", "v2", m_theta_r2, dt);
+	r2_theta = m_Robot2->updateRobotMovement(a, s, "omega2", "v2", m_theta_r2, dt);
 
 	//Execute simulation
 	rob2Builder->getDynamicsWorld()->stepSimulation(dt, 20);
@@ -181,19 +181,20 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		rob2Builder->drawText3D("Evaluation episode", printPosition);
+		rob2Builder->draw();
 	}
 	else
 	{
 		rob2Builder->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		rob2Builder->draw();
+		//rob2Builder->draw();
 	}
 
 }
 
-#define BOX_ROBOT_REWARD_WEIGHT 3.0
-#define BOX_TARGET_REWARD_WEIGHT 1.0
+#define BOX_ROBOT_REWARD_WEIGHT 1.0
+#define BOX_TARGET_REWARD_WEIGHT 3.0
 double CMoveBox2RobotsReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
 	double boxAfterX = s_p->get("bx");
@@ -221,6 +222,14 @@ double CMoveBox2RobotsReward::getReward(const CState* s, const CAction* a, const
 	double rewardBoxRobot1 = std::min(BOX_ROBOT_REWARD_WEIGHT*2.0, BOX_ROBOT_REWARD_WEIGHT / distanceBoxRobot1);
 	double rewardBoxRobot2 = std::min(BOX_ROBOT_REWARD_WEIGHT*2.0, BOX_ROBOT_REWARD_WEIGHT / distanceBoxRobot2);
 	double rewardBoxTarget = std::min(BOX_TARGET_REWARD_WEIGHT*2.0, BOX_TARGET_REWARD_WEIGHT / distanceBoxTarget);
+
+	/*if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		if (distanceBoxTarget < 8.8)
+		{
+			printf("Box moved");
+		}
+	}*/
 	return rewardBoxRobot1 + rewardBoxRobot2 + rewardBoxTarget;
 }
 
@@ -231,5 +240,5 @@ double CMoveBox2RobotsReward::getMin()
 
 double CMoveBox2RobotsReward::getMax()
 {
-	return 10.0;
+	return 14.0;
 }

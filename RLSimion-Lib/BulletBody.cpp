@@ -43,22 +43,19 @@ btTransform BulletBody::getTransform()
 void BulletBody::reset(CState* s, bool isBox, double originX, double originY, int idX, int idY)
 {
 	btTransform bodyTransform;
-	if(!isBox)
-	{
-		btVector3 zeroVector(0, 0, 0);
-		getBody()->clearForces();
-		getBody()->setLinearVelocity(zeroVector);
-		getBody()->setAngularVelocity(zeroVector);
-	}
+	
+	btVector3 zeroVector(0, 0, 0);
+	getBody()->clearForces();
+	getBody()->setLinearVelocity(zeroVector);
+	getBody()->setAngularVelocity(zeroVector);
+
 
 	getBody()->getMotionState()->getWorldTransform(bodyTransform);
 	bodyTransform.setOrigin(btVector3(originX, 0.0, originY));
 
-	if (isBox)
-	{
-		btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
-		bodyTransform.setRotation(orientation);
-	}
+	btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
+	bodyTransform.setRotation(orientation);
+	
 	
 	getBody()->setWorldTransform(bodyTransform);
 	getBody()->getMotionState()->setWorldTransform(bodyTransform);
