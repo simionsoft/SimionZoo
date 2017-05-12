@@ -43,6 +43,8 @@ RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)
 	pConfigNode = pConfigNode->getChild("RLSimion");
 	if (!pConfigNode) throw std::exception("Wrong experiment configuration file");
 
+	pMemManager = new CMemManager<CInterleavedMemPool>();
+
 	//In the beginning, a logger was created so that we could tell about creation itself
 	pLogger= CHILD_OBJECT<CLogger>(pConfigNode, "Log", "The logger class");
 
@@ -60,6 +62,7 @@ RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)
 
 RLSimionApp::~RLSimionApp()
 {
+	delete pMemManager;
 }
 
 void RLSimionApp::run()

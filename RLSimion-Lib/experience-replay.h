@@ -23,7 +23,7 @@ public:
 class CExperienceReplay: public CDeferredLoad
 {
 	CExperienceTuple* m_pTupleBuffer;
-	INT_PARAM m_bufferSize;
+	INT_PARAM m_blockSizeInBytes;
 	INT_PARAM m_updateBatchSize;
 
 	int m_currentPosition= 0;

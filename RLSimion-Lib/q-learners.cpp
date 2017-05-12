@@ -166,8 +166,13 @@ void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s
 	if (m_numStepsSinceLastTargetUpdate > m_targetUpdateFreq.get())
 	{
 		//copy the weights from the online function to the target function
-		memcpy_s(m_pTargetQFunction->getWeightPtr(), m_pTargetQFunction->getNumWeights()*sizeof(double)
-			, m_pQFunction->getWeightPtr(), m_pQFunction->getNumWeights()*sizeof(double));
+		for (int i = 0; i < m_pTargetQFunction->getNumWeights(); ++i)
+		{
+			m_pTargetQFunction->getWeights()[i] = m_pQFunction->getWeights()[i];
+		}
+		//interleaved memory buffers don't allow us to us memcpy_s()
+		//memcpy_s(m_pTargetQFunction->getWeightPtr(), m_pTargetQFunction->getNumWeights()*sizeof(double)
+		//	, m_pQFunction->getWeightPtr(), m_pQFunction->getNumWeights()*sizeof(double));
 		m_numStepsSinceLastTargetUpdate = 0;
 	}
 	else m_numStepsSinceLastTargetUpdate++;

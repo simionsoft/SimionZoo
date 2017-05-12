@@ -24,6 +24,9 @@
     <Filter Include="world\GraphicResources">
       <UniqueIdentifier>{9ac009a6-05f8-408a-9696-e5ec1696c580}</UniqueIdentifier>
     </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{ccab0e5e-5a18-4d27-9001-51dca3f56d3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp">
@@ -203,6 +206,18 @@
     <ClCompile Include="BulletBody.cpp">
       <Filter>world\Move2RobotsUtils</Filter>
     </ClCompile>
+    <ClCompile Include="mem-buffer-handler.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-block.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-pool.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-manager.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -366,6 +381,21 @@
     </ClInclude>
     <ClInclude Include="BulletBody.h">
       <Filter>world\Move2RobotsUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-buffer-handler.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-block.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-pool.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-interfaces.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-manager.h">
+      <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,7 @@ class CFilePathList;
 #include "experiment.h"
 #include "SimGod.h"
 #include "parameters.h"
+#include "mem-manager.h"
 
 class CSimionApp
 {
@@ -26,6 +27,7 @@ public:
 
 	static CSimionApp* get();
 
+	CMemManager<CInterleavedMemPool>* pMemManager;
 	CHILD_OBJECT<CLogger> pLogger;
 	CHILD_OBJECT<CWorld> pWorld;
 	CHILD_OBJECT<CExperiment> pExperiment;

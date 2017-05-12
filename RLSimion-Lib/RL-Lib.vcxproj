@@ -219,6 +219,10 @@
     <ClCompile Include="GLShapeDrawer.cpp" />
     <ClCompile Include="GraphicSettings.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="mem-buffer-handler.cpp" />
+    <ClCompile Include="mem-block.cpp" />
+    <ClCompile Include="mem-pool.cpp" />
+    <ClCompile Include="mem-manager.cpp" />
     <ClCompile Include="OpenGLGuiHelper.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
     <ClCompile Include="parameters.cpp" />
@@ -286,6 +290,11 @@
     <ClInclude Include="features.h" />
     <ClInclude Include="GL_ShapeDrawer.h" />
     <ClInclude Include="GraphicSettings.h" />
+    <ClInclude Include="mem-buffer-handler.h" />
+    <ClInclude Include="mem-block.h" />
+    <ClInclude Include="mem-pool.h" />
+    <ClInclude Include="mem-interfaces.h" />
+    <ClInclude Include="mem-manager.h" />
     <ClInclude Include="OpenGLGuiHelper.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="logger.h" />

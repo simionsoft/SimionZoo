@@ -23,9 +23,9 @@ double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 	double *pWeights;
 
 	if (!bUseFrozenWeights || !m_bCanBeFrozen)
-		pWeights = m_pWeights.get();
+		pWeights = &(*m_pWeights)[0];// .get();
 	else
-		pWeights = m_pFrozenWeights.get();
+		pWeights = &(*m_pFrozenWeights)[0]; //m_pFrozenWeights.get();
 
 	for (unsigned int i = 0; i<pFeatures->m_numFeatures; i++)
 	{
@@ -62,7 +62,8 @@ bool CLinearVFA::saveWeights(const char* pFilename) const
 	if (pFile)
 	{
 		fwrite(&m_numWeights, sizeof(unsigned int), 1, (FILE*)pFile);
-		fwrite(m_pWeights.get(), sizeof(double), m_numWeights, (FILE*)pFile);
+		for (int i= 0; i<m_numWeights; ++i)
+			fwrite(&(*m_pWeights)[i], sizeof(double), 1, (FILE*)pFile);
 		fclose(pFile);
 		return true;
 	}
@@ -83,7 +84,8 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 
 		assert(m_numWeights == numWeightsRead);
 
-		fread_s(m_pWeights.get(), numWeightsRead*sizeof(double), sizeof(double), numWeightsRead, (FILE*)pFile);
+		for(int i= 0; i<numWeightsRead; ++i)
+			fread_s(&(*m_pWeights)[0], sizeof(double), sizeof(double), 1, (FILE*)pFile);
 
 		fclose(pFile);
 		return true;
@@ -143,14 +145,14 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 		if (!m_bSaturateOutput)
 		{
 			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index < m_maxIndex)
-				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] += alpha*pFeatures->m_pFeatures[i].m_factor;	
+				(*m_pWeights)[pFeatures->m_pFeatures[i].m_index] += alpha*pFeatures->m_pFeatures[i].m_factor;	
 		}
 		else
 		{
 			if (pFeatures->m_pFeatures[i].m_index >= m_minIndex && pFeatures->m_pFeatures[i].m_index < m_maxIndex)
-				m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] =
+				(*m_pWeights)[pFeatures->m_pFeatures[i].m_index] =
 				std::min(m_maxOutput,std::max(m_minOutput
-					, m_pWeights.get()[pFeatures->m_pFeatures[i].m_index] + alpha * pFeatures->m_pFeatures[i].m_factor));
+					, (*m_pWeights)[pFeatures->m_pFeatures[i].m_index] + alpha * pFeatures->m_pFeatures[i].m_factor));
 		}
 	}
 	//if we are deferring updates, check whether we have to update frozen weights
@@ -161,7 +163,9 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 
 		if (vUpdateFreq == 0 || experimentStep % vUpdateFreq == 0)
 		{
-			memcpy(m_pFrozenWeights.get(), m_pWeights.get(), m_numWeights * sizeof(double));
+			for (int i = 0; i < m_numWeights; ++i)
+				(*m_pFrozenWeights)[i] = (*m_pWeights)[i];
+				//memcpy(m_pFrozenWeights.get(), m_pWeights.get(), m_numWeights * sizeof(double));
 		}
 	}
 }
@@ -188,16 +192,16 @@ CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 void CLinearStateVFA::deferredLoadStep()
 {
 	//weights
-	m_pWeights = std::shared_ptr<double>(new double[m_numWeights]);
+	m_pWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);//std::shared_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights.get()[i] = m_initValue.get();
+		(*m_pWeights)[i] = m_initValue.get();
 
 	//frozen weights
 	if (m_bCanBeFrozen)
 	{
-		m_pFrozenWeights = std::shared_ptr<double>(new double[m_numWeights]);
+		m_pFrozenWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights); //std::shared_ptr<double>(new double[m_numWeights]);
 		for (unsigned int i = 0; i < m_numWeights; i++)
-			m_pFrozenWeights.get()[i] = m_initValue.get();
+			(*m_pFrozenWeights)[i] = m_initValue.get();
 	}
 }
 
@@ -294,16 +298,16 @@ void CLinearStateActionVFA::setInitValue(double initValue)
 void CLinearStateActionVFA::deferredLoadStep()
 {
 	//weights
-	m_pWeights= std::unique_ptr<double>(new double[m_numWeights]);
+	m_pWeights= CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);//std::unique_ptr<double>(new double[m_numWeights]);
 	for (unsigned int i = 0; i < m_numWeights; i++)
-		m_pWeights.get()[i] = m_initValue.get();
+		(*m_pWeights)[i] = m_initValue.get();
 
 	//frozen weights
 	if (m_bCanBeFrozen)
 	{
-		m_pFrozenWeights = std::shared_ptr<double>(new double[m_numWeights]);
+		m_pFrozenWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights); //std::shared_ptr<double>(new double[m_numWeights]);
 		for (unsigned int i = 0; i < m_numWeights; i++)
-			m_pFrozenWeights.get()[i] = m_initValue.get();
+			(*m_pFrozenWeights)[i] = m_initValue.get();
 	}
 }
 

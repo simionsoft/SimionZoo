@@ -30,7 +30,7 @@ bool CTemplatedConfigFile::load(const char* inTemplateConfigFile)
 	fopen_s(&templateFile, inTemplateConfigFile, "r");
 	if (templateFile)
 	{
-		numCharsRead = fread_s(m_pTemplateConfigFileContent, MAX_CONFIG_FILE_SIZE, sizeof(char)
+		numCharsRead = fread_s(m_pTemplateConfigFileContent, MAX_CONFIG_FILE_SIZE, (int)sizeof(char)
 			, MAX_CONFIG_FILE_SIZE, templateFile);
 		m_pTemplateConfigFileContent[numCharsRead] = 0;
 
