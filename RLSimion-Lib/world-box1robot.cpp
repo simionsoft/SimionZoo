@@ -134,7 +134,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 
 void CMoveBoxOneRobot::reset(CState *s)
 {
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (1)//CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		m_Box->reset(s, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
 		m_Robot->reset(s, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);

@@ -352,7 +352,7 @@ int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarS
 
 int CLogger::writeStatsToBuffer(char* buffer, int offset)
 {
-	int numVars = m_stats.size();
+	int numVars = (int)m_stats.size();
 	double* pDoubleBuffer = (double*)(buffer + offset);
 	int i = 0;
 	for (auto it = m_stats.begin(); it != m_stats.end(); ++it)
@@ -394,11 +394,13 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 void CLogger::openLogFile(const char* logFilename)
 {
 	fopen_s(&m_logFile, logFilename, "wb");
+	if (!m_logFile)
+		logMessage(MessageType::Warning, "Log file couldn't be opened, so no log info will be saved.");
 }
 void CLogger::closeLogFile()
 {
-	if (m_logFile) fclose(m_logFile);
-	else logMessage(MessageType::Warning, "Could not close log file because it wasn't opened.");
+	if (m_logFile)
+		fclose(m_logFile);
 }
 
 void CLogger::writeLogBuffer(const char* pBuffer, int numBytes)
@@ -429,7 +431,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Error:
 			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
 		}
-		m_outputPipe.writeBuffer(messageLine, strlen(messageLine)+1);
+		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine)+1);
 	}
 	else
 	{

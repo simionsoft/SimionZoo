@@ -77,7 +77,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.05</Value>
+                          <Value>0.1</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -117,7 +117,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.05</Value>
+                          <Value>0.1</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>

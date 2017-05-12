@@ -103,12 +103,13 @@ bool CSimGod::isStateKnown(const CState* s) const
 	if (!m_bCountVisits.get()) return true;
 
 	m_pGlobalStateFeatureMap->getFeatures(s, m_pStateFeatures);
-	double avgVisits = 0.0;
+	double sumVisits = 0.0;
+
 	for (unsigned int i = 0; i < m_pStateFeatures->m_numFeatures; ++i)
 	{
-		avgVisits += m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index];
+		sumVisits += m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index];
 	}
-	return (avgVisits>=m_stateConfidenceThreshold);
+	return (sumVisits>=m_stateConfidenceThreshold);
 }
 
 void CSimGod::registerDeferredLoadStep(CDeferredLoad* deferredLoadObject, unsigned int orderLoad)
