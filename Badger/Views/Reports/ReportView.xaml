@@ -11,7 +11,7 @@
              d:DesignHeight="300" d:DesignWidth="600">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
+        <BitmapImage x:Key="close" UriSource="/images/ic-close.png"/>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <TabControl x:Name="plots" SelectedItem="{Binding Path=selectedPlot,Mode=TwoWay}">
