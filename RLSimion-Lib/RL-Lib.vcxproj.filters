@@ -203,6 +203,9 @@
     <ClCompile Include="BulletBody.cpp">
       <Filter>world\Move2RobotsUtils</Filter>
     </ClCompile>
+    <ClCompile Include="world-two-robots-rope.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -366,6 +369,9 @@
     </ClInclude>
     <ClInclude Include="BulletBody.h">
       <Filter>world\Move2RobotsUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="world-two-robots-rope.h">
+      <Filter>world\BulletWorlds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

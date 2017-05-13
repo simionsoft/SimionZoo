@@ -76,6 +76,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LinearMath", "3rd-party\bul
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletCollision", "3rd-party\bullet3-2.86\build3\vs2010\BulletCollision.vcxproj", "{91650844-3A27-904E-9B55-79AB50C2531B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BulletSoftBody", "3rd-party\bullet3-2.86\build3\vs2010\BulletSoftBody.vcxproj", "{F663C29D-A7FD-D24F-A85F-1933B83A2818}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -316,6 +318,16 @@ Global
 		{91650844-3A27-904E-9B55-79AB50C2531B}.Release|x64.Build.0 = Release|x64
 		{91650844-3A27-904E-9B55-79AB50C2531B}.Release|x86.ActiveCfg = Release|Win32
 		{91650844-3A27-904E-9B55-79AB50C2531B}.Release|x86.Build.0 = Release|Win32
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Debug|x64.ActiveCfg = Debug|x64
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Debug|x64.Build.0 = Debug|x64
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Debug|x86.ActiveCfg = Debug|Win32
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Debug|x86.Build.0 = Debug|Win32
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Release|Any CPU.ActiveCfg = Release|Win32
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Release|x64.ActiveCfg = Release|x64
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Release|x64.Build.0 = Release|x64
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Release|x86.ActiveCfg = Release|Win32
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -344,5 +356,6 @@ Global
 		{12820605-A402-F444-954E-FF051A08A3F3} = {7398CB58-8521-4F9F-9E77-E697358E7636}
 		{D611B375-721F-1941-BC88-B3F7E227AC7E} = {7398CB58-8521-4F9F-9E77-E697358E7636}
 		{91650844-3A27-904E-9B55-79AB50C2531B} = {7398CB58-8521-4F9F-9E77-E697358E7636}
+		{F663C29D-A7FD-D24F-A85F-1933B83A2818} = {7398CB58-8521-4F9F-9E77-E697358E7636}
 	EndGlobalSection
 EndGlobal
