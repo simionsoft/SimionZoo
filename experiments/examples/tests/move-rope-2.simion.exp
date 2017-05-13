@@ -17,10 +17,10 @@
     </World>
     <Experiment>
       <Random-Seed>1</Random-Seed>
-      <Num-Episodes>1000</Num-Episodes>
-      <Eval-Freq>10</Eval-Freq>
+      <Num-Episodes>2000</Num-Episodes>
+      <Eval-Freq>50</Eval-Freq>
       <Progress-Update-Freq>1.0</Progress-Update-Freq>
-      <Episode-Length>150</Episode-Length>
+      <Episode-Length>250</Episode-Length>
     </Experiment>
     <SimGod>
       <V-Function-Update-Freq>100</V-Function-Update-Freq>
@@ -28,37 +28,41 @@
       <Count-State-Visits>true</Count-State-Visits>
       <Freeze-V-Function>true</Freeze-V-Function>
       <Use-Importance-Weights>false</Use-Importance-Weights>
+      <Experience-Replay>
+        <Buffer-Size>1000</Buffer-Size>
+        <Update-Batch-Size>10</Update-Batch-Size>
+      </Experience-Replay>
       <State-Feature-Map>
         <Type>
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
-              <Num-Features>10</Num-Features>
-              <Variable>rx1</Variable>
+              <Num-Features>9</Num-Features>
+              <Variable>dBtX</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>10</Num-Features>
-              <Variable>rx2</Variable>
+              <Num-Features>9</Num-Features>
+              <Variable>dBtY</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>10</Num-Features>
-              <Variable>ry1</Variable>
+              <Num-Features>9</Num-Features>
+              <Variable>dBr1X</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>10</Num-Features>
-              <Variable>ry2</Variable>
+              <Num-Features>9</Num-Features>
+              <Variable>dBr1Y</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>10</Num-Features>
-              <Variable>bx</Variable>
+              <Num-Features>9</Num-Features>
+              <Variable>dBr2X</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>10</Num-Features>
-              <Variable>by</Variable>
+              <Num-Features>9</Num-Features>
+              <Variable>dBr2Y</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
@@ -84,7 +88,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.05</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -124,7 +128,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.05</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -188,7 +192,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.05</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -228,7 +232,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.05</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
