@@ -22,5 +22,8 @@ double& CMemBlock::operator[](size_t index)
 
 	m_pBuffer = new double[m_blockSizeInBytes];
 	m_pPool->updateTotalMemAllocated(m_blockSizeInBytes);
+
+	//how do I initialise it from here????
+
 	return m_pBuffer[index];
 }

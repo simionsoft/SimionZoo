@@ -18,8 +18,11 @@ public:
 
 class IMemBuffer
 {
+	double m_initValue;
 public:
 	virtual ~IMemBuffer() {};
 
 	virtual double& operator[](size_t index)= 0;
+	void setInitValue(double value) { m_initValue = value; }
+	double getInitValue() const { return m_initValue; }
 };
