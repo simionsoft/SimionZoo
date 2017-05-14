@@ -1,6 +1,5 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using Caliburn.Micro;
 using Badger.Simion;
 using Badger.Data;
 
@@ -40,10 +39,8 @@ namespace Badger.ViewModels
 
         private List<string> m_variablesInLog = new List<string>();
 
-        public LoggedExperimentalUnitViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        public LoggedExperimentalUnitViewModel(XmlNode configNode)
         {
-            m_parentWindow = parent;
-
             if (configNode.Attributes != null)
             {
                 if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
@@ -55,14 +52,6 @@ namespace Badger.ViewModels
 
             logDescriptorFilePath = SimionFileData.getLogDescriptorsFilePath(experimentFilePath);
             logFilePath = SimionFileData.getLogFilePath(experimentFilePath);
-
-
-            if (parent is ReportsWindowViewModel)
-            {
-                logDescriptor = new XmlDocument();
-                logDescriptor.Load(logDescriptorFilePath);
-                processDescriptor();
-            }
 
             //load the value of each fork used in this experimental unit
             foreach (XmlNode fork in configNode.ChildNodes)
@@ -76,8 +65,9 @@ namespace Badger.ViewModels
             }
         }
 
-        private void processDescriptor()
+        public List<string> processDescriptor()
         {
+            List<string> variablesNames = new List<string>();
             XmlNode node = m_logDescriptor.FirstChild;
             if (node.Name == XMLConfig.descriptorRootNodeName)
             {
@@ -89,14 +79,16 @@ namespace Badger.ViewModels
                         || child.Name == XMLConfig.descriptorStatVarNodeName)
                     {
                         string varName = child.InnerText;
-                        //add the variable to the local list
+                        // add the variable to the local list
                         m_variablesInLog.Add(varName);
-                        //add the variable to the list managed by the parent window
-                        m_parentWindow.addVariable(varName);
+                        variablesNames.Add(varName);
                     }
                 }
             }
+
+            return variablesNames;
         }
+
         //loads the log file and then returns the data of the requested variable as an array of TrackData
         //not the most efficient way, but the easiest right now
         public TrackData loadTrackData(List<string> varNames)

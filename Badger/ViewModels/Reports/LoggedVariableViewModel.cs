@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Dynamic;
+﻿using System.Collections.Generic;
 using Caliburn.Micro;
-using System.IO;
-using Badger.Data;
+
 
 namespace Badger.ViewModels
 {
@@ -20,8 +13,6 @@ namespace Badger.ViewModels
             set
             {
                 m_bIsSelected = value;
-                m_parent.validateQuery();
-                NotifyOfPropertyChange(() => bIsSelected);
             }
         }
 
@@ -39,8 +30,6 @@ namespace Badger.ViewModels
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
 
-        private ReportsWindowViewModel m_parent;
-
         public enum PlotType { Last, All, Both };
 
         private MultiStateButtonViewModel m_stateButton =
@@ -50,12 +39,10 @@ namespace Badger.ViewModels
         public MultiStateButtonViewModel stateButton
         {
             get { return m_stateButton; }
-            set { }
         }
 
-        public LoggedVariableViewModel(string name, ReportsWindowViewModel parent)
+        public LoggedVariableViewModel(string name)
         {
-            m_parent = parent;
             m_name = name;
         }
     }

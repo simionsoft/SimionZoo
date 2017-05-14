@@ -1,67 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
-using Caliburn.Micro;
-using Badger.Data;
 using Badger.Simion;
 using Badger.ViewModels.Reports;
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
     public class LoggedExperimentViewModel : SelectableTreeItem
     {
-        private string m_name = "";
-        public string name
-        {
-            get { return m_name; }
-            set { m_name = value; }
-        }
+        public string Name { get; set; } = "";
 
-        private string m_exeFile;
+        public string ExeFile { get; set; }
 
-        public string ExeFile
-        {
-            get { return m_exeFile; }
-            set { m_exeFile = value; }
-        }
+        public List<LoggedPrerequisiteViewModel> Prerequisites { get; set; } = new List<LoggedPrerequisiteViewModel>();
 
-        private List<LoggedPrerequisiteViewModel> m_prerequisites = new List<LoggedPrerequisiteViewModel>();
+        public List<LoggedForkViewModel> Forks { get; set; } = new List<LoggedForkViewModel>();
 
-        public List<LoggedPrerequisiteViewModel> Prerequisites
-        {
-            get { return m_prerequisites; }
-            set { m_prerequisites = value; }
-        }
-
-        private List<LoggedForkViewModel> m_forks = new List<LoggedForkViewModel>();
-        public List<LoggedForkViewModel> forks
-        {
-            get { return m_forks; }
-            set { m_forks = value; }
-        }
+        public List<LoggedExperimentalUnitViewModel> ExperimentalUnits { get; set; } = new List<LoggedExperimentalUnitViewModel>();
 
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {
             if (doActionLocally) LocalTraverseAction(action);
-            foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true, action);
-        }
-
-        private List<LoggedExperimentalUnitViewModel> m_expUnits = new List<LoggedExperimentalUnitViewModel>();
-        public List<LoggedExperimentalUnitViewModel> expUnits
-        {
-            get { return m_expUnits; }
-            set { m_expUnits = value; }
+            foreach (LoggedForkViewModel fork in Forks) fork.TraverseAction(true, action);
         }
 
 
         public LoggedExperimentViewModel(XmlNode configNode, ReportsWindowViewModel parent)
         {
+            m_parentWindow = parent;
             XmlAttributeCollection attrs = configNode.Attributes;
 
             if (attrs != null)
             {
                 if (attrs.GetNamedItem(XMLConfig.nameAttribute) != null)
-                    name = attrs[XMLConfig.nameAttribute].Value;
+                    Name = attrs[XMLConfig.nameAttribute].Value;
 
                 if (attrs.GetNamedItem(XMLConfig.ExeFileNameAttr) != null)
                     ExeFile = attrs[XMLConfig.ExeFileNameAttr].Value;
@@ -69,26 +42,98 @@ namespace Badger.ViewModels
 
             foreach (XmlNode child in configNode.ChildNodes)
             {
-                if (child.Name == XMLConfig.forkTag)
+                switch (child.Name)
                 {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
-                    forks.Add(newFork);
+                    case XMLConfig.forkTag:
+                        LoggedForkViewModel newFork = new LoggedForkViewModel(child);
+                        Forks.Add(newFork);
+                        break;
+
+                    case XMLConfig.PrerequisiteTag:
+                        LoggedPrerequisiteViewModel newPrerequisite = new LoggedPrerequisiteViewModel(child);
+                        Prerequisites.Add(newPrerequisite);
+                        break;
+
+                    case XMLConfig.experimentalUnitNodeTag:
+                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child);
+
+                        if (parent != null)
+                        {
+                            newExpUnit.logDescriptor = new XmlDocument();
+                            newExpUnit.logDescriptor.Load(newExpUnit.logDescriptorFilePath);
+                            List<string> variableNames = newExpUnit.processDescriptor();
+                            foreach (var name in variableNames) AddVariable(name);
+                        }
+
+                        ExperimentalUnits.Add(newExpUnit);
+                        break;
                 }
-                else if (child.Name == XMLConfig.PrerequisiteTag)
+            }
+
+        }
+
+        /// <summary>
+        ///     Call after reading the log file descriptor of each experimetal unit
+        /// </summary>
+        /// <param name="variableName"></param>
+        public void AddVariable(string variableName)
+        {
+            bool bVarExists = false;
+            int i = 0, len = variables.Count;
+
+            while (!bVarExists && i < len)
+            {
+                if (variables[i].name == variableName)
+                    bVarExists = true;
+                i++;
+            }
+
+            if (!bVarExists)
+            {
+                variables.Add(new LoggedVariableViewModel(variableName));
+                inGroupSelectionVariables.Add(variableName);
+                orderByVariables.Add(variableName);
+            }
+        }
+
+        //Variables
+        private BindableCollection<LoggedVariableViewModel> m_variables
+            = new BindableCollection<LoggedVariableViewModel>();
+        public BindableCollection<LoggedVariableViewModel> variables
+        {
+            get { return m_variables; }
+            set { m_variables = value; NotifyOfPropertyChange(() => variables); }
+        }
+
+        private bool m_bVariableSelection = true;
+        public bool bVariableSelection
+        {
+            get { return m_bVariableSelection; }
+            set
+            {
+                m_bVariableSelection = value;
+                foreach (LoggedVariableViewModel var in variables)
                 {
-                    LoggedPrerequisiteViewModel newPrerequisite =
-                        new LoggedPrerequisiteViewModel(child);
-                    Prerequisites.Add(newPrerequisite);
-                }
-                else if (child.Name == XMLConfig.experimentalUnitNodeTag)
-                {
-                    LoggedExperimentalUnitViewModel newExpUnit =
-                        new LoggedExperimentalUnitViewModel(child, parent);
-                    expUnits.Add(newExpUnit);
+                    var.bIsSelected = value;
+                    m_parentWindow.validateQuery();
+                    NotifyOfPropertyChange(() => bIsSelected);
                 }
             }
         }
 
+        private BindableCollection<string> m_inGroupSelectionVariables = new BindableCollection<string>();
+        public BindableCollection<string> inGroupSelectionVariables
+        {
+            get { return m_inGroupSelectionVariables; }
+            set { m_inGroupSelectionVariables = value; NotifyOfPropertyChange(() => inGroupSelectionVariables); }
+        }
+
+        private BindableCollection<string> m_orderByVariables = new BindableCollection<string>();
+        public BindableCollection<string> orderByVariables
+        {
+            get { return m_orderByVariables; }
+            set { m_orderByVariables = value; NotifyOfPropertyChange(() => orderByVariables); }
+        }
     }
 
 

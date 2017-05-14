@@ -8,8 +8,8 @@
             xmlns:v="clr-namespace:Badger.Views"
             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
             WindowStyle="ThreeDBorderWindow"
-        Width="1024"
-        Height="768"
+        Width="800"
+        Height="600"
         Background="#eeeeee"
         WindowState="Normal"
         Title="Report Viewer"
@@ -93,7 +93,7 @@
                             <CheckBox x:Name="bVariableSelection" VerticalAlignment="Center" Margin="4,0,0,0"/>
                             <Label Width="70" Margin="0,0,0,0" VerticalAlignment="Center" Content="Variables"/>
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Height="180" MaxHeight="180">
-                                <ItemsControl x:Name="variables" Width="183"/>
+                                <ItemsControl x:Name="Variables" Width="183" />
                             </ScrollViewer>
                         </StackPanel>
                         <StackPanel Margin="0,10,0,2" Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">

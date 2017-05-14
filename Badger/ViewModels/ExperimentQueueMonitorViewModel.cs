@@ -339,7 +339,7 @@ namespace Badger.ViewModels
                 foreach (var prerequisite in experiment.Prerequisites)
                     prerequisites.Add(prerequisite.Value);
 
-                foreach (var unit in experiment.expUnits)
+                foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentViewModel monitoredExperiment =
                     new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, evaluationMonitor);

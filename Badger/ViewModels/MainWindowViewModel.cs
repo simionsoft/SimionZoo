@@ -344,7 +344,7 @@ namespace Badger.ViewModels
             if (SelectedLaunchMode.Equals("Batch File"))
             {
                 batchFileName = SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment);
-                experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.expUnits.Count);
+                experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.ExperimentalUnits.Count);
             }
             else
                 experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,

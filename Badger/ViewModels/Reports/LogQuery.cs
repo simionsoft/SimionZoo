@@ -147,7 +147,7 @@ namespace Badger.ViewModels
             //traverse the experimental units within each experiment
             foreach (LoggedExperimentViewModel exp in experiments)
             {
-                foreach (LoggedExperimentalUnitViewModel expUnit in exp.expUnits)
+                foreach (LoggedExperimentalUnitViewModel expUnit in exp.ExperimentalUnits)
                 {
                     //take selection into account? is this exp. unit selected?
                     if (from == fromAll || (from == fromSelection && expUnit.bIsSelected))
@@ -163,7 +163,7 @@ namespace Badger.ViewModels
                         {
                             //No groups (each experimental unit is a track) or the track doesn't exist
                             //Either way, we create a new track
-                            LogQueryResultTrackViewModel newResultTrack = new LogQueryResultTrackViewModel(exp.name);
+                            LogQueryResultTrackViewModel newResultTrack = new LogQueryResultTrackViewModel(exp.Name);
 
                             if (groupBy.Count == 0)
                                 newResultTrack.forkValues = expUnit.forkValues;

@@ -54,12 +54,14 @@ namespace Badger.Data
             var settings = SetupPopupWindow(windowHeader);
 
             settings.WindowState = WindowState.Normal;
-            settings.ResizeMode = ResizeMode.CanMinimize;
+            settings.ResizeMode = ResizeMode.CanResize;
+            settings.SizeToContent = SizeToContent.Manual;
 
             if (isDialog)
                 windowManager.ShowDialog(viewModel, null, settings);
-            else
+            else {
                 windowManager.ShowWindow(viewModel, null, settings);
+            }
         }
 
         /// <summary>

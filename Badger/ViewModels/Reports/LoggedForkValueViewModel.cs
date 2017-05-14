@@ -26,7 +26,7 @@ namespace Badger.ViewModels
             set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
         }
 
-        public LoggedForkValueViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        public LoggedForkValueViewModel(XmlNode configNode)
         {
             if (configNode.Attributes.GetNamedItem(XMLConfig.valueAttribute) != null)
                 value = configNode.Attributes[XMLConfig.valueAttribute].Value;
@@ -37,7 +37,7 @@ namespace Badger.ViewModels
             {
                 if (child.Name == XMLConfig.forkTag)
                 {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
+                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
                     forks.Add(newFork);
                 }
             }

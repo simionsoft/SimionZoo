@@ -29,7 +29,7 @@ namespace Badger.Data
         /// <param name="batchFilename"></param>
         static public string LoadExperimentBatchFile(XmlNodeFunction perExperimentFunction, string batchFilename = "")
         {
-            if (batchFilename == "")
+            if (string.IsNullOrEmpty(batchFilename))
             {
                 bool isOpen = OpenFile(ref batchFilename, "Experiment batch | *.", XMLConfig.experimentBatchExtension);
                 if (!isOpen)
