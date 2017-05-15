@@ -161,8 +161,7 @@ namespace Badger.ViewModels
 
             //update the "enabled" property of the variable used to select a group
             foreach (var experiment in loggedExperiments)
-                foreach (var fork in experiment.Forks)
-                    fork.bGroupsEnabled = fork.GroupByForks.Count > 0;
+                experiment.bGroupsEnabled = experiment.GroupByForks.Count > 0;
         }
 
         public ReportsWindowViewModel()
@@ -195,9 +194,8 @@ namespace Badger.ViewModels
             query.from = selectedFrom;
             //group by
             foreach (var experiment in loggedExperiments)
-                foreach (var fork in experiment.Forks)
-                    foreach (var group in fork.GroupByForks)
-                        query.groupBy.Add(group);
+                foreach (var group in experiment.GroupByForks)
+                    query.groupBy.Add(group);
             //having
             if (query.groupBy.Count > 0)
             {

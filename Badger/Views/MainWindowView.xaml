@@ -17,7 +17,7 @@
         <DataTemplate DataType="{x:Type vm:StatsViewModel}">
             <v:StatsView/>
         </DataTemplate>
-        
+
         <BitmapImage x:Key="stop" UriSource="/images/stop.png" />
         <BitmapImage x:Key="herdagent-head" UriSource="/images/herdagent-head.png" />
     </Window.Resources>
@@ -27,7 +27,7 @@
             <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
                 <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="New Experiment"
                         Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action NewExperiment()]">
-                    <Image Source="{StaticResource New}" Opacity="0.6"  Width="24" Height="24"/>
+                    <Image Source="{StaticResource New}" Opacity="0.6" Width="24" Height="24" />
                 </Button>
                 <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Experiment"
                         Height="40" Width="40" IsEnabled="{Binding Path=bIsExperimentListNotEmpty}"
@@ -82,7 +82,7 @@
                         ToolTip="Generate reports from stored experiment results">
                     <StackPanel Orientation="Horizontal" Margin="4,0">
                         <Image Opacity="0.6" Width="22" Height="22" Source="{StaticResource Plot}" />
-                        <Label Padding="4,3,4,3">Reports</Label>
+                        <Label Padding="4,3">Reports</Label>
                     </StackPanel>
                 </Button>
             </StackPanel>
@@ -103,7 +103,7 @@
 
             <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                         HorizontalAlignment="Center" Orientation="Horizontal" >
-                <Image Width="30" Height="30" Margin="5" Source="{StaticResource herdagent-head}"/>
+                <Image Width="25" Height="25" Margin="5" Source="{StaticResource herdagent-head}"/>
                 <Label FontWeight="Medium" VerticalAlignment="Center">Herd Agents</Label>
             </StackPanel>
 
@@ -119,15 +119,16 @@
                         VerticalContentAlignment="Center" HorizontalAlignment="Center" />
             </StackPanel>
 
-            <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels"  Margin="0,0,5,5"
-                            SelectedItem="{Binding Path = selectedExperiment}" >
+            <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels" Margin="0,0,5,5"
+                        SelectedItem="{Binding Path = selectedExperiment}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" >
                             <Label Content="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
-                                       VerticalAlignment="Center"/>
+                                   VerticalAlignment="Center"/>
                             <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
-                            <Button Style="{StaticResource BadgerButtonStyle}" cal:Message.Attach="[Event Click]=[Action close()]">
+                            <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18"
+                                    cal:Message.Attach="[Event Click]=[Action close()]">
                                 <Image Source="{StaticResource Close}" Height="16" Width="16" />
                             </Button>
                         </StackPanel>

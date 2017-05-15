@@ -1,14 +1,11 @@
 ﻿<Window x:Class="Badger.Views.ReportsWindowView"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-            xmlns:vm="clr-namespace:Badger.ViewModels"
-            xmlns:cal="http://www.caliburnproject.org"
-            xmlns:v="clr-namespace:Badger.Views"
-            xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-            WindowStyle="ThreeDBorderWindow"
-        Width="800"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Badger.ViewModels"
+        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:v="clr-namespace:Badger.Views"
+        WindowStyle="ThreeDBorderWindow"
+        Width="900"
         Height="600"
         Background="#eeeeee"
         WindowState="Normal"
@@ -16,8 +13,6 @@
         Icon="/badger-head.ico">
 
     <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-
         <DataTemplate DataType="{x:Type vm:LoggedExperimentViewModel}">
             <v:LoggedExperimentView/>
         </DataTemplate>
@@ -36,130 +31,161 @@
         <DataTemplate DataType="{x:Type vm:StatsViewModel}">
             <v:StatsView/>
         </DataTemplate>
-        <BitmapImage x:Key="open-project" UriSource="/images/open-project.png" />
-        <BitmapImage x:Key="plot" UriSource="/images/plot.png" />
-        <BitmapImage x:Key="save-all" UriSource="/images/save-all.png" />
-        <BitmapImage x:Key="spreadsheet" UriSource="/images/spreadsheet.png" />
-        <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
-        <BitmapImage x:Key="add" UriSource="/images/add.png"/>
     </Window.Resources>
 
-    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-        <StackPanel Orientation="Vertical" Width="300" Margin="0,0,0,0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="84,0,84,0" Width="140">
-                <Button  HorizontalAlignment="Center" Width="40" Height="40" Margin="5"
-            		x:Name="loadExperimentBatch" ToolTip="Load a batch: results from an experiment execution">
-                    <StackPanel Orientation="Horizontal">
-                        <!--
-                        <TextBlock VerticalAlignment="Center" Margin="0,0,5,0">Load</TextBlock>
-                        -->
-                        <Image Width="24" Height="24" Source="{StaticResource open-project}"/>
-                    </StackPanel>
-                </Button>
-                <Button  HorizontalAlignment="Right" BorderBrush="SlateGray" Width="40" Height="40"
-            		cal:Message.Attach="[Event Click]=[Action saveReports()]"
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="48" Width="Auto" Background="#EEEEEE" Margin="4,0">
+            <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Load a batch: results from an experiment execution"
+                    Width="40" Height="40" x:Name="loadExperimentBatch">
+                <Image Source="{StaticResource Open}" Opacity="0.6" Width="24" Height="24"/>
+            </Button>
+            <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Report"
+                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action saveReports()]"
             		IsEnabled="{Binding bCanSaveReports}">
-                    <StackPanel Orientation="Horizontal">
-                        <!--
-                        <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Save all</TextBlock>
-                        -->
-                        <Image Width="24" Height="24" Source="{StaticResource save-all}"  Margin="3,0,3,0"/>
-                    </StackPanel>
-                </Button>
-                <Button  HorizontalAlignment="Center" ToolTip="Clear ReportViewer" BorderBrush="SlateGray" Width="40" Height="40" Margin="5"
-            		cal:Message.Attach="[Event Click]=[Action clearReportViewer()]"
+                <Image Source="{StaticResource Save}" Opacity="0.6" Width="24" Height="24" />
+            </Button>
+            <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Clear ReportViewer" 
+                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action clearReportViewer()]"
             		IsEnabled="{Binding bLogsLoaded}">
-                    <StackPanel Orientation="Horizontal">
-                        <!--
-                        <TextBlock VerticalAlignment="Center" Margin="3,0,0,0">Clear</TextBlock>
-                        -->
-                        <Image Width="24" Height="24" Source="{StaticResource close}"  Margin="3,0,3,0"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-            <StackPanel Margin="4,0,4,6">
-                <Label  Content="Experiment Forks" FontSize="14"
-                       FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
-                <TreeView x:Name="Experiments" Margin="0" Height="210" BorderBrush="DarkGray" BorderThickness="1" Background="White">
-                    <ItemsControl x:Name="loggedExperiments"/>
-                </TreeView>
-            </StackPanel>
-            <StackPanel Margin="4,0,4,0">
-                <Label  Content="Variable Selection" FontSize="14"
-                       FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
-                <Border Margin="0" BorderBrush="DarkGray" BorderThickness="1">
-                    <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}" Background="White" Margin="0,2,0,2">
-                        <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="Which variables do we want to display?">
-                            <CheckBox x:Name="bVariableSelection" VerticalAlignment="Center" Margin="4,0,0,0"/>
-                            <Label Width="70" Margin="0,0,0,0" VerticalAlignment="Center" Content="Variables"/>
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="180" MaxHeight="180">
-                                <ItemsControl x:Name="Variables" Width="183" />
-                            </ScrollViewer>
-                        </StackPanel>
-                        <StackPanel Margin="0,10,0,2" Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
-                            <Label Width="70" Margin="0,0,10,0" Content="From"/>
-                            <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" Width="80" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="Forks currently used to group results">
-                            <Label Width="70" Margin="0,0,10,0" Content="Group by"/>
-                            <TextBlock Text="{Binding groupBy}" MaxWidth="164" Width="164" Background="#eeeeee"/>
-                            <Button x:Name="resetGroupBy" Margin="4,0,0,0">
-                                <Image Source="{StaticResource close}" Width="20"/>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
-                            <Label Width="70" Margin="0,0,10,0" Content="Pick"/>
-                            <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding selectedInGroupSelectionFunction}"
-                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
-                            <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding selectedInGroupSelectionVariable}"
-                                      Width="80" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
-                            <Label Width="70" Margin="0,0,10,0" Content="Limit to"/>
-                            <ComboBox x:Name="limitToOptions" SelectedValue="{Binding selectedLimitToOption}"
-                                      Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                        <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bIsOrderByEnabled}" ToolTip="Sets the criteria by which tracks are sorted before limiting">
-                            <Label Width="70" Margin="0,0,10,0" Content="Order by"/>
-                            <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding selectedOrderByFunction}"
-                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
-                            <ComboBox x:Name="orderByVariables" SelectedValue="{Binding selectedOrderByVariable}"
-                                      Width="80" HorizontalAlignment="Center"/>
+                <Image Source="{StaticResource Delete}" Opacity="0.6" Width="24" Height="24" />
+            </Button>
+        </StackPanel>
+
+        <Grid Background="#FAFAFA">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.1*" MinWidth="15" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="4*" MinWidth="30" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0" Margin="5,5,0,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="30" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="*" MinHeight="30" />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" BorderBrush="DarkGray" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Background="#EEEEEE">
+                            <Label Content="Experiment Forks" FontWeight="Medium" HorizontalAlignment="Center" />
                         </StackPanel>
 
-                        <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button x:Name="makeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
-                                    Margin="0,0" Height="30"
-                                IsEnabled="{Binding bCanGenerateReports}" >
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock VerticalAlignment="Center" Margin="2"><Run Text="Make Report"/></TextBlock>
-                                    <!--
+                        <TreeView Grid.Row="1" x:Name="Experiments" BorderBrush="{x:Null}" BorderThickness="0">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="loggedExperiments"/>
+                            </ScrollViewer>
+                        </TreeView>
+                    </Grid>
+                </Border>
+
+                <GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />
+
+                <Border Grid.Row="2" BorderBrush="DarkGray" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Background="#EEEEEE">
+                            <Label Content="Variable Selection" FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" />
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}" Margin="2">
+                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="Which variables do we want to display?">
+                                    <CheckBox x:Name="bVariableSelection" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                                    <Label VerticalAlignment="Center" Content="Variables"/>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                                        <ItemsControl x:Name="Variables" />
+                                    </ScrollViewer>
+                                </StackPanel>
+                                <StackPanel Margin="0,10,0,2" Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
+                                    <Label Margin="0,0,10,0" Content="From"/>
+                                    <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="Forks currently used to group results">
+                                    <Label Width="70" Margin="0,0,10,0" Content="Group by"/>
+                                    <TextBlock Text="{Binding groupBy}" MaxWidth="164" Width="164" Background="#eeeeee"/>
+                                    <Button x:Name="resetGroupBy" Margin="4,0,0,0">
+                                        <Image Source="{StaticResource Close}" Width="20"/>
+                                    </Button>
+                                </StackPanel>
+                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
+                                    <Label Width="70" Margin="0,0,10,0" Content="Pick"/>
+                                    <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding selectedInGroupSelectionFunction}"
+                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
+                                    <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding selectedInGroupSelectionVariable}"
+                                      Width="80" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
+                                    <Label Width="70" Margin="0,0,10,0" Content="Limit to"/>
+                                    <ComboBox x:Name="limitToOptions" SelectedValue="{Binding selectedLimitToOption}"
+                                      Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bIsOrderByEnabled}" ToolTip="Sets the criteria by which tracks are sorted before limiting">
+                                    <Label Width="70" Margin="0,0,10,0" Content="Order by"/>
+                                    <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding selectedOrderByFunction}"
+                                      Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
+                                    <ComboBox x:Name="orderByVariables" SelectedValue="{Binding selectedOrderByVariable}"
+                                      Width="80" HorizontalAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button x:Name="makeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
+                                            Height="30" IsEnabled="{Binding bCanGenerateReports}" >
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock VerticalAlignment="Center" Margin="2"><Run Text="Make Report"/></TextBlock>
+                                            <!--
                                     <Image Source="{StaticResource plot}" Width="24" Margin="0"></Image>
                                     -->
+                                        </StackPanel>
+                                    </Button>
                                 </StackPanel>
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-        </StackPanel>
-        <StackPanel Orientation="Vertical" Margin="0,0,0,0" Width="700">
-            <Label  Content="Reports" FontSize="14"
-                       FontWeight="Medium" VerticalContentAlignment="Center" HorizontalAlignment="Center" Margin="0,48,0,0"/>
-            <StackPanel Margin="0,0,0,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <TabControl x:Name="reports" SelectedItem="{Binding selectedReport}" Margin="0,0,0,0" Height="644">
-                    <TabControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="{Binding name}" BorderBrush="{x:Null}"/>
-                                <Button cal:Message.Attach="[Event Click]=[Action close()]" Background="{x:Null}" BorderBrush="{x:Null}">
-                                    <Image Source="{StaticResource close}" Width="10"/>
-                                </Button>
                             </StackPanel>
-                        </DataTemplate>
-                    </TabControl.ItemTemplate>
-                </TabControl>
-            </StackPanel>
-        </StackPanel>
-    </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4" Background="#FAFAFA"
+                          x:Name="GridSplitter" HorizontalAlignment="Stretch" />
+
+            <Border Grid.Row="0" Grid.Column="2" BorderBrush="DarkGray" BorderThickness="1" Margin="0,5,5,5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Background="#EEEEEE">
+                        <Label Content="Reports" FontWeight="Medium" HorizontalAlignment="Center" />
+                    </StackPanel>
+
+                    <TabControl Grid.Row="1" x:Name="reports" SelectedItem="{Binding selectedReport}">
+                        <TabControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding name}" VerticalAlignment="Center" />
+                                    <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18"
+                                            cal:Message.Attach="[Event Click]=[Action close()]">
+                                        <Image Source="{StaticResource Close}" Height="16" Width="16" />
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </TabControl.ItemTemplate>
+                    </TabControl>
+                </Grid>
+            </Border>
+        </Grid>
+    </DockPanel>
 </Window>

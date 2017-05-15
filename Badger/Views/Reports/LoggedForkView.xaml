@@ -18,7 +18,7 @@
                 <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
                           Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}">
                 </CheckBox>
-                <Label x:Name="name" FontSize="10" FontFamily="Segoe UI Light" Content="{Binding name}">
+                <Label x:Name="name" FontWeight="Medium" Content="{Binding name}">
                     <Label.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Group by value" cal:Message.Attach="groupByThisFork">

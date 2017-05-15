@@ -11,20 +11,20 @@
              d:DesignHeight="400" d:DesignWidth="600">
     <UserControl.Resources>
         <BitmapImage UriSource="/images/settings.png" x:Key="settings"/>
-        <BitmapImage UriSource="/images/save.png" x:Key="save"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-        <oxy:PlotView Model="{Binding Plot}" Width="580" Height="300"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
-            <Button x:Name="showProperties" Width="25" Height="25">
-                <Image Source="{StaticResource settings}" Width="22" Height="22"/>
-            </Button>
-            <Button x:Name="saveImage" Width="25" Height="25">
-                <Image Source="{StaticResource save}" Width="22" Height="22"/>
-            </Button>
+    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+            <oxy:PlotView Model="{Binding Plot}" Width="580" Height="300"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
+                <Button x:Name="showProperties" Width="25" Height="25">
+                    <Image Source="{StaticResource settings}" Width="22" Height="22"/>
+                </Button>
+                <Button x:Name="saveImage" Width="25" Height="25">
+                    <Image Source="{StaticResource Save}" Width="22" Height="22"/>
+                </Button>
+            </StackPanel>
         </StackPanel>
-        
-    </StackPanel>
+    </ScrollViewer>
 </UserControl>

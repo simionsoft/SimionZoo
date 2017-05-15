@@ -60,16 +60,7 @@ namespace Badger.ViewModels
             //hide the area used to display children forks?
             bHasForks = forks.Count != 0;
         }
-
-        public void groupByThisFork()
-        {
-            //this method is called from the context menu
-            //informs the parent window that results should be grouped by this fork
-            m_groupByForks.Add(name);
-            m_parentWindow.validateQuery();
-            NotifyOfPropertyChange(() => groupBy);
-            bGroupsEnabled = true;
-        }
+        
 
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {
@@ -77,35 +68,5 @@ namespace Badger.ViewModels
             foreach (LoggedForkValueViewModel value in m_values) value.TraverseAction(true, action);
             foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true, action);
         }
-
-        //Group By
-        private BindableCollection<string> m_groupByForks = new BindableCollection<string>();
-        public BindableCollection<string> GroupByForks { get; set; } = new BindableCollection<string>();
-
-        public string groupBy
-        {
-            get
-            {
-                string s = "";
-                for (int i = 0; i < m_groupByForks.Count - 1; i++) s += m_groupByForks[i] + ",";
-                if (m_groupByForks.Count > 0) s += m_groupByForks[m_groupByForks.Count - 1];
-                return s;
-            }
-        }
-
-        public void resetGroupBy()
-        {
-            m_groupByForks.Clear();
-            NotifyOfPropertyChange(() => groupBy);
-        }
-
-
-        private bool m_bGroupsEnabled = false; //no groups by default
-        public bool bGroupsEnabled
-        {
-            get { return m_bGroupsEnabled; }
-            set { m_bGroupsEnabled = value; NotifyOfPropertyChange(() => bGroupsEnabled); }
-        }
-
     }
 }

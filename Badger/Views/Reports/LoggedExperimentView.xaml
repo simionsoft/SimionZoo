@@ -17,7 +17,7 @@
             <StackPanel Orientation="Horizontal">
                 <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
                           Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
-                <Label FontSize="10" FontFamily="Segoe UI Light" Content="{Binding Name}"/>
+                <Label FontWeight="Medium" Content="{Binding Name}"/>
             </StackPanel>
         </TreeViewItem.Header>
 
