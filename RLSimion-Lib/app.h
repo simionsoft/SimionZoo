@@ -27,7 +27,7 @@ public:
 
 	static CSimionApp* get();
 
-	CMemManager<CInterleavedMemPool>* pMemManager;
+	CMemManager<CSimionMemPool>* pMemManager;
 	CHILD_OBJECT<CLogger> pLogger;
 	CHILD_OBJECT<CWorld> pWorld;
 	CHILD_OBJECT<CExperiment> pExperiment;

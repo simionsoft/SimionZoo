@@ -25,7 +25,7 @@ void CExperienceTuple::copy(CState* s, CAction* a, CState* s_p, double r, double
 
 CExperienceReplay::CExperienceReplay(CConfigNode* pConfigNode)
 {
-	m_blockSizeInBytes = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1000);
+	m_blockSize = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1000);
 	m_updateBatchSize = INT_PARAM(pConfigNode, "Update-Batch-Size", "Number of tuples used each time-step in the update", 10);
 
 	CLogger::logMessage(MessageType::Info, "Experience replay buffer initialized");
@@ -38,7 +38,7 @@ CExperienceReplay::CExperienceReplay(CConfigNode* pConfigNode)
 CExperienceReplay::CExperienceReplay() : CDeferredLoad()
 {
 	//default behaviour when experience replay is not used
-	m_blockSizeInBytes.set(0);
+	m_blockSize.set(0);
 	m_updateBatchSize.set(0);
 
 	m_pTupleBuffer = 0;
@@ -48,12 +48,12 @@ CExperienceReplay::CExperienceReplay() : CDeferredLoad()
 
 bool CExperienceReplay::bUsing()
 {
-	return m_blockSizeInBytes.get() != 0;
+	return m_blockSize.get() != 0;
 }
 
 void CExperienceReplay::deferredLoadStep()
 {
-	m_pTupleBuffer = new CExperienceTuple[m_blockSizeInBytes.get()];
+	m_pTupleBuffer = new CExperienceTuple[m_blockSize.get()];
 }
 
 CExperienceReplay::~CExperienceReplay()
@@ -71,7 +71,7 @@ void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r, d
 {
 	//add the experience tuple to the buffer
 
-	if (m_numTuples < m_blockSizeInBytes.get())
+	if (m_numTuples < m_blockSize.get())
 	{
 		//the buffer is not yet full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
@@ -82,7 +82,7 @@ void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r, d
 		//the buffer is full
 		m_pTupleBuffer[m_currentPosition].copy(s, a, s_p, r, probability);
 	}
-	m_currentPosition = ++m_currentPosition % m_blockSizeInBytes.get();
+	m_currentPosition = ++m_currentPosition % m_blockSize.get();
 }
 
 CExperienceTuple* CExperienceReplay::getRandomTupleFromBuffer()

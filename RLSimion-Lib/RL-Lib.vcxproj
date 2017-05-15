@@ -212,14 +212,14 @@
     <ClCompile Include="BulletBody.cpp" />
     <ClCompile Include="CollisionShape2TriangleMesh.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
-    <ClCompile Include="delayed-load.cpp" />
+    <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="GLShapeDrawer.cpp" />
     <ClCompile Include="GraphicSettings.cpp" />
     <ClCompile Include="logger.cpp" />
-    <ClCompile Include="mem-buffer-handler.cpp" />
+    <ClCompile Include="mem-buffer.cpp" />
     <ClCompile Include="mem-block.cpp" />
     <ClCompile Include="mem-pool.cpp" />
     <ClCompile Include="mem-manager.cpp" />
@@ -282,7 +282,7 @@
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
-    <ClInclude Include="delayed-load.h" />
+    <ClInclude Include="deferred-load.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />
@@ -290,7 +290,7 @@
     <ClInclude Include="features.h" />
     <ClInclude Include="GL_ShapeDrawer.h" />
     <ClInclude Include="GraphicSettings.h" />
-    <ClInclude Include="mem-buffer-handler.h" />
+    <ClInclude Include="mem-buffer.h" />
     <ClInclude Include="mem-block.h" />
     <ClInclude Include="mem-pool.h" />
     <ClInclude Include="mem-interfaces.h" />

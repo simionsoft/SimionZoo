@@ -171,7 +171,7 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const CDescriptor* descriptor)
 {
 	char buffer[BUFFER_SIZE];
-	for (int i = 0; i < descriptor->size(); i++)
+	for (unsigned int i = 0; i < descriptor->size(); i++)
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "  <%s-variable>%s</%s-variable>\n", id, (*descriptor)[i].getName(), id);
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);

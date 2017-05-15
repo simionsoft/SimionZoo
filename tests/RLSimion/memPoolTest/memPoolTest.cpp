@@ -9,7 +9,7 @@
 #include <algorithm>
 int main()
 {
-	CMemManager<CInterleavedMemPool> *pMemManager= new CMemManager<CInterleavedMemPool>();
+	CMemManager<CSimionMemPool> *pMemManager= new CMemManager<CSimionMemPool>();
 	int numElements = 10 * 1024 * 1024;
 	CTimer timer;
 
@@ -34,7 +34,7 @@ int main()
 	for (int i = 0; i < numElements; ++i)
 	{
 		double r = (double)rand() / (double)RAND_MAX;
-		int index = r* (double)numElements;
+		int index = (int) (r* (double)numElements);
 		index = std::min(index, numElements - 1);// minIndex + r* (double)(maxIndex - minIndex);
 		//int index = i;
 

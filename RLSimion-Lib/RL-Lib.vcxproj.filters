@@ -137,9 +137,6 @@
     <ClCompile Include="app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="delayed-load.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -206,9 +203,6 @@
     <ClCompile Include="BulletBody.cpp">
       <Filter>world\Move2RobotsUtils</Filter>
     </ClCompile>
-    <ClCompile Include="mem-buffer-handler.cpp">
-      <Filter>memory</Filter>
-    </ClCompile>
     <ClCompile Include="mem-block.cpp">
       <Filter>memory</Filter>
     </ClCompile>
@@ -216,6 +210,12 @@
       <Filter>memory</Filter>
     </ClCompile>
     <ClCompile Include="mem-manager.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="deferred-load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-buffer.cpp">
       <Filter>memory</Filter>
     </ClCompile>
   </ItemGroup>
@@ -269,9 +269,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="critic.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="delayed-load.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="etraces.h">
@@ -382,9 +379,6 @@
     <ClInclude Include="BulletBody.h">
       <Filter>world\Move2RobotsUtils</Filter>
     </ClInclude>
-    <ClInclude Include="mem-buffer-handler.h">
-      <Filter>memory</Filter>
-    </ClInclude>
     <ClInclude Include="mem-block.h">
       <Filter>memory</Filter>
     </ClInclude>
@@ -395,6 +389,12 @@
       <Filter>memory</Filter>
     </ClInclude>
     <ClInclude Include="mem-manager.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="deferred-load.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-buffer.h">
       <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>

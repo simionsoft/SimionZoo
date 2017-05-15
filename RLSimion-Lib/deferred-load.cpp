@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 #include "SimGod.h"
 #include "app.h"
 

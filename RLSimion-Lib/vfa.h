@@ -10,7 +10,7 @@ class CConfigNode;
 class CConfigFile;
 
 #include "parameters.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 class IMemBuffer;
 
 //CLinearVFA////////////////////////////////////////////////////////////////////

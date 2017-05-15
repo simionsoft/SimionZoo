@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../RLSimion-Lib/experiment.h"
+#include "../../../RLSimion-Lib/experiment.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -11,7 +11,7 @@ namespace ExperimentEpisodesSteps
 		//These tests check the functionality of the CExperiment class
 	public:
 		
-		TEST_METHOD(ExperimentEpisodes)
+		TEST_METHOD(Experiment_Episodes)
 		{
 			// init
 			CExperiment *pExperiment = new CExperiment();
@@ -89,7 +89,7 @@ namespace ExperimentEpisodesSteps
 			Assert::AreEqual((unsigned int)4, pExperiment->getRelativeEpisodeIndex(), L"getRelativeEpisodeIndex() failed");
 			delete pExperiment;
 		}
-		TEST_METHOD(ExperimentEpisodes2)
+		TEST_METHOD(Experiment_Episodes2)
 		{
 			// init
 			CExperiment *pExperiment = new CExperiment();
@@ -171,7 +171,7 @@ namespace ExperimentEpisodesSteps
 				, L"getRelativeEpisodeIndex() failed");
 			delete pExperiment;
 		}
-		TEST_METHOD(ExperimentProgress)
+		TEST_METHOD(Experiment_Progress)
 		{
 			// init
 			CExperiment *pExperiment = new CExperiment();
@@ -231,7 +231,7 @@ namespace ExperimentEpisodesSteps
 			delete pExperiment;
 		}
 
-		TEST_METHOD(ExperimentOnlyOneEpisode)
+		TEST_METHOD(Experiment_OnlyOneEpisode)
 		{
 			// init: only one episode (evaluation) and 2 episodes per evaluation
 			CExperiment *pExperiment = new CExperiment();

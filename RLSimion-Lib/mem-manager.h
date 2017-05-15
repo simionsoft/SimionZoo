@@ -1,10 +1,10 @@
 #pragma once
 
-#include "mem-block.h"
-#include "mem-buffer-handler.h"
 #include "mem-interfaces.h"
+#include "mem-block.h"
+#include "mem-buffer.h"
 #include "mem-pool.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 
 #include <vector>
 using namespace std;
@@ -33,13 +33,32 @@ class CMemManager: public CDeferredLoad
 	}
 public:
 	//This should be the first deferred load step taken
-	CMemManager():CDeferredLoad(2){}
+	CMemManager():CDeferredLoad(10){}
 	virtual ~CMemManager()
 	{
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 		{
 			delete *it;
 		}
+	}
+
+	//maxAllocatedMemory: maximum number of bytes allowed to have in memory concurrently
+	void setMaxAllocatedMem(int maxAllocatedMem)
+	{
+		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
+		{
+			(*it)->setMemLimit(maxAllocatedMem);
+		}
+	}
+
+	bool bAskPermissionAllocateMemBuffer(int memSizeRequested)
+	{
+		if (m_maxAllocatedMem < 0) return true;
+		int allocatedMem = getAllocatedMem();
+
+		if (allocatedMem + memSizeRequested > m_maxAllocatedMem)
+			return false;
+		return true;
 	}
 
 	IMemBuffer* getMemBuffer(int elementCount)
@@ -62,6 +81,16 @@ public:
 			total += (*it)->getTotalAllocatedMem();
 		}
 		return total;
+	}
+
+	virtual void copy(IMemBuffer* pSrc, IMemBuffer* pDst)
+	{
+		IMemPool* pSrcPool= pSrc->getMemPool();
+		IMemPool* pDstPool = pDst->getMemPool();
+		if (pSrcPool == pDstPool)
+		{
+			pSrcPool->copy(pSrc, pDst);
+		}
 	}
 
 	void deferredLoadStep()

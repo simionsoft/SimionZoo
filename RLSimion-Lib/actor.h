@@ -5,7 +5,7 @@ typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 
 #include "parameters.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 #include "policy-learner.h"
 #include "controller.h"
 #include <vector>

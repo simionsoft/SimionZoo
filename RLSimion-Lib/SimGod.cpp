@@ -5,7 +5,7 @@
 #include "config.h"
 #include "simion.h"
 #include "app.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 #include "utils.h"
 #include "featuremap.h"
 #include "experience-replay.h"
@@ -31,9 +31,10 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 	m_bCountVisits = BOOL_PARAM(pConfigNode, "Count-State-Visits", "Count the number of times a state is visited", true);
 	m_pStateFeatures = new CFeatureList("SimGod\\state-visits");
 	if (m_bCountVisits.get())
+	{
 		m_pVisits = CSimionApp::get()->pMemManager->getMemBuffer(m_pGlobalStateFeatureMap->getTotalNumFeatures());
-		//std::unique_ptr<double>(new double[m_pGlobalStateFeatureMap->getTotalNumFeatures()]);
-
+		m_pVisits->setInitValue(0.0);
+	}
 
 	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
 	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter",0.9);
@@ -133,14 +134,6 @@ void CSimGod::deferredLoad()
 	for (auto it = m_deferredLoadSteps.begin(); it != m_deferredLoadSteps.end(); it++)
 	{
 		(*it).first->deferredLoadStep();
-	}
-	//we could put this into a member function, but what would be the point?
-	if (m_bCountVisits.get())
-	{
-		for (unsigned int i = 0; i < m_pGlobalStateFeatureMap->getTotalNumFeatures(); ++i)
-		{
-			(*m_pVisits)[i] = 0.0;
-		}
 	}
 }
 
