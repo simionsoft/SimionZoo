@@ -38,12 +38,12 @@
             </Button>
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Report"
                     Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action saveReports()]"
-            		IsEnabled="{Binding bCanSaveReports}">
+                    IsEnabled="{Binding bCanSaveReports}">
                 <Image Source="{StaticResource Save}" Opacity="0.6" Width="24" Height="24" />
             </Button>
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Clear ReportViewer" 
-                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action clearReportViewer()]"
-            		IsEnabled="{Binding bLogsLoaded}">
+                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action clearReportViewer()]"     
+                    IsEnabled="{Binding bLogsLoaded}">
                 <Image Source="{StaticResource Delete}" Opacity="0.6" Width="24" Height="24" />
             </Button>
         </StackPanel>
@@ -139,7 +139,7 @@
                                       Width="80" HorizontalAlignment="Center"/>
                                 </StackPanel>
 
-                                <StackPanel Margin="0,10,0,10" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <StackPanel Margin="0,10" Orientation="Horizontal" HorizontalAlignment="Center">
                                     <Button x:Name="makeReport"  HorizontalAlignment="Center" BorderBrush="SlateGray"
                                             Height="30" IsEnabled="{Binding bCanGenerateReports}" >
                                         <StackPanel Orientation="Horizontal">

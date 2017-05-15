@@ -41,6 +41,7 @@
             <BitmapImage x:Key="Plot" UriSource="/images/ic-graphic.png" />
             <BitmapImage x:Key="Save" UriSource="/images/ic-save.png" />
             <BitmapImage x:Key="SaveAll" UriSource="/images/ic-save-all.png" />
+            <BitmapImage x:Key="Settings" UriSource="/images/ic-settings.png" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

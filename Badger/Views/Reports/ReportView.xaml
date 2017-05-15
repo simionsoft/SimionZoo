@@ -15,8 +15,8 @@
         <DataTemplate DataType="{x:Type vm:StatsViewModel}">
             <v:StatsView/>
         </DataTemplate>
-        
     </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1.7*" />
