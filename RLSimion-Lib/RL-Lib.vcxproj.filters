@@ -218,6 +218,9 @@
     <ClCompile Include="mem-buffer.cpp">
       <Filter>memory</Filter>
     </ClCompile>
+    <ClCompile Include="world-two-robots-rope.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">

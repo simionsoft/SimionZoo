@@ -266,6 +266,7 @@
     <ClCompile Include="world-movebox2robots.cpp" />
     <ClCompile Include="world-pitchcontrol.cpp" />
     <ClCompile Include="world-robotonly.cpp" />
+    <ClCompile Include="world-two-robots-rope.cpp" />
     <ClCompile Include="world-underwatervehicle.cpp" />
     <ClCompile Include="world-windturbine.cpp" />
     <ClCompile Include="world.cpp" />
@@ -327,6 +328,7 @@
     <ClInclude Include="world-movebox2robots.h" />
     <ClInclude Include="world-pitchcontrol.h" />
     <ClInclude Include="world-robotonly.h" />
+    <ClInclude Include="world-two-robots-rope.h" />
     <ClInclude Include="world-underwatervehicle.h" />
     <ClInclude Include="world-windturbine.h" />
     <ClInclude Include="world.h" />
@@ -349,6 +351,9 @@
     </ProjectReference>
     <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
       <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletSoftBody.vcxproj">
+      <Project>{f663c29d-a7fd-d24f-a85f-1933b83a2818}</Project>
     </ProjectReference>
     <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
       <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>
