@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Text;
-using Badger.Simion;
 
 
 namespace Badger.ViewModels
@@ -274,14 +273,16 @@ namespace Badger.ViewModels
             if (ExperimentViewModels != null) ExperimentViewModels.Clear();
         }
 
-        public void close(ExperimentViewModel app)
+        /// <summary>
+        ///     Close a tab (experiment) and remove it from experiments list.
+        /// </summary>
+        /// <param name="e">Experiment to be removed</param>
+        public void close(ExperimentViewModel e)
         {
-            ExperimentViewModels.Remove(app);
+            ExperimentViewModels.Remove(e);
             checkEmptyExperimentList();
-            if (m_bIsExperimentListNotEmpty)
-                CanLaunchExperiment = true;
-            else
-                CanLaunchExperiment = false;
+
+            CanLaunchExperiment = m_bIsExperimentListNotEmpty;
         }
 
         public void removeSelectedExperiments()
@@ -309,7 +310,6 @@ namespace Badger.ViewModels
         }
 
 
-
         private List<LoggedExperimentViewModel> m_loggedExperiments = new List<LoggedExperimentViewModel>();
         public List<LoggedExperimentViewModel> LoggedExperiments
         {
@@ -319,7 +319,7 @@ namespace Badger.ViewModels
 
         private void LoadLoggedExperiment(XmlNode node)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, null);
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, false);
             LoggedExperiments.Add(newExperiment);
         }
 

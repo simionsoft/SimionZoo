@@ -3,13 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:vm="clr-namespace:Badger.ViewModels"
-            xmlns:v="clr-namespace:Badger.Views"
-             xmlns:oxy="http://oxyplot.org/wpf"
-            xmlns:cal="http://www.caliburnproject.org"
+             xmlns:v="clr-namespace:Badger.Views"
+             xmlns:vm="clr-namespace:Badger.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
 
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type vm:PlotViewModel}">
+            <v:PlotView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:StatsViewModel}">
+            <v:StatsView/>
+        </DataTemplate>
+        
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1.7*" />

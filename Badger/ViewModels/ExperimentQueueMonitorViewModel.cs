@@ -314,7 +314,7 @@ namespace Badger.ViewModels
 
         private void LoadLoggedExperiment(XmlNode node)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, null);
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, false);
             LoggedExperiments.Add(newExperiment);
         }
 

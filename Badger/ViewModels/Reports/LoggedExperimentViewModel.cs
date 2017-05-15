@@ -26,10 +26,13 @@ namespace Badger.ViewModels
             foreach (LoggedForkViewModel fork in Forks) fork.TraverseAction(true, action);
         }
 
-
-        public LoggedExperimentViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        /// <summary>
+        ///     Class constructor.
+        /// </summary>
+        /// <param name="configNode"></param>
+        /// <param name="isForReport"></param>
+        public LoggedExperimentViewModel(XmlNode configNode, bool isForReport)
         {
-            m_parentWindow = parent;
             XmlAttributeCollection attrs = configNode.Attributes;
 
             if (attrs != null)
@@ -58,7 +61,7 @@ namespace Badger.ViewModels
                     case XMLConfig.experimentalUnitNodeTag:
                         LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child);
 
-                        if (parent != null)
+                        if (isForReport)
                         {
                             newExpUnit.logDescriptor = new XmlDocument();
                             newExpUnit.logDescriptor.Load(newExpUnit.logDescriptorFilePath);
@@ -70,7 +73,6 @@ namespace Badger.ViewModels
                         break;
                 }
             }
-
         }
 
         /// <summary>
@@ -90,11 +92,7 @@ namespace Badger.ViewModels
             }
 
             if (!bVarExists)
-            {
                 variables.Add(new LoggedVariableViewModel(variableName));
-                inGroupSelectionVariables.Add(variableName);
-                orderByVariables.Add(variableName);
-            }
         }
 
         //Variables
@@ -105,76 +103,6 @@ namespace Badger.ViewModels
             get { return m_variables; }
             set { m_variables = value; NotifyOfPropertyChange(() => variables); }
         }
-
-        private bool m_bVariableSelection = true;
-        public bool bVariableSelection
-        {
-            get { return m_bVariableSelection; }
-            set
-            {
-                m_bVariableSelection = value;
-                foreach (LoggedVariableViewModel var in variables)
-                {
-                    var.bIsSelected = value;
-                    m_parentWindow.validateQuery();
-                    NotifyOfPropertyChange(() => bIsSelected);
-                }
-            }
-        }
-
-        private BindableCollection<string> m_inGroupSelectionVariables = new BindableCollection<string>();
-        public BindableCollection<string> inGroupSelectionVariables
-        {
-            get { return m_inGroupSelectionVariables; }
-            set { m_inGroupSelectionVariables = value; NotifyOfPropertyChange(() => inGroupSelectionVariables); }
-        }
-
-        private BindableCollection<string> m_orderByVariables = new BindableCollection<string>();
-        public BindableCollection<string> orderByVariables
-        {
-            get { return m_orderByVariables; }
-            set { m_orderByVariables = value; NotifyOfPropertyChange(() => orderByVariables); }
-        }
-
-        public void groupByThisFork(string forkName)
-        {
-            //this method is called from the context menu
-            //informs the parent window that results should be grouped by this fork
-            m_groupByForks.Add(forkName);
-            m_parentWindow.validateQuery();
-            NotifyOfPropertyChange(() => groupBy);
-            bGroupsEnabled = true;
-        }
-
-        //Group By
-        private BindableCollection<string> m_groupByForks = new BindableCollection<string>();
-        public BindableCollection<string> GroupByForks { get; set; } = new BindableCollection<string>();
-
-        public string groupBy
-        {
-            get
-            {
-                string s = "";
-                for (int i = 0; i < m_groupByForks.Count - 1; i++) s += m_groupByForks[i] + ",";
-                if (m_groupByForks.Count > 0) s += m_groupByForks[m_groupByForks.Count - 1];
-                return s;
-            }
-        }
-
-        public void resetGroupBy()
-        {
-            m_groupByForks.Clear();
-            NotifyOfPropertyChange(() => groupBy);
-        }
-
-
-        private bool m_bGroupsEnabled = false; //no groups by default
-        public bool bGroupsEnabled
-        {
-            get { return m_bGroupsEnabled; }
-            set { m_bGroupsEnabled = value; NotifyOfPropertyChange(() => bGroupsEnabled); }
-        }
-
     }
 
 

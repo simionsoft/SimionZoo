@@ -1,5 +1,5 @@
 ﻿using Caliburn.Micro;
-using Badger.Data;
+
 
 namespace Badger.ViewModels
 {
@@ -36,7 +36,5 @@ namespace Badger.ViewModels
 
         public void LocalTraverseAction(System.Action<SelectableTreeItem> action) { action(this); }
         public virtual void TraverseAction(bool doActionLocally, System.Action<SelectableTreeItem> action) { }
-
-        protected ReportsWindowViewModel m_parentWindow;
     }
 }

@@ -155,6 +155,7 @@ namespace Badger.ViewModels
                 selectedPlot.updateView();
             }
         }
+
         public void close()
         {
             if (m_parent != null)

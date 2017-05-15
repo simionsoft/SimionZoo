@@ -25,11 +25,8 @@
         <DataTemplate DataType="{x:Type vm:LoggedVariableViewModel}">
             <v:LoggedVariableView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:PlotViewModel}">
-            <v:PlotView/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:StatsViewModel}">
-            <v:StatsView/>
+        <DataTemplate DataType="{x:Type vm:ReportViewModel}">
+            <v:ReportView/>
         </DataTemplate>
     </Window.Resources>
 
@@ -56,7 +53,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.1*" MinWidth="15" />
+                <ColumnDefinition Width="1.125*" MinWidth="15" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="4*" MinWidth="30" />
             </Grid.ColumnDefinitions>
@@ -110,7 +107,7 @@
                                     </ScrollViewer>
                                 </StackPanel>
                                 <StackPanel Margin="0,10,0,2" Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
-                                    <Label Margin="0,0,10,0" Content="From"/>
+                                    <Label  Width="70" Margin="0,0,10,0" Content="From"/>
                                     <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" HorizontalAlignment="Center"/>
                                 </StackPanel>
                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="Forks currently used to group results">
@@ -120,11 +117,12 @@
                                         <Image Source="{StaticResource Close}" Width="20"/>
                                     </Button>
                                 </StackPanel>
-                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
+                                <StackPanel Margin="0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
                                     <Label Width="70" Margin="0,0,10,0" Content="Pick"/>
                                     <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding selectedInGroupSelectionFunction}"
                                       Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
-                                    <ComboBox x:Name="inGroupSelectionVariables" SelectedValue="{Binding selectedInGroupSelectionVariable}"
+                                    <ComboBox ItemsSource="{Binding Variables}" DisplayMemberPath="name"
+                                              SelectedValuePath="name" SelectedValue="{Binding selectedInGroupSelectionVariable}"
                                       Width="80" HorizontalAlignment="Center"/>
                                 </StackPanel>
                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
@@ -136,7 +134,8 @@
                                     <Label Width="70" Margin="0,0,10,0" Content="Order by"/>
                                     <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding selectedOrderByFunction}"
                                       Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
-                                    <ComboBox x:Name="orderByVariables" SelectedValue="{Binding selectedOrderByVariable}"
+                                    <ComboBox ItemsSource="{Binding Variables}" DisplayMemberPath="name"
+                                              SelectedValuePath="name" SelectedValue="{Binding selectedOrderByVariable}"
                                       Width="80" HorizontalAlignment="Center"/>
                                 </StackPanel>
 
@@ -171,7 +170,7 @@
                         <Label Content="Reports" FontWeight="Medium" HorizontalAlignment="Center" />
                     </StackPanel>
 
-                    <TabControl Grid.Row="1" x:Name="reports" SelectedItem="{Binding selectedReport}">
+                    <TabControl Margin="0" Padding="0"  Grid.Row="1" x:Name="reports" SelectedItem="{Binding selectedReport}">
                         <TabControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
