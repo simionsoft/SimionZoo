@@ -5,7 +5,7 @@
 #include "config.h"
 #include "simion.h"
 #include "app.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 #include "utils.h"
 #include "featuremap.h"
 #include "experience-replay.h"
@@ -30,6 +30,11 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 	
 	m_bCountVisits = BOOL_PARAM(pConfigNode, "Count-State-Visits", "Count the number of times a state is visited", true);
 	m_pStateFeatures = new CFeatureList("SimGod\\state-visits");
+	if (m_bCountVisits.get())
+	{
+		m_pVisits = CSimionApp::get()->pMemManager->getMemBuffer(m_pGlobalStateFeatureMap->getTotalNumFeatures());
+		m_pVisits->setInitValue(0.0);
+	}
 
 	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
 	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter",0.9);
@@ -70,8 +75,8 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 		m_pGlobalStateFeatureMap->getFeatures(s_p, m_pStateFeatures);
 		for (unsigned int i = 0; i < m_pStateFeatures->m_numFeatures; ++i)
 		{
-			if (m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index]<m_stateConfidenceThreshold)
-			m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index] +=
+			if ((*m_pVisits)[m_pStateFeatures->m_pFeatures[i].m_index]<m_stateConfidenceThreshold)
+			(*m_pVisits)[m_pStateFeatures->m_pFeatures[i].m_index] +=
 				m_pStateFeatures->m_pFeatures[i].m_factor;
 		}
 	}
@@ -103,12 +108,13 @@ bool CSimGod::isStateKnown(const CState* s) const
 	if (!m_bCountVisits.get()) return true;
 
 	m_pGlobalStateFeatureMap->getFeatures(s, m_pStateFeatures);
-	double avgVisits = 0.0;
+	double sumVisits = 0.0;
+
 	for (unsigned int i = 0; i < m_pStateFeatures->m_numFeatures; ++i)
 	{
-		avgVisits += m_pVisits.get()[m_pStateFeatures->m_pFeatures[i].m_index];
+		sumVisits += (*m_pVisits)[m_pStateFeatures->m_pFeatures[i].m_index];
 	}
-	return (avgVisits>=m_stateConfidenceThreshold);
+	return (sumVisits>=m_stateConfidenceThreshold);
 }
 
 void CSimGod::registerDeferredLoadStep(CDeferredLoad* deferredLoadObject, unsigned int orderLoad)
@@ -123,15 +129,6 @@ bool myComparison(const std::pair<CDeferredLoad*, unsigned int> &a, const std::p
 
 void CSimGod::deferredLoad()
 {
-	if (m_bCountVisits.get())
-	{
-		m_pVisits = std::unique_ptr<double>(new double[m_pGlobalStateFeatureMap->getTotalNumFeatures()]);
-		for (unsigned int i = 0; i < m_pGlobalStateFeatureMap->getTotalNumFeatures(); ++i)
-		{
-			m_pVisits.get()[i] = 0;
-		}
-	}
-
 	std::sort(m_deferredLoadSteps.begin(), m_deferredLoadSteps.end(),myComparison);
 
 	for (auto it = m_deferredLoadSteps.begin(); it != m_deferredLoadSteps.end(); it++)

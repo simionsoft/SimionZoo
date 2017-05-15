@@ -1,6 +1,6 @@
 #pragma once
 
-#include "delayed-load.h"
+#include "deferred-load.h"
 #include "parameters.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
@@ -23,7 +23,7 @@ public:
 class CExperienceReplay: public CDeferredLoad
 {
 	CExperienceTuple* m_pTupleBuffer;
-	INT_PARAM m_bufferSize;
+	INT_PARAM m_blockSize;
 	INT_PARAM m_updateBatchSize;
 
 	int m_currentPosition= 0;

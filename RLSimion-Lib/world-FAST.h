@@ -1,7 +1,7 @@
 #pragma once
 
 #include "world.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 #include "../tools/WindowsUtils/NamedPipe.h"
 #include "../tools/WindowsUtils/Process.h"
 #include "../RLSimion-Lib/parameters.h"

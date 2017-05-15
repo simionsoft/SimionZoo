@@ -13,12 +13,12 @@ namespace StateActionVFA
 	{
 	public:
 		
-		TEST_METHOD(UVQArgMax)
+		TEST_METHOD(StateActionFunc_QArgMax)
 		{
 			//Because we are mostly only implementing the constructor that takes a CConfigNode,
 			//it is easier to load a config file and then manipulate the classes loaded
 			CConfigFile configFile;			
-			CConfigNode* pConfigNode = configFile.loadFile("../tests/q-learning-test.exp");
+			CConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.exp");
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);	
 
 			CLinearStateActionVFA *pVFA= new CLinearStateActionVFA(
@@ -26,7 +26,7 @@ namespace StateActionVFA
 				,pApp->pSimGod->getGlobalActionFeatureMap());
 
 			pVFA->setInitValue(0.0);
-			pVFA->deferredLoadStep();
+			pApp->pSimGod->deferredLoad();
 
 			CFeatureList *pFeatures= new CFeatureList("features");
 
@@ -63,7 +63,7 @@ namespace StateActionVFA
 			delete pApp;
 			delete pVFA;
 		}
-		TEST_METHOD(UVStateActionFeatureMap)
+		TEST_METHOD(StateActionFunc_FeatureMap)
 		{
 			//Because we are mostly only implementing the constructor that takes a CConfigNode,
 			//it is easier to load a config file and then manipulate the classes loaded
@@ -79,7 +79,7 @@ namespace StateActionVFA
 				, pApp->pSimGod->getGlobalActionFeatureMap());
 
 			pVFA->setInitValue(0.0);
-			pVFA->deferredLoadStep();
+			pApp->pSimGod->deferredLoad();
 
 			CFeatureList *pFeatures = new CFeatureList("features");
 

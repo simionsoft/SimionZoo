@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "BulletBody.h"
 
-BulletBody::BulletBody(double mass,btVector3 pos, btCollisionShape* shape, bool moving_obj)
+BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* shape, bool moving_obj)
 {
 	m_shape = shape;
 	
 	m_transform.setIdentity();
-	m_transform.setOrigin(pos);
+	m_transform.setOrigin(origin);
 	m_mass = mass;
 
 	m_localInertia = btVector3(0, 0, 0);

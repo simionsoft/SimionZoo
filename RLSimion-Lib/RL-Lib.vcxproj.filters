@@ -24,6 +24,9 @@
     <Filter Include="world\GraphicResources">
       <UniqueIdentifier>{9ac009a6-05f8-408a-9696-e5ec1696c580}</UniqueIdentifier>
     </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{ccab0e5e-5a18-4d27-9001-51dca3f56d3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp">
@@ -134,9 +137,6 @@
     <ClCompile Include="app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="delayed-load.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -203,6 +203,21 @@
     <ClCompile Include="BulletBody.cpp">
       <Filter>world\Move2RobotsUtils</Filter>
     </ClCompile>
+    <ClCompile Include="mem-block.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-pool.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-manager.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="deferred-load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-buffer.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
     <ClCompile Include="world-two-robots-rope.cpp">
       <Filter>world\BulletWorlds</Filter>
     </ClCompile>
@@ -257,9 +272,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="critic.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="delayed-load.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="etraces.h">
@@ -370,8 +382,23 @@
     <ClInclude Include="BulletBody.h">
       <Filter>world\Move2RobotsUtils</Filter>
     </ClInclude>
-    <ClInclude Include="world-two-robots-rope.h">
-      <Filter>world\BulletWorlds</Filter>
+    <ClInclude Include="mem-block.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-pool.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-interfaces.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-manager.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="deferred-load.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-buffer.h">
+      <Filter>memory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

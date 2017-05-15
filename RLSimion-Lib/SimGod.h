@@ -2,7 +2,7 @@
 
 #include "parameters.h"
 #include <vector>
-#include <memory>
+#include "mem-manager.h"
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
@@ -16,6 +16,7 @@ class CStateFeatureMap;
 class CActionFeatureMap;
 class CFeatureList;
 
+
 //This class is the Simion God: it controls the learning agents and holds global learning parameters
 //Some members are declared static because they are requested by children before the SimGod object is actually constructed
 class CSimGod
@@ -25,7 +26,7 @@ class CSimGod
 
 	BOOL_PARAM m_bCountVisits;
 	double m_stateConfidenceThreshold = 10.0;
-	std::unique_ptr<double> m_pVisits;
+	IMemBuffer* m_pVisits= nullptr;
 	CFeatureList *m_pStateFeatures;
 
 	MULTI_VALUE_FACTORY<CSimion> m_simions;
