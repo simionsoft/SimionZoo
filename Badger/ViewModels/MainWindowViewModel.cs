@@ -383,7 +383,7 @@ namespace Badger.ViewModels
         public void ShowReportsWindow()
         {
             ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
-            CaliburnUtility.ShowPopupWindow(plotEditor, "Plot editor");
+            CaliburnUtility.ShowPopupWindow(plotEditor, "Badger Reports");
         }
     }
 }
