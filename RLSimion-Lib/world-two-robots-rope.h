@@ -18,13 +18,6 @@ class CRope2Robots : public CDynamicModel
 	double MASS_TARGET;
 	double MASS_GROUND;
 
-	double o_distBr1X;
-	double o_distBr1Y;
-	double o_distBr2X;
-	double o_distBr2Y;
-	double o_distBtX;
-	double o_distBtY;
-
 	/// Episode variables
 	int m_rob1_X, m_rob1_Y;
 	int m_rob2_X, m_rob2_Y;
