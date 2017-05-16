@@ -18,6 +18,8 @@ namespace Badger.ViewModels.Reports
             get { return m_value; }
             set { m_value = value; }
         }
+        private string m_rename = null;
+        public string Rename { get { return m_rename; }} //read-only
 
         public LoggedPrerequisiteViewModel(XmlNode configNode)
         {
@@ -26,6 +28,8 @@ namespace Badger.ViewModels.Reports
             {
                 if (attrs.GetNamedItem(XMLConfig.valueAttribute) != null)
                     Value = attrs[XMLConfig.valueAttribute].Value;
+                if (attrs.GetNamedItem(XMLConfig.renameAttr) != null)
+                    m_rename = attrs[XMLConfig.renameAttr].Value;
             }
         }
     }

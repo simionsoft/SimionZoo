@@ -78,6 +78,9 @@ namespace Badger.ViewModels
                     if (!job.inputFiles.Contains(pre))
                         job.inputFiles.Add(pre);
 
+                //add rename rules
+                job.renameRules = experiment.RenameRules;
+
                 //add experiment file to inputs
                 if (!job.inputFiles.Contains(experiment.FilePath))
                     job.inputFiles.Add(experiment.FilePath);
@@ -312,7 +315,7 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private void LoadLoggedExperiment(XmlNode node)
+        private void LoadBatchFunc(XmlNode node)
         {
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, false);
             LoggedExperiments.Add(newExperiment);
@@ -328,21 +331,26 @@ namespace Badger.ViewModels
             logFunction = logFunctionDelegate;
             ExperimentTimer = new Stopwatch();
 
-            SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
+            SimionFileData.LoadExperimentBatchFile(LoadBatchFunc, batchFileName);
 
             MonitoredExperimentList = new ObservableCollection<MonitoredExperimentViewModel>();
 
             foreach (var experiment in LoggedExperiments)
             {
                 List<string> prerequisites = new List<string>();
+                Dictionary<string,string> renameRules = new Dictionary<string, string>();
 
                 foreach (var prerequisite in experiment.Prerequisites)
+                {
                     prerequisites.Add(prerequisite.Value);
+                    if (prerequisite.Rename != null)
+                        renameRules[prerequisite.Value] = prerequisite.Rename;
+                }
 
                 foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentViewModel monitoredExperiment =
-                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, evaluationMonitor);
+                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites,renameRules, evaluationMonitor);
                     MonitoredExperimentList.Add(monitoredExperiment);
                     m_pendingExperiments.Add(monitoredExperiment);
                 }

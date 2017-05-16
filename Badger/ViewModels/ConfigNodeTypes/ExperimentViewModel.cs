@@ -47,6 +47,13 @@ namespace Badger.ViewModels
         private Dictionary<string, XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
         private Dictionary<string, List<string>> m_enumDefinitions = new Dictionary<string, List<string>>();
 
+        //Rename rules: files that must be stored in the remote machine in a different relative location
+        //Example: 64 bit runtime C++ libraries have the same name the 32-bit versions have.
+        //         In the local machine, 64 bit libraries are in /bin/64, 32 libraries are in /bin, but both
+        //         must be in the same directory as the .exe using them, so the 64 dll-s must be saved in /bin in
+        //         the remote machine.
+        private Dictionary<string, string> m_renameRules = new Dictionary<string, string>();
+        public Dictionary<string,string> renameRules { get {return m_renameRules; } }
 
         public XmlNode getClassDefinition(string className, bool bCanBeNull = false)
         {
@@ -195,7 +202,15 @@ namespace Badger.ViewModels
                     {
                         //Only EXE, PRE, INCLUDE and BRANCH children nodes
                         if (child.Name == XMLConfig.exeNodeTag) m_exeFile = child.InnerText;
-                        else if (child.Name == XMLConfig.preNodeTag) m_preFiles.Add(child.InnerText);
+                        else if (child.Name == XMLConfig.preNodeTag)
+                        {
+                            m_preFiles.Add(child.InnerText);
+                            if (child.Attributes.GetNamedItem(XMLConfig.renameAttr)!=null)
+                            {
+                                //add the new rename rule
+                                renameRules[child.InnerText] = child.Attributes[XMLConfig.renameAttr].Value;
+                            }
+                        }
                         else if (child.Name == XMLConfig.includeNodeTag)
                             loadIncludedDefinitionFile(child.InnerText);
                         else

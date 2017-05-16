@@ -73,9 +73,11 @@ namespace Badger.Simion
         public const string ExeFileNameAttr = "ExeFile";
         //Attribute special values
         public const string newWindowValue = "New";
+
         public const string exeNodeTag = "EXE";
         public const string preNodeTag = "PRE";
         public const string includeNodeTag = "INCLUDE";
+        public const string renameAttr = "Rename";
 
         //the name of the configuration class used in the C++ source code
         public const string srcConfigClassName = "CConfigNode";
