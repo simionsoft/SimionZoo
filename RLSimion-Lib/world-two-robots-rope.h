@@ -18,13 +18,6 @@ class CRope2Robots : public CDynamicModel
 	double MASS_TARGET;
 	double MASS_GROUND;
 
-	double o_distBr1X;
-	double o_distBr1Y;
-	double o_distBr2X;
-	double o_distBr2Y;
-	double o_distBtX;
-	double o_distBtY;
-
 	/// Episode variables
 	int m_rob1_X, m_rob1_Y;
 	int m_rob2_X, m_rob2_Y;
@@ -34,6 +27,7 @@ class CRope2Robots : public CDynamicModel
 	int m_D_BtX, m_D_BtY;
 	int m_theta_r1;
 	int m_theta_r2;
+	int m_boxTheta;
 
 	// Action variables
 	int m_linear_vel_r1;
@@ -55,7 +49,7 @@ class CRope2Robots : public CDynamicModel
 
 public:
 	CRope2Robots(CConfigNode* pParameters);
-	virtual ~CRope2Robots() = default;
+	virtual ~CRope2Robots();
 
 	void reset(CState *s);
 	void executeAction(CState *s, const CAction *a, double dt);

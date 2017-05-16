@@ -8,6 +8,12 @@
   <State-variable>by</State-variable>
   <State-variable>theta1</State-variable>
   <State-variable>theta2</State-variable>
+  <State-variable>dBtX</State-variable>
+  <State-variable>dBtY</State-variable>
+  <State-variable>dBr1X</State-variable>
+  <State-variable>dBr1Y</State-variable>
+  <State-variable>dBr2X</State-variable>
+  <State-variable>dBr2Y</State-variable>
   <Action-variable>v1</Action-variable>
   <Action-variable>omega1</Action-variable>
   <Action-variable>v2</Action-variable>

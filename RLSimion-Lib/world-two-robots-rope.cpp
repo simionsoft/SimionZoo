@@ -38,7 +38,7 @@ double static getRand(double range)
 OpenGLGuiHelper *helper_gui;
 CommonExampleOptions *help_opt;
 btSoftBodyWorldInfo m_sBodyWorldInfo;
-btSoftBodyWorldInfo* s_BodyInfo = &m_sBodyWorldInfo;
+btSoftBodyWorldInfo* s_pBodyInfo = &m_sBodyWorldInfo;
 
 CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 {
@@ -54,6 +54,7 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 
 	m_theta_r1 = addStateVariable("theta1", "rad", -3.15, 3.15);
 	m_theta_r2 = addStateVariable("theta2", "rad", -3.15, 3.15);
+	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15);
 	m_D_BtX = addStateVariable("dBtX", "m", -20.0, 20.0);
 	m_D_BtY = addStateVariable("dBtY", "m", -20.0, 20.0);
 
@@ -79,7 +80,7 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	help_opt = new CommonExampleOptions(helper_gui);
 
 	robRopeBuilder = new BulletBuilder(help_opt->m_guiHelper);
-	robRopeBuilder->initSoftBullet(s_BodyInfo);
+	robRopeBuilder->initSoftBullet(s_pBodyInfo);
 	robRopeBuilder->setOpenGLApp(app_window);
 
 	///Creating static object, ground
@@ -120,18 +121,9 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 
 	/// creating an union with rope between robot and box
 	{
-		robRopeBuilder->connectWithRope(m_Robot1->getBody(), m_Box->getBody(), s_BodyInfo);
-		robRopeBuilder->connectWithRope(m_Robot2->getBody(), m_Box->getBody(), s_BodyInfo);
+		robRopeBuilder->connectWithRope(m_Robot1->getBody(), m_Box->getBody(), s_pBodyInfo);
+		robRopeBuilder->connectWithRope(m_Robot2->getBody(), m_Box->getBody(), s_pBodyInfo);
 	}
-
-	o_distBr1X = fabs(r1origin_x - boxOrigin_x);
-	o_distBr1Y = fabs(r1origin_y - boxOrigin_y);
-
-	o_distBr2X = fabs(r2origin_x - boxOrigin_x);
-	o_distBr2Y = fabs(r2origin_y - boxOrigin_y);
-
-	o_distBtX = fabs(boxOrigin_x - TargetX);
-	o_distBtY = fabs(boxOrigin_y - TargetY);
 
 	///Graphic init
 	robRopeBuilder->generateGraphics(robRopeBuilder->getGuiHelper());
@@ -151,6 +143,7 @@ void CRope2Robots::reset(CState *s)
 
 		s->set(m_theta_r1, theta_o1);
 		s->set(m_theta_r2, theta_o2);
+		s->set(m_boxTheta, 0.0);
 	}
 	else
 	{
@@ -167,6 +160,7 @@ void CRope2Robots::reset(CState *s)
 
 		s->set(m_theta_r1, theta_o1 + getRand(1.0));
 		s->set(m_theta_r2, theta_o2 + getRand(1.0));
+		s->set(m_boxTheta, 0.0);
 	}
 
 	//set relative coordinates
@@ -202,25 +196,29 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 
 	s->set(m_theta_r1, r1_theta);
 	s->set(m_theta_r2, r2_theta);
+	btScalar yaw, pitch, roll;
+	box_trans.getBasis().getEulerYPR(yaw, pitch, roll);
+	if (pitch < SIMD_2_PI) pitch += SIMD_2_PI;
+	else if (pitch > SIMD_2_PI) pitch -= SIMD_2_PI;
+	s->set(m_boxTheta, (double)yaw);
 
 	//draw
 	btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		robRopeBuilder->drawText3D("Evaluation episode", printPosition);
-		//robRopeBuilder->draw();
+		robRopeBuilder->drawSoftWorld();
 	}
 	else
 	{
 		robRopeBuilder->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		robRopeBuilder->drawSoftWorld();
+		//robRopeBuilder->drawSoftWorld();
 	}
 
 }
 
-#define BOX_TARGET_REWARD_WEIGHT 3.0
 double CRope2RobotsReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
 	double boxAfterX = s_p->get("bx");
@@ -232,18 +230,17 @@ double CRope2RobotsReward::getReward(const CState* s, const CAction* a, const CS
 	double robot2X = s_p->get("rx2");
 	double robot2Y = s_p->get("ry2");
 
-	double distanceBoxTarget = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
 
 	if (robot1X >= 20.0 || robot1X <= -20.0 || robot1Y >= 20.0 || robot1Y <= -20.0 || robot2X >= 20.0 || robot2X <= -20.0 || robot2Y >= 20.0 || robot2Y <= -20.0)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1;
 	}
-	distanceBoxTarget = std::max(distanceBoxTarget, 0.0001);
-
-	double rewardBoxTarget = std::min(BOX_TARGET_REWARD_WEIGHT*2.0, BOX_TARGET_REWARD_WEIGHT / distanceBoxTarget);
-
-	return rewardBoxTarget;
+	double distanceBoxTarget = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
+	if (distanceBoxTarget < 1)
+		return 1 + (1 - distanceBoxTarget);
+	else
+		return 1 / distanceBoxTarget;
 }
 
 double CRope2RobotsReward::getMin()
@@ -253,5 +250,17 @@ double CRope2RobotsReward::getMin()
 
 double CRope2RobotsReward::getMax()
 {
-	return 6.0;
+	return 2.0;
+}
+
+CRope2Robots::~CRope2Robots()
+{
+	delete helper_gui;
+	delete help_opt;
+	delete s_pBodyInfo;
+	delete m_Ground;
+	delete m_Robot1;
+	delete m_Robot2;
+	delete m_Box;
+	delete m_Target;
 }
