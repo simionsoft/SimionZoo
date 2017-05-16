@@ -26,18 +26,19 @@ namespace Herd
     }
     public class CJob
     {
-        public string name;
-        public List<CTask> tasks;
-        public List<string> inputFiles;
-        public List<string> outputFiles;
+        public string name= "";
+        public List<CTask> tasks = new List<CTask>();
+        public List<string> inputFiles= new List<string>();
+        public List<string> outputFiles = new List<string>();
+        public Dictionary<string, string> renameRules;
 
-        public CJob()
+        public CJob() { }
+
+        public string renameFile(string filename)
         {
-            //comLineArgs = "";
-            name = "";
-            tasks = new List<CTask>();
-            inputFiles = new List<string>();
-            outputFiles = new List<string>();
+            if (renameRules != null && renameRules.ContainsKey(filename))
+                return renameRules[filename];
+            return filename;
         }
     }
 
@@ -143,7 +144,7 @@ namespace Herd
         {
             foreach (string file in m_job.inputFiles)
             {
-                SendFile(file, FileType.INPUT, sendContent, false,cancelToken);
+                SendFile(file, FileType.INPUT, sendContent, false,cancelToken,m_job.renameFile(file));
             }
         }
         protected void SendOutputFiles(bool sendContent,CancellationToken cancelToken)
@@ -154,7 +155,7 @@ namespace Herd
                 //some output files may not be ther if a task failed
                 //we still want to try sending the rest of files
                 if (!sendContent || File.Exists(getCachedFilename(file)))
-                    SendFile(file, FileType.OUTPUT, sendContent, true, cancelToken);
+                    SendFile(file, FileType.OUTPUT, sendContent, true, cancelToken,m_job.renameFile(file));
                 else
                 {
                     unknownFiles.Add(file);
@@ -205,7 +206,8 @@ namespace Herd
             byte[] footerbytes = Encoding.ASCII.GetBytes(footer);
             writeAsync(footerbytes, 0, footerbytes.Length,cancelToken);
         }
-        protected void SendFile(string fileName, FileType type, bool sendContent, bool fromCachedDir,CancellationToken cancelToken)
+        protected void SendFile(string fileName, FileType type, bool sendContent
+            , bool fromCachedDir,CancellationToken cancelToken, string rename= null)
         {
             string fileTypeXMLTag;
             string header;
@@ -213,7 +215,12 @@ namespace Herd
             string footer = "";
 
             fileTypeXMLTag = getFileTypeXMLTag(type);
-            header = "<" + fileTypeXMLTag + " Name=\"" + fileName + "\"";
+
+            string sentFilename;
+            if (rename != null) sentFilename = rename;
+            else sentFilename = fileName;
+
+            header = "<" + fileTypeXMLTag + " Name=\"" + sentFilename + "\"";
             if (sendContent) footer = "</" + fileTypeXMLTag + ">";
 
             if (sendContent)

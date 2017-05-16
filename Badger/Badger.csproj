@@ -62,10 +62,6 @@
       <HintPath>..\packages\Caliburn.Micro.3.0.3\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Caliburn.Micro.Platform.Core, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Caliburn.Micro.3.0.3\lib\net45\Caliburn.Micro.Platform.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
       <Private>True</Private>
@@ -75,11 +71,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration.Install" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Caliburn.Micro.3.0.3\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -89,7 +81,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -114,8 +105,7 @@
     <Compile Include="badgerInstaller.Designer.cs">
       <DependentUpon>badgerInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\caliburnUtility.cs" />
-    <Compile Include="Data\Experiment.cs" />
+    <Compile Include="Data\CaliburnUtility.cs" />
     <Compile Include="Data\SimionFileData.cs" />
     <Compile Include="Data\SimionLogFile.cs" />
     <Compile Include="Data\Utility.cs" />
@@ -146,6 +136,7 @@
     <Compile Include="ViewModels\Reports\LogQuery.cs" />
     <Compile Include="ViewModels\Reports\LogQueryResultTrackViewModel.cs" />
     <Compile Include="ViewModels\Reports\PlotPropertiesViewModel.cs" />
+    <Compile Include="ViewModels\Reports\LoggedPrerequisiteViewModel.cs" />
     <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />
     <Compile Include="ViewModels\Reports\PlotLineSeriesPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\PlotViewModel.cs" />
@@ -158,11 +149,11 @@
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
-    <Compile Include="ViewModels\MonitorWindowViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentMonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
-    <Compile Include="ViewModels\WindowViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
@@ -181,14 +172,14 @@
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MonitorWindowView.xaml.cs">
-      <DependentUpon>MonitorWindowView.xaml</DependentUpon>
+    <Compile Include="Views\ExperimentMonitorWindowView.xaml.cs">
+      <DependentUpon>ExperimentMonitorWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\ReportsWindowView.xaml.cs">
       <DependentUpon>ReportsWindowView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WindowView.xaml.cs">
-      <DependentUpon>WindowView.xaml</DependentUpon>
+    <Compile Include="Views\MainWindowView.xaml.cs">
+      <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -333,7 +324,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MonitorWindowView.xaml">
+    <Page Include="Views\ExperimentMonitorWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -361,7 +352,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\WindowView.xaml">
+    <Page Include="Views\MainWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -376,25 +367,13 @@
     <Resource Include="images\copy.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="images\folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="images\fork.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\left-arrow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="images\load.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="images\paste.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\play.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\plot.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\remove.png">
@@ -407,9 +386,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\save-all.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\save.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\stop.png">
@@ -469,6 +445,36 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-play-arrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-graphic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-open-multiple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-save-all.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-delete.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

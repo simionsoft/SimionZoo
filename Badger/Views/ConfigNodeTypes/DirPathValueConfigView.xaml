@@ -29,7 +29,7 @@ d:DesignHeight="50" d:DesignWidth="300">
         <TextBlock Text="{Binding content}" Width="150" 
                  TextWrapping="WrapWithOverflow"/>
         <Button Background="Transparent" Width="30"
-                cal:Message.Attach="[Event Click]=[Action selectFolder()]">
+                cal:Message.Attach="[Event Click]=[Action SelectFolder()]">
             <Image Source="{StaticResource folder}" Width="25" Height="25"></Image>
         </Button>
     </StackPanel>

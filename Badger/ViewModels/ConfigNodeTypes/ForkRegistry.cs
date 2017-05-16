@@ -7,9 +7,11 @@ using Badger.Simion;
 namespace Badger.ViewModels
 {
     //this class is used to register all the forks hanging from an experiment or a fork node
-    public class ForkRegistry: PropertyChangedBase
+    public class ForkRegistry : PropertyChangedBase
     {
-        private List<ForkedNodeViewModel> m_forks= new List<ForkedNodeViewModel>();
+        private List<ForkedNodeViewModel> m_forks = new List<ForkedNodeViewModel>();
+
+        public List<ForkedNodeViewModel> Forks { get { return m_forks; } }
 
         public void Add(ForkedNodeViewModel fork)
         {
@@ -21,15 +23,15 @@ namespace Badger.ViewModels
             m_forks.Remove(fork);
         }
 
-        public bool validate(string name)
+        public bool Validate(string name)
         {
             int count = 0;
-            foreach(ForkedNodeViewModel fork in m_forks)
+            foreach (ForkedNodeViewModel fork in m_forks)
             {
                 if (fork.alias == name)
                     ++count;
             }
-            if (count==1)
+            if (count == 1)
                 return true;
             return false;
         }

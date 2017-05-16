@@ -4,7 +4,7 @@ using Badger.Simion;
 
 namespace Badger.ViewModels
 {
-    public class BranchConfigViewModel: NestedConfigNode
+    public class BranchConfigViewModel : NestedConfigNode
     {
         private string m_className = "";
         private string m_window = "";
@@ -24,9 +24,9 @@ namespace Badger.ViewModels
         }
 
         public BranchConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
-            , XmlNode definitionNode, string parentXPath, XmlNode configNode= null, bool initChildren= true)
+            , XmlNode definitionNode, string parentXPath, XmlNode configNode = null, bool initChildren = true)
         {
-            commonInit(parentExperiment,parent, definitionNode,parentXPath);
+            commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
             m_className = definitionNode.Attributes[XMLConfig.classAttribute].Value;
             if (definitionNode.Attributes.GetNamedItem(XMLConfig.windowAttribute) != null)
@@ -62,15 +62,15 @@ namespace Badger.ViewModels
             return true;
         }
 
-        public override void outputXML(StreamWriter writer,SaveMode mode,string leftSpace)
+        public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             if (bIsUsed)
-                base.outputXML(writer,mode,leftSpace);
+                base.outputXML(writer, mode, leftSpace);
         }
         public override ConfigNodeViewModel clone()
         {
-            BranchConfigViewModel newBranch = new BranchConfigViewModel(m_parentExperiment,parent
-                ,nodeDefinition,parent.xPath,null, false);
+            BranchConfigViewModel newBranch = new BranchConfigViewModel(m_parentExperiment, parent
+                , nodeDefinition, parent.xPath, null, false);
             foreach (ConfigNodeViewModel child in children)
             {
                 ConfigNodeViewModel clonedChild = child.clone();

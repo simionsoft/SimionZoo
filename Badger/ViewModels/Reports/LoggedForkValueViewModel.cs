@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using System.Xml;
+using Badger.Data;
 using Badger.Simion;
 
 namespace Badger.ViewModels
@@ -25,10 +26,8 @@ namespace Badger.ViewModels
             set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
         }
 
-        public LoggedForkValueViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        public LoggedForkValueViewModel(XmlNode configNode)
         {
-            m_parentWindow = parent;
-
             if (configNode.Attributes.GetNamedItem(XMLConfig.valueAttribute) != null)
                 value = configNode.Attributes[XMLConfig.valueAttribute].Value;
             else
@@ -38,7 +37,7 @@ namespace Badger.ViewModels
             {
                 if (child.Name == XMLConfig.forkTag)
                 {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
+                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
                     forks.Add(newFork);
                 }
             }

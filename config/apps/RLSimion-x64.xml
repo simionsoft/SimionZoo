@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<APP Name="RLSimion" FileVersion="1">
+<APP Name="RLSimion-x64" FileVersion="1">
   <EXE>..\bin\RLSimion-x64.exe</EXE>
-  <PRE>..\bin\msvcp140.dll</PRE>
-  <PRE>..\bin\vcruntime140.dll</PRE>
+  <PRE Rename="..\bin\msvcp140.dll">..\bin\x64\msvcp140.dll</PRE>
+  <PRE Rename="..\bin\vcruntime140.dll">..\bin\x64\vcruntime140.dll</PRE>
   
   <INCLUDE>..\config\definitions.xml</INCLUDE>
 

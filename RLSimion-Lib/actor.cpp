@@ -59,14 +59,8 @@ void CActor::deferredLoadStep()
 		CLogger::logMessage(MessageType::Info, "Initializing policy weights with null values");
 		for (actorActionIndex = 0; actorActionIndex < m_policyLearners.size(); actorActionIndex++)
 		{
-			numWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
-			pWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights();
-			assert(pWeights);
-
-			for (unsigned int i = 0; i < numWeights; i++)
-			{
-				(*pWeights)[i] = 0.0;
-			}
+			m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights()->setInitValue(0.0);
+			m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights()->setInitValue(0.0);
 		}
 		CLogger::logMessage(MessageType::Info, "Initialization done");
 	}

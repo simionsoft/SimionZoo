@@ -50,6 +50,7 @@ namespace Badger.Simion
         public const string constantTag = "CONSTANT";
         public const string statVariableTag = "VARIABLE";
         public const string statVariableItemTag = "STATISTIC-ITEM";
+        public const string PrerequisiteTag = "PREREQUISITE";
         //Attributes
         public const string nameAttribute = "Name";
         public const string aliasAttribute = "Alias";
@@ -69,11 +70,14 @@ namespace Badger.Simion
         public const string worldAttribute = "World";
         public const string groupIdAttribute = "Group";
         public const string trackIdAttribute = "Track";
+        public const string ExeFileNameAttr = "ExeFile";
         //Attribute special values
         public const string newWindowValue = "New";
+
         public const string exeNodeTag = "EXE";
         public const string preNodeTag = "PRE";
         public const string includeNodeTag = "INCLUDE";
+        public const string renameAttr = "Rename";
 
         //the name of the configuration class used in the C++ source code
         public const string srcConfigClassName = "CConfigNode";

@@ -11,15 +11,16 @@ using Badger.Data;
 
 namespace Badger.ViewModels
 {
-    public class PlotViewModel: PropertyChangedBase
+    public class PlotViewModel : PropertyChangedBase
     {
         string m_name = "";
+
         public string name
         {
             get { return m_name; }
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
-        private const int m_updateFreq= 1000; //plot refresh freq in millseconds
+        private const int m_updateFreq = 1000; //plot refresh freq in millseconds
         private System.Threading.Timer m_timer;
 
         double m_minX = double.MaxValue;
@@ -28,7 +29,7 @@ namespace Badger.ViewModels
         double m_maxY = double.MinValue;
 
         private PlotModel m_plot;
-        public PlotModel plot { get { return m_plot; } set { } }
+        public PlotModel Plot { get { return m_plot; } set { } }
 
         private PlotPropertiesViewModel m_properties = new PlotPropertiesViewModel();
         public PlotPropertiesViewModel properties
@@ -36,10 +37,10 @@ namespace Badger.ViewModels
             get { return m_properties; }
         }
 
-        public PlotViewModel(string title, bool bRefresh=true, bool bShowOptions=false)
+        public PlotViewModel(string title, bool bRefresh = true, bool bShowOptions = false)
         {
-            name= title;
-            m_plot = new PlotModel { Title=title};
+            name = title;
+            m_plot = new PlotModel { Title = title };
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
@@ -71,20 +72,24 @@ namespace Badger.ViewModels
         {
             m_plot.InvalidatePlot(true);
         }
+
         private object m_lineSeriesLock = new object();
+
         public int addLineSeries(string title)
         {
             lock (m_lineSeriesLock)
             {
-                OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+                OxyPlot.Series.LineSeries newSeries =
+                    new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
                 m_plot.Series.Add(newSeries);
 
-                properties.addLineSeries(title, newSeries, this);
+                properties.addLineSeries(newSeries, this);
 
-                return m_plot.Series.Count - 1;
+                return m_plot.Series.Count - 1; ;
             }
         }
-        public void addLineSeriesValue(int seriesIndex,double xValue, double yValue)
+
+        public void addLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
             if (seriesIndex < 0 || seriesIndex >= m_plot.Series.Count)
             {
@@ -92,11 +97,56 @@ namespace Badger.ViewModels
                 return;
             }
 
-            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries) m_plot.Series[seriesIndex];
+            OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)m_plot.Series[seriesIndex];
             updatePlotBounds(xValue, yValue);
-            series.Points.Add(new DataPoint(xValue,yValue));
+            series.Points.Add(new DataPoint(xValue, yValue));
         }
-        private void updatePlotBounds(double x,double y)
+
+        public void clearLineSeries()
+        {
+            m_plot.Series.Clear();
+            updateView();
+            
+        }
+
+        /// <summary>
+        ///     Identify which LineSeries is hovered and make a call to the dimLineSeriesColor method 
+        ///     passing the correct LineSeriesProperties object as parameter.
+        ///     In order to highlight a LineSeries what we actually do is to dim, that is, apply
+        ///     certain opacity, to all the other LineSeries.
+        /// </summary>
+        /// <param name="name">Name of the hovered LineSeries which is gonna be highlighted</param>
+        public void highlightLineSeries(string name)
+        {
+            bool found = false;
+
+            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
+            {
+                if (!p.lineSeries.Title.Equals(name))
+                    properties.dimLineSeriesColor(p);
+                else
+                {
+                    properties.removeLineSeriesColorOpacity(p);
+                    found = true;
+                }
+            }
+
+            if (!found)
+                resetLineSeriesColors();
+        }
+
+        /// <summary>
+        ///     Reset all LineSeries color to its original, removing the opacity in case that some
+        ///     was applied before by the highlightLineSeries method.  
+        /// </summary>
+        public void resetLineSeriesColors()
+        {
+            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
+                properties.removeLineSeriesColorOpacity(p);
+        }
+
+
+        private void updatePlotBounds(double x, double y)
         {
             bool bMustUpdate = false;
             if (x < m_minX)
@@ -109,12 +159,12 @@ namespace Badger.ViewModels
                 m_maxX = x;
                 bMustUpdate = true;
             }
-            if (y<m_minY)
+            if (y < m_minY)
             {
                 m_minY = y;
                 bMustUpdate = true;
             }
-            if (y>m_maxY)
+            if (y > m_maxY)
             {
                 m_maxY = y;
                 bMustUpdate = true;
@@ -127,13 +177,14 @@ namespace Badger.ViewModels
                 double maxY = m_maxY;
                 double minY = m_minY;
                 if (maxX - minX == 0.0) { minX -= 0.01; maxX += 0.01; }
-                if (maxY - minY==0.0) { minY -= 0.01; maxY += 0.01; }
+                if (maxY - minY == 0.0) { minY -= 0.01; maxY += 0.01; }
                 m_plot.Axes[0].Maximum = maxX;
                 m_plot.Axes[0].Minimum = minX;
-                m_plot.Axes[1].Maximum= maxY;
-                m_plot.Axes[1].Minimum= minY;
+                m_plot.Axes[1].Maximum = maxY;
+                m_plot.Axes[1].Minimum = minY;
             }
         }
+
         public void saveImage()
         {
             FolderBrowserDialog sfd = new FolderBrowserDialog();
@@ -148,15 +199,16 @@ namespace Badger.ViewModels
 
         public void showProperties()
         {
-            CaliburnUtility.showVMDialog(properties,"Plot properties");
+            CaliburnUtility.ShowPopupWindow(properties, "Plot properties");
             setProperties();
         }
 
         public void setProperties()
         {
-            plot.IsLegendVisible = properties.bLegendVisible;
+            Plot.IsLegendVisible = properties.bLegendVisible;
             updateView();
         }
+
         public void export(string outputFolder)
         {
             string fileName;

@@ -17,10 +17,10 @@
             <StackPanel Orientation="Horizontal">
                 <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
                           Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
-                <Label x:Name="name" FontSize="10" FontFamily="Segoe UI Light" Content="{Binding name}"/>
+                <Label FontWeight="Medium" Content="{Binding Name}"/>
             </StackPanel>
         </TreeViewItem.Header>
 
-        <ItemsControl x:Name="forks" Margin="-19,0,0,0"/>
+        <ItemsControl x:Name="Forks" Margin="-19,0,0,0"/>
     </TreeViewItem>
 </UserControl>

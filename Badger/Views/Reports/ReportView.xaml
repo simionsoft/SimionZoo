@@ -3,18 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:vm="clr-namespace:Badger.ViewModels"
-            xmlns:v="clr-namespace:Badger.Views"
-             xmlns:oxy="http://oxyplot.org/wpf"
-            xmlns:cal="http://www.caliburnproject.org"
+             xmlns:v="clr-namespace:Badger.Views"
+             xmlns:vm="clr-namespace:Badger.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
+
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <BitmapImage x:Key="close" UriSource="/images/cancel.png"/>
+        <DataTemplate DataType="{x:Type vm:PlotViewModel}">
+            <v:PlotView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:StatsViewModel}">
+            <v:StatsView/>
+        </DataTemplate>
+        
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical">
-        <TabControl x:Name="plots" SelectedItem="{Binding Path=selectedPlot,Mode=TwoWay}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.7*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0" x:Name="plots" SelectedItem="{Binding Path=selectedPlot,Mode=TwoWay}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -23,16 +33,17 @@
                 </DataTemplate>
             </TabControl.ItemTemplate>
         </TabControl>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="100" Height="100">
-            <TabControl x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
-                <TabControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Label Content="{Binding variable}" FontSize="8" FontFamily="Segoe UI Light"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </TabControl.ItemTemplate>
-            </TabControl>
-        </ScrollViewer>
-    </StackPanel>
+
+        <GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />
+
+        <TabControl Grid.Row="2" x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="{Binding variable}" FontSize="8" FontFamily="Segoe UI Light"/>
+                    </StackPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+        </TabControl>
+    </Grid>
 </UserControl>

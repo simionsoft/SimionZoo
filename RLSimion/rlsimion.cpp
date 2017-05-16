@@ -10,8 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-
-	//_CrtSetBreakAlloc(157);
 	try
 	{
 		CConfigFile configXMLFile;
@@ -32,7 +30,7 @@ int main(int argc, char* argv[])
 		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
-		if (!strcmp("RLSimion", pParameters->getName()))
+		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64",pParameters->getName()))
 			pApp = new RLSimionApp(pParameters);
 				
 		if (pApp)
@@ -53,6 +51,6 @@ int main(int argc, char* argv[])
 	{
 		CLogger::logMessage(MessageType::Error, e.what());
 	}
-	//_CrtDumpMemoryLeaks();
+
 	return 0;
 }
