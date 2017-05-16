@@ -54,6 +54,7 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 
 	m_theta_r1 = addStateVariable("theta1", "rad", -3.15, 3.15);
 	m_theta_r2 = addStateVariable("theta2", "rad", -3.15, 3.15);
+	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15);
 	m_D_BtX = addStateVariable("dBtX", "m", -20.0, 20.0);
 	m_D_BtY = addStateVariable("dBtY", "m", -20.0, 20.0);
 
@@ -142,6 +143,7 @@ void CRope2Robots::reset(CState *s)
 
 		s->set(m_theta_r1, theta_o1);
 		s->set(m_theta_r2, theta_o2);
+		s->set(m_boxTheta, 0.0);
 	}
 	else
 	{
@@ -158,6 +160,7 @@ void CRope2Robots::reset(CState *s)
 
 		s->set(m_theta_r1, theta_o1 + getRand(1.0));
 		s->set(m_theta_r2, theta_o2 + getRand(1.0));
+		s->set(m_boxTheta, 0.0);
 	}
 
 	//set relative coordinates
@@ -193,6 +196,11 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 
 	s->set(m_theta_r1, r1_theta);
 	s->set(m_theta_r2, r2_theta);
+	btScalar yaw, pitch, roll;
+	box_trans.getBasis().getEulerYPR(yaw, pitch, roll);
+	if (pitch < SIMD_2_PI) pitch += SIMD_2_PI;
+	else if (pitch > SIMD_2_PI) pitch -= SIMD_2_PI;
+	s->set(m_boxTheta, (double)yaw);
 
 	//draw
 	btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
@@ -243,4 +251,16 @@ double CRope2RobotsReward::getMin()
 double CRope2RobotsReward::getMax()
 {
 	return 2.0;
+}
+
+CRope2Robots::~CRope2Robots()
+{
+	delete helper_gui;
+	delete help_opt;
+	delete s_pBodyInfo;
+	delete m_Ground;
+	delete m_Robot1;
+	delete m_Robot2;
+	delete m_Box;
+	delete m_Target;
 }

@@ -27,6 +27,7 @@ class CRope2Robots : public CDynamicModel
 	int m_D_BtX, m_D_BtY;
 	int m_theta_r1;
 	int m_theta_r2;
+	int m_boxTheta;
 
 	// Action variables
 	int m_linear_vel_r1;
@@ -48,7 +49,7 @@ class CRope2Robots : public CDynamicModel
 
 public:
 	CRope2Robots(CConfigNode* pParameters);
-	virtual ~CRope2Robots() = default;
+	virtual ~CRope2Robots();
 
 	void reset(CState *s);
 	void executeAction(CState *s, const CAction *a, double dt);
