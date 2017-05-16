@@ -144,7 +144,6 @@ void BulletBuilder::connectWithRope(btRigidBody* body1, btRigidBody* body2, btSo
 	softBodyRope0->m_cfg.kSHR = 1;
 	softBodyRope0->m_cfg.kCHR = 1;
 	softBodyRope0->m_cfg.kKHR = 1;
-
 	getSoftDynamicsWorld()->addSoftBody(softBodyRope0);
 }
 
