@@ -9,26 +9,28 @@ using System.Linq;
 
 namespace Badger.ViewModels
 {
-    //Save modes:
-    //  -AsExperiment: all forks and all values are saved
-    //  -AsExperimentalUnit: for each combination of fork values, a different experiment will be saved
-    //              , meaning no forked nodes will be actually saved
-    //              , but only the currently selected value
-    //  -AsProject: in a single file, all the forks, values and the rest of nodes are saved
-    //  -ForkHierarchy: forkedNodes and forks will be saved as a unique experiment
-    //  -ForkValues: only the selected values for each fork are saved
+    /// <summary>
+    /// Save modes:
+    ///     - AsExperiment: all forks and all values are saved.
+    ///     - AsExperimentalUnit: for each combination of fork values, a different experimental unit
+    ///         will be saved, meaning no forked nodes will be actually saved, but only the currently
+    ///         selected value.
+    ///     - AsProject: in a single file, all the forks, values and the rest of nodes are saved.
+    ///     - ForkValues: only the selected values for each fork are saved.
+    ///     - ForkHierarchy: forkedNodes and forks will be saved as a unique experiment.
+    ///     - Prerequisites: list of files' names that are necessary to execute an experiment.
+    /// </summary>
+    public enum SaveMode { AsExperiment, AsExperimentalUnit, AsProject, ForkValues, ForkHierarchy, Prerequisites };
+    public enum WorldVarType { StateVar, ActionVar, Constant };
 
-    public enum SaveMode { AsExperiment, AsExperimentalUnit, AsProject, ForkValues, ForkHierarchy};
-    public enum WorldVarType { StateVar, ActionVar,Constant };
-
-    public class ExperimentViewModel: PropertyChangedBase
+    public class ExperimentViewModel : PropertyChangedBase
     {
-        public SaveMode saveMode= SaveMode.AsExperiment;
+        public SaveMode saveMode = SaveMode.AsExperiment;
 
         //deferred load step
         public delegate void deferredLoadStep();
 
-        private List<deferredLoadStep> m_deferredLoadSteps= new List<deferredLoadStep>();
+        private List<deferredLoadStep> m_deferredLoadSteps = new List<deferredLoadStep>();
         public void registerDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
         public void doDeferredLoadSteps()
         {
@@ -38,21 +40,20 @@ namespace Badger.ViewModels
         }
 
         //app properties: prerrequisites, exe files, definitions...
-        private List<string> m_preFiles= new List<string>();
+        private List<string> m_preFiles = new List<string>();
         public List<string> getPrerrequisites() { return m_preFiles; }
         private string m_exeFile;
         public string getExeFilename() { return m_exeFile; }
-        private Dictionary<string,XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
-        private Dictionary<string,List<string>> m_enumDefinitions 
-            = new Dictionary<string, List<string>>();
-        
+        private Dictionary<string, XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
+        private Dictionary<string, List<string>> m_enumDefinitions = new Dictionary<string, List<string>>();
 
-        public XmlNode getClassDefinition(string className, bool bCanBeNull= false)
+
+        public XmlNode getClassDefinition(string className, bool bCanBeNull = false)
         {
             if (!m_classDefinitions.ContainsKey(className))
             {
                 if (!bCanBeNull)
-                    CaliburnUtility.showWarningDialog("Undefined class" + className, "ERROR");
+                    CaliburnUtility.ShowWarningDialog("Undefined class" + className, "ERROR");
                 return null;
             }
             return m_classDefinitions[className];
@@ -61,19 +62,18 @@ namespace Badger.ViewModels
         public void addEnumeratedType(XmlNode definition)
         {
             List<string> enumeratedValues = new List<string>();
-            foreach (XmlNode child in definition)
-            {
-                enumeratedValues.Add(child.InnerText);
-            }
 
-            m_enumDefinitions.Add(definition.Attributes[XMLConfig.nameAttribute].Value
-                ,enumeratedValues);
+            foreach (XmlNode child in definition)
+                enumeratedValues.Add(child.InnerText);
+
+            m_enumDefinitions.Add(definition.Attributes[XMLConfig.nameAttribute].Value, enumeratedValues);
         }
+
         public List<string> getEnumeratedType(string enumName)
         {
             if (!m_enumDefinitions.ContainsKey(enumName))
             {
-                CaliburnUtility.showWarningDialog("Undefined enumeratedType: " + enumName, "ERROR");
+                CaliburnUtility.ShowWarningDialog("Undefined enumeratedType: " + enumName, "ERROR");
                 return null;
             }
             return m_enumDefinitions[enumName];
@@ -81,16 +81,16 @@ namespace Badger.ViewModels
 
         //the app node's name: RLSimion, ...
         private string m_appName;
-        public string appName { get { return m_appName; }set { m_appName = value; NotifyOfPropertyChange(() => appName); } }
+        public string appName { get { return m_appName; } set { m_appName = value; NotifyOfPropertyChange(() => appName); } }
         //experiment's name
         private string m_name;
         public string name
         {
             get { return m_name; }
-            set { m_name = WindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => name); }
+            set { m_name = MainWindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => name); }
         }
         //file name (not null if it has been saved)
-        private string m_fileName= null;
+        private string m_fileName = null;
         public string fileName
         {
             get { return m_fileName; }
@@ -99,12 +99,15 @@ namespace Badger.ViewModels
 
         private string m_version;
 
-        private BindableCollection<ConfigNodeViewModel> m_children= new BindableCollection<ConfigNodeViewModel>();
-        public BindableCollection<ConfigNodeViewModel> children { get { return m_children; }
-            set { m_children = value; NotifyOfPropertyChange(() => children); } }
+        private BindableCollection<ConfigNodeViewModel> m_children = new BindableCollection<ConfigNodeViewModel>();
+        public BindableCollection<ConfigNodeViewModel> children
+        {
+            get { return m_children; }
+            set { m_children = value; NotifyOfPropertyChange(() => children); }
+        }
 
         private Dictionary<string, WorldDefinition> m_worldDefinitions = new Dictionary<string, WorldDefinition>();
-        private string m_selectedWorld="";
+        private string m_selectedWorld = "";
 
         public void selectWorld(string worldName)
         {
@@ -119,11 +122,11 @@ namespace Badger.ViewModels
         {
             string worldName;
             WorldDefinition worldDefinition;
-            if (definition.Attributes.GetNamedItem(XMLConfig.worldAttribute)!=null)
+            if (definition.Attributes.GetNamedItem(XMLConfig.worldAttribute) != null)
             {
                 worldName = definition.Attributes[XMLConfig.worldAttribute].Value;
                 worldDefinition = new WorldDefinition();
-                foreach(XmlNode child in definition.ChildNodes)
+                foreach (XmlNode child in definition.ChildNodes)
                 {
                     if (child.Name == XMLConfig.stateVarTag)
                         worldDefinition.addStateVar(new StateVar(child));
@@ -136,11 +139,11 @@ namespace Badger.ViewModels
             }
         }
 
-        public void getWorldVarNameList(WorldVarType varType,ref List<string> varNameList)
+        public void getWorldVarNameList(WorldVarType varType, ref List<string> varNameList)
         {
-            if (varNameList!=null && m_selectedWorld!="")
+            if (varNameList != null && m_selectedWorld != "")
             {
-                switch(varType)
+                switch (varType)
                 {
                     case WorldVarType.StateVar:
                         m_worldDefinitions[m_selectedWorld].getStateVarNameList(ref varNameList);
@@ -164,7 +167,7 @@ namespace Badger.ViewModels
             foreach (deferredLoadStep func in m_WorldVarRefListeners)
                 func();
         }
-        public void init(string appDefinitionFileName, XmlNode configRootNode,string experimentName)
+        public void init(string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
             XmlDocument appDefinition = new XmlDocument();
             appDefinition.Load(appDefinitionFileName);
@@ -183,8 +186,8 @@ namespace Badger.ViewModels
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
                     else
                     {
-                        CaliburnUtility.showWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
-                            ,"ERROR");
+                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
+                            , "ERROR");
                         m_version = "0.0.0.0";
                     }
 
@@ -206,17 +209,17 @@ namespace Badger.ViewModels
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
-        private WindowViewModel m_parent;
-        public WindowViewModel parent { get { return m_parent; }set { m_parent = value; } }
+        private MainWindowViewModel m_parent;
+        public MainWindowViewModel parent { get { return m_parent; } set { m_parent = value; } }
 
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
-        public ExperimentViewModel(WindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
+        public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
         {
             m_parent = parentWindow;
             //Load the configFile if a configFilename is provided
-            XmlDocument configDoc= null;
+            XmlDocument configDoc = null;
             XmlNode configRootNode = null;
             if (configFilename != null)
             {
@@ -226,14 +229,14 @@ namespace Badger.ViewModels
             }
 
             init(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
-                                                        //we remove the two extensions in "simion.exp"
+            //we remove the two extensions in "simion.exp"
         }
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
         //XML file, the calling method will be passing XML nodes belonging to the single XML file instead of filenames
-        public ExperimentViewModel(WindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode,string experimentName)
+        public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
             m_parent = parentWindow;
-            init(appDefinitionFileName, configRootNode,experimentName);
+            init(appDefinitionFileName, configRootNode, experimentName);
         }
 
         private void loadIncludedDefinitionFile(string appDefinitionFile)
@@ -271,9 +274,9 @@ namespace Badger.ViewModels
         //setCombination(i). This method will then save the i-th combination
         //  -SaveMode.AsExperiment -> this method should be called only once per experiment. All the forks will be saved embedded
         //in the config file
-        //  -SaveMode.AsExperimentBatch -> this method is called from saveExperimentBatchFile and saves only the information related to forks
+        //  -SaveMode.AsExperimentBatch -> this method is called from SaveExperimentBatchFile and saves only the information related to forks
         //   We need this to know later which value were given to each fork
-        public void save(string filename,SaveMode mode, string leftSpace="")
+        public void save(string filename, SaveMode mode, string leftSpace = "")
         {
             using (FileStream stream = File.Create(filename))
             {
@@ -283,25 +286,25 @@ namespace Badger.ViewModels
                 }
             }
         }
+
         public void saveToStream(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             saveMode = mode;
-            //header
+            // Header for experiments and experiment units
             if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
             {
                 //We are saving the config file as an experiment, experiment unit, or a badger file
                 writer.WriteLine(leftSpace + "<" + appName + " " + XMLConfig.versionAttribute
                 + "=\"" + XMLConfig.experimentConfigVersion + "\">");
             }
-            
-            //body
-            foreach (ConfigNodeViewModel node in m_children)
-                node.outputXML(writer, mode,leftSpace + "  ");
 
-            //footer
-            if (mode == SaveMode.AsExperiment || mode==SaveMode.AsExperimentalUnit)
+            // Body
+            foreach (ConfigNodeViewModel node in m_children)
+                node.outputXML(writer, mode, leftSpace);
+
+            // Footer for experiments and experiment units
+            if (mode == SaveMode.AsExperiment || mode == SaveMode.AsExperimentalUnit)
                 writer.WriteLine(leftSpace + "</" + appName + ">");
-            //else writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
         }
 
 
@@ -356,21 +359,22 @@ namespace Badger.ViewModels
 
         public int getNumForkCombinations()
         {
-            int numForkCombinations= 1;
+            int numForkCombinations = 1;
             foreach (ConfigNodeViewModel child in children)
                 numForkCombinations *= child.getNumForkCombinations();
-                    
+
             return numForkCombinations;
         }
 
         public string setForkCombination(int combination)
         {
             string combinationName = name;
-            int combinationId= combination;
-            foreach(ConfigNodeViewModel child in children)
+            int combinationId = combination;
+            foreach (ConfigNodeViewModel child in children)
             {
-                child.setForkCombination(ref combinationId,ref combinationName);
+                child.setForkCombination(ref combinationId, ref combinationName);
             }
+
             return combinationName;
         }
 
@@ -379,7 +383,7 @@ namespace Badger.ViewModels
         public ForkRegistry forkRegistry
         {
             get { return m_forkRegistry; }
-            set { m_forkRegistry = value;  NotifyOfPropertyChange(() => forkRegistry); }
+            set { m_forkRegistry = value; NotifyOfPropertyChange(() => forkRegistry); }
         }
 
         public void close()

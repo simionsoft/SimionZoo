@@ -1,11 +1,13 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
+using Badger.Data;
 using Badger.Simion;
 using System;
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
-    public class LoggedForkViewModel: SelectableTreeItem
+    public class LoggedForkViewModel : SelectableTreeItem
     {
         private string m_name = "unnamed";
         public string name
@@ -32,46 +34,39 @@ namespace Badger.ViewModels
         public bool bHasForks
         {
             get { return m_bHasForks; }
-            set { m_bHasForks = value;  NotifyOfPropertyChange(() => bHasForks); }
+            set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
         }
 
 
-        public LoggedForkViewModel(XmlNode configNode, ReportsWindowViewModel parent)
+        public LoggedForkViewModel(XmlNode configNode)
         {
-            m_parentWindow = parent;
             if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
                 name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
 
-            foreach(XmlNode child in configNode.ChildNodes)
+            foreach (XmlNode child in configNode.ChildNodes)
             {
-                if (child.Name==XMLConfig.forkTag)
+                if (child.Name == XMLConfig.forkTag)
                 {
-                    LoggedForkViewModel newFork = new LoggedForkViewModel(child, parent);
+                    LoggedForkViewModel newFork = new LoggedForkViewModel(child);
                     forks.Add(newFork);
                 }
-                else if (child.Name==XMLConfig.forkValueTag)
+                else if (child.Name == XMLConfig.forkValueTag)
                 {
-                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child, parent);
+                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child);
                     values.Add(newValue);
                 }
             }
 
             //hide the area used to display children forks?
-            bHasForks = forks.Count!=0;
+            bHasForks = forks.Count != 0;
         }
-
-        public void groupByThisFork()
-        {
-            //this method is called from the context menu
-            //informs the parent window that results should be grouped by this fork
-            m_parentWindow.addGroupBy(name);
-        }
+        
 
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {
             if (doActionLocally) LocalTraverseAction(action);
-            foreach (LoggedForkValueViewModel value in m_values) value.TraverseAction(true,action);
-            foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true,action);
+            foreach (LoggedForkValueViewModel value in m_values) value.TraverseAction(true, action);
+            foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true, action);
         }
     }
 }

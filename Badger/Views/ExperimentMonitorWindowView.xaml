@@ -1,0 +1,26 @@
+﻿<Window x:Class="Badger.Views.ExperimentMonitorWindowView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        WindowStyle="ThreeDBorderWindow"
+        Width="700"
+        Height="800"
+        WindowState="Normal"
+        Title="Experiment Monitor"
+        Icon="/badger-head.ico">
+
+    <Grid Background="#FAFAFA">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding EvaluationPlot.Plot}" 
+                      MinHeight="300" Margin="10,10,20,0" Background="#FAFAFA" />
+
+        <ContentControl Grid.Row="1" Grid.Column="0" x:Name="ExperimentQueueMonitor" Margin="5" />
+    </Grid>
+</Window>

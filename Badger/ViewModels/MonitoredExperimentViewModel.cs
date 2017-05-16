@@ -1,21 +1,27 @@
 ﻿
+using System;
 using System.Xml;
 using Caliburn.Micro;
 using Herd;
 using System.Collections.Generic;
-
+using System.Linq;
 using Badger.Data;
 
 namespace Badger.ViewModels
 {
     public class MonitoredExperimentViewModel : PropertyChangedBase
     {
-        private Experiment m_experiment;
-        public string pipeName { get { return m_experiment.pipeName; } }
-        public string name { get { return m_experiment.name; } }
-        public string filePath { get { return m_experiment.configFilePath; } }
-        public string exeFile { get { return m_experiment.exeFile; } }
-        public List<string> prerrequisites { get { return m_experiment.prerrequisites; } }
+        private LoggedExperimentalUnitViewModel m_loggedExperimentalUnit;
+
+        public string PipeName { get { return m_loggedExperimentalUnit.name; } }
+        public string Name { get { return m_loggedExperimentalUnit.name; } }
+        public string FilePath { get { return m_loggedExperimentalUnit.experimentFilePath; } }
+
+        public string ExeFile { get; set; }
+
+        public List<string> Prerequisites { get; set; }
+
+        public List<string> Forks { get; set; }
 
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
@@ -41,16 +47,10 @@ namespace Badger.ViewModels
             state = ExperimentState.ENQUEUED;
             NotifyOfPropertyChange(() => state);
         }
-        public bool isRunning
-        {
-            get { return m_state == ExperimentState.RUNNING; }
-            set { }
-        }
-        public bool isEnqueued
-        {
-            get { return m_state == ExperimentState.ENQUEUED; }
-            set { }
-        }
+
+        public bool isRunning { get { return m_state == ExperimentState.RUNNING; } }
+
+        public bool isEnqueued { get { return m_state == ExperimentState.ENQUEUED; } }
 
         public string stateString
         {
@@ -65,8 +65,9 @@ namespace Badger.ViewModels
                     case ExperimentState.RECEIVING: return "Receiving";
                     case ExperimentState.WAITING_EXECUTION: return "Awaiting";
                     case ExperimentState.WAITING_RESULT: return "Awaiting";
+                    default:
+                        return "";
                 }
-                return "";
             }
         }
 
@@ -91,20 +92,15 @@ namespace Badger.ViewModels
         }
 
         //progress is expressed as a percentage
-        private const double m_globalProgressUpdateRate = 10.0;
-        private double m_lastProgressUpdate = -m_globalProgressUpdateRate;
+
         private double m_progress;
-        public double progress
+        public double Progress
         {
             get { return m_progress; }
             set
             {
-                m_progress = value; NotifyOfPropertyChange(() => progress);
-                if (m_progress-m_lastProgressUpdate>=m_globalProgressUpdateRate)
-                {
-                    m_parent.updateGlobalProgress();
-                    m_lastProgressUpdate = m_progress;
-                }
+                m_progress = value;
+                NotifyOfPropertyChange(() => Progress);
             }
         }
 
@@ -118,6 +114,7 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => statusInfo);
             }
         }
+
         public void addStatusInfoLine(string line)
         { statusInfo += line + "\n"; }
 
@@ -129,22 +126,43 @@ namespace Badger.ViewModels
             m_logFunction?.Invoke(message);
         }
 
-        private MonitorWindowViewModel m_parent;
-        public MonitoredExperimentViewModel(Experiment experiment,PlotViewModel plot,MonitorWindowViewModel parent)
+
+        public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
+           List<string> prerequisites, PlotViewModel plot)
         {
-            evaluationMonitor = plot;
-            m_experiment = experiment;
-            m_parent = parent;
+            m_loggedExperimentalUnit = expUnit;
+            ExeFile = exeFile;
+            Prerequisites = prerequisites;
+            Forks = expUnit.forkValues.Select(k => k.Key + ": " + k.Value).ToList();
+            m_plotEvaluationMonitor = plot;
         }
 
         //evaluation plot stuff
         private int evaluationSeriesId = -1;
-        public PlotViewModel evaluationMonitor= null;
+        public PlotViewModel m_plotEvaluationMonitor;
+
         public void addEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added
-                evaluationSeriesId = evaluationMonitor.addLineSeries(name);
-            evaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
+                evaluationSeriesId = m_plotEvaluationMonitor.addLineSeries(Name);
+            m_plotEvaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
+        }
+
+        /// <summary>
+        ///     Get MouseEnter event from View and process it.
+        /// </summary>
+        /// <param name="name">The name of the component which trigger the event</param>
+        public void HandleMouseEnter(string name)
+        {
+            m_plotEvaluationMonitor.highlightLineSeries(name);
+        }
+
+        /// <summary>
+        ///     Get MouseLeave event from View and process it.
+        /// </summary>
+        public void HandleMouseLeave()
+        {
+            m_plotEvaluationMonitor.resetLineSeriesColors();
         }
     }
- }
+}

@@ -46,5 +46,27 @@ namespace Badger.ViewModels
             }
             fileWriter.WriteLine(leftSpace + "</" + XMLConfig.statVariableTag + ">");
         }
+
+        public void addOrganized(StatViewModel newStat)
+        {
+            int paramIndex = 0;
+            string[] parameters = newStat.groupIdParameters();
+            int i = 0;
+            bool inRange = false;
+            foreach (StatViewModel stat in stats)
+            {
+                if (inRange && !parameters[paramIndex].Equals(stat.groupIdParameters()[paramIndex]))
+                {
+                    stats.Insert(i, newStat);
+                    return;
+                }
+                if (parameters[paramIndex].Equals(stat.groupIdParameters()[paramIndex]))
+                {
+                    inRange = true;
+                }
+                i++;
+            }
+            stats.Add(newStat);   
+        }
     }
 }

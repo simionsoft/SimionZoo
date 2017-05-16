@@ -20,7 +20,7 @@ namespace Badger.ViewModels
             else return -1;
         }
     }
-    public class LogQuery: PropertyChangedBase
+    public class LogQuery : PropertyChangedBase
     {
         public const string functionMax = "Max";
         public const string functionMin = "Min";
@@ -37,25 +37,25 @@ namespace Badger.ViewModels
         public string inGroupSelectionFunction
         {
             get { return m_inGroupSelectionFunction; }
-            set { m_inGroupSelectionFunction = value;}
+            set { m_inGroupSelectionFunction = value; }
         }
         private string m_inGroupSelectionVariable = "";
         public string inGroupSelectionVariable
         {
             get { return m_inGroupSelectionVariable; }
-            set { m_inGroupSelectionVariable = value;}
+            set { m_inGroupSelectionVariable = value; }
         }
         private string m_orderByFunction = "";
         public string orderByFunction
         {
             get { return m_orderByFunction; }
-            set { m_orderByFunction = value;  NotifyOfPropertyChange(() => orderByFunction); }
+            set { m_orderByFunction = value; NotifyOfPropertyChange(() => orderByFunction); }
         }
         private string m_orderByVariable = "";
         public string orderByVariable
         {
             get { return m_orderByVariable; }
-            set { m_orderByVariable = value;  NotifyOfPropertyChange(() => orderByVariable); }
+            set { m_orderByVariable = value; NotifyOfPropertyChange(() => orderByVariable); }
         }
         private string m_limitToOption = "";
         public string limitToOption
@@ -105,10 +105,10 @@ namespace Badger.ViewModels
         public BindableCollection<LogQueryResultTrackViewModel> resultTracks
         {
             get { return m_resultTracks; }
-            set { m_resultTracks = value;  NotifyOfPropertyChange(() => resultTracks); }
+            set { m_resultTracks = value; NotifyOfPropertyChange(() => resultTracks); }
         }
 
-        private LogQueryResultTrackViewModel getTrack(Dictionary<string,string> forkValues)
+        private LogQueryResultTrackViewModel getTrack(Dictionary<string, string> forkValues)
         {
             foreach (LogQueryResultTrackViewModel resultTrack in resultTracks)
             {
@@ -130,13 +130,13 @@ namespace Badger.ViewModels
         public BindableCollection<LoggedVariableViewModel> loggedVariables
         {
             get { return m_loggedVariables; }
-            set{ m_loggedVariables = value; }
+            set { m_loggedVariables = value; }
         }
 
         public void execute(BindableCollection<LoggedExperimentViewModel> experiments
-            ,BindableCollection<LoggedVariableViewModel> loggedVariablesVM)
+            , BindableCollection<LoggedVariableViewModel> loggedVariablesVM)
         {
-            LogQueryResultTrackViewModel resultTrack= null;
+            LogQueryResultTrackViewModel resultTrack = null;
             loggedVariables = loggedVariablesVM;
 
             //add all selected variables to the list of variables
@@ -147,7 +147,7 @@ namespace Badger.ViewModels
             //traverse the experimental units within each experiment
             foreach (LoggedExperimentViewModel exp in experiments)
             {
-                foreach (LoggedExperimentalUnitViewModel expUnit in exp.expUnits)
+                foreach (LoggedExperimentalUnitViewModel expUnit in exp.ExperimentalUnits)
                 {
                     //take selection into account? is this exp. unit selected?
                     if (from == fromAll || (from == fromSelection && expUnit.bIsSelected))
@@ -159,14 +159,16 @@ namespace Badger.ViewModels
                                 //the track exists and we are using forks to group results
                                 resultTrack.addTrackData(expUnit.loadTrackData(variables));
                         }
-                        if (resultTrack==null) //New track
+                        if (resultTrack == null) //New track
                         {
                             //No groups (each experimental unit is a track) or the track doesn't exist
                             //Either way, we create a new track
-                            LogQueryResultTrackViewModel newResultTrack = new LogQueryResultTrackViewModel(exp.name);
+                            LogQueryResultTrackViewModel newResultTrack = new LogQueryResultTrackViewModel(exp.Name);
 
-                            if (groupBy.Count==0) newResultTrack.forkValues = expUnit.forkValues;
-                            else foreach (string group in groupBy)
+                            if (groupBy.Count == 0)
+                                newResultTrack.forkValues = expUnit.forkValues;
+                            else
+                                foreach (string group in groupBy)
                                     newResultTrack.forkValues[group] = expUnit.forkValues[group];
 
                             //if the in-group selection function requires a variable not selected for the report
@@ -176,7 +178,7 @@ namespace Badger.ViewModels
 
                             //if we use some sorting function to select only some tracks, we need to add the variable
                             // to the list too
-                            if (limitToOption!= noLimitOnResults && !variables.Contains(orderByVariable))
+                            if (limitToOption != noLimitOnResults && !variables.Contains(orderByVariable))
                                 variables.Add(orderByVariable);
 
                             //load data from the log file
@@ -196,14 +198,14 @@ namespace Badger.ViewModels
             }
             //if groups are used, we have to select a single track in each group using the in-group selection function
             //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
-            if (groupBy.Count>0)
+            if (groupBy.Count > 0)
             {
                 foreach (LogQueryResultTrackViewModel track in resultTracks)
                     track.consolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
             }
 
             //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
-            if (limitToOption!=LogQuery.noLimitOnResults)
+            if (limitToOption != LogQuery.noLimitOnResults)
             {
                 int numMaxTracks = int.Parse(limitToOption);
 
@@ -213,14 +215,14 @@ namespace Badger.ViewModels
 
                     if (orderByFunction == orderAsc)
                         sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
-                            ,new AscComparer());
+                            , new AscComparer());
                     else
                         sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
-                            ,new DescComparer());
+                            , new DescComparer());
 
                     foreach (LogQueryResultTrackViewModel track in resultTracks)
                     {
-                        double sortValue= 0.0;
+                        double sortValue = 0.0;
                         TrackVariableData variableData = track.trackData.getVariableData(orderByVariable);
                         if (variableData != null)
                             sortValue = variableData.lastEpisodeData.stats.avg;
@@ -229,7 +231,7 @@ namespace Badger.ViewModels
 
                     //set the sorted list as resultTracks
                     resultTracks.Clear();
-                    for (int i= 0; i<numMaxTracks; i++)
+                    for (int i = 0; i < numMaxTracks; i++)
                         resultTracks.Add(sortedList.Values[i]);
                 }
             }
