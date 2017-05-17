@@ -15,6 +15,11 @@ CLinearVFA::~CLinearVFA()
 {
 }
 
+void CLinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
+{
+	m_bCanBeFrozen = bCanUseDeferredUpdates;
+}
+
 double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
@@ -62,7 +67,7 @@ bool CLinearVFA::saveWeights(const char* pFilename) const
 	if (pFile)
 	{
 		fwrite(&m_numWeights, sizeof(unsigned int), 1, (FILE*)pFile);
-		for (int i= 0; i<m_numWeights; ++i)
+		for (unsigned int i= 0; i<m_numWeights; ++i)
 			fwrite(&(*m_pWeights)[i], sizeof(double), 1, (FILE*)pFile);
 		fclose(pFile);
 		return true;
@@ -161,8 +166,8 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 		vUpdateFreq = CSimionApp::get()->pSimGod->getVFunctionUpdateFreq();
 		experimentStep = CSimionApp::get()->pExperiment->getExperimentStep();
 
-		if (vUpdateFreq == 0 || experimentStep % vUpdateFreq == 0)
-			CSimionApp::get()->pMemManager->copy(m_pFrozenWeights, m_pWeights);
+		if (vUpdateFreq != 0 && experimentStep % vUpdateFreq == 0)
+			CSimionApp::get()->pMemManager->copy(m_pWeights, m_pFrozenWeights);
 	}
 }
 

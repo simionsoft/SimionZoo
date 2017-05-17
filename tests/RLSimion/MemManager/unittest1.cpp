@@ -24,6 +24,8 @@ namespace MemManager
 			IMemBuffer* pBuffer5 = pMemManager->getMemBuffer(BUFFER_SIZE);
 			
 			pMemManager->init(BLOCK_SIZE);
+			int realBlockSize = dynamic_cast<CSimionMemBuffer*>(pBuffer1)->getBlockSizeInBytes();
+
 			Assert::AreEqual(pMemManager->getTotalAllocatedMem(), 0);
 
 			(*pBuffer1)[0] = 1.0;
@@ -39,23 +41,26 @@ namespace MemManager
 			Assert::AreEqual((*pBuffer2)[1], 2.0);
 			Assert::AreEqual((*pBuffer3)[1], 3.0);
 
-			Assert::AreEqual(BLOCK_SIZE_IN_BYTES,pMemManager->getTotalAllocatedMem());
+			Assert::AreEqual(realBlockSize,pMemManager->getTotalAllocatedMem());
 
-			(*pBuffer1)[0 + BLOCK_SIZE] = -1.0;
-			(*pBuffer2)[0 + BLOCK_SIZE] = -2.0;
-			(*pBuffer3)[0 + BLOCK_SIZE] = -3.0;
-			(*pBuffer1)[1 + BLOCK_SIZE] = -1.0;
-			(*pBuffer2)[1 + BLOCK_SIZE] = -2.0;
-			(*pBuffer3)[1 + BLOCK_SIZE] = -3.0;
+			(*pBuffer1)[0 + realBlockSize] = -1.0;
+			(*pBuffer2)[0 + realBlockSize] = -2.0;
+			(*pBuffer3)[0 + realBlockSize] = -3.0;
+			(*pBuffer1)[1 + realBlockSize] = -1.0;
+			(*pBuffer2)[1 + realBlockSize] = -2.0;
+			(*pBuffer3)[1 + realBlockSize] = -3.0;
 
-			Assert::AreEqual((*pBuffer1)[0 + BLOCK_SIZE ] ,-1.0);
-			Assert::AreEqual((*pBuffer2)[0 + BLOCK_SIZE ], -2.0);
-			Assert::AreEqual((*pBuffer3)[0 + BLOCK_SIZE ], -3.0);
-			Assert::AreEqual((*pBuffer1)[1 + BLOCK_SIZE ], -1.0);
-			Assert::AreEqual((*pBuffer2)[1 + BLOCK_SIZE ], -2.0);
-			Assert::AreEqual((*pBuffer3)[1 + BLOCK_SIZE ], -3.0);
+			Assert::AreEqual((*pBuffer1)[0 + realBlockSize] ,-1.0);
 
-			Assert::AreEqual(BLOCK_SIZE_IN_BYTES * 2, pMemManager->getTotalAllocatedMem());
+			Assert::AreEqual(realBlockSize * 2, pMemManager->getTotalAllocatedMem());
+
+			Assert::AreEqual((*pBuffer2)[0 + realBlockSize], -2.0);
+			Assert::AreEqual((*pBuffer3)[0 + realBlockSize], -3.0);
+			Assert::AreEqual((*pBuffer1)[1 + realBlockSize], -1.0);
+			Assert::AreEqual((*pBuffer2)[1 + realBlockSize], -2.0);
+			Assert::AreEqual((*pBuffer3)[1 + realBlockSize], -3.0);
+
+			Assert::AreEqual(realBlockSize * 2, pMemManager->getTotalAllocatedMem());
 
 			delete pMemManager;
 		}

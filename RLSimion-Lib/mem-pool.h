@@ -59,6 +59,6 @@ public:
 	void copy(IMemBuffer* pSrc, IMemBuffer* pDst);
 
 	//This method must be called after all the CSimionMemBuffer's are requested
-	void init(int blockSize= 65536);
+	void init(int blockSize);
 };
 

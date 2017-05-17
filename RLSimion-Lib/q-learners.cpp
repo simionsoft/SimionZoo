@@ -166,7 +166,7 @@ void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s
 	if (m_numStepsSinceLastTargetUpdate > m_targetUpdateFreq.get())
 	{
 		//copy the weights from the online function to the target function
-		CSimionApp::get()->pMemManager->copy(m_pTargetQFunction->getWeights(), m_pQFunction->getWeights());
+		CSimionApp::get()->pMemManager->copy(m_pQFunction->getWeights(), m_pTargetQFunction->getWeights());
 
 		m_numStepsSinceLastTargetUpdate = 0;
 	}

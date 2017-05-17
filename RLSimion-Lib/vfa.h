@@ -38,7 +38,7 @@ public:
 	IMemBuffer *getWeights(){ return m_pWeights; }
 	unsigned int getNumWeights(){ return m_numWeights; }
 
-	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates) { m_bCanBeFrozen = bCanUseDeferredUpdates; }
+	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates);
 	
 	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 

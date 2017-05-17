@@ -67,7 +67,7 @@ public:
 		return pMemPool->getHandler(elementCount);
 	}
 
-	void init(int blockSize = 1024 * 1024)
+	void init(int blockSize = 64 * 1024)
 	{
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 			(*it)->init(blockSize);
@@ -95,8 +95,7 @@ public:
 
 	void deferredLoadStep()
 	{
-		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
-			(*it)->init();
+		init();
 	}
 };
 
