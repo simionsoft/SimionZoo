@@ -125,6 +125,8 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 		robRopeBuilder->connectWithRope(m_Robot2->getBody(), m_Box->getBody(), s_pBodyInfo);
 	}
 
+	double hi = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r1origin_x, r1origin_y);
+	double hi2 = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r2origin_x, r2origin_y);
 	///Graphic init
 	robRopeBuilder->generateGraphics(robRopeBuilder->getGuiHelper());
 
@@ -207,14 +209,14 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		robRopeBuilder->drawText3D("Evaluation episode", printPosition);
-		robRopeBuilder->drawSoftWorld();
+		//robRopeBuilder->drawSoftWorld();
 	}
 	else
 	{
 		robRopeBuilder->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		//robRopeBuilder->drawSoftWorld();
+		robRopeBuilder->drawSoftWorld();
 	}
 
 }
@@ -255,9 +257,6 @@ double CRope2RobotsReward::getMax()
 
 CRope2Robots::~CRope2Robots()
 {
-	delete helper_gui;
-	delete help_opt;
-	delete s_pBodyInfo;
 	delete m_Ground;
 	delete m_Robot1;
 	delete m_Robot2;

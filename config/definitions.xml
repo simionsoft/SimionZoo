@@ -431,6 +431,7 @@
     <STATE-VAR Name="by" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="theta1" Min="-3.15" Max="3.15" Unit="rad"/>
     <STATE-VAR Name="theta2" Min="-3.15" Max="3.15" Unit="rad"/>
+    <STATE-VAR Name="boxTheta" Min="-3.15" Max="3.15" Unit="rad"/>
     <STATE-VAR Name="dBtX" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="dBtY" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="dBr1X" Min="-20" Max="20" Unit="m"/>
