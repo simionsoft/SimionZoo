@@ -23,7 +23,7 @@
       <Episode-Length>250</Episode-Length>
     </Experiment>
     <SimGod>
-      <V-Function-Update-Freq>500</V-Function-Update-Freq>
+      <V-Function-Update-Freq>100</V-Function-Update-Freq>
       <Gamma>0.9</Gamma>
       <Freeze-V-Function>true</Freeze-V-Function>
       <Use-Importance-Weights>false</Use-Importance-Weights>

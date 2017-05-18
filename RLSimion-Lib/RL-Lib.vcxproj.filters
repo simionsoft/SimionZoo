@@ -400,6 +400,9 @@
     <ClInclude Include="mem-buffer.h">
       <Filter>memory</Filter>
     </ClInclude>
+    <ClInclude Include="world-two-robots-rope.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

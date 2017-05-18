@@ -201,36 +201,25 @@ void CSimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 	if (pSrcBuffer && pDstBuffer)
 	{
 		//copy only those blocks that have been allocated and initialized
-		//UNFINISHED
 		int minRelIndexInBlock, maxRelIndexInBlock;
 		int blockAbsOffset = 0;
+		minRelIndexInBlock = blockAbsOffset / m_elementSize;
+		if (pSrcBuffer->getOffset()<(blockAbsOffset%m_elementSize))
+			++minRelIndexInBlock;
 		for (int block = 0; block < m_memBlocks.size(); ++block)
 		{
 			if (m_memBlocks[block]->bAllocated() && m_memBlocks[block]->bInitialized())
 			{
-				minRelIndexInBlock = blockAbsOffset/m_elementSize;
-				if (pSrcBuffer->getOffset()<(blockAbsOffset%m_elementSize))
-						++minRelIndexInBlock;
 				maxRelIndexInBlock = (blockAbsOffset+m_memBlockSize)/m_elementSize;
 				if (pSrcBuffer->getOffset()<((blockAbsOffset+m_memBlockSize)%m_elementSize))
 						++maxRelIndexInBlock;
+
 				for (int i= minRelIndexInBlock; i<maxRelIndexInBlock; ++i)
-				{
 					(*pDstBuffer)[i] = (*pSrcBuffer)[i];
-				}
 				++numBlocksCopied;
 			}
 			blockAbsOffset += m_memBlockSize;
+			minRelIndexInBlock = maxRelIndexInBlock;
 		}
-//		printf("Copied blocks= %d/%d\n", numBlocksCopied,(int) m_memBlocks.size());
-
-		//for (int i = 0; i < pSrcBuffer->getNumElements(); ++i)
-		//{
-		//	int absIndex = i*m_elementSize + pSrcBuffer->getOffset();
-		//	int blockId= absIndex/m_memBlockSize;
-
-		//	if (m_memBlocks[blockId]->bAllocated() && m_memBlocks[blockId]->bInitialized())
-		//		(*pDstBuffer)[i] = (*pSrcBuffer)[i];
-		//}
 	}
 }
