@@ -1,15 +1,11 @@
 #pragma once
-#include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
+#include "BulletBody.h"
 
-
-class Robot {
+class Robot : public BulletBody {
 public:
-	Robot(double mass, btDefaultMotionState* motionState, btCollisionShape* shape, btVector3& inertia);
-	virtual ~Robot() { }
-
-	btRigidBody* Robot::getBody();
-
-protected:
-	btVector3 m_force;
-	btRigidBody* m_pBody;
+	Robot(double mass, const btVector3& pos, btCollisionShape* shape, bool moving_obj) : BulletBody(mass, pos, shape, moving_obj)
+	{
+	}
+	virtual ~Robot() {}
+	void setRelativeVariables(CState* s, int idX, int idY, double valX, double valY);
 };

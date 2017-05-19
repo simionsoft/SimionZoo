@@ -7,6 +7,8 @@
 class SimpleOpenGL3App;
 class BulletPhysics;
 class BulletGraphic;
+class Robot;
+class Box;
 class BulletBody;
 
 
@@ -43,10 +45,11 @@ class CRope2Robots : public CDynamicModel
 
 	///Bullet bodies init
 	BulletBody *m_Ground;
-	BulletBody *m_Robot1;
-	BulletBody *m_Robot2;
-	BulletBody *m_Box;
 	BulletBody *m_Target;
+	Robot *m_Robot1;
+	Robot *m_Robot2;
+	Box *m_Box;
+	
 
 
 public:

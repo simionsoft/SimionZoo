@@ -3,6 +3,8 @@
 #include "app.h"
 #include "noise.h"
 #include "BulletBody.h"
+#include "Robot.h"
+#include "Box.h"
 #include "BulletPhysics.h"
 #include "BulletDisplay.h"
 #pragma comment(lib,"opengl32.lib")
@@ -101,21 +103,21 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 
 	///Creating dynamic box
 	{
-		m_Box = new BulletBody(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))), true);
+		m_Box = new Box(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))), true);
 		robRopeBuilder->getCollisionShape().push_back(m_Box->getShape());
 		robRopeBuilder->getDynamicsWorld()->addRigidBody(m_Box->getBody());
 	}
 
 	///creating  dynamic robot one
 	{
-		m_Robot1 = new BulletBody(MASS_ROBOT, btVector3(r1origin_x, 0, r1origin_y), new btSphereShape(btScalar(0.5)), true);
+		m_Robot1 = new Robot(MASS_ROBOT, btVector3(r1origin_x, 0, r1origin_y), new btSphereShape(btScalar(0.5)), true);
 		robRopeBuilder->getCollisionShape().push_back(m_Robot1->getShape());
 		robRopeBuilder->getDynamicsWorld()->addRigidBody(m_Robot1->getBody());
 	}
 
 	///creating  dynamic robot two
 	{
-		m_Robot2 = new BulletBody(MASS_ROBOT, btVector3(r2origin_x, 0, r2origin_y), new btSphereShape(btScalar(0.5)), true);
+		m_Robot2 = new Robot(MASS_ROBOT, btVector3(r2origin_x, 0, r2origin_y), new btSphereShape(btScalar(0.5)), true);
 		robRopeBuilder->getCollisionShape().push_back(m_Robot2->getShape());
 		robRopeBuilder->getDynamicsWorld()->addRigidBody(m_Robot2->getBody());
 	}
@@ -195,9 +197,9 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	m_Robot1->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
 	m_Robot2->setAbsoluteVariables(s, m_rob2_X, m_rob2_Y);
 
-	m_Robot1->setRelativeVariables(s, m_D_Br1X, m_D_Br1X, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
-	m_Robot2->setRelativeVariables(s, m_D_Br2X, m_D_Br2Y, false, NULL, NULL, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
-	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY, true, TargetX, TargetY);
+	m_Robot1->setRelativeVariables(s, m_D_Br1X, m_D_Br1X, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
+	m_Robot2->setRelativeVariables(s, m_D_Br2X, m_D_Br2Y, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
+	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY, TargetX, TargetY);
 
 	s->set(m_theta_r1, r1_theta);
 	s->set(m_theta_r2, r2_theta);

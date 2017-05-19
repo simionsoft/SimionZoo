@@ -403,7 +403,6 @@
     <ClInclude Include="mem-buffer.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="world-two-robots-rope.h" />
     <ClInclude Include="GraphicSettings.h">
       <Filter>world\GraphicResources</Filter>
     </ClInclude>
@@ -415,6 +414,9 @@
     </ClInclude>
     <ClInclude Include="BulletDisplay.h">
       <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="world-two-robots-rope.h">
+      <Filter>world\BulletWorlds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
