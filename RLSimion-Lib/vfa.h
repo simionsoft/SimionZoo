@@ -19,7 +19,7 @@ class IMemBuffer;
 class CLinearVFA
 {
 protected:
-
+	CFeatureList* m_pPendingUpdates= nullptr;
 	IMemBuffer* m_pFrozenWeights = nullptr;
 	IMemBuffer* m_pWeights= nullptr;
 	unsigned int m_numWeights= 0;

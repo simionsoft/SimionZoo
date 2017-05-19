@@ -83,6 +83,10 @@ public:
 		return total;
 	}
 
+	//This method copies initialized memory blocks from buffer to buffer
+	//Don't use in performance-critical operations done frequently such as copying weights
+	//from a function to the frozen copy. Rather, store in a separate feature list
+	//weight updates and then apply those updates to the frozen copy.
 	virtual void copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 	{
 		IMemPool* pSrcPool= pSrc->getMemPool();
