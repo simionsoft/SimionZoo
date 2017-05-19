@@ -15,18 +15,18 @@
 #include <math.h>
 #pragma comment(lib,"opengl32.lib")
 
-class BulletViewer
+class BulletGraphic
 {
 
 public:
 	SimpleOpenGL3App* m_pOpenGLApp;
 	GUIHelperInterface* m_pHelper;
-	BulletViewer(struct GUIHelperInterface* help, SimpleOpenGL3App* app)
+	BulletGraphic(struct GUIHelperInterface* help, SimpleOpenGL3App* app)
 	{
 		m_pHelper = help;
 		m_pOpenGLApp = app;
 	}
-	~BulletViewer();
+	~BulletGraphic();
 
 	virtual void setDebugger(btDiscreteDynamicsWorld* m_dynamicsWorld);
 	virtual void setSoftDebugger(btSoftRigidDynamicsWorld* m_dynamicsWorld);
@@ -45,5 +45,5 @@ public:
 
 	
 
-	GUIHelperInterface* BulletViewer::getGuiHelper();
+	GUIHelperInterface* BulletGraphic::getGuiHelper();
 };

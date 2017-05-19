@@ -7,8 +7,6 @@
 
 #define GLEW_STATIC
 
-int gSharedMemoryKey = -1;
-
 void BulletViewer::resetCamera() {
 	float dist = 25;
 	float pitch = 52;

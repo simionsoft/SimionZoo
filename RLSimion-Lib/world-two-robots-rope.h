@@ -6,6 +6,7 @@
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 class SimpleOpenGL3App;
 class BulletPhysics;
+class BulletGraphic;
 class BulletBody;
 
 
@@ -38,6 +39,7 @@ class CRope2Robots : public CDynamicModel
 	///Graphic initialization
 	SimpleOpenGL3App* app_window;
 	BulletPhysics* robRopeBuilder;
+	BulletGraphic* robRopeViewer;
 
 	///Bullet bodies init
 	BulletBody *m_Ground;

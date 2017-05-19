@@ -36,7 +36,7 @@ double static getRand(double range)
 #define theta_o1 0.0
 #define theta_o2 0.0
 
-//OpenGLGuiHelper *helper_gui;
+OpenGLGuiHelper *helper_gui;
 btSoftBodyWorldInfo m_sBodyWorldInfo;
 btSoftBodyWorldInfo* s_pBodyInfo = &m_sBodyWorldInfo;
 
@@ -73,14 +73,16 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	//app_window = new SimpleOpenGL3App("Graphic Bullet Two Robots Rope Interface", 1024, 768, true);
+	app_window = new SimpleOpenGL3App("Graphic Bullet Two Robots Rope Interface", 1024, 768, true);
 
 	///Graphic init
-	//helper_gui = new OpenGLGuiHelper(app_window, false);
-	//help_opt = new CommonExampleOptions(helper_gui);
+	helper_gui = new OpenGLGuiHelper(app_window, false);
 
 	robRopeBuilder = new BulletPhysics();
+	robRopeViewer = new BulletGraphic(helper_gui, app_window);
+
 	robRopeBuilder->initSoftPhysics(s_pBodyInfo);
+	robRopeViewer->setSoftDebugger(robRopeBuilder->getSoftDynamicsWorld());
 
 	///Creating static object, ground
 	{
@@ -126,8 +128,9 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 
 	double hi = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r1origin_x, r1origin_y);
 	double hi2 = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r2origin_x, r2origin_y);
+
 	///Graphic init
-	//robRopeBuilder->generateGraphics(robRopeBuilder->getGuiHelper());
+	robRopeViewer->generateGraphics(robRopeBuilder->getDynamicsWorld());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CRope2RobotsReward());
@@ -184,6 +187,7 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 
 	//Execute simulation
 	robRopeBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
+	robRopeViewer->updateCamera();
 
 	//Update
 
@@ -204,19 +208,19 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	s->set(m_boxTheta, (double)yaw);
 
 	////draw
-	//btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
-	//if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
-	//{
-	//	robRopeBuilder->drawText3D("Evaluation episode", printPosition);
-	//	//robRopeBuilder->drawSoftWorld();
-	//}
-	//else
-	//{
-	//	robRopeBuilder->drawText3D("Training episode", printPosition);
-	//}
-	//if (!CSimionApp::get()->isExecutedRemotely()) {
-	//	robRopeBuilder->drawSoftWorld();
-	//}
+	btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	{
+		robRopeViewer->drawText3D("Evaluation episode", printPosition);
+		//robRopeBuilder->drawSoftWorld();
+	}
+	else
+	{
+		robRopeViewer->drawText3D("Training episode", printPosition);
+	}
+	if (!CSimionApp::get()->isExecutedRemotely()) {
+		robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
+	}
 
 }
 
