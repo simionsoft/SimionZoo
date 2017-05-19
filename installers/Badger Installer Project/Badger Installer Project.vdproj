@@ -309,12 +309,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_71849E0F63AB147A131146EE036B033A"
-        "OwnerKey" = "8:_25185E43337E4872BBDC1CC4C1010182"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_7618C52A1EAF9E811FC137DC4CF50459"
         "OwnerKey" = "8:_25185E43337E4872BBDC1CC4C1010182"
         "MsmSig" = "8:_UNDEFINED"
@@ -491,6 +485,12 @@
         {
         "MsmKey" = "8:_B550D658D8D841B58387B965F9524FC2"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BC345513B12386530CE7232ACCE67061"
+        "OwnerKey" = "8:_25185E43337E4872BBDC1CC4C1010182"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1000,7 +1000,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_71849E0F63AB147A131146EE036B033A"
+        "OwnerKey" = "8:_BC345513B12386530CE7232ACCE67061"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -1011,8 +1011,8 @@
         "DisplayName" = "8:Debug"
         "IsDebugOnly" = "11:TRUE"
         "IsReleaseOnly" = "11:FALSE"
-        "OutputFilename" = "8:..\\..\\Debug\\Badger Installer.msi"
-        "PackageFilesAs" = "3:2"
+        "OutputFilename" = "8:..\\..\\Debug\\Badger.msi"
+        "PackageFilesAs" = "3:4"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
         "Compression" = "3:2"
@@ -1043,8 +1043,8 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:..\\..\\Release\\Badger Installer.msi"
-        "PackageFilesAs" = "3:2"
+        "OutputFilename" = "8:..\\..\\bin\\Badger.msi"
+        "PackageFilesAs" = "3:4"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
         "Compression" = "3:2"
@@ -2007,37 +2007,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_71849E0F63AB147A131146EE036B033A"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Herd, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_71849E0F63AB147A131146EE036B033A"
-                    {
-                    "Name" = "8:Herd.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Herd.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6EAAEA1992D34621ABEB1DF0FCA08712"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7618C52A1EAF9E811FC137DC4CF50459"
             {
             "AssemblyRegister" = "3:1"
@@ -2592,6 +2561,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BC345513B12386530CE7232ACCE67061"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Herd, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_BC345513B12386530CE7232ACCE67061"
+                    {
+                    "Name" = "8:Herd.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Herd.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6EAAEA1992D34621ABEB1DF0FCA08712"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BF25B81F6FDFA5CFEEF7ACCB198887FF"
@@ -3295,7 +3295,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Badger"
         "ProductCode" = "8:{07B18FF2-12CD-4930-9907-9061E7327A88}"
-        "PackageCode" = "8:{8A48622C-5920-4062-A584-39DF46F93E62}"
+        "PackageCode" = "8:{18DDB153-76EA-4338-91A0-D16E380F0453}"
         "UpgradeCode" = "8:{A21E97D1-C0E2-46C8-8B54-194F955CA571}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
