@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 #include "../3rd-party/bullet3-2.86/examples/CommonInterfaces/CommonRigidBodyBase.h"
 
@@ -14,39 +15,35 @@
 #include <math.h>
 #pragma comment(lib,"opengl32.lib")
 
-class BulletViewer : public CommonRigidBodyBase
+class BulletViewer
 {
-	
 
 public:
 	SimpleOpenGL3App* m_pOpenGLApp;
-
-	BulletViewer(struct GUIHelperInterface* helper)
-		:CommonRigidBodyBase(helper)
+	GUIHelperInterface* m_pHelper;
+	BulletViewer(struct GUIHelperInterface* help, SimpleOpenGL3App* app)
 	{
+		m_pHelper = help;
+		m_pOpenGLApp = app;
 	}
 	~BulletViewer();
 
-	virtual void initBullet();
-	virtual void initPhysics();
+	virtual void setDebugger(btDiscreteDynamicsWorld* m_dynamicsWorld);
+	virtual void setSoftDebugger(btSoftRigidDynamicsWorld* m_dynamicsWorld);
 
-	virtual void initSoftBullet(btSoftBodyWorldInfo* m_sBodyWorldInfo);
-	virtual void initSoftPhysics(btSoftBodyWorldInfo* m_sBodyWorldInfo);
+	virtual void renderScene(btDiscreteDynamicsWorld* m_dynamicsWorld);
 
-	virtual void generateGraphics(GUIHelperInterface*	helper);
-	void setOpenGLApp(SimpleOpenGL3App* app) { m_pOpenGLApp = app; }
+	virtual void generateGraphics(btDiscreteDynamicsWorld* m_dynamicsWorld);
+	
+	virtual void updateCamera();
 	virtual void resetCamera();
-	void deleteGraphicOptions();
+	virtual void swapBuffers();
 
-	void simulate(double dt);
-	void draw();
+	void drawDynamicWorld(btDiscreteDynamicsWorld* m_dynamicsWorld);
+	void drawSoftWorld(btSoftRigidDynamicsWorld* m_softWorld);
 	void drawText3D(char text[], btVector3 &position);
 
-	void connectWithRope(btRigidBody* body1, btRigidBody* body2, btSoftBodyWorldInfo* btInfo);
-	btSoftRigidDynamicsWorld* getSoftDynamicsWorld();
-	void drawSoftWorld();
-	//btSoftBodyWorldInfo* getBtSoftBodyInfo();
 	
-	btAlignedObjectArray<btCollisionShape*> BulletViewer::getCollisionShape();
+
 	GUIHelperInterface* BulletViewer::getGuiHelper();
 };

@@ -9,7 +9,7 @@
 
 int gSharedMemoryKey = -1;
 
-void BulletBuilder::resetCamera() {
+void BulletViewer::resetCamera() {
 	float dist = 25;
 	float pitch = 52;
 	float yaw = 35;
@@ -18,7 +18,7 @@ void BulletBuilder::resetCamera() {
 }
 
 // Inicialization of physics
-void BulletBuilder::initPhysics()
+void BulletViewer::initPhysics()
 {
 	m_guiHelper->setUpAxis(1);
 	createEmptyDynamicsWorld();
@@ -29,14 +29,14 @@ void BulletBuilder::initPhysics()
 }
 
 // create OpenGL window and Bullet World
-void BulletBuilder::initBullet()
+void BulletViewer::initBullet()
 {
 	initPhysics();
 	resetCamera();
 }
 
 
-void BulletBuilder::initSoftPhysics(btSoftBodyWorldInfo* m_sBodyWorldInfo)
+void BulletViewer::initSoftPhysics(btSoftBodyWorldInfo* m_sBodyWorldInfo)
 {
 	m_guiHelper->setUpAxis(1);
 	{
@@ -61,7 +61,7 @@ void BulletBuilder::initSoftPhysics(btSoftBodyWorldInfo* m_sBodyWorldInfo)
 			+ btIDebugDraw::DBG_DrawNormals);
 }
 
-void BulletBuilder::initSoftBullet(btSoftBodyWorldInfo* m_sBodyWorldInfo)
+void BulletViewer::initSoftBullet(btSoftBodyWorldInfo* m_sBodyWorldInfo)
 {
 	initSoftPhysics(m_sBodyWorldInfo);
 	resetCamera();
@@ -69,13 +69,13 @@ void BulletBuilder::initSoftBullet(btSoftBodyWorldInfo* m_sBodyWorldInfo)
 
 
 /// Create graphics after adding bodies to the world
-void BulletBuilder::generateGraphics(GUIHelperInterface*	helper)
+void BulletViewer::generateGraphics(GUIHelperInterface*	helper)
 {
 	helper->autogenerateGraphicsObjects(m_dynamicsWorld);
 }
 
 // Step the simulation 
-void BulletBuilder::simulate(double dt)
+void BulletViewer::simulate(double dt)
 {
 	m_pOpenGLApp->m_instancingRenderer->init();
 	m_pOpenGLApp->m_instancingRenderer->updateCamera(m_pOpenGLApp->getUpAxis());
@@ -84,7 +84,7 @@ void BulletBuilder::simulate(double dt)
 }
 
 // Draw the scene
-void BulletBuilder::draw()
+void BulletViewer::draw()
 {
 	renderScene();
 
@@ -96,29 +96,29 @@ void BulletBuilder::draw()
 }
 
 // Print 3D text in a determined possition
-void BulletBuilder::drawText3D(char text[], btVector3 &position)
+void BulletViewer::drawText3D(char text[], btVector3 &position)
 {
 	m_pOpenGLApp->drawText3D(text, float(position.getX()), float(position.getY()), float(position.getZ()), 1);
 }
 
 // Needed getter in order to add shapes to the array of bullets collision shapes
-btAlignedObjectArray<btCollisionShape*> BulletBuilder::getCollisionShape()
+btAlignedObjectArray<btCollisionShape*> BulletViewer::getCollisionShape()
 {
 	return m_collisionShapes;
 }
 
-GUIHelperInterface* BulletBuilder::getGuiHelper()
+GUIHelperInterface* BulletViewer::getGuiHelper()
 {
 	return m_guiHelper;
 }
 
 // Delete every graphic object from outside
-void BulletBuilder::deleteGraphicOptions()
+void BulletViewer::deleteGraphicOptions()
 {
 	exitPhysics();
 }
 
-BulletBuilder::~BulletBuilder()
+BulletViewer::~BulletViewer()
 {
 	deleteGraphicOptions();
 }
@@ -130,7 +130,7 @@ B3_STANDALONE_EXAMPLE(StandaloneExampleCreateFunc)
 //ONLY CAN BE USED WITH SOFTDYNAMICSWORLD//
 //////////////////////////////////////////
 
-void BulletBuilder::connectWithRope(btRigidBody* body1, btRigidBody* body2, btSoftBodyWorldInfo* btInfo)
+void BulletViewer::connectWithRope(btRigidBody* body1, btRigidBody* body2, btSoftBodyWorldInfo* btInfo)
 {
 	//btSoftBodyWorldInfo btInf = btInfo;
 	btSoftBody*	softBodyRope0 = btSoftBodyHelpers::CreateRope(*btInfo, body1->getWorldTransform().getOrigin(), body2->getWorldTransform().getOrigin(), 4, 0);
@@ -147,17 +147,17 @@ void BulletBuilder::connectWithRope(btRigidBody* body1, btRigidBody* body2, btSo
 	getSoftDynamicsWorld()->addSoftBody(softBodyRope0);
 }
 
-btSoftRigidDynamicsWorld* BulletBuilder::getSoftDynamicsWorld()
+btSoftRigidDynamicsWorld* BulletViewer::getSoftDynamicsWorld()
 {
 	return (btSoftRigidDynamicsWorld*)m_dynamicsWorld;
 }
 //
-//btSoftBodyWorldInfo* BulletBuilder::getBtSoftBodyInfo()
+//btSoftBodyWorldInfo* BulletViewer::getBtSoftBodyInfo()
 //{
 //	return m_sBodyWorldInfo;
 //}
 
-void BulletBuilder::drawSoftWorld()
+void BulletViewer::drawSoftWorld()
 {
 	CommonRigidBodyBase::renderScene();
 	btSoftRigidDynamicsWorld* softWorld = getSoftDynamicsWorld();

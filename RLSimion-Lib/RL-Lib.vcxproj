@@ -210,6 +210,8 @@
     <ClCompile Include="b3Clock.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="BulletBody.cpp" />
+    <ClCompile Include="BulletDisplay.cpp" />
+    <ClCompile Include="BulletPhysics.cpp" />
     <ClCompile Include="CollisionShape2TriangleMesh.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="deferred-load.cpp" />
@@ -279,6 +281,9 @@
     <ClInclude Include="b3Clock.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BulletBody.h" />
+    <ClInclude Include="BulletCreationInterface.h" />
+    <ClInclude Include="BulletDisplay.h" />
+    <ClInclude Include="BulletPhysics.h" />
     <ClInclude Include="CollisionShape2TriangleMesh.h" />
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
@@ -338,6 +343,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">

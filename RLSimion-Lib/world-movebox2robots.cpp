@@ -73,7 +73,7 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 	gui_helper = new OpenGLGuiHelper(window_app, false);
 	opt_helper = new CommonExampleOptions(gui_helper);
 
-	rob2Builder = new BulletBuilder(opt_helper->m_guiHelper);
+	rob2Builder = new BulletViewer(opt_helper->m_guiHelper);
 	rob2Builder->initBullet();
 	rob2Builder->setOpenGLApp(window_app);
 

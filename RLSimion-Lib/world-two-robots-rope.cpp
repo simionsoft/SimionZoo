@@ -2,8 +2,9 @@
 #include "world-two-robots-rope.h"
 #include "app.h"
 #include "noise.h"
-#include "GraphicSettings.h"
 #include "BulletBody.h"
+#include "BulletPhysics.h"
+#include "BulletDisplay.h"
 #pragma comment(lib,"opengl32.lib")
 
 double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
@@ -35,8 +36,7 @@ double static getRand(double range)
 #define theta_o1 0.0
 #define theta_o2 0.0
 
-OpenGLGuiHelper *helper_gui;
-CommonExampleOptions *help_opt;
+//OpenGLGuiHelper *helper_gui;
 btSoftBodyWorldInfo m_sBodyWorldInfo;
 btSoftBodyWorldInfo* s_pBodyInfo = &m_sBodyWorldInfo;
 
@@ -73,15 +73,14 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	app_window = new SimpleOpenGL3App("Graphic Bullet Two Robots Rope Interface", 1024, 768, true);
+	//app_window = new SimpleOpenGL3App("Graphic Bullet Two Robots Rope Interface", 1024, 768, true);
 
 	///Graphic init
-	helper_gui = new OpenGLGuiHelper(app_window, false);
-	help_opt = new CommonExampleOptions(helper_gui);
+	//helper_gui = new OpenGLGuiHelper(app_window, false);
+	//help_opt = new CommonExampleOptions(helper_gui);
 
-	robRopeBuilder = new BulletBuilder(help_opt->m_guiHelper);
-	robRopeBuilder->initSoftBullet(s_pBodyInfo);
-	robRopeBuilder->setOpenGLApp(app_window);
+	robRopeBuilder = new BulletPhysics();
+	robRopeBuilder->initSoftPhysics(s_pBodyInfo);
 
 	///Creating static object, ground
 	{
@@ -128,7 +127,7 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	double hi = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r1origin_x, r1origin_y);
 	double hi2 = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r2origin_x, r2origin_y);
 	///Graphic init
-	robRopeBuilder->generateGraphics(robRopeBuilder->getGuiHelper());
+	//robRopeBuilder->generateGraphics(robRopeBuilder->getGuiHelper());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CRope2RobotsReward());
@@ -204,20 +203,20 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	else if (pitch > SIMD_2_PI) pitch -= SIMD_2_PI;
 	s->set(m_boxTheta, (double)yaw);
 
-	//draw
-	btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
-	{
-		robRopeBuilder->drawText3D("Evaluation episode", printPosition);
-		//robRopeBuilder->drawSoftWorld();
-	}
-	else
-	{
-		robRopeBuilder->drawText3D("Training episode", printPosition);
-	}
-	if (!CSimionApp::get()->isExecutedRemotely()) {
-		robRopeBuilder->drawSoftWorld();
-	}
+	////draw
+	//btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
+	//if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	//{
+	//	robRopeBuilder->drawText3D("Evaluation episode", printPosition);
+	//	//robRopeBuilder->drawSoftWorld();
+	//}
+	//else
+	//{
+	//	robRopeBuilder->drawText3D("Training episode", printPosition);
+	//}
+	//if (!CSimionApp::get()->isExecutedRemotely()) {
+	//	robRopeBuilder->drawSoftWorld();
+	//}
 
 }
 

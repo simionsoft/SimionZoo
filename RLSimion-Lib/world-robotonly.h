@@ -8,7 +8,7 @@
 class Robot;
 class BulletBody;
 class SimpleOpenGL3App;
-class BulletBuilder;
+class BulletViewer;
 
 //Move box with 2 robots
 class COnlyRobot : public CDynamicModel
@@ -28,7 +28,7 @@ class COnlyRobot : public CDynamicModel
 
 	///inicialización
 	SimpleOpenGL3App* app;
-	BulletBuilder* robotOnlyGraphs;
+	BulletViewer* robotOnlyGraphs;
 
 	BulletBody* robot_bb;
 	BulletBody* ground_bb;

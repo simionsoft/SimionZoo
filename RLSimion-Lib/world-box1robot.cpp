@@ -75,7 +75,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	guiHelper = new OpenGLGuiHelper(window, false);
 	opt = new CommonExampleOptions(guiHelper);
 
-	rBoxBuilder = new BulletBuilder(opt->m_guiHelper);
+	rBoxBuilder = new BulletViewer(opt->m_guiHelper);
 	rBoxBuilder->initBullet();
 	rBoxBuilder->setOpenGLApp(window);
 

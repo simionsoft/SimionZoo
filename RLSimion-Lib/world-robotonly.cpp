@@ -53,7 +53,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	gui= new OpenGLGuiHelper(app, false);
 	options= new CommonExampleOptions(gui);
 
-	robotOnlyGraphs = new BulletBuilder(options->m_guiHelper);
+	robotOnlyGraphs = new BulletViewer(options->m_guiHelper);
 	robotOnlyGraphs->initBullet();
 	robotOnlyGraphs->setOpenGLApp(app);
 	

@@ -5,7 +5,7 @@
 #define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 class SimpleOpenGL3App;
-class BulletBuilder;
+class BulletViewer;
 class BulletBody;
 
 //Move box with 1 robot
@@ -31,7 +31,7 @@ class CMoveBoxOneRobot : public CDynamicModel
 
 	///Graphic initialization
 	SimpleOpenGL3App* window;
-	BulletBuilder* rBoxBuilder;
+	BulletViewer* rBoxBuilder;
 
 	///Bullet bodies init
 	BulletBody *m_Ground= 0;
