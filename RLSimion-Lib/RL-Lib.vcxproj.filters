@@ -206,9 +206,6 @@
     <ClCompile Include="mem-pool.cpp">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="mem-manager.cpp">
-      <Filter>memory</Filter>
-    </ClCompile>
     <ClCompile Include="deferred-load.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
