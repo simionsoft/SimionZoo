@@ -28,6 +28,7 @@ class CSimGod
 	double m_stateConfidenceThreshold = 10.0;
 	IMemBuffer* m_pVisits= nullptr;
 	CFeatureList *m_pStateFeatures;
+	bool m_bReplayingExperience= false;
 
 	MULTI_VALUE_FACTORY<CSimion> m_simions;
 	
@@ -50,7 +51,8 @@ public:
 	CSimGod() = default;
 	virtual ~CSimGod();
 
-	bool isStateKnown(const CState *s) const;
+	bool bIsStateKnown(const CState *s) const;
+	bool bReplayingExperience() const { return m_bReplayingExperience; }
 
 	double selectAction(CState* s,CAction* a);
 	void update(CState* s, CAction* a, CState* s_p, double r, double probability);

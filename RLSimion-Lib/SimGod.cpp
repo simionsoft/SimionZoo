@@ -69,6 +69,8 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
+	m_bReplayingExperience = false;
+
 	//update the number of state visits
 	if (m_bCountVisits.get())
 	{
@@ -88,6 +90,7 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 	//Experience Replay
 	if (m_pExperienceReplay->bUsing())
 	{
+		m_bReplayingExperience = true;
 		m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
 
 		int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
@@ -103,7 +106,7 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 	}
 }
 
-bool CSimGod::isStateKnown(const CState* s) const
+bool CSimGod::bIsStateKnown(const CState* s) const
 {
 	if (!m_bCountVisits.get()) return true;
 

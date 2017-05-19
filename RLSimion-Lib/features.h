@@ -39,7 +39,7 @@ public:
 	double getFactor(unsigned int index) const;
 	double innerProduct(const CFeatureList *inList);
 	void copyMult(double factor,const CFeatureList *inList);
-	virtual void addFeatureList(const CFeatureList *inList,double factor= 1.0);
+	void addFeatureList(const CFeatureList *inList,double factor= 1.0);
 	void add(unsigned int index, double value);
 
 	//spawn: all features (indices and values) are spawned by those in inList

@@ -29,6 +29,7 @@ public:
 	//as all the big buffers are, so far, double*, we skip this assume m_elementSize= 1
 	int getElementSize() { return m_elementSize; }
 	int getOffset() { return m_offset; }
+	int getBlockSizeInBytes();
 	CSimionMemPool* getPool() { return m_pPool; }
 
 	double& operator[](size_t index);

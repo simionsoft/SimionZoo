@@ -145,6 +145,7 @@ CDoubleQLearning::CDoubleQLearning(CConfigNode* pConfigNode) : CQLearning(pConfi
 {
 	//no need to parameterize it, just clone the original q-function
 	m_pTargetQFunction= new CLinearStateActionVFA(m_pQFunction.ptr());
+	m_pDeferredUpdates = new CFeatureList("DQL-deferred-updates", OverwriteMode::AllowDuplicates);
 
 	//CONST_INTEGER_VALUE(m_targetUpdateFreq, "Target-Update-Freq", 100, "The number of steps between updates of the target Q-Function");
 	m_targetUpdateFreq = INT_PARAM(pConfigNode, "Target-Update-Freq", "The number of steps between updates of the target Q-Function", 100);
@@ -163,10 +164,17 @@ void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s
 	m_eTraces->update();
 
 	//update the target
-	if (m_numStepsSinceLastTargetUpdate > m_targetUpdateFreq.get())
+	if (!CSimionApp::get()->pSimGod->bReplayingExperience()
+		&& m_numStepsSinceLastTargetUpdate > m_targetUpdateFreq.get())
 	{
 		//copy the weights from the online function to the target function
-		CSimionApp::get()->pMemManager->copy(m_pTargetQFunction->getWeights(), m_pQFunction->getWeights());
+		//CSimionApp::get()->pMemManager->copy(m_pQFunction->getWeights(), m_pTargetQFunction->getWeights());
+		for (int i = 0; i < m_pDeferredUpdates->m_numFeatures; ++i)
+		{
+			(*m_pTargetQFunction->getWeights())[m_pDeferredUpdates->m_pFeatures[i].m_index] +=
+				m_pDeferredUpdates->m_pFeatures[i].m_factor;
+		}
+		m_pDeferredUpdates->clear();
 
 		m_numStepsSinceLastTargetUpdate = 0;
 	}
@@ -179,6 +187,7 @@ void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s
 	double td = r + gamma*m_pQFunction->max(s_p) - m_pTargetQFunction->get(s, a);
 
 	m_pQFunction->add(m_eTraces.ptr(), td);
+	m_pDeferredUpdates->addFeatureList(m_eTraces.ptr(), td);
 }
 
 /////////////////////////////////////////////////

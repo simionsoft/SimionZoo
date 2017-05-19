@@ -38,3 +38,8 @@ double& CSimionMemBuffer::operator[](size_t index)
 {
 	return m_pPool->get((int)index,m_offset);
 }
+
+int CSimionMemBuffer::getBlockSizeInBytes()
+{
+	return m_pPool->getBlockSize()*sizeof(double);
+}

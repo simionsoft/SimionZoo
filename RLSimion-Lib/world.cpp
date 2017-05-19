@@ -122,7 +122,7 @@ void CDynamicModel::addConstant(const char* name, double value)
 
 int CDynamicModel::getNumConstants()
 {
-	return m_pConstants.size();
+	return (int)m_pConstants.size();
 }
 
 double CDynamicModel::getConstant(int i)

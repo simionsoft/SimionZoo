@@ -175,6 +175,9 @@ void CSimionMemPool::init(int blockSize)
 	int totalNumElements= m_numElements * (int)m_memBufferHandlers.size();
 	m_memBlockSize = std::min(blockSize,totalNumElements);
 
+	//make the block size a multiple of the number of interleaved arrays
+	m_memBlockSize -= m_memBlockSize % m_elementSize;
+
 	int numBlocks= totalNumElements / m_memBlockSize;
 	if (totalNumElements % m_memBlockSize > 0)
 		++numBlocks;
@@ -194,20 +197,29 @@ void CSimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 {
 	CSimionMemBuffer* pSrcBuffer = dynamic_cast<CSimionMemBuffer*>(pSrc);
 	CSimionMemBuffer* pDstBuffer = dynamic_cast<CSimionMemBuffer*>(pDst);
-
+	int numBlocksCopied = 0;
 	if (pSrcBuffer && pDstBuffer)
 	{
 		//copy only those blocks that have been allocated and initialized
-		for (int i = 0; i < pSrcBuffer->getNumElements(); ++i)
+		int minRelIndexInBlock, maxRelIndexInBlock;
+		int blockAbsOffset = 0;
+		minRelIndexInBlock = blockAbsOffset / m_elementSize;
+		if (pSrcBuffer->getOffset()<(blockAbsOffset%m_elementSize))
+			++minRelIndexInBlock;
+		for (int block = 0; block < m_memBlocks.size(); ++block)
 		{
-			int absIndex = i*m_elementSize + pSrcBuffer->getOffset();
-			int blockId= absIndex/m_memBlockSize;
-
-			if (m_memBlocks[blockId]->bAllocated() && m_memBlocks[blockId]->bInitialized())
+			if (m_memBlocks[block]->bAllocated() && m_memBlocks[block]->bInitialized())
 			{
+				maxRelIndexInBlock = (blockAbsOffset+m_memBlockSize)/m_elementSize;
+				if (pSrcBuffer->getOffset()<((blockAbsOffset+m_memBlockSize)%m_elementSize))
+						++maxRelIndexInBlock;
 
-				(*pDstBuffer)[i] = (*pSrcBuffer)[i];
+				for (int i= minRelIndexInBlock; i<maxRelIndexInBlock; ++i)
+					(*pDstBuffer)[i] = (*pSrcBuffer)[i];
+				++numBlocksCopied;
 			}
+			blockAbsOffset += m_memBlockSize;
+			minRelIndexInBlock = maxRelIndexInBlock;
 		}
 	}
 }

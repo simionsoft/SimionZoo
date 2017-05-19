@@ -80,6 +80,8 @@ public:
 class CDoubleQLearning : public CQLearning
 {
 	CLinearStateActionVFA* m_pTargetQFunction;
+	CFeatureList* m_pDeferredUpdates;
+
 	INT_PARAM m_targetUpdateFreq;
 	int m_numStepsSinceLastTargetUpdate;
 public:

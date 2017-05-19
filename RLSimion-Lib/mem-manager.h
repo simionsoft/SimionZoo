@@ -67,7 +67,7 @@ public:
 		return pMemPool->getHandler(elementCount);
 	}
 
-	void init(int blockSize = 1024 * 1024)
+	void init(int blockSize = 64 * 1024)
 	{
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 			(*it)->init(blockSize);
@@ -83,6 +83,10 @@ public:
 		return total;
 	}
 
+	//This method copies initialized memory blocks from buffer to buffer
+	//Don't use in performance-critical operations done frequently such as copying weights
+	//from a function to the frozen copy. Rather, store in a separate feature list
+	//weight updates and then apply those updates to the frozen copy.
 	virtual void copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 	{
 		IMemPool* pSrcPool= pSrc->getMemPool();
@@ -95,8 +99,7 @@ public:
 
 	void deferredLoadStep()
 	{
-		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
-			(*it)->init();
+		init();
 	}
 };
 
