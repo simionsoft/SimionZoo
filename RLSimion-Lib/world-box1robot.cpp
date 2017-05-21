@@ -2,24 +2,17 @@
 #include "world-box1robot.h"
 #include "app.h"
 #include "noise.h"
-#include  "GraphicSettings.h"
+#include "BulletPhysics.h"
+#include "BulletDisplay.h"
 #include "BulletBody.h"
+#include "Box.h"
+#include "Robot.h"
 #pragma comment(lib,"opengl32.lib")
 
 double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2)
 {
 	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 	return distance;
-}
-
-double static getDistanceOneDimension(double x1, double x2)
-{
-	double dist = x2 - x1;
-	if (dist < 0)
-	{
-		dist = dist * (-1);
-	}
-	return dist;
 }
 
 double static getRand(double range)
@@ -41,9 +34,6 @@ double static getRand(double range)
 #define boxOrigin_y 0.0
 
 #define theta_o 0.0
-
-OpenGLGuiHelper *guiHelper;
-CommonExampleOptions *opt;
 
 CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 {
@@ -69,62 +59,61 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	window = new SimpleOpenGL3App("Graphic Bullet One Robot Interface", 600, 400, true);
+	rBoxPhysics = new BulletPhysics();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics = new BulletGraphic();
 
-	///Graphic init
-	guiHelper = new OpenGLGuiHelper(window, false);
-	opt = new CommonExampleOptions(guiHelper);
-
-	rBoxBuilder = new BulletViewer(opt->m_guiHelper);
-	rBoxBuilder->initBullet();
-	rBoxBuilder->setOpenGLApp(window);
+	rBoxPhysics->initPhysics();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics->setDebugger(rBoxPhysics->getDynamicsWorld());
 
 	///Creating static object, ground
 	{
 		m_Ground = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), new btBoxShape(btVector3(btScalar(20.), btScalar(1.), btScalar(20.))), false);
-		rBoxBuilder->getCollisionShape().push_back(m_Ground->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Ground->getBody());
+		rBoxPhysics->getCollisionShape().push_back(m_Ground->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Ground->getBody());
 	}
 	///Creating static object, walls
 	{
 		m_pWall1 = new BulletBody(MASS_GROUND, btVector3(12.0, 1.0, 0.0), new btBoxShape(btVector3(1.0, 2.0, 13.)), false);
-		rBoxBuilder->getCollisionShape().push_back(m_pWall1->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_pWall1->getBody());
+		rBoxPhysics->getCollisionShape().push_back(m_pWall1->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall1->getBody());
 		m_pWall2 = new BulletBody(MASS_GROUND, btVector3(-12.0, 1.0, 0.0), new btBoxShape(btVector3(1.0, 2.0, 13.)), false);
-		rBoxBuilder->getCollisionShape().push_back(m_pWall2->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_pWall2->getBody());
+		rBoxPhysics->getCollisionShape().push_back(m_pWall2->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall2->getBody());
 		m_pWall3 = new BulletBody(MASS_GROUND, btVector3(1.0, 1.0, 12.0), new btBoxShape(btVector3(12.0, 2.0, 1.0)), false);
-		rBoxBuilder->getCollisionShape().push_back(m_pWall3->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_pWall3->getBody());
+		rBoxPhysics->getCollisionShape().push_back(m_pWall3->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall3->getBody());
 		m_pWall4 = new BulletBody(MASS_GROUND, btVector3(1.0, 1.0, -12.0), new btBoxShape(btVector3(12.0, 2.0, 1.0)), false);
-		rBoxBuilder->getCollisionShape().push_back(m_pWall4->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_pWall4->getBody());
+		rBoxPhysics->getCollisionShape().push_back(m_pWall4->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall4->getBody());
 	}
 
 	/// Creating target point, static
 	{
 		m_Target = new BulletBody(MASS_TARGET, btVector3(TargetX, 0.001, TargetY), new btConeShape(0.5, 0.001), false);
 		m_Target->getBody()->setCollisionFlags(m_Target->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-		rBoxBuilder->getCollisionShape().push_back(m_Target->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Target->getBody());
+		rBoxPhysics->getCollisionShape().push_back(m_Target->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Target->getBody());
 	}
 
 	///Creating dynamic box
 	{
-		m_Box = new BulletBody(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(0.6, 0.6, 0.6)), true);
-		rBoxBuilder->getCollisionShape().push_back(m_Box->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Box->getBody());
+		m_Box = new Box(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(0.6, 0.6, 0.6)), true);
+		rBoxPhysics->getCollisionShape().push_back(m_Box->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Box->getBody());
 	}
 
 	///creating a dynamic robot  
 	{
-		m_Robot = new BulletBody(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5), true);
-		rBoxBuilder->getCollisionShape().push_back(m_Robot->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
+		m_Robot = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5), true);
+		rBoxPhysics->getCollisionShape().push_back(m_Robot->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
 	}
 
 	///Graphic init
-	rBoxBuilder->generateGraphics(rBoxBuilder->getGuiHelper());
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics->generateGraphics(rBoxPhysics->getDynamicsWorld());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CMoveBoxOneRobotReward());
@@ -170,15 +159,15 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	theta = m_Robot->updateRobotMovement(a, s, "omega", "v", m_theta, dt);
 	
 	//Execute simulation
-	rBoxBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
+	rBoxPhysics->getDynamicsWorld()->stepSimulation(dt, 20);
 
 	//Update
 
 	btTransform box_trans = m_Box->setAbsoluteVariables(s, m_box_X, m_box_Y);
 	m_Robot->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
 		
-	m_Robot->setRelativeVariables(s, m_D_BrX, m_D_BrY, false, NULL, NULL, box_trans.getOrigin().getX(),box_trans.getOrigin().getZ());
-	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY, true, TargetX, TargetY);
+	m_Robot->setRelativeVariables(s, m_D_BrX, m_D_BrY, box_trans.getOrigin().getX(),box_trans.getOrigin().getZ());
+	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY,TargetX, TargetY);
 
 	s->set(m_theta, theta);
 	btTransform boxTransform;
@@ -193,16 +182,17 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	btVector3 printPosition = btVector3(TargetX, 5, TargetY);
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
-		rBoxBuilder->draw();
+		rBoxGraphics->drawText3D("Evaluation episode", printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+			rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
 	}
 	else
 	{
-		rBoxBuilder->drawText3D("Training episode", printPosition);
+		rBoxGraphics->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely())
 	{
-		//rBoxBuilder->draw();
+		//rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
 	}
 }
 
@@ -247,8 +237,6 @@ double CMoveBoxOneRobotReward::getMax()
 
 CMoveBoxOneRobot::~CMoveBoxOneRobot()
 {
-	delete opt;
-	delete guiHelper;
 	delete m_Ground;
 	delete m_Robot;
 	delete m_Box;

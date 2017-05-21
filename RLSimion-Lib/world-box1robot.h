@@ -5,8 +5,11 @@
 #define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 class SimpleOpenGL3App;
-class BulletViewer;
+class BulletPhysics;
+class BulletGraphic;
 class BulletBody;
+class Box;
+class Robot;
 
 //Move box with 1 robot
 class CMoveBoxOneRobot : public CDynamicModel
@@ -30,13 +33,13 @@ class CMoveBoxOneRobot : public CDynamicModel
 	int m_omega;
 
 	///Graphic initialization
-	SimpleOpenGL3App* window;
-	BulletViewer* rBoxBuilder;
+	BulletPhysics* rBoxPhysics;
+	BulletGraphic* rBoxGraphics;
 
 	///Bullet bodies init
 	BulletBody *m_Ground= 0;
-	BulletBody *m_Robot= 0;
-	BulletBody *m_Box= 0;
+	Robot *m_Robot= 0;
+	Box *m_Box= 0;
 	BulletBody *m_Target= 0;
 	BulletBody *m_pWall1= 0, *m_pWall2= 0, *m_pWall3= 0, *m_pWall4= 0;
 

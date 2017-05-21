@@ -20,11 +20,12 @@ class BulletGraphic
 
 public:
 	SimpleOpenGL3App* m_pOpenGLApp;
-	GUIHelperInterface* m_pHelper;
-	BulletGraphic(struct GUIHelperInterface* help, SimpleOpenGL3App* app)
+	OpenGLGuiHelper* m_pHelper;
+	// Another option might be to pass the dimensions and text to the constructor
+	BulletGraphic()
 	{
-		m_pHelper = help;
-		m_pOpenGLApp = app;
+		m_pOpenGLApp = new SimpleOpenGL3App("Bullet Graphic Interface", 1024, 768, true);
+		m_pHelper = new OpenGLGuiHelper(m_pOpenGLApp, false);
 	}
 	~BulletGraphic();
 
@@ -42,8 +43,6 @@ public:
 	void drawDynamicWorld(btDiscreteDynamicsWorld* m_dynamicsWorld);
 	void drawSoftWorld(btSoftRigidDynamicsWorld* m_softWorld);
 	void drawText3D(char text[], btVector3 &position);
-
-	
 
 	GUIHelperInterface* BulletGraphic::getGuiHelper();
 };

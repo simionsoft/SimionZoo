@@ -10,9 +10,9 @@ void BulletPhysics::initPhysics()
 }
 
 // Inicialization of soft physics
-void BulletPhysics::initSoftPhysics(btSoftBodyWorldInfo* m_sBodyWorldInfo)
+void BulletPhysics::initSoftPhysics()
 {
-	createEmptySoftWorld(m_sBodyWorldInfo);
+	createEmptySoftWorld();
 }
 
 // Step the simulation 
@@ -37,10 +37,10 @@ BulletPhysics::~BulletPhysics()
 //ONLY CAN BE USED WITH SOFTDYNAMICSWORLD//
 //////////////////////////////////////////
 
-void BulletPhysics::connectWithRope(btRigidBody* body1, btRigidBody* body2, btSoftBodyWorldInfo* btInfo)
+void BulletPhysics::connectWithRope(btRigidBody* body1, btRigidBody* body2)
 {
 	//btSoftBodyWorldInfo btInf = btInfo;
-	btSoftBody*	softBodyRope0 = btSoftBodyHelpers::CreateRope(*btInfo, body1->getWorldTransform().getOrigin(), body2->getWorldTransform().getOrigin(), 4, 0);
+	btSoftBody*	softBodyRope0 = btSoftBodyHelpers::CreateRope(*getSoftBodyWorldInfo(), body1->getWorldTransform().getOrigin(), body2->getWorldTransform().getOrigin(), 4, 0);
 	softBodyRope0->setTotalMass(0.1f);
 
 	softBodyRope0->appendAnchor(0, body1);

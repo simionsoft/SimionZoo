@@ -39,7 +39,7 @@ class CRope2Robots : public CDynamicModel
 	int m_omega_r2;
 
 	///Graphic initialization
-	SimpleOpenGL3App* app_window;
+	
 	BulletPhysics* robRopeBuilder;
 	BulletGraphic* robRopeViewer;
 

@@ -9,22 +9,21 @@
 
 class BulletPhysics : public BulletCreationInterface
 {
-
-
+	
 public:
 
 	BulletPhysics()
 		:BulletCreationInterface()
-	{
+	{	
 	}
 	~BulletPhysics();
 
 	virtual void initPhysics();
-	virtual void initSoftPhysics(btSoftBodyWorldInfo* m_sBodyWorldInfo);
+	virtual void initSoftPhysics();
 
 	void simulate(double dt);
 
-	void connectWithRope(btRigidBody* body1, btRigidBody* body2, btSoftBodyWorldInfo* btInfo);
+	void connectWithRope(btRigidBody* body1, btRigidBody* body2);
 
-	btAlignedObjectArray<btCollisionShape*> BulletPhysics::getCollisionShape();
+	btAlignedObjectArray<btCollisionShape*> getCollisionShape();
 };

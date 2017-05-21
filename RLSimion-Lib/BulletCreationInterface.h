@@ -14,13 +14,15 @@ struct BulletCreationInterface
 	btConstraintSolver*	m_solver;
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
+	btSoftBodyWorldInfo m_sBodyWorldInfo;
+	btSoftBodyWorldInfo* s_pBodyInfo = &m_sBodyWorldInfo;
 
 	BulletCreationInterface()
 		:m_broadphase(0),
 		m_dispatcher(0),
 		m_solver(0),
 		m_collisionConfiguration(0),
-		m_dynamicsWorld(0)
+		m_dynamicsWorld(0), s_pBodyInfo{ &m_sBodyWorldInfo }
 	{
 	}
 	virtual ~BulletCreationInterface()
@@ -39,7 +41,7 @@ struct BulletCreationInterface
 	}
 
 
-	virtual void createEmptySoftWorld(btSoftBodyWorldInfo* m_sBodyWorldInfo) {
+	virtual void createEmptySoftWorld() {
 		m_collisionConfiguration = new btSoftBodyRigidBodyCollisionConfiguration();
 		m_dispatcher = new	btCollisionDispatcher(m_collisionConfiguration);
 		m_broadphase = new btDbvtBroadphase();
@@ -49,10 +51,10 @@ struct BulletCreationInterface
 		m_dynamicsWorld = new btSoftRigidDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
 		m_dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
 
-		m_sBodyWorldInfo->m_broadphase = m_broadphase;
-		m_sBodyWorldInfo->m_dispatcher = m_dispatcher;
-		m_sBodyWorldInfo->m_gravity = m_dynamicsWorld->getGravity();
-		m_sBodyWorldInfo->m_sparsesdf.Initialize();
+		getSoftBodyWorldInfo()->m_broadphase = m_broadphase;
+		getSoftBodyWorldInfo()->m_dispatcher = m_dispatcher;
+		getSoftBodyWorldInfo()->m_gravity = m_dynamicsWorld->getGravity();
+		getSoftBodyWorldInfo()->m_sparsesdf.Initialize();
 	}
 
 	/// inicialización, todo por defecto
@@ -129,6 +131,12 @@ struct BulletCreationInterface
 
 		delete m_collisionConfiguration;
 		m_collisionConfiguration = 0;
+	}
+
+
+	virtual btSoftBodyWorldInfo* getSoftBodyWorldInfo()
+	{
+		return s_pBodyInfo;
 	}
 };
 

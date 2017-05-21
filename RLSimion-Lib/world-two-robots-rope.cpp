@@ -38,9 +38,7 @@ double static getRand(double range)
 #define theta_o1 0.0
 #define theta_o2 0.0
 
-OpenGLGuiHelper *helper_gui;
-btSoftBodyWorldInfo m_sBodyWorldInfo;
-btSoftBodyWorldInfo* s_pBodyInfo = &m_sBodyWorldInfo;
+
 
 CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 {
@@ -75,16 +73,14 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	app_window = new SimpleOpenGL3App("Graphic Bullet Two Robots Rope Interface", 1024, 768, true);
-
 	///Graphic init
-	helper_gui = new OpenGLGuiHelper(app_window, false);
-
 	robRopeBuilder = new BulletPhysics();
-	robRopeViewer = new BulletGraphic(helper_gui, app_window);
+	if (!CSimionApp::get()->isExecutedRemotely())
+		robRopeViewer = new BulletGraphic();
 
-	robRopeBuilder->initSoftPhysics(s_pBodyInfo);
-	robRopeViewer->setSoftDebugger(robRopeBuilder->getSoftDynamicsWorld());
+	robRopeBuilder->initSoftPhysics();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		robRopeViewer->setSoftDebugger(robRopeBuilder->getSoftDynamicsWorld());
 
 	///Creating static object, ground
 	{
@@ -124,15 +120,16 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 
 	/// creating an union with rope between robot and box
 	{
-		robRopeBuilder->connectWithRope(m_Robot1->getBody(), m_Box->getBody(), s_pBodyInfo);
-		robRopeBuilder->connectWithRope(m_Robot2->getBody(), m_Box->getBody(), s_pBodyInfo);
+		robRopeBuilder->connectWithRope(m_Robot1->getBody(), m_Box->getBody());
+		robRopeBuilder->connectWithRope(m_Robot2->getBody(), m_Box->getBody());
 	}
 
 	double hi = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r1origin_x, r1origin_y);
 	double hi2 = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r2origin_x, r2origin_y);
 
 	///Graphic init
-	robRopeViewer->generateGraphics(robRopeBuilder->getDynamicsWorld());
+	if (!CSimionApp::get()->isExecutedRemotely())
+		robRopeViewer->generateGraphics(robRopeBuilder->getDynamicsWorld());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CRope2RobotsReward());
@@ -214,14 +211,15 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		robRopeViewer->drawText3D("Evaluation episode", printPosition);
-		//robRopeBuilder->drawSoftWorld();
+		if (!CSimionApp::get()->isExecutedRemotely())
+			robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
 	}
 	else
 	{
 		robRopeViewer->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
+		//robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
 	}
 
 }
