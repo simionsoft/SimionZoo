@@ -22,6 +22,9 @@ int main(int argc, char* argv[])
 			//if connection with parent process went ok, we set the logger's output mode accordingly
 			if (CLogger::m_outputPipe.isConnected())
 				CLogger::m_messageOutputMode = MessageOutputMode::NamedPipe;
+
+			//remote execution?? Most likely yes if an output pipename has been given
+			CSimionApp::bRemoteExecution= true;
 		}
 
 		if (argc <= 1)
@@ -36,8 +39,6 @@ int main(int argc, char* argv[])
 		if (pApp)
 		{
 			pApp->setOutputDirectory(argv[1]);
-			//remote execution?? Most likely yes if an output pipename has been given
-			if (pPipename) pApp->setExecutedRemotely(true);
 
 			if (CSimionApp::flagPassed(argc,argv,"printIOfiles"))
 				pApp->printInputOutputFiles();
