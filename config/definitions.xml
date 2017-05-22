@@ -434,10 +434,10 @@
     <STATE-VAR Name="boxTheta" Min="-3.15" Max="3.15" Unit="rad"/>
     <STATE-VAR Name="dBtX" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="dBtY" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBr1X" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBr1Y" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBr2X" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="dBr2Y" Min="-20" Max="20" Unit="m"/>
+    <STATE-VAR Name="dBr1X" Min="-6" Max="6" Unit="m"/>
+    <STATE-VAR Name="dBr1Y" Min="-6" Max="6" Unit="m"/>
+    <STATE-VAR Name="dBr2X" Min="-6" Max="6" Unit="m"/>
+    <STATE-VAR Name="dBr2Y" Min="-6" Max="6" Unit="m"/>
     <ACTION-VAR Name="v1" Min="-2" Max="2" Unit="m/s"/>
     <ACTION-VAR Name="omega1" Min="-8" Max="8" Unit="rad/s"/>
     <ACTION-VAR Name="v2" Min="-2" Max="2" Unit="m/s"/>
