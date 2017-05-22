@@ -9,6 +9,7 @@
 
 
 CSimionApp* CSimionApp::m_pAppInstance = 0;
+bool CSimionApp::bRemoteExecution= false;
 
 CSimionApp::CSimionApp()
 {
@@ -70,4 +71,14 @@ void CSimionApp::printInputOutputFiles()
 CSimionApp* CSimionApp::get()
 {
 	return m_pAppInstance;
+}
+
+bool CSimionApp::isExecutedRemotely()
+{
+	return bRemoteExecution;
+}
+
+void CSimionApp::setExecutedRemotely(bool bRemote)
+{
+	bRemoteExecution = bRemote;
 }
