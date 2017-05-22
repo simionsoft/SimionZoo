@@ -160,6 +160,8 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	
 	//Execute simulation
 	rBoxPhysics->getDynamicsWorld()->stepSimulation(dt, 20);
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics->updateCamera();
 
 	//Update
 
@@ -182,13 +184,16 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	btVector3 printPosition = btVector3(TargetX, 5, TargetY);
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		rBoxGraphics->drawText3D("Evaluation episode", printPosition);
 		if (!CSimionApp::get()->isExecutedRemotely())
+		{
+			rBoxGraphics->drawText3D("Evaluation episode", printPosition);
 			rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
+		}
 	}
 	else
 	{
-		rBoxGraphics->drawText3D("Training episode", printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+			rBoxGraphics->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely())
 	{

@@ -113,7 +113,8 @@ CMoveBox2Robots::CMoveBox2Robots(CConfigNode* pConfigNode)
 
 
 	///Graphic init
-	rob2Graphic->generateGraphics(rob2Physics->getDynamicsWorld());
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rob2Graphic->generateGraphics(rob2Physics->getDynamicsWorld());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CMoveBox2RobotsReward());
@@ -151,6 +152,8 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 
 	//Execute simulation
 	rob2Physics->getDynamicsWorld()->stepSimulation(dt, 20);
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rob2Graphic->updateCamera();
 
 	//Update
 
@@ -169,13 +172,16 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 	btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		rob2Graphic->drawText3D("Evaluation episode", printPosition);
 		if (!CSimionApp::get()->isExecutedRemotely())
+		{
+			rob2Graphic->drawText3D("Evaluation episode", printPosition);
 			rob2Graphic->drawDynamicWorld(rob2Physics->getDynamicsWorld());
+		}
 	}
 	else
 	{
-		rob2Graphic->drawText3D("Training episode", printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+			rob2Graphic->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
 		//rob2Graphic->drawDynamicWorld(rob2Physics->getDynamicsWorld());

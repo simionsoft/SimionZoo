@@ -139,6 +139,8 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 
 	//Update Robot1
 	rOnlyPhysics->getDynamicsWorld()->stepSimulation(dt,20);
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rOnlyGraphic->updateCamera();
 
 	robot_bb->getBody()->getMotionState()->getWorldTransform(r1_trans);
 	s->set(m_rob1_X, double(r1_trans.getOrigin().getX()));
@@ -147,15 +149,19 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	btVector3 printPosition = btVector3(r1_trans.getOrigin().getX(), r1_trans.getOrigin().getY() + 5, r1_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		rOnlyGraphic->drawText3D("Evaluation episode",printPosition);
-		//rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
+		if (!CSimionApp::get()->isExecutedRemotely())
+		{
+			rOnlyGraphic->drawText3D("Evaluation episode", printPosition);
+			rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
+		}
 	}
 	else
 	{
-		rOnlyGraphic->drawText3D("Training episode", printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+			rOnlyGraphic->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
+		//rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
 	}
 }
 

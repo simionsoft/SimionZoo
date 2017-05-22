@@ -58,10 +58,10 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	m_D_BtX = addStateVariable("dBtX", "m", -20.0, 20.0);
 	m_D_BtY = addStateVariable("dBtY", "m", -20.0, 20.0);
 
-	m_D_Br1X = addStateVariable("dBr1X", "m", -20.0, 20.0);
-	m_D_Br1Y = addStateVariable("dBr1Y", "m", -20.0, 20.0);
-	m_D_Br2X = addStateVariable("dBr2X", "m", -20.0, 20.0);
-	m_D_Br2Y = addStateVariable("dBr2Y", "m", -20.0, 20.0);
+	m_D_Br1X = addStateVariable("dBr1X", "m", -6.0, 6.0);
+	m_D_Br1Y = addStateVariable("dBr1Y", "m", -6.0, 6.0);
+	m_D_Br2X = addStateVariable("dBr2X", "m", -6.0, 6.0);
+	m_D_Br2Y = addStateVariable("dBr2Y", "m", -6.0, 6.0);
 
 	m_linear_vel_r1 = addActionVariable("v1", "m/s", -2.0, 2.0);
 	m_omega_r1 = addActionVariable("omega1", "rad/s", -8.0, 8.0);
@@ -124,9 +124,6 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 		robRopeBuilder->connectWithRope(m_Robot2->getBody(), m_Box->getBody());
 	}
 
-	double hi = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r1origin_x, r1origin_y);
-	double hi2 = getDistanceBetweenPoints(boxOrigin_x, boxOrigin_y, r2origin_x, r2origin_y);
-
 	///Graphic init
 	if (!CSimionApp::get()->isExecutedRemotely())
 		robRopeViewer->generateGraphics(robRopeBuilder->getDynamicsWorld());
@@ -186,7 +183,8 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 
 	//Execute simulation
 	robRopeBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
-	robRopeViewer->updateCamera();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		robRopeViewer->updateCamera();
 
 	//Update
 
@@ -210,13 +208,17 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	btVector3 printPosition = btVector3(box_trans.getOrigin().getX(), box_trans.getOrigin().getY() + 5, box_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		robRopeViewer->drawText3D("Evaluation episode", printPosition);
 		if (!CSimionApp::get()->isExecutedRemotely())
+		{
+			robRopeViewer->drawText3D("Evaluation episode", printPosition);
 			robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
+		}
+		
 	}
 	else
 	{
-		robRopeViewer->drawText3D("Training episode", printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+			robRopeViewer->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
 		//robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
