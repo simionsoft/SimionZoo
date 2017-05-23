@@ -75,10 +75,9 @@ CSimionApp* CSimionApp::get()
 
 bool CSimionApp::isExecutedRemotely()
 {
-	return bRemoteExecution;
-}
-
-void CSimionApp::setExecutedRemotely(bool bRemote)
-{
-	bRemoteExecution = bRemote;
+#ifdef _DEBUG
+	return false;
+#else
+	return true;
+#endif
 }
