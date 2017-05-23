@@ -9,7 +9,6 @@
 
 
 CSimionApp* CSimionApp::m_pAppInstance = 0;
-bool CSimionApp::bRemoteExecution= false;
 
 CSimionApp::CSimionApp()
 {
