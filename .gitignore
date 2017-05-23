@@ -23,19 +23,16 @@ experiments/*
 **/[Bb]in/*
 !bin/msvcp120.dll
 !bin/msvcr120.dll
-#!Debug/msvcp120d.dll  <- not needed anymore because we sent release versions to remote machines
-#!Debug/msvcr120d.dll
 !bin/msvcp140.dll
 !bin/vcruntime140.dll
+x64/
+x86/
+**/Win32/
 !bin/x64/msvcp140.dll
 !bin/x64/vcruntime140.dll
-#!Debug/msvcp140d.dll
-#!Debug/vcruntime140d.dll
 !bin/FAST_Win32.exe
 !bin/TurbSim.exe
 !bin/MAP_Win32.dll
-x64/
-x86/
 build/
 bld/
 **/experiment-log.xml
