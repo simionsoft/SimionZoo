@@ -2,28 +2,17 @@
   <Episode-Type Id="0">Evaluation</Episode-Type>
   <State-variable>rx1</State-variable>
   <State-variable>ry1</State-variable>
-  <State-variable>rx2</State-variable>
-  <State-variable>ry2</State-variable>
   <State-variable>bx</State-variable>
   <State-variable>by</State-variable>
-  <State-variable>theta1</State-variable>
-  <State-variable>theta2</State-variable>
-  <State-variable>boxTheta</State-variable>
+  <State-variable>dBrX</State-variable>
+  <State-variable>dBrY</State-variable>
   <State-variable>dBtX</State-variable>
   <State-variable>dBtY</State-variable>
-  <State-variable>dBr1X</State-variable>
-  <State-variable>dBr1Y</State-variable>
-  <State-variable>dBr2X</State-variable>
-  <State-variable>dBr2Y</State-variable>
-  <Action-variable>v1</Action-variable>
-  <Action-variable>omega1</Action-variable>
-  <Action-variable>v2</Action-variable>
-  <Action-variable>omega2</Action-variable>
+  <State-variable>theta</State-variable>
+  <State-variable>boxTheta</State-variable>
+  <Action-variable>v</Action-variable>
+  <Action-variable>omega</Action-variable>
   <Reward-variable>reward</Reward-variable>
-  <Stat-variable>TD-error/TD-error</Stat-variable>
-  <Stat-variable>Features/Actor/E-Traces</Stat-variable>
-  <Stat-variable>Features/Actor/E-Traces</Stat-variable>
-  <Stat-variable>Features/Critic/E-Traces</Stat-variable>
   <Stat-variable>TD-error/TD-error</Stat-variable>
   <Stat-variable>Features/Actor/E-Traces</Stat-variable>
   <Stat-variable>Features/Actor/E-Traces</Stat-variable>

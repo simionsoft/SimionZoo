@@ -78,17 +78,17 @@ double& CSimionMemPool::get(int elementIndex, int bufferOffset)
 {
 	++m_accessCounter;
 
-	int elementStartByte = elementIndex*m_elementSize + bufferOffset;
-	int blockId = elementStartByte / m_memBlockSize;
-	int relBlockAddr = elementStartByte % m_memBlockSize;
+	unsigned int elementStartByte = elementIndex*m_elementSize + bufferOffset;
+	unsigned int blockId = elementStartByte / m_memBlockSize;
+	unsigned int relBlockAddr = elementStartByte % m_memBlockSize;
 	double* pMemBuffer= 0;
 	CMemBlock* pBlock = m_memBlocks[blockId];
 
 	if (!pBlock->bAllocated())
 	{
 		//can we allocate more memory?
-		int allocatedMem = getTotalAllocatedMem();
-		int requestedMem = m_memBlockSize * sizeof(double);
+		unsigned int allocatedMem = getTotalAllocatedMem();
+		unsigned int requestedMem = m_memBlockSize * sizeof(double);
 
 		if (m_memLimit==0 || allocatedMem+requestedMem<=m_memLimit)
 		{
@@ -139,9 +139,9 @@ double* CSimionMemPool::recycleMem()
 void CSimionMemPool::initialize(CMemBlock* pBlock)
 {
 	int blockId = pBlock->getId();
-	int firstElement = blockId*pBlock->size();
-	int numHandlers = (int)m_memBufferHandlers.size();
-	int handler;
+	unsigned int firstElement = blockId*pBlock->size();
+	unsigned int numHandlers = (int)m_memBufferHandlers.size();
+	unsigned int handler;
 	double initValue;
 	for (int i = 0; i < pBlock->size(); ++i)
 	{
@@ -172,8 +172,8 @@ double* CSimionMemPool::tryToAllocateMem(int blockSize)
 void CSimionMemPool::init(int blockSize)
 {
 	CMemBlock* pNewMemBlock;
-	int totalNumElements= m_numElements * (int)m_memBufferHandlers.size();
-	m_memBlockSize = std::min(blockSize,totalNumElements);
+	unsigned int totalNumElements= m_numElements * (int)m_memBufferHandlers.size();
+	m_memBlockSize = std::min((unsigned int)blockSize,totalNumElements);
 
 	//make the block size a multiple of the number of interleaved arrays
 	m_memBlockSize -= m_memBlockSize % m_elementSize;
