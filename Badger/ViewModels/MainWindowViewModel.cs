@@ -5,8 +5,11 @@ using Caliburn.Micro;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.VisualBasic;
 
 
 namespace Badger.ViewModels
@@ -203,6 +206,7 @@ namespace Badger.ViewModels
                 Console.WriteLine(text);
             }
         }
+
 
         public MainWindowViewModel()
         {

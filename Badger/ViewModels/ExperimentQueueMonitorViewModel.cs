@@ -97,26 +97,26 @@ namespace Badger.ViewModels
                 m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.WAITING_EXECUTION);
                 CJob job = getJob();
 
-                bool bConnected = m_shepherd.connectToHerdAgent(m_herdAgent.ipAddress);
+                bool bConnected = m_shepherd.connectToHerdAgent(m_herdAgent.IpAddress);
                 if (bConnected)
                 {
-                    logMessage("Sending job to herd agent " + m_herdAgent.ipAddress);
+                    logMessage("Sending job to herd agent " + m_herdAgent.IpAddress);
                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.SENDING);
-                    m_herdAgent.status = "Sending job query";
+                    m_herdAgent.Status = "Sending job query";
                     m_shepherd.SendJobQuery(job, m_cancelToken);
-                    logMessage("Job sent to herd agent " + m_herdAgent.ipAddress);
+                    logMessage("Job sent to herd agent " + m_herdAgent.IpAddress);
                     //await m_shepherd.waitAsyncWriteOpsToFinish();
                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.RUNNING);
-                    m_herdAgent.status = "Executing job query";
+                    m_herdAgent.Status = "Executing job query";
                 }
                 else
                 {
                     foreach (MonitoredExperimentViewModel exp in m_monitoredExperiments) m_failedExperiments.Add(exp);
                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.ERROR);
-                    logMessage("Failed to connect to herd agent " + m_herdAgent.ipAddress);
+                    logMessage("Failed to connect to herd agent " + m_herdAgent.IpAddress);
                     return this;
                 }
-                logMessage("Monitoring remote job run by herd agent " + m_herdAgent.ipAddress);
+                logMessage("Monitoring remote job run by herd agent " + m_herdAgent.IpAddress);
                 // Monitor the remote job
                 while (true)
                 {
@@ -189,10 +189,10 @@ namespace Badger.ViewModels
                                     //job results can be expected to be sent back even if some of the tasks failed
                                     logMessage("Receiving job results");
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.RECEIVING);
-                                    m_herdAgent.status = "Receiving output files";
+                                    m_herdAgent.Status = "Receiving output files";
                                     bool bret = await m_shepherd.ReceiveJobResult(m_cancelToken);
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.FINISHED);
-                                    m_herdAgent.status = "Finished";
+                                    m_herdAgent.Status = "Finished";
                                     logMessage("Job results received");
                                     return this;
                                 }
@@ -212,11 +212,11 @@ namespace Badger.ViewModels
                 await m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
 
                 m_monitoredExperiments.ForEach((exp) => { exp.resetState(); });
-                m_herdAgent.status = "";
+                m_herdAgent.Status = "";
             }
             catch (Exception ex)
             {
-                logMessage("Unhandled exception in Badger.sendJobAndMonitor(). Agent " + m_herdAgent.ipAddress);
+                logMessage("Unhandled exception in Badger.sendJobAndMonitor(). Agent " + m_herdAgent.IpAddress);
                 logMessage(ex.ToString());
                 m_failedExperiments.Clear();
                 foreach (MonitoredExperimentViewModel exp in m_monitoredExperiments) m_failedExperiments.Add(exp);
@@ -224,7 +224,7 @@ namespace Badger.ViewModels
             }
             finally
             {
-                logMessage("Disconnected from herd agent " + m_herdAgent.ipAddress);
+                logMessage("Disconnected from herd agent " + m_herdAgent.IpAddress);
                 m_shepherd.disconnect();
             }
             return this;
@@ -501,7 +501,7 @@ namespace Badger.ViewModels
                 HerdAgentViewModel agentVM = freeHerdAgents[0];
                 freeHerdAgents.RemoveAt(0);
                 //usedHerdAgents.Add(agentVM);
-                int numProcessors = Math.Max(1, agentVM.numProcessors - 1); // Let's free one processor
+                int numProcessors = Math.Max(1, agentVM.NumProcessors - 1); // Let's free one processor
 
                 monitoredExperimentViewModels.Clear();
                 int len = Math.Min(numProcessors, pendingExperiments.Count);

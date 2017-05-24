@@ -10,22 +10,24 @@ using System.Xml.Linq;
 
 namespace Herd
 {
-
     public class ShepherdUdpState
     {
         public UdpClient client { get; set; }
         public IPEndPoint ip { get; set; }
     }
+
+
     public class ShepherdTCPState
     {
         public IPEndPoint ip { get; set; }
     }
 
+
     public class Shepherd : CJobDispatcher
     {
         private object m_listLock = new object();
-        private Dictionary<IPEndPoint,HerdAgentInfo> m_herdAgentList
-            = new Dictionary<IPEndPoint,HerdAgentInfo>();
+        private Dictionary<IPEndPoint, HerdAgentInfo> m_herdAgentList
+            = new Dictionary<IPEndPoint, HerdAgentInfo>();
 
         UdpClient m_discoverySocket;
 
@@ -41,12 +43,15 @@ namespace Herd
             m_notifyAgentListChanged = func;
         }
 
+
         public Shepherd()
         {
             m_discoverySocket = new UdpClient();
             m_discoverySocket.EnableBroadcast = true;
             m_notifyAgentListChanged = null;
         }
+
+
         public static bool IsLocalIpAddress(string host)
         {
             try
@@ -71,6 +76,7 @@ namespace Herd
             return false;
         }
 
+
         public void DiscoveryCallback(IAsyncResult ar)
         {
             UdpClient u = (UdpClient)((ShepherdUdpState)(ar.AsyncState)).client;
@@ -88,7 +94,7 @@ namespace Herd
                     herdAgentXMLDescription = Encoding.ASCII.GetString(receiveBytes);
                     xmlDescription = XElement.Parse(herdAgentXMLDescription);
                     HerdAgentInfo herdAgentInfo = new HerdAgentInfo();
-                    herdAgentInfo.parse(xmlDescription);
+                    herdAgentInfo.Parse(xmlDescription);
                     //we copy the ip address into the properties
                     herdAgentInfo.ipAddress = ip;
                     //we update the ack time
@@ -116,7 +122,7 @@ namespace Herd
 
                 u.BeginReceive(new AsyncCallback(DiscoveryCallback), ar.AsyncState);
             }
-            catch(TaskCanceledException ex)
+            catch (TaskCanceledException ex)
             {
                 logMessage("Task canceled exception in Shepherd");
                 logMessage(ex.ToString());
@@ -127,14 +133,16 @@ namespace Herd
                 logMessage(ex.StackTrace);
             }
         }
+
+
         public void sendBroadcastHerdAgentQuery()
         {
-            var RequestData = Encoding.ASCII.GetBytes(CJobDispatcher.m_discoveryMessage);
-
-            m_discoverySocket.Send(RequestData, RequestData.Length
-                , new IPEndPoint(IPAddress.Broadcast, CJobDispatcher.m_discoveryPortHerd));
-
+            var RequestData = Encoding.ASCII.GetBytes(m_discoveryMessage);
+            m_discoverySocket.Send(RequestData, RequestData.Length,
+                new IPEndPoint(IPAddress.Broadcast, m_discoveryPortHerd));
         }
+
+
         public void beginListeningHerdAgentQueryResponses()
         {
             ShepherdUdpState u = new ShepherdUdpState();
@@ -143,6 +151,8 @@ namespace Herd
             u.client = m_discoverySocket;
             m_discoverySocket.BeginReceive(DiscoveryCallback, u);
         }
+
+
         public bool connectToHerdAgent(IPEndPoint endPoint)
         {
             try
@@ -160,13 +170,17 @@ namespace Herd
             }
             return true;
         }
+
+
         public void disconnect()
         {
-            if (m_netStream!=null) m_netStream.Dispose();
-            if (m_tcpClient!=null) m_tcpClient.Close();
+            if (m_netStream != null) m_netStream.Dispose();
+            if (m_tcpClient != null) m_tcpClient.Close();
             m_tcpClient = null;
         }
-        public void getHerdAgentList(ref List <HerdAgentInfo> outHerdAgentList, int timeoutSeconds= 10)
+
+
+        public void getHerdAgentList(ref List<HerdAgentInfo> outHerdAgentList, int timeoutSeconds = 10)
         {
             lock (m_listLock)
             {
@@ -177,6 +191,8 @@ namespace Herd
                         outHerdAgentList.Add(agent.Value);
             }
         }
+
+
         public void getHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentInfo> outDictionary)
         {
             lock (m_listLock)
@@ -187,9 +203,10 @@ namespace Herd
                     outDictionary.Add(agent.Key, agent.Value);
             }
         }
+
+
         public int getAvailableHerdAgentListAndCores(ref Dictionary<IPEndPoint, int> outHerdAgentList)
         {
-            int numCores;
             int numCoresTotal = 0;
             lock (m_listLock)
             {
@@ -203,7 +220,7 @@ namespace Herd
                     {
                         try
                         {
-                            numCores = Int32.Parse(numCoresString);
+                            var numCores = Int32.Parse(numCoresString);
                             numCoresTotal += numCores - 1;
                             outHerdAgentList.Add(agent.Key, numCores - 1);
                         }
@@ -217,45 +234,45 @@ namespace Herd
             }
         }
 
-        public void SendJobQuery(CJob job,CancellationToken cancelToken)
+        public void SendJobQuery(CJob job, CancellationToken cancelToken)
         {
             m_job = job;
             SendJobHeader(cancelToken);
             SendTasks(cancelToken);
             //SendExeFiles(true);
-            SendInputFiles(true,cancelToken);
-            SendOutputFiles(false,cancelToken);
+            SendInputFiles(true, cancelToken);
+            SendOutputFiles(false, cancelToken);
             SendJobFooter(cancelToken);
         }
         public async Task<bool> ReceiveJobResult(CancellationToken cancelToken)
         {
-            bool bFooterPeeked= false;
+            bool bFooterPeeked = false;
             string xmlTag = "";
             m_job.tasks.Clear();
             m_job.inputFiles.Clear();
             m_job.outputFiles.Clear();
 
-            int ret= await ReceiveJobHeader(cancelToken);
+            int ret = await ReceiveJobHeader(cancelToken);
             bool bret;
             do
             {
-                xmlTag= m_xmlStream.peekNextXMLTag();
-                while (xmlTag=="")
+                xmlTag = m_xmlStream.peekNextXMLTag();
+                while (xmlTag == "")
                 {
                     ret = await ReadFromStreamAsync(cancelToken);
                     xmlTag = m_xmlStream.peekNextXMLTag();
                 }
 
-                switch(xmlTag)
+                switch (xmlTag)
                 {
-                    case "Task": bret= await ReceiveTask(cancelToken); break;
-                    case "Input": bret= await ReceiveFile(FileType.INPUT, false, false,cancelToken); break;
-                    case "Output": bret= await ReceiveFile(FileType.OUTPUT, true, false,cancelToken); break;
-                    case "/Job": bFooterPeeked= true; break;
+                    case "Task": bret = await ReceiveTask(cancelToken); break;
+                    case "Input": bret = await ReceiveFile(FileType.INPUT, false, false, cancelToken); break;
+                    case "Output": bret = await ReceiveFile(FileType.OUTPUT, true, false, cancelToken); break;
+                    case "/Job": bFooterPeeked = true; break;
                 }
             } while (!bFooterPeeked);
 
-            bret= await ReceiveJobFooter(cancelToken);
+            bret = await ReceiveJobFooter(cancelToken);
 
             //if job result properly received. For now, we will assume it
             return true;
