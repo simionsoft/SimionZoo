@@ -16,7 +16,6 @@ class CSimionApp
 {
 private:
 	static CSimionApp* m_pAppInstance;
-
 protected:
 	CConfigFile* m_pConfigDoc;
 	
@@ -43,9 +42,7 @@ public:
 	static bool flagPassed(int argc, char** argv, char* flagName);
 
 	//is this app being run remotely?
-	static bool bRemoteExecution; //public to be able to set it before the constructor is called
 	bool isExecutedRemotely();
-	void setExecutedRemotely(bool bRemote);
 
 	virtual void run()= 0;
 };

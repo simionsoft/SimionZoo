@@ -22,9 +22,6 @@ int main(int argc, char* argv[])
 			//if connection with parent process went ok, we set the logger's output mode accordingly
 			if (CLogger::m_outputPipe.isConnected())
 				CLogger::m_messageOutputMode = MessageOutputMode::NamedPipe;
-
-			//remote execution?? Most likely yes if an output pipename has been given
-			CSimionApp::bRemoteExecution= true;
 		}
 
 		if (argc <= 1)
