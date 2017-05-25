@@ -10,6 +10,7 @@ class BulletGraphic;
 class Robot;
 class Box;
 class BulletBody;
+class Rope;
 
 
 //Move box with 2 robots
@@ -49,6 +50,7 @@ class CRope2Robots : public CDynamicModel
 	Robot *m_Robot1;
 	Robot *m_Robot2;
 	Box *m_Box;
+	Rope *m_Rope;
 	
 
 

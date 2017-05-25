@@ -15,6 +15,36 @@
   <State-variable>dBr1Y</State-variable>
   <State-variable>dBr2X</State-variable>
   <State-variable>dBr2Y</State-variable>
+  <State-variable>rope0_p0X</State-variable>
+  <State-variable>rope0_p0Y</State-variable>
+  <State-variable>rope0_p0Z</State-variable>
+  <State-variable>rope0_p1X</State-variable>
+  <State-variable>rope0_p1Y</State-variable>
+  <State-variable>rope0_p1Z</State-variable>
+  <State-variable>rope0_p2X</State-variable>
+  <State-variable>rope0_p2Y</State-variable>
+  <State-variable>rope0_p2Z</State-variable>
+  <State-variable>rope0_p3X</State-variable>
+  <State-variable>rope0_p3Y</State-variable>
+  <State-variable>rope0_p3Z</State-variable>
+  <State-variable>rope0_p4X</State-variable>
+  <State-variable>rope0_p4Y</State-variable>
+  <State-variable>rope0_p4Z</State-variable>
+  <State-variable>rope1_p0X</State-variable>
+  <State-variable>rope1_p0Y</State-variable>
+  <State-variable>rope1_p0Z</State-variable>
+  <State-variable>rope1_p1X</State-variable>
+  <State-variable>rope1_p1Y</State-variable>
+  <State-variable>rope1_p1Z</State-variable>
+  <State-variable>rope1_p2X</State-variable>
+  <State-variable>rope1_p2Y</State-variable>
+  <State-variable>rope1_p2Z</State-variable>
+  <State-variable>rope1_p3X</State-variable>
+  <State-variable>rope1_p3Y</State-variable>
+  <State-variable>rope1_p3Z</State-variable>
+  <State-variable>rope1_p4X</State-variable>
+  <State-variable>rope1_p4Y</State-variable>
+  <State-variable>rope1_p4Z</State-variable>
   <Action-variable>v1</Action-variable>
   <Action-variable>omega1</Action-variable>
   <Action-variable>v2</Action-variable>
