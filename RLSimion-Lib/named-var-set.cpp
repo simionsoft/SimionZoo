@@ -7,6 +7,7 @@ CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, do
 	sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
 	m_min = min;
 	m_max = max;
+	m_bCircular = false; //default value
 }
 
 void CNamedVarProperties::setName(const char* name)

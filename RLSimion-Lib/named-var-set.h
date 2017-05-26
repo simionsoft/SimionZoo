@@ -9,6 +9,7 @@ class CNamedVarProperties
 	char m_units[VAR_NAME_MAX_LENGTH];
 	double m_min;
 	double m_max;
+	bool m_bCircular;
 public:
 	CNamedVarProperties(const char* name, const char* units, double min, double max);
 	const char* getName() const { return m_name; }
@@ -16,6 +17,8 @@ public:
 	double getMin() const { return m_min; }
 	double getMax() const { return m_max; }
 	double getRangeWidth(int i) const { return m_max - m_min; }
+	void setCircular(bool bCircular) { m_bCircular = bCircular; }
+	bool bIsCircular() const { return m_bCircular; }
 };
 
 class CNamedVarSet;

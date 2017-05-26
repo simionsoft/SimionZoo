@@ -56,19 +56,40 @@ void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatu
 	unsigned int numCenters = m_numCenters.get();
 
 	assert(numCenters >= 2);
-	double value = getVariableValue(s, a);
+	double value = getVarValue(s, a);
+
+	//we will assume radians for circular variables
+	bool bCircular = getVarProperties(s,a).bIsCircular();
 
 	if (value <= m_pCenters[1])
 	{
-		outDimFeatures->add(0, getFeatureFactor(0, value));
-		outDimFeatures->add(1, getFeatureFactor(1, value));
-		outDimFeatures->add(2, getFeatureFactor(2, value));
+		if (!bCircular)
+		{
+			outDimFeatures->add(0, getFeatureFactor(0, value));
+			outDimFeatures->add(1, getFeatureFactor(1, value));
+			outDimFeatures->add(2, getFeatureFactor(2, value));
+		}
+		else
+		{
+			outDimFeatures->add(0, getFeatureFactor(0, value));
+			outDimFeatures->add(1, getFeatureFactor(1, value));
+			outDimFeatures->add(numCenters-1, getFeatureFactor(numCenters-1, value + 2*3.141516));
+		}
 	}
 	else if (value >= m_pCenters[numCenters - 2])
 	{
-		outDimFeatures->add(numCenters - 3, getFeatureFactor(numCenters - 3, value));
-		outDimFeatures->add(numCenters - 2, getFeatureFactor(numCenters - 2, value));
-		outDimFeatures->add(numCenters - 1, getFeatureFactor(numCenters - 1, value));
+		if (!bCircular)
+		{
+			outDimFeatures->add(numCenters - 3, getFeatureFactor(numCenters - 3, value));
+			outDimFeatures->add(numCenters - 2, getFeatureFactor(numCenters - 2, value));
+			outDimFeatures->add(numCenters - 1, getFeatureFactor(numCenters - 1, value));
+		}
+		else
+		{
+			outDimFeatures->add(numCenters - 2, getFeatureFactor(numCenters - 2, value));
+			outDimFeatures->add(numCenters - 1, getFeatureFactor(numCenters - 1, value));
+			outDimFeatures->add(0, getFeatureFactor(0, value - 2*3.1415926535897));
+		}
 	}
 	else
 	{
@@ -145,14 +166,20 @@ CStateVariableGrid::CStateVariableGrid(CConfigNode* pConfigNode)
 
 	initCenterPoints();
 }
+
 void CStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
 	s->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CStateVariableGrid::getVariableValue(const CState* s, const CAction* a)
+double CStateVariableGrid::getVarValue(const CState* s, const CAction* a)
 {
 	return s->get(m_hVariable.get());
+}
+
+CNamedVarProperties& CStateVariableGrid::getVarProperties(const CState* s, const CAction* a)
+{
+	return s->getProperties(m_hVariable.get());
 }
 
 CActionVariableGrid::CActionVariableGrid(CConfigNode* pConfigNode)
@@ -174,7 +201,12 @@ void CActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s,
 	a->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CActionVariableGrid::getVariableValue(const CState* s, const CAction* a)
+double CActionVariableGrid::getVarValue(const CState* s, const CAction* a)
 {
 	return a->get(m_hVariable.get());
+}
+
+CNamedVarProperties& CActionVariableGrid::getVarProperties(const CState* s, const CAction* a)
+{
+	return a->getProperties(m_hVariable.get());
 }
