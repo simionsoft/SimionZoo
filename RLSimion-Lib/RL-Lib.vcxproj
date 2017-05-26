@@ -228,6 +228,7 @@
     <ClCompile Include="parameters-numeric.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="q-learners.cpp" />
+    <ClCompile Include="Rope.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
@@ -307,6 +308,7 @@
     <ClInclude Include="parameters-numeric.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="q-learners.h" />
+    <ClInclude Include="Rope.h" />
     <ClInclude Include="simgod.h" />
     <ClInclude Include="simion.h" />
     <ClInclude Include="single-dimension-grid.h" />

@@ -6,6 +6,7 @@
 #include "Robot.h"
 #include "Box.h"
 #include "BulletPhysics.h"
+#include "Rope.h"
 #include "BulletDisplay.h"
 #pragma comment(lib,"opengl32.lib")
 
@@ -122,6 +123,7 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	{
 		robRopeBuilder->connectWithRope(m_Robot1->getBody(), m_Box->getBody());
 		robRopeBuilder->connectWithRope(m_Robot2->getBody(), m_Box->getBody());
+		m_Rope = new Rope(this, robRopeBuilder->getSoftBodiesArray());
 	}
 
 	///Graphic init
@@ -182,7 +184,7 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	r2_theta = m_Robot2->updateRobotMovement(a, s, "omega2", "v2", m_theta_r2, dt);
 
 	//Execute simulation
-	robRopeBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
+	robRopeBuilder->simulate(dt, 20);
 	if (!CSimionApp::get()->isExecutedRemotely())
 		robRopeViewer->updateCamera();
 
@@ -195,6 +197,8 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	m_Robot1->setRelativeVariables(s, m_D_Br1X, m_D_Br1X, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
 	m_Robot2->setRelativeVariables(s, m_D_Br2X, m_D_Br2Y, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
 	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY, TargetX, TargetY);
+
+	m_Rope->updateRopePoints(s, robRopeBuilder->getSoftBodiesArray());
 
 	s->set(m_theta_r1, r1_theta);
 	s->set(m_theta_r2, r2_theta);
@@ -211,7 +215,7 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 		if (!CSimionApp::get()->isExecutedRemotely())
 		{
 			robRopeViewer->drawText3D("Evaluation episode", printPosition);
-			robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
+			//robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
 		}
 		
 	}
@@ -221,7 +225,7 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 			robRopeViewer->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		//robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
+		robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
 	}
 
 }

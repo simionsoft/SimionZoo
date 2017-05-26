@@ -16,9 +16,10 @@ void BulletPhysics::initSoftPhysics()
 }
 
 // Step the simulation 
-void BulletPhysics::simulate(double dt)
+void BulletPhysics::simulate(double dt, int maxSubSteps)
 {
-	stepSimulation(dt);
+	stepSimulation(dt, maxSubSteps);
+
 }
 
 // Needed getter in order to add shapes to the array of bullets collision shapes
@@ -52,4 +53,11 @@ void BulletPhysics::connectWithRope(btRigidBody* body1, btRigidBody* body2)
 	softBodyRope0->m_cfg.kCHR = 1;
 	softBodyRope0->m_cfg.kKHR = 1;
 	getSoftDynamicsWorld()->addSoftBody(softBodyRope0);
+	m_pSoftObjects->push_back(softBodyRope0);
+}
+
+
+std::vector<btSoftBody*>* BulletPhysics::getSoftBodiesArray()
+{
+	return m_pSoftObjects;
 }

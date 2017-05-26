@@ -85,6 +85,7 @@ void BulletGraphic::drawSoftWorld(btSoftRigidDynamicsWorld* m_softWorld)
 
 	for (int i = 0; i < m_softWorld->getSoftBodyArray().size(); i++)
 	{
+		double size = m_softWorld->getSoftBodyArray().size();
 		btSoftBody*	psb = (btSoftBody*)m_softWorld->getSoftBodyArray()[i];
 		{
 			btSoftBodyHelpers::DrawFrame(psb, m_softWorld->getDebugDrawer());

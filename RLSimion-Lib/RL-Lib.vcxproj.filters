@@ -224,6 +224,9 @@
     <ClCompile Include="BulletDisplay.cpp">
       <Filter>world\GraphicResources</Filter>
     </ClCompile>
+    <ClCompile Include="Rope.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="world-magneticlevitation.h">
@@ -414,6 +417,9 @@
     </ClInclude>
     <ClInclude Include="world-two-robots-rope.h">
       <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="Rope.h">
+      <Filter>world\BulletUtils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

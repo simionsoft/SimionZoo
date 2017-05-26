@@ -75,11 +75,11 @@ struct BulletCreationInterface
 	}
 
 
-	virtual void stepSimulation(float deltaTime)
+	virtual void stepSimulation(float deltaTime, int maxSubSteps)
 	{
 		if (m_dynamicsWorld)
 		{
-			m_dynamicsWorld->stepSimulation(deltaTime);
+			m_dynamicsWorld->stepSimulation(deltaTime,maxSubSteps);
 		}
 	}
 
