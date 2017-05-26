@@ -11,12 +11,13 @@ class CNamedVarProperties
 	double m_max;
 	bool m_bCircular;
 public:
-	CNamedVarProperties(const char* name, const char* units, double min, double max);
+	//bCircular must be true for variables holding angles
+	CNamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular= false);
 	const char* getName() const { return m_name; }
 	void setName(const char* name);
 	double getMin() const { return m_min; }
 	double getMax() const { return m_max; }
-	double getRangeWidth(int i) const { return m_max - m_min; }
+	double getRangeWidth() const { return m_max - m_min; }
 	void setCircular(bool bCircular) { m_bCircular = bCircular; }
 	bool bIsCircular() const { return m_bCircular; }
 };
@@ -31,7 +32,7 @@ public:
 	size_t size() const { return m_pProperties.size(); }
 	CNamedVarProperties& operator[](int idx) { return *m_pProperties[idx]; }
 	const CNamedVarProperties& operator[](int idx) const { return *m_pProperties[idx]; }
-	int addVariable(const char* name, const char* units, double min, double max);
+	int addVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
 	int getVarIndex (const char* name);
 };
 

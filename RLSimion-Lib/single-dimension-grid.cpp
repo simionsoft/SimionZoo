@@ -57,13 +57,11 @@ void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatu
 
 	assert(numCenters >= 2);
 	double value = getVarValue(s, a);
-
-	//we will assume radians for circular variables
-	bool bCircular = getVarProperties(s,a).bIsCircular();
+	CNamedVarProperties& properties = getVarProperties(s, a);
 
 	if (value <= m_pCenters[1])
 	{
-		if (!bCircular)
+		if (!properties.bIsCircular())
 		{
 			outDimFeatures->add(0, getFeatureFactor(0, value));
 			outDimFeatures->add(1, getFeatureFactor(1, value));
@@ -73,12 +71,12 @@ void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatu
 		{
 			outDimFeatures->add(0, getFeatureFactor(0, value));
 			outDimFeatures->add(1, getFeatureFactor(1, value));
-			outDimFeatures->add(numCenters-1, getFeatureFactor(numCenters-1, value + 2*3.141516));
+			outDimFeatures->add(numCenters-1, getFeatureFactor(numCenters-1, value + properties.getRangeWidth()));
 		}
 	}
 	else if (value >= m_pCenters[numCenters - 2])
 	{
-		if (!bCircular)
+		if (!properties.bIsCircular())
 		{
 			outDimFeatures->add(numCenters - 3, getFeatureFactor(numCenters - 3, value));
 			outDimFeatures->add(numCenters - 2, getFeatureFactor(numCenters - 2, value));
@@ -88,7 +86,7 @@ void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatu
 		{
 			outDimFeatures->add(numCenters - 2, getFeatureFactor(numCenters - 2, value));
 			outDimFeatures->add(numCenters - 1, getFeatureFactor(numCenters - 1, value));
-			outDimFeatures->add(0, getFeatureFactor(0, value - 2*3.1415926535897));
+			outDimFeatures->add(0, getFeatureFactor(0, value - properties.getRangeWidth()));
 		}
 	}
 	else
@@ -155,18 +153,32 @@ CStateVariableGrid::CStateVariableGrid(CConfigNode* pConfigNode)
 {
 	m_hVariable = STATE_VARIABLE(pConfigNode,"Variable", "The state variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Num-Features","The number of points that form the grid",3);
-
-	CDescriptor &descriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	CNamedVarProperties properties = descriptor[m_hVariable.get()];
-	m_min= properties.getMin();
-	m_max= properties.getMax();
-	m_distributionType = ENUM_PARAM<Distribution>(pConfigNode,"Distribution"
+	m_distributionType = ENUM_PARAM<Distribution>(pConfigNode, "Distribution"
 		, "The manner in which the points are distributed on the state variable's grid"
-		,Distribution::linear);
-
+		, Distribution::linear);
+	
+	initVarRange();
 	initCenterPoints();
 }
 
+void CStateVariableGrid::initVarRange()
+{
+	CDescriptor &descriptor = CWorld::getDynamicModel()->getStateDescriptor();
+	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	m_min = properties.getMin();
+	m_max = properties.getMax();
+}
+
+
+CStateVariableGrid::CStateVariableGrid(int m_hVar, int numCenters, Distribution distr)
+{
+	m_hVariable.set(m_hVar);
+	m_numCenters.set(numCenters);
+	m_distributionType.set(distr);
+
+	initVarRange();
+	initCenterPoints();
+}
 void CStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
 	s->set(m_hVariable.get(), m_pCenters[feature]);
@@ -186,14 +198,19 @@ CActionVariableGrid::CActionVariableGrid(CConfigNode* pConfigNode)
 {
 	m_hVariable = ACTION_VARIABLE(pConfigNode,"Variable", "The action variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Num-Features","The number of points that form the grid",3);
-
-	m_min = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()[m_hVariable.get()].getMin();
-	m_max = CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptor()[m_hVariable.get()].getMax();
-
 	m_distributionType = ENUM_PARAM<Distribution>(pConfigNode, "Distribution"
 		, "The manner in which the points are distributed on the action variable's grid",Distribution::linear);
 
+	initVarRange();
 	initCenterPoints();
+}
+
+void CActionVariableGrid::initVarRange()
+{
+	CDescriptor &descriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	m_min = properties.getMin();
+	m_max = properties.getMax();
 }
 
 void CActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)

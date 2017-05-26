@@ -7,13 +7,8 @@
 #include "BulletBody.h"
 #include "Box.h"
 #include "Robot.h"
+#include "world-aux-rewards.h"
 #pragma comment(lib,"opengl32.lib")
-
-double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2)
-{
-	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-	return distance;
-}
 
 double static getRand(double range)
 {
@@ -39,6 +34,8 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 {
 	METADATA("World", "MoveBoxOneRobot");
 
+	m_target_X = addStateVariable("targetX", "m", -20.0, 20.0);
+	m_target_Y = addStateVariable("targetY", "m", -20.0, 20.0);
 	m_rob1_X = addStateVariable("rx1", "m", -10.0, 10.0);
 	m_rob1_Y = addStateVariable("ry1", "m", -10.0, 10.0);
 	m_box_X = addStateVariable("bx", "m", -10.0, 10.0);
@@ -48,8 +45,8 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	m_D_BrY = addStateVariable("dBrY", "m", -10.0, 10.0);
 	m_D_BtX = addStateVariable("dBtX", "m", -10.0, 10.0);
 	m_D_BtY = addStateVariable("dBtY", "m", -10.0, 10.0);
-	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
-	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15);
+	m_theta = addStateVariable("theta", "rad", -3.15, 3.15, true);
+	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15, true);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
 	m_omega = addActionVariable("omega", "rad/s", -8.0, 8.0);
@@ -116,7 +113,7 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 		rBoxGraphics->generateGraphics(rBoxPhysics->getDynamicsWorld());
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CMoveBoxOneRobotReward());
+	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_box_X,m_box_Y,m_target_X,m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
@@ -151,6 +148,10 @@ void CMoveBoxOneRobot::reset(CState *s)
 	s->set(m_D_BrY, fabs(s->get(m_box_Y) - s->get(m_rob1_Y)));
 	s->set(m_D_BtX, fabs(s->get(m_box_X) - TargetX));
 	s->set(m_D_BtY, fabs(s->get(m_box_Y) - TargetY));
+
+	//target
+	s->set(m_target_X, TargetX);
+	s->set(m_target_Y, TargetY);
 }
 
 void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
@@ -199,45 +200,6 @@ void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 	{
 		//rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
 	}
-}
-
-#define BOX_ROBOT_REWARD_WEIGHT 1.0
-#define BOX_TARGET_REWARD_WEIGHT 3.0
-double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
-{
-	double boxAfterX = s_p->get("bx");
-	double boxAfterY = s_p->get("by");
-
-	double robotAfterX = s_p->get("rx1");
-	double robotAfterY = s_p->get("ry1");
-
-	double distanceBoxTarget = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
-	double distanceBoxRobot = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
-
-	if (robotAfterX >= 20.0 || robotAfterX <= -20.0 || robotAfterY >= 20.0 || robotAfterY <= -20.0)
-	{
-		CSimionApp::get()->pExperiment->setTerminalState();
-		return -1;
-	}
-	distanceBoxRobot = std::max(distanceBoxRobot, 0.0001);
-	distanceBoxTarget = std::max(distanceBoxTarget, 0.0001);
-
-	double rewardBoxRobot = 0.0;// std::min(BOX_ROBOT_REWARD_WEIGHT*2.0, BOX_ROBOT_REWARD_WEIGHT / distanceBoxRobot);
-	double distError = distanceBoxTarget / 1.0;
-	double rewardBoxTarget = 1.0 - distError;
-		//std::min(BOX_TARGET_REWARD_WEIGHT*2.0, BOX_TARGET_REWARD_WEIGHT / distanceBoxTarget);
-	return /*rewardBoxRobot +*/ rewardBoxTarget;
-
-}
-
-double CMoveBoxOneRobotReward::getMin()
-{
-	return -10.0;
-}
-
-double CMoveBoxOneRobotReward::getMax()
-{
-	return 1.0;
 }
 
 CMoveBoxOneRobot::~CMoveBoxOneRobot()

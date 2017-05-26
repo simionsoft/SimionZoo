@@ -105,14 +105,14 @@ CDynamicModel::CDynamicModel()
 	m_pRewardFunction = new CRewardFunction();
 }
 
-int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max)
+int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	return m_pStateDescriptor->addVariable(name, units, min, max);
+	return m_pStateDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
-int CDynamicModel::addActionVariable(const char* name, const char* units, double min, double max)
+int CDynamicModel::addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	return m_pActionDescriptor->addVariable(name, units, min, max);
+	return m_pActionDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
 void CDynamicModel::addConstant(const char* name, double value)

@@ -140,6 +140,7 @@ public:
 
 	STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
+	void set(int hVar) { m_hVariable = hVar; }
 };
 
 class ACTION_VARIABLE

@@ -110,9 +110,11 @@ namespace MemManager
 			pBuffer5->setInitValue(5.0);
 
 			pMemManager->init(SMALL_BLOCK_SIZE);
+			int actualBlockSize = ((CSimionMemPool*)pBuffer1->getMemPool())->getBlockSize();
 
 			Assert::AreEqual(1.0, (*pBuffer1)[0]);
 			Assert::AreEqual(2.0, (*pBuffer2)[1000]);
+			Assert::AreEqual(3.0, (*pBuffer3)[200]);
 
 			pMemManager->copy(pBuffer1, pBuffer2);
 
@@ -123,16 +125,16 @@ namespace MemManager
 
 			Assert::AreEqual(1.0, (*pBuffer1)[0]);
 			Assert::AreEqual(1.0, (*pBuffer2)[1000]);
-			Assert::AreEqual(3.0, (*pBuffer3)[350]);
+			Assert::AreEqual(1.0, (*pBuffer3)[350]);
 
 			pMemManager->copy(pBuffer4, pBuffer1);
 
 			Assert::AreEqual(4.0, (*pBuffer1)[0]);
 			Assert::AreEqual(1.0, (*pBuffer2)[1000]);
-			Assert::AreEqual(3.0, (*pBuffer3)[350]);
+			Assert::AreEqual(1.0, (*pBuffer3)[350]);
 			Assert::AreEqual(4.0, (*pBuffer4)[10]);
 
-			Assert::IsTrue(pMemManager->getTotalAllocatedMem()< SMALL_BUFER_SIZE*sizeof(double)*4);
+			Assert::IsTrue(pMemManager->getTotalAllocatedMem()< SMALL_BUFER_SIZE*sizeof(double)*5);
 
 			delete pMemManager;
 		}

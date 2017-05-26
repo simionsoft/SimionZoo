@@ -1,7 +1,6 @@
 #pragma once
 
 #include "world.h"
-#include "reward.h"
 #define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
@@ -19,6 +18,7 @@ class COnlyRobot : public CDynamicModel
 	double MASS_GROUND;
 
 	/// State variables
+	int m_target_X, m_target_Y;
 	int m_rob1_X, m_rob1_Y;
 	int m_omega;
 	int m_theta;
@@ -43,11 +43,3 @@ public:
 
 };
 
-class COnlyRobotReward : public IRewardComponent
-{
-public:
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
-	const char* getName() { return "reward"; }
-	double getMin();
-	double getMax();
-};

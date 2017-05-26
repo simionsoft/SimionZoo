@@ -1,7 +1,6 @@
 #pragma once
 
 #include "world.h"
-#include "reward.h"
 #define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 class BulletBody;
@@ -20,7 +19,8 @@ class CMoveBox2Robots : public CDynamicModel
 	double MASS_TARGET;
 	double MASS_GROUND;
 
-	/// Episode variables
+	/// State variables
+	int m_target_X, m_target_Y;
 	int m_rob1_X, m_rob1_Y;
 	int m_rob2_X, m_rob2_Y;
 	int m_box_X, m_box_Y;
@@ -54,13 +54,4 @@ public:
 
 	void reset(CState *s);
 	void executeAction(CState *s, const CAction *a, double dt);
-};
-
-class CMoveBox2RobotsReward : public IRewardComponent
-{
-public:
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
-	const char* getName() { return "reward"; }
-	double getMin();
-	double getMax();
 };

@@ -18,7 +18,7 @@ namespace StateActionVFA
 			//Because we are mostly only implementing the constructor that takes a CConfigNode,
 			//it is easier to load a config file and then manipulate the classes loaded
 			CConfigFile configFile;			
-			CConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.exp");
+			CConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);	
 
 			CLinearStateActionVFA *pVFA= new CLinearStateActionVFA(
@@ -70,7 +70,7 @@ namespace StateActionVFA
 			CConfigFile configFile;
 			CConfigNode* pConfigNode;
 
-			pConfigNode= configFile.loadFile("..\\tests\\q-learning-test.exp");
+			pConfigNode= configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
 
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
 

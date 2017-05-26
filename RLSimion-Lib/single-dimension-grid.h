@@ -24,6 +24,7 @@ protected:
 public:
 	virtual ~CSingleDimensionGrid();
 
+	virtual void initVarRange()= 0;
 	void initCenterPoints();
 
 	int getNumCenters(){ return m_numCenters.get(); }
@@ -41,6 +42,8 @@ class CStateVariableGrid : public CSingleDimensionGrid
 {
 	STATE_VARIABLE m_hVariable;
 public:
+	void initVarRange();
+	CStateVariableGrid(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
 	CStateVariableGrid(CConfigNode* pParameters);
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
@@ -51,6 +54,8 @@ class CActionVariableGrid : public CSingleDimensionGrid
 {
 	ACTION_VARIABLE m_hVariable;
 public:
+	void initVarRange();
+	CActionVariableGrid(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
 	CActionVariableGrid(CConfigNode* pParameters);
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);

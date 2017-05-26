@@ -21,13 +21,13 @@ private:
 	std::map<const char*, double> m_pConstants;
 protected:
 	CRewardFunction* m_pRewardFunction;
-	int addActionVariable(const char* name, const char* units, double min, double max);
-	void addConstant(const char* name, double value);
 public:
 	CDynamicModel();
 	virtual ~CDynamicModel();
-	//changed from protected to public in order to enable its use from Rope's class
-	int addStateVariable(const char* name, const char* units, double min, double max);
+
+	int addStateVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
+	int addActionVariable(const char* name, const char* units, double min, double max, bool bCircular = false);
+	void addConstant(const char* name, double value);
 
 	virtual void reset(CState *s) = 0;
 	virtual void executeAction(CState *s, const CAction *a, double dt) = 0;

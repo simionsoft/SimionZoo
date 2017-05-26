@@ -6,14 +6,10 @@
 #include "BulletPhysics.h"
 #include "BulletDisplay.h"
 #include "BulletBody.h"
+#include "world-aux-rewards.h"
 #pragma comment(lib,"opengl32.lib")
 
 #define GLEW_STATIC
-
-double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
-	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-	return distance;
-}
 
 #define TargetX 10.0
 #define TargetY 3.0
@@ -34,9 +30,12 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 
 	METADATA("World", "MoveRobotOnly");
 
-	m_rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
-	m_rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
-	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
+	m_target_X = addStateVariable("targetX", "m", -20.0, 20.0);
+	m_target_Y = addStateVariable("targetY", "m", -20.0, 20.0);
+
+	m_rob1_X = addStateVariable("rx1", "m", -20.0, 20.0);
+	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
+	m_theta = addStateVariable("theta", "rad", -3.1415, 3.1415, true);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
 	m_omega = addActionVariable("omega", "rad", -8.0, 8.0);
@@ -85,7 +84,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 		rOnlyGraphic->generateGraphics(rOnlyPhysics->getDynamicsWorld());
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new COnlyRobotReward());
+	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
@@ -163,37 +162,6 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	if (!CSimionApp::get()->isExecutedRemotely()) {
 		//rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
 	}
-}
-
-double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
-{
-	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
-	bool bEval = CSimionApp::get()->pExperiment->isEvaluationEpisode();
-	int step = CSimionApp::get()->pExperiment->getStep();
-
-	double robotAfterX = s_p->get("rx1");
-	double robotAfterY = s_p->get("ry1");
-
-	double distance = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
-
-	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
-	{
-		CSimionApp::get()->pExperiment->setTerminalState();
-		return -1;
-	}
-
-	distance = std::max(distance, 0.0001);
-	return 1 / (distance);
-}
-
-double COnlyRobotReward::getMin()
-{
-	return -1.0;
-}
-
-double COnlyRobotReward::getMax()
-{
-	return 1.0;
 }
 
 COnlyRobot::~COnlyRobot()

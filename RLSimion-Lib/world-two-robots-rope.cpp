@@ -8,12 +8,8 @@
 #include "BulletPhysics.h"
 #include "Rope.h"
 #include "BulletDisplay.h"
+#include "world-aux-rewards.h"
 #pragma comment(lib,"opengl32.lib")
-
-double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
-	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-	return distance;
-}
 
 double static getRand(double range)
 {
@@ -44,6 +40,8 @@ double static getRand(double range)
 CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 {
 	METADATA("World", "MoveRopeRobots");
+	m_target_X = addStateVariable("targetX", "m", -20.0, 20.0);
+	m_target_Y = addStateVariable("targetY", "m", -20.0, 20.0);
 
 	m_rob1_X = addStateVariable("rx1", "m", -20.0, 20.0);
 	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
@@ -53,9 +51,9 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 	m_box_X = addStateVariable("bx", "m", -20.0, 20.0);
 	m_box_Y = addStateVariable("by", "m", -20.0, 20.0);
 
-	m_theta_r1 = addStateVariable("theta1", "rad", -3.15, 3.15);
-	m_theta_r2 = addStateVariable("theta2", "rad", -3.15, 3.15);
-	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15);
+	m_theta_r1 = addStateVariable("theta1", "rad", -3.15, 3.15, true);
+	m_theta_r2 = addStateVariable("theta2", "rad", -3.15, 3.15, true);
+	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15, true);
 	m_D_BtX = addStateVariable("dBtX", "m", -20.0, 20.0);
 	m_D_BtY = addStateVariable("dBtY", "m", -20.0, 20.0);
 
@@ -131,7 +129,7 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 		robRopeViewer->generateGraphics(robRopeBuilder->getDynamicsWorld());
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CRope2RobotsReward());
+	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_box_X, m_box_Y, m_target_X, m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
@@ -173,6 +171,9 @@ void CRope2Robots::reset(CState *s)
 	s->set(m_D_BtX, fabs(s->get(m_box_X) - TargetX));
 	s->set(m_D_BtY, fabs(s->get(m_box_Y) - TargetY));
 
+	//target
+	s->set(m_target_X, TargetX);
+	s->set(m_target_Y, TargetY);
 }
 
 void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
@@ -227,41 +228,6 @@ void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)
 	if (!CSimionApp::get()->isExecutedRemotely()) {
 		robRopeViewer->drawSoftWorld(robRopeBuilder->getSoftDynamicsWorld());
 	}
-
-}
-
-double CRope2RobotsReward::getReward(const CState* s, const CAction* a, const CState* s_p)
-{
-	double boxAfterX = s_p->get("bx");
-	double boxAfterY = s_p->get("by");
-
-	double robot1X = s_p->get("rx1");
-	double robot1Y = s_p->get("ry1");
-
-	double robot2X = s_p->get("rx2");
-	double robot2Y = s_p->get("ry2");
-
-
-	if (robot1X >= 20.0 || robot1X <= -20.0 || robot1Y >= 20.0 || robot1Y <= -20.0 || robot2X >= 20.0 || robot2X <= -20.0 || robot2Y >= 20.0 || robot2Y <= -20.0)
-	{
-		CSimionApp::get()->pExperiment->setTerminalState();
-		return -1;
-	}
-	double distanceBoxTarget = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
-	if (distanceBoxTarget < 1)
-		return 1 + (1 - distanceBoxTarget);
-	else
-		return 1 / distanceBoxTarget;
-}
-
-double CRope2RobotsReward::getMin()
-{
-	return 0.0;
-}
-
-double CRope2RobotsReward::getMax()
-{
-	return 2.0;
 }
 
 CRope2Robots::~CRope2Robots()

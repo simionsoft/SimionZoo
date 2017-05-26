@@ -260,6 +260,7 @@
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
+    <ClCompile Include="world-aux-rewards.cpp" />
     <ClCompile Include="world-balancingpole.cpp" />
     <ClCompile Include="world-box1robot.cpp" />
     <ClCompile Include="world-FAST.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="vfa-critic.h" />
     <ClInclude Include="policy.h" />
     <ClInclude Include="vfa.h" />
+    <ClInclude Include="world-aux-rewards.h" />
     <ClInclude Include="world-balancingpole.h" />
     <ClInclude Include="world-box1robot.h" />
     <ClInclude Include="world-FAST.h" />
