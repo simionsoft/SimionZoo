@@ -17,7 +17,7 @@
                 <DataGridTextColumn Header="Processor" Binding="{Binding Path=FormatedProcessorInfo}" />
                 <DataGridTextColumn Header="Load" Binding="{Binding Path=ProcessorLoad}" />
                 <DataGridTextColumn Header="Memory" Binding="{Binding Path=Memory}" />
-                <DataGridTextColumn Header="CUDA" Binding="{Binding Path=Memory}" />
+                <DataGridTextColumn Header="CUDA" />
                 <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}" />
             </DataGrid.Columns>
         </DataGrid>

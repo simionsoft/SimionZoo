@@ -45,13 +45,17 @@ namespace Badger.ViewModels
             }
         }
 
-        public string ProcessorLoad { get { return m_herdAgentInfo.ProcessorLoad.ToString("0.00") + "%"; } }
+        public string ProcessorLoad { get { return m_herdAgentInfo.ProcessorLoad.ToString("0.") + "%"; } }
 
         public string Memory
         {
             get
             {
                 double totalMem = m_herdAgentInfo.Memory / 1024 / 1024;
+
+                if (totalMem >= 1024)
+                    return (totalMem / 1024).ToString("0.") + " GB";
+
                 return totalMem.ToString("0.") + " MB";
             }
         }
