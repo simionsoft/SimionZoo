@@ -35,6 +35,7 @@ namespace Badger.Data
         {
             DialogViewModel dvm = new DialogViewModel(null, message, DialogViewModel.DialogType.Info);
             var settings = SetupPopupWindow(windowHeader);
+            settings.ResizeMode = ResizeMode.NoResize;
             new WindowManager().ShowDialog(dvm, null, settings);
 
             return dvm.DialogResult;

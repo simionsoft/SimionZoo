@@ -2,12 +2,15 @@
 using Caliburn.Micro;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
 using System.Globalization;
+using System.IO;
 using System.Timers;
+using System.Windows.Markup;
 using System.Xml;
 using Herd;
 using Badger.Data;
@@ -259,7 +262,7 @@ namespace Badger.ViewModels
         private List<HerdAgentViewModel> m_herdAgentList;
         private List<MonitoredExperimentViewModel> m_pendingExperiments = new List<MonitoredExperimentViewModel>();
 
-        public ObservableCollection<MonitoredExperimentViewModel> MonitoredExperimentList { get; }
+        public ObservableCollection<MonitoredExperimentViewModel> MonitoredExperimentList { get; set; }
 
         private CancellationTokenSource m_cancelTokenSource;
 
@@ -317,39 +320,77 @@ namespace Badger.ViewModels
             LoggedExperiments.Add(newExperiment);
         }
 
-
+        /// <summary>
+        ///     Class constructor.
+        /// </summary>
+        /// <param name="freeHerdAgents"></param>
+        /// <param name="evaluationMonitor"></param>
+        /// <param name="logFunctionDelegate"></param>
         public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate, string batchFileName)
+            PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate)
         {
             m_bRunning = false;
             m_evaluationMonitor = evaluationMonitor;
             m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
             ExperimentTimer = new Stopwatch();
+        }
 
+        /// <summary>
+        ///     Initializes the experiments to be monitored through a batch file that
+        ///     contains all required data for the task.
+        /// </summary>
+        /// <param name="batchFileName">The batch file with experiment data</param>
+        public bool InitializeExperiments(string batchFileName)
+        {
             SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
 
             MonitoredExperimentList = new ObservableCollection<MonitoredExperimentViewModel>();
 
             foreach (var experiment in LoggedExperiments)
             {
+                if (!ExistsRequiredFile(experiment.ExeFile))
+                    return false;
+
                 List<string> prerequisites = new List<string>();
 
                 foreach (var prerequisite in experiment.Prerequisites)
+                {
+                    if (!ExistsRequiredFile(prerequisite.Value))
+                        return false;
+
                     prerequisites.Add(prerequisite.Value);
+                }
 
                 foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentViewModel monitoredExperiment =
-                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, evaluationMonitor);
+                        new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, m_evaluationMonitor);
                     MonitoredExperimentList.Add(monitoredExperiment);
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
             }
 
             NotifyOfPropertyChange(() => MonitoredExperimentList);
+            return true;
         }
 
+        /// <summary>
+        ///     Check whether a required file to run an experiment exits or not.
+        /// </summary>
+        /// <param name="file">The file to check</param>
+        /// <returns>A boolean value indicating the existance of the file</returns>
+        public bool ExistsRequiredFile(string file)
+        {
+            if (!File.Exists(file))
+            {
+                CaliburnUtility.ShowWarningDialog("Unable to find " + file + "."
+                    + " Experiment cannot run without this file.", "File not found");
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary>
         ///     Calculate the global progress of experiments in queue.
@@ -495,22 +536,22 @@ namespace Badger.ViewModels
 
             while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
             {
-                HerdAgentViewModel agentVM = freeHerdAgents[0];
+                HerdAgentViewModel herdAgent = freeHerdAgents[0];
                 freeHerdAgents.RemoveAt(0);
-                //usedHerdAgents.Add(agentVM);
-                int numProcessors = Math.Max(1, agentVM.NumProcessors - 1); // Let's free one processor
 
-                List<MonitoredExperimentViewModel> monitoredExperimentViewModels = new List<MonitoredExperimentViewModel>();
+                int numProcessors = Math.Max(1, herdAgent.NumProcessors - 1); // Let's free one processor
+
+                List<MonitoredExperimentViewModel> experiments = new List<MonitoredExperimentViewModel>();
                 int len = Math.Min(numProcessors, pendingExperiments.Count);
 
                 for (int i = 0; i < len; i++)
                 {
-                    monitoredExperimentViewModels.Add(pendingExperiments[0]);
+                    experiments.Add(pendingExperiments[0]);
                     pendingExperiments.RemoveAt(0);
                 }
 
-                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, monitoredExperimentViewModels,
-                    agentVM, m_evaluationMonitor, cancelToken, logFunction));
+                experimentAssignments.Add(new ExperimentBatch("batch-" + batchId, experiments,
+                    herdAgent, m_evaluationMonitor, cancelToken, logFunction));
                 ++batchId;
             }
         }

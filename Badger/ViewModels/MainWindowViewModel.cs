@@ -186,31 +186,38 @@ namespace Badger.ViewModels
         {
             lock (m_logFileLock)
             {
-                string text = DateTime.Now.ToShortDateString() + " " +
-                                DateTime.Now.ToShortTimeString() + ": " + logMessage + "\n";
+                string text = DateTime.Now.ToShortDateString() + " " 
+                    + DateTime.Now.ToShortTimeString() + ": " + logMessage + "\n";
                 FileStream file;
+
                 if (m_bFirstLog)
                 {
                     file = File.Create(logFilename);
                     m_bFirstLog = false;
                 }
-                else file = File.Open(logFilename, FileMode.Append);
-                if (file != null)
-                {
-                    file.Write(Encoding.ASCII.GetBytes(text), 0, Encoding.ASCII.GetByteCount(text));
-                    file.Close();
-                }
+                else
+                    file = File.Open(logFilename, FileMode.Append);
+
+                file.Write(Encoding.ASCII.GetBytes(text), 0, Encoding.ASCII.GetByteCount(text));
+                file.Close();
+
                 Console.WriteLine(text);
             }
         }
 
-
+        /// <summary>
+        ///     Class constructor.
+        /// </summary>
         public MainWindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-            LaunchMode = new ObservableCollection<string>() { "Batch File", "Loaded Experiment" };
+            LaunchMode = new ObservableCollection<string> { "Batch File", "Loaded Experiment" };
             SelectedLaunchMode = LaunchMode[0];
             LoadAppDefinitions();
+
+            // Check for aditional required configuration files
+            if (!File.Exists("..\\config\\definitions.xml"))
+                CaliburnUtility.ShowWarningDialog("Unable to find required configuration file.", "Fatal Error");
         }
 
 
@@ -243,7 +250,7 @@ namespace Badger.ViewModels
 
         public void SaveAllExperiments()
         {
-            SimionFileData.saveExperiments(m_experimentViewModels);
+            SimionFileData.SaveExperiments(m_experimentViewModels);
         }
 
         /// <summary>
@@ -365,7 +372,9 @@ namespace Badger.ViewModels
 
                 m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(freeHerdAgents, logToFile, batchFileName);
 
-                m_monitorWindowViewModel.RunExperiments();
+                if (!m_monitorWindowViewModel.RunExperiments())
+                    return;
+
                 IsExperimentRunning = true;
 
                 CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);

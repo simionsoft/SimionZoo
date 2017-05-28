@@ -4,27 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org"
-             xmlns:vm="clr-namespace:Badger.ViewModels"
-             xmlns:v="clr-namespace:Badger.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="150" d:DesignWidth="300"
+             Background="#EEEEEE">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <ScrollViewer.Background>
-            <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
-                <GradientStop Color="#fafafa" Offset="0"/>
-                <GradientStop Color="#fcfcfc" Offset="0.567"/>
-            </LinearGradientBrush>
-        </ScrollViewer.Background>
         <StackPanel>
-            <Label Margin="10" Foreground="Black" VerticalContentAlignment="Center"
-                   HorizontalContentAlignment="Center" x:Name="Message" FontSize="10">
-            </Label>
-            <TextBox Margin="10,0,10,0" x:Name="Text" Height="auto" Visibility="{Binding AnswerVisibility}"></TextBox>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0,10,0">
-
-
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" Focusable="True" TabIndex="1" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[Cancel()]" Visibility="{Binding CancelButtonVisibility}">CANCEL</Button>
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" Focusable="True" TabIndex="0" Width="70" Margin="5,5,0,15" cal:Message.Attach="[Event Click]=[OK()]">OK</Button>
+            <Label Margin="10" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" x:Name="Message"/>
+            <Label Margin="10,0" x:Name="Text" Visibility="{Binding AnswerVisibility}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,0">
+                <Button Focusable="True" TabIndex="0" Width="70" Margin="5,5,0,15"
+                        cal:Message.Attach="[Event Click]=[OK()]">Ok</Button>
+                <Button Focusable="True" TabIndex="1" Width="70" Margin="5,5,0,15"
+                        Visibility="{Binding CancelButtonVisibility, Converter = {StaticResource BoolToVis}}"
+                        cal:Message.Attach="[Event Click]=[Cancel()]">Cancel</Button>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

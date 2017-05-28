@@ -162,12 +162,15 @@ namespace Badger.ViewModels
         private List<deferredLoadStep> m_WorldVarRefListeners = new List<deferredLoadStep>();
         public void registerWorldVarRef(deferredLoadStep func)
         { m_WorldVarRefListeners.Add(func); }
+
         private void updateWorldDefinition()
         {
             foreach (deferredLoadStep func in m_WorldVarRefListeners)
                 func();
         }
-        public void init(string appDefinitionFileName, XmlNode configRootNode, string experimentName)
+
+
+        public void Initialize(string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
             XmlDocument appDefinition = new XmlDocument();
             appDefinition.Load(appDefinitionFileName);
@@ -186,8 +189,8 @@ namespace Badger.ViewModels
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
                     else
                     {
-                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
-                            , "ERROR");
+                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " 
+                            + XMLConfig.experimentConfigVersion, "ERROR");
                         m_version = "0.0.0.0";
                     }
 
@@ -209,6 +212,7 @@ namespace Badger.ViewModels
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
+
         private MainWindowViewModel m_parent;
         public MainWindowViewModel parent { get { return m_parent; } set { m_parent = value; } }
 
@@ -219,16 +223,15 @@ namespace Badger.ViewModels
         {
             m_parent = parentWindow;
             //Load the configFile if a configFilename is provided
-            XmlDocument configDoc = null;
             XmlNode configRootNode = null;
             if (configFilename != null)
             {
-                configDoc = new XmlDocument();
+                var configDoc = new XmlDocument();
                 configDoc.Load(configFilename);
                 configRootNode = configDoc.LastChild;
             }
 
-            init(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
+            Initialize(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
             //we remove the two extensions in "simion.exp"
         }
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
@@ -236,7 +239,7 @@ namespace Badger.ViewModels
         public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
             m_parent = parentWindow;
-            init(appDefinitionFileName, configRootNode, experimentName);
+            Initialize(appDefinitionFileName, configRootNode, experimentName);
         }
 
         private void loadIncludedDefinitionFile(string appDefinitionFile)

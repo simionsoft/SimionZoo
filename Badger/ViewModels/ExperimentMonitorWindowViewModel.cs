@@ -27,7 +27,7 @@ namespace Badger.ViewModels
         public Logger.LogFunction LogFunction { get; set; }
 
         public string BatchFileName { get; set; }
-   
+
         /// <summary>
         ///     Constructor.
         /// </summary>
@@ -37,7 +37,7 @@ namespace Badger.ViewModels
         public ExperimentMonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents,
             Logger.LogFunction logFunction, string batchFileName)
         {
-            EvaluationPlot = new PlotViewModel("Evaluation episodes") {bShowOptions = false};
+            EvaluationPlot = new PlotViewModel("Evaluation episodes") { bShowOptions = false };
             EvaluationPlot.Plot.TitleFontSize = 14;
             EvaluationPlot.properties.bLegendVisible = false;
             EvaluationPlot.setProperties();
@@ -52,16 +52,21 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="monitorProgress"></param>
         /// <param name="receiveJobResults"></param>
-        public void RunExperiments(bool monitorProgress = true, bool receiveJobResults = true)
+        public bool RunExperiments(bool monitorProgress = true, bool receiveJobResults = true)
         {
             // Clear old LineSeries to avoid confusion on visualization
             EvaluationPlot.clearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
             ExperimentQueueMonitor = new ExperimentQueueMonitorViewModel(FreeHerdAgents, EvaluationPlot,
-                LogFunction, BatchFileName);
+                LogFunction);
+
+            if (!ExperimentQueueMonitor.InitializeExperiments(BatchFileName))
+                return false;
 
             ExperimentQueueMonitor.ExperimentTimer.Start();
             Task.Run(() => ExperimentQueueMonitor.RunExperimentsAsync(monitorProgress, receiveJobResults));
+
+            return true;
         }
 
         /// <summary>

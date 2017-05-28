@@ -4,7 +4,7 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         WindowStyle="ThreeDBorderWindow"
         Width="700"
-        Height="600"
+        Height="700"
         WindowState="Normal"
         Title="Experiment Monitor"
         Icon="/badger-head.ico">
