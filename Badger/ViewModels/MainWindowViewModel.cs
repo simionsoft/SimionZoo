@@ -5,11 +5,8 @@ using Caliburn.Micro;
 using System.IO;
 using System.Collections.Generic;
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using Microsoft.VisualBasic;
 
 
 namespace Badger.ViewModels
@@ -80,7 +77,7 @@ namespace Badger.ViewModels
         }
 
         private ShepherdViewModel m_shepherdViewModel;
-        public ShepherdViewModel shepherdViewModel { get { return m_shepherdViewModel; } set { } }
+        public ShepherdViewModel ShepherdViewModel { get { return m_shepherdViewModel; } set { } }
 
         private bool m_bCanLaunchExperiment;
 
@@ -110,13 +107,13 @@ namespace Badger.ViewModels
             bool wasEmpty = !m_bIsExperimentListNotEmpty;
             if (wasEmpty != (m_experimentViewModels.Count == 0))
             {
-                m_bIsExperimentListNotEmpty = !(m_experimentViewModels.Count == 0);
+                m_bIsExperimentListNotEmpty = m_experimentViewModels.Count != 0;
                 NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
             }
         }
 
         private ObservableCollection<string> m_appNames = new ObservableCollection<string>();
-        public ObservableCollection<string> appNames { get { return m_appNames; } set { m_appNames = value; } }
+        public ObservableCollection<string> AppNames { get { return m_appNames; } set { m_appNames = value; } }
 
         public ObservableCollection<string> LaunchMode { get; set; }
 
@@ -216,6 +213,7 @@ namespace Badger.ViewModels
             LoadAppDefinitions();
         }
 
+
         private void LoadAppDefinitions()
         {
             foreach (string app in Directory.GetFiles(SimionFileData.appConfigRelativeDir))
@@ -229,7 +227,7 @@ namespace Badger.ViewModels
             }
 
             selectedAppName = m_appNames[0];
-            NotifyOfPropertyChange(() => appNames);
+            NotifyOfPropertyChange(() => AppNames);
         }
 
         public void SaveSelectedExperiment()
@@ -362,12 +360,12 @@ namespace Badger.ViewModels
                 logToFile("Running experiment queue remotely: " + experimentalUnitsCount + " experiments");
 
                 // Get available herd agents list. Inside the loop to update the list
-                shepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
+                ShepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
                 logToFile("Using " + freeHerdAgents.Count + " agents");
 
                 m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(freeHerdAgents, logToFile, batchFileName);
 
-                m_monitorWindowViewModel.RunExperiments(true, true);
+                m_monitorWindowViewModel.RunExperiments();
                 IsExperimentRunning = true;
 
                 CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);

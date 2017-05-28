@@ -31,7 +31,7 @@
             <StackPanel Grid.Row="0">
                 <TextBlock x:Name="EstimatedEndTime" TextAlignment="Center" Foreground="#424242" 
                        Margin="5,5,5,0" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
-                <ProgressBar Grid.Row="1" Grid.Column="0" x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100"
+                <ProgressBar x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100"
                          Margin="5" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
             </StackPanel>
             

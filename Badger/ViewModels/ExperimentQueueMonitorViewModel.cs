@@ -206,7 +206,6 @@ namespace Badger.ViewModels
             catch (OperationCanceledException)
             {
                 //quit remote jobs
-
                 logMessage("Cancellation requested by user");
                 m_shepherd.writeMessage(Shepherd.m_quitMessage, true);
                 await m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
@@ -405,7 +404,7 @@ namespace Badger.ViewModels
         public async void RunExperimentsAsync(bool monitorProgress, bool receiveJobResults)
         {
             m_timer = new System.Timers.Timer(1000);
-            m_timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+            m_timer.Elapsed += OnTimedEvent;
             m_timer.Enabled = true;
 
             bRunning = true;
@@ -493,8 +492,6 @@ namespace Badger.ViewModels
         {
             experimentAssignments.Clear();
             int batchId = 0;
-            List<MonitoredExperimentViewModel> monitoredExperimentViewModels =
-                new List<MonitoredExperimentViewModel>();
 
             while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
             {
@@ -503,7 +500,7 @@ namespace Badger.ViewModels
                 //usedHerdAgents.Add(agentVM);
                 int numProcessors = Math.Max(1, agentVM.NumProcessors - 1); // Let's free one processor
 
-                monitoredExperimentViewModels.Clear();
+                List<MonitoredExperimentViewModel> monitoredExperimentViewModels = new List<MonitoredExperimentViewModel>();
                 int len = Math.Min(numProcessors, pendingExperiments.Count);
 
                 for (int i = 0; i < len; i++)

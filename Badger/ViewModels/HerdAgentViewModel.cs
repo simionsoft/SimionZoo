@@ -54,7 +54,7 @@ namespace Badger.ViewModels
                 double totalMem = m_herdAgentInfo.Memory / 1024 / 1024;
 
                 if (totalMem >= 1024)
-                    return (totalMem / 1024).ToString("0.") + " GB";
+                    return (totalMem / 1024).ToString("0.0") + " GB";
 
                 return totalMem.ToString("0.") + " MB";
             }

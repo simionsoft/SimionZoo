@@ -5,7 +5,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
         WindowStyle="ThreeDBorderWindow"
-        Title="Badger" Width="900" Height="600"
+        Title="Badger" Width="960" Height="600"
         Icon="/badger-head.ico">
 
     <Window.Resources>
@@ -46,7 +46,7 @@
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
 
                 <!--Label VerticalAlignment="Center">App</-->
-                <ComboBox x:Name="appNames" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"
+                <ComboBox x:Name="AppNames" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"
                       ToolTip="Apps" Margin="5,0" Height="26" SelectedItem="{Binding selectedAppName}" />
                 <ComboBox x:Name="LaunchMode" MinWidth="140" HorizontalAlignment="Center" VerticalAlignment="Center"
                       ToolTip="Launch Modes" Margin="5,0" Height="26" SelectedItem="{Binding SelectedLaunchMode}" />
@@ -101,11 +101,11 @@
             </StackPanel>
 
             <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="5,0,0,5" BorderBrush="#BDBDBD" >
-                <ContentControl x:Name="shepherdViewModel" />
+                <ContentControl x:Name="ShepherdViewModel" />
             </Border>
 
             <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4" Background="#FAFAFA"
-                          x:Name="gridSplitter" HorizontalAlignment="Stretch" />
+                          x:Name="GridSplitter" HorizontalAlignment="Stretch" />
 
             <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
                 <Label Content="Experiment Editor" FontWeight="Medium"

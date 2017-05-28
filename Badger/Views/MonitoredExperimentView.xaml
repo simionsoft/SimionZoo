@@ -28,7 +28,7 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!--TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
