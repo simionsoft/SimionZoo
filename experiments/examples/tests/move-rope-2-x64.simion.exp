@@ -36,42 +36,42 @@
         <Type>
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
-              <Num-Features>9</Num-Features>
+              <Num-Features>20</Num-Features>
               <Variable>dBtX</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>9</Num-Features>
+              <Num-Features>20</Num-Features>
               <Variable>dBtY</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>9</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>dBr1X</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>9</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>dBr1Y</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>9</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>dBr2X</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>9</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>dBr2Y</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>4</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>theta1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>4</Num-Features>
+              <Num-Features>10</Num-Features>
               <Variable>theta2</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>

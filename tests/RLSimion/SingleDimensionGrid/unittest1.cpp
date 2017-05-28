@@ -6,7 +6,7 @@
 #include "../../../RLSimion-Lib/features.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-//#include <Windows.h>
+#include <Windows.h>
 namespace SingleDimensionGrid
 {		
 	TEST_CLASS(UnitTest1)
@@ -15,10 +15,10 @@ namespace SingleDimensionGrid
 		
 		TEST_METHOD(SingleDimensionGrid_CircularVariables)
 		{
-			//DWORD buffer[512];
-			//GetCurrentDirectory(512,(LPWSTR)buffer);
+			DWORD buffer[512];
+			GetCurrentDirectory(512,(LPWSTR)buffer);
 			CConfigFile configFile;
-			CConfigNode* pConfigNode = configFile.loadFile("..\\..\\tests\\q-learning-test.simion.exp");
+			CConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
 			int hVar= pApp->pWorld->getDynamicModel()->addStateVariable("test-angle", "rad", -3.1415, 3.1415);
 			int hVar2= pApp->pWorld->getDynamicModel()->addStateVariable("test-angle2", "rad", -3.1415, 3.1415);
