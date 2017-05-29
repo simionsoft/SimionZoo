@@ -37,7 +37,7 @@ build/
 bld/
 **/experiment-log.xml
 config/definitions.xml
-
+tmp/
 
 [Oo]bj/
 [Ii]pch/

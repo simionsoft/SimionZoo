@@ -4,6 +4,7 @@
   <RunConfiguration>  
     <MaxCpuCount>1</MaxCpuCount>  
     <!-- Path relative to solution directory -->  
+<DeploymentEnabled>false</DeploymentEnabled>
     <ResultsDirectory>.\experiments</ResultsDirectory>  
   </RunConfiguration>  
 </RunSettings>
