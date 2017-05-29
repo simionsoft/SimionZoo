@@ -76,6 +76,10 @@ namespace Badger.ViewModels
 
                 if (!job.inputFiles.Contains(task.exe))
                     job.inputFiles.Add(task.exe);
+
+                //add rename rules
+                job.renameRules = experiment.RenameRules;
+
                 //add prerrequisites
                 foreach (string pre in experiment.Prerequisites)
                     if (!job.inputFiles.Contains(pre))
@@ -346,6 +350,7 @@ namespace Badger.ViewModels
             SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
 
             MonitoredExperimentList = new ObservableCollection<MonitoredExperimentViewModel>();
+            Dictionary<string, string> renameRules = new Dictionary<string, string>();
 
             foreach (var experiment in LoggedExperiments)
             {
@@ -360,12 +365,14 @@ namespace Badger.ViewModels
                         return false;
 
                     prerequisites.Add(prerequisite.Value);
+                    if (prerequisite.Rename != null)
+                        renameRules[prerequisite.Value] = prerequisite.Rename;
                 }
 
                 foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentViewModel monitoredExperiment =
-                        new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, m_evaluationMonitor);
+                    new MonitoredExperimentViewModel(unit, experiment.ExeFile, prerequisites, renameRules, m_evaluationMonitor);
                     MonitoredExperimentList.Add(monitoredExperiment);
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
