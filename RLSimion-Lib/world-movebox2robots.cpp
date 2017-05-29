@@ -167,7 +167,7 @@ void CMoveBox2Robots::executeAction(CState *s, const CAction *a, double dt)
 	m_Robot1->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
 	m_Robot2->setAbsoluteVariables(s, m_rob2_X, m_rob2_Y);
 	
-	m_Robot1->setRelativeVariables(s, m_D_Br1X, m_D_Br1X, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
+	m_Robot1->setRelativeVariables(s, m_D_Br1X, m_D_Br1Y, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
 	m_Robot2->setRelativeVariables(s, m_D_Br2X, m_D_Br2Y, box_trans.getOrigin().getX(), box_trans.getOrigin().getZ());
 	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY, TargetX, TargetY);
 

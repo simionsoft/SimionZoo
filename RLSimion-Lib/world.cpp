@@ -9,6 +9,7 @@
 #include "world-box1robot.h"
 #include "world-movebox2robots.h"
 #include "world-two-robots-rope.h"
+#include "world-one-rope-robot.h"
 #include "world-mountaincar.h"
 #include "world-robotonly.h"
 #include "world-FAST.h"
@@ -195,7 +196,8 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 		{make_tuple("MoveBox-2Robots",CHOICE_ELEMENT_NEW<CMoveBox2Robots>,"World=MoveBox-2Robots")},
 		{make_tuple("MoveBoxOneRobot",CHOICE_ELEMENT_NEW<CMoveBoxOneRobot>,"World=MoveBoxOneRobot")},
 		{make_tuple("MoveRobotOnly",CHOICE_ELEMENT_NEW<COnlyRobot>,"World=MoveRobotOnly") },
-		{ make_tuple("MoveRopeRobots",CHOICE_ELEMENT_NEW<CRope2Robots>,"World=MoveRopeRobots") },
+		{make_tuple("MoveRopeRobots",CHOICE_ELEMENT_NEW<CRope2Robots>,"World=MoveRopeRobots") },
+		{make_tuple("MoveBoxOneRobotRope",CHOICE_ELEMENT_NEW<CRopeRobot>,"World=MoveBoxOneRobotRope") },
 		{make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") }
 	});
 }
