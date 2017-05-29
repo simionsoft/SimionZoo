@@ -3,26 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:vm="clr-namespace:Badger.ViewModels"
-            xmlns:v="clr-namespace:Badger.Views"
              xmlns:oxy="http://oxyplot.org/wpf"
-            xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="600">
+
     <UserControl.Resources>
-        <BitmapImage UriSource="/images/settings.png" x:Key="settings"/>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
             <oxy:PlotView Model="{Binding Plot}" Width="580" Height="300"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
-                <Button x:Name="showProperties" Width="25" Height="25">
-                    <Image Source="{StaticResource settings}" Width="22" Height="22"/>
+                <Button Style="{StaticResource BadgerButtonStyle}" x:Name="showProperties" Width="32" Height="32">
+                    <Image Source="{StaticResource Settings}" Opacity="0.6" Width="24" Height="24"/>
                 </Button>
-                <Button x:Name="saveImage" Width="25" Height="25">
-                    <Image Source="{StaticResource Save}" Width="22" Height="22"/>
+                <Button Style="{StaticResource BadgerButtonStyle}" x:Name="saveImage" Width="32" Height="32">
+                    <Image Source="{StaticResource Save}" Opacity="0.6" Width="24" Height="24"/>
                 </Button>
             </StackPanel>
         </StackPanel>

@@ -34,6 +34,8 @@
 
             <BitmapImage x:Key="Close" UriSource="/images/ic-close.png" />
             <BitmapImage x:Key="Delete" UriSource="/images/ic-delete.png" />
+            <BitmapImage x:Key="Error" UriSource="/images/ic-error.png" />
+            <BitmapImage x:Key="HerdAgentHead" UriSource="/images/herdagent-head.png" />
             <BitmapImage x:Key="New" UriSource="/images/ic-new.png" />
             <BitmapImage x:Key="Open" UriSource="/images/ic-open.png" />
             <BitmapImage x:Key="OpenProject" UriSource="/images/ic-open-multiple.png" />
@@ -41,6 +43,7 @@
             <BitmapImage x:Key="Plot" UriSource="/images/ic-graphic.png" />
             <BitmapImage x:Key="Save" UriSource="/images/ic-save.png" />
             <BitmapImage x:Key="SaveAll" UriSource="/images/ic-save-all.png" />
+            <BitmapImage x:Key="Settings" UriSource="/images/ic-settings.png" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

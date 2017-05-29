@@ -98,7 +98,7 @@ namespace Badger.ViewModels
             StatsViewModel newStatsViewModel;
             foreach (string variable in query.variables)
             {
-                newStatsViewModel = new StatsViewModel(variable, this);
+                newStatsViewModel = new StatsViewModel(variable);
                 int trackId = 0;
                 foreach (LogQueryResultTrackViewModel track in query.resultTracks)
                 {

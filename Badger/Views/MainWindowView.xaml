@@ -5,9 +5,7 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
         WindowStyle="ThreeDBorderWindow"
-        Width="800"
-        Height="600"
-        Title="Badger"
+        Title="Badger" Width="960" Height="600"
         Icon="/badger-head.ico">
 
     <Window.Resources>
@@ -17,14 +15,11 @@
         <DataTemplate DataType="{x:Type vm:StatsViewModel}">
             <v:StatsView/>
         </DataTemplate>
-
-        <BitmapImage x:Key="stop" UriSource="/images/stop.png" />
-        <BitmapImage x:Key="herdagent-head" UriSource="/images/herdagent-head.png" />
     </Window.Resources>
 
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="48" Width="Auto" Background="#EEEEEE">
-            <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
+        <WrapPanel DockPanel.Dock="Top" MinHeight="48" Width="Auto" Background="#EEEEEE">
+            <WrapPanel Margin="5,4">
                 <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="New Experiment"
                         Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action NewExperiment()]">
                     <Image Source="{StaticResource New}" Opacity="0.6" Width="24" Height="24" />
@@ -47,26 +42,25 @@
                         Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LoadExperiments()]">
                     <Image Source="{StaticResource OpenProject}" Opacity="0.6" Width="24" Height="24" />
                 </Button>
-            </StackPanel>
 
-            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
 
-            <!--Label VerticalAlignment="Center">App</-->
-            <ComboBox x:Name="appNames" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"
+                <!--Label VerticalAlignment="Center">App</-->
+                <ComboBox x:Name="AppNames" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"
                       ToolTip="Apps" Margin="5,0" Height="26" SelectedItem="{Binding selectedAppName}" />
-            <ComboBox x:Name="LaunchMode" MinWidth="140" HorizontalAlignment="Center" VerticalAlignment="Center"
+                <ComboBox x:Name="LaunchMode" MinWidth="140" HorizontalAlignment="Center" VerticalAlignment="Center"
                       ToolTip="Launch Modes" Margin="5,0" Height="26" SelectedItem="{Binding SelectedLaunchMode}" />
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
                         IsEnabled="{Binding Path = CanLaunchExperiment}" ToolTip="Run Experiments"
                         cal:Message.Attach="[Event Click]=[Action RunExperiments()]">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Width="24" Height="24" Margin="2,0" Source="{StaticResource Play}" />
-                        <Label Padding="0,4,7,4">Launch</Label>
-                    </StackPanel>
-                </Button>
-                <!--Button Width="100" Height="30" Margin="5"
+                        <StackPanel Orientation="Horizontal">
+                            <Image Width="24" Height="24" Margin="2,0" Source="{StaticResource Play}" />
+                            <Label Padding="0,4,7,4">Launch</Label>
+                        </StackPanel>
+                    </Button>
+                    <!--Button Width="100" Height="30" Margin="5"
                          IsEnabled="{Binding Path = IsExperimentRunning}"
                          x:Name="StopExperiments" VerticalAlignment="Top"
                             ToolTip="Stop experiments in queue">
@@ -75,18 +69,19 @@
                         <Image Width="20" Height="20" Source="{StaticResource stop}"></Image>
                     </StackPanel>
                 </Button-->
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
 
-                <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
+                    <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
                         cal:Message.Attach="[Event Click]=[Action ShowReportsWindow()]"
                         ToolTip="Generate reports from stored experiment results">
-                    <StackPanel Orientation="Horizontal" Margin="4,0">
-                        <Image Opacity="0.6" Width="22" Height="22" Source="{StaticResource Plot}" />
-                        <Label Padding="4,3">Reports</Label>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
-        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="4,0">
+                            <Image Opacity="0.6" Width="22" Height="22" Source="{StaticResource Plot}" />
+                            <Label Padding="4,3">Reports</Label>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </WrapPanel>
+        </WrapPanel>
 
         <Grid Background="#FAFAFA">
             <Grid.RowDefinitions>
@@ -97,22 +92,20 @@
                 <ColumnDefinition Width="Auto" MinWidth="15" />
                 <ColumnDefinition Width="4" />
                 <ColumnDefinition Width="5*" MinWidth="40" />
-                <!--ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="3*" MinWidth="400"/-->
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
                         HorizontalAlignment="Center" Orientation="Horizontal" >
-                <Image Width="25" Height="25" Margin="5" Source="{StaticResource herdagent-head}"/>
+                <Image Width="25" Height="25" Margin="5" Source="{StaticResource HerdAgentHead}"/>
                 <Label FontWeight="Medium" VerticalAlignment="Center">Herd Agents</Label>
             </StackPanel>
 
             <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="5,0,0,5" BorderBrush="#BDBDBD" >
-                <ContentControl x:Name="shepherdViewModel" />
+                <ContentControl x:Name="ShepherdViewModel" />
             </Border>
 
             <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4" Background="#FAFAFA"
-                          x:Name="gridSplitter" HorizontalAlignment="Stretch" />
+                          x:Name="GridSplitter" HorizontalAlignment="Stretch" />
 
             <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
                 <Label Content="Experiment Editor" FontWeight="Medium"
@@ -135,17 +128,6 @@
                     </DataTemplate>
                 </TabControl.ItemTemplate>
             </TabControl>
-
-            <!--GridSplitter Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Width="4"
-                              x:Name="gridSplitter2" HorizontalAlignment="Stretch" />
-                
-                <StackPanel Grid.Row="0" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label Content="Experiment Monitor" FontSize="14" FontWeight="Medium" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <Border Grid.Row="1" Grid.Column="4" BorderThickness="1" BorderBrush="#BDBDBD" >
-                    <ContentControl  x:Name="monitorWindowViewModel" />
-                </Border-->
         </Grid>
     </DockPanel>
 </Window>

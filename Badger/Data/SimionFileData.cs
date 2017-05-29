@@ -4,8 +4,10 @@ using System.IO;
 using System.Xml;
 using Badger.ViewModels;
 using System.Windows.Forms;
+using Badger.Properties;
 using Badger.Simion;
 using Caliburn.Micro;
+
 
 namespace Badger.Data
 {
@@ -19,7 +21,7 @@ namespace Badger.Data
         public const string imageRelativeDir = "..\\" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
 
-        public delegate void logFunction(string message);
+        public delegate void LogFunction(string message);
         public delegate void XmlNodeFunction(XmlNode node);
 
         /// <summary>
@@ -31,7 +33,7 @@ namespace Badger.Data
         {
             if (string.IsNullOrEmpty(batchFilename))
             {
-                bool isOpen = OpenFile(ref batchFilename, "Experiment batch | *.", XMLConfig.experimentBatchExtension);
+                bool isOpen = OpenFile(ref batchFilename, Resources.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
                 if (!isOpen)
                     return null;
             }
@@ -41,7 +43,7 @@ namespace Badger.Data
             batchDoc.Load(batchFilename);
             XmlElement fileRoot = batchDoc.DocumentElement;
 
-            if (fileRoot.Name == XMLConfig.experimentBatchNodeTag)
+            if (fileRoot != null && fileRoot.Name == XMLConfig.experimentBatchNodeTag)
             {
                 foreach (XmlNode experiment in fileRoot.ChildNodes)
                 {
@@ -68,7 +70,7 @@ namespace Badger.Data
         /// <param name="log"></param>
         /// <returns></returns>
         public static int SaveExperimentBatchFile(BindableCollection<ExperimentViewModel> experiments,
-            ref string batchFilename, logFunction log)
+            ref string batchFilename, LogFunction log)
         {
             int experimentalUnitsCount = 0;
 
@@ -90,14 +92,7 @@ namespace Badger.Data
             if (batchFilename == "")
             {
                 //Save dialog -> returns the experiment batch file
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Experiment batch | *." + XMLConfig.experimentBatchExtension;
-                sfd.InitialDirectory = experimentRelativeDir;
-                string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
-                if (!Directory.Exists(CombinedPath))
-                    Directory.CreateDirectory(CombinedPath);
-                sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
-
+                var sfd = SaveFile(Resources.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     batchFilename = sfd.FileName;
@@ -185,25 +180,17 @@ namespace Badger.Data
             return experimentalUnitsCount;
         }
 
+
         //BADGER project: LOAD
         static public void loadExperiments(MainWindowViewModel parentWindow,
             ref BindableCollection<ExperimentViewModel> experiments,
-            Dictionary<string, string> appDefinitions, logFunction log)
+            Dictionary<string, string> appDefinitions, LogFunction log)
         {
             string fileDoc = null;
-            bool isOpen = OpenFile(ref fileDoc, "Badger project | *.", XMLConfig.badgerProjectExtension);
+            bool isOpen = OpenFile(ref fileDoc, Resources.BadgerProjectFilter, XMLConfig.badgerProjectExtension);
             if (!isOpen)
                 return;
-            /*
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Badger project | *." + XMLConfig.badgerProjectExtension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                fileDoc = ofd.FileName;
-            }
-            else return;
-            */
+
             XmlDocument badgerDoc = new XmlDocument();
             badgerDoc.Load(fileDoc);
             XmlElement fileRoot = badgerDoc.DocumentElement;
@@ -213,6 +200,7 @@ namespace Badger.Data
                 log("ERROR: malformed XML in experiment badger project file.");
                 return;
             }
+
             XmlNode configNode;
             foreach (XmlNode experiment in fileRoot.ChildNodes)
             {
@@ -229,8 +217,13 @@ namespace Badger.Data
                 }
             }
         }
-        //BADGER project: SAVE
-        static public void saveExperiments(BindableCollection<ExperimentViewModel> experiments)
+
+        /// <summary>
+        ///     Save multiple experiments as a Badger project. Useful when we need to load a bunch
+        ///     of experiments later.
+        /// </summary>
+        /// <param name="experiments"></param>
+        static public void SaveExperiments(BindableCollection<ExperimentViewModel> experiments)
         {
             foreach (ExperimentViewModel experiment in experiments)
             {
@@ -241,12 +234,8 @@ namespace Badger.Data
                     return;
                 }
             }
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Badger project | *." + XMLConfig.badgerProjectExtension;
-            string CombinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
-            if (!Directory.Exists(CombinedPath))
-                Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = Path.GetFullPath(CombinedPath);
+
+            var sfd = SaveFile(Resources.BadgerProjectFilter, XMLConfig.badgerProjectExtension);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string leftSpace;
@@ -273,21 +262,21 @@ namespace Badger.Data
         }
 
         //EXPERIMENT file: LOAD
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentWindow"></param>
+        /// <param name="appDefinitions"></param>
+        /// <returns></returns>
         static public ExperimentViewModel LoadExperiment(MainWindowViewModel parentWindow,
             Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
-            ofd.InitialDirectory = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), "experiments");
+            bool isOpen = OpenFile(ref fileDoc, Resources.ExperimentFilter, XMLConfig.experimentExtension);
+            if (!isOpen)
+                return null;
 
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                fileDoc = ofd.FileName;
-            }
-            else return null;
-
-            //open the config file to retrive the app's name before loading it
+            // Open the config file to retrive the app's name before loading it
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
@@ -305,18 +294,9 @@ namespace Badger.Data
                 return;
             }
 
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Experiment | *." + XMLConfig.experimentExtension;
-            sfd.InitialDirectory = experimentRelativeDir;
-            string CombinedPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
-            if (!Directory.Exists(CombinedPath))
-                System.IO.Directory.CreateDirectory(CombinedPath);
-            sfd.InitialDirectory = System.IO.Path.GetFullPath(CombinedPath);
-
-            if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
+            var sfd = SaveFile(Resources.ExperimentFilter, XMLConfig.experimentExtension);
+            if (sfd.ShowDialog() == DialogResult.OK)
                 experiment.save(sfd.FileName, SaveMode.AsExperiment);
-            }
         }
 
         static public string getLogDescriptorsFilePath(string logDescriptorFilePath)
@@ -339,6 +319,7 @@ namespace Badger.Data
             return "";
         }
 
+
         static public string getLogFilePath(string experimentConfigFilePath)
         {
             if (experimentConfigFilePath != "")
@@ -359,7 +340,33 @@ namespace Badger.Data
             return "";
         }
 
-        public static bool OpenFile(ref string batchFileName, string filterPrefix, string extension)
+        /// <summary>
+        ///     Show a dialog used to save a file with an specific extension.
+        /// </summary>
+        /// <param name="filterPrefix"></param>
+        /// <param name="extension">The extension of the file</param>
+        /// <returns></returns>
+        private static SaveFileDialog SaveFile(string filterPrefix, string extension)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = filterPrefix + extension;
+            string combinedPath = Path.Combine(Directory.GetCurrentDirectory(), experimentRelativeDir);
+
+            if (!Directory.Exists(combinedPath))
+                Directory.CreateDirectory(combinedPath);
+
+            sfd.InitialDirectory = Path.GetFullPath(combinedPath);
+            return sfd;
+        }
+
+        /// <summary>
+        ///     Open a file that fulfills the requirements passed as parameters.
+        /// </summary>
+        /// <param name="fileName">The name of the file</param>
+        /// <param name="filterPrefix"></param>
+        /// <param name="extension">The extension of the file</param>
+        /// <returns>Wheter the file was successfully open or not</returns>
+        public static bool OpenFile(ref string fileName, string filterPrefix, string extension)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = filterPrefix + extension;
@@ -367,7 +374,7 @@ namespace Badger.Data
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                batchFileName = ofd.FileName;
+                fileName = ofd.FileName;
                 return true;
             }
 

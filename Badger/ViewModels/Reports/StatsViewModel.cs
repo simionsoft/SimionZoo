@@ -13,7 +13,6 @@ namespace Badger.ViewModels
         private ObservableCollection<StatViewModel> m_stats = new ObservableCollection<StatViewModel>();
         public ObservableCollection<StatViewModel> stats { get { return m_stats; } set { } }
 
-        private ReportViewModel m_parent;
         private string m_variable;
         public string variable
         {
@@ -21,10 +20,9 @@ namespace Badger.ViewModels
             set { m_variable = value;  NotifyOfPropertyChange(() => variable); }
         }
 
-        public StatsViewModel(string variableName,ReportViewModel parent)
+        public StatsViewModel(string variableName)
         {
             m_variable = variableName;
-            m_parent = parent;
         }
 
         public void addStat(StatViewModel newStat)

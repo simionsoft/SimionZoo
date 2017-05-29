@@ -42,22 +42,21 @@ namespace Badger.ViewModels
         {
             //header
             if (mode == SaveMode.AsProject)
-                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + ">" + configNode.content + "/>");
+                writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + ">" + configNode.content + ">");
 
             if (mode == SaveMode.ForkHierarchy)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag
-                    + " " + XMLConfig.valueAttribute + "=\"" + configNode.content + "\" />");
+                    + " " + XMLConfig.valueAttribute + "=\"" + configNode.content + "\">");
 
             if (mode == SaveMode.AsExperiment)
                 writer.WriteLine(leftSpace + "<" + XMLConfig.forkValueTag + " "
-                    + XMLConfig.nameAttribute + "=\"" + name + "\" />");
+                    + XMLConfig.nameAttribute + "=\"" + name + "\">");
             //body: children
             configNode.outputXML(writer, mode, leftSpace + "\t");
-            /*
+            
             //footer
             if (mode == SaveMode.AsExperiment || mode == SaveMode.ForkHierarchy)
                 writer.WriteLine(leftSpace + "</" + XMLConfig.forkValueTag + ">");
-            */
         }
 
         public override bool validate()

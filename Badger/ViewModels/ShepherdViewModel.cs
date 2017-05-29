@@ -45,10 +45,10 @@ namespace Badger.ViewModels
                 outList.Clear();
                 foreach (HerdAgentInfo agent in m_innerHerdAgentList)
                 {
-                    if (agent.isAvailable)
+                    if (agent.IsAvailable)
                     {
                         outList.Add(new HerdAgentViewModel(agent));
-                        numAvailableCores += agent.numProcessors;
+                        numAvailableCores += agent.NumProcessors;
                     }
                 }
             }
