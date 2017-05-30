@@ -1,14 +1,13 @@
 #pragma once
 
 #include "world.h"
-#include "reward.h"
 #define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
 class Robot;
 class BulletBody;
-class SimpleOpenGL3App;
-class BulletBuilder;
+class BulletGraphic;
+class BulletPhysics;
 
 //Move box with 2 robots
 class COnlyRobot : public CDynamicModel
@@ -19,6 +18,7 @@ class COnlyRobot : public CDynamicModel
 	double MASS_GROUND;
 
 	/// State variables
+	int m_target_X, m_target_Y;
 	int m_rob1_X, m_rob1_Y;
 	int m_omega;
 	int m_theta;
@@ -27,10 +27,10 @@ class COnlyRobot : public CDynamicModel
 	int m_linear_vel;
 
 	///inicialización
-	SimpleOpenGL3App* app;
-	BulletBuilder* robotOnlyGraphs;
+	BulletPhysics* rOnlyPhysics;
+	BulletGraphic* rOnlyGraphic;
 
-	BulletBody* robot_bb;
+	Robot* robot_bb;
 	BulletBody* ground_bb;
 	BulletBody* target_bb;
 
@@ -43,11 +43,3 @@ public:
 
 };
 
-class COnlyRobotReward : public IRewardComponent
-{
-public:
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
-	const char* getName() { return "reward"; }
-	double getMin();
-	double getMax();
-};

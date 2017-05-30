@@ -57,7 +57,7 @@ void CDeterministicPolicyGaussianNoise::getNaturalGradient(const CState* s, cons
 	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
 	m_pDeterministicVFA->getFeatures(s, pOutGradient);
 
-	double sigma = std::max(0.0000001,m_pExpNoise->getSigma());
+	double sigma = std::max(0.0000001,m_pExpNoise->getVariance());
 
 	double noise = a->get(m_outputActionIndex.get()) 
 		- m_pDeterministicVFA->get((const CFeatureList*)pOutGradient);

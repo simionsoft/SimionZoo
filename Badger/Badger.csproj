@@ -169,9 +169,6 @@
     <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
       <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\HerdAgentView.xaml.cs">
-      <DependentUpon>HerdAgentView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ExperimentMonitorWindowView.xaml.cs">
       <DependentUpon>ExperimentMonitorWindowView.xaml</DependentUpon>
     </Compile>
@@ -320,10 +317,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\HerdAgentView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\ExperimentMonitorWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -337,10 +330,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Reports\ReportView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Reports\StatView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -380,9 +369,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\right-arrow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\right.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\save-all.png">
@@ -434,17 +420,9 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\new.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\spreadsheet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\settings.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\ic-play-arrow.png" />
@@ -478,6 +456,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\ic-settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\ic-error.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

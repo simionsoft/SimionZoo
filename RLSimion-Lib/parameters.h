@@ -101,7 +101,7 @@ public:
 		initValue(pConfigNode, m_value);
 	}
 
-	DataType& get() { return m_value; }
+	DataType get() const { return m_value; }
 	void set(DataType value) { m_value = value; }
 };
 
@@ -140,6 +140,7 @@ public:
 
 	STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
+	void set(int hVar) { m_hVariable = hVar; }
 };
 
 class ACTION_VARIABLE

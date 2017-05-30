@@ -16,10 +16,11 @@ namespace Badger.ViewModels
         public string PipeName { get { return m_loggedExperimentalUnit.name; } }
         public string Name { get { return m_loggedExperimentalUnit.name; } }
         public string FilePath { get { return m_loggedExperimentalUnit.experimentFilePath; } }
-
+        
         public string ExeFile { get; set; }
 
         public List<string> Prerequisites { get; set; }
+        public Dictionary<string, string> RenameRules;
 
         public List<string> Forks { get; set; }
 
@@ -128,11 +129,12 @@ namespace Badger.ViewModels
 
 
         public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
-           List<string> prerequisites, PlotViewModel plot)
+           List<string> prerequisites, Dictionary<string,string> renameRules,PlotViewModel plot)
         {
             m_loggedExperimentalUnit = expUnit;
             ExeFile = exeFile;
             Prerequisites = prerequisites;
+            RenameRules = renameRules;
             Forks = expUnit.forkValues.Select(k => k.Key + ": " + k.Value).ToList();
             m_plotEvaluationMonitor = plot;
         }

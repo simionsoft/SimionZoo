@@ -2,57 +2,51 @@
 #include "world-box1robot.h"
 #include "app.h"
 #include "noise.h"
-#include  "GraphicSettings.h"
+#include "BulletPhysics.h"
+#include "BulletDisplay.h"
 #include "BulletBody.h"
+#include "Box.h"
+#include "Robot.h"
+#include "world-aux-rewards.h"
 #pragma comment(lib,"opengl32.lib")
 
-
-double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
-	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-	return distance;
-}
-
-double static getDistanceOneDimension(double x1, double x2) {
-	double dist = x2 - x1;
-	if (dist < 0)
-	{
-		dist = dist * (-1);
-	}
-	return dist;
+double static getRand(double range)
+{
+	return (-range*0.5) + (range)*getRandomValue();
 }
 
 #define TargetX 10.0
 #define TargetY 3.0
 
 #define ground_x 0.0
-#define ground_y -50.0
+#define ground_y -1.0
 #define ground_z 0.0 
 
 #define robotOrigin_x 0.0
 #define robotOrigin_y 0.0
 
 #define boxOrigin_x 3.0
-#define boxOrigin_y 2.0
+#define boxOrigin_y 0.0
 
 #define theta_o 0.0
-
-OpenGLGuiHelper *guiHelper;
-CommonExampleOptions *opt;
 
 CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 {
 	METADATA("World", "MoveBoxOneRobot");
 
-	m_rob1_X = addStateVariable("rx1", "m", -20.0, 20.0);
-	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
-	m_box_X = addStateVariable("bx", "m", -20.0, 20.0);
-	m_box_Y = addStateVariable("by", "m", -20.0, 20.0);
+	m_target_X = addStateVariable("targetX", "m", -20.0, 20.0);
+	m_target_Y = addStateVariable("targetY", "m", -20.0, 20.0);
+	m_rob1_X = addStateVariable("rx1", "m", -10.0, 10.0);
+	m_rob1_Y = addStateVariable("ry1", "m", -10.0, 10.0);
+	m_box_X = addStateVariable("bx", "m", -10.0, 10.0);
+	m_box_Y = addStateVariable("by", "m", -10.0, 10.0);
 
-	m_D_BrX = addStateVariable("dBrX", "m", -20.0, 20.0);
-	m_D_BrY = addStateVariable("dBrY", "m", -20.0, 20.0);
-	m_D_BtX = addStateVariable("dBtX", "m", -20.0, 20.0);
-	m_D_BtY = addStateVariable("dBtY", "m", -20.0, 20.0);
-	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
+	m_D_BrX = addStateVariable("dBrX", "m", -10.0, 10.0);
+	m_D_BrY = addStateVariable("dBrY", "m", -10.0, 10.0);
+	m_D_BtX = addStateVariable("dBtX", "m", -10.0, 10.0);
+	m_D_BtY = addStateVariable("dBtY", "m", -10.0, 10.0);
+	m_theta = addStateVariable("theta", "rad", -3.15, 3.15, true);
+	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15, true);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
 	m_omega = addActionVariable("omega", "rad/s", -8.0, 8.0);
@@ -62,210 +56,160 @@ CMoveBoxOneRobot::CMoveBoxOneRobot(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	window = new SimpleOpenGL3App("Graphic Bullet One Robot Interface", 1024, 768, true);
+	rBoxPhysics = new BulletPhysics();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics = new BulletGraphic();
 
-	///Graphic init
-	guiHelper = new OpenGLGuiHelper(window, false);
-	opt = new CommonExampleOptions(guiHelper);
-
-	rBoxBuilder = new BulletBuilder(opt->m_guiHelper);
-	rBoxBuilder->initializeBulletRequirements();
-	rBoxBuilder->setOpenGLApp(window);
+	rBoxPhysics->initPhysics();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics->setDebugger(rBoxPhysics->getDynamicsWorld());
 
 	///Creating static object, ground
 	{
-		m_Ground = new BulletBody(MASS_GROUND, ground_x, ground_y, ground_z, new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))), false);
-		rBoxBuilder->getCollisionShape().push_back(m_Ground->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Ground->getBody());
+		m_Ground = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), new btBoxShape(btVector3(btScalar(20.), btScalar(1.), btScalar(20.))), false);
+		rBoxPhysics->getCollisionShape().push_back(m_Ground->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Ground->getBody());
+	}
+	///Creating static object, walls
+	{
+		m_pWall1 = new BulletBody(MASS_GROUND, btVector3(12.0, 1.0, 0.0), new btBoxShape(btVector3(1.0, 2.0, 13.)), false);
+		rBoxPhysics->getCollisionShape().push_back(m_pWall1->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall1->getBody());
+		m_pWall2 = new BulletBody(MASS_GROUND, btVector3(-12.0, 1.0, 0.0), new btBoxShape(btVector3(1.0, 2.0, 13.)), false);
+		rBoxPhysics->getCollisionShape().push_back(m_pWall2->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall2->getBody());
+		m_pWall3 = new BulletBody(MASS_GROUND, btVector3(1.0, 1.0, 12.0), new btBoxShape(btVector3(12.0, 2.0, 1.0)), false);
+		rBoxPhysics->getCollisionShape().push_back(m_pWall3->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall3->getBody());
+		m_pWall4 = new BulletBody(MASS_GROUND, btVector3(1.0, 1.0, -12.0), new btBoxShape(btVector3(12.0, 2.0, 1.0)), false);
+		rBoxPhysics->getCollisionShape().push_back(m_pWall4->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_pWall4->getBody());
 	}
 
 	/// Creating target point, static
 	{
-		m_Target = new BulletBody(MASS_TARGET, TargetX, 0, TargetY, new btConeShape(btScalar(0.5), btScalar(0.001)), false);
+		m_Target = new BulletBody(MASS_TARGET, btVector3(TargetX, 0.001, TargetY), new btConeShape(0.5, 0.001), false);
 		m_Target->getBody()->setCollisionFlags(m_Target->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-		rBoxBuilder->getCollisionShape().push_back(m_Target->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Target->getBody());
+		rBoxPhysics->getCollisionShape().push_back(m_Target->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Target->getBody());
 	}
 
 	///Creating dynamic box
 	{
-		m_Box = new BulletBody(MASS_BOX, boxOrigin_x, 0, boxOrigin_y, new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))), true);
-		rBoxBuilder->getCollisionShape().push_back(m_Box->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Box->getBody());
+		m_Box = new Box(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(0.6, 0.6, 0.6)), true);
+		rBoxPhysics->getCollisionShape().push_back(m_Box->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Box->getBody());
 	}
 
 	///creating a dynamic robot  
 	{
-		m_Robot = new BulletBody(MASS_ROBOT, robotOrigin_x, 0, robotOrigin_y, new btSphereShape(btScalar(0.5)), true);
-		rBoxBuilder->getCollisionShape().push_back(m_Robot->getShape());
-		rBoxBuilder->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
+		m_Robot = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5), true);
+		rBoxPhysics->getCollisionShape().push_back(m_Robot->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
 	}
 
-	o_distBrX = getDistanceOneDimension(robotOrigin_x, boxOrigin_x);
-	o_distBrY = getDistanceOneDimension(robotOrigin_y, boxOrigin_y);
-	o_distBtX = getDistanceOneDimension(boxOrigin_x, TargetX);
-	o_distBtY = getDistanceOneDimension(boxOrigin_y, TargetY);
-
 	///Graphic init
-	rBoxBuilder->generateGraphics(rBoxBuilder->getGuiHelper());
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics->generateGraphics(rBoxPhysics->getDynamicsWorld());
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CMoveBoxOneRobotReward());
+	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_box_X,m_box_Y,m_target_X,m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
+
 void CMoveBoxOneRobot::reset(CState *s)
 {
-	btTransform robotTransform;
-	btTransform boxTransform;
-	btTransform targetTransform;
-	btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
-
-
+	if (1)//CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		m_Robot->getBody()->clearForces();
-		btVector3 zeroVector(0, 0, 0);
-		m_Robot->getBody()->setLinearVelocity(zeroVector);
-		m_Robot->getBody()->setAngularVelocity(zeroVector);
-
-
-		m_Robot->getBody()->getMotionState()->getWorldTransform(robotTransform);
-		m_Box->getBody()->getMotionState()->getWorldTransform(boxTransform);
-		m_Target->getBody()->getMotionState()->getWorldTransform(targetTransform);
-
-		/// reset robot
-		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		m_Robot->getBody()->setWorldTransform(robotTransform);
-		m_Robot->getBody()->getMotionState()->setWorldTransform(robotTransform);
-
-		///reset box
-		boxTransform.setOrigin(btVector3(boxOrigin_x, 0.0, boxOrigin_y));
-		boxTransform.setRotation(orientation);
-		m_Box->getBody()->setWorldTransform(boxTransform);
-		m_Box->getBody()->getMotionState()->setWorldTransform(boxTransform);
-
-		/////reset target (maybe not necessary)
-		targetTransform.setOrigin(btVector3(TargetX, 0.0, TargetY));
-		m_Target->getBody()->setWorldTransform(targetTransform);
-		m_Target->getBody()->getMotionState()->setWorldTransform(targetTransform);
+		m_Box->reset(s, boxOrigin_x, boxOrigin_y, m_box_X, m_box_Y);
+		m_Robot->reset(s, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
 
 		///set initial values to state variables
-
-		s->set(m_D_BrX, o_distBrX);
-		s->set(m_D_BrY, o_distBrY);
-		s->set(m_D_BtX, o_distBtX);
-		s->set(m_D_BtY, o_distBtY);
-
-		///set initial values to state variables
-		s->set(m_rob1_X, robotOrigin_x);
-		s->set(m_rob1_Y, robotOrigin_y);
-		s->set(m_box_X, boxOrigin_x);
-		s->set(m_box_Y, boxOrigin_y);
 		s->set(m_theta, theta_o);
+		s->set(m_boxTheta, 0.0);
 	}
+	else
+	{
+		double boxOrX = boxOrigin_x + getRand(2.0);
+		double boxOrY = boxOrigin_y + getRand(2.0);
+		double robOrX = robotOrigin_x + getRand(2.0);
+		double robOrY = robotOrigin_y + getRand(2.0);
+
+		m_Box->reset(s, boxOrX, boxOrY, m_box_X, m_box_Y);
+		m_Robot->reset(s, robOrX, robOrY, m_rob1_X, m_rob1_Y);
+
+		s->set(m_theta, theta_o + getRand(1.0));
+		s->set(m_boxTheta, 0.0);
+	}
+
+	//set relative coordinates
+	s->set(m_D_BrX, fabs(s->get(m_box_X) - s->get(m_rob1_X)));
+	s->set(m_D_BrY, fabs(s->get(m_box_Y) - s->get(m_rob1_Y)));
+	s->set(m_D_BtX, fabs(s->get(m_box_X) - TargetX));
+	s->set(m_D_BtY, fabs(s->get(m_box_Y) - TargetY));
+
+	//target
+	s->set(m_target_X, TargetX);
+	s->set(m_target_Y, TargetY);
 }
 
 void CMoveBoxOneRobot::executeAction(CState *s, const CAction *a, double dt)
 {
-	btTransform box_trans;
-	btTransform rob_trans;
-	double rob_VelX, rob_VelY;
-
-	double omega = a->get("omega");
-	double linear_vel = a->get("v");
-
-	double theta = s->get(m_theta);
-	theta += omega*dt;
-
-	if (theta > SIMD_2_PI)
-		theta -= SIMD_2_PI;
-	if (theta < -SIMD_2_PI)
-		theta += SIMD_2_PI;
-
-	rob_VelX = cos(theta)*linear_vel;
-	rob_VelY = sin(theta)*linear_vel;
-
-	m_Robot->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
-	m_Robot->getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
-
+	double theta;
+	theta = m_Robot->updateRobotMovement(a, s, "omega", "v", m_theta, dt);
+	
 	//Execute simulation
-	rBoxBuilder->getDynamicsWorld()->stepSimulation(dt, 20);
+	rBoxPhysics->getDynamicsWorld()->stepSimulation(dt, 20);
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rBoxGraphics->updateCamera();
 
 	//Update
-	{
-		m_Box->getBody()->getMotionState()->getWorldTransform(box_trans);
-		m_Robot->getBody()->getMotionState()->getWorldTransform(rob_trans);
 
-		s->set(m_box_X, float(box_trans.getOrigin().getX()));
-		s->set(m_box_Y, float(box_trans.getOrigin().getZ()));
+	btTransform box_trans = m_Box->setAbsoluteVariables(s, m_box_X, m_box_Y);
+	m_Robot->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
+		
+	m_Robot->setRelativeVariables(s, m_D_BrX, m_D_BrY, box_trans.getOrigin().getX(),box_trans.getOrigin().getZ());
+	m_Box->setRelativeVariables(s, m_D_BtX, m_D_BtY,TargetX, TargetY);
 
-		s->set(m_rob1_X, double(rob_trans.getOrigin().getX()));
-		s->set(m_rob1_Y, double(rob_trans.getOrigin().getZ()));
-
-		s->set(m_D_BrX, getDistanceOneDimension(rob_trans.getOrigin().getX(), box_trans.getOrigin().getX()));
-		s->set(m_D_BrY, getDistanceOneDimension(rob_trans.getOrigin().getZ(), box_trans.getOrigin().getZ()));
-
-		s->set(m_D_BtX, getDistanceOneDimension(TargetX, box_trans.getOrigin().getX()));
-		s->set(m_D_BtY, getDistanceOneDimension(TargetY, box_trans.getOrigin().getZ()));
-
-		s->set(m_theta, theta);
-	}
+	s->set(m_theta, theta);
+	btTransform boxTransform;
+	m_Box->getBody()->getMotionState()->getWorldTransform(boxTransform);
+	btScalar yaw, pitch, roll;
+	boxTransform.getBasis().getEulerYPR(yaw,pitch,roll);
+	if (pitch < SIMD_2_PI) pitch += SIMD_2_PI;
+	else if (pitch > SIMD_2_PI) pitch -= SIMD_2_PI;
+	s->set(m_boxTheta, (double)yaw);
 
 	//draw
-	btVector3 printPosition = btVector3(rob_trans.getOrigin().getX(), rob_trans.getOrigin().getY() + 5, rob_trans.getOrigin().getZ());
+	btVector3 printPosition = btVector3(TargetX, 5, TargetY);
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		rBoxBuilder->drawText3D("Evaluation episode", printPosition);
-		rBoxBuilder->draw();
+		if (!CSimionApp::get()->isExecutedRemotely())
+		{
+			rBoxGraphics->drawText3D("Evaluation episode", printPosition);
+			rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
+		}
 	}
 	else
 	{
-		rBoxBuilder->drawText3D("Training episode", printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+			rBoxGraphics->drawText3D("Training episode", printPosition);
 	}
-	if (!CSimionApp::get()->isExecutedRemotely()) {
-		//rBoxBuilder->draw();
-	}
-
-}
-#define BOX_ROBOT_REWARD_WEIGHT 1.0
-#define BOX_TARGET_REWARD_WEIGHT 3.0
-double CMoveBoxOneRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
-{
-	double boxAfterX = s_p->get("bx");
-	double boxAfterY = s_p->get("by");
-
-	double robotAfterX = s_p->get("rx1");
-	double robotAfterY = s_p->get("ry1");
-
-	double distanceBoxTarget = getDistanceBetweenPoints(TargetX, TargetY, boxAfterX, boxAfterY);
-	double distanceBoxRobot = getDistanceBetweenPoints(robotAfterX, robotAfterY, boxAfterX, boxAfterY);
-
-	if (robotAfterX >= 40.0 || robotAfterX <= -40.0 || robotAfterY >= 40.0 || robotAfterY <= -40.0)
+	if (!CSimionApp::get()->isExecutedRemotely())
 	{
-		CSimionApp::get()->pExperiment->setTerminalState();
-		return -1;
+		//rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
 	}
-	distanceBoxRobot = std::max(distanceBoxRobot, 0.0001);
-	distanceBoxTarget = std::max(distanceBoxTarget, 0.0001);
-
-	double rewardBoxRobot = std::min(BOX_ROBOT_REWARD_WEIGHT*2.0, BOX_ROBOT_REWARD_WEIGHT / distanceBoxRobot);
-	double rewardBoxTarget = std::min(BOX_TARGET_REWARD_WEIGHT*2.0, BOX_TARGET_REWARD_WEIGHT / distanceBoxTarget);
-	return rewardBoxRobot + rewardBoxTarget;
-
-}
-
-double CMoveBoxOneRobotReward::getMin()
-{
-	return -1.0;
-}
-
-double CMoveBoxOneRobotReward::getMax()
-{
-	return 10.0;
 }
 
 CMoveBoxOneRobot::~CMoveBoxOneRobot()
 {
-	delete opt;
-	delete guiHelper;
+	delete m_Ground;
+	delete m_Robot;
+	delete m_Box;
+	delete m_Target;
+	delete m_pWall1;
+	delete m_pWall2;
+	delete m_pWall3;
+	delete m_pWall4;
 }

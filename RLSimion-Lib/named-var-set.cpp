@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "named-var-set.h"
 
-CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, double min, double max)
+CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
 	sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
 	m_min = min;
 	m_max = max;
+	m_bCircular = bCircular; //default value
 }
 
 void CNamedVarProperties::setName(const char* name)
@@ -24,10 +25,10 @@ int CDescriptor::getVarIndex(const char* name)
 	return -1; //error return value
 }
 
-int CDescriptor::addVariable(const char* name, const char* units, double min, double max)
+int CDescriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	int index = (int) m_pProperties.size();
-	m_pProperties.push_back(new CNamedVarProperties(name, units, min, max));
+	m_pProperties.push_back(new CNamedVarProperties(name, units, min, max, bCircular));
 	return index;
 }
 
@@ -105,8 +106,19 @@ void CNamedVarSet::set(int i, double value)
 {
 	if (i >= 0 && i < m_numVars)
 	{
-		m_pValues[i] = std::min(m_pProperties[i].getMax()
-			, std::max(m_pProperties[i].getMin(), value));
+		if (!m_pProperties[i].bIsCircular())
+		{
+			m_pValues[i] = std::min(m_pProperties[i].getMax()
+				, std::max(m_pProperties[i].getMin(), value));
+		}
+		else
+		{
+			if (value > m_pProperties[i].getMax())
+				value -= m_pProperties[i].getRangeWidth();
+			else if (value < m_pProperties[i].getMin())
+				value += m_pProperties[i].getRangeWidth();
+			m_pValues[i] = value;
+		}
 	}
 }
 

@@ -10,16 +10,18 @@ class CConfigNode;
 class CConfigFile;
 
 #include "parameters.h"
-#include "delayed-load.h"
-#include <memory>
+#include "deferred-load.h"
+class IMemBuffer;
+
 //CLinearVFA////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 
 class CLinearVFA
 {
 protected:
-	std::shared_ptr<double> m_pFrozenWeights = nullptr;
-	std::shared_ptr<double> m_pWeights= nullptr;
+	CFeatureList* m_pPendingUpdates= nullptr;
+	IMemBuffer* m_pFrozenWeights = nullptr;
+	IMemBuffer* m_pWeights= nullptr;
 	unsigned int m_numWeights= 0;
 
 	bool m_bSaturateOutput;
@@ -33,10 +35,10 @@ public:
 	CLinearVFA();
 	virtual ~CLinearVFA();
 	double get(const CFeatureList *features,bool bUseFrozenWeights= true);
-	double *getWeightPtr(){ return m_pWeights.get(); }
+	IMemBuffer *getWeights(){ return m_pWeights; }
 	unsigned int getNumWeights(){ return m_numWeights; }
 
-	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates) { m_bCanBeFrozen = bCanUseDeferredUpdates; }
+	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates);
 	
 	void add(const CFeatureList* pFeatures,double alpha= 1.0);
 

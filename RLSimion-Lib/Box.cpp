@@ -1,15 +1,13 @@
 #include "stdafx.h"
 #include "Box.h"
-#include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 
-
-Box::Box(double mass, btDefaultMotionState* motionState, btCollisionShape* shape, btVector3& inertia)
+void Box::setRelativeVariables(CState* s, int idX, int idY, double targetX, double targetY)
 {
-	btRigidBody::btRigidBodyConstructionInfo Robot1rbInfo(mass, motionState, shape, inertia);
-	m_pBody = new btRigidBody(Robot1rbInfo);
-}
+	btTransform bodyTrans;
+	getBody()->getMotionState()->getWorldTransform(bodyTrans);
 
-
-btRigidBody* Box::getBody() {
-	return m_pBody;
+	{
+		s->set(idX, fabs(targetX - bodyTrans.getOrigin().getX()));
+		s->set(idY, fabs(targetY - bodyTrans.getOrigin().getZ()));
+	}
 }

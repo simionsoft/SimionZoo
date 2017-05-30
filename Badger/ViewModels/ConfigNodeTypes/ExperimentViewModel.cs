@@ -47,6 +47,13 @@ namespace Badger.ViewModels
         private Dictionary<string, XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
         private Dictionary<string, List<string>> m_enumDefinitions = new Dictionary<string, List<string>>();
 
+        //Rename rules: files that must be stored in the remote machine in a different relative location
+        //Example: 64 bit runtime C++ libraries have the same name the 32-bit versions have.
+        //         In the local machine, 64 bit libraries are in /bin/64, 32 libraries are in /bin, but both
+        //         must be in the same directory as the .exe using them, so the 64 dll-s must be saved in /bin in
+        //         the remote machine.
+        private Dictionary<string, string> m_renameRules = new Dictionary<string, string>();
+        public Dictionary<string,string> renameRules { get {return m_renameRules; } }
 
         public XmlNode getClassDefinition(string className, bool bCanBeNull = false)
         {
@@ -162,12 +169,15 @@ namespace Badger.ViewModels
         private List<deferredLoadStep> m_WorldVarRefListeners = new List<deferredLoadStep>();
         public void registerWorldVarRef(deferredLoadStep func)
         { m_WorldVarRefListeners.Add(func); }
+
         private void updateWorldDefinition()
         {
             foreach (deferredLoadStep func in m_WorldVarRefListeners)
                 func();
         }
-        public void init(string appDefinitionFileName, XmlNode configRootNode, string experimentName)
+
+
+        public void Initialize(string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
             XmlDocument appDefinition = new XmlDocument();
             appDefinition.Load(appDefinitionFileName);
@@ -186,8 +196,8 @@ namespace Badger.ViewModels
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
                     else
                     {
-                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " + XMLConfig.experimentConfigVersion
-                            , "ERROR");
+                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " 
+                            + XMLConfig.experimentConfigVersion, "ERROR");
                         m_version = "0.0.0.0";
                     }
 
@@ -195,7 +205,15 @@ namespace Badger.ViewModels
                     {
                         //Only EXE, PRE, INCLUDE and BRANCH children nodes
                         if (child.Name == XMLConfig.exeNodeTag) m_exeFile = child.InnerText;
-                        else if (child.Name == XMLConfig.preNodeTag) m_preFiles.Add(child.InnerText);
+                        else if (child.Name == XMLConfig.preNodeTag)
+                        {
+                            m_preFiles.Add(child.InnerText);
+                            if (child.Attributes.GetNamedItem(XMLConfig.renameAttr)!=null)
+                            {
+                                //add the new rename rule
+                                renameRules[child.InnerText] = child.Attributes[XMLConfig.renameAttr].Value;
+                            }
+                        }
                         else if (child.Name == XMLConfig.includeNodeTag)
                             loadIncludedDefinitionFile(child.InnerText);
                         else
@@ -209,6 +227,7 @@ namespace Badger.ViewModels
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
+
         private MainWindowViewModel m_parent;
         public MainWindowViewModel parent { get { return m_parent; } set { m_parent = value; } }
 
@@ -219,16 +238,15 @@ namespace Badger.ViewModels
         {
             m_parent = parentWindow;
             //Load the configFile if a configFilename is provided
-            XmlDocument configDoc = null;
             XmlNode configRootNode = null;
             if (configFilename != null)
             {
-                configDoc = new XmlDocument();
+                var configDoc = new XmlDocument();
                 configDoc.Load(configFilename);
                 configRootNode = configDoc.LastChild;
             }
 
-            init(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
+            Initialize(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
             //we remove the two extensions in "simion.exp"
         }
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
@@ -236,7 +254,7 @@ namespace Badger.ViewModels
         public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
             m_parent = parentWindow;
-            init(appDefinitionFileName, configRootNode, experimentName);
+            Initialize(appDefinitionFileName, configRootNode, experimentName);
         }
 
         private void loadIncludedDefinitionFile(string appDefinitionFile)

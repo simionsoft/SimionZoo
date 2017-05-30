@@ -34,6 +34,8 @@
 
             <BitmapImage x:Key="Close" UriSource="/images/ic-close.png" />
             <BitmapImage x:Key="Delete" UriSource="/images/ic-delete.png" />
+            <BitmapImage x:Key="Error" UriSource="/images/ic-error.png" />
+            <BitmapImage x:Key="HerdAgentHead" UriSource="/images/herdagent-head.png" />
             <BitmapImage x:Key="New" UriSource="/images/ic-new.png" />
             <BitmapImage x:Key="Open" UriSource="/images/ic-open.png" />
             <BitmapImage x:Key="OpenProject" UriSource="/images/ic-open-multiple.png" />

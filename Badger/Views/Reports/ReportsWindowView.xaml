@@ -5,11 +5,9 @@
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
         WindowStyle="ThreeDBorderWindow"
-        Width="900"
-        Height="600"
+        Title="Report Viewer" Width="900" Height="600"
         Background="#eeeeee"
         WindowState="Normal"
-        Title="Report Viewer"
         Icon="/badger-head.ico">
 
     <Window.Resources>
@@ -53,7 +51,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.125*" MinWidth="15" />
+                <ColumnDefinition Width="Auto" MinWidth="15" />
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="4*" MinWidth="30" />
             </Grid.ColumnDefinitions>
@@ -62,7 +60,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" MinHeight="30" />
                     <RowDefinition Height="5" />
-                    <RowDefinition Height="*" MinHeight="30" />
+                    <RowDefinition Height="Auto" MinHeight="30" />
                 </Grid.RowDefinitions>
 
                 <Border Grid.Row="0" BorderBrush="DarkGray" BorderThickness="1">

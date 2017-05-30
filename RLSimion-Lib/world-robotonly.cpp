@@ -3,16 +3,13 @@
 #include "app.h"
 #include "noise.h"
 #include "Robot.h"
-#include "GraphicSettings.h"
+#include "BulletPhysics.h"
+#include "BulletDisplay.h"
 #include "BulletBody.h"
+#include "world-aux-rewards.h"
 #pragma comment(lib,"opengl32.lib")
 
 #define GLEW_STATIC
-
-double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2) {
-	double distance = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
-	return distance;
-}
 
 #define TargetX 10.0
 #define TargetY 3.0
@@ -28,17 +25,17 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 
 #define CNT_VEL 2.0
 
-OpenGLGuiHelper *gui;
-CommonExampleOptions *options;
-
 COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 {
 
 	METADATA("World", "MoveRobotOnly");
 
-	m_rob1_X = addStateVariable("rx1", "m", -50.0, 50.0);
-	m_rob1_Y = addStateVariable("ry1", "m", -50.0, 50.0);
-	m_theta = addStateVariable("theta", "rad", -3.15, 3.15);
+	m_target_X = addStateVariable("targetX", "m", -20.0, 20.0);
+	m_target_Y = addStateVariable("targetY", "m", -20.0, 20.0);
+
+	m_rob1_X = addStateVariable("rx1", "m", -20.0, 20.0);
+	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
+	m_theta = addStateVariable("theta", "rad", -3.1415, 3.1415, true);
 
 	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
 	m_omega = addActionVariable("omega", "rad", -8.0, 8.0);
@@ -47,48 +44,47 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
+	rOnlyPhysics = new BulletPhysics();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rOnlyGraphic = new BulletGraphic();
 
-	app = new SimpleOpenGL3App("Graphic Bullet Interface", 1024, 768, true);
-	///Graphic init
-	gui= new OpenGLGuiHelper(app, false);
-	options= new CommonExampleOptions(gui);
-
-	robotOnlyGraphs = new BulletBuilder(options->m_guiHelper);
-	robotOnlyGraphs->initializeBulletRequirements();
-	robotOnlyGraphs->setOpenGLApp(app);
+	rOnlyPhysics->initPhysics();
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rOnlyGraphic->setDebugger(rOnlyPhysics->getDynamicsWorld());
 	
 	
 	///Creating static object, ground
 	{
 		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
 		// "false" parameter will notify the constructor not to disable activation state
-		ground_bb = new BulletBody(MASS_GROUND, ground_x, ground_y, ground_z, groundShape, false);
-		robotOnlyGraphs->getCollisionShape().push_back(ground_bb->getShape());
-		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
+		ground_bb = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), groundShape, false);
+		rOnlyPhysics->getCollisionShape().push_back(ground_bb->getShape());
+		rOnlyPhysics->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
 	}
 
 	/// Creating target point, static
 	{
 		btCollisionShape* targetShape = new btConeShape(btScalar(0.5), btScalar(5.5));
-		target_bb = new BulletBody(MASS_TARGET, TargetX, 0, TargetY+1, targetShape, false);
+		target_bb = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY+1), targetShape, false);
 		target_bb->getBody()->setCollisionFlags(2);
-		robotOnlyGraphs->getCollisionShape().push_back(target_bb->getShape());
-		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(target_bb->getBody());
+		rOnlyPhysics->getCollisionShape().push_back(target_bb->getShape());
+		rOnlyPhysics->getDynamicsWorld()->addRigidBody(target_bb->getBody());
 	}
 
 	///creating a dynamic robot obj1
 	{
 		//btCollisionShape* robot1Shape = new btSphereShape(btScalar(0.5));
-		robot_bb = new BulletBody(MASS_ROBOT, robotOrigin_x, 0, robotOrigin_y, new btSphereShape(btScalar(0.5)), true);
-		robotOnlyGraphs->getCollisionShape().push_back(robot_bb->getShape());
-		robotOnlyGraphs->getDynamicsWorld()->addRigidBody(robot_bb->getBody());
+		robot_bb = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(btScalar(0.5)), true);
+		rOnlyPhysics->getCollisionShape().push_back(robot_bb->getShape());
+		rOnlyPhysics->getDynamicsWorld()->addRigidBody(robot_bb->getBody());
 	}
 
 	///Graphic init
-	robotOnlyGraphs->generateGraphics(robotOnlyGraphs->getGuiHelper());
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rOnlyGraphic->generateGraphics(rOnlyPhysics->getDynamicsWorld());
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new COnlyRobotReward());
+	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
@@ -141,63 +137,34 @@ void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 	robot_bb->getBody()->setLinearVelocity(btVector3(rob1_VelX, 0.0, rob1_VelY));
 
 	//Update Robot1
-	robotOnlyGraphs->getDynamicsWorld()->stepSimulation(dt,20);
+	rOnlyPhysics->getDynamicsWorld()->stepSimulation(dt,20);
+	if (!CSimionApp::get()->isExecutedRemotely())
+		rOnlyGraphic->updateCamera();
 
 	robot_bb->getBody()->getMotionState()->getWorldTransform(r1_trans);
+	s->set(m_rob1_X, double(r1_trans.getOrigin().getX()));
+	s->set(m_rob1_Y, double(r1_trans.getOrigin().getZ()));
+
 	btVector3 printPosition = btVector3(r1_trans.getOrigin().getX(), r1_trans.getOrigin().getY() + 5, r1_trans.getOrigin().getZ());
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		robotOnlyGraphs->drawText3D("Evaluation episode",printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+		{
+			rOnlyGraphic->drawText3D("Evaluation episode", printPosition);
+			rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
+		}
 	}
 	else
 	{
-		robotOnlyGraphs->drawText3D("Training episode", printPosition);
+		if (!CSimionApp::get()->isExecutedRemotely())
+			rOnlyGraphic->drawText3D("Training episode", printPosition);
 	}
 	if (!CSimionApp::get()->isExecutedRemotely()) {
-		robotOnlyGraphs->draw();
+		//rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
 	}
-	
-	
-	s->set(m_rob1_X, double(r1_trans.getOrigin().getX()));
-	s->set(m_rob1_Y, double(r1_trans.getOrigin().getZ()));
-	
-
-}
-
-double COnlyRobotReward::getReward(const CState* s, const CAction* a, const CState* s_p)
-{
-	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
-	bool bEval = CSimionApp::get()->pExperiment->isEvaluationEpisode();
-	int step = CSimionApp::get()->pExperiment->getStep();
-
-	double robotAfterX = s_p->get("rx1");
-	double robotAfterY = s_p->get("ry1");
-
-	double distance = getDistanceBetweenPoints(TargetX, TargetY, robotAfterX, robotAfterY);
-
-	if (robotAfterX >= 50.0 || robotAfterX <= -50.0 || robotAfterY >= 50.0 || robotAfterY <= -50.0)
-	{
-		CSimionApp::get()->pExperiment->setTerminalState();
-		return -1;
-	}
-
-	distance = std::max(distance, 0.0001);
-	return 1 / (distance);
-}
-
-double COnlyRobotReward::getMin()
-{
-	return -1.0;
-}
-
-double COnlyRobotReward::getMax()
-{
-	return 1.0;
 }
 
 COnlyRobot::~COnlyRobot()
 {
-	delete options;
-	delete gui;
 }
 
