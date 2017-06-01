@@ -15,14 +15,17 @@
     <Filter Include="parameters">
       <UniqueIdentifier>{6a5fa884-f3e3-4de0-a675-65340642e183}</UniqueIdentifier>
     </Filter>
-    <Filter Include="world\Move2RobotsUtils">
-      <UniqueIdentifier>{f2676abb-8538-43d3-b448-7414a627e60e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="world\BulletWorlds">
       <UniqueIdentifier>{9fdcd276-d72c-4a03-81c0-2714f2f39d20}</UniqueIdentifier>
     </Filter>
     <Filter Include="world\GraphicResources">
       <UniqueIdentifier>{9ac009a6-05f8-408a-9696-e5ec1696c580}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{ccab0e5e-5a18-4d27-9001-51dca3f56d3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world\BulletUtils">
+      <UniqueIdentifier>{f2676abb-8538-43d3-b448-7414a627e60e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -134,9 +137,6 @@
     <ClCompile Include="app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="delayed-load.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -171,10 +171,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Robot.cpp">
-      <Filter>world\Move2RobotsUtils</Filter>
+      <Filter>world\BulletUtils</Filter>
     </ClCompile>
     <ClCompile Include="Box.cpp">
-      <Filter>world\Move2RobotsUtils</Filter>
+      <Filter>world\BulletUtils</Filter>
     </ClCompile>
     <ClCompile Include="world-box1robot.cpp">
       <Filter>world\BulletWorlds</Filter>
@@ -184,9 +184,6 @@
     </ClCompile>
     <ClCompile Include="world-robotonly.cpp">
       <Filter>world\BulletWorlds</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicSettings.cpp">
-      <Filter>world\GraphicResources</Filter>
     </ClCompile>
     <ClCompile Include="OpenGLGuiHelper.cpp">
       <Filter>world\GraphicResources</Filter>
@@ -201,7 +198,40 @@
       <Filter>world\GraphicResources</Filter>
     </ClCompile>
     <ClCompile Include="BulletBody.cpp">
-      <Filter>world\Move2RobotsUtils</Filter>
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-block.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-pool.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="deferred-load.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mem-buffer.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="world-two-robots-rope.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicSettings.cpp">
+      <Filter>world\GraphicResources</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletPhysics.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="BulletDisplay.cpp">
+      <Filter>world\GraphicResources</Filter>
+    </ClCompile>
+    <ClCompile Include="Rope.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="world-aux-rewards.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="world-one-rope-robot.cpp">
+      <Filter>world\BulletWorlds</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +284,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="critic.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="delayed-load.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="etraces.h">
@@ -335,10 +362,10 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Robot.h">
-      <Filter>world\Move2RobotsUtils</Filter>
+      <Filter>world\BulletUtils</Filter>
     </ClInclude>
     <ClInclude Include="Box.h">
-      <Filter>world\Move2RobotsUtils</Filter>
+      <Filter>world\BulletUtils</Filter>
     </ClInclude>
     <ClInclude Include="world-box1robot.h">
       <Filter>world\BulletWorlds</Filter>
@@ -348,9 +375,6 @@
     </ClInclude>
     <ClInclude Include="world-robotonly.h">
       <Filter>world\BulletWorlds</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphicSettings.h">
-      <Filter>world\GraphicResources</Filter>
     </ClInclude>
     <ClInclude Include="OpenGLGuiHelper.h">
       <Filter>world\GraphicResources</Filter>
@@ -365,7 +389,49 @@
       <Filter>world\GraphicResources</Filter>
     </ClInclude>
     <ClInclude Include="BulletBody.h">
-      <Filter>world\Move2RobotsUtils</Filter>
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-block.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-pool.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-interfaces.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-manager.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="deferred-load.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mem-buffer.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicSettings.h">
+      <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletPhysics.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletCreationInterface.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletDisplay.h">
+      <Filter>world\GraphicResources</Filter>
+    </ClInclude>
+    <ClInclude Include="world-two-robots-rope.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="Rope.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="world-aux-rewards.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="world-one-rope-robot.h">
+      <Filter>world\BulletWorlds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -373,5 +439,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

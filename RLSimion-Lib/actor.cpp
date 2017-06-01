@@ -24,7 +24,7 @@ void CActor::deferredLoadStep()
 {
 	unsigned int controllerActionIndex, actorActionIndex;
 	unsigned int numWeights;
-	double *pWeights;
+	IMemBuffer *pWeights;
 	CState* s= CSimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
 	CAction* a= CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
 	
@@ -42,12 +42,12 @@ void CActor::deferredLoadStep()
 				{
 					//controller's output action index and actor's match, so we use it to initialize
 					numWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
-					pWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeightPtr();
+					pWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights();
 					for (unsigned int i = 0; i < numWeights; i++)
 					{
 						m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getStateFeatureMap()->getFeatureState(i, s);
 						m_pInitController->selectAction(s, a);
-						pWeights[i] = a->get(controllerActionIndex);//m_pPolicyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getSample(s);
+						(*pWeights)[i] = a->get(controllerActionIndex);
 					}
 				}
 			}
@@ -59,14 +59,8 @@ void CActor::deferredLoadStep()
 		CLogger::logMessage(MessageType::Info, "Initializing policy weights with null values");
 		for (actorActionIndex = 0; actorActionIndex < m_policyLearners.size(); actorActionIndex++)
 		{
-			numWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getNumWeights();
-			pWeights = m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeightPtr();
-			assert(pWeights);
-
-			for (unsigned int i = 0; i < numWeights; i++)
-			{
-				pWeights[i] = 0.0;
-			}
+			m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights()->setInitValue(0.0);
+			m_policyLearners[actorActionIndex]->getPolicy()->getDetPolicyStateVFA()->getWeights()->setInitValue(0.0);
 		}
 		CLogger::logMessage(MessageType::Info, "Initialization done");
 	}

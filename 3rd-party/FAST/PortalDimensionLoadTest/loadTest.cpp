@@ -10,7 +10,7 @@ namespace PortalDimensionLoadTest
 	{
 	public:
 		
-		TEST_METHOD(LoadTest)
+		TEST_METHOD(FASTPortalDLL_LoadTest)
 		{
 			// TODO: Your test code here
 			try

@@ -10,12 +10,12 @@ class CFilePathList;
 #include "experiment.h"
 #include "SimGod.h"
 #include "parameters.h"
+#include "mem-manager.h"
 
 class CSimionApp
 {
 private:
 	static CSimionApp* m_pAppInstance;
-	bool m_bRemoteExecution = false;
 protected:
 	CConfigFile* m_pConfigDoc;
 	
@@ -26,6 +26,7 @@ public:
 
 	static CSimionApp* get();
 
+	CMemManager<CSimionMemPool>* pMemManager;
 	CHILD_OBJECT<CLogger> pLogger;
 	CHILD_OBJECT<CWorld> pWorld;
 	CHILD_OBJECT<CExperiment> pExperiment;
@@ -41,8 +42,7 @@ public:
 	static bool flagPassed(int argc, char** argv, char* flagName);
 
 	//is this app being run remotely?
-	bool isExecutedRemotely() { return m_bRemoteExecution; }
-	void setExecutedRemotely(bool bRemote) { m_bRemoteExecution = bRemote; }
+	bool isExecutedRemotely();
 
 	virtual void run()= 0;
 };

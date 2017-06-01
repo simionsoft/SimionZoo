@@ -13,46 +13,117 @@ namespace Badger.ViewModels
         {
             values = new double[numValues];
         }
+
         public void calculateStats()
         {
-            if (values == null) return;
-            //calculate avg, min and max
-            double sum = 0.0;
-            stats.min = values[0]; stats.max = values[0];
-            foreach (double val in values)
+            stats.min = getMinValueOfArray(values);
+            stats.max = getMaxValueOfArray(values);
+            stats.avg = getAverageOfArrayValues(values);
+            stats.stdDev = getStdDeviationOfArrayValues(values, stats.avg);
+        }
+
+        private double getMinValueOfArray(double []values)
+        {
+            if (values != null)
             {
-                sum += val;
-                if (val > stats.max) stats.max = val;
-                if (val < stats.min) stats.min = val;
+                double minimumValue = values[0];
+                foreach(double valueToCheck in values)
+                {
+                    if (valueToCheck < minimumValue) minimumValue = valueToCheck;
+                }
+                return minimumValue;
             }
-            stats.avg = sum / values.Length;
-            //calculate std. deviation
-            double diff;
-            sum = 0.0;
-            foreach (double val in values)
+            else
             {
-                diff = val - stats.avg;
-                sum += diff * diff;
+                throw new ArgumentNullException();
             }
-            stats.stdDev = Math.Sqrt(sum / values.Length);
+        }
+
+        private double getMaxValueOfArray(double[] values)
+        {
+            if (values != null)
+            {
+                double maximumValue = values[0];
+                foreach (double valueToCheck in values)
+                {
+                    if (valueToCheck > maximumValue) maximumValue = valueToCheck;
+                }
+                return maximumValue;
+            }
+            else
+            {
+                throw new ArgumentNullException();
+            }
+        }
+
+        private double getAverageOfArrayValues(double[] values)
+        {
+            if (values != null)
+            {
+                double sum = 0;
+                foreach (double valueToSum in values)
+                {
+                    sum += valueToSum;
+                }
+                return sum / values.Length;
+            }
+            else
+            {
+                throw new ArgumentNullException();
+            }
+        }
+
+        private double getStdDeviationOfArrayValues(double[] values, double averageValue)
+        {
+            if (values != null)
+            {
+                double valueDifferenceWithAvg = 0;
+                double totalSum = 0;
+                foreach (double valueToCheck in values)
+                {
+                    valueDifferenceWithAvg = valueToCheck - averageValue;
+                    totalSum += Math.Pow(valueDifferenceWithAvg, 2);
+                }
+                return Math.Sqrt(totalSum / values.Length);
+            }
+            else
+            {
+                throw new ArgumentNullException();
+            }
         }
     }
     public class TrackVariableData
     {
-        public TrackVariableData(int numSteps,int numEpisodes)
+        public TrackVariableData(int numSteps, int numEpisodes)
         {
-            if (numSteps>0) lastEpisodeData = new DataSeries(numSteps);
-            if (numEpisodes>0) experimentData = new DataSeries(numEpisodes);
+            if (numSteps > 0) lastEpisodeData = new DataSeries(numSteps);
+            if (numEpisodes > 0)
+            {
+                experimentData = new DataSeries(numEpisodes);
+                evaluationEpisodesData = new DataSeries[numEpisodes];
+                for (int i = 0; i < numEpisodes; i++)
+                {
+                    evaluationEpisodesData[i] = new DataSeries(numSteps);
+                }
+            }
+
         }
         public DataSeries lastEpisodeData;
         public DataSeries experimentData;
+        public DataSeries[] evaluationEpisodesData;
 
         public void calculateStats()
         {
             if (lastEpisodeData != null) lastEpisodeData.calculateStats();
             if (experimentData != null) experimentData.calculateStats();
+            foreach (DataSeries evaluationEpisode in evaluationEpisodesData)
+            {
+                if (evaluationEpisode != null)
+                    evaluationEpisode.calculateStats();
+            }
         }
     }
+
     public class TrackData
     {
         public bool bSuccesful;

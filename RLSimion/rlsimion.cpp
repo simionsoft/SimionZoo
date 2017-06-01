@@ -10,8 +10,6 @@
 
 int main(int argc, char* argv[])
 {
-
-	//_CrtSetBreakAlloc(157);
 	try
 	{
 		CConfigFile configXMLFile;
@@ -32,14 +30,12 @@ int main(int argc, char* argv[])
 		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
-		if (!strcmp("RLSimion", pParameters->getName()))
+		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64",pParameters->getName()))
 			pApp = new RLSimionApp(pParameters);
 				
 		if (pApp)
 		{
 			pApp->setOutputDirectory(argv[1]);
-			//remote execution?? Most likely yes if an output pipename has been given
-			if (pPipename) pApp->setExecutedRemotely(true);
 
 			if (CSimionApp::flagPassed(argc,argv,"printIOfiles"))
 				pApp->printInputOutputFiles();
@@ -53,6 +49,6 @@ int main(int argc, char* argv[])
 	{
 		CLogger::logMessage(MessageType::Error, e.what());
 	}
-	//_CrtDumpMemoryLeaks();
+
 	return 0;
 }

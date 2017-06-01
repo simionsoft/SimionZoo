@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0E901F9133AC21077F8779352A2B270D"
+        "MsmKey" = "8:_0D306140BBDAC3433183CBD6AB286DA6"
         "OwnerKey" = "8:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -46,7 +46,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_0E901F9133AC21077F8779352A2B270D"
+        "OwnerKey" = "8:_0D306140BBDAC3433183CBD6AB286DA6"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -89,7 +89,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:..\\..\\Release\\HerdAgentInstaller.msi"
+        "OutputFilename" = "8:..\\..\\bin\\HerdAgentInstaller.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -172,14 +172,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0E901F9133AC21077F8779352A2B270D"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0D306140BBDAC3433183CBD6AB286DA6"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Herd, Version=0.0.1.1, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Herd, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_0E901F9133AC21077F8779352A2B270D"
+                    "_0D306140BBDAC3433183CBD6AB286DA6"
                     {
                     "Name" = "8:Herd.dll"
                     "Attributes" = "3:512"
@@ -820,7 +820,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C6AA6A3F54A345A3AE5B91C361D9A6E9"
             {
-            "SourcePath" = "8:..\\..\\tools\\HerdAgent\\obj\\Debug\\HerdAgent.exe"
+            "SourcePath" = "8:..\\..\\tools\\HerdAgent\\obj\\Release\\HerdAgent.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_25E3F76F56964AC892C056BACBDB9A77"

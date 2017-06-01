@@ -29,24 +29,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -69,7 +69,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Debug\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
     <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
@@ -80,18 +80,18 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <OutDir>$(SolutionDir)Debug\$(Platform)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
     <OutDir>$(SolutionDir)bin\$(Platform)\</OutDir>
     <TargetName>$(ProjectName)</TargetName>
-    <IntDir>$(ProjectDir)$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -185,6 +185,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>../3rd-party/bullet3-2.86/src</AdditionalIncludeDirectories>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Lib>
       <TargetMachine>MachineX64</TargetMachine>
@@ -209,19 +210,25 @@
     <ClCompile Include="b3Clock.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="BulletBody.cpp" />
+    <ClCompile Include="BulletDisplay.cpp" />
+    <ClCompile Include="BulletPhysics.cpp" />
     <ClCompile Include="CollisionShape2TriangleMesh.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
-    <ClCompile Include="delayed-load.cpp" />
+    <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="GLShapeDrawer.cpp" />
     <ClCompile Include="GraphicSettings.cpp" />
     <ClCompile Include="logger.cpp" />
+    <ClCompile Include="mem-buffer.cpp" />
+    <ClCompile Include="mem-block.cpp" />
+    <ClCompile Include="mem-pool.cpp" />
     <ClCompile Include="OpenGLGuiHelper.cpp" />
     <ClCompile Include="parameters-numeric.cpp" />
     <ClCompile Include="parameters.cpp" />
     <ClCompile Include="q-learners.cpp" />
+    <ClCompile Include="Rope.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
@@ -253,14 +260,17 @@
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
+    <ClCompile Include="world-aux-rewards.cpp" />
     <ClCompile Include="world-balancingpole.cpp" />
     <ClCompile Include="world-box1robot.cpp" />
     <ClCompile Include="world-FAST.cpp" />
     <ClCompile Include="world-magneticlevitation.cpp" />
     <ClCompile Include="world-mountaincar.cpp" />
     <ClCompile Include="world-movebox2robots.cpp" />
+    <ClCompile Include="world-one-rope-robot.cpp" />
     <ClCompile Include="world-pitchcontrol.cpp" />
     <ClCompile Include="world-robotonly.cpp" />
+    <ClCompile Include="world-two-robots-rope.cpp" />
     <ClCompile Include="world-underwatervehicle.cpp" />
     <ClCompile Include="world-windturbine.cpp" />
     <ClCompile Include="world.cpp" />
@@ -273,11 +283,14 @@
     <ClInclude Include="b3Clock.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="BulletBody.h" />
+    <ClInclude Include="BulletCreationInterface.h" />
+    <ClInclude Include="BulletDisplay.h" />
+    <ClInclude Include="BulletPhysics.h" />
     <ClInclude Include="CollisionShape2TriangleMesh.h" />
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
-    <ClInclude Include="delayed-load.h" />
+    <ClInclude Include="deferred-load.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />
@@ -285,6 +298,11 @@
     <ClInclude Include="features.h" />
     <ClInclude Include="GL_ShapeDrawer.h" />
     <ClInclude Include="GraphicSettings.h" />
+    <ClInclude Include="mem-buffer.h" />
+    <ClInclude Include="mem-block.h" />
+    <ClInclude Include="mem-pool.h" />
+    <ClInclude Include="mem-interfaces.h" />
+    <ClInclude Include="mem-manager.h" />
     <ClInclude Include="OpenGLGuiHelper.h" />
     <ClInclude Include="Robot.h" />
     <ClInclude Include="logger.h" />
@@ -292,6 +310,7 @@
     <ClInclude Include="parameters-numeric.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="q-learners.h" />
+    <ClInclude Include="Rope.h" />
     <ClInclude Include="simgod.h" />
     <ClInclude Include="simion.h" />
     <ClInclude Include="single-dimension-grid.h" />
@@ -309,14 +328,17 @@
     <ClInclude Include="vfa-critic.h" />
     <ClInclude Include="policy.h" />
     <ClInclude Include="vfa.h" />
+    <ClInclude Include="world-aux-rewards.h" />
     <ClInclude Include="world-balancingpole.h" />
     <ClInclude Include="world-box1robot.h" />
     <ClInclude Include="world-FAST.h" />
     <ClInclude Include="world-magneticlevitation.h" />
     <ClInclude Include="world-mountaincar.h" />
     <ClInclude Include="world-movebox2robots.h" />
+    <ClInclude Include="world-one-rope-robot.h" />
     <ClInclude Include="world-pitchcontrol.h" />
     <ClInclude Include="world-robotonly.h" />
+    <ClInclude Include="world-two-robots-rope.h" />
     <ClInclude Include="world-underwatervehicle.h" />
     <ClInclude Include="world-windturbine.h" />
     <ClInclude Include="world.h" />
@@ -326,6 +348,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">
@@ -339,6 +362,9 @@
     </ProjectReference>
     <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
       <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletSoftBody.vcxproj">
+      <Project>{f663c29d-a7fd-d24f-a85f-1933b83a2818}</Project>
     </ProjectReference>
     <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
       <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>

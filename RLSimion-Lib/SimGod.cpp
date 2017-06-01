@@ -5,11 +5,12 @@
 #include "config.h"
 #include "simion.h"
 #include "app.h"
-#include "delayed-load.h"
+#include "deferred-load.h"
 #include "utils.h"
 #include "featuremap.h"
 #include "experience-replay.h"
 #include "parameters.h"
+#include "features.h"
 
 std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_deferredLoadSteps;
 std::vector<const char*> CSimGod::m_inputFiles;
@@ -27,6 +28,14 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "Experience-Replay", "The experience replay parameters", true);
 	m_simions = MULTI_VALUE_FACTORY<CSimion>(pConfigNode, "Simion", "Simions: learning agents and controllers");
 	
+	m_bCountVisits = BOOL_PARAM(pConfigNode, "Count-State-Visits", "Count the number of times a state is visited", true);
+	m_pStateFeatures = new CFeatureList("SimGod\\state-visits");
+	if (m_bCountVisits.get())
+	{
+		m_pVisits = CSimionApp::get()->pMemManager->getMemBuffer(m_pGlobalStateFeatureMap->getTotalNumFeatures());
+		m_pVisits->setInitValue(0.0);
+	}
+
 	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
 	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter",0.9);
 
@@ -60,18 +69,55 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
-	m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
+	m_bReplayingExperience = false;
 
-	int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
-	for (int tuple = 0; tuple < updateBatchSize; ++tuple)
+	//update the number of state visits
+	if (m_bCountVisits.get())
 	{
-		pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
-
-		//update step
-		for (unsigned int i = 0; i < m_simions.size(); i++)
-			m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
-				, pExperienceTuple->r, pExperienceTuple->probability);
+		m_pGlobalStateFeatureMap->getFeatures(s_p, m_pStateFeatures);
+		for (unsigned int i = 0; i < m_pStateFeatures->m_numFeatures; ++i)
+		{
+			if ((*m_pVisits)[m_pStateFeatures->m_pFeatures[i].m_index]<m_stateConfidenceThreshold)
+			(*m_pVisits)[m_pStateFeatures->m_pFeatures[i].m_index] +=
+				m_pStateFeatures->m_pFeatures[i].m_factor;
+		}
 	}
+
+	//update step
+	for (unsigned int i = 0; i < m_simions.size(); i++)
+		m_simions[i]->update(s, a, s_p, r, probability);
+
+	//Experience Replay
+	if (m_pExperienceReplay->bUsing())
+	{
+		m_bReplayingExperience = true;
+		m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
+
+		int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
+		for (int tuple = 0; tuple < updateBatchSize; ++tuple)
+		{
+			pExperienceTuple = m_pExperienceReplay->getRandomTupleFromBuffer();
+
+			//update step
+			for (unsigned int i = 0; i < m_simions.size(); i++)
+				m_simions[i]->update(pExperienceTuple->s, pExperienceTuple->a, pExperienceTuple->s_p
+					, pExperienceTuple->r, pExperienceTuple->probability);
+		}
+	}
+}
+
+bool CSimGod::bIsStateKnown(const CState* s) const
+{
+	if (!m_bCountVisits.get()) return true;
+
+	m_pGlobalStateFeatureMap->getFeatures(s, m_pStateFeatures);
+	double sumVisits = 0.0;
+
+	for (unsigned int i = 0; i < m_pStateFeatures->m_numFeatures; ++i)
+	{
+		sumVisits += (*m_pVisits)[m_pStateFeatures->m_pFeatures[i].m_index];
+	}
+	return (sumVisits>=m_stateConfidenceThreshold);
 }
 
 void CSimGod::registerDeferredLoadStep(CDeferredLoad* deferredLoadObject, unsigned int orderLoad)

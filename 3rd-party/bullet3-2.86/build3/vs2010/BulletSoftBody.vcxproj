@@ -22,6 +22,7 @@
     <ProjectGuid>{F663C29D-A7FD-D24F-A85F-1933B83A2818}</ProjectGuid>
     <RootNamespace>BulletSoftBody</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -29,12 +30,14 @@
     <CharacterSet>MultiByte</CharacterSet>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -66,18 +69,18 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">obj\x32\Release\BulletSoftBody\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BulletSoftBody_vs2010</TargetName>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">..\..\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">obj\x64\Release\BulletSoftBody\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BulletSoftBody_vs2010_x64_release</TargetName>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">obj\x32\Debug\BulletSoftBody\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BulletSoftBody_vs2010_debug</TargetName>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">obj\x64\Debug\BulletSoftBody\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BulletSoftBody_vs2010_x64_debug</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)bin\$(Platform)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">BulletSoftBody</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)bin\$(Platform)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">BulletSoftBody</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)Debug\$(Platform)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">BulletSoftBody</TargetName>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)Debug\$(Platform)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">BulletSoftBody</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -88,7 +91,7 @@
       </PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -104,7 +107,7 @@
       <AdditionalIncludeDirectories>..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(OutDir)BulletSoftBody_vs2010.lib</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
     <Link>
@@ -123,7 +126,7 @@
       </PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -139,7 +142,7 @@
       <AdditionalIncludeDirectories>..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(OutDir)BulletSoftBody_vs2010_x64_release.lib</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <TargetMachine>MachineX64</TargetMachine>
     </Lib>
     <Link>
@@ -157,7 +160,7 @@
       <PreprocessorDefinitions>_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -171,7 +174,7 @@
       <AdditionalIncludeDirectories>..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(OutDir)BulletSoftBody_vs2010_debug.lib</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <TargetMachine>MachineX86</TargetMachine>
     </Lib>
     <Link>
@@ -187,7 +190,7 @@
       <PreprocessorDefinitions>_DEBUG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -201,7 +204,7 @@
       <AdditionalIncludeDirectories>..\..\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Lib>
-      <OutputFile>$(OutDir)BulletSoftBody_vs2010_x64_debug.lib</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <TargetMachine>MachineX64</TargetMachine>
     </Lib>
     <Link>

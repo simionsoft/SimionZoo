@@ -43,8 +43,10 @@ double CTDLambdaCritic::update(const CState *s, const CAction *a, const CState *
 	m_pVFunction->getFeatures(s_p, m_aux);
 	double v_s_p= m_pVFunction->get(m_aux);
 	double td = rho*r + gamma*v_s_p - v_s;
-	
-	m_pVFunction->add(m_z.ptr(),td);
+
+	//double stateConfidence = CSimionApp::get()->pSimGod->getStateConfidence();
+	//if (stateConfidence<10.0 || td > 0.0)
+		m_pVFunction->add(m_z.ptr(),td);
 
 	return td;
 }

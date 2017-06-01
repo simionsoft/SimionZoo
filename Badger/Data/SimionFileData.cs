@@ -103,8 +103,7 @@ namespace Badger.Data
                     return -1;
                 }
             }
-
-            string batchFileDir = batchFilename.Split('.')[0];
+            string batchFileDir = batchFilename.Remove( batchFilename.LastIndexOf("." + XMLConfig.experimentBatchExtension));
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
             if (Directory.Exists(batchFileDir))
@@ -134,8 +133,13 @@ namespace Badger.Data
 
                         foreach (var prerequisite in experimentViewModel.getPrerrequisites())
                         {
-                            batchFileWriter.WriteLine("\t\t<" + XMLConfig.PrerequisiteTag + " "
-                               + XMLConfig.valueAttribute + "=\"" + prerequisite + "\" />");
+                            batchFileWriter.Write("\t\t<" + XMLConfig.PrerequisiteTag + " "
+                               + XMLConfig.valueAttribute + "=\"" + prerequisite + "\"");
+                            //add the rename attribute
+                            if (experimentViewModel.renameRules.ContainsKey(prerequisite))
+                                batchFileWriter.Write(" " + XMLConfig.renameAttr 
+                                    + "=\"" + experimentViewModel.renameRules[prerequisite] + "\"");
+                            batchFileWriter.WriteLine("/>");
                         }
 
                         // Save the fork hierarchy and values. This helps to generate reports easier

@@ -8,6 +8,8 @@
 #include "world-balancingpole.h"
 #include "world-box1robot.h"
 #include "world-movebox2robots.h"
+#include "world-two-robots-rope.h"
+#include "world-one-rope-robot.h"
 #include "world-mountaincar.h"
 #include "world-robotonly.h"
 #include "world-FAST.h"
@@ -104,14 +106,14 @@ CDynamicModel::CDynamicModel()
 	m_pRewardFunction = new CRewardFunction();
 }
 
-int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max)
+int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	return m_pStateDescriptor->addVariable(name, units, min, max);
+	return m_pStateDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
-int CDynamicModel::addActionVariable(const char* name, const char* units, double min, double max)
+int CDynamicModel::addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
-	return m_pActionDescriptor->addVariable(name, units, min, max);
+	return m_pActionDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
 void CDynamicModel::addConstant(const char* name, double value)
@@ -121,7 +123,7 @@ void CDynamicModel::addConstant(const char* name, double value)
 
 int CDynamicModel::getNumConstants()
 {
-	return m_pConstants.size();
+	return (int)m_pConstants.size();
 }
 
 double CDynamicModel::getConstant(int i)
@@ -194,6 +196,8 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 		{make_tuple("MoveBox-2Robots",CHOICE_ELEMENT_NEW<CMoveBox2Robots>,"World=MoveBox-2Robots")},
 		{make_tuple("MoveBoxOneRobot",CHOICE_ELEMENT_NEW<CMoveBoxOneRobot>,"World=MoveBoxOneRobot")},
 		{make_tuple("MoveRobotOnly",CHOICE_ELEMENT_NEW<COnlyRobot>,"World=MoveRobotOnly") },
+		{make_tuple("MoveRopeRobots",CHOICE_ELEMENT_NEW<CRope2Robots>,"World=MoveRopeRobots") },
+		{make_tuple("MoveBoxOneRobotRope",CHOICE_ELEMENT_NEW<CRopeRobot>,"World=MoveBoxOneRobotRope") },
 		{make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") }
 	});
 }

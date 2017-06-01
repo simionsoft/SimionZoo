@@ -102,7 +102,7 @@
     <Position X="2.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAAAAAAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>delayed-load.h</FileName>
+      <FileName>deferred-load.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CETraces" Collapsed="true">

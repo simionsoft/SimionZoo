@@ -1,12 +1,13 @@
 #pragma once
 
 #include "world.h"
-#include "reward.h"
 #define ATTRIBUTE_ALIGNED16(a)
 #include "../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
-class SimpleOpenGL3App;
-class BulletBuilder;
 class BulletBody;
+class Robot;
+class Box;
+class BulletPhysics;
+class BulletGraphic;
 
 
 //Move box with 2 robots
@@ -18,14 +19,8 @@ class CMoveBox2Robots : public CDynamicModel
 	double MASS_TARGET;
 	double MASS_GROUND;
 
-	double o_distBr1X;
-	double o_distBr1Y;
-	double o_distBr2X;
-	double o_distBr2Y;
-	double o_distBtX;
-	double o_distBtY;
-
-	/// Episode variables
+	/// State variables
+	int m_target_X, m_target_Y;
 	int m_rob1_X, m_rob1_Y;
 	int m_rob2_X, m_rob2_Y;
 	int m_box_X, m_box_Y;
@@ -35,7 +30,6 @@ class CMoveBox2Robots : public CDynamicModel
 	int m_theta_r1;
 	int m_theta_r2;
 	
-
 	// Action variables
 	int m_linear_vel_r1;
 	int m_omega_r1;
@@ -43,14 +37,14 @@ class CMoveBox2Robots : public CDynamicModel
 	int m_omega_r2;
 
 	///Graphic initialization
-	SimpleOpenGL3App* window_app;
-	BulletBuilder* rob2Builder;
+	BulletPhysics* rob2Physics;
+	BulletGraphic* rob2Graphic;
 
 	///Bullet bodies init
 	BulletBody *m_Ground;
-	BulletBody *m_Robot1;
-	BulletBody *m_Robot2;
-	BulletBody *m_Box;
+	Robot *m_Robot1;
+	Robot *m_Robot2;
+	Box *m_Box;
 	BulletBody *m_Target;
 
 
@@ -60,13 +54,4 @@ public:
 
 	void reset(CState *s);
 	void executeAction(CState *s, const CAction *a, double dt);
-};
-
-class CMoveBox2RobotsReward : public IRewardComponent
-{
-public:
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
-	const char* getName() { return "reward"; }
-	double getMin();
-	double getMax();
 };

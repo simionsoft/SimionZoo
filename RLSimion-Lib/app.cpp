@@ -71,3 +71,12 @@ CSimionApp* CSimionApp::get()
 {
 	return m_pAppInstance;
 }
+
+bool CSimionApp::isExecutedRemotely()
+{
+#ifdef _DEBUG
+	return false;
+#else
+	return true;
+#endif
+}
