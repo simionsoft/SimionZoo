@@ -184,8 +184,7 @@ namespace Badger.Data
         {
             string fileDoc = null;
             bool isOpen = OpenFile(ref fileDoc, Resources.BadgerProjectFilter, XMLConfig.badgerProjectExtension);
-            if (!isOpen)
-                return;
+            if (!isOpen) return;
 
             XmlDocument badgerDoc = new XmlDocument();
             badgerDoc.Load(fileDoc);
@@ -295,44 +294,28 @@ namespace Badger.Data
                 experiment.save(sfd.FileName, SaveMode.AsExperiment);
         }
 
-        static public string getLogDescriptorsFilePath(string logDescriptorFilePath)
+
+
+        static public string GetLogFilePath(string experimentFilePath, bool descriptor = true)
         {
-            if (logDescriptorFilePath != "")
+            if (experimentFilePath != "")
             {
                 //the hard way because the elegant way didn't seem to work
                 int lastPos1, lastPos2, lastPos;
-                lastPos1 = logDescriptorFilePath.LastIndexOf("/");
-                lastPos2 = logDescriptorFilePath.LastIndexOf("\\");
+                lastPos1 = experimentFilePath.LastIndexOf("/");
+                lastPos2 = experimentFilePath.LastIndexOf("\\");
 
                 lastPos = Math.Max(lastPos1, lastPos2);
                 if (lastPos > 0)
                 {
-                    string directory = logDescriptorFilePath.Substring(0, lastPos + 1);
-
-                    return directory + "experiment-log.xml";
-                }
-            }
-            return "";
-        }
-
-
-        static public string getLogFilePath(string experimentConfigFilePath)
-        {
-            if (experimentConfigFilePath != "")
-            {
-                //the hard way because the elegant way didn't seem to work
-                int lastPos1, lastPos2, lastPos;
-                lastPos1 = experimentConfigFilePath.LastIndexOf("/");
-                lastPos2 = experimentConfigFilePath.LastIndexOf("\\");
-
-                lastPos = Math.Max(lastPos1, lastPos2);
-                if (lastPos > 0)
-                {
-                    string directory = experimentConfigFilePath.Substring(0, lastPos + 1);
-
+                    string directory = experimentFilePath.Substring(0, lastPos + 1);
+                    if (descriptor)
+                        return directory + "experiment-log.xml";
+                    
                     return directory + "experiment-log.bin";
                 }
             }
+
             return "";
         }
 
