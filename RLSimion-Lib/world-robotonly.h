@@ -27,10 +27,10 @@ class COnlyRobot : public CDynamicModel
 	int m_linear_vel;
 
 	///inicialización
-	BulletPhysics* rOnlyPhysics;
-	BulletGraphic* rOnlyGraphic;
+	BulletPhysics* rBoxPhysics;
+	BulletGraphic* rBoxGraphics;
 
-	Robot* robot_bb;
+	Robot* m_Robot;
 	BulletBody* ground_bb;
 	BulletBody* target_bb;
 

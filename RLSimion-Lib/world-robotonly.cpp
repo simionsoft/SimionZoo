@@ -44,13 +44,13 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	rOnlyPhysics = new BulletPhysics();
+	rBoxPhysics = new BulletPhysics();
 	if (!CSimionApp::get()->isExecutedRemotely())
-		rOnlyGraphic = new BulletGraphic();
+		rBoxGraphics = new BulletGraphic();
 
-	rOnlyPhysics->initPhysics();
+	rBoxPhysics->initPhysics();
 	if (!CSimionApp::get()->isExecutedRemotely())
-		rOnlyGraphic->setDebugger(rOnlyPhysics->getDynamicsWorld());
+		rBoxGraphics->setDebugger(rBoxPhysics->getDynamicsWorld());
 	
 	
 	///Creating static object, ground
@@ -58,8 +58,8 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
 		// "false" parameter will notify the constructor not to disable activation state
 		ground_bb = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), groundShape, false);
-		rOnlyPhysics->getCollisionShape().push_back(ground_bb->getShape());
-		rOnlyPhysics->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
+		rBoxPhysics->getCollisionShape().push_back(ground_bb->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
 	}
 
 	/// Creating target point, static
@@ -67,21 +67,20 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 		btCollisionShape* targetShape = new btConeShape(btScalar(0.5), btScalar(5.5));
 		target_bb = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY+1), targetShape, false);
 		target_bb->getBody()->setCollisionFlags(2);
-		rOnlyPhysics->getCollisionShape().push_back(target_bb->getShape());
-		rOnlyPhysics->getDynamicsWorld()->addRigidBody(target_bb->getBody());
+		rBoxPhysics->getCollisionShape().push_back(target_bb->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(target_bb->getBody());
 	}
 
-	///creating a dynamic robot obj1
+	///creating a dynamic robot  
 	{
-		//btCollisionShape* robot1Shape = new btSphereShape(btScalar(0.5));
-		robot_bb = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(btScalar(0.5)), true);
-		rOnlyPhysics->getCollisionShape().push_back(robot_bb->getShape());
-		rOnlyPhysics->getDynamicsWorld()->addRigidBody(robot_bb->getBody());
+		m_Robot = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5), true);
+		rBoxPhysics->getCollisionShape().push_back(m_Robot->getShape());
+		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
 	}
 
 	///Graphic init
 	if (!CSimionApp::get()->isExecutedRemotely())
-		rOnlyGraphic->generateGraphics(rOnlyPhysics->getDynamicsWorld());
+		rBoxGraphics->generateGraphics(rBoxPhysics->getDynamicsWorld());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
@@ -93,75 +92,41 @@ void COnlyRobot::reset(CState *s)
 	btTransform robotTransform;
 
 	{
-		/// New update due to correct the reset
-		robot_bb->getBody()->clearForces();
-		btVector3 zeroVector(0, 0, 0);
-		robot_bb->getBody()->setLinearVelocity(zeroVector);
-		robot_bb->getBody()->setAngularVelocity(zeroVector);
+		m_Robot->reset(s, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
 
-
-		robot_bb->getBody()->getMotionState()->getWorldTransform(robotTransform);
-
-		/// reset robot
-		robotTransform.setOrigin(btVector3(robotOrigin_x, 0.0, robotOrigin_y));
-		robot_bb->getBody()->setWorldTransform(robotTransform);
-		robot_bb->getBody()->getMotionState()->setWorldTransform(robotTransform);
-	
 		///set initial values to state variables
-		s->set(m_rob1_X, robotOrigin_x);
-		s->set(m_rob1_Y, robotOrigin_y);
 		s->set(m_theta, theta_o);
+		s->set(m_target_X, TargetX);
+		s->set(m_target_Y, TargetY);
 	}
 }
 
 void COnlyRobot::executeAction(CState *s, const CAction *a, double dt)
 {
-	double omega = a->get("omega");
-	double theta = s->get(m_theta);
-	double linear_vel = a->get("v");
-
-	theta = theta + omega*dt;
-
-	if (theta > SIMD_2_PI)
-		theta -= SIMD_2_PI;
-	if (theta < -SIMD_2_PI)
-		theta += SIMD_2_PI;
-
-	btTransform r1_trans;
-	double rob1_VelX, rob1_VelY;
-
-	rob1_VelX = cos(theta)*linear_vel;
-	rob1_VelY = sin(theta)*linear_vel;
-
-	robot_bb->getBody()->setAngularVelocity(btVector3(0.0, omega, 0.0));
-	robot_bb->getBody()->setLinearVelocity(btVector3(rob1_VelX, 0.0, rob1_VelY));
+	double theta= m_Robot->updateRobotMovement(a, s, "omega", "v", m_theta, dt);
 
 	//Update Robot1
-	rOnlyPhysics->getDynamicsWorld()->stepSimulation(dt,20);
+	rBoxPhysics->getDynamicsWorld()->stepSimulation(dt,20);
 	if (!CSimionApp::get()->isExecutedRemotely())
-		rOnlyGraphic->updateCamera();
+		rBoxGraphics->updateCamera();
 
-	robot_bb->getBody()->getMotionState()->getWorldTransform(r1_trans);
-	s->set(m_rob1_X, double(r1_trans.getOrigin().getX()));
-	s->set(m_rob1_Y, double(r1_trans.getOrigin().getZ()));
+	//Update
 
-	btVector3 printPosition = btVector3(r1_trans.getOrigin().getX(), r1_trans.getOrigin().getY() + 5, r1_trans.getOrigin().getZ());
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	m_Robot->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
+
+	s->set(m_theta, theta);
+
+	//draw
+	btVector3 printPosition = btVector3(TargetX, 5, TargetY);
+	if (!CSimionApp::get()->isExecutedRemotely())
 	{
-		if (!CSimionApp::get()->isExecutedRemotely())
-		{
-			rOnlyGraphic->drawText3D("Evaluation episode", printPosition);
-			rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
-		}
+		if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+			rBoxGraphics->drawText3D("Evaluation", printPosition);
+		else
+			rBoxGraphics->drawText3D("Training", printPosition);
+		rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
 	}
-	else
-	{
-		if (!CSimionApp::get()->isExecutedRemotely())
-			rOnlyGraphic->drawText3D("Training episode", printPosition);
-	}
-	if (!CSimionApp::get()->isExecutedRemotely()) {
-		//rOnlyGraphic->drawDynamicWorld(rOnlyPhysics->getDynamicsWorld());
-	}
+
 }
 
 COnlyRobot::~COnlyRobot()

@@ -17,8 +17,8 @@
     </World>
     <Experiment>
       <Random-Seed>1</Random-Seed>
-      <Num-Episodes>1000</Num-Episodes>
-      <Eval-Freq>10</Eval-Freq>
+      <Num-Episodes>500</Num-Episodes>
+      <Eval-Freq>25</Eval-Freq>
       <Progress-Update-Freq>1.0</Progress-Update-Freq>
       <Episode-Length>200</Episode-Length>
     </Experiment>
@@ -27,21 +27,25 @@
       <Gamma>0.9</Gamma>
       <Freeze-V-Function>true</Freeze-V-Function>
       <Use-Importance-Weights>false</Use-Importance-Weights>
+      <Experience-Replay>
+        <Buffer-Size>1000</Buffer-Size>
+        <Update-Batch-Size>10</Update-Batch-Size>
+      </Experience-Replay>
       <State-Feature-Map>
         <Type>
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
-              <Num-Features>100</Num-Features>
+              <Num-Features>20</Num-Features>
               <Variable>rx1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>100</Num-Features>
+              <Num-Features>20</Num-Features>
               <Variable>ry1</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
-              <Num-Features>50</Num-Features>
+              <Num-Features>20</Num-Features>
               <Variable>theta</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
@@ -58,7 +62,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.01</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -98,7 +102,7 @@
                     <Alpha>
                       <Schedule>
                         <Constant>
-                          <Value>0.1</Value>
+                          <Value>0.01</Value>
                         </Constant>
                       </Schedule>
                     </Alpha>
@@ -136,7 +140,6 @@
             <Critic>
               <Critic>
                 <TD-Lambda>
-
                   <Alpha>
                     <Schedule>
                       <Constant>

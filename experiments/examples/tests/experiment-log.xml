@@ -4,31 +4,9 @@
   <State-variable>targetY</State-variable>
   <State-variable>rx1</State-variable>
   <State-variable>ry1</State-variable>
-  <State-variable>bx</State-variable>
-  <State-variable>by</State-variable>
-  <State-variable>theta1</State-variable>
-  <State-variable>boxTheta</State-variable>
-  <State-variable>dBtX</State-variable>
-  <State-variable>dBtY</State-variable>
-  <State-variable>dBr1X</State-variable>
-  <State-variable>dBr1Y</State-variable>
-  <State-variable>rope0_p0X</State-variable>
-  <State-variable>rope0_p0Y</State-variable>
-  <State-variable>rope0_p0Z</State-variable>
-  <State-variable>rope0_p1X</State-variable>
-  <State-variable>rope0_p1Y</State-variable>
-  <State-variable>rope0_p1Z</State-variable>
-  <State-variable>rope0_p2X</State-variable>
-  <State-variable>rope0_p2Y</State-variable>
-  <State-variable>rope0_p2Z</State-variable>
-  <State-variable>rope0_p3X</State-variable>
-  <State-variable>rope0_p3Y</State-variable>
-  <State-variable>rope0_p3Z</State-variable>
-  <State-variable>rope0_p4X</State-variable>
-  <State-variable>rope0_p4Y</State-variable>
-  <State-variable>rope0_p4Z</State-variable>
-  <Action-variable>v1</Action-variable>
-  <Action-variable>omega1</Action-variable>
+  <State-variable>theta</State-variable>
+  <Action-variable>v</Action-variable>
+  <Action-variable>omega</Action-variable>
   <Reward-variable>reward</Reward-variable>
   <Stat-variable>TD-error/TD-error</Stat-variable>
   <Stat-variable>Features/Actor/E-Traces</Stat-variable>

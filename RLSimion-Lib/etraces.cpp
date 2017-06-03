@@ -51,6 +51,6 @@ void CETraces::addFeatureList(CFeatureList* inList, double factor)
 	else
 	{
 		clear();
-		copy(inList);
+		copyMult(factor,inList);
 	}
 }
