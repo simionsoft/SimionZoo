@@ -75,7 +75,7 @@ CSimionApp* CSimionApp::get()
 bool CSimionApp::isExecutedRemotely()
 {
 #ifdef _DEBUG
-	return true;// false;
+	return false;
 #else
 	return true;
 #endif
