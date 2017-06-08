@@ -36,7 +36,7 @@ double CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 	double epsilon = m_pEpsilon->get();
 	double randomValue = getRandomValue();
 
-	if (randomValue < epsilon)
+	if (randomValue >= epsilon)
 	{
 		pQFunction->argMax(s, a);
 		return epsilon;

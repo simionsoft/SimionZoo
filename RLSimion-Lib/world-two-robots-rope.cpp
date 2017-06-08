@@ -129,7 +129,7 @@ CRope2Robots::CRope2Robots(CConfigNode* pConfigNode)
 		robRopeViewer->generateGraphics(robRopeBuilder->getDynamicsWorld());
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_box_X, m_box_Y, m_target_X, m_target_Y));
+	m_pRewardFunction->addRewardComponent(new CDistanceReward2D(getStateDescriptor(),m_box_X, m_box_Y, m_target_X, m_target_Y));
 	m_pRewardFunction->initialize();
 }
 

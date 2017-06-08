@@ -9,24 +9,32 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-CBoxTargetReward::CBoxTargetReward(const char* var1xName, const char* var1yName, const char* var2xName, const char* var2yName)
+CDistanceReward2D::CDistanceReward2D(CDescriptor& stateDescr, const char* var1xName, const char* var1yName, const char* var2xName, const char* var2yName)
 {
-	CDescriptor& descr= CWorld::getDynamicModel()->getStateDescriptor();
-	m_var1xId = descr.getVarIndex(var1xName);
-	m_var1yId = descr.getVarIndex(var1yName);
-	m_var2xId = descr.getVarIndex(var2xName);
-	m_var2yId = descr.getVarIndex(var2yName);
+	m_var1xId = stateDescr.getVarIndex(var1xName);
+	m_var1yId = stateDescr.getVarIndex(var1yName);
+	m_var2xId = stateDescr.getVarIndex(var2xName);
+	m_var2yId = stateDescr.getVarIndex(var2yName);
+
+	//here we assume both variables have the same value range
+	m_maxDist = sqrt(stateDescr[m_var1xId].getRangeWidth()*stateDescr[m_var1xId].getRangeWidth()
+		+ stateDescr[m_var1yId].getRangeWidth()*stateDescr[m_var1yId].getRangeWidth());
 }
 
-CBoxTargetReward::CBoxTargetReward(int var1xId, int var1yId, int var2xId, int var2yId)
+CDistanceReward2D::CDistanceReward2D(CDescriptor& stateDescr, int var1xId, int var1yId, int var2xId, int var2yId)
 {
 	m_var1xId = var1xId;
 	m_var1yId = var1yId;
 	m_var2xId = var2xId;
 	m_var2yId = var2yId;
+
+	//here we assume both variables have the same value range
+	m_maxDist = sqrt(stateDescr[m_var1xId].getRangeWidth()*stateDescr[m_var1xId].getRangeWidth()
+		+ stateDescr[m_var1yId].getRangeWidth()*stateDescr[m_var1yId].getRangeWidth());
+
 }
 
-double CBoxTargetReward::getReward(const CState* s, const CAction* a, const CState* s_p)
+double CDistanceReward2D::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
 	double boxX = s_p->get(m_var1xId);
 	double boxY = s_p->get(m_var1yId);
@@ -37,20 +45,18 @@ double CBoxTargetReward::getReward(const CState* s, const CAction* a, const CSta
 
 	distance = std::max(distance, 0.0001);
 
-	double distError = distance / 1.0;
-
-	double reward = 1.0 - distError;
+	double reward = distance / m_maxDist;
 
 	return reward;
 
 }
 
-double CBoxTargetReward::getMin()
+double CDistanceReward2D::getMin()
 {
-	return -10.0;
+	return 0.0;
 }
 
-double CBoxTargetReward::getMax()
+double CDistanceReward2D::getMax()
 {
 	return 1.0;
 }

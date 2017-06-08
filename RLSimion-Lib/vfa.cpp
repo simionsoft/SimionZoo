@@ -309,15 +309,18 @@ void CLinearStateActionVFA::setInitValue(double initValue)
 void CLinearStateActionVFA::deferredLoadStep()
 {
 	//weights
-	m_pWeights= CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);//std::unique_ptr<double>(new double[m_numWeights]);
+	m_pWeights= CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
 	m_pWeights->setInitValue(m_initValue.get());
 
 	//frozen weights
 	if (m_bCanBeFrozen)
 	{
-		m_pFrozenWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights); //std::shared_ptr<double>(new double[m_numWeights]);
+		m_pFrozenWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
 		m_pFrozenWeights->setInitValue(m_initValue.get());
 	}
+
+	//buffer to solve value ties in argMax()
+	m_pArgMaxTies = new int[m_numActionWeights];
 }
 
 void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
@@ -366,6 +369,7 @@ double CLinearStateActionVFA::get(const CState *s, const CAction* a)
 
 void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 {
+	int numTies = 0;
 	//state features in aux list
 	getFeatures(s, 0, m_pAux);
 
@@ -377,14 +381,24 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
 		value= get(m_pAux);
+		if (value == maxValue)
+		{
+			m_pArgMaxTies[numTies++] = i;
+		}
 		if (value>maxValue)
 		{
 			maxValue = value;
 			arg = i;
+			numTies = 1;
 		}
 
 		m_pAux->offsetIndices(m_numStateWeights);
 	}
+
+	//any ties?
+	if (numTies > 1)
+		arg = m_pArgMaxTies[rand() % numTies]; //select one randomly
+
 
 	//retrieve action
 	m_pActionFeatureMap->getFeatureAction(arg,a);

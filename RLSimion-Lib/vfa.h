@@ -88,6 +88,7 @@ protected:
 	CFeatureList *m_pAux;
 	CFeatureList *m_pAux2;
 	DOUBLE_PARAM m_initValue;
+	int *m_pArgMaxTies;
 public:
 	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
 	unsigned int getNumActionWeights() const { return m_numActionWeights; }

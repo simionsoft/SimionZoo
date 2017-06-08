@@ -83,7 +83,7 @@ COnlyRobot::COnlyRobot(CConfigNode* pConfigNode)
 		rBoxGraphics->generateGraphics(rBoxPhysics->getDynamicsWorld());
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CBoxTargetReward(m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
+	m_pRewardFunction->addRewardComponent(new CDistanceReward2D(getStateDescriptor(),m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
