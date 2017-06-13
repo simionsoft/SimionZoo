@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -72,8 +73,7 @@ namespace Herd
             return res;
         }
 
-
-        public string State { get { return getProperty(HerdAgent.m_stateXMLTag); } set { } }
+        public string Id { get { return getProperty(HerdAgent.m_idXmlTag); } }
 
         public string Version { get { return getProperty(HerdAgent.m_versionXMLTag); } set { } }
 
@@ -84,6 +84,8 @@ namespace Herd
         public double ProcessorLoad { get { return Double.Parse(getProperty(HerdAgent.ProcessorLoadTag)); } }
 
         public double Memory { get { return Double.Parse(getProperty(HerdAgent.TotalMemoryTag)); } }
+
+        public string State { get { return getProperty(HerdAgent.m_stateXMLTag); } set { } }
 
         public bool IsAvailable
         {
@@ -129,6 +131,7 @@ namespace Herd
         private string m_dirPath = "";
 
         public const string m_herdDescriptionXMLTag = "HerdAgent";
+        public const string m_idXmlTag = "Id";
         public const string m_versionXMLTag = "HerdAgentVersion";
         public const string m_numProcessorsXMLTag = "NumberOfProcessors";
         public const string m_stateXMLTag = "State";
@@ -352,6 +355,54 @@ namespace Herd
 
         public void setState(AgentState s) { m_state = s; }
 
+        /// <summary>
+        ///     Make a hardware identifier depending on data provided.
+        /// </summary>
+        /// <param name="wmiClass">Hardware class (e.g Win32_Processor)</param>
+        /// <param name="wmiProperty">Class property (e.g. ProcessorId)</param>
+        /// <returns>An identifier</returns>
+        private string Identifier(string wmiClass, string wmiProperty)
+        {
+            string result = "";
+            ManagementClass mc = new ManagementClass(wmiClass);
+            ManagementObjectCollection moc = mc.GetInstances();
+            foreach (ManagementBaseObject mo in moc)
+            {
+                //Only get the first one
+                if (result != "") continue;
+                try
+                {
+                    result = mo[wmiProperty].ToString();
+                    break;
+                }
+                catch
+                {
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Gets a CPU identifier constructed from processor's information.
+        /// </summary>
+        /// <returns>The CPU identifier</returns>
+        private string GetCpuId()
+        {
+            //Uses first CPU identifier available in order of preference
+            //Don't get all identifiers, as it is very time consuming
+            string retVal = Identifier("Win32_Processor", "UniqueId");
+            if (retVal != "") return retVal;
+            retVal = Identifier("Win32_Processor", "ProcessorId");
+            if (retVal != "") return retVal;
+            retVal = Identifier("Win32_Processor", "Name");
+            if (retVal == "") // If no Name, use Manufacturer
+            {
+                retVal = Identifier("Win32_Processor", "Manufacturer");
+            }
+            //Add clock speed for extra security
+            retVal += Identifier("Win32_Processor", "MaxClockSpeed");
+            return retVal;
+        }
 
         public float GetCurrentCpuUsage()
         {
@@ -386,9 +437,17 @@ namespace Herd
             return statEx.ullTotalPhys;
         }
 
+        /// <summary>
+        ///     Generates a XML formated string to store the <see cref="HerdAgent"/> information.
+        /// </summary>
+        /// <returns>
+        ///     Information as a set of XML tags with the <see cref="HerdAgent"/> description
+        /// </returns>
         public string GetAgentDescription()
         {
             string description = "<" + m_herdDescriptionXMLTag + ">"
+                // Unique hardware identifier for a HerdAgent
+                + "<" + m_idXmlTag + ">" + GetCpuId() + "</" + m_idXmlTag + ">"
                 // HerdAgent version
                 + "<" + m_versionXMLTag + ">"
                 + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version

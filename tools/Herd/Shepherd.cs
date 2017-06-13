@@ -26,8 +26,7 @@ namespace Herd
     public class Shepherd : CJobDispatcher
     {
         private object m_listLock = new object();
-        private Dictionary<IPEndPoint, HerdAgentInfo> m_herdAgentList
-            = new Dictionary<IPEndPoint, HerdAgentInfo>();
+        private Dictionary<string, HerdAgentInfo> m_herdAgentList = new Dictionary<string, HerdAgentInfo>();
 
         UdpClient m_discoverySocket;
 
@@ -103,10 +102,10 @@ namespace Herd
 
                     lock (m_listLock)
                     {
-                        if (!m_herdAgentList.ContainsKey(ip))
-                            m_herdAgentList.Add(ip, herdAgentInfo);
+                        if (!m_herdAgentList.ContainsKey(herdAgentInfo.Id))
+                            m_herdAgentList.Add(herdAgentInfo.Id, herdAgentInfo);
                         else
-                            m_herdAgentList[ip] = herdAgentInfo;
+                            m_herdAgentList[herdAgentInfo.Id] = herdAgentInfo;
                     }
                     //check how much time ago the agent list was updated
                     double lastUpdateElapsedTime = (now - m_lastHerdAgentListUpdate).TotalSeconds;
@@ -193,7 +192,7 @@ namespace Herd
         }
 
 
-        public void getHerdAgentList(ref Dictionary<IPEndPoint, HerdAgentInfo> outDictionary)
+        public void getHerdAgentList(ref Dictionary<string, HerdAgentInfo> outDictionary)
         {
             lock (m_listLock)
             {
@@ -205,7 +204,7 @@ namespace Herd
         }
 
 
-        public int getAvailableHerdAgentListAndCores(ref Dictionary<IPEndPoint, int> outHerdAgentList)
+        public int getAvailableHerdAgentListAndCores(ref Dictionary<string, int> outHerdAgentList)
         {
             int numCoresTotal = 0;
             lock (m_listLock)
