@@ -15,7 +15,7 @@ CActorCritic::CActorCritic(CConfigNode* pConfigNode)
 	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", &m_td);
 
 	m_pActor = CHILD_OBJECT<CActor>(pConfigNode, "Actor", "The actor");
-	m_pCritic = CHILD_OBJECT_FACTORY<CCritic>(pConfigNode, "Critic", "The critic");
+	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic");
 }
 
 double CActorCritic::selectAction(const CState *s, CAction *a)
@@ -23,7 +23,7 @@ double CActorCritic::selectAction(const CState *s, CAction *a)
 	return m_pActor->selectAction(s, a);
 }
 
-void CActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
+double CActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
 {
 	//sample importance weigthing: rho= pi(a_t|x_t) / mu(a_t|x_t)
 	//where mu is the behavior from which the sample is drawn
@@ -39,4 +39,6 @@ void CActorCritic::update(const CState *s, const CAction *a, const CState *s_p, 
 	m_td= m_pCritic->update(s, a, s_p, r,sampleWeight);
 
 	m_pActor->update(s, a, s_p, r, m_td);
+
+	return m_td;
 }

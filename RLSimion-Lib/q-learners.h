@@ -2,7 +2,7 @@
 
 
 #include "simion.h"
-
+#include "critic.h"
 
 class CLinearStateActionVFA;
 class CQPolicy;
@@ -52,21 +52,30 @@ public:
 //Q-Learning
 //https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
 
-class CQLearning : public CSimion
+class CQLearningCritic : public ICritic
+{
+protected:
+	CHILD_OBJECT<CLinearStateActionVFA> m_pQFunction;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	CFeatureList *m_pAux;
+	CHILD_OBJECT<CETraces> m_eTraces;
+public:
+	CQLearningCritic(CConfigNode* pParameters);
+	virtual ~CQLearningCritic();
+	//the Q-Function is updated in this method (and thus, any policy derived from it such as epsilon-greedy or soft-max) 
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
+};
+
+class CQLearning : public CSimion, public CQLearningCritic
 {
 protected:
 	CHILD_OBJECT_FACTORY<CQPolicy> m_pQPolicy;
-	CHILD_OBJECT<CLinearStateActionVFA> m_pQFunction;
-	
-	CHILD_OBJECT<CETraces> m_eTraces;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
-	CFeatureList *m_pAux;
+
 public:
 	CQLearning(CConfigNode* pParameters);
 	virtual ~CQLearning();
 
-	//the Q-Function is updated in this method (and thus, any policy derived from it such as epsilon-greedy or soft-max) 
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
 
 	double selectAction(const CState *s, CAction *a);
 };
@@ -88,7 +97,7 @@ public:
 	CDoubleQLearning(CConfigNode* pParameters);
 	virtual ~CDoubleQLearning();
 
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
 };
 
 ////////////////////////
@@ -104,5 +113,5 @@ public:
 	CSARSA(CConfigNode* pParameters);
 	virtual ~CSARSA();
 	double selectAction(const CState *s, CAction *a);
-	void update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
+	double update(const CState *s, const CAction *a, const CState *s_p, double r, double probability);
 };

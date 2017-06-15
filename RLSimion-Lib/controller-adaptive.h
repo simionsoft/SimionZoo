@@ -8,7 +8,7 @@
 class CExtendedWindTurbineVidalController: public CWindTurbineVidalController
 {
 	double m_td;
-	CHILD_OBJECT_FACTORY<CCritic> m_pCritic;
+	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
 	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pAdpParamA, m_pAdpParamK_alpha, m_pAdpParamKP;
 
 public:
@@ -22,7 +22,7 @@ public:
 class CExtendedWindTurbineBoukhezzarController : public CWindTurbineBoukhezzarController
 {
 	double m_td;
-	CHILD_OBJECT_FACTORY<CCritic> m_pCritic;
+	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
 	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pAdpParamA, m_pAdpParamK_alpha, m_pAdpParamKP;
 
 public:
@@ -36,7 +36,7 @@ public:
 class CExtendedWindTurbineJonkmanController : public CWindTurbineJonkmanController
 {
 	double m_td;
-	CHILD_OBJECT_FACTORY<CCritic> m_pCritic;
+	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
 	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pAdpParamA, m_pAdpParamK_alpha, m_pAdpParamKP;
 
 public:

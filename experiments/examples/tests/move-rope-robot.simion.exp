@@ -53,7 +53,7 @@
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>4</Num-Features>
-              <Variable>theta1</Variable>
+              <Variable>theta</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
           </RBF-State-Grid>
@@ -76,7 +76,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>omega1</Output-Action>
+                          <Output-Action>omega</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
@@ -116,7 +116,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>v1</Output-Action>
+                          <Output-Action>v</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>

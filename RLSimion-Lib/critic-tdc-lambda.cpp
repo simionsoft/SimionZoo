@@ -9,7 +9,7 @@
 #include "parameters-numeric.h"
 #include "app.h"
 
-CTDCLambdaCritic::CTDCLambdaCritic(CConfigNode* pConfigNode): CCritic(pConfigNode)
+CTDCLambdaCritic::CTDCLambdaCritic(CConfigNode* pConfigNode): CVLearnerCritic(pConfigNode)
 {
 	m_z= CHILD_OBJECT<CETraces>(pConfigNode,"E-Traces","Elilgibility traces of the critic",true);
 	m_z->setName("Critic/E-Traces");

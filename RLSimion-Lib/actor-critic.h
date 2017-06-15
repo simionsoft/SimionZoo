@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include "simion.h"
+#include "critic.h"
 #include "parameters.h"
 class CConfigNode;
 class CActor;
-class CCritic;
+class CVLearnerCritic;
 class CPolicy;
 class CETraces;
 class CNumericValue;
@@ -15,14 +16,14 @@ class CActorCritic: public CSimion
 {
 	double m_td;
 	CHILD_OBJECT<CActor> m_pActor;
-	CHILD_OBJECT_FACTORY<CCritic> m_pCritic;
+	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
 public:
 	CActorCritic(CConfigNode* pParameters);
 	virtual ~CActorCritic() = default;
 
 	virtual double selectAction(const CState *s, CAction *a);
 
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };
 
 
@@ -58,5 +59,5 @@ public:
 
 	virtual double selectAction(const CState *s, CAction *a);
 
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };

@@ -174,6 +174,8 @@ void CRope2Robots::reset(CState *s)
 	//target
 	s->set(m_target_X, TargetX);
 	s->set(m_target_Y, TargetY);
+
+	m_Rope->updateRopePoints(s, robRopeBuilder->getSoftBodiesArray());
 }
 
 void CRope2Robots::executeAction(CState *s, const CAction *a, double dt)

@@ -21,7 +21,7 @@ public:
 
 	//regular controllers need not update. Default implementation does nothing but it can be overriden
 	//by adaptive controllers if need to
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb){ }
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 
 	virtual double selectAction(const CState *s, CAction *a)= 0;
 };

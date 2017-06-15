@@ -133,10 +133,11 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	}
 }
 
-void CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
+double CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
 {
 	updateValue(s, a, s_p, r);
 	updatePolicy(s, a, s_p, r);
+	return 1.0;
 }
 
 double CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)

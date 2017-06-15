@@ -11,9 +11,9 @@ class CNumericValue;
 
 
 
-//CCritic implementations
+//CVLearnerCritic implementations
 
-class CTDLambdaCritic : public CCritic
+class CTDLambdaCritic : public CVLearnerCritic
 {
 	CHILD_OBJECT<CETraces> m_z; //traces
 	CFeatureList* m_aux;
@@ -26,7 +26,7 @@ public:
 	double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho = 1.0);
 };
 
-class CTrueOnlineTDLambdaCritic : public CCritic
+class CTrueOnlineTDLambdaCritic : public CVLearnerCritic
 {
 	//True Online TD(lambda)
 	//Harm van Seijen, Richard Sutton
@@ -44,7 +44,7 @@ public:
 
 };
 
-class CTDCLambdaCritic : public CCritic
+class CTDCLambdaCritic : public CVLearnerCritic
 {
 	CHILD_OBJECT<CETraces> m_z; //traces
 	CFeatureList* m_s_features;

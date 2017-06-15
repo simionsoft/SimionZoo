@@ -106,33 +106,53 @@ double CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 ///////////////////////////////////
 //Q-Learning
 
-CQLearning::CQLearning(CConfigNode* pConfigNode)
+CQLearningCritic::CQLearningCritic(CConfigNode* pConfigNode)
 {
-	m_pQFunction= CHILD_OBJECT<CLinearStateActionVFA>(pConfigNode, "Q-Function", "The parameterization of the Q-Function");
-	m_pQPolicy= CHILD_OBJECT_FACTORY<CQPolicy>(pConfigNode, "Policy", "The policy to be followed");
-	m_eTraces= CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "E-Traces",true);
+	m_pQFunction = CHILD_OBJECT<CLinearStateActionVFA>(pConfigNode, "Q-Function", "The parameterization of the Q-Function");
+	m_eTraces = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "E-Traces", true);
 	m_eTraces->setName("Q-Learning/traces");
 	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain [0-1]");
+
 	m_pAux = new CFeatureList("QLearning/aux");
 }
-CQLearning::~CQLearning()
+
+CQLearningCritic::~CQLearningCritic()
 {
 	delete m_pAux;
 }
 
-void CQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
+double CQLearningCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
 	m_eTraces->update();
 
-	double gamma= CSimionApp::get()->pSimGod->getGamma();
+	double gamma = CSimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
 	m_eTraces->addFeatureList(m_pAux, gamma);
 
-	double td = r + gamma*m_pQFunction->max(s_p) - m_pQFunction->get(s,a);
+	double s_p_value = gamma*m_pQFunction->max(s_p);
+	double s_value = m_pQFunction->get(m_pAux);
+	double td = r + gamma*m_pQFunction->max(s_p) - m_pQFunction->get(m_pAux);
 
 	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
+
+	return td;
 }
+
+CQLearning::CQLearning(CConfigNode* pConfigNode): CQLearningCritic(pConfigNode)
+{
+	m_pQPolicy= CHILD_OBJECT_FACTORY<CQPolicy>(pConfigNode, "Policy", "The policy to be followed");
+}
+CQLearning::~CQLearning()
+{
+
+}
+
+double CQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
+{
+	return update(s, a, s_p, r, probability);
+}
+
 
 double CQLearning::selectAction(const CState *s, CAction *a)
 {
@@ -159,7 +179,7 @@ CDoubleQLearning::~CDoubleQLearning()
 	delete m_pTargetQFunction;
 }
 
-void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
+double CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
 {
 	m_eTraces->update();
 
@@ -169,7 +189,7 @@ void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s
 	{
 		//copy the weights from the online function to the target function
 		//CSimionApp::get()->pMemManager->copy(m_pQFunction->getWeights(), m_pTargetQFunction->getWeights());
-		for (int i = 0; i < m_pDeferredUpdates->m_numFeatures; ++i)
+		for (unsigned int i = 0; i < m_pDeferredUpdates->m_numFeatures; ++i)
 		{
 			(*m_pTargetQFunction->getWeights())[m_pDeferredUpdates->m_pFeatures[i].m_index] +=
 				m_pDeferredUpdates->m_pFeatures[i].m_factor;
@@ -188,6 +208,8 @@ void CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s
 
 	m_pQFunction->add(m_eTraces.ptr(), td);
 	m_pDeferredUpdates->addFeatureList(m_eTraces.ptr(), td);
+
+	return td;
 }
 
 /////////////////////////////////////////////////
@@ -218,7 +240,7 @@ double CSARSA::selectAction(const CState *s, CAction *a)
 	}
 }
 
-void CSARSA::update(const CState* s, const CAction* a, const CState* s_p, double r, double probability)
+double CSARSA::update(const CState* s, const CAction* a, const CState* s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node77.html
 	m_eTraces->update();
@@ -233,4 +255,5 @@ void CSARSA::update(const CState* s, const CAction* a, const CState* s_p, double
 
 	double td = r + gamma*m_pQFunction->get(s_p,m_nextA) - m_pQFunction->get(s, a);
 	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
+	return td;
 }

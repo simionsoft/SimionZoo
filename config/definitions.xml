@@ -16,7 +16,7 @@
   </CLASS>
   <CLASS Name="CActorCritic">
     <BRANCH Name="Actor" Class="CActor" Comment="The actor"/>
-    <BRANCH Name="Critic" Class="CCritic-Factory" Comment="The critic"/>
+    <BRANCH Name="Critic" Class="ICritic-Factory" Comment="The critic"/>
   </CLASS>
   <CLASS Name="CRegularPolicyGradientLearner">
     <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner" Optional="True"/>
@@ -38,7 +38,7 @@
     <DOUBLE-VALUE Name="K_alpha" Comment="K_alpha parameter of the torque controller" Default="5000000"/>
     <DOUBLE-VALUE Name="KP" Comment="Proportional gain of the pitch controller" Default="1.0"/>
     <DOUBLE-VALUE Name="KI" Comment="Integral gain of the pitch controller" Default="0.0"/>
-    <BRANCH Name="Critic" Class="CCritic-Factory" Comment="The critic used to learn"/>
+    <BRANCH Name="Critic" Class="ICritic-Factory" Comment="The critic used to learn"/>
     <BRANCH Name="A-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter A"/>
     <BRANCH Name="KAlpha-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter K_alpha"/>
     <BRANCH Name="KP-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter KP"/>
@@ -107,14 +107,15 @@
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain of the critic"/>
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
   </CLASS>
-  <CLASS Name="CCritic">
+  <CLASS Name="CVLearnerCritic">
     <BRANCH Name="V-Function" Class="CLinearStateVFA" Comment="The V-function to be learned"/>
   </CLASS>
-  <CLASS Name="CCritic-Factory">
-    <CHOICE Name="Critic" Class="CCritic" Comment="Critic type">
+  <CLASS Name="ICritic-Factory">
+    <CHOICE Name="Critic" Class="ICritic" Comment="Critic type">
       <CHOICE-ELEMENT Name="TD-Lambda" Class="CTDLambdaCritic"/>
       <CHOICE-ELEMENT Name="True-Online-TD-Lambda" Class="CTrueOnlineTDLambdaCritic"/>
       <CHOICE-ELEMENT Name="TDC-Lambda" Class="CTDCLambdaCritic"/>
+      <CHOICE-ELEMENT Name="Q-Learning" Class="CQLearningCritic"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CETraces">
@@ -230,23 +231,28 @@
   <CLASS Name="CQSoftMaxPolicy">
     <BRANCH Name="Tau" Class="CNumericValue-Factory" Comment="Temperature parameter"/>
   </CLASS>
-  <CLASS Name="CQLearning">
+  <CLASS Name="CQLearningCritic">
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="True"/>
+    <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
+  </CLASS>
+  <CLASS Name="CQLearning">
     <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
+    <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
+    <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="True"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CDoubleQLearning">
     <INTEGER-VALUE Name="Target-Update-Freq" Comment="The number of steps between updates of the target Q-Function" Default="100"/>
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="True"/>
-    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CSARSA">
+    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
     <BRANCH Name="Q-Function" Class="CLinearStateActionVFA" Comment="The parameterization of the Q-Function"/>
     <BRANCH Name="E-Traces" Class="CETraces" Comment="E-Traces" Optional="True"/>
-    <BRANCH Name="Policy" Class="CQPolicy-Factory" Comment="The policy to be followed"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain [0-1]"/>
   </CLASS>
   <CLASS Name="CQPolicy-Factory">
@@ -417,14 +423,14 @@
     <STATE-VAR Name="ry1" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="bx" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="by" Min="-20" Max="20" Unit="m"/>
-    <STATE-VAR Name="theta1" Min="-3.15" Max="3.15" Unit="rad"/>
+    <STATE-VAR Name="theta" Min="-3.15" Max="3.15" Unit="rad"/>
     <STATE-VAR Name="boxTheta" Min="-3.15" Max="3.15" Unit="rad"/>
     <STATE-VAR Name="dBtX" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="dBtY" Min="-20" Max="20" Unit="m"/>
     <STATE-VAR Name="dBr1X" Min="-6" Max="6" Unit="m"/>
     <STATE-VAR Name="dBr1Y" Min="-6" Max="6" Unit="m"/>
-    <ACTION-VAR Name="v1" Min="-2" Max="2" Unit="m/s"/>
-    <ACTION-VAR Name="omega1" Min="-8" Max="8" Unit="rad/s"/>
+    <ACTION-VAR Name="v" Min="-2" Max="2" Unit="m/s"/>
+    <ACTION-VAR Name="omega" Min="-8" Max="8" Unit="rad/s"/>
   </CLASS>
   <CLASS Name="CPitchControl" World="Pitch-control">
     <FILE-PATH-VALUE Name="Set-Point-File" Comment="The setpoint file" Default="../config/world/pitch-control/setpoint.txt"/>

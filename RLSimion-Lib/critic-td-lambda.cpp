@@ -10,7 +10,7 @@
 #include "app-rlsimion.h"
 
 CTDLambdaCritic::CTDLambdaCritic(CConfigNode* pConfigNode)
-	: CCritic(pConfigNode)
+	: CVLearnerCritic(pConfigNode)
 {
 	m_z = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
 	m_z->setName("Critic/E-Traces" );

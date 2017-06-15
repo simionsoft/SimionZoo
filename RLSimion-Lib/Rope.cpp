@@ -9,9 +9,9 @@ Rope::Rope(CDynamicModel* pWorld, std::vector<btSoftBody*>* arr)
 	{
 		for (i = 0; i < arr->at(j)->m_links.size(); ++i)
 		{
-			pWorld->addStateVariable((string("rope")+to_string(j)+string("_p")+to_string(i)+string("X")).c_str(), "m", 0.0, 2.0);
-			pWorld->addStateVariable((string("rope") + to_string(j) + string("_p") + to_string(i) + string("Y")).c_str(), "m", 0.0, 2.0);
-			pWorld->addStateVariable((string("rope") + to_string(j) + string("_p") + to_string(i) + string("Z")).c_str(), "m", 0.0, 2.0);
+			pWorld->addStateVariable((string("rope") + to_string(j)+string("_p")+to_string(i)+string("X")).c_str(), "m", -20.0, 20.0);
+			pWorld->addStateVariable((string("rope") + to_string(j) + string("_p") + to_string(i) + string("Y")).c_str(), "m", -20.0, 20.0);
+			pWorld->addStateVariable((string("rope") + to_string(j) + string("_p") + to_string(i) + string("Z")).c_str(), "m", -20.0, 20.0);
 		}
 	}
 }

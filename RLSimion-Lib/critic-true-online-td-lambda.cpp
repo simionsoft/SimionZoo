@@ -9,7 +9,7 @@
 #include "config.h"
 #include "app.h"
 
-CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CConfigNode* pConfigNode): CCritic(pConfigNode)
+CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CConfigNode* pConfigNode): CVLearnerCritic(pConfigNode)
 {
 	m_e = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
 	m_e->setName("Critic/E-Traces" );

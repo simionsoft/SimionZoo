@@ -43,7 +43,7 @@ CRopeRobot::CRopeRobot(CConfigNode* pConfigNode)
 	m_box_X = addStateVariable("bx", "m", -20.0, 20.0);
 	m_box_Y = addStateVariable("by", "m", -20.0, 20.0);
 
-	m_theta_r1 = addStateVariable("theta1", "rad", -3.15, 3.15, true);
+	m_theta_r1 = addStateVariable("theta", "rad", -3.15, 3.15, true);
 	m_boxTheta = addStateVariable("boxTheta", "rad", -3.15, 3.15, true);
 	m_D_BtX = addStateVariable("dBtX", "m", -20.0, 20.0);
 	m_D_BtY = addStateVariable("dBtY", "m", -20.0, 20.0);
@@ -51,8 +51,8 @@ CRopeRobot::CRopeRobot(CConfigNode* pConfigNode)
 	m_D_Br1X = addStateVariable("dBr1X", "m", -6.0, 6.0);
 	m_D_Br1Y = addStateVariable("dBr1Y", "m", -6.0, 6.0);
 
-	m_linear_vel_r1 = addActionVariable("v1", "m/s", -2.0, 2.0);
-	m_omega_r1 = addActionVariable("omega1", "rad/s", -8.0, 8.0);
+	m_linear_vel_r1 = addActionVariable("v", "m/s", -2.0, 2.0);
+	m_omega_r1 = addActionVariable("omega", "rad/s", -8.0, 8.0);
 
 	MASS_ROBOT = 1.1f;
 	MASS_BOX = 6.9;
@@ -145,13 +145,16 @@ void CRopeRobot::reset(CState *s)
 	//target
 	s->set(m_target_X, TargetX);
 	s->set(m_target_Y, TargetY);
+
+	//rope
+	m_Rope->updateRopePoints(s, robRopeBuilder->getSoftBodiesArray());
 }
 
 void CRopeRobot::executeAction(CState *s, const CAction *a, double dt)
 {
 
 	double r1_theta;
-	r1_theta = m_Robot1->updateRobotMovement(a, s, "omega1", "v1", m_theta_r1, dt);
+	r1_theta = m_Robot1->updateRobotMovement(a, s, "omega", "v", m_theta_r1, dt);
 
 	//Execute simulation
 	robRopeBuilder->simulate(dt, 20);

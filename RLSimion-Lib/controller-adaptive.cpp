@@ -7,7 +7,7 @@
 CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfigNode* pConfigNode) :CWindTurbineVidalController(pConfigNode)
 {
 	m_td = 0.0;
-	m_pCritic = CHILD_OBJECT_FACTORY<CCritic>(pConfigNode, "Critic", "The critic used to learn");
+	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic used to learn");
 	m_pAdpParamA = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "A-adaptive-parameter", "The learner used for Vidal controller's parameter A");
 	m_pAdpParamA->getPolicy()->getDetPolicyStateVFA()->setInitValue(m_pA.get());
 	m_pAdpParamK_alpha = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KAlpha-adaptive-parameter", "The learner used for Vidal controller's parameter K_alpha");

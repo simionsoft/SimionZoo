@@ -42,10 +42,7 @@ CLQRController::CLQRController(CConfigNode* pConfigNode)
 
 }
 
-CLQRController::~CLQRController()
-{
-	//for (unsigned int i = 0; i < m_gains.size(); i++) delete m_gains[i];
-}
+CLQRController::~CLQRController(){}
 
 double CLQRController::selectAction(const CState *s, CAction *a)
 {
