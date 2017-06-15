@@ -12,8 +12,8 @@
         <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">
             <v:ExperimentView/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:StatsViewModel}">
-            <v:StatsView/>
+        <DataTemplate DataType="{x:Type vm:VariableStatsViewModel}">
+            <v:VariableStatsView/>
         </DataTemplate>
     </Window.Resources>
 
