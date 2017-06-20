@@ -1,7 +1,7 @@
 #pragma once
 
 #include "world.h"
-#define ATTRIBUTE_ALIGNED16(a)
+
 #include "../../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 class BulletBody;
 class Robot;

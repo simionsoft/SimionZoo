@@ -18,7 +18,7 @@ void BulletPhysics::initSoftPhysics()
 // Step the simulation 
 void BulletPhysics::simulate(double dt, int maxSubSteps)
 {
-	stepSimulation(dt, maxSubSteps);
+	stepSimulation((float)dt, maxSubSteps);
 
 }
 

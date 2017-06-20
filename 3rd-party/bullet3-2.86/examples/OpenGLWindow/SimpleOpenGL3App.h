@@ -8,9 +8,10 @@
 #include "../CommonInterfaces/CommonGraphicsAppInterface.h"
 
 
-struct SimpleOpenGL3App : public CommonGraphicsApp
+class SimpleOpenGL3App : public CommonGraphicsApp
 {
-	struct SimpleInternalData* m_data;
+public:
+	class SimpleInternalData* m_data;
 
 	class GLPrimitiveRenderer*	m_primRenderer;
 	class GLInstancingRenderer* m_instancingRenderer;

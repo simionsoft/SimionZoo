@@ -78,7 +78,7 @@ void BulletViewer::simulate(double dt)
 	m_pOpenGLApp->m_instancingRenderer->init();
 	m_pOpenGLApp->m_instancingRenderer->updateCamera(m_pOpenGLApp->getUpAxis());
 
-	stepSimulation(dt);
+	stepSimulation((float)dt);
 }
 
 // Draw the scene

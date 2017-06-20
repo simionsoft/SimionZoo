@@ -90,7 +90,7 @@ double BulletBody::updateRobotMovement(const CAction *a, CState *s, char *omega,
 	return m_theta;
 }
 
-btTransform BulletBody::setAbsoluteVariables(CState* s, double idX, double idY)
+btTransform BulletBody::setAbsoluteVariables(CState* s, int idX, int idY)
 {
 	btTransform trans;
 	getBody()->getMotionState()->getWorldTransform(trans);

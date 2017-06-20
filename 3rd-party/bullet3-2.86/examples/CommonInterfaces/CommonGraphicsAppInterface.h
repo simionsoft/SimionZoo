@@ -190,13 +190,13 @@ struct CommonGraphicsApp
 
 				if (m_middleMouseButton)
 				{
-					cameraTargetPosition += cameraUp * yDelta*0.01;
+					cameraTargetPosition += cameraUp * yDelta*0.01f;
 
 
 					b3Vector3 fwd = cameraTargetPosition-cameraPosition;
 					b3Vector3 side = cameraUp.cross(fwd);
 					side.normalize();
-					cameraTargetPosition += side * xDelta*0.01;
+					cameraTargetPosition += side * xDelta*0.01f;
 
 				}
 				if (m_rightMouseButton)

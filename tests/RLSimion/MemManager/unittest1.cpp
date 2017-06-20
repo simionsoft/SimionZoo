@@ -110,7 +110,7 @@ namespace MemManager
 			pBuffer5->setInitValue(5.0);
 
 			pMemManager->init(SMALL_BLOCK_SIZE);
-			int actualBlockSize = ((CSimionMemPool*)pBuffer1->getMemPool())->getBlockSize();
+			size_t actualBlockSize = ((CSimionMemPool*)pBuffer1->getMemPool())->getBlockSize();
 
 			Assert::AreEqual(1.0, (*pBuffer1)[0]);
 			Assert::AreEqual(2.0, (*pBuffer2)[1000]);

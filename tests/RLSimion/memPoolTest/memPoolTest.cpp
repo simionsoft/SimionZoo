@@ -10,7 +10,7 @@
 int main()
 {
 	CMemManager<CSimionMemPool> *pMemManager= new CMemManager<CSimionMemPool>();
-	int numElements = 10 * 1024 * 1024;
+	size_t numElements = 10 * 1024 * 1024;
 	CTimer timer;
 
 	IMemBuffer* bufferHandler1= pMemManager->getMemBuffer(numElements);
@@ -26,7 +26,7 @@ int main()
 
 	pMemManager->init();
 	timer.startTimer();
-	int lastMemAlloc = pMemManager->getTotalAllocatedMem();
+	size_t lastMemAlloc = pMemManager->getTotalAllocatedMem();
 	int numAccesses = 10000000;
 	int minIndex = 600000;
 	int maxIndex = 5000000;
@@ -34,7 +34,7 @@ int main()
 	for (int i = 0; i < numElements; ++i)
 	{
 		double r = (double)rand() / (double)RAND_MAX;
-		int index = (int) (r* (double)numElements);
+		size_t index = (int) (r* (double)numElements);
 		index = std::min(index, numElements - 1);// minIndex + r* (double)(maxIndex - minIndex);
 		//int index = i;
 
@@ -53,7 +53,7 @@ int main()
 	}
 
 	double time= timer.getElapsedTime();
-	printf("Total memory allocated= %d", pMemManager->getTotalAllocatedMem());
+	printf("Total memory allocated= %zd", pMemManager->getTotalAllocatedMem());
 	printf("Total time= %f\n", time);
 	printf("Sum= %f\n", sum);
 	delete pMemManager;

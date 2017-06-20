@@ -57,7 +57,7 @@ inline int	b3GetVersion()
 //			#pragma warning(disable:4530) // Disable the exception disable but used in MSCV Stl warning.
 			#pragma warning(disable:4996) //Turn off warnings about deprecated C routines
 //			#pragma warning(disable:4786) // Disable the "debug name too long" warning
-
+			#pragma warning (disable:4316)
 			#define B3_FORCE_INLINE __forceinline
 			#define B3_ATTRIBUTE_ALIGNED16(a) __declspec(align(16)) a
 			#define B3_ATTRIBUTE_ALIGNED64(a) __declspec(align(64)) a

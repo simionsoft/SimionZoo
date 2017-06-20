@@ -176,7 +176,7 @@ struct CommonRigidBodyBase : public CommonExampleInterface
 		
 		if (!renderer)
 		{
-			btAssert(0);
+			//btAssert(0);
 			return btVector3(0,0,0);
 		}
 
@@ -184,7 +184,7 @@ struct CommonRigidBodyBase : public CommonExampleInterface
 		float bottom = -1.f;
 		float nearPlane = 1.f;
 		float tanFov = (top-bottom)*0.5f / nearPlane;
-		float fov = btScalar(2.0) * btAtan(tanFov);
+		float fov = (float) (btScalar(2.0f) * btAtan(tanFov));
 
 		btVector3 camPos,camTarget;
 		
@@ -241,7 +241,7 @@ struct CommonRigidBodyBase : public CommonExampleInterface
 		
 		if (!renderer)
 		{
-			btAssert(0);
+			//btAssert(0);
 			return false;
 		}
 
@@ -407,7 +407,7 @@ struct CommonRigidBodyBase : public CommonExampleInterface
 
 	btRigidBody*	createRigidBody(float mass, const btTransform& startTransform, btCollisionShape* shape,  const btVector4& color = btVector4(1, 0, 0, 1))
 	{
-		btAssert((!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE));
+		//btAssert((!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE));
 
 		//rigidbody is dynamic if and only if mass is non zero, otherwise static
 		bool isDynamic = (mass != 0.f);

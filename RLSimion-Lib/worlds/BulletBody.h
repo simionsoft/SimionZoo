@@ -13,7 +13,7 @@ public:
 	btTransform BulletBody::getTransform();
 	void reset(CState* s, double originX, double originY, int idX, int idY);
 	double updateRobotMovement(const CAction *a, CState *s, char *omega, char *vel, int theta, double dt);
-	btTransform setAbsoluteVariables(CState* s, double idX, double idY);
+	btTransform setAbsoluteVariables(CState* s, int idX, int idY);
 	void setRelativeVariables(CState* s, int idX, int idY, bool isBox, double targetX, double targetY, double valX = 0.0, double valY = 0.0);
 
 protected:

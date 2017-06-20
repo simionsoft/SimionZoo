@@ -35,8 +35,9 @@
     #define pclose _pclose
 #endif // _WIN32
 
-struct SimpleInternalData
+class SimpleInternalData
 {
+public:
 	GLuint m_fontTextureId;
 	GLuint m_largeFontTextureId;
 	struct sth_stash* m_fontStash;
