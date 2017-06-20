@@ -2,7 +2,7 @@
 #include "experiment.h"
 #include "config.h"
 #include "logger.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "stats.h"
 #include "timer.h"
 #include "app.h"

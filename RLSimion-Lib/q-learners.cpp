@@ -6,7 +6,7 @@
 #include "parameters-numeric.h"
 #include "noise.h"
 #include "etraces.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "app.h"
 #include "featuremap.h"
 

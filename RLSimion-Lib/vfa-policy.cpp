@@ -4,7 +4,7 @@
 #include "vfa.h"
 #include "policy-learner.h"
 #include "config.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "features.h"
 #include "policy.h"
 #include "app-rlsimion.h"

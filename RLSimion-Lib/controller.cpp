@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "controller.h"
 #include "named-var-set.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "config.h"
 #include "parameters-numeric.h"
 #include "controller-adaptive.h"

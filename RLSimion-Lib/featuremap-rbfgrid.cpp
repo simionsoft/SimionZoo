@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "featuremap.h"
 #include "named-var-set.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "features.h"
 #include "config.h"
 #include "single-dimension-grid.h"

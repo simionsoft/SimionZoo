@@ -5,29 +5,29 @@
 #include "mem-manager.h"
 #include <string>
 
-CSimpleMemPool::CSimpleMemPool(int elementCount) {}
+CSimpleMemPool::CSimpleMemPool(BUFFER_SIZE elementCount) {}
 CSimpleMemPool::~CSimpleMemPool()
 {
 	for (auto it = m_buffers.begin(); it != m_buffers.end(); ++it)
 		delete *it;
 }
 
-IMemBuffer* CSimpleMemPool::getHandler(int elementCount)
+IMemBuffer* CSimpleMemPool::getHandler(BUFFER_SIZE elementCount)
 {
 	m_buffers.push_back(new CSimpleMemBuffer(this, elementCount));
 	return m_buffers.back();
 }
 
-void CSimpleMemPool::init(int blockSize)
+void CSimpleMemPool::init(BUFFER_SIZE blockSize)
 {
 }
 
 void CSimpleMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 {
-	unsigned int numElements = pSrc->getNumElements();
+	BUFFER_SIZE numElements = pSrc->getNumElements();
 	if ( numElements == pDst->getNumElements())
 	{
-		for (unsigned int i= 0; i<numElements; ++i)
+		for (BUFFER_SIZE i= 0; i<numElements; ++i)
 		{
 			(*pDst)[i] = (*pSrc)[i];
 		}
@@ -39,7 +39,7 @@ void CSimpleMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 //Interleaved Memory Pool
 //a set arrays with the same size are interleaved to improve cache hits
 
-CSimionMemPool::CSimionMemPool(int numElements)
+CSimionMemPool::CSimionMemPool(BUFFER_SIZE numElements)
 {
 	m_numElements = numElements;
 }
@@ -60,12 +60,12 @@ CSimionMemPool::~CSimionMemPool()
 
 void CSimionMemPool::addMemBufferHandler(CSimionMemBuffer* pMemBufferHandler)
 {
-	int newMemBufferOffset = m_elementSize;
+	BUFFER_SIZE newMemBufferOffset = m_elementSize;
 	m_elementSize += pMemBufferHandler->getElementSize();
 	m_memBufferHandlers.push_back(pMemBufferHandler);
 }
 
-IMemBuffer* CSimionMemPool::getHandler(int elementCount)
+IMemBuffer* CSimionMemPool::getHandler(BUFFER_SIZE elementCount)
 {
 	CSimionMemBuffer* pHandler 
 		= new CSimionMemBuffer(this, elementCount, 1, m_elementSize);
@@ -74,21 +74,21 @@ IMemBuffer* CSimionMemPool::getHandler(int elementCount)
 }
 
 
-double& CSimionMemPool::get(int elementIndex, int bufferOffset)
+double& CSimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 {
 	++m_accessCounter;
 
-	unsigned int elementStartByte = elementIndex*m_elementSize + bufferOffset;
-	unsigned int blockId = elementStartByte / m_memBlockSize;
-	unsigned int relBlockAddr = elementStartByte % m_memBlockSize;
+	BUFFER_SIZE elementStartByte = elementIndex*m_elementSize + bufferOffset;
+	BUFFER_SIZE blockId = elementStartByte / m_memBlockSize;
+	BUFFER_SIZE relBlockAddr = elementStartByte % m_memBlockSize;
 	double* pMemBuffer= 0;
-	CMemBlock* pBlock = m_memBlocks[blockId];
+	CMemBlock* pBlock = m_memBlocks[(size_t)blockId];
 
 	if (!pBlock->bAllocated())
 	{
 		//can we allocate more memory?
-		unsigned int allocatedMem = getTotalAllocatedMem();
-		unsigned int requestedMem = m_memBlockSize * sizeof(double);
+		BUFFER_SIZE allocatedMem = getTotalAllocatedMem();
+		BUFFER_SIZE requestedMem = m_memBlockSize * sizeof(double);
 
 		if (m_memLimit==0 || allocatedMem+requestedMem<=m_memLimit)
 		{
@@ -138,7 +138,7 @@ double* CSimionMemPool::recycleMem()
 
 void CSimionMemPool::initialize(CMemBlock* pBlock)
 {
-	int blockId = pBlock->getId();
+	BUFFER_SIZE blockId = pBlock->getId();
 	unsigned int firstElement = blockId*pBlock->size();
 	unsigned int numHandlers = (int)m_memBufferHandlers.size();
 	unsigned int handler;
@@ -155,7 +155,7 @@ void CSimionMemPool::initialize(CMemBlock* pBlock)
 	pBlock->setInitialized();
 }
 
-double* CSimionMemPool::tryToAllocateMem(int blockSize)
+double* CSimionMemPool::tryToAllocateMem(BUFFER_SIZE blockSize)
 {
 	double* pNewMemBlock;
 	try
@@ -169,7 +169,7 @@ double* CSimionMemPool::tryToAllocateMem(int blockSize)
 	}
 }
 
-void CSimionMemPool::init(int blockSize)
+void CSimionMemPool::init(BUFFER_SIZE blockSize)
 {
 	CMemBlock* pNewMemBlock;
 	unsigned int totalNumElements= m_numElements * (int)m_memBufferHandlers.size();
@@ -190,7 +190,7 @@ void CSimionMemPool::init(int blockSize)
 
 	//we may have to correct the maximum amount of memory allowed to accomodate at least one block
 	if (m_memLimit>0)
-		m_memLimit = std::max(m_memLimit, (int)(m_memBlockSize * sizeof(double)));
+		m_memLimit = std::max(m_memLimit, (BUFFER_SIZE)(m_memBlockSize * sizeof(double)));
 }
 
 void CSimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
@@ -206,7 +206,7 @@ void CSimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 		minRelIndexInBlock = blockAbsOffset / m_elementSize;
 		if (pSrcBuffer->getOffset()<(blockAbsOffset%m_elementSize))
 			++minRelIndexInBlock;
-		for (int block = 0; block < m_memBlocks.size(); ++block)
+		for (unsigned int block = 0; block < m_memBlocks.size(); ++block)
 		{
 			if (m_memBlocks[block]->bAllocated() && m_memBlocks[block]->bInitialized())
 			{

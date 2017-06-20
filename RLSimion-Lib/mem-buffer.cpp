@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "mem-buffer.h"
-#include "mem-block.h"
 #include "mem-pool.h"
+#include "mem-block.h"
+#include "mem-buffer.h"
 
 
-CSimpleMemBuffer::CSimpleMemBuffer(IMemPool* pPool, int elementCount)
+CSimpleMemBuffer::CSimpleMemBuffer(IMemPool* pPool, BUFFER_SIZE elementCount)
 	:m_pPool(pPool), m_blockSize(elementCount),IMemBuffer(pPool,elementCount)
 {
 	m_pBuffer = new double[elementCount];
@@ -15,7 +15,7 @@ CSimpleMemBuffer::~CSimpleMemBuffer()
 	if (m_pBuffer != nullptr) delete[] m_pBuffer;
 }
 
-double& CSimpleMemBuffer::operator[](size_t index)
+double& CSimpleMemBuffer::operator[](BUFFER_SIZE index)
 {
 	return m_pBuffer[index];
 }
@@ -24,7 +24,7 @@ double& CSimpleMemBuffer::operator[](size_t index)
 
 
 CSimionMemBuffer::CSimionMemBuffer(CSimionMemPool* pPool
-	,int elementCount, int elementSize, int offset)
+	, BUFFER_SIZE elementCount, BUFFER_SIZE elementSize, BUFFER_SIZE offset)
 	:m_pPool(pPool), m_elementSize(elementSize), m_offset(offset),IMemBuffer(pPool,elementCount)
 {
 
@@ -34,12 +34,12 @@ CSimionMemBuffer::~CSimionMemBuffer()
 {
 }
 
-double& CSimionMemBuffer::operator[](size_t index)
+double& CSimionMemBuffer::operator[](BUFFER_SIZE index)
 {
 	return m_pPool->get((int)index,m_offset);
 }
 
-int CSimionMemBuffer::getBlockSizeInBytes()
+BUFFER_SIZE CSimionMemBuffer::getBlockSizeInBytes()
 {
 	return m_pPool->getBlockSize()*sizeof(double);
 }

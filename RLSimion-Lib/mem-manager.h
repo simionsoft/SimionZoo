@@ -1,13 +1,16 @@
 #pragma once
 
+typedef size_t BUFFER_SIZE;
+
+#include <vector>
+using namespace std;
+
 #include "mem-interfaces.h"
 #include "mem-block.h"
 #include "mem-buffer.h"
 #include "mem-pool.h"
 #include "deferred-load.h"
 
-#include <vector>
-using namespace std;
 
 template <typename MemPoolType>
 class CMemManager: public CDeferredLoad
@@ -18,7 +21,7 @@ class CMemManager: public CDeferredLoad
 	//This should be a short list. Not likely worth using a map instead of a vector
 	vector<IMemPool*>m_memPools;
 	
-	IMemPool* getMemPool(int elementCount)
+	IMemPool* getMemPool(BUFFER_SIZE elementCount)
 	{
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 		{
@@ -43,7 +46,7 @@ public:
 	}
 
 	//maxAllocatedMemory: maximum number of bytes allowed to have in memory concurrently
-	void setMaxAllocatedMem(int maxAllocatedMem)
+	void setMaxAllocatedMem(BUFFER_SIZE maxAllocatedMem)
 	{
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 		{
@@ -51,7 +54,7 @@ public:
 		}
 	}
 
-	bool bAskPermissionAllocateMemBuffer(int memSizeRequested)
+	bool bAskPermissionAllocateMemBuffer(BUFFER_SIZE memSizeRequested)
 	{
 		if (m_maxAllocatedMem < 0) return true;
 		int allocatedMem = getAllocatedMem();
@@ -61,21 +64,21 @@ public:
 		return true;
 	}
 
-	IMemBuffer* getMemBuffer(int elementCount)
+	IMemBuffer* getMemBuffer(BUFFER_SIZE elementCount)
 	{
 		IMemPool* pMemPool = getMemPool(elementCount);
 		return pMemPool->getHandler(elementCount);
 	}
 
-	void init(int blockSize = 64 * 1024)
+	void init(BUFFER_SIZE blockSize = 64 * 1024)
 	{
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 			(*it)->init(blockSize);
 	}
 
-	int getTotalAllocatedMem() const
+	BUFFER_SIZE getTotalAllocatedMem() const
 	{
-		int total = 0;
+		BUFFER_SIZE total = 0;
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 		{
 			total += (*it)->getTotalAllocatedMem();

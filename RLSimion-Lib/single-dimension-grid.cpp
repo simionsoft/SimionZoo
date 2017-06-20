@@ -2,7 +2,7 @@
 #include "single-dimension-grid.h"
 #include "features.h"
 #include "config.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "named-var-set.h"
 #include "app.h"
 

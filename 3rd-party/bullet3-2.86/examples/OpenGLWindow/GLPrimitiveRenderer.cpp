@@ -502,7 +502,7 @@ void GLPrimitiveRenderer::drawTexturedRect2(float x0, float y0, float x1, float 
 
 	if (m_data2->m_numVerticesText>=MAX_VERTICES2)
 	{
-		drawTexturedRect3D2(m_data2->m_verticesText, m_data2->m_numVerticesText,useRGBA);
+		drawTexturedRect3D2(m_data2->m_verticesText, m_data2->m_numVerticesText,useRGBA!=0);
 		m_data2->m_numVerticesText=0;
 	}
 
@@ -522,7 +522,7 @@ void GLPrimitiveRenderer::drawTexturedRect(float x0, float y0, float x1, float y
         PrimVertex( PrimVec4( -1.f+2.f*x1/float(m_screenWidth), 1.f-2.f*y0/float(m_screenHeight), 0.f, 1.f ), PrimVec4( color[0], color[1], color[2], color[3] ) ,PrimVec2(u1,v0))
     };
     
-	drawTexturedRect3D(vertexData[0],vertexData[1],vertexData[2],vertexData[3],identity,identity,useRGBA);
+	drawTexturedRect3D(vertexData[0],vertexData[1],vertexData[2],vertexData[3],identity,identity,useRGBA!=0);
 }
 
 void GLPrimitiveRenderer::setScreenSize(int width, int height)

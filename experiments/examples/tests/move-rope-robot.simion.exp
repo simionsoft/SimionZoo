@@ -10,8 +10,8 @@
       <Delta-T>0.1</Delta-T>
       <Dynamic-Model>
         <Model>
-          <MoveBoxOneRobotRope>
-          </MoveBoxOneRobotRope>
+          <Pull-Box-1>
+          </Pull-Box-1>
         </Model>
       </Dynamic-Model>
     </World>

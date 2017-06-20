@@ -24,9 +24,9 @@ namespace MemManager
 			IMemBuffer* pBuffer5 = pMemManager->getMemBuffer(BUFFER_SIZE);
 			
 			pMemManager->init(BLOCK_SIZE);
-			int realBlockSize = dynamic_cast<CSimionMemBuffer*>(pBuffer1)->getBlockSizeInBytes();
+			size_t realBlockSize = dynamic_cast<CSimionMemBuffer*>(pBuffer1)->getBlockSizeInBytes();
 
-			Assert::AreEqual(pMemManager->getTotalAllocatedMem(), 0);
+			Assert::AreEqual(pMemManager->getTotalAllocatedMem(), (size_t)0);
 
 			(*pBuffer1)[0] = 1.0;
 			(*pBuffer2)[0] = 2.0;

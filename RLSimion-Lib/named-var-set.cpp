@@ -44,7 +44,7 @@ CNamedVarSet::CNamedVarSet(CDescriptor& descriptor): m_pProperties(descriptor)
 
 	//m_pProperties= new CNamedVarProperties[numVars];
 	m_pValues= new double[descriptor.size()];
-	for (int i = 0; i < descriptor.size(); i++) m_pValues[i] = 0.0;
+	for (unsigned int i = 0; i < descriptor.size(); i++) m_pValues[i] = 0.0;
 	m_numVars= (int)descriptor.size();
 }
 

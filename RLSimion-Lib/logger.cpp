@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "logger.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "named-var-set.h"
 #include "config.h"
 #include "stats.h"
@@ -136,7 +136,9 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	fopen_s(&logXMLDescriptorFile, filename, "w");
 	if (logXMLDescriptorFile)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\">\n", OUTPUT_LOG_FILENAME);
+		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" World=\"%s\">\n"
+			, OUTPUT_LOG_FILENAME
+			, (CSimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		writeEpisodeTypesToBuffer(buffer);
 		writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
 		writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action

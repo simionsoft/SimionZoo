@@ -222,7 +222,7 @@ int sth_add_font(struct sth_stash* stash, const char* path)
 	int idx=0;
 
 	// Read in the font data.
-	fp = fopen(path, "rb");
+	fopen_s(&fp,path, "rb");
 	if (!fp) goto error;
 	fseek(fp,0,SEEK_END);
 	datasize = (int)ftell(fp);

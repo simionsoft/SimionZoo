@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "app-rlsimion.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "experiment.h"
 #include "SimGod.h"
 #include "config.h"

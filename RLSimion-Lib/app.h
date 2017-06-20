@@ -5,7 +5,7 @@ class CConfigFile;
 
 class CFilePathList;
 
-#include "world.h"
+#include "worlds/world.h"
 #include "logger.h"
 #include "experiment.h"
 #include "SimGod.h"

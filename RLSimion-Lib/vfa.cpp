@@ -91,7 +91,7 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 
 		assert(m_numWeights == numWeightsRead);
 
-		for(int i= 0; i<numWeightsRead; ++i)
+		for(unsigned int i= 0; i<numWeightsRead; ++i)
 			fread_s(&(*m_pWeights)[i], sizeof(double), sizeof(double), 1, (FILE*)pFile);
 
 		fclose(pFile);
@@ -173,7 +173,7 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 
 		if (experimentStep % vUpdateFreq == 0)
 		{
-			for (int i = 0; i < m_pPendingUpdates->m_numFeatures; ++i)
+			for (unsigned int i = 0; i < m_pPendingUpdates->m_numFeatures; ++i)
 			{
 				(*m_pFrozenWeights)[m_pPendingUpdates->m_pFeatures[i].m_index]
 					+= m_pPendingUpdates->m_pFeatures[i].m_factor;

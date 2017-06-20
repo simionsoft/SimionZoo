@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "parameters.h"
-#include "world.h"
+#include "worlds/world.h"
 
 STATE_VARIABLE::STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment)
 {

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "reward.h"
 #include "config.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "parameters-numeric.h"
 #include "app.h"
 #include "logger.h"
@@ -79,7 +79,7 @@ void CRewardFunction::initialize()
 				, m_rewardComponents[i]->getMin(), m_rewardComponents[i]->getMax());
 		}
 		m_pRewardVector = rewardDescriptor.getInstance();
-		for (int i= 0; i<numComponents; ++i)
+		for (unsigned int i= 0; i<numComponents; ++i)
 		{
 			m_pRewardVector->getProperties(i).setName(m_rewardComponents[i]->getName());
 		}

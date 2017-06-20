@@ -62,9 +62,6 @@
     <ClCompile Include="reward.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="setpoint.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -88,18 +85,6 @@
     </ClCompile>
     <ClCompile Include="vfa-policy.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world-magneticlevitation.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="world-pitchcontrol.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="world-underwatervehicle.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="world-windturbine.cpp">
-      <Filter>world</Filter>
     </ClCompile>
     <ClCompile Include="stats.cpp">
       <Filter>Source Files</Filter>
@@ -140,17 +125,8 @@
     <ClCompile Include="logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="world-balancingpole.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="world.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
     <ClCompile Include="experience-replay.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="world-mountaincar.cpp">
-      <Filter>world</Filter>
     </ClCompile>
     <ClCompile Include="parameters-numeric.cpp">
       <Filter>parameters</Filter>
@@ -161,44 +137,8 @@
     <ClCompile Include="parameters.cpp">
       <Filter>parameters</Filter>
     </ClCompile>
-    <ClCompile Include="world-FAST.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="templatedConfigFile.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
     <ClCompile Include="controller-adaptive.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Robot.cpp">
-      <Filter>world\BulletUtils</Filter>
-    </ClCompile>
-    <ClCompile Include="Box.cpp">
-      <Filter>world\BulletUtils</Filter>
-    </ClCompile>
-    <ClCompile Include="world-box1robot.cpp">
-      <Filter>world\BulletWorlds</Filter>
-    </ClCompile>
-    <ClCompile Include="world-movebox2robots.cpp">
-      <Filter>world\BulletWorlds</Filter>
-    </ClCompile>
-    <ClCompile Include="world-robotonly.cpp">
-      <Filter>world\BulletWorlds</Filter>
-    </ClCompile>
-    <ClCompile Include="OpenGLGuiHelper.cpp">
-      <Filter>world\GraphicResources</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionShape2TriangleMesh.cpp">
-      <Filter>world\GraphicResources</Filter>
-    </ClCompile>
-    <ClCompile Include="GLShapeDrawer.cpp">
-      <Filter>world\GraphicResources</Filter>
-    </ClCompile>
-    <ClCompile Include="b3Clock.cpp">
-      <Filter>world\GraphicResources</Filter>
-    </ClCompile>
-    <ClCompile Include="BulletBody.cpp">
-      <Filter>world\BulletUtils</Filter>
     </ClCompile>
     <ClCompile Include="mem-block.cpp">
       <Filter>memory</Filter>
@@ -212,50 +152,89 @@
     <ClCompile Include="mem-buffer.cpp">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="world-two-robots-rope.cpp">
-      <Filter>world\BulletWorlds</Filter>
+    <ClCompile Include="worlds\robot-control.cpp">
+      <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicSettings.cpp">
-      <Filter>world\GraphicResources</Filter>
+    <ClCompile Include="worlds\setpoint.cpp">
+      <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="BulletPhysics.cpp">
+    <ClCompile Include="worlds\templatedConfigFile.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\underwatervehicle.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\windturbine.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\world.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\aux-rewards.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\balancingpole.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\FAST.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\magneticlevitation.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\mountaincar.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pull-box-1.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pull-box-2.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\push-box-1.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\push-box-2.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\b3Clock.cpp">
       <Filter>world\BulletUtils</Filter>
     </ClCompile>
-    <ClCompile Include="BulletDisplay.cpp">
-      <Filter>world\GraphicResources</Filter>
-    </ClCompile>
-    <ClCompile Include="Rope.cpp">
+    <ClCompile Include="worlds\BulletPhysics.cpp">
       <Filter>world\BulletUtils</Filter>
     </ClCompile>
-    <ClCompile Include="world-aux-rewards.cpp">
+    <ClCompile Include="worlds\CollisionShape2TriangleMesh.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\BulletBody.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\BulletDisplay.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\GLShapeDrawer.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\GraphicSettings.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\Box.cpp">
       <Filter>world\BulletWorlds</Filter>
     </ClCompile>
-    <ClCompile Include="world-one-rope-robot.cpp">
+    <ClCompile Include="worlds\Robot.cpp">
       <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\Rope.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\OpenGLGuiHelper.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pitchcontrol.cpp">
+      <Filter>world</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="world-magneticlevitation.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="world-pitchcontrol.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="world-underwatervehicle.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="world-windturbine.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="world-balancingpole.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="world.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="world-mountaincar.h">
-      <Filter>world</Filter>
-    </ClInclude>
     <ClInclude Include="parameters-numeric.h">
       <Filter>parameters</Filter>
     </ClInclude>
@@ -322,9 +301,6 @@
     <ClInclude Include="reward.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="setpoint.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="simgod.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -352,44 +328,8 @@
     <ClInclude Include="vfa.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="world-FAST.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="templatedConfigFile.h">
-      <Filter>world</Filter>
-    </ClInclude>
     <ClInclude Include="controller-adaptive.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Robot.h">
-      <Filter>world\BulletUtils</Filter>
-    </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>world\BulletUtils</Filter>
-    </ClInclude>
-    <ClInclude Include="world-box1robot.h">
-      <Filter>world\BulletWorlds</Filter>
-    </ClInclude>
-    <ClInclude Include="world-movebox2robots.h">
-      <Filter>world\BulletWorlds</Filter>
-    </ClInclude>
-    <ClInclude Include="world-robotonly.h">
-      <Filter>world\BulletWorlds</Filter>
-    </ClInclude>
-    <ClInclude Include="OpenGLGuiHelper.h">
-      <Filter>world\GraphicResources</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionShape2TriangleMesh.h">
-      <Filter>world\GraphicResources</Filter>
-    </ClInclude>
-    <ClInclude Include="GL_ShapeDrawer.h">
-      <Filter>world\GraphicResources</Filter>
-    </ClInclude>
-    <ClInclude Include="b3Clock.h">
-      <Filter>world\GraphicResources</Filter>
-    </ClInclude>
-    <ClInclude Include="BulletBody.h">
-      <Filter>world\BulletUtils</Filter>
     </ClInclude>
     <ClInclude Include="mem-block.h">
       <Filter>memory</Filter>
@@ -409,29 +349,89 @@
     <ClInclude Include="mem-buffer.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicSettings.h">
-      <Filter>world\GraphicResources</Filter>
+    <ClInclude Include="worlds\robot-control.h">
+      <Filter>world</Filter>
     </ClInclude>
-    <ClInclude Include="BulletPhysics.h">
+    <ClInclude Include="worlds\setpoint.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\templatedConfigFile.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\underwatervehicle.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\windturbine.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\world.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\aux-rewards.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\balancingpole.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\FAST.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\magneticlevitation.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\mountaincar.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-1.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-2.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-1.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-2.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\b3Clock.h">
       <Filter>world\BulletUtils</Filter>
     </ClInclude>
-    <ClInclude Include="BulletCreationInterface.h">
+    <ClInclude Include="worlds\BulletPhysics.h">
       <Filter>world\BulletUtils</Filter>
     </ClInclude>
-    <ClInclude Include="BulletDisplay.h">
-      <Filter>world\GraphicResources</Filter>
-    </ClInclude>
-    <ClInclude Include="world-two-robots-rope.h">
-      <Filter>world\BulletWorlds</Filter>
-    </ClInclude>
-    <ClInclude Include="Rope.h">
+    <ClInclude Include="worlds\CollisionShape2TriangleMesh.h">
       <Filter>world\BulletUtils</Filter>
     </ClInclude>
-    <ClInclude Include="world-aux-rewards.h">
+    <ClInclude Include="worlds\BulletCreationInterface.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletBody.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\BulletDisplay.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\GL_ShapeDrawer.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\GraphicSettings.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Box.h">
       <Filter>world\BulletWorlds</Filter>
     </ClInclude>
-    <ClInclude Include="world-one-rope-robot.h">
+    <ClInclude Include="worlds\Robot.h">
       <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\Rope.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\OpenGLGuiHelper.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pitchcontrol.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -354,4 +354,5 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 	return 0;
 }
 
-#define METADATA(name, value)
+//quick and dirty hack to store the name of the dynamic world in a choice
+#define METADATA(name, value) m_name= value;

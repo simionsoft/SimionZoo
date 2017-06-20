@@ -1,0 +1,87 @@
+<Scene>
+  <Camera>
+    <Simple-Camera Name="Main-camera">
+      <Transform>
+        <Translation>
+          <X>0.0</X>
+          <Y>5.0</Y>
+          <Z>10.0</Z>
+        </Translation>
+        <Rotation>
+          <Pitch>-0.01</Pitch>
+        </Rotation>
+      </Transform>
+    </Simple-Camera>
+  </Camera>
+  <Light Name="Main-light">
+    <Directional-Light>
+      <Direction>
+        <X>0.577</X>
+        <Y>0.577</Y>
+        <Z>0.577</Z>
+      </Direction>
+      <Ambient>
+        <R>0.2</R>
+        <G>0.2</G>
+        <B>0.2</B>
+      </Ambient>
+      <Diffuse>
+        <R>1.0</R>
+        <G>1.0</G>
+        <B>1.0</B>
+      </Diffuse>
+      <Specular>
+        <R>0.0</R>
+        <G>0.0</G>
+        <B>0.0</B>
+      </Specular>
+    </Directional-Light>
+  </Light>
+
+  <Objects>
+    <Collada-Model Name="Venom" Path="r2d2/r2d2.dae">
+      <Transform>
+        <Translation>
+          <X Bind="rx1"/>
+          <Y>0.5</Y>
+          <Z Bind="ry1"/>
+        </Translation>
+        <Rotation>
+          <d><Pitch>-1.57</Pitch></d>
+          <Yaw Bind="theta"/>
+        </Rotation>
+      </Transform>
+      <Fit-BoundingBox>
+        <Min>
+          <X>-0.5</X>
+          <Y>-0.5</Y>
+          <Z>-0.5</Z>
+        </Min>
+        <Max>
+          <X>0.5</X>
+          <Y>0.5</Y>
+          <Z>0.5</Z>
+        </Max>
+      </Fit-BoundingBox>
+    </Collada-Model>
+    <Box Name="Floor">
+      <Material>
+        <Simple-TL-Material>
+          <Texture>
+            <Path>concrete1.png</Path>
+          </Texture>
+        </Simple-TL-Material>
+      </Material>
+      <Transform>
+        <Scale>
+          <X>20</X>
+          <Y>0.1</Y>
+          <Z>20</Z>
+        </Scale>
+        <Translation>
+          <Y>-0.1</Y>
+        </Translation>
+      </Transform>
+    </Box>
+  </Objects>
+</Scene>

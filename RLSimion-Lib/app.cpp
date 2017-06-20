@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "app.h"
 #include "logger.h"
-#include "world.h"
+#include "worlds/world.h"
 #include "experiment.h"
 #include "SimGod.h"
 #include "config.h"
