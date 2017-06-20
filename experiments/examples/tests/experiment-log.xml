@@ -1,4 +1,4 @@
-<ExperimentLogDescriptor BinaryDataFile="experiment-log.bin" World="Pull-Box-1.scene">
+<ExperimentLogDescriptor BinaryDataFile="experiment-log.bin" SceneFile="Pull-Box-1.scene">
   <Episode-Type Id="0">Evaluation</Episode-Type>
   <State-variable>targetX</State-variable>
   <State-variable>targetY</State-variable>

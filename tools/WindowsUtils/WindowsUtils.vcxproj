@@ -134,10 +134,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileUtils.cpp" />
     <ClCompile Include="NamedPipe.cpp" />
     <ClCompile Include="Process.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileUtils.h" />
     <ClInclude Include="NamedPipe.h" />
     <ClInclude Include="Process.h" />
   </ItemGroup>

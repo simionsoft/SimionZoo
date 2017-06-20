@@ -136,7 +136,7 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	fopen_s(&logXMLDescriptorFile, filename, "w");
 	if (logXMLDescriptorFile)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" World=\"%s\">\n"
+		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
 			, OUTPUT_LOG_FILENAME
 			, (CSimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		writeEpisodeTypesToBuffer(buffer);
