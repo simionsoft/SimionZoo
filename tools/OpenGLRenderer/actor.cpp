@@ -5,7 +5,7 @@
 
 
 
-CActor::CActor(tinyxml2::XMLElement* pNode)
+CSceneActor::CSceneActor(tinyxml2::XMLElement* pNode)
 {
 	XMLElement* pChild;
 	pChild= pNode->FirstChildElement(XML_TAG_TRANSFORM);
@@ -13,11 +13,11 @@ CActor::CActor(tinyxml2::XMLElement* pNode)
 		m_transform.load(pChild);
 }
 
-CActor::~CActor()
+CSceneActor::~CSceneActor()
 {
 }
 
-void CActor::setTransform()
+void CSceneActor::setTransform()
 {
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -27,13 +27,13 @@ void CActor::setTransform()
 		glMultMatrixd(pMatrix);
 }
 
-void CActor::restoreTransform()
+void CSceneActor::restoreTransform()
 {
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
 }
 
-Matrix44 CActor::getTransformMatrix() const
+Matrix44 CSceneActor::getTransformMatrix() const
 {
 	Matrix44 mat, rot, scale,trans;
 	rot = Matrix44::rotationMatrix(m_transform.rotation());
@@ -43,19 +43,19 @@ Matrix44 CActor::getTransformMatrix() const
 	return mat;
 }
 
-void CActor::addLocalOffset(Vector3D& offset)
+void CSceneActor::addLocalOffset(Vector3D& offset)
 {
 	Matrix44 mat = getTransformMatrix();
 	Vector3D worldOffset = mat*offset;
 	m_transform.setTranslation(m_transform.translation() + worldOffset);
 }
 
-void CActor::addWorldOffset(Vector3D& offset)
+void CSceneActor::addWorldOffset(Vector3D& offset)
 {
 	m_transform.setTranslation(	m_transform.translation() + offset);
 }
 
-void CActor::addRotation(Quaternion& quat)
+void CSceneActor::addRotation(Quaternion& quat)
 {
 	m_transform.setRotation(m_transform.rotation() * quat);
 }

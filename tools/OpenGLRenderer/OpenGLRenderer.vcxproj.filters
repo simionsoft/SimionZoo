@@ -3,7 +3,6 @@
   <ItemGroup>
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="timer.cpp" />
     <ClCompile Include="matrix33.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
@@ -79,7 +78,6 @@
     <ClInclude Include="renderer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="timer.h" />
     <ClInclude Include="matrix33.h">
       <Filter>geometry</Filter>
     </ClInclude>

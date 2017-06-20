@@ -1,9 +1,10 @@
 // StandaloneOpenGLRenderer.cpp : Defines the entry point for the console application.
 //
 #include "stdafx.h"
+#include "../../../tools/WindowsUtils/Timer.h"
+
 #include "../../../tools/OpenGLRenderer/Renderer.h"
 #include "../../../tools/OpenGLRenderer/renderer.h"
-#include "../../../tools/OpenGLRenderer/timer.h"
 #include "../../../tools/OpenGLRenderer/text.h"
 #include "../../../tools/OpenGLRenderer/camera.h"
 #include "../../../tools/OpenGLRenderer/quaternion.h"

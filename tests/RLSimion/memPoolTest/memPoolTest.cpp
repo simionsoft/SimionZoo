@@ -4,7 +4,7 @@
 #include "stdafx.h"
 
 #include "../../../RLSimion-Lib/mem-manager.h"
-#include "../../../RLSimion-Lib/timer.h"
+#include "../../../tools/WindowsUtils/Timer.h"
 
 #include <algorithm>
 int main()
@@ -25,7 +25,7 @@ int main()
 	IMemBuffer* bufferHandler10 = pMemManager->getMemBuffer(numElements);
 
 	pMemManager->init();
-	timer.startTimer();
+	timer.start();
 	size_t lastMemAlloc = pMemManager->getTotalAllocatedMem();
 	int numAccesses = 10000000;
 	int minIndex = 600000;

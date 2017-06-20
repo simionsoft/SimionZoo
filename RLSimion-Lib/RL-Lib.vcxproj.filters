@@ -18,9 +18,6 @@
     <Filter Include="world\BulletWorlds">
       <UniqueIdentifier>{9fdcd276-d72c-4a03-81c0-2714f2f39d20}</UniqueIdentifier>
     </Filter>
-    <Filter Include="world\GraphicResources">
-      <UniqueIdentifier>{9ac009a6-05f8-408a-9696-e5ec1696c580}</UniqueIdentifier>
-    </Filter>
     <Filter Include="memory">
       <UniqueIdentifier>{ccab0e5e-5a18-4d27-9001-51dca3f56d3b}</UniqueIdentifier>
     </Filter>
@@ -90,9 +87,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="named-var-set.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="single-dimension-grid.cpp">
@@ -209,15 +203,6 @@
     <ClCompile Include="worlds\BulletBody.cpp">
       <Filter>world\BulletUtils</Filter>
     </ClCompile>
-    <ClCompile Include="worlds\BulletDisplay.cpp">
-      <Filter>world\BulletUtils</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\GLShapeDrawer.cpp">
-      <Filter>world\BulletUtils</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\GraphicSettings.cpp">
-      <Filter>world\BulletUtils</Filter>
-    </ClCompile>
     <ClCompile Include="worlds\Box.cpp">
       <Filter>world\BulletWorlds</Filter>
     </ClCompile>
@@ -226,9 +211,6 @@
     </ClCompile>
     <ClCompile Include="worlds\Rope.cpp">
       <Filter>world\BulletWorlds</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\OpenGLGuiHelper.cpp">
-      <Filter>world\BulletUtils</Filter>
     </ClCompile>
     <ClCompile Include="worlds\pitchcontrol.cpp">
       <Filter>world</Filter>
@@ -319,9 +301,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="timer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -409,15 +388,6 @@
     <ClInclude Include="worlds\BulletBody.h">
       <Filter>world\BulletUtils</Filter>
     </ClInclude>
-    <ClInclude Include="worlds\BulletDisplay.h">
-      <Filter>world\BulletUtils</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\GL_ShapeDrawer.h">
-      <Filter>world\BulletUtils</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\GraphicSettings.h">
-      <Filter>world\BulletUtils</Filter>
-    </ClInclude>
     <ClInclude Include="worlds\Box.h">
       <Filter>world\BulletWorlds</Filter>
     </ClInclude>
@@ -426,9 +396,6 @@
     </ClInclude>
     <ClInclude Include="worlds\Rope.h">
       <Filter>world\BulletWorlds</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\OpenGLGuiHelper.h">
-      <Filter>world\BulletUtils</Filter>
     </ClInclude>
     <ClInclude Include="worlds\pitchcontrol.h">
       <Filter>world</Filter>

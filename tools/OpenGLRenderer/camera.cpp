@@ -6,7 +6,7 @@
 #include "transform3d.h"
 #include "renderer.h"
 
-CCamera::CCamera(): CActor()
+CCamera::CCamera(): CSceneActor()
 {
 }
 

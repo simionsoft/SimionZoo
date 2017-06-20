@@ -4,7 +4,7 @@
 #include "logger.h"
 #include "worlds/world.h"
 #include "stats.h"
-#include "timer.h"
+#include "../tools/WindowsUtils/Timer.h"
 #include "app.h"
 
 CExperimentTime& CExperimentTime::operator=(CExperimentTime& exp)
@@ -231,7 +231,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	{
 		sprintf_s(msg, 1024, "%f", CSimionApp::get()->pExperiment->getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);
-		m_pProgressTimer->startTimer();
+		m_pProgressTimer->start();
 	}
 
 	bool evalEpisode = isEvaluationEpisode();

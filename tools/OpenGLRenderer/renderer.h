@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "timer.h"
+#include "../WindowsUtils/Timer.h"
 
 class CGraphicObject;
 class CGraphicObject2D;

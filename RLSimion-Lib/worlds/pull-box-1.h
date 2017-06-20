@@ -4,7 +4,6 @@
 #include "../../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 class SimpleOpenGL3App;
 class BulletPhysics;
-class BulletGraphic;
 class Robot;
 class Box;
 class BulletBody;
@@ -35,14 +34,13 @@ class CPullBox1 : public CDynamicModel
 	int m_omega_r1;
 
 	///Graphic initialization
-	BulletPhysics* robRopeBuilder;
-	BulletGraphic* robRopeViewer;
+	BulletPhysics* m_pBulletPhysics;
 
 	///Bullet bodies init
-	BulletBody *m_Ground;
-	BulletBody *m_Target;
-	Robot *m_Robot1;
-	Box *m_Box;
+	BulletBody *m_pGround;
+	BulletBody *m_pTarget;
+	Robot *m_pRobot1;
+	Box *m_pBox;
 	Rope *m_Rope;
 
 

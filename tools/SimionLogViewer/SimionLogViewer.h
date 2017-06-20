@@ -1,5 +1,5 @@
 #pragma once
-#include "../OpenGLRenderer/timer.h"
+#include "../WindowsUtils/timer.h"
 #include "../OpenGLRenderer/input-handler.h"
 #include <string>
 using namespace std;

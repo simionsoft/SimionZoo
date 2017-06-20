@@ -4,7 +4,7 @@
 #include "named-var-set.h"
 #include "config.h"
 #include "stats.h"
-#include "timer.h"
+#include "../tools/WindowsUtils/Timer.h"
 #include "app.h"
 #include "utils.h"
 #include "SimGod.h"
@@ -183,7 +183,7 @@ void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* i
 void CLogger::firstEpisode()
 {
 	//set episode start time
-	m_pEpisodeTimer->startTimer();
+	m_pEpisodeTimer->start();
 
 	char fullLogFilename[MAX_FILENAME_LENGTH];
 
@@ -206,7 +206,7 @@ void CLogger::firstStep()
 	m_episodeRewardSum = 0.0;
 
 	//set episode start time
-	m_pEpisodeTimer->startTimer();
+	m_pEpisodeTimer->start();
 
 	m_lastLogSimulationT = 0.0;
 

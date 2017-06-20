@@ -7,7 +7,6 @@ class BulletBody;
 class Robot;
 class Box;
 class BulletPhysics;
-class BulletGraphic;
 
 
 //Move box with 2 robots
@@ -37,16 +36,14 @@ class CPushBox2 : public CDynamicModel
 	int m_omega_r2;
 
 	///Graphic initialization
-	BulletPhysics* rob2Physics;
-	BulletGraphic* rob2Graphic;
+	BulletPhysics* m_pBulletPhysics;
 
 	///Bullet bodies init
-	BulletBody *m_Ground;
-	Robot *m_Robot1;
-	Robot *m_Robot2;
-	Box *m_Box;
-	BulletBody *m_Target;
-
+	BulletBody *m_pGround;
+	Robot *m_pRobot1;
+	Robot *m_pRobot2;
+	Box *m_pBox;
+	BulletBody *m_pTarget;
 
 public:
 	CPushBox2(CConfigNode* pParameters);

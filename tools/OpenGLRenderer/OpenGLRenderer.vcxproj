@@ -202,7 +202,6 @@
     <ClCompile Include="color.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture-manager.cpp" />
-    <ClCompile Include="timer.cpp" />
     <ClCompile Include="transform2d.cpp" />
     <ClCompile Include="transform3d.cpp" />
     <ClCompile Include="vector2d.cpp" />
@@ -231,7 +230,6 @@
     <ClInclude Include="color.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="texture-manager.h" />
-    <ClInclude Include="timer.h" />
     <ClInclude Include="transform2d.h" />
     <ClInclude Include="transform3d.h" />
     <ClInclude Include="vector2d.h" />

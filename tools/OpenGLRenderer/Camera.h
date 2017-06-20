@@ -3,7 +3,7 @@
 
 namespace tinyxml2 { class XMLElement; }
 
-class CCamera: public CActor
+class CCamera: public CSceneActor
 {
 public:
 	CCamera();

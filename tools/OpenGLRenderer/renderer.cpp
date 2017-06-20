@@ -59,7 +59,7 @@ void CRenderer::init(int argc, char** argv, int screenWidth, int screenHeight)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(600, 400);
-	glutCreateWindow(argv[0]);
+	glutCreateWindow("SimionRenderer");
 	//glutFullScreen();
 
 	//callback functions
@@ -113,7 +113,6 @@ CGraphicObject* CRenderer::getObjectByName(string name)
 
 void CRenderer::loadScene(const char* file)
 {
-	CGraphicObject* pGraphicObject;
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile((m_dataFolder+string(file)).c_str());
 	if (doc.Error() == tinyxml2::XML_SUCCESS)

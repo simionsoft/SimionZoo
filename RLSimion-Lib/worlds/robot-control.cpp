@@ -1,15 +1,13 @@
 #include "../stdafx.h"
-#include "robot-control.h"
 #include "../app.h"
 #include "../noise.h"
+
+#include "robot-control.h"
 #include "Robot.h"
 #include "BulletPhysics.h"
-#include "BulletDisplay.h"
 #include "BulletBody.h"
 #include "aux-rewards.h"
-#pragma comment(lib,"opengl32.lib")
 
-#define GLEW_STATIC
 
 #define TargetX 10.0
 #define TargetY 3.0
@@ -43,22 +41,18 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
-	rBoxPhysics = new BulletPhysics();
-	if (!CSimionApp::get()->isExecutedRemotely())
-		rBoxGraphics = new BulletGraphic();
+	m_pBulletPhysics = new BulletPhysics();
 
-	rBoxPhysics->initPhysics();
-	if (!CSimionApp::get()->isExecutedRemotely())
-		rBoxGraphics->setDebugger(rBoxPhysics->getDynamicsWorld());
-	
+	m_pBulletPhysics->initPhysics();
+
 	
 	///Creating static object, ground
 	{
 		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
 		// "false" parameter will notify the constructor not to disable activation state
 		ground_bb = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), groundShape, false);
-		rBoxPhysics->getCollisionShape().push_back(ground_bb->getShape());
-		rBoxPhysics->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
+		m_pBulletPhysics->getCollisionShape().push_back(ground_bb->getShape());
+		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
 	}
 
 	/// Creating target point, static
@@ -66,20 +60,16 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 		btCollisionShape* targetShape = new btConeShape(btScalar(0.5), btScalar(5.5));
 		target_bb = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY+1), targetShape, false);
 		target_bb->getBody()->setCollisionFlags(2);
-		rBoxPhysics->getCollisionShape().push_back(target_bb->getShape());
-		rBoxPhysics->getDynamicsWorld()->addRigidBody(target_bb->getBody());
+		m_pBulletPhysics->getCollisionShape().push_back(target_bb->getShape());
+		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(target_bb->getBody());
 	}
 
 	///creating a dynamic robot  
 	{
 		m_Robot = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5), true);
-		rBoxPhysics->getCollisionShape().push_back(m_Robot->getShape());
-		rBoxPhysics->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
+		m_pBulletPhysics->getCollisionShape().push_back(m_Robot->getShape());
+		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
 	}
-
-	///Graphic init
-	if (!CSimionApp::get()->isExecutedRemotely())
-		rBoxGraphics->generateGraphics(rBoxPhysics->getDynamicsWorld());
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CDistanceReward2D(getStateDescriptor(),m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
@@ -105,30 +95,18 @@ void CRobotControl::executeAction(CState *s, const CAction *a, double dt)
 	double theta= m_Robot->updateRobotMovement(a, s, "omega", "v", m_theta, dt);
 
 	//Update Robot1
-	rBoxPhysics->getDynamicsWorld()->stepSimulation(dt,20);
-	if (!CSimionApp::get()->isExecutedRemotely())
-		rBoxGraphics->updateCamera();
+	m_pBulletPhysics->getDynamicsWorld()->stepSimulation(dt,20);
 
 	//Update
-
 	m_Robot->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
 
 	s->set(m_theta, theta);
-
-	//draw
-	btVector3 printPosition = btVector3(TargetX, 5, TargetY);
-	if (!CSimionApp::get()->isExecutedRemotely())
-	{
-		if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
-			rBoxGraphics->drawText3D("Evaluation", printPosition);
-		else
-			rBoxGraphics->drawText3D("Training", printPosition);
-		rBoxGraphics->drawDynamicWorld(rBoxPhysics->getDynamicsWorld());
-	}
-
 }
 
 CRobotControl::~CRobotControl()
 {
+	delete m_pBulletPhysics;
+	delete ground_bb;
+	delete target_bb;
 }
 

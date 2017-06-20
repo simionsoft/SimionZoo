@@ -15,7 +15,7 @@ CGraphicObject::CGraphicObject(string name)
 	m_name = name;
 }
 
-CGraphicObject::CGraphicObject(tinyxml2::XMLElement* pNode): CActor(pNode)
+CGraphicObject::CGraphicObject(tinyxml2::XMLElement* pNode): CSceneActor(pNode)
 {
 	if (pNode->Attribute(XML_TAG_NAME_ATTR))
 		m_name= string(pNode->Attribute(XML_TAG_NAME_ATTR));

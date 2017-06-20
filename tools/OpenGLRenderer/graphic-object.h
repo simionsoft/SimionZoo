@@ -10,7 +10,7 @@ class BoundingCylinder;
 using namespace std;
 #include <vector>
 
-class CGraphicObject: public CActor
+class CGraphicObject: public CSceneActor
 {
 protected:
 	string m_name;

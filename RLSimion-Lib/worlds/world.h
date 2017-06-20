@@ -19,11 +19,13 @@ class CDynamicModel
 	CDescriptor *m_pActionDescriptor;
 	std::map<const char*, double> m_pConstants;
 protected:
-	string m_name= string("unset");
+	string m_name= string("");
 	CRewardFunction* m_pRewardFunction;
 public:
 	CDynamicModel();
 	virtual ~CDynamicModel();
+
+	string getWorldSceneFile() { return m_name + ".scene"; }
 
 	int addStateVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
 	int addActionVariable(const char* name, const char* units, double min, double max, bool bCircular = false);

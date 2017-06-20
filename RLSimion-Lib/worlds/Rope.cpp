@@ -4,7 +4,8 @@
 
 Rope::Rope(CDynamicModel* pWorld, std::vector<btSoftBody*>* arr)
 {
-	unsigned int j, i;
+	unsigned int j;
+	int i;
 	for (j = 0; j < arr->size(); j++)
 	{
 		for (i = 0; i < arr->at(j)->m_links.size(); ++i)
@@ -18,7 +19,8 @@ Rope::Rope(CDynamicModel* pWorld, std::vector<btSoftBody*>* arr)
 
 void Rope::updateRopePoints(CState* s, std::vector<btSoftBody*>* arr)
 {
-	unsigned int j, i;
+	unsigned int j;
+	int i;
 	for (j = 0; j < arr->size(); j++)
 	{
 		for (i = 0; i < arr->at(j)->m_links.size(); ++i)

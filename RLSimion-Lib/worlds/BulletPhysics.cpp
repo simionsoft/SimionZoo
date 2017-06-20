@@ -1,7 +1,6 @@
 #include "../stdafx.h"
 #include "BulletPhysics.h"
 
-#pragma comment(lib,"opengl32.lib")
 
 // Inicialization of physics
 void BulletPhysics::initPhysics()

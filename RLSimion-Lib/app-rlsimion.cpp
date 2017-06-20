@@ -8,6 +8,9 @@
 #include "named-var-set.h"
 #include "utils.h"
 #include "app.h"
+#include "../tools/OpenGLRenderer/renderer.h"
+#include "../tools/OpenGLRenderer/input-handler.h"
+#include "../tools/WindowsUtils/FileUtils.h"
 
 void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
 {
@@ -62,7 +65,8 @@ RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)
 
 RLSimionApp::~RLSimionApp()
 {
-	delete pMemManager;
+	if (pMemManager != nullptr) delete pMemManager;
+	if (m_pRenderer != nullptr) delete m_pRenderer;
 }
 
 void RLSimionApp::run()
@@ -74,6 +78,15 @@ void RLSimionApp::run()
 	CState *s = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
 	CState *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
 	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor().getInstance();
+
+#if _DEBUG
+	string sceneFile = pApp->pWorld->getDynamicModel()->getWorldSceneFile();
+	//initialize the render if a scene file can be found
+	string sceneDir = "../config/scenes/";
+	sceneFile = sceneDir + sceneFile;
+	if (bFileExists(sceneFile))
+		initRenderer(sceneFile);
+#endif
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pApp->pSimGod->deferredLoad();
@@ -103,6 +116,10 @@ void RLSimionApp::run()
 			pApp->pExperiment->timestep(s, a, s_p, pApp->pWorld->getRewardVector());
 			//we need the complete reward vector for logging
 
+#ifdef _DEBUG
+			updateScene(s_p);
+#endif
+
 			//s= s'
 			s->copy(s_p);
 		}
@@ -112,4 +129,26 @@ void RLSimionApp::run()
 	delete s;
 	delete s_p;
 	delete a;
+}
+
+void RLSimionApp::initRenderer(string sceneFile)
+{
+	m_pRenderer = new CRenderer();
+	m_pRenderer->init(0, 0, 600, 400);
+	m_pRenderer->loadScene(sceneFile.c_str());
+	m_pInputHandler = new CFreeCameraInputHandler();
+}
+
+void RLSimionApp::updateScene(CState* s)
+{
+	double value;
+	string varName;
+	for (int b = 0; b < m_pRenderer->getNumBindings(); ++b)
+	{
+		varName = m_pRenderer->getBindingExternalName(b);
+		value = s->get(varName.c_str());
+		m_pRenderer->updateBinding(varName, value);
+	}
+	m_pInputHandler->handleInput();
+	m_pRenderer->redraw();
 }

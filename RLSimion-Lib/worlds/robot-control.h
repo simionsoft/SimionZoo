@@ -5,7 +5,6 @@
 
 class Robot;
 class BulletBody;
-class BulletGraphic;
 class BulletPhysics;
 
 //Move box with 2 robots
@@ -26,8 +25,7 @@ class CRobotControl : public CDynamicModel
 	int m_linear_vel;
 
 	///inicialización
-	BulletPhysics* rBoxPhysics;
-	BulletGraphic* rBoxGraphics;
+	BulletPhysics* m_pBulletPhysics;
 
 	Robot* m_Robot;
 	BulletBody* ground_bb;

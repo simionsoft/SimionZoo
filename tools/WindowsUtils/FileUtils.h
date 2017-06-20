@@ -3,4 +3,5 @@
 #include <string>
 using namespace std;
 
-string getDirectory(string pFilename);
+string getDirectory(const string& filename);
+bool bFileExists(const string& filename);
