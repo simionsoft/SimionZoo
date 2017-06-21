@@ -39,12 +39,15 @@ class CRenderer
 	void drawScene();
 	static void _drawScene();
 	static void _reshapeWindow(int width, int height);
+
+	bool m_bShowBoundingBoxes= false;
 public:
 	CRenderer();
 	virtual ~CRenderer();
 
 	void getWindowsSize(int& sizeX, int& sizeY) { sizeX = m_windowWidth; sizeY = m_windowHeight; }
 	double getFPS() { return m_fps; }
+	void updateFPS();
 
 	void setDataFolder(string dataFolder);
 	string getDataFolder();
@@ -63,6 +66,9 @@ public:
 	CCamera* getActiveCamera();
 
 	CGraphicObject* getObjectByName(string name);
+
+	void showBoundingBoxes(bool bShow) { m_bShowBoundingBoxes = bShow; }
+	bool bShowBoundingBoxes() { return m_bShowBoundingBoxes; }
 
 	void registerBinding(Binding* pBinding); //this is called by Bindable objects at initialization time
 

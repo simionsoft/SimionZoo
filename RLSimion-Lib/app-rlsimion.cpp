@@ -8,7 +8,9 @@
 #include "named-var-set.h"
 #include "utils.h"
 #include "app.h"
+#include "stats.h"
 #include "../tools/OpenGLRenderer/renderer.h"
+#include "../tools/OpenGLRenderer/text.h"
 #include "../tools/OpenGLRenderer/input-handler.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
@@ -81,11 +83,7 @@ void RLSimionApp::run()
 
 #if _DEBUG
 	string sceneFile = pApp->pWorld->getDynamicModel()->getWorldSceneFile();
-	//initialize the render if a scene file can be found
-	string sceneDir = "../config/scenes/";
-	sceneFile = sceneDir + sceneFile;
-	if (bFileExists(sceneFile))
-		initRenderer(sceneFile);
+	initRenderer(sceneFile);
 #endif
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
@@ -133,14 +131,55 @@ void RLSimionApp::run()
 
 void RLSimionApp::initRenderer(string sceneFile)
 {
+	//initialize the render if a scene file can be found
+	string sceneDir = "../config/scenes/";
+	if (!bFileExists(sceneDir + sceneFile))
+		return;
+
 	m_pRenderer = new CRenderer();
 	m_pRenderer->init(0, 0, 600, 400);
+	m_pRenderer->setDataFolder(sceneDir);
 	m_pRenderer->loadScene(sceneFile.c_str());
+
+	//text
+	m_pProgressText = new C2DText(string("Progress"), Vector2D(0.1, 0.9), 0);
+	m_pRenderer->add2DGraphicObject(m_pProgressText);
+
+	//stats
+	C2DMeter* pStatText;
+	CStats* pStat;
+	Vector2D origin = Vector2D(0.1, 0.8);
+	Vector2D size = Vector2D(0.2, 0.05);
+	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
+	{
+		pStat = pLogger->getStats(i);
+		pStatText = new C2DMeter(string(pStat->getKey()), origin, size);
+		m_pStatsText.push_back(pStatText);
+		m_pRenderer->add2DGraphicObject(pStatText);
+		origin -= Vector2D(0.0, 0.05);
+	}
+
 	m_pInputHandler = new CFreeCameraInputHandler();
 }
 
 void RLSimionApp::updateScene(CState* s)
 {
+	//update progress text
+	m_pProgressText->set(string("Episode: ") + std::to_string(pExperiment->getEpisodeIndex())
+		+ string(" Step: ") + std::to_string(pExperiment->getStep()));
+
+	//update stats
+	CStats* pStat;
+	unsigned int statIndex = 0;
+	for (auto it= m_pStatsText.begin(); it!=m_pStatsText.end(); ++it)
+	{
+		pStat = pLogger->getStats(statIndex);
+		(*it)->setValue(pStat->get());
+		(*it)->setValueRange(Range(pStat->getStatsInfo()->getMin(), pStat->getStatsInfo()->getMax()));
+		++statIndex;
+	}
+
+	//update bindings
 	double value;
 	string varName;
 	for (int b = 0; b < m_pRenderer->getNumBindings(); ++b)
@@ -149,6 +188,7 @@ void RLSimionApp::updateScene(CState* s)
 		value = s->get(varName.c_str());
 		m_pRenderer->updateBinding(varName, value);
 	}
+	//drawScene
 	m_pInputHandler->handleInput();
 	m_pRenderer->redraw();
 }

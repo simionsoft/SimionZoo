@@ -47,7 +47,6 @@
           <Z Bind="ry1"/>
         </Translation>
         <Rotation>
-          <d><Pitch>-1.57</Pitch></d>
           <Yaw Bind="theta"/>
         </Rotation>
       </Transform>

@@ -146,7 +146,11 @@ void CRenderer::redraw()
 {
 	glutPostRedisplay();
 	glutSwapBuffers();
+	updateFPS();
+}
 
+void CRenderer::updateFPS()
+{
 	//update FPS
 	++m_frameCount;
 	double time = m_timer.getElapsedTime();
@@ -176,10 +180,9 @@ void CRenderer::drawScene()
 	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it)
 	{
 		(*it)->draw();
-#ifdef _DEBUG
-		(*it)->drawBoundingBox();
-#endif
 
+		if (m_bShowBoundingBoxes)
+			(*it)->drawBoundingBox();
 	}
 	CLight::enable(false);
 	//set 2d view
@@ -188,9 +191,9 @@ void CRenderer::drawScene()
 	for (auto it = m_2DgraphicObjects.begin(); it != m_2DgraphicObjects.end(); ++it)
 	{
 		(*it)->draw();
-#ifdef _DEBUG
-		(*it)->boundingBox().draw();
-#endif
+
+		if (m_bShowBoundingBoxes)
+			(*it)->boundingBox().draw();
 	}
 }
 

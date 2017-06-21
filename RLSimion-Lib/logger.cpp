@@ -254,13 +254,13 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	//we add the scalar reward in evaluation episodes for monitoring purposes, no matter if we are logging this type of episode or not
 	if (bEvalEpisode) m_episodeRewardSum += r->getSumValue();
 
-	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
-
 	//update experiment stats
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
 		(*iterator)->addExperimentSample();
 	}
+
+	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
 	//output episode log data
 	if (CSimionApp::get()->pWorld->getStepStartSimTime() - m_lastLogSimulationT >= m_logFreq.get()
@@ -390,6 +390,18 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 	{
 		m_stats.push_back(new CStats(key, varset->getProperties()[i].getName(), varset->getValuePtr(i), Double));
 	}
+}
+
+unsigned int CLogger::getNumStats()
+{
+	return m_stats.size();
+}
+
+CStats* CLogger::getStats(unsigned int i)
+{
+	if (i < m_stats.size())
+		return m_stats[i];
+	return nullptr;
 }
 
 

@@ -76,6 +76,9 @@ public:
 	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
+	unsigned int getNumStats();
+	CStats* getStats(unsigned int i);
+
 	void setLogDirectory(const char* xmlFilePath);
 
 	static MessageOutputMode m_messageOutputMode;

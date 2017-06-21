@@ -24,8 +24,12 @@ public:
 
 	Vector2D operator+(const Vector2D& v) const;
 	Vector2D& operator+=(const Vector2D& v);
+	Vector2D operator-(const Vector2D& v) const;
+	Vector2D& operator-=(const Vector2D& v);
 	Vector2D operator*(double scalar) const;
 	Vector2D& operator*=(double scalar);
+	Vector2D operator/(double scalar) const;
+	Vector2D& operator/=(double scalar);
 
 	void setX(double x) { _values[0] = x; }
 	void setY(double y) { _values[1] = y; }
