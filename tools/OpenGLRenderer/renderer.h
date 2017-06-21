@@ -6,6 +6,7 @@ class CGraphicObject;
 class CGraphicObject2D;
 class CTextureManager;
 class Binding;
+class Bindable;
 class CCamera;
 class CLight;
 using namespace std;
@@ -40,6 +41,8 @@ class CRenderer
 	static void _drawScene();
 	static void _reshapeWindow(int width, int height);
 
+	Binding* getBinding(string externalName);
+
 	bool m_bShowBoundingBoxes= false;
 public:
 	CRenderer();
@@ -70,7 +73,8 @@ public:
 	void showBoundingBoxes(bool bShow) { m_bShowBoundingBoxes = bShow; }
 	bool bShowBoundingBoxes() { return m_bShowBoundingBoxes; }
 
-	void registerBinding(Binding* pBinding); //this is called by Bindable objects at initialization time
+	//this is called by Bindable objects at initialization time
+	void registerBinding(string externalName, Bindable* pObj, string internalName);
 
 	//These methods should be called from outside the renderer
 	int getNumBindings();

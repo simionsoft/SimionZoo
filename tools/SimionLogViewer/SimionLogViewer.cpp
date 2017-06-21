@@ -28,8 +28,8 @@ void SimionLogViewer::init(int argc,char** argv)
 	m_pRenderer = new CRenderer();
 	m_pRenderer->init(argc, argv, 600, 400);
 
-	m_pTimeText = new C2DText(string("Time"), Vector2D(0.1, 0.9), 0.0);
-	m_pEpisodeText = new C2DText(string("Episode"), Vector2D(0.1, 0.85), 0.0);
+	m_pTimeText = new C2DText(string("Time"), Vector2D(0.1, 0.9), 0);
+	m_pEpisodeText = new C2DText(string("Episode"), Vector2D(0.1, 0.85), 0);
 
 	m_pRenderer->add2DGraphicObject(m_pTimeText);
 	m_pRenderer->add2DGraphicObject(m_pEpisodeText);
@@ -171,7 +171,6 @@ void SimionLogViewer::draw()
 {
 	if (m_pCurrentEpisode == nullptr) return;
 
-	CStep* pStep;
 	double dt = m_timer.getElapsedTime(true);
 
 	//time

@@ -27,7 +27,8 @@ void C2DText::draw()
 	//set color
 	glColor3fv(m_color.rgba());
 	
-	glRasterPos3i(m_absPosX, m_absPosY, (int) m_transform.depth());
+	glRasterPos3i(m_transform.translation().x()
+		, m_transform.translation().y(), (int) m_transform.depth());
 
 	void * font = GLUT_BITMAP_9_BY_15;
 
@@ -37,5 +38,5 @@ void C2DText::draw()
 
 void C2DText::addPixelOffset(const Vector2D offset)
 {
-	m_transform.translation() += offset;
+	m_transform.setTranslation( m_transform.translation()+offset );
 }

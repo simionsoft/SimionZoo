@@ -1,6 +1,7 @@
 #pragma once
 
 #include "app.h"
+#include "../tools/WindowsUtils/Timer.h"
 #define MAX_PATH_SIZE 1024
 
 class CRenderer;
@@ -11,6 +12,7 @@ class C2DMeter;
 class RLSimionApp : public CSimionApp
 {
 	//Rendering
+	CTimer m_timer;
 	CRenderer *m_pRenderer = 0;
 	IInputHandler *m_pInputHandler = 0;
 	void initRenderer(string sceneFile);

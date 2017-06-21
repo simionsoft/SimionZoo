@@ -4,16 +4,13 @@
       <Transform>
         <Translation>
           <X>0.0</X>
-          <Y>5.0</Y>
+          <Y>0.0</Y>
           <Z>10.0</Z>
         </Translation>
-        <Rotation>
-          <Pitch>-0.01</Pitch>
-        </Rotation>
       </Transform>
     </Simple-Camera>
   </Camera>
-  <Light Name="Main-light">
+  <Light>
     <Directional-Light>
       <Direction>
         <X>0.577</X>
@@ -37,34 +34,8 @@
       </Specular>
     </Directional-Light>
   </Light>
-
   <Objects>
-    <Collada-Model Name="Venom" Path="r2d2/r2d2.dae">
-      <Transform>
-        <Translation>
-          <X Bind="rx1"/>
-          <Y>0.5</Y>
-          <Z Bind="ry1"/>
-        </Translation>
-        <Rotation>
-          <d><Pitch>-1.57</Pitch></d>
-          <Yaw Bind="theta"/>
-        </Rotation>
-      </Transform>
-      <Fit-BoundingBox>
-        <Min>
-          <X>-0.5</X>
-          <Y>-0.5</Y>
-          <Z>-0.5</Z>
-        </Min>
-        <Max>
-          <X>0.5</X>
-          <Y>0.5</Y>
-          <Z>0.5</Z>
-        </Max>
-      </Fit-BoundingBox>
-    </Collada-Model>
-     <Box Name="Box01">
+    <Box Name="Cart">
       <Material>
         <Simple-TL-Material>
           <Diffuse>
@@ -98,43 +69,49 @@
         </Simple-TL-Material>
       </Material>
       <Transform>
-        <Translation>
-          <X Bind="bx"/>
-          <Y>0.5</Y>
-          <Z Bind="by"/>
-        </Translation>
-        <Rotation>
-          <Yaw Bind="boxTheta"/>
-        </Rotation>
+        <Translation><X Bind="x"/><Z>0.5</Z></Translation>
+        <Scale><Y>0.1</Y><Z>0.5</Z></Scale>
       </Transform>
     </Box>
-   <Polyline Name="Rope">
-      <Point>
-        <X Bind="rope0_p0X"/>
-        <Y Bind="rope0_p0Y"/>
-        <Z Bind="rope0_p0Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p1X"/>
-        <Y Bind="rope0_p1Y"/>
-        <Z Bind="rope0_p1Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p2X"/>
-        <Y Bind="rope0_p2Y"/>
-        <Z Bind="rope0_p2Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p3X"/>
-        <Y Bind="rope0_p3Y"/>
-        <Z Bind="rope0_p3Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p4X"/>
-        <Y Bind="rope0_p4Y"/>
-        <Z Bind="rope0_p4Z"/>
-      </Point>
-    </Polyline>
+    <Box Name="Pole">
+      <Material>
+        <Simple-TL-Material>
+          <Diffuse>
+            <R>1.0</R>
+            <G>1.0</G>
+            <B>1.0</B>
+            <A>1.0</A>
+          </Diffuse>
+          <Ambient>
+            <R>0.1</R>
+            <G>0.1</G>
+            <B>0.1</B>
+            <A>1.0</A>
+          </Ambient>
+          <Specular>
+            <R>0.0</R>
+            <G>0.0</G>
+            <B>0.0</B>
+            <A>1.0</A>
+          </Specular>
+          <Emission>
+            <R>0.0</R>
+            <G>0.0</G>
+            <B>0.0</B>
+            <A>1.0</A>
+          </Emission>
+          <Shininess>0.5</Shininess>
+          <Texture>
+            <Path>box.png</Path>
+          </Texture>
+        </Simple-TL-Material>
+      </Material>
+      <Transform>
+        <Translation><X Bind="x"/><Y>0.6</Y></Translation>
+        <Scale><X>0.1</X><Y>1.0</Y><Z>0.1</Z></Scale>
+        <Rotation><Roll Bind="theta"/></Rotation>
+      </Transform>
+    </Box>
     <Box Name="Floor">
       <Material>
         <Simple-TL-Material>

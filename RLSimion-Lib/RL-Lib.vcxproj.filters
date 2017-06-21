@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
@@ -24,103 +20,104 @@
     <Filter Include="world\BulletUtils">
       <UniqueIdentifier>{f2676abb-8538-43d3-b448-7414a627e60e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="learning">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{392e5100-2aca-45d8-b3ce-e8206ea64573}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="actor.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="controller.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="critic-td-lambda.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="critic-true-online-td-lambda.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="critic.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="experiment.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="featuremap-rbfgrid.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="features.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="noise.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="reward.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="vfa.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="critic-tdc-lambda.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="actor-regular.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="featuremap.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="actor-critic-inac.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="etraces.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="vfa-policy.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="stats.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="named-var-set.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="single-dimension-grid.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="simgod.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="simion.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="actor-critic.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="policy-learner.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="q-learners.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="app-rlsimion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="app.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="logger.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="experience-replay.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="parameters-numeric.cpp">
       <Filter>parameters</Filter>
@@ -132,7 +129,7 @@
       <Filter>parameters</Filter>
     </ClCompile>
     <ClCompile Include="controller-adaptive.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="mem-block.cpp">
       <Filter>memory</Filter>
@@ -141,7 +138,7 @@
       <Filter>memory</Filter>
     </ClCompile>
     <ClCompile Include="deferred-load.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="mem-buffer.cpp">
       <Filter>memory</Filter>
@@ -191,13 +188,7 @@
     <ClCompile Include="worlds\push-box-2.cpp">
       <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="worlds\b3Clock.cpp">
-      <Filter>world\BulletUtils</Filter>
-    </ClCompile>
     <ClCompile Include="worlds\BulletPhysics.cpp">
-      <Filter>world\BulletUtils</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\CollisionShape2TriangleMesh.cpp">
       <Filter>world\BulletUtils</Filter>
     </ClCompile>
     <ClCompile Include="worlds\BulletBody.cpp">
@@ -215,6 +206,12 @@
     <ClCompile Include="worlds\pitchcontrol.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="app.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="app-rlsimion.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">
@@ -227,88 +224,82 @@
       <Filter>parameters</Filter>
     </ClInclude>
     <ClInclude Include="vfa-critic.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="actor.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="actor-critic.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="app.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="app-rlsimion.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="controller.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="critic.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="etraces.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="experience-replay.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="experiment.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="featuremap.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="features.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="logger.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="named-var-set.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="noise.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="policy.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="policy-learner.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="q-learners.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="reward.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="simgod.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="simion.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="single-dimension-grid.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="stats.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="vfa.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="controller-adaptive.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="mem-block.h">
       <Filter>memory</Filter>
@@ -323,7 +314,7 @@
       <Filter>memory</Filter>
     </ClInclude>
     <ClInclude Include="deferred-load.h">
-      <Filter>Source Files</Filter>
+      <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="mem-buffer.h">
       <Filter>memory</Filter>
@@ -373,13 +364,7 @@
     <ClInclude Include="worlds\push-box-2.h">
       <Filter>world</Filter>
     </ClInclude>
-    <ClInclude Include="worlds\b3Clock.h">
-      <Filter>world\BulletUtils</Filter>
-    </ClInclude>
     <ClInclude Include="worlds\BulletPhysics.h">
-      <Filter>world\BulletUtils</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\CollisionShape2TriangleMesh.h">
       <Filter>world\BulletUtils</Filter>
     </ClInclude>
     <ClInclude Include="worlds\BulletCreationInterface.h">
@@ -399,6 +384,12 @@
     </ClInclude>
     <ClInclude Include="worlds\pitchcontrol.h">
       <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="app-rlsimion.h">
+      <Filter>app</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

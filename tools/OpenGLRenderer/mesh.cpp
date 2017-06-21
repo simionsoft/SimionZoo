@@ -68,9 +68,6 @@ void CMesh::transformVertices(Vector3D& translation, Vector3D& scale)
 		m_pPositions[i] += translation;
 		m_pPositions[i] *= scale;
 	}
-	//transform normals
-	for (unsigned int i= 0; i<m_numNormals; ++i)
-		m_pNormals[i] += translation;
 }
 
 void CMesh::flipYZAxis()

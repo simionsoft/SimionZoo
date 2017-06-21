@@ -38,7 +38,7 @@ namespace Badger.Data
             }
             int startPos = processOutput.IndexOf("<Files>");
             int endPos = processOutput.IndexOf("</Files>");
-            if (startPos > 0 && endPos > 0)
+            if (startPos >= 0 && endPos > 0)
             {
                 string xml = processOutput.Substring(startPos, endPos - startPos + ("</Files>").Length);
 

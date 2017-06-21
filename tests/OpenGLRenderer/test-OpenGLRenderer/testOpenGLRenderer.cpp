@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 	pMeter2->setValueRange(Range(-5.0, 5.0));
 	double t = 0.0;
 
-	C2DText* pFPSText = new C2DText(string("fps"), Vector2D(0.1, 0.9), 0.0);
+	C2DText* pFPSText = new C2DText(string("fps"), Vector2D(0.1, 0.9), 0);
 	pRenderer->add2DGraphicObject(pFPSText);
 
 	while (1)

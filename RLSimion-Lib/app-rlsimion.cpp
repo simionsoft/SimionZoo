@@ -137,33 +137,38 @@ void RLSimionApp::initRenderer(string sceneFile)
 		return;
 
 	m_pRenderer = new CRenderer();
-	m_pRenderer->init(0, 0, 600, 400);
+	m_pRenderer->init(0, 0, 800, 600);
 	m_pRenderer->setDataFolder(sceneDir);
 	m_pRenderer->loadScene(sceneFile.c_str());
 
 	//text
-	m_pProgressText = new C2DText(string("Progress"), Vector2D(0.1, 0.9), 0);
+	m_pProgressText = new C2DText(string("Progress"), Vector2D(0.05, 0.95), 0);
 	m_pRenderer->add2DGraphicObject(m_pProgressText);
 
 	//stats
 	C2DMeter* pStatText;
 	CStats* pStat;
-	Vector2D origin = Vector2D(0.1, 0.8);
-	Vector2D size = Vector2D(0.2, 0.05);
+	Vector2D origin = Vector2D(0.05, 0.8);
+	Vector2D size = Vector2D(0.35, 0.05);
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
 		pStatText = new C2DMeter(string(pStat->getKey()), origin, size);
 		m_pStatsText.push_back(pStatText);
 		m_pRenderer->add2DGraphicObject(pStatText);
-		origin -= Vector2D(0.0, 0.05);
+		origin -= Vector2D(0.0, 0.06);
 	}
 
 	m_pInputHandler = new CFreeCameraInputHandler();
+
+	m_timer.start();
 }
 
 void RLSimionApp::updateScene(CState* s)
 {
+	//check the renderer has been initialized
+	if (!m_pRenderer) return;
+
 	//update progress text
 	m_pProgressText->set(string("Episode: ") + std::to_string(pExperiment->getEpisodeIndex())
 		+ string(" Step: ") + std::to_string(pExperiment->getStep()));
@@ -191,4 +196,13 @@ void RLSimionApp::updateScene(CState* s)
 	//drawScene
 	m_pInputHandler->handleInput();
 	m_pRenderer->redraw();
+
+	//real time execution?
+	double dt = pWorld->getDT();
+	double elapsedTime = m_timer.getElapsedTime(true);
+	if (dt > elapsedTime)
+	{
+		Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
+		m_timer.start();
+	}
 }

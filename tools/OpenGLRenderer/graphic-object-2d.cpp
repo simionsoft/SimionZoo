@@ -45,7 +45,7 @@ C2DMeter::C2DMeter(string name, Vector2D origin, Vector2D size, int depth): CGra
 	m_pMaterial= new CColorMaterial();
 
 	m_pText = new C2DText(name + "/text" , origin, depth + 1); //over the progress bar
-	m_pText->addPixelOffset(Vector2D(2, 2));
+	m_pText->addPixelOffset(Vector2D(2, 5));
 }
 
 C2DMeter::~C2DMeter()

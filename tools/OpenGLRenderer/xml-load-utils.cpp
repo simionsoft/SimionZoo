@@ -44,7 +44,7 @@ bool loadBindableValue(tinyxml2::XMLElement* pNode, const char* xmlTag, double& 
 			value= atof(pChild->GetText());
 		pBindingName = pChild->Attribute(XML_ATTR_BINDING);
 		if (pBindingName)
-			CRenderer::get()->registerBinding(new Binding(pBindingName,xmlTag,pObj));
+			CRenderer::get()->registerBinding(pBindingName,pObj,xmlTag);
 		return true;
 	}
 	return false;

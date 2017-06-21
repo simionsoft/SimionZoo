@@ -247,12 +247,10 @@
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
     <ClCompile Include="worlds\aux-rewards.cpp" />
-    <ClCompile Include="worlds\b3Clock.cpp" />
     <ClCompile Include="worlds\balancingpole.cpp" />
     <ClCompile Include="worlds\Box.cpp" />
     <ClCompile Include="worlds\BulletBody.cpp" />
     <ClCompile Include="worlds\BulletPhysics.cpp" />
-    <ClCompile Include="worlds\CollisionShape2TriangleMesh.cpp" />
     <ClCompile Include="worlds\FAST.cpp" />
     <ClCompile Include="worlds\magneticlevitation.cpp" />
     <ClCompile Include="worlds\mountaincar.cpp" />
@@ -309,13 +307,11 @@
     <ClInclude Include="policy.h" />
     <ClInclude Include="vfa.h" />
     <ClInclude Include="worlds\aux-rewards.h" />
-    <ClInclude Include="worlds\b3Clock.h" />
     <ClInclude Include="worlds\balancingpole.h" />
     <ClInclude Include="worlds\Box.h" />
     <ClInclude Include="worlds\BulletBody.h" />
     <ClInclude Include="worlds\BulletCreationInterface.h" />
     <ClInclude Include="worlds\BulletPhysics.h" />
-    <ClInclude Include="worlds\CollisionShape2TriangleMesh.h" />
     <ClInclude Include="worlds\FAST.h" />
     <ClInclude Include="worlds\magneticlevitation.h" />
     <ClInclude Include="worlds\mountaincar.h" />
