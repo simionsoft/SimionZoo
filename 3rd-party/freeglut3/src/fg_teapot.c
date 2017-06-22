@@ -30,7 +30,7 @@
  * a much more optimized version is here, didn't bother to implement that: http://www.gamasutra.com/view/feature/131794/an_indepth_look_at_bicubic_bezier_.php?print=1
  */
 
-#include <GL/freeglut.h>
+#include "../include/GL/freeglut.h"
 #include "fg_internal.h"
 #include "fg_teapot_data.h"
 

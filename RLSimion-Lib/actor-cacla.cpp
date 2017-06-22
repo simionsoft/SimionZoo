@@ -31,7 +31,6 @@ void CCACLALearner::update(const CState *s, const CAction *a, const CState *s_p,
 
 	//CACLA (van Hasselt)
 	//if delta>0: theta= theta + alpha*(lastNoise)*phi_pi(s)
-	bool bStateKnown = CSimionApp::get()->pSimGod->bIsStateKnown(s_p);
 	if (td > 0.0)
 	{
 		alpha = m_pAlpha->get();

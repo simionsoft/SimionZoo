@@ -26,7 +26,7 @@
 #ifndef  FG_GL2_H
 #define  FG_GL2_H
 
-#include <GL/freeglut.h>
+#include "../include/GL/freeglut.h"
 #include "fg_internal.h"
 
 #ifdef GL_ES_VERSION_2_0

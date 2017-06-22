@@ -29,7 +29,7 @@
  * But is needed for mswindows platform builds.
  */
 
-#include <GL/freeglut.h>
+#include "../../include/GL/freeglut.h"
 #include "../fg_internal.h"
 
 void fgPlatformInitializeSpaceball(void)
