@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Badger.Views.HerdAgentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Badger.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <Border BorderThickness="0,0,0,1" BorderBrush="LightGray">
+        <Grid Margin="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="15" />
+                <ColumnDefinition Width="*" MinWidth="15" />
+            </Grid.ColumnDefinitions>
+            
+            <CheckBox Grid.RowSpan="2" VerticalAlignment="Center" Margin="5"/>
+            
+            <Grid Grid.Column="1" Grid.Row="0" Margin="5,0,5,4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" MinWidth="15" />
+                    <ColumnDefinition Width="*" MinWidth="15" />
+                    <ColumnDefinition Width="*" MinWidth="15" />
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="{Binding Path=IpAddressString}" FontWeight="Bold" />
+                <TextBlock Grid.Column="1" Text="{Binding Path=State}" HorizontalAlignment="Right"/>
+                <TextBlock Grid.Column="2" Text="{Binding Path=Version}" HorizontalAlignment="Right" Foreground="#FF616161" />
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=FormatedProcessorInfo}" Padding="5,1"/>
+                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                    <Label Content="CPU – " HorizontalAlignment="Right" Padding="5,1,3,1" Foreground="#FF616161" />
+                    <TextBlock Text="{Binding Path=ProcessorLoad}" Padding="0,1,5,1"/>
+                </StackPanel>
+
+                <Separator Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
+
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=Memory}" Padding="5,1"/>
+                <Label Grid.Row="1" Grid.Column="2" Content="Memory" Padding="5,1" Foreground="#FF616161" />
+
+                <Separator Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
+
+                <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Path=CudaInfo}" Foreground="{Binding Path=CudaInfoColor}"  Padding="5,1"/>
+                <Label Grid.Row="1" Grid.Column="4" Content="CUDA" Padding="5,1"  Foreground="#FF616161" />
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

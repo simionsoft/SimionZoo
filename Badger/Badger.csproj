@@ -157,6 +157,9 @@
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HerdAgentView.xaml.cs">
+      <DependentUpon>HerdAgentView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Reports\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
     </Compile>
@@ -272,6 +275,10 @@
     <Page Include="Views\ConfigNodeTypes\IntegerValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\HerdAgentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultiStateButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>

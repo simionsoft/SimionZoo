@@ -85,6 +85,8 @@ namespace Herd
 
         public double Memory { get { return Double.Parse(getProperty(HerdAgent.TotalMemoryTag)); } }
 
+        public double CudaInfo { get { return Double.Parse(getProperty(HerdAgent.CudaInfoTag)); } }
+
         public bool IsAvailable
         {
             get { if (getProperty(HerdAgent.m_stateXMLTag) == "available") return true; return false; }
@@ -135,6 +137,7 @@ namespace Herd
         public const string TotalMemoryTag = "Memory";
         public const string ProcessorArchitectureTag = "ProcessorArchitecture";
         public const string ProcessorLoadTag = "ProcessorLoad";
+        public const string CudaInfoTag = "CudaInfo";
 
         private CancellationTokenSource m_cancelTokenSource;
 
@@ -358,6 +361,14 @@ namespace Herd
             return m_cpuCounter.NextValue();
         }
 
+        /// <summary>
+        ///     Get information about CUDA installation.
+        /// </summary>
+        /// <returns>The CUDA version installed or -1 if none was found</returns>
+        public double GetCudaInfo()
+        {
+            return -1;
+        }
 
         [StructLayout(LayoutKind.Sequential)]
         struct MEMORYSTATUSEX
@@ -403,6 +414,8 @@ namespace Herd
                 + "<" + ProcessorLoadTag + ">" + GetCurrentCpuUsage() + "</" + ProcessorLoadTag + ">"
                 // Total installed memory
                 + "<" + TotalMemoryTag + ">" + GetGlobalMemoryStatusEx() + "</" + TotalMemoryTag + ">"
+                // CUDA support information
+                + "<" + CudaInfoTag + ">" + GetCudaInfo() + "</" + CudaInfoTag + ">"
                 // HerdAgent state
                 + "<" + m_stateXMLTag + ">" + getStateString() + "</" + m_stateXMLTag + ">"
                 + "</" + m_herdDescriptionXMLTag + ">";

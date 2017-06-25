@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Net;
 using Caliburn.Micro;
 using Herd;
@@ -40,7 +41,8 @@ namespace Badger.ViewModels
             {
                 int cpus = m_herdAgentInfo.NumProcessors;
                 string info = m_herdAgentInfo.ProcessorArchitecture + ", ";
-                info += (cpus > 1) ? cpus + " CPUs" : cpus + " CPU";
+                info += cpus + " Core";
+                if (cpus > 1) info += 's';
                 return info;
             }
         }
@@ -64,10 +66,31 @@ namespace Badger.ViewModels
 
         public string Version { get { return m_herdAgentInfo.Version; } }
 
-        public string Status
+        public string State
         {
             get { return m_herdAgentInfo.State; }
-            set { m_herdAgentInfo.State = value; NotifyOfPropertyChange(() => Status); }
+            set { m_herdAgentInfo.State = value; NotifyOfPropertyChange(() => State); }
+        }
+
+        public string CudaInfo
+        {
+            get
+            {
+                if (m_herdAgentInfo.CudaInfo != -1)
+                    return m_herdAgentInfo.CudaInfo.ToString(CultureInfo.InvariantCulture);
+
+                return "Not supported";
+            }
+        }
+
+        public string CudaInfoColor
+        {
+            get
+            {
+                if (m_herdAgentInfo.CudaInfo != -1)
+                    return "Black";
+                return "Tomato";
+            }
         }
     }
 }
