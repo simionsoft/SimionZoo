@@ -23,9 +23,9 @@
       <Episode-Length>250</Episode-Length>
     </Experiment>
     <SimGod>
-      <V-Function-Update-Freq>100</V-Function-Update-Freq>
+      <Target-Function-Update-Freq>100</Target-Function-Update-Freq>
       <Gamma>0.9</Gamma>
-      <Freeze-V-Function>true</Freeze-V-Function>
+      <Freeze-Target-Function>true</Freeze-Target-Function>
       <Use-Importance-Weights>false</Use-Importance-Weights>
       <Experience-Replay>
         <Buffer-Size>5000</Buffer-Size>

@@ -285,9 +285,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>learning</Filter>
-    </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>learning</Filter>
     </ClInclude>
@@ -387,6 +384,7 @@
     <ClInclude Include="app-rlsimion.h">
       <Filter>app</Filter>
     </ClInclude>
+    <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

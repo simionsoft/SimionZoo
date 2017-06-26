@@ -33,7 +33,6 @@ public:
 class CCACLALearner : public CPolicyLearner
 {
 	CFeatureList *m_pStateFeatures;
-	CHILD_OBJECT<CETraces> m_e;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
 public:
 
@@ -46,7 +45,6 @@ public:
 class CRegularPolicyGradientLearner :public CPolicyLearner
 {
 	CFeatureList *m_pStateFeatures;
-	CHILD_OBJECT<CETraces> m_e;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
 public:
 
