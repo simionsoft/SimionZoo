@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <DEFINITIONS>
   <CLASS Name="CCACLALearner">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by CACLA" Optional="True"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="Learning gain [0..1]"/>
     <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
   </CLASS>
@@ -19,7 +18,6 @@
     <BRANCH Name="Critic" Class="ICritic-Factory" Comment="The critic"/>
   </CLASS>
   <CLASS Name="CRegularPolicyGradientLearner">
-    <BRANCH Name="E-Traces" Class="CETraces" Comment="Eligibility traces used by the regular Pol.Grad. learner" Optional="True"/>
     <BRANCH Name="Alpha" Class="CNumericValue-Factory" Comment="The learning gain"/>
     <BRANCH Name="Policy" Class="CPolicy-Factory" Comment="The policy to be learned"/>
   </CLASS>
@@ -262,10 +260,10 @@
     </CHOICE>
   </CLASS>
   <CLASS Name="CSimGod">
-    <INTEGER-VALUE Name="V-Function-Update-Freq" Comment="Update frequency at which v-function updates will be done. Only used if Freeze-V-Function=true" Default="100"/>
+    <INTEGER-VALUE Name="Target-Function-Update-Freq" Comment="Update frequency at which target functions will be updated. Only used if Freeze-Target-Function=true" Default="100"/>
     <DOUBLE-VALUE Name="Gamma" Comment="Gamma parameter" Default="0.9"/>
     <BOOL-VALUE Name="Count-State-Visits" Comment="Count the number of times a state is visited" Default="true"/>
-    <BOOL-VALUE Name="Freeze-V-Function" Comment="Defers updates on the V-functions to improve stability" Default="false"/>
+    <BOOL-VALUE Name="Freeze-Target-Function" Comment="Defers updates on the V-functions to improve stability" Default="false"/>
     <BOOL-VALUE Name="Use-Importance-Weights" Comment="Use sample importance weights to allow off-policy learning -experimental-" Default="false"/>
     <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>
     <BRANCH Name="State-Feature-Map" Class="CStateFeatureMap-Factory" Comment="The state feature map" Optional="True"/>

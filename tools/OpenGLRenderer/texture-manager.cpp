@@ -27,7 +27,7 @@ CTextureManager::~CTextureManager()
 int CTextureManager::loadTexture(string filename)
 {
 	filename = m_folder + filename;
-	int id = 1;
+	int id = 0;
 	for (vector<CTexture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		if ((*it)->path == filename)
@@ -38,13 +38,18 @@ int CTextureManager::loadTexture(string filename)
 		++id;
 	}
 	//texture not found, must load it
-	int oglId = SOIL_load_OGL_texture(filename.c_str(), 0, 0, SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS);
+	unsigned int numChannelsRead;
+	int oglId = SOIL_load_OGL_texture(filename.c_str(), 0, 0
+		, SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS,&numChannelsRead);
 	if (oglId != 0)
 	{
 		CTexture* pTexture = new CTexture();
 		pTexture->oglId = oglId;
 		pTexture->path = filename;
 		m_textures.push_back(pTexture);
+		if (numChannelsRead == 4)
+			pTexture->bAlphaChannel = true;
+
 		return m_textures.size() - 1; //we return the internal ID instead of the OpenGL id
 	}
 	return -1;
@@ -70,4 +75,12 @@ void CTexture::set()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_t);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+	if (bAlphaChannel)
+	{
+		glEnable(GL_BLEND);
+	}
+	else
+	{
+		glDisable(GL_BLEND);
+	}
 }

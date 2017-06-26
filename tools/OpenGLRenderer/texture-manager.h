@@ -12,6 +12,7 @@ public:
 	int minFilter = GL_LINEAR_MIPMAP_LINEAR, magFilter = GL_LINEAR_MIPMAP_LINEAR;
 	string path;
 	unsigned int oglId= 0;
+	bool bAlphaChannel = false;
 
 	void addRef() { ++numRefs; }
 	void set();

@@ -82,11 +82,11 @@
         </Translation>
       </Transform>
     </Box>
-    <Box Name="Target">
+    <Box Name="Target" DrawTop="false">
       <Material>
         <Simple-TL-Material>
           <Texture>
-            <Path>translucent.png</Path>
+            <Path>translucent-green.png</Path>
           </Texture>
         </Simple-TL-Material>
       </Material>

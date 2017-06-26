@@ -8,6 +8,7 @@ namespace tinyxml2 { class XMLElement; }
 #define XML_TAG_SPHERE "Sphere"
 #define XML_TAG_CILINDER "Cilinder"
 #define XML_TAG_BOX "Box"
+#define XML_ATTR_BOX_DRAW_TOP "DrawTop"
 #define XML_TAG_POLYLINE "Polyline"
 #define XML_TAG_POINT "Point"
 #define XML_TAG_WIDTH "Width"

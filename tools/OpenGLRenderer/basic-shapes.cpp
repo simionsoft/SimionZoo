@@ -54,6 +54,13 @@ CSphere::CSphere(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
 
 CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 {
+	bool bDrawTopSide= true;
+	//box attributes
+	if (pNode->Attribute(XML_ATTR_BOX_DRAW_TOP)
+		&& (!strcmp(pNode->Attribute(XML_ATTR_BOX_DRAW_TOP), "false")
+			|| !strcmp(pNode->Attribute(XML_ATTR_BOX_DRAW_TOP), "False")))
+		bDrawTopSide = false;
+
 	CMesh* pMesh = new CMesh();
 	//vertex positions
 	pMesh->allocPositions(8);
@@ -77,7 +84,10 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	pMesh->getTexCoordArray()[1] = Vector2D(1.0, 0.0);
 	pMesh->getTexCoordArray()[2] = Vector2D(1.0, 1.0);
 	pMesh->getTexCoordArray()[3] = Vector2D(0.0, 1.0);
-	pMesh->allocIndices(24*3);
+	
+	if (bDrawTopSide)
+		pMesh->allocIndices(24*3);
+	else pMesh->allocIndices(20 * 3);
 	//front
 	pMesh->getIndexArray()[0] = 0; //positions
 	pMesh->getIndexArray()[3] = 1;
@@ -130,32 +140,35 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	pMesh->getIndexArray()[41] = 1;
 	pMesh->getIndexArray()[44] = 2;
 	pMesh->getIndexArray()[47] = 3;
-	//top
-	pMesh->getIndexArray()[48] = 2;
-	pMesh->getIndexArray()[51] = 6;
-	pMesh->getIndexArray()[54] = 7;
-	pMesh->getIndexArray()[57] = 3;
-	pMesh->getIndexArray()[49] = 4;//normals
-	pMesh->getIndexArray()[52] = 4;
-	pMesh->getIndexArray()[55] = 4;
-	pMesh->getIndexArray()[58] = 4;
+	//bottom
+	pMesh->getIndexArray()[48] = 0;
+	pMesh->getIndexArray()[51] = 4;
+	pMesh->getIndexArray()[54] = 5;
+	pMesh->getIndexArray()[57] = 1;
+	pMesh->getIndexArray()[49] = 5;//normals
+	pMesh->getIndexArray()[52] = 5;
+	pMesh->getIndexArray()[55] = 5;
+	pMesh->getIndexArray()[58] = 5;
 	pMesh->getIndexArray()[50] = 0;//tex.coords
 	pMesh->getIndexArray()[53] = 1;
 	pMesh->getIndexArray()[56] = 2;
 	pMesh->getIndexArray()[59] = 3;
-	//bottom
-	pMesh->getIndexArray()[60] = 0;
-	pMesh->getIndexArray()[63] = 4;
-	pMesh->getIndexArray()[66] = 5;
-	pMesh->getIndexArray()[69] = 1;
-	pMesh->getIndexArray()[61] = 5;//normals
-	pMesh->getIndexArray()[64] = 5;
-	pMesh->getIndexArray()[67] = 5;
-	pMesh->getIndexArray()[70] = 5;
-	pMesh->getIndexArray()[62] = 0;//tex.coords
-	pMesh->getIndexArray()[65] = 1;
-	pMesh->getIndexArray()[68] = 2;
-	pMesh->getIndexArray()[71] = 3;
+	//top
+	if (bDrawTopSide)
+	{
+		pMesh->getIndexArray()[60] = 2;
+		pMesh->getIndexArray()[63] = 6;
+		pMesh->getIndexArray()[66] = 7;
+		pMesh->getIndexArray()[69] = 3;
+		pMesh->getIndexArray()[61] = 4;//normals
+		pMesh->getIndexArray()[64] = 4;
+		pMesh->getIndexArray()[67] = 4;
+		pMesh->getIndexArray()[70] = 4;
+		pMesh->getIndexArray()[62] = 0;//tex.coords
+		pMesh->getIndexArray()[65] = 1;
+		pMesh->getIndexArray()[68] = 2;
+		pMesh->getIndexArray()[71] = 3;
+	}
 	pMesh->setNumIndicesPerVertex(3);
 	pMesh->setPosOffset(0);
 	pMesh->setNormalOffset(1);
