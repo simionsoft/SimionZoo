@@ -67,6 +67,7 @@ public:
 	virtual ~CLinearStateVFA();
 	using CLinearVFA::get;
 	double get(const CState *s);
+	//double get(unsigned int featureIndex) const;
 
 	void getFeatures(const CState* s,CFeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, CState* s);
@@ -88,7 +89,8 @@ protected:
 	CFeatureList *m_pAux;
 	CFeatureList *m_pAux2;
 	DOUBLE_PARAM m_initValue;
-	int *m_pArgMaxTies;
+	int *m_pArgMaxTies= nullptr;
+
 public:
 	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
 	unsigned int getNumActionWeights() const { return m_numActionWeights; }
@@ -106,6 +108,7 @@ public:
 	virtual ~CLinearStateActionVFA();
 	using CLinearVFA::get;
 	double get(const CState *s, const CAction *a);
+	//double get(unsigned int sFeatureIndex,unsigned int aFeatureIndex) const;
 
 	void argMax(const CState *s, CAction* a);
 	double max(const CState *s);

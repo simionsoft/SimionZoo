@@ -146,7 +146,7 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 
 	//If we are deferring updates, check whether we have to update frozen weights
 	//Note: vUpdate=0 if we are not deferring updates
-	vUpdateFreq = CSimionApp::get()->pSimGod->getVFunctionUpdateFreq();
+	vUpdateFreq = CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
 	bFreezeTarget = (vUpdateFreq != 0) && m_bCanBeFrozen;
 
 	//then we apply all the feature updates
@@ -299,6 +299,8 @@ CLinearStateActionVFA::~CLinearStateActionVFA()
 	//now SimGod owns the feature maps -> his responsability to free memory
 	delete m_pAux;
 	delete m_pAux2;
+
+	if (m_pArgMaxTies) delete [] m_pArgMaxTies;
 }
 
 void CLinearStateActionVFA::setInitValue(double initValue)
@@ -366,6 +368,10 @@ double CLinearStateActionVFA::get(const CState *s, const CAction* a)
 	return CLinearVFA::get(m_pAux);
 }
 
+//double CLinearStateActionVFA::get(unsigned int sFeatureIndex, unsigned int aFeatureIndex) const
+//{
+//	return (*m_pWeights)[sFeatureIndex*m_pActionFeatureMap->getTotalNumFeatures() + aFeatureIndex];
+//}
 
 void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 {
@@ -373,14 +379,14 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	//state features in aux list
 	getFeatures(s, 0, m_pAux);
 
-	double value= 0.0;
+	double value = 0.0;
 	double maxValue = std::numeric_limits<double>::lowest();
 	unsigned int arg = -1;
 
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
-		value= get(m_pAux);
+		value = get(m_pAux);
 		if (value == maxValue)
 		{
 			m_pArgMaxTies[numTies++] = i;
@@ -399,9 +405,8 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	if (numTies > 1)
 		arg = m_pArgMaxTies[rand() % numTies]; //select one randomly
 
-
 	//retrieve action
-	m_pActionFeatureMap->getFeatureAction(arg,a);
+	m_pActionFeatureMap->getFeatureAction(arg, a);
 }
 
 double CLinearStateActionVFA::max(const CState* s)
@@ -415,10 +420,10 @@ double CLinearStateActionVFA::max(const CState* s)
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
-		value = get(m_pAux);
+		value = get(m_pAux, true); //if the target is frozen, we use the frozen weights
 		if (value>maxValue)
 			maxValue = value;
-	
+
 		m_pAux->offsetIndices(m_numStateWeights);
 	}
 
@@ -435,7 +440,7 @@ void CLinearStateActionVFA::getActionValues(const CState* s,double *outActionVal
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
-		outActionValues[i] = get(m_pAux);
+		outActionValues[i] = get(m_pAux, true); //frozen weights
 
 		m_pAux->offsetIndices(m_numStateWeights);
 	}

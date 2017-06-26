@@ -82,5 +82,23 @@
         </Translation>
       </Transform>
     </Box>
+    <Box Name="Target">
+      <Material>
+        <Simple-TL-Material>
+          <Texture>
+            <Path>translucent.png</Path>
+          </Texture>
+        </Simple-TL-Material>
+      </Material>
+      <Transform>
+        <Scale>
+          <Y>2</Y>
+        </Scale>
+        <Translation>
+          <X Bind="targetX"/>
+          <Z Bind="targetY"/>
+        </Translation>
+      </Transform>
+    </Box>
   </Objects>
 </Scene>

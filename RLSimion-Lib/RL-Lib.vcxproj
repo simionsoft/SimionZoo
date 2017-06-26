@@ -121,6 +121,9 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>RLSimion source code parser</Message>
     </CustomBuildStep>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -149,6 +152,9 @@
       <TreatOutputAsContent>false</TreatOutputAsContent>
       <Message>RLSimion source code parser</Message>
     </CustomBuildStep>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -173,6 +179,9 @@
       <Outputs>..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
     </CustomBuildStep>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -199,6 +208,9 @@
       <Outputs>..\config\definitions.xml</Outputs>
       <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
     </CustomBuildStep>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
@@ -331,10 +343,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">

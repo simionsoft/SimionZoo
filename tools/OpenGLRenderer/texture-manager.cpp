@@ -38,7 +38,7 @@ int CTextureManager::loadTexture(string filename)
 		++id;
 	}
 	//texture not found, must load it
-	int oglId = SOIL_load_OGL_texture(filename.c_str(), 0, 0, SOIL_FLAG_MIPMAPS);
+	int oglId = SOIL_load_OGL_texture(filename.c_str(), 0, 0, SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS);
 	if (oglId != 0)
 	{
 		CTexture* pTexture = new CTexture();

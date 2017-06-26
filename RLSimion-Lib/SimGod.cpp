@@ -39,8 +39,8 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
 	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter",0.9);
 
-	m_bFreezeVFunctionUpdates= BOOL_PARAM(pConfigNode,"Freeze-V-Function","Defers updates on the V-functions to improve stability",false);
-	m_vFunctionUpdateFreq= INT_PARAM(pConfigNode,"V-Function-Update-Freq","Update frequency at which v-function updates will be done. Only used if Freeze-V-Function=true",100);
+	m_bFreezeTargetFunctions= BOOL_PARAM(pConfigNode,"Freeze-Target-Function","Defers updates on the V-functions to improve stability",false);
+	m_targetFunctionUpdateFreq= INT_PARAM(pConfigNode,"Target-Function-Update-Freq","Update frequency at which target functions will be updated. Only used if Freeze-Target-Function=true",100);
 	m_bUseImportanceWeights = BOOL_PARAM(pConfigNode, "Use-Importance-Weights", "Use sample importance weights to allow off-policy learning -experimental-", false);
 }
 
@@ -187,10 +187,10 @@ double CSimGod::getGamma()
 
 //Returns the number of steps after which deferred V-Function updates are to be done
 //0 if we don't use Freeze-V-Function
-int CSimGod::getVFunctionUpdateFreq()
+int CSimGod::getTargetFunctionUpdateFreq()
 {
-	if (m_bFreezeVFunctionUpdates.get())
-		return m_vFunctionUpdateFreq.get();
+	if (m_bFreezeTargetFunctions.get())
+		return m_targetFunctionUpdateFreq.get();
 	return 0;
 }
 

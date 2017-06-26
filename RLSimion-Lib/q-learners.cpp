@@ -109,6 +109,8 @@ double CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 CQLearningCritic::CQLearningCritic(CConfigNode* pConfigNode)
 {
 	m_pQFunction = CHILD_OBJECT<CLinearStateActionVFA>(pConfigNode, "Q-Function", "The parameterization of the Q-Function");
+	m_pQFunction->setCanUseDeferredUpdates(true);
+	
 	m_eTraces = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "E-Traces", true);
 	m_eTraces->setName("Q-Learning/traces");
 	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain [0-1]");
@@ -131,8 +133,8 @@ double CQLearningCritic::update(const CState *s, const CAction *a, const CState 
 	m_eTraces->addFeatureList(m_pAux, gamma);
 
 	double s_p_value = gamma*m_pQFunction->max(s_p);
-	double s_value = m_pQFunction->get(m_pAux);
-	double td = r + gamma*m_pQFunction->max(s_p) - m_pQFunction->get(m_pAux);
+	double s_value = m_pQFunction->get(m_pAux, false); //we use the live weights instead of the frozen ones
+	double td = r + s_p_value - s_value;
 
 	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 
@@ -150,7 +152,7 @@ CQLearning::~CQLearning()
 
 double CQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
 {
-	return update(s, a, s_p, r, probability);
+	return CQLearningCritic::update(s, a, s_p, r, probability);
 }
 
 

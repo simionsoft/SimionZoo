@@ -34,8 +34,8 @@ class CSimGod
 	
 	DOUBLE_PARAM m_gamma;
 
-	BOOL_PARAM m_bFreezeVFunctionUpdates;
-	INT_PARAM m_vFunctionUpdateFreq;
+	BOOL_PARAM m_bFreezeTargetFunctions;
+	INT_PARAM m_targetFunctionUpdateFreq;
 	BOOL_PARAM m_bUseImportanceWeights;
 
 	CReward *m_pReward;
@@ -75,9 +75,9 @@ public:
 	//global learning parameters
 	double getGamma();
 
-	//V-Function freeze
+	//Target-Function freeze
 	//returns the freq. (in steps) at which the V-functions should be updated (0 if they aren't deferred)
-	int getVFunctionUpdateFreq();
+	int getTargetFunctionUpdateFreq();
 
 	//Use sample importance weights for off-policy learning?
 	bool useSampleImportanceWeights();
