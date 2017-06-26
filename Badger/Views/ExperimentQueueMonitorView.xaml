@@ -45,7 +45,7 @@
             </Button>
         </Grid>
 
-        <ListBox Grid.Row="1" ItemsSource="{Binding Path = MonitoredExperimentList}" >
+        <ListBox Grid.Row="1" ItemsSource="{Binding Path = MonitoredExperimentList}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>

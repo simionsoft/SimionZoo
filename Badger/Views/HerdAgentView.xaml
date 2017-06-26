@@ -3,36 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Badger.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="75" d:DesignWidth="250">
 
-    <Border BorderThickness="0,0,0,1" BorderBrush="LightGray">
-        <Grid Margin="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" MinWidth="15" />
-                <ColumnDefinition Width="*" MinWidth="15" />
-            </Grid.ColumnDefinitions>
-            
-            <CheckBox Grid.RowSpan="2" VerticalAlignment="Center" Margin="5"/>
-            
-            <Grid Grid.Column="1" Grid.Row="0" Margin="5,0,5,4">
+    <Border BorderThickness="1" BorderBrush="LightGray">
+        <DockPanel Background="#FFFFFF">
+            <Grid DockPanel.Dock="Top" Background="#F5F5F5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="15" />
                     <ColumnDefinition Width="*" MinWidth="15" />
                     <ColumnDefinition Width="*" MinWidth="15" />
+                    <ColumnDefinition Width="*" MinWidth="15" />
                 </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Column="0" Text="{Binding Path=IpAddressString}" FontWeight="Bold" />
-                <TextBlock Grid.Column="1" Text="{Binding Path=State}" HorizontalAlignment="Right"/>
-                <TextBlock Grid.Column="2" Text="{Binding Path=Version}" HorizontalAlignment="Right" Foreground="#FF616161" />
+
+                <CheckBox VerticalAlignment="Center" Margin="5" />
+                <TextBlock Grid.Column="1" Text="{Binding Path=IpAddressString}" FontWeight="Bold"  Margin="5"/>
+                <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Right"  Margin="5"/>
+                <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Right" Foreground="#FF616161"  Margin="5"/>
             </Grid>
 
-            <Grid Grid.Row="1" Grid.Column="1">
+            <Grid Margin="0,5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -61,6 +51,6 @@
                 <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Path=CudaInfo}" Foreground="{Binding Path=CudaInfoColor}"  Padding="5,1"/>
                 <Label Grid.Row="1" Grid.Column="4" Content="CUDA" Padding="5,1"  Foreground="#FF616161" />
             </Grid>
-        </Grid>
+        </DockPanel>
     </Border>
 </UserControl>

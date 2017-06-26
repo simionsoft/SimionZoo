@@ -367,6 +367,13 @@ namespace Herd
         /// <returns>The CUDA version installed or -1 if none was found</returns>
         public double GetCudaInfo()
         {
+            if (File.Exists(@"C:\nvapi.dll"))
+            {
+                // Get the file version for the notepad.
+                FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\MyAssembly.dll");
+                return Double.Parse(myFileVersionInfo.FileVersion);
+            }
+
             return -1;
         }
 

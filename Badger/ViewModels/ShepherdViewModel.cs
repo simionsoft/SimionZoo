@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Input;
 using Herd;
 using Caliburn.Micro;
 
@@ -8,7 +9,7 @@ namespace Badger.ViewModels
     public class ShepherdViewModel : PropertyChangedBase
     {
         const int m_agentTimeoutSeconds = 10;
-        const int m_updateTimeSeconds = 5;
+        const int m_updateTimeSeconds = 3;
         System.Timers.Timer m_timer;
 
         private Shepherd m_shepherd;
@@ -23,7 +24,6 @@ namespace Badger.ViewModels
         {
             get
             {
-                //return m_herdAgentList;
                 lock (m_listsLock)
                 {
                     m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
@@ -36,6 +36,7 @@ namespace Badger.ViewModels
             }
             set {}
         }
+
         public int getAvailableHerdAgents(ref List<HerdAgentViewModel> outList)
         {
             //we assume outList needs no synchronization
@@ -77,5 +78,8 @@ namespace Badger.ViewModels
             m_timer.Elapsed += new System.Timers.ElapsedEventHandler(resendBroadcast);
             m_timer.Start();
         }
+
+
+
     }
 }

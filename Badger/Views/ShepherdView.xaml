@@ -3,25 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:cal="http://www.caliburnproject.org"
              xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:views="clr-namespace:Badger.Views"
+             xmlns:dd="urn:gong-wpf-dragdrop"
              mc:Ignorable="d"  
              d:DesignHeight="300" d:DesignWidth="300">
 
+    <UserControl.Resources>
+        <DataTemplate x:Key="HerdAgent" DataType="{x:Type vm:HerdAgentViewModel}">
+            <views:HerdAgentView />
+        </DataTemplate>
+    </UserControl.Resources>
+    
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <ListBox ItemsSource="{Binding Path = herdAgentList}" BorderThickness="0">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Padding" Value="0"/>
-                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <ListBox.Resources>
+        <ListView ItemsSource="{Binding Path = herdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                  dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                   dd:DragDrop.DragAdornerTemplate="{StaticResource HerdAgent}"
+                  dd:DragDrop.DefaultDragAdornerOpacity="0.3">
+            <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Resources>
                 <DataTemplate DataType="{x:Type vm:HerdAgentViewModel}">
                     <views:HerdAgentView />
                 </DataTemplate>
-            </ListBox.Resources>
-        </ListBox>
+            </ListView.Resources>
+        </ListView>
     </ScrollViewer>
 </UserControl>
