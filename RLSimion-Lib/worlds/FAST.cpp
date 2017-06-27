@@ -242,7 +242,7 @@ void CFASTWindTurbine::reset(CState *s)
 			//training wind file
 			index = rand() % m_trainingMeanWindSpeeds.size();
 			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME)
-				+ std::to_string(m_trainingMeanWindSpeeds[index]->get()) + std::string(".bts");
+				+ std::to_string(index) + std::string(".bts");
 		}
 		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
 			+ std::string(FAST_WIND_CONFIG_FILE);
