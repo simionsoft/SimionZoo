@@ -17,6 +17,7 @@ public:
 
 class CSimpleTLMaterial : public CMaterial
 {
+protected:
 	int m_textureId= -1;
 	Color m_ambient, m_diffuse, m_specular, m_emission;
 	double m_shininess;
@@ -26,12 +27,25 @@ public:
 	CSimpleTLMaterial(string texturePath);
 	CSimpleTLMaterial(Color ambient, Color diffuse, Color specular, Color emission, double shininess
 		,string texturePath);
+	virtual ~CSimpleTLMaterial() {}
 	void setTexture(int id) { m_textureId = id; }
 	void setAmbient(Color color) { m_ambient = color; }
 	void setDiffuse(Color color) { m_diffuse = color; }
 	void setSpecular(Color color) { m_specular = color; }
 	void setEmission(Color color) { m_emission = color; }
 	void setShininess(double value) { m_shininess = value; }
+	virtual void set();
+};
+
+class CTranslucentMaterial : public CSimpleTLMaterial
+{
+public:
+	CTranslucentMaterial(tinyxml2::XMLElement* pNode) : CSimpleTLMaterial(pNode) {}
+	CTranslucentMaterial(string texture) :CSimpleTLMaterial(texture) {}
+	CTranslucentMaterial(Color ambient, Color diffuse, Color specular, Color emission, double shininess, string texture)
+		:CSimpleTLMaterial(ambient, diffuse, specular, emission, shininess, texture) {}
+	virtual ~CTranslucentMaterial() {}
+
 	virtual void set();
 };
 

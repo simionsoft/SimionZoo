@@ -111,6 +111,6 @@
         </Simple-TL-Material>
       </Material>
     </Box>
-    <d><Collada-Model Name="example2" Path="EM208/EM208_heavy.dae"/></d>
+    <Collada-Model Name="example2" Path="EM208/EM208_heavy.dae"/>
   </Objects>
 </Scene>

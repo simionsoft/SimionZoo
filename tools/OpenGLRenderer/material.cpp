@@ -17,6 +17,8 @@ CMaterial* CMaterial::getInstance(tinyxml2::XMLElement* pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_SIMPLE_TL_MATERIAL))
 		return new CSimpleTLMaterial(pNode);
+	if (!strcmp(pNode->Name(), XML_TAG_TRANSLUCENT_MATERIAL))
+		return new CTranslucentMaterial(pNode);
 	return nullptr;
 }
 
@@ -44,6 +46,30 @@ CSimpleTLMaterial::CSimpleTLMaterial(tinyxml2::XMLElement* pNode)
 
 void CSimpleTLMaterial::set()
 {
+	//no alpha blending
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
+	glEnable(GL_CULL_FACE);
+
+	CRenderer::get()->getTextureManager()->set(m_textureId);
+
+	glShadeModel(GL_SMOOTH);
+
+	glMaterialfv(GL_FRONT, GL_AMBIENT, m_ambient.rgba());
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, m_diffuse.rgba());
+	glMaterialfv(GL_FRONT, GL_SPECULAR, m_specular.rgba());
+	glMaterialf(GL_FRONT, GL_SHININESS, (float)m_shininess);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+}
+
+void CTranslucentMaterial::set()
+{
+	//alpha blending: no depth writing, no face culling
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glDepthMask(GL_FALSE);
+	glDisable(GL_CULL_FACE);
+
 	CRenderer::get()->getTextureManager()->set(m_textureId);
 
 	glShadeModel(GL_SMOOTH);

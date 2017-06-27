@@ -80,10 +80,10 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	pMesh->getNormalArray()[4] = Point3D(0.0,1.0,0.0); //top
 	pMesh->getNormalArray()[5] = Point3D(0.0,-1.0,0.0); //bottom
 	pMesh->allocTexCoords(4);
-	pMesh->getTexCoordArray()[0] = Vector2D(0.0, 0.0);
-	pMesh->getTexCoordArray()[1] = Vector2D(1.0, 0.0);
-	pMesh->getTexCoordArray()[2] = Vector2D(1.0, 1.0);
-	pMesh->getTexCoordArray()[3] = Vector2D(0.0, 1.0);
+	pMesh->getTexCoordArray()[0] = Vector2D(0.0, 1.0);
+	pMesh->getTexCoordArray()[1] = Vector2D(1.0, 1.0);
+	pMesh->getTexCoordArray()[2] = Vector2D(1.0, 0.0);
+	pMesh->getTexCoordArray()[3] = Vector2D(0.0, 0.0);
 	
 	if (bDrawTopSide)
 		pMesh->allocIndices(24*3);
@@ -115,10 +115,10 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	pMesh->getIndexArray()[20] = 2;
 	pMesh->getIndexArray()[23] = 3;
 	//right
-	pMesh->getIndexArray()[24] = 2;
-	pMesh->getIndexArray()[27] = 1;
-	pMesh->getIndexArray()[30] = 5;
-	pMesh->getIndexArray()[33] = 6;
+	pMesh->getIndexArray()[24] = 1;
+	pMesh->getIndexArray()[27] = 5;
+	pMesh->getIndexArray()[30] = 6;
+	pMesh->getIndexArray()[33] = 2;
 	pMesh->getIndexArray()[25] = 2;//normals
 	pMesh->getIndexArray()[28] = 2;
 	pMesh->getIndexArray()[31] = 2;
@@ -128,10 +128,10 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	pMesh->getIndexArray()[32] = 2;
 	pMesh->getIndexArray()[35] = 3;
 	//left
-	pMesh->getIndexArray()[36] = 3;
-	pMesh->getIndexArray()[39] = 7;
-	pMesh->getIndexArray()[42] = 4;
-	pMesh->getIndexArray()[45] = 0;
+	pMesh->getIndexArray()[36] = 4;
+	pMesh->getIndexArray()[39] = 0;
+	pMesh->getIndexArray()[42] = 3;
+	pMesh->getIndexArray()[45] = 7;
 	pMesh->getIndexArray()[37] = 3;//normals
 	pMesh->getIndexArray()[40] = 3;
 	pMesh->getIndexArray()[43] = 3;

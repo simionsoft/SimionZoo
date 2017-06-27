@@ -27,6 +27,7 @@ namespace tinyxml2 { class XMLElement; }
 #define XML_TAG_ROLL "Roll"
 #define XML_TAG_MATERIAL "Material"
 #define XML_TAG_SIMPLE_TL_MATERIAL "Simple-TL-Material"
+#define XML_TAG_TRANSLUCENT_MATERIAL "Translucent-Material"
 #define XML_TAG_R "R"
 #define XML_TAG_G "G"
 #define XML_TAG_B "B"

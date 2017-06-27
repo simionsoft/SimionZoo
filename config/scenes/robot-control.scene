@@ -84,11 +84,11 @@
     </Box>
     <Box Name="Target" DrawTop="false">
       <Material>
-        <Simple-TL-Material>
+        <Translucent-Material>
           <Texture>
-            <Path>translucent-green.png</Path>
+            <Path>translucent-green.tga</Path>
           </Texture>
-        </Simple-TL-Material>
+        </Translucent-Material>
       </Material>
       <Transform>
         <Scale>

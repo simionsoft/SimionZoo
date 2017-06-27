@@ -3,6 +3,7 @@
   <asset>
     <created>2001-01-01T01:01:01Z</created>
     <modified>2001-01-01T01:01:01Z</modified>
+    <up_axis>Z_UP</up_axis>
   </asset>
   <library_images>
     <image id="Image">
