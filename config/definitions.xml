@@ -262,7 +262,6 @@
   <CLASS Name="CSimGod">
     <INTEGER-VALUE Name="Target-Function-Update-Freq" Comment="Update frequency at which target functions will be updated. Only used if Freeze-Target-Function=true" Default="100"/>
     <DOUBLE-VALUE Name="Gamma" Comment="Gamma parameter" Default="0.9"/>
-    <BOOL-VALUE Name="Count-State-Visits" Comment="Count the number of times a state is visited" Default="true"/>
     <BOOL-VALUE Name="Freeze-Target-Function" Comment="Defers updates on the V-functions to improve stability" Default="false"/>
     <BOOL-VALUE Name="Use-Importance-Weights" Comment="Use sample importance weights to allow off-policy learning -experimental-" Default="false"/>
     <BRANCH Name="Experience-Replay" Class="CExperienceReplay" Comment="The experience replay parameters" Optional="True"/>

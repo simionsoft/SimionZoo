@@ -24,10 +24,6 @@ class CSimGod
 	static CHILD_OBJECT_FACTORY<CStateFeatureMap> m_pGlobalStateFeatureMap;
 	static CHILD_OBJECT_FACTORY<CActionFeatureMap> m_pGlobalActionFeatureMap;
 
-	BOOL_PARAM m_bCountVisits;
-	double m_stateConfidenceThreshold = 10.0;
-	IMemBuffer* m_pVisits= nullptr;
-	CFeatureList *m_pStateFeatures;
 	bool m_bReplayingExperience= false;
 
 	MULTI_VALUE_FACTORY<CSimion> m_simions;
@@ -51,7 +47,6 @@ public:
 	CSimGod() = default;
 	virtual ~CSimGod();
 
-	bool bIsStateKnown(const CState *s) const;
 	bool bReplayingExperience() const { return m_bReplayingExperience; }
 
 	double selectAction(CState* s,CAction* a);
