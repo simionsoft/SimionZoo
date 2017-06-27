@@ -14,17 +14,15 @@
             <views:HerdAgentView />
         </DataTemplate>
     </UserControl.Resources>
-    
+
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <ListView ItemsSource="{Binding Path = herdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
                   dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
-                   dd:DragDrop.DragAdornerTemplate="{StaticResource HerdAgent}"
-                  dd:DragDrop.DefaultDragAdornerOpacity="0.3">
+                  dd:DragDrop.DragAdornerTemplate="{StaticResource HerdAgent}">
             <ListView.ItemContainerStyle>
-            <Style TargetType="ListViewItem">
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="BorderThickness" Value="0,0,0,1"/>
-            </Style>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
             </ListView.ItemContainerStyle>
             <ListView.Resources>
                 <DataTemplate DataType="{x:Type vm:HerdAgentViewModel}">

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using Herd;
 using Caliburn.Micro;
@@ -13,12 +14,15 @@ namespace Badger.ViewModels
         System.Timers.Timer m_timer;
 
         private Shepherd m_shepherd;
-        public Shepherd shepherd { get { return m_shepherd; } set{}}
+        public Shepherd shepherd { get { return m_shepherd; } set { } }
 
         private object m_listsLock = new object();
         private List<HerdAgentInfo> m_innerHerdAgentList =
             new List<HerdAgentInfo>();
-        private BindableCollection <HerdAgentViewModel> m_herdAgentList
+
+        private List<HerdAgentInfo> orderedHerdAgentList;
+
+        private BindableCollection<HerdAgentViewModel> m_herdAgentList
             = new BindableCollection<HerdAgentViewModel>();
         public BindableCollection<HerdAgentViewModel> herdAgentList
         {
@@ -26,15 +30,18 @@ namespace Badger.ViewModels
             {
                 lock (m_listsLock)
                 {
-                    m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
+                    m_shepherd.getHerdAgentList(ref m_innerHerdAgentList);
+                    // Ordering the inner list by number of processor 
+                    orderedHerdAgentList = m_innerHerdAgentList.OrderByDescending(o => o.NumProcessors).ToList();
 
                     m_herdAgentList.Clear();
-                    foreach (HerdAgentInfo agent in m_innerHerdAgentList)
+                    foreach (HerdAgentInfo agent in orderedHerdAgentList)
                         m_herdAgentList.Add(new HerdAgentViewModel(agent));
                 }
+
                 return m_herdAgentList;
             }
-            set {}
+            set { }
         }
 
         public int getAvailableHerdAgents(ref List<HerdAgentViewModel> outList)
@@ -44,7 +51,7 @@ namespace Badger.ViewModels
             lock (m_listsLock)
             {
                 outList.Clear();
-                foreach (HerdAgentInfo agent in m_innerHerdAgentList)
+                foreach (HerdAgentInfo agent in orderedHerdAgentList)
                 {
                     if (agent.IsAvailable)
                     {
@@ -70,7 +77,7 @@ namespace Badger.ViewModels
             m_shepherd = new Shepherd();
             m_shepherd.setNotifyAgentListChangedFunc(notifyHerdAgentChanged);
 
-            m_timer = new System.Timers.Timer(m_updateTimeSeconds*1000);
+            m_timer = new System.Timers.Timer(m_updateTimeSeconds * 1000);
             m_shepherd.sendBroadcastHerdAgentQuery();
             m_shepherd.beginListeningHerdAgentQueryResponses();
 

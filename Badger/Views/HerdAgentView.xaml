@@ -22,7 +22,7 @@
                 <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Right" Foreground="#FF616161"  Margin="5"/>
             </Grid>
 
-            <Grid Margin="0,5">
+            <Grid Margin="27,5,0,5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
