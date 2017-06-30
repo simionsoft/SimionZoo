@@ -15,6 +15,7 @@ namespace Badger.ViewModels
         {
             m_herdAgentInfo = info;
             ProcessorLoad = m_herdAgentInfo.ProcessorLoad.ToString("0.") + "%";
+            State = m_herdAgentInfo.State;
             IsSelected = true;
         }
 
@@ -51,7 +52,7 @@ namespace Badger.ViewModels
             }
         }
 
-        private string m_processorLoad = "";
+        private string m_processorLoad;
 
         public string ProcessorLoad
         {
@@ -80,10 +81,16 @@ namespace Badger.ViewModels
 
         public string Version { get { return m_herdAgentInfo.Version; } }
 
+        private string m_state;
+
         public string State
         {
-            get { return m_herdAgentInfo.State; }
-            set { m_herdAgentInfo.State = value; NotifyOfPropertyChange(() => State); }
+            get { return m_state; }
+            set
+            {
+                m_state = value;
+                NotifyOfPropertyChange(() => State);
+            }
         }
 
         public string CudaInfo

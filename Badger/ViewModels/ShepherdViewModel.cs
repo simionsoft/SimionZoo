@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Windows.Input;
 using Herd;
 using Caliburn.Micro;
 
@@ -33,9 +33,9 @@ namespace Badger.ViewModels
                     m_shepherd.getHerdAgentList(ref m_innerHerdAgentList);
 
                     // Test data
-                    m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x0811026f), 3128) });
-                    m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x2414188f), 3128) });
-                    m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x1914188f), 3128) });
+                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x0811026f), 3128) });
+                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x2414188f), 3128) });
+                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x1914188f), 3128) });
 
                     // Ordering the inner list by number of processor 
                     orderedHerdAgentList = m_innerHerdAgentList.OrderByDescending(o => o.NumProcessors).ToList();
@@ -52,11 +52,13 @@ namespace Badger.ViewModels
                         {
                             if (Equals(agent.ipAddress, m_herdAgentList[index].IpAddress))
                             {
-                                m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%"; ;
+                                // Properties that can change at runtime
+                                m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%";
+                                m_herdAgentList[index].State = agent.State;
                                 found = true;
                             }
 
-                            index++;;
+                            index++; ;
                         }
 
                         if (!found)
@@ -110,8 +112,5 @@ namespace Badger.ViewModels
             m_timer.Elapsed += new System.Timers.ElapsedEventHandler(resendBroadcast);
             m_timer.Start();
         }
-
-
-
     }
 }

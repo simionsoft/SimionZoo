@@ -2,25 +2,121 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:badger="clr-namespace:Badger"
              mc:Ignorable="d" 
              d:DesignHeight="75" d:DesignWidth="250">
 
-    <Border BorderThickness="1" BorderBrush="LightGray">
-        <DockPanel Background="#FFFFFF">
-            <Grid DockPanel.Dock="Top" Background="#FAFAFA">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="15" />
-                    <ColumnDefinition Width="*" MinWidth="15" />
-                    <ColumnDefinition Width="*" MinWidth="15" />
-                    <ColumnDefinition Width="*" MinWidth="15" />
-                </Grid.ColumnDefinitions>
+    <UserControl.Resources>
+        <ControlTemplate x:Key="HerdAgentExpanderButton" TargetType="{x:Type ToggleButton}">
+            <Border x:Name="ExpanderButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                <Grid Background="#FAFAFA">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="5,8" />
-                <TextBlock Grid.Column="1" Text="{Binding Path=IpAddressString}" FontWeight="Bold"  Margin="5,8"/>
-                <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Right"  Margin="5,8"/>
-                <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Right" Foreground="#FF616161"  Margin="5,8"/>
-            </Grid>
+                    <Rectangle Fill="Transparent" Grid.ColumnSpan="2"/>
+                    <Path x:Name="Arrow" Grid.Column="1" Data="M7.41,7.84L12,12.42l4.59,-4.58L18,9.25l-6,6 -6,-6z"
+                          Width="24" Height="24" Fill="#89000000" HorizontalAlignment="Center"
+                          VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="5">
+                        <Path.RenderTransform>
+                            <RotateTransform Angle="0"/>
+                        </Path.RenderTransform>
+                    </Path>
+
+                    <ContentPresenter x:Name="HeaderContent" Grid.Column="0" Margin="0" ContentSource="Content"/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <!-- Animate arrow when toggled-->
+                <Trigger Property="IsChecked" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Arrow" To="-180" Duration="0:0:0.2"
+                                                 Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="Arrow" To="0" Duration="0:0:0.2"
+                                                 Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <badger:MultiplyConverter x:Key="MultiplyConverter" />
+        <!-- Simple Expander Template-->
+        <ControlTemplate x:Key="HerdAgentExpander" TargetType="{x:Type Expander}">
+            <DockPanel Background="#FFFFFF">
+                <ToggleButton x:Name="ExpanderButton" DockPanel.Dock="Top" Template="{StaticResource HerdAgentExpanderButton}"
+                              Content="{TemplateBinding Header}" OverridesDefaultStyle="True"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource TemplatedParent}}">
+                </ToggleButton>
+
+                <ScrollViewer x:Name="ExpanderContentScrollView" DockPanel.Dock="Bottom" HorizontalScrollBarVisibility="Hidden"
+                              VerticalScrollBarVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Bottom">
+                    <ScrollViewer.Tag>
+                        <system:Double>0.0</system:Double>
+                    </ScrollViewer.Tag>
+                    <ScrollViewer.Height>
+                        <MultiBinding Converter="{StaticResource MultiplyConverter}">
+                            <Binding Path="ActualHeight" ElementName="ExpanderContent"/>
+                            <Binding Path="Tag" RelativeSource="{RelativeSource Self}" />
+                        </MultiBinding>
+                    </ScrollViewer.Height>
+                    <ContentPresenter x:Name="ExpanderContent" ContentSource="Content"/>
+                </ScrollViewer>
+            </DockPanel>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsExpanded" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ExpanderContentScrollView"
+                                                 Storyboard.TargetProperty="Tag" To="1" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetName="ExpanderContentScrollView"
+                                                 Storyboard.TargetProperty="Tag" To="0" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </UserControl.Resources>
+
+    <Border BorderThickness="1" BorderBrush="LightGray" Cursor="Hand">
+        <Expander Template="{StaticResource HerdAgentExpander}" MinWidth="250">
+            <Expander.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="15" />
+                        <ColumnDefinition Width="*" MinWidth="15" />
+                        <ColumnDefinition Width="*" MinWidth="15" />
+                        <ColumnDefinition Width="Auto" MinWidth="15" />
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="5,8"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Path=IpAddressString}" FontWeight="Bold"  Margin="5,8"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Right"  Margin="5,8"/>
+                    <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Right"
+                               Foreground="#FF616161" Margin="5,8"/>
+                </Grid>
+            </Expander.Header>
 
             <Grid Margin="27,5,0,5">
                 <Grid.RowDefinitions>
@@ -51,6 +147,6 @@
                 <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Path=CudaInfo}" Foreground="{Binding Path=CudaInfoColor}"  Padding="5,1"/>
                 <Label Grid.Row="1" Grid.Column="4" Content="CUDA" Padding="5,1"  Foreground="#FF616161" />
             </Grid>
-        </DockPanel>
+        </Expander>
     </Border>
 </UserControl>
