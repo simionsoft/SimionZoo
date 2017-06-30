@@ -17,16 +17,19 @@ namespace Herd
 {
     public class HerdAgentInfo
     {
+        public const string NoneProperty = "N/A";
+
         private IPEndPoint m_ipAddress;
         public IPEndPoint ipAddress { get { return m_ipAddress; } set { m_ipAddress = value; } }
+
         public string ipAddressString
         {
             get
             {
                 return m_ipAddress.Address.ToString();
             }
-            set { }
         }
+
         public DateTime lastACK { get { return m_lastACK; } set { m_lastACK = value; } }
         private DateTime m_lastACK;
         private Dictionary<string, string> m_properties;
@@ -46,7 +49,7 @@ namespace Herd
             if (m_properties.ContainsKey(name))
                 return m_properties[name];
 
-            return "n/a";
+            return NoneProperty;
         }
 
 
@@ -55,10 +58,9 @@ namespace Herd
             if (xmlDescription.Name.ToString() == "HerdAgent")
             {
                 m_properties.Clear();
+
                 foreach (XElement child in xmlDescription.Elements())
-                {
                     addProperty(child.Name.ToString(), child.Value);
-                }
             }
         }
 
@@ -77,15 +79,36 @@ namespace Herd
 
         public string Version { get { return getProperty(HerdAgent.m_versionXMLTag); } set { } }
 
-        public int NumProcessors { get { return Int32.Parse(getProperty(HerdAgent.m_numProcessorsXMLTag)); } set { } }
+        public int NumProcessors
+        {
+            get
+            {
+                string prop = getProperty(HerdAgent.m_numProcessorsXMLTag);
+                return (!prop.Equals(NoneProperty)) ? int.Parse(prop) : 0;
+            }
+        }
 
         public string ProcessorArchitecture { get { return getProperty(HerdAgent.ProcessorArchitectureTag); } }
 
-        public double ProcessorLoad { get { return Double.Parse(getProperty(HerdAgent.ProcessorLoadTag)); } }
+        public double ProcessorLoad
+        {
+            get
+            {
+                string prop = getProperty(HerdAgent.ProcessorLoadTag);
+                return (!prop.Equals(NoneProperty)) ? double.Parse(prop) : 0.0;
+            }
+        }
 
-        public double Memory { get { return Double.Parse(getProperty(HerdAgent.TotalMemoryTag)); } }
+        public double Memory
+        {
+            get
+            {
+                string prop = getProperty(HerdAgent.TotalMemoryTag);
+                return (!prop.Equals(NoneProperty)) ? double.Parse(prop) : 0.0;
+            }
+        }
 
-        public double CudaInfo { get { return Double.Parse(getProperty(HerdAgent.CudaInfoTag)); } }
+        public string CudaInfo { get { return getProperty(HerdAgent.CudaInfoTag); } }
 
         public bool IsAvailable
         {
@@ -365,16 +388,17 @@ namespace Herd
         ///     Get information about CUDA installation.
         /// </summary>
         /// <returns>The CUDA version installed or -1 if none was found</returns>
-        public double GetCudaInfo()
+        public string GetCudaInfo()
         {
             if (File.Exists(@"C:\nvapi.dll"))
             {
+                // After this I check for nvcuda.dll and then cudart.dll.
                 // Get the file version for the notepad.
                 FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\MyAssembly.dll");
-                return Double.Parse(myFileVersionInfo.FileVersion);
+                return myFileVersionInfo.FileVersion;
             }
 
-            return -1;
+            return HerdAgentInfo.NoneProperty;
         }
 
         [StructLayout(LayoutKind.Sequential)]

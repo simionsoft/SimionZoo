@@ -8,7 +8,7 @@
 
     <Border BorderThickness="1" BorderBrush="LightGray">
         <DockPanel Background="#FFFFFF">
-            <Grid DockPanel.Dock="Top" Background="#F5F5F5">
+            <Grid DockPanel.Dock="Top" Background="#FAFAFA">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" MinWidth="15" />
                     <ColumnDefinition Width="*" MinWidth="15" />
@@ -16,10 +16,10 @@
                     <ColumnDefinition Width="*" MinWidth="15" />
                 </Grid.ColumnDefinitions>
 
-                <CheckBox VerticalAlignment="Center" Margin="5" />
-                <TextBlock Grid.Column="1" Text="{Binding Path=IpAddressString}" FontWeight="Bold"  Margin="5"/>
-                <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Right"  Margin="5"/>
-                <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Right" Foreground="#FF616161"  Margin="5"/>
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="5,8" />
+                <TextBlock Grid.Column="1" Text="{Binding Path=IpAddressString}" FontWeight="Bold"  Margin="5,8"/>
+                <TextBlock Grid.Column="2" Text="{Binding Path=State}" HorizontalAlignment="Right"  Margin="5,8"/>
+                <TextBlock Grid.Column="3" Text="{Binding Path=Version}" HorizontalAlignment="Right" Foreground="#FF616161"  Margin="5,8"/>
             </Grid>
 
             <Grid Margin="27,5,0,5">

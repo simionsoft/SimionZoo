@@ -14,7 +14,11 @@ namespace Badger.ViewModels
         public HerdAgentViewModel(HerdAgentInfo info)
         {
             m_herdAgentInfo = info;
+            ProcessorLoad = m_herdAgentInfo.ProcessorLoad.ToString("0.") + "%";
+            IsSelected = true;
         }
+
+        public bool IsSelected { get; set; }
 
         //Interfaces to HerdAgentInfo object's properties. This avoids references to Caliburn from the Herd
         public IPEndPoint IpAddress
@@ -47,7 +51,17 @@ namespace Badger.ViewModels
             }
         }
 
-        public string ProcessorLoad { get { return m_herdAgentInfo.ProcessorLoad.ToString("0.") + "%"; } }
+        private string m_processorLoad = "";
+
+        public string ProcessorLoad
+        {
+            get { return m_processorLoad; }
+            set
+            {
+                m_processorLoad = value;
+                NotifyOfPropertyChange(() => ProcessorLoad);
+            }
+        }
 
         public string Memory
         {
@@ -76,8 +90,8 @@ namespace Badger.ViewModels
         {
             get
             {
-                if (m_herdAgentInfo.CudaInfo != -1)
-                    return m_herdAgentInfo.CudaInfo.ToString(CultureInfo.InvariantCulture);
+                if (!m_herdAgentInfo.CudaInfo.Equals(HerdAgentInfo.NoneProperty))
+                    return m_herdAgentInfo.CudaInfo;
 
                 return "Not supported";
             }
@@ -87,8 +101,9 @@ namespace Badger.ViewModels
         {
             get
             {
-                if (m_herdAgentInfo.CudaInfo != -1)
+                if (!m_herdAgentInfo.CudaInfo.Equals(HerdAgentInfo.NoneProperty))
                     return "Black";
+
                 return "Tomato";
             }
         }
