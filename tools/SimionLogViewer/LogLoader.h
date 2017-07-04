@@ -73,7 +73,7 @@ public:
 	CEpisode() { }
 	~CEpisode();
 
-	int getNumSteps() const { return m_pSteps.size(); }
+	size_t getNumSteps() const { return m_pSteps.size(); }
 	CStep* getStep(int i);
 	int getNumValuesPerStep() const { if (m_pSteps.size() == 0) return 0; return m_pSteps[0]->getNumValues(); }
 	double getSimTimeLength()const { if (m_pSteps.size() == 0) return 0.0; return m_pSteps[m_pSteps.size() - 1]->getEpisodeSimTime(); }

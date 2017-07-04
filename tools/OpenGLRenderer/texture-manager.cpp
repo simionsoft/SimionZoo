@@ -24,7 +24,7 @@ CTextureManager::~CTextureManager()
 	}
 }
 
-int CTextureManager::loadTexture(string filename)
+size_t CTextureManager::loadTexture(string filename)
 {
 	filename = m_folder + filename;
 	int id = 0;

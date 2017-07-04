@@ -27,48 +27,54 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 {
 	METADATA("World", "Robot-control");
 
-	m_target_X = addStateVariable("targetX", "m", -20.0, 20.0);
-	m_target_Y = addStateVariable("targetY", "m", -20.0, 20.0);
+	m_target_X = addStateVariable("target-x", "m", -20.0, 20.0);
+	m_target_Y = addStateVariable("target-y", "m", -20.0, 20.0);
 
-	m_rob1_X = addStateVariable("rx1", "m", -20.0, 20.0);
-	m_rob1_Y = addStateVariable("ry1", "m", -20.0, 20.0);
-	m_theta = addStateVariable("theta", "rad", -3.1415, 3.1415, true);
+	m_rob1_X = addStateVariable("robot1-x", "m", -20.0, 20.0);
+	m_rob1_Y = addStateVariable("robot1-y", "m", -20.0, 20.0);
+	m_theta = addStateVariable("robot1-theta", "rad", -3.1415, 3.1415, true);
 
-	m_linear_vel = addActionVariable("v", "m/s", -2.0, 2.0);
-	m_omega = addActionVariable("omega", "rad", -8.0, 8.0);
+	m_linear_vel = addActionVariable("robot1-v", "m/s", -2.0, 2.0);
+	m_omega = addActionVariable("robot1-omega", "rad", -8.0, 8.0);
 
 	MASS_ROBOT = 0.5f;
 	MASS_GROUND = 0.f;
 	MASS_TARGET = 0.1f;
 
 	m_pBulletPhysics = new BulletPhysics();
-
 	m_pBulletPhysics->initPhysics();
 
 	
 	///Creating static object, ground
 	{
-		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-		// "false" parameter will notify the constructor not to disable activation state
-		ground_bb = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), groundShape, false);
-		m_pBulletPhysics->getCollisionShape().push_back(ground_bb->getShape());
-		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(ground_bb->getBody());
+		m_pGround = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z)
+			, new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))), btCollisionObject::CF_STATIC_OBJECT);
+		m_pBulletPhysics->add(m_pGround);
 	}
 
 	/// Creating target point, static
 	{
-		btCollisionShape* targetShape = new btConeShape(btScalar(0.5), btScalar(5.5));
-		target_bb = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY+1), targetShape, false);
-		target_bb->getBody()->setCollisionFlags(2);
-		m_pBulletPhysics->getCollisionShape().push_back(target_bb->getShape());
-		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(target_bb->getBody());
+		m_pTarget = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY), new btConeShape(btScalar(0.5)
+			, btScalar(0.001)), btCollisionObject::CF_KINEMATIC_OBJECT);
+		m_pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
+			, getStateDescriptor().getVarIndex("target-y"), -1);
+		m_pBulletPhysics->add(m_pTarget);
 	}
 
 	///creating a dynamic robot  
 	{
-		m_Robot = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5), true);
-		m_pBulletPhysics->getCollisionShape().push_back(m_Robot->getShape());
-		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(m_Robot->getBody());
+		//m_pRobot1 = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 5, robotOrigin_y), new btSphereShape(0.5));
+
+		//m_pBulletPhysics->add(m_pRobot1);
+
+		m_pRobot1 = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5));
+		m_pBulletPhysics->getCollisionShape().push_back(m_pRobot1->getShape());
+		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(m_pRobot1->getBody());
+		m_pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
+			, getStateDescriptor().getVarIndex("robot1-y")
+			, getStateDescriptor().getVarIndex("robot1-theta"));
+		m_pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
+			, getActionDescriptor().getVarIndex("robot1-omega"));
 	}
 
 	//the reward function
@@ -78,35 +84,22 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 
 void CRobotControl::reset(CState *s)
 {
-	btTransform robotTransform;
-
-	{
-		m_Robot->reset(s, robotOrigin_x, robotOrigin_y, m_rob1_X, m_rob1_Y);
-
-		///set initial values to state variables
-		s->set(m_theta, theta_o);
-		s->set(m_target_X, TargetX);
-		s->set(m_target_Y, TargetY);
-	}
+	m_pBulletPhysics->reset(s);
 }
 
 void CRobotControl::executeAction(CState *s, const CAction *a, double dt)
 {
-	double theta= m_Robot->updateRobotMovement(a, s, "omega", "v", m_theta, dt);
+	m_pBulletPhysics->updateBulletState(s, a, dt);
 
 	//Update Robot1
-	m_pBulletPhysics->getDynamicsWorld()->stepSimulation(dt,20);
+	m_pBulletPhysics->stepSimulation((float)dt,20);
 
 	//Update
-	m_Robot->setAbsoluteVariables(s, m_rob1_X, m_rob1_Y);
-
-	s->set(m_theta, theta);
+	m_pBulletPhysics->updateState(s);
 }
 
 CRobotControl::~CRobotControl()
 {
 	delete m_pBulletPhysics;
-	delete ground_bb;
-	delete target_bb;
 }
 

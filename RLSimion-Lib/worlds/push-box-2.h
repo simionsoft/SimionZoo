@@ -22,7 +22,7 @@ class CPushBox2 : public CDynamicModel
 	int m_target_X, m_target_Y;
 	int m_rob1_X, m_rob1_Y;
 	int m_rob2_X, m_rob2_Y;
-	int m_box_X, m_box_Y;
+	int m_box_X, m_box_Y, m_boxTheta;
 	int m_D_Br1X, m_D_Br1Y;
 	int m_D_Br2X, m_D_Br2Y;
 	int m_D_BtX, m_D_BtY;
@@ -47,7 +47,7 @@ class CPushBox2 : public CDynamicModel
 
 public:
 	CPushBox2(CConfigNode* pParameters);
-	virtual ~CPushBox2() = default;
+	virtual ~CPushBox2();
 
 	void reset(CState *s);
 	void executeAction(CState *s, const CAction *a, double dt);

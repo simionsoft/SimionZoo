@@ -321,6 +321,7 @@
     <ClInclude Include="worlds\aux-rewards.h" />
     <ClInclude Include="worlds\balancingpole.h" />
     <ClInclude Include="worlds\Box.h" />
+    <ClInclude Include="worlds\bullet-common.h" />
     <ClInclude Include="worlds\BulletBody.h" />
     <ClInclude Include="worlds\BulletCreationInterface.h" />
     <ClInclude Include="worlds\BulletPhysics.h" />

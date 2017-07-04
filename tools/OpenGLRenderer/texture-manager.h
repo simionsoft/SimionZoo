@@ -28,7 +28,7 @@ public:
 	CTextureManager();
 	virtual ~CTextureManager();
 
-	int loadTexture(string filename);
+	size_t loadTexture(string filename);
 	void set(int textureId);
 
 	void setFolder(string folder) { m_folder = folder; }

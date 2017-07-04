@@ -58,9 +58,8 @@ void CRenderer::init(int argc, char** argv, int screenWidth, int screenHeight)
 	//init window and OpenGL context
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(600, 400);
-	glutCreateWindow("SimionRenderer");
-	//glutFullScreen();
+	glutInitWindowSize(screenWidth, screenHeight);
+	glutCreateWindow(argv[0]);
 
 	//callback functions
 	glutDisplayFunc(_drawScene);
@@ -114,31 +113,46 @@ CGraphicObject* CRenderer::getObjectByName(string name)
 void CRenderer::loadScene(const char* file)
 {
 	tinyxml2::XMLDocument doc;
-	doc.LoadFile((m_dataFolder+string(file)).c_str());
+	doc.LoadFile((m_dataFolder + string(file)).c_str());
 	if (doc.Error() == tinyxml2::XML_SUCCESS)
 	{
 		tinyxml2::XMLElement *pRoot = doc.FirstChildElement(XML_TAG_SCENE);
 		if (pRoot)
-			loadChildren<CGraphicObject>
-			(pRoot->FirstChildElement(XML_TAG_OBJECTS), nullptr, m_3DgraphicObjects);
+			loadSceneObjects(pRoot);
+	}
+}
+void CRenderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
+{
+	//import scene files
+	string scenePath;
+	tinyxml2::XMLElement* pImportedScene = pNode->FirstChildElement(XML_TAG_IMPORT_SCENE);
+	while (pImportedScene != nullptr)
+	{
+		scenePath = pImportedScene->Attribute(XML_TAG_PATH);
+		loadScene(scenePath.c_str());
+		pImportedScene = pImportedScene->NextSiblingElement(XML_TAG_IMPORT_SCENE);
+	}
 
-		//cameras
-		loadChildren<CCamera>(pRoot, XML_TAG_CAMERA, m_cameras);
-		if (m_cameras.size() > 0)
-			m_pActiveCamera = m_cameras[0];
-		else
-		{
-			m_pActiveCamera = new CSimpleCamera();
-			m_cameras.push_back(m_pActiveCamera);
-			printf("Warning: No camera defined. Default camera created\n");
-		}
-		//lights
-		loadChildren<CLight>(pRoot, XML_TAG_LIGHT, m_lights);
-		if (m_lights.size() == 0)
-		{
-			printf("Warning: No light defined. Default directional light created\n");
-			m_lights.push_back(new CDirectionalLight());
-		}
+		//graphic objects
+	loadChildren<CGraphicObject>
+			(pNode->FirstChildElement(XML_TAG_OBJECTS), nullptr, m_3DgraphicObjects);
+
+	//cameras
+	loadChildren<CCamera>(pNode, XML_TAG_CAMERA, m_cameras);
+	if (m_cameras.size() > 0)
+		m_pActiveCamera = m_cameras[0];
+	else
+	{
+		m_pActiveCamera = new CSimpleCamera();
+		m_cameras.push_back(m_pActiveCamera);
+		printf("Warning: No camera defined. Default camera created\n");
+	}
+	//lights
+	loadChildren<CLight>(pNode, XML_TAG_LIGHT, m_lights);
+	if (m_lights.size() == 0)
+	{
+		printf("Warning: No light defined. Default directional light created\n");
+		m_lights.push_back(new CDirectionalLight());
 	}
 }
 
@@ -230,7 +244,7 @@ void CRenderer::registerBinding(string externalName, Bindable* pObj, string inte
 	m_bindings.push_back(pBinding);
 }
 
-int CRenderer::getNumBindings()
+size_t CRenderer::getNumBindings()
 {
 	return m_bindings.size();
 }

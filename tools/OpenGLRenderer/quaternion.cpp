@@ -154,8 +154,11 @@ Quaternion::Quaternion(double yaw, double pitch, double roll)
 	fromOrientations(yaw, pitch, roll);
 }
 
-Quaternion Quaternion::inverse() const
+Quaternion Quaternion::inverse()
 {
+	if (bUseOrientations())
+		fromOrientations();
+	
 	return Quaternion(m_x, m_y, m_z, -m_w);
 }
 

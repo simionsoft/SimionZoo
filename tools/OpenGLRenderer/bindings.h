@@ -36,7 +36,7 @@ public:
 		for (auto it = boundObjects.begin(); it != boundObjects.end(); ++it)
 			delete (*it);
 	}
-	unsigned int getNumBoundObjects() const { return boundObjects.size(); }
+	size_t getNumBoundObjects() const { return boundObjects.size(); }
 	BoundObject* getBoundObject(unsigned int i)
 	{
 		if (i<boundObjects.size())

@@ -17,7 +17,7 @@ CStep::~CStep()
 
 void CStep::load(FILE* pFile)
 {
-	int elementsRead = fread_s((void*)&m_header, sizeof(StepHeader), sizeof(StepHeader), 1, pFile);
+	size_t elementsRead = fread_s((void*)&m_header, sizeof(StepHeader), sizeof(StepHeader), 1, pFile);
 	if (elementsRead == 1 && !bEnd())
 	{
 		elementsRead = fread_s(m_pValues, sizeof(double)*m_numValues, sizeof(double), m_numValues, pFile);
@@ -57,7 +57,7 @@ bool CStep::bEnd()
 
 void CEpisode::load(FILE* pFile)
 {
-	int elementsRead = fread_s((void*)&m_header, sizeof(EpisodeHeader), sizeof(EpisodeHeader), 1, pFile);
+	size_t elementsRead = fread_s((void*)&m_header, sizeof(EpisodeHeader), sizeof(EpisodeHeader), 1, pFile);
 	if (elementsRead == 1)
 	{
 		CStep *pStep= new CStep((int)m_header.numVariablesLogged);
@@ -123,7 +123,7 @@ bool CExperimentLog::load(string descriptorFile, string& outSceneFile)
 	fopen_s(&pFile, (logDirectory + binaryFile).c_str(), "rb");
 	if (pFile)
 	{
-		int elementsRead = fread_s((void*)&m_header, sizeof(ExperimentHeader), sizeof(ExperimentHeader), 1, pFile);
+		size_t elementsRead = fread_s((void*)&m_header, sizeof(ExperimentHeader), sizeof(ExperimentHeader), 1, pFile);
 		if (elementsRead == 1)
 		{
 			m_pEpisodes = new CEpisode[getNumEpisodes()];

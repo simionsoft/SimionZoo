@@ -1,29 +1,36 @@
 #include "../stdafx.h"
 #include "BulletBody.h"
 
-BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* shape, bool moving_obj)
+BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* shape, int objType)
 {
 	m_shape = shape;
 	
-	m_transform.setIdentity();
-	m_transform.setOrigin(origin);
+	btTransform trans;
+	trans.setIdentity();
+	trans.setOrigin(origin);
+	m_originX = origin.x();
+	m_originY = origin.z();
+
 	m_mass = btScalar(mass);
 
-	m_localInertia = btVector3(0, 0, 0);
+	btVector3 localInertia = btVector3(0, 0, 0);
 	bool isDynamic = (m_mass != 0.f);
+	
 	if (isDynamic)
-	{
-		m_shape->calculateLocalInertia(m_mass, m_localInertia);
-	}
-	btDefaultMotionState* motionState = new btDefaultMotionState(m_transform);
-	btRigidBody::btRigidBodyConstructionInfo bulletBodyInfo(m_mass, motionState, m_shape, m_localInertia);
+		m_shape->calculateLocalInertia(m_mass, localInertia);
+	
+	btDefaultMotionState* motionState = new btDefaultMotionState(trans);
+	btRigidBody::btRigidBodyConstructionInfo bulletBodyInfo(m_mass, motionState, m_shape, localInertia);
 	m_pBody = new btRigidBody(bulletBodyInfo);
-	if (moving_obj)
+	if ((objType | btCollisionObject::CF_STATIC_OBJECT) == 0)
 	{
 		m_pBody->setActivationState(DISABLE_DEACTIVATION);
 	}
-	
+	if (objType!=0)
+		m_pBody->setCollisionFlags(objType);
+	m_objType = objType;
 }
+
 
 btRigidBody* BulletBody::getBody()
 {
@@ -35,87 +42,74 @@ btCollisionShape* BulletBody::getShape()
 	return m_shape;
 }
 
-btTransform BulletBody::getTransform()
+void BulletBody::setAbsoluteStateVarIds(int xId, int yId, int thetaId)
 {
-	return m_transform;
+	m_xId = xId; m_yId = yId; m_thetaId = thetaId;
+	m_bSetAbsStateVars = true;
+}
+void BulletBody::setRelativeStateVarIds(int relXId, int relYId, int refXId, int refYId)
+{
+	m_relXId = relXId; m_relYId = relYId; m_refXId = refXId; m_refYId = refYId;
+	m_bSetRelStateVars = true;
+}
+void BulletBody::setOrigin(double x, double y, double theta)
+{
+	m_originX = x; m_originY = y; m_originTheta = theta;
 }
 
-void BulletBody::reset(CState* s, double originX, double originY, int idX, int idY)
+
+void BulletBody::reset(CState* s)
 {
 	btTransform bodyTransform;
 	
 	btVector3 zeroVector(0, 0, 0);
-	getBody()->clearForces();
-	getBody()->setLinearVelocity(zeroVector);
-	getBody()->setAngularVelocity(zeroVector);
+	//if (!m_objType)
+	{
+		m_pBody->clearForces();
+		m_pBody->setLinearVelocity(zeroVector);
+		m_pBody->setAngularVelocity(zeroVector);
+	}
 
-
-	getBody()->getMotionState()->getWorldTransform(bodyTransform);
-	bodyTransform.setOrigin(btVector3(originX, btScalar(0.0), originY));
+	m_pBody->getMotionState()->getWorldTransform(bodyTransform);
+	bodyTransform.setOrigin(btVector3(m_originX, 0.0, m_originY));
 
 	btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
+	orientation.setEuler(m_originTheta, 0.0, 0.0);
 	bodyTransform.setRotation(orientation);
 	
-	
-	getBody()->setWorldTransform(bodyTransform);
-	getBody()->getMotionState()->setWorldTransform(bodyTransform);
+	m_pBody->setWorldTransform(bodyTransform);
+	m_pBody->getMotionState()->setWorldTransform(bodyTransform);
 
-	
-	s->set(idX, originX);
-	s->set(idY, originY);
-
+	updateState(s);
 }
 
-double BulletBody::updateRobotMovement(const CAction *a, CState *s, char *omega, char *vel, int theta, double dt)
-{
-	double rob_VelX, rob_VelY;
-
-	double m_omega = a->get(omega);
-	double linear_vel = a->get(vel);
-
-	double m_theta = s->get(theta);
-	m_theta += m_omega*dt;
-
-	if (m_theta > SIMD_2_PI)
-		m_theta -= SIMD_2_PI;
-	if (m_theta < -SIMD_2_PI)
-		m_theta += SIMD_2_PI;
-
-	rob_VelX = cos(m_theta)*linear_vel;
-	rob_VelY = sin(m_theta)*linear_vel;
-
-	getBody()->setAngularVelocity(btVector3(0.0, m_omega, 0.0));
-	getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
-
-	return m_theta;
-}
-
-btTransform BulletBody::setAbsoluteVariables(CState* s, int idX, int idY)
+void BulletBody::updateState(CState* s)
 {
 	btTransform trans;
-	getBody()->getMotionState()->getWorldTransform(trans);
+	if (bSetAbsStateVars())
+	{
+		m_pBody->getMotionState()->getWorldTransform(trans);
 
-	s->set(idX, float(trans.getOrigin().getX()));
-	s->set(idY, float(trans.getOrigin().getZ()));
-
-	return trans;
+		if (m_xId >= 0) s->set(m_xId, float(trans.getOrigin().getX()));
+		if (m_yId >= 0) s->set(m_yId, float(trans.getOrigin().getZ()));
+		updateYawState(s);
+	}
+	if (bSetRelStateVars())
+	{
+		s->set(m_relXId, s->get(m_refXId) - s->get(m_xId));
+		s->set(m_relYId, s->get(m_refYId) - s->get(m_yId));
+	}
 }
 
-
-void BulletBody::setRelativeVariables(CState* s, int idX, int idY, bool isBox, double targetX, double targetY, double valX, double valY)
+void BulletBody::updateYawState(CState* s)
 {
-	btTransform bodyTrans;
-	getBody()->getMotionState()->getWorldTransform(bodyTrans);
-	
-	if (!isBox)
+	if (m_thetaId >= 0)
 	{
-		s->set(idX, fabs(bodyTrans.getOrigin().getX() - valX));
-		s->set(idY, fabs(bodyTrans.getOrigin().getZ() - valY));
-	}
-	else
-	{
-		s->set(idX, fabs(targetX- bodyTrans.getOrigin().getX()));
-		s->set(idY, fabs(targetY- bodyTrans.getOrigin().getZ()));
+		btTransform transform;
+		m_pBody->getMotionState()->getWorldTransform(transform);
+		btScalar yaw, pitch, roll;
+		transform.getBasis().getEulerYPR(yaw, pitch, roll);
+
+		s->set(m_thetaId, (double)yaw);
 	}
 }
-

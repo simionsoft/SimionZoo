@@ -40,7 +40,7 @@ CSimpleTLMaterial::CSimpleTLMaterial(tinyxml2::XMLElement* pNode)
 	{
 		pChild2 = pChild->FirstChildElement(XML_TAG_PATH);
 		if (pChild2!=nullptr)
-			m_textureId = CRenderer::get()->getTextureManager()->loadTexture(pChild2->GetText());
+			m_textureId = (int) CRenderer::get()->getTextureManager()->loadTexture(pChild2->GetText());
 	}
 }
 
@@ -86,12 +86,12 @@ CSimpleTLMaterial::CSimpleTLMaterial(Color ambient, Color diffuse, Color specula
 	:m_ambient(ambient), m_diffuse(diffuse), m_specular(specular), m_emission(emission)
 	, m_shininess(shininess)
 {
-	m_textureId= CRenderer::get()->getTextureManager()->loadTexture(texture);
+	m_textureId= (int) CRenderer::get()->getTextureManager()->loadTexture(texture);
 }
 
 CSimpleTLMaterial::CSimpleTLMaterial(string texturePath)
 {
-	m_textureId= CRenderer::get()->getTextureManager()->loadTexture(texturePath);
+	m_textureId= (int)CRenderer::get()->getTextureManager()->loadTexture(texturePath);
 }
 
 
@@ -106,6 +106,6 @@ void CColorMaterial::set()
 void CLineMaterial::set()
 {
 //	glEnable(GL_LINE_SMOOTH);
-	glLineWidth(m_width);
+	glLineWidth((float)m_width);
 	glColor4fv(m_color.rgba());
 }

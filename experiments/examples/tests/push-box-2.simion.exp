@@ -32,42 +32,42 @@
           <RBF-State-Grid>
             <RBF-Grid-Dimension>
               <Num-Features>20</Num-Features>
-              <Variable>rx1</Variable>
+              <Variable>robot1-x</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>10</Num-Features>
-              <Variable>ry1</Variable>
+              <Variable>robot1-y</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>10</Num-Features>
-              <Variable>rx2</Variable>
+              <Variable>robot2-x</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>10</Num-Features>
-              <Variable>ry2</Variable>
+              <Variable>robot2-y</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>10</Num-Features>
-              <Variable>bx</Variable>
+              <Variable>box-x</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>10</Num-Features>
-              <Variable>by</Variable>
+              <Variable>box-y</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>4</Num-Features>
-              <Variable>theta1</Variable>
+              <Variable>robot1-theta</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
             <RBF-Grid-Dimension>
               <Num-Features>4</Num-Features>
-              <Variable>theta2</Variable>
+              <Variable>robot2-theta</Variable>
               <Distribution>linear</Distribution>
             </RBF-Grid-Dimension>
           </RBF-State-Grid>
@@ -90,7 +90,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>omega1</Output-Action>
+                          <Output-Action>robot1-omega</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
@@ -130,7 +130,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>v1</Output-Action>
+                          <Output-Action>robot1-v</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
@@ -194,7 +194,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>omega2</Output-Action>
+                          <Output-Action>robot2-omega</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>
@@ -234,7 +234,7 @@
                     <Policy>
                       <Policy>
                         <Deterministic-Policy-Gaussian-Noise>
-                          <Output-Action>v2</Output-Action>
+                          <Output-Action>robot2-v</Output-Action>
                           <Deterministic-Policy-VFA>
                             <Init-Value>0.0</Init-Value>
                           </Deterministic-Policy-VFA>

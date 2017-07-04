@@ -3,14 +3,20 @@
 #include "BulletSoftBody\btSoftRigidDynamicsWorld.h"
 #include "BulletSoftBody\btSoftBodyHelpers.h"
 #include "world.h"
+#include "BulletBody.h"
+
 using namespace std;
 
-class Rope
+class Rope: public BulletBody
 {
-
+	std::vector<btSoftBody*>* m_pSoftBodies;
 public:
 
 	Rope(CDynamicModel* pWorld, std::vector<btSoftBody*>* arr);
 	~Rope() = default;
-	virtual void updateRopePoints(CState* s, std::vector<btSoftBody*>* arr);
+
+	//override these two methods from BulletBody
+	virtual void updateState(CState* s);
+	virtual void reset(CState* s);
+	virtual bool bIsRigidBody() { return false; }
 };

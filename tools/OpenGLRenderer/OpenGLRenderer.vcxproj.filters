@@ -55,9 +55,6 @@
     <ClCompile Include="camera.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="xml-load-utils.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
     <ClCompile Include="matrix44.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
@@ -73,6 +70,7 @@
     <ClCompile Include="bounding-cylinder.cpp">
       <Filter>geometry</Filter>
     </ClCompile>
+    <ClCompile Include="xml-load-utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.h" />
@@ -128,9 +126,6 @@
     <ClInclude Include="camera.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="xml-load-utils.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
     <ClInclude Include="matrix44.h">
       <Filter>geometry</Filter>
     </ClInclude>
@@ -146,6 +141,7 @@
     <ClInclude Include="bounding-cylinder.h">
       <Filter>geometry</Filter>
     </ClInclude>
+    <ClInclude Include="xml-load-utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

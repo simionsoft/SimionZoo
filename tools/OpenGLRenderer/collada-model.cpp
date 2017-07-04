@@ -659,7 +659,7 @@ const char* CColladaModel::findTextureRedirection(tinyxml2::XMLElement* pFxProfi
 
 int CColladaModel::loadTexture(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLElement* pFxProfile, string textureName)
 {
-	int textureId;
+	size_t textureId;
 	//first, we assume the number of the texture in the diffuse element is the name of a texture resource
 	const char* imageFile = findTexture(pRootNode, textureName);
 	if (imageFile == nullptr)
@@ -677,7 +677,7 @@ int CColladaModel::loadTexture(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLEle
 	if (imageFile != nullptr)
 	{
 		textureId = CRenderer::get()->getTextureManager()->loadTexture(imageFile);
-		return textureId;
+		return (int)textureId;
 	}
 
 	return -1;

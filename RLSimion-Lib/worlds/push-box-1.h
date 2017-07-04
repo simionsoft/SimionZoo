@@ -35,7 +35,7 @@ class CPushBox1 : public CDynamicModel
 
 	///Bullet bodies init
 	BulletBody *m_pGround= 0;
-	Robot *m_Robot= 0;
+	Robot *m_pRobot1= 0;
 	Box *m_pBox= 0;
 	BulletBody *m_pTarget= 0;
 	BulletBody *m_pWall1= 0, *m_pWall2= 0, *m_pWall3= 0, *m_pWall4= 0;

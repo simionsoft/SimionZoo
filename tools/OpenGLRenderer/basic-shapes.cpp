@@ -56,9 +56,9 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 {
 	bool bDrawTopSide= true;
 	//box attributes
-	if (pNode->Attribute(XML_ATTR_BOX_DRAW_TOP)
-		&& (!strcmp(pNode->Attribute(XML_ATTR_BOX_DRAW_TOP), "false")
-			|| !strcmp(pNode->Attribute(XML_ATTR_BOX_DRAW_TOP), "False")))
+	if (pNode->Attribute(XML_TAG_BOX_DRAW_TOP)
+		&& (!strcmp(pNode->Attribute(XML_TAG_BOX_DRAW_TOP), "false")
+			|| !strcmp(pNode->Attribute(XML_TAG_BOX_DRAW_TOP), "False")))
 		bDrawTopSide = false;
 
 	CMesh* pMesh = new CMesh();

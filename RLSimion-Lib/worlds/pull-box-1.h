@@ -41,7 +41,7 @@ class CPullBox1 : public CDynamicModel
 	BulletBody *m_pTarget;
 	Robot *m_pRobot1;
 	Box *m_pBox;
-	Rope *m_Rope;
+	Rope *m_pRope;
 
 
 public:

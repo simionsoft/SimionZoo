@@ -385,6 +385,9 @@
       <Filter>app</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="worlds\bullet-common.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

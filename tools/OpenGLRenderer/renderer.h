@@ -10,7 +10,7 @@ class Bindable;
 class CCamera;
 class CLight;
 using namespace std;
-
+namespace tinyxml2 { class XMLElement; }
 
 class CRenderer
 {
@@ -40,7 +40,7 @@ class CRenderer
 	void drawScene();
 	static void _drawScene();
 	static void _reshapeWindow(int width, int height);
-
+	void loadSceneObjects(tinyxml2::XMLElement* pNode);
 	Binding* getBinding(string externalName);
 
 	bool m_bShowBoundingBoxes= false;
@@ -77,7 +77,7 @@ public:
 	void registerBinding(string externalName, Bindable* pObj, string internalName);
 
 	//These methods should be called from outside the renderer
-	int getNumBindings();
+	size_t getNumBindings();
 	string getBindingExternalName(unsigned int i);
 	bool updateBinding(unsigned int i, double value);
 	bool updateBinding(string bindingExternalName, double value);

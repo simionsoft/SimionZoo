@@ -131,13 +131,16 @@ void RLSimionApp::run()
 
 void RLSimionApp::initRenderer(string sceneFile)
 {
+	char arguments[] = "RLSimion";
+	char* argv = arguments;
+
 	//initialize the render if a scene file can be found
 	string sceneDir = "../config/scenes/";
 	if (!bFileExists(sceneDir + sceneFile))
 		return;
 
 	m_pRenderer = new CRenderer();
-	m_pRenderer->init(0, 0, 800, 600);
+	m_pRenderer->init(1, &argv, 800, 600);
 	m_pRenderer->setDataFolder(sceneDir);
 	m_pRenderer->loadScene(sceneFile.c_str());
 

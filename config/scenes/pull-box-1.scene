@@ -1,54 +1,15 @@
 <Scene>
-  <Camera>
-    <Simple-Camera Name="Main-camera">
-      <Transform>
-        <Translation>
-          <X>0.0</X>
-          <Y>5.0</Y>
-          <Z>10.0</Z>
-        </Translation>
-        <Rotation>
-          <Pitch>-0.01</Pitch>
-        </Rotation>
-      </Transform>
-    </Simple-Camera>
-  </Camera>
-  <Light Name="Main-light">
-    <Directional-Light>
-      <Direction>
-        <X>0.577</X>
-        <Y>0.577</Y>
-        <Z>0.577</Z>
-      </Direction>
-      <Ambient>
-        <R>0.2</R>
-        <G>0.2</G>
-        <B>0.2</B>
-      </Ambient>
-      <Diffuse>
-        <R>1.0</R>
-        <G>1.0</G>
-        <B>1.0</B>
-      </Diffuse>
-      <Specular>
-        <R>0.0</R>
-        <G>0.0</G>
-        <B>0.0</B>
-      </Specular>
-    </Directional-Light>
-  </Light>
-
+  <Import-Scene Path="robot-control-common.scene"/>
   <Objects>
-    <Collada-Model Name="Venom" Path="r2d2/r2d2.dae">
+    <Collada-Model Name="Robot1" Path="r2d2/r2d2.dae">
       <Transform>
         <Translation>
-          <X Bind="rx1"/>
+          <X Bind="robot1-x"/>
           <Y>0.5</Y>
-          <Z Bind="ry1"/>
+          <Z Bind="robot1-y"/>
         </Translation>
         <Rotation>
-          <d><Pitch>-1.57</Pitch></d>
-          <Yaw Bind="theta"/>
+          <Yaw Bind="robot1-theta"/>
         </Rotation>
       </Transform>
       <Fit-BoundingBox>
@@ -64,7 +25,34 @@
         </Max>
       </Fit-BoundingBox>
     </Collada-Model>
-     <Box Name="Box01">
+    <Polyline Name="Rope1">
+      <Point>
+        <X Bind="rope0-p0-x"/>
+        <Y Bind="rope0-p0-y"/>
+        <Z Bind="rope0-p0-z"/>
+      </Point>
+      <Point>
+        <X Bind="rope0-p1-x"/>
+        <Y Bind="rope0-p1-y"/>
+        <Z Bind="rope0-p1-z"/>
+      </Point>
+      <Point>
+        <X Bind="rope0-p2-x"/>
+        <Y Bind="rope0-p2-y"/>
+        <Z Bind="rope0-p2-z"/>
+      </Point>
+      <Point>
+        <X Bind="rope0-p3-x"/>
+        <Y Bind="rope0-p3-y"/>
+        <Z Bind="rope0-p3-z"/>
+      </Point>
+      <Point>
+        <X Bind="rope0-p4-x"/>
+        <Y Bind="rope0-p4-y"/>
+        <Z Bind="rope0-p4-z"/>
+      </Point>
+    </Polyline>
+    <Box Name="Box1">
       <Material>
         <Simple-TL-Material>
           <Diffuse>
@@ -99,59 +87,13 @@
       </Material>
       <Transform>
         <Translation>
-          <X Bind="bx"/>
+          <X Bind="box-x"/>
           <Y>0.5</Y>
-          <Z Bind="by"/>
+          <Z Bind="box-y"/>
         </Translation>
         <Rotation>
-          <Yaw Bind="boxTheta"/>
+          <Yaw Bind="box-theta"/>
         </Rotation>
-      </Transform>
-    </Box>
-   <Polyline Name="Rope">
-      <Point>
-        <X Bind="rope0_p0X"/>
-        <Y Bind="rope0_p0Y"/>
-        <Z Bind="rope0_p0Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p1X"/>
-        <Y Bind="rope0_p1Y"/>
-        <Z Bind="rope0_p1Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p2X"/>
-        <Y Bind="rope0_p2Y"/>
-        <Z Bind="rope0_p2Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p3X"/>
-        <Y Bind="rope0_p3Y"/>
-        <Z Bind="rope0_p3Z"/>
-      </Point>
-      <Point>
-        <X Bind="rope0_p4X"/>
-        <Y Bind="rope0_p4Y"/>
-        <Z Bind="rope0_p4Z"/>
-      </Point>
-    </Polyline>
-    <Box Name="Floor">
-      <Material>
-        <Simple-TL-Material>
-          <Texture>
-            <Path>concrete1.png</Path>
-          </Texture>
-        </Simple-TL-Material>
-      </Material>
-      <Transform>
-        <Scale>
-          <X>20</X>
-          <Y>0.1</Y>
-          <Z>20</Z>
-        </Scale>
-        <Translation>
-          <Y>-0.1</Y>
-        </Translation>
       </Transform>
     </Box>
   </Objects>

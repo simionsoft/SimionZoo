@@ -7,5 +7,5 @@ public:
 	{
 	}
 	virtual ~Box() {}
-	void setRelativeVariables(CState* s, int idX, int idY, double targetX, double targetY);
+
 };

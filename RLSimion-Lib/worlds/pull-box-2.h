@@ -48,7 +48,7 @@ class CPullBox2 : public CDynamicModel
 	Robot *m_pRobot1;
 	Robot *m_pRobot2;
 	Box *m_pBox;
-	Rope *m_Rope;
+	Rope *m_pRope;
 	
 
 

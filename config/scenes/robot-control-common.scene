@@ -1,0 +1,80 @@
+<Scene>
+  <Camera>
+    <Simple-Camera Name="Main-camera">
+      <Transform>
+        <Translation>
+          <X>-10.0</X>
+          <Y>10.0</Y>
+          <Z>0.0</Z>
+        </Translation>
+        <Rotation>
+          <Yaw>1.52</Yaw>
+          <Pitch>1.0</Pitch>
+        </Rotation>
+      </Transform>
+    </Simple-Camera>
+  </Camera>
+  <Light Name="Main-light">
+    <Directional-Light>
+      <Direction>
+        <X>-0.577</X>
+        <Y>0.577</Y>
+        <Z>0.577</Z>
+      </Direction>
+      <Ambient>
+        <R>0.2</R>
+        <G>0.2</G>
+        <B>0.2</B>
+      </Ambient>
+      <Diffuse>
+        <R>1.0</R>
+        <G>1.0</G>
+        <B>1.0</B>
+      </Diffuse>
+      <Specular>
+        <R>0.0</R>
+        <G>0.0</G>
+        <B>0.0</B>
+      </Specular>
+    </Directional-Light>
+  </Light>
+  <Objects>
+    <Box Name="Floor">
+      <Material>
+        <Simple-TL-Material>
+          <Texture>
+            <Path>concrete1.png</Path>
+          </Texture>
+        </Simple-TL-Material>
+      </Material>
+      <Transform>
+        <Scale>
+          <X>40</X>
+          <Y>0.1</Y>
+          <Z>40</Z>
+        </Scale>
+        <Translation>
+          <Y>-0.1</Y>
+        </Translation>
+      </Transform>
+    </Box>
+    <Box Name="Target" DrawTop="false">
+      <Material>
+        <Translucent-Material>
+          <Texture>
+            <Path>translucent-green.tga</Path>
+          </Texture>
+        </Translucent-Material>
+      </Material>
+      <Transform>
+        <Scale>
+          <Y>2</Y>
+        </Scale>
+        <Translation>
+          <X Bind="target-x"/>
+          <Z Bind="target-y"/>
+        </Translation>
+      </Transform>
+    </Box>
+  </Objects>
+</Scene>

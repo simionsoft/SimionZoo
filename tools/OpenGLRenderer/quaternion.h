@@ -50,7 +50,7 @@ public:
 
 	void load(tinyxml2::XMLElement* pNode);
 	void asMatrix33(Matrix33& matrix) const;
-	Quaternion inverse() const;
+	Quaternion inverse();
 
 	Quaternion operator+(const Quaternion quat) const;
 	Quaternion operator-(const Quaternion quat) const;

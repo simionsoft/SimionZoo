@@ -27,8 +27,8 @@ void C2DText::draw()
 	//set color
 	glColor3fv(m_color.rgba());
 	
-	glRasterPos3i(m_transform.translation().x()
-		, m_transform.translation().y(), (int) m_transform.depth());
+	glRasterPos3i((int)m_transform.translation().x()
+		, (int)m_transform.translation().y(), (int) m_transform.depth());
 
 	void * font = GLUT_BITMAP_9_BY_15;
 

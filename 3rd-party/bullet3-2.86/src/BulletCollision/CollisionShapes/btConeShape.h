@@ -52,7 +52,6 @@ public:
 		m_height = height;
 	}
 
-
 	virtual void	calculateLocalInertia(btScalar mass,btVector3& inertia) const
 	{
 		btTransform identity;
