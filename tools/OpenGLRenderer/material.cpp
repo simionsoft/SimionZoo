@@ -52,6 +52,8 @@ void CSimpleTLMaterial::set()
 	glEnable(GL_CULL_FACE);
 
 	CRenderer::get()->getTextureManager()->set(m_textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_textureWrapModeS);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_textureWrapModeT);
 
 	glShadeModel(GL_SMOOTH);
 

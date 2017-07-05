@@ -39,7 +39,7 @@
     </Directional-Light>
   </Light>
   <Objects>
-    <Box Name="Floor">
+    <Box Name="Floor" TexCoordMultFactor="3">
       <Material>
         <Simple-TL-Material>
           <Texture>

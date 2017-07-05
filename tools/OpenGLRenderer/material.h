@@ -19,7 +19,10 @@ class CSimpleTLMaterial : public CMaterial
 {
 protected:
 	int m_textureId= -1;
+	int m_textureWrapModeS = GL_REPEAT;
+	int m_textureWrapModeT = GL_REPEAT;
 	Color m_ambient, m_diffuse, m_specular, m_emission;
+
 	double m_shininess;
 public:
 	CSimpleTLMaterial() {}
@@ -34,6 +37,7 @@ public:
 	void setSpecular(Color color) { m_specular = color; }
 	void setEmission(Color color) { m_emission = color; }
 	void setShininess(double value) { m_shininess = value; }
+	void setTextureWrapMode(int mode) { m_textureWrapModeS = mode; m_textureWrapModeT = mode; }
 	virtual void set();
 };
 

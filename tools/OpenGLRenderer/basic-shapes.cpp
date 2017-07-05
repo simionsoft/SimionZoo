@@ -169,6 +169,18 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 		pMesh->getIndexArray()[68] = 2;
 		pMesh->getIndexArray()[71] = 3;
 	}
+
+	//multiply tex coordinates??
+	if (pNode->Attribute(XML_TAG_TEX_COORD_MULT_FACTOR))
+	{
+		double factor = atoi(pNode->Attribute(XML_TAG_TEX_COORD_MULT_FACTOR));
+		for (int i = 0; i < pMesh->getNumTexCoords(); ++i)
+			pMesh->getTexCoord(i) *= factor;
+		CSimpleTLMaterial* pMaterial= dynamic_cast<CSimpleTLMaterial*>(m_pMaterialLoaded);
+		if (pMaterial)
+			pMaterial->setTextureWrapMode(GL_REPEAT);
+	}
+
 	pMesh->setNumIndicesPerVertex(3);
 	pMesh->setPosOffset(0);
 	pMesh->setNormalOffset(1);

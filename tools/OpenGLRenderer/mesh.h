@@ -54,10 +54,12 @@ public:
 	Vector3D* getNormalArray() { return m_pNormals; }
 	Vector2D* getTexCoordArray() { return m_pTexCoords; }
 	
-	int getNumPositions() const{ return m_numPositions; }
+	unsigned int getNumPositions() const{ return m_numPositions; }
 	Point3D& getPosition(unsigned int i) { return m_pPositions[i]; }
-	int getNumNormals() const { return m_numNormals; }
+	unsigned int getNumNormals() const { return m_numNormals; }
 	Vector3D& getNormal(unsigned int i) { return m_pNormals[i]; }
+	unsigned int getNumTexCoords() const { return m_numTexCoords; }
+	Vector2D& getTexCoord(unsigned int i) const { return m_pTexCoords[i]; }
 
 	void setPosOffset(unsigned int offset) { m_posOffset = offset; }
 	void setNormalOffset(unsigned int offset) { m_normalOffset = offset; }
