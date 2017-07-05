@@ -87,7 +87,7 @@ double Quaternion::xFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
+	return sinYaw * sinPitch * cosRoll + cosYaw * cosPitch * sinRoll;
 }
 
 double Quaternion::yFromOrientations(double yaw, double pitch, double roll)
@@ -101,7 +101,7 @@ double Quaternion::yFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
+	return sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
 }
 
 double Quaternion::zFromOrientations(double yaw, double pitch, double roll)
@@ -115,7 +115,7 @@ double Quaternion::zFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw;
+	return cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
 }
 
 double Quaternion::wFromOrientations(double yaw, double pitch, double roll)
@@ -129,7 +129,7 @@ double Quaternion::wFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
+	return cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
 }
 
 void Quaternion::fromOrientations(double yaw, double pitch, double roll)
@@ -143,10 +143,10 @@ void Quaternion::fromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	m_x = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
-	m_y = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
-	m_z = sinRoll * cosPitch * cosYaw - cosRoll * sinPitch * sinYaw;
-	m_w = cosRoll * cosPitch * cosYaw + sinRoll * sinPitch * sinYaw;
+	m_w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
+	m_x = sinYaw * sinPitch * cosRoll + cosYaw * cosPitch * sinRoll;
+	m_y = sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
+	m_z = cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
 }
 
 Quaternion::Quaternion(double yaw, double pitch, double roll)
