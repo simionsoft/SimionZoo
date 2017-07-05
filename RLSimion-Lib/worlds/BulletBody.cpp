@@ -9,7 +9,7 @@ BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* s
 	trans.setIdentity();
 	trans.setOrigin(origin);
 	m_originX = origin.x();
-	m_originY = origin.z();
+	m_originY = origin.y();
 
 	m_mass = btScalar(mass);
 

@@ -12,7 +12,7 @@ public:
 	Robot(double mass, const btVector3& pos, btCollisionShape* shape);
 	virtual ~Robot() {}
 
-	void updateBulletState(CState *s, const CAction *a, double dt);
+	virtual void updateBulletState(CState *s, const CAction *a, double dt);
 
 	void setActionIds(int v, int omega) { m_vId = v; m_omegaId = omega; }
 

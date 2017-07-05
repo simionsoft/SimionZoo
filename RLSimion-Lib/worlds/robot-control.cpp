@@ -63,18 +63,13 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 
 	///creating a dynamic robot  
 	{
-		//m_pRobot1 = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 5, robotOrigin_y), new btSphereShape(0.5));
-
-		//m_pBulletPhysics->add(m_pRobot1);
-
 		m_pRobot1 = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5));
-		m_pBulletPhysics->getCollisionShape().push_back(m_pRobot1->getShape());
-		m_pBulletPhysics->getDynamicsWorld()->addRigidBody(m_pRobot1->getBody());
 		m_pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
 			, getStateDescriptor().getVarIndex("robot1-y")
 			, getStateDescriptor().getVarIndex("robot1-theta"));
 		m_pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
 			, getActionDescriptor().getVarIndex("robot1-omega"));
+		m_pBulletPhysics->add(m_pRobot1);
 	}
 
 	//the reward function

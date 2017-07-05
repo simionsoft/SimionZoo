@@ -182,22 +182,31 @@ void Quaternion::asMatrix33(Matrix33& matrix) const
 	matrix.z().setZ( 1.0 - (xx + yy));
 }
 
-Quaternion Quaternion::operator+(const Quaternion quat) const
+Quaternion Quaternion::operator+(const Quaternion quat)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	Quaternion result = Quaternion(m_x + quat.m_x,
 		m_y + quat.m_y, m_z + quat.m_z, m_w + quat.m_w);
 	return result;
 }
 
-Quaternion Quaternion::operator-(const Quaternion quat) const
+Quaternion Quaternion::operator-(const Quaternion quat)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	Quaternion result = Quaternion(m_x - quat.m_x,
 		m_y - quat.m_y, m_z - quat.m_z, m_w - quat.m_w);
 	return result;
 }
 
-Quaternion Quaternion::operator*(const Quaternion quat) const
+Quaternion Quaternion::operator*(const Quaternion quat)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	Quaternion result;
 	result.m_x = m_w * quat.m_x + m_x * quat.m_w + m_y * quat.m_z - m_z * quat.m_y;
 	result.m_y = m_w * quat.m_y + m_y * quat.m_w + m_z * quat.m_x - m_x * quat.m_z;
@@ -207,6 +216,9 @@ Quaternion Quaternion::operator*(const Quaternion quat) const
 }
 void Quaternion::operator+=(const Quaternion quat)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	m_x += quat.m_x;
 	m_y += quat.m_y;
 	m_z += quat.m_z;
@@ -214,6 +226,9 @@ void Quaternion::operator+=(const Quaternion quat)
 }
 void Quaternion::operator-=(const Quaternion quat)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	m_x -= quat.m_x;
 	m_y -= quat.m_y;
 	m_z -= quat.m_z;
@@ -222,6 +237,9 @@ void Quaternion::operator-=(const Quaternion quat)
 
 void Quaternion::operator*= (const Quaternion quat)
 {
+	if (bUseOrientations())
+		fromOrientations();
+
 	Quaternion result;
 	result = (*this)*quat;
 	(*this) = result;

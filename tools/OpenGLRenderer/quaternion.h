@@ -52,9 +52,9 @@ public:
 	void asMatrix33(Matrix33& matrix) const;
 	Quaternion inverse();
 
-	Quaternion operator+(const Quaternion quat) const;
-	Quaternion operator-(const Quaternion quat) const;
-	Quaternion operator*(const Quaternion quat) const;
+	Quaternion operator+(const Quaternion quat);
+	Quaternion operator-(const Quaternion quat);
+	Quaternion operator*(const Quaternion quat);
 	void operator+=(const Quaternion quat);
 	void operator-=(const Quaternion quat);
 	void operator*=(const Quaternion quat);

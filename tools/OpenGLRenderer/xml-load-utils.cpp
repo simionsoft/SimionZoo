@@ -64,10 +64,9 @@ void Quaternion::load(tinyxml2::XMLElement* pNode)
 	loadBindableValue(pNode, XML_TAG_Z, m_z, this);
 	loadBindableValue(pNode, XML_TAG_W, m_w, this);
 
-	if (loadBindableValue(pNode, XML_TAG_YAW, m_yaw, this)
-		|| loadBindableValue(pNode, XML_TAG_PITCH, m_pitch, this)
-		|| loadBindableValue(pNode, XML_TAG_ROLL, m_roll, this))
-		m_bOrientationsSet= true;
+	if (loadBindableValue(pNode, XML_TAG_YAW, m_yaw, this)) m_bOrientationsSet = true;
+	if (loadBindableValue(pNode, XML_TAG_PITCH, m_pitch, this)) m_bOrientationsSet = true;
+	if (loadBindableValue(pNode, XML_TAG_ROLL, m_roll, this)) m_bOrientationsSet = true;
 }
 
 
