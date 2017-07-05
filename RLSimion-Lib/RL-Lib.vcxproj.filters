@@ -139,9 +139,6 @@
     <ClCompile Include="mem-buffer.cpp">
       <Filter>memory</Filter>
     </ClCompile>
-    <ClCompile Include="worlds\robot-control.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
     <ClCompile Include="worlds\setpoint.cpp">
       <Filter>world</Filter>
     </ClCompile>
@@ -172,18 +169,6 @@
     <ClCompile Include="worlds\mountaincar.cpp">
       <Filter>world</Filter>
     </ClCompile>
-    <ClCompile Include="worlds\pull-box-1.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\pull-box-2.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\push-box-1.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
-    <ClCompile Include="worlds\push-box-2.cpp">
-      <Filter>world</Filter>
-    </ClCompile>
     <ClCompile Include="worlds\BulletPhysics.cpp">
       <Filter>world\BulletUtils</Filter>
     </ClCompile>
@@ -207,6 +192,21 @@
     </ClCompile>
     <ClCompile Include="app-rlsimion.cpp">
       <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pull-box-1.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\pull-box-2.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\push-box-1.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\push-box-2.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\robot-control.cpp">
+      <Filter>world\BulletWorlds</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -312,9 +312,6 @@
     <ClInclude Include="mem-buffer.h">
       <Filter>memory</Filter>
     </ClInclude>
-    <ClInclude Include="worlds\robot-control.h">
-      <Filter>world</Filter>
-    </ClInclude>
     <ClInclude Include="worlds\setpoint.h">
       <Filter>world</Filter>
     </ClInclude>
@@ -343,18 +340,6 @@
       <Filter>world</Filter>
     </ClInclude>
     <ClInclude Include="worlds\mountaincar.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\pull-box-1.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\pull-box-2.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\push-box-1.h">
-      <Filter>world</Filter>
-    </ClInclude>
-    <ClInclude Include="worlds\push-box-2.h">
       <Filter>world</Filter>
     </ClInclude>
     <ClInclude Include="worlds\BulletPhysics.h">
@@ -387,6 +372,21 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="worlds\bullet-common.h">
       <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-1.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\pull-box-2.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-1.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\push-box-2.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\robot-control.h">
+      <Filter>world\BulletWorlds</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

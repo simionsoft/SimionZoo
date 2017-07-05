@@ -44,7 +44,6 @@ public:
 protected:
 	btRigidBody* m_pBody= 0;
 	btCollisionShape* m_shape= 0;
-	int m_objType = 0;
 
 	btScalar m_mass;
 

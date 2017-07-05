@@ -88,8 +88,8 @@ CPullBox1::CPullBox1(CConfigNode* pConfigNode)
 			, getStateDescriptor().getVarIndex("box-theta"));
 		m_pBox->setRelativeStateVarIds(getStateDescriptor().getVarIndex("box-to-target-x")
 			, getStateDescriptor().getVarIndex("box-to-target-y")
-			, getStateDescriptor().getVarIndex("box-x")
-			, getStateDescriptor().getVarIndex("box-y"));
+			, getStateDescriptor().getVarIndex("target-x")
+			, getStateDescriptor().getVarIndex("target-y"));
 		m_pBulletPhysics->add(m_pBox);
 	}
 
@@ -127,7 +127,6 @@ void CPullBox1::reset(CState *s)
 	{
 		m_pRobot1->setOrigin(r1origin_x, r1origin_y, 0.0);
 		m_pBox->setOrigin(boxOrigin_x, boxOrigin_y, 0.0);
-
 	}
 	else
 	{
@@ -140,7 +139,6 @@ void CPullBox1::reset(CState *s)
 
 void CPullBox1::executeAction(CState *s, const CAction *a, double dt)
 {
-
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
 	//Execute simulation

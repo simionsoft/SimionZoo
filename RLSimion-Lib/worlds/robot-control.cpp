@@ -84,6 +84,7 @@ void CRobotControl::reset(CState *s)
 
 void CRobotControl::executeAction(CState *s, const CAction *a, double dt)
 {
+	btTransform trans;
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
 	//Update Robot1

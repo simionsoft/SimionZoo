@@ -94,8 +94,8 @@ CPushBox1::CPushBox1(CConfigNode* pConfigNode)
 			, getStateDescriptor().getVarIndex("box-theta"));
 		m_pBox->setRelativeStateVarIds(getStateDescriptor().getVarIndex("box-to-target-x")
 			, getStateDescriptor().getVarIndex("box-to-target-y")
-			, getStateDescriptor().getVarIndex("box-x")
-			, getStateDescriptor().getVarIndex("box-y"));
+			, getStateDescriptor().getVarIndex("target-x")
+			, getStateDescriptor().getVarIndex("target-y"));
 		m_pBulletPhysics->add(m_pBox);
 	}
 

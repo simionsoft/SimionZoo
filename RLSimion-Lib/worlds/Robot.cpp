@@ -3,7 +3,7 @@
 
 
 Robot::Robot(double mass, const btVector3& pos, btCollisionShape* shape)
-	: BulletBody(mass, pos, shape)
+	: BulletBody(mass, pos, shape )
 {
 }
 

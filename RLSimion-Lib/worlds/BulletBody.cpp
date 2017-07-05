@@ -9,7 +9,7 @@ BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* s
 	trans.setIdentity();
 	trans.setOrigin(origin);
 	m_originX = origin.x();
-	m_originY = origin.y();
+	m_originY = origin.z();
 
 	m_mass = btScalar(mass);
 
@@ -28,7 +28,6 @@ BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* s
 	}
 	if (objType!=0)
 		m_pBody->setCollisionFlags(objType);
-	m_objType = objType;
 }
 
 
@@ -63,12 +62,9 @@ void BulletBody::reset(CState* s)
 	btTransform bodyTransform;
 	
 	btVector3 zeroVector(0, 0, 0);
-	//if (!m_objType)
-	{
-		m_pBody->clearForces();
-		m_pBody->setLinearVelocity(zeroVector);
-		m_pBody->setAngularVelocity(zeroVector);
-	}
+	m_pBody->clearForces();
+	m_pBody->setLinearVelocity(zeroVector);
+	m_pBody->setAngularVelocity(zeroVector);
 
 	m_pBody->getMotionState()->getWorldTransform(bodyTransform);
 	bodyTransform.setOrigin(btVector3(m_originX, 0.0, m_originY));
