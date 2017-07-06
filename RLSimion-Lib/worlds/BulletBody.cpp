@@ -22,12 +22,10 @@ BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* s
 	m_pBody = new btRigidBody(bulletBodyInfo);
 	m_pBody->setWorldTransform(trans);
 	m_pBody->getMotionState()->setWorldTransform(trans);
-	if ((objType | btCollisionObject::CF_STATIC_OBJECT) == 0)
-	{
-		m_pBody->setActivationState(DISABLE_DEACTIVATION);
-	}
+	
 	if (objType!=0)
 		m_pBody->setCollisionFlags(objType);
+	else m_pBody->setActivationState(DISABLE_DEACTIVATION);
 }
 
 void BulletBody::resetInertia()
@@ -74,7 +72,8 @@ void BulletBody::reset(CState* s)
 	m_pBody->setLinearVelocity(zeroVector);
 	m_pBody->setAngularVelocity(zeroVector);
 
-	bodyTransform.setIdentity();
+	bodyTransform= m_pBody->getWorldTransform();
+	//bodyTransform.setIdentity();
 	bodyTransform.setOrigin(btVector3(m_originX, m_originZ, m_originY));
 	orientation.setEuler(m_originTheta, 0.0, 0.0);
 	bodyTransform.setRotation(orientation);

@@ -48,7 +48,7 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 	///Creating static object, ground
 	{
 		m_pGround = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z)
-			, new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))), btCollisionObject::CF_STATIC_OBJECT);
+			, new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))));
 		m_pBulletPhysics->add(m_pGround);
 	}
 
