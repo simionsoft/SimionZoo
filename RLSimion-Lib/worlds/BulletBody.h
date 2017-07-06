@@ -4,6 +4,7 @@
 
 class BulletBody
 {
+	btVector3 m_localInertia;
 	bool m_bSetRelStateVars = false;
 	bool m_bSetAbsStateVars = false;
 
@@ -48,4 +49,5 @@ protected:
 	btScalar m_mass;
 
 	virtual void updateYawState(CState* s);
+	void resetInertia();
 };

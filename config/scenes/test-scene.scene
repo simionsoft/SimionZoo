@@ -5,7 +5,7 @@
         <Translation>
           <X>0.0</X>
           <Y>0.0</Y>
-          <Z>3.0</Z>
+          <Z>7.0</Z>
         </Translation>
       </Transform>
     </Simple-Camera>
@@ -77,7 +77,7 @@
         </Scale>
       </Transform>
     </Collada-Model></d>
-    <Box Name="Box01">
+    <d><Box Name="Box01">
       <Material>
         <Simple-TL-Material>
           <Diffuse>
@@ -110,7 +110,7 @@
           </Texture>
         </Simple-TL-Material>
       </Material>
-    </Box>
+    </Box></d>
     <Collada-Model Name="example2" Path="EM208/EM208_heavy.dae"/>
   </Objects>
 </Scene>

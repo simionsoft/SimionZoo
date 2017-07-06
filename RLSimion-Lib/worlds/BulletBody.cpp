@@ -10,18 +10,18 @@ BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* s
 	trans.setOrigin(origin);
 	m_originX = origin.x();
 	m_originY = origin.z();
+	m_originZ = origin.y();
 
 	m_mass = btScalar(mass);
 
-	btVector3 localInertia = btVector3(0, 0, 0);
-	bool isDynamic = (m_mass != 0.f);
-	
-	if (isDynamic)
-		m_shape->calculateLocalInertia(m_mass, localInertia);
+	//must be calculated before creating the rigid body
+	resetInertia();
 	
 	btDefaultMotionState* motionState = new btDefaultMotionState(trans);
-	btRigidBody::btRigidBodyConstructionInfo bulletBodyInfo(m_mass, motionState, m_shape, localInertia);
+	btRigidBody::btRigidBodyConstructionInfo bulletBodyInfo(m_mass, motionState, m_shape, m_localInertia);
 	m_pBody = new btRigidBody(bulletBodyInfo);
+	m_pBody->setWorldTransform(trans);
+	m_pBody->getMotionState()->setWorldTransform(trans);
 	if ((objType | btCollisionObject::CF_STATIC_OBJECT) == 0)
 	{
 		m_pBody->setActivationState(DISABLE_DEACTIVATION);
@@ -30,6 +30,13 @@ BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* s
 		m_pBody->setCollisionFlags(objType);
 }
 
+void BulletBody::resetInertia()
+{
+	m_localInertia = btVector3(0, 0, 0);
+
+	if (m_mass != 0.f) //is a dynamic object?
+		m_shape->calculateLocalInertia(m_mass, m_localInertia);
+}
 
 btRigidBody* BulletBody::getBody()
 {
@@ -60,21 +67,22 @@ void BulletBody::setOrigin(double x, double y, double theta)
 void BulletBody::reset(CState* s)
 {
 	btTransform bodyTransform;
-	
+	btQuaternion orientation;
+
 	btVector3 zeroVector(0, 0, 0);
 	m_pBody->clearForces();
 	m_pBody->setLinearVelocity(zeroVector);
 	m_pBody->setAngularVelocity(zeroVector);
 
-	m_pBody->getMotionState()->getWorldTransform(bodyTransform);
-	bodyTransform.setOrigin(btVector3(m_originX, 0.0, m_originY));
-
-	btQuaternion orientation = { 0.000000000, 0.000000000, 0.000000000, 1.00000000 };
+	bodyTransform.setIdentity();
+	bodyTransform.setOrigin(btVector3(m_originX, m_originZ, m_originY));
 	orientation.setEuler(m_originTheta, 0.0, 0.0);
 	bodyTransform.setRotation(orientation);
 	
 	m_pBody->setWorldTransform(bodyTransform);
 	m_pBody->getMotionState()->setWorldTransform(bodyTransform);
+
+	resetInertia();
 
 	updateState(s);
 }
