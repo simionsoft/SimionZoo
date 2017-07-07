@@ -27,10 +27,6 @@ class CRobotControl : public CDynamicModel
 	///inicialización
 	BulletPhysics* m_pBulletPhysics;
 
-	Robot* m_pRobot1;
-	BulletBody* m_pGround;
-	BulletBody* m_pTarget;
-
 public:
 	CRobotControl(CConfigNode* pParameters);
 	virtual ~CRobotControl();

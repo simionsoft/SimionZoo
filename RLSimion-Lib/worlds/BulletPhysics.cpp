@@ -1,6 +1,35 @@
 #include "../stdafx.h"
 #include "BulletPhysics.h"
 #include "BulletBody.h"
+#include "Box.h"
+
+//static public constants
+const double BulletPhysics::MASS_ROBOT = 0.5f;
+const double BulletPhysics::MASS_TARGET = 0.1f;
+const double BulletPhysics::MASS_BOX = 4.0;
+
+const double BulletPhysics::TargetX = 12.0;
+const double BulletPhysics::TargetY = -2.0;
+const double BulletPhysics::TargetZ = 0.5;
+
+const double BulletPhysics::ground_x = 0.0;
+const double BulletPhysics::ground_y = -50.0;
+const double BulletPhysics::ground_z = 0.0;
+
+const double BulletPhysics::r1origin_x = 0.0;
+const double BulletPhysics::r1origin_y = 0.0;
+const double BulletPhysics::r1origin_z = 0.5;
+
+const double BulletPhysics::r2origin_x = 3.0;
+const double BulletPhysics::r2origin_y = 4.0;
+const double BulletPhysics::r2origin_z = 0.5;
+
+const double BulletPhysics::boxOrigin_x = 3.0;
+const double BulletPhysics::boxOrigin_y = 2.0;
+const double BulletPhysics::boxOrigin_z = 0.5;
+
+const double BulletPhysics::theta_o1 = 0.0;
+const double BulletPhysics::theta_o2 = 0.0;
 
 // Initialization of physics
 void BulletPhysics::initPhysics()
@@ -25,6 +54,7 @@ void BulletPhysics::add(BulletBody* pBulletObject)
 {
 	if (pBulletObject->bIsRigidBody())
 	{
+		//soft bodies (rope) don't need to be added, as they will be added in their constructor
 		if (pBulletObject->getShape())
 			m_collisionShapes.push_back(pBulletObject->getShape());
 		if (pBulletObject->getBody())
@@ -38,7 +68,6 @@ void BulletPhysics::add(BulletBody* pBulletObject)
 void BulletPhysics::simulate(double dt, int maxSubSteps)
 {
 	stepSimulation((float)dt, maxSubSteps);
-
 }
 
 
@@ -49,6 +78,32 @@ BulletPhysics::~BulletPhysics()
 		delete (*it);
 
 	exitPhysics();
+}
+void BulletPhysics::initPlayground()
+{
+	double MASS_GROUND = 0.0;
+
+	///Creating static object, ground
+	{
+		StaticObject* pGround = new StaticObject(btVector3(ground_x, ground_y, ground_z)
+			, new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))));
+		add(pGround);
+	}
+	///Creating static object, walls
+	{
+		StaticObject* pWall = new StaticObject(btVector3(12.0, 1.0, 0.0)
+			, new btBoxShape(btVector3(1.0, 2.0, 13.)));
+		add(pWall);
+		pWall = new StaticObject(btVector3(-12.0, 1.0, 0.0)
+			, new btBoxShape(btVector3(1.0, 2.0, 13.)));
+		add(pWall);
+		pWall = new StaticObject(btVector3(1.0, 1.0, 12.0)
+			, new btBoxShape(btVector3(12.0, 2.0, 1.0)));
+		add(pWall);
+		pWall = new StaticObject(btVector3(1.0, 1.0, -12.0)
+			, new btBoxShape(btVector3(12.0, 2.0, 1.0)));
+		add(pWall);
+	}
 }
 
 void BulletPhysics::reset(CState* s)

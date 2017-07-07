@@ -14,21 +14,6 @@ double static getRand(double range)
 	return (-range*0.5) + (range)*getRandomValue();
 }
 
-#define TargetX 10.0
-#define TargetY 3.0
-
-#define ground_x 0.0
-#define ground_y -1.0
-#define ground_z 0.0 
-
-#define robotOrigin_x 0.0
-#define robotOrigin_y 0.0
-
-#define boxOrigin_x 3.0
-#define boxOrigin_y 0.0
-
-#define theta_o 0.0
-
 CPushBox1::CPushBox1(CConfigNode* pConfigNode)
 {
 	METADATA("World", "Push-Box-1");
@@ -47,71 +32,55 @@ CPushBox1::CPushBox1(CConfigNode* pConfigNode)
 	m_theta = addStateVariable("robot1-theta", "rad", -3.15, 3.15, true);
 	m_boxTheta = addStateVariable("box-theta", "rad", -3.15, 3.15, true);
 
-	m_linear_vel = addActionVariable("robot1-v", "m/s", -2.0, 2.0);
-	m_omega = addActionVariable("robot1-omega", "rad/s", -8.0, 8.0);
-
-	MASS_ROBOT = 1.5f;
-	MASS_BOX = 1.f;
-	MASS_GROUND = 0.f;
-	MASS_TARGET = 0.1f;
+	addActionVariable("robot1-v", "m/s", -2.0, 2.0);
+	addActionVariable("robot1-omega", "rad/s", -8.0, 8.0);
 
 	//Init Bullet
 	m_pBulletPhysics = new BulletPhysics();
 
 	m_pBulletPhysics->initPhysics();
+	m_pBulletPhysics->initPlayground();
 
-	///Creating static object, ground
+	/// Creating target point, kinematic
 	{
-		m_pGround = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), new btBoxShape(btVector3(btScalar(20.), btScalar(1.), btScalar(20.))), false);
-		m_pBulletPhysics->add(m_pGround);
-	}
-	///Creating static object, walls
-	{
-		m_pWall1 = new BulletBody(MASS_GROUND, btVector3(12.0, 1.0, 0.0), new btBoxShape(btVector3(1.0, 2.0, 13.)), false);
-		m_pBulletPhysics->add(m_pWall1);
-		m_pWall2 = new BulletBody(MASS_GROUND, btVector3(-12.0, 1.0, 0.0), new btBoxShape(btVector3(1.0, 2.0, 13.)), false);
-		m_pBulletPhysics->add(m_pWall2);
-		m_pWall3 = new BulletBody(MASS_GROUND, btVector3(1.0, 1.0, 12.0), new btBoxShape(btVector3(12.0, 2.0, 1.0)), false);
-		m_pBulletPhysics->add(m_pWall3);
-		m_pWall4 = new BulletBody(MASS_GROUND, btVector3(1.0, 1.0, -12.0), new btBoxShape(btVector3(12.0, 2.0, 1.0)), false);
-		m_pBulletPhysics->add(m_pWall4);
-	}
-
-	/// Creating target point, static
-	{
-		m_pTarget = new BulletBody(MASS_TARGET, btVector3(TargetX, 0.001, TargetY), new btConeShape(0.5, 0.001), false);
-		m_pTarget->getBody()->setCollisionFlags(m_pTarget->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-		m_pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
+		KinematicObject* pTarget = new KinematicObject(BulletPhysics::MASS_TARGET
+			, btVector3(BulletPhysics::TargetX, BulletPhysics::TargetZ, BulletPhysics::TargetY)
+			, new btConeShape(btScalar(0.5), btScalar(0.001)));
+		pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
 			, getStateDescriptor().getVarIndex("target-y"), -1);
-		m_pBulletPhysics->add(m_pTarget);
+		m_pBulletPhysics->add(pTarget);
 	}
 
 	///Creating dynamic box
 	{
-		m_pBox = new Box(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(0.6, 0.6, 0.6)), true);
-		m_pBox->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("box-x")
+		Box* pBox = new Box(BulletPhysics::MASS_BOX
+			, btVector3(BulletPhysics::boxOrigin_x, BulletPhysics::boxOrigin_z, BulletPhysics::boxOrigin_y)
+			, new btBoxShape(btVector3(0.6, 0.6, 0.6)));
+		pBox->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("box-x")
 			, getStateDescriptor().getVarIndex("box-y")
 			, getStateDescriptor().getVarIndex("box-theta"));
-		m_pBox->setRelativeStateVarIds(getStateDescriptor().getVarIndex("box-to-target-x")
+		pBox->setRelativeStateVarIds(getStateDescriptor().getVarIndex("box-to-target-x")
 			, getStateDescriptor().getVarIndex("box-to-target-y")
 			, getStateDescriptor().getVarIndex("target-x")
 			, getStateDescriptor().getVarIndex("target-y"));
-		m_pBulletPhysics->add(m_pBox);
+		m_pBulletPhysics->add(pBox);
 	}
 
 	///creating a dynamic robot  
 	{
-		m_pRobot1 = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5));
-		m_pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
+		Robot* pRobot1 = new Robot(BulletPhysics::MASS_ROBOT
+			, btVector3(BulletPhysics::r1origin_x, BulletPhysics::r1origin_z, BulletPhysics::r1origin_y)
+			, new btSphereShape(0.5));
+		pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
 			, getStateDescriptor().getVarIndex("robot1-y")
 			, getStateDescriptor().getVarIndex("robot1-theta"));
-		m_pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
+		pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
 			, getActionDescriptor().getVarIndex("robot1-omega"));
-		m_pRobot1->setRelativeStateVarIds(getStateDescriptor().getVarIndex("robot1-to-box-x")
+		pRobot1->setRelativeStateVarIds(getStateDescriptor().getVarIndex("robot1-to-box-x")
 			, getStateDescriptor().getVarIndex("robot1-to-box-y")
 			, getStateDescriptor().getVarIndex("box-x")
 			, getStateDescriptor().getVarIndex("box-y"));
-		m_pBulletPhysics->add(m_pRobot1);
+		m_pBulletPhysics->add(pRobot1);
 	}
 
 	//the reward function
@@ -122,14 +91,6 @@ CPushBox1::CPushBox1(CConfigNode* pConfigNode)
 
 void CPushBox1::reset(CState *s)
 {
-	if (1)//CSimionApp::get()->pExperiment->isEvaluationEpisode())
-	{
-	}
-	else
-	{
-		m_pBox->setOrigin(boxOrigin_x + getRand(2.0), boxOrigin_y + getRand(2.0), theta_o + getRand(1.0));
-		m_pRobot1->setOrigin(robotOrigin_x + getRand(2.0), robotOrigin_y + getRand(2.0), theta_o + getRand(1.0));
-	}
 	m_pBulletPhysics->reset(s);
 }
 

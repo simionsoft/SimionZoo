@@ -27,8 +27,10 @@ protected:
 
 	//only to be called by Rope subclass
 	BulletBody() {}
-public:
+
+	//protected because we want to force the use of subclasses: StaticObject, Robot, Box, KinematicObject...
 	BulletBody(double mass, const btVector3& pos, btCollisionShape* shape, int objType= 0);
+public:
 	virtual ~BulletBody() { }
 
 	void setAbsoluteStateVarIds(int xId, int yId, int thetaId);

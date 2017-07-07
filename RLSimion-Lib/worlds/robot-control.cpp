@@ -7,21 +7,8 @@
 #include "BulletPhysics.h"
 #include "BulletBody.h"
 #include "aux-rewards.h"
+#include "Box.h"
 
-
-#define TargetX 10.0
-#define TargetY 3.0
-
-#define robotOrigin_x 0.0
-#define robotOrigin_y 0.0
-
-#define ground_x 0.0
-#define ground_y -50.0
-#define ground_z 0.0 
-
-#define theta_o 0.0
-
-#define CNT_VEL 2.0
 
 CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 {
@@ -43,34 +30,31 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 
 	m_pBulletPhysics = new BulletPhysics();
 	m_pBulletPhysics->initPhysics();
-
+	m_pBulletPhysics->initPlayground();
 	
-	///Creating static object, ground
+	/// Creating target point, kinematic
 	{
-		m_pGround = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z)
-			, new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))));
-		m_pBulletPhysics->add(m_pGround);
-	}
-
-	/// Creating target point, static
-	{
-		m_pTarget = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY), new btConeShape(btScalar(0.5)
-			, btScalar(0.001)), btCollisionObject::CF_KINEMATIC_OBJECT);
-		m_pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
+		KinematicObject* pTarget = new KinematicObject(MASS_TARGET
+			, btVector3(BulletPhysics::TargetX, 0, BulletPhysics::TargetY)
+			, new btConeShape(btScalar(0.5), btScalar(0.001)));
+		pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
 			, getStateDescriptor().getVarIndex("target-y"), -1);
-		m_pBulletPhysics->add(m_pTarget);
+		m_pBulletPhysics->add(pTarget);
 	}
 
 	///creating a dynamic robot  
 	{
-		m_pRobot1 = new Robot(MASS_ROBOT, btVector3(robotOrigin_x, 0, robotOrigin_y), new btSphereShape(0.5));
-		m_pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
+		Robot* pRobot1 = new Robot(MASS_ROBOT
+			, btVector3(BulletPhysics::r1origin_x, 0, BulletPhysics::r1origin_y)
+			, new btSphereShape(0.5));
+		pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
 			, getStateDescriptor().getVarIndex("robot1-y")
 			, getStateDescriptor().getVarIndex("robot1-theta"));
-		m_pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
+		pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
 			, getActionDescriptor().getVarIndex("robot1-omega"));
-		m_pBulletPhysics->add(m_pRobot1);
+		m_pBulletPhysics->add(pRobot1);
 	}
+
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CDistanceReward2D(getStateDescriptor(),m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));

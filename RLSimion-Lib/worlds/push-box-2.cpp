@@ -15,26 +15,6 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-
-#define TargetX 12.0
-#define TargetY -2.0
-
-#define ground_x 0.0
-#define ground_y -50.0
-#define ground_z 0.0 
-
-#define r1origin_x 0.0
-#define r1origin_y 0.0
-
-#define r2origin_x 3.0
-#define r2origin_y 4.0
-
-#define boxOrigin_x 3.0
-#define boxOrigin_y 2.0
-
-#define theta_o1 0.0
-#define theta_o2 0.0
-
 CPushBox2::CPushBox2(CConfigNode* pConfigNode)
 {
 	METADATA("World", "Push-Box-2");
@@ -61,76 +41,73 @@ CPushBox2::CPushBox2(CConfigNode* pConfigNode)
 
 	m_boxTheta = addStateVariable("box-theta", "rad", -3.15, 3.15, true);
 
-	m_linear_vel_r1 = addActionVariable("robot1-v", "m/s", -2.0, 2.0);
-	m_omega_r1 = addActionVariable("robot1-omega", "rad/s", -8.0, 8.0);
-	m_linear_vel_r2 = addActionVariable("robot2-v", "m/s", -2.0, 2.0);
-	m_omega_r2 = addActionVariable("robot2-omega", "rad/s", -8.0, 8.0);
-
-	MASS_ROBOT = 1.1f;
-	MASS_BOX = 6.9;
-	MASS_GROUND = 0.f;
-	MASS_TARGET = 0.1f;
+	addActionVariable("robot1-v", "m/s", -2.0, 2.0);
+	addActionVariable("robot1-omega", "rad/s", -8.0, 8.0);
+	addActionVariable("robot2-v", "m/s", -2.0, 2.0);
+	addActionVariable("robot2-omega", "rad/s", -8.0, 8.0);
 
 	m_pBulletPhysics = new BulletPhysics();
 
 	m_pBulletPhysics->initPhysics();
+	m_pBulletPhysics->initPlayground();
 
-	///Creating static object, ground
+	/// Creating target point, kinematic
 	{
-		m_pGround = new BulletBody(MASS_GROUND, btVector3(ground_x, ground_y, ground_z), new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.))), false);
-		m_pBulletPhysics->add(m_pGround);
-	}
-
-	/// Creating target point, static
-	{
-		m_pTarget = new BulletBody(MASS_TARGET, btVector3(TargetX, 0, TargetY), new btConeShape(btScalar(0.5), btScalar(0.001)), false);
-		m_pTarget->getBody()->setCollisionFlags(m_pTarget->getBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-		m_pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
-			, getStateDescriptor().getVarIndex("target-y"), -1); 
-		m_pBulletPhysics->add(m_pTarget);
+		KinematicObject* pTarget = new KinematicObject(BulletPhysics::MASS_TARGET
+			, btVector3(BulletPhysics::TargetX, BulletPhysics::TargetZ, BulletPhysics::TargetY)
+			, new btConeShape(btScalar(0.5), btScalar(0.001)));
+		pTarget->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("target-x")
+			, getStateDescriptor().getVarIndex("target-y"), -1);
+		m_pBulletPhysics->add(pTarget);
 	}
 
 	///Creating dynamic box
 	{
-		m_pBox = new Box(MASS_BOX, btVector3(boxOrigin_x, 0, boxOrigin_y), new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))), true);
-		m_pBox->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("box-x")
+		Box* pBox = new Box(BulletPhysics::MASS_BOX
+			, btVector3(BulletPhysics::boxOrigin_x, BulletPhysics::boxOrigin_z, BulletPhysics::boxOrigin_y)
+			, new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))));
+		pBox->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("box-x")
 			, getStateDescriptor().getVarIndex("box-y")
 			, getStateDescriptor().getVarIndex("box-theta"));
-		m_pBox->setRelativeStateVarIds(getStateDescriptor().getVarIndex("box-to-target-x")
+		pBox->setRelativeStateVarIds(getStateDescriptor().getVarIndex("box-to-target-x")
 			, getStateDescriptor().getVarIndex("box-to-target-y")
 			, getStateDescriptor().getVarIndex("target-x")
 			, getStateDescriptor().getVarIndex("target-y"));
-		m_pBulletPhysics->add(m_pBox);
+		m_pBulletPhysics->add(pBox);
 	}
 
 	///creating  dynamic robot one
 	{
-		m_pRobot1 = new Robot(MASS_ROBOT, btVector3(r1origin_x, 0, r1origin_y), new btSphereShape(btScalar(0.5)));
-		m_pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
+		Robot* pRobot1 = new Robot(BulletPhysics::MASS_ROBOT
+			, btVector3(BulletPhysics::r1origin_x, BulletPhysics::r1origin_z, BulletPhysics::r1origin_y)
+			, new btSphereShape(btScalar(0.5)));
+		pRobot1->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot1-x")
 			, getStateDescriptor().getVarIndex("robot1-y")
 			, getStateDescriptor().getVarIndex("robot1-theta"));
-		m_pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
+		pRobot1->setActionIds(getActionDescriptor().getVarIndex("robot1-v")
 			, getActionDescriptor().getVarIndex("robot1-omega"));
-		m_pRobot1->setRelativeStateVarIds(getStateDescriptor().getVarIndex("robot1-to-box-x")
+		pRobot1->setRelativeStateVarIds(getStateDescriptor().getVarIndex("robot1-to-box-x")
 			, getStateDescriptor().getVarIndex("robot1-to-box-y")
 			, getStateDescriptor().getVarIndex("box-x")
 			, getStateDescriptor().getVarIndex("box-y"));
-		m_pBulletPhysics->add(m_pRobot1);
+		m_pBulletPhysics->add(pRobot1);
 	}
 
 	///creating  dynamic robot two
 	{
-		m_pRobot2 = new Robot(MASS_ROBOT, btVector3(r2origin_x, 0, r2origin_y), new btSphereShape(btScalar(0.5)));
-		m_pRobot2->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot2-x")
+		Robot* pRobot2 = new Robot(BulletPhysics::MASS_ROBOT
+			, btVector3(BulletPhysics::r2origin_x, BulletPhysics::r2origin_z, BulletPhysics::r2origin_y)
+			, new btSphereShape(btScalar(0.5)));
+		pRobot2->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("robot2-x")
 			, getStateDescriptor().getVarIndex("robot2-y")
 			, getStateDescriptor().getVarIndex("robot2-theta"));
-		m_pRobot2->setActionIds(getActionDescriptor().getVarIndex("robot2-v")
+		pRobot2->setActionIds(getActionDescriptor().getVarIndex("robot2-v")
 			, getActionDescriptor().getVarIndex("robot2-omega"));
-		m_pRobot2->setRelativeStateVarIds(getStateDescriptor().getVarIndex("robot2-to-box-x")
+		pRobot2->setRelativeStateVarIds(getStateDescriptor().getVarIndex("robot2-to-box-x")
 			, getStateDescriptor().getVarIndex("robot2-to-box-y")
 			, getStateDescriptor().getVarIndex("box-x")
 			, getStateDescriptor().getVarIndex("box-y"));
-		m_pBulletPhysics->add(m_pRobot2);
+		m_pBulletPhysics->add(pRobot2);
 	}
 
 

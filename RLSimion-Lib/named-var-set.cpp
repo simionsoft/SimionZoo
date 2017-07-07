@@ -59,7 +59,6 @@ double CNamedVarSet::get(const char* varName) const
 	if (varIndex >= 0)
 		return m_pValues[varIndex];
 
-	assert(0);
 	return 0.0;
 }
 
