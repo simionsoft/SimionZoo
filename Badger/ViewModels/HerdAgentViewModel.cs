@@ -16,19 +16,28 @@ namespace Badger.ViewModels
             m_herdAgentInfo = info;
             ProcessorLoad = m_herdAgentInfo.ProcessorLoad.ToString("0.") + "%";
             State = m_herdAgentInfo.State;
+            IpAddress = m_herdAgentInfo.ipAddress;
             IsSelected = true;
         }
 
         public bool IsSelected { get; set; }
 
         //Interfaces to HerdAgentInfo object's properties. This avoids references to Caliburn from the Herd
+
+        private IPEndPoint m_ipAddress;
+
         public IPEndPoint IpAddress
         {
-            get { return m_herdAgentInfo.ipAddress; }
-            set { m_herdAgentInfo.ipAddress = value; }
+            get { return m_ipAddress; }
+            set
+            {
+                m_ipAddress = value;
+                NotifyOfPropertyChange(() => IpAddress);
+                NotifyOfPropertyChange(() => IpAddressString);
+            }
         }
 
-        public string IpAddressString { get { return m_herdAgentInfo.ipAddressString; } set { } }
+        public string IpAddressString { get { return IpAddress.Address.ToString(); } set { } }
 
         public DateTime lastACK
         {
