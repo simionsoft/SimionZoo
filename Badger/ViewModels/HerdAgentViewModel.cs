@@ -36,6 +36,8 @@ namespace Badger.ViewModels
             set { m_herdAgentInfo.lastACK = value; }
         }
 
+        public string ProcessorId { get { return m_herdAgentInfo.ProcessorId; } }
+
         public int NumProcessors { get { return m_herdAgentInfo.NumProcessors; } }
 
         public string ProcessorArchitecture { get { return m_herdAgentInfo.ProcessorArchitecture; } }

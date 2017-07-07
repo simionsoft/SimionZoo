@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
 using Herd;
 using Caliburn.Micro;
 
@@ -40,8 +39,29 @@ namespace Badger.ViewModels
                     // Ordering the inner list by number of processor 
                     orderedHerdAgentList = m_innerHerdAgentList.OrderByDescending(o => o.NumProcessors).ToList();
 
-                    // m_herdAgentList.Clear();
                     int len = m_herdAgentList.Count;
+                    int lenOrdered = orderedHerdAgentList.Count;
+
+                    // This condition and all the code inside it makes a temporal fix to avoid
+                    // to have inactive agents in list due to IP address changing at runtime.
+                    if (len > lenOrdered)
+                    {
+                        for (int i = len - 1; i >= 0; i--)
+                        {
+                            bool found = false;
+                            int index = 0;
+                            while (!found && index < lenOrdered)
+                            {
+                                if (Equals(orderedHerdAgentList[index].ipAddress, m_herdAgentList[i].IpAddress))
+                                    found = true;
+                                index++;
+                            }
+
+                            if (!found)
+                                m_herdAgentList.Remove(m_herdAgentList[i]);
+                        }
+                    }
+
 
                     foreach (HerdAgentInfo agent in orderedHerdAgentList)
                     {
@@ -58,7 +78,8 @@ namespace Badger.ViewModels
                                 found = true;
                             }
 
-                            index++; ;
+
+                            index++;
                         }
 
                         if (!found)
@@ -94,6 +115,7 @@ namespace Badger.ViewModels
         {
             NotifyOfPropertyChange(() => herdAgentList);
         }
+
         private void resendBroadcast(object sender, System.Timers.ElapsedEventArgs e)
         {
             m_shepherd.sendBroadcastHerdAgentQuery();

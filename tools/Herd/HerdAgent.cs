@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -78,6 +79,8 @@ namespace Herd
         public string State { get { return getProperty(HerdAgent.m_stateXMLTag); } set { } }
 
         public string Version { get { return getProperty(HerdAgent.m_versionXMLTag); } set { } }
+
+        public string ProcessorId { get { return getProperty(HerdAgent.m_processorIdTag); } }
 
         public int NumProcessors
         {
@@ -155,6 +158,7 @@ namespace Herd
 
         public const string m_herdDescriptionXMLTag = "HerdAgent";
         public const string m_versionXMLTag = "HerdAgentVersion";
+        public const string m_processorIdTag = "ProccesorId";
         public const string m_numProcessorsXMLTag = "NumberOfProcessors";
         public const string m_stateXMLTag = "State";
         public const string TotalMemoryTag = "Memory";
@@ -384,6 +388,20 @@ namespace Herd
             return m_cpuCounter.NextValue();
         }
 
+        public string GetProcessorId()
+        {
+            var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
+            ManagementObjectCollection mbsList = mbs.Get();
+            string id = "";
+            foreach (ManagementObject mo in mbsList)
+            {
+                id = mo["ProcessorId"].ToString();
+                break;
+            }
+
+            return id;
+        }
+
         /// <summary>
         ///     Get information about CUDA installation.
         /// </summary>
@@ -451,6 +469,8 @@ namespace Herd
                 + "<" + m_versionXMLTag + ">"
                 + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
                 + "</" + m_versionXMLTag + ">"
+                // CPU amount of cores
+                + "<" + m_processorIdTag + ">" + GetProcessorId() + "</" + m_processorIdTag + ">"
                 // CPU amount of cores
                 + "<" + m_numProcessorsXMLTag + ">" + Environment.ProcessorCount + "</" + m_numProcessorsXMLTag + ">"
                 // CPU architecture
