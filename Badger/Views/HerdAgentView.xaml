@@ -10,26 +10,22 @@
 
     <UserControl.Resources>
         <ControlTemplate x:Key="HerdAgentExpanderButton" TargetType="{x:Type ToggleButton}">
-            <Border x:Name="ExpanderButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                <Grid Background="#FAFAFA">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Rectangle Fill="Transparent" Grid.ColumnSpan="2"/>
-                    <Path x:Name="Arrow" Grid.Column="1" Data="M7.41,7.84L12,12.42l4.59,-4.58L18,9.25l-6,6 -6,-6z"
+            <Grid Background="#FAFAFA" Cursor="Hand">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+               
+                <Path x:Name="Arrow" Grid.Column="1" Data="M7.41,7.84L12,12.42l4.59,-4.58L18,9.25l-6,6 -6,-6z"
                           Width="24" Height="24" Fill="#89000000" HorizontalAlignment="Center"
                           VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="5">
-                        <Path.RenderTransform>
-                            <RotateTransform Angle="0"/>
-                        </Path.RenderTransform>
-                    </Path>
+                    <Path.RenderTransform>
+                        <RotateTransform Angle="0"/>
+                    </Path.RenderTransform>
+                </Path>
 
-                    <ContentPresenter x:Name="HeaderContent" Grid.Column="0" Margin="0" ContentSource="Content"/>
-                </Grid>
-            </Border>
+                <ContentPresenter x:Name="HeaderContent" Grid.Column="0" Margin="0" ContentSource="Content"/>
+            </Grid>
             <ControlTemplate.Triggers>
                 <!-- Animate arrow when toggled-->
                 <Trigger Property="IsChecked" Value="True">
@@ -99,7 +95,7 @@
         </ControlTemplate>
     </UserControl.Resources>
 
-    <Border BorderThickness="1" BorderBrush="LightGray" Cursor="Hand">
+    <Border BorderThickness="1" BorderBrush="LightGray">
         <Expander Template="{StaticResource HerdAgentExpander}" MinWidth="250">
             <Expander.Header>
                 <Grid>

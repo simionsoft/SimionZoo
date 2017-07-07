@@ -390,16 +390,32 @@ namespace Herd
         /// <returns>The CUDA version installed or -1 if none was found</returns>
         public string GetCudaInfo()
         {
-            if (File.Exists(@"C:\nvapi.dll"))
-            {
-                // After this I check for nvcuda.dll and then cudart.dll.
-                // Get the file version for the notepad.
-                FileVersionInfo myFileVersionInfo = FileVersionInfo.GetVersionInfo(@"C:\MyAssembly.dll");
-                return myFileVersionInfo.FileVersion;
-            }
+            string[] dllNames = { @"nvcuda.dll", @"nvcuda64.dll" };
+            string dir = Environment.SystemDirectory;
 
-            return HerdAgentInfo.NoneProperty;
+            try
+            {
+                FileVersionInfo myFileVersionInfo = null;
+                bool bCudaCapable = false;
+                foreach (string dll in dllNames)
+                {
+                    var dllPath = dir + "\\" + dll;
+                    myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
+                    bCudaCapable = true;
+                }
+
+                if (bCudaCapable)
+                    return myFileVersionInfo.ProductVersion;
+
+                return HerdAgentInfo.NoneProperty;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.StackTrace);
+                return HerdAgentInfo.NoneProperty;
+            }
         }
+
 
         [StructLayout(LayoutKind.Sequential)]
         struct MEMORYSTATUSEX
