@@ -1,4 +1,5 @@
 #pragma once
+#include "mem-manager.h"
 #include <string>
 using namespace std;
 class CSimionMemPool;
@@ -9,7 +10,7 @@ class CMemBlock
 	double* m_pBuffer = nullptr;
 	int m_blockSize = 0;
 	bool m_bInitialized = false;
-	int m_lastAccess = 0;
+	BUFFER_SIZE m_lastAccess = 0;
 	int m_id;
 	bool m_bDumped = false;
 
@@ -28,7 +29,8 @@ public:
 	int size() const { return m_blockSize; }
 	bool bInitialized() const { return m_bInitialized; }
 	void setInitialized() { m_bInitialized= true; }
-	int getLastAccess() const { return m_lastAccess; }
+	BUFFER_SIZE getLastAccess() const { return m_lastAccess; }
+	void setLastAccess(BUFFER_SIZE newValue) { m_lastAccess = newValue; }
 	int getId() const { return m_id; }
 
 	double& operator[](size_t index);

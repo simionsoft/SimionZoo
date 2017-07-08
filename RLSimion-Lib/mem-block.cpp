@@ -15,6 +15,11 @@ CMemBlock::~CMemBlock()
 
 double& CMemBlock::operator[](size_t index)
 {
+	m_lastAccess = m_pPool->getAccessCounter();
+	if (m_lastAccess == std::numeric_limits<BUFFER_SIZE>::max())
+	{
+		m_pPool->resetAccessCounter();
+	}
 	return m_pBuffer[index];
 }
 

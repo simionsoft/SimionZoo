@@ -54,7 +54,8 @@ public:
 	BUFFER_SIZE getElementSize() const { return m_elementSize; }
 	BUFFER_SIZE getBlockSize() const { return m_memBlockSize; }
 	virtual bool bCanAllocate(BUFFER_SIZE elementCount) const { return elementCount == m_numElements; }
-	BUFFER_SIZE getAccessCounter() const { return m_accessCounter; }
+	BUFFER_SIZE getAccessCounter();
+	void resetAccessCounter();
 
 	virtual IMemBuffer* getHandler(BUFFER_SIZE elementCount);
 	void copy(IMemBuffer* pSrc, IMemBuffer* pDst);

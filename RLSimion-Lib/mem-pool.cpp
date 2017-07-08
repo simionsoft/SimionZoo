@@ -121,19 +121,31 @@ double& CSimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 
 bool compare_lastAccess(CMemBlock* pFirst, CMemBlock* pSecond)
 {
-	return (pFirst->getLastAccess() >= pSecond->getLastAccess());
+	return (pFirst->getLastAccess() > pSecond->getLastAccess());
 }
 
 double* CSimionMemPool::recycleMem()
 {
 	m_sortedAllocatedMemBlocks.sort(compare_lastAccess);
 
-	CMemBlock* pRecycledMemBlock = m_sortedAllocatedMemBlocks.front();
+	//blocks are sorted from last accest to oldest accest
+	CMemBlock* pRecycledMemBlock = m_sortedAllocatedMemBlocks.back();
 	pRecycledMemBlock->dumpToFile();
 	double* pBuffer= pRecycledMemBlock->deallocate();
-	m_sortedAllocatedMemBlocks.pop_front();
+	m_sortedAllocatedMemBlocks.pop_back();
 	
 	return pBuffer;
+}
+
+void CSimionMemPool::resetAccessCounter()
+{
+	m_sortedAllocatedMemBlocks.sort(compare_lastAccess);
+
+	BUFFER_SIZE oldestAccessCounter = m_sortedAllocatedMemBlocks.back()->getLastAccess();
+	for (auto it = m_sortedAllocatedMemBlocks.begin(); it != m_sortedAllocatedMemBlocks.end(); ++it)
+		(*it)->setLastAccess((*it)->getLastAccess() - oldestAccessCounter);
+
+	m_accessCounter = 0;
 }
 
 void CSimionMemPool::initialize(CMemBlock* pBlock)
@@ -222,4 +234,9 @@ void CSimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 			minRelIndexInBlock = maxRelIndexInBlock;
 		}
 	}
+}
+
+BUFFER_SIZE CSimionMemPool::getAccessCounter()
+{
+	return ++m_accessCounter;
 }
