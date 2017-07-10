@@ -134,11 +134,11 @@ namespace StateActionVFA
 			CState* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
 			CAction* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
 			//Q(s={0.0,1.0,0.0},a={1.0,1.0})= 100;
-			pState->set("rx1", 0.0);
-			pState->set("ry1", 1.0);
-			pState->set("theta", 0.0);
-			pAction->set("v", 1.0);
-			pAction->set("omega", 0.5);
+			pState->set("robot1-x", 0.0);
+			pState->set("robot1-y", 1.0);
+			pState->set("robot1-theta", 0.0);
+			pAction->set("robot1-v", 1.0);
+			pAction->set("robot1-omega", 0.5);
 
 			pVFA->getFeatures(pState, pAction, pFeatures);
 			pFeatures->normalize();
@@ -153,19 +153,19 @@ namespace StateActionVFA
 			if (abs(value - 100) > 0.001) Assert::Fail();
 
 			//Q(s={0.0,1.0,0.0},a={-1.0,0.0})= 10;
-			pState->set("rx1", 0.0);
-			pState->set("ry1", 1.0);
-			pState->set("theta", 0.0);
-			pAction->set("v", -1.0);
-			pAction->set("omega", -0.5);
+			pState->set("robot1-x", 0.0);
+			pState->set("robot1-y", 1.0);
+			pState->set("robot1-theta", 0.0);
+			pAction->set("robot1-v", -1.0);
+			pAction->set("robot1-omega", -0.5);
 
 			pVFA->getFeatures(pState, pAction, pFeatures);
 			pFeatures->mult(10);
 			pVFA->argMax(pState, pAction);
-			double argMaxV = pAction->get("v");
+			double argMaxV = pAction->get("robot1-v");
 			if (abs(argMaxV - 1.0) > 0.1) Assert::Fail();
 			
-			double argMaxOmega = pAction->get("omega");
+			double argMaxOmega = pAction->get("robot1-omega");
 			if (abs(argMaxOmega - 0.5) > 0.1) Assert::Fail();
 
 			delete pState;

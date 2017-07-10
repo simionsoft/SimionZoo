@@ -29,7 +29,7 @@ class CSimionMemPool: public IMemPool
 	//Local collection of mem. buffer handlers
 	vector<CSimionMemBuffer*> m_memBufferHandlers;
 	vector<CMemBlock*> m_memBlocks;
-	list<CMemBlock*> m_sortedAllocatedMemBlocks;
+	vector<CMemBlock*> m_allocatedMemBlocks;
 
 	void addMemBufferHandler(CSimionMemBuffer* pMemBufferHandler);
 	//This function returns a buffer of size elementCount*sizeof(double)

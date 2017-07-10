@@ -27,13 +27,17 @@ double* CMemBlock::deallocate()
 {
 	double* pBuffer = m_pBuffer;
 	m_pBuffer = 0;
-	m_bInitialized = false;
+	m_bInitialized = true; //must be restored from file
 	return pBuffer;
 }
 
 void CMemBlock::dumpToFile()
 {
 	FILE* pFile;
+
+	if (!m_pBuffer)
+		return;
+
 	string dumpFile = getDumpFileName();
 	fopen_s(&pFile, dumpFile.c_str(), "wb");
 	if (pFile)

@@ -83,37 +83,43 @@ double& CSimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 	BUFFER_SIZE relBlockAddr = elementStartByte % m_memBlockSize;
 	double* pMemBuffer= 0;
 	CMemBlock* pBlock = m_memBlocks[(size_t)blockId];
-
-	if (!pBlock->bAllocated())
+	try
 	{
-		//can we allocate more memory?
-		BUFFER_SIZE allocatedMem = getTotalAllocatedMem();
-		BUFFER_SIZE requestedMem = m_memBlockSize * sizeof(double);
-
-		if (m_memLimit==0 || allocatedMem+requestedMem<=m_memLimit)
+		if (!pBlock->bAllocated())
 		{
-			//try to allocate the memory buffer
-			pMemBuffer = tryToAllocateMem(pBlock->size());
+			//can we allocate more memory?
+			BUFFER_SIZE allocatedMem = getTotalAllocatedMem();
+			BUFFER_SIZE requestedMem = m_memBlockSize * sizeof(double);
 
-			if (pMemBuffer)
+			if (m_memLimit == 0 || allocatedMem + requestedMem <= m_memLimit)
 			{
-				//memory block successfully allocated
-				m_sortedAllocatedMemBlocks.push_front(pBlock);
-				pBlock->setBuffer(pMemBuffer);
-				m_totalAllocatedMem+= m_memBlockSize * sizeof(double);
+				//try to allocate the memory buffer
+				pMemBuffer = tryToAllocateMem(pBlock->size());
+
+				if (pMemBuffer)
+				{
+					//memory block successfully allocated
+					m_allocatedMemBlocks.push_back(pBlock);
+					pBlock->setBuffer(pMemBuffer);
+					m_totalAllocatedMem += m_memBlockSize * sizeof(double);
+				}
 			}
+			if (!pMemBuffer)
+			{
+				//failed to allocate the memory block: either permission was denied or there is no more available memory
+				//recycle some already allocated memory block after dumping it to a file
+				pBlock->setBuffer(recycleMem());
+				m_allocatedMemBlocks.push_back(pBlock);
+			}
+			//initialization
+			if (!pBlock->bInitialized())
+				initialize(pBlock);
+			else pBlock->restoreFromFile();
 		}
-		if (!pMemBuffer)
-		{
-			//failed to allocate the memory block: either permission was denied or there is no more available memory
-			//recycle some already allocated memory block after dumping it to a file
-			pBlock->setBuffer(recycleMem());
-			m_sortedAllocatedMemBlocks.push_front(pBlock);
-		}
-		//initialization
-		if (!pBlock->bInitialized())
-			initialize(pBlock);
-		else pBlock->restoreFromFile();
+	}
+	catch (std::exception ex)
+	{
+		int x = 0;
 	}
 
 	return (*pBlock)[relBlockAddr];
@@ -126,23 +132,23 @@ bool compare_lastAccess(CMemBlock* pFirst, CMemBlock* pSecond)
 
 double* CSimionMemPool::recycleMem()
 {
-	m_sortedAllocatedMemBlocks.sort(compare_lastAccess);
+	std::sort(m_allocatedMemBlocks.begin(),m_allocatedMemBlocks.end(),compare_lastAccess);
 
 	//blocks are sorted from last accest to oldest accest
-	CMemBlock* pRecycledMemBlock = m_sortedAllocatedMemBlocks.back();
+	CMemBlock* pRecycledMemBlock = m_allocatedMemBlocks.back();
 	pRecycledMemBlock->dumpToFile();
 	double* pBuffer= pRecycledMemBlock->deallocate();
-	m_sortedAllocatedMemBlocks.pop_back();
+	m_allocatedMemBlocks.pop_back();
 	
 	return pBuffer;
 }
 
 void CSimionMemPool::resetAccessCounter()
 {
-	m_sortedAllocatedMemBlocks.sort(compare_lastAccess);
+	std::sort(m_allocatedMemBlocks.begin(), m_allocatedMemBlocks.end(), compare_lastAccess);
 
-	BUFFER_SIZE oldestAccessCounter = m_sortedAllocatedMemBlocks.back()->getLastAccess();
-	for (auto it = m_sortedAllocatedMemBlocks.begin(); it != m_sortedAllocatedMemBlocks.end(); ++it)
+	BUFFER_SIZE oldestAccessCounter = m_allocatedMemBlocks.back()->getLastAccess();
+	for (auto it = m_allocatedMemBlocks.begin(); it != m_allocatedMemBlocks.end(); ++it)
 		(*it)->setLastAccess((*it)->getLastAccess() - oldestAccessCounter);
 
 	m_accessCounter = 0;
@@ -193,6 +199,10 @@ void CSimionMemPool::init(BUFFER_SIZE blockSize)
 	int numBlocks= totalNumElements / m_memBlockSize;
 	if (totalNumElements % m_memBlockSize > 0)
 		++numBlocks;
+
+	//pre-allocate space in both vectors
+	m_memBlocks.reserve(numBlocks);
+	m_allocatedMemBlocks.reserve(numBlocks);
 
 	for (int i = 0; i < numBlocks; ++i)
 	{
