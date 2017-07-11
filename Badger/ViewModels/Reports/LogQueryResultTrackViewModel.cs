@@ -13,83 +13,28 @@ namespace Badger.ViewModels
         {
             values = new double[numValues];
         }
-
         public void calculateStats()
         {
-            stats.min = getMinValueOfArray(values);
-            stats.max = getMaxValueOfArray(values);
-            stats.avg = getAverageOfArrayValues(values);
-            stats.stdDev = getStdDeviationOfArrayValues(values, stats.avg);
-        }
-
-        private double getMinValueOfArray(double []values)
-        {
-            if (values != null)
+            if (values == null) return;
+            //calculate avg, min and max
+            double sum = 0.0;
+            stats.min = values[0]; stats.max = values[0];
+            foreach (double val in values)
             {
-                double minimumValue = values[0];
-                foreach(double valueToCheck in values)
-                {
-                    if (valueToCheck < minimumValue) minimumValue = valueToCheck;
-                }
-                return minimumValue;
+                sum += val;
+                if (val > stats.max) stats.max = val;
+                if (val < stats.min) stats.min = val;
             }
-            else
+            stats.avg = sum / values.Length;
+            //calculate std. deviation
+            double diff;
+            sum = 0.0;
+            foreach (double val in values)
             {
-                throw new ArgumentNullException();
+                diff = val - stats.avg;
+                sum += diff * diff;
             }
-        }
-
-        private double getMaxValueOfArray(double[] values)
-        {
-            if (values != null)
-            {
-                double maximumValue = values[0];
-                foreach (double valueToCheck in values)
-                {
-                    if (valueToCheck > maximumValue) maximumValue = valueToCheck;
-                }
-                return maximumValue;
-            }
-            else
-            {
-                throw new ArgumentNullException();
-            }
-        }
-
-        private double getAverageOfArrayValues(double[] values)
-        {
-            if (values != null)
-            {
-                double sum = 0;
-                foreach (double valueToSum in values)
-                {
-                    sum += valueToSum;
-                }
-                return sum / values.Length;
-            }
-            else
-            {
-                throw new ArgumentNullException();
-            }
-        }
-
-        private double getStdDeviationOfArrayValues(double[] values, double averageValue)
-        {
-            if (values != null)
-            {
-                double valueDifferenceWithAvg = 0;
-                double totalSum = 0;
-                foreach (double valueToCheck in values)
-                {
-                    valueDifferenceWithAvg = valueToCheck - averageValue;
-                    totalSum += Math.Pow(valueDifferenceWithAvg, 2);
-                }
-                return Math.Sqrt(totalSum / values.Length);
-            }
-            else
-            {
-                throw new ArgumentNullException();
-            }
+            stats.stdDev = Math.Sqrt(sum / values.Length);
         }
     }
     public class TrackVariableData
