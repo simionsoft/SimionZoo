@@ -81,10 +81,9 @@
                                 <Theta>0.5</Theta>
                                 <Scale>
                                   <Schedule>
-                                    <Simple-Linear-Decay>
-                                      <Initial-Value>1.0</Initial-Value>
-                                      <End-Value>0.0</End-Value>
-                                    </Simple-Linear-Decay>
+                                    <Constant>
+                                      <Value>1.0</Value>
+                                    </Constant>
                                   </Schedule>
                                 </Scale>
                               </Ornstein-Uhlenbeck>
@@ -119,12 +118,11 @@
                                 <Mu>0.0</Mu>
                                 <Sigma>0.2</Sigma>
                                 <Theta>0.1</Theta>
-				<Scale>
+                                <Scale>
                                   <Schedule>
-                                    <Simple-Linear-Decay>
-                                      <Initial-Value>1.0</Initial-Value>
-                                      <End-Value>0.0</End-Value>
-                                    </Simple-Linear-Decay>
+                                    <Constant>
+                                      <Value>1.0</Value>
+                                    </Constant>
                                   </Schedule>
                                 </Scale>
                               </Ornstein-Uhlenbeck>

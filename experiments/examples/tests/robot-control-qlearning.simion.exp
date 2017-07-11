@@ -79,7 +79,7 @@
 				<Schedule>
 		<Simple-Linear-Decay>
 			<Initial-Value>0.5</Initial-Value>
-			<End-Value>0.0</End-Value>
+			<End-Value>0.5</End-Value>
 		</Simple-Linear-Decay>
 		</Schedule>
 			</Epsilon>
@@ -92,7 +92,7 @@
 			<Alpha>
 				<Schedule>
 		<Constant>
-			<Value>0.001</Value>
+			<Value>0.0005</Value>
 		</Constant>
 		</Schedule>
 			</Alpha>
