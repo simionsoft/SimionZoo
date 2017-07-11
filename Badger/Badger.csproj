@@ -130,7 +130,6 @@
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
-    <Compile Include="ViewModels\Reports\GroupStatsViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
@@ -144,7 +143,7 @@
     <Compile Include="ViewModels\Reports\LoggedExperimentViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedVariableViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
-    <Compile Include="ViewModels\Reports\VariableStatsViewModel.cs" />
+    <Compile Include="ViewModels\Reports\StatsViewModel.cs" />
     <Compile Include="ViewModels\MonitoredExperimentViewModel.cs" />
     <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
@@ -152,7 +151,7 @@
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
     <Compile Include="ViewModels\ExperimentMonitorWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportsWindowViewModel.cs" />
-    <Compile Include="ViewModels\Reports\EpisodeStatsViewModel.cs" />
+    <Compile Include="ViewModels\Reports\StatViewModel.cs" />
     <Compile Include="ViewModels\ShepherdViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
@@ -278,10 +277,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Reports\GroupStatsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Reports\LoggedExperimentalUnitView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -342,7 +337,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Reports\VariableStatsView.xaml">
+    <Page Include="Views\Reports\StatsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

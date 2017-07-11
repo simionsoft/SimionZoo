@@ -27,14 +27,14 @@ namespace Badger.ViewModels
         public void updateView() { }
 
         //stats
-        private BindableCollection<VariableStatsViewModel> m_stats = new BindableCollection<VariableStatsViewModel>();
-        public BindableCollection<VariableStatsViewModel> stats
+        private BindableCollection<StatsViewModel> m_stats = new BindableCollection<StatsViewModel>();
+        public BindableCollection<StatsViewModel> stats
         {
             get { return m_stats; }
             set { m_stats = value; NotifyOfPropertyChange(() => stats); }
         }
-        private VariableStatsViewModel m_selectedStat;
-        public VariableStatsViewModel selectedStat
+        private StatsViewModel m_selectedStat;
+        public StatsViewModel selectedStat
         {
             get { return m_selectedStat; }
             set { m_selectedStat = value; NotifyOfPropertyChange(() => selectedStat); }
@@ -53,7 +53,7 @@ namespace Badger.ViewModels
                 using (StreamWriter fileWriter = File.CreateText(statsFile))
                 {
                     fileWriter.WriteLine("<" + XMLConfig.statisticsFileTag + ">");
-                    foreach (VariableStatsViewModel stat in stats) stat.export(fileWriter, "  ");
+                    foreach (StatsViewModel stat in stats) stat.export(fileWriter, "  ");
                     fileWriter.WriteLine("</" + XMLConfig.statisticsFileTag + ">");
                     fileWriter.Close();
                 }
@@ -95,32 +95,24 @@ namespace Badger.ViewModels
 
         private void loadAllStats(LogQuery query)
         {
-            VariableStatsViewModel newVariableStatsViewModel;
+            StatsViewModel newStatsViewModel;
             foreach (string variable in query.variables)
             {
-                newVariableStatsViewModel = new VariableStatsViewModel(variable);
+                newStatsViewModel = new StatsViewModel(variable);
                 int trackId = 0;
                 foreach (LogQueryResultTrackViewModel track in query.resultTracks)
                 {
                     TrackVariableData trackData = track.trackData.getVariableData(variable);
                     if (trackData != null)
                     {
-                        GroupStatsViewModel groupStats = new GroupStatsViewModel(trackId.ToString(), track.groupId);
-                        EpisodeStatsViewModel episodeStats = null;
-                        
-                        for (int i = 0; i < trackData.evaluationEpisodesData.Length; i++)
-                        {
-                            episodeStats = new EpisodeStatsViewModel(i.ToString());
-                            episodeStats.statData = trackData.evaluationEpisodesData[i].stats;
-
-                            groupStats.addNewEpisodeStats(episodeStats);
-                        }
-                        newVariableStatsViewModel.addGroup(groupStats);
+                        StatViewModel trackStats = new StatViewModel(track.groupId, trackId.ToString());
+                        trackStats.lastEpisodeStats = trackData.lastEpisodeData.stats;
+                        trackStats.experimentStats = trackData.experimentData.stats;
+                        newStatsViewModel.addStat(trackStats);
                         trackId++;
                     }
                 }
-                newVariableStatsViewModel.selectedGroup = newVariableStatsViewModel.groups[0];
-                stats.Add(newVariableStatsViewModel);
+                stats.Add(newStatsViewModel);
             }
         }
 
@@ -163,9 +155,7 @@ namespace Badger.ViewModels
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
-                        //lineSeriesId = newPlotViewModel.addLineSeries(query.resultTracks[i].groupId);
-                        //It's best to show the id than the full groupId name
-                        lineSeriesId = newPlotViewModel.addLineSeries(i.ToString());
+                        lineSeriesId = newPlotViewModel.addLineSeries(query.resultTracks[i].groupId);
                         for (int x = 0; x < variableData.experimentData.values.Length; ++x)
                         {
                             newPlotViewModel.addLineSeriesValue(lineSeriesId, x
