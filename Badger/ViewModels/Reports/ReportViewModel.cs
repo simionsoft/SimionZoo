@@ -84,7 +84,7 @@ namespace Badger.ViewModels
             StatsViewModel newStat;
             foreach (string variable in query.variables)
             {
-                newStat = new StatsViewModel(variable, this);
+                newStat = new StatsViewModel(variable);
                 foreach(LogQueryResultTrackViewModel track in query.resultTracks)
                 {
                     TrackVariableData trackData = track.trackData.getVariableData(variable);
