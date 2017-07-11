@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Badger.Simion;
 using Badger.Data;
-using System;
 
 namespace Badger.ViewModels
 {
@@ -100,131 +99,54 @@ namespace Badger.ViewModels
             EpisodeData lastEvalEpisode = experimentData.episodes[experimentData.episodes.Count - 1];
 
             int numSteps = lastEvalEpisode.steps.Count;
-            TrackData trackData = new TrackData(numSteps, experimentData.numEpisodes, varNames);
-            trackData.bSuccesful = experimentData.bSuccesful;
-            trackData.forkValues = forkValues;
+            TrackData data = new TrackData(numSteps, experimentData.numEpisodes, varNames);
+            data.bSuccesful = experimentData.bSuccesful;
+            data.forkValues = forkValues;
 
-            generateExperimentLongAvgValues(trackData, experimentData.episodes, varNames);
-
-            fillTrackDataRealAndSimTime(trackData, lastEvalEpisode.steps);
-            generateLastEpisodeData(trackData, lastEvalEpisode.steps, varNames);
-
-            generateAllEvaluationEpisodesValues(trackData, experimentData.episodes, varNames);
-
-            calculateEachVariableStats(trackData, varNames);
-
-            return trackData;
-        }
-
-        private void fillTrackDataRealAndSimTime(TrackData trackData, List<StepData> stepList)
-        {
-            int i = 0;
-            foreach (StepData step in stepList)
+            //experiment-long average values
+            foreach (EpisodeData episode in experimentData.episodes)
             {
-                trackData.realTime[i] = step.episodeRealTime;
-                trackData.simTime[i] = step.episodeSimTime;
-                i++;
-            }
-        }
-
-        private void generateLastEpisodeData(TrackData trackData, List<StepData> stepList, List<string> variablesNames)
-        {
-            int i = 0;
-            int variableIndex;
-            foreach (StepData step in stepList)
-            {
-                foreach (string variable in variablesNames)
+                foreach (string variable in varNames)
                 {
-                    variableIndex = m_variablesInLog.IndexOf(variable);
-                    TrackVariableData variableData = trackData.getVariableData(variable);
+                    double avg = 0.0;
+                    int variableIndex = m_variablesInLog.IndexOf(variable);
+                    TrackVariableData variableData = data.getVariableData(variable);
+                    if (variableData != null && episode.steps.Count > 0)
+                    {
+                        foreach (StepData step in episode.steps)
+                        {
+                            avg += step.data[variableIndex];
+                        }
+                        avg /= episode.steps.Count;
+                        variableData.experimentData.values[episode.index - 1] = avg;
+                    }
+                }
+            }
+
+            //last evaluation Episode
+            int i = 0;
+            foreach (StepData step in lastEvalEpisode.steps)
+            {
+                data.realTime[i] = step.episodeRealTime;
+                data.simTime[i] = step.episodeSimTime;
+                foreach (string variable in varNames)
+                {
+                    int variableIndex = m_variablesInLog.IndexOf(variable);
+                    TrackVariableData variableData = data.getVariableData(variable);
                     if (variableData != null)
                         variableData.lastEpisodeData.values[i] = step.data[variableIndex];
                 }
                 ++i;
             }
-        }
-
-        private void calculateEachVariableStats(TrackData trackData, List<string> variablesNames)
-        {
-            foreach (string variable in variablesNames)
+            //calculate each variable's last episode stats
+            foreach (string variable in varNames)
             {
-                TrackVariableData variableData = trackData.getVariableData(variable);
+                TrackVariableData variableData = data.getVariableData(variable);
                 if (variableData != null)
-                {
                     variableData.calculateStats();
-                }
-                else
-                {
-                    throw new Exception("Variable " + variable + " not loaded correctly");
-                }
             }
-        }
 
-        private void generateExperimentLongAvgValues(TrackData trackData, List<EpisodeData> episodes, List<string> variablesNames)
-        {
-            double avg;
-            int variableIndex;
-            foreach (EpisodeData episode in episodes)
-            {
-                if (episode.steps.Count > 0)
-                {
-                    foreach (string variable in variablesNames)
-                    {
-                        variableIndex = m_variablesInLog.IndexOf(variable);
-                        TrackVariableData trackVariableData = trackData.getVariableData(variable);
-                        if (trackVariableData != null)
-                        {
-                            avg = getAverageValueFromEpisodeStepsData(episode.steps, variableIndex);
-                            trackVariableData.experimentData.values[episode.index - 1] = avg;
-                        }
-                    }
-                }
-            }
-        }
-
-        private double getAverageValueFromEpisodeStepsData(List<StepData> stepList, int variableIndex)
-        {
-            if (stepList != null)
-            {
-                double sum = 0;
-                foreach (StepData step in stepList)
-                {
-                    sum += step.data[variableIndex];
-                }
-                double average = sum / stepList.Count;
-                return average;
-            }
-            else
-            {
-                throw new ArgumentNullException();
-            }
-        }
-
-        private void generateAllEvaluationEpisodesValues(TrackData trackData, List<EpisodeData> episodes, List<string> variablesNames)
-        {
-            int episodeIndex = 0;
-            foreach (EpisodeData episode in episodes)
-            {
-                generateEpisodeData(trackData, episode.steps, variablesNames, episodeIndex);
-                episodeIndex++;
-            }
-        }
-
-        private void generateEpisodeData(TrackData trackData, List<StepData> stepList, List<string> variablesNames, int episodeIndex)
-        {
-            int i = 0;
-            int variableIndex;
-            foreach (StepData step in stepList)
-            {
-                foreach (string variable in variablesNames)
-                {
-                    variableIndex = m_variablesInLog.IndexOf(variable);
-                    TrackVariableData variableData = trackData.getVariableData(variable);
-                    if (variableData != null)
-                        variableData.evaluationEpisodesData[episodeIndex].values[i] = step.data[variableIndex];
-                }
-                ++i;
-            }
+            return data;
         }
     }
 }

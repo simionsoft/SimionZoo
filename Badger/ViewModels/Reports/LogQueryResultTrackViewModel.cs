@@ -94,36 +94,20 @@ namespace Badger.ViewModels
     }
     public class TrackVariableData
     {
-        public TrackVariableData(int numSteps, int numEpisodes)
+        public TrackVariableData(int numSteps,int numEpisodes)
         {
-            if (numSteps > 0) lastEpisodeData = new DataSeries(numSteps);
-            if (numEpisodes > 0)
-            {
-                experimentData = new DataSeries(numEpisodes);
-                evaluationEpisodesData = new DataSeries[numEpisodes];
-                for (int i = 0; i < numEpisodes; i++)
-                {
-                    evaluationEpisodesData[i] = new DataSeries(numSteps);
-                }
-            }
-
+            if (numSteps>0) lastEpisodeData = new DataSeries(numSteps);
+            if (numEpisodes>0) experimentData = new DataSeries(numEpisodes);
         }
         public DataSeries lastEpisodeData;
         public DataSeries experimentData;
-        public DataSeries[] evaluationEpisodesData;
 
         public void calculateStats()
         {
             if (lastEpisodeData != null) lastEpisodeData.calculateStats();
             if (experimentData != null) experimentData.calculateStats();
-            foreach (DataSeries evaluationEpisode in evaluationEpisodesData)
-            {
-                if (evaluationEpisode != null)
-                    evaluationEpisode.calculateStats();
-            }
         }
     }
-
     public class TrackData
     {
         public bool bSuccesful;
