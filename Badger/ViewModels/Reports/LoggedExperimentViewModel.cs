@@ -29,9 +29,10 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Class constructor.
         /// </summary>
-        /// <param name="configNode"></param>
-        /// <param name="isForReport"></param>
-        public LoggedExperimentViewModel(XmlNode configNode, bool isForReport)
+        /// <param name="configNode">The XML node from which the experiment's parameters hang.</param>
+        /// <param name="baseDirectory">The directory of the parent batch file, if there is one.</param>
+        /// <param name="isForReport">True if we are reading the experiment to make a report.</param>
+        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool isForReport)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
 
@@ -59,7 +60,7 @@ namespace Badger.ViewModels
                         break;
 
                     case XMLConfig.experimentalUnitNodeTag:
-                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child);
+                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory);
 
                         if (isForReport)
                         {

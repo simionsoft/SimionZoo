@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.IO;
+using System;
 
 namespace Badger.Data
 {
@@ -116,6 +117,28 @@ namespace Badger.Data
             relativePath.Append(relDirs[relDirs.Length - 1]);
             relativePath.Replace('\\', '/');
             return relativePath.ToString();
+        }
+
+
+        //given the path (relative or absolute) of a file, this function returns the path without the
+        //file's name
+        //For example:
+        //-"c:\jander\clander.txt" -> "c:\jander\"
+        //-"clander.txt" -> ""
+        public static string getDirectory(string fileName)
+        {
+            if (fileName != "")
+            {
+                //the hard way because the elegant way didn't seem to work
+                int lastPos1, lastPos2, lastPos;
+                lastPos1 = fileName.LastIndexOf("/");
+                lastPos2 = fileName.LastIndexOf("\\");
+
+                lastPos = Math.Max(lastPos1, lastPos2);
+                if (lastPos > 0)
+                    return fileName.Substring(0, lastPos + 1);
+            }
+            return "";
         }
 
         //returns the file's name from the full path

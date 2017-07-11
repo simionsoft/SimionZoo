@@ -330,9 +330,9 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => loggedExperiments); }
         }
 
-        private void loadLoggedExperiment(XmlNode node)
+        private void loadLoggedExperiment(XmlNode node, string baseDirectory)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, true);
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, true);
             loggedExperiments.Add(newExperiment);
             Variables.AddRange(newExperiment.variables);
             bLogsLoaded = true;
