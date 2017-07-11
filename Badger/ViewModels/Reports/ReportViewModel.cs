@@ -108,7 +108,7 @@ namespace Badger.ViewModels
                         StatViewModel trackStats = new StatViewModel(track.groupId, trackId.ToString());
                         trackStats.lastEpisodeStats = trackData.lastEpisodeData.stats;
                         trackStats.experimentStats = trackData.experimentData.stats;
-                        newStatsViewModel.addStat(trackStats);
+                        newStatsViewModel.addOrganized(trackStats);
                         trackId++;
                     }
                 }
