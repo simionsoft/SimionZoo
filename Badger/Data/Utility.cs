@@ -119,6 +119,40 @@ namespace Badger.Data
             return relativePath.ToString();
         }
 
+        /// <summary>
+        /// Given the path (relative or absolute) of a file, this function removes all but "allowedLevels" levels of directories
+        ///<param name="fileName">path to a file from which directories must be removed</param>
+        ///<param name="allowedLevels">number of directory levels to be left in the returned path</param>
+        /// </summary>
+        //For example:
+        //-removeDirectories("c:\jander\clander\more.txt",2) -> "jander\clander\more.txt"
+        //-removeDirectories("c:\jander\clander\more.txt",0) -> "more.txt"
+        public static string removeDirectories(string fileName,uint allowedLevels=0)
+        {
+            if (fileName != "")
+            {
+                //the hard way because the elegant way didn't seem to work
+                int lastPos1, lastPos2, lastPos;
+                int startPos = fileName.Length - 1;
+
+                lastPos1 = fileName.LastIndexOf("/",startPos);
+                lastPos2 = fileName.LastIndexOf("\\",startPos);
+                lastPos = Math.Max(lastPos1, lastPos2);
+
+                while (lastPos>=0 && allowedLevels>0)
+                {
+                    allowedLevels--;
+                    startPos = lastPos - 1;
+
+                    lastPos1 = fileName.LastIndexOf("/", startPos);
+                    lastPos2 = fileName.LastIndexOf("\\", startPos);
+                    lastPos = Math.Max(lastPos1, lastPos2);
+                }
+                if (lastPos > 0)
+                    return fileName.Substring(lastPos + 1);
+            }
+            return fileName;
+        }
 
         //given the path (relative or absolute) of a file, this function returns the path without the
         //file's name

@@ -366,7 +366,9 @@ namespace Herd
                 outputFilename = getCachedFilename(m_nextFileName);
             else outputFilename = m_nextFileName;
             string outputDir = Path.GetDirectoryName(outputFilename);
-            Directory.CreateDirectory(outputDir);
+
+            if (!Directory.Exists(outputDir))
+                Directory.CreateDirectory(outputDir);
 
             return true;
         }
