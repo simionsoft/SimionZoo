@@ -39,7 +39,7 @@ namespace Badger.ViewModels
 
         private List<string> m_variablesInLog = new List<string>();
 
-        public LoggedExperimentalUnitViewModel(XmlNode configNode)
+        public LoggedExperimentalUnitViewModel(XmlNode configNode, string baseDirectory)
         {
             if (configNode.Attributes != null)
             {
@@ -47,11 +47,11 @@ namespace Badger.ViewModels
                     name = configNode.Attributes[XMLConfig.nameAttribute].Value;
 
                 if (configNode.Attributes.GetNamedItem(XMLConfig.pathAttribute) != null)
-                    experimentFilePath = configNode.Attributes[XMLConfig.pathAttribute].Value;
+                    experimentFilePath = baseDirectory + configNode.Attributes[XMLConfig.pathAttribute].Value;
             }
 
-            logDescriptorFilePath = SimionFileData.GetLogFilePath(experimentFilePath);
-            logFilePath = SimionFileData.GetLogFilePath(experimentFilePath, false);
+            logDescriptorFilePath = SimionFileData.GetLogFilePath(baseDirectory + experimentFilePath);
+            logFilePath = SimionFileData.GetLogFilePath(baseDirectory + experimentFilePath, false);
 
             //load the value of each fork used in this experimental unit
             foreach (XmlNode fork in configNode.ChildNodes)

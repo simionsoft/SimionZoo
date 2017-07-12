@@ -66,9 +66,14 @@ namespace Badger.ViewModels
                 // We are assuming the same exe file is used in all the experiments!!!
                 // IMPORTANT
 
+                //Because the experiment file might well be outside the RLSimion folder structure
+                //we need make all paths to experiment files relative and let the herd agent
+                //know that they must be renamed
+                string relPathExperimentFile = SimionFileData.experimentRelativeDir
+                     + "\\" + Utility.removeDirectories(experiment.FilePath, 2);
                 task.name = experiment.Name;
                 task.exe = experiment.ExeFile;
-                task.arguments = experiment.FilePath + " -pipe=" + experiment.PipeName;
+                task.arguments = relPathExperimentFile + " -pipe=" + experiment.PipeName;
                 task.pipe = experiment.PipeName;
 
                 job.tasks.Add(task);
@@ -90,6 +95,19 @@ namespace Badger.ViewModels
                     job.inputFiles.Add(experiment.FilePath);
 
                 Utility.getInputsAndOutputs(experiment.ExeFile, experiment.FilePath, ref job);
+
+                //add rename rules for experiments outside RLSimion's folder structure
+                //the experiment file itself
+                if (experiment.FilePath != relPathExperimentFile && !job.renameRules.Keys.Contains(experiment.FilePath))
+                    job.renameRules.Add(experiment.FilePath, relPathExperimentFile);
+                //the output files
+                foreach(string outputFile in job.outputFiles)
+                {
+                    string renamedFile = SimionFileData.experimentRelativeDir + "\\"
+                        + Utility.removeDirectories(outputFile, 2);
+                    if (outputFile!=renamedFile && !job.renameRules.Keys.Contains(outputFile))
+                        job.renameRules.Add(outputFile, renamedFile);
+                }
             }
 
             return job;
@@ -318,9 +336,9 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private void LoadLoggedExperiment(XmlNode node)
+        private void LoadLoggedExperiment(XmlNode node, string baseDirectory)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, false);
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node,baseDirectory, false);
             LoggedExperiments.Add(newExperiment);
         }
 

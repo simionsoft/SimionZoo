@@ -22,7 +22,10 @@ namespace Badger.Data
         public const string badgerLogFile = "badger-log.txt";
 
         public delegate void LogFunction(string message);
-        public delegate void XmlNodeFunction(XmlNode node);
+
+        //baseDirectory: directory where the batch file is located. Included to allow using paths
+        //relative to the batch file, instead of relative to the RLSimion folder structure
+        public delegate void XmlNodeFunction(XmlNode node, string baseDirectory);
 
         /// <summary>
         ///     Load experiment batch file.
@@ -48,7 +51,7 @@ namespace Badger.Data
                 foreach (XmlNode experiment in fileRoot.ChildNodes)
                 {
                     if (experiment.Name == XMLConfig.experimentNodeTag)
-                        perExperimentFunction(experiment);
+                        perExperimentFunction(experiment, Utility.getDirectory(batchFilename));
                 }
             }
             else
@@ -104,6 +107,7 @@ namespace Badger.Data
                 }
             }
             string batchFileDir = batchFilename.Remove( batchFilename.LastIndexOf("." + XMLConfig.experimentBatchExtension));
+            string batchFileName = Utility.getFileName(batchFileDir);
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
             if (Directory.Exists(batchFileDir))
@@ -155,12 +159,13 @@ namespace Badger.Data
                             Directory.CreateDirectory(folderPath);
                             string filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
                             experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
+                            string relativePathToExperimentalUnit= batchFileName + "\\" + experimentName + "\\" + experimentName + "." + XMLConfig.experimentExtension;
 
                             // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                             // with its corresponding attributes.
                             batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag + " "
                                 + XMLConfig.nameAttribute + "=\"" + experimentName + "\" "
-                                + XMLConfig.pathAttribute + "=\"" + filePath + "\">");
+                                + XMLConfig.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
                             // Write fork values in between
                             experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
                             // Close 'EXPERIMENTAL-UNIT' tag
@@ -304,20 +309,10 @@ namespace Badger.Data
         {
             if (experimentFilePath != "")
             {
-                //the hard way because the elegant way didn't seem to work
-                int lastPos1, lastPos2, lastPos;
-                lastPos1 = experimentFilePath.LastIndexOf("/");
-                lastPos2 = experimentFilePath.LastIndexOf("\\");
-
-                lastPos = Math.Max(lastPos1, lastPos2);
-                if (lastPos > 0)
-                {
-                    string directory = experimentFilePath.Substring(0, lastPos + 1);
-                    if (descriptor)
-                        return directory + "experiment-log.xml";
-                    
-                    return directory + "experiment-log.bin";
-                }
+                if (descriptor)
+                    return Utility.getDirectory(experimentFilePath) + "experiment-log.xml";
+                else
+                    return Utility.getDirectory(experimentFilePath) + "experiment-log.bin";
             }
 
             return "";

@@ -34,10 +34,22 @@ namespace Herd
 
         public CJob() { }
 
-        public string renameFile(string filename)
+        public string renamedFilename(string filename)
         {
             if (renameRules != null && renameRules.ContainsKey(filename))
                 return renameRules[filename];
+            return filename;
+        }
+        public string originalFilename(string filename)
+        {
+            if (renameRules != null)
+            {
+                foreach (string originalName in renameRules.Keys)
+                {
+                    if (renameRules[originalName] == filename)
+                        return originalName;
+                }
+            }
             return filename;
         }
     }
@@ -144,7 +156,7 @@ namespace Herd
         {
             foreach (string file in m_job.inputFiles)
             {
-                SendFile(file, FileType.INPUT, sendContent, false,cancelToken,m_job.renameFile(file));
+                SendFile(file, FileType.INPUT, sendContent, false,cancelToken,m_job.renamedFilename(file));
             }
         }
         protected void SendOutputFiles(bool sendContent,CancellationToken cancelToken)
@@ -155,7 +167,7 @@ namespace Herd
                 //some output files may not be ther if a task failed
                 //we still want to try sending the rest of files
                 if (!sendContent || File.Exists(getCachedFilename(file)))
-                    SendFile(file, FileType.OUTPUT, sendContent, true, cancelToken,m_job.renameFile(file));
+                    SendFile(file, FileType.OUTPUT, sendContent, true, cancelToken,m_job.renamedFilename(file));
                 else
                 {
                     unknownFiles.Add(file);
@@ -356,7 +368,8 @@ namespace Herd
             if (type == FileType.INPUT) m_job.inputFiles.Add(match.Groups[2].Value);
             else m_job.outputFiles.Add(match.Groups[2].Value);
 
-            m_nextFileName = match.Groups[2].Value;
+            m_nextFileName = m_job.originalFilename(match.Groups[2].Value);
+
             if (receiveContent) m_nextFileSize = Int32.Parse(match.Groups[3].Value);
             else m_nextFileSize = 0;
 
@@ -366,7 +379,9 @@ namespace Herd
                 outputFilename = getCachedFilename(m_nextFileName);
             else outputFilename = m_nextFileName;
             string outputDir = Path.GetDirectoryName(outputFilename);
-            Directory.CreateDirectory(outputDir);
+
+            if (!Directory.Exists(outputDir))
+                Directory.CreateDirectory(outputDir);
 
             return true;
         }
