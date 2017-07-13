@@ -32,11 +32,13 @@ double CExtendedWindTurbineVidalController::selectAction(const CState *s, CActio
 
 	return 1.0;
 }
-void CExtendedWindTurbineVidalController::update(const CState *s, const CAction *a, const CState *s_p, double r)
+double CExtendedWindTurbineVidalController::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProbability)
 {
 	m_td= m_pCritic->update(s, a, s_p, r);
 
 	m_pAdpParamA->update(s, a, s_p, r, m_td);
 	m_pAdpParamK_alpha->update(s, a, s_p, r, m_td);
 	m_pAdpParamKP->update(s, a, s_p, r, m_td);
+
+	return 1.0;
 }

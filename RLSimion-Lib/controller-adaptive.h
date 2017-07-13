@@ -15,8 +15,8 @@ public:
 	CExtendedWindTurbineVidalController(CConfigNode* pConfigNode);
 	virtual ~CExtendedWindTurbineVidalController();
 
-	double selectAction(const CState *s, CAction *a);
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual double selectAction(const CState *s, CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };
 
 class CExtendedWindTurbineBoukhezzarController : public CWindTurbineBoukhezzarController
@@ -29,8 +29,8 @@ public:
 	CExtendedWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
 	virtual ~CExtendedWindTurbineBoukhezzarController();
 
-	double selectAction(const CState *s, CAction *a);
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual double selectAction(const CState *s, CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
 class CExtendedWindTurbineJonkmanController : public CWindTurbineJonkmanController
@@ -43,6 +43,6 @@ public:
 	CExtendedWindTurbineJonkmanController(CConfigNode* pConfigNode);
 	virtual ~CExtendedWindTurbineJonkmanController();
 
-	double selectAction(const CState *s, CAction *a);
-	virtual void update(const CState *s, const CAction *a, const CState *s_p, double r);
+	virtual double selectAction(const CState *s, CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 };

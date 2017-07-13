@@ -21,7 +21,7 @@ public:
 
 	//regular controllers need not update. Default implementation does nothing but it can be overriden
 	//by adaptive controllers if need to
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) = 0;
 
 	virtual double selectAction(const CState *s, CAction *a)= 0;
 };
@@ -47,6 +47,7 @@ public:
 	int getOutputActionIndex(int output);
 
 	double selectAction(const CState *s,CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
 class CPIDController : public CController
@@ -65,6 +66,7 @@ public:
 	int getOutputActionIndex(int output);
 
 	double selectAction(const CState *s,CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
 class CWindTurbineVidalController : public CController
@@ -89,6 +91,7 @@ public:
 	int getOutputActionIndex(int output);
 
 	virtual double selectAction(const CState *s,CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
 class CWindTurbineBoukhezzarController : public CController
@@ -112,6 +115,7 @@ public:
 	int getOutputActionIndex(int output);
 
 	virtual double selectAction(const CState *s,CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
 class CWindTurbineJonkmanController : public CController
@@ -142,4 +146,5 @@ public:
 	int getOutputActionIndex(int output);
 
 	virtual double selectAction(const CState *s,CAction *a);
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
 };
