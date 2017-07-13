@@ -3,23 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Badger.ViewModels"
+             xmlns:views="clr-namespace:Badger.Views"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d"  
              d:DesignHeight="300" d:DesignWidth="300">
 
+    <UserControl.Resources>
+        <DataTemplate x:Key="HerdAgent" DataType="{x:Type vm:HerdAgentViewModel}">
+            <views:HerdAgentView />
+        </DataTemplate>
+    </UserControl.Resources>
+
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <DataGrid Name="StatsDataGrid" ItemsSource="{Binding herdAgentList}" CanUserAddRows="False" 
-                  AutoGenerateColumns="False" CanUserReorderColumns="True" CanUserResizeColumns="True" 
-                  CanUserResizeRows="False" CanUserSortColumns="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="IP" Binding="{Binding Path=IpAddressString}" />
-                <DataGridTextColumn Header="Version" Binding="{Binding Path=Version}" />
-                <DataGridTextColumn Header="Processor" Binding="{Binding Path=FormatedProcessorInfo}" />
-                <DataGridTextColumn Header="Load" Binding="{Binding Path=ProcessorLoad}" />
-                <DataGridTextColumn Header="Memory" Binding="{Binding Path=Memory}" />
-                <DataGridTextColumn Header="CUDA" />
-                <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <ListView ItemsSource="{Binding Path = herdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                  dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                  dd:DragDrop.DragAdornerTemplate="{StaticResource HerdAgent}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="0"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.Resources>
+                <DataTemplate DataType="{x:Type vm:HerdAgentViewModel}">
+                    <views:HerdAgentView />
+                </DataTemplate>
+            </ListView.Resources>
+        </ListView>
     </ScrollViewer>
 </UserControl>

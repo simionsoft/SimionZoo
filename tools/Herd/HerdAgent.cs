@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -17,16 +18,19 @@ namespace Herd
 {
     public class HerdAgentInfo
     {
+        public const string NoneProperty = "N/A";
+
         private IPEndPoint m_ipAddress;
         public IPEndPoint ipAddress { get { return m_ipAddress; } set { m_ipAddress = value; } }
+
         public string ipAddressString
         {
             get
             {
                 return m_ipAddress.Address.ToString();
             }
-            set { }
         }
+
         public DateTime lastACK { get { return m_lastACK; } set { m_lastACK = value; } }
         private DateTime m_lastACK;
         private Dictionary<string, string> m_properties;
@@ -46,7 +50,7 @@ namespace Herd
             if (m_properties.ContainsKey(name))
                 return m_properties[name];
 
-            return "n/a";
+            return NoneProperty;
         }
 
 
@@ -55,10 +59,9 @@ namespace Herd
             if (xmlDescription.Name.ToString() == "HerdAgent")
             {
                 m_properties.Clear();
+
                 foreach (XElement child in xmlDescription.Elements())
-                {
                     addProperty(child.Name.ToString(), child.Value);
-                }
             }
         }
 
@@ -77,13 +80,38 @@ namespace Herd
 
         public string Version { get { return getProperty(HerdAgent.m_versionXMLTag); } set { } }
 
-        public int NumProcessors { get { return Int32.Parse(getProperty(HerdAgent.m_numProcessorsXMLTag)); } set { } }
+        public string ProcessorId { get { return getProperty(HerdAgent.m_processorIdTag); } }
+
+        public int NumProcessors
+        {
+            get
+            {
+                string prop = getProperty(HerdAgent.m_numProcessorsXMLTag);
+                return (!prop.Equals(NoneProperty)) ? int.Parse(prop) : 0;
+            }
+        }
 
         public string ProcessorArchitecture { get { return getProperty(HerdAgent.ProcessorArchitectureTag); } }
 
-        public double ProcessorLoad { get { return Double.Parse(getProperty(HerdAgent.ProcessorLoadTag)); } }
+        public double ProcessorLoad
+        {
+            get
+            {
+                string prop = getProperty(HerdAgent.ProcessorLoadTag);
+                return (!prop.Equals(NoneProperty)) ? double.Parse(prop) : 0.0;
+            }
+        }
 
-        public double Memory { get { return Double.Parse(getProperty(HerdAgent.TotalMemoryTag)); } }
+        public double Memory
+        {
+            get
+            {
+                string prop = getProperty(HerdAgent.TotalMemoryTag);
+                return (!prop.Equals(NoneProperty)) ? double.Parse(prop) : 0.0;
+            }
+        }
+
+        public string CudaInfo { get { return getProperty(HerdAgent.CudaInfoTag); } }
 
         public bool IsAvailable
         {
@@ -130,11 +158,13 @@ namespace Herd
 
         public const string m_herdDescriptionXMLTag = "HerdAgent";
         public const string m_versionXMLTag = "HerdAgentVersion";
+        public const string m_processorIdTag = "ProccesorId";
         public const string m_numProcessorsXMLTag = "NumberOfProcessors";
         public const string m_stateXMLTag = "State";
         public const string TotalMemoryTag = "Memory";
         public const string ProcessorArchitectureTag = "ProcessorArchitecture";
         public const string ProcessorLoadTag = "ProcessorLoad";
+        public const string CudaInfoTag = "CudaInfo";
 
         private CancellationTokenSource m_cancelTokenSource;
 
@@ -358,6 +388,52 @@ namespace Herd
             return m_cpuCounter.NextValue();
         }
 
+        public string GetProcessorId()
+        {
+            var mbs = new ManagementObjectSearcher("Select ProcessorId From Win32_processor");
+            ManagementObjectCollection mbsList = mbs.Get();
+            string id = "";
+            foreach (ManagementObject mo in mbsList)
+            {
+                id = mo["ProcessorId"].ToString();
+                break;
+            }
+
+            return id;
+        }
+
+        /// <summary>
+        ///     Get information about CUDA installation.
+        /// </summary>
+        /// <returns>The CUDA version installed or -1 if none was found</returns>
+        public string GetCudaInfo()
+        {
+            string[] dllNames = { @"nvcuda.dll", @"nvcuda64.dll" };
+            string dir = Environment.SystemDirectory;
+
+            try
+            {
+                FileVersionInfo myFileVersionInfo = null;
+                bool bCudaCapable = false;
+                foreach (string dll in dllNames)
+                {
+                    var dllPath = dir + "\\" + dll;
+                    myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
+                    bCudaCapable = true;
+                }
+
+                if (bCudaCapable)
+                    return myFileVersionInfo.ProductVersion;
+
+                return HerdAgentInfo.NoneProperty;
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.StackTrace);
+                return HerdAgentInfo.NoneProperty;
+            }
+        }
+
 
         [StructLayout(LayoutKind.Sequential)]
         struct MEMORYSTATUSEX
@@ -394,6 +470,8 @@ namespace Herd
                 + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
                 + "</" + m_versionXMLTag + ">"
                 // CPU amount of cores
+                + "<" + m_processorIdTag + ">" + GetProcessorId() + "</" + m_processorIdTag + ">"
+                // CPU amount of cores
                 + "<" + m_numProcessorsXMLTag + ">" + Environment.ProcessorCount + "</" + m_numProcessorsXMLTag + ">"
                 // CPU architecture
                 + "<" + ProcessorArchitectureTag + ">"
@@ -403,6 +481,8 @@ namespace Herd
                 + "<" + ProcessorLoadTag + ">" + GetCurrentCpuUsage() + "</" + ProcessorLoadTag + ">"
                 // Total installed memory
                 + "<" + TotalMemoryTag + ">" + GetGlobalMemoryStatusEx() + "</" + TotalMemoryTag + ">"
+                // CUDA support information
+                + "<" + CudaInfoTag + ">" + GetCudaInfo() + "</" + CudaInfoTag + ">"
                 // HerdAgent state
                 + "<" + m_stateXMLTag + ">" + getStateString() + "</" + m_stateXMLTag + ">"
                 + "</" + m_herdDescriptionXMLTag + ">";

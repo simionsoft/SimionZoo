@@ -62,6 +62,10 @@
       <HintPath>..\packages\Caliburn.Micro.3.0.3\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.1.1.0\lib\net45\GongSolutions.Wpf.DragDrop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="OxyPlot, Version=1.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\net45\OxyPlot.dll</HintPath>
       <Private>True</Private>
@@ -111,6 +115,7 @@
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\WorldDefinition.cs" />
     <Compile Include="Data\XMLConfig.cs" />
+    <Compile Include="Views\MultiplyConverter.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceElementConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ConfigNodeViewModel.cs" />
@@ -156,6 +161,9 @@
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\DialogView.xaml.cs">
       <DependentUpon>DialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HerdAgentView.xaml.cs">
+      <DependentUpon>HerdAgentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
@@ -272,6 +280,10 @@
     <Page Include="Views\ConfigNodeTypes\IntegerValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\HerdAgentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultiStateButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
