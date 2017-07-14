@@ -127,12 +127,12 @@ namespace Badger.ViewModels
                 {
                     logMessage("Sending job to herd agent " + m_herdAgent.IpAddress);
                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.SENDING);
-                    m_herdAgent.Status = "Sending job query";
+                    m_herdAgent.State = "Sending job query";
                     m_shepherd.SendJobQuery(job, m_cancelToken);
                     logMessage("Job sent to herd agent " + m_herdAgent.IpAddress);
                     //await m_shepherd.waitAsyncWriteOpsToFinish();
                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.RUNNING);
-                    m_herdAgent.Status = "Executing job query";
+                    m_herdAgent.State = "Executing job query";
                 }
                 else
                 {
@@ -214,10 +214,10 @@ namespace Badger.ViewModels
                                     //job results can be expected to be sent back even if some of the tasks failed
                                     logMessage("Receiving job results");
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.RECEIVING);
-                                    m_herdAgent.Status = "Receiving output files";
+                                    m_herdAgent.State = "Receiving output files";
                                     bool bret = await m_shepherd.ReceiveJobResult(m_cancelToken);
                                     m_monitoredExperiments.ForEach((exp) => exp.state = MonitoredExperimentViewModel.ExperimentState.FINISHED);
-                                    m_herdAgent.Status = "Finished";
+                                    m_herdAgent.State = "Finished";
                                     logMessage("Job results received");
                                     return this;
                                 }
@@ -236,7 +236,7 @@ namespace Badger.ViewModels
                 await m_shepherd.readAsync(new CancellationToken()); //we synchronously wait until we get the ack from the client
 
                 m_monitoredExperiments.ForEach((exp) => { exp.resetState(); });
-                m_herdAgent.Status = "";
+                m_herdAgent.State = "";
             }
             catch (Exception ex)
             {

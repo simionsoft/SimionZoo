@@ -103,10 +103,7 @@ namespace Herd
 
                     lock (m_listLock)
                     {
-                        if (!m_herdAgentList.ContainsKey(ip))
-                            m_herdAgentList.Add(ip, herdAgentInfo);
-                        else
-                            m_herdAgentList[ip] = herdAgentInfo;
+                        m_herdAgentList[ip] = herdAgentInfo;
                     }
                     //check how much time ago the agent list was updated
                     double lastUpdateElapsedTime = (now - m_lastHerdAgentListUpdate).TotalSeconds;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Herd;
 using Caliburn.Micro;
 
@@ -7,35 +8,103 @@ namespace Badger.ViewModels
 {
     public class ShepherdViewModel : PropertyChangedBase
     {
-        const int m_agentTimeoutSeconds = 10;
-        const int m_updateTimeSeconds = 5;
+        // const int m_agentTimeoutSeconds = 10;
+        const int m_updateTimeSeconds = 3;
         System.Timers.Timer m_timer;
 
         private Shepherd m_shepherd;
-        public Shepherd shepherd { get { return m_shepherd; } set{}}
+        public Shepherd shepherd { get { return m_shepherd; } set { } }
 
         private object m_listsLock = new object();
         private List<HerdAgentInfo> m_innerHerdAgentList =
             new List<HerdAgentInfo>();
-        private BindableCollection <HerdAgentViewModel> m_herdAgentList
+
+        private List<HerdAgentInfo> orderedHerdAgentList;
+
+        private BindableCollection<HerdAgentViewModel> m_herdAgentList
             = new BindableCollection<HerdAgentViewModel>();
         public BindableCollection<HerdAgentViewModel> herdAgentList
         {
             get
             {
-                //return m_herdAgentList;
                 lock (m_listsLock)
                 {
-                    m_shepherd.getHerdAgentList(ref m_innerHerdAgentList, m_agentTimeoutSeconds);
+                    m_shepherd.getHerdAgentList(ref m_innerHerdAgentList);
 
-                    m_herdAgentList.Clear();
-                    foreach (HerdAgentInfo agent in m_innerHerdAgentList)
-                        m_herdAgentList.Add(new HerdAgentViewModel(agent));
+                    // Test data
+                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x0811026f), 3128) });
+                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x2414188f), 3128) });
+                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x1914188f), 3128) });
+
+                    // Ordering the inner list by number of processor 
+                    orderedHerdAgentList = m_innerHerdAgentList.OrderByDescending(o => o.NumProcessors).ToList();
+
+                    int len = m_herdAgentList.Count;
+                    int lenOrdered = orderedHerdAgentList.Count;
+
+                    // This condition and all the code inside it makes a temporal fix to avoid
+                    // to have inactive agents in list due to IP address changing at runtime.
+                    if (len > lenOrdered)
+                    {
+                        for (int i = len - 1; i >= 0; i--)
+                        {
+                            bool found = false;
+                            int index = 0;
+                            while (!found && index < lenOrdered)
+                            {
+                                if (Equals(orderedHerdAgentList[index].ipAddress, m_herdAgentList[i].IpAddress))
+                                    found = true;
+                                index++;
+                            }
+
+                            if (!found)
+                                m_herdAgentList.Remove(m_herdAgentList[i]);
+                        }
+                    }
+
+
+                    foreach (HerdAgentInfo agent in orderedHerdAgentList)
+                    {
+                        bool found = false;
+                        int index = 0;
+
+                        while (!found && index < len)
+                        {
+                            // We need to have this condition until every agent is in v1.0.0.6 or superior
+                            if (agent.ProcessorId != null && agent.ProcessorId != HerdAgentInfo.NoneProperty)
+                            {
+                                if (agent.ProcessorId.Equals(m_herdAgentList[index].ProcessorId))
+                                {
+                                    m_herdAgentList[index].IpAddress = agent.ipAddress; // The we can change IP at runtime
+                                    m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%";
+                                    m_herdAgentList[index].State = agent.State;
+                                    found = true;
+                                }
+                            }
+                            else
+                            {
+                                if (Equals(agent.ipAddress, m_herdAgentList[index].IpAddress))
+                                {
+                                    // Properties that can change at runtime
+                                    m_herdAgentList[index].ProcessorLoad = agent.ProcessorLoad.ToString("0.") + "%";
+                                    m_herdAgentList[index].State = agent.State;
+                                    found = true;
+                                }
+                            }
+
+                            index++;
+                        }
+
+                        if (!found)
+                            m_herdAgentList.Add(new HerdAgentViewModel(agent));
+                    }
                 }
+
                 return m_herdAgentList;
             }
-            set {}
+            set { }
         }
+
         public int getAvailableHerdAgents(ref List<HerdAgentViewModel> outList)
         {
             //we assume outList needs no synchronization
@@ -43,11 +112,11 @@ namespace Badger.ViewModels
             lock (m_listsLock)
             {
                 outList.Clear();
-                foreach (HerdAgentInfo agent in m_innerHerdAgentList)
+                foreach (HerdAgentViewModel agent in m_herdAgentList)
                 {
-                    if (agent.IsAvailable)
+                    if (agent.IsAvailable && agent.IsSelected)
                     {
-                        outList.Add(new HerdAgentViewModel(agent));
+                        outList.Add(agent);
                         numAvailableCores += agent.NumProcessors;
                     }
                 }
@@ -59,6 +128,7 @@ namespace Badger.ViewModels
         {
             NotifyOfPropertyChange(() => herdAgentList);
         }
+
         private void resendBroadcast(object sender, System.Timers.ElapsedEventArgs e)
         {
             m_shepherd.sendBroadcastHerdAgentQuery();
@@ -69,7 +139,7 @@ namespace Badger.ViewModels
             m_shepherd = new Shepherd();
             m_shepherd.setNotifyAgentListChangedFunc(notifyHerdAgentChanged);
 
-            m_timer = new System.Timers.Timer(m_updateTimeSeconds*1000);
+            m_timer = new System.Timers.Timer(m_updateTimeSeconds * 1000);
             m_shepherd.sendBroadcastHerdAgentQuery();
             m_shepherd.beginListeningHerdAgentQueryResponses();
 

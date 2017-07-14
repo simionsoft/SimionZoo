@@ -347,6 +347,20 @@ namespace Badger.ViewModels
                 return;
             }
 
+            List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
+
+            // Get available herd agents list. Inside the loop to update the list
+            ShepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
+            logToFile("Using " + freeHerdAgents.Count + " agents");
+
+            if (freeHerdAgents.Count == 0)
+            {
+                CaliburnUtility.ShowWarningDialog(
+                    "There is no herd agents availables at this moment. Make sure you have selected at " +
+                    "least one available agent and try again.", "No agents detected");
+                return;
+            }
+
             int experimentalUnitsCount = 0;
             string batchFileName = "";
 
@@ -362,13 +376,7 @@ namespace Badger.ViewModels
             // safed /loaded succesfully
             if (experimentalUnitsCount > 0 && batchFileName != "")
             {
-                List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
-
                 logToFile("Running experiment queue remotely: " + experimentalUnitsCount + " experiments");
-
-                // Get available herd agents list. Inside the loop to update the list
-                ShepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
-                logToFile("Using " + freeHerdAgents.Count + " agents");
 
                 m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(freeHerdAgents, logToFile, batchFileName);
 
