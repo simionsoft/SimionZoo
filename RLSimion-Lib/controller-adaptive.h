@@ -7,10 +7,11 @@
 
 class CExtendedWindTurbineVidalController: public CWindTurbineVidalController
 {
-	double m_td;
+	unsigned int m_aActionId, m_KAlphaActionId, m_KPActionId;
+
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
 	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pALearner, m_pKAlphaLearner, m_pKPLearner;
-	unsigned int m_aActionId, m_KAlphaActionId, m_KPActionId;
+
 public:
 	CExtendedWindTurbineVidalController(CConfigNode* pConfigNode);
 	virtual ~CExtendedWindTurbineVidalController();
@@ -21,9 +22,9 @@ public:
 
 class CExtendedWindTurbineBoukhezzarController : public CWindTurbineBoukhezzarController
 {
-	double m_td;
+	unsigned int m_C0ActionId, m_KPActionId;
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
-	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pALearner, m_pKAlphaLearner, m_pKPLearner;
+	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pC0Learner, m_pKPLearner;
 
 public:
 	CExtendedWindTurbineBoukhezzarController(CConfigNode* pConfigNode);

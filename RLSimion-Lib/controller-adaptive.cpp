@@ -5,11 +5,12 @@
 #include "app-rlsimion.h"
 #include "worlds/world.h"
 
+//Extended version of the Vidal controller
+
 CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfigNode* pConfigNode) :CWindTurbineVidalController(pConfigNode)
 {
 	CDynamicModel* pWorld = CSimionApp::get()->pWorld->getDynamicModel();
 	CDescriptor& pActionDescriptor = pWorld->getActionDescriptor();
-	m_td = 0.0;
 	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic used to learn");
 	//A parameter
 	m_pALearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "A-adaptive-parameter", "The learner used for Vidal controller's parameter A");
@@ -63,11 +64,71 @@ double CExtendedWindTurbineVidalController::selectAction(const CState *s, CActio
 }
 double CExtendedWindTurbineVidalController::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProbability)
 {
-	m_td= m_pCritic->update(s, a, s_p, r);
+	double td= m_pCritic->update(s, a, s_p, r);
 
-	m_pALearner->update(s, a, s_p, r, m_td);
-	m_pKAlphaLearner->update(s, a, s_p, r, m_td);
-	m_pKPLearner->update(s, a, s_p, r, m_td);
+	m_pALearner->update(s, a, s_p, r, td);
+	m_pKAlphaLearner->update(s, a, s_p, r, td);
+	m_pKPLearner->update(s, a, s_p, r, td);
 
 	return 1.0;
 }
+
+
+//Extended version of the Boukhezzar controller
+
+
+CExtendedWindTurbineBoukhezzarController::CExtendedWindTurbineBoukhezzarController(CConfigNode* pConfigNode)
+	:CWindTurbineBoukhezzarController(pConfigNode)
+{
+	CDynamicModel* pWorld = CSimionApp::get()->pWorld->getDynamicModel();
+	CDescriptor& pActionDescriptor = pWorld->getActionDescriptor();
+	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic used to learn");
+	//A parameter
+	m_pC0Learner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "C_0-learner", "The learner used for Boukhezzar controller's parameter C0");
+	m_C0ActionId = pWorld->addActionVariable("C_0", "unitless", 0.0, 100.0);
+	m_pC0Learner->getPolicy()->setOutputActionIndex(m_C0ActionId);
+	m_pC0Learner->getPolicy()->getDetPolicyStateVFA()->setInitValue(m_pC_0.get());
+	m_pC0Learner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
+		pActionDescriptor[m_C0ActionId].getMin()
+		, pActionDescriptor[m_C0ActionId].getMax());
+	m_pC0Learner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
+	//KP parameter
+	m_pKPLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KP-learner", "The learner used for Boukhezzar controller's parameter KP");
+	m_KPActionId = pWorld->addActionVariable("KP", "unitless", -100.0, 100.0);
+	m_pKPLearner->getPolicy()->setOutputActionIndex(m_KPActionId);
+	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->setInitValue(m_pKP.get());
+	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
+		pActionDescriptor[m_KPActionId].getMin()
+		, pActionDescriptor[m_KPActionId].getMax());
+	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
+}
+
+CExtendedWindTurbineBoukhezzarController::~CExtendedWindTurbineBoukhezzarController()
+{}
+
+double CExtendedWindTurbineBoukhezzarController::selectAction(const CState *s, CAction *a)
+{
+	//A= f_a(v)
+	//K_alpha= f_k_alpha(v)
+	//KP= f_kp(v)
+	m_pC0Learner->getPolicy()->selectAction(s, a);
+	m_pC_0.set(a->get(m_pC0Learner->getPolicy()->getOutputActionIndex()));
+
+	m_pKPLearner->getPolicy()->selectAction(s, a);
+	m_pKP.set(a->get(m_pKPLearner->getPolicy()->getOutputActionIndex()));
+
+	CWindTurbineBoukhezzarController::selectAction(s, a);
+
+	return 1.0;
+}
+double CExtendedWindTurbineBoukhezzarController::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProbability)
+{
+	double td = m_pCritic->update(s, a, s_p, r);
+
+	m_pC0Learner->update(s, a, s_p, r, td);
+	m_pKPLearner->update(s, a, s_p, r, td);
+
+	return 1.0;
+}
+
+
