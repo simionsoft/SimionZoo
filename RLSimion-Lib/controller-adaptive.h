@@ -31,7 +31,7 @@ public:
 	virtual ~CExtendedWindTurbineBoukhezzarController();
 
 	virtual double selectAction(const CState *s, CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };
 
 class CExtendedWindTurbineJonkmanController : public CWindTurbineJonkmanController

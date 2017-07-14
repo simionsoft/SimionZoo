@@ -121,6 +121,7 @@ double CExtendedWindTurbineBoukhezzarController::selectAction(const CState *s, C
 
 	return 1.0;
 }
+
 double CExtendedWindTurbineBoukhezzarController::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProbability)
 {
 	double td = m_pCritic->update(s, a, s_p, r);
