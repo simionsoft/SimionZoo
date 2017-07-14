@@ -145,14 +145,15 @@ public:
 
 class ACTION_VARIABLE
 {
-	int m_hVariable = -1;
 	const char* m_name;
-	const char* m_comment; 
+	const char* m_comment;
+	int m_hVariable = -1;
 public:
 	ACTION_VARIABLE() = default;
 
 	ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
+	void set(unsigned int index) { m_hVariable = index; }
 };
 
 template<typename DataType>

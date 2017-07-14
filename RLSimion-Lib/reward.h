@@ -47,6 +47,9 @@ class CRewardFunction
 	CDescriptor rewardDescriptor;
 	CReward* m_pRewardVector;
 	bool m_bInitialized;
+
+	bool m_bOverride = false;
+	double m_overrideValue = 0.0;
 public:
 
 	void addRewardComponent(IRewardComponent *rewardComponent);
@@ -58,6 +61,7 @@ public:
 	CReward* getRewardVector();
 	double getReward(const CState *s, const CAction *a, const CState *s_p);
 	
-	//int getNumRewardComponents(){ return m_rewardComponents.size(); }
-	//double getLastRewardComponent(int i);
+	//This method can be used to, instead of calculating the next reward, return the given value
+	//Useful in case something fails during the simulation (i.e., premature stop in FAST)
+	void override(double reward);
 };

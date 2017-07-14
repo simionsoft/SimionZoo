@@ -71,7 +71,7 @@ void CWorld::reset(CState *s)
 }
 
 double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
-{	
+{
 	double dt= m_dt.get()/(double)m_numIntegrationSteps.get();
 
 	m_stepStartSimTime= m_episodeSimTime;
@@ -79,7 +79,7 @@ double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
 	if (m_pDynamicModel.ptr())
 	{
 		s_p->copy(s);
-		for (int i= 0; i<m_numIntegrationSteps.get() && CSimionApp::get()->pExperiment->isValidStep(); i++)
+		for (int i= 0; i<m_numIntegrationSteps.get(); i++)
 		{
 			m_pDynamicModel->executeAction(s_p,a,dt);
 			m_episodeSimTime+= dt;

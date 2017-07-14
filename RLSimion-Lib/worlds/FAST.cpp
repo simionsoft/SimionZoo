@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include "../app.h"
 
+#define FAST_FAILURE_REWARD -100.0 //reward given in case a simulation error arises
+
 #define FAST_WIND_CONFIG_FILE "NRELOffshrBsline5MW_InflowWind.dat"
 #define FAST_WIND_CONFIG_TEMPLATE_FILE "..\\config\\world\\FAST\\NRELOffshrBsline5MW_InflowWindTemplate.dat"
 #define TURBSIM_TEMPLATE_CONFIG_FILE "..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp"
@@ -293,18 +295,20 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	{
 		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
 		CSimionApp::get()->pExperiment->setTerminalState();
+		m_pRewardFunction->override(FAST_FAILURE_REWARD);
 		return;
 	}
 
 	//send(a)
 	//here we have to cheat the compiler (const). We don't want to, but we have to
 	double* pActionValues = ((CAction*)a)->getValueVector();
-	int numBytesToWrite = a->getNumVars() * sizeof(double);
+	int numBytesToWrite = sizeof(double) * 2; //hard-coded because there might be auxiliary actions added by the controller
 	int numBytesWritten= m_namedPipeServer.writeBuffer(pActionValues, numBytesToWrite);
 	if (numBytesToWrite != numBytesWritten)
 	{
 		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
 		CSimionApp::get()->pExperiment->setTerminalState();
+		m_pRewardFunction->override(FAST_FAILURE_REWARD);
 		return;
 	}
 
@@ -315,6 +319,7 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	{
 		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
 		CSimionApp::get()->pExperiment->setTerminalState();
+		m_pRewardFunction->override(FAST_FAILURE_REWARD);
 		return;
 	}
 }

@@ -37,6 +37,7 @@ public:
 	virtual void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
 
 	int getOutputActionIndex(){ return m_outputActionIndex.get(); }
+	void setOutputActionIndex(unsigned int outputActionIndex) { m_outputActionIndex.set(outputActionIndex); }
 
 	static std::shared_ptr<CPolicy> getInstance(CConfigNode* pParameters);
 

@@ -9,8 +9,8 @@ class CExtendedWindTurbineVidalController: public CWindTurbineVidalController
 {
 	double m_td;
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
-	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pAdpParamA, m_pAdpParamK_alpha, m_pAdpParamKP;
-
+	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pALearner, m_pKAlphaLearner, m_pKPLearner;
+	unsigned int m_aActionId, m_KAlphaActionId, m_KPActionId;
 public:
 	CExtendedWindTurbineVidalController(CConfigNode* pConfigNode);
 	virtual ~CExtendedWindTurbineVidalController();
@@ -23,7 +23,7 @@ class CExtendedWindTurbineBoukhezzarController : public CWindTurbineBoukhezzarCo
 {
 	double m_td;
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
-	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pAdpParamA, m_pAdpParamK_alpha, m_pAdpParamKP;
+	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pALearner, m_pKAlphaLearner, m_pKPLearner;
 
 public:
 	CExtendedWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
@@ -37,7 +37,7 @@ class CExtendedWindTurbineJonkmanController : public CWindTurbineJonkmanControll
 {
 	double m_td;
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
-	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pAdpParamA, m_pAdpParamK_alpha, m_pAdpParamKP;
+	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pALearner, m_pKAlphaLearner, m_pKPLearner;
 
 public:
 	CExtendedWindTurbineJonkmanController(CConfigNode* pConfigNode);

@@ -53,6 +53,12 @@ double CRewardFunction::getReward(const CState* s, const CAction* a, const CStat
 	if (!m_bInitialized)
 		CSimionApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
 
+	if (m_bOverride)
+	{
+		m_bOverride = false;
+		return m_overrideValue;
+	}
+
 	double reward = 0.0, r_i;
 	int i = 0;
 	for (auto it = m_rewardComponents.begin(); it != m_rewardComponents.end(); ++it)
@@ -96,4 +102,10 @@ CReward* CRewardFunction::getRewardVector()
 		CSimionApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
 
 	return m_pRewardVector;
+}
+
+void CRewardFunction::override(double reward)
+{
+	m_bOverride = true;
+	m_overrideValue = reward;
 }

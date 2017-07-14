@@ -40,6 +40,9 @@
     <BRANCH Name="A-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter A"/>
     <BRANCH Name="KAlpha-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter K_alpha"/>
     <BRANCH Name="KP-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter KP"/>
+    <ACTION-VAR Name="A" Min="0" Max="100" Unit="unitless"/>
+    <ACTION-VAR Name="K_alpha" Min="0" Max="10000000" Unit="unitless"/>
+    <ACTION-VAR Name="KP" Min="-100" Max="100" Unit="unitless"/>
   </CLASS>
   <CLASS Name="CLQRGain">
     <DOUBLE-VALUE Name="Gain" Comment="The gain applied to the input state variable" Default="0.1"/>
