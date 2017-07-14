@@ -37,11 +37,21 @@
     <DOUBLE-VALUE Name="KP" Comment="Proportional gain of the pitch controller" Default="1.0"/>
     <DOUBLE-VALUE Name="KI" Comment="Integral gain of the pitch controller" Default="0.0"/>
     <BRANCH Name="Critic" Class="ICritic-Factory" Comment="The critic used to learn"/>
-    <BRANCH Name="A-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter A"/>
-    <BRANCH Name="KAlpha-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter K_alpha"/>
-    <BRANCH Name="KP-adaptive-parameter" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter KP"/>
+    <BRANCH Name="A-learner" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter A"/>
+    <BRANCH Name="KAlpha-learner" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter K_alpha"/>
+    <BRANCH Name="KP-learner" Class="CPolicyLearner-Factory" Comment="The learner used for Vidal controller's parameter KP"/>
     <ACTION-VAR Name="A" Min="0" Max="100" Unit="unitless"/>
     <ACTION-VAR Name="K_alpha" Min="0" Max="10000000" Unit="unitless"/>
+    <ACTION-VAR Name="KP" Min="-100" Max="100" Unit="unitless"/>
+  </CLASS>
+  <CLASS Name="CExtendedWindTurbineBoukhezzarController">
+    <DOUBLE-VALUE Name="C_0" Comment="C_0 parameter" Default="1.0"/>
+    <DOUBLE-VALUE Name="KP" Comment="Proportional gain of the pitch controller" Default="1.0"/>
+    <DOUBLE-VALUE Name="KI" Comment="Integral gain of the pitch controller" Default="0.0"/>
+    <BRANCH Name="Critic" Class="ICritic-Factory" Comment="The critic used to learn"/>
+    <BRANCH Name="C_0-learner" Class="CPolicyLearner-Factory" Comment="The learner used for Boukhezzar controller's parameter C0"/>
+    <BRANCH Name="KP-learner" Class="CPolicyLearner-Factory" Comment="The learner used for Boukhezzar controller's parameter KP"/>
+    <ACTION-VAR Name="C_0" Min="0" Max="100" Unit="unitless"/>
     <ACTION-VAR Name="KP" Min="-100" Max="100" Unit="unitless"/>
   </CLASS>
   <CLASS Name="CLQRGain">
@@ -90,6 +100,7 @@
       <CHOICE-ELEMENT Name="Vidal" Class="CWindTurbineVidalController"/>
       <CHOICE-ELEMENT Name="Boukhezzar" Class="CWindTurbineBoukhezzarController"/>
       <CHOICE-ELEMENT Name="Extended-Vidal" Class="CExtendedWindTurbineVidalController"/>
+      <CHOICE-ELEMENT Name="Extended-Boukhezzar" Class="CExtendedWindTurbineBoukhezzarController"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CTDLambdaCritic">

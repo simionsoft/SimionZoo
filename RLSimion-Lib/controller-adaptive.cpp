@@ -13,7 +13,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 	CDescriptor& pActionDescriptor = pWorld->getActionDescriptor();
 	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic used to learn");
 	//A parameter
-	m_pALearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "A-adaptive-parameter", "The learner used for Vidal controller's parameter A");
+	m_pALearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "A-learner", "The learner used for Vidal controller's parameter A");
 	m_aActionId= pWorld->addActionVariable("A", "unitless", 0.0, 100.0);
 	m_pALearner->getPolicy()->setOutputActionIndex(m_aActionId);
 	m_pALearner->getPolicy()->getDetPolicyStateVFA()->setInitValue(m_pA.get());
@@ -22,7 +22,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 		, pActionDescriptor[m_aActionId].getMax());
 	m_pALearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
 	//KAlpha parameter
-	m_pKAlphaLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KAlpha-adaptive-parameter", "The learner used for Vidal controller's parameter K_alpha");
+	m_pKAlphaLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KAlpha-learner", "The learner used for Vidal controller's parameter K_alpha");
 	m_KAlphaActionId = pWorld->addActionVariable("K_alpha", "unitless", 0.0, 10000000.0);
 	m_pKAlphaLearner->getPolicy()->setOutputActionIndex(m_KAlphaActionId);
 	m_pKAlphaLearner->getPolicy()->getDetPolicyStateVFA()->setInitValue(m_pK_alpha.get());
@@ -31,7 +31,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 		, pActionDescriptor[m_KAlphaActionId].getMax());
 	m_pKAlphaLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
 	//KP parameter
-	m_pKPLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KP-adaptive-parameter", "The learner used for Vidal controller's parameter KP");
+	m_pKPLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KP-learner", "The learner used for Vidal controller's parameter KP");
 	m_KPActionId = pWorld->addActionVariable("KP", "unitless", -100.0, 100.0);
 	m_pKPLearner->getPolicy()->setOutputActionIndex(m_KPActionId);
 	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->setInitValue(m_pKP.get());

@@ -18,7 +18,8 @@ std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 		{"Jonkman",CHOICE_ELEMENT_NEW<CWindTurbineJonkmanController>},
 		{"Vidal",CHOICE_ELEMENT_NEW<CWindTurbineVidalController>},
 		{"Boukhezzar",CHOICE_ELEMENT_NEW<CWindTurbineBoukhezzarController>},
-		{"Extended-Vidal",CHOICE_ELEMENT_NEW<CExtendedWindTurbineVidalController>}
+		{"Extended-Vidal",CHOICE_ELEMENT_NEW<CExtendedWindTurbineVidalController>},
+		{"Extended-Boukhezzar",CHOICE_ELEMENT_NEW<CExtendedWindTurbineBoukhezzarController>}
 	});
 }
 
