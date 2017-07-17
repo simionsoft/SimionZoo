@@ -50,8 +50,8 @@ namespace Badger.ViewModels
                     experimentFilePath = baseDirectory + configNode.Attributes[XMLConfig.pathAttribute].Value;
             }
 
-            logDescriptorFilePath = SimionFileData.GetLogFilePath(baseDirectory + experimentFilePath);
-            logFilePath = SimionFileData.GetLogFilePath(baseDirectory + experimentFilePath, false);
+            logDescriptorFilePath = SimionFileData.GetLogFilePath(experimentFilePath);
+            logFilePath = SimionFileData.GetLogFilePath(experimentFilePath, false);
 
             //load the value of each fork used in this experimental unit
             foreach (XmlNode fork in configNode.ChildNodes)
