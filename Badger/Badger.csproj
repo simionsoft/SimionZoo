@@ -115,7 +115,7 @@
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\WorldDefinition.cs" />
     <Compile Include="Data\XMLConfig.cs" />
-    <Compile Include="Views\MultiplyConverter.cs" />
+    <Compile Include="Utils\MultiplyConverter.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceElementConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ConfigNodeViewModel.cs" />

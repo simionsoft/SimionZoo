@@ -19,13 +19,13 @@
                 <ContextMenu Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                     <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource fork}"></Image>
+                            <Image Source="{StaticResource fork}"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
             </Label.ContextMenu>
         </Label>
-        <CheckBox VerticalAlignment="Center" IsChecked="{Binding bContentAsBool,Mode=TwoWay}"></CheckBox>
+        <CheckBox VerticalAlignment="Center" IsChecked="{Binding bContentAsBool,Mode=TwoWay}"/>
         <!--<TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
                  BorderThickness="0"/>-->

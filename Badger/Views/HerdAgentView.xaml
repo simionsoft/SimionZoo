@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:badger="clr-namespace:Badger"
+             xmlns:badger="clr-namespace:Badger.Utils"
              mc:Ignorable="d" 
              d:DesignHeight="75" d:DesignWidth="250">
 
@@ -50,7 +50,7 @@
         </ControlTemplate>
 
         <badger:MultiplyConverter x:Key="MultiplyConverter" />
-        <!-- Simple Expander Template-->
+        
         <ControlTemplate x:Key="HerdAgentExpander" TargetType="{x:Type Expander}">
             <DockPanel Background="#FFFFFF">
                 <ToggleButton x:Name="ExpanderButton" DockPanel.Dock="Top" Template="{StaticResource HerdAgentExpanderButton}"

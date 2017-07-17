@@ -106,7 +106,7 @@ namespace Badger.Data
                     return -1;
                 }
             }
-            string batchFileDir = batchFilename.Remove( batchFilename.LastIndexOf("." + XMLConfig.experimentBatchExtension));
+            string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf("." + XMLConfig.experimentBatchExtension));
             string batchFileName = Utility.getFileName(batchFileDir);
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
@@ -141,7 +141,7 @@ namespace Badger.Data
                                + XMLConfig.valueAttribute + "=\"" + prerequisite + "\"");
                             //add the rename attribute
                             if (experimentViewModel.renameRules.ContainsKey(prerequisite))
-                                batchFileWriter.Write(" " + XMLConfig.renameAttr 
+                                batchFileWriter.Write(" " + XMLConfig.renameAttr
                                     + "=\"" + experimentViewModel.renameRules[prerequisite] + "\"");
                             batchFileWriter.WriteLine("/>");
                         }
@@ -159,7 +159,7 @@ namespace Badger.Data
                             Directory.CreateDirectory(folderPath);
                             string filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
                             experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
-                            string relativePathToExperimentalUnit= batchFileName + "\\" + experimentName + "\\" + experimentName + "." + XMLConfig.experimentExtension;
+                            string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + "." + XMLConfig.experimentExtension;
 
                             // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
                             // with its corresponding attributes.
@@ -187,8 +187,7 @@ namespace Badger.Data
 
 
         //BADGER project: LOAD
-        static public void loadExperiments(MainWindowViewModel parentWindow,
-            ref BindableCollection<ExperimentViewModel> experiments,
+        static public void loadExperiments(ref BindableCollection<ExperimentViewModel> experiments,
             Dictionary<string, string> appDefinitions, LogFunction log)
         {
             string fileDoc = null;
@@ -211,7 +210,7 @@ namespace Badger.Data
                 if (experiment.Name == XMLConfig.experimentNodeTag && experiment.ChildNodes.Count > 0)
                 {
                     configNode = experiment.FirstChild;
-                    experiments.Add(new ExperimentViewModel(parentWindow, appDefinitions[configNode.Name],
+                    experiments.Add(new ExperimentViewModel(appDefinitions[configNode.Name],
                         configNode, experiment.Attributes[XMLConfig.nameAttribute].Value));
                 }
                 else
@@ -269,11 +268,9 @@ namespace Badger.Data
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="parentWindow"></param>
         /// <param name="appDefinitions"></param>
         /// <returns></returns>
-        static public ExperimentViewModel LoadExperiment(MainWindowViewModel parentWindow,
-            Dictionary<string, string> appDefinitions)
+        static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;
             bool isOpen = OpenFile(ref fileDoc, Resources.ExperimentFilter, XMLConfig.experimentExtension);
@@ -284,7 +281,7 @@ namespace Badger.Data
             XmlDocument configDocument = new XmlDocument();
             configDocument.Load(fileDoc);
             XmlNode rootNode = configDocument.LastChild;
-            ExperimentViewModel newExperiment = new ExperimentViewModel(parentWindow, appDefinitions[rootNode.Name], fileDoc);
+            ExperimentViewModel newExperiment = new ExperimentViewModel(appDefinitions[rootNode.Name], fileDoc);
             return newExperiment;
         }
 

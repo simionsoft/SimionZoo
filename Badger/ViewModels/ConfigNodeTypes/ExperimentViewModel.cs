@@ -21,6 +21,7 @@ namespace Badger.ViewModels
     ///     - Prerequisites: list of files' names that are necessary to execute an experiment.
     /// </summary>
     public enum SaveMode { AsExperiment, AsExperimentalUnit, AsProject, ForkValues, ForkHierarchy, Prerequisites };
+
     public enum WorldVarType { StateVar, ActionVar, Constant };
 
     public class ExperimentViewModel : PropertyChangedBase
@@ -32,6 +33,7 @@ namespace Badger.ViewModels
 
         private List<deferredLoadStep> m_deferredLoadSteps = new List<deferredLoadStep>();
         public void registerDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
+
         public void doDeferredLoadSteps()
         {
             foreach (deferredLoadStep deferredStep in m_deferredLoadSteps)
@@ -41,19 +43,28 @@ namespace Badger.ViewModels
 
         //app properties: prerrequisites, exe files, definitions...
         private List<string> m_preFiles = new List<string>();
+
         public List<string> getPrerrequisites() { return m_preFiles; }
+
         private string m_exeFile;
+
         public string getExeFilename() { return m_exeFile; }
+
         private Dictionary<string, XmlNode> m_classDefinitions = new Dictionary<string, XmlNode>();
+
         private Dictionary<string, List<string>> m_enumDefinitions = new Dictionary<string, List<string>>();
 
-        //Rename rules: files that must be stored in the remote machine in a different relative location
-        //Example: 64 bit runtime C++ libraries have the same name the 32-bit versions have.
-        //         In the local machine, 64 bit libraries are in /bin/64, 32 libraries are in /bin, but both
-        //         must be in the same directory as the .exe using them, so the 64 dll-s must be saved in /bin in
-        //         the remote machine.
+        /// <summary>
+        /// Rename rules: files that must be stored in the remote machine in a different relative location
+        /// 
+        /// Example: 64 bit runtime C++ libraries have the same name that 32-bit versions have.
+        ///         In the local machine, 64 bit libraries are in /bin/64, 32 libraries are in /bin, but both
+        ///         must be in the same directory as the .exe using them, so the 64 dll-s must be saved in /bin in
+        ///         the remote machine.
+        /// </summary>
         private Dictionary<string, string> m_renameRules = new Dictionary<string, string>();
-        public Dictionary<string,string> renameRules { get {return m_renameRules; } }
+
+        public Dictionary<string, string> renameRules { get { return m_renameRules; } }
 
         public XmlNode getClassDefinition(string className, bool bCanBeNull = false)
         {
@@ -86,18 +97,23 @@ namespace Badger.ViewModels
             return m_enumDefinitions[enumName];
         }
 
-        //the app node's name: RLSimion, ...
+        //  the app node's name: RLSimion, ...
         private string m_appName;
+
         public string appName { get { return m_appName; } set { m_appName = value; NotifyOfPropertyChange(() => appName); } }
+
         //experiment's name
         private string m_name;
+
         public string name
         {
             get { return m_name; }
             set { m_name = MainWindowViewModel.getValidAppName(value); NotifyOfPropertyChange(() => name); }
         }
+
         //file name (not null if it has been saved)
         private string m_fileName = null;
+
         public string fileName
         {
             get { return m_fileName; }
@@ -107,6 +123,7 @@ namespace Badger.ViewModels
         private string m_version;
 
         private BindableCollection<ConfigNodeViewModel> m_children = new BindableCollection<ConfigNodeViewModel>();
+
         public BindableCollection<ConfigNodeViewModel> children
         {
             get { return m_children; }
@@ -114,6 +131,7 @@ namespace Badger.ViewModels
         }
 
         private Dictionary<string, WorldDefinition> m_worldDefinitions = new Dictionary<string, WorldDefinition>();
+
         private string m_selectedWorld = "";
 
         public void selectWorld(string worldName)
@@ -142,6 +160,7 @@ namespace Badger.ViewModels
                     else if (child.Name == XMLConfig.constantTag)
                         worldDefinition.addConstant(child.Attributes[XMLConfig.nameAttribute].Value);
                 }
+
                 m_worldDefinitions.Add(worldName, worldDefinition);
             }
         }
@@ -167,6 +186,7 @@ namespace Badger.ViewModels
 
         //WorldVarRefs
         private List<deferredLoadStep> m_WorldVarRefListeners = new List<deferredLoadStep>();
+
         public void registerWorldVarRef(deferredLoadStep func)
         { m_WorldVarRefListeners.Add(func); }
 
@@ -196,7 +216,7 @@ namespace Badger.ViewModels
                         m_version = rootChild.Attributes[XMLConfig.versionAttribute].Value;
                     else
                     {
-                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: " 
+                        CaliburnUtility.ShowWarningDialog("Error reading version attribute: "
                             + XMLConfig.experimentConfigVersion, "ERROR");
                         m_version = "0.0.0.0";
                     }
@@ -208,7 +228,7 @@ namespace Badger.ViewModels
                         else if (child.Name == XMLConfig.preNodeTag)
                         {
                             m_preFiles.Add(child.InnerText);
-                            if (child.Attributes.GetNamedItem(XMLConfig.renameAttr)!=null)
+                            if (child.Attributes.GetNamedItem(XMLConfig.renameAttr) != null)
                             {
                                 //add the new rename rule
                                 renameRules[child.InnerText] = child.Attributes[XMLConfig.renameAttr].Value;
@@ -218,8 +238,8 @@ namespace Badger.ViewModels
                             loadIncludedDefinitionFile(child.InnerText);
                         else
                         {
+                            // here we assume definitions are before the children
                             children.Add(ConfigNodeViewModel.getInstance(this, null, child, m_appName, configRootNode));
-                            //here we assume definitions are before the children
                         }
                     }
                 }
@@ -228,15 +248,11 @@ namespace Badger.ViewModels
             doDeferredLoadSteps();
         }
 
-        private MainWindowViewModel m_parent;
-        public MainWindowViewModel parent { get { return m_parent; } set { m_parent = value; } }
-
         //This constructor builds the whole tree of ConfigNodes either
         // -with default values ("New")
         // -with a configuration file ("Load")
-        public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, string configFilename)
+        public ExperimentViewModel(string appDefinitionFileName, string configFilename)
         {
-            m_parent = parentWindow;
             //Load the configFile if a configFilename is provided
             XmlNode configRootNode = null;
             if (configFilename != null)
@@ -249,11 +265,11 @@ namespace Badger.ViewModels
             Initialize(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
             //we remove the two extensions in "simion.exp"
         }
+
         //This constructor is called when a badger file is loaded. Because all the experiments are embedded within a single
         //XML file, the calling method will be passing XML nodes belonging to the single XML file instead of filenames
-        public ExperimentViewModel(MainWindowViewModel parentWindow, string appDefinitionFileName, XmlNode configRootNode, string experimentName)
+        public ExperimentViewModel(string appDefinitionFileName, XmlNode configRootNode, string experimentName)
         {
-            m_parent = parentWindow;
             Initialize(appDefinitionFileName, configRootNode, experimentName);
         }
 
@@ -404,10 +420,6 @@ namespace Badger.ViewModels
             set { m_forkRegistry = value; NotifyOfPropertyChange(() => forkRegistry); }
         }
 
-        public void close()
-        {
-            if (m_parent != null)
-                m_parent.close(this);
-        }
+
     }
 }

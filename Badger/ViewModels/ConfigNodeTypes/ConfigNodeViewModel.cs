@@ -14,6 +14,7 @@ namespace Badger.ViewModels
 
         protected string m_default = "";
         private string m_content = "";
+
         public string content
         {
             get { return m_content; }
@@ -25,21 +26,27 @@ namespace Badger.ViewModels
             }
         }
 
+
         private string m_textColor = XMLConfig.colorDefaultValue;
+
+
         public string textColor
         {
             get { return m_textColor; }
             set { m_textColor = value; NotifyOfPropertyChange(() => textColor); }
         }
 
+
         abstract public bool validate();
 
         //Comment
         private string m_comment = "";
+
         public string comment { get { return m_comment; } set { m_comment = value; } }
 
         //Validation
         private bool m_bIsValid = false;
+
         public bool bIsValid
         {
             get { return m_bIsValid; }
@@ -52,24 +59,28 @@ namespace Badger.ViewModels
             }
         }
 
+
         private bool m_bCanBeForked = true;
+
         public bool bCanBeForked { get { return m_bCanBeForked; } set { m_bCanBeForked = value; NotifyOfPropertyChange(() => bCanBeForked); } }
+
         public void forkThisNode()
         {
             bCanBeForked = false;
+
             if (m_parent != null)
             {
                 m_parent.forkChild(this);
             }
-            else System.Console.WriteLine("Can't fork this node because it has no parent: " + name);
+            else Console.WriteLine("Can't fork this node because it has no parent: " + name);
         }
+
         virtual public void forkChild(ConfigNodeViewModel forkedChild)
         {
-            System.Console.WriteLine("Error: non-nested config node asked to fork a child");
+            Console.WriteLine("Error: non-nested config node asked to fork a child");
         }
-        virtual public void unforkThisNode()
-        {
-        }
+
+        virtual public void unforkThisNode() { }
 
 
         //clone
@@ -93,6 +104,7 @@ namespace Badger.ViewModels
 
         //Parent
         protected ConfigNodeViewModel m_parent;
+
         public ConfigNodeViewModel parent
         {
             get { return m_parent; }
@@ -121,35 +133,73 @@ namespace Badger.ViewModels
 
 
         //FACTORY
-        public static ConfigNodeViewModel getInstance(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent
-            , XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public static ConfigNodeViewModel getInstance(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
+            XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             switch (definitionNode.Name)
             {
-                case XMLConfig.integerNodeTag: return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.boolNodeTag: return new BoolValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.doubleNodeTag: return new DoubleValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.stringNodeTag: return new StringValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.filePathNodeTag: return new FilePathValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.dirPathNodeTag: return new DirPathValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.integerNodeTag:
+                    return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
 
-                case XMLConfig.stateVarRefTag: return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.actionVarRefTag: return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.boolNodeTag:
+                    return new BoolValueConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
 
-                case XMLConfig.branchNodeTag: return new BranchConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.choiceNodeTag: return new ChoiceConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.choiceElementNodeTag: return new ChoiceElementConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.enumNodeTag: return new EnumeratedValueConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
-                case XMLConfig.multiValuedNodeTag: return new MultiValuedConfigViewModel(parentExperiment, parent, definitionNode, parentXPath, configNode);
+                case XMLConfig.doubleNodeTag:
+                    return new DoubleValueConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
+                case XMLConfig.stringNodeTag:
+                    return new StringValueConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
+                case XMLConfig.filePathNodeTag:
+                    return new FilePathValueConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
+                case XMLConfig.dirPathNodeTag:
+                    return new DirPathValueConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
+                case XMLConfig.stateVarRefTag:
+                    return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar,
+                        parent, definitionNode, parentXPath, configNode);
+
+                case XMLConfig.actionVarRefTag:
+                    return new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar,
+                        parent, definitionNode, parentXPath, configNode);
+
+                case XMLConfig.branchNodeTag:
+                    return new BranchConfigViewModel(parentExperiment, parent, definitionNode, parentXPath,
+                        configNode);
+
+                case XMLConfig.choiceNodeTag:
+                    return new ChoiceConfigViewModel(parentExperiment, parent, definitionNode, parentXPath,
+                        configNode);
+
+                case XMLConfig.choiceElementNodeTag:
+                    return new ChoiceElementConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
+                case XMLConfig.enumNodeTag:
+                    return new EnumeratedValueConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
+                case XMLConfig.multiValuedNodeTag:
+                    return new MultiValuedConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
+                default:
+                    return null;
             }
-
-            return null;
         }
 
         public virtual int getNumForkCombinations()
         {
             return 1;
         }
+
         //we do nothing by default
         public virtual void setForkCombination(ref int id, ref string combinationName) { }
 
@@ -169,6 +219,7 @@ namespace Badger.ViewModels
         public virtual void onRemoved()
         { }
     }
+
     abstract public class NestedConfigNode : ConfigNodeViewModel
     {
         //Children
@@ -178,6 +229,7 @@ namespace Badger.ViewModels
             get { return m_children; }
             set { m_children = value; NotifyOfPropertyChange(() => children); }
         }
+
 
         public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
@@ -193,16 +245,20 @@ namespace Badger.ViewModels
                 writer.Write(leftSpace + getXMLFooter());
         }
 
+
         public void outputChildrenXML(StreamWriter writer, SaveMode mode, string leftSpace)
         {
             foreach (ConfigNodeViewModel child in m_children)
                 child.outputXML(writer, mode, leftSpace);
         }
+
         public virtual string getXMLHeader() { return "<" + name + ">\n"; }
+
         public virtual string getXMLFooter() { return "</" + name + ">\n"; }
 
-        protected void childrenInit(ExperimentViewModel parentExperiment, XmlNode classDefinition
-            , string parentXPath, XmlNode configNode = null)
+
+        protected void childrenInit(ExperimentViewModel parentExperiment, XmlNode classDefinition,
+            string parentXPath, XmlNode configNode = null)
         {
             ConfigNodeViewModel childNode;
             XmlNode forkNode;
@@ -217,8 +273,8 @@ namespace Badger.ViewModels
                     }
                     else
                     {
-                        childNode = ConfigNodeViewModel.getInstance(parentExperiment, this, child
-                            , parentXPath, configNode);
+                        childNode = ConfigNodeViewModel.getInstance(parentExperiment, this, child,
+                            parentXPath, configNode);
                         if (childNode != null)
                             children.Add(childNode);
                     }
@@ -241,6 +297,8 @@ namespace Badger.ViewModels
             }
             return null;
         }
+
+
         public override void forkChild(ConfigNodeViewModel forkedChild)
         {
             ForkedNodeViewModel newForkNode;
@@ -277,8 +335,8 @@ namespace Badger.ViewModels
         {
             return nestedNodeFunc(this);
         }
-        public override void traverseDoAction(Action<ConfigNodeViewModel> simpleNodeFunc
-            , Action<NestedConfigNode> nestedNodeAction)
+        public override void traverseDoAction(Action<ConfigNodeViewModel> simpleNodeFunc,
+            Action<NestedConfigNode> nestedNodeAction)
         {
             nestedNodeAction(this);
         }
@@ -290,6 +348,7 @@ namespace Badger.ViewModels
                 numForkCombinations *= child.getNumForkCombinations();
             return numForkCombinations;
         }
+
         public override void setForkCombination(ref int id, ref string combinationName)
         {
             foreach (ConfigNodeViewModel child in children)
@@ -301,5 +360,4 @@ namespace Badger.ViewModels
             foreach (ConfigNodeViewModel child in children) child.onRemoved();
         }
     }
-
 }

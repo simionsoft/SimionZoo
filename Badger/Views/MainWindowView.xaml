@@ -4,6 +4,7 @@
         xmlns:vm="clr-namespace:Badger.ViewModels"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         WindowStyle="ThreeDBorderWindow"
         Title="Badger" Width="960" Height="600"
         Icon="/badger-head.ico">
@@ -25,12 +26,12 @@
                     <Image Source="{StaticResource New}" Opacity="0.6" Width="24" Height="24" />
                 </Button>
                 <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Experiment"
-                        Height="40" Width="40" IsEnabled="{Binding Path=bIsExperimentListNotEmpty}"
+                        Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
                         cal:Message.Attach="[Event Click]=[Action SaveSelectedExperiment()]">
                     <Image Source="{StaticResource Save}" Opacity="0.6" Width="24" Height="24" />
                 </Button>
                 <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save All Experiments"
-                        Height="40" Width="40" IsEnabled="{Binding Path=bIsExperimentListNotEmpty}"
+                        Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
                         cal:Message.Attach="[Event Click]=[Action SaveAllExperiments()]">
                     <Image Source="{StaticResource SaveAll}" Opacity="0.6" Width="24" Height="24" />
                 </Button>
@@ -120,8 +121,14 @@
                             <Label Content="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
                                    VerticalAlignment="Center"/>
                             <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
-                            <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18"
-                                    cal:Message.Attach="[Event Click]=[Action close()]">
+                            <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cal:ActionMessage MethodName="Close" >
+                                            <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                        </cal:ActionMessage>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Image Source="{StaticResource Close}" Height="16" Width="16" />
                             </Button>
                         </StackPanel>

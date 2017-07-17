@@ -3,14 +3,15 @@ using System.Xml;
 
 namespace Badger.ViewModels
 {
-    class DoubleValueConfigViewModel: ConfigNodeViewModel
+    class DoubleValueConfigViewModel : ConfigNodeViewModel
     {
 
-        public DoubleValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public DoubleValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
+            XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(parentExperiment, parent, definitionNode, parentXPath);
 
-            if (configNode == null || configNode[name]==null)
+            if (configNode == null || configNode[name] == null)
             {
                 //default init
                 content = definitionNode.Attributes[XMLConfig.defaultAttribute].Value;

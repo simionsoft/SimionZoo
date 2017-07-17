@@ -11,9 +11,13 @@ using System.Text;
 
 namespace Badger.ViewModels
 {
-
+    /// <summary>
+    /// 
+    /// </summary>
     public class MainWindowViewModel : PropertyChangedBase
     {
+        private const string BatchFile = "Batch File";
+
         static private BindableCollection<ExperimentViewModel> m_experimentViewModels
             = new BindableCollection<ExperimentViewModel>();
         //these two properties interface to the same hidden attribute
@@ -24,6 +28,7 @@ namespace Badger.ViewModels
         }
 
         private ExperimentViewModel m_selectedExperiment;
+
         public ExperimentViewModel selectedExperiment
         {
             get { return m_selectedExperiment; }
@@ -34,15 +39,9 @@ namespace Badger.ViewModels
             }
         }
 
-
         static private bool appNameExists(string name)
         {
-            foreach (ExperimentViewModel app in m_experimentViewModels)
-            {
-                if (app.name == name)
-                    return true;
-            }
-            return false;
+            return m_experimentViewModels.Any(app => app.name == name);
         }
 
         static public string getValidAppName(string originalName)
@@ -77,6 +76,7 @@ namespace Badger.ViewModels
         }
 
         private ShepherdViewModel m_shepherdViewModel;
+
         public ShepherdViewModel ShepherdViewModel { get { return m_shepherdViewModel; } set { } }
 
         private bool m_bCanLaunchExperiment;
@@ -91,28 +91,30 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool m_bIsExperimentListNotEmpty = false;
-        public bool bIsExperimentListNotEmpty
+        private bool m_bIsExperimentListNotEmpty;
+
+        public bool IsExperimentListNotEmpty
         {
             get { return m_bIsExperimentListNotEmpty; }
             set
             {
                 m_bIsExperimentListNotEmpty = value;
-                NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
+                NotifyOfPropertyChange(() => IsExperimentListNotEmpty);
             }
         }
 
-        private void checkEmptyExperimentList()
+        private void CheckEmptyExperimentList()
         {
             bool wasEmpty = !m_bIsExperimentListNotEmpty;
             if (wasEmpty != (m_experimentViewModels.Count == 0))
             {
                 m_bIsExperimentListNotEmpty = m_experimentViewModels.Count != 0;
-                NotifyOfPropertyChange(() => bIsExperimentListNotEmpty);
+                NotifyOfPropertyChange(() => IsExperimentListNotEmpty);
             }
         }
 
         private ObservableCollection<string> m_appNames = new ObservableCollection<string>();
+
         public ObservableCollection<string> AppNames { get { return m_appNames; } set { m_appNames = value; } }
 
         public ObservableCollection<string> LaunchMode { get; set; }
@@ -148,7 +150,7 @@ namespace Badger.ViewModels
 
                 m_selectedLaunchMode = value;
 
-                if (m_selectedLaunchMode.Equals("Batch File"))
+                if (m_selectedLaunchMode.Equals(BatchFile))
                     CanLaunchExperiment = true;
                 else if (m_bIsExperimentListNotEmpty)
                     CanLaunchExperiment = true;
@@ -165,28 +167,27 @@ namespace Badger.ViewModels
             if (m_selectedAppName == null) return;
 
             string xmlDefinitionFile = appDefinitions[m_selectedAppName];
-            ExperimentViewModel newExperiment = new ExperimentViewModel(this, xmlDefinitionFile, null, "New");
+            ExperimentViewModel newExperiment = new ExperimentViewModel(xmlDefinitionFile, null, "New");
             ExperimentViewModels.Add(newExperiment);
             NotifyOfPropertyChange(() => ExperimentViewModels);
-            checkEmptyExperimentList();
+            CheckEmptyExperimentList();
 
-            if (m_bIsExperimentListNotEmpty)
-                CanLaunchExperiment = true;
-            else
-                CanLaunchExperiment = false;
+            CanLaunchExperiment = m_bIsExperimentListNotEmpty;
 
             selectedExperiment = newExperiment;
         }
 
         private object m_logFileLock = new object();
+
         public const string logFilename = SimionFileData.badgerLogFile;
+
         private bool m_bFirstLog = true;
 
         public void logToFile(string logMessage)
         {
             lock (m_logFileLock)
             {
-                string text = DateTime.Now.ToShortDateString() + " " 
+                string text = DateTime.Now.ToShortDateString() + " "
                     + DateTime.Now.ToShortTimeString() + ": " + logMessage + "\n";
                 FileStream file;
 
@@ -211,7 +212,7 @@ namespace Badger.ViewModels
         public MainWindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-            LaunchMode = new ObservableCollection<string> { "Batch File", "Loaded Experiment" };
+            LaunchMode = new ObservableCollection<string> { BatchFile, "Loaded Experiment" };
             SelectedLaunchMode = LaunchMode[0];
             LoadAppDefinitions();
 
@@ -259,17 +260,14 @@ namespace Badger.ViewModels
         /// </summary>
         public void LoadExperiment()
         {
-            ExperimentViewModel newExperiment = SimionFileData.LoadExperiment(this, appDefinitions);
+            ExperimentViewModel newExperiment = SimionFileData.LoadExperiment(appDefinitions);
 
             if (newExperiment != null)
             {
                 ExperimentViewModels.Add(newExperiment);
-                checkEmptyExperimentList();
+                CheckEmptyExperimentList();
 
-                if (m_bIsExperimentListNotEmpty)
-                    CanLaunchExperiment = true;
-                else
-                    CanLaunchExperiment = false;
+                CanLaunchExperiment = m_bIsExperimentListNotEmpty;
 
                 selectedExperiment = newExperiment;
             }
@@ -283,24 +281,15 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        ///     Close a tab (experiment) and remove it from experiments list.
+        ///     Close a tab (experiment view) and remove it from experiments list.
         /// </summary>
-        /// <param name="e">Experiment to be removed</param>
-        public void close(ExperimentViewModel e)
+        /// <param name="e">The experiment to be removed</param>
+        public void Close(ExperimentViewModel e)
         {
             ExperimentViewModels.Remove(e);
-            checkEmptyExperimentList();
+            CheckEmptyExperimentList();
 
-            CanLaunchExperiment = m_bIsExperimentListNotEmpty;
-        }
-
-        public void removeSelectedExperiments()
-        {
-            if (selectedExperiment != null)
-            {
-                ExperimentViewModels.Remove(selectedExperiment);
-                checkEmptyExperimentList();
-            }
+            CanLaunchExperiment = (m_bIsExperimentListNotEmpty || SelectedLaunchMode.Equals(BatchFile));
         }
 
         /// <summary>
@@ -309,17 +298,18 @@ namespace Badger.ViewModels
         /// </summary>
         public void LoadExperiments()
         {
-            SimionFileData.loadExperiments(this, ref m_experimentViewModels, appDefinitions, logToFile);
+            SimionFileData.loadExperiments(ref m_experimentViewModels, appDefinitions, logToFile);
             NotifyOfPropertyChange(() => ExperimentViewModels);
 
             if (m_experimentViewModels.Count > 0)
                 selectedExperiment = m_experimentViewModels[0];
 
-            checkEmptyExperimentList();
+            CheckEmptyExperimentList();
         }
 
 
         private List<LoggedExperimentViewModel> m_loggedExperiments = new List<LoggedExperimentViewModel>();
+
         public List<LoggedExperimentViewModel> LoggedExperiments
         {
             get { return m_loggedExperiments; }
@@ -331,7 +321,6 @@ namespace Badger.ViewModels
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, false);
             LoggedExperiments.Add(newExperiment);
         }
-
 
         /// <summary>
         ///     Pass data to experiment monitor and run experiments defined so far.
@@ -364,7 +353,7 @@ namespace Badger.ViewModels
             int experimentalUnitsCount = 0;
             string batchFileName = "";
 
-            if (SelectedLaunchMode.Equals("Batch File"))
+            if (SelectedLaunchMode.Equals(BatchFile))
             {
                 batchFileName = SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment);
                 experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.ExperimentalUnits.Count);
@@ -399,6 +388,10 @@ namespace Badger.ViewModels
             IsExperimentRunning = false;
         }
 
+        /// <summary>
+        ///     Show a window that allows you to make reports attending diferent criterias from
+        ///     previously completed experiments.
+        /// </summary>
         public void ShowReportsWindow()
         {
             ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
