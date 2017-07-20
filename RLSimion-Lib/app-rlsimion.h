@@ -8,6 +8,7 @@ class CRenderer;
 class IInputHandler;
 class C2DText;
 class C2DMeter;
+using namespace std;
 
 class RLSimionApp : public CSimionApp
 {
@@ -19,8 +20,6 @@ class RLSimionApp : public CSimionApp
 	void updateScene(CState* s);
 	C2DText* m_pProgressText= 0;
 	vector<C2DMeter*> m_pStatsText;
-
-	char m_directory[MAX_PATH_SIZE];
 public:
 
 	RLSimionApp(CConfigNode* pParameters);
@@ -28,8 +27,6 @@ public:
 
 	void getInputFiles(CFilePathList& filePathList);
 	void getOutputFiles(CFilePathList& filePathList);
-	void setOutputDirectory(const char*);
-	char* getOutputDirectory();
 
 	void run();
 };

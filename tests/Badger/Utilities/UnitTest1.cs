@@ -30,5 +30,18 @@ namespace Utilities
             result = Utility.getDirectory("more.txt");
             Assert.AreEqual(result, "");
         }
+        [TestMethod]
+        public void Badger_Utility_removeExtension()
+        {
+            string filename= "C:/jander\\clander/more.simion.exp";
+            Assert.AreEqual("C:/jander\\clander/more.simion", Utility.removeExtension(filename, 1));
+            Assert.AreEqual("C:/jander\\clander/more.simion", Utility.removeExtension(filename));
+            Assert.AreEqual("C:/jander\\clander/more", Utility.removeExtension(filename, 2));
+            filename = "jander/clander.exp/more.simion.exp";
+            Assert.AreEqual("jander/clander.exp/more.simion", Utility.removeExtension(filename, 1));
+            Assert.AreEqual("jander/clander.exp/more", Utility.removeExtension(filename, 2));
+            Assert.AreEqual(filename, Utility.removeExtension(filename, 0));
+            Assert.AreEqual(filename, Utility.removeExtension(filename,3));
         }
+    }
 }
