@@ -154,6 +154,27 @@ namespace Badger.Data
             return fileName;
         }
 
+        //given the path to a file, this function removes [numExtensions] extensions of the file
+        //if not enough extensions are found, nothing is changed from the input path
+        public static string removeExtension(string filename, uint numExtensions= 1)
+        {
+            string result = filename;
+            int lastExt, lastBar;
+            lastBar = Math.Max(filename.LastIndexOf('/'),filename.LastIndexOf('\\'));
+            lastExt = result.LastIndexOf('.');
+            int numRemovedExtensions = 0;
+            while (lastExt > 0 && numRemovedExtensions < numExtensions && lastExt > lastBar)
+            {
+                result = result.Substring(0, lastExt);
+                ++numRemovedExtensions;
+
+                lastExt = result.LastIndexOf('.');
+            }
+            if (numRemovedExtensions == numExtensions)
+                return result;
+            return filename;
+        }
+
         //given the path (relative or absolute) of a file, this function returns the path without the
         //file's name
         //For example:

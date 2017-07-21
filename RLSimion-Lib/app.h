@@ -18,7 +18,8 @@ private:
 	static CSimionApp* m_pAppInstance;
 protected:
 	CConfigFile* m_pConfigDoc;
-	
+	string m_directory;
+	string m_configFile;
 public:
 
 	CSimionApp();
@@ -34,8 +35,9 @@ public:
 
 	virtual void getInputFiles(CFilePathList& filePathList) = 0;
 	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
-	virtual void setOutputDirectory(const char*) = 0;
-	virtual char* getOutputDirectory() = 0;
+	void setConfigFile(string);
+	string getOutputDirectory();
+	string getConfigFile();
 	void printInputOutputFiles();
 
 	static const char* getArgValue(int argc, char** argv, char* argName);

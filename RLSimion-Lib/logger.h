@@ -22,8 +22,8 @@ class CLogger
 	static const int BUFFER_SIZE = 10000;
 
 	//log file
-	char m_outputDir[MAX_FILENAME_LENGTH];
-	char* m_pFullLogFilename;
+	string m_outputLogDescriptor;
+	string m_outputLogBinary;
 	static FILE *m_logFile;
 
 	BOOL_PARAM m_bLogEvaluationEpisodes;
@@ -76,10 +76,10 @@ public:
 	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
-	unsigned int getNumStats();
+	size_t getNumStats();
 	CStats* getStats(unsigned int i);
 
-	void setLogDirectory(const char* xmlFilePath);
+	void setOutputFilenames();
 
 	static MessageOutputMode m_messageOutputMode;
 	static CNamedPipeClient m_outputPipe;
