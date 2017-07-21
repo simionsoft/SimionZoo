@@ -55,6 +55,10 @@ public:
 class CQLearningCritic : public ICritic
 {
 protected:
+	//if this variable is true: td= r + gamma*max a' Q(s_p,a') - max a' Q(s,a')
+	//else: td= r + gamma* max a' Q(s_p,a') - Q(s,a)
+	bool m_bUseVFunctionAsBaseline = true;
+
 	CHILD_OBJECT<CLinearStateActionVFA> m_pQFunction;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
 	CFeatureList *m_pAux;
