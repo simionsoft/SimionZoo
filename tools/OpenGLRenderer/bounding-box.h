@@ -11,6 +11,7 @@ class BoundingBox3D
 	Vector3D m_min, m_max;
 public:
 	BoundingBox3D();
+	BoundingBox3D(Vector3D min, Vector3D max);
 	virtual ~BoundingBox3D();
 	void addPoint(Vector3D p);
 	void reset();
@@ -19,6 +20,7 @@ public:
 	Vector3D max() const;
 	Vector3D size() const;
 	Vector3D center() const;
+	Vector3D getMinMax(unsigned int index) const;
 
 	void draw() const;
 	void load(tinyxml2::XMLElement* pNode);

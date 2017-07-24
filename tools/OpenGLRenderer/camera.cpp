@@ -54,6 +54,8 @@ void CSimpleCamera::set()
 	glMatrixMode(GL_MODELVIEW);
 	Matrix44 matrix = getModelviewMatrix();
 	glLoadMatrixd(matrix.asArray());
+
+	m_frustum.fromCameraMatrix(matrix);
 }
 
 void CCamera::set2DView()

@@ -85,6 +85,13 @@ void Matrix44::setScale(Vector3D& scale)
 	set(3, 3, 1.0);
 }
 
+BoundingBox3D Matrix44::operator*(const BoundingBox3D& box) const
+{
+	BoundingBox3D result;
+	result = BoundingBox3D(*this*box.min(), *this*box.max());
+	return result;
+}
+
 Matrix44 Matrix44::operator*(Matrix44& mat) const
 {
 	Matrix44 result;

@@ -1,10 +1,13 @@
 #pragma once
 #include "actor.h"
+#include "frustum.h"
 
 namespace tinyxml2 { class XMLElement; }
 
 class CCamera: public CSceneActor
 {
+protected:
+	Frustum m_frustum;
 public:
 	CCamera();
 	virtual ~CCamera();
@@ -15,6 +18,7 @@ public:
 	static void set2DView();
 
 	Matrix44 getModelviewMatrix() const;
+	Frustum& getFrustum(){ return m_frustum; }
 };
 
 class CSimpleCamera : public CCamera

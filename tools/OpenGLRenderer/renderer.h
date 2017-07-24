@@ -17,6 +17,7 @@ class CRenderer
 	CTimer m_timer;
 	int m_frameCount = 0;
 	double m_fps = 0.0;
+	unsigned int m_num3DObjectsDrawn = 0;
 
 	CTextureManager* m_pTextureManager;
 
@@ -51,6 +52,7 @@ public:
 	void getWindowsSize(int& sizeX, int& sizeY) { sizeX = m_windowWidth; sizeY = m_windowHeight; }
 	double getFPS() { return m_fps; }
 	void updateFPS();
+	unsigned int getNum3DObjectsDrawn() { return m_num3DObjectsDrawn; }
 
 	void setDataFolder(string dataFolder);
 	string getDataFolder();

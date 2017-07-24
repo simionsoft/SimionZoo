@@ -180,9 +180,9 @@ void CRenderer::drawScene()
 {
 	//clean the backbuffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	if (!m_pActiveCamera) return;
 	//set 3d view
-	if (m_pActiveCamera) m_pActiveCamera->set();
+	m_pActiveCamera->set();
 	//set lights
 	CLight::enable(true);
 
@@ -191,12 +191,19 @@ void CRenderer::drawScene()
 		(*it)->set();
 	}
 	//draw 3d objects in the scene
+	Frustum& frustum = m_pActiveCamera->getFrustum();
+	m_num3DObjectsDrawn = 0;
+	Matrix44 modelviewMatrix = m_pActiveCamera->getModelviewMatrix();
 	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it)
 	{
-		(*it)->draw();
+		if (frustum.insideFrustum(modelviewMatrix * (*it)->boundingBox()))
+		{
+			(*it)->draw();
 
-		if (m_bShowBoundingBoxes)
-			(*it)->drawBoundingBox();
+			if (m_bShowBoundingBoxes)
+				(*it)->drawBoundingBox();
+			++m_num3DObjectsDrawn;
+		}
 	}
 	CLight::enable(false);
 	//set 2d view

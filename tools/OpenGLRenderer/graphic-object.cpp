@@ -45,7 +45,7 @@ CGraphicObject::~CGraphicObject()
 
 BoundingBox3D CGraphicObject::boundingBox() const
 {
-	return m_bb;
+	return m_transform.transformMatrix()*m_bb;
 }
 
 

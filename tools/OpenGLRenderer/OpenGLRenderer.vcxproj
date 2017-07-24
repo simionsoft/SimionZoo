@@ -179,9 +179,11 @@
     <ClCompile Include="bounding-box-gl.cpp" />
     <ClCompile Include="bounding-box.cpp" />
     <ClCompile Include="bounding-cylinder.cpp" />
+    <ClCompile Include="frustum.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="matrix44.cpp" />
     <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="plane.cpp" />
     <ClCompile Include="xml-load-utils.cpp" />
     <ClCompile Include="graphic-object-2d.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -212,6 +214,7 @@
     <ClInclude Include="bindings.h" />
     <ClInclude Include="bounding-box.h" />
     <ClInclude Include="bounding-cylinder.h" />
+    <ClInclude Include="frustum.h" />
     <ClInclude Include="graphic-object-2d.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collada-model.h" />
@@ -223,6 +226,7 @@
     <ClInclude Include="matrix33.h" />
     <ClInclude Include="matrix44.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="plane.h" />
     <ClInclude Include="quaternion.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="stdafx.h" />

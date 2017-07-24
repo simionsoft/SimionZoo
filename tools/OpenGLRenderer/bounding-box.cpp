@@ -6,6 +6,12 @@ BoundingBox3D::BoundingBox3D()
 	reset();
 }
 
+BoundingBox3D::BoundingBox3D(Vector3D min, Vector3D max)
+{
+	m_min = min;
+	m_max = max;
+}
+
 void BoundingBox3D::reset()
 {
 	m_min.setX(std::numeric_limits<double>::max());
@@ -40,6 +46,11 @@ Vector3D BoundingBox3D::center() const
 {
 	return Vector3D(m_min.x() + (m_max.x() - m_min.x())*0.5
 		, m_min.y() + (m_max.y() - m_min.y())*0.5, m_min.z() + (m_max.z() - m_min.z())*0.5);
+}
+Vector3D BoundingBox3D::getMinMax(unsigned int index) const
+{
+	if (index == 0) return m_min;
+	return m_max;
 }
 
 BoundingBox2D::BoundingBox2D()

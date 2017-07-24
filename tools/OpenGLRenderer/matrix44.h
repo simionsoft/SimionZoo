@@ -1,6 +1,7 @@
 #pragma once
 #include "quaternion.h"
 #include "vector3d.h"
+#include "bounding-box.h"
 
 class Matrix44
 {
@@ -15,7 +16,7 @@ public:
 	void setScale(Vector3D& scale);
 
 	Matrix44 operator*(Matrix44& mat) const;
-
+	BoundingBox3D operator*( const BoundingBox3D& box) const;
 	Point3D operator*(Point3D& p) const;
 	Vector3D operator*(Vector3D& v) const;
 
