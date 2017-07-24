@@ -335,6 +335,7 @@ namespace Badger.ViewModels
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, true);
             loggedExperiments.Add(newExperiment);
             Variables.AddRange(newExperiment.variables);
+            foreach (LoggedVariableViewModel variable in Variables) variable.setParent(this);
             bLogsLoaded = true;
 
             if (Variables.Count > 0)
