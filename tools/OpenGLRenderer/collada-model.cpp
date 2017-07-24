@@ -205,9 +205,9 @@ CMesh* CColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement
 
 	//we are not instancing geometries, but replicating them, so we can take a shortcut here and transform vertices
 	//using the node's transform in the visual scene
-	for (int i = 0; i < pMesh->getNumPositions(); ++i)
+	for (unsigned int i = 0; i < pMesh->getNumPositions(); ++i)
 		pMesh->getPosition(i) = nodeTransform*pMesh->getPosition(i);
-	for (int i = 0; i < pMesh->getNumNormals(); ++i)
+	for (unsigned int i = 0; i < pMesh->getNumNormals(); ++i)
 	{
 		pMesh->getNormal(i) = nodeTransform*pMesh->getNormal(i);
 		pMesh->getNormal(i).normalize();
@@ -506,7 +506,8 @@ void CColladaModel::traverseVisualScene(tinyxml2::XMLElement* pRootNode, tinyxml
 {
 	//node has a transform matrix??
 	Vector3D translation;
-	Matrix44 localTransform, readTransform = Matrix44::identity();
+	Matrix44 localTransform, readTransform,translationMatrix;
+	readTransform.setIdentity();
 	if (pNode->FirstChildElement(XML_TAG_COLLADA_MATRIX) != nullptr)
 	{
 		loadColladaMatrix(pNode->FirstChildElement(XML_TAG_COLLADA_MATRIX)->GetText(), readTransform);
@@ -515,7 +516,8 @@ void CColladaModel::traverseVisualScene(tinyxml2::XMLElement* pRootNode, tinyxml
 	else if (pNode->FirstChildElement(XML_TAG_COLLADA_TRANSLATE))
 	{
 		loadVector3D(pNode->FirstChildElement(XML_TAG_COLLADA_TRANSLATE)->GetText(), translation);
-		localTransform = Matrix44::translationMatrix(translation)*nodeTransform;
+		translationMatrix.setTranslation(translation);
+		localTransform = translationMatrix*nodeTransform;
 	}
 	else localTransform = nodeTransform;
 
@@ -542,7 +544,8 @@ void CColladaModel::loadVisualScenes(tinyxml2::XMLElement* pRootNode)
 	//load the visual scene
 	tinyxml2::XMLElement* pVisualScene, *pNode;
 	tinyxml2::XMLElement* pVisualSceneLib = pRootNode->FirstChildElement(XML_TAG_COLLADA_VISUAL_SCENE_LIB);
-	Matrix44 nodeTransform = Matrix44::identity();
+	Matrix44 nodeTransform;
+	nodeTransform.setIdentity();
 	if (pVisualSceneLib)
 	{
 		pVisualScene = pVisualSceneLib->FirstChildElement(XML_TAG_COLLADA_VISUAL_SCENE);
@@ -560,7 +563,9 @@ void CColladaModel::loadVisualScenes(tinyxml2::XMLElement* pRootNode)
 
 void CColladaModel::loadSkin(tinyxml2::XMLElement* pRootNode)
 {
-	Matrix44 matrix = Matrix44::identity();
+	Matrix44 matrix;
+	matrix.setIdentity();
+
 	const char* geometryId;
 	tinyxml2::XMLElement* pController, *pSkin;
 	tinyxml2::XMLElement* pControllerLib = pRootNode->FirstChildElement(XML_TAG_COLLADA_CONTROLLER_LIB);

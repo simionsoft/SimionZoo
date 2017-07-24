@@ -36,9 +36,9 @@ void CSceneActor::restoreTransform()
 Matrix44 CSceneActor::getTransformMatrix() const
 {
 	Matrix44 mat, rot, scale,trans;
-	rot = Matrix44::rotationMatrix(m_transform.rotation());
-	trans = Matrix44::translationMatrix(m_transform.translation());
-	scale = Matrix44::scaleMatrix(m_transform.scale());
+	rot.setRotation(m_transform.rotation());
+	trans.setTranslation(m_transform.translation());
+	scale.setScale(m_transform.scale());
 	mat = trans*rot*scale;
 	return mat;
 }

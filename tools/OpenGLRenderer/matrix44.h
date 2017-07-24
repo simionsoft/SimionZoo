@@ -9,10 +9,10 @@ public:
 	Matrix44();
 	virtual ~Matrix44();
 
-	static Matrix44 identity();
-	static Matrix44 rotationMatrix(Quaternion& quat);
-	static Matrix44 translationMatrix(Vector3D& translation);
-	static Matrix44 scaleMatrix(Vector3D& scale);
+	void setIdentity();
+	void setRotation(Quaternion& quat);
+	void setTranslation(Vector3D& translation);
+	void setScale(Vector3D& scale);
 
 	Matrix44 operator*(Matrix44& mat) const;
 

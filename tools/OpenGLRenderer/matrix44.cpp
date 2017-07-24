@@ -11,19 +11,16 @@ Matrix44::~Matrix44()
 {
 }
 
-Matrix44 Matrix44::identity()
+void Matrix44::setIdentity()
 {
-	Matrix44 m;
-	m.set(0, 0, 1.0); m.set(0, 1, 0.0); m.set(0, 2, 0.0); m.set(0, 3, 0.0);
-	m.set(1, 0, 0.0); m.set(1, 1, 1.0); m.set(1, 2, 0.0); m.set(1, 3, 0.0);
-	m.set(2, 0, 0.0); m.set(2, 1, 0.0); m.set(2, 2, 1.0); m.set(2, 3, 0.0);
-	m.set(3, 0, 0.0); m.set(3, 1, 0.0); m.set(3, 2, 0.0); m.set(3, 3, 1.0);
-	return m;
+	set(0, 0, 1.0); set(0, 1, 0.0); set(0, 2, 0.0); set(0, 3, 0.0);
+	set(1, 0, 0.0); set(1, 1, 1.0); set(1, 2, 0.0); set(1, 3, 0.0);
+	set(2, 0, 0.0); set(2, 1, 0.0); set(2, 2, 1.0); set(2, 3, 0.0);
+	set(3, 0, 0.0); set(3, 1, 0.0); set(3, 2, 0.0); set(3, 3, 1.0);
 }
 
-Matrix44 Matrix44::rotationMatrix(Quaternion& quat)
+void Matrix44::setRotation(Quaternion& quat)
 {
-	Matrix44 m;
 	double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
 
 	x2 = quat.x() + quat.x();  y2 = quat.y() + quat.y();  z2 = quat.z() + quat.z();
@@ -31,67 +28,61 @@ Matrix44 Matrix44::rotationMatrix(Quaternion& quat)
 	yy = quat.y() * y2;       yz = quat.y() * z2;       zz = quat.z() * z2;
 	wx = quat.w() * x2;       wy = quat.w() * y2;       wz = quat.w() * z2;
 	
-	m.set(0, 0, 1.0 - (yy + zz));
-	m.set(0, 1, xy - wz);
-	m.set(0, 2, xz + wy);
-	m.set(0, 3, 0.0);
-	m.set(1, 0, xy + wz);
-	m.set(1, 1, 1.0 - (xx + zz));
-	m.set(1, 2, yz - wx);
-	m.set(1, 3, 0.0);
-	m.set(2, 0, xz - wy);
-	m.set(2, 1, yz + wx);
-	m.set(2, 2, 1.0 - (xx + yy));
-	m.set(2, 3, 0.0);
-	m.set(3, 0, 0.0);
-	m.set(3, 1, 0.0);
-	m.set(3, 2, 0.0);
-	m.set(3, 3, 1.0);
-	return m;
+	set(0, 0, 1.0 - (yy + zz));
+	set(0, 1, xy - wz);
+	set(0, 2, xz + wy);
+	set(0, 3, 0.0);
+	set(1, 0, xy + wz);
+	set(1, 1, 1.0 - (xx + zz));
+	set(1, 2, yz - wx);
+	set(1, 3, 0.0);
+	set(2, 0, xz - wy);
+	set(2, 1, yz + wx);
+	set(2, 2, 1.0 - (xx + yy));
+	set(2, 3, 0.0);
+	set(3, 0, 0.0);
+	set(3, 1, 0.0);
+	set(3, 2, 0.0);
+	set(3, 3, 1.0);
 }
 
-Matrix44 Matrix44::translationMatrix(Vector3D& translation)
+void Matrix44::setTranslation(Vector3D& translation)
 {
-	Matrix44 m;
-	m.set(0, 0, 1.0);
-	m.set(0, 1, 0.0);
-	m.set(0, 2, 0.0);
-	m.set(0, 3, 0.0);
-	m.set(1, 0, 0.0);
-	m.set(1, 1, 1.0);
-	m.set(1, 2, 0.0);
-	m.set(1, 3, 0.0);
-	m.set(2, 0, 0.0);
-	m.set(2, 1, 0.0);
-	m.set(2, 2, 1.0);
-	m.set(2, 3, 0.0);
-	m.set(3, 0, translation.x());
-	m.set(3, 1, translation.y());
-	m.set(3, 2, translation.z());
-	m.set(3, 3, 1.0);
-	return m;
+	set(0, 0, 1.0);
+	set(0, 1, 0.0);
+	set(0, 2, 0.0);
+	set(0, 3, 0.0);
+	set(1, 0, 0.0);
+	set(1, 1, 1.0);
+	set(1, 2, 0.0);
+	set(1, 3, 0.0);
+	set(2, 0, 0.0);
+	set(2, 1, 0.0);
+	set(2, 2, 1.0);
+	set(2, 3, 0.0);
+	set(3, 0, translation.x());
+	set(3, 1, translation.y());
+	set(3, 2, translation.z());
+	set(3, 3, 1.0);
 }
-Matrix44 Matrix44::scaleMatrix(Vector3D& scale)
+void Matrix44::setScale(Vector3D& scale)
 {
-	Matrix44 m;
-	m.set(0, 0, scale.x());
-	m.set(0, 1, 0.0);
-	m.set(0, 2, 0.0);
-	m.set(0, 3, 0.0);
-	m.set(1, 0, 0.0);
-	m.set(1, 1, scale.y());
-	m.set(1, 2, 0.0);
-	m.set(1, 3, 0.0);
-	m.set(2, 0, 0.0);
-	m.set(2, 1, 0.0);
-	m.set(2, 2, scale.z());
-	m.set(2, 3, 0.0);
-	m.set(3, 0, 0.0);
-	m.set(3, 1, 0.0);
-	m.set(3, 2, 0.0);
-	m.set(3, 3, 1.0);
-	return m;
-
+	set(0, 0, scale.x());
+	set(0, 1, 0.0);
+	set(0, 2, 0.0);
+	set(0, 3, 0.0);
+	set(1, 0, 0.0);
+	set(1, 1, scale.y());
+	set(1, 2, 0.0);
+	set(1, 3, 0.0);
+	set(2, 0, 0.0);
+	set(2, 1, 0.0);
+	set(2, 2, scale.z());
+	set(2, 3, 0.0);
+	set(3, 0, 0.0);
+	set(3, 1, 0.0);
+	set(3, 2, 0.0);
+	set(3, 3, 1.0);
 }
 
 Matrix44 Matrix44::operator*(Matrix44& mat) const

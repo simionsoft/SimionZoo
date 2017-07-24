@@ -17,8 +17,8 @@ CCamera::~CCamera()
 Matrix44 CCamera::getModelviewMatrix() const
 {
 	Matrix44 mat, rot, trans;
-	rot = Matrix44::rotationMatrix(m_transform.rotation().inverse());
-	trans = Matrix44::translationMatrix(m_transform.translation().inverse());
+	rot.setRotation(m_transform.rotation().inverse());
+	trans.setTranslation(m_transform.translation().inverse());
 	mat = rot*trans;
 
 	return mat;
