@@ -105,6 +105,8 @@ namespace Badger.ViewModels
             ExperimentData experimentData = new ExperimentData();
             experimentData.load(m_logFilePath);
 
+            if (!experimentData.bSuccesful || experimentData.episodes.Count == 0) return null;
+
             EpisodeData lastEvalEpisode = experimentData.episodes[experimentData.episodes.Count - 1];
 
             int numSteps = lastEvalEpisode.steps.Count;
