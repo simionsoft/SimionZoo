@@ -15,19 +15,18 @@ enum planeEnum
 };
 
 #define NUM_PLANES 6
-#define NUM_POINTS 8
+
 class Frustum
 {
 	Plane planes[NUM_PLANES];
-	Point3D points[NUM_POINTS];
 
-	void planesFromCameraMatrix(Matrix44& cameraMatrix);
 public:
 	Frustum();
 	virtual ~Frustum();
 
 	void fromCameraMatrix(Matrix44& cameraMatrix);
 
-	bool insideFrustum(BoundingBox3D& boundingBox);
+	bool isVisible(BoundingBox3D& boundingBox) const;
+	bool isVisible(Point3D& point) const;
 };
 

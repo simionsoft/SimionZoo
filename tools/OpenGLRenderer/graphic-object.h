@@ -31,7 +31,7 @@ public:
 
 	void draw();
 
-	BoundingBox3D boundingBox() const;
+	BoundingBox3D boundingBox();
 	void drawBoundingBox();
 	void fitToBoundingBox(BoundingBox3D& newBB);
 	void fitToBoundingCylinder(BoundingCylinder& newBC);

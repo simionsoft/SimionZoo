@@ -2,25 +2,26 @@
 
 #include "vector3d.h"
 #include "vector2d.h"
-
+#undef min
+#undef max
 namespace tinyxml2 { class XMLElement; }
 
 class BoundingBox3D
 {
 	bool m_bSet= false;
-	Vector3D m_min, m_max;
+	Point3D m_min, m_max;
 public:
 	BoundingBox3D();
-	BoundingBox3D(Vector3D min, Vector3D max);
+	BoundingBox3D(Point3D min, Point3D max);
 	virtual ~BoundingBox3D();
-	void addPoint(Vector3D p);
+	void addPoint(Point3D p);
 	void reset();
 
-	Vector3D min() const;
-	Vector3D max() const;
-	Vector3D size() const;
-	Vector3D center() const;
-	Vector3D getMinMax(unsigned int index) const;
+	Point3D min() const;
+	Point3D max() const;
+	Point3D size() const;
+	Point3D center() const;
+	Point3D getMinMax(unsigned int index) const;
 
 	void draw() const;
 	void load(tinyxml2::XMLElement* pNode);
@@ -30,18 +31,18 @@ public:
 class BoundingBox2D
 {
 	bool m_bSet = false;
-	Vector2D m_min, m_max;
+	Point2D m_min, m_max;
 public:
 	BoundingBox2D();
 	virtual ~BoundingBox2D();
 
-	void addPoint(Vector2D p);
+	void addPoint(Point2D p);
 	void reset();
 
-	Vector2D min() const;
-	Vector2D max() const;
-	Vector2D size() const;
-	Vector2D center() const;
+	Point2D min() const;
+	Point2D max() const;
+	Point2D size() const;
+	Point2D center() const;
 
 	void draw() const;
 	void load(tinyxml2::XMLElement* pNode);

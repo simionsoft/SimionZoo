@@ -85,6 +85,28 @@ void Matrix44::setScale(Vector3D& scale)
 	set(3, 3, 1.0);
 }
 
+
+void Matrix44::setPerspective(double halfWidth, double halfHeight, double nearPlaneDist, double farPlaneDist)
+{
+	//http://www.songho.ca/opengl/gl_projectionmatrix.html
+	setIdentity();
+	
+	if (farPlaneDist - nearPlaneDist == 0.0) return;
+
+	//[0,0]= n/r
+	set(0, 0, nearPlaneDist / halfWidth);
+	//[1,1]= n/t
+	set(1, 1, nearPlaneDist / halfHeight);
+	//[2,2]= -(f+n)/(f-n)
+	set(2, 2, -(farPlaneDist + nearPlaneDist) / (farPlaneDist - nearPlaneDist));
+	//[3,2]= -2fn/(f-n)
+	set(3, 2, -2 * farPlaneDist*nearPlaneDist / (farPlaneDist - nearPlaneDist));
+	//[2,3]= -1
+	set(2, 3, -1.0);
+	//[3,3]= 0
+	set(3, 3, 0.0);
+}
+
 BoundingBox3D Matrix44::operator*(const BoundingBox3D& box) const
 {
 	BoundingBox3D result;

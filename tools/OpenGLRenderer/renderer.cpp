@@ -193,10 +193,10 @@ void CRenderer::drawScene()
 	//draw 3d objects in the scene
 	Frustum& frustum = m_pActiveCamera->getFrustum();
 	m_num3DObjectsDrawn = 0;
-	Matrix44 modelviewMatrix = m_pActiveCamera->getModelviewMatrix();
+
 	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it)
 	{
-		if (frustum.insideFrustum(modelviewMatrix * (*it)->boundingBox()))
+		if (frustum.isVisible((*it)->boundingBox()))
 		{
 			(*it)->draw();
 

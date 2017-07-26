@@ -16,41 +16,41 @@ void Frustum::fromCameraMatrix(Matrix44& cameraMatrix)
 {
 	//FROM: http://ruh.li/CameraViewFrustum.html
 
-	// left
-	planes[LEFT_PLANE].setNormal(cameraMatrix.get(3, 0) + cameraMatrix.get(0, 0)
-		, cameraMatrix.get(3, 1) + cameraMatrix.get(0, 1)
-		, cameraMatrix.get(3, 2) + cameraMatrix.get(0, 2));
-	planes[LEFT_PLANE].setDistance(cameraMatrix.get(3, 3) + cameraMatrix.get(0, 3));
+	//left
+	planes[LEFT_PLANE].setNormal(cameraMatrix.get(0, 3) + cameraMatrix.get(0, 0)
+		, cameraMatrix.get(1, 3) + cameraMatrix.get(1, 0)
+		, cameraMatrix.get(2, 3) + cameraMatrix.get(2, 0));
+	planes[LEFT_PLANE].setDistance(cameraMatrix.get(3, 3) + cameraMatrix.get(3, 0));
 
 	// right
-	planes[RIGHT_PLANE].setNormal(cameraMatrix.get(3, 0) - cameraMatrix.get(0, 0)
-		, cameraMatrix.get(3, 1) - cameraMatrix.get(0, 1)
-		, cameraMatrix.get(3, 2) - cameraMatrix.get(0, 2));
-	planes[RIGHT_PLANE].setDistance(cameraMatrix.get(3, 3) - cameraMatrix.get(0, 3));
+	planes[RIGHT_PLANE].setNormal(cameraMatrix.get(0, 3) - cameraMatrix.get(0, 0)
+		, cameraMatrix.get(1, 3) - cameraMatrix.get(1, 0)
+		, cameraMatrix.get(2, 3) - cameraMatrix.get(2, 0));
+	planes[RIGHT_PLANE].setDistance(cameraMatrix.get(3, 3) - cameraMatrix.get(3, 0));
 
 	// bottom
-	planes[BOTTOM_PLANE].setNormal(cameraMatrix.get(3, 0) + cameraMatrix.get(1, 0)
-		, cameraMatrix.get(3, 1) + cameraMatrix.get(1, 1)
-		, cameraMatrix.get(3, 2) + cameraMatrix.get(1, 2));
-	planes[BOTTOM_PLANE].setDistance( cameraMatrix.get(3, 3) + cameraMatrix.get(1, 3));
+	planes[BOTTOM_PLANE].setNormal(cameraMatrix.get(0, 3) + cameraMatrix.get(0, 1)
+		, cameraMatrix.get(1, 3) + cameraMatrix.get(1, 1)
+		, cameraMatrix.get(2, 3) + cameraMatrix.get(2, 1));
+	planes[BOTTOM_PLANE].setDistance(cameraMatrix.get(3, 3) + cameraMatrix.get(3, 1));
 
 	// top
-	planes[TOP_PLANE].setNormal(cameraMatrix.get(3, 0) - cameraMatrix.get(1, 0)
-		, cameraMatrix.get(3, 1) - cameraMatrix.get(1, 1)
-		, cameraMatrix.get(3, 2) - cameraMatrix.get(1, 2));
-	planes[TOP_PLANE].setDistance(cameraMatrix.get(3, 3) - cameraMatrix.get(1, 3));
+	planes[TOP_PLANE].setNormal(cameraMatrix.get(0, 3) - cameraMatrix.get(0, 1)
+		, cameraMatrix.get(1, 3) - cameraMatrix.get(1, 1)
+		, cameraMatrix.get(2, 3) - cameraMatrix.get(2, 1));
+	planes[TOP_PLANE].setDistance(cameraMatrix.get(3, 3) - cameraMatrix.get(3, 1));
 
 	// near
-	planes[NEAR_PLANE].setNormal(cameraMatrix.get(3, 0) + cameraMatrix.get(2, 0)
-		, cameraMatrix.get(3, 1) + cameraMatrix.get(2, 1)
-		, cameraMatrix.get(3, 2) + cameraMatrix.get(2, 2));
-	planes[NEAR_PLANE].setDistance(cameraMatrix.get(3, 3) + cameraMatrix.get(2, 3));
+	planes[NEAR_PLANE].setNormal(cameraMatrix.get(0, 3) + cameraMatrix.get(0, 2)
+		, cameraMatrix.get(1, 3) + cameraMatrix.get(1, 2)
+		, cameraMatrix.get(2, 3) + cameraMatrix.get(2, 2));
+	planes[NEAR_PLANE].setDistance(cameraMatrix.get(3, 3) + cameraMatrix.get(3, 2));
 
 	// far
-	planes[FAR_PLANE].setNormal(cameraMatrix.get(3, 0) - cameraMatrix.get(2, 0)
-		, cameraMatrix.get(3, 1) - cameraMatrix.get(2, 1)
-		, cameraMatrix.get(3, 2) - cameraMatrix.get(2, 2));
-	planes[FAR_PLANE].setDistance(cameraMatrix.get(3, 3) - cameraMatrix.get(2, 3));
+	planes[FAR_PLANE].setNormal(cameraMatrix.get(0, 3) - cameraMatrix.get(0, 2)
+		, cameraMatrix.get(1, 3) - cameraMatrix.get(1, 2)
+		, cameraMatrix.get(2, 3) - cameraMatrix.get(2, 2));
+	planes[FAR_PLANE].setDistance(cameraMatrix.get(3, 3) - cameraMatrix.get(3, 2));
 
 	// normalize
 	for (unsigned int i = 0; i < NUM_PLANES; i++)
@@ -64,7 +64,7 @@ void Frustum::fromCameraMatrix(Matrix44& cameraMatrix)
 	}
 }
 
-bool Frustum::insideFrustum(BoundingBox3D& box)
+bool Frustum::isVisible(BoundingBox3D& box) const
 {
 	for (unsigned int i = 0; i < NUM_PLANES; i++)
 	{
@@ -90,5 +90,19 @@ bool Frustum::insideFrustum(BoundingBox3D& box)
 			return true;
 	}
 
+	return true;
+}
+
+bool Frustum::isVisible(Point3D& point) const
+{
+	double dist;
+	for (unsigned int i = 0; i < NUM_PLANES; i++)
+	{
+		dist = planes[i].getNormal().dot(point) + planes[i].getDistance();
+		if (dist < 0)
+		{
+			return false;
+		}
+	}
 	return true;
 }

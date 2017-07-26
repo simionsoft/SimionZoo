@@ -14,6 +14,8 @@ public:
 	void setRotation(Quaternion& quat);
 	void setTranslation(Vector3D& translation);
 	void setScale(Vector3D& scale);
+	void setPerspective(double halfWidth, double halfHeight, double nearPlaneDist, double farPlaneDist);
+
 
 	Matrix44 operator*(Matrix44& mat) const;
 	BoundingBox3D operator*( const BoundingBox3D& box) const;

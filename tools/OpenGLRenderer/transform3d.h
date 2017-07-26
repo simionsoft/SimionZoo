@@ -23,7 +23,7 @@ public:
 	Vector3D translation() const { return m_translation; }
 	Quaternion rotation() const { return m_rotation; }
 	Vector3D scale() const { return m_scale; }
-	Matrix44 transformMatrix() const { return m_matrix; }
+	Matrix44 transformMatrix() { updateMatrix(); return m_matrix; }
 
 	void setTranslation(const Vector3D& translation) { m_translation = translation; }
 	void setRotation(const Quaternion& rotation) { m_rotation = rotation; }

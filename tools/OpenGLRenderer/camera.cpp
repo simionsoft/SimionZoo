@@ -47,15 +47,16 @@ void CSimpleCamera::set()
 {
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glFrustum(-1.0, 1.0, -1.0, 1.0, nearPlane, farPlane);
+	Matrix44 perspective;
+	perspective.setPerspective(1.0, 1.0, nearPlane, farPlane);
+	glLoadMatrixd(perspective.asArray());
 
 	//set modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	Matrix44 matrix = getModelviewMatrix();
 	glLoadMatrixd(matrix.asArray());
 
-	m_frustum.fromCameraMatrix(matrix);
+	m_frustum.fromCameraMatrix(perspective*matrix);
 }
 
 void CCamera::set2DView()
