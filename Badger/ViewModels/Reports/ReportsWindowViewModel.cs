@@ -12,7 +12,10 @@ namespace Badger.ViewModels
         private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
         public ObservableCollection<ReportViewModel> reports { get { return m_reports; } }
 
-        private bool m_bCanGenerateReports = false;
+        public BindableCollection<LoggedForkViewModel> Forks { get; } =
+            new BindableCollection<LoggedForkViewModel>();
+
+        private bool m_bCanGenerateReports;
         public bool bCanGenerateReports
         {
             get { return m_bCanGenerateReports; }
@@ -119,7 +122,7 @@ namespace Badger.ViewModels
 
 
         //Order by
-        private bool m_bIsOrderByEnabled = false;
+        private bool m_bIsOrderByEnabled;
         public bool bIsOrderByEnabled
         {
             get { return m_bIsOrderByEnabled; }
@@ -205,7 +208,7 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool m_bLogsLoaded = false;
+        private bool m_bLogsLoaded;
         public bool bLogsLoaded
         {
             get { return m_bLogsLoaded; }
@@ -214,7 +217,7 @@ namespace Badger.ViewModels
 
         public void validateQuery()
         {
-            //validate the current query
+            // Validate the current query
             int numSelectedVars = 0;
 
             foreach (LoggedVariableViewModel variable in Variables)
@@ -222,10 +225,11 @@ namespace Badger.ViewModels
 
             if (numSelectedVars == 0 || selectedInGroupSelectionVariable == "")
                 bCanGenerateReports = false;
-            else bCanGenerateReports = true;
+            else
+                bCanGenerateReports = true;
 
-            //update the "enabled" property of the variable used to select a group
-            bGroupsEnabled = GroupByForks.Count > 0;
+            // Update the "enabled" property of the variable used to select a group
+            bGroupsEnabled = Forks.Count > 0;
         }
 
         public ReportsWindowViewModel()
@@ -251,12 +255,15 @@ namespace Badger.ViewModels
             selectedOrderByFunction = LogQuery.orderDesc;
         }
 
-        public void makeReport()
+        /// <summary>
+        ///     Method called from the view. Make a report from selected configuration once
+        ///     all conditions are fulfilled.
+        /// </summary>
+        public void MakeReport()
         {
-            //FILL the LogQuery data
-            LogQuery query = new LogQuery();
-            query.from = selectedFrom;
-            //group by
+            // Fill the LogQuery data
+            LogQuery query = new LogQuery { @from = selectedFrom };
+            // Group by
             foreach (string fork in m_groupByForks) query.groupBy.Add(fork);
             //having
             if (query.groupBy.Count > 0)
@@ -264,7 +271,7 @@ namespace Badger.ViewModels
                 query.inGroupSelectionFunction = selectedInGroupSelectionFunction;
                 query.inGroupSelectionVariable = selectedInGroupSelectionVariable;
             }
-            //orderBy
+            // Order by
             query.limitToOption = selectedLimitToOption;
             if (selectedLimitToOption != LogQuery.noLimitOnResults)
             {
@@ -272,10 +279,9 @@ namespace Badger.ViewModels
                 query.orderByVariable = selectedOrderByVariable;
             }
 
-            //EXECUTE the query
+            // Execute the query
             query.execute(loggedExperiments, Variables);
-
-            //DISPLAY the report
+            // Display the report
             ReportViewModel newReport = new ReportViewModel(query);
             reports.Add(newReport);
             selectedReport = newReport;
@@ -285,7 +291,7 @@ namespace Badger.ViewModels
         public BindableCollection<LoggedVariableViewModel> Variables { get; }
             = new BindableCollection<LoggedVariableViewModel>();
 
-        private bool m_bCanSaveReports = false;
+        private bool m_bCanSaveReports;
 
         public bool bCanSaveReports
         {
@@ -343,6 +349,8 @@ namespace Badger.ViewModels
                 selectedInGroupSelectionVariable = Variables[0].name;
                 selectedOrderByVariable = Variables[0].name;
             }
+
+            // Forks.AddRange(newExperiment.Forks);
         }
 
         public void loadExperimentBatch(string batchFileName)
