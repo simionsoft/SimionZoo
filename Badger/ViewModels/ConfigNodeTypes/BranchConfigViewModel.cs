@@ -69,8 +69,8 @@ namespace Badger.ViewModels
         }
         public override ConfigNodeViewModel clone()
         {
-            BranchConfigViewModel newBranch = new BranchConfigViewModel(m_parentExperiment, parent
-                , nodeDefinition, parent.xPath, null, false);
+            BranchConfigViewModel newBranch = new BranchConfigViewModel(m_parentExperiment, parent,
+                nodeDefinition, parent.xPath, null, false);
             foreach (ConfigNodeViewModel child in children)
             {
                 ConfigNodeViewModel clonedChild = child.clone();

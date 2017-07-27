@@ -8,7 +8,8 @@ namespace Badger.ViewModels
 {
     class FilePathValueConfigViewModel: ConfigNodeViewModel
     {
-        public FilePathValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+        public FilePathValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
+            XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(parentExperiment, parent, definitionNode, parentXPath);
 

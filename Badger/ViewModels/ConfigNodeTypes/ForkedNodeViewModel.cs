@@ -8,7 +8,8 @@ namespace Badger.ViewModels
 {
     public class ForkedNodeViewModel : NestedConfigNode
     {
-        private ForkValueViewModel m_selectedForkValue = null;
+        private ForkValueViewModel m_selectedForkValue;
+
         public ForkValueViewModel selectedForkValue
         {
             get { return m_selectedForkValue; }
@@ -93,6 +94,7 @@ namespace Badger.ViewModels
             //register this fork
             m_parentExperiment.forkRegistry.Add(this);
         }
+
         //Constructor called when loading an experiment config file
         public ForkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parentNode,
             XmlNode classDefinition, XmlNode configNode = null, bool initChildren = true)
@@ -195,10 +197,10 @@ namespace Badger.ViewModels
                 // Close 'FORK' tag inside experimental unit
                 writer.WriteLine(leftSpace + "\t</" + XMLConfig.forkTag + ">");
 
-                // TODO: Not sure what is the purpose of this call (Ale)
                 selectedForkValue.outputXML(writer, mode, leftSpace);
             }
         }
+
 
         public void addValue()
         {
@@ -208,6 +210,7 @@ namespace Badger.ViewModels
             updateBoolFlags();
             m_parentExperiment.updateNumForkCombinations();
         }
+
 
         public override void unforkThisNode()
         {
@@ -247,6 +250,7 @@ namespace Badger.ViewModels
                 selectedForkValue = children[index + 1] as ForkValueViewModel;
             updateBoolFlags();
         }
+
         public void previousValue()
         {
             int index = children.IndexOf(selectedForkValue);

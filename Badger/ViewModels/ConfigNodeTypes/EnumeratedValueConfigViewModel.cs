@@ -8,6 +8,7 @@ namespace Badger.ViewModels
     class EnumeratedValueConfigViewModel: ConfigNodeViewModel
     {
         private List<string> m_enumeratedNames;
+
         public List<string> enumeratedNames
         {
             get { return m_enumeratedNames; }
@@ -19,8 +20,11 @@ namespace Badger.ViewModels
             get { return content; }
             set { content = value; }
         }
+
         string m_class;
-        public EnumeratedValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
+
+        public EnumeratedValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
+            XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
             commonInit(parentExperiment, parent, definitionNode, parentXPath);
 

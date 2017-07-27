@@ -21,7 +21,7 @@
                     <ContextMenu>
                         <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode">
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource fork}"></Image>
+                                <Image Source="{StaticResource fork}"/>
                             </MenuItem.Icon>
                         </MenuItem>
                     </ContextMenu>
@@ -34,23 +34,24 @@
                 <Button Background="Transparent" BorderBrush="Transparent" Width="25" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action previousValue()]"
                             Opacity="{Binding bIsTherePreviousValue}">
-                    <Image Source="{StaticResource left-arrow}"  ToolTip="Set previous value" Width="10"></Image>
+                    <Image Source="{StaticResource left-arrow}"  ToolTip="Set previous value" Width="10"/>
                 </Button>
                 <Label VerticalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
                 <Button Background="Transparent" BorderBrush="Transparent" Width="25" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action nextValue()]"
                             Opacity="{Binding bIsThereNextValue}">
-                    <Image Source="{StaticResource right-arrow}"  ToolTip="Set next value" Width="10"></Image>
+                    <Image Source="{StaticResource right-arrow}"  ToolTip="Set next value" Width="10"/>
                 </Button>
 
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action addValue()]">
-                    <Image Source="{StaticResource add}"  ToolTip="Add a new value"></Image>
+                    <Image Source="{StaticResource add}"  ToolTip="Add a new value"/>
                 </Button>
+
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
                                 Opacity="{Binding bIsThereMoreValues}">
-                    <Image Source="{StaticResource remove}"  ToolTip="Remove this value"></Image>
+                    <Image Source="{StaticResource remove}"  ToolTip="Remove this value"/>
                 </Button>
             </StackPanel>
             <StackPanel>

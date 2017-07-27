@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace Badger.ViewModels
 {
-    class BoolValueConfigViewModel: ConfigNodeViewModel
+    class BoolValueConfigViewModel : ConfigNodeViewModel
     {
         public bool bContentAsBool
         {
