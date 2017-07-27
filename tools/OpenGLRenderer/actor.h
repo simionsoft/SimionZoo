@@ -1,12 +1,13 @@
 #pragma once
-#include "transform3d.h"
+#include "bindings.h"
+#include "../GeometryLib/transform3d.h"
 
 namespace tinyxml2 { class XMLElement; }
 
 class CSceneActor
 {
 protected:
-	Transform3D m_transform;
+	LoadableTransform3D m_transform;
 public:
 	CSceneActor()= default;
 	CSceneActor(tinyxml2::XMLElement* pNode);
@@ -14,7 +15,7 @@ public:
 
 	void setTransform();
 	void restoreTransform();
-	Transform3D& getTransform() { return m_transform; }
+	LoadableTransform3D& getTransform() { return m_transform; }
 	Matrix44 getTransformMatrix() const;
 
 	static CSceneActor* load(tinyxml2::XMLElement* pNode);

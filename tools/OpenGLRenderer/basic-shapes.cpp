@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "basic-shapes.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
+#include "bindings.h"
 #include "material.h"
 #include "mesh.h"
 
@@ -226,7 +227,9 @@ CPolyline::CPolyline(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
 	unsigned int i = 0;
 	while (pChild && i<numPoints)
 	{
-		pMesh->getPosition(i).load(pChild);
+		BindablePoint3D point;
+		point.load(pChild);
+		pMesh->getPosition(i) = point;
 		pChild = pChild->NextSiblingElement(XML_TAG_POINT);
 		++i;
 	}

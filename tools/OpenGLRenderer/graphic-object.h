@@ -2,7 +2,7 @@
 
 #include <string>
 #include "actor.h"
-#include "bounding-box.h"
+#include "../GeometryLib/bounding-box.h"
 class CMesh;
 class CMaterial;
 class XMLElement;
@@ -33,7 +33,7 @@ public:
 
 	BoundingBox3D boundingBox();
 	void drawBoundingBox();
-	void fitToBoundingBox(BoundingBox3D& newBB);
-	void fitToBoundingCylinder(BoundingCylinder& newBC);
+	void fitToBoundingBox(BoundingBox3D* newBB);
+	void fitToBoundingCylinder(BoundingCylinder* newBC);
 };
 

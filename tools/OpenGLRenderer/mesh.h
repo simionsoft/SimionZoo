@@ -1,9 +1,9 @@
 #pragma once
 
-#include "bounding-box.h"
-#include "matrix44.h"
-#include "vector3d.h"
-#include "vector2d.h"
+#include "../GeometryLib/bounding-box.h"
+#include "../GeometryLib/matrix44.h"
+#include "../GeometryLib/vector3d.h"
+#include "../GeometryLib/vector2d.h"
 class CMaterial;
 class CColladaModel;
 class CGeometry;

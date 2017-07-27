@@ -1,6 +1,12 @@
 #pragma once
 namespace tinyxml2 { class XMLElement; }
-#include "matrix44.h"
+
+class XMLReader
+{
+public:
+	virtual void load(tinyxml2::XMLElement* pNode) = 0;
+};
+
 
 #define XML_TAG_SCENE "Scene"
 #define XML_TAG_IMPORT_SCENE "Import-Scene"
@@ -125,7 +131,8 @@ namespace tinyxml2 { class XMLElement; }
 #define XML_TAG_COLLADA_BIND_SHAPE_MATRIX "bind_shape_matrix"
 
 //aux functions
-
+class Matrix44;
+class Vector3D;
 void loadColladaMatrix(const char* pText, Matrix44& outMatrix);
 void loadVector3D(const char* pText, Vector3D& outVec);
 

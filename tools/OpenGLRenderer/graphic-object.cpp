@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "graphic-object.h"
 #include "material.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
 #include "basic-shapes.h"
 #include "collada-model.h"
 #include "mesh.h"
-#include "bounding-cylinder.h"
+#include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
 
 
@@ -73,18 +73,18 @@ void CGraphicObject::updateBoundingBox()
 		(*it)->updateBoundingBox(m_bb);
 }
 
-void CGraphicObject::fitToBoundingBox(BoundingBox3D& newBB)
+void CGraphicObject::fitToBoundingBox(BoundingBox3D* newBB)
 {
 	Vector3D newBBSize,bbSize;
 	Vector3D newBBCenter, bbCenter;
 	Vector3D translation, scale;
 
-	if (!newBB.bSet())
+	if (!newBB->bSet())
 		return;
 	
-	newBBCenter = newBB.center();
+	newBBCenter = newBB->center();
 	bbCenter = m_bb.center();
-	newBBSize = newBB.size();
+	newBBSize = newBB->size();
 	bbSize = m_bb.size();
 
 	translation= Vector3D(newBBCenter.x() - bbCenter.x()
@@ -103,7 +103,7 @@ void CGraphicObject::fitToBoundingBox(BoundingBox3D& newBB)
 	updateBoundingBox();
 }
 
-void CGraphicObject::fitToBoundingCylinder(BoundingCylinder& newBC)
+void CGraphicObject::fitToBoundingCylinder(BoundingCylinder* newBC)
 {
 	BoundingCylinder currentBC;
 	/*Point3D centroid;*/
@@ -133,7 +133,7 @@ void CGraphicObject::fitToBoundingCylinder(BoundingCylinder& newBC)
 					+ (*it)->getPosition(i).z()*(*it)->getPosition(i).z()));
 		}
 	}
-	double scaleFactor = newBC.radius() / sampleRadius;
+	double scaleFactor = newBC->radius() / sampleRadius;
 	//transform vertices
 	for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
 	{

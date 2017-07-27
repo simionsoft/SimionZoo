@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "collada-model.h"
 #include "material.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
 #include "renderer.h"
 #include "texture-manager.h"
 #include "mesh.h"
-#include "bounding-cylinder.h"
+#include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
 #include "../WindowsUtils/FileUtils.h"
 
@@ -467,19 +467,19 @@ CColladaModel::CColladaModel(tinyxml2::XMLElement* pNode): CGraphicObject(pNode)
 	updateBoundingBox();
 
 	//do we need to rescale the model's coordinates to fit a bounding box?
-	BoundingBox3D fitBB;
+	LoadableBoundingBox3D fitBB;
 	pChild = pNode->FirstChildElement(XML_TAG_FIT_BOUNDING_BOX);
 	if (pChild)
 	{
 		fitBB.load(pChild);
-		fitToBoundingBox(fitBB);
+		fitToBoundingBox(&fitBB);
 	}
-	BoundingCylinder fitBC;
+	LoadableBoundingCylinder fitBC;
 	pChild = pNode->FirstChildElement(XML_TAG_FIT_BOUNDING_CYLINDER);
 	if (pChild)
 	{
 		fitBC.load(pChild);
-		fitToBoundingCylinder(fitBC);
+		fitToBoundingCylinder(&fitBC);
 	}
 }
 

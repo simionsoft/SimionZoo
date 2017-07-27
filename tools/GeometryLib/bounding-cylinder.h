@@ -4,6 +4,7 @@ class Vector3D;
 
 class BoundingCylinder
 {
+protected:
 	bool m_bSet = false;
 	double m_radius;
 public:
@@ -12,8 +13,6 @@ public:
 
 	void addPoint(Vector3D& point);
 	void reset();
-
-	void load(tinyxml2::XMLElement* pNode);
 
 	double radius() const;
 };

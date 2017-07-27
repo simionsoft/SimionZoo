@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector3d.h"
+#include "../GeometryLib/vector3d.h"
 #include "color.h"
 
 namespace tinyxml2 { class XMLElement; }

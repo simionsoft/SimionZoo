@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "material.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
 #include "renderer.h"
 #include "texture-manager.h"
 

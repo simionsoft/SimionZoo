@@ -9,6 +9,8 @@ class Binding;
 class Bindable;
 class CCamera;
 class CLight;
+class BoundingBox3D;
+class BoundingBox2D;
 using namespace std;
 namespace tinyxml2 { class XMLElement; }
 
@@ -43,6 +45,9 @@ class CRenderer
 	static void _reshapeWindow(int width, int height);
 	void loadSceneObjects(tinyxml2::XMLElement* pNode);
 	Binding* getBinding(string externalName);
+
+	void drawBoundingBox3D(BoundingBox3D& box) const;
+	void drawBoundingBox2D(BoundingBox2D& box) const;
 
 	bool m_bShowBoundingBoxes= false;
 public:

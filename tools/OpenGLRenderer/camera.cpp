@@ -1,10 +1,10 @@
 #include "stdafx.h"
-#include "Camera.h"
-#include "xml-load-utils.h"
-#include "vector3d.h"
-#include "matrix33.h"
-#include "transform3d.h"
+#include "camera.h"
+#include "xml-load.h"
 #include "renderer.h"
+#include "../GeometryLib/vector3d.h"
+#include "../GeometryLib/matrix33.h"
+#include "../GeometryLib/transform3d.h"
 
 CCamera::CCamera(): CSceneActor()
 {

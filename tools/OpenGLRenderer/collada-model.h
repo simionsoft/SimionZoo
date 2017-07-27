@@ -1,6 +1,6 @@
 #pragma once
 #include "graphic-object.h"
-#include "vector3d.h"
+#include "../GeometryLib/vector3d.h"
 #include <vector>
 #include <string>
 #include <map>

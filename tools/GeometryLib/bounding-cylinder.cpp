@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "bounding-cylinder.h"
 #include "vector3d.h"
+#include <algorithm>
 
 BoundingCylinder::BoundingCylinder()
 {
