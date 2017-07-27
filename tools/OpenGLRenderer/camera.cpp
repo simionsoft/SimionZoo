@@ -17,8 +17,8 @@ CCamera::~CCamera()
 Matrix44 CCamera::getModelviewMatrix() const
 {
 	Matrix44 mat, rot, trans;
-	rot = Matrix44::rotationMatrix(m_transform.rotation().inverse());
-	trans = Matrix44::translationMatrix(m_transform.translation().inverse());
+	rot.setRotation(m_transform.rotation().inverse());
+	trans.setTranslation(m_transform.translation().inverse());
 	mat = rot*trans;
 
 	return mat;
@@ -47,13 +47,16 @@ void CSimpleCamera::set()
 {
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glFrustum(-1.0, 1.0, -1.0, 1.0, nearPlane, farPlane);
+	Matrix44 perspective;
+	perspective.setPerspective(1.0, 1.0, nearPlane, farPlane);
+	glLoadMatrixd(perspective.asArray());
 
 	//set modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	Matrix44 matrix = getModelviewMatrix();
 	glLoadMatrixd(matrix.asArray());
+
+	m_frustum.fromCameraMatrix(perspective*matrix);
 }
 
 void CCamera::set2DView()

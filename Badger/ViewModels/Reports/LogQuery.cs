@@ -156,8 +156,12 @@ namespace Badger.ViewModels
                         {
                             resultTrack = getTrack(expUnit.forkValues);
                             if (resultTrack != null)
+                            {
                                 //the track exists and we are using forks to group results
-                                resultTrack.addTrackData(expUnit.loadTrackData(variables));
+                                TrackData trackData = expUnit.loadTrackData(variables);
+                                if (trackData!=null)
+                                    resultTrack.addTrackData(trackData);
+                            }
                         }
                         if (resultTrack == null) //New track
                         {
@@ -184,14 +188,17 @@ namespace Badger.ViewModels
                             //load data from the log file
                             TrackData trackData = expUnit.loadTrackData(variables);
 
-                            //for now, we just ignore failed experiments. Maybe we could do something more sophisticated
-                            //for example, allow to choose only those parameter variations that lead to failed experiments
-                            if (trackData.bSuccesful)
-                                newResultTrack.addTrackData(trackData);
+                            if (trackData != null)
+                            {
+                                //for now, we just ignore failed experiments. Maybe we could do something more sophisticated
+                                //for example, allow to choose only those parameter variations that lead to failed experiments
+                                if (trackData.bSuccesful)
+                                    newResultTrack.addTrackData(trackData);
 
-                            //we only consider those tracks with data loaded
-                            if (newResultTrack.bHasData)
-                                resultTracks.Add(newResultTrack);
+                                //we only consider those tracks with data loaded
+                                if (newResultTrack.bHasData)
+                                    resultTracks.Add(newResultTrack);
+                            }
                         }
                     }
                 }

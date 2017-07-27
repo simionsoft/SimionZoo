@@ -409,7 +409,7 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	m_pActionFeatureMap->getFeatureAction(arg, a);
 }
 
-double CLinearStateActionVFA::max(const CState* s)
+double CLinearStateActionVFA::max(const CState* s, bool bUseFrozenWeights)
 {
 	//state features in aux list
 	m_pStateFeatureMap->getFeatures(s, m_pAux);
@@ -420,7 +420,7 @@ double CLinearStateActionVFA::max(const CState* s)
 	//action-value maximization
 	for (unsigned int i = 0; i < m_numActionWeights; i++)
 	{
-		value = get(m_pAux, true); //if the target is frozen, we use the frozen weights
+		value = get(m_pAux, bUseFrozenWeights); //if the target is frozen, we use the frozen weights
 		if (value>maxValue)
 			maxValue = value;
 

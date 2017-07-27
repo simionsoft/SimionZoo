@@ -342,46 +342,6 @@ namespace Badger.ViewModels
                 writer.WriteLine(leftSpace + "</" + appName + ">");
         }
 
-
-        public string getLogDescriptorsFilePath()
-        {
-            if (m_fileName != "")
-            {
-                //the hard way because the elegant way didn't seem to work
-                int lastPos1, lastPos2, lastPos;
-                lastPos1 = m_fileName.LastIndexOf("/");
-                lastPos2 = m_fileName.LastIndexOf("\\");
-
-                lastPos = Math.Max(lastPos1, lastPos2);
-                if (lastPos > 0)
-                {
-                    string directory = m_fileName.Substring(0, lastPos + 1);
-
-                    return directory + "experiment-log.xml";
-                }
-            }
-            return "";
-        }
-        public string getLogFilePath()
-        {
-            if (m_fileName != "")
-            {
-                //the hard way because the elegant way didn't seem to work
-                int lastPos1, lastPos2, lastPos;
-                lastPos1 = m_fileName.LastIndexOf("/");
-                lastPos2 = m_fileName.LastIndexOf("\\");
-
-                lastPos = Math.Max(lastPos1, lastPos2);
-                if (lastPos > 0)
-                {
-                    string directory = m_fileName.Substring(0, lastPos + 1);
-
-                    return directory + "experiment-log.bin";
-                }
-            }
-            return "";
-        }
-
         public string numForkCombinations
         {
             get { return "(" + getNumForkCombinations() + ")"; }

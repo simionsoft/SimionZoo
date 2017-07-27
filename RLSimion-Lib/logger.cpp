@@ -5,6 +5,7 @@
 #include "config.h"
 #include "stats.h"
 #include "../tools/WindowsUtils/Timer.h"
+#include "../tools/WindowsUtils/FileUtils.h"
 #include "app.h"
 #include "utils.h"
 #include "SimGod.h"
@@ -12,9 +13,6 @@
 FILE *CLogger::m_logFile= 0;
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
 CNamedPipeClient CLogger::m_outputPipe;
-
-#define OUTPUT_LOG_XML_DESCRIPTOR_FILENAME "experiment-log.xml"
-#define OUTPUT_LOG_FILENAME "experiment-log.bin"
 
 #define HEADER_MAX_SIZE 16
 #define EXPERIMENT_HEADER 1
@@ -86,24 +84,21 @@ CLogger::CLogger(CConfigNode* pConfigNode)
 	m_lastLogSimulationT = 0.0;
 }
 
+#define LOG_DESCRIPTOR_EXTENSION ".log"
+#define LOG_BINARY_EXTENSION ".log.bin"
 
-
-void CLogger::setLogDirectory(const char* xmlFilePath)
+void CLogger::setOutputFilenames()
 {
-	if (!xmlFilePath)
-		throw(std::exception("CLogger. No output directory provided."));
+	string inputConfigFile = removeExtension(CSimionApp::get()->getConfigFile());
 
-	strcpy_s(m_outputDir, MAX_FILENAME_LENGTH, xmlFilePath);
-	
-	//we register the name for input/output stuff
-	char fullLogFilename[MAX_FILENAME_LENGTH];
-	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_XML_DESCRIPTOR_FILENAME);
-	CSimGod::registerOutputFile(fullLogFilename);
-	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_FILENAME);
-	CSimGod::registerOutputFile(fullLogFilename);
+	//we register the names of the log files for input/output stuff
+	m_outputLogDescriptor = inputConfigFile + LOG_DESCRIPTOR_EXTENSION;
+	CSimGod::registerOutputFile(m_outputLogDescriptor.c_str());
+	m_outputLogBinary = inputConfigFile + LOG_BINARY_EXTENSION;
+	CSimGod::registerOutputFile(m_outputLogBinary.c_str());
 
 	//open the log file
-	openLogFile(fullLogFilename);
+	openLogFile(m_outputLogBinary.c_str());
 }
 
 
@@ -137,7 +132,7 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	if (logXMLDescriptorFile)
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
-			, OUTPUT_LOG_FILENAME
+			, getFilename(m_outputLogBinary).c_str()
 			, (CSimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		writeEpisodeTypesToBuffer(buffer);
 		writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
@@ -185,11 +180,8 @@ void CLogger::firstEpisode()
 	//set episode start time
 	m_pEpisodeTimer->start();
 
-	char fullLogFilename[MAX_FILENAME_LENGTH];
-
 	//generate the xml descriptor of the log file
-	sprintf_s(fullLogFilename, MAX_FILENAME_LENGTH, "%s/%s", m_outputDir, OUTPUT_LOG_XML_DESCRIPTOR_FILENAME);
-	writeLogFileXMLDescriptor(fullLogFilename);
+	writeLogFileXMLDescriptor(m_outputLogDescriptor.c_str());
 
 	//write the log file header
 	writeExperimentHeader();
@@ -197,7 +189,6 @@ void CLogger::firstEpisode()
 
 void CLogger::lastEpisode()
 {
-	//writeLogBuffer(Output::LogFile, "</Experiment>\n");
 }
 
 void CLogger::firstStep()
@@ -392,7 +383,7 @@ void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 	}
 }
 
-unsigned int CLogger::getNumStats()
+size_t CLogger::getNumStats()
 {
 	return m_stats.size();
 }

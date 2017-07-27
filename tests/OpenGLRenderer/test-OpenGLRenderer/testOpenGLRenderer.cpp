@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
 	CGraphicObject* pDynamicObject = pRenderer->getObjectByName("Robot");
 
-	C2DMeter* pMeter1 = new C2DMeter("test", Vector2D(0.1, 0.2), Vector2D(0.4, 0.04));
+	C2DMeter* pMeter1 = new C2DMeter("Num.Objects drawn", Vector2D(0.1, 0.2), Vector2D(0.4, 0.04));
 	pRenderer->add2DGraphicObject(pMeter1);
 	pMeter1->setValueRange(Range(0.0, 10.0));
 
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 
 		//if (pDynamicObject) pDynamicObject->addRotation(Quaternion(0.1*dt, 0.0, 0.0));
 		t += dt;
-		if (pMeter1) pMeter1->setValue(fmod(t, 10.0));
+		if (pMeter1) pMeter1->setValue(pRenderer->getNum3DObjectsDrawn());
 		if (pMeter2) pMeter2->setValue(fmod(t, 5.0));
 		//queued events?
 		

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Badger.Simion;
 using Badger.Data;
+using System.IO;
 
 namespace Badger.ViewModels
 {
@@ -50,8 +51,16 @@ namespace Badger.ViewModels
                     experimentFilePath = baseDirectory + configNode.Attributes[XMLConfig.pathAttribute].Value;
             }
 
-            logDescriptorFilePath = SimionFileData.GetLogFilePath(experimentFilePath);
-            logFilePath = SimionFileData.GetLogFilePath(experimentFilePath, false);
+            logDescriptorFilePath = SimionFileData.GetLogFilePath(experimentFilePath, true);
+            if (!File.Exists(logDescriptorFilePath))
+            {
+                //for back-compatibility: if the approapriate log file is not found, check whether one exists
+                //with the legacy naming convention: experiment-log.xml
+                logDescriptorFilePath = SimionFileData.GetLogFilePath(experimentFilePath, true, true);
+                logFilePath = SimionFileData.GetLogFilePath(experimentFilePath, false, true);
+            }
+            else
+                logFilePath = SimionFileData.GetLogFilePath(experimentFilePath, false);
 
             //load the value of each fork used in this experimental unit
             foreach (XmlNode fork in configNode.ChildNodes)
@@ -95,6 +104,8 @@ namespace Badger.ViewModels
         {
             ExperimentData experimentData = new ExperimentData();
             experimentData.load(m_logFilePath);
+
+            if (!experimentData.bSuccesful || experimentData.episodes.Count == 0) return null;
 
             EpisodeData lastEvalEpisode = experimentData.episodes[experimentData.episodes.Count - 1];
 

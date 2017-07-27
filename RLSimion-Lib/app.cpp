@@ -6,7 +6,7 @@
 #include "SimGod.h"
 #include "config.h"
 #include "utils.h"
-
+#include "../tools/WindowsUtils/FileUtils.h"
 
 CSimionApp* CSimionApp::m_pAppInstance = 0;
 
@@ -80,3 +80,23 @@ bool CSimionApp::isExecutedRemotely()
 	return true;
 #endif
 }
+
+void CSimionApp::setConfigFile(string configFile)
+{
+	//we provide the path to the xml configuration file so that the logger saves its log files in the directory
+	m_directory = getDirectory(configFile);
+	m_configFile = configFile;
+
+	pLogger->setOutputFilenames();
+}
+
+string CSimionApp::getConfigFile()
+{
+	return m_configFile;
+}
+
+string CSimionApp::getOutputDirectory()
+{
+	return m_directory;
+}
+

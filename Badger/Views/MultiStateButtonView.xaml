@@ -13,7 +13,7 @@
     </UserControl.Resources>
 
     <Button x:Name="nextState" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0" Margin="0">
-        <Label FontFamily="Segoe UI Light" FontSize="8" x:Name="state">Last</Label>
+        <Label FontFamily="Segoe UI Light" FontSize="8" x:Name="state" MinWidth="60">n/a</Label>
     </Button>
     
 </UserControl>

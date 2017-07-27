@@ -13,6 +13,8 @@ namespace Badger.Data
 {
     public static class SimionFileData
     {
+        public const string logDescriptorExtension = ".log";
+        public const string logBinaryExtension = ".log.bin";
         public const string binDir = "bin";
         public const string experimentDir = "experiments";
         public const string imageDir = "images";
@@ -302,14 +304,24 @@ namespace Badger.Data
 
 
 
-        static public string GetLogFilePath(string experimentFilePath, bool descriptor = true)
+        static public string GetLogFilePath(string experimentFilePath, bool descriptor = true, bool legacyName= false)
         {
             if (experimentFilePath != "")
             {
-                if (descriptor)
-                    return Utility.getDirectory(experimentFilePath) + "experiment-log.xml";
+                if (!legacyName)
+                {
+                    if (descriptor)
+                        return Utility.removeExtension(experimentFilePath, 1) + logDescriptorExtension;
+                    else
+                        return Utility.removeExtension(experimentFilePath, 1) + logBinaryExtension;
+                }
                 else
-                    return Utility.getDirectory(experimentFilePath) + "experiment-log.bin";
+                {
+                    if (descriptor)
+                        return Utility.getDirectory(experimentFilePath) + "experiment-log.xml";
+                    else
+                        return Utility.getDirectory(experimentFilePath) + "experiment-log.bin";
+                }
             }
 
             return "";
@@ -357,3 +369,4 @@ namespace Badger.Data
         }
     }
 }
+

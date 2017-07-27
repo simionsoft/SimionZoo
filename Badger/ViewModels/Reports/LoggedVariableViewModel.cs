@@ -6,13 +6,14 @@ namespace Badger.ViewModels
 {
     public class LoggedVariableViewModel : PropertyChangedBase
     {
-        private bool m_bIsSelected = true;
+        private bool m_bIsSelected = false;
         public bool bIsSelected
         {
             get { return m_bIsSelected; }
             set
             {
-                m_bIsSelected = value;
+                m_bIsSelected = value; NotifyOfPropertyChange(() => bIsSelected);
+                if (m_parent!=null) m_parent.validateQuery();
             }
         }
 
@@ -30,11 +31,11 @@ namespace Badger.ViewModels
             set { m_name = value; NotifyOfPropertyChange(() => name); }
         }
 
-        public enum PlotType { Last, All, Both };
+        public enum PlotType { LastEvaluation, AllEvaluations, Both };
 
         private MultiStateButtonViewModel m_stateButton =
-            new MultiStateButtonViewModel(new List<string>() { PlotType.Last.ToString(),
-                PlotType.All.ToString(), PlotType.Both.ToString()});
+            new MultiStateButtonViewModel(new List<string>() { PlotType.LastEvaluation.ToString(),
+                PlotType.AllEvaluations.ToString(), PlotType.Both.ToString()});
 
         public MultiStateButtonViewModel stateButton
         {
@@ -45,5 +46,8 @@ namespace Badger.ViewModels
         {
             m_name = name;
         }
+
+        ReportsWindowViewModel m_parent = null;
+        public void setParent(ReportsWindowViewModel parent) { m_parent = parent; }
     }
 }

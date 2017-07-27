@@ -132,18 +132,21 @@ double CQLearningCritic::update(const CState *s, const CAction *a, const CState 
 	m_pQFunction->getFeatures(s, a, m_pAux);
 	m_eTraces->addFeatureList(m_pAux, gamma);
 
-	double s_p_value = gamma*m_pQFunction->max(s_p);
+	double s_p_value = gamma*m_pQFunction->max(s_p, true);
 	double s_value = m_pQFunction->get(m_pAux, false); //we use the live weights instead of the frozen ones
 	double td = r + s_p_value - s_value;
 
 	m_pQFunction->add(m_eTraces.ptr(), td*m_pAlpha->get());
 
-	return td;
+	if (m_bUseVFunctionAsBaseline)
+		return r + s_p_value - m_pQFunction->max(s, true);
+	else return td;
 }
 
 CQLearning::CQLearning(CConfigNode* pConfigNode): CQLearningCritic(pConfigNode)
 {
 	m_pQPolicy= CHILD_OBJECT_FACTORY<CQPolicy>(pConfigNode, "Policy", "The policy to be followed");
+	m_bUseVFunctionAsBaseline = false;
 }
 CQLearning::~CQLearning()
 {

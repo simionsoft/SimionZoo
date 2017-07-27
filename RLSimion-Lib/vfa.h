@@ -111,7 +111,7 @@ public:
 	//double get(unsigned int sFeatureIndex,unsigned int aFeatureIndex) const;
 
 	void argMax(const CState *s, CAction* a);
-	double max(const CState *s);
+	double max(const CState *s, bool bUseFrozenWeights= true);
 	
 	//This function fills the pre-allocated array outActionVariables with the values of the different actions in state s
 	//The size of the buffer must be greater than the number of action weights

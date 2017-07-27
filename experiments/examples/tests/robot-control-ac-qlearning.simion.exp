@@ -17,7 +17,7 @@
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>10000</Num-Episodes>
+		<Num-Episodes>2000</Num-Episodes>
 		<Eval-Freq>25</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
 		<Episode-Length>200</Episode-Length>
@@ -79,7 +79,7 @@
 			<Alpha>
 				<Schedule>
 		<Constant>
-			<Value>0.0001</Value>
+			<Value>0.001</Value>
 		</Constant>
 		</Schedule>
 			</Alpha>
@@ -97,13 +97,12 @@
 			<Sigma>1.0</Sigma>
 			<Theta>0.5</Theta>
 			<Scale>
-				<Schedule>
-		<Simple-Linear-Decay>
-			<Initial-Value>1.0</Initial-Value>
-			<End-Value>0.0</End-Value>
-		</Simple-Linear-Decay>
-		</Schedule>
-			</Scale>
+                                  <Schedule>
+                                    <Constant>
+                                      <Value>1.0</Value>
+                                    </Constant>
+                                  </Schedule>
+                                </Scale>
 		</Ornstein-Uhlenbeck>
 		</Noise>
 			</Exploration-Noise>
@@ -119,7 +118,7 @@
 			<Alpha>
 				<Schedule>
 		<Constant>
-			<Value>0.0001</Value>
+			<Value>0.001</Value>
 		</Constant>
 		</Schedule>
 			</Alpha>
@@ -136,14 +135,13 @@
 			<Mu>0.0</Mu>
 			<Sigma>0.2</Sigma>
 			<Theta>0.1</Theta>
-			<Scale>
-				<Schedule>
-		<Simple-Linear-Decay>
-			<Initial-Value>1.0</Initial-Value>
-			<End-Value>0.0</End-Value>
-		</Simple-Linear-Decay>
-		</Schedule>
-			</Scale>
+<Scale>
+                                  <Schedule>
+                                    <Constant>
+                                      <Value>1.0</Value>
+                                    </Constant>
+                                  </Schedule>
+                                </Scale>
 		</Ornstein-Uhlenbeck>
 		</Noise>
 			</Exploration-Noise>

@@ -107,7 +107,7 @@ namespace Badger.ViewModels
                 int lineSeriesId;
                 string plotType = getVariablePlotType(query, variable);
 
-                if (plotType == LoggedVariableViewModel.PlotType.Last.ToString()
+                if (plotType == LoggedVariableViewModel.PlotType.LastEvaluation.ToString()
                     || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
                 {
                     //LAST EVALUATION values: create a new plot for each variable in the result data          
@@ -126,7 +126,7 @@ namespace Badger.ViewModels
                     }
                     plots.Add(newPlot);
                 }
-                if (plotType == LoggedVariableViewModel.PlotType.All.ToString()
+                if (plotType == LoggedVariableViewModel.PlotType.AllEvaluations.ToString()
                       || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
                 {
                     //AVERAGED EVALUATION values: create a new plot for each variable in the result data

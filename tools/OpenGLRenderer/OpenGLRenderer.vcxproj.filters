@@ -71,6 +71,12 @@
       <Filter>geometry</Filter>
     </ClCompile>
     <ClCompile Include="xml-load-utils.cpp" />
+    <ClCompile Include="frustum.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="plane.cpp">
+      <Filter>geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.h" />
@@ -142,6 +148,12 @@
       <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="xml-load-utils.h" />
+    <ClInclude Include="frustum.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

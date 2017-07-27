@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
 				
 		if (pApp)
 		{
-			pApp->setOutputDirectory(argv[1]);
+			pApp->setConfigFile(argv[1]);
 
 			if (CSimionApp::flagPassed(argc,argv,"printIOfiles"))
 				pApp->printInputOutputFiles();
