@@ -1,11 +1,8 @@
 ﻿
-using System;
-using System.Xml;
 using Caliburn.Micro;
 using Herd;
 using System.Collections.Generic;
 using System.Linq;
-using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -13,10 +10,10 @@ namespace Badger.ViewModels
     {
         private LoggedExperimentalUnitViewModel m_loggedExperimentalUnit;
 
-        public string PipeName { get { return m_loggedExperimentalUnit.name; } }
-        public string Name { get { return m_loggedExperimentalUnit.name; } }
-        public string FilePath { get { return m_loggedExperimentalUnit.experimentFilePath; } }
-        
+        public string PipeName => m_loggedExperimentalUnit.name;
+        public string Name => m_loggedExperimentalUnit.name;
+        public string FilePath => m_loggedExperimentalUnit.experimentFilePath;
+
         public string ExeFile { get; set; }
 
         public List<string> Prerequisites { get; set; }
@@ -129,7 +126,7 @@ namespace Badger.ViewModels
 
 
         public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
-           List<string> prerequisites, Dictionary<string,string> renameRules,PlotViewModel plot)
+           List<string> prerequisites, Dictionary<string, string> renameRules, PlotViewModel plot)
         {
             m_loggedExperimentalUnit = expUnit;
             ExeFile = exeFile;

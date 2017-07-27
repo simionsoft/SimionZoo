@@ -1,6 +1,5 @@
 ﻿using System.Xml;
 using System.Collections.Generic;
-using Badger.Data;
 using Badger.Simion;
 using System;
 using Caliburn.Micro;
@@ -10,19 +9,35 @@ namespace Badger.ViewModels
     public class LoggedForkViewModel : SelectableTreeItem
     {
         private string m_name = "unnamed";
+
         public string name
         {
             get { return m_name; }
             set { m_name = value; }
         }
+
         private List<LoggedForkValueViewModel> m_values = new List<LoggedForkValueViewModel>();
+
         public List<LoggedForkValueViewModel> values
         {
             get { return m_values; }
             set { m_values = value; }
         }
 
+        private bool m_bGroupByThis;
+
+        public bool IsGroupedByThisFork
+        {
+            get { return m_bGroupByThis; }
+            set
+            {
+                m_bGroupByThis = value;
+                NotifyOfPropertyChange(() => IsGroupedByThisFork);
+            }
+        }
+
         private List<LoggedForkViewModel> m_forks = new List<LoggedForkViewModel>();
+
         public List<LoggedForkViewModel> forks
         {
             get { return m_forks; }
@@ -30,7 +45,8 @@ namespace Badger.ViewModels
         }
 
         //this is used to hide the space given to display children forks in case there is none
-        private bool m_bHasForks = false;
+        private bool m_bHasForks;
+
         public bool bHasForks
         {
             get { return m_bHasForks; }
@@ -60,13 +76,23 @@ namespace Badger.ViewModels
             //hide the area used to display children forks?
             bHasForks = forks.Count != 0;
         }
-        
+
 
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {
             if (doActionLocally) LocalTraverseAction(action);
             foreach (LoggedForkValueViewModel value in m_values) value.TraverseAction(true, action);
             foreach (LoggedForkViewModel fork in m_forks) fork.TraverseAction(true, action);
+        }
+
+        /// <summary>
+        ///     Method is called from the context menu informs the parent window that results should be
+        ///     grouped by this fork.
+        /// </summary>
+        /// <param name="forkName">The name of the fork that we want to use to group values.</param>
+        public void GroupByThisFork(string forkName)
+        {
+            IsGroupedByThisFork = true;
         }
     }
 }

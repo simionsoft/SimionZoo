@@ -32,16 +32,16 @@
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="48" Width="Auto" Background="#EEEEEE" Margin="4,0">
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Load a batch: results from an experiment execution"
-                    Width="40" Height="40" x:Name="loadExperimentBatch">
+                    Width="40" Height="40" x:Name="LoadExperimentBatch">
                 <Image Source="{StaticResource Open}" Opacity="0.6" Width="24" Height="24"/>
             </Button>
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Report"
-                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action saveReports()]"
+                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action SaveReports()]"
                     IsEnabled="{Binding bCanSaveReports}">
                 <Image Source="{StaticResource Save}" Opacity="0.6" Width="24" Height="24" />
             </Button>
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Clear ReportViewer" 
-                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action clearReportViewer()]"     
+                    Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action ClearReportViewer()]"     
                     IsEnabled="{Binding bLogsLoaded}">
                 <Image Source="{StaticResource Delete}" Opacity="0.6" Width="24" Height="24" />
             </Button>
@@ -77,7 +77,7 @@
 
                         <TreeView Grid.Row="1" x:Name="Experiments" BorderBrush="{x:Null}" BorderThickness="0">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="loggedExperiments"/>
+                                <ItemsControl x:Name="LoggedExperiments"/>
                             </ScrollViewer>
                         </TreeView>
                     </Grid>
@@ -111,7 +111,7 @@
                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="Forks currently used to group results">
                                     <Label Width="70" Margin="0,0,10,0" Content="Group by"/>
                                     <TextBlock Text="{Binding groupBy}" MaxWidth="164" Width="164" Background="#eeeeee"/>
-                                    <Button x:Name="resetGroupBy" Margin="4,0,0,0">
+                                    <Button x:Name="ResetGroupBy" Margin="4,0,0,0">
                                         <Image Source="{StaticResource Close}" Width="20"/>
                                     </Button>
                                 </StackPanel>
@@ -165,7 +165,7 @@
                         <Label Content="Reports" FontWeight="Medium" HorizontalAlignment="Center" />
                     </StackPanel>
 
-                    <TabControl Margin="0" Padding="0"  Grid.Row="1" x:Name="reports" SelectedItem="{Binding selectedReport}">
+                    <TabControl Margin="0" Padding="0"  Grid.Row="1" x:Name="Reports" SelectedItem="{Binding selectedReport}">
                         <TabControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

@@ -101,11 +101,11 @@ namespace Badger.ViewModels
                 if (experiment.FilePath != relPathExperimentFile && !job.renameRules.Keys.Contains(experiment.FilePath))
                     job.renameRules.Add(experiment.FilePath, relPathExperimentFile);
                 //the output files
-                foreach(string outputFile in job.outputFiles)
+                foreach (string outputFile in job.outputFiles)
                 {
                     string renamedFile = SimionFileData.experimentRelativeDir + "\\"
                         + Utility.removeDirectories(outputFile, 2);
-                    if (outputFile!=renamedFile && !job.renameRules.Keys.Contains(outputFile))
+                    if (outputFile != renamedFile && !job.renameRules.Keys.Contains(outputFile))
                         job.renameRules.Add(outputFile, renamedFile);
                 }
             }
@@ -338,7 +338,7 @@ namespace Badger.ViewModels
 
         private void LoadLoggedExperiment(XmlNode node, string baseDirectory)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node,baseDirectory, false);
+            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, false);
             LoggedExperiments.Add(newExperiment);
         }
 

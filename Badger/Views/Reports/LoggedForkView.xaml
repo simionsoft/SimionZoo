@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:vm="clr-namespace:Badger.ViewModels"
-             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.LoggedForkView"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             x:Class="Badger.Views.LoggedForkView"
              mc:Ignorable="d" 
                 d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
@@ -21,7 +23,14 @@
                 <Label x:Name="name" FontWeight="Medium" Content="{Binding name}">
                     <Label.ContextMenu>
                         <ContextMenu>
-                            <MenuItem Header="Group by value" cal:Message.Attach="groupByThisFork">
+                            <MenuItem Header="Group by value">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <cal:ActionMessage MethodName="GroupByThisFork" >
+                                            <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                        </cal:ActionMessage>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </MenuItem>
                         </ContextMenu>
                     </Label.ContextMenu>

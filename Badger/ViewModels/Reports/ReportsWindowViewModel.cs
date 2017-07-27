@@ -1,5 +1,8 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using Badger.Data;
 using Caliburn.Micro;
@@ -10,12 +13,14 @@ namespace Badger.ViewModels
     public class ReportsWindowViewModel : Conductor<Screen>.Collection.OneActive
     {
         private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
-        public ObservableCollection<ReportViewModel> reports { get { return m_reports; } }
 
-        public BindableCollection<LoggedForkViewModel> Forks { get; } =
-            new BindableCollection<LoggedForkViewModel>();
+        public ObservableCollection<ReportViewModel> Reports => m_reports;
+
+        public ObservableCollection<LoggedForkViewModel> Forks { get; } = new ObservableCollection<LoggedForkViewModel>();
 
         private bool m_bCanGenerateReports;
+
+
         public bool bCanGenerateReports
         {
             get { return m_bCanGenerateReports; }
@@ -24,6 +29,8 @@ namespace Badger.ViewModels
 
         //plot selection in tab control
         private ReportViewModel m_selectedReport;
+
+
         public ReportViewModel selectedReport
         {
             get { return m_selectedReport; }
@@ -46,20 +53,21 @@ namespace Badger.ViewModels
                 foreach (LoggedVariableViewModel var in Variables)
                 {
                     var.bIsSelected = value;
-                    validateQuery();
+                    ValidateQuery();
                     NotifyOfPropertyChange(() => var.bIsSelected);
                 }
             }
         }
 
         private BindableCollection<string> m_inGroupSelectionVariables = new BindableCollection<string>();
+
         public BindableCollection<string> inGroupSelectionVariables
         {
             get { return m_inGroupSelectionVariables; }
             set { m_inGroupSelectionVariables = value; NotifyOfPropertyChange(() => inGroupSelectionVariables); }
         }
 
-        //In-Group selection
+        // In-Group selection
         private string m_selectedInGroupSelectionFunction = "";
         public string selectedInGroupSelectionFunction
         {
@@ -67,74 +75,86 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedInGroupSelectionFunction = value;
-                validateQuery();
+                ValidateQuery();
                 NotifyOfPropertyChange(() => selectedInGroupSelectionFunction);
             }
         }
 
         private string m_selectedInGroupSelectionVariable = "";
+
         public string selectedInGroupSelectionVariable
         {
             get { return m_selectedInGroupSelectionVariable; }
             set
             {
                 m_selectedInGroupSelectionVariable = value;
-                validateQuery();
+                ValidateQuery();
                 NotifyOfPropertyChange(() => selectedInGroupSelectionVariable);
             }
         }
 
 
         private BindableCollection<string> m_inGroupSelectionFunctions = new BindableCollection<string>();
+
         public BindableCollection<string> inGroupSelectionFunctions
         {
             get { return m_inGroupSelectionFunctions; }
             set
             {
                 m_inGroupSelectionFunctions = value;
-                validateQuery();
+                ValidateQuery();
                 NotifyOfPropertyChange(() => inGroupSelectionFunctions);
             }
         }
 
-        //From
+        // From
         private string m_selectedFrom = "";
+
         public string selectedFrom
         {
             get { return m_selectedFrom; }
             set
             {
                 m_selectedFrom = value;
-                validateQuery();
+                ValidateQuery();
                 NotifyOfPropertyChange(() => selectedFrom);
-                foreach (LoggedExperimentViewModel exp in loggedExperiments)
+
+                foreach (LoggedExperimentViewModel exp in LoggedExperiments)
                     exp.TraverseAction(true, (child) =>
-                     { child.bCheckIsVisible = (selectedFrom == LogQuery.fromSelection); });
+                    {
+                        child.bCheckIsVisible = (selectedFrom == LogQuery.fromSelection);
+                    });
             }
         }
 
         private BindableCollection<string> m_fromOptions = new BindableCollection<string>();
+
         public BindableCollection<string> fromOptions
         {
             get { return m_fromOptions; }
             set { m_fromOptions = value; NotifyOfPropertyChange(() => fromOptions); }
         }
 
-
-        //Order by
+        // Order by
         private bool m_bIsOrderByEnabled;
+
         public bool bIsOrderByEnabled
         {
             get { return m_bIsOrderByEnabled; }
             set { m_bIsOrderByEnabled = value; NotifyOfPropertyChange(() => bIsOrderByEnabled); }
         }
+
         private BindableCollection<string> m_orderByFunctions = new BindableCollection<string>();
+
         public BindableCollection<string> orderByFunctions
         {
             get { return m_orderByFunctions; }
             set { m_orderByFunctions = value; NotifyOfPropertyChange(() => orderByFunctions); }
         }
+
         private string m_selectedOrderByFunction = "";
+
+
         public string selectedOrderByFunction
         {
             get { return m_selectedOrderByFunction; }
@@ -143,79 +163,100 @@ namespace Badger.ViewModels
 
 
         private string m_selectedOrderByVariable = "";
+
         public string selectedOrderByVariable
         {
             get { return m_selectedOrderByVariable; }
             set { m_selectedOrderByVariable = value; NotifyOfPropertyChange(() => selectedOrderByVariable); }
         }
 
-        public void groupByThisFork(string forkName)
+
+        void item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //this method is called from the context menu
-            //informs the parent window that results should be grouped by this fork
-            m_groupByForks.Add(forkName);
-            validateQuery();
+            m_groupByForks.Add(((LoggedForkViewModel)sender).name);
+            ValidateQuery();
             NotifyOfPropertyChange(() => groupBy);
             bGroupsEnabled = true;
         }
 
-        //Group By
+        // Group By
         private BindableCollection<string> m_groupByForks = new BindableCollection<string>();
-        public BindableCollection<string> GroupByForks { get; set; } = new BindableCollection<string>();
+
+        public BindableCollection<string> GroupByForks
+        {
+            get { return m_groupByForks; }
+            set
+            {
+                m_groupByForks = value;
+                NotifyOfPropertyChange(() => GroupByForks);
+            }
+        }
 
         public string groupBy
         {
             get
             {
                 string s = "";
-                for (int i = 0; i < m_groupByForks.Count - 1; i++) s += m_groupByForks[i] + ",";
-                if (m_groupByForks.Count > 0) s += m_groupByForks[m_groupByForks.Count - 1];
+                for (int i = 0; i < m_groupByForks.Count - 1; i++)
+                    s += m_groupByForks[i] + ",";
+
+                if (m_groupByForks.Count > 0)
+                    s += m_groupByForks[m_groupByForks.Count - 1];
+
                 return s;
             }
         }
 
-        public void resetGroupBy()
+        public void ResetGroupBy()
         {
             m_groupByForks.Clear();
             NotifyOfPropertyChange(() => groupBy);
         }
 
 
-        private bool m_bGroupsEnabled = false; //no groups by default
+        private bool m_bGroupsEnabled; // no groups by default
+
         public bool bGroupsEnabled
         {
             get { return m_bGroupsEnabled; }
             set { m_bGroupsEnabled = value; NotifyOfPropertyChange(() => bGroupsEnabled); }
         }
 
-        //Limit to
+        // Limit to
         private BindableCollection<string> m_limitToOptions = new BindableCollection<string>();
+
         public BindableCollection<string> limitToOptions
         {
             get { return m_limitToOptions; }
             set { m_limitToOptions = value; NotifyOfPropertyChange(() => limitToOptions); }
         }
+
         private string m_selectedLimitToOption;
+
         public string selectedLimitToOption
         {
             get { return m_selectedLimitToOption; }
             set
             {
                 m_selectedLimitToOption = value;
-                //ordering results only makes sense if results are limited
+                // Ordering results only makes sense if results are limited
                 bIsOrderByEnabled = (value != LogQuery.noLimitOnResults);
                 NotifyOfPropertyChange(() => selectedLimitToOption);
             }
         }
 
         private bool m_bLogsLoaded;
+
         public bool bLogsLoaded
         {
             get { return m_bLogsLoaded; }
             set { m_bLogsLoaded = value; NotifyOfPropertyChange(() => bLogsLoaded); }
         }
 
-        public void validateQuery()
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ValidateQuery()
         {
             // Validate the current query
             int numSelectedVars = 0;
@@ -229,34 +270,34 @@ namespace Badger.ViewModels
                 bCanGenerateReports = true;
 
             // Update the "enabled" property of the variable used to select a group
-            bGroupsEnabled = Forks.Count > 0;
+            bGroupsEnabled = GroupByForks.Count > 0;
         }
 
+        /// <summary>
+        ///     Class default constructor.
+        /// </summary>
         public ReportsWindowViewModel()
         {
-            //add the function options
+            // Add the function options
             inGroupSelectionFunctions.Add(LogQuery.functionMax);
             inGroupSelectionFunctions.Add(LogQuery.functionMin);
             selectedInGroupSelectionFunction = LogQuery.functionMax;
-
-            //add the from options
+            // Add the from options
             fromOptions.Add(LogQuery.fromAll);
             fromOptions.Add(LogQuery.fromSelection);
             selectedFrom = LogQuery.fromAll;
-
-            //add the limit to options
+            // Add the limit to options
             limitToOptions.Add(LogQuery.noLimitOnResults);
             for (int i = 1; i <= 10; i++) limitToOptions.Add(i.ToString());
             selectedLimitToOption = LogQuery.noLimitOnResults;
-
-            //order by functions
+            // Add order by functions
             orderByFunctions.Add(LogQuery.orderAsc);
             orderByFunctions.Add(LogQuery.orderDesc);
             selectedOrderByFunction = LogQuery.orderDesc;
         }
 
         /// <summary>
-        ///     Method called from the view. Make a report from selected configuration once
+        ///     Method called from the view. Generate a report from a set of selected configurations once
         ///     all conditions are fulfilled.
         /// </summary>
         public void MakeReport()
@@ -265,7 +306,7 @@ namespace Badger.ViewModels
             LogQuery query = new LogQuery { @from = selectedFrom };
             // Group by
             foreach (string fork in m_groupByForks) query.groupBy.Add(fork);
-            //having
+
             if (query.groupBy.Count > 0)
             {
                 query.inGroupSelectionFunction = selectedInGroupSelectionFunction;
@@ -280,10 +321,10 @@ namespace Badger.ViewModels
             }
 
             // Execute the query
-            query.execute(loggedExperiments, Variables);
+            query.execute(LoggedExperiments, Variables);
             // Display the report
             ReportViewModel newReport = new ReportViewModel(query);
-            reports.Add(newReport);
+            Reports.Add(newReport);
             selectedReport = newReport;
             bCanSaveReports = true;
         }
@@ -303,7 +344,11 @@ namespace Badger.ViewModels
             }
         }
 
-        public void saveReports()
+        /// <summary>
+        ///     Method called from the view. When the report is generated it can be saved in a folder 
+        ///     as a set of separated files containing the report data for further analysis.
+        /// </summary>
+        public void SaveReports()
         {
             if (m_reports.Count == 0) return;
 
@@ -314,34 +359,41 @@ namespace Badger.ViewModels
             {
                 foreach (ReportViewModel report in m_reports)
                 {
-                    //if there is more than one report, we store each one in a subfolder
+                    // If there is more than one report, we store each one in a subfolder
                     string outputFolder;
                     if (m_reports.Count > 1)
                     {
                         outputFolder = outputBaseFolder + "\\" + Utility.removeSpecialCharacters(report.name);
                         Directory.CreateDirectory(outputFolder);
                     }
-                    else outputFolder = outputBaseFolder;
+                    else
+                        outputFolder = outputBaseFolder;
 
                     report.export(outputFolder);
                 }
             }
         }
 
+
         private BindableCollection<LoggedExperimentViewModel> m_loggedExperiments
             = new BindableCollection<LoggedExperimentViewModel>();
-        public BindableCollection<LoggedExperimentViewModel> loggedExperiments
+
+        public BindableCollection<LoggedExperimentViewModel> LoggedExperiments
         {
             get { return m_loggedExperiments; }
-            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => loggedExperiments); }
+            set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private void loadLoggedExperiment(XmlNode node, string baseDirectory)
+
+        private void LoadLoggedExperiment(XmlNode node, string baseDirectory)
         {
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, true);
-            loggedExperiments.Add(newExperiment);
+            LoggedExperiments.Add(newExperiment);
             Variables.AddRange(newExperiment.variables);
-            foreach (LoggedVariableViewModel variable in Variables) variable.setParent(this);
+
+            foreach (LoggedVariableViewModel variable in Variables)
+                variable.setParent(this);
+
             bLogsLoaded = true;
 
             if (Variables.Count > 0)
@@ -350,29 +402,40 @@ namespace Badger.ViewModels
                 selectedOrderByVariable = Variables[0].name;
             }
 
-            // Forks.AddRange(newExperiment.Forks);
+            foreach (var fork in newExperiment.Forks)
+            {
+                fork.PropertyChanged += item_PropertyChanged;
+                Forks.Add(fork);
+            }
         }
 
-        public void loadExperimentBatch(string batchFileName)
+
+        public void LoadExperimentBatch(string batchFileName)
         {
-            SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
+            SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
         }
 
+        /// <summary>
+        ///     Close a tab (report view) and remove it from the list of reports.
+        /// </summary>
+        /// <param name="report">The report to be removed</param>
         public void Close(ReportViewModel report)
         {
-            reports.Remove(report);
+            Reports.Remove(report);
         }
 
-        public void clearReportViewer()
+        /// <summary>
+        ///     Method called from the view.
+        /// </summary>
+        public void ClearReportViewer()
         {
-            loggedExperiments.Clear();
-            reports.Clear();
-            resetGroupBy();
+            LoggedExperiments.Clear();
+            Reports.Clear();
+            ResetGroupBy();
             inGroupSelectionVariables.Clear();
             Variables.Clear();
-
-            foreach (var experiment in loggedExperiments)
-                experiment.variables.Clear();
+            GroupByForks.Clear();
+            Forks.Clear();
 
             selectedLimitToOption = "-";
             selectedFrom = "*";
