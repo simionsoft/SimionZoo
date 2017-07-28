@@ -176,24 +176,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basic-shapes.cpp" />
-    <ClCompile Include="bounding-box-gl.cpp" />
-    <ClCompile Include="bounding-box.cpp" />
-    <ClCompile Include="bounding-cylinder.cpp" />
-    <ClCompile Include="frustum.cpp" />
     <ClCompile Include="light.cpp" />
-    <ClCompile Include="matrix44.cpp" />
     <ClCompile Include="mesh.cpp" />
-    <ClCompile Include="plane.cpp" />
-    <ClCompile Include="xml-load-utils.cpp" />
+    <ClCompile Include="bindings.cpp" />
     <ClCompile Include="graphic-object-2d.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collada-model.cpp" />
-    <ClCompile Include="actor.cpp" />
+    <ClCompile Include="scene-actor.cpp" />
     <ClCompile Include="graphic-object.cpp" />
     <ClCompile Include="input-handler.cpp" />
     <ClCompile Include="material.cpp" />
-    <ClCompile Include="matrix33.cpp" />
-    <ClCompile Include="quaternion.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -204,44 +196,35 @@
     <ClCompile Include="color.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture-manager.cpp" />
-    <ClCompile Include="transform2d.cpp" />
-    <ClCompile Include="transform3d.cpp" />
-    <ClCompile Include="vector2d.cpp" />
-    <ClCompile Include="vector3d.cpp" />
+    <ClCompile Include="xml-load.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basic-shapes.h" />
     <ClInclude Include="bindings.h" />
-    <ClInclude Include="bounding-box.h" />
-    <ClInclude Include="bounding-cylinder.h" />
-    <ClInclude Include="frustum.h" />
     <ClInclude Include="graphic-object-2d.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collada-model.h" />
-    <ClInclude Include="actor.h" />
+    <ClInclude Include="scene-actor.h" />
     <ClInclude Include="graphic-object.h" />
     <ClInclude Include="input-handler.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="material.h" />
-    <ClInclude Include="matrix33.h" />
-    <ClInclude Include="matrix44.h" />
     <ClInclude Include="mesh.h" />
-    <ClInclude Include="plane.h" />
-    <ClInclude Include="quaternion.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="color.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="texture-manager.h" />
-    <ClInclude Include="transform2d.h" />
-    <ClInclude Include="transform3d.h" />
-    <ClInclude Include="vector2d.h" />
-    <ClInclude Include="vector3d.h" />
-    <ClInclude Include="xml-load-utils.h" />
+    <ClInclude Include="xml-load.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GeometryLib\GeometryLib.vcxproj">
+      <Project>{aabae018-c8f6-4865-a0f9-e8e46da55a2d}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

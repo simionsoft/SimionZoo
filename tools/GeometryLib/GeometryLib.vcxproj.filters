@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="quaternion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transform2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transform3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vector2d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vector3d.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bounding-box.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="frustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix33.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="matrix44.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="plane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="bounding-cylinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="quaternion.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="transform2d.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="transform3d.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vector2d.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vector3d.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bounding-box.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="frustum.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix33.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix44.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="bounding-cylinder.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,6 +1,6 @@
-#include "stdafx.h"
 #include "bounding-cylinder.h"
 #include "vector3d.h"
+#include <algorithm>
 
 BoundingCylinder::BoundingCylinder()
 {
@@ -31,4 +31,10 @@ void BoundingCylinder::reset()
 double BoundingCylinder::radius() const
 {
 	return m_radius;
+}
+
+void BoundingCylinder::setRadius(double r)
+{
+	m_bSet = true;
+	m_radius = r;
 }

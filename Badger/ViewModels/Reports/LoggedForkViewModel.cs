@@ -89,10 +89,6 @@ namespace Badger.ViewModels
         ///     Method is called from the context menu informs the parent window that results should be
         ///     grouped by this fork.
         /// </summary>
-        /// <param name="forkName">The name of the fork that we want to use to group values.</param>
-        public void GroupByThisFork(string forkName)
-        {
-            IsGroupedByThisFork = true;
-        }
+        public void GroupByThisFork() { IsGroupedByThisFork = true; }
     }
 }

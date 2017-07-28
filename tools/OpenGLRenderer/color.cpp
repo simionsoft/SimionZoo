@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "color.h"
-#include "vector2d.h"
+#include "../GeometryLib/vector2d.h"
 
 Color Color::operator*(double scalar) const
 {

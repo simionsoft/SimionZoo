@@ -1,8 +1,8 @@
 #pragma once
 
-#include "transform2d.h"
-#include "vector2d.h"
-#include "bounding-box.h"
+#include "../GeometryLib/transform2d.h"
+#include "../GeometryLib/vector2d.h"
+#include "../GeometryLib/bounding-box.h"
 #include <string>
 using namespace std;
 class CMaterial;

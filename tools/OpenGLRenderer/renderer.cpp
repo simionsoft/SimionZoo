@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "renderer.h"
-#include "actor.h"
+#include "scene-actor.h"
 #include "texture-manager.h"
 #include "graphic-object.h"
 #include "graphic-object-2d.h"
 #include "camera.h"
 #include "light.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
+#include "../GeometryLib/bounding-box.h"
 
 using namespace tinyxml2;
 
@@ -201,7 +202,11 @@ void CRenderer::drawScene()
 			(*it)->draw();
 
 			if (m_bShowBoundingBoxes)
-				(*it)->drawBoundingBox();
+			{
+				(*it)->setTransform();
+				drawBoundingBox3D((*it)->boundingBox());
+				(*it)->restoreTransform();
+			}
 			++m_num3DObjectsDrawn;
 		}
 	}
@@ -214,7 +219,7 @@ void CRenderer::drawScene()
 		(*it)->draw();
 
 		if (m_bShowBoundingBoxes)
-			(*it)->boundingBox().draw();
+			drawBoundingBox2D((*it)->boundingBox());
 	}
 }
 
@@ -235,21 +240,6 @@ Binding* CRenderer::getBinding(string externalName)
 	return nullptr;
 }
 
-void CRenderer::registerBinding(string externalName, Bindable* pObj, string internalName)
-{
-	Binding* pBinding = getBinding(externalName);
-	if (pBinding == nullptr)
-	{
-		//No binding registered yet for the external name (i.e, the state variable's name)
-		pBinding = new Binding(externalName, pObj, internalName);
-	}
-	else
-	{
-		//we simply add the new bound object
-		pBinding->addBoundObject(new BoundObject(pObj, internalName));
-	}
-	m_bindings.push_back(pBinding);
-}
 
 size_t CRenderer::getNumBindings()
 {
@@ -265,16 +255,11 @@ string CRenderer::getBindingExternalName(unsigned int i)
 
 bool CRenderer::updateBinding(unsigned int i, double value)
 {
-	BoundObject* pBoundObj;
-
 	//update the value if the binding's index is in range
 	if (i >= 0 && i < m_bindings.size())
 	{
-		for (unsigned int obj = 0; obj < m_bindings[i]->getNumBoundObjects(); ++obj)
-		{
-			pBoundObj = m_bindings[i]->getBoundObject(obj);
-			pBoundObj->pObj->update(pBoundObj->internalName, value);
-		}
+		m_bindings[i]->update(value);
+
 		return true;
 	}
 	return false;
@@ -291,4 +276,48 @@ bool CRenderer::updateBinding(string bindingExternalName, double value)
 		++i;
 	}
 	return false;
+}
+
+
+void CRenderer::drawBoundingBox3D(BoundingBox3D& box) const
+{
+	glBegin(GL_LINES);
+	//FRONT
+	glVertex3d(box.min().x(), box.min().y(), box.max().z());
+	glVertex3d(box.max().x(), box.min().y(), box.max().z());
+	glVertex3d(box.max().x(), box.min().y(), box.max().z());
+	glVertex3d(box.max().x(), box.max().y(), box.max().z());
+	glVertex3d(box.max().x(), box.max().y(), box.max().z());
+	glVertex3d(box.min().x(), box.max().y(), box.max().z());
+	glVertex3d(box.min().x(), box.max().y(), box.max().z());
+	glVertex3d(box.min().x(), box.min().y(), box.max().z());
+	//BACK
+	glVertex3d(box.min().x(), box.min().y(), box.min().z());
+	glVertex3d(box.max().x(), box.min().y(), box.min().z());
+	glVertex3d(box.max().x(), box.min().y(), box.min().z());
+	glVertex3d(box.max().x(), box.max().y(), box.min().z());
+	glVertex3d(box.max().x(), box.max().y(), box.min().z());
+	glVertex3d(box.min().x(), box.max().y(), box.min().z());
+	glVertex3d(box.min().x(), box.max().y(), box.min().z());
+	glVertex3d(box.min().x(), box.min().y(), box.min().z());
+	//4 lines between front face and back face
+	glVertex3d(box.min().x(), box.min().y(), box.min().z());
+	glVertex3d(box.min().x(), box.min().y(), box.max().z());
+	glVertex3d(box.max().x(), box.min().y(), box.min().z());
+	glVertex3d(box.max().x(), box.min().y(), box.max().z());
+	glVertex3d(box.max().x(), box.max().y(), box.min().z());
+	glVertex3d(box.max().x(), box.max().y(), box.max().z());
+	glVertex3d(box.min().x(), box.max().y(), box.min().z());
+	glVertex3d(box.min().x(), box.max().y(), box.max().z());
+	glEnd();
+}
+
+void CRenderer::drawBoundingBox2D(BoundingBox2D& box) const
+{
+	glBegin(GL_LINES);
+	glVertex2d(box.min().x(), box.min().y()); glVertex2d(box.max().x(), box.min().y());
+	glVertex2d(box.max().x(), box.min().y()); glVertex2d(box.max().x(), box.max().y());
+	glVertex2d(box.max().x(), box.max().y()); glVertex2d(box.min().x(), box.max().y());
+	glVertex2d(box.min().x(), box.max().y()); glVertex2d(box.min().x(), box.min().y());
+	glEnd();
 }

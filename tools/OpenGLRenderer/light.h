@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vector3d.h"
+#include "../GeometryLib/vector3d.h"
 #include "color.h"
 
 namespace tinyxml2 { class XMLElement; }
@@ -32,7 +32,7 @@ public:
 	CDirectionalLight() : m_direction(Vector3D(0.0, -1.0, 0.0)), CLight(){}
 	CDirectionalLight(tinyxml2::XMLElement* pNode);
 
-	void setDirection(Vector3D dir) { m_direction = dir; }
+	void setDirection(Vector3D dir) { m_direction= dir; }
 	Vector3D getDirection() { return m_direction; }
 	void setColor(Color color) { m_diffuseColor = m_specularColor= m_ambientColor= color; }
 	Color getDiffuseColor() { return m_diffuseColor; }

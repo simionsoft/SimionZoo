@@ -1,5 +1,6 @@
 #pragma once
-#include "transform3d.h"
+#include "bindings.h"
+#include "../GeometryLib/transform3d.h"
 
 namespace tinyxml2 { class XMLElement; }
 

@@ -1,19 +1,13 @@
 #include "stdafx.h"
 #include "collada-model.h"
 #include "material.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
 #include "renderer.h"
 #include "texture-manager.h"
 #include "mesh.h"
-#include "bounding-cylinder.h"
+#include "../GeometryLib/bounding-cylinder.h"
 #include <algorithm>
 #include "../WindowsUtils/FileUtils.h"
-
-//#define NUM_ATTRIBUTES_PER_VERTEX 3
-//#define NUM_INDICES_PER_PRIMITIVE 3
-//#define NORMAL_ATTR_OFFSET 1
-//#define TEX_COORD_ATTR_OFFSET 2
-
 
 
 unsigned int parseIntArray(const char* pInputString, unsigned int* pValues, unsigned int numValues, unsigned int startOffset= 0)
@@ -471,15 +465,15 @@ CColladaModel::CColladaModel(tinyxml2::XMLElement* pNode): CGraphicObject(pNode)
 	pChild = pNode->FirstChildElement(XML_TAG_FIT_BOUNDING_BOX);
 	if (pChild)
 	{
-		fitBB.load(pChild);
-		fitToBoundingBox(fitBB);
+		XML::load(pChild, fitBB);
+		fitToBoundingBox(&fitBB);
 	}
 	BoundingCylinder fitBC;
 	pChild = pNode->FirstChildElement(XML_TAG_FIT_BOUNDING_CYLINDER);
 	if (pChild)
 	{
-		fitBC.load(pChild);
-		fitToBoundingCylinder(fitBC);
+		XML::load(pChild,fitBC);
+		fitToBoundingCylinder(&fitBC);
 	}
 }
 
@@ -510,12 +504,12 @@ void CColladaModel::traverseVisualScene(tinyxml2::XMLElement* pRootNode, tinyxml
 	readTransform.setIdentity();
 	if (pNode->FirstChildElement(XML_TAG_COLLADA_MATRIX) != nullptr)
 	{
-		loadColladaMatrix(pNode->FirstChildElement(XML_TAG_COLLADA_MATRIX)->GetText(), readTransform);
+		XML::loadColladaMatrix(pNode->FirstChildElement(XML_TAG_COLLADA_MATRIX)->GetText(), readTransform);
 		localTransform = readTransform*nodeTransform;
 	}
 	else if (pNode->FirstChildElement(XML_TAG_COLLADA_TRANSLATE))
 	{
-		loadVector3D(pNode->FirstChildElement(XML_TAG_COLLADA_TRANSLATE)->GetText(), translation);
+		XML::loadVector3D(pNode->FirstChildElement(XML_TAG_COLLADA_TRANSLATE)->GetText(), translation);
 		translationMatrix.setTranslation(translation);
 		localTransform = translationMatrix*nodeTransform;
 	}
@@ -578,7 +572,7 @@ void CColladaModel::loadSkin(tinyxml2::XMLElement* pRootNode)
 			if (pSkin && pSkin->Attribute(XML_TAG_COLLADA_SOURCE))
 			{
 				if (pSkin->FirstChildElement(XML_TAG_COLLADA_BIND_SHAPE_MATRIX))
-					loadColladaMatrix(pSkin->FirstChildElement(XML_TAG_COLLADA_BIND_SHAPE_MATRIX)->GetText(), matrix);
+					XML::loadColladaMatrix(pSkin->FirstChildElement(XML_TAG_COLLADA_BIND_SHAPE_MATRIX)->GetText(), matrix);
 				geometryId = pSkin->Attribute(XML_TAG_COLLADA_SOURCE) + 1;
 				instanceGeometry(pRootNode, geometryId, matrix);
 			}

@@ -53,7 +53,7 @@
         <Radius>1.0</Radius>
       </Fit-BoundingCylinder></d>
     </Collada-Model>
-    <d><Polyline Name="Line">
+    <Polyline Name="Line">
       <Color><R>1.0</R><G>0.0</G><B>0.0</B><A>1.0</A></Color>
       <Width>1</Width>
       <Point><X>0.0</X><Y>0.0</Y><Z>0.0</Z></Point>
@@ -63,6 +63,7 @@
       <Point><X>-1.0</X><Y>1.0</Y><Z>1.0</Z></Point>
       <Point><X>0.0</X><Y>0.0</Y><Z>0.0</Z></Point>
     </Polyline>
+<d>
     <Collada-Model Name="Venom" Path="Venom/Venom.dae">
       <Transform>
         <Translation>

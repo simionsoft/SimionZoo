@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "material.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
 #include "renderer.h"
 #include "texture-manager.h"
 
@@ -26,13 +26,13 @@ CSimpleTLMaterial::CSimpleTLMaterial(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement *pChild, *pChild2;
 	pChild = pNode->FirstChildElement(XML_TAG_AMBIENT);
-	if (pChild != nullptr) m_ambient.load(pChild);
+	if (pChild != nullptr) XML::load(pChild,m_ambient);
 	pChild = pNode->FirstChildElement(XML_TAG_DIFFUSE);
-	if (pChild != nullptr) m_diffuse.load(pChild);
+	if (pChild != nullptr) XML::load(pChild, m_diffuse);
 	pChild = pNode->FirstChildElement(XML_TAG_SPECULAR);
-	if (pChild != nullptr) m_specular.load(pChild);
+	if (pChild != nullptr) XML::load(pChild, m_specular);
 	pChild = pNode->FirstChildElement(XML_TAG_EMISSION);
-	if (pChild != nullptr) m_emission.load(pChild);
+	if (pChild != nullptr) XML::load(pChild, m_emission);
 	pChild = pNode->FirstChildElement(XML_TAG_SHININESS);
 	if (pChild != nullptr) m_shininess = atof(pChild->GetText());
 	pChild = pNode->FirstChildElement(XML_TAG_TEXTURE);
@@ -47,6 +47,7 @@ CSimpleTLMaterial::CSimpleTLMaterial(tinyxml2::XMLElement* pNode)
 void CSimpleTLMaterial::set()
 {
 	//no alpha blending
+	glEnable(GL_LIGHTING);
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 	glEnable(GL_CULL_FACE);
@@ -66,6 +67,7 @@ void CSimpleTLMaterial::set()
 
 void CTranslucentMaterial::set()
 {
+	glEnable(GL_LIGHTING);
 	//alpha blending: no depth writing, no face culling
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -101,13 +103,18 @@ void CColorMaterial::set()
 {
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
 
 	glColor4fv(m_color.rgba());
 }
 
 void CLineMaterial::set()
 {
-//	glEnable(GL_LINE_SMOOTH);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+	glDepthMask(GL_TRUE);
 	glLineWidth((float)m_width);
 	glColor4fv(m_color.rgba());
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "graphic-object.h"
-#include "vector2d.h"
-#include "vector3d.h"
+#include "../GeometryLib/vector2d.h"
+#include "../GeometryLib/vector3d.h"
 namespace tinyxml2 { class XMLElement; }
 
 class CBasicShape : public CGraphicObject

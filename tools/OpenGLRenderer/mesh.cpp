@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "mesh.h"
 #include "collada-model.h"
-#include "xml-load-utils.h"
+#include "xml-load.h"
 #include "material.h"
 #include <algorithm>
 

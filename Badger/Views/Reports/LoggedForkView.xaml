@@ -26,9 +26,7 @@
                             <MenuItem Header="Group by value">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
-                                        <cal:ActionMessage MethodName="GroupByThisFork" >
-                                            <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                        </cal:ActionMessage>
+                                        <cal:ActionMessage MethodName="GroupByThisFork" />
                                     </i:EventTrigger>
                                 </i:Interaction.Triggers>
                             </MenuItem>

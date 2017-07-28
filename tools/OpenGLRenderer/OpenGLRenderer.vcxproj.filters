@@ -3,25 +3,7 @@
   <ItemGroup>
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="matrix33.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="quaternion.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="vector3d.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="vector2d.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="transform3d.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
     <ClCompile Include="basic-shapes.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="actor.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="graphic-object.cpp">
@@ -29,9 +11,6 @@
     </ClCompile>
     <ClCompile Include="collada-model.cpp">
       <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="transform2d.cpp">
-      <Filter>geometry</Filter>
     </ClCompile>
     <ClCompile Include="material.cpp">
       <Filter>graphics</Filter>
@@ -43,20 +22,11 @@
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="input-handler.cpp" />
-    <ClCompile Include="bounding-box.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="bounding-box-gl.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
     <ClCompile Include="mesh.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
     <ClCompile Include="camera.cpp">
       <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="matrix44.cpp">
-      <Filter>geometry</Filter>
     </ClCompile>
     <ClCompile Include="light.cpp">
       <Filter>graphics</Filter>
@@ -67,40 +37,17 @@
     <ClCompile Include="texture-manager.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="bounding-cylinder.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="xml-load-utils.cpp" />
-    <ClCompile Include="frustum.cpp">
-      <Filter>geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="plane.cpp">
-      <Filter>geometry</Filter>
+    <ClCompile Include="bindings.cpp" />
+    <ClCompile Include="xml-load.cpp" />
+    <ClCompile Include="scene-actor.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="renderer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="matrix33.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="quaternion.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="vector3d.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="vector2d.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="transform3d.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
     <ClInclude Include="basic-shapes.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="actor.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="graphic-object.h">
@@ -108,9 +55,6 @@
     </ClInclude>
     <ClInclude Include="collada-model.h">
       <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="transform2d.h">
-      <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="material.h">
       <Filter>graphics</Filter>
@@ -123,17 +67,11 @@
     </ClInclude>
     <ClInclude Include="input-handler.h" />
     <ClInclude Include="bindings.h" />
-    <ClInclude Include="bounding-box.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
     <ClInclude Include="mesh.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="matrix44.h">
-      <Filter>geometry</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
       <Filter>graphics</Filter>
@@ -144,24 +82,15 @@
     <ClInclude Include="texture-manager.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="bounding-cylinder.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="xml-load-utils.h" />
-    <ClInclude Include="frustum.h">
-      <Filter>geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="plane.h">
-      <Filter>geometry</Filter>
+    <ClInclude Include="xml-load.h" />
+    <ClInclude Include="scene-actor.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="geometry">
-      <UniqueIdentifier>{c53f6a2c-ce12-4a3f-a8a2-9abfee85b391}</UniqueIdentifier>
-    </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{59f3d4e5-c225-49b2-9c12-9a0ea1d5288e}</UniqueIdentifier>
     </Filter>

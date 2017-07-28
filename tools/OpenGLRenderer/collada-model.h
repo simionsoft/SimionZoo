@@ -1,6 +1,6 @@
 #pragma once
 #include "graphic-object.h"
-#include "vector3d.h"
+#include "../GeometryLib/vector3d.h"
 #include <vector>
 #include <string>
 #include <map>
@@ -14,12 +14,6 @@ class CMesh;
 
 using namespace std;
 
-unsigned int parseFloatArrayToVector3DArray(const char* pInputString, Vector3D* pBuffer, unsigned int bufferElementSize);
-unsigned int parseFloatArrayToVector2DArray(const char* pInputString, Vector2D* pBuffer, unsigned int bufferElementSize);
-unsigned int parseIntArray(const char* pInputString, unsigned int* pBuffer, unsigned int bufferSize);
-unsigned int parseFloatArray(const char* pInputString, double* pBuffer, unsigned int bufferSize);
-tinyxml2::XMLElement* deepSearch(tinyxml2::XMLElement* pNode, const char* elementName
-	, const char* attributeName, const char* attributeValueToMatch);
 
 struct InputDef
 {

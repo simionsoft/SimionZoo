@@ -7,13 +7,13 @@
 #include "../../../tools/OpenGLRenderer/renderer.h"
 #include "../../../tools/OpenGLRenderer/text.h"
 #include "../../../tools/OpenGLRenderer/camera.h"
-#include "../../../tools/OpenGLRenderer/quaternion.h"
-#include "../../../tools/OpenGLRenderer/vector3d.h"
-#include "../../../tools/OpenGLRenderer/transform3d.h"
 #include "../../../tools/OpenGLRenderer/graphic-object.h"
 #include "../../../tools/OpenGLRenderer/graphic-object-2d.h"
-#include "../../../tools/OpenGLRenderer/vector2d.h"
 #include "../../../tools/OpenGLRenderer/input-handler.h"
+#include "../../../tools/GeometryLib/quaternion.h"
+#include "../../../tools/GeometryLib/vector3d.h"
+#include "../../../tools/GeometryLib/transform3d.h"
+#include "../../../tools/GeometryLib/vector2d.h"
 
 int main(int argc, char** argv)
 {

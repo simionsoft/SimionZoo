@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "actor.h"
-#include "xml-load-utils.h"
-#include "matrix44.h"
+#include "scene-actor.h"
+#include "xml-load.h"
+#include "../GeometryLib/matrix44.h"
 
 
 
@@ -10,7 +10,7 @@ CSceneActor::CSceneActor(tinyxml2::XMLElement* pNode)
 	XMLElement* pChild;
 	pChild= pNode->FirstChildElement(XML_TAG_TRANSFORM);
 	if (pChild)
-		m_transform.load(pChild);
+		XML::load(pChild, m_transform);
 }
 
 CSceneActor::~CSceneActor()
