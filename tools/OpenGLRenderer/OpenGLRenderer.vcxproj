@@ -182,7 +182,7 @@
     <ClCompile Include="graphic-object-2d.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collada-model.cpp" />
-    <ClCompile Include="actor.cpp" />
+    <ClCompile Include="scene-actor.cpp" />
     <ClCompile Include="graphic-object.cpp" />
     <ClCompile Include="input-handler.cpp" />
     <ClCompile Include="material.cpp" />
@@ -204,7 +204,7 @@
     <ClInclude Include="graphic-object-2d.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collada-model.h" />
-    <ClInclude Include="actor.h" />
+    <ClInclude Include="scene-actor.h" />
     <ClInclude Include="graphic-object.h" />
     <ClInclude Include="input-handler.h" />
     <ClInclude Include="light.h" />

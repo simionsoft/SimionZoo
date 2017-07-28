@@ -36,7 +36,7 @@ CSimpleCamera::CSimpleCamera(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement* pChild = pNode->FirstChildElement(XML_TAG_TRANSFORM);
 	if (pChild)
-		m_transform.load(pChild);
+		XML::load(pChild,m_transform);
 }
 
 CSimpleCamera::CSimpleCamera()

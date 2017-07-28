@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "renderer.h"
-#include "actor.h"
+#include "scene-actor.h"
 #include "texture-manager.h"
 #include "graphic-object.h"
 #include "graphic-object-2d.h"
@@ -240,21 +240,6 @@ Binding* CRenderer::getBinding(string externalName)
 	return nullptr;
 }
 
-void CRenderer::registerBinding(string externalName, Bindable* pObj, string internalName)
-{
-	Binding* pBinding = getBinding(externalName);
-	if (pBinding == nullptr)
-	{
-		//No binding registered yet for the external name (i.e, the state variable's name)
-		pBinding = new Binding(externalName, pObj, internalName);
-	}
-	else
-	{
-		//we simply add the new bound object
-		pBinding->addBoundObject(new BoundObject(pObj, internalName));
-	}
-	m_bindings.push_back(pBinding);
-}
 
 size_t CRenderer::getNumBindings()
 {
@@ -270,16 +255,11 @@ string CRenderer::getBindingExternalName(unsigned int i)
 
 bool CRenderer::updateBinding(unsigned int i, double value)
 {
-	BoundObject* pBoundObj;
-
 	//update the value if the binding's index is in range
 	if (i >= 0 && i < m_bindings.size())
 	{
-		for (unsigned int obj = 0; obj < m_bindings[i]->getNumBoundObjects(); ++obj)
-		{
-			pBoundObj = m_bindings[i]->getBoundObject(obj);
-			pBoundObj->pObj->update(pBoundObj->internalName, value);
-		}
+		m_bindings[i]->update(value);
+
 		return true;
 	}
 	return false;

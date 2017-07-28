@@ -20,10 +20,10 @@ public:
 	Transform2D();
 	virtual ~Transform2D() {}
 
-	Vector2D translation() const { return m_translation; }
-	double rotation() const { return m_rotation; }
-	Vector2D scale() const { return m_scale; }
-	double depth() const { return m_depth; }
+	Vector2D& translation() { return m_translation; }
+	double& rotation() { return m_rotation; }
+	Vector2D& scale() { return m_scale; }
+	double& depth() { return m_depth; }
 
 	void setTranslation(const Vector2D& translation) { m_translation = translation; }
 	void setRotation(double rotation) { m_rotation = rotation; }

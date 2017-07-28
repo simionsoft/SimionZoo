@@ -33,6 +33,13 @@ public:
 	void setY(double y) { _values[1] = y; }
 };
 
+class Point2D : public Vector2D
+{
+public:
+	Point2D() :Vector2D() {}
+	Point2D(double x, double y) : Vector2D(x, y) {}
+};
+
 class Range : public Vector2D
 {
 public:

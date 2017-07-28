@@ -175,7 +175,7 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	if (pNode->Attribute(XML_TAG_TEX_COORD_MULT_FACTOR))
 	{
 		double factor = atoi(pNode->Attribute(XML_TAG_TEX_COORD_MULT_FACTOR));
-		for (int i = 0; i < pMesh->getNumTexCoords(); ++i)
+		for (unsigned int i = 0; i < pMesh->getNumTexCoords(); ++i)
 			pMesh->getTexCoord(i) *= factor;
 		CSimpleTLMaterial* pMaterial= dynamic_cast<CSimpleTLMaterial*>(m_pMaterialLoaded);
 		if (pMaterial)
@@ -189,6 +189,8 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	pMesh->setMaterial(m_pMaterialLoaded);
 	pMesh->setPrimitiveType(GL_QUADS);
 	addMesh(pMesh);
+
+	m_bb = BoundingBox3D(m_transform.scale()*m_min, m_transform.scale()*m_max);
 }
 
 CCilinder::CCilinder(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
@@ -212,7 +214,7 @@ CPolyline::CPolyline(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
 	Color color= Color(0.0,0.0,0.0,1.0);
 	pChild = pNode->FirstChildElement(XML_TAG_COLOR);
 	if (pChild)
-		color.load(pChild);
+		XML::load(pChild,color);
 	CLineMaterial* pMaterial = new CLineMaterial();
 	pMaterial->setColor(color);
 	pMaterial->setWidth(width);
@@ -227,9 +229,10 @@ CPolyline::CPolyline(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
 	unsigned int i = 0;
 	while (pChild && i<numPoints)
 	{
-		BindablePoint3D point;
-		point.load(pChild);
+		Point3D point;
+		XML::load(pChild,point);
 		pMesh->getPosition(i) = point;
+		m_bb.addPoint(point);
 		pChild = pChild->NextSiblingElement(XML_TAG_POINT);
 		++i;
 	}

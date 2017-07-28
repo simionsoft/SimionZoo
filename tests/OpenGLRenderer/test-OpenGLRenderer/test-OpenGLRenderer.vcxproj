@@ -171,6 +171,9 @@
     <ProjectReference Include="..\..\..\3rd-party\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\tools\GeometryLib\GeometryLib.vcxproj">
+      <Project>{aabae018-c8f6-4865-a0f9-e8e46da55a2d}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\tools\OpenGLRenderer\OpenGLRenderer.vcxproj">
       <Project>{b16284d9-e609-4914-9459-0b65ee749489}</Project>
     </ProjectReference>

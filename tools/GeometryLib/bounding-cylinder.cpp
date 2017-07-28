@@ -32,3 +32,9 @@ double BoundingCylinder::radius() const
 {
 	return m_radius;
 }
+
+void BoundingCylinder::setRadius(double r)
+{
+	m_bSet = true;
+	m_radius = r;
+}

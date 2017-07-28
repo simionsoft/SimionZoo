@@ -81,7 +81,22 @@ public:
 	bool bShowBoundingBoxes() { return m_bShowBoundingBoxes; }
 
 	//this is called by Bindable objects at initialization time
-	void registerBinding(string externalName, Bindable* pObj, string internalName);
+	template <typename T>
+	void registerBinding(string externalName, T& obj, string internalName)
+	{
+		Binding* pBinding = getBinding(externalName);
+		if (pBinding == nullptr)
+		{
+			//No binding registered yet for the external name (i.e, the state variable's name)
+			pBinding = new Binding(externalName, obj, internalName);
+		}
+		else
+		{
+			//we simply add the new bound object
+			pBinding->addBoundObject(new BoundObject<T>(obj, internalName));
+		}
+		m_bindings.push_back(pBinding);
+	}
 
 	//These methods should be called from outside the renderer
 	size_t getNumBindings();

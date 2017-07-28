@@ -18,6 +18,8 @@ public:
 
 	Vector3D min() const;
 	Vector3D max() const;
+	Vector3D& min();
+	Vector3D& max();
 	Vector3D size() const;
 	Vector3D center() const;
 	Vector3D getMinMax(unsigned int index) const;
@@ -36,8 +38,8 @@ public:
 	void addPoint(Vector2D p);
 	void reset();
 
-	Vector2D min() const;
-	Vector2D max() const;
+	Vector2D& min();
+	Vector2D& max();
 	Vector2D size() const;
 	Vector2D center() const;
 

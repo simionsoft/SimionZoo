@@ -1,5 +1,4 @@
 #pragma once
-
 #include "vector3d.h"
 #include "quaternion.h"
 #include "matrix44.h"
@@ -21,6 +20,9 @@ public:
 	Vector3D operator*(Vector3D& v);
 	Point3D operator*(Point3D& v);
 
+	Vector3D& translation() { return m_translation; }
+	Quaternion& rotation() { return m_rotation; }
+	Vector3D& scale() { return m_scale; }
 	Vector3D translation() const { return m_translation; }
 	Quaternion rotation() const { return m_rotation; }
 	Vector3D scale() const { return m_scale; }

@@ -41,7 +41,13 @@ void BoundingBox3D::addPoint(Vector3D p)
 
 Vector3D BoundingBox3D::min() const { return m_min; }
 Vector3D BoundingBox3D::max() const { return m_max; }
-Vector3D BoundingBox3D::size() const { return Vector3D(m_max.x() - m_min.x(), m_max.y() - m_min.y(), m_max.z() - m_min.z()); }
+Vector3D& BoundingBox3D::min() { return m_min; }
+Vector3D& BoundingBox3D::max() { return m_max; }
+Vector3D BoundingBox3D::size() const 
+{
+	return Vector3D(m_max.x() - m_min.x(), m_max.y() - m_min.y()
+		, m_max.z() - m_min.z());
+}
 Vector3D BoundingBox3D::center() const
 {
 	return Vector3D(m_min.x() + (m_max.x() - m_min.x())*0.5
@@ -77,10 +83,21 @@ void BoundingBox2D::addPoint(Vector2D p)
 	if (p.y() < m_min.y()) m_min.setY(p.y());
 }
 
-Vector2D BoundingBox2D::min() const { return m_min; }
-Vector2D BoundingBox2D::max() const { return m_max; }
+Vector2D& BoundingBox2D::min()
+{
+	return m_min;
+}
 
-Vector2D BoundingBox2D::size() const { return Vector2D(m_max.x() - m_min.x(), m_max.y() - m_min.y()); }
+Vector2D& BoundingBox2D::max()
+{
+	return m_max;
+}
+
+Vector2D BoundingBox2D::size() const
+{
+	return Vector2D(m_max.x() - m_min.x(), m_max.y() - m_min.y());
+}
+
 Vector2D BoundingBox2D::center() const 
 {
 	return Vector2D(m_min.x() + (m_max.x() - m_min.x())*0.5

@@ -9,16 +9,16 @@ CLight::CLight(tinyxml2::XMLElement* pNode)
 	tinyxml2::XMLElement* pChild= pNode->FirstChildElement(XML_TAG_COLOR);
 	if (pChild)
 	{
-		m_diffuseColor.load(pChild);
+		XML::load(pChild, m_diffuseColor);
 		m_ambientColor = m_diffuseColor;
 		m_specularColor = m_diffuseColor;
 	}
 	pChild = pNode->FirstChildElement(XML_TAG_DIFFUSE);
-	if (pChild) m_diffuseColor.load(pChild);
+	if (pChild) XML::load(pChild, m_diffuseColor);
 	pChild = pNode->FirstChildElement(XML_TAG_AMBIENT);
-	if (pChild) m_ambientColor.load(pChild);
+	if (pChild) XML::load(pChild, m_ambientColor);
 	pChild = pNode->FirstChildElement(XML_TAG_SPECULAR);
-	if (pChild) m_specularColor.load(pChild);
+	if (pChild) XML::load(pChild, m_specularColor);
 }
 
 CLight::~CLight()
@@ -44,7 +44,7 @@ CDirectionalLight::CDirectionalLight(tinyxml2::XMLElement* pNode):CLight(pNode)
 	tinyxml2::XMLElement* pChild = pNode->FirstChildElement(XML_TAG_DIRECTION);
 	if (pChild)
 	{
-		m_direction.load(pChild);
+		XML::load(pChild,m_direction);
 	}
 }
 

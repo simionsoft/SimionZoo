@@ -1,5 +1,5 @@
 #pragma once
-#include "actor.h"
+#include "scene-actor.h"
 #include "../GeometryLib/frustum.h"
 
 namespace tinyxml2 { class XMLElement; }

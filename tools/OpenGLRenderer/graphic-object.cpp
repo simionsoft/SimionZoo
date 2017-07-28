@@ -59,12 +59,6 @@ void CGraphicObject::draw()
 	restoreTransform();
 }
 
-void CGraphicObject::drawBoundingBox()
-{
-	setTransform();
-	m_bb.draw();
-	restoreTransform();
-}
 
 void CGraphicObject::updateBoundingBox()
 {
@@ -126,7 +120,7 @@ void CGraphicObject::fitToBoundingCylinder(BoundingCylinder* newBC)
 	//calculate the BC
 	for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
 	{
-		for (int i = 0; i < (*it)->getNumPositions(); ++i)
+		for (unsigned int i = 0; i < (*it)->getNumPositions(); ++i)
 		{
 			sampleRadius = std::max(sampleRadius,
 				sqrt((*it)->getPosition(i).x()*(*it)->getPosition(i).x()

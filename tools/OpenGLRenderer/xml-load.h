@@ -1,13 +1,6 @@
 #pragma once
 namespace tinyxml2 { class XMLElement; }
 
-class XMLReader
-{
-public:
-	virtual void load(tinyxml2::XMLElement* pNode) = 0;
-};
-
-
 #define XML_TAG_SCENE "Scene"
 #define XML_TAG_IMPORT_SCENE "Import-Scene"
 #define XML_TAG_OBJECTS "Objects"
@@ -26,6 +19,7 @@ public:
 #define XML_TAG_TRANSLATION "Translation"
 #define XML_TAG_ROTATION "Rotation"
 #define XML_TAG_SCALE "Scale"
+#define XML_TAG_DEPTH "Depth"
 #define XML_TAG_X "X"
 #define XML_TAG_Y "Y"
 #define XML_TAG_Z "Z"
@@ -130,13 +124,50 @@ public:
 #define XML_TAG_COLLADA_SKIN "skin"
 #define XML_TAG_COLLADA_BIND_SHAPE_MATRIX "bind_shape_matrix"
 
-//aux functions
+//loading functions
+#include "bindings.h"
+class Color;
 class Matrix44;
-class Vector3D;
-void loadColladaMatrix(const char* pText, Matrix44& outMatrix);
-void loadVector3D(const char* pText, Vector3D& outVec);
+class Transform3D;
+class Transform2D;
+class BoundingBox3D;
+class BoundingBox2D;
+class BoundingCylinder;
 
+namespace XML
+{
+	template <typename T>
+	double loadBindableValue(tinyxml2::XMLElement* pNode, const char* xmlTag, T& obj)
+	{
+		double value= 0.0;
+		const char* pBindingName;
+		tinyxml2::XMLElement* pChild = pNode->FirstChildElement(xmlTag);
+		if (pChild)
+		{
+			if (pChild->GetText())
+				value = atof(pChild->GetText());
+			pBindingName = pChild->Attribute(XML_ATTR_BINDING);
+			if (pBindingName)
+				CRenderer::get()->registerBinding<T>(pBindingName, obj, xmlTag);
+			return value;
+		}
+		return value;
+	}
+	void loadColladaMatrix(const char* pText, Matrix44& outMatrix);
+	void loadVector3D(const char* pText, Vector3D& outVec);
 
+	void load(tinyxml2::XMLElement* pNode, Vector3D& outVec);
+	void load(tinyxml2::XMLElement* pNode, Point3D& outVec);
+	void load(tinyxml2::XMLElement* pNode, Quaternion& outVec);
+	void load(tinyxml2::XMLElement* pNode, Vector2D& outVec);
+	void load(tinyxml2::XMLElement* pNode, Point2D& outVec);
+	void load(tinyxml2::XMLElement* pNode, Transform3D& transform);
+	void load(tinyxml2::XMLElement* pNode, Transform2D& transform);
+	void load(tinyxml2::XMLElement* pNode, Color& color);
+	void load(tinyxml2::XMLElement* pNode, BoundingBox3D& box);
+	void load(tinyxml2::XMLElement* pNode, BoundingBox2D& box);
+	void load(tinyxml2::XMLElement* pNode, BoundingCylinder& cylinder);
+}
 #include <vector>
 
 

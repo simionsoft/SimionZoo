@@ -15,5 +15,6 @@ public:
 	void reset();
 
 	double radius() const;
+	void setRadius(double r);
 };
 
