@@ -3,8 +3,8 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-#include "../../src/frustum.h"
-#include "../../src/matrix44.h"
+#include "../../../tools/GeometryLib/frustum.h"
+#include "../../../tools/GeometryLib/matrix44.h"
 
 
 namespace insideFrustum

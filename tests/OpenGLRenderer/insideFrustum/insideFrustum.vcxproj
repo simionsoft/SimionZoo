@@ -164,7 +164,7 @@
     <ClCompile Include="unittest1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MathLib.vcxproj">
+    <ProjectReference Include="..\..\..\tools\GeometryLib\GeometryLib.vcxproj">
       <Project>{aabae018-c8f6-4865-a0f9-e8e46da55a2d}</Project>
     </ProjectReference>
   </ItemGroup>
