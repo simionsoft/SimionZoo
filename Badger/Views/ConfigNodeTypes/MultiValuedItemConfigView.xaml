@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:v="clr-namespace:Badger.Views"
-             xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.MultiValuedItemConfigView"
              mc:Ignorable="d" 
                 d:DesignHeight="50" d:DesignWidth="300">
@@ -16,12 +14,11 @@
             <StackPanel>
                 <ItemsControl x:Name="children" BorderThickness="1" BorderBrush="LightGray" Margin="0,0,0,3"/>
             </StackPanel>
-            <StackPanel Width="20" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button VerticalAlignment="Center" Background="Transparent" BorderBrush="{x:Null}"
                             cal:Message.Attach="[Event Click]=[remove]"
-                            x:Name="Remove" 
-                            Width="25" Height="25" >
-                    <Image Source="{StaticResource remove}"></Image>
+                            x:Name="Remove" Width="25" Height="25" >
+                    <Image Source="{StaticResource remove}"/>
                 </Button>
             </StackPanel>
         </StackPanel>

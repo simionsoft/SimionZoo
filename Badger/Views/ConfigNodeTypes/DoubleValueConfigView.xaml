@@ -2,9 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:v="clr-namespace:Badger.Views"
-             xmlns:vm="clr-namespace:Badger.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.DoubleValueConfigView"
              mc:Ignorable="d" 
 d:DesignHeight="50" d:DesignWidth="300">
@@ -17,12 +15,12 @@ d:DesignHeight="50" d:DesignWidth="300">
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light">
             <Label.ContextMenu>
                 <ContextMenu  Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
-                <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
-                    <MenuItem.Icon>
-                        <Image Source="{StaticResource fork}"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-            </ContextMenu>
+                    <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource fork}"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
             </Label.ContextMenu>
         </Label>
         <TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 

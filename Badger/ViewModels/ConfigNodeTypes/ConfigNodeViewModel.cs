@@ -45,7 +45,7 @@ namespace Badger.ViewModels
         public string comment { get { return m_comment; } set { m_comment = value; } }
 
         //Validation
-        private bool m_bIsValid = false;
+        private bool m_bIsValid;
 
         public bool bIsValid
         {
@@ -112,7 +112,8 @@ namespace Badger.ViewModels
         }
 
         //Initialization stuff common to all types of configuration nodes
-        protected void commonInit(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent, XmlNode definitionNode, string parentXPath)
+        protected void commonInit(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
+            XmlNode definitionNode, string parentXPath)
         {
             name = definitionNode.Attributes[XMLConfig.nameAttribute].Value;
 
@@ -205,20 +206,21 @@ namespace Badger.ViewModels
 
 
         //Lambda Traverse functions
-        public virtual int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc
-            , Func<ConfigNodeViewModel, int> nestedNodeFunc)
+        public virtual int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc,
+            Func<ConfigNodeViewModel, int> nestedNodeFunc)
         {
             return simpleNodeFunc(this);
         }
-        public virtual void traverseDoAction(Action<ConfigNodeViewModel> simpleNodeAction
-            , Action<NestedConfigNode> nestedNodeAction)
+
+        public virtual void traverseDoAction(Action<ConfigNodeViewModel> simpleNodeAction,
+            Action<NestedConfigNode> nestedNodeAction)
         {
             simpleNodeAction(this);
         }
 
-        public virtual void onRemoved()
-        { }
+        public virtual void onRemoved() { }
     }
+
 
     abstract public class NestedConfigNode : ConfigNodeViewModel
     {
@@ -308,6 +310,7 @@ namespace Badger.ViewModels
                 newForkNode = new ForkedNodeViewModel(m_parentExperiment, forkedChild);
 
                 int oldIndex = children.IndexOf(forkedChild);
+
                 if (oldIndex >= 0)
                 {
                     children.Remove(forkedChild);
@@ -330,8 +333,8 @@ namespace Badger.ViewModels
         }
 
         //Lambda Traverse functions
-        public override int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc
-            , Func<ConfigNodeViewModel, int> nestedNodeFunc)
+        public override int traverseRetInt(Func<ConfigNodeViewModel, int> simpleNodeFunc,
+            Func<ConfigNodeViewModel, int> nestedNodeFunc)
         {
             return nestedNodeFunc(this);
         }

@@ -5,7 +5,6 @@ namespace Badger.ViewModels
 {
     class DoubleValueConfigViewModel : ConfigNodeViewModel
     {
-
         public DoubleValueConfigViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parent,
             XmlNode definitionNode, string parentXPath, XmlNode configNode = null)
         {
@@ -24,6 +23,7 @@ namespace Badger.ViewModels
             }
         }
 
+
         public override ConfigNodeViewModel clone()
         {
             DoubleValueConfigViewModel newInstance =
@@ -33,6 +33,7 @@ namespace Badger.ViewModels
             newInstance.textColor = textColor;
             return newInstance;
         }
+
 
         public override bool validate()
         {

@@ -276,7 +276,7 @@ namespace Badger.ViewModels
             query.execute(loggedExperiments, Variables);
 
             //DISPLAY the report
-            ReportViewModel newReport = new ReportViewModel(query, this);
+            ReportViewModel newReport = new ReportViewModel(query);
             reports.Add(newReport);
             selectedReport = newReport;
             bCanSaveReports = true;
@@ -350,7 +350,7 @@ namespace Badger.ViewModels
             SimionFileData.LoadExperimentBatchFile(loadLoggedExperiment, batchFileName);
         }
 
-        public void close(ReportViewModel report)
+        public void Close(ReportViewModel report)
         {
             reports.Remove(report);
         }

@@ -32,6 +32,7 @@ namespace Badger.ViewModels
         public delegate void deferredLoadStep();
 
         private List<deferredLoadStep> m_deferredLoadSteps = new List<deferredLoadStep>();
+
         public void registerDeferredLoadStep(deferredLoadStep func) { m_deferredLoadSteps.Add(func); }
 
         public void doDeferredLoadSteps()
@@ -112,7 +113,7 @@ namespace Badger.ViewModels
         }
 
         //file name (not null if it has been saved)
-        private string m_fileName = null;
+        private string m_fileName;
 
         public string fileName
         {

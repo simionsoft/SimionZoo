@@ -4,6 +4,7 @@
         xmlns:vm="clr-namespace:Badger.ViewModels"
         xmlns:cal="http://www.caliburnproject.org"
         xmlns:v="clr-namespace:Badger.Views"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         WindowStyle="ThreeDBorderWindow"
         Title="Report Viewer" Width="900" Height="600"
         Background="#eeeeee"
@@ -169,8 +170,14 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="{Binding name}" VerticalAlignment="Center" />
-                                    <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18"
-                                            cal:Message.Attach="[Event Click]=[Action close()]">
+                                    <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Click">
+                                                <cal:ActionMessage MethodName="Close" >
+                                                    <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                                </cal:ActionMessage>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
                                         <Image Source="{StaticResource Close}" Height="16" Width="16" />
                                     </Button>
                                 </StackPanel>
