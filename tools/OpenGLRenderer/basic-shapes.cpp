@@ -229,10 +229,8 @@ CPolyline::CPolyline(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
 	unsigned int i = 0;
 	while (pChild && i<numPoints)
 	{
-		Point3D point;
-		XML::load(pChild,point);
-		pMesh->getPosition(i) = point;
-		m_bb.addPoint(point);
+		XML::load(pChild, pMesh->getPosition(i));
+		m_bb.addPoint(pMesh->getPosition(i));
 		pChild = pChild->NextSiblingElement(XML_TAG_POINT);
 		++i;
 	}
