@@ -16,7 +16,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                
-                <Path x:Name="Arrow" Grid.Column="1" Data="M7.41,7.84L12,12.42l4.59,-4.58L18,9.25l-6,6 -6,-6z"
+                <Path x:Name="Arrow" Grid.Column="1" Data="{StaticResource Arrow}"
                           Width="24" Height="24" Fill="#89000000" HorizontalAlignment="Center"
                           VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="5">
                     <Path.RenderTransform>

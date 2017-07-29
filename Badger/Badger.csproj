@@ -384,9 +384,6 @@
     <Resource Include="images\right-arrow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="images\save-all.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="images\stop.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -428,47 +425,12 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\open-project.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\spreadsheet.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\ic-play-arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-graphic.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="images\folder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-open-multiple.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-save-all.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-new.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-delete.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-settings.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="images\ic-error.png" />
