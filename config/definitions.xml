@@ -371,9 +371,12 @@
     <CONSTANT Name="RatedGeneratorTorque"/>
     <CONSTANT Name="GearBoxRatio"/>
     <CONSTANT Name="ElectricalGeneratorEfficiency"/>
+    <CONSTANT Name="TotalTurbineInertia"/>
     <CONSTANT Name="GeneratorInertia"/>
     <CONSTANT Name="HubInertia"/>
-    <CONSTANT Name="DriveTrainTorsionalDamping"/>
+    <CONSTANT Name="TotalTurbineTorsionalDamping"/>
+    <CONSTANT Name="RotorDiameter"/>
+    <CONSTANT Name="AirDensity"/>
   </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">
     <FILE-PATH-VALUE Name="Evaluation-Set-Point" Comment="The setpoint file" Default="../config/world/magnetic-levitation/setpoint.txt"/>
@@ -498,22 +501,42 @@
     <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE" Comment="The wind files used for training" Default="../config/world/wind-turbine/TurbSim-10.5.hh"/>
     <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
     <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
-    <STATE-VAR Name="P_s" Min="500000" Max="700000" Unit="W"/>
-    <STATE-VAR Name="P_e" Min="500000" Max="700000" Unit="W"/>
-    <STATE-VAR Name="E_p" Min="-100000" Max="100000" Unit="W"/>
+    <STATE-VAR Name="P_s" Min="0" Max="6000000" Unit="W"/>
+    <STATE-VAR Name="P_e" Min="0" Max="6000000" Unit="W"/>
+    <STATE-VAR Name="E_p" Min="-5000000" Max="5000000" Unit="W"/>
     <STATE-VAR Name="v" Min="1" Max="50" Unit="m/s"/>
-    <STATE-VAR Name="omega_r" Min="2.39823" Max="6.39823" Unit="rad/s"/>
-    <STATE-VAR Name="E_omega_r" Min="-4" Max="4" Unit="rad/s"/>
+    <STATE-VAR Name="omega_r" Min="0" Max="6" Unit="rad/s"/>
     <STATE-VAR Name="d_omega_r" Min="-2" Max="2" Unit="rad/s^2"/>
-    <STATE-VAR Name="beta" Min="-0.3490658504" Max="0.5235987756" Unit="rad"/>
-    <STATE-VAR Name="d_beta" Min="-0.1745329252" Max="0.1745329252" Unit="rad/s"/>
-    <STATE-VAR Name="T_g" Min="100000" Max="162000" Unit="N/m"/>
-    <STATE-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
+    <STATE-VAR Name="E_omega_r" Min="-4" Max="4" Unit="rad/s"/>
+    <STATE-VAR Name="omega_g" Min="0" Max="200" Unit="rad/s"/>
+    <STATE-VAR Name="d_omega_g" Min="-2" Max="2" Unit="rad/s^2"/>
+    <STATE-VAR Name="E_omega_g" Min="-4" Max="4" Unit="rad/s"/>
+    <STATE-VAR Name="beta" Min="0" Max="1.570796" Unit="rad"/>
+    <STATE-VAR Name="d_beta" Min="-0.1396263" Max="0.1396263" Unit="rad/s"/>
+    <STATE-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
+    <STATE-VAR Name="d_T_g" Min="-15000" Max="15000" Unit="N/m/s"/>
     <STATE-VAR Name="E_int_omega_r" Min="-100" Max="100" Unit="rad"/>
-    <ACTION-VAR Name="d_beta" Min="-10" Max="10" Unit="rad/s"/>
-    <ACTION-VAR Name="d_T_g" Min="-100000" Max="100000" Unit="N/m/s"/>
-    <CONSTANT Name="K_t"/>
-    <CONSTANT Name="J_t"/>
+    <ACTION-VAR Name="beta" Min="0" Max="1.570796" Unit="rad"/>
+    <ACTION-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
+    <CONSTANT Name="RatedPower"/>
+    <CONSTANT Name="HubHeight"/>
+    <CONSTANT Name="CutInWindSpeed"/>
+    <CONSTANT Name="RatedWindSpeed"/>
+    <CONSTANT Name="CutOutWindSpeed"/>
+    <CONSTANT Name="CutInRotorSpeed"/>
+    <CONSTANT Name="CutOutRotorSpeed"/>
+    <CONSTANT Name="RatedRotorSpeed"/>
+    <CONSTANT Name="RatedTipSpeed"/>
+    <CONSTANT Name="RatedGeneratorSpeed"/>
+    <CONSTANT Name="RatedGeneratorTorque"/>
+    <CONSTANT Name="GearBoxRatio"/>
+    <CONSTANT Name="ElectricalGeneratorEfficiency"/>
+    <CONSTANT Name="TotalTurbineInertia"/>
+    <CONSTANT Name="GeneratorInertia"/>
+    <CONSTANT Name="HubInertia"/>
+    <CONSTANT Name="TotalTurbineTorsionalDamping"/>
+    <CONSTANT Name="RotorDiameter"/>
+    <CONSTANT Name="AirDensity"/>
   </CLASS>
   <CLASS Name="CWorld">
     <INTEGER-VALUE Name="Num-Integration-Steps" Comment="The number of integration steps performed each simulation time-step" Default="4"/>

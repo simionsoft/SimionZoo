@@ -29,6 +29,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	//This class is used both in the DimensionalPortalDLL (pConfigNode will be nullptr) and in RLSimion (pConfigNode will not be nullptr)
 	METADATA("World", "FAST-Wind-turbine");
 	
+	//This if allows prevents erros when the constructor is called without a config node
 	if (pConfigNode)
 	{
 		m_trainingMeanWindSpeeds = MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double>(pConfigNode, "Training-Mean-Wind-Speeds", "Mean wind speeds used in training episodes", 12.5);
@@ -49,9 +50,12 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addConstant("RatedGeneratorTorque", 43093.55);
 	addConstant("GearBoxRatio", 97.0);
 	addConstant("ElectricalGeneratorEfficiency", 0.944); //%94.4
+	addConstant("TotalTurbineInertia", 43784725); //J_t= J_r + n_g^2*J_g= 38759228 + 5025497 
 	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
 	addConstant("HubInertia", 115926.0);				//kg*m^2
-	addConstant("DriveTrainTorsionalDamping", 6210000.0); //N*m/(rad/s)
+	addConstant("TotalTurbineTorsionalDamping", 6210000.0); //N*m/(rad/s)
+	addConstant("RotorDiameter", 128.0); //m
+	addConstant("AirDensity", 1.225);	//kg/m^3
 
 	addStateVariable("T_a", "N/m", 0.0, 400000.0);
 	addStateVariable("P_a", "W", 0.0, 1600000.0);
@@ -75,7 +79,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);
 
-	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 1000.0, 1.0));
 	m_pRewardFunction->initialize();
 
 	if (CSimionApp::get())
