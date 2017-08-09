@@ -15,6 +15,8 @@ protected:
 
 	double m_min;
 	double m_max;
+	double m_offset = 0.0;
+
 	ENUM_PARAM<Distribution> m_distributionType;
 
 	CSingleDimensionGrid();
@@ -33,6 +35,9 @@ public:
 	virtual double getVarValue(const CState* s, const CAction* a) = 0;
 	virtual CNamedVarProperties& getVarProperties(const CState* s, const CAction* a) = 0;
 	virtual void setFeatureStateAction(unsigned int feature, CState* s, CAction* a) = 0;
+
+	double getOffset() { return m_offset; }
+	virtual void setOffset(double offset) = 0;
 };
 
 class CStateVariableGrid : public CSingleDimensionGrid
@@ -45,6 +50,7 @@ public:
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
 	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	void setOffset(double offset);
 };
 
 class CActionVariableGrid : public CSingleDimensionGrid
@@ -57,4 +63,5 @@ public:
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
 	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	void setOffset(double offset);
 };

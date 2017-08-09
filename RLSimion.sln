@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLSimion-Lib", "RLSimion-Lib\RL-Lib.vcxproj", "{A97CFEAC-DBE2-433C-9454-6D1D2749C591}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -123,6 +123,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeometryLib", "tools\GeometryLib\GeometryLib.vcxproj", "{AABAE018-C8F6-4865-A0F9-E8E46DA55A2D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testInsideFrustum", "tests\OpenGLRenderer\insideFrustum\insideFrustum.vcxproj", "{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TileCoding", "tests\RLSimion\TileCoding\TileCoding.vcxproj", "{856CF46A-39FF-430D-BCC3-513F13E37520}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A97CFEAC-DBE2-433C-9454-6D1D2749C591} = {A97CFEAC-DBE2-433C-9454-6D1D2749C591}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -469,6 +474,7 @@ Global
 		{B16284D9-E609-4914-9459-0B65EE749489}.Debug|x86.Build.0 = Debug|Win32
 		{B16284D9-E609-4914-9459-0B65EE749489}.Release|Any CPU.ActiveCfg = Release|Win32
 		{B16284D9-E609-4914-9459-0B65EE749489}.Release|x64.ActiveCfg = Release|x64
+		{B16284D9-E609-4914-9459-0B65EE749489}.Release|x64.Build.0 = Release|x64
 		{B16284D9-E609-4914-9459-0B65EE749489}.Release|x86.ActiveCfg = Release|Win32
 		{B16284D9-E609-4914-9459-0B65EE749489}.Release|x86.Build.0 = Release|Win32
 		{A1BC7018-1BA7-40DA-8A00-FE662A775577}.Debug|Any CPU.ActiveCfg = Debug|Win32
@@ -524,6 +530,16 @@ Global
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}.Release|x64.Build.0 = Release|x64
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}.Release|x86.ActiveCfg = Release|Win32
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}.Release|x86.Build.0 = Release|Win32
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Debug|x64.ActiveCfg = Debug|x64
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Debug|x64.Build.0 = Debug|x64
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Debug|x86.ActiveCfg = Debug|Win32
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Debug|x86.Build.0 = Debug|Win32
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Release|Any CPU.ActiveCfg = Release|Win32
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Release|x64.ActiveCfg = Release|x64
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Release|x64.Build.0 = Release|x64
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Release|x86.ActiveCfg = Release|Win32
+		{856CF46A-39FF-430D-BCC3-513F13E37520}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -569,5 +585,6 @@ Global
 		{177C0CC0-A392-4667-895E-BE8D5CFBC20B} = {BF490352-B518-4726-BA16-BC447F2D7A37}
 		{AABAE018-C8F6-4865-A0F9-E8E46DA55A2D} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85} = {77FC5F8E-C5B8-4C23-9F2B-DEB74DBD214D}
+		{856CF46A-39FF-430D-BCC3-513F13E37520} = {BF490352-B518-4726-BA16-BC447F2D7A37}
 	EndGlobalSection
 EndGlobal

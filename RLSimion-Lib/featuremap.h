@@ -130,6 +130,8 @@ public:
 	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
 	virtual unsigned int getNumTilings() = 0;
 
+	MULTI_VALUE<dimensionGridType> returnGrid() { return m_grid; }
+
 };
 
 class CTileCodingStateFeatureMap : public CTileCodingFeatureMap<CStateVariableGrid>

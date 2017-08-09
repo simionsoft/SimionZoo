@@ -5,7 +5,7 @@
 #include "features.h"
 #include "config.h"
 #include "single-dimension-grid.h"
-#include <iostream>
+#include "app-rlsimion.h"
 
 template <typename dimensionGridType>
 CTileCodingFeatureMap<dimensionGridType>::CTileCodingFeatureMap(CConfigNode* pParameters)
@@ -17,7 +17,7 @@ CTileCodingFeatureMap<dimensionGridType>::~CTileCodingFeatureMap()
 {
 	delete m_pVarFeatures;
 }
-#include "app-rlsimion.h"
+
 template <typename dimensionGridType>
 void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
 {
@@ -27,53 +27,23 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 	if (m_grid.size() == 0) return;
 
 	unsigned int basicTilingIndexOffset = m_totalNumFeatures / m_numTilings;
-	for (int d = 0; d < m_numTilings; d++)
+	for (int layerIndex = 0; layerIndex < m_numTilings; layerIndex++)
 	{
-		unsigned int tilingIndexOffset = basicTilingIndexOffset*d;
-
-		double variableOffset = m_tilingOffset * d;
-
-		//create modified states s and actions a which are "moved" by the offset of the layer
-		if (a != NULL)
-		{
-			CAction* temp_a = CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
-			temp_a->addOffset(variableOffset);
-			modified_a = const_cast<const CState*>(temp_a);
-		}
-		else
-			modified_a = a;
-
-		if (s != NULL)
-		{
-			CState* temp_s = CSimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
-			temp_s->addOffset(variableOffset);
-			modified_s = const_cast<const CState*>(temp_s);
-		}
-		else
-			modified_s = s;
+		unsigned int tilingIndexOffset = basicTilingIndexOffset*layerIndex;
 
 		unsigned int index = tilingIndexOffset;
-		for (int i = 0; i < m_grid.size(); i++)
+		for (int variableDimension = 0; variableDimension < m_grid.size(); variableDimension++)
 		{
 			m_pVarFeatures->clear();
-			m_grid[i]->getFeatures(modified_s, modified_a, m_pVarFeatures);
+			m_grid[variableDimension]->getFeatures(s, a, m_pVarFeatures);
 			
 			//find index of the only 1.0 in the features and store it in oneIndex
-			int oneIndex = -1;
-			for (int j = 0; j < m_grid[i]->getNumCenters(); j++)
-			{
-				if (m_pVarFeatures->getFactor(j) == 1.0)
-				{
-					oneIndex = j;
-				}
-			}
-
-			assert(oneIndex != -1);
+			unsigned int oneIndex = m_pVarFeatures->m_pFeatures[0].m_index;
 
 			//calculate the product of the lengths of previous processes feature dimensions
 			unsigned int prodLength = 1;
 
-			for (int j = i-1; j >= 0; j--)
+			for (int j = 0; j < variableDimension; j++)
 			{
 				prodLength *= m_grid[j]->getNumCenters();
 			}
@@ -85,7 +55,7 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 		outFeatures->add(index, 1.0);
 	}
 
-	//outFeatures->normalize();
+	outFeatures->normalize();
 }
 
 template <typename dimensionGridType>
@@ -127,7 +97,11 @@ CTileCodingActionFeatureMap::CTileCodingActionFeatureMap(CConfigNode* pConfigNod
 	m_totalNumFeatures = m_numTilings;
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
+	{
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
+
+		m_grid[i]->setOffset(m_tilingOffset * i);
+	}
 
 	m_totalNumFeatures *= m_numTilings;
 }

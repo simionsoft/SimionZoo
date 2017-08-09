@@ -17,8 +17,8 @@
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>2000</Num-Episodes>
-		<Eval-Freq>50</Eval-Freq>
+		<Num-Episodes>20000</Num-Episodes>
+		<Eval-Freq>500</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
 		<Episode-Length>250</Episode-Length>
 	</Experiment>
@@ -30,30 +30,30 @@
 		<State-Feature-Map>
 			<Type>
 		<Tile-Coding-State-Grid>
-			<Tile-layers>10</Tile-layers>
-			<Tile-offset>0.1</Tile-offset>
+			<Tile-layers>1</Tile-layers>
+			<Tile-offset>0.2</Tile-offset>
 			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>10</Num-Features>
+				<Num-Features>20</Num-Features>
 				<Variable>box-to-target-x</Variable>
 				<Distribution>linear</Distribution>
 			</Tile-Encoding-Grid-Dimension>
 			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>10</Num-Features>
+				<Num-Features>20</Num-Features>
 				<Variable>box-to-target-y</Variable>
 				<Distribution>linear</Distribution>
 			</Tile-Encoding-Grid-Dimension>
 			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>10</Num-Features>
+				<Num-Features>20</Num-Features>
 				<Variable>robot1-to-box-x</Variable>
 				<Distribution>linear</Distribution>
 			</Tile-Encoding-Grid-Dimension>
 			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>10</Num-Features>
+				<Num-Features>20</Num-Features>
 				<Variable>robot1-to-box-y</Variable>
 				<Distribution>linear</Distribution>
 			</Tile-Encoding-Grid-Dimension>
 			<Tile-Encoding-Grid-Dimension>
-				<Num-Features>10</Num-Features>
+				<Num-Features>20</Num-Features>
 				<Variable>robot1-theta</Variable>
 				<Distribution>linear</Distribution>
 			</Tile-Encoding-Grid-Dimension>

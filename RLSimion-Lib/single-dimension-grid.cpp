@@ -56,7 +56,7 @@ void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatu
 	unsigned int numCenters = m_numCenters.get();
 
 	assert(numCenters >= 2);
-	double value = getVarValue(s, a);
+	double value = getVarValue(s, a) + m_offset;
 	CNamedVarProperties& properties = getVarProperties(s, a);
 
 	unsigned int nearestIndex = 0;
@@ -149,4 +149,14 @@ double CActionVariableGrid::getVarValue(const CState* s, const CAction* a)
 CNamedVarProperties& CActionVariableGrid::getVarProperties(const CState* s, const CAction* a)
 {
 	return a->getProperties(m_hVariable.get());
+}
+
+void CStateVariableGrid::setOffset(double offset)
+{
+	m_offset = offset;
+}
+
+void CActionVariableGrid::setOffset(double offset)
+{
+	m_offset = offset;
 }
