@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "utils.h"
 #include "config.h"
-
+#include <algorithm>
+#include <fstream>
 
 CFilePathList::CFilePathList()
 {
@@ -49,10 +50,6 @@ CTable::CTable()
 CTable::~CTable()
 {
 }
-
-
-#include <fstream>
-
 
 unsigned int parseHeader(const char* pInputString, vector<double>& outVector, char delimChar= '\t')
 {
@@ -112,16 +109,16 @@ bool CTable::readFromFile(string filename)
 	return false;
 }
 
-double CTable::getInterpolatedValue(double columnValue, double rowValue)
+double CTable::getInterpolatedValue(double columnValue, double rowValue) const
 {
 	//check column and row values are within the defined ranges
-	if (columnValue<m_columns[0] || columnValue>m_columns[m_columns.size() - 1]) return 0.0;
-	if (rowValue<m_rows[0] || rowValue>m_rows[m_rows.size() - 1]) return 0.0;
+	columnValue = std::max(m_columns[0], std::min(m_columns[m_columns.size() - 1], columnValue));
+	rowValue = std::max(m_rows[0], std::min(m_rows[m_rows.size() - 1], rowValue));
 
 	//search for the columns/rows where the given values are in
 	int colIndex = 1, rowIndex = 1;
-	while (m_columns[colIndex] <= columnValue) ++colIndex;
-	while (m_rows[rowIndex] <= rowValue) ++rowIndex;
+	while (m_columns[colIndex] < columnValue) ++colIndex;
+	while (m_rows[rowIndex] < rowValue) ++rowIndex;
 	--colIndex;
 	--rowIndex;
 
@@ -139,10 +136,46 @@ double CTable::getInterpolatedValue(double columnValue, double rowValue)
 	return value;
 }
 
-double CTable::getValue(int col, int row)
+double CTable::getValue(size_t col, size_t row) const
 {
-	if (col < 0 || col >= m_columns.size()) return 0.0;
-	if (row < 0 || row >= m_rows.size()) return 0.0;
+	col = std::max((size_t)0, std::min(col, m_columns.size() - 1));
+	row = std::max((size_t)0, std::min(row, m_rows.size() - 1));
 
 	return m_values[row*m_columns.size() + col];
+}
+
+double CTable::getMinCol() const
+{
+	if (!m_bSuccess) return 0.0;
+	return m_columns[0];
+}
+
+double CTable::getMaxCol() const
+{
+	if (!m_bSuccess) return 0.0;
+	return m_columns[m_columns.size() - 1];
+}
+
+double CTable::getMinRow() const
+{
+	if (!m_bSuccess) return 0.0;
+	return m_rows[0];
+}
+
+double CTable::getMaxRow() const
+{
+	if (!m_bSuccess) return 0.0;
+	return m_rows[m_rows.size() - 1];
+}
+
+double CTable::getNumCols() const
+{
+	if (!m_bSuccess) return m_columns.size();
+	return 0;
+}
+
+double CTable::getNumRows() const
+{
+	if (!m_bSuccess) return m_rows.size();
+	return 0;
 }

@@ -133,8 +133,8 @@ CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNod
 	m_pKI = DOUBLE_PARAM(pConfigNode, "KI", "Integral gain of the pitch controller",0.0);
 
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
-	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_g");
+	m_omega_r = pStateDescriptor.getVarIndex("omega_r");
+	m_d_omega_r = pStateDescriptor.getVarIndex("d_omega_r");
 	m_E_p = pStateDescriptor.getVarIndex("E_p");
 	m_T_g = pStateDescriptor.getVarIndex("T_g");
 	m_beta = pStateDescriptor.getVarIndex("beta");
@@ -181,8 +181,8 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
 
-	double omega_g= s->get(m_omega_g);
-	double d_omega_g= s->get(m_d_omega_g);
+	double omega_r= s->get(m_omega_r);
+	double d_omega_r= s->get(m_d_omega_r);
 
 	double error_P= s->get(m_E_p);
 
@@ -190,12 +190,12 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	
 	double d_T_g;
 	
-	if (omega_g!=0.0) d_T_g= (-1/omega_g)*(T_g*( m_pA.get() *omega_g+d_omega_g) 
+	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*( m_pA.get() *omega_r+d_omega_r) 
 		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
-	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0 + sgn(e_omega_g));
+	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedRotorSpeed");
+	double beta = 0.5*m_pKP.get()*e_omega_r*(1.0 + sgn(e_omega_r));
 				//+ m_pKI.getSample()*s->getSample("E_int_omega_r");
 			//up there, it should be "E_int_omega_g", which is currently not defined/set
 
@@ -223,7 +223,7 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* 
 	m_J_t = CWorld::getDynamicModel()->getConstant("TotalTurbineInertia");
 	m_K_t = CWorld::getDynamicModel()->getConstant("TotalTurbineTorsionalDamping");
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
+	m_omega_r = pStateDescriptor.getVarIndex("omega_r");
 	m_E_p = pStateDescriptor.getVarIndex("E_p");
 	m_T_g = pStateDescriptor.getVarIndex("T_g");
 	m_T_a_index = pStateDescriptor.getVarIndex("T_a");
@@ -257,7 +257,7 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
 
-	double omega_g= s->get(m_omega_g);
+	double omega_r= s->get(m_omega_r);
 	double C_0= m_pC_0.get();		
 	double error_P= -s->get(m_E_p);	
 	double T_a= s->get(m_T_a_index);		
@@ -265,12 +265,11 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 	double T_g= s->get(m_T_g);	
 	double beta= s->get(m_beta);	
 	
-	double d_T_g= (1.0/omega_g)*(C_0*error_P - (1.0/m_J_t)
-		*(T_a*T_g - m_K_t*omega_g*T_g - T_g*T_g));
+	double d_T_g= (1.0/omega_r)*(C_0*error_P - (T_a*T_g + m_K_t*omega_r*T_g - T_g*T_g) / m_J_t );
 	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
 
-	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.getSample()*s->getSample("E_int_omega_g");
+	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedRotorSpeed");
+	double desiredBeta = m_pKP.get()*e_omega_r;// +m_pKI.getSample()*s->getSample("E_int_omega_g");
 		//up there, it should be "E_int_omega_g", which is currently not defined/set
 
 	a->set(m_a_beta,desiredBeta);
@@ -319,7 +318,7 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfi
 	m_IntSpdErr= 0.0;
 
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
+	m_omega_r = pStateDescriptor.getVarIndex("omega_g");
 
 	m_E_p = pStateDescriptor.getVarIndex("E_p");
 	m_T_g = pStateDescriptor.getVarIndex("T_g");
@@ -357,14 +356,14 @@ double CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 	{
 		lowPassFilterAlpha= 1.0;
-		m_GenSpeedF= s->get(m_omega_g);
+		m_GenSpeedF= s->get(m_omega_r);
 		m_lastDemandedPitch = s->get(m_beta);
 		m_IntSpdErr = 0.0;
 	}
 	else
 		lowPassFilterAlpha = exp(-CSimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
 
-	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get(m_omega_g) + lowPassFilterAlpha*m_GenSpeedF;
+	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get(m_omega_r) + lowPassFilterAlpha*m_GenSpeedF;
 
 	//TORQUE CONTROLLER
 	double DesiredGenTrq;

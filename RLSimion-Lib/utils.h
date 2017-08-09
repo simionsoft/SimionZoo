@@ -33,7 +33,13 @@ public:
 	CTable();
 	~CTable();
 
-	double getValue(int col, int row);
+	double getMinCol() const;
+	double getMaxCol() const;
+	double getMinRow() const;
+	double getMaxRow() const;
+	double getNumCols() const;
+	double getNumRows() const;
+	double getValue(size_t col, size_t row) const;
 	bool readFromFile(string filename);
-	double getInterpolatedValue(double colValue, double rowValue);
+	double getInterpolatedValue(double colValue, double rowValue) const;
 };

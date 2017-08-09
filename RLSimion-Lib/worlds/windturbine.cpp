@@ -9,77 +9,8 @@
 #include "../app.h"
 #include "../reward.h"
 
-//[1]
-//"Torque and pitch angle control for VSWT in all operating regimes"
-//Adel Merabet, Jogendra Thongam, Jason Gu
-
-//[2]
-//"Pitch and torque control strategy for VSWT"
-//L. Lupu, B. Boukhezzar, H. Siguerdidjane
-
-//[3]
-//"Nonlinear Control of a Variable-Speed Wind Turbine Using a Two-Mass Model"
-//Boubekeur Boukhezzar and Houria Siguerdidjane
-
-//[4]
-//"Multivariable control strategy for variable speed, variable pitch wind turbines"
-//Boubekeur Boukhezzar and L. Lupu and H. Siguerdidjane, M. Hand
-
-//[5]
-//"Power control design for Variable-speed Wind Turbines"
-//Yolanda Vidal, Leonardo Acho, Ningsu Luo, Mauricio Zapateiro and Francesc Pozo
-
-//[6]
-//FAST: test 13
-
-
-//#define MIN_BLADE_ANGLE (-5*2*3.1415/360.0) // radians //degrees [4]
-//#define MAX_BLADE_ANGLE (30*2*3.1415/360.0) // radians //degrees [4]  
-//
-//#define MAX_AERODYNAMIC_POWER  1600000.0 //W
-//#define MAX_AERODYNAMIC_TORQUE 400000.0 //N/m
-//
-//#define NOMINAL_ROTOR_SPEED 4.39823//rad/s - 42 rpm[thesis boukhezzar]
-//#define MAX_ROTOR_SPEED NOMINAL_ROTOR_SPEED +2.0
-//#define MIN_ROTOR_SPEED NOMINAL_ROTOR_SPEED -2.0
-
-//////////////////////////////////////////////////////////
-//#define INITIAL_ROTOR_SPEED NOMINAL_ROTOR_SPEED //rad/s nominal-speed [6]
-//#define INITIAL_ACTION_TORQUE 142000.0//-36.279653322202989 //[4] N/m
-
-//#define MAX_GENERATOR_TORQUE_INC 100000
-//
-//
-//#define P_e_nom 600000.0 //W [4]
-//#define HUB_HEIGHT 36.6 //m [4]
-//#define N_g 43.165 //[4]
-//#define D 43.3 //m [4]
-////#define J_r 3.25e5 //kg*m^2 [3]
-////#define K_r 27.36 //N*m/rad/s [3]
-//#define rho 1.29 //kg/m^3 [3]
-////#define J_g 34.400 //kg*m^2 [3]
-////#define K_g 0.2 //N*m/rad/s [3]
-//#define K_t 400.0 //N*m/rad/s [thesis boukhezzar]
-//#define J_t 3.92e5 //kg*m^2
-
-
-//#define NUM_ACTION_VARS 2
-//
-//#define MIN_GENERATOR_TORQUE 100000 //from log
-//#define MAX_GENERATOR_TORQUE 162000 //N*m [2]
-//#define MAX_ACTION_BLADE_RATE ((10.0*2*3.14159265)/360.0)// //rad/s +/- 10º/s
-//
-//#define MIN_INTEGRATIVE_ROTOR_SPEED_ERROR -100
-//#define MAX_INTEGRATIVE_ROTOR_SPEED_ERROR 100
-//
-//#define MAX_INITIAL_BLADE_ANGLE MIN_BLADE_ANGLE//((30.0*2*3.14159265)/360.0)
-//#define MIN_INITIAL_BLADE_ANGLE MAX_BLADE_ANGLE//((0.0*2*3.14159265)/360.0)
-
-#define MAX_WIND_SPEED 50.0
-#define MAX_TSR 15.0
-#define NUM_BETA_SAMPLES 10000
-#define NUM_WIND_SPEED_SAMPLES 1000
-#define NUM_TSR_SAMPLES 1000
+#define NUM_BETA_SAMPLES 100
+#define NUM_TSR_SAMPLES 100
 
 
 double CWindTurbine::C_p(double lambda, double beta) 
@@ -130,34 +61,34 @@ double CWindTurbine::aerodynamicPower(double cp, double wind_speed)
 
 
 
-void CWindTurbine::findSuitableParameters(double initial_wind_speed,double initial_rotor_speed
-							,double &initial_torque,double &initial_blade_angle)
+void CWindTurbine::findSuitableParameters(double initial_wind_speed,double& initial_rotor_speed
+							,double &initial_blade_angle)
 {
-	double c_p,best_c_p= -1000.0;
 	double beta, tsr;
-	double torque, best_torque= -1000000000.0;
+	double omega_r, best_omega_r = 0.0;
+	initial_rotor_speed = 0.0;
+	initial_blade_angle= 0.0;
 
-	initial_blade_angle= 0.01;
-	tsr= initial_rotor_speed*getConstant("RotorDiameter")*0.5/initial_wind_speed;
+	double betaRange = m_Cp.getMaxCol() - m_Cp.getMinCol();
+	double tsrRange= m_Cp.getMaxRow()- m_Cp.getMinRow();
 
-	double minInitialBeta= 0.0;
-	double initialBetaRange= 0.2;
-
-	for (int j= 0; j<NUM_BETA_SAMPLES; j++)
+	for (int i = 0; i < NUM_TSR_SAMPLES; i++)
 	{
-		beta= minInitialBeta + (double)j * (initialBetaRange/(double)NUM_BETA_SAMPLES);
-		
-		torque= aerodynamicTorque(tsr,beta,initial_wind_speed);
-		c_p= C_p(tsr,beta);
-
-		if (fabs(initial_torque-torque)<fabs(initial_torque-best_torque))
+		tsr = m_Cp.getMinRow() + (double)i * tsrRange/(double)NUM_TSR_SAMPLES;
+		for (int j = 0; j < NUM_BETA_SAMPLES; j++)
 		{
-			initial_blade_angle= beta;
-			best_c_p= c_p;
-			best_torque= torque;
+			beta = m_Cp.getMinCol() + (double)j * (betaRange / (double)NUM_BETA_SAMPLES);
+
+			omega_r= tsr * initial_wind_speed/ (getConstant("RotorDiameter")*0.5) ;
+
+			if (fabs(getConstant("RatedRotorSpeed") - omega_r) 
+				< fabs(getConstant("RatedRotorSpeed") - initial_rotor_speed))
+			{
+				initial_blade_angle = beta;
+				initial_rotor_speed = omega_r;
+			}
 		}
 	}
-	initial_torque= best_torque;
 }
 
 
@@ -188,10 +119,6 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	CSimionApp::get()->pSimGod->registerInputFile(cp_table_file);
 	m_Cp.readFromFile(cp_table_file);
 
-	double test1 = m_Cp.getInterpolatedValue(-4.5, 7.25);
-	double test2 = m_Cp.getInterpolatedValue(-3.0, 9.0);
-	double test3 = m_Cp.getInterpolatedValue(-3.5, 8.0);
-
 	//model constants
 	addConstant("RatedPower", 5e6);				//W
 	addConstant("HubHeight", 90);				//m
@@ -209,7 +136,7 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	addConstant("TotalTurbineInertia", 43784725); //J_t= J_r + n_g^2*J_g= 38759228 + 5025497 
 	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
 	addConstant("HubInertia", 115926.0);				//kg*m^2
-	addConstant("TotalTurbineTorsionalDamping", 6210000.0); //N*m/(rad/s)
+	addConstant("TotalTurbineTorsionalDamping", 3470794.95); //N*m/(rad/s)
 	addConstant("RotorDiameter", 128.0); //m
 	addConstant("AirDensity", 1.225);	//kg/m^3
 
@@ -269,23 +196,19 @@ void CWindTurbine::reset(CState *s)
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
 
-	double initial_wind_speed = getConstant("RatedWindSpeed");
+	double initial_wind_speed = getConstant("RatedWindSpeed");// m_pCurrentWindData->getPointSet(0.0);
 	double initial_rotor_speed= getConstant("RatedRotorSpeed");
-	m_initial_torque = getConstant("RatedGeneratorTorque");
-	m_initial_blade_angle = 0.0;
+	double initial_blade_angle= 0.0;
 
-	//if (m_initial_blade_angle==0.0)
-	//{
-	//	CLogger::logMessage(Info,"Calculating initial torque and blade angle parameters...");
-	//	findSuitableParameters(initial_wind_speed,initial_rotor_speed,m_initial_torque,m_initial_blade_angle);
-	//	char msg[128];
-	//	sprintf_s(msg,"T_g= %f     //    Beta= %f",m_initial_torque,m_initial_blade_angle);
-	//	CLogger::logMessage(Info, msg);
-	//}
+//	CLogger::logMessage(Info,"Calculating initial torque and blade angle parameters...");
+//	findSuitableParameters(initial_wind_speed,initial_rotor_speed,initial_blade_angle);
+//	char msg[128];
+//	sprintf_s(msg,"T_g= %f     //    Beta= %f",m_initial_torque,m_initial_blade_angle);
+//	CLogger::logMessage(Info, msg);
 
 	double tsr= initial_rotor_speed*getConstant("RotorDiameter")*0.5/initial_wind_speed;
 
-	s->set("T_a",aerodynamicTorque(tsr,m_initial_blade_angle,initial_wind_speed));
+	s->set("T_a",aerodynamicTorque(tsr,initial_blade_angle,initial_wind_speed));
 	s->set("P_a", s->get("T_a")*initial_rotor_speed);
 	s->set("P_s",m_pPowerSetpoint->getPointSet(0.0));
 
@@ -299,7 +222,7 @@ void CWindTurbine::reset(CState *s)
 	s->set("omega_g", initial_rotor_speed*getConstant("GearBoxRatio"));
 	s->set("E_omega_g", s->get("omega_g") - getConstant("RatedGeneratorSpeed"));
 	s->set("d_omega_g", 0.0);
-	s->set("beta",m_initial_blade_angle);
+	s->set("beta",initial_blade_angle);
 	s->set("d_beta",0.0);
 	s->set("T_g", getConstant("RatedGeneratorTorque"));
 	s->set("d_T_g",0.0);
@@ -332,7 +255,9 @@ void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 	double P_a = aerodynamicPower(tip_speed_ratio, s->get("beta"), s->get("v"));
 	s->set("P_a",P_a);
 	//T_a= P_a/omega_r
-	double T_a= P_a/omega_r;
+	double T_a= 0.0;
+	if (omega_r>0.0)
+		T_a= P_a / omega_r;
 	s->set("T_a",T_a);
 
 
