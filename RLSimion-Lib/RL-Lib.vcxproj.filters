@@ -205,13 +205,13 @@
     <ClCompile Include="worlds\robot-control.cpp">
       <Filter>world\BulletWorlds</Filter>
     </ClCompile>
-    <ClCompile Include="featuremap-tileencoding.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="single-dimension-grid-rbf.cpp">
       <Filter>learning</Filter>
     </ClCompile>
     <ClCompile Include="single-dimension-grid.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-tilecoding.cpp">
       <Filter>learning</Filter>
     </ClCompile>
   </ItemGroup>

@@ -146,7 +146,7 @@ void RLSimionApp::initRenderer(string sceneFile)
 	}
 
 	m_pInputHandler = new CFreeCameraInputHandler();
-
+	
 	m_timer.start();
 }
 
@@ -184,11 +184,14 @@ void RLSimionApp::updateScene(CState* s)
 	m_pRenderer->redraw();
 
 	//real time execution?
-	double dt = pWorld->getDT();
-	double elapsedTime = m_timer.getElapsedTime(true);
-	if (dt > elapsedTime)
+	if (!((CFreeCameraInputHandler*)m_pInputHandler)->getRealTimeExecutionDisabled())
 	{
-		Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
-		m_timer.start();
+		double dt = pWorld->getDT();
+		double elapsedTime = m_timer.getElapsedTime(true);
+		if (dt > elapsedTime)
+		{
+			Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
+			m_timer.start();
+		}
 	}
 }

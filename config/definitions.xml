@@ -153,9 +153,13 @@
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CActionVariableGridRBF" Comment="Parameters of the action-dimension's grid"/>
   </CLASS>
   <CLASS Name="CTileCodingStateFeatureMap">
+    <INTEGER-VALUE Name="Tile-layers" Comment="Number of tile layers of the grid" Default="1"/>
+    <DOUBLE-VALUE Name="Tile-offset" Comment="Offset of each tile relative to the previous one" Default="0.0"/>
     <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
   </CLASS>
   <CLASS Name="CTileCodingActionFeatureMap">
+    <INTEGER-VALUE Name="Tile-layers" Comment="Number of tile layers of the grid" Default="1"/>
+    <DOUBLE-VALUE Name="Tile-offset" Comment="Offset of each tile relative to the previous one" Default="0.0"/>
     <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
   </CLASS>
   <CLASS Name="CStateFeatureMap">

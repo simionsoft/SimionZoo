@@ -25,6 +25,8 @@ class CFreeCameraInputHandler: public IInputHandler
 	bool m_bLeftArrowPressed = false;
 	bool m_bRightArrowPressed = false;
 	bool m_bShftPressed = false;
+	bool m_bSpacePressed = false;
+	bool m_real_time_execution_disabled = false;
 
 	static void _onKeyPressed(unsigned char key, int x, int y);
 	static void _onKeyReleased(unsigned char key, int x, int y);
@@ -54,5 +56,7 @@ public:
 	virtual ~CFreeCameraInputHandler();
 
 	virtual void handleInput();
+
+	bool getRealTimeExecutionDisabled() {return m_real_time_execution_disabled;}
 };
 

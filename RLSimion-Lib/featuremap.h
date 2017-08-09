@@ -109,8 +109,13 @@ protected:
 	CFeatureList* m_pVarFeatures;
 
 	unsigned int m_totalNumFeatures;
-	unsigned int m_maxNumActiveFeatures = 1;
-	unsigned int m_numTilings = 5;
+	unsigned int m_maxNumActiveFeatures;
+	unsigned int m_numTilings;
+
+	//modified states s and actions a which are "moved" by the offset of the layer
+	const CState* modified_s;
+	const CState* modified_a;
+
 
 	double m_tilingOffset;
 
