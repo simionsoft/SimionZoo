@@ -57,11 +57,11 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addConstant("RotorDiameter", 128.0); //m
 	addConstant("AirDensity", 1.225);	//kg/m^3
 
-	addStateVariable("T_a", "N/m", 0.0, 400000.0);
-	addStateVariable("P_a", "W", 0.0, 1600000.0);
+	addStateVariable("T_a", "N/m", 0.0, 10000000.0);
+	addStateVariable("P_a", "W", 0.0, 16000000.0);
 	addStateVariable("P_s", "W", 0.0, 6e6);
 	addStateVariable("P_e", "W", 0.0, 6e6);
-	addStateVariable("E_p", "W", -5e6,5e6);
+	addStateVariable("E_p", "W", -5e6, 5e6);
 	addStateVariable("v", "m/s", 1.0, 50.0);
 	addStateVariable("omega_r", "rad/s", 0.0, 6.0);
 	addStateVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
@@ -74,7 +74,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addStateVariable("T_g", "N/m", 0.0, 47402.91);
 	addStateVariable("d_T_g", "N/m/s", -15000, 15000);
 	addStateVariable("E_int_omega_r", "rad", -100.0, 100.0);
-	addStateVariable("SimTime", "s", 0.0, 10000.0); //added to avoid precision issues between FAST and RLSimion
+	addStateVariable("SimTime", "s", 0.0, 100000.0); //added to avoid precision issues between FAST and RLSimion
 	//action handlers
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);

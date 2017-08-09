@@ -257,7 +257,7 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
 
-	double omega_r= s->get(m_omega_g);
+	double omega_g= s->get(m_omega_g);
 	double C_0= m_pC_0.get();		
 	double error_P= -s->get(m_E_p);	
 	double T_a= s->get(m_T_a_index);		
@@ -265,11 +265,11 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 	double T_g= s->get(m_T_g);	
 	double beta= s->get(m_beta);	
 	
-	double d_T_g= (1.0/omega_r)*(C_0*error_P - (1.0/m_J_t)
-		*(T_a*T_g - m_K_t*omega_r*T_g - T_g*T_g));
+	double d_T_g= (1.0/omega_g)*(C_0*error_P - (1.0/m_J_t)
+		*(T_a*T_g - m_K_t*omega_g*T_g - T_g*T_g));
 	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
 
-	double e_omega_g = omega_r - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
+	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
 	double desiredBeta = m_pKP.get()*e_omega_g;// +m_pKI.getSample()*s->getSample("E_int_omega_g");
 		//up there, it should be "E_int_omega_g", which is currently not defined/set
 
@@ -393,7 +393,7 @@ double CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	m_IntSpdErr = m_IntSpdErr + SpdErr*CSimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
 	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta).getMin()/( GK*m_PC_KI.get() ) )
-		, s->getProperties("beta").getMax()/( GK*m_PC_KI.get() ));
+		, s->getProperties(m_beta).getMax()/( GK*m_PC_KI.get() ));
   
 	//Compute the pitch commands associated with the proportional and integral  gains:
 	double PitComP   = GK* m_PC_KP.get() *   SpdErr; //Proportional term

@@ -82,19 +82,12 @@
 #define NUM_TSR_SAMPLES 1000
 
 
-double CWindTurbine::C_p(double lambda, double beta) //[1]
+double CWindTurbine::C_p(double lambda, double beta) 
 {
-	double lambda_i,c_p;
-	beta= beta*360.0/(2*3.14159265);
+	//Using values from the table given in: https://wind.nrel.gov/forum/wind/viewtopic.php?t=582
+	double betaInDegrees= beta*360.0/(2*3.14159265);
 
-	lambda_i= 1.0/((1.0/(lambda+0.08*beta)) - 0.035/(pow(beta,3.0)+1.0));
-	if (lambda_i==0.0)
-		return 0.00001;
-
-	double e= exp(-16.5/lambda_i);
-	c_p= 0.5*(116.0/lambda_i - 0.4*beta -5.0)*exp(-16.5/lambda_i);
-
-	return std::max(0.00001,c_p);
+	return m_Cp.getInterpolatedValue(betaInDegrees, lambda);
 }
 
 double CWindTurbine::C_q(double lambda, double beta)
@@ -191,6 +184,14 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	FILE_PATH_PARAM powerSetpoint= FILE_PATH_PARAM(pConfigNode, "Power-Set-Point", "The power setpoint file", "../config/world/wind-turbine/power-setpoint.txt");
 	m_pPowerSetpoint = new CFileSetPoint(powerSetpoint.get());
 
+	char cp_table_file[] = "../config/world/wind-turbine/cp-table.txt";
+	CSimionApp::get()->pSimGod->registerInputFile(cp_table_file);
+	m_Cp.readFromFile(cp_table_file);
+
+	double test1 = m_Cp.getInterpolatedValue(-4.5, 7.25);
+	double test2 = m_Cp.getInterpolatedValue(-3.0, 9.0);
+	double test3 = m_Cp.getInterpolatedValue(-3.5, 8.0);
+
 	//model constants
 	addConstant("RatedPower", 5e6);				//W
 	addConstant("HubHeight", 90);				//m
@@ -212,8 +213,8 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	addConstant("RotorDiameter", 128.0); //m
 	addConstant("AirDensity", 1.225);	//kg/m^3
 
-	addStateVariable("T_a", "N/m", 0.0, 400000.0);
-	addStateVariable("P_a", "W", 0.0, 1600000.0);
+	addStateVariable("T_a", "N/m", 0.0, 10000000.0);
+	addStateVariable("P_a", "W", 0.0, 16000000.0);
 	addStateVariable("P_s", "W", 0.0, 6e6);
 	addStateVariable("P_e", "W", 0.0, 6e6);
 	addStateVariable("E_p", "W", -5e6, 5e6);
@@ -260,10 +261,6 @@ CWindTurbine::~CWindTurbine()
 	delete m_pEvaluationWindData;
 	delete m_pPowerSetpoint;
 }
-
-
-
-
 
 void CWindTurbine::reset(CState *s)
 {
@@ -320,15 +317,14 @@ void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 	s->set("beta", a->get("beta"));
 	s->set("T_g", a->get("T_g"));
 
-	//P_e= T_g*omega_r
+	//P_e= T_g*omega_g
 	double omega_r = s->get("omega_r");
 	double omega_g = s->get("omega_g");
 
 	s->set("P_e",a->get("T_g")*omega_g*getConstant("ElectricalGeneratorEfficiency"));
 	s->set("E_p", s->get("P_e") - s->get("P_s"));
 
-	double tip_speed_ratio = (s->get("omega_r")*getConstant("RotorDiameter")*0.5)
-		/ s->get("v");
+	double tip_speed_ratio = (s->get("omega_r")*getConstant("RotorDiameter")*0.5) / s->get("v");
 	
 	//C_p(tip_speed_ratio,blade_angle)
 	//double power_coef=C_p(tip_speed_ratio,beta);

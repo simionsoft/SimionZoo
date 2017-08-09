@@ -1,6 +1,7 @@
 #pragma once
 
 #include "world.h"
+#include "../utils.h"
 
 class CSetPoint;
 
@@ -18,6 +19,7 @@ class CWindTurbine: public CDynamicModel
 	int m_currentDataFile;
 
 	CSetPoint *m_pPowerSetpoint;
+	CTable m_Cp;
 
 	double C_p(double lambda, double beta);
 	double C_q(double lambda, double beta);

@@ -338,8 +338,8 @@
   <CLASS Name="CFASTWindTurbine" World="FAST-Wind-turbine">
     <MULTI-VALUED Name="Training-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds used in training episodes" Default="12.5"/>
     <MULTI-VALUED Name="Evaluation-Mean-Wind-Speeds" Class="DOUBLE-VALUE" Comment="Mean wind speeds in evaluation episodes" Default="12.5"/>
-    <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
-    <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
+    <STATE-VAR Name="T_a" Min="0" Max="10000000" Unit="N/m"/>
+    <STATE-VAR Name="P_a" Min="0" Max="16000000" Unit="W"/>
     <STATE-VAR Name="P_s" Min="0" Max="6000000" Unit="W"/>
     <STATE-VAR Name="P_e" Min="0" Max="6000000" Unit="W"/>
     <STATE-VAR Name="E_p" Min="-5000000" Max="5000000" Unit="W"/>
@@ -355,7 +355,7 @@
     <STATE-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
     <STATE-VAR Name="d_T_g" Min="-15000" Max="15000" Unit="N/m/s"/>
     <STATE-VAR Name="E_int_omega_r" Min="-100" Max="100" Unit="rad"/>
-    <STATE-VAR Name="SimTime" Min="0" Max="10000" Unit="s"/>
+    <STATE-VAR Name="SimTime" Min="0" Max="100000" Unit="s"/>
     <ACTION-VAR Name="beta" Min="0" Max="1.570796" Unit="rad"/>
     <ACTION-VAR Name="T_g" Min="0" Max="47402.91" Unit="N/m"/>
     <CONSTANT Name="RatedPower"/>
@@ -499,8 +499,8 @@
     <FILE-PATH-VALUE Name="Evaluation-Wind-Data" Comment="The wind file used for evaluation" Default="../config/world/wind-turbine/TurbSim-10.25.hh"/>
     <FILE-PATH-VALUE Name="Power-Set-Point" Comment="The power setpoint file" Default="../config/world/wind-turbine/power-setpoint.txt"/>
     <MULTI-VALUED Name="Training-Wind-Data" Class="FILE-PATH-VALUE" Comment="The wind files used for training" Default="../config/world/wind-turbine/TurbSim-10.5.hh"/>
-    <STATE-VAR Name="T_a" Min="0" Max="400000" Unit="N/m"/>
-    <STATE-VAR Name="P_a" Min="0" Max="1600000" Unit="W"/>
+    <STATE-VAR Name="T_a" Min="0" Max="10000000" Unit="N/m"/>
+    <STATE-VAR Name="P_a" Min="0" Max="16000000" Unit="W"/>
     <STATE-VAR Name="P_s" Min="0" Max="6000000" Unit="W"/>
     <STATE-VAR Name="P_e" Min="0" Max="6000000" Unit="W"/>
     <STATE-VAR Name="E_p" Min="-5000000" Max="5000000" Unit="W"/>
