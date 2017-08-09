@@ -147,10 +147,16 @@
     <DOUBLE-VALUE Name="Episode-Length" Comment="Length of an episode(seconds)" Default="10.0"/>
   </CLASS>
   <CLASS Name="CGaussianRBFStateGridFeatureMap">
-    <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
+    <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CStateVariableGridRBF" Comment="Parameters of the state-dimension's grid"/>
   </CLASS>
   <CLASS Name="CGaussianRBFActionGridFeatureMap">
-    <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
+    <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CActionVariableGridRBF" Comment="Parameters of the action-dimension's grid"/>
+  </CLASS>
+  <CLASS Name="CTileCodingStateFeatureMap">
+    <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
+  </CLASS>
+  <CLASS Name="CTileCodingActionFeatureMap">
+    <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
   </CLASS>
   <CLASS Name="CStateFeatureMap">
   </CLASS>
@@ -159,11 +165,13 @@
   <CLASS Name="CStateFeatureMap-Factory">
     <CHOICE Name="Type" Class="CStateFeatureMap" Comment="Feature map type">
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap"/>
+      <CHOICE-ELEMENT Name="Tile-Coding-State-Grid" Class="CTileCodingStateFeatureMap"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CActionFeatureMap-Factory">
     <CHOICE Name="Type" Class="CActionFeatureMap" Comment="Feature map type">
       <CHOICE-ELEMENT Name="RBF-Action-Grid" Class="CGaussianRBFActionGridFeatureMap"/>
+      <CHOICE-ELEMENT Name="Tile-Coding-Action-Grid" Class="CTileCodingActionFeatureMap"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CLogger">
@@ -292,6 +300,16 @@
       <CHOICE-ELEMENT Name="SARSA" Class="CSARSA"/>
       <CHOICE-ELEMENT Name="Inc-Natural-Actor-Critic" Class="CIncrementalNaturalActorCritic"/>
     </CHOICE>
+  </CLASS>
+  <CLASS Name="CStateVariableGridRBF">
+    <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
+    <STATE-VAR-REF Name="Variable" Comment="The state variable"/>
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the state variable's grid" Default="linear"/>
+  </CLASS>
+  <CLASS Name="CActionVariableGridRBF">
+    <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
+    <ACTION-VAR-REF Name="Variable" Comment="The action variable"/>
+    <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
   </CLASS>
   <CLASS Name="CStateVariableGrid">
     <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>

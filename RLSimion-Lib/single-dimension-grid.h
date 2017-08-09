@@ -7,8 +7,6 @@ class CConfigNode;
 #include "parameters.h"
 #include "named-var-set.h"
 
-#define ACTIVATION_THRESHOLD 0.0001
-
 class CSingleDimensionGrid
 {
 protected:
@@ -24,14 +22,13 @@ protected:
 public:
 	virtual ~CSingleDimensionGrid();
 
-	virtual void initVarRange()= 0;
+	virtual void initVarRange() = 0;
 	void initCenterPoints();
 
-	int getNumCenters(){ return m_numCenters.get(); }
-	double* getCenters(){ return m_pCenters; }
+	int getNumCenters() { return m_numCenters.get(); }
+	double* getCenters() { return m_pCenters; }
 
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures);
-	double getFeatureFactor(int feature, double value);
 
 	virtual double getVarValue(const CState* s, const CAction* a) = 0;
 	virtual CNamedVarProperties& getVarProperties(const CState* s, const CAction* a) = 0;
@@ -43,7 +40,7 @@ class CStateVariableGrid : public CSingleDimensionGrid
 	STATE_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CStateVariableGrid(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
+	CStateVariableGrid(int m_hVar, int numCenters, Distribution distr = Distribution::linear);
 	CStateVariableGrid(CConfigNode* pParameters);
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
@@ -55,7 +52,7 @@ class CActionVariableGrid : public CSingleDimensionGrid
 	ACTION_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CActionVariableGrid(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
+	CActionVariableGrid(int m_hVar, int numCenters, Distribution distr = Distribution::linear);
 	CActionVariableGrid(CConfigNode* pParameters);
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);

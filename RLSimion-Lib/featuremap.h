@@ -7,6 +7,7 @@ typedef CNamedVarSet CAction;
 class CConfigNode;
 
 #include "parameters.h"
+#include "single-dimension-grid-rbf.h"
 #include "single-dimension-grid.h"
 #include <vector>
 
@@ -68,33 +69,88 @@ public:
 
 	virtual ~CGaussianRBFGridFeatureMap();
 
-	void getFeatures(const CState* s,const CAction* a,CFeatureList* outFeatures);
+	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
 	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
 
 };
 
-class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap<CStateVariableGrid>
+class CGaussianRBFStateGridFeatureMap : public CGaussianRBFGridFeatureMap<CStateVariableGridRBF>
 	, public CStateFeatureMap
 {
 public:
 	CGaussianRBFStateGridFeatureMap(CConfigNode* pParameters);
 
-	void getFeatures(const CState* s, CFeatureList* outFeatures){ CGaussianRBFGridFeatureMap::getFeatures(s, 0, outFeatures); }
-	void getFeatureState(unsigned int feature, CState* s){ CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, s, 0); }
-	unsigned int getTotalNumFeatures(){ return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures(){ return m_maxNumActiveFeatures; }
+	void getFeatures(const CState* s, CFeatureList* outFeatures) { CGaussianRBFGridFeatureMap::getFeatures(s, 0, outFeatures); }
+	void getFeatureState(unsigned int feature, CState* s) { CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, s, 0); }
+	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
+	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 
 };
 
-class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap<CActionVariableGrid>
+class CGaussianRBFActionGridFeatureMap : public CGaussianRBFGridFeatureMap<CActionVariableGridRBF>
 	, public CActionFeatureMap
 {
 public:
 	CGaussianRBFActionGridFeatureMap(CConfigNode* pParameters);
-	
-	void getFeatures(const CAction* a, CFeatureList* outFeatures){ CGaussianRBFGridFeatureMap::getFeatures(0, a, outFeatures); }
-	void getFeatureAction(unsigned int feature, CAction* a){ CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, 0, a); }
-	unsigned int getTotalNumFeatures(){ return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures(){ return m_maxNumActiveFeatures; }
 
+	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CGaussianRBFGridFeatureMap::getFeatures(0, a, outFeatures); }
+	void getFeatureAction(unsigned int feature, CAction* a) { CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, 0, a); }
+	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
+	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+
+};
+
+//CFeatureMap////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+template <typename dimensionGridType>
+class CTileCodingFeatureMap
+{
+protected:
+	CFeatureList* m_pVarFeatures;
+
+	unsigned int m_totalNumFeatures;
+	unsigned int m_maxNumActiveFeatures = 1;
+	unsigned int m_numTilings = 5;
+
+	double m_tilingOffset;
+
+	MULTI_VALUE<dimensionGridType> m_grid;
+
+	CTileCodingFeatureMap(CConfigNode* pParameters);
+public:
+
+	virtual ~CTileCodingFeatureMap();
+
+	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
+	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	virtual unsigned int getNumTilings() = 0;
+
+};
+
+class CTileCodingStateFeatureMap : public CTileCodingFeatureMap<CStateVariableGrid>
+	, public CStateFeatureMap
+{
+public:
+	CTileCodingStateFeatureMap(CConfigNode* pParameters);
+
+	void getFeatures(const CState* s, CFeatureList* outFeatures) { CTileCodingFeatureMap::getFeatures(s, 0, outFeatures); }
+	void getFeatureState(unsigned int feature, CState* s) { CTileCodingFeatureMap::getFeatureStateAction(feature, s, 0); }
+	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
+	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	unsigned int getNumTilings() { return m_numTilings; }
+	double getTilingOffset() { return m_tilingOffset; }
+};
+
+class CTileCodingActionFeatureMap : public CTileCodingFeatureMap<CActionVariableGrid>
+	, public CActionFeatureMap
+{
+public:
+	CTileCodingActionFeatureMap(CConfigNode* pParameters);
+
+	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CTileCodingFeatureMap::getFeatures(0, a, outFeatures); }
+	void getFeatureAction(unsigned int feature, CAction* a) { CTileCodingFeatureMap::getFeatureStateAction(feature, 0, a); }
+	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
+	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	unsigned int getNumTilings() { return m_numTilings; }
+	double getTilingOffset() { return m_tilingOffset; }
 };

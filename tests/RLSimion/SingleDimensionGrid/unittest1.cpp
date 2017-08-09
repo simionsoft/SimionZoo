@@ -45,7 +45,7 @@ namespace SingleDimensionGrid
 				|| pFeatures->m_pFeatures[2].m_index == 0);
 
 			//test the non-circular variable
-			CStateVariableGrid gridVar2(hVar2, numFeatures);
+			CStateVariableGridRBF gridVar2(hVar2, numFeatures);
 			s->set("test-angle2", 3.14);
 			gridVar2.getFeatures(s, 0, pFeatures);
 			Assert::IsFalse(pFeatures->m_pFeatures[0].m_index == 0
