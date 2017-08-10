@@ -18,13 +18,13 @@ class CStateFeatureMap
 	CConfigNode* m_pParameters;
 public:
 	CStateFeatureMap(CConfigNode* pParameters);
-	virtual ~CStateFeatureMap(){};
+	virtual ~CStateFeatureMap() {};
 
-	virtual void getFeatures(const CState* s,CFeatureList* outFeatures)= 0;
-	virtual void getFeatureState(unsigned int feature, CState* s)= 0;
+	virtual void getFeatures(const CState* s, CFeatureList* outFeatures) = 0;
+	virtual void getFeatureState(unsigned int feature, CState* s) = 0;
 
-	virtual unsigned int getTotalNumFeatures()= 0;
-	virtual unsigned int getMaxNumActiveFeatures()= 0;
+	virtual unsigned int getTotalNumFeatures() = 0;
+	virtual unsigned int getMaxNumActiveFeatures() = 0;
 
 	static std::shared_ptr<CStateFeatureMap> getInstance(CConfigNode* pParameters);
 
@@ -36,7 +36,7 @@ class CActionFeatureMap
 	CConfigNode* m_pParameters;
 public:
 	CActionFeatureMap(CConfigNode* pParameters);
-	virtual ~CActionFeatureMap(){};
+	virtual ~CActionFeatureMap() {};
 
 	virtual void getFeatures(const CAction* a, CFeatureList* outFeatures) = 0;
 	virtual void getFeatureAction(unsigned int feature, CAction* a) = 0;
@@ -45,7 +45,7 @@ public:
 	virtual unsigned int getMaxNumActiveFeatures() = 0;
 
 	static std::shared_ptr<CActionFeatureMap> getInstance(CConfigNode* pParameters);
-	
+
 	CConfigNode* getParameters() { return m_pParameters; }
 };
 

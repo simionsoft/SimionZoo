@@ -36,7 +36,7 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 		{
 			m_pVarFeatures->clear();
 			m_grid[variableDimension]->getFeatures(s, a, m_pVarFeatures);
-			
+
 			//find index of the only 1.0 in the features and store it in oneIndex
 			unsigned int oneIndex = m_pVarFeatures->m_pFeatures[0].m_index;
 
@@ -50,7 +50,7 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 
 			index += oneIndex * prodLength;
 		}
-		
+
 		//set the activated feature of this tiling layer
 		outFeatures->add(index, 1.0);
 	}
@@ -61,7 +61,22 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 template <typename dimensionGridType>
 void CTileCodingFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
 {
-	throw "CTileCodingFeatureMap<dimensionGridType>::getFeatureStateAction is not implemented yet.";
+	//at first: determine the tile layer of the feature and subtract it to get the index within this layer
+	feature = feature % (m_totalNumFeatures / m_numTilings);
+
+	//now we have to unpack the feature step by step by going through each dimension
+	for (int i = m_grid.size() - 1; i >= 0; i--)
+	{
+		unsigned int prodLength = 1;
+		for (int j = 0; j < i; j++)
+		{
+			prodLength *= m_grid[j]->getNumCenters();
+		}
+		
+		m_grid[i]->setFeatureStateAction(feature / prodLength, s, a);
+		if (prodLength <= feature)
+			feature = feature % prodLength;
+	}
 }
 
 CTileCodingStateFeatureMap::CTileCodingStateFeatureMap(CConfigNode* pConfigNode)
@@ -78,9 +93,11 @@ CTileCodingStateFeatureMap::CTileCodingStateFeatureMap(CConfigNode* pConfigNode)
 	m_totalNumFeatures = m_numTilings;
 
 	for (unsigned int i = 0; i < m_grid.size(); i++)
+	{
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
 
-	m_totalNumFeatures *= m_numTilings;
+		m_grid[i]->setOffset(m_tilingOffset * i);
+	}
 }
 
 CTileCodingActionFeatureMap::CTileCodingActionFeatureMap(CConfigNode* pConfigNode)
@@ -92,7 +109,7 @@ CTileCodingActionFeatureMap::CTileCodingActionFeatureMap(CConfigNode* pConfigNod
 
 	m_numTilings = INT_PARAM(pConfigNode, "Tile-layers", "Number of tile layers of the grid", 1).get();
 	m_tilingOffset = DOUBLE_PARAM(pConfigNode, "Tile-offset", "Offset of each tile relative to the previous one", 0.0).get();
-	
+
 	//pre-calculate number of features
 	m_totalNumFeatures = m_numTilings;
 
@@ -102,6 +119,4 @@ CTileCodingActionFeatureMap::CTileCodingActionFeatureMap(CConfigNode* pConfigNod
 
 		m_grid[i]->setOffset(m_tilingOffset * i);
 	}
-
-	m_totalNumFeatures *= m_numTilings;
 }

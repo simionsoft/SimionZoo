@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "logger.h"
 #include "worlds/world.h"
 #include "named-var-set.h"
@@ -10,7 +10,7 @@
 #include "utils.h"
 #include "SimGod.h"
 
-FILE *CLogger::m_logFile= 0;
+FILE *CLogger::m_logFile = 0;
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
 CNamedPipeClient CLogger::m_outputPipe;
 
@@ -73,11 +73,11 @@ CLogger::CLogger(CConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 
-	m_bLogEvaluationEpisodes= BOOL_PARAM(pConfigNode,"Log-eval-episodes", "Log evaluation episodes?",true);
+	m_bLogEvaluationEpisodes = BOOL_PARAM(pConfigNode, "Log-eval-episodes", "Log evaluation episodes?", true);
 
-	m_bLogTrainingEpisodes= BOOL_PARAM(pConfigNode,"Log-training-episodes", "Log training episodes?",false);
+	m_bLogTrainingEpisodes = BOOL_PARAM(pConfigNode, "Log-training-episodes", "Log training episodes?", false);
 
-	m_logFreq= DOUBLE_PARAM(pConfigNode,"Log-Freq","Log frequency. Simulation time in seconds.",0.25);
+	m_logFreq = DOUBLE_PARAM(pConfigNode, "Log-Freq", "Log frequency. Simulation time in seconds.", 0.25);
 
 	m_pEpisodeTimer = new CTimer();
 	m_pExperimentTimer = new CTimer();
@@ -140,7 +140,7 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
 		writeStatDescriptorToBuffer(buffer);
 		strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
-		fwrite(buffer, 1,strlen(buffer), logXMLDescriptorFile);
+		fwrite(buffer, 1, strlen(buffer), logXMLDescriptorFile);
 
 		fclose(logXMLDescriptorFile);
 	}
@@ -161,7 +161,7 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey(),(*iterator)->getSubkey());
+		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey(), (*iterator)->getSubkey());
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
@@ -228,11 +228,11 @@ void CLogger::lastStep()
 	int numRelativeEpisodeIndex = pExperiment->getRelativeEpisodeIndex();
 
 	//log the progress if an evaluation episode has ended
-	if (pExperiment->isEvaluationEpisode() 
+	if (pExperiment->isEvaluationEpisode()
 		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
-			, (double)(numRelativeEpisodeIndex - 1) 
+		sprintf_s(buffer, BUFFER_SIZE, "%f -> R = %f"
+			, (double)(numRelativeEpisodeIndex - 1)
 			/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
 			, m_episodeRewardSum / (double)pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
@@ -269,7 +269,7 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 	buffer[0] = 0;
 
 	offset += writeStepHeaderToBuffer(buffer, offset);
-	
+
 	offset += writeNamedVarSetToBuffer(buffer, offset, s);
 	offset += writeNamedVarSetToBuffer(buffer, offset, a);
 	offset += writeNamedVarSetToBuffer(buffer, offset, r);
@@ -285,11 +285,11 @@ void CLogger::writeExperimentHeader()
 
 	if (m_bLogEvaluationEpisodes.get())
 		header.numEpisodes +=
-			pExperiment->getNumEvaluations()*pExperiment->getNumEpisodesPerEvaluation();
+		pExperiment->getNumEvaluations()*pExperiment->getNumEpisodesPerEvaluation();
 	if (m_bLogTrainingEpisodes.get())
 		header.numEpisodes += pExperiment->getNumTrainingEpisodes();
 
-	writeLogBuffer((char*) &header, sizeof(ExperimentHeader));
+	writeLogBuffer((char*)&header, sizeof(ExperimentHeader));
 }
 
 void CLogger::writeEpisodeHeader()
@@ -310,7 +310,7 @@ void CLogger::writeEpisodeHeader()
 		+ pWorld->getRewardVector()->getNumVars()
 		+ m_stats.size();
 
-	writeLogBuffer((char*) &header, sizeof(EpisodeHeader));
+	writeLogBuffer((char*)&header, sizeof(EpisodeHeader));
 }
 
 void CLogger::writeEpisodeEndHeader()
@@ -340,7 +340,7 @@ int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarS
 	double* pDoubleBuffer = (double*)(buffer + offset);
 	for (int i = 0; i < numVars; ++i)
 		pDoubleBuffer[i] = pNamedVarSet->get(i);
-	return numVars* sizeof(double);
+	return numVars * sizeof(double);
 }
 
 int CLogger::writeStatsToBuffer(char* buffer, int offset)
@@ -353,20 +353,20 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 		pDoubleBuffer[i] = (*it)->get();
 		++i;
 	}
-	return numVars* sizeof(double);
+	return numVars * sizeof(double);
 }
 
 
 void CLogger::addVarToStats(const char* key, const char* subkey, double* variable)
 {
 	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*) variable, Double));
+	m_stats.push_back(new CStats(key, subkey, (void*)variable, Double));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, int* variable)
 {
 	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*) variable, Int));
+	m_stats.push_back(new CStats(key, subkey, (void*)variable, Int));
 }
 
 void CLogger::addVarToStats(const char* key, const char* subkey, unsigned int* variable)
@@ -436,7 +436,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Error:
 			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
 		}
-		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine)+1);
+		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine) + 1);
 	}
 	else
 	{
@@ -453,7 +453,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Info:
 			printf("%s\n", message); break;
 		case Error:
-			printf("ERROR: %s\n",message); break;
+			printf("ERROR: %s\n", message); break;
 		}
 	}
 	if (type == MessageType::Error)
