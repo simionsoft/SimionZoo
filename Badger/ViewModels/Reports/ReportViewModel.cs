@@ -2,6 +2,7 @@
 using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
+using OxyPlot;
 
 namespace Badger.ViewModels
 {
@@ -21,7 +22,14 @@ namespace Badger.ViewModels
         public PlotViewModel selectedPlot
         {
             get { return m_selectedPlot; }
-            set { m_selectedPlot = value; m_selectedPlot.updateView(); NotifyOfPropertyChange(() => selectedPlot); }
+            set
+            {
+                if (m_selectedPlot!=null)
+                    ((IPlotModel) (m_selectedPlot.Plot)).AttachPlotView( null);
+                m_selectedPlot = value;
+                m_selectedPlot.updateView();
+                NotifyOfPropertyChange(() => selectedPlot);
+            }
         }
 
         public void updateView() { }
