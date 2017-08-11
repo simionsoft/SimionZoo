@@ -110,17 +110,18 @@ namespace Badger.ViewModels
 
         private LogQueryResultTrackViewModel getTrack(Dictionary<string, string> forkValues)
         {
+            uint numMatchedForks;
             foreach (LogQueryResultTrackViewModel resultTrack in resultTracks)
             {
+                numMatchedForks = 0;
                 foreach (string forkName in forkValues.Keys)
                 {
-                    if (!resultTrack.forkValues.ContainsKey(forkName)
-                        || forkValues[forkName] != resultTrack.forkValues[forkName])
-                    {
-                        break;
-                    }
-                    return resultTrack;
+                    if (resultTrack.forkValues.ContainsKey(forkName)
+                        && forkValues[forkName] == resultTrack.forkValues[forkName])
+                        numMatchedForks++;
                 }
+                if (numMatchedForks == resultTrack.forkValues.Count)
+                    return resultTrack;
 
             }
             return null;

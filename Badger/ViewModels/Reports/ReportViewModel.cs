@@ -55,7 +55,6 @@ namespace Badger.ViewModels
                     fileWriter.WriteLine("<" + XMLConfig.statisticsFileTag + ">");
                     foreach (StatsViewModel stat in stats) stat.export(fileWriter, "  ");
                     fileWriter.WriteLine("</" + XMLConfig.statisticsFileTag + ">");
-                    fileWriter.Close();
                 }
             }
             catch (Exception ex)

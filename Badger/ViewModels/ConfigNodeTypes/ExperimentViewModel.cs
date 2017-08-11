@@ -313,12 +313,9 @@ namespace Badger.ViewModels
         //   We need this to know later which value were given to each fork
         public void save(string filename, SaveMode mode, string leftSpace = "")
         {
-            using (FileStream stream = File.Create(filename))
+            using (StreamWriter writer = new StreamWriter(filename))
             {
-                using (StreamWriter writer = new StreamWriter(stream))
-                {
-                    saveToStream(writer, mode, leftSpace);
-                }
+                saveToStream(writer, mode, leftSpace);
             }
         }
 

@@ -8,11 +8,26 @@ using Caliburn.Micro;
 using System.Windows.Forms;
 using System.IO;
 using Badger.Data;
+using System;
 
 namespace Badger.ViewModels
 {
-    public class PlotViewModel : PropertyChangedBase
+    public class PlotViewModel : PropertyChangedBase, IDisposable
     {
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                m_timer.Dispose();
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         string m_name = "";
 
         public string name

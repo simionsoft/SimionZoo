@@ -230,5 +230,23 @@ namespace Badger.Data
             }
             return filename;
         }
+
+        public static string limitLength(string s, uint maxLength, char[] delim= null)
+        {
+            //make sure we can prepend "..." in case we have to
+            maxLength = Math.Max(4, maxLength);
+
+            if (s.Length < maxLength) return s;
+            if (delim == null) return "";
+
+            //look for any delimiter: if there's one, just remove everything before it
+            //if s="../experiment/config/jarl.txt" and delim='/', it would return "jarl.txt"
+            int pos = s.LastIndexOfAny(delim);
+            if (pos >= 0)
+                return s.Substring(pos + 1);
+
+            //if no delimiter is found, just take the last maxLength-3 characters and prepend "..."
+            return "..." + s.Substring((int)( s.Length - maxLength + 3));
+        }
     }
 }

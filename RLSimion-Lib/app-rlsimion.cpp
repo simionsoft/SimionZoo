@@ -173,7 +173,7 @@ void RLSimionApp::updateScene(CState* s)
 	//update bindings
 	double value;
 	string varName;
-	for (int b = 0; b < m_pRenderer->getNumBindings(); ++b)
+	for (unsigned int b = 0; b < m_pRenderer->getNumBindings(); ++b)
 	{
 		varName = m_pRenderer->getBindingExternalName(b);
 		value = s->get(varName.c_str());

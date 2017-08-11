@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using System.Collections.Generic;
 using System;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -104,6 +105,8 @@ namespace Badger.ViewModels
         }
         private string m_parentExperimentName = "";
 
+        private static char[] valueDelimiters = new char[] { '=', '/', '\\' };
+        
         public LogQueryResultTrackViewModel(string experimentName)
         {
             m_parentExperimentName = experimentName;
@@ -113,10 +116,14 @@ namespace Badger.ViewModels
             get
             {
                 if (m_forkValues.Count == 0) return m_parentExperimentName;
-                string id = "";
+                string id = "", shortId;
                 foreach (KeyValuePair<string, string> entry in m_forkValues)
                 {
-                    id += entry.Key + "=" + entry.Value + ",";
+                    //we limit the length of the values
+                    shortId= Utility.limitLength(entry.Key, 10);
+                    if (shortId.Length > 0)
+                        id += shortId + "=";
+                    id += Utility.limitLength(entry.Value,10,valueDelimiters) + ",";
                 }
                 id= id.Trim(',');
                 return id;
@@ -167,9 +174,13 @@ namespace Badger.ViewModels
                     //we remove those forks used to group from the forkValues
                     //because *hopefully* we only use them to name the track
                     m_groupId = "";
+                    string shortId;
                     foreach (string group in groupBy)
                     {
-                        m_groupId += group + "=" + forkValues[group] + ",";
+                        shortId = Utility.limitLength(group, 10);
+                        if (shortId.Length > 0)
+                            m_groupId += shortId + "=";
+                        m_groupId += Utility.limitLength(forkValues[group],10,valueDelimiters) + ",";
                         forkValues.Remove(group);
                     }
                     groupId = m_groupId.TrimEnd(',');

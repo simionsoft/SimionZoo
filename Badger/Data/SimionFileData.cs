@@ -123,65 +123,64 @@ namespace Badger.Data
                     return -1;
                 }
             }
+            string fullBatchFileName = batchFileDir + "." + XMLConfig.experimentBatchExtension;
 
-            using (FileStream batchFile = File.Create(batchFileDir + "." + XMLConfig.experimentBatchExtension))
+            
+            using (StreamWriter batchFileWriter = new StreamWriter(fullBatchFileName))
             {
-                using (StreamWriter batchFileWriter = new StreamWriter(batchFile))
+                // Write batch file header (i.e. open 'EXPERIMENT-BATCH' tag)
+                batchFileWriter.WriteLine("<" + XMLConfig.experimentBatchNodeTag + ">");
+
+                foreach (ExperimentViewModel experimentViewModel in experiments)
                 {
-                    // Write batch file header (i.e. open 'EXPERIMENT-BATCH' tag)
-                    batchFileWriter.WriteLine("<" + XMLConfig.experimentBatchNodeTag + ">");
+                    batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " "
+                        + XMLConfig.nameAttribute + "=\"" + experimentViewModel.name + "\" "
+                        + XMLConfig.ExeFileNameAttr + "=\"" + experimentViewModel.getExeFilename() + "\">");
 
-                    foreach (ExperimentViewModel experimentViewModel in experiments)
+                    foreach (var prerequisite in experimentViewModel.getPrerrequisites())
                     {
-                        batchFileWriter.WriteLine("\t<" + XMLConfig.experimentNodeTag + " "
-                            + XMLConfig.nameAttribute + "=\"" + experimentViewModel.name + "\" "
-                            + XMLConfig.ExeFileNameAttr + "=\"" + experimentViewModel.getExeFilename() + "\">");
-
-                        foreach (var prerequisite in experimentViewModel.getPrerrequisites())
-                        {
-                            batchFileWriter.Write("\t\t<" + XMLConfig.PrerequisiteTag + " "
-                               + XMLConfig.valueAttribute + "=\"" + prerequisite + "\"");
-                            //add the rename attribute
-                            if (experimentViewModel.renameRules.ContainsKey(prerequisite))
-                                batchFileWriter.Write(" " + XMLConfig.renameAttr
-                                    + "=\"" + experimentViewModel.renameRules[prerequisite] + "\"");
-                            batchFileWriter.WriteLine("/>");
-                        }
-
-                        // Save the fork hierarchy and values. This helps to generate reports easier
-                        experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "\t");
-
-                        int numCombinations = experimentViewModel.getNumForkCombinations();
-                        for (int i = 0; i < numCombinations; i++)
-                        {
-                            // Save the combination of forks as a new experiment
-                            string experimentName = experimentViewModel.setForkCombination(i);
-
-                            string folderPath = batchFileDir + "\\" + experimentName;
-                            Directory.CreateDirectory(folderPath);
-                            string filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
-                            experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
-                            string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + "." + XMLConfig.experimentExtension;
-
-                            // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
-                            // with its corresponding attributes.
-                            batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag + " "
-                                + XMLConfig.nameAttribute + "=\"" + experimentName + "\" "
-                                + XMLConfig.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
-                            // Write fork values in between
-                            experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
-                            // Close 'EXPERIMENTAL-UNIT' tag
-                            batchFileWriter.WriteLine("\t\t</" + XMLConfig.experimentalUnitNodeTag + ">");
-                        }
-
-                        experimentalUnitsCount += numCombinations;
-                        // Close 'EXPERIMENT' tag
-                        batchFileWriter.WriteLine("\t</" + XMLConfig.experimentNodeTag + ">");
+                        batchFileWriter.Write("\t\t<" + XMLConfig.PrerequisiteTag + " "
+                            + XMLConfig.valueAttribute + "=\"" + prerequisite + "\"");
+                        //add the rename attribute
+                        if (experimentViewModel.renameRules.ContainsKey(prerequisite))
+                            batchFileWriter.Write(" " + XMLConfig.renameAttr
+                                + "=\"" + experimentViewModel.renameRules[prerequisite] + "\"");
+                        batchFileWriter.WriteLine("/>");
                     }
-                    // Write batch file footer (i.e. close 'EXPERIMENT-BATCH' tag)
-                    batchFileWriter.WriteLine("</" + XMLConfig.experimentBatchNodeTag + ">");
-                    log("Succesfully saved " + experiments.Count + " experiments");
+
+                    // Save the fork hierarchy and values. This helps to generate reports easier
+                    experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkHierarchy, "\t");
+
+                    int numCombinations = experimentViewModel.getNumForkCombinations();
+                    for (int i = 0; i < numCombinations; i++)
+                    {
+                        // Save the combination of forks as a new experiment
+                        string experimentName = experimentViewModel.setForkCombination(i);
+
+                        string folderPath = batchFileDir + "\\" + experimentName;
+                        Directory.CreateDirectory(folderPath);
+                        string filePath = folderPath + "\\" + experimentName + "." + XMLConfig.experimentExtension;
+                        experimentViewModel.save(filePath, SaveMode.AsExperimentalUnit);
+                        string relativePathToExperimentalUnit = batchFileName + "\\" + experimentName + "\\" + experimentName + "." + XMLConfig.experimentExtension;
+
+                        // Save the experiment reference in the root batch file. Open 'EXPERIMENTAL-UNIT' tag
+                        // with its corresponding attributes.
+                        batchFileWriter.WriteLine("\t\t<" + XMLConfig.experimentalUnitNodeTag + " "
+                            + XMLConfig.nameAttribute + "=\"" + experimentName + "\" "
+                            + XMLConfig.pathAttribute + "=\"" + relativePathToExperimentalUnit + "\">");
+                        // Write fork values in between
+                        experimentViewModel.saveToStream(batchFileWriter, SaveMode.ForkValues, "\t");
+                        // Close 'EXPERIMENTAL-UNIT' tag
+                        batchFileWriter.WriteLine("\t\t</" + XMLConfig.experimentalUnitNodeTag + ">");
+                    }
+
+                    experimentalUnitsCount += numCombinations;
+                    // Close 'EXPERIMENT' tag
+                    batchFileWriter.WriteLine("\t</" + XMLConfig.experimentNodeTag + ">");
                 }
+                // Write batch file footer (i.e. close 'EXPERIMENT-BATCH' tag)
+                batchFileWriter.WriteLine("</" + XMLConfig.experimentBatchNodeTag + ">");
+                log("Succesfully saved " + experiments.Count + " experiments");
             }
 
             return experimentalUnitsCount;
@@ -244,24 +243,21 @@ namespace Badger.Data
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string leftSpace;
-                using (FileStream outputFile = File.Create(sfd.FileName))
+                using (StreamWriter writer = new StreamWriter(sfd.FileName))
                 {
-                    using (StreamWriter writer = new StreamWriter(outputFile))
+                    writer.WriteLine("<" + XMLConfig.badgerNodeTag + " " + XMLConfig.versionAttribute
+                        + "=\"" + XMLConfig.BadgerProjectConfigVersion + "\">");
+                    leftSpace = "  ";
+
+                    foreach (ExperimentViewModel experiment in experiments)
                     {
-                        writer.WriteLine("<" + XMLConfig.badgerNodeTag + " " + XMLConfig.versionAttribute
-                            + "=\"" + XMLConfig.BadgerProjectConfigVersion + "\">");
-                        leftSpace = "  ";
-
-                        foreach (ExperimentViewModel experiment in experiments)
-                        {
-                            writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag
-                                + " Name=\"" + experiment.name + "\">");
-                            experiment.saveToStream(writer, SaveMode.AsExperiment, leftSpace + "  ");
-                            writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
-                        }
-
-                        writer.WriteLine("</" + XMLConfig.badgerNodeTag + ">");
+                        writer.WriteLine(leftSpace + "<" + XMLConfig.experimentNodeTag
+                            + " Name=\"" + experiment.name + "\">");
+                        experiment.saveToStream(writer, SaveMode.AsExperiment, leftSpace + "  ");
+                        writer.WriteLine(leftSpace + "</" + XMLConfig.experimentNodeTag + ">");
                     }
+
+                    writer.WriteLine("</" + XMLConfig.badgerNodeTag + ">");
                 }
             }
         }

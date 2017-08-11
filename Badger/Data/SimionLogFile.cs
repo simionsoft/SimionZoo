@@ -140,37 +140,37 @@ namespace Badger.Data
         {
             try
             {
-                FileStream logFile = File.OpenRead(logFilename);
-                using (BinaryReader binaryReader = new BinaryReader(logFile))
+                using (FileStream logFile = File.OpenRead(logFilename))
                 {
-                    readExperimentLogHeader(binaryReader);
-                    for (int i = 0; i < numEpisodes; i++)
+                    using (BinaryReader binaryReader = new BinaryReader(logFile))
                     {
-                        EpisodeData episodeData = new EpisodeData();
-                        episodes.Add(episodeData);
-
-                        episodeData.readEpisodeHeader(binaryReader);
-                        //if we find an episode subindex greater than the current max, we update it
-                        //Episode subindex= Episode within an evaluation
-                        if (episodeData.subIndex > numEpisodesPerEvaluation)
-                            numEpisodesPerEvaluation = episodeData.subIndex;
-
-                        StepData stepData = new StepData();
-                        bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
-
-                        while (!bLastStep)
+                        readExperimentLogHeader(binaryReader);
+                        for (int i = 0; i < numEpisodes; i++)
                         {
-                            //we only add the step if it's not the last one
-                            //last steps don't contain any info but the end marker
-                            episodeData.steps.Add(stepData);
+                            EpisodeData episodeData = new EpisodeData();
+                            episodes.Add(episodeData);
 
-                            stepData = new StepData();
-                            bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+                            episodeData.readEpisodeHeader(binaryReader);
+                            //if we find an episode subindex greater than the current max, we update it
+                            //Episode subindex= Episode within an evaluation
+                            if (episodeData.subIndex > numEpisodesPerEvaluation)
+                                numEpisodesPerEvaluation = episodeData.subIndex;
+
+                            StepData stepData = new StepData();
+                            bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+
+                            while (!bLastStep)
+                            {
+                                //we only add the step if it's not the last one
+                                //last steps don't contain any info but the end marker
+                                episodeData.steps.Add(stepData);
+
+                                stepData = new StepData();
+                                bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+                            }
                         }
                     }
                 }
-                logFile.Close();
-                //TODO: we should be able to know somehow if the experiment failed (i.e.: early end of FAST)
             }
             catch (Exception ex)
             {

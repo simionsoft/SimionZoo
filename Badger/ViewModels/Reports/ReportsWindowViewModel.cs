@@ -37,7 +37,6 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedReport = value;
-                if (m_selectedReport != null) m_selectedReport.updateView();
                 NotifyOfPropertyChange(() => selectedReport);
             }
         }
@@ -422,6 +421,7 @@ namespace Badger.ViewModels
         public void Close(ReportViewModel report)
         {
             Reports.Remove(report);
+            selectedReport = null;
         }
 
         /// <summary>

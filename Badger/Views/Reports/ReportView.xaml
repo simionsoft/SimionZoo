@@ -28,7 +28,7 @@
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding name}" FontSize="8" FontFamily="Segoe UI Light"/>
+                        <Label Content="{Binding name}" FontSize="8"  FontFamily="Segoe UI Light"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
