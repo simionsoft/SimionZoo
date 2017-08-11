@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using Badger.Data;
 using Caliburn.Micro;
-
+using OxyPlot;
 
 namespace Badger.ViewModels
 {

@@ -165,7 +165,7 @@
                         <Label Content="Reports" FontWeight="Medium" HorizontalAlignment="Center" />
                     </StackPanel>
 
-                    <TabControl Margin="0" Padding="0"  Grid.Row="1" x:Name="Reports" SelectedItem="{Binding selectedReport}">
+                    <TabControl VirtualizingPanel.IsVirtualizing="False" Margin="0" Padding="0"  Grid.Row="1" x:Name="Reports" SelectedItem="{Binding selectedReport}">
                         <TabControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
