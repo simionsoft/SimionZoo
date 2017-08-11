@@ -277,6 +277,7 @@
     <ClCompile Include="worlds\Robot.cpp" />
     <ClCompile Include="worlds\Rope.cpp" />
     <ClCompile Include="worlds\setpoint.cpp" />
+    <ClCompile Include="worlds\swinguppendulum.cpp" />
     <ClCompile Include="worlds\templatedConfigFile.cpp" />
     <ClCompile Include="worlds\underwatervehicle.cpp" />
     <ClCompile Include="worlds\windturbine.cpp" />
@@ -340,6 +341,7 @@
     <ClInclude Include="worlds\Robot.h" />
     <ClInclude Include="worlds\Rope.h" />
     <ClInclude Include="worlds\setpoint.h" />
+    <ClInclude Include="worlds\swinguppendulum.h" />
     <ClInclude Include="worlds\templatedConfigFile.h" />
     <ClInclude Include="worlds\underwatervehicle.h" />
     <ClInclude Include="worlds\windturbine.h" />

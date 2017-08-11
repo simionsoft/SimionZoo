@@ -6,6 +6,7 @@
 #include "pitchcontrol.h"
 #include "magneticlevitation.h"
 #include "balancingpole.h"
+#include "swinguppendulum.h"
 #include "push-box-1.h"
 #include "push-box-2.h"
 #include "pull-box-1.h"
@@ -198,7 +199,8 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 		{make_tuple("Robot-control",CHOICE_ELEMENT_NEW<CRobotControl>,"World=Robot-control") },
 		{make_tuple("Pull-Box-2",CHOICE_ELEMENT_NEW<CPullBox2>,"World=Pull-Box-2") },
 		{make_tuple("Pull-Box-1",CHOICE_ELEMENT_NEW<CPullBox1>,"World=Pull-Box-1") },
-		{make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") }
+		{ make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") },
+		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<CSwingupPendulum>,"World=Swing-up-pendulum") }
 	});
 }
 

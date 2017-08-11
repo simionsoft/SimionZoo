@@ -33,25 +33,23 @@
       </Experience-Replay>
       <State-Feature-Map>
         <Type>
-          <Tile-Coding-State-Grid>
-            <Tile-layers>5</Tile-layers>
-            <Tile-offset>0.2</Tile-offset>
-            <Tile-Encoding-Grid-Dimension>
+          <RBF-State-Grid>
+            <RBF-Grid-Dimension>
               <Num-Features>20</Num-Features>
               <Variable>robot1-x</Variable>
               <Distribution>linear</Distribution>
-            </Tile-Encoding-Grid-Dimension>
-            <Tile-Encoding-Grid-Dimension>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
               <Num-Features>20</Num-Features>
               <Variable>robot1-y</Variable>
               <Distribution>linear</Distribution>
-            </Tile-Encoding-Grid-Dimension>
-            <Tile-Encoding-Grid-Dimension>
+            </RBF-Grid-Dimension>
+            <RBF-Grid-Dimension>
               <Num-Features>20</Num-Features>
               <Variable>robot1-theta</Variable>
               <Distribution>linear</Distribution>
-            </Tile-Encoding-Grid-Dimension>
-          </Tile-Coding-State-Grid>
+            </RBF-Grid-Dimension>
+          </RBF-State-Grid>
         </Type>
       </State-Feature-Map>
       <Simion>

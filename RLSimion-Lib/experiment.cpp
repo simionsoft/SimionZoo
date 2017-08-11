@@ -229,7 +229,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	if (time > m_progUpdateFreq.get() || (isLastStep() && isLastEpisode()))
 	{
-		sprintf_s(msg, 1024, "%f%%", CSimionApp::get()->pExperiment->getExperimentProgress()*100.0);
+		sprintf_s(msg, 1024, "%f", CSimionApp::get()->pExperiment->getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);
 		m_pProgressTimer->start();
 	}

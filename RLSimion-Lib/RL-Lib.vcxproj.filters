@@ -214,6 +214,9 @@
     <ClCompile Include="featuremap-tilecoding.cpp">
       <Filter>learning</Filter>
     </ClCompile>
+    <ClCompile Include="worlds\swinguppendulum.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">
@@ -396,6 +399,9 @@
     </ClInclude>
     <ClInclude Include="single-dimension-grid.h">
       <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\swinguppendulum.h">
+      <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

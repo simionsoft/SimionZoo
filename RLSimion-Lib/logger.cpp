@@ -231,7 +231,7 @@ void CLogger::lastStep()
 	if (pExperiment->isEvaluationEpisode()
 		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "%f -> R = %f"
+		sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
 			, (double)(numRelativeEpisodeIndex - 1)
 			/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
 			, m_episodeRewardSum / (double)pExperiment->getStep());
