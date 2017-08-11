@@ -124,6 +124,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GeometryLib", "tools\Geomet
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testInsideFrustum", "tests\OpenGLRenderer\insideFrustum\insideFrustum.vcxproj", "{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portable Badger", "installers\Portable Badger\Portable Badger.csproj", "{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -524,6 +526,18 @@ Global
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}.Release|x64.Build.0 = Release|x64
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}.Release|x86.ActiveCfg = Release|Win32
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85}.Release|x86.Build.0 = Release|Win32
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Debug|x64.Build.0 = Debug|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Debug|x86.Build.0 = Debug|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x64.ActiveCfg = Release|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x64.Build.0 = Release|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x86.ActiveCfg = Release|Any CPU
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -569,5 +583,6 @@ Global
 		{177C0CC0-A392-4667-895E-BE8D5CFBC20B} = {BF490352-B518-4726-BA16-BC447F2D7A37}
 		{AABAE018-C8F6-4865-A0F9-E8E46DA55A2D} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85} = {77FC5F8E-C5B8-4C23-9F2B-DEB74DBD214D}
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4} = {66BE88CA-FAA4-469D-B16D-3FA641E7FB73}
 	EndGlobalSection
 EndGlobal

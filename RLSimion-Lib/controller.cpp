@@ -269,8 +269,7 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
 
 	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedRotorSpeed");
-	double desiredBeta = m_pKP.get()*e_omega_r;// +m_pKI.getSample()*s->getSample("E_int_omega_g");
-		//up there, it should be "E_int_omega_g", which is currently not defined/set
+	double desiredBeta = m_pKP.get()*e_omega_r +m_pKI.get()*s->get("E_int_omega_r");
 
 	a->set(m_a_beta,desiredBeta);
 	a->set(m_a_T_g,T_g + d_T_g*CSimionApp::get()->pWorld->getDT());
