@@ -161,7 +161,8 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey(),(*iterator)->getSubkey());
+		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey().c_str()
+			,(*iterator)->getSubkey().c_str());
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
@@ -248,7 +249,7 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	//update experiment stats
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		(*iterator)->addExperimentSample();
+		(*iterator)->addSample();
 	}
 
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
@@ -357,29 +358,11 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 }
 
 
-void CLogger::addVarToStats(const char* key, const char* subkey, double* variable)
-{
-	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*) variable, Double));
-}
-
-void CLogger::addVarToStats(const char* key, const char* subkey, int* variable)
-{
-	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*) variable, Int));
-}
-
-void CLogger::addVarToStats(const char* key, const char* subkey, unsigned int* variable)
-{
-	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*)variable, UnsignedInt));
-}
-
 void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 {
 	for (int i = 0; i < varset->getNumVars(); i++)
 	{
-		m_stats.push_back(new CStats(key, varset->getProperties()[i].getName(), varset->getValuePtr(i), Double));
+		m_stats.push_back(new CStats<double>(key, varset->getProperties()[i].getName(), varset->getRef(i)));
 	}
 }
 
@@ -388,7 +371,7 @@ size_t CLogger::getNumStats()
 	return m_stats.size();
 }
 
-CStats* CLogger::getStats(unsigned int i)
+IStats* CLogger::getStats(unsigned int i)
 {
 	if (i < m_stats.size())
 		return m_stats[i];

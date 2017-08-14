@@ -45,7 +45,7 @@ double CDistanceReward2D::getReward(const CState* s, const CAction* a, const CSt
 
 	distance = std::max(distance, 0.0001);
 
-	double reward = distance / m_maxDist;
+	double reward = 1. - distance / m_maxDist;
 
 	return reward;
 

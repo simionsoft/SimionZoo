@@ -101,6 +101,11 @@ double* CNamedVarSet::getValuePtr(int i)
 	return 0;
 }
 
+double& CNamedVarSet::getRef(int i)
+{
+	return m_pValues[i];
+}
+
 void CNamedVarSet::set(int i, double value)
 {
 	if (i >= 0 && i < m_numVars)

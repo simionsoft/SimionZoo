@@ -12,7 +12,7 @@
 CActorCritic::CActorCritic(CConfigNode* pConfigNode)
 {
 	m_td = 0.0;
-	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", &m_td);
+	CSimionApp::get()->pLogger->addVarToStats<double>("TD-error", "TD-error", m_td);
 
 	m_pActor = CHILD_OBJECT<CActor>(pConfigNode, "Actor", "The actor");
 	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic");

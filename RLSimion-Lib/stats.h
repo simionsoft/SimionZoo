@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-
+#include <string>
+using namespace std;
 
 class CStatsInfo
 {
@@ -15,41 +16,51 @@ class CStatsInfo
 	bool m_bLog;
 public:
 	CStatsInfo();
-	bool log();
 
 	void reset();
-	double get(); //the value in the last step
 
 	double getMin();
 	double getMax();
 	double getAvg();
 	double getStdDev();
 
-	void addExperimentSample(double value);
+	void addSample(double value);
 };
 
-enum DataType{Double, Int, UnsignedInt};
+//enum DataType{Double, Int, UnsignedInt};
 
-class CStats
+//common interface
+class IStats
 {
+protected:
 	CStatsInfo m_statsInfo;
-
-	char* m_key;
-	char* m_subkey;
-	void* m_variable;
-	DataType m_type;
+	string m_key;
+	string m_subkey;
 public:
-	CStats(const char* key, const char* subkey, const void *variable, DataType type);
-	virtual ~CStats();
+	CStatsInfo* getStatsInfo() { return &m_statsInfo; }
+	string getKey() { return m_key; }
+	string getSubkey() { return m_subkey; }
+	void reset() { m_statsInfo.reset(); }
 
-	void reset();
+	virtual void addSample() = 0;
+	virtual double get() = 0;
+};
 
-	const char* getKey();
-	const char* getSubkey();
-	double get();
+template <typename T>
+class CStats: public IStats
+{
+	T& m_variable;
+public:
+	template <typename T>
+	CStats(string key, string subkey, T& variable): m_variable(variable)
+	{
+		m_key = key;
+		m_subkey = subkey;
+		reset();
+	}
+	virtual ~CStats() {}
 
-	CStatsInfo* getStatsInfo();
-
-	void addExperimentSample();
+	virtual void addSample() { m_statsInfo.addSample(m_variable); }
+	virtual double get() { return (double)m_variable; }
 };
 

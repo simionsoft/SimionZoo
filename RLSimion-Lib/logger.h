@@ -1,17 +1,17 @@
 #pragma once
 
+#include <vector>
+#include "parameters.h"
+#include "../tools/WindowsUtils/NamedPipe.h"
+#include "stats.h"
+
 class CNamedVarSet;
 typedef CNamedVarSet CState;
 typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CConfigNode;
 class CDescriptor;
-#include <vector>
-#include "parameters.h"
-#include "../tools/WindowsUtils/NamedPipe.h"
-class CStats;
 class CTimer;
-
 
 enum MessageType {Progress,Evaluation,Info,Warning, Error};
 enum MessageOutputMode {Console,NamedPipe};
@@ -58,10 +58,9 @@ class CLogger
 	int writeStatsToBuffer(char* buffer, int offset);
 
 	//stats
-	std::vector<CStats*> m_stats;
+	std::vector<IStats *> m_stats;
 public:
 	static const unsigned int BIN_FILE_VERSION = 2;
-
 
 	CLogger(CConfigNode* pParameters);
 	CLogger() = default;
@@ -71,13 +70,15 @@ public:
 	bool isEpisodeTypeLogged(bool evaluation);
 
 	//METHODS CALLED FROM ANY CLASS
-	void addVarToStats(const char* key, const char* subkey, double* variable);
-	void addVarToStats(const char* key, const char* subkey, int* variable);
-	void addVarToStats(const char* key, const char* subkey, unsigned int* variable);
+	template <typename T>
+	void addVarToStats(string key, string subkey, T& variable)
+	{
+		m_stats.push_back(new CStats<T>(key, subkey, variable));
+	}
 	void addVarSetToStats(const char* key, CNamedVarSet* varset);
 
 	size_t getNumStats();
-	CStats* getStats(unsigned int i);
+	IStats* getStats(unsigned int i);
 
 	void setOutputFilenames();
 

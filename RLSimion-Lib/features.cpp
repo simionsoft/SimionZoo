@@ -26,7 +26,7 @@ CFeatureList::~CFeatureList()
 void CFeatureList::setName(const char* name)
 {
 	m_name = name;
-	CSimionApp::get()->pLogger->addVarToStats("Features", m_name, &m_numFeatures);
+	CSimionApp::get()->pLogger->addVarToStats<unsigned int>("Features", m_name, m_numFeatures);
 }
 
 void CFeatureList::clear()

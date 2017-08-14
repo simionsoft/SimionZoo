@@ -49,14 +49,15 @@ CSimGod::~CSimGod()
 double CSimGod::selectAction(CState* s, CAction* a)
 {
 	double probability = 1.0;
+
 	for (unsigned int i = 0; i < m_simions.size(); i++)
 		probability*= m_simions[i]->selectAction(s, a);
+
 	return probability;
 }
 
 void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probability)
 {
-	CExperienceTuple* pExperienceTuple;
 	double actionImportanceWeight= 1.0;
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
@@ -67,11 +68,17 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 	for (unsigned int i = 0; i < m_simions.size(); i++)
 		m_simions[i]->update(s, a, s_p, r, probability);
 
+	m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
+}
+
+void CSimGod::postUpdate()
+{
+	CExperienceTuple* pExperienceTuple;
+
 	//Experience Replay
 	if (m_pExperienceReplay->bUsing())
 	{
 		m_bReplayingExperience = true;
-		m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
 
 		int updateBatchSize = m_pExperienceReplay->getUpdateBatchSize();
 		for (int tuple = 0; tuple < updateBatchSize; ++tuple)

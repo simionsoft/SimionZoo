@@ -58,6 +58,7 @@ public:
 
 	double get(int i) const;
 	double* getValuePtr(int i);
+	double& getRef(int i);
 	void set(int i, double value);
 
 	//returns the sum of all the values, i.e. used to scalarise a reward vector
