@@ -83,6 +83,10 @@ protected:
 	CHILD_OBJECT<CLinearStateVFA> m_pSigmaVFA;
 	//Auxiliar feature lists
 	CFeatureList *m_pMeanFeatures,*m_pSigmaFeatures;
+
+	//temp buffer lists for the add() method
+	CFeatureList* m_meanAddList;
+	CFeatureList* m_sigmaAddList;
 public:
 	CStochasticPolicyGaussianNoise(CConfigNode* pParameters);
 	virtual ~CStochasticPolicyGaussianNoise();

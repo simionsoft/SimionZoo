@@ -16,11 +16,11 @@ double getRandomValue()
 
 double CGaussianNoise::getNormalDistributionSample(double mean, double sigma)
 {
-	if (sigma == 0.0) return 0.0;
+	if (sigma == 0.0) return mean;
 	double x1 = (double) (rand() + 1) / ((double) RAND_MAX + 1);
 	double x2 = (double) rand() / (double) RAND_MAX;
 	double z = sqrt(- 2 * log(x1)) * cos(2 * M_PI * x2);
-	return z * sqrt(sigma) + mean;
+	return z * sigma + mean;
 }
 
 double CGaussianNoise::getPDF(double mean, double sigma, double value,double scaleFactor)

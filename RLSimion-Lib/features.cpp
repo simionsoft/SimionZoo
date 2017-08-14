@@ -181,7 +181,7 @@ void CFeatureList::applyThreshold(double threshold)
 
 	for (unsigned int i = 0; i < oldNumFeatures; i++)
 	{
-		if (m_pFeatures[i].m_factor < threshold)
+		if (abs(m_pFeatures[i].m_factor) < threshold)
 		{
 			if (firstUnderThreshold < 0) firstUnderThreshold = i;
 
@@ -229,6 +229,18 @@ void CFeatureList::offsetIndices(int offset)
 	for (unsigned int i = 0; i < m_numFeatures; i++)
 		m_pFeatures[i].m_index += offset;
 }
+
+void CFeatureList::split(CFeatureList *outList1, CFeatureList *outList2, unsigned int splitOffset) const
+{
+	for (int i = 0; i < m_numFeatures; i++)
+	{
+		if (m_pFeatures[i].m_index < splitOffset)
+			outList1->add(m_pFeatures[i].m_index, m_pFeatures[i].m_factor);
+		else
+			outList2->add(m_pFeatures[i].m_index - splitOffset, m_pFeatures[i].m_factor);
+	}
+}
+
 
 void CFeatureList::multIndices(int mult)
 {

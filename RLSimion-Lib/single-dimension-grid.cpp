@@ -24,14 +24,14 @@ void CSingleDimensionGrid::initCenterPoints()
 
 	if (m_distributionType.get() == Distribution::linear)
 	{
-		for (int i = 0; i<m_numCenters.get(); i++)
+		for (int i = 0; i < m_numCenters.get(); i++)
 			m_pCenters[i] = m_min + (((double)i) / (m_numCenters.get() - 1))*(m_max - m_min);
 	}
 	else
 	{
 		double normalisedPos;
 		double ncenters = (double)m_numCenters.get();
-		for (int i = 0; i<m_numCenters.get(); i++)
+		for (int i = 0; i < m_numCenters.get(); i++)
 		{
 			normalisedPos = ((double)i - ncenters*.5) / (ncenters*.5);
 
@@ -63,6 +63,7 @@ void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatu
 
 	for (unsigned int i = 0; i < numCenters; i++)
 	{
+		//there is no special treatment for circular variables 
 		if (abs(value - m_pCenters[i]) < abs(value - m_pCenters[nearestIndex]))
 		{
 			nearestIndex = i;

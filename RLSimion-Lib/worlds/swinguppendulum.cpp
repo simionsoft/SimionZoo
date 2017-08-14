@@ -15,7 +15,7 @@
 CSwingupPendulum::CSwingupPendulum(CConfigNode* pConfigNode)
 {
 	METADATA("World", "Swing-up-pendulum");
-	m_sAngle = addStateVariable("angle", "rad", -3.14, 3.14); // M_PI
+	m_sAngle = addStateVariable("angle", "rad", -3.14, 3.14, true); // M_PI
 	m_sAngularVelocity = addStateVariable("angular-velocity", "rad/s", -25, 25); //25 * M_PI
 	m_sNormalizedTimeInTargetPosition = addStateVariable("normalized-time-in-target-position", "", 0.0, 1.0);
 	

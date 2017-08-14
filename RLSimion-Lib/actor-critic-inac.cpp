@@ -49,8 +49,6 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 	delete m_s_features;
 	delete m_s_p_features;
 
-
-
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		delete m_w[i];
@@ -88,6 +86,7 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	m_pVFunction->add(m_e_v.ptr(), alpha_v*m_td);
 }
 
+#include <iostream>
 
 void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
 {
@@ -115,21 +114,48 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		if (CSimionApp::get()->pExperiment->isFirstStep())
 			m_w[i]->clear();
 
+		m_grad_u->clear();
 		m_policies[i]->getNaturalGradient(s, a, m_grad_u);
-		m_grad_u->normalize();
+		//m_grad_u->normalize();
+
+		for (int j = 0; j < m_grad_u->m_numFeatures; j++)
+			if (isnan(m_grad_u->m_pFeatures[j].m_factor))
+				cout << "nan!\n";
 
 		//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
 		m_e_u->update(gamma);
 		m_e_u->addFeatureList(m_grad_u);
 		//2. w= w - alpha_v * Grad_u pi(a|s)/pi(a|s) * Grad_u pi(a|s)/pi(a|s)^T * w + alpha_v*td*e_u
 		double innerprod = m_grad_u->innerProduct(m_w[i]); //Grad_u pi(a|s)/pi(a|s)^T * w
-		m_grad_u->mult(alpha_v*innerprod*-1.0);
-		m_grad_u->applyThreshold(0.0001);
+		
+		if (isnan(innerprod) || isinf(innerprod))
+		{
+			//m_grad_u->clear();
+			//m_policies[i]->getNaturalGradient(s, a, m_grad_u);
+
+			cout << "nope\n";
+			cout << "\n\n";
+			for (int j = 0; j < m_w[i]->m_numFeatures; j++)
+				cout << ((m_grad_u->m_pFeatures[j].m_factor)) << "\n";
+		}
+		cout << innerprod << "\n";
+
+		m_grad_u->mult(-1.0*alpha_v*innerprod);
+
+		//m_grad_u->applyThreshold(0.0001);
+		
 		m_w[i]->addFeatureList(m_grad_u);
 		m_w[i]->addFeatureList(m_e_u.ptr(), alpha_v*m_td);
 //		m_w[i]->applyThreshold(0.0001);
 		//3. u= u + alpha_u * w
+
+		for (int j = 0; j < m_w[i]->m_numFeatures; j++)
+			if (isnan(m_w[i]->m_pFeatures[j].m_factor))
+				cout << "nan!\n";
+
 		m_policies[i]->addFeatures(m_w[i], alpha_u);
+
+		cout << "\t" << m_w[i]->m_numFeatures << "\n";
 	}
 }
 

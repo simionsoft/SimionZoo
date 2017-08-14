@@ -22,6 +22,7 @@ void CLinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
 	m_bCanBeFrozen = bCanUseDeferredUpdates;
 }
 
+#include <iostream>
 double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
@@ -42,6 +43,11 @@ double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 			localIndex = pFeatures->m_pFeatures[i].m_index - m_minIndex;
 
 			value += (*pWeights)[localIndex] * pFeatures->m_pFeatures[i].m_factor;
+
+			if (isnan((*pWeights)[localIndex]))
+				cout << "weight at " << localIndex << " is NaN\n";
+			if (isnan(pFeatures->m_pFeatures[i].m_factor))
+				cout << "factor at " << i << " is NaN\n";
 		}
 	}
 	return value;
@@ -167,6 +173,7 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 		if (bFreezeTarget)
 			m_pPendingUpdates->add(pFeatures->m_pFeatures[i].m_index, inc);
 	}
+
 	if (bFreezeTarget && !CSimionApp::get()->pSimGod->bReplayingExperience())
 	{
 		experimentStep = CSimionApp::get()->pExperiment->getExperimentStep();
@@ -190,7 +197,7 @@ CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 {
 	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
 
-	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();
+	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();// *2; //times 2 because there is the mean and the standard deviation
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
@@ -267,7 +274,7 @@ CLinearStateActionVFA::CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> p
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
-	m_numWeights = m_numStateWeights * m_numActionWeights;
+	m_numWeights = m_numStateWeights * m_numActionWeights * 2; //time 2 because there is the mean and the standard deviation
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
