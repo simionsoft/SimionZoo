@@ -75,6 +75,7 @@ namespace Badger.ViewModels
                 task.exe = experiment.ExeFile;
                 task.arguments = relPathExperimentFile + " -pipe=" + experiment.PipeName;
                 task.pipe = experiment.PipeName;
+                task.authenticationToken = m_herdAgent.AuthenticationCode; //TODO: Add Settings?
 
                 job.tasks.Add(task);
                 // add EXE files
