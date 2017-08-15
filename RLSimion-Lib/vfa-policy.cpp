@@ -138,6 +138,7 @@ CStochasticPolicyGaussianNoise::CStochasticPolicyGaussianNoise(CConfigNode* pCon
 	m_pMeanFeatures = new CFeatureList("Sto-Policy/mean-features");
 	m_pSigmaFeatures = new CFeatureList("Sto-Policy/sigma-features");
 
+	//will be used as temp. buffers in the add method
 	m_meanAddList = new CFeatureList("meanAddList");
 	m_sigmaAddList = new CFeatureList("sigmaAddList");
 }
@@ -146,6 +147,10 @@ CStochasticPolicyGaussianNoise::~CStochasticPolicyGaussianNoise()
 {
 	delete m_pMeanFeatures;
 	delete m_pSigmaFeatures;
+}
+
+float clip(float n, float lower, float upper) {
+	return std::max(lower, std::min(n, upper));
 }
 
 double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
@@ -157,12 +162,21 @@ double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 	{
 		//Training: add noise
 		sigma = exp(m_pSigmaVFA->get(s));
-		output = CGaussianNoise::getNormalDistributionSample(mean, sigma); //TODO: UNDO!
+		output = CGaussianNoise::getNormalDistributionSample(mean, sigma); 
 	}
 
-	a->set(m_outputActionIndex.get(), output);
+	//clip the output between the min and max value of the action space
+	unsigned int actionIndex = m_outputActionIndex.get();
+	output = clip(output, a->getProperties()[actionIndex].getMin(), a->getProperties()[actionIndex].getMax());
 
-	cout << mean << "\t" << sigma << "\n";
+	a->set(actionIndex, output);
+
+#ifdef _DEBUG
+	cout << "select action - mean: " << mean << "\tsigma: " << sigma << "\toutput: " << output << "\n";
+#endif
+	//this is only an approximation as the PDF now looks differntly because of the clipping
+	//this means, that the values at the borders will be higher as predicted by this function call
+	//maybe this is causing problems, but I do not see a way to solve this
 	return CGaussianNoise::getSampleProbability(mean, sigma, output);
 }
 
@@ -175,7 +189,7 @@ double CStochasticPolicyGaussianNoise::getOutput(const CState *s)
 	{
 		//Training: add noise
 		sigma = exp(m_pSigmaVFA->get(s));
-		output += CGaussianNoise::getNormalDistributionSample(mean, sigma);
+		output = CGaussianNoise::getNormalDistributionSample(mean, sigma);
 	}
 
 	return output;
@@ -196,22 +210,28 @@ double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CSt
 //according to https://hal.inria.fr/hal-00764281/document
 void CStochasticPolicyGaussianNoise::getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
+	m_pMeanFeatures->clear();
+	m_pSigmaFeatures->clear();
+
 	m_pMeanVFA->getFeatures(s, m_pMeanFeatures);
 	m_pSigmaVFA->getFeatures(s, m_pSigmaFeatures);
-	double sigma = exp(m_pSigmaVFA->get(m_pSigmaFeatures));
-	double mean = m_pMeanVFA->get(m_pSigmaFeatures);
+	
+	double mean = m_pMeanVFA->get(m_pMeanFeatures); //mu(s) = u_mu * x_mu(s)
+	double sigma = exp(m_pSigmaVFA->get(m_pSigmaFeatures)); //sigma(s) = exp(u_sigma * x_sigma(s))
 
-	//a. Grad_u_mean pi(a|s)/pi(a|s) = (a - pi(s)) * phi_mean(s) / sigma*2
+	//a. Grad_u_mu pi(a|s)/pi(a|s) = (a - mu(s)) / sigma(s)^2 * x_mu(s) 
 	double noise = a->get(m_outputActionIndex.get()) - mean;
 
 	double factor = noise / (sigma*sigma);
 	pOutGradient->addFeatureList(m_pMeanFeatures, factor);
 
-	//b. Grad_u_sigma pi(a|s)/pi(a|s) = (a - pi(s))^2 -1 * phi_sigma(s) / sigma*2
+	//b. Grad_u_sigma pi(a|s)/pi(a|s) = ((a - mu(s))^2 / (sigma(s)^2) - 1) * x_sigma(s) 
 	factor = (noise*noise) / (sigma*sigma) - 1.0;
 	pOutGradient->addFeatureList(m_pSigmaFeatures, factor);
 
-	cout << "\t\t\t" <<sigma << " " << noise << " " << factor << "\n";
+#ifdef _DEBUG
+	cout << "\t\sigma: " <<sigma << "\tmean: " << mean << "\tnoise: " << noise << "\tfactor: " << factor << "\n";
+#endif // DEBUG
 }
 
 void CStochasticPolicyGaussianNoise::getFeatures(const CState* state, CFeatureList* outFeatureList)
@@ -225,13 +245,12 @@ void CStochasticPolicyGaussianNoise::addFeatures(const CFeatureList* pFeatureLis
 	m_meanAddList->clear();
 	m_sigmaAddList->clear();
 
-	unsigned int m_numWeights = CSimGod::getGlobalStateFeatureMap().get()->getTotalNumFeatures();
-	//assuming that the first half of the entries correspons to the mean, and the last half to the std.dev
+	//split the long pFeatureList into the two sublists, one for the mean and one for the std.dev.
+	unsigned int m_numWeights = m_pMeanVFA->getNumWeights();
 	pFeatureList->split(m_meanAddList, m_sigmaAddList, m_numWeights);
 
 	m_pMeanVFA->add(m_meanAddList);
 	m_pSigmaVFA->add(m_sigmaAddList);
-	//m_pMeanVFA->add(pFeatureList, factor);
 }
 double CStochasticPolicyGaussianNoise::getDeterministicOutput(const CFeatureList* pFeatureList)
 {

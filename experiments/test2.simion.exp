@@ -71,7 +71,7 @@
 			<Alpha-v>
 				<Schedule>
 		<Constant>
-			<Value>0.1</Value>
+			<Value>0.001</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-v>
@@ -110,7 +110,7 @@
 				<Init-Value>0.0</Init-Value>
 			</Mean-VFA>
 			<Sigma-VFA>
-				<Init-Value>0.0</Init-Value>
+				<Init-Value>-1.0</Init-Value>
 			</Sigma-VFA>
 		</Stochastic-Policy-Gaussian-Noise>
 		</Policy>
