@@ -37,6 +37,18 @@ namespace Badger.ViewModels
             }
         }
 
+        private String m_authenticationCode = "";
+        public String AuthenticationCode
+        {
+            get { return m_authenticationCode; }
+            set
+            {
+                m_authenticationCode = value;
+                NotifyOfPropertyChange(() => AuthenticationCode);
+
+            }
+        }
+
         public string IpAddressString { get { return IpAddress.Address.ToString(); } set { } }
 
         public DateTime lastACK
