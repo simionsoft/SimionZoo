@@ -217,6 +217,9 @@
     <ClCompile Include="worlds\swinguppendulum.cpp">
       <Filter>world</Filter>
     </ClCompile>
+    <ClCompile Include="actor-critic-offpac.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">

@@ -215,6 +215,7 @@
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
     <ClCompile Include="actor-critic-inac.cpp" />
+    <ClCompile Include="actor-critic-offpac.cpp" />
     <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />

@@ -7,10 +7,19 @@
   <CLASS Name="CIncrementalNaturalActorCritic">
     <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function"/>
     <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="True"/>
-    <BRANCH Name="U-ETraces" Class="CETraces" Comment="Traces used by the actor" Optional="True"/>
     <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
     <BRANCH Name="Alpha-r" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
     <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
+    <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The policy"/>
+  </CLASS>
+  <CLASS Name="COffPolicyActorCritic">
+    <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function"/>
+    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="True"/>
+    <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
+    <BRANCH Name="Alpha-w" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
+    <BRANCH Name="OffPac-Lambda" Class="CNumericValue-Factory" Comment="Lambda factor of the GTD(lambda) critic's update"/>
+    <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
+    <MULTI-VALUED Name="b-Policy" Class="CPolicy-Factory" Comment="The base-policy b(a|s)"/>
     <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The policy"/>
   </CLASS>
   <CLASS Name="CActorCritic">
@@ -303,6 +312,7 @@
       <CHOICE-ELEMENT Name="Double-Q-Learning" Class="CDoubleQLearning"/>
       <CHOICE-ELEMENT Name="SARSA" Class="CSARSA"/>
       <CHOICE-ELEMENT Name="Inc-Natural-Actor-Critic" Class="CIncrementalNaturalActorCritic"/>
+      <CHOICE-ELEMENT Name="Off-Policy-Actor-Critic" Class="COffPolicyActorCritic"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CStateVariableGridRBF">
@@ -328,6 +338,9 @@
   <CLASS Name="CPolicy">
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
+  <CLASS Name="CUniformPolicy">
+    <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
+  </CLASS>
   <CLASS Name="CDeterministicPolicyGaussianNoise">
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
     <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
@@ -342,6 +355,7 @@
     <CHOICE Name="Policy" Class="CPolicy" Comment="The policy type">
       <CHOICE-ELEMENT Name="Deterministic-Policy-Gaussian-Noise" Class="CDeterministicPolicyGaussianNoise"/>
       <CHOICE-ELEMENT Name="Stochastic-Policy-Gaussian-Noise" Class="CStochasticPolicyGaussianNoise"/>
+      <CHOICE-ELEMENT Name="Uniform-Policy" Class="CUniformPolicy"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CLinearStateVFA">

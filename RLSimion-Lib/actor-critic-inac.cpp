@@ -26,6 +26,7 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
 	m_e_v->setName("Critic/e_v");
 
+
 	//actor's stuff
 	m_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy");
 
@@ -40,8 +41,14 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 
 	m_pAlphaU = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha-u", "Learning gain used by the actor");
 
-	m_e_u = CHILD_OBJECT<CETraces>(pConfigNode, "U-ETraces", "Traces used by the actor", true);
-	m_e_u->setName("Actor/E-Traces");
+	m_e_u = new CETraces*[m_policies.size()];
+	for (unsigned int i = 0; i < m_policies.size(); i++)
+	{
+		m_e_u[i] = new CETraces(pConfigNode);
+		char* buffer = new char[strlen("Actor/E-Trace %i") + 100];
+		sprintf(buffer, "Actor/E-Trace %i", i);
+		m_e_u[i]->setName(buffer);
+	}
 }
 
 CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
@@ -127,8 +134,8 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 #endif // DEBUG
 
 		//1. e_u= gamma*lambda*e_u + Grad_u pi(a|s)/pi(a|s)
-		m_e_u->update(gamma);
-		m_e_u->addFeatureList(m_grad_u);
+		m_e_u[i]->update(gamma);
+		m_e_u[i]->addFeatureList(m_grad_u);
 
 		//2. w= w - alpha_v * Grad_u pi(a|s)/pi(a|s) * Grad_u pi(a|s)/pi(a|s)^T * w + alpha_v*td*e_u
 		double innerprod = m_grad_u->innerProduct(m_w[i]); //Grad_u pi(a|s)/pi(a|s)^T * w
@@ -147,9 +154,8 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 #endif // DEBUG
 
 		m_grad_u->mult(-1.0*alpha_v*innerprod);
-
 		m_w[i]->addFeatureList(m_grad_u);
-		m_w[i]->addFeatureList(m_e_u.ptr(), alpha_v*m_td);
+		m_w[i]->addFeatureList(m_e_u[i], alpha_v*m_td);
 
 #ifdef _DEBUG
 		double avg_w = 0;

@@ -63,15 +63,10 @@
 				<Lambda>0.9</Lambda>
 				<Replace>true</Replace>
 			</V-ETraces>
-			<U-ETraces>
-				<Threshold>0.001</Threshold>
-				<Lambda>0.9</Lambda>
-				<Replace>true</Replace>
-			</U-ETraces>
 			<Alpha-v>
 				<Schedule>
 		<Constant>
-			<Value>0.001</Value>
+			<Value>0.1</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-v>
@@ -85,7 +80,7 @@
 			<Alpha-u>
 				<Schedule>
 		<Constant>
-			<Value>0.001</Value>
+			<Value>0.01</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-u>
@@ -110,7 +105,7 @@
 				<Init-Value>0.0</Init-Value>
 			</Mean-VFA>
 			<Sigma-VFA>
-				<Init-Value>-1.0</Init-Value>
+				<Init-Value>0</Init-Value>
 			</Sigma-VFA>
 		</Stochastic-Policy-Gaussian-Noise>
 		</Policy>

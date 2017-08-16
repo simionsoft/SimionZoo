@@ -22,7 +22,6 @@ void CLinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
 	m_bCanBeFrozen = bCanUseDeferredUpdates;
 }
 
-#include <iostream>
 double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
@@ -43,11 +42,6 @@ double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 			localIndex = pFeatures->m_pFeatures[i].m_index - m_minIndex;
 
 			value += (*pWeights)[localIndex] * pFeatures->m_pFeatures[i].m_factor;
-
-			if (isnan((*pWeights)[localIndex]))
-				cout << "weight at " << localIndex << " is NaN\n";
-			if (isnan(pFeatures->m_pFeatures[i].m_factor))
-				cout << "factor at " << i << " is NaN\n";
 		}
 	}
 	return value;

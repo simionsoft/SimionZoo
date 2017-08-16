@@ -286,7 +286,7 @@ namespace Herd
                 myProcess.StartInfo.Arguments = task.arguments;
                 myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
 
-                if (m_credentials != null)
+                if (m_credentials == null)
                 {
                     myProcess.Start();
                 }
