@@ -68,7 +68,8 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 	for (unsigned int i = 0; i < m_simions.size(); i++)
 		m_simions[i]->update(s, a, s_p, r, probability);
 
-	m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
+	if (m_pExperienceReplay->bUsing())
+		m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
 }
 
 void CSimGod::postUpdate()

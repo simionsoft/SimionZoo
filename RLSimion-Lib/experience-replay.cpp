@@ -70,6 +70,7 @@ int CExperienceReplay::getUpdateBatchSize()
 void CExperienceReplay::addTuple(CState* s, CAction* a, CState* s_p, double r, double probability)
 {
 	//add the experience tuple to the buffer
+	if (!bUsing()) return;
 
 	if (m_numTuples < m_blockSize.get())
 	{
