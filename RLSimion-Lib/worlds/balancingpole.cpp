@@ -95,10 +95,7 @@ double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const 
 	double theta = s_p->get("theta");
 	double x = s_p->get("x");
 
-	if (x < -2.4 || x > 2.4 || /*theta<-1.3 || theta>1.3)*/
-		//visually, it feels better to let it fall nearly completely
-		theta < -twelve_degrees ||
-		theta > twelve_degrees)
+	if (x < -2.4 || x > 2.4 || theta < -twelve_degrees || theta > twelve_degrees)
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1.0;
