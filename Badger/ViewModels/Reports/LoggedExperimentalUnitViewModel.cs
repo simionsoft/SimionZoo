@@ -121,15 +121,18 @@ namespace Badger.ViewModels
                 {
                     double avg = 0.0;
                     int variableIndex = m_variablesInLog.IndexOf(variable);
-                    TrackVariableData variableData = data.getVariableData(variable);
-                    if (variableData != null && episode.steps.Count > 0)
+                    if (variableIndex >= 0)
                     {
-                        foreach (StepData step in episode.steps)
+                        TrackVariableData variableData = data.getVariableData(variable);
+                        if (variableData != null && episode.steps.Count > 0)
                         {
-                            avg += step.data[variableIndex];
+                            foreach (StepData step in episode.steps)
+                            {
+                                avg += step.data[variableIndex];
+                            }
+                            avg /= episode.steps.Count;
+                            variableData.experimentData.values[episode.index - 1] = avg;
                         }
-                        avg /= episode.steps.Count;
-                        variableData.experimentData.values[episode.index - 1] = avg;
                     }
                 }
             }
@@ -143,9 +146,12 @@ namespace Badger.ViewModels
                 foreach (string variable in varNames)
                 {
                     int variableIndex = m_variablesInLog.IndexOf(variable);
-                    TrackVariableData variableData = data.getVariableData(variable);
-                    if (variableData != null)
-                        variableData.lastEpisodeData.values[i] = step.data[variableIndex];
+                    if (variableIndex >= 0)
+                    {
+                        TrackVariableData variableData = data.getVariableData(variable);
+                        if (variableData != null)
+                            variableData.lastEpisodeData.values[i] = step.data[variableIndex];
+                    }
                 }
                 ++i;
             }
