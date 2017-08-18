@@ -142,7 +142,7 @@ namespace Badger.ViewModels
 
             //add all selected variables to the list of variables
             foreach (LoggedVariableViewModel variable in loggedVariablesVM)
-                if (from == fromSelection || variable.bIsSelected)
+                if ( variable.bIsSelected )
                     variables.Add(variable.name);
 
             //traverse the experimental units within each experiment
