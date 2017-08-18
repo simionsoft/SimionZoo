@@ -142,6 +142,7 @@ namespace Badger.ViewModels
                 m_selectedWorld = worldName;
                 updateWorldDefinition();
             }
+            else CaliburnUtility.ShowWarningDialog("The world selected hasn't been defined. Check for missmatched names in the source code of the app", "ERROR");
         }
 
         private void parseClassDefinitionMetadata(XmlNode definition)
