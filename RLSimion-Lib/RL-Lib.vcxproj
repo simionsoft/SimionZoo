@@ -224,6 +224,7 @@
     <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
+    <ClCompile Include="featuremap-linear.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mem-buffer.cpp" />
@@ -267,6 +268,7 @@
     <ClCompile Include="worlds\BulletBody.cpp" />
     <ClCompile Include="worlds\BulletPhysics.cpp" />
     <ClCompile Include="worlds\FAST.cpp" />
+    <ClCompile Include="worlds\gridworld.cpp" />
     <ClCompile Include="worlds\magneticlevitation.cpp" />
     <ClCompile Include="worlds\mountaincar.cpp" />
     <ClCompile Include="worlds\pitchcontrol.cpp" />
@@ -331,6 +333,7 @@
     <ClInclude Include="worlds\BulletCreationInterface.h" />
     <ClInclude Include="worlds\BulletPhysics.h" />
     <ClInclude Include="worlds\FAST.h" />
+    <ClInclude Include="worlds\gridworld.h" />
     <ClInclude Include="worlds\magneticlevitation.h" />
     <ClInclude Include="worlds\mountaincar.h" />
     <ClInclude Include="worlds\pitchcontrol.h" />

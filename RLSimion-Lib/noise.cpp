@@ -37,7 +37,7 @@ double CGaussianNoise::getSampleProbability(double mean, double sigma, double sa
 	double sample1 = getPDF(mean, sigma, sample + intwidth*0.5, scale);
 	double sample2 = getPDF(mean, sigma, sample - intwidth*0.5, scale);
 
-	double prob = fabs(sample1 - sample2)*0.5*intwidth;
+	double prob = fabs(sample1 + sample2)*0.5*intwidth;
 
 	return std::max(MINIMAL_PROBABILITY,prob);
 }

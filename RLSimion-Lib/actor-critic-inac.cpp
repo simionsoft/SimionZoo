@@ -11,9 +11,11 @@
 #include "parameters-numeric.h"
 #include "policy.h"
 #include "app.h"
+#include <iostream>
 
 CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pConfigNode)
 {
+	cout.precision(5);
 	m_td = 0.0;
 
 	//critic's stuff
@@ -68,7 +70,17 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
 {
 	if (CSimionApp::get()->pExperiment->isFirstStep())
+	{
 		m_avg_r = 0.0;
+		m_e_v->clear();
+
+		for (unsigned int i = 0; i < m_policies.size(); i++)
+		{
+			m_w[i]->clear();
+			m_e_u[i]->clear();
+		}
+
+	}
 	// Incremental Natural Actor - Critic(INAC)
 	//Critic update:
 	//td= r - avg_r + gamma*V(s_p) - V(s)
@@ -95,8 +107,6 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	m_pVFunction->add(m_e_v.ptr(), alpha_v*m_td);
 }
 
-#include <iostream>
-
 void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
 {
 	//Incremental Natural Actor-Critic (INAC)
@@ -120,9 +130,6 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		if (CSimionApp::get()->pExperiment->isFirstStep())
-			m_w[i]->clear();
-
 		//calculate the gradient
 		m_grad_u->clear();
 		m_policies[i]->getNaturalGradient(s, a, m_grad_u);
@@ -153,8 +160,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		}
 #endif // DEBUG
 
-		m_grad_u->mult(-1.0*alpha_v*innerprod);
-		m_w[i]->addFeatureList(m_grad_u);
+		m_w[i]->addFeatureList(m_grad_u, -1.0*alpha_v*innerprod);
 		m_w[i]->addFeatureList(m_e_u[i], alpha_v*m_td);
 
 #ifdef _DEBUG
@@ -187,6 +193,10 @@ double CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a,
 
 double CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
 {
+	if (CSimionApp::get()->pExperiment->isFirstStep())
+	{
+		cout << "first step\n";
+	}
 	double prob = 1.0;
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{

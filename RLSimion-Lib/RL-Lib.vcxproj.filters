@@ -220,6 +220,12 @@
     <ClCompile Include="actor-critic-offpac.cpp">
       <Filter>learning</Filter>
     </ClCompile>
+    <ClCompile Include="featuremap-linear.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\gridworld.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">
@@ -404,6 +410,9 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="worlds\swinguppendulum.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\gridworld.h">
       <Filter>world</Filter>
     </ClInclude>
   </ItemGroup>

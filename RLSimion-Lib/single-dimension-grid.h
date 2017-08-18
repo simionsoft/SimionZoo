@@ -38,6 +38,8 @@ public:
 
 	double getOffset() { return m_offset; }
 	virtual void setOffset(double offset) = 0;
+
+	int getClosestCenter(double value);
 };
 
 class CStateVariableGrid : public CSingleDimensionGrid

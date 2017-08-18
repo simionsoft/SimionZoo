@@ -155,6 +155,12 @@
     <DOUBLE-VALUE Name="Progress-Update-Freq" Comment="Progress update frequency (seconds)" Default="1.0"/>
     <DOUBLE-VALUE Name="Episode-Length" Comment="Length of an episode(seconds)" Default="10.0"/>
   </CLASS>
+  <CLASS Name="CLinearStateFeatureMap">
+    <MULTI-VALUED Name="Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
+  </CLASS>
+  <CLASS Name="CLinearActionFeatureMap">
+    <MULTI-VALUED Name="Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
+  </CLASS>
   <CLASS Name="CGaussianRBFStateGridFeatureMap">
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CStateVariableGridRBF" Comment="Parameters of the state-dimension's grid"/>
   </CLASS>
@@ -177,12 +183,14 @@
   </CLASS>
   <CLASS Name="CStateFeatureMap-Factory">
     <CHOICE Name="Type" Class="CStateFeatureMap" Comment="Feature map type">
+      <CHOICE-ELEMENT Name="Linear-State-Grid" Class="CLinearStateFeatureMap"/>
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap"/>
       <CHOICE-ELEMENT Name="Tile-Coding-State-Grid" Class="CTileCodingStateFeatureMap"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CActionFeatureMap-Factory">
     <CHOICE Name="Type" Class="CActionFeatureMap" Comment="Feature map type">
+      <CHOICE-ELEMENT Name="Linear-Action-Grid" Class="CLinearActionFeatureMap"/>
       <CHOICE-ELEMENT Name="RBF-Action-Grid" Class="CGaussianRBFActionGridFeatureMap"/>
       <CHOICE-ELEMENT Name="Tile-Coding-Action-Grid" Class="CTileCodingActionFeatureMap"/>
     </CHOICE>
@@ -336,17 +344,21 @@
     <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
   </CLASS>
   <CLASS Name="CPolicy">
+    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
   <CLASS Name="CUniformPolicy">
+    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
   <CLASS Name="CDeterministicPolicyGaussianNoise">
+    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
     <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
     <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration"/>
   </CLASS>
   <CLASS Name="CStochasticPolicyGaussianNoise">
+    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
     <BRANCH Name="Mean-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
     <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates variance(s)"/>
@@ -411,6 +423,21 @@
     <CONSTANT Name="HubInertia"/>
     <CONSTANT Name="DriveTrainTorsionalDamping"/>
   </CLASS>
+  <CLASS Name="CContinuousGridWorld" World="Continuous-GridWorld">
+    <INTEGER-VALUE Name="Target-X" Comment="X coordinate of the target position." Default="0"/>
+    <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="10"/>
+    <STATE-VAR Name="x-position" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="z-position" Min="-10" Max="10" Unit="m"/>
+    <ACTION-VAR Name="x-step" Min="-1" Max="1" Unit="m"/>
+    <ACTION-VAR Name="y-step" Min="-1" Max="1" Unit="m"/>
+  </CLASS>
+  <CLASS Name="CDiscreteGridWorld" World="Discrete-GridWorld">
+    <INTEGER-VALUE Name="Target-X" Comment="X coordinate of the target position." Default="0"/>
+    <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="10"/>
+    <STATE-VAR Name="x-position" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="z-position" Min="-10" Max="10" Unit="m"/>
+    <ACTION-VAR Name="step" Min="0" Max="4" Unit=""/>
+  </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">
     <FILE-PATH-VALUE Name="Evaluation-Set-Point" Comment="The setpoint file" Default="../config/world/magnetic-levitation/setpoint.txt"/>
     <STATE-VAR Name="position-setpoint" Min="0" Max="0.013" Unit="m"/>
@@ -421,7 +448,7 @@
     <ACTION-VAR Name="voltage" Min="-60" Max="60" Unit="V"/>
   </CLASS>
   <CLASS Name="CMountainCar" World="Mountain-car">
-    <STATE-VAR Name="position" Min="-1.2" Max="0.6" Unit="m"/>
+    <STATE-VAR Name="position" Min="-1.2" Max="0.5" Unit="m"/>
     <STATE-VAR Name="velocity" Min="-0.07" Max="0.07" Unit="m/s"/>
     <ACTION-VAR Name="pedal" Min="-1" Max="1" Unit="m"/>
   </CLASS>
@@ -576,6 +603,8 @@
       <CHOICE-ELEMENT Name="Pull-Box-1" Class="CPullBox1" BadgerMetadata="World=Pull-Box-1"/>
       <CHOICE-ELEMENT Name="Mountain-car" Class="CMountainCar" BadgerMetadata="World=Mountain-car"/>
       <CHOICE-ELEMENT Name="Swing-up-pendulum" Class="CSwingupPendulum" BadgerMetadata="World=Swing-up-pendulum"/>
+      <CHOICE-ELEMENT Name="Continuous-Gridworld" Class="CContinuousGridWorld" BadgerMetadata="World=Continuous-Gridworld"/>
+      <CHOICE-ELEMENT Name="Discrete-Gridworld" Class="CDiscreteGridWorld" BadgerMetadata="World=Discrete-Gridworld"/>
     </CHOICE>
   </CLASS>
   <ENUMERATION Name="Distribution">

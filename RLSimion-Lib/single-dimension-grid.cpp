@@ -48,17 +48,15 @@ void CSingleDimensionGrid::initCenterPoints()
 
 void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures)
 {
-	double u;
-	int i;
-
-	outDimFeatures->clear();
-
-	unsigned int numCenters = m_numCenters.get();
-
-	assert(numCenters >= 2);
 	double value = getVarValue(s, a) + m_offset;
-	CNamedVarProperties& properties = getVarProperties(s, a);
+	outDimFeatures->clear();
+	outDimFeatures->add(getClosestCenter(value), 1.0);
+}
 
+int CSingleDimensionGrid::getClosestCenter(double value)
+{
+	unsigned int numCenters = m_numCenters.get();
+	assert(numCenters >= 2);
 	unsigned int nearestIndex = 0;
 
 	for (unsigned int i = 0; i < numCenters; i++)
@@ -70,7 +68,7 @@ void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatu
 		}
 	}
 
-	outDimFeatures->add(nearestIndex, 1.0);
+	return nearestIndex;
 }
 
 CStateVariableGrid::CStateVariableGrid(CConfigNode* pConfigNode)

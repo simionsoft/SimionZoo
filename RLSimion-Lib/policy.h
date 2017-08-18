@@ -16,6 +16,7 @@ class CPolicy
 {
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
+	BOOL_PARAM m_discreteActionSpace;
 
 public:
 	CPolicy(CConfigNode* pConfigNode);
@@ -107,8 +108,8 @@ protected:
 	CFeatureList *m_pMeanFeatures, *m_pSigmaFeatures;
 
 	//temp buffer lists for the add() method
-	CFeatureList* m_meanAddList;
-	CFeatureList* m_sigmaAddList;
+	//CFeatureList* m_pMeanAddList;
+	//CFeatureList* m_pSigmaAddList;
 public:
 	CStochasticPolicyGaussianNoise(CConfigNode* pParameters);
 	virtual ~CStochasticPolicyGaussianNoise();

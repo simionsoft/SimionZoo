@@ -7,6 +7,7 @@
 #include "magneticlevitation.h"
 #include "balancingpole.h"
 #include "swinguppendulum.h"
+#include "gridworld.h"
 #include "push-box-1.h"
 #include "push-box-2.h"
 #include "pull-box-1.h"
@@ -25,14 +26,14 @@ CHILD_OBJECT_FACTORY<CDynamicModel> CWorld::m_pDynamicModel;
 CWorld::CWorld(CConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
-	m_episodeSimTime= 0.0;
+	m_episodeSimTime = 0.0;
 	m_totalSimTime = 0.0;
 
-	m_pDynamicModel=CHILD_OBJECT_FACTORY<CDynamicModel>(pConfigNode, "Dynamic-Model","The dynamic model");
+	m_pDynamicModel = CHILD_OBJECT_FACTORY<CDynamicModel>(pConfigNode, "Dynamic-Model", "The dynamic model");
 
-	m_numIntegrationSteps= INT_PARAM(pConfigNode,"Num-Integration-Steps"
-		,"The number of integration steps performed each simulation time-step",4);
-	m_dt= DOUBLE_PARAM(pConfigNode,"Delta-T","The delta-time between simulation steps", 0.01);
+	m_numIntegrationSteps = INT_PARAM(pConfigNode, "Num-Integration-Steps"
+		, "The number of integration steps performed each simulation time-step", 4);
+	m_dt = DOUBLE_PARAM(pConfigNode, "Delta-T", "The delta-time between simulation steps", 0.01);
 }
 
 CWorld::~CWorld()
@@ -66,24 +67,24 @@ CReward* CWorld::getRewardVector()
 
 void CWorld::reset(CState *s)
 {
-	m_episodeSimTime= 0.0;
+	m_episodeSimTime = 0.0;
 	if (m_pDynamicModel.ptr())
 		m_pDynamicModel->reset(s);
 }
 
-double CWorld::executeAction(CState *s,CAction *a,CState *s_p)
-{	
-	double dt= m_dt.get()/(double)m_numIntegrationSteps.get();
+double CWorld::executeAction(CState *s, CAction *a, CState *s_p)
+{
+	double dt = m_dt.get() / (double)m_numIntegrationSteps.get();
 
-	m_stepStartSimTime= m_episodeSimTime;
+	m_stepStartSimTime = m_episodeSimTime;
 
 	if (m_pDynamicModel.ptr())
 	{
 		s_p->copy(s);
-		for (int i= 0; i<m_numIntegrationSteps.get() && CSimionApp::get()->pExperiment->isValidStep(); i++)
+		for (int i = 0; i < m_numIntegrationSteps.get() && CSimionApp::get()->pExperiment->isValidStep(); i++)
 		{
-			m_pDynamicModel->executeAction(s_p,a,dt);
-			m_episodeSimTime+= dt;
+			m_pDynamicModel->executeAction(s_p, a, dt);
+			m_episodeSimTime += dt;
 			m_totalSimTime += dt;
 		}
 	}
@@ -142,10 +143,10 @@ double CDynamicModel::getConstant(int i)
 const char* CDynamicModel::getConstantName(int i)
 {
 	int j = 0;
-	for (std::map<const char*,double>::iterator it = m_pConstants.begin(); it != m_pConstants.end(); ++it)
+	for (std::map<const char*, double>::iterator it = m_pConstants.begin(); it != m_pConstants.end(); ++it)
 	{
 		if (j == i) return it->first;
-			
+
 		++j;
 	}
 	return "";
@@ -153,10 +154,10 @@ const char* CDynamicModel::getConstantName(int i)
 
 double CDynamicModel::getConstant(const char* constantName)
 {
-	if (m_pConstants.find(constantName)!=m_pConstants.end())
+	if (m_pConstants.find(constantName) != m_pConstants.end())
 		return m_pConstants[constantName];
 	CLogger::logMessage(MessageType::Error
-		, (std::string("CDynamicModel::getConstant() couldn't find constant: ")+std::string(constantName)).c_str());
+		, (std::string("CDynamicModel::getConstant() couldn't find constant: ") + std::string(constantName)).c_str());
 	return 0.0;
 }
 
@@ -178,7 +179,7 @@ CDescriptor* CDynamicModel::getActionDescriptorPtr()
 }
 CState* CDynamicModel::getStateInstance()
 {
-	return m_pStateDescriptor->getInstance(); 
+	return m_pStateDescriptor->getInstance();
 }
 CAction* CDynamicModel::getActionInstance()
 {
@@ -187,7 +188,7 @@ CAction* CDynamicModel::getActionInstance()
 
 std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNode)
 {
-	return CHOICE<CDynamicModel>(pConfigNode,"Model", "The world",
+	return CHOICE<CDynamicModel>(pConfigNode, "Model", "The world",
 	{
 		{make_tuple("Wind-turbine",CHOICE_ELEMENT_NEW<CWindTurbine>,"World=Wind-turbine")},
 		{make_tuple("FAST-Wind-turbine",CHOICE_ELEMENT_NEW<CFASTWindTurbine>,"World=FAST-Wind-turbine") },
@@ -200,7 +201,9 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 		{make_tuple("Pull-Box-2",CHOICE_ELEMENT_NEW<CPullBox2>,"World=Pull-Box-2") },
 		{make_tuple("Pull-Box-1",CHOICE_ELEMENT_NEW<CPullBox1>,"World=Pull-Box-1") },
 		{ make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") },
-		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<CSwingupPendulum>,"World=Swing-up-pendulum") }
+		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<CSwingupPendulum>,"World=Swing-up-pendulum") },
+		{ make_tuple("Continuous-Gridworld",CHOICE_ELEMENT_NEW<CContinuousGridWorld>,"World=Continuous-Gridworld") },
+		{ make_tuple("Discrete-Gridworld",CHOICE_ELEMENT_NEW<CDiscreteGridWorld>,"World=Discrete-Gridworld") }
 	});
 }
 

@@ -8,10 +8,10 @@
 CMountainCar::CMountainCar(CConfigNode* pConfigNode)
 {
 	METADATA("World", "Mountain-car");
-	m_sPosition = addStateVariable("position","m",-1.2,0.6);
-	m_sVelocity = addStateVariable("velocity","m/s",-0.07,0.07);
+	m_sPosition = addStateVariable("position","m", -1.2, 0.5);
+	m_sVelocity = addStateVariable("velocity","m/s", -0.07, 0.07);
 
-	m_aPedal = addActionVariable("pedal","m",-1.0,1.0);
+	m_aPedal = addActionVariable("pedal","m", -1.0, 1.0);
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CMountainCarReward());
@@ -60,7 +60,7 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
 	*/
 	if (position > s->getProperties(m_sPosition).getMin())
 	{
-		velocity += pedal*0.001 + cos(3 * position)*(-0.0025);
+		velocity += pedal*0.001 -0.0025 * cos(3 * position);
 		s->set(m_sVelocity, velocity); //saturate
 		velocity = s->get(m_sVelocity);
 		position += velocity;
@@ -88,11 +88,11 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 	if (position == s_p->getProperties("position").getMin())
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
-		return -100.0;
+		return -1.0;// -100.0;
 	}
 	return -1.0;
 }
 
-double CMountainCarReward::getMin() { return -100.0; }
+double CMountainCarReward::getMin() { return -1.0; }
 
 double CMountainCarReward::getMax() { return 1.0; }

@@ -50,7 +50,7 @@ public:
 };
 
 
-//CFeatureMap////////////////////////////////////////////////////
+//CGaussianRBFFeatureMap////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 #define MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION 3
 template <typename dimensionGridType>
@@ -100,7 +100,7 @@ public:
 
 };
 
-//CFeatureMap////////////////////////////////////////////////////
+//CTileCodingFeatureMap////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 template <typename dimensionGridType>
 class CTileCodingFeatureMap
@@ -160,4 +160,51 @@ public:
 	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 	unsigned int getNumTilings() { return m_numTilings; }
 	double getTilingOffset() { return m_tilingOffset; }
+};
+
+//CLinearFeatureMap////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+template <typename dimensionGridType>
+class CLinearFeatureMap
+{
+protected:
+	CFeatureList* m_pVarFeatures;
+
+	unsigned int m_totalNumFeatures;
+	unsigned int m_maxNumActiveFeatures;
+
+	MULTI_VALUE<dimensionGridType> m_grid;
+
+	CLinearFeatureMap(CConfigNode* pParameters);
+public:
+	virtual ~CLinearFeatureMap();
+
+	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
+	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+
+	MULTI_VALUE<dimensionGridType> returnGrid() { return m_grid; }
+};
+
+class CLinearStateFeatureMap : public CLinearFeatureMap<CStateVariableGrid>
+	, public CStateFeatureMap
+{
+public:
+	CLinearStateFeatureMap(CConfigNode* pParameters);
+
+	void getFeatures(const CState* s, CFeatureList* outFeatures) { CLinearFeatureMap::getFeatures(s, 0, outFeatures); }
+	void getFeatureState(unsigned int feature, CState* s) { CLinearFeatureMap::getFeatureStateAction(feature, s, 0); }
+	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
+	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+};
+
+class CLinearActionFeatureMap : public CLinearFeatureMap<CActionVariableGrid>
+	, public CActionFeatureMap
+{
+public:
+	CLinearActionFeatureMap(CConfigNode* pParameters);
+
+	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CLinearFeatureMap::getFeatures(0, a, outFeatures); }
+	void getFeatureAction(unsigned int feature, CAction* a) { CLinearFeatureMap::getFeatureStateAction(feature, 0, a); }
+	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
+	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 };
