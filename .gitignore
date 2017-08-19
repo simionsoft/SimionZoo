@@ -3,7 +3,8 @@
 
 *.bin
 
-.vs/
+*.vs/
+*.vs/*
 
 # User-specific files
 *.suo
