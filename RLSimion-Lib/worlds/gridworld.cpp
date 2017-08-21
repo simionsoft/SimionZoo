@@ -10,7 +10,7 @@ CContinuousGridWorld::CContinuousGridWorld(CConfigNode* pConfigNode)
 	METADATA("World", "Continuous-GridWorld");
 
 	m_targetX = INT_PARAM(pConfigNode, "Target-X", "X coordinate of the target position.", 0);
-	m_targetY = INT_PARAM(pConfigNode, "Target-Y", "Y coordinate of the target position.", 10);
+	m_targetY = INT_PARAM(pConfigNode, "Target-Y", "Y coordinate of the target position.", 8);
 
 	m_sXPosition = addStateVariable("x-position", "m", -10, 10);
 	m_sYPosition = addStateVariable("y-position", "m", -10, 10);
@@ -117,17 +117,13 @@ CDiscreteGridWorld::CDiscreteGridWorld(CConfigNode* pConfigNode)
 
 CDiscreteGridWorld::~CDiscreteGridWorld()
 {
-
 }
 
 void CDiscreteGridWorld::reset(CState *s)
 {
-
-	//fixed setting
 	s->set(m_sXPosition, 0);
 	s->set(m_sYPosition, 0);
 }
-
 
 void CDiscreteGridWorld::executeAction(CState *s, const CAction *a, double dt)
 {
@@ -155,14 +151,8 @@ void CDiscreteGridWorld::executeAction(CState *s, const CAction *a, double dt)
 		break;
 	}
 
-	if (xPosition + xStep >= s->getProperties(m_sXPosition).getMin() && xPosition + xStep <= s->getProperties(m_sXPosition).getMax())
-	{
-		xPosition += xStep;
-	}
-	if (yPosition + yStep >= s->getProperties(m_sYPosition).getMin() && yPosition + yStep <= s->getProperties(m_sYPosition).getMax())
-	{
-		yPosition += yStep;
-	}
+	xPosition += xStep;
+	yPosition += yStep;
 
 	s->set(m_sXPosition, xPosition);
 	s->set(m_sYPosition, yPosition);
@@ -173,7 +163,6 @@ CDiscreteGridWorldReward::CDiscreteGridWorldReward(int targetX, int targetY)
 	m_xTarget = targetX;
 	m_yTarget = targetY;
 }
-
 
 double CDiscreteGridWorldReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {

@@ -6,6 +6,11 @@
 *.vs/
 *.vs/*
 
+.vs/*
+.vs
+
+config/definitions.xml
+
 # User-specific files
 *.suo
 *.user

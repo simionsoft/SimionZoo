@@ -12,15 +12,15 @@
 			<Model>
 		<Discrete-Gridworld>
 			<Target-X>0</Target-X>
-			<Target-Y>10</Target-Y>
+			<Target-Y>8</Target-Y>
 		</Discrete-Gridworld>
 		</Model>
 		</Dynamic-Model>
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>1000</Num-Episodes>
-		<Eval-Freq>10</Eval-Freq>
+		<Num-Episodes>10000</Num-Episodes>
+		<Eval-Freq>100</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
 		<Episode-Length>1000.0</Episode-Length>
 	</Experiment>
@@ -65,9 +65,15 @@
 		<Epsilon-Greedy>
 			<Epsilon>
 				<Schedule>
-		<Constant>
-			<Value>0.1</Value>
-		</Constant>
+		<Linear-Schedule>
+			<Start-Offset>0.1</Start-Offset>
+			<Pre-Offset-Value>0.2</Pre-Offset-Value>
+			<Initial-Value>0.2</Initial-Value>
+			<End-Value>0.0</End-Value>
+			<Evaluation-Value>0.0</Evaluation-Value>
+			<Interpolation>linear</Interpolation>
+			<Time-reference>experiment</Time-reference>
+		</Linear-Schedule>
 		</Schedule>
 			</Epsilon>
 		</Epsilon-Greedy>
@@ -84,7 +90,7 @@
 			<Alpha>
 				<Schedule>
 		<Constant>
-			<Value>0.1</Value>
+			<Value>0.05</Value>
 		</Constant>
 		</Schedule>
 			</Alpha>

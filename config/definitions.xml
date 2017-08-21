@@ -433,7 +433,7 @@
   </CLASS>
   <CLASS Name="CContinuousGridWorld" World="Continuous-GridWorld">
     <INTEGER-VALUE Name="Target-X" Comment="X coordinate of the target position." Default="0"/>
-    <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="10"/>
+    <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="8"/>
     <STATE-VAR Name="x-position" Min="-10" Max="10" Unit="m"/>
     <STATE-VAR Name="y-position" Min="-10" Max="10" Unit="m"/>
     <ACTION-VAR Name="x-step" Min="-1" Max="1" Unit="m"/>
