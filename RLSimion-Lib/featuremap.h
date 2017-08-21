@@ -9,6 +9,7 @@ class CConfigNode;
 #include "parameters.h"
 #include "single-dimension-grid-rbf.h"
 #include "single-dimension-grid.h"
+#include "single-dimension-discrete-grid.h"
 #include <vector>
 
 //CFeatureMap//////////////////////////////////////////////////
@@ -134,7 +135,7 @@ public:
 
 };
 
-class CTileCodingStateFeatureMap : public CTileCodingFeatureMap<CStateVariableGrid>
+class CTileCodingStateFeatureMap : public CTileCodingFeatureMap<CSingleDimensionStateVariableGrid>
 	, public CStateFeatureMap
 {
 public:
@@ -148,7 +149,7 @@ public:
 	double getTilingOffset() { return m_tilingOffset; }
 };
 
-class CTileCodingActionFeatureMap : public CTileCodingFeatureMap<CActionVariableGrid>
+class CTileCodingActionFeatureMap : public CTileCodingFeatureMap<CSingleDimensionActionVariableGrid>
 	, public CActionFeatureMap
 {
 public:
@@ -162,10 +163,10 @@ public:
 	double getTilingOffset() { return m_tilingOffset; }
 };
 
-//CLinearFeatureMap////////////////////////////////////////////////////
+//CDiscreteFeatureMap////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 template <typename dimensionGridType>
-class CLinearFeatureMap
+class CDiscreteFeatureMap
 {
 protected:
 	CFeatureList* m_pVarFeatures;
@@ -175,9 +176,9 @@ protected:
 
 	MULTI_VALUE<dimensionGridType> m_grid;
 
-	CLinearFeatureMap(CConfigNode* pParameters);
+	CDiscreteFeatureMap(CConfigNode* pParameters);
 public:
-	virtual ~CLinearFeatureMap();
+	virtual ~CDiscreteFeatureMap();
 
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
 	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
@@ -185,26 +186,26 @@ public:
 	MULTI_VALUE<dimensionGridType> returnGrid() { return m_grid; }
 };
 
-class CLinearStateFeatureMap : public CLinearFeatureMap<CStateVariableGrid>
+class CDiscreteStateFeatureMap : public CDiscreteFeatureMap<CSingleDimensionDiscreteStateVariableGrid>
 	, public CStateFeatureMap
 {
 public:
-	CLinearStateFeatureMap(CConfigNode* pParameters);
+	CDiscreteStateFeatureMap(CConfigNode* pParameters);
 
-	void getFeatures(const CState* s, CFeatureList* outFeatures) { CLinearFeatureMap::getFeatures(s, 0, outFeatures); }
-	void getFeatureState(unsigned int feature, CState* s) { CLinearFeatureMap::getFeatureStateAction(feature, s, 0); }
+	void getFeatures(const CState* s, CFeatureList* outFeatures) { CDiscreteFeatureMap::getFeatures(s, 0, outFeatures); }
+	void getFeatureState(unsigned int feature, CState* s) { CDiscreteFeatureMap::getFeatureStateAction(feature, s, 0); }
 	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
 	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 };
 
-class CLinearActionFeatureMap : public CLinearFeatureMap<CActionVariableGrid>
+class CDiscreteActionFeatureMap : public CDiscreteFeatureMap<CSingleDimensionDiscreteActionVariableGrid>
 	, public CActionFeatureMap
 {
 public:
-	CLinearActionFeatureMap(CConfigNode* pParameters);
+	CDiscreteActionFeatureMap(CConfigNode* pParameters);
 
-	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CLinearFeatureMap::getFeatures(0, a, outFeatures); }
-	void getFeatureAction(unsigned int feature, CAction* a) { CLinearFeatureMap::getFeatureStateAction(feature, 0, a); }
+	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CDiscreteFeatureMap::getFeatures(0, a, outFeatures); }
+	void getFeatureAction(unsigned int feature, CAction* a) { CDiscreteFeatureMap::getFeatureStateAction(feature, 0, a); }
 	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
 	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 };

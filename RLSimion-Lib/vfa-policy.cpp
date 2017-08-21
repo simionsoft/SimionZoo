@@ -32,10 +32,10 @@ CPolicy::CPolicy(CConfigNode* pConfigNode)
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 	m_discreteActionSpace = BOOL_PARAM(pConfigNode, "Discrete-Action-Space", "Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)", false);
 
-	//only CLinearActionFeatureMap is supported for the discrete mode
+	//only CDiscreteActionFeatureMap is supported for the discrete mode
 	if (m_discreteActionSpace.get())
 	{
-		assert(typeid(*CSimGod::getGlobalActionFeatureMap().get()) == typeid(CLinearActionFeatureMap));
+		assert(typeid(*CSimGod::getGlobalActionFeatureMap().get()) == typeid(CDiscreteActionFeatureMap));
 	}
 }
 
@@ -74,7 +74,7 @@ double CUniformPolicy::selectAction(const CState *s, CAction *a)
 
 	if (m_discreteActionSpace.get())
 	{
-		CSingleDimensionGrid* grid = ((CActionVariableGrid*)(((CLinearActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		randomValue = grid->getCenters()[grid->getClosestCenter(randomValue)];
 		probability = 1.0 / grid->getNumCenters();
 	}
@@ -91,7 +91,7 @@ double CUniformPolicy::getOutput(const CState* s)
 
 	if (m_discreteActionSpace.get())
 	{
-		CSingleDimensionGrid* grid = ((CActionVariableGrid*)(((CLinearActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		randomValue = grid->getCenters()[grid->getClosestCenter(randomValue)];
 	}
 
@@ -107,7 +107,7 @@ double CUniformPolicy::getProbability(const CState* s, const CAction* a, bool bS
 
 	if (m_discreteActionSpace.get())
 	{
-		CSingleDimensionGrid* grid = ((CActionVariableGrid*)(((CLinearActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		probability = 1.0 / grid->getNumCenters();
 	}
 
@@ -271,7 +271,7 @@ double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 	//disctingtion between continuous and discrete action variables
 	if (m_discreteActionSpace.get())
 	{
-		CSingleDimensionGrid* grid = ((CActionVariableGrid*)(((CLinearActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		output = grid->getCenters()[grid->getClosestCenter(output)];
 
 		probability = CGaussianNoise::getPDF(mean, sigma, output) / grid->getNumCenters();
@@ -310,7 +310,7 @@ double CStochasticPolicyGaussianNoise::getOutput(const CState *s)
 
 	if (m_discreteActionSpace.get())
 	{
-		CSingleDimensionGrid* grid = ((CActionVariableGrid*)(((CLinearActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		output = grid->getCenters()[grid->getClosestCenter(output)];
 	}
 
@@ -328,7 +328,7 @@ double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CSt
 
 		if (m_discreteActionSpace.get())
 		{
-			CSingleDimensionGrid* grid = ((CActionVariableGrid*)(((CLinearActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+			CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 			return CGaussianNoise::getPDF(mean, exp(m_pSigmaVFA->get(s)), value) / grid->getNumCenters();
 		}
 		else

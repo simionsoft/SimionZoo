@@ -202,8 +202,8 @@ std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNo
 		{make_tuple("Pull-Box-1",CHOICE_ELEMENT_NEW<CPullBox1>,"World=Pull-Box-1") },
 		{ make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") },
 		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<CSwingupPendulum>,"World=Swing-up-pendulum") },
-		{ make_tuple("Continuous-Gridworld",CHOICE_ELEMENT_NEW<CContinuousGridWorld>,"World=Continuous-Gridworld") },
-		{ make_tuple("Discrete-Gridworld",CHOICE_ELEMENT_NEW<CDiscreteGridWorld>,"World=Discrete-Gridworld") }
+		{ make_tuple("Continuous-Gridworld",CHOICE_ELEMENT_NEW<CContinuousGridWorld>,"World=Continuous-GridWorld") },
+		{ make_tuple("Discrete-Gridworld",CHOICE_ELEMENT_NEW<CDiscreteGridWorld>,"World=Discrete-GridWorld") }
 	});
 }
 

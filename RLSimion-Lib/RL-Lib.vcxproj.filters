@@ -220,11 +220,14 @@
     <ClCompile Include="actor-critic-offpac.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="featuremap-linear.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="worlds\gridworld.cpp">
       <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-discrete.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="single-dimension-discrete-grid.cpp">
+      <Filter>learning</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -414,6 +417,9 @@
     </ClInclude>
     <ClInclude Include="worlds\gridworld.h">
       <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-discrete-grid.h">
+      <Filter>learning</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

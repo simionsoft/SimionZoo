@@ -222,9 +222,12 @@
     <ClCompile Include="app.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="deferred-load.cpp" />
+    <ClCompile Include="single-dimension-discrete-grid.cpp">
+      <FileType>CppCode</FileType>
+    </ClCompile>
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
-    <ClCompile Include="featuremap-linear.cpp" />
+    <ClCompile Include="featuremap-discrete.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mem-buffer.cpp" />
@@ -295,6 +298,7 @@
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="deferred-load.h" />
+    <ClInclude Include="single-dimension-discrete-grid.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />

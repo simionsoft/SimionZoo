@@ -13,7 +13,7 @@ CContinuousGridWorld::CContinuousGridWorld(CConfigNode* pConfigNode)
 	m_targetY = INT_PARAM(pConfigNode, "Target-Y", "Y coordinate of the target position.", 10);
 
 	m_sXPosition = addStateVariable("x-position", "m", -10, 10);
-	m_sYPosition = addStateVariable("z-position", "m", -10, 10);
+	m_sYPosition = addStateVariable("y-position", "m", -10, 10);
 
 	m_aXStep = addActionVariable("x-step", "m", -1.0, 1.0);
 	m_aYStep = addActionVariable("y-step", "m", -1.0, 1.0);
@@ -106,7 +106,7 @@ CDiscreteGridWorld::CDiscreteGridWorld(CConfigNode* pConfigNode)
 	m_targetY = INT_PARAM(pConfigNode, "Target-Y", "Y coordinate of the target position.", 10);
 
 	m_sXPosition = addStateVariable("x-position", "m", -10, 10);
-	m_sYPosition = addStateVariable("z-position", "m", -10, 10);
+	m_sYPosition = addStateVariable("y-position", "m", -10, 10);
 
 	m_aStep = addActionVariable("step", "", 0, 4);
 

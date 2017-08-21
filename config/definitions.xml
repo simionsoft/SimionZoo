@@ -155,11 +155,11 @@
     <DOUBLE-VALUE Name="Progress-Update-Freq" Comment="Progress update frequency (seconds)" Default="1.0"/>
     <DOUBLE-VALUE Name="Episode-Length" Comment="Length of an episode(seconds)" Default="10.0"/>
   </CLASS>
-  <CLASS Name="CLinearStateFeatureMap">
-    <MULTI-VALUED Name="Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
+  <CLASS Name="CDiscreteStateFeatureMap">
+    <MULTI-VALUED Name="Grid-Dimension" Class="CSingleDimensionDiscreteStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
   </CLASS>
-  <CLASS Name="CLinearActionFeatureMap">
-    <MULTI-VALUED Name="Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
+  <CLASS Name="CDiscreteActionFeatureMap">
+    <MULTI-VALUED Name="Grid-Dimension" Class="CSingleDimensionDiscreteActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
   </CLASS>
   <CLASS Name="CGaussianRBFStateGridFeatureMap">
     <MULTI-VALUED Name="RBF-Grid-Dimension" Class="CStateVariableGridRBF" Comment="Parameters of the state-dimension's grid"/>
@@ -170,12 +170,12 @@
   <CLASS Name="CTileCodingStateFeatureMap">
     <INTEGER-VALUE Name="Tile-layers" Comment="Number of tile layers of the grid" Default="1"/>
     <DOUBLE-VALUE Name="Tile-offset" Comment="Offset of each tile relative to the previous one" Default="0.0"/>
-    <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
+    <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CSingleDimensionStateVariableGrid" Comment="Parameters of the state-dimension's grid"/>
   </CLASS>
   <CLASS Name="CTileCodingActionFeatureMap">
     <INTEGER-VALUE Name="Tile-layers" Comment="Number of tile layers of the grid" Default="1"/>
     <DOUBLE-VALUE Name="Tile-offset" Comment="Offset of each tile relative to the previous one" Default="0.0"/>
-    <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
+    <MULTI-VALUED Name="Tile-Encoding-Grid-Dimension" Class="CSingleDimensionActionVariableGrid" Comment="Parameters of the action-dimension's grid"/>
   </CLASS>
   <CLASS Name="CStateFeatureMap">
   </CLASS>
@@ -183,14 +183,14 @@
   </CLASS>
   <CLASS Name="CStateFeatureMap-Factory">
     <CHOICE Name="Type" Class="CStateFeatureMap" Comment="Feature map type">
-      <CHOICE-ELEMENT Name="Linear-State-Grid" Class="CLinearStateFeatureMap"/>
+      <CHOICE-ELEMENT Name="Discrete-State-Grid" Class="CDiscreteStateFeatureMap"/>
       <CHOICE-ELEMENT Name="RBF-State-Grid" Class="CGaussianRBFStateGridFeatureMap"/>
       <CHOICE-ELEMENT Name="Tile-Coding-State-Grid" Class="CTileCodingStateFeatureMap"/>
     </CHOICE>
   </CLASS>
   <CLASS Name="CActionFeatureMap-Factory">
     <CHOICE Name="Type" Class="CActionFeatureMap" Comment="Feature map type">
-      <CHOICE-ELEMENT Name="Linear-Action-Grid" Class="CLinearActionFeatureMap"/>
+      <CHOICE-ELEMENT Name="Discrete-Action-Grid" Class="CDiscreteActionFeatureMap"/>
       <CHOICE-ELEMENT Name="RBF-Action-Grid" Class="CGaussianRBFActionGridFeatureMap"/>
       <CHOICE-ELEMENT Name="Tile-Coding-Action-Grid" Class="CTileCodingActionFeatureMap"/>
     </CHOICE>
@@ -323,6 +323,14 @@
       <CHOICE-ELEMENT Name="Off-Policy-Actor-Critic" Class="COffPolicyActorCritic"/>
     </CHOICE>
   </CLASS>
+  <CLASS Name="CSingleDimensionDiscreteStateVariableGrid">
+    <DOUBLE-VALUE Name="Step-Size" Comment="The step size with which the space will be discretized" Default="1.0"/>
+    <STATE-VAR-REF Name="Variable" Comment="The state variable"/>
+  </CLASS>
+  <CLASS Name="CSingleDimensionDiscreteActionVariableGrid">
+    <DOUBLE-VALUE Name="Step-Size" Comment="The step size with which the space will be discretized" Default="1.0"/>
+    <ACTION-VAR-REF Name="Variable" Comment="The action variable"/>
+  </CLASS>
   <CLASS Name="CStateVariableGridRBF">
     <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
     <STATE-VAR-REF Name="Variable" Comment="The state variable"/>
@@ -333,12 +341,12 @@
     <ACTION-VAR-REF Name="Variable" Comment="The action variable"/>
     <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
   </CLASS>
-  <CLASS Name="CStateVariableGrid">
+  <CLASS Name="CSingleDimensionStateVariableGrid">
     <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
     <STATE-VAR-REF Name="Variable" Comment="The state variable"/>
     <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the state variable's grid" Default="linear"/>
   </CLASS>
-  <CLASS Name="CActionVariableGrid">
+  <CLASS Name="CSingleDimensionActionVariableGrid">
     <INTEGER-VALUE Name="Num-Features" Comment="The number of points that form the grid" Default="3"/>
     <ACTION-VAR-REF Name="Variable" Comment="The action variable"/>
     <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
@@ -427,7 +435,7 @@
     <INTEGER-VALUE Name="Target-X" Comment="X coordinate of the target position." Default="0"/>
     <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="10"/>
     <STATE-VAR Name="x-position" Min="-10" Max="10" Unit="m"/>
-    <STATE-VAR Name="z-position" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="y-position" Min="-10" Max="10" Unit="m"/>
     <ACTION-VAR Name="x-step" Min="-1" Max="1" Unit="m"/>
     <ACTION-VAR Name="y-step" Min="-1" Max="1" Unit="m"/>
   </CLASS>
@@ -435,7 +443,7 @@
     <INTEGER-VALUE Name="Target-X" Comment="X coordinate of the target position." Default="0"/>
     <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="10"/>
     <STATE-VAR Name="x-position" Min="-10" Max="10" Unit="m"/>
-    <STATE-VAR Name="z-position" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="y-position" Min="-10" Max="10" Unit="m"/>
     <ACTION-VAR Name="step" Min="0" Max="4" Unit=""/>
   </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">
@@ -603,8 +611,8 @@
       <CHOICE-ELEMENT Name="Pull-Box-1" Class="CPullBox1" BadgerMetadata="World=Pull-Box-1"/>
       <CHOICE-ELEMENT Name="Mountain-car" Class="CMountainCar" BadgerMetadata="World=Mountain-car"/>
       <CHOICE-ELEMENT Name="Swing-up-pendulum" Class="CSwingupPendulum" BadgerMetadata="World=Swing-up-pendulum"/>
-      <CHOICE-ELEMENT Name="Continuous-Gridworld" Class="CContinuousGridWorld" BadgerMetadata="World=Continuous-Gridworld"/>
-      <CHOICE-ELEMENT Name="Discrete-Gridworld" Class="CDiscreteGridWorld" BadgerMetadata="World=Discrete-Gridworld"/>
+      <CHOICE-ELEMENT Name="Continuous-Gridworld" Class="CContinuousGridWorld" BadgerMetadata="World=Continuous-GridWorld"/>
+      <CHOICE-ELEMENT Name="Discrete-Gridworld" Class="CDiscreteGridWorld" BadgerMetadata="World=Discrete-GridWorld"/>
     </CHOICE>
   </CLASS>
   <ENUMERATION Name="Distribution">
