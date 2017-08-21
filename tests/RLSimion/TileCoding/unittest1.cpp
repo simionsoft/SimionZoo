@@ -17,7 +17,7 @@ namespace TileCoding
 	public:
 
 		void test_all_low(int highDimension, CTileCodingStateFeatureMap* map,
-			CFeatureList* outFeatureList, MULTI_VALUE<CStateVariableGrid> m_grid, CState* s)
+			CFeatureList* outFeatureList, MULTI_VALUE<CSingleDimensionStateVariableGrid> m_grid, CState* s)
 		{
 			outFeatureList->clear();
 
@@ -65,7 +65,7 @@ namespace TileCoding
 
 			CFeatureList* outFeatureList = new CFeatureList("testFeatureList");
 
-			MULTI_VALUE<CStateVariableGrid> m_grid = map->returnGrid();
+			MULTI_VALUE<CSingleDimensionStateVariableGrid> m_grid = map->returnGrid();
 
 			for (int i = 0; i < m_grid.size(); i++)
 			{

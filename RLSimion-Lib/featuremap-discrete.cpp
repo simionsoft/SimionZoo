@@ -9,19 +9,19 @@
 #define ACTIVATION_THRESHOLD 0.0001
 
 template <typename dimensionGridType>
-CLinearFeatureMap<dimensionGridType>::CLinearFeatureMap(CConfigNode* pParameters)
+CDiscreteFeatureMap<dimensionGridType>::CDiscreteFeatureMap(CConfigNode* pParameters)
 {
 }
 
 
 template <typename dimensionGridType>
-CLinearFeatureMap<dimensionGridType>::~CLinearFeatureMap()
+CDiscreteFeatureMap<dimensionGridType>::~CDiscreteFeatureMap()
 {
 	delete m_pVarFeatures;
 }
 
 template <typename dimensionGridType>
-void CLinearFeatureMap<dimensionGridType>::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
+void CDiscreteFeatureMap<dimensionGridType>::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
 {
 	unsigned int offset = 1;
 
@@ -44,7 +44,7 @@ void CLinearFeatureMap<dimensionGridType>::getFeatures(const CState* s, const CA
 }
 
 template <typename dimensionGridType>
-void CLinearFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
+void CDiscreteFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
 {
 	unsigned int dimFeature;
 
@@ -58,12 +58,12 @@ void CLinearFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int fe
 	}
 }
 
-CLinearStateFeatureMap::CLinearStateFeatureMap(CConfigNode* pConfigNode)
-	: CLinearFeatureMap(pConfigNode), CStateFeatureMap(pConfigNode)
+CDiscreteStateFeatureMap::CDiscreteStateFeatureMap(CConfigNode* pConfigNode)
+	: CDiscreteFeatureMap(pConfigNode), CStateFeatureMap(pConfigNode)
 {
 	m_pVarFeatures = new CFeatureList("LinearGrid/var");
 
-	m_grid = MULTI_VALUE<CStateVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the state-dimension's grid");
+	m_grid = MULTI_VALUE<CSingleDimensionDiscreteStateVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the state-dimension's grid");
 
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
@@ -76,12 +76,12 @@ CLinearStateFeatureMap::CLinearStateFeatureMap(CConfigNode* pConfigNode)
 		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 }
 
-CLinearActionFeatureMap::CLinearActionFeatureMap(CConfigNode* pConfigNode)
-	: CLinearFeatureMap(pConfigNode), CActionFeatureMap(pConfigNode)
+CDiscreteActionFeatureMap::CDiscreteActionFeatureMap(CConfigNode* pConfigNode)
+	: CDiscreteFeatureMap(pConfigNode), CActionFeatureMap(pConfigNode)
 {
 	m_pVarFeatures = new CFeatureList("LinearGrid/var");
 
-	m_grid = MULTI_VALUE<CActionVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the action-dimension's grid");
+	m_grid = MULTI_VALUE<CSingleDimensionDiscreteActionVariableGrid>(pConfigNode, "Grid-Dimension", "Parameters of the action-dimension's grid");
 
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
