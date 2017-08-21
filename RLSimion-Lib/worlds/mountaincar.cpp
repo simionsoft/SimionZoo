@@ -81,16 +81,20 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 	if (position == s_p->getProperties("position").getMax())
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
-		/*printf("goal reached\n");*/
 		return 1.0;
 	}
+
 	//reached the minimum position to the left?
 	if (position == s_p->getProperties("position").getMin())
 	{
-		CSimionApp::get()->pExperiment->setTerminalState();
+		//in Sutton's description the experiment would now be terminated.
+		//In the Degris' the experiment is only terminated at the right side of the world.
+		//(see https://hal.inria.fr/hal-00764281/document)
+
+		//CSimionApp::get()->pExperiment->setTerminalState();
 		return -1.0;// -100.0;
 	}
-	return 0.0;// -1.0;
+	return -1.0;
 }
 
 double CMountainCarReward::getMin() { return -1.0; }

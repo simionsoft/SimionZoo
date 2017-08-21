@@ -1,4 +1,4 @@
-<RLSimion-x64 FileVersion="1.0.0.0">
+<RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
 		<Log-Freq>0.25</Log-Freq>
@@ -6,8 +6,8 @@
 		<Log-training-episodes>false</Log-training-episodes>
 	</Log>
 	<World>
-		<Num-Integration-Steps>4</Num-Integration-Steps>
-		<Delta-T>0.01</Delta-T>
+		<Num-Integration-Steps>1</Num-Integration-Steps>
+		<Delta-T>1</Delta-T>
 		<Dynamic-Model>
 			<Model>
 		<Mountain-car>
@@ -18,24 +18,20 @@
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
 		<Num-Episodes>1000</Num-Episodes>
-		<Eval-Freq>10</Eval-Freq>
+		<Eval-Freq>50</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>10.0</Episode-Length>
+		<Episode-Length>5000</Episode-Length>
 	</Experiment>
 	<SimGod>
 		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
 		<Gamma>1.0</Gamma>
 		<Freeze-Target-Function>false</Freeze-Target-Function>
-		<Use-Importance-Weights>false</Use-Importance-Weights>
-		<Experience-Replay>
-			<Buffer-Size>1000</Buffer-Size>
-			<Update-Batch-Size>10</Update-Batch-Size>
-		</Experience-Replay>
+		<Use-Importance-Weights>true</Use-Importance-Weights>
 		<State-Feature-Map>
 			<Type>
 		<Tile-Coding-State-Grid>
 			<Tile-layers>10</Tile-layers>
-			<Tile-offset>0.0</Tile-offset>
+			<Tile-offset>0.1</Tile-offset>
 			<Tile-Encoding-Grid-Dimension>
 				<Num-Features>10</Num-Features>
 				<Variable>position</Variable>
@@ -49,6 +45,16 @@
 		</Tile-Coding-State-Grid>
 		</Type>
 		</State-Feature-Map>
+		<Action-Feature-Map>
+			<Type>
+		<Discrete-Action-Grid>
+			<Grid-Dimension>
+				<Step-Size>1.0</Step-Size>
+				<Variable>pedal</Variable>
+			</Grid-Dimension>
+		</Discrete-Action-Grid>
+		</Type>
+		</Action-Feature-Map>
 		<Simion>
 			<Type>
 		<Inc-Natural-Actor-Critic>
@@ -57,38 +63,34 @@
 			</VFunction>
 			<V-ETraces>
 				<Threshold>0.001</Threshold>
-				<Lambda>0.9</Lambda>
+				<Lambda>0.75</Lambda>
 				<Replace>true</Replace>
 			</V-ETraces>
-			<U-ETraces>
-				<Threshold>0.001</Threshold>
-				<Lambda>0.9</Lambda>
-				<Replace>true</Replace>
-			</U-ETraces>
 			<Alpha-v>
 				<Schedule>
 		<Constant>
-			<Value>0.5</Value>
+			<Value>0.01</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-v>
 			<Alpha-r>
 				<Schedule>
 		<Constant>
-			<Value>0.005</Value>
+			<Value>0.001</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-r>
 			<Alpha-u>
 				<Schedule>
 		<Constant>
-			<Value>0.005</Value>
+			<Value>0.01</Value>
 		</Constant>
 		</Schedule>
 			</Alpha-u>
 			<Policy>
 				<Policy>
 		<Stochastic-Policy-Gaussian-Noise>
+			<Discrete-Action-Space>false</Discrete-Action-Space>
 			<Output-Action>pedal</Output-Action>
 			<Mean-VFA>
 				<Init-Value>0.0</Init-Value>
@@ -104,4 +106,4 @@
 		</Simion>
 	</SimGod>
 </RLSimion>
-</RLSimion-x64>
+</RLSimion>
