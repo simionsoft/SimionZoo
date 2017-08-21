@@ -118,7 +118,7 @@
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" >
-                            <Label Content="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
+                            <TextBox Text="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
                                    VerticalAlignment="Center"/>
                             <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
                             <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">

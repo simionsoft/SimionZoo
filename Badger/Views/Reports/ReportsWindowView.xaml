@@ -169,7 +169,7 @@
                         <TabControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Label Content="{Binding name}" VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding name}" VerticalAlignment="Center" BorderBrush="Transparent"/>
                                     <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="Click">
