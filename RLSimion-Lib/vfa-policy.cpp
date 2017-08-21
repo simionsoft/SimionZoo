@@ -284,7 +284,7 @@ double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 	a->set(actionIndex, output);
 
 #ifdef _DEBUG
-	cout << "select action - mean: " << mean << "\tsigma: " << sigma << "\tlog(sigma)" << m_pSigmaVFA->get(s) << "\toutput: " << output << "\n";
+	cout << "select action - mean: " << mean << "\tsigma: " << sigma << "\tlog(sigma): " << m_pSigmaVFA->get(s) << "\toutput: " << output << "\n";
 #endif
 	//this is only an approximation as the PDF now looks differntly because of the clipping
 	//this means, that the values at the borders will be higher as predicted by this function call

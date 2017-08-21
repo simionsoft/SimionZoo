@@ -28,8 +28,9 @@ double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 	unsigned int localIndex;
 
 	IMemBuffer *pWeights;
+	int updateFreq = CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
 
-	if (!bUseFrozenWeights || !m_bCanBeFrozen)
+	if (!bUseFrozenWeights || !m_bCanBeFrozen || updateFreq == 0)
 		pWeights = m_pWeights;
 	else
 		pWeights = m_pFrozenWeights;
@@ -198,7 +199,7 @@ CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 {
 	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
 
-	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();// *2; //times 2 because there is the mean and the standard deviation
+	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
@@ -275,7 +276,7 @@ CLinearStateActionVFA::CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> p
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
-	m_numWeights = m_numStateWeights * m_numActionWeights * 2; //time 2 because there is the mean and the standard deviation
+	m_numWeights = m_numStateWeights * m_numActionWeights;
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
@@ -403,6 +404,7 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 		{
 			maxValue = value;
 			arg = i;
+			m_pArgMaxTies[0] = i;
 			numTies = 1;
 		}
 

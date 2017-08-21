@@ -90,7 +90,7 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 		CSimionApp::get()->pExperiment->setTerminalState();
 		return -1.0;// -100.0;
 	}
-	return -1.0;
+	return 0.0;// -1.0;
 }
 
 double CMountainCarReward::getMin() { return -1.0; }

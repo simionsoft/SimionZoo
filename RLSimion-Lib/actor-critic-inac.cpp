@@ -193,10 +193,12 @@ double CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a,
 
 double CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
 {
+	/*
 	if (CSimionApp::get()->pExperiment->isFirstStep())
 	{
 		cout << "first step\n";
 	}
+	*/
 	double prob = 1.0;
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
