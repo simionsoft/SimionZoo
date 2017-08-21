@@ -77,6 +77,24 @@ namespace Badger.ViewModels
                         break;
                 }
             }
+            //Associate forks and experiment units
+            foreach(LoggedExperimentalUnitViewModel expUnit in ExperimentalUnits)
+            {
+                TraverseAction(false, (node) => 
+                {
+                    LoggedForkValueViewModel forkValue = node as LoggedForkValueViewModel;
+                    if (forkValue!=null)
+                    {
+                        foreach (string forkName in expUnit.forkValues.Keys)
+                        {
+                            if (forkName==forkValue.parent.name && expUnit.forkValues[forkName]==forkValue.value)
+                            {
+                                forkValue.expUnits.Add(expUnit);
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         /// <summary>

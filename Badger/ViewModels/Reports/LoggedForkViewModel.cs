@@ -68,7 +68,7 @@ namespace Badger.ViewModels
                 }
                 else if (child.Name == XMLConfig.forkValueTag)
                 {
-                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child);
+                    LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child, this);
                     values.Add(newValue);
                 }
             }

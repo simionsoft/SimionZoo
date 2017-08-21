@@ -172,10 +172,15 @@ namespace Badger.ViewModels
 
         void item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            m_groupByForks.Add(((LoggedForkViewModel)sender).name);
+
+            if (e.PropertyName == "IsGroupedByThisFork")
+            {
+                m_groupByForks.Add(((LoggedForkViewModel)sender).name);
+                NotifyOfPropertyChange(() => groupBy);
+                bGroupsEnabled = true;
+            }
             ValidateQuery();
-            NotifyOfPropertyChange(() => groupBy);
-            bGroupsEnabled = true;
+
         }
 
         // Group By
@@ -388,7 +393,17 @@ namespace Badger.ViewModels
         {
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, true);
             LoggedExperiments.Add(newExperiment);
-            Variables.AddRange(newExperiment.variables);
+
+            //the harsh way, because Observable collection doesn't implement Exists
+            //and Contains will look for the same object, not just an object with the same name
+            foreach (LoggedVariableViewModel var in newExperiment.variables)
+            {
+                bool bFound = false;
+                foreach (LoggedVariableViewModel existingVar in Variables)
+                    if (var.name == existingVar.name) bFound = true;
+                if (!bFound)
+                    Variables.Add(var);
+            }
 
             foreach (LoggedVariableViewModel variable in Variables)
                 variable.setParent(this);
