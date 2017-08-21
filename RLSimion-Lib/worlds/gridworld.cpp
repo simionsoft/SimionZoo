@@ -13,7 +13,7 @@ CContinuousGridWorld::CContinuousGridWorld(CConfigNode* pConfigNode)
 	m_targetY = INT_PARAM(pConfigNode, "Target-Y", "Y coordinate of the target position.", 10);
 
 	m_sXPosition = addStateVariable("x-position", "m", -10, 10);
-	m_sYPosition = addStateVariable("z-position", "m", -10, 10);
+	m_sYPosition = addStateVariable("y-position", "m", -10, 10);
 
 	m_aXStep = addActionVariable("x-step", "m", -1.0, 1.0);
 	m_aYStep = addActionVariable("y-step", "m", -1.0, 1.0);
@@ -106,9 +106,9 @@ CDiscreteGridWorld::CDiscreteGridWorld(CConfigNode* pConfigNode)
 	m_targetY = INT_PARAM(pConfigNode, "Target-Y", "Y coordinate of the target position.", 10);
 
 	m_sXPosition = addStateVariable("x-position", "m", -10, 10);
-	m_sYPosition = addStateVariable("z-position", "m", -10, 10);
+	m_sYPosition = addStateVariable("y-position", "m", -10, 10);
 
-	m_aStep = addActionVariable("step", "", 0, 4);
+	m_aStep = addActionVariable("step", "m", 0, 3);
 
 	//the reward function
 	m_pRewardFunction->addRewardComponent(new CDiscreteGridWorldReward(m_targetX.get(), m_targetY.get()));
@@ -125,7 +125,7 @@ void CDiscreteGridWorld::reset(CState *s)
 
 	//fixed setting
 	s->set(m_sXPosition, 0);
-	s->set(m_sYPosition, -10);
+	s->set(m_sYPosition, 0);
 }
 
 
@@ -134,7 +134,7 @@ void CDiscreteGridWorld::executeAction(CState *s, const CAction *a, double dt)
 	//this simulation model ignores dt!!
 	int xPosition = (int)s->get(m_sXPosition);
 	int yPosition = (int)s->get(m_sYPosition);
-	int step = (int)round(a->get(m_aStep));
+	int step = (int)(a->get(m_aStep));
 
 	int xStep = 0;
 	int yStep = 0;
@@ -192,8 +192,8 @@ double CDiscreteGridWorldReward::getReward(const CState* s, const CAction* a, co
 	//reached the goal?
 	if (m_xTarget == xPosition && m_yTarget == yPosition)
 	{
-	CSimionApp::get()->pExperiment->setTerminalState();
-	return 10.0;
+		CSimionApp::get()->pExperiment->setTerminalState();
+		return 10.0;
 	}
 
 	return 0;

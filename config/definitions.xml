@@ -427,7 +427,7 @@
     <INTEGER-VALUE Name="Target-X" Comment="X coordinate of the target position." Default="0"/>
     <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="10"/>
     <STATE-VAR Name="x-position" Min="-10" Max="10" Unit="m"/>
-    <STATE-VAR Name="z-position" Min="-10" Max="10" Unit="m"/>
+    <STATE-VAR Name="y-position" Min="-10" Max="10" Unit="m"/>
     <ACTION-VAR Name="x-step" Min="-1" Max="1" Unit="m"/>
     <ACTION-VAR Name="y-step" Min="-1" Max="1" Unit="m"/>
   </CLASS>
@@ -435,8 +435,8 @@
     <INTEGER-VALUE Name="Target-X" Comment="X coordinate of the target position." Default="0"/>
     <INTEGER-VALUE Name="Target-Y" Comment="Y coordinate of the target position." Default="10"/>
     <STATE-VAR Name="x-position" Min="-10" Max="10" Unit="m"/>
-    <STATE-VAR Name="z-position" Min="-10" Max="10" Unit="m"/>
-    <ACTION-VAR Name="step" Min="0" Max="4" Unit=""/>
+    <STATE-VAR Name="y-position" Min="-10" Max="10" Unit="m"/>
+    <ACTION-VAR Name="step" Min="0" Max="3" Unit="m"/>
   </CLASS>
   <CLASS Name="CMagneticLevitation" World="Magnetic-levitation">
     <FILE-PATH-VALUE Name="Evaluation-Set-Point" Comment="The setpoint file" Default="../config/world/magnetic-levitation/setpoint.txt"/>
@@ -603,8 +603,8 @@
       <CHOICE-ELEMENT Name="Pull-Box-1" Class="CPullBox1" BadgerMetadata="World=Pull-Box-1"/>
       <CHOICE-ELEMENT Name="Mountain-car" Class="CMountainCar" BadgerMetadata="World=Mountain-car"/>
       <CHOICE-ELEMENT Name="Swing-up-pendulum" Class="CSwingupPendulum" BadgerMetadata="World=Swing-up-pendulum"/>
-      <CHOICE-ELEMENT Name="Continuous-Gridworld" Class="CContinuousGridWorld" BadgerMetadata="World=Continuous-Gridworld"/>
-      <CHOICE-ELEMENT Name="Discrete-Gridworld" Class="CDiscreteGridWorld" BadgerMetadata="World=Discrete-Gridworld"/>
+      <CHOICE-ELEMENT Name="Continuous-Gridworld" Class="CContinuousGridWorld" BadgerMetadata="World=Continuous-GridWorld"/>
+      <CHOICE-ELEMENT Name="Discrete-Gridworld" Class="CDiscreteGridWorld" BadgerMetadata="World=Discrete-GridWorld"/>
     </CHOICE>
   </CLASS>
   <ENUMERATION Name="Distribution">
