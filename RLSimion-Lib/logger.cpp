@@ -161,7 +161,8 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey(), (*iterator)->getSubkey());
+		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey().c_str()
+			, (*iterator)->getSubkey().c_str());
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }

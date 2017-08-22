@@ -13,7 +13,7 @@ protected:
 	DOUBLE_PARAM m_stepSize;
 	double *m_pCenters;
 	
-	int m_numCenters;
+	unsigned int m_numCenters;
 	double m_min;
 	double m_max;
 	double m_offset = 0.0;

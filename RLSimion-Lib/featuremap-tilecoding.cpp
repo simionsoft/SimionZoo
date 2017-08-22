@@ -27,12 +27,12 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 	if (m_grid.size() == 0) return;
 
 	unsigned int basicTilingIndexOffset = m_totalNumFeatures / m_numTilings;
-	for (int layerIndex = 0; layerIndex < m_numTilings; layerIndex++)
+	for (unsigned int layerIndex = 0; layerIndex < m_numTilings; layerIndex++)
 	{
 		unsigned int tilingIndexOffset = basicTilingIndexOffset*layerIndex;
 
 		unsigned int index = tilingIndexOffset;
-		for (int variableDimension = 0; variableDimension < m_grid.size(); variableDimension++)
+		for (unsigned int variableDimension = 0; variableDimension < m_grid.size(); variableDimension++)
 		{
 			m_pVarFeatures->clear();
 			m_grid[variableDimension]->getFeatures(s, a, m_pVarFeatures);
@@ -43,7 +43,7 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 			//calculate the product of the lengths of previous processes feature dimensions
 			unsigned int prodLength = 1;
 
-			for (int j = 0; j < variableDimension; j++)
+			for (unsigned int j = 0; j < variableDimension; j++)
 			{
 				prodLength *= m_grid[j]->getNumCenters();
 			}

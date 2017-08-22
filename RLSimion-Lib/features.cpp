@@ -232,7 +232,7 @@ void CFeatureList::offsetIndices(int offset)
 
 void CFeatureList::split(CFeatureList *outList1, CFeatureList *outList2, unsigned int splitOffset) const
 {
-	for (int i = 0; i < m_numFeatures; i++)
+	for (unsigned int i = 0; i < m_numFeatures; i++)
 	{
 		if (m_pFeatures[i].m_index < splitOffset)
 			outList1->add(m_pFeatures[i].m_index, m_pFeatures[i].m_factor);

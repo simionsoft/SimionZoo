@@ -14,8 +14,8 @@
 
 COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 {
-	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", &m_td);
-	CSimionApp::get()->pLogger->addVarToStats("m_rhor", "m_rho", &m_rho);
+	CSimionApp::get()->pLogger->addVarToStats<double>("TD-error", "TD-error", m_td);
+	CSimionApp::get()->pLogger->addVarToStats<double>("m_rhor", "m_rho", m_rho);
 	//td error
 	m_td = 0.0;
 
@@ -63,9 +63,10 @@ COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		m_e_u[i] = new CETraces(pConfigNode);
-		char* buffer = new char[strlen("Actor/E-Trace %i") + 100];
-		sprintf(buffer, "Actor/E-Trace %i", i);
-		m_e_u[i]->setName(buffer);
+		//we name all the same to avoid having to store all pointers and then freeing them in the constructor
+		//the actual dimension it belongs to doesn't seem very important at the moment
+		static std::string name= "Actor/E-Trace";
+		m_e_u[i]->setName(name.c_str());
 	}
 }
 

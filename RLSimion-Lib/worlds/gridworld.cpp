@@ -166,8 +166,8 @@ CDiscreteGridWorldReward::CDiscreteGridWorldReward(int targetX, int targetY)
 
 double CDiscreteGridWorldReward::getReward(const CState* s, const CAction* a, const CState* s_p)
 {
-	int xPosition = s_p->get("x-position");
-	int yPosition = s_p->get("y-position");
+	int xPosition = (int) s_p->get("x-position");
+	int yPosition = (int) s_p->get("y-position");
 
 	if (xPosition == s_p->getProperties("x-position").getMin() || xPosition == s_p->getProperties("x-position").getMax())
 	{

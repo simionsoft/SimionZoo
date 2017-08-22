@@ -191,7 +191,7 @@ namespace Herd
             string taskXML = "<Task Name=\"" + task.name + "\"";
             taskXML += " Exe=\"" + task.exe + "\"";
             taskXML += " Arguments=\"" + task.arguments + "\"";
-            taskXML += " AuthenticationToken=\"" + task.authenticationToken + "\"";
+            //taskXML += " AuthenticationToken=\"" + task.authenticationToken + "\"";
             taskXML += " Pipe=\"" + task.pipe + "\"";
             taskXML += "/>";
             byte[] bytes = Encoding.ASCII.GetBytes(taskXML);
@@ -203,12 +203,13 @@ namespace Herd
         {
             CTask task = new CTask();
             Match match;
-            match = await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" AuthenticationToken=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>", cancelToken);
+            match = await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>", cancelToken);
+//            match = await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" AuthenticationToken=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>", cancelToken);
             task.name = match.Groups[1].Value;
             task.exe = match.Groups[2].Value;
             task.arguments = match.Groups[3].Value;
-            task.authenticationToken = match.Groups[4].Value;
-            task.pipe = match.Groups[5].Value;
+            task.authenticationToken = "";//match.Groups[4].Value;
+            task.pipe = match.Groups[4].Value;
             m_job.tasks.Add(task);
             return true;
         }

@@ -172,17 +172,16 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="sender">The object with the change in a property</param>
         /// <param name="e">The launched event</param>
-        void fork_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void Fork_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            LoggedForkViewModel fork = (LoggedForkViewModel)sender;
-
-        void item_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-
+            //not all properties sending changes are due to "Group by this fork", so we need to check it
             if (e.PropertyName == "IsGroupedByThisFork")
             {
-                m_groupByForks.Add(((LoggedForkViewModel)sender).name);
-                NotifyOfPropertyChange(() => groupBy);
+                if (!m_groupByForks.Contains(((LoggedForkViewModel)sender).name))
+                {
+                    m_groupByForks.Add(((LoggedForkViewModel)sender).name);
+                    NotifyOfPropertyChange(() => groupBy);
+                }
                 bGroupsEnabled = true;
             }
             ValidateQuery();
@@ -425,7 +424,7 @@ namespace Badger.ViewModels
             foreach (var fork in newExperiment.Forks)
             {
                 // Add a property change listener before adding this item to the list
-                fork.PropertyChanged += fork_PropertyChanged;
+                fork.PropertyChanged += Fork_PropertyChanged;
                 Forks.Add(fork);
             }
         }

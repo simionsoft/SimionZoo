@@ -22,7 +22,7 @@ void CSingleDimensionDiscreteGrid::initCenterPoints()
 {
 	m_pCenters = new double[m_numCenters];
 
-	for (int i = 0; i < m_numCenters; i++)
+	for (unsigned int i = 0; i < m_numCenters; i++)
 		m_pCenters[i] = m_min + i * m_stepSize.get();
 }
 
@@ -57,7 +57,7 @@ CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariable
 
 	initVarRange();
 
-	m_numCenters = (int)(m_max - m_min) / m_stepSize.get() + 1;
+	m_numCenters = (int)(m_max - m_min) / (int)m_stepSize.get() + 1;
 	//step size must be compatible with value range (example: 0-2 can not be divided in steps with size 0.8)
 	assert((m_numCenters - 1) * m_stepSize.get() == (m_max - m_min));
 
@@ -80,7 +80,7 @@ CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariable
 	m_hVariable.set(m_hVar);
 	m_stepSize.set(stepSize);
 
-	m_numCenters = (int)(m_max - m_min) / stepSize + 1;
+	m_numCenters = (int)(m_max - m_min) / (int) stepSize + 1;
 	//step size must be compatible with value range (example: 0-2 can not be divided in steps with size 0.8)
 	assert((m_numCenters - 1) * stepSize == (m_max - m_min));
 
@@ -108,7 +108,7 @@ CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariab
 
 	initVarRange();
 
-	m_numCenters = (int)(m_max - m_min) / m_stepSize.get() + 1;
+	m_numCenters = (int)(m_max - m_min) / (int) m_stepSize.get() + 1;
 	//step size must be compatible with value range (example: 0-2 can not be divided in steps with size 0.8)
 	assert((m_numCenters - 1) * m_stepSize.get() == (m_max - m_min));
 

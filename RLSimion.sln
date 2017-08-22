@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLSimion-Lib", "RLSimion-Lib\RL-Lib.vcxproj", "{A97CFEAC-DBE2-433C-9454-6D1D2749C591}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -128,6 +128,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TileCoding", "tests\RLSimio
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerdAgentServiceSettings", "HerdAgentServiceSettings\HerdAgentServiceSettings.csproj", "{78160827-2C08-4D14-BDD8-0D842FC1191F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portable Badger", "installers\Portable Badger\Portable Badger.csproj", "{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -603,5 +605,9 @@ Global
 		{C7B7E8E6-E9AF-4E93-B8B2-D951FADC1E85} = {77FC5F8E-C5B8-4C23-9F2B-DEB74DBD214D}
 		{856CF46A-39FF-430D-BCC3-513F13E37520} = {BF490352-B518-4726-BA16-BC447F2D7A37}
 		{78160827-2C08-4D14-BDD8-0D842FC1191F} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
+		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4} = {66BE88CA-FAA4-469D-B16D-3FA641E7FB73}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F8F8B096-6BE4-44D0-B78E-2C39AD9519BA}
 	EndGlobalSection
 EndGlobal
