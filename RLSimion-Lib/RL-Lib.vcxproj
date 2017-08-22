@@ -215,14 +215,19 @@
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
     <ClCompile Include="actor-critic-inac.cpp" />
+    <ClCompile Include="actor-critic-offpac.cpp" />
     <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="deferred-load.cpp" />
+    <ClCompile Include="single-dimension-discrete-grid.cpp">
+      <FileType>CppCode</FileType>
+    </ClCompile>
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
+    <ClCompile Include="featuremap-discrete.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mem-buffer.cpp" />
@@ -233,6 +238,7 @@
     <ClCompile Include="q-learners.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
+    <ClCompile Include="single-dimension-grid-rbf.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="config.cpp" />
@@ -255,6 +261,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="featuremap-tilecoding.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
@@ -264,6 +271,7 @@
     <ClCompile Include="worlds\BulletBody.cpp" />
     <ClCompile Include="worlds\BulletPhysics.cpp" />
     <ClCompile Include="worlds\FAST.cpp" />
+    <ClCompile Include="worlds\gridworld.cpp" />
     <ClCompile Include="worlds\magneticlevitation.cpp" />
     <ClCompile Include="worlds\mountaincar.cpp" />
     <ClCompile Include="worlds\pitchcontrol.cpp" />
@@ -275,6 +283,7 @@
     <ClCompile Include="worlds\Robot.cpp" />
     <ClCompile Include="worlds\Rope.cpp" />
     <ClCompile Include="worlds\setpoint.cpp" />
+    <ClCompile Include="worlds\swinguppendulum.cpp" />
     <ClCompile Include="worlds\templatedConfigFile.cpp" />
     <ClCompile Include="worlds\underwatervehicle.cpp" />
     <ClCompile Include="worlds\windturbine.cpp" />
@@ -289,6 +298,7 @@
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="deferred-load.h" />
+    <ClInclude Include="single-dimension-discrete-grid.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />
@@ -306,6 +316,7 @@
     <ClInclude Include="q-learners.h" />
     <ClInclude Include="simgod.h" />
     <ClInclude Include="simion.h" />
+    <ClInclude Include="single-dimension-grid-rbf.h" />
     <ClInclude Include="single-dimension-grid.h" />
     <ClInclude Include="stats.h" />
     <ClInclude Include="config.h" />
@@ -326,6 +337,7 @@
     <ClInclude Include="worlds\BulletCreationInterface.h" />
     <ClInclude Include="worlds\BulletPhysics.h" />
     <ClInclude Include="worlds\FAST.h" />
+    <ClInclude Include="worlds\gridworld.h" />
     <ClInclude Include="worlds\magneticlevitation.h" />
     <ClInclude Include="worlds\mountaincar.h" />
     <ClInclude Include="worlds\pitchcontrol.h" />
@@ -337,6 +349,7 @@
     <ClInclude Include="worlds\Robot.h" />
     <ClInclude Include="worlds\Rope.h" />
     <ClInclude Include="worlds\setpoint.h" />
+    <ClInclude Include="worlds\swinguppendulum.h" />
     <ClInclude Include="worlds\templatedConfigFile.h" />
     <ClInclude Include="worlds\underwatervehicle.h" />
     <ClInclude Include="worlds\windturbine.h" />

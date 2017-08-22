@@ -9,19 +9,19 @@ using Herd;
 
 namespace Herd
 {
-    
-    
-    
+
+
+
     public partial class HerdService : ServiceBase
     {
         private HerdAgent m_herdAgent;
         private string m_dirPath;
 
-        private object m_logFileLock= new object();
+        private object m_logFileLock = new object();
 
         public HerdService()
         {
-            
+
             InitializeComponent();
         }
         public string getLogFilename()
@@ -42,7 +42,7 @@ namespace Herd
         public void cleanDir(string dir)
         {
             //clean child files
-            foreach(string file in Directory.GetFiles(dir))
+            foreach (string file in Directory.GetFiles(dir))
             {
                 double filesAge = (DateTime.Now - File.GetLastWriteTime(file)).TotalDays;
                 if (filesAge > fileRetirementAgeInDays)
@@ -102,22 +102,25 @@ namespace Herd
                 }
             }
         }
-       
-        
-       
+
+        internal void TestStartupAndStop(string[] args)
+        {
+            this.OnStart(args);
+            Console.ReadLine();
+            this.OnStop();
+        }
+
         protected override void OnStart(string[] args)
         {
-
             DoStart();
-
         }
+
         public void DoStart()
         {
             m_herdAgent = new HerdAgent(new CancellationTokenSource());
 
             m_dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp";
             Directory.CreateDirectory(m_dirPath);
-            m_herdAgent.setDirPath(m_dirPath);
             m_herdAgent.setLogMessageHandler(logToFile);
             cleanLog();
             cleanTempDir();

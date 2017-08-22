@@ -38,7 +38,7 @@ double CExperiment::getTrainingProgress()
 
 double CExperiment::getEpisodeProgress()
 {
-	double progress = ((double)m_step - 1)	/ ((double)m_numSteps - 1);
+	double progress = ((double)m_step - 1) / ((double)m_numSteps - 1);
 	return progress;
 }
 
@@ -81,8 +81,8 @@ bool CExperiment::isEvaluationEpisode()
 {
 	if (m_evalFreq.get() > 0)
 	{
-		unsigned int episodeInEvalTrainingCycle = (m_episodeIndex-1)
-			% ( m_numEpisodesPerEvaluation + m_evalFreq.get());
+		unsigned int episodeInEvalTrainingCycle = (m_episodeIndex - 1)
+			% (m_numEpisodesPerEvaluation + m_evalFreq.get());
 		return episodeInEvalTrainingCycle < m_numEpisodesPerEvaluation;
 	}
 	return true;
@@ -91,12 +91,12 @@ bool CExperiment::isEvaluationEpisode()
 unsigned int CExperiment::getEpisodeInEvaluationIndex()
 {
 	//the index of the last evaluation (1-based index)
-	return 1+( (m_evalEpisodeIndex-1) % m_numEpisodesPerEvaluation);
+	return 1 + ((m_evalEpisodeIndex - 1) % m_numEpisodesPerEvaluation);
 }
 unsigned int CExperiment::getEvaluationIndex()
 {
 	//the last episode within last evaluation
-	return 1+( (m_evalEpisodeIndex-1) / m_numEpisodesPerEvaluation);
+	return 1 + ((m_evalEpisodeIndex - 1) / m_numEpisodesPerEvaluation);
 }
 unsigned int CExperiment::getRelativeEpisodeIndex()
 {
@@ -107,10 +107,10 @@ unsigned int CExperiment::getRelativeEpisodeIndex()
 
 void CExperiment::reset()
 {
-	m_trainingEpisodeIndex= 0; //[1..m_numTrainingEpisodes]
-	m_evalEpisodeIndex= 0; //[1..1+m_numTrainingEpisodes/ evalFreq]
-	m_episodeIndex= 0; //[1..g_numEpisodes]
-	m_step= 0; //]1..g_numStepsPerEpisode]
+	m_trainingEpisodeIndex = 0; //[1..m_numTrainingEpisodes]
+	m_evalEpisodeIndex = 0; //[1..1+m_numTrainingEpisodes/ evalFreq]
+	m_episodeIndex = 0; //[1..g_numEpisodes]
+	m_step = 0; //]1..g_numStepsPerEpisode]
 	m_experimentStep = 0;
 	m_bTerminalState = false;
 
@@ -136,9 +136,9 @@ void CExperiment::reset()
 		m_totalNumEpisodes = (unsigned int)m_numTrainingEpisodes.get();
 	}
 	//number of steps
-	if (CSimionApp::get() != nullptr && CSimionApp::get()->pWorld.ptr() != nullptr 
-		&& CSimionApp::get()->pWorld->getDT()>0.0)
-		m_numSteps= ((unsigned int)(m_episodeLength.get() / CSimionApp::get()->pWorld->getDT()));
+	if (CSimionApp::get() != nullptr && CSimionApp::get()->pWorld.ptr() != nullptr
+		&& CSimionApp::get()->pWorld->getDT() > 0.0)
+		m_numSteps = ((unsigned int)(m_episodeLength.get() / CSimionApp::get()->pWorld->getDT()));
 	else
 	{
 		CLogger::logMessage(MessageType::Warning, "CExperiment: Failed to get DT. m_numSteps will be used instead");
@@ -150,8 +150,8 @@ void CExperiment::nextStep()
 {
 	m_experimentStep++;
 
-	if (!m_bTerminalState && m_step<m_numSteps)
-		m_step ++;
+	if (!m_bTerminalState && m_step < m_numSteps)
+		m_step++;
 	else m_step = 0;
 }
 
@@ -188,7 +188,7 @@ bool CExperiment::isFirstEpisode()
 
 bool CExperiment::isLastEpisode()
 {
-	if (isEvaluationEpisode()) 
+	if (isEvaluationEpisode())
 		return m_evalEpisodeIndex == m_numEvaluations*m_numEpisodesPerEvaluation;
 	return m_trainingEpisodeIndex == m_numTrainingEpisodes.get();
 }
@@ -203,13 +203,13 @@ CExperiment::CExperiment(CConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 
-	m_progUpdateFreq = DOUBLE_PARAM(pConfigNode, "Progress-Update-Freq", "Progress update frequency (seconds)",1.0);
-	m_randomSeed = INT_PARAM(pConfigNode, "Random-Seed","Random seed used to generate random sequences of numbers",1);
+	m_progUpdateFreq = DOUBLE_PARAM(pConfigNode, "Progress-Update-Freq", "Progress update frequency (seconds)", 1.0);
+	m_randomSeed = INT_PARAM(pConfigNode, "Random-Seed", "Random seed used to generate random sequences of numbers", 1);
 
-	m_numTrainingEpisodes = INT_PARAM(pConfigNode, "Num-Episodes","Number of episodes",1000);
-	m_evalFreq = INT_PARAM(pConfigNode,"Eval-Freq", "Evaluation frequency (in episodes)",10);
+	m_numTrainingEpisodes = INT_PARAM(pConfigNode, "Num-Episodes", "Number of episodes", 1000);
+	m_evalFreq = INT_PARAM(pConfigNode, "Eval-Freq", "Evaluation frequency (in episodes)", 10);
 
-	m_episodeLength = DOUBLE_PARAM(pConfigNode, "Episode-Length", "Length of an episode(seconds)",10.0);
+	m_episodeLength = DOUBLE_PARAM(pConfigNode, "Episode-Length", "Length of an episode(seconds)", 10.0);
 
 	reset();	//calculate all the variables not given as parameters
 				//and reset counters
@@ -227,7 +227,7 @@ void CExperiment::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	double time = m_pProgressTimer->getElapsedTime();//(double)(currentCounter - m_lastProgressReportCounter) / (double)m_counterFreq;
 
-	if (time>m_progUpdateFreq.get() || (isLastStep() && isLastEpisode()))
+	if (time > m_progUpdateFreq.get() || (isLastStep() && isLastEpisode()))
 	{
 		sprintf_s(msg, 1024, "%f", CSimionApp::get()->pExperiment->getExperimentProgress()*100.0);
 		CLogger::logMessage(Progress, msg);

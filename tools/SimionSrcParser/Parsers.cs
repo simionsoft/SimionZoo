@@ -105,8 +105,8 @@ namespace SimionSrcParser
             string name = parsedArguments[2];
             string comment = parsedArguments[3];
             string defaultValue = parsedArguments[4];
-            defaultValue= defaultValue.Trim(' ').Substring(className.Length + 2); //Remove the namespace
-            parent.addParameter(new EnumParameter(className, name, comment,defaultValue));
+            defaultValue = defaultValue.Trim(' ').Substring(className.Length + 2); //Remove the namespace
+            parent.addParameter(new EnumParameter(className, name, comment, defaultValue));
         }
     }
     public class ChildObjectParameterParser : Parser
@@ -205,8 +205,21 @@ namespace SimionSrcParser
         public StateVariableParser() : base(WorldParser.WorldParameterType.StateVariable, "addStateVariable") { }
         public override void processParameter(ParameterizedObject parent)
         {
-            parent.addParameter(new WorldParameter(WorldParser.WorldParameterType.StateVariable
-                , parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]), parsedArguments[1]));
+            try
+            {
+                parent.addParameter(new WorldParameter(WorldParser.WorldParameterType.StateVariable
+                    , parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]), parsedArguments[1]));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(String.Format("Parsing the world '{0}' an exception has been raised.", parent.name));
+                Console.WriteLine("It was raised parsing one of the following items:");
+                foreach (String item in new String[] { parsedArguments[2], parsedArguments[3] })
+                {
+                    Console.WriteLine(String.Format("\t{0}", item));
+                }
+                throw ex;
+            }
         }
     }
     public class ActionVariableParser : WorldParser
@@ -214,8 +227,22 @@ namespace SimionSrcParser
         public ActionVariableParser() : base(WorldParser.WorldParameterType.ActionVariable, "addActionVariable") { }
         public override void processParameter(ParameterizedObject parent)
         {
-            parent.addParameter(new WorldParameter(WorldParser.WorldParameterType.ActionVariable
-                , parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]), parsedArguments[1]));
+            try
+            {
+                parent.addParameter(new WorldParameter(WorldParser.WorldParameterType.ActionVariable
+               , parsedArguments[0], double.Parse(parsedArguments[2]), double.Parse(parsedArguments[3]), parsedArguments[1]));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(String.Format("Parsing the world '{0}' an exception has been raised.", parent.name));
+                Console.WriteLine("It was raised parsing one of the following items:");
+                foreach (String item in new String[] { parsedArguments[2], parsedArguments[3] })
+                {
+                    Console.WriteLine(String.Format("\t{0}", item));
+                }
+                throw ex;
+            }
+
         }
     }
     public class ConstantParser : WorldParser
@@ -233,7 +260,7 @@ namespace SimionSrcParser
         public override void processParameter(ParameterizedObject parent)
         {
             Constructor parentConstructor = parent as Constructor;
-            if (parsedArguments[0] == "World" && parentConstructor!=null)
+            if (parsedArguments[0] == "World" && parentConstructor != null)
                 parentConstructor.m_world = parsedArguments[1];
         }
     }

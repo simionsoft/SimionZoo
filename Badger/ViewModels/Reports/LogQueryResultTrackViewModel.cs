@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using Badger.Data;
+using System.Linq;
 
 namespace Badger.ViewModels
 {
@@ -167,7 +168,11 @@ namespace Badger.ViewModels
                 }
                 m_trackData.Clear();
                 m_trackData.Add(selectedTrack);
-                forkValues = selectedTrack.forkValues;
+
+                //create a copy of the dictionary to solve the following issue:
+                //after generating the first report (with groups) the forkValues of the experiments are cleared
+                //and therefore, no more report can be generated afterwards
+                forkValues = new Dictionary<string, string>(selectedTrack.forkValues);
 
                 if (groupBy.Count>0)
                 {

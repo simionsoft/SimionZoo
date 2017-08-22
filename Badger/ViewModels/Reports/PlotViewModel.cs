@@ -52,7 +52,7 @@ namespace Badger.ViewModels
             get { return m_properties; }
         }
 
-        public PlotViewModel(string title, bool bRefresh = true, bool bShowOptions = false)
+        public PlotViewModel(string title, double xMax, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
         {
             name = title;
             m_plot = new PlotModel { Title = title };
@@ -61,12 +61,16 @@ namespace Badger.ViewModels
             xAxis.MajorGridlineStyle = LineStyle.Solid;
             xAxis.Minimum = 0.0;
             xAxis.Maximum = 1.0;
+            xAxis.AbsoluteMaximum = xMax;
+            xAxis.AbsoluteMinimum = 0.0;
+            xAxis.Title = xName;
             m_plot.Axes.Add(xAxis);
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.MajorGridlineStyle = LineStyle.Solid;
             yAxis.Minimum = 0.0;
             yAxis.Maximum = 1.0;
+            yAxis.Title = yName;
             m_plot.Axes.Add(yAxis);
 
             if (bRefresh)

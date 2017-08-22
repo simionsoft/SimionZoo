@@ -12,7 +12,7 @@ using System.Text;
 using System.Xml.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Security.Authentication;
 
 namespace Herd
 {
@@ -154,6 +154,8 @@ namespace Herd
         public UdpClient getUdpClient() { return m_discoveryClient; }
         private TcpListener m_listener;
 
+        private Credentials m_credentials;
+
         private string m_dirPath = "";
 
         public const string m_herdDescriptionXMLTag = "HerdAgent";
@@ -179,6 +181,15 @@ namespace Herd
             m_cancelTokenSource = cancelTokenSource;
             m_state = AgentState.Available;
             m_cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            m_credentials = Credentials.Load(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+        }
+
+        protected override string getTmpDir()
+        {
+            if (m_credentials == null)
+                return base.getTmpDir();
+            else
+                return m_credentials.GetTempDir();
         }
 
         public string getDirPath() { return m_dirPath; }
@@ -247,21 +258,42 @@ namespace Herd
             Process myProcess = new Process();
             if (task.pipe != "")
                 pipeServer = new NamedPipeServerStream(task.pipe);
+            XMLStream xmlStream = new XMLStream();
 
             try
             {
-                myProcess.StartInfo.FileName = getCachedFilename(task.exe);
-                myProcess.StartInfo.Arguments = task.arguments;
-                myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
-                logMessage("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
-
                 //not to read 23.232 as 23232
                 Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
-                myProcess.Start();
-                //addSpawnedProcessToList(myProcess);
+                if (m_credentials != null)
+                {
+                    if (!m_credentials.AuthenticationCode.Equals(task.authenticationToken))
+                    {
+                        logMessage("Authentication tokens did NOT match. Won't execute command: " + getCachedFilename(task.exe) + " " + task.arguments);
 
-                XMLStream xmlStream = new XMLStream();
+                        await xmlStream.writeMessageAsync(m_tcpClient.GetStream(),
+                       "<" + task.pipe + "><End>Authentication Error</End></" + task.pipe + ">", cancelToken);
+
+                        returnCode = -1;
+                        throw new AuthenticationException("AuthenticationToken of the task does not match local token.");
+                    }
+
+                    myProcess = WinApi.StartUnelevatedProcess(getCachedFilename(task.exe), task.arguments, Path.GetDirectoryName((getCachedFilename(task.exe))));
+                    // myProcess = WinApi.StartUnelevatedProcess(@"C:\Users\Roland\Source\Repos\RLSimion\Debug\HerdAgentServiceSettings.exe", task.arguments, Path.GetDirectoryName(@"C:\Users\Roland\Source\Repos\RLSimion\Debug\HerdAgentServiceSettings.exe"));
+                }
+
+                myProcess.StartInfo.FileName = getCachedFilename(task.exe);
+                myProcess.StartInfo.Arguments = task.arguments;
+                myProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(myProcess.StartInfo.FileName);
+
+                if (m_credentials == null)
+                {
+                    myProcess.Start();
+                }
+
+                logMessage("Running command: " + myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments);
+
+                //addSpawnedProcessToList(myProcess);
 
                 string xmlItem;
 
@@ -313,6 +345,9 @@ namespace Herd
                 logMessage("Thread finished gracefully");
                 if (myProcess != null) myProcess.Kill();
                 returnCode = m_remotelyCancelledErrorCode;
+            }
+            catch (AuthenticationException ex){
+                logMessage(ex.ToString());
             }
             catch (Exception ex)
             {
@@ -418,8 +453,16 @@ namespace Herd
                 foreach (string dll in dllNames)
                 {
                     var dllPath = dir + "\\" + dll;
-                    myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
-                    bCudaCapable = true;
+                    if (System.IO.File.Exists(dllPath))
+                    {
+                        myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
+                        bCudaCapable = true;
+                    }
+                    else
+                    {
+                        bCudaCapable = false;
+                        break;
+                    }
                 }
 
                 if (bCudaCapable)

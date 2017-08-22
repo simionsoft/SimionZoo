@@ -6,7 +6,7 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:badger="clr-namespace:Badger.Utils"
              mc:Ignorable="d" 
-             d:DesignHeight="75" d:DesignWidth="250">
+             d:DesignHeight="110" d:DesignWidth="250">
 
     <UserControl.Resources>
         <ControlTemplate x:Key="HerdAgentExpanderButton" TargetType="{x:Type ToggleButton}">
@@ -15,8 +15,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-               
-                <Path x:Name="Arrow" Grid.Column="1" Data="M7.41,7.84L12,12.42l4.59,-4.58L18,9.25l-6,6 -6,-6z"
+
+                <Path x:Name="Arrow" Grid.Column="1" Data="{StaticResource Arrow}"
                           Width="24" Height="24" Fill="#89000000" HorizontalAlignment="Center"
                           VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Margin="5">
                     <Path.RenderTransform>
@@ -50,7 +50,7 @@
         </ControlTemplate>
 
         <badger:MultiplyConverter x:Key="MultiplyConverter" />
-        
+
         <ControlTemplate x:Key="HerdAgentExpander" TargetType="{x:Type Expander}">
             <DockPanel Background="#FFFFFF">
                 <ToggleButton x:Name="ExpanderButton" DockPanel.Dock="Top" Template="{StaticResource HerdAgentExpanderButton}"
@@ -114,35 +114,46 @@
                 </Grid>
             </Expander.Header>
 
-            <Grid Margin="27,5,0,5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Vertical">
+                <Grid Margin="27,5,0,5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=FormatedProcessorInfo}" Padding="5,1"/>
-                <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
-                    <Label Content="CPU – " HorizontalAlignment="Right" Padding="5,1,3,1" Foreground="#FF616161" />
-                    <TextBlock Text="{Binding Path=ProcessorLoad}" Padding="0,1,5,1"/>
-                </StackPanel>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Path=FormatedProcessorInfo}" Padding="5,1"/>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+                        <Label Content="CPU – " HorizontalAlignment="Right" Padding="5,1,3,1" Foreground="#FF616161" />
+                        <TextBlock Text="{Binding Path=ProcessorLoad}" Padding="0,1,5,1"/>
+                    </StackPanel>
 
-                <Separator Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
+                    <Separator Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
 
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=Memory}" Padding="5,1"/>
-                <Label Grid.Row="1" Grid.Column="2" Content="Memory" Padding="5,1" Foreground="#FF616161" />
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Path=Memory}" Padding="5,1"/>
+                    <Label Grid.Row="1" Grid.Column="2" Content="Memory" Padding="5,1" Foreground="#FF616161" />
 
-                <Separator Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
+                    <Separator Grid.Row="0" Grid.Column="3" Grid.RowSpan="2" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
 
-                <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Path=CudaInfo}" Foreground="{Binding Path=CudaInfoColor}"  Padding="5,1"/>
-                <Label Grid.Row="1" Grid.Column="4" Content="CUDA" Padding="5,1"  Foreground="#FF616161" />
-            </Grid>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Text="{Binding Path=CudaInfo}" Foreground="{Binding Path=CudaInfoColor}"  Padding="5,1"/>
+                    <Label Grid.Row="1" Grid.Column="4" Content="CUDA" Padding="5,1"  Foreground="#FF616161" />
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Foreground="#FF616161" Content="Authentication Token" />
+                    <TextBox Grid.Column="1" Text="{Binding AuthenticationCode, Mode=TwoWay}" Margin="5 2 5 0" TextWrapping="NoWrap" VerticalAlignment="Center"/>
+                </Grid>
+
+            </StackPanel>
         </Expander>
     </Border>
 </UserControl>

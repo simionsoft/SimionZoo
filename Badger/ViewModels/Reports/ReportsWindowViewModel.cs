@@ -1,7 +1,5 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using Badger.Data;
@@ -12,9 +10,7 @@ namespace Badger.ViewModels
 {
     public class ReportsWindowViewModel : Conductor<Screen>.Collection.OneActive
     {
-        private ObservableCollection<ReportViewModel> m_reports = new ObservableCollection<ReportViewModel>();
-
-        public ObservableCollection<ReportViewModel> Reports => m_reports;
+        public ObservableCollection<ReportViewModel> Reports { get; } = new ObservableCollection<ReportViewModel>();
 
         public ObservableCollection<LoggedForkViewModel> Forks { get; } = new ObservableCollection<LoggedForkViewModel>();
 
@@ -43,6 +39,7 @@ namespace Badger.ViewModels
 
 
         private bool m_bVariableSelection = true;
+
         public bool bVariableSelection
         {
             get { return m_bVariableSelection; }
@@ -169,6 +166,15 @@ namespace Badger.ViewModels
             set { m_selectedOrderByVariable = value; NotifyOfPropertyChange(() => selectedOrderByVariable); }
         }
 
+        /// <summary>
+        ///     Add a fork to the "GroupByFork" list when a property of a LoggedForkValues changes.
+        ///     The item added to the list is the one with the changes in one of its properties.
+        /// </summary>
+        /// <param name="sender">The object with the change in a property</param>
+        /// <param name="e">The launched event</param>
+        void fork_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            LoggedForkViewModel fork = (LoggedForkViewModel)sender;
 
         void item_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -354,18 +360,18 @@ namespace Badger.ViewModels
         /// </summary>
         public void SaveReports()
         {
-            if (m_reports.Count == 0) return;
+            if (Reports.Count == 0) return;
 
             string outputBaseFolder =
                 CaliburnUtility.SelectFolder(SimionFileData.imageRelativeDir);
 
             if (outputBaseFolder != "")
             {
-                foreach (ReportViewModel report in m_reports)
+                foreach (ReportViewModel report in Reports)
                 {
                     // If there is more than one report, we store each one in a subfolder
                     string outputFolder;
-                    if (m_reports.Count > 1)
+                    if (Reports.Count > 1)
                     {
                         outputFolder = outputBaseFolder + "\\" + Utility.removeSpecialCharacters(report.name);
                         Directory.CreateDirectory(outputFolder);
@@ -418,12 +424,17 @@ namespace Badger.ViewModels
 
             foreach (var fork in newExperiment.Forks)
             {
-                fork.PropertyChanged += item_PropertyChanged;
+                // Add a property change listener before adding this item to the list
+                fork.PropertyChanged += fork_PropertyChanged;
                 Forks.Add(fork);
             }
         }
 
-
+        /// <summary>
+        ///     Load an experiment from a batch file. The batch should be from an already finished
+        ///     experiment, this is in order to make reports correctly but is not mandatory.
+        /// </summary>
+        /// <param name="batchFileName">The name of the file to load</param>
         public void LoadExperimentBatch(string batchFileName)
         {
             SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
@@ -440,7 +451,9 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        ///     Method called from the view.
+        ///     Method called from the view. This clear every list and field. Should be called when
+        ///     we load a new experiment if one is already loaded or when we hit the delete button
+        ///     from the view.
         /// </summary>
         public void ClearReportViewer()
         {

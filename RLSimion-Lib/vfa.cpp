@@ -152,6 +152,13 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 	//then we apply all the feature updates
 	for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
 	{
+		//index is too low, does not correspond to this map!
+		if (pFeatures->m_pFeatures[i].m_index < m_minIndex)
+			continue;
+		//index is too high, does not correspond to this map, too!
+		if (pFeatures->m_pFeatures[i].m_index - m_minIndex > m_maxIndex)
+			continue;
+
 		//IF instead of assert because some features may not belong to this specific VFA
 		//and would still be a valid operation
 		//(for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
@@ -160,13 +167,14 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 			inc= alpha*pFeatures->m_pFeatures[i].m_factor;
 		else
 		{
-			inc= std::min(m_maxOutput, std::max(m_minOutput, (*m_pWeights)[pFeatures->m_pFeatures[i].m_index] 
-				+ alpha * pFeatures->m_pFeatures[i].m_factor)) - (*m_pWeights)[pFeatures->m_pFeatures[i].m_index];
+			inc= std::min(m_maxOutput, std::max(m_minOutput, (*m_pWeights)[pFeatures->m_pFeatures[i].m_index - m_minIndex]
+				+ alpha * pFeatures->m_pFeatures[i].m_factor)) - (*m_pWeights)[pFeatures->m_pFeatures[i].m_index - m_minIndex];
 		}
-		(*m_pWeights)[pFeatures->m_pFeatures[i].m_index] += inc;
+		(*m_pWeights)[pFeatures->m_pFeatures[i].m_index - m_minIndex] += inc;
 		if (bFreezeTarget)
 			m_pPendingUpdates->add(pFeatures->m_pFeatures[i].m_index, inc);
 	}
+
 	if (bFreezeTarget && !CSimionApp::get()->pSimGod->bReplayingExperience())
 	{
 		experimentStep = CSimionApp::get()->pExperiment->getExperimentStep();
@@ -190,7 +198,7 @@ CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
 {
 	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
 
-	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();
+	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();// *2; //times 2 because there is the mean and the standard deviation
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
@@ -267,7 +275,7 @@ CLinearStateActionVFA::CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> p
 
 	m_numStateWeights = m_pStateFeatureMap->getTotalNumFeatures();
 	m_numActionWeights = m_pActionFeatureMap->getTotalNumFeatures();
-	m_numWeights = m_numStateWeights * m_numActionWeights;
+	m_numWeights = m_numStateWeights * m_numActionWeights * 2; //time 2 because there is the mean and the standard deviation
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;

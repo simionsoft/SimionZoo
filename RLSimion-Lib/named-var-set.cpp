@@ -143,3 +143,11 @@ void CNamedVarSet::copy(CNamedVarSet* nvs)
 		set(i,nvs->get(i));
 	}
 }
+
+void CNamedVarSet::addOffset(double offset)
+{
+	for (int i = 0; i<m_numVars; i++)
+	{
+		set(i, this->get(i) + offset);
+	}
+}

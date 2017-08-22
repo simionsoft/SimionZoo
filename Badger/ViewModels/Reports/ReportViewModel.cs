@@ -2,7 +2,7 @@
 using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
-using OxyPlot;
+using System.Linq;
 
 namespace Badger.ViewModels
 {
@@ -24,8 +24,15 @@ namespace Badger.ViewModels
             get { return m_selectedPlot; }
             set
             {
-                if (m_selectedPlot!=null)
-                    ((IPlotModel) (m_selectedPlot.Plot)).AttachPlotView( null);
+                /*
+                 * workarround to solve the exception:
+                 * "This PlotModel is already in use by some other PlotView control."
+                 * switching the tabs multiple times
+                */
+                if (m_selectedPlot != null)
+                {
+                    ((OxyPlot.IPlotModel)m_selectedPlot.Plot).AttachPlotView(null);
+                }
                 m_selectedPlot = value;
                 m_selectedPlot.updateView();
                 NotifyOfPropertyChange(() => selectedPlot);
@@ -117,8 +124,13 @@ namespace Badger.ViewModels
                 if (plotType == LoggedVariableViewModel.PlotType.LastEvaluation.ToString()
                     || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
                 {
+                    //get the max length of the log
+                    double maxLength = 0.0;
+                    if (query.resultTracks.Count > 0)
+                        maxLength = query.resultTracks.Select(a => a.trackData.realTime.Length).Max();
+
                     //LAST EVALUATION values: create a new plot for each variable in the result data          
-                    newPlot = new PlotViewModel(variable, false, true);
+                    newPlot = new PlotViewModel(String.Format("History of {0}", variable), maxLength, "Time (s)", variable, false, true);
                     //plot data
 
                     for (int i = 0; i < query.resultTracks.Count; i++)
@@ -136,8 +148,13 @@ namespace Badger.ViewModels
                 if (plotType == LoggedVariableViewModel.PlotType.AllEvaluations.ToString()
                       || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
                 {
+                    //get the max length of the log
+                    double maxLength = 0.0;
+                    if (query.resultTracks.Count > 0)
+                        maxLength = query.resultTracks.Select(a => a.trackData.getVariableData(variable).experimentData.values.Length).Max();
+
                     //AVERAGED EVALUATION values: create a new plot for each variable in the result data
-                    newPlot = new PlotViewModel(variable + "-episode", false, true);
+                    newPlot = new PlotViewModel(String.Format("Average of {0}", variable), maxLength, "Validation Episode", String.Format("Average of {0}", variable), false, true);
                     //plot data
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {

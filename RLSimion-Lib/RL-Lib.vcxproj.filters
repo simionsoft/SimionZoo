@@ -88,9 +88,6 @@
     <ClCompile Include="named-var-set.cpp">
       <Filter>learning</Filter>
     </ClCompile>
-    <ClCompile Include="single-dimension-grid.cpp">
-      <Filter>learning</Filter>
-    </ClCompile>
     <ClCompile Include="simgod.cpp">
       <Filter>learning</Filter>
     </ClCompile>
@@ -208,6 +205,30 @@
     <ClCompile Include="worlds\robot-control.cpp">
       <Filter>world\BulletWorlds</Filter>
     </ClCompile>
+    <ClCompile Include="single-dimension-grid-rbf.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="single-dimension-grid.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-tilecoding.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\swinguppendulum.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="actor-critic-offpac.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="worlds\gridworld.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-discrete.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="single-dimension-discrete-grid.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">
@@ -274,9 +295,6 @@
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="simion.h">
-      <Filter>learning</Filter>
-    </ClInclude>
-    <ClInclude Include="single-dimension-grid.h">
       <Filter>learning</Filter>
     </ClInclude>
     <ClInclude Include="stats.h">
@@ -387,6 +405,21 @@
     </ClInclude>
     <ClInclude Include="worlds\robot-control.h">
       <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-grid-rbf.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-grid.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\swinguppendulum.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="worlds\gridworld.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="single-dimension-discrete-grid.h">
+      <Filter>learning</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
