@@ -57,10 +57,15 @@ namespace Badger.ViewModels
         public ObservableCollection<PlotLineSeriesPropertiesViewModel> SelectedPlotLineSeriesPropertiesViewModels
         {
             get { return m_selectedPlotLineSeriesPropertiesViewModels; }
-            set {
+            set
+            {
                 m_selectedPlotLineSeriesPropertiesViewModels = value;
                 NotifyOfPropertyChange(() => SelectedPlotLineSeriesPropertiesViewModels);
             }
+        }
+        public bool LineSeriesSelectionVisible
+        {
+            get { return properties.lineSeriesProperties.Count > 1; }
         }
 
         public PlotViewModel(string title, double xMax, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
@@ -112,6 +117,9 @@ namespace Badger.ViewModels
 
                 updateView();
             };
+
+            if (properties.lineSeriesProperties.Count > 0)
+                m_selectedPlotLineSeriesPropertiesViewModels.Add(properties.lineSeriesProperties[0]);
         }
 
         private void updatePlot(object state)

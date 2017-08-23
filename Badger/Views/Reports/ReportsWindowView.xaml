@@ -106,7 +106,7 @@
 
                                 <StackPanel Margin="0,10,0,2" Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
                                     <Label  Width="70" Margin="0,0,10,0" Content="From" HorizontalContentAlignment="Right"/>
-                                    <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" HorizontalAlignment="Center"/>
+                                    <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" HorizontalAlignment="Center" MinWidth="80px"/>
                                 </StackPanel>
                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" 
                                             ToolTip="Forks currently used to group results">
@@ -121,7 +121,7 @@
                                         </Border>
                                     </Grid>
 
-                                    <Button x:Name="ResetGroupBy" Margin="4,0,0,0" Width="36" Height="36">
+                                    <Button x:Name="ResetGroupBy" Margin="4,0,0,0" Width="24" Height="24">
                                         <Path Data="{StaticResource  Close}" Width="24" Height="24" Fill="#89000000"
                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Button>
