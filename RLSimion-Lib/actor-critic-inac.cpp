@@ -52,9 +52,9 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		m_e_u[i] = new CETraces(pConfigNode);
-		char* buffer = new char[strlen("Actor/E-Trace %i") + 100];
-		sprintf(buffer, "Actor/E-Trace %i", i);
-		m_e_u[i]->setName(buffer);
+		char* buffer = new char[1024];
+		sprintf_s(buffer, 1024, "Actor/E-Trace %i", i);
+		m_e_u[i]->setName("Actor/E-Trace");
 	}
 }
 
@@ -66,6 +66,8 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		delete m_w[i];
+		delete [] m_e_u[i]->getName(); //the destructor of CETraces doesn't free the memory reserved for the name
+		delete m_e_u[i];
 	}
 	delete[]m_w;
 

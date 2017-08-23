@@ -34,6 +34,7 @@ public:
 	virtual ~CFeatureList();
 
 	void setName(const char* name);
+	const char* getName();
 	void clear();
 	void mult(double factor);
 	double getFactor(unsigned int index) const;

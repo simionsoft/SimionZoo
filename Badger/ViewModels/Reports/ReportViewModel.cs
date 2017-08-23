@@ -103,7 +103,7 @@ namespace Badger.ViewModels
                     if (trackData != null)
                     {
                         //code below can be improved: organize forks hierarchically instead of a single string
-                        StatViewModel trackStats = new StatViewModel(track.groupId, track.trackId);
+                        StatViewModel trackStats = new StatViewModel(track.GroupId, track.TrackId);
                         trackStats.lastEpisodeStats = trackData.lastEvaluationEpisodeData.Stats;
                         trackStats.experimentStats = trackData.experimentAverageData.Stats;
                         newStat.addStat(trackStats);
@@ -137,7 +137,7 @@ namespace Badger.ViewModels
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
-                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].groupId);
+                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].GroupId);
                         for (int x = 0; x < variableData.lastEvaluationEpisodeData.Values.Length; ++x)
                         {
                             newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x]
@@ -197,12 +197,15 @@ namespace Badger.ViewModels
                         int episodeIndex = 0;
                         foreach (var episodeData in variableData.experimentTrainingData)
                         {
-                            lineSeriesId = newPlot.addLineSeries(String.Format("track {0}\nepisode {1}", i, episodeIndex++), isFirstSeries);
-                            isFirstSeries = false;
-
-                            for (int x = 0; x < episodeData.Values.Length; ++x)
+                            if (episodeData.Initialized)
                             {
-                                newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x], episodeData.Values[x]);
+                                lineSeriesId = newPlot.addLineSeries(String.Format("track {0}\nepisode {1}", i, episodeIndex++), isFirstSeries);
+                                isFirstSeries = false;
+
+                                for (int x = 0; x < episodeData.Values.Length; ++x)
+                                {
+                                    newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x], episodeData.Values[x]);
+                                }
                             }
                         }
                     }
@@ -222,11 +225,14 @@ namespace Badger.ViewModels
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
-                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].groupId);
-                        for (int x = 0; x < variableData.experimentAverageData.Values.Length; ++x)
+                        if (variableData.experimentAverageData.Initialized)
                         {
-                            newPlot.addLineSeriesValue(lineSeriesId, x
-                                , variableData.experimentAverageData.Values[x]);
+                            lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].GroupId);
+                            for (int x = 0; x < variableData.experimentAverageData.Values.Length; ++x)
+                            {
+                                newPlot.addLineSeriesValue(lineSeriesId, x
+                                    , variableData.experimentAverageData.Values[x]);
+                            }
                         }
                     }
                     plots.Add(newPlot);
