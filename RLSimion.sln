@@ -127,7 +127,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TileCoding", "tests\RLSimio
 		{A97CFEAC-DBE2-433C-9454-6D1D2749C591} = {A97CFEAC-DBE2-433C-9454-6D1D2749C591}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerdAgentServiceSettings", "HerdAgentServiceSettings\HerdAgentServiceSettings.csproj", "{78160827-2C08-4D14-BDD8-0D842FC1191F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HerdAgentServiceSettings", "tools\HerdAgentServiceSettings\HerdAgentServiceSettings.csproj", "{78160827-2C08-4D14-BDD8-0D842FC1191F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portable Badger", "installers\Portable Badger\Portable Badger.csproj", "{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}"
 EndProject

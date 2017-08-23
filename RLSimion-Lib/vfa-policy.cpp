@@ -30,12 +30,21 @@ std::shared_ptr<CPolicy> CPolicy::getInstance(CConfigNode* pConfigNode)
 CPolicy::CPolicy(CConfigNode* pConfigNode)
 {
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
-	m_discreteActionSpace = BOOL_PARAM(pConfigNode, "Discrete-Action-Space", "Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)", false);
 
 	//only CDiscreteActionFeatureMap is supported for the discrete mode
-	if (m_discreteActionSpace.get())
+	if (CSimGod::getGlobalActionFeatureMap().get() != NULL)
+		m_discreteActionSpace = (typeid(*CSimGod::getGlobalActionFeatureMap().get()) == typeid(CDiscreteActionFeatureMap));
+	else
+		m_discreteActionSpace = false;
+
+	if (m_discreteActionSpace)
 	{
-		assert(typeid(*CSimGod::getGlobalActionFeatureMap().get()) == typeid(CDiscreteActionFeatureMap));
+		//calculate the density of the space
+		m_space_density = 1.0;
+		for (int i = 0; i < CWorld::getDynamicModel()->getActionDescriptor().size(); i++)
+		{
+			m_space_density *= ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[i]))->getStepSize();
+		}
 	}
 }
 
@@ -72,9 +81,9 @@ double CUniformPolicy::selectAction(const CState *s, CAction *a)
 	double randomValue = getRandomValue() * m_action_width + m_minActionValue;
 	double probability = 1.0 / m_action_width * PROBABILITY_INTEGRATION_WIDTH;
 
-	if (m_discreteActionSpace.get())
+	if (m_discreteActionSpace)
 	{
-		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		randomValue = grid->getCenters()[grid->getClosestCenter(randomValue)];
 		probability = 1.0 / grid->getNumCenters();
 	}
@@ -89,9 +98,9 @@ double CUniformPolicy::getOutput(const CState* s)
 	int actionIndex = m_outputActionIndex.get();
 	double randomValue = getRandomValue() * m_action_width + m_minActionValue;
 
-	if (m_discreteActionSpace.get())
+	if (m_discreteActionSpace)
 	{
-		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		randomValue = grid->getCenters()[grid->getClosestCenter(randomValue)];
 	}
 
@@ -105,9 +114,9 @@ double CUniformPolicy::getProbability(const CState* s, const CAction* a, bool bS
 	//values for the case of a continuous action space
 	double probability = 1.0 / m_action_width * PROBABILITY_INTEGRATION_WIDTH;
 
-	if (m_discreteActionSpace.get())
+	if (m_discreteActionSpace)
 	{
-		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		probability = 1.0 / grid->getNumCenters();
 	}
 
@@ -269,12 +278,12 @@ double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 	output = clip(output, a->getProperties()[actionIndex].getMin(), a->getProperties()[actionIndex].getMax());
 
 	//disctingtion between continuous and discrete action variables
-	if (m_discreteActionSpace.get())
+	if (m_discreteActionSpace)
 	{
-		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		output = grid->getCenters()[grid->getClosestCenter(output)];
 
-		probability = CGaussianNoise::getPDF(mean, sigma, output) / grid->getNumCenters();
+		probability = CGaussianNoise::getPDF(mean, sigma, output) * m_space_density;
 	}
 	else
 	{
@@ -284,7 +293,7 @@ double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 	a->set(actionIndex, output);
 
 #ifdef _DEBUG
-	cout << "select action - mean: " << mean << "\tsigma: " << sigma << "\tlog(sigma)" << m_pSigmaVFA->get(s) << "\toutput: " << output << "\n";
+	cout << "select action - mean: " << mean << "\tsigma: " << sigma << "\tlog(sigma): " << m_pSigmaVFA->get(s) << "\toutput: " << output << "\n";
 #endif
 	//this is only an approximation as the PDF now looks differntly because of the clipping
 	//this means, that the values at the borders will be higher as predicted by this function call
@@ -308,9 +317,9 @@ double CStochasticPolicyGaussianNoise::getOutput(const CState *s)
 	unsigned int actionIndex = m_outputActionIndex.get();
 	output = clip(output, CWorld::getDynamicModel()->getActionDescriptor().getInstance()->getProperties()[actionIndex].getMin(), CWorld::getDynamicModel()->getActionDescriptor().getInstance()->getProperties()[actionIndex].getMax());
 
-	if (m_discreteActionSpace.get())
+	if (m_discreteActionSpace)
 	{
-		CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		output = grid->getCenters()[grid->getClosestCenter(output)];
 	}
 
@@ -326,10 +335,12 @@ double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CSt
 		unsigned int actionIndex = m_outputActionIndex.get();
 		double value = a->get(actionIndex);
 
-		if (m_discreteActionSpace.get())
+		if (m_discreteActionSpace)
 		{
-			CSingleDimensionGrid* grid = ((CSingleDimensionActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-			return CGaussianNoise::getPDF(mean, exp(m_pSigmaVFA->get(s)), value) / grid->getNumCenters();
+			CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+			//TODO: Multiply with width of the action space!
+			//P(x) = pdf(x) * space_density
+			return CGaussianNoise::getPDF(mean, exp(m_pSigmaVFA->get(s)), value) * m_space_density;
 		}
 		else
 		{
@@ -350,7 +361,7 @@ void CStochasticPolicyGaussianNoise::getNaturalGradient(const CState* s, const C
 
 	//mu(s) = u_mu * x_mu(s)
 	//sigma(s) = exp(u_sigma * x_sigma(s))
-	double mean = m_pMeanVFA->get(m_pMeanFeatures); 
+	double mean = m_pMeanVFA->get(m_pMeanFeatures);
 	double sigma = exp(m_pSigmaVFA->get(m_pSigmaFeatures));
 
 	//a. Grad_u_mu pi(a|s)/pi(a|s) = (a - mu(s)) / sigma(s)^2 * x_mu(s) 

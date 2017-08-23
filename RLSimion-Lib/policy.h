@@ -16,7 +16,9 @@ class CPolicy
 {
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
-	BOOL_PARAM m_discreteActionSpace;
+	bool m_discreteActionSpace = false;
+
+	double m_space_density;
 
 public:
 	CPolicy(CConfigNode* pConfigNode);

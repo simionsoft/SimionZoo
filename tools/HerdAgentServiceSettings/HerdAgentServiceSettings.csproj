@@ -53,7 +53,7 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\tools\Herd\Herd.csproj">
+    <ProjectReference Include="..\Herd\Herd.csproj">
       <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
       <Name>Herd</Name>
     </ProjectReference>

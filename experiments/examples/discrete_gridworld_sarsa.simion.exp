@@ -11,7 +11,7 @@
 		<Dynamic-Model>
 			<Model>
 		<Discrete-Gridworld>
-			<Target-X>-8</Target-X>
+			<Target-X>0</Target-X>
 			<Target-Y>8</Target-Y>
 		</Discrete-Gridworld>
 		</Model>
@@ -59,21 +59,15 @@
 		</Action-Feature-Map>
 		<Simion>
 			<Type>
-		<Q-Learning>
+		<SARSA>
 			<Policy>
 				<Policy>
 		<Epsilon-Greedy>
 			<Epsilon>
 				<Schedule>
-		<Linear-Schedule>
-			<Start-Offset>0.3</Start-Offset>
-			<Pre-Offset-Value>0.2</Pre-Offset-Value>
-			<Initial-Value>0.2</Initial-Value>
-			<End-Value>0.0</End-Value>
-			<Evaluation-Value>0.0</Evaluation-Value>
-			<Interpolation>linear</Interpolation>
-			<Time-reference>experiment</Time-reference>
-		</Linear-Schedule>
+		<Constant>
+			<Value>0.1</Value>
+		</Constant>
 		</Schedule>
 			</Epsilon>
 		</Epsilon-Greedy>
@@ -94,7 +88,7 @@
 		</Constant>
 		</Schedule>
 			</Alpha>
-		</Q-Learning>
+		</SARSA>
 		</Type>
 		</Simion>
 	</SimGod>

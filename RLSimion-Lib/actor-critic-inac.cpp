@@ -17,6 +17,11 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 {
 	cout.precision(5);
 	m_td = 0.0;
+	m_v_s = 0.0;
+	m_v_s_p = 0.0;
+
+	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s)", &m_v_s);
+	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s')", &m_v_s_p);
 
 	//critic's stuff
 	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
@@ -93,8 +98,11 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	m_pVFunction->getFeatures(s, m_s_features);
 	m_pVFunction->getFeatures(s_p, m_s_p_features);
 	
+	m_v_s = m_pVFunction->get(m_s_features);
+	m_v_s_p = m_pVFunction->get(m_s_p_features);
+
 	//1. td= r - avg_r + gamma*V(s_p) - V(s)
-	m_td = r - m_avg_r + gamma * m_pVFunction->get(m_s_p_features) - m_pVFunction->get(m_s_features);
+	m_td = r - m_avg_r + gamma * m_v_s_p - m_v_s;
 
 	//2. avg_r= avg_r + alpha_r * td
 	m_avg_r += m_td * m_pAlphaR->get();
@@ -193,10 +201,12 @@ double CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a,
 
 double CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
 {
+	/*
 	if (CSimionApp::get()->pExperiment->isFirstStep())
 	{
 		cout << "first step\n";
 	}
+	*/
 	double prob = 1.0;
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{

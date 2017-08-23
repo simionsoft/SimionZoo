@@ -72,8 +72,6 @@ CDiscreteStateFeatureMap::CDiscreteStateFeatureMap(CConfigNode* pConfigNode)
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
 
 	m_maxNumActiveFeatures = 1;
-	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 }
 
 CDiscreteActionFeatureMap::CDiscreteActionFeatureMap(CConfigNode* pConfigNode)
@@ -90,6 +88,4 @@ CDiscreteActionFeatureMap::CDiscreteActionFeatureMap(CConfigNode* pConfigNode)
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
 
 	m_maxNumActiveFeatures = 1;
-	for (unsigned int i = 0; i < m_grid.size(); i++)
-		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 }

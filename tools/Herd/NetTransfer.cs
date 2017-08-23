@@ -203,11 +203,11 @@ namespace Herd
         {
             CTask task = new CTask();
             Match match;
-            match = await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>", cancelToken);
-//            match = await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" AuthenticationToken=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>", cancelToken);
+            match = await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\"(?: AuthenticationToken=\"([^\"]*)\")? Pipe=\"([^\"]*)\"\\/>", cancelToken);
             task.name = match.Groups[1].Value;
             task.exe = match.Groups[2].Value;
             task.arguments = match.Groups[3].Value;
+            //TODO: Solve this!
             task.authenticationToken = "";//match.Groups[4].Value;
             task.pipe = match.Groups[4].Value;
             m_job.tasks.Add(task);

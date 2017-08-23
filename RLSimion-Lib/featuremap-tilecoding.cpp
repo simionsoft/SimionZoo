@@ -34,6 +34,10 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 		unsigned int index = tilingIndexOffset;
 		for (unsigned int variableDimension = 0; variableDimension < m_grid.size(); variableDimension++)
 		{
+			//set offset of the grid
+			double oldOffset = m_grid[variableDimension]->getOffset();
+			m_grid[variableDimension]->setOffset(m_tilingOffset * layerIndex + oldOffset);
+
 			m_pVarFeatures->clear();
 			m_grid[variableDimension]->getFeatures(s, a, m_pVarFeatures);
 
@@ -49,6 +53,9 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 			}
 
 			index += oneIndex * prodLength;
+
+			//reset offset
+			m_grid[variableDimension]->setOffset(oldOffset);
 		}
 
 		//set the activated feature of this tiling layer
@@ -95,8 +102,6 @@ CTileCodingStateFeatureMap::CTileCodingStateFeatureMap(CConfigNode* pConfigNode)
 	for (unsigned int i = 0; i < m_grid.size(); i++)
 	{
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
-
-		m_grid[i]->setOffset(m_tilingOffset * i);
 	}
 }
 
@@ -116,7 +121,5 @@ CTileCodingActionFeatureMap::CTileCodingActionFeatureMap(CConfigNode* pConfigNod
 	for (unsigned int i = 0; i < m_grid.size(); i++)
 	{
 		m_totalNumFeatures *= m_grid[i]->getNumCenters();
-
-		m_grid[i]->setOffset(m_tilingOffset * i);
 	}
 }

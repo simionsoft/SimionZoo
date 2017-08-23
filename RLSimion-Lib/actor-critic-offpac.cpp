@@ -14,8 +14,8 @@
 
 COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 {
-	CSimionApp::get()->pLogger->addVarToStats<double>("TD-error", "TD-error", m_td);
-	CSimionApp::get()->pLogger->addVarToStats<double>("m_rhor", "m_rho", m_rho);
+	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", &m_td);
+	CSimionApp::get()->pLogger->addVarToStats("m_rho", "m_rho", &m_rho);
 	//td error
 	m_td = 0.0;
 
@@ -34,12 +34,9 @@ COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 	//learning rates
 	m_pAlphaV = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
 	m_pAlphaW = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-w", "Learning gain used to average the reward");
-	//lambda factor
-	m_lambda = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "OffPac-Lambda", "Lambda factor of the GTD(lambda) critic's update");
 	//eligibility trace
-	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
+	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "ETraces", "Traces used by the critic and the actor", true);
 	m_e_v->setName("Critic/e_v");
-
 
 
 	/*actor's stuff*/
@@ -67,6 +64,13 @@ COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 		//the actual dimension it belongs to doesn't seem very important at the moment
 		static std::string name= "Actor/E-Trace";
 		m_e_u[i]->setName(name.c_str());
+
+		//copy the settings of the e_v trace
+		//(we do this, because we just want one entry in the settings for all traces
+		//and not for each trace an individual entry)
+		m_e_u[i]->setLambda(m_e_v->getLambda());
+		m_e_u[i]->setTreshold(m_e_v->getTreshold());
+		m_e_u[i]->setReplace(m_e_v->getReplace());
 	}
 }
 
@@ -78,8 +82,10 @@ COffPolicyActorCritic::~COffPolicyActorCritic()
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		delete m_w[i];
+		delete m_e_u[i];
 	}
 	delete[] m_w;
+	delete[] m_e_u;
 
 	delete m_grad_u;
 }
@@ -97,7 +103,6 @@ void COffPolicyActorCritic::updateValue(const CState *s, const CAction *a, const
 	//w   = w + alpha_w * (td * e_v - (w^T*x(s))*x(s))
 
 	double gamma = CSimionApp::get()->pSimGod->getGamma();
-	double lambda = m_lambda->get();
 	double alpha_v = m_pAlphaV->get();
 	double alpha_w = m_pAlphaW->get();
 
@@ -122,13 +127,17 @@ void COffPolicyActorCritic::updateValue(const CState *s, const CAction *a, const
 	m_e_v->update(gamma);
 	m_e_v->addFeatureList(m_s_features, 1.0);
 	m_e_v->mult(m_rho);
+	m_e_v->applyThreshold(m_e_v->getTreshold());
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
+		if (CSimionApp::get()->pExperiment->isFirstStep())
+			m_w[i]->clear();
+
 		m_pVFunction->add(m_e_v.ptr(), m_td*alpha_v);
 		double factor = -alpha_v * gamma * (1.0 - m_e_v->getLambda()) * m_w[i]->innerProduct(m_e_v.ptr());
 		m_pVFunction->add(m_s_features, factor);
-		
+
 		m_w[i]->addFeatureList(m_e_v.ptr(), alpha_w * m_td);
 		factor = -alpha_w * m_w[i]->innerProduct(m_s_features);
 		m_w[i]->addFeatureList(m_s_features, factor);
@@ -143,7 +152,6 @@ void COffPolicyActorCritic::updatePolicy(const CState* s, const CState* a, const
 	//u   = u + alpha_u * td * e_u
 
 	double gamma = CSimionApp::get()->pSimGod->getGamma();
-	double lambda = m_lambda->get();
 	double alpha_u = m_pAlphaU->get();
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
@@ -154,8 +162,8 @@ void COffPolicyActorCritic::updatePolicy(const CState* s, const CState* a, const
 		//calculate the gradient
 		m_grad_u->clear();
 		m_policies[i]->getNaturalGradient(s, a, m_grad_u);
+		m_e_u[i]->update(m_rho*gamma);
 		m_e_u[i]->addFeatureList(m_grad_u, m_rho);
-		m_e_u[i]->addFeatureList(m_e_u[i], m_rho*gamma*m_e_u[i]->getLambda());
 
 		m_policies[i]->addFeatures(m_e_u[i], alpha_u*m_td);
 	}

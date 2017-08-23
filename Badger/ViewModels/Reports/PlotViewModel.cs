@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.IO;
 using Badger.Data;
 using System;
+using System.Collections.ObjectModel;
 
 namespace Badger.ViewModels
 {
@@ -52,6 +53,16 @@ namespace Badger.ViewModels
             get { return m_properties; }
         }
 
+        private ObservableCollection<PlotLineSeriesPropertiesViewModel> m_selectedPlotLineSeriesPropertiesViewModels;
+        public ObservableCollection<PlotLineSeriesPropertiesViewModel> SelectedPlotLineSeriesPropertiesViewModels
+        {
+            get { return m_selectedPlotLineSeriesPropertiesViewModels; }
+            set {
+                m_selectedPlotLineSeriesPropertiesViewModels = value;
+                NotifyOfPropertyChange(() => SelectedPlotLineSeriesPropertiesViewModels);
+            }
+        }
+
         public PlotViewModel(string title, double xMax, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
         {
             name = title;
@@ -80,6 +91,27 @@ namespace Badger.ViewModels
             }
             m_bShowOptions = bShowOptions;
 
+
+            //to selective disable certain lines
+            m_selectedPlotLineSeriesPropertiesViewModels = new ObservableCollection<PlotLineSeriesPropertiesViewModel>();
+            m_selectedPlotLineSeriesPropertiesViewModels.CollectionChanged += (s, e) =>
+            {
+                foreach (var outerItem in properties.lineSeriesProperties)
+                {
+                    bool found = false;
+                    foreach (var item in m_selectedPlotLineSeriesPropertiesViewModels)
+                    {
+                        if (item.Equals(outerItem))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    outerItem.bVisible = found;
+                }
+
+                updateView();
+            };
         }
 
         private void updatePlot(object state)
@@ -94,17 +126,19 @@ namespace Badger.ViewModels
 
         private object m_lineSeriesLock = new object();
 
-        public int addLineSeries(string title)
+        public int addLineSeries(string title, bool isVisible = true)
         {
             lock (m_lineSeriesLock)
             {
-                OxyPlot.Series.LineSeries newSeries =
-                    new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+                OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+                newSeries.IsVisible = isVisible;
                 m_plot.Series.Add(newSeries);
 
                 properties.addLineSeries(newSeries, this);
 
                 return m_plot.Series.Count - 1; ;
+
+
             }
         }
 
@@ -112,7 +146,7 @@ namespace Badger.ViewModels
         {
             if (seriesIndex < 0 || seriesIndex >= m_plot.Series.Count)
             {
-                //at least, we should log the error   
+                //TODO: at least, we should log the error
                 return;
             }
 
@@ -125,11 +159,11 @@ namespace Badger.ViewModels
         {
             m_plot.Series.Clear();
             updateView();
-            
+            NotifyOfPropertyChange("Series");
         }
 
         /// <summary>
-        ///     Identify which LineSeries is hovered and make a call to the dimLineSeriesColor method 
+        ///     Identify which LineSeries is hovered and make a call to the dimLineSeriesColor method
         ///     passing the correct LineSeriesProperties object as parameter.
         ///     In order to highlight a LineSeries what we actually do is to dim, that is, apply
         ///     certain opacity, to all the other LineSeries.
@@ -156,7 +190,7 @@ namespace Badger.ViewModels
 
         /// <summary>
         ///     Reset all LineSeries color to its original, removing the opacity in case that some
-        ///     was applied before by the highlightLineSeries method.  
+        ///     was applied before by the highlightLineSeries method.
         /// </summary>
         public void resetLineSeriesColors()
         {
