@@ -9,7 +9,7 @@
 .vs/*
 .vs
 
-config/definitions.xml
+./config/definitions.xml
 
 # User-specific files
 *.suo
