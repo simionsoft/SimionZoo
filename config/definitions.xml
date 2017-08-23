@@ -14,10 +14,9 @@
   </CLASS>
   <CLASS Name="COffPolicyActorCritic">
     <BRANCH Name="VFunction" Class="CLinearStateVFA" Comment="The Value-function"/>
-    <BRANCH Name="V-ETraces" Class="CETraces" Comment="Traces used by the critic" Optional="True"/>
+    <BRANCH Name="ETraces" Class="CETraces" Comment="Traces used by the critic and the actor" Optional="True"/>
     <BRANCH Name="Alpha-v" Class="CNumericValue-Factory" Comment="Learning gain used by the critic"/>
     <BRANCH Name="Alpha-w" Class="CNumericValue-Factory" Comment="Learning gain used to average the reward"/>
-    <BRANCH Name="OffPac-Lambda" Class="CNumericValue-Factory" Comment="Lambda factor of the GTD(lambda) critic's update"/>
     <BRANCH Name="Alpha-u" Class="CNumericValue-Factory" Comment="Learning gain used by the actor"/>
     <MULTI-VALUED Name="b-Policy" Class="CPolicy-Factory" Comment="The base-policy b(a|s)"/>
     <MULTI-VALUED Name="Policy" Class="CPolicy-Factory" Comment="The policy"/>
@@ -352,21 +351,17 @@
     <ENUM-VALUE Name="Distribution" Class="Distribution" Comment="The manner in which the points are distributed on the action variable's grid" Default="linear"/>
   </CLASS>
   <CLASS Name="CPolicy">
-    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
   <CLASS Name="CUniformPolicy">
-    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
   </CLASS>
   <CLASS Name="CDeterministicPolicyGaussianNoise">
-    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
     <BRANCH Name="Deterministic-Policy-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
     <BRANCH Name="Exploration-Noise" Class="CNoise-Factory" Comment="Parameters of the noise used as exploration"/>
   </CLASS>
   <CLASS Name="CStochasticPolicyGaussianNoise">
-    <BOOL-VALUE Name="Discrete-Action-Space" Comment="Use a discrete representation of the action space (you have to use a linear Action Space Feature Map)" Default="false"/>
     <ACTION-VAR-REF Name="Output-Action" Comment="The output action variable"/>
     <BRANCH Name="Mean-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates the function"/>
     <BRANCH Name="Sigma-VFA" Class="CLinearStateVFA" Comment="The parameterized VFA that approximates variance(s)"/>

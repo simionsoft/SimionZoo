@@ -6,7 +6,7 @@
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:vm="clr-namespace:Badger.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="300" d:DesignWidth="700">
 
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type vm:PlotViewModel}">
@@ -28,7 +28,7 @@
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding name}" FontSize="8" FontFamily="Segoe UI Light"/>
+                        <TextBlock Text="{Binding name}" FontSize="10" FontFamily="Segoe UI Light" TextAlignment="Center"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
@@ -40,7 +40,7 @@
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding variable}" FontSize="8" FontFamily="Segoe UI Light"/>
+                        <TextBlock Text="{Binding variable}" FontSize="10" FontFamily="Segoe UI Light" TextAlignment="Center"/>
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>

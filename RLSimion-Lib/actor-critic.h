@@ -35,6 +35,8 @@ class CIncrementalNaturalActorCritic : public CSimion
 	//td error
 	double m_td;
 
+	double m_v_s, m_v_s_p;
+
 	//linear state value function (represented by v^t * x in the paper)
 	CHILD_OBJECT<CLinearStateVFA> m_pVFunction;
 
@@ -123,8 +125,6 @@ class COffPolicyActorCritic : public CSimion
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaV;
 	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaW;
 
-	//lambda factor
-	CHILD_OBJECT_FACTORY<CNumericValue> m_lambda;
 
 	//updates the policy/the actor
 	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);

@@ -4,16 +4,23 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="600">
+             d:DesignHeight="400" d:DesignWidth="600" MinHeight="300">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
-            <oxy:PlotView Model="{Binding Plot}" Width="580" Height="300"/>
+        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Width="630" Height="300">
+                <oxy:PlotView Model="{Binding Plot}" Width="480" Height="300"/>
+                <xctk:CheckListBox Width="120px" Margin="30 0 0 30" ItemsSource="{Binding properties.lineSeriesProperties, Mode=OneWay, NotifyOnSourceUpdated=True}"
+                                   ValueMemberPath="bVisible" DisplayMemberPath="lineSeries.Title" HorizontalAlignment="Right" HorizontalContentAlignment="Right"
+                                   SelectedItemsOverride="{Binding SelectedPlotLineSeriesPropertiesViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+           
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
                 <Button Style="{StaticResource BadgerButtonStyle}" x:Name="showProperties" Width="32" Height="32">
                     <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"

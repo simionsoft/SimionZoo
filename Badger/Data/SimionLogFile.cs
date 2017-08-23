@@ -19,9 +19,9 @@ namespace Badger.Data
 
         public delegate void StepAction(int auxId, int stepIndex, double value);
         public delegate void ScalarValueAction(double action);
-        public delegate double EpisodeFunc(EpisodeData episode,int varIndex);
+        public delegate double EpisodeFunc(EpisodeData episode, int varIndex);
     }
- 
+
     public class StepData
     {
         public int stepIndex;
@@ -83,7 +83,7 @@ namespace Badger.Data
             double min = episode.steps[0].data[varIndex];
             foreach (StepData step in episode.steps)
             {
-                if (step.data[varIndex]<min)
+                if (step.data[varIndex] < min)
                     min = step.data[varIndex];
             }
             return min;
@@ -100,24 +100,24 @@ namespace Badger.Data
             }
             return max;
         }
-        public static double calculateVarAvg(EpisodeData episode,int varIndex)
+        public static double calculateVarAvg(EpisodeData episode, int varIndex)
         {
             if (varIndex < 0 || episode.steps.Count == 0)
                 return 0.0;
             double avg = 0.0;
-            foreach(StepData step in episode.steps)
+            foreach (StepData step in episode.steps)
             {
                 avg += step.data[varIndex];
             }
             return avg / episode.steps.Count;
         }
-        public static double calculateStdDev(EpisodeData episode,int varIndex)
+        public static double calculateStdDev(EpisodeData episode, int varIndex)
         {
             if (varIndex < 0 || episode.steps.Count == 0)
                 return 0.0;
-            double avg = calculateVarAvg(episode,varIndex);
+            double avg = calculateVarAvg(episode, varIndex);
             double sum = 0.0, diff;
-            foreach(StepData step in episode.steps)
+            foreach (StepData step in episode.steps)
             {
                 diff = step.data[varIndex] - avg;
                 sum = diff * diff;
@@ -130,6 +130,8 @@ namespace Badger.Data
     public class ExperimentData
     {
         public int numEpisodes = 0;
+        public int numTrainingEpisodes = 0;
+        public int numEvaluationEpisodes = 0;
         public int numEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
         public int fileFormatVersion = 0;
         public bool bSuccesful = true; //true if it finished correctly: the number of episodes in the header must match the number of episodes read from the log file
@@ -154,6 +156,12 @@ namespace Badger.Data
                         //Episode subindex= Episode within an evaluation
                         if (episodeData.subIndex > numEpisodesPerEvaluation)
                             numEpisodesPerEvaluation = episodeData.subIndex;
+
+                        //count evaluation and training episodes 
+                        if (episodeData.type == 0)
+                            this.numEvaluationEpisodes++;
+                        else
+                            this.numTrainingEpisodes++;
 
                         StepData stepData = new StepData();
                         bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
@@ -200,26 +208,26 @@ namespace Badger.Data
             }
         }
         //for each evaluation episode the episodeFunc is performed
-        public double doForEpisodeVar(int episodeIndex,int varIndex,SimionLogFile.EpisodeFunc episodeFunc)
+        public double doForEpisodeVar(int episodeIndex, int varIndex, SimionLogFile.EpisodeFunc episodeFunc)
         {
             foreach (EpisodeData episode in episodes)
             {
-                if (episode.index == episodeIndex && episode.subIndex==1 // <- this obviously is not the right way to do it
+                if (episode.index == episodeIndex && episode.subIndex == 1 // <- this obviously is not the right way to do it
                     && episode.type == EpisodeData.episodeTypeEvaluation)
                 {
-                    return episodeFunc(episode,varIndex);
+                    return episodeFunc(episode, varIndex);
                 }
             }
             return 0.0;
         }
         //for the i-th episode, the action is performed for each step data value
-        public void doForEpisodeSteps(int episodeIndex,System.Action<StepData> stepAction)
+        public void doForEpisodeSteps(int episodeIndex, System.Action<StepData> stepAction)
         {
             foreach (EpisodeData episode in episodes)
             {
-                if (episode.index == episodeIndex && episode.type== EpisodeData.episodeTypeEvaluation)
+                if (episode.index == episodeIndex && episode.type == EpisodeData.episodeTypeEvaluation)
                 {
-                    foreach(StepData step in episode.steps)
+                    foreach (StepData step in episode.steps)
                         stepAction(step);
                 }
             }

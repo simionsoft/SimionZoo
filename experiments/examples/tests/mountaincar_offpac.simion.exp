@@ -45,17 +45,27 @@
 		</Tile-Coding-State-Grid>
 		</Type>
 		</State-Feature-Map>
+		<Action-Feature-Map>
+			<Type>
+		<Discrete-Action-Grid>
+			<Grid-Dimension>
+				<Step-Size>1.0</Step-Size>
+				<Variable>pedal</Variable>
+			</Grid-Dimension>
+		</Discrete-Action-Grid>
+		</Type>
+		</Action-Feature-Map>
 		<Simion>
 			<Type>
 		<Off-Policy-Actor-Critic>
 			<VFunction>
 				<Init-Value>0.0</Init-Value>
 			</VFunction>
-			<V-ETraces>
+			<ETraces>
 				<Threshold>0.001</Threshold>
-				<Lambda>0.0</Lambda>
+				<Lambda>0.9</Lambda>
 				<Replace>true</Replace>
-			</V-ETraces>
+			</ETraces>
 			<Alpha-v>
 				<Schedule>
 		<Constant>
@@ -70,13 +80,6 @@
 		</Constant>
 		</Schedule>
 			</Alpha-w>
-			<OffPac-Lambda>
-				<Schedule>
-		<Constant>
-			<Value>0.0</Value>
-		</Constant>
-		</Schedule>
-			</OffPac-Lambda>
 			<Alpha-u>
 				<Schedule>
 		<Constant>
@@ -87,7 +90,6 @@
 			<b-Policy>
 				<Policy>
 		<Uniform-Policy>
-			<Discrete-Action-Space>false</Discrete-Action-Space>
 			<Output-Action>pedal</Output-Action>
 		</Uniform-Policy>
 		</Policy>
@@ -95,7 +97,6 @@
 			<Policy>
 				<Policy>
 		<Stochastic-Policy-Gaussian-Noise>
-			<Discrete-Action-Space>false</Discrete-Action-Space>
 			<Output-Action>pedal</Output-Action>
 			<Mean-VFA>
 				<Init-Value>0.0</Init-Value>

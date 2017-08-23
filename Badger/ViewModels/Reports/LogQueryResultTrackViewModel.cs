@@ -7,81 +7,122 @@ namespace Badger.ViewModels
 {
     public class DataSeries
     {
-        public double[] values = null;
-        public StatData stats= new StatData();
-
-        public DataSeries(int numValues)
+        private double[] _values = null;
+        public double[] Values
         {
-            values = new double[numValues];
+            get
+            {
+                if (_values is null)
+                    throw new InvalidOperationException("Values has not been initiliazed; you must call SetLength() before accessing the Values property.");
+                return _values;
+            }
+            set { _values = value; }
         }
-        public void calculateStats()
+        public StatData Stats = new StatData();
+
+        public void SetLength(int numValues)
         {
-            if (values == null) return;
+            Values = new double[numValues];
+        }
+
+        public void CalculateStats()
+        {
             //calculate avg, min and max
             double sum = 0.0;
-            stats.min = values[0]; stats.max = values[0];
-            foreach (double val in values)
+            Stats.min = Values[0]; Stats.max = Values[0];
+            foreach (double val in Values)
             {
                 sum += val;
-                if (val > stats.max) stats.max = val;
-                if (val < stats.min) stats.min = val;
+                if (val > Stats.max) Stats.max = val;
+                if (val < Stats.min) Stats.min = val;
             }
-            stats.avg = sum / values.Length;
+
+            Stats.avg = sum / Values.Length;
+
             //calculate std. deviation
             double diff;
             sum = 0.0;
-            foreach (double val in values)
+            foreach (double val in Values)
             {
-                diff = val - stats.avg;
+                diff = val - Stats.avg;
                 sum += diff * diff;
             }
-            stats.stdDev = Math.Sqrt(sum / values.Length);
+
+            Stats.stdDev = Math.Sqrt(sum / Values.Length);
         }
+
     }
     public class TrackVariableData
     {
-        public TrackVariableData(int numSteps,int numEpisodes)
+        public TrackVariableData(int numEpisodes, int evalulationEpisodes, int trainingEpisodes)
         {
-            if (numSteps>0) lastEpisodeData = new DataSeries(numSteps);
-            if (numEpisodes>0) experimentData = new DataSeries(numEpisodes);
+            lastEvaluationEpisodeData = new DataSeries();
+            if (numEpisodes > 0)
+            {
+                experimentAverageData = new DataSeries();
+                experimentAverageData.SetLength(numEpisodes);
+            }
+            
+            experimentEvaluationData = new List<DataSeries>(evalulationEpisodes);
+            for (int i = 0; i < evalulationEpisodes; i++)
+            {
+                experimentEvaluationData.Add(new DataSeries());
+            }
+            
+            experimentTrainingData = new List<DataSeries>(trainingEpisodes);
+            for (int i = 0; i < trainingEpisodes; i++)
+            {
+                experimentTrainingData.Add(new DataSeries());
+            }
         }
-        public DataSeries lastEpisodeData;
-        public DataSeries experimentData;
+
+        public DataSeries lastEvaluationEpisodeData;
+        public DataSeries experimentAverageData;
+        public List<DataSeries> experimentEvaluationData;
+        public List<DataSeries> experimentTrainingData;
 
         public void calculateStats()
         {
-            if (lastEpisodeData != null) lastEpisodeData.calculateStats();
-            if (experimentData != null) experimentData.calculateStats();
+            if (lastEvaluationEpisodeData != null) lastEvaluationEpisodeData.CalculateStats();
+            if (experimentAverageData != null) experimentAverageData.CalculateStats();
+
+            foreach (var item in experimentEvaluationData)
+                item.CalculateStats();
+
+            foreach (var item in experimentTrainingData)
+                item.CalculateStats();
         }
     }
     public class TrackData
     {
         public bool bSuccesful;
-        public double []simTime;
-        public double []realTime;
+        public double[] simTime;
+        public double[] realTime;
         public Dictionary<string, string> forkValues;
-        private Dictionary<string,TrackVariableData>variablesData= new Dictionary<string,TrackVariableData>();
+        private Dictionary<string, TrackVariableData> variablesData = new Dictionary<string, TrackVariableData>();
 
-        public TrackData(int numSteps,int numEpisodes, List<string> variables)
+        public TrackData(int maxNumSteps, int numEpisodes, int evalulationEpisodes, int trainingEpisodes, List<string> variables)
         {
-            simTime = new double[numSteps];
-            realTime = new double[numSteps];
+            simTime = new double[maxNumSteps];
+            realTime = new double[maxNumSteps];
             foreach (string variable in variables)
             {
-                this.variablesData[variable] = new TrackVariableData(numSteps,numEpisodes);
+                this.variablesData[variable] = new TrackVariableData(numEpisodes, evalulationEpisodes, trainingEpisodes);
             }
         }
-        private void addVariableData(string variable,TrackVariableData variableData)
+
+        private void addVariableData(string variable, TrackVariableData variableData)
         {
             this.variablesData.Add(variable, variableData);
         }
+
         public TrackVariableData getVariableData(string variable)
         {
             if (variablesData.ContainsKey(variable)) return variablesData[variable];
             else return null;
         }
     }
-    public class LogQueryResultTrackViewModel: PropertyChangedBase
+    public class LogQueryResultTrackViewModel : PropertyChangedBase
     {
         //data read fromm the log files: might be more than one track before applying a group function
         private List<TrackData> m_trackData = new List<TrackData>();
@@ -119,15 +160,15 @@ namespace Badger.ViewModels
                 {
                     id += entry.Key + "=" + entry.Value + ",";
                 }
-                id= id.Trim(',');
+                id = id.Trim(',');
                 return id;
             }
         }
         private string m_groupId = null;
         public string groupId
         {
-            get { if (m_groupId!=null) return m_groupId; return trackId; }
-            set { m_groupId = value;  NotifyOfPropertyChange(()=>groupId); }
+            get { if (m_groupId != null) return m_groupId; return trackId; }
+            set { m_groupId = value; NotifyOfPropertyChange(() => groupId); }
         }
 
         public void addTrackData(TrackData newTrackData)
@@ -136,25 +177,25 @@ namespace Badger.ViewModels
         }
 
         //this function selects a unique track fromm each group (if there's more than one track)
-        public void consolidateGroups(string function,string variable,List<string> groupBy)
+        public void consolidateGroups(string function, string variable, List<string> groupBy)
         {
-            if (m_trackData.Count>1)
+            if (m_trackData.Count > 1)
             {
-                TrackData selectedTrack= null;
-                double min= double.MaxValue, max= double.MinValue;
+                TrackData selectedTrack = null;
+                double min = double.MaxValue, max = double.MinValue;
                 foreach (TrackData track in m_trackData)
                 {
                     TrackVariableData variableData = track.getVariableData(variable);
                     if (variableData != null)
                     {
-                        if (function == LogQuery.functionMax && Math.Abs(variableData.lastEpisodeData.stats.avg) > max)
+                        if (function == LogQuery.functionMax && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) > max)
                         {
-                            max = Math.Abs(variableData.lastEpisodeData.stats.avg);
+                            max = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
                             selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMin && Math.Abs(variableData.lastEpisodeData.stats.avg) < min)
+                        if (function == LogQuery.functionMin && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) < min)
                         {
-                            min = Math.Abs(variableData.lastEpisodeData.stats.avg);
+                            min = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
                             selectedTrack = track;
                         }
                     }
@@ -167,7 +208,7 @@ namespace Badger.ViewModels
                 //and therefore, no more report can be generated afterwards
                 forkValues = new Dictionary<string, string>(selectedTrack.forkValues);
 
-                if (groupBy.Count>0)
+                if (groupBy.Count > 0)
                 {
                     //we remove those forks used to group from the forkValues
                     //because *hopefully* we only use them to name the track

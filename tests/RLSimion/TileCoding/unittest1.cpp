@@ -28,6 +28,8 @@ namespace TileCoding
 
 				double val = prop.getMin();
 				s->set(prop.getName(), val);
+				double b = s->get(prop.getName());
+				Assert::IsTrue(val == b);
 			}
 
 			//set the one dimension to its max value

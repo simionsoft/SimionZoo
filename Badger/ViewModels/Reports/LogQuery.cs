@@ -232,7 +232,7 @@ namespace Badger.ViewModels
                         double sortValue = 0.0;
                         TrackVariableData variableData = track.trackData.getVariableData(orderByVariable);
                         if (variableData != null)
-                            sortValue = variableData.lastEpisodeData.stats.avg;
+                            sortValue = variableData.lastEvaluationEpisodeData.Stats.avg;
                         sortedList.Add(sortValue, track);
                     }
 
