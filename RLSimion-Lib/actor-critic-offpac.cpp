@@ -14,8 +14,8 @@
 
 COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 {
-	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", &m_td);
-	CSimionApp::get()->pLogger->addVarToStats("m_rho", "m_rho", &m_rho);
+	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);
+	CSimionApp::get()->pLogger->addVarToStats("m_rho", "m_rho", m_rho);
 	//td error
 	m_td = 0.0;
 

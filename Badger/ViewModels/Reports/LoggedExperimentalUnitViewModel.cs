@@ -141,15 +141,9 @@ namespace Badger.ViewModels
 
                     if (variableData != null && episode.steps.Count > 0)
                     {
-                        TrackVariableData variableData = data.getVariableData(variable);
-                        if (variableData != null && episode.steps.Count > 0)
+                        foreach (StepData step in episode.steps)
                         {
-                            foreach (StepData step in episode.steps)
-                            {
-                                avg += step.data[variableIndex];
-                            }
-                            avg /= episode.steps.Count;
-                            variableData.experimentData.values[episode.index - 1] = avg;
+                            avg += step.data[variableIndex];
                         }
                         avg /= episode.steps.Count;
                         variableData.experimentAverageData.Values[episode.index - 1] = avg;

@@ -20,8 +20,8 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 	m_v_s = 0.0;
 	m_v_s_p = 0.0;
 
-	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s)", &m_v_s);
-	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s')", &m_v_s_p);
+	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s)", m_v_s);
+	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s')", m_v_s_p);
 
 	//critic's stuff
 	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
