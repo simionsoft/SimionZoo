@@ -131,7 +131,7 @@ namespace Badger.ViewModels
                         maxLength = query.resultTracks.Select(a => a.trackData.realTime.Length).Max();
 
                     //LAST EVALUATION values: create a new plot for each variable in the result data          
-                    newPlot = new PlotViewModel(String.Format("Last Evaluation's History of\n{0}", variable), maxLength, "Time (s)", variable, false, true);
+                    newPlot = new PlotViewModel(String.Format("Last Evaluation\n{0}", variable), maxLength, "Time (s)", variable, false, true);
                     //plot data
 
                     for (int i = 0; i < query.resultTracks.Count; i++)
@@ -154,8 +154,8 @@ namespace Badger.ViewModels
                     if (query.resultTracks.Count > 0)
                         maxLength = query.resultTracks.Select(a => a.trackData.realTime.Length).Max();
 
-                    //LAST EVALUATION values: create a new plot for each variable in the result data          
-                    newPlot = new PlotViewModel(String.Format("Evaluation Episodes' History of\n{0}", variable), maxLength, "Time (s)", variable, false, true);
+                    //ALL EVALUATION values         
+                    newPlot = new PlotViewModel(String.Format("Evaluation Episodes\n{0}", variable), maxLength, "Time (s)", variable, false, true);
                     //plot data
 
                     bool isFirstSeries = true;
@@ -168,10 +168,12 @@ namespace Badger.ViewModels
                         {
                             lineSeriesId = newPlot.addLineSeries(String.Format("track {0}\nepisode {1}", i, episodeIndex++), isFirstSeries);
                             isFirstSeries = false;
-
-                            for (int x = 0; x < episodeData.Values.Length; x++)
+                            if (episodeData.Initialized)
                             {
-                                newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x], episodeData.Values[x]);
+                                for (int x = 0; x < episodeData.Values.Length; x++)
+                                {
+                                    newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x], episodeData.Values[x]);
+                                }
                             }
                         }
                     }
@@ -186,7 +188,7 @@ namespace Badger.ViewModels
                         maxLength = query.resultTracks.Select(a => a.trackData.realTime.Length).Max();
 
                     //LAST EVALUATION values: create a new plot for each variable in the result data          
-                    newPlot = new PlotViewModel(String.Format("Training Episodes' History of\n{0}", variable), maxLength, "Time (s)", variable, false, true);
+                    newPlot = new PlotViewModel(String.Format("Training Episodes:\n{0}", variable), maxLength, "Time (s)", variable, false, true);
                     //plot data
 
                     bool isFirstSeries = true;

@@ -21,7 +21,7 @@ namespace Badger.Data
         AllTrainingEpisodes = 8,
         //[Description("Average of each training episode")]
         //AverageOfEachTrainingEpisode = 16,
-        [Description("Average of each episode")]
+        [Description("Evaluation averages")]
         AverageOfEachEpisode = 32
     };
 }

@@ -18,6 +18,7 @@ void CStatsInfo::reset()
 	m_sum = 0.0;
 }
 
+
 //one pass-mean/std.dev. calculation
 //https://www.strchr.com/standard_deviation_in_one_pass
 //double std_dev(double a[], int n) {

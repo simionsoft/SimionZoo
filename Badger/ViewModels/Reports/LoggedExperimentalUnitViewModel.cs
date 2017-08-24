@@ -131,25 +131,28 @@ namespace Badger.ViewModels
             int trainingIndex = 0;
             foreach (EpisodeData episode in experimentData.episodes)
             {
-                //experiment-long average values
-                foreach (string variable in varNames)
+                if (episode.type == EpisodeData.episodeTypeEvaluation)
                 {
-                    double avg = 0.0;
-
-                    int variableIndex = m_variablesInLog.IndexOf(variable);
-                    if (variableIndex >= 0)
+                    //experiment-long average values
+                    foreach (string variable in varNames)
                     {
-                        TrackVariableData variableData = null;
-                        variableData = data.getVariableData(variable);
+                        double avg = 0.0;
 
-                        if (variableData != null && episode.steps.Count > 0)
+                        int variableIndex = m_variablesInLog.IndexOf(variable);
+                        if (variableIndex >= 0)
                         {
-                            foreach (StepData step in episode.steps)
+                            TrackVariableData variableData = null;
+                            variableData = data.getVariableData(variable);
+
+                            if (variableData != null && episode.steps.Count > 0)
                             {
-                                avg += step.data[variableIndex];
+                                foreach (StepData step in episode.steps)
+                                {
+                                    avg += step.data[variableIndex];
+                                }
+                                avg /= episode.steps.Count;
+                                variableData.experimentAverageData.Values[episode.index - 1] = avg;
                             }
-                            avg /= episode.steps.Count;
-                            variableData.experimentAverageData.Values[episode.index - 1] = avg;
                         }
                     }
                 }

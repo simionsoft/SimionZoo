@@ -62,17 +62,19 @@ namespace Badger.ViewModels
     }
     public class TrackVariableData
     {
-        public TrackVariableData(int numEpisodes, int evalulationEpisodes, int trainingEpisodes)
+        public TrackVariableData(int numSteps, int evaluationEpisodes, int trainingEpisodes)
         {
             lastEvaluationEpisodeData = new DataSeries();
-            if (numEpisodes > 0)
+            lastEvaluationEpisodeData.SetLength(numSteps);
+            if (numSteps > 0)
             {
                 experimentAverageData = new DataSeries();
-                experimentAverageData.SetLength(numEpisodes);
+                //averages are only interesting in evaluation episodes
+                experimentAverageData.SetLength(evaluationEpisodes);
             }
             
-            experimentEvaluationData = new List<DataSeries>(evalulationEpisodes);
-            for (int i = 0; i < evalulationEpisodes; i++)
+            experimentEvaluationData = new List<DataSeries>(evaluationEpisodes);
+            for (int i = 0; i < evaluationEpisodes; i++)
             {
                 experimentEvaluationData.Add(new DataSeries());
             }
@@ -109,13 +111,13 @@ namespace Badger.ViewModels
         public Dictionary<string, string> forkValues;
         private Dictionary<string, TrackVariableData> variablesData = new Dictionary<string, TrackVariableData>();
 
-        public TrackData(int maxNumSteps, int numEpisodes, int evalulationEpisodes, int trainingEpisodes, List<string> variables)
+        public TrackData(int maxNumSteps, int numEpisodes, int evaluationEpisodes, int trainingEpisodes, List<string> variables)
         {
             simTime = new double[maxNumSteps];
             realTime = new double[maxNumSteps];
             foreach (string variable in variables)
             {
-                this.variablesData[variable] = new TrackVariableData(numEpisodes, evalulationEpisodes, trainingEpisodes);
+                this.variablesData[variable] = new TrackVariableData(maxNumSteps, evaluationEpisodes, trainingEpisodes);
             }
         }
 
@@ -172,7 +174,7 @@ namespace Badger.ViewModels
                     shortId= Utility.limitLength(entry.Key, 10);
                     if (shortId.Length > 0)
                         id += shortId + "=";
-                    id += Utility.limitLength(entry.Value,10,valueDelimiters) + ",";
+                    id += Utility.limitLength(entry.Value,20,valueDelimiters) + ",";
                 }
                 id = id.Trim(',');
                 return id;

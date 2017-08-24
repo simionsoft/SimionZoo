@@ -15,13 +15,16 @@ namespace Badger.ViewModels
 
             m_selectedPlotTypes = new ObservableCollection<string>();
             m_selectedPlotTypes.CollectionChanged += M_selectedPlotTypes_CollectionChanged;
+
+            Badger.Data.EnumDescriptionConverter conv = new EnumDescriptionConverter();
+            SelectedPlotTypes.Add((string)((IValueConverter)conv).Convert(PlotType.LastEvaluation,typeof(PlotType),null, CultureInfo.CurrentCulture));
         }
 
         private void M_selectedPlotTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             NotifyOfPropertyChange(() => SelectedPlotTypes);
             NotifyOfPropertyChange(() => PlaceHolderText);
-            SelectedPlotType = PlotType.Undefined;
+            SelectedPlotType = PlotType.LastEvaluation;
             Badger.Data.EnumDescriptionConverter conv = new EnumDescriptionConverter();
             foreach (var item in m_selectedPlotTypes)
             {
@@ -68,7 +71,7 @@ namespace Badger.ViewModels
             }
         }
 
-        private PlotType m_selectedPlotType = PlotType.LastEvaluation;
+        private PlotType m_selectedPlotType;
         public PlotType SelectedPlotType
         {
             get { return m_selectedPlotType; }
