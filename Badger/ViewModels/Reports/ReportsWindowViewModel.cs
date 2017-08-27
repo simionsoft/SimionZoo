@@ -432,10 +432,12 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Load an experiment from a batch file. The batch should be from an already finished
         ///     experiment, this is in order to make reports correctly but is not mandatory.
+        ///     We clear the previously loaded data to avoid mixing data from two different batches
         /// </summary>
         /// <param name="batchFileName">The name of the file to load</param>
         public void LoadExperimentBatch(string batchFileName)
         {
+            ClearReportViewer();
             SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
         }
 

@@ -40,11 +40,12 @@
                     IsEnabled="{Binding bCanSaveReports}">
                 <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
             </Button>
-            <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Clear ReportViewer" 
+            <!-- This button doesn't make sense any more: before loading a new batch, the data is cleared-->
+            <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Clear ReportViewer" 
                     Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action ClearReportViewer()]"     
                     IsEnabled="{Binding bLogsLoaded}">
                 <Path Data="{StaticResource  Delete}" Width="24" Height="24" Fill="#F44336" />
-            </Button>
+            </Button>-->
         </StackPanel>
 
         <Grid Background="#FAFAFA">
