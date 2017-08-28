@@ -3,14 +3,18 @@
 #include "simion.h"
 #include "critic.h"
 #include "parameters.h"
+
 class CConfigNode;
 class CActor;
 class CVLearnerCritic;
 class CPolicy;
+class CDeterministicPolicy;
+class CStochasticPolicy;
 class CETraces;
 class CNumericValue;
 class CFeatureList;
 class CLinearStateVFA;
+class CLinearStateActionVFA;
 
 class CActorCritic: public CSimion
 {
@@ -131,6 +135,7 @@ class COffPolicyActorCritic : public CSimion
 
 	//updates the value/the critic
 	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+
 public:
 	COffPolicyActorCritic(CConfigNode *pParameters);
 	virtual ~COffPolicyActorCritic();
@@ -165,7 +170,8 @@ class COffPolicyDeterministicActorCritic : public CSimion
 	//list of policies
 	MULTI_VALUE_FACTORY<CDeterministicPolicy> m_policies;
 
-	//gradient of the policy with respect to its parameters
+	//gradient of the policy and the value function with respect to its parameters
+	CFeatureList *m_grad_Q;
 	CFeatureList *m_grad_mu;
 
 	//buffer to store features of the value function activated by the state s and the state s'

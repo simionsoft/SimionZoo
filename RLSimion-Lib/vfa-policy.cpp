@@ -56,7 +56,7 @@ CPolicy::~CPolicy()
 //CStochasticUniformPolicy/////////////////////////////////////////
 /////////////////////////////////////////////////////////
 CStochasticUniformPolicy::CStochasticUniformPolicy(CConfigNode* pConfigNode)
-	: CPolicy(pConfigNode)
+	: CStochasticPolicy(pConfigNode)
 {
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 	m_minActionValue = pActionDescriptor[m_outputActionIndex.get()].getMin();
@@ -93,7 +93,7 @@ double CStochasticUniformPolicy::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CUniformPolicy::getProbability(const CState* s, const CAction* a, bool bStochastic)
+double CStochasticUniformPolicy::getProbability(const CState* s, const CAction* a, bool bStochastic)
 {
 	int actionIndex = m_outputActionIndex.get();
 
@@ -128,7 +128,7 @@ double CStochasticUniformPolicy::getDeterministicOutput(const CFeatureList* pFea
 //CDetPolicyGaussianNoise////////////////////////////////
 /////////////////////////////////////////////////////////
 CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CConfigNode* pConfigNode)
-	: CPolicy(pConfigNode)
+	: CDeterministicPolicy(pConfigNode)
 {
 	m_pDeterministicVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Deterministic-Policy-VFA"
 		, "The parameterized VFA that approximates the function");
@@ -208,7 +208,7 @@ double CDeterministicPolicyGaussianNoise::getDeterministicOutput(const CFeatureL
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
 CStochasticGaussianPolicy::CStochasticGaussianPolicy(CConfigNode* pConfigNode)
-	: CPolicy(pConfigNode)
+	: CStochasticPolicy(pConfigNode)
 {
 	m_pMeanVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
 	m_pSigmaVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
@@ -280,7 +280,7 @@ double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CState *a, bool bStochastic)
+double CStochasticGaussianPolicy::getProbability(const CState *s, const CState *a, bool bStochastic)
 {
 	double mean = m_pMeanVFA->get(s);
 

@@ -25,7 +25,7 @@ COffPolicyDeterministicActorCritic::COffPolicyDeterministicActorCritic(CConfigNo
 	//base policies beta_i(a|s)
 	m_beta_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "beta-Policy", "The base-policy beta(a|s)");
 
-	/*critic's stuff*/
+	//critic's stuff
 	//linear state action value function
 	//(in the paper this is a general function without any more knowledge about it)
 	m_pQFunction = CHILD_OBJECT<CLinearStateActionVFA>(pConfigNode, "QFunction", "The Q-function");
@@ -36,7 +36,7 @@ COffPolicyDeterministicActorCritic::COffPolicyDeterministicActorCritic(CConfigNo
 	m_pAlphaW = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-w", "Learning gain used by the critic");
 	
 	
-	/*actor's stuff*/
+	//actor's stuff
 	//list of policies
 	m_policies = MULTI_VALUE_FACTORY<CDeterministicPolicy>(pConfigNode, "Policy", "The deterministic policy");
 	//gradient of the policy with respect to its parameters
@@ -74,60 +74,34 @@ void COffPolicyDeterministicActorCritic::updateValue(const CState *s, const CAct
 	//w(t+1) = w(t) + alpha_w * td * grad_w(Q^w)(s(t), a(t))
 	m_pQFunction->getFeatures(s, a, m_s_features);
 	m_pQFunction->add(m_s_features, alpha_w*m_td);
-	
-	//calculate grad_theta(mu_theta(s(t)))
-	for (int i = 0; i < m_policies.size(); i++)
-	{
-		m_policies[i]->getParameterGradient(s, a, m_grad_mu);
-		m_policies[i]->addFeatures(m_grad_mu, alpha_theta*m_td);
-	}
-	
-	
-
-	//v   = v + alpha_v * (td * e_v - gamma(s')*(1-lambda)*(w^T*e_v)*x(s))
-	//w   = w + alpha_w * (td * e_v - (w^T*x(s))*x(s))
-	m_e_v->update(gamma);
-	m_e_v->addFeatureList(m_s_features, 1.0);
-	m_e_v->mult(m_rho);
-	m_e_v->applyThreshold(m_e_v->getTreshold());
-
-	for (unsigned int i = 0; i < m_policies.size(); i++)
-	{
-		if (CSimionApp::get()->pExperiment->isFirstStep())
-			m_w[i]->clear();
-
-		m_pVFunction->add(m_e_v.ptr(), m_td*alpha_v);
-		double factor = -alpha_v * gamma * (1.0 - m_e_v->getLambda()) * m_w[i]->innerProduct(m_e_v.ptr());
-		m_pVFunction->add(m_s_features, factor);
-
-		m_w[i]->addFeatureList(m_e_v.ptr(), alpha_w * m_td);
-		factor = -alpha_w * m_w[i]->innerProduct(m_s_features);
-		m_w[i]->addFeatureList(m_s_features, factor);
-	}
 }
 
 void COffPolicyDeterministicActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
 {
 	//update the policy/critic
-	//psi(s,a) = (grad_u pi(a|s)) / (pi(a|s))
-	//e_u = e_u + rho * (psi(s, a) + gamma(s) * lambda * e_u)
-	//u   = u + alpha_u * td * e_u
+	//theta(t+1) = theta(t) + alpha_theta * grad_theta(mu_theta(s(t)) * grad_a(Q^w(s(t), a(t))
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
-	double alpha_u = m_pAlphaU->get();
+	double alpha_theta = m_pAlphaTheta->get();
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		if (CSimionApp::get()->pExperiment->isFirstStep())
 			m_w[i]->clear();
 
-		//calculate the gradient
-		m_grad_u->clear();
-		m_policies[i]->getParameterGradient(s, a, m_grad_u);
-		m_e_u[i]->update(m_rho*gamma);
-		m_e_u[i]->addFeatureList(m_grad_u, m_rho);
+		//calculate the gradients
+		m_grad_Q->clear();
+		m_grad_mu->clear();
 
-		m_policies[i]->addFeatures(m_e_u[i], alpha_u*m_td);
+		//get the grad_theta(mu_theta(s(t))
+		m_policies[i]->getParameterGradient(s, a, m_grad_mu);
+
+		//get the grad_a(Q^w(s(t), a(t))
+		//TODO: add code
+
+		//calculate the product grad_theta(mu_theta(s(t)) * grad_a(Q^w(s(t), a(t)) and store it in m_grad_mu
+		//TODO: add code
+
+		m_policies[i]->addFeatures(m_grad_mu, alpha_theta);
 	}
 }
 
@@ -145,7 +119,7 @@ double COffPolicyDeterministicActorCritic::selectAction(const CState *s, CAction
 	{
 		for (unsigned int i = 0; i < m_policies.size(); i++)
 		{
-			prob *= m_b_policies[i]->selectAction(s, a);
+			prob *= m_beta_policies[i]->selectAction(s, a);
 		}
 	}
 	else
