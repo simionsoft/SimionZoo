@@ -37,7 +37,9 @@ public:
 	//if we want to take exploration into account, bStochastic should be true. False otherwise.
 	virtual double getProbability(const CState *s, const CAction *a, bool bStochastic) = 0;
 
-	virtual void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
+	virtual void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
+	//virtual void getActionGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
+	//virtual void getStateGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
 
 	int getOutputActionIndex() { return m_outputActionIndex.get(); }
 	void setOutputActionIndex(unsigned int outputActionIndex) { m_outputActionIndex.set(outputActionIndex); }
@@ -47,7 +49,13 @@ public:
 	virtual CLinearStateVFA* getDetPolicyStateVFA() = 0;
 };
 
-class CUniformPolicy : public CPolicy
+class CDeterministicPolicy : public CPolicy
+{ };
+
+class CStochasticPolicy : public CPolicy
+{ };
+
+class CStochasticUniformPolicy : public CStochasticPolicy
 {
 protected:
 	double m_minActionValue;
@@ -55,8 +63,8 @@ protected:
 	double m_action_width;
 
 public:
-	CUniformPolicy(CConfigNode* pParameters);
-	virtual ~CUniformPolicy();
+	CStochasticUniformPolicy(CConfigNode* pParameters);
+	virtual ~CStochasticUniformPolicy();
 
 	void getFeatures(const CState* state, CFeatureList* outFeatureList);
 	void addFeatures(const CFeatureList* pFeatureList, double factor);
@@ -66,14 +74,14 @@ public:
 	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 
-	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 
-	CLinearStateVFA* getDetPolicyStateVFA() { throw "CUniformPolicy::getDetPolicyStateVFA() is not implemented"; }
+	CLinearStateVFA* getDetPolicyStateVFA() { throw "CStochasticUniformPolicy::getDetPolicyStateVFA() is not implemented"; }
 };
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
 //As proposed by Hasselt (?)
-class CDeterministicPolicyGaussianNoise : public CPolicy
+class CDeterministicPolicyGaussianNoise : public CDeterministicPolicy
 {
 protected:
 	CHILD_OBJECT<CLinearStateVFA> m_pDeterministicVFA;
@@ -91,7 +99,7 @@ public:
 	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 
-	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 
 	CLinearStateVFA* getDetPolicyStateVFA() { return m_pDeterministicVFA.ptr(); }
 };
@@ -99,7 +107,7 @@ public:
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
 //Model-Free Reinforcement Learning with Continuous Action in Practice
 //2012 American Control Conference
-class CStochasticPolicyGaussianNoise : public CPolicy
+class CStochasticGaussianPolicy : public CStochasticPolicy
 {
 protected:
 	//The deterministic output. The indices of the weights start from 0
@@ -113,8 +121,8 @@ protected:
 	//CFeatureList* m_pMeanAddList;
 	//CFeatureList* m_pSigmaAddList;
 public:
-	CStochasticPolicyGaussianNoise(CConfigNode* pParameters);
-	virtual ~CStochasticPolicyGaussianNoise();
+	CStochasticGaussianPolicy(CConfigNode* pParameters);
+	virtual ~CStochasticGaussianPolicy();
 
 	void getFeatures(const CState* state, CFeatureList* outFeatureList);
 	void addFeatures(const CFeatureList* pFeatureList, double factor);
@@ -124,7 +132,7 @@ public:
 	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 
-	void getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
 
 	CLinearStateVFA* getDetPolicyStateVFA() { return m_pMeanVFA.ptr(); }
 };

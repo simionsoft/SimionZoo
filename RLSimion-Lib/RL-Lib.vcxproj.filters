@@ -229,6 +229,9 @@
     <ClCompile Include="single-dimension-discrete-grid.cpp">
       <Filter>learning</Filter>
     </ClCompile>
+    <ClCompile Include="actor-critic-opdac.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">

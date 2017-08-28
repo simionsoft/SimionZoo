@@ -161,7 +161,7 @@ void COffPolicyActorCritic::updatePolicy(const CState* s, const CState* a, const
 
 		//calculate the gradient
 		m_grad_u->clear();
-		m_policies[i]->getNaturalGradient(s, a, m_grad_u);
+		m_policies[i]->getParameterGradient(s, a, m_grad_u);
 		m_e_u[i]->update(m_rho*gamma);
 		m_e_u[i]->addFeatureList(m_grad_u, m_rho);
 

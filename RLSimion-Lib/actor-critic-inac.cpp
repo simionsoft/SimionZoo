@@ -140,7 +140,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	{
 		//calculate the gradient
 		m_grad_u->clear();
-		m_policies[i]->getNaturalGradient(s, a, m_grad_u);
+		m_policies[i]->getParameterGradient(s, a, m_grad_u);
 
 #ifdef _DEBUG
 		for (int j = 0; j < m_grad_u->m_numFeatures; j++)
@@ -159,7 +159,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		if (isnan(innerprod) || isinf(innerprod))
 		{
 			//m_grad_u->clear();
-			//m_policies[i]->getNaturalGradient(s, a, m_grad_u);
+			//m_policies[i]->getParameterGradient(s, a, m_grad_u);
 
 			cout << "nope\n";
 			cout << "\n\n";

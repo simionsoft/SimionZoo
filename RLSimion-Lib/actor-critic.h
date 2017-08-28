@@ -141,3 +141,56 @@ public:
 	//updates the critic and the actor
 	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };
+
+
+class COffPolicyDeterministicActorCritic : public CSimion
+{
+	//"off-policy deterministic actorcritic (OPDAC)" in "Deterministic Policy Gradient Algorithms"
+	//David Silver, Guy Lever, Nicolas Heess, Thomas Degris, Daan Wierstra, Martin Riedmiller 
+	//Proceedings of the 31 st International Conference on Machine Learning, Beijing, China, 2014. JMLR: W&CP volume 32
+
+	//td error
+	double m_td;
+
+	//buffer to app
+	CAction* a_p;
+
+	//list base policies beta_i(a|s) for each pi_i(a|s)
+	MULTI_VALUE_FACTORY<CPolicy> m_beta_policies;
+
+	//linear state action value function
+	//(in the paper this is a general function without any more knowledge about it)
+	CHILD_OBJECT<CLinearStateActionVFA> m_pQFunction;
+
+	//list of policies
+	MULTI_VALUE_FACTORY<CDeterministicPolicy> m_policies;
+
+	//gradient of the policy with respect to its parameters
+	CFeatureList *m_grad_mu;
+
+	//buffer to store features of the value function activated by the state s and the state s'
+	CFeatureList *m_s_features;
+	CFeatureList *m_s_p_features;
+
+	//list of weight vector w for updating the value of Q(s, a)
+	CFeatureList **m_w;
+
+	//learning rates
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaTheta;
+	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlphaW;
+
+	//updates the policy/the actor
+	void updatePolicy(const CState *s, const CAction *a, const CState *s_p, double r);
+
+	//updates the value/the critic
+	void updateValue(const CState *s, const CAction *a, const CState *s_p, double r);
+public:
+	COffPolicyDeterministicActorCritic(CConfigNode *pParameters);
+	virtual ~COffPolicyDeterministicActorCritic();
+
+	//selects an according to the learned policy pi(a|s)
+	virtual double selectAction(const CState *s, CAction *a);
+
+	//updates the critic and the actor
+	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
+};
