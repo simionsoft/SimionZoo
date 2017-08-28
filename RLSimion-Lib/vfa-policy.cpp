@@ -22,8 +22,8 @@ std::shared_ptr<CPolicy> CPolicy::getInstance(CConfigNode* pConfigNode)
 	return CHOICE<CPolicy>(pConfigNode, "Policy", "The policy type",
 	{
 		{"Deterministic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<CDeterministicPolicyGaussianNoise>},
-		{"Stochastic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<CStochasticPolicyGaussianNoise>},
-		{"Uniform-Policy",CHOICE_ELEMENT_NEW<CUniformPolicy>}
+		{"Stochastic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<CStochasticGaussianPolicy>},
+		{"Uniform-Policy",CHOICE_ELEMENT_NEW<CStochasticUniformPolicy>}
 	});
 }
 
@@ -53,9 +53,9 @@ CPolicy::~CPolicy()
 }
 
 
-//CUniformPolicy/////////////////////////////////////////
+//CStochasticUniformPolicy/////////////////////////////////////////
 /////////////////////////////////////////////////////////
-CUniformPolicy::CUniformPolicy(CConfigNode* pConfigNode)
+CStochasticUniformPolicy::CStochasticUniformPolicy(CConfigNode* pConfigNode)
 	: CPolicy(pConfigNode)
 {
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
@@ -64,16 +64,16 @@ CUniformPolicy::CUniformPolicy(CConfigNode* pConfigNode)
 	m_action_width = pActionDescriptor[m_outputActionIndex.get()].getRangeWidth();
 }
 
-CUniformPolicy::~CUniformPolicy()
+CStochasticUniformPolicy::~CStochasticUniformPolicy()
 {
 }
 
-void CUniformPolicy::getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
+void CStochasticUniformPolicy::getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
-	throw "CUniformPolicy::getNaturalGradient() is not implemented";
+	throw "CStochasticUniformPolicy::getParameterGradient() is not implemented";
 }
 
-double CUniformPolicy::selectAction(const CState *s, CAction *a)
+double CStochasticUniformPolicy::selectAction(const CState *s, CAction *a)
 {
 	int actionIndex = m_outputActionIndex.get();
 
@@ -93,7 +93,7 @@ double CUniformPolicy::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CUniformPolicy::getProbability(const CState* s, const CAction* a, bool bStochastic)
+double CStochasticUniformPolicy::getProbability(const CState* s, const CAction* a, bool bStochastic)
 {
 	int actionIndex = m_outputActionIndex.get();
 
@@ -109,19 +109,19 @@ double CUniformPolicy::getProbability(const CState* s, const CAction* a, bool bS
 	return probability;
 }
 
-void CUniformPolicy::getFeatures(const CState* state, CFeatureList* outFeatureList)
+void CStochasticUniformPolicy::getFeatures(const CState* state, CFeatureList* outFeatureList)
 {
-	throw "CUniformPolicy::getFeatures() is not implemented";
+	throw "CStochasticUniformPolicy::getFeatures() is not implemented";
 }
 
-void CUniformPolicy::addFeatures(const CFeatureList* pFeatureList, double factor)
+void CStochasticUniformPolicy::addFeatures(const CFeatureList* pFeatureList, double factor)
 {
-	throw "CUniformPolicy::addFeatures() is not implemented";
+	throw "CStochasticUniformPolicy::addFeatures() is not implemented";
 }
 
-double CUniformPolicy::getDeterministicOutput(const CFeatureList* pFeatureList)
+double CStochasticUniformPolicy::getDeterministicOutput(const CFeatureList* pFeatureList)
 {
-	throw "CUniformPolicy::getDeterministicOutput() is not implemented";
+	throw "CStochasticUniformPolicy::getDeterministicOutput() is not implemented";
 }
 
 
@@ -147,7 +147,7 @@ CDeterministicPolicyGaussianNoise::~CDeterministicPolicyGaussianNoise()
 {
 }
 
-void CDeterministicPolicyGaussianNoise::getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
+void CDeterministicPolicyGaussianNoise::getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
 	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
 	m_pDeterministicVFA->getFeatures(s, pOutGradient);
@@ -207,7 +207,7 @@ double CDeterministicPolicyGaussianNoise::getDeterministicOutput(const CFeatureL
 
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
-CStochasticPolicyGaussianNoise::CStochasticPolicyGaussianNoise(CConfigNode* pConfigNode)
+CStochasticGaussianPolicy::CStochasticGaussianPolicy(CConfigNode* pConfigNode)
 	: CPolicy(pConfigNode)
 {
 	m_pMeanVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
@@ -224,7 +224,7 @@ CStochasticPolicyGaussianNoise::CStochasticPolicyGaussianNoise(CConfigNode* pCon
 	//m_pSigmaAddList = new CFeatureList("sigmaAddList");
 }
 
-CStochasticPolicyGaussianNoise::~CStochasticPolicyGaussianNoise()
+CStochasticGaussianPolicy::~CStochasticGaussianPolicy()
 {
 	delete m_pMeanFeatures;
 	delete m_pSigmaFeatures;
@@ -235,7 +235,7 @@ double clip(double n, double lower, double upper)
 	return std::max(lower, std::min(n, upper));
 }
 
-double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
+double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
 {
 	double mean = m_pMeanVFA->get(s);
 	double sigma = exp(m_pSigmaVFA->get(s));
@@ -280,7 +280,7 @@ double CStochasticPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CState *a, bool bStochastic)
+double CStochasticGaussianPolicy::getProbability(const CState *s, const CState *a, bool bStochastic)
 {
 	double mean = m_pMeanVFA->get(s);
 
@@ -305,7 +305,7 @@ double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CSt
 }
 
 //according to https://hal.inria.fr/hal-00764281/document
-void CStochasticPolicyGaussianNoise::getNaturalGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
+void CStochasticGaussianPolicy::getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
 {
 	m_pMeanFeatures->clear();
 	m_pSigmaFeatures->clear();
@@ -318,24 +318,24 @@ void CStochasticPolicyGaussianNoise::getNaturalGradient(const CState* s, const C
 	double mean = m_pMeanVFA->get(m_pMeanFeatures);
 	double sigma = exp(m_pSigmaVFA->get(m_pSigmaFeatures));
 
-	//a. Grad_u_mu pi(a|s)/pi(a|s) = (a - mu(s)) / sigma(s)^2 * x_mu(s) 
+	//a. Grad_u_mu pi(a|s)/pi(a|s) = (a - mu(s)) / sigma(s)^2 * x_mu(s)
 	double noise = a->get(m_outputActionIndex.get()) - mean;
 
 	double factor = noise / (sigma*sigma);
 	pOutGradient->addFeatureList(m_pMeanFeatures, factor);
 
-	//b. Grad_u_sigma pi(a|s)/pi(a|s) = ((a - mu(s))^2 / (sigma(s)^2) - 1) * x_sigma(s) 
+	//b. Grad_u_sigma pi(a|s)/pi(a|s) = ((a - mu(s))^2 / (sigma(s)^2) - 1) * x_sigma(s)
 	factor = (noise*noise) / (sigma*sigma) - 1.0;
 	pOutGradient->addFeatureList(m_pSigmaFeatures, factor);
 }
 
-void CStochasticPolicyGaussianNoise::getFeatures(const CState* state, CFeatureList* outFeatureList)
+void CStochasticGaussianPolicy::getFeatures(const CState* state, CFeatureList* outFeatureList)
 {
 	m_pMeanVFA->getFeatures(state, outFeatureList);
 	m_pSigmaVFA->getFeatures(state, m_pSigmaFeatures);
 	outFeatureList->addFeatureList(m_pSigmaFeatures);
 }
-void CStochasticPolicyGaussianNoise::addFeatures(const CFeatureList* pFeatureList, double factor)
+void CStochasticGaussianPolicy::addFeatures(const CFeatureList* pFeatureList, double factor)
 {
 	//m_pMeanAddList->clear();
 	//m_pSigmaAddList->clear();
@@ -349,7 +349,7 @@ void CStochasticPolicyGaussianNoise::addFeatures(const CFeatureList* pFeatureLis
 	m_pMeanVFA->add(pFeatureList);
 	m_pSigmaVFA->add(pFeatureList);
 }
-double CStochasticPolicyGaussianNoise::getDeterministicOutput(const CFeatureList* pFeatureList)
+double CStochasticGaussianPolicy::getDeterministicOutput(const CFeatureList* pFeatureList)
 {
 	return m_pMeanVFA->get(pFeatureList);
 }
