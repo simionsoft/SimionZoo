@@ -15,13 +15,13 @@ namespace Badger.Data
         LastEvaluation = 1,
         [Description("All evaluation episodes")]
         AllEvaluationEpisodes = 2,
-        //[Description("Average of each evaluation episode")]
-        //AverageOfEachEvaluationEpisode = 4,
+        [Description("Evaluation averages")]
+        AverageOfEachEvaluationEpisode = 4,
         [Description("All training episodes")]
         AllTrainingEpisodes = 8,
-        //[Description("Average of each training episode")]
+        //[Description("Training averages")]
         //AverageOfEachTrainingEpisode = 16,
-        [Description("Evaluation averages")]
-        AverageOfEachEpisode = 32
+        //[Description("All episodes")]
+        //AllEpisodes = 32,
     };
 }

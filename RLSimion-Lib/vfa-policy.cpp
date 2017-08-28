@@ -56,7 +56,7 @@ CPolicy::~CPolicy()
 //CStochasticUniformPolicy/////////////////////////////////////////
 /////////////////////////////////////////////////////////
 CStochasticUniformPolicy::CStochasticUniformPolicy(CConfigNode* pConfigNode)
-	: CPolicy(pConfigNode)
+	: CStochasticPolicy(pConfigNode)
 {
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 	m_minActionValue = pActionDescriptor[m_outputActionIndex.get()].getMin();
@@ -128,7 +128,7 @@ double CStochasticUniformPolicy::getDeterministicOutput(const CFeatureList* pFea
 //CDetPolicyGaussianNoise////////////////////////////////
 /////////////////////////////////////////////////////////
 CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CConfigNode* pConfigNode)
-	: CPolicy(pConfigNode)
+	: CDeterministicPolicy(pConfigNode)
 {
 	m_pDeterministicVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Deterministic-Policy-VFA"
 		, "The parameterized VFA that approximates the function");
@@ -208,7 +208,7 @@ double CDeterministicPolicyGaussianNoise::getDeterministicOutput(const CFeatureL
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
 CStochasticGaussianPolicy::CStochasticGaussianPolicy(CConfigNode* pConfigNode)
-	: CPolicy(pConfigNode)
+	: CStochasticPolicy(pConfigNode)
 {
 	m_pMeanVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
 	m_pSigmaVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
