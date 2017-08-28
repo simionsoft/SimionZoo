@@ -152,7 +152,7 @@ void CLogger::writeEpisodeTypesToBuffer(char* pOutBuffer)
 	if (m_bLogEvaluationEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
 		, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
 	if (m_bLogTrainingEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
-		, "  <Episode-Type Id=\"0\">Training</Episode-Type>\n");
+		, "  <Episode-Type Id=\"1\">Training</Episode-Type>\n");
 }
 
 void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
@@ -205,8 +205,7 @@ void CLogger::firstStep()
 	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 
 	//reset stats
-	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
-		(*it)->reset();
+	for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
 
 	if (isEpisodeTypeLogged(bEvalEpisode))
 		writeEpisodeHeader();
@@ -259,6 +258,8 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 		|| CSimionApp::get()->pExperiment->isFirstStep() || CSimionApp::get()->pExperiment->isLastStep())
 	{
 		writeStepData(s, a, s_p, r);
+		//reset stats
+		for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
 		m_lastLogSimulationT = CSimionApp::get()->pWorld->getStepStartSimTime();
 	}
 }
@@ -351,7 +352,9 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 	int i = 0;
 	for (auto it = m_stats.begin(); it != m_stats.end(); ++it)
 	{
-		pDoubleBuffer[i] = (*it)->get();
+		//Because we may not be logging all the steps, we need to save the average value from the last logged step
+		//instead of only the current value
+		pDoubleBuffer[i] = (*it)->getStatsInfo()->getAvg();
 		++i;
 	}
 	return numVars * sizeof(double);

@@ -37,7 +37,7 @@ namespace Badger.ViewModels
         public ExperimentMonitorWindowViewModel(List<HerdAgentViewModel> freeHerdAgents,
             Logger.LogFunction logFunction, string batchFileName)
         {
-            EvaluationPlot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Validation Episode", "Average Reward") { bShowOptions = false };
+            EvaluationPlot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
             EvaluationPlot.Plot.TitleFontSize = 14;
             EvaluationPlot.properties.bLegendVisible = false;
             EvaluationPlot.setProperties();

@@ -28,6 +28,10 @@ void CFeatureList::setName(const char* name)
 	m_name = name;
 	CSimionApp::get()->pLogger->addVarToStats<unsigned int>("Features", m_name, m_numFeatures);
 }
+const char* CFeatureList::getName()
+{
+	return m_name;
+}
 
 void CFeatureList::clear()
 {

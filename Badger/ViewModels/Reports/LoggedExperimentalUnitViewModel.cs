@@ -131,22 +131,29 @@ namespace Badger.ViewModels
             int trainingIndex = 0;
             foreach (EpisodeData episode in experimentData.episodes)
             {
-                //experiment-long average values
-                foreach (string variable in varNames)
+                if (episode.type == EpisodeData.episodeTypeEvaluation)
                 {
-                    double avg = 0.0;
-
-                    int variableIndex = m_variablesInLog.IndexOf(variable);
-                    TrackVariableData variableData = data.getVariableData(variable);
-
-                    if (variableData != null && episode.steps.Count > 0)
+                    //experiment-long average values
+                    foreach (string variable in varNames)
                     {
-                        foreach (StepData step in episode.steps)
+                        double avg = 0.0;
+
+                        int variableIndex = m_variablesInLog.IndexOf(variable);
+                        if (variableIndex >= 0)
                         {
-                            avg += step.data[variableIndex];
+                            TrackVariableData variableData = null;
+                            variableData = data.getVariableData(variable);
+
+                            if (variableData != null && episode.steps.Count > 0)
+                            {
+                                foreach (StepData step in episode.steps)
+                                {
+                                    avg += step.data[variableIndex];
+                                }
+                                avg /= episode.steps.Count;
+                                variableData.experimentAverageData.Values[episode.index - 1] = avg;
+                            }
                         }
-                        avg /= episode.steps.Count;
-                        variableData.experimentAverageData.Values[episode.index - 1] = avg;
                     }
                 }
 
@@ -154,24 +161,26 @@ namespace Badger.ViewModels
                 foreach (string variable in varNames)
                 {
                     int variableIndex = m_variablesInLog.IndexOf(variable);
-                    TrackVariableData variableData = data.getVariableData(variable);
-
-                    if (episode.type == 0)
-                        variableData.experimentEvaluationData[evaluationIndex].SetLength(episode.steps.Count);
-                    else
-                        variableData.experimentTrainingData[trainingIndex].SetLength(episode.steps.Count);
-
-                    foreach (var item in episode.steps.Select((step, index) => new { index, step }))
+                    if (variableIndex >= 0)
                     {
-                        if (variableData != null)
+                        TrackVariableData variableData = data.getVariableData(variable);
+
+                        if (episode.type == 0)
+                            variableData.experimentEvaluationData[evaluationIndex].SetLength(episode.steps.Count);
+                        else
+                            variableData.experimentTrainingData[trainingIndex].SetLength(episode.steps.Count);
+
+                        foreach (var item in episode.steps.Select((step, index) => new { index, step }))
                         {
-                            if (episode.type == 0)
-                                variableData.experimentEvaluationData[evaluationIndex].Values[item.index] = item.step.data[variableIndex];
-                            else
-                                variableData.experimentTrainingData[trainingIndex].Values[item.index] = item.step.data[variableIndex];
+                            if (variableData != null)
+                            {
+                                if (episode.type == 0)
+                                    variableData.experimentEvaluationData[evaluationIndex].Values[item.index] = item.step.data[variableIndex];
+                                else
+                                    variableData.experimentTrainingData[trainingIndex].Values[item.index] = item.step.data[variableIndex];
+                            }
                         }
                     }
-
                 }
 
                 if (episode.type == 0)
@@ -185,16 +194,18 @@ namespace Badger.ViewModels
             foreach (string variable in varNames)
             {
                 int variableIndex = m_variablesInLog.IndexOf(variable);
-                TrackVariableData variableData = data.getVariableData(variable);
-
-                variableData.lastEvaluationEpisodeData.SetLength(lastEvaluationEpisode.steps.Count);
-
-                foreach (var item in lastEvaluationEpisode.steps.Select((step, index) => new { index, step }))
+                if (variableIndex >= 0)
                 {
-                    if (variableData != null)
-                        variableData.lastEvaluationEpisodeData.Values[item.index] = item.step.data[variableIndex];
-                }
+                    TrackVariableData variableData = data.getVariableData(variable);
 
+                    variableData.lastEvaluationEpisodeData.SetLength(lastEvaluationEpisode.steps.Count);
+
+                    foreach (var item in lastEvaluationEpisode.steps.Select((step, index) => new { index, step }))
+                    {
+                        if (variableData != null)
+                            variableData.lastEvaluationEpisodeData.Values[item.index] = item.step.data[variableIndex];
+                    }
+                }
             }
 
             //calculate each variable's last episode stats
@@ -202,7 +213,7 @@ namespace Badger.ViewModels
             {
                 TrackVariableData variableData = data.getVariableData(variable);
                 if (variableData != null)
-                    variableData.calculateStats();
+                    variableData.CalculateStats();
             }
 
             return data;

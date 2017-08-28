@@ -21,6 +21,11 @@ namespace Badger.ViewModels
         }
         public StatData Stats = new StatData();
 
+        public bool Initialized
+        {
+            get { return (_values != null); }
+        }
+
         public void SetLength(int numValues)
         {
             Values = new double[numValues];
@@ -28,6 +33,8 @@ namespace Badger.ViewModels
 
         public void CalculateStats()
         {
+            if (!Initialized) return;
+
             //calculate avg, min and max
             double sum = 0.0;
             Stats.min = Values[0]; Stats.max = Values[0];
@@ -55,17 +62,19 @@ namespace Badger.ViewModels
     }
     public class TrackVariableData
     {
-        public TrackVariableData(int numEpisodes, int evalulationEpisodes, int trainingEpisodes)
+        public TrackVariableData(int numSteps, int evaluationEpisodes, int trainingEpisodes)
         {
             lastEvaluationEpisodeData = new DataSeries();
-            if (numEpisodes > 0)
+            lastEvaluationEpisodeData.SetLength(numSteps);
+            if (numSteps > 0)
             {
                 experimentAverageData = new DataSeries();
-                experimentAverageData.SetLength(numEpisodes);
+                //averages are only interesting in evaluation episodes
+                experimentAverageData.SetLength(evaluationEpisodes);
             }
             
-            experimentEvaluationData = new List<DataSeries>(evalulationEpisodes);
-            for (int i = 0; i < evalulationEpisodes; i++)
+            experimentEvaluationData = new List<DataSeries>(evaluationEpisodes);
+            for (int i = 0; i < evaluationEpisodes; i++)
             {
                 experimentEvaluationData.Add(new DataSeries());
             }
@@ -82,7 +91,7 @@ namespace Badger.ViewModels
         public List<DataSeries> experimentEvaluationData;
         public List<DataSeries> experimentTrainingData;
 
-        public void calculateStats()
+        public void CalculateStats()
         {
             if (lastEvaluationEpisodeData != null) lastEvaluationEpisodeData.CalculateStats();
             if (experimentAverageData != null) experimentAverageData.CalculateStats();
@@ -102,13 +111,13 @@ namespace Badger.ViewModels
         public Dictionary<string, string> forkValues;
         private Dictionary<string, TrackVariableData> variablesData = new Dictionary<string, TrackVariableData>();
 
-        public TrackData(int maxNumSteps, int numEpisodes, int evalulationEpisodes, int trainingEpisodes, List<string> variables)
+        public TrackData(int maxNumSteps, int numEpisodes, int evaluationEpisodes, int trainingEpisodes, List<string> variables)
         {
             simTime = new double[maxNumSteps];
             realTime = new double[maxNumSteps];
             foreach (string variable in variables)
             {
-                this.variablesData[variable] = new TrackVariableData(numEpisodes, evalulationEpisodes, trainingEpisodes);
+                this.variablesData[variable] = new TrackVariableData(maxNumSteps, evaluationEpisodes, trainingEpisodes);
             }
         }
 
@@ -133,7 +142,7 @@ namespace Badger.ViewModels
             get { if (m_trackData.Count == 1) return m_trackData[0]; return null; }
             set { }
         }
-        public bool bHasData
+        public bool HasData
         {
             get { return m_trackData.Count > 0; }
         }
@@ -153,7 +162,7 @@ namespace Badger.ViewModels
         {
             m_parentExperimentName = experimentName;
         }
-        public string trackId
+        public string TrackId
         {
             get
             {
@@ -165,26 +174,26 @@ namespace Badger.ViewModels
                     shortId= Utility.limitLength(entry.Key, 10);
                     if (shortId.Length > 0)
                         id += shortId + "=";
-                    id += Utility.limitLength(entry.Value,10,valueDelimiters) + ",";
+                    id += Utility.limitLength(entry.Value,20,valueDelimiters) + ",";
                 }
                 id = id.Trim(',');
                 return id;
             }
         }
         private string m_groupId = null;
-        public string groupId
+        public string GroupId
         {
-            get { if (m_groupId != null) return m_groupId; return trackId; }
-            set { m_groupId = value; NotifyOfPropertyChange(() => groupId); }
+            get { if (m_groupId != null) return m_groupId; return TrackId; }
+            set { m_groupId = value; NotifyOfPropertyChange(() => GroupId); }
         }
 
-        public void addTrackData(TrackData newTrackData)
+        public void AddTrackData(TrackData newTrackData)
         {
             m_trackData.Add(newTrackData);
         }
 
         //this function selects a unique track fromm each group (if there's more than one track)
-        public void consolidateGroups(string function, string variable, List<string> groupBy)
+        public void ConsolidateGroups(string function, string variable, List<string> groupBy)
         {
             if (m_trackData.Count > 1)
             {
@@ -229,7 +238,7 @@ namespace Badger.ViewModels
                         m_groupId += Utility.limitLength(forkValues[group],10,valueDelimiters) + ",";
                         forkValues.Remove(group);
                     }
-                    groupId = m_groupId.TrimEnd(',');
+                    GroupId = m_groupId.TrimEnd(',');
                 }
             }
         }

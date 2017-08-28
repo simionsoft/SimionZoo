@@ -30,9 +30,7 @@ public:
 
 	//this method is used when we want the policy to plug directly its output into the environment
 	virtual double selectAction(const CState *s, CAction *a) = 0;
-	//this method is used when we want to getSample the output of the controller (exploration noise too) and use for some internal stuff
-	//i.e., use the output of the policy learner within an adaptive controller: CExtendedWindTurbine...
-	virtual double getOutput(const CState *s) = 0;
+
 	//getProbability returns the probability with which the policy would select this output in s
 	//if we want to take exploration into account, bStochastic should be true. False otherwise.
 	virtual double getProbability(const CState *s, const CAction *a, bool bStochastic) = 0;
@@ -71,7 +69,6 @@ public:
 	double getDeterministicOutput(const CFeatureList* pFeatureList);
 
 	double selectAction(const CState *s, CAction *a);
-	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 
 	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
@@ -83,6 +80,7 @@ public:
 //As proposed by Hasselt (?)
 class CDeterministicPolicyGaussianNoise : public CDeterministicPolicy
 {
+	double m_lastNoise;
 protected:
 	CHILD_OBJECT<CLinearStateVFA> m_pDeterministicVFA;
 	CHILD_OBJECT_FACTORY<CNoise> m_pExpNoise;
@@ -96,7 +94,6 @@ public:
 	double getDeterministicOutput(const CFeatureList* pFeatureList);
 
 	double selectAction(const CState *s, CAction *a);
-	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 
 	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
@@ -109,6 +106,7 @@ public:
 //2012 American Control Conference
 class CStochasticGaussianPolicy : public CStochasticPolicy
 {
+	double m_lastNoise;
 protected:
 	//The deterministic output. The indices of the weights start from 0
 	CHILD_OBJECT<CLinearStateVFA> m_pMeanVFA;
@@ -129,7 +127,6 @@ public:
 	double getDeterministicOutput(const CFeatureList* pFeatureList);
 
 	double selectAction(const CState *s, CAction *a);
-	double getOutput(const CState *s);
 	double getProbability(const CState *s, const CAction *a, bool bStochastic);
 
 	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);

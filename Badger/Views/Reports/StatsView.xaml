@@ -13,10 +13,10 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Path=trackId}" Width="Auto"/>
                 <DataGridTextColumn Header="Experiment" Binding="{Binding Path=groupId}" Width="Auto"/>
-                <DataGridTextColumn Header="Avg" Binding="{Binding Path=lastEpisodeStats.avg, StringFormat=\{0:#\,#0.00\}}" Width="Auto"/>
-                <DataGridTextColumn Header="Std.Dev." Binding="{Binding Path=lastEpisodeStats.stdDev, StringFormat=\{0:#\,#0.00\}}" Width="Auto"/>
-                <DataGridTextColumn Header="Min" Binding="{Binding Path=lastEpisodeStats.min, StringFormat=\{0:#\,#0.00\}}" Width="Auto"/>
-                <DataGridTextColumn Header="Max" Binding="{Binding Path=lastEpisodeStats.max, StringFormat=\{0:#\,#0.00\}}" Width="Auto"/>
+                <DataGridTextColumn Header="Avg" Binding="{Binding Path=lastEpisodeStats.avg, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
+                <DataGridTextColumn Header="Std.Dev." Binding="{Binding Path=lastEpisodeStats.stdDev, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
+                <DataGridTextColumn Header="Min" Binding="{Binding Path=lastEpisodeStats.min, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
+                <DataGridTextColumn Header="Max" Binding="{Binding Path=lastEpisodeStats.max, StringFormat=\{0:#\,#0.000000\}}" Width="Auto"/>
             </DataGrid.Columns>
         </DataGrid>
     </ScrollViewer>

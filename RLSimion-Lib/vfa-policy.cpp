@@ -41,7 +41,7 @@ CPolicy::CPolicy(CConfigNode* pConfigNode)
 	{
 		//calculate the density of the space
 		m_space_density = 1.0;
-		for (int i = 0; i < CWorld::getDynamicModel()->getActionDescriptor().size(); i++)
+		for (size_t i = 0; i < CWorld::getDynamicModel()->getActionDescriptor().size(); i++)
 		{
 			m_space_density *= ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[i]))->getStepSize();
 		}
@@ -93,21 +93,7 @@ double CStochasticUniformPolicy::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CStochasticUniformPolicy::getOutput(const CState* s)
-{
-	int actionIndex = m_outputActionIndex.get();
-	double randomValue = getRandomValue() * m_action_width + m_minActionValue;
-
-	if (m_discreteActionSpace)
-	{
-		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-		randomValue = grid->getCenters()[grid->getClosestCenter(randomValue)];
-	}
-
-	return randomValue;
-}
-
-double CStochasticUniformPolicy::getProbability(const CState* s, const CAction* a, bool bStochastic)
+double CUniformPolicy::getProbability(const CState* s, const CAction* a, bool bStochastic)
 {
 	int actionIndex = m_outputActionIndex.get();
 
@@ -152,6 +138,9 @@ CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CConfigNode
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 	m_pDeterministicVFA->saturateOutput(pActionDescriptor[m_outputActionIndex.get()].getMin()
 		, pActionDescriptor[m_outputActionIndex.get()].getMax());
+
+	m_lastNoise = 0.0;
+	CSimionApp::get()->pLogger->addVarToStats<double>("Policy", "Noise", m_lastNoise);
 }
 
 CDeterministicPolicyGaussianNoise::~CDeterministicPolicyGaussianNoise()
@@ -176,32 +165,17 @@ void CDeterministicPolicyGaussianNoise::getParameterGradient(const CState* s, co
 
 double CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
 {
-	double noise;
-
 	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
-		noise = m_pExpNoise->getSample();
-	else noise = 0.0;
+		m_lastNoise = m_pExpNoise->getSample();
+	else m_lastNoise = 0.0;
 
 	double output = m_pDeterministicVFA->get(s);
 
-	a->set(m_outputActionIndex.get(), output + noise);
+	a->set(m_outputActionIndex.get(), output + m_lastNoise);
 
 	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
-		return m_pExpNoise->getSampleProbability(noise);
+		return m_pExpNoise->getSampleProbability(m_lastNoise);
 	return 1.0;
-}
-
-double CDeterministicPolicyGaussianNoise::getOutput(const CState* s)
-{
-	double noise;
-
-	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
-		noise = m_pExpNoise->getSample();
-	else noise = 0.0;
-
-	double output = m_pDeterministicVFA->get(s);
-
-	return noise + output;
 }
 
 double CDeterministicPolicyGaussianNoise::getProbability(const CState* s, const CAction* a, bool bStochastic)
@@ -243,6 +217,8 @@ CStochasticGaussianPolicy::CStochasticGaussianPolicy(CConfigNode* pConfigNode)
 	m_pMeanFeatures = new CFeatureList("Sto-Policy/mean-features");
 	m_pSigmaFeatures = new CFeatureList("Sto-Policy/sigma-features");
 
+	m_lastNoise = 0.0;
+	CSimionApp::get()->pLogger->addVarToStats<double>("Stoch.Policy", "Noise", m_lastNoise);
 	//will be used as temp. buffers in the add method
 	//m_pMeanAddList = new CFeatureList("meanAddList");
 	//m_pSigmaAddList = new CFeatureList("sigmaAddList");
@@ -254,7 +230,8 @@ CStochasticGaussianPolicy::~CStochasticGaussianPolicy()
 	delete m_pSigmaFeatures;
 }
 
-double clip(double n, double lower, double upper) {
+double clip(double n, double lower, double upper)
+{
 	return std::max(lower, std::min(n, upper));
 }
 
@@ -290,6 +267,8 @@ double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
 		probability = CGaussianNoise::getSampleProbability(mean, sigma, output);
 	}
 
+	m_lastNoise = output - mean;
+
 	a->set(actionIndex, output);
 
 #ifdef _DEBUG
@@ -301,32 +280,7 @@ double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CStochasticGaussianPolicy::getOutput(const CState *s)
-{
-	double mean = m_pMeanVFA->get(s);
-	double sigma = 0.0;
-	double output = mean;
-	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
-	{
-		//Training: add noise
-		sigma = exp(m_pSigmaVFA->get(s));
-		output = CGaussianNoise::getNormalDistributionSample(mean, sigma);
-	}
-
-	//clip the output between the min and max value of the action space
-	unsigned int actionIndex = m_outputActionIndex.get();
-	output = clip(output, CWorld::getDynamicModel()->getActionDescriptor().getInstance()->getProperties()[actionIndex].getMin(), CWorld::getDynamicModel()->getActionDescriptor().getInstance()->getProperties()[actionIndex].getMax());
-
-	if (m_discreteActionSpace)
-	{
-		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
-		output = grid->getCenters()[grid->getClosestCenter(output)];
-	}
-
-	return output;
-}
-
-double CStochasticGaussianPolicy::getProbability(const CState *s, const CState *a, bool bStochastic)
+double CStochasticPolicyGaussianNoise::getProbability(const CState *s, const CState *a, bool bStochastic)
 {
 	double mean = m_pMeanVFA->get(s);
 
@@ -364,13 +318,13 @@ void CStochasticGaussianPolicy::getParameterGradient(const CState* s, const CAct
 	double mean = m_pMeanVFA->get(m_pMeanFeatures);
 	double sigma = exp(m_pSigmaVFA->get(m_pSigmaFeatures));
 
-	//a. Grad_u_mu pi(a|s)/pi(a|s) = (a - mu(s)) / sigma(s)^2 * x_mu(s) 
+	//a. Grad_u_mu pi(a|s)/pi(a|s) = (a - mu(s)) / sigma(s)^2 * x_mu(s)
 	double noise = a->get(m_outputActionIndex.get()) - mean;
 
 	double factor = noise / (sigma*sigma);
 	pOutGradient->addFeatureList(m_pMeanFeatures, factor);
 
-	//b. Grad_u_sigma pi(a|s)/pi(a|s) = ((a - mu(s))^2 / (sigma(s)^2) - 1) * x_sigma(s) 
+	//b. Grad_u_sigma pi(a|s)/pi(a|s) = ((a - mu(s))^2 / (sigma(s)^2) - 1) * x_sigma(s)
 	factor = (noise*noise) / (sigma*sigma) - 1.0;
 	pOutGradient->addFeatureList(m_pSigmaFeatures, factor);
 }
