@@ -17,6 +17,7 @@
 
 COffPolicyDeterministicActorCritic::COffPolicyDeterministicActorCritic(CConfigNode* pConfigNode)
 {
+
 	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);
 
 	//td error
@@ -34,8 +35,8 @@ COffPolicyDeterministicActorCritic::COffPolicyDeterministicActorCritic(CConfigNo
 	m_s_p_features = new CFeatureList("Critic/s_p");
 	//learning rates
 	m_pAlphaW = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-w", "Learning gain used by the critic");
-	
-	
+
+
 	//actor's stuff
 	//list of policies
 	m_policies = MULTI_VALUE_FACTORY<CDeterministicPolicy>(pConfigNode, "Policy", "The deterministic policy");
@@ -43,6 +44,7 @@ COffPolicyDeterministicActorCritic::COffPolicyDeterministicActorCritic(CConfigNo
 	m_grad_mu = new CFeatureList("OPDAC/Actor/grad-mu");
 	//learning rate
 	m_pAlphaTheta = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha-theta", "Learning gain used by the actor");
+
 }
 
 COffPolicyDeterministicActorCritic::~COffPolicyDeterministicActorCritic()
@@ -95,13 +97,15 @@ void COffPolicyDeterministicActorCritic::updatePolicy(const CState* s, const CSt
 		//get the grad_theta(mu_theta(s(t))
 		m_policies[i]->getParameterGradient(s, a, m_grad_mu);
 
+
 		//get the grad_a(Q^w(s(t), a(t))
-		//TODO: add code
+		//we now assume that Q^q(s,a) is compatible with the policy mu_theta(s)
+		//this means: grad_a(Q^w(s(t), a(t)) = grad_theta(mu_theta(s))^T * w
+		double grad_prod = m_grad_mu->innerProduct(m_grad_mu);
 
 		//calculate the product grad_theta(mu_theta(s(t)) * grad_a(Q^w(s(t), a(t)) and store it in m_grad_mu
-		//TODO: add code
-
-		m_policies[i]->addFeatures(m_grad_mu, alpha_theta);
+		
+		m_policies[i]->addFeatures(m_s_features, grad_prod*alpha_theta);
 	}
 }
 
