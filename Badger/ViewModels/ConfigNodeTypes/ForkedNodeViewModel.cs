@@ -218,12 +218,16 @@ namespace Badger.ViewModels
             m_parentExperiment.forkRegistry.Remove(this);
 
             NestedConfigNode parent = m_parent as NestedConfigNode;
-            int childIndex = parent.children.IndexOf(this);
-            parent.children.Remove(this);
-            parent.children.Insert(childIndex, selectedForkValue.configNode);
-            //the node can again be forked
-            selectedForkValue.configNode.bCanBeForked = true;
-            m_parentExperiment.updateNumForkCombinations();
+            if (parent != null)
+            {
+                int childIndex = parent.children.IndexOf(this);
+                parent.children.Remove(this);
+                parent.children.Insert(childIndex, selectedForkValue.configNode);
+                //the node can again be forked
+                selectedForkValue.configNode.parent = parent;
+                selectedForkValue.configNode.bCanBeForked = true;
+                m_parentExperiment.updateNumForkCombinations();
+            }
         }
 
         public void removeSelectedValue()
