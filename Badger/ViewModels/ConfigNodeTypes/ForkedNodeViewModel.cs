@@ -221,6 +221,8 @@ namespace Badger.ViewModels
             int childIndex = parent.children.IndexOf(this);
             parent.children.Remove(this);
             parent.children.Insert(childIndex, selectedForkValue.configNode);
+            //the node can again be forked
+            selectedForkValue.configNode.bCanBeForked = true;
             m_parentExperiment.updateNumForkCombinations();
         }
 
