@@ -10,7 +10,7 @@ namespace Badger.ViewModels
     {
         private string m_name = "unnamed";
 
-        public string name
+        public string Name
         {
             get { return m_name; }
             set { m_name = value; }
@@ -18,7 +18,7 @@ namespace Badger.ViewModels
 
         private List<LoggedForkValueViewModel> m_values = new List<LoggedForkValueViewModel>();
 
-        public List<LoggedForkValueViewModel> values
+        public List<LoggedForkValueViewModel> Values
         {
             get { return m_values; }
             set { m_values = value; }
@@ -38,43 +38,48 @@ namespace Badger.ViewModels
 
         private List<LoggedForkViewModel> m_forks = new List<LoggedForkViewModel>();
 
-        public List<LoggedForkViewModel> forks
+        public List<LoggedForkViewModel> Forks
         {
             get { return m_forks; }
             set { m_forks = value; }
         }
 
         //this is used to hide the space given to display children forks in case there is none
-        private bool m_bHasForks;
-
-        public bool bHasForks
+        private bool m_bHasChildrenForks;
+        public bool HasChildrenForks
         {
-            get { return m_bHasForks; }
-            set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
+            get { return m_bHasChildrenForks; }
+            set { m_bHasChildrenForks = value; NotifyOfPropertyChange(() => HasChildrenForks); }
         }
-
+        private bool m_bHasChildrenValues;
+        public bool HasChildrenValues
+        {
+            get { return m_bHasChildrenValues; }
+            set { m_bHasChildrenValues = value; NotifyOfPropertyChange(() => HasChildrenValues); }
+        }
 
         public LoggedForkViewModel(XmlNode configNode)
         {
             if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
-                name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
+                Name = configNode.Attributes[XMLConfig.aliasAttribute].Value;
 
             foreach (XmlNode child in configNode.ChildNodes)
             {
                 if (child.Name == XMLConfig.forkTag)
                 {
                     LoggedForkViewModel newFork = new LoggedForkViewModel(child);
-                    forks.Add(newFork);
+                    Forks.Add(newFork);
                 }
                 else if (child.Name == XMLConfig.forkValueTag)
                 {
                     LoggedForkValueViewModel newValue = new LoggedForkValueViewModel(child, this);
-                    values.Add(newValue);
+                    Values.Add(newValue);
                 }
             }
 
-            //hide the area used to display children forks?
-            bHasForks = forks.Count != 0;
+            //hide the area used to display children forks/values?
+            HasChildrenForks = Forks.Count != 0;
+            HasChildrenValues = Values.Count != 0;
         }
 
 

@@ -177,9 +177,9 @@ namespace Badger.ViewModels
             //not all properties sending changes are due to "Group by this fork", so we need to check it
             if (e.PropertyName == "IsGroupedByThisFork")
             {
-                if (!m_groupByForks.Contains(((LoggedForkViewModel)sender).name))
+                if (!m_groupByForks.Contains(((LoggedForkViewModel)sender).Name))
                 {
-                    m_groupByForks.Add(((LoggedForkViewModel)sender).name);
+                    m_groupByForks.Add(((LoggedForkViewModel)sender).Name);
                     NotifyOfPropertyChange(() => groupBy);
                 }
                 bGroupsEnabled = true;
