@@ -14,12 +14,22 @@ namespace Herd
         /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[] 
-            { 
-                new HerdService() 
-            };
-            ServiceBase.Run(ServicesToRun);
+            if (Environment.UserInteractive)
+            {
+                HerdService service1 = new HerdService();
+                service1.TestStartupAndStop(null);
+            }
+            else
+            {
+                // Put the body of your old Main method here.  
+                ServiceBase[] ServicesToRun;
+                ServicesToRun = new ServiceBase[]
+                {
+                new HerdService()
+                };
+                ServiceBase.Run(ServicesToRun);
+            }
+           
         }
     }
 }

@@ -16,17 +16,17 @@ double getRandomValue()
 
 double CGaussianNoise::getNormalDistributionSample(double mean, double sigma)
 {
-	if (sigma == 0.0) return 0.0;
+	if (sigma == 0.0) return mean;
 	double x1 = (double) (rand() + 1) / ((double) RAND_MAX + 1);
 	double x2 = (double) rand() / (double) RAND_MAX;
 	double z = sqrt(- 2 * log(x1)) * cos(2 * M_PI * x2);
-	return z * sqrt(sigma) + mean;
+	return z * sigma + mean;
 }
 
 double CGaussianNoise::getPDF(double mean, double sigma, double value,double scaleFactor)
 {
 	double diff = (value - mean)/scaleFactor;
-	return (1. / sqrt(2 * M_PI*sigma*sigma))*exp(-(diff*diff / 2*sigma*sigma));
+	return (1. / sqrt(2 * M_PI*sigma*sigma))*exp(-(diff*diff / (2*sigma*sigma)));
 }
 
 double CGaussianNoise::getSampleProbability(double mean, double sigma, double sample, double scale)
@@ -34,10 +34,10 @@ double CGaussianNoise::getSampleProbability(double mean, double sigma, double sa
 	//https://en.wikipedia.org/wiki/Normal_distribution
 	double intwidth = PROBABILITY_INTEGRATION_WIDTH;
 
-	double sample1 = getPDF(0.0, sigma, sample + intwidth*0.5, scale);
-	double sample2 = getPDF(0.0, sigma, sample - intwidth*0.5, scale);
+	double sample1 = getPDF(mean, sigma, sample + intwidth*0.5, scale);
+	double sample2 = getPDF(mean, sigma, sample - intwidth*0.5, scale);
 
-	double prob = fabs(sample1 - sample2)*0.5*intwidth;
+	double prob = fabs(sample1 + sample2)*0.5*intwidth;
 
 	return std::max(MINIMAL_PROBABILITY,prob);
 }
@@ -104,7 +104,7 @@ double CGaussianNoise::getSample()
 
 double CGaussianNoise::getVariance()
 {
-	return m_sigma.get(); 
+	return pow(m_sigma.get(), 2); 
 }
 
 double CGaussianNoise::unscale(double noise)

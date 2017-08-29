@@ -141,14 +141,14 @@ void RLSimionApp::initRenderer(string sceneFile)
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
-		pStatText = new C2DMeter(string(pStat->getKey()), origin, size);
+		pStatText = new C2DMeter(string(pStat->getSubkey()), origin, size);
 		m_pStatsText.push_back(pStatText);
 		m_pRenderer->add2DGraphicObject(pStatText);
 		origin -= Vector2D(0.0, 0.06);
 	}
 
 	m_pInputHandler = new CFreeCameraInputHandler();
-
+	
 	m_timer.start();
 }
 
@@ -186,11 +186,14 @@ void RLSimionApp::updateScene(CState* s)
 	m_pRenderer->redraw();
 
 	//real time execution?
-	double dt = pWorld->getDT();
-	double elapsedTime = m_timer.getElapsedTime(true);
-	if (dt > elapsedTime)
+	if (!((CFreeCameraInputHandler*)m_pInputHandler)->getRealTimeExecutionDisabled())
 	{
-		Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
-		m_timer.start();
+		double dt = pWorld->getDT();
+		double elapsedTime = m_timer.getElapsedTime(true);
+		if (dt > elapsedTime)
+		{
+			Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
+			m_timer.start();
+		}
 	}
 }

@@ -33,18 +33,19 @@
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="48" Width="Auto" Background="#EEEEEE" Margin="4,0">
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Load a batch: results from an experiment execution"
                     Width="40" Height="40" x:Name="LoadExperimentBatch">
-                <Image Source="{StaticResource Open}" Opacity="0.6" Width="24" Height="24"/>
+                <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
             </Button>
             <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Report"
                     Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action SaveReports()]"
                     IsEnabled="{Binding bCanSaveReports}">
-                <Image Source="{StaticResource Save}" Opacity="0.6" Width="24" Height="24" />
+                <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
             </Button>
-            <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Clear ReportViewer" 
+            <!-- This button doesn't make sense any more: before loading a new batch, the data is cleared-->
+            <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Clear ReportViewer" 
                     Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action ClearReportViewer()]"     
                     IsEnabled="{Binding bLogsLoaded}">
-                <Image Source="{StaticResource Delete}" Opacity="0.6" Width="24" Height="24" />
-            </Button>
+                <Path Data="{StaticResource  Delete}" Width="24" Height="24" Fill="#F44336" />
+            </Button>-->
         </StackPanel>
 
         <Grid Background="#FAFAFA">
@@ -99,24 +100,35 @@
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <StackPanel Orientation="Vertical"  IsEnabled="{Binding bLogsLoaded}" Margin="2">
                                 <Grid Margin="0,2,0,2" ToolTip="Which variables do we want to display?" MaxHeight="90">
-                                    <ScrollViewer VerticalScrollBarVisibility="Visible">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
                                         <ItemsControl x:Name="Variables"/>
                                     </ScrollViewer>
                                 </Grid>
-                                
+
                                 <StackPanel Margin="0,10,0,2" Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
-                                    <Label  Width="70" Margin="0,0,10,0" Content="From"/>
-                                    <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" HorizontalAlignment="Center"/>
+                                    <Label  Width="70" Margin="0,0,10,0" Content="From" HorizontalContentAlignment="Right"/>
+                                    <ComboBox x:Name="fromOptions" SelectedValue="{Binding selectedFrom}" HorizontalAlignment="Center" MinWidth="80px"/>
                                 </StackPanel>
-                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="Forks currently used to group results">
-                                    <Label Width="70" Margin="0,0,10,0" Content="Group by"/>
-                                    <TextBlock Text="{Binding groupBy}" MaxWidth="164" Width="164" Background="#eeeeee"/>
-                                    <Button x:Name="ResetGroupBy" Margin="4,0,0,0">
-                                        <Image Source="{StaticResource Close}" Width="20"/>
+                                <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" 
+                                            ToolTip="Forks currently used to group results">
+                                    <Label Width="70" Margin="0,0,10,0" Content="Group by" VerticalContentAlignment="Center"
+                                           HorizontalContentAlignment="Right"/>
+                                    <Grid Margin="0,2,0,2" ToolTip="Which variables do we want to display?" MaxWidth="164" Width="164"
+                                          MaxHeight="56">
+                                        <Border BorderThickness="1" BorderBrush="#BDBDBD" >
+                                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl x:Name="GroupByForks" Margin="3"/>
+                                            </ScrollViewer>
+                                        </Border>
+                                    </Grid>
+
+                                    <Button x:Name="ResetGroupBy" Margin="4,0,0,0" Width="24" Height="24">
+                                        <Path Data="{StaticResource  Close}" Width="24" Height="24" Fill="#89000000"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Button>
                                 </StackPanel>
                                 <StackPanel Margin="0,2" Orientation="Horizontal" IsEnabled="{Binding bGroupsEnabled}" ToolTip="How do we pick the best track from each group?">
-                                    <Label Width="70" Margin="0,0,10,0" Content="Pick"/>
+                                    <Label Width="70" Margin="0,0,10,0" Content="Pick" HorizontalContentAlignment="Right" />
                                     <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding selectedInGroupSelectionFunction}"
                                       Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
                                     <ComboBox ItemsSource="{Binding Variables}" DisplayMemberPath="name"
@@ -124,12 +136,12 @@
                                       Width="80" HorizontalAlignment="Center"/>
                                 </StackPanel>
                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
-                                    <Label Width="70" Margin="0,0,10,0" Content="Limit to"/>
+                                    <Label Width="70" Margin="0,0,10,0" Content="Limit to" HorizontalContentAlignment="Right"/>
                                     <ComboBox x:Name="limitToOptions" SelectedValue="{Binding selectedLimitToOption}"
                                       Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"/>
                                 </StackPanel>
                                 <StackPanel Margin="0,2,0,2" Orientation="Horizontal" IsEnabled="{Binding bIsOrderByEnabled}" ToolTip="Sets the criteria by which tracks are sorted before limiting">
-                                    <Label Width="70" Margin="0,0,10,0" Content="Order by"/>
+                                    <Label Width="70" Margin="0,0,10,0" Content="Order by" HorizontalContentAlignment="Right"/>
                                     <ComboBox x:Name="orderByFunctions" SelectedValue="{Binding selectedOrderByFunction}"
                                       Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
                                     <ComboBox ItemsSource="{Binding Variables}" DisplayMemberPath="name"
@@ -178,7 +190,8 @@
                                                 </cal:ActionMessage>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
-                                        <Image Source="{StaticResource Close}" Height="16" Width="16" />
+                                        <Path Data="{StaticResource Close}" Width="24" Height="24" Fill="#89000000"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3" />
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>

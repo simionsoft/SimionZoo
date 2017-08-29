@@ -2,7 +2,8 @@
 using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
-using OxyPlot;
+using System.Linq;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -24,8 +25,15 @@ namespace Badger.ViewModels
             get { return m_selectedPlot; }
             set
             {
-                if (m_selectedPlot!=null)
-                    ((IPlotModel) (m_selectedPlot.Plot)).AttachPlotView( null);
+                /*
+                 * workarround to solve the exception:
+                 * "This PlotModel is already in use by some other PlotView control."
+                 * switching the tabs multiple times
+                */
+                if (m_selectedPlot != null)
+                {
+                    ((OxyPlot.IPlotModel)m_selectedPlot.Plot).AttachPlotView(null);
+                }
                 m_selectedPlot = value;
                 m_selectedPlot.updateView();
                 NotifyOfPropertyChange(() => selectedPlot);
@@ -72,14 +80,14 @@ namespace Badger.ViewModels
             }
         }
 
-        private string getVariablePlotType(LogQuery query, string variable)
+        private PlotType getVariablePlotType(LogQuery query, string variable)
         {
             foreach (LoggedVariableViewModel var in query.loggedVariables)
             {
                 if (var.name == variable)
-                    return var.stateButton.state;
+                    return var.SelectedPlotType;
             }
-            return null;
+            return PlotType.Undefined;
         }
 
         public ReportViewModel(LogQuery query)
@@ -95,9 +103,9 @@ namespace Badger.ViewModels
                     if (trackData != null)
                     {
                         //code below can be improved: organize forks hierarchically instead of a single string
-                        StatViewModel trackStats = new StatViewModel(track.groupId, track.trackId);
-                        trackStats.lastEpisodeStats = trackData.lastEpisodeData.stats;
-                        trackStats.experimentStats = trackData.experimentData.stats;
+                        StatViewModel trackStats = new StatViewModel(track.GroupId, track.TrackId);
+                        trackStats.lastEpisodeStats = trackData.lastEvaluationEpisodeData.Stats;
+                        trackStats.experimentStats = trackData.experimentAverageData.Stats;
                         newStat.addStat(trackStats);
                     }
                 }
@@ -106,52 +114,135 @@ namespace Badger.ViewModels
             }
             if (stats.Count > 0)
                 selectedStat = stats[0];
+
             //plots
             foreach (string variable in query.variables)
             {
                 PlotViewModel newPlot;
 
                 int lineSeriesId;
-                string plotType = getVariablePlotType(query, variable);
+                PlotType plotType = getVariablePlotType(query, variable);
 
-                if (plotType == LoggedVariableViewModel.PlotType.LastEvaluation.ToString()
-                    || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
+                if ((plotType & PlotType.LastEvaluation) == PlotType.LastEvaluation)
                 {
+                    //get the max length of the log
+                    double maxLength = 0.0;
+                    if (query.resultTracks.Count > 0)
+                        maxLength = query.resultTracks.Select(a => a.trackData.realTime.Length).Max();
+
                     //LAST EVALUATION values: create a new plot for each variable in the result data          
-                    newPlot = new PlotViewModel(variable, false, true);
+                    newPlot = new PlotViewModel(String.Format("Last Evaluation\n{0}", variable), maxLength, "Time (s)", variable, false, true);
                     //plot data
 
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
-                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].groupId);
-                        for (int x = 0; x < query.resultTracks[i].trackData.realTime.Length; ++x)
+                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].GroupId);
+                        for (int x = 0; x < variableData.lastEvaluationEpisodeData.Values.Length; ++x)
                         {
                             newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x]
-                                , variableData.lastEpisodeData.values[x]);
+                                , variableData.lastEvaluationEpisodeData.Values[x]);
                         }
                     }
                     plots.Add(newPlot);
                 }
-                if (plotType == LoggedVariableViewModel.PlotType.AllEvaluations.ToString()
-                      || plotType == LoggedVariableViewModel.PlotType.Both.ToString())
+
+                if ((plotType & PlotType.AllEvaluationEpisodes) == PlotType.AllEvaluationEpisodes)
                 {
+                    //get the max length of the log
+                    double maxLength = 0.0;
+                    if (query.resultTracks.Count > 0)
+                        maxLength = query.resultTracks.Select(a => a.trackData.realTime.Length).Max();
+
+                    //ALL EVALUATION values         
+                    newPlot = new PlotViewModel(String.Format("Evaluation Episodes\n{0}", variable), maxLength, "Time (s)", variable, false, true);
+                    //plot data
+
+                    bool isFirstSeries = true;
+                    for (int i = 0; i < query.resultTracks.Count; i++)
+                    {
+                        TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
+
+                        int episodeIndex = 0;
+                        foreach (var episodeData in variableData.experimentEvaluationData)
+                        {
+                            lineSeriesId = newPlot.addLineSeries(String.Format("track {0}\nepisode {1}", i, episodeIndex++), isFirstSeries);
+                            isFirstSeries = false;
+                            if (episodeData.Initialized)
+                            {
+                                for (int x = 0; x < episodeData.Values.Length; x++)
+                                {
+                                    newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x], episodeData.Values[x]);
+                                }
+                            }
+                        }
+                    }
+                    plots.Add(newPlot);
+                }
+
+                if ((plotType & PlotType.AllTrainingEpisodes) == PlotType.AllTrainingEpisodes)
+                {
+                    //get the max length of the log
+                    double maxLength = 0.0;
+                    if (query.resultTracks.Count > 0)
+                        maxLength = query.resultTracks.Select(a => a.trackData.realTime.Length).Max();
+
+                    //LAST EVALUATION values: create a new plot for each variable in the result data          
+                    newPlot = new PlotViewModel(String.Format("Training Episodes:\n{0}", variable), maxLength, "Time (s)", variable, false, true);
+                    //plot data
+
+                    bool isFirstSeries = true;
+                    for (int i = 0; i < query.resultTracks.Count; i++)
+                    {
+                        TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
+
+                        int episodeIndex = 0;
+                        foreach (var episodeData in variableData.experimentTrainingData)
+                        {
+                            if (episodeData.Initialized)
+                            {
+                                lineSeriesId = newPlot.addLineSeries(String.Format("track {0}\nepisode {1}", i, episodeIndex++), isFirstSeries);
+                                isFirstSeries = false;
+
+                                for (int x = 0; x < episodeData.Values.Length; ++x)
+                                {
+                                    newPlot.addLineSeriesValue(lineSeriesId, query.resultTracks[i].trackData.simTime[x], episodeData.Values[x]);
+                                }
+                            }
+                        }
+                    }
+                    plots.Add(newPlot);
+                }
+
+                if ((plotType & PlotType.AverageOfEachEpisode) == PlotType.AverageOfEachEpisode)
+                {
+                    //get the max length of the log
+                    double maxLength = 0.0;
+                    if (query.resultTracks.Count > 0)
+                        maxLength = query.resultTracks.Select(a => a.trackData.getVariableData(variable).experimentAverageData.Values.Length).Max();
+
                     //AVERAGED EVALUATION values: create a new plot for each variable in the result data
-                    newPlot = new PlotViewModel(variable + "-episode", false, true);
+                    newPlot = new PlotViewModel(String.Format("Each Experiment's Average of\n{0}", variable), maxLength, "Episode", String.Format("Average of {0}", variable), false, true);
                     //plot data
                     for (int i = 0; i < query.resultTracks.Count; i++)
                     {
                         TrackVariableData variableData = query.resultTracks[i].trackData.getVariableData(variable);
-                        lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].groupId);
-                        for (int x = 0; x < variableData.experimentData.values.Length; ++x)
+                        if (variableData.experimentAverageData.Initialized)
                         {
-                            newPlot.addLineSeriesValue(lineSeriesId, x
-                                , variableData.experimentData.values[x]);
+                            lineSeriesId = newPlot.addLineSeries(query.resultTracks[i].GroupId);
+                            for (int x = 0; x < variableData.experimentAverageData.Values.Length; ++x)
+                            {
+                                newPlot.addLineSeriesValue(lineSeriesId, x
+                                    , variableData.experimentAverageData.Values[x]);
+                            }
                         }
                     }
                     plots.Add(newPlot);
                 }
             }
+
+            //TODO: Add support for other plottypes!
+
             if (plots.Count > 0)
             {
                 selectedPlot = plots[0];

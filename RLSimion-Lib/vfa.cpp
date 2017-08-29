@@ -28,8 +28,9 @@ double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 	unsigned int localIndex;
 
 	IMemBuffer *pWeights;
+	int updateFreq = CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
 
-	if (!bUseFrozenWeights || !m_bCanBeFrozen)
+	if (!bUseFrozenWeights || !m_bCanBeFrozen || updateFreq == 0)
 		pWeights = m_pWeights;
 	else
 		pWeights = m_pFrozenWeights;
@@ -152,6 +153,13 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 	//then we apply all the feature updates
 	for (unsigned int i = 0; i < pFeatures->m_numFeatures; i++)
 	{
+		//index is too low, does not correspond to this map!
+		if (pFeatures->m_pFeatures[i].m_index < m_minIndex)
+			continue;
+		//index is too high, does not correspond to this map, too!
+		if (pFeatures->m_pFeatures[i].m_index - m_minIndex > m_maxIndex)
+			continue;
+
 		//IF instead of assert because some features may not belong to this specific VFA
 		//and would still be a valid operation
 		//(for example, in a VFAPolicy with 2 VFAs: StochasticPolicyGaussianNose)
@@ -160,13 +168,14 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 			inc= alpha*pFeatures->m_pFeatures[i].m_factor;
 		else
 		{
-			inc= std::min(m_maxOutput, std::max(m_minOutput, (*m_pWeights)[pFeatures->m_pFeatures[i].m_index] 
-				+ alpha * pFeatures->m_pFeatures[i].m_factor)) - (*m_pWeights)[pFeatures->m_pFeatures[i].m_index];
+			inc= std::min(m_maxOutput, std::max(m_minOutput, (*m_pWeights)[pFeatures->m_pFeatures[i].m_index - m_minIndex]
+				+ alpha * pFeatures->m_pFeatures[i].m_factor)) - (*m_pWeights)[pFeatures->m_pFeatures[i].m_index - m_minIndex];
 		}
-		(*m_pWeights)[pFeatures->m_pFeatures[i].m_index] += inc;
+		(*m_pWeights)[pFeatures->m_pFeatures[i].m_index - m_minIndex] += inc;
 		if (bFreezeTarget)
 			m_pPendingUpdates->add(pFeatures->m_pFeatures[i].m_index, inc);
 	}
+
 	if (bFreezeTarget && !CSimionApp::get()->pSimGod->bReplayingExperience())
 	{
 		experimentStep = CSimionApp::get()->pExperiment->getExperimentStep();
@@ -395,6 +404,7 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 		{
 			maxValue = value;
 			arg = i;
+			m_pArgMaxTies[0] = i;
 			numTies = 1;
 		}
 
