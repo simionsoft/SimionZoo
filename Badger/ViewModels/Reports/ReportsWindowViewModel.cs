@@ -14,6 +14,8 @@ namespace Badger.ViewModels
 
         public ObservableCollection<LoggedForkViewModel> Forks { get; } = new ObservableCollection<LoggedForkViewModel>();
 
+        public ObservableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits { get; } = new ObservableCollection<LoggedExperimentalUnitViewModel>();
+
         private bool m_bCanGenerateReports;
 
 
@@ -372,7 +374,7 @@ namespace Badger.ViewModels
                     string outputFolder;
                     if (Reports.Count > 1)
                     {
-                        outputFolder = outputBaseFolder + "\\" + Utility.removeSpecialCharacters(report.name);
+                        outputFolder = outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(report.name);
                         Directory.CreateDirectory(outputFolder);
                     }
                     else
@@ -412,6 +414,19 @@ namespace Badger.ViewModels
 
             foreach (LoggedVariableViewModel variable in Variables)
                 variable.setParent(this);
+
+            //add all experimental units to the collection
+            foreach (LoggedExperimentViewModel experiment in LoggedExperiments)
+            {
+                experiment.TraverseAction(false, (n) =>
+                 {
+                     LoggedExperimentalUnitViewModel expUnit = n as LoggedExperimentalUnitViewModel;
+                     if (expUnit != null)
+                     {
+                         ExperimentalUnits.Add(expUnit);
+                     }
+                 });
+            }
 
             bLogsLoaded = true;
 
@@ -458,6 +473,7 @@ namespace Badger.ViewModels
         /// </summary>
         public void ClearReportViewer()
         {
+            ExperimentalUnits.Clear();
             LoggedExperiments.Clear();
             Reports.Clear();
             ResetGroupBy();

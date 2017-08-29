@@ -171,10 +171,10 @@ namespace Badger.ViewModels
                 foreach (KeyValuePair<string, string> entry in m_forkValues)
                 {
                     //we limit the length of the values
-                    shortId= Utility.limitLength(entry.Key, 10);
+                    shortId= Utility.LimitLength(entry.Key, 10);
                     if (shortId.Length > 0)
                         id += shortId + "=";
-                    id += Utility.limitLength(entry.Value,20,valueDelimiters) + ",";
+                    id += Utility.LimitLength(entry.Value,20,valueDelimiters) + ",";
                 }
                 id = id.Trim(',');
                 return id;
@@ -232,10 +232,10 @@ namespace Badger.ViewModels
                     string shortId;
                     foreach (string group in groupBy)
                     {
-                        shortId = Utility.limitLength(group, 10);
+                        shortId = Utility.LimitLength(group, 10);
                         if (shortId.Length > 0)
                             m_groupId += shortId + "=";
-                        m_groupId += Utility.limitLength(forkValues[group],10,valueDelimiters) + ",";
+                        m_groupId += Utility.LimitLength(forkValues[group],10,valueDelimiters) + ",";
                         forkValues.Remove(group);
                     }
                     GroupId = m_groupId.TrimEnd(',');

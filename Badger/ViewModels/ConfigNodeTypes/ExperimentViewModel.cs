@@ -264,7 +264,7 @@ namespace Badger.ViewModels
                 configRootNode = configDoc.LastChild;
             }
 
-            Initialize(appDefinitionFileName, configRootNode, Utility.getFileName(configFilename, true, 2));
+            Initialize(appDefinitionFileName, configRootNode, Utility.GetFilename(configFilename, true, 2));
             //we remove the two extensions in "simion.exp"
         }
 
