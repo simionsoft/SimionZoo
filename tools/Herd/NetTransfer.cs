@@ -207,9 +207,8 @@ namespace Herd
             task.name = match.Groups[1].Value;
             task.exe = match.Groups[2].Value;
             task.arguments = match.Groups[3].Value;
-            //TODO: Solve this!
-            task.authenticationToken = "";//match.Groups[4].Value;
-            task.pipe = match.Groups[4].Value;
+            task.authenticationToken = match.Groups[4].Value;
+            task.pipe = match.Groups[5].Value;
             m_job.tasks.Add(task);
             return true;
         }
