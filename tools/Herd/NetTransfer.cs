@@ -60,6 +60,8 @@ namespace Herd
 
     public class CJobDispatcher
     {
+        public const string LegacyTaskHeaderRegEx = "<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>";
+
         public const string TaskHeaderRegEx = "<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"( AuthenticationToken=\"([^\"]*)\")?/>";
         public const string JobHeaderRegEx = "<Job Name=\"([^\"]*)\">";
         public const string JobFooterRegEx = "</Job>";
