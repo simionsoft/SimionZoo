@@ -25,6 +25,12 @@ namespace Herd
             pipe = "";
             authenticationToken = "";
         }
+        public override string ToString()
+        {
+            string ret = "Task = " + name + "\n" + "Exe= " + exe + "\n" + "Arguments= " + arguments + "\n";
+            ret += "Pipe= " + pipe + "\n" + "Auth.Token= " + authenticationToken + "\n";
+            return ret;
+        }
     }
     public class CJob
     {
@@ -35,6 +41,14 @@ namespace Herd
         public Dictionary<string, string> renameRules;
 
         public CJob() { }
+
+        public override string ToString()
+        {
+            string ret = "Job: " + name;
+            foreach (CTask task in tasks)
+                ret += "||" + task.ToString();
+            return ret;
+        }
 
         public string renamedFilename(string filename)
         {

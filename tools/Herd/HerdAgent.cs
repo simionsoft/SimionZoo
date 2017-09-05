@@ -618,6 +618,8 @@ namespace Herd
                             if (bret)
                             {
                                 //run the job
+                                logMessage("Job received");
+                                logMessage(m_job.ToString());
                                 logMessage("Running job");
                                 returnCode = await runJobAsync(m_cancelTokenSource.Token);
 
@@ -677,7 +679,7 @@ namespace Herd
                 {
                     //if (getState() == AgentState.AVAILABLE)
                     {
-                        logMessage("Agent discovered by " + ip + ". Current state=" + getStateString());
+                        //logMessage("Agent discovered by " + ip + ". Current state=" + getStateString());
                         string agentDescription = GetAgentDescription();
                         byte[] data = Encoding.ASCII.GetBytes(agentDescription);
                         getUdpClient().Send(data, data.Length, ip);
