@@ -122,6 +122,8 @@ namespace Badger.ViewModels
 
             //register this fork
             m_parentExperiment.forkRegistry.Add(this);
+
+            GetLinkableForks();
         }
         //constructor used in clone()
         public ForkedNodeViewModel() { }
@@ -303,6 +305,24 @@ namespace Badger.ViewModels
         public override void onRemoved()
         {
             m_parentExperiment.forkRegistry.Remove(this);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void LinkFork(ConfigNodeViewModel node)
+        {
+            GetLinkableForks();
+            Console.WriteLine(node.name);
+            Console.WriteLine(node.parent);
+        }
+
+        public void GetLinkableForks()
+        {
+            foreach (var configNodeViewModel in children)
+            {
+                Console.WriteLine(configNodeViewModel.nodeDefinition);
+            }
         }
     }
 }

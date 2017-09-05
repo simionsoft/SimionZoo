@@ -133,6 +133,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\MultiValuedItemConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\NestedConfigNode.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\NumericForkedNodeViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
@@ -269,6 +270,10 @@
     <Page Include="Views\ConfigNodeTypes\MultiValuedItemConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfigNodeTypes\NumericForkedNodeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ConfigNodeTypes\StringValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
