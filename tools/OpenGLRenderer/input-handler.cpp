@@ -44,7 +44,7 @@ void CFreeCameraInputHandler::_onSpecialKeyReleased(int key, int x, int y)
 
 void CFreeCameraInputHandler::_onKeyPressed(unsigned char key, int x, int y)
 {
-	((CFreeCameraInputHandler*)IInputHandler::get())->onKeyPressed(key,x,y);
+	((CFreeCameraInputHandler*)IInputHandler::get())->onKeyPressed(key, x, y);
 }
 
 void CFreeCameraInputHandler::_onKeyReleased(unsigned char key, int x, int y)
@@ -57,15 +57,16 @@ void CFreeCameraInputHandler::onKeyPressed(unsigned char key, int x, int y)
 	//keyboard callback function
 	switch (key)
 	{
-		case 'w': m_bWPressed = true; m_bShftPressed = false; break;
-		case 'W': m_bWPressed = true; m_bShftPressed = true; break;
-		case 's': m_bSPressed = true; m_bShftPressed = false; break;
-		case 'S': m_bSPressed = true; m_bShftPressed = true; break;
-		case 'a': m_bAPressed = true; m_bShftPressed = false; break;
-		case 'A': m_bAPressed = true; m_bShftPressed = true; break;
-		case 'd': m_bDPressed = true; m_bShftPressed = false; break;
-		case 'D': m_bDPressed = true; m_bShftPressed = true; break;
-		case 27: exit(0);
+	case 'w': m_bWPressed = true; m_bShftPressed = false; break;
+	case 'W': m_bWPressed = true; m_bShftPressed = true; break;
+	case 's': m_bSPressed = true; m_bShftPressed = false; break;
+	case 'S': m_bSPressed = true; m_bShftPressed = true; break;
+	case 'a': m_bAPressed = true; m_bShftPressed = false; break;
+	case 'A': m_bAPressed = true; m_bShftPressed = true; break;
+	case 'd': m_bDPressed = true; m_bShftPressed = false; break;
+	case 'D': m_bDPressed = true; m_bShftPressed = true; break;
+	case 32: m_bSpacePressed = true; m_bShftPressed = false; break;
+	case 27: exit(0);
 	}
 }
 
@@ -74,14 +75,18 @@ void CFreeCameraInputHandler::onKeyReleased(unsigned char key, int x, int y)
 	//keyboard callback function
 	switch (key)
 	{
-		case 'w':
-		case 'W': m_bWPressed = false; break;
-		case 's':
-		case 'S': m_bSPressed = false; break;
-		case 'a':
-		case 'A': m_bAPressed = false; break;
-		case 'd':
-		case 'D': m_bDPressed = false; break;
+	case 'w':
+	case 'W': m_bWPressed = false; break;
+	case 's':
+	case 'S': m_bSPressed = false; break;
+	case 'a':
+	case 'A': m_bAPressed = false; break;
+	case 'd':
+	case 'D': m_bDPressed = false; break;
+	case 32:
+		m_real_time_execution_disabled = !m_real_time_execution_disabled;
+		m_bSpacePressed = false;
+		break;
 	}
 }
 
@@ -89,10 +94,10 @@ void CFreeCameraInputHandler::onSpecialKeyPressed(int key, int x, int y)
 {
 	switch (key)
 	{
-		case GLUT_KEY_UP: m_bUpArrowPressed = true; break;
-		case GLUT_KEY_DOWN: m_bDownArrowPressed = true; break;
-		case GLUT_KEY_LEFT: m_bLeftArrowPressed = true; break;
-		case GLUT_KEY_RIGHT: m_bRightArrowPressed = true; break;
+	case GLUT_KEY_UP: m_bUpArrowPressed = true; break;
+	case GLUT_KEY_DOWN: m_bDownArrowPressed = true; break;
+	case GLUT_KEY_LEFT: m_bLeftArrowPressed = true; break;
+	case GLUT_KEY_RIGHT: m_bRightArrowPressed = true; break;
 	}
 }
 
@@ -100,10 +105,10 @@ void CFreeCameraInputHandler::onSpecialKeyReleased(int key, int x, int y)
 {
 	switch (key)
 	{
-		case GLUT_KEY_UP: m_bUpArrowPressed = false; break;
-		case GLUT_KEY_DOWN: m_bDownArrowPressed = false; break;
-		case GLUT_KEY_LEFT: m_bLeftArrowPressed = false; break;
-		case GLUT_KEY_RIGHT: m_bRightArrowPressed = false; break;
+	case GLUT_KEY_UP: m_bUpArrowPressed = false; break;
+	case GLUT_KEY_DOWN: m_bDownArrowPressed = false; break;
+	case GLUT_KEY_LEFT: m_bLeftArrowPressed = false; break;
+	case GLUT_KEY_RIGHT: m_bRightArrowPressed = false; break;
 	}
 }
 
@@ -140,6 +145,6 @@ void CFreeCameraInputHandler::handleInput()
 	}
 	if (bMoveUp()) pCamera->addLocalOffset(Vector3D(0.0, dt*MOVE_SPEED, 0.0));
 	if (bMoveDown()) pCamera->addLocalOffset(Vector3D(0.0, -dt*MOVE_SPEED, 0.0));
-	if (bMoveLeft()) pCamera->addLocalOffset(Vector3D(-dt*MOVE_SPEED, 0.0,  0.0));
+	if (bMoveLeft()) pCamera->addLocalOffset(Vector3D(-dt*MOVE_SPEED, 0.0, 0.0));
 	if (bMoveRight()) pCamera->addLocalOffset(Vector3D(dt*MOVE_SPEED, 0.0, 0.0));
 }

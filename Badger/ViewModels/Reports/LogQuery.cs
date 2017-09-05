@@ -110,17 +110,18 @@ namespace Badger.ViewModels
 
         private LogQueryResultTrackViewModel getTrack(Dictionary<string, string> forkValues)
         {
+            uint numMatchedForks;
             foreach (LogQueryResultTrackViewModel resultTrack in resultTracks)
             {
+                numMatchedForks = 0;
                 foreach (string forkName in forkValues.Keys)
                 {
-                    if (!resultTrack.forkValues.ContainsKey(forkName)
-                        || forkValues[forkName] != resultTrack.forkValues[forkName])
-                    {
-                        break;
-                    }
-                    return resultTrack;
+                    if (resultTrack.forkValues.ContainsKey(forkName)
+                        && forkValues[forkName] == resultTrack.forkValues[forkName])
+                        numMatchedForks++;
                 }
+                if (numMatchedForks == resultTrack.forkValues.Count)
+                    return resultTrack;
 
             }
             return null;
@@ -141,7 +142,7 @@ namespace Badger.ViewModels
 
             //add all selected variables to the list of variables
             foreach (LoggedVariableViewModel variable in loggedVariablesVM)
-                if (from == fromSelection || variable.bIsSelected)
+                if ( variable.bIsSelected )
                     variables.Add(variable.name);
 
             //traverse the experimental units within each experiment
@@ -160,7 +161,7 @@ namespace Badger.ViewModels
                                 //the track exists and we are using forks to group results
                                 TrackData trackData = expUnit.loadTrackData(variables);
                                 if (trackData!=null)
-                                    resultTrack.addTrackData(trackData);
+                                    resultTrack.AddTrackData(trackData);
                             }
                         }
                         if (resultTrack == null) //New track
@@ -193,10 +194,10 @@ namespace Badger.ViewModels
                                 //for now, we just ignore failed experiments. Maybe we could do something more sophisticated
                                 //for example, allow to choose only those parameter variations that lead to failed experiments
                                 if (trackData.bSuccesful)
-                                    newResultTrack.addTrackData(trackData);
+                                    newResultTrack.AddTrackData(trackData);
 
                                 //we only consider those tracks with data loaded
-                                if (newResultTrack.bHasData)
+                                if (newResultTrack.HasData)
                                     resultTracks.Add(newResultTrack);
                             }
                         }
@@ -208,7 +209,7 @@ namespace Badger.ViewModels
             if (groupBy.Count > 0)
             {
                 foreach (LogQueryResultTrackViewModel track in resultTracks)
-                    track.consolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
+                    track.ConsolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
             }
 
             //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
@@ -232,7 +233,7 @@ namespace Badger.ViewModels
                         double sortValue = 0.0;
                         TrackVariableData variableData = track.trackData.getVariableData(orderByVariable);
                         if (variableData != null)
-                            sortValue = variableData.lastEpisodeData.stats.avg;
+                            sortValue = variableData.lastEvaluationEpisodeData.Stats.avg;
                         sortedList.Add(sortValue, track);
                     }
 

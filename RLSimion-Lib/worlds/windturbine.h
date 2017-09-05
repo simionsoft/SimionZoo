@@ -1,23 +1,13 @@
 #pragma once
 
 #include "world.h"
+#include "../utils.h"
 
 class CSetPoint;
 
 //ONE-MASS WIND TURBINE MODEL
 class CWindTurbine: public CDynamicModel
 {
-	//state handlers
-	int m_sT_a, m_sP_a, m_sP_s, m_sP_e;
-	int m_sE_p, m_sV, m_sOmega_r, m_sE_omega_r;
-	int m_sD_omega_r, m_sBeta, m_sD_beta;
-	int m_sT_g, m_sD_T_g, m_sE_int_omega_r;
-	//action handlers
-	int m_aD_beta, m_aD_T_g;
-
-	double m_initial_torque;
-	double m_initial_blade_angle;
-
 	CSetPoint **m_pTrainingWindData;
 	CSetPoint* m_pEvaluationWindData;
 	CSetPoint* m_pCurrentWindData;
@@ -25,6 +15,14 @@ class CWindTurbine: public CDynamicModel
 	int m_currentDataFile;
 
 	CSetPoint *m_pPowerSetpoint;
+	CTable m_Cp;
+
+	double C_p(double lambda, double beta);
+	double C_q(double lambda, double beta);
+	double aerodynamicTorque(double tip_speed_ratio, double beta, double wind_speed);
+	double aerodynamicPower(double tip_speed_ratio, double beta, double wind_speed);
+	double aerodynamicPower(double cp, double wind_speed);
+	void findSuitableParameters(double initial_wind_speed, double& initial_rotor_speed, double &initial_blade_angle);
 
 public:
 	CWindTurbine(CConfigNode* pParameters);

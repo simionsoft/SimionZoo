@@ -2,6 +2,7 @@
 using System.Xml;
 using Badger.Data;
 using Badger.Simion;
+using System.Collections.Generic;
 
 namespace Badger.ViewModels
 {
@@ -26,8 +27,14 @@ namespace Badger.ViewModels
             set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
         }
 
-        public LoggedForkValueViewModel(XmlNode configNode)
+        public LoggedForkViewModel parent { get; set; }
+        public List<LoggedExperimentalUnitViewModel> expUnits { get; }
+            = new List<LoggedExperimentalUnitViewModel>();
+
+        public LoggedForkValueViewModel(XmlNode configNode, LoggedForkViewModel _parent)
         {
+            parent = _parent;
+
             if (configNode.Attributes.GetNamedItem(XMLConfig.valueAttribute) != null)
                 value = configNode.Attributes[XMLConfig.valueAttribute].Value;
             else
@@ -51,6 +58,8 @@ namespace Badger.ViewModels
             if (doActionLocally) LocalTraverseAction(action);
             foreach (LoggedForkViewModel fork in forks)
                 fork.TraverseAction(doActionLocally, action);
+            foreach (LoggedExperimentalUnitViewModel expUnit in expUnits)
+                expUnit.LocalTraverseAction(action);
         }
     }
 }

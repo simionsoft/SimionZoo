@@ -38,7 +38,7 @@ string removeExtension(const string& filename, unsigned int numExtensions)
 	string result = filename;
 	size_t lastExt = filename.find_last_of('.');
 	size_t lastBar = getLastBarPos(filename);
-	int numRemovedExtensions = 0;
+	unsigned int numRemovedExtensions = 0;
 	while (lastExt > 0 && numRemovedExtensions < numExtensions && lastExt>lastBar)
 	{
 		result = result.substr(0, lastExt);

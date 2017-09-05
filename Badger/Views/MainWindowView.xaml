@@ -118,10 +118,10 @@
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" >
-                            <Label Content="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
-                                   VerticalContentAlignment="Center"/>
-                            <Label Content="{Binding Path=numForkCombinations}" VerticalContentAlignment="Center"/>
-                            <Button Style="{StaticResource BadgerButtonStyle}" Width="16" Height="16">
+                            <TextBox Text="{Binding Path=name,Mode=TwoWay}" BorderBrush="Transparent"
+                                   VerticalAlignment="Center"/>
+                            <Label Content="{Binding Path=numForkCombinations}" VerticalAlignment="Center"/>
+                            <Button Style="{StaticResource BadgerButtonStyle}" Width="18" Height="18">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <cal:ActionMessage MethodName="Close" >

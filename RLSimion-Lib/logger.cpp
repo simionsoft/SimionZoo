@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "logger.h"
 #include "worlds/world.h"
 #include "named-var-set.h"
@@ -10,7 +10,7 @@
 #include "utils.h"
 #include "SimGod.h"
 
-FILE *CLogger::m_logFile= 0;
+FILE *CLogger::m_logFile = 0;
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
 CNamedPipeClient CLogger::m_outputPipe;
 
@@ -73,11 +73,11 @@ CLogger::CLogger(CConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 
-	m_bLogEvaluationEpisodes= BOOL_PARAM(pConfigNode,"Log-eval-episodes", "Log evaluation episodes?",true);
+	m_bLogEvaluationEpisodes = BOOL_PARAM(pConfigNode, "Log-eval-episodes", "Log evaluation episodes?", true);
 
-	m_bLogTrainingEpisodes= BOOL_PARAM(pConfigNode,"Log-training-episodes", "Log training episodes?",false);
+	m_bLogTrainingEpisodes = BOOL_PARAM(pConfigNode, "Log-training-episodes", "Log training episodes?", false);
 
-	m_logFreq= DOUBLE_PARAM(pConfigNode,"Log-Freq","Log frequency. Simulation time in seconds.",0.25);
+	m_logFreq = DOUBLE_PARAM(pConfigNode, "Log-Freq", "Log frequency. Simulation time in seconds.", 0.25);
 
 	m_pEpisodeTimer = new CTimer();
 	m_pExperimentTimer = new CTimer();
@@ -140,7 +140,7 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
 		writeStatDescriptorToBuffer(buffer);
 		strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
-		fwrite(buffer, 1,strlen(buffer), logXMLDescriptorFile);
+		fwrite(buffer, 1, strlen(buffer), logXMLDescriptorFile);
 
 		fclose(logXMLDescriptorFile);
 	}
@@ -152,7 +152,7 @@ void CLogger::writeEpisodeTypesToBuffer(char* pOutBuffer)
 	if (m_bLogEvaluationEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
 		, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
 	if (m_bLogTrainingEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
-		, "  <Episode-Type Id=\"0\">Training</Episode-Type>\n");
+		, "  <Episode-Type Id=\"1\">Training</Episode-Type>\n");
 }
 
 void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
@@ -161,7 +161,8 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey(),(*iterator)->getSubkey());
+		sprintf_s(buffer, BUFFER_SIZE, "  <Stat-variable>%s/%s</Stat-variable>\n", (*iterator)->getKey().c_str()
+			, (*iterator)->getSubkey().c_str());
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
@@ -204,8 +205,7 @@ void CLogger::firstStep()
 	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 
 	//reset stats
-	for (auto it = m_stats.begin(); it != m_stats.end(); it++)
-		(*it)->reset();
+	for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
 
 	if (isEpisodeTypeLogged(bEvalEpisode))
 		writeEpisodeHeader();
@@ -228,11 +228,11 @@ void CLogger::lastStep()
 	int numRelativeEpisodeIndex = pExperiment->getRelativeEpisodeIndex();
 
 	//log the progress if an evaluation episode has ended
-	if (pExperiment->isEvaluationEpisode() 
+	if (pExperiment->isEvaluationEpisode()
 		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
-			, (double)(numRelativeEpisodeIndex - 1) 
+			, (double)(numRelativeEpisodeIndex - 1)
 			/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
 			, m_episodeRewardSum / (double)pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
@@ -248,7 +248,7 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	//update experiment stats
 	for (auto iterator = m_stats.begin(); iterator != m_stats.end(); iterator++)
 	{
-		(*iterator)->addExperimentSample();
+		(*iterator)->addSample();
 	}
 
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
@@ -258,6 +258,8 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 		|| CSimionApp::get()->pExperiment->isFirstStep() || CSimionApp::get()->pExperiment->isLastStep())
 	{
 		writeStepData(s, a, s_p, r);
+		//reset stats
+		for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
 		m_lastLogSimulationT = CSimionApp::get()->pWorld->getStepStartSimTime();
 	}
 }
@@ -269,7 +271,7 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 	buffer[0] = 0;
 
 	offset += writeStepHeaderToBuffer(buffer, offset);
-	
+
 	offset += writeNamedVarSetToBuffer(buffer, offset, s);
 	offset += writeNamedVarSetToBuffer(buffer, offset, a);
 	offset += writeNamedVarSetToBuffer(buffer, offset, r);
@@ -285,11 +287,11 @@ void CLogger::writeExperimentHeader()
 
 	if (m_bLogEvaluationEpisodes.get())
 		header.numEpisodes +=
-			pExperiment->getNumEvaluations()*pExperiment->getNumEpisodesPerEvaluation();
+		pExperiment->getNumEvaluations()*pExperiment->getNumEpisodesPerEvaluation();
 	if (m_bLogTrainingEpisodes.get())
 		header.numEpisodes += pExperiment->getNumTrainingEpisodes();
 
-	writeLogBuffer((char*) &header, sizeof(ExperimentHeader));
+	writeLogBuffer((char*)&header, sizeof(ExperimentHeader));
 }
 
 void CLogger::writeEpisodeHeader()
@@ -310,7 +312,7 @@ void CLogger::writeEpisodeHeader()
 		+ pWorld->getRewardVector()->getNumVars()
 		+ m_stats.size();
 
-	writeLogBuffer((char*) &header, sizeof(EpisodeHeader));
+	writeLogBuffer((char*)&header, sizeof(EpisodeHeader));
 }
 
 void CLogger::writeEpisodeEndHeader()
@@ -340,7 +342,7 @@ int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarS
 	double* pDoubleBuffer = (double*)(buffer + offset);
 	for (int i = 0; i < numVars; ++i)
 		pDoubleBuffer[i] = pNamedVarSet->get(i);
-	return numVars* sizeof(double);
+	return numVars * sizeof(double);
 }
 
 int CLogger::writeStatsToBuffer(char* buffer, int offset)
@@ -350,36 +352,20 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 	int i = 0;
 	for (auto it = m_stats.begin(); it != m_stats.end(); ++it)
 	{
-		pDoubleBuffer[i] = (*it)->get();
+		//Because we may not be logging all the steps, we need to save the average value from the last logged step
+		//instead of only the current value
+		pDoubleBuffer[i] = (*it)->getStatsInfo()->getAvg();
 		++i;
 	}
-	return numVars* sizeof(double);
+	return numVars * sizeof(double);
 }
 
-
-void CLogger::addVarToStats(const char* key, const char* subkey, double* variable)
-{
-	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*) variable, Double));
-}
-
-void CLogger::addVarToStats(const char* key, const char* subkey, int* variable)
-{
-	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*) variable, Int));
-}
-
-void CLogger::addVarToStats(const char* key, const char* subkey, unsigned int* variable)
-{
-	//all stats added by the loaded classes are calculated
-	m_stats.push_back(new CStats(key, subkey, (void*)variable, UnsignedInt));
-}
 
 void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
 {
 	for (int i = 0; i < varset->getNumVars(); i++)
 	{
-		m_stats.push_back(new CStats(key, varset->getProperties()[i].getName(), varset->getValuePtr(i), Double));
+		m_stats.push_back(new CStats<double>(key, varset->getProperties()[i].getName(), varset->getRef(i)));
 	}
 }
 
@@ -388,7 +374,7 @@ size_t CLogger::getNumStats()
 	return m_stats.size();
 }
 
-CStats* CLogger::getStats(unsigned int i)
+IStats* CLogger::getStats(unsigned int i)
 {
 	if (i < m_stats.size())
 		return m_stats[i];
@@ -436,7 +422,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Error:
 			sprintf_s(messageLine, 1024, "<Error>ERROR: %s</Error>", message); break;
 		}
-		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine)+1);
+		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine) + 1);
 	}
 	else
 	{
@@ -453,7 +439,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		case Info:
 			printf("%s\n", message); break;
 		case Error:
-			printf("ERROR: %s\n",message); break;
+			printf("ERROR: %s\n", message); break;
 		}
 	}
 	if (type == MessageType::Error)

@@ -41,6 +41,7 @@ class CNamedVarSet
 	CDescriptor &m_pProperties;
 	double *m_pValues;
 	int m_numVars;
+
 public:
 	CNamedVarSet(CDescriptor& descriptor);
 	virtual ~CNamedVarSet();
@@ -58,6 +59,7 @@ public:
 
 	double get(int i) const;
 	double* getValuePtr(int i);
+	double& getRef(int i);
 	void set(int i, double value);
 
 	//returns the sum of all the values, i.e. used to scalarise a reward vector
@@ -68,6 +70,9 @@ public:
 	CNamedVarProperties& getProperties(const char* varName) const;
 	CDescriptor& getProperties() { return m_pProperties; }
 	CDescriptor* getPropertiesPtr() { return &m_pProperties; }
+
+public:
+	void addOffset(double offset);
 };
 
 using CState= CNamedVarSet;

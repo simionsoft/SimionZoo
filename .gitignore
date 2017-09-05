@@ -3,6 +3,14 @@
 
 *.bin
 
+*.vs/
+*.vs/*
+
+.vs/*
+.vs
+
+./config/definitions.xml
+
 # User-specific files
 *.suo
 *.user
@@ -35,7 +43,8 @@ x86/
 !bin/MAP_Win32.dll
 build/
 bld/
-**/experiment-log.xml
+*.simion.log
+*.simion.log.bin
 config/definitions.xml
 tmp/
 
@@ -44,6 +53,7 @@ tmp/
 logs/
 /data/
 /images/
+.vs/
 
 #FAST log files
 *.sum
@@ -90,7 +100,8 @@ dlldata.c
 *.svclog
 *.scc
 *.bin
-
+*.dll
+*.lib
 
 # Chutzpah Test files
 _Chutzpah*

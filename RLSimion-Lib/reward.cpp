@@ -7,10 +7,10 @@
 #include "logger.h"
 #include "named-var-set.h"
 
-CToleranceRegionReward::CToleranceRegionReward(char* variable, double tolerance, double scale)
+CToleranceRegionReward::CToleranceRegionReward(string variable, double tolerance, double scale)
 {
-	sprintf_s(m_name, MAX_REWARD_NAME_SIZE, "r/(%s)", variable);
-	m_pVariableName = variable;
+	m_name= "r/(" + variable + ")";
+	m_pVariableName = variable.c_str();
 	m_tolerance = tolerance;
 	m_scale = scale;
 }
@@ -18,7 +18,7 @@ double CToleranceRegionReward::getReward(const CState *s, const CAction* a, cons
 {
 	double rew, error;
 
-	error = s_p->get(m_pVariableName);
+	error = s_p->get(m_pVariableName.c_str());
 
 	error = (error) / m_tolerance;
 
@@ -29,7 +29,7 @@ double CToleranceRegionReward::getReward(const CState *s, const CAction* a, cons
 	return rew;
 }
 
-const char* CToleranceRegionReward::getName(){ return m_name; }
+const char* CToleranceRegionReward::getName(){ return m_name.c_str(); }
 
 
 CRewardFunction::CRewardFunction()

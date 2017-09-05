@@ -64,6 +64,10 @@ void RLSimionApp::run()
 	CState *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
 	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor().getInstance();
 
+	double r;
+	double probability;
+	pApp->pLogger->addVarToStats<double>("reward", "r", r);
+
 #if _DEBUG
 	string sceneFile = pApp->pWorld->getDynamicModel()->getWorldSceneFile();
 	initRenderer(sceneFile);
@@ -72,9 +76,6 @@ void RLSimionApp::run()
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pApp->pSimGod->deferredLoad();
 	CLogger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
-
-	double r;
-	double probability;
 
 	//episodes
 	for (pApp->pExperiment->nextEpisode(); pApp->pExperiment->isValidEpisode(); pApp->pExperiment->nextEpisode())
@@ -93,10 +94,11 @@ void RLSimionApp::run()
 			//update god's policy and value estimation
 			pApp->pSimGod->update(s, a, s_p, r, probability);
 
-			//log tuple <s,a,s',r>
+			//log tuple <s,a,s',r> and stats
 			pApp->pExperiment->timestep(s, a, s_p, pApp->pWorld->getRewardVector());
 			//we need the complete reward vector for logging
 
+			pApp->pSimGod->postUpdate();
 #ifdef _DEBUG
 			updateScene(s_p);
 #endif
@@ -133,20 +135,20 @@ void RLSimionApp::initRenderer(string sceneFile)
 
 	//stats
 	C2DMeter* pStatText;
-	CStats* pStat;
+	IStats* pStat;
 	Vector2D origin = Vector2D(0.05, 0.8);
 	Vector2D size = Vector2D(0.35, 0.05);
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
-		pStatText = new C2DMeter(string(pStat->getKey()), origin, size);
+		pStatText = new C2DMeter(string(pStat->getSubkey()), origin, size);
 		m_pStatsText.push_back(pStatText);
 		m_pRenderer->add2DGraphicObject(pStatText);
 		origin -= Vector2D(0.0, 0.06);
 	}
 
 	m_pInputHandler = new CFreeCameraInputHandler();
-
+	
 	m_timer.start();
 }
 
@@ -160,7 +162,7 @@ void RLSimionApp::updateScene(CState* s)
 		+ string(" Step: ") + std::to_string(pExperiment->getStep()));
 
 	//update stats
-	CStats* pStat;
+	IStats* pStat;
 	unsigned int statIndex = 0;
 	for (auto it= m_pStatsText.begin(); it!=m_pStatsText.end(); ++it)
 	{
@@ -173,7 +175,7 @@ void RLSimionApp::updateScene(CState* s)
 	//update bindings
 	double value;
 	string varName;
-	for (int b = 0; b < m_pRenderer->getNumBindings(); ++b)
+	for (unsigned int b = 0; b < m_pRenderer->getNumBindings(); ++b)
 	{
 		varName = m_pRenderer->getBindingExternalName(b);
 		value = s->get(varName.c_str());
@@ -184,11 +186,14 @@ void RLSimionApp::updateScene(CState* s)
 	m_pRenderer->redraw();
 
 	//real time execution?
-	double dt = pWorld->getDT();
-	double elapsedTime = m_timer.getElapsedTime(true);
-	if (dt > elapsedTime)
+	if (!((CFreeCameraInputHandler*)m_pInputHandler)->getRealTimeExecutionDisabled())
 	{
-		Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
-		m_timer.start();
+		double dt = pWorld->getDT();
+		double elapsedTime = m_timer.getElapsedTime(true);
+		if (dt > elapsedTime)
+		{
+			Sleep((unsigned long)(1000.0*(dt - elapsedTime)));
+			m_timer.start();
+		}
 	}
 }

@@ -359,8 +359,11 @@ namespace Badger.ViewModels
                 experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.ExperimentalUnits.Count);
             }
             else
+            {
                 experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
                     ref batchFileName, logToFile);
+            }
+
             // Experiments will be launched only if exists any experimental unit and the batch file was 
             // safed /loaded succesfully
             if (experimentalUnitsCount > 0 && batchFileName != "")

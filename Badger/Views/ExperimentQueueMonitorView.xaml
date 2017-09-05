@@ -39,7 +39,15 @@
                     cal:Message.Attach="[Event Click]=[Action ShowReports()]" IsEnabled="{Binding bFinished}"
                     Visibility="{Binding bFinished, Converter = {StaticResource BoolToVis}}">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="{StaticResource Plot}" Opacity="0.6" Width="24"/>
+                    <Image Opacity="0.6" Width="24">
+                        <Image.Source>
+                            <DrawingImage>
+                                <DrawingImage.Drawing>
+                                    <GeometryDrawing Brush="Black" Geometry="{StaticResource Plot}" />
+                                </DrawingImage.Drawing>
+                            </DrawingImage>
+                        </Image.Source>
+                    </Image>
                     <Label Content="Report"/>
                 </StackPanel>
             </Button>

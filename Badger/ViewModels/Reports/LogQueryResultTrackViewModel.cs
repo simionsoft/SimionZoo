@@ -1,86 +1,138 @@
 ﻿using Caliburn.Micro;
 using System.Collections.Generic;
 using System;
+using Badger.Data;
+using System.Linq;
 
 namespace Badger.ViewModels
 {
     public class DataSeries
     {
-        public double[] values = null;
-        public StatData stats= new StatData();
-
-        public DataSeries(int numValues)
+        private double[] _values = null;
+        public double[] Values
         {
-            values = new double[numValues];
+            get
+            {
+                if (_values is null)
+                    throw new InvalidOperationException("Values has not been initiliazed; you must call SetLength() before accessing the Values property.");
+                return _values;
+            }
+            set { _values = value; }
         }
-        public void calculateStats()
+        public StatData Stats = new StatData();
+
+        public bool Initialized
         {
-            if (values == null) return;
+            get { return (_values != null); }
+        }
+
+        public void SetLength(int numValues)
+        {
+            Values = new double[numValues];
+        }
+
+        public void CalculateStats()
+        {
+            if (!Initialized) return;
+
             //calculate avg, min and max
             double sum = 0.0;
-            stats.min = values[0]; stats.max = values[0];
-            foreach (double val in values)
+            Stats.min = Values[0]; Stats.max = Values[0];
+            foreach (double val in Values)
             {
                 sum += val;
-                if (val > stats.max) stats.max = val;
-                if (val < stats.min) stats.min = val;
+                if (val > Stats.max) Stats.max = val;
+                if (val < Stats.min) Stats.min = val;
             }
-            stats.avg = sum / values.Length;
+
+            Stats.avg = sum / Values.Length;
+
             //calculate std. deviation
             double diff;
             sum = 0.0;
-            foreach (double val in values)
+            foreach (double val in Values)
             {
-                diff = val - stats.avg;
+                diff = val - Stats.avg;
                 sum += diff * diff;
             }
-            stats.stdDev = Math.Sqrt(sum / values.Length);
+
+            Stats.stdDev = Math.Sqrt(sum / Values.Length);
         }
+
     }
     public class TrackVariableData
     {
-        public TrackVariableData(int numSteps,int numEpisodes)
+        public TrackVariableData(int numSteps, int evaluationEpisodes, int trainingEpisodes)
         {
-            if (numSteps>0) lastEpisodeData = new DataSeries(numSteps);
-            if (numEpisodes>0) experimentData = new DataSeries(numEpisodes);
+            lastEvaluationEpisodeData = new DataSeries();
+            lastEvaluationEpisodeData.SetLength(numSteps);
+            if (numSteps > 0)
+            {
+                experimentAverageData = new DataSeries();
+                //averages are only interesting in evaluation episodes
+                experimentAverageData.SetLength(evaluationEpisodes);
+            }
+            
+            experimentEvaluationData = new List<DataSeries>(evaluationEpisodes);
+            for (int i = 0; i < evaluationEpisodes; i++)
+            {
+                experimentEvaluationData.Add(new DataSeries());
+            }
+            
+            experimentTrainingData = new List<DataSeries>(trainingEpisodes);
+            for (int i = 0; i < trainingEpisodes; i++)
+            {
+                experimentTrainingData.Add(new DataSeries());
+            }
         }
-        public DataSeries lastEpisodeData;
-        public DataSeries experimentData;
 
-        public void calculateStats()
+        public DataSeries lastEvaluationEpisodeData;
+        public DataSeries experimentAverageData;
+        public List<DataSeries> experimentEvaluationData;
+        public List<DataSeries> experimentTrainingData;
+
+        public void CalculateStats()
         {
-            if (lastEpisodeData != null) lastEpisodeData.calculateStats();
-            if (experimentData != null) experimentData.calculateStats();
+            if (lastEvaluationEpisodeData != null) lastEvaluationEpisodeData.CalculateStats();
+            if (experimentAverageData != null) experimentAverageData.CalculateStats();
+
+            foreach (var item in experimentEvaluationData)
+                item.CalculateStats();
+
+            foreach (var item in experimentTrainingData)
+                item.CalculateStats();
         }
     }
     public class TrackData
     {
         public bool bSuccesful;
-        public double []simTime;
-        public double []realTime;
+        public double[] simTime;
+        public double[] realTime;
         public Dictionary<string, string> forkValues;
-        private Dictionary<string,TrackVariableData>variablesData= new Dictionary<string,TrackVariableData>();
+        private Dictionary<string, TrackVariableData> variablesData = new Dictionary<string, TrackVariableData>();
 
-        public TrackData(int numSteps,int numEpisodes, List<string> variables)
+        public TrackData(int maxNumSteps, int numEpisodes, int evaluationEpisodes, int trainingEpisodes, List<string> variables)
         {
-            simTime = new double[numSteps];
-            realTime = new double[numSteps];
+            simTime = new double[maxNumSteps];
+            realTime = new double[maxNumSteps];
             foreach (string variable in variables)
             {
-                this.variablesData[variable] = new TrackVariableData(numSteps,numEpisodes);
+                this.variablesData[variable] = new TrackVariableData(maxNumSteps, evaluationEpisodes, trainingEpisodes);
             }
         }
-        private void addVariableData(string variable,TrackVariableData variableData)
+
+        private void addVariableData(string variable, TrackVariableData variableData)
         {
             this.variablesData.Add(variable, variableData);
         }
+
         public TrackVariableData getVariableData(string variable)
         {
             if (variablesData.ContainsKey(variable)) return variablesData[variable];
             else return null;
         }
     }
-    public class LogQueryResultTrackViewModel: PropertyChangedBase
+    public class LogQueryResultTrackViewModel : PropertyChangedBase
     {
         //data read fromm the log files: might be more than one track before applying a group function
         private List<TrackData> m_trackData = new List<TrackData>();
@@ -90,7 +142,7 @@ namespace Badger.ViewModels
             get { if (m_trackData.Count == 1) return m_trackData[0]; return null; }
             set { }
         }
-        public bool bHasData
+        public bool HasData
         {
             get { return m_trackData.Count > 0; }
         }
@@ -104,75 +156,89 @@ namespace Badger.ViewModels
         }
         private string m_parentExperimentName = "";
 
+        private static char[] valueDelimiters = new char[] { '=', '/', '\\' };
+        
         public LogQueryResultTrackViewModel(string experimentName)
         {
             m_parentExperimentName = experimentName;
         }
-        public string trackId
+        public string TrackId
         {
             get
             {
                 if (m_forkValues.Count == 0) return m_parentExperimentName;
-                string id = "";
+                string id = "", shortId;
                 foreach (KeyValuePair<string, string> entry in m_forkValues)
                 {
-                    id += entry.Key + "=" + entry.Value + ",";
+                    //we limit the length of the values
+                    shortId= Utility.limitLength(entry.Key, 10);
+                    if (shortId.Length > 0)
+                        id += shortId + "=";
+                    id += Utility.limitLength(entry.Value,20,valueDelimiters) + ",";
                 }
-                id= id.Trim(',');
+                id = id.Trim(',');
                 return id;
             }
         }
         private string m_groupId = null;
-        public string groupId
+        public string GroupId
         {
-            get { if (m_groupId!=null) return m_groupId; return trackId; }
-            set { m_groupId = value;  NotifyOfPropertyChange(()=>groupId); }
+            get { if (m_groupId != null) return m_groupId; return TrackId; }
+            set { m_groupId = value; NotifyOfPropertyChange(() => GroupId); }
         }
 
-        public void addTrackData(TrackData newTrackData)
+        public void AddTrackData(TrackData newTrackData)
         {
             m_trackData.Add(newTrackData);
         }
 
         //this function selects a unique track fromm each group (if there's more than one track)
-        public void consolidateGroups(string function,string variable,List<string> groupBy)
+        public void ConsolidateGroups(string function, string variable, List<string> groupBy)
         {
-            if (m_trackData.Count>1)
+            if (m_trackData.Count > 1)
             {
-                TrackData selectedTrack= null;
-                double min= double.MaxValue, max= double.MinValue;
+                TrackData selectedTrack = null;
+                double min = double.MaxValue, max = double.MinValue;
                 foreach (TrackData track in m_trackData)
                 {
                     TrackVariableData variableData = track.getVariableData(variable);
                     if (variableData != null)
                     {
-                        if (function == LogQuery.functionMax && Math.Abs(variableData.lastEpisodeData.stats.avg) > max)
+                        if (function == LogQuery.functionMax && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) > max)
                         {
-                            max = Math.Abs(variableData.lastEpisodeData.stats.avg);
+                            max = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
                             selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMin && Math.Abs(variableData.lastEpisodeData.stats.avg) < min)
+                        if (function == LogQuery.functionMin && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) < min)
                         {
-                            min = Math.Abs(variableData.lastEpisodeData.stats.avg);
+                            min = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
                             selectedTrack = track;
                         }
                     }
                 }
                 m_trackData.Clear();
                 m_trackData.Add(selectedTrack);
-                forkValues = selectedTrack.forkValues;
 
-                if (groupBy.Count>0)
+                //create a copy of the dictionary to solve the following issue:
+                //after generating the first report (with groups) the forkValues of the experiments are cleared
+                //and therefore, no more report can be generated afterwards
+                forkValues = new Dictionary<string, string>(selectedTrack.forkValues);
+
+                if (groupBy.Count > 0)
                 {
                     //we remove those forks used to group from the forkValues
                     //because *hopefully* we only use them to name the track
                     m_groupId = "";
+                    string shortId;
                     foreach (string group in groupBy)
                     {
-                        m_groupId += group + "=" + forkValues[group] + ",";
+                        shortId = Utility.limitLength(group, 10);
+                        if (shortId.Length > 0)
+                            m_groupId += shortId + "=";
+                        m_groupId += Utility.limitLength(forkValues[group],10,valueDelimiters) + ",";
                         forkValues.Remove(group);
                     }
-                    groupId = m_groupId.TrimEnd(',');
+                    GroupId = m_groupId.TrimEnd(',');
                 }
             }
         }

@@ -29,6 +29,7 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	//This class is used both in the DimensionalPortalDLL (pConfigNode will be nullptr) and in RLSimion (pConfigNode will not be nullptr)
 	METADATA("World", "FAST-Wind-turbine");
 	
+	//This if allows prevents erros when the constructor is called without a config node
 	if (pConfigNode)
 	{
 		m_trainingMeanWindSpeeds = MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double>(pConfigNode, "Training-Mean-Wind-Speeds", "Mean wind speeds used in training episodes", 12.5);
@@ -49,15 +50,18 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addConstant("RatedGeneratorTorque", 43093.55);
 	addConstant("GearBoxRatio", 97.0);
 	addConstant("ElectricalGeneratorEfficiency", 0.944); //%94.4
+	addConstant("TotalTurbineInertia", 43784725); //J_t= J_r + n_g^2*J_g= 38759228 + 5025497 
 	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
 	addConstant("HubInertia", 115926.0);				//kg*m^2
-	addConstant("DriveTrainTorsionalDamping", 6210000.0); //N*m/(rad/s)
+	addConstant("TotalTurbineTorsionalDamping", 6210000.0); //N*m/(rad/s)
+	addConstant("RotorDiameter", 128.0); //m
+	addConstant("AirDensity", 1.225);	//kg/m^3
 
-	addStateVariable("T_a", "N/m", 0.0, 400000.0);
-	addStateVariable("P_a", "W", 0.0, 1600000.0);
+	addStateVariable("T_a", "N/m", 0.0, 10000000.0);
+	addStateVariable("P_a", "W", 0.0, 16000000.0);
 	addStateVariable("P_s", "W", 0.0, 6e6);
 	addStateVariable("P_e", "W", 0.0, 6e6);
-	addStateVariable("E_p", "W", -5e6,5e6);
+	addStateVariable("E_p", "W", -5e6, 5e6);
 	addStateVariable("v", "m/s", 1.0, 50.0);
 	addStateVariable("omega_r", "rad/s", 0.0, 6.0);
 	addStateVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
@@ -70,12 +74,12 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addStateVariable("T_g", "N/m", 0.0, 47402.91);
 	addStateVariable("d_T_g", "N/m/s", -15000, 15000);
 	addStateVariable("E_int_omega_r", "rad", -100.0, 100.0);
-	addStateVariable("SimTime", "s", 0.0, 10000.0); //added to avoid precision issues between FAST and RLSimion
+	addStateVariable("SimTime", "s", 0.0, 100000.0); //added to avoid precision issues between FAST and RLSimion
 	//action handlers
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);
 
-	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 100, 1.0));
+	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 1000.0, 1.0));
 	m_pRewardFunction->initialize();
 
 	if (CSimionApp::get())

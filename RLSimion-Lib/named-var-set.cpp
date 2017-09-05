@@ -101,6 +101,11 @@ double* CNamedVarSet::getValuePtr(int i)
 	return 0;
 }
 
+double& CNamedVarSet::getRef(int i)
+{
+	return m_pValues[i];
+}
+
 void CNamedVarSet::set(int i, double value)
 {
 	if (i >= 0 && i < m_numVars)
@@ -136,5 +141,13 @@ void CNamedVarSet::copy(CNamedVarSet* nvs)
 	for (int i= 0; i<m_numVars; i++)
 	{
 		set(i,nvs->get(i));
+	}
+}
+
+void CNamedVarSet::addOffset(double offset)
+{
+	for (int i = 0; i<m_numVars; i++)
+	{
+		set(i, this->get(i) + offset);
 	}
 }

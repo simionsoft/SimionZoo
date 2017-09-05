@@ -50,7 +50,12 @@ public:
 	bool bReplayingExperience() const { return m_bReplayingExperience; }
 
 	double selectAction(CState* s,CAction* a);
+	//regular update step after a simulation time-step
+	//variables will be logged after this step
 	void update(CState* s, CAction* a, CState* s_p, double r, double probability);
+	//post-update step done after logging variables
+	//used to avoid having experience replay mess with the stats logged
+	void postUpdate();
 
 	//delayed load
 	static void registerDeferredLoadStep(CDeferredLoad* deferredLoadObject,unsigned int orderLoad);

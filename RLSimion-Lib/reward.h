@@ -2,10 +2,10 @@
 
 
 #include "named-var-set.h"
-class CRewardFunctionComponent;
 
 #include <vector>
-
+#include <string>
+using namespace std;
 class CConfigNode;
 
 class IRewardComponent
@@ -20,24 +20,25 @@ public:
 };
 
 
-#define MAX_REWARD_NAME_SIZE 128
 class CToleranceRegionReward: public IRewardComponent
 {
-	char m_name[MAX_REWARD_NAME_SIZE];
-	char* m_pVariableName;
+	string m_name;
+	string m_pVariableName;
 	double m_tolerance;
 	double m_scale;
 	double m_lastReward;
 
 public:
-	const double m_minReward = -1.0;
-	const double m_maxReward = 1.0;
+	double m_minReward = -1.0;
+	double m_maxReward = 1.0;
 
-	CToleranceRegionReward(char* variable, double tolerance, double scale);
+	CToleranceRegionReward(string variable, double tolerance, double scale);
 	double getReward(const CState *s, const CAction* a, const CState *s_p);
 	const char* getName();
 	double getMin() { return m_minReward; }
 	double getMax() { return m_maxReward; }
+	void setMin(double newMin) { m_minReward = newMin; }
+	void setMax(double newMax) { m_maxReward = newMax; }
 };
 
 class CRewardFunction

@@ -21,5 +21,12 @@ public:
 
 	void addFeatureList(CFeatureList *inList, double factor = 1.0);
 
-	double getLambda(){ return m_lambda.get(); };
+	double getLambda() { return m_lambda.get(); };
+	void setLambda(double value) { m_lambda.set(value); }
+
+	double getTreshold() { return m_threshold.get(); };
+	void setTreshold(double value) { m_threshold.set(value); }
+
+	bool getReplace() { return m_bReplace.get(); }
+	void setReplace(bool value) { m_bReplace.set(value); }
 };

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using Badger.Data;
 using Caliburn.Micro;
-
+using OxyPlot;
 
 namespace Badger.ViewModels
 {
@@ -33,7 +33,6 @@ namespace Badger.ViewModels
             set
             {
                 m_selectedReport = value;
-                if (m_selectedReport != null) m_selectedReport.updateView();
                 NotifyOfPropertyChange(() => selectedReport);
             }
         }
@@ -173,18 +172,20 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="sender">The object with the change in a property</param>
         /// <param name="e">The launched event</param>
-        void fork_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void Fork_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            LoggedForkViewModel fork = (LoggedForkViewModel)sender;
-
-            int index = m_groupByForks.IndexOf(fork.name);
-            // If that name is already in the list we finish this action right here
-            if (index != -1) return;
-
-            m_groupByForks.Add(fork.name);
+            //not all properties sending changes are due to "Group by this fork", so we need to check it
+            if (e.PropertyName == "IsGroupedByThisFork")
+            {
+                if (!m_groupByForks.Contains(((LoggedForkViewModel)sender).name))
+                {
+                    m_groupByForks.Add(((LoggedForkViewModel)sender).name);
+                    NotifyOfPropertyChange(() => groupBy);
+                }
+                bGroupsEnabled = true;
+            }
             ValidateQuery();
-            NotifyOfPropertyChange(() => groupBy);
-            bGroupsEnabled = true;
+
         }
 
         // Group By
@@ -397,7 +398,17 @@ namespace Badger.ViewModels
         {
             LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, true);
             LoggedExperiments.Add(newExperiment);
-            Variables.AddRange(newExperiment.variables);
+
+            //the harsh way, because Observable collection doesn't implement Exists
+            //and Contains will look for the same object, not just an object with the same name
+            foreach (LoggedVariableViewModel var in newExperiment.variables)
+            {
+                bool bFound = false;
+                foreach (LoggedVariableViewModel existingVar in Variables)
+                    if (var.name == existingVar.name) bFound = true;
+                if (!bFound)
+                    Variables.Add(var);
+            }
 
             foreach (LoggedVariableViewModel variable in Variables)
                 variable.setParent(this);
@@ -413,7 +424,7 @@ namespace Badger.ViewModels
             foreach (var fork in newExperiment.Forks)
             {
                 // Add a property change listener before adding this item to the list
-                fork.PropertyChanged += fork_PropertyChanged;
+                fork.PropertyChanged += Fork_PropertyChanged;
                 Forks.Add(fork);
             }
         }
@@ -421,10 +432,12 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Load an experiment from a batch file. The batch should be from an already finished
         ///     experiment, this is in order to make reports correctly but is not mandatory.
+        ///     We clear the previously loaded data to avoid mixing data from two different batches
         /// </summary>
         /// <param name="batchFileName">The name of the file to load</param>
         public void LoadExperimentBatch(string batchFileName)
         {
+            ClearReportViewer();
             SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
         }
 
@@ -435,6 +448,7 @@ namespace Badger.ViewModels
         public void Close(ReportViewModel report)
         {
             Reports.Remove(report);
+            selectedReport = null;
         }
 
         /// <summary>

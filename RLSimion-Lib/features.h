@@ -34,6 +34,7 @@ public:
 	virtual ~CFeatureList();
 
 	void setName(const char* name);
+	const char* getName();
 	void clear();
 	void mult(double factor);
 	double getFactor(unsigned int index) const;
@@ -49,6 +50,8 @@ public:
 
 	//adds an offset to all feature indices in a feature list.
 	void offsetIndices(int offset);
+
+	void split(CFeatureList *outList1, CFeatureList *outList2, unsigned int splitOffset) const;
 
 	//multiplies all indices by a factor
 	void multIndices(int mult);

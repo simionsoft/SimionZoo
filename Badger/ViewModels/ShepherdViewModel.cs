@@ -2,12 +2,26 @@
 using System.Linq;
 using Herd;
 using Caliburn.Micro;
-
+using System;
 
 namespace Badger.ViewModels
 {
-    public class ShepherdViewModel : PropertyChangedBase
+    public class ShepherdViewModel : PropertyChangedBase, IDisposable
     {
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                m_timer.Dispose();
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         // const int m_agentTimeoutSeconds = 10;
         const int m_updateTimeSeconds = 3;
         System.Timers.Timer m_timer;

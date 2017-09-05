@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -23,29 +23,29 @@
     <RootNamespace>RLLib</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <ProjectName>RLSimion-Lib</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -215,14 +215,19 @@
   <ItemGroup>
     <ClCompile Include="actor-cacla.cpp" />
     <ClCompile Include="actor-critic-inac.cpp" />
+    <ClCompile Include="actor-critic-offpac.cpp" />
     <ClCompile Include="actor-critic.cpp" />
     <ClCompile Include="actor-regular.cpp" />
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
     <ClCompile Include="deferred-load.cpp" />
+    <ClCompile Include="single-dimension-discrete-grid.cpp">
+      <FileType>CppCode</FileType>
+    </ClCompile>
     <ClCompile Include="etraces.cpp" />
     <ClCompile Include="experience-replay.cpp" />
+    <ClCompile Include="featuremap-discrete.cpp" />
     <ClCompile Include="featuremap.cpp" />
     <ClCompile Include="logger.cpp" />
     <ClCompile Include="mem-buffer.cpp" />
@@ -233,6 +238,7 @@
     <ClCompile Include="q-learners.cpp" />
     <ClCompile Include="simgod.cpp" />
     <ClCompile Include="simion.cpp" />
+    <ClCompile Include="single-dimension-grid-rbf.cpp" />
     <ClCompile Include="single-dimension-grid.cpp" />
     <ClCompile Include="stats.cpp" />
     <ClCompile Include="config.cpp" />
@@ -255,6 +261,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="featuremap-tilecoding.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="vfa-policy.cpp" />
     <ClCompile Include="vfa.cpp" />
@@ -264,6 +271,7 @@
     <ClCompile Include="worlds\BulletBody.cpp" />
     <ClCompile Include="worlds\BulletPhysics.cpp" />
     <ClCompile Include="worlds\FAST.cpp" />
+    <ClCompile Include="worlds\gridworld.cpp" />
     <ClCompile Include="worlds\magneticlevitation.cpp" />
     <ClCompile Include="worlds\mountaincar.cpp" />
     <ClCompile Include="worlds\pitchcontrol.cpp" />
@@ -275,6 +283,7 @@
     <ClCompile Include="worlds\Robot.cpp" />
     <ClCompile Include="worlds\Rope.cpp" />
     <ClCompile Include="worlds\setpoint.cpp" />
+    <ClCompile Include="worlds\swinguppendulum.cpp" />
     <ClCompile Include="worlds\templatedConfigFile.cpp" />
     <ClCompile Include="worlds\underwatervehicle.cpp" />
     <ClCompile Include="worlds\windturbine.cpp" />
@@ -289,6 +298,7 @@
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
     <ClInclude Include="deferred-load.h" />
+    <ClInclude Include="single-dimension-discrete-grid.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />
     <ClInclude Include="experiment.h" />
@@ -306,6 +316,7 @@
     <ClInclude Include="q-learners.h" />
     <ClInclude Include="simgod.h" />
     <ClInclude Include="simion.h" />
+    <ClInclude Include="single-dimension-grid-rbf.h" />
     <ClInclude Include="single-dimension-grid.h" />
     <ClInclude Include="stats.h" />
     <ClInclude Include="config.h" />
@@ -326,6 +337,7 @@
     <ClInclude Include="worlds\BulletCreationInterface.h" />
     <ClInclude Include="worlds\BulletPhysics.h" />
     <ClInclude Include="worlds\FAST.h" />
+    <ClInclude Include="worlds\gridworld.h" />
     <ClInclude Include="worlds\magneticlevitation.h" />
     <ClInclude Include="worlds\mountaincar.h" />
     <ClInclude Include="worlds\pitchcontrol.h" />
@@ -337,6 +349,7 @@
     <ClInclude Include="worlds\Robot.h" />
     <ClInclude Include="worlds\Rope.h" />
     <ClInclude Include="worlds\setpoint.h" />
+    <ClInclude Include="worlds\swinguppendulum.h" />
     <ClInclude Include="worlds\templatedConfigFile.h" />
     <ClInclude Include="worlds\underwatervehicle.h" />
     <ClInclude Include="worlds\windturbine.h" />
@@ -367,9 +380,6 @@
     <ProjectReference Include="..\3rd-party\freeglut3\freeglut3.vcxproj">
       <Project>{5a98782e-7027-46f9-91e1-e1ede1e14bf4}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\3rd-party\glew-2.0.0\glew-2.0.0.vcxproj">
-      <Project>{c474717f-f37a-4201-ae32-871219c77803}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\3rd-party\SOIL\projects\VC9\SOIL.vcxproj">
       <Project>{c32fb2b4-500c-43cd-a099-eecce079d3f1}</Project>
     </ProjectReference>
@@ -381,23 +391,6 @@
     </ProjectReference>
     <ProjectReference Include="..\tools\WindowsUtils\WindowsUtils.vcxproj">
       <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">
-      <Project>{039b76ca-bc1b-b94d-a520-7e71cca3ded2}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Geometry.vcxproj">
-      <Project>{4e8b0499-8628-8943-b9c8-2a391cffff80}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletCollision.vcxproj">
-      <Project>{91650844-3a27-904e-9b55-79ab50c2531b}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
-      <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
-      <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
