@@ -292,6 +292,8 @@ namespace Badger.ViewModels
             // Add the function options
             inGroupSelectionFunctions.Add(LogQuery.functionMax);
             inGroupSelectionFunctions.Add(LogQuery.functionMin);
+            inGroupSelectionFunctions.Add(LogQuery.functionMaxAbs);
+            inGroupSelectionFunctions.Add(LogQuery.functionMinAbs);
             selectedInGroupSelectionFunction = LogQuery.functionMax;
             // Add the from options
             fromOptions.Add(LogQuery.fromAll);
@@ -304,6 +306,8 @@ namespace Badger.ViewModels
             // Add order by functions
             orderByFunctions.Add(LogQuery.orderAsc);
             orderByFunctions.Add(LogQuery.orderDesc);
+            orderByFunctions.Add(LogQuery.orderAscAbs);
+            orderByFunctions.Add(LogQuery.orderDescAbs);
             selectedOrderByFunction = LogQuery.orderDesc;
         }
 

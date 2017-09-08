@@ -625,7 +625,7 @@ namespace Herd
 
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
-                                    logMessage("Job finished");
+                                    logMessage("Job finished. Code=" + returnCode );
                                     await writeMessageAsync(CJobDispatcher.m_endMessage, m_cancelTokenSource.Token, true);
 
                                     logMessage("Sending job results");
@@ -651,7 +651,9 @@ namespace Herd
                 }
                 finally
                 {
+                    logMessage("Waiting for queued async write operations to finish");
                     waitAsyncWriteOpsToFinish();
+                    logMessage("Closing the TCP connection");
                     m_tcpClient.Close();
                     setState(AgentState.Available);
 
@@ -659,7 +661,7 @@ namespace Herd
                     //start listening again
                     HerdAgentTcpState tcpState = new HerdAgentTcpState();
                     tcpState.ip = new IPEndPoint(0, 0);
-                    //m_listener.Start();
+
                     m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
             }

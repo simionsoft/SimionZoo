@@ -170,7 +170,7 @@ bool CNamedPipeClient::connectToServer(const char* pipeName, bool addPipePrefix)
 
 	if (m_pipeHandle == INVALID_HANDLE_VALUE)
 		return false;
-	printf("CLIENT: connected after %d attempt(s)\n", numAttempts);
+
 	return true;
 }
 

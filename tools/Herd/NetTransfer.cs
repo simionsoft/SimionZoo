@@ -375,9 +375,11 @@ namespace Herd
             bool ret = await ReceiveFileHeader(type, receiveContent, inCachedDir, cancelToken);
             if (receiveContent)
             {
-                logMessage("Receiving file: " + m_nextFileName);
+                logMessage("Receiving file data: " + m_nextFileName + " (" + m_nextFileSize + " bytes)");
                 ret = await ReceiveFileData(inCachedDir, cancelToken);
+                logMessage("Receiving file footer");
                 ret = await ReceiveFileFooter(type, cancelToken);
+                logMessage("File transfer complete");
             }
             return true;
         }
@@ -471,6 +473,7 @@ namespace Herd
                 bytesLeft -= SaveBufferToFile(outputFile, bytesLeft, bFileOpen);
             }
             if (bFileOpen) outputFile.Close();
+            logMessage("Closed file: " + outputFilename);
 
             return true;
         }

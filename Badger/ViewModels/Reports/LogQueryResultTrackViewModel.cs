@@ -204,12 +204,22 @@ namespace Badger.ViewModels
                     TrackVariableData variableData = track.getVariableData(variable);
                     if (variableData != null)
                     {
-                        if (function == LogQuery.functionMax && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) > max)
+                        if (function == LogQuery.functionMax && variableData.lastEvaluationEpisodeData.Stats.avg > max)
+                        {
+                            max = variableData.lastEvaluationEpisodeData.Stats.avg;
+                            selectedTrack = track;
+                        }
+                        if (function == LogQuery.functionMin && variableData.lastEvaluationEpisodeData.Stats.avg < min)
+                        {
+                            min = variableData.lastEvaluationEpisodeData.Stats.avg;
+                            selectedTrack = track;
+                        }
+                        if (function == LogQuery.functionMaxAbs && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) > max)
                         {
                             max = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
                             selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMin && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) < min)
+                        if (function == LogQuery.functionMinAbs && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) < min)
                         {
                             min = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
                             selectedTrack = track;
