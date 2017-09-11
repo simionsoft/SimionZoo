@@ -103,7 +103,7 @@ namespace Badger.ViewModels
                     if (trackData != null)
                     {
                         //code below can be improved: organize forks hierarchically instead of a single string
-                        StatViewModel trackStats = new StatViewModel(track.GroupId, track.TrackId);
+                        StatViewModel trackStats = new StatViewModel(track.ExperimentId, track.TrackId);
                         trackStats.lastEpisodeStats = trackData.lastEvaluationEpisodeData.Stats;
                         trackStats.experimentStats = trackData.experimentAverageData.Stats;
                         newStat.addStat(trackStats);

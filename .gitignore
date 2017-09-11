@@ -54,6 +54,7 @@ logs/
 /data/
 /images/
 .vs/
+*.gz
 
 #FAST log files
 *.sum

@@ -37,15 +37,18 @@ namespace Badger.ViewModels
 
             //calculate avg, min and max
             double sum = 0.0;
+            double absSum = 0.0;
             Stats.min = Values[0]; Stats.max = Values[0];
             foreach (double val in Values)
             {
-                sum += val;
                 if (val > Stats.max) Stats.max = val;
                 if (val < Stats.min) Stats.min = val;
+                sum += val;
+                absSum += Math.Abs(val);
             }
 
             Stats.avg = sum / Values.Length;
+            Stats.absAvg = absSum / Values.Length;
 
             //calculate std. deviation
             double diff;
@@ -154,19 +157,19 @@ namespace Badger.ViewModels
             get { return m_forkValues; }
             set { m_forkValues = value; NotifyOfPropertyChange(() => forkValues); }
         }
-        private string m_parentExperimentName = "";
+        public string ExperimentId { get; set; } = "";
 
         private static char[] valueDelimiters = new char[] { '=', '/', '\\' };
         
-        public LogQueryResultTrackViewModel(string experimentName)
+        public LogQueryResultTrackViewModel(string experimentId)
         {
-            m_parentExperimentName = experimentName;
+            ExperimentId = experimentId;
         }
         public string TrackId
         {
             get
             {
-                if (m_forkValues.Count == 0) return m_parentExperimentName;
+                if (m_forkValues.Count == 0) return "N/A";// m_experimentId;
                 string id = "", shortId;
                 foreach (KeyValuePair<string, string> entry in m_forkValues)
                 {
