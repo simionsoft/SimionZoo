@@ -217,14 +217,14 @@ namespace Badger.ViewModels
                             min = variableData.lastEvaluationEpisodeData.Stats.avg;
                             selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMaxAbs && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) > max)
+                        if (function == LogQuery.functionMaxAbs && variableData.lastEvaluationEpisodeData.Stats.absAvg > max)
                         {
-                            max = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
+                            max = variableData.lastEvaluationEpisodeData.Stats.absAvg;
                             selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMinAbs && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) < min)
+                        if (function == LogQuery.functionMinAbs && variableData.lastEvaluationEpisodeData.Stats.absAvg < min)
                         {
-                            min = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
+                            min = variableData.lastEvaluationEpisodeData.Stats.absAvg;
                             selectedTrack = track;
                         }
                     }
