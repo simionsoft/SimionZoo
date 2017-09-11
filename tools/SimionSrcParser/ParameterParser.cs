@@ -20,6 +20,7 @@ namespace SimionSrcParser
             m_parsers.Add(new StringParameterParser());
             m_parsers.Add(new FilePathParameterParser());
             m_parsers.Add(new DirPathParameterParser());
+            m_parsers.Add(new NeuralNetworkProblemDescriptionParameterParser());
             m_parsers.Add(new ChildObjectParameterParser());
             m_parsers.Add(new ChildObjectFactoryParameterParser());
             m_parsers.Add(new StateVarRefParser());

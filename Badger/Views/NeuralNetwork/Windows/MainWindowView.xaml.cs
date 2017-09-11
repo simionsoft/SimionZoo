@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace NNGui.Views.Windows
+namespace Badger.Views.NeuralNetwork.Windows
 {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml

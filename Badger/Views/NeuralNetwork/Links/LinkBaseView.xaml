@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="NNGui.Views.Links.LinkBaseView"
+﻿<UserControl x:Class="Badger.Views.NeuralNetwork.Links.LinkBaseView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NNGui.Views.Links"
+             xmlns:local="clr-namespace:Badger.Views.NeuralNetwork.Links"
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="150">
     <Expander IsExpanded="False">

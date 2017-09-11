@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NNGui.Views.Parameters
+namespace Badger.Views.NeuralNetwork.Parameters
 {
     /// <summary>
     /// Interaction logic for IntTuple3DParameterView.xaml

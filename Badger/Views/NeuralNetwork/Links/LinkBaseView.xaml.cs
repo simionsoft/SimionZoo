@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NNGui.Views.Links
+namespace Badger.Views.NeuralNetwork.Links
 {
     /// <summary>
     /// Interaction logic for LinkBaseView.xaml

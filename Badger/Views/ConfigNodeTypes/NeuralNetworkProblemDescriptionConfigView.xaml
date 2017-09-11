@@ -13,7 +13,7 @@ d:DesignHeight="50" d:DesignWidth="300">
         <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
         <BitmapImage x:Key="folder" UriSource="/images/folder.png" />
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
+    <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" VerticalAlignment="Center">
         <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light" >
             <Label.ContextMenu>
@@ -26,12 +26,8 @@ d:DesignHeight="50" d:DesignWidth="300">
                 </ContextMenu>
             </Label.ContextMenu>
         </Label>
-        <TextBlock Text="{Binding content}" Width="150" 
-                 TextWrapping="WrapWithOverflow"/>
-        <Button Background="Transparent" Width="30"
-                cal:Message.Attach="[Event Click]=[Action EditModel()]">
-            <Image Source="{StaticResource folder}" Width="25" Height="25"></Image>
-        </Button>
+
+        <Button Content="Edit model"
+                cal:Message.Attach="[Event Click]=[Action EditModel()]" />
     </StackPanel>
-  
 </UserControl>

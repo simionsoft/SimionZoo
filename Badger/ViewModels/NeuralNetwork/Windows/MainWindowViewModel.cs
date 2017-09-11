@@ -48,9 +48,19 @@ namespace Badger.ViewModels.NeuralNetwork.Windows
             Problem.ProblemData.Export();
         }
 
+        public string ExportToString()
+        {
+            return Problem.ProblemData.ExportToString();
+        }
+
         public void Import()
         {
             Problem = new ProblemViewModel(Badger.Data.NeuralNetwork.Problem.Import(GetSampleInputData()));
+        }
+
+        public void Import(string content)
+        {
+            Problem = new ProblemViewModel(Badger.Data.NeuralNetwork.Problem.Import(content, GetSampleInputData()));
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Xml;
 using System.IO;
 using System.Windows.Forms;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -25,6 +26,8 @@ namespace Badger.ViewModels
             }
         }
 
+        private Badger.ViewModels.NeuralNetwork.ProblemViewModel m_problemViewModel = null;
+
         public override ConfigNodeViewModel clone()
         {
             NeuralNetworkProblemDescriptionConfigViewModel newInstance =
@@ -38,25 +41,26 @@ namespace Badger.ViewModels
 
         public override bool validate()
         {
-            return Directory.Exists(content);
+            if (m_problemViewModel == null || m_problemViewModel.NetworkArchitecture == null)
+                return false;
+
+            foreach (var chain in m_problemViewModel.NetworkArchitecture.Chains)
+                foreach (var link in chain.ChainLinks)
+                    if (!link.IsInputCompatible)
+                        return false;
+
+            return true;
         }
 
 
         public void EditModel()
         {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            if (m_default != "" && Directory.Exists(m_default))
-            {
-                if (Path.IsPathRooted(m_default))
-                    fbd.SelectedPath = m_default;
-                else
-                    fbd.SelectedPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), content));
-            }
+            var mwvm = new NeuralNetwork.Windows.MainWindowViewModel();
+            mwvm.Import(content);
 
-            if (fbd.ShowDialog() == DialogResult.OK)
-                content = Data.Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), fbd.SelectedPath);
-
-            content = content;
+            CaliburnUtility.ShowPopupWindow(mwvm, "Neural Network Editor");
+            m_problemViewModel = mwvm.Problem;
+            content = mwvm.ExportToString();
         }
     }
 }

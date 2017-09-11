@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using Badger.Data.NeuralNetwork.Links;
 using Badger.Data.NeuralNetwork.Parameters;
 
-namespace NNGui.Views.Windows
+namespace Badger.Views.NeuralNetwork.Windows
 {
     /// <summary>
     /// Interaktionslogik für AddLayerWindow.xaml

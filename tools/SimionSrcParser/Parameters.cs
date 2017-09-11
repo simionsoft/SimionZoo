@@ -92,6 +92,16 @@ namespace SimionSrcParser
             m_xmlTag = XMLConfig.dirPathNodeTag;
         }
     }
+    public class NeuralNetworkProblemDescriptionParameter : SimpleParameter
+    {
+        public NeuralNetworkProblemDescriptionParameter(string name, string comment)
+        {
+            m_name = name;
+            m_comment = comment;
+            m_default = "";
+            m_xmlTag = XMLConfig.neuralNetworkProblemDescriptionNodeTag;
+        }
+    }
     public class EnumParameter :IParameter
     {
         string m_name, m_className, m_comment, m_default;

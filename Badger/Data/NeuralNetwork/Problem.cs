@@ -133,6 +133,26 @@ namespace Badger.Data.NeuralNetwork
                 }
             }
         }
+
+        public string ExportToString()
+        {
+            var serializer = new XmlCallbackSerializer(typeof(Problem), new Type[] {
+                    typeof(NetworkArchitecture),
+                    typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer), typeof(Convolution3DLayer), typeof(DenseLayer),
+                    typeof(DropoutLayer), typeof(FlattenLayer), typeof(ReshapeLayer), typeof(MergeLayer),
+                    typeof(ActivationFunctionParameter), typeof(DoubleParameter), typeof(IntParameter),
+                    typeof(IntTuple2DParameter),  typeof(IntTuple3DParameter),  typeof(IntTuple4DParameter)
+                });
+            using (var sw = new System.IO.StringWriter())
+            {
+                using (XmlWriter writer = XmlWriter.Create(sw))
+                {
+                    serializer.Serialize(writer, this);
+                }
+
+                return sw.ToString();
+            }
+        }
         public static Problem Import(List<InputData> inputs)
         {
             var serializer = new XmlCallbackSerializer(typeof(Problem), new Type[] {
@@ -147,6 +167,51 @@ namespace Badger.Data.NeuralNetwork
                 using (XmlReader reader = XmlReader.Create(sr))
                 {
                     Problem result = serializer.Deserialize(reader) as Problem;
+
+                    foreach (var input in result.Inputs)
+                    {
+                        foreach (var oldInput in inputs)
+                        {
+                            if (input.ID.Equals(oldInput.ID))
+                            {
+                                input.Description = oldInput.Description;
+                                inputs.Remove(oldInput);
+                                break;
+                            }
+                        }
+                    }
+
+                    foreach (var item in inputs)
+                        result.Inputs.Add(item);
+
+                    return result;
+                }
+            }
+        }
+
+        public static Problem Import(string content, List<InputData> inputs)
+        {
+            var serializer = new XmlCallbackSerializer(typeof(Problem), new Type[] {
+                    typeof(NetworkArchitecture),
+                    typeof(ActivationLayer), typeof(Convolution1DLayer), typeof(Convolution2DLayer), typeof(Convolution3DLayer), typeof(DenseLayer),
+                    typeof(DropoutLayer), typeof(FlattenLayer), typeof(ReshapeLayer), typeof(MergeLayer),
+                    typeof(ActivationFunctionParameter), typeof(DoubleParameter), typeof(IntParameter),
+                    typeof(IntTuple2DParameter),  typeof(IntTuple3DParameter),  typeof(IntTuple4DParameter)
+                });
+            using (var sr = new System.IO.StringReader(content))
+            {
+                using (XmlReader reader = XmlReader.Create(sr))
+                {
+                    Problem result;
+                    try
+                    {
+                        result = serializer.Deserialize(reader) as Problem;
+                    }
+                    catch
+                    {
+                        result = new Problem();
+                        
+                    }
 
                     foreach (var input in result.Inputs)
                     {
