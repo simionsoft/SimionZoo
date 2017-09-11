@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="NNGui.Views.Parameters.LinkConnectionListParameterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:local="clr-namespace:NNGui.Views.Parameters"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="300">
+    <Grid Margin="0 2">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Label x:Name="Name" />
+        <ListBox x:Name="Value" MinHeight="30px" HorizontalContentAlignment="Stretch"
+                 dd:DragDrop.IsDragSource="False" dd:DragDrop.IsDropTarget="True"
+                 dd:DragDrop.DropHandler="{Binding}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Focusable" Value="False" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+    </Grid>
+</UserControl>

@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="NNGui.Views.Parameters.ActivationFunctionParameterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NNGui.Views.Parameters"
+             mc:Ignorable="d" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:pm="clr-namespace:Badger.Data.NeuralNetwork.Parameters"
+             d:DesignHeight="45" d:DesignWidth="200">
+
+    <UserControl.Resources>
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="ActivationFunctionEnumValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="pm:ActivationFunction" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    
+    <StackPanel Orientation="Vertical" Margin="0 2">
+        <Label x:Name="Name" />
+        <ComboBox Margin="5 0 0 0" SelectedItem="{Binding Value, Mode=TwoWay}"
+                  ItemsSource="{Binding Source={StaticResource ActivationFunctionEnumValues}}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" TextTrimming="CharacterEllipsis"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </StackPanel>
+</UserControl>

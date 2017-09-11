@@ -12,6 +12,7 @@
 #include "policy.h"
 #include "app.h"
 #include <iostream>
+#include "../tools/NNCreatorLib/Problem.h"
 
 CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pConfigNode)
 {
@@ -33,6 +34,9 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
 	m_e_v->setName("Critic/e_v");
 
+	//dummy_nn = NN_PROBLEM_DESCRIPTION(pConfigNode, "Neural-network", "Neural network description");
+	//dummy_nn = CHILD_OBJECT<NEURAL_NETWORK_PROBLEM_DESCRIPTION>(pConfigNode, "Neural-network", "Neural network description");
+	dummy_nn = NEURAL_NETWORK_PROBLEM_DESCRIPTION(pConfigNode, "Neural-network", "Neural network description");
 
 	//actor's stuff
 	m_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy");

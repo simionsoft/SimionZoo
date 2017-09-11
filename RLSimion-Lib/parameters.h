@@ -7,6 +7,8 @@
 #include <list>
 #include <tuple>
 #include "config.h"
+#include "../tools/NNCreatorLib/Problem.h"
+#include "../tools/NNCreatorLib/Network.h"
 
 using namespace std;
 //Enumerated types
@@ -313,7 +315,6 @@ shared_ptr<Class> CHOICE_ELEMENT_FACTORY(CConfigNode* pConfigNode)
 template <typename DataType>
 using choiceElement = function<shared_ptr<DataType>(CConfigNode*)>;
 
-
 template<typename BaseClass>
 shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const char* comment
 	, list<tuple<const char*, choiceElement<BaseClass>, const char*>> choices)
@@ -357,3 +358,28 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 
 //quick and dirty hack to store the name of the dynamic world in a choice
 #define METADATA(name, value) m_name= value;
+
+class NEURAL_NETWORK_PROBLEM_DESCRIPTION
+{
+protected:
+	CHILD_OBJECT<CProblem> m_pProblem;
+	CNetwork* m_pNetwork = nullptr;
+	
+public:
+	NEURAL_NETWORK_PROBLEM_DESCRIPTION() = default;
+	NEURAL_NETWORK_PROBLEM_DESCRIPTION(CConfigNode* pConfigNode, const char* name, const char* comment);
+
+	void createNetwork()
+	{
+		if (m_pNetwork)
+			return;
+
+		m_pNetwork = m_pProblem->createNetwork();
+	}
+
+	CNetwork* getNetwork()
+	{
+		createNetwork();
+		return m_pNetwork;
+	}
+};

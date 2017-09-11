@@ -36,6 +36,7 @@ namespace Badger.Simion
         public const string integerNodeTag = "INTEGER-VALUE";
         public const string stringNodeTag = "STRING-VALUE";
         public const string filePathNodeTag = "FILE-PATH-VALUE";
+        public const string neuralNetworkProblemDescriptionNodeTag = "NEURAL_NETWORK_PROBLEM_DESCRIPTION";
         public const string dirPathNodeTag = "DIR-PATH-VALUE";
         public const string enumNodeTag = "ENUM-VALUE";
         public const string multiValuedNodeTag = "MULTI-VALUED";

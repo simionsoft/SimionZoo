@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="NNGui.Views.ChainView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:local="clr-namespace:NNGui.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="190">
+    <ListBoxItem>
+        <StackPanel Width="175px" Margin="5,0">
+            <StackPanel x:Name="ParentStackPanel">
+                <Grid Margin="0 2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="20"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Name:" Foreground="#222" FontSize="11" VerticalAlignment="Bottom"/>
+                    <Button Grid.Column="1" Template="{StaticResource DeleteButtonTemplate}"
+                            Style="{StaticResource DeleteButtonStyle}" x:Name="Delete" />
+                    <!--Command="local:Commands.RemoveChainCommand" CommandParameter="{Binding }"/>-->
+                </Grid>
+                <TextBox x:Name="Name" />
+            </StackPanel>
+
+            <ListBox x:Name="ChainLinks" HorizontalContentAlignment="Stretch"  ToolTip="Links of the chain"
+                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                     dd:DragDrop.DropHandler="{Binding DropHandler}">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Focusable" Value="False" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.Template>
+                    <ControlTemplate TargetType="ListBox">
+                        <StackPanel cal:Bind.Model="{Binding}">
+                            <ItemsPresenter />
+                            <Button Content="+" Margin="5" Height="30" FontSize="20" Foreground="#BCBCBC" ToolTip="Add new link to chain"
+                                    Template="{StaticResource AddButtonTemplate}" Style="{StaticResource AddButtonStyle}"
+                                    x:Name="AddChainLink"/>
+                        </StackPanel>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Control.Background" Value="White" />
+                        <Style.Triggers>
+                            <Trigger Property="Control.IsMouseOver" Value="True">
+                                <Setter Property="Control.BorderBrush" Value="#FF26A0DA" />
+                                <Setter Property="Control.Background" Value="#167CBEDE" />
+                            </Trigger>
+                            <Trigger Property="Control.IsKeyboardFocusWithin" Value="True">
+                                <Setter Property="Control.BorderBrush" Value="#FF26A0DA" />
+                                <Setter Property="Control.Background" Value="#167CBEDE" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+        </StackPanel>
+    </ListBoxItem>
+</UserControl>

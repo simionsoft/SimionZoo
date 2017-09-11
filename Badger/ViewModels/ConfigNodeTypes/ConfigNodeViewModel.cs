@@ -139,6 +139,10 @@ namespace Badger.ViewModels
         {
             switch (definitionNode.Name)
             {
+                case XMLConfig.neuralNetworkProblemDescriptionNodeTag:
+                    return new NeuralNetworkProblemDescriptionConfigViewModel(parentExperiment, parent, definitionNode,
+                        parentXPath, configNode);
+
                 case XMLConfig.integerNodeTag:
                     return new IntegerValueConfigViewModel(parentExperiment, parent, definitionNode,
                         parentXPath, configNode);
