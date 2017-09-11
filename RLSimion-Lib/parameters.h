@@ -359,6 +359,7 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 //quick and dirty hack to store the name of the dynamic world in a choice
 #define METADATA(name, value) m_name= value;
 
+/*
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:
@@ -378,6 +379,39 @@ public:
 	}
 
 	CNetwork* getNetwork()
+	{
+		createNetwork();
+		return m_pNetwork;
+	}
+};
+*/
+class NEURAL_NETWORK_PROBLEM_DESCRIPTION
+{
+protected:
+	shared_ptr<CProblem> m_pProblem;
+	shared_ptr<CNetwork> m_pNetwork;
+
+	const char* m_name;
+	const char* m_comment;
+
+public:
+	NEURAL_NETWORK_PROBLEM_DESCRIPTION() = default;
+	NEURAL_NETWORK_PROBLEM_DESCRIPTION(CConfigNode* pConfigNode, const char* name, const char* comment)
+	{
+		m_name = name;
+		m_comment = comment;
+		m_pProblem = shared_ptr<CProblem>(new CProblem(pConfigNode));
+	}
+
+	void createNetwork()
+	{
+		if (m_pNetwork)
+			return;
+
+		m_pNetwork = shared_ptr<CNetwork>(m_pProblem->createNetwork());
+	}
+
+	shared_ptr<CNetwork> getNetwork()
 	{
 		createNetwork();
 		return m_pNetwork;
