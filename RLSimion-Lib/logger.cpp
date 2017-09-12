@@ -272,7 +272,8 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 
 	offset += writeStepHeaderToBuffer(buffer, offset);
 
-	offset += writeNamedVarSetToBuffer(buffer, offset, s);
+	//We log s_p instead of s to log a coherent state-reward: r= f(s_p)
+	offset += writeNamedVarSetToBuffer(buffer, offset, s_p);
 	offset += writeNamedVarSetToBuffer(buffer, offset, a);
 	offset += writeNamedVarSetToBuffer(buffer, offset, r);
 	offset += writeStatsToBuffer(buffer, offset);
