@@ -54,8 +54,6 @@ class CIncrementalNaturalActorCritic : public CSimion
 	CETraces** m_e_u;
 	CHILD_OBJECT<CETraces> m_e_v;
 
-	NEURAL_NETWORK_PROBLEM_DESCRIPTION dummy_nn;
-
 	//gradient of the policy with respect to its parameters
 	CFeatureList *m_grad_u;
 

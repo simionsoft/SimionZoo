@@ -24,22 +24,22 @@ protected:
 	const char* m_comment;
 	DataType m_value;
 	DataType m_default;
-	
+
 	void initValue(CConfigNode* pConfigNode, int& value)
 	{
-		value = pConfigNode->getConstInteger(m_name,m_default);
+		value = pConfigNode->getConstInteger(m_name, m_default);
 	}
 	void initValue(CConfigNode* pConfigNode, double& value)
 	{
-		value = pConfigNode->getConstDouble(m_name,m_default);
+		value = pConfigNode->getConstDouble(m_name, m_default);
 	}
 	void initValue(CConfigNode* pConfigNode, const char*& value)
 	{
-		value = pConfigNode->getConstString(m_name,m_default);
+		value = pConfigNode->getConstString(m_name, m_default);
 	}
 	void initValue(CConfigNode* pConfigNode, bool& value)
 	{
-		value = pConfigNode->getConstBoolean(m_name,m_default);
+		value = pConfigNode->getConstBoolean(m_name, m_default);
 	}
 	void initValue(CConfigNode* pConfigNode, TimeReference& value)
 	{
@@ -54,7 +54,7 @@ protected:
 		}
 		value = m_default;
 	}
-	void initValue(CConfigNode* pConfigNode,Distribution& value)
+	void initValue(CConfigNode* pConfigNode, Distribution& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
 		if (!strcmp(strValue, "linear"))
@@ -78,8 +78,8 @@ protected:
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
 		if (!strcmp(strValue, "linear"))
-		{			
-			value = Interpolation::linear; return;		
+		{
+			value = Interpolation::linear; return;
 		}
 		else if (!strcmp(strValue, "quadratic"))
 		{
@@ -107,7 +107,7 @@ public:
 	void set(DataType value) { m_value = value; }
 };
 
-using INT_PARAM= CSimpleParam<int>;
+using INT_PARAM = CSimpleParam<int>;
 using DOUBLE_PARAM = CSimpleParam<double>;
 using BOOL_PARAM = CSimpleParam<bool>;
 using STRING_PARAM = CSimpleParam<const char*>;
@@ -116,17 +116,17 @@ using FILE_PATH_PARAM = CSimpleParam<const char*>;
 
 
 template <typename EnumType>
-class ENUM_PARAM: public CSimpleParam<EnumType>
+class ENUM_PARAM : public CSimpleParam<EnumType>
 {
 public:
 	ENUM_PARAM() = default;
 
-	ENUM_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment,EnumType default)
+	ENUM_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment, EnumType default)
 	{
 		m_name = name;
 		m_comment = comment;
 		m_default = default;
-		initValue(pConfigNode,m_value);
+		initValue(pConfigNode, m_value);
 	}
 };
 
@@ -134,9 +134,9 @@ public:
 class STATE_VARIABLE
 {
 protected:
-	const char* m_name= 0;
-	const char* m_comment= 0;
-	int m_hVariable= -1;
+	const char* m_name = 0;
+	const char* m_comment = 0;
+	int m_hVariable = -1;
 public:
 	STATE_VARIABLE() = default;
 
@@ -161,18 +161,18 @@ public:
 template<typename DataType>
 class CHILD_OBJECT
 {
-	const char* m_name= 0;
-	const char* m_comment= 0;
-	bool m_bOptional= false;
+	const char* m_name = 0;
+	const char* m_comment = 0;
+	bool m_bOptional = false;
 	shared_ptr<DataType> m_pValue;
 public:
 	CHILD_OBJECT() = default;
 	template <typename DataType> CHILD_OBJECT(DataType* value)
 	{
-		m_pValue = std::shared_ptr<DataType> (value);
+		m_pValue = std::shared_ptr<DataType>(value);
 	}
 	CHILD_OBJECT(CConfigNode* pConfigNode, const char* name, const char* comment
-		,bool bOptional=false,const char* badgerMetadata="")
+		, bool bOptional = false, const char* badgerMetadata = "")
 	{
 		m_name = name;
 		m_comment = comment;
@@ -195,9 +195,9 @@ public:
 template<typename DataType>
 class CHILD_OBJECT_FACTORY
 {
-	const char* m_name= 0;
-	const char* m_comment= 0;
-	bool m_bOptional= false;
+	const char* m_name = 0;
+	const char* m_comment = 0;
+	bool m_bOptional = false;
 	shared_ptr<DataType> m_pValue = 0;
 public:
 	CHILD_OBJECT_FACTORY() = default;
@@ -206,7 +206,7 @@ public:
 		m_pValue = std::shared_ptr<DataType>(value);
 	}
 	CHILD_OBJECT_FACTORY(CConfigNode* pConfigNode, const char* name, const char* comment
-		, bool bOptional= false, const char* badgerMetadata= "")
+		, bool bOptional = false, const char* badgerMetadata = "")
 	{
 		m_name = name;
 		m_comment = comment;
@@ -229,19 +229,19 @@ template <typename DataType>
 class MULTI_VALUE
 {
 protected:
-	const char* m_name= 0;
-	const char* m_comment= 0;
-	bool m_bOptional= false;
+	const char* m_name = 0;
+	const char* m_comment = 0;
+	bool m_bOptional = false;
 	vector<shared_ptr<DataType>> m_values;
 public:
 	MULTI_VALUE() = default;
 
-	MULTI_VALUE(CConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional=false)
+	MULTI_VALUE(CConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional = false)
 	{
 		m_name = name;
 		m_comment = comment;
 		m_bOptional = bOptional;
-		
+
 		CConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
@@ -257,22 +257,22 @@ template <typename DataType>
 class MULTI_VALUE_FACTORY : public MULTI_VALUE<DataType>
 {
 protected:
-	const char* m_name= 0;
-	const char* m_comment= 0;
-	bool m_bOptional= false;
+	const char* m_name = 0;
+	const char* m_comment = 0;
+	bool m_bOptional = false;
 public:
 	MULTI_VALUE_FACTORY() = default;
 
-	MULTI_VALUE_FACTORY(CConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional= false)
+	MULTI_VALUE_FACTORY(CConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional = false)
 	{
 		m_name = name;
 		m_comment = comment;
 		m_bOptional = bOptional;
-		
+
 		CConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
-			m_values.push_back( shared_ptr<DataType>(DataType::getInstance(pChildParameters)));
+			m_values.push_back(shared_ptr<DataType>(DataType::getInstance(pChildParameters)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
@@ -282,8 +282,8 @@ template <typename DataType, typename baseDataType>
 class MULTI_VALUE_SIMPLE_PARAM : public MULTI_VALUE<DataType>
 {
 protected:
-	const char* m_name= 0;
-	const char* m_comment= 0;
+	const char* m_name = 0;
+	const char* m_comment = 0;
 public:
 	MULTI_VALUE_SIMPLE_PARAM() = default;
 
@@ -295,7 +295,7 @@ public:
 		CConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
-			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters,name,comment,default)));
+			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment, default)));
 			pChildParameters = pChildParameters->getNextSibling(name);
 		}
 	}
@@ -365,7 +365,7 @@ class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 protected:
 	CHILD_OBJECT<CProblem> m_pProblem;
 	CNetwork* m_pNetwork = nullptr;
-	
+
 public:
 	NEURAL_NETWORK_PROBLEM_DESCRIPTION() = default;
 	NEURAL_NETWORK_PROBLEM_DESCRIPTION(CConfigNode* pConfigNode, const char* name, const char* comment);
@@ -400,20 +400,10 @@ public:
 	{
 		m_name = name;
 		m_comment = comment;
-		m_pProblem = shared_ptr<CProblem>(new CProblem(pConfigNode));
-	}
-
-	void createNetwork()
-	{
-		if (m_pNetwork)
-			return;
-
+		m_pProblem = shared_ptr<CProblem>(new CProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem")));
 		m_pNetwork = shared_ptr<CNetwork>(m_pProblem->createNetwork());
+		m_pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
 	}
 
-	shared_ptr<CNetwork> getNetwork()
-	{
-		createNetwork();
-		return m_pNetwork;
-	}
+	shared_ptr<CNetwork> getNetwork() { return m_pNetwork; }
 };

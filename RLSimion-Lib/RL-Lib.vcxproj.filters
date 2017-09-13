@@ -232,6 +232,12 @@
     <ClCompile Include="actor-critic-opdac.cpp">
       <Filter>learning</Filter>
     </ClCompile>
+    <ClCompile Include="DQN.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-vfa-policy.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">
@@ -424,6 +430,10 @@
     <ClInclude Include="single-dimension-discrete-grid.h">
       <Filter>learning</Filter>
     </ClInclude>
+    <ClInclude Include="DQN.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-vfa-policy.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />

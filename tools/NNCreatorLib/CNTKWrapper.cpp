@@ -18,7 +18,7 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(const CLink * pLink, vector<const CLin
 	CNTK::FunctionPtr pInput;
 	for each (CInputData* pItem in inputList)
 		if (!strcmp(pItem->getId().c_str(), inputID.c_str()))
-			return pItem->getInputFunctionPtr();
+			return pItem->getInputVariable();
 
 	return nullptr;
 }
@@ -230,7 +230,7 @@ FunctionPtr CNTKWrapper::Internal::applyActivationFunction(FunctionPtr pInput, A
 	case ActivationFunction::sigmoid:
 		return CNTK::Sigmoid(pInput);
 	case ActivationFunction::softmax:
-		throw "not supported at the moment";
+		return CNTK::Softmax(pInput);
 		//TODO: solve this problem
 		//return std::bind<FunctionPtr(const Variable&, const std::wstring&)>(Softmax, std::placeholders::_1, L"");
 	case ActivationFunction::softplus:

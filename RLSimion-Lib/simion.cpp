@@ -5,6 +5,7 @@
 #include "controller.h"
 #include "actor-critic.h"
 #include "q-learners.h"
+#include "DQN.h"
 
 std::shared_ptr<CSimion> CSimion::getInstance(CConfigNode* pConfigNode)
 {
@@ -16,7 +17,8 @@ std::shared_ptr<CSimion> CSimion::getInstance(CConfigNode* pConfigNode)
 		{"Double-Q-Learning", CHOICE_ELEMENT_NEW<CDoubleQLearning>},
 		{"SARSA", CHOICE_ELEMENT_NEW<CSARSA>},
 		{"Inc-Natural-Actor-Critic", CHOICE_ELEMENT_NEW<CIncrementalNaturalActorCritic>},
-		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<COffPolicyActorCritic>}
+		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<COffPolicyActorCritic>},
+		{"DQN", CHOICE_ELEMENT_NEW<CDQN>}
 	});
 }
 

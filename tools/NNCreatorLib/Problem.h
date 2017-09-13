@@ -16,11 +16,10 @@ protected:
 	CLinkConnection* m_pOutput;
 	COptimizerSetting* m_pOptimizerSetting;
 	
-
+	
 public:
 	CProblem();
 	~CProblem();
-
 	CProblem(tinyxml2::XMLElement* pNode);
 
 	CNetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }

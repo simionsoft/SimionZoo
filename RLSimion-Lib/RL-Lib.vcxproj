@@ -222,7 +222,9 @@
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
+    <ClCompile Include="deep-vfa-policy.cpp" />
     <ClCompile Include="deferred-load.cpp" />
+    <ClCompile Include="DQN.cpp" />
     <ClCompile Include="single-dimension-discrete-grid.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>
@@ -298,7 +300,9 @@
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
+    <ClInclude Include="deep-vfa-policy.h" />
     <ClInclude Include="deferred-load.h" />
+    <ClInclude Include="DQN.h" />
     <ClInclude Include="single-dimension-discrete-grid.h" />
     <ClInclude Include="etraces.h" />
     <ClInclude Include="experience-replay.h" />

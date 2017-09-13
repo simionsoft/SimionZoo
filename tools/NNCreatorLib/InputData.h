@@ -14,18 +14,19 @@ protected:
 	string m_id;
 	string m_name;
 	CIntTuple* m_pShape;
-	CNTK::FunctionPtr m_pInputFunctionPtr = nullptr;
+	CNTK::Variable m_pInputVariable; //TODO: Fix = nullptr
 	CInputData(tinyxml2::XMLElement* pNode);
 
 public:
-	CInputData(string id, CNTK::FunctionPtr pInputFunctionPtr);
+	CInputData(string id, CNTK::Variable pInputVariable);
 	~CInputData();
 
 	static CInputData* getInstance(tinyxml2::XMLElement* pNode);
 	
 	const string& getId() { return m_id; }
+	CNTK::NDShape getNDShape();
 	const string& getName() { return m_name; }
-	const CNTK::FunctionPtr getInputFunctionPtr() { return m_pInputFunctionPtr; }
-	void createInputFunctionPtr();
+	const CNTK::Variable getInputVariable() { return m_pInputVariable; }
+	void createInputVariable();
 };
 

@@ -32,5 +32,7 @@ public:
 	void buildNetworkFunctionPtr(const COptimizerSetting* optimizer);
 	void save(string fileName);
 	static CNetwork load(string fileName, CNTK::DeviceDescriptor &device);
-};
 
+	void train(std::vector<float>& inputData, std::vector<float>& targetOutputData, size_t numSamples);
+	void predict(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& predictionData, size_t numSamples);
+};

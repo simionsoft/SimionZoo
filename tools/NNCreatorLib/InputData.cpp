@@ -24,10 +24,10 @@ CInputData::CInputData(tinyxml2::XMLElement * pParentNode)
 
 }
 
-CInputData::CInputData(string id, CNTK::FunctionPtr pInputFunctionPtr)
+CInputData::CInputData(string id, CNTK::Variable pInputVariable)
 {
 	m_id = id;
-	m_pInputFunctionPtr = pInputFunctionPtr;
+	m_pInputVariable = pInputVariable;
 }
 
 
@@ -42,7 +42,12 @@ CInputData * CInputData::getInstance(tinyxml2::XMLElement * pNode)
 	return nullptr;
 }
 
-void CInputData::createInputFunctionPtr()
+NDShape CInputData::getNDShape()
 {
-	m_pInputFunctionPtr = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Float, CNTKWrapper::Internal::string2wstring(m_name));
+	return m_pShape->getNDShape();
+}
+
+void CInputData::createInputVariable()
+{
+	m_pInputVariable = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Float, CNTKWrapper::Internal::string2wstring(m_name));
 }

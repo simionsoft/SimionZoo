@@ -109,9 +109,10 @@ CNetwork * CProblem::createNetwork()
 	//create the inputs
 	for each (CInputData* input in m_inputs)
 	{
-		if (input->getInputFunctionPtr() == nullptr)
+		//TODO: Fix
+		//if (input->getInputVariable() == nullptr)
 		{
-			input->createInputFunctionPtr();
+			input->createInputVariable();
 			result->getInputs().push_back(input);
 		}
 	}
