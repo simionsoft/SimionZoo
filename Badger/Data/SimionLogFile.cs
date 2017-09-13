@@ -1,26 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Badger.Data
+namespace Badger.Simion
 {
-
-    public class SimionLogFile
-    {
-        //BINARY LOG FILE STUFF: constants, reading methods, etc...
-        public const int HEADER_MAX_SIZE = 16;
-
-        public const int EXPERIMENT_HEADER = 1;
-        public const int EPISODE_HEADER = 2;
-        public const int STEP_HEADER = 3;
-        public const int EPISODE_END_HEADER = 4;
-
-        public delegate void StepAction(int auxId, int stepIndex, double value);
-        public delegate void ScalarValueAction(double action);
-        public delegate double EpisodeFunc(EpisodeData episode, int varIndex);
-    }
 
     public class StepData
     {
@@ -36,8 +19,8 @@ namespace Badger.Data
             expRealTime = logReader.ReadDouble();
             episodeSimTime = logReader.ReadDouble();
             episodeRealTime = logReader.ReadDouble();
-            logReader.ReadChars(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 5));
-            if (magicNumber == SimionLogFile.EPISODE_END_HEADER) return true;
+            logReader.ReadChars(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
+            if (magicNumber == SimionLog.EPISODE_END_HEADER) return true;
 
             //not the final step, we have to read the logged variables
             byte[] buffer = logReader.ReadBytes(sizeof(double) * (int)numLoggedVariables);
@@ -47,17 +30,8 @@ namespace Badger.Data
             Buffer.BlockCopy(buffer, 0, data, 0, numLoggedVariables * sizeof(double));
             return false;
         }
-        //static bool skipStep(BinaryReader logReader, int numLoggedVariables)
-        //{
-        //    int magicNumber = (int)logReader.ReadInt64();
-        //    if (magicNumber == SimionLogFile.EPISODE_END_HEADER) return true;
-
-        //    logReader.BaseStream.Seek((SimionLogFile.HEADER_MAX_SIZE + numLoggedVariables -1)*sizeof(double)
-        //        , SeekOrigin.Current);
-        //    return false;
-        //}
     }
-    public class EpisodeData
+    public class EpisodesData
     {
         public const int episodeTypeEvaluation = 0;
         public const int episodeTypeTraining = 1;
@@ -74,9 +48,9 @@ namespace Badger.Data
             index = (int)logReader.ReadInt64();
             numVariablesLogged = (int)logReader.ReadInt64();
             subIndex = (int)logReader.ReadInt64();
-            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 5));
+            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
         }
-        public static double calculateMin(EpisodeData episode, int varIndex)
+        public static double calculateMin(EpisodesData episode, int varIndex)
         {
             if (varIndex < 0 || episode.steps.Count == 0)
                 return 0.0;
@@ -88,7 +62,7 @@ namespace Badger.Data
             }
             return min;
         }
-        public static double calculateMax(EpisodeData episode, int varIndex)
+        public static double calculateMax(EpisodesData episode, int varIndex)
         {
             if (varIndex < 0 || episode.steps.Count == 0)
                 return 0.0;
@@ -100,7 +74,7 @@ namespace Badger.Data
             }
             return max;
         }
-        public static double calculateVarAvg(EpisodeData episode, int varIndex)
+        public static double calculateVarAvg(EpisodesData episode, int varIndex)
         {
             if (varIndex < 0 || episode.steps.Count == 0)
                 return 0.0;
@@ -111,7 +85,7 @@ namespace Badger.Data
             }
             return avg / episode.steps.Count;
         }
-        public static double calculateStdDev(EpisodeData episode, int varIndex)
+        public static double calculateStdDev(EpisodesData episode, int varIndex)
         {
             if (varIndex < 0 || episode.steps.Count == 0)
                 return 0.0;
@@ -127,18 +101,32 @@ namespace Badger.Data
 
 
     }
-    public class ExperimentData
+    public class SimionLog
     {
-        public int numEpisodes = 0;
-        public int numTrainingEpisodes = 0;
-        public int numEvaluationEpisodes = 0;
-        public int numEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
-        public int fileFormatVersion = 0;
-        public bool bSuccesful = true; //true if it finished correctly: the number of episodes in the header must match the number of episodes read from the log file
+        //BINARY LOG FILE STUFF: constants, reading methods, etc...
+        public const int HEADER_MAX_SIZE = 16;
 
-        public List<EpisodeData> episodes = new List<EpisodeData>();
+        public const int EXPERIMENT_HEADER = 1;
+        public const int EPISODE_HEADER = 2;
+        public const int STEP_HEADER = 3;
+        public const int EPISODE_END_HEADER = 4;
 
-        public bool load(string logFilename)
+        public delegate void StepAction(int auxId, int stepIndex, double value);
+        public delegate void ScalarValueAction(double action);
+        public delegate double EpisodeFunc(EpisodesData episode, int varIndex);
+
+        public int TotalNumEpisodes = 0;
+        public int NumTrainingEpisodes => TrainingEpisodes.Count;
+        public int NumEvaluationEpisodes => EvaluationEpisodes.Count;
+        public int NumEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
+        public int FileFormatVersion = 0;
+        public bool Succesful = true; //true if it finished correctly: the number of episodes in the header must match the number of episodes read from the log file
+
+        public List<EpisodesData> EvaluationEpisodes = new List<EpisodesData>();
+        public List<EpisodesData> TrainingEpisodes = new List<EpisodesData>();
+        public List<EpisodesData> Episodes = new List<EpisodesData>();
+
+        public bool LoadBinaryLog(string logFilename)
         {
             try
             {
@@ -146,26 +134,26 @@ namespace Badger.Data
                 {
                     using (BinaryReader binaryReader = new BinaryReader(logFile))
                     {
-                        readExperimentLogHeader(binaryReader);
-                        for (int i = 0; i < numEpisodes; i++)
+                        ReadExperimentLogHeader(binaryReader);
+                        for (int i = 0; i < TotalNumEpisodes; i++)
                         {
-                            EpisodeData episodeData = new EpisodeData();
-                            episodes.Add(episodeData);
+                            EpisodesData episodeData = new EpisodesData();
 
                             episodeData.readEpisodeHeader(binaryReader);
                             //if we find an episode subindex greater than the current max, we update it
                             //Episode subindex= Episode within an evaluation
-                            if (episodeData.subIndex > numEpisodesPerEvaluation)
-                                numEpisodesPerEvaluation = episodeData.subIndex;
+                            if (episodeData.subIndex > NumEpisodesPerEvaluation)
+                                NumEpisodesPerEvaluation = episodeData.subIndex;
 
-                        //count evaluation and training episodes
-                        if (episodeData.type == 0)
-                            this.numEvaluationEpisodes++;
-                        else
-                            this.numTrainingEpisodes++;
+                            //count evaluation and training episodes
+                            if (episodeData.type == 0)
+                                EvaluationEpisodes.Add(episodeData);
+                            else
+                                TrainingEpisodes.Add(episodeData);
+                            Episodes.Add(episodeData);
 
-                        StepData stepData = new StepData();
-                        bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+                            StepData stepData = new StepData();
+                            bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
 
                             while (!bLastStep)
                             {
@@ -182,38 +170,38 @@ namespace Badger.Data
             }
             catch (Exception ex)
             {
-                bSuccesful = false;
+                Succesful = false;
                 Console.WriteLine("Exception reading " + logFilename + "\n" + ex.ToString());
             }
-            return bSuccesful;
+            return Succesful;
         }
 
-        public void readExperimentLogHeader(BinaryReader logReader)
+        void ReadExperimentLogHeader(BinaryReader logReader)
         {
             int magicNumber = (int)logReader.ReadInt64();
-            fileFormatVersion = (int)logReader.ReadInt64();
-            numEpisodes = (int)logReader.ReadInt64();
-            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 3));
+            FileFormatVersion = (int)logReader.ReadInt64();
+            TotalNumEpisodes = (int)logReader.ReadInt64();
+            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 3));
         }
 
         //for each evaluation episode the episodeAction is performed
-        public void doForEachEvalEpisode(System.Action<EpisodeData> episodeAction)
+        public void doForEachEvalEpisode(System.Action<EpisodesData> episodeAction)
         {
-            foreach (EpisodeData episode in episodes)
+            foreach (EpisodesData episode in EvaluationEpisodes)
             {
-                if (episode.type == EpisodeData.episodeTypeEvaluation)
+                if (episode.type == EpisodesData.episodeTypeEvaluation)
                 {
                     episodeAction(episode);
                 }
             }
         }
         //for each evaluation episode the episodeFunc is performed
-        public double doForEpisodeVar(int episodeIndex, int varIndex, SimionLogFile.EpisodeFunc episodeFunc)
+        public double doForEpisodeVar(int episodeIndex, int varIndex, SimionLog.EpisodeFunc episodeFunc)
         {
-            foreach (EpisodeData episode in episodes)
+            foreach (EpisodesData episode in EvaluationEpisodes)
             {
                 if (episode.index == episodeIndex && episode.subIndex == 1 // <- this obviously is not the right way to do it
-                    && episode.type == EpisodeData.episodeTypeEvaluation)
+                    && episode.type == EpisodesData.episodeTypeEvaluation)
                 {
                     return episodeFunc(episode, varIndex);
                 }
@@ -223,9 +211,9 @@ namespace Badger.Data
         //for the i-th episode, the action is performed for each step data value
         public void doForEpisodeSteps(int episodeIndex, System.Action<StepData> stepAction)
         {
-            foreach (EpisodeData episode in episodes)
+            foreach (EpisodesData episode in EvaluationEpisodes)
             {
-                if (episode.index == episodeIndex && episode.type == EpisodeData.episodeTypeEvaluation)
+                if (episode.index == episodeIndex && episode.type == EpisodesData.episodeTypeEvaluation)
                 {
                     foreach (StepData step in episode.steps)
                         stepAction(step);

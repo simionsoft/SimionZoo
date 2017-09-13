@@ -102,26 +102,26 @@ namespace Badger.ViewModels
             return variablesNames;
         }
 
-        //loads the log file and then returns the data of the requested variable as an array of TrackData
-        //not the most efficient way, but the easiest right now
+        //loads the log file and then returns the data of the requested variable as a TrackData object
+        //Not the most efficient way (we load more than we need), but the easiest right now
         public TrackData loadTrackData(List<string> varNames)
         {
-            ExperimentData experimentData = new ExperimentData();
-            experimentData.load(m_logFilePath);
+            SimionLog experimentData = new SimionLog();
+            experimentData.LoadBinaryLog(m_logFilePath);
 
-            if (!experimentData.bSuccesful || experimentData.episodes.Count == 0) return null;
+            if (!experimentData.Succesful || experimentData.TotalNumEpisodes == 0) return null;
 
-            int longestEpisodeIndex = experimentData.episodes.Select(e => e.steps.Count).MaxIndex();
-            int maxNumSteps = experimentData.episodes[longestEpisodeIndex].steps.Count;
+            int longestEpisodeIndex = experimentData.Episodes.Select(e => e.steps.Count).MaxIndex();
+            int maxNumSteps = experimentData.Episodes[longestEpisodeIndex].steps.Count;
 
-            EpisodeData lastEvaluationEpisode = experimentData.episodes.Where(e => e.type == 0).Last();
+            EpisodesData lastEvaluationEpisode = experimentData.EvaluationEpisodes.Where(e => e.type == 0).Last();
 
-            TrackData data = new TrackData(maxNumSteps, experimentData.numEpisodes, experimentData.numEvaluationEpisodes, experimentData.numTrainingEpisodes, varNames);
-            data.bSuccesful = experimentData.bSuccesful;
+            TrackData data = new TrackData(maxNumSteps, experimentData.TotalNumEpisodes, experimentData.NumEvaluationEpisodes, experimentData.NumTrainingEpisodes, varNames);
+            data.bSuccesful = experimentData.Succesful;
             data.forkValues = forkValues;
 
             //set the realTime and simTime
-            foreach (var item in experimentData.episodes[longestEpisodeIndex].steps.Select((step, index) => new { index, step }))
+            foreach (var item in experimentData.Episodes[longestEpisodeIndex].steps.Select((step, index) => new { index, step }))
             {
                 data.realTime[item.index] = item.step.episodeRealTime;
                 data.simTime[item.index] = item.step.episodeSimTime;
@@ -130,9 +130,9 @@ namespace Badger.ViewModels
             //set the experiment data now
             int evaluationIndex = 0;
             int trainingIndex = 0;
-            foreach (EpisodeData episode in experimentData.episodes)
+            foreach (EpisodesData episode in experimentData.Episodes)
             {
-                if (episode.type == EpisodeData.episodeTypeEvaluation)
+                if (episode.type == EpisodesData.episodeTypeEvaluation)
                 {
                     //experiment-long average values
                     foreach (string variable in varNames)

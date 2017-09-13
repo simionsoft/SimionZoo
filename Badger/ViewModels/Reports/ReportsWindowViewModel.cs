@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using Badger.Data;
 using Caliburn.Micro;
-using OxyPlot;
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {

@@ -2,7 +2,6 @@
 using Caliburn.Micro;
 using System.Collections.Generic;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
@@ -10,11 +9,10 @@ using System.Threading;
 using System.Globalization;
 using System.IO;
 using System.Timers;
-using System.Windows.Markup;
 using System.Xml;
 using Herd;
 using Badger.Data;
-
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {

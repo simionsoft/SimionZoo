@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Badger.Data;
-using System.IO;
+using Badger.Simion;
 
 namespace LogStats_SanityCheck
 {
@@ -14,7 +11,7 @@ namespace LogStats_SanityCheck
         public double E_p { get; } = 0;
         double min_r = double.MaxValue, max_r= double.MinValue;
         double min_E_p = double.MaxValue, max_E_p= double.MinValue;
-        public EpisodeStats(EpisodeData episode)
+        public EpisodeStats(EpisodesData episode)
         {
             foreach (StepData step in episode.steps)
             {
@@ -43,15 +40,15 @@ namespace LogStats_SanityCheck
     {
         static EpisodeStats GetLastEpisodeStats(string logfile)
         {
-            ExperimentData log;
-            EpisodeData lastEpisode;
+            SimionLog log;
+            EpisodesData lastEpisode;
 
-            log = new ExperimentData();
-            log.load(logfile);
+            log = new SimionLog();
+            log.LoadBinaryLog(logfile);
 
-            if (log.bSuccesful)
+            if (log.Succesful)
             {
-                lastEpisode = log.episodes[log.numEpisodes - 1];
+                lastEpisode = log.EvaluationEpisodes[log.TotalNumEpisodes - 1];
 
                 return new EpisodeStats(lastEpisode);
             }

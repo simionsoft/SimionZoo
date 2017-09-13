@@ -5,11 +5,10 @@ using System.Xml;
 using Badger.ViewModels;
 using System.Windows.Forms;
 using Badger.Properties;
-using Badger.Simion;
 using Caliburn.Micro;
+using Badger.Data;
 
-
-namespace Badger.Data
+namespace Badger.Simion
 {
     public static class SimionFileData
     {
