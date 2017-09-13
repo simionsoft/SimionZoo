@@ -22,7 +22,7 @@ namespace Badger.ViewModels
             else
             {
                 //init from config file
-                content = configNode[name].InnerText;
+                content = configNode[name].InnerXml;
             }
         }
 
@@ -42,7 +42,11 @@ namespace Badger.ViewModels
         public override bool validate()
         {
             if (m_problemViewModel == null || m_problemViewModel.NetworkArchitecture == null)
-                return false;
+            {
+                var mwvm = new NeuralNetwork.Windows.MainWindowViewModel();
+                mwvm.Import(content);
+                m_problemViewModel = mwvm.Problem;
+            }
 
             foreach (var chain in m_problemViewModel.NetworkArchitecture.Chains)
                 foreach (var link in chain.ChainLinks)

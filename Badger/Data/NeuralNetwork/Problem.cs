@@ -127,7 +127,7 @@ namespace Badger.Data.NeuralNetwork
                 });
             using (var sw = new System.IO.StreamWriter("network.xml"))
             {
-                using (XmlWriter writer = XmlWriter.Create(sw))
+                using (XmlWriter writer = XmlWriter.Create(sw, new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true }))
                 {
                     serializer.Serialize(writer, this);
                 }
@@ -145,7 +145,7 @@ namespace Badger.Data.NeuralNetwork
                 });
             using (var sw = new System.IO.StringWriter())
             {
-                using (XmlWriter writer = XmlWriter.Create(sw))
+                using (XmlWriter writer = XmlWriter.Create(sw, new XmlWriterSettings() { OmitXmlDeclaration = true, Indent = true }))
                 {
                     serializer.Serialize(writer, this);
                 }

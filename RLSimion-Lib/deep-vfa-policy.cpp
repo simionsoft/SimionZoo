@@ -15,6 +15,7 @@ CDeepPolicy::CDeepPolicy(CConfigNode* pConfigNode)
 
 CDeepPolicy::~CDeepPolicy()
 {
+
 }
 
 std::shared_ptr<CDeepPolicy> CDeepPolicy::getInstance(CConfigNode* pConfigNode)
@@ -30,7 +31,7 @@ CDiscreteEpsilonGreedyDeepPolicy::CDiscreteEpsilonGreedyDeepPolicy(CConfigNode *
 	m_pStateOutFeatures = new CFeatureList("State");
 	m_epsilon = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "epsilon", "Epsilon");
 
-	if (typeid(CSimGod::getGlobalActionFeatureMap().get()) != typeid(CDiscreteActionFeatureMap*))
+	if (dynamic_cast<CDiscreteActionFeatureMap*>(CSimGod::getGlobalActionFeatureMap().get()) == nullptr)
 	{
 		throw std::runtime_error("The CDiscreteEpsilonGreedyDeepPolicy requires a CDiscreteActionFeatureMap as the action-feature-map.");
 	}
@@ -42,37 +43,41 @@ CDiscreteEpsilonGreedyDeepPolicy::CDiscreteEpsilonGreedyDeepPolicy(CConfigNode *
 	{
 		throw std::runtime_error("Output of the network has not the same size as the discrete action grid has centers/discrete values");
 	}
+
+	//TODO: Was: CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()-> getTotalNumFeatures()
+	m_numberOfStateFeatures = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid().size();
+	m_numberOfActions = m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
+	m_stateVector = std::vector<float>(m_numberOfStateFeatures, 0.0);
+	m_actionValuePredictionVector = std::vector<float>(m_numberOfActions);
 }
 
 double CDiscreteEpsilonGreedyDeepPolicy::selectAction(const CState * s, CAction * a)
 {
 	double randomValue = getRandomValue();
-	int numberOfActions = m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
 
 	int resultingActionIndex;
-	if (randomValue < m_epsilon->get())
+	double eps = m_epsilon->get();
+
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+		eps = 0.0;
+
+	if (randomValue < eps)
 	{
-		resultingActionIndex = std::rand() % static_cast<int>(numberOfActions + 1);
+		resultingActionIndex = std::rand() % static_cast<int>(m_numberOfActions + 1);
 	}
 	else
 	{
 		CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
-		int numberOfStateFeatures = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid().size();
-		//TODO: Was: CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()-> getTotalNumFeatures()
+
 		//TODO: use sparse representation
-		auto stateVector = std::vector<float>(numberOfStateFeatures, 0.0);
+		for (int i = 0; i < m_numberOfStateFeatures; i++)
+			m_stateVector[i] = ((CDiscreteStateFeatureMap*)CSimGod::getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s, nullptr);
+		CNTK::ValuePtr stateSequence = CNTK::Value::CreateSequence({ (size_t)m_numberOfStateFeatures }, m_stateVector, CNTK::DeviceDescriptor::CPUDevice());
 
-
-		//		for (int i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
-			//		stateVector[m_pStateOutFeatures->m_pFeatures[i].m_index] = m_pStateOutFeatures->m_pFeatures[i].m_factor;
-
-		for (int i = 0; i < numberOfStateFeatures; i++)
-			stateVector[i] = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s, nullptr);
-
-		auto prediction = std::vector<float>(numberOfActions);
-		std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", stateVector } };
-		m_QNetwork.getNetwork()->predict(inputMap, prediction, 1);
-		resultingActionIndex = std::distance(prediction.begin(), std::max_element(prediction.begin(), prediction.end()));
+		std::unordered_map<std::string, CNTK::ValuePtr> inputMap = { { "state-input", stateSequence } };
+		m_QNetwork.getNetwork()->predict(inputMap, m_actionValuePredictionVector);
+		resultingActionIndex = std::distance(m_actionValuePredictionVector.begin(),
+			std::max_element(m_actionValuePredictionVector.begin(), m_actionValuePredictionVector.end()));
 	}
 
 	//TODO: check if this gets the correct action index
@@ -80,37 +85,34 @@ double CDiscreteEpsilonGreedyDeepPolicy::selectAction(const CState * s, CAction 
 	double actionValue = m_pGrid->getCenters()[resultingActionIndex];
 	a->set(m_outputActionIndex.get(), actionValue);
 
-	return 0.0;
+	return 1.0;
 }
 
 double CDiscreteEpsilonGreedyDeepPolicy::updateNetwork(const CState * s, const CAction * a, const CState * s_p, double r)
 {
-	int numberOfActions = m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
+
 	double gamma = CSimionApp::get()->pSimGod->getGamma();
 
 	CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
 
 	//TODO: use sparse representation
-	int numberOfStateFeatures = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid().size();
-	auto stateVector = std::vector<float>(numberOfStateFeatures, 0.0);
-	for (int i = 0; i < numberOfStateFeatures; i++)
-		stateVector[i] = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s_p, nullptr);
+	for (int i = 0; i < m_numberOfStateFeatures; i++)
+		m_stateVector[i] = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s_p, nullptr);
 
-	auto prediction = std::vector<float>(numberOfActions);
-	std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", stateVector } };
-	m_QNetwork.getNetwork()->predict(inputMap, prediction, 1);
+	std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", m_stateVector } };
+	m_QNetwork.getNetwork()->predict(inputMap, m_actionValuePredictionVector, 1);
 
 	int actionValue = a->get(m_outputActionIndex.get());
 	int choosenActionIndex = m_pGrid->getClosestCenter(actionValue);
 
-	double targetValue = r + gamma * prediction[choosenActionIndex];
-	prediction[choosenActionIndex] = targetValue;
+	double targetValue = r + gamma * m_actionValuePredictionVector[choosenActionIndex];
+	m_actionValuePredictionVector[choosenActionIndex] = targetValue;
 
-	for (int i = 0; i < numberOfStateFeatures; i++)
-		stateVector[i] = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s, nullptr);
+	for (int i = 0; i < m_numberOfStateFeatures; i++)
+		m_stateVector[i] = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s, nullptr);
 	//std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", stateVector } };
 
-	m_QNetwork.getNetwork()->train(stateVector, prediction, 1);
+	m_QNetwork.getNetwork()->train(m_stateVector, m_actionValuePredictionVector, 1);
 
 	return 0.0;
 }

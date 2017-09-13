@@ -35,6 +35,7 @@ public:
 class CInterpolatedValue : public CNumericValue
 {
 	DOUBLE_PARAM m_startOffset; //normalized offset to start
+	DOUBLE_PARAM m_endTime; //normalized end-time
 	DOUBLE_PARAM m_preOffsetValue; //value before the start of the schedule
 	DOUBLE_PARAM m_startValue;
 	DOUBLE_PARAM m_endValue;
@@ -43,7 +44,7 @@ class CInterpolatedValue : public CNumericValue
 	ENUM_PARAM<TimeReference> m_timeReference;
 public:
 	CInterpolatedValue(CConfigNode* pParameters);
-	CInterpolatedValue(double startOffset, double preOffsetValue, double startValue, double endValue, double evaluationValue
+	CInterpolatedValue(double startOffset, double endTime, double preOffsetValue, double startValue, double endValue, double evaluationValue
 		, Interpolation interpolation, TimeReference timeReference);
 	double get();
 };

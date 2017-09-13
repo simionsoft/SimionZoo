@@ -46,7 +46,7 @@ void CNetwork::train(std::vector<float>& inputData, std::vector<float>& targetOu
 {
 	NDShape inputShape = m_inputs[0]->getInputVariable().Shape();//.AppendShape({ 1, numSamples });
 	NDShape outputShape = getOutputsFunctionPtr().at(0)->Output().Shape();// .AppendShape({ 1, numSamples });
-	
+
 	ValuePtr inputSequence = CNTK::Value::CreateSequence(inputShape, inputData, CNTK::DeviceDescriptor::CPUDevice());
 	ValuePtr outputSequence = CNTK::Value::CreateSequence(outputShape, targetOutputData, CNTK::DeviceDescriptor::CPUDevice());
 
@@ -79,6 +79,39 @@ void CNetwork::predict(std::unordered_map<std::string, std::vector<float>&>& inp
 	outputValue = outputs[outputPtr];
 
 	CNTK::NDShape outputShape = outputPtr->Output().Shape().AppendShape({ 1, numSamples });
+
+	if (predictionData.size() != outputShape.TotalSize())
+	{
+		throw std::runtime_error("predictionData does not have the right size.");
+	}
+
+	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape, predictionData, false);
+	cpuArrayOutput->CopyFrom(*outputValue->Data());
+}
+
+void CNetwork::train(std::unordered_map<std::string, CNTK::ValuePtr> inputDataMap, CNTK::ValuePtr targetOutputData)
+{
+}
+
+void CNetwork::predict(std::unordered_map<std::string, CNTK::ValuePtr> inputDataMap, std::vector<float>& predictionData)
+{
+	FunctionPtr outputPtr = getOutputsFunctionPtr().at(0);
+	ValuePtr outputValue;
+
+	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> outputs = { { outputPtr->Output(), outputValue } };
+
+	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs = std::unordered_map<CNTK::Variable, CNTK::ValuePtr>();
+	for each (auto item in m_inputs)
+	{
+		inputs[item->getInputVariable()] = inputDataMap[item->getId()];
+	}
+
+	outputPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice());
+
+	outputValue = outputs[outputPtr];
+
+	auto outputShape = outputPtr->Output().Shape();
+	outputShape = outputPtr->Output().Shape().AppendShape({ 1, predictionData.size() / outputShape.TotalSize() });
 
 	if (predictionData.size() != outputShape.TotalSize())
 	{

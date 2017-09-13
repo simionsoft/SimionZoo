@@ -27,9 +27,13 @@ protected:
 	CHILD_OBJECT_FACTORY<CNumericValue> m_epsilon;
 	CSingleDimensionDiscreteActionVariableGrid* m_pGrid;
 	CFeatureList* m_pStateOutFeatures;
+
+	int m_numberOfActions;
+	int m_numberOfStateFeatures;
+	std::vector<float> m_stateVector;
+	std::vector<float> m_actionValuePredictionVector;
 public:
 	CDiscreteEpsilonGreedyDeepPolicy(CConfigNode* pConfigNode);
-	CDiscreteEpsilonGreedyDeepPolicy();
 
 	virtual double selectAction(const CState *s, CAction *a);
 	virtual double updateNetwork(const CState * s, const CAction * a, const CState * s_p, double r);

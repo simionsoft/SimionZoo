@@ -35,4 +35,7 @@ public:
 
 	void train(std::vector<float>& inputData, std::vector<float>& targetOutputData, size_t numSamples);
 	void predict(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& predictionData, size_t numSamples);
+
+	void train(std::unordered_map<std::string, CNTK::ValuePtr> inputDataMap, CNTK::ValuePtr targetOutputData);
+	void predict(std::unordered_map<std::string, CNTK::ValuePtr> inputDataMap, std::vector<float>& predictionData);
 };

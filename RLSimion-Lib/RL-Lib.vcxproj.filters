@@ -433,7 +433,9 @@
     <ClInclude Include="DQN.h">
       <Filter>learning</Filter>
     </ClInclude>
-    <ClInclude Include="deep-vfa-policy.h" />
+    <ClInclude Include="deep-vfa-policy.h">
+      <Filter>learning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
