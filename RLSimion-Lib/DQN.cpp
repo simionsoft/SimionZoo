@@ -19,31 +19,22 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 
 double CDQN::selectAction(const CState * s, CAction * a)
 {
+	double prob = 1.0;
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_policies[i]->selectAction(s, a);
+		prob *= m_policies[i]->selectAction(s, a);
 	}
 	
-	return 0.0;
+	return prob;
 }
 
 double CDQN::update(const CState * s, const CAction * a, const CState * s_p, double r, double behaviorProb)
 {
-	//train now
-	//m_QNetwork.getNetwork()->getTrainer()
-
-
-	//every C time steps clone the q-network to set the new target network
-	int step = (int)(CSimionApp::get()->pWorld->getTotalSimTime() / CSimionApp::get()->pWorld->getDT());
-	if (step == CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
-	{
-		//m_pTargetNetwork = m_QNetwork.getNetwork()->getNetworkFunctionPtr()->Clone(CNTK::ParameterCloningMethod::Freeze);
-	}
-
+	double prob = 1.0;
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_policies[i]->updateNetwork(s, a, s_p, r);
+		prob *= m_policies[i]->updateNetwork(s, a, s_p, r);
 	}
 
-	return 0.0;
+	return prob;
 }

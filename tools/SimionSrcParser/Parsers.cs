@@ -199,6 +199,16 @@ namespace SimionSrcParser
                 , parsedArguments[3], parsedArguments[4]));
         }
     }
+    public class MultiVariableParameterParser : Parser
+    {
+        public MultiVariableParameterParser() : base("MULTI_VALUE_VARIABLE", true) { }
+        public override void processParameter(ParameterizedObject parent)
+        {
+            string simpleParameterType = parsedArguments[0];
+            parent.addParameter(new MultiVariableParameter(simpleParameterType, parsedArguments[2]
+                , parsedArguments[3]));
+        }
+    }
     public abstract class WorldParser : Parser
     {
         public enum WorldParameterType { StateVariable, ActionVariable, Constant };

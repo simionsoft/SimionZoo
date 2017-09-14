@@ -209,3 +209,29 @@ public:
 	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
 	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 };
+
+//CBagFeatureMap////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+class CBagStateFeatureMap : public CStateFeatureMap
+{
+	MULTI_VALUE_VARIABLE<STATE_VARIABLE> m_stateVariables;
+public:
+	CBagStateFeatureMap(CConfigNode* pParameters);
+
+	void getFeatures(const CState* s, CFeatureList* outFeatures);
+	void getFeatureState(unsigned int feature, CState* s);
+	unsigned int getTotalNumFeatures() { return m_stateVariables.size(); }
+	unsigned int getMaxNumActiveFeatures() { return m_stateVariables.size(); }
+};
+
+class CBagActionFeatureMap : public CActionFeatureMap
+{
+	MULTI_VALUE_VARIABLE<ACTION_VARIABLE> m_actionVariables;
+public:
+	CBagActionFeatureMap(CConfigNode* pParameters);
+
+	void getFeatures(const CAction* a, CFeatureList* outFeatures);
+	void getFeatureAction(unsigned int feature, CAction* a);
+	unsigned int getTotalNumFeatures() { return m_actionVariables.size(); }
+	unsigned int getMaxNumActiveFeatures() { return m_actionVariables.size(); }
+};

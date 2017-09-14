@@ -301,6 +301,29 @@ public:
 	}
 };
 
+template <typename DataType>
+class MULTI_VALUE_VARIABLE : public MULTI_VALUE<DataType>
+{
+protected:
+	const char* m_name = 0;
+	const char* m_comment = 0;
+public:
+	MULTI_VALUE_VARIABLE() = default;
+
+	MULTI_VALUE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment)
+	{
+		m_name = name;
+		m_comment = comment;
+
+		CConfigNode* pChildParameters = pConfigNode->getChild(name);
+		while (pChildParameters != 0)
+		{
+			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment)));
+			pChildParameters = pChildParameters->getNextSibling(name);
+		}
+	}
+};
+
 template<typename Class>
 shared_ptr<Class> CHOICE_ELEMENT_NEW(CConfigNode* pConfigNode)
 {
@@ -359,32 +382,6 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 //quick and dirty hack to store the name of the dynamic world in a choice
 #define METADATA(name, value) m_name= value;
 
-/*
-class NEURAL_NETWORK_PROBLEM_DESCRIPTION
-{
-protected:
-	CHILD_OBJECT<CProblem> m_pProblem;
-	CNetwork* m_pNetwork = nullptr;
-
-public:
-	NEURAL_NETWORK_PROBLEM_DESCRIPTION() = default;
-	NEURAL_NETWORK_PROBLEM_DESCRIPTION(CConfigNode* pConfigNode, const char* name, const char* comment);
-
-	void createNetwork()
-	{
-		if (m_pNetwork)
-			return;
-
-		m_pNetwork = m_pProblem->createNetwork();
-	}
-
-	CNetwork* getNetwork()
-	{
-		createNetwork();
-		return m_pNetwork;
-	}
-};
-*/
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:

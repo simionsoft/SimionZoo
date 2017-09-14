@@ -225,6 +225,7 @@
     <ClCompile Include="deep-vfa-policy.cpp" />
     <ClCompile Include="deferred-load.cpp" />
     <ClCompile Include="DQN.cpp" />
+    <ClCompile Include="featuremap-bag.cpp" />
     <ClCompile Include="single-dimension-discrete-grid.cpp">
       <FileType>CppCode</FileType>
     </ClCompile>

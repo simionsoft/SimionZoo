@@ -238,6 +238,9 @@
     <ClCompile Include="deep-vfa-policy.cpp">
       <Filter>learning</Filter>
     </ClCompile>
+    <ClCompile Include="featuremap-bag.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">
