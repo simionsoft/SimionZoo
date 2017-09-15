@@ -7,8 +7,10 @@
 #include <list>
 #include <tuple>
 #include "config.h"
+#ifdef _WIN64
 #include "../tools/NNCreatorLib/Problem.h"
 #include "../tools/NNCreatorLib/Network.h"
+#endif
 
 using namespace std;
 //Enumerated types
@@ -382,6 +384,7 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 //quick and dirty hack to store the name of the dynamic world in a choice
 #define METADATA(name, value) m_name= value;
 
+#ifdef _WIN64
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:
@@ -404,3 +407,4 @@ public:
 
 	shared_ptr<CNetwork> getNetwork() { return m_pNetwork; }
 };
+#endif

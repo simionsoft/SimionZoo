@@ -1,10 +1,13 @@
 #pragma once
+#ifdef _WIN64
 #include <vector>
 #include "simion.h"
 #include "critic.h"
 #include "parameters.h"
 #include "q-learners.h"
 #include "deep-vfa-policy.h"
+
+
 
 class CDQN : public CSimion
 {
@@ -23,4 +26,4 @@ public:
 	//updates the critic and the actor
 	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
 };
-
+#endif

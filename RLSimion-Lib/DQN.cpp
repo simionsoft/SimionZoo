@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "DQN.h"
 #include "SimGod.h"
 #include "worlds\world.h"
@@ -6,7 +8,6 @@
 #include "features.h"
 #include "noise.h"
 #include "parameters-numeric.h"
-
 
 CDQN::~CDQN()
 {
@@ -38,3 +39,5 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 
 	return prob;
 }
+
+#endif

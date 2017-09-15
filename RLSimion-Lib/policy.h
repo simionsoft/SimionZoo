@@ -48,7 +48,7 @@ public:
 class CDeterministicPolicy : public CPolicy
 {
 public:
-	CDeterministicPolicy(CConfigNode* pConfigNode) : CPolicy(pConfigNode) {}
+	CDeterministicPolicy(CConfigNode* pConfigNode);
 
 	static std::shared_ptr<CDeterministicPolicy> getInstance(CConfigNode* pParameters) {return CDeterministicPolicy::getInstance(pParameters);}
 };
@@ -56,7 +56,7 @@ public:
 class CStochasticPolicy : public CPolicy
 {
 public:
-	CStochasticPolicy(CConfigNode* pConfigNode) : CPolicy(pConfigNode) {}
+	CStochasticPolicy(CConfigNode* pConfigNode);
 	static std::shared_ptr<CStochasticPolicy> getInstance(CConfigNode* pParameters) { return CStochasticPolicy::getInstance(pParameters); }
 };
 

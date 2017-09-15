@@ -1,4 +1,5 @@
 #pragma once
+#ifdef _WIN64
 #include "policy.h"
 #include "parameters-numeric.h"
 
@@ -38,4 +39,4 @@ public:
 	virtual double selectAction(const CState *s, CAction *a);
 	virtual double updateNetwork(const CState * s, const CAction * a, const CState * s_p, double r);
 };
-
+#endif

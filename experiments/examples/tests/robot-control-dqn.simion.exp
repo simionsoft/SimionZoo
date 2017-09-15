@@ -56,7 +56,7 @@
 				<Variable>robot1-v</Variable>
 			</Grid-Dimension>
 			<Grid-Dimension>
-				<Step-Size>0.5</Step-Size>
+				<Step-Size>0.2</Step-Size>
 				<Variable>robot1-omega</Variable>
 			</Grid-Dimension>
 		</Discrete-Action-Grid>
@@ -115,7 +115,17 @@
           <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>50</Value>
+                <Value>200</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>300</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>relu</Value>
@@ -205,7 +215,17 @@
           <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>100</Value>
+                <Value>200</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>400</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>relu</Value>
@@ -215,7 +235,7 @@
           <LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>33</Value>
+                <Value>81</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>linear</Value>

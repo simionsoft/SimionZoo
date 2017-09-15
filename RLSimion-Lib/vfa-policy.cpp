@@ -52,6 +52,10 @@ CPolicy::~CPolicy()
 {
 }
 
+CDeterministicPolicy::CDeterministicPolicy(CConfigNode* pConfigNode) : CPolicy(pConfigNode) {}
+
+CStochasticPolicy::CStochasticPolicy(CConfigNode* pConfigNode) : CPolicy(pConfigNode) {}
+
 
 //CStochasticUniformPolicy/////////////////////////////////////////
 /////////////////////////////////////////////////////////

@@ -1,3 +1,5 @@
+#ifdef _WIN64
+
 #include "deep-vfa-policy.h"
 #include "parameters.h"
 #include "SimGod.h"
@@ -129,3 +131,5 @@ double CDiscreteEpsilonGreedyDeepPolicy::updateNetwork(const CState * s, const C
 
 	return 0.0;
 }
+
+#endif

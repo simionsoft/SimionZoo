@@ -222,9 +222,9 @@
     <ClCompile Include="app-rlsimion.cpp" />
     <ClCompile Include="app.cpp" />
     <ClCompile Include="controller-adaptive.cpp" />
-    <ClCompile Include="deep-vfa-policy.cpp" />
+    <ClCompile Include="deep-vfa-policy.cpp"/>
     <ClCompile Include="deferred-load.cpp" />
-    <ClCompile Include="DQN.cpp" />
+    <ClCompile Include="DQN.cpp"/>
     <ClCompile Include="featuremap-bag.cpp" />
     <ClCompile Include="single-dimension-discrete-grid.cpp">
       <FileType>CppCode</FileType>
@@ -392,7 +392,7 @@
     <ProjectReference Include="..\3rd-party\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\tools\NNCreatorLib\NNCreatorLib.vcxproj">
+    <ProjectReference Include="..\tools\NNCreatorLib\NNCreatorLib.vcxproj" Condition="'$(Platform)' == 'x64'">
       <Project>{72cf78b6-1dca-4ba6-8ee0-c98e9226f853}</Project>
     </ProjectReference>
     <ProjectReference Include="..\tools\OpenGLRenderer\OpenGLRenderer.vcxproj">
