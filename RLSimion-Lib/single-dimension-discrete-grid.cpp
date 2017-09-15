@@ -108,7 +108,7 @@ CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariab
 
 	initVarRange();
 
-	m_numCenters = (int)(m_max - m_min) / (int) m_stepSize.get() + 1;
+	m_numCenters = (int)((m_max - m_min) / m_stepSize.get() + 1);
 	//step size must be compatible with value range (example: 0-2 can not be divided in steps with size 0.8)
 	assert((m_numCenters - 1) * m_stepSize.get() == (m_max - m_min));
 

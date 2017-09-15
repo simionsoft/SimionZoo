@@ -118,8 +118,11 @@ double CDiscreteEpsilonGreedyDeepPolicy::updateNetwork(const CState * s, const C
 	double targetValue = r + gamma * m_actionValuePredictionVector[choosenActionIndex];
 	m_actionValuePredictionVector[choosenActionIndex] = targetValue;
 
-	for (int i = 0; i < m_numberOfStateFeatures; i++)
-		m_stateVector[i] = ((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s, nullptr);
+	for (int i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
+	{
+		auto item = m_pStateOutFeatures->m_pFeatures[i];
+		m_stateVector[item.m_index] = item.m_factor;
+	}
 	//std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", stateVector } };
 
 	m_QNetwork.getNetwork()->train(m_stateVector, m_actionValuePredictionVector, 1);
