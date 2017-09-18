@@ -11,20 +11,13 @@ namespace Badger.ViewModels
 {
     public class LoggedExperimentalUnitViewModel : SelectableTreeItem
     {
-        private string m_logFilePath = "";
-        public string logFilePath { get { return m_logFilePath; } set { m_logFilePath = value; } }
-
-        private string m_logDescriptorFilePath = "";
-        public string logDescriptorFilePath { get { return m_logDescriptorFilePath; } set { m_logDescriptorFilePath = value; } }
-
-        private string m_experimentFilePath = "";
-        public string experimentFilePath { get { return m_experimentFilePath; } set { m_experimentFilePath = value; } }
+        public SimionLog Log { get; }
 
         private string m_name;
-        public string name
+        public string Name
         {
             get { return m_name; }
-            set { m_name = value; NotifyOfPropertyChange(() => name); }
+            set { m_name = value; NotifyOfPropertyChange(() => Name); }
         }
 
         private XmlDocument m_logDescriptor;
@@ -42,30 +35,23 @@ namespace Badger.ViewModels
         }
         public string ForkValuesAsString => Utility.DictionaryAsString(forkValues);
 
-        private List<string> m_variablesInLog = new List<string>();
+        public List<string> VariablesInLog => Log.VariablesLogged;
 
         public LoggedExperimentalUnitViewModel(XmlNode configNode, string baseDirectory)
         {
+            //Experiment Name
             if (configNode.Attributes != null)
             {
                 if (configNode.Attributes.GetNamedItem(XMLConfig.nameAttribute) != null)
-                    name = configNode.Attributes[XMLConfig.nameAttribute].Value;
-
-                if (configNode.Attributes.GetNamedItem(XMLConfig.pathAttribute) != null)
-                    experimentFilePath = baseDirectory + configNode.Attributes[XMLConfig.pathAttribute].Value;
+                    Name = configNode.Attributes[XMLConfig.nameAttribute].Value;
             }
+            //Initalize the paths to the log files
+            if (configNode.Attributes.GetNamedItem(XMLConfig.pathAttribute) == null)
+                throw new Exception("Malformed experiment batch file: cannot get the path to an experimental unit");
+            Log= new SimionLog( baseDirectory + configNode.Attributes[XMLConfig.pathAttribute].Value);
 
-            logDescriptorFilePath = SimionFileData.GetLogFilePath(experimentFilePath, true);
-            if (!File.Exists(logDescriptorFilePath))
-            {
-                //for back-compatibility: if the approapriate log file is not found, check whether one exists
-                //with the legacy naming convention: experiment-log.xml
-                logDescriptorFilePath = SimionFileData.GetLogFilePath(experimentFilePath, true, true);
-                logFilePath = SimionFileData.GetLogFilePath(experimentFilePath, false, true);
-            }
-            else
-                logFilePath = SimionFileData.GetLogFilePath(experimentFilePath, false);
 
+            //FORKS
             //load the value of each fork used in this experimental unit
             foreach (XmlNode fork in configNode.ChildNodes)
             {
@@ -77,147 +63,49 @@ namespace Badger.ViewModels
                 }
             }
         }
-
-        public List<string> processDescriptor()
-        {
-            List<string> variablesNames = new List<string>();
-            XmlNode node = m_logDescriptor.FirstChild;
-            if (node.Name == XMLConfig.descriptorRootNodeName)
-            {
-                foreach (XmlNode child in node.ChildNodes)
-                {
-                    if (child.Name == XMLConfig.descriptorStateVarNodeName
-                        || child.Name == XMLConfig.descriptorActionVarNodeName
-                        || child.Name == XMLConfig.descriptorRewardVarNodeName
-                        || child.Name == XMLConfig.descriptorStatVarNodeName)
-                    {
-                        string varName = child.InnerText;
-                        // add the variable to the local list
-                        m_variablesInLog.Add(varName);
-                        variablesNames.Add(varName);
-                    }
-                }
-            }
-
-            return variablesNames;
-        }
+       
 
         //loads the log file and then returns the data of the requested variable as a TrackData object
-        //Not the most efficient way (we load more than we need), but the easiest right now
-        public TrackData loadTrackData(List<string> varNames)
+        //Not the most efficient way (we may load way more than we need), but good enough for now
+        public TrackData LoadTrackData(List<ReportParams> trackParameters)
         {
-            SimionLog experimentData = new SimionLog();
-            experimentData.LoadBinaryLog(m_logFilePath);
+            Log.LoadBinaryLog();
 
-            if (!experimentData.Succesful || experimentData.TotalNumEpisodes == 0) return null;
+            if (!Log.BinFileLoadSuccess || Log.TotalNumEpisodes == 0) return null;
 
-            int longestEpisodeIndex = experimentData.Episodes.Select(e => e.steps.Count).MaxIndex();
-            int maxNumSteps = experimentData.Episodes[longestEpisodeIndex].steps.Count;
-
-            EpisodesData lastEvaluationEpisode = experimentData.EvaluationEpisodes.Where(e => e.type == 0).Last();
-
-            TrackData data = new TrackData(maxNumSteps, experimentData.TotalNumEpisodes, experimentData.NumEvaluationEpisodes, experimentData.NumTrainingEpisodes, varNames);
-            data.bSuccesful = experimentData.Succesful;
-            data.forkValues = forkValues;
-
-            //set the realTime and simTime
-            foreach (var item in experimentData.Episodes[longestEpisodeIndex].steps.Select((step, index) => new { index, step }))
+            TrackData trackData = new TrackData(forkValues);
+            DataSeries dataSeries;
+            foreach (ReportParams track in trackParameters)
             {
-                data.realTime[item.index] = item.step.episodeRealTime;
-                data.simTime[item.index] = item.step.episodeSimTime;
-            }
-
-            //set the experiment data now
-            int evaluationIndex = 0;
-            int trainingIndex = 0;
-            foreach (EpisodesData episode in experimentData.Episodes)
-            {
-                if (episode.type == EpisodesData.episodeTypeEvaluation)
+                switch(track.Type)
                 {
-                    //experiment-long average values
-                    foreach (string variable in varNames)
-                    {
-                        double avg = 0.0;
-
-                        int variableIndex = m_variablesInLog.IndexOf(variable);
-                        if (variableIndex >= 0)
+                    case PlotType.LastEvaluation:
+                        EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
+                        dataSeries = new DataSeries(track);
+                        dataSeries.AddSeries(Log.GetEpisodeData(lastEpisode, track));
+                        trackData.AddVariableData(track, dataSeries);
+                        break;
+                    case PlotType.EvaluationAverages:
+                        trackData.AddVariableData(track, Log.GetAveragedData(Log.EvaluationEpisodes, track));
+                        break;
+                    case PlotType.AllEvaluationEpisodes:
+                    case PlotType.AllTrainingEpisodes:
+                        dataSeries = new DataSeries(track);
+                        List<EpisodesData> episodes;
+                        if (track.Type == PlotType.AllEvaluationEpisodes)
+                            episodes = Log.EvaluationEpisodes;
+                        else episodes = Log.TrainingEpisodes;
+                        foreach(EpisodesData episode in episodes)
                         {
-                            TrackVariableData variableData = null;
-                            variableData = data.getVariableData(variable);
-
-                            if (variableData != null && episode.steps.Count > 0)
-                            {
-                                foreach (StepData step in episode.steps)
-                                {
-                                    avg += step.data[variableIndex];
-                                }
-                                avg /= episode.steps.Count;
-                                variableData.experimentAverageData.Values[episode.index - 1] = avg;
-                            }
+                            XYSeries subSeries = Log.GetEpisodeData(episode, track);
+                            subSeries.Id = episode.index.ToString();
+                            dataSeries.AddSeries(subSeries);
                         }
-                    }
-                }
-
-                //gather data for all training/evaluation episodes
-                foreach (string variable in varNames)
-                {
-                    int variableIndex = m_variablesInLog.IndexOf(variable);
-                    if (variableIndex >= 0)
-                    {
-                        TrackVariableData variableData = data.getVariableData(variable);
-
-                        if (episode.type == 0)
-                            variableData.experimentEvaluationData[evaluationIndex].SetLength(episode.steps.Count);
-                        else
-                            variableData.experimentTrainingData[trainingIndex].SetLength(episode.steps.Count);
-
-                        foreach (var item in episode.steps.Select((step, index) => new { index, step }))
-                        {
-                            if (variableData != null)
-                            {
-                                if (episode.type == 0)
-                                    variableData.experimentEvaluationData[evaluationIndex].Values[item.index] = item.step.data[variableIndex];
-                                else
-                                    variableData.experimentTrainingData[trainingIndex].Values[item.index] = item.step.data[variableIndex];
-                            }
-                        }
-                    }
-                }
-
-                if (episode.type == 0)
-                    evaluationIndex++;
-                else
-                    trainingIndex++;
-            }
-
-
-            //last evaluation Episode
-            foreach (string variable in varNames)
-            {
-                int variableIndex = m_variablesInLog.IndexOf(variable);
-                if (variableIndex >= 0)
-                {
-                    TrackVariableData variableData = data.getVariableData(variable);
-
-                    variableData.lastEvaluationEpisodeData.SetLength(lastEvaluationEpisode.steps.Count);
-
-                    foreach (var item in lastEvaluationEpisode.steps.Select((step, index) => new { index, step }))
-                    {
-                        if (variableData != null)
-                            variableData.lastEvaluationEpisodeData.Values[item.index] = item.step.data[variableIndex];
-                    }
+                        trackData.AddVariableData(track, dataSeries);
+                        break;
                 }
             }
-
-            //calculate each variable's last episode stats
-            foreach (string variable in varNames)
-            {
-                TrackVariableData variableData = data.getVariableData(variable);
-                if (variableData != null)
-                    variableData.CalculateStats();
-            }
-
-            return data;
+            return trackData;
         }
     }
 }

@@ -342,10 +342,19 @@ namespace Herd
             do
             {
                 header = m_xmlStream.processNextXMLTag();
-                if (header == "") //there's nothing in the buffer or incomplete tags
+                while (header == "") //there's nothing in the buffer or incomplete tags
+                {
                     ret = await ReadFromStreamAsync(cancelToken);
+                    header = m_xmlStream.processNextXMLTag();
+                }
 
                 match = Regex.Match(header, pattern);
+
+                if (!match.Success)
+                {
+                    logMessage("WARNING: Unexpected XML tag in ReadUntilMatchAsync(): " + header);
+                    logMessage("Buffer contents: " + Encoding.Default.GetString(m_xmlStream.getBuffer()));
+                }
             }
             while (!match.Success);
 
@@ -647,7 +656,7 @@ namespace Herd
                 discardProcessedData();
                 m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
 
-                m_match = Regex.Match(m_asciiBuffer, @"<([^\s>]*)");
+                m_match = Regex.Match(m_asciiBuffer, @"<([^\s>]*)[^>]*>");
 
                 if (m_match.Success)
                 {
@@ -675,6 +684,7 @@ namespace Herd
                     m_lastXMLItem = m_match.Value;
                     return m_match.Value;
                 }
+                else logMessage("WARNING: Couldn't match input in processNextXMLTag(): " + m_asciiBuffer);
             }
             return "";
         }
@@ -707,7 +717,7 @@ namespace Herd
         {
             if (m_lastXMLItem != "")
             {
-                m_match = Regex.Match(m_lastXMLItem, @"<([^\s\>]*)");
+                m_match = Regex.Match(m_lastXMLItem, @"<([^\s>]*)[^>]*>");
                 if (m_match.Success)
                     return m_match.Groups[1].Value;
             }

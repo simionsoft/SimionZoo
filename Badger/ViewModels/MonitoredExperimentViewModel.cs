@@ -10,9 +10,9 @@ namespace Badger.ViewModels
     {
         private LoggedExperimentalUnitViewModel m_loggedExperimentalUnit;
 
-        public string PipeName => m_loggedExperimentalUnit.name;
-        public string Name => m_loggedExperimentalUnit.name;
-        public string FilePath => m_loggedExperimentalUnit.experimentFilePath;
+        public string PipeName => m_loggedExperimentalUnit.Name;
+        public string Name => m_loggedExperimentalUnit.Name;
+        public string FilePath => m_loggedExperimentalUnit.Log.ExperimentFileName;
 
         public string ExeFile { get; set; }
 

@@ -38,29 +38,29 @@ namespace LogStats_SanityCheck
     }
     class Program
     {
-        static EpisodeStats GetLastEpisodeStats(string logfile)
-        {
-            SimionLog log;
-            EpisodesData lastEpisode;
+        //static EpisodeStats GetLastEpisodeStats(string logfile)
+        //{
+        //    SimionLog log;
+        //    EpisodesData lastEpisode;
 
-            log = new SimionLog();
-            log.LoadBinaryLog(logfile);
+        //    log = new SimionLog();
+        //    log.LoadBinaryLog(logfile);
 
-            if (log.Succesful)
-            {
-                lastEpisode = log.EvaluationEpisodes[log.TotalNumEpisodes - 1];
+        //    if (log.BinFileLoadSuccess)
+        //    {
+        //        lastEpisode = log.EvaluationEpisodes[log.TotalNumEpisodes - 1];
 
-                return new EpisodeStats(lastEpisode);
-            }
-            else Console.WriteLine("Error reading file");
-            return null;
-        }
+        //        return new EpisodeStats(lastEpisode);
+        //    }
+        //    else Console.WriteLine("Error reading file");
+        //    return null;
+        //}
         static void Main(string[] args)
         {
-            List<EpisodeStats> stats = new List<EpisodeStats>();
-            string baseDir = "..\\..\\..\\..\\..\\experiments\\a\\";
+            //List<EpisodeStats> stats = new List<EpisodeStats>();
+            //string baseDir = "..\\..\\..\\..\\..\\experiments\\a\\";
 
-            EpisodeStats testStats = GetLastEpisodeStats(baseDir + "2mass-reg-controllers-0-0-0-0-0-0\\2mass-reg-controllers-0-0-0-0-0-0.simion.log.bin");
+            //EpisodeStats testStats = GetLastEpisodeStats(baseDir + "2mass-reg-controllers-0-0-0-0-0-0\\2mass-reg-controllers-0-0-0-0-0-0.simion.log.bin");
 
             //foreach (string file in Directory.EnumerateFiles(baseDir, "*.log.bin", SearchOption.AllDirectories))
             //{

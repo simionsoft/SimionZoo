@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+
 
 namespace Badger.Data
 {
@@ -11,17 +7,17 @@ namespace Badger.Data
     {
         [Browsable(false)]
         Undefined = 0,
-        [Description("Last evaluation episode")]
+        [Description("Last evaluation")]
         LastEvaluation = 1,
-        [Description("All evaluation episodes")]
+        [Description("All evaluations")]
         AllEvaluationEpisodes = 2,
         //[Description("Average of each evaluation episode")]
         //AverageOfEachEvaluationEpisode = 4,
-        [Description("All training episodes")]
+        [Description("All training")]
         AllTrainingEpisodes = 8,
         //[Description("Average of each training episode")]
         //AverageOfEachTrainingEpisode = 16,
         [Description("Evaluation averages")]
-        AverageOfEachEpisode = 32
+        EvaluationAverages = 32
     };
 }

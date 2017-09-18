@@ -4,6 +4,7 @@ using Badger.Data;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Data;
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {
@@ -13,10 +14,13 @@ namespace Badger.ViewModels
         {
             m_name = name;
 
+            ProcessFuncs.Add(DataProcess.None);
+            ProcessFuncs.Add(DataProcess.Abs);
+
             m_selectedPlotTypes = new ObservableCollection<string>();
             m_selectedPlotTypes.CollectionChanged += M_selectedPlotTypes_CollectionChanged;
 
-            Badger.Data.EnumDescriptionConverter conv = new EnumDescriptionConverter();
+            EnumDescriptionConverter conv = new EnumDescriptionConverter();
             SelectedPlotTypes.Add((string)((IValueConverter)conv).Convert(PlotType.LastEvaluation,typeof(PlotType),null, CultureInfo.CurrentCulture));
         }
 
@@ -24,8 +28,8 @@ namespace Badger.ViewModels
         {
             NotifyOfPropertyChange(() => SelectedPlotTypes);
             NotifyOfPropertyChange(() => PlaceHolderText);
-            SelectedPlotType = PlotType.LastEvaluation;
-            Badger.Data.EnumDescriptionConverter conv = new EnumDescriptionConverter();
+            SelectedPlotType = PlotType.Undefined;
+            EnumDescriptionConverter conv = new EnumDescriptionConverter();
             foreach (var item in m_selectedPlotTypes)
             {
                 SelectedPlotType |= (PlotType)((IValueConverter)conv).ConvertBack(item, typeof(PlotType), null, CultureInfo.CurrentCulture);
@@ -99,5 +103,13 @@ namespace Badger.ViewModels
         ReportsWindowViewModel m_parent;
 
         public void setParent(ReportsWindowViewModel parent) { m_parent = parent; }
+
+        private BindableCollection<string> m_processFuncs = new BindableCollection<string>();
+        public BindableCollection<string> ProcessFuncs
+        {
+            get { return m_processFuncs; }
+            set { m_processFuncs = value; NotifyOfPropertyChange(() => ProcessFuncs); }
+        }
+        public string SelectedProcessFunc { get; set; } = DataProcess.None;
     }
 }

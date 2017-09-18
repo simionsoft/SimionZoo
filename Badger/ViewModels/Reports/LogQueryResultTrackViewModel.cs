@@ -1,146 +1,17 @@
 ﻿using Caliburn.Micro;
 using System.Collections.Generic;
-using System;
+using Badger.Simion;
 using Badger.Data;
-using System.Linq;
 
 namespace Badger.ViewModels
 {
-    public class DataSeries
-    {
-        private double[] _values = null;
-        public double[] Values
-        {
-            get
-            {
-                if (_values is null)
-                    throw new InvalidOperationException("Values has not been initiliazed; you must call SetLength() before accessing the Values property.");
-                return _values;
-            }
-            set { _values = value; }
-        }
-        public StatData Stats = new StatData();
-
-        public bool Initialized
-        {
-            get { return (_values != null); }
-        }
-
-        public void SetLength(int numValues)
-        {
-            Values = new double[numValues];
-        }
-
-        public void CalculateStats()
-        {
-            if (!Initialized) return;
-
-            //calculate avg, min and max
-            double sum = 0.0;
-            double absSum = 0.0;
-            Stats.min = Values[0]; Stats.max = Values[0];
-            foreach (double val in Values)
-            {
-                if (val > Stats.max) Stats.max = val;
-                if (val < Stats.min) Stats.min = val;
-                sum += val;
-                absSum += Math.Abs(val);
-            }
-
-            Stats.avg = sum / Values.Length;
-            Stats.absAvg = absSum / Values.Length;
-
-            //calculate std. deviation
-            double diff;
-            sum = 0.0;
-            foreach (double val in Values)
-            {
-                diff = val - Stats.avg;
-                sum += diff * diff;
-            }
-
-            Stats.stdDev = Math.Sqrt(sum / Values.Length);
-        }
-
-    }
-    public class TrackVariableData
-    {
-        public TrackVariableData(int numSteps, int evaluationEpisodes, int trainingEpisodes)
-        {
-            lastEvaluationEpisodeData = new DataSeries();
-            lastEvaluationEpisodeData.SetLength(numSteps);
-            if (numSteps > 0)
-            {
-                experimentAverageData = new DataSeries();
-                //averages are only interesting in evaluation episodes
-                experimentAverageData.SetLength(evaluationEpisodes);
-            }
-            
-            experimentEvaluationData = new List<DataSeries>(evaluationEpisodes);
-            for (int i = 0; i < evaluationEpisodes; i++)
-            {
-                experimentEvaluationData.Add(new DataSeries());
-            }
-            
-            experimentTrainingData = new List<DataSeries>(trainingEpisodes);
-            for (int i = 0; i < trainingEpisodes; i++)
-            {
-                experimentTrainingData.Add(new DataSeries());
-            }
-        }
-
-        public DataSeries lastEvaluationEpisodeData;
-        public DataSeries experimentAverageData;
-        public List<DataSeries> experimentEvaluationData;
-        public List<DataSeries> experimentTrainingData;
-
-        public void CalculateStats()
-        {
-            if (lastEvaluationEpisodeData != null) lastEvaluationEpisodeData.CalculateStats();
-            if (experimentAverageData != null) experimentAverageData.CalculateStats();
-
-            foreach (var item in experimentEvaluationData)
-                item.CalculateStats();
-
-            foreach (var item in experimentTrainingData)
-                item.CalculateStats();
-        }
-    }
-    public class TrackData
-    {
-        public bool bSuccesful;
-        public double[] simTime;
-        public double[] realTime;
-        public Dictionary<string, string> forkValues;
-        private Dictionary<string, TrackVariableData> variablesData = new Dictionary<string, TrackVariableData>();
-
-        public TrackData(int maxNumSteps, int numEpisodes, int evaluationEpisodes, int trainingEpisodes, List<string> variables)
-        {
-            simTime = new double[maxNumSteps];
-            realTime = new double[maxNumSteps];
-            foreach (string variable in variables)
-            {
-                this.variablesData[variable] = new TrackVariableData(maxNumSteps, evaluationEpisodes, trainingEpisodes);
-            }
-        }
-
-        private void addVariableData(string variable, TrackVariableData variableData)
-        {
-            this.variablesData.Add(variable, variableData);
-        }
-
-        public TrackVariableData getVariableData(string variable)
-        {
-            if (variablesData.ContainsKey(variable)) return variablesData[variable];
-            else return null;
-        }
-    }
+ 
     public class LogQueryResultTrackViewModel : PropertyChangedBase
     {
         //data read fromm the log files: might be more than one track before applying a group function
         private List<TrackData> m_trackData = new List<TrackData>();
         //public merged track data: cannot be accessed before calling consolidateGroups()
-        public TrackData trackData
+        public TrackData ResultTrackData
         {
             get { if (m_trackData.Count == 1) return m_trackData[0]; return null; }
             set { }
@@ -196,7 +67,7 @@ namespace Badger.ViewModels
         }
 
         //this function selects a unique track fromm each group (if there's more than one track)
-        public void ConsolidateGroups(string function, string variable, List<string> groupBy)
+        public void ConsolidateGroups(string inGroupSelectionFunction, string inGroupSelectionVariable, List<string> groupBy)
         {
             if (m_trackData.Count > 1)
             {
@@ -204,27 +75,18 @@ namespace Badger.ViewModels
                 double min = double.MaxValue, max = double.MinValue;
                 foreach (TrackData track in m_trackData)
                 {
-                    TrackVariableData variableData = track.getVariableData(variable);
+                    DataSeries variableData = track.GetDataSeriesForOrdering(inGroupSelectionVariable);
                     if (variableData != null)
                     {
-                        if (function == LogQuery.functionMax && variableData.lastEvaluationEpisodeData.Stats.avg > max)
+                        double sortValue = variableData.Series.Stats.avg;
+                        if (inGroupSelectionFunction == LogQuery.functionMax && sortValue > max)
                         {
-                            max = variableData.lastEvaluationEpisodeData.Stats.avg;
+                            max = sortValue;
                             selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMin && variableData.lastEvaluationEpisodeData.Stats.avg < min)
+                        if (inGroupSelectionFunction == LogQuery.functionMin && sortValue < min)
                         {
-                            min = variableData.lastEvaluationEpisodeData.Stats.avg;
-                            selectedTrack = track;
-                        }
-                        if (function == LogQuery.functionMaxAbs && variableData.lastEvaluationEpisodeData.Stats.absAvg > max)
-                        {
-                            max = variableData.lastEvaluationEpisodeData.Stats.absAvg;
-                            selectedTrack = track;
-                        }
-                        if (function == LogQuery.functionMinAbs && variableData.lastEvaluationEpisodeData.Stats.absAvg < min)
-                        {
-                            min = variableData.lastEvaluationEpisodeData.Stats.absAvg;
+                            min = sortValue;
                             selectedTrack = track;
                         }
                     }
@@ -235,7 +97,7 @@ namespace Badger.ViewModels
                 //create a copy of the dictionary to solve the following issue:
                 //after generating the first report (with groups) the forkValues of the experiments are cleared
                 //and therefore, no more report can be generated afterwards
-                forkValues = new Dictionary<string, string>(selectedTrack.forkValues);
+                forkValues = new Dictionary<string, string>(selectedTrack.ForkValues);
 
                 if (groupBy.Count > 0)
                 {

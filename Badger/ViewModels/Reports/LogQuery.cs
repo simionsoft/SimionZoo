@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Caliburn.Micro;
+using Badger.Simion;
+using Badger.Data;
 
 namespace Badger.ViewModels
 {
@@ -40,15 +42,11 @@ namespace Badger.ViewModels
     {
         public const string functionMax = "Max";
         public const string functionMin = "Min";
-        public const string functionMaxAbs = "Max(Abs)";
-        public const string functionMinAbs = "Min(Abs)";
 
         public const string noLimitOnResults = "-";
 
         public const string orderAsc = "Asc";
         public const string orderDesc = "Desc";
-        public const string orderAscAbs = "Asc(Abs)";
-        public const string orderDescAbs = "Desc(Abs)";
 
         public const string fromAll = "*";
         public const string fromSelection = "Selection";
@@ -120,18 +118,31 @@ namespace Badger.ViewModels
             }
         }
 
-        private BindableCollection<LogQueryResultTrackViewModel> m_resultTracks
-            = new BindableCollection<LogQueryResultTrackViewModel>();
-        public BindableCollection<LogQueryResultTrackViewModel> resultTracks
+        private List<LogQueryResultTrackViewModel> m_resultTracks
+            = new List<LogQueryResultTrackViewModel>();
+        public List<LogQueryResultTrackViewModel> ResultTracks
         {
             get { return m_resultTracks; }
-            set { m_resultTracks = value; NotifyOfPropertyChange(() => resultTracks); }
+            set { m_resultTracks = value; NotifyOfPropertyChange(() => ResultTracks); }
         }
 
-        private LogQueryResultTrackViewModel getTrack(Dictionary<string, string> forkValues)
+        public List<ReportParams> GetTracksParameters()
+        {
+            List<ReportParams> list = new List<ReportParams>();
+            foreach(LogQueryResultTrackViewModel track in ResultTracks)
+            {
+                //we iterate over the TrackParameters of the result track
+                foreach (ReportParams parameters in track.ResultTrackData.Data.Keys)
+                    if (!list.Contains(parameters))
+                        list.Add(parameters);
+            }
+            return list;
+        }
+
+        private LogQueryResultTrackViewModel GetTrack(Dictionary<string, string> forkValues)
         {
             uint numMatchedForks;
-            foreach (LogQueryResultTrackViewModel resultTrack in resultTracks)
+            foreach (LogQueryResultTrackViewModel resultTrack in ResultTracks)
             {
                 numMatchedForks = 0;
                 foreach (string forkName in forkValues.Keys)
@@ -154,7 +165,9 @@ namespace Badger.ViewModels
             set { m_loggedVariables = value; }
         }
 
-        public void execute(BindableCollection<LoggedExperimentViewModel> experiments
+        public List<ReportParams> Reports = new List<ReportParams>();
+
+        public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
             , BindableCollection<LoggedVariableViewModel> loggedVariablesVM)
         {
             LogQueryResultTrackViewModel resultTrack = null;
@@ -164,6 +177,8 @@ namespace Badger.ViewModels
             foreach (LoggedVariableViewModel variable in loggedVariablesVM)
                 if ( variable.bIsSelected )
                     variables.Add(variable.name);
+
+            Reports = DataTrackUtilities.FromLoggedVariables(loggedVariablesVM);
 
             //traverse the experimental units within each experiment
             foreach (LoggedExperimentViewModel exp in experiments)
@@ -175,11 +190,11 @@ namespace Badger.ViewModels
                     {
                         if (groupBy.Count != 0)
                         {
-                            resultTrack = getTrack(expUnit.forkValues);
+                            resultTrack = GetTrack(expUnit.forkValues);
                             if (resultTrack != null)
                             {
                                 //the track exists and we are using forks to group results
-                                TrackData trackData = expUnit.loadTrackData(variables);
+                                TrackData trackData = expUnit.LoadTrackData(Reports);
                                 if (trackData!=null)
                                     resultTrack.AddTrackData(trackData);
                             }
@@ -207,18 +222,18 @@ namespace Badger.ViewModels
                                 variables.Add(orderByVariable);
 
                             //load data from the log file
-                            TrackData trackData = expUnit.loadTrackData(variables);
+                            TrackData trackData = expUnit.LoadTrackData(Reports);
 
                             if (trackData != null)
                             {
                                 //for now, we just ignore failed experiments. Maybe we could do something more sophisticated
                                 //for example, allow to choose only those parameter variations that lead to failed experiments
-                                if (trackData.bSuccesful)
+                                if (trackData.HasData)
                                     newResultTrack.AddTrackData(trackData);
 
                                 //we only consider those tracks with data loaded
                                 if (newResultTrack.HasData)
-                                    resultTracks.Add(newResultTrack);
+                                    ResultTracks.Add(newResultTrack);
                             }
                         }
                     }
@@ -228,7 +243,7 @@ namespace Badger.ViewModels
             //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
             if (groupBy.Count > 0)
             {
-                foreach (LogQueryResultTrackViewModel track in resultTracks)
+                foreach (LogQueryResultTrackViewModel track in ResultTracks)
                     track.ConsolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
             }
 
@@ -237,36 +252,30 @@ namespace Badger.ViewModels
             {
                 int numMaxTracks = int.Parse(limitToOption);
 
-                if (resultTracks.Count > numMaxTracks)
+                if (ResultTracks.Count > numMaxTracks)
                 {
                     SortedList<double, LogQueryResultTrackViewModel> sortedList;
 
                     if (orderByFunction == orderAsc)
-                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
+                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(ResultTracks.Count
                             , new AscComparer());
-                    else if (orderByFunction == orderDesc)
-                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
+                    else // (orderByFunction == orderDesc)
+                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(ResultTracks.Count
                             , new DescComparer());
-                    else if (orderByFunction == orderAscAbs)
-                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
-                            , new AscAbsComparer());
-                    else
-                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
-                            , new DescAbsComparer());
 
-                    foreach (LogQueryResultTrackViewModel track in resultTracks)
+                    foreach (LogQueryResultTrackViewModel track in ResultTracks)
                     {
                         double sortValue = 0.0;
-                        TrackVariableData variableData = track.trackData.getVariableData(orderByVariable);
+                        DataSeries variableData = track.ResultTrackData.GetDataSeriesForOrdering(orderByVariable);
                         if (variableData != null)
-                            sortValue = variableData.lastEvaluationEpisodeData.Stats.avg;
+                            sortValue = variableData.Series.Stats.avg;
                         sortedList.Add(sortValue, track);
                     }
 
                     //set the sorted list as resultTracks
-                    resultTracks.Clear();
+                    ResultTracks.Clear();
                     for (int i = 0; i < numMaxTracks; i++)
-                        resultTracks.Add(sortedList.Values[i]);
+                        ResultTracks.Add(sortedList.Values[i]);
                 }
             }
         }

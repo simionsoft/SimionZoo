@@ -37,8 +37,8 @@ namespace Badger.ViewModels
             foreach(StatViewModel stat in stats)
             {
                 fileWriter.WriteLine(leftSpace + "  <" + XMLConfig.statVariableItemTag 
-                    + " " + XMLConfig.groupIdAttribute + "=\"" + stat.experimentId + "\" "
-                    + XMLConfig.trackIdAttribute + "=\"" + stat.trackId + "\">");
+                    + " " + XMLConfig.groupIdAttribute + "=\"" + stat.ExperimentId + "\" "
+                    + XMLConfig.trackIdAttribute + "=\"" + stat.TrackId + "\">");
                 stat.export(fileWriter, leftSpace + "    ");
                 fileWriter.WriteLine(leftSpace + "  </" + XMLConfig.statVariableItemTag + ">");
             }

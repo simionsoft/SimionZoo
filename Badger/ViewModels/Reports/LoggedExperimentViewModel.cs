@@ -64,13 +64,9 @@ namespace Badger.ViewModels
 
                         if (isForReport)
                         {
-                            newExpUnit.logDescriptor = new XmlDocument();
-                            if (File.Exists(newExpUnit.logDescriptorFilePath))
-                            {
-                                newExpUnit.logDescriptor.Load(newExpUnit.logDescriptorFilePath);
-                                List<string> variableNames = newExpUnit.processDescriptor();
-                                foreach (var name in variableNames) AddVariable(name);
-                            }
+                            //We load the list of variables from the log descriptor and add them to the global list
+                            newExpUnit.Log.LoadLogDescriptor();
+                            foreach (string variable in newExpUnit.VariablesInLog) AddVariable(variable);
                         }
 
                         ExperimentalUnits.Add(newExpUnit);

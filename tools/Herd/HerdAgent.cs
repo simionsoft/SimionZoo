@@ -231,10 +231,13 @@ namespace Herd
                     case "Input": bret = await ReceiveFile(FileType.INPUT, true, true, cancelToken); break;
                     case "Output": bret = await ReceiveFile(FileType.OUTPUT, false, true, cancelToken); break;
                     case "/Job": bFooterPeeked = true; break;
+                    default: logMessage("WARNING: Unexpected xml tag received: " + xmlTag); break;
                 }
             } while (!bFooterPeeked);
 
+            logMessage("Waiting for job footer");
             bret = await ReceiveJobFooter(cancelToken);
+            logMessage("Job footer received");
 
             return true;
         }
