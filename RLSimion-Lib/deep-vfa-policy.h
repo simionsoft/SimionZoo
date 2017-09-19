@@ -4,6 +4,7 @@
 #include "parameters-numeric.h"
 
 class CSingleDimensionDiscreteActionVariableGrid;
+class CExperienceReplay;
 
 class CDeepPolicy
 {
@@ -11,7 +12,8 @@ protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	NEURAL_NETWORK_PROBLEM_DESCRIPTION m_QNetwork;
 	shared_ptr<CNetwork> m_pTargetNetwork;
-	CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
+	//CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
+	//m_experienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 
 public:
 	CDeepPolicy(CConfigNode* pConfigNode);

@@ -14,7 +14,6 @@ CDeepPolicy::CDeepPolicy(CConfigNode* pConfigNode)
 {
 	m_QNetwork = NEURAL_NETWORK_PROBLEM_DESCRIPTION(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
-	m_experienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 }
 
 CDeepPolicy::~CDeepPolicy()
