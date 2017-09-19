@@ -11,6 +11,7 @@ protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	NEURAL_NETWORK_PROBLEM_DESCRIPTION m_QNetwork;
 	shared_ptr<CNetwork> m_pTargetNetwork;
+	CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
 
 public:
 	CDeepPolicy(CConfigNode* pConfigNode);
@@ -22,10 +23,9 @@ public:
 	virtual double updateNetwork(const CState * s, const CAction * a, const CState * s_p, double r) = 0;
 };
 
-class CDiscreteEpsilonGreedyDeepPolicy : public CDeepPolicy
+class CDiscreteDeepPolicy : public CDeepPolicy
 {
 protected:
-	CHILD_OBJECT_FACTORY<CNumericValue> m_epsilon;
 	CSingleDimensionDiscreteActionVariableGrid* m_pGrid;
 	CFeatureList* m_pStateOutFeatures;
 
@@ -34,7 +34,29 @@ protected:
 	std::vector<float> m_stateVector;
 	std::vector<float> m_actionValuePredictionVector;
 public:
+	CDiscreteDeepPolicy(CConfigNode* pConfigNode);
+
+	virtual double selectAction(const CState *s, CAction *a) = 0;
+	virtual double updateNetwork(const CState * s, const CAction * a, const CState * s_p, double r) = 0;
+};
+
+class CDiscreteEpsilonGreedyDeepPolicy : public CDiscreteDeepPolicy
+{
+protected:
+	CHILD_OBJECT_FACTORY<CNumericValue> m_epsilon;
+public:
 	CDiscreteEpsilonGreedyDeepPolicy(CConfigNode* pConfigNode);
+
+	virtual double selectAction(const CState *s, CAction *a);
+	virtual double updateNetwork(const CState * s, const CAction * a, const CState * s_p, double r);
+};
+
+class CDiscreteSoftmaxDeepPolicy : public CDiscreteDeepPolicy
+{
+protected:
+	CHILD_OBJECT_FACTORY<CNumericValue> m_temperature;
+public:
+	CDiscreteSoftmaxDeepPolicy(CConfigNode* pConfigNode);
 
 	virtual double selectAction(const CState *s, CAction *a);
 	virtual double updateNetwork(const CState * s, const CAction * a, const CState * s_p, double r);

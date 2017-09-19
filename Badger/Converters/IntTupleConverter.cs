@@ -22,8 +22,32 @@ namespace Badger.Converters
             var sParameter = parameter as string;
             if (sParameter is null)
             {
-                sParameter = ",";
+                sParameter = "()";
             }
+
+            if (targetType == typeof(IntTupleBase))
+            {
+                switch (sParameter.Count(c => c == ','))
+                {
+                    default:
+                    case 0:
+                        targetType = typeof(IntTuple1D);
+                        break;
+
+                    case 1:
+                        targetType = typeof(IntTuple2D);
+                        break;
+
+                    case 2:
+                        targetType = typeof(IntTuple3D);
+                        break;
+
+                    case 3:
+                        targetType = typeof(IntTuple4D);
+                        break;
+                }
+            }
+
             var result = (IntTupleBase)Activator.CreateInstance(targetType) as IntTupleBase;
             try
             {

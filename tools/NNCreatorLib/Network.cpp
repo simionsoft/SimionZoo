@@ -50,7 +50,9 @@ void CNetwork::train(std::unordered_map<std::string, std::vector<float>&>& input
 	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> arguments = std::unordered_map<CNTK::Variable, CNTK::ValuePtr>();
 	for each (auto item in m_inputs)
 	{
-		arguments[item->getInputVariable()] = CNTK::Value::CreateBatch(item->getInputVariable().Shape(), inputDataMap.at(m_inputs[0]->getId()), CNTK::DeviceDescriptor::CPUDevice());
+		//only use inputs, which are actually needed/used in the model
+		if (item->getIsUsed())
+			arguments[item->getInputVariable()] = CNTK::Value::CreateBatch(item->getInputVariable().Shape(), inputDataMap.at(m_inputs[0]->getId()), CNTK::DeviceDescriptor::CPUDevice());
 	}
 
 	arguments[m_targetOutput] = outputSequence;
@@ -68,7 +70,9 @@ void CNetwork::predict(std::unordered_map<std::string, std::vector<float>&>& inp
 	std::unordered_map<CNTK::Variable, CNTK::ValuePtr> inputs = std::unordered_map<CNTK::Variable, CNTK::ValuePtr>();
 	for each (auto item in m_inputs)
 	{
-		inputs[item->getInputVariable()] = CNTK::Value::CreateBatch(item->getInputVariable().Shape(), inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
+		//only use inputs, which are actually needed/used in the model
+		if (item->getIsUsed())
+			inputs[item->getInputVariable()] = CNTK::Value::CreateBatch(item->getInputVariable().Shape(), inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
 	}
 
 	outputPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice());

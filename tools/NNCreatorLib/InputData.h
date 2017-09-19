@@ -16,6 +16,7 @@ protected:
 	CIntTuple* m_pShape;
 	CNTK::Variable m_pInputVariable; //TODO: Fix = nullptr
 	CInputData(tinyxml2::XMLElement* pNode);
+	bool m_isUsed = false; 
 
 public:
 	CInputData(string id, CNTK::Variable pInputVariable);
@@ -28,5 +29,8 @@ public:
 	const string& getName() { return m_name; }
 	const CNTK::Variable getInputVariable() { return m_pInputVariable; }
 	void createInputVariable();
+
+	bool getIsUsed() const { return m_isUsed; }
+	void setIsUsed(bool isUsed) { m_isUsed = isUsed; }
 };
 

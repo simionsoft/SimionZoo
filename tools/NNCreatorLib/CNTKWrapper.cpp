@@ -17,9 +17,13 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(const CLink * pLink, vector<const CLin
 
 	CNTK::FunctionPtr pInput;
 	for each (CInputData* pItem in inputList)
+	{
 		if (!strcmp(pItem->getId().c_str(), inputID.c_str()))
+		{
+			pItem->setIsUsed(true);
 			return pItem->getInputVariable();
-
+		}
+	}
 	return nullptr;
 }
 
