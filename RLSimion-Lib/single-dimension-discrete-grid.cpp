@@ -20,10 +20,10 @@ CSingleDimensionDiscreteGrid::~CSingleDimensionDiscreteGrid()
 
 void CSingleDimensionDiscreteGrid::initCenterPoints()
 {
-	m_pCenters = new double[m_numCenters];
+	m_pCenters = new double[m_numCenters.get()];
 
-	for (unsigned int i = 0; i < m_numCenters; i++)
-		m_pCenters[i] = m_min + i * m_stepSize.get();
+	for (unsigned int i = 0; i < m_numCenters.get(); i++)
+		m_pCenters[i] = m_min + i * m_stepSize;
 }
 
 void CSingleDimensionDiscreteGrid::getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures)
@@ -35,10 +35,10 @@ void CSingleDimensionDiscreteGrid::getFeatures(const CState* s, const CAction* a
 
 int CSingleDimensionDiscreteGrid::getClosestCenter(double value)
 {
-	assert(m_numCenters >= 2);
+	assert(m_numCenters.get() >= 2);
 	unsigned int nearestIndex = 0;
 
-	for (unsigned int i = 0; i < m_numCenters; i++)
+	for (int i = 0; i < m_numCenters.get(); i++)
 	{
 		//there is no special treatment for circular variables 
 		if (abs(value - m_pCenters[i]) < abs(value - m_pCenters[nearestIndex]))
@@ -53,13 +53,10 @@ int CSingleDimensionDiscreteGrid::getClosestCenter(double value)
 CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariableGrid(CConfigNode* pConfigNode)
 {
 	m_hVariable = STATE_VARIABLE(pConfigNode, "Variable", "The state variable");
-	m_stepSize = DOUBLE_PARAM(pConfigNode, "Step-Size", "The step size with which the space will be discretized", 1.0);
+	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1.0);
 
 	initVarRange();
-
-	m_numCenters = (int)(m_max - m_min) / (int)m_stepSize.get() + 1;
-	//step size must be compatible with value range (example: 0-2 can not be divided in steps with size 0.8)
-	assert((m_numCenters - 1) * m_stepSize.get() == (m_max - m_min));
+	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();
 
 	initCenterPoints();
 }
@@ -73,19 +70,18 @@ void CSingleDimensionDiscreteStateVariableGrid::initVarRange()
 }
 
 
-CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariableGrid(int m_hVar, double stepSize)
+CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariableGrid(int m_hVar, int steps)
 {
 	initVarRange();
 
 	m_hVariable.set(m_hVar);
-	m_stepSize.set(stepSize);
+	m_numCenters.set(steps);
 
-	m_numCenters = (int)(m_max - m_min) / (int) stepSize + 1;
-	//step size must be compatible with value range (example: 0-2 can not be divided in steps with size 0.8)
-	assert((m_numCenters - 1) * stepSize == (m_max - m_min));
+	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();
 
 	initCenterPoints();
 }
+
 void CSingleDimensionDiscreteStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
 {
 	s->set(m_hVariable.get(), m_pCenters[feature]);
@@ -104,13 +100,10 @@ CNamedVarProperties& CSingleDimensionDiscreteStateVariableGrid::getVarProperties
 CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariableGrid(CConfigNode* pConfigNode)
 {
 	m_hVariable = ACTION_VARIABLE(pConfigNode, "Variable", "The action variable");
-	m_stepSize = DOUBLE_PARAM(pConfigNode, "Step-Size", "The step size with which the space will be discretized", 1.0);
+	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1.0);
 
 	initVarRange();
-
-	m_numCenters = (int)((m_max - m_min) / m_stepSize.get() + 1);
-	//step size must be compatible with value range (example: 0-2 can not be divided in steps with size 0.8)
-	assert((m_numCenters - 1) * m_stepSize.get() == (m_max - m_min));
+	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();
 
 	initCenterPoints();
 }
@@ -121,6 +114,18 @@ void CSingleDimensionDiscreteActionVariableGrid::initVarRange()
 	CNamedVarProperties properties = descriptor[m_hVariable.get()];
 	m_min = properties.getMin();
 	m_max = properties.getMax();
+}
+
+CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariableGrid(int m_hVar, int steps)
+{
+	initVarRange();
+
+	m_hVariable.set(m_hVar);
+	m_numCenters.set(steps);
+
+	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();
+
+	initCenterPoints();
 }
 
 void CSingleDimensionDiscreteActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)

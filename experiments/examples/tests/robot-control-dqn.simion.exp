@@ -1,4 +1,4 @@
-<RLSimion FileVersion="1.0.0.0">
+<RLSimion-x64-CNTK FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
 		<Log-Freq>0.25</Log-Freq>
@@ -17,10 +17,10 @@
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>1000</Num-Episodes>
-		<Eval-Freq>10</Eval-Freq>
+		<Num-Episodes>200</Num-Episodes>
+		<Eval-Freq>5</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>50</Episode-Length>
+		<Episode-Length>500</Episode-Length>
 	</Experiment>
 	<SimGod>
 		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
@@ -52,11 +52,11 @@
 			<Type>
 		<Discrete-Action-Grid>
 			<Grid-Dimension>
-				<Step-Size>0.2</Step-Size>
+				<Steps>101</Steps>
 				<Variable>robot1-v</Variable>
 			</Grid-Dimension>
 			<Grid-Dimension>
-				<Step-Size>0.2</Step-Size>
+				<Steps>101</Steps>
 				<Variable>robot1-omega</Variable>
 			</Grid-Dimension>
 		</Discrete-Action-Grid>
@@ -81,7 +81,7 @@
       <Parameters>
         <OptimizerParameterOfStringDouble>
           <Key>Learning rate</Key>
-          <Value>0.001</Value>
+          <Value>0.0001</Value>
         </OptimizerParameterOfStringDouble>
         <OptimizerParameterOfStringDouble>
           <Key>Momentum</Key>
@@ -125,7 +125,7 @@
           <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>300</Value>
+                <Value>404</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>relu</Value>
@@ -135,10 +135,20 @@
           <LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>21</Value>
+                <Value>101</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>linear</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="5827B63D">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>101</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
               </ParameterBase>
             </Parameters>
           </LinkBase>
@@ -181,7 +191,7 @@
       <Parameters>
         <OptimizerParameterOfStringDouble>
           <Key>Learning rate</Key>
-          <Value>0.001</Value>
+          <Value>0.0001</Value>
         </OptimizerParameterOfStringDouble>
         <OptimizerParameterOfStringDouble>
           <Key>Momentum</Key>
@@ -215,7 +225,7 @@
           <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>200</Value>
+                <Value>201</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>relu</Value>
@@ -225,7 +235,7 @@
           <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>400</Value>
+                <Value>501</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>relu</Value>
@@ -235,10 +245,20 @@
           <LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
-                <Value>81</Value>
+                <Value>101</Value>
               </ParameterBase>
               <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
                 <Value>linear</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="A4B47E0C">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>101</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
               </ParameterBase>
             </Parameters>
           </LinkBase>
@@ -257,7 +277,7 @@
 			<Initial-Value>0.9</Initial-Value>
 			<End-Value>0.01</End-Value>
 			<Evaluation-Value>0.0</Evaluation-Value>
-			<Interpolation>quadratic</Interpolation>
+			<Interpolation>linear</Interpolation>
 			<Time-reference>experiment</Time-reference>
 		</Linear-Schedule>
 		</Schedule>
@@ -270,4 +290,4 @@
 		</Simion>
 	</SimGod>
 </RLSimion>
-</RLSimion>
+</RLSimion-x64-CNTK>

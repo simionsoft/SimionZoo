@@ -47,10 +47,46 @@ namespace Badger.ViewModels.NeuralNetwork
                 NotifyOfPropertyChange(() => Description);
             }
         }
-        
+
         public IntTupleBase Shape
         {
             get { return InputData.Shape; }
+            set
+            {
+                InputData.Shape = value;
+                NotifyOfPropertyChange(() => Shape);
+            }
+        }
+
+        public int Dimension
+        {
+            get
+            {
+                return Shape.Dimension;
+            }
+            set
+            {
+                if (value == Shape.Dimension)
+                    return;
+
+                switch (value)
+                {
+                    case 1:
+                        Shape = new IntTuple1D(-1);
+                        break;
+                    case 2:
+                        Shape = new IntTuple2D(-1, -1);
+                        break;
+                    case 3:
+                        Shape = new IntTuple3D(-1, -1, -1);
+                        break;
+                    default:
+                    case 4:
+                        Shape = new IntTuple4D(-1, -1, -1, -1);
+                        break;
+                }
+
+            }
         }
 
         public override bool Equals(object obj)

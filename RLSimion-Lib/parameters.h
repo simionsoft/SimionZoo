@@ -401,10 +401,22 @@ public:
 		m_name = name;
 		m_comment = comment;
 		m_pProblem = shared_ptr<CProblem>(new CProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem")));
+	}
+
+	void buildNetwork()
+	{
+		if (m_pNetwork)
+			return;
+
 		m_pNetwork = shared_ptr<CNetwork>(m_pProblem->createNetwork());
 		m_pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
 	}
 
-	shared_ptr<CNetwork> getNetwork() { return m_pNetwork; }
+	shared_ptr<CNetwork> getNetwork()
+	{
+		buildNetwork();
+		return m_pNetwork;
+	}
+	shared_ptr<CProblem> getProblem() { return m_pProblem; }
 };
 #endif

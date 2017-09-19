@@ -24,9 +24,8 @@ namespace Badger.ViewModels.NeuralNetwork.Windows
         public static List<InputData> GetSampleInputData()
         {
             var result = new List<InputData>();
-            result.Add(new InputData("state-input", "State", new IntTuple1D(-1), "The dummy state state (TODO: Show real information here."));
-            //result.Add(new InputData("State-Images", "State Images", new IntTuple3D(84, 84, 4), "The state conisting out of the last 4 images."));
-            //result.Add(new InputData("State-RAM", "State RAM", new IntTuple1D(1024 * 1024), "The state conisting out of the current RAM."));
+            result.Add(new InputData("state-input", "State", new IntTuple1D(-1), "The state vector."));
+            result.Add(new InputData("action-input", "Action", new IntTuple1D(-1), "The action vector."));
             return result;
         }
 

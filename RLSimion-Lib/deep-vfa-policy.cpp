@@ -29,8 +29,14 @@ std::shared_ptr<CDeepPolicy> CDeepPolicy::getInstance(CConfigNode* pConfigNode)
 
 CDiscreteEpsilonGreedyDeepPolicy::CDiscreteEpsilonGreedyDeepPolicy(CConfigNode * pConfigNode) : CDeepPolicy(pConfigNode)
 {
-	m_pStateOutFeatures = new CFeatureList("State");
+	m_pStateOutFeatures = new CFeatureList("state-input");
 	m_epsilon = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "epsilon", "Epsilon");
+
+	//TODO: Was: CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()-> getTotalNumFeatures()
+	m_numberOfStateFeatures = CSimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
+
+	if (m_numberOfStateFeatures == 0)
+		CLogger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
 
 	if (dynamic_cast<CDiscreteActionFeatureMap*>(CSimGod::getGlobalActionFeatureMap().get()) == nullptr)
 	{
@@ -44,12 +50,6 @@ CDiscreteEpsilonGreedyDeepPolicy::CDiscreteEpsilonGreedyDeepPolicy(CConfigNode *
 	{
 		CLogger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
 	}
-
-	//TODO: Was: CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()-> getTotalNumFeatures()
-	m_numberOfStateFeatures = CSimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
-
-	if (m_numberOfStateFeatures == 0)
-		CLogger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
 
 	//((CDiscreteStateFeatureMap*)CSimionApp::get()->pSimGod->getGlobalStateFeatureMap().get())->returnGrid().size();
 	m_numberOfActions = m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
@@ -81,10 +81,9 @@ double CDiscreteEpsilonGreedyDeepPolicy::selectAction(const CState * s, CAction 
 			auto item = m_pStateOutFeatures->m_pFeatures[i];
 			m_stateVector[item.m_index] = item.m_factor;
 		}
-		//((CDiscreteStateFeatureMap*)CSimGod::getGlobalStateFeatureMap().get())->returnGrid()[i]->getVarValue(s, nullptr);
-		CNTK::ValuePtr stateSequence = CNTK::Value::CreateSequence({ (size_t)m_numberOfStateFeatures }, m_stateVector, CNTK::DeviceDescriptor::CPUDevice());
 
-		std::unordered_map<std::string, CNTK::ValuePtr> inputMap = { { "state-input", stateSequence } };
+		std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", m_stateVector } };
+
 		m_QNetwork.getNetwork()->predict(inputMap, m_actionValuePredictionVector);
 		resultingActionIndex = std::distance(m_actionValuePredictionVector.begin(),
 			std::max_element(m_actionValuePredictionVector.begin(), m_actionValuePredictionVector.end()));
@@ -112,7 +111,7 @@ double CDiscreteEpsilonGreedyDeepPolicy::updateNetwork(const CState * s, const C
 	}
 
 	std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", m_stateVector } };
-	m_QNetwork.getNetwork()->predict(inputMap, m_actionValuePredictionVector, 1);
+	m_QNetwork.getNetwork()->predict(inputMap, m_actionValuePredictionVector);
 
 	int actionValue = a->get(m_outputActionIndex.get());
 	int choosenActionIndex = m_pGrid->getClosestCenter(actionValue);
@@ -125,9 +124,8 @@ double CDiscreteEpsilonGreedyDeepPolicy::updateNetwork(const CState * s, const C
 		auto item = m_pStateOutFeatures->m_pFeatures[i];
 		m_stateVector[item.m_index] = item.m_factor;
 	}
-	//std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", stateVector } };
 
-	m_QNetwork.getNetwork()->train(m_stateVector, m_actionValuePredictionVector, 1);
+	m_QNetwork.getNetwork()->train(inputMap, m_actionValuePredictionVector);
 
 	return 0.0;
 }
