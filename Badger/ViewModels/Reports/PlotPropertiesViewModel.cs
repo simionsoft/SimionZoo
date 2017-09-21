@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using System;
+using Caliburn.Micro;
 using OxyPlot;
 
 namespace Badger.ViewModels
@@ -19,64 +20,87 @@ namespace Badger.ViewModels
         private BindableCollection<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties
             = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
 
-        public BindableCollection<PlotLineSeriesPropertiesViewModel> lineSeriesProperties
+        public BindableCollection<PlotLineSeriesPropertiesViewModel> LineSeriesProperties
         {
             get { return m_lineSeriesProperties; }
-            set { m_lineSeriesProperties = value; NotifyOfPropertyChange(() => lineSeriesProperties); }
+            set { m_lineSeriesProperties = value; NotifyOfPropertyChange(() => LineSeriesProperties); }
         }
 
-        // private OxyPlot.Series.LineSeries m_lineSeries;
-
-        public void addLineSeries(OxyPlot.Series.LineSeries series, PlotViewModel parent)
+        public void AddLineSeries(string name, OxyPlot.Series.LineSeries series)
         {
-            // m_lineSeries = series;
-            lineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(series, parent));
+            LineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(name, series));
         }
 
-        private BindableCollection<string> m_legendOptions = new BindableCollection<string>();
-        public BindableCollection<string> legendOptions
+        //LEGEND
+        //Position
+        private BindableCollection<string> m_legendPositions = new BindableCollection<string>();
+        public BindableCollection<string> LegendPositions
         {
-            get { return m_legendOptions; }
-            set { m_legendOptions = value; NotifyOfPropertyChange(() => legendOptions); }
+            get { return m_legendPositions; }
+            set { m_legendPositions = value; NotifyOfPropertyChange(() => LegendPositions); }
         }
-        public string selectedLegendOption { get; set; }
+        private string m_selectedLegendPosition;
+        public string SelectedLegendPosition
+        {
+            get { return m_selectedLegendPosition; }
+            set { m_selectedLegendPosition = value; NotifyOfPropertyChange(() => SelectedLegendPosition); }
+        }
+        //Placement
+        private BindableCollection<string> m_legendPlacements = new BindableCollection<string>();
+        public BindableCollection<string> LegendPlacements
+        {
+            get { return m_legendPlacements; }
+            set { m_legendPlacements = value; NotifyOfPropertyChange(() => LegendPlacements); }
+        }
+        private string m_selectedLegendPlacement;
+        public string SelectedLegendPlacement
+        {
+            get { return m_selectedLegendPlacement; }
+            set { m_selectedLegendPlacement = value; NotifyOfPropertyChange(() => SelectedLegendPlacement); }
+        }
+        //Orientation
+        private BindableCollection<string> m_legendOrientations = new BindableCollection<string>();
+        public BindableCollection<string> LegendOrientations
+        {
+            get { return m_legendOrientations; }
+            set { m_legendOrientations = value; NotifyOfPropertyChange(() => LegendOrientations); }
+        }
+        private string m_selectedLegendOrientation;
+        public string SelectedLegendOrientation
+        {
+            get { return m_selectedLegendOrientation; }
+            set { m_selectedLegendOrientation = value; NotifyOfPropertyChange(() => SelectedLegendOrientation); }
+        }
+        //Visibility
         private bool m_bLegendVisible = true;
-        public bool bLegendVisible
+        public bool LegendVisible
         {
             get { return m_bLegendVisible; }
-            set { m_bLegendVisible = value; NotifyOfPropertyChange(() => bLegendVisible); }
+            set { LegendVisible = value; NotifyOfPropertyChange(() => LegendVisible); }
         }
         private bool m_bLegendBorder = true;
-        public bool bLegendBorder
+        public bool LegendBorder
         {
             get { return m_bLegendBorder; }
-            set { m_bLegendBorder = value; NotifyOfPropertyChange(() => m_bLegendBorder); }
+            set { LegendBorder = value; NotifyOfPropertyChange(() => LegendBorder); }
         }
 
         public PlotPropertiesViewModel()
         {
-            m_legendOptions.Add(OxyPlot.LegendPosition.BottomLeft.ToString());
-            m_legendOptions.Add(OxyPlot.LegendPosition.BottomRight.ToString());
-            m_legendOptions.Add(OxyPlot.LegendPosition.TopLeft.ToString());
-            m_legendOptions.Add(OxyPlot.LegendPosition.TopRight.ToString());
-            selectedLegendOption = OxyPlot.LegendPosition.TopRight.ToString();
+            m_legendPositions.Add(OxyPlot.LegendPosition.BottomLeft.ToString());
+            m_legendPositions.Add(OxyPlot.LegendPosition.BottomRight.ToString());
+            m_legendPositions.Add(OxyPlot.LegendPosition.TopLeft.ToString());
+            m_legendPositions.Add(OxyPlot.LegendPosition.TopRight.ToString());
+            SelectedLegendPosition = OxyPlot.LegendPosition.TopRight.ToString();
+
+            m_legendPlacements.Add(OxyPlot.LegendPlacement.Inside.ToString());
+            m_legendPlacements.Add(OxyPlot.LegendPlacement.Outside.ToString());
+            SelectedLegendPlacement = OxyPlot.LegendPlacement.Inside.ToString();
+
+            m_legendOrientations.Add(OxyPlot.LegendOrientation.Horizontal.ToString());
+            m_legendOrientations.Add(OxyPlot.LegendOrientation.Vertical.ToString());
+            SelectedLegendOrientation = OxyPlot.LegendOrientation.Vertical.ToString();
         }
-
-        //public void updateLineSeriesVisibility(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
-        //{
-        //    m_plot.Series[lineSeriesProperties.lineSeriesId].IsVisible = lineSeriesProperties.bVisible;
-        //    updateView();
-        //}
-
-        //public void soloLineSeries(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
-        //{
-        //    foreach (PlotLineSeriesPropertiesViewModel seriesProperties in m_lineSeriesProperties)
-        //    {
-        //        seriesProperties.bVisible = (seriesProperties.lineSeriesId == lineSeriesProperties.lineSeriesId);
-        //        m_plot.Series[seriesProperties.lineSeriesId].IsVisible = seriesProperties.bVisible;
-        //    }
-        //    updateView();
-        //}
 
         /// <summary>
         ///     Apply some opacity to the original color of the LineSeries.  

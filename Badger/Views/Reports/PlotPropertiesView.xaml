@@ -13,27 +13,42 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
     <StackPanel>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Width="300">
 
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <CheckBox x:Name="bLegendVisible">Legend</CheckBox>
                 <StackPanel Orientation="Vertical" IsEnabled="{Binding bLegendVisible}">
-                    <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="bLegendBorder">Border</CheckBox>
+                    <StackPanel>
+                        <GroupBox  Header="Legend">
+                            <StackPanel Margin="10">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                    <CheckBox x:Name="LegendVisible" Margin="2">Show</CheckBox>
+                                    <CheckBox x:Name="LegendBorder" Margin="2">Border</CheckBox>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
+                                    <Label Width="120">Position</Label>
+                                    <ComboBox x:Name="LegendPositions" SelectedItem="{Binding SelectedLegendPosition}" Width="80"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
+                                    <Label Width="120">Placement</Label>
+                                    <ComboBox x:Name="LegendPlacements" SelectedItem="{Binding SelectedLegendPlacement}" Width="80"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
+                                    <Label Width="120">Orientation</Label>
+                                    <ComboBox x:Name="LegendOrientations" SelectedItem="{Binding SelectedLegendOrientation}" Width="80"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label>Position</Label>
-                        <ComboBox Text="Position" x:Name="legendOptions" Width="80"></ComboBox>
+                    <StackPanel>
+                        <GroupBox Name="VisibilityProperties" MaxHeight="300">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl x:Name="LineSeriesProperties"/>
+                            </ScrollViewer>
+                        </GroupBox>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
-           
-        </StackPanel>
-        
-        <GroupBox Name="VisibilityProperties">
-            <ContentControl x:Name="lineSeriesProperties"></ContentControl>
-        </GroupBox>
+
     </StackPanel>
-    
 
 </UserControl>

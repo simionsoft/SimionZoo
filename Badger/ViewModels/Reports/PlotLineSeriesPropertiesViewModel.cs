@@ -1,12 +1,11 @@
 ﻿
 using Caliburn.Micro;
-using OxyPlot;
 
 namespace Badger.ViewModels
 {
     public class PlotLineSeriesPropertiesViewModel : PropertyChangedBase
     {
-        private bool m_bVisible = true;
+        private bool m_bVisible;
 
         public bool bVisible
         {
@@ -18,17 +17,18 @@ namespace Badger.ViewModels
                 m_lineSeries.IsVisible = bVisible;
             }
         }
+        private string m_name = "N/A";
+        public string Name { get { return m_name; } set { m_name = value;NotifyOfPropertyChange(() => Name); } }
 
         OxyPlot.Series.LineSeries m_lineSeries;
 
         public OxyPlot.Series.LineSeries lineSeries { get { return m_lineSeries; } }
 
-        private PlotViewModel m_parent = null;
-
-        public PlotLineSeriesPropertiesViewModel(OxyPlot.Series.LineSeries lineSeries, PlotViewModel parentPlot)
+        public PlotLineSeriesPropertiesViewModel(string name, OxyPlot.Series.LineSeries lineSeries)
         {
             m_lineSeries = lineSeries;
-            m_parent = parentPlot;
+            bVisible = true;
+            Name = name;
         }
     }
 }

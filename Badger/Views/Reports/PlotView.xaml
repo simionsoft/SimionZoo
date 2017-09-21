@@ -6,12 +6,12 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="600" MinHeight="300">
+             d:DesignHeight="600" d:DesignWidth="650" MinHeight="300">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
-        <Style TargetType="{x:Type xctk:SelectorItem}" x:Key="SelectorItemStyle">
+        <!--<Style TargetType="{x:Type xctk:SelectorItem}" x:Key="SelectorItemStyle">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type xctk:SelectorItem}">
@@ -45,30 +45,35 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
 
     </UserControl.Resources>
-
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
-            <StackPanel Orientation="Horizontal" Width="630" Height="300">
-                <oxy:PlotView Model="{Binding Plot}" Width="480" Height="300"/>
-                <xctk:CheckListBox Visibility="{Binding LineSeriesSelectionVisible, Converter={StaticResource BoolToVis}}" Width="120px" Margin="30 0 0 30" ItemsSource="{Binding properties.lineSeriesProperties, Mode=OneWay, NotifyOnSourceUpdated=True}"
-                                   ValueMemberPath="bVisible" DisplayMemberPath="lineSeries.Title" HorizontalAlignment="Right" HorizontalContentAlignment="Right"
-                                   SelectedItemsOverride="{Binding SelectedPlotLineSeriesPropertiesViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                   ItemContainerStyle="{StaticResource SelectorItemStyle}" />
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
-                <Button Style="{StaticResource BadgerButtonStyle}" x:Name="showProperties" Width="32" Height="32">
-                    <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"
-                          HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" x:Name="saveImage" Width="32" Height="32">
-                    <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000"
-                          HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Button>
-            </StackPanel>
-        </StackPanel>
-    </ScrollViewer>
+    <Grid HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="460"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="400"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <oxy:PlotView Grid.Row="0" Model="{Binding Plot}" Width="600" Height="400" Margin="10,0"/>
+                <!--<xctk:CheckListBox Grid.Row="1" Visibility="{Binding LineSeriesSelectionVisible, Converter={StaticResource BoolToVis}}" ItemsSource="{Binding properties.lineSeriesProperties, Mode=OneWay, NotifyOnSourceUpdated=True}"
+                        ValueMemberPath="bVisible" DisplayMemberPath="lineSeries.Title" HorizontalAlignment="Center" HorizontalContentAlignment="Right"
+                        SelectedItemsOverride="{Binding SelectedPlotLineSeriesPropertiesViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        ItemContainerStyle="{StaticResource SelectorItemStyle}" />-->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
+                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="showProperties" Width="32" Height="32">
+                        <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Button>
+                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="saveImage" Width="32" Height="32">
+                        <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000"
+                    HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

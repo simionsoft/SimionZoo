@@ -65,7 +65,7 @@ namespace Badger.ViewModels
         }
         public bool LineSeriesSelectionVisible
         {
-            get { return properties.lineSeriesProperties.Count > 1; }
+            get { return properties.LineSeriesProperties.Count > 1; }
         }
 
         public PlotViewModel(string title, double xMax = 0, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
@@ -104,7 +104,7 @@ namespace Badger.ViewModels
             m_selectedPlotLineSeriesPropertiesViewModels = new ObservableCollection<PlotLineSeriesPropertiesViewModel>();
             m_selectedPlotLineSeriesPropertiesViewModels.CollectionChanged += (s, e) =>
             {
-                foreach (var outerItem in properties.lineSeriesProperties)
+                foreach (var outerItem in properties.LineSeriesProperties)
                 {
                     bool found = false;
                     foreach (var item in m_selectedPlotLineSeriesPropertiesViewModels)
@@ -121,8 +121,8 @@ namespace Badger.ViewModels
                 updateView();
             };
 
-            if (properties.lineSeriesProperties.Count > 0)
-                m_selectedPlotLineSeriesPropertiesViewModels.Add(properties.lineSeriesProperties[0]);
+            if (properties.LineSeriesProperties.Count > 0)
+                m_selectedPlotLineSeriesPropertiesViewModels.Add(properties.LineSeriesProperties[0]);
         }
 
         private void updatePlot(object state)
@@ -145,7 +145,7 @@ namespace Badger.ViewModels
                 newSeries.IsVisible = isVisible;
                 m_plot.Series.Add(newSeries);
 
-                properties.addLineSeries(newSeries, this);
+                properties.AddLineSeries(title, newSeries);
 
                 return m_plot.Series.Count - 1; ;
 
@@ -184,7 +184,7 @@ namespace Badger.ViewModels
         {
             bool found = false;
 
-            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
+            foreach (PlotLineSeriesPropertiesViewModel p in properties.LineSeriesProperties)
             {
                 if (!p.lineSeries.Title.Equals(name))
                     properties.dimLineSeriesColor(p);
@@ -205,7 +205,7 @@ namespace Badger.ViewModels
         /// </summary>
         public void resetLineSeriesColors()
         {
-            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
+            foreach (PlotLineSeriesPropertiesViewModel p in properties.LineSeriesProperties)
                 properties.removeLineSeriesColorOpacity(p);
         }
 
@@ -264,12 +264,19 @@ namespace Badger.ViewModels
         public void showProperties()
         {
             CaliburnUtility.ShowPopupWindow(properties, "Plot properties");
-            setProperties();
+            SetProperties();
         }
 
-        public void setProperties()
+        public void SetProperties()
         {
-            Plot.IsLegendVisible = properties.bLegendVisible;
+            Plot.IsLegendVisible = properties.LegendVisible;
+            //placement
+            Plot.LegendOrientation = (OxyPlot.LegendOrientation)Enum.Parse(typeof(OxyPlot.LegendOrientation)
+                , properties.SelectedLegendOrientation);
+            Plot.LegendPlacement = (OxyPlot.LegendPlacement)Enum.Parse(typeof(OxyPlot.LegendPlacement)
+                , properties.SelectedLegendPlacement);
+            Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
+                , properties.SelectedLegendPosition);
             updateView();
         }
 

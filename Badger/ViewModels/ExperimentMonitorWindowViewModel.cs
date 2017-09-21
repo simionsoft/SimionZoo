@@ -39,8 +39,8 @@ namespace Badger.ViewModels
         {
             EvaluationPlot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
             EvaluationPlot.Plot.TitleFontSize = 14;
-            EvaluationPlot.properties.bLegendVisible = false;
-            EvaluationPlot.setProperties();
+            EvaluationPlot.properties.LegendVisible = false;
+            EvaluationPlot.SetProperties();
 
             FreeHerdAgents = freeHerdAgents;
             LogFunction = logFunction;
