@@ -5,29 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Badger.Views.NeuralNetwork"
              xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:cal="http://www.caliburnproject.org"
              mc:Ignorable="d" 
              d:DesignHeight="105" d:DesignWidth="200">
-    
+
     <StackPanel>
         <TextBlock Text="Output Layer:" FontSize="11" Foreground="#222" />
-        <ListBox Margin="5 2" Height="82px" ToolTip="Drop the output layer (link) here." x:Name="DummyItems"
+        <Border Margin="5 2" Height="82px" ToolTip="Drop the output layer (link) here."
             dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Focusable" Value="False" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-            
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Grid.Row="2" Text="Name:" Margin="0 4 0 2" Foreground="#222" FontSize="11" VerticalAlignment="Bottom"/>
-                        <TextBlock Text="{Binding Name}" />
-                        <TextBlock Grid.Row="2" Text="ID:" Margin="0 4 0 2" Foreground="#222" FontSize="11" VerticalAlignment="Bottom"/>
-                        <TextBlock Text="{Binding ID}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            <Grid ToolTip="Drop the output link here">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Drop the output link here" Foreground="#222"/>
+                <Border Visibility="{Binding OutputLinkConnection, Converter={StaticResource NullToVisibilityConverter}}" Background="White" BorderBrush="#BBB" BorderThickness="1">
+                    <ContentControl cal:View.Model="{Binding OutputLinkConnection}" Background="White"/>
+                </Border>
+            </Grid>
+        </Border>
     </StackPanel>
 </UserControl>

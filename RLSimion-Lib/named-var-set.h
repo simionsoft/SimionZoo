@@ -65,7 +65,7 @@ public:
 	//returns the sum of all the values, i.e. used to scalarise a reward vector
 	double getSumValue() const;
 
-	void copy(CNamedVarSet* nvs);
+	void copy(const CNamedVarSet* nvs);
 	CNamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
 	CNamedVarProperties& getProperties(const char* varName) const;
 	CDescriptor& getProperties() { return m_pProperties; }

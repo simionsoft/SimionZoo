@@ -20,19 +20,21 @@ namespace Badger.ViewModels.NeuralNetwork
         {
             OutputConfigurationData = outputConfiguration;
 
-            DummyItems = new ObservableCollection<LinkBaseViewModel>();
             if (OutputConfigurationData.LinkConnection != null && OutputConfigurationData.LinkConnection.Target != null)
-                DummyItems.Add(new LinkBaseViewModel(OutputConfigurationData.LinkConnection.Target, null));
+                OutputLinkConnection = new LinkConnectionViewModel(OutputConfigurationData.LinkConnection);
         }
 
-        public ObservableCollection<LinkBaseViewModel> DummyItems { get; set; }
+        private LinkConnectionViewModel _outputLinkConnection;
         public LinkConnectionViewModel OutputLinkConnection
         {
             get
             {
-                if (DummyItems.Count == 0)
-                    return null;
-                return new LinkConnectionViewModel(new LinkConnection(DummyItems[0].LinkBaseData));
+                return _outputLinkConnection;
+            }
+            set
+            {
+                _outputLinkConnection = value;
+                NotifyOfPropertyChange(() => OutputLinkConnection);
             }
         }
 
@@ -53,9 +55,8 @@ namespace Badger.ViewModels.NeuralNetwork
             if (item == null)
                 return;
 
-            DummyItems.Clear();
-            DummyItems.Add(item);
             OutputConfigurationData.LinkConnection = new LinkConnection(item.LinkBaseData);
+            OutputLinkConnection = new LinkConnectionViewModel(OutputConfigurationData.LinkConnection); 
         }
     }
 }

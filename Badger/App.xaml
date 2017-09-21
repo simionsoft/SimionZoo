@@ -72,7 +72,7 @@
 
 
 
-
+            <cv:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <cv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <cv:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />
             <cv:IntTupleConverter x:Key="IntTupleConverter" />

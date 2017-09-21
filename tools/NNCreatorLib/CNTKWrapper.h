@@ -40,6 +40,14 @@ namespace CNTKWrapper
 			return wide;
 		}
 
+		inline string wstring2string(const std::wstring& value)
+		{
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			std::string wide = converter.to_bytes(value);
+
+			return wide;
+		}
+
 		inline FunctionPtr applyActivationFunction(FunctionPtr pInput, ActivationFunction activationFunction);
 
 		inline FunctionPtr FullyConnectedLinearLayer(Variable input, size_t outputDim, const DeviceDescriptor& device, const std::wstring& outputName = L"")

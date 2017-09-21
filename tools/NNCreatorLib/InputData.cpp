@@ -49,5 +49,5 @@ NDShape CInputData::getNDShape()
 
 void CInputData::createInputVariable()
 {
-	m_pInputVariable = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Float, CNTKWrapper::Internal::string2wstring(m_name));
+	m_pInputVariable = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Float, CNTKWrapper::Internal::string2wstring(m_id));
 }

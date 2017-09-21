@@ -3,7 +3,6 @@
 #include "CNTKWrapper.h"
 #include "OptimizerSetting.h"
 
-
 CNetwork::CNetwork()
 {
 	m_outputsFunctionPtr = vector<CNTK::FunctionPtr>();
@@ -72,7 +71,9 @@ void CNetwork::predict(std::unordered_map<std::string, std::vector<float>&>& inp
 	{
 		//only use inputs, which are actually needed/used in the model
 		if (item->getIsUsed())
+		{
 			inputs[item->getInputVariable()] = CNTK::Value::CreateBatch(item->getInputVariable().Shape(), inputDataMap.at(item->getId()), CNTK::DeviceDescriptor::CPUDevice());
+		}
 	}
 
 	outputPtr->Evaluate(inputs, outputs, CNTK::DeviceDescriptor::CPUDevice());
@@ -88,4 +89,39 @@ void CNetwork::predict(std::unordered_map<std::string, std::vector<float>&>& inp
 
 	CNTK::NDArrayViewPtr cpuArrayOutput = CNTK::MakeSharedObject<CNTK::NDArrayView>(outputShape, predictionData, false);
 	cpuArrayOutput->CopyFrom(*outputValue->Data());
+}
+
+#include <iostream>
+CNetwork* CNetwork::cloneNonTrainable() const
+{
+	CNetwork* result = new CNetwork();
+	result->m_trainer = nullptr;
+	result->m_lossFunctionPtr = nullptr;
+
+	result->m_networkFunctionPtr = m_networkFunctionPtr->Clone(CNTK::ParameterCloningMethod::Clone);
+
+	for each (CNTK::Variable var in result->m_networkFunctionPtr->Outputs())
+	{
+		if (var.Name() != L"Loss" && var.Name() != L"loss")
+			result->m_outputsFunctionPtr.push_back(var);
+	}
+
+	for each (auto initem in m_inputs)
+	{
+		for each (auto item in result->m_networkFunctionPtr->Arguments())
+		{
+			if (CNTKWrapper::Internal::wstring2string(item.Name()) == initem->getId())
+			{
+				auto value = new CInputData(CNTKWrapper::Internal::wstring2string(item.Name()), item);
+				value->setIsUsed(initem->getIsUsed());
+				//TODO: set shape
+				result->m_inputs.push_back(value);
+				break;
+			}
+		}
+	}
+
+
+
+	return result;
 }

@@ -33,6 +33,8 @@ public:
 	void save(string fileName);
 	static CNetwork load(string fileName, CNTK::DeviceDescriptor &device);
 
+	CNetwork* cloneNonTrainable() const;
+
 	void train(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& predictionData);
 };

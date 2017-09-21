@@ -53,7 +53,7 @@ int CSingleDimensionDiscreteGrid::getClosestCenter(double value)
 CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariableGrid(CConfigNode* pConfigNode)
 {
 	m_hVariable = STATE_VARIABLE(pConfigNode, "Variable", "The state variable");
-	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1.0);
+	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1);
 
 	initVarRange();
 	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();
@@ -100,7 +100,7 @@ CNamedVarProperties& CSingleDimensionDiscreteStateVariableGrid::getVarProperties
 CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariableGrid(CConfigNode* pConfigNode)
 {
 	m_hVariable = ACTION_VARIABLE(pConfigNode, "Variable", "The action variable");
-	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1.0);
+	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1);
 
 	initVarRange();
 	m_stepSize = (m_max - m_min + 1.0) / m_numCenters.get();

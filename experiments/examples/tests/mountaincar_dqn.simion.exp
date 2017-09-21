@@ -1,4 +1,4 @@
-<RLSimion-x64 FileVersion="1.0.0.0">
+<RLSimion-x64-CNTK FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
 		<Log-Freq>0.25</Log-Freq>
@@ -7,7 +7,7 @@
 	</Log>
 	<World>
 		<Num-Integration-Steps>1</Num-Integration-Steps>
-		<Delta-T>1</Delta-T>
+		<Delta-T>0.01</Delta-T>
 		<Dynamic-Model>
 			<Model>
 		<Mountain-car>
@@ -18,15 +18,15 @@
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
 		<Num-Episodes>1000</Num-Episodes>
-		<Eval-Freq>50</Eval-Freq>
+		<Eval-Freq>10</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>5000</Episode-Length>
+		<Episode-Length>10.0</Episode-Length>
 	</Experiment>
 	<SimGod>
-		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
-		<Gamma>1.0</Gamma>
-		<Freeze-Target-Function>false</Freeze-Target-Function>
-		<Use-Importance-Weights>true</Use-Importance-Weights>
+		<Target-Function-Update-Freq>50</Target-Function-Update-Freq>
+		<Gamma>0.9</Gamma>
+		<Freeze-Target-Function>true</Freeze-Target-Function>
+		<Use-Importance-Weights>false</Use-Importance-Weights>
 		<State-Feature-Map>
 			<Type>
 		<State-Bag>
@@ -43,7 +43,7 @@
 			<Type>
 		<Discrete-Action-Grid>
 			<Grid-Dimension>
-				<Step-Size>1.0</Step-Size>
+				<Steps>3</Steps>
 				<Variable>pedal</Variable>
 			</Grid-Dimension>
 		</Discrete-Action-Grid>
@@ -52,9 +52,6 @@
 		<Simion>
 			<Type>
 		<DQN>
-			<Policy>
-				<Policy>
-		<Discrete-Deep-Policy>
 			<neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Inputs>
     <InputData ID="state-input" Name="State">
@@ -62,32 +59,49 @@
         <x1>2</x1>
       </Shape>
     </InputData>
+    <InputData ID="action-input" Name="Action">
+      <Shape xsi:type="IntTuple1D">
+        <x1>-1</x1>
+      </Shape>
+    </InputData>
   </Inputs>
   <OptimizerSetting>
-    <Optimizer xsi:type="OptimizerSGD">
+    <Optimizer xsi:type="OptimizerAdam">
       <Parameters>
         <OptimizerParameterOfStringDouble>
           <Key>Learning rate</Key>
-          <Value>0.01</Value>
+          <Value>0.001</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Momentum</Key>
+          <Value>0.9</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Variance momentum</Key>
+          <Value>0.999</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Epsilon</Key>
+          <Value>1E-08</Value>
         </OptimizerParameterOfStringDouble>
       </Parameters>
     </Optimizer>
   </OptimizerSetting>
   <Output>
-    <LinkConnection TargetID="CDB93311" />
+    <LinkConnection TargetID="B59082A2" />
   </Output>
   <NetworkArchitecture>
     <Chains>
       <Chain Name="Chain">
         <ChainLinks>
-          <LinkBase xsi:type="InputLayer" Name="Input Layer" ID="2E85F685">
+          <LinkBase xsi:type="InputLayer" Name="Input Layer" ID="7BE1DFF4">
             <Parameters>
               <ParameterBase xsi:type="InputDataParameter" Name="Input Data">
                 <Value>state-input</Value>
               </ParameterBase>
             </Parameters>
           </LinkBase>
-          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="802FF639">
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="DADF7F57">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
                 <Value>100</Value>
@@ -97,7 +111,7 @@
               </ParameterBase>
             </Parameters>
           </LinkBase>
-          <LinkBase xsi:type="DenseLayer" Name="output" ID="CDB93311">
+          <LinkBase xsi:type="DenseLayer" Name="output" ID="B59082A2">
             <Parameters>
               <ParameterBase xsi:type="IntParameter" Name="Units">
                 <Value>3</Value>
@@ -113,21 +127,21 @@
   </NetworkArchitecture>
 </Problem></neural-network>
 			<Output-Action>pedal</Output-Action>
+			<experience-replay>
+				<Buffer-Size>500</Buffer-Size>
+				<Update-Batch-Size>32</Update-Batch-Size>
+			</experience-replay>
+			<Policy>
+				<Policy>
+		<Discrete-Epsilon-Greedy-Deep-Policy>
 			<epsilon>
 				<Schedule>
-		<Linear-Schedule>
-			<Start-Offset>0.0</Start-Offset>
-			<End-Offset>0.8</End-Offset>
-			<Pre-Offset-Value>1.0</Pre-Offset-Value>
-			<Initial-Value>1.0</Initial-Value>
-			<End-Value>0.05</End-Value>
-			<Evaluation-Value>0.0</Evaluation-Value>
-			<Interpolation>linear</Interpolation>
-			<Time-reference>experiment</Time-reference>
-		</Linear-Schedule>
+		<Constant>
+			<Value>0.2</Value>
+		</Constant>
 		</Schedule>
 			</epsilon>
-		</Discrete-Deep-Policy>
+		</Discrete-Epsilon-Greedy-Deep-Policy>
 		</Policy>
 			</Policy>
 		</DQN>
@@ -135,4 +149,4 @@
 		</Simion>
 	</SimGod>
 </RLSimion>
-</RLSimion-x64>
+</RLSimion-x64-CNTK>
