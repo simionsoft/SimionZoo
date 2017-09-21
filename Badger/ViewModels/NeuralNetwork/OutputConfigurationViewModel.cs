@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static Badger.Data.NeuralNetwork.Problem;
+using Badger.Data.NeuralNetwork;
 
 namespace Badger.ViewModels.NeuralNetwork
 {
