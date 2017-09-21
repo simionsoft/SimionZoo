@@ -22,98 +22,15 @@ namespace Badger.Data.NeuralNetwork
         public Problem()
         {
             NetworkArchitecture = new NetworkArchitecture(this);
-            OutputDDHandler = new InternalOutputDDHandler(this);
             OptimizerSetting = new OptimizerSetting(OptimizerType.SGD);
         }
 
         public List<InputData> Inputs { get; } = new List<InputData>();
-        //TODO: add support for this later
-        //public List<OutputData> Outputs { get; set; }
-        [XmlIgnore]
-        public List<LinkBase> RawOutput { get; set; } = new List<LinkBase>();
-
-        [XmlIgnore]
-        public InternalOutputDDHandler OutputDDHandler { get; set; }
-
-        public class InternalOutputDDHandler : GongSolutions.Wpf.DragDrop.IDropTarget
-        {
-            Problem _parent;
-
-            public InternalOutputDDHandler(Problem parent)
-            {
-                _parent = parent;
-            }
-
-            public void DragOver(IDropInfo dropInfo)
-            {
-                var link = dropInfo.Data as LinkBase;
-                if (link is null)
-                    dropInfo.Effects = System.Windows.DragDropEffects.None;
-                else
-                    dropInfo.Effects = System.Windows.DragDropEffects.Copy;
-            }
-
-            public void Drop(IDropInfo dropInfo)
-            {
-                var link = dropInfo.Data as LinkBase;
-                if (link is null)
-                    return;
-
-                _parent.Output.LinkConnection = new LinkConnection(link);
-                ((ObservableCollection<LinkBase>)((ItemsControl)dropInfo.VisualTarget).ItemsSource).Clear();
-                ((ObservableCollection<LinkBase>)((ItemsControl)dropInfo.VisualTarget).ItemsSource).Add(dropInfo.Data as LinkBase);
-            }
-        }
-
-        public class OutputConfiguration : INotifyPropertyChanged
-        {
-            public OutputConfiguration() { }
-            public OutputConfiguration(LinkConnection linkConnection)
-            {
-                LinkConnection = linkConnection;
-            }
-
-            private LinkConnection _linkConnection;
-            public LinkConnection LinkConnection
-            {
-                get
-                {
-                    return _linkConnection;
-                }
-                set
-                {
-                    _linkConnection = value;
-                    OnPropertyChanged("LinkConnection");
-                }
-            }
-
-            public event PropertyChangedEventHandler PropertyChanged;
-            protected virtual void OnPropertyChanged(string propertyName)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
 
         public OptimizerSetting OptimizerSetting { get; set; }
 
-        private OutputConfiguration _output = new OutputConfiguration();
-        public OutputConfiguration Output
-        {
-            get
-            {
-                return _output;
-            }
-            set
-            {
-                _output = value;
-                if (!(RawOutput.Count == 1 && RawOutput[0] == value.LinkConnection.Target))
-                {
-                    RawOutput.Clear();
-                    if (value.LinkConnection != null)
-                        RawOutput.Add(value.LinkConnection.Target);
-                }
-            }
-        }
+        public OutputConfiguration Output { get; set; } = new OutputConfiguration();
+
         public NetworkArchitecture NetworkArchitecture { get; set; }
 
         public void Export()
@@ -210,7 +127,7 @@ namespace Badger.Data.NeuralNetwork
                     catch
                     {
                         result = new Problem();
-                        
+
                     }
 
                     foreach (var input in result.Inputs)
@@ -248,8 +165,6 @@ namespace Badger.Data.NeuralNetwork
                         if (link.ID.Equals(Output.LinkConnection.TargetID))
                         {
                             Output.LinkConnection.Target = link;
-                            RawOutput.Clear();
-                            RawOutput.Add(link);
                             break;
                         }
                     }

@@ -158,6 +158,7 @@
     <Compile Include="Data\NeuralNetwork\Optimizers\Optimizer.cs" />
     <Compile Include="Data\NeuralNetwork\Optimizers\OptimizerParameter.cs" />
     <Compile Include="Data\NeuralNetwork\Optimizers\OptimizerType.cs" />
+    <Compile Include="Data\NeuralNetwork\OutputConfiguration.cs" />
     <Compile Include="Data\NeuralNetwork\Parameters\ActivationFunctionParameter.cs" />
     <Compile Include="Data\NeuralNetwork\Parameters\DoubleParameter.cs" />
     <Compile Include="Data\NeuralNetwork\Parameters\InputDataParameter.cs" />
@@ -349,6 +350,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="NeuralNetworkClasses.cd" />
     <None Include="LogQueryClasses.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
