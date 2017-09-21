@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RLSimion-Lib", "RLSimion-Lib\RL-Lib.vcxproj", "{A97CFEAC-DBE2-433C-9454-6D1D2749C591}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -132,6 +132,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portable Badger", "installers\Portable Badger\Portable Badger.csproj", "{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegExpressions", "tests\Badger\RegExpressions\RegExpressions.csproj", "{E7C3B94C-81D8-4096-AEB4-1B52DCE5C79A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NNCreatorLib", "tools\NNCreatorLib\NNCreatorLib.vcxproj", "{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -573,6 +575,16 @@ Global
 		{E7C3B94C-81D8-4096-AEB4-1B52DCE5C79A}.Release|x64.Build.0 = Release|Any CPU
 		{E7C3B94C-81D8-4096-AEB4-1B52DCE5C79A}.Release|x86.ActiveCfg = Release|Any CPU
 		{E7C3B94C-81D8-4096-AEB4-1B52DCE5C79A}.Release|x86.Build.0 = Release|Any CPU
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Debug|x64.ActiveCfg = Debug|x64
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Debug|x64.Build.0 = Debug|x64
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Debug|x86.ActiveCfg = Debug|Win32
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Debug|x86.Build.0 = Debug|Win32
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Release|Any CPU.ActiveCfg = Release|Win32
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Release|x64.ActiveCfg = Release|x64
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Release|x64.Build.0 = Release|x64
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Release|x86.ActiveCfg = Release|Win32
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -621,6 +633,7 @@ Global
 		{78160827-2C08-4D14-BDD8-0D842FC1191F} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
 		{7D509B33-B297-4C5E-BDE8-F47C2BDF6EA4} = {66BE88CA-FAA4-469D-B16D-3FA641E7FB73}
 		{E7C3B94C-81D8-4096-AEB4-1B52DCE5C79A} = {4CE3179C-81EA-4334-A339-3DFBB4A975C4}
+		{72CF78B6-1DCA-4BA6-8EE0-C98E9226F853} = {78D64C99-9407-468F-9581-D5C97CBDF7C7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F8F8B096-6BE4-44D0-B78E-2C39AD9519BA}

@@ -40,6 +40,7 @@ double CSimpleEpisodeLinearSchedule::get()
 CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
 {
 	m_startOffset = DOUBLE_PARAM(pConfigNode, "Start-Offset", "Normalized time from which the schedule will begin [0...1]", 0.0);
+	m_endTime = DOUBLE_PARAM(pConfigNode, "End-Offset", "Normalized time at which the schedule will end and only return the End-Value [0...1]", 1.0);
 	m_preOffsetValue = DOUBLE_PARAM(pConfigNode, "Pre-Offset-Value", "Output value before the schedule begins", 0.1);
 	m_interpolation = ENUM_PARAM<Interpolation>(pConfigNode, "Interpolation", "Interpolation type", Interpolation::linear);
 	m_timeReference = ENUM_PARAM<TimeReference>(pConfigNode, "Time-reference", "The time-reference type", TimeReference::experiment);
@@ -48,10 +49,11 @@ CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
 	m_evaluationValue = DOUBLE_PARAM(pConfigNode, "Evaluation-Value", "Output value during evaluation episodes", 0.0);
 }
 
-CInterpolatedValue::CInterpolatedValue(double startOffset, double preOffsetValue, double startValue, double endValue, double evaluationValue
+CInterpolatedValue::CInterpolatedValue(double startOffset, double endTime, double preOffsetValue, double startValue, double endValue, double evaluationValue
 	, Interpolation interpolation, TimeReference timeReference)
 {
 	m_startOffset.set(startOffset);
+	m_endTime.set(endTime);
 	m_preOffsetValue.set(preOffsetValue);
 	m_startValue.set(startValue);
 	m_endValue.set(endValue);
@@ -67,6 +69,7 @@ double CInterpolatedValue::get()
 	//evalution episode?
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 		return m_evaluationValue.get();
+
 	//time reference
 	if (m_timeReference.get()==TimeReference::experiment)
 		progress = CSimionApp::get()->pExperiment->getTrainingProgress();
@@ -77,18 +80,17 @@ double CInterpolatedValue::get()
 	{
 		if (progress < m_startOffset.get()) return m_preOffsetValue.get();
 
-		progress = (progress - m_startOffset.get()) / (1 - m_startOffset.get());
+		progress = (progress - m_startOffset.get()) / (m_endTime.get() - m_startOffset.get());
 	}
 	//interpolation
 	if (m_interpolation.get()==Interpolation::linear)
-		return m_startValue.get() 
-		+ (m_endValue.get() - m_startValue.get())* progress;
+		return m_startValue.get() + (m_endValue.get() - m_startValue.get())* progress;
+
 	else if (m_interpolation.get()==Interpolation::quadratic)
-		return m_startValue.get()
-		+ (1. - pow(1 - progress, 2.0))*(m_endValue.get() - m_startValue.get())* progress;
+		return m_startValue.get()+ (1. - pow(1 - progress, 2.0))*(m_endValue.get() - m_startValue.get())* progress;
+
 	else if (m_interpolation.get()==Interpolation::cubic)
-		return m_startValue.get()
-		+ (1. - pow(1 - progress, 3.0))*(m_endValue.get() - m_startValue.get())* progress;
+		return m_startValue.get() + (1. - pow(1 - progress, 3.0))*(m_endValue.get() - m_startValue.get())* progress;
 	else assert(0);
 
 	return 0.0;

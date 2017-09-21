@@ -4,15 +4,15 @@ using Badger.Simion;
 
 namespace SimionSrcParser
 {
- 
-    public interface  IParameter
+
+    public interface IParameter
     {
         string outputXML(int level);
         int parameterClassSortValue();
         void setParameterIndexInCode(int index);
         string getName();
     }
-    public class SimpleParameter: IParameter
+    public class SimpleParameter : IParameter
     {
         protected string m_xmlTag;
         protected string m_name;
@@ -25,14 +25,14 @@ namespace SimionSrcParser
         public string getName() { return m_name; }
         public string outputXML(int level)
         {
-            string output= "";
+            string output = "";
             SimionSrcParser.addIndentation(ref output, level);
-            output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\"" 
+            output += "<" + m_xmlTag + " Name=\"" + m_name + "\" Comment=\"" + m_comment + "\" Default=\""
                 + m_default + "\"/>\n";
             return output;
         }
     }
-    public class IntParameter: SimpleParameter
+    public class IntParameter : SimpleParameter
     {
         public IntParameter(string name, string comment, string defaultValue)
         {
@@ -92,10 +92,20 @@ namespace SimionSrcParser
             m_xmlTag = XMLConfig.dirPathNodeTag;
         }
     }
-    public class EnumParameter :IParameter
+    public class NeuralNetworkProblemDescriptionParameter : SimpleParameter
+    {
+        public NeuralNetworkProblemDescriptionParameter(string name, string comment)
+        {
+            m_name = name;
+            m_comment = comment;
+            m_default = "";
+            m_xmlTag = XMLConfig.neuralNetworkProblemDescriptionNodeTag;
+        }
+    }
+    public class EnumParameter : IParameter
     {
         string m_name, m_className, m_comment, m_default;
-        public EnumParameter(string className,string name,  string comment, string defaultValue)
+        public EnumParameter(string className, string name, string comment, string defaultValue)
         {
             m_className = className;
             m_name = name;
@@ -111,9 +121,9 @@ namespace SimionSrcParser
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
-            output += "<" + XMLConfig.enumNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name 
-                + "\" " + XMLConfig.classAttribute + "=\"" +  m_className
-                + "\" " + XMLConfig.commentAttribute + "=\"" + m_comment + "\" " + XMLConfig.defaultAttribute 
+            output += "<" + XMLConfig.enumNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
+                + "\" " + XMLConfig.classAttribute + "=\"" + m_className
+                + "\" " + XMLConfig.commentAttribute + "=\"" + m_comment + "\" " + XMLConfig.defaultAttribute
                 + "=\"" + m_default + "\"/>\n";
             return output;
         }
@@ -144,14 +154,14 @@ namespace SimionSrcParser
         {
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
-            output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name 
-                + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "\" " + XMLConfig.commentAttribute 
+            output += "<" + XMLConfig.branchNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
+                + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\"";
             if (m_bOptional)
                 output += " " + XMLConfig.optionalAttribute + "=\"True\"";
             if (m_badgerMetadata != "")
                 output += " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
-            output+= "/>\n";
+            output += "/>\n";
             return output;
         }
     }
@@ -197,8 +207,8 @@ namespace SimionSrcParser
         protected string m_name;
         protected string m_comment;
         protected VarType m_type;
-        public enum VarType{StateVariable,ActionVariable };
-        public VarRefParameter(VarType type,string name, string comment)
+        public enum VarType { StateVariable, ActionVariable };
+        public VarRefParameter(VarType type, string name, string comment)
         {
             m_type = type;
             m_name = name;
@@ -215,15 +225,15 @@ namespace SimionSrcParser
             string output = "";
             SimionSrcParser.addIndentation(ref output, level);
             if (m_type == VarType.StateVariable) output += "<" + XMLConfig.stateVarRefTag;
-            else output+= "<" + XMLConfig.actionVarRefTag;
-            output += " " + XMLConfig.nameAttribute + "=\"" + m_name + "\" " + XMLConfig.commentAttribute + "=\"" 
+            else output += "<" + XMLConfig.actionVarRefTag;
+            output += " " + XMLConfig.nameAttribute + "=\"" + m_name + "\" " + XMLConfig.commentAttribute + "=\""
                 + m_comment + "\"/>\n";
             return output;
         }
     }
     public class StateVarRefParameter : VarRefParameter
     {
-        public StateVarRefParameter(string name, string comment): base(VarType.StateVariable,name,comment){}
+        public StateVarRefParameter(string name, string comment) : base(VarType.StateVariable, name, comment) { }
     }
     public class ActionVarRefParameter : VarRefParameter
     {
@@ -295,10 +305,43 @@ namespace SimionSrcParser
             return output;
         }
     }
+
+    public class MultiVariableParameter : IParameter
+    {
+        string m_className, m_name, m_comment;
+
+        public MultiVariableParameter(string className, string objectName, string comment)
+        {
+            switch (className)
+            {
+                case "ACTION_VARIABLE": m_className = XMLConfig.actionVarRefTag; break;
+                default:
+                case "STATE_VARIABLE": m_className = XMLConfig.stateVarRefTag; break;
+            }
+
+            m_name = objectName;
+            m_comment = comment;
+        }
+        public string getName() { return m_name; }
+        public int m_parameterIndexInCode;
+
+        public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
+
+        public string outputXML(int level)
+        {
+            string output = "";
+            SimionSrcParser.addIndentation(ref output, level);
+            output += "<" + XMLConfig.multiValuedNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
+                + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "\" " + XMLConfig.commentAttribute
+                + "=\"" + m_comment + "\"/>\n";
+            return output;
+        }
+    }
     public class MultiValueSimpleParameter : IParameter
     {
         string m_className, m_name, m_comment, m_default;
-        
+
         public MultiValueSimpleParameter(string className, string objectName, string comment, string defaultValue)
         {
             switch (className)
@@ -311,7 +354,7 @@ namespace SimionSrcParser
                 default:
                 case "DIR_PATH_PARAM": m_className = XMLConfig.dirPathNodeTag; break;
             }
-            
+
             m_name = objectName;
             m_comment = comment;
             m_default = defaultValue;
@@ -320,7 +363,7 @@ namespace SimionSrcParser
         public int m_parameterIndexInCode;
 
         public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
-        public int parameterClassSortValue() {return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
+        public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
 
         public string outputXML(int level)
         {
@@ -338,7 +381,7 @@ namespace SimionSrcParser
         string m_name;
         double m_min, m_max;
         string m_unit;
-        public WorldParameter(WorldParser.WorldParameterType type, string name, double min,double max,string unit)
+        public WorldParameter(WorldParser.WorldParameterType type, string name, double min, double max, string unit)
         {
             //used for state variables and action variables
             m_type = type;
@@ -365,9 +408,9 @@ namespace SimionSrcParser
             string typeTag;
             switch (m_type)
             {
-                case WorldParser.WorldParameterType.StateVariable: typeTag = XMLConfig.stateVarTag;break;
-                case WorldParser.WorldParameterType.ActionVariable: typeTag= XMLConfig.actionVarTag; break;
-                default: typeTag= XMLConfig.constantTag; break;
+                case WorldParser.WorldParameterType.StateVariable: typeTag = XMLConfig.stateVarTag; break;
+                case WorldParser.WorldParameterType.ActionVariable: typeTag = XMLConfig.actionVarTag; break;
+                default: typeTag = XMLConfig.constantTag; break;
             }
             output += "<" + typeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name + "\"";
             if (m_type != WorldParser.WorldParameterType.Constant)
@@ -406,18 +449,18 @@ namespace SimionSrcParser
             output += "<" + XMLConfig.choiceNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
                 + "\" " + XMLConfig.classAttribute + "=\"" + m_className + "\" " + XMLConfig.commentAttribute
                 + "=\"" + m_comment + "\">\n";
-            foreach(IParameter parameter in m_parameters)
+            foreach (IParameter parameter in m_parameters)
             {
-                output+= parameter.outputXML(level + 1);
+                output += parameter.outputXML(level + 1);
             }
             SimionSrcParser.addIndentation(ref output, level);
             output += "</" + XMLConfig.choiceNodeTag + ">\n";
             return output;
         }
     }
-    public class ChoiceElementParameter: IParameter
+    public class ChoiceElementParameter : IParameter
     {
-        public enum Type { New,Factory};
+        public enum Type { New, Factory };
         string m_name, m_className;
         Type m_type;
         string m_badgerMetadata;
@@ -428,13 +471,13 @@ namespace SimionSrcParser
         public void setParameterIndexInCode(int index) { m_parameterIndexInCode = index; }
         public int parameterClassSortValue() { return m_parameterIndexInCode + XMLConfig.sortingValueSimpleParameter; }
 
-        public ChoiceElementParameter(string name,string className,Type type)
+        public ChoiceElementParameter(string name, string className, Type type)
         {
             m_name = name;
             m_className = className;
             m_type = type;
         }
-        public ChoiceElementParameter(string name, string className, Type type,string badgerMetadata)
+        public ChoiceElementParameter(string name, string className, Type type, string badgerMetadata)
         {
             m_name = name;
             m_className = className;
@@ -450,9 +493,9 @@ namespace SimionSrcParser
                 className += "-Factory";
             output += "<" + XMLConfig.choiceElementNodeTag + " " + XMLConfig.nameAttribute + "=\"" + m_name
                 + "\" " + XMLConfig.classAttribute + "=\"" + className + "\"";
-            if (m_badgerMetadata!=null)
-                output+= " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
-            output+= "/>\n";
+            if (m_badgerMetadata != null)
+                output += " " + XMLConfig.badgerMetadataAttribute + "=\"" + m_badgerMetadata + "\"";
+            output += "/>\n";
 
             return output;
         }

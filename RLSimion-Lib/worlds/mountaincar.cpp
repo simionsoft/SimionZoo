@@ -4,6 +4,7 @@
 #include "../config.h"
 #include "../reward.h"
 #include "../app.h"
+#include "../noise.h"
 
 CMountainCar::CMountainCar(CConfigNode* pConfigNode)
 {
@@ -26,18 +27,18 @@ CMountainCar::~CMountainCar()
 void CMountainCar::reset(CState *s)
 {
 
-	//if (CSimionApp::getSample()->pExperiment->isEvaluationEpisode())
+	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
 		s->set(m_sPosition, -0.5);
 		s->set(m_sVelocity, 0.0);
 	}
-	//else
-	//{
-	//	//random setting in training episodes
-	//	s->set(m_sPosition, -1.0 + getRandomValue()*0.8); //[-1.0, -0.2]
-	//	s->set(m_sVelocity, -0.02 + getRandomValue()*0.04); //[-0.02,0.02]
-	//}
+	else
+	{
+		//random setting in training episodes
+		s->set(m_sPosition, getRandomValue()*0.2-0.6); //[-0.6, -0.4]
+		s->set(m_sVelocity, 0.0);
+	}
 }
 
 
@@ -58,18 +59,13 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
 	if (mcar_position < mcar_min_position) mcar_position = mcar_min_position;
 	if (mcar_position==mcar_min_position && mcar_velocity<0) mcar_velocity = 0;}
 	*/
-	//if (position > s->getProperties(m_sPosition).getMin())
-	//{
-	velocity += pedal*0.001 - 0.0025 * cos(3 * position);
-	s->set(m_sVelocity, velocity); //saturate
-	velocity = s->get(m_sVelocity);
-	position += velocity;
-	//}
-	//else
-	//	velocity = 0.0;
+	if (position <= s->getProperties(m_sPosition).getMin() && velocity < 0)
+	{
+		velocity = 0;
+	}
 
-	s->set(m_sPosition, position);
-	s->set(m_sVelocity, velocity);
+	s->set(m_sVelocity, velocity + pedal*0.001 - 0.0025 * cos(3 * position)); //saturate
+	s->set(m_sPosition, position + velocity);
 }
 
 
@@ -81,7 +77,7 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 	if (position == s_p->getProperties("position").getMax())
 	{
 		CSimionApp::get()->pExperiment->setTerminalState();
-		return 1.0;
+		return 100.0;
 	}
 
 	//reached the minimum position to the left?
@@ -99,4 +95,4 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 
 double CMountainCarReward::getMin() { return -1.0; }
 
-double CMountainCarReward::getMax() { return 1.0; }
+double CMountainCarReward::getMax() { return 100.0; }

@@ -1,0 +1,303 @@
+<RLSimion-x64-CNTK FileVersion="1.0.0.0">
+<RLSimion>
+	<Log>
+		<Log-Freq>0.25</Log-Freq>
+		<Log-eval-episodes>true</Log-eval-episodes>
+		<Log-training-episodes>false</Log-training-episodes>
+	</Log>
+	<World>
+		<Num-Integration-Steps>1</Num-Integration-Steps>
+		<Delta-T>0.1</Delta-T>
+		<Dynamic-Model>
+			<Model>
+		<Robot-control>
+		</Robot-control>
+		</Model>
+		</Dynamic-Model>
+	</World>
+	<Experiment>
+		<Random-Seed>1</Random-Seed>
+		<Num-Episodes>200</Num-Episodes>
+		<Eval-Freq>5</Eval-Freq>
+		<Progress-Update-Freq>1.0</Progress-Update-Freq>
+		<Episode-Length>100</Episode-Length>
+	</Experiment>
+	<SimGod>
+		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
+		<Gamma>0.9</Gamma>
+		<Freeze-Target-Function>false</Freeze-Target-Function>
+		<Use-Importance-Weights>false</Use-Importance-Weights>
+		<State-Feature-Map>
+			<Type>
+		<State-Bag>
+			<State-Variables>
+				<State-Variables>target-x</State-Variables>
+			</State-Variables>
+			<State-Variables>
+				<State-Variables>target-y</State-Variables>
+			</State-Variables>
+			<State-Variables>
+				<State-Variables>robot1-x</State-Variables>
+			</State-Variables>
+			<State-Variables>
+				<State-Variables>robot1-y</State-Variables>
+			</State-Variables>
+			<State-Variables>
+				<State-Variables>robot1-theta</State-Variables>
+			</State-Variables>
+		</State-Bag>
+		</Type>
+		</State-Feature-Map>
+		<Action-Feature-Map>
+			<Type>
+		<Discrete-Action-Grid>
+			<Grid-Dimension>
+				<Steps>51</Steps>
+				<Variable>robot1-v</Variable>
+			</Grid-Dimension>
+			<Grid-Dimension>
+				<Steps>51</Steps>
+				<Variable>robot1-omega</Variable>
+			</Grid-Dimension>
+		</Discrete-Action-Grid>
+		</Type>
+		</Action-Feature-Map>
+		<Simion>
+			<Type>
+		<DQN>
+			<Policy>
+				<Policy>
+		<Discrete-Epsilon-Greedy-Deep-Policy>
+			<neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Inputs>
+    <InputData ID="state-input" Name="State">
+      <Shape xsi:type="IntTuple1D">
+        <x1>5</x1>
+      </Shape>
+    </InputData>
+    <InputData ID="action-input" Name="Action">
+      <Shape xsi:type="IntTuple1D">
+        <x1>-1</x1>
+      </Shape>
+    </InputData>
+  </Inputs>
+  <OptimizerSetting>
+    <Optimizer xsi:type="OptimizerAdam">
+      <Parameters>
+        <OptimizerParameterOfStringDouble>
+          <Key>Learning rate</Key>
+          <Value>0.0001</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Momentum</Key>
+          <Value>0.9</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Variance momentum</Key>
+          <Value>0.999</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Epsilon</Key>
+          <Value>1E-08</Value>
+        </OptimizerParameterOfStringDouble>
+      </Parameters>
+    </Optimizer>
+  </OptimizerSetting>
+  <Output>
+    <LinkConnection TargetID="A7C3B867" />
+  </Output>
+  <NetworkArchitecture>
+    <Chains>
+      <Chain Name="Chain">
+        <ChainLinks>
+          <LinkBase xsi:type="InputLayer" Name="Input Layer" ID="27F7D6DE">
+            <Parameters>
+              <ParameterBase xsi:type="InputDataParameter" Name="Input Data">
+                <Value>state-input</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>200</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>200</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="5827B63D">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>100</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>51</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>linear</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+        </ChainLinks>
+      </Chain>
+    </Chains>
+  </NetworkArchitecture>
+</Problem></neural-network>
+			<Output-Action>robot1-v</Output-Action>
+			<epsilon>
+				<Schedule>
+		<Linear-Schedule>
+			<Start-Offset>0.0</Start-Offset>
+			<End-Offset>0.8</End-Offset>
+			<Pre-Offset-Value>0.9</Pre-Offset-Value>
+			<Initial-Value>0.9</Initial-Value>
+			<End-Value>0.05</End-Value>
+			<Evaluation-Value>0.0</Evaluation-Value>
+			<Interpolation>linear</Interpolation>
+			<Time-reference>experiment</Time-reference>
+		</Linear-Schedule>
+		</Schedule>
+			</epsilon>
+		</Discrete-Epsilon-Greedy-Deep-Policy>
+		</Policy>
+			</Policy>
+			<Policy>
+				<Policy>
+		<Discrete-Epsilon-Greedy-Deep-Policy>
+			<neural-network><Problem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Inputs>
+    <InputData ID="state-input" Name="State">
+      <Shape xsi:type="IntTuple1D">
+        <x1>5</x1>
+      </Shape>
+    </InputData>
+    <InputData ID="action-input" Name="Action">
+      <Shape xsi:type="IntTuple1D">
+        <x1>-1</x1>
+      </Shape>
+    </InputData>
+  </Inputs>
+  <OptimizerSetting>
+    <Optimizer xsi:type="OptimizerAdam">
+      <Parameters>
+        <OptimizerParameterOfStringDouble>
+          <Key>Learning rate</Key>
+          <Value>0.0001</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Momentum</Key>
+          <Value>0.9</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Variance momentum</Key>
+          <Value>0.999</Value>
+        </OptimizerParameterOfStringDouble>
+        <OptimizerParameterOfStringDouble>
+          <Key>Epsilon</Key>
+          <Value>1E-08</Value>
+        </OptimizerParameterOfStringDouble>
+      </Parameters>
+    </Optimizer>
+  </OptimizerSetting>
+  <Output>
+    <LinkConnection TargetID="A7C3B867" />
+  </Output>
+  <NetworkArchitecture>
+    <Chains>
+      <Chain Name="Chain">
+        <ChainLinks>
+          <LinkBase xsi:type="InputLayer" Name="Input Layer" ID="27F7D6DE">
+            <Parameters>
+              <ParameterBase xsi:type="InputDataParameter" Name="Input Data">
+                <Value>state-input</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>200</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>200</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="5827B63D">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>100</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>51</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>linear</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+        </ChainLinks>
+      </Chain>
+    </Chains>
+  </NetworkArchitecture>
+</Problem></neural-network>
+			<Output-Action>robot1-omega</Output-Action>
+			<epsilon>
+				<Schedule>
+		<Linear-Schedule>
+			<Start-Offset>0.0</Start-Offset>
+			<End-Offset>0.8</End-Offset>
+			<Pre-Offset-Value>0.9</Pre-Offset-Value>
+			<Initial-Value>0.9</Initial-Value>
+			<End-Value>0.05</End-Value>
+			<Evaluation-Value>0.0</Evaluation-Value>
+			<Interpolation>linear</Interpolation>
+			<Time-reference>experiment</Time-reference>
+		</Linear-Schedule>
+		</Schedule>
+			</epsilon>
+		</Discrete-Epsilon-Greedy-Deep-Policy>
+		</Policy>
+			</Policy>
+		</DQN>
+		</Type>
+		</Simion>
+	</SimGod>
+</RLSimion>
+</RLSimion-x64-CNTK>

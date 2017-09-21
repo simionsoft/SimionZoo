@@ -14,6 +14,18 @@ double getRandomValue()
 	return (double)(rand() + 1) / ((double)RAND_MAX + 1);
 }
 
+int chooseRandomInteger(vector<float>& probability)
+{
+	int index = 0;
+	double cumProb = 0;
+	double randomValue = getRandomValue();
+
+	while (cumProb < randomValue)
+		cumProb += probability[index++];
+
+	return index - 1;
+}
+
 double CGaussianNoise::getNormalDistributionSample(double mean, double sigma)
 {
 	if (sigma == 0.0) return mean;

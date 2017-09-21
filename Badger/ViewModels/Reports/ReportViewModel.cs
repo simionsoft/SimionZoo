@@ -214,7 +214,7 @@ namespace Badger.ViewModels
                     plots.Add(newPlot);
                 }
 
-                if ((plotType & PlotType.AverageOfEachEpisode) == PlotType.AverageOfEachEpisode)
+                if ((plotType & PlotType.AverageOfEachEvaluationEpisode) == PlotType.AverageOfEachEvaluationEpisode)
                 {
                     //get the max length of the log
                     double maxLength = 0.0;
