@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using Badger.Simion;
 using Badger.Data;
-using System.IO;
-using System.Linq;
 using System;
-using Badger.Utils;
 
 namespace Badger.ViewModels
 {
@@ -67,45 +64,45 @@ namespace Badger.ViewModels
 
         //loads the log file and then returns the data of the requested variable as a TrackData object
         //Not the most efficient way (we may load way more than we need), but good enough for now
-        public TrackData LoadTrackData(List<ReportParams> trackParameters)
+        public Track LoadTrackData(List<Report> reports)
         {
             Log.LoadBinaryLog();
 
             if (!Log.BinFileLoadSuccess || Log.TotalNumEpisodes == 0) return null;
 
-            TrackData trackData = new TrackData(forkValues);
-            DataSeries dataSeries;
-            foreach (ReportParams track in trackParameters)
+            Track track = new Track(forkValues);
+            SeriesGroup dataSeries;
+            foreach (Report report in reports)
             {
-                switch(track.Type)
+                switch(report.Type)
                 {
                     case PlotType.LastEvaluation:
                         EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
-                        dataSeries = new DataSeries(track);
-                        dataSeries.AddSeries(Log.GetEpisodeData(lastEpisode, track));
-                        trackData.AddVariableData(track, dataSeries);
+                        dataSeries = new SeriesGroup(report);
+                        dataSeries.AddSeries(Log.GetEpisodeData(lastEpisode, report));
+                        track.AddVariableData(report, dataSeries);
                         break;
                     case PlotType.EvaluationAverages:
-                        trackData.AddVariableData(track, Log.GetAveragedData(Log.EvaluationEpisodes, track));
+                        track.AddVariableData(report, Log.GetAveragedData(Log.EvaluationEpisodes, report));
                         break;
                     case PlotType.AllEvaluationEpisodes:
                     case PlotType.AllTrainingEpisodes:
-                        dataSeries = new DataSeries(track);
+                        dataSeries = new SeriesGroup(report);
                         List<EpisodesData> episodes;
-                        if (track.Type == PlotType.AllEvaluationEpisodes)
+                        if (report.Type == PlotType.AllEvaluationEpisodes)
                             episodes = Log.EvaluationEpisodes;
                         else episodes = Log.TrainingEpisodes;
                         foreach(EpisodesData episode in episodes)
                         {
-                            XYSeries subSeries = Log.GetEpisodeData(episode, track);
+                            Series subSeries = Log.GetEpisodeData(episode, report);
                             subSeries.Id = episode.index.ToString();
                             dataSeries.AddSeries(subSeries);
                         }
-                        trackData.AddVariableData(track, dataSeries);
+                        track.AddVariableData(report, dataSeries);
                         break;
                 }
             }
-            return trackData;
+            return track;
         }
     }
 }

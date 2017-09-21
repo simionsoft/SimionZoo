@@ -8,9 +8,9 @@ namespace Badger.Data
 {
     class DataTrackUtilities
     {
-        public static List<ReportParams> FromLoggedVariables(BindableCollection<LoggedVariableViewModel> loggedVariables)
+        public static List<Report> FromLoggedVariables(BindableCollection<LoggedVariableViewModel> loggedVariables)
         {
-            List<ReportParams> trackParameterList = new List<ReportParams>();
+            List<Report> trackParameterList = new List<Report>();
             foreach(LoggedVariableViewModel variable in loggedVariables)
             {
                 if (variable.bIsSelected)
@@ -19,7 +19,7 @@ namespace Badger.Data
                     {
                         if ((type & variable.SelectedPlotType) != PlotType.Undefined)
                         {
-                            ReportParams trackParameters = new ReportParams(variable.name
+                            Report trackParameters = new Report(variable.name
                                 , type, variable.SelectedProcessFunc);
                             trackParameterList.Add(trackParameters);
                         }

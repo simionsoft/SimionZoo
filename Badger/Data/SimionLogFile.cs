@@ -53,23 +53,23 @@ namespace Badger.Simion
             subIndex = (int)logReader.ReadInt64();
             byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
         }
-        public XYSeries GetVariableData(Dictionary<string, int> variablesInLog, ReportParams trackParameters)
+        public Series GetVariableData(Dictionary<string, int> variablesInLog, Report trackParameters)
         {
-            XYSeries data = new XYSeries();
+            Series data = new Series();
             int variableIndex = variablesInLog[trackParameters.Variable];
             foreach (StepData step in steps)
                 data.AddValue(step.episodeSimTime
-                    , DataProcess.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
+                    , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
             data.CalculateStats(trackParameters);
             return data;
         }
-        public double GetEpisodeAverage(Dictionary<string, int> variablesInLog, ReportParams trackParameters)
+        public double GetEpisodeAverage(Dictionary<string, int> variablesInLog, Report trackParameters)
         {
             int variableIndex = variablesInLog[trackParameters.Variable];
             double avg = 0.0;
             if (steps.Count == 0) return 0.0;
             foreach (StepData step in steps)
-                avg += DataProcess.Get(trackParameters.ProcessFunc, step.data[variableIndex]);
+                avg += ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]);
             return avg / steps.Count;
         }
     }
@@ -225,15 +225,15 @@ namespace Badger.Simion
         public delegate double EpisodeFunc(EpisodesData episode, int varIndex);
 
    
-        public XYSeries GetEpisodeData(EpisodesData episode, ReportParams trackParameters)
+        public Series GetEpisodeData(EpisodesData episode, Report trackParameters)
         {
             return episode.GetVariableData(VariableIndices, trackParameters);
         }
 
-        public DataSeries GetAveragedData(List<EpisodesData> episodes, ReportParams trackParameters)
+        public SeriesGroup GetAveragedData(List<EpisodesData> episodes, Report trackParameters)
         {
-            DataSeries data = new DataSeries(trackParameters);
-            XYSeries xYSeries = new XYSeries();
+            SeriesGroup data = new SeriesGroup(trackParameters);
+            Series xYSeries = new Series();
 
             foreach (EpisodesData episode in episodes)
             {

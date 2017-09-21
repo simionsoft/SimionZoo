@@ -14,8 +14,8 @@ namespace Badger.ViewModels
         {
             m_name = name;
 
-            ProcessFuncs.Add(DataProcess.None);
-            ProcessFuncs.Add(DataProcess.Abs);
+            ProcessFuncs.Add(ProcessFunc.None);
+            ProcessFuncs.Add(ProcessFunc.Abs);
 
             m_selectedPlotTypes = new ObservableCollection<string>();
             m_selectedPlotTypes.CollectionChanged += M_selectedPlotTypes_CollectionChanged;
@@ -110,6 +110,6 @@ namespace Badger.ViewModels
             get { return m_processFuncs; }
             set { m_processFuncs = value; NotifyOfPropertyChange(() => ProcessFuncs); }
         }
-        public string SelectedProcessFunc { get; set; } = DataProcess.None;
+        public string SelectedProcessFunc { get; set; } = ProcessFunc.None;
     }
 }

@@ -4,7 +4,7 @@ using Badger.Data;
 
 namespace Badger.Simion
 {
-    public class DataProcess
+    public class ProcessFunc
     {
         public const string None = "None";
         public const string Abs = "Abs";
@@ -19,19 +19,19 @@ namespace Badger.Simion
             }
         }
     };
-    public class StatData
+    public class Stats
     {
         public double min { get; set; }
         public double max { get; set; }
         public double avg { get; set; }
         public double stdDev { get; set; }
     }
-    public class ReportParams
+    public class Report
     {
         public string Variable;
         public PlotType Type;
         public string ProcessFunc;
-        public ReportParams(string varName, PlotType type, string processFunc)
+        public Report(string varName, PlotType type, string processFunc)
         {
             Type = type;
             ProcessFunc = processFunc;
@@ -49,7 +49,12 @@ namespace Badger.Simion
             Y = y;
         }
     }
-    public class XYSeries
+
+    /// <summary>
+    /// Single series of data. These series may belong to a series a values in an episode or a set of
+    /// per-episode-values. In this case, an Id will be used to distinguish them
+    /// </summary>
+    public class Series
     {
         public string Id { get; set; } = null;
         public List<XYValue> Values { get; set; } = new List<XYValue>();
@@ -59,9 +64,9 @@ namespace Badger.Simion
             Values.Add(new XYValue(x, y));
         }
 
-        public StatData Stats= new StatData();
+        public Stats Stats= new Stats();
 
-        public void CalculateStats(ReportParams trackParameters)
+        public void CalculateStats(Report trackParameters)
         {
             //calculate avg, min and max
             double sum = 0.0;
@@ -73,7 +78,7 @@ namespace Badger.Simion
                 if (val.Y > Stats.max) Stats.max = val.Y;
                 if (val.Y < Stats.min) Stats.min = val.Y;
                 
-                sum += DataProcess.Get(trackParameters.ProcessFunc,val.Y);
+                sum += ProcessFunc.Get(trackParameters.ProcessFunc,val.Y);
             }
 
             Stats.avg = sum / Values.Count;
@@ -91,49 +96,62 @@ namespace Badger.Simion
         }
 
     }
-    public class DataSeries
-    {
-        private ReportParams trackParameters;
 
-        public DataSeries(ReportParams parameters)
+    /// <summary>
+    /// A group of series. For a given report, there may be more than one series with the same set of
+    /// fork values. For example, "AllEvaluations" will read several series
+    /// for each of the evaluation episodes, all of them under the same fork values.
+    /// </summary>
+    public class SeriesGroup
+    {
+        private Report trackParameters;
+
+        public SeriesGroup(Report parameters)
         {
             trackParameters = parameters;
         }
 
-        //Each series may have more than one subseries. For example, "AllEvaluations" returns a series
-        //for each of the evaluation episodes. Thus, we need a list of subseries (
-        public List<XYSeries> SubSeries = new List<XYSeries>();
 
-        public XYSeries Series { get { if (SubSeries.Count>0) return SubSeries[0]; return null; } }
-        public void AddSeries(XYSeries series) { SubSeries.Add(series); }
-        public StatData Stats = new StatData();
+        public List<Series> SeriesList = new List<Series>();
+
+        /// <summary>
+        /// In case we are expecting to have only one series in this group, we can get it by using
+        /// MainSeries. The same idea as in TrackGroup, but without having to consolidate series
+        /// </summary>
+        public Series MainSeries { get { if (SeriesList.Count>0) return SeriesList[0]; return null; } }
+        public void AddSeries(Series series) { SeriesList.Add(series); }
+        public Stats Stats = new Stats();
     }
  
-    public class TrackData
+    /// <summary>
+    /// A track contains all the series corresponding to a combination of fork values.
+    /// For each Report, a different SeriesGroup will hold all the series with those fork values
+    /// </summary>
+    public class Track
     {
         public Dictionary<string, string> ForkValues;
-        public Dictionary<ReportParams, DataSeries> Data { get; }
-            = new Dictionary<ReportParams, DataSeries>();
+        public Dictionary<Report, SeriesGroup> SeriesGroups { get; }
+            = new Dictionary<Report, SeriesGroup>();
 
-        public TrackData(Dictionary<string, string> forkValues)
+        public Track(Dictionary<string, string> forkValues)
         {
             ForkValues = forkValues;
         }
 
-        public void AddVariableData(ReportParams variable, DataSeries variableData)
+        public void AddVariableData(Report variable, SeriesGroup variableData)
         {
-            Data.Add(variable, variableData);
+            SeriesGroups.Add(variable, variableData);
         }
 
-        public DataSeries GetDataSeriesForOrdering(string variable)
+        public SeriesGroup GetDataSeriesForOrdering(string variable)
         {
-            foreach (ReportParams track in Data.Keys)
+            foreach (Report track in SeriesGroups.Keys)
             {
-                if (track.Variable == variable) return Data[track];
+                if (track.Variable == variable) return SeriesGroups[track];
             }
             return null;
         }
 
-        public bool HasData { get { return Data.Keys.Count != 0; } }
+        public bool HasData { get { return SeriesGroups.Keys.Count != 0; } }
     }
 }

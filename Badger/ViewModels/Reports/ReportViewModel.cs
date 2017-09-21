@@ -90,7 +90,7 @@ namespace Badger.ViewModels
             return PlotType.Undefined;
         }
 
-        public ReportViewModel(LogQuery query, ReportParams report)
+        public ReportViewModel(LogQuery query, Report report)
         {
             name = report.Name;
 
@@ -99,24 +99,24 @@ namespace Badger.ViewModels
             //Create the stats
             StatsViewModel newStatGroup = new StatsViewModel(report.Name);
 
-            foreach (LogQueryResultTrackViewModel Track in query.ResultTracks)
+            foreach (TrackGroup group in query.ResultTracks)
             {
                 //plot data
-                DataSeries data = Track.ResultTrackData.Data[report];
+                SeriesGroup seriesGroup = group.ConsolidatedTrack.SeriesGroups[report];
 
-                foreach (XYSeries subSeries in data.SubSeries)
+                foreach (Series series in seriesGroup.SeriesList)
                 {
-                    string subSeriesName;
-                    if (data.SubSeries.Count == 0)
-                        subSeriesName = Track.GroupId;
-                    else subSeriesName = Track.GroupId + "-" + subSeries.Id;
+                    string seriesName;
+                    if (seriesGroup.SeriesList.Count == 1)
+                        seriesName = group.GroupId;
+                    else seriesName = group.GroupId + "-" + series.Id;
 
                     //add data to the plot
-                    int lineSeriesId = newPlot.addLineSeries(subSeriesName);
-                    foreach (XYValue value in subSeries.Values)
+                    int lineSeriesId = newPlot.addLineSeries(seriesName);
+                    foreach (XYValue value in series.Values)
                         newPlot.addLineSeriesValue(lineSeriesId, value.X, value.Y);
 
-                    StatViewModel newStat = new StatViewModel(Track.ExperimentId, subSeriesName, subSeries.Stats);
+                    StatViewModel newStat = new StatViewModel(group.ExperimentId, seriesName, series.Stats);
 
                     newStatGroup.addStat(newStat);
                 }

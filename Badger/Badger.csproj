@@ -138,7 +138,7 @@
     <Compile Include="Data\PlotType.cs" />
     <Compile Include="Data\SimionFileData.cs" />
     <Compile Include="Data\SimionLogFile.cs" />
-    <Compile Include="Data\TrackData.cs" />
+    <Compile Include="Data\Track.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\WorldDefinition.cs" />
     <Compile Include="Data\XMLConfig.cs" />
@@ -168,7 +168,7 @@
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
     <Compile Include="ViewModels\Reports\LogQuery.cs" />
-    <Compile Include="ViewModels\Reports\LogQueryResultTrackViewModel.cs" />
+    <Compile Include="Data\TrackGroup.cs" />
     <Compile Include="ViewModels\Reports\PlotPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedPrerequisiteViewModel.cs" />
     <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />

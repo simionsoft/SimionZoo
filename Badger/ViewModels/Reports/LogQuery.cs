@@ -118,40 +118,40 @@ namespace Badger.ViewModels
             }
         }
 
-        private List<LogQueryResultTrackViewModel> m_resultTracks
-            = new List<LogQueryResultTrackViewModel>();
-        public List<LogQueryResultTrackViewModel> ResultTracks
+        private List<TrackGroup> m_resultTracks
+            = new List<TrackGroup>();
+        public List<TrackGroup> ResultTracks
         {
             get { return m_resultTracks; }
             set { m_resultTracks = value; NotifyOfPropertyChange(() => ResultTracks); }
         }
 
-        public List<ReportParams> GetTracksParameters()
+        public List<Report> GetTracksParameters()
         {
-            List<ReportParams> list = new List<ReportParams>();
-            foreach(LogQueryResultTrackViewModel track in ResultTracks)
+            List<Report> list = new List<Report>();
+            foreach(TrackGroup group in ResultTracks)
             {
                 //we iterate over the TrackParameters of the result track
-                foreach (ReportParams parameters in track.ResultTrackData.Data.Keys)
+                foreach (Report parameters in group.ConsolidatedTrack.SeriesGroups.Keys)
                     if (!list.Contains(parameters))
                         list.Add(parameters);
             }
             return list;
         }
 
-        private LogQueryResultTrackViewModel GetTrack(Dictionary<string, string> forkValues)
+        private TrackGroup GetTrack(Dictionary<string, string> forkValues)
         {
             uint numMatchedForks;
-            foreach (LogQueryResultTrackViewModel resultTrack in ResultTracks)
+            foreach (TrackGroup resultTrack in ResultTracks)
             {
                 numMatchedForks = 0;
                 foreach (string forkName in forkValues.Keys)
                 {
-                    if (resultTrack.forkValues.ContainsKey(forkName)
-                        && forkValues[forkName] == resultTrack.forkValues[forkName])
+                    if (resultTrack.ForkValues.ContainsKey(forkName)
+                        && forkValues[forkName] == resultTrack.ForkValues[forkName])
                         numMatchedForks++;
                 }
-                if (numMatchedForks == resultTrack.forkValues.Count)
+                if (numMatchedForks == resultTrack.ForkValues.Count)
                     return resultTrack;
 
             }
@@ -165,12 +165,12 @@ namespace Badger.ViewModels
             set { m_loggedVariables = value; }
         }
 
-        public List<ReportParams> Reports = new List<ReportParams>();
+        public List<Report> Reports = new List<Report>();
 
         public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
             , BindableCollection<LoggedVariableViewModel> loggedVariablesVM)
         {
-            LogQueryResultTrackViewModel resultTrack = null;
+            TrackGroup resultTrackGroup = null;
             loggedVariables = loggedVariablesVM;
 
             //add all selected variables to the list of variables
@@ -190,26 +190,26 @@ namespace Badger.ViewModels
                     {
                         if (groupBy.Count != 0)
                         {
-                            resultTrack = GetTrack(expUnit.forkValues);
-                            if (resultTrack != null)
+                            resultTrackGroup = GetTrack(expUnit.forkValues);
+                            if (resultTrackGroup != null)
                             {
                                 //the track exists and we are using forks to group results
-                                TrackData trackData = expUnit.LoadTrackData(Reports);
+                                Track trackData = expUnit.LoadTrackData(Reports);
                                 if (trackData!=null)
-                                    resultTrack.AddTrackData(trackData);
+                                    resultTrackGroup.AddTrackData(trackData);
                             }
                         }
-                        if (resultTrack == null) //New track
+                        if (resultTrackGroup == null) //New track
                         {
                             //No groups (each experimental unit is a track) or the track doesn't exist
                             //Either way, we create a new track
-                            LogQueryResultTrackViewModel newResultTrack = new LogQueryResultTrackViewModel(exp.Name);
+                            TrackGroup newResultTrackGroup = new TrackGroup(exp.Name);
 
                             if (groupBy.Count == 0)
-                                newResultTrack.forkValues = expUnit.forkValues;
+                                newResultTrackGroup.ForkValues = expUnit.forkValues;
                             else
                                 foreach (string group in groupBy)
-                                    newResultTrack.forkValues[group] = expUnit.forkValues[group];
+                                    newResultTrackGroup.ForkValues[group] = expUnit.forkValues[group];
 
                             //if the in-group selection function requires a variable not selected for the report
                             //we add it too to the list of variables read from the log
@@ -222,30 +222,29 @@ namespace Badger.ViewModels
                                 variables.Add(orderByVariable);
 
                             //load data from the log file
-                            TrackData trackData = expUnit.LoadTrackData(Reports);
+                            Track trackData = expUnit.LoadTrackData(Reports);
 
                             if (trackData != null)
                             {
                                 //for now, we just ignore failed experiments. Maybe we could do something more sophisticated
                                 //for example, allow to choose only those parameter variations that lead to failed experiments
                                 if (trackData.HasData)
-                                    newResultTrack.AddTrackData(trackData);
+                                    newResultTrackGroup.AddTrackData(trackData);
 
                                 //we only consider those tracks with data loaded
-                                if (newResultTrack.HasData)
-                                    ResultTracks.Add(newResultTrack);
+                                if (newResultTrackGroup.HasData)
+                                    ResultTracks.Add(newResultTrackGroup);
                             }
                         }
                     }
                 }
             }
-            //if groups are used, we have to select a single track in each group using the in-group selection function
+
+            //ConsolidateGroups selects a single track in each group using the in-group selection function
             //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
-            if (groupBy.Count > 0)
-            {
-                foreach (LogQueryResultTrackViewModel track in ResultTracks)
-                    track.ConsolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
-            }
+            //and also names groups depending on the number of tracks in the group
+            foreach (TrackGroup trackGroup in ResultTracks)
+                trackGroup.ConsolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
 
             //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
             if (limitToOption != LogQuery.noLimitOnResults)
@@ -254,22 +253,22 @@ namespace Badger.ViewModels
 
                 if (ResultTracks.Count > numMaxTracks)
                 {
-                    SortedList<double, LogQueryResultTrackViewModel> sortedList;
+                    SortedList<double, TrackGroup> sortedList;
 
                     if (orderByFunction == orderAsc)
-                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(ResultTracks.Count
+                        sortedList = new SortedList<double, TrackGroup>(ResultTracks.Count
                             , new AscComparer());
                     else // (orderByFunction == orderDesc)
-                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(ResultTracks.Count
+                        sortedList = new SortedList<double, TrackGroup>(ResultTracks.Count
                             , new DescComparer());
 
-                    foreach (LogQueryResultTrackViewModel track in ResultTracks)
+                    foreach (TrackGroup group in ResultTracks)
                     {
                         double sortValue = 0.0;
-                        DataSeries variableData = track.ResultTrackData.GetDataSeriesForOrdering(orderByVariable);
+                        SeriesGroup variableData = group.ConsolidatedTrack.GetDataSeriesForOrdering(orderByVariable);
                         if (variableData != null)
-                            sortValue = variableData.Series.Stats.avg;
-                        sortedList.Add(sortValue, track);
+                            sortValue = variableData.MainSeries.Stats.avg;
+                        sortedList.Add(sortValue, group);
                     }
 
                     //set the sorted list as resultTracks

@@ -8,9 +8,9 @@ namespace Badger.ViewModels
     {
         public string ExperimentId { get; set; }
         public string TrackId { get; set; }
-        public StatData Stats { get; set; }
+        public Stats Stats { get; set; }
 
-        public StatViewModel(string experimentId, string trackId, StatData stats)
+        public StatViewModel(string experimentId, string trackId, Stats stats)
         {
             ExperimentId = experimentId;
             TrackId = trackId;

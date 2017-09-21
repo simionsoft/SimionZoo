@@ -334,7 +334,7 @@ namespace Badger.ViewModels
             // Execute the query
             query.Execute(LoggedExperiments, Variables);
             // Display the report
-            foreach (ReportParams report in query.Reports)
+            foreach (Report report in query.Reports)
             {
                 ReportViewModel newReport = new ReportViewModel(query, report);
                 Reports.Add(newReport);
