@@ -99,6 +99,15 @@ namespace Badger.ViewModels
             PlotPropertiesViewModel properties= sender as PlotPropertiesViewModel;
             if (properties!=null)
             {
+                Plot.IsLegendVisible = Properties.LegendVisible;
+                Plot.LegendBorderThickness = Properties.LegendBorder ? 2.0 : 0.0;
+                //placement
+                Plot.LegendOrientation = (OxyPlot.LegendOrientation)Enum.Parse(typeof(OxyPlot.LegendOrientation)
+                    , Properties.SelectedLegendOrientation);
+                Plot.LegendPlacement = (OxyPlot.LegendPlacement)Enum.Parse(typeof(OxyPlot.LegendPlacement)
+                    , Properties.SelectedLegendPlacement);
+                Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
+                    , Properties.SelectedLegendPosition);
                 UpdateView();
             }
         }
@@ -240,20 +249,6 @@ namespace Badger.ViewModels
         public void ShowProperties()
         {
             CaliburnUtility.ShowPopupWindow(Properties, "Plot properties");
-            SetProperties();
-        }
-
-        public void SetProperties()
-        {
-            Plot.IsLegendVisible = Properties.LegendVisible;
-            //placement
-            Plot.LegendOrientation = (OxyPlot.LegendOrientation)Enum.Parse(typeof(OxyPlot.LegendOrientation)
-                , Properties.SelectedLegendOrientation);
-            Plot.LegendPlacement = (OxyPlot.LegendPlacement)Enum.Parse(typeof(OxyPlot.LegendPlacement)
-                , Properties.SelectedLegendPlacement);
-            Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
-                , Properties.SelectedLegendPosition);
-            UpdateView();
         }
 
         public void Export(string outputFolder)

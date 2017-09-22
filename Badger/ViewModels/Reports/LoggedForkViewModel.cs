@@ -82,7 +82,6 @@ namespace Badger.ViewModels
             HasChildrenValues = Values.Count != 0;
         }
 
-
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {
             if (doActionLocally) LocalTraverseAction(action);

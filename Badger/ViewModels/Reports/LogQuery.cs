@@ -180,6 +180,16 @@ namespace Badger.ViewModels
 
             Reports = DataTrackUtilities.FromLoggedVariables(loggedVariablesVM);
 
+            //if the in-group selection function requires a variable not selected for the report
+            //we add it too to the list of variables read from the log
+            if (inGroupSelectionVariable != "" && !variables.Contains(inGroupSelectionVariable))
+                Reports.Add(new Report(inGroupSelectionVariable, PlotType.LastEvaluation, ProcessFunc.None));
+
+            //if we use some sorting function to select only some tracks, we need to add the variable
+            // to the list too
+            if (limitToOption != noLimitOnResults && !variables.Contains(orderByVariable))
+                Reports.Add(new Report(orderByVariable, PlotType.LastEvaluation, ProcessFunc.None));
+
             //traverse the experimental units within each experiment
             foreach (LoggedExperimentViewModel exp in experiments)
             {
@@ -209,17 +219,11 @@ namespace Badger.ViewModels
                                 newResultTrackGroup.ForkValues = expUnit.forkValues;
                             else
                                 foreach (string group in groupBy)
-                                    newResultTrackGroup.ForkValues[group] = expUnit.forkValues[group];
-
-                            //if the in-group selection function requires a variable not selected for the report
-                            //we add it too to the list of variables read from the log
-                            if (inGroupSelectionVariable != "" && !variables.Contains(inGroupSelectionVariable))
-                                variables.Add(inGroupSelectionVariable);
-
-                            //if we use some sorting function to select only some tracks, we need to add the variable
-                            // to the list too
-                            if (limitToOption != noLimitOnResults && !variables.Contains(orderByVariable))
-                                variables.Add(orderByVariable);
+                                {
+                                    //an experimental unit may not have a fork used to group
+                                    if (expUnit.forkValues.ContainsKey(group))
+                                        newResultTrackGroup.ForkValues[group] = expUnit.forkValues[group];
+                                }
 
                             //load data from the log file
                             Track trackData = expUnit.LoadTrackData(Reports);

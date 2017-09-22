@@ -174,7 +174,7 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="sender">The object with the change in a property</param>
         /// <param name="e">The launched event</param>
-        void Fork_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        void OnChildPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //not all properties sending changes are due to "Group by this fork", so we need to check it
             if (e.PropertyName == "IsGroupedByThisFork")
@@ -442,10 +442,12 @@ namespace Badger.ViewModels
                 selectedOrderByVariable = Variables[0].name;
             }
 
+            // Add a property change listener to each node in the tree
+            newExperiment.TraverseAction(true, (n) => { n.PropertyChanged += OnChildPropertyChanged; });
+
+            //Add forks to the list managed by the new experiment
             foreach (var fork in newExperiment.Forks)
             {
-                // Add a property change listener before adding this item to the list
-                fork.PropertyChanged += Fork_PropertyChanged;
                 Forks.Add(fork);
             }
         }

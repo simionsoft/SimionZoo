@@ -75,12 +75,15 @@ namespace Badger.Data
                     }
                 }
                 m_tracks.Clear();
-                m_tracks.Add(selectedTrack);
+                if (selectedTrack != null)
+                {
+                    m_tracks.Add(selectedTrack);
 
-                //create a copy of the dictionary to solve the following issue:
-                //after generating the first report (with groups) the forkValues of the experiments are cleared
-                //and therefore, no more report can be generated afterwards
-                ForkValues = new Dictionary<string, string>(selectedTrack.ForkValues);
+                    //create a copy of the dictionary to solve the following issue:
+                    //after generating the first report (with groups) the forkValues of the experiments are cleared
+                    //and therefore, no more report can be generated afterwards
+                    ForkValues = new Dictionary<string, string>(selectedTrack.ForkValues);
+                }
             }
 
             SetNameFromGroups(groupBy);
@@ -95,11 +98,14 @@ namespace Badger.Data
                 string shortId;
                 foreach (string group in groupBy)
                 {
-                    shortId = Utility.LimitLength(group, 10);
-                    if (shortId.Length > 0)
-                        GroupId += shortId + "=";
-                    GroupId += Utility.LimitLength(ForkValues[group], 10, valueDelimiters) + ",";
-                    ForkValues.Remove(group);
+                    if (ForkValues.ContainsKey(group))
+                    {
+                        shortId = Utility.LimitLength(group, 10);
+                        if (shortId.Length > 0)
+                            GroupId += shortId + "=";
+                        GroupId += Utility.LimitLength(ForkValues[group], 10, valueDelimiters) + ",";
+                        ForkValues.Remove(group);
+                    }
                 }
                 GroupId = GroupId.TrimEnd(',');
             }
