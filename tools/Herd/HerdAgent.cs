@@ -618,12 +618,14 @@ namespace Herd
                             if (bret)
                             {
                                 //run the job
+                                logMessage("Job received");
+                                logMessage(m_job.ToString());
                                 logMessage("Running job");
                                 returnCode = await runJobAsync(m_cancelTokenSource.Token);
 
                                 if (returnCode == m_noErrorCode || returnCode == m_jobInternalErrorCode)
                                 {
-                                    logMessage("Job finished");
+                                    logMessage("Job finished. Code=" + returnCode );
                                     await writeMessageAsync(CJobDispatcher.m_endMessage, m_cancelTokenSource.Token, true);
 
                                     logMessage("Sending job results");
@@ -649,7 +651,9 @@ namespace Herd
                 }
                 finally
                 {
+                    logMessage("Waiting for queued async write operations to finish");
                     waitAsyncWriteOpsToFinish();
+                    logMessage("Closing the TCP connection");
                     m_tcpClient.Close();
                     setState(AgentState.Available);
 
@@ -657,7 +661,7 @@ namespace Herd
                     //start listening again
                     HerdAgentTcpState tcpState = new HerdAgentTcpState();
                     tcpState.ip = new IPEndPoint(0, 0);
-                    //m_listener.Start();
+
                     m_listener.BeginAcceptTcpClient(CommunicationCallback, tcpState);
                 }
             }
@@ -677,7 +681,7 @@ namespace Herd
                 {
                     //if (getState() == AgentState.AVAILABLE)
                     {
-                        logMessage("Agent discovered by " + ip + ". Current state=" + getStateString());
+                        //logMessage("Agent discovered by " + ip + ". Current state=" + getStateString());
                         string agentDescription = GetAgentDescription();
                         byte[] data = Encoding.ASCII.GetBytes(agentDescription);
                         getUdpClient().Send(data, data.Length, ip);

@@ -25,6 +25,12 @@ namespace Herd
             pipe = "";
             authenticationToken = "";
         }
+        public override string ToString()
+        {
+            string ret = "Task = " + name + "\n" + "Exe= " + exe + "\n" + "Arguments= " + arguments + "\n";
+            ret += "Pipe= " + pipe + "\n" + "Auth.Token= " + authenticationToken + "\n";
+            return ret;
+        }
     }
     public class CJob
     {
@@ -35,6 +41,14 @@ namespace Herd
         public Dictionary<string, string> renameRules;
 
         public CJob() { }
+
+        public override string ToString()
+        {
+            string ret = "Job: " + name;
+            foreach (CTask task in tasks)
+                ret += "||" + task.ToString();
+            return ret;
+        }
 
         public string renamedFilename(string filename)
         {
@@ -60,6 +74,15 @@ namespace Herd
 
     public class CJobDispatcher
     {
+        public const string LegacyTaskHeaderRegEx = "<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"/>";
+
+        public const string TaskHeaderRegEx = "<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\" Pipe=\"([^\"]*)\"( AuthenticationToken=\"([^\"]*)\")?/>";
+        public const string JobHeaderRegEx = "<Job Name=\"([^\"]*)\">";
+        public const string JobFooterRegEx = "</Job>";
+        public const string IncomingFileHeaderRegEx = "<(Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">";
+        public const string OutgoingFileHeaderRegEx = "<(Input|Output) Name=\"([^\"]*)\"/>";
+        public const string FileFooterRegEx = "</(Input|Output)>";
+
         public XMLStream m_xmlStream;
         public const int m_discoveryPortHerd = 2333;
         public const int m_comPortHerd = 2335;
@@ -191,8 +214,8 @@ namespace Herd
             string taskXML = "<Task Name=\"" + task.name + "\"";
             taskXML += " Exe=\"" + task.exe + "\"";
             taskXML += " Arguments=\"" + task.arguments + "\"";
-            //taskXML += " AuthenticationToken=\"" + task.authenticationToken + "\"";
             taskXML += " Pipe=\"" + task.pipe + "\"";
+            //taskXML += " AuthenticationToken=\"" + task.authenticationToken + "\"";
             taskXML += "/>";
             byte[] bytes = Encoding.ASCII.GetBytes(taskXML);
 
@@ -203,13 +226,14 @@ namespace Herd
         {
             CTask task = new CTask();
             Match match;
-            match = await ReadUntilMatchAsync("<Task Name=\"([^\"]*)\" Exe=\"([^\"]*)\" Arguments=\"([^\"]*)\"(?: AuthenticationToken=\"([^\"]*)\")? Pipe=\"([^\"]*)\"\\/>", cancelToken);
+            //This expression was tested and worked fine with and without the authentication token
+            match = await ReadUntilMatchAsync(TaskHeaderRegEx, cancelToken);
             task.name = match.Groups[1].Value;
             task.exe = match.Groups[2].Value;
             task.arguments = match.Groups[3].Value;
-            //TODO: Solve this!
-            task.authenticationToken = "";//match.Groups[4].Value;
             task.pipe = match.Groups[4].Value;
+            if (match.Groups.Count>5)
+                task.authenticationToken = match.Groups[6].Value;
             m_job.tasks.Add(task);
             return true;
         }
@@ -330,7 +354,7 @@ namespace Herd
         public async Task<int> ReceiveJobHeader(CancellationToken cancelToken)
         {
             Match match;
-            match = await ReadUntilMatchAsync("<Job Name=\"([^\"]*)\">", cancelToken);
+            match = await ReadUntilMatchAsync(JobHeaderRegEx, cancelToken);
 
             m_job.name = match.Groups[1].Value;
 
@@ -342,7 +366,7 @@ namespace Herd
 
         protected async Task<bool> ReceiveJobFooter(CancellationToken cancelToken)
         {
-            Match ret = await ReadUntilMatchAsync("</Job>", cancelToken);
+            Match ret = await ReadUntilMatchAsync(JobFooterRegEx, cancelToken);
             return true;
         }
 
@@ -351,9 +375,11 @@ namespace Herd
             bool ret = await ReceiveFileHeader(type, receiveContent, inCachedDir, cancelToken);
             if (receiveContent)
             {
-                logMessage("Receiving file: " + m_nextFileName);
+                logMessage("Receiving file data: " + m_nextFileName + " (" + m_nextFileSize + " bytes)");
                 ret = await ReceiveFileData(inCachedDir, cancelToken);
+                logMessage("Receiving file footer");
                 ret = await ReceiveFileFooter(type, cancelToken);
+                logMessage("File transfer complete");
             }
             return true;
         }
@@ -362,8 +388,8 @@ namespace Herd
             Match match;
 
             if (receiveContent)
-                match = await ReadUntilMatchAsync("<(Input|Output) Name=\"([^\"]*)\" Size=\"([^\"]*)\">", cancelToken);
-            else match = await ReadUntilMatchAsync("<(Input|Output) Name=\"([^\"]*)\"/>", cancelToken);
+                match = await ReadUntilMatchAsync(IncomingFileHeaderRegEx, cancelToken);
+            else match = await ReadUntilMatchAsync(OutgoingFileHeaderRegEx, cancelToken);
 
 
             if ((match.Groups[1].Value == "Input" && type != FileType.INPUT)
@@ -396,7 +422,7 @@ namespace Herd
         protected async Task<bool> ReceiveFileFooter(FileType type, CancellationToken cancelToken)
         {
             Match match;
-            match = await ReadUntilMatchAsync("</(Input|Output)>", cancelToken);
+            match = await ReadUntilMatchAsync(FileFooterRegEx, cancelToken);
             return true;
         }
         protected int SaveBufferToFile(FileStream outputFile, int bytesLeft, bool bFileOpen = true)
@@ -447,6 +473,7 @@ namespace Herd
                 bytesLeft -= SaveBufferToFile(outputFile, bytesLeft, bFileOpen);
             }
             if (bFileOpen) outputFile.Close();
+            logMessage("Closed file: " + outputFilename);
 
             return true;
         }

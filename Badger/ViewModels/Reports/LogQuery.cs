@@ -4,6 +4,22 @@ using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
+    public class AscAbsComparer : IComparer<double>
+    {
+        public int Compare(double x, double y)
+        {
+            if (Math.Abs(x) >= Math.Abs(y)) return 1;
+            else return -1;
+        }
+    }
+    public class DescAbsComparer : IComparer<double>
+    {
+        public int Compare(double x, double y)
+        {
+            if (Math.Abs(x) <= Math.Abs(y)) return 1;
+            else return -1;
+        }
+    }
     public class AscComparer : IComparer<double>
     {
         public int Compare(double x, double y)
@@ -24,11 +40,15 @@ namespace Badger.ViewModels
     {
         public const string functionMax = "Max";
         public const string functionMin = "Min";
+        public const string functionMaxAbs = "Max(Abs)";
+        public const string functionMinAbs = "Min(Abs)";
 
         public const string noLimitOnResults = "-";
 
         public const string orderAsc = "Asc";
         public const string orderDesc = "Desc";
+        public const string orderAscAbs = "Asc(Abs)";
+        public const string orderDescAbs = "Desc(Abs)";
 
         public const string fromAll = "*";
         public const string fromSelection = "Selection";
@@ -224,9 +244,15 @@ namespace Badger.ViewModels
                     if (orderByFunction == orderAsc)
                         sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
                             , new AscComparer());
-                    else
+                    else if (orderByFunction == orderDesc)
                         sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
                             , new DescComparer());
+                    else if (orderByFunction == orderAscAbs)
+                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
+                            , new AscAbsComparer());
+                    else
+                        sortedList = new SortedList<double, LogQueryResultTrackViewModel>(resultTracks.Count
+                            , new DescAbsComparer());
 
                     foreach (LogQueryResultTrackViewModel track in resultTracks)
                     {

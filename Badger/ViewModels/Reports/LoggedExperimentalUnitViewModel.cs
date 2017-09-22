@@ -40,6 +40,7 @@ namespace Badger.ViewModels
             get { return m_forkValues; }
             set { m_forkValues = value; NotifyOfPropertyChange(() => forkValues); }
         }
+        public string ForkValuesAsString => Utility.DictionaryAsString(forkValues);
 
         private List<string> m_variablesInLog = new List<string>();
 

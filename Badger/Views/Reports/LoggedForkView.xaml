@@ -9,7 +9,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="Badger.Views.LoggedForkView"
              mc:Ignorable="d" 
-                d:DesignHeight="50" d:DesignWidth="300">
+                d:DesignHeight="100" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
@@ -17,10 +17,11 @@
     <TreeViewItem IsExpanded="True" Margin="0,0,0,0" >
         <TreeViewItem.Header>
             <StackPanel Orientation="Horizontal">
-                <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
-                          Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}">
-                </CheckBox>
-                <Label x:Name="name" FontWeight="Medium" Content="{Binding name}">
+                <!-- Deselecting a whole fork makes no sense, so there's no point showing the checkbox -->
+                <!--<CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
+                          Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}">-->
+                <!--</CheckBox>-->
+                <Label x:Name="name" FontWeight="Medium" Content="{Binding Name}">
                     <Label.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Group by value">
@@ -36,7 +37,7 @@
             </StackPanel>
         </TreeViewItem.Header>
 
-        <ItemsControl x:Name="values" Margin="-17,0,0,0"/>
-        <ItemsControl x:Name="forks" Margin="-17,0,0,0" Visibility="{Binding Path=bHasForks,Converter={StaticResource BoolToVis}}"/>
+        <ItemsControl x:Name="Values" Margin="-17,0,0,0" Visibility="{Binding Path=HasChildrenValues,Converter={StaticResource BoolToVis}}"/>
+        <ItemsControl x:Name="Forks" Margin="-17,0,0,0" Visibility="{Binding Path=HasChildrenForks,Converter={StaticResource BoolToVis}}"/>
     </TreeViewItem>
 </UserControl>

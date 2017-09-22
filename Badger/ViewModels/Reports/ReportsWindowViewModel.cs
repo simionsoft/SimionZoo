@@ -14,6 +14,8 @@ namespace Badger.ViewModels
 
         public ObservableCollection<LoggedForkViewModel> Forks { get; } = new ObservableCollection<LoggedForkViewModel>();
 
+        public ObservableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits { get; } = new ObservableCollection<LoggedExperimentalUnitViewModel>();
+
         private bool m_bCanGenerateReports;
 
 
@@ -177,9 +179,9 @@ namespace Badger.ViewModels
             //not all properties sending changes are due to "Group by this fork", so we need to check it
             if (e.PropertyName == "IsGroupedByThisFork")
             {
-                if (!m_groupByForks.Contains(((LoggedForkViewModel)sender).name))
+                if (!m_groupByForks.Contains(((LoggedForkViewModel)sender).Name))
                 {
-                    m_groupByForks.Add(((LoggedForkViewModel)sender).name);
+                    m_groupByForks.Add(((LoggedForkViewModel)sender).Name);
                     NotifyOfPropertyChange(() => groupBy);
                 }
                 bGroupsEnabled = true;
@@ -290,6 +292,8 @@ namespace Badger.ViewModels
             // Add the function options
             inGroupSelectionFunctions.Add(LogQuery.functionMax);
             inGroupSelectionFunctions.Add(LogQuery.functionMin);
+            inGroupSelectionFunctions.Add(LogQuery.functionMaxAbs);
+            inGroupSelectionFunctions.Add(LogQuery.functionMinAbs);
             selectedInGroupSelectionFunction = LogQuery.functionMax;
             // Add the from options
             fromOptions.Add(LogQuery.fromAll);
@@ -302,6 +306,8 @@ namespace Badger.ViewModels
             // Add order by functions
             orderByFunctions.Add(LogQuery.orderAsc);
             orderByFunctions.Add(LogQuery.orderDesc);
+            orderByFunctions.Add(LogQuery.orderAscAbs);
+            orderByFunctions.Add(LogQuery.orderDescAbs);
             selectedOrderByFunction = LogQuery.orderDesc;
         }
 
@@ -372,7 +378,7 @@ namespace Badger.ViewModels
                     string outputFolder;
                     if (Reports.Count > 1)
                     {
-                        outputFolder = outputBaseFolder + "\\" + Utility.removeSpecialCharacters(report.name);
+                        outputFolder = outputBaseFolder + "\\" + Utility.RemoveSpecialCharacters(report.name);
                         Directory.CreateDirectory(outputFolder);
                     }
                     else
@@ -412,6 +418,19 @@ namespace Badger.ViewModels
 
             foreach (LoggedVariableViewModel variable in Variables)
                 variable.setParent(this);
+
+            //add all experimental units to the collection
+            foreach (LoggedExperimentViewModel experiment in LoggedExperiments)
+            {
+                experiment.TraverseAction(false, (n) =>
+                 {
+                     LoggedExperimentalUnitViewModel expUnit = n as LoggedExperimentalUnitViewModel;
+                     if (expUnit != null)
+                     {
+                         ExperimentalUnits.Add(expUnit);
+                     }
+                 });
+            }
 
             bLogsLoaded = true;
 
@@ -458,6 +477,7 @@ namespace Badger.ViewModels
         /// </summary>
         public void ClearReportViewer()
         {
+            ExperimentalUnits.Clear();
             LoggedExperiments.Clear();
             Reports.Clear();
             ResetGroupBy();

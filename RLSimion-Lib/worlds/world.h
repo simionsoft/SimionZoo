@@ -51,7 +51,6 @@ public:
 	const char* getConstantName(int i);
 	int getNumConstants();
 
-
 	static std::shared_ptr<CDynamicModel> getInstance(CConfigNode* pParameters);
 };
 
@@ -66,12 +65,15 @@ class CWorld
 	double m_totalSimTime; // simulated time since the experiment started
 	double m_stepStartSimTime; // the simulated time when last step started
 
+	bool m_bFirstIntegrationStep = true; //is the current one the first integration step within a control step?
 public:
 	double getDT();
 	double getEpisodeSimTime();
 	double getTotalSimTime();
 	double getStepStartSimTime();
 	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel.ptr(); }
+	bool bIsFirstIntegrationStep() { return m_bFirstIntegrationStep; }
+	void setIsFirstIntegrationStep(bool bFirstIntegrationStep) { m_bFirstIntegrationStep = bFirstIntegrationStep; }
 
 	CWorld(CConfigNode* pConfigNode);
 	CWorld() = default;

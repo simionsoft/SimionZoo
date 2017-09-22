@@ -131,20 +131,57 @@
     <Compile Include="badgerInstaller.Designer.cs">
       <DependentUpon>badgerInstaller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Converters\EnumDescriptionConverter.cs" />
+    <Compile Include="Converters\IntTupleConverter.cs" />
+    <Compile Include="Converters\InvertedBooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Data\CaliburnUtility.cs" />
     <Compile Include="Data\EnumDescriptionConverter.cs" />
     <Compile Include="Data\EnumerationManager.cs" />
+    <Compile Include="Data\NeuralNetwork\Chain.cs" />
+    <Compile Include="Data\NeuralNetwork\InputData.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\ActivationLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\Convolution1DLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\Convolution2DLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\Convolution3DLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\DenseLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\DropoutLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\FlattenLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\InputLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\LinkBase.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\LinkType.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\MergeLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\Links\ReshapeLayer.cs" />
+    <Compile Include="Data\NeuralNetwork\NetworkArchitecture.cs" />
+    <Compile Include="Data\NeuralNetwork\OptimizerSetting.cs" />
+    <Compile Include="Data\NeuralNetwork\Optimizers\Optimizer.cs" />
+    <Compile Include="Data\NeuralNetwork\Optimizers\OptimizerParameter.cs" />
+    <Compile Include="Data\NeuralNetwork\Optimizers\OptimizerType.cs" />
+    <Compile Include="Data\NeuralNetwork\OutputConfiguration.cs" />
+    <Compile Include="Data\NeuralNetwork\Parameters\ActivationFunctionParameter.cs" />
+    <Compile Include="Data\NeuralNetwork\Parameters\DoubleParameter.cs" />
+    <Compile Include="Data\NeuralNetwork\Parameters\InputDataParameter.cs" />
+    <Compile Include="Data\NeuralNetwork\Parameters\IntParameter.cs" />
+    <Compile Include="Data\NeuralNetwork\Parameters\IntTupleParameter.cs" />
+    <Compile Include="Data\NeuralNetwork\Parameters\LinkConnectionListParameter.cs" />
+    <Compile Include="Data\NeuralNetwork\Parameters\ParameterBase.cs" />
+    <Compile Include="Data\NeuralNetwork\Problem.cs" />
+    <Compile Include="Data\NeuralNetwork\Tuple.cs" />
     <Compile Include="Data\PlotType.cs" />
     <Compile Include="Data\SimionFileData.cs" />
     <Compile Include="Data\SimionLogFile.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\WorldDefinition.cs" />
     <Compile Include="Data\XMLConfig.cs" />
+    <Compile Include="Utils\CustomXmlSerializer.cs" />
     <Compile Include="Utils\ExtensionMethods.cs" />
     <Compile Include="Utils\MultiplyConverter.cs" />
+    <Compile Include="Utils\TypeReferenceAttribute.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceElementConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ConfigNodeViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\NeuralNetworkProblemDescriptionConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ExperimentViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\BranchConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\DirPathValueConfigViewModel.cs" />
@@ -163,6 +200,24 @@
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\InputDataViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\LinkConnectionViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Links\LinkBaseViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\NetworkArchitectureViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Optimizers\OptimizerParameterViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Optimizers\OptimizerSettingViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\OutputConfigurationViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Parameters\ActivationFunctionParameterViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Parameters\DoubleParameterViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Parameters\InputDataParameterViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Parameters\IntParameterViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Parameters\IntTupleParameterViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Parameters\LinkConnectionListParameterViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Parameters\ParameterBaseViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\ProblemViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Windows\AddLinkWindowViewModel.cs" />
+    <Compile Include="ViewModels\NeuralNetwork\Windows\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
@@ -192,6 +247,69 @@
     </Compile>
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\ChainView.xaml.cs">
+      <DependentUpon>ChainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\InputDataView.xaml.cs">
+      <DependentUpon>InputDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\LinkConnectionView.xaml.cs">
+      <DependentUpon>LinkConnectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Links\LinkBaseView.xaml.cs">
+      <DependentUpon>LinkBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\NetworkArchitectureView.xaml.cs">
+      <DependentUpon>NetworkArchitectureView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Optimizers\OptimizerParameterView.xaml.cs">
+      <DependentUpon>OptimizerParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Optimizers\OptimizerSettingView.xaml.cs">
+      <DependentUpon>OptimizerSettingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\OutputConfigurationView.xaml.cs">
+      <DependentUpon>OutputConfigurationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\ActivationFunctionParameterView.xaml.cs">
+      <DependentUpon>ActivationFunctionParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\DoubleParameterView.xaml.cs">
+      <DependentUpon>DoubleParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\InputDataParameterView.xaml.cs">
+      <DependentUpon>InputDataParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\IntParameterView.xaml.cs">
+      <DependentUpon>IntParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\IntTuple1DParameterView.xaml.cs">
+      <DependentUpon>IntTuple1DParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\IntTuple2DParameterView.xaml.cs">
+      <DependentUpon>IntTuple2DParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\IntTuple3DParameterView.xaml.cs">
+      <DependentUpon>IntTuple3DParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\IntTuple4DParameterView.xaml.cs">
+      <DependentUpon>IntTuple4DParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\IntTupleBaseView.xaml.cs">
+      <DependentUpon>IntTupleBaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Parameters\LinkConnectionListParameterView.xaml.cs">
+      <DependentUpon>LinkConnectionListParameterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\ProblemView.xaml.cs">
+      <DependentUpon>ProblemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Windows\AddLinkWindowView.xaml.cs">
+      <DependentUpon>AddLinkWindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NeuralNetwork\Windows\MainWindowView.xaml.cs">
+      <DependentUpon>MainWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\PlotView.xaml.cs">
       <DependentUpon>PlotView.xaml</DependentUpon>
@@ -233,6 +351,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="NeuralNetworkClasses.cd" />
     <None Include="LogQueryClasses.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -245,6 +364,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\ConfigNodeTypes\NeuralNetworkProblemDescriptionConfigView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\ConfigNodeTypes\ExperimentView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -318,6 +441,90 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\MultiStateButtonView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\ChainView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\InputDataView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\LinkConnectionView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Links\LinkBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\NetworkArchitectureView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Optimizers\OptimizerParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Optimizers\OptimizerSettingView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\OutputConfigurationView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\ActivationFunctionParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\DoubleParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\InputDataParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\IntParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\IntTuple1DParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\IntTuple2DParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\IntTuple3DParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\IntTuple4DParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\IntTupleBaseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Parameters\LinkConnectionListParameterView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\ProblemView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Windows\AddLinkWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NeuralNetwork\Windows\MainWindowView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

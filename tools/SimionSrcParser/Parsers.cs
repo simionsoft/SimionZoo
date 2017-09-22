@@ -96,6 +96,14 @@ namespace SimionSrcParser
             parent.addParameter(new DirPathParameter(parsedArguments[1], parsedArguments[2], parsedArguments[3]));
         }
     }
+    public class NeuralNetworkProblemDescriptionParameterParser : Parser
+    {
+        public NeuralNetworkProblemDescriptionParameterParser() : base("NEURAL_NETWORK_PROBLEM_DESCRIPTION", false) { }
+        public override void processParameter(ParameterizedObject parent)
+        {
+            parent.addParameter(new NeuralNetworkProblemDescriptionParameter(parsedArguments[1], parsedArguments[2]));
+        }
+    }
     public class EnumParameterParser : Parser
     {
         public EnumParameterParser() : base("ENUM_PARAM", true) { }
@@ -189,6 +197,16 @@ namespace SimionSrcParser
             string simpleParameterType = parsedArguments[0].Substring(0, parsedArguments[0].IndexOf(","));
             parent.addParameter(new MultiValueSimpleParameter(simpleParameterType, parsedArguments[2]
                 , parsedArguments[3], parsedArguments[4]));
+        }
+    }
+    public class MultiVariableParameterParser : Parser
+    {
+        public MultiVariableParameterParser() : base("MULTI_VALUE_VARIABLE", true) { }
+        public override void processParameter(ParameterizedObject parent)
+        {
+            string simpleParameterType = parsedArguments[0];
+            parent.addParameter(new MultiVariableParameter(simpleParameterType, parsedArguments[2]
+                , parsedArguments[3]));
         }
     }
     public abstract class WorldParser : Parser

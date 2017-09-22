@@ -53,7 +53,7 @@ namespace Badger.Data
                 foreach (XmlNode experiment in fileRoot.ChildNodes)
                 {
                     if (experiment.Name == XMLConfig.experimentNodeTag)
-                        perExperimentFunction(experiment, Utility.getDirectory(batchFilename));
+                        perExperimentFunction(experiment, Utility.GetDirectory(batchFilename));
                 }
             }
             else
@@ -109,7 +109,7 @@ namespace Badger.Data
                 }
             }
             string batchFileDir = batchFilename.Remove(batchFilename.LastIndexOf("." + XMLConfig.experimentBatchExtension));
-            string batchFileName = Utility.getFileName(batchFileDir);
+            string batchFileName = Utility.GetFilename(batchFileDir);
             batchFileDir = Utility.GetRelativePathTo(Directory.GetCurrentDirectory(), batchFileDir);
             // Clean output directory if it exists
             if (Directory.Exists(batchFileDir))
@@ -307,16 +307,16 @@ namespace Badger.Data
                 if (!legacyName)
                 {
                     if (descriptor)
-                        return Utility.removeExtension(experimentFilePath, 1) + logDescriptorExtension;
+                        return Utility.RemoveExtension(experimentFilePath, 1) + logDescriptorExtension;
                     else
-                        return Utility.removeExtension(experimentFilePath, 1) + logBinaryExtension;
+                        return Utility.RemoveExtension(experimentFilePath, 1) + logBinaryExtension;
                 }
                 else
                 {
                     if (descriptor)
-                        return Utility.getDirectory(experimentFilePath) + "experiment-log.xml";
+                        return Utility.GetDirectory(experimentFilePath) + "experiment-log.xml";
                     else
-                        return Utility.getDirectory(experimentFilePath) + "experiment-log.bin";
+                        return Utility.GetDirectory(experimentFilePath) + "experiment-log.bin";
                 }
             }
 

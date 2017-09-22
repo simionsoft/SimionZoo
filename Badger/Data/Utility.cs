@@ -8,14 +8,31 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.IO;
 using System;
+using System.Security.Cryptography;
 
 namespace Badger.Data
 {
     public static class Utility
     {
+        public static byte[] GetHash(string inputString)
+        {
+            HashAlgorithm algorithm = MD5.Create();  //or use SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHash(inputString))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
+        }
+
+
         //this function is called from several tasks and needs to be synchronized
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void getInputsAndOutputs(string exe, string args, ref CJob job)
+        public static void GetInputsAndOutputs(string exe, string args, ref CJob job)
         {
             object o = new object();
             Monitor.Enter(o);
@@ -127,7 +144,7 @@ namespace Badger.Data
         //For example:
         //-removeDirectories("c:\jander\clander\more.txt",2) -> "jander\clander\more.txt"
         //-removeDirectories("c:\jander\clander\more.txt",0) -> "more.txt"
-        public static string removeDirectories(string fileName,uint allowedLevels=0)
+        public static string RemoveDirectories(string fileName,uint allowedLevels=0)
         {
             if (fileName != "")
             {
@@ -156,7 +173,7 @@ namespace Badger.Data
 
         //given the path to a file, this function removes [numExtensions] extensions of the file
         //if not enough extensions are found, nothing is changed from the input path
-        public static string removeExtension(string filename, uint numExtensions= 1)
+        public static string RemoveExtension(string filename, uint numExtensions= 1)
         {
             string result = filename;
             int lastExt, lastBar;
@@ -180,7 +197,7 @@ namespace Badger.Data
         //For example:
         //-"c:\jander\clander.txt" -> "c:\jander\"
         //-"clander.txt" -> ""
-        public static string getDirectory(string fileName)
+        public static string GetDirectory(string fileName)
         {
             if (fileName != "")
             {
@@ -199,7 +216,7 @@ namespace Badger.Data
         //returns the file's name from the full path
         //if removeExtension==true: c:\jander\clander.txt ->clander.txt
         //else: c:\jander\clander.txt ->clander
-        public static string getFileName(string Default, bool removeExtension = false, int numExtensionDots = 1)
+        public static string GetFilename(string Default, bool removeExtension = false, int numExtensionDots = 1)
         {
             string filename;
             if (Default == null)
@@ -220,7 +237,7 @@ namespace Badger.Data
             }
             return filename;
         }
-        public static string removeSpecialCharacters(string filename)
+        public static string RemoveSpecialCharacters(string filename)
         {
             string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
 
@@ -231,7 +248,7 @@ namespace Badger.Data
             return filename;
         }
 
-        public static string limitLength(string s, uint maxLength, char[] delim= null)
+        public static string LimitLength(string s, uint maxLength, char[] delim= null)
         {
             //make sure we can prepend "..." in case we have to
             maxLength = Math.Max(4, maxLength);
@@ -247,6 +264,17 @@ namespace Badger.Data
 
             //if no delimiter is found, just take the last maxLength-3 characters and prepend "..."
             return "..." + s.Substring((int)( s.Length - maxLength + 3));
+        }
+
+        public static string DictionaryAsString(Dictionary<string,string> dictionary)
+        {
+            string res = "";
+            foreach (string key in dictionary.Keys)
+            {
+                res += key + "= " + dictionary[key] + "\n";
+            }
+            res.TrimEnd('\n');
+            return res;
         }
     }
 }

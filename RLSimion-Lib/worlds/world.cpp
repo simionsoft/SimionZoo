@@ -83,6 +83,7 @@ double CWorld::executeAction(CState *s, CAction *a, CState *s_p)
 		s_p->copy(s);
 		for (int i = 0; i < m_numIntegrationSteps.get() && CSimionApp::get()->pExperiment->isValidStep(); i++)
 		{
+			m_bFirstIntegrationStep = ( i==0 );
 			m_pDynamicModel->executeAction(s_p, a, dt);
 			m_episodeSimTime += dt;
 			m_totalSimTime += dt;

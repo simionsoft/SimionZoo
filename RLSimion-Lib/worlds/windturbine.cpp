@@ -276,7 +276,9 @@ void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 	s->set("E_omega_g", s->get("omega_g") - getConstant("RatedGeneratorSpeed"));
 	s->set("E_int_omega_r", s->get("E_int_omega_r") + s->get("E_omega_r")*dt);
 
-
-	s->set("d_T_g", (a->get("T_g") - lastTorque) / dt);
-	s->set("d_beta", (a->get("beta") - lastBeta) / dt);
+	if (CSimionApp::get()->pWorld->bIsFirstIntegrationStep())
+	{
+		s->set("d_T_g", (a->get("T_g") - lastTorque) / dt);
+		s->set("d_beta", (a->get("beta") - lastBeta) / dt);
+	}
 }

@@ -74,7 +74,16 @@ namespace Badger.ViewModels
         }
 
         private string m_alias = "Name";
-        public string alias { get { return m_alias; } set { m_alias = value; NotifyOfPropertyChange(() => alias); } }
+        public string alias
+        {
+            get { return m_alias; }
+            set
+            {
+                m_alias = value;
+                bIsValid= m_parentExperiment.forkRegistry.Validate(value);
+                NotifyOfPropertyChange(() => alias);
+            }
+        }
 
         //Constructor used from the experiment editor
         public ForkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel forkedNode)
@@ -88,11 +97,13 @@ namespace Badger.ViewModels
             m_parentExperiment = parentExperiment;
             nodeDefinition = forkedNode.nodeDefinition;
             name = forkedNode.name;
-            alias = forkedNode.name;
             NotifyOfPropertyChange(() => selectedForkValue);
 
             //register this fork
             m_parentExperiment.forkRegistry.Add(this);
+
+            //we set the alias AFTER adding the fork to the registry to make sure that validation is properly done
+            alias = forkedNode.name;
         }
 
         //Constructor called when loading an experiment config file
@@ -104,9 +115,6 @@ namespace Badger.ViewModels
             nodeDefinition = classDefinition;
             m_parent = parentNode;
             name = configNode.Attributes[XMLConfig.nameAttribute].Value;
-            if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
-                alias = configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute).Value;
-            else alias = name;
 
             if (initChildren)
             {
@@ -123,7 +131,10 @@ namespace Badger.ViewModels
             //register this fork
             m_parentExperiment.forkRegistry.Add(this);
 
-            GetLinkableForks();
+            //we set the alias AFTER adding the fork to the registry to make sure that validation is properly done
+            if (configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute) != null)
+                alias = configNode.Attributes.GetNamedItem(XMLConfig.aliasAttribute).Value;
+            else alias = name;
         }
         //constructor used in clone()
         public ForkedNodeViewModel() { }
@@ -220,10 +231,16 @@ namespace Badger.ViewModels
             m_parentExperiment.forkRegistry.Remove(this);
 
             NestedConfigNode parent = m_parent as NestedConfigNode;
-            int childIndex = parent.children.IndexOf(this);
-            parent.children.Remove(this);
-            parent.children.Insert(childIndex, selectedForkValue.configNode);
-            m_parentExperiment.updateNumForkCombinations();
+            if (parent != null)
+            {
+                int childIndex = parent.children.IndexOf(this);
+                parent.children.Remove(this);
+                parent.children.Insert(childIndex, selectedForkValue.configNode);
+                //the node can again be forked
+                selectedForkValue.configNode.parent = parent;
+                selectedForkValue.configNode.bCanBeForked = true;
+                m_parentExperiment.updateNumForkCombinations();
+            }
         }
 
         public void removeSelectedValue()
@@ -305,24 +322,6 @@ namespace Badger.ViewModels
         public override void onRemoved()
         {
             m_parentExperiment.forkRegistry.Remove(this);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void LinkFork(ConfigNodeViewModel node)
-        {
-            GetLinkableForks();
-            Console.WriteLine(node.name);
-            Console.WriteLine(node.parent);
-        }
-
-        public void GetLinkableForks()
-        {
-            foreach (var configNodeViewModel in children)
-            {
-                Console.WriteLine(configNodeViewModel.nodeDefinition);
-            }
         }
     }
 }

@@ -274,11 +274,11 @@ namespace Badger.ViewModels
         {
             string fileName;
             //as png
-            fileName = outputFolder + "\\" + Utility.removeSpecialCharacters(name) + ".png";
+            fileName = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name) + ".png";
             var pngExporter = new PngExporter { Width = 600, Height = 400, Background = OxyColors.Transparent };
             pngExporter.ExportToFile(m_plot, fileName);
             //as svg
-            fileName = outputFolder + "\\" + Utility.removeSpecialCharacters(name) + ".svg";
+            fileName = outputFolder + "\\" + Utility.RemoveSpecialCharacters(name) + ".svg";
             var svgExporter = new OxyPlot.Wpf.SvgExporter { Width = 600, Height = 400 };
             svgExporter.ExportToFile(m_plot, fileName);
         }

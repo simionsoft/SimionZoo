@@ -10,14 +10,9 @@
                 d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-    </UserControl.Resources>    
-    <TreeViewItem IsExpanded="True" Margin="0,0,0,0">
-        <TreeViewItem.Header>
-            <StackPanel Orientation="Horizontal" Focusable="False">
-                <Label Content="{Binding name}" ToolTip="{Binding comment}" />
-            </StackPanel>
-        </TreeViewItem.Header>
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal">
+        <Label Content="{Binding name}" FontWeight="Light" ToolTip="{Binding ForkValuesAsString}" Margin="0"/>
+    </StackPanel>
 
-        <ItemsControl x:Name="forkValues" Margin="-19,0,0,0"/>
-    </TreeViewItem>
 </UserControl>

@@ -8,6 +8,11 @@ namespace Badger.Utils
 {
     public static class ExtensionMethods
     {
+        public static int CountListType<T>(this IEnumerable<T> list, Type type)
+        {
+            return list.Where(x => x.GetType() == type).Count();
+        }
+
         public static int MaxIndex<T>(this IEnumerable<T> sequence) where T : IComparable<T>
         {
             int maxIndex = -1;

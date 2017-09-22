@@ -37,15 +37,18 @@ namespace Badger.ViewModels
 
             //calculate avg, min and max
             double sum = 0.0;
+            double absSum = 0.0;
             Stats.min = Values[0]; Stats.max = Values[0];
             foreach (double val in Values)
             {
-                sum += val;
                 if (val > Stats.max) Stats.max = val;
                 if (val < Stats.min) Stats.min = val;
+                sum += val;
+                absSum += Math.Abs(val);
             }
 
             Stats.avg = sum / Values.Length;
+            Stats.absAvg = absSum / Values.Length;
 
             //calculate std. deviation
             double diff;
@@ -154,27 +157,27 @@ namespace Badger.ViewModels
             get { return m_forkValues; }
             set { m_forkValues = value; NotifyOfPropertyChange(() => forkValues); }
         }
-        private string m_parentExperimentName = "";
+        public string ExperimentId { get; set; } = "";
 
         private static char[] valueDelimiters = new char[] { '=', '/', '\\' };
         
-        public LogQueryResultTrackViewModel(string experimentName)
+        public LogQueryResultTrackViewModel(string experimentId)
         {
-            m_parentExperimentName = experimentName;
+            ExperimentId = experimentId;
         }
         public string TrackId
         {
             get
             {
-                if (m_forkValues.Count == 0) return m_parentExperimentName;
+                if (m_forkValues.Count == 0) return "N/A";// m_experimentId;
                 string id = "", shortId;
                 foreach (KeyValuePair<string, string> entry in m_forkValues)
                 {
                     //we limit the length of the values
-                    shortId= Utility.limitLength(entry.Key, 10);
+                    shortId= Utility.LimitLength(entry.Key, 10);
                     if (shortId.Length > 0)
                         id += shortId + "=";
-                    id += Utility.limitLength(entry.Value,20,valueDelimiters) + ",";
+                    id += Utility.LimitLength(entry.Value,20,valueDelimiters) + ",";
                 }
                 id = id.Trim(',');
                 return id;
@@ -204,14 +207,24 @@ namespace Badger.ViewModels
                     TrackVariableData variableData = track.getVariableData(variable);
                     if (variableData != null)
                     {
-                        if (function == LogQuery.functionMax && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) > max)
+                        if (function == LogQuery.functionMax && variableData.lastEvaluationEpisodeData.Stats.avg > max)
                         {
-                            max = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
+                            max = variableData.lastEvaluationEpisodeData.Stats.avg;
                             selectedTrack = track;
                         }
-                        if (function == LogQuery.functionMin && Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg) < min)
+                        if (function == LogQuery.functionMin && variableData.lastEvaluationEpisodeData.Stats.avg < min)
                         {
-                            min = Math.Abs(variableData.lastEvaluationEpisodeData.Stats.avg);
+                            min = variableData.lastEvaluationEpisodeData.Stats.avg;
+                            selectedTrack = track;
+                        }
+                        if (function == LogQuery.functionMaxAbs && variableData.lastEvaluationEpisodeData.Stats.absAvg > max)
+                        {
+                            max = variableData.lastEvaluationEpisodeData.Stats.absAvg;
+                            selectedTrack = track;
+                        }
+                        if (function == LogQuery.functionMinAbs && variableData.lastEvaluationEpisodeData.Stats.absAvg < min)
+                        {
+                            min = variableData.lastEvaluationEpisodeData.Stats.absAvg;
                             selectedTrack = track;
                         }
                     }
@@ -232,10 +245,10 @@ namespace Badger.ViewModels
                     string shortId;
                     foreach (string group in groupBy)
                     {
-                        shortId = Utility.limitLength(group, 10);
+                        shortId = Utility.LimitLength(group, 10);
                         if (shortId.Length > 0)
                             m_groupId += shortId + "=";
-                        m_groupId += Utility.limitLength(forkValues[group],10,valueDelimiters) + ",";
+                        m_groupId += Utility.LimitLength(forkValues[group],10,valueDelimiters) + ",";
                         forkValues.Remove(group);
                     }
                     GroupId = m_groupId.TrimEnd(',');

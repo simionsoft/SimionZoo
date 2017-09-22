@@ -24,6 +24,8 @@ namespace Badger.ViewModels
                 case XMLConfig.stringNodeTag: children.Add(new StringValueConfigViewModel(parentExperiment, this, definitionNode, m_xPath, configNode));break ;
                 case XMLConfig.filePathNodeTag: children.Add(new FilePathValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
                 case XMLConfig.dirPathNodeTag: children.Add(new DirPathValueConfigViewModel(parentExperiment, this,definitionNode, m_xPath, configNode));break ;
+                case XMLConfig.stateVarRefTag: children.Add(new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.StateVar, parent, definitionNode, parentXPath, configNode)); break;
+                case XMLConfig.actionVarRefTag: children.Add(new WorldVarRefValueConfigViewModel(parentExperiment, WorldVarType.ActionVar, parent, definitionNode, parentXPath, configNode)); break;
                 default:
                     XmlNode classDefinition = parentExperiment.getClassDefinition(m_className);
                     if (classDefinition != null)

@@ -60,7 +60,7 @@
 
             <Grid Grid.Row="0" Grid.Column="0" Margin="5,5,0,5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*" MinHeight="30" />
+                    <RowDefinition Height="150" />
                     <RowDefinition Height="5" />
                     <RowDefinition Height="Auto" MinHeight="30" />
                 </Grid.RowDefinitions>
@@ -73,18 +73,27 @@
                         </Grid.RowDefinitions>
 
                         <StackPanel Grid.Row="0" Background="#EEEEEE">
-                            <Label Content="Experiment Forks" FontWeight="Medium" HorizontalAlignment="Center" />
+                            <Label Content="Experiments" FontWeight="Medium" HorizontalAlignment="Center" />
+                            <TabControl>
+                                <TabItem Header="Forks" >
+                                    <ScrollViewer  Grid.Row="1" Height="100" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <TreeView x:Name="Experiments" BorderBrush="{x:Null}" BorderThickness="0">
+                                            <ItemsControl x:Name="LoggedExperiments"/>
+                                        </TreeView>
+                                    </ScrollViewer>
+                                </TabItem>
+                                <TabItem Header="ExperimentalUnitList">
+                                    <ScrollViewer  Grid.Row="1" Height="100" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <StackPanel Orientation="Vertical">
+                                            <ItemsControl x:Name="ExperimentalUnits" />
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </TabItem>
+                            </TabControl>
                         </StackPanel>
-
-                        <TreeView Grid.Row="1" x:Name="Experiments" BorderBrush="{x:Null}" BorderThickness="0">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="LoggedExperiments"/>
-                            </ScrollViewer>
-                        </TreeView>
                     </Grid>
                 </Border>
-
-                <GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />
+                <!--<GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />-->
 
                 <Border Grid.Row="2" BorderBrush="DarkGray" BorderThickness="1">
                     <Grid>

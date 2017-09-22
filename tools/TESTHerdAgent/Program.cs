@@ -18,6 +18,8 @@ namespace TESTHerdAgent
        
         static void Main(string[] args)
         {
+            System.Threading.Thread.Sleep(2000);
+
             m_herdService = new HerdService();
 
             m_herdService.DoStart();

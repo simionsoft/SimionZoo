@@ -20,7 +20,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 	m_pALearner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
 		pActionDescriptor[m_aActionId].getMin()
 		, pActionDescriptor[m_aActionId].getMax());
-	m_pALearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
+	m_pALearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(false);
 	//KAlpha parameter
 	m_pKAlphaLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KAlpha-learner", "The learner used for Vidal controller's parameter K_alpha");
 	m_KAlphaActionId = pWorld->addActionVariable("K_alpha", "unitless", 0.0, 10000000.0);
@@ -29,7 +29,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 	m_pKAlphaLearner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
 		pActionDescriptor[m_KAlphaActionId].getMin()
 		, pActionDescriptor[m_KAlphaActionId].getMax());
-	m_pKAlphaLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
+	m_pKAlphaLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(false);
 	//KP parameter
 	m_pKPLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KP-learner", "The learner used for Vidal controller's parameter KP");
 	m_KPActionId = pWorld->addActionVariable("KP", "unitless", -100.0, 100.0);
@@ -38,7 +38,7 @@ CExtendedWindTurbineVidalController::CExtendedWindTurbineVidalController(CConfig
 	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
 		pActionDescriptor[m_KPActionId].getMin()
 		, pActionDescriptor[m_KPActionId].getMax());
-	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
+	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(false);
 }
 
 CExtendedWindTurbineVidalController::~CExtendedWindTurbineVidalController()
@@ -91,7 +91,7 @@ CExtendedWindTurbineBoukhezzarController::CExtendedWindTurbineBoukhezzarControll
 	m_pC0Learner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
 		pActionDescriptor[m_C0ActionId].getMin()
 		, pActionDescriptor[m_C0ActionId].getMax());
-	m_pC0Learner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
+	m_pC0Learner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(false);
 	//KP parameter
 	m_pKPLearner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "KP-learner", "The learner used for Boukhezzar controller's parameter KP");
 	m_KPActionId = pWorld->addActionVariable("KP", "unitless", -100.0, 100.0);
@@ -100,7 +100,7 @@ CExtendedWindTurbineBoukhezzarController::CExtendedWindTurbineBoukhezzarControll
 	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
 		pActionDescriptor[m_KPActionId].getMin()
 		, pActionDescriptor[m_KPActionId].getMax());
-	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(true);
+	m_pKPLearner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(false);
 }
 
 CExtendedWindTurbineBoukhezzarController::~CExtendedWindTurbineBoukhezzarController()

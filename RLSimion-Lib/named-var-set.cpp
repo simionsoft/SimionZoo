@@ -134,13 +134,13 @@ double CNamedVarSet::getSumValue() const
 	return sum;
 }
 
-void CNamedVarSet::copy(CNamedVarSet* nvs)
+void CNamedVarSet::copy(const CNamedVarSet* nvs)
 {
-	assert(m_numVars==nvs->getNumVars());
+	assert(m_numVars == nvs->getNumVars());
 
-	for (int i= 0; i<m_numVars; i++)
+	for (int i = 0; i<m_numVars; i++)
 	{
-		set(i,nvs->get(i));
+		set(i, nvs->get(i));
 	}
 }
 

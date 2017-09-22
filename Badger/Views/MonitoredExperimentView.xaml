@@ -27,27 +27,28 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!--TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
                            FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center" /-->
-            <ListBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Path = Forks}" Background="Transparent"
-                 BorderThickness="0" FontSize="11">
-                <ListBox.ItemContainerStyle>
+            <StackPanel Grid.Row="0" Grid.Column="0"  Background="Transparent">
+                <ItemsControl ItemsSource="{Binding Forks}"></ItemsControl>
+                <!--BorderThickness="0" FontSize="11">-->
+                <!--<ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
                         <Setter Property="Padding" Value="0"/>
                     </Style>
-                </ListBox.ItemContainerStyle>
-            </ListBox>
+                </ListBox.ItemContainerStyle>-->
+            </StackPanel>
 
             <TextBlock Grid.Row="1" Grid.Column="0" Foreground="{Binding stateColor}" Text="{Binding stateString}"
                    FontSize="11" VerticalAlignment="Center" />
 
             <ScrollViewer Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto"
                       Padding="4" MaxHeight="75">
-                <TextBlock Text="{Binding statusInfo}" FontSize="11" Foreground="Gray"/>
+                <TextBlock Text="{Binding statusInfo}" FontSize="11" Foreground="Gray" TextAlignment="Left"/>
             </ScrollViewer>
 
             <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="100" Value="{Binding Path = Progress}" 

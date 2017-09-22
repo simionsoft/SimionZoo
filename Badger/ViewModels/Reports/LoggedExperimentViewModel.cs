@@ -87,7 +87,7 @@ namespace Badger.ViewModels
                     {
                         foreach (string forkName in expUnit.forkValues.Keys)
                         {
-                            if (forkName==forkValue.parent.name && expUnit.forkValues[forkName]==forkValue.value)
+                            if (forkName==forkValue.parent.Name && expUnit.forkValues[forkName]==forkValue.value)
                             {
                                 forkValue.expUnits.Add(expUnit);
                             }
