@@ -39,7 +39,7 @@ namespace Badger.ViewModels
         {
             EvaluationPlot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
             EvaluationPlot.Plot.TitleFontSize = 14;
-            EvaluationPlot.properties.LegendVisible = false;
+            EvaluationPlot.Properties.LegendVisible = false;
             EvaluationPlot.SetProperties();
 
             FreeHerdAgents = freeHerdAgents;
@@ -55,7 +55,7 @@ namespace Badger.ViewModels
         public bool RunExperiments(bool monitorProgress = true, bool receiveJobResults = true)
         {
             // Clear old LineSeries to avoid confusion on visualization
-            EvaluationPlot.clearLineSeries();
+            EvaluationPlot.ClearLineSeries();
             // Create the new ExperimentQueue for the selected experiment
             ExperimentQueueMonitor = new ExperimentQueueMonitorViewModel(FreeHerdAgents, EvaluationPlot,
                 LogFunction);
@@ -76,7 +76,7 @@ namespace Badger.ViewModels
         public void StopExperiments()
         {
             ExperimentQueueMonitor.StopExperiments();
-            EvaluationPlot.clearLineSeries();
+            EvaluationPlot.ClearLineSeries();
         }
 
         /// <summary>

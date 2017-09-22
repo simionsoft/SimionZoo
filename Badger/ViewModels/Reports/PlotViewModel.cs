@@ -10,6 +10,7 @@ using System.IO;
 using Badger.Data;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
@@ -48,24 +49,14 @@ namespace Badger.ViewModels
         public PlotModel Plot { get { return m_plot; } set { } }
 
         private PlotPropertiesViewModel m_properties = new PlotPropertiesViewModel();
-        public PlotPropertiesViewModel properties
+        public PlotPropertiesViewModel Properties
         {
             get { return m_properties; }
         }
 
-        private ObservableCollection<PlotLineSeriesPropertiesViewModel> m_selectedPlotLineSeriesPropertiesViewModels;
-        public ObservableCollection<PlotLineSeriesPropertiesViewModel> SelectedPlotLineSeriesPropertiesViewModels
-        {
-            get { return m_selectedPlotLineSeriesPropertiesViewModels; }
-            set
-            {
-                m_selectedPlotLineSeriesPropertiesViewModels = value;
-                NotifyOfPropertyChange(() => SelectedPlotLineSeriesPropertiesViewModels);
-            }
-        }
         public bool LineSeriesSelectionVisible
         {
-            get { return properties.LineSeriesProperties.Count > 1; }
+            get { return Properties.LineSeriesProperties.Count > 1; }
         }
 
         public PlotViewModel(string title, double xMax = 0, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
@@ -92,37 +83,24 @@ namespace Badger.ViewModels
             yAxis.Title = yName;
             m_plot.Axes.Add(yAxis);
 
+            //Add a listener to "PropertiesChanged" event from Properties
+            Properties.PropertyChanged += PropertiesChanged;
+
             if (bRefresh)
             {
                 m_timer = new System.Threading.Timer(updatePlot);
                 m_timer.Change(m_updateFreq, m_updateFreq);
             }
             m_bShowOptions = bShowOptions;
+        }
 
-
-            //to selective disable certain lines
-            m_selectedPlotLineSeriesPropertiesViewModels = new ObservableCollection<PlotLineSeriesPropertiesViewModel>();
-            m_selectedPlotLineSeriesPropertiesViewModels.CollectionChanged += (s, e) =>
+        public void PropertiesChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PlotPropertiesViewModel properties= sender as PlotPropertiesViewModel;
+            if (properties!=null)
             {
-                foreach (var outerItem in properties.LineSeriesProperties)
-                {
-                    bool found = false;
-                    foreach (var item in m_selectedPlotLineSeriesPropertiesViewModels)
-                    {
-                        if (item.Equals(outerItem))
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                    outerItem.bVisible = found;
-                }
-
-                updateView();
-            };
-
-            if (properties.LineSeriesProperties.Count > 0)
-                m_selectedPlotLineSeriesPropertiesViewModels.Add(properties.LineSeriesProperties[0]);
+                UpdateView();
+            }
         }
 
         private void updatePlot(object state)
@@ -130,14 +108,14 @@ namespace Badger.ViewModels
             m_plot.InvalidatePlot(true);
         }
 
-        public void updateView()
+        public void UpdateView()
         {
             m_plot.InvalidatePlot(true);
         }
 
         private object m_lineSeriesLock = new object();
 
-        public int addLineSeries(string title, bool isVisible = true)
+        public int AddLineSeries(string title, bool isVisible = true)
         {
             lock (m_lineSeriesLock)
             {
@@ -145,15 +123,13 @@ namespace Badger.ViewModels
                 newSeries.IsVisible = isVisible;
                 m_plot.Series.Add(newSeries);
 
-                properties.AddLineSeries(title, newSeries);
+                Properties.AddLineSeries(title, newSeries);
 
                 return m_plot.Series.Count - 1; ;
-
-
             }
         }
 
-        public void addLineSeriesValue(int seriesIndex, double xValue, double yValue)
+        public void AddLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
             if (seriesIndex < 0 || seriesIndex >= m_plot.Series.Count)
             {
@@ -162,14 +138,14 @@ namespace Badger.ViewModels
             }
 
             OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)m_plot.Series[seriesIndex];
-            updatePlotBounds(xValue, yValue);
+            UpdatePlotBounds(xValue, yValue);
             series.Points.Add(new DataPoint(xValue, yValue));
         }
 
-        public void clearLineSeries()
+        public void ClearLineSeries()
         {
             m_plot.Series.Clear();
-            updateView();
+            UpdateView();
             NotifyOfPropertyChange("Series");
         }
 
@@ -180,37 +156,37 @@ namespace Badger.ViewModels
         ///     certain opacity, to all the other LineSeries.
         /// </summary>
         /// <param name="name">Name of the hovered LineSeries which is gonna be highlighted</param>
-        public void highlightLineSeries(string name)
+        public void HighlightLineSeries(string name)
         {
-            bool found = false;
+            bool found = true;
 
-            foreach (PlotLineSeriesPropertiesViewModel p in properties.LineSeriesProperties)
+            foreach (PlotLineSeriesPropertiesViewModel p in Properties.LineSeriesProperties)
             {
                 if (!p.lineSeries.Title.Equals(name))
-                    properties.dimLineSeriesColor(p);
+                    Properties.dimLineSeriesColor(p);
                 else
                 {
-                    properties.removeLineSeriesColorOpacity(p);
+                    Properties.removeLineSeriesColorOpacity(p);
                     found = true;
                 }
             }
 
             if (!found)
-                resetLineSeriesColors();
+                ResetLineSeriesColors();
         }
 
         /// <summary>
         ///     Reset all LineSeries color to its original, removing the opacity in case that some
         ///     was applied before by the highlightLineSeries method.
         /// </summary>
-        public void resetLineSeriesColors()
+        public void ResetLineSeriesColors()
         {
-            foreach (PlotLineSeriesPropertiesViewModel p in properties.LineSeriesProperties)
-                properties.removeLineSeriesColorOpacity(p);
+            foreach (PlotLineSeriesPropertiesViewModel p in Properties.LineSeriesProperties)
+                Properties.removeLineSeriesColorOpacity(p);
         }
 
 
-        private void updatePlotBounds(double x, double y)
+        private void UpdatePlotBounds(double x, double y)
         {
             bool bMustUpdate = false;
             if (x < m_minX)
@@ -249,7 +225,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public void saveImage()
+        public void SaveImage()
         {
             FolderBrowserDialog sfd = new FolderBrowserDialog();
 
@@ -257,30 +233,30 @@ namespace Badger.ViewModels
             //sfd.RootFolder = new Environment.SpecialFolder(Path.Combine(Directory.GetCurrentDirectory(), SimionFileData.experimentRelativeDir));
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                export(sfd.SelectedPath);
+                Export(sfd.SelectedPath);
             }
         }
 
-        public void showProperties()
+        public void ShowProperties()
         {
-            CaliburnUtility.ShowPopupWindow(properties, "Plot properties");
+            CaliburnUtility.ShowPopupWindow(Properties, "Plot properties");
             SetProperties();
         }
 
         public void SetProperties()
         {
-            Plot.IsLegendVisible = properties.LegendVisible;
+            Plot.IsLegendVisible = Properties.LegendVisible;
             //placement
             Plot.LegendOrientation = (OxyPlot.LegendOrientation)Enum.Parse(typeof(OxyPlot.LegendOrientation)
-                , properties.SelectedLegendOrientation);
+                , Properties.SelectedLegendOrientation);
             Plot.LegendPlacement = (OxyPlot.LegendPlacement)Enum.Parse(typeof(OxyPlot.LegendPlacement)
-                , properties.SelectedLegendPlacement);
+                , Properties.SelectedLegendPlacement);
             Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
-                , properties.SelectedLegendPosition);
-            updateView();
+                , Properties.SelectedLegendPosition);
+            UpdateView();
         }
 
-        public void export(string outputFolder)
+        public void Export(string outputFolder)
         {
             string fileName;
             //as png

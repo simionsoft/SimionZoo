@@ -35,7 +35,7 @@ namespace Badger.ViewModels
                     ((OxyPlot.IPlotModel)m_selectedPlot.Plot).AttachPlotView(null);
                 }
                 m_selectedPlot = value;
-                m_selectedPlot.updateView();
+                m_selectedPlot.UpdateView();
                 NotifyOfPropertyChange(() => selectedPlot);
             }
         }
@@ -61,7 +61,7 @@ namespace Badger.ViewModels
             //set culture as invariant to write numbers as in english
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
             //export plots
-            foreach (PlotViewModel plot in plots) plot.export(outputFolder);
+            foreach (PlotViewModel plot in plots) plot.Export(outputFolder);
             //export stats
             string statsFile = outputFolder + "\\" + name + ".xml";
             try
@@ -112,9 +112,9 @@ namespace Badger.ViewModels
                     else seriesName = group.GroupId + "-" + series.Id;
 
                     //add data to the plot
-                    int lineSeriesId = newPlot.addLineSeries(seriesName);
+                    int lineSeriesId = newPlot.AddLineSeries(seriesName);
                     foreach (XYValue value in series.Values)
-                        newPlot.addLineSeriesValue(lineSeriesId, value.X, value.Y);
+                        newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
 
                     StatViewModel newStat = new StatViewModel(group.ExperimentId, seriesName, series.Stats);
 
@@ -281,7 +281,7 @@ namespace Badger.ViewModels
             if (plots.Count > 0)
             {
                 selectedPlot = plots[0];
-                selectedPlot.updateView();
+                selectedPlot.UpdateView();
             }
         }
     }

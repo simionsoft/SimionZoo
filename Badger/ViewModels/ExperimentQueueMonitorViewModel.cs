@@ -173,12 +173,12 @@ namespace Badger.ViewModels
                                 {
                                     if (!m_experimentSeriesId.Keys.Contains(experimentVM.Name))
                                     {
-                                        seriesId = m_evaluationPlot.addLineSeries(seriesName);
+                                        seriesId = m_evaluationPlot.AddLineSeries(seriesName);
                                         m_experimentSeriesId.Add(seriesName, seriesId);
                                     }
                                     else seriesId = m_experimentSeriesId[seriesName];
 
-                                    m_evaluationPlot.addLineSeriesValue(seriesId, double.Parse(values[0], CultureInfo.InvariantCulture)
+                                    m_evaluationPlot.AddLineSeriesValue(seriesId, double.Parse(values[0], CultureInfo.InvariantCulture)
                                         , double.Parse(values[1], CultureInfo.InvariantCulture));
                                 }
                             }

@@ -10,43 +10,6 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-
-        <!--<Style TargetType="{x:Type xctk:SelectorItem}" x:Key="SelectorItemStyle">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type xctk:SelectorItem}">
-                        <Border x:Name="_background" 
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <CheckBox Name="PART_CheckBox" IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
-                                          VerticalAlignment="Center" VerticalContentAlignment="Center" Focusable="True" Margin="3,1,5,1">
-                                    <Border Grid.Column="1">
-                                        <ContentPresenter Margin="2" ContentSource="Content" />
-                                    </Border>
-                                </CheckBox>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="_background" Property="Background" Value="#FFB8E0F3" />
-                                <Setter TargetName="_background" Property="BorderBrush" Value="#FF26A0DA" />
-                            </Trigger>
-                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                <Setter TargetName="_background" Property="Background" Value="#FFB8E0F3" />
-                                <Setter TargetName="_background" Property="BorderBrush" Value="#FF26A0DA" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>-->
-
     </UserControl.Resources>
     <Grid HorizontalAlignment="Center">
         <Grid.RowDefinitions>
@@ -59,16 +22,12 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <oxy:PlotView Grid.Row="0" Model="{Binding Plot}" Width="600" Height="400" Margin="10,0"/>
-                <!--<xctk:CheckListBox Grid.Row="1" Visibility="{Binding LineSeriesSelectionVisible, Converter={StaticResource BoolToVis}}" ItemsSource="{Binding properties.lineSeriesProperties, Mode=OneWay, NotifyOnSourceUpdated=True}"
-                        ValueMemberPath="bVisible" DisplayMemberPath="lineSeries.Title" HorizontalAlignment="Center" HorizontalContentAlignment="Right"
-                        SelectedItemsOverride="{Binding SelectedPlotLineSeriesPropertiesViewModels, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        ItemContainerStyle="{StaticResource SelectorItemStyle}" />-->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
-                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="showProperties" Width="32" Height="32">
+                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="ShowProperties" Width="32" Height="32">
                         <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"
                     HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Button>
-                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="saveImage" Width="32" Height="32">
+                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="SaveImage" Width="32" Height="32">
                         <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000"
                     HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Button>

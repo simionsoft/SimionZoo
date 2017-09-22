@@ -6,7 +6,7 @@
         xmlns:v="clr-namespace:Badger.Views"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         WindowStyle="ThreeDBorderWindow"
-        Title="Report Viewer" Width="900" Height="600"
+        Title="Report Viewer" Width="1000" Height="800"
         Background="#eeeeee"
         WindowState="Normal"
         Icon="/badger-head.ico">

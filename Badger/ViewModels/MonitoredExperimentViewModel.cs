@@ -143,8 +143,8 @@ namespace Badger.ViewModels
         public void addEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added
-                evaluationSeriesId = m_plotEvaluationMonitor.addLineSeries(Name);
-            m_plotEvaluationMonitor.addLineSeriesValue(evaluationSeriesId, xNorm, y);
+                evaluationSeriesId = m_plotEvaluationMonitor.AddLineSeries(Name);
+            m_plotEvaluationMonitor.AddLineSeriesValue(evaluationSeriesId, xNorm, y);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace Badger.ViewModels
         /// <param name="name">The name of the component which trigger the event</param>
         public void HandleMouseEnter(string name)
         {
-            m_plotEvaluationMonitor.highlightLineSeries(name);
+            m_plotEvaluationMonitor.HighlightLineSeries(name);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Badger.ViewModels
         /// </summary>
         public void HandleMouseLeave()
         {
-            m_plotEvaluationMonitor.resetLineSeriesColors();
+            m_plotEvaluationMonitor.ResetLineSeriesColors();
         }
     }
 }

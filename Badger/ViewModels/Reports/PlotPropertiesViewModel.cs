@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.ComponentModel;
 using Caliburn.Micro;
 using OxyPlot;
 
@@ -25,10 +25,21 @@ namespace Badger.ViewModels
             get { return m_lineSeriesProperties; }
             set { m_lineSeriesProperties = value; NotifyOfPropertyChange(() => LineSeriesProperties); }
         }
+        //public Dictionary<string,PlotLineSeriesPropertiesViewModel> LineSeriesPropertiesDic=
+        //    new Dictionary<string,PlotLineSeriesPropertiesViewModel>();
 
         public void AddLineSeries(string name, OxyPlot.Series.LineSeries series)
         {
-            LineSeriesProperties.Add(new PlotLineSeriesPropertiesViewModel(name, series));
+            PlotLineSeriesPropertiesViewModel newLineProperties 
+                = new PlotLineSeriesPropertiesViewModel(name, series);
+            LineSeriesProperties.Add(newLineProperties);
+            newLineProperties.PropertyChanged += RaisePropertiesChangedEvent;
+        }
+
+        public bool PropertiesChanged { get; set; }
+        public void RaisePropertiesChangedEvent(object sender, PropertyChangedEventArgs e)
+        {
+            NotifyOfPropertyChange(() => PropertiesChanged);
         }
 
         //LEGEND
@@ -76,13 +87,13 @@ namespace Badger.ViewModels
         public bool LegendVisible
         {
             get { return m_bLegendVisible; }
-            set { LegendVisible = value; NotifyOfPropertyChange(() => LegendVisible); }
+            set { m_bLegendVisible = value; NotifyOfPropertyChange(() => LegendVisible); }
         }
         private bool m_bLegendBorder = true;
         public bool LegendBorder
         {
             get { return m_bLegendBorder; }
-            set { LegendBorder = value; NotifyOfPropertyChange(() => LegendBorder); }
+            set { m_bLegendBorder = value; NotifyOfPropertyChange(() => LegendBorder); }
         }
 
         public PlotPropertiesViewModel()
