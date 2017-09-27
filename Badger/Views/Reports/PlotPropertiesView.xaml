@@ -1,50 +1,79 @@
 ﻿<Window x:Class="Badger.Views.PlotPropertiesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             Width="310" Height="450"
-             WindowStyle="ThreeDBorderWindow" Title="Plot Properties"
+             Width="430" Height="350"
+             WindowStyle="ThreeDBorderWindow" Title="Properties"
              Background="#eeeeee" WindowState="Normal" Icon="/badger-head.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
-    <StackPanel Width="310" HorizontalAlignment="Center">
-        <StackPanel Orientation="Vertical" Width="300">
-                <StackPanel Orientation="Vertical" IsEnabled="{Binding bLegendVisible}">
-                    <StackPanel>
-                        <GroupBox  Header="Legend">
-                            <StackPanel Margin="10">
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <CheckBox x:Name="LegendVisible" Margin="2">Show</CheckBox>
-                                    <CheckBox x:Name="LegendBorder" Margin="2">Border</CheckBox>
-                                </StackPanel>
 
-                                <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
-                                    <Label Width="120">Position</Label>
-                                    <ComboBox x:Name="LegendPositions" SelectedItem="{Binding SelectedLegendPosition}" Width="80"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
-                                    <Label Width="120">Placement</Label>
-                                    <ComboBox x:Name="LegendPlacements" SelectedItem="{Binding SelectedLegendPlacement}" Width="80"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
-                                    <Label Width="120">Orientation</Label>
-                                    <ComboBox x:Name="LegendOrientations" SelectedItem="{Binding SelectedLegendOrientation}" Width="80"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </GroupBox>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="145"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Label VerticalAlignment="Center">Legend</Label>
+                        <CheckBox x:Name="LegendVisible" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel>
-                        <GroupBox Header="Tracks" MaxHeight="300" Padding="3">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="LineSeriesProperties"/>
-                            </ScrollViewer>
-                        </GroupBox>
+                </GroupBox.Header>
+                <StackPanel>
+                    <StackPanel Orientation="Vertical" IsEnabled="{Binding LegendVisible}" Margin="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Width="80">Show border</Label>
+                            <CheckBox x:Name="LegendBorder" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Width="80">Position</Label>
+                            <ComboBox x:Name="LegendPositions" SelectedItem="{Binding SelectedLegendPosition}" Width="120"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
+                            <Label Width="80">Placement</Label>
+                            <ComboBox x:Name="LegendPlacements" SelectedItem="{Binding SelectedLegendPlacement}" Width="120"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
+                            <Label Width="80">Orientation</Label>
+                            <ComboBox x:Name="LegendOrientations" SelectedItem="{Binding SelectedLegendOrientation}" Width="120"/>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
-            </StackPanel>
-
-    </StackPanel>
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="Text" Padding="3" Margin="0,0,0,5">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">Title</Label>
+                        <TextBox Width="120" x:Name="Title"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">X Axis name</Label>
+                        <TextBox Width="120" x:Name="XAxisName"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">Y Axis name</Label>
+                        <TextBox Width="120" x:Name="YAxisName"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">Font family</Label>
+                        <ComboBox x:Name="Fonts" SelectedItem="{Binding SelectedFont}" Width="120"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+        <GroupBox Grid.Column="1" Header="Tracks" Padding="3">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="LineSeriesProperties"/>
+            </ScrollViewer>
+        </GroupBox>
+    </Grid>
 
 </Window>

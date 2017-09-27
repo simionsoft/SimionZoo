@@ -62,7 +62,7 @@ namespace Badger.ViewModels
         public PlotViewModel(string title, double xMax = 0, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
         {
             name = title;
-            m_plot = new PlotModel { Title = title };
+            m_plot = new PlotModel();
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
@@ -73,15 +73,24 @@ namespace Badger.ViewModels
             if (xMax>0)
                 xAxis.AbsoluteMaximum = xMax;
             xAxis.AbsoluteMinimum = 0.0;
-            xAxis.Title = xName;
+
             m_plot.Axes.Add(xAxis);
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.MajorGridlineStyle = LineStyle.Solid;
             yAxis.Minimum = 0.0;
             yAxis.Maximum = 1.0;
-            yAxis.Title = yName;
+
             m_plot.Axes.Add(yAxis);
+            //default properties
+            m_plot.LegendBorder = OxyColors.Black;
+            m_plot.LegendBackground = OxyColors.White;
+
+            Properties.Title = Utility.OxyPlotMathNotation(title);
+            Properties.XAxisName = Utility.OxyPlotMathNotation(xName);
+            Properties.YAxisName = Utility.OxyPlotMathNotation(yName);
+
+            UpdatePlotProperties();
 
             //Add a listener to "PropertiesChanged" event from Properties
             Properties.PropertyChanged += PropertiesChanged;
@@ -99,17 +108,35 @@ namespace Badger.ViewModels
             PlotPropertiesViewModel properties= sender as PlotPropertiesViewModel;
             if (properties!=null)
             {
-                Plot.IsLegendVisible = Properties.LegendVisible;
-                Plot.LegendBorderThickness = Properties.LegendBorder ? 2.0 : 0.0;
-                //placement
-                Plot.LegendOrientation = (OxyPlot.LegendOrientation)Enum.Parse(typeof(OxyPlot.LegendOrientation)
-                    , Properties.SelectedLegendOrientation);
-                Plot.LegendPlacement = (OxyPlot.LegendPlacement)Enum.Parse(typeof(OxyPlot.LegendPlacement)
-                    , Properties.SelectedLegendPlacement);
-                Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
-                    , Properties.SelectedLegendPosition);
+                UpdatePlotProperties();
+
                 UpdateView();
             }
+        }
+
+        private void UpdatePlotProperties()
+        {
+            //Texts
+            if (m_plot.Axes.Count == 2)
+            {
+                m_plot.Axes[0].Title = Properties.XAxisName;
+                m_plot.Axes[1].Title = Properties.YAxisName;
+            }
+            m_plot.Title = Properties.Title;
+            //font
+            Plot.DefaultFont = Properties.SelectedFont;
+
+            //legend
+            Plot.IsLegendVisible = Properties.LegendVisible;
+            bool showLegend = Properties.LegendBorder;
+            Plot.LegendBorderThickness = showLegend ? 1 : 0;
+
+            Plot.LegendOrientation = (OxyPlot.LegendOrientation)Enum.Parse(typeof(OxyPlot.LegendOrientation)
+                , Properties.SelectedLegendOrientation);
+            Plot.LegendPlacement = (OxyPlot.LegendPlacement)Enum.Parse(typeof(OxyPlot.LegendPlacement)
+                , Properties.SelectedLegendPlacement);
+            Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
+                , Properties.SelectedLegendPosition);
         }
 
         private void updatePlot(object state)
@@ -171,7 +198,7 @@ namespace Badger.ViewModels
 
             foreach (PlotLineSeriesPropertiesViewModel p in Properties.LineSeriesProperties)
             {
-                if (!p.lineSeries.Title.Equals(name))
+                if (!p.LineSeries.Title.Equals(name))
                     Properties.dimLineSeriesColor(p);
                 else
                 {

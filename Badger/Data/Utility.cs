@@ -231,6 +231,15 @@ namespace Badger.Data
             return filename;
         }
 
+        /// <summary>
+        /// Returns a string with a shortened copy of the input parameter <paramref name="s"/> that has
+        /// a maximum length <paramref name="maxLength"/>. In case any of the characters in <paramref name="delim"/>
+        /// is found, everything before the last index of it will be removed.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="maxLength"></param>
+        /// <param name="delim"></param>
+        /// <returns></returns>
         public static string LimitLength(string s, uint maxLength, char[] delim= null)
         {
             //make sure we can prepend "..." in case we have to
@@ -249,6 +258,12 @@ namespace Badger.Data
             return "..." + s.Substring((int)( s.Length - maxLength + 3));
         }
 
+        /// <summary>
+        /// This function returns a string->string Dicionary as a single string with the format:
+        /// key1=value1\nkey2=value2\n...
+        /// </summary>
+        /// <param name="dictionary"></param>
+        /// <returns></returns>
         public static string DictionaryAsString(Dictionary<string,string> dictionary)
         {
             string res = "";
@@ -258,6 +273,48 @@ namespace Badger.Data
             }
             res.TrimEnd('\n');
             return res;
+        }
+
+        /// <summary>
+        /// This function does some "intelligent" conversions in the input string to try to automatically
+        /// adapt it to Oxyplot's math notation
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string OxyPlotMathNotation(string s)
+        {
+            //Subscripts
+            //E_p => E_{p}
+            //E_int_omega_r = E_{int_omega_r}
+            int firstUnderscore = s.IndexOf('_');
+            if (firstUnderscore >= 0)
+                s = s.Substring(0, firstUnderscore + 1) + "{" + s.Substring(firstUnderscore + 1) + "}";
+
+            //Greek characters
+            //α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω
+            //Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω
+            s= s.Replace("alpha", "α");
+            s = s.Replace("Alpha", "α");
+            s= s.Replace("beta", "β");
+            s= s.Replace("Beta", "β");
+            s= s.Replace("gamma", "γ");
+            s= s.Replace("Gamma", "γ");
+            s= s.Replace("delta", "δ");
+            s= s.Replace("Delta", "Δ");
+            s= s.Replace("epsilon", "ε");
+            s= s.Replace("Epsilon", "Ε");
+            s= s.Replace("theta", "θ");
+            s= s.Replace("Theta", "Θ");
+            s= s.Replace("lambda", "λ");
+            s= s.Replace("Lambda", "λ");
+            s= s.Replace("mu", "μ");
+            s= s.Replace("Mu", "μ");
+            s= s.Replace("sigma", "σ");
+            s= s.Replace("Sigma", "Σ");
+            s= s.Replace("omega", "ω");
+            s= s.Replace("Omega", "Ω");
+
+            return s;
         }
     }
 }

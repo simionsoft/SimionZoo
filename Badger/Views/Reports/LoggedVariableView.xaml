@@ -31,10 +31,10 @@
         <CheckBox IsChecked="{Binding bIsSelected,Mode=TwoWay}" VerticalAlignment="Center"
                   Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
         <TextBlock Grid.Column="1" x:Name="name" HorizontalAlignment="Left" VerticalAlignment="Center"
-                   FontFamily="Segoe UI" FontSize="10" Foreground="Black" TextWrapping="Wrap"                   
+                   FontFamily="Segoe UI" Width="60" FontSize="10" Foreground="Black" TextWrapping="Wrap"                   
                    IsEnabled="{Binding bIsSelected,Mode=TwoWay}" Margin="2,0,0,0"/>
         <ComboBox Grid.Column="2" x:Name="ProcessFuncs" SelectedItem="{Binding Path=SelectedProcessFunc}"
-                  FontFamily="Segoe UI" FontSize="8" IsEnabled="{Binding bIsSelected,Mode=TwoWay}" Margin="2,0,0,0"/>
+                  FontFamily="Segoe UI" FontSize="8" Width="50" MaxHeight="20" IsEnabled="{Binding bIsSelected,Mode=TwoWay}" Margin="2,0,0,0"/>
         <xctk:CheckComboBox x:Name="checkComboBox" Grid.Column="3" IsEnabled="{Binding bIsSelected, Mode=TwoWay}" Height="Auto" IsEditable="False"
                             Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}, Mode=TwoWay, NotifyOnSourceUpdated=True}"
                             Text="{Binding PlaceholderText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"

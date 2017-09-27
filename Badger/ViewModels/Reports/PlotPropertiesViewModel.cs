@@ -95,22 +95,66 @@ namespace Badger.ViewModels
             get { return m_bLegendBorder; }
             set { m_bLegendBorder = value; NotifyOfPropertyChange(() => LegendBorder); }
         }
+        private bool m_bLegendSolidBackground = true;
+        public bool LegendSolidBackground
+        {
+            get { return m_bLegendSolidBackground; }
+            set { m_bLegendSolidBackground = value; NotifyOfPropertyChange(() => LegendSolidBackground); }
+        }
+        //Font
+        private BindableCollection<string> m_fonts = new BindableCollection<string>();
+        public BindableCollection<string> Fonts
+        {
+            get { return m_fonts; }
+            set { m_fonts = value; NotifyOfPropertyChange(() => Fonts); }
+        }
+        private string m_selectedFont;
+        public string SelectedFont
+        {
+            get { return m_selectedFont; }
+            set { m_selectedFont = value;NotifyOfPropertyChange(() => SelectedFont); }
+        }
+        //Texts
+        private string m_title = "N/A";
+        public string Title
+        {
+            get { return m_title; }
+            set { m_title = value; NotifyOfPropertyChange(() => Title); }
+        }
+        private string m_xAxisName = "N/A";
+        public string XAxisName
+        {
+            get { return m_xAxisName; }
+            set { m_xAxisName = value; NotifyOfPropertyChange(() => XAxisName); }
+        }
+        private string m_yAxisName = "N/A";
+        public string YAxisName
+        {
+            get { return m_yAxisName; }
+            set { m_yAxisName = value; NotifyOfPropertyChange(() => YAxisName); }
+        }
 
         public PlotPropertiesViewModel()
         {
-            m_legendPositions.Add(OxyPlot.LegendPosition.BottomLeft.ToString());
-            m_legendPositions.Add(OxyPlot.LegendPosition.BottomRight.ToString());
-            m_legendPositions.Add(OxyPlot.LegendPosition.TopLeft.ToString());
-            m_legendPositions.Add(OxyPlot.LegendPosition.TopRight.ToString());
-            SelectedLegendPosition = OxyPlot.LegendPosition.TopRight.ToString();
+            m_legendPositions.Add(LegendPosition.BottomLeft.ToString());
+            m_legendPositions.Add(LegendPosition.BottomRight.ToString());
+            m_legendPositions.Add(LegendPosition.TopLeft.ToString());
+            m_legendPositions.Add(LegendPosition.TopRight.ToString());
+            SelectedLegendPosition = LegendPosition.TopRight.ToString();
 
-            m_legendPlacements.Add(OxyPlot.LegendPlacement.Inside.ToString());
-            m_legendPlacements.Add(OxyPlot.LegendPlacement.Outside.ToString());
-            SelectedLegendPlacement = OxyPlot.LegendPlacement.Inside.ToString();
+            m_legendPlacements.Add(LegendPlacement.Inside.ToString());
+            m_legendPlacements.Add(LegendPlacement.Outside.ToString());
+            SelectedLegendPlacement = LegendPlacement.Inside.ToString();
 
-            m_legendOrientations.Add(OxyPlot.LegendOrientation.Horizontal.ToString());
-            m_legendOrientations.Add(OxyPlot.LegendOrientation.Vertical.ToString());
-            SelectedLegendOrientation = OxyPlot.LegendOrientation.Vertical.ToString();
+            m_legendOrientations.Add(LegendOrientation.Horizontal.ToString());
+            m_legendOrientations.Add(LegendOrientation.Vertical.ToString());
+            SelectedLegendOrientation = LegendOrientation.Vertical.ToString();
+
+            m_fonts.Add("Arial");
+            m_fonts.Add("Segoe UI");
+            m_fonts.Add("Times New Roman");
+            m_fonts.Add("Verdana");
+            SelectedFont = "Segoe UI";
         }
 
         /// <summary>
@@ -119,9 +163,9 @@ namespace Badger.ViewModels
         /// <param name="lineSeriesProperties"></param>
         public void dimLineSeriesColor(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
         {
-            OxyColor color = lineSeriesProperties.lineSeries.ActualColor;
+            OxyColor color = lineSeriesProperties.LineSeries.ActualColor;
             // Apply an opacity of 15% over the original color
-            lineSeriesProperties.lineSeries.Color = OxyColor.FromArgb(0x26, color.R, color.G, color.B);
+            lineSeriesProperties.LineSeries.Color = OxyColor.FromArgb(0x26, color.R, color.G, color.B);
         }
 
         /// <summary>
@@ -130,8 +174,8 @@ namespace Badger.ViewModels
         /// <param name="lineSeriesProperties"></param>
         public void removeLineSeriesColorOpacity(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
         {
-            OxyColor color = lineSeriesProperties.lineSeries.ActualColor;
-            lineSeriesProperties.lineSeries.Color = OxyColor.FromRgb(color.R, color.G, color.B);
+            OxyColor color = lineSeriesProperties.LineSeries.ActualColor;
+            lineSeriesProperties.LineSeries.Color = OxyColor.FromRgb(color.R, color.G, color.B);
         }
     }
 }

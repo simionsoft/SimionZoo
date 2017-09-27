@@ -6,7 +6,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="5">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="15">
         <DataGrid Name="StatsDataGrid" ItemsSource="{Binding stats}" CanUserAddRows="False"
                   AutoGenerateColumns="False" CanUserResizeColumns="False"
                   CanUserSortColumns="True" IsReadOnly="True" Width="Auto">

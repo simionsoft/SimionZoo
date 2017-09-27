@@ -11,8 +11,8 @@
 
     <StackPanel HorizontalAlignment="Left">
         <StackPanel Orientation="Horizontal">
-            <CheckBox IsChecked="{Binding Path=bVisible,Mode=TwoWay}" VerticalAlignment="Center"/>
-            <Label Content="{Binding Path=Name}" VerticalAlignment="Center"></Label>
+            <CheckBox IsChecked="{Binding Path=Visible,Mode=TwoWay}" VerticalAlignment="Center"/>
+            <TextBox Text="{Binding Path=Name}" VerticalAlignment="Center"></TextBox>
         </StackPanel>
     </StackPanel>
 </UserControl>
