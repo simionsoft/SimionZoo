@@ -90,11 +90,13 @@ namespace Badger.Data
         }
         void SetNameFromGroups(List<string> groupBy)
         {
+            int numForksInTrackUsedToGroup = 0;
             if (groupBy.Count > 0)
             {
                 //we remove those forks used to group from the forkValues
                 //because *hopefully* we only use them to name the track
                 GroupId = "";
+
                 string shortId;
                 foreach (string group in groupBy)
                 {
@@ -105,11 +107,13 @@ namespace Badger.Data
                             GroupId += shortId + "=";
                         GroupId += Utility.LimitLength(ForkValues[group], 10, valueDelimiters) + ",";
                         ForkValues.Remove(group);
+                        numForksInTrackUsedToGroup++;
                     }
                 }
-                GroupId = GroupId.TrimEnd(',');
             }
-            else GroupId= SetNameFromForkValues();
+            if (numForksInTrackUsedToGroup > 0)
+                GroupId = GroupId.TrimEnd(',');
+            else GroupId = SetNameFromForkValues();
         }
         string SetNameFromForkValues()
         {

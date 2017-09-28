@@ -45,12 +45,6 @@ namespace Badger.ViewModels
 
         public const string noLimitOnResults = "-";
 
-        public const string orderAsc = "Asc";
-        public const string orderDesc = "Desc";
-
-        public const string fromAll = "*";
-        public const string fromSelection = "Selection";
-
         private string m_inGroupSelectionFunction = "";
         public string inGroupSelectionFunction
         {
@@ -89,12 +83,8 @@ namespace Badger.ViewModels
             get { return m_variables; }
             set { m_variables = value; }
         }
-        private string m_from = "";
-        public string from
-        {
-            get { return m_from; }
-            set { m_from = value; }
-        }
+
+        public bool UseForkSelection { get; set; } = false;
         private List<string> m_groupBy = new List<string>();
         public List<string> groupBy { get { return m_groupBy; } }
 
@@ -196,7 +186,7 @@ namespace Badger.ViewModels
                 foreach (LoggedExperimentalUnitViewModel expUnit in exp.ExperimentalUnits)
                 {
                     //take selection into account? is this exp. unit selected?
-                    if (from == fromAll || (from == fromSelection && expUnit.bIsSelected))
+                    if (!UseForkSelection || (UseForkSelection && expUnit.bIsSelected))
                     {
                         if (groupBy.Count != 0)
                         {
@@ -259,7 +249,7 @@ namespace Badger.ViewModels
                 {
                     SortedList<double, TrackGroup> sortedList;
 
-                    if (orderByFunction == orderAsc)
+                    if (orderByFunction == functionMin)
                         sortedList = new SortedList<double, TrackGroup>(ResultTracks.Count
                             , new AscComparer());
                     else // (orderByFunction == orderDesc)

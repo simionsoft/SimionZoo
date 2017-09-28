@@ -1,15 +1,10 @@
-﻿
-using System.Collections.Generic;
-using OxyPlot;
+﻿using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
-using System.Threading;
 using Caliburn.Micro;
 using System.Windows.Forms;
-using System.IO;
 using Badger.Data;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Badger.ViewModels
