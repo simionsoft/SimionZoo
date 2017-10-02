@@ -13,7 +13,7 @@ namespace Badger.Data
             List<Report> trackParameterList = new List<Report>();
             foreach(LoggedVariableViewModel variable in loggedVariables)
             {
-                if (variable.bIsSelected)
+                if (variable.IsSelected)
                 {
                     foreach (PlotType type in Enum.GetValues(typeof(PlotType)))
                     {

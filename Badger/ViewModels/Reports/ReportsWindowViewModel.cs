@@ -47,9 +47,9 @@ namespace Badger.ViewModels
                 m_bVariableSelection = value;
                 foreach (LoggedVariableViewModel var in Variables)
                 {
-                    var.bIsSelected = value;
+                    var.IsSelected = value;
                     ValidateQuery();
-                    NotifyOfPropertyChange(() => var.bIsSelected);
+                    NotifyOfPropertyChange(() => var.IsSelected);
                 }
             }
         }
@@ -245,7 +245,7 @@ namespace Badger.ViewModels
                 foreach (LoggedExperimentViewModel exp in LoggedExperiments)
                     exp.TraverseAction(true, (child) =>
                     {
-                        child.bCheckIsVisible = UseForkSelection;
+                        child.IsCheckVisible = UseForkSelection;
                     });
             }
         }
@@ -269,7 +269,7 @@ namespace Badger.ViewModels
             int numSelectedVars = 0;
 
             foreach (LoggedVariableViewModel variable in Variables)
-                if (variable.bIsSelected) ++numSelectedVars;
+                if (variable.IsSelected) ++numSelectedVars;
 
             if (numSelectedVars == 0 || selectedInGroupSelectionVariable == "")
                 CanGenerateReports = false;

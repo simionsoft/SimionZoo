@@ -165,7 +165,7 @@ namespace Badger.ViewModels
 
             //add all selected variables to the list of variables
             foreach (LoggedVariableViewModel variable in loggedVariablesVM)
-                if ( variable.bIsSelected )
+                if ( variable.IsSelected )
                     variables.Add(variable.name);
 
             Reports = DataTrackUtilities.FromLoggedVariables(loggedVariablesVM);

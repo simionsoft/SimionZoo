@@ -17,16 +17,16 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool m_bCheckIsVisible; // ReportsWindowViewModel.selectedFrom=FromAll by default
+        private bool m_bIsCheckVisible;
 
-        public bool bCheckIsVisible
+        public bool IsCheckVisible
         {
-            get { return m_bCheckIsVisible; }
+            get { return m_bIsCheckVisible; }
             set
             {
-                m_bCheckIsVisible = value;
-                NotifyOfPropertyChange(() => bCheckIsVisible);
-                TraverseAction(false, (element) => { element.bCheckIsVisible = value; });
+                m_bIsCheckVisible = value;
+                NotifyOfPropertyChange(() => IsCheckVisible);
+                TraverseAction(false, (element) => { element.IsCheckVisible = value; });
             }
         }
 

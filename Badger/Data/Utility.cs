@@ -271,7 +271,7 @@ namespace Badger.Data
             {
                 res += key + "= " + dictionary[key] + "\n";
             }
-            res.TrimEnd('\n');
+            res= res.TrimEnd('\n');
             return res;
         }
 

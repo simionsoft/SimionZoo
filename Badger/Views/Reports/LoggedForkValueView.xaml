@@ -1,24 +1,20 @@
-﻿<UserControl
+﻿<UserControl x:Class="Badger.Views.LoggedForkValueView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:v="clr-namespace:Badger.Views"
-             xmlns:vm="clr-namespace:Badger.ViewModels"
-             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.LoggedForkValueView"
-             mc:Ignorable="d" 
-d:DesignHeight="50" d:DesignWidth="300">
+             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal">
-            <CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
-                      Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}"/>
-            <Label x:Name="value" />
+        <StackPanel Margin="0" Orientation="Horizontal">
+            <Label x:Name="Value" Padding="0" FontSize="10" VerticalAlignment="Center"/>
         </StackPanel>
-        <StackPanel>
-            <ItemsControl x:Name="forks" Margin="-17,0,0,0" Visibility="{Binding Path=bHasForks,Converter={StaticResource BoolToVis}}"/>
-        </StackPanel>
-    </StackPanel>  
+        <ItemsControl x:Name="Forks" Margin="5 0 0 0"
+                          Visibility="{Binding Path=HasChildrenForks,Converter={StaticResource BoolToVis}}"/>
+    </StackPanel>
+
+
 </UserControl>

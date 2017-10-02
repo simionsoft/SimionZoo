@@ -71,10 +71,8 @@
                             <Label Content="Experiment batch" FontWeight="Medium" HorizontalAlignment="Center" />
                             <TabControl>
                                 <TabItem Header="Experiment/fork hierarchy" >
-                                    <ScrollViewer  Grid.Row="1" Height="100" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                        <TreeView x:Name="Experiments" BorderBrush="{x:Null}" BorderThickness="0">
-                                            <ItemsControl x:Name="LoggedExperiments"/>
-                                        </TreeView>
+                                    <ScrollViewer Grid.Row="1" Height="100" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <ItemsControl x:Name="LoggedExperiments"/>
                                     </ScrollViewer>
                                 </TabItem>
                                 <TabItem Header="Experimental units">

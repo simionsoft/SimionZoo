@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:v="clr-namespace:Badger.Views"
-             xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="Badger.Views.LoggedForkView"
@@ -14,30 +12,27 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
     </UserControl.Resources>
-    <TreeViewItem IsExpanded="True" Margin="0,0,0,0" >
-        <TreeViewItem.Header>
-            <StackPanel Orientation="Horizontal">
-                <!-- Deselecting a whole fork makes no sense, so there's no point showing the checkbox -->
-                <!--<CheckBox IsChecked="{Binding bIsSelected}" VerticalAlignment="Center"
-                          Visibility="{Binding Path=bCheckIsVisible,Converter={StaticResource BoolToVis}}">-->
-                <!--</CheckBox>-->
-                <Label x:Name="name" FontWeight="Medium" Content="{Binding Name}">
-                    <Label.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Group by value">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="Click">
-                                        <cal:ActionMessage MethodName="GroupByThisFork" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </MenuItem>
-                        </ContextMenu>
-                    </Label.ContextMenu>
-                </Label>
-            </StackPanel>
-        </TreeViewItem.Header>
 
-        <ItemsControl x:Name="Values" Margin="-17,0,0,0" Visibility="{Binding Path=HasChildrenValues,Converter={StaticResource BoolToVis}}"/>
-        <ItemsControl x:Name="Forks" Margin="-17,0,0,0" Visibility="{Binding Path=HasChildrenForks,Converter={StaticResource BoolToVis}}"/>
-    </TreeViewItem>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Margin="0,0,0,0"  Orientation="Horizontal" Background="#f0f0f0">
+            <Image Source="{StaticResource fork}" Width="15"/>
+            <Label x:Name="Name" FontWeight="Medium" FontSize="10" Padding="0">
+                <Label.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Group by value">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="GroupByThisFork" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </MenuItem>
+                    </ContextMenu>
+                </Label.ContextMenu>
+            </Label>
+    </StackPanel>
+    <ItemsControl x:Name="Values" Margin="5,0,0,0" Visibility="{Binding Path=HasChildrenValues,Converter={StaticResource BoolToVis}}"/>
+    <ItemsControl x:Name="Forks" Margin="5,0,0,0" Visibility="{Binding Path=HasChildrenForks,Converter={StaticResource BoolToVis}}"/>
+
+    </StackPanel>
+    
 </UserControl>

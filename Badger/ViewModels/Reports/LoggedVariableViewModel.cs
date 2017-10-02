@@ -38,28 +38,28 @@ namespace Badger.ViewModels
 
         private bool m_bIsSelected;
 
-        public bool bIsSelected
+        public bool IsSelected
         {
             get { return m_bIsSelected; }
             set
             {
                 m_bIsSelected = value;
-                NotifyOfPropertyChange(() => bIsSelected);
+                NotifyOfPropertyChange(() => IsSelected);
 
                 if (m_parent != null)
                     m_parent.ValidateQuery();
             }
         }
 
-        private bool m_bCheckIsVisible = true;
+        private bool m_bIsCheckVisible = true;
 
-        public bool bCheckIsVisible
+        public bool IsCheckVisible
         {
-            get { return m_bCheckIsVisible; }
+            get { return m_bIsCheckVisible; }
             set
             {
-                m_bCheckIsVisible = value;
-                NotifyOfPropertyChange(() => bCheckIsVisible);
+                m_bIsCheckVisible = value;
+                NotifyOfPropertyChange(() => IsCheckVisible);
             }
         }
 
