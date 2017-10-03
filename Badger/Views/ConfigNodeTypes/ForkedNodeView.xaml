@@ -5,7 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:vm="clr-namespace:Badger.ViewModels"
-             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.ForkedNodeView"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             x:Class="Badger.Views.ForkedNodeView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
@@ -47,14 +49,24 @@
                                     cal:Message.Attach="[Event Click]=[Action addValue()]">
                     <Image Source="{StaticResource add}"  ToolTip="Add a new value"/>
                 </Button>
-
+                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked node"
+                        Width="40" Height="40">
+                    <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Click">
+                            <cal:ActionMessage MethodName="LinkFork" >
+                                <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                            </cal:ActionMessage>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
                                 Opacity="{Binding bIsThereMoreValues}">
                     <Image Source="{StaticResource remove}"  ToolTip="Remove this value"/>
                 </Button>
             </StackPanel>
-            <StackPanel>
+            <StackPanel Orientation="Horizontal">
                 <StackPanel.Background>
                     <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
                         <GradientStop Color="#fafafa" Offset="0"/>
@@ -62,6 +74,10 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <ContentControl x:Name="selectedValueConfigNode"/>
+                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked value"
+                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LinkFork()]">
+                    <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
+                </Button>
             </StackPanel>
         </StackPanel>
     </Border>

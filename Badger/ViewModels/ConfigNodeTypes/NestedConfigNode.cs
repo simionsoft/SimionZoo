@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Xml;
 using Badger.Simion;
+using Badger.ViewModels.ConfigNodeTypes;
 using Caliburn.Micro;
 
 namespace Badger.ViewModels
@@ -59,8 +60,7 @@ namespace Badger.ViewModels
                     }
                     else
                     {
-                        childNode = ConfigNodeViewModel.getInstance(parentExperiment, this, child,
-                            parentXPath, configNode);
+                        childNode = getInstance(parentExperiment, this, child, parentXPath, configNode);
                         if (childNode != null)
                             children.Add(childNode);
                     }

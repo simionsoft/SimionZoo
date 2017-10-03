@@ -4,7 +4,7 @@
 class CConfigNode;
 
 
-class CConfigFile : private tinyxml2::XMLDocument
+class CConfigFile : public tinyxml2::XMLDocument
 {
 
 public:
@@ -14,7 +14,7 @@ public:
 };
 
 //this class is a simplified interface of tinyxml2::XMLElement
-class CConfigNode: private tinyxml2::XMLElement
+class CConfigNode: public tinyxml2::XMLElement
 {
 	//We use downcasting, so don't add any non-static attributes here!!
 

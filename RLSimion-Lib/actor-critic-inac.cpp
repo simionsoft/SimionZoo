@@ -12,6 +12,7 @@
 #include "policy.h"
 #include "app.h"
 #include <iostream>
+#include "../tools/NNCreatorLib/Problem.h"
 
 CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pConfigNode)
 {
@@ -32,7 +33,6 @@ CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pCon
 
 	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
 	m_e_v->setName("Critic/e_v");
-
 
 	//actor's stuff
 	m_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy");
@@ -66,7 +66,7 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		delete m_w[i];
-		delete [] m_e_u[i]->getName(); //the destructor of CETraces doesn't free the memory reserved for the name
+		delete[] m_e_u[i]->getName(); //the destructor of CETraces doesn't free the memory reserved for the name
 		delete m_e_u[i];
 	}
 	delete[]m_w;
@@ -99,7 +99,7 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 
 	m_pVFunction->getFeatures(s, m_s_features);
 	m_pVFunction->getFeatures(s_p, m_s_p_features);
-	
+
 	m_v_s = m_pVFunction->get(m_s_features);
 	m_v_s_p = m_pVFunction->get(m_s_p_features);
 
@@ -112,7 +112,7 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	//3. e_v= gamma* lambda*e_v + phi(s)
 	m_e_v->update(gamma);
 	m_e_v->addFeatureList(m_s_features);
-	
+
 	//4. v = v + alpha_v*td*e_v
 	m_pVFunction->add(m_e_v.ptr(), alpha_v*m_td);
 }
@@ -142,7 +142,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	{
 		//calculate the gradient
 		m_grad_u->clear();
-		m_policies[i]->getNaturalGradient(s, a, m_grad_u);
+		m_policies[i]->getParameterGradient(s, a, m_grad_u);
 
 #ifdef _DEBUG
 		for (int j = 0; j < m_grad_u->m_numFeatures; j++)
@@ -161,7 +161,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		if (isnan(innerprod) || isinf(innerprod))
 		{
 			//m_grad_u->clear();
-			//m_policies[i]->getNaturalGradient(s, a, m_grad_u);
+			//m_policies[i]->getParameterGradient(s, a, m_grad_u);
 
 			cout << "nope\n";
 			cout << "\n\n";

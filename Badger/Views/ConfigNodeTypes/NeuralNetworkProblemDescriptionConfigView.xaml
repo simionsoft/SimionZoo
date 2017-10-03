@@ -1,0 +1,33 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:v="clr-namespace:Badger.Views"
+             xmlns:vm="clr-namespace:Badger.ViewModels"
+             xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.NeuralNetworkProblemDescriptionConfigView"
+             mc:Ignorable="d" 
+d:DesignHeight="50" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
+        <BitmapImage x:Key="folder" UriSource="/images/folder.png" />
+    </UserControl.Resources>
+    <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" VerticalAlignment="Center" Margin="0 2">
+        <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
+                               HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light" >
+            <Label.ContextMenu>
+                <ContextMenu  Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
+                    <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource fork}"></Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Label.ContextMenu>
+        </Label>
+
+        <Button Content="Edit model"
+                cal:Message.Attach="[Event Click]=[Action EditModel()]" Margin="0 2"/>
+    </StackPanel>
+</UserControl>

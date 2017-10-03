@@ -8,11 +8,28 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.IO;
 using System;
+using System.Security.Cryptography;
 
 namespace Badger.Data
 {
     public static class Utility
     {
+        public static byte[] GetHash(string inputString)
+        {
+            HashAlgorithm algorithm = MD5.Create();  //or use SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHash(inputString))
+                sb.Append(b.ToString("X2"));
+
+            return sb.ToString();
+        }
+
+
         //this function is called from several tasks and needs to be synchronized
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static void GetInputsAndOutputs(string exe, string args, ref CJob job)

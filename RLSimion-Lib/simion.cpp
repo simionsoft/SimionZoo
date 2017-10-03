@@ -5,9 +5,11 @@
 #include "controller.h"
 #include "actor-critic.h"
 #include "q-learners.h"
+#include "DQN.h"
 
 std::shared_ptr<CSimion> CSimion::getInstance(CConfigNode* pConfigNode)
 {
+
 	return CHOICE<CSimion>(pConfigNode, "Type", "The Simion class",
 	{
 		{"Controller", CHOICE_ELEMENT_FACTORY<CController>},
@@ -17,6 +19,9 @@ std::shared_ptr<CSimion> CSimion::getInstance(CConfigNode* pConfigNode)
 		{"SARSA", CHOICE_ELEMENT_NEW<CSARSA>},
 		{"Inc-Natural-Actor-Critic", CHOICE_ELEMENT_NEW<CIncrementalNaturalActorCritic>},
 		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<COffPolicyActorCritic>}
+#ifdef _WIN64
+		,{"DQN", CHOICE_ELEMENT_NEW<CDQN>}
+#endif
 	});
 }
 

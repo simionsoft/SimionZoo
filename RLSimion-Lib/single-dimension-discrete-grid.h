@@ -10,10 +10,10 @@ class CConfigNode;
 class CSingleDimensionDiscreteGrid
 {
 protected:
-	DOUBLE_PARAM m_stepSize;
+	INT_PARAM m_numCenters;
 	double *m_pCenters;
 	
-	unsigned int m_numCenters;
+	double m_stepSize;
 	double m_min;
 	double m_max;
 	double m_offset = 0.0;
@@ -26,10 +26,10 @@ public:
 	virtual void initVarRange() = 0;
 	void initCenterPoints();
 
-	int getNumCenters() { return m_numCenters; }
+	int getNumCenters() { return m_numCenters.get(); }
 	double* getCenters() { return m_pCenters; }
 
-	double getStepSize() { return m_stepSize.get(); }
+	int getStepSize() { return m_stepSize; }
 
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures);
 
@@ -48,7 +48,7 @@ class CSingleDimensionDiscreteStateVariableGrid : public CSingleDimensionDiscret
 	STATE_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CSingleDimensionDiscreteStateVariableGrid(int m_hVar, double stepSize);
+	CSingleDimensionDiscreteStateVariableGrid(int m_hVar, int steps);
 	CSingleDimensionDiscreteStateVariableGrid(CConfigNode* pParameters);
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
@@ -61,7 +61,7 @@ class CSingleDimensionDiscreteActionVariableGrid : public CSingleDimensionDiscre
 	ACTION_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CSingleDimensionDiscreteActionVariableGrid(int m_hVar, double stepSize);
+	CSingleDimensionDiscreteActionVariableGrid(int m_hVar, int steps);
 	CSingleDimensionDiscreteActionVariableGrid(CConfigNode* pParameters);
 	double getVarValue(const CState* s, const CAction* a);
 	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);

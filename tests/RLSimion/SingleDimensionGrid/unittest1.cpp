@@ -28,7 +28,7 @@ namespace SingleDimensionGrid
 
 			CState* s= pApp->pWorld->getDynamicModel()->getStateInstance();
 			const int numFeatures = 10;
-			CSingleDimensionStateVariableGrid gridVar1(hVar,numFeatures);
+			CStateVariableGridRBF gridVar1(hVar,numFeatures);
 			CFeatureList* pFeatures = new CFeatureList("test");
 
 			s->set("test-angle", -3.14);

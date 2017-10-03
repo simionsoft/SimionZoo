@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
-		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64",pParameters->getName()))
+		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) || !strcmp("RLSimion-x64-CNTK", pParameters->getName()))
 			pApp = new RLSimionApp(pParameters);
 				
 		if (pApp)

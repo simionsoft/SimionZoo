@@ -229,6 +229,18 @@
     <ClCompile Include="single-dimension-discrete-grid.cpp">
       <Filter>learning</Filter>
     </ClCompile>
+    <ClCompile Include="actor-critic-opdac.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="DQN.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="deep-vfa-policy.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="featuremap-bag.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="parameters-numeric.h">
@@ -421,8 +433,17 @@
     <ClInclude Include="single-dimension-discrete-grid.h">
       <Filter>learning</Filter>
     </ClInclude>
+    <ClInclude Include="DQN.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="deep-vfa-policy.h">
+      <Filter>learning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
