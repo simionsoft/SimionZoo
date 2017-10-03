@@ -12,15 +12,15 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
 
-    <TreeViewItem IsExpanded="True" Margin="-15,0,0,0">
-        <TreeViewItem.Header>
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Background="#e0e0e0">
-                <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Background="#e0e0e0">
+            <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center"
                           Visibility="{Binding Path=IsCheckVisible,Converter={StaticResource BoolToVis}}"
-                          Margin="-5,0,0,0"/>
-                <Label x:Name="Name" FontWeight="Bold" Margin="-5,0,0,0"/>
-            </StackPanel>
-        </TreeViewItem.Header>
-        <ItemsControl x:Name="Forks" Margin="-15,0,0,0" Padding="0"/>
-    </TreeViewItem>
+                          Margin="0"/>
+            <Label x:Name="Name" FontWeight="Bold" Margin="0"/>
+        </StackPanel>
+        <StackPanel Margin="10,0,0,0">
+            <ItemsControl x:Name="Forks" Padding="0"/>
+        </StackPanel>
+    </StackPanel>
 </UserControl>
