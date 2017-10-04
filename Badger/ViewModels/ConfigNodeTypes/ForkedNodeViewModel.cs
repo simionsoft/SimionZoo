@@ -80,7 +80,7 @@ namespace Badger.ViewModels
             set
             {
                 m_alias = value;
-                bIsValid= m_parentExperiment.forkRegistry.Validate(value);
+                bIsValid = m_parentExperiment.forkRegistry.Validate(value);
                 NotifyOfPropertyChange(() => alias);
             }
         }
@@ -92,6 +92,7 @@ namespace Badger.ViewModels
 
             ForkValueViewModel newForkValue = new ForkValueViewModel("Value-0", this, forkedNode);
             children.Add(newForkValue);
+
             selectedForkValue = newForkValue;
 
             m_parentExperiment = parentExperiment;
@@ -322,6 +323,16 @@ namespace Badger.ViewModels
         public override void onRemoved()
         {
             m_parentExperiment.forkRegistry.Remove(this);
+        }
+
+        private BindableCollection<string> m_linkableNodeList
+            = new BindableCollection<string>() { "Ale", "Guerra"};
+
+        public BindableCollection<string> LinkableNodeList
+        {
+            get { return m_linkableNodeList; }
+            set
+            {}
         }
     }
 }

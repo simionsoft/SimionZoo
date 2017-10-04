@@ -26,6 +26,13 @@
                                 <Image Source="{StaticResource fork}"/>
                             </MenuItem.Icon>
                         </MenuItem>
+                        <MenuItem Header="Link this node">
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
+                            </MenuItem.Icon>
+                            <MenuItem Header="Ale"></MenuItem>
+                            <MenuItem Header="Guerra"></MenuItem>
+                        </MenuItem>
                     </ContextMenu>
                 </StackPanel.ContextMenu>
                 <Image  Source="{StaticResource fork}" Width="30"/>
@@ -49,7 +56,8 @@
                                     cal:Message.Attach="[Event Click]=[Action addValue()]">
                     <Image Source="{StaticResource add}"  ToolTip="Add a new value"/>
                 </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked node"
+                <!--ToggleButton Name="LinkForkeNodeButton" Style="{StaticResource BadgerToggleButtonStyle}"
+                              ToolTip="Link with other forked node"
                         Width="40" Height="40">
                     <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
                     <i:Interaction.Triggers>
@@ -59,11 +67,20 @@
                             </cal:ActionMessage>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </Button>
+                </ToggleButton>
+                <Popup IsOpen="{Binding ElementName=LinkForkeNodeButton, Path=IsChecked}"   
+                       PlacementTarget="{Binding ElementName=LinkForkeNodeButton}"
+                       PopupAnimation="Scroll" StaysOpen="False" Placement="Center">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <ListView ItemsSource="{Binding Path = LinkableNodeList}" BorderThickness="0">
+
+                        </ListView>
+                    </ScrollViewer>
+                </Popup-->
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
                                 Opacity="{Binding bIsThereMoreValues}">
-                    <Image Source="{StaticResource remove}"  ToolTip="Remove this value"/>
+                    <Image Source="{StaticResource remove}" ToolTip="Remove this value"/>
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -74,10 +91,10 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <ContentControl x:Name="selectedValueConfigNode"/>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked value"
+                <!--Button Name="myButton" Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked value"
                         Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LinkFork()]">
                     <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
-                </Button>
+                </Button-->
             </StackPanel>
         </StackPanel>
     </Border>

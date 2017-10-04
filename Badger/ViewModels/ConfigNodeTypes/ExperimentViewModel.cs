@@ -226,7 +226,8 @@ namespace Badger.ViewModels
                     foreach (XmlNode child in rootChild.ChildNodes)
                     {
                         //Only EXE, PRE, INCLUDE and BRANCH children nodes
-                        if (child.Name == XMLConfig.exeNodeTag) m_exeFile = child.InnerText;
+                        if (child.Name == XMLConfig.exeNodeTag)
+                            m_exeFile = child.InnerText;
                         else if (child.Name == XMLConfig.preNodeTag)
                         {
                             m_preFiles.Add(child.InnerText);
@@ -250,12 +251,16 @@ namespace Badger.ViewModels
             doDeferredLoadSteps();
         }
 
-        //This constructor builds the whole tree of ConfigNodes either
-        // -with default values ("New")
-        // -with a configuration file ("Load")
+        /// <summary>
+        ///     This constructor builds the whole tree of ConfigNodes either
+        ///         - with default values ("New") or
+        ///         - with a configuration file ("Load")
+        /// </summary>
+        /// <param name="appDefinitionFileName"></param>
+        /// <param name="configFilename"></param>
         public ExperimentViewModel(string appDefinitionFileName, string configFilename)
         {
-            //Load the configFile if a configFilename is provided
+            // Load the configFile if a configFilename is provided
             XmlNode configRootNode = null;
             if (configFilename != null)
             {
