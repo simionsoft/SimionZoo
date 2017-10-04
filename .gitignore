@@ -29,18 +29,10 @@ experiments/*
 [Rr]eleases/
 [Bb]in/*
 **/[Bb]in/*
-!bin/msvcp120.dll
-!bin/msvcr120.dll
-!bin/msvcp140.dll
-!bin/vcruntime140.dll
 x64/
 x86/
 **/Win32/
-!bin/x64/msvcp140.dll
-!bin/x64/vcruntime140.dll
-!bin/FAST_Win32.exe
-!bin/TurbSim.exe
-!bin/MAP_Win32.dll
+
 build/
 bld/
 *.simion.log
@@ -275,3 +267,15 @@ $RECYCLE.BIN/
 *.lnk
 /temp
 
+
+
+# EXE/DLL we need to run distributed experiments. They are versioned to make things easier
+!bin/x64/msvcp140.dll
+!bin/x64/vcruntime140.dll
+!bin/MAP_Win32.dll
+!bin/FAST_Win32.exe
+!bin/TurbSim.exe
+!bin/msvcp120.dll
+!bin/msvcr120.dll
+!bin/msvcp140.dll
+!bin/vcruntime140.dll
