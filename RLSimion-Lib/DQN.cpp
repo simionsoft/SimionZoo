@@ -40,11 +40,11 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 		CLogger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
 
 	m_numberOfActions = m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
-	m_stateVector = std::vector<float>(m_numberOfStateFeatures, 0.0);
-	m_actionValuePredictionVector = std::vector<float>(m_numberOfActions);
+	m_stateVector = std::vector<double>(m_numberOfStateFeatures, 0.0);
+	m_actionValuePredictionVector = std::vector<double>(m_numberOfActions);
 
-	m_minibatchStateVector = std::vector<float>(m_numberOfStateFeatures * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
-	m_minibatchActionValuePredictionVector = std::vector<float>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatchStateVector = std::vector<double>(m_numberOfStateFeatures * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatchActionValuePredictionVector = std::vector<double>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
 
 	m_pMinibatchExperienceTuples = new CExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionTargetValues = new double[m_experienceReplay->getMaxUpdateBatchSize()];
@@ -76,7 +76,7 @@ double CDQN::selectAction(const CState * s, CAction * a)
 		m_stateVector[item.m_index] = item.m_factor;
 	}
 
-	std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", m_stateVector } };
+	std::unordered_map<std::string, std::vector<double>&> inputMap = { { "state-input", m_stateVector } };
 
 	getPredictionNetwork()->predict(inputMap, m_actionValuePredictionVector);
 
@@ -110,7 +110,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 		m_pMinibatchChosenActionIndex[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get()));
 	}
 
-	std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", m_minibatchStateVector } };
+	std::unordered_map<std::string, std::vector<double>&> inputMap = { { "state-input", m_minibatchStateVector } };
 	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
 
 

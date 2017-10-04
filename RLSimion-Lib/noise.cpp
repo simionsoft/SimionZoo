@@ -14,7 +14,7 @@ double getRandomValue()
 	return (double)(rand() + 1) / ((double)RAND_MAX + 1);
 }
 
-int chooseRandomInteger(vector<float>& probability)
+int chooseRandomInteger(vector<double>& probability)
 {
 	int index = 0;
 	double cumProb = 0;
