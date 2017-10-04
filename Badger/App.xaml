@@ -69,9 +69,6 @@
                 M7.41,7.84L12,12.42l4.59,-4.58L18,9.25l-6,6 -6,-6z
             </Geometry>
 
-
-
-
             <cv:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <cv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <cv:InvertedBooleanToVisibilityConverter x:Key="InvertedBooleanToVisibilityConverter" />

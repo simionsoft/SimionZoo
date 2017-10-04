@@ -246,4 +246,5 @@ FunctionPtr CNTKWrapper::Internal::applyActivationFunction(FunctionPtr pInput, A
 	case ActivationFunction::linear:
 		return pInput;
 	}
+	return FunctionPtr(nullptr);
 }

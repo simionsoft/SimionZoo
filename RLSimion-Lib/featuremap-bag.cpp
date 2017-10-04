@@ -19,7 +19,7 @@ CBagActionFeatureMap::CBagActionFeatureMap(CConfigNode* pParameters) : CActionFe
 void CBagStateFeatureMap::getFeatures(const CState* s, CFeatureList* outFeatures)
 {
 	outFeatures->clear();
-	for (int i = 0; i < m_stateVariables.size(); i++)
+	for (size_t i = 0; i < m_stateVariables.size(); i++)
 	{
 		int index = m_stateVariables[i]->get();
 		outFeatures->add(index, s->get(index));
@@ -34,7 +34,7 @@ void CBagStateFeatureMap::getFeatureState(unsigned int feature, CState* s)
 void CBagActionFeatureMap::getFeatures(const CAction* a, CFeatureList* outFeatures)
 {
 	outFeatures->clear();
-	for (int i = 0; i < m_actionVariables.size(); i++)
+	for (size_t i = 0; i < m_actionVariables.size(); i++)
 	{
 		int index = m_actionVariables[i]->get();
 		outFeatures->add(index, a->get(index));

@@ -41,9 +41,11 @@
                     IsEnabled="{Binding CanSaveReports}">
                 <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
             </Button>
+            <StackPanel VerticalAlignment="Center" Visibility="{Binding LogsLoaded,Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
+                <Label Foreground="Red" Width="880" HorizontalContentAlignment="Right">No logs loaded</Label>
+            </StackPanel>
         </StackPanel>
-
-        <Grid Background="#FAFAFA">
+        <Grid Background="#FAFAFA" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
@@ -88,8 +90,7 @@
                 </Border>
                 <GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />
 
-                <Border Grid.Row="2" BorderBrush="DarkGray" BorderThickness="1"
-                        Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
+                <Border Grid.Row="2" BorderBrush="DarkGray" BorderThickness="1">
                     <StackPanel >
                         <!--<Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

@@ -70,7 +70,7 @@ double CDQN::selectAction(const CState * s, CAction * a)
 	CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
 
 	//TODO: use sparse representation
-	for (int i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
+	for (size_t i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
 	{
 		auto item = m_pStateOutFeatures->m_pFeatures[i];
 		m_stateVector[item.m_index] = item.m_factor;
@@ -80,7 +80,7 @@ double CDQN::selectAction(const CState * s, CAction * a)
 
 	getPredictionNetwork()->predict(inputMap, m_actionValuePredictionVector);
 
-	int resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
+	size_t resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
 
 	double actionValue = m_pGrid->getCenters()[resultingActionIndex];
 	a->set(m_outputActionIndex.get(), actionValue);
@@ -140,6 +140,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 		{
 			m_pPredictionNetwork = std::shared_ptr<CNetwork>(m_QNetwork.getNetwork()->cloneNonTrainable());
 		}
+	return 0.0; //TODO: what should we return?
 }
 
 #endif

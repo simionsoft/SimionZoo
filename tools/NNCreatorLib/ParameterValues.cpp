@@ -153,4 +153,5 @@ CIntTuple * CIntTuple::getInstance(tinyxml2::XMLElement * pNode)
 		return CIntTuple3D::getInstance(pNode);
 	else if (!strcmp(type.c_str(), XML_TAG_IntTuple4D))
 		return CIntTuple4D::getInstance(pNode);
+	return nullptr;
 }

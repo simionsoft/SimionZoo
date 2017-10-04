@@ -23,7 +23,7 @@ CActor::~CActor() {}
 void CActor::deferredLoadStep()
 {
 	unsigned int controllerActionIndex, actorActionIndex;
-	unsigned int numWeights;
+	size_t numWeights;
 	IMemBuffer *pWeights;
 	CState* s= CSimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
 	CAction* a= CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();

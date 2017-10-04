@@ -29,7 +29,7 @@ public:
 	int getNumCenters() { return m_numCenters.get(); }
 	double* getCenters() { return m_pCenters; }
 
-	int getStepSize() { return m_stepSize; }
+	double getStepSize() { return m_stepSize; }
 
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures);
 
