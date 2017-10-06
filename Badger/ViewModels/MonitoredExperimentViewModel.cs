@@ -21,6 +21,15 @@ namespace Badger.ViewModels
 
         public List<string> Forks { get; set; }
 
+        public string ExperimentalUnitId
+        {
+            get
+            {
+                if (Forks.Count > 0) return Badger.Data.Utility.ListAsString(Forks);
+                return Name;
+            }
+        }
+
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
         private ExperimentState m_state = ExperimentState.ENQUEUED;

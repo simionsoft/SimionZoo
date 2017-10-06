@@ -31,16 +31,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!--TextBlock x:Name="ExperimentName" IsEnabled="False" Text="{Binding Name}" FontWeight="Bold"
-                           FontFamily="Segoe UI" FontSize="12" VerticalAlignment="Center" /-->
             <StackPanel Grid.Row="0" Grid.Column="0"  Background="Transparent">
-                <ItemsControl ItemsSource="{Binding Forks}"></ItemsControl>
-                <!--BorderThickness="0" FontSize="11">-->
-                <!--<ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="0"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>-->
+                <Label Content="{Binding ExperimentalUnitId}"/>
             </StackPanel>
 
             <TextBlock Grid.Row="1" Grid.Column="0" Foreground="{Binding stateColor}" Text="{Binding stateString}"

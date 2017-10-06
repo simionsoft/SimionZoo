@@ -136,7 +136,6 @@
     <Compile Include="Converters\InvertedBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
-    <Compile Include="Converters\stupidtest.cs" />
     <Compile Include="Data\CaliburnUtility.cs" />
     <Compile Include="Data\DataTrackUtilities.cs" />
     <Compile Include="Data\EnumDescriptionConverter.cs" />

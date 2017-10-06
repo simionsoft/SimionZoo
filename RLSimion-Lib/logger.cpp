@@ -399,7 +399,7 @@ void CLogger::writeLogBuffer(const char* pBuffer, int numBytes)
 {
 	unsigned long numBytesWritten = 0;
 	if (m_logFile)
-		fwrite(pBuffer, 1, numBytes, m_logFile);
+		numBytesWritten= fwrite(pBuffer, 1, numBytes, m_logFile);
 }
 
 

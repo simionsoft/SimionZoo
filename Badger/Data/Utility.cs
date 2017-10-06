@@ -293,6 +293,24 @@ namespace Badger.Data
         }
 
         /// <summary>
+        /// This function returns a list of strings as a single string with the format:
+        /// element1-<paramref name="delimiter"/>-element2-<paramref name="delimiter"/>-...
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="delimiter"/>
+        /// <returns></returns>
+        public static string ListAsString(List<string> list, char delimiter='\n')
+        {
+            string res = "";
+            foreach (string element in list)
+            {
+                res += element + delimiter;
+            }
+            res = res.TrimEnd(delimiter);
+            return res;
+        }
+
+        /// <summary>
         /// This function does some "intelligent" conversions in the input string to try to automatically
         /// adapt it to Oxyplot's math notation
         /// </summary>
