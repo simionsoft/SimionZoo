@@ -77,6 +77,7 @@ protected:
 
 	//state variable indices
 	int m_omega_r, m_d_omega_r;
+	int m_omega_g, m_d_omega_g;
 	int m_E_p, m_T_g, m_beta;
 	int m_E_int_omega_r;
 	//action variable indices

@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
@@ -155,3 +159,5 @@ CIntTuple * CIntTuple::getInstance(tinyxml2::XMLElement * pNode)
 		return CIntTuple4D::getInstance(pNode);
 	return nullptr;
 }
+
+#endif // _WIN64

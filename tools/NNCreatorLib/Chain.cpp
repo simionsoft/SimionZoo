@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#ifdef _WIN64
+
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
@@ -50,3 +52,5 @@ const CLink* CChain::getLinkById(const char * id) const
 
 	return NULL;
 }
+
+#endif

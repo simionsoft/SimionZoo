@@ -135,6 +135,8 @@ CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNod
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_r = pStateDescriptor.getVarIndex("omega_r");
 	m_d_omega_r = pStateDescriptor.getVarIndex("d_omega_r");
+	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
+	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_g");
 	m_E_p = pStateDescriptor.getVarIndex("E_p");
 	m_T_g = pStateDescriptor.getVarIndex("T_g");
 	m_beta = pStateDescriptor.getVarIndex("beta");
@@ -183,6 +185,8 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 
 	double omega_r= s->get(m_omega_r);
 	double d_omega_r= s->get(m_d_omega_r);
+	double omega_g = s->get(m_omega_g);
+	double d_omega_g = s->get(m_d_omega_g);
 
 	double error_P= s->get(m_E_p);
 
@@ -190,14 +194,13 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	
 	double d_T_g;
 	
-	if (omega_r!=0.0) d_T_g= (-1/omega_r)*(T_g*( m_pA.get() *omega_r+d_omega_r) 
+	if (omega_g!=0.0) d_T_g= (-1/omega_g)*(T_g*( m_pA.get() *omega_g+d_omega_g) 
 		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
 	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedRotorSpeed");
 	double beta = 0.5*m_pKP.get()*e_omega_r*(1.0 + sgn(e_omega_r));
-				//+ m_pKI.getSample()*s->getSample("E_int_omega_r");
-			//up there, it should be "E_int_omega_g", which is currently not defined/set
+				+ m_pKI.get()*s->get("E_int_omega_r");
 
 	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
 	a->set(m_a_beta,beta);

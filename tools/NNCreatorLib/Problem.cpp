@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
 #include "Problem.h"
 #include "xmltags.h"
 #include "InputData.h"
@@ -211,3 +214,6 @@ CNetwork * CProblem::createNetwork()
 
 	return result;
 }
+
+
+#endif // _WIN64

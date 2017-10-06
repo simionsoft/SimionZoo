@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
 #include "xmltags.h"
 #include "CNTKLibrary.h"
 
@@ -167,3 +171,5 @@ CLink* CLink::getInstance(tinyxml2::XMLElement* pNode)
 
 	return nullptr;
 }
+
+#endif // _WIN64

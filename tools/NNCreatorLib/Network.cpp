@@ -1,4 +1,9 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
+
 #include "Network.h"
 #include "CNTKWrapper.h"
 #include "OptimizerSetting.h"
@@ -125,3 +130,5 @@ CNetwork* CNetwork::cloneNonTrainable() const
 
 	return result;
 }
+
+#endif // _WIN64
