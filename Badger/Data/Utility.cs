@@ -263,14 +263,15 @@ namespace Badger.Data
             maxLength = Math.Max(4, maxLength);
 
             if (s.Length < maxLength) return s;
-            if (delim == null) return "";
+            if (delim != null)
+            {
 
-            //look for any delimiter: if there's one, just remove everything before it
-            //if s="../experiment/config/jarl.txt" and delim='/', it would return "jarl.txt"
-            int pos = s.LastIndexOfAny(delim);
-            if (pos >= 0)
-                return s.Substring(pos + 1);
-
+                //look for any delimiter: if there's one, just remove everything before it
+                //if s="../experiment/config/jarl.txt" and delim='/', it would return "jarl.txt"
+                int pos = s.LastIndexOfAny(delim);
+                if (pos >= 0)
+                    return s.Substring(pos + 1);
+            }
             //if no delimiter is found, just take the last maxLength-3 characters and prepend "..."
             return "..." + s.Substring((int)( s.Length - maxLength + 3));
         }
@@ -321,9 +322,28 @@ namespace Badger.Data
             //Subscripts
             //E_p => E_{p}
             //E_int_omega_r = E_{int_omega_r}
-            int firstUnderscore = s.IndexOf('_');
-            if (firstUnderscore >= 0)
-                s = s.Substring(0, firstUnderscore + 1) + "{" + s.Substring(firstUnderscore + 1) + "}";
+            //E_p,w_r => E_{p},w_{r}
+            int firstUnderscore, nextDelimiter, nextComma, nextEqual, nextSemicolon, charCount;
+            string underText;
+            
+            firstUnderscore= s.IndexOf('_');
+            while (firstUnderscore >= 0)
+            {
+                nextComma = s.IndexOf(',', firstUnderscore + 1);
+                nextEqual = nextDelimiter = s.IndexOf('=', firstUnderscore + 1);
+                nextSemicolon = nextDelimiter = s.IndexOf(';', firstUnderscore + 1);
+                nextDelimiter = s.Length;
+                if (nextComma >= 0) nextDelimiter= nextComma;
+                if (nextEqual >= 0) nextDelimiter = Math.Min(nextDelimiter,nextEqual);
+                if (nextSemicolon >= 0) nextDelimiter = Math.Min(nextDelimiter, nextSemicolon);
+
+                charCount= nextDelimiter - firstUnderscore - 1;
+                underText = s.Substring(firstUnderscore + 1, charCount);
+                s = s.Substring(0, firstUnderscore + 1) + "{" + underText + "}"
+                    + s.Substring(firstUnderscore+1+charCount);
+                //we skip the last delimiter, the undertext, and the "{" we added
+                firstUnderscore = s.IndexOf('_', firstUnderscore + underText.Length + 2); 
+            }
 
             //Greek characters
             //α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω

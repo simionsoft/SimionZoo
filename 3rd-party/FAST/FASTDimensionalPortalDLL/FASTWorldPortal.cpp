@@ -71,6 +71,9 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	s->set("E_p", (double)FASTdata[13] - m_constants["RatedPower"]);
 
 	//Aerodynamic torque: T_a
+	//TODO:
+	//Use equation in: https://wind.nrel.gov/forum/wind/viewtopic.php?t=961
+	//LSShftTq = T_Aero – J_Rotor*Alpha -> T_Aera= LSShftTq + J_Rotor*Alpha
 	s->set("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->get("P_e") / s->get("omega_g"));
 
 	//Aerodynamic power: P_a

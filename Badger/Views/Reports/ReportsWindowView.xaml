@@ -6,7 +6,7 @@
         xmlns:v="clr-namespace:Badger.Views"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         WindowStyle="ThreeDBorderWindow"
-        Title="Report Viewer" Width="1000" Height="800"
+        Title="Report Viewer" Width="1100" Height="800"
         Background="#eeeeee"
         WindowState="Normal"
         Icon="/badger-head.ico">
@@ -42,7 +42,7 @@
                 <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
             </Button>
             <StackPanel VerticalAlignment="Center" Visibility="{Binding LogsLoaded,Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
-                <Label Foreground="Red" Width="880" HorizontalContentAlignment="Right">No logs loaded</Label>
+                <Label Width="880" HorizontalContentAlignment="Right" Content="{Binding LoadedBatch}"/>
             </StackPanel>
         </StackPanel>
         <Grid Background="#FAFAFA" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">
@@ -52,7 +52,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MinWidth="15" />
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="4*" MinWidth="30" />
+                <ColumnDefinition Width="780" />
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Row="0" Grid.Column="0" Margin="5,5,0,5">
@@ -193,7 +193,8 @@
                         <Label Content="Reports" FontWeight="Medium" HorizontalAlignment="Center" />
                     </StackPanel>
 
-                    <TabControl Margin="0" Padding="0"  Grid.Row="1" x:Name="Reports" SelectedItem="{Binding selectedReport}">
+                    <TabControl Margin="0" Padding="0"  Grid.Row="1" x:Name="Reports"
+                                SelectedItem="{Binding SelectedReport}">
                         <TabControl.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">

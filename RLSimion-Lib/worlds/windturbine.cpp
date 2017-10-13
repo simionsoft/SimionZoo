@@ -147,7 +147,7 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	addStateVariable("E_p", "W", -5e6, 5e6);
 	addStateVariable("v", "m/s", 1.0, 50.0);
 	addStateVariable("omega_r", "rad/s", 0.0, 6.0);
-	addStateVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
+	addStateVariable("d_omega_r", "rad/s^2", -10.0, 10.0);
 	addStateVariable("E_omega_r", "rad/s", -4.0, 4.0);
 	addStateVariable("omega_g", "rad/s", 0.0, 200.0);
 	addStateVariable("d_omega_g", "rad/s^2", -2.0, 2.0);

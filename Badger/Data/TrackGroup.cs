@@ -86,7 +86,8 @@ namespace Badger.Data
                 }
             }
 
-            SetNameFromGroups(groupBy);
+            GroupId = SetNameFromForkValues();
+            //SetNameFromGroups(groupBy);
         }
         void SetNameFromGroups(List<string> groupBy)
         {
@@ -118,14 +119,14 @@ namespace Badger.Data
         string SetNameFromForkValues()
         {
             if (ForkValues.Count == 0) return "N/A";
-            string id = "", shortId;
+            string id = "";
+            double value;
             foreach (KeyValuePair<string, string> entry in ForkValues)
             {
-                //we limit the length of the values
-                shortId = Utility.LimitLength(entry.Key, 10);
-                if (shortId.Length > 0)
-                    id += shortId + "=";
-                id += Utility.LimitLength(entry.Value, 20, valueDelimiters) + ",";
+                //we leave the keys of numeric values and remove the keys of alphanumeric ones
+                if (double.TryParse(entry.Value, out value))
+                    id += Utility.LimitLength(entry.Key, 10) + "=" + entry.Value + ",";
+                else id += entry.Value + ",";
             }
             id = id.Trim(',');
             return id;

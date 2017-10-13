@@ -53,9 +53,9 @@ namespace Utilities
             string res= Utility.OxyPlotMathNotation(original);
             Assert.AreEqual("E_{p}", res);
 
-            original = "E_int_omega_r";
+            original = "E_int_omega_r,E_p";
             res = Utility.OxyPlotMathNotation(original);
-            Assert.AreEqual("E_{int_ω_r}", res);
+            Assert.AreEqual("E_{int_ω_r},E_{p}", res);
 
             original = "KP_alpha";
             res = Utility.OxyPlotMathNotation(original);

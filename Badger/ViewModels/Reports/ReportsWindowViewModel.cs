@@ -10,6 +10,9 @@ namespace Badger.ViewModels
 {
     public class ReportsWindowViewModel : Conductor<Screen>.Collection.OneActive
     {
+        string m_loadedBatch = "No batch has been loaded";
+        public string LoadedBatch { get { return m_loadedBatch; } set { m_loadedBatch = value; NotifyOfPropertyChange(() => LoadedBatch); } }
+                
         public ObservableCollection<ReportViewModel> Reports { get; } = new ObservableCollection<ReportViewModel>();
 
         public ObservableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits { get; } = new ObservableCollection<LoggedExperimentalUnitViewModel>();
@@ -26,13 +29,13 @@ namespace Badger.ViewModels
         //plot selection in tab control
         private ReportViewModel m_selectedReport;
 
-        public ReportViewModel selectedReport
+        public ReportViewModel SelectedReport
         {
             get { return m_selectedReport; }
             set
             {
                 m_selectedReport = value;
-                NotifyOfPropertyChange(() => selectedReport);
+                NotifyOfPropertyChange(() => SelectedReport);
             }
         }
 
@@ -335,7 +338,7 @@ namespace Badger.ViewModels
             }
             if (Reports.Count > 0)
             {
-                selectedReport = Reports[0];
+                SelectedReport = Reports[0];
                 CanSaveReports = true;
             }
         }
@@ -474,6 +477,7 @@ namespace Badger.ViewModels
         public void LoadExperimentBatch(string batchFileName)
         {
             ClearReportViewer();
+            LoadedBatch = batchFileName;
             SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
         }
 
@@ -484,7 +488,9 @@ namespace Badger.ViewModels
         public void Close(ReportViewModel report)
         {
             Reports.Remove(report);
-            selectedReport = null;
+            if (Reports.Count > 0)
+                SelectedReport = Reports[0];
+            else SelectedReport = null;
         }
 
         /// <summary>

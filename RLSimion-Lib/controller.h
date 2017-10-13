@@ -76,13 +76,14 @@ protected:
 	double sgn(double value);
 
 	//state variable indices
-	int m_omega_r, m_d_omega_r;
 	int m_omega_g, m_d_omega_g;
+	int m_omega_r, m_d_omega_r;
 	int m_E_p, m_T_g, m_beta;
 	int m_E_int_omega_r;
 	//action variable indices
 	int m_a_beta, m_a_T_g;
 	double m_ratedPower;
+	double m_genElecEff;
 	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
 	CWindTurbineVidalController(CConfigNode* pConfigNode);
@@ -99,7 +100,7 @@ class CWindTurbineBoukhezzarController : public CController
 {
 protected:
 	//state variable indices
-	int m_omega_r;
+	int m_omega_g;
 	int m_E_p, m_T_a_index, m_T_g;
 	int m_beta;// , m_E_int_omega_r;
 
@@ -122,7 +123,7 @@ public:
 class CWindTurbineJonkmanController : public CController
 {
 protected:
-	int m_omega_r, m_d_omega_r;
+	int m_omega_g, m_d_omega_g;
 	int m_E_p, m_T_g, m_beta;
 	int m_a_beta, m_a_T_g;
 
