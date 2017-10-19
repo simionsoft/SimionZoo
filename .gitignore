@@ -9,7 +9,7 @@
 .vs/*
 .vs
 
-./config/definitions.xml
+config/definitions.xml
 
 # User-specific files
 *.suo
@@ -30,6 +30,8 @@ experiments/*
 [Bb]in/*
 **/[Bb]in/*
 x64/
+!bin/x64
+bin/x64/**
 x86/
 **/Win32/
 
@@ -37,7 +39,7 @@ build/
 bld/
 *.simion.log
 *.simion.log.bin
-config/definitions.xml
+
 tmp/
 
 [Oo]bj/
