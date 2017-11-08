@@ -84,6 +84,7 @@ protected:
 	int m_a_beta, m_a_T_g;
 	double m_ratedPower;
 	double m_genElecEff;
+	double m_lastT_g = 0.0;
 	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
 	CWindTurbineVidalController(CConfigNode* pConfigNode);
@@ -109,6 +110,7 @@ protected:
 	
 	DOUBLE_PARAM m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
+	double m_lastT_g = 0.0;
 public:
 	CWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineBoukhezzarController();

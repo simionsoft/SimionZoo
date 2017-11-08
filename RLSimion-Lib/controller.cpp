@@ -194,18 +194,23 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	double T_g= s->get(m_T_g);
 	
 	double d_T_g;
+	//this is now fixed in FASTWorldPortal
+	//double sign_error_P = sgn(T_g*omega_g*m_genElecEff - m_ratedPower*m_genElecEff);
 	
-	if (omega_g!=0.0) d_T_g= (-1/(omega_g*m_genElecEff))*(T_g*m_genElecEff*( m_pA.get() *omega_g+d_omega_g) 
-		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
+	if (omega_g != 0.0) d_T_g = (-1 / (omega_g*m_genElecEff))*(m_lastT_g*m_genElecEff*(m_pA.get() *omega_g + d_omega_g)
+		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));//*sign_error_P);
 	else d_T_g= 0.0;
 
-	double e_omega_r = omega_r - CWorld::getDynamicModel()->getConstant("RatedRotorSpeed");
-	double beta = 0.5*m_pKP.get()*e_omega_r*(1.0 + sgn(e_omega_r));
-				+ m_pKI.get()*s->get("E_int_omega_r");
-	double lastBeta = s->get("beta");
+	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
+	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0 + sgn(e_omega_g))
+				+ m_pKI.get()*s->get("E_int_omega_g");
+
+	beta = std::min(a->getProperties("beta").getMax(), std::max(beta, a->getProperties("beta").getMin()));
 	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
 	a->set(m_a_beta,beta);
-	a->set(m_a_T_g,T_g + d_T_g* CSimionApp::get()->pWorld->getDT());
+	double nextT_g = m_lastT_g + d_T_g* CSimionApp::get()->pWorld->getDT();
+	a->set(m_a_T_g,nextT_g);
+	m_lastT_g = nextT_g;
 
 	return 1.0;
 }
@@ -263,20 +268,24 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 
 	double omega_g= s->get(m_omega_g);
 	double C_0= m_pC_0.get();		
-	double error_P= -s->get(m_E_p);	
+	double error_P= -s->get(m_E_p);
 	double T_a= s->get(m_T_a_index);		
 
-	double T_g= s->get(m_T_g);	
+	//double T_g= s->get(m_T_g);	
 	double beta= s->get(m_beta);	
 	
-	double d_T_g= (1.0/omega_g)*(C_0*error_P - (T_a*T_g + m_K_t*omega_g*T_g - T_g*T_g) / m_J_t );
+	//Boukhezzar controller without substituting d_omega_g
+	double d_T_g= (1.0/omega_g)*(C_0*error_P - (T_a*m_lastT_g - m_K_t*omega_g*m_lastT_g 
+		- m_lastT_g *m_lastT_g) / m_J_t );
 	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
 
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
 	double desiredBeta = m_pKP.get()*e_omega_g +m_pKI.get()*s->get("E_int_omega_r");
 
 	a->set(m_a_beta,desiredBeta);
-	a->set(m_a_T_g,T_g + d_T_g*CSimionApp::get()->pWorld->getDT());
+	double nextT_g = m_lastT_g + d_T_g*CSimionApp::get()->pWorld->getDT();
+	a->set(m_a_T_g, nextT_g);
+	m_lastT_g = nextT_g;
 
 	return 1.0;
 }
