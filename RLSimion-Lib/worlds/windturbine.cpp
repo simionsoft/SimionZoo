@@ -134,8 +134,8 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	addConstant("GearBoxRatio", 97.0);
 	addConstant("ElectricalGeneratorEfficiency", 0.944); //%94.4
 	addConstant("TotalTurbineInertia", 43784725); //J_t= J_r + n_g^2*J_g= 38759228 + 5025497 
-	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
-	addConstant("HubInertia", 115926.0);				//kg*m^2
+	addConstant("GeneratorInertia", 534.116);			//kg*m^2
+	addConstant("HubInertia", 115.926);				//kg*m^2
 	addConstant("TotalTurbineTorsionalDamping", 3470794.95); //N*m/(rad/s)
 	addConstant("RotorDiameter", 128.0); //m
 	addConstant("AirDensity", 1.225);	//kg/m^3
@@ -230,6 +230,7 @@ void CWindTurbine::reset(CState *s)
 	s->set("T_g", getConstant("RatedGeneratorTorque"));
 	s->set("d_T_g",0.0);
 	s->set("E_int_omega_r", 0.0);
+	s->set("E_int_omega_g", 0.0);
 }
 
 

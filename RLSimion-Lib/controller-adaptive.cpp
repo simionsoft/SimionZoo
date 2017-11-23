@@ -75,8 +75,6 @@ double CExtendedWindTurbineVidalController::update(const CState *s, const CActio
 
 
 //Extended version of the Boukhezzar controller
-
-
 CExtendedWindTurbineBoukhezzarController::CExtendedWindTurbineBoukhezzarController(CConfigNode* pConfigNode)
 	:CWindTurbineBoukhezzarController(pConfigNode)
 {
@@ -128,6 +126,48 @@ double CExtendedWindTurbineBoukhezzarController::update(const CState *s, const C
 
 	m_pC0Learner->update(s, a, s_p, r, td);
 	m_pKPLearner->update(s, a, s_p, r, td);
+
+	return 1.0;
+}
+
+
+//Extended version of the Jonkman controller
+CExtendedWindTurbineJonkmanController::CExtendedWindTurbineJonkmanController(CConfigNode* pConfigNode)
+	:CWindTurbineJonkmanController(pConfigNode)
+{
+	CDynamicModel* pWorld = CSimionApp::get()->pWorld->getDynamicModel();
+	CDescriptor& pActionDescriptor = pWorld->getActionDescriptor();
+	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic used to learn");
+	//KP parameter
+	m_pPC_KP_Learner = CHILD_OBJECT_FACTORY<CPolicyLearner>(pConfigNode, "K_P-learner", "The learner used for Jonkman controller's parameter KP");
+	m_KPActionId = pWorld->addActionVariable("K_P", "unitless", 0.0, 100.0);
+	m_pPC_KP_Learner->getPolicy()->setOutputActionIndex(m_KPActionId);
+	m_pPC_KP_Learner->getPolicy()->getDetPolicyStateVFA()->setInitValue(m_PC_KP.get());
+	m_pPC_KP_Learner->getPolicy()->getDetPolicyStateVFA()->saturateOutput(
+		pActionDescriptor[m_KPActionId].getMin()
+		, pActionDescriptor[m_KPActionId].getMax());
+	m_pPC_KP_Learner->getPolicy()->getDetPolicyStateVFA()->setCanUseDeferredUpdates(false);
+}
+
+CExtendedWindTurbineJonkmanController::~CExtendedWindTurbineJonkmanController()
+{}
+
+double CExtendedWindTurbineJonkmanController::selectAction(const CState *s, CAction *a)
+{
+	//KP= f_kp(v)
+	m_pPC_KP_Learner->getPolicy()->selectAction(s, a);
+	m_PC_KP.set(a->get(m_pPC_KP_Learner->getPolicy()->getOutputActionIndex()));
+
+	CWindTurbineJonkmanController::selectAction(s, a);
+
+	return 1.0;
+}
+
+double CExtendedWindTurbineJonkmanController::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProbability)
+{
+	double td = m_pCritic->update(s, a, s_p, r);
+
+	m_pPC_KP_Learner->update(s, a, s_p, r, td);
 
 	return 1.0;
 }

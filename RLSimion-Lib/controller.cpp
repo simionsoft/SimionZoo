@@ -16,9 +16,10 @@ std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 		{"PID",CHOICE_ELEMENT_NEW<CPIDController>},
 		{"LQR",CHOICE_ELEMENT_NEW<CLQRController>},
 		{"Jonkman",CHOICE_ELEMENT_NEW<CWindTurbineJonkmanController>},
+		{"Extended-Jonkman",CHOICE_ELEMENT_NEW<CExtendedWindTurbineJonkmanController>},
 		{"Vidal",CHOICE_ELEMENT_NEW<CWindTurbineVidalController>},
-		{"Boukhezzar",CHOICE_ELEMENT_NEW<CWindTurbineBoukhezzarController>},
 		{"Extended-Vidal",CHOICE_ELEMENT_NEW<CExtendedWindTurbineVidalController>},
+		{"Boukhezzar",CHOICE_ELEMENT_NEW<CWindTurbineBoukhezzarController>},
 		{"Extended-Boukhezzar",CHOICE_ELEMENT_NEW<CExtendedWindTurbineBoukhezzarController>}
 	});
 }
@@ -179,7 +180,10 @@ double CWindTurbineVidalController::sgn(double value)
 
 double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 {
-	//f(omega_g,T_g,d_omega_g,E_p, E_int_omega_r)
+	bool evaluation = CSimionApp::get()->pExperiment->isEvaluationEpisode();
+	//initialise m_lastT_g if we have to, controllers don't implement reset()
+	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
+		m_lastT_g = 0.0;
 
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
@@ -231,12 +235,17 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* 
 
 	m_J_t = CWorld::getDynamicModel()->getConstant("TotalTurbineInertia");
 	m_K_t = CWorld::getDynamicModel()->getConstant("TotalTurbineTorsionalDamping");
+	m_genElecEff = CWorld::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
+
 	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
 	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
+	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_g");
 	m_E_p = pStateDescriptor.getVarIndex("E_p");
 	m_T_g = pStateDescriptor.getVarIndex("T_g");
 	m_T_a_index = pStateDescriptor.getVarIndex("T_a");
 	m_beta = pStateDescriptor.getVarIndex("beta");
+	m_d_T_g = pStateDescriptor.getVarIndex("d_T_g");
+	m_E_int_omega_g = pStateDescriptor.getVarIndex("E_int_omega_g");
 
 	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
 
@@ -263,24 +272,31 @@ int CWindTurbineBoukhezzarController::getOutputActionIndex(int output)
 
 double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
 {
+	//initialise m_lastT_g if we have to, controllers don't implement reset()
+	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
+		m_lastT_g = 0.0;
+
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
+	//Original expression in Boukhezzar's paper:
+	//double d_T_g= (1.0/omega_g)*(m_pC_0.get()*error_P - (T_a*m_lastT_g - m_K_t*omega_g*m_lastT_g 
+	//	- m_lastT_g *m_lastT_g) / m_J_t );
 
 	double omega_g= s->get(m_omega_g);
-	double C_0= m_pC_0.get();		
-	double error_P= -s->get(m_E_p);
+	double d_omega_g = s->get(m_d_omega_g);	
 	double T_a= s->get(m_T_a_index);		
-
-	//double T_g= s->get(m_T_g);	
-	double beta= s->get(m_beta);	
 	
-	//Boukhezzar controller without substituting d_omega_g
-	double d_T_g= (1.0/omega_g)*(C_0*error_P - (T_a*m_lastT_g - m_K_t*omega_g*m_lastT_g 
-		- m_lastT_g *m_lastT_g) / m_J_t );
-	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
+	double beta= s->get(m_beta);
+	double E_p = s->get(m_E_p);
+	double P_e = s->get("P_e");
+	
+	//Boukhezzar controller without making substitution: d_T_g= (-1/omega_g)(d_omega_g*T_g+C_0*Ep)
+	double d_T_g = (-1.0/(omega_g*m_genElecEff))*(d_omega_g*m_lastT_g*m_genElecEff+m_pC_0.get()*s->get(m_E_p));
+
+	d_T_g = std::min(std::max(s->getProperties(m_d_T_g).getMin(), d_T_g), s->getProperties(m_d_T_g).getMax());
 
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
-	double desiredBeta = m_pKP.get()*e_omega_g +m_pKI.get()*s->get("E_int_omega_r");
+	double desiredBeta = m_pKP.get()*e_omega_g +m_pKI.get()*s->get(m_E_int_omega_g);
 
 	a->set(m_a_beta,desiredBeta);
 	double nextT_g = m_lastT_g + d_T_g*CSimionApp::get()->pWorld->getDT();

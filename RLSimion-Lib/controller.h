@@ -101,9 +101,9 @@ class CWindTurbineBoukhezzarController : public CController
 {
 protected:
 	//state variable indices
-	int m_omega_g;
-	int m_E_p, m_T_a_index, m_T_g;
-	int m_beta;// , m_E_int_omega_r;
+	int m_omega_g, m_d_omega_g;
+	int m_E_p, m_T_a_index, m_T_g, m_d_T_g;
+	int m_beta, m_E_int_omega_g;
 
 	//action variable indices
 	int m_a_beta, m_a_T_g;
@@ -111,6 +111,7 @@ protected:
 	DOUBLE_PARAM m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
 	double m_lastT_g = 0.0;
+	double m_genElecEff;
 public:
 	CWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineBoukhezzarController();

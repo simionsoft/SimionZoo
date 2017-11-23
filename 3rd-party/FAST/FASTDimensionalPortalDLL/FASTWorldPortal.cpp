@@ -68,8 +68,8 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 
 	//Measured electrical power: P_e
 	//Fix to an error preventing the correct measured power to be sent to the controller
-	s->set("P_e", s->get("T_g")*s->get("omega_g")*m_constants["ElectricalGeneratorEfficiency"];
-	//s->set("P_e", (double)FASTdata[13]);
+	//s->set("P_e", s->get("T_g")*s->get("omega_g")*m_constants["ElectricalGeneratorEfficiency"];
+	s->set("P_e", (double)FASTdata[13]);
 
 	//Power error: E_p
 	s->set("E_p", s->get("P_e") - m_constants["RatedPower"]);
