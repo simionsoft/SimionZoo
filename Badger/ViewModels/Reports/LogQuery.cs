@@ -186,7 +186,7 @@ namespace Badger.ViewModels
                 foreach (LoggedExperimentalUnitViewModel expUnit in exp.ExperimentalUnits)
                 {
                     //take selection into account? is this exp. unit selected?
-                    if (!UseForkSelection || (UseForkSelection && expUnit.bIsSelected))
+                    if (!UseForkSelection || (UseForkSelection && expUnit.IsSelected))
                     {
                         if (groupBy.Count != 0)
                         {

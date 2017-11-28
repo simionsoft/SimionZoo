@@ -199,15 +199,9 @@ void CWindTurbine::reset(CState *s)
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
 
-	double initial_wind_speed = getConstant("RatedWindSpeed");// m_pCurrentWindData->getPointSet(0.0);
+	double initial_wind_speed = getConstant("RatedWindSpeed");
 	double initial_rotor_speed= getConstant("RatedRotorSpeed");
 	double initial_blade_angle= 0.0;
-
-//	CLogger::logMessage(Info,"Calculating initial torque and blade angle parameters...");
-//	findSuitableParameters(initial_wind_speed,initial_rotor_speed,initial_blade_angle);
-//	char msg[128];
-//	sprintf_s(msg,"T_g= %f     //    Beta= %f",m_initial_torque,m_initial_blade_angle);
-//	CLogger::logMessage(Info, msg);
 
 	double tsr= initial_rotor_speed*getConstant("RotorDiameter")*0.5/initial_wind_speed;
 

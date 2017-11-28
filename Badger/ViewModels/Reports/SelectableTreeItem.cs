@@ -7,13 +7,13 @@ namespace Badger.ViewModels
     {
         private bool m_bIsSelected = true;
 
-        public bool bIsSelected
+        public bool IsSelected
         {
             get { return m_bIsSelected; }
             set
             {
-                m_bIsSelected = value; NotifyOfPropertyChange(() => bIsSelected);
-                TraverseAction(false, (element) => { element.bIsSelected = value; });
+                m_bIsSelected = value; NotifyOfPropertyChange(() => IsSelected);
+                TraverseAction(false, (element) => { element.IsSelected = value; });
             }
         }
 
