@@ -69,7 +69,13 @@
                 </StackPanel>
             </GroupBox>
         </Grid>
-        <GroupBox Grid.Column="1" Header="Tracks" Padding="3">
+        <GroupBox Grid.Column="1" Padding="3">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Tracks"/>
+                    <CheckBox x:Name="AllTracksSelected" VerticalAlignment="Center"/>
+                </StackPanel>
+            </GroupBox.Header>
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl x:Name="LineSeriesProperties"/>
             </ScrollViewer>

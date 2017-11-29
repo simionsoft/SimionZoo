@@ -16,7 +16,20 @@ namespace Badger.ViewModels
          * -[color, thickness,...]
          */
 
-        //per-line series properties
+        //all-track selection 
+        private bool m_bAllTracksSelected = true;
+        public bool AllTracksSelected
+        {
+            get { return m_bAllTracksSelected; }
+            set
+            {
+                m_bAllTracksSelected = value;
+                NotifyOfPropertyChange(() => AllTracksSelected);
+                foreach (PlotLineSeriesPropertiesViewModel trackProperties in m_lineSeriesProperties)
+                    trackProperties.Visible = value;
+            }
+        }
+        //per-track series properties
         private BindableCollection<PlotLineSeriesPropertiesViewModel> m_lineSeriesProperties
             = new BindableCollection<PlotLineSeriesPropertiesViewModel>();
 
