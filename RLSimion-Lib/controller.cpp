@@ -183,7 +183,7 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	bool evaluation = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
 	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
-		m_lastT_g = 0.0;
+		m_lastT_g = s->get(m_T_g);
 
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
@@ -198,11 +198,9 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	double T_g= s->get(m_T_g);
 	
 	double d_T_g;
-	//this is now fixed in FASTWorldPortal
-	//double sign_error_P = sgn(T_g*omega_g*m_genElecEff - m_ratedPower*m_genElecEff);
 	
 	if (omega_g != 0.0) d_T_g = (-1 / (omega_g*m_genElecEff))*(m_lastT_g*m_genElecEff*(m_pA.get() *omega_g + d_omega_g)
-		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));//*sign_error_P);
+		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
 	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
@@ -274,7 +272,7 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 {
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
 	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
-		m_lastT_g = 0.0;
+		m_lastT_g = s->get(m_T_g);
 
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
@@ -385,7 +383,6 @@ double CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	{
 		lowPassFilterAlpha= 1.0;
 		m_GenSpeedF= s->get(m_omega_g);
-		m_lastDemandedPitch = s->get(m_beta);
 		m_IntSpdErr = 0.0;
 	}
 	else

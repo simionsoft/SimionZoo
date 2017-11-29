@@ -142,7 +142,6 @@ protected:
 	double m_IntSpdErr;
 	DOUBLE_PARAM m_PC_KK, m_PC_KP, m_PC_KI;
 	DOUBLE_PARAM m_PC_RefSpd;
-	double m_lastDemandedPitch;
 public:
 	CWindTurbineJonkmanController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineJonkmanController();
