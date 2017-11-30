@@ -183,7 +183,7 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 	bool evaluation = CSimionApp::get()->pExperiment->isEvaluationEpisode();
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
 	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
-		m_lastT_g = s->get(m_T_g);
+		m_lastT_g = 0.0;
 
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
 	//beta= K_p*(omega_ref - omega_g) + K_i*(error_integral)
@@ -272,7 +272,7 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 {
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
 	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
-		m_lastT_g = s->get(m_T_g);
+		m_lastT_g = 0.0;// CSimionApp::get()->pWorld->getDynamicModel()->getConstant("RatedGeneratorTorque");
 
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
