@@ -16,7 +16,7 @@
 
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type local:EnumerationManager}" x:Key="PlotTypeDataProvider">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="local:PlotType" />
+                <x:Type TypeName="local:ReportType" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>

@@ -79,20 +79,20 @@ namespace Badger.ViewModels
             {
                 switch(report.Type)
                 {
-                    case PlotType.LastEvaluation:
+                    case ReportType.LastEvaluation:
                         EpisodesData lastEpisode = Log.EvaluationEpisodes[Log.EvaluationEpisodes.Count - 1];
                         dataSeries = new SeriesGroup(report);
                         dataSeries.AddSeries(Log.GetEpisodeData(lastEpisode, report));
                         track.AddVariableData(report, dataSeries);
                         break;
-                    case PlotType.EvaluationAverages:
+                    case ReportType.EvaluationAverages:
                         track.AddVariableData(report, Log.GetAveragedData(Log.EvaluationEpisodes, report));
                         break;
-                    case PlotType.AllEvaluationEpisodes:
-                    case PlotType.AllTrainingEpisodes:
+                    case ReportType.AllEvaluationEpisodes:
+                    case ReportType.AllTrainingEpisodes:
                         dataSeries = new SeriesGroup(report);
                         List<EpisodesData> episodes;
-                        if (report.Type == PlotType.AllEvaluationEpisodes)
+                        if (report.Type == ReportType.AllEvaluationEpisodes)
                             episodes = Log.EvaluationEpisodes;
                         else episodes = Log.TrainingEpisodes;
                         foreach(EpisodesData episode in episodes)

@@ -29,9 +29,11 @@ namespace Badger.Simion
     public class Report
     {
         public string Variable;
-        public PlotType Type;
+        public ReportType Type;
         public string ProcessFunc;
-        public Report(string varName, PlotType type, string processFunc)
+        public bool Resample = false;
+        public int NumSamples= 0;
+        public Report(string varName, ReportType type, string processFunc)
         {
             Type = type;
             ProcessFunc = processFunc;
@@ -94,7 +96,32 @@ namespace Badger.Simion
 
             Stats.stdDev = Math.Sqrt(sum / Values.Count);
         }
-
+        double Sample(double x)
+        {
+            int i = 1;
+            while (i < Values.Count - 1 && Values[i].X < x) i++;
+            double x0 = Values[i - 1].X;
+            double y0 = Values[i - 1].Y;
+            double x1 = Values[i].X;
+            double y1 = Values[i].Y;
+            double slope = (y1 - y0) / (x1 - x0);
+            return y0 + slope*(x-x0);
+        }
+        public void Resample(int numSamples)
+        {
+            List<XYValue> resampled = new List<XYValue>(numSamples);
+            double minX = Values[0].X;
+            double maxX = Values[Values.Count - 1].X;
+            double pointDist = (maxX - minX) / (double)(numSamples - 1);
+            for (int sample= 0; sample<numSamples; sample++)
+            {
+                double x = minX + sample * pointDist;
+                double y = Sample(x);
+                XYValue newSample = new XYValue(x,y);
+                resampled.Add(newSample);
+            }
+            Values= resampled;
+        }
     }
 
     /// <summary>

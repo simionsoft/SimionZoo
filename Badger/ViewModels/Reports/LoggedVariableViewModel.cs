@@ -21,18 +21,18 @@ namespace Badger.ViewModels
             m_selectedPlotTypes.CollectionChanged += M_selectedPlotTypes_CollectionChanged;
 
             EnumDescriptionConverter conv = new EnumDescriptionConverter();
-            SelectedPlotTypes.Add((string)((IValueConverter)conv).Convert(PlotType.LastEvaluation,typeof(PlotType),null, CultureInfo.CurrentCulture));
+            SelectedPlotTypes.Add((string)((IValueConverter)conv).Convert(ReportType.LastEvaluation,typeof(ReportType),null, CultureInfo.CurrentCulture));
         }
 
         private void M_selectedPlotTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             NotifyOfPropertyChange(() => SelectedPlotTypes);
             NotifyOfPropertyChange(() => PlaceHolderText);
-            SelectedPlotType = PlotType.Undefined;
+            SelectedPlotType = ReportType.Undefined;
             EnumDescriptionConverter conv = new EnumDescriptionConverter();
             foreach (var item in m_selectedPlotTypes)
             {
-                SelectedPlotType |= (PlotType)((IValueConverter)conv).ConvertBack(item, typeof(PlotType), null, CultureInfo.CurrentCulture);
+                SelectedPlotType |= (ReportType)((IValueConverter)conv).ConvertBack(item, typeof(ReportType), null, CultureInfo.CurrentCulture);
             }
         }
 
@@ -75,8 +75,8 @@ namespace Badger.ViewModels
             }
         }
 
-        private PlotType m_selectedPlotType;
-        public PlotType SelectedPlotType
+        private ReportType m_selectedPlotType;
+        public ReportType SelectedPlotType
         {
             get { return m_selectedPlotType; }
             set

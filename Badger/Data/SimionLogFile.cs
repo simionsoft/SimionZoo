@@ -61,6 +61,8 @@ namespace Badger.Simion
                 data.AddValue(step.episodeSimTime
                     , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
             data.CalculateStats(trackParameters);
+            if (trackParameters.Resample)
+                data.Resample(trackParameters.NumSamples);
             return data;
         }
         public double GetEpisodeAverage(Dictionary<string, int> variablesInLog, Report trackParameters)
@@ -241,6 +243,8 @@ namespace Badger.Simion
                     , episode.GetEpisodeAverage(VariableIndices, trackParameters));
             }
             xYSeries.CalculateStats(trackParameters);
+            if (trackParameters.Resample)
+                xYSeries.Resample(trackParameters.NumSamples);
             data.AddSeries(xYSeries);
             return data;
         }

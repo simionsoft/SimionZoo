@@ -38,8 +38,31 @@ namespace Badger.ViewModels
             else return -1;
         }
     }
+    public class TrackGroupComparer : IComparer<TrackGroup>
+    {
+        string m_varName;
+        bool m_bAsc;
+        public TrackGroupComparer(bool asc, string varName)
+        {
+            m_bAsc = asc;
+            m_varName = varName;
+        }
+        public int Compare(TrackGroup x, TrackGroup y)
+        {
+            SeriesGroup variableDataX = x.ConsolidatedTrack.GetDataSeriesForOrdering(m_varName);
+            if (variableDataX == null) return -1;
+            SeriesGroup variableDataY = y.ConsolidatedTrack.GetDataSeriesForOrdering(m_varName);
+            if (variableDataY == null) return 1;
+            if ((m_bAsc && variableDataX.MainSeries.Stats.avg >= variableDataY.MainSeries.Stats.avg)
+                || (!m_bAsc && variableDataX.MainSeries.Stats.avg <= variableDataY.MainSeries.Stats.avg))
+                return 1;
+            return -1;
+        }
+    }
     public class LogQuery : PropertyChangedBase
     {
+        public bool ResampleData= false;
+        public int ResamplingNumPoints = 0;
         public const string functionMax = "Max";
         public const string functionMin = "Min";
 
@@ -129,7 +152,7 @@ namespace Badger.ViewModels
             return list;
         }
 
-        private TrackGroup GetTrack(Dictionary<string, string> forkValues)
+        private TrackGroup GetTrackGroup(Dictionary<string, string> forkValues)
         {
             uint numMatchedForks;
             foreach (TrackGroup resultTrack in ResultTracks)
@@ -165,7 +188,7 @@ namespace Badger.ViewModels
 
             //add all selected variables to the list of variables
             foreach (LoggedVariableViewModel variable in loggedVariablesVM)
-                if ( variable.IsSelected )
+                if (variable.IsSelected)
                     variables.Add(variable.name);
 
             Reports = DataTrackUtilities.FromLoggedVariables(loggedVariablesVM);
@@ -173,12 +196,19 @@ namespace Badger.ViewModels
             //if the in-group selection function requires a variable not selected for the report
             //we add it too to the list of variables read from the log
             if (inGroupSelectionVariable != "" && !variables.Contains(inGroupSelectionVariable))
-                Reports.Add(new Report(inGroupSelectionVariable, PlotType.LastEvaluation, ProcessFunc.None));
+                Reports.Add(new Report(inGroupSelectionVariable, ReportType.LastEvaluation, ProcessFunc.None));
 
             //if we use some sorting function to select only some tracks, we need to add the variable
             // to the list too
             if (limitToOption != noLimitOnResults && !variables.Contains(orderByVariable))
-                Reports.Add(new Report(orderByVariable, PlotType.LastEvaluation, ProcessFunc.None));
+                Reports.Add(new Report(orderByVariable, ReportType.LastEvaluation, ProcessFunc.None));
+
+            //set the data resampling options
+            foreach (Report report in Reports)
+            {
+                report.Resample = ResampleData;
+                report.NumSamples = ResamplingNumPoints;
+            }
 
             //traverse the experimental units within each experiment
             foreach (LoggedExperimentViewModel exp in experiments)
@@ -190,7 +220,7 @@ namespace Badger.ViewModels
                     {
                         if (groupBy.Count != 0)
                         {
-                            resultTrackGroup = GetTrack(expUnit.forkValues);
+                            resultTrackGroup = GetTrackGroup(expUnit.forkValues);
                             if (resultTrackGroup != null)
                             {
                                 //the track exists and we are using forks to group results
@@ -199,7 +229,7 @@ namespace Badger.ViewModels
                                     resultTrackGroup.AddTrackData(trackData);
                             }
                         }
-                        if (resultTrackGroup == null) //New track
+                        if (resultTrackGroup == null) //New track group
                         {
                             //No groups (each experimental unit is a track) or the track doesn't exist
                             //Either way, we create a new track
@@ -247,28 +277,8 @@ namespace Badger.ViewModels
 
                 if (ResultTracks.Count > numMaxTracks)
                 {
-                    SortedList<double, TrackGroup> sortedList;
-
-                    if (orderByFunction == functionMin)
-                        sortedList = new SortedList<double, TrackGroup>(ResultTracks.Count
-                            , new AscComparer());
-                    else // (orderByFunction == orderDesc)
-                        sortedList = new SortedList<double, TrackGroup>(ResultTracks.Count
-                            , new DescComparer());
-
-                    foreach (TrackGroup group in ResultTracks)
-                    {
-                        double sortValue = 0.0;
-                        SeriesGroup variableData = group.ConsolidatedTrack.GetDataSeriesForOrdering(orderByVariable);
-                        if (variableData != null)
-                            sortValue = variableData.MainSeries.Stats.avg;
-                        sortedList.Add(sortValue, group);
-                    }
-
-                    //set the sorted list as resultTracks
-                    ResultTracks.Clear();
-                    for (int i = 0; i < numMaxTracks; i++)
-                        ResultTracks.Add(sortedList.Values[i]);
+                    m_resultTracks.Sort(new TrackGroupComparer(orderByFunction == functionMin, orderByVariable));
+                    ResultTracks.RemoveRange(numMaxTracks, m_resultTracks.Count - numMaxTracks);
                 }
             }
         }

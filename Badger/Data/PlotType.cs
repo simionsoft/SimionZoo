@@ -3,7 +3,7 @@
 
 namespace Badger.Data
 {
-    public enum PlotType
+    public enum ReportType
     {
         [Browsable(false)]
         Undefined = 0,

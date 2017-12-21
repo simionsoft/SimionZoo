@@ -19,7 +19,19 @@ namespace Badger.ViewModels
 
         private bool m_bCanGenerateReports;
 
-
+        private bool m_bResampleData = true;
+        public bool ResampleData { get { return m_bResampleData; } set { m_bResampleData = value;NotifyOfPropertyChange(() => ResampleData); } }
+        private int m_ResamplingNumPoints = 100;
+        public string ResamplingNumPoints
+        {
+            get { return m_ResamplingNumPoints.ToString(); }
+            set
+            {
+                if (int.TryParse(value, out m_ResamplingNumPoints))
+                    NotifyOfPropertyChange(() => ResamplingNumPoints);
+                else CaliburnUtility.ShowWarningDialog("Error", "Wrong input: needs to be an integer number");
+            }
+        }
         public bool CanGenerateReports
         {
             get { return m_bCanGenerateReports; }
@@ -327,6 +339,11 @@ namespace Badger.ViewModels
                 query.orderByFunction = selectedOrderByFunction;
                 query.orderByVariable = selectedOrderByVariable;
             }
+
+            //set resampling parametres
+            query.ResampleData = ResampleData;
+            if (ResampleData)
+                query.ResamplingNumPoints = int.Parse(ResamplingNumPoints);
 
             // Execute the query
             query.Execute(LoggedExperiments, Variables);

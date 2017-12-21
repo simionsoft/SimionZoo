@@ -15,9 +15,9 @@ namespace Badger.Data
             {
                 if (variable.IsSelected)
                 {
-                    foreach (PlotType type in Enum.GetValues(typeof(PlotType)))
+                    foreach (ReportType type in Enum.GetValues(typeof(ReportType)))
                     {
-                        if ((type & variable.SelectedPlotType) != PlotType.Undefined)
+                        if ((type & variable.SelectedPlotType) != ReportType.Undefined)
                         {
                             Report trackParameters = new Report(variable.name
                                 , type, variable.SelectedProcessFunc);

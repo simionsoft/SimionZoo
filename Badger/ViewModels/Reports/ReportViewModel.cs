@@ -80,7 +80,7 @@ namespace Badger.ViewModels
             }
         }
 
-        private PlotType GetVariableReportType(LogQuery query, string variable)
+        private ReportType GetVariableReportType(LogQuery query, string variable)
         {
             //TODO: this only returns the first report type for that variable
             //This should be improved
@@ -89,7 +89,7 @@ namespace Badger.ViewModels
                 if (var.name == variable)
                     return var.SelectedPlotType;
             }
-            return PlotType.Undefined;
+            return ReportType.Undefined;
         }
 
         public ReportViewModel(LogQuery query, Report report)
