@@ -227,6 +227,13 @@ namespace Badger.ViewModels
                                 Track trackData = expUnit.LoadTrackData(Reports);
                                 if (trackData!=null)
                                     resultTrackGroup.AddTrackData(trackData);
+
+                                //It is not the first track in the track group, so we consolidate it asap
+                                //to avoid using unnecessary amounts of memory
+                                //Consolidate selects a single track in each group using the in-group selection function
+                                //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
+                                //and also names groups depending on the number of tracks in the group
+                                resultTrackGroup.Consolidate(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
                             }
                         }
                         if (resultTrackGroup == null) //New track group
@@ -236,7 +243,7 @@ namespace Badger.ViewModels
                             TrackGroup newResultTrackGroup = new TrackGroup(exp.Name);
 
                             if (groupBy.Count == 0)
-                                newResultTrackGroup.ForkValues = expUnit.forkValues;
+                                newResultTrackGroup.SetForkValues(expUnit.forkValues);
                             else
                                 foreach (string group in groupBy)
                                 {
@@ -260,27 +267,25 @@ namespace Badger.ViewModels
                                     ResultTracks.Add(newResultTrackGroup);
                             }
                         }
+                        //Limit the number of tracks asap
+                        //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
+                        if (limitToOption != LogQuery.noLimitOnResults)
+                        {
+                            int numMaxTracks = int.Parse(limitToOption);
+
+                            if (ResultTracks.Count > numMaxTracks)
+                            {
+                                m_resultTracks.Sort(new TrackGroupComparer(orderByFunction == functionMin, orderByVariable));
+                                ResultTracks.RemoveRange(numMaxTracks, m_resultTracks.Count - numMaxTracks);
+                            }
+                        }
                     }
                 }
             }
 
-            //ConsolidateGroups selects a single track in each group using the in-group selection function
-            //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
-            //and also names groups depending on the number of tracks in the group
-            foreach (TrackGroup trackGroup in ResultTracks)
-                trackGroup.ConsolidateGroups(inGroupSelectionFunction, inGroupSelectionVariable, groupBy);
 
-            //if we are using limitTo/orderBy, we have to select the best tracks/groups according to the given criteria
-            if (limitToOption != LogQuery.noLimitOnResults)
-            {
-                int numMaxTracks = int.Parse(limitToOption);
 
-                if (ResultTracks.Count > numMaxTracks)
-                {
-                    m_resultTracks.Sort(new TrackGroupComparer(orderByFunction == functionMin, orderByVariable));
-                    ResultTracks.RemoveRange(numMaxTracks, m_resultTracks.Count - numMaxTracks);
-                }
-            }
+
         }
     }
 }

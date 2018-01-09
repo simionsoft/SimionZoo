@@ -319,6 +319,7 @@ namespace Badger.Data
         /// <returns></returns>
         public static string OxyPlotMathNotation(string s)
         {
+            if (s == null) return null;
             //Subscripts
             //E_p => E_{p}
             //E_int_omega_r = E_{int_omega_r}

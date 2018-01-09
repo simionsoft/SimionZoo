@@ -50,7 +50,7 @@ namespace Badger.Data
         }
 
         //this function selects a unique track fromm each group (if there's more than one track)
-        public void ConsolidateGroups(string inGroupSelectionFunction, string inGroupSelectionVariable, List<string> groupBy)
+        public void Consolidate(string inGroupSelectionFunction, string inGroupSelectionVariable, List<string> groupBy)
         {
             if (m_tracks.Count > 1)
             {
@@ -67,7 +67,7 @@ namespace Badger.Data
                             max = sortValue;
                             selectedTrack = track;
                         }
-                        if (inGroupSelectionFunction == LogQuery.functionMin && sortValue < min)
+                        else if (inGroupSelectionFunction == LogQuery.functionMin && sortValue < min)
                         {
                             min = sortValue;
                             selectedTrack = track;
@@ -85,9 +85,11 @@ namespace Badger.Data
                     ForkValues = new Dictionary<string, string>(selectedTrack.ForkValues);
                 }
             }
-
+        }
+        public void SetForkValues(Dictionary<string,string> forkValues)
+        {
+            ForkValues = forkValues;
             GroupId = SetNameFromForkValues();
-            //SetNameFromGroups(groupBy);
         }
         void SetNameFromGroups(List<string> groupBy)
         {
