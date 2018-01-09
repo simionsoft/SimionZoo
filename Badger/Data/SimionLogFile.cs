@@ -53,10 +53,10 @@ namespace Badger.Simion
             subIndex = (int)logReader.ReadInt64();
             byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
         }
-        public Series GetVariableData(Dictionary<string, int> variablesInLog, Report trackParameters)
+        public Series GetVariableData(int variableIndex, Report trackParameters)
         {
             Series data = new Series();
-            int variableIndex = variablesInLog[trackParameters.Variable];
+
             foreach (StepData step in steps)
                 data.AddValue(step.episodeSimTime
                     , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
@@ -65,9 +65,8 @@ namespace Badger.Simion
                 data.Resample(trackParameters.NumSamples);
             return data;
         }
-        public double GetEpisodeAverage(Dictionary<string, int> variablesInLog, Report trackParameters)
+        public double GetEpisodeAverage(int variableIndex, Report trackParameters)
         {
-            int variableIndex = variablesInLog[trackParameters.Variable];
             double avg = 0.0;
             if (steps.Count == 0) return 0.0;
             foreach (StepData step in steps)
@@ -91,90 +90,23 @@ namespace Badger.Simion
         public int NumEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
         int FileFormatVersion = 0;
         public bool BinFileLoadSuccess = false; //true if the binary file was correctly loaded
-        public bool LogDescriptorLoadSuccesss = false; //true if the log descriptor was correctly loaded
 
         public List<EpisodesData> EvaluationEpisodes = new List<EpisodesData>();
         public List<EpisodesData> TrainingEpisodes = new List<EpisodesData>();
         public EpisodesData[] Episodes = null;
 
-        public string ExperimentFileName { get; set; }
-        public string BinaryLogFileName { get; set; }
-        public string LogDescriptorFileName { get; set; }
 
-        //We keep variables in a list for easy enumeration
-        public List<string> VariablesLogged { get; } = new List<string>();
-        //And also in a dictionary to be able to get index of any given variable easily
-        Dictionary<string, int> VariableIndices = new Dictionary<string, int>();
-
-        /// <summary>
-        /// Constructor: the path to the experiment config file is provided and the constructor
-        /// sets the path to the log files (descriptor and binary log)
-        /// </summary>
-        /// <param name="experimentFilePath"></param>
-        public SimionLog(string experimentFilePath)
-        {
-            LogDescriptorFileName = SimionFileData.GetLogFilePath(experimentFilePath, true);
-            if (!File.Exists(LogDescriptorFileName))
-            {
-                //for back-compatibility: if the appropriate log file is not found, check whether one exists
-                //with the legacy naming convention: experiment-log.xml
-                LogDescriptorFileName = SimionFileData.GetLogFilePath(experimentFilePath, true, true);
-                BinaryLogFileName = SimionFileData.GetLogFilePath(experimentFilePath, false, true);
-            }
-            else
-                BinaryLogFileName = SimionFileData.GetLogFilePath(experimentFilePath, false);
-
-            ExperimentFileName = experimentFilePath;
-        }
-
-        /// <summary>
-        /// This method loads the list of variables in the log file from the log descriptor
-        /// </summary>
-        /// <returns></returns>
-        public void LoadLogDescriptor()
-        {
-            XmlDocument logDescriptor = new XmlDocument();
-            if (File.Exists(LogDescriptorFileName))
-            {
-                try
-                {
-                    logDescriptor.Load(LogDescriptorFileName);
-                    XmlNode node = logDescriptor.FirstChild;
-                    if (node.Name == XMLConfig.descriptorRootNodeName)
-                    {
-                        foreach (XmlNode child in node.ChildNodes)
-                        {
-                            if (child.Name == XMLConfig.descriptorStateVarNodeName
-                                || child.Name == XMLConfig.descriptorActionVarNodeName
-                                || child.Name == XMLConfig.descriptorRewardVarNodeName
-                                || child.Name == XMLConfig.descriptorStatVarNodeName)
-                            {
-                                string variableName = child.InnerText;
-                                VariableIndices[variableName] = VariablesLogged.Count;
-                                VariablesLogged.Add(variableName);
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogDescriptorLoadSuccesss = false;
-                    throw new Exception("Error loading log descriptor: " + LogDescriptorFileName + ex.Message);
-                }
-                LogDescriptorLoadSuccesss = true;
-            }
-            else LogDescriptorLoadSuccesss = false;
-        }
+  
         /// <summary>
         /// Read the binary log file. To know whether the log information has been succesfully loaded
         /// or not, BinFileLoadSuccess can be checked after calling this method.
         /// </summary>
         /// <returns></returns>
-        public bool LoadBinaryLog()
+        public bool LoadBinaryLog(string LogFileName)
         {
             try
             {
-                using (FileStream logFile = File.OpenRead(BinaryLogFileName))
+                using (FileStream logFile = File.OpenRead(LogFileName))
                 {
                     using (BinaryReader binaryReader = new BinaryReader(logFile))
                     {
@@ -227,12 +159,12 @@ namespace Badger.Simion
         public delegate double EpisodeFunc(EpisodesData episode, int varIndex);
 
    
-        public Series GetEpisodeData(EpisodesData episode, Report trackParameters)
+        public Series GetEpisodeData(EpisodesData episode, Report trackParameters, int variableIndex)
         {
-            return episode.GetVariableData(VariableIndices, trackParameters);
+            return episode.GetVariableData(variableIndex, trackParameters);
         }
 
-        public SeriesGroup GetAveragedData(List<EpisodesData> episodes, Report trackParameters)
+        public SeriesGroup GetAveragedData(List<EpisodesData> episodes, Report trackParameters, int variableIndex)
         {
             SeriesGroup data = new SeriesGroup(trackParameters);
             Series xYSeries = new Series();
@@ -240,7 +172,7 @@ namespace Badger.Simion
             foreach (EpisodesData episode in episodes)
             {
                 xYSeries.AddValue(episode.index
-                    , episode.GetEpisodeAverage(VariableIndices, trackParameters));
+                    , episode.GetEpisodeAverage(variableIndex, trackParameters));
             }
             xYSeries.CalculateStats(trackParameters);
             if (trackParameters.Resample)

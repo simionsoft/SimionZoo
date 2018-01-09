@@ -284,8 +284,6 @@ namespace Badger.ViewModels
             }
 
 
-
-
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Badger.ViewModels
 
         public string PipeName => m_loggedExperimentalUnit.Name;
         public string Name => m_loggedExperimentalUnit.Name;
-        public string FilePath => m_loggedExperimentalUnit.Log.ExperimentFileName;
+        public string FilePath => m_loggedExperimentalUnit.ExperimentFileName;
 
         public string ExeFile { get; set; }
 

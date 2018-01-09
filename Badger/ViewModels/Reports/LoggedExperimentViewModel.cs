@@ -65,7 +65,7 @@ namespace Badger.ViewModels
                         if (isForReport)
                         {
                             //We load the list of variables from the log descriptor and add them to the global list
-                            newExpUnit.Log.LoadLogDescriptor();
+                            newExpUnit.LoadLogDescriptor();
                             foreach (string variable in newExpUnit.VariablesInLog) AddVariable(variable);
                         }
 
