@@ -93,7 +93,7 @@ namespace Badger.ViewModels
             SimionLog Log = new SimionLog();
             Log.LoadBinaryLog(LogFileName);
 
-            if (!Log.BinFileLoadSuccess || Log.TotalNumEpisodes == 0) return null;
+            if (!Log.SuccessfulLoad || Log.TotalNumEpisodes == 0) return null;
 
             Track track = new Track(forkValues);
             SeriesGroup dataSeries;

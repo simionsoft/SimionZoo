@@ -99,27 +99,12 @@ namespace Badger.ViewModels
         /// <param name="variableName"></param>
         public void AddVariable(string variableName)
         {
-            bool bVarExists = false;
-            int i = 0, len = variables.Count;
-
-            while (!bVarExists && i < len)
-            {
-                if (variables[i].name == variableName)
-                    bVarExists = true;
-                i++;
-            }
-
-            if (!bVarExists)
-                variables.Add(new LoggedVariableViewModel(variableName));
+            if (!VariablesInLog.Contains(variableName))
+                VariablesInLog.Add(variableName);
         }
 
         //Variables
-        private BindableCollection<LoggedVariableViewModel> m_variables
-            = new BindableCollection<LoggedVariableViewModel>();
-        public BindableCollection<LoggedVariableViewModel> variables
-        {
-            get { return m_variables; }
-            set { m_variables = value; NotifyOfPropertyChange(() => variables); }
-        }
+        public List<string> VariablesInLog { get; set; }
+            = new List<string>();
     }
 }

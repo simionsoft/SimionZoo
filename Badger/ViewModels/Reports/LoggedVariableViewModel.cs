@@ -37,7 +37,6 @@ namespace Badger.ViewModels
         }
 
         private bool m_bIsSelected;
-
         public bool IsSelected
         {
             get { return m_bIsSelected; }
@@ -45,9 +44,6 @@ namespace Badger.ViewModels
             {
                 m_bIsSelected = value;
                 NotifyOfPropertyChange(() => IsSelected);
-
-                if (m_parent != null)
-                    m_parent.ValidateQuery();
             }
         }
 

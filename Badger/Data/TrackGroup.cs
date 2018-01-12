@@ -62,12 +62,12 @@ namespace Badger.Data
                     if (variableData != null)
                     {
                         double sortValue = variableData.MainSeries.Stats.avg;
-                        if (inGroupSelectionFunction == LogQuery.functionMax && sortValue > max)
+                        if (inGroupSelectionFunction == LogQueryViewModel.FunctionMax && sortValue > max)
                         {
                             max = sortValue;
                             selectedTrack = track;
                         }
-                        else if (inGroupSelectionFunction == LogQuery.functionMin && sortValue < min)
+                        else if (inGroupSelectionFunction == LogQueryViewModel.FunctionMin && sortValue < min)
                         {
                             min = sortValue;
                             selectedTrack = track;

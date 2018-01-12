@@ -89,7 +89,7 @@ namespace Badger.Simion
         public int NumEvaluationEpisodes => EvaluationEpisodes.Count;
         public int NumEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
         int FileFormatVersion = 0;
-        public bool BinFileLoadSuccess = false; //true if the binary file was correctly loaded
+        public bool SuccessfulLoad = false; //true if the binary file was correctly loaded
 
         public List<EpisodesData> EvaluationEpisodes = new List<EpisodesData>();
         public List<EpisodesData> TrainingEpisodes = new List<EpisodesData>();
@@ -143,15 +143,15 @@ namespace Badger.Simion
                                 bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
                             }
                         }
-                        BinFileLoadSuccess = true;
+                        SuccessfulLoad = true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                BinFileLoadSuccess = false;
+                SuccessfulLoad = false;
             }
-            return BinFileLoadSuccess;
+            return SuccessfulLoad;
         }
 
         public delegate void StepAction(int auxId, int stepIndex, double value);

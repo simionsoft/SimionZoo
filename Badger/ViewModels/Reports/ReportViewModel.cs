@@ -19,29 +19,7 @@ namespace Badger.ViewModels
             get { return m_plot; }
             set { m_plot = value; m_plot.UpdateView(); NotifyOfPropertyChange(() => Plot); }
         }
-        //private PlotViewModel m_selectedPlot = null;
-        //public PlotViewModel selectedPlot
-        //{
-        //    get { return m_selectedPlot; }
-        //    set
-        //    {
-        //        /*
-        //         * workarround to solve the exception:
-        //         * "This PlotModel is already in use by some other PlotView control."
-        //         * switching the tabs multiple times
-        //        */
-        //        if (m_selectedPlot != null)
-        //        {
-        //            ((OxyPlot.IPlotModel)m_selectedPlot.Plot).AttachPlotView(null);
-        //        }
-        //        m_selectedPlot = value;
-        //        m_selectedPlot.UpdateView();
-        //        NotifyOfPropertyChange(() => selectedPlot);
-        //    }
-        //}
-
-        public void updateView() { }
-
+ 
         //stats
         private StatsViewModel m_stats;
         public StatsViewModel Stats
@@ -49,14 +27,8 @@ namespace Badger.ViewModels
             get { return m_stats; }
             set { m_stats = value; NotifyOfPropertyChange(() => Stats); }
         }
-        //private StatsViewModel m_selectedStat;
-        //public StatsViewModel selectedStat
-        //{
-        //    get { return m_selectedStat; }
-        //    set { m_selectedStat = value; NotifyOfPropertyChange(() => selectedStat); }
-        //}
 
-        public void export(string outputFolder)
+        public void Export(string outputFolder)
         {
             //set culture as invariant to write numbers as in english
             System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
@@ -80,11 +52,11 @@ namespace Badger.ViewModels
             }
         }
 
-        private ReportType GetVariableReportType(LogQuery query, string variable)
+        private ReportType GetVariableReportType(LogQueryViewModel query, string variable)
         {
             //TODO: this only returns the first report type for that variable
             //This should be improved
-            foreach (LoggedVariableViewModel var in query.loggedVariables)
+            foreach (LoggedVariableViewModel var in query.VariablesVM)
             {
                 if (var.name == variable)
                     return var.SelectedPlotType;
@@ -92,7 +64,7 @@ namespace Badger.ViewModels
             return ReportType.Undefined;
         }
 
-        public ReportViewModel(LogQuery query, Report report)
+        public ReportViewModel(LogQueryViewModel query, Report report)
         {
             name = report.Name;
 
