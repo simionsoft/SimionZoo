@@ -27,7 +27,7 @@ namespace Badger.ViewModels
         private void M_selectedPlotTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             NotifyOfPropertyChange(() => SelectedPlotTypes);
-            NotifyOfPropertyChange(() => PlaceHolderText);
+            NotifyOfPropertyChange(() => PlaceholderText);
             SelectedPlotType = ReportType.Undefined;
             EnumDescriptionConverter conv = new EnumDescriptionConverter();
             foreach (var item in m_selectedPlotTypes)
@@ -90,11 +90,11 @@ namespace Badger.ViewModels
             {
                 m_selectedPlotTypes = value;
                 NotifyOfPropertyChange(() => SelectedPlotTypes);
-                NotifyOfPropertyChange("PlaceHolderText");
+                NotifyOfPropertyChange(()=> PlaceholderText);
             }
         }
 
-        public string PlaceHolderText { get { return "Evaluation Type"; } }
+        public string PlaceholderText { get { return "Evaluation Type"; } }
 
         ReportsWindowViewModel m_parent;
 

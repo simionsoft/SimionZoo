@@ -224,7 +224,7 @@
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
-    <Compile Include="ViewModels\Reports\LogQuery.cs" />
+    <Compile Include="ViewModels\Reports\LogQueryViewModel.cs" />
     <Compile Include="Data\TrackGroup.cs" />
     <Compile Include="ViewModels\Reports\PlotPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedPrerequisiteViewModel.cs" />

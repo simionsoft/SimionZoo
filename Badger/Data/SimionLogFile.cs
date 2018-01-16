@@ -58,9 +58,13 @@ namespace Badger.Simion
             Series data = new Series();
 
             foreach (StepData step in steps)
-                data.AddValue(step.episodeSimTime
-                    , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
+            {
+                if (step.episodeSimTime>=trackParameters.TimeOffset)
+                    data.AddValue(step.episodeSimTime
+                     , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
+            }
             data.CalculateStats(trackParameters);
+
             if (trackParameters.Resample)
                 data.Resample(trackParameters.NumSamples);
             return data;
@@ -68,10 +72,17 @@ namespace Badger.Simion
         public double GetEpisodeAverage(int variableIndex, Report trackParameters)
         {
             double avg = 0.0;
+            int count = 0;
             if (steps.Count == 0) return 0.0;
             foreach (StepData step in steps)
-                avg += ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]);
-            return avg / steps.Count;
+            {
+                if (step.episodeSimTime >= trackParameters.TimeOffset)
+                {
+                    avg += ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]);
+                    count++;
+                }
+            }
+            return avg / count;
         }
     }
     public class SimionLog

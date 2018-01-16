@@ -65,10 +65,9 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" ToolTip="How do we pick the best track from each group?">
                         <Label Width="100" Margin="0,0,10,0" FontSize="10" Content="In-group selection" HorizontalContentAlignment="Right" />
-                        <ComboBox x:Name="inGroupSelectionFunctions" SelectedValue="{Binding InGroupSelectionFunction}"
+                        <ComboBox x:Name="InGroupSelectionFunctions" SelectedValue="{Binding InGroupSelectionFunction}"
                                         Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
-                        <ComboBox ItemsSource="{Binding Variables}" DisplayMemberPath="name"
-                                                SelectedValuePath="name" SelectedValue="{Binding InGroupSelectionVariable}"
+                        <ComboBox x:Name="InGroupSelectionVariables" SelectedValue="{Binding InGroupSelectionVariable}"
                                         Width="80" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>
@@ -78,15 +77,14 @@
                 <StackPanel Orientation="Vertical">
                     <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
                         <Label FontSize="10" Width="100" Margin="0,0,10,0" Content="Maximum Number" HorizontalContentAlignment="Right"/>
-                        <ComboBox x:Name="MaxNumTracksOptions" SelectedValue="{Binding Path=MaxNumTracks, StringFormat='D'}"
+                        <ComboBox x:Name="MaxNumTracksOptions" SelectedValue="{Binding MaxNumTracks}"
                                             Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"/>
                     </StackPanel>
                     <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="Sets the criteria by which tracks are sorted before limiting">
                         <Label Width="100" Margin="0,0,10,0" FontSize="10" Content="Track selection" HorizontalContentAlignment="Right"/>
                         <ComboBox x:Name="OrderByFunctions" SelectedValue="{Binding OrderByFunction}"
                                             Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
-                        <ComboBox ItemsSource="{Binding Variables}" DisplayMemberPath="name"
-                                                    SelectedValuePath="name" SelectedValue="{Binding OrderByVariable}"
+                        <ComboBox x:Name="OrderByVariables" SelectedValue="{Binding OrderByVariable}"
                                             Width="80" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </StackPanel>

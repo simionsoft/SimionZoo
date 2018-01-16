@@ -204,18 +204,18 @@ namespace Badger.ViewModels
                  });
             }
 
-            UpdateMenuState();
+            OnExperimentBatchLoad();
 
             // Add a property change listener to each node in the tree
             newExperiment.TraverseAction(true, (n) => {n.PropertyChanged += OnChildPropertyChanged; });
         }
 
-        void UpdateMenuState()
+        void OnExperimentBatchLoad()
         {
             //Update flags use to enable/disable parts of the report generation menu
             NotifyOfPropertyChange(() => ForksLoaded);
             NotifyOfPropertyChange(() => VariablesLoaded);
-            Query.Init();
+            Query.OnExperimentBatchLoaded();
             LogsLoaded = true;
         }
 

@@ -69,19 +69,48 @@ namespace Badger.ViewModels
 
         public double TimeOffset { get; set; } = 0.0;
 
-        public string InGroupSelectionFunction { get; set; } = FunctionMax;
-        public string InGroupSelectionVariable { get; set; } = "";
+        public string InGroupSelectionFunction { get; set; }
+        public string InGroupSelectionVariable { get; set; }
 
-        public int MaxNumTracks { get; set; } = 10;
+        // Limit to
+        private BindableCollection<int> m_maxNumTrackOptions = new BindableCollection<int>();
+        public BindableCollection<int> MaxNumTracksOptions
+        {
+            get { return m_maxNumTrackOptions; }
+            set { m_maxNumTrackOptions = value; NotifyOfPropertyChange(() => MaxNumTracksOptions); }
+        }
+        private int m_maxNumTracks;
+        public int MaxNumTracks
+        {
+            get { return m_maxNumTracks; }
+            set { m_maxNumTracks = value;NotifyOfPropertyChange(() => MaxNumTracks); }
+        }
 
-        public string OrderByFunction { get; set; } = FunctionMax;
-        public string OrderByVariable { get; set; } = "";
+
+        //Order by
+        private string m_orderByFunction;
+        public string OrderByFunction
+        {
+            get { return m_orderByFunction; }
+            set { m_orderByFunction = value;NotifyOfPropertyChange(() => OrderByFunction); }
+        }
+        private string m_orderByVariable;
+        public string OrderByVariable
+        {
+            get { return m_orderByVariable; }
+            set { m_orderByVariable = value; NotifyOfPropertyChange(() => OrderByVariable); }
+        }
         private BindableCollection<string> m_orderByFunctions 
             = new BindableCollection<string>() { FunctionMax, FunctionMin};
         public BindableCollection<string> OrderByFunctions
         {
             get { return m_orderByFunctions; }
             set { m_orderByFunctions = value; NotifyOfPropertyChange(() => OrderByFunctions); }
+        }
+        public BindableCollection<string> OrderByVariables
+        {
+            get { return m_variables; }
+            set { m_variables = value; NotifyOfPropertyChange(() => OrderByVariables); }
         }
 
         // Group By
@@ -100,18 +129,6 @@ namespace Badger.ViewModels
                 //NotifyOfPropertyChange(() => GroupBy);
             }
             GroupsEnabled = true;
-        }
-
-
-        public string GroupByAsString
-        {
-            get
-            {
-                string s = "";
-                for (int i = 0; i < m_groupByForksList.Count; i++) s += m_groupByForksList[i] + ",";
-                s= s.TrimEnd(',');
-                return s;
-            }
         }
 
         public void ResetGroupBy()
@@ -135,15 +152,6 @@ namespace Badger.ViewModels
             set { m_bGroupsEnabled = value; NotifyOfPropertyChange(() => GroupsEnabled); }
         }
 
-        // Limit to
-        private BindableCollection<string> m_maxNumTrackOptions = new BindableCollection<string>();
-
-        public BindableCollection<string> MaxNumTracksOptions
-        {
-            get { return m_maxNumTrackOptions; }
-            set { m_maxNumTrackOptions = value; NotifyOfPropertyChange(() => MaxNumTracksOptions); }
-        }
-
         bool m_useForkSelection = false;
         public bool UseForkSelection
         {
@@ -155,9 +163,7 @@ namespace Badger.ViewModels
 
         public LogQueryViewModel()
         {
-            // Add the limit to options
-            for (int i = 0; i <= 10; i++) MaxNumTracksOptions.Add(i.ToString());
-            NotifyOfPropertyChange(() => OrderByFunctions);
+
         }
 
         private List<TrackGroup> m_resultTracks
@@ -200,8 +206,13 @@ namespace Badger.ViewModels
             return null;
         }
 
-        public BindableCollection<string> Variables { get; set; }
-            = new BindableCollection<string>();
+        private BindableCollection<string> m_variables = new BindableCollection<string>();
+        public BindableCollection<string> InGroupSelectionVariables
+        {
+            get { return m_variables; }
+            set { m_variables = value; NotifyOfPropertyChange(() => InGroupSelectionVariables); }
+        }
+            
         public BindableCollection<LoggedVariableViewModel> VariablesVM { get; }
             = new BindableCollection<LoggedVariableViewModel>();
 
@@ -245,18 +256,25 @@ namespace Badger.ViewModels
                     LoggedVariableViewModel newVariableVM= new LoggedVariableViewModel(variable);
                     VariablesVM.Add(newVariableVM);
                     newVariableVM.PropertyChanged += OnChildPropertyChanged;
-                    Variables.Add(variable);
+                    InGroupSelectionVariables.Add(variable);
                 }
             }
         }
 
-        public void Init()
+        public void OnExperimentBatchLoaded()
         {
-            if (VariablesVM.Count > 0)
-            {
-                InGroupSelectionVariable = VariablesVM[0].name;
-                OrderByVariable = VariablesVM[0].name;
-            }
+            // Add the limit to options
+            for (int i = 0; i <= 10; i++) MaxNumTracksOptions.Add(i);
+            MaxNumTracks = 10;
+
+            OrderByFunction = FunctionMax;
+            NotifyOfPropertyChange(() => OrderByFunctions);
+
+            if (InGroupSelectionVariables.Count > 0) InGroupSelectionVariable = InGroupSelectionVariables[0];
+            NotifyOfPropertyChange(() => InGroupSelectionVariables);
+
+            if (OrderByVariables.Count > 0) OrderByVariable = OrderByVariables[0];
+            NotifyOfPropertyChange(() => OrderByVariables);
         }
 
         public List<Report> Reports = new List<Report>();
@@ -311,6 +329,7 @@ namespace Badger.ViewModels
             {
                 report.Resample = ResampleData;
                 report.NumSamples = ResamplingNumPoints;
+                report.TimeOffset = TimeOffset;
             }
 
             //traverse the experimental units within each experiment
