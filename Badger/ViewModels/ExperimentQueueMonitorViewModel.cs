@@ -335,10 +335,13 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private void LoadLoggedExperiment(XmlNode node, string baseDirectory)
+        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
+            , SimionFileData.LoadUpdateFunction loadUpdateFunction= null)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, false);
+            LoggedExperimentViewModel newExperiment
+                = new LoggedExperimentViewModel(node, baseDirectory, false, loadUpdateFunction);
             LoggedExperiments.Add(newExperiment);
+            return newExperiment.ExperimentalUnits.Count;
         }
 
         /// <summary>
@@ -364,7 +367,7 @@ namespace Badger.ViewModels
         /// <param name="batchFileName">The batch file with experiment data</param>
         public bool InitializeExperiments(string batchFileName)
         {
-            SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
+            SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
 
             MonitoredExperimentList = new ObservableCollection<MonitoredExperimentViewModel>();
             Dictionary<string, string> renameRules = new Dictionary<string, string>();

@@ -230,12 +230,10 @@ namespace Badger.ViewModels
 
         void OnChildPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //not all properties sending changes are due to "Group by this fork", so we need to check it
             if (e.PropertyName == "IsSelected")
             {
                 ValidateQuery();
             }
-
         }
 
         public void AddLogVariables(List<string> variables)
@@ -307,7 +305,8 @@ namespace Badger.ViewModels
             GroupsEnabled = GroupByForks.Count > 0;
         }
 
-        public void Execute(BindableCollection<LoggedExperimentViewModel> experiments)
+        public void Execute(BindableCollection<LoggedExperimentViewModel> experiments
+            ,SimionFileData.LoadUpdateFunction loadUpdateFunction)
         {
             TrackGroup resultTrackGroup = null;
 
@@ -400,6 +399,7 @@ namespace Badger.ViewModels
                             }
                         }
                     }
+                    loadUpdateFunction?.Invoke();
                 }
             }
         }

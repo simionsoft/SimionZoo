@@ -41,8 +41,10 @@
                     IsEnabled="{Binding CanSaveReports}">
                 <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
             </Button>
-            <StackPanel VerticalAlignment="Center" Visibility="{Binding LogsLoaded,Converter={StaticResource InvertedBooleanToVisibilityConverter}}">
-                <Label Width="880" HorizontalContentAlignment="Right" Content="{Binding LoadedBatch}"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Label Width="720" HorizontalContentAlignment="Right" Content="{Binding LoadedBatch}"/>
+                <ProgressBar x:Name="LoadProgress" Minimum="0" Maximum="1" Height="10" Width="200"
+                             Visibility="{Binding Loading,Converter={StaticResource BoolToVis}}"/>
             </StackPanel>
         </StackPanel>
         <Grid Background="#FAFAFA" Visibility="{Binding LogsLoaded,Converter={StaticResource BoolToVis}}">

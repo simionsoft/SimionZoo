@@ -33,7 +33,8 @@ namespace Badger.ViewModels
 
         public List<string> VariablesInLog { get; set; }
 
-        public LoggedExperimentalUnitViewModel(XmlNode configNode, string baseDirectory)
+        public LoggedExperimentalUnitViewModel(XmlNode configNode, string baseDirectory
+            , SimionFileData.LoadUpdateFunction updateFunction = null)
         {
             //Experiment Name
             if (configNode.Attributes != null)
@@ -69,8 +70,10 @@ namespace Badger.ViewModels
                     forkValues[forkName] = forkValue;
                 }
             }
+            //update progress
+            updateFunction?.Invoke();
         }
-       
+
         public void LoadLogDescriptor()
         {
             VariablesInLog = SimionLogDescriptor.LoadLogDescriptor(LogDescriptorFileName);

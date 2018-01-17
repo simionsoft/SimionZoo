@@ -316,10 +316,13 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private void LoadLoggedExperiment(XmlNode node, string baseDirectory)
+        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
+            , SimionFileData.LoadUpdateFunction updateFunction)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, false);
+            LoggedExperimentViewModel newExperiment 
+                = new LoggedExperimentViewModel(node, baseDirectory, false, updateFunction);
             LoggedExperiments.Add(newExperiment);
+            return newExperiment.ExperimentalUnits.Count;
         }
 
         /// <summary>
@@ -355,7 +358,13 @@ namespace Badger.ViewModels
 
             if (SelectedLaunchMode.Equals(BatchFile))
             {
-                batchFileName = SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment);
+                string batchFilename ="";
+                bool success = SimionFileData.OpenFile(ref batchFilename, SimionFileData.ExperimentBatchFilter
+                    , XMLConfig.experimentBatchExtension);
+                if (!success)
+                    return;
+
+                SimionFileData.LoadExperimentBatchFile(batchFilename, LoadLoggedExperiment);
                 experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.ExperimentalUnits.Count);
             }
             else

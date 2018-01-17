@@ -24,8 +24,7 @@ namespace Badger.ViewModels
             get { return m_bIsCheckVisible; }
             set
             {
-                m_bIsCheckVisible = value;
-                NotifyOfPropertyChange(() => IsCheckVisible);
+                m_bIsCheckVisible = value; NotifyOfPropertyChange(() => IsCheckVisible);
                 TraverseAction(false, (element) => { element.IsCheckVisible = value; });
             }
         }

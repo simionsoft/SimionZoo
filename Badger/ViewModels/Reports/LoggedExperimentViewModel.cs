@@ -5,6 +5,7 @@ using Badger.Simion;
 using Badger.ViewModels.Reports;
 using Caliburn.Micro;
 using System.IO;
+using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
@@ -26,13 +27,17 @@ namespace Badger.ViewModels
             foreach (LoggedForkViewModel fork in Forks) fork.TraverseAction(true, action);
         }
 
+
+
         /// <summary>
         ///     Class constructor.
         /// </summary>
         /// <param name="configNode">The XML node from which the experiment's parameters hang.</param>
         /// <param name="baseDirectory">The directory of the parent batch file, if there is one.</param>
         /// <param name="isForReport">True if we are reading the experiment to make a report.</param>
-        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool isForReport)
+        /// <param name="updateFunction">Callback function to be called after a load progress event</param>
+        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool isForReport
+            , SimionFileData.LoadUpdateFunction updateFunction = null)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
 
@@ -60,7 +65,7 @@ namespace Badger.ViewModels
                         break;
 
                     case XMLConfig.experimentalUnitNodeTag:
-                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory);
+                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);
 
                         if (isForReport)
                         {
@@ -78,8 +83,7 @@ namespace Badger.ViewModels
             {
                 TraverseAction(false, (node) => 
                 {
-                    LoggedForkValueViewModel forkValue = node as LoggedForkValueViewModel;
-                    if (forkValue!=null)
+                    if (node is LoggedForkValueViewModel forkValue)
                     {
                         foreach (string forkName in expUnit.forkValues.Keys)
                         {

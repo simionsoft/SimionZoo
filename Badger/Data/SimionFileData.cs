@@ -22,26 +22,27 @@ namespace Badger.Simion
         public const string imageRelativeDir = "..\\" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
 
+        public const string ExperimentBatchFilter = "Experiment-batch|*.";
+        public const string BadgerProjectFilter = "Badger project|*.";
+        public const string ExperimentFilter = "Experiment|*.";
+
         public delegate void LogFunction(string message);
+        public delegate void LoadUpdateFunction();
+
 
         //baseDirectory: directory where the batch file is located. Included to allow using paths
         //relative to the batch file, instead of relative to the RLSimion folder structure
-        public delegate void XmlNodeFunction(XmlNode node, string baseDirectory);
+        public delegate int XmlNodeFunction(XmlNode node, string baseDirectory,LoadUpdateFunction loadUpdateFunction);
 
         /// <summary>
         ///     Load experiment batch file.
         /// </summary>
         /// <param name="perExperimentFunction"></param>
         /// <param name="batchFilename"></param>
-        static public string LoadExperimentBatchFile(XmlNodeFunction perExperimentFunction, string batchFilename = "")
+        static public int LoadExperimentBatchFile(string batchFilename, XmlNodeFunction perExperimentFunction
+            , LoadUpdateFunction onExperimentLoaded = null)
         {
-            if (string.IsNullOrEmpty(batchFilename))
-            {
-                bool isOpen = OpenFile(ref batchFilename, Resources.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
-                if (!isOpen)
-                    return null;
-            }
-
+            int retValue = 0;
             // Load the experiment batch in queue
             XmlDocument batchDoc = new XmlDocument();
             batchDoc.Load(batchFilename);
@@ -52,16 +53,16 @@ namespace Badger.Simion
                 foreach (XmlNode experiment in fileRoot.ChildNodes)
                 {
                     if (experiment.Name == XMLConfig.experimentNodeTag)
-                        perExperimentFunction(experiment, Utility.GetDirectory(batchFilename));
+                        retValue+= perExperimentFunction(experiment, Utility.GetDirectory(batchFilename), onExperimentLoaded);
                 }
             }
             else
             {
                 CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
-                return null;
+                return retValue;
             }
 
-            return batchFilename;
+            return retValue;
         }
 
         /// <summary>
@@ -96,7 +97,7 @@ namespace Badger.Simion
             if (batchFilename == "")
             {
                 //Save dialog -> returns the experiment batch file
-                var sfd = SaveFile(Resources.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
+                var sfd = SaveFile(ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     batchFilename = sfd.FileName;
@@ -191,7 +192,7 @@ namespace Badger.Simion
             Dictionary<string, string> appDefinitions, LogFunction log)
         {
             string fileDoc = null;
-            bool isOpen = OpenFile(ref fileDoc, Resources.BadgerProjectFilter, XMLConfig.badgerProjectExtension);
+            bool isOpen = OpenFile(ref fileDoc, BadgerProjectFilter, XMLConfig.badgerProjectExtension);
             if (!isOpen) return;
 
             XmlDocument badgerDoc = new XmlDocument();
@@ -238,7 +239,7 @@ namespace Badger.Simion
                 }
             }
 
-            var sfd = SaveFile(Resources.BadgerProjectFilter, XMLConfig.badgerProjectExtension);
+            var sfd = SaveFile(BadgerProjectFilter, XMLConfig.badgerProjectExtension);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string leftSpace;
@@ -270,7 +271,7 @@ namespace Badger.Simion
         static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;
-            bool isOpen = OpenFile(ref fileDoc, Resources.ExperimentFilter, XMLConfig.experimentExtension);
+            bool isOpen = OpenFile(ref fileDoc, ExperimentFilter, XMLConfig.experimentExtension);
             if (!isOpen)
                 return null;
 
@@ -292,7 +293,7 @@ namespace Badger.Simion
                 return;
             }
 
-            var sfd = SaveFile(Resources.ExperimentFilter, XMLConfig.experimentExtension);
+            var sfd = SaveFile(ExperimentFilter, XMLConfig.experimentExtension);
             if (sfd.ShowDialog() == DialogResult.OK)
                 experiment.save(sfd.FileName, SaveMode.AsExperiment);
         }

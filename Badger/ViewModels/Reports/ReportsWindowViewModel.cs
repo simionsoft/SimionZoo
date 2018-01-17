@@ -5,6 +5,7 @@ using System.IO;
 using Badger.Data;
 using Caliburn.Micro;
 using Badger.Simion;
+using System.Threading.Tasks;
 
 namespace Badger.ViewModels
 {
@@ -17,12 +18,18 @@ namespace Badger.ViewModels
             set { m_query = value; NotifyOfPropertyChange(() => Query); }
         }
 
-        string m_loadedBatch = "No batch has been loaded";
-        public string LoadedBatch { get { return m_loadedBatch; } set { m_loadedBatch = value; NotifyOfPropertyChange(() => LoadedBatch); } }
+        string m_loadedBatch = "No batch loaded";
+        public string LoadedBatch
+        {
+            get { return m_loadedBatch; }
+            set { m_loadedBatch = value; NotifyOfPropertyChange(() => LoadedBatch); }
+        }
                 
-        public ObservableCollection<ReportViewModel> Reports { get; } = new ObservableCollection<ReportViewModel>();
+        public BindableCollection<ReportViewModel> Reports
+        { get; } = new BindableCollection<ReportViewModel>();
 
-        public ObservableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits { get; } = new ObservableCollection<LoggedExperimentalUnitViewModel>();
+        public BindableCollection<LoggedExperimentalUnitViewModel> ExperimentalUnits
+        { get; } = new BindableCollection<LoggedExperimentalUnitViewModel>();
 
 
         //plot selection in tab control
@@ -54,16 +61,11 @@ namespace Badger.ViewModels
             else if (e.PropertyName=="UseForkSelection")
             {
                 foreach (LoggedExperimentViewModel exp in LoggedExperiments)
-                    exp.TraverseAction(true, (child) =>
-                    {
-                        child.IsCheckVisible = Query.UseForkSelection;
-                    });
+                    exp.IsCheckVisible = Query.UseForkSelection;
+
                 Query.ValidateQuery();
             }
         }
-
-    
-
 
 
         /// <summary>
@@ -92,20 +94,29 @@ namespace Badger.ViewModels
         /// </summary>
         public void MakeReport()
         {
-            // Execute the Query
-            Query.Execute(LoggedExperiments);
+            Task.Run(() =>
+            {
+                StartLongOperation();
+                // Execute the Query
+                string batchFilename = LoadedBatch;
 
-            // Display the reports
-            foreach (Report report in Query.Reports)
-            {
-                ReportViewModel newReport = new ReportViewModel(Query, report);
-                Reports.Add(newReport);
-            }
-            if (Reports.Count > 0)
-            {
-                SelectedReport = Reports[0];
-                CanSaveReports = true;
-            }
+                LoadedBatch = "Running query";
+                Query.Execute(LoggedExperiments, OnExperimentalUnitProcessed);
+
+                // Display the reports
+                foreach (Report report in Query.Reports)
+                {
+                    ReportViewModel newReport = new ReportViewModel(Query, report);
+                    Reports.Add(newReport);
+                }
+                if (Reports.Count > 0)
+                {
+                    SelectedReport = Reports[0];
+                    CanSaveReports = true;
+                }
+                LoadedBatch = batchFilename;
+                EndLongOperation();
+            });
         }
 
 
@@ -132,14 +143,12 @@ namespace Badger.ViewModels
         }
 
 
-        private int m_numTotalForks = 0;
         /// <summary>
         /// Are there any forks in the logs we loaded? This property is used to enable/disable fork-related options
         /// </summary>
+        private bool m_bForksLoaded = false;
         public bool ForksLoaded
-        {
-            get { return m_numTotalForks > 0; }
-        }
+        { get { return m_bForksLoaded; } set { m_bForksLoaded = value; NotifyOfPropertyChange(() => ForksLoaded); } }
 
         /// <summary>
         ///     Method called from the view. When the report is generated it can be saved in a folder 
@@ -181,55 +190,103 @@ namespace Badger.ViewModels
             set { m_loggedExperiments = value; NotifyOfPropertyChange(() => LoggedExperiments); }
         }
 
-        private void LoadLoggedExperiment(XmlNode node, string baseDirectory)
+        
+        private int CountExperimentalUnitsInBatch(XmlNode node, string baseDirectory
+            , SimionFileData.LoadUpdateFunction loadUpdateFunction)
         {
-            LoggedExperimentViewModel newExperiment = new LoggedExperimentViewModel(node, baseDirectory, true);
-            LoggedExperiments.Add(newExperiment);
-
-            Query.AddLogVariables(newExperiment.VariablesInLog);
-
-            //add all experimental units to the collection
-           
-            foreach (LoggedExperimentViewModel experiment in LoggedExperiments)
+            int ExperimentalUnitCount = 0;
+            foreach(XmlNode child in node.ChildNodes)
             {
-                experiment.TraverseAction(false, (n) =>
-                 {
-                     //get all the experimental units in a list
-                     if (n is LoggedExperimentalUnitViewModel expUnit)
-                         ExperimentalUnits.Add(expUnit);
-
-                     //count the number of forks in this batch
-                     if (n is LoggedForkViewModel fork)
-                         m_numTotalForks++;
-                 });
+                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                    ExperimentalUnitCount++;
+                else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
             }
-
-            OnExperimentBatchLoad();
-
-            // Add a property change listener to each node in the tree
-            newExperiment.TraverseAction(true, (n) => {n.PropertyChanged += OnChildPropertyChanged; });
+            return ExperimentalUnitCount;
         }
 
-        void OnExperimentBatchLoad()
+        private int LoadLoggedExperiment(XmlNode node, string baseDirectory
+            , SimionFileData.LoadUpdateFunction loadUpdateFunction)
         {
-            //Update flags use to enable/disable parts of the report generation menu
-            NotifyOfPropertyChange(() => ForksLoaded);
-            NotifyOfPropertyChange(() => VariablesLoaded);
-            Query.OnExperimentBatchLoaded();
-            LogsLoaded = true;
+            LoggedExperimentViewModel newExperiment
+                = new LoggedExperimentViewModel(node, baseDirectory, true, loadUpdateFunction);
+
+            LoggedExperiments.Add(newExperiment);
+            ExperimentalUnits.AddRange(newExperiment.ExperimentalUnits);
+            Query.AddLogVariables(newExperiment.VariablesInLog);
+            ForksLoaded |= newExperiment.Forks.Count > 0;
+            newExperiment.PropertyChanged += OnChildPropertyChanged;
+
+            return ExperimentalUnits.Count;
         }
 
+        private double m_loadProgress = 0.0;
+        public double LoadProgress
+        {
+            get { return m_loadProgress; }
+            set { m_loadProgress = value; NotifyOfPropertyChange(() => LoadProgress); }
+        }
+        private bool m_bLoading = false;
+        public bool Loading { get { return m_bLoading; } set { m_bLoading = value;NotifyOfPropertyChange(() => Loading); } }
+
+        int m_numExperimentalUnits = 0;
+        int m_numProcessedExperimentalUnits = 0;
+        public void OnExperimentalUnitProcessed()
+        {
+            m_numProcessedExperimentalUnits++;
+            if (m_numExperimentalUnits != 0)
+                LoadProgress = (double)m_numProcessedExperimentalUnits / (double)m_numExperimentalUnits;
+
+        }
+        void StartLongOperation()
+        {
+            LoadProgress = 0;
+            m_numProcessedExperimentalUnits = 0;
+            Loading = true;
+        }
+        void EndLongOperation()
+        {
+            LoadProgress = 1;
+            Loading = false;
+        }
         /// <summary>
-        ///     Load an experiment from a batch file. The batch should be from an already finished
-        ///     experiment, this is in order to make reports correctly but is not mandatory.
-        ///     We clear the previously loaded data to avoid mixing data from two different batches
+        ///     Load an experiment from a batch file. If <paramref name="batchFileName"/> is either
+        ///     null or empty, a dialog window will be opened to let the user select a batch file.
         /// </summary>
         /// <param name="batchFileName">The name of the file to load</param>
         public void LoadExperimentBatch(string batchFileName)
         {
+            //reset the view
             ClearReportViewer();
-            LoadedBatch = batchFileName;
-            SimionFileData.LoadExperimentBatchFile(LoadLoggedExperiment, batchFileName);
+
+            if (string.IsNullOrEmpty(batchFileName))
+            {
+                bool bSuccess = SimionFileData.OpenFile(ref batchFileName
+                    , SimionFileData.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
+                if (!bSuccess)
+                    return;
+            }
+
+            //Inefficient but not so much as to care
+            //First we load the batch file to cout how many experimental units we have
+            StartLongOperation();
+            LoadedBatch = "Reading batch file";
+            m_numExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, CountExperimentalUnitsInBatch);
+
+            Task.Run(() =>
+            {
+                //load the batch
+                LoadedBatch = "Reading experiment files";
+                SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment, OnExperimentalUnitProcessed);
+
+                //Update flags use to enable/disable parts of the report generation menu
+                NotifyOfPropertyChange(() => ForksLoaded);
+                NotifyOfPropertyChange(() => VariablesLoaded);
+                Query.OnExperimentBatchLoaded();
+                LoadedBatch = batchFileName;
+                LogsLoaded = true;
+
+                EndLongOperation();
+            });
         }
 
         /// <summary>
@@ -257,14 +314,12 @@ namespace Badger.ViewModels
             Query = new LogQueryViewModel();
             Query.PropertyChanged += OnChildPropertyChanged;
 
-            m_numTotalForks = 0;
-
             NotifyOfPropertyChange(() => VariablesLoaded);
             NotifyOfPropertyChange(() => ForksLoaded);
 
             CanSaveReports = false;
             LogsLoaded = false;
-            Refresh();
+            ForksLoaded = false;
         }
     }
 }
