@@ -353,7 +353,6 @@ namespace Badger.ViewModels
                 return;
             }
 
-            int experimentalUnitsCount = 0;
             string batchFileName = "";
 
             if (SelectedLaunchMode.Equals(BatchFile))
@@ -362,31 +361,25 @@ namespace Badger.ViewModels
                     , XMLConfig.experimentBatchExtension);
                 if (!success)
                     return;
-
-                SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
-                experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.ExperimentalUnits.Count);
             }
             else
             {
-                experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
+                int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
                     ref batchFileName, logToFile);
             }
 
-            // Experiments will be launched only if exists any experimental unit and the batch file was 
-            // safed /loaded succesfully
-            if (experimentalUnitsCount > 0 && batchFileName != "")
-            {
-                logToFile("Running experiment queue remotely: " + experimentalUnitsCount + " experiments");
+            // Experiments are sent and executed remotely
+            logToFile("Running experiment queue remotely");
 
-                m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(freeHerdAgents, logToFile, batchFileName);
+            m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(freeHerdAgents, logToFile, batchFileName);
 
-                if (!m_monitorWindowViewModel.RunExperiments())
-                    return;
+            if (!m_monitorWindowViewModel.RunExperiments())
+                return;
 
-                IsExperimentRunning = true;
+            IsExperimentRunning = true;
 
-                CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
-            }
+            CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
+
         }
 
         /// <summary>

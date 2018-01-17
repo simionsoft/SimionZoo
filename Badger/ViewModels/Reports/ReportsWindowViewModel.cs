@@ -191,19 +191,6 @@ namespace Badger.ViewModels
         }
 
         
-        private int CountExperimentalUnitsInBatch(XmlNode node, string baseDirectory
-            , SimionFileData.LoadUpdateFunction loadUpdateFunction)
-        {
-            int ExperimentalUnitCount = 0;
-            foreach(XmlNode child in node.ChildNodes)
-            {
-                if (child.Name == XMLConfig.experimentalUnitNodeTag)
-                    ExperimentalUnitCount++;
-                else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
-            }
-            return ExperimentalUnitCount;
-        }
-
         private int LoadLoggedExperiment(XmlNode node, string baseDirectory
             , SimionFileData.LoadUpdateFunction loadUpdateFunction)
         {
@@ -258,6 +245,7 @@ namespace Badger.ViewModels
             //reset the view
             ClearReportViewer();
 
+            //Ask the user for the name of the batch
             if (string.IsNullOrEmpty(batchFileName))
             {
                 bool bSuccess = SimionFileData.OpenFile(ref batchFileName
@@ -270,7 +258,8 @@ namespace Badger.ViewModels
             //First we load the batch file to cout how many experimental units we have
             StartLongOperation();
             LoadedBatch = "Reading batch file";
-            m_numExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, CountExperimentalUnitsInBatch);
+            m_numExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName
+                , SimionFileData.CountExperimentalUnitsInBatch);
 
             Task.Run(() =>
             {

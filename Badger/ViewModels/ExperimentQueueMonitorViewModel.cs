@@ -367,6 +367,7 @@ namespace Badger.ViewModels
         /// <param name="batchFileName">The batch file with experiment data</param>
         public bool InitializeExperiments(string batchFileName)
         {
+            //Load the batch
             SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
 
             MonitoredExperimentList = new ObservableCollection<MonitoredExperimentViewModel>();

@@ -35,6 +35,26 @@ namespace Badger.Simion
         public delegate int XmlNodeFunction(XmlNode node, string baseDirectory,LoadUpdateFunction loadUpdateFunction);
 
         /// <summary>
+        /// This function can be passed as an argument to LoadExperimentBatch to quickly count the number
+        /// of experimental units in a batch
+        /// </summary>
+        /// <param name="node">The node used in each call of the function</param>
+        /// <param name="baseDirectory">Base directory</param>
+        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        /// <returns></returns>
+        public static int CountExperimentalUnitsInBatch(XmlNode node, string baseDirectory
+                , LoadUpdateFunction loadUpdateFunction)
+        {
+            int ExperimentalUnitCount = 0;
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                    ExperimentalUnitCount++;
+                else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
+            }
+            return ExperimentalUnitCount;
+        }
+        /// <summary>
         ///     Load experiment batch file.
         /// </summary>
         /// <param name="perExperimentFunction"></param>
