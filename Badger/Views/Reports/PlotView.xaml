@@ -17,12 +17,12 @@
         </Grid.RowDefinitions>
         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="400"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <oxy:PlotView Grid.Row="0" Model="{Binding Plot}" Width="600" Height="400" Margin="10,0"/>
-                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="600"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <oxy:PlotView Grid.Column="0" Model="{Binding Plot}" Width="600" Height="400" Margin="0"/>
+                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
                     <Button Style="{StaticResource BadgerButtonStyle}" x:Name="ShowProperties" Width="32" Height="32">
                         <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"
                     HorizontalAlignment="Center" VerticalAlignment="Center" />

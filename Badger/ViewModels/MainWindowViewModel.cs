@@ -358,13 +358,12 @@ namespace Badger.ViewModels
 
             if (SelectedLaunchMode.Equals(BatchFile))
             {
-                string batchFilename ="";
-                bool success = SimionFileData.OpenFile(ref batchFilename, SimionFileData.ExperimentBatchFilter
+                bool success = SimionFileData.OpenFile(ref batchFileName, SimionFileData.ExperimentBatchFilter
                     , XMLConfig.experimentBatchExtension);
                 if (!success)
                     return;
 
-                SimionFileData.LoadExperimentBatchFile(batchFilename, LoadLoggedExperiment);
+                SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
                 experimentalUnitsCount += LoggedExperiments.Sum(experiment => experiment.ExperimentalUnits.Count);
             }
             else
