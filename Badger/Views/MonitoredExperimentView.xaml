@@ -19,32 +19,35 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <Border BorderThickness="1" BorderBrush="LightGray">
+    <Border BorderThickness="1" BorderBrush="LightGray" ToolTip="{Binding ForkListAsString}">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0"  Background="Transparent">
-                <Label Content="{Binding ExperimentalUnitId}"/>
+            <StackPanel Grid.Column="0" Background="Transparent">
+                <Label Content="{Binding Name}" Margin="0" Padding="0"/>
             </StackPanel>
 
-            <TextBlock Grid.Row="1" Grid.Column="0" Foreground="{Binding stateColor}" Text="{Binding stateString}"
-                   FontSize="11" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Foreground="{Binding StateColor}" 
+                       Text="{Binding StateString}" Background="Transparent"
+                   FontSize="11" VerticalAlignment="Center" Margin="0"/>
 
-            <ScrollViewer Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto"
+            <!--<ScrollViewer Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" VerticalScrollBarVisibility="Auto"
                       Padding="4" MaxHeight="75">
                 <TextBlock Text="{Binding statusInfo}" FontSize="11" Foreground="Gray" TextAlignment="Left"/>
-            </ScrollViewer>
+            </ScrollViewer>-->
 
-            <ProgressBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Minimum="0" Maximum="100" Value="{Binding Path = Progress}" 
+            <ProgressBar Margin="5" Grid.Column="2" Minimum="0" Maximum="100" Value="{Binding Progress}" 
                      Height="10" Visibility="{Binding Path = isRunning, Converter = {StaticResource BoolToVis}}" />
+            <Button  Grid.Row="1" Margin="2" Grid.Column="3" Width="42" Height="20" ToolTip="Show the experimental unit's log"
+                        cal:Message.Attach="[Event Click]=[Action ShowLog()]">
+                <Label FontSize="9" Margin="0" Padding="0" >Show log</Label>
+            </Button>
         </Grid>
     </Border>
 </UserControl>

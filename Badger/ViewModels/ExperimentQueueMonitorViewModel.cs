@@ -112,7 +112,7 @@ namespace Badger.ViewModels
             return job;
         }
 
-        public async Task<ExperimentBatch> sendJobAndMonitor()
+        public async Task<ExperimentBatch> SendJobAndMonitor()
         {
             m_failedExperiments.Clear();
             try
@@ -184,7 +184,7 @@ namespace Badger.ViewModels
                             }
                             else if (messageId == "Message")
                             {
-                                experimentVM.addStatusInfoLine(messageContent);
+                                experimentVM.AddStatusInfoLine(messageContent);
                             }
                             else if (messageId == "End")
                             {
@@ -491,7 +491,7 @@ namespace Badger.ViewModels
                     || m_pendingExperiments.Count > 0) && !m_cancelTokenSource.IsCancellationRequested)
                 {
                     foreach (ExperimentBatch batch in experimentBatchList)
-                        experimentBatchTaskList.Add(batch.sendJobAndMonitor());
+                        experimentBatchTaskList.Add(batch.SendJobAndMonitor());
 
                     // All pending experiments sent? Then we await completion to retry in case something fails
                     if (m_pendingExperiments.Count == 0)

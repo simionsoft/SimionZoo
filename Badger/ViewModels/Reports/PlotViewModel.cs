@@ -39,6 +39,7 @@ namespace Badger.ViewModels
         double m_maxX = double.MinValue;
         double m_minY = double.MaxValue;
         double m_maxY = double.MinValue;
+        double m_maxNumSeries = 20;
 
         private PlotModel m_plot;
         public PlotModel Plot { get { return m_plot; } set { } }
@@ -148,16 +149,20 @@ namespace Badger.ViewModels
 
         public int AddLineSeries(string title, bool isVisible = true)
         {
-            lock (m_lineSeriesLock)
-            {
-                OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
-                newSeries.IsVisible = isVisible;
-                m_plot.Series.Add(newSeries);
+            //TODO: improve how to limit the number of plots
+            //For now, we just ignore series after the max number has been reached
+            if (m_plot.Series.Count<m_maxNumSeries)
+                lock (m_lineSeriesLock)
+                {
+                    OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+                    newSeries.IsVisible = isVisible;
+                    m_plot.Series.Add(newSeries);
 
-                Properties.AddLineSeries(title, newSeries);
+                    Properties.AddLineSeries(title, newSeries);
 
-                return m_plot.Series.Count - 1; ;
-            }
+                    return m_plot.Series.Count - 1; ;
+                }
+            return -1;
         }
 
         public void AddLineSeriesValue(int seriesIndex, double xValue, double yValue)

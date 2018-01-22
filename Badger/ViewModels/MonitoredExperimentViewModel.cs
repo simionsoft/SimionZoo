@@ -21,11 +21,11 @@ namespace Badger.ViewModels
 
         public List<string> Forks { get; set; }
 
-        public string ExperimentalUnitId
+        public string ForkListAsString
         {
             get
             {
-                if (Forks.Count > 0) return Badger.Data.Utility.ListAsString(Forks);
+                if (Forks.Count > 0) return Data.Utility.ListAsString(Forks);
                 return Name;
             }
         }
@@ -44,8 +44,8 @@ namespace Badger.ViewModels
                     m_state = value;
                 NotifyOfPropertyChange(() => state);
                 NotifyOfPropertyChange(() => isRunning);
-                NotifyOfPropertyChange(() => stateString);
-                NotifyOfPropertyChange(() => stateColor);
+                NotifyOfPropertyChange(() => StateString);
+                NotifyOfPropertyChange(() => StateColor);
             }
         }
 
@@ -59,7 +59,7 @@ namespace Badger.ViewModels
 
         public bool isEnqueued { get { return m_state == ExperimentState.ENQUEUED; } }
 
-        public string stateString
+        public string StateString
         {
             get
             {
@@ -78,7 +78,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public string stateColor
+        public string StateColor
         {
             get
             {
@@ -100,10 +100,13 @@ namespace Badger.ViewModels
 
         //progress is expressed as a percentage
 
-        private double m_progress;
+        private double m_progress = 0.0;
         public double Progress
         {
-            get { return m_progress; }
+            get
+            {
+                return m_progress;
+            }
             set
             {
                 m_progress = value;
@@ -112,23 +115,28 @@ namespace Badger.ViewModels
         }
 
         private string m_statusInfo;
-        public string statusInfo
+        public string StatusInfo
         {
             get { return m_statusInfo; }
             set
             {
                 m_statusInfo = value;
-                NotifyOfPropertyChange(() => statusInfo);
+                NotifyOfPropertyChange(() => StatusInfo);
             }
         }
 
-        public void addStatusInfoLine(string line)
-        { statusInfo += line + "\n"; }
+        public void ShowLog()
+        {
+            Data.CaliburnUtility.ShowWarningDialog(StatusInfo, "Experiment log");
+        }
+
+        public void AddStatusInfoLine(string line)
+        { StatusInfo += line + "\n"; }
 
 
         //log stuff
         private Logger.LogFunction m_logFunction = null;
-        private void logMessage(string message)
+        private void LogMessage(string message)
         {
             m_logFunction?.Invoke(message);
         }
@@ -149,7 +157,7 @@ namespace Badger.ViewModels
         private int evaluationSeriesId = -1;
         public PlotViewModel m_plotEvaluationMonitor;
 
-        public void addEvaluationValue(double xNorm, double y)
+        public void AddEvaluationValue(double xNorm, double y)
         {
             if (evaluationSeriesId == -1) //series not yet added
                 evaluationSeriesId = m_plotEvaluationMonitor.AddLineSeries(Name);
