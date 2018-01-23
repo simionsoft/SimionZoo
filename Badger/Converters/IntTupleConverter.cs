@@ -53,7 +53,10 @@ namespace Badger.Converters
             {
                 result.FromString(sValue, sParameter);
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
 
             return result;
         }

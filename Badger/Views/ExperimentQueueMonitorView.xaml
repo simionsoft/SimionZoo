@@ -11,6 +11,9 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <DataTemplate DataType="{x:Type vm:MonitoredJobViewModel}">
+            <v:MonitoredJobView/>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
@@ -31,7 +34,7 @@
             <StackPanel Grid.Row="0">
                 <TextBlock x:Name="EstimatedEndTime" TextAlignment="Center" Foreground="#424242" 
                        Margin="5,5,5,0" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
-                <ProgressBar x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="100"
+                <ProgressBar x:Name="GlobalProgress" Height="10" Width="Auto" Minimum="0" Maximum="1"
                          Margin="5" Visibility="{Binding bRunning, Converter = {StaticResource BoolToVis}}" />
             </StackPanel>
             
@@ -52,16 +55,18 @@
                 </StackPanel>
             </Button>
         </Grid>
-
-        <ListBox Grid.Row="1" ItemsSource="{Binding Path = MonitoredExperimentList}" HorizontalContentAlignment="Stretch">
+        <!--<ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Path = AllMonitoredJobs}" HorizontalContentAlignment="Stretch"/>
+        </ScrollViewer>-->
+        <ListBox Grid.Row="1" ItemsSource="{Binding Path = AllMonitoredJobs}" HorizontalContentAlignment="Stretch">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.Resources>
-                <DataTemplate DataType="{x:Type vm:MonitoredExperimentViewModel}">
-                    <v:MonitoredExperimentView />
+                <DataTemplate DataType="{x:Type vm:MonitoredJobViewModel}">
+                    <v:MonitoredJobView />
                 </DataTemplate>
             </ListBox.Resources>
         </ListBox>

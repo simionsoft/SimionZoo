@@ -160,6 +160,7 @@ namespace Badger.Simion
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 SuccessfulLoad = false;
             }
             return SuccessfulLoad;

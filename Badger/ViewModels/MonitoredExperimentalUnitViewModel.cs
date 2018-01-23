@@ -6,13 +6,20 @@ using System.Linq;
 
 namespace Badger.ViewModels
 {
-    public class MonitoredExperimentViewModel : PropertyChangedBase
+    public class MonitoredExperimentalUnitViewModel : PropertyChangedBase
     {
         private LoggedExperimentalUnitViewModel m_loggedExperimentalUnit;
 
         public string PipeName => m_loggedExperimentalUnit.Name;
         public string Name => m_loggedExperimentalUnit.Name;
         public string FilePath => m_loggedExperimentalUnit.ExperimentFileName;
+
+        string m_taskName;
+        public string TaskName
+        {
+            get { return m_taskName; }
+            set { m_taskName = value; NotifyOfPropertyChange(() => TaskName); }
+        }
 
         public string ExeFile { get; set; }
 
@@ -33,7 +40,7 @@ namespace Badger.ViewModels
         //STATE
         public enum ExperimentState { RUNNING, FINISHED, ERROR, ENQUEUED, SENDING, RECEIVING, WAITING_EXECUTION, WAITING_RESULT };
         private ExperimentState m_state = ExperimentState.ENQUEUED;
-        public ExperimentState state
+        public ExperimentState State
         {
             get { return m_state; }
             set
@@ -42,8 +49,8 @@ namespace Badger.ViewModels
                 //we don't update state in case new state is not RUNNING or SENDING
                 if (m_state != ExperimentState.ERROR || value == ExperimentState.WAITING_EXECUTION)
                     m_state = value;
-                NotifyOfPropertyChange(() => state);
-                NotifyOfPropertyChange(() => isRunning);
+                NotifyOfPropertyChange(() => State);
+                NotifyOfPropertyChange(() => IsRunning);
                 NotifyOfPropertyChange(() => StateString);
                 NotifyOfPropertyChange(() => StateColor);
             }
@@ -51,13 +58,13 @@ namespace Badger.ViewModels
 
         public void resetState()
         {
-            state = ExperimentState.ENQUEUED;
-            NotifyOfPropertyChange(() => state);
+            State = ExperimentState.ENQUEUED;
+            NotifyOfPropertyChange(() => State);
         }
 
-        public bool isRunning { get { return m_state == ExperimentState.RUNNING; } }
+        public bool IsRunning { get { return m_state == ExperimentState.RUNNING; } }
 
-        public bool isEnqueued { get { return m_state == ExperimentState.ENQUEUED; } }
+        public bool IsEnqueued { get { return m_state == ExperimentState.ENQUEUED; } }
 
         public string StateString
         {
@@ -142,7 +149,7 @@ namespace Badger.ViewModels
         }
 
 
-        public MonitoredExperimentViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
+        public MonitoredExperimentalUnitViewModel(LoggedExperimentalUnitViewModel expUnit, string exeFile,
            List<string> prerequisites, Dictionary<string, string> renameRules, PlotViewModel plot)
         {
             m_loggedExperimentalUnit = expUnit;
@@ -154,23 +161,23 @@ namespace Badger.ViewModels
         }
 
         //evaluation plot stuff
-        private int evaluationSeriesId = -1;
+        private int m_seriesId = -1;
         public PlotViewModel m_plotEvaluationMonitor;
 
         public void AddEvaluationValue(double xNorm, double y)
         {
-            if (evaluationSeriesId == -1) //series not yet added
-                evaluationSeriesId = m_plotEvaluationMonitor.AddLineSeries(Name);
-            m_plotEvaluationMonitor.AddLineSeriesValue(evaluationSeriesId, xNorm, y);
+            if (m_seriesId == -1) //series not yet added
+                m_seriesId = m_plotEvaluationMonitor.AddLineSeries(Name);
+            m_plotEvaluationMonitor.AddLineSeriesValue(m_seriesId, xNorm, y);
         }
 
         /// <summary>
         ///     Get MouseEnter event from View and process it.
         /// </summary>
         /// <param name="name">The name of the component which trigger the event</param>
-        public void HandleMouseEnter(string name)
+        public void HandleMouseEnter()
         {
-            m_plotEvaluationMonitor.HighlightLineSeries(name);
+            m_plotEvaluationMonitor.HighlightLineSeries(m_seriesId);
         }
 
         /// <summary>

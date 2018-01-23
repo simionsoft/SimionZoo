@@ -169,12 +169,24 @@ namespace Badger.ViewModels
             m_fonts.Add("Verdana");
             SelectedFont = "Segoe UI";
         }
-
+        /// <summary>
+        ///     Highlight a series 
+        /// </summary>
+        /// <param name="seriesId"></param>
+        public void HighlightSeries(int seriesId)
+        {
+            for (int i= 0; i<LineSeriesProperties.Count; i++)
+            {
+                if (i == seriesId)
+                    ResetLineSeriesOpacity(LineSeriesProperties[i]);
+                else DimLineSeriesColor(LineSeriesProperties[i]);
+            }
+        }
         /// <summary>
         ///     Apply some opacity to the original color of the LineSeries.  
         /// </summary>
         /// <param name="lineSeriesProperties"></param>
-        public void dimLineSeriesColor(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
+        public void DimLineSeriesColor(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
         {
             OxyColor color = lineSeriesProperties.LineSeries.ActualColor;
             // Apply an opacity of 15% over the original color
@@ -182,10 +194,10 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        ///     Remove opacity in the original color of the LineSeries.  
+        ///     Restore the original color of the LineSeries.  
         /// </summary>
         /// <param name="lineSeriesProperties"></param>
-        public void removeLineSeriesColorOpacity(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
+        public void ResetLineSeriesOpacity(PlotLineSeriesPropertiesViewModel lineSeriesProperties)
         {
             OxyColor color = lineSeriesProperties.LineSeries.ActualColor;
             lineSeriesProperties.LineSeries.Color = OxyColor.FromRgb(color.R, color.G, color.B);

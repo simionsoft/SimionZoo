@@ -202,6 +202,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\NumericForkedNodeViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\InputDataViewModel.cs" />
@@ -235,7 +236,7 @@
     <Compile Include="ViewModels\Reports\LoggedVariableViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatsViewModel.cs" />
-    <Compile Include="ViewModels\MonitoredExperimentViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
@@ -250,6 +251,12 @@
     </Compile>
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MonitoredExperimentalUnitView.xaml.cs">
+      <DependentUpon>MonitoredExperimentalUnitView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MonitoredJobView.xaml.cs">
+      <DependentUpon>MonitoredJobView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NeuralNetwork\ChainView.xaml.cs">
       <DependentUpon>ChainView.xaml</DependentUpon>
@@ -319,9 +326,6 @@
     </Compile>
     <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MonitoredExperimentView.xaml.cs">
-      <DependentUpon>MonitoredExperimentView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
       <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
@@ -433,6 +437,10 @@
     <Page Include="Views\HerdAgentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MonitoredJobView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MultiStateButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -558,7 +566,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MonitoredExperimentView.xaml">
+    <Page Include="Views\MonitoredExperimentalUnitView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

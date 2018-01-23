@@ -191,24 +191,12 @@ namespace Badger.ViewModels
         ///     In order to highlight a LineSeries what we actually do is to dim, that is, apply
         ///     certain opacity, to all the other LineSeries.
         /// </summary>
-        /// <param name="name">Name of the hovered LineSeries which is gonna be highlighted</param>
-        public void HighlightLineSeries(string name)
+        /// <param name="seriesId">Id of the LineSeries to be highlighted</param>
+        public void HighlightLineSeries(int seriesId)
         {
-            bool found = true;
+            if (seriesId < 0) ResetLineSeriesColors();
 
-            foreach (PlotLineSeriesPropertiesViewModel p in Properties.LineSeriesProperties)
-            {
-                if (!p.LineSeries.Title.Equals(name))
-                    Properties.dimLineSeriesColor(p);
-                else
-                {
-                    Properties.removeLineSeriesColorOpacity(p);
-                    found = true;
-                }
-            }
-
-            if (!found)
-                ResetLineSeriesColors();
+            Properties.HighlightSeries(seriesId);
         }
 
         /// <summary>
@@ -218,7 +206,7 @@ namespace Badger.ViewModels
         public void ResetLineSeriesColors()
         {
             foreach (PlotLineSeriesPropertiesViewModel p in Properties.LineSeriesProperties)
-                Properties.removeLineSeriesColorOpacity(p);
+                Properties.ResetLineSeriesOpacity(p);
         }
 
 

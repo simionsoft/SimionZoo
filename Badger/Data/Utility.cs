@@ -32,7 +32,7 @@ namespace Badger.Data
 
         //this function is called from several tasks and needs to be synchronized
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public static void GetInputsAndOutputs(string exe, string args, ref CJob job)
+        public static void GetInputsAndOutputs(string exe, string args, ref HerdJob job)
         {
             object o = new object();
             Monitor.Enter(o);

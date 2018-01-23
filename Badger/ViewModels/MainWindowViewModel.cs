@@ -331,7 +331,7 @@ namespace Badger.ViewModels
         /// </summary>
         public void RunExperiments()
         {
-            if (m_shepherdViewModel.herdAgentList.Count == 0)
+            if (m_shepherdViewModel.HerdAgentList.Count == 0)
             {
                 CaliburnUtility.ShowWarningDialog(
                     "No Herd agents were detected, so experiments cannot be sent. " +

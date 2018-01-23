@@ -231,7 +231,7 @@ namespace Herd
             }
         }
 
-        public void SendJobQuery(CJob job, CancellationToken cancelToken)
+        public void SendJobQuery(HerdJob job, CancellationToken cancelToken)
         {
             m_job = job;
             SendJobHeader(cancelToken);

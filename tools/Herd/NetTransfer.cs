@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace Herd
 {
-    public class CTask
+    public class HerdTask
     {
         public string exe;
         public string arguments;
         public string pipe;
         public string authenticationToken;
         public string name;
-        public CTask()
+        public HerdTask()
         {
             name = "";
             exe = "";
@@ -32,20 +32,20 @@ namespace Herd
             return ret;
         }
     }
-    public class CJob
+    public class HerdJob
     {
         public string name = "";
-        public List<CTask> tasks = new List<CTask>();
+        public List<HerdTask> tasks = new List<HerdTask>();
         public List<string> inputFiles = new List<string>();
         public List<string> outputFiles = new List<string>();
         public Dictionary<string, string> renameRules;
 
-        public CJob() { }
+        public HerdJob() { }
 
         public override string ToString()
         {
             string ret = "Job: " + name;
-            foreach (CTask task in tasks)
+            foreach (HerdTask task in tasks)
                 ret += "||" + task.ToString();
             return ret;
         }
@@ -103,7 +103,7 @@ namespace Herd
         protected int m_nextFileSize;
         protected string m_nextFileName;
 
-        protected CJob m_job;
+        protected HerdJob m_job;
 
         protected Logger.LogFunction m_logMessageHandler;
 
@@ -123,7 +123,7 @@ namespace Herd
         }
         public CJobDispatcher()
         {
-            m_job = new CJob();
+            m_job = new HerdJob();
             m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
             m_logMessageHandler = null;
@@ -206,10 +206,10 @@ namespace Herd
         }
         protected void SendTasks(CancellationToken cancelToken)
         {
-            foreach (CTask task in m_job.tasks)
+            foreach (HerdTask task in m_job.tasks)
                 SendTask(task, cancelToken);
         }
-        protected void SendTask(CTask task, CancellationToken cancelToken)
+        protected void SendTask(HerdTask task, CancellationToken cancelToken)
         {
             string taskXML = "<Task Name=\"" + task.name + "\"";
             taskXML += " Exe=\"" + task.exe + "\"";
@@ -224,7 +224,7 @@ namespace Herd
 
         public async Task<bool> ReceiveTask(CancellationToken cancelToken)
         {
-            CTask task = new CTask();
+            HerdTask task = new HerdTask();
             Match match;
             //This expression was tested and worked fine with and without the authentication token
             match = await ReadUntilMatchAsync(TaskHeaderRegEx, cancelToken);
