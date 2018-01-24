@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Badger.Simion;
 using System;
 using Caliburn.Micro;
+using System.ComponentModel;
 
 namespace Badger.ViewModels
 {

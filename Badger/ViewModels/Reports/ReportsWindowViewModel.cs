@@ -201,7 +201,12 @@ namespace Badger.ViewModels
             ExperimentalUnits.AddRange(newExperiment.ExperimentalUnits);
             Query.AddLogVariables(newExperiment.VariablesInLog);
             ForksLoaded |= newExperiment.Forks.Count > 0;
-            newExperiment.PropertyChanged += OnChildPropertyChanged;
+
+            newExperiment.TraverseAction(true, (n)=>
+            {
+                if (n is LoggedForkViewModel fork)
+                    fork.PropertyChanged += OnChildPropertyChanged;
+            });
 
             return ExperimentalUnits.Count;
         }
@@ -300,8 +305,6 @@ namespace Badger.ViewModels
             ExperimentalUnits.Clear();
             LoggedExperiments.Clear();
             Reports.Clear();
-            Query = new LogQueryViewModel();
-            Query.PropertyChanged += OnChildPropertyChanged;
 
             NotifyOfPropertyChange(() => VariablesLoaded);
             NotifyOfPropertyChange(() => ForksLoaded);

@@ -30,9 +30,7 @@ namespace Portable_Badger
             files.Add(inBaseRelPath + @"bin\RLSimion.exe");
             files.Add(inBaseRelPath + @"bin\RLSimion-x64.exe");
             files.Add(inBaseRelPath + @"bin\FAST_Win32.exe");
-            files.Add(inBaseRelPath + @"bin\FAST_x64.exe");
             files.Add(inBaseRelPath + @"bin\TurbSim.exe");
-            files.Add(inBaseRelPath + @"bin\TurbSim64.exe");
             files.Add(inBaseRelPath + @"bin\vcruntime140.dll");
             files.Add(inBaseRelPath + @"bin\msvcp140.dll");
             files.Add(inBaseRelPath + @"bin\x64\vcruntime140.dll");

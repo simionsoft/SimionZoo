@@ -27,8 +27,6 @@ namespace Badger.ViewModels
             foreach (LoggedForkViewModel fork in Forks) fork.TraverseAction(true, action);
         }
 
-
-
         /// <summary>
         ///     Class constructor.
         /// </summary>
@@ -66,7 +64,6 @@ namespace Badger.ViewModels
 
                     case XMLConfig.experimentalUnitNodeTag:
                         LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);
-
                         if (isForReport)
                         {
                             //We load the list of variables from the log descriptor and add them to the global list
