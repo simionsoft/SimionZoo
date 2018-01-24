@@ -221,6 +221,11 @@ namespace Badger.ViewModels
         public bool Loading { get { return m_bLoading; } set { m_bLoading = value;NotifyOfPropertyChange(() => Loading); } }
 
         int m_numExperimentalUnits = 0;
+        public int NumExperimentalUnits
+        {
+            get { return m_numExperimentalUnits; }
+        }
+
         int m_numProcessedExperimentalUnits = 0;
         public void OnExperimentalUnitProcessed()
         {

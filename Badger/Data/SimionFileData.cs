@@ -34,6 +34,39 @@ namespace Badger.Simion
         //relative to the batch file, instead of relative to the RLSimion folder structure
         public delegate int XmlNodeFunction(XmlNode node, string baseDirectory,LoadUpdateFunction loadUpdateFunction);
 
+
+        /// <summary>
+        /// This function cleans the log files
+        /// </summary>
+        /// <param name="node">The node used in each call of the function</param>
+        /// <param name="baseDirectory">Base directory</param>
+        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        /// <returns></returns>
+        public static int CleanExperimentalUnitLogFiles(XmlNode node, string baseDirectory
+                , LoadUpdateFunction loadUpdateFunction)
+        {
+            int numFilesDeleted = 0;
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                {
+                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute];
+                    string pathToLogFile = GetLogFilePath(pathToExpUnit, false);
+                    if (File.Exists(pathToLogFile))
+                    {
+                        File.Delete(pathToLogFile);
+                        numFilesDeleted++;
+                    }
+                    string pathToLogFileDesc = GetLogFilePath(pathToExpUnit, true);
+                    if (File.Exists(pathToLogFileDesc))
+                    {
+                        File.Delete(pathToLogFileDesc);
+                        numFilesDeleted++;
+                    }
+                }
+            }
+            return numFilesDeleted;
+        }
         /// <summary>
         /// This function can be passed as an argument to LoadExperimentBatch to quickly count the number
         /// of experimental units in a batch
@@ -54,6 +87,8 @@ namespace Badger.Simion
             }
             return ExperimentalUnitCount;
         }
+
+        
         /// <summary>
         ///     Load experiment batch file.
         /// </summary>

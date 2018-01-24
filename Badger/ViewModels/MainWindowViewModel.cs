@@ -29,13 +29,13 @@ namespace Badger.ViewModels
 
         private ExperimentViewModel m_selectedExperiment;
 
-        public ExperimentViewModel selectedExperiment
+        public ExperimentViewModel SelectedExperiment
         {
             get { return m_selectedExperiment; }
             set
             {
                 m_selectedExperiment = value;
-                NotifyOfPropertyChange(() => selectedExperiment);
+                NotifyOfPropertyChange(() => SelectedExperiment);
             }
         }
 
@@ -61,19 +61,6 @@ namespace Badger.ViewModels
         private ExperimentMonitorWindowViewModel m_monitorWindowViewModel;
 
         public ExperimentMonitorWindowViewModel monitorWindowViewModel { get { return m_monitorWindowViewModel; } }
-
-        // This is need it in order to enable/disable the StopExperiments button
-        private bool m_bExperimentRunning = false;
-
-        public bool IsExperimentRunning
-        {
-            get { return m_bExperimentRunning; }
-            set
-            {
-                m_bExperimentRunning = value;
-                NotifyOfPropertyChange(() => IsExperimentRunning);
-            }
-        }
 
         private ShepherdViewModel m_shepherdViewModel;
 
@@ -117,7 +104,6 @@ namespace Badger.ViewModels
 
         public ObservableCollection<string> AppNames { get { return m_appNames; } set { m_appNames = value; } }
 
-        public ObservableCollection<string> LaunchMode { get; set; }
 
         // Key element is the apps name, and the value is the .xml definition file
         private Dictionary<string, string> appDefinitions = new Dictionary<string, string>();
@@ -137,31 +123,6 @@ namespace Badger.ViewModels
             }
         }
 
-        private string m_selectedLaunchMode;
-
-        public string SelectedLaunchMode
-        {
-            get { return m_selectedLaunchMode; }
-            set
-            {
-                int index = LaunchMode.IndexOf(value);
-                if (index == -1)
-                    return;
-
-                m_selectedLaunchMode = value;
-
-                if (m_selectedLaunchMode.Equals(BatchFile))
-                    CanLaunchExperiment = true;
-                else if (m_bIsExperimentListNotEmpty)
-                    CanLaunchExperiment = true;
-                else
-                    CanLaunchExperiment = false;
-
-                NotifyOfPropertyChange(() => LaunchMode);
-            }
-        }
-
-
         public void NewExperiment()
         {
             if (m_selectedAppName == null) return;
@@ -174,7 +135,7 @@ namespace Badger.ViewModels
 
             CanLaunchExperiment = m_bIsExperimentListNotEmpty;
 
-            selectedExperiment = newExperiment;
+            SelectedExperiment = newExperiment;
         }
 
         private object m_logFileLock = new object();
@@ -212,8 +173,6 @@ namespace Badger.ViewModels
         public MainWindowViewModel()
         {
             m_shepherdViewModel = new ShepherdViewModel();
-            LaunchMode = new ObservableCollection<string> { BatchFile, "Loaded Experiment" };
-            SelectedLaunchMode = LaunchMode[0];
             LoadAppDefinitions();
 
             // Check for aditional required configuration files
@@ -240,13 +199,13 @@ namespace Badger.ViewModels
 
         public void SaveSelectedExperiment()
         {
-            if (selectedExperiment == null || !selectedExperiment.validate())
+            if (SelectedExperiment == null || !SelectedExperiment.validate())
             {
                 CaliburnUtility.ShowWarningDialog("The app can't be validated. See error log.", "Error");
                 return;
             }
 
-            SimionFileData.SaveExperiment(selectedExperiment);
+            SimionFileData.SaveExperiment(SelectedExperiment);
         }
 
         public void SaveAllExperiments()
@@ -269,14 +228,14 @@ namespace Badger.ViewModels
 
                 CanLaunchExperiment = m_bIsExperimentListNotEmpty;
 
-                selectedExperiment = newExperiment;
+                SelectedExperiment = newExperiment;
             }
         }
 
 
-        public void clearExperimentQueue()
+        public void ClearExperiments()
         {
-            selectedExperiment = null;
+            SelectedExperiment = null;
             if (ExperimentViewModels != null) ExperimentViewModels.Clear();
         }
 
@@ -289,7 +248,7 @@ namespace Badger.ViewModels
             ExperimentViewModels.Remove(e);
             CheckEmptyExperimentList();
 
-            CanLaunchExperiment = (m_bIsExperimentListNotEmpty || SelectedLaunchMode.Equals(BatchFile));
+            CanLaunchExperiment = (m_bIsExperimentListNotEmpty);
         }
 
         /// <summary>
@@ -302,7 +261,7 @@ namespace Badger.ViewModels
             NotifyOfPropertyChange(() => ExperimentViewModels);
 
             if (m_experimentViewModels.Count > 0)
-                selectedExperiment = m_experimentViewModels[0];
+                SelectedExperiment = m_experimentViewModels[0];
 
             CheckEmptyExperimentList();
         }
@@ -319,87 +278,52 @@ namespace Badger.ViewModels
         private int LoadLoggedExperiment(XmlNode node, string baseDirectory
             , SimionFileData.LoadUpdateFunction updateFunction)
         {
-            LoggedExperimentViewModel newExperiment 
+            LoggedExperimentViewModel newExperiment
                 = new LoggedExperimentViewModel(node, baseDirectory, false, updateFunction);
             LoggedExperiments.Add(newExperiment);
             return newExperiment.ExperimentalUnits.Count;
         }
 
+        
         /// <summary>
         ///     Pass data to experiment monitor and run experiments defined so far.
         ///     Used from MainWindowView when the launch button is clicked.
         /// </summary>
-        public void RunExperiments()
+        public void RunExperimentsInEditor()
         {
-            if (m_shepherdViewModel.HerdAgentList.Count == 0)
-            {
-                CaliburnUtility.ShowWarningDialog(
-                    "No Herd agents were detected, so experiments cannot be sent. " +
-                    "Consider starting the local agent: \"net start HerdAgent\"", "No agents detected");
-                return;
-            }
-
-            List<HerdAgentViewModel> freeHerdAgents = new List<HerdAgentViewModel>();
-
-            // Get available herd agents list. Inside the loop to update the list
-            ShepherdViewModel.getAvailableHerdAgents(ref freeHerdAgents);
-            logToFile("Using " + freeHerdAgents.Count + " agents");
-
-            if (freeHerdAgents.Count == 0)
-            {
-                CaliburnUtility.ShowWarningDialog(
-                    "There is no herd agents availables at this moment. Make sure you have selected at " +
-                    "least one available agent and try again.", "No agents detected");
-                return;
-            }
-
             string batchFileName = "";
 
-            if (SelectedLaunchMode.Equals(BatchFile))
-            {
-                bool success = SimionFileData.OpenFile(ref batchFileName, SimionFileData.ExperimentBatchFilter
-                    , XMLConfig.experimentBatchExtension);
-                if (!success)
-                    return;
-            }
-            else
-            {
-                int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
-                    ref batchFileName, logToFile);
-            }
+            int experimentalUnitsCount = SimionFileData.SaveExperimentBatchFile(ExperimentViewModels,
+                ref batchFileName, logToFile);
 
             // Experiments are sent and executed remotely
             logToFile("Running experiment queue remotely");
 
-            m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(freeHerdAgents, logToFile, batchFileName);
-
-            if (!m_monitorWindowViewModel.RunExperiments())
-                return;
-
-            IsExperimentRunning = true;
+            m_monitorWindowViewModel = new ExperimentMonitorWindowViewModel(ShepherdViewModel,logToFile);
 
             CaliburnUtility.ShowPopupWindow(m_monitorWindowViewModel, "Experiment Monitor", false);
 
+            m_monitorWindowViewModel.LoadExperimentBatch(batchFileName);
+            m_monitorWindowViewModel.RunExperimentBatch();
         }
 
         /// <summary>
-        ///     Stops all experiments in progress if there is some.
+        /// Shows the experiment monitor in a new window
         /// </summary>
-        public void StopExperiments()
+        public void ShowExperimentMonitor()
         {
-            if (!IsExperimentRunning) return;
-            m_monitorWindowViewModel.StopExperiments();
-            IsExperimentRunning = false;
+            ExperimentMonitorWindowViewModel experimentMonitor
+                = new ExperimentMonitorWindowViewModel(ShepherdViewModel, logToFile);
+            CaliburnUtility.ShowPopupWindow(experimentMonitor, "Experiment Monitor");
         }
 
         /// <summary>
-        ///     Show a window that allows you to make reports attending diferent criterias from
-        ///     previously completed experiments.
+        ///     Shows the report viewer
         /// </summary>
-        public void ShowReportsWindow()
+        public void ShowReportViewer()
         {
             ReportsWindowViewModel plotEditor = new ReportsWindowViewModel();
-            CaliburnUtility.ShowPopupWindow(plotEditor, "Badger Reports");
+            CaliburnUtility.ShowPopupWindow(plotEditor, "Report Viewer");
         }
     }
 }

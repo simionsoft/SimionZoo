@@ -19,70 +19,11 @@
     </Window.Resources>
 
     <DockPanel>
-        <WrapPanel DockPanel.Dock="Top" MinHeight="48" Width="Auto" Background="#EEEEEE">
+        <!--<WrapPanel DockPanel.Dock="Top" MinHeight="48" Width="Auto" Background="#EEEEEE">
             <WrapPanel Margin="5,4">
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="New Experiment"
-                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action NewExperiment()]">
-                    <Path Data="{StaticResource New}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Experiment"
-                        Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
-                        cal:Message.Attach="[Event Click]=[Action SaveSelectedExperiment()]">
-                    <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save All Experiments"
-                        Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
-                        cal:Message.Attach="[Event Click]=[Action SaveAllExperiments()]">
-                    <Path Data="{StaticResource SaveAll}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Open Experiment"
-                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LoadExperiment()]">
-                    <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}"  ToolTip="Open Set of Experiments"
-                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LoadExperiments()]">
-                    <Path Data="{StaticResource OpenProject}" Width="24" Height="24" Fill="#89000000" />
-                </Button>
-
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
-
-                <!--Label VerticalAlignment="Center">App</-->
-                <ComboBox x:Name="AppNames" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      ToolTip="Apps" Margin="5,0" Height="26" SelectedItem="{Binding selectedAppName}" />
-                <ComboBox x:Name="LaunchMode" MinWidth="140" HorizontalAlignment="Center" VerticalAlignment="Center"
-                      ToolTip="Launch Modes" Margin="5,0" Height="26" SelectedItem="{Binding SelectedLaunchMode}" />
-
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
-                        IsEnabled="{Binding Path = CanLaunchExperiment}" ToolTip="Run Experiments"
-                        cal:Message.Attach="[Event Click]=[Action RunExperiments()]">
-                        <StackPanel Orientation="Horizontal">
-                            <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#4CAF50" />
-                            <Label Padding="4,3" VerticalContentAlignment="Center">Launch</Label>
-                        </StackPanel>
-                    </Button>
-                    <!--Button Width="100" Height="30" Margin="5"
-                         IsEnabled="{Binding Path = IsExperimentRunning}"
-                         x:Name="StopExperiments" VerticalAlignment="Top"
-                            ToolTip="Stop experiments in queue">
-                    <StackPanel Orientation="Horizontal">
-                        <Label Margin="0,0,5,0">STOP</Label>
-                        <Image Width="20" Height="20" Source="{StaticResource stop}"></Image>
-                    </StackPanel>
-                </Button-->
-                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />
-
-                    <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
-                        cal:Message.Attach="[Event Click]=[Action ShowReportsWindow()]"
-                        ToolTip="Generate reports from stored experiment results">
-                        <StackPanel Orientation="Horizontal" Margin="4,0">
-                            <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
-                            <Label Padding="4,3">Reports</Label>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+                
             </WrapPanel>
-        </WrapPanel>
+        </WrapPanel>-->
 
         <Grid Background="#FAFAFA">
             <Grid.RowDefinitions>
@@ -95,11 +36,6 @@
                 <ColumnDefinition Width="5*" MinWidth="40" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
-                        HorizontalAlignment="Center" Orientation="Horizontal" >
-                <Image Width="25" Height="25" Margin="5" Source="{StaticResource HerdAgentHead}"/>
-                <Label FontWeight="Medium" VerticalAlignment="Center">Herd Agents</Label>
-            </StackPanel>
 
             <Border Grid.Row="1" Grid.Column="0" BorderThickness="1" Margin="5,0,0,5" BorderBrush="#BDBDBD" >
                 <ContentControl x:Name="ShepherdViewModel" />
@@ -108,13 +44,71 @@
             <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Width="4" Background="#FAFAFA"
                           x:Name="GridSplitter" HorizontalAlignment="Stretch" />
 
-            <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" >
-                <Label Content="Experiment Editor" FontWeight="Medium"
-                        VerticalContentAlignment="Center" HorizontalAlignment="Center" />
-            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center"
+                        VerticalAlignment="Center" Orientation="Horizontal">
+                <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40" Margin="10,0"
+                        ToolTip="Open the experiment monitor"
+                        cal:Message.Attach="[Event Click]=[Action ShowExperimentMonitor()]">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000" />
+                        <Label>Experiment Monitor</Label>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40" Margin="10,0,180,0"
+                        cal:Message.Attach="[Event Click]=[Action ShowReportViewer()]"
+                        ToolTip="Generate reports from stored experiment results">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
+                        <Label>Report Viewer</Label>
+                    </StackPanel>
+                </Button>
+                <!--<Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="10,0" />-->
+                <!--<Label Content="Experiments" FontWeight="Medium" Margin="0,0,300,0"
+                        VerticalContentAlignment="Center" HorizontalAlignment="Center" />-->
+                <ComboBox x:Name="AppNames" MinWidth="120" Margin="2,0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                      ToolTip="Apps" Height="26" SelectedItem="{Binding selectedAppName}" />
+                <Button Style="{StaticResource BadgerButtonStyle}" Margin="2,0" ToolTip="New Experiment"
+                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action NewExperiment()]">
+                    <Path Data="{StaticResource New}" Width="24" Height="24" Fill="#89000000" />
+                </Button>
+                <Button Margin="0,0,0,0" Style="{StaticResource BadgerButtonStyle}" ToolTip="Save Experiment"
+                        Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
+                        cal:Message.Attach="[Event Click]=[Action SaveSelectedExperiment()]">
+                    <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000" />
+                </Button>
+                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Save All Experiments"
+                        Height="40" Width="40" IsEnabled="{Binding Path=IsExperimentListNotEmpty}"
+                        cal:Message.Attach="[Event Click]=[Action SaveAllExperiments()]">
+                    <Path Data="{StaticResource SaveAll}" Width="24" Height="24" Fill="#89000000" />
+                </Button>
+                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Open an experiment"
+                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LoadExperiment()]">
+                    <Path Data="{StaticResource Open}" Width="24" Height="24" Fill="#89000000" />
+                </Button>
+                <Button Style="{StaticResource BadgerButtonStyle}"  ToolTip="Open a set of experiments"
+                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LoadExperiments()]">
+                    <Path Data="{StaticResource OpenProject}" Width="24" Height="24" Fill="#89000000" />
+                </Button>
+                <Button Style="{StaticResource BadgerButtonStyle}"  ToolTip="Erase all open experiments"
+                        Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action ClearExperiments()]">
+                    <Path Data="{StaticResource Delete}" Width="24" Height="24" Fill="#89000000" />
+                </Button>
 
+                <!--<Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="4" />-->
+
+                <!--Label VerticalAlignment="Center">App</-->
+
+                <Button Style="{StaticResource BadgerButtonStyle}" Width="Auto" Height="40"
+                        IsEnabled="{Binding Path = CanLaunchExperiment}" ToolTip="Run Experiments"
+                        cal:Message.Attach="[Event Click]=[Action RunExperimentsInEditor()]">
+                    <StackPanel Orientation="Horizontal">
+                        <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000" />
+                        <Label>Launch</Label>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
             <TabControl Grid.Row="1" Grid.Column="2" x:Name="ExperimentViewModels" Margin="0,0,5,5"
-                        Padding="0" SelectedItem="{Binding Path = selectedExperiment}">
+                        Padding="0" SelectedItem="{Binding Path = SelectedExperiment}">
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" >

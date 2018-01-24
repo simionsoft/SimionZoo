@@ -26,22 +26,48 @@ namespace Badger.ViewModels
         private int m_lastProgressUpdate = 5;
 
         private System.Timers.Timer m_timer;
-        private bool m_bRunning;
 
-        public bool bRunning
+        public bool IsBatchLoadedAndNotRunning
+        {
+            get { return IsBatchLoaded && !IsRunning; }
+        }
+
+        private bool m_bBatchLoaded = false;
+        public bool IsBatchLoaded
+        {
+            get { return m_bBatchLoaded; }
+            set
+            {
+                m_bBatchLoaded = value;
+                NotifyOfPropertyChange(() => IsBatchLoaded);
+                NotifyOfPropertyChange(() => IsBatchLoadedAndNotRunning);
+            }
+        }
+
+        private bool m_bRunning= false;
+        public bool IsRunning
         {
             get { return m_bRunning; }
-            set { m_bRunning = value; NotifyOfPropertyChange(() => bRunning); }
+            set
+            {
+                m_bRunning = value;
+                NotifyOfPropertyChange(() => IsRunning);
+                NotifyOfPropertyChange(() => IsNotRunning);
+                NotifyOfPropertyChange(() => IsBatchLoadedAndNotRunning);
+            }
+        }
+        public bool IsNotRunning
+        {
+            get { return !IsRunning; }
         }
 
         private bool m_bFinished;
-        public bool bFinished
+        public bool IsFinished
         {
             get { return m_bFinished; }
-            set { m_bFinished = value; NotifyOfPropertyChange(() => bFinished); }
+            set { m_bFinished = value; NotifyOfPropertyChange(() => IsFinished); }
         }
 
-        private List<HerdAgentViewModel> m_herdAgentList;
         private List<MonitoredExperimentalUnitViewModel> m_pendingExperiments = new List<MonitoredExperimentalUnitViewModel>();
 
         private CancellationTokenSource m_cancelTokenSource;
@@ -103,22 +129,41 @@ namespace Badger.ViewModels
             return newExperiment.ExperimentalUnits.Count;
         }
 
+
         /// <summary>
         ///     Class constructor.
         /// </summary>
-        /// <param name="freeHerdAgents"></param>
         /// <param name="evaluationMonitor"></param>
         /// <param name="logFunctionDelegate"></param>
-        public ExperimentQueueMonitorViewModel(List<HerdAgentViewModel> freeHerdAgents,
-            PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate)
+        public ExperimentQueueMonitorViewModel(PlotViewModel evaluationMonitor, Logger.LogFunction logFunctionDelegate)
         {
-            m_bRunning = false;
             m_evaluationMonitor = evaluationMonitor;
-            m_herdAgentList = freeHerdAgents;
             logFunction = logFunctionDelegate;
             ExperimentTimer = new Stopwatch();
+
+            IsRunning = false;
+            IsBatchLoaded = false;
         }
 
+        public void SelectExperimentBatchFile()
+        {
+            string fileName= null;
+            bool isOpen = SimionFileData.OpenFile(ref fileName, SimionFileData.ExperimentBatchFilter
+                , XMLConfig.experimentBatchExtension);
+            if (!isOpen) return;
+            LoadBatchFile(fileName);
+        }
+
+        string m_batchFileName;
+        public string BatchFileName
+        {
+            get { return m_batchFileName; }
+            set
+            {
+                m_batchFileName = value;
+                NotifyOfPropertyChange(() => BatchFileName);
+            }
+        }
         int NumExperimentalUnits = 0;
 
         /// <summary>
@@ -126,7 +171,7 @@ namespace Badger.ViewModels
         ///     contains all required data for the task.
         /// </summary>
         /// <param name="batchFileName">The batch file with experiment data</param>
-        public bool InitializeExperiments(string batchFileName)
+        public bool LoadBatchFile(string batchFileName)
         {
             //Load the batch
             NumExperimentalUnits= SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
@@ -157,6 +202,9 @@ namespace Badger.ViewModels
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
             }
+            BatchFileName = batchFileName;
+            IsBatchLoaded = true;
+            IsRunning = false;
             return true;
         }
 
@@ -249,20 +297,20 @@ namespace Badger.ViewModels
         }
 
 
-        public async void RunExperimentsAsync(bool monitorProgress, bool receiveJobResults)
+        public async void RunExperimentsAsync(List<HerdAgentViewModel> freeHerdAgents)
         {
             m_timer = new System.Timers.Timer(1000);
             m_timer.Elapsed += OnTimedEvent;
             m_timer.Enabled = true;
 
-            bRunning = true;
+            IsRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
             List<Task<MonitoredJobViewModel>> experimentBatchTaskList 
                 = new List<Task<MonitoredJobViewModel>>();
 
             // Assign experiments to free agents
-            AssignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref m_monitoredJobs,
+            AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref m_monitoredJobs,
                 m_cancelTokenSource.Token, logFunction);
             try
             {
@@ -293,12 +341,12 @@ namespace Badger.ViewModels
                         logFunction(finishedTaskResult.FailedExperiments.Count + " failed experiments enqueued again for further trials");
                     }
 
-                    // Just in case the freed agent hasn't still been discovered by the shepherd
-                    if (!m_herdAgentList.Contains(finishedTaskResult.HerdAgent))
-                        m_herdAgentList.Add(finishedTaskResult.HerdAgent);
+                    //// Just in case the freed agent hasn't still been discovered by the shepherd
+                    //if (!m_herdAgentList.Contains(finishedTaskResult.HerdAgent))
+                    //    m_herdAgentList.Add(finishedTaskResult.HerdAgent);
 
                     // Assign experiments to free agents
-                    AssignExperiments(ref m_pendingExperiments, ref m_herdAgentList, ref m_monitoredJobs,
+                    AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref m_monitoredJobs,
                         m_cancelTokenSource.Token, logFunction);
                 }
             }
@@ -310,9 +358,9 @@ namespace Badger.ViewModels
             finally
             {
                 if (m_pendingExperiments.Count == 0)
-                    bFinished = true; // used to enable the "View reports" button
+                    IsFinished = true; // used to enable the "View reports" button
 
-                bRunning = false;
+                IsRunning = false;
                 m_cancelTokenSource.Dispose();
             }
         }
