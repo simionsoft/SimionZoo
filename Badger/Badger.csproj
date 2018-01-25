@@ -237,7 +237,6 @@
     <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatsViewModel.cs" />
     <Compile Include="ViewModels\MonitoredExperimentalUnitViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
@@ -326,9 +325,6 @@
     </Compile>
     <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
-      <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ExperimentMonitorWindowView.xaml.cs">
       <DependentUpon>ExperimentMonitorWindowView.xaml</DependentUpon>
@@ -567,10 +563,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MonitoredExperimentalUnitView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ExperimentQueueMonitorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

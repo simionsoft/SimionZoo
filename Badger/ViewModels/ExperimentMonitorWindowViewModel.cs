@@ -15,7 +15,7 @@ namespace Badger.ViewModels
 {
     public class ExperimentMonitorWindowViewModel : Screen
     {
-        public PlotViewModel EvaluationPlot { get; set; }
+        public PlotViewModel Plot { get; set; }
 
         public Logger.LogFunction LogFunction { get; set; }
 
@@ -28,9 +28,9 @@ namespace Badger.ViewModels
         public ExperimentMonitorWindowViewModel(ShepherdViewModel shepherd, Logger.LogFunction logFunction)
         {
             m_shepherd = shepherd;
-            EvaluationPlot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
-            EvaluationPlot.Plot.TitleFontSize = 14;
-            EvaluationPlot.Properties.LegendVisible = false;
+            Plot = new PlotViewModel("Evaluation Episodes", 1.0, "Normalized Evaluation Episode", "Average Reward") { bShowOptions = false };
+            Plot.Plot.TitleFontSize = 14;
+            Plot.Properties.LegendVisible = false;
 
             LogFunction = logFunction;
         }
@@ -40,20 +40,9 @@ namespace Badger.ViewModels
         ///</summary>
         public void CleanExperimentBatch()
         {
-            SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CleanExperimentalUnitLogFiles);
-        }
-
-        public void LoadExperimentBatch(string batchFileName)
-        {
-            BatchFileName = batchFileName;
-            // Clear old LineSeries to avoid confusion on visualization
-            EvaluationPlot.ClearLineSeries();
-
-            if (!LoadBatchFile(BatchFileName))
-            {
-                CaliburnUtility.ShowWarningDialog("Failed to initialize the experiment batch", "Error");
-                return;
-            }
+            int numFilesDeleted= SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CleanExperimentalUnitLogFiles);
+            NumFinishedExperimentalUnits=
+                SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CountFinishedExperimentalUnitsInBatch);
         }
 
         List<HerdAgentViewModel> getFreeHerdAgentList()
@@ -86,6 +75,7 @@ namespace Badger.ViewModels
         /// </summary>
         public void RunExperimentBatch()
         {
+            jobId = 0; //initialize the job ids
             List<HerdAgentViewModel> freeHerdAgents= getFreeHerdAgentList();
             IsRunning = true;
             ExperimentTimer.Start();
@@ -168,9 +158,6 @@ namespace Badger.ViewModels
 
         private CancellationTokenSource m_cancelTokenSource;
 
-        //log stuff: a delegate log function must be passed via setLogFunction
-        private Logger.LogFunction logFunction = null;
-        private PlotViewModel m_evaluationMonitor;
 
         private string m_estimatedEndTimeText = "";
         public string EstimatedEndTime
@@ -220,7 +207,7 @@ namespace Badger.ViewModels
             , SimionFileData.LoadUpdateFunction loadUpdateFunction = null)
         {
             LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, false, loadUpdateFunction);
+                = new LoggedExperimentViewModel(node, baseDirectory, false, true, loadUpdateFunction);
             LoggedExperiments.Add(newExperiment);
             return newExperiment.ExperimentalUnits.Count;
         }
@@ -232,7 +219,7 @@ namespace Badger.ViewModels
             bool isOpen = SimionFileData.OpenFile(ref fileName, SimionFileData.ExperimentBatchFilter
                 , XMLConfig.experimentBatchExtension);
             if (!isOpen) return;
-            LoadBatchFile(fileName);
+            LoadExperimentBatch(fileName);
         }
 
         string m_batchFileName;
@@ -245,17 +232,46 @@ namespace Badger.ViewModels
                 NotifyOfPropertyChange(() => BatchFileName);
             }
         }
-        int NumExperimentalUnits = 0;
+
+        int m_numExperimentalUnits = 0;
+        public int NumExperimentalUnits
+        {
+            get { return m_numExperimentalUnits; }
+            set { m_numExperimentalUnits = value; NotifyOfPropertyChange(() => NumExperimentalUnits); }
+        }
+
+        int m_numFinishedExperimentalUnits = 0;
+        public int NumFinishedExperimentalUnits
+        {
+            get { return m_numFinishedExperimentalUnits; }
+            set
+            {
+                m_numFinishedExperimentalUnits = value;
+                GlobalProgress = NumFinishedExperimentalUnits / NumExperimentalUnits;
+                NotifyOfPropertyChange(() => NumFinishedExperimentalUnits);
+            }
+        }
 
         /// <summary>
         ///     Initializes the experiments to be monitored through a batch file that
         ///     contains all required data for the task.
         /// </summary>
         /// <param name="batchFileName">The batch file with experiment data</param>
-        public bool LoadBatchFile(string batchFileName)
+        public bool LoadExperimentBatch(string batchFileName)
         {
-            //Load the batch
+            BatchFileName = batchFileName;
+            // Clear old LineSeries to avoid confusion on visualization
+            Plot.ClearLineSeries();
+
+            //Load the experiments
             NumExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
+
+            if (NumExperimentalUnits == 0)
+            {
+                CaliburnUtility.ShowWarningDialog("Failed to initialize the experiment batch", "Error");
+                return false;
+            }
+            NumFinishedExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, SimionFileData.CountFinishedExperimentalUnitsInBatch);
 
             Dictionary<string, string> renameRules = new Dictionary<string, string>();
 
@@ -276,10 +292,11 @@ namespace Badger.ViewModels
                         renameRules[prerequisite.Value] = prerequisite.Rename;
                 }
 
+                m_pendingExperiments.Clear();
                 foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentalUnitViewModel monitoredExperiment =
-                        new MonitoredExperimentalUnitViewModel(unit, experiment.ExeFile, prerequisites, renameRules, m_evaluationMonitor);
+                        new MonitoredExperimentalUnitViewModel(unit, experiment.ExeFile, prerequisites, renameRules, Plot);
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
             }
@@ -355,16 +372,6 @@ namespace Badger.ViewModels
             }
         }
 
-        List<MonitoredJobViewModel> m_monitoredJobs = new List<MonitoredJobViewModel>();
-        public List<MonitoredJobViewModel> MonitoredJobs
-        {
-            get { return m_monitoredJobs; }
-            set
-            {
-                m_monitoredJobs = value;
-                NotifyOfPropertyChange(() => MonitoredJobs);
-            }
-        }
         BindableCollection<MonitoredJobViewModel> m_allMonitoredJobs
             = new BindableCollection<MonitoredJobViewModel>();
         public BindableCollection<MonitoredJobViewModel> AllMonitoredJobs
@@ -380,6 +387,8 @@ namespace Badger.ViewModels
 
         public async void RunExperimentsAsync(List<HerdAgentViewModel> freeHerdAgents)
         {
+            List<MonitoredJobViewModel> assignedJobs = new List<MonitoredJobViewModel>();
+
             m_timer = new System.Timers.Timer(1000);
             m_timer.Elapsed += OnTimedEvent;
             m_timer.Enabled = true;
@@ -387,54 +396,53 @@ namespace Badger.ViewModels
             IsRunning = true;
             m_cancelTokenSource = new CancellationTokenSource();
 
-            List<Task<MonitoredJobViewModel>> experimentBatchTaskList
+            List<Task<MonitoredJobViewModel>> monitoredJobTasks
                 = new List<Task<MonitoredJobViewModel>>();
 
             // Assign experiments to free agents
-            AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref m_monitoredJobs,
-                m_cancelTokenSource.Token, logFunction);
+            AssignExperiments(ref freeHerdAgents, ref assignedJobs);
             try
             {
-                while ((MonitoredJobs.Count > 0 || experimentBatchTaskList.Count > 0
+                while ((assignedJobs.Count > 0 || monitoredJobTasks.Count > 0
                     || m_pendingExperiments.Count > 0) && !m_cancelTokenSource.IsCancellationRequested)
                 {
-                    foreach (MonitoredJobViewModel batch in MonitoredJobs)
-                        experimentBatchTaskList.Add(batch.SendJobAndMonitor());
+                    foreach (MonitoredJobViewModel batch in assignedJobs)
+                        monitoredJobTasks.Add(batch.SendJobAndMonitor());
 
                     // All pending experiments sent? Then we await completion to retry in case something fails
                     if (m_pendingExperiments.Count == 0)
                     {
-                        Task.WhenAll(experimentBatchTaskList).Wait();
-                        logFunction("All the experiments have finished");
+                        Task.WhenAll(monitoredJobTasks).Wait();
+                        LogFunction("All the experiments have finished");
                         break;
                     }
 
                     // Wait for the first agent to finish and give it something to do
-                    Task<MonitoredJobViewModel> finishedTask = await Task.WhenAny(experimentBatchTaskList);
+                    Task<MonitoredJobViewModel> finishedTask = await Task.WhenAny(monitoredJobTasks);
                     MonitoredJobViewModel finishedTaskResult = await finishedTask;
-                    logFunction("Job finished: " + finishedTaskResult.ToString());
-                    experimentBatchTaskList.Remove(finishedTask);
+                    LogFunction("Job finished: " + finishedTaskResult.ToString());
+                    NumFinishedExperimentalUnits += finishedTaskResult.MonitoredExperimentalUnits.Count;
+                    monitoredJobTasks.Remove(finishedTask);
 
                     if (finishedTaskResult.FailedExperiments.Count > 0)
                     {
                         foreach (MonitoredExperimentalUnitViewModel exp in finishedTaskResult.FailedExperiments)
                             m_pendingExperiments.Add(exp);
-                        logFunction(finishedTaskResult.FailedExperiments.Count + " failed experiments enqueued again for further trials");
+                        LogFunction(finishedTaskResult.FailedExperiments.Count + " failed experiments enqueued again for further trials");
                     }
 
-                    //// Just in case the freed agent hasn't still been discovered by the shepherd
-                    //if (!m_herdAgentList.Contains(finishedTaskResult.HerdAgent))
-                    //    m_herdAgentList.Add(finishedTaskResult.HerdAgent);
+                    // Add the herd agent to the free agent list
+                    if (!freeHerdAgents.Contains(finishedTaskResult.HerdAgent))
+                        freeHerdAgents.Add(finishedTaskResult.HerdAgent);
 
                     // Assign experiments to free agents
-                    AssignExperiments(ref m_pendingExperiments, ref freeHerdAgents, ref m_monitoredJobs,
-                        m_cancelTokenSource.Token, logFunction);
+                    AssignExperiments(ref freeHerdAgents, ref assignedJobs);
                 }
             }
             catch (Exception ex)
             {
-                logFunction("Exception in runExperimentQueueRemotely()");
-                logFunction(ex.StackTrace);
+                LogFunction("Exception in runExperimentQueueRemotely()");
+                LogFunction(ex.StackTrace);
             }
             finally
             {
@@ -453,7 +461,7 @@ namespace Badger.ViewModels
         {
             if (m_bRunning && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
-            EvaluationPlot.ClearLineSeries();
+            Plot.ClearLineSeries();
         }
 
         //integer value incremented to generate job ids
@@ -461,20 +469,15 @@ namespace Badger.ViewModels
         /// <summary>
         ///     Assigns experiments to availables herd agents.
         /// </summary>
-        /// <param name="pendingExperiments"></param>
         /// <param name="freeHerdAgents"></param>
-        /// <param name="experimentAssignments"></param>
-        /// <param name="cancelToken"></param>
-        /// <param name="logFunction"></param>
         /// 
-        public void AssignExperiments(ref List<MonitoredExperimentalUnitViewModel> pendingExperiments,
-            ref List<HerdAgentViewModel> freeHerdAgents, ref List<MonitoredJobViewModel> experimentAssignments,
-            CancellationToken cancelToken, Logger.LogFunction logFunction = null)
+        void AssignExperiments(ref List<HerdAgentViewModel> freeHerdAgents
+            , ref List<MonitoredJobViewModel> assignedJobs)
         {
-            experimentAssignments.Clear();
+            //Clear the list: these are jobs which have to be sent
+            assignedJobs.Clear();
 
-
-            while (pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
+            while (m_pendingExperiments.Count > 0 && freeHerdAgents.Count > 0)
             {
                 HerdAgentViewModel herdAgent = freeHerdAgents[0];
                 freeHerdAgents.RemoveAt(0);
@@ -482,17 +485,17 @@ namespace Badger.ViewModels
                 int numProcessors = Math.Max(1, herdAgent.NumProcessors - 1); // Let's free one processor
 
                 List<MonitoredExperimentalUnitViewModel> experiments = new List<MonitoredExperimentalUnitViewModel>();
-                int len = Math.Min(numProcessors, pendingExperiments.Count);
+                int len = Math.Min(numProcessors, m_pendingExperiments.Count);
 
                 for (int i = 0; i < len; i++)
                 {
-                    experiments.Add(pendingExperiments[0]);
-                    pendingExperiments.RemoveAt(0);
+                    experiments.Add(m_pendingExperiments[0]);
+                    m_pendingExperiments.RemoveAt(0);
                 }
 
                 MonitoredJobViewModel newJob = new MonitoredJobViewModel("Job #" + jobId, experiments,
-                    herdAgent, m_evaluationMonitor, cancelToken, logFunction);
-                experimentAssignments.Add(newJob);
+                    herdAgent, Plot, m_cancelTokenSource.Token, LogFunction);
+                assignedJobs.Add(newJob);
                 AllMonitoredJobs.Insert(0, newJob);
                 ++jobId;
             }

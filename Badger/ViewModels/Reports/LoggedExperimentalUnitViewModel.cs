@@ -74,6 +74,17 @@ namespace Badger.ViewModels
             updateFunction?.Invoke();
         }
 
+        public bool PreviousLogExists()
+        {
+            if (File.Exists(LogFileName))
+            {
+                FileInfo fileInfo = new FileInfo(LogFileName);
+                if (fileInfo.Length > 0)
+                    return true;
+            }
+            return false;
+        }
+
         public void LoadLogDescriptor()
         {
             VariablesInLog = SimionLogDescriptor.LoadLogDescriptor(LogDescriptorFileName);

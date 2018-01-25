@@ -34,6 +34,35 @@ namespace Badger.Simion
         //relative to the batch file, instead of relative to the RLSimion folder structure
         public delegate int XmlNodeFunction(XmlNode node, string baseDirectory,LoadUpdateFunction loadUpdateFunction);
 
+        /// <summary>
+        /// This function cleans the log files
+        /// </summary>
+        /// <param name="node">The node used in each call of the function</param>
+        /// <param name="baseDirectory">Base directory</param>
+        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        /// <returns></returns>
+        public static int CountFinishedExperimentalUnitsInBatch(XmlNode node, string baseDirectory
+                , LoadUpdateFunction loadUpdateFunction)
+        {
+            int finishedExperimentalUnits = 0;
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                {
+                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute].Value;
+                    string pathToLogFile = GetLogFilePath(pathToExpUnit, false);
+                    if (File.Exists(pathToLogFile))
+                    {
+                        FileInfo fileInfo = new FileInfo(pathToLogFile);
+                        if (fileInfo.Length > 0)
+                            finishedExperimentalUnits++;
+                    }
+                }
+                else
+                    finishedExperimentalUnits+= CountFinishedExperimentalUnitsInBatch(child, baseDirectory, loadUpdateFunction);
+            }
+            return finishedExperimentalUnits;
+        }
 
         /// <summary>
         /// This function cleans the log files
@@ -50,7 +79,7 @@ namespace Badger.Simion
             {
                 if (child.Name == XMLConfig.experimentalUnitNodeTag)
                 {
-                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute];
+                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute].Value;
                     string pathToLogFile = GetLogFilePath(pathToExpUnit, false);
                     if (File.Exists(pathToLogFile))
                     {
@@ -64,6 +93,8 @@ namespace Badger.Simion
                         numFilesDeleted++;
                     }
                 }
+                else
+                    numFilesDeleted+= CleanExperimentalUnitLogFiles(child, baseDirectory, loadUpdateFunction);
             }
             return numFilesDeleted;
         }

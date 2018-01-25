@@ -279,7 +279,7 @@ namespace Badger.ViewModels
             , SimionFileData.LoadUpdateFunction updateFunction)
         {
             LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, false, updateFunction);
+                = new LoggedExperimentViewModel(node, baseDirectory, false, false, updateFunction);
             LoggedExperiments.Add(newExperiment);
             return newExperiment.ExperimentalUnits.Count;
         }

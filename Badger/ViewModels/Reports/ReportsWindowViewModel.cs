@@ -195,7 +195,7 @@ namespace Badger.ViewModels
             , SimionFileData.LoadUpdateFunction loadUpdateFunction)
         {
             LoggedExperimentViewModel newExperiment
-                = new LoggedExperimentViewModel(node, baseDirectory, true, loadUpdateFunction);
+                = new LoggedExperimentViewModel(node, baseDirectory, true, false, loadUpdateFunction);
 
             LoggedExperiments.Add(newExperiment);
             ExperimentalUnits.AddRange(newExperiment.ExperimentalUnits);

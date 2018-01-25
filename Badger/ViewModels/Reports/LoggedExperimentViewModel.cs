@@ -32,10 +32,11 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="configNode">The XML node from which the experiment's parameters hang.</param>
         /// <param name="baseDirectory">The directory of the parent batch file, if there is one.</param>
-        /// <param name="isForReport">True if we are reading the experiment to make a report.</param>
+        /// <param name="loadVariablesInLog">True if we are reading the experiment to make a report.</param>
+        /// <param name="loadOnlyUnfinishedExperimentalUnits">True if we only want to load unfinished experimental units</param>
         /// <param name="updateFunction">Callback function to be called after a load progress event</param>
-        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool isForReport
-            , SimionFileData.LoadUpdateFunction updateFunction = null)
+        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool loadVariablesInLog
+            , bool loadOnlyUnfinishedExperimentalUnits, SimionFileData.LoadUpdateFunction updateFunction = null)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
 
@@ -64,14 +65,14 @@ namespace Badger.ViewModels
 
                     case XMLConfig.experimentalUnitNodeTag:
                         LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);
-                        if (isForReport)
+                        if (loadVariablesInLog)
                         {
                             //We load the list of variables from the log descriptor and add them to the global list
                             newExpUnit.LoadLogDescriptor();
                             foreach (string variable in newExpUnit.VariablesInLog) AddVariable(variable);
                         }
-
-                        ExperimentalUnits.Add(newExpUnit);
+                        if (!loadOnlyUnfinishedExperimentalUnits || !newExpUnit.PreviousLogExists())
+                            ExperimentalUnits.Add(newExpUnit);
                         break;
                 }
             }
