@@ -244,7 +244,7 @@ namespace Badger.ViewModels
             set
             {
                 m_numFinishedExperimentalUnits = value;
-                GlobalProgress = CalculateGlobalProgress();
+                UpdateGlobalProgress();
                 NotifyOfPropertyChange(() => NumFinishedExperimentalUnits);
             }
         }
@@ -333,14 +333,14 @@ namespace Badger.ViewModels
         ///     Calculate the global progress of experiments in queue.
         /// </summary>
         /// <returns>The progress as a percentage.</returns>
-        public double CalculateGlobalProgress()
+        public void UpdateGlobalProgress()
         {
             if (NumExperimentalUnits == 0)
-                return 0.0;
+                GlobalProgress= 0.0;
             double sum = 0.0;
             foreach (MonitoredJobViewModel exp in AllMonitoredJobs)
                 sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
-            return sum / NumExperimentalUnits;
+            GlobalProgress= sum / NumExperimentalUnits;
         }
 
 
@@ -352,7 +352,7 @@ namespace Badger.ViewModels
         private void ProgressUpdateTimedEvent(object source, ElapsedEventArgs e)
         {
             // Recalculate global progress each time
-            GlobalProgress = CalculateGlobalProgress();
+            UpdateGlobalProgress();
             // Then update the estimated time to end
             m_timeRemaining = (int)(ExperimentTimer.Elapsed.TotalSeconds
                 * ((1 - m_globalProgress) / m_globalProgress));
