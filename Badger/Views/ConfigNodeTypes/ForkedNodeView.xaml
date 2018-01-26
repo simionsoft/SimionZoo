@@ -10,7 +10,6 @@
              x:Class="Badger.Views.ForkedNodeView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
-        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
         <BitmapImage x:Key="left-arrow" UriSource="/images/left-arrow.png" />
         <BitmapImage x:Key="right-arrow" UriSource="/images/right-arrow.png" />
         <BitmapImage x:Key="add" UriSource="/images/add.png" />
@@ -23,7 +22,7 @@
                     <ContextMenu>
                         <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode">
                             <MenuItem.Icon>
-                                <Image Source="{StaticResource fork}"/>
+                                <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </ContextMenu>

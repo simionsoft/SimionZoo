@@ -10,13 +10,12 @@
                 d:DesignHeight="100" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical">
         <StackPanel Margin="0,0,0,0"  Orientation="Horizontal" Background="#f0f0f0">
-            <Image Source="{StaticResource fork}" Width="15"/>
-            <Label x:Name="Name" FontWeight="Medium" FontSize="10" Padding="0">
+            <Path Data="{StaticResource Fork}" Width="15" Height="15" Fill="#89000000" />
+            <Label x:Name="Name" FontWeight="Medium" FontSize="10" Padding="0" VerticalAlignment="Center">
                 <Label.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Group by value">

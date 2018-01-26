@@ -43,6 +43,8 @@ namespace Badger.ViewModels
             int numFilesDeleted= SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CleanExperimentalUnitLogFiles);
             NumFinishedExperimentalUnits=
                 SimionFileData.LoadExperimentBatchFile(BatchFileName, SimionFileData.CountFinishedExperimentalUnitsInBatch);
+            //prepare the batch for a new execution
+            InitializeExperimentBatchForExecution();
         }
 
         List<HerdAgentViewModel> getFreeHerdAgentList()
@@ -105,11 +107,6 @@ namespace Badger.ViewModels
                 StopExperiments();
             base.OnDeactivate(close);
         }
-
-        // Update time estimation according to porgress every half second
-        private const int m_globalProgressUpdateRate = 15;
-        // Intial value set to 20 in order to make an initial estimation after 10s (15 - 5 = 10)
-        private int m_lastProgressUpdate = 5;
 
         private System.Timers.Timer m_timer;
 
@@ -247,7 +244,7 @@ namespace Badger.ViewModels
             set
             {
                 m_numFinishedExperimentalUnits = value;
-                GlobalProgress = NumFinishedExperimentalUnits / NumExperimentalUnits;
+                GlobalProgress = CalculateGlobalProgress();
                 NotifyOfPropertyChange(() => NumFinishedExperimentalUnits);
             }
         }
@@ -264,15 +261,23 @@ namespace Badger.ViewModels
             Plot.ClearLineSeries();
 
             //Load the experiments
-            NumExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
-
-            if (NumExperimentalUnits == 0)
+            int numUnfinishedExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, LoadLoggedExperiment);
+            NumExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, SimionFileData.CountExperimentalUnitsInBatch);
+            if (NumExperimentalUnits < 0)
             {
                 CaliburnUtility.ShowWarningDialog("Failed to initialize the experiment batch", "Error");
                 return false;
             }
             NumFinishedExperimentalUnits = SimionFileData.LoadExperimentBatchFile(batchFileName, SimionFileData.CountFinishedExperimentalUnitsInBatch);
 
+            if (InitializeExperimentBatchForExecution())
+                BatchFileName = batchFileName;
+
+            return true;
+        }
+
+        bool InitializeExperimentBatchForExecution()
+        {
             Dictionary<string, string> renameRules = new Dictionary<string, string>();
 
             foreach (var experiment in LoggedExperiments)
@@ -296,11 +301,12 @@ namespace Badger.ViewModels
                 foreach (var unit in experiment.ExperimentalUnits)
                 {
                     MonitoredExperimentalUnitViewModel monitoredExperiment =
-                        new MonitoredExperimentalUnitViewModel(unit, experiment.ExeFile, prerequisites, renameRules, Plot);
+                        new MonitoredExperimentalUnitViewModel(unit, experiment.ExeFile
+                        , prerequisites, renameRules, Plot);
                     m_pendingExperiments.Add(monitoredExperiment);
                 }
             }
-            BatchFileName = batchFileName;
+            AllMonitoredJobs.Clear();
             IsBatchLoaded = true;
             IsRunning = false;
             return true;
@@ -329,47 +335,28 @@ namespace Badger.ViewModels
         /// <returns>The progress as a percentage.</returns>
         public double CalculateGlobalProgress()
         {
+            if (NumExperimentalUnits == 0)
+                return 0.0;
             double sum = 0.0;
             foreach (MonitoredJobViewModel exp in AllMonitoredJobs)
                 sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
             return sum / NumExperimentalUnits;
         }
 
+
         /// <summary>
-        ///     Express progress as a percentage unit to fill the global progress bar.
+        ///     Update the progress each time the timer generates an event
         /// </summary>
-        public void UpdateGlobalProgress()
+        /// <param name="source"></param>
+        /// <param name="e"></param>
+        private void ProgressUpdateTimedEvent(object source, ElapsedEventArgs e)
         {
             // Recalculate global progress each time
             GlobalProgress = CalculateGlobalProgress();
             // Then update the estimated time to end
             m_timeRemaining = (int)(ExperimentTimer.Elapsed.TotalSeconds
                 * ((1 - m_globalProgress) / m_globalProgress));
-            EstimatedEndTime = "Time remaining: "
-                + TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
-        }
-
-        /// <summary>
-        ///     Specify what is going to happen when the Elapsed event is raised.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="e"></param>
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            if (m_globalProgress >= 0.0 && m_globalProgress < 1.0 && m_timeRemaining >= 0)
-            {
-                m_timeRemaining = m_timeRemaining - 1;
-                EstimatedEndTime = "Time remaining: "
-                    + TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
-            }
-
-            m_lastProgressUpdate++;
-
-            if (m_lastProgressUpdate > m_globalProgressUpdateRate)
-            {
-                UpdateGlobalProgress();
-                m_lastProgressUpdate = 0;
-            }
+            EstimatedEndTime = TimeSpan.FromSeconds(m_timeRemaining).ToString(@"hh\:mm\:ss");
         }
 
         BindableCollection<MonitoredJobViewModel> m_allMonitoredJobs
@@ -390,7 +377,7 @@ namespace Badger.ViewModels
             List<MonitoredJobViewModel> assignedJobs = new List<MonitoredJobViewModel>();
 
             m_timer = new System.Timers.Timer(1000);
-            m_timer.Elapsed += OnTimedEvent;
+            m_timer.Elapsed += ProgressUpdateTimedEvent;
             m_timer.Enabled = true;
 
             IsRunning = true;
@@ -413,6 +400,7 @@ namespace Badger.ViewModels
                     if (m_pendingExperiments.Count == 0)
                     {
                         Task.WhenAll(monitoredJobTasks).Wait();
+                        NumFinishedExperimentalUnits = NumExperimentalUnits; //set the progress to 100%
                         LogFunction("All the experiments have finished");
                         break;
                     }
@@ -462,6 +450,7 @@ namespace Badger.ViewModels
             if (m_bRunning && m_cancelTokenSource != null)
                 m_cancelTokenSource.Cancel();
             Plot.ClearLineSeries();
+            IsRunning = false;
         }
 
         //integer value incremented to generate job ids
