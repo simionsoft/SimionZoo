@@ -48,18 +48,23 @@
                     </Button>
 
                     <Button ToolTip="Run the experiment" Width="30" Style="{StaticResource BadgerButtonStyle}" 
-            cal:Message.Attach="[Event Click]=[Action RunExperimentBatch()]" 
-                    IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
+                        cal:Message.Attach="[Event Click]=[Action RunExperimentBatch()]" 
+                        IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
                         <Path Data="{StaticResource Play}" Width="24" Height="24" Fill="#89000000" />
                     </Button>
+                    <Button ToolTip="Stop the experiment" Width="30" Style="{StaticResource BadgerButtonStyle}" 
+                        cal:Message.Attach="[Event Click]=[Action StopExperiments()]" 
+                        IsEnabled="{Binding IsRunning}">
+                        <Path Data="{StaticResource Stop}" Width="24" Height="24" Fill="#89000000" />
+                    </Button>
                     <Button ToolTip="Run the experiment" Width="30"
-            cal:Message.Attach="[Event Click]=[Action CleanExperimentBatch()]" Style="{StaticResource BadgerButtonStyle}" 
-                    IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
+                        cal:Message.Attach="[Event Click]=[Action CleanExperimentBatch()]" Style="{StaticResource BadgerButtonStyle}" 
+                        IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
                         <Path Data="{StaticResource Delete}" Width="24" Height="24" Fill="#89000000" />
                     </Button>
                     <Button ToolTip="Show report for this experiment" Width="30"
-            cal:Message.Attach="[Event Click]=[Action ShowReports()]" Style="{StaticResource BadgerButtonStyle}"
-                IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
+                        cal:Message.Attach="[Event Click]=[Action ShowReports()]" Style="{StaticResource BadgerButtonStyle}"
+                        IsEnabled="{Binding IsBatchLoadedAndNotRunning}">
                         <Path Data="{StaticResource Plot}" Width="24" Height="24" Fill="#89000000" />
                     </Button>
                 </StackPanel>
