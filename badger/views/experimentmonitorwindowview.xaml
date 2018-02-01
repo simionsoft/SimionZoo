@@ -10,7 +10,7 @@
         Height="700"
         WindowState="Normal"
         Title="Experiment Monitor"
-        Icon="/badger-head.ico">
+        Icon="../badger.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>
