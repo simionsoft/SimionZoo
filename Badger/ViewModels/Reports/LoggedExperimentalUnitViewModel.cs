@@ -10,7 +10,7 @@ namespace Badger.ViewModels
     public class LoggedExperimentalUnitViewModel : SelectableTreeItem
     {
         private string m_name;
-        public string Name
+        new public string Name
         {
             get { return m_name; }
             set { m_name = value; NotifyOfPropertyChange(() => Name); }

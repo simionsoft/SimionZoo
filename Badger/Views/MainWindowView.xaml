@@ -7,7 +7,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         WindowStyle="ThreeDBorderWindow"
         Title="Badger" Width="960" Height="600"
-        Icon="/badger-head.ico">
+        Icon="../badger.ico">
 
     <Window.Resources>
         <DataTemplate DataType="{x:Type vm:ExperimentViewModel}">

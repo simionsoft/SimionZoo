@@ -10,7 +10,6 @@
 d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <BitmapImage x:Key="folder" UriSource="/images/folder.png" />
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" VerticalAlignment="Center" Margin="0 2">
         <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"

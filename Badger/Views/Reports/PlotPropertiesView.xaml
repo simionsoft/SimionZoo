@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Width="430" Height="350"
              WindowStyle="ThreeDBorderWindow" Title="Properties"
-             Background="#eeeeee" WindowState="Normal" Icon="/badger-head.ico">
+             Background="#eeeeee" WindowState="Normal" Icon="../../badger.ico">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </Window.Resources>

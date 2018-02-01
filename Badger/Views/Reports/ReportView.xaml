@@ -24,7 +24,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ContentControl x:Name="Plot" Grid.Row="0" Height="500" Width="600"/>
+        <ContentControl x:Name="Plot" Grid.Row="0" Height="500" Width="700"/>
         <!--<oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding Plot}" 
                       Height="500" Width="600" Margin="10,10,20,0" Background="#FAFAFA" />-->
 

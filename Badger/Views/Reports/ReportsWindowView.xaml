@@ -9,7 +9,7 @@
         Title="Report Viewer" Width="1100" Height="800"
         Background="#eeeeee"
         WindowState="Normal"
-        Icon="/badger-head.ico">
+        Icon="../../badger.ico">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />

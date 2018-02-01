@@ -9,12 +9,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="Badger.Views.ForkedNodeView"
              mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
-    <UserControl.Resources>
-        <BitmapImage x:Key="left-arrow" UriSource="/images/left-arrow.png" />
-        <BitmapImage x:Key="right-arrow" UriSource="/images/right-arrow.png" />
-        <BitmapImage x:Key="add" UriSource="/images/add.png" />
-        <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
-    </UserControl.Resources>
+
     <Border BorderBrush="Orange">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Background="LightGray">
@@ -27,28 +22,30 @@
                         </MenuItem>
                     </ContextMenu>
                 </StackPanel.ContextMenu>
-                <Image  Source="{StaticResource fork}" Width="30"/>
+                <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
 
                 <TextBox Text="{Binding alias}" Foreground="{Binding textColor}" MaxLength="20" FontSize="10" MaxWidth="80" Width="80"
                              VerticalAlignment="Center" Background="Transparent" BorderThickness="0"/>
 
-                <Button Background="Transparent" BorderBrush="Transparent" Width="25" Padding="0"
+                <Button Background="Transparent" BorderBrush="Transparent" Width="20" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action previousValue()]"
-                            Opacity="{Binding bIsTherePreviousValue}">
-                    <Image Source="{StaticResource left-arrow}"  ToolTip="Set previous value" Width="10"/>
+                            Opacity="{Binding bIsTherePreviousValue}" ToolTip="Select the previous value">
+                    
+                    <Path Data="{StaticResource LeftArrow}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
                 <Label VerticalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
-                <Button Background="Transparent" BorderBrush="Transparent" Width="25" Padding="0"
+                <Button Background="Transparent" BorderBrush="Transparent" Width="20" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action nextValue()]"
-                            Opacity="{Binding bIsThereNextValue}">
-                    <Image Source="{StaticResource right-arrow}"  ToolTip="Set next value" Width="10"/>
+                            Opacity="{Binding bIsThereNextValue}" ToolTip="Select the next value">
+                    <Path Data="{StaticResource RightArrow}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
 
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
-                                    cal:Message.Attach="[Event Click]=[Action addValue()]">
-                    <Image Source="{StaticResource add}"  ToolTip="Add a new value"/>
+                                    cal:Message.Attach="[Event Click]=[Action addValue()]"
+                        ToolTip="Add a new value">
+                    <Path Data="{StaticResource Add}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked node"
+                <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked node"
                         Width="40" Height="40">
                     <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
                     <i:Interaction.Triggers>
@@ -58,11 +55,11 @@
                             </cal:ActionMessage>
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
-                </Button>
+                </Button>-->
                 <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
                                     cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
-                                Opacity="{Binding bIsThereMoreValues}">
-                    <Image Source="{StaticResource remove}"  ToolTip="Remove this value"/>
+                                Opacity="{Binding bIsThereMoreValues}" ToolTip="Remove this value">
+                    <Path Data="{StaticResource Close}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -73,10 +70,10 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <ContentControl x:Name="selectedValueConfigNode"/>
-                <Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked value"
+                <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked value"
                         Width="40" Height="40" cal:Message.Attach="[Event Click]=[Action LinkFork()]">
                     <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />
-                </Button>
+                </Button>-->
             </StackPanel>
         </StackPanel>
     </Border>

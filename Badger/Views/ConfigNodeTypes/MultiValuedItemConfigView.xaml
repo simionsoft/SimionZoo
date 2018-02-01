@@ -6,9 +6,7 @@
              xmlns:cal="http://www.caliburnproject.org" x:Class="Badger.Views.MultiValuedItemConfigView"
              mc:Ignorable="d" 
                 d:DesignHeight="50" d:DesignWidth="300">
-    <UserControl.Resources>
-        <BitmapImage x:Key="remove" UriSource="/images/remove.png" />
-    </UserControl.Resources>
+
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <StackPanel>
@@ -18,7 +16,7 @@
                 <Button VerticalAlignment="Center" Background="Transparent" BorderBrush="{x:Null}"
                             cal:Message.Attach="[Event Click]=[remove]"
                             x:Name="Remove" Width="25" Height="25" >
-                    <Image Source="{StaticResource remove}"/>
+                    <Path Data="{StaticResource Close}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
             </StackPanel>
         </StackPanel>

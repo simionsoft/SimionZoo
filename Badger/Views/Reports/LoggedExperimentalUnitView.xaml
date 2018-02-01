@@ -12,5 +12,4 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
     <Label x:Name="Name" FontWeight="Light" ToolTip="{Binding ForkValuesAsString}" Padding="2"/>
-
 </UserControl>
