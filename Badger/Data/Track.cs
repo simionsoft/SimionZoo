@@ -171,7 +171,7 @@ namespace Badger.Simion
             SeriesGroups.Add(variable, variableData);
         }
 
-        public SeriesGroup GetDataSeriesForOrdering(string variable)
+        public SeriesGroup GetDataSeries(string variable)
         {
             foreach (Report track in SeriesGroups.Keys)
             {
@@ -181,5 +181,25 @@ namespace Badger.Simion
         }
 
         public bool HasData { get { return SeriesGroups.Keys.Count != 0; } }
+
+        public string TrackId
+        {
+            get
+            {
+                if (ForkValues.Count == 0)
+                    return "N/A";
+                string id = "";
+                double value;
+                foreach (KeyValuePair<string, string> entry in ForkValues)
+                {
+                    //we leave the keys of numeric values and remove the keys of alphanumeric ones
+                    if (double.TryParse(entry.Value, out value))
+                        id += Utility.LimitLength(entry.Key, 10) + "=" + entry.Value + ",";
+                    else id += entry.Value + ",";
+                }
+                id = id.TrimEnd(',');
+                return id;
+            }
+        }
     }
 }

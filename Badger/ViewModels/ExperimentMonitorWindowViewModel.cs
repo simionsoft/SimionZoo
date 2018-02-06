@@ -213,7 +213,7 @@ namespace Badger.ViewModels
         public void SelectExperimentBatchFile()
         {
             string fileName = null;
-            bool isOpen = SimionFileData.OpenFile(ref fileName, SimionFileData.ExperimentBatchFilter
+            bool isOpen = SimionFileData.OpenFileDialog(ref fileName, SimionFileData.ExperimentBatchFilter
                 , XMLConfig.experimentBatchExtension);
             if (!isOpen) return;
             LoadExperimentBatch(fileName);
@@ -337,7 +337,7 @@ namespace Badger.ViewModels
         {
             if (NumExperimentalUnits == 0)
                 GlobalProgress= 0.0;
-            double sum = 0.0;
+            double sum = NumFinishedExperimentalUnits;
             foreach (MonitoredJobViewModel exp in AllMonitoredJobs)
                 sum += exp.MonitoredExperimentalUnits.Count * exp.NormalizedProgress;
             GlobalProgress= sum / NumExperimentalUnits;

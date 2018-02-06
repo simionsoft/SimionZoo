@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Badger.Simion;
 using Badger.ViewModels;
+using System;
 
 namespace Badger.Data
 {
@@ -27,6 +28,9 @@ namespace Badger.Data
         }
 
         //fork values given to this group
+        //If GroupBy is used, then we will only include those used to group because they are common to all
+        //the tracks in the group
+        //Else, all the forks from the tracks
         public Dictionary<string, string> ForkValues { get; set; } = new Dictionary<string, string>();
 
         public string ExperimentId { get; set; } = "";
@@ -37,28 +41,32 @@ namespace Badger.Data
         {
             ExperimentId = experimentId;
         }
-        public string TrackId
-        {
-            get{ return SetNameFromForkValues(); }
-        }
-        public string GroupId { get; set; }
-
 
         public void AddTrackData(Track newTrackData)
         {
             m_tracks.Add(newTrackData);
         }
 
-        //this function selects a unique track fromm each group (if there's more than one track)
-        public void Consolidate(string inGroupSelectionFunction, string inGroupSelectionVariable, List<string> groupBy)
+        /// <summary>
+        /// When grouping tracks by a fork, this function must be called to select a track inside the group.
+        /// We call this "consolidating" the track group.
+        /// </summary>
+        /// <param name="inGroupSelectionFunction">The function used to compare tracks inside the group</param>
+        /// <param name="inGroupSelectionVariable">The variable used to evaluate tracks</param>
+        /// <param name="groupBy">The list of forks used to group tracks</param>
+        public void Consolidate(string inGroupSelectionFunction, string inGroupSelectionVariable
+            , BindableCollection<string> groupBy)
         {
+            //Consolidation makes only sense if were are using groups
+            if (groupBy.Count == 0) return;
+
             if (m_tracks.Count > 1)
             {
                 Track selectedTrack = null;
                 double min = double.MaxValue, max = double.MinValue;
                 foreach (Track track in m_tracks)
                 {
-                    SeriesGroup variableData = track.GetDataSeriesForOrdering(inGroupSelectionVariable);
+                    SeriesGroup variableData = track.GetDataSeries(inGroupSelectionVariable);
                     if (variableData != null)
                     {
                         double sortValue = variableData.MainSeries.Stats.avg;
@@ -76,62 +84,10 @@ namespace Badger.Data
                 }
                 m_tracks.Clear();
                 if (selectedTrack != null)
-                {
                     m_tracks.Add(selectedTrack);
+            }
+        }
 
-                    //create a copy of the dictionary to solve the following issue:
-                    //after generating the first report (with groups) the forkValues of the experiments are cleared
-                    //and therefore, no more report can be generated afterwards
-                    ForkValues = new Dictionary<string, string>(selectedTrack.ForkValues);
-                }
-            }
-        }
-        public void SetForkValues(Dictionary<string,string> forkValues)
-        {
-            ForkValues = forkValues;
-            GroupId = SetNameFromForkValues();
-        }
-        void SetNameFromGroups(List<string> groupBy)
-        {
-            int numForksInTrackUsedToGroup = 0;
-            if (groupBy.Count > 0)
-            {
-                //we remove those forks used to group from the forkValues
-                //because *hopefully* we only use them to name the track
-                GroupId = "";
 
-                string shortId;
-                foreach (string group in groupBy)
-                {
-                    if (ForkValues.ContainsKey(group))
-                    {
-                        shortId = Utility.LimitLength(group, 10);
-                        if (shortId.Length > 0)
-                            GroupId += shortId + "=";
-                        GroupId += Utility.LimitLength(ForkValues[group], 10, valueDelimiters) + ",";
-                        ForkValues.Remove(group);
-                        numForksInTrackUsedToGroup++;
-                    }
-                }
-            }
-            if (numForksInTrackUsedToGroup > 0)
-                GroupId = GroupId.TrimEnd(',');
-            else GroupId = SetNameFromForkValues();
-        }
-        string SetNameFromForkValues()
-        {
-            if (ForkValues.Count == 0) return "N/A";
-            string id = "";
-            double value;
-            foreach (KeyValuePair<string, string> entry in ForkValues)
-            {
-                //we leave the keys of numeric values and remove the keys of alphanumeric ones
-                if (double.TryParse(entry.Value, out value))
-                    id += Utility.LimitLength(entry.Key, 10) + "=" + entry.Value + ",";
-                else id += entry.Value + ",";
-            }
-            id = id.Trim(',');
-            return id;
-        }
     }
 }

@@ -50,9 +50,9 @@ namespace Badger.ViewModels
         }
         public int Compare(TrackGroup x, TrackGroup y)
         {
-            SeriesGroup variableDataX = x.ConsolidatedTrack.GetDataSeriesForOrdering(m_varName);
+            SeriesGroup variableDataX = x.ConsolidatedTrack.GetDataSeries(m_varName);
             if (variableDataX == null) return -1;
-            SeriesGroup variableDataY = y.ConsolidatedTrack.GetDataSeriesForOrdering(m_varName);
+            SeriesGroup variableDataY = y.ConsolidatedTrack.GetDataSeries(m_varName);
             if (variableDataY == null) return 1;
             if ((m_bAsc && variableDataX.MainSeries.Stats.avg >= variableDataY.MainSeries.Stats.avg)
                 || (!m_bAsc && variableDataX.MainSeries.Stats.avg <= variableDataY.MainSeries.Stats.avg))
@@ -62,6 +62,7 @@ namespace Badger.ViewModels
     }
     public class LogQueryViewModel : PropertyChangedBase
     {
+        const int DefaultMaxNumTracks = 10;
         public bool ResampleData { get; set; } = false;
         public int ResamplingNumPoints { get; set; } = 100;
         public const string FunctionMax = "Max";
@@ -69,8 +70,18 @@ namespace Badger.ViewModels
 
         public double TimeOffset { get; set; } = 0.0;
 
-        public string InGroupSelectionFunction { get; set; }
-        public string InGroupSelectionVariable { get; set; }
+        string m_inGroupSelectionFunction;
+        public string InGroupSelectionFunction
+        {
+            get { return m_inGroupSelectionFunction; }
+            set { m_inGroupSelectionFunction = value; NotifyOfPropertyChange(() => InGroupSelectionFunction); }
+        }
+        string m_inGroupSelectionVariable;
+        public string InGroupSelectionVariable
+        {
+            get { return m_inGroupSelectionVariable; }
+            set { m_inGroupSelectionVariable = value; NotifyOfPropertyChange(() => InGroupSelectionVariable); }
+        }
 
         // Limit to
         private BindableCollection<int> m_maxNumTrackOptions = new BindableCollection<int>();
@@ -126,16 +137,26 @@ namespace Badger.ViewModels
             if (!GroupByForks.Contains(forkName))
             {
                 m_groupByForks.Add(forkName);
-                //NotifyOfPropertyChange(() => GroupBy);
+                NotifyOfPropertyChange(() => GroupByForks);
             }
             GroupsEnabled = true;
+        }
+
+        public void Reset()
+        {
+            this.CanGenerateReports = false;
+            this.GroupByForks.Clear();
+            this.GroupByForksList.Clear();
+            this.GroupsEnabled = false;
+            this.InGroupSelectionFunction = FunctionMax;
+            this.InGroupSelectionVariable = null;
+            this.MaxNumTracks = DefaultMaxNumTracks;
         }
 
         public void ResetGroupBy()
         {
             GroupsEnabled = false;
-            m_groupByForks.Clear();
-            NotifyOfPropertyChange(() => GroupByForksList);
+            GroupByForks.Clear();
         }
 
         private BindableCollection<string> m_inGroupSelectionFunctions 
@@ -199,7 +220,7 @@ namespace Badger.ViewModels
                         && forkValues[forkName] == resultTrack.ForkValues[forkName])
                         numMatchedForks++;
                 }
-                if (numMatchedForks == resultTrack.ForkValues.Count)
+                if (numMatchedForks == GroupByForks.Count)
                     return resultTrack;
 
             }
@@ -263,7 +284,7 @@ namespace Badger.ViewModels
         {
             // Add the limit to options
             for (int i = 0; i <= 10; i++) MaxNumTracksOptions.Add(i);
-            MaxNumTracks = 10;
+            MaxNumTracks = DefaultMaxNumTracks;
 
             OrderByFunction = FunctionMax;
             NotifyOfPropertyChange(() => OrderByFunctions);
@@ -309,6 +330,7 @@ namespace Badger.ViewModels
             ,SimionFileData.LoadUpdateFunction loadUpdateFunction)
         {
             TrackGroup resultTrackGroup = null;
+            ResultTracks.Clear();
 
             Reports = DataTrackUtilities.FromLoggedVariables(VariablesVM);
 
@@ -337,9 +359,12 @@ namespace Badger.ViewModels
                 foreach (LoggedExperimentalUnitViewModel expUnit in exp.ExperimentalUnits)
                 {
                     //take selection into account? is this exp. unit selected?
-                    if (!UseForkSelection || (UseForkSelection && expUnit.IsSelected))
+                    bool expUnitContainsGroupByForks = expUnit.ContainsForks(GroupByForks);
+                    if ((!UseForkSelection || (UseForkSelection && expUnit.IsSelected))
+                        && expUnitContainsGroupByForks)
                     {
-                        if (GroupByForksList.Count != 0)
+                        resultTrackGroup = null;
+                        if (GroupByForks.Count != 0)
                         {
                             resultTrackGroup = GetTrackGroup(expUnit.forkValues);
                             if (resultTrackGroup != null)
@@ -354,24 +379,24 @@ namespace Badger.ViewModels
                                 //Consolidate selects a single track in each group using the in-group selection function
                                 //-max(avg(inGroupSelectionVariable)) or min(avg(inGroupSelectionVariable))
                                 //and also names groups depending on the number of tracks in the group
-                                resultTrackGroup.Consolidate(InGroupSelectionFunction, InGroupSelectionVariable, GroupByForksList);
+                                resultTrackGroup.Consolidate(InGroupSelectionFunction, InGroupSelectionVariable, GroupByForks);
                             }
                         }
-                        if (resultTrackGroup == null) //New track group
+                        if (resultTrackGroup == null && expUnitContainsGroupByForks) //New track group
                         {
                             //No groups (each experimental unit is a track) or the track doesn't exist
                             //Either way, we create a new track
                             TrackGroup newResultTrackGroup = new TrackGroup(exp.Name);
 
-                            if (GroupByForksList.Count == 0)
-                                newResultTrackGroup.SetForkValues(expUnit.forkValues);
+                            if (GroupByForks.Count == 0)
+                                newResultTrackGroup.ForkValues= expUnit.forkValues;
                             else
-                                foreach (string group in GroupByForksList)
-                                {
-                                    //an experimental unit may not have a fork used to group
-                                    if (expUnit.forkValues.ContainsKey(group))
-                                        newResultTrackGroup.ForkValues[group] = expUnit.forkValues[group];
-                                }
+                                foreach (string forkName in GroupByForks)
+                            {
+                                //an experimental unit may not have a fork used to group
+                                if (expUnit.forkValues.ContainsKey(forkName))
+                                    newResultTrackGroup.ForkValues[forkName] = expUnit.forkValues[forkName];
+                            }
 
                             //load data from the log file
                             Track trackData = expUnit.LoadTrackData(Reports);

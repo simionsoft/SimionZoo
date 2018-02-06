@@ -82,8 +82,11 @@ namespace Badger.ViewModels
                 {
                     string seriesName;
                     if (seriesGroup.SeriesList.Count == 1)
-                        seriesName = group.GroupId;
-                    else seriesName = group.GroupId + "-" + series.Id;
+                    {
+                        //only one series per track group, no multi-series track group
+                        seriesName = group.ConsolidatedTrack.TrackId;
+                    }
+                    else seriesName = group.ConsolidatedTrack.TrackId + "-" + series.Id;
 
                     //add data to the plot
                     int lineSeriesId = newPlot.AddLineSeries(seriesName);

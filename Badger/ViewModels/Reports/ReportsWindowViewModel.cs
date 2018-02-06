@@ -252,17 +252,18 @@ namespace Badger.ViewModels
         /// <param name="batchFileName">The name of the file to load</param>
         public void LoadExperimentBatch(string batchFileName)
         {
-            //reset the view
-            ClearReportViewer();
-
             //Ask the user for the name of the batch
             if (string.IsNullOrEmpty(batchFileName))
             {
-                bool bSuccess = SimionFileData.OpenFile(ref batchFileName
+                bool bSuccess = SimionFileData.OpenFileDialog(ref batchFileName
                     , SimionFileData.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
                 if (!bSuccess)
                     return;
             }
+
+            //reset the view and the query if a batch was succesfully selected
+            ClearReportViewer();
+            Query.OnExperimentBatchLoaded();
 
             //Inefficient but not so much as to care
             //First we load the batch file to cout how many experimental units we have
@@ -280,7 +281,7 @@ namespace Badger.ViewModels
                 //Update flags use to enable/disable parts of the report generation menu
                 NotifyOfPropertyChange(() => ForksLoaded);
                 NotifyOfPropertyChange(() => VariablesLoaded);
-                Query.OnExperimentBatchLoaded();
+
                 LoadedBatch = batchFileName;
                 LogsLoaded = true;
 
@@ -313,6 +314,8 @@ namespace Badger.ViewModels
 
             NotifyOfPropertyChange(() => VariablesLoaded);
             NotifyOfPropertyChange(() => ForksLoaded);
+
+            Query.Reset();
 
             CanSaveReports = false;
             LogsLoaded = false;

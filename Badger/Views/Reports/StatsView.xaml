@@ -8,7 +8,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="15">
         <DataGrid Name="StatsDataGrid" ItemsSource="{Binding stats}" CanUserAddRows="False"
-                  AutoGenerateColumns="False" CanUserResizeColumns="False"
+                  AutoGenerateColumns="False" CanUserResizeColumns="False" BorderBrush="LightGray"
                   CanUserSortColumns="True" IsReadOnly="True" Width="Auto">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Experiment" Binding="{Binding Path=ExperimentId}" Width="Auto"/>

@@ -4,13 +4,14 @@ using Badger.Simion;
 using Badger.Data;
 using System;
 using System.IO;
+using Caliburn.Micro;
 
 namespace Badger.ViewModels
 {
     public class LoggedExperimentalUnitViewModel : SelectableTreeItem
     {
         private string m_name;
-        new public string Name
+        public string Name
         {
             get { return m_name; }
             set { m_name = value; NotifyOfPropertyChange(() => Name); }
@@ -29,6 +30,16 @@ namespace Badger.ViewModels
         public string ForkValuesAsString
         {
             get { return Utility.DictionaryAsString(forkValues); }
+        }
+
+        public bool ContainsForks(BindableCollection<string> forks)
+        {
+            foreach (string fork in forks)
+            {
+                if (!forkValues.ContainsKey(fork))
+                    return false;
+            }
+            return true;
         }
 
         public List<string> VariablesInLog { get; set; }

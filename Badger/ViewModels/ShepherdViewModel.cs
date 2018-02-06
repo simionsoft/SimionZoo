@@ -148,6 +148,8 @@ namespace Badger.ViewModels
             m_shepherd.sendBroadcastHerdAgentQuery();
         }
 
+
+
         public ShepherdViewModel()
         {
             m_shepherd = new Shepherd();

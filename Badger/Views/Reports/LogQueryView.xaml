@@ -58,8 +58,8 @@
                             </Border>
                         </Grid>
 
-                        <Button x:Name="ResetGroupBy" Margin="4,0,0,0" Width="24" Height="24">
-                            <Path Data="{StaticResource  Close}" Width="24" Height="24" Fill="#89000000"
+                        <Button x:Name="ResetGroupBy" Style="{StaticResource BadgerButtonStyle}" Margin="4,0,0,0" Width="24" Height="24">
+                            <Path Data="{StaticResource  Delete}" Width="24" Height="24" Fill="#89000000"
                                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Button>
                     </StackPanel>

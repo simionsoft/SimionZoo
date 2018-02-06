@@ -6,33 +6,29 @@
              xmlns:oxy="http://oxyplot.org/wpf"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="650" MinHeight="300">
+             d:DesignWidth="650" MinHeight="300">
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <Grid HorizontalAlignment="Center">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="460"/>
-        </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="600"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <oxy:PlotView Grid.Column="0" Model="{Binding Plot}" Width="600" Height="400" Margin="0"/>
-                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
-                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="ShowProperties" Width="32" Height="32">
-                        <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"
-                    HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Button>
-                    <Button Style="{StaticResource BadgerButtonStyle}" x:Name="SaveImage" Width="32" Height="32">
-                        <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000"
-                    HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </ScrollViewer>
-    </Grid>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="600"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <oxy:PlotView Grid.Column="0" Model="{Binding Plot}" Width="600" Height="400" Margin="0"/>
+            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Visibility="{Binding Path=bShowOptions,Converter={StaticResource BoolToVis}}">
+                <Button Style="{StaticResource BadgerButtonStyle}" x:Name="ShowProperties" Width="32" Height="32">
+                    <Path Data="{StaticResource Settings}" Width="24" Height="24" Fill="#89000000"
+                HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+                <Button Style="{StaticResource BadgerButtonStyle}" x:Name="SaveImage" Width="32" Height="32">
+                    <Path Data="{StaticResource Save}" Width="24" Height="24" Fill="#89000000"
+                HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Button>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+
 </UserControl>

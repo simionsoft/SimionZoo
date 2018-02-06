@@ -278,7 +278,7 @@ namespace Badger.Simion
             Dictionary<string, string> appDefinitions, LogFunction log)
         {
             string fileDoc = null;
-            bool isOpen = OpenFile(ref fileDoc, BadgerProjectFilter, XMLConfig.badgerProjectExtension);
+            bool isOpen = OpenFileDialog(ref fileDoc, BadgerProjectFilter, XMLConfig.badgerProjectExtension);
             if (!isOpen) return;
 
             XmlDocument badgerDoc = new XmlDocument();
@@ -357,7 +357,7 @@ namespace Badger.Simion
         static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;
-            bool isOpen = OpenFile(ref fileDoc, ExperimentFilter, XMLConfig.experimentExtension);
+            bool isOpen = OpenFileDialog(ref fileDoc, ExperimentFilter, XMLConfig.experimentExtension);
             if (!isOpen)
                 return null;
 
@@ -435,7 +435,7 @@ namespace Badger.Simion
         /// <param name="filterPrefix"></param>
         /// <param name="extension">The extension of the file</param>
         /// <returns>Wheter the file was successfully open or not</returns>
-        public static bool OpenFile(ref string fileName, string filterPrefix, string extension)
+        public static bool OpenFileDialog(ref string fileName, string filterPrefix, string extension)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = filterPrefix + extension;
