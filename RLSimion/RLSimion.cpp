@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 			pApp->setConfigFile(argv[1]);
 
 			if (CSimionApp::flagPassed(argc,argv,"requirements"))
-				pApp->printInputOutputFiles();
+				pApp->printRequirements();
 			else pApp->run();
 
 			delete pApp;

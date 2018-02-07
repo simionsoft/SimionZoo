@@ -48,7 +48,7 @@ bool CSimionApp::flagPassed(int argc, char** argv, char* flagName)
 	return false;
 }
 
-void CSimionApp::printInputOutputFiles()
+void CSimionApp::printRequirements()
 {
 	CFilePathList InputFileList, OutputFileList;
 	printf("<Files>\n");
