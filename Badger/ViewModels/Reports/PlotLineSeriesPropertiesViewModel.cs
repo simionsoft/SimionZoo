@@ -13,8 +13,8 @@ namespace Badger.ViewModels
             set
             {
                 m_bVisible = value;
-                NotifyOfPropertyChange(() => Visible);
                 m_lineSeries.IsVisible = Visible;
+                NotifyOfPropertyChange(() => Visible);
             }
         }
         private string m_name = "N/A";

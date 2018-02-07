@@ -71,6 +71,7 @@ namespace Badger.ViewModels
             xAxis.AbsoluteMinimum = 0.0;
 
             m_plot.Axes.Add(xAxis);
+
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.MajorGridlineStyle = LineStyle.Solid;
@@ -101,8 +102,7 @@ namespace Badger.ViewModels
 
         public void PropertiesChanged(object sender, PropertyChangedEventArgs e)
         {
-            PlotPropertiesViewModel properties= sender as PlotPropertiesViewModel;
-            if (properties!=null)
+            if (sender is PlotPropertiesViewModel properties)
             {
                 UpdatePlotProperties();
 
@@ -112,6 +112,28 @@ namespace Badger.ViewModels
 
         private void UpdatePlotProperties()
         {
+            //Boundaries
+            if (m_plot.Axes.Count == 2)
+            {
+                double minY= double.MaxValue, maxY= double.MinValue;
+                foreach(OxyPlot.Series.LineSeries series in m_plot.Series)
+                {
+                    if (series.IsVisible && series.MinY < minY)
+                        minY = series.MinY;
+                    if (series.IsVisible && series.MaxY > maxY)
+                        maxY = series.MaxY;
+                }
+                if (maxY - minY > 0)
+                {
+                    m_plot.Axes[1].Maximum = maxY;
+                    m_plot.Axes[1].Minimum = minY;
+                }
+                else
+                {
+                    m_plot.Axes[1].Maximum = 1.0;
+                    m_plot.Axes[1].Minimum = 0.0;
+                }
+            }
             //Texts
             if (m_plot.Axes.Count == 2)
             {
@@ -133,6 +155,9 @@ namespace Badger.ViewModels
                 , Properties.SelectedLegendPlacement);
             Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
                 , Properties.SelectedLegendPosition);
+
+            //to update the boundaries
+            UpdateView();
         }
 
         private void updatePlot(object state)
