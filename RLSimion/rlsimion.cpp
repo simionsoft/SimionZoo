@@ -37,8 +37,8 @@ int main(int argc, char* argv[])
 		{
 			pApp->setConfigFile(argv[1]);
 
-			if (CSimionApp::flagPassed(argc,argv,"printIOfiles"))
-				pApp->printInputOutputFiles();
+			if (CSimionApp::flagPassed(argc,argv,"requirements"))
+				pApp->printRequirements();
 			else pApp->run();
 
 			delete pApp;
