@@ -41,7 +41,7 @@ namespace Badger.Data
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = exe,
-                    Arguments = args + " -printIOfiles",
+                    Arguments = args + " -requirements",
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true
