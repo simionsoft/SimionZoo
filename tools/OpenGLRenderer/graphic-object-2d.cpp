@@ -92,7 +92,9 @@ void C2DMeter::setValue(double value)
 	//udpate the color
 	((CColorMaterial*)m_pMaterial)->setColor(Color(1.0, 0.0, 0.0, 1.0).lerp(Color(0.0, 1.0, 0.0, 1.0), normValue));
 	//update the text
-	m_pText->set(m_name + string(": ") + std::to_string(m_value));
+	char buffer[1024];
+	sprintf_s(buffer, 1024, "%s: %.4f", m_name.c_str(), value);
+	m_pText->set(string(buffer));
 }
 
 BoundingBox2D& CGraphicObject2D::boundingBox()
