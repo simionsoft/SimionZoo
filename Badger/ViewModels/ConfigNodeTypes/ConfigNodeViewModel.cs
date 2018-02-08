@@ -82,6 +82,49 @@ namespace Badger.ViewModels
 
         virtual public void unforkThisNode() { }
 
+        private bool m_bCanBeLinked = true;
+
+        public bool bCanBeLinked
+        {
+            get { return m_bCanBeLinked; }
+            set { m_bCanBeLinked = value; NotifyOfPropertyChange(() => bCanBeLinked); }
+        }
+
+        private bool m_bLinking;
+
+        public bool Linking
+        {
+            get { return m_bLinking; }
+            set { m_bLinking = value; NotifyOfPropertyChange(() => Linking); }
+        }
+
+        private BindableCollection<ConfigNodeViewModel> m_linkableNodes = new BindableCollection<ConfigNodeViewModel>();
+
+        public BindableCollection<ConfigNodeViewModel> LinkableNodes
+        {
+            get { return m_linkableNodes; }
+            set { m_linkableNodes = value; NotifyOfPropertyChange(() => LinkableNodes); }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void LinkThisNode(ConfigNodeViewModel originNode)
+        {
+            bCanBeLinked = false; // once a node is linked cannot be linked again
+            Linking = !bCanBeLinked; 
+            var value = originNode.content;
+            Console.WriteLine("Trying to link " + originNode.content);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetNode"></param>
+        public void Link(ConfigNodeViewModel targetNode)
+        {
+            Console.WriteLine("Error: non-nested config node asked to fork a child");
+        }
 
         //clone
         public abstract ConfigNodeViewModel clone();

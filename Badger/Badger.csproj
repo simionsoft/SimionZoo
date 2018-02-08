@@ -181,6 +181,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ChoiceElementConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ConfigNodeViewModel.cs" />
+    <Compile Include="ViewModels\ConfigNodeTypes\LinkedNodeViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\NeuralNetworkProblemDescriptionConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\ExperimentViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\BranchConfigViewModel.cs" />
