@@ -24,8 +24,8 @@ public:
 	virtual void getFeatures(const CState* s, CFeatureList* outFeatures) = 0;
 	virtual void getFeatureState(unsigned int feature, CState* s) = 0;
 
-	virtual unsigned int getTotalNumFeatures() = 0;
-	virtual unsigned int getMaxNumActiveFeatures() = 0;
+	virtual size_t getTotalNumFeatures() = 0;
+	virtual size_t getMaxNumActiveFeatures() = 0;
 
 	static std::shared_ptr<CStateFeatureMap> getInstance(CConfigNode* pParameters);
 
@@ -42,8 +42,8 @@ public:
 	virtual void getFeatures(const CAction* a, CFeatureList* outFeatures) = 0;
 	virtual void getFeatureAction(unsigned int feature, CAction* a) = 0;
 
-	virtual unsigned int getTotalNumFeatures() = 0;
-	virtual unsigned int getMaxNumActiveFeatures() = 0;
+	virtual size_t getTotalNumFeatures() = 0;
+	virtual size_t getMaxNumActiveFeatures() = 0;
 
 	static std::shared_ptr<CActionFeatureMap> getInstance(CConfigNode* pParameters);
 
@@ -60,8 +60,8 @@ class CGaussianRBFGridFeatureMap
 protected:
 	CFeatureList* m_pVarFeatures;
 
-	unsigned int m_totalNumFeatures;
-	unsigned int m_maxNumActiveFeatures;
+	size_t m_totalNumFeatures;
+	size_t m_maxNumActiveFeatures;
 
 	MULTI_VALUE<dimensionGridType> m_grid;
 
@@ -83,8 +83,8 @@ public:
 
 	void getFeatures(const CState* s, CFeatureList* outFeatures) { CGaussianRBFGridFeatureMap::getFeatures(s, 0, outFeatures); }
 	void getFeatureState(unsigned int feature, CState* s) { CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, s, 0); }
-	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
+	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 
 };
 
@@ -96,8 +96,8 @@ public:
 
 	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CGaussianRBFGridFeatureMap::getFeatures(0, a, outFeatures); }
 	void getFeatureAction(unsigned int feature, CAction* a) { CGaussianRBFGridFeatureMap::getFeatureStateAction(feature, 0, a); }
-	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
+	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 
 };
 
@@ -109,9 +109,9 @@ class CTileCodingFeatureMap
 protected:
 	CFeatureList* m_pVarFeatures;
 
-	unsigned int m_totalNumFeatures;
-	unsigned int m_maxNumActiveFeatures;
-	unsigned int m_numTilings;
+	size_t m_totalNumFeatures;
+	size_t m_maxNumActiveFeatures;
+	size_t m_numTilings;
 
 	//modified states s and actions a which are "moved" by the offset of the layer
 	const CState* modified_s;
@@ -129,7 +129,7 @@ public:
 
 	void getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures);
 	void getFeatureStateAction(unsigned int feature, CState* s, CAction* a);
-	virtual unsigned int getNumTilings() = 0;
+	virtual size_t getNumTilings() = 0;
 
 	MULTI_VALUE<dimensionGridType> returnGrid() { return m_grid; }
 
@@ -143,9 +143,9 @@ public:
 
 	void getFeatures(const CState* s, CFeatureList* outFeatures) { CTileCodingFeatureMap::getFeatures(s, 0, outFeatures); }
 	void getFeatureState(unsigned int feature, CState* s) { CTileCodingFeatureMap::getFeatureStateAction(feature, s, 0); }
-	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
-	unsigned int getNumTilings() { return m_numTilings; }
+	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
+	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	size_t getNumTilings() { return m_numTilings; }
 	double getTilingOffset() { return m_tilingOffset; }
 };
 
@@ -157,9 +157,9 @@ public:
 
 	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CTileCodingFeatureMap::getFeatures(0, a, outFeatures); }
 	void getFeatureAction(unsigned int feature, CAction* a) { CTileCodingFeatureMap::getFeatureStateAction(feature, 0, a); }
-	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
-	unsigned int getNumTilings() { return m_numTilings; }
+	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
+	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	size_t getNumTilings() { return m_numTilings; }
 	double getTilingOffset() { return m_tilingOffset; }
 };
 
@@ -171,8 +171,8 @@ class CDiscreteFeatureMap
 protected:
 	CFeatureList* m_pVarFeatures;
 
-	unsigned int m_totalNumFeatures;
-	unsigned int m_maxNumActiveFeatures;
+	size_t m_totalNumFeatures;
+	size_t m_maxNumActiveFeatures;
 
 	MULTI_VALUE<dimensionGridType> m_grid;
 
@@ -194,8 +194,8 @@ public:
 
 	void getFeatures(const CState* s, CFeatureList* outFeatures) { CDiscreteFeatureMap::getFeatures(s, 0, outFeatures); }
 	void getFeatureState(unsigned int feature, CState* s) { CDiscreteFeatureMap::getFeatureStateAction(feature, s, 0); }
-	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
+	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 };
 
 class CDiscreteActionFeatureMap : public CDiscreteFeatureMap<CSingleDimensionDiscreteActionVariableGrid>
@@ -206,8 +206,8 @@ public:
 
 	void getFeatures(const CAction* a, CFeatureList* outFeatures) { CDiscreteFeatureMap::getFeatures(0, a, outFeatures); }
 	void getFeatureAction(unsigned int feature, CAction* a) { CDiscreteFeatureMap::getFeatureStateAction(feature, 0, a); }
-	unsigned int getTotalNumFeatures() { return m_totalNumFeatures; }
-	unsigned int getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
+	size_t getTotalNumFeatures() { return m_totalNumFeatures; }
+	size_t getMaxNumActiveFeatures() { return m_maxNumActiveFeatures; }
 };
 
 //CBagFeatureMap////////////////////////////////////////////////////
@@ -220,8 +220,8 @@ public:
 
 	void getFeatures(const CState* s, CFeatureList* outFeatures);
 	void getFeatureState(unsigned int feature, CState* s);
-	unsigned int getTotalNumFeatures() { return m_stateVariables.size(); }
-	unsigned int getMaxNumActiveFeatures() { return m_stateVariables.size(); }
+	size_t getTotalNumFeatures() { return m_stateVariables.size(); }
+	size_t getMaxNumActiveFeatures() { return m_stateVariables.size(); }
 };
 
 class CBagActionFeatureMap : public CActionFeatureMap
@@ -232,6 +232,6 @@ public:
 
 	void getFeatures(const CAction* a, CFeatureList* outFeatures);
 	void getFeatureAction(unsigned int feature, CAction* a);
-	unsigned int getTotalNumFeatures() { return m_actionVariables.size(); }
-	unsigned int getMaxNumActiveFeatures() { return m_actionVariables.size(); }
+	size_t getTotalNumFeatures() { return m_actionVariables.size(); }
+	size_t getMaxNumActiveFeatures() { return m_actionVariables.size(); }
 };

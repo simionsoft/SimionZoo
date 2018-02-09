@@ -12,7 +12,7 @@ public:
 
 	CDiscreteDeepPolicy(CConfigNode* pConfigNode);
 
-	virtual int selectAction(std::vector<float> values) = 0;
+	virtual int selectAction(std::vector<double> values) = 0;
 };
 
 class CDiscreteEpsilonGreedyDeepPolicy : public CDiscreteDeepPolicy
@@ -22,7 +22,7 @@ protected:
 public:
 	CDiscreteEpsilonGreedyDeepPolicy(CConfigNode* pConfigNode);
 
-	virtual int selectAction(std::vector<float> values);
+	virtual int selectAction(std::vector<double> values);
 };
 
 class CDiscreteSoftmaxDeepPolicy : public CDiscreteDeepPolicy
@@ -32,6 +32,6 @@ protected:
 public:
 	CDiscreteSoftmaxDeepPolicy(CConfigNode* pConfigNode);
 
-	virtual int selectAction(std::vector<float> values);
+	virtual int selectAction(std::vector<double> values);
 };
 #endif

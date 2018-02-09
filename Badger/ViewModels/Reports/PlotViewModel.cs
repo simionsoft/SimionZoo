@@ -1,15 +1,11 @@
-﻿
-using System.Collections.Generic;
-using OxyPlot;
+﻿using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
-using System.Threading;
 using Caliburn.Micro;
 using System.Windows.Forms;
-using System.IO;
 using Badger.Data;
 using System;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
@@ -43,51 +39,58 @@ namespace Badger.ViewModels
         double m_maxX = double.MinValue;
         double m_minY = double.MaxValue;
         double m_maxY = double.MinValue;
+        double m_maxNumSeries = 20;
 
         private PlotModel m_plot;
         public PlotModel Plot { get { return m_plot; } set { } }
 
         private PlotPropertiesViewModel m_properties = new PlotPropertiesViewModel();
-        public PlotPropertiesViewModel properties
+        public PlotPropertiesViewModel Properties
         {
             get { return m_properties; }
         }
 
-        private ObservableCollection<PlotLineSeriesPropertiesViewModel> m_selectedPlotLineSeriesPropertiesViewModels;
-        public ObservableCollection<PlotLineSeriesPropertiesViewModel> SelectedPlotLineSeriesPropertiesViewModels
-        {
-            get { return m_selectedPlotLineSeriesPropertiesViewModels; }
-            set
-            {
-                m_selectedPlotLineSeriesPropertiesViewModels = value;
-                NotifyOfPropertyChange(() => SelectedPlotLineSeriesPropertiesViewModels);
-            }
-        }
         public bool LineSeriesSelectionVisible
         {
-            get { return properties.lineSeriesProperties.Count > 1; }
+            get { return Properties.LineSeriesProperties.Count > 1; }
         }
 
-        public PlotViewModel(string title, double xMax, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
+        public PlotViewModel(string title, double xMax = 0, string xName = "", string yName = "", bool bRefresh = true, bool bShowOptions = false)
         {
             name = title;
-            m_plot = new PlotModel { Title = title };
+            m_plot = new PlotModel();
             var xAxis = new OxyPlot.Axes.LinearAxis();
             xAxis.Position = AxisPosition.Bottom;
             xAxis.MajorGridlineStyle = LineStyle.Solid;
             xAxis.Minimum = 0.0;
             xAxis.Maximum = 1.0;
-            xAxis.AbsoluteMaximum = xMax;
+
+            //If no absolute maximum x is provided, we don't set it and it will take the default value double.MaxValue
+            if (xMax>0)
+                xAxis.AbsoluteMaximum = xMax;
             xAxis.AbsoluteMinimum = 0.0;
-            xAxis.Title = xName;
+
             m_plot.Axes.Add(xAxis);
+
             var yAxis = new OxyPlot.Axes.LinearAxis();
             yAxis.Position = AxisPosition.Left;
             yAxis.MajorGridlineStyle = LineStyle.Solid;
             yAxis.Minimum = 0.0;
             yAxis.Maximum = 1.0;
-            yAxis.Title = yName;
+
             m_plot.Axes.Add(yAxis);
+            //default properties
+            m_plot.LegendBorder = OxyColors.Black;
+            m_plot.LegendBackground = OxyColors.White;
+
+            Properties.Title = Utility.OxyPlotMathNotation(title);
+            Properties.XAxisName = Utility.OxyPlotMathNotation(xName);
+            Properties.YAxisName = Utility.OxyPlotMathNotation(yName);
+
+            UpdatePlotProperties();
+
+            //Add a listener to "PropertiesChanged" event from Properties
+            Properties.PropertyChanged += PropertiesChanged;
 
             if (bRefresh)
             {
@@ -95,31 +98,66 @@ namespace Badger.ViewModels
                 m_timer.Change(m_updateFreq, m_updateFreq);
             }
             m_bShowOptions = bShowOptions;
+        }
 
-
-            //to selective disable certain lines
-            m_selectedPlotLineSeriesPropertiesViewModels = new ObservableCollection<PlotLineSeriesPropertiesViewModel>();
-            m_selectedPlotLineSeriesPropertiesViewModels.CollectionChanged += (s, e) =>
+        public void PropertiesChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender is PlotPropertiesViewModel properties)
             {
-                foreach (var outerItem in properties.lineSeriesProperties)
+                UpdatePlotProperties();
+
+                UpdateView();
+            }
+        }
+
+        private void UpdatePlotProperties()
+        {
+            //Boundaries
+            if (m_plot.Axes.Count == 2)
+            {
+                double minY= double.MaxValue, maxY= double.MinValue;
+                foreach(OxyPlot.Series.LineSeries series in m_plot.Series)
                 {
-                    bool found = false;
-                    foreach (var item in m_selectedPlotLineSeriesPropertiesViewModels)
-                    {
-                        if (item.Equals(outerItem))
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                    outerItem.bVisible = found;
+                    if (series.IsVisible && series.MinY < minY)
+                        minY = series.MinY;
+                    if (series.IsVisible && series.MaxY > maxY)
+                        maxY = series.MaxY;
                 }
+                if (maxY - minY > 0)
+                {
+                    m_plot.Axes[1].Maximum = maxY;
+                    m_plot.Axes[1].Minimum = minY;
+                }
+                else
+                {
+                    m_plot.Axes[1].Maximum = 1.0;
+                    m_plot.Axes[1].Minimum = 0.0;
+                }
+            }
+            //Texts
+            if (m_plot.Axes.Count == 2)
+            {
+                m_plot.Axes[0].Title = Properties.XAxisName;
+                m_plot.Axes[1].Title = Properties.YAxisName;
+            }
+            m_plot.Title = Properties.Title;
+            //font
+            Plot.DefaultFont = Properties.SelectedFont;
 
-                updateView();
-            };
+            //legend
+            Plot.IsLegendVisible = Properties.LegendVisible;
+            bool showLegend = Properties.LegendBorder;
+            Plot.LegendBorderThickness = showLegend ? 1 : 0;
 
-            if (properties.lineSeriesProperties.Count > 0)
-                m_selectedPlotLineSeriesPropertiesViewModels.Add(properties.lineSeriesProperties[0]);
+            Plot.LegendOrientation = (OxyPlot.LegendOrientation)Enum.Parse(typeof(OxyPlot.LegendOrientation)
+                , Properties.SelectedLegendOrientation);
+            Plot.LegendPlacement = (OxyPlot.LegendPlacement)Enum.Parse(typeof(OxyPlot.LegendPlacement)
+                , Properties.SelectedLegendPlacement);
+            Plot.LegendPosition = (OxyPlot.LegendPosition)Enum.Parse(typeof(OxyPlot.LegendPosition)
+                , Properties.SelectedLegendPosition);
+
+            //to update the boundaries
+            UpdateView();
         }
 
         private void updatePlot(object state)
@@ -127,30 +165,32 @@ namespace Badger.ViewModels
             m_plot.InvalidatePlot(true);
         }
 
-        public void updateView()
+        public void UpdateView()
         {
             m_plot.InvalidatePlot(true);
         }
 
         private object m_lineSeriesLock = new object();
 
-        public int addLineSeries(string title, bool isVisible = true)
+        public int AddLineSeries(string title, bool isVisible = true)
         {
-            lock (m_lineSeriesLock)
-            {
-                OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
-                newSeries.IsVisible = isVisible;
-                m_plot.Series.Add(newSeries);
+            //TODO: improve how to limit the number of plots
+            //For now, we just ignore series after the max number has been reached
+            if (m_plot.Series.Count<m_maxNumSeries)
+                lock (m_lineSeriesLock)
+                {
+                    OxyPlot.Series.LineSeries newSeries = new OxyPlot.Series.LineSeries { Title = title, MarkerType = MarkerType.None };
+                    newSeries.IsVisible = isVisible;
+                    m_plot.Series.Add(newSeries);
 
-                properties.addLineSeries(newSeries, this);
+                    Properties.AddLineSeries(title, newSeries);
 
-                return m_plot.Series.Count - 1; ;
-
-
-            }
+                    return m_plot.Series.Count - 1; ;
+                }
+            return -1;
         }
 
-        public void addLineSeriesValue(int seriesIndex, double xValue, double yValue)
+        public void AddLineSeriesValue(int seriesIndex, double xValue, double yValue)
         {
             if (seriesIndex < 0 || seriesIndex >= m_plot.Series.Count)
             {
@@ -159,14 +199,14 @@ namespace Badger.ViewModels
             }
 
             OxyPlot.Series.LineSeries series = (OxyPlot.Series.LineSeries)m_plot.Series[seriesIndex];
-            updatePlotBounds(xValue, yValue);
+            UpdatePlotBounds(xValue, yValue);
             series.Points.Add(new DataPoint(xValue, yValue));
         }
 
-        public void clearLineSeries()
+        public void ClearLineSeries()
         {
             m_plot.Series.Clear();
-            updateView();
+            UpdateView();
             NotifyOfPropertyChange("Series");
         }
 
@@ -176,38 +216,26 @@ namespace Badger.ViewModels
         ///     In order to highlight a LineSeries what we actually do is to dim, that is, apply
         ///     certain opacity, to all the other LineSeries.
         /// </summary>
-        /// <param name="name">Name of the hovered LineSeries which is gonna be highlighted</param>
-        public void highlightLineSeries(string name)
+        /// <param name="seriesId">Id of the LineSeries to be highlighted</param>
+        public void HighlightLineSeries(int seriesId)
         {
-            bool found = false;
+            if (seriesId < 0) ResetLineSeriesColors();
 
-            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
-            {
-                if (!p.lineSeries.Title.Equals(name))
-                    properties.dimLineSeriesColor(p);
-                else
-                {
-                    properties.removeLineSeriesColorOpacity(p);
-                    found = true;
-                }
-            }
-
-            if (!found)
-                resetLineSeriesColors();
+            Properties.HighlightSeries(seriesId);
         }
 
         /// <summary>
         ///     Reset all LineSeries color to its original, removing the opacity in case that some
         ///     was applied before by the highlightLineSeries method.
         /// </summary>
-        public void resetLineSeriesColors()
+        public void ResetLineSeriesColors()
         {
-            foreach (PlotLineSeriesPropertiesViewModel p in properties.lineSeriesProperties)
-                properties.removeLineSeriesColorOpacity(p);
+            foreach (PlotLineSeriesPropertiesViewModel p in Properties.LineSeriesProperties)
+                Properties.ResetLineSeriesOpacity(p);
         }
 
 
-        private void updatePlotBounds(double x, double y)
+        private void UpdatePlotBounds(double x, double y)
         {
             bool bMustUpdate = false;
             if (x < m_minX)
@@ -246,7 +274,7 @@ namespace Badger.ViewModels
             }
         }
 
-        public void saveImage()
+        public void SaveImage()
         {
             FolderBrowserDialog sfd = new FolderBrowserDialog();
 
@@ -254,23 +282,16 @@ namespace Badger.ViewModels
             //sfd.RootFolder = new Environment.SpecialFolder(Path.Combine(Directory.GetCurrentDirectory(), SimionFileData.experimentRelativeDir));
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                export(sfd.SelectedPath);
+                Export(sfd.SelectedPath);
             }
         }
 
-        public void showProperties()
+        public void ShowProperties()
         {
-            CaliburnUtility.ShowPopupWindow(properties, "Plot properties");
-            setProperties();
+            CaliburnUtility.ShowPopupWindow(Properties, "Plot properties");
         }
 
-        public void setProperties()
-        {
-            Plot.IsLegendVisible = properties.bLegendVisible;
-            updateView();
-        }
-
-        public void export(string outputFolder)
+        public void Export(string outputFolder)
         {
             string fileName;
             //as png

@@ -6,11 +6,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="resource1.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RLSimion1.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="simion.ico" />
   </ItemGroup>
 </Project>

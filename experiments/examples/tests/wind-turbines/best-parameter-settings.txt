@@ -1,0 +1,13 @@
+Vidal:
+A=0.6
+K_alpha=5000000
+KP= 1
+KI= 0.01
+
+Boukhezzar:
+C0=1.1
+KP= 1
+KI= 0.1
+
+Jonkman:
+KP= 0.01882681

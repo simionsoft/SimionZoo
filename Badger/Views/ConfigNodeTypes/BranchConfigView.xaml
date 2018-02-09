@@ -10,29 +10,27 @@
                 d:DesignHeight="50" d:DesignWidth="300">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-        <BitmapImage x:Key="fork" UriSource="/images/fork.png" />
-    </UserControl.Resources>    
-    <TreeViewItem IsExpanded="True" Margin="0,0,0,0">
-        <TreeViewItem.Header>
-            <StackPanel Orientation="Horizontal" Focusable="False">
-                <CheckBox  VerticalAlignment="Center" 
-                          Visibility="{Binding Path=bIsOptional,Converter={StaticResource BoolToVis}}"
-                           IsChecked="{Binding bIsUsed}"/>
-                <Label Content="{Binding name}" ToolTip="{Binding comment}" >
-                    <Label.ContextMenu >
-                        <ContextMenu Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
-                            <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
-                                <MenuItem.Icon>
-                                    <Image Source="{StaticResource fork}"></Image>
-                                </MenuItem.Icon>
-                            </MenuItem>
-                        </ContextMenu>
-                    </Label.ContextMenu>
-                </Label>
-            </StackPanel>
-        </TreeViewItem.Header>
-
-        <ItemsControl x:Name="children" Margin="-17,0,0,0"
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Horizontal" Focusable="False">
+            <CheckBox  VerticalAlignment="Center" 
+                            Visibility="{Binding Path=bIsOptional,Converter={StaticResource BoolToVis}}"
+                            IsChecked="{Binding bIsUsed}"/>
+            <Label Content="{Binding name}" ToolTip="{Binding comment}" >
+                <Label.ContextMenu >
+                    <ContextMenu Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
+                        <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </Label.ContextMenu>
+            </Label>
+        </StackPanel>
+        <StackPanel>
+        <ItemsControl x:Name="children" Margin="5,0,0,0"
                       Visibility="{Binding Path=bIsUsed,Converter={StaticResource BoolToVis}}"/>
-    </TreeViewItem>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

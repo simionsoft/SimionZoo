@@ -1,4 +1,9 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
+
 #include "Network.h"
 #include "CNTKWrapper.h"
 #include "OptimizerSetting.h"
@@ -41,7 +46,7 @@ CNetwork CNetwork::load(string fileName, CNTK::DeviceDescriptor &device)
 	return result;
 }
 
-void CNetwork::train(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& targetOutputData)
+void CNetwork::train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData)
 {
 	NDShape outputShape = getOutputsFunctionPtr().at(0)->Output().Shape();
 	ValuePtr outputSequence = CNTK::Value::CreateBatch(outputShape, targetOutputData, CNTK::DeviceDescriptor::CPUDevice());
@@ -59,7 +64,7 @@ void CNetwork::train(std::unordered_map<std::string, std::vector<float>&>& input
 	m_trainer->TrainMinibatch(arguments, DeviceDescriptor::CPUDevice());
 }
 
-void CNetwork::predict(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& predictionData)
+void CNetwork::predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData)
 {
 	FunctionPtr outputPtr = getOutputsFunctionPtr().at(0);
 	ValuePtr outputValue;
@@ -125,3 +130,5 @@ CNetwork* CNetwork::cloneNonTrainable() const
 
 	return result;
 }
+
+#endif // _WIN64

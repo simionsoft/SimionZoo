@@ -14,6 +14,7 @@ using System.Collections.Specialized;
 using Badger.ViewModels.NeuralNetwork.Windows;
 using Badger.Data.NeuralNetwork.Parameters;
 using Badger.Utils;
+using Badger.Data;
 
 namespace Badger.ViewModels.NeuralNetwork
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Badger.Simion;
 using System;
 using Caliburn.Micro;
+using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
@@ -81,7 +82,6 @@ namespace Badger.ViewModels
             HasChildrenForks = Forks.Count != 0;
             HasChildrenValues = Values.Count != 0;
         }
-
 
         public override void TraverseAction(bool doActionLocally, Action<SelectableTreeItem> action)
         {

@@ -38,7 +38,7 @@ public:
 	void setConfigFile(string);
 	string getOutputDirectory();
 	string getConfigFile();
-	void printInputOutputFiles();
+	void printRequirements();
 
 	static const char* getArgValue(int argc, char** argv, char* argName);
 	static bool flagPassed(int argc, char** argv, char* flagName);

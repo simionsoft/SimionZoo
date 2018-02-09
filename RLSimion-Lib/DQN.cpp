@@ -40,11 +40,11 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 		CLogger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
 
 	m_numberOfActions = m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
-	m_stateVector = std::vector<float>(m_numberOfStateFeatures, 0.0);
-	m_actionValuePredictionVector = std::vector<float>(m_numberOfActions);
+	m_stateVector = std::vector<double>(m_numberOfStateFeatures, 0.0);
+	m_actionValuePredictionVector = std::vector<double>(m_numberOfActions);
 
-	m_minibatchStateVector = std::vector<float>(m_numberOfStateFeatures * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
-	m_minibatchActionValuePredictionVector = std::vector<float>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatchStateVector = std::vector<double>(m_numberOfStateFeatures * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
+	m_minibatchActionValuePredictionVector = std::vector<double>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
 
 	m_pMinibatchExperienceTuples = new CExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionTargetValues = new double[m_experienceReplay->getMaxUpdateBatchSize()];
@@ -70,17 +70,17 @@ double CDQN::selectAction(const CState * s, CAction * a)
 	CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
 
 	//TODO: use sparse representation
-	for (int i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
+	for (size_t i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
 	{
 		auto item = m_pStateOutFeatures->m_pFeatures[i];
 		m_stateVector[item.m_index] = item.m_factor;
 	}
 
-	std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", m_stateVector } };
+	std::unordered_map<std::string, std::vector<double>&> inputMap = { { "state-input", m_stateVector } };
 
 	getPredictionNetwork()->predict(inputMap, m_actionValuePredictionVector);
 
-	int resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
+	size_t resultingActionIndex = m_policy->selectAction(m_actionValuePredictionVector);
 
 	double actionValue = m_pGrid->getCenters()[resultingActionIndex];
 	a->set(m_outputActionIndex.get(), actionValue);
@@ -110,7 +110,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 		m_pMinibatchChosenActionIndex[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get()));
 	}
 
-	std::unordered_map<std::string, std::vector<float>&> inputMap = { { "state-input", m_minibatchStateVector } };
+	std::unordered_map<std::string, std::vector<double>&> inputMap = { { "state-input", m_minibatchStateVector } };
 	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);
 
 
@@ -140,6 +140,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 		{
 			m_pPredictionNetwork = std::shared_ptr<CNetwork>(m_QNetwork.getNetwork()->cloneNonTrainable());
 		}
+	return 0.0; //TODO: what should we return?
 }
 
 #endif

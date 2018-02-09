@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace Herd
 {
-    public class CTask
+    public class HerdTask
     {
         public string exe;
         public string arguments;
         public string pipe;
         public string authenticationToken;
         public string name;
-        public CTask()
+        public HerdTask()
         {
             name = "";
             exe = "";
@@ -32,20 +32,20 @@ namespace Herd
             return ret;
         }
     }
-    public class CJob
+    public class HerdJob
     {
         public string name = "";
-        public List<CTask> tasks = new List<CTask>();
+        public List<HerdTask> tasks = new List<HerdTask>();
         public List<string> inputFiles = new List<string>();
         public List<string> outputFiles = new List<string>();
         public Dictionary<string, string> renameRules;
 
-        public CJob() { }
+        public HerdJob() { }
 
         public override string ToString()
         {
             string ret = "Job: " + name;
-            foreach (CTask task in tasks)
+            foreach (HerdTask task in tasks)
                 ret += "||" + task.ToString();
             return ret;
         }
@@ -103,7 +103,7 @@ namespace Herd
         protected int m_nextFileSize;
         protected string m_nextFileName;
 
-        protected CJob m_job;
+        protected HerdJob m_job;
 
         protected Logger.LogFunction m_logMessageHandler;
 
@@ -123,7 +123,7 @@ namespace Herd
         }
         public CJobDispatcher()
         {
-            m_job = new CJob();
+            m_job = new HerdJob();
             m_xmlStream = new XMLStream();
             m_nextFileSize = 0;
             m_logMessageHandler = null;
@@ -206,10 +206,10 @@ namespace Herd
         }
         protected void SendTasks(CancellationToken cancelToken)
         {
-            foreach (CTask task in m_job.tasks)
+            foreach (HerdTask task in m_job.tasks)
                 SendTask(task, cancelToken);
         }
-        protected void SendTask(CTask task, CancellationToken cancelToken)
+        protected void SendTask(HerdTask task, CancellationToken cancelToken)
         {
             string taskXML = "<Task Name=\"" + task.name + "\"";
             taskXML += " Exe=\"" + task.exe + "\"";
@@ -224,7 +224,7 @@ namespace Herd
 
         public async Task<bool> ReceiveTask(CancellationToken cancelToken)
         {
-            CTask task = new CTask();
+            HerdTask task = new HerdTask();
             Match match;
             //This expression was tested and worked fine with and without the authentication token
             match = await ReadUntilMatchAsync(TaskHeaderRegEx, cancelToken);
@@ -342,10 +342,19 @@ namespace Herd
             do
             {
                 header = m_xmlStream.processNextXMLTag();
-                if (header == "") //there's nothing in the buffer or incomplete tags
+                while (header == "") //there's nothing in the buffer or incomplete tags
+                {
                     ret = await ReadFromStreamAsync(cancelToken);
+                    header = m_xmlStream.processNextXMLTag();
+                }
 
                 match = Regex.Match(header, pattern);
+
+                if (!match.Success)
+                {
+                    logMessage("WARNING: Unexpected XML tag in ReadUntilMatchAsync(): " + header);
+                    logMessage("Buffer contents: " + Encoding.Default.GetString(m_xmlStream.getBuffer()));
+                }
             }
             while (!match.Success);
 
@@ -647,7 +656,7 @@ namespace Herd
                 discardProcessedData();
                 m_asciiBuffer = Encoding.ASCII.GetString(m_buffer, 0, m_bytesInBuffer);
 
-                m_match = Regex.Match(m_asciiBuffer, @"<([^\s>]*)");
+                m_match = Regex.Match(m_asciiBuffer, @"<([^\s>]*)[^>]*>");
 
                 if (m_match.Success)
                 {
@@ -675,6 +684,7 @@ namespace Herd
                     m_lastXMLItem = m_match.Value;
                     return m_match.Value;
                 }
+                else logMessage("WARNING: Couldn't match input in processNextXMLTag(): " + m_asciiBuffer);
             }
             return "";
         }
@@ -707,7 +717,7 @@ namespace Herd
         {
             if (m_lastXMLItem != "")
             {
-                m_match = Regex.Match(m_lastXMLItem, @"<([^\s\>]*)");
+                m_match = Regex.Match(m_lastXMLItem, @"<([^\s>]*)[^>]*>");
                 if (m_match.Success)
                     return m_match.Groups[1].Value;
             }

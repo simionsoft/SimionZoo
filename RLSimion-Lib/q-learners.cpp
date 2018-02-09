@@ -43,8 +43,8 @@ double CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 	}
 	else
 	{
-		unsigned int numActionWeights= pQFunction->getNumActionWeights();
-		unsigned int randomActionWeight = rand() % numActionWeights;
+		size_t numActionWeights= pQFunction->getNumActionWeights();
+		size_t randomActionWeight = rand() % numActionWeights;
 		pQFunction->getActionFeatureMap()->getFeatureAction(randomActionWeight, a);
 		return 1.0 / numActionWeights;
 	}

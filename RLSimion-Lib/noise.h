@@ -5,7 +5,7 @@ class CConfigNode;
 class CNumericValue;
 
 double getRandomValue();// returns a random value in range [0,1]
-int chooseRandomInteger(vector<float>& probability); //returns an integer in range [0, probability.size] according to the given probability
+int chooseRandomInteger(vector<double>& probability); //returns an integer in range [0, probability.size] according to the given probability
 
 class CNoise
 {

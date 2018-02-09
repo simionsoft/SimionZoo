@@ -76,12 +76,15 @@ protected:
 	double sgn(double value);
 
 	//state variable indices
+	int m_omega_g, m_d_omega_g;
 	int m_omega_r, m_d_omega_r;
 	int m_E_p, m_T_g, m_beta;
 	int m_E_int_omega_r;
 	//action variable indices
 	int m_a_beta, m_a_T_g;
 	double m_ratedPower;
+	double m_genElecEff;
+	double m_lastT_g = 0.0;
 	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
 	CWindTurbineVidalController(CConfigNode* pConfigNode);
@@ -98,15 +101,17 @@ class CWindTurbineBoukhezzarController : public CController
 {
 protected:
 	//state variable indices
-	int m_omega_r;
-	int m_E_p, m_T_a_index, m_T_g;
-	int m_beta;// , m_E_int_omega_r;
+	int m_omega_g, m_d_omega_g;
+	int m_E_p, m_T_a_index, m_T_g, m_d_T_g;
+	int m_beta, m_E_int_omega_g;
 
 	//action variable indices
 	int m_a_beta, m_a_T_g;
 	
 	DOUBLE_PARAM m_pC_0, m_pKP, m_pKI;
 	double m_K_t, m_J_t;
+	double m_lastT_g = 0.0;
+	double m_genElecEff;
 public:
 	CWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineBoukhezzarController();
@@ -121,7 +126,7 @@ public:
 class CWindTurbineJonkmanController : public CController
 {
 protected:
-	int m_omega_r, m_d_omega_r;
+	int m_omega_g, m_d_omega_g;
 	int m_E_p, m_T_g, m_beta;
 	int m_a_beta, m_a_T_g;
 
@@ -137,7 +142,6 @@ protected:
 	double m_IntSpdErr;
 	DOUBLE_PARAM m_PC_KK, m_PC_KP, m_PC_KI;
 	DOUBLE_PARAM m_PC_RefSpd;
-	double m_lastDemandedPitch;
 public:
 	CWindTurbineJonkmanController(CConfigNode* pConfigNode);
 	virtual ~CWindTurbineJonkmanController();

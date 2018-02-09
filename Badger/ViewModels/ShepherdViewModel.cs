@@ -37,7 +37,7 @@ namespace Badger.ViewModels
 
         private BindableCollection<HerdAgentViewModel> m_herdAgentList
             = new BindableCollection<HerdAgentViewModel>();
-        public BindableCollection<HerdAgentViewModel> herdAgentList
+        public BindableCollection<HerdAgentViewModel> HerdAgentList
         {
             get
             {
@@ -140,13 +140,15 @@ namespace Badger.ViewModels
 
         private void notifyHerdAgentChanged()
         {
-            NotifyOfPropertyChange(() => herdAgentList);
+            NotifyOfPropertyChange(() => HerdAgentList);
         }
 
         private void resendBroadcast(object sender, System.Timers.ElapsedEventArgs e)
         {
             m_shepherd.sendBroadcastHerdAgentQuery();
         }
+
+
 
         public ShepherdViewModel()
         {

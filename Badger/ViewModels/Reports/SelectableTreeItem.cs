@@ -7,38 +7,25 @@ namespace Badger.ViewModels
     {
         private bool m_bIsSelected = true;
 
-        public bool bIsSelected
+        public bool IsSelected
         {
             get { return m_bIsSelected; }
             set
             {
-                m_bIsSelected = value; NotifyOfPropertyChange(() => bIsSelected);
-                TraverseAction(false, (element) => { element.bIsSelected = value; });
+                m_bIsSelected = value; NotifyOfPropertyChange(() => IsSelected);
+                TraverseAction(false, (element) => { element.IsSelected = value; });
             }
         }
 
-        private bool m_bCheckIsVisible; // ReportsWindowViewModel.selectedFrom=FromAll by default
+        private bool m_bIsCheckVisible;
 
-        public bool bCheckIsVisible
+        public bool IsCheckVisible
         {
-            get { return m_bCheckIsVisible; }
+            get { return m_bIsCheckVisible; }
             set
             {
-                m_bCheckIsVisible = value;
-                NotifyOfPropertyChange(() => bCheckIsVisible);
-                TraverseAction(false, (element) => { element.bCheckIsVisible = value; });
-            }
-        }
-
-        private bool m_bVisible = true;
-
-        public bool bVisible
-        {
-            get { return m_bVisible; }
-            set
-            {
-                m_bVisible = value;
-                NotifyOfPropertyChange(() => bVisible);
+                m_bIsCheckVisible = value; NotifyOfPropertyChange(() => IsCheckVisible);
+                TraverseAction(false, (element) => { element.IsCheckVisible = value; });
             }
         }
 

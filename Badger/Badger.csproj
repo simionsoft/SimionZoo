@@ -51,7 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>badger-head.ico</ApplicationIcon>
+    <ApplicationIcon>badger.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Caliburn.Micro, Version=3.0.3.0, Culture=neutral, PublicKeyToken=8e5891231f2ed21f, processorArchitecture=MSIL">
@@ -137,6 +137,7 @@
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Data\CaliburnUtility.cs" />
+    <Compile Include="Data\DataTrackUtilities.cs" />
     <Compile Include="Data\EnumDescriptionConverter.cs" />
     <Compile Include="Data\EnumerationManager.cs" />
     <Compile Include="Data\NeuralNetwork\Chain.cs" />
@@ -170,7 +171,9 @@
     <Compile Include="Data\NeuralNetwork\Tuple.cs" />
     <Compile Include="Data\PlotType.cs" />
     <Compile Include="Data\SimionFileData.cs" />
+    <Compile Include="Data\SimionLogDescriptor.cs" />
     <Compile Include="Data\SimionLogFile.cs" />
+    <Compile Include="Data\Track.cs" />
     <Compile Include="Data\Utility.cs" />
     <Compile Include="Data\WorldDefinition.cs" />
     <Compile Include="Data\XMLConfig.cs" />
@@ -200,6 +203,7 @@
     <Compile Include="ViewModels\ConfigNodeTypes\NumericForkedNodeViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\StringValueConfigViewModel.cs" />
     <Compile Include="ViewModels\ConfigNodeTypes\WorldVarRefValueConfigViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredJobViewModel.cs" />
     <Compile Include="ViewModels\MultiStateButtonViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\ChainViewModel.cs" />
     <Compile Include="ViewModels\NeuralNetwork\InputDataViewModel.cs" />
@@ -222,8 +226,8 @@
     <Compile Include="ViewModels\Reports\LoggedExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedForkValueViewModel.cs" />
-    <Compile Include="ViewModels\Reports\LogQuery.cs" />
-    <Compile Include="ViewModels\Reports\LogQueryResultTrackViewModel.cs" />
+    <Compile Include="ViewModels\Reports\LogQueryViewModel.cs" />
+    <Compile Include="Data\TrackGroup.cs" />
     <Compile Include="ViewModels\Reports\PlotPropertiesViewModel.cs" />
     <Compile Include="ViewModels\Reports\LoggedPrerequisiteViewModel.cs" />
     <Compile Include="ViewModels\Reports\SelectableTreeItem.cs" />
@@ -233,8 +237,7 @@
     <Compile Include="ViewModels\Reports\LoggedVariableViewModel.cs" />
     <Compile Include="ViewModels\Reports\ReportViewModel.cs" />
     <Compile Include="ViewModels\Reports\StatsViewModel.cs" />
-    <Compile Include="ViewModels\MonitoredExperimentViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentQueueMonitorViewModel.cs" />
+    <Compile Include="ViewModels\MonitoredExperimentalUnitViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\HerdAgentViewModel.cs" />
     <Compile Include="ViewModels\LoadDialogViewModel.cs" />
@@ -248,6 +251,12 @@
     </Compile>
     <Compile Include="Views\HerdAgentView.xaml.cs">
       <DependentUpon>HerdAgentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MonitoredExperimentalUnitView.xaml.cs">
+      <DependentUpon>MonitoredExperimentalUnitView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MonitoredJobView.xaml.cs">
+      <DependentUpon>MonitoredJobView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NeuralNetwork\ChainView.xaml.cs">
       <DependentUpon>ChainView.xaml</DependentUpon>
@@ -318,12 +327,6 @@
     <Compile Include="Views\Reports\LoggedVariableView.xaml.cs">
       <DependentUpon>LoggedVariableView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\MonitoredExperimentView.xaml.cs">
-      <DependentUpon>MonitoredExperimentView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ExperimentQueueMonitorView.xaml.cs">
-      <DependentUpon>ExperimentQueueMonitorView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ExperimentMonitorWindowView.xaml.cs">
       <DependentUpon>ExperimentMonitorWindowView.xaml</DependentUpon>
     </Compile>
@@ -338,22 +341,12 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="NeuralNetworkClasses.cd" />
-    <None Include="LogQueryClasses.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -421,10 +414,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\ConfigNodeTypes\NumericForkedNodeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ConfigNodeTypes\StringValueConfigView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -440,6 +429,10 @@
     <Page Include="Views\HerdAgentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MonitoredJobView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MultiStateButtonView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -545,6 +538,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Reports\LogQueryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Reports\PlotLineSeriesPropertiesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -561,11 +558,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\MonitoredExperimentView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ExperimentQueueMonitorView.xaml">
+    <Page Include="Views\MonitoredExperimentalUnitView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -599,53 +592,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\add.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\cancel.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\copy.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\fork.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\left-arrow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\paste.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\remove.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\right-arrow.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\stop.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\badgerion.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\badger-head.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="badger-head.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\herdagent-head.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\tools\Herd\Herd.csproj">
       <Project>{75640896-f22e-4295-bb90-560cb48bb2b2}</Project>
       <Name>Herd</Name>
@@ -664,15 +610,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\spreadsheet.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\folder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="images\ic-error.png" />
+    <Content Include="badger.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

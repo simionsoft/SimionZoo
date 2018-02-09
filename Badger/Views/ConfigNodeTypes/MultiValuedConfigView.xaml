@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
-            <BitmapImage x:Key="add" UriSource="/images/add.png" />
+            
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
@@ -20,7 +20,7 @@
         <Button VerticalAlignment="Center" Background="Transparent" BorderBrush="{x:Null}" x:Name="Add" 
                             cal:Message.Attach="[Event Click]=[addChild]"
                             Width="25" Height="25" >
-            <Image Source="{StaticResource add}"></Image>
+            <Path Data="{StaticResource Add}" Stretch="Uniform" Fill="#89000000" />
         </Button>
     </StackPanel>
 </UserControl>

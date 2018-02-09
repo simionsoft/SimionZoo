@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:v="clr-namespace:Badger.Views"
              xmlns:vm="clr-namespace:Badger.ViewModels"
+             xmlns:oxy="http://oxyplot.org/wpf"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="700">
+             d:DesignHeight="600" d:DesignWidth="700">
 
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type vm:PlotViewModel}">
@@ -20,23 +21,17 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="5" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0" x:Name="plots" SelectedItem="{Binding Path=selectedPlot,Mode=TwoWay}">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding name}" FontSize="10" FontFamily="Segoe UI Light" TextAlignment="Center"/>
-                    </StackPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-        </TabControl>
+        <ContentControl x:Name="Plot" Grid.Row="0" Width="700"/>
+        <!--<oxy:PlotView Grid.Row="0" Grid.Column="0" Model="{Binding Plot}" 
+                      Height="500" Width="600" Margin="10,10,20,0" Background="#FAFAFA" />-->
 
-        <GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />
+        <!--<GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />-->
 
-        <TabControl Grid.Row="2" x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
+        <ContentControl x:Name="Stats" Grid.Row="1"/>
+        <!--<TabControl Grid.Row="2" x:Name="stats" SelectedItem="{Binding Path=selectedStat,Mode=TwoWay}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -44,6 +39,6 @@
                     </StackPanel>
                 </DataTemplate>
             </TabControl.ItemTemplate>
-        </TabControl>
+        </TabControl>-->
     </Grid>
 </UserControl>

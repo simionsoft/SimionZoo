@@ -11,8 +11,5 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    <StackPanel Orientation="Horizontal">
-        <Label Content="{Binding name}" FontWeight="Light" ToolTip="{Binding ForkValuesAsString}" Margin="0"/>
-    </StackPanel>
-
+    <Label x:Name="Name" FontWeight="Light" ToolTip="{Binding ForkValuesAsString}" Padding="2"/>
 </UserControl>

@@ -48,6 +48,7 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	s->set("d_omega_r", d_omega_r);
 
 	s->set("E_omega_r", s->get("omega_r") - m_constants["RatedRotorSpeed"]);
+	s->set("E_int_omega_r", s->get("E_omega_r")*m_elapsedTime);
 
 	//Generator speed: omega_g		//GenSpeed = avrSWAP[20 - 1];
 	double last_omega_g = s->get("omega_g");
@@ -60,18 +61,23 @@ void FASTWorldPortal::retrieveStateVariables(float* FASTdata, bool bFirstTime)
 	s->set("d_omega_g", d_omega_r);
 
 	s->set("E_omega_g", s->get("omega_g") - m_constants["RatedGeneratorSpeed"]);
+	s->set("E_int_omega_g", s->get("E_omega_g")*m_elapsedTime);
 
 	//Wind speed: v					//HorWindV = avrSWAP[27 - 1];
 	s->set("v", (double)FASTdata[26]);
 
-	//Mesaured electrical power: P_e
+	//Measured electrical power: P_e
+	//Fix to an error preventing the correct measured power to be sent to the controller
+	//s->set("P_e", s->get("T_g")*s->get("omega_g")*m_constants["ElectricalGeneratorEfficiency"];
 	s->set("P_e", (double)FASTdata[13]);
 
 	//Power error: E_p
-	s->set("E_p", (double)FASTdata[13] - m_constants["RatedPower"]);
+	s->set("E_p", s->get("P_e") - m_constants["RatedPower"]);
 
 	//Aerodynamic torque: T_a
-	s->set("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->get("P_e") / s->get("omega_g"));
+	//https://wind.nrel.gov/forum/wind/viewtopic.php?t=961
+	//T_aero = (J_rotor + J_gen*GBRatio^2)*Alpha + T_gen*GbRatio
+	s->set("T_a", (J_r + J_g*n_g*n_g)*d_omega_r + s->get("T_g")*n_g);
 
 	//Aerodynamic power: P_a
 	s->set("P_a", s->get("T_a")*s->get("omega_r"));

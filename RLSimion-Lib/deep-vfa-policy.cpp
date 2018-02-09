@@ -33,7 +33,7 @@ CDiscreteSoftmaxDeepPolicy::CDiscreteSoftmaxDeepPolicy(CConfigNode * pConfigNode
 	m_temperature = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "temperature", "Tempreature");
 }
 
-int CDiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<float> values)
+int CDiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
 {
 	double randomValue = getRandomValue();
 
@@ -55,7 +55,7 @@ int CDiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<float> values)
 	return resultingActionIndex;
 }
 
-int CDiscreteSoftmaxDeepPolicy::selectAction(std::vector<float> values)
+int CDiscreteSoftmaxDeepPolicy::selectAction(std::vector<double> values)
 {
 	double sum = 0;
 	for (int i = 0; i < values.size(); i++)

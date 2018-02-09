@@ -231,10 +231,13 @@ namespace Herd
                     case "Input": bret = await ReceiveFile(FileType.INPUT, true, true, cancelToken); break;
                     case "Output": bret = await ReceiveFile(FileType.OUTPUT, false, true, cancelToken); break;
                     case "/Job": bFooterPeeked = true; break;
+                    default: logMessage("WARNING: Unexpected xml tag received: " + xmlTag); break;
                 }
             } while (!bFooterPeeked);
 
+            logMessage("Waiting for job footer");
             bret = await ReceiveJobFooter(cancelToken);
+            logMessage("Job footer received");
 
             return true;
         }
@@ -251,7 +254,7 @@ namespace Herd
         }
 
 
-        public async Task<int> runTaskAsync(CTask task, CancellationToken cancelToken)
+        public async Task<int> runTaskAsync(HerdTask task, CancellationToken cancelToken)
         {
             int returnCode = m_noErrorCode;
             NamedPipeServerStream pipeServer = null;
@@ -373,7 +376,7 @@ namespace Herd
             try
             {
                 List<Task<int>> taskList = new List<Task<int>>();
-                foreach (CTask task in m_job.tasks)
+                foreach (HerdTask task in m_job.tasks)
                     taskList.Add(runTaskAsync(task, cancelToken));
                 int[] exitCodes = await Task.WhenAll(taskList);
 

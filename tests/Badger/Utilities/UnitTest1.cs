@@ -43,5 +43,31 @@ namespace Utilities
             Assert.AreEqual(filename, Utility.RemoveExtension(filename, 0));
             Assert.AreEqual(filename, Utility.RemoveExtension(filename,3));
         }
+        [TestMethod]
+        public void Badger_Utility_OxyplotMathNotation()
+        {
+            //α β γ δ ε ζ η θ ι κ λ μ ν ξ ο π ρ σ τ υ φ χ ψ ω
+            //Α Β Γ Δ Ε Ζ Η Θ Ι Κ Λ Μ Ν Ξ Ο Π Ρ Σ Τ Υ Φ Χ Ψ Ω
+
+            string original = "E_p";
+            string res= Utility.OxyPlotMathNotation(original);
+            Assert.AreEqual("E_{p}", res);
+
+            original = "E_int_omega_r,E_p";
+            res = Utility.OxyPlotMathNotation(original);
+            Assert.AreEqual("E_{int_ω_r},E_{p}", res);
+
+            original = "KP_alpha";
+            res = Utility.OxyPlotMathNotation(original);
+            Assert.AreEqual("KP_{α}", res);
+
+            original = "Alpha_i";
+            res = Utility.OxyPlotMathNotation(original);
+            Assert.AreEqual("α_{i}", res);
+
+            original = "TD(lambda)";
+            res = Utility.OxyPlotMathNotation(original);
+            Assert.AreEqual("TD(λ)", res);
+        }
     }
 }

@@ -25,13 +25,13 @@ protected:
 	CFeatureList* m_pStateOutFeatures;
 	CSingleDimensionDiscreteActionVariableGrid* m_pGrid;
 
-	int m_numberOfActions;
-	int m_numberOfStateFeatures;
-	std::vector<float> m_stateVector;
-	std::vector<float> m_actionValuePredictionVector;
+	size_t m_numberOfActions;
+	size_t m_numberOfStateFeatures;
+	std::vector<double> m_stateVector;
+	std::vector<double> m_actionValuePredictionVector;
 
-	std::vector<float> m_minibatchStateVector;
-	std::vector<float> m_minibatchActionValuePredictionVector;
+	std::vector<double> m_minibatchStateVector;
+	std::vector<double> m_minibatchActionValuePredictionVector;
 
 	int* m_pMinibatchChosenActionIndex;
 

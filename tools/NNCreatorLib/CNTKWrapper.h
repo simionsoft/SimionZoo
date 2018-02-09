@@ -1,4 +1,5 @@
 #pragma once
+#ifdef _WIN64
 #include "CNTKLibrary.h"
 
 //#include "ParameterValues.h"
@@ -109,3 +110,5 @@ namespace CNTKWrapper
 		}
 	}
 }
+
+#endif

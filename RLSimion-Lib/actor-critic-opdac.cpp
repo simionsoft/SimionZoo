@@ -65,7 +65,7 @@ void COffPolicyDeterministicActorCritic::updateValue(const CState *s, const CAct
 	double alpha_w = m_pAlphaW->get();
 
 	//select new action a_(t+1) = mu(s_(t+1))
-	for (int i = 0; i < m_policies.size(); i++)
+	for (size_t i = 0; i < m_policies.size(); i++)
 	{
 		m_policies[i]->selectAction(s_p, a_p);
 	}
