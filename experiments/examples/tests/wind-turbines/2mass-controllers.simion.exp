@@ -1,0 +1,461 @@
+<RLSimion FileVersion="1.0.0.0">
+<RLSimion>
+	<Log>
+		<Log-Freq>0.25</Log-Freq>
+		<Log-eval-episodes>true</Log-eval-episodes>
+		<Log-training-episodes>false</Log-training-episodes>
+	</Log>
+	<World>
+		<Num-Integration-Steps>4</Num-Integration-Steps>
+		<Delta-T>0.01</Delta-T>
+		<Dynamic-Model>
+			<Model>
+		<Wind-turbine>
+			<Evaluation-Wind-Data>../config/world/wind-turbine/TurbSim-17.hh</Evaluation-Wind-Data>
+			<Power-Set-Point>../config/world/wind-turbine/power-setpoint.txt</Power-Set-Point>
+			<Training-Wind-Data>
+				<Training-Wind-Data>../config/world/wind-turbine/TurbSim-14.hh</Training-Wind-Data>
+			</Training-Wind-Data>
+			<Training-Wind-Data>
+				<Training-Wind-Data>../config/world/wind-turbine/TurbSim-15.hh</Training-Wind-Data>
+			</Training-Wind-Data>
+			<Training-Wind-Data>
+				<Training-Wind-Data>../config/world/wind-turbine/TurbSim-16.hh</Training-Wind-Data>
+			</Training-Wind-Data>
+			<Training-Wind-Data>
+				<Training-Wind-Data>../config/world/wind-turbine/TurbSim-18.hh</Training-Wind-Data>
+			</Training-Wind-Data>
+			<Training-Wind-Data>
+				<Training-Wind-Data>../config/world/wind-turbine/TurbSim-19.hh</Training-Wind-Data>
+			</Training-Wind-Data>
+			<Training-Wind-Data>
+				<Training-Wind-Data>../config/world/wind-turbine/TurbSim-20.hh</Training-Wind-Data>
+			</Training-Wind-Data>
+		</Wind-turbine>
+		</Model>
+		</Dynamic-Model>
+	</World>
+	<Experiment>
+		<Random-Seed>1</Random-Seed>
+		<Num-Episodes>1000</Num-Episodes>
+		<Eval-Freq>10</Eval-Freq>
+		<Progress-Update-Freq>1.0</Progress-Update-Freq>
+		<Episode-Length>150</Episode-Length>
+	</Experiment>
+	<SimGod>
+		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>
+		<Gamma>0.9</Gamma>
+		<Freeze-Target-Function>true</Freeze-Target-Function>
+		<Use-Importance-Weights>false</Use-Importance-Weights>
+		<Experience-Replay>
+			<Buffer-Size>1000</Buffer-Size>
+			<Update-Batch-Size>10</Update-Batch-Size>
+		</Experience-Replay>
+		<State-Feature-Map>
+			<Type>
+		<RBF-State-Grid>
+			<RBF-Grid-Dimension>
+				<Num-Features>20</Num-Features>
+				<Variable>v</Variable>
+				<Distribution>linear</Distribution>
+			</RBF-Grid-Dimension>
+		</RBF-State-Grid>
+		</Type>
+		</State-Feature-Map>
+		<Simion>
+			<Type>
+		<Controller>
+			<FORKED-NODE Name="Controller" Alias="Controller">
+			  <FORK-VALUE Name="Value-0">
+			  	<Controller>
+		<Jonkman>
+			<CornerFreq>1.570796</CornerFreq>
+			<VS_SlPc>10.0</VS_SlPc>
+			<VS_Rgn2K>2.332287</VS_Rgn2K>
+			<VS_Rgn2Sp>91.21091</VS_Rgn2Sp>
+			<VS_CtInSp>70.16224</VS_CtInSp>
+			<VS_Rgn3MP>0.01745329</VS_Rgn3MP>
+			<PC_KK>0.1099965</PC_KK>
+			<PC_KP>0.01882681</PC_KP>
+			<PC_KI>0.008068634</PC_KI>
+			<PC_RefSpd>122.9096</PC_RefSpd>
+		</Jonkman>
+		</Controller>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Controller>
+		<Vidal>
+			<A>1.0</A>
+			<K_alpha>5000000</K_alpha>
+			<KP>1.0</KP>
+			<KI>0.01</KI>
+		</Vidal>
+		</Controller>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Controller>
+		<Boukhezzar>
+			<C_0>1.0</C_0>
+			<KP>1.0</KP>
+			<KI>0.01</KI>
+		</Boukhezzar>
+		</Controller>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-3">
+			  	<Controller>
+		<Extended-Vidal>
+			<A>1</A>
+			<K_alpha>500000</K_alpha>
+			<KP>0.5</KP>
+			<KI>0.001</KI>
+			<Critic>
+				<Critic>
+		<TD-Lambda>
+			<Alpha>
+				<Schedule>
+		<Constant>
+			<FORKED-NODE Name="Value" Alias="ExtVidal-CriticAlpha">
+			  <FORK-VALUE Name="Value-0">
+			  	<Value>0.1</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Value>0.05</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Value>0.01</Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Constant>
+		</Schedule>
+			</Alpha>
+			<V-Function>
+				<Init-Value>0.0</Init-Value>
+			</V-Function>
+		</TD-Lambda>
+		</Critic>
+			</Critic>
+			<A-learner>
+				<Policy-Learner>
+		<CACLA>
+			<Alpha>
+				<Schedule>
+		<Constant>
+			<FORKED-NODE Name="Value" Alias="ExtVidal-A-alpha">
+			  <FORK-VALUE Name="Value-0">
+			  	<Value>0.001</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Value>0.0005</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Value>0.0001</Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Constant>
+		</Schedule>
+			</Alpha>
+			<Policy>
+				<Policy>
+		<Deterministic-Policy-Gaussian-Noise>
+			<Output-Action>beta</Output-Action>
+			<Deterministic-Policy-VFA>
+				<Init-Value>0.0</Init-Value>
+			</Deterministic-Policy-VFA>
+			<Exploration-Noise>
+				<Noise>
+		<Ornstein-Uhlenbeck>
+			<Mu>0.0</Mu>
+			<Sigma>0.01</Sigma>
+			<Theta>0.1</Theta>
+			<Scale>
+				<Schedule>
+		<Simple-Linear-Decay>
+			<FORKED-NODE Name="Initial-Value" Alias="ExtVidal-A-scale">
+			  <FORK-VALUE Name="Value-0">
+			  	<Initial-Value>0.1</Initial-Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Initial-Value>0.5</Initial-Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Initial-Value>1.0</Initial-Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+			<End-Value>0.0</End-Value>
+		</Simple-Linear-Decay>
+		</Schedule>
+			</Scale>
+		</Ornstein-Uhlenbeck>
+		</Noise>
+			</Exploration-Noise>
+		</Deterministic-Policy-Gaussian-Noise>
+		</Policy>
+			</Policy>
+		</CACLA>
+		</Policy-Learner>
+			</A-learner>
+			<KAlpha-learner>
+				<Policy-Learner>
+		<CACLA>
+			<Alpha>
+				<Schedule>
+		<Constant>
+			<FORKED-NODE Name="Value" Alias="ExtVidal-Kalpha-alph">
+			  <FORK-VALUE Name="Value-0">
+			  	<Value>0.001</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Value>0.0005</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Value>0.0001</Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Constant>
+		</Schedule>
+			</Alpha>
+			<Policy>
+				<Policy>
+		<Deterministic-Policy-Gaussian-Noise>
+			<Output-Action>beta</Output-Action>
+			<Deterministic-Policy-VFA>
+				<Init-Value>0.0</Init-Value>
+			</Deterministic-Policy-VFA>
+			<Exploration-Noise>
+				<Noise>
+		<Ornstein-Uhlenbeck>
+			<Mu>0.0</Mu>
+			<Sigma>0.01</Sigma>
+			<Theta>0.1</Theta>
+			<Scale>
+				<Schedule>
+		<Simple-Linear-Decay>
+			<FORKED-NODE Name="Initial-Value" Alias="ExtVidal-Kalpha-scal">
+			  <FORK-VALUE Name="Value-0">
+			  	<Initial-Value>0.1</Initial-Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Initial-Value>0.5</Initial-Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Initial-Value>1</Initial-Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+			<End-Value>0.0</End-Value>
+		</Simple-Linear-Decay>
+		</Schedule>
+			</Scale>
+		</Ornstein-Uhlenbeck>
+		</Noise>
+			</Exploration-Noise>
+		</Deterministic-Policy-Gaussian-Noise>
+		</Policy>
+			</Policy>
+		</CACLA>
+		</Policy-Learner>
+			</KAlpha-learner>
+			<KP-learner>
+				<Policy-Learner>
+		<CACLA>
+			<Alpha>
+				<Schedule>
+		<Constant>
+			<FORKED-NODE Name="Value" Alias="ExtVidal-Alpha">
+			  <FORK-VALUE Name="Value-0">
+			  	<Value>0.001</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Value>0.0005</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Value>0.0001</Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Constant>
+		</Schedule>
+			</Alpha>
+			<Policy>
+				<Policy>
+		<Deterministic-Policy-Gaussian-Noise>
+			<Output-Action>beta</Output-Action>
+			<Deterministic-Policy-VFA>
+				<Init-Value>0.0</Init-Value>
+			</Deterministic-Policy-VFA>
+			<Exploration-Noise>
+				<Noise>
+		<Ornstein-Uhlenbeck>
+			<Mu>0.0</Mu>
+			<Sigma>0.01</Sigma>
+			<Theta>0.1</Theta>
+			<Scale>
+				<Schedule>
+		<Simple-Linear-Decay>
+			<FORKED-NODE Name="Initial-Value" Alias="ExtVidal-KPNoiseScal">
+			  <FORK-VALUE Name="Value-0">
+			  	<Initial-Value>0.1</Initial-Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Initial-Value>0.5</Initial-Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Initial-Value>1</Initial-Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+			<End-Value>0.0</End-Value>
+		</Simple-Linear-Decay>
+		</Schedule>
+			</Scale>
+		</Ornstein-Uhlenbeck>
+		</Noise>
+			</Exploration-Noise>
+		</Deterministic-Policy-Gaussian-Noise>
+		</Policy>
+			</Policy>
+		</CACLA>
+		</Policy-Learner>
+			</KP-learner>
+		</Extended-Vidal>
+		</Controller>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-4">
+			  	<Controller>
+		<Extended-Boukhezzar>
+			<C_0>1.1</C_0>
+			<KP>0.9</KP>
+			<KI>0.01</KI>
+			<Critic>
+				<Critic>
+		<TD-Lambda>
+			<Alpha>
+				<Schedule>
+		<Constant>
+			<FORKED-NODE Name="Value" Alias="ExtBouk-CriticAlpha">
+			  <FORK-VALUE Name="Value-0">
+			  	<Value>0.1</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Value>0.05</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Value>0.01</Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Constant>
+		</Schedule>
+			</Alpha>
+			<V-Function>
+				<Init-Value>0.0</Init-Value>
+			</V-Function>
+		</TD-Lambda>
+		</Critic>
+			</Critic>
+			<C_0-learner>
+				<Policy-Learner>
+		<CACLA>
+			<Alpha>
+				<Schedule>
+		<Constant>
+			<FORKED-NODE Name="Value" Alias="ExtBouk-C0-ActorAlph">
+			  <FORK-VALUE Name="Value-0">
+			  	<Value>0.001</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Value>0.0005</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Value>0.0001</Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Constant>
+		</Schedule>
+			</Alpha>
+			<Policy>
+				<Policy>
+		<Deterministic-Policy-Gaussian-Noise>
+			<Output-Action>beta</Output-Action>
+			<Deterministic-Policy-VFA>
+				<Init-Value>0.0</Init-Value>
+			</Deterministic-Policy-VFA>
+			<Exploration-Noise>
+				<Noise>
+		<Ornstein-Uhlenbeck>
+			<Mu>0.0</Mu>
+			<Sigma>0.01</Sigma>
+			<Theta>0.1</Theta>
+			<Scale>
+				<Schedule>
+		<Simple-Linear-Decay>
+			<Initial-Value>0.1</Initial-Value>
+			<End-Value>0.0</End-Value>
+		</Simple-Linear-Decay>
+		</Schedule>
+			</Scale>
+		</Ornstein-Uhlenbeck>
+		</Noise>
+			</Exploration-Noise>
+		</Deterministic-Policy-Gaussian-Noise>
+		</Policy>
+			</Policy>
+		</CACLA>
+		</Policy-Learner>
+			</C_0-learner>
+			<KP-learner>
+				<Policy-Learner>
+		<CACLA>
+			<Alpha>
+				<Schedule>
+		<Constant>
+			<FORKED-NODE Name="Value" Alias="ExtBouk-ActorAlpha">
+			  <FORK-VALUE Name="Value-0">
+			  	<Value>0.001</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-1">
+			  	<Value>0.0005</Value>
+			  </FORK-VALUE>
+			  <FORK-VALUE Name="Value-2">
+			  	<Value>0.0001</Value>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Constant>
+		</Schedule>
+			</Alpha>
+			<Policy>
+				<Policy>
+		<Deterministic-Policy-Gaussian-Noise>
+			<Output-Action>beta</Output-Action>
+			<Deterministic-Policy-VFA>
+				<Init-Value>0.0</Init-Value>
+			</Deterministic-Policy-VFA>
+			<Exploration-Noise>
+				<Noise>
+		<Ornstein-Uhlenbeck>
+			<Mu>0.0</Mu>
+			<Sigma>0.01</Sigma>
+			<Theta>0.1</Theta>
+			<Scale>
+				<Schedule>
+		<Simple-Linear-Decay>
+			<Initial-Value>0.1</Initial-Value>
+			<End-Value>0.0</End-Value>
+		</Simple-Linear-Decay>
+		</Schedule>
+			</Scale>
+		</Ornstein-Uhlenbeck>
+		</Noise>
+			</Exploration-Noise>
+		</Deterministic-Policy-Gaussian-Noise>
+		</Policy>
+			</Policy>
+		</CACLA>
+		</Policy-Learner>
+			</KP-learner>
+		</Extended-Boukhezzar>
+		</Controller>
+			  </FORK-VALUE>
+			</FORKED-NODE>
+		</Controller>
+		</Type>
+		</Simion>
+	</SimGod>
+</RLSimion>
+</RLSimion>

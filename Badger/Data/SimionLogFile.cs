@@ -1,27 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+using System.Xml;
+using Badger.Data;
+using Badger.ViewModels;
 
-namespace Badger.Data
+namespace Badger.Simion
 {
-
-    public class SimionLogFile
-    {
-        //BINARY LOG FILE STUFF: constants, reading methods, etc...
-        public const int HEADER_MAX_SIZE = 16;
-
-        public const int EXPERIMENT_HEADER = 1;
-        public const int EPISODE_HEADER = 2;
-        public const int STEP_HEADER = 3;
-        public const int EPISODE_END_HEADER = 4;
-
-        public delegate void StepAction(int auxId, int stepIndex, double value);
-        public delegate void ScalarValueAction(double action);
-        public delegate double EpisodeFunc(EpisodeData episode, int varIndex);
-    }
-
     public class StepData
     {
         public int stepIndex;
@@ -36,8 +21,8 @@ namespace Badger.Data
             expRealTime = logReader.ReadDouble();
             episodeSimTime = logReader.ReadDouble();
             episodeRealTime = logReader.ReadDouble();
-            logReader.ReadChars(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 5));
-            if (magicNumber == SimionLogFile.EPISODE_END_HEADER) return true;
+            logReader.ReadChars(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
+            if (magicNumber == SimionLog.EPISODE_END_HEADER) return true;
 
             //not the final step, we have to read the logged variables
             byte[] buffer = logReader.ReadBytes(sizeof(double) * (int)numLoggedVariables);
@@ -47,17 +32,8 @@ namespace Badger.Data
             Buffer.BlockCopy(buffer, 0, data, 0, numLoggedVariables * sizeof(double));
             return false;
         }
-        //static bool skipStep(BinaryReader logReader, int numLoggedVariables)
-        //{
-        //    int magicNumber = (int)logReader.ReadInt64();
-        //    if (magicNumber == SimionLogFile.EPISODE_END_HEADER) return true;
-
-        //    logReader.BaseStream.Seek((SimionLogFile.HEADER_MAX_SIZE + numLoggedVariables -1)*sizeof(double)
-        //        , SeekOrigin.Current);
-        //    return false;
-        //}
     }
-    public class EpisodeData
+    public class EpisodesData
     {
         public const int episodeTypeEvaluation = 0;
         public const int episodeTypeTraining = 1;
@@ -67,105 +43,106 @@ namespace Badger.Data
         public int subIndex = 0;
         public int numVariablesLogged = 0;
         public List<StepData> steps = new List<StepData>();
-        public void readEpisodeHeader(BinaryReader logReader)
+        public EpisodesData() { }
+        public void ReadEpisodeHeader(BinaryReader logReader)
         {
             int magicNumber = (int)logReader.ReadInt64();
             type = (int)logReader.ReadInt64();
             index = (int)logReader.ReadInt64();
             numVariablesLogged = (int)logReader.ReadInt64();
             subIndex = (int)logReader.ReadInt64();
-            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 5));
+            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 5));
         }
-        public static double calculateMin(EpisodeData episode, int varIndex)
+        public Series GetVariableData(int variableIndex, Report trackParameters)
         {
-            if (varIndex < 0 || episode.steps.Count == 0)
-                return 0.0;
-            double min = episode.steps[0].data[varIndex];
-            foreach (StepData step in episode.steps)
+            Series data = new Series();
+
+            foreach (StepData step in steps)
             {
-                if (step.data[varIndex] < min)
-                    min = step.data[varIndex];
+                if (step.episodeSimTime>=trackParameters.TimeOffset)
+                    data.AddValue(step.episodeSimTime
+                     , ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]));
             }
-            return min;
+            data.CalculateStats(trackParameters);
+
+            if (trackParameters.Resample)
+                data.Resample(trackParameters.NumSamples);
+            return data;
         }
-        public static double calculateMax(EpisodeData episode, int varIndex)
+        public double GetEpisodeAverage(int variableIndex, Report trackParameters)
         {
-            if (varIndex < 0 || episode.steps.Count == 0)
-                return 0.0;
-            double max = episode.steps[0].data[varIndex];
-            foreach (StepData step in episode.steps)
-            {
-                if (step.data[varIndex] > max)
-                    max = step.data[varIndex];
-            }
-            return max;
-        }
-        public static double calculateVarAvg(EpisodeData episode, int varIndex)
-        {
-            if (varIndex < 0 || episode.steps.Count == 0)
-                return 0.0;
             double avg = 0.0;
-            foreach (StepData step in episode.steps)
+            int count = 0;
+            if (steps.Count == 0) return 0.0;
+            foreach (StepData step in steps)
             {
-                avg += step.data[varIndex];
+                if (step.episodeSimTime >= trackParameters.TimeOffset)
+                {
+                    avg += ProcessFunc.Get(trackParameters.ProcessFunc, step.data[variableIndex]);
+                    count++;
+                }
             }
-            return avg / episode.steps.Count;
+            return avg / count;
         }
-        public static double calculateStdDev(EpisodeData episode, int varIndex)
-        {
-            if (varIndex < 0 || episode.steps.Count == 0)
-                return 0.0;
-            double avg = calculateVarAvg(episode, varIndex);
-            double sum = 0.0, diff;
-            foreach (StepData step in episode.steps)
-            {
-                diff = step.data[varIndex] - avg;
-                sum = diff * diff;
-            }
-            return Math.Sqrt(sum / episode.steps.Count);
-        }
-
-
     }
-    public class ExperimentData
+    public class SimionLog
     {
-        public int numEpisodes = 0;
-        public int numTrainingEpisodes = 0;
-        public int numEvaluationEpisodes = 0;
-        public int numEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
-        public int fileFormatVersion = 0;
-        public bool bSuccesful = true; //true if it finished correctly: the number of episodes in the header must match the number of episodes read from the log file
+        //BINARY LOG FILE STUFF: constants, reading methods, etc...
+        public const int HEADER_MAX_SIZE = 16;
 
-        public List<EpisodeData> episodes = new List<EpisodeData>();
+        public const int EXPERIMENT_HEADER = 1;
+        public const int EPISODE_HEADER = 2;
+        public const int STEP_HEADER = 3;
+        public const int EPISODE_END_HEADER = 4;
 
-        public bool load(string logFilename)
+        public int TotalNumEpisodes = 0;
+        public int NumTrainingEpisodes => TrainingEpisodes.Count;
+        public int NumEvaluationEpisodes => EvaluationEpisodes.Count;
+        public int NumEpisodesPerEvaluation = 1; //to make things easier, we update this number if we find
+        int FileFormatVersion = 0;
+        public bool SuccessfulLoad = false; //true if the binary file was correctly loaded
+
+        public List<EpisodesData> EvaluationEpisodes = new List<EpisodesData>();
+        public List<EpisodesData> TrainingEpisodes = new List<EpisodesData>();
+        public EpisodesData[] Episodes = null;
+
+
+  
+        /// <summary>
+        /// Read the binary log file. To know whether the log information has been succesfully loaded
+        /// or not, BinFileLoadSuccess can be checked after calling this method.
+        /// </summary>
+        /// <returns></returns>
+        public bool LoadBinaryLog(string LogFileName)
         {
             try
             {
-                using (FileStream logFile = File.OpenRead(logFilename))
+                using (FileStream logFile = File.OpenRead(LogFileName))
                 {
                     using (BinaryReader binaryReader = new BinaryReader(logFile))
                     {
-                        readExperimentLogHeader(binaryReader);
-                        for (int i = 0; i < numEpisodes; i++)
-                        {
-                            EpisodeData episodeData = new EpisodeData();
-                            episodes.Add(episodeData);
+                        ReadExperimentLogHeader(binaryReader);
+                        Episodes = new EpisodesData[TotalNumEpisodes];
 
-                            episodeData.readEpisodeHeader(binaryReader);
+                        for (int i = 0; i < TotalNumEpisodes; i++)
+                        {
+                            Episodes[i] = new EpisodesData();
+                            EpisodesData episodeData = Episodes[i];
+
+                            episodeData.ReadEpisodeHeader(binaryReader);
                             //if we find an episode subindex greater than the current max, we update it
                             //Episode subindex= Episode within an evaluation
-                            if (episodeData.subIndex > numEpisodesPerEvaluation)
-                                numEpisodesPerEvaluation = episodeData.subIndex;
+                            if (episodeData.subIndex > NumEpisodesPerEvaluation)
+                                NumEpisodesPerEvaluation = episodeData.subIndex;
 
-                        //count evaluation and training episodes
-                        if (episodeData.type == 0)
-                            this.numEvaluationEpisodes++;
-                        else
-                            this.numTrainingEpisodes++;
+                            //count evaluation and training episodes
+                            if (episodeData.type == 0)
+                                EvaluationEpisodes.Add(episodeData);
+                            else
+                                TrainingEpisodes.Add(episodeData);
 
-                        StepData stepData = new StepData();
-                        bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
+                            StepData stepData = new StepData();
+                            bool bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
 
                             while (!bLastStep)
                             {
@@ -177,60 +154,51 @@ namespace Badger.Data
                                 bLastStep = stepData.readStep(binaryReader, episodeData.numVariablesLogged);
                             }
                         }
+                        SuccessfulLoad = true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                bSuccesful = false;
-                Console.WriteLine("Exception reading " + logFilename + "\n" + ex.ToString());
+                Console.WriteLine(ex.ToString());
+                SuccessfulLoad = false;
             }
-            return bSuccesful;
+            return SuccessfulLoad;
         }
 
-        public void readExperimentLogHeader(BinaryReader logReader)
+        public delegate void StepAction(int auxId, int stepIndex, double value);
+        public delegate void ScalarValueAction(double action);
+        public delegate double EpisodeFunc(EpisodesData episode, int varIndex);
+
+   
+        public Series GetEpisodeData(EpisodesData episode, Report trackParameters, int variableIndex)
+        {
+            return episode.GetVariableData(variableIndex, trackParameters);
+        }
+
+        public SeriesGroup GetAveragedData(List<EpisodesData> episodes, Report trackParameters, int variableIndex)
+        {
+            SeriesGroup data = new SeriesGroup(trackParameters);
+            Series xYSeries = new Series();
+
+            foreach (EpisodesData episode in episodes)
+            {
+                xYSeries.AddValue(episode.index
+                    , episode.GetEpisodeAverage(variableIndex, trackParameters));
+            }
+            xYSeries.CalculateStats(trackParameters);
+            if (trackParameters.Resample)
+                xYSeries.Resample(trackParameters.NumSamples);
+            data.AddSeries(xYSeries);
+            return data;
+        }
+
+        private void ReadExperimentLogHeader(BinaryReader logReader)
         {
             int magicNumber = (int)logReader.ReadInt64();
-            fileFormatVersion = (int)logReader.ReadInt64();
-            numEpisodes = (int)logReader.ReadInt64();
-            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLogFile.HEADER_MAX_SIZE - 3));
-        }
-
-        //for each evaluation episode the episodeAction is performed
-        public void doForEachEvalEpisode(System.Action<EpisodeData> episodeAction)
-        {
-            foreach (EpisodeData episode in episodes)
-            {
-                if (episode.type == EpisodeData.episodeTypeEvaluation)
-                {
-                    episodeAction(episode);
-                }
-            }
-        }
-        //for each evaluation episode the episodeFunc is performed
-        public double doForEpisodeVar(int episodeIndex, int varIndex, SimionLogFile.EpisodeFunc episodeFunc)
-        {
-            foreach (EpisodeData episode in episodes)
-            {
-                if (episode.index == episodeIndex && episode.subIndex == 1 // <- this obviously is not the right way to do it
-                    && episode.type == EpisodeData.episodeTypeEvaluation)
-                {
-                    return episodeFunc(episode, varIndex);
-                }
-            }
-            return 0.0;
-        }
-        //for the i-th episode, the action is performed for each step data value
-        public void doForEpisodeSteps(int episodeIndex, System.Action<StepData> stepAction)
-        {
-            foreach (EpisodeData episode in episodes)
-            {
-                if (episode.index == episodeIndex && episode.type == EpisodeData.episodeTypeEvaluation)
-                {
-                    foreach (StepData step in episode.steps)
-                        stepAction(step);
-                }
-            }
+            FileFormatVersion = (int)logReader.ReadInt64();
+            TotalNumEpisodes = (int)logReader.ReadInt64();
+            byte[] padding = logReader.ReadBytes(sizeof(double) * (SimionLog.HEADER_MAX_SIZE - 3));
         }
     }
 

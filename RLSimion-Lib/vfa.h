@@ -22,7 +22,7 @@ protected:
 	CFeatureList* m_pPendingUpdates= nullptr;
 	IMemBuffer* m_pFrozenWeights = nullptr;
 	IMemBuffer* m_pWeights= nullptr;
-	unsigned int m_numWeights= 0;
+	size_t m_numWeights= 0;
 
 	bool m_bSaturateOutput;
 	double m_minOutput, m_maxOutput;
@@ -36,7 +36,7 @@ public:
 	virtual ~CLinearVFA();
 	double get(const CFeatureList *features,bool bUseFrozenWeights= true);
 	IMemBuffer *getWeights(){ return m_pWeights; }
-	unsigned int getNumWeights(){ return m_numWeights; }
+	size_t getNumWeights(){ return m_numWeights; }
 
 	void setCanUseDeferredUpdates(bool bCanUseDeferredUpdates);
 	
@@ -83,8 +83,8 @@ class CLinearStateActionVFA : public CLinearVFA, public CDeferredLoad
 protected:
 	std::shared_ptr<CStateFeatureMap> m_pStateFeatureMap;
 	std::shared_ptr<CActionFeatureMap> m_pActionFeatureMap;
-	unsigned int m_numStateWeights;
-	unsigned int m_numActionWeights;
+	size_t m_numStateWeights;
+	size_t m_numActionWeights;
 
 	CFeatureList *m_pAux;
 	CFeatureList *m_pAux2;
@@ -92,8 +92,8 @@ protected:
 	int *m_pArgMaxTies= nullptr;
 
 public:
-	unsigned int getNumStateWeights() const{ return m_numStateWeights; }
-	unsigned int getNumActionWeights() const { return m_numActionWeights; }
+	size_t getNumStateWeights() const{ return m_numStateWeights; }
+	size_t getNumActionWeights() const { return m_numActionWeights; }
 	std::shared_ptr<CStateFeatureMap> getStateFeatureMap() { return m_pStateFeatureMap; }
 	std::shared_ptr<CActionFeatureMap> getActionFeatureMap() { return m_pActionFeatureMap; }
 

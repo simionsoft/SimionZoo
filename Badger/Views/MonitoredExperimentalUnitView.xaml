@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Badger.Views.MonitoredExperimentalUnitView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             Background="Transparent" Width="250">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="MouseEnter">
+            <cal:ActionMessage MethodName="HandleMouseEnter"/>
+        </i:EventTrigger>
+        <i:EventTrigger EventName="MouseLeave">
+            <cal:ActionMessage MethodName="HandleMouseLeave" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Border BorderThickness="0" ToolTip="{Binding ForkListAsString}" MinHeight="20">
+        <StackPanel Orientation="Horizontal">
+            <Label Content="{Binding TaskName}" VerticalAlignment="Center" Width="50" Margin="0" Padding="0"/>
+            <TextBlock Foreground="{Binding StateColor}" 
+                        Text="{Binding StateString}" Background="Transparent"
+                    FontSize="11" VerticalAlignment="Center" Margin="0" Width="50"/>
+            <Button  Margin="2" Width="22" BorderThickness="0" Background="Transparent" Height="20" ToolTip="Show the experimental unit's log"
+                        cal:Message.Attach="[Event Click]=[Action ShowLog()]">
+                <!--<Label FontSize="9" Margin="0" Padding="0" >log</Label>-->
+                <Path Data="{StaticResource Notification}" Width="16" Height="16" Canvas.Left="17" Canvas.Top="21" Stretch="Fill" Fill="#89000000" />
+
+            </Button>
+            
+            <ProgressBar Margin="5" Width="50" Minimum="0" Maximum="100" Value="{Binding Progress}" 
+                        Height="10" Visibility="{Binding Path = IsRunning, Converter = {StaticResource BoolToVis}}" />
+
+        </StackPanel>
+    </Border>
+</UserControl>

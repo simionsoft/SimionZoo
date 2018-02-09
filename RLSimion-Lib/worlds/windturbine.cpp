@@ -134,8 +134,8 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	addConstant("GearBoxRatio", 97.0);
 	addConstant("ElectricalGeneratorEfficiency", 0.944); //%94.4
 	addConstant("TotalTurbineInertia", 43784725); //J_t= J_r + n_g^2*J_g= 38759228 + 5025497 
-	addConstant("GeneratorInertia", 534116.0);			//kg*m^2
-	addConstant("HubInertia", 115926.0);				//kg*m^2
+	addConstant("GeneratorInertia", 534.116);			//kg*m^2
+	addConstant("HubInertia", 115.926);				//kg*m^2
 	addConstant("TotalTurbineTorsionalDamping", 3470794.95); //N*m/(rad/s)
 	addConstant("RotorDiameter", 128.0); //m
 	addConstant("AirDensity", 1.225);	//kg/m^3
@@ -143,20 +143,21 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	addStateVariable("T_a", "N/m", 0.0, 10000000.0);
 	addStateVariable("P_a", "W", 0.0, 16000000.0);
 	addStateVariable("P_s", "W", 0.0, 6e6);
-	addStateVariable("P_e", "W", 0.0, 6e6);
-	addStateVariable("E_p", "W", -5e6, 5e6);
+	addStateVariable("P_e", "W", 0.0, 10e6);
+	addStateVariable("E_p", "W", -10e6, 10e6);
 	addStateVariable("v", "m/s", 1.0, 50.0);
 	addStateVariable("omega_r", "rad/s", 0.0, 6.0);
-	addStateVariable("d_omega_r", "rad/s^2", -2.0, 2.0);
+	addStateVariable("d_omega_r", "rad/s^2", -10.0, 10.0);
 	addStateVariable("E_omega_r", "rad/s", -4.0, 4.0);
 	addStateVariable("omega_g", "rad/s", 0.0, 200.0);
-	addStateVariable("d_omega_g", "rad/s^2", -2.0, 2.0);
-	addStateVariable("E_omega_g", "rad/s", -4.0, 4.0);
+	addStateVariable("d_omega_g", "rad/s^2", -50.0, 50.0);
+	addStateVariable("E_omega_g", "rad/s", -122.0, 122.0);
 	addStateVariable("beta", "rad", 0.0, 1.570796);
 	addStateVariable("d_beta", "rad/s", -0.1396263, 0.1396263);
 	addStateVariable("T_g", "N/m", 0.0, 47402.91);
 	addStateVariable("d_T_g", "N/m/s", -15000, 15000);
-	addStateVariable("E_int_omega_r", "rad", -100.0, 100.0);
+	addStateVariable("E_int_omega_r", "rad/s", -1.0e6, 1.0e6);
+	addStateVariable("E_int_omega_g", "rad/s", -1.0e6, 1.0e6);
 
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);
@@ -198,15 +199,9 @@ void CWindTurbine::reset(CState *s)
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
 
-	double initial_wind_speed = getConstant("RatedWindSpeed");// m_pCurrentWindData->getPointSet(0.0);
+	double initial_wind_speed = getConstant("RatedWindSpeed");
 	double initial_rotor_speed= getConstant("RatedRotorSpeed");
 	double initial_blade_angle= 0.0;
-
-//	CLogger::logMessage(Info,"Calculating initial torque and blade angle parameters...");
-//	findSuitableParameters(initial_wind_speed,initial_rotor_speed,initial_blade_angle);
-//	char msg[128];
-//	sprintf_s(msg,"T_g= %f     //    Beta= %f",m_initial_torque,m_initial_blade_angle);
-//	CLogger::logMessage(Info, msg);
 
 	double tsr= initial_rotor_speed*getConstant("RotorDiameter")*0.5/initial_wind_speed;
 
@@ -229,18 +224,27 @@ void CWindTurbine::reset(CState *s)
 	s->set("T_g", getConstant("RatedGeneratorTorque"));
 	s->set("d_T_g",0.0);
 	s->set("E_int_omega_r", 0.0);
+	s->set("E_int_omega_g", 0.0);
 }
 
 
 void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 {
 	s->set("P_s", m_pPowerSetpoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime()));
-	s->set("v", m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime()));
+	s->set("v",m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime()));
 
 	double lastBeta = s->get("beta");
 	double lastTorque = s->get("T_g");
-	s->set("beta", a->get("beta"));
-	s->set("T_g", a->get("T_g"));
+
+	if (CSimionApp::get()->pWorld->bIsFirstIntegrationStep())
+	{
+		//calculate action variables' derivatives to clamp them
+		s->set("d_T_g", (a->get("T_g") - lastTorque) / dt);
+		s->set("d_beta", (a->get("beta") - lastBeta) / dt);
+	}
+
+	s->set("beta", lastBeta + s->get("d_beta")*dt);
+	s->set("T_g", lastTorque + s->get("d_T_g")*dt);
 
 	//P_e= T_g*omega_g
 	double omega_r = s->get("omega_r");
@@ -264,8 +268,8 @@ void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 
 
 	//d(omega_r)= (T_a - DriveTrainTorsionalDamping*omega_r - T_g) / GeneratorInertia
-	double d_omega_r= (T_a - getConstant("TotalTurbineTorsionalDamping")*omega_r - a->get("T_g"))
-		/ getConstant("TotalTurbineInertia");
+	double d_omega_r = (T_a - getConstant("TotalTurbineTorsionalDamping")*omega_r - a->get("T_g"))
+		/ getConstant("TotalTurbineInertia");//437847250;//
 
 	s->set("d_omega_r",d_omega_r);
 	s->set("d_omega_g", d_omega_r*getConstant("GearBoxRatio"));
@@ -275,10 +279,4 @@ void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
 	s->set("E_omega_r", s->get("omega_r") - getConstant("RatedRotorSpeed"));
 	s->set("E_omega_g", s->get("omega_g") - getConstant("RatedGeneratorSpeed"));
 	s->set("E_int_omega_r", s->get("E_int_omega_r") + s->get("E_omega_r")*dt);
-
-	if (CSimionApp::get()->pWorld->bIsFirstIntegrationStep())
-	{
-		s->set("d_T_g", (a->get("T_g") - lastTorque) / dt);
-		s->set("d_beta", (a->get("beta") - lastBeta) / dt);
-	}
 }

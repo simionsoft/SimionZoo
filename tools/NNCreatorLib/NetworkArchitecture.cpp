@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
@@ -54,3 +58,5 @@ const CLink* CNetworkArchitecture::getLinkById(const char* id) const
 
 	return result;
 }
+
+#endif // _WIN64

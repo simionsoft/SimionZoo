@@ -145,7 +145,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 		m_policies[i]->getParameterGradient(s, a, m_grad_u);
 
 #ifdef _DEBUG
-		for (int j = 0; j < m_grad_u->m_numFeatures; j++)
+		for (unsigned int j = 0; j < m_grad_u->m_numFeatures; j++)
 			if (isnan(m_grad_u->m_pFeatures[j].m_factor))
 				cout << "nan!\n";
 #endif // DEBUG
@@ -165,7 +165,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 
 			cout << "nope\n";
 			cout << "\n\n";
-			for (int j = 0; j < m_w[i]->m_numFeatures; j++)
+			for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
 				cout << ((m_grad_u->m_pFeatures[j].m_factor)) << "\n";
 		}
 #endif // DEBUG
@@ -175,16 +175,16 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 
 #ifdef _DEBUG
 		double avg_w = 0;
-		for (int j = 0; j < m_w[i]->m_numFeatures; j++)
+		for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
 			avg_w += abs(m_w[i]->m_pFeatures[j].m_factor);
 		double avg_u = 0;
-		for (int j = 0; j < m_grad_u->m_numFeatures; j++)
+		for (unsigned int j = 0; j < m_grad_u->m_numFeatures; j++)
 		{
 			avg_u = avg_u + abs(m_grad_u->m_pFeatures[j].m_factor);
 		}
 		cout << "td: " << m_td << "\tinnerprod: " << innerprod << "\tsum |w|: " << avg_w << "\tsum |grad u|: " << avg_u << "\n";
 
-		for (int j = 0; j < m_w[i]->m_numFeatures; j++)
+		for (unsigned int j = 0; j < m_w[i]->m_numFeatures; j++)
 			if (isnan(m_w[i]->m_pFeatures[j].m_factor))
 				cout << "nan!\n";
 #endif // DEBUG

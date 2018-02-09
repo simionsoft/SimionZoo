@@ -26,13 +26,13 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 
 	if (m_grid.size() == 0) return;
 
-	unsigned int basicTilingIndexOffset = m_totalNumFeatures / m_numTilings;
-	for (unsigned int layerIndex = 0; layerIndex < m_numTilings; layerIndex++)
+	size_t basicTilingIndexOffset = m_totalNumFeatures / m_numTilings;
+	for (size_t layerIndex = 0; layerIndex < m_numTilings; layerIndex++)
 	{
-		unsigned int tilingIndexOffset = basicTilingIndexOffset*layerIndex;
+		size_t tilingIndexOffset = basicTilingIndexOffset*layerIndex;
 
-		unsigned int index = tilingIndexOffset;
-		for (unsigned int variableDimension = 0; variableDimension < m_grid.size(); variableDimension++)
+		size_t index = tilingIndexOffset;
+		for (size_t variableDimension = 0; variableDimension < m_grid.size(); variableDimension++)
 		{
 			//set offset of the grid
 			double oldOffset = m_grid[variableDimension]->getOffset();
@@ -42,12 +42,12 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 			m_grid[variableDimension]->getFeatures(s, a, m_pVarFeatures);
 
 			//find index of the only 1.0 in the features and store it in oneIndex
-			unsigned int oneIndex = m_pVarFeatures->m_pFeatures[0].m_index;
+			size_t oneIndex = m_pVarFeatures->m_pFeatures[0].m_index;
 
 			//calculate the product of the lengths of previous processes feature dimensions
-			unsigned int prodLength = 1;
+			size_t prodLength = 1;
 
-			for (unsigned int j = 0; j < variableDimension; j++)
+			for (size_t j = 0; j < variableDimension; j++)
 			{
 				prodLength *= m_grid[j]->getNumCenters();
 			}

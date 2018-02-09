@@ -5,6 +5,7 @@ using Badger.Simion;
 using Badger.ViewModels.Reports;
 using Caliburn.Micro;
 using System.IO;
+using System.ComponentModel;
 
 namespace Badger.ViewModels
 {
@@ -31,8 +32,11 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="configNode">The XML node from which the experiment's parameters hang.</param>
         /// <param name="baseDirectory">The directory of the parent batch file, if there is one.</param>
-        /// <param name="isForReport">True if we are reading the experiment to make a report.</param>
-        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool isForReport)
+        /// <param name="loadVariablesInLog">True if we are reading the experiment to make a report.</param>
+        /// <param name="loadOnlyUnfinishedExperimentalUnits">True if we only want to load unfinished experimental units</param>
+        /// <param name="updateFunction">Callback function to be called after a load progress event</param>
+        public LoggedExperimentViewModel(XmlNode configNode, string baseDirectory, bool loadVariablesInLog
+            , bool loadOnlyUnfinishedExperimentalUnits, SimionFileData.LoadUpdateFunction updateFunction = null)
         {
             XmlAttributeCollection attrs = configNode.Attributes;
 
@@ -60,20 +64,15 @@ namespace Badger.ViewModels
                         break;
 
                     case XMLConfig.experimentalUnitNodeTag:
-                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory);
-
-                        if (isForReport)
+                        LoggedExperimentalUnitViewModel newExpUnit = new LoggedExperimentalUnitViewModel(child, baseDirectory, updateFunction);
+                        if (loadVariablesInLog)
                         {
-                            newExpUnit.logDescriptor = new XmlDocument();
-                            if (File.Exists(newExpUnit.logDescriptorFilePath))
-                            {
-                                newExpUnit.logDescriptor.Load(newExpUnit.logDescriptorFilePath);
-                                List<string> variableNames = newExpUnit.processDescriptor();
-                                foreach (var name in variableNames) AddVariable(name);
-                            }
+                            //We load the list of variables from the log descriptor and add them to the global list
+                            newExpUnit.LoadLogDescriptor();
+                            foreach (string variable in newExpUnit.VariablesInLog) AddVariable(variable);
                         }
-
-                        ExperimentalUnits.Add(newExpUnit);
+                        if (!loadOnlyUnfinishedExperimentalUnits || !newExpUnit.PreviousLogExists())
+                            ExperimentalUnits.Add(newExpUnit);
                         break;
                 }
             }
@@ -82,12 +81,11 @@ namespace Badger.ViewModels
             {
                 TraverseAction(false, (node) => 
                 {
-                    LoggedForkValueViewModel forkValue = node as LoggedForkValueViewModel;
-                    if (forkValue!=null)
+                    if (node is LoggedForkValueViewModel forkValue)
                     {
                         foreach (string forkName in expUnit.forkValues.Keys)
                         {
-                            if (forkName==forkValue.parent.Name && expUnit.forkValues[forkName]==forkValue.value)
+                            if (forkName==forkValue.parent.Name && expUnit.forkValues[forkName]==forkValue.Value)
                             {
                                 forkValue.expUnits.Add(expUnit);
                             }
@@ -103,27 +101,12 @@ namespace Badger.ViewModels
         /// <param name="variableName"></param>
         public void AddVariable(string variableName)
         {
-            bool bVarExists = false;
-            int i = 0, len = variables.Count;
-
-            while (!bVarExists && i < len)
-            {
-                if (variables[i].name == variableName)
-                    bVarExists = true;
-                i++;
-            }
-
-            if (!bVarExists)
-                variables.Add(new LoggedVariableViewModel(variableName));
+            if (!VariablesInLog.Contains(variableName))
+                VariablesInLog.Add(variableName);
         }
 
         //Variables
-        private BindableCollection<LoggedVariableViewModel> m_variables
-            = new BindableCollection<LoggedVariableViewModel>();
-        public BindableCollection<LoggedVariableViewModel> variables
-        {
-            get { return m_variables; }
-            set { m_variables = value; NotifyOfPropertyChange(() => variables); }
-        }
+        public List<string> VariablesInLog { get; set; }
+            = new List<string>();
     }
 }

@@ -5,11 +5,10 @@ using System.Xml;
 using Badger.ViewModels;
 using System.Windows.Forms;
 using Badger.Properties;
-using Badger.Simion;
 using Caliburn.Micro;
+using Badger.Data;
 
-
-namespace Badger.Data
+namespace Badger.Simion
 {
     public static class SimionFileData
     {
@@ -23,26 +22,113 @@ namespace Badger.Data
         public const string imageRelativeDir = "..\\" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
 
+        public const string ExperimentBatchFilter = "Experiment-batch|*.";
+        public const string BadgerProjectFilter = "Badger project|*.";
+        public const string ExperimentFilter = "Experiment|*.";
+
         public delegate void LogFunction(string message);
+        public delegate void LoadUpdateFunction();
+
 
         //baseDirectory: directory where the batch file is located. Included to allow using paths
         //relative to the batch file, instead of relative to the RLSimion folder structure
-        public delegate void XmlNodeFunction(XmlNode node, string baseDirectory);
+        public delegate int XmlNodeFunction(XmlNode node, string baseDirectory,LoadUpdateFunction loadUpdateFunction);
 
+        /// <summary>
+        /// This function cleans the log files
+        /// </summary>
+        /// <param name="node">The node used in each call of the function</param>
+        /// <param name="baseDirectory">Base directory</param>
+        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        /// <returns></returns>
+        public static int CountFinishedExperimentalUnitsInBatch(XmlNode node, string baseDirectory
+                , LoadUpdateFunction loadUpdateFunction)
+        {
+            int finishedExperimentalUnits = 0;
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                {
+                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute].Value;
+                    string pathToLogFile = GetLogFilePath(pathToExpUnit, false);
+                    if (File.Exists(pathToLogFile))
+                    {
+                        FileInfo fileInfo = new FileInfo(pathToLogFile);
+                        if (fileInfo.Length > 0)
+                            finishedExperimentalUnits++;
+                    }
+                }
+                else
+                    finishedExperimentalUnits+= CountFinishedExperimentalUnitsInBatch(child, baseDirectory, loadUpdateFunction);
+            }
+            return finishedExperimentalUnits;
+        }
+
+        /// <summary>
+        /// This function cleans the log files
+        /// </summary>
+        /// <param name="node">The node used in each call of the function</param>
+        /// <param name="baseDirectory">Base directory</param>
+        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        /// <returns></returns>
+        public static int CleanExperimentalUnitLogFiles(XmlNode node, string baseDirectory
+                , LoadUpdateFunction loadUpdateFunction)
+        {
+            int numFilesDeleted = 0;
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                {
+                    string pathToExpUnit = baseDirectory + child.Attributes[XMLConfig.pathAttribute].Value;
+                    string pathToLogFile = GetLogFilePath(pathToExpUnit, false);
+                    if (File.Exists(pathToLogFile))
+                    {
+                        File.Delete(pathToLogFile);
+                        numFilesDeleted++;
+                    }
+                    string pathToLogFileDesc = GetLogFilePath(pathToExpUnit, true);
+                    if (File.Exists(pathToLogFileDesc))
+                    {
+                        File.Delete(pathToLogFileDesc);
+                        numFilesDeleted++;
+                    }
+                }
+                else
+                    numFilesDeleted+= CleanExperimentalUnitLogFiles(child, baseDirectory, loadUpdateFunction);
+            }
+            return numFilesDeleted;
+        }
+        /// <summary>
+        /// This function can be passed as an argument to LoadExperimentBatch to quickly count the number
+        /// of experimental units in a batch
+        /// </summary>
+        /// <param name="node">The node used in each call of the function</param>
+        /// <param name="baseDirectory">Base directory</param>
+        /// <param name="loadUpdateFunction">Callback function called after processing an experimental unit</param>
+        /// <returns></returns>
+        public static int CountExperimentalUnitsInBatch(XmlNode node, string baseDirectory
+                , LoadUpdateFunction loadUpdateFunction)
+        {
+            int ExperimentalUnitCount = 0;
+            foreach (XmlNode child in node.ChildNodes)
+            {
+                if (child.Name == XMLConfig.experimentalUnitNodeTag)
+                    ExperimentalUnitCount++;
+                else ExperimentalUnitCount += CountExperimentalUnitsInBatch(child, null, loadUpdateFunction);
+            }
+            return ExperimentalUnitCount;
+        }
+
+        
         /// <summary>
         ///     Load experiment batch file.
         /// </summary>
         /// <param name="perExperimentFunction"></param>
         /// <param name="batchFilename"></param>
-        static public string LoadExperimentBatchFile(XmlNodeFunction perExperimentFunction, string batchFilename = "")
+        static public int LoadExperimentBatchFile(string batchFilename, XmlNodeFunction perExperimentFunction
+            , LoadUpdateFunction onExperimentLoaded = null)
         {
-            if (string.IsNullOrEmpty(batchFilename))
-            {
-                bool isOpen = OpenFile(ref batchFilename, Resources.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
-                if (!isOpen)
-                    return null;
-            }
-
+            int retValue = 0;
             // Load the experiment batch in queue
             XmlDocument batchDoc = new XmlDocument();
             batchDoc.Load(batchFilename);
@@ -53,16 +139,16 @@ namespace Badger.Data
                 foreach (XmlNode experiment in fileRoot.ChildNodes)
                 {
                     if (experiment.Name == XMLConfig.experimentNodeTag)
-                        perExperimentFunction(experiment, Utility.GetDirectory(batchFilename));
+                        retValue+= perExperimentFunction(experiment, Utility.GetDirectory(batchFilename), onExperimentLoaded);
                 }
             }
             else
             {
                 CaliburnUtility.ShowWarningDialog("Malformed XML in experiment queue file. No badger node.", "ERROR");
-                return null;
+                return retValue;
             }
 
-            return batchFilename;
+            return retValue;
         }
 
         /// <summary>
@@ -97,7 +183,7 @@ namespace Badger.Data
             if (batchFilename == "")
             {
                 //Save dialog -> returns the experiment batch file
-                var sfd = SaveFile(Resources.ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
+                var sfd = SaveFile(ExperimentBatchFilter, XMLConfig.experimentBatchExtension);
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     batchFilename = sfd.FileName;
@@ -192,7 +278,7 @@ namespace Badger.Data
             Dictionary<string, string> appDefinitions, LogFunction log)
         {
             string fileDoc = null;
-            bool isOpen = OpenFile(ref fileDoc, Resources.BadgerProjectFilter, XMLConfig.badgerProjectExtension);
+            bool isOpen = OpenFileDialog(ref fileDoc, BadgerProjectFilter, XMLConfig.badgerProjectExtension);
             if (!isOpen) return;
 
             XmlDocument badgerDoc = new XmlDocument();
@@ -239,7 +325,7 @@ namespace Badger.Data
                 }
             }
 
-            var sfd = SaveFile(Resources.BadgerProjectFilter, XMLConfig.badgerProjectExtension);
+            var sfd = SaveFile(BadgerProjectFilter, XMLConfig.badgerProjectExtension);
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 string leftSpace;
@@ -271,7 +357,7 @@ namespace Badger.Data
         static public ExperimentViewModel LoadExperiment(Dictionary<string, string> appDefinitions)
         {
             string fileDoc = null;
-            bool isOpen = OpenFile(ref fileDoc, Resources.ExperimentFilter, XMLConfig.experimentExtension);
+            bool isOpen = OpenFileDialog(ref fileDoc, ExperimentFilter, XMLConfig.experimentExtension);
             if (!isOpen)
                 return null;
 
@@ -293,7 +379,7 @@ namespace Badger.Data
                 return;
             }
 
-            var sfd = SaveFile(Resources.ExperimentFilter, XMLConfig.experimentExtension);
+            var sfd = SaveFile(ExperimentFilter, XMLConfig.experimentExtension);
             if (sfd.ShowDialog() == DialogResult.OK)
                 experiment.save(sfd.FileName, SaveMode.AsExperiment);
         }
@@ -349,7 +435,7 @@ namespace Badger.Data
         /// <param name="filterPrefix"></param>
         /// <param name="extension">The extension of the file</param>
         /// <returns>Wheter the file was successfully open or not</returns>
-        public static bool OpenFile(ref string fileName, string filterPrefix, string extension)
+        public static bool OpenFileDialog(ref string fileName, string filterPrefix, string extension)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = filterPrefix + extension;

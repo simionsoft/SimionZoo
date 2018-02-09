@@ -1,39 +1,85 @@
-﻿<UserControl x:Class="Badger.Views.PlotPropertiesView"
+﻿<Window x:Class="Badger.Views.PlotPropertiesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            xmlns:vm="clr-namespace:Badger.ViewModels"
-            xmlns:v="clr-namespace:Badger.Views"
-             xmlns:oxy="http://oxyplot.org/wpf"
-            xmlns:cal="http://www.caliburnproject.org"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
+             Width="430" Height="350"
+             WindowStyle="ThreeDBorderWindow" Title="Properties"
+             Background="#eeeeee" WindowState="Normal" Icon="../../badger.ico">
+    <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-    </UserControl.Resources>
-    <StackPanel>
-        <StackPanel Orientation="Vertical">
+    </Window.Resources>
 
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <CheckBox x:Name="bLegendVisible">Legend</CheckBox>
-                <StackPanel Orientation="Vertical" IsEnabled="{Binding bLegendVisible}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="145"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0">
+                <GroupBox.Header>
                     <StackPanel Orientation="Horizontal">
-                        <CheckBox x:Name="bLegendBorder">Border</CheckBox>
+                        <Label VerticalAlignment="Center">Legend</Label>
+                        <CheckBox x:Name="LegendVisible" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Label>Position</Label>
-                        <ComboBox Text="Position" x:Name="legendOptions" Width="80"></ComboBox>
+                </GroupBox.Header>
+                <StackPanel>
+                    <StackPanel Orientation="Vertical" IsEnabled="{Binding LegendVisible}" Margin="4">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Width="80">Show border</Label>
+                            <CheckBox x:Name="LegendBorder" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Width="80">Position</Label>
+                            <ComboBox x:Name="LegendPositions" SelectedItem="{Binding SelectedLegendPosition}" Width="120"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
+                            <Label Width="80">Placement</Label>
+                            <ComboBox x:Name="LegendPlacements" SelectedItem="{Binding SelectedLegendPlacement}" Width="120"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" IsEnabled="{Binding LegendVisible}">
+                            <Label Width="80">Orientation</Label>
+                            <ComboBox x:Name="LegendOrientations" SelectedItem="{Binding SelectedLegendOrientation}" Width="120"/>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
-            </StackPanel>
-           
-        </StackPanel>
-        
-        <GroupBox Name="VisibilityProperties">
-            <ContentControl x:Name="lineSeriesProperties"></ContentControl>
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="Text" Padding="3" Margin="0,0,0,5">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">Title</Label>
+                        <TextBox Width="120" x:Name="Title"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">X Axis name</Label>
+                        <TextBox Width="120" x:Name="XAxisName"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">Y Axis name</Label>
+                        <TextBox Width="120" x:Name="YAxisName"></TextBox>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Width="80">Font family</Label>
+                        <ComboBox x:Name="Fonts" SelectedItem="{Binding SelectedFont}" Width="120"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+        <GroupBox Grid.Column="1" Padding="3">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Tracks"/>
+                    <CheckBox x:Name="AllTracksSelected" VerticalAlignment="Center"/>
+                </StackPanel>
+            </GroupBox.Header>
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl x:Name="LineSeriesProperties"/>
+            </ScrollViewer>
         </GroupBox>
-    </StackPanel>
-    
+    </Grid>
 
-</UserControl>
+</Window>

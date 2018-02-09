@@ -10,21 +10,21 @@ namespace Badger.ViewModels
     public class LoggedForkValueViewModel: SelectableTreeItem
     {
         private string m_value = "";
-        public string value { get { return m_value; } set { m_value = value; } }
+        public string Value { get { return m_value; } set { m_value = value; } }
 
         private BindableCollection<LoggedForkViewModel> m_forks = new BindableCollection<LoggedForkViewModel>();
-        public BindableCollection<LoggedForkViewModel> forks
+        public BindableCollection<LoggedForkViewModel> Forks
         {
             get { return m_forks; }
-            set { m_forks = value; NotifyOfPropertyChange(() => forks); }
+            set { m_forks = value; NotifyOfPropertyChange(() => Forks); }
         }
 
         //this is used to hide the space given to display children forks in case there is none
         private bool m_bHasForks = false;
-        public bool bHasForks
+        public bool HasChildrenForks
         {
             get { return m_bHasForks; }
-            set { m_bHasForks = value; NotifyOfPropertyChange(() => bHasForks); }
+            set { m_bHasForks = value; NotifyOfPropertyChange(() => HasChildrenForks); }
         }
 
         public LoggedForkViewModel parent { get; set; }
@@ -36,27 +36,27 @@ namespace Badger.ViewModels
             parent = _parent;
 
             if (configNode.Attributes.GetNamedItem(XMLConfig.valueAttribute) != null)
-                value = configNode.Attributes[XMLConfig.valueAttribute].Value;
+                Value = configNode.Attributes[XMLConfig.valueAttribute].Value;
             else
-                value = configNode.InnerText;
+                Value = configNode.InnerText;
 
             foreach (XmlNode child in configNode.ChildNodes)
             {
                 if (child.Name == XMLConfig.forkTag)
                 {
                     LoggedForkViewModel newFork = new LoggedForkViewModel(child);
-                    forks.Add(newFork);
+                    Forks.Add(newFork);
                 }
             }
 
             //hide the area used to display children forks?
-            bHasForks = forks.Count != 0;
+            HasChildrenForks = Forks.Count != 0;
         }
 
         public override void TraverseAction(bool doActionLocally,System.Action<SelectableTreeItem> action)
         {
             if (doActionLocally) LocalTraverseAction(action);
-            foreach (LoggedForkViewModel fork in forks)
+            foreach (LoggedForkViewModel fork in Forks)
                 fork.TraverseAction(doActionLocally, action);
             foreach (LoggedExperimentalUnitViewModel expUnit in expUnits)
                 expUnit.LocalTraverseAction(action);

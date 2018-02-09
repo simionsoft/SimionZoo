@@ -18,7 +18,7 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-        <ListView ItemsSource="{Binding Path = herdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
+        <ListView ItemsSource="{Binding Path = HerdAgentList}" BorderThickness="0" HorizontalContentAlignment="Stretch"
                   dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                   dd:DragDrop.DragAdornerTemplate="{StaticResource HerdAgent}">
             <ListView.ItemContainerStyle>

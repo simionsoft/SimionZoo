@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="Badger.Views.MonitoredJobView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cal="http://www.caliburnproject.org"
+             xmlns:vm="clr-namespace:Badger.ViewModels"
+             xmlns:v="clr-namespace:Badger.Views"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             Background="Transparent"
+             Width="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+
+    <Border BorderThickness="1" BorderBrush="LightGray" Margin="3">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Background="Transparent" Orientation="Vertical"
+                        Margin="3" VerticalAlignment="Center">
+                <StackPanel>
+                    <Label Content="{Binding Path=HerdAgent.IpAddressString}" Margin="0" Padding="0" FontWeight="Bold"/>
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="{Binding Name}" Foreground="#FF616161" Margin="0" Padding="0" FontSize="10"/>
+                </StackPanel>
+            </StackPanel>
+
+            <ListView Grid.Column="1" ItemsSource="{Binding MonitoredExperimentalUnits}" 
+                     HorizontalContentAlignment="Stretch" BorderThickness="0" Padding="1">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Focusable" Value="false"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.Resources>
+                    <DataTemplate DataType="{x:Type vm:MonitoredExperimentalUnitViewModel}">
+                        <v:MonitoredExperimentalUnitView />
+                    </DataTemplate>
+                </ListView.Resources>
+            </ListView>
+        </Grid>
+    </Border>
+</UserControl>

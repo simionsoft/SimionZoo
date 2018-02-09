@@ -4,9 +4,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              x:Class="Badger.Views.ExperimentView"
              mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="200">
-
-    <TreeView x:Name="RootNode" Background="Transparent" BorderThickness="0" Margin="0">
-        <ItemsControl x:Name="children" />
-    </TreeView>
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="children"/>
+        </ScrollViewer>
+    </Grid>
 
 </UserControl>

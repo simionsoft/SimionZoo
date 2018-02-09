@@ -35,6 +35,6 @@ public:
 
 	CNetwork* cloneNonTrainable() const;
 
-	void train(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& targetOutputData);
-	void predict(std::unordered_map<std::string, std::vector<float>&>& inputDataMap, std::vector<float>& predictionData);
+	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
+	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);
 };

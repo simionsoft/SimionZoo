@@ -1,4 +1,10 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
+
+
 #include "InputData.h"
 #include "xmltags.h"
 #include "ParameterValues.h"
@@ -51,3 +57,5 @@ void CInputData::createInputVariable()
 {
 	m_pInputVariable = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Float, CNTKWrapper::Internal::string2wstring(m_id));
 }
+
+#endif // _WIN64

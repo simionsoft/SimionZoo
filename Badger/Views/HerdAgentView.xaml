@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:badger="clr-namespace:Badger.Utils"
+             xmlns:badger="clr-namespace:Badger.Data"
              mc:Ignorable="d" 
              d:DesignHeight="110" d:DesignWidth="250">
 
@@ -149,8 +149,8 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Label Foreground="#FF616161" Content="Authentication Token" />
-                    <TextBox Grid.Column="1" Text="{Binding AuthenticationCode, Mode=TwoWay}" Margin="5 2 5 0" TextWrapping="NoWrap" VerticalAlignment="Center"/>
+                    <!--<Label Foreground="#FF616161" Content="Authentication Token" />
+                    <TextBox Grid.Column="1" Text="{Binding AuthenticationCode, Mode=TwoWay}" Margin="5 2 5 0" TextWrapping="NoWrap" VerticalAlignment="Center"/>-->
                 </Grid>
 
             </StackPanel>

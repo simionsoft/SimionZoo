@@ -9,5 +9,5 @@
              mc:Ignorable="d" 
                 d:DesignHeight="50" d:DesignWidth="300">
     
-    <ItemsControl x:Name="children" Margin="-10,0,0,0"/>
+    <ItemsControl x:Name="children" Margin="0"/>
 </UserControl>

@@ -1,4 +1,9 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
+
 #include "CNTKWrapper.h"
 #include "Parameter.h"
 #include "Link.h"
@@ -246,4 +251,7 @@ FunctionPtr CNTKWrapper::Internal::applyActivationFunction(FunctionPtr pInput, A
 	case ActivationFunction::linear:
 		return pInput;
 	}
+	return FunctionPtr(nullptr);
 }
+
+#endif // _WIN64

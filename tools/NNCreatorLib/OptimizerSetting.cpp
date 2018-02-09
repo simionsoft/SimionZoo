@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#ifdef _WIN64
+
+
 #include "OptimizerSetting.h"
 #include "xmltags.h"
 #include "Exceptions.h"
@@ -77,3 +81,5 @@ COptimizerParameter * COptimizerParameter::getInstance(tinyxml2::XMLElement * pN
 		return new COptimizerParameter(pNode);
 	return nullptr;
 }
+
+#endif // _WIN64

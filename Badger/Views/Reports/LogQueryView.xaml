@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="Badger.Views.LogQueryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:local="clr-namespace:Badger.Data"
+            xmlns:vm="clr-namespace:Badger.ViewModels"
+            xmlns:v="clr-namespace:Badger.Views"
+            xmlns:cal="http://www.caliburnproject.org"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+    <StackPanel >
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="2">
+            <GroupBox Header="Variable selection" Margin="0,2,0,2" ToolTip="Which variables do we want to display?"
+                                        MaxHeight="120" MinHeight="50">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="VariablesVM"/>
+                </ScrollViewer>
+            </GroupBox>
+
+            <StackPanel Orientation="Horizontal" ToolTip="Sets whether all variations of the experiments will be considered or just selected ones">
+                <StackPanel Orientation="Horizontal" ToolTip="Check if you want to consider only a subset of the forks in your queries">
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=UseForkSelection}"/>
+                    <Label  Width="120" FontSize="10" Margin="0,0,10,0" Content="Use fork selection" HorizontalContentAlignment="Left"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" ToolTip="Time offset from which logged data will begin (in seconds). Data before the offset will be discarded">
+                    <Label  FontSize="10" Margin="0,0,10,0" Content="Time offset" HorizontalContentAlignment="Left"/>
+                    <TextBox Text="{Binding Path=TimeOffset, Mode=TwoWay, StringFormat='N1'}" FontSize="10" Width="30" VerticalAlignment="Center"
+                                         IsEnabled="{Binding ResampleData,Converter={StaticResource BoolToVis}}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" ToolTip="If checked, data will be resampled to avoid an excessive number of points. Use if there are too many points.">
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding Path=ResampleData}"/>
+                    <Label  Width="80" FontSize="10" Margin="0,0,10,0" Content="Resample data" HorizontalContentAlignment="Left"/>
+                    <TextBox Text="{Binding Path=ResamplingNumPoints, StringFormat='D'}" FontSize="10" Width="30" VerticalAlignment="Center"
+                                             IsEnabled="{Binding ResampleData,Converter={StaticResource BoolToVis}}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <GroupBox Header="Track groups" Visibility="{Binding GroupsEnabled,Converter={StaticResource BoolToVis}}">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <StackPanel Orientation="Horizontal" 
+                                            ToolTip="Forks currently used to group results">
+                        <Label FontSize="10" Width="100" Margin="0,0,10,0" Content="Tracks grouped by" VerticalContentAlignment="Center"
+                                            HorizontalContentAlignment="Right"/>
+                        <Grid Margin="0,2,0,2" ToolTip="Which variables do we want to display?" Width="134"
+                                            MaxHeight="56">
+                            <Border BorderThickness="1" BorderBrush="#BDBDBD" >
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl x:Name="GroupByForks" Margin="3"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Grid>
+
+                        <Button x:Name="ResetGroupBy" Style="{StaticResource BadgerButtonStyle}" Margin="4,0,0,0" Width="24" Height="24">
+                            <Path Data="{StaticResource  Delete}" Width="24" Height="24" Fill="#89000000"
+                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="How do we pick the best track from each group?">
+                        <Label Width="100" Margin="0,0,10,0" FontSize="10" Content="In-group selection" HorizontalContentAlignment="Right" />
+                        <ComboBox x:Name="InGroupSelectionFunctions" SelectedValue="{Binding InGroupSelectionFunction}"
+                                        Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
+                        <ComboBox x:Name="InGroupSelectionVariables" SelectedValue="{Binding InGroupSelectionVariable}"
+                                        Width="80" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="Tracks">
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="This limits the maximum number of tracks to be displayed">
+                        <Label FontSize="10" Width="100" Margin="0,0,10,0" Content="Maximum Number" HorizontalContentAlignment="Right"/>
+                        <ComboBox x:Name="MaxNumTracksOptions" SelectedValue="{Binding MaxNumTracks}"
+                                            Width="80" Margin="0,0,10,0" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Margin="0,2,0,2" Orientation="Horizontal" ToolTip="Sets the criteria by which tracks are sorted before limiting">
+                        <Label Width="100" Margin="0,0,10,0" FontSize="10" Content="Track selection" HorizontalContentAlignment="Right"/>
+                        <ComboBox x:Name="OrderByFunctions" SelectedValue="{Binding OrderByFunction}"
+                                            Width="80" Margin="0,0,4,0" HorizontalAlignment="Center"/>
+                        <ComboBox x:Name="OrderByVariables" SelectedValue="{Binding OrderByVariable}"
+                                            Width="80" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </StackPanel>
+
+</UserControl>

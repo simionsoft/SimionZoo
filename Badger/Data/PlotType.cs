@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+
 
 namespace Badger.Data
 {
-    public enum PlotType
+    public enum ReportType
     {
         [Browsable(false)]
         Undefined = 0,
-        [Description("Last evaluation episode")]
+        [Description("Last evaluation")]
         LastEvaluation = 1,
-        [Description("All evaluation episodes")]
+        [Description("All evaluations")]
         AllEvaluationEpisodes = 2,
-        [Description("Evaluation averages")]
-        AverageOfEachEvaluationEpisode = 4,
-        [Description("All training episodes")]
+        //[Description("Average of each evaluation episode")]
+        //AverageOfEachEvaluationEpisode = 4,
+        [Description("All training")]
         AllTrainingEpisodes = 8,
         //[Description("Training averages")]
         //AverageOfEachTrainingEpisode = 16,
-        //[Description("All episodes")]
-        //AllEpisodes = 32,
+        [Description("Evaluation averages")]
+        EvaluationAverages = 32
     };
 }
