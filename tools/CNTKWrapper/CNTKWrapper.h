@@ -1,7 +1,8 @@
 #pragma once
 #ifdef _WIN64
-#include "CNTKLibrary.h"
 
+
+#include "../../packages/CNTK.CPUOnly.2.1.0/build/native/include/CNTKLibrary.h"
 #include <locale>
 #include <codecvt>
 #include <string>
