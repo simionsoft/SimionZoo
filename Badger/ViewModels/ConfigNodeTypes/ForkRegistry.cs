@@ -6,7 +6,9 @@ using Badger.Simion;
 
 namespace Badger.ViewModels
 {
-    //this class is used to register all the forks hanging from an experiment or a fork node
+    /// <summary>
+    /// Class to register all the forks hanging from an experiment or a fork node 
+    /// </summary>
     public class ForkRegistry : PropertyChangedBase
     {
         private List<ForkedNodeViewModel> m_forks = new List<ForkedNodeViewModel>();

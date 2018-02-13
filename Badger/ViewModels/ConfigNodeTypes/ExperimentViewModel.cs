@@ -378,6 +378,7 @@ namespace Badger.ViewModels
 
         //the list of forks hanging directly from the main experiment
         private ForkRegistry m_forkRegistry = new ForkRegistry();
+
         public ForkRegistry forkRegistry
         {
             get { return m_forkRegistry; }
@@ -385,5 +386,53 @@ namespace Badger.ViewModels
         }
 
 
+        public void CheckLinkableNodes(ConfigNodeViewModel originNode)
+        {
+            Stack<ConfigNodeViewModel> nodeStack = new Stack<ConfigNodeViewModel>();
+
+            nodeStack.Push(children[0]);
+            while (nodeStack.Count != 0)
+            {
+                ConfigNodeViewModel expand = nodeStack.Pop();
+
+                if (expand.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name))
+                {
+                    if (!expand.IsLinkOrigin)
+                    {
+                        expand.bCanBeLinked = true;
+                        expand.IsLinkable = false;
+                    }
+                }
+
+                if (expand is BranchConfigViewModel)
+                {
+                    BranchConfigViewModel branch = (BranchConfigViewModel)expand;
+                    if (branch.children.Count > 0)
+                    {
+                        for (int j = branch.children.Count - 1; j >= 0; j--)
+                        {
+                            nodeStack.Push(branch.children[j]);
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private void SetLinkable(ConfigNodeViewModel node)
+        {
+            //if (node.children.Count > 0)
+            //{
+            //foreach (ConfigNodeViewModel child in children)
+            //    SetLinkable(child);
+            //}
+            //else
+            //{
+            if (!node.IsLinkOrigin)
+                node.bCanBeLinked = true;
+            else
+                node.bCanBeLinked = false;
+            //}
+        }
     }
 }

@@ -3,6 +3,8 @@ using System.Xml;
 using Caliburn.Micro;
 using Badger.Simion;
 using System;
+using Badger.ViewModels.ConfigNodeTypes;
+using System.Collections.Generic;
 
 namespace Badger.ViewModels
 {
@@ -10,10 +12,13 @@ namespace Badger.ViewModels
     {
         //access to the root node
         protected ExperimentViewModel m_parentExperiment;
+
         public XmlNode nodeDefinition;
 
         protected string m_default = "";
+
         private string m_content = "";
+
 
         public string content
         {
@@ -82,12 +87,16 @@ namespace Badger.ViewModels
 
         virtual public void unforkThisNode() { }
 
-        private bool m_bCanBeLinked = true;
+        private bool m_bCanBeLinked;
 
         public bool bCanBeLinked
         {
             get { return m_bCanBeLinked; }
-            set { m_bCanBeLinked = value; NotifyOfPropertyChange(() => bCanBeLinked); }
+            set
+            {
+                m_bCanBeLinked = value;
+                NotifyOfPropertyChange(() => bCanBeLinked);
+            }
         }
 
         private bool m_bLinking;
@@ -95,35 +104,117 @@ namespace Badger.ViewModels
         public bool Linking
         {
             get { return m_bLinking; }
-            set { m_bLinking = value; NotifyOfPropertyChange(() => Linking); }
+            set
+            {
+                m_bLinking = value;
+                m_bCanBeLinked = !m_bLinking;
+                Console.WriteLine("Linking node: " + name);
+                NotifyOfPropertyChange(() => Linking);
+            }
         }
 
-        private BindableCollection<ConfigNodeViewModel> m_linkableNodes = new BindableCollection<ConfigNodeViewModel>();
+        private bool m_bIsLinkable = true;
 
-        public BindableCollection<ConfigNodeViewModel> LinkableNodes
+        public bool IsLinkable
         {
-            get { return m_linkableNodes; }
-            set { m_linkableNodes = value; NotifyOfPropertyChange(() => LinkableNodes); }
+            get { return m_bIsLinkable; }
+            set
+            {
+                m_bIsLinkable = value;
+                NotifyOfPropertyChange(() => IsLinkable);
+            }
         }
+
+        private bool m_bIsLinkOrigin;
+
+        public bool IsLinkOrigin
+        {
+            get { return m_bIsLinkOrigin; }
+            set
+            {
+                m_bIsLinkOrigin = value;
+                NotifyOfPropertyChange(() => IsLinkOrigin);
+            }
+        }
+
+        private ConfigNodeViewModel m_linkOriginNode;
+
+        public ConfigNodeViewModel LinkOriginNode
+        {
+            get { return m_linkOriginNode; }
+            set
+            {
+                m_linkOriginNode = value;
+                NotifyOfPropertyChange(() => LinkOriginNode);
+            }
+        }
+
 
         /// <summary>
         /// 
         /// </summary>
         public void LinkThisNode(ConfigNodeViewModel originNode)
         {
-            bCanBeLinked = false; // once a node is linked cannot be linked again
-            Linking = !bCanBeLinked; 
+            Linking = IsLinkOrigin = true;
+            IsLinkable = false;
+            LinkOriginNode = originNode;
+
+            m_parentExperiment.CheckLinkableNodes(originNode);
+
+
             var value = originNode.content;
             Console.WriteLine("Trying to link " + originNode.content);
         }
 
         /// <summary>
-        /// 
+        /// Actually link the node.
         /// </summary>
         /// <param name="targetNode"></param>
-        public void Link(ConfigNodeViewModel targetNode)
+        public bool Link(ConfigNodeViewModel targetNode)
         {
+            LinkedNodeViewModel linkedNode = new LinkedNodeViewModel();
+
+            Stack<ConfigNodeViewModel> nodeStack = new Stack<ConfigNodeViewModel>();
+
+            nodeStack.Push(m_parentExperiment.children[0]);
+            while (nodeStack.Count != 0)
+            {
+                ConfigNodeViewModel expand = nodeStack.Pop();
+
+                if (expand.Equals(targetNode))
+                {
+                    return true;
+                }
+
+                if (expand is BranchConfigViewModel)
+                {
+                    BranchConfigViewModel branch = (BranchConfigViewModel)expand;
+                    if (branch.children.Count > 0)
+                    {
+                        for (int j = branch.children.Count - 1; j >= 0; j--)
+                        {
+                            nodeStack.Push(branch.children[j]);
+                        }
+                    }
+                }
+            }
+
+            return false;
+            /*int oldIndex = m_parentExperiment.children.IndexOf(targetNode);
+
+            if (oldIndex >= 0)
+            {
+                m_parentExperiment.children.Remove(targetNode);
+                m_parentExperiment.children.Insert(oldIndex, linkedNode);
+            }*/
+
             Console.WriteLine("Error: non-nested config node asked to fork a child");
+        }
+
+
+        private int getTargetNodeIndex(ConfigNodeViewModel rootNode, ConfigNodeViewModel targetNode)
+        {
+            return -1;
         }
 
         //clone
@@ -139,10 +230,12 @@ namespace Badger.ViewModels
 
         //XPath methods
         protected string m_xPath;
+
         public string xPath { get { return m_xPath; } set { m_xPath = value; } }
 
         //Name
         private string m_name;
+
         public string name { get { return m_name; } set { m_name = value; } }
 
         //Parent

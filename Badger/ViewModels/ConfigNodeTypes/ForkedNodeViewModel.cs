@@ -324,15 +324,5 @@ namespace Badger.ViewModels
         {
             m_parentExperiment.forkRegistry.Remove(this);
         }
-
-        private BindableCollection<string> m_linkableNodeList
-            = new BindableCollection<string>() { "Ale", "Guerra"};
-
-        public BindableCollection<string> LinkableNodeList
-        {
-            get { return m_linkableNodeList; }
-            set
-            {}
-        }
     }
 }

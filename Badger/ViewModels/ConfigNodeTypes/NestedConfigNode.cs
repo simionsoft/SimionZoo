@@ -11,6 +11,7 @@ namespace Badger.ViewModels
     {
         //Children
         protected BindableCollection<ConfigNodeViewModel> m_children = new BindableCollection<ConfigNodeViewModel>();
+
         public BindableCollection<ConfigNodeViewModel> children
         {
             get { return m_children; }
@@ -88,9 +89,10 @@ namespace Badger.ViewModels
         public override void forkChild(ConfigNodeViewModel forkedChild)
         {
             ForkedNodeViewModel newForkNode;
+
             if (m_parentExperiment != null)
             {
-                //cross-reference
+                // cross-reference
                 newForkNode = new ForkedNodeViewModel(m_parentExperiment, forkedChild);
 
                 int oldIndex = children.IndexOf(forkedChild);
