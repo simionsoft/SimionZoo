@@ -7,37 +7,22 @@ using System.Xml;
 
 namespace Badger.ViewModels.ConfigNodeTypes
 {
-    class LinkedNodeViewModel : NestedConfigNode
+    class LinkedNodeViewModel : ConfigNodeViewModel
     {
-        private ForkValueViewModel m_selectedForkValue;
 
-
-        private void renameValues()
+        public LinkedNodeViewModel(ConfigNodeViewModel linkOriginNode)
         {
-            int i = 0;
-            foreach (ForkValueViewModel fValue in children)
-            {
-                fValue.name = "Value-" + i;
-                i++;
-            }
-        }
-
-        private string m_alias = "Name";
-        public string alias
-        {
-            get { return m_alias; }
-            set
-            {
-                m_alias = value;
-                bIsValid = m_parentExperiment.forkRegistry.Validate(value);
-                NotifyOfPropertyChange(() => alias);
-            }
+            Console.WriteLine("Linked with " + linkOriginNode.name);
         }
 
         //Constructor used from the experiment editor
-        public LinkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel forkedNode)
+        public LinkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel originNode,
+            ConfigNodeViewModel targetNode)
         {
-
+            m_parent = originNode.parent;
+            m_parentExperiment = parentExperiment;
+            nodeDefinition = targetNode.nodeDefinition;
+            content = originNode.content;
         }
 
         /// <summary>
@@ -46,74 +31,43 @@ namespace Badger.ViewModels.ConfigNodeTypes
         /// <param name="parentExperiment"></param>
         /// <param name="parentNode"></param>
         /// <param name="classDefinition"></param>
+        /// <param name="parentXPath"></param>
         /// <param name="configNode"></param>
-        /// <param name="initChildren"></param
         public LinkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parentNode,
-            XmlNode classDefinition, XmlNode configNode = null, bool initChildren = true)
+            XmlNode classDefinition, string parentXPath, XmlNode configNode = null)
         {
-            //configNode must be non-null since no ForkedNodeVM can be created from the app defintion
             m_parentExperiment = parentExperiment;
             nodeDefinition = classDefinition;
             m_parent = parentNode;
 
-            if (initChildren)
-            {
-                foreach (XmlNode forkValueConfig in configNode.ChildNodes)
-                {
-                    children.Add(new ForkValueViewModel(parentExperiment, classDefinition, this, forkValueConfig));
-                }
-            }
+            Console.WriteLine("Linked with " + nodeDefinition.Name);
         }
 
         //constructor used in clone()
         public LinkedNodeViewModel() { }
 
+
         public override ConfigNodeViewModel clone()
         {
-            ForkedNodeViewModel newForkedNode = new ForkedNodeViewModel();
-            newForkedNode.name = name;
-            foreach (ConfigNodeViewModel child in children)
-            {
-                ConfigNodeViewModel clonedChild = child.clone();
-                clonedChild.parent = newForkedNode;
-                newForkedNode.children.Add(clonedChild);
-            }
+            DoubleValueConfigViewModel newInstance =
+                new DoubleValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
 
-            //register this fork
-            m_parentExperiment.forkRegistry.Add(newForkedNode);
-
-            if (newForkedNode.children.Count > 0)
-                newForkedNode.selectedForkValue = newForkedNode.children[0] as ForkValueViewModel;
-            return newForkedNode;
+            newInstance.content = content;
+            newInstance.textColor = textColor;
+            return newInstance;
         }
 
 
         public override bool validate()
         {
-            if (name == "" || !m_parentExperiment.forkRegistry.Validate(alias))
-                return false;
-            foreach (ForkValueViewModel value in children)
-            {
-                if (!value.configNode.validate()) return false;
-            }
             return true;
         }
 
-     
-
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void UnlinkNode()
         {
-            //unregister this fork
-
-
-            NestedConfigNode parent = m_parent as NestedConfigNode;
-            if (parent != null)
-            {
-                int childIndex = parent.children.IndexOf(this);
-                parent.children.Remove(this);
-                m_parentExperiment.updateNumForkCombinations();
-            }
         }
     }
 }

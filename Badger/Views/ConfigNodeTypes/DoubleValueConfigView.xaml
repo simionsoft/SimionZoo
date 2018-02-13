@@ -10,7 +10,7 @@
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </UserControl.Resources>
-    
+
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
         <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light">
@@ -36,17 +36,17 @@
                     </MenuItem>
                     <MenuItem Header="Cancel linking" 
                               Visibility="{Binding Path=IsLinkOrigin,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="Click">
-                                    <cal:ActionMessage MethodName="CancelLinking" >
-                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
-                                    </cal:ActionMessage>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                            <MenuItem.Icon >
-                                <Path Data="{StaticResource Link}" Width="56" Height="56" Margin="0" Fill="#B2000000" />
-                            </MenuItem.Icon>
-                            <!--ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <cal:ActionMessage MethodName="CancelLinking" >
+                                    <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                </cal:ActionMessage>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <MenuItem.Icon >
+                            <Path Data="{StaticResource Link}" Width="56" Height="56" Margin="0" Fill="#B2000000" />
+                        </MenuItem.Icon>
+                        <!--ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <ListView ItemsSource="{Binding Path = LinkableNodes}" BorderThickness="0"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemContainerStyle>

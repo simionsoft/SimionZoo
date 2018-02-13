@@ -137,19 +137,6 @@ namespace Badger.ViewModels
             }
         }
 
-        private ConfigNodeViewModel m_linkOriginNode;
-
-        public ConfigNodeViewModel LinkOriginNode
-        {
-            get { return m_linkOriginNode; }
-            set
-            {
-                m_linkOriginNode = value;
-                NotifyOfPropertyChange(() => LinkOriginNode);
-            }
-        }
-
-
         /// <summary>
         /// 
         /// </summary>
@@ -157,13 +144,19 @@ namespace Badger.ViewModels
         {
             Linking = IsLinkOrigin = true;
             IsLinkable = false;
-            LinkOriginNode = originNode;
-
+            m_parentExperiment.LinkOriginNode = originNode;
             m_parentExperiment.CheckLinkableNodes(originNode);
+        }
 
-
-            var value = originNode.content;
-            Console.WriteLine("Trying to link " + originNode.content);
+        /// <summary>
+        /// Cancel a linking process between two nodes.
+        /// </summary>
+        public void CancelLinking(ConfigNodeViewModel originNode)
+        {
+            Linking = IsLinkOrigin = false;
+            IsLinkable = true;
+            m_parentExperiment.LinkOriginNode = null;
+            m_parentExperiment.CheckLinkableNodes(originNode, false);
         }
 
         /// <summary>
@@ -172,49 +165,34 @@ namespace Badger.ViewModels
         /// <param name="targetNode"></param>
         public bool Link(ConfigNodeViewModel targetNode)
         {
-            LinkedNodeViewModel linkedNode = new LinkedNodeViewModel();
-
             Stack<ConfigNodeViewModel> nodeStack = new Stack<ConfigNodeViewModel>();
-
             nodeStack.Push(m_parentExperiment.children[0]);
+
             while (nodeStack.Count != 0)
             {
                 ConfigNodeViewModel expand = nodeStack.Pop();
 
                 if (expand.Equals(targetNode))
                 {
+                    LinkedNodeViewModel linkedNode = new LinkedNodeViewModel(m_parentExperiment,
+                        m_parentExperiment.LinkOriginNode, targetNode);
+                    expand = linkedNode;
                     return true;
                 }
 
                 if (expand is BranchConfigViewModel)
                 {
                     BranchConfigViewModel branch = (BranchConfigViewModel)expand;
+
                     if (branch.children.Count > 0)
                     {
                         for (int j = branch.children.Count - 1; j >= 0; j--)
-                        {
                             nodeStack.Push(branch.children[j]);
-                        }
                     }
                 }
             }
 
             return false;
-            /*int oldIndex = m_parentExperiment.children.IndexOf(targetNode);
-
-            if (oldIndex >= 0)
-            {
-                m_parentExperiment.children.Remove(targetNode);
-                m_parentExperiment.children.Insert(oldIndex, linkedNode);
-            }*/
-
-            Console.WriteLine("Error: non-nested config node asked to fork a child");
-        }
-
-
-        private int getTargetNodeIndex(ConfigNodeViewModel rootNode, ConfigNodeViewModel targetNode)
-        {
-            return -1;
         }
 
         //clone

@@ -379,60 +379,65 @@ namespace Badger.ViewModels
         //the list of forks hanging directly from the main experiment
         private ForkRegistry m_forkRegistry = new ForkRegistry();
 
+
         public ForkRegistry forkRegistry
         {
             get { return m_forkRegistry; }
             set { m_forkRegistry = value; NotifyOfPropertyChange(() => forkRegistry); }
         }
 
+        private ConfigNodeViewModel m_linkOriginNode;
 
-        public void CheckLinkableNodes(ConfigNodeViewModel originNode)
+
+        public ConfigNodeViewModel LinkOriginNode
+        {
+            get { return m_linkOriginNode; }
+            set
+            {
+                m_linkOriginNode = value;
+                NotifyOfPropertyChange(() => LinkOriginNode);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="originNode"></param>
+        public void CheckLinkableNodes(ConfigNodeViewModel originNode, bool link = true)
         {
             Stack<ConfigNodeViewModel> nodeStack = new Stack<ConfigNodeViewModel>();
-
             nodeStack.Push(children[0]);
+
             while (nodeStack.Count != 0)
             {
                 ConfigNodeViewModel expand = nodeStack.Pop();
 
-                if (expand.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name))
+                if (link)
                 {
-                    if (!expand.IsLinkOrigin)
+                    if (expand.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name)
+                        && !expand.IsLinkOrigin)
                     {
                         expand.bCanBeLinked = true;
                         expand.IsLinkable = false;
                     }
                 }
+                else
+                {
+                    expand.bCanBeLinked = false;
+                    expand.IsLinkable = true;
+                }
 
                 if (expand is BranchConfigViewModel)
                 {
                     BranchConfigViewModel branch = (BranchConfigViewModel)expand;
+
                     if (branch.children.Count > 0)
                     {
                         for (int j = branch.children.Count - 1; j >= 0; j--)
-                        {
                             nodeStack.Push(branch.children[j]);
-                        }
                     }
                 }
             }
-        }
-
-
-        private void SetLinkable(ConfigNodeViewModel node)
-        {
-            //if (node.children.Count > 0)
-            //{
-            //foreach (ConfigNodeViewModel child in children)
-            //    SetLinkable(child);
-            //}
-            //else
-            //{
-            if (!node.IsLinkOrigin)
-                node.bCanBeLinked = true;
-            else
-                node.bCanBeLinked = false;
-            //}
         }
     }
 }
