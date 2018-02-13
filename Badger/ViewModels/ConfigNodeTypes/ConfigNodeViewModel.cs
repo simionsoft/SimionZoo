@@ -29,6 +29,9 @@ namespace Badger.ViewModels
                 m_content = value;
                 bIsValid = validate();
                 NotifyOfPropertyChange(() => content);
+                // Reflect content change in linked nodes
+                foreach (var node in m_linkedNodes)
+                    node.content = value;
             }
         }
 
@@ -138,6 +141,20 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
+        /// The list with the linked nodes
+        /// </summary>
+        private BindableCollection<ConfigNodeViewModel> m_linkedNodes = new BindableCollection<ConfigNodeViewModel>();
+
+        /// <summary>
+        /// Linked nodes list property to get and/or set values
+        /// </summary>
+        public BindableCollection<ConfigNodeViewModel> LinkedNodes
+        {
+            get { return m_linkedNodes; }
+            set { m_linkedNodes = value; NotifyOfPropertyChange(() => LinkedNodes); }
+        }
+
+        /// <summary>
         ///  Take the right-clicked node as the origin node to link with all the posible linkable
         ///  nodes (i.e. nodes of the same class). Linkable nodes bCanBeLinked attr value are set 
         ///  to true.
@@ -163,7 +180,7 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        /// Actually link the node.
+        /// Actually perform the linking with the node.
         /// </summary>
         /// <param name="targetNode"></param>
         public bool Link(ConfigNodeViewModel targetNode)
@@ -176,7 +193,7 @@ namespace Badger.ViewModels
 
                 if (expand.Equals(targetNode))
                 {
-                    LinkedNodeViewModel linkedNode = new LinkedNodeViewModel(m_parentExperiment,
+                    var linkedNode = new LinkedNodeViewModel(m_parentExperiment,
                         m_parentExperiment.LinkOriginNode, targetNode);
 
                     if (expand.m_parent is BranchConfigViewModel)
@@ -187,6 +204,8 @@ namespace Badger.ViewModels
                         int index = parent.children.IndexOf(expand);
                         parent.children.Remove(expand);
                         parent.children.Insert(index, linkedNode);
+
+                        m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode);
                         return true;
                     }
 

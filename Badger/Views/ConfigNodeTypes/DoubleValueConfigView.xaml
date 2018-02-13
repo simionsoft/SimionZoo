@@ -18,7 +18,7 @@
                 <ContextMenu Visibility="{Binding Path=bCanBeForked,FallbackValue=Hidden,Converter={StaticResource BoolToVis}}">
                     <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
                         <MenuItem.Icon>
-                            <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
+                            <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" Margin="-4,-4,0,0"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Link this node" 
@@ -31,7 +31,7 @@
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <MenuItem.Icon>
-                            <Path Data="{StaticResource Link}" Width="56" Height="56" Margin="0" Fill="#B2000000" />
+                            <Path Data="{StaticResource Link}" Width="24" Height="24" Margin="-4,-4,0,0" Fill="#B2000000" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Cancel linking" 
