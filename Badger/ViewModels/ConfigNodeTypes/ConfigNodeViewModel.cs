@@ -5,6 +5,7 @@ using Badger.Simion;
 using System;
 using Badger.ViewModels.ConfigNodeTypes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Badger.ViewModels
 {
@@ -108,7 +109,6 @@ namespace Badger.ViewModels
             {
                 m_bLinking = value;
                 m_bCanBeLinked = !m_bLinking;
-                Console.WriteLine("Linking node: " + name);
                 NotifyOfPropertyChange(() => Linking);
             }
         }
@@ -138,8 +138,11 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
-        /// 
+        ///  Take the right-clicked node as the origin node to link with all the posible linkable
+        ///  nodes (i.e. nodes of the same class). Linkable nodes bCanBeLinked attr value are set 
+        ///  to true.
         /// </summary>
+        /// <param name="originNode">The origin node of the linking process</param>
         public void LinkThisNode(ConfigNodeViewModel originNode)
         {
             Linking = IsLinkOrigin = true;
@@ -165,10 +168,9 @@ namespace Badger.ViewModels
         /// <param name="targetNode"></param>
         public bool Link(ConfigNodeViewModel targetNode)
         {
-            Stack<ConfigNodeViewModel> nodeStack = new Stack<ConfigNodeViewModel>();
-            nodeStack.Push(m_parentExperiment.children[0]);
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { m_parentExperiment.children[0] });
 
-            while (nodeStack.Count != 0)
+            while (nodeStack.Any())
             {
                 ConfigNodeViewModel expand = nodeStack.Pop();
 
@@ -176,8 +178,19 @@ namespace Badger.ViewModels
                 {
                     LinkedNodeViewModel linkedNode = new LinkedNodeViewModel(m_parentExperiment,
                         m_parentExperiment.LinkOriginNode, targetNode);
-                    expand = linkedNode;
-                    return true;
+
+                    if (expand.m_parent is BranchConfigViewModel)
+                    {
+                        BranchConfigViewModel parent = (BranchConfigViewModel)expand.m_parent;
+                        // For node substitution We don't need the index in the whole tree 
+                        // just the index in the parent children list
+                        int index = parent.children.IndexOf(expand);
+                        parent.children.Remove(expand);
+                        parent.children.Insert(index, linkedNode);
+                        return true;
+                    }
+
+                    return false;
                 }
 
                 if (expand is BranchConfigViewModel)
@@ -186,8 +199,8 @@ namespace Badger.ViewModels
 
                     if (branch.children.Count > 0)
                     {
-                        for (int j = branch.children.Count - 1; j >= 0; j--)
-                            nodeStack.Push(branch.children[j]);
+                        foreach (var node in branch.children)
+                            nodeStack.Push(node);
                     }
                 }
             }

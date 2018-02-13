@@ -8,11 +8,11 @@
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="Badger.Views.LinkedNodeView"
-             mc:Ignorable="d" d:DesignHeight="50" d:DesignWidth="300">
+             mc:Ignorable="d" d:DesignHeight="28" d:DesignWidth="412">
 
     <Border BorderBrush="Orange">
         <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal" Background="LightGray">
+            <StackPanel Orientation="Horizontal" Background="#FFFFFF" Height="28">
                 <StackPanel.ContextMenu >
                     <ContextMenu>
                         <MenuItem Header="Unlink" cal:Message.Attach="UnlinkNode">
@@ -22,8 +22,18 @@
                         </MenuItem>
                     </ContextMenu>
                 </StackPanel.ContextMenu>
-                <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#89000000" />
-                <Label VerticalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
+                <Label Content="{Binding name}" Foreground="{Binding textColor}" Width="150"
+                             VerticalAlignment="Center" Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Right"/>
+
+                <StackPanel Orientation="Horizontal" Background="#EEEEEE">
+                    <TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" Background="Transparent"
+                 HorizontalContentAlignment="Left" Width="75" BorderBrush="{x:Null}" BorderThickness="0"/>
+
+                    <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#89000000" Margin="2"/>
+                </StackPanel>
+
+                <Label Content="{Binding Origin}" Foreground="{Binding textColor}" Width="150"
+                             VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Margin="4,0,0,0"/>
                 <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked node"
                         Width="40" Height="40">
                     <Path Data="{StaticResource Link}" Width="24" Height="24" Fill="#B2000000" />

@@ -5,10 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Badger.ViewModels.ConfigNodeTypes
+namespace Badger.ViewModels
 {
     class LinkedNodeViewModel : ConfigNodeViewModel
     {
+        private string m_origin;
+
+        public string Origin {
+            get { return m_origin; }
+            set {
+                m_origin = value;
+                NotifyOfPropertyChange(() => Origin);
+            }
+        }
 
         public LinkedNodeViewModel(ConfigNodeViewModel linkOriginNode)
         {
@@ -21,8 +30,10 @@ namespace Badger.ViewModels.ConfigNodeTypes
         {
             m_parent = originNode.parent;
             m_parentExperiment = parentExperiment;
-            nodeDefinition = targetNode.nodeDefinition;
+            name = targetNode.name;
+            comment = targetNode.comment;
             content = originNode.content;
+            Origin = "Linked to " + originNode.name;
         }
 
         /// <summary>

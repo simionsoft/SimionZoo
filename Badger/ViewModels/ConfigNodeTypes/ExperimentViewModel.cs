@@ -403,12 +403,12 @@ namespace Badger.ViewModels
         /// 
         /// </summary>
         /// <param name="originNode"></param>
+        /// <param name="link"></param>
         public void CheckLinkableNodes(ConfigNodeViewModel originNode, bool link = true)
         {
-            Stack<ConfigNodeViewModel> nodeStack = new Stack<ConfigNodeViewModel>();
-            nodeStack.Push(children[0]);
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
 
-            while (nodeStack.Count != 0)
+            while (nodeStack.Any())
             {
                 ConfigNodeViewModel expand = nodeStack.Pop();
 
@@ -433,8 +433,8 @@ namespace Badger.ViewModels
 
                     if (branch.children.Count > 0)
                     {
-                        for (int j = branch.children.Count - 1; j >= 0; j--)
-                            nodeStack.Push(branch.children[j]);
+                        foreach (var node in branch.children)
+                            nodeStack.Push(node);
                     }
                 }
             }
