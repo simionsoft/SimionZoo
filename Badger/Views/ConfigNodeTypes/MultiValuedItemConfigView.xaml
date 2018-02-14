@@ -20,9 +20,5 @@
                 </Button>
             </StackPanel>
         </StackPanel>
-
-
-
-
     </StackPanel>
 </UserControl>

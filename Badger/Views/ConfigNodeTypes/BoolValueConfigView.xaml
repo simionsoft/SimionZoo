@@ -13,21 +13,13 @@
     </UserControl.Resources>
     <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
         <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
-                               HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light">
-            <Label.ContextMenu>
-                <ContextMenu Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
-                    <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
-                        <MenuItem.Icon>
-                            <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </Label.ContextMenu>
-        </Label>
+               HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light"
+               ContextMenu="{DynamicResource SharedContextMenu}"/>
+
         <CheckBox VerticalAlignment="Center" IsChecked="{Binding bContentAsBool,Mode=TwoWay}"/>
         <!--<TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
                  BorderThickness="0"/>-->
     </StackPanel>
-  
+
 </UserControl>

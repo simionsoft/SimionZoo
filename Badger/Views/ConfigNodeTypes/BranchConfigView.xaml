@@ -13,23 +13,14 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal" Focusable="False">
-            <CheckBox  VerticalAlignment="Center" 
-                            Visibility="{Binding Path=bIsOptional,Converter={StaticResource BoolToVis}}"
-                            IsChecked="{Binding bIsUsed}"/>
-            <Label Content="{Binding name}" ToolTip="{Binding comment}" >
-                <Label.ContextMenu >
-                    <ContextMenu Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
-                        <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </Label.ContextMenu>
-            </Label>
+            <CheckBox  VerticalAlignment="Center" IsChecked="{Binding bIsUsed}"
+                       Visibility="{Binding Path=bIsOptional,Converter={StaticResource BoolToVis}}"/>
+
+            <Label Content="{Binding name}" ToolTip="{Binding comment}" ContextMenu="{DynamicResource SharedContextMenu}"/>
         </StackPanel>
+
         <StackPanel>
-        <ItemsControl x:Name="children" Margin="5,0,0,0"
+            <ItemsControl x:Name="children" Margin="5,0,0,0"
                       Visibility="{Binding Path=bIsUsed,Converter={StaticResource BoolToVis}}"/>
         </StackPanel>
     </StackPanel>
