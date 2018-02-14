@@ -59,6 +59,10 @@ namespace Badger.ViewModels
                     {
                         children.Add(new ForkedNodeViewModel(parentExperiment, this, child, forkNode));
                     }
+                    else if (IsLinked(child.Attributes[XMLConfig.nameAttribute].Value, configNode))
+                    {
+                        children.Add(new LinkedNodeViewModel(parentExperiment, this, child, configNode));
+                    }
                     else
                     {
                         childNode = getInstance(parentExperiment, this, child, parentXPath, configNode);
@@ -103,6 +107,20 @@ namespace Badger.ViewModels
                     children.Insert(oldIndex, newForkNode);
                 }
             }
+        }
+
+        private bool IsLinked(string nodeName, XmlNode configNode)
+        {
+            if (configNode == null) return false;
+
+            foreach (XmlNode configChildNode in configNode)
+            {
+                if (configChildNode.Name.Equals(XMLConfig.linkedNodeTag)
+                    && configChildNode.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
+                    return true;
+            }
+
+            return false;
         }
 
         public override bool validate()

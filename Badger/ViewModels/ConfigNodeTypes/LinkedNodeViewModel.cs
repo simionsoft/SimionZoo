@@ -1,23 +1,40 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Badger.Simion;
 
 namespace Badger.ViewModels
 {
     class LinkedNodeViewModel : ConfigNodeViewModel
     {
-        private string m_origin;
+        private ConfigNodeViewModel m_origin;
 
-        public string Origin {
+        public ConfigNodeViewModel Origin
+        {
             get { return m_origin; }
-            set {
+            set
+            {
                 m_origin = value;
                 NotifyOfPropertyChange(() => Origin);
             }
         }
+
+        private string m_originName;
+
+        public string OriginName
+        {
+            get { return m_originName; }
+            set
+            {
+                m_originName = value;
+                NotifyOfPropertyChange(() => OriginName);
+            }
+        }
+
 
         public LinkedNodeViewModel(ConfigNodeViewModel linkOriginNode)
         {
@@ -33,7 +50,7 @@ namespace Badger.ViewModels
             name = targetNode.name;
             comment = targetNode.comment;
             content = originNode.content;
-            Origin = "Linked to " + originNode.name;
+            Origin = originNode;
         }
 
         /// <summary>
@@ -41,17 +58,25 @@ namespace Badger.ViewModels
         /// </summary>
         /// <param name="parentExperiment"></param>
         /// <param name="parentNode"></param>
-        /// <param name="classDefinition"></param>
+        /// <param name="classDefinition">Class of the node in app definitions</param>
         /// <param name="parentXPath"></param>
-        /// <param name="configNode"></param>
+        /// <param name="configNode">Node in simion.exp file with the configuration for a node class</param>
         public LinkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel parentNode,
-            XmlNode classDefinition, string parentXPath, XmlNode configNode = null)
+            XmlNode classDefinition, XmlNode configNode = null)
         {
             m_parentExperiment = parentExperiment;
             nodeDefinition = classDefinition;
-            m_parent = parentNode;
 
-            Console.WriteLine("Linked with " + nodeDefinition.Name);
+            foreach (XmlNode configChildNode in configNode)
+            {
+                if (configChildNode.Name.Equals(XMLConfig.linkedNodeTag)
+                    && configChildNode.Attributes[XMLConfig.nameAttribute].Value
+                    .Equals(classDefinition.Attributes[XMLConfig.nameAttribute].Value))
+                    OriginName = configChildNode.Attributes[XMLConfig.originNodeAttribute].Value;
+            }
+
+            name = nodeDefinition.Attributes[XMLConfig.nameAttribute].Value;
+            //m_parent = Origin.parent;
         }
 
         //constructor used in clone()
@@ -60,14 +85,24 @@ namespace Badger.ViewModels
 
         public override ConfigNodeViewModel clone()
         {
-            DoubleValueConfigViewModel newInstance =
-                new DoubleValueConfigViewModel(m_parentExperiment, m_parent, nodeDefinition, m_parent.xPath);
+            LinkedNodeViewModel newInstance =
+                new LinkedNodeViewModel(m_parentExperiment, m_parent, nodeDefinition);
 
             newInstance.content = content;
             newInstance.textColor = textColor;
             return newInstance;
         }
 
+
+        public override void outputXML(StreamWriter writer, SaveMode mode, string leftSpace)
+        {
+            if (mode == SaveMode.AsProject || mode == SaveMode.AsExperiment)
+            {
+                writer.WriteLine(leftSpace + "<" + XMLConfig.linkedNodeTag + " "
+                    + XMLConfig.nameAttribute + "=\"" + name.TrimEnd(' ') + "\" " + XMLConfig.originNodeAttribute
+                    + "=\"" + m_origin.name + "\"/>");
+            }
+        }
 
         public override bool validate()
         {

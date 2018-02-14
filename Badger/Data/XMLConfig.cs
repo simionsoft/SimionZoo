@@ -44,6 +44,8 @@ namespace Badger.Simion
         public const string forkTag = "FORK";
         public const string forkedNodeTag = "FORKED-NODE";
         public const string forkValueTag = "FORK-VALUE";
+        public const string linkedNodeTag = "LINKED-NODE";
+        public const string linkOriginNodeTag = "LINK-ORIGIN";
         public const string stateVarRefTag = "STATE-VAR-REF";
         public const string actionVarRefTag = "ACTION-VAR-REF";
         public const string stateVarTag = "STATE-VAR";
@@ -71,6 +73,7 @@ namespace Badger.Simion
         public const string worldAttribute = "World";
         public const string groupIdAttribute = "Group";
         public const string trackIdAttribute = "Track";
+        public const string originNodeAttribute = "LinkOriginNode"; // name of the origin node in the link target node tag
         public const string ExeFileNameAttr = "ExeFile";
         //Attribute special values
         public const string newWindowValue = "New";

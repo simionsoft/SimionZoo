@@ -247,6 +247,8 @@ namespace Badger.ViewModels
                     }
                 }
             }
+
+            LinkNodes();
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
@@ -400,6 +402,70 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
+        /// Implementation of depth first search algorithm for experiment tree.
+        /// </summary>
+        /// <param name="targetNode"></param>
+        public ConfigNodeViewModel DepthFirstSearch(string nodeName)
+        {
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
+
+            while (nodeStack.Any())
+            {
+                ConfigNodeViewModel expand = nodeStack.Pop();
+
+                if (expand.nodeDefinition.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
+                {
+                    if (expand.parent is BranchConfigViewModel)
+                        return expand;
+
+                    return null;
+                }
+
+                if (expand is BranchConfigViewModel)
+                    WalkThroughBranch(ref nodeStack, expand);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Implementation of depth first search algorithm for experiment tree.
+        /// </summary>
+        /// <param name="targetNode"></param>
+        public ConfigNodeViewModel DepthFirstSearch(ConfigNodeViewModel targetNode)
+        {
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
+
+            while (nodeStack.Any())
+            {
+                ConfigNodeViewModel expand = nodeStack.Pop();
+
+                if (expand.Equals(targetNode))
+                {
+                    if (expand.parent is BranchConfigViewModel)
+                        return expand;
+
+                    return null;
+                }
+
+                if (expand is BranchConfigViewModel)
+                    WalkThroughBranch(ref nodeStack, expand);
+            }
+
+            return null;
+        }
+
+
+        private void WalkThroughBranch(ref Stack<ConfigNodeViewModel> nodeStack, ConfigNodeViewModel branchRoot)
+        {
+            BranchConfigViewModel branch = (BranchConfigViewModel)branchRoot;
+
+            if (branch.children.Count > 0)
+                foreach (var node in branch.children)
+                    nodeStack.Push(node);
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="originNode"></param>
@@ -428,15 +494,31 @@ namespace Badger.ViewModels
                 }
 
                 if (expand is BranchConfigViewModel)
-                {
-                    BranchConfigViewModel branch = (BranchConfigViewModel)expand;
+                    WalkThroughBranch(ref nodeStack, expand);
+            }
+        }
 
-                    if (branch.children.Count > 0)
-                    {
-                        foreach (var node in branch.children)
-                            nodeStack.Push(node);
-                    }
+
+        private void LinkNodes()
+        {
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
+
+            while (nodeStack.Any())
+            {
+                ConfigNodeViewModel node = nodeStack.Pop();
+
+                if (node is LinkedNodeViewModel)
+                {
+                    LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)node;
+                    linkedNode.Origin = DepthFirstSearch(linkedNode.OriginName);
+                    // Add the node to origin linked nodes give the functionality to reflect content
+                    // changes of in all linked nodes
+                    linkedNode.Origin.LinkedNodes.Add(linkedNode);
+                    linkedNode.content = linkedNode.Origin.content;
                 }
+
+                if (node is BranchConfigViewModel)
+                    WalkThroughBranch(ref nodeStack, node);
             }
         }
     }

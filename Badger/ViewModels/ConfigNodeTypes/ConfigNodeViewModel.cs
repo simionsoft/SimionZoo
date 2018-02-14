@@ -183,48 +183,21 @@ namespace Badger.ViewModels
         /// Actually perform the linking with the node.
         /// </summary>
         /// <param name="targetNode"></param>
-        public bool Link(ConfigNodeViewModel targetNode)
+        public void Link(ConfigNodeViewModel targetNode)
         {
-            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { m_parentExperiment.children[0] });
-
-            while (nodeStack.Any())
-            {
-                ConfigNodeViewModel expand = nodeStack.Pop();
-
-                if (expand.Equals(targetNode))
-                {
-                    var linkedNode = new LinkedNodeViewModel(m_parentExperiment,
+            var linkedNode = new LinkedNodeViewModel(m_parentExperiment,
                         m_parentExperiment.LinkOriginNode, targetNode);
 
-                    if (expand.m_parent is BranchConfigViewModel)
-                    {
-                        BranchConfigViewModel parent = (BranchConfigViewModel)expand.m_parent;
-                        // For node substitution We don't need the index in the whole tree 
-                        // just the index in the parent children list
-                        int index = parent.children.IndexOf(expand);
-                        parent.children.Remove(expand);
-                        parent.children.Insert(index, linkedNode);
+            var expand = m_parentExperiment.DepthFirstSearch(targetNode);
 
-                        m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode);
-                        return true;
-                    }
+            BranchConfigViewModel parent = (BranchConfigViewModel)expand.m_parent;
+            // For node substitution We don't need the index in the whole tree 
+            // just the index in the parent children list
+            int index = parent.children.IndexOf(expand);
+            parent.children.Remove(expand);
+            parent.children.Insert(index, linkedNode);
 
-                    return false;
-                }
-
-                if (expand is BranchConfigViewModel)
-                {
-                    BranchConfigViewModel branch = (BranchConfigViewModel)expand;
-
-                    if (branch.children.Count > 0)
-                    {
-                        foreach (var node in branch.children)
-                            nodeStack.Push(node);
-                    }
-                }
-            }
-
-            return false;
+            m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode);
         }
 
         //clone
