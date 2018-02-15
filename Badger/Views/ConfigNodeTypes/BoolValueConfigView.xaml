@@ -16,7 +16,7 @@
                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light"
                ContextMenu="{DynamicResource SharedContextMenu}"/>
 
-        <CheckBox VerticalAlignment="Center" IsChecked="{Binding bContentAsBool,Mode=TwoWay}"/>
+        <CheckBox x:Name="OriginContent" VerticalAlignment="Center" IsChecked="{Binding bContentAsBool,Mode=TwoWay}"/>
         <!--<TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
                  BorderThickness="0"/>-->

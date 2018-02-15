@@ -14,7 +14,17 @@ namespace Badger.ViewModels
         //access to the root node
         protected ExperimentViewModel m_parentExperiment;
 
-        public XmlNode nodeDefinition;
+        private XmlNode m_nodeDefinition;
+
+        public XmlNode nodeDefinition
+        {
+            get { return m_nodeDefinition; }
+            set
+            {
+                m_nodeDefinition = value;
+                NotifyOfPropertyChange(() => nodeDefinition);
+            }
+        }
 
         protected string m_default = "";
 
@@ -197,7 +207,7 @@ namespace Badger.ViewModels
             parent.children.Remove(expand);
             parent.children.Insert(index, linkedNode);
 
-            m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode);
+            m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode.LinkedNode);
         }
 
         //clone

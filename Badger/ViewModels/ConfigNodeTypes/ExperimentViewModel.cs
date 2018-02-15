@@ -498,7 +498,10 @@ namespace Badger.ViewModels
             }
         }
 
-
+        /// <summary>
+        /// Link nodes when experiment is loaded from a file. This has to be done once all nodes
+        /// are loaded.
+        /// </summary>
         private void LinkNodes()
         {
             var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });

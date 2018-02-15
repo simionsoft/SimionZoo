@@ -35,6 +35,17 @@ namespace Badger.ViewModels
             }
         }
 
+        private ConfigNodeViewModel m_linkedNode;
+
+        public ConfigNodeViewModel LinkedNode
+        {
+            get { return m_linkedNode; }
+            set
+            {
+                m_linkedNode = value;
+                NotifyOfPropertyChange(() => LinkedNode);
+            }
+        }
 
         public LinkedNodeViewModel(ConfigNodeViewModel linkOriginNode)
         {
@@ -47,10 +58,19 @@ namespace Badger.ViewModels
         {
             m_parent = originNode.parent;
             m_parentExperiment = parentExperiment;
+            m_origin = originNode;
+            // We need the linked node to show exactly as the origin node
+            LinkedNode = originNode.clone();
+            // But we need to protects its identity, so lets put a few things back to normal
+            LinkedNode.nodeDefinition = targetNode.nodeDefinition;
+            LinkedNode.LinkedNodes = targetNode.LinkedNodes;
+            LinkedNode.name = targetNode.name;
+            LinkedNode.comment = targetNode.comment;
+
+            nodeDefinition = targetNode.nodeDefinition;
             name = targetNode.name;
             comment = targetNode.comment;
             content = originNode.content;
-            Origin = originNode;
         }
 
         /// <summary>
@@ -76,6 +96,7 @@ namespace Badger.ViewModels
             }
 
             name = nodeDefinition.Attributes[XMLConfig.nameAttribute].Value;
+            LinkedNode.nodeDefinition = classDefinition;
             //m_parent = Origin.parent;
         }
 
@@ -85,12 +106,7 @@ namespace Badger.ViewModels
 
         public override ConfigNodeViewModel clone()
         {
-            LinkedNodeViewModel newInstance =
-                new LinkedNodeViewModel(m_parentExperiment, m_parent, nodeDefinition);
-
-            newInstance.content = content;
-            newInstance.textColor = textColor;
-            return newInstance;
+            return null;
         }
 
 
