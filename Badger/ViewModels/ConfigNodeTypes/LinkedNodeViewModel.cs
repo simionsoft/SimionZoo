@@ -96,8 +96,9 @@ namespace Badger.ViewModels
             }
 
             name = nodeDefinition.Attributes[XMLConfig.nameAttribute].Value;
-            LinkedNode.nodeDefinition = classDefinition;
-            //m_parent = Origin.parent;
+            LinkedNode = getInstance(parentExperiment, parentNode, classDefinition, "",
+                configNode);
+            //LinkedNode.nodeDefinition = classDefinition;
         }
 
         //constructor used in clone()

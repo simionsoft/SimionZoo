@@ -1,7 +1,7 @@
 <RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
-		<Log-Freq>0.25</Log-Freq>
+		<LINKED-NODE Name="Log-Freq" LinkOriginNode="Initial-Value"/>
 		<Log-eval-episodes>True</Log-eval-episodes>
 		<Log-training-episodes>False</Log-training-episodes>
 	</Log>

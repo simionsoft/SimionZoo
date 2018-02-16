@@ -208,6 +208,20 @@ namespace Badger.ViewModels
             parent.children.Insert(index, linkedNode);
 
             m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode.LinkedNode);
+            // If the origin is a ForkedNode we also need to link the fork values inside
+            // this is for content changes reflection.
+            if (m_parentExperiment.LinkOriginNode is ForkedNodeViewModel)
+            {
+                ForkedNodeViewModel forkedOrigin = (ForkedNodeViewModel)m_parentExperiment.LinkOriginNode;
+                int len = forkedOrigin.children.Count;
+
+                for (int i = 0; i < len; i++)
+                {
+                    ForkedNodeViewModel linkedFork = (ForkedNodeViewModel)linkedNode.LinkedNode;
+                    ((ForkValueViewModel)forkedOrigin.children[i]).configNode.LinkedNodes
+                        .Add(((ForkValueViewModel)linkedFork.children[i]).configNode);
+                }
+            }
         }
 
         //clone
