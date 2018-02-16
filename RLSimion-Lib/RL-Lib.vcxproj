@@ -298,6 +298,8 @@
     <ClInclude Include="actor.h" />
     <ClInclude Include="app-rlsimion.h" />
     <ClInclude Include="app.h" />
+    <ClInclude Include="CNTKWrapperLoader.cpp" />
+    <ClInclude Include="CNTKWrapperLoader.h" />
     <ClInclude Include="controller-adaptive.h" />
     <ClInclude Include="controller.h" />
     <ClInclude Include="critic.h" />
@@ -392,9 +394,6 @@
     <ProjectReference Include="..\3rd-party\tinyxml2\tinyxml2.vcxproj">
       <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\tools\NNCreatorLib\NNCreatorLib.vcxproj" Condition="'$(Platform)' == 'x64'">
-      <Project>{72cf78b6-1dca-4ba6-8ee0-c98e9226f853}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\tools\OpenGLRenderer\OpenGLRenderer.vcxproj">
       <Project>{b16284d9-e609-4914-9459-0b65ee749489}</Project>
     </ProjectReference>
@@ -402,17 +401,6 @@
       <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets" Condition="Exists('..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\CNTK.CPUOnly.2.1.0\build\native\CNTK.CPUOnly.targets'))" />
-  </Target>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

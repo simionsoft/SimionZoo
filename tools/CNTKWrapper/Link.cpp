@@ -4,8 +4,6 @@
 
 
 #include "xmltags.h"
-#include "CNTKLibrary.h"
-
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
 #include "Chain.h"

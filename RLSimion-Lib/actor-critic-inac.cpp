@@ -12,7 +12,7 @@
 #include "policy.h"
 #include "app.h"
 #include <iostream>
-#include "../tools/NNCreatorLib/Problem.h"
+#include "CNTKWrapperLoader.h"
 
 CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pConfigNode)
 {

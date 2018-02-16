@@ -16,10 +16,12 @@ CDQN::~CDQN()
 	delete[] m_pMinibatchExperienceTuples;
 	delete[] m_pMinibatchChosenActionTargetValues;
 	delete[] m_pMinibatchChosenActionIndex;
+	CNTKWrapper::Close();
 }
 
 CDQN::CDQN(CConfigNode* pConfigNode)
 {
+	CNTKWrapper::Init();
 	m_policy = CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_QNetwork = NEURAL_NETWORK_PROBLEM_DESCRIPTION(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
@@ -53,12 +55,12 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 
 }
 
-std::shared_ptr<CNetwork> CDQN::getPredictionNetwork()
+CNetwork* CDQN::getPredictionNetwork()
 {
 	if (CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 	{
-		if (m_pPredictionNetwork.get() == nullptr)
-			m_pPredictionNetwork = std::shared_ptr<CNetwork>(m_QNetwork.getNetwork()->cloneNonTrainable());
+		if (m_pPredictionNetwork == nullptr)
+			m_pPredictionNetwork = m_QNetwork.getNetwork()->cloneNonTrainable();
 		return m_pPredictionNetwork;
 	}
 	else
@@ -138,7 +140,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 	if (CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 		if (CSimionApp::get()->pExperiment->getExperimentStep() % CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
 		{
-			m_pPredictionNetwork = std::shared_ptr<CNetwork>(m_QNetwork.getNetwork()->cloneNonTrainable());
+			m_pPredictionNetwork = m_QNetwork.getNetwork()->cloneNonTrainable();
 		}
 	return 0.0; //TODO: what should we return?
 }

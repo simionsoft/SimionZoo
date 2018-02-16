@@ -60,6 +60,9 @@
     <ClInclude Include="Exceptions.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="DllApi.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

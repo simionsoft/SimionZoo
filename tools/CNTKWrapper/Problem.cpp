@@ -53,6 +53,11 @@ CProblem::~CProblem()
 {
 }
 
+void CProblem::destroy()
+{
+	delete this;
+}
+
 CProblem * CProblem::getInstance(tinyxml2::XMLElement * pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_Problem))

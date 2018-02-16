@@ -439,11 +439,14 @@
     <ClInclude Include="deep-vfa-policy.h">
       <Filter>learning</Filter>
     </ClInclude>
+    <ClInclude Include="CNTKWrapperLoader.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKWrapperLoader.cpp">
+      <Filter>learning</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

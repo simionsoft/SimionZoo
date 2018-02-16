@@ -2,8 +2,6 @@
 
 #ifdef _WIN64
 
-
-
 #include "CNTKWrapper.h"
 #include "Parameter.h"
 #include "Link.h"
@@ -14,8 +12,17 @@
 #include "InputData.h"
 #include "OptimizerSetting.h"
 
+#define EXPORT comment(linker, "/EXPORT:" __FUNCTION__ "=" __FUNCDNAME__)
+
+CProblem* CNTKWrapper::getProblemInstance(tinyxml2::XMLElement* pNode)
+{
+#pragma EXPORT
+	return CProblem::getInstance(pNode);
+}
+
 CNTK::FunctionPtr CNTKWrapper::InputLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	//determine the linked input data
 	string inputID = pLink->getParameterByName<CInputDataParameter>("Input Data")->getValue();
 	auto inputList = pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->getInputs();
@@ -34,12 +41,14 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(const CLink * pLink, vector<const CLin
 
 CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	auto activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
 	return CNTKWrapper::Internal::applyActivationFunction(dependencies.at(0)->getFunctionPtr(), activationFunction);
 }
 
 CNTK::FunctionPtr CNTKWrapper::Convolution1DLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
 
 	string name = pLink->getName();
@@ -58,6 +67,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution1DLayer(const CLink * pLink, vector<co
 
 CNTK::FunctionPtr CNTKWrapper::Convolution2DLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
 
 	string name = pLink->getName();
@@ -78,6 +88,7 @@ CNTK::FunctionPtr CNTKWrapper::Convolution2DLayer(const CLink * pLink, vector<co
 
 CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	FunctionPtr input = dependencies.at(0)->getFunctionPtr();
 
 	string name = pLink->getName();
@@ -100,21 +111,23 @@ CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const CLink * pLink, vector<co
 
 CNTK::FunctionPtr CNTKWrapper::DenseLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device)
 {
+#pragma EXPORT
 	int output_nodes = pLink->getParameterByName<CIntParameter>("Units")->getValue();
 	wstring name = CNTKWrapper::Internal::string2wstring(pLink->getName());
 	auto activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
 
-	//return CNTKWrapper::Internal::FullyConnectedDNNLayer(pInput, output_nodes, device, nonLinearity, name);
 	return CNTKWrapper::Internal::FullyConnectedDNNLayer(dependencies.at(0)->getFunctionPtr(), output_nodes, device, activationFunction, name);
 }
 
 CNTK::FunctionPtr CNTKWrapper::DropoutLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	return CNTK::FunctionPtr();
 }
 
 CNTK::FunctionPtr CNTKWrapper::FlattenLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	wstring name = Internal::string2wstring(pLink->getName());
 	NDShape inputShape = dependencies.at(0)->getFunctionPtr()->Output().Shape();
 
@@ -123,6 +136,7 @@ CNTK::FunctionPtr CNTKWrapper::FlattenLayer(const CLink * pLink, vector<const CL
 
 CNTK::FunctionPtr CNTKWrapper::ReshapeLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	wstring name = Internal::string2wstring(pLink->getName());
 	CIntTuple4D shapeTuple = pLink->getParameterByName<CIntTuple4DParameter>("4D Shape")->getValue();
 	NDShape shape = {};
@@ -141,6 +155,7 @@ CNTK::FunctionPtr CNTKWrapper::ReshapeLayer(const CLink * pLink, vector<const CL
 
 CNTK::FunctionPtr CNTKWrapper::MergeLayer(const CLink * pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor & device)
 {
+#pragma EXPORT
 	vector<Variable> inputs = vector<Variable>();
 	if (dependencies.size() > 1)
 	{
@@ -157,6 +172,7 @@ CNTK::FunctionPtr CNTKWrapper::MergeLayer(const CLink * pLink, vector<const CLin
 
 CNTK::TrainerPtr CNTKWrapper::CreateOptimizer(const COptimizerSetting * pOptimizerSetting, CNTK::FunctionPtr& output, CNTK::FunctionPtr& lossFunction)
 {
+#pragma EXPORT
 	CNTK::LearnerPtr pLearner;
 	switch (pOptimizerSetting->getOptimizerType())
 	{

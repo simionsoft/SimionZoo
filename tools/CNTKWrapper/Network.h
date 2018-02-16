@@ -5,6 +5,7 @@
 using namespace std;
 
 class COptimizerSetting;
+class CInputData;
 
 class CNetwork
 {
@@ -20,6 +21,8 @@ protected:
 public:
 	CNetwork();
 	~CNetwork();
+
+	void destroy();
 
 	vector<CInputData*>& getInputs() { return m_inputs; }
 	vector<CNTK::FunctionPtr>& getOutputsFunctionPtr() { return m_outputsFunctionPtr; }

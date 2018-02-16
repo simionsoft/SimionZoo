@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "../../packages/CNTK.CPUOnly.2.1.0/build/native/include/CNTKLibrary.h"
+#include "CNTKWrapper.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 
 using namespace std;

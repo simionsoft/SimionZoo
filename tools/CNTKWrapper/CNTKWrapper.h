@@ -5,31 +5,43 @@
 #include "../../packages/CNTK.CPUOnly.2.1.0/build/native/include/CNTKLibrary.h"
 #include <locale>
 #include <codecvt>
+#include <vector>
 #include <string>
-
+#include "DllApi.h"
+#include "Chain.h"
+#include "Exceptions.h"
+#include "InputData.h"
 #include "Link.h"
+#include "Network.h"
+#include "NetworkArchitecture.h"
+#include "Parameter.h"
+#include "ParameterValues.h"
+#include "Problem.h"
 
-enum class ActivationFunction;
 
 using namespace CNTK;
+using namespace std;
 
-class COptimizerSetting;
+
+namespace tinyxml2 { class XMLElement; }
+enum class ActivationFunction;
 
 
 namespace CNTKWrapper
 {
-	CNTK::FunctionPtr InputLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr ActivationLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr Convolution1DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr Convolution2DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr Convolution3DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr DenseLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr DropoutLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr FlattenLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr ReshapeLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
-	CNTK::FunctionPtr MergeLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	DLL_API CProblem* getProblemInstance(tinyxml2::XMLElement* pNode);
+	CNTK::FunctionPtr DLL_API InputLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API ActivationLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API Convolution1DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API Convolution2DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API Convolution3DLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API DenseLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API DropoutLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API FlattenLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API ReshapeLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
+	CNTK::FunctionPtr DLL_API MergeLayer(const CLink* pLink, vector<const CLink*> dependencies, CNTK::DeviceDescriptor& device);
 
-	CNTK::TrainerPtr CreateOptimizer(const COptimizerSetting* pOptimizerSetting, CNTK::FunctionPtr& model, CNTK::FunctionPtr& lossFunction);
+	CNTK::TrainerPtr DLL_API CreateOptimizer(const COptimizerSetting* pOptimizerSetting, CNTK::FunctionPtr& model, CNTK::FunctionPtr& lossFunction);
 
 	namespace Internal
 	{

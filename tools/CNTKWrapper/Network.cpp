@@ -18,6 +18,11 @@ CNetwork::~CNetwork()
 {
 }
 
+void CNetwork::destroy()
+{
+	delete this;
+}
+
 void CNetwork::buildNetworkFunctionPtr(const COptimizerSetting* optimizer)
 {
 	auto shape = m_outputsFunctionPtr.at(0)->Output().Shape();

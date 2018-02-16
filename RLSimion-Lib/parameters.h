@@ -8,8 +8,8 @@
 #include <tuple>
 #include "config.h"
 #ifdef _WIN64
-#include "../tools/NNCreatorLib/Problem.h"
-#include "../tools/NNCreatorLib/Network.h"
+#include "CNTKWrapperLoader.h"
+
 #endif
 
 using namespace std;
@@ -388,8 +388,8 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:
-	shared_ptr<CProblem> m_pProblem;
-	shared_ptr<CNetwork> m_pNetwork;
+	CProblem* m_pProblem;
+	CNetwork* m_pNetwork;
 
 	const char* m_name;
 	const char* m_comment;
@@ -400,7 +400,12 @@ public:
 	{
 		m_name = name;
 		m_comment = comment;
-		m_pProblem = shared_ptr<CProblem>(new CProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem")));
+		m_pProblem = new CProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
+	}
+	~NEURAL_NETWORK_PROBLEM_DESCRIPTION()
+	{
+		m_pProblem->destroy();
+		m_pNetwork->destroy();
 	}
 
 	void buildNetwork()
@@ -408,15 +413,15 @@ public:
 		if (m_pNetwork)
 			return;
 
-		m_pNetwork = shared_ptr<CNetwork>(m_pProblem->createNetwork());
+		m_pNetwork = m_pProblem->createNetwork();
 		m_pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
 	}
 
-	shared_ptr<CNetwork> getNetwork()
+	CNetwork* getNetwork()
 	{
 		buildNetwork();
 		return m_pNetwork;
 	}
-	shared_ptr<CProblem> getProblem() { return m_pProblem; }
+	CProblem* getProblem() { return m_pProblem; }
 };
 #endif

@@ -19,7 +19,7 @@ protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
 	NEURAL_NETWORK_PROBLEM_DESCRIPTION m_QNetwork;
-	shared_ptr<CNetwork> m_pPredictionNetwork;
+	CNetwork* m_pPredictionNetwork;
 
 	CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy> m_policy;
 	CFeatureList* m_pStateOutFeatures;
@@ -38,7 +38,7 @@ protected:
 	CExperienceTuple** m_pMinibatchExperienceTuples;
 	double* m_pMinibatchChosenActionTargetValues;
 
-	std::shared_ptr<CNetwork> getPredictionNetwork();
+	CNetwork* getPredictionNetwork();
 	
 public:
 	~CDQN();

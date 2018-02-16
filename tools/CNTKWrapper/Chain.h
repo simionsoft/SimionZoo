@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <string>
+using namespace std;
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 
 class CLink;

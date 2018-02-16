@@ -2,7 +2,7 @@
 
 #include <string>
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
-#include "CNTKLibrary.h"
+#include "CNTKWrapper.h"
 
 class CIntTuple;
 

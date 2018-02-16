@@ -1,4 +1,5 @@
 #pragma once
+#include "DllApi.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include <vector>
 
@@ -21,6 +22,8 @@ public:
 	CProblem();
 	~CProblem();
 	CProblem(tinyxml2::XMLElement* pNode);
+
+	void destroy();
 
 	CNetworkArchitecture* getNetworkArchitecture() { return m_pNetworkArchitecture; }
 	const std::vector<CInputData*>& getInputs() const { return m_inputs; }
