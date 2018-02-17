@@ -103,13 +103,30 @@ namespace Badger.ViewModels
 
         private bool m_bCanBeLinked;
 
-        public bool bCanBeLinked
+        public bool CanBeLinked
         {
             get { return m_bCanBeLinked; }
             set
             {
                 m_bCanBeLinked = value;
-                NotifyOfPropertyChange(() => bCanBeLinked);
+                NotifyOfPropertyChange(() => CanBeLinked);
+            }
+        }
+
+        private bool m_bIsLinkable = true;
+
+        /// <summary>
+        /// All nodes are linkable by default. The moment a node of a type is chosen as a
+        /// link origin this property is set to false for that specific node and for all other
+        /// nodes of that type.
+        /// </summary>
+        public bool IsLinkable
+        {
+            get { return m_bIsLinkable; }
+            set
+            {
+                m_bIsLinkable = value;
+                NotifyOfPropertyChange(() => IsLinkable);
             }
         }
 
@@ -126,17 +143,19 @@ namespace Badger.ViewModels
             }
         }
 
-        private bool m_bIsLinkable = true;
+        private bool m_bIsLinked;
 
-        public bool IsLinkable
+        public bool IsLinked
         {
-            get { return m_bIsLinkable; }
+            get { return m_bIsLinked; }
             set
             {
-                m_bIsLinkable = value;
-                NotifyOfPropertyChange(() => IsLinkable);
+                m_bIsLinked = value;
+                NotifyOfPropertyChange(() => IsLinked);
             }
         }
+
+        public bool IsNotLinked { get { return !IsLinked; } }
 
         private bool m_bIsLinkOrigin;
 
@@ -166,7 +185,7 @@ namespace Badger.ViewModels
 
         /// <summary>
         ///  Take the right-clicked node as the origin node to link with all the posible linkable
-        ///  nodes (i.e. nodes of the same class). Linkable nodes bCanBeLinked attr value are set 
+        ///  nodes (i.e. nodes of the same class). Linkable nodes CanBeLinked property value are set 
         ///  to true.
         /// </summary>
         /// <param name="originNode">The origin node of the linking process</param>
@@ -198,13 +217,13 @@ namespace Badger.ViewModels
             var linkedNode = new LinkedNodeViewModel(m_parentExperiment,
                         m_parentExperiment.LinkOriginNode, targetNode);
 
-            var expand = m_parentExperiment.DepthFirstSearch(targetNode);
+            var node = m_parentExperiment.DepthFirstSearch(targetNode);
 
-            BranchConfigViewModel parent = (BranchConfigViewModel)expand.m_parent;
+            BranchConfigViewModel parent = (BranchConfigViewModel)node.m_parent;
             // For node substitution We don't need the index in the whole tree 
             // just the index in the parent children list
-            int index = parent.children.IndexOf(expand);
-            parent.children.Remove(expand);
+            int index = parent.children.IndexOf(node);
+            parent.children.Remove(node);
             parent.children.Insert(index, linkedNode);
 
             m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode.LinkedNode);
@@ -218,10 +237,52 @@ namespace Badger.ViewModels
                 for (int i = 0; i < len; i++)
                 {
                     ForkedNodeViewModel linkedFork = (ForkedNodeViewModel)linkedNode.LinkedNode;
+                    ForkValueViewModel linkedForkValue = (ForkValueViewModel)linkedFork.children[i];
                     ((ForkValueViewModel)forkedOrigin.children[i]).configNode.LinkedNodes
-                        .Add(((ForkValueViewModel)linkedFork.children[i]).configNode);
+                        .Add(linkedForkValue.configNode);
+                    linkedForkValue.configNode.name = targetNode.name;
+                    linkedForkValue.configNode.comment = targetNode.comment;
+                    linkedForkValue.configNode.nodeDefinition = targetNode.nodeDefinition;
                 }
             }
+
+            linkedNode.LinkedNode.IsLinkable = false;
+            linkedNode.LinkedNode.IsLinked = true;
+        }
+
+        /// <summary>
+        /// Unlink the node removing it from its origin linked nodes list and restore it to its 
+        /// original node class.
+        /// </summary>
+        public void UnlinkNode()
+        {
+            LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)this;
+            linkedNode.Origin.LinkedNodes.Remove(linkedNode);
+
+            BranchConfigViewModel parent = (BranchConfigViewModel)linkedNode.m_parent;
+
+            ConfigNodeViewModel unlinkedNode = getInstance(m_parentExperiment, parent,
+                linkedNode.nodeDefinition, m_parentExperiment.appName);
+            // Keep the content of the former ogirin node
+            if (!(linkedNode.Origin is ForkedNodeViewModel))
+            {
+                unlinkedNode.content = linkedNode.Origin.content;
+            }
+            else
+            {
+                ForkedNodeViewModel forkedNode = (ForkedNodeViewModel)linkedNode.LinkedNode;
+                int valueIndex = int.Parse(forkedNode.currentValueIndex.Substring(0, 1)) - 1;
+                ForkValueViewModel value = (ForkValueViewModel)forkedNode.children[valueIndex];
+                unlinkedNode.content = value.configNode.content;
+            }
+            // For node substitution We don't need the index in the whole tree just
+            // the index in the parent children list
+            int index = parent.children.IndexOf(linkedNode);
+            parent.children.Remove(linkedNode);
+            parent.children.Insert(index, unlinkedNode);
+
+            unlinkedNode.CanBeLinked = true;
+            unlinkedNode.IsLinkable = false;
         }
 
         //clone

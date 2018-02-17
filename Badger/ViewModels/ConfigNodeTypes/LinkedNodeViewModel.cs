@@ -56,7 +56,7 @@ namespace Badger.ViewModels
         public LinkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel originNode,
             ConfigNodeViewModel targetNode)
         {
-            m_parent = originNode.parent;
+            m_parent = targetNode.parent;
             m_parentExperiment = parentExperiment;
             m_origin = originNode;
             // We need the linked node to show exactly as the origin node
@@ -129,8 +129,10 @@ namespace Badger.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        public void UnlinkNode()
-        {
-        }
+        //public void UnlinkNode()
+//        {
+  //          var node = m_parentExperiment.DepthFirstSearch(this);
+      //      Console.WriteLine("Unlink this node!!");
+    //    }
     }
 }

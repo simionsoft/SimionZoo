@@ -483,13 +483,13 @@ namespace Badger.ViewModels
                     if (expand.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name)
                         && !expand.IsLinkOrigin)
                     {
-                        expand.bCanBeLinked = true;
+                        expand.CanBeLinked = true;
                         expand.IsLinkable = false;
                     }
                 }
                 else
                 {
-                    expand.bCanBeLinked = false;
+                    expand.CanBeLinked = false;
                     expand.IsLinkable = true;
                 }
 
