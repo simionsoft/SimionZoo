@@ -405,24 +405,28 @@ namespace Badger.ViewModels
         /// Implementation of depth first search algorithm for experiment tree.
         /// </summary>
         /// <param name="targetNode"></param>
-        public ConfigNodeViewModel DepthFirstSearch(string nodeName)
+        public ConfigNodeViewModel DepthFirstSearch(string nodeName, string alias = "")
         {
             var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
 
             while (nodeStack.Any())
             {
-                ConfigNodeViewModel expand = nodeStack.Pop();
+                ConfigNodeViewModel node = nodeStack.Pop();
 
-                if (expand.nodeDefinition.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
-                {
-                    if (expand.parent is BranchConfigViewModel)
-                        return expand;
+                if (node.nodeDefinition != null)
+                    if (node.nodeDefinition.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
+                    {
+                        if (node.nodeDefinition.Attributes[XMLConfig.aliasAttribute] != null)
+                            if (node.nodeDefinition.Attributes[XMLConfig.aliasAttribute].Value.Equals(alias))
+                                return node;
 
-                    return null;
-                }
+                        if (node.parent is NestedConfigNode)
+                            return node;
 
-                if (expand is BranchConfigViewModel)
-                    WalkThroughBranch(ref nodeStack, expand);
+                        return null;
+                    }
+
+                WalkThroughBranch(ref nodeStack, node);
             }
 
             return null;
@@ -438,18 +442,12 @@ namespace Badger.ViewModels
 
             while (nodeStack.Any())
             {
-                ConfigNodeViewModel expand = nodeStack.Pop();
+                ConfigNodeViewModel node = nodeStack.Pop();
 
-                if (expand.Equals(targetNode))
-                {
-                    if (expand.parent is BranchConfigViewModel)
-                        return expand;
+                if (node.Equals(targetNode))
+                    return node;
 
-                    return null;
-                }
-
-                if (expand is BranchConfigViewModel)
-                    WalkThroughBranch(ref nodeStack, expand);
+                WalkThroughBranch(ref nodeStack, node);
             }
 
             return null;
@@ -458,11 +456,14 @@ namespace Badger.ViewModels
 
         private void WalkThroughBranch(ref Stack<ConfigNodeViewModel> nodeStack, ConfigNodeViewModel branchRoot)
         {
-            BranchConfigViewModel branch = (BranchConfigViewModel)branchRoot;
+            if (branchRoot is NestedConfigNode)
+            {
+                NestedConfigNode branch = (NestedConfigNode)branchRoot;
 
-            if (branch.children.Count > 0)
-                foreach (var node in branch.children)
-                    nodeStack.Push(node);
+                if (branch.children.Count > 0)
+                    foreach (var node in branch.children)
+                        nodeStack.Push(node);
+            }
         }
 
         /// <summary>
@@ -476,25 +477,24 @@ namespace Badger.ViewModels
 
             while (nodeStack.Any())
             {
-                ConfigNodeViewModel expand = nodeStack.Pop();
+                ConfigNodeViewModel node = nodeStack.Pop();
 
-                if (link)
+                if (link && node.nodeDefinition != null)
                 {
-                    if (expand.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name)
-                        && !expand.IsLinkOrigin)
+                    if (node.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name)
+                        && !node.IsLinkOrigin)
                     {
-                        expand.CanBeLinked = true;
-                        expand.IsLinkable = false;
+                        node.CanBeLinked = true;
+                        node.IsLinkable = false;
                     }
                 }
                 else
                 {
-                    expand.CanBeLinked = false;
-                    expand.IsLinkable = true;
+                    node.CanBeLinked = false;
+                    node.IsLinkable = true;
                 }
 
-                if (expand is BranchConfigViewModel)
-                    WalkThroughBranch(ref nodeStack, expand);
+                WalkThroughBranch(ref nodeStack, node);
             }
         }
 
@@ -509,19 +509,36 @@ namespace Badger.ViewModels
             while (nodeStack.Any())
             {
                 ConfigNodeViewModel node = nodeStack.Pop();
-
+                
                 if (node is LinkedNodeViewModel)
                 {
                     LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)node;
-                    linkedNode.Origin = DepthFirstSearch(linkedNode.OriginName);
+                    linkedNode.Origin = DepthFirstSearch(linkedNode.OriginName, linkedNode.OriginAlias);
+
+                    linkedNode.createLinkedNode(node);
                     // Add the node to origin linked nodes give the functionality to reflect content
                     // changes of in all linked nodes
-                    linkedNode.Origin.LinkedNodes.Add(linkedNode);
-                    linkedNode.content = linkedNode.Origin.content;
+                    linkedNode.Origin.LinkedNodes.Add(linkedNode.LinkedNode);
+
+                    if (linkedNode.Origin is ForkedNodeViewModel)
+                    {
+                        ForkedNodeViewModel forkedOrigin = (ForkedNodeViewModel)linkedNode.Origin;
+                        int len = forkedOrigin.children.Count;
+
+                        for (int i = 0; i < len; i++)
+                        {
+                            ForkedNodeViewModel linkedFork = (ForkedNodeViewModel)linkedNode.LinkedNode;
+                            ForkValueViewModel linkedForkValue = (ForkValueViewModel)linkedFork.children[i];
+                            ((ForkValueViewModel)forkedOrigin.children[i]).configNode.LinkedNodes
+                                .Add(linkedForkValue.configNode);
+                            linkedForkValue.configNode.name = linkedNode.name;
+                            linkedForkValue.configNode.comment = linkedNode.comment;
+                            linkedForkValue.configNode.nodeDefinition = linkedNode.nodeDefinition;
+                        }
+                    }
                 }
 
-                if (node is BranchConfigViewModel)
-                    WalkThroughBranch(ref nodeStack, node);
+                WalkThroughBranch(ref nodeStack, node);
             }
         }
     }

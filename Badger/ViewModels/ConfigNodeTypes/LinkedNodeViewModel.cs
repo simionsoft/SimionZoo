@@ -35,6 +35,21 @@ namespace Badger.ViewModels
             }
         }
 
+        private string m_originAlias;
+
+        /// <summary>
+        /// Used when the link origin is a fork
+        /// </summary>
+        public string OriginAlias
+        {
+            get { return m_originAlias; }
+            set
+            {
+                m_originAlias = value;
+                NotifyOfPropertyChange(() => OriginAlias);
+            }
+        }
+
         private ConfigNodeViewModel m_linkedNode;
 
         public ConfigNodeViewModel LinkedNode
@@ -47,30 +62,25 @@ namespace Badger.ViewModels
             }
         }
 
-        public LinkedNodeViewModel(ConfigNodeViewModel linkOriginNode)
-        {
-            Console.WriteLine("Linked with " + linkOriginNode.name);
-        }
-
-        //Constructor used from the experiment editor
+        /// <summary>
+        /// Constructor used from the experiment editor
+        /// </summary>
+        /// <param name="parentExperiment"></param>
+        /// <param name="originNode"></param>
+        /// <param name="targetNode"></param>
         public LinkedNodeViewModel(ExperimentViewModel parentExperiment, ConfigNodeViewModel originNode,
             ConfigNodeViewModel targetNode)
         {
             m_parent = targetNode.parent;
             m_parentExperiment = parentExperiment;
-            m_origin = originNode;
-            // We need the linked node to show exactly as the origin node
-            LinkedNode = originNode.clone();
-            // But we need to protects its identity, so lets put a few things back to normal
-            LinkedNode.nodeDefinition = targetNode.nodeDefinition;
-            LinkedNode.LinkedNodes = targetNode.LinkedNodes;
-            LinkedNode.name = targetNode.name;
-            LinkedNode.comment = targetNode.comment;
+            Origin = originNode;
 
             nodeDefinition = targetNode.nodeDefinition;
             name = targetNode.name;
-            comment = targetNode.comment;
+            comment = nodeDefinition.Attributes[XMLConfig.commentAttribute].Value;
             content = originNode.content;
+
+            createLinkedNode(targetNode);
         }
 
         /// <summary>
@@ -86,18 +96,23 @@ namespace Badger.ViewModels
         {
             m_parentExperiment = parentExperiment;
             nodeDefinition = classDefinition;
+            m_parent = parentNode;
 
             foreach (XmlNode configChildNode in configNode)
             {
                 if (configChildNode.Name.Equals(XMLConfig.linkedNodeTag)
                     && configChildNode.Attributes[XMLConfig.nameAttribute].Value
                     .Equals(classDefinition.Attributes[XMLConfig.nameAttribute].Value))
+                {
                     OriginName = configChildNode.Attributes[XMLConfig.originNodeAttribute].Value;
+                    if (configChildNode.Attributes[XMLConfig.aliasAttribute] != null)
+                        OriginAlias = configChildNode.Attributes[XMLConfig.aliasAttribute].Value;
+                }
             }
 
             name = nodeDefinition.Attributes[XMLConfig.nameAttribute].Value;
-            LinkedNode = getInstance(parentExperiment, parentNode, classDefinition, "",
-                configNode);
+            LinkedNode = getInstance(parentExperiment, parentNode, classDefinition,
+                parentExperiment.appName, configNode);
             //LinkedNode.nodeDefinition = classDefinition;
         }
 
@@ -129,10 +144,15 @@ namespace Badger.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        //public void UnlinkNode()
-//        {
-  //          var node = m_parentExperiment.DepthFirstSearch(this);
-      //      Console.WriteLine("Unlink this node!!");
-    //    }
+        public void createLinkedNode(ConfigNodeViewModel targetNode)
+        {
+            // We need the linked node to be shown exactly as the origin node
+            LinkedNode = Origin.clone();
+            // But we need to protects its identity, so lets put a few things back to normal
+            LinkedNode.nodeDefinition = nodeDefinition;
+            LinkedNode.LinkedNodes = LinkedNodes;
+            LinkedNode.name = name;
+            LinkedNode.comment = nodeDefinition.Attributes[XMLConfig.commentAttribute].Value;
+        }
     }
 }

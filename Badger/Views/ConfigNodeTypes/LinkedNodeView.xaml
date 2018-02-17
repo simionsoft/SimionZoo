@@ -29,9 +29,9 @@
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
-                    <Label Content="Linked to" Foreground="{Binding textColor}" VerticalAlignment="Center"
-                           Margin="4,0,-5,0" />
-                    <Label Content="{Binding Origin.name}" Foreground="{Binding textColor}" Width="150"
+                    <Label Content="Linked to" Foreground="Gray" VerticalAlignment="Center"
+                           Margin="4,0,-6,0" />
+                    <Label Content="{Binding Origin.name}" Foreground="Gray" Width="150"
                            VerticalAlignment="Center" Background="Transparent" BorderThickness="0" />
                 </StackPanel>
                 <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked node"

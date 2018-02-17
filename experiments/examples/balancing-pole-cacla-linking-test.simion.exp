@@ -1,7 +1,7 @@
 <RLSimion FileVersion="1.0.0.0">
 <RLSimion>
 	<Log>
-		<LINKED-NODE Name="Log-Freq" LinkOriginNode="Initial-Value"/>
+		<Log-Freq>0.25</Log-Freq>
 		<Log-eval-episodes>True</Log-eval-episodes>
 		<Log-training-episodes>False</Log-training-episodes>
 	</Log>
@@ -19,7 +19,7 @@
 		<Random-Seed>1</Random-Seed>
 		<Num-Episodes>10000</Num-Episodes>
 		<Eval-Freq>100</Eval-Freq>
-		<Progress-Update-Freq>0.5</Progress-Update-Freq>
+		<Progress-Update-Freq>1.17</Progress-Update-Freq>
 		<Episode-Length>100</Episode-Length>
 	</Experiment>
 	<SimGod>
@@ -102,7 +102,7 @@
 		<Simple-Linear-Decay>
 			<FORKED-NODE Name="Initial-Value" Alias="Noise-Width">
 			  <FORK-VALUE Name="Value-0">
-			  	<Initial-Value>1.0</Initial-Value>
+			  	<Initial-Value>1.17</Initial-Value>
 			  </FORK-VALUE>
 			  <FORK-VALUE Name="Value-1">
 			  	<Initial-Value>0.5</Initial-Value>

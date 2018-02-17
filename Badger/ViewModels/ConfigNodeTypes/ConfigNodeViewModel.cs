@@ -219,7 +219,7 @@ namespace Badger.ViewModels
 
             var node = m_parentExperiment.DepthFirstSearch(targetNode);
 
-            BranchConfigViewModel parent = (BranchConfigViewModel)node.m_parent;
+            NestedConfigNode parent = (NestedConfigNode)node.m_parent;
             // For node substitution We don't need the index in the whole tree 
             // just the index in the parent children list
             int index = parent.children.IndexOf(node);
