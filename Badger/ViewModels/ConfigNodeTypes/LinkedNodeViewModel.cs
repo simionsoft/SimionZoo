@@ -80,7 +80,7 @@ namespace Badger.ViewModels
             comment = nodeDefinition.Attributes[XMLConfig.commentAttribute].Value;
             content = originNode.content;
 
-            createLinkedNode(targetNode);
+            CreateLinkedNode(targetNode);
         }
 
         /// <summary>
@@ -113,7 +113,6 @@ namespace Badger.ViewModels
             name = nodeDefinition.Attributes[XMLConfig.nameAttribute].Value;
             LinkedNode = getInstance(parentExperiment, parentNode, classDefinition,
                 parentExperiment.appName, configNode);
-            //LinkedNode.nodeDefinition = classDefinition;
         }
 
         //constructor used in clone()
@@ -144,7 +143,7 @@ namespace Badger.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        public void createLinkedNode(ConfigNodeViewModel targetNode)
+        public void CreateLinkedNode(ConfigNodeViewModel targetNode)
         {
             // We need the linked node to be shown exactly as the origin node
             LinkedNode = Origin.clone();

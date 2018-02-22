@@ -484,8 +484,20 @@ namespace Badger.ViewModels
                     if (node.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name)
                         && !node.IsLinkOrigin)
                     {
-                        node.CanBeLinked = true;
-                        node.IsLinkable = false;
+                        if (node.nodeDefinition.Name.Equals("BRANCH"))
+                        {
+                            if (((BranchConfigViewModel)node).ClassName.Equals(
+                                ((BranchConfigViewModel)originNode).ClassName))
+                            {
+                                node.CanBeLinked = true;
+                                node.IsLinkable = false;
+                            }
+                        }
+                        else
+                        {
+                            node.CanBeLinked = true;
+                            node.IsLinkable = false;
+                        }
                     }
                 }
                 else
@@ -509,13 +521,13 @@ namespace Badger.ViewModels
             while (nodeStack.Any())
             {
                 ConfigNodeViewModel node = nodeStack.Pop();
-                
+
                 if (node is LinkedNodeViewModel)
                 {
                     LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)node;
                     linkedNode.Origin = DepthFirstSearch(linkedNode.OriginName, linkedNode.OriginAlias);
 
-                    linkedNode.createLinkedNode(node);
+                    linkedNode.CreateLinkedNode(node);
                     // Add the node to origin linked nodes give the functionality to reflect content
                     // changes of in all linked nodes
                     linkedNode.Origin.LinkedNodes.Add(linkedNode.LinkedNode);
