@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              x:Class="Badger.Views.ExperimentView"
              mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="200">
+
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <ItemsControl x:Name="children"/>

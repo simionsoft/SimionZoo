@@ -11,6 +11,7 @@ namespace Badger.ViewModels
     {
         //Children
         protected BindableCollection<ConfigNodeViewModel> m_children = new BindableCollection<ConfigNodeViewModel>();
+
         public BindableCollection<ConfigNodeViewModel> children
         {
             get { return m_children; }
@@ -58,6 +59,10 @@ namespace Badger.ViewModels
                     {
                         children.Add(new ForkedNodeViewModel(parentExperiment, this, child, forkNode));
                     }
+                    else if (IsLinked(child.Attributes[XMLConfig.nameAttribute].Value, configNode))
+                    {
+                        children.Add(new LinkedNodeViewModel(parentExperiment, this, child, configNode));
+                    }
                     else
                     {
                         childNode = getInstance(parentExperiment, this, child, parentXPath, configNode);
@@ -88,9 +93,10 @@ namespace Badger.ViewModels
         public override void forkChild(ConfigNodeViewModel forkedChild)
         {
             ForkedNodeViewModel newForkNode;
+
             if (m_parentExperiment != null)
             {
-                //cross-reference
+                // cross-reference
                 newForkNode = new ForkedNodeViewModel(m_parentExperiment, forkedChild);
 
                 int oldIndex = children.IndexOf(forkedChild);
@@ -101,6 +107,20 @@ namespace Badger.ViewModels
                     children.Insert(oldIndex, newForkNode);
                 }
             }
+        }
+
+        private bool IsLinked(string nodeName, XmlNode configNode)
+        {
+            if (configNode == null) return false;
+
+            foreach (XmlNode configChildNode in configNode)
+            {
+                if (configChildNode.Name.Equals(XMLConfig.linkedNodeTag)
+                    && configChildNode.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
+                    return true;
+            }
+
+            return false;
         }
 
         public override bool validate()

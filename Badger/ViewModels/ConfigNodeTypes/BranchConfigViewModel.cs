@@ -7,6 +7,17 @@ namespace Badger.ViewModels
     public class BranchConfigViewModel : NestedConfigNode
     {
         private string m_className = "";
+
+        public string ClassName
+        {
+            get { return m_className; }
+            set
+            {
+                m_className = value;
+                NotifyOfPropertyChange(() => ClassName);
+            }
+        }
+
         private string m_window = "";
 
         private bool m_bIsOptional = false;

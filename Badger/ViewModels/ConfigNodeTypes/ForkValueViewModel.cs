@@ -10,6 +10,7 @@ namespace Badger.ViewModels
     {
 
         private ConfigNodeViewModel m_configNode;
+
         public ConfigNodeViewModel configNode
         {
             get { return m_configNode; }

@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:v="clr-namespace:Badger.Views"
-             xmlns:vm="clr-namespace:Badger.ViewModels"
              xmlns:cal="http://www.caliburnproject.org"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              x:Class="Badger.Views.ForkedNodeView"
@@ -15,35 +13,90 @@
             <StackPanel Orientation="Horizontal" Background="LightGray">
                 <StackPanel.ContextMenu >
                     <ContextMenu>
-                        <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode">
+                        <!-- If is linked then we should not be showing certain options-->
+                        <MenuItem Header="Remove Fork" cal:Message.Attach="unforkThisNode"
+                                  Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                             <MenuItem.Icon>
                                 <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Link this node" 
+                              Visibility="{Binding Path=IsLinkable,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="LinkThisNode" >
+                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                    </cal:ActionMessage>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource Link}" Width="24" Height="24" Margin="-4,-4,0,0" Fill="#B2000000" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Cancel linking" 
+                              Visibility="{Binding Path=IsLinkOrigin,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="CancelLinking" >
+                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                    </cal:ActionMessage>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <MenuItem.Icon >
+                                <Path Data="{StaticResource Link}" Width="56" Height="56" Margin="0" Fill="#B2000000" />
+                            </MenuItem.Icon>
+                            <!--ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <ListView ItemsSource="{Binding Path = LinkableNodes}" BorderThickness="0"
+                                      HorizontalContentAlignment="Stretch">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Padding" Value="0"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.Resources>
+                                    <DataTemplate DataType="{x:Type vm:HerdAgentViewModel}">
+                                        <views:HerdAgentView />
+                                    </DataTemplate>
+                                </ListView.Resources>
+                            </ListView>
+                        </ScrollViewer-->
+                        </MenuItem>
+                        <MenuItem Header="Link" 
+                              Visibility="{Binding Path=CanBeLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Click">
+                                    <cal:ActionMessage MethodName="Link" >
+                                        <cal:Parameter Value="{Binding BindsDirectlyToSource=True}" />
+                                    </cal:ActionMessage>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource Link}" Width="56" Height="56" Margin="0" Fill="#B2000000" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </ContextMenu>
                 </StackPanel.ContextMenu>
                 <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
 
-                <TextBox Text="{Binding alias}" Foreground="{Binding textColor}" MaxLength="20" FontSize="10" MaxWidth="80" Width="80"
-                             VerticalAlignment="Center" Background="Transparent" BorderThickness="0"/>
+                <TextBox Text="{Binding alias}" Foreground="{Binding textColor}" MaxLength="20" MaxWidth="80" Width="80"
+                             VerticalAlignment="Center" Background="Transparent" BorderThickness="0" Margin="8,0"/>
 
                 <Button Background="Transparent" BorderBrush="Transparent" Width="20" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action previousValue()]"
                             Opacity="{Binding bIsTherePreviousValue}" ToolTip="Select the previous value">
-                    
+
                     <Path Data="{StaticResource LeftArrow}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
-                <Label VerticalAlignment="Center" Content="{Binding currentValueIndex}" FontSize="8" Foreground="Black" Padding="0"/>
+                <Label VerticalAlignment="Center" Content="{Binding currentValueIndex}" Foreground="Black" Padding="0" Margin="4,0"/>
                 <Button Background="Transparent" BorderBrush="Transparent" Width="20" Padding="0"
                                 cal:Message.Attach="[Event Click]=[Action nextValue()]"
                             Opacity="{Binding bIsThereNextValue}" ToolTip="Select the next value">
                     <Path Data="{StaticResource RightArrow}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
 
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
-                                    cal:Message.Attach="[Event Click]=[Action addValue()]"
-                        ToolTip="Add a new value">
-                    <Path Data="{StaticResource Add}" Stretch="Uniform" Fill="#89000000" />
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action addValue()]"
+                        ToolTip="Add a new value" Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
+                    <Path Data="{StaticResource Add}" Stretch="Uniform" Fill="#89000000" Margin="8,0"/>
                 </Button>
                 <!--<Button Style="{StaticResource BadgerButtonStyle}" ToolTip="Link with other forked node"
                         Width="40" Height="40">
@@ -56,9 +109,9 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                 </Button>-->
-                <Button Background="{x:Null}" BorderBrush="{x:Null}" Width="20"
-                                    cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
-                                Opacity="{Binding bIsThereMoreValues}" ToolTip="Remove this value">
+                <Button Background="{x:Null}" BorderBrush="{x:Null}" cal:Message.Attach="[Event Click]=[Action removeSelectedValue()]"
+                        Opacity="{Binding bIsThereMoreValues}" ToolTip="Remove this value" Width="20" 
+                        Visibility="{Binding Path=IsNotLinked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
                     <Path Data="{StaticResource Close}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
             </StackPanel>

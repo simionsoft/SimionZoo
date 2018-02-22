@@ -3,6 +3,9 @@ using System.Xml;
 using Caliburn.Micro;
 using Badger.Simion;
 using System;
+using Badger.ViewModels.ConfigNodeTypes;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Badger.ViewModels
 {
@@ -10,10 +13,23 @@ namespace Badger.ViewModels
     {
         //access to the root node
         protected ExperimentViewModel m_parentExperiment;
-        public XmlNode nodeDefinition;
+
+        private XmlNode m_nodeDefinition;
+
+        public XmlNode nodeDefinition
+        {
+            get { return m_nodeDefinition; }
+            set
+            {
+                m_nodeDefinition = value;
+                NotifyOfPropertyChange(() => nodeDefinition);
+            }
+        }
 
         protected string m_default = "";
+
         private string m_content = "";
+
 
         public string content
         {
@@ -23,6 +39,9 @@ namespace Badger.ViewModels
                 m_content = value;
                 bIsValid = validate();
                 NotifyOfPropertyChange(() => content);
+                // Reflect content change in linked nodes
+                foreach (var node in m_linkedNodes)
+                    node.content = value;
             }
         }
 
@@ -82,6 +101,189 @@ namespace Badger.ViewModels
 
         virtual public void unforkThisNode() { }
 
+        private bool m_bCanBeLinked;
+
+        public bool CanBeLinked
+        {
+            get { return m_bCanBeLinked; }
+            set
+            {
+                m_bCanBeLinked = value;
+                NotifyOfPropertyChange(() => CanBeLinked);
+            }
+        }
+
+        private bool m_bIsLinkable = true;
+
+        /// <summary>
+        /// All nodes are linkable by default. The moment a node of a type is chosen as a
+        /// link origin this property is set to false for that specific node and for all other
+        /// nodes of that type.
+        /// </summary>
+        public bool IsLinkable
+        {
+            get { return m_bIsLinkable; }
+            set
+            {
+                m_bIsLinkable = value;
+                NotifyOfPropertyChange(() => IsLinkable);
+            }
+        }
+
+        private bool m_bLinking;
+
+        public bool Linking
+        {
+            get { return m_bLinking; }
+            set
+            {
+                m_bLinking = value;
+                m_bCanBeLinked = !m_bLinking;
+                NotifyOfPropertyChange(() => Linking);
+            }
+        }
+
+        private bool m_bIsLinked;
+
+        public bool IsLinked
+        {
+            get { return m_bIsLinked; }
+            set
+            {
+                m_bIsLinked = value;
+                NotifyOfPropertyChange(() => IsLinked);
+            }
+        }
+
+        public bool IsNotLinked { get { return !IsLinked; } }
+
+        private bool m_bIsLinkOrigin;
+
+        public bool IsLinkOrigin
+        {
+            get { return m_bIsLinkOrigin; }
+            set
+            {
+                m_bIsLinkOrigin = value;
+                NotifyOfPropertyChange(() => IsLinkOrigin);
+            }
+        }
+
+        /// <summary>
+        /// The list with the linked nodes
+        /// </summary>
+        private BindableCollection<ConfigNodeViewModel> m_linkedNodes = new BindableCollection<ConfigNodeViewModel>();
+
+        /// <summary>
+        /// Linked nodes list property to get and/or set values
+        /// </summary>
+        public BindableCollection<ConfigNodeViewModel> LinkedNodes
+        {
+            get { return m_linkedNodes; }
+            set { m_linkedNodes = value; NotifyOfPropertyChange(() => LinkedNodes); }
+        }
+
+        /// <summary>
+        ///  Take the right-clicked node as the origin node to link with all the posible linkable
+        ///  nodes (i.e. nodes of the same class). Linkable nodes CanBeLinked property value are set 
+        ///  to true.
+        /// </summary>
+        /// <param name="originNode">The origin node of the linking process</param>
+        public void LinkThisNode(ConfigNodeViewModel originNode)
+        {
+            Linking = IsLinkOrigin = true;
+            IsLinkable = false;
+            m_parentExperiment.LinkOriginNode = originNode;
+            m_parentExperiment.CheckLinkableNodes(originNode);
+        }
+
+        /// <summary>
+        /// Cancel a linking process between two nodes.
+        /// </summary>
+        public void CancelLinking(ConfigNodeViewModel originNode)
+        {
+            Linking = IsLinkOrigin = false;
+            IsLinkable = true;
+            m_parentExperiment.LinkOriginNode = null;
+            m_parentExperiment.CheckLinkableNodes(originNode, false);
+        }
+
+        /// <summary>
+        /// Actually perform the linking with the node.
+        /// </summary>
+        /// <param name="targetNode"></param>
+        public void Link(ConfigNodeViewModel targetNode)
+        {
+            var linkedNode = new LinkedNodeViewModel(m_parentExperiment,
+                        m_parentExperiment.LinkOriginNode, targetNode);
+
+            var node = m_parentExperiment.DepthFirstSearch(targetNode);
+
+            NestedConfigNode parent = (NestedConfigNode)node.m_parent;
+            // For node substitution We don't need the index in the whole tree 
+            // just the index in the parent children list
+            int index = parent.children.IndexOf(node);
+            parent.children.Remove(node);
+            parent.children.Insert(index, linkedNode);
+
+            m_parentExperiment.LinkOriginNode.LinkedNodes.Add(linkedNode.LinkedNode);
+            // If the origin is a ForkedNode we also need to link the fork values inside
+            // this is for content changes reflection.
+            if (m_parentExperiment.LinkOriginNode is ForkedNodeViewModel)
+            {
+                ForkedNodeViewModel forkedOrigin = (ForkedNodeViewModel)m_parentExperiment.LinkOriginNode;
+                int len = forkedOrigin.children.Count;
+
+                for (int i = 0; i < len; i++)
+                {
+                    ForkedNodeViewModel linkedFork = (ForkedNodeViewModel)linkedNode.LinkedNode;
+                    ForkValueViewModel linkedForkValue = (ForkValueViewModel)linkedFork.children[i];
+                    ((ForkValueViewModel)forkedOrigin.children[i]).configNode.LinkedNodes
+                        .Add(linkedForkValue.configNode);
+                    linkedForkValue.configNode.name = targetNode.name;
+                    linkedForkValue.configNode.comment = targetNode.comment;
+                    linkedForkValue.configNode.nodeDefinition = targetNode.nodeDefinition;
+                }
+            }
+
+            linkedNode.LinkedNode.IsLinkable = false;
+            linkedNode.LinkedNode.IsLinked = true;
+        }
+
+        /// <summary>
+        /// Unlink the node removing it from its origin linked nodes list and restore it to its 
+        /// original node class.
+        /// </summary>
+        public void UnlinkNode()
+        {
+            LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)this;
+            linkedNode.Origin.LinkedNodes.Remove(linkedNode);
+
+            BranchConfigViewModel parent = (BranchConfigViewModel)linkedNode.m_parent;
+
+            ConfigNodeViewModel unlinkedNode = getInstance(m_parentExperiment, parent,
+                linkedNode.nodeDefinition, m_parentExperiment.appName);
+            // Keep the content of the former ogirin node
+            if (!(linkedNode.Origin is ForkedNodeViewModel))
+            {
+                unlinkedNode.content = linkedNode.Origin.content;
+            }
+            else
+            {
+                ForkedNodeViewModel forkedNode = (ForkedNodeViewModel)linkedNode.LinkedNode;
+                int valueIndex = int.Parse(forkedNode.currentValueIndex.Substring(0, 1)) - 1;
+                ForkValueViewModel value = (ForkValueViewModel)forkedNode.children[valueIndex];
+                unlinkedNode.content = value.configNode.content;
+            }
+            // For node substitution We don't need the index in the whole tree just
+            // the index in the parent children list
+            int index = parent.children.IndexOf(linkedNode);
+            parent.children.Remove(linkedNode);
+            parent.children.Insert(index, unlinkedNode);
+
+            unlinkedNode.CanBeLinked = true;
+            unlinkedNode.IsLinkable = false;
+        }
 
         //clone
         public abstract ConfigNodeViewModel clone();
@@ -96,10 +298,12 @@ namespace Badger.ViewModels
 
         //XPath methods
         protected string m_xPath;
+
         public string xPath { get { return m_xPath; } set { m_xPath = value; } }
 
         //Name
         private string m_name;
+
         public string name { get { return m_name; } set { m_name = value; } }
 
         //Parent

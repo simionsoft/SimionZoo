@@ -226,7 +226,8 @@ namespace Badger.ViewModels
                     foreach (XmlNode child in rootChild.ChildNodes)
                     {
                         //Only EXE, PRE, INCLUDE and BRANCH children nodes
-                        if (child.Name == XMLConfig.exeNodeTag) m_exeFile = child.InnerText;
+                        if (child.Name == XMLConfig.exeNodeTag)
+                            m_exeFile = child.InnerText;
                         else if (child.Name == XMLConfig.preNodeTag)
                         {
                             m_preFiles.Add(child.InnerText);
@@ -246,16 +247,22 @@ namespace Badger.ViewModels
                     }
                 }
             }
+
+            LinkNodes();
             //deferred load step: enumerated types
             doDeferredLoadSteps();
         }
 
-        //This constructor builds the whole tree of ConfigNodes either
-        // -with default values ("New")
-        // -with a configuration file ("Load")
+        /// <summary>
+        ///     This constructor builds the whole tree of ConfigNodes either
+        ///         - with default values ("New") or
+        ///         - with a configuration file ("Load")
+        /// </summary>
+        /// <param name="appDefinitionFileName"></param>
+        /// <param name="configFilename"></param>
         public ExperimentViewModel(string appDefinitionFileName, string configFilename)
         {
-            //Load the configFile if a configFilename is provided
+            // Load the configFile if a configFilename is provided
             XmlNode configRootNode = null;
             if (configFilename != null)
             {
@@ -373,12 +380,178 @@ namespace Badger.ViewModels
 
         //the list of forks hanging directly from the main experiment
         private ForkRegistry m_forkRegistry = new ForkRegistry();
+
+
         public ForkRegistry forkRegistry
         {
             get { return m_forkRegistry; }
             set { m_forkRegistry = value; NotifyOfPropertyChange(() => forkRegistry); }
         }
 
+        private ConfigNodeViewModel m_linkOriginNode;
 
+
+        public ConfigNodeViewModel LinkOriginNode
+        {
+            get { return m_linkOriginNode; }
+            set
+            {
+                m_linkOriginNode = value;
+                NotifyOfPropertyChange(() => LinkOriginNode);
+            }
+        }
+
+        /// <summary>
+        /// Implementation of depth first search algorithm for experiment tree.
+        /// </summary>
+        /// <param name="targetNode"></param>
+        public ConfigNodeViewModel DepthFirstSearch(string nodeName, string alias = "")
+        {
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
+
+            while (nodeStack.Any())
+            {
+                ConfigNodeViewModel node = nodeStack.Pop();
+
+                if (node.nodeDefinition != null)
+                    if (node.nodeDefinition.Attributes[XMLConfig.nameAttribute].Value.Equals(nodeName))
+                    {
+                        if (node.nodeDefinition.Attributes[XMLConfig.aliasAttribute] != null)
+                            if (node.nodeDefinition.Attributes[XMLConfig.aliasAttribute].Value.Equals(alias))
+                                return node;
+
+                        if (node.parent is NestedConfigNode)
+                            return node;
+
+                        return null;
+                    }
+
+                WalkThroughBranch(ref nodeStack, node);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Implementation of depth first search algorithm for experiment tree.
+        /// </summary>
+        /// <param name="targetNode"></param>
+        public ConfigNodeViewModel DepthFirstSearch(ConfigNodeViewModel targetNode)
+        {
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
+
+            while (nodeStack.Any())
+            {
+                ConfigNodeViewModel node = nodeStack.Pop();
+
+                if (node.Equals(targetNode))
+                    return node;
+
+                WalkThroughBranch(ref nodeStack, node);
+            }
+
+            return null;
+        }
+
+
+        private void WalkThroughBranch(ref Stack<ConfigNodeViewModel> nodeStack, ConfigNodeViewModel branchRoot)
+        {
+            if (branchRoot is NestedConfigNode)
+            {
+                NestedConfigNode branch = (NestedConfigNode)branchRoot;
+
+                if (branch.children.Count > 0)
+                    foreach (var node in branch.children)
+                        nodeStack.Push(node);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="originNode"></param>
+        /// <param name="link"></param>
+        public void CheckLinkableNodes(ConfigNodeViewModel originNode, bool link = true)
+        {
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
+
+            while (nodeStack.Any())
+            {
+                ConfigNodeViewModel node = nodeStack.Pop();
+
+                if (link && node.nodeDefinition != null)
+                {
+                    if (node.nodeDefinition.Name.Equals(originNode.nodeDefinition.Name)
+                        && !node.IsLinkOrigin)
+                    {
+                        if (node.nodeDefinition.Name.Equals("BRANCH"))
+                        {
+                            if (((BranchConfigViewModel)node).ClassName.Equals(
+                                ((BranchConfigViewModel)originNode).ClassName))
+                            {
+                                node.CanBeLinked = true;
+                                node.IsLinkable = false;
+                            }
+                        }
+                        else
+                        {
+                            node.CanBeLinked = true;
+                            node.IsLinkable = false;
+                        }
+                    }
+                }
+                else
+                {
+                    node.CanBeLinked = false;
+                    node.IsLinkable = true;
+                }
+
+                WalkThroughBranch(ref nodeStack, node);
+            }
+        }
+
+        /// <summary>
+        /// Link nodes when experiment is loaded from a file. This has to be done once all nodes
+        /// are loaded.
+        /// </summary>
+        private void LinkNodes()
+        {
+            var nodeStack = new Stack<ConfigNodeViewModel>(new[] { children[0] });
+
+            while (nodeStack.Any())
+            {
+                ConfigNodeViewModel node = nodeStack.Pop();
+
+                if (node is LinkedNodeViewModel)
+                {
+                    LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)node;
+                    linkedNode.Origin = DepthFirstSearch(linkedNode.OriginName, linkedNode.OriginAlias);
+
+                    linkedNode.CreateLinkedNode(node);
+                    // Add the node to origin linked nodes give the functionality to reflect content
+                    // changes of in all linked nodes
+                    linkedNode.Origin.LinkedNodes.Add(linkedNode.LinkedNode);
+
+                    if (linkedNode.Origin is ForkedNodeViewModel)
+                    {
+                        ForkedNodeViewModel forkedOrigin = (ForkedNodeViewModel)linkedNode.Origin;
+                        int len = forkedOrigin.children.Count;
+
+                        for (int i = 0; i < len; i++)
+                        {
+                            ForkedNodeViewModel linkedFork = (ForkedNodeViewModel)linkedNode.LinkedNode;
+                            ForkValueViewModel linkedForkValue = (ForkValueViewModel)linkedFork.children[i];
+                            ((ForkValueViewModel)forkedOrigin.children[i]).configNode.LinkedNodes
+                                .Add(linkedForkValue.configNode);
+                            linkedForkValue.configNode.name = linkedNode.name;
+                            linkedForkValue.configNode.comment = linkedNode.comment;
+                            linkedForkValue.configNode.nodeDefinition = linkedNode.nodeDefinition;
+                        }
+                    }
+                }
+
+                WalkThroughBranch(ref nodeStack, node);
+            }
+        }
     }
 }

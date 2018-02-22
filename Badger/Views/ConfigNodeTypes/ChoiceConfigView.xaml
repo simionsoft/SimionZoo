@@ -14,18 +14,9 @@
     <StackPanel Orientation="Vertical" Margin="0">
         <StackPanel Orientation="Horizontal" Margin="0">
             <Label x:Name="name" Width="150" ToolTip="{Binding comment}" VerticalContentAlignment="Center"
-                               HorizontalContentAlignment="Right" Foreground="{Binding textColor}">
-                <Label.ContextMenu>
-                    <ContextMenu  Visibility="{Binding Path=bCanBeForked,FallbackValue='Hidden',Converter={StaticResource BoolToVis}}">
-                        <MenuItem Header="Fork" cal:Message.Attach="forkThisNode">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </Label.ContextMenu>
-            
-            </Label>
+                   HorizontalContentAlignment="Right" Foreground="{Binding textColor}"
+                   ContextMenu="{DynamicResource SharedContextMenu}"/>
+
             <ComboBox Background="White" ItemsSource="{Binding choiceNames}" SelectedValue="{Binding selectedChoiceName}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" >
