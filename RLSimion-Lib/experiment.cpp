@@ -207,7 +207,7 @@ CExperiment::CExperiment(CConfigNode* pConfigNode)
 	m_randomSeed = INT_PARAM(pConfigNode, "Random-Seed", "Random seed used to generate random sequences of numbers", 1);
 
 	m_numTrainingEpisodes = INT_PARAM(pConfigNode, "Num-Episodes", "Number of episodes. Zero if we only want to run one evaluation episode", 1000);
-	m_evalFreq = INT_PARAM(pConfigNode, "Eval-Freq", "Evaluation frequency (in episodes). If zero, then only training episodes will be run", 10);
+	m_evalFreq = INT_PARAM(pConfigNode, "Eval-Freq", "Evaluation frequency (in episodes). If zero then only training episodes will be run", 10);
 
 	m_episodeLength = DOUBLE_PARAM(pConfigNode, "Episode-Length", "Length of an episode(seconds)", 10.0);
 
