@@ -259,7 +259,7 @@ namespace Badger.ViewModels
             LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)this;
             linkedNode.Origin.LinkedNodes.Remove(linkedNode);
 
-            BranchConfigViewModel parent = (BranchConfigViewModel)linkedNode.m_parent;
+            NestedConfigNode parent = (NestedConfigNode)linkedNode.m_parent;
 
             ConfigNodeViewModel unlinkedNode = getInstance(m_parentExperiment, parent,
                 linkedNode.nodeDefinition, m_parentExperiment.appName);
