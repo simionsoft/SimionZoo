@@ -9,14 +9,31 @@
 //#define CNTK_HEADERONLY_DEFINITIONS
 #endif
 
-
-#include "CNTKLibrary.h"
-
-
-
-class IProblem;
-
 namespace tinyxml2 { class XMLElement; }
+class CNetworkArchitecture;
+class CInputData;
+class CLinkConnection;
+class COptimizerSetting;
+
+//Interface class
+class IProblem
+{
+public:
+	//virtual IProblem(tinyxml2::XMLElement* pNode)= 0;
+	virtual void destroy() = 0;
+
+	virtual CNetworkArchitecture* getNetworkArchitecture() = 0;
+	virtual const std::vector<CInputData*>& getInputs() const = 0;
+	virtual const CLinkConnection* getOutput() const = 0;
+	virtual const COptimizerSetting* getOptimizerSetting() const = 0;
+
+	//static CProblem* getInstance(tinyxml2::XMLElement* pNode);
+
+	//static CProblem* loadFromFile(std::string fileName);
+	//static CProblem* loadFromString(std::string content);
+
+	virtual CNetwork* createNetwork() = 0;
+};
 
 
 namespace CNTKWrapper
