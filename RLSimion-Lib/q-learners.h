@@ -92,11 +92,8 @@ public:
 
 class CDoubleQLearning : public CQLearning
 {
-	CLinearStateActionVFA* m_pTargetQFunction;
-	CFeatureList* m_pDeferredUpdates;
+	CLinearStateActionVFA *m_pQFunction2;
 
-	INT_PARAM m_targetUpdateFreq;
-	int m_numStepsSinceLastTargetUpdate;
 public:
 	CDoubleQLearning(CConfigNode* pParameters);
 	virtual ~CDoubleQLearning();

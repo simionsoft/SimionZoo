@@ -168,51 +168,36 @@ double CQLearning::selectAction(const CState *s, CAction *a)
 //Q-Learning
 CDoubleQLearning::CDoubleQLearning(CConfigNode* pConfigNode) : CQLearning(pConfigNode)
 {
-	//no need to parameterize it, just clone the original q-function
-	m_pTargetQFunction= new CLinearStateActionVFA(m_pQFunction.ptr());
-	m_pDeferredUpdates = new CFeatureList("DQL-deferred-updates", OverwriteMode::AllowDuplicates);
-
-	//CONST_INTEGER_VALUE(m_targetUpdateFreq, "Target-Update-Freq", 100, "The number of steps between updates of the target Q-Function");
-	m_targetUpdateFreq = INT_PARAM(pConfigNode, "Target-Update-Freq", "The number of steps between updates of the target Q-Function", 100);
-	m_numStepsSinceLastTargetUpdate = 0;
-
-
+	//no need to parameterize the second Q-function (Q_b), just clone the original q-function (Q_a)
+	m_pQFunction2 = new CLinearStateActionVFA(m_pQFunction.ptr());
 }
 
 CDoubleQLearning::~CDoubleQLearning()
 {
-	delete m_pTargetQFunction;
+	delete m_pQFunction2;
 }
 
 double CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
 {
-	m_eTraces->update();
-
-	//update the target
-	if (!CSimionApp::get()->pSimGod->bReplayingExperience()
-		&& m_numStepsSinceLastTargetUpdate > m_targetUpdateFreq.get())
-	{
-		//copy the weights from the online function to the target function
-		//CSimionApp::get()->pMemManager->copy(m_pQFunction->getWeights(), m_pTargetQFunction->getWeights());
-		for (unsigned int i = 0; i < m_pDeferredUpdates->m_numFeatures; ++i)
-		{
-			(*m_pTargetQFunction->getWeights())[m_pDeferredUpdates->m_pFeatures[i].m_index] +=
-				m_pDeferredUpdates->m_pFeatures[i].m_factor;
-		}
-		m_pDeferredUpdates->clear();
-
-		m_numStepsSinceLastTargetUpdate = 0;
-	}
-	else m_numStepsSinceLastTargetUpdate++;
-
 	double gamma= CSimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
-	m_eTraces->addFeatureList(m_pAux, gamma);
 
-	double td = r + gamma*m_pQFunction->max(s_p) - m_pTargetQFunction->get(s, a);
+	//Randomly select the target function
+	CLinearStateActionVFA *pQ_a, *pQ_b;
+	if (getRandomValue()<0.5)
+	{
+		pQ_a = m_pQFunction.ptr();
+		pQ_b = m_pQFunction2;
+	}
+	else
+	{
+		pQ_b = m_pQFunction.ptr();
+		pQ_a = m_pQFunction2;
+	}
 
-	m_pQFunction->add(m_eTraces.ptr(), td);
-	m_pDeferredUpdates->addFeatureList(m_eTraces.ptr(), td);
+	double td = r + gamma*pQ_b->max(s_p) - pQ_a->get(s, a);
+
+	pQ_a->add(m_pAux, td);
 
 	return td;
 }
