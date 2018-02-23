@@ -1,0 +1,54 @@
+<Problem>
+  <Inputs>
+    <InputData ID="state-input" Name="State"><Shape xsi:type="IntTuple1D"><x1>2</x1></Shape></InputData>
+  </Inputs>
+  <OptimizerSetting>
+    <Optimizer xsi:type="OptimizerSGD">
+      <Parameters><OptimizerParameterOfStringDouble><Key>Learning rate</Key><Value>0.1</Value></OptimizerParameterOfStringDouble></Parameters>
+    </Optimizer>
+  </OptimizerSetting>
+  <Output>
+    <LinkConnection TargetID="A7C3B867" />
+  </Output>
+  <NetworkArchitecture>
+    <Chains>
+      <Chain Name="Chain">
+        <ChainLinks>
+          <LinkBase xsi:type="InputLayer" Name="Input Layer" ID="27F7D6DE">
+            <Parameters>
+              <ParameterBase xsi:type="InputDataParameter" Name="Input Data">
+                <Value>state-input</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="2E139DBC">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units">
+                <Value>8</Value>
+              </ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation">
+                <Value>relu</Value>
+              </ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="EC2BDC65">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units"><Value>16</Value></ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase>
+            </Parameters>
+          </LinkBase>
+          <LinkBase xsi:type="DenseLayer" Name="Dense Layer" ID="A50D99C1">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units"><Value>32</Value></ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>relu</Value></ParameterBase>
+            </Parameters></LinkBase><LinkBase xsi:type="DenseLayer" Name="output " ID="A7C3B867">
+            <Parameters>
+              <ParameterBase xsi:type="IntParameter" Name="Units"><Value>3</Value></ParameterBase>
+              <ParameterBase xsi:type="ActivationFunctionParameter" Name="Activation"><Value>linear</Value></ParameterBase>
+            </Parameters>
+          </LinkBase>
+        </ChainLinks>
+      </Chain>
+    </Chains>
+  </NetworkArchitecture>
+</Problem>

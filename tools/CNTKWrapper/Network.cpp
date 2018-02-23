@@ -5,7 +5,7 @@
 
 
 #include "Network.h"
-#include "CNTKWrapper.h"
+#include "CNTKWrapperInternals.h"
 #include "OptimizerSetting.h"
 
 CNetwork::CNetwork()

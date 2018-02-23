@@ -13,7 +13,7 @@
 #include "ParameterValues.h"
 #include "Problem.h"
 #include "Exceptions.h"
-#include "CNTKWrapper.h"
+#include "CNTKWrapperInternals.h"
 
 CLink::CLink()
 {

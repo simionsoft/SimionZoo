@@ -8,7 +8,7 @@
 #include "InputData.h"
 #include "xmltags.h"
 #include "ParameterValues.h"
-#include "CNTKWrapper.h"
+#include "CNTKWrapperInternals.h"
 #include "Exceptions.h"
 
 

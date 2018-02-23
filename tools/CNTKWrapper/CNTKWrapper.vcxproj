@@ -106,7 +106,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>__BUILD_CNTK_WRAPPER__;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILD_CNTK_WRAPPER;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,7 +134,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>__BUILD_CNTK_WRAPPER__;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BUILD_CNTK_WRAPPER;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,8 +147,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chain.h" />
+    <ClInclude Include="CNTKLibrary.h" />
+    <ClInclude Include="CNTKLibraryInternals.h" />
     <ClInclude Include="CNTKWrapper.h" />
-    <ClInclude Include="DllApi.h" />
+    <ClInclude Include="CNTKWrapperInternals.h" />
     <ClInclude Include="Exceptions.h" />
     <ClInclude Include="OptimizerSetting.h" />
     <ClInclude Include="Problem.h" />
@@ -164,7 +166,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Chain.cpp" />
+    <ClCompile Include="CNTKLibraryInline.cpp" />
     <ClCompile Include="CNTKWrapper.cpp" />
+    <ClCompile Include="CNTKWrapperInternals.cpp" />
     <ClCompile Include="OptimizerSetting.cpp" />
     <ClCompile Include="Problem.cpp" />
     <ClCompile Include="InputData.cpp" />

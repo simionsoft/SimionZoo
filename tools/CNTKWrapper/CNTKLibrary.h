@@ -22,7 +22,7 @@
 #include <mutex>
 #include <future>
 #include <cstddef>
-#include "DllApi.h"
+
 
 #ifdef SWIG
 #define final
@@ -304,40 +304,7 @@ namespace CNTK
         ///
         /// Create a string representation of 'this' NDShape for display/printing purposes
         ///
-        std::wstring AsString() const
-        {
-            if (IsUnknown())
-            {
-                return L"[???]";
-            }
-            else
-            {
-                bool reverseShape = Internal::IsReversingTensorShapesInErrorMessagesEnabled();
-                auto displayShape = *this;
-                if (reverseShape)
-                {
-                    for (size_t i = 0, j = Rank() - 1; i < Rank(); ++i, --j)
-                        displayShape[i] = (*this)[j];
-                }
-
-                std::wstringstream wStrStream;
-                wStrStream << L"[";
-                for (size_t i = 0; i < Rank(); i++)
-                {
-                    if (i != 0)
-                        wStrStream << L" x ";
-
-                    if (displayShape[i] == InferredDimension)
-                        wStrStream << "?";
-                    else if (displayShape[i] == FreeDimension)
-                        wStrStream << "*";
-                    else
-                        wStrStream << displayShape[i];
-                }
-                wStrStream << L"]";
-                return wStrStream.str();
-            }
-        }
+		std::wstring AsString() const;
 
     private:
         std::vector<size_t> m_shapeDims;
@@ -4430,7 +4397,7 @@ namespace CNTK
 
         bool IsSweepBased() const { return m_epochSize == FullDataSweep; }
 
-        CNTK_API virtual ~TrainingParameterSchedule();
+		CNTK_API virtual ~TrainingParameterSchedule() {}
 
         CNTK_API TrainingParameterSchedule(const TrainingParameterSchedule<T>&); 
         CNTK_API TrainingParameterSchedule(TrainingParameterSchedule<T>&&); 
@@ -4519,23 +4486,12 @@ namespace CNTK
     class MomentumAsTimeConstantSchedule: public TrainingParameterSchedule<double>
     {
     public:
-        MomentumAsTimeConstantSchedule(double value) 
-            : TrainingParameterSchedule<double>::TrainingParameterSchedule(value, UnitType::Sample)
-        { 
-            ConvertToPerSampleValues();
-        }
+
+		MomentumAsTimeConstantSchedule(double value);
         
-        MomentumAsTimeConstantSchedule(const std::vector<double>& schedule, size_t epochSize = FullDataSweep) 
-            : TrainingParameterSchedule<double>::TrainingParameterSchedule(schedule, UnitType::Sample, epochSize) 
-        { 
-            ConvertToPerSampleValues();
-        }
+		MomentumAsTimeConstantSchedule(const std::vector<double>& schedule, size_t epochSize = FullDataSweep);
         
-        MomentumAsTimeConstantSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = FullDataSweep) 
-            : TrainingParameterSchedule<double>::TrainingParameterSchedule(schedule, UnitType::Sample, epochSize)
-        { 
-            ConvertToPerSampleValues();
-        }
+		MomentumAsTimeConstantSchedule(const std::vector<std::pair<size_t, double>>& schedule, size_t epochSize = FullDataSweep);
 
 #ifdef SWIGPYTHON // for Python interop (adds indexer)
         const double __getitem__(size_t count) const

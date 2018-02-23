@@ -60,7 +60,13 @@
     <ClInclude Include="Exceptions.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="DllApi.h">
+    <ClInclude Include="CNTKLibrary.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKLibraryInternals.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CNTKWrapperInternals.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -96,6 +102,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="OptimizerSetting.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CNTKWrapperInternals.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CNTKLibraryInline.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

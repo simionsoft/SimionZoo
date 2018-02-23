@@ -15,11 +15,24 @@
 #endif
 
 #ifdef _WIN32
-#ifdef CNTKV2LIBRARYDLL
-#define CNTK_API __declspec(dllexport)
+
+//Changed this definitions to allow explicit link of the CNTK DLL from the CNTKWrapper
+
+#ifdef BUILD_CNTK_WRAPPER
+	//implicit link: we are compiling the CNTKWrapper
+	#ifdef _DEBUG
+	#pragma comment(lib,"../../packages/CNTK.CPUOnly.2.1.0/build/native/lib/x64/Debug/Cntk.Core-2.1d.lib")
+	#else
+	#pragma comment(lib,"../../packages/CNTK.CPUOnly.2.1.0/build/native/lib/x64/Release/Cntk.Core-2.1.lib")
+	#endif
+	#define CNTK_API __declspec(dllimport)
 #else
-#define CNTK_API __declspec(dllimport)
+	//explicit link: we are compiling the client app
+	#define CNTK_API __declspec(dllexport)
+	#define CNTK_HEADERONLY_DEFINITIONS
 #endif
+
+
 #define _SCL_SECURE_NO_WARNINGS
 #else // no DLLs on Linux
 #define CNTK_API
@@ -229,9 +242,7 @@ namespace CNTK
     typedef std::weak_ptr<PackedValue> PackedValueWeakPtr;
 
     struct MinibatchSourceConfig;
-
-//#ifndef CNTK_HEADERONLY_DEFINITIONS
-
+#ifndef CNTK_HEADERONLY_DEFINITIONS
     namespace Internal
     {
         CNTK_API FunctionPtr IsWithin(const Variable& operand, int offset, const std::wstring& name = L"");
@@ -456,12 +467,10 @@ namespace CNTK
              bool m_initialized { false };
         };
     }
-
+#endif
     // Forward-declare test fixtures, so that they can be used as friends.
     namespace Test 
     {
         struct DeviceSelectionTestFixture;
     }
-
-//#endif
 }
