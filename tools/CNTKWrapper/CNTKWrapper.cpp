@@ -25,4 +25,5 @@ IProblem* CNTKWrapper::getProblemInstance(tinyxml2::XMLElement* pNode)
 }
 
 
+
 #endif // _WIN64

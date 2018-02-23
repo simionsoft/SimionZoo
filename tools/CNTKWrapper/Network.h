@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "CNTKLibrary.h"
 #include "InputData.h"
 
 using namespace std;

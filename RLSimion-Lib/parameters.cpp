@@ -15,3 +15,29 @@ ACTION_VARIABLE::ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, con
 	m_name = name;
 	m_comment = comment;
 }
+
+
+#include "../tools/CNTKWrapper/Problem.h"
+#include "../tools/CNTKWrapper/Network.h"
+
+NEURAL_NETWORK_PROBLEM_DESCRIPTION::~NEURAL_NETWORK_PROBLEM_DESCRIPTION()
+{
+	m_pProblem->destroy();
+	m_pNetwork->destroy();
+}
+
+void NEURAL_NETWORK_PROBLEM_DESCRIPTION::buildNetwork()
+{
+	if (m_pNetwork)
+		return;
+
+	m_pNetwork = m_pProblem->createNetwork();
+	m_pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
+}
+
+CNetwork* NEURAL_NETWORK_PROBLEM_DESCRIPTION::getNetwork()
+{
+	buildNetwork();
+	return m_pNetwork;
+}
+IProblem* NEURAL_NETWORK_PROBLEM_DESCRIPTION::getProblem() { return m_pProblem; }

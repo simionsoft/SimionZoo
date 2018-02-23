@@ -9,6 +9,7 @@
 #include "noise.h"
 #include "deep-vfa-policy.h"
 #include "parameters-numeric.h"
+#include "../tools/CNTKWrapper/Network.h"
 
 CDQN::~CDQN()
 {

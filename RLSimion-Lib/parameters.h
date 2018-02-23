@@ -385,10 +385,14 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 #define METADATA(name, value) m_name= value;
 
 #ifdef _WIN64
+
+#include "CNTKWrapperLoader.h"
+class CNetwork;
+
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:
-	CProblem* m_pProblem;
+	IProblem* m_pProblem;
 	CNetwork* m_pNetwork;
 
 	const char* m_name;
@@ -400,28 +404,13 @@ public:
 	{
 		m_name = name;
 		m_comment = comment;
-		m_pProblem = new CProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
+		m_pProblem = CNTKWrapper::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
 	}
-	~NEURAL_NETWORK_PROBLEM_DESCRIPTION()
-	{
-		m_pProblem->destroy();
-		m_pNetwork->destroy();
-	}
+	~NEURAL_NETWORK_PROBLEM_DESCRIPTION();
 
-	void buildNetwork()
-	{
-		if (m_pNetwork)
-			return;
+	void buildNetwork();
 
-		m_pNetwork = m_pProblem->createNetwork();
-		m_pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
-	}
-
-	CNetwork* getNetwork()
-	{
-		buildNetwork();
-		return m_pNetwork;
-	}
-	CProblem* getProblem() { return m_pProblem; }
+	CNetwork* getNetwork();
+	IProblem* getProblem();
 };
 #endif

@@ -33,7 +33,7 @@ CInputData::CInputData(tinyxml2::XMLElement * pParentNode)
 CInputData::CInputData(string id, CNTK::Variable pInputVariable)
 {
 	m_id = id;
-	m_pInputVariable = pInputVariable;
+	m_inputVariable = pInputVariable;
 }
 
 
@@ -55,7 +55,7 @@ NDShape CInputData::getNDShape()
 
 void CInputData::createInputVariable()
 {
-	m_pInputVariable = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Float, CNTKWrapper::Internal::string2wstring(m_id));
+	m_inputVariable = CNTK::InputVariable(m_pShape->getNDShape(), CNTK::DataType::Float, CNTKWrapper::Internal::string2wstring(m_id));
 }
 
 #endif // _WIN64

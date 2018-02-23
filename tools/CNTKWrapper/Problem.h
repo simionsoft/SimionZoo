@@ -14,12 +14,12 @@ class IProblem
 {
 public:
 	//virtual IProblem(tinyxml2::XMLElement* pNode)= 0;
-	//virtual void destroy()= 0;
+	virtual void destroy()= 0;
 
-	//virtual CNetworkArchitecture* getNetworkArchitecture() = 0;
-	//virtual const std::vector<CInputData*>& getInputs() const = 0;
-	//virtual const CLinkConnection* getOutput() const = 0;
-	//virtual const COptimizerSetting* getOptimizerSetting() const = 0;
+	virtual CNetworkArchitecture* getNetworkArchitecture() = 0;
+	virtual const std::vector<CInputData*>& getInputs() const = 0;
+	virtual const CLinkConnection* getOutput() const = 0;
+	virtual const COptimizerSetting* getOptimizerSetting() const = 0;
 
 	//static CProblem* getInstance(tinyxml2::XMLElement* pNode);
 
