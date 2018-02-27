@@ -80,7 +80,7 @@ namespace Badger.ViewModels
             comment = nodeDefinition.Attributes[XMLConfig.commentAttribute].Value;
             content = originNode.content;
 
-            CreateLinkedNode(targetNode);
+            CreateLinkedNode();
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace Badger.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        public void CreateLinkedNode(ConfigNodeViewModel targetNode)
+        public void CreateLinkedNode()
         {
             // We need the linked node to be shown exactly as the origin node
             LinkedNode = Origin.clone();
@@ -152,6 +152,12 @@ namespace Badger.ViewModels
             LinkedNode.LinkedNodes = LinkedNodes;
             LinkedNode.name = name;
             LinkedNode.comment = nodeDefinition.Attributes[XMLConfig.commentAttribute].Value;
+
+            if (LinkedNode is NestedConfigNode)
+            {
+                NestedConfigNode node = (NestedConfigNode)LinkedNode;
+                
+            }
         }
     }
 }

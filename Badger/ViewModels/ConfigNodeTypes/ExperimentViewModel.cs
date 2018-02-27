@@ -527,7 +527,10 @@ namespace Badger.ViewModels
                     LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)node;
                     linkedNode.Origin = DepthFirstSearch(linkedNode.OriginName, linkedNode.OriginAlias);
 
-                    linkedNode.CreateLinkedNode(node);
+                    linkedNode.CreateLinkedNode();
+                    linkedNode.LinkedNode.IsLinkable = false;
+                    linkedNode.LinkedNode.IsLinked = true;
+                    linkedNode.LinkedNode.IsNotLinked = false;
                     // Add the node to origin linked nodes give the functionality to reflect content
                     // changes of in all linked nodes
                     linkedNode.Origin.LinkedNodes.Add(linkedNode.LinkedNode);
