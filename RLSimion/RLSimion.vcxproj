@@ -73,23 +73,27 @@
     <OutDir>$(SolutionDir)Debug\</OutDir>
     <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Debug\</OutDir>
     <TargetName>$(ProjectName)-$(Platform)</TargetName>
     <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\</OutDir>
     <TargetName>$(ProjectName)-$(Platform)</TargetName>
     <IntDir>$(SolutionDir)tmp\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,7 +102,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -117,8 +121,11 @@
       </AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>
-      </Command>
+      <Command>..\Debug\SimionSrcParser.exe $(ProjectDir)</Command>
+      <Message>RLSimion source code parser</Message>
+      <Outputs>..\config\definitions.xml</Outputs>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,7 +134,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>false</WholeProgramOptimization>
@@ -147,8 +154,11 @@
       </DelayLoadDLLs>
     </Link>
     <CustomBuildStep>
-      <Command>
-      </Command>
+      <Command>..\Debug\SimionSrcParser.exe $(ProjectDir)</Command>
+      <Message>RLSimion source code parser</Message>
+      <Outputs>..\config\definitions.xml</Outputs>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -158,7 +168,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader />
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>SDK Path\Include</AdditionalIncludeDirectories>
@@ -173,6 +183,13 @@
       </AdditionalLibraryDirectories>
       <OutputFile>$(SolutionDir)bin\$(TargetName)$(TargetExt)</OutputFile>
     </Link>
+    <CustomBuildStep>
+      <Command>..\bin\SimionSrcParser.exe $(ProjectDir)</Command>
+      <Outputs>..\config\definitions.xml</Outputs>
+      <Message>RLSimion source code parser</Message>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -181,8 +198,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>SDK Path\Include</AdditionalIncludeDirectories>
@@ -198,31 +214,209 @@
       <DelayLoadDLLs>
       </DelayLoadDLLs>
     </Link>
+    <CustomBuildStep>
+      <Command>..\bin\SimionSrcParser.exe $(ProjectDir)</Command>
+      <Message>RLSimion source code parser</Message>
+      <Outputs>..\config\definitions.xml</Outputs>
+      <Inputs>$(ProjectDir)*.cpp;$(ProjectDir)*.h</Inputs>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\RLSimion-Lib\actor-cacla.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\actor-critic-inac.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\actor-critic-offpac.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\actor-critic-opdac.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\actor-critic.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\actor-regular.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\actor.cpp" />
+    <ClInclude Include="..\RLSimion-Lib\app-rlsimion.h" />
+    <ClInclude Include="..\RLSimion-Lib\app.h" />
+    <ClCompile Include="..\RLSimion-Lib\CNTKWrapperLoader.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\app-rlsimion.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\app.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\config.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\controller-adaptive.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\controller.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\critic-td-lambda.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\critic-tdc-lambda.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\critic-true-online-td-lambda.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\critic.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\deep-vfa-policy.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\deferred-load.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\DQN.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\etraces.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\experience-replay.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\experiment.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\featuremap-bag.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\featuremap-discrete.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\featuremap-rbfgrid.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\featuremap-tilecoding.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\featuremap.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\features.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\logger.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\mem-block.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\mem-buffer.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\mem-pool.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\named-var-set.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\noise.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\parameters-numeric.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\parameters.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\policy-learner.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\q-learners.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\reward.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\simgod.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\simion.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\single-dimension-discrete-grid.cpp">
+      <FileType>CppCode</FileType>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\single-dimension-grid-rbf.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\single-dimension-grid.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\stats.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\utils.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\vfa-policy.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\vfa.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\aux-rewards.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\balancingpole.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\Box.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\BulletBody.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\BulletPhysics.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\FAST.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\gridworld.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\magneticlevitation.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\mountaincar.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\pitchcontrol.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\pull-box-1.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\pull-box-2.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\push-box-1.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\push-box-2.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\robot-control.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\Robot.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\Rope.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\setpoint.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\swinguppendulum.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\templatedConfigFile.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\underwatervehicle.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\windturbine.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\worlds\world.cpp" />
     <ClCompile Include="RLSimion.cpp" />
-    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\RLSimion-Lib\actor-critic.h" />
+    <ClInclude Include="..\RLSimion-Lib\actor.h" />
+    <ClInclude Include="..\RLSimion-Lib\CNTKWrapperLoader.h" />
+    <ClInclude Include="..\RLSimion-Lib\config.h" />
+    <ClInclude Include="..\RLSimion-Lib\controller-adaptive.h" />
+    <ClInclude Include="..\RLSimion-Lib\controller.h" />
+    <ClInclude Include="..\RLSimion-Lib\critic.h" />
+    <ClInclude Include="..\RLSimion-Lib\deep-vfa-policy.h" />
+    <ClInclude Include="..\RLSimion-Lib\deferred-load.h" />
+    <ClInclude Include="..\RLSimion-Lib\DQN.h" />
+    <ClInclude Include="..\RLSimion-Lib\etraces.h" />
+    <ClInclude Include="..\RLSimion-Lib\experience-replay.h" />
+    <ClInclude Include="..\RLSimion-Lib\experiment.h" />
+    <ClInclude Include="..\RLSimion-Lib\featuremap.h" />
+    <ClInclude Include="..\RLSimion-Lib\features.h" />
+    <ClInclude Include="..\RLSimion-Lib\logger.h" />
+    <ClInclude Include="..\RLSimion-Lib\mem-block.h" />
+    <ClInclude Include="..\RLSimion-Lib\mem-buffer.h" />
+    <ClInclude Include="..\RLSimion-Lib\mem-interfaces.h" />
+    <ClInclude Include="..\RLSimion-Lib\mem-manager.h" />
+    <ClInclude Include="..\RLSimion-Lib\mem-pool.h" />
+    <ClInclude Include="..\RLSimion-Lib\named-var-set.h" />
+    <ClInclude Include="..\RLSimion-Lib\noise.h" />
+    <ClInclude Include="..\RLSimion-Lib\parameters-numeric.h" />
+    <ClInclude Include="..\RLSimion-Lib\parameters.h" />
+    <ClInclude Include="..\RLSimion-Lib\policy-learner.h" />
+    <ClInclude Include="..\RLSimion-Lib\policy.h" />
+    <ClInclude Include="..\RLSimion-Lib\q-learners.h" />
+    <ClInclude Include="..\RLSimion-Lib\reward.h" />
+    <ClInclude Include="..\RLSimion-Lib\simgod.h" />
+    <ClInclude Include="..\RLSimion-Lib\simion.h" />
+    <ClInclude Include="..\RLSimion-Lib\single-dimension-discrete-grid.h" />
+    <ClInclude Include="..\RLSimion-Lib\single-dimension-grid-rbf.h" />
+    <ClInclude Include="..\RLSimion-Lib\single-dimension-grid.h" />
+    <ClInclude Include="..\RLSimion-Lib\stats.h" />
+    <ClInclude Include="..\RLSimion-Lib\stdafx.h" />
+    <ClInclude Include="..\RLSimion-Lib\utils.h" />
+    <ClInclude Include="..\RLSimion-Lib\vfa-critic.h" />
+    <ClInclude Include="..\RLSimion-Lib\vfa.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\aux-rewards.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\balancingpole.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\Box.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\bullet-common.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\BulletBody.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\BulletCreationInterface.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\BulletPhysics.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\FAST.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\gridworld.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\magneticlevitation.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\mountaincar.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\pitchcontrol.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\pull-box-1.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\pull-box-2.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\push-box-1.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\push-box-2.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\robot-control.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\Robot.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\Rope.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\setpoint.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\swinguppendulum.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\templatedConfigFile.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\underwatervehicle.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\windturbine.h" />
+    <ClInclude Include="..\RLSimion-Lib\worlds\world.h" />
     <ClInclude Include="resource1.h" />
-    <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RLSimion-Lib\RL-Lib.vcxproj">
-      <Project>{a97cfeac-dbe2-433c-9454-6d1d2749c591}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLSimion1.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="simion.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Common.vcxproj">
+      <Project>{039b76ca-bc1b-b94d-a520-7e71cca3ded2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\Bullet3Geometry.vcxproj">
+      <Project>{4e8b0499-8628-8943-b9c8-2a391cffff80}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletCollision.vcxproj">
+      <Project>{91650844-3a27-904e-9b55-79ab50c2531b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletDynamics.vcxproj">
+      <Project>{e8ba71f2-3b56-9d4f-a151-d41542a6b401}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\BulletSoftBody.vcxproj">
+      <Project>{f663c29d-a7fd-d24f-a85f-1933b83a2818}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\bullet3-2.86\build3\vs2010\LinearMath.vcxproj">
+      <Project>{d611b375-721f-1941-bc88-b3f7e227ac7e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\freeglut3\freeglut3.vcxproj">
+      <Project>{5a98782e-7027-46f9-91e1-e1ede1e14bf4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\SOIL\projects\VC9\SOIL.vcxproj">
+      <Project>{c32fb2b4-500c-43cd-a099-eecce079d3f1}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rd-party\tinyxml2\tinyxml2.vcxproj">
+      <Project>{d1c528b6-aa02-4d29-9d61-dc08e317a70d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\tools\OpenGLRenderer\OpenGLRenderer.vcxproj">
+      <Project>{b16284d9-e609-4914-9459-0b65ee749489}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\tools\WindowsUtils\WindowsUtils.vcxproj">
+      <Project>{f32419bf-f083-4552-aa39-610898f34dbb}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

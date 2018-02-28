@@ -19,17 +19,11 @@
 //Changed this definitions to allow explicit link of the CNTK DLL from the CNTKWrapper
 
 #ifdef BUILD_CNTK_WRAPPER
-	//implicit link: we are compiling the CNTKWrapper
-	#ifdef _DEBUG
-	#pragma comment(lib,"../../packages/CNTK.CPUOnly.2.1.0/build/native/lib/x64/Debug/Cntk.Core-2.1d.lib")
-	#else
-	#pragma comment(lib,"../../packages/CNTK.CPUOnly.2.1.0/build/native/lib/x64/Release/Cntk.Core-2.1.lib")
-	#endif
+	////implicit link: we are compiling the CNTKWrapper
 	#define CNTK_API __declspec(dllimport)
 #else
 	//explicit link: we are compiling the client app
-	#define CNTK_API __declspec(dllexport)
-	#define CNTK_HEADERONLY_DEFINITIONS
+	#define CNTK_API
 #endif
 
 

@@ -1,5 +1,4 @@
-﻿#include "stdafx.h"
-#include "logger.h"
+﻿#include "logger.h"
 #include "worlds/world.h"
 #include "named-var-set.h"
 #include "config.h"
@@ -9,6 +8,7 @@
 #include "app.h"
 #include "utils.h"
 #include "SimGod.h"
+#include <algorithm>
 
 FILE *CLogger::m_logFile = 0;
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
@@ -232,8 +232,7 @@ void CLogger::lastStep()
 		&& pExperiment->getEpisodeInEvaluationIndex() == pExperiment->getNumEpisodesPerEvaluation())
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "%f,%f"
-			, (double)(numRelativeEpisodeIndex - 1)
-			/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
+			, (double)(numRelativeEpisodeIndex - 1)	/ (std::max(1.0, (double)numEvaluations*numEpisodesPerEvaluation - 1))
 			, m_episodeRewardSum / (double)pExperiment->getStep());
 		logMessage(MessageType::Evaluation, buffer);
 	}
@@ -397,7 +396,7 @@ void CLogger::closeLogFile()
 
 void CLogger::writeLogBuffer(const char* pBuffer, int numBytes)
 {
-	unsigned long numBytesWritten = 0;
+	size_t numBytesWritten = 0;
 	if (m_logFile)
 		numBytesWritten= fwrite(pBuffer, 1, numBytes, m_logFile);
 }

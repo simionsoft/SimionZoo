@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "underwatervehicle.h"
 #include "../named-var-set.h"
 #include "setpoint.h"

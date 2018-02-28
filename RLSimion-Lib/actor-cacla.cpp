@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "actor.h"
 #include "vfa.h"
 #include "policy.h"

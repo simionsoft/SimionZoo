@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "policy.h"
 #include "vfa.h"
 #include "named-var-set.h"

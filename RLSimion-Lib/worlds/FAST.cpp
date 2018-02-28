@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "FAST.h"
 #include "../named-var-set.h"
 #include "../config.h"
@@ -10,6 +9,7 @@
 #include <string>
 #include <stdio.h>
 #include "../app.h"
+#include <algorithm>
 
 #define FAST_FAILURE_REWARD -100.0 //reward given in case a simulation error arises
 

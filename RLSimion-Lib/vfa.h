@@ -29,8 +29,8 @@ protected:
 
 	bool m_bCanBeFrozen= false;
 
-	unsigned int m_minIndex;
-	unsigned int m_maxIndex;
+	size_t m_minIndex;
+	size_t m_maxIndex;
 public:
 	CLinearVFA();
 	virtual ~CLinearVFA();

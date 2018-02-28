@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "featuremap.h"
 #include "config.h"
 #include "app.h"

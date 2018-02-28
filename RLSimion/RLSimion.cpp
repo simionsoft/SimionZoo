@@ -1,7 +1,6 @@
 // RLSimion-Lib-test.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include "../RLSimion-Lib/app.h"
 #include "../RLSimion-Lib/app-rlsimion.h"
 #include "../RLSimion-Lib/logger.h"

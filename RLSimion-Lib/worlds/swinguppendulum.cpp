@@ -1,10 +1,11 @@
-#include "../stdafx.h"
 #include "swinguppendulum.h"
 #include "../named-var-set.h"
 #include "../config.h"
 #include "../reward.h"
 #include "../app.h"
 #include "../noise.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #define g 9.8
 #define m 1

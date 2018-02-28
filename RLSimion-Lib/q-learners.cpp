@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "q-learners.h"
 #include "named-var-set.h"
 #include "vfa.h"
@@ -9,6 +8,8 @@
 #include "worlds/world.h"
 #include "app.h"
 #include "featuremap.h"
+#include <algorithm>
+#include <assert.h>
 
 ///////////////////////////////////////
 //Q-function-based POLICIES
@@ -45,7 +46,7 @@ double CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 	{
 		size_t numActionWeights= pQFunction->getNumActionWeights();
 		size_t randomActionWeight = rand() % numActionWeights;
-		pQFunction->getActionFeatureMap()->getFeatureAction(randomActionWeight, a);
+		pQFunction->getActionFeatureMap()->getFeatureAction((unsigned int)randomActionWeight, a);
 		return 1.0 / numActionWeights;
 	}
 }
@@ -70,7 +71,7 @@ double CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 		return 1.0;
 	}
 
-	unsigned int numActionWeights = pQFunction->getNumActionWeights();
+	size_t numActionWeights = pQFunction->getNumActionWeights();
 	//allocate the probability array if we have to
 	//we don't use DeferredLoadStep, because we need pQFunction
 	if (!m_pProbabilities)
@@ -81,7 +82,7 @@ double CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 	double inv_tau = 1.0/std::max(0.000001,m_pTau->get());
 	pQFunction->getActionValues(s, m_pProbabilities);
 	double sum = 0.0;
-	unsigned int i;
+	size_t i;
 	for (i = 0; i < numActionWeights; i++)
 	{
 		m_pProbabilities[i] = exp(m_pProbabilities[i] * inv_tau);

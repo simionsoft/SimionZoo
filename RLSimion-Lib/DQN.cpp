@@ -10,7 +10,6 @@
 #include "deep-vfa-policy.h"
 #include "parameters-numeric.h"
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
-#include "../tools/CNTKWrapper/Network.h"
 
 CDQN::~CDQN()
 {
@@ -18,12 +17,12 @@ CDQN::~CDQN()
 	delete[] m_pMinibatchExperienceTuples;
 	delete[] m_pMinibatchChosenActionTargetValues;
 	delete[] m_pMinibatchChosenActionIndex;
-	CNTKWrapper::Close();
+	CNTKWrapperLoader::Close();
 }
 
 CDQN::CDQN(CConfigNode* pConfigNode)
 {
-	CNTKWrapper::Init();
+	CNTKWrapperLoader::Init();
 	m_policy = CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_QNetwork = NEURAL_NETWORK_PROBLEM_DESCRIPTION(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
@@ -40,10 +39,11 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 
 	m_pGrid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputActionIndex.get()]));
 
-	if (m_pGrid->getNumCenters() != m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize())
+	m_numberOfActions = m_QNetwork.getNetwork()->getTotalSize();
+
+	if (m_pGrid->getNumCenters() != m_numberOfActions)
 		CLogger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
 
-	m_numberOfActions = m_QNetwork.getNetwork()->getTargetOutput().Shape().TotalSize();
 	m_stateVector = std::vector<double>(m_numberOfStateFeatures, 0.0);
 	m_actionValuePredictionVector = std::vector<double>(m_numberOfActions);
 
@@ -57,7 +57,7 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 
 }
 
-CNetwork* CDQN::getPredictionNetwork()
+INetwork* CDQN::getPredictionNetwork()
 {
 	if (CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 	{
@@ -108,7 +108,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 
 		//get Q(s_p) for entire minibatch
 		CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
-		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
+		for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
 			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 
 		m_pMinibatchChosenActionIndex[i] = m_pGrid->getClosestCenter(m_pMinibatchExperienceTuples[i]->a->get(m_outputActionIndex.get()));
@@ -128,7 +128,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
 	{
 		CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
-		for (int n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
+		for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
 			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 	}
 	getPredictionNetwork()->predict(inputMap, m_minibatchActionValuePredictionVector);

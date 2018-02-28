@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "controller-adaptive.h"
 #include "vfa.h"
 #include "policy.h"

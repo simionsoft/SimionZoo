@@ -3,10 +3,11 @@
 #ifdef _WIN64
 
 
-
+#include "CNTKLibrary.h"
 #include "Network.h"
 #include "CNTKWrapperInternals.h"
 #include "OptimizerSetting.h"
+#include "InputData.h"
 
 CNetwork::CNetwork()
 {
@@ -16,6 +17,11 @@ CNetwork::CNetwork()
 
 CNetwork::~CNetwork()
 {
+}
+
+size_t CNetwork::getTotalSize()
+{
+	return getTargetOutput().Shape().TotalSize();
 }
 
 void CNetwork::destroy()
@@ -102,7 +108,7 @@ void CNetwork::predict(std::unordered_map<std::string, std::vector<double>&>& in
 }
 
 #include <iostream>
-CNetwork* CNetwork::cloneNonTrainable() const
+INetwork* CNetwork::cloneNonTrainable() const
 {
 	CNetwork* result = new CNetwork();
 	result->m_trainer = nullptr;

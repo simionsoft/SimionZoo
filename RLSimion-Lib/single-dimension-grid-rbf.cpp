@@ -1,10 +1,10 @@
-#include "stdafx.h"
 #include "single-dimension-grid-rbf.h"
 #include "features.h"
 #include "config.h"
 #include "worlds/world.h"
 #include "named-var-set.h"
 #include "app.h"
+#include <assert.h>
 
 CSingleDimensionGridRBF::CSingleDimensionGridRBF()
 {

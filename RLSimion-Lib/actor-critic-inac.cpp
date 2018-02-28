@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "features.h"
 #include "etraces.h"
 #include "vfa.h"

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "BulletSoftBody\btSoftRigidDynamicsWorld.h"
-#include "BulletSoftBody\btSoftBodyHelpers.h"
+#include "..\..\3rd-party\bullet3-2.86\src\BulletSoftBody\btSoftRigidDynamicsWorld.h"
+#include "..\..\3rd-party\bullet3-2.86\src\BulletSoftBody\btSoftBodyHelpers.h"
 #include "world.h"
 #include "BulletBody.h"
 

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "named-var-set.h"
 #include "noise.h"
 #include "vfa.h"
@@ -13,6 +12,7 @@
 #include <iostream>
 #include <typeinfo>
 #include "named-var-set.h"
+#include <algorithm>
 
 #define PROBABILITY_INTEGRATION_WIDTH 0.05
 //0.05

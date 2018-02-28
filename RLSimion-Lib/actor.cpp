@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "actor.h"
 #include "noise.h"
 #include "controller.h"
@@ -11,6 +10,7 @@
 #include "vfa.h"
 #include "featuremap.h"
 #include "simgod.h"
+#include <algorithm>
 
 CActor::CActor(CConfigNode* pConfigNode): CDeferredLoad(10)
 {

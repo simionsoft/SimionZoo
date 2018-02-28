@@ -11,8 +11,8 @@ class CWindTurbine: public CDynamicModel
 	CSetPoint **m_pTrainingWindData;
 	CSetPoint* m_pEvaluationWindData;
 	CSetPoint* m_pCurrentWindData;
-	int m_numDataFiles;
-	int m_currentDataFile;
+	size_t m_numDataFiles;
+	size_t m_currentDataFile;
 
 	CSetPoint *m_pPowerSetpoint;
 	CTable m_Cp;

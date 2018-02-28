@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "BulletBody.h"
 
 BulletBody::BulletBody(double mass, const btVector3& origin, btCollisionShape* shape, int objType)

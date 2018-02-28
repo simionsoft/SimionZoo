@@ -1,10 +1,11 @@
-#include "stdafx.h"
 #include "vfa.h"
 #include "featuremap.h"
 #include "features.h"
 #include "logger.h"
 #include "app.h"
 #include "SimGod.h"
+#include <assert.h>
+#include <algorithm>
 
 //LINEAR VFA. Common functionalities: getSample (CFeatureList*), saturate, save, load, ....
 CLinearVFA::CLinearVFA()

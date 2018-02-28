@@ -1,8 +1,7 @@
-#include "stdafx.h"
 #include "mem-block.h"
 #include "mem-pool.h"
 
-CMemBlock::CMemBlock(CSimionMemPool* pPool, int id, int blockSize)
+CMemBlock::CMemBlock(CSimionMemPool* pPool, int id, size_t blockSize)
 	: m_pPool(pPool), m_blockSize(blockSize), m_id (id)
 {
 }

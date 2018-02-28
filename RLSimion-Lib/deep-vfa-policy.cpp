@@ -9,6 +9,7 @@
 #include "features.h"
 #include "single-dimension-discrete-grid.h"
 #include "experience-replay.h"
+#include <algorithm>
 
 std::shared_ptr<CDiscreteDeepPolicy> CDiscreteDeepPolicy::getInstance(CConfigNode* pConfigNode)
 {
@@ -37,7 +38,7 @@ int CDiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
 {
 	double randomValue = getRandomValue();
 
-	int resultingActionIndex;
+	size_t resultingActionIndex;
 	double eps = m_epsilon->get();
 
 	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
@@ -52,7 +53,7 @@ int CDiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
 		resultingActionIndex = std::distance(values.begin(), std::max_element(values.begin(), values.end()));
 	}
 
-	return resultingActionIndex;
+	return (int) resultingActionIndex;
 }
 
 int CDiscreteSoftmaxDeepPolicy::selectAction(std::vector<double> values)

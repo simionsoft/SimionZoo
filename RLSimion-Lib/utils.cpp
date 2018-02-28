@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "utils.h"
 #include "config.h"
 #include <algorithm>
@@ -170,12 +169,12 @@ double CTable::getMaxRow() const
 
 double CTable::getNumCols() const
 {
-	if (!m_bSuccess) return m_columns.size();
+	if (!m_bSuccess) return (double) m_columns.size();
 	return 0;
 }
 
 double CTable::getNumRows() const
 {
-	if (!m_bSuccess) return m_rows.size();
+	if (!m_bSuccess) return (double) m_rows.size();
 	return 0;
 }

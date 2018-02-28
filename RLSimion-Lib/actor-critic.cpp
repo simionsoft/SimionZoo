@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "actor-critic.h"
 #include "config.h"
 #include "actor.h"

@@ -1,10 +1,10 @@
-#include "stdafx.h"
 #include "single-dimension-discrete-grid.h"
 #include "features.h"
 #include "config.h"
 #include "worlds/world.h"
 #include "named-var-set.h"
 #include "app.h"
+#include <assert.h>
 
 CSingleDimensionDiscreteGrid::CSingleDimensionDiscreteGrid()
 {
@@ -22,7 +22,7 @@ void CSingleDimensionDiscreteGrid::initCenterPoints()
 {
 	m_pCenters = new double[m_numCenters.get()];
 
-	for (unsigned int i = 0; i < m_numCenters.get(); i++)
+	for (size_t i = 0; i < m_numCenters.get(); i++)
 		m_pCenters[i] = m_min + i * m_stepSize;
 }
 

@@ -8,7 +8,7 @@ class CMemBlock
 {
 	CSimionMemPool* m_pPool;
 	double* m_pBuffer = nullptr;
-	int m_blockSize = 0;
+	size_t m_blockSize = 0;
 	bool m_bInitialized = false;
 	BUFFER_SIZE m_lastAccess = 0;
 	int m_id;
@@ -16,7 +16,7 @@ class CMemBlock
 
 	string getDumpFileName();
 public:
-	CMemBlock(CSimionMemPool* pPool,int id, int elementCount);
+	CMemBlock(CSimionMemPool* pPool,int id, size_t elementCount);
 	virtual ~CMemBlock();
 
 	bool bAllocated() const { return m_pBuffer != nullptr; }
@@ -26,7 +26,7 @@ public:
 	void dumpToFile();
 
 	void setBuffer(double* pBuffer);
-	int size() const { return m_blockSize; }
+	size_t size() const { return m_blockSize; }
 	bool bInitialized() const { return m_bInitialized; }
 	void setInitialized() { m_bInitialized= true; }
 	BUFFER_SIZE getLastAccess() const { return m_lastAccess; }

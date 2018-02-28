@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "mem-pool.h"
 #include "mem-block.h"
 #include "mem-buffer.h"

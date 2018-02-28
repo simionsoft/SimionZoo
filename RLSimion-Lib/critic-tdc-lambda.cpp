@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "critic.h"
 #include "vfa.h"
 #include "features.h"

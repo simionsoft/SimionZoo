@@ -1,5 +1,6 @@
-#include "stdafx.h"
 #include "named-var-set.h"
+#include <assert.h>
+#include <algorithm>
 
 CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular)
 {

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "parameters.h"
 #include "worlds/world.h"
 
@@ -16,9 +15,7 @@ ACTION_VARIABLE::ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, con
 	m_comment = comment;
 }
 
-
-#include "../tools/CNTKWrapper/Problem.h"
-#include "../tools/CNTKWrapper/Network.h"
+#include "../tools/CNTKWrapper/CNTKWrapper.h"
 
 NEURAL_NETWORK_PROBLEM_DESCRIPTION::~NEURAL_NETWORK_PROBLEM_DESCRIPTION()
 {
@@ -35,7 +32,7 @@ void NEURAL_NETWORK_PROBLEM_DESCRIPTION::buildNetwork()
 	m_pNetwork->buildNetworkFunctionPtr(m_pProblem->getOptimizerSetting());
 }
 
-CNetwork* NEURAL_NETWORK_PROBLEM_DESCRIPTION::getNetwork()
+INetwork* NEURAL_NETWORK_PROBLEM_DESCRIPTION::getNetwork()
 {
 	buildNetwork();
 	return m_pNetwork;

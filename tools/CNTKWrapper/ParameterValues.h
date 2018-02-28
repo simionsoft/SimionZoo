@@ -43,10 +43,7 @@ public:
 		m_x1 = x1;
 	}
 
-	CNTK::NDShape getNDShape()
-	{
-		return { (size_t)m_x1 };
-	}
+	CNTK::NDShape getNDShape();
 
 	static CIntTuple1D* getInstance(tinyxml2::XMLElement* pNode);
 
@@ -67,10 +64,7 @@ public:
 		m_x2 = x2;
 	}
 
-	CNTK::NDShape getNDShape()
-	{
-		return { (size_t)m_x1, (size_t)m_x2 };
-	}
+	CNTK::NDShape getNDShape();
 
 	static CIntTuple2D* getInstance(tinyxml2::XMLElement* pNode);
 
@@ -95,10 +89,7 @@ public:
 		m_x3 = x3;
 	}
 
-	CNTK::NDShape getNDShape()
-	{
-		return { (size_t)m_x1, (size_t)m_x2, (size_t)m_x3 };
-	}
+	CNTK::NDShape getNDShape();
 
 	static CIntTuple3D* getInstance(tinyxml2::XMLElement* pNode);
 
@@ -128,10 +119,7 @@ public:
 		m_x4 = x4;
 	}
 
-	CNTK::NDShape getNDShape()
-	{
-		return { (size_t)m_x1, (size_t)m_x2, (size_t)m_x3, (size_t)m_x4 };
-	}
+	CNTK::NDShape getNDShape();
 
 	static CIntTuple4D* getInstance(tinyxml2::XMLElement* pNode);
 

@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "gridworld.h"
 #include "../named-var-set.h"
 #include "../config.h"

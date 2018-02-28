@@ -2,22 +2,457 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="RLSimion.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="..\RLSimion-Lib\actor-cacla.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\actor-critic-inac.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\actor-critic-offpac.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\actor-critic-opdac.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\actor-critic.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\actor-regular.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\controller-adaptive.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\deep-vfa-policy.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\deferred-load.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\DQN.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\featuremap-bag.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\single-dimension-discrete-grid.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\etraces.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\experience-replay.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\featuremap-discrete.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\featuremap.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\logger.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\q-learners.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\simgod.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\simion.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\single-dimension-grid-rbf.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\single-dimension-grid.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\stats.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\policy-learner.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\actor.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\controller.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\critic-td-lambda.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\critic-tdc-lambda.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\critic-true-online-td-lambda.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\critic.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\experiment.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\featuremap-rbfgrid.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\features.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\noise.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\reward.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\named-var-set.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\stdafx.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\featuremap-tilecoding.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\utils.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\vfa-policy.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\vfa.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\mem-buffer.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\mem-block.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\mem-pool.cpp">
+      <Filter>memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\parameters-numeric.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\parameters.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\config.cpp">
+      <Filter>parameters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\aux-rewards.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\balancingpole.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\FAST.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\gridworld.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\magneticlevitation.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\mountaincar.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\pitchcontrol.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\setpoint.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\swinguppendulum.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\templatedConfigFile.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\underwatervehicle.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\windturbine.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\world.cpp">
+      <Filter>world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\Box.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\pull-box-1.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\pull-box-2.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\push-box-1.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\push-box-2.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\robot-control.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\Robot.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\Rope.cpp">
+      <Filter>world\BulletWorlds</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\BulletBody.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\worlds\BulletPhysics.cpp">
+      <Filter>world\BulletUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\app-rlsimion.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\app.cpp">
+      <Filter>app</Filter>
+    </ClCompile>
+    <ClCompile Include="..\RLSimion-Lib\CNTKWrapperLoader.cpp">
+      <Filter>learning</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="..\RLSimion-Lib\actor-critic.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\actor.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\CNTKWrapperLoader.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\controller-adaptive.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\controller.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\critic.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\deep-vfa-policy.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\deferred-load.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\DQN.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\single-dimension-discrete-grid.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\etraces.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\experience-replay.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\experiment.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\featuremap.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\features.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\logger.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\noise.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\q-learners.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\simgod.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\simion.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\single-dimension-grid-rbf.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\single-dimension-grid.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\stats.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\reward.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\named-var-set.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\stdafx.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\policy-learner.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\utils.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\vfa-critic.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\policy.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\vfa.h">
+      <Filter>learning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\mem-buffer.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\mem-block.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\mem-pool.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\mem-interfaces.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\mem-manager.h">
+      <Filter>memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\parameters-numeric.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\parameters.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\config.h">
+      <Filter>parameters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\aux-rewards.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\balancingpole.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\FAST.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\gridworld.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\magneticlevitation.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\mountaincar.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\pitchcontrol.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\setpoint.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\swinguppendulum.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\templatedConfigFile.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\underwatervehicle.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\windturbine.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\world.h">
+      <Filter>world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\Box.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\pull-box-1.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\pull-box-2.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\push-box-1.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\push-box-2.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\robot-control.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\Robot.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\Rope.h">
+      <Filter>world\BulletWorlds</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\bullet-common.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\BulletBody.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\BulletCreationInterface.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\worlds\BulletPhysics.h">
+      <Filter>world\BulletUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\app-rlsimion.h">
+      <Filter>app</Filter>
+    </ClInclude>
+    <ClInclude Include="..\RLSimion-Lib\app.h">
+      <Filter>app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="RLSimion1.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="simion.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="learning">
+      <UniqueIdentifier>{6c756c83-4899-4773-8a80-43e8e4090859}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="memory">
+      <UniqueIdentifier>{aee4e7ad-f9ff-4b67-8786-bb71730c9ad3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parameters">
+      <UniqueIdentifier>{0447d1d9-32d3-44af-aa54-9742278bc9b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world">
+      <UniqueIdentifier>{010c293e-4515-424f-bcbf-826101e45db7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world\BulletWorlds">
+      <UniqueIdentifier>{09186cee-e938-448e-aeb5-54a43ca261d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="world\BulletUtils">
+      <UniqueIdentifier>{25c04409-ea97-41c4-9316-c07bb21ead0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="app">
+      <UniqueIdentifier>{b0da59a6-2ec2-41d1-8cb0-c35bf4b8b163}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

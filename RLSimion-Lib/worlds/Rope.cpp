@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "Rope.h"
 #include <string>
 

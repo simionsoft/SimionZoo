@@ -1,5 +1,6 @@
-#include "../stdafx.h"
 #include "templatedConfigFile.h"
+#include <stdio.h>
+#include <string>
 
 #define MAX_CONFIG_FILE_SIZE 10000
 

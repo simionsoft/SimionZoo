@@ -2,7 +2,7 @@
 
 #ifdef _WIN64
 
-
+#include "CNTKLibrary.h"
 #include "xmltags.h"
 #include "NetworkArchitecture.h"
 #include "Parameter.h"
@@ -21,6 +21,12 @@ CIntTuple1D::CIntTuple1D(tinyxml2::XMLElement* pParentNode) : CIntTuple1D()
 	m_x1 = stoi(pNode->GetText());
 }
 
+CNTK::NDShape CIntTuple1D::getNDShape()
+{
+	return { (size_t)m_x1 };
+}
+
+
 CIntTuple2D::CIntTuple2D(tinyxml2::XMLElement* pParentNode) : CIntTuple2D()
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Tuple_1);
@@ -32,6 +38,11 @@ CIntTuple2D::CIntTuple2D(tinyxml2::XMLElement* pParentNode) : CIntTuple2D()
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Tuple_1);
 	m_x2 = stoi(pNode->GetText());
+}
+
+CNTK::NDShape CIntTuple2D::getNDShape()
+{
+	return { (size_t)m_x1, (size_t)m_x2 };
 }
 
 CIntTuple3D::CIntTuple3D(tinyxml2::XMLElement* pParentNode) : CIntTuple3D()
@@ -50,6 +61,11 @@ CIntTuple3D::CIntTuple3D(tinyxml2::XMLElement* pParentNode) : CIntTuple3D()
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Tuple_3);
 	m_x3 = stoi(pNode->GetText());
+}
+
+CNTK::NDShape CIntTuple3D::getNDShape()
+{
+	return { (size_t)m_x1, (size_t)m_x2, (size_t)m_x3 };
 }
 
 CIntTuple4D::CIntTuple4D(tinyxml2::XMLElement* pParentNode) : CIntTuple4D()
@@ -73,6 +89,11 @@ CIntTuple4D::CIntTuple4D(tinyxml2::XMLElement* pParentNode) : CIntTuple4D()
 	if (pNode == nullptr)
 		throw ProblemParserElementNotFound(XML_TAG_Tuple_4);
 	m_x4 = stoi(pNode->GetText());
+}
+
+CNTK::NDShape CIntTuple4D::getNDShape()
+{
+	return { (size_t)m_x1, (size_t)m_x2, (size_t)m_x3 };
 }
 
 CIntTuple1D* CIntTuple1D::getInstance(tinyxml2::XMLElement* pNode)

@@ -2,7 +2,6 @@
 #include "CNTKWrapper.h"
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include <vector>
-#include "CNTKWrapper.h"
 
 class CNetworkArchitecture;
 class CInputData;
@@ -36,6 +35,6 @@ public:
 	static CProblem* loadFromFile(std::string fileName);
 	static CProblem* loadFromString(std::string content);
 
-	CNetwork* createNetwork();
+	INetwork* createNetwork();
 };
 

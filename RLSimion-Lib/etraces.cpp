@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "etraces.h"
 #include "experiment.h"
 #include "config.h"

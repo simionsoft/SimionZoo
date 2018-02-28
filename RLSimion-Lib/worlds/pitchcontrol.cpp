@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "world.h"
 #include "pitchcontrol.h"
 #include "../named-var-set.h"

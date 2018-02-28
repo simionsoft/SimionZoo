@@ -1,14 +1,14 @@
 #pragma once
 #include <vector>
+#include "CNTKWrapper.h"
 #include "CNTKLibrary.h"
-#include "InputData.h"
 
 using namespace std;
 
 class COptimizerSetting;
 class CInputData;
 
-class CNetwork
+class CNetwork:public INetwork
 {
 protected:
 	vector<CInputData*> m_inputs;
@@ -23,6 +23,7 @@ public:
 	CNetwork();
 	~CNetwork();
 
+	size_t getTotalSize();
 	void destroy();
 
 	vector<CInputData*>& getInputs() { return m_inputs; }
@@ -37,7 +38,7 @@ public:
 	void save(string fileName);
 	static CNetwork load(string fileName, CNTK::DeviceDescriptor &device);
 
-	CNetwork* cloneNonTrainable() const;
+	INetwork* cloneNonTrainable() const;
 
 	void train(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& targetOutputData);
 	void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap, std::vector<double>& predictionData);

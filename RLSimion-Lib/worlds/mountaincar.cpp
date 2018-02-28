@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "mountaincar.h"
 #include "../named-var-set.h"
 #include "../config.h"

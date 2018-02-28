@@ -11,7 +11,7 @@
 class CSingleDimensionDiscreteActionVariableGrid;
 class CExperienceReplay;
 class CExperienceTuple;
-
+class INetwork;
 
 class CDQN : public CSimion
 {
@@ -19,7 +19,7 @@ protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
 	NEURAL_NETWORK_PROBLEM_DESCRIPTION m_QNetwork;
-	CNetwork* m_pPredictionNetwork;
+	INetwork* m_pPredictionNetwork;
 
 	CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy> m_policy;
 	CFeatureList* m_pStateOutFeatures;
@@ -38,7 +38,7 @@ protected:
 	CExperienceTuple** m_pMinibatchExperienceTuples;
 	double* m_pMinibatchChosenActionTargetValues;
 
-	CNetwork* getPredictionNetwork();
+	INetwork* getPredictionNetwork();
 	
 public:
 	~CDQN();

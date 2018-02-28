@@ -3,18 +3,22 @@
 
 HMODULE hCNTKWrapperDLL= 0;
 
-CNTKWrapper::getProblemInstanceDLL getProblem= 0;
+CNTKWrapperLoader::getProblemInstanceDLL CNTKWrapperLoader::getProblem= 0;
 
-
-void CNTKWrapper::Init()
+void CNTKWrapperLoader::Init()
 {
+#ifdef _DEBUG
+	hCNTKWrapperDLL = LoadLibrary(".\\..\\Debug\\x64\\CNTKWrapper.dll");
+#else
+	hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\x64\\CNTKWrapper.dll");
+#endif
 	if (hCNTKWrapperDLL)
 	{
-		getProblem= (getProblemInstanceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getProblemInstance");
+		getProblem = (getProblemInstanceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getProblemInstance");
 	}
 }
 
-void CNTKWrapper::Close()
+void CNTKWrapperLoader::Close()
 {
 	if (hCNTKWrapperDLL)
 		FreeLibrary(hCNTKWrapperDLL);

@@ -6,12 +6,13 @@ namespace tinyxml2 { class XMLElement; }
 
 
 
-namespace CNTKWrapper
+class CNTKWrapperLoader
 {
+public:
 	typedef IProblem* (__stdcall *getProblemInstanceDLL)(tinyxml2::XMLElement* pNode);
-	extern getProblemInstanceDLL getProblem;
+	static getProblemInstanceDLL getProblem;
 
-	void Init();
-	void Close();
-}
+	static void Init();
+	static void Close();
+};
 

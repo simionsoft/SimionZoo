@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "config.h"
 #include "experiment.h"
 #include "logger.h"

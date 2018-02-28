@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "simion.h"
 
 #include "config.h"

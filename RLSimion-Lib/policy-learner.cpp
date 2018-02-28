@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "named-var-set.h"
 #include "noise.h"
 #include "policy-learner.h"

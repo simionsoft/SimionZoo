@@ -1,9 +1,9 @@
 #pragma once
 
-#include "btBulletDynamicsCommon.h"
-#include "BulletSoftBody\btSoftRigidDynamicsWorld.h"
-#include "BulletSoftBody\btSoftBodyHelpers.h"
-#include "BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
+#include "..\..\3rd-party\bullet3-2.86\src\btBulletDynamicsCommon.h"
+#include "..\..\3rd-party\bullet3-2.86\src\BulletSoftBody/btSoftRigidDynamicsWorld.h"
+#include "..\..\3rd-party\bullet3-2.86\src\BulletSoftBody/btSoftBodyHelpers.h"
+#include "..\..\3rd-party\bullet3-2.86\src\BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h"
 
 struct BulletCreationInterface
 {

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "controller.h"
 #include "named-var-set.h"
 #include "worlds/world.h"
@@ -6,7 +5,7 @@
 #include "parameters-numeric.h"
 #include "controller-adaptive.h"
 #include "app.h"
-
+#include <algorithm>
 
 
 std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)

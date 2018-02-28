@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "setpoint.h"
 #include "../config.h"
 #include "../logger.h"

@@ -1,7 +1,7 @@
-#include "../stdafx.h"
 #include "aux-rewards.h"
 #include "../named-var-set.h"
 #include "world.h"
+#include <algorithm>
 
 double static getDistanceBetweenPoints(double x1, double y1, double x2, double y2)
 {

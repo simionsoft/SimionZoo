@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "../app.h"
 #include "../noise.h"
 

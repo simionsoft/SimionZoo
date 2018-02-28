@@ -6,7 +6,7 @@
 
 
 #include "../../tools/CNTKWrapper/CNTKWrapper.h"
-#include "../../tools/CNTKWrapper/Problem.h"
+
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 
 typedef IProblem* (__stdcall * getProblemInstanceDLL)(tinyxml2::XMLElement* pNode);

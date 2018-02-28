@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "stats.h"
+#include <algorithm>
 
 #define MAX_KEY_SIZE 128
 

@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "pull-box-1.h"
 #include "../../3rd-party/bullet3-2.86/src/btBulletDynamicsCommon.h"
 #include "../app.h"

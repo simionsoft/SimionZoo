@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "featuremap.h"
 #include "named-var-set.h"
 #include "worlds/world.h"

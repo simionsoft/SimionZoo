@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "deferred-load.h"
 #include "SimGod.h"
 #include "app.h"

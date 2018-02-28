@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "reward.h"
 #include "config.h"
 #include "worlds/world.h"
@@ -6,6 +5,7 @@
 #include "app.h"
 #include "logger.h"
 #include "named-var-set.h"
+#include <algorithm>
 
 CToleranceRegionReward::CToleranceRegionReward(string variable, double tolerance, double scale)
 {

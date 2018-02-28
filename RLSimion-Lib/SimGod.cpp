@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "SimGod.h"
 #include "experiment.h"
 #include "named-var-set.h"
@@ -11,6 +10,7 @@
 #include "experience-replay.h"
 #include "parameters.h"
 #include "features.h"
+#include <algorithm>
 
 std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_deferredLoadSteps;
 std::vector<const char*> CSimGod::m_inputFiles;

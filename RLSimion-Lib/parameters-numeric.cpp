@@ -1,9 +1,8 @@
-#include "stdafx.h"
 #include "parameters-numeric.h"
 #include "config.h"
 #include "experiment.h"
 #include "app.h"
-
+#include <assert.h>
 
 CConstantValue::CConstantValue(CConfigNode* pConfigNode)
 {

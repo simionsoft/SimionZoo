@@ -99,7 +99,7 @@ CProblem * CProblem::loadFromString(std::string content)
 	return nullptr;
 }
 
-CNetwork * CProblem::createNetwork()
+INetwork * CProblem::createNetwork()
 {
 	CNetwork* result = new CNetwork();
 	/*

@@ -1,4 +1,3 @@
-#include "../stdafx.h"
 #include "world.h"
 #include "magneticlevitation.h"
 #include "../named-var-set.h"

@@ -1,10 +1,10 @@
-#include "stdafx.h"
 #include "experience-replay.h"
 #include "app.h"
 #include "config.h"
 #include "logger.h"
 #include "named-var-set.h"
 #include "simgod.h"
+#include <algorithm>
 
 CExperienceTuple::CExperienceTuple()
 {
