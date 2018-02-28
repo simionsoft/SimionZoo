@@ -19,8 +19,8 @@ ACTION_VARIABLE::ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, con
 
 NEURAL_NETWORK_PROBLEM_DESCRIPTION::~NEURAL_NETWORK_PROBLEM_DESCRIPTION()
 {
-	m_pProblem->destroy();
-	m_pNetwork->destroy();
+	if (m_pNetwork) m_pProblem->destroy();
+	if (m_pNetwork) m_pNetwork->destroy();
 }
 
 void NEURAL_NETWORK_PROBLEM_DESCRIPTION::buildNetwork()

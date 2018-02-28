@@ -19,7 +19,7 @@ protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
 	NEURAL_NETWORK_PROBLEM_DESCRIPTION m_QNetwork;
-	INetwork* m_pPredictionNetwork;
+	INetwork* m_pPredictionNetwork= nullptr;
 
 	CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy> m_policy;
 	CFeatureList* m_pStateOutFeatures;

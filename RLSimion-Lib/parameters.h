@@ -392,8 +392,8 @@ class INetwork;
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:
-	IProblem* m_pProblem;
-	INetwork* m_pNetwork;
+	IProblem* m_pProblem= nullptr;
+	INetwork* m_pNetwork= nullptr;
 
 	const char* m_name;
 	const char* m_comment;
