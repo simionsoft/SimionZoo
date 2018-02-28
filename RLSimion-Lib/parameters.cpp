@@ -14,7 +14,7 @@ ACTION_VARIABLE::ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, con
 	m_name = name;
 	m_comment = comment;
 }
-
+#ifdef _WIN64
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 
 NEURAL_NETWORK_PROBLEM_DESCRIPTION::~NEURAL_NETWORK_PROBLEM_DESCRIPTION()
@@ -38,3 +38,5 @@ INetwork* NEURAL_NETWORK_PROBLEM_DESCRIPTION::getNetwork()
 	return m_pNetwork;
 }
 IProblem* NEURAL_NETWORK_PROBLEM_DESCRIPTION::getProblem() { return m_pProblem; }
+
+#endif
