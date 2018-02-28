@@ -17,10 +17,10 @@
 	</World>
 	<Experiment>
 		<Random-Seed>1</Random-Seed>
-		<Num-Episodes>200</Num-Episodes>
-		<Eval-Freq>5</Eval-Freq>
+		<Num-Episodes>20</Num-Episodes>
+		<Eval-Freq>3</Eval-Freq>
 		<Progress-Update-Freq>1.0</Progress-Update-Freq>
-		<Episode-Length>10000</Episode-Length>
+		<Episode-Length>100</Episode-Length>
 	</Experiment>
 	<SimGod>
 		<Target-Function-Update-Freq>100</Target-Function-Update-Freq>

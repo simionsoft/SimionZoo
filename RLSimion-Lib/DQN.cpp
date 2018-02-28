@@ -54,7 +54,7 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 	m_pMinibatchChosenActionTargetValues = new double[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionIndex = new int[m_experienceReplay->getMaxUpdateBatchSize()];
 
-
+	m_pPredictionNetwork = nullptr;
 }
 
 INetwork* CDQN::getPredictionNetwork()

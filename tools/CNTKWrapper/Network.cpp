@@ -33,7 +33,7 @@ void CNetwork::buildNetworkFunctionPtr(const COptimizerSetting* optimizer)
 {
 	auto shape = m_outputsFunctionPtr.at(0)->Output().Shape();
 
-	m_targetOutput = CNTK::InputVariable(shape, CNTK::DataType::Float, L"Target");
+	m_targetOutput = CNTK::InputVariable(shape, CNTK::DataType::Double, L"Target");
 
 	//TODO: add support for different loss functions
 	m_lossFunctionPtr = CNTK::SquaredError(m_outputsFunctionPtr.at(0), m_targetOutput, L"Loss");

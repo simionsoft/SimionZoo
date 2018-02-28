@@ -283,10 +283,10 @@ CNTK::FunctionPtr CNTKWrapper::Internal::FullyConnectedLinearLayer(CNTK::Variabl
 	assert(input.Shape().Rank() == 1);
 	size_t inputDim = input.Shape()[0];
 
-	auto timesParam = Parameter({ outputDim, inputDim }, DataType::Float, GlorotUniformInitializer(DefaultParamInitScale, SentinelValueForInferParamInitRank, SentinelValueForInferParamInitRank, 1), device, L"timesParam");
+	auto timesParam = Parameter({ outputDim, inputDim }, DataType::Double, GlorotUniformInitializer(DefaultParamInitScale, SentinelValueForInferParamInitRank, SentinelValueForInferParamInitRank, 1), device, L"timesParam");
 	auto timesFunction = Times(timesParam, input, L"times");
 
-	auto plusParam = Parameter({ outputDim }, 0.0f, device, L"plusParam");
+	auto plusParam = Parameter({ outputDim }, 0.0, device, L"plusParam");
 	return Plus(plusParam, timesFunction, outputName);
 }
 
@@ -295,7 +295,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution1D(Variable input, size_t kernelCo
 	assert(input.Shape().Rank() == 2);
 	size_t numInputChannels = input.Shape()[input.Shape().Rank() - 1];
 
-	auto convParams = Parameter({ kernel, numInputChannels, kernelCount }, DataType::Float, GlorotUniformInitializer(wScale, -1, 2), device);
+	auto convParams = Parameter({ kernel, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
 		Convolution(convParams, input, { stride, numInputChannels }, { true }, { true }, 0Ui64, string2wstring(outputName)),
 		activationFunction
@@ -307,7 +307,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution2D(Variable input, size_t kernelCo
 	assert(input.Shape().Rank() == 3);
 	size_t numInputChannels = input.Shape()[input.Shape().Rank() - 1];
 
-	auto convParams = Parameter({ kernelWidth, kernelHeight, numInputChannels, kernelCount }, DataType::Float, GlorotUniformInitializer(wScale, -1, 2), device);
+	auto convParams = Parameter({ kernelWidth, kernelHeight, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
 		Convolution(convParams, input, { strideWidth, strideHeight, numInputChannels }, { true }, { true }, 0Ui64, string2wstring(outputName)),
 		activationFunction
@@ -319,7 +319,7 @@ FunctionPtr CNTKWrapper::Internal::Convolution3D(Variable input, size_t kernelCo
 	assert(input.Shape().Rank() == 4);
 	size_t numInputChannels = input.Shape()[input.Shape().Rank() - 1];
 
-	auto convParams = Parameter({ kernelWidth, kernelHeight, kernelDepth, numInputChannels, kernelCount }, DataType::Float, GlorotUniformInitializer(wScale, -1, 2), device);
+	auto convParams = Parameter({ kernelWidth, kernelHeight, kernelDepth, numInputChannels, kernelCount }, DataType::Double, GlorotUniformInitializer(wScale, -1, 2), device);
 	return applyActivationFunction(
 		Convolution(convParams, input, { strideWidth, strideHeight, strideDepth, numInputChannels }, { true }, { true }, 0Ui64, string2wstring(outputName)),
 		activationFunction
