@@ -25,8 +25,5 @@ public:
 	RLSimionApp(CConfigNode* pParameters);
 	virtual ~RLSimionApp();
 
-	void getInputFiles(CFilePathList& filePathList);
-	void getOutputFiles(CFilePathList& filePathList);
-
 	void run();
 };

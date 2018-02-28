@@ -14,17 +14,6 @@
 #include "../tools/OpenGLRenderer/input-handler.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
-void RLSimionApp::getOutputFiles(CFilePathList& filePathList)
-{
-	pSimGod->getOutputFiles(filePathList);
-}
-
-void RLSimionApp::getInputFiles(CFilePathList& filePathList)
-{
-	pSimGod->getInputFiles(filePathList);
-}
-
-
 
 RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)
 {

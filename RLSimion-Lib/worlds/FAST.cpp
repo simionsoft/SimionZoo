@@ -86,52 +86,52 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	if (CSimionApp::get())
 	{
 		//input/output files
-		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\FASTDimensionalPortalDLL.dll");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\FAST_win32.exe");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\MAP_win32.dll");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\bin\\TurbSim.exe");
+		CSimionApp::get()->registerInputFile("..\\bin\\FASTDimensionalPortalDLL.dll");
+		CSimionApp::get()->registerInputFile("..\\bin\\FAST_win32.exe");
+		CSimionApp::get()->registerInputFile("..\\bin\\MAP_win32.dll");
+		CSimionApp::get()->registerInputFile("..\\bin\\TurbSim.exe");
 
 		//FAST data files
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\configFileTemplate.fst");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\Cylinder1.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\Cylinder2.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\DU21_A17.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\DU25_A17.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\DU30_A17.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\DU35_A17.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\DU40_A17.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NACA64_A17.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_AeroDyn_blade.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn_Blade.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Blade.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_InflowWindTemplate.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\configFileTemplate.fst");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder1.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder2.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU21_A17.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU25_A17.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU30_A17.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU35_A17.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU40_A17.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NACA64_A17.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_AeroDyn_blade.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn_Blade.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Blade.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_InflowWindTemplate.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
 		
 		//TurbSim data files
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event00000.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event01917.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02515.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02800.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02893.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03167.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03219.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03326.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03384.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03613.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03692.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03868.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04110.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04434.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04702.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event99999.dat");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.les");
-		CSimionApp::get()->pSimGod->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.xtm");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event00000.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event01917.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02515.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02800.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02893.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03167.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03219.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03326.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03384.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03613.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03692.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03868.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04110.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04434.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04702.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event99999.dat");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.les");
+		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.xtm");
 	}
 }
 

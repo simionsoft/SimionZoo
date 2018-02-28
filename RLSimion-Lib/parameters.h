@@ -389,6 +389,8 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 #include "CNTKWrapperLoader.h"
 class INetwork;
 
+//because NN objects are created from the CNTKWrapper DLL, this objects needs to be created using "new" and cannot
+//use shared_ptr as in the rest of the objects
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:

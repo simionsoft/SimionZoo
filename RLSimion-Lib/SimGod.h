@@ -9,7 +9,6 @@ typedef CNamedVarSet CAction;
 typedef CNamedVarSet CReward;
 class CConfigNode;
 class CSimion;
-class CFilePathList;
 class CExperienceReplay;
 class CDeferredLoad;
 class CStateFeatureMap;
@@ -38,8 +37,6 @@ class CSimGod
 
 	//lists that must be initialized before the constructor is actually called
 	static std::vector<std::pair<CDeferredLoad*, unsigned int>> m_deferredLoadSteps;
-	static std::vector<const char*> m_inputFiles;
-	static std::vector<const char*> m_outputFiles;
 
 	CHILD_OBJECT<CExperienceReplay> m_pExperienceReplay;
 public:
@@ -60,13 +57,6 @@ public:
 	//delayed load
 	static void registerDeferredLoadStep(CDeferredLoad* deferredLoadObject,unsigned int orderLoad);
 	void deferredLoad();
-
-	//input/output files
-	static void registerInputFile(const char* filepath);
-	void getInputFiles(CFilePathList& filepathList);
-
-	static void registerOutputFile(const char* filepath);
-	void getOutputFiles(CFilePathList& filepathList);
 
 	//global feature maps
 	static std::shared_ptr<CStateFeatureMap> getGlobalStateFeatureMap();

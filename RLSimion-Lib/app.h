@@ -3,8 +3,7 @@
 class CConfigNode;
 class CConfigFile;
 
-class CFilePathList;
-
+#include <vector>
 #include "worlds/world.h"
 #include "logger.h"
 #include "experiment.h"
@@ -20,6 +19,11 @@ protected:
 	CConfigFile* m_pConfigDoc;
 	string m_directory;
 	string m_configFile;
+
+	//Input/Output files
+	std::vector<const char*> m_inputFiles;
+	std::vector<const char*> m_inputFilesRenamed; // names to be given in the remote machines to input files
+	std::vector<const char*> m_outputFiles;
 public:
 
 	CSimionApp();
@@ -33,8 +37,18 @@ public:
 	CHILD_OBJECT<CExperiment> pExperiment;
 	CHILD_OBJECT<CSimGod> pSimGod;
 
-	virtual void getInputFiles(CFilePathList& filePathList) = 0;
-	virtual void getOutputFiles(CFilePathList& filePathList) = 0;
+
+	//Input/Output file registering member functions
+	//Subclasses should call these methods to let know what input/output files will be required at run-time
+	//in order to be remotely executed
+	void registerInputFile(const char* filepath, const char* rename= 0);
+	void registerOutputFile(const char* filepath);
+	unsigned int getNumInputFiles();
+	const char* getInputFile(unsigned int i);
+	const char* getInputFileRename(unsigned int i);
+	unsigned int getNumOutputFiles();
+	const char* getOutputFile(unsigned int i);
+
 	void setConfigFile(string);
 	string getOutputDirectory();
 	string getConfigFile();

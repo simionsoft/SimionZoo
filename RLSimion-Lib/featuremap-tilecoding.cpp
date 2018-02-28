@@ -58,7 +58,7 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 		}
 
 		//set the activated feature of this tiling layer
-		outFeatures->add(index, 1.0);
+		outFeatures->add((unsigned int)index, 1.0);
 	}
 
 	outFeatures->normalize();

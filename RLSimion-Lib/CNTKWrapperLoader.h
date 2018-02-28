@@ -12,7 +12,7 @@ public:
 	typedef IProblem* (__stdcall *getProblemInstanceDLL)(tinyxml2::XMLElement* pNode);
 	static getProblemInstanceDLL getProblem;
 
-	static void Init();
-	static void Close();
+	static void Load();
+	static void UnLoad();
 };
 

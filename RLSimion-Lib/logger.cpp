@@ -7,7 +7,6 @@
 #include "../tools/WindowsUtils/FileUtils.h"
 #include "app.h"
 #include "utils.h"
-#include "SimGod.h"
 #include <algorithm>
 
 FILE *CLogger::m_logFile = 0;
@@ -93,9 +92,9 @@ void CLogger::setOutputFilenames()
 
 	//we register the names of the log files for input/output stuff
 	m_outputLogDescriptor = inputConfigFile + LOG_DESCRIPTOR_EXTENSION;
-	CSimGod::registerOutputFile(m_outputLogDescriptor.c_str());
+	CSimionApp::get()->registerOutputFile(m_outputLogDescriptor.c_str());
 	m_outputLogBinary = inputConfigFile + LOG_BINARY_EXTENSION;
-	CSimGod::registerOutputFile(m_outputLogBinary.c_str());
+	CSimionApp::get()->registerOutputFile(m_outputLogBinary.c_str());
 
 	//open the log file
 	openLogFile(m_outputLogBinary.c_str());

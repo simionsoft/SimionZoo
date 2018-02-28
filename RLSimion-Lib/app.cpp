@@ -18,6 +18,16 @@ CSimionApp::CSimionApp()
 CSimionApp::~CSimionApp()
 {
 	m_pAppInstance = 0;
+	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
+	m_inputFiles.clear();
+	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);
+	m_outputFiles.clear();
+	for (auto it = m_inputFilesRenamed.begin(); it != m_inputFilesRenamed.end(); it++)
+	{
+		if (*it != 0)
+			delete *it;
+	}
+	m_inputFilesRenamed.clear();
 }
 
 const char* CSimionApp::getArgValue(int argc,char** argv,char* argName)
@@ -50,19 +60,23 @@ bool CSimionApp::flagPassed(int argc, char** argv, char* flagName)
 
 void CSimionApp::printRequirements()
 {
-	CFilePathList InputFileList, OutputFileList;
+	const char *pFileName, *pFileRename;
 	printf("<Files>\n");
 
-	getInputFiles(InputFileList);
-	for (int i = 0; i < InputFileList.getNumFilePaths(); i++)
+	for (int i = 0; i < getNumInputFiles(); i++)
 	{
-		printf("  <Input>%s</Input>\n", InputFileList.getFilePath(i));
+		pFileName = getInputFile(i);
+		pFileRename = getInputFileRename(i);
+		if (pFileRename==0)
+			printf("  <Input>%s</Input>\n", pFileName);
+		else
+			printf("  <Input Rename=\"%s\">%s</Input>\n", pFileRename, pFileName);
 	}
 
-	getOutputFiles(OutputFileList);
-	for (int i = 0; i < OutputFileList.getNumFilePaths(); i++)
+	for (int i = 0; i < getNumOutputFiles(); i++)
 	{
-		printf("  <Output>%s</Output>\n", OutputFileList.getFilePath(i));
+		pFileName = getOutputFile(i);
+		printf("  <Output>%s</Output>\n", pFileName);
 	}
 	printf("</Files>\n");
 }
@@ -98,5 +112,61 @@ string CSimionApp::getConfigFile()
 string CSimionApp::getOutputDirectory()
 {
 	return m_directory;
+}
+
+
+
+
+void CSimionApp::registerInputFile(const char* filepath, const char* rename)
+{
+	char* copy = new char[strlen(filepath) + 1];
+	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	m_inputFiles.push_back(copy);
+	if (rename != 0)
+	{
+		copy = new char[strlen(rename) + 1];
+		strcpy_s(copy, strlen(rename) + 1, rename);
+		m_inputFilesRenamed.push_back(copy);
+	}
+	else m_inputFilesRenamed.push_back(0);
+}
+
+unsigned int CSimionApp::getNumInputFiles()
+{
+	return (unsigned int) m_inputFiles.size();
+}
+
+const char* CSimionApp::getInputFile(unsigned int i)
+{
+	if (i<m_inputFiles.size())
+		return m_inputFiles[i];
+	return 0;
+}
+
+const char* CSimionApp::getInputFileRename(unsigned int i)
+{
+	if (i<m_inputFilesRenamed.size())
+		return m_inputFilesRenamed[i];
+	return 0;
+}
+
+unsigned int CSimionApp::getNumOutputFiles()
+{
+	return (unsigned int) m_outputFiles.size();
+}
+
+const char* CSimionApp::getOutputFile(unsigned int i)
+{
+	if (i<m_outputFiles.size())
+		return m_outputFiles[i];
+	return 0;
+}
+
+
+void CSimionApp::registerOutputFile(const char* filepath)
+{
+	char* copy = new char[strlen(filepath) + 1];
+	strcpy_s(copy, strlen(filepath) + 1, filepath);
+	m_outputFiles.push_back(copy);
 }
 

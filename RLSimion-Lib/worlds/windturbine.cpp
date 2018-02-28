@@ -115,7 +115,7 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	m_pPowerSetpoint = new CFileSetPoint(powerSetpoint.get());
 
 	char cp_table_file[] = "../config/world/wind-turbine/cp-table.txt";
-	CSimionApp::get()->pSimGod->registerInputFile(cp_table_file);
+	CSimionApp::get()->registerInputFile(cp_table_file);
 	m_Cp.readFromFile(cp_table_file);
 
 	//model constants

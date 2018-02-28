@@ -13,8 +13,6 @@
 #include <algorithm>
 
 std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_deferredLoadSteps;
-std::vector<const char*> CSimGod::m_inputFiles;
-std::vector<const char*> CSimGod::m_outputFiles;
 CHILD_OBJECT_FACTORY<CStateFeatureMap> CSimGod::m_pGlobalStateFeatureMap;
 CHILD_OBJECT_FACTORY<CActionFeatureMap> CSimGod::m_pGlobalActionFeatureMap;
 
@@ -39,10 +37,6 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 
 CSimGod::~CSimGod()
 {
-	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
-	m_inputFiles.clear();
-	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++) delete (*it);
-	m_outputFiles.clear();
 }
 
 
@@ -114,35 +108,6 @@ void CSimGod::deferredLoad()
 	}
 }
 
-void CSimGod::registerInputFile(const char* filepath)
-{
-	char* copy = new char[strlen(filepath) + 1];
-	strcpy_s(copy, strlen(filepath) + 1, filepath);
-	m_inputFiles.push_back(copy);
-}
-
-void CSimGod::getInputFiles(CFilePathList& filepathList)
-{
-	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++)
-	{
-		filepathList.addFilePath(*it);
-	}
-}
-
-void CSimGod::registerOutputFile(const char* filepath)
-{
-	char* copy = new char[strlen(filepath) + 1];
-	strcpy_s(copy, strlen(filepath) + 1, filepath);
-	m_outputFiles.push_back(copy);
-}
-
-void CSimGod::getOutputFiles(CFilePathList& filepathList)
-{
-	for (auto it = m_outputFiles.begin(); it != m_outputFiles.end(); it++)
-	{
-		filepathList.addFilePath(*it);
-	}
-}
 
 std::shared_ptr<CStateFeatureMap> CSimGod::getGlobalStateFeatureMap()
 {
