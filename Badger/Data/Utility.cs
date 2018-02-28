@@ -67,11 +67,19 @@ namespace Badger.Data
                 XElement[] outputFiles = doc.Descendants()
                                             .Where(e => e.Name == "Output")
                                             .ToArray();
+                //parse input files
                 foreach (XElement e in inputFiles)
                 {
                     if (!job.inputFiles.Contains(e.Value))
                         job.inputFiles.Add(e.Value);
+                    //must the input file be renamed in remote machines??
+                    foreach (XAttribute attr in e.Attributes())
+                    {
+                        if (attr.Name == "Rename")
+                            job.renameRules.Add(e.Value, attr.Value);
+                    }
                 }
+                //parse output files
                 foreach (XElement e in outputFiles)
                 {
                     if (!job.outputFiles.Contains(e.Value))
