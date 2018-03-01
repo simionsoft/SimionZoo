@@ -29,6 +29,9 @@ int main(int argc, char* argv[])
 		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
+		if (CSimionApp::flagPassed(argc, argv, "requirements"))
+			CLogger::enableLogMessages(false);
+
 		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) || !strcmp("RLSimion-x64-CNTK", pParameters->getName()))
 			pApp = new RLSimionApp(pParameters);
 				
@@ -36,7 +39,7 @@ int main(int argc, char* argv[])
 		{
 			pApp->setConfigFile(argv[1]);
 
-			if (CSimionApp::flagPassed(argc,argv,"requirements"))
+			if (CSimionApp::flagPassed(argc, argv, "requirements"))
 				pApp->printRequirements();
 			else pApp->run();
 
