@@ -1,10 +1,10 @@
 // RLSimion-Lib-test.cpp : Defines the entry point for the console application.
 //
 
-#include "../RLSimion-Lib/app.h"
-#include "../RLSimion-Lib/app-rlsimion.h"
-#include "../RLSimion-Lib/logger.h"
-#include "../RLSimion-Lib/config.h"
+#include "app.h"
+#include "app-rlsimion.h"
+#include "logger.h"
+#include "config.h"
 
 
 int main(int argc, char* argv[])
