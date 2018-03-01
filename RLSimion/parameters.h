@@ -389,8 +389,9 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 #include "CNTKWrapperLoader.h"
 class INetwork;
 
-//because NN objects are created from the CNTKWrapper DLL, this objects needs to be created using "new" and cannot
+//Because NN objects are created from the CNTKWrapper DLL, this objects needs to be created using "new" and cannot
 //use shared_ptr as in the rest of the objects
+//The copy assignment operator is overriden to avoid destroying m_pProblem and m_pNetwork after a copy-construct
 class NEURAL_NETWORK_PROBLEM_DESCRIPTION
 {
 protected:
@@ -408,6 +409,8 @@ public:
 		m_comment = comment;
 		m_pProblem = CNTKWrapperLoader::getProblem(pConfigNode->FirstChildElement(m_name)->FirstChildElement("Problem"));
 	}
+	NEURAL_NETWORK_PROBLEM_DESCRIPTION& operator=(NEURAL_NETWORK_PROBLEM_DESCRIPTION& copied);
+
 	~NEURAL_NETWORK_PROBLEM_DESCRIPTION();
 
 	void buildNetwork();

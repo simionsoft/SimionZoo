@@ -84,11 +84,13 @@ public:
 
 	static MessageOutputMode m_messageOutputMode;
 	static CNamedPipeClient m_outputPipe;
+	static bool m_bLogMessagesEnabled;
 
 	//Function called to report progress and error messages
 	//static so that it can be called right from the beginning
 	static void logMessage(MessageType type, const char* message);
-
+	//Function called to enable/disable output messages. Used when RLSimion outputs its requirements
+	static void enableLogMessages(bool enable);
 
 protected:
 	friend class CExperiment;

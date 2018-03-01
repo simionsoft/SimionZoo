@@ -12,6 +12,7 @@
 FILE *CLogger::m_logFile = 0;
 MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
 CNamedPipeClient CLogger::m_outputPipe;
+bool CLogger::m_bLogMessagesEnabled = true;
 
 #define HEADER_MAX_SIZE 16
 #define EXPERIMENT_HEADER 1
@@ -400,7 +401,10 @@ void CLogger::writeLogBuffer(const char* pBuffer, int numBytes)
 		numBytesWritten= fwrite(pBuffer, 1, numBytes, m_logFile);
 }
 
-
+void CLogger::enableLogMessages(bool enable)
+{
+	m_bLogMessagesEnabled = enable;
+}
 
 void CLogger::logMessage(MessageType type, const char* message)
 {
@@ -423,7 +427,7 @@ void CLogger::logMessage(MessageType type, const char* message)
 		}
 		m_outputPipe.writeBuffer(messageLine, (int)strlen(messageLine) + 1);
 	}
-	else
+	else if (m_bLogMessagesEnabled)
 	{
 		switch (type)
 		{

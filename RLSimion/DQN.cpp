@@ -13,7 +13,6 @@
 
 CDQN::~CDQN()
 {
-	delete m_pQNetwork;
 	delete m_pStateOutFeatures;
 	delete[] m_pMinibatchExperienceTuples;
 	delete[] m_pMinibatchChosenActionTargetValues;
@@ -25,7 +24,7 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 {
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
-	m_pQNetwork = new NEURAL_NETWORK_PROBLEM_DESCRIPTION(pConfigNode, "neural-network", "Neural Network Architecture");
+	m_QNetwork = std::move(NEURAL_NETWORK_PROBLEM_DESCRIPTION(pConfigNode, "neural-network", "Neural Network Architecture"));
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 	m_experienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 
@@ -40,7 +39,7 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 
 	m_pGrid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputActionIndex.get()]));
 
-	m_numberOfActions = m_pQNetwork->getNetwork()->getTotalSize();
+	m_numberOfActions = m_QNetwork.getNetwork()->getTotalSize();
 
 	if (m_pGrid->getNumCenters() != m_numberOfActions)
 		CLogger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
@@ -63,11 +62,11 @@ INetwork* CDQN::getPredictionNetwork()
 	if (CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 	{
 		if (m_pPredictionNetwork == nullptr)
-			m_pPredictionNetwork = m_pQNetwork->getNetwork()->cloneNonTrainable();
+			m_pPredictionNetwork = m_QNetwork.getNetwork()->cloneNonTrainable();
 		return m_pPredictionNetwork;
 	}
 	else
-		return m_pQNetwork->getNetwork();
+		return m_QNetwork.getNetwork();
 }
 
 double CDQN::selectAction(const CState * s, CAction * a)
@@ -138,13 +137,13 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 		m_minibatchActionValuePredictionVector[m_pMinibatchChosenActionIndex[i] + i*m_numberOfActions] = m_pMinibatchChosenActionTargetValues[i];
 
 	//update the network finally
-	m_pQNetwork->getNetwork()->train(inputMap, m_minibatchActionValuePredictionVector);
+	m_QNetwork.getNetwork()->train(inputMap, m_minibatchActionValuePredictionVector);
 
 	if (CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 		if (CSimionApp::get()->pExperiment->getExperimentStep() % CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
 		{
 			delete m_pPredictionNetwork;
-			m_pPredictionNetwork = m_pQNetwork->getNetwork()->cloneNonTrainable();
+			m_pPredictionNetwork = m_QNetwork.getNetwork()->cloneNonTrainable();
 		}
 	return 0.0; //TODO: what should we return?
 }
