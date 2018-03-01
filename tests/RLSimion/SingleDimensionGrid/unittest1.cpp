@@ -1,10 +1,10 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../RLSimion-Lib/single-dimension-grid.h"
-#include "../../../RLSimion-Lib/single-dimension-grid-rbf.h"
-#include "../../../RLSimion-Lib/named-var-set.h"
-#include "../../../RLSimion-Lib/app-rlsimion.h"
-#include "../../../RLSimion-Lib/features.h"
+#include "../../../RLSimion/single-dimension-grid.h"
+#include "../../../RLSimion/single-dimension-grid-rbf.h"
+#include "../../../RLSimion/named-var-set.h"
+#include "../../../RLSimion/app-rlsimion.h"
+#include "../../../RLSimion/features.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 #include <Windows.h>
