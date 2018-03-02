@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 
-#include "../../../RLSimion-Lib/mem-manager.h"
+#include "../../../RLSimion/mem-manager.h"
 #include "../../../tools/WindowsUtils/Timer.h"
 
 #include <algorithm>

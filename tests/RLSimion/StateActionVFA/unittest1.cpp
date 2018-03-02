@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../../../RLSimion-Lib/vfa.h"
-#include "../../../RLSimion-Lib/app-rlsimion.h"
-#include "../../../RLSimion-Lib/features.h"
+#include "../../../RLSimion/vfa.h"
+#include "../../../RLSimion/app-rlsimion.h"
+#include "../../../RLSimion/features.h"
 #include <iostream>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

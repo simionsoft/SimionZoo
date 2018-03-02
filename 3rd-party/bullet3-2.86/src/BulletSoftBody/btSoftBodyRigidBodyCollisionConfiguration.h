@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_SOFTBODY_RIGIDBODY_COLLISION_CONFIGURATION
 #define BT_SOFTBODY_RIGIDBODY_COLLISION_CONFIGURATION
 
-#include "BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
+#include "..\BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.h"
 
 class btVoronoiSimplexSolver;
 class btGjkEpaPenetrationDepthSolver;

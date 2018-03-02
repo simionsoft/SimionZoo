@@ -24,17 +24,30 @@ namespace Portable_Badger
             List<string> dependencyList = new List<string>();
             getDependencies(inBaseRelPath + @"bin\", "Badger.exe", ref dependencyList);
             files.AddRange(dependencyList);
+
             //for some unknown reason, this dependency is not detected, so we add it manually:
             files.Add(inBaseRelPath + @"bin\GongSolutions.Wpf.DragDrop.dll");
 
+            //RLSimion
             files.Add(inBaseRelPath + @"bin\RLSimion.exe");
             files.Add(inBaseRelPath + @"bin\RLSimion-x64.exe");
+            //FAST
             files.Add(inBaseRelPath + @"bin\FAST_Win32.exe");
             files.Add(inBaseRelPath + @"bin\TurbSim.exe");
+            //C++ Runtime libraries: x86 and x64 versions
             files.Add(inBaseRelPath + @"bin\vcruntime140.dll");
             files.Add(inBaseRelPath + @"bin\msvcp140.dll");
             files.Add(inBaseRelPath + @"bin\x64\vcruntime140.dll");
             files.Add(inBaseRelPath + @"bin\x64\msvcp140.dll");
+            //CNTK library and dependencies
+            files.Add(inBaseRelPath + "bin\\x64\\CNTKWrapper.dll");
+            files.Add(inBaseRelPath + "bin\\x64\\Cntk.Core-2.1.dll");
+            files.Add(inBaseRelPath + "bin\\x64\\Cntk.Math-2.1.dll");
+            files.Add(inBaseRelPath + "bin\\x64\\Cntk.PerformanceProfiler-2.1.dll");
+            files.Add(inBaseRelPath + "bin\\x64\\libiomp5md.dll");
+            files.Add(inBaseRelPath + "bin\\x64\\mkl_cntk_p.dll");
+
+            //Config files and example experiments
             files.AddRange(getFilesInFolder(inBaseRelPath + @"config\", true));
             files.AddRange(getFilesInFolder(inBaseRelPath + @"experiments\examples", true));
 

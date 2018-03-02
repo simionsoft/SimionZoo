@@ -2,14 +2,12 @@
 #ifdef _WIN64
 #include "CNTKLibrary.h"
 
-//#include "ParameterValues.h"
 #include <locale>
 #include <codecvt>
 #include <string>
 
 #include "Link.h"
-//class CLink;
-//enum class LinkType;
+
 enum class ActivationFunction;
 
 using namespace CNTK;

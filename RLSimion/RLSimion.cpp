@@ -1,11 +1,10 @@
 // RLSimion-Lib-test.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
-#include "../RLSimion-Lib/app.h"
-#include "../RLSimion-Lib/app-rlsimion.h"
-#include "../RLSimion-Lib/logger.h"
-#include "../RLSimion-Lib/config.h"
+#include "app.h"
+#include "app-rlsimion.h"
+#include "logger.h"
+#include "config.h"
 
 
 int main(int argc, char* argv[])
@@ -30,6 +29,9 @@ int main(int argc, char* argv[])
 		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
+		if (CSimionApp::flagPassed(argc, argv, "requirements"))
+			CLogger::enableLogMessages(false);
+
 		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) || !strcmp("RLSimion-x64-CNTK", pParameters->getName()))
 			pApp = new RLSimionApp(pParameters);
 				
@@ -37,7 +39,7 @@ int main(int argc, char* argv[])
 		{
 			pApp->setConfigFile(argv[1]);
 
-			if (CSimionApp::flagPassed(argc,argv,"requirements"))
+			if (CSimionApp::flagPassed(argc, argv, "requirements"))
 				pApp->printRequirements();
 			else pApp->run();
 
