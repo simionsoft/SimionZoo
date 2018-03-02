@@ -155,7 +155,17 @@ namespace Badger.ViewModels
             }
         }
 
-        public bool IsNotLinked { get { return !IsLinked; } }
+        private bool m_bIsNotLinked = true;
+
+        public bool IsNotLinked
+        {
+            get { return m_bIsNotLinked; }
+            set
+            {
+                m_bIsNotLinked = value;
+                NotifyOfPropertyChange(() => IsNotLinked);
+            }
+        }
 
         private bool m_bIsLinkOrigin;
 
@@ -220,8 +230,7 @@ namespace Badger.ViewModels
             var node = m_parentExperiment.DepthFirstSearch(targetNode);
 
             NestedConfigNode parent = (NestedConfigNode)node.m_parent;
-            // For node substitution We don't need the index in the whole tree 
-            // just the index in the parent children list
+            // For node substitution we just need the index in the parent children list
             int index = parent.children.IndexOf(node);
             parent.children.Remove(node);
             parent.children.Insert(index, linkedNode);
@@ -248,6 +257,7 @@ namespace Badger.ViewModels
 
             linkedNode.LinkedNode.IsLinkable = false;
             linkedNode.LinkedNode.IsLinked = true;
+            linkedNode.LinkedNode.IsNotLinked = false;
         }
 
         /// <summary>
@@ -259,7 +269,7 @@ namespace Badger.ViewModels
             LinkedNodeViewModel linkedNode = (LinkedNodeViewModel)this;
             linkedNode.Origin.LinkedNodes.Remove(linkedNode);
 
-            BranchConfigViewModel parent = (BranchConfigViewModel)linkedNode.m_parent;
+            NestedConfigNode parent = (NestedConfigNode)linkedNode.m_parent;
 
             ConfigNodeViewModel unlinkedNode = getInstance(m_parentExperiment, parent,
                 linkedNode.nodeDefinition, m_parentExperiment.appName);

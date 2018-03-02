@@ -7,13 +7,13 @@
     mc:Ignorable="d" 
     d:DesignHeight="50" d:DesignWidth="300">
 
-    <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}" >
+    <StackPanel Orientation="Horizontal" ToolTip="{Binding comment}">
         <Label Content="{Binding name}" Foreground="{Binding textColor}" VerticalContentAlignment="Center"
                HorizontalContentAlignment="Right" Width="150" FontFamily="Segoe UI Light"
                ContextMenu="{DynamicResource SharedContextMenu}"/>
 
         <TextBox Text="{Binding content, Mode=TwoWay}" VerticalContentAlignment="Center" 
                  HorizontalContentAlignment="Left" Width="150" BorderBrush="{x:Null}"
-                 BorderThickness="0"/>
+                 BorderThickness="0" IsEnabled="{Binding IsNotLinked, Mode=TwoWay}"/>
     </StackPanel>
 </UserControl>
