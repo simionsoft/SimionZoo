@@ -317,7 +317,7 @@ namespace Badger.ViewModels
             foreach (LoggedVariableViewModel variable in VariablesVM)
                 if (variable.IsSelected) ++numSelectedVars;
 
-            if (numSelectedVars == 0 || InGroupSelectionVariable == "")
+            if (numSelectedVars == 0 || InGroupSelectionVariable == null || InGroupSelectionVariable == "")
                 CanGenerateReports = false;
             else
                 CanGenerateReports = true;
@@ -336,7 +336,8 @@ namespace Badger.ViewModels
 
             //if the in-group selection function requires a variable not selected for the report
             //we add it too to the list of variables read from the log
-            if (InGroupSelectionVariable != "" && !IsVariableSelected(InGroupSelectionVariable))
+            if (InGroupSelectionVariable != null && InGroupSelectionVariable != ""
+                && !IsVariableSelected(InGroupSelectionVariable))
                 Reports.Add(new Report(InGroupSelectionVariable, ReportType.LastEvaluation
                     , ProcessFunc.None));
 

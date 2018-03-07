@@ -45,11 +45,6 @@ namespace Badger.ViewModels
                 {
                     m_shepherd.getHerdAgentList(ref m_innerHerdAgentList);
 
-                    // Test data
-                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x0811026f), 3128) });
-                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x2414188f), 3128) });
-                    // m_innerHerdAgentList.Add(new HerdAgentInfo { ipAddress = new IPEndPoint(new IPAddress(0x1914188f), 3128) });
-
                     // Ordering the inner list by number of processor 
                     orderedHerdAgentList = m_innerHerdAgentList.OrderByDescending(o => o.NumProcessors).ToList();
 
@@ -76,6 +71,7 @@ namespace Badger.ViewModels
                         }
                     }
 
+                    len = m_herdAgentList.Count;
 
                     foreach (HerdAgentInfo agent in orderedHerdAgentList)
                     {
