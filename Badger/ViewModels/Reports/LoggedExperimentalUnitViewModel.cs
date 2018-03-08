@@ -111,8 +111,11 @@ namespace Badger.ViewModels
             }
             return -1;
         }
-        //loads the log file and then returns the data of the requested variable as a TrackData object
-        //Not the most efficient way (we may load way more than we need), but good enough for now
+        /// <summary>
+        /// Reads the log file and returns in a track the data for each of the reports.
+        /// </summary>
+        /// <param name="reports">Parameters of each of the reporters: variable, type, ...</param>
+        /// <returns></returns>
         public Track LoadTrackData(List<Report> reports)
         {
             SimionLog Log = new SimionLog();
@@ -120,7 +123,7 @@ namespace Badger.ViewModels
 
             if (!Log.SuccessfulLoad || Log.TotalNumEpisodes == 0) return null;
 
-            Track track = new Track(forkValues);
+            Track track = new Track(forkValues,LogFileName,LogDescriptorFileName);
             SeriesGroup dataSeries;
             int variableIndex;
             foreach (Report report in reports)

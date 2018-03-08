@@ -6,15 +6,20 @@ namespace Badger.ViewModels
 {
     public class StatViewModel : PropertyChangedBase
     {
+        public string LogBinaryFile { get; set; }
+        public string LogDescriptorFile { get; set; }
         public string ExperimentId { get; set; }
         public string TrackId { get; set; }
         public Stats Stats { get; set; }
 
-        public StatViewModel(string experimentId, string trackId, Stats stats)
+        public StatViewModel(string experimentId, string trackId, Stats stats
+            , string logBinaryFile, string logDescriptorFile)
         {
             ExperimentId = experimentId;
             TrackId = trackId;
             Stats = stats;
+            LogBinaryFile = logBinaryFile;
+            LogDescriptorFile = logDescriptorFile;
         }
 
         public void export(StreamWriter fileWriter, string leftSpace)

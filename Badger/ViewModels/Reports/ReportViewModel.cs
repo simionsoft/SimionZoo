@@ -2,8 +2,8 @@
 using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
-using System.Collections.Generic;
 using Badger.Data;
+
 
 namespace Badger.ViewModels
 {
@@ -93,7 +93,10 @@ namespace Badger.ViewModels
                     foreach (XYValue value in series.Values)
                         newPlot.AddLineSeriesValue(lineSeriesId, value.X, value.Y);
 
-                    StatViewModel newStat = new StatViewModel(group.ExperimentId, seriesName, series.Stats);
+                    StatViewModel newStat =
+                        new StatViewModel(group.ExperimentId, seriesName, series.Stats
+                            ,group.ConsolidatedTrack.LogBinaryFile
+                            ,group.ConsolidatedTrack.LogDescriptorFile);
 
                     newStatGroup.addStat(newStat);
                 }
@@ -101,5 +104,6 @@ namespace Badger.ViewModels
             Plot = newPlot;
             Stats = newStatGroup;
         }
+
     }
 }

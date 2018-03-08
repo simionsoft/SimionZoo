@@ -62,6 +62,10 @@ namespace Badger.Simion
         public string Id { get; set; } = null;
         public List<XYValue> Values { get; set; } = new List<XYValue>();
 
+
+        public Series ()
+        {
+        }
         public void AddValue(double x, double y)
         {
             Values.Add(new XYValue(x, y));
@@ -157,13 +161,17 @@ namespace Badger.Simion
     /// </summary>
     public class Track
     {
+        public string LogBinaryFile { get; set; }
+        public string LogDescriptorFile { get; set; }
         public Dictionary<string, string> ForkValues;
         public Dictionary<Report, SeriesGroup> SeriesGroups { get; }
             = new Dictionary<Report, SeriesGroup>();
 
-        public Track(Dictionary<string, string> forkValues)
+        public Track(Dictionary<string, string> forkValues,string logBinaryFile, string logDescriptorFile)
         {
             ForkValues = forkValues;
+            LogBinaryFile = logBinaryFile;
+            LogDescriptorFile = logDescriptorFile;
         }
 
         public void AddVariableData(Report variable, SeriesGroup variableData)

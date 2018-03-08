@@ -317,7 +317,7 @@ namespace Badger.ViewModels
             foreach (LoggedVariableViewModel variable in VariablesVM)
                 if (variable.IsSelected) ++numSelectedVars;
 
-            if (numSelectedVars == 0 || InGroupSelectionVariable == null || InGroupSelectionVariable == "")
+            if (numSelectedVars == 0 || (GroupsEnabled && (InGroupSelectionVariable == null || InGroupSelectionVariable == "")))
                 CanGenerateReports = false;
             else
                 CanGenerateReports = true;
