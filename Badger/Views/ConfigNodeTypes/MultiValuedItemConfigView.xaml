@@ -15,7 +15,7 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button VerticalAlignment="Center" Background="Transparent" BorderBrush="{x:Null}"
                             cal:Message.Attach="[Event Click]=[remove]"
-                            x:Name="Remove" Width="25" Height="25" >
+                            x:Name="Remove" Width="16" Height="16" >
                     <Path Data="{StaticResource Close}" Stretch="Uniform" Fill="#89000000" />
                 </Button>
             </StackPanel>

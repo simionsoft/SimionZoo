@@ -14,7 +14,7 @@
 
     <StackPanel Orientation="Vertical">
         <StackPanel Margin="0,0,0,0"  Orientation="Horizontal" Background="#f0f0f0">
-            <Path Data="{StaticResource Fork}" Width="24" Height="24" Fill="#89000000" />
+            <Path Data="{StaticResource Fork}" Width="16" Height="16" Stretch="Uniform" Fill="#89000000" />
             <Label x:Name="Name" FontWeight="Medium" FontSize="10" Padding="0" VerticalAlignment="Center">
                 <Label.ContextMenu>
                     <ContextMenu>

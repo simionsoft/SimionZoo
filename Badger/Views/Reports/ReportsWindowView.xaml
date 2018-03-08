@@ -67,21 +67,12 @@
                 <Border Grid.Row="0" BorderBrush="DarkGray" BorderThickness="1">
 
                     <StackPanel Background="#EEEEEE">
-                        <!--<Label Content="Experiment batch" FontWeight="Medium" HorizontalAlignment="Center" />-->
-                        <TabControl>
-                            <TabItem Header="Forks" >
-                                <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                    <ItemsControl x:Name="LoggedExperiments"/>
-                                </ScrollViewer>
-                            </TabItem>
-                            <TabItem Header="Experimental units">
-                                <ScrollViewer Height="120"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                                    <StackPanel Orientation="Vertical">
-                                        <ItemsControl x:Name="ExperimentalUnits" />
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </TabItem>
-                        </TabControl>
+                        <StackPanel>
+                            <Label>Experiments</Label>
+                        </StackPanel>
+                        <ScrollViewer Height="120" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="LoggedExperiments"/>
+                        </ScrollViewer>
                     </StackPanel>
                 </Border>
                 <GridSplitter Grid.Row="1" Height="5" Background="#FAFAFA" HorizontalAlignment="Stretch" />
