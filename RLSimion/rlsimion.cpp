@@ -39,6 +39,9 @@ int main(int argc, char* argv[])
 		{
 			pApp->setConfigFile(argv[1]);
 
+			if (CSimionApp::flagPassed(argc, argv, "local"))
+				pApp->setExecutedRemotely(false);
+
 			if (CSimionApp::flagPassed(argc, argv, "requirements"))
 				pApp->printRequirements();
 			else pApp->run();
