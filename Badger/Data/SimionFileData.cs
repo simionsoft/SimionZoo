@@ -21,6 +21,7 @@ namespace Badger.Simion
         public const string experimentRelativeDir = "..\\" + experimentDir;
         public const string imageRelativeDir = "..\\" + imageDir;
         public const string badgerLogFile = "badger-log.txt";
+        public const string tempRelativeDir = "..\\temp\\";
 
         public const string ExperimentBatchFilter = "Experiment-batch|*.";
         public const string BadgerProjectFilter = "Badger project|*.";

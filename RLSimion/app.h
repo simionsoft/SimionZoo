@@ -58,6 +58,14 @@ public:
 	static bool flagPassed(int argc, char** argv, char* flagName);
 
 	//is this app being run remotely?
+	//by default, we assume it is in Release mode
+	//can be overriden using setExecutedRemotely()
+#ifdef _DEBUG
+	bool m_bRemoteExecution = false;
+#else
+	bool m_bRemoteExecution = true;
+#endif
+	void setExecutedRemotely(bool remote);
 	bool isExecutedRemotely();
 
 	virtual void run()= 0;

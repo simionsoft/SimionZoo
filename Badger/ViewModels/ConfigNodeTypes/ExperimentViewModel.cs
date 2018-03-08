@@ -4,8 +4,9 @@ using Caliburn.Micro;
 using System.IO;
 using Badger.Simion;
 using Badger.Data;
-using System;
 using System.Linq;
+using System;
+using System.Diagnostics;
 
 namespace Badger.ViewModels
 {
@@ -310,6 +311,34 @@ namespace Badger.ViewModels
             foreach (ConfigNodeViewModel node in m_children)
                 if (!node.validate()) return false;
             return true;
+        }
+
+        //Runs the experiment with the currently selected fork values locally.
+        //The experiment is saved in a temporary folder
+        public void RunLocallyCurrentConfiguration()
+        {
+            //we save the experiment with the currently selected fork values
+            int fileId = new Random().Next(1, 1000);
+            string filename = SimionFileData.tempRelativeDir + fileId.ToString() 
+                + "." +  XMLConfig.experimentExtension;
+
+            if (!Directory.Exists(SimionFileData.tempRelativeDir))
+                Directory.CreateDirectory(SimionFileData.tempRelativeDir);
+
+            save(filename, SaveMode.AsExperimentalUnit);
+
+            Process proc = new Process()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = m_exeFile,
+                    Arguments = filename + " -local",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = false,
+                    CreateNoWindow = true
+                }
+            };
+            proc.Start();
         }
 
         //this method saves an experiment. Depending on the mode:

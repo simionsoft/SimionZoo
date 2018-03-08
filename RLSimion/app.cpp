@@ -86,13 +86,14 @@ CSimionApp* CSimionApp::get()
 	return m_pAppInstance;
 }
 
+void CSimionApp::setExecutedRemotely(bool remote)
+{
+	m_bRemoteExecution = remote;
+}
+
 bool CSimionApp::isExecutedRemotely()
 {
-#ifdef _DEBUG
-	return false;
-#else
-	return true;
-#endif
+	return m_bRemoteExecution;
 }
 
 void CSimionApp::setConfigFile(string configFile)

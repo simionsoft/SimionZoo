@@ -57,10 +57,11 @@ void RLSimionApp::run()
 	double probability;
 	pApp->pLogger->addVarToStats<double>("reward", "r", r);
 
-#if _DEBUG
-	string sceneFile = pApp->pWorld->getDynamicModel()->getWorldSceneFile();
-	initRenderer(sceneFile);
-#endif
+	if (!m_bRemoteExecution)
+	{
+		string sceneFile = pApp->pWorld->getDynamicModel()->getWorldSceneFile();
+		initRenderer(sceneFile);
+	}
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pApp->pSimGod->deferredLoad();
@@ -88,9 +89,9 @@ void RLSimionApp::run()
 			//we need the complete reward vector for logging
 
 			pApp->pSimGod->postUpdate();
-#ifdef _DEBUG
-			updateScene(s_p);
-#endif
+
+			if (!m_bRemoteExecution)
+				updateScene(s_p);
 
 			//s= s'
 			s->copy(s_p);

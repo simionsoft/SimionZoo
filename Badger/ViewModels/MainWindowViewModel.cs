@@ -252,6 +252,15 @@ namespace Badger.ViewModels
         }
 
         /// <summary>
+        ///     Runs locally the experiment with its currently selected parameters
+        /// </summary>
+        /// <param name="e">The experiment to be run</param>
+        public void RunExperimentalUnitLocallyWithCurrentParameters(ExperimentViewModel e)
+        {
+            e.RunLocallyCurrentConfiguration();
+        }
+
+        /// <summary>
         ///     Load multiple experiments all at once.
         ///     Used from MainWindowView when the Load experiments button is clicked.
         /// </summary>

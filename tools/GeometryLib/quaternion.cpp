@@ -48,31 +48,25 @@ double Quaternion::yaw() const
 	double t3 = +2.0 * (w() * y() + x() * z());
 	double t4 = +1.0 - 2.0 * (z()*z() + y() * y());
 	return atan2(t3, t4);
-
-	//return asin(2 * m_x*m_z + 2 * m_y*m_w);
 }
 double Quaternion::pitch() const
 {
 	if (bUseOrientations()) return m_pitch;
 
 	// pitch (y-axis rotation)
-	double t2 = +2.0 * (w() * z() - y() * x());
-	t2 = t2 > 1.0 ? 1.0 : t2;
-	t2 = t2 < -1.0 ? -1.0 : t2;
-	return asin(t2);
-
-	//return atan2(2 * m_x*m_w - 2 * m_y*m_z, 1 - 2 * m_x*m_x - 2 * m_y*m_y);
+	double t0 = +2.0 * (w() * x() + z() * y());
+	double t1 = +1.0 - 2.0 * (x() * x() + z()*z());
+	return atan2(t0, t1);
 }
 double Quaternion::roll() const
 {
 	if (bUseOrientations()) return m_roll;
 
 	// roll (x-axis rotation)
-	double t0 = +2.0 * (w() * x() + z() * y());
-	double t1 = +1.0 - 2.0 * (x() * x() + z()*z());
-	return atan2(t0, t1);
-
-	//return atan2(2 * m_z*m_w - 2 * m_x*m_y, 1 - 2 * m_z*m_z - 2 * m_y*m_y);
+	double t2 = +2.0 * (w() * z() - y() * x());
+	t2 = t2 > 1.0 ? 1.0 : t2;
+	t2 = t2 < -1.0 ? -1.0 : t2;
+	return asin(t2);
 }
 
 
@@ -87,7 +81,7 @@ double Quaternion::xFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return sinYaw * sinPitch * cosRoll + cosYaw * cosPitch * sinRoll;
+	return sinYaw * sinRoll * cosPitch + cosYaw * cosRoll * sinPitch;
 }
 
 double Quaternion::yFromOrientations(double yaw, double pitch, double roll)
@@ -101,7 +95,7 @@ double Quaternion::yFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
+	return sinYaw * cosRoll * cosPitch + cosYaw * sinRoll * sinPitch;
 }
 
 double Quaternion::zFromOrientations(double yaw, double pitch, double roll)
@@ -115,7 +109,7 @@ double Quaternion::zFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
+	return cosYaw * sinRoll * cosPitch - sinYaw * cosRoll * sinPitch;
 }
 
 double Quaternion::wFromOrientations(double yaw, double pitch, double roll)
@@ -129,11 +123,13 @@ double Quaternion::wFromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	return cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
+	return cosYaw * cosRoll * cosPitch - sinYaw * sinRoll * sinPitch;
 }
 
 void Quaternion::fromOrientations(double yaw, double pitch, double roll)
 {
+	//https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+	//Had to swap pitch and roll
 	double halfYaw = yaw * 0.5;
 	double halfPitch = pitch * 0.5;
 	double halfRoll = roll * 0.5;
@@ -143,10 +139,10 @@ void Quaternion::fromOrientations(double yaw, double pitch, double roll)
 	double sinPitch = sin(halfPitch);
 	double cosRoll = cos(halfRoll);
 	double sinRoll = sin(halfRoll);
-	m_w = cosYaw * cosPitch * cosRoll - sinYaw * sinPitch * sinRoll;
-	m_x = sinYaw * sinPitch * cosRoll + cosYaw * cosPitch * sinRoll;
-	m_y = sinYaw * cosPitch * cosRoll + cosYaw * sinPitch * sinRoll;
-	m_z = cosYaw * sinPitch * cosRoll - sinYaw * cosPitch * sinRoll;
+	m_x = sinYaw * sinRoll * cosPitch + cosYaw * cosRoll * sinPitch;
+	m_y = sinYaw * cosRoll * cosPitch + cosYaw * sinRoll * sinPitch;
+	m_z = cosYaw * sinRoll * cosPitch - sinYaw * cosRoll * sinPitch;
+	m_w = cosYaw * cosRoll * cosPitch - sinYaw * sinRoll * sinPitch;
 }
 
 Quaternion::Quaternion(double yaw, double pitch, double roll)
