@@ -24,7 +24,7 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 {
 	CNTKWrapperLoader::Load();
 	m_policy = CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
-	m_QNetwork = NEURAL_NETWORK_PROBLEM_DESCRIPTION(pConfigNode, "neural-network", "Neural Network Architecture");
+	m_QNetwork = NEURAL_NETWORK(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 	m_experienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 

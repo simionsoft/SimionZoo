@@ -18,7 +18,7 @@ class CDQN : public CSimion
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
 	CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
-	NEURAL_NETWORK_PROBLEM_DESCRIPTION m_QNetwork;
+	NEURAL_NETWORK m_QNetwork;
 	INetwork* m_pPredictionNetwork= nullptr;
 
 	CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy> m_policy;
