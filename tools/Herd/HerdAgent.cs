@@ -487,27 +487,29 @@ namespace Herd
         /// <returns>The CUDA version installed or -1 if none was found</returns>
         private void CheckCUDASupport()
         {
-            string[] dllNames = { @"nvcuda.dll" };
+            string dllName = @"nvcuda.dll";
             string dir = Environment.SystemDirectory;
 
             try
             {
                 FileVersionInfo myFileVersionInfo = null;
-                foreach (string dll in dllNames)
-                {
-                    var dllPath = dir + "\\" + dll;
-                    if (System.IO.File.Exists(dllPath))
-                    {
-                        myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
-                        IsCUDASupported = true;
-                        break;
-                    }
-                }
 
-                if (IsCUDASupported)
-                    CUDAVersion = myFileVersionInfo.ProductVersion;
+                var dllPath = dir + "\\" + dllName;
+                if (System.IO.File.Exists(dllPath))
+                {
+                    myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
+                    //This is a quick and dirty hack to get the CUDA version without loading the DLL
+                    //It seems that nVidia sets the ProductName with the cuda version inside. I hope they
+                    //keep doint it
+                    CUDAVersion = myFileVersionInfo.ProductName;
+                    CUDAVersion = new string(CUDAVersion.Where(c => char.IsDigit(c) || char.IsPunctuation(c)).ToArray());
+                    IsCUDASupported = true;
+                }
                 else
+                {
+                    IsCUDASupported = false;
                     CUDAVersion = HerdAgentInfo.NoneProperty;
+                }
             }
             catch (Exception ex)
             {
