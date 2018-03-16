@@ -176,12 +176,21 @@ namespace Herd
         ///     HerdAgent class constructor
         /// </summary>
         /// <param name="cancelTokenSource"></param>
-        public HerdAgent(CancellationTokenSource cancelTokenSource)
+        public HerdAgent(CancellationTokenSource cancelTokenSource, Logger.LogFunction logMessageHandler= null)
         {
+            setLogMessageHandler(logMessageHandler);
             m_cancelTokenSource = cancelTokenSource;
             m_state = AgentState.Available;
             m_cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-            m_credentials = Credentials.Load(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+            try
+            {
+                m_credentials = Credentials.Load(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location));
+            }
+            catch
+            {
+                //we do nothing for now
+            }
+            InitStaticProperties();
         }
 
         protected override string getTmpDir()
@@ -440,43 +449,71 @@ namespace Herd
             return id;
         }
 
+        string HerdAgentVersion = HerdAgentInfo.NoneProperty;
+        string CPUId = HerdAgentInfo.NoneProperty;
+        int NumCPUCores = 0;
+        string CPUArchitecture = HerdAgentInfo.NoneProperty;
+        double TotalMemory = 0.0;
+        /// <summary>
+        /// This method should be called once on initialization to set static properties: CUDA support
+        /// , number of cores, ... No point checking them every time we get a ping from the client
+        /// </summary>
+        private void InitStaticProperties()
+        {
+            logMessage("Initializing Herd Agent static properties:");
+
+            //Herd Agent version
+            HerdAgentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            //Number of CPU cores
+            NumCPUCores = Environment.ProcessorCount;
+            //Processor Id
+            CPUId = GetProcessorId();
+            // CPU architecture
+            CPUArchitecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine);
+            // Total installed memory
+            TotalMemory = GetGlobalMemoryStatusEx();
+            //CUDA support
+            CheckCUDASupport();
+
+            logMessage(GetAgentDescription());
+        }
+
+        string CUDAVersion = "";
+        bool IsCUDASupported = false;
+
         /// <summary>
         ///     Get information about CUDA installation.
         /// </summary>
         /// <returns>The CUDA version installed or -1 if none was found</returns>
-        public string GetCudaInfo()
+        private void CheckCUDASupport()
         {
-            string[] dllNames = { @"nvcuda.dll", @"nvcuda64.dll" };
+            string[] dllNames = { @"nvcuda.dll" };
             string dir = Environment.SystemDirectory;
 
             try
             {
                 FileVersionInfo myFileVersionInfo = null;
-                bool bCudaCapable = false;
                 foreach (string dll in dllNames)
                 {
                     var dllPath = dir + "\\" + dll;
                     if (System.IO.File.Exists(dllPath))
                     {
                         myFileVersionInfo = FileVersionInfo.GetVersionInfo(dllPath);
-                        bCudaCapable = true;
-                    }
-                    else
-                    {
-                        bCudaCapable = false;
+                        IsCUDASupported = true;
                         break;
                     }
                 }
 
-                if (bCudaCapable)
-                    return myFileVersionInfo.ProductVersion;
-
-                return HerdAgentInfo.NoneProperty;
+                if (IsCUDASupported)
+                    CUDAVersion = myFileVersionInfo.ProductVersion;
+                else
+                    CUDAVersion = HerdAgentInfo.NoneProperty;
             }
             catch (Exception ex)
             {
                 Console.Write(ex.StackTrace);
-                return HerdAgentInfo.NoneProperty;
+                IsCUDASupported = false;
+                CUDAVersion = HerdAgentInfo.NoneProperty;
             }
         }
 
@@ -513,22 +550,22 @@ namespace Herd
             string description = "<" + m_herdDescriptionXMLTag + ">"
                 // HerdAgent version
                 + "<" + m_versionXMLTag + ">"
-                + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version
+                + HerdAgentVersion
                 + "</" + m_versionXMLTag + ">"
                 // CPU amount of cores
-                + "<" + m_processorIdTag + ">" + GetProcessorId() + "</" + m_processorIdTag + ">"
+                + "<" + m_processorIdTag + ">" + CPUId + "</" + m_processorIdTag + ">"
                 // CPU amount of cores
-                + "<" + m_numProcessorsXMLTag + ">" + Environment.ProcessorCount + "</" + m_numProcessorsXMLTag + ">"
+                + "<" + m_numProcessorsXMLTag + ">" + NumCPUCores + "</" + m_numProcessorsXMLTag + ">"
                 // CPU architecture
                 + "<" + ProcessorArchitectureTag + ">"
-                + Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE", EnvironmentVariableTarget.Machine)
+                + CPUArchitecture
                 + "</" + ProcessorArchitectureTag + ">"
                 // Current processor load
                 + "<" + ProcessorLoadTag + ">" + GetCurrentCpuUsage() + "</" + ProcessorLoadTag + ">"
                 // Total installed memory
-                + "<" + TotalMemoryTag + ">" + GetGlobalMemoryStatusEx() + "</" + TotalMemoryTag + ">"
+                + "<" + TotalMemoryTag + ">" + TotalMemory + "</" + TotalMemoryTag + ">"
                 // CUDA support information
-                + "<" + CudaInfoTag + ">" + GetCudaInfo() + "</" + CudaInfoTag + ">"
+                + "<" + CudaInfoTag + ">" + CUDAVersion + "</" + CudaInfoTag + ">"
                 // HerdAgent state
                 + "<" + m_stateXMLTag + ">" + getStateString() + "</" + m_stateXMLTag + ">"
                 + "</" + m_herdDescriptionXMLTag + ">";
