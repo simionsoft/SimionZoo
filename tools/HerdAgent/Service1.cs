@@ -26,7 +26,7 @@ namespace Herd
         }
         public string getLogFilename()
         {
-            return m_dirPath + "//log.txt";
+            return m_dirPath + @"\log.txt";
         }
 
         public void cleanLog()
@@ -88,13 +88,14 @@ namespace Herd
         }
         public void logToFile(string logMessage)
         {
+            string logFilename = getLogFilename();
             lock (m_logFileLock)
             {
-                if (File.Exists(getLogFilename()))
+                if (File.Exists(logFilename))
                 {
                     string text = DateTime.Now.ToShortDateString() + " " +
                         DateTime.Now.ToShortTimeString() + ": " + logMessage;
-                    StreamWriter w = File.AppendText(getLogFilename());
+                    StreamWriter w = File.AppendText(logFilename);
 
                     w.WriteLine(text);
                     w.Close();
@@ -117,13 +118,14 @@ namespace Herd
 
         public void DoStart()
         {
-            m_herdAgent = new HerdAgent(new CancellationTokenSource());
-
+            //Clean-up
             m_dirPath = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location) + "\\temp";
             Directory.CreateDirectory(m_dirPath);
-            m_herdAgent.setLogMessageHandler(logToFile);
             cleanLog();
             cleanTempDir();
+
+            //Start herd-agent
+            m_herdAgent = new HerdAgent(new CancellationTokenSource(),logToFile);
             logToFile("Herd agent started");
 
             m_herdAgent.startListening();
