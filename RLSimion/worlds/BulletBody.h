@@ -28,7 +28,7 @@ protected:
 	//only to be called by Rope subclass
 	BulletBody() {}
 
-	//protected because we want to force the use of subclasses: StaticObject, Robot, Box, KinematicObject...
+	//protected because we want to force the use of subclasses: StaticObject, Robot, BulletBox, KinematicObject...
 	BulletBody(double mass, const btVector3& pos, btCollisionShape* shape, int objType= 0);
 public:
 	virtual ~BulletBody() { }
@@ -37,9 +37,9 @@ public:
 	void setRelativeStateVarIds(int relXId, int relYId, int refXId, int refYId);
 	void setOrigin(double x, double y, double theta);
 
-	virtual void reset(CState* s);
-	virtual void updateState(CState* s);
-	virtual void updateBulletState(CState *s, const CAction *a, double dt) {}
+	virtual void reset(State* s);
+	virtual void updateState(State* s);
+	virtual void updateBulletState(State *s, const Action *a, double dt) {}
 
 	btRigidBody* BulletBody::getBody();
 	btCollisionShape* BulletBody::getShape();
@@ -50,6 +50,6 @@ protected:
 
 	btScalar m_mass;
 
-	virtual void updateYawState(CState* s);
+	virtual void updateYawState(State* s);
 	void resetInertia();
 };

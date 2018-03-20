@@ -10,46 +10,46 @@
 
 
 
-CGraphicObject::CGraphicObject(string name)
+GraphicObject::GraphicObject(string name)
 {
 	m_name = name;
 }
 
-CGraphicObject::CGraphicObject(tinyxml2::XMLElement* pNode): CSceneActor(pNode)
+GraphicObject::GraphicObject(tinyxml2::XMLElement* pNode): SceneActor(pNode)
 {
 	if (pNode->Attribute(XML_TAG_NAME_ATTR))
 		m_name= string(pNode->Attribute(XML_TAG_NAME_ATTR));
 }
 
-CGraphicObject* CGraphicObject::getInstance(tinyxml2::XMLElement* pNode)
+GraphicObject* GraphicObject::getInstance(tinyxml2::XMLElement* pNode)
 {
 	const char* name = pNode->Name();
 	if (!strcmp(pNode->Name(), XML_TAG_COLLADA_MODEL))
-		return new CColladaModel(pNode);
+		return new ColladaModel(pNode);
 	if (!strcmp(pNode->Name(), XML_TAG_BOX))
-		return new CBox(pNode);
+		return new Box(pNode);
 	if (!strcmp(pNode->Name(), XML_TAG_SPHERE))
-		return new CSphere(pNode);
+		return new Sphere(pNode);
 	if (!strcmp(pNode->Name(), XML_TAG_CILINDER))
-		return new CCilinder(pNode);
+		return new Cilinder(pNode);
 	if (!strcmp(pNode->Name(), XML_TAG_POLYLINE))
-		return new CPolyline(pNode);
+		return new PolyLine(pNode);
 
 	return nullptr;
 }
 
 
-CGraphicObject::~CGraphicObject()
+GraphicObject::~GraphicObject()
 {
 }
 
-BoundingBox3D CGraphicObject::boundingBox()
+BoundingBox3D GraphicObject::boundingBox()
 {
 	return m_transform.transformMatrix()*m_bb;
 }
 
 
-void CGraphicObject::draw()
+void GraphicObject::draw()
 {
 	setTransform();
 
@@ -60,14 +60,14 @@ void CGraphicObject::draw()
 }
 
 
-void CGraphicObject::updateBoundingBox()
+void GraphicObject::updateBoundingBox()
 {
 	m_bb.reset();
 	for (auto it = m_meshes.begin(); it != m_meshes.end(); ++it)
 		(*it)->updateBoundingBox(m_bb);
 }
 
-void CGraphicObject::fitToBoundingBox(BoundingBox3D* newBB)
+void GraphicObject::fitToBoundingBox(BoundingBox3D* newBB)
 {
 	Vector3D newBBSize,bbSize;
 	Vector3D newBBCenter, bbCenter;
@@ -97,7 +97,7 @@ void CGraphicObject::fitToBoundingBox(BoundingBox3D* newBB)
 	updateBoundingBox();
 }
 
-void CGraphicObject::fitToBoundingCylinder(BoundingCylinder* newBC)
+void GraphicObject::fitToBoundingCylinder(BoundingCylinder* newBC)
 {
 	BoundingCylinder currentBC;
 	/*Point3D centroid;*/

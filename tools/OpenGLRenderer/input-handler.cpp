@@ -9,7 +9,7 @@
 
 IInputHandler* IInputHandler::m_pInstance = 0;
 
-CFreeCameraInputHandler::CFreeCameraInputHandler()
+FreeCameraInputHandler::FreeCameraInputHandler()
 {
 	m_pInstance = this;
 
@@ -28,31 +28,31 @@ IInputHandler* IInputHandler::get()
 }
 
 
-CFreeCameraInputHandler::~CFreeCameraInputHandler()
+FreeCameraInputHandler::~FreeCameraInputHandler()
 {
 }
 
-void CFreeCameraInputHandler::_onSpecialKeyPressed(int key, int x, int y)
+void FreeCameraInputHandler::_onSpecialKeyPressed(int key, int x, int y)
 {
-	((CFreeCameraInputHandler*)IInputHandler::get())->onSpecialKeyPressed(key, x, y);
+	((FreeCameraInputHandler*)IInputHandler::get())->onSpecialKeyPressed(key, x, y);
 }
 
-void CFreeCameraInputHandler::_onSpecialKeyReleased(int key, int x, int y)
+void FreeCameraInputHandler::_onSpecialKeyReleased(int key, int x, int y)
 {
-	((CFreeCameraInputHandler*)IInputHandler::get())->onSpecialKeyReleased(key, x, y);
+	((FreeCameraInputHandler*)IInputHandler::get())->onSpecialKeyReleased(key, x, y);
 }
 
-void CFreeCameraInputHandler::_onKeyPressed(unsigned char key, int x, int y)
+void FreeCameraInputHandler::_onKeyPressed(unsigned char key, int x, int y)
 {
-	((CFreeCameraInputHandler*)IInputHandler::get())->onKeyPressed(key, x, y);
+	((FreeCameraInputHandler*)IInputHandler::get())->onKeyPressed(key, x, y);
 }
 
-void CFreeCameraInputHandler::_onKeyReleased(unsigned char key, int x, int y)
+void FreeCameraInputHandler::_onKeyReleased(unsigned char key, int x, int y)
 {
-	((CFreeCameraInputHandler*)IInputHandler::get())->onKeyReleased(key, x, y);
+	((FreeCameraInputHandler*)IInputHandler::get())->onKeyReleased(key, x, y);
 }
 
-void CFreeCameraInputHandler::onKeyPressed(unsigned char key, int x, int y)
+void FreeCameraInputHandler::onKeyPressed(unsigned char key, int x, int y)
 {
 	//keyboard callback function
 	switch (key)
@@ -70,7 +70,7 @@ void CFreeCameraInputHandler::onKeyPressed(unsigned char key, int x, int y)
 	}
 }
 
-void CFreeCameraInputHandler::onKeyReleased(unsigned char key, int x, int y)
+void FreeCameraInputHandler::onKeyReleased(unsigned char key, int x, int y)
 {
 	//keyboard callback function
 	switch (key)
@@ -90,7 +90,7 @@ void CFreeCameraInputHandler::onKeyReleased(unsigned char key, int x, int y)
 	}
 }
 
-void CFreeCameraInputHandler::onSpecialKeyPressed(int key, int x, int y)
+void FreeCameraInputHandler::onSpecialKeyPressed(int key, int x, int y)
 {
 	switch (key)
 	{
@@ -101,7 +101,7 @@ void CFreeCameraInputHandler::onSpecialKeyPressed(int key, int x, int y)
 	}
 }
 
-void CFreeCameraInputHandler::onSpecialKeyReleased(int key, int x, int y)
+void FreeCameraInputHandler::onSpecialKeyReleased(int key, int x, int y)
 {
 	switch (key)
 	{
@@ -112,13 +112,13 @@ void CFreeCameraInputHandler::onSpecialKeyReleased(int key, int x, int y)
 	}
 }
 
-void CFreeCameraInputHandler::handleInput()
+void FreeCameraInputHandler::handleInput()
 {
 	double dt = m_timer.getElapsedTime(true);
 
 	glutMainLoopEvent();
 
-	CCamera* pCamera = CRenderer::get()->getActiveCamera();
+	Camera* pCamera = Renderer::get()->getActiveCamera();
 	if (!pCamera) return;
 
 	Matrix44 tras = pCamera->getTransformMatrix();

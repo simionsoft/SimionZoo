@@ -1,7 +1,7 @@
 #pragma once
 
 #include "world.h"
-class CSetPoint;
+class SetPoint;
 #include "../reward.h"
 #include "../parameters.h"
 
@@ -10,7 +10,7 @@ class CSetPoint;
 //as used in "Model-Free Reinforcement Learning with Continous Action in Practice"
 
 //SWINGUP PENDULUM
-class CSwingupPendulum : public CDynamicModel
+class SwingupPendulum : public DynamicModel
 {
 	int m_sAngularVelocity, m_sAngle;
 	int m_sNormalizedTimeInTargetPosition;
@@ -19,19 +19,19 @@ class CSwingupPendulum : public CDynamicModel
 	//DOUBLE_PARAM 
 
 public:
-	CSwingupPendulum(CConfigNode* pParameters);
-	virtual ~CSwingupPendulum();
+	SwingupPendulum(ConfigNode* pParameters);
+	virtual ~SwingupPendulum();
 
-	void reset(CState *s);
+	void reset(State *s);
 
-	void executeAction(CState *s, const CAction *a, double dt);
+	void executeAction(State *s, const Action *a, double dt);
 };
 
-class CSwingupPendulumReward : public IRewardComponent
+class SwingupPendulumReward : public IRewardComponent
 {
 public:
-	CSwingupPendulumReward() = default;
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
+	SwingupPendulumReward() = default;
+	double getReward(const State *s, const Action *a, const State *s_p);
 	const char* getName() { return "reward"; }
 	double getMin();
 	double getMax();

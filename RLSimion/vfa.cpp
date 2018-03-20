@@ -7,29 +7,29 @@
 #include <assert.h>
 #include <algorithm>
 
-//LINEAR VFA. Common functionalities: getSample (CFeatureList*), saturate, save, load, ....
-CLinearVFA::CLinearVFA()
+//LINEAR VFA. Common functionalities: getSample (FeatureList*), saturate, save, load, ....
+LinearVFA::LinearVFA()
 {
-	m_pPendingUpdates = new CFeatureList("Pending-vfa-updates", OverwriteMode::AllowDuplicates);
+	m_pPendingUpdates = new FeatureList("Pending-vfa-updates", OverwriteMode::AllowDuplicates);
 }
 
-CLinearVFA::~CLinearVFA()
+LinearVFA::~LinearVFA()
 {
 	delete[] m_pPendingUpdates;
 }
 
-void CLinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
+void LinearVFA::setCanUseDeferredUpdates(bool bCanUseDeferredUpdates)
 {
 	m_bCanBeFrozen = bCanUseDeferredUpdates;
 }
 
-double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
+double LinearVFA::get(const FeatureList *pFeatures,bool bUseFrozenWeights)
 {
 	double value = 0.0;
 	unsigned int localIndex;
 
 	IMemBuffer *pWeights;
-	int updateFreq = CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
+	int updateFreq = SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
 
 	if (!bUseFrozenWeights || !m_bCanBeFrozen || updateFreq == 0)
 		pWeights = m_pWeights;
@@ -49,20 +49,20 @@ double CLinearVFA::get(const CFeatureList *pFeatures,bool bUseFrozenWeights)
 	return value;
 }
 
-void CLinearVFA::saturateOutput(double min, double max)
+void LinearVFA::saturateOutput(double min, double max)
 {
 	m_bSaturateOutput = true;
 	m_minOutput = min;
 	m_maxOutput = max;
 }
 
-void CLinearVFA::setIndexOffset(unsigned int offset)
+void LinearVFA::setIndexOffset(unsigned int offset)
 {
 	m_minIndex = offset;
 	m_maxIndex = offset + m_numWeights;
 }
 
-bool CLinearVFA::saveWeights(const char* pFilename) const
+bool LinearVFA::saveWeights(const char* pFilename) const
 {
 	FILE* pFile;
 	assert(m_pWeights && m_numWeights >= 0);
@@ -77,11 +77,11 @@ bool CLinearVFA::saveWeights(const char* pFilename) const
 		return true;
 	}
 	else
-		CLogger::logMessage(MessageType::Error,"Couldn't open binary file with VFA weights");
+		Logger::logMessage(MessageType::Error,"Couldn't open binary file with VFA weights");
 	return false;
 }
 
-bool CLinearVFA::loadWeights(const char* pFilename)
+bool LinearVFA::loadWeights(const char* pFilename)
 {
 	FILE* pFile;
 	unsigned int numWeightsRead;
@@ -100,13 +100,13 @@ bool CLinearVFA::loadWeights(const char* pFilename)
 		return true;
 	}
 	else
-		CLogger::logMessage(MessageType::Warning, "Couldn't load weights from file");
+		Logger::logMessage(MessageType::Warning, "Couldn't load weights from file");
 	return false;
 }
 
-void CLinearStateVFA::save(const char* pFilename) const
+void LinearStateVFA::save(const char* pFilename) const
 {
-	CConfigNode* pFeatureMapParameters;
+	ConfigNode* pFeatureMapParameters;
 	char msg[128];
 	char binFile[512];
 	char xmlDescFile[512];
@@ -115,7 +115,7 @@ void CLinearStateVFA::save(const char* pFilename) const
 	if (pFilename == 0 || pFilename[0] == 0) return;
 
 	sprintf_s(msg, 128, "Saving Policy to \"%s\" (.fmap/.weights)...", pFilename);
-	CLogger::logMessage(Info, msg);
+	Logger::logMessage(Info, msg);
 
 	sprintf_s(binFile, 512, "%s.weights", pFilename);
 	saveWeights(binFile);
@@ -131,16 +131,16 @@ void CLinearStateVFA::save(const char* pFilename) const
 			pFeatureMapParameters->saveFile(pXMLFile);
 
 		fclose(pXMLFile);
-		CLogger::logMessage(Info, "OK");
+		Logger::logMessage(Info, "OK");
 		return;
 	}
 
 	sprintf_s(msg, 128, "Couldn't save the policy in file %s", binFile);
-	CLogger::logMessage(Warning, msg);
+	Logger::logMessage(Warning, msg);
 }
 
 
-void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
+void LinearVFA::add(const FeatureList* pFeatures, double alpha)
 {
 	int vUpdateFreq = 0;
 	int experimentStep = 0;
@@ -148,7 +148,7 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 
 	//If we are deferring updates, check whether we have to update frozen weights
 	//Note: vUpdate=0 if we are not deferring updates
-	vUpdateFreq = CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
+	vUpdateFreq = SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq();
 	bFreezeTarget = (vUpdateFreq != 0) && m_bCanBeFrozen;
 
 	//then we apply all the feature updates
@@ -177,9 +177,9 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 			m_pPendingUpdates->add(pFeatures->m_pFeatures[i].m_index, inc);
 	}
 
-	if (bFreezeTarget && !CSimionApp::get()->pSimGod->bReplayingExperience())
+	if (bFreezeTarget && !SimionApp::get()->pSimGod->bReplayingExperience())
 	{
-		experimentStep = CSimionApp::get()->pExperiment->getExperimentStep();
+		experimentStep = SimionApp::get()->pExperiment->getExperimentStep();
 
 		if (experimentStep % vUpdateFreq == 0)
 		{
@@ -196,47 +196,47 @@ void CLinearVFA::add(const CFeatureList* pFeatures, double alpha)
 
 //STATE VFA: V(s), pi(s), .../////////////////////////////////////////////////////////////////////
 
-CLinearStateVFA::CLinearStateVFA(CConfigNode* pConfigNode)
+LinearStateVFA::LinearStateVFA(ConfigNode* pConfigNode)
 {
-	m_pStateFeatureMap = CSimGod::getGlobalStateFeatureMap();
+	m_pStateFeatureMap = SimGod::getGlobalStateFeatureMap();
 
 	m_numWeights = m_pStateFeatureMap.get()->getTotalNumFeatures();
 	m_pWeights = 0;
 	m_minIndex = 0;
 	m_maxIndex = m_numWeights;
 
-	m_pAux = new CFeatureList("LinearStateVFA/aux");
+	m_pAux = new FeatureList("LinearStateVFA/aux");
 	m_initValue= DOUBLE_PARAM(pConfigNode, "Init-Value", "The initial value given to the weights on initialization", 0.0);
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
 }
-void CLinearStateVFA::deferredLoadStep()
+void LinearStateVFA::deferredLoadStep()
 {
 	//weights
-	m_pWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);//std::shared_ptr<double>(new double[m_numWeights]);
+	m_pWeights = SimionApp::get()->pMemManager->getMemBuffer(m_numWeights);//std::shared_ptr<double>(new double[m_numWeights]);
 	m_pWeights->setInitValue(m_initValue.get());
 
 	//frozen weights
 	if (m_bCanBeFrozen)
 	{
-		m_pFrozenWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights); //std::shared_ptr<double>(new double[m_numWeights]);
+		m_pFrozenWeights = SimionApp::get()->pMemManager->getMemBuffer(m_numWeights); //std::shared_ptr<double>(new double[m_numWeights]);
 		m_pFrozenWeights->setInitValue(m_initValue.get());
 	}
 }
 
-void CLinearStateVFA::setInitValue(double initValue)
+void LinearStateVFA::setInitValue(double initValue)
 {
 	m_initValue.set(initValue);
 }
 
-CLinearStateVFA::CLinearStateVFA()
+LinearStateVFA::LinearStateVFA()
 {
 }
 
 
-CLinearStateVFA::~CLinearStateVFA()
+LinearStateVFA::~LinearStateVFA()
 {
 	//now SimGod owns the feature map, his duty to free the memory
 	//if (m_pStateFeatureMap) delete m_pStateFeatureMap;
@@ -244,7 +244,7 @@ CLinearStateVFA::~CLinearStateVFA()
 }
 
 
-void CLinearStateVFA::getFeatures(const CState* s, CFeatureList* outFeatures)
+void LinearStateVFA::getFeatures(const State* s, FeatureList* outFeatures)
 {
 	assert (s);
 	assert (outFeatures);
@@ -252,17 +252,17 @@ void CLinearStateVFA::getFeatures(const CState* s, CFeatureList* outFeatures)
 	outFeatures->offsetIndices(m_minIndex);
 }
 
-void CLinearStateVFA::getFeatureState(unsigned int feature, CState* s)
+void LinearStateVFA::getFeatureState(unsigned int feature, State* s)
 {
 	if (feature>=m_minIndex && feature<m_maxIndex)
 		m_pStateFeatureMap->getFeatureState(feature,s);
 }
 
-double CLinearStateVFA::get(const CState *s)
+double LinearStateVFA::get(const State *s)
 {
 	getFeatures(s, m_pAux);
 
-	return CLinearVFA::get(m_pAux);
+	return LinearVFA::get(m_pAux);
 }
 
 
@@ -270,7 +270,7 @@ double CLinearStateVFA::get(const CState *s)
 
 //STATE-ACTION VFA: Q(s,a), A(s,a), .../////////////////////////////////////////////////////////////////////
 
-CLinearStateActionVFA::CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> pStateFeatureMap, std::shared_ptr<CActionFeatureMap> pActionFeatureMap)
+LinearStateActionVFA::LinearStateActionVFA(std::shared_ptr<StateFeatureMap> pStateFeatureMap, std::shared_ptr<ActionFeatureMap> pActionFeatureMap)
 {
 	m_pStateFeatureMap = pStateFeatureMap;
 	m_pActionFeatureMap = pActionFeatureMap;
@@ -283,28 +283,28 @@ CLinearStateActionVFA::CLinearStateActionVFA(std::shared_ptr<CStateFeatureMap> p
 	m_maxIndex = m_numWeights;
 
 	//this is used in "high-level" methods
-	m_pAux = new CFeatureList("LinearStateActionVFA/aux");
+	m_pAux = new FeatureList("LinearStateActionVFA/aux");
 	//this is used in "lower-level" methods
-	m_pAux2 = new CFeatureList("LinearStateActionVFA/aux2");
+	m_pAux2 = new FeatureList("LinearStateActionVFA/aux2");
 
 	m_bSaturateOutput = false;
 	m_minOutput = 0.0;
 	m_maxOutput = 0.0;
 }
 
-CLinearStateActionVFA::CLinearStateActionVFA(CConfigNode* pConfigNode)
-	:CLinearStateActionVFA(CSimGod::getGlobalStateFeatureMap(),CSimGod::getGlobalActionFeatureMap())
+LinearStateActionVFA::LinearStateActionVFA(ConfigNode* pConfigNode)
+	:LinearStateActionVFA(SimGod::getGlobalStateFeatureMap(),SimGod::getGlobalActionFeatureMap())
 {
 	m_initValue= DOUBLE_PARAM(pConfigNode, "Init-Value","The initial value given to the weights on initialization", 0.0);
 }
 
-CLinearStateActionVFA::CLinearStateActionVFA(CLinearStateActionVFA* pSourceVFA)
-	: CLinearStateActionVFA(CSimGod::getGlobalStateFeatureMap(), CSimGod::getGlobalActionFeatureMap())
+LinearStateActionVFA::LinearStateActionVFA(LinearStateActionVFA* pSourceVFA)
+	: LinearStateActionVFA(SimGod::getGlobalStateFeatureMap(), SimGod::getGlobalActionFeatureMap())
 {
 	m_initValue = pSourceVFA->m_initValue;
 }
 
-CLinearStateActionVFA::~CLinearStateActionVFA()
+LinearStateActionVFA::~LinearStateActionVFA()
 {
 	//now SimGod owns the feature maps -> his responsability to free memory
 	delete m_pAux;
@@ -313,21 +313,21 @@ CLinearStateActionVFA::~CLinearStateActionVFA()
 	if (m_pArgMaxTies) delete [] m_pArgMaxTies;
 }
 
-void CLinearStateActionVFA::setInitValue(double initValue)
+void LinearStateActionVFA::setInitValue(double initValue)
 {
 	m_initValue.set(initValue);
 }
 
-void CLinearStateActionVFA::deferredLoadStep()
+void LinearStateActionVFA::deferredLoadStep()
 {
 	//weights
-	m_pWeights= CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
+	m_pWeights= SimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
 	m_pWeights->setInitValue(m_initValue.get());
 
 	//frozen weights
 	if (m_bCanBeFrozen)
 	{
-		m_pFrozenWeights = CSimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
+		m_pFrozenWeights = SimionApp::get()->pMemManager->getMemBuffer(m_numWeights);
 		m_pFrozenWeights->setInitValue(m_initValue.get());
 	}
 
@@ -335,7 +335,7 @@ void CLinearStateActionVFA::deferredLoadStep()
 	m_pArgMaxTies = new int[m_numActionWeights];
 }
 
-void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
+void LinearStateActionVFA::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
 {
 	assert(outFeatures);
 
@@ -355,10 +355,10 @@ void CLinearStateActionVFA::getFeatures(const CState* s, const CAction* a, CFeat
 		m_pStateFeatureMap->getFeatures(s, outFeatures);
 	}
 	else
-		CLogger::logMessage(MessageType::Error, "CLinearStateActionVFA::getFeatures() called with neither a state nor an action");
+		Logger::logMessage(MessageType::Error, "LinearStateActionVFA::getFeatures() called with neither a state nor an action");
 }
 
-void CLinearStateActionVFA::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
+void LinearStateActionVFA::getFeatureStateAction(unsigned int feature, State* s, Action* a)
 {
 	if (feature >= m_minIndex && feature < m_maxIndex)
 	{
@@ -371,19 +371,19 @@ void CLinearStateActionVFA::getFeatureStateAction(unsigned int feature, CState* 
 
 
 
-double CLinearStateActionVFA::get(const CState *s, const CAction* a)
+double LinearStateActionVFA::get(const State *s, const Action* a)
 {
 	getFeatures(s, a, m_pAux);
 
-	return CLinearVFA::get(m_pAux);
+	return LinearVFA::get(m_pAux);
 }
 
-//double CLinearStateActionVFA::get(unsigned int sFeatureIndex, unsigned int aFeatureIndex) const
+//double LinearStateActionVFA::get(unsigned int sFeatureIndex, unsigned int aFeatureIndex) const
 //{
 //	return (*m_pWeights)[sFeatureIndex*m_pActionFeatureMap->getTotalNumFeatures() + aFeatureIndex];
 //}
 
-void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
+void LinearStateActionVFA::argMax(const State *s, Action* a)
 {
 	int numTies = 0;
 	//state features in aux list
@@ -420,7 +420,7 @@ void CLinearStateActionVFA::argMax(const CState *s, CAction* a)
 	m_pActionFeatureMap->getFeatureAction(arg, a);
 }
 
-double CLinearStateActionVFA::max(const CState* s, bool bUseFrozenWeights)
+double LinearStateActionVFA::max(const State* s, bool bUseFrozenWeights)
 {
 	//state features in aux list
 	m_pStateFeatureMap->getFeatures(s, m_pAux);
@@ -441,10 +441,10 @@ double CLinearStateActionVFA::max(const CState* s, bool bUseFrozenWeights)
 	return maxValue;
 }
 
-void CLinearStateActionVFA::getActionValues(const CState* s,double *outActionValues)
+void LinearStateActionVFA::getActionValues(const State* s,double *outActionValues)
 {
 	if (!outActionValues)
-		throw std::exception("CLinearStateActionVFA::getAction Values(...) tried to get action values without providing a buffer");
+		throw std::exception("LinearStateActionVFA::getAction Values(...) tried to get action values without providing a buffer");
 	//state features in aux list
 	m_pStateFeatureMap->getFeatures(s, m_pAux);
 

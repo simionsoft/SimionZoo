@@ -3,11 +3,11 @@
 #include <algorithm>
 #include <fstream>
 
-CTable::CTable()
+Table::Table()
 {
 }
 
-CTable::~CTable()
+Table::~Table()
 {
 }
 
@@ -29,7 +29,7 @@ unsigned int parseHeader(const char* pInputString, vector<double>& outVector, ch
 	return numParsedValues;
 }
 
-bool CTable::readFromFile(string filename)
+bool Table::readFromFile(string filename)
 {
 	//Reads a matrix from a file. The format should be:
 //		3	5	7	9
@@ -69,7 +69,7 @@ bool CTable::readFromFile(string filename)
 	return false;
 }
 
-double CTable::getInterpolatedValue(double columnValue, double rowValue) const
+double Table::getInterpolatedValue(double columnValue, double rowValue) const
 {
 	//check column and row values are within the defined ranges
 	columnValue = std::max(m_columns[0], std::min(m_columns[m_columns.size() - 1], columnValue));
@@ -96,7 +96,7 @@ double CTable::getInterpolatedValue(double columnValue, double rowValue) const
 	return value;
 }
 
-double CTable::getValue(size_t col, size_t row) const
+double Table::getValue(size_t col, size_t row) const
 {
 	col = std::max((size_t)0, std::min(col, m_columns.size() - 1));
 	row = std::max((size_t)0, std::min(row, m_rows.size() - 1));
@@ -104,37 +104,37 @@ double CTable::getValue(size_t col, size_t row) const
 	return m_values[row*m_columns.size() + col];
 }
 
-double CTable::getMinCol() const
+double Table::getMinCol() const
 {
 	if (!m_bSuccess) return 0.0;
 	return m_columns[0];
 }
 
-double CTable::getMaxCol() const
+double Table::getMaxCol() const
 {
 	if (!m_bSuccess) return 0.0;
 	return m_columns[m_columns.size() - 1];
 }
 
-double CTable::getMinRow() const
+double Table::getMinRow() const
 {
 	if (!m_bSuccess) return 0.0;
 	return m_rows[0];
 }
 
-double CTable::getMaxRow() const
+double Table::getMaxRow() const
 {
 	if (!m_bSuccess) return 0.0;
 	return m_rows[m_rows.size() - 1];
 }
 
-double CTable::getNumCols() const
+double Table::getNumCols() const
 {
 	if (!m_bSuccess) return (double) m_columns.size();
 	return 0;
 }
 
-double CTable::getNumRows() const
+double Table::getNumRows() const
 {
 	if (!m_bSuccess) return (double) m_rows.size();
 	return 0;

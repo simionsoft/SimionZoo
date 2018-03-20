@@ -12,9 +12,9 @@ public:
 	virtual void handleInput() = 0;
 };
 
-class CFreeCameraInputHandler: public IInputHandler
+class FreeCameraInputHandler: public IInputHandler
 {
-	CTimer m_timer;
+	Timer m_timer;
 
 	bool m_bWPressed = false;
 	bool m_bSPressed = false;
@@ -52,8 +52,8 @@ class CFreeCameraInputHandler: public IInputHandler
 	bool bMoveRight() const { return m_bShftPressed && (m_bDPressed || m_bRightArrowPressed); }
 
 public:
-	CFreeCameraInputHandler();
-	virtual ~CFreeCameraInputHandler();
+	FreeCameraInputHandler();
+	virtual ~FreeCameraInputHandler();
 
 	virtual void handleInput();
 

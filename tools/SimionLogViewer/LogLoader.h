@@ -26,14 +26,14 @@ struct StepHeader
 	}
 };
 
-class CStep
+class Step
 {
 	StepHeader m_header;
 	int m_numValues;
 	double *m_pValues;
 public:
-	CStep(int numVars);
-	~CStep();
+	Step(int numVars);
+	~Step();
 
 	int getNumValues() { return m_numValues; }
 	double getValue(int i) const;
@@ -65,16 +65,16 @@ struct EpisodeHeader
 	}
 };
 
-class CEpisode
+class Episode
 {
 	EpisodeHeader m_header;
-	vector<CStep*> m_pSteps;
+	vector<Step*> m_pSteps;
 public:
-	CEpisode() { }
-	~CEpisode();
+	Episode() { }
+	~Episode();
 
 	size_t getNumSteps() const { return m_pSteps.size(); }
-	CStep* getStep(int i);
+	Step* getStep(int i);
 	int getNumValuesPerStep() const { if (m_pSteps.size() == 0) return 0; return m_pSteps[0]->getNumValues(); }
 	double getSimTimeLength()const { if (m_pSteps.size() == 0) return 0.0; return m_pSteps[m_pSteps.size() - 1]->getEpisodeSimTime(); }
 	void load(FILE* pFile);
@@ -95,10 +95,10 @@ struct ExperimentHeader
 };
 
 
-class CExperimentLog
+class ExperimentLog
 {
 	ExperimentHeader m_header;
-	CEpisode *m_pEpisodes = 0;
+	Episode *m_pEpisodes = 0;
 	vector<string> m_variableNames;
 
 public:
@@ -106,11 +106,11 @@ public:
 	const char* xmlTagBinaryDataFile = "BinaryDataFile";
 	const char* xmlTagSceneFile = "SceneFile";
 
-	CExperimentLog() { }
-	~CExperimentLog();
+	ExperimentLog() { }
+	~ExperimentLog();
 
 	int getNumEpisodes() const { return (int) m_header.numEpisodes; }
-	CEpisode* getEpisode(int i) { return &m_pEpisodes[i]; }
+	Episode* getEpisode(int i) { return &m_pEpisodes[i]; }
 
 	int getVariableIndex(string variableName) const;
 

@@ -1,18 +1,18 @@
 #include "mem-block.h"
 #include "mem-pool.h"
 
-CMemBlock::CMemBlock(CSimionMemPool* pPool, int id, size_t blockSize)
+MemBlock::MemBlock(SimionMemPool* pPool, int id, size_t blockSize)
 	: m_pPool(pPool), m_blockSize(blockSize), m_id (id)
 {
 }
 
-CMemBlock::~CMemBlock()
+MemBlock::~MemBlock()
 {
 	if (m_pBuffer != nullptr)
 		delete[] m_pBuffer;
 }
 
-double& CMemBlock::operator[](size_t index)
+double& MemBlock::operator[](size_t index)
 {
 	m_lastAccess = m_pPool->getAccessCounter();
 	if (m_lastAccess == std::numeric_limits<BUFFER_SIZE>::max())
@@ -22,7 +22,7 @@ double& CMemBlock::operator[](size_t index)
 	return m_pBuffer[index];
 }
 
-double* CMemBlock::deallocate()
+double* MemBlock::deallocate()
 {
 	double* pBuffer = m_pBuffer;
 	m_pBuffer = 0;
@@ -30,7 +30,7 @@ double* CMemBlock::deallocate()
 	return pBuffer;
 }
 
-void CMemBlock::dumpToFile()
+void MemBlock::dumpToFile()
 {
 	FILE* pFile;
 
@@ -47,7 +47,7 @@ void CMemBlock::dumpToFile()
 	}
 }
 
-void CMemBlock::restoreFromFile()
+void MemBlock::restoreFromFile()
 {
 	if (!m_bDumped) return;
 	
@@ -62,12 +62,12 @@ void CMemBlock::restoreFromFile()
 	}
 }
 
-void CMemBlock::setBuffer(double *pMemBuffer)
+void MemBlock::setBuffer(double *pMemBuffer)
 {
 	m_pBuffer = pMemBuffer;
 }
 
-string CMemBlock::getDumpFileName()
+string MemBlock::getDumpFileName()
 {
 	return string("mem-dump.") + std::to_string(m_id) + string(".tmp");
 }

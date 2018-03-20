@@ -9,9 +9,9 @@
 #include <algorithm>
 int main()
 {
-	CMemManager<CSimionMemPool> *pMemManager= new CMemManager<CSimionMemPool>();
+	MemManager<SimionMemPool> *pMemManager= new MemManager<SimionMemPool>();
 	size_t numElements = 10 * 1024 * 1024;
-	CTimer timer;
+	Timer timer;
 
 	IMemBuffer* bufferHandler1= pMemManager->getMemBuffer(numElements);
 	IMemBuffer* bufferHandler2 = pMemManager->getMemBuffer(numElements);

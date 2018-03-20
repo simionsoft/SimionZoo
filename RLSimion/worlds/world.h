@@ -1,29 +1,29 @@
 #pragma once
 
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
-typedef CNamedVarSet CReward;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
+typedef NamedVarSet Reward;
 
-class CDynamicModel;
-class CConfigNode;
-class CRewardFunction;
+class DynamicModel;
+class ConfigNode;
+class RewardFunction;
 
 #include "../../3rd-party/tinyxml2/tinyxml2.h"
 #include "../parameters.h"
 #include "../named-var-set.h"
 
-class CDynamicModel
+class DynamicModel
 {
-	CDescriptor *m_pStateDescriptor;
-	CDescriptor *m_pActionDescriptor;
+	Descriptor *m_pStateDescriptor;
+	Descriptor *m_pActionDescriptor;
 	std::map<const char*, double> m_pConstants;
 protected:
 	string m_name= string("");
-	CRewardFunction* m_pRewardFunction;
+	RewardFunction* m_pRewardFunction;
 public:
-	CDynamicModel();
-	virtual ~CDynamicModel();
+	DynamicModel();
+	virtual ~DynamicModel();
 
 	string getWorldSceneFile() { return m_name + ".scene"; }
 
@@ -33,30 +33,30 @@ public:
 
 	const string getName() { return m_name; }
 
-	virtual void reset(CState *s) = 0;
-	virtual void executeAction(CState *s, const CAction *a, double dt) = 0;
+	virtual void reset(State *s) = 0;
+	virtual void executeAction(State *s, const Action *a, double dt) = 0;
 
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
-	CReward* getRewardVector();
+	double getReward(const State *s, const Action *a, const State *s_p);
+	Reward* getRewardVector();
 
-	CDescriptor& getStateDescriptor();
-	CDescriptor* getStateDescriptorPtr();
-	CState* getStateInstance();
-	CDescriptor& getActionDescriptor();
-	CDescriptor* getActionDescriptorPtr();
-	CAction* getActionInstance();
+	Descriptor& getStateDescriptor();
+	Descriptor* getStateDescriptorPtr();
+	State* getStateInstance();
+	Descriptor& getActionDescriptor();
+	Descriptor* getActionDescriptorPtr();
+	Action* getActionInstance();
 
 	double getConstant(const char* constantName);
 	double getConstant(int i);
 	const char* getConstantName(int i);
 	int getNumConstants();
 
-	static std::shared_ptr<CDynamicModel> getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<DynamicModel> getInstance(ConfigNode* pParameters);
 };
 
-class CWorld
+class World
 {
-	static CHILD_OBJECT_FACTORY<CDynamicModel> m_pDynamicModel;
+	static CHILD_OBJECT_FACTORY<DynamicModel> m_pDynamicModel;
 	INT_PARAM m_numIntegrationSteps;
 	DOUBLE_PARAM m_dt;
 
@@ -71,20 +71,20 @@ public:
 	double getEpisodeSimTime();
 	double getTotalSimTime();
 	double getStepStartSimTime();
-	static CDynamicModel* getDynamicModel(){ return m_pDynamicModel.ptr(); }
+	static DynamicModel* getDynamicModel(){ return m_pDynamicModel.ptr(); }
 	bool bIsFirstIntegrationStep() { return m_bFirstIntegrationStep; }
 	void setIsFirstIntegrationStep(bool bFirstIntegrationStep) { m_bFirstIntegrationStep = bFirstIntegrationStep; }
 
-	CWorld(CConfigNode* pConfigNode);
-	CWorld() = default;
-	virtual ~CWorld();
+	World(ConfigNode* pConfigNode);
+	World() = default;
+	virtual ~World();
 
-	void reset(CState *s);
+	void reset(State *s);
 
 	//this function returns the reward of the tuple <s,a,s_p> and whether the resultant state is a failure state or not
-	double executeAction(CState *s,CAction *a,CState *s_p);
+	double executeAction(State *s,Action *a,State *s_p);
 
-	CReward *getRewardVector();
+	Reward *getRewardVector();
 };
 
 

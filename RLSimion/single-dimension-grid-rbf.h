@@ -1,15 +1,15 @@
 #pragma once
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
-class CFeatureList;
-class CConfigNode;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
+class FeatureList;
+class ConfigNode;
 #include "parameters.h"
 #include "named-var-set.h"
 
 #define ACTIVATION_THRESHOLD 0.0001
 
-class CSingleDimensionGridRBF
+class SingleDimensionGridRBF
 {
 protected:
 	INT_PARAM m_numCenters;
@@ -19,10 +19,10 @@ protected:
 	double m_max;
 	ENUM_PARAM<Distribution> m_distributionType;
 
-	CSingleDimensionGridRBF();
+	SingleDimensionGridRBF();
 
 public:
-	virtual ~CSingleDimensionGridRBF();
+	virtual ~SingleDimensionGridRBF();
 
 	virtual void initVarRange()= 0;
 	void initCenterPoints();
@@ -30,34 +30,34 @@ public:
 	int getNumCenters(){ return m_numCenters.get(); }
 	double* getCenters(){ return m_pCenters; }
 
-	void getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures);
+	void getFeatures(const State* s, const Action* a, FeatureList* outDimFeatures);
 	double getFeatureFactor(int feature, double value);
 
-	virtual double getVarValue(const CState* s, const CAction* a) = 0;
-	virtual CNamedVarProperties& getVarProperties(const CState* s, const CAction* a) = 0;
-	virtual void setFeatureStateAction(unsigned int feature, CState* s, CAction* a) = 0;
+	virtual double getVarValue(const State* s, const Action* a) = 0;
+	virtual NamedVarProperties& getVarProperties(const State* s, const Action* a) = 0;
+	virtual void setFeatureStateAction(unsigned int feature, State* s, Action* a) = 0;
 };
 
-class CStateVariableGridRBF : public CSingleDimensionGridRBF
+class StateVariableGridRBF : public SingleDimensionGridRBF
 {
 	STATE_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CStateVariableGridRBF(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
-	CStateVariableGridRBF(CConfigNode* pParameters);
-	double getVarValue(const CState* s, const CAction* a);
-	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
-	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	StateVariableGridRBF(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
+	StateVariableGridRBF(ConfigNode* pParameters);
+	double getVarValue(const State* s, const Action* a);
+	NamedVarProperties& getVarProperties(const State* s, const Action* a);
+	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
 };
 
-class CActionVariableGridRBF : public CSingleDimensionGridRBF
+class ActionVariableGridRBF : public SingleDimensionGridRBF
 {
 	ACTION_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CActionVariableGridRBF(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
-	CActionVariableGridRBF(CConfigNode* pParameters);
-	double getVarValue(const CState* s, const CAction* a);
-	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
-	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	ActionVariableGridRBF(int m_hVar, int numCenters, Distribution distr= Distribution::linear);
+	ActionVariableGridRBF(ConfigNode* pParameters);
+	double getVarValue(const State* s, const Action* a);
+	NamedVarProperties& getVarProperties(const State* s, const Action* a);
+	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
 };

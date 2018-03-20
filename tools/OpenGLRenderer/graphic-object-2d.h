@@ -5,18 +5,18 @@
 #include "../GeometryLib/bounding-box.h"
 #include <string>
 using namespace std;
-class CMaterial;
-class C2DText;
+class Material;
+class Text2D;
 
-class CGraphicObject2D
+class GraphicObject2D
 {
 protected:
 	string m_name;
 	Transform2D m_transform;
 	BoundingBox2D m_bb;
 public:
-	CGraphicObject2D(string name);
-	virtual ~CGraphicObject2D();
+	GraphicObject2D(string name);
+	virtual ~GraphicObject2D();
 
 	string name() { return m_name; }
 
@@ -24,16 +24,16 @@ public:
 	BoundingBox2D& boundingBox();
 };
 
-class C2DMeter: public CGraphicObject2D
+class Meter2D: public GraphicObject2D
 {
-	CMaterial* m_pMaterial;
+	Material* m_pMaterial;
 	Range m_valueRange;
 	double m_value;
-	C2DText *m_pText;
+	Text2D *m_pText;
 public:
 	//the constructor uses normalized coordinates [0,1]
-	C2DMeter(string name, Vector2D origin, Vector2D size, int depth= 0);
-	virtual ~C2DMeter();
+	Meter2D(string name, Vector2D origin, Vector2D size, int depth= 0);
+	virtual ~Meter2D();
 
 	void setValueRange(Range range) { m_valueRange = range; }
 	void setValue(double value);

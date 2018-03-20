@@ -1,32 +1,32 @@
 #pragma once
 
 #include "world.h"
-class CSetPoint;
+class SetPoint;
 #include "../reward.h"
 
 //Original implementation:
 //https://webdocs.cs.ualberta.ca/~sutton/MountainCar/MountainCar.html
 
 //MOUNTAIN CAR
-class CMountainCar: public CDynamicModel
+class MountainCar: public DynamicModel
 {
 	int m_sVelocity, m_sPosition;
 	int m_aPedal;
 
 public:
-	CMountainCar(CConfigNode* pParameters);
-	virtual ~CMountainCar();
+	MountainCar(ConfigNode* pParameters);
+	virtual ~MountainCar();
 
-	void reset(CState *s);
+	void reset(State *s);
 
-	void executeAction(CState *s, const CAction *a, double dt);
+	void executeAction(State *s, const Action *a, double dt);
 };
 
-class CMountainCarReward : public IRewardComponent
+class MountainCarReward : public IRewardComponent
 {
 public:
-	CMountainCarReward() = default;
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
+	MountainCarReward() = default;
+	double getReward(const State *s, const Action *a, const State *s_p);
 	const char* getName(){ return "reward"; }
 	double getMin();
 	double getMax();

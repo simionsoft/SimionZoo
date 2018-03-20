@@ -8,14 +8,14 @@
 #include "utils.h"
 #include "../tools/WindowsUtils/FileUtils.h"
 
-CSimionApp* CSimionApp::m_pAppInstance = 0;
+SimionApp* SimionApp::m_pAppInstance = 0;
 
-CSimionApp::CSimionApp()
+SimionApp::SimionApp()
 {
 	m_pAppInstance = this;
 }
 
-CSimionApp::~CSimionApp()
+SimionApp::~SimionApp()
 {
 	m_pAppInstance = 0;
 	for (auto it = m_inputFiles.begin(); it != m_inputFiles.end(); it++) delete (*it);
@@ -30,7 +30,7 @@ CSimionApp::~CSimionApp()
 	m_inputFilesRenamed.clear();
 }
 
-const char* CSimionApp::getArgValue(int argc,char** argv,char* argName)
+const char* SimionApp::getArgValue(int argc,char** argv,char* argName)
 {
 	char argPrefix[256];
 	sprintf_s(argPrefix, 256, "-%s=", argName);
@@ -44,7 +44,7 @@ const char* CSimionApp::getArgValue(int argc,char** argv,char* argName)
 	return nullptr;
 }
 
-bool CSimionApp::flagPassed(int argc, char** argv, char* flagName)
+bool SimionApp::flagPassed(int argc, char** argv, char* flagName)
 {
 	char argPrefix[256];
 	sprintf_s(argPrefix, 256, "-%s", flagName);
@@ -58,7 +58,7 @@ bool CSimionApp::flagPassed(int argc, char** argv, char* flagName)
 	return false;
 }
 
-void CSimionApp::printRequirements()
+void SimionApp::printRequirements()
 {
 	const char *pFileName, *pFileRename;
 	printf("<Files>\n");
@@ -81,22 +81,22 @@ void CSimionApp::printRequirements()
 	printf("</Files>\n");
 }
 
-CSimionApp* CSimionApp::get()
+SimionApp* SimionApp::get()
 {
 	return m_pAppInstance;
 }
 
-void CSimionApp::setExecutedRemotely(bool remote)
+void SimionApp::setExecutedRemotely(bool remote)
 {
 	m_bRemoteExecution = remote;
 }
 
-bool CSimionApp::isExecutedRemotely()
+bool SimionApp::isExecutedRemotely()
 {
 	return m_bRemoteExecution;
 }
 
-void CSimionApp::setConfigFile(string configFile)
+void SimionApp::setConfigFile(string configFile)
 {
 	//we provide the path to the xml configuration file so that the logger saves its log files in the directory
 	m_directory = getDirectory(configFile);
@@ -105,12 +105,12 @@ void CSimionApp::setConfigFile(string configFile)
 	pLogger->setOutputFilenames();
 }
 
-string CSimionApp::getConfigFile()
+string SimionApp::getConfigFile()
 {
 	return m_configFile;
 }
 
-string CSimionApp::getOutputDirectory()
+string SimionApp::getOutputDirectory()
 {
 	return m_directory;
 }
@@ -118,7 +118,7 @@ string CSimionApp::getOutputDirectory()
 
 
 
-void CSimionApp::registerInputFile(const char* filepath, const char* rename)
+void SimionApp::registerInputFile(const char* filepath, const char* rename)
 {
 	char* copy = new char[strlen(filepath) + 1];
 	strcpy_s(copy, strlen(filepath) + 1, filepath);
@@ -132,31 +132,31 @@ void CSimionApp::registerInputFile(const char* filepath, const char* rename)
 	else m_inputFilesRenamed.push_back(0);
 }
 
-unsigned int CSimionApp::getNumInputFiles()
+unsigned int SimionApp::getNumInputFiles()
 {
 	return (unsigned int) m_inputFiles.size();
 }
 
-const char* CSimionApp::getInputFile(unsigned int i)
+const char* SimionApp::getInputFile(unsigned int i)
 {
 	if (i<m_inputFiles.size())
 		return m_inputFiles[i];
 	return 0;
 }
 
-const char* CSimionApp::getInputFileRename(unsigned int i)
+const char* SimionApp::getInputFileRename(unsigned int i)
 {
 	if (i<m_inputFilesRenamed.size())
 		return m_inputFilesRenamed[i];
 	return 0;
 }
 
-unsigned int CSimionApp::getNumOutputFiles()
+unsigned int SimionApp::getNumOutputFiles()
 {
 	return (unsigned int) m_outputFiles.size();
 }
 
-const char* CSimionApp::getOutputFile(unsigned int i)
+const char* SimionApp::getOutputFile(unsigned int i)
 {
 	if (i<m_outputFiles.size())
 		return m_outputFiles[i];
@@ -164,7 +164,7 @@ const char* CSimionApp::getOutputFile(unsigned int i)
 }
 
 
-void CSimionApp::registerOutputFile(const char* filepath)
+void SimionApp::registerOutputFile(const char* filepath)
 {
 	char* copy = new char[strlen(filepath) + 1];
 	strcpy_s(copy, strlen(filepath) + 1, filepath);

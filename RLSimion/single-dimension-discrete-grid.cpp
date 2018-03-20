@@ -6,19 +6,19 @@
 #include "app.h"
 #include <assert.h>
 
-CSingleDimensionDiscreteGrid::CSingleDimensionDiscreteGrid()
+SingleDimensionDiscreteGrid::SingleDimensionDiscreteGrid()
 {
 	m_pCenters = 0;
 	m_min = 0.0;
 	m_max = 0.0;
 }
 
-CSingleDimensionDiscreteGrid::~CSingleDimensionDiscreteGrid()
+SingleDimensionDiscreteGrid::~SingleDimensionDiscreteGrid()
 {
 	delete[] m_pCenters;
 }
 
-void CSingleDimensionDiscreteGrid::initCenterPoints()
+void SingleDimensionDiscreteGrid::initCenterPoints()
 {
 	m_pCenters = new double[m_numCenters.get()];
 
@@ -26,14 +26,14 @@ void CSingleDimensionDiscreteGrid::initCenterPoints()
 		m_pCenters[i] = m_min + i * m_stepSize;
 }
 
-void CSingleDimensionDiscreteGrid::getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures)
+void SingleDimensionDiscreteGrid::getFeatures(const State* s, const Action* a, FeatureList* outDimFeatures)
 {
 	double value = getVarValue(s, a) + m_offset;
 	outDimFeatures->clear();
 	outDimFeatures->add(getClosestCenter(value), 1.0);
 }
 
-int CSingleDimensionDiscreteGrid::getClosestCenter(double value)
+int SingleDimensionDiscreteGrid::getClosestCenter(double value)
 {
 	assert(m_numCenters.get() >= 2);
 	unsigned int nearestIndex = 0;
@@ -50,7 +50,7 @@ int CSingleDimensionDiscreteGrid::getClosestCenter(double value)
 	return nearestIndex;
 }
 
-CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariableGrid(CConfigNode* pConfigNode)
+SingleDimensionDiscreteStateVariableGrid::SingleDimensionDiscreteStateVariableGrid(ConfigNode* pConfigNode)
 {
 	m_hVariable = STATE_VARIABLE(pConfigNode, "Variable", "The state variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1);
@@ -61,16 +61,16 @@ CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariable
 	initCenterPoints();
 }
 
-void CSingleDimensionDiscreteStateVariableGrid::initVarRange()
+void SingleDimensionDiscreteStateVariableGrid::initVarRange()
 {
-	CDescriptor &descriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	Descriptor &descriptor = World::getDynamicModel()->getStateDescriptor();
+	NamedVarProperties properties = descriptor[m_hVariable.get()];
 	m_min = properties.getMin();
 	m_max = properties.getMax();
 }
 
 
-CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariableGrid(int m_hVar, int steps)
+SingleDimensionDiscreteStateVariableGrid::SingleDimensionDiscreteStateVariableGrid(int m_hVar, int steps)
 {
 	initVarRange();
 
@@ -82,22 +82,22 @@ CSingleDimensionDiscreteStateVariableGrid::CSingleDimensionDiscreteStateVariable
 	initCenterPoints();
 }
 
-void CSingleDimensionDiscreteStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
+void SingleDimensionDiscreteStateVariableGrid::setFeatureStateAction(unsigned int feature, State* s, State* a)
 {
 	s->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CSingleDimensionDiscreteStateVariableGrid::getVarValue(const CState* s, const CAction* a)
+double SingleDimensionDiscreteStateVariableGrid::getVarValue(const State* s, const Action* a)
 {
 	return s->get(m_hVariable.get());
 }
 
-CNamedVarProperties& CSingleDimensionDiscreteStateVariableGrid::getVarProperties(const CState* s, const CAction* a)
+NamedVarProperties& SingleDimensionDiscreteStateVariableGrid::getVarProperties(const State* s, const Action* a)
 {
 	return s->getProperties(m_hVariable.get());
 }
 
-CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariableGrid(CConfigNode* pConfigNode)
+SingleDimensionDiscreteActionVariableGrid::SingleDimensionDiscreteActionVariableGrid(ConfigNode* pConfigNode)
 {
 	m_hVariable = ACTION_VARIABLE(pConfigNode, "Variable", "The action variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Steps", "The number of steps in which the space will be discretized", 1);
@@ -108,15 +108,15 @@ CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariab
 	initCenterPoints();
 }
 
-void CSingleDimensionDiscreteActionVariableGrid::initVarRange()
+void SingleDimensionDiscreteActionVariableGrid::initVarRange()
 {
-	CDescriptor &descriptor = CWorld::getDynamicModel()->getActionDescriptor();
-	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	Descriptor &descriptor = World::getDynamicModel()->getActionDescriptor();
+	NamedVarProperties properties = descriptor[m_hVariable.get()];
 	m_min = properties.getMin();
 	m_max = properties.getMax();
 }
 
-CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariableGrid(int m_hVar, int steps)
+SingleDimensionDiscreteActionVariableGrid::SingleDimensionDiscreteActionVariableGrid(int m_hVar, int steps)
 {
 	initVarRange();
 
@@ -128,27 +128,27 @@ CSingleDimensionDiscreteActionVariableGrid::CSingleDimensionDiscreteActionVariab
 	initCenterPoints();
 }
 
-void CSingleDimensionDiscreteActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
+void SingleDimensionDiscreteActionVariableGrid::setFeatureStateAction(unsigned int feature, State* s, State* a)
 {
 	a->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CSingleDimensionDiscreteActionVariableGrid::getVarValue(const CState* s, const CAction* a)
+double SingleDimensionDiscreteActionVariableGrid::getVarValue(const State* s, const Action* a)
 {
 	return a->get(m_hVariable.get());
 }
 
-CNamedVarProperties& CSingleDimensionDiscreteActionVariableGrid::getVarProperties(const CState* s, const CAction* a)
+NamedVarProperties& SingleDimensionDiscreteActionVariableGrid::getVarProperties(const State* s, const Action* a)
 {
 	return a->getProperties(m_hVariable.get());
 }
 
-void CSingleDimensionDiscreteStateVariableGrid::setOffset(double offset)
+void SingleDimensionDiscreteStateVariableGrid::setOffset(double offset)
 {
 	m_offset = offset;
 }
 
-void CSingleDimensionDiscreteActionVariableGrid::setOffset(double offset)
+void SingleDimensionDiscreteActionVariableGrid::setOffset(double offset)
 {
 	m_offset = offset;
 }

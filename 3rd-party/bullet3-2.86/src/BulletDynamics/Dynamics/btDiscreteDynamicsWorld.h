@@ -92,7 +92,7 @@ protected:
     void createPredictiveContactsInternal( btRigidBody** bodies, int numBodies, btScalar timeStep );  // can be called in parallel
 	virtual void	createPredictiveContacts(btScalar timeStep);
 
-	virtual void	saveKinematicState(btScalar timeStep);
+	virtual void	saveKinematiState(btScalar timeStep);
 
 	void	serializeRigidBodies(btSerializer* serializer);
 

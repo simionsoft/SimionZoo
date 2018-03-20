@@ -1,7 +1,7 @@
 #include "Rope.h"
 #include <string>
 
-Rope::Rope(CDynamicModel* pWorld, std::vector<btSoftBody*>* arr): BulletBody()
+Rope::Rope(DynamicModel* pWorld, std::vector<btSoftBody*>* arr): BulletBody()
 {
 	m_pSoftBodies = arr;
 
@@ -18,12 +18,12 @@ Rope::Rope(CDynamicModel* pWorld, std::vector<btSoftBody*>* arr): BulletBody()
 	}
 }
 
-void Rope::reset(CState* s)
+void Rope::reset(State* s)
 {
 	updateState(s);
 }
 
-void Rope::updateState(CState* s)
+void Rope::updateState(State* s)
 {
 	unsigned int j;
 	int i;

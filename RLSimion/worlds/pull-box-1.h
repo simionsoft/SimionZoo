@@ -6,7 +6,7 @@ class BulletPhysics;
 
 
 //Move box with 1 robot and 1 rope
-class CPullBox1 : public CDynamicModel
+class PullBox1 : public DynamicModel
 {
 
 	/// State variables
@@ -22,9 +22,9 @@ class CPullBox1 : public CDynamicModel
 	BulletPhysics* m_pBulletPhysics;
 
 public:
-	CPullBox1(CConfigNode* pParameters);
-	virtual ~CPullBox1();
+	PullBox1(ConfigNode* pParameters);
+	virtual ~PullBox1();
 
-	void reset(CState *s);
-	void executeAction(CState *s, const CAction *a, double dt);
+	void reset(State *s);
+	void executeAction(State *s, const Action *a, double dt);
 };

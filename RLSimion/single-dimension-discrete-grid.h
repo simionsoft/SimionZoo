@@ -1,13 +1,13 @@
 #pragma once
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
-class CFeatureList;
-class CConfigNode;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
+class FeatureList;
+class ConfigNode;
 #include "parameters.h"
 #include "named-var-set.h"
 
-class CSingleDimensionDiscreteGrid
+class SingleDimensionDiscreteGrid
 {
 protected:
 	INT_PARAM m_numCenters;
@@ -18,10 +18,10 @@ protected:
 	double m_max;
 	double m_offset = 0.0;
 
-	CSingleDimensionDiscreteGrid();
+	SingleDimensionDiscreteGrid();
 
 public:
-	virtual ~CSingleDimensionDiscreteGrid();
+	virtual ~SingleDimensionDiscreteGrid();
 
 	virtual void initVarRange() = 0;
 	void initCenterPoints();
@@ -31,11 +31,11 @@ public:
 
 	double getStepSize() { return m_stepSize; }
 
-	void getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures);
+	void getFeatures(const State* s, const Action* a, FeatureList* outDimFeatures);
 
-	virtual double getVarValue(const CState* s, const CAction* a) = 0;
-	virtual CNamedVarProperties& getVarProperties(const CState* s, const CAction* a) = 0;
-	virtual void setFeatureStateAction(unsigned int feature, CState* s, CAction* a) = 0;
+	virtual double getVarValue(const State* s, const Action* a) = 0;
+	virtual NamedVarProperties& getVarProperties(const State* s, const Action* a) = 0;
+	virtual void setFeatureStateAction(unsigned int feature, State* s, Action* a) = 0;
 
 	double getOffset() { return m_offset; }
 	virtual void setOffset(double offset) = 0;
@@ -43,28 +43,28 @@ public:
 	int getClosestCenter(double value);
 };
 
-class CSingleDimensionDiscreteStateVariableGrid : public CSingleDimensionDiscreteGrid
+class SingleDimensionDiscreteStateVariableGrid : public SingleDimensionDiscreteGrid
 {
 	STATE_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CSingleDimensionDiscreteStateVariableGrid(int m_hVar, int steps);
-	CSingleDimensionDiscreteStateVariableGrid(CConfigNode* pParameters);
-	double getVarValue(const CState* s, const CAction* a);
-	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
-	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	SingleDimensionDiscreteStateVariableGrid(int m_hVar, int steps);
+	SingleDimensionDiscreteStateVariableGrid(ConfigNode* pParameters);
+	double getVarValue(const State* s, const Action* a);
+	NamedVarProperties& getVarProperties(const State* s, const Action* a);
+	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
 	void setOffset(double offset);
 };
 
-class CSingleDimensionDiscreteActionVariableGrid : public CSingleDimensionDiscreteGrid
+class SingleDimensionDiscreteActionVariableGrid : public SingleDimensionDiscreteGrid
 {
 	ACTION_VARIABLE m_hVariable;
 public:
 	void initVarRange();
-	CSingleDimensionDiscreteActionVariableGrid(int m_hVar, int steps);
-	CSingleDimensionDiscreteActionVariableGrid(CConfigNode* pParameters);
-	double getVarValue(const CState* s, const CAction* a);
-	CNamedVarProperties& getVarProperties(const CState* s, const CAction* a);
-	void setFeatureStateAction(unsigned int feature, CState* s, CAction* a);
+	SingleDimensionDiscreteActionVariableGrid(int m_hVar, int steps);
+	SingleDimensionDiscreteActionVariableGrid(ConfigNode* pParameters);
+	double getVarValue(const State* s, const Action* a);
+	NamedVarProperties& getVarProperties(const State* s, const Action* a);
+	void setFeatureStateAction(unsigned int feature, State* s, Action* a);
 	void setOffset(double offset);
 };

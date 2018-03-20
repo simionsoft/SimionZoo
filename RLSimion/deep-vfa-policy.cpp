@@ -11,37 +11,37 @@
 #include "experience-replay.h"
 #include <algorithm>
 
-std::shared_ptr<CDiscreteDeepPolicy> CDiscreteDeepPolicy::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CDiscreteDeepPolicy>(pConfigNode, "Policy", "The policy type",
+	return CHOICE<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy type",
 	{
-		{ "Discrete-Epsilon-Greedy-Deep-Policy",CHOICE_ELEMENT_NEW<CDiscreteEpsilonGreedyDeepPolicy> },
-		{ "Discrete-Softmax-Deep-Policy",CHOICE_ELEMENT_NEW<CDiscreteSoftmaxDeepPolicy> }
+		{ "Discrete-Epsilon-Greedy-Deep-Policy",CHOICE_ELEMENT_NEW<DiscreteEpsilonGreedyDeepPolicy> },
+		{ "Discrete-Softmax-Deep-Policy",CHOICE_ELEMENT_NEW<DiscreteSoftmaxDeepPolicy> }
 	});
 }
 
-CDiscreteDeepPolicy::CDiscreteDeepPolicy(CConfigNode * pConfigNode)
+DiscreteDeepPolicy::DiscreteDeepPolicy(ConfigNode * pConfigNode)
 {	
 }
 
-CDiscreteEpsilonGreedyDeepPolicy::CDiscreteEpsilonGreedyDeepPolicy(CConfigNode * pConfigNode) : CDiscreteDeepPolicy(pConfigNode)
+DiscreteEpsilonGreedyDeepPolicy::DiscreteEpsilonGreedyDeepPolicy(ConfigNode * pConfigNode) : DiscreteDeepPolicy(pConfigNode)
 {
-	m_epsilon = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "epsilon", "Epsilon");
+	m_epsilon = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "epsilon", "Epsilon");
 }
 
-CDiscreteSoftmaxDeepPolicy::CDiscreteSoftmaxDeepPolicy(CConfigNode * pConfigNode) : CDiscreteDeepPolicy(pConfigNode)
+DiscreteSoftmaxDeepPolicy::DiscreteSoftmaxDeepPolicy(ConfigNode * pConfigNode) : DiscreteDeepPolicy(pConfigNode)
 {
-	m_temperature = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "temperature", "Tempreature");
+	m_temperature = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "temperature", "Tempreature");
 }
 
-int CDiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
+int DiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
 {
 	double randomValue = getRandomValue();
 
 	size_t resultingActionIndex;
 	double eps = m_epsilon->get();
 
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		eps = 0.0;
 
 	if (randomValue < eps)
@@ -56,7 +56,7 @@ int CDiscreteEpsilonGreedyDeepPolicy::selectAction(std::vector<double> values)
 	return (int) resultingActionIndex;
 }
 
-int CDiscreteSoftmaxDeepPolicy::selectAction(std::vector<double> values)
+int DiscreteSoftmaxDeepPolicy::selectAction(std::vector<double> values)
 {
 	double sum = 0;
 	for (int i = 0; i < values.size(); i++)

@@ -3,12 +3,12 @@
 
 #define MAX_KEY_SIZE 128
 
-CStatsInfo::CStatsInfo()
+StatsInfo::StatsInfo()
 {
 	reset();
 }
 
-void CStatsInfo::reset()
+void StatsInfo::reset()
 {
 	m_min = std::numeric_limits<double>::max();
 	m_max = std::numeric_limits<double>::lowest();
@@ -37,7 +37,7 @@ void CStatsInfo::reset()
 //	return sqrt(stdDevSum / (elements - 1));
 //}
 
-void CStatsInfo::addSample(double value)
+void StatsInfo::addSample(double value)
 {
 	m_min = std::min(value, m_min);
 	m_max = std::max(value, m_max);
@@ -51,14 +51,14 @@ void CStatsInfo::addSample(double value)
 	m_stdDevSum += stepMean * stepSum;
 }
 
-double CStatsInfo::getMin(){ return m_min; }
-double CStatsInfo::getMax(){ return m_max; }
-double CStatsInfo::getAvg()
+double StatsInfo::getMin(){ return m_min; }
+double StatsInfo::getMax(){ return m_max; }
+double StatsInfo::getAvg()
 {
 	if (m_numSamples > 0) return m_sum / m_numSamples;
 	return 0.0;
 }
-double CStatsInfo::getStdDev()
+double StatsInfo::getStdDev()
 {
 	if (m_numSamples > 1) return sqrt(fabs(m_stdDevSum / (m_numSamples - 1)));
 	return 0.0;

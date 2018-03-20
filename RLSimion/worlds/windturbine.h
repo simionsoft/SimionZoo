@@ -3,19 +3,19 @@
 #include "world.h"
 #include "../utils.h"
 
-class CSetPoint;
+class SetPoint;
 
 //ONE-MASS WIND TURBINE MODEL
-class CWindTurbine: public CDynamicModel
+class WindTurbine: public DynamicModel
 {
-	CSetPoint **m_pTrainingWindData;
-	CSetPoint* m_pEvaluationWindData;
-	CSetPoint* m_pCurrentWindData;
+	SetPoint **m_pTrainingWindData;
+	SetPoint* m_pEvaluationWindData;
+	SetPoint* m_pCurrentWindData;
 	size_t m_numDataFiles;
 	size_t m_currentDataFile;
 
-	CSetPoint *m_pPowerSetpoint;
-	CTable m_Cp;
+	SetPoint *m_pPowerSetpoint;
+	Table m_Cp;
 
 	double C_p(double lambda, double beta);
 	double C_q(double lambda, double beta);
@@ -25,9 +25,9 @@ class CWindTurbine: public CDynamicModel
 	void findSuitableParameters(double initial_wind_speed, double& initial_rotor_speed, double &initial_blade_angle);
 
 public:
-	CWindTurbine(CConfigNode* pParameters);
-	virtual ~CWindTurbine();
+	WindTurbine(ConfigNode* pParameters);
+	virtual ~WindTurbine();
 
-	void reset(CState *s);
-	void executeAction(CState *s, const CAction *a,double dt);
+	void reset(State *s);
+	void executeAction(State *s, const Action *a,double dt);
 };

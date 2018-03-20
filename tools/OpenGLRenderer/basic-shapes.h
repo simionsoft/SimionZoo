@@ -4,25 +4,25 @@
 #include "../GeometryLib/vector3d.h"
 namespace tinyxml2 { class XMLElement; }
 
-class CBasicShape : public CGraphicObject
+class BasicShape : public GraphicObject
 {
 protected:
-	CMaterial* m_pMaterialLoaded; //for later use when the mesh is created in the respective shape's constructor
+	Material* m_pMaterialLoaded; //for later use when the mesh is created in the respective shape's constructor
 public:
-	CBasicShape(tinyxml2::XMLElement* pNode);
-	CBasicShape(string name);
-	~CBasicShape();
+	BasicShape(tinyxml2::XMLElement* pNode);
+	BasicShape(string name);
+	~BasicShape();
 };
 
-class CSphere : public CBasicShape
+class Sphere : public BasicShape
 {
 public:
-	CSphere(string name) :CBasicShape(name){}
-	CSphere(tinyxml2::XMLElement* pNode);
+	Sphere(string name) :BasicShape(name){}
+	Sphere(tinyxml2::XMLElement* pNode);
 };
 
 
-class CBox : public CBasicShape
+class Box : public BasicShape
 {
 	Vector3D m_min = Vector3D(-0.5,0.0,-0.5);
 	Vector3D m_max = Vector3D(0.5,1.0, 0.5);
@@ -30,20 +30,20 @@ class CBox : public CBasicShape
 	Vector2D m_maxTexCoord = Vector2D(1.0,1.0);
 
 public:
-	CBox(string name) :CBasicShape(name) {}
-	CBox(tinyxml2::XMLElement* pNode);
+	Box(string name) :BasicShape(name) {}
+	Box(tinyxml2::XMLElement* pNode);
 };
 
-class CCilinder : public CBasicShape
+class Cilinder : public BasicShape
 {
 public:
-	CCilinder(string name): CBasicShape(name){}
-	CCilinder(tinyxml2::XMLElement* pNode);
+	Cilinder(string name): BasicShape(name){}
+	Cilinder(tinyxml2::XMLElement* pNode);
 };
 
-class CPolyline : public CBasicShape
+class PolyLine : public BasicShape
 {
 public:
-	CPolyline(string name) : CBasicShape(name) {}
-	CPolyline(tinyxml2::XMLElement* pNode);
+	PolyLine(string name) : BasicShape(name) {}
+	PolyLine(tinyxml2::XMLElement* pNode);
 };

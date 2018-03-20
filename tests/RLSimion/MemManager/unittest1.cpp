@@ -7,7 +7,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace MemManager
+namespace MemManagerTest
 {		
 	TEST_CLASS(UnitTest1)
 	{
@@ -16,7 +16,7 @@ namespace MemManager
 		TEST_METHOD(MemManager_TotalAllocated)
 		{
 			// TODO: Your test code here
-			CMemManager<CSimionMemPool>* pMemManager = new CMemManager<CSimionMemPool>();
+			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();
 			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(BUFFER_SIZE);
 			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(BUFFER_SIZE);
 			IMemBuffer* pBuffer3 = pMemManager->getMemBuffer(BUFFER_SIZE);
@@ -24,7 +24,7 @@ namespace MemManager
 			IMemBuffer* pBuffer5 = pMemManager->getMemBuffer(BUFFER_SIZE);
 			
 			pMemManager->init(BLOCK_SIZE);
-			size_t realBlockSize = dynamic_cast<CSimionMemBuffer*>(pBuffer1)->getBlockSizeInBytes();
+			size_t realBlockSize = dynamic_cast<SimionMemBuffer*>(pBuffer1)->getBlockSizeInBytes();
 
 			Assert::AreEqual(pMemManager->getTotalAllocatedMem(), (size_t)0);
 
@@ -67,7 +67,7 @@ namespace MemManager
 		TEST_METHOD(MemManager_InitValue)
 		{
 			// TODO: Your test code here
-			CMemManager<CSimionMemPool>* pMemManager = new CMemManager<CSimionMemPool>();
+			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();
 			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(BUFFER_SIZE);
 			pBuffer1->setInitValue(1.0);
 			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(BUFFER_SIZE);
@@ -97,7 +97,7 @@ namespace MemManager
 #define SMALL_BLOCK_SIZE 100
 		TEST_METHOD(MemManager_Copy)
 		{
-			CMemManager<CSimionMemPool>* pMemManager = new CMemManager<CSimionMemPool>();
+			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();
 			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer1->setInitValue(1.0);
 			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
@@ -110,7 +110,7 @@ namespace MemManager
 			pBuffer5->setInitValue(5.0);
 
 			pMemManager->init(SMALL_BLOCK_SIZE);
-			size_t actualBlockSize = ((CSimionMemPool*)pBuffer1->getMemPool())->getBlockSize();
+			size_t actualBlockSize = ((SimionMemPool*)pBuffer1->getMemPool())->getBlockSize();
 
 			Assert::AreEqual(1.0, (*pBuffer1)[0]);
 			Assert::AreEqual(2.0, (*pBuffer2)[1000]);
@@ -140,7 +140,7 @@ namespace MemManager
 		}
 		TEST_METHOD(MemManager_UpperBound)
 		{
-			CMemManager<CSimionMemPool>* pMemManager = new CMemManager<CSimionMemPool>();
+			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();
 			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(BUFFER_SIZE);
 			pBuffer1->setInitValue(1.0);
 			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(BUFFER_SIZE);
@@ -169,7 +169,7 @@ namespace MemManager
 
 		TEST_METHOD(MemManager_MemLimit)
 		{
-			CMemManager<CSimionMemPool>* pMemManager = new CMemManager<CSimionMemPool>();
+			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();
 			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer1->setInitValue(1.0);
 			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
@@ -189,7 +189,7 @@ namespace MemManager
 		}
 		TEST_METHOD(MemManager_MemDiskDump)
 		{
-			CMemManager<CSimionMemPool>* pMemManager = new CMemManager<CSimionMemPool>();
+			MemManager<SimionMemPool>* pMemManager = new MemManager<SimionMemPool>();
 			IMemBuffer* pBuffer1 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);
 			pBuffer1->setInitValue(1.0);
 			IMemBuffer* pBuffer2 = pMemManager->getMemBuffer(SMALL_BUFER_SIZE);

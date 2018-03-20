@@ -9,18 +9,18 @@
 #include "parameters-numeric.h"
 #include "app.h"
 
-CCACLALearner::CCACLALearner(CConfigNode* pConfigNode): CPolicyLearner(pConfigNode)
+CACLALearner::CACLALearner(ConfigNode* pConfigNode): PolicyLearner(pConfigNode)
 {
-	m_pStateFeatures = new CFeatureList("Actor/s");
-	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Learning gain [0..1]");
+	m_pStateFeatures = new FeatureList("Actor/s");
+	m_pAlpha = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Alpha", "Learning gain [0..1]");
 }
 
-CCACLALearner::~CCACLALearner()
+CACLALearner::~CACLALearner()
 {
 	delete m_pStateFeatures;
 }
 
-void CCACLALearner::update(const CState *s, const CAction *a, const CState *s_p, double r, double td)
+void CACLALearner::update(const State *s, const Action *a, const State *s_p, double r, double td)
 {
 	double lastNoise;
 	double alpha;

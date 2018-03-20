@@ -6,7 +6,7 @@ Robot::Robot(double mass, const btVector3& pos, btCollisionShape* shape)
 {
 }
 
-void Robot::updateBulletState(CState *s, const CAction *a, double dt)
+void Robot::updateBulletState(State *s, const Action *a, double dt)
 {
 	double rob_VelX, rob_VelY;
 
@@ -30,7 +30,7 @@ void Robot::updateBulletState(CState *s, const CAction *a, double dt)
 	getBody()->setLinearVelocity(btVector3(rob_VelX, 0.0, rob_VelY));
 }
 
-void Robot::updateYawState(CState* s)
+void Robot::updateYawState(State* s)
 {
 	//because this value is calculated in updateBulletVelocities() internally, we don't retrieve
 	//it from bullet, but from the locally stored value

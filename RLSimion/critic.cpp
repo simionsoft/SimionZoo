@@ -5,25 +5,25 @@
 #include "vfa.h"
 #include "q-learners.h"
 
-std::shared_ptr<ICritic> ICritic::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<ICritic> ICritic::getInstance(ConfigNode* pConfigNode)
 {
 	return CHOICE<ICritic>(pConfigNode, "Critic", "Critic type",
 	{
-		{ "TD-Lambda",CHOICE_ELEMENT_NEW<CTDLambdaCritic> },
-		{ "True-Online-TD-Lambda",CHOICE_ELEMENT_NEW<CTrueOnlineTDLambdaCritic> },
-		{ "TDC-Lambda",CHOICE_ELEMENT_NEW<CTDCLambdaCritic> },
-		{ "Q-Learning",CHOICE_ELEMENT_NEW<CQLearningCritic> }
+		{ "TD-Lambda",CHOICE_ELEMENT_NEW<TDLambdaCritic> },
+		{ "True-Online-TD-Lambda",CHOICE_ELEMENT_NEW<TrueOnlineTDLambdaCritic> },
+		{ "TDC-Lambda",CHOICE_ELEMENT_NEW<TDCLambdaCritic> },
+		{ "Q-Learning",CHOICE_ELEMENT_NEW<QLearningCritic> }
 	});
 }
 
-CVLearnerCritic::CVLearnerCritic(CConfigNode* pConfigNode)
+VLearnerCritic::VLearnerCritic(ConfigNode* pConfigNode)
 {
-	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "V-Function", "The V-function to be learned");
+	m_pVFunction = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "V-Function", "The V-function to be learned");
 	m_pVFunction->setCanUseDeferredUpdates(true);
 }
 
 
 
-CVLearnerCritic::~CVLearnerCritic()
+VLearnerCritic::~VLearnerCritic()
 {
 }

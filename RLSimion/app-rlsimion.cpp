@@ -15,25 +15,25 @@
 #include "../tools/WindowsUtils/FileUtils.h"
 
 
-RLSimionApp::RLSimionApp(CConfigNode* pConfigNode)
+RLSimionApp::RLSimionApp(ConfigNode* pConfigNode)
 {
 	pConfigNode = pConfigNode->getChild("RLSimion");
 	if (!pConfigNode) throw std::exception("Wrong experiment configuration file");
 
-	pMemManager = new CMemManager<CSimionMemPool>();
+	pMemManager = new MemManager<SimionMemPool>();
 
 	//In the beginning, a logger was created so that we could tell about creation itself
-	pLogger= CHILD_OBJECT<CLogger>(pConfigNode, "Log", "The logger class");
+	pLogger= CHILD_OBJECT<Logger>(pConfigNode, "Log", "The logger class");
 
 	//Then the world was created by sheer chance
-	pWorld = CHILD_OBJECT<CWorld>(pConfigNode, "World", "The simulation environment and its parameters");
+	pWorld = CHILD_OBJECT<World>(pConfigNode, "World", "The simulation environment and its parameters");
 
 	//Then, the experiment.
 	//Dependency: it needs DT from the world to calculate the number of steps-per-episode
-	pExperiment = CHILD_OBJECT<CExperiment>(pConfigNode, "Experiment", "The parameters of the experiment");
+	pExperiment = CHILD_OBJECT<Experiment>(pConfigNode, "Experiment", "The parameters of the experiment");
 
 	//Last, the SimGod was created to create and control all the simions
-	pSimGod= CHILD_OBJECT<CSimGod>(pConfigNode,"SimGod"
+	pSimGod= CHILD_OBJECT<SimGod>(pConfigNode,"SimGod"
 		, "The omniscient class that controls all aspects of the simulation process");
 }
 
@@ -45,13 +45,13 @@ RLSimionApp::~RLSimionApp()
 
 void RLSimionApp::run()
 {
-	CLogger::logMessage(MessageType::Info, "Simulation starting");
-	CSimionApp* pApp = CSimionApp::get();
+	Logger::logMessage(MessageType::Info, "Simulation starting");
+	SimionApp* pApp = SimionApp::get();
 
 	//create state and action vectors
-	CState *s = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
-	CState *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
-	CAction *a = pApp->pWorld->getDynamicModel()->getActionDescriptor().getInstance();
+	State *s = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
+	State *s_p = pApp->pWorld->getDynamicModel()->getStateDescriptor().getInstance();
+	Action *a = pApp->pWorld->getDynamicModel()->getActionDescriptor().getInstance();
 
 	double r;
 	double probability;
@@ -65,7 +65,7 @@ void RLSimionApp::run()
 
 	//load stuff we don't want to be loaded in the constructors for faster construction
 	pApp->pSimGod->deferredLoad();
-	CLogger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
+	Logger::logMessage(MessageType::Info, "Deferred load step finished. Simulation starts");
 
 	//episodes
 	for (pApp->pExperiment->nextEpisode(); pApp->pExperiment->isValidEpisode(); pApp->pExperiment->nextEpisode())
@@ -97,7 +97,7 @@ void RLSimionApp::run()
 			s->copy(s_p);
 		}
 	}
-	CLogger::logMessage(MessageType::Info, "Simulation finished");
+	Logger::logMessage(MessageType::Info, "Simulation finished");
 
 	delete s;
 	delete s_p;
@@ -114,35 +114,35 @@ void RLSimionApp::initRenderer(string sceneFile)
 	if (!bFileExists(sceneDir + sceneFile))
 		return;
 
-	m_pRenderer = new CRenderer();
+	m_pRenderer = new Renderer();
 	m_pRenderer->init(1, &argv, 800, 600);
 	m_pRenderer->setDataFolder(sceneDir);
 	m_pRenderer->loadScene(sceneFile.c_str());
 
 	//text
-	m_pProgressText = new C2DText(string("Progress"), Vector2D(0.05, 0.95), 0);
+	m_pProgressText = new Text2D(string("Progress"), Vector2D(0.05, 0.95), 0);
 	m_pRenderer->add2DGraphicObject(m_pProgressText);
 
 	//stats
-	C2DMeter* pStatText;
+	Meter2D* pStatText;
 	IStats* pStat;
 	Vector2D origin = Vector2D(0.05, 0.8);
 	Vector2D size = Vector2D(0.35, 0.05);
 	for (unsigned int i = 0; i < pLogger->getNumStats(); ++i)
 	{
 		pStat = pLogger->getStats(i);
-		pStatText = new C2DMeter(string(pStat->getSubkey()), origin, size);
+		pStatText = new Meter2D(string(pStat->getSubkey()), origin, size);
 		m_pStatsText.push_back(pStatText);
 		m_pRenderer->add2DGraphicObject(pStatText);
 		origin -= Vector2D(0.0, 0.06);
 	}
 
-	m_pInputHandler = new CFreeCameraInputHandler();
+	m_pInputHandler = new FreeCameraInputHandler();
 	
 	m_timer.start();
 }
 
-void RLSimionApp::updateScene(CState* s)
+void RLSimionApp::updateScene(State* s)
 {
 	//check the renderer has been initialized
 	if (!m_pRenderer) return;
@@ -176,7 +176,7 @@ void RLSimionApp::updateScene(CState* s)
 	m_pRenderer->redraw();
 
 	//real time execution?
-	if (!((CFreeCameraInputHandler*)m_pInputHandler)->getRealTimeExecutionDisabled())
+	if (!((FreeCameraInputHandler*)m_pInputHandler)->getRealTimeExecutionDisabled())
 	{
 		double dt = pWorld->getDT();
 		double elapsedTime = m_timer.getElapsedTime(true);

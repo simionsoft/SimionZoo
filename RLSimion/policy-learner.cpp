@@ -8,21 +8,21 @@
 #include "logger.h"
 
 
-CPolicyLearner::CPolicyLearner(CConfigNode* pConfigNode)
+PolicyLearner::PolicyLearner(ConfigNode* pConfigNode)
 {
-	m_pPolicy= CHILD_OBJECT_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy to be learned");
+	m_pPolicy= CHILD_OBJECT_FACTORY<Policy>(pConfigNode, "Policy", "The policy to be learned");
 }
 
-CPolicyLearner::~CPolicyLearner()
+PolicyLearner::~PolicyLearner()
 {
 }
 
-std::shared_ptr<CPolicyLearner> CPolicyLearner::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<PolicyLearner> PolicyLearner::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CPolicyLearner>(pConfigNode,"Policy-Learner", "The algorithm used to learn the policy",
+	return CHOICE<PolicyLearner>(pConfigNode,"Policy-Learner", "The algorithm used to learn the policy",
 	{
-		{"CACLA",CHOICE_ELEMENT_NEW<CCACLALearner>},
-		{"Regular-Gradient",CHOICE_ELEMENT_NEW<CRegularPolicyGradientLearner>}
+		{"CACLA",CHOICE_ELEMENT_NEW<CACLALearner>},
+		{"Regular-Gradient",CHOICE_ELEMENT_NEW<RegularPolicyGradientLearner>}
 	});
 }
 
@@ -33,7 +33,7 @@ std::shared_ptr<CPolicyLearner> CPolicyLearner::getInstance(CConfigNode* pConfig
 
 //doesn't work, not sure if it should either
 
-double CVFAActor::getProbability(CState* s, CAction* a)
+double CVFAActor::getProbability(State* s, Action* a)
 {
 	double actionProb = 1.0;
 	double actionDist = 0.0;
@@ -43,7 +43,7 @@ double CVFAActor::getProbability(CState* s, CAction* a)
 	double var_i; //action's i-th dimension's variance
 	double output;
 
-	if (CSimionApp::getSample()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::getSample()->pExperiment->isEvaluationEpisode())
 		return 1.0;
 	//http://en.wikipedia.org/wiki/Multivariate_normal_distribution
 

@@ -19,7 +19,7 @@ enum class Interpolation { linear, quadratic, cubic };
 enum class TimeReference { episode, experiment };
 
 template<typename DataType>
-class CSimpleParam
+class SimpleParam
 {
 protected:
 	const char* m_name;
@@ -27,23 +27,23 @@ protected:
 	DataType m_value;
 	DataType m_default;
 
-	void initValue(CConfigNode* pConfigNode, int& value)
+	void initValue(ConfigNode* pConfigNode, int& value)
 	{
 		value = pConfigNode->getConstInteger(m_name, m_default);
 	}
-	void initValue(CConfigNode* pConfigNode, double& value)
+	void initValue(ConfigNode* pConfigNode, double& value)
 	{
 		value = pConfigNode->getConstDouble(m_name, m_default);
 	}
-	void initValue(CConfigNode* pConfigNode, const char*& value)
+	void initValue(ConfigNode* pConfigNode, const char*& value)
 	{
 		value = pConfigNode->getConstString(m_name, m_default);
 	}
-	void initValue(CConfigNode* pConfigNode, bool& value)
+	void initValue(ConfigNode* pConfigNode, bool& value)
 	{
 		value = pConfigNode->getConstBoolean(m_name, m_default);
 	}
-	void initValue(CConfigNode* pConfigNode, TimeReference& value)
+	void initValue(ConfigNode* pConfigNode, TimeReference& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
 		if (!strcmp(strValue, "episode"))
@@ -56,7 +56,7 @@ protected:
 		}
 		value = m_default;
 	}
-	void initValue(CConfigNode* pConfigNode, Distribution& value)
+	void initValue(ConfigNode* pConfigNode, Distribution& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
 		if (!strcmp(strValue, "linear"))
@@ -76,7 +76,7 @@ protected:
 		}
 		value = m_default;
 	}
-	void initValue(CConfigNode* pConfigNode, Interpolation& value)
+	void initValue(ConfigNode* pConfigNode, Interpolation& value)
 	{
 		const char* strValue = pConfigNode->getConstString(m_name);
 		if (!strcmp(strValue, "linear"))
@@ -94,8 +94,8 @@ protected:
 		value = m_default;
 	}
 public:
-	CSimpleParam() = default;
-	CSimpleParam(CConfigNode* pConfigNode
+	SimpleParam() = default;
+	SimpleParam(ConfigNode* pConfigNode
 		, const char* name, const char* comment, DataType default)
 	{
 		m_name = name;
@@ -109,21 +109,21 @@ public:
 	void set(DataType value) { m_value = value; }
 };
 
-using INT_PARAM = CSimpleParam<int>;
-using DOUBLE_PARAM = CSimpleParam<double>;
-using BOOL_PARAM = CSimpleParam<bool>;
-using STRING_PARAM = CSimpleParam<const char*>;
-using DIR_PATH_PARAM = CSimpleParam<const char*>;
-using FILE_PATH_PARAM = CSimpleParam<const char*>;
+using INT_PARAM = SimpleParam<int>;
+using DOUBLE_PARAM = SimpleParam<double>;
+using BOOL_PARAM = SimpleParam<bool>;
+using STRING_PARAM = SimpleParam<const char*>;
+using DIR_PATH_PARAM = SimpleParam<const char*>;
+using FILE_PATH_PARAM = SimpleParam<const char*>;
 
 
 template <typename EnumType>
-class ENUM_PARAM : public CSimpleParam<EnumType>
+class ENUM_PARAM : public SimpleParam<EnumType>
 {
 public:
 	ENUM_PARAM() = default;
 
-	ENUM_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment, EnumType default)
+	ENUM_PARAM(ConfigNode* pConfigNode, const char* name, const char* comment, EnumType default)
 	{
 		m_name = name;
 		m_comment = comment;
@@ -142,7 +142,7 @@ protected:
 public:
 	STATE_VARIABLE() = default;
 
-	STATE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment);
+	STATE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
 	void set(int hVar) { m_hVariable = hVar; }
 };
@@ -155,7 +155,7 @@ class ACTION_VARIABLE
 public:
 	ACTION_VARIABLE() = default;
 
-	ACTION_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment);
+	ACTION_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment);
 	int get() { return m_hVariable; }
 	void set(unsigned int index) { m_hVariable = index; }
 };
@@ -173,7 +173,7 @@ public:
 	{
 		m_pValue = std::shared_ptr<DataType>(value);
 	}
-	CHILD_OBJECT(CConfigNode* pConfigNode, const char* name, const char* comment
+	CHILD_OBJECT(ConfigNode* pConfigNode, const char* name, const char* comment
 		, bool bOptional = false, const char* badgerMetadata = "")
 	{
 		m_name = name;
@@ -207,7 +207,7 @@ public:
 	{
 		m_pValue = std::shared_ptr<DataType>(value);
 	}
-	CHILD_OBJECT_FACTORY(CConfigNode* pConfigNode, const char* name, const char* comment
+	CHILD_OBJECT_FACTORY(ConfigNode* pConfigNode, const char* name, const char* comment
 		, bool bOptional = false, const char* badgerMetadata = "")
 	{
 		m_name = name;
@@ -238,13 +238,13 @@ protected:
 public:
 	MULTI_VALUE() = default;
 
-	MULTI_VALUE(CConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional = false)
+	MULTI_VALUE(ConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional = false)
 	{
 		m_name = name;
 		m_comment = comment;
 		m_bOptional = bOptional;
 
-		CConfigNode* pChildParameters = pConfigNode->getChild(name);
+		ConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
 			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters)));
@@ -265,13 +265,13 @@ protected:
 public:
 	MULTI_VALUE_FACTORY() = default;
 
-	MULTI_VALUE_FACTORY(CConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional = false)
+	MULTI_VALUE_FACTORY(ConfigNode* pConfigNode, const char* name, const char* comment, bool bOptional = false)
 	{
 		m_name = name;
 		m_comment = comment;
 		m_bOptional = bOptional;
 
-		CConfigNode* pChildParameters = pConfigNode->getChild(name);
+		ConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
 			m_values.push_back(shared_ptr<DataType>(DataType::getInstance(pChildParameters)));
@@ -289,12 +289,12 @@ protected:
 public:
 	MULTI_VALUE_SIMPLE_PARAM() = default;
 
-	MULTI_VALUE_SIMPLE_PARAM(CConfigNode* pConfigNode, const char* name, const char* comment, baseDataType default)
+	MULTI_VALUE_SIMPLE_PARAM(ConfigNode* pConfigNode, const char* name, const char* comment, baseDataType default)
 	{
 		m_name = name;
 		m_comment = comment;
 
-		CConfigNode* pChildParameters = pConfigNode->getChild(name);
+		ConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
 			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment, default)));
@@ -312,12 +312,12 @@ protected:
 public:
 	MULTI_VALUE_VARIABLE() = default;
 
-	MULTI_VALUE_VARIABLE(CConfigNode* pConfigNode, const char* name, const char* comment)
+	MULTI_VALUE_VARIABLE(ConfigNode* pConfigNode, const char* name, const char* comment)
 	{
 		m_name = name;
 		m_comment = comment;
 
-		CConfigNode* pChildParameters = pConfigNode->getChild(name);
+		ConfigNode* pChildParameters = pConfigNode->getChild(name);
 		while (pChildParameters != 0)
 		{
 			m_values.push_back(shared_ptr<DataType>(new DataType(pChildParameters, name, comment)));
@@ -327,21 +327,21 @@ public:
 };
 
 template<typename Class>
-shared_ptr<Class> CHOICE_ELEMENT_NEW(CConfigNode* pConfigNode)
+shared_ptr<Class> CHOICE_ELEMENT_NEW(ConfigNode* pConfigNode)
 {
 	return shared_ptr<Class>(new Class(pConfigNode));
 };
 template<typename Class>
-shared_ptr<Class> CHOICE_ELEMENT_FACTORY(CConfigNode* pConfigNode)
+shared_ptr<Class> CHOICE_ELEMENT_FACTORY(ConfigNode* pConfigNode)
 {
 	return Class::getInstance(pConfigNode);
 };
 
 template <typename DataType>
-using choiceElement = function<shared_ptr<DataType>(CConfigNode*)>;
+using choiceElement = function<shared_ptr<DataType>(ConfigNode*)>;
 
 template<typename BaseClass>
-shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const char* comment
+shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const char* comment
 	, list<tuple<const char*, choiceElement<BaseClass>, const char*>> choices)
 {
 	if (!pConfig) return 0;
@@ -351,7 +351,7 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 	for each (auto var in choices)
 	{
 		const char* choiceName = get<0>(var);
-		CConfigNode* pChoiceConfig = pConfig->getChild(choiceName);
+		ConfigNode* pChoiceConfig = pConfig->getChild(choiceName);
 		if (pChoiceConfig != 0)
 		{
 			choiceElement<BaseClass> choiceConstructor = get<1>(var);
@@ -362,7 +362,7 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 }
 
 template<typename BaseClass>
-shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const char* comment
+shared_ptr<BaseClass> CHOICE(ConfigNode* pConfig, const char* choiceName, const char* comment
 	, map<const char*, choiceElement<BaseClass>> choices)
 {
 	if (!pConfig) return 0;
@@ -372,7 +372,7 @@ shared_ptr<BaseClass> CHOICE(CConfigNode* pConfig, const char* choiceName, const
 	for each (auto var in choices)
 	{
 		const char* choiceName = var.first;
-		CConfigNode* pChoiceConfig = pConfig->getChild(choiceName);
+		ConfigNode* pChoiceConfig = pConfig->getChild(choiceName);
 		if (pChoiceConfig != 0)
 		{
 			return var.second(pChoiceConfig);
@@ -403,7 +403,7 @@ protected:
 
 public:
 	NEURAL_NETWORK() = default;
-	NEURAL_NETWORK(CConfigNode* pConfigNode, const char* name, const char* comment)
+	NEURAL_NETWORK(ConfigNode* pConfigNode, const char* name, const char* comment)
 	{
 		m_name = name;
 		m_comment = comment;

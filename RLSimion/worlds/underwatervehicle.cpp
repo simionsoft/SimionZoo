@@ -7,7 +7,7 @@
 #include "../reward.h"
 
 
-CUnderwaterVehicle::CUnderwaterVehicle(CConfigNode* pConfigNode)
+UnderwaterVehicle::UnderwaterVehicle(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Underwater-vehicle");
 	m_sVSetpoint = addStateVariable("v-setpoint","m/s",-5.0,5.0);
@@ -19,29 +19,29 @@ CUnderwaterVehicle::CUnderwaterVehicle(CConfigNode* pConfigNode)
 	FILE_PATH_PARAM setpointFile= FILE_PATH_PARAM(pConfigNode, "Set-Point-File"
 		,"The setpoint file", "../config/world/underwater-vehicle/setpoint.txt");
 
-	m_pSetpoint= new CFileSetPoint(setpointFile.get());
+	m_pSetpoint= new FileSetPoint(setpointFile.get());
 
-	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("v-deviation", 0.1, 1.0));
+	m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("v-deviation", 0.1, 1.0));
 	m_pRewardFunction->initialize();
 }
 
-CUnderwaterVehicle::~CUnderwaterVehicle()
+UnderwaterVehicle::~UnderwaterVehicle()
 {
 	delete m_pSetpoint;
 }
 
 
 
-void CUnderwaterVehicle::reset(CState *s)
+void UnderwaterVehicle::reset(State *s)
 {
 	s->set(m_sVSetpoint,m_pSetpoint->getPointSet(0.0));
 	s->set(m_sVDeviation,m_pSetpoint->getPointSet(0.0));
 	s->set(m_sV,0.0);
 }
 
-void CUnderwaterVehicle::executeAction(CState *s,const CAction *a,double dt)
+void UnderwaterVehicle::executeAction(State *s,const Action *a,double dt)
 {
-	double newSetpoint = m_pSetpoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
+	double newSetpoint = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
 	double v= s->get(m_sV);
 	double u= a->get(m_aUThrust); //thrust
 	double dot_v= (u*(-0.5*tanh((fabs((1.2+0.2*sin(fabs(v)))*v*fabs(v) - u) -30.0)*0.1) + 0.5) 

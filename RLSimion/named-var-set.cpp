@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <algorithm>
 
-CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular)
+NamedVarProperties::NamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	sprintf_s(m_name, VAR_NAME_MAX_LENGTH, name);
 	sprintf_s(m_units, VAR_NAME_MAX_LENGTH, units);
@@ -11,12 +11,12 @@ CNamedVarProperties::CNamedVarProperties(const char* name, const char* units, do
 	m_bCircular = bCircular; //default value
 }
 
-void CNamedVarProperties::setName(const char* name)
+void NamedVarProperties::setName(const char* name)
 {
 	strcpy_s(m_name, VAR_NAME_MAX_LENGTH, name);
 }
 
-int CDescriptor::getVarIndex(const char* name)
+int Descriptor::getVarIndex(const char* name)
 {
 	for (unsigned int i = 0; i<m_pProperties.size(); i++)
 	{
@@ -26,35 +26,35 @@ int CDescriptor::getVarIndex(const char* name)
 	return -1; //error return value
 }
 
-int CDescriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
+int Descriptor::addVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	int index = (int) m_pProperties.size();
-	m_pProperties.push_back(new CNamedVarProperties(name, units, min, max, bCircular));
+	m_pProperties.push_back(new NamedVarProperties(name, units, min, max, bCircular));
 	return index;
 }
 
-CNamedVarSet* CDescriptor::getInstance()
+NamedVarSet* Descriptor::getInstance()
 {
-	CNamedVarSet* pNew = new CNamedVarSet(*this);
+	NamedVarSet* pNew = new NamedVarSet(*this);
 
 	return pNew;
 }
 
-CNamedVarSet::CNamedVarSet(CDescriptor& descriptor): m_pProperties(descriptor)
+NamedVarSet::NamedVarSet(Descriptor& descriptor): m_pProperties(descriptor)
 {
 
-	//m_pProperties= new CNamedVarProperties[numVars];
+	//m_pProperties= new NamedVarProperties[numVars];
 	m_pValues= new double[descriptor.size()];
 	for (unsigned int i = 0; i < descriptor.size(); i++) m_pValues[i] = 0.0;
 	m_numVars= (int)descriptor.size();
 }
 
-CNamedVarSet::~CNamedVarSet()
+NamedVarSet::~NamedVarSet()
 {
 	if (m_pValues) delete [] m_pValues;
 }
 
-double CNamedVarSet::get(const char* varName) const
+double NamedVarSet::get(const char* varName) const
 {
 	int varIndex = m_pProperties.getVarIndex(varName);
 	if (varIndex >= 0)
@@ -63,18 +63,18 @@ double CNamedVarSet::get(const char* varName) const
 	return 0.0;
 }
 
-int CNamedVarSet::getVarIndex(const char* varName) const
+int NamedVarSet::getVarIndex(const char* varName) const
 {
 	return m_pProperties.getVarIndex(varName);
 }
 
-CNamedVarProperties& CNamedVarSet::getProperties(const char* varName) const
+NamedVarProperties& NamedVarSet::getProperties(const char* varName) const
 {
 	int varIndex = m_pProperties.getVarIndex(varName);
 	return m_pProperties[varIndex];
 }
 
-void CNamedVarSet::set(const char* varName, double value)
+void NamedVarSet::set(const char* varName, double value)
 {
 	int i = m_pProperties.getVarIndex(varName);
 	if (i >= 0)
@@ -86,7 +86,7 @@ void CNamedVarSet::set(const char* varName, double value)
 	assert(0);
 }
 
-double CNamedVarSet::get(int i) const
+double NamedVarSet::get(int i) const
 {
 	if (i>=0 && i<m_numVars)
 		return m_pValues[i];
@@ -94,7 +94,7 @@ double CNamedVarSet::get(int i) const
 	return 0.0;
 }
 
-double* CNamedVarSet::getValuePtr(int i)
+double* NamedVarSet::getValuePtr(int i)
 {
 	if (i >= 0 && i<m_numVars)
 		return &m_pValues[i];
@@ -102,12 +102,12 @@ double* CNamedVarSet::getValuePtr(int i)
 	return 0;
 }
 
-double& CNamedVarSet::getRef(int i)
+double& NamedVarSet::getRef(int i)
 {
 	return m_pValues[i];
 }
 
-void CNamedVarSet::set(int i, double value)
+void NamedVarSet::set(int i, double value)
 {
 	if (i >= 0 && i < m_numVars)
 	{
@@ -127,7 +127,7 @@ void CNamedVarSet::set(int i, double value)
 	}
 }
 
-double CNamedVarSet::getSumValue() const
+double NamedVarSet::getSumValue() const
 {
 	double sum = 0.0;
 	for (int i = 0; i < m_numVars; i++)
@@ -135,7 +135,7 @@ double CNamedVarSet::getSumValue() const
 	return sum;
 }
 
-void CNamedVarSet::copy(const CNamedVarSet* nvs)
+void NamedVarSet::copy(const NamedVarSet* nvs)
 {
 	assert(m_numVars == nvs->getNumVars());
 
@@ -145,7 +145,7 @@ void CNamedVarSet::copy(const CNamedVarSet* nvs)
 	}
 }
 
-void CNamedVarSet::addOffset(double offset)
+void NamedVarSet::addOffset(double offset)
 {
 	for (int i = 0; i<m_numVars; i++)
 	{

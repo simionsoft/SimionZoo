@@ -2,10 +2,10 @@
 #include "SimGod.h"
 #include "app.h"
 
-CDeferredLoad::CDeferredLoad(unsigned int loadOrder)
+DeferredLoad::DeferredLoad(unsigned int loadOrder)
 {
-	CSimGod::registerDeferredLoadStep(this,loadOrder);
+	SimGod::registerDeferredLoadStep(this,loadOrder);
 }
 
-CDeferredLoad::~CDeferredLoad()
+DeferredLoad::~DeferredLoad()
 {}

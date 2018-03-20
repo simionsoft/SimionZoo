@@ -5,7 +5,7 @@
 #include "../app.h"
 #include "../noise.h"
 
-CMountainCar::CMountainCar(CConfigNode* pConfigNode)
+MountainCar::MountainCar(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Mountain-car");
 	m_sPosition = addStateVariable("position", "m", -1.2, 0.5);
@@ -14,19 +14,19 @@ CMountainCar::CMountainCar(CConfigNode* pConfigNode)
 	m_aPedal = addActionVariable("pedal", "m", -1.0, 1.0);
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CMountainCarReward());
+	m_pRewardFunction->addRewardComponent(new MountainCarReward());
 	m_pRewardFunction->initialize();
 }
 
-CMountainCar::~CMountainCar()
+MountainCar::~MountainCar()
 {
 
 }
 
-void CMountainCar::reset(CState *s)
+void MountainCar::reset(State *s)
 {
 
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
 		s->set(m_sPosition, -0.5);
@@ -41,7 +41,7 @@ void CMountainCar::reset(CState *s)
 }
 
 
-void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
+void MountainCar::executeAction(State *s, const Action *a, double dt)
 {
 	//this simulation model ignores dt!!
 
@@ -68,14 +68,14 @@ void CMountainCar::executeAction(CState *s, const CAction *a, double dt)
 }
 
 
-double CMountainCarReward::getReward(const CState* s, const CAction* a, const CState* s_p)
+double MountainCarReward::getReward(const State* s, const Action* a, const State* s_p)
 {
 	double position = s_p->get("position");
 
 	//reached the goal?
 	if (position == s_p->getProperties("position").getMax())
 	{
-		CSimionApp::get()->pExperiment->setTerminalState();
+		SimionApp::get()->pExperiment->setTerminalState();
 		return 100.0;
 	}
 
@@ -86,12 +86,12 @@ double CMountainCarReward::getReward(const CState* s, const CAction* a, const CS
 		//In the Degris' the experiment is only terminated at the right side of the world.
 		//(see https://hal.inria.fr/hal-00764281/document)
 
-		//CSimionApp::get()->pExperiment->setTerminalState();
+		//SimionApp::get()->pExperiment->setTerminalState();
 		return -1.0;// -100.0;
 	}
 	return -1.0;
 }
 
-double CMountainCarReward::getMin() { return -1.0; }
+double MountainCarReward::getMin() { return -1.0; }
 
-double CMountainCarReward::getMax() { return 100.0; }
+double MountainCarReward::getMax() { return 100.0; }

@@ -2,19 +2,19 @@
 
 #include "world.h"
 
-class CSetPoint;
-class CRewardFunction;
+class SetPoint;
+class RewardFunction;
 
-class CUnderwaterVehicle : public CDynamicModel
+class UnderwaterVehicle : public DynamicModel
 {
 	int m_sVSetpoint, m_sV, m_sVDeviation;
 	int m_aUThrust;
-	CSetPoint *m_pSetpoint;
+	SetPoint *m_pSetpoint;
 public:
 
-	CUnderwaterVehicle(CConfigNode* pParameters);
-	virtual ~CUnderwaterVehicle();
+	UnderwaterVehicle(ConfigNode* pParameters);
+	virtual ~UnderwaterVehicle();
 
-	void reset(CState *s);
-	void executeAction(CState *s, const CAction *a, double dt);
+	void reset(State *s);
+	void executeAction(State *s, const Action *a, double dt);
 };

@@ -9,7 +9,7 @@
 #include "Box.h"
 
 
-CRobotControl::CRobotControl(CConfigNode* pConfigNode)
+RobotControl::RobotControl(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Robot-control");
 
@@ -56,16 +56,16 @@ CRobotControl::CRobotControl(CConfigNode* pConfigNode)
 
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CDistanceReward2D(getStateDescriptor(),m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
+	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),m_rob1_X,m_rob1_Y,m_target_X,m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
-void CRobotControl::reset(CState *s)
+void RobotControl::reset(State *s)
 {
 	m_pBulletPhysics->reset(s);
 }
 
-void CRobotControl::executeAction(CState *s, const CAction *a, double dt)
+void RobotControl::executeAction(State *s, const Action *a, double dt)
 {
 	btTransform trans;
 	m_pBulletPhysics->updateBulletState(s, a, dt);
@@ -77,7 +77,7 @@ void CRobotControl::executeAction(CState *s, const CAction *a, double dt)
 	m_pBulletPhysics->updateState(s);
 }
 
-CRobotControl::~CRobotControl()
+RobotControl::~RobotControl()
 {
 	delete m_pBulletPhysics;
 }

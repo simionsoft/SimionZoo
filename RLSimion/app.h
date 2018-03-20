@@ -1,7 +1,7 @@
 #pragma once
 
-class CConfigNode;
-class CConfigFile;
+class ConfigNode;
+class ConfigFile;
 
 #include <vector>
 #include "worlds/world.h"
@@ -11,12 +11,12 @@ class CConfigFile;
 #include "parameters.h"
 #include "mem-manager.h"
 
-class CSimionApp
+class SimionApp
 {
 private:
-	static CSimionApp* m_pAppInstance;
+	static SimionApp* m_pAppInstance;
 protected:
-	CConfigFile* m_pConfigDoc;
+	ConfigFile* m_pConfigDoc;
 	string m_directory;
 	string m_configFile;
 
@@ -26,16 +26,16 @@ protected:
 	std::vector<const char*> m_outputFiles;
 public:
 
-	CSimionApp();
-	virtual ~CSimionApp();
+	SimionApp();
+	virtual ~SimionApp();
 
-	static CSimionApp* get();
+	static SimionApp* get();
 
-	CMemManager<CSimionMemPool>* pMemManager;
-	CHILD_OBJECT<CLogger> pLogger;
-	CHILD_OBJECT<CWorld> pWorld;
-	CHILD_OBJECT<CExperiment> pExperiment;
-	CHILD_OBJECT<CSimGod> pSimGod;
+	MemManager<SimionMemPool>* pMemManager;
+	CHILD_OBJECT<Logger> pLogger;
+	CHILD_OBJECT<World> pWorld;
+	CHILD_OBJECT<Experiment> pExperiment;
+	CHILD_OBJECT<SimGod> pSimGod;
 
 
 	//Input/Output file registering member functions

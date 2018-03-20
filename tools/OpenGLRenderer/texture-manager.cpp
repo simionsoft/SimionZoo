@@ -3,32 +3,32 @@
 #include "renderer.h"
 
 
-CTexture::CTexture()
+Texture::Texture()
 {}
 
-CTexture::~CTexture()
+Texture::~Texture()
 {
 	glDeleteTextures(1, &oglId);
 }
 
-CTextureManager::CTextureManager()
+TextureManager::TextureManager()
 {
 }
 
 
-CTextureManager::~CTextureManager()
+TextureManager::~TextureManager()
 {
-	for (vector<CTexture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	for (vector<Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		delete *it;
 	}
 }
 
-size_t CTextureManager::loadTexture(string filename)
+size_t TextureManager::loadTexture(string filename)
 {
 	filename = m_folder + filename;
 	int id = 0;
-	for (vector<CTexture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
+	for (vector<Texture*>::iterator it = m_textures.begin(); it != m_textures.end(); ++it)
 	{
 		if ((*it)->path == filename)
 		{
@@ -43,7 +43,7 @@ size_t CTextureManager::loadTexture(string filename)
 		, SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS,&numChannelsRead);
 	if (oglId != 0)
 	{
-		CTexture* pTexture = new CTexture();
+		Texture* pTexture = new Texture();
 		pTexture->oglId = oglId;
 		pTexture->path = filename;
 		m_textures.push_back(pTexture);
@@ -53,7 +53,7 @@ size_t CTextureManager::loadTexture(string filename)
 	return -1;
 }
 
-void CTextureManager::set(int textureId)
+void TextureManager::set(int textureId)
 {
 	if (textureId >= 0 && textureId < (int)m_textures.size() )
 	{
@@ -65,7 +65,7 @@ void CTextureManager::set(int textureId)
 	}
 }
 
-void CTexture::set()
+void Texture::set()
 {
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, oglId);

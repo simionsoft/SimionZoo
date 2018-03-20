@@ -6,7 +6,7 @@
 #include "../noise.h"
 
 
-CBalancingPole::CBalancingPole(CConfigNode* pConfigNode)
+BalancingPole::BalancingPole(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Balancing-pole");
 	m_sX = addStateVariable("x", "m", -3.0, 3.0);
@@ -24,15 +24,15 @@ CBalancingPole::CBalancingPole(CConfigNode* pConfigNode)
 	POLEMASS_LENGTH = 0.05;
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CBalancingPoleReward());
+	m_pRewardFunction->addRewardComponent(new BalancingPoleReward());
 	m_pRewardFunction->initialize();
 }
 
 
-void CBalancingPole::reset(CState *s)
+void BalancingPole::reset(State *s)
 {
 
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//fixed setting in evaluation episodes
 		s->set(m_sTheta, -0.1);
@@ -60,7 +60,7 @@ void CBalancingPole::reset(CState *s)
 //#define TAU 0.02		  /* seconds between state updates */
 #define FOURTHIRDS 1.3333333333333
 
-void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
+void BalancingPole::executeAction(State *s, const Action *a, double dt)
 {
 	double force = a->get(m_aPitch);
 	double theta = s->get(m_sTheta);
@@ -87,28 +87,28 @@ void CBalancingPole::executeAction(CState *s, const CAction *a, double dt)
 }
 
 #define twelve_degrees 0.2094384
-double CBalancingPoleReward::getReward(const CState* s, const CAction* a, const CState* s_p)
+double BalancingPoleReward::getReward(const State* s, const Action* a, const State* s_p)
 {
-	bool bEval = CSimionApp::get()->pExperiment->isEvaluationEpisode();
-	int step = CSimionApp::get()->pExperiment->getStep();
+	bool bEval = SimionApp::get()->pExperiment->isEvaluationEpisode();
+	int step = SimionApp::get()->pExperiment->getStep();
 	double theta = s_p->get("theta");
 	double x = s_p->get("x");
 
 	if (x < -2.4 || x > 2.4 || theta < -twelve_degrees || theta > twelve_degrees)
 	{
-		CSimionApp::get()->pExperiment->setTerminalState();
+		SimionApp::get()->pExperiment->setTerminalState();
 		return -1.0;
 	}
 
 	return 0.0;
 }
 
-double CBalancingPoleReward::getMin()
+double BalancingPoleReward::getMin()
 {
 	return -1.0;
 }
 
-double CBalancingPoleReward::getMax()
+double BalancingPoleReward::getMax()
 {
 	return 0.0;
 }

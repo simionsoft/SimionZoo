@@ -4,7 +4,7 @@
 
 
 
-CLight::CLight(tinyxml2::XMLElement* pNode)
+Light::Light(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement* pChild= pNode->FirstChildElement(XML_TAG_COLOR);
 	if (pChild)
@@ -21,25 +21,25 @@ CLight::CLight(tinyxml2::XMLElement* pNode)
 	if (pChild) XML::load(pChild, m_specularColor);
 }
 
-CLight::~CLight()
+Light::~Light()
 {
 }
 
-void CLight::enable(bool enable)
+void Light::enable(bool enable)
 {
 	if (enable) glEnable(GL_LIGHTING);
 	else glDisable(GL_LIGHTING);
 }
 
-CLight* CLight::getInstance(tinyxml2::XMLElement* pNode)
+Light* Light::getInstance(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement* pChild = pNode->FirstChildElement();
 	if (!strcmp(pChild->Name(), XML_TAG_DIR_LIGHT))
-		return new CDirectionalLight(pChild);
+		return new DirectionalLight(pChild);
 	return nullptr;
 }
 
-CDirectionalLight::CDirectionalLight(tinyxml2::XMLElement* pNode):CLight(pNode)
+DirectionalLight::DirectionalLight(tinyxml2::XMLElement* pNode):Light(pNode)
 {
 	tinyxml2::XMLElement* pChild = pNode->FirstChildElement(XML_TAG_DIRECTION);
 	if (pChild)
@@ -48,7 +48,7 @@ CDirectionalLight::CDirectionalLight(tinyxml2::XMLElement* pNode):CLight(pNode)
 	}
 }
 
-void CDirectionalLight::set()
+void DirectionalLight::set()
 {
 	int lightId = GL_LIGHT0 + m_id;
 	glEnable(lightId);

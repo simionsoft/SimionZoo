@@ -17,32 +17,32 @@
 
 int main(int argc, char** argv)
 {
-	CRenderer* pRenderer = 0;
+	Renderer* pRenderer = 0;
 	IInputHandler* pInputHandler = 0;
 
-	pRenderer = new CRenderer();
+	pRenderer = new Renderer();
 	pRenderer->init(argc, argv, 600, 400);
 	pRenderer->setDataFolder("../../../config/scenes/");
 	pRenderer->loadScene("test-scene.scene");
-	pInputHandler = new CFreeCameraInputHandler();
+	pInputHandler = new FreeCameraInputHandler();
 
-	CTimer timer;
+	Timer timer;
 	double dt = 0.0;
 
 	timer.start();
 
-	CGraphicObject* pDynamicObject = pRenderer->getObjectByName("Robot");
+	GraphicObject* pDynamicObject = pRenderer->getObjectByName("Robot");
 
-	C2DMeter* pMeter1 = new C2DMeter("Num.Objects drawn", Vector2D(0.1, 0.2), Vector2D(0.4, 0.04));
+	Meter2D* pMeter1 = new Meter2D("Num.Objects drawn", Vector2D(0.1, 0.2), Vector2D(0.4, 0.04));
 	pRenderer->add2DGraphicObject(pMeter1);
 	pMeter1->setValueRange(Range(0.0, 10.0));
 
-	C2DMeter* pMeter2 = new C2DMeter("test2", Vector2D(0.1, 0.25), Vector2D(0.4, 0.04));
+	Meter2D* pMeter2 = new Meter2D("test2", Vector2D(0.1, 0.25), Vector2D(0.4, 0.04));
 	pRenderer->add2DGraphicObject(pMeter2);
 	pMeter2->setValueRange(Range(-5.0, 5.0));
 	double t = 0.0;
 
-	C2DText* pFPSText = new C2DText(string("fps"), Vector2D(0.1, 0.9), 0);
+	Text2D* pFPSText = new Text2D(string("fps"), Vector2D(0.1, 0.9), 0);
 	pRenderer->add2DGraphicObject(pFPSText);
 
 	while (1)

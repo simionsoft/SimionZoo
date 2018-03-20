@@ -20,58 +20,58 @@
 #include "../SimGod.h"
 #include "../logger.h"
 
-CHILD_OBJECT_FACTORY<CDynamicModel> CWorld::m_pDynamicModel;
+CHILD_OBJECT_FACTORY<DynamicModel> World::m_pDynamicModel;
 
-CWorld::CWorld(CConfigNode* pConfigNode)
+World::World(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 	m_episodeSimTime = 0.0;
 	m_totalSimTime = 0.0;
 
-	m_pDynamicModel = CHILD_OBJECT_FACTORY<CDynamicModel>(pConfigNode, "Dynamic-Model", "The dynamic model");
+	m_pDynamicModel = CHILD_OBJECT_FACTORY<DynamicModel>(pConfigNode, "Dynamic-Model", "The dynamic model");
 
 	m_numIntegrationSteps = INT_PARAM(pConfigNode, "Num-Integration-Steps"
 		, "The number of integration steps performed each simulation time-step", 4);
 	m_dt = DOUBLE_PARAM(pConfigNode, "Delta-T", "The delta-time between simulation steps", 0.01);
 }
 
-CWorld::~CWorld()
+World::~World()
 {
 }
 
-double CWorld::getDT()
+double World::getDT()
 {
 	return m_dt.get();
 }
 
-double CWorld::getEpisodeSimTime()
+double World::getEpisodeSimTime()
 {
 	return m_episodeSimTime;
 }
 
-double CWorld::getTotalSimTime()
+double World::getTotalSimTime()
 {
 	return m_totalSimTime;
 }
 
-double CWorld::getStepStartSimTime()
+double World::getStepStartSimTime()
 {
 	return m_stepStartSimTime;
 }
 
-CReward* CWorld::getRewardVector()
+Reward* World::getRewardVector()
 {
 	return m_pDynamicModel->getRewardVector();
 }
 
-void CWorld::reset(CState *s)
+void World::reset(State *s)
 {
 	m_episodeSimTime = 0.0;
 	if (m_pDynamicModel.ptr())
 		m_pDynamicModel->reset(s);
 }
 
-double CWorld::executeAction(CState *s, CAction *a, CState *s_p)
+double World::executeAction(State *s, Action *a, State *s_p)
 {
 	double dt = m_dt.get() / (double)m_numIntegrationSteps.get();
 
@@ -80,7 +80,7 @@ double CWorld::executeAction(CState *s, CAction *a, CState *s_p)
 	if (m_pDynamicModel.ptr())
 	{
 		s_p->copy(s);
-		for (int i = 0; i < m_numIntegrationSteps.get() && CSimionApp::get()->pExperiment->isValidStep(); i++)
+		for (int i = 0; i < m_numIntegrationSteps.get() && SimionApp::get()->pExperiment->isValidStep(); i++)
 		{
 			m_bFirstIntegrationStep = ( i==0 );
 			m_pDynamicModel->executeAction(s_p, a, dt);
@@ -93,7 +93,7 @@ double CWorld::executeAction(CState *s, CAction *a, CState *s_p)
 
 
 
-CDynamicModel::~CDynamicModel()
+DynamicModel::~DynamicModel()
 {
 	if (m_pStateDescriptor) delete m_pStateDescriptor;
 	if (m_pActionDescriptor) delete m_pActionDescriptor;
@@ -101,34 +101,34 @@ CDynamicModel::~CDynamicModel()
 }
 
 
-CDynamicModel::CDynamicModel()
+DynamicModel::DynamicModel()
 {
-	m_pStateDescriptor = new CDescriptor();
-	m_pActionDescriptor = new CDescriptor();
-	m_pRewardFunction = new CRewardFunction();
+	m_pStateDescriptor = new Descriptor();
+	m_pActionDescriptor = new Descriptor();
+	m_pRewardFunction = new RewardFunction();
 }
 
-int CDynamicModel::addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)
+int DynamicModel::addStateVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	return m_pStateDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
-int CDynamicModel::addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)
+int DynamicModel::addActionVariable(const char* name, const char* units, double min, double max, bool bCircular)
 {
 	return m_pActionDescriptor->addVariable(name, units, min, max, bCircular);
 }
 
-void CDynamicModel::addConstant(const char* name, double value)
+void DynamicModel::addConstant(const char* name, double value)
 {
 	m_pConstants[name] = value;
 }
 
-int CDynamicModel::getNumConstants()
+int DynamicModel::getNumConstants()
 {
 	return (int)m_pConstants.size();
 }
 
-double CDynamicModel::getConstant(int i)
+double DynamicModel::getConstant(int i)
 {
 	int j = 0;
 	for (std::map<const char*, double>::iterator it = m_pConstants.begin(); it != m_pConstants.end(); ++it)
@@ -140,7 +140,7 @@ double CDynamicModel::getConstant(int i)
 	return 0.0;
 }
 
-const char* CDynamicModel::getConstantName(int i)
+const char* DynamicModel::getConstantName(int i)
 {
 	int j = 0;
 	for (std::map<const char*, double>::iterator it = m_pConstants.begin(); it != m_pConstants.end(); ++it)
@@ -152,67 +152,67 @@ const char* CDynamicModel::getConstantName(int i)
 	return "";
 }
 
-double CDynamicModel::getConstant(const char* constantName)
+double DynamicModel::getConstant(const char* constantName)
 {
 	if (m_pConstants.find(constantName) != m_pConstants.end())
 		return m_pConstants[constantName];
-	CLogger::logMessage(MessageType::Error
-		, (std::string("CDynamicModel::getConstant() couldn't find constant: ") + std::string(constantName)).c_str());
+	Logger::logMessage(MessageType::Error
+		, (std::string("DynamicModel::getConstant() couldn't find constant: ") + std::string(constantName)).c_str());
 	return 0.0;
 }
 
-CDescriptor& CDynamicModel::getStateDescriptor()
+Descriptor& DynamicModel::getStateDescriptor()
 {
 	return *m_pStateDescriptor;
 }
-CDescriptor& CDynamicModel::getActionDescriptor()
+Descriptor& DynamicModel::getActionDescriptor()
 {
 	return *m_pActionDescriptor;
 }
-CDescriptor* CDynamicModel::getStateDescriptorPtr()
+Descriptor* DynamicModel::getStateDescriptorPtr()
 {
 	return m_pStateDescriptor;
 }
-CDescriptor* CDynamicModel::getActionDescriptorPtr()
+Descriptor* DynamicModel::getActionDescriptorPtr()
 {
 	return m_pActionDescriptor;
 }
-CState* CDynamicModel::getStateInstance()
+State* DynamicModel::getStateInstance()
 {
 	return m_pStateDescriptor->getInstance();
 }
-CAction* CDynamicModel::getActionInstance()
+Action* DynamicModel::getActionInstance()
 {
 	return m_pActionDescriptor->getInstance();
 }
 
-std::shared_ptr<CDynamicModel> CDynamicModel::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<DynamicModel> DynamicModel::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CDynamicModel>(pConfigNode, "Model", "The world",
+	return CHOICE<DynamicModel>(pConfigNode, "Model", "The world",
 	{
-		{make_tuple("Wind-turbine",CHOICE_ELEMENT_NEW<CWindTurbine>,"World=Wind-turbine")},
-		{make_tuple("FAST-Wind-turbine",CHOICE_ELEMENT_NEW<CFASTWindTurbine>,"World=FAST-Wind-turbine") },
-		{make_tuple("Underwater-vehicle", CHOICE_ELEMENT_NEW<CUnderwaterVehicle>,"World=Underwater-vehicle")},
-		{make_tuple("Pitch-control",CHOICE_ELEMENT_NEW<CPitchControl>,"World=Pitch-control")},
-		{make_tuple("Balancing-pole",CHOICE_ELEMENT_NEW<CBalancingPole>,"World=Balancing-pole")},
-		{make_tuple("Push-Box-2",CHOICE_ELEMENT_NEW<CPushBox2>,"World=Push-Box-2")},
-		{make_tuple("Push-Box-1",CHOICE_ELEMENT_NEW<CPushBox1>,"World=Push-Box-1")},
-		{make_tuple("Robot-control",CHOICE_ELEMENT_NEW<CRobotControl>,"World=Robot-control") },
-		{make_tuple("Pull-Box-2",CHOICE_ELEMENT_NEW<CPullBox2>,"World=Pull-Box-2") },
-		{make_tuple("Pull-Box-1",CHOICE_ELEMENT_NEW<CPullBox1>,"World=Pull-Box-1") },
-		{ make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<CMountainCar>,"World=Mountain-car") },
-		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<CSwingupPendulum>,"World=Swing-up-pendulum") },
-		{ make_tuple("Continuous-Gridworld",CHOICE_ELEMENT_NEW<CContinuousGridWorld>,"World=Continuous-GridWorld") },
-		{ make_tuple("Discrete-Gridworld",CHOICE_ELEMENT_NEW<CDiscreteGridWorld>,"World=Discrete-GridWorld") }
+		{make_tuple("Wind-turbine",CHOICE_ELEMENT_NEW<WindTurbine>,"World=Wind-turbine")},
+		{make_tuple("FAST-Wind-turbine",CHOICE_ELEMENT_NEW<FASTWindTurbine>,"World=FAST-Wind-turbine") },
+		{make_tuple("Underwater-vehicle", CHOICE_ELEMENT_NEW<UnderwaterVehicle>,"World=Underwater-vehicle")},
+		{make_tuple("Pitch-control",CHOICE_ELEMENT_NEW<PitchControl>,"World=Pitch-control")},
+		{make_tuple("Balancing-pole",CHOICE_ELEMENT_NEW<BalancingPole>,"World=Balancing-pole")},
+		{make_tuple("Push-Box-2",CHOICE_ELEMENT_NEW<PushBox2>,"World=Push-Box-2")},
+		{make_tuple("Push-Box-1",CHOICE_ELEMENT_NEW<PushBox1>,"World=Push-Box-1")},
+		{make_tuple("Robot-control",CHOICE_ELEMENT_NEW<RobotControl>,"World=Robot-control") },
+		{make_tuple("Pull-Box-2",CHOICE_ELEMENT_NEW<PullBox2>,"World=Pull-Box-2") },
+		{make_tuple("Pull-Box-1",CHOICE_ELEMENT_NEW<PullBox1>,"World=Pull-Box-1") },
+		{ make_tuple("Mountain-car",CHOICE_ELEMENT_NEW<MountainCar>,"World=Mountain-car") },
+		{ make_tuple("Swing-up-pendulum",CHOICE_ELEMENT_NEW<SwingupPendulum>,"World=Swing-up-pendulum") },
+		{ make_tuple("Continuous-Gridworld",CHOICE_ELEMENT_NEW<ContinuousGridWorld>,"World=Continuous-GridWorld") },
+		{ make_tuple("Discrete-Gridworld",CHOICE_ELEMENT_NEW<DiscreteGridWorld>,"World=Discrete-GridWorld") }
 	});
 }
 
-double CDynamicModel::getReward(const CState *s, const CAction *a, const CState *s_p)
+double DynamicModel::getReward(const State *s, const Action *a, const State *s_p)
 {
 	return m_pRewardFunction->getReward(s, a, s_p);
 }
 
-CReward* CDynamicModel::getRewardVector()
+Reward* DynamicModel::getRewardVector()
 {
 	return m_pRewardFunction->getRewardVector();
 }

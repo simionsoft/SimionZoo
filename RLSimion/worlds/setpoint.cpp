@@ -3,7 +3,7 @@
 #include "../logger.h"
 #include "../app.h"
 
-//CFileSetPoint//////////////////////////////////////////////////
+//FileSetPoint//////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 
 int countlines(const char *filename)
@@ -29,7 +29,7 @@ int countlines(const char *filename)
   return lines;
 }
 
-CFileSetPoint::CFileSetPoint()
+FileSetPoint::FileSetPoint()
 {
 	m_numSteps= 0;
 	m_pSetPoints= 0;
@@ -37,9 +37,9 @@ CFileSetPoint::CFileSetPoint()
 	m_totalTime= 0.0;
 }
 
-CFileSetPoint::CFileSetPoint(const char* filename)
+FileSetPoint::FileSetPoint(const char* filename)
 {
-	CSimionApp::get()->registerInputFile(filename);
+	SimionApp::get()->registerInputFile(filename);
 	//char fullFilename[1024];
 	m_numSteps= 0;
 
@@ -73,7 +73,7 @@ CFileSetPoint::CFileSetPoint(const char* filename)
 }
 
 
-CFileSetPoint::~CFileSetPoint()
+FileSetPoint::~FileSetPoint()
 {
 	if (m_pSetPoints)
 	{
@@ -87,7 +87,7 @@ CFileSetPoint::~CFileSetPoint()
 	}
 }
 
-double CFileSetPoint::getPointSet(double time)
+double FileSetPoint::getPointSet(double time)
 {
 	int i= 0;
 
@@ -116,16 +116,16 @@ double CFileSetPoint::getPointSet(double time)
 	return m_pSetPoints[m_numSteps-1];//step % m_numSteps];
 }
 
-//CHHFileSetPoint//////////////////////////////////////////////
+//HHFileSetPoint//////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-CHHFileSetPoint::CHHFileSetPoint(const char* filename) : CFileSetPoint()
+HHFileSetPoint::HHFileSetPoint(const char* filename) : FileSetPoint()
 {
 	FILE* pHHFile;
 	char buffer[1024];
 	char* pNext;
 
-	CSimionApp::get()->registerInputFile(filename);
+	SimionApp::get()->registerInputFile(filename);
 
 	int numLines = countlines(filename);
 	if (numLines == 0) return;
@@ -157,10 +157,10 @@ CHHFileSetPoint::CHHFileSetPoint(const char* filename) : CFileSetPoint()
 }
 
 
-//CFixedStepSizeSetPoint////////////////////////////////////////
+//FixedStepSizeSetPoint////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-CFixedStepSizeSetPoint::CFixedStepSizeSetPoint(double stepTime, double min, double max)
+FixedStepSizeSetPoint::FixedStepSizeSetPoint(double stepTime, double min, double max)
 {
 	m_stepTime= stepTime;
 	m_min= min;
@@ -169,9 +169,9 @@ CFixedStepSizeSetPoint::CFixedStepSizeSetPoint(double stepTime, double min, doub
 	m_lastSetPoint= min;
 }
 
-CFixedStepSizeSetPoint::~CFixedStepSizeSetPoint(){}
+FixedStepSizeSetPoint::~FixedStepSizeSetPoint(){}
 
-double CFixedStepSizeSetPoint::getPointSet(double time)
+double FixedStepSizeSetPoint::getPointSet(double time)
 {
 	if (time==0.0 || (time-m_lastStepTime>m_stepTime))
 	{

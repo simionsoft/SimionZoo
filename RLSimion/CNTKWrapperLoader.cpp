@@ -22,21 +22,21 @@ void CNTKWrapperLoader::Load()
 		if (hCNTKWrapperDLL==0)
 			hCNTKWrapperDLL = LoadLibrary(".\\..\\bin\\x64\\CNTKWrapper.dll");
 		if (hCNTKWrapperDLL == 0)
-			CLogger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
+			Logger::logMessage(MessageType::Error, "Failed to load CNTKWrapper.dll");
 
-		CLogger::logMessage(MessageType::Info, "CNTKWrapper.dll loaded");
+		Logger::logMessage(MessageType::Info, "CNTKWrapper.dll loaded");
 
-		CSimionApp::get()->registerInputFile("..\\bin\\x64\\CNTKWrapper.dll", "..\\bin\\CNTKWrapper.dll");
-		CSimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.1.dll", "..\\bin\\Cntk.Core-2.1.dll");
-		CSimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.1.dll", "..\\bin\\Cntk.Math-2.1.dll");
-		CSimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.PerformanceProfiler-2.1.dll", "..\\bin\\Cntk.PerformanceProfiler-2.1.dll");
-		CSimionApp::get()->registerInputFile("..\\bin\\x64\\libiomp5md.dll", "..\\bin\\libiomp5md.dll");
-		CSimionApp::get()->registerInputFile("..\\bin\\x64\\mkl_cntk_p.dll", "..\\bin\\mkl_cntk_p.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\CNTKWrapper.dll", "..\\bin\\CNTKWrapper.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Core-2.1.dll", "..\\bin\\Cntk.Core-2.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.Math-2.1.dll", "..\\bin\\Cntk.Math-2.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\Cntk.PerformanceProfiler-2.1.dll", "..\\bin\\Cntk.PerformanceProfiler-2.1.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\libiomp5md.dll", "..\\bin\\libiomp5md.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\x64\\mkl_cntk_p.dll", "..\\bin\\mkl_cntk_p.dll");
 #endif
 
 		getProblem = (getProblemInstanceDLL)GetProcAddress(hCNTKWrapperDLL, "CNTKWrapper::getProblemInstance");
 		if (getProblem==0)
-			CLogger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getProblemInstance()");
+			Logger::logMessage(MessageType::Error, "Failed to get a pointer to CNTKWrapper:getProblemInstance()");
 	}
 }
 

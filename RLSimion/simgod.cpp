@@ -12,19 +12,19 @@
 #include "features.h"
 #include <algorithm>
 
-std::vector<std::pair<CDeferredLoad*, unsigned int>> CSimGod::m_deferredLoadSteps;
-CHILD_OBJECT_FACTORY<CStateFeatureMap> CSimGod::m_pGlobalStateFeatureMap;
-CHILD_OBJECT_FACTORY<CActionFeatureMap> CSimGod::m_pGlobalActionFeatureMap;
+std::vector<std::pair<DeferredLoad*, unsigned int>> SimGod::m_deferredLoadSteps;
+CHILD_OBJECT_FACTORY<StateFeatureMap> SimGod::m_pGlobalStateFeatureMap;
+CHILD_OBJECT_FACTORY<ActionFeatureMap> SimGod::m_pGlobalActionFeatureMap;
 
-CSimGod::CSimGod(CConfigNode* pConfigNode)
+SimGod::SimGod(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 
 	//the global parameterizations of the state/action spaces
-	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<CStateFeatureMap>(pConfigNode, "State-Feature-Map", "The state feature map", true);
-	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<CActionFeatureMap>(pConfigNode, "Action-Feature-Map", "The state feature map", true);
-	m_pExperienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "Experience-Replay", "The experience replay parameters", true);
-	m_simions = MULTI_VALUE_FACTORY<CSimion>(pConfigNode, "Simion", "Simions: learning agents and controllers");
+	m_pGlobalStateFeatureMap = CHILD_OBJECT_FACTORY<StateFeatureMap>(pConfigNode, "State-Feature-Map", "The state feature map", true);
+	m_pGlobalActionFeatureMap = CHILD_OBJECT_FACTORY<ActionFeatureMap>(pConfigNode, "Action-Feature-Map", "The state feature map", true);
+	m_pExperienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "Experience-Replay", "The experience replay parameters", true);
+	m_simions = MULTI_VALUE_FACTORY<Simion>(pConfigNode, "Simion", "Simions: learning agents and controllers");
 
 	//Gamma is global: it is considered a parameter of the problem, not the learning algorithm
 	m_gamma = DOUBLE_PARAM(pConfigNode, "Gamma", "Gamma parameter", 0.9);
@@ -35,12 +35,12 @@ CSimGod::CSimGod(CConfigNode* pConfigNode)
 }
 
 
-CSimGod::~CSimGod()
+SimGod::~SimGod()
 {
 }
 
 
-double CSimGod::selectAction(CState* s, CAction* a)
+double SimGod::selectAction(State* s, Action* a)
 {
 	double probability = 1.0;
 
@@ -50,11 +50,11 @@ double CSimGod::selectAction(CState* s, CAction* a)
 	return probability;
 }
 
-void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probability)
+void SimGod::update(State* s, Action* a, State* s_p, double r, double probability)
 {
 	double actionImportanceWeight= 1.0;
 
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return;
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode()) return;
 
 	m_bReplayingExperience = false;
 
@@ -66,9 +66,9 @@ void CSimGod::update(CState* s, CAction* a, CState* s_p, double r, double probab
 		m_pExperienceReplay->addTuple(s, a, s_p, r, probability);
 }
 
-void CSimGod::postUpdate()
+void SimGod::postUpdate()
 {
-	CExperienceTuple* pExperienceTuple;
+	ExperienceTuple* pExperienceTuple;
 
 	//Experience Replay
 	if (m_pExperienceReplay->bUsing())
@@ -88,17 +88,17 @@ void CSimGod::postUpdate()
 	}
 }
 
-void CSimGod::registerDeferredLoadStep(CDeferredLoad* deferredLoadObject, unsigned int orderLoad)
+void SimGod::registerDeferredLoadStep(DeferredLoad* deferredLoadObject, unsigned int orderLoad)
 {
-	m_deferredLoadSteps.push_back(std::pair<CDeferredLoad*, unsigned int>(deferredLoadObject, orderLoad));
+	m_deferredLoadSteps.push_back(std::pair<DeferredLoad*, unsigned int>(deferredLoadObject, orderLoad));
 }
 
-bool myComparison(const std::pair<CDeferredLoad*, unsigned int> &a, const std::pair<CDeferredLoad*, unsigned int> &b)
+bool myComparison(const std::pair<DeferredLoad*, unsigned int> &a, const std::pair<DeferredLoad*, unsigned int> &b)
 {
 	return a.second < b.second;
 }
 
-void CSimGod::deferredLoad()
+void SimGod::deferredLoad()
 {
 	std::sort(m_deferredLoadSteps.begin(), m_deferredLoadSteps.end(), myComparison);
 
@@ -109,31 +109,31 @@ void CSimGod::deferredLoad()
 }
 
 
-std::shared_ptr<CStateFeatureMap> CSimGod::getGlobalStateFeatureMap()
+std::shared_ptr<StateFeatureMap> SimGod::getGlobalStateFeatureMap()
 {
 	return m_pGlobalStateFeatureMap.shared_ptr();
 }
-std::shared_ptr<CActionFeatureMap> CSimGod::getGlobalActionFeatureMap()
+std::shared_ptr<ActionFeatureMap> SimGod::getGlobalActionFeatureMap()
 {
 	return m_pGlobalActionFeatureMap.shared_ptr();
 }
 
 
-double CSimGod::getGamma()
+double SimGod::getGamma()
 {
 	return m_gamma.get();
 }
 
 //Returns the number of steps after which deferred V-Function updates are to be done
 //0 if we don't use Freeze-V-Function
-int CSimGod::getTargetFunctionUpdateFreq()
+int SimGod::getTargetFunctionUpdateFreq()
 {
 	if (m_bFreezeTargetFunctions.get())
 		return m_targetFunctionUpdateFreq.get();
 	return 0;
 }
 
-bool CSimGod::useSampleImportanceWeights()
+bool SimGod::useSampleImportanceWeights()
 {
 	return m_bUseImportanceWeights.get();
 }

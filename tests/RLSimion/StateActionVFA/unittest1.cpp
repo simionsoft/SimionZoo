@@ -15,23 +15,23 @@ namespace StateActionVFA
 		
 		TEST_METHOD(QFunction_ArgMax)
 		{
-			//Because we are mostly only implementing the constructor that takes a CConfigNode,
+			//Because we are mostly only implementing the constructor that takes a ConfigNode,
 			//it is easier to load a config file and then manipulate the classes loaded
-			CConfigFile configFile;			
-			CConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
+			ConfigFile configFile;			
+			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);	
 
-			CLinearStateActionVFA *pVFA= new CLinearStateActionVFA(
+			LinearStateActionVFA *pVFA= new LinearStateActionVFA(
 				pApp->pSimGod->getGlobalStateFeatureMap()
 				,pApp->pSimGod->getGlobalActionFeatureMap());
 
 			pVFA->setInitValue(0.0);
 			pApp->pSimGod->deferredLoad();
 
-			CFeatureList *pFeatures= new CFeatureList("features");
+			FeatureList *pFeatures= new FeatureList("features");
 
-			CState* pState= pApp->pWorld->getDynamicModel()->getStateInstance();
-			CAction* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
+			State* pState= pApp->pWorld->getDynamicModel()->getStateInstance();
+			Action* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
 			//Q(s=2.5,a=8) = 100;
 			pState->set("v-deviation", 2.5);
 			pAction->set("u-thrust", 8.0);
@@ -65,29 +65,29 @@ namespace StateActionVFA
 		}
 		TEST_METHOD(QFunction_FeatureMap)
 		{
-			//Because we are mostly only implementing the constructor that takes a CConfigNode,
+			//Because we are mostly only implementing the constructor that takes a ConfigNode,
 			//it is easier to load a config file and then manipulate the classes loaded
-			CConfigFile configFile;
-			CConfigNode* pConfigNode;
+			ConfigFile configFile;
+			ConfigNode* pConfigNode;
 
 			pConfigNode= configFile.loadFile("..\\tests\\q-learning-test.simion.exp");
 
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
 
-			CLinearStateActionVFA *pVFA = new CLinearStateActionVFA(
+			LinearStateActionVFA *pVFA = new LinearStateActionVFA(
 				pApp->pSimGod->getGlobalStateFeatureMap()
 				, pApp->pSimGod->getGlobalActionFeatureMap());
 
 			pVFA->setInitValue(0.0);
 			pApp->pSimGod->deferredLoad();
 
-			CFeatureList *pFeatures = new CFeatureList("features");
+			FeatureList *pFeatures = new FeatureList("features");
 
-			CState* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
-			CAction* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
+			State* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
+			Action* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
 
-			CState* pOutState= pApp->pWorld->getDynamicModel()->getStateInstance();
-			CAction* pOutAction = pApp->pWorld->getDynamicModel()->getActionInstance();
+			State* pOutState= pApp->pWorld->getDynamicModel()->getStateInstance();
+			Action* pOutAction = pApp->pWorld->getDynamicModel()->getActionInstance();
 
 			pState->set("v-deviation", 2.5);
 			pAction->set("u-thrust", 8.0);
@@ -116,23 +116,23 @@ namespace StateActionVFA
 
 		TEST_METHOD(QFunction_ArgMax_two_actions)
 		{
-			//Because we are mostly only implementing the constructor that takes a CConfigNode,
+			//Because we are mostly only implementing the constructor that takes a ConfigNode,
 			//it is easier to load a config file and then manipulate the classes loaded
-			CConfigFile configFile;
-			CConfigNode* pConfigNode = configFile.loadFile("..\\tests\\robot-control-test.simion.exp");
+			ConfigFile configFile;
+			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\robot-control-test.simion.exp");
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
 
-			CLinearStateActionVFA *pVFA = new CLinearStateActionVFA(
+			LinearStateActionVFA *pVFA = new LinearStateActionVFA(
 				pApp->pSimGod->getGlobalStateFeatureMap()
 				, pApp->pSimGod->getGlobalActionFeatureMap());
 
 			pVFA->setInitValue(0.0);
 			pApp->pSimGod->deferredLoad();
 
-			CFeatureList *pFeatures = new CFeatureList("features");
+			FeatureList *pFeatures = new FeatureList("features");
 
-			CState* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
-			CAction* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
+			State* pState = pApp->pWorld->getDynamicModel()->getStateInstance();
+			Action* pAction = pApp->pWorld->getDynamicModel()->getActionInstance();
 			//Q(s={0.0,1.0,0.0},a={1.0,1.0})= 100;
 			pState->set("robot1-x", 0.0);
 			pState->set("robot1-y", 1.0);

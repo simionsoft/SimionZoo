@@ -9,10 +9,10 @@
 #include "utils.h"
 #include <algorithm>
 
-FILE *CLogger::m_logFile = 0;
-MessageOutputMode CLogger::m_messageOutputMode = MessageOutputMode::Console;
-CNamedPipeClient CLogger::m_outputPipe;
-bool CLogger::m_bLogMessagesEnabled = true;
+FILE *Logger::m_logFile = 0;
+MessageOutputMode Logger::m_messageOutputMode = MessageOutputMode::Console;
+CNamedPipeClient Logger::m_outputPipe;
+bool Logger::m_bLogMessagesEnabled = true;
 
 #define HEADER_MAX_SIZE 16
 #define EXPERIMENT_HEADER 1
@@ -25,7 +25,7 @@ bool CLogger::m_bLogMessagesEnabled = true;
 struct ExperimentHeader
 {
 	__int64 magicNumber = EXPERIMENT_HEADER;
-	__int64 fileVersion = CLogger::BIN_FILE_VERSION;
+	__int64 fileVersion = Logger::BIN_FILE_VERSION;
 	__int64 numEpisodes = 0;
 
 	__int64 padding[HEADER_MAX_SIZE - 3]; //extra space
@@ -69,7 +69,7 @@ struct StepHeader
 	}
 };
 
-CLogger::CLogger(CConfigNode* pConfigNode)
+Logger::Logger(ConfigNode* pConfigNode)
 {
 	if (!pConfigNode) return;
 
@@ -79,30 +79,30 @@ CLogger::CLogger(CConfigNode* pConfigNode)
 
 	m_logFreq = DOUBLE_PARAM(pConfigNode, "Log-Freq", "Log frequency. Simulation time in seconds.", 0.25);
 
-	m_pEpisodeTimer = new CTimer();
-	m_pExperimentTimer = new CTimer();
+	m_pEpisodeTimer = new Timer();
+	m_pExperimentTimer = new Timer();
 	m_lastLogSimulationT = 0.0;
 }
 
 #define LOG_DESCRIPTOR_EXTENSION ".log"
 #define LOG_BINARY_EXTENSION ".log.bin"
 
-void CLogger::setOutputFilenames()
+void Logger::setOutputFilenames()
 {
-	string inputConfigFile = removeExtension(CSimionApp::get()->getConfigFile());
+	string inputConfigFile = removeExtension(SimionApp::get()->getConfigFile());
 
 	//we register the names of the log files for input/output stuff
 	m_outputLogDescriptor = inputConfigFile + LOG_DESCRIPTOR_EXTENSION;
-	CSimionApp::get()->registerOutputFile(m_outputLogDescriptor.c_str());
+	SimionApp::get()->registerOutputFile(m_outputLogDescriptor.c_str());
 	m_outputLogBinary = inputConfigFile + LOG_BINARY_EXTENSION;
-	CSimionApp::get()->registerOutputFile(m_outputLogBinary.c_str());
+	SimionApp::get()->registerOutputFile(m_outputLogBinary.c_str());
 
 	//open the log file
 	openLogFile(m_outputLogBinary.c_str());
 }
 
 
-CLogger::~CLogger()
+Logger::~Logger()
 {
 	if (m_pExperimentTimer) delete m_pExperimentTimer;
 	if (m_pEpisodeTimer) delete m_pEpisodeTimer;
@@ -116,14 +116,14 @@ CLogger::~CLogger()
 }
 
 
-bool CLogger::isEpisodeTypeLogged(bool evalEpisode)
+bool Logger::isEpisodeTypeLogged(bool evalEpisode)
 {
 	return (evalEpisode && m_bLogEvaluationEpisodes.get()) || (!evalEpisode && m_bLogTrainingEpisodes.get());
 }
 
 
 
-void CLogger::writeLogFileXMLDescriptor(const char* filename)
+void Logger::writeLogFileXMLDescriptor(const char* filename)
 {
 	char buffer[BUFFER_SIZE];
 
@@ -133,11 +133,11 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	{
 		sprintf_s(buffer, BUFFER_SIZE, "<ExperimentLogDescriptor BinaryDataFile=\"%s\" SceneFile=\"%s\">\n"
 			, getFilename(m_outputLogBinary).c_str()
-			, (CSimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
+			, (SimionApp::get()->pWorld->getDynamicModel()->getName() + string(".scene")).c_str());
 		writeEpisodeTypesToBuffer(buffer);
-		writeNamedVarSetDescriptorToBuffer(buffer, "State", CSimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
-		writeNamedVarSetDescriptorToBuffer(buffer, "Action", CSimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
-		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", CSimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
+		writeNamedVarSetDescriptorToBuffer(buffer, "State", SimionApp::get()->pWorld->getDynamicModel()->getStateDescriptorPtr()); //state
+		writeNamedVarSetDescriptorToBuffer(buffer, "Action", SimionApp::get()->pWorld->getDynamicModel()->getActionDescriptorPtr()); //action
+		writeNamedVarSetDescriptorToBuffer(buffer, "Reward", SimionApp::get()->pWorld->getRewardVector()->getPropertiesPtr());
 		writeStatDescriptorToBuffer(buffer);
 		strcat_s(buffer, BUFFER_SIZE, "</ExperimentLogDescriptor>");
 		fwrite(buffer, 1, strlen(buffer), logXMLDescriptorFile);
@@ -147,7 +147,7 @@ void CLogger::writeLogFileXMLDescriptor(const char* filename)
 	else logMessage(MessageType::Warning, "Couldn't save experiment log descriptor");
 }
 
-void CLogger::writeEpisodeTypesToBuffer(char* pOutBuffer)
+void Logger::writeEpisodeTypesToBuffer(char* pOutBuffer)
 {
 	if (m_bLogEvaluationEpisodes.get()) strcat_s(pOutBuffer, BUFFER_SIZE
 		, "  <Episode-Type Id=\"0\">Evaluation</Episode-Type>\n");
@@ -155,7 +155,7 @@ void CLogger::writeEpisodeTypesToBuffer(char* pOutBuffer)
 		, "  <Episode-Type Id=\"1\">Training</Episode-Type>\n");
 }
 
-void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
+void Logger::writeStatDescriptorToBuffer(char* pOutBuffer)
 {
 	char buffer[BUFFER_SIZE];
 
@@ -166,7 +166,7 @@ void CLogger::writeStatDescriptorToBuffer(char* pOutBuffer)
 		strcat_s(pOutBuffer, BUFFER_SIZE, buffer);
 	}
 }
-void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const CDescriptor* descriptor)
+void Logger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* id, const Descriptor* descriptor)
 {
 	char buffer[BUFFER_SIZE];
 	for (unsigned int i = 0; i < descriptor->size(); i++)
@@ -176,7 +176,7 @@ void CLogger::writeNamedVarSetDescriptorToBuffer(char* pOutBuffer, const char* i
 	}
 }
 
-void CLogger::firstEpisode()
+void Logger::firstEpisode()
 {
 	//set episode start time
 	m_pEpisodeTimer->start();
@@ -188,11 +188,11 @@ void CLogger::firstEpisode()
 	writeExperimentHeader();
 }
 
-void CLogger::lastEpisode()
+void Logger::lastEpisode()
 {
 }
 
-void CLogger::firstStep()
+void Logger::firstStep()
 {
 	//initialise the episode reward
 	m_episodeRewardSum = 0.0;
@@ -202,7 +202,7 @@ void CLogger::firstStep()
 
 	m_lastLogSimulationT = 0.0;
 
-	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
+	bool bEvalEpisode = SimionApp::get()->pExperiment->isEvaluationEpisode();
 
 	//reset stats
 	for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
@@ -211,9 +211,9 @@ void CLogger::firstStep()
 		writeEpisodeHeader();
 }
 
-void CLogger::lastStep()
+void Logger::lastStep()
 {
-	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
+	Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
 	bool bEvalEpisode = pExperiment->isEvaluationEpisode();
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
@@ -238,9 +238,9 @@ void CLogger::lastStep()
 	}
 }
 
-void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
+void Logger::timestep(State* s, Action* a, State* s_p, Reward* r)
 {
-	bool bEvalEpisode = CSimionApp::get()->pExperiment->isEvaluationEpisode();
+	bool bEvalEpisode = SimionApp::get()->pExperiment->isEvaluationEpisode();
 	//we add the scalar reward in evaluation episodes for monitoring purposes, no matter if we are logging this type of episode or not
 	if (bEvalEpisode) m_episodeRewardSum += r->getSumValue();
 
@@ -253,17 +253,17 @@ void CLogger::timestep(CState* s, CAction* a, CState* s_p, CReward* r)
 	if (!isEpisodeTypeLogged(bEvalEpisode)) return;
 
 	//output episode log data
-	if (CSimionApp::get()->pWorld->getStepStartSimTime() - m_lastLogSimulationT >= m_logFreq.get()
-		|| CSimionApp::get()->pExperiment->isFirstStep() || CSimionApp::get()->pExperiment->isLastStep())
+	if (SimionApp::get()->pWorld->getStepStartSimTime() - m_lastLogSimulationT >= m_logFreq.get()
+		|| SimionApp::get()->pExperiment->isFirstStep() || SimionApp::get()->pExperiment->isLastStep())
 	{
 		writeStepData(s, a, s_p, r);
 		//reset stats
 		for (auto it = m_stats.begin(); it != m_stats.end(); it++) (*it)->reset();
-		m_lastLogSimulationT = CSimionApp::get()->pWorld->getStepStartSimTime();
+		m_lastLogSimulationT = SimionApp::get()->pWorld->getStepStartSimTime();
 	}
 }
 
-void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
+void Logger::writeStepData(State* s, Action* a, State* s_p, Reward* r)
 {
 	int offset = 0;
 	char buffer[BUFFER_SIZE];
@@ -280,10 +280,10 @@ void CLogger::writeStepData(CState* s, CAction* a, CState* s_p, CReward* r)
 	writeLogBuffer(buffer, offset);
 }
 
-void CLogger::writeExperimentHeader()
+void Logger::writeExperimentHeader()
 {
 	ExperimentHeader header;
-	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
+	Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
 
 	if (m_bLogEvaluationEpisodes.get())
 		header.numEpisodes +=
@@ -294,11 +294,11 @@ void CLogger::writeExperimentHeader()
 	writeLogBuffer((char*)&header, sizeof(ExperimentHeader));
 }
 
-void CLogger::writeEpisodeHeader()
+void Logger::writeEpisodeHeader()
 {
 	EpisodeHeader header;
-	CExperiment* pExperiment = CSimionApp::get()->pExperiment.ptr();
-	CWorld* pWorld = CSimionApp::get()->pWorld.ptr();
+	Experiment* pExperiment = SimionApp::get()->pExperiment.ptr();
+	World* pWorld = SimionApp::get()->pWorld.ptr();
 
 	header.episodeIndex = pExperiment->getRelativeEpisodeIndex();
 	if (pExperiment->isEvaluationEpisode())
@@ -315,7 +315,7 @@ void CLogger::writeEpisodeHeader()
 	writeLogBuffer((char*)&header, sizeof(EpisodeHeader));
 }
 
-void CLogger::writeEpisodeEndHeader()
+void Logger::writeEpisodeEndHeader()
 {
 	StepHeader episodeEndHeader;
 	memset(&episodeEndHeader, 0, sizeof(StepHeader));
@@ -323,12 +323,12 @@ void CLogger::writeEpisodeEndHeader()
 	writeLogBuffer((char*)&episodeEndHeader, sizeof(StepHeader));
 }
 
-int CLogger::writeStepHeaderToBuffer(char* buffer, int offset)
+int Logger::writeStepHeaderToBuffer(char* buffer, int offset)
 {
 	StepHeader header;
-	header.stepIndex = CSimionApp::get()->pExperiment->getStep();
+	header.stepIndex = SimionApp::get()->pExperiment->getStep();
 	header.episodeRealTime = m_pEpisodeTimer->getElapsedTime();
-	header.episodeSimTime = CSimionApp::get()->pWorld->getEpisodeSimTime();
+	header.episodeSimTime = SimionApp::get()->pWorld->getEpisodeSimTime();
 	header.experimentRealTime = m_pExperimentTimer->getElapsedTime();
 
 	memcpy_s(buffer + offset, BUFFER_SIZE, (char*)&header, sizeof(StepHeader));
@@ -336,7 +336,7 @@ int CLogger::writeStepHeaderToBuffer(char* buffer, int offset)
 	return sizeof(header);
 }
 
-int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarSet* pNamedVarSet)
+int Logger::writeNamedVarSetToBuffer(char* buffer, int offset, const NamedVarSet* pNamedVarSet)
 {
 	int numVars = pNamedVarSet->getNumVars();
 	double* pDoubleBuffer = (double*)(buffer + offset);
@@ -345,7 +345,7 @@ int CLogger::writeNamedVarSetToBuffer(char* buffer, int offset, const CNamedVarS
 	return numVars * sizeof(double);
 }
 
-int CLogger::writeStatsToBuffer(char* buffer, int offset)
+int Logger::writeStatsToBuffer(char* buffer, int offset)
 {
 	int numVars = (int)m_stats.size();
 	double* pDoubleBuffer = (double*)(buffer + offset);
@@ -361,20 +361,20 @@ int CLogger::writeStatsToBuffer(char* buffer, int offset)
 }
 
 
-void CLogger::addVarSetToStats(const char* key, CNamedVarSet* varset)
+void Logger::addVarSetToStats(const char* key, NamedVarSet* varset)
 {
 	for (int i = 0; i < varset->getNumVars(); i++)
 	{
-		m_stats.push_back(new CStats<double>(key, varset->getProperties()[i].getName(), varset->getRef(i)));
+		m_stats.push_back(new Stats<double>(key, varset->getProperties()[i].getName(), varset->getRef(i)));
 	}
 }
 
-size_t CLogger::getNumStats()
+size_t Logger::getNumStats()
 {
 	return m_stats.size();
 }
 
-IStats* CLogger::getStats(unsigned int i)
+IStats* Logger::getStats(unsigned int i)
 {
 	if (i < m_stats.size())
 		return m_stats[i];
@@ -382,31 +382,31 @@ IStats* CLogger::getStats(unsigned int i)
 }
 
 
-void CLogger::openLogFile(const char* logFilename)
+void Logger::openLogFile(const char* logFilename)
 {
 	fopen_s(&m_logFile, logFilename, "wb");
 	if (!m_logFile)
 		logMessage(MessageType::Warning, "Log file couldn't be opened, so no log info will be saved.");
 }
-void CLogger::closeLogFile()
+void Logger::closeLogFile()
 {
 	if (m_logFile)
 		fclose(m_logFile);
 }
 
-void CLogger::writeLogBuffer(const char* pBuffer, int numBytes)
+void Logger::writeLogBuffer(const char* pBuffer, int numBytes)
 {
 	size_t numBytesWritten = 0;
 	if (m_logFile)
 		numBytesWritten= fwrite(pBuffer, 1, numBytes, m_logFile);
 }
 
-void CLogger::enableLogMessages(bool enable)
+void Logger::enableLogMessages(bool enable)
 {
 	m_bLogMessagesEnabled = enable;
 }
 
-void CLogger::logMessage(MessageType type, const char* message)
+void Logger::logMessage(MessageType type, const char* message)
 {
 	char messageLine[1024];
 

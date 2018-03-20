@@ -25,11 +25,11 @@ SimionLogViewer::~SimionLogViewer()
 void SimionLogViewer::init(int argc,char** argv)
 {
 	//init the renderer
-	m_pRenderer = new CRenderer();
+	m_pRenderer = new Renderer();
 	m_pRenderer->init(argc, argv, 600, 400);
 
-	m_pTimeText = new C2DText(string("Time"), Vector2D(0.1, 0.9), 0);
-	m_pEpisodeText = new C2DText(string("Episode"), Vector2D(0.1, 0.85), 0);
+	m_pTimeText = new Text2D(string("Time"), Vector2D(0.1, 0.9), 0);
+	m_pEpisodeText = new Text2D(string("Episode"), Vector2D(0.1, 0.85), 0);
 
 	m_pRenderer->add2DGraphicObject(m_pTimeText);
 	m_pRenderer->add2DGraphicObject(m_pEpisodeText);
@@ -117,15 +117,15 @@ void SimionLogViewer::playEpisode(int i)
 bool SimionLogViewer::loadLogFile(string filename)
 {
 	string sceneFile;
-	m_pExperimentLog = new CExperimentLog();
+	m_pExperimentLog = new ExperimentLog();
 	if (m_pExperimentLog->load(filename, sceneFile))
 	{
 		m_pRenderer->setDataFolder("..\\config\\scenes\\");
 		m_pRenderer->loadScene(sceneFile.c_str());
 
 		//allocate a step object to store the interpolated data
-		CEpisode* pFirstEpisode = m_pExperimentLog->getEpisode(0);
-		m_pInterpolatedStep = new CStep(pFirstEpisode->getNumValuesPerStep());
+		Episode* pFirstEpisode = m_pExperimentLog->getEpisode(0);
+		m_pInterpolatedStep = new Step(pFirstEpisode->getNumValuesPerStep());
 		m_numEpisodes = m_pExperimentLog->getNumEpisodes();
 	}
 	else return false;
@@ -136,7 +136,7 @@ bool SimionLogViewer::loadLogFile(string filename)
 }
 
 
-void SimionLogViewer::interpolateStepData(double t, CEpisode* pInEpisode, CStep* pOutInterpolatedData) const
+void SimionLogViewer::interpolateStepData(double t, Episode* pInEpisode, Step* pOutInterpolatedData) const
 {
 	int step = 0;
 

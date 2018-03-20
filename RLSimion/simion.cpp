@@ -6,20 +6,20 @@
 #include "q-learners.h"
 #include "DQN.h"
 
-std::shared_ptr<CSimion> CSimion::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<Simion> Simion::getInstance(ConfigNode* pConfigNode)
 {
 
-	return CHOICE<CSimion>(pConfigNode, "Type", "The Simion class",
+	return CHOICE<Simion>(pConfigNode, "Type", "The Simion class",
 	{
-		{"Controller", CHOICE_ELEMENT_FACTORY<CController>},
-		{"Actor-Critic", CHOICE_ELEMENT_NEW<CActorCritic>},
-		{"Q-Learning", CHOICE_ELEMENT_NEW<CQLearning>},
-		{"Double-Q-Learning", CHOICE_ELEMENT_NEW<CDoubleQLearning>},
-		{"SARSA", CHOICE_ELEMENT_NEW<CSARSA>},
-		{"Inc-Natural-Actor-Critic", CHOICE_ELEMENT_NEW<CIncrementalNaturalActorCritic>},
-		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<COffPolicyActorCritic>}
+		{"Controller", CHOICE_ELEMENT_FACTORY<Controller>},
+		{"Actor-Critic", CHOICE_ELEMENT_NEW<ActorCritic>},
+		{"Q-Learning", CHOICE_ELEMENT_NEW<QLearning>},
+		{"Double-Q-Learning", CHOICE_ELEMENT_NEW<DoubleQLearning>},
+		{"SARSA", CHOICE_ELEMENT_NEW<SARSA>},
+		{"Inc-Natural-Actor-Critic", CHOICE_ELEMENT_NEW<IncrementalNaturalActorCritic>},
+		{"Off-Policy-Actor-Critic", CHOICE_ELEMENT_NEW<OffPolicyActorCritic>}
 #ifdef _WIN64
-		,{"DQN", CHOICE_ELEMENT_NEW<CDQN>}
+		,{"DQN", CHOICE_ELEMENT_NEW<DQN>}
 #endif
 	});
 }

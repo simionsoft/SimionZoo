@@ -2,17 +2,17 @@
 #include "Timer.h"
 
 
-CTimer::CTimer()
+Timer::Timer()
 {
 	m_startTimePoint = std::chrono::system_clock::now();
 }
 
-void CTimer::start()
+void Timer::start()
 {
 	m_startTimePoint= std::chrono::system_clock::now();
 }
 
-double CTimer::getElapsedTime(bool resetTimer)
+double Timer::getElapsedTime(bool resetTimer)
 {
 	std::chrono::system_clock::time_point timePointNow = std::chrono::system_clock::now();
 

@@ -45,7 +45,7 @@ namespace SimionSrcParser
 
         void parseConstructors(string content)
         {
-            string sPattern = @"(\w+)::\1\(\s*CConfigNode\s*\*\s*([^)]+)\)";
+            string sPattern = @"(\w+)::\1\(\s*ConfigNode\s*\*\s*([^)]+)\)";
 
             string className, paramName, prefix,definition;
             foreach (Match match in Regex.Matches(content, sPattern))
@@ -60,7 +60,7 @@ namespace SimionSrcParser
         }
         void parseFactories(string content)
         {
-            string sPattern = @"(\w+)::getInstance\(\s*CConfigNode\s*\*\s*([^)]+)\)";
+            string sPattern = @"(\w+)::getInstance\(\s*ConfigNode\s*\*\s*([^)]+)\)";
 
             string className, paramName, prefix, definition;
             foreach (Match match in Regex.Matches(content, sPattern))

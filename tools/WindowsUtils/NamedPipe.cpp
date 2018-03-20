@@ -5,24 +5,24 @@
 
 #define NUM_MAX_CONNECTION_ATTEMPTS 10
 
-//CNamedPipe: Common stuff
-CNamedPipe::CNamedPipe()
+//NamedPipe: Common stuff
+NamedPipe::NamedPipe()
 {
 	m_pipeHandle = INVALID_HANDLE_VALUE;
 }
 
-CNamedPipe::~CNamedPipe()
+NamedPipe::~NamedPipe()
 {
 	if (m_pipeHandle!=INVALID_HANDLE_VALUE)
 		CloseHandle(m_pipeHandle);
 }
 
-bool CNamedPipe::isConnected()
+bool NamedPipe::isConnected()
 {
 	return (m_pipeHandle != INVALID_HANDLE_VALUE);
 }
 
-void CNamedPipe::setPipeName(const char* pipeName,bool bAddPrefix,int id)
+void NamedPipe::setPipeName(const char* pipeName,bool bAddPrefix,int id)
 {
 	//this method appends the pipeName (i.e. "myPipe") to the standard pipe name prefix
 	//and leaves the result in m_pipeFullName
@@ -43,7 +43,7 @@ void CNamedPipe::setPipeName(const char* pipeName,bool bAddPrefix,int id)
 	}
 }
 
-int CNamedPipe::writeBuffer(const void* pBuffer, int numBytes)
+int NamedPipe::writeBuffer(const void* pBuffer, int numBytes)
 {
 	DWORD bytesWritten= 0;
 	if (m_pipeHandle!=INVALID_HANDLE_VALUE)
@@ -51,7 +51,7 @@ int CNamedPipe::writeBuffer(const void* pBuffer, int numBytes)
 	return bytesWritten;
 }
 
-int CNamedPipe::readToBuffer(void *pBuffer, int numBytes)
+int NamedPipe::readToBuffer(void *pBuffer, int numBytes)
 {
 	DWORD bytesRead= 0;
 	if (m_pipeHandle!= INVALID_HANDLE_VALUE)

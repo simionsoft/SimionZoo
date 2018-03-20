@@ -6,7 +6,7 @@
 
 FASTWorldPortal::FASTWorldPortal()
 {
-	CFASTWindTurbine *pModel= new CFASTWindTurbine(0);
+	FASTWindTurbine *pModel= new FASTWindTurbine(0);
 	m_stateDescriptor = pModel->getStateDescriptor();
 	m_actionDescriptor = pModel->getActionDescriptor();
 	

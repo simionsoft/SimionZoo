@@ -8,22 +8,22 @@
 #include "parameters-numeric.h"
 #include "app.h"
 
-CTDCLambdaCritic::CTDCLambdaCritic(CConfigNode* pConfigNode): CVLearnerCritic(pConfigNode)
+TDCLambdaCritic::TDCLambdaCritic(ConfigNode* pConfigNode): VLearnerCritic(pConfigNode)
 {
-	m_z= CHILD_OBJECT<CETraces>(pConfigNode,"E-Traces","Elilgibility traces of the critic",true);
+	m_z= CHILD_OBJECT<ETraces>(pConfigNode,"E-Traces","Elilgibility traces of the critic",true);
 	m_z->setName("Critic/E-Traces");
 
-	m_s_features = new CFeatureList("Critic/s");
-	m_s_p_features = new CFeatureList("Critic/s_p");
-	m_a = new CFeatureList("Critic/a");
-	m_b= new CFeatureList("Critic/b");
-	m_omega = new CFeatureList("Critic/omega");
+	m_s_features = new FeatureList("Critic/s");
+	m_s_p_features = new FeatureList("Critic/s_p");
+	m_a = new FeatureList("Critic/a");
+	m_b= new FeatureList("Critic/b");
+	m_omega = new FeatureList("Critic/omega");
 
-	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Alpha","Learning gain of the critic");
-	m_pBeta = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Beta","Learning gain applied to the omega vector");
+	m_pAlpha= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,"Alpha","Learning gain of the critic");
+	m_pBeta = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Beta","Learning gain applied to the omega vector");
 }
 
-CTDCLambdaCritic::~CTDCLambdaCritic()
+TDCLambdaCritic::~TDCLambdaCritic()
 {
 	delete m_b;
 	delete m_s_features;
@@ -32,11 +32,11 @@ CTDCLambdaCritic::~CTDCLambdaCritic()
 	delete m_omega;
 }
 
-double CTDCLambdaCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double rho)
+double TDCLambdaCritic::update(const State *s, const Action *a, const State *s_p, double r, double rho)
 {
 	if (m_pAlpha->get()==0.0) return 0.0;
 	
-	if (CSimionApp::get()->pExperiment->isFirstStep())
+	if (SimionApp::get()->pExperiment->isFirstStep())
 	{
 		m_omega->clear();
 	}
@@ -49,7 +49,7 @@ double CTDCLambdaCritic::update(const CState *s, const CAction *a, const CState 
 	double oldValue = m_pVFunction->get(m_s_features);
 	double newValue = m_pVFunction->get(m_s_p_features);
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	double td= rho*r + gamma * newValue - oldValue;
 
 	//z_{k+1}= rho*gamma*lambda*z_k + omega(x_t)

@@ -105,19 +105,19 @@ void BulletPhysics::initPlayground()
 	}
 }
 
-void BulletPhysics::reset(CState* s)
+void BulletPhysics::reset(State* s)
 {
 	for (auto it = m_bulletObjects.begin(); it != m_bulletObjects.end(); ++it)
 		(*it)->reset(s);
 }
 
-void BulletPhysics::updateState(CState* s)
+void BulletPhysics::updateState(State* s)
 {
 	for (auto it = m_bulletObjects.begin(); it != m_bulletObjects.end(); ++it)
 		(*it)->updateState(s);
 }
 
-void BulletPhysics::updateBulletState(CState* s, const CAction* a, double dt)
+void BulletPhysics::updateBulletState(State* s, const Action* a, double dt)
 {
 	for (auto it = m_bulletObjects.begin(); it != m_bulletObjects.end(); ++it)
 		(*it)->updateBulletState(s,a,dt);

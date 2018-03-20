@@ -11,18 +11,18 @@
 
 using namespace tinyxml2;
 
-CRenderer* CRenderer::m_pInstance = 0;
+Renderer* Renderer::m_pInstance = 0;
 
-CRenderer::CRenderer()
+Renderer::Renderer()
 {
 	m_pInstance = this;
 	m_timer.start();
 
-	m_pTextureManager = new CTextureManager();
+	m_pTextureManager = new TextureManager();
 	m_pActiveCamera = 0;
 }
 
-CRenderer::~CRenderer()
+Renderer::~Renderer()
 {
 	//delete 3d objects
 	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it) delete *it;
@@ -33,28 +33,28 @@ CRenderer::~CRenderer()
 	if (m_pTextureManager) delete m_pTextureManager;
 }
 
-void CRenderer::setDataFolder(string dataFolder)
+void Renderer::setDataFolder(string dataFolder)
 {
 	m_dataFolder = dataFolder; m_pTextureManager->setFolder(dataFolder); 
 }
 
-string CRenderer::getDataFolder()
+string Renderer::getDataFolder()
 {
 	return m_dataFolder;
 }
 
 
-void CRenderer::_drawScene()
+void Renderer::_drawScene()
 {
-	CRenderer::get()->drawScene();
+	Renderer::get()->drawScene();
 }
 
-void CRenderer::_reshapeWindow(int width, int height)
+void Renderer::_reshapeWindow(int width, int height)
 {
-	CRenderer::get()->reshapeWindow(width, height);
+	Renderer::get()->reshapeWindow(width, height);
 }
 
-void CRenderer::init(int argc, char** argv, int screenWidth, int screenHeight)
+void Renderer::init(int argc, char** argv, int screenWidth, int screenHeight)
 {
 	//init window and OpenGL context
 	glutInit(&argc, argv);
@@ -76,32 +76,32 @@ void CRenderer::init(int argc, char** argv, int screenWidth, int screenHeight)
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 }
 
-CRenderer* CRenderer::get()
+Renderer* Renderer::get()
 {
 	return m_pInstance;
 }
 
-void CRenderer::addGraphicObject(CGraphicObject* pObj)
+void Renderer::addGraphicObject(GraphicObject* pObj)
 {
 	m_3DgraphicObjects.push_back(pObj);
 }
 
-void CRenderer::add2DGraphicObject(CGraphicObject2D* pObj)
+void Renderer::add2DGraphicObject(GraphicObject2D* pObj)
 {
 	m_2DgraphicObjects.push_back(pObj);
 }
 
-CTextureManager* CRenderer::getTextureManager()
+TextureManager* Renderer::getTextureManager()
 {
 	return m_pTextureManager;
 }
 
-CCamera* CRenderer::getActiveCamera()
+Camera* Renderer::getActiveCamera()
 {
 	return m_pActiveCamera;
 }
 
-CGraphicObject* CRenderer::getObjectByName(string name)
+GraphicObject* Renderer::getObjectByName(string name)
 {
 	for (auto it = m_3DgraphicObjects.begin(); it != m_3DgraphicObjects.end(); ++it)
 	{
@@ -111,7 +111,7 @@ CGraphicObject* CRenderer::getObjectByName(string name)
 	return nullptr;
 }
 
-void CRenderer::loadScene(const char* file)
+void Renderer::loadScene(const char* file)
 {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile((m_dataFolder + string(file)).c_str());
@@ -122,7 +122,7 @@ void CRenderer::loadScene(const char* file)
 			loadSceneObjects(pRoot);
 	}
 }
-void CRenderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
+void Renderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 {
 	//import scene files
 	string scenePath;
@@ -135,36 +135,36 @@ void CRenderer::loadSceneObjects(tinyxml2::XMLElement* pNode)
 	}
 
 		//graphic objects
-	loadChildren<CGraphicObject>
+	loadChildren<GraphicObject>
 			(pNode->FirstChildElement(XML_TAG_OBJECTS), nullptr, m_3DgraphicObjects);
 
 	//cameras
-	loadChildren<CCamera>(pNode, XML_TAG_CAMERA, m_cameras);
+	loadChildren<Camera>(pNode, XML_TAG_CAMERA, m_cameras);
 	if (m_cameras.size() > 0)
 		m_pActiveCamera = m_cameras[0];
 	else
 	{
-		m_pActiveCamera = new CSimpleCamera();
+		m_pActiveCamera = new SimpleCamera();
 		m_cameras.push_back(m_pActiveCamera);
 		printf("Warning: No camera defined. Default camera created\n");
 	}
 	//lights
-	loadChildren<CLight>(pNode, XML_TAG_LIGHT, m_lights);
+	loadChildren<Light>(pNode, XML_TAG_LIGHT, m_lights);
 	if (m_lights.size() == 0)
 	{
 		printf("Warning: No light defined. Default directional light created\n");
-		m_lights.push_back(new CDirectionalLight());
+		m_lights.push_back(new DirectionalLight());
 	}
 }
 
-void CRenderer::redraw()
+void Renderer::redraw()
 {
 	glutPostRedisplay();
 	glutSwapBuffers();
 	updateFPS();
 }
 
-void CRenderer::updateFPS()
+void Renderer::updateFPS()
 {
 	//update FPS
 	++m_frameCount;
@@ -177,7 +177,7 @@ void CRenderer::updateFPS()
 	}
 }
 
-void CRenderer::drawScene()
+void Renderer::drawScene()
 {
 	//clean the backbuffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -185,7 +185,7 @@ void CRenderer::drawScene()
 	//set 3d view
 	m_pActiveCamera->set();
 	//set lights
-	CLight::enable(true);
+	Light::enable(true);
 
 	for (auto it = m_lights.begin(); it != m_lights.end(); ++it)
 	{
@@ -210,7 +210,7 @@ void CRenderer::drawScene()
 			++m_num3DObjectsDrawn;
 		}
 	}
-	CLight::enable(false);
+	Light::enable(false);
 	//set 2d view
 	if (m_pActiveCamera) m_pActiveCamera->set2DView();
 	//draw 2d objects
@@ -223,14 +223,14 @@ void CRenderer::drawScene()
 	}
 }
 
-void CRenderer::reshapeWindow(int w,int h)
+void Renderer::reshapeWindow(int w,int h)
 {
 	m_windowWidth = w;
 	m_windowHeight = h;
 	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 }
 
-Binding* CRenderer::getBinding(string externalName)
+Binding* Renderer::getBinding(string externalName)
 {
 	for (auto it = m_bindings.begin(); it != m_bindings.end(); ++it)
 	{
@@ -241,19 +241,19 @@ Binding* CRenderer::getBinding(string externalName)
 }
 
 
-size_t CRenderer::getNumBindings()
+size_t Renderer::getNumBindings()
 {
 	return m_bindings.size();
 }
 
-string CRenderer::getBindingExternalName(unsigned int i)
+string Renderer::getBindingExternalName(unsigned int i)
 {
 	if (i >= 0 && i < (int)m_bindings.size())
 		return m_bindings[i]->externalName;
 	return string("");
 }
 
-bool CRenderer::updateBinding(unsigned int i, double value)
+bool Renderer::updateBinding(unsigned int i, double value)
 {
 	//update the value if the binding's index is in range
 	if (i >= 0 && i < m_bindings.size())
@@ -265,7 +265,7 @@ bool CRenderer::updateBinding(unsigned int i, double value)
 	return false;
 }
 
-bool CRenderer::updateBinding(string bindingExternalName, double value)
+bool Renderer::updateBinding(string bindingExternalName, double value)
 {
 	int i = 0;
 	for (auto it = m_bindings.begin(); it != m_bindings.end(); ++it)
@@ -279,7 +279,7 @@ bool CRenderer::updateBinding(string bindingExternalName, double value)
 }
 
 
-void CRenderer::drawBoundingBox3D(BoundingBox3D& box) const
+void Renderer::drawBoundingBox3D(BoundingBox3D& box) const
 {
 	glBegin(GL_LINES);
 	//FRONT
@@ -312,7 +312,7 @@ void CRenderer::drawBoundingBox3D(BoundingBox3D& box) const
 	glEnd();
 }
 
-void CRenderer::drawBoundingBox2D(BoundingBox2D& box) const
+void Renderer::drawBoundingBox2D(BoundingBox2D& box) const
 {
 	glBegin(GL_LINES);
 	glVertex2d(box.min().x(), box.min().y()); glVertex2d(box.max().x(), box.min().y());

@@ -1,11 +1,11 @@
 #pragma once
 
-class CProcess
+class Process
 {
 	void* m_handle;
 public:
-	CProcess();
-	~CProcess();
+	Process();
+	~Process();
 
 	void kill();
 	bool spawn(const char* commandLine, bool bAwait= false);

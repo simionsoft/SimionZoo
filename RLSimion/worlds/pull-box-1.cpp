@@ -14,7 +14,7 @@ double static getRand(double range)
 	return (-range*0.5) + (range)*getRandomValue();
 }
 
-CPullBox1::CPullBox1(CConfigNode* pConfigNode)
+PullBox1::PullBox1(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Pull-Box-1");
 	m_target_X = addStateVariable("target-x", "m", -20.0, 20.0);
@@ -54,7 +54,7 @@ CPullBox1::CPullBox1(CConfigNode* pConfigNode)
 	}
 
 	///Creating dynamic box
-	Box* pBox = new Box(BulletPhysics::MASS_BOX
+	BulletBox* pBox = new BulletBox(BulletPhysics::MASS_BOX
 		, btVector3(BulletPhysics::boxOrigin_x, BulletPhysics::boxOrigin_z, BulletPhysics::boxOrigin_y)
 		, new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))));
 	pBox->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("box-x")
@@ -87,16 +87,16 @@ CPullBox1::CPullBox1(CConfigNode* pConfigNode)
 	m_pBulletPhysics->add(pRope);
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CDistanceReward2D(getStateDescriptor(),m_box_X, m_box_Y, m_target_X, m_target_Y));
+	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),m_box_X, m_box_Y, m_target_X, m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
-void CPullBox1::reset(CState *s)
+void PullBox1::reset(State *s)
 {
 	m_pBulletPhysics->reset(s);
 }
 
-void CPullBox1::executeAction(CState *s, const CAction *a, double dt)
+void PullBox1::executeAction(State *s, const Action *a, double dt)
 {
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
@@ -107,7 +107,7 @@ void CPullBox1::executeAction(CState *s, const CAction *a, double dt)
 	m_pBulletPhysics->updateState(s);
 }
 
-CPullBox1::~CPullBox1()
+PullBox1::~PullBox1()
 {
 	delete m_pBulletPhysics;
 }

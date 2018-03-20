@@ -4,18 +4,18 @@ namespace tinyxml2 { class XMLElement; }
 #include <string>
 using namespace std;
 
-class CMaterial
+class Material
 {
 public:
-	CMaterial();
-	virtual ~CMaterial();
+	Material();
+	virtual ~Material();
 
-	static CMaterial* getInstance(tinyxml2::XMLElement* pNode);
+	static Material* getInstance(tinyxml2::XMLElement* pNode);
 
 	virtual void set()= 0;
 };
 
-class CSimpleTLMaterial : public CMaterial
+class SimpleTLMaterial : public Material
 {
 protected:
 	int m_textureId= -1;
@@ -25,12 +25,12 @@ protected:
 
 	double m_shininess;
 public:
-	CSimpleTLMaterial() {}
-	CSimpleTLMaterial(tinyxml2::XMLElement* pNode);
-	CSimpleTLMaterial(string texturePath);
-	CSimpleTLMaterial(Color ambient, Color diffuse, Color specular, Color emission, double shininess
+	SimpleTLMaterial() {}
+	SimpleTLMaterial(tinyxml2::XMLElement* pNode);
+	SimpleTLMaterial(string texturePath);
+	SimpleTLMaterial(Color ambient, Color diffuse, Color specular, Color emission, double shininess
 		,string texturePath);
-	virtual ~CSimpleTLMaterial() {}
+	virtual ~SimpleTLMaterial() {}
 	void setTexture(int id) { m_textureId = id; }
 	void setAmbient(Color color) { m_ambient = color; }
 	void setDiffuse(Color color) { m_diffuse = color; }
@@ -41,33 +41,33 @@ public:
 	virtual void set();
 };
 
-class CTranslucentMaterial : public CSimpleTLMaterial
+class TranslucentMaterial : public SimpleTLMaterial
 {
 public:
-	CTranslucentMaterial(tinyxml2::XMLElement* pNode) : CSimpleTLMaterial(pNode) {}
-	CTranslucentMaterial(string texture) :CSimpleTLMaterial(texture) {}
-	CTranslucentMaterial(Color ambient, Color diffuse, Color specular, Color emission, double shininess, string texture)
-		:CSimpleTLMaterial(ambient, diffuse, specular, emission, shininess, texture) {}
-	virtual ~CTranslucentMaterial() {}
+	TranslucentMaterial(tinyxml2::XMLElement* pNode) : SimpleTLMaterial(pNode) {}
+	TranslucentMaterial(string texture) :SimpleTLMaterial(texture) {}
+	TranslucentMaterial(Color ambient, Color diffuse, Color specular, Color emission, double shininess, string texture)
+		:SimpleTLMaterial(ambient, diffuse, specular, emission, shininess, texture) {}
+	virtual ~TranslucentMaterial() {}
 
 	virtual void set();
 };
 
-class CColorMaterial : public CMaterial
+class ColorMaterial : public Material
 {
 	Color m_color = Color(1.0, 0.0, 0.0, 1.0);
 public:
-	CColorMaterial() {}
+	ColorMaterial() {}
 	void set();
 	void setColor(Color color) { m_color = color; }
 };
 
-class CLineMaterial : public CMaterial
+class LineMaterial : public Material
 {
 	Color m_color = Color(0.0,0.0,0.0,1.0);
 	int m_width= 1;
 public:
-	CLineMaterial() {}
+	LineMaterial() {}
 	void set();
 	void setColor(Color color) { m_color = color; }
 	void setWidth(int width) { m_width= width; }

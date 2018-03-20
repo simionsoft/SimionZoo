@@ -11,26 +11,26 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		CConfigFile configXMLFile;
-		CSimionApp* pApp = 0;
+		ConfigFile configXMLFile;
+		SimionApp* pApp = 0;
 		//initialisation required for all apps: create the comm pipe and load the xml configuration file, ....
-		const char* pPipename = CSimionApp::getArgValue(argc, argv, "pipe");
+		const char* pPipename = SimionApp::getArgValue(argc, argv, "pipe");
 		if (pPipename)
 		{
-			CLogger::m_outputPipe.connectToServer(pPipename);
+			Logger::m_outputPipe.connectToServer(pPipename);
 			//if connection with parent process went ok, we set the logger's output mode accordingly
-			if (CLogger::m_outputPipe.isConnected())
-				CLogger::m_messageOutputMode = MessageOutputMode::NamedPipe;
+			if (Logger::m_outputPipe.isConnected())
+				Logger::m_messageOutputMode = MessageOutputMode::NamedPipe;
 		}
 
 		if (argc <= 1)
-			CLogger::logMessage(MessageType::Error, "Too few parameters: no config file provided");
+			Logger::logMessage(MessageType::Error, "Too few parameters: no config file provided");
 
-		CConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
+		ConfigNode* pParameters= configXMLFile.loadFile(argv[1]);
 		if (!pParameters) throw std::exception("Wrong experiment configuration file");
 
-		if (CSimionApp::flagPassed(argc, argv, "requirements"))
-			CLogger::enableLogMessages(false);
+		if (SimionApp::flagPassed(argc, argv, "requirements"))
+			Logger::enableLogMessages(false);
 
 		if (!strcmp("RLSimion", pParameters->getName()) || !strcmp("RLSimion-x64", pParameters->getName()) || !strcmp("RLSimion-x64-CNTK", pParameters->getName()))
 			pApp = new RLSimionApp(pParameters);
@@ -39,10 +39,10 @@ int main(int argc, char* argv[])
 		{
 			pApp->setConfigFile(argv[1]);
 
-			if (CSimionApp::flagPassed(argc, argv, "local"))
+			if (SimionApp::flagPassed(argc, argv, "local"))
 				pApp->setExecutedRemotely(false);
 
-			if (CSimionApp::flagPassed(argc, argv, "requirements"))
+			if (SimionApp::flagPassed(argc, argv, "requirements"))
 				pApp->printRequirements();
 			else pApp->run();
 
@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 	}
 	catch (std::exception& e)
 	{
-		CLogger::logMessage(MessageType::Error, e.what());
+		Logger::logMessage(MessageType::Error, e.what());
 	}
 
 	return 0;

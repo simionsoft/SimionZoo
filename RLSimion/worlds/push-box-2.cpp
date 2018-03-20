@@ -14,7 +14,7 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-CPushBox2::CPushBox2(CConfigNode* pConfigNode)
+PushBox2::PushBox2(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Push-Box-2");
 	
@@ -62,7 +62,7 @@ CPushBox2::CPushBox2(CConfigNode* pConfigNode)
 
 	///Creating dynamic box
 	{
-		Box* pBox = new Box(BulletPhysics::MASS_BOX
+		BulletBox* pBox = new BulletBox(BulletPhysics::MASS_BOX
 			, btVector3(BulletPhysics::boxOrigin_x, BulletPhysics::boxOrigin_z, BulletPhysics::boxOrigin_y)
 			, new btBoxShape(btVector3(btScalar(0.6), btScalar(0.6), btScalar(0.6))));
 		pBox->setAbsoluteStateVarIds(getStateDescriptor().getVarIndex("box-x")
@@ -111,16 +111,16 @@ CPushBox2::CPushBox2(CConfigNode* pConfigNode)
 
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CDistanceReward2D(getStateDescriptor(),m_box_X, m_box_Y, m_target_X, m_target_Y));
+	m_pRewardFunction->addRewardComponent(new DistanceReward2D(getStateDescriptor(),m_box_X, m_box_Y, m_target_X, m_target_Y));
 	m_pRewardFunction->initialize();
 }
 
-void CPushBox2::reset(CState *s)
+void PushBox2::reset(State *s)
 {
 	m_pBulletPhysics->reset(s);
 }
 
-void CPushBox2::executeAction(CState *s, const CAction *a, double dt)
+void PushBox2::executeAction(State *s, const Action *a, double dt)
 {
 	m_pBulletPhysics->updateBulletState(s, a, dt);
 
@@ -131,7 +131,7 @@ void CPushBox2::executeAction(CState *s, const CAction *a, double dt)
 	m_pBulletPhysics->updateState(s);
 }
 
-CPushBox2::~CPushBox2()
+PushBox2::~PushBox2()
 {
 	delete m_pBulletPhysics;
 }

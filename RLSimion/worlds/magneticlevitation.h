@@ -2,20 +2,20 @@
 
 
 #include "world.h"
-class CSetPoint;
+class SetPoint;
 
 //MAGNETIC LEVIATION OF A STEEL BALL
-class CMagneticLevitation: public CDynamicModel
+class MagneticLevitation: public DynamicModel
 {
 	int m_sPosition, m_sVelocity, m_sCurrent;
 	int m_sPositionSetpoint, m_sPositionDeviation;
 	int m_aVoltage;
-	CSetPoint *m_pEvalSetPoint,*m_pLearnSetPoint;
+	SetPoint *m_pEvalSetPoint,*m_pLearnSetPoint;
 
 public:
-	CMagneticLevitation(CConfigNode* pParameters);
-	virtual ~CMagneticLevitation();
+	MagneticLevitation(ConfigNode* pParameters);
+	virtual ~MagneticLevitation();
 
-	void reset(CState *s);
-	void executeAction(CState *s,CAction *a,double dt);
+	void reset(State *s);
+	void executeAction(State *s,Action *a,double dt);
 };

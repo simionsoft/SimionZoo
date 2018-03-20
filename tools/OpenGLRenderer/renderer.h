@@ -2,38 +2,38 @@
 #include <vector>
 #include "../WindowsUtils/Timer.h"
 
-class CGraphicObject;
-class CGraphicObject2D;
-class CTextureManager;
+class GraphicObject;
+class GraphicObject2D;
+class TextureManager;
 class Binding;
 class Bindable;
-class CCamera;
-class CLight;
+class Camera;
+class Light;
 class BoundingBox3D;
 class BoundingBox2D;
 using namespace std;
 namespace tinyxml2 { class XMLElement; }
 
-class CRenderer
+class Renderer
 {
-	CTimer m_timer;
+	Timer m_timer;
 	int m_frameCount = 0;
 	double m_fps = 0.0;
 	unsigned int m_num3DObjectsDrawn = 0;
 
-	CTextureManager* m_pTextureManager;
+	TextureManager* m_pTextureManager;
 
-	CCamera* m_pActiveCamera;
-	vector <CCamera*> m_cameras;
+	Camera* m_pActiveCamera;
+	vector <Camera*> m_cameras;
 
-	vector <CLight*> m_lights;
+	vector <Light*> m_lights;
 
 	string m_dataFolder;
 
-	static CRenderer* m_pInstance;
+	static Renderer* m_pInstance;
 
-	vector<CGraphicObject*> m_3DgraphicObjects;
-	vector<CGraphicObject2D*> m_2DgraphicObjects;
+	vector<GraphicObject*> m_3DgraphicObjects;
+	vector<GraphicObject2D*> m_2DgraphicObjects;
 
 	vector <Binding*> m_bindings;
 
@@ -51,8 +51,8 @@ class CRenderer
 
 	bool m_bShowBoundingBoxes= false;
 public:
-	CRenderer();
-	virtual ~CRenderer();
+	Renderer();
+	virtual ~Renderer();
 
 	void getWindowsSize(int& sizeX, int& sizeY) { sizeX = m_windowWidth; sizeY = m_windowHeight; }
 	double getFPS() { return m_fps; }
@@ -68,14 +68,14 @@ public:
 
 	void init(int argc, char** argv, int sizeX, int sizeY);
 
-	void addGraphicObject(CGraphicObject* pObj);
-	void add2DGraphicObject(CGraphicObject2D* pObj);
+	void addGraphicObject(GraphicObject* pObj);
+	void add2DGraphicObject(GraphicObject2D* pObj);
 
-	static CRenderer* get();
-	CTextureManager* getTextureManager();
-	CCamera* getActiveCamera();
+	static Renderer* get();
+	TextureManager* getTextureManager();
+	Camera* getActiveCamera();
 
-	CGraphicObject* getObjectByName(string name);
+	GraphicObject* getObjectByName(string name);
 
 	void showBoundingBoxes(bool bShow) { m_bShowBoundingBoxes = bShow; }
 	bool bShowBoundingBoxes() { return m_bShowBoundingBoxes; }

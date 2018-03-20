@@ -8,22 +8,22 @@
 #include "deep-vfa-policy.h"
 #include "experience-replay.h"
 
-class CSingleDimensionDiscreteActionVariableGrid;
-class CExperienceReplay;
-class CExperienceTuple;
+class SingleDimensionDiscreteActionVariableGrid;
+class ExperienceReplay;
+class ExperienceTuple;
 class INetwork;
 
-class CDQN : public CSimion
+class DQN : public Simion
 {
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
-	CHILD_OBJECT<CExperienceReplay> m_experienceReplay;
+	CHILD_OBJECT<ExperienceReplay> m_experienceReplay;
 	NEURAL_NETWORK m_QNetwork;
 	INetwork* m_pPredictionNetwork= nullptr;
 
-	CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy> m_policy;
-	CFeatureList* m_pStateOutFeatures;
-	CSingleDimensionDiscreteActionVariableGrid* m_pGrid;
+	CHILD_OBJECT_FACTORY<DiscreteDeepPolicy> m_policy;
+	FeatureList* m_pStateOutFeatures;
+	SingleDimensionDiscreteActionVariableGrid* m_pGrid;
 
 	size_t m_numberOfActions;
 	size_t m_numberOfStateFeatures;
@@ -35,19 +35,19 @@ protected:
 
 	int* m_pMinibatchChosenActionIndex;
 
-	CExperienceTuple** m_pMinibatchExperienceTuples;
+	ExperienceTuple** m_pMinibatchExperienceTuples;
 	double* m_pMinibatchChosenActionTargetValues;
 
 	INetwork* getPredictionNetwork();
 	
 public:
-	~CDQN();
-	CDQN(CConfigNode *pParameters);
+	~DQN();
+	DQN(ConfigNode *pParameters);
 
 	//selects an according to the learned policy pi(a|s)
-	virtual double selectAction(const CState *s, CAction *a);
+	virtual double selectAction(const State *s, Action *a);
 
 	//updates the critic and the actor
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };
 #endif

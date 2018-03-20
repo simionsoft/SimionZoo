@@ -6,14 +6,14 @@
 #include <string>
 using namespace std;
 
-class C2DText: public CGraphicObject2D
+class Text2D: public GraphicObject2D
 {
 	int m_absPosX, m_absPosY;
 	Color m_color;
 	string m_text;
 public:
-	C2DText(string name,Vector2D origin, int depth);
-	virtual ~C2DText();
+	Text2D(string name,Vector2D origin, int depth);
+	virtual ~Text2D();
 
 	void set(string text) { m_text = text; }
 

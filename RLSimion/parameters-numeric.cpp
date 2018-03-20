@@ -4,39 +4,39 @@
 #include "app.h"
 #include <assert.h>
 
-CConstantValue::CConstantValue(CConfigNode* pConfigNode)
+ConstantValue::ConstantValue(ConfigNode* pConfigNode)
 {
 	m_value = DOUBLE_PARAM(pConfigNode, "Value", "Constant value", 0.0);
 }
 
-CConstantValue::CConstantValue(double value)
+ConstantValue::ConstantValue(double value)
 {
 	m_value.set(value);
 }
 
-CSimpleEpisodeLinearSchedule::CSimpleEpisodeLinearSchedule(CConfigNode* pConfigNode)
+SimpleEpisodeLinearSchedule::SimpleEpisodeLinearSchedule(ConfigNode* pConfigNode)
 {
 	m_startValue = DOUBLE_PARAM(pConfigNode, "Initial-Value", "Value at the beginning of the experiment",0.1);
 	m_endValue = DOUBLE_PARAM(pConfigNode, "End-Value", "Value at the end of the experiment", 0.0);
 }
 
-CSimpleEpisodeLinearSchedule::CSimpleEpisodeLinearSchedule(double startValue, double endValue)
+SimpleEpisodeLinearSchedule::SimpleEpisodeLinearSchedule(double startValue, double endValue)
 {
 	m_startValue.set(startValue);
 	m_endValue.set(endValue);
 }
 
-double CSimpleEpisodeLinearSchedule::get()
+double SimpleEpisodeLinearSchedule::get()
 {
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode()) return 0.0;
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode()) return 0.0;
 
-	double progress = CSimionApp::get()->pExperiment->getTrainingProgress();
+	double progress = SimionApp::get()->pExperiment->getTrainingProgress();
 
 	return m_startValue.get() + (m_endValue.get() - m_startValue.get())* progress;
 }
 
 
-CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
+InterpolatedValue::InterpolatedValue(ConfigNode* pConfigNode)
 {
 	m_startOffset = DOUBLE_PARAM(pConfigNode, "Start-Offset", "Normalized time from which the schedule will begin [0...1]", 0.0);
 	m_endTime = DOUBLE_PARAM(pConfigNode, "End-Offset", "Normalized time at which the schedule will end and only return the End-Value [0...1]", 1.0);
@@ -48,7 +48,7 @@ CInterpolatedValue::CInterpolatedValue(CConfigNode* pConfigNode)
 	m_evaluationValue = DOUBLE_PARAM(pConfigNode, "Evaluation-Value", "Output value during evaluation episodes", 0.0);
 }
 
-CInterpolatedValue::CInterpolatedValue(double startOffset, double endTime, double preOffsetValue, double startValue, double endValue, double evaluationValue
+InterpolatedValue::InterpolatedValue(double startOffset, double endTime, double preOffsetValue, double startValue, double endValue, double evaluationValue
 	, Interpolation interpolation, TimeReference timeReference)
 {
 	m_startOffset.set(startOffset);
@@ -61,19 +61,19 @@ CInterpolatedValue::CInterpolatedValue(double startOffset, double endTime, doubl
 	m_timeReference.set(timeReference);
 }
 
-double CInterpolatedValue::get()
+double InterpolatedValue::get()
 {
 	double progress;
 
 	//evalution episode?
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		return m_evaluationValue.get();
 
 	//time reference
 	if (m_timeReference.get()==TimeReference::experiment)
-		progress = CSimionApp::get()->pExperiment->getTrainingProgress();
+		progress = SimionApp::get()->pExperiment->getTrainingProgress();
 	else if (m_timeReference.get()==TimeReference::episode)
-		progress = CSimionApp::get()->pExperiment->getEpisodeProgress();
+		progress = SimionApp::get()->pExperiment->getEpisodeProgress();
 
 	if (m_startOffset.get() != 0.0)
 	{
@@ -98,7 +98,7 @@ double CInterpolatedValue::get()
 
 
 
-CBhatnagarSchedule::CBhatnagarSchedule(CConfigNode* pConfigNode)
+BhatnagarSchedule::BhatnagarSchedule(ConfigNode* pConfigNode)
 {
 	m_timeReference = ENUM_PARAM<TimeReference>(pConfigNode, "Time-reference", "The time reference", TimeReference::episode);
 	m_alpha_0 = DOUBLE_PARAM(pConfigNode, "Alpha-0", "Alpha-0 parameter in Bhatnagar's schedule", 1.0);
@@ -107,7 +107,7 @@ CBhatnagarSchedule::CBhatnagarSchedule(CConfigNode* pConfigNode)
 	m_evaluationValue= DOUBLE_PARAM(pConfigNode, "Evaluation-Value", "Output value during evaluation episodes", 0.0);
 }
 
-CBhatnagarSchedule::CBhatnagarSchedule(double alpha_0, double alpha_c, double t_exp
+BhatnagarSchedule::BhatnagarSchedule(double alpha_0, double alpha_c, double t_exp
 	, double evaluationValue, TimeReference timeReference)
 {
 	m_alpha_0.set(alpha_0);
@@ -118,33 +118,33 @@ CBhatnagarSchedule::CBhatnagarSchedule(double alpha_0, double alpha_c, double t_
 }
 
 
-double CBhatnagarSchedule::get()
+double BhatnagarSchedule::get()
 {
 	double t;
 
 	//evalution episode?
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		return m_evaluationValue.get();
 	//time reference
 	if (m_timeReference.get()==TimeReference::experiment)
-		t = CSimionApp::get()->pExperiment->getStep()
-		+ (CSimionApp::get()->pExperiment->getEpisodeIndex() - 1) * CSimionApp::get()->pExperiment->getNumSteps();
+		t = SimionApp::get()->pExperiment->getStep()
+		+ (SimionApp::get()->pExperiment->getEpisodeIndex() - 1) * SimionApp::get()->pExperiment->getNumSteps();
 	else if (m_timeReference.get()==TimeReference::episode)
-		t = CSimionApp::get()->pExperiment->getStep();
+		t = SimionApp::get()->pExperiment->getStep();
 	else assert(0);
 
 	return m_alpha_0.get()*m_alpha_c.get() / (m_alpha_c.get() + pow(t, m_t_exp.get()));
 }
 
 
-std::shared_ptr<CNumericValue> CNumericValue::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<NumericValue> NumericValue::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CNumericValue>(pConfigNode, "Schedule", "Schedule-type",
+	return CHOICE<NumericValue>(pConfigNode, "Schedule", "Schedule-type",
 	{
-		{"Constant",CHOICE_ELEMENT_NEW<CConstantValue>},
-		{"Linear-Schedule",CHOICE_ELEMENT_NEW<CInterpolatedValue>},
-		{"Simple-Linear-Decay",CHOICE_ELEMENT_NEW<CSimpleEpisodeLinearSchedule>},
-		{"Bhatnagar-Schedule",CHOICE_ELEMENT_NEW<CBhatnagarSchedule>}
+		{"Constant",CHOICE_ELEMENT_NEW<ConstantValue>},
+		{"Linear-Schedule",CHOICE_ELEMENT_NEW<InterpolatedValue>},
+		{"Simple-Linear-Decay",CHOICE_ELEMENT_NEW<SimpleEpisodeLinearSchedule>},
+		{"Bhatnagar-Schedule",CHOICE_ELEMENT_NEW<BhatnagarSchedule>}
 	});
 
 }

@@ -216,7 +216,7 @@ public:
 	/// continuous collision detection needs prediction
 	void			predictIntegratedTransform(btScalar step, btTransform& predictedTransform) ;
 	
-	void			saveKinematicState(btScalar step);
+	void			saveKinematiState(btScalar step);
 	
 	void			applyGravity();
 	

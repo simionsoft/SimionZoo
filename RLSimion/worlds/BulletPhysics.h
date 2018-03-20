@@ -7,9 +7,9 @@
 #include <vector>
 #include <math.h>
 class BulletBody;
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
 
 class BulletPhysics : public BulletCreationInterface
 {
@@ -60,9 +60,9 @@ public:
 	std::vector<btSoftBody*>* getSoftBodiesArray();
 
 	void add(BulletBody* pBulletBody);
-	void reset(CState* s);
-	void updateState(CState* s);
-	void updateBulletState(CState* s, const CAction* a, double dt);
+	void reset(State* s);
+	void updateState(State* s);
+	void updateBulletState(State* s, const Action* a, double dt);
 
 	btAlignedObjectArray<btCollisionShape*> getCollisionShape();
 };

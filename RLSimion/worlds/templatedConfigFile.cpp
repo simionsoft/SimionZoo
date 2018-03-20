@@ -4,14 +4,14 @@
 
 #define MAX_CONFIG_FILE_SIZE 10000
 
-CTemplatedConfigFile::CTemplatedConfigFile()
+TemplatedConfigFile::TemplatedConfigFile()
 {
 	m_pTemplateConfigFileContent = 0;
 	m_pInstantiatedConfigFile = 0;
 	m_bTemplateLoaded = false;
 }
 
-CTemplatedConfigFile::~CTemplatedConfigFile()
+TemplatedConfigFile::~TemplatedConfigFile()
 {
 	if (m_pTemplateConfigFileContent != 0)
 		delete[] m_pTemplateConfigFileContent;
@@ -19,7 +19,7 @@ CTemplatedConfigFile::~CTemplatedConfigFile()
 		delete[] m_pInstantiatedConfigFile;
 }
 
-bool CTemplatedConfigFile::load(const char* inTemplateConfigFile)
+bool TemplatedConfigFile::load(const char* inTemplateConfigFile)
 {
 	FILE *templateFile;
 	int numCharsRead = 0;
@@ -45,7 +45,7 @@ bool CTemplatedConfigFile::load(const char* inTemplateConfigFile)
 
 
 template <typename ...ArgsType>
-bool CTemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConfigFile, ArgsType... args)
+bool TemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConfigFile, ArgsType... args)
 {
 	if (!m_bTemplateLoaded) return false;
 
@@ -65,25 +65,12 @@ bool CTemplatedConfigFile::instantiateConfigFile(const char* outInstantiatedConf
 
 
 //for some unknown reason, VStudio fails to link to the versions of the templated functions that are only called from an implementation
-//of a virtual function, so this little function foo() with the signatures we use seems like a small price to getSample it work
+//of a virtual function, so this little function foo() with the signatures we use seems like a small price for getSample to work
 void foo()
 {
-	CTemplatedConfigFile t;
+	TemplatedConfigFile t;
 	t.instantiateConfigFile("a.txt", 32.3);
 	t.instantiateConfigFile("a.txt", 2.3,3.4,13.3);
 	t.instantiateConfigFile("a.txt", 2.3, 5.2, "ajal");
 	t.instantiateConfigFile("a.txt", "b");
 }
-
-//class CFoo
-//{
-//	CTemplatedConfigFile m_episodeSimTime;
-//public :
-//	CFoo()
-//	{
-//		m_episodeSimTime.instantiateConfigFile("a.txt", 2.3);
-//		m_episodeSimTime.instantiateConfigFile("a.txt", 2.3, 5.2, "ajal");
-//	}
-//};
-
-//CFoo f;

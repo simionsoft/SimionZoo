@@ -6,12 +6,12 @@
 #include <map>
 
 
-class FASTStateDescriptor : public CDescriptor
+class FASTStateDescriptor : public Descriptor
 {
 	FASTStateDescriptor();
 };
 
-class FASTActionDescriptor : public CDescriptor
+class FASTActionDescriptor : public Descriptor
 {
 	FASTActionDescriptor();
 };
@@ -28,10 +28,10 @@ class FASTWorldPortal
 	//constants used to calculate those variables not available at runtime
 	double J_r, J_g, n_g;
 
-	CDescriptor m_stateDescriptor, m_actionDescriptor;
+	Descriptor m_stateDescriptor, m_actionDescriptor;
 	std::map<const char*, double> m_constants;
-	CState *s;
-	CAction *a;
+	State *s;
+	Action *a;
 
 public:
 	FASTWorldPortal();

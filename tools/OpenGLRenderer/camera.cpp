@@ -6,15 +6,15 @@
 #include "../GeometryLib/matrix33.h"
 #include "../GeometryLib/transform3d.h"
 
-CCamera::CCamera(): CSceneActor()
+Camera::Camera(): SceneActor()
 {
 }
 
-CCamera::~CCamera()
+Camera::~Camera()
 {
 }
 
-Matrix44 CCamera::getModelviewMatrix() const
+Matrix44 Camera::getModelviewMatrix() const
 {
 	Matrix44 mat, rot, trans;
 	rot.setRotation(m_transform.rotation().inverse());
@@ -24,26 +24,26 @@ Matrix44 CCamera::getModelviewMatrix() const
 	return mat;
 }
 
-CCamera* CCamera::getInstance(tinyxml2::XMLElement* pNode)
+Camera* Camera::getInstance(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement* pChild = pNode->FirstChildElement();
 	if (!strcmp(pChild->Name(), XML_TAG_SIMPLE_CAMERA))
-		return new CSimpleCamera(pChild);
+		return new SimpleCamera(pChild);
 	return nullptr;
 }
 
-CSimpleCamera::CSimpleCamera(tinyxml2::XMLElement* pNode)
+SimpleCamera::SimpleCamera(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement* pChild = pNode->FirstChildElement(XML_TAG_TRANSFORM);
 	if (pChild)
 		XML::load(pChild,m_transform);
 }
 
-CSimpleCamera::CSimpleCamera()
+SimpleCamera::SimpleCamera()
 {
 }
 
-void CSimpleCamera::set()
+void SimpleCamera::set()
 {
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -59,13 +59,13 @@ void CSimpleCamera::set()
 	m_frustum.fromCameraMatrix(perspective*matrix);
 }
 
-void CCamera::set2DView()
+void Camera::set2DView()
 {
 	int sizeX, sizeY;
 	//set projection matrix
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	CRenderer::get()->getWindowsSize(sizeX, sizeY);
+	Renderer::get()->getWindowsSize(sizeX, sizeY);
 	gluOrtho2D(0.0, sizeX, 0.0, sizeY);
 
 	//set modelview matrix

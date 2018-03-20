@@ -1,20 +1,20 @@
 #pragma once
 
 #include "world.h"
-class CSetPoint;
-class CRewardFunction;
+class SetPoint;
+class RewardFunction;
 
 //AIRPLANE PITCH CONTROL
-class CPitchControl: public CDynamicModel
+class PitchControl: public DynamicModel
 {
 	int m_sSetpointPitch, m_sAttackAngle;
 	int m_sPitch, m_sPitchRate, m_sControlDeviation;
 	int m_aPitch;
-	CSetPoint *m_pSetpoint;
+	SetPoint *m_pSetpoint;
 public:
-	CPitchControl(CConfigNode* pParameters);
-	virtual ~CPitchControl();
+	PitchControl(ConfigNode* pParameters);
+	virtual ~PitchControl();
 
-	void reset(CState *s);
-	void executeAction(CState *s, const CAction *a, double dt);
+	void reset(State *s);
+	void executeAction(State *s, const Action *a, double dt);
 };

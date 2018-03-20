@@ -1,12 +1,13 @@
 #pragma once
 #include "BulletBody.h"
 
-class Box : public BulletBody {
+class BulletBox : public BulletBody
+{
 public:
-	Box(double mass, const btVector3& pos, btCollisionShape* shape) : BulletBody(mass, pos, shape, 0)
+	BulletBox(double mass, const btVector3& pos, btCollisionShape* shape) : BulletBody(mass, pos, shape, 0)
 	{
 	}
-	virtual ~Box() {}
+	virtual ~BulletBox() {}
 
 };
 

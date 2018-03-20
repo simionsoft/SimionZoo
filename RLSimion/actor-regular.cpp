@@ -7,19 +7,19 @@
 #include "policy-learner.h"
 #include "parameters-numeric.h"
 
-CRegularPolicyGradientLearner::CRegularPolicyGradientLearner(CConfigNode* pConfigNode)
-	: CPolicyLearner(pConfigNode)
+RegularPolicyGradientLearner::RegularPolicyGradientLearner(ConfigNode* pConfigNode)
+	: PolicyLearner(pConfigNode)
 {
-	m_pStateFeatures = new CFeatureList("Actor/s");
-	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain");
+	m_pStateFeatures = new FeatureList("Actor/s");
+	m_pAlpha = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Alpha", "The learning gain");
 }
 
-CRegularPolicyGradientLearner::~CRegularPolicyGradientLearner()
+RegularPolicyGradientLearner::~RegularPolicyGradientLearner()
 {
 	delete m_pStateFeatures;
 }
 
-void CRegularPolicyGradientLearner::update(const CState *s, const CAction *a, const CState *s_p, double r, double td)
+void RegularPolicyGradientLearner::update(const State *s, const Action *a, const State *s_p, double r, double td)
 {
 	double lastNoise;
 	double alpha;

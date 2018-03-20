@@ -3,65 +3,65 @@
 #include "critic.h"
 #include "parameters.h"
 
-class CLinearStateVFA;
-class CETraces;
-class CFeatureList;
-class CConfigNode;
-class CNumericValue;
+class LinearStateVFA;
+class ETraces;
+class FeatureList;
+class ConfigNode;
+class NumericValue;
 
 
 
-//CVLearnerCritic implementations
+//VLearnerCritic implementations
 
-class CTDLambdaCritic : public CVLearnerCritic
+class TDLambdaCritic : public VLearnerCritic
 {
-	CHILD_OBJECT<CETraces> m_z; //traces
-	CFeatureList* m_aux;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	CHILD_OBJECT<ETraces> m_z; //traces
+	FeatureList* m_aux;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pAlpha;
 
 public:
-	CTDLambdaCritic(CConfigNode *pParameters);
-	virtual ~CTDLambdaCritic();
+	TDLambdaCritic(ConfigNode *pParameters);
+	virtual ~TDLambdaCritic();
 
-	double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho = 1.0);
+	double update(const State *s, const Action *a, const State *s_p, double r, double rho = 1.0);
 };
 
-class CTrueOnlineTDLambdaCritic : public CVLearnerCritic
+class TrueOnlineTDLambdaCritic : public VLearnerCritic
 {
 	//True Online TD(lambda)
 	//Harm van Seijen, Richard Sutton
 	//Proceedings of the 31st International Conference on Machine learning
 
-	CHILD_OBJECT<CETraces> m_e; //traces
-	CFeatureList* m_aux;
+	CHILD_OBJECT<ETraces> m_e; //traces
+	FeatureList* m_aux;
 	double m_v_s;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pAlpha;
 public:
-	CTrueOnlineTDLambdaCritic(CConfigNode *pParameters);
-	virtual ~CTrueOnlineTDLambdaCritic();
+	TrueOnlineTDLambdaCritic(ConfigNode *pParameters);
+	virtual ~TrueOnlineTDLambdaCritic();
 
-	double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho = 1.0);
+	double update(const State *s, const Action *a, const State *s_p, double r, double rho = 1.0);
 
 };
 
-class CTDCLambdaCritic : public CVLearnerCritic
+class TDCLambdaCritic : public VLearnerCritic
 {
-	CHILD_OBJECT<CETraces> m_z; //traces
-	CFeatureList* m_s_features;
-	CFeatureList* m_s_p_features;
-	CFeatureList* m_omega;
-	CFeatureList* m_a;
-	CFeatureList* m_b;
+	CHILD_OBJECT<ETraces> m_z; //traces
+	FeatureList* m_s_features;
+	FeatureList* m_s_p_features;
+	FeatureList* m_omega;
+	FeatureList* m_a;
+	FeatureList* m_b;
 
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pBeta;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pAlpha;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pBeta;
 	
 
 public:
-	CTDCLambdaCritic(CConfigNode *pParameters);
-	virtual ~CTDCLambdaCritic();
+	TDCLambdaCritic(ConfigNode *pParameters);
+	virtual ~TDCLambdaCritic();
 
-	double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho= 1.0);
+	double update(const State *s, const Action *a, const State *s_p, double r, double rho= 1.0);
 };
 
 

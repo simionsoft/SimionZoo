@@ -6,15 +6,15 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace ExperimentEpisodesSteps
 {		
-	TEST_CLASS(CExperimentTest)
+	TEST_CLASS(ExperimentTest)
 	{
-		//These tests check the functionality of the CExperiment class
+		//These tests check the functionality of the Experiment class
 	public:
 		
 		TEST_METHOD(Experiment_Episodes)
 		{
 			// init
-			CExperiment *pExperiment = new CExperiment();
+			Experiment *pExperiment = new Experiment();
 			pExperiment->setEpisodeLength(2.0);
 			pExperiment->setNumTrainingEpisodes(10);
 			pExperiment->setEvaluationFreq(2);
@@ -92,7 +92,7 @@ namespace ExperimentEpisodesSteps
 		TEST_METHOD(Experiment_Episodes2)
 		{
 			// init
-			CExperiment *pExperiment = new CExperiment();
+			Experiment *pExperiment = new Experiment();
 			pExperiment->setEpisodeLength(2.0);
 			pExperiment->setNumTrainingEpisodes(10);
 			pExperiment->setEvaluationFreq(3);
@@ -174,7 +174,7 @@ namespace ExperimentEpisodesSteps
 		TEST_METHOD(Experiment_Progress)
 		{
 			// init
-			CExperiment *pExperiment = new CExperiment();
+			Experiment *pExperiment = new Experiment();
 			pExperiment->setEpisodeLength(2.0);
 			pExperiment->setNumTrainingEpisodes(10);
 			pExperiment->setEvaluationFreq(2);
@@ -234,7 +234,7 @@ namespace ExperimentEpisodesSteps
 		TEST_METHOD(Experiment_OnlyOneEpisode)
 		{
 			// init: only one episode (evaluation) and 2 episodes per evaluation
-			CExperiment *pExperiment = new CExperiment();
+			Experiment *pExperiment = new Experiment();
 			pExperiment->setEpisodeLength(2.0);
 			pExperiment->setNumTrainingEpisodes(1);
 			pExperiment->setEvaluationFreq(2);

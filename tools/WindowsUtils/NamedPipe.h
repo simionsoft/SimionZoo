@@ -2,7 +2,7 @@
 
 #define MAX_PIPE_NAME_SIZE 1024
 
-class CNamedPipe
+class NamedPipe
 {
 protected:
 	void* m_pipeHandle;
@@ -13,8 +13,8 @@ protected:
 	void setPipeName(const char* pipeName,bool bAddPrefix= true,int id= -1);
 
 public:
-	CNamedPipe();
-	virtual ~CNamedPipe();
+	NamedPipe();
+	virtual ~NamedPipe();
 
 	int writeBuffer(const void* pBuffer, int numBytes);
 	int readToBuffer(void *pBuffer, int numBytes);
@@ -22,7 +22,7 @@ public:
 	bool isConnected();
 };
 
-class CNamedPipeServer: public CNamedPipe
+class CNamedPipeServer: public NamedPipe
 {
 	
 public:
@@ -35,7 +35,7 @@ public:
 	void closeServer();
 };
 
-class CNamedPipeClient: public CNamedPipe
+class CNamedPipeClient: public NamedPipe
 {
 public:
 	CNamedPipeClient();

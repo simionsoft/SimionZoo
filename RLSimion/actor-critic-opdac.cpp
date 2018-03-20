@@ -14,53 +14,53 @@
 //Implementation according to
 //http://proceedings.mlr.press/v32/silver14.pdf
 
-COffPolicyDeterministicActorCritic::COffPolicyDeterministicActorCritic(CConfigNode* pConfigNode)
+OffPolicyDeterministicActorCritic::OffPolicyDeterministicActorCritic(ConfigNode* pConfigNode)
 {
 
-	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);
+	SimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);
 
 	//td error
 	m_td = 0.0;
 
 	//base policies beta_i(a|s)
-	m_beta_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "beta-Policy", "The base-policy beta(a|s)");
+	m_beta_policies = MULTI_VALUE_FACTORY<Policy>(pConfigNode, "beta-Policy", "The base-policy beta(a|s)");
 
 	//critic's stuff
 	//linear state action value function
 	//(in the paper this is a general function without any more knowledge about it)
-	m_pQFunction = CHILD_OBJECT<CLinearStateActionVFA>(pConfigNode, "QFunction", "The Q-function");
+	m_pQFunction = CHILD_OBJECT<LinearStateActionVFA>(pConfigNode, "QFunction", "The Q-function");
 	//buffer to store features of the value function activated by the state s and the state s'
-	m_s_features = new CFeatureList("Critic/s");
-	m_s_p_features = new CFeatureList("Critic/s_p");
+	m_s_features = new FeatureList("Critic/s");
+	m_s_p_features = new FeatureList("Critic/s_p");
 	//learning rates
-	m_pAlphaW = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-w", "Learning gain used by the critic");
+	m_pAlphaW = CHILD_OBJECT_FACTORY <NumericValue>(pConfigNode, "Alpha-w", "Learning gain used by the critic");
 
 
 	//actor's stuff
 	//list of policies
-	m_policies = MULTI_VALUE_FACTORY<CDeterministicPolicy>(pConfigNode, "Policy", "The deterministic policy");
+	m_policies = MULTI_VALUE_FACTORY<DeterministicPolicy>(pConfigNode, "Policy", "The deterministic policy");
 	//gradient of the policy with respect to its parameters
-	m_grad_mu = new CFeatureList("OPDAC/Actor/grad-mu");
+	m_grad_mu = new FeatureList("OPDAC/Actor/grad-mu");
 	//learning rate
-	m_pAlphaTheta = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha-theta", "Learning gain used by the actor");
+	m_pAlphaTheta = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Alpha-theta", "Learning gain used by the actor");
 
 }
 
-COffPolicyDeterministicActorCritic::~COffPolicyDeterministicActorCritic()
+OffPolicyDeterministicActorCritic::~OffPolicyDeterministicActorCritic()
 {
 	delete m_s_features;
 	delete m_s_p_features;
 }
 
 #include <iostream>
-void COffPolicyDeterministicActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void OffPolicyDeterministicActorCritic::updateValue(const State *s, const Action *a, const State *s_p, double r)
 {
 	//td = r + gamma*V(s') - V(s)
 
 	//update the value/critic:
 	//w = w + alpha_w * td * grad_w(Q^w)(s_t, a_t)
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	double alpha_w = m_pAlphaW->get();
 
 	//select new action a_(t+1) = mu(s_(t+1))
@@ -77,7 +77,7 @@ void COffPolicyDeterministicActorCritic::updateValue(const CState *s, const CAct
 	m_pQFunction->add(m_s_features, alpha_w*m_td);
 }
 
-void COffPolicyDeterministicActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
+void OffPolicyDeterministicActorCritic::updatePolicy(const State* s, const State* a, const State *s_p, double r)
 {
 	//update the policy/critic
 	//theta(t+1) = theta(t) + alpha_theta * grad_theta(mu_theta(s(t)) * grad_a(Q^w(s(t), a(t))
@@ -86,7 +86,7 @@ void COffPolicyDeterministicActorCritic::updatePolicy(const CState* s, const CSt
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		if (CSimionApp::get()->pExperiment->isFirstStep())
+		if (SimionApp::get()->pExperiment->isFirstStep())
 			m_w[i]->clear();
 
 		//calculate the gradients
@@ -108,17 +108,17 @@ void COffPolicyDeterministicActorCritic::updatePolicy(const CState* s, const CSt
 	}
 }
 
-double COffPolicyDeterministicActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
+double OffPolicyDeterministicActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	updateValue(s, a, s_p, r);
 	updatePolicy(s, a, s_p, r);
 	return 1.0;
 }
 
-double COffPolicyDeterministicActorCritic::selectAction(const CState *s, CAction *a)
+double OffPolicyDeterministicActorCritic::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;
-	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		for (unsigned int i = 0; i < m_policies.size(); i++)
 		{

@@ -12,7 +12,7 @@
 #define NUM_TSR_SAMPLES 100
 
 
-double CWindTurbine::C_p(double lambda, double beta) 
+double WindTurbine::C_p(double lambda, double beta) 
 {
 	//Using values from the table given in: https://wind.nrel.gov/forum/wind/viewtopic.php?t=582
 	double betaInDegrees= beta*360.0/(2*3.14159265);
@@ -20,7 +20,7 @@ double CWindTurbine::C_p(double lambda, double beta)
 	return m_Cp.getInterpolatedValue(betaInDegrees, lambda);
 }
 
-double CWindTurbine::C_q(double lambda, double beta)
+double WindTurbine::C_q(double lambda, double beta)
 {
 	if (lambda==0.0)
 		return 0.0;
@@ -28,7 +28,7 @@ double CWindTurbine::C_q(double lambda, double beta)
 	return C_p(lambda,beta)/lambda;
 }
 
-double CWindTurbine::aerodynamicTorque(double tip_speed_ratio,double beta, double wind_speed)
+double WindTurbine::aerodynamicTorque(double tip_speed_ratio,double beta, double wind_speed)
 {
 	double cq= C_q(tip_speed_ratio,beta);
 
@@ -38,7 +38,7 @@ double CWindTurbine::aerodynamicTorque(double tip_speed_ratio,double beta, doubl
 	return torque;
 }
 
-double CWindTurbine::aerodynamicPower(double tip_speed_ratio,double beta, double wind_speed)
+double WindTurbine::aerodynamicPower(double tip_speed_ratio,double beta, double wind_speed)
 {
 	double cp= C_p(tip_speed_ratio,beta);
 
@@ -49,7 +49,7 @@ double CWindTurbine::aerodynamicPower(double tip_speed_ratio,double beta, double
 	return power;
 }
 
-double CWindTurbine::aerodynamicPower(double cp, double wind_speed)
+double WindTurbine::aerodynamicPower(double cp, double wind_speed)
 {
 	//Pa= 0.5 * rho * pi * R^2 * C_p(lambda,beta) * v^3
 	double power= 0.5*getConstant("AirDensity")*3.14159265
@@ -60,7 +60,7 @@ double CWindTurbine::aerodynamicPower(double cp, double wind_speed)
 
 
 
-void CWindTurbine::findSuitableParameters(double initial_wind_speed,double& initial_rotor_speed
+void WindTurbine::findSuitableParameters(double initial_wind_speed,double& initial_rotor_speed
 							,double &initial_blade_angle)
 {
 	double beta, tsr;
@@ -91,7 +91,7 @@ void CWindTurbine::findSuitableParameters(double initial_wind_speed,double& init
 }
 
 
-CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
+WindTurbine::WindTurbine(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Wind-turbine");
 	//load all the wind data files
@@ -100,22 +100,22 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	//evaluation file
 	FILE_PATH_PARAM evalFile= FILE_PATH_PARAM(pConfigNode, "Evaluation-Wind-Data"
 		, "The wind file used for evaluation", "../config/world/wind-turbine/TurbSim-10.25.hh");
-	m_pEvaluationWindData = new CHHFileSetPoint(evalFile.get());
+	m_pEvaluationWindData = new HHFileSetPoint(evalFile.get());
 
 	//training files
 	MULTI_VALUE_SIMPLE_PARAM<FILE_PATH_PARAM, const char*> trainingFiles 
 		= MULTI_VALUE_SIMPLE_PARAM<FILE_PATH_PARAM,const char*>(pConfigNode
 		, "Training-Wind-Data", "The wind files used for training","../config/world/wind-turbine/TurbSim-10.5.hh");
 	m_numDataFiles = trainingFiles.size();
-	m_pTrainingWindData = new CSetPoint*[m_numDataFiles];
+	m_pTrainingWindData = new SetPoint*[m_numDataFiles];
 	for (unsigned int i= 0; i<trainingFiles.size(); i++)
-		m_pTrainingWindData[i] = new CHHFileSetPoint(trainingFiles[i]->get());
+		m_pTrainingWindData[i] = new HHFileSetPoint(trainingFiles[i]->get());
 
 	FILE_PATH_PARAM powerSetpoint= FILE_PATH_PARAM(pConfigNode, "Power-Set-Point", "The power setpoint file", "../config/world/wind-turbine/power-setpoint.txt");
-	m_pPowerSetpoint = new CFileSetPoint(powerSetpoint.get());
+	m_pPowerSetpoint = new FileSetPoint(powerSetpoint.get());
 
 	char cp_table_file[] = "../config/world/wind-turbine/cp-table.txt";
-	CSimionApp::get()->registerInputFile(cp_table_file);
+	SimionApp::get()->registerInputFile(cp_table_file);
 	m_Cp.readFromFile(cp_table_file);
 
 	//model constants
@@ -161,7 +161,7 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);
 	
-	CToleranceRegionReward* pToleranceReward = new CToleranceRegionReward("E_p", 1000.0, 1.0);
+	ToleranceRegionReward* pToleranceReward = new ToleranceRegionReward("E_p", 1000.0, 1.0);
 	pToleranceReward->setMin(-1000.0);
 	m_pRewardFunction->addRewardComponent(pToleranceReward);
 	m_pRewardFunction->initialize();
@@ -173,14 +173,14 @@ CWindTurbine::CWindTurbine(CConfigNode* pConfigNode)
 	//m_initial_blade_angle= 0.0;
 
 	//the reward function
-	//m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("d_T_g",12000.0,1.0));
-	//m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 10.0, 1.0));
-	//m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_omega_r", 0.02, 1.0));
-	//m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("d_beta", 0.1745, 1.0));
+	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("d_T_g",12000.0,1.0));
+	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("E_p", 10.0, 1.0));
+	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("E_omega_r", 0.02, 1.0));
+	//m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("d_beta", 0.1745, 1.0));
 	//m_pRewardFunction->initialize();
 }
 
-CWindTurbine::~CWindTurbine()
+WindTurbine::~WindTurbine()
 {
 	for (int i = 0; i < m_numDataFiles; i++)
 	{
@@ -191,9 +191,9 @@ CWindTurbine::~CWindTurbine()
 	delete m_pPowerSetpoint;
 }
 
-void CWindTurbine::reset(CState *s)
+void WindTurbine::reset(State *s)
 {
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		m_pCurrentWindData = m_pEvaluationWindData;
 	else
 		m_pCurrentWindData = m_pTrainingWindData[rand() % m_numDataFiles];
@@ -227,15 +227,15 @@ void CWindTurbine::reset(CState *s)
 }
 
 
-void CWindTurbine::executeAction(CState *s, const CAction *a, double dt)
+void WindTurbine::executeAction(State *s, const Action *a, double dt)
 {
-	s->set("P_s", m_pPowerSetpoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime()));
-	s->set("v",m_pCurrentWindData->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime()));
+	s->set("P_s", m_pPowerSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime()));
+	s->set("v",m_pCurrentWindData->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime()));
 
 	double lastBeta = s->get("beta");
 	double lastTorque = s->get("T_g");
 
-	if (CSimionApp::get()->pWorld->bIsFirstIntegrationStep())
+	if (SimionApp::get()->pWorld->bIsFirstIntegrationStep())
 	{
 		//calculate action variables' derivatives to clamp them
 		s->set("d_T_g", (a->get("T_g") - lastTorque) / dt);

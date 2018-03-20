@@ -2,74 +2,74 @@
 
 #include "simion.h"
 #include "parameters.h"
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
 
-class CConfigNode;
-class CNumericValue;
+class ConfigNode;
+class NumericValue;
 
-class CController : public CSimion
+class Controller : public Simion
 {
 
 public:
-	virtual ~CController(){}
+	virtual ~Controller(){}
 	virtual int getNumOutputs()= 0;
 	virtual int getOutputActionIndex(int output)= 0;
 
-	static std::shared_ptr<CController> getInstance(CConfigNode* pConfigNode);
+	static std::shared_ptr<Controller> getInstance(ConfigNode* pConfigNode);
 
 	//regular controllers need not update. Default implementation does nothing but it can be overriden
 	//by adaptive controllers if need to
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) = 0;
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) = 0;
 
-	virtual double selectAction(const CState *s, CAction *a)= 0;
+	virtual double selectAction(const State *s, Action *a)= 0;
 };
 
-class CLQRGain
+class LQRGain
 {
 public:
-	CLQRGain(CConfigNode* pConfigNode);
-	virtual ~CLQRGain(){}
+	LQRGain(ConfigNode* pConfigNode);
+	virtual ~LQRGain(){}
 	STATE_VARIABLE m_variableIndex;
 	DOUBLE_PARAM m_gain;
 };
 
-class CLQRController : public CController
+class LQRController : public Controller
 {
-	MULTI_VALUE<CLQRGain> m_gains;
+	MULTI_VALUE<LQRGain> m_gains;
 	ACTION_VARIABLE m_outputActionIndex;
 public:
-	CLQRController(CConfigNode* pConfigNode);
-	virtual ~CLQRController();
+	LQRController(ConfigNode* pConfigNode);
+	virtual ~LQRController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	double selectAction(const CState *s,CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
+	double selectAction(const State *s,Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
-class CPIDController : public CController
+class PIDController : public Controller
 {
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pKP;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pKI;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pKD;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKP;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKI;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pKD;
 	ACTION_VARIABLE m_outputActionIndex;
 	double m_intError;
 	STATE_VARIABLE m_errorVariableIndex;
 public:
-	CPIDController(CConfigNode* pConfigNode);
-	virtual ~CPIDController();
+	PIDController(ConfigNode* pConfigNode);
+	virtual ~PIDController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	double selectAction(const CState *s,CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
+	double selectAction(const State *s,Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
-class CWindTurbineVidalController : public CController
+class WindTurbineVidalController : public Controller
 {
 protected:
 	//aux function
@@ -87,17 +87,17 @@ protected:
 	double m_lastT_g = 0.0;
 	DOUBLE_PARAM m_pA, m_pK_alpha, m_pKP, m_pKI;
 public:
-	CWindTurbineVidalController(CConfigNode* pConfigNode);
-	virtual ~CWindTurbineVidalController();
+	WindTurbineVidalController(ConfigNode* pConfigNode);
+	virtual ~WindTurbineVidalController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	virtual double selectAction(const CState *s,CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
+	virtual double selectAction(const State *s,Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
-class CWindTurbineBoukhezzarController : public CController
+class WindTurbineBoukhezzarController : public Controller
 {
 protected:
 	//state variable indices
@@ -113,17 +113,17 @@ protected:
 	double m_lastT_g = 0.0;
 	double m_genElecEff;
 public:
-	CWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
-	virtual ~CWindTurbineBoukhezzarController();
+	WindTurbineBoukhezzarController(ConfigNode* pConfigNode);
+	virtual ~WindTurbineBoukhezzarController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	virtual double selectAction(const CState *s,CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
+	virtual double selectAction(const State *s,Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
 };
 
-class CWindTurbineJonkmanController : public CController
+class WindTurbineJonkmanController : public Controller
 {
 protected:
 	int m_omega_g, m_d_omega_g;
@@ -143,12 +143,12 @@ protected:
 	DOUBLE_PARAM m_PC_KK, m_PC_KP, m_PC_KI;
 	DOUBLE_PARAM m_PC_RefSpd;
 public:
-	CWindTurbineJonkmanController(CConfigNode* pConfigNode);
-	virtual ~CWindTurbineJonkmanController();
+	WindTurbineJonkmanController(ConfigNode* pConfigNode);
+	virtual ~WindTurbineJonkmanController();
 
 	int getNumOutputs();
 	int getOutputActionIndex(int output);
 
-	virtual double selectAction(const CState *s,CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb) { return 1.0; }
+	virtual double selectAction(const State *s,Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb) { return 1.0; }
 };

@@ -1,18 +1,18 @@
 #pragma once
 #include "parameters.h"
-class CLinearStateVFA;
-class CNoise;
+class LinearStateVFA;
+class Noise;
 
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
 
-class CConfigNode;
-class CFeatureList;
+class ConfigNode;
+class FeatureList;
 
 
 //The interface class. One State-Function that represents a deterministic function output to some action
-class CPolicy
+class Policy
 {
 protected:
 	ACTION_VARIABLE m_outputActionIndex;
@@ -21,46 +21,46 @@ protected:
 	double m_space_density;
 
 public:
-	CPolicy(CConfigNode* pConfigNode);
-	virtual ~CPolicy();
+	Policy(ConfigNode* pConfigNode);
+	virtual ~Policy();
 
-	virtual void getFeatures(const CState* state, CFeatureList* outFeatureList) = 0;
-	virtual void addFeatures(const CFeatureList* pFeatureList, double factor) = 0;
-	virtual double getDeterministicOutput(const CFeatureList* pFeatureList) = 0;
+	virtual void getFeatures(const State* state, FeatureList* outFeatureList) = 0;
+	virtual void addFeatures(const FeatureList* pFeatureList, double factor) = 0;
+	virtual double getDeterministicOutput(const FeatureList* pFeatureList) = 0;
 
 	//this method is used when we want the policy to plug directly its output into the environment
-	virtual double selectAction(const CState *s, CAction *a) = 0;
+	virtual double selectAction(const State *s, Action *a) = 0;
 
 	//getProbability returns the probability with which the policy would select this output in s
 	//if we want to take exploration into account, bStochastic should be true. False otherwise.
-	virtual double getProbability(const CState *s, const CAction *a, bool bStochastic) = 0;
+	virtual double getProbability(const State *s, const Action *a, bool bStochastic) = 0;
 
-	virtual void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient) = 0;
+	virtual void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient) = 0;
 
 	int getOutputActionIndex() { return m_outputActionIndex.get(); }
 	void setOutputActionIndex(unsigned int outputActionIndex) { m_outputActionIndex.set(outputActionIndex); }
 
-	static std::shared_ptr<CPolicy> getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<Policy> getInstance(ConfigNode* pParameters);
 
-	virtual CLinearStateVFA* getDetPolicyStateVFA() = 0;
+	virtual LinearStateVFA* getDetPolicyStateVFA() = 0;
 };
 
-class CDeterministicPolicy : public CPolicy
+class DeterministicPolicy : public Policy
 {
 public:
-	CDeterministicPolicy(CConfigNode* pConfigNode);
+	DeterministicPolicy(ConfigNode* pConfigNode);
 
-	static std::shared_ptr<CDeterministicPolicy> getInstance(CConfigNode* pParameters) {throw("Not implemented: CDeterministicPolicy::getInstance()");}
+	static std::shared_ptr<DeterministicPolicy> getInstance(ConfigNode* pParameters) {throw("Not implemented: DeterministicPolicy::getInstance()");}
 };
 
-class CStochasticPolicy : public CPolicy
+class StochasticPolicy : public Policy
 {
 public:
-	CStochasticPolicy(CConfigNode* pConfigNode);
-	static std::shared_ptr<CStochasticPolicy> getInstance(CConfigNode* pParameters) { throw("Not implemented: CStochasticPolicy::getInstance()"); }
+	StochasticPolicy(ConfigNode* pConfigNode);
+	static std::shared_ptr<StochasticPolicy> getInstance(ConfigNode* pParameters) { throw("Not implemented: StochasticPolicy::getInstance()"); }
 };
 
-class CStochasticUniformPolicy : public CStochasticPolicy
+class StochasticUniformPolicy : public StochasticPolicy
 {
 protected:
 	double m_minActionValue;
@@ -68,75 +68,75 @@ protected:
 	double m_action_width;
 
 public:
-	CStochasticUniformPolicy(CConfigNode* pParameters);
-	virtual ~CStochasticUniformPolicy();
+	StochasticUniformPolicy(ConfigNode* pParameters);
+	virtual ~StochasticUniformPolicy();
 
-	void getFeatures(const CState* state, CFeatureList* outFeatureList);
-	void addFeatures(const CFeatureList* pFeatureList, double factor);
-	double getDeterministicOutput(const CFeatureList* pFeatureList);
+	void getFeatures(const State* state, FeatureList* outFeatureList);
+	void addFeatures(const FeatureList* pFeatureList, double factor);
+	double getDeterministicOutput(const FeatureList* pFeatureList);
 
-	double selectAction(const CState *s, CAction *a);
-	double getProbability(const CState *s, const CAction *a, bool bStochastic);
+	double selectAction(const State *s, Action *a);
+	double getProbability(const State *s, const Action *a, bool bStochastic);
 
-	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient);
 
-	CLinearStateVFA* getDetPolicyStateVFA() { throw "CStochasticUniformPolicy::getDetPolicyStateVFA() is not implemented"; }
+	LinearStateVFA* getDetPolicyStateVFA() { throw "StochasticUniformPolicy::getDetPolicyStateVFA() is not implemented"; }
 };
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
 //As proposed by Hasselt (?)
-class CDeterministicPolicyGaussianNoise : public CDeterministicPolicy
+class DeterministicPolicyGaussianNoise : public DeterministicPolicy
 {
 	double m_lastNoise;
 protected:
-	CHILD_OBJECT<CLinearStateVFA> m_pDeterministicVFA;
-	CHILD_OBJECT_FACTORY<CNoise> m_pExpNoise;
+	CHILD_OBJECT<LinearStateVFA> m_pDeterministicVFA;
+	CHILD_OBJECT_FACTORY<Noise> m_pExpNoise;
 
 public:
-	CDeterministicPolicyGaussianNoise(CConfigNode* pParameters);
-	virtual ~CDeterministicPolicyGaussianNoise();
+	DeterministicPolicyGaussianNoise(ConfigNode* pParameters);
+	virtual ~DeterministicPolicyGaussianNoise();
 
-	void getFeatures(const CState* state, CFeatureList* outFeatureList);
-	void addFeatures(const CFeatureList* pFeatureList, double factor);
-	double getDeterministicOutput(const CFeatureList* pFeatureList);
+	void getFeatures(const State* state, FeatureList* outFeatureList);
+	void addFeatures(const FeatureList* pFeatureList, double factor);
+	double getDeterministicOutput(const FeatureList* pFeatureList);
 
-	double selectAction(const CState *s, CAction *a);
-	double getProbability(const CState *s, const CAction *a, bool bStochastic);
+	double selectAction(const State *s, Action *a);
+	double getProbability(const State *s, const Action *a, bool bStochastic);
 
-	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient);
 
-	CLinearStateVFA* getDetPolicyStateVFA() { return m_pDeterministicVFA.ptr(); }
+	LinearStateVFA* getDetPolicyStateVFA() { return m_pDeterministicVFA.ptr(); }
 };
 
 //A policy that adds noise drawn from N(VFA(s),sigma) deterministic
 //Model-Free Reinforcement Learning with Continuous Action in Practice
 //2012 American Control Conference
-class CStochasticGaussianPolicy : public CStochasticPolicy
+class StochasticGaussianPolicy : public StochasticPolicy
 {
 	double m_lastNoise;
 protected:
 	//The deterministic output. The indices of the weights start from 0
-	CHILD_OBJECT<CLinearStateVFA> m_pMeanVFA;
+	CHILD_OBJECT<LinearStateVFA> m_pMeanVFA;
 	//the sigma parameter of the Gaussian noise added to the deterministic output. The indices of the VFA's start from m_pMeanVFA->getNumWeigths()
-	CHILD_OBJECT<CLinearStateVFA> m_pSigmaVFA;
+	CHILD_OBJECT<LinearStateVFA> m_pSigmaVFA;
 	//Auxiliar feature lists
-	CFeatureList *m_pMeanFeatures, *m_pSigmaFeatures;
+	FeatureList *m_pMeanFeatures, *m_pSigmaFeatures;
 
 	//temp buffer lists for the add() method
-	//CFeatureList* m_pMeanAddList;
-	//CFeatureList* m_pSigmaAddList;
+	//FeatureList* m_pMeanAddList;
+	//FeatureList* m_pSigmaAddList;
 public:
-	CStochasticGaussianPolicy(CConfigNode* pParameters);
-	virtual ~CStochasticGaussianPolicy();
+	StochasticGaussianPolicy(ConfigNode* pParameters);
+	virtual ~StochasticGaussianPolicy();
 
-	void getFeatures(const CState* state, CFeatureList* outFeatureList);
-	void addFeatures(const CFeatureList* pFeatureList, double factor);
-	double getDeterministicOutput(const CFeatureList* pFeatureList);
+	void getFeatures(const State* state, FeatureList* outFeatureList);
+	void addFeatures(const FeatureList* pFeatureList, double factor);
+	double getDeterministicOutput(const FeatureList* pFeatureList);
 
-	double selectAction(const CState *s, CAction *a);
-	double getProbability(const CState *s, const CAction *a, bool bStochastic);
+	double selectAction(const State *s, Action *a);
+	double getProbability(const State *s, const Action *a, bool bStochastic);
 
-	void getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient);
+	void getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient);
 
-	CLinearStateVFA* getDetPolicyStateVFA() { return m_pMeanVFA.ptr(); }
+	LinearStateVFA* getDetPolicyStateVFA() { return m_pMeanVFA.ptr(); }
 };

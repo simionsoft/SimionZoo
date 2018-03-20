@@ -13,7 +13,7 @@ using namespace std;
 
 
 template <typename MemPoolType>
-class CMemManager: public CDeferredLoad
+class MemManager: public DeferredLoad
 {
 	//Global collection of already requested memory pools
 	//when a new memory buffer is requested, we search for an existing pool that uses the exact same
@@ -36,8 +36,8 @@ class CMemManager: public CDeferredLoad
 	}
 public:
 	//This should be the first deferred load step taken
-	CMemManager():CDeferredLoad(10){}
-	virtual ~CMemManager()
+	MemManager():DeferredLoad(10){}
+	virtual ~MemManager()
 	{
 		for (auto it = m_memPools.begin(); it != m_memPools.end(); ++it)
 		{

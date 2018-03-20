@@ -24,7 +24,7 @@
 #define TRAINING_WIND_BASE_FILE_NAME "training-wind-file-"
 #define EVALUATION_WIND_BASE_FILE_NAME "eval-wind-file-"
 
-CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
+FASTWindTurbine::FASTWindTurbine(ConfigNode* pConfigNode)
 {
 	//This class is used both in the DimensionalPortalDLL (pConfigNode will be nullptr) and in RLSimion (pConfigNode will not be nullptr)
 	METADATA("World", "FAST-Wind-turbine");
@@ -80,63 +80,63 @@ CFASTWindTurbine::CFASTWindTurbine(CConfigNode* pConfigNode)
 	addActionVariable("beta", "rad", 0.0, 1.570796);
 	addActionVariable("T_g", "N/m", 0.0, 47402.91);
 
-	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("E_p", 1000.0, 1.0));
+	m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("E_p", 1000.0, 1.0));
 	m_pRewardFunction->initialize();
 
-	if (CSimionApp::get())
+	if (SimionApp::get())
 	{
 		//input/output files
-		CSimionApp::get()->registerInputFile("..\\bin\\FASTDimensionalPortalDLL.dll");
-		CSimionApp::get()->registerInputFile("..\\bin\\FAST_win32.exe");
-		CSimionApp::get()->registerInputFile("..\\bin\\MAP_win32.dll");
-		CSimionApp::get()->registerInputFile("..\\bin\\TurbSim.exe");
+		SimionApp::get()->registerInputFile("..\\bin\\FASTDimensionalPortalDLL.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\FAST_win32.exe");
+		SimionApp::get()->registerInputFile("..\\bin\\MAP_win32.dll");
+		SimionApp::get()->registerInputFile("..\\bin\\TurbSim.exe");
 
 		//FAST data files
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\configFileTemplate.fst");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder1.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder2.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU21_A17.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU25_A17.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU30_A17.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU35_A17.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU40_A17.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NACA64_A17.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_AeroDyn_blade.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn_Blade.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Blade.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_InflowWindTemplate.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\configFileTemplate.fst");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder1.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\Cylinder2.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU21_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU25_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU30_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU35_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\DU40_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NACA64_A17.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_AeroDyn_blade.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_BeamDyn_Blade.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Blade.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_InflowWindTemplate.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_AeroDyn15.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_BDoutputs.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ElastoDyn_Tower.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\FAST\\NRELOffshrBsline5MW_Onshore_ServoDyn.dat");
 		
 		//TurbSim data files
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event00000.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event01917.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02515.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02800.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02893.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03167.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03219.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03326.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03384.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03613.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03692.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03868.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04110.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04434.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04702.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event99999.dat");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.les");
-		CSimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.xtm");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\TurbSimConfigTemplate.inp");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event00000.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event01917.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02515.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02800.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event02893.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03167.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03219.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03326.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03384.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03613.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03692.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event03868.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04110.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04434.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event04702.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Event99999.dat");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.les");
+		SimionApp::get()->registerInputFile("..\\config\\world\\TurbSim\\EventData\\Events.xtm");
 	}
 }
 
 
-void CFASTWindTurbine::deferredLoadStep()
+void FASTWindTurbine::deferredLoadStep()
 {
 	std::string outConfigFileName, exeFileName;
 	std::string commandLine;
@@ -145,34 +145,34 @@ void CFASTWindTurbine::deferredLoadStep()
 	bool bLoaded = m_TurbSimConfigTemplate.load(TURBSIM_TEMPLATE_CONFIG_FILE);
 	if (bLoaded)
 	{
-		CLogger::logMessage(MessageType::Info, "Generating TurbSim wind files");
+		Logger::logMessage(MessageType::Info, "Generating TurbSim wind files");
 
 		exeFileName = std::string("..\\bin\\TurbSim.exe");
 
 		//evaluation wind files
 		for (unsigned int i = 0; i < m_evaluationMeanWindSpeeds.size(); i++)
 		{
-			outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
+			outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
 				+ std::string(EVALUATION_WIND_BASE_FILE_NAME) + std::to_string(i) + std::string(".inp");
 			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
-				, CSimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//AnalysisTime
-				, CSimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//UsableTime
+				, SimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//AnalysisTime
+				, SimionApp::get()->pExperiment->getEpisodeLength() + 30.0	//UsableTime
 				, m_evaluationMeanWindSpeeds[i]->get());						//URef
 
 			commandLine = exeFileName + std::string(" ") + outConfigFileName;
 			TurbSimProcess.spawn((char*)(commandLine).c_str(), true);
 		}
 		//set the number of episodes per evaluation
-		CSimionApp::get()->pExperiment->setNumEpisodesPerEvaluation((int)m_evaluationMeanWindSpeeds.size());
+		SimionApp::get()->pExperiment->setNumEpisodesPerEvaluation((int)m_evaluationMeanWindSpeeds.size());
 
 		//training wind files
 		for (unsigned int i = 0; i < m_trainingMeanWindSpeeds.size(); i++)
 		{
-			outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\") 
+			outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\") 
 				+ std::string(TRAINING_WIND_BASE_FILE_NAME) + std::to_string(i) + std::string(".inp");
 			m_TurbSimConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
-				, CSimionApp::get()->pExperiment->getEpisodeLength()+30.0	//AnalysisTime
-				, CSimionApp::get()->pExperiment->getEpisodeLength()+30.0	//UsableTime
+				, SimionApp::get()->pExperiment->getEpisodeLength()+30.0	//AnalysisTime
+				, SimionApp::get()->pExperiment->getEpisodeLength()+30.0	//UsableTime
 				, m_trainingMeanWindSpeeds[i]->get());						//URef
 
 			commandLine = exeFileName + std::string(" ") + outConfigFileName;
@@ -184,22 +184,22 @@ void CFASTWindTurbine::deferredLoadStep()
 	
 	//copy input files to experiment directory to avoid problems with FAST adding base config file's directory
 
-	commandLine= std::string("copy ..\\config\\world\\FAST\\*.dat ") + std::string(CSimionApp::get()->getOutputDirectory());
+	commandLine= std::string("copy ..\\config\\world\\FAST\\*.dat ") + std::string(SimionApp::get()->getOutputDirectory());
 	std::replace(commandLine.begin(), commandLine.end(), '/', '\\');
 	system(commandLine.c_str());
 
-	CLogger::logMessage(MessageType::Info, "Input files copied");
+	Logger::logMessage(MessageType::Info, "Input files copied");
 }
 
-CFASTWindTurbine::~CFASTWindTurbine()
+FASTWindTurbine::~FASTWindTurbine()
 {
 	m_namedPipeServer.closeServer();
-	CLogger::logMessage(MessageType::Info, "Closed connection to FASTDimensionalPortalDLL");
+	Logger::logMessage(MessageType::Info, "Closed connection to FASTDimensionalPortalDLL");
 }
 
 
 
-void CFASTWindTurbine::reset(CState *s)
+void FASTWindTurbine::reset(State *s)
 {
 	std::string outConfigFileName,windFile;
 	FILE *pOutConfigFile;
@@ -216,7 +216,7 @@ void CFASTWindTurbine::reset(CState *s)
 	bool pipeServerOpened = m_namedPipeServer.openUniqueNamedPipeServer(DIMENSIONAL_PORTAL_PIPE_NAME);
 	if (pipeServerOpened)
 	{
-		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
+		outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
 			+ std::string(PORTAL_CONFIG_FILE);
 		fopen_s(&pOutConfigFile, outConfigFileName.c_str(), "w");
 		if (pOutConfigFile)
@@ -224,11 +224,11 @@ void CFASTWindTurbine::reset(CState *s)
 			fprintf_s(pOutConfigFile, "<?xml version=\"1.0\"?>\n<FAST-DIMENSIONAL-PORTAL>\n  <PIPE-NAME>%s</PIPE-NAME>\n</FAST-DIMENSIONAL-PORTAL>"
 				, m_namedPipeServer.getPipeFullName());
 			fclose(pOutConfigFile);
-			CLogger::logMessage(MessageType::Info, "FASTDimensionalPortalDLL: pipe server created");
+			Logger::logMessage(MessageType::Info, "FASTDimensionalPortalDLL: pipe server created");
 		}
-		else CLogger::logMessage(MessageType::Error, (std::string("Couldn't create config file: ") + outConfigFileName).c_str());
+		else Logger::logMessage(MessageType::Error, (std::string("Couldn't create config file: ") + outConfigFileName).c_str());
 	}
-	else CLogger::logMessage(MessageType::Error, "Couldn't open named pipe server");
+	else Logger::logMessage(MessageType::Error, "Couldn't open named pipe server");
 
 
 	//Instantiate the templated FAST config file
@@ -237,10 +237,10 @@ void CFASTWindTurbine::reset(CState *s)
 	{
 		//choose the wind file
 		int index;
-		if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+		if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		{
 			//evaluation wind file
-			index = CSimionApp::get()->pExperiment->getEpisodeInEvaluationIndex()-1; //names are 0-based and indices are 1-based
+			index = SimionApp::get()->pExperiment->getEpisodeInEvaluationIndex()-1; //names are 0-based and indices are 1-based
 			windFile = std::string(EVALUATION_WIND_BASE_FILE_NAME)
 				+ std::to_string(index) + std::string(".bts");
 		}
@@ -251,21 +251,21 @@ void CFASTWindTurbine::reset(CState *s)
 			windFile = std::string(TRAINING_WIND_BASE_FILE_NAME)
 				+ std::to_string(index) + std::string(".bts");
 		}
-		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
+		outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
 			+ std::string(FAST_WIND_CONFIG_FILE);
 		m_FASTWindConfigTemplate.instantiateConfigFile(outConfigFileName.c_str(), windFile.c_str());
 
-		CLogger::logMessage(MessageType::Info, "Instantiating FAST config file");
-		outConfigFileName = std::string(CSimionApp::get()->getOutputDirectory()) + std::string("\\")
+		Logger::logMessage(MessageType::Info, "Instantiating FAST config file");
+		outConfigFileName = std::string(SimionApp::get()->getOutputDirectory()) + std::string("\\")
 			+ std::string(FAST_CONFIG_FILE);
 		m_FASTConfigTemplate.instantiateConfigFile(outConfigFileName.c_str()
-			, CSimionApp::get()->pExperiment->getEpisodeLength()
-			, CSimionApp::get()->pWorld->getDT()
+			, SimionApp::get()->pExperiment->getEpisodeLength()
+			, SimionApp::get()->pWorld->getDT()
 			, FAST_WIND_CONFIG_FILE
 		);
 	}
 	else
-		CLogger::logMessage(MessageType::Error, "Couldn't instantiate config file: ../config/world/FAST/configFileTemplate.fst");
+		Logger::logMessage(MessageType::Error, "Couldn't instantiate config file: ../config/world/FAST/configFileTemplate.fst");
 
 
 	//spawn the FAST exe file
@@ -273,46 +273,46 @@ void CFASTWindTurbine::reset(CState *s)
 
 	commandLine= std::string("..\\bin\\fast_win32.exe");
 
-	commandLine+= std::string(" ") + std::string(CSimionApp::get()->getOutputDirectory())+ std::string("\\")
+	commandLine+= std::string(" ") + std::string(SimionApp::get()->getOutputDirectory())+ std::string("\\")
 		+ std::string(FAST_CONFIG_FILE);
 	bool bSpawned= FASTprocess.spawn((char*)(commandLine).c_str());
 	//wait for the client (FASTDimensionalPortalDLL) to connect
 	if (bSpawned && FASTprocess.isRunning())
 	{
-		CLogger::logMessage(MessageType::Info, "Waiting for the client to connect");
+		Logger::logMessage(MessageType::Info, "Waiting for the client to connect");
 		m_namedPipeServer.waitForClientConnection();
-		CLogger::logMessage(MessageType::Info, "Client connected");
+		Logger::logMessage(MessageType::Info, "Client connected");
 		//receive(s)
 		m_namedPipeServer.readToBuffer(s->getValueVector(), s->getNumVars() * sizeof(double));
 	}
 	else
 	{
-		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
-		CSimionApp::get()->pExperiment->setTerminalState();
+		Logger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		SimionApp::get()->pExperiment->setTerminalState();
 		return;
 	}
 }
 
-void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
+void FASTWindTurbine::executeAction(State *s,const Action *a,double dt)
 {
 	//Check FAST is still running
 	if (!FASTprocess.isRunning())
 	{
-		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
-		CSimionApp::get()->pExperiment->setTerminalState();
+		Logger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		SimionApp::get()->pExperiment->setTerminalState();
 		m_pRewardFunction->override(FAST_FAILURE_REWARD);
 		return;
 	}
 
 	//send(a)
 	//here we have to cheat the compiler (const). We don't want to, but we have to
-	double* pActionValues = ((CAction*)a)->getValueVector();
+	double* pActionValues = ((Action*)a)->getValueVector();
 	int numBytesToWrite = sizeof(double) * 2; //hard-coded because there might be auxiliary actions added by the controller
 	int numBytesWritten= m_namedPipeServer.writeBuffer(pActionValues, numBytesToWrite);
 	if (numBytesToWrite != numBytesWritten)
 	{
-		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
-		CSimionApp::get()->pExperiment->setTerminalState();
+		Logger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		SimionApp::get()->pExperiment->setTerminalState();
 		m_pRewardFunction->override(FAST_FAILURE_REWARD);
 		return;
 	}
@@ -322,8 +322,8 @@ void CFASTWindTurbine::executeAction(CState *s,const CAction *a,double dt)
 	int numBytesRead= m_namedPipeServer.readToBuffer(s->getValueVector(), numBytesToRead);
 	if (numBytesToRead!=numBytesRead)
 	{
-		CLogger::logMessage(MessageType::Info, "FAST process ended prematurely");
-		CSimionApp::get()->pExperiment->setTerminalState();
+		Logger::logMessage(MessageType::Info, "FAST process ended prematurely");
+		SimionApp::get()->pExperiment->setTerminalState();
 		m_pRewardFunction->override(FAST_FAILURE_REWARD);
 		return;
 	}

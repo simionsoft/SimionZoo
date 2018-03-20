@@ -7,18 +7,18 @@
 #include "app-rlsimion.h"
 
 template <typename dimensionGridType>
-CTileCodingFeatureMap<dimensionGridType>::CTileCodingFeatureMap(CConfigNode* pParameters)
+TileCodingFeatureMap<dimensionGridType>::TileCodingFeatureMap(ConfigNode* pParameters)
 {
 }
 
 template <typename dimensionGridType>
-CTileCodingFeatureMap<dimensionGridType>::~CTileCodingFeatureMap()
+TileCodingFeatureMap<dimensionGridType>::~TileCodingFeatureMap()
 {
 	delete m_pVarFeatures;
 }
 
 template <typename dimensionGridType>
-void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
+void TileCodingFeatureMap<dimensionGridType>::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
 {
 	//initialize outFeatures with the right size
 	outFeatures->clear();
@@ -65,7 +65,7 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatures(const CState* s, cons
 }
 
 template <typename dimensionGridType>
-void CTileCodingFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
+void TileCodingFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, State* s, Action* a)
 {
 	//at first: determine the tile layer of the feature and subtract it to get the index within this layer
 	feature = feature % (m_totalNumFeatures / m_numTilings);
@@ -85,12 +85,12 @@ void CTileCodingFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned in
 	}
 }
 
-CTileCodingStateFeatureMap::CTileCodingStateFeatureMap(CConfigNode* pConfigNode)
-	: CTileCodingFeatureMap(pConfigNode), CStateFeatureMap(pConfigNode)
+TileCodingStateFeatureMap::TileCodingStateFeatureMap(ConfigNode* pConfigNode)
+	: TileCodingFeatureMap(pConfigNode), StateFeatureMap(pConfigNode)
 {
-	m_pVarFeatures = new CFeatureList("TileEncoding/var");
+	m_pVarFeatures = new FeatureList("TileEncoding/var");
 
-	m_grid = MULTI_VALUE<CSingleDimensionStateVariableGrid>(pConfigNode, "Tile-Encoding-Grid-Dimension", "Parameters of the state-dimension's grid");
+	m_grid = MULTI_VALUE<SingleDimensionStateVariableGrid>(pConfigNode, "Tile-Encoding-Grid-Dimension", "Parameters of the state-dimension's grid");
 
 	m_numTilings = INT_PARAM(pConfigNode, "Tile-layers", "Number of tile layers of the grid", 1).get();
 	m_tilingOffset = DOUBLE_PARAM(pConfigNode, "Tile-offset", "Offset of each tile relative to the previous one", 0.0).get();
@@ -104,12 +104,12 @@ CTileCodingStateFeatureMap::CTileCodingStateFeatureMap(CConfigNode* pConfigNode)
 	}
 }
 
-CTileCodingActionFeatureMap::CTileCodingActionFeatureMap(CConfigNode* pConfigNode)
-	: CTileCodingFeatureMap(pConfigNode), CActionFeatureMap(pConfigNode)
+TileCodingActionFeatureMap::TileCodingActionFeatureMap(ConfigNode* pConfigNode)
+	: TileCodingFeatureMap(pConfigNode), ActionFeatureMap(pConfigNode)
 {
-	m_pVarFeatures = new CFeatureList("TileEncoding/var");
+	m_pVarFeatures = new FeatureList("TileEncoding/var");
 
-	m_grid = MULTI_VALUE<CSingleDimensionActionVariableGrid>(pConfigNode, "Tile-Encoding-Grid-Dimension", "Parameters of the action-dimension's grid");
+	m_grid = MULTI_VALUE<SingleDimensionActionVariableGrid>(pConfigNode, "Tile-Encoding-Grid-Dimension", "Parameters of the action-dimension's grid");
 
 	m_numTilings = INT_PARAM(pConfigNode, "Tile-layers", "Number of tile layers of the grid", 1).get();
 	m_tilingOffset = DOUBLE_PARAM(pConfigNode, "Tile-offset", "Offset of each tile relative to the previous one", 0.0).get();

@@ -1,17 +1,17 @@
 #pragma once
 
-class CConfigNode;
+class ConfigNode;
 
-class CSetPoint
+class SetPoint
 {
 public:
-	CSetPoint(){}
-	virtual ~CSetPoint(){}
+	SetPoint(){}
+	virtual ~SetPoint(){}
 
 	virtual double getPointSet(double time)= 0;
 };
 
-class CFileSetPoint: public CSetPoint
+class FileSetPoint: public SetPoint
 {
 protected:
 	int m_numSteps;
@@ -19,21 +19,21 @@ protected:
 	double *m_pTimes;
 	double m_totalTime;
 public:
-	CFileSetPoint();
-	CFileSetPoint(const char* filename);
-	virtual ~CFileSetPoint();
+	FileSetPoint();
+	FileSetPoint(const char* filename);
+	virtual ~FileSetPoint();
 
 	double getPointSet(double time);
 };
 
-class CHHFileSetPoint : public CFileSetPoint
+class HHFileSetPoint : public FileSetPoint
 {
 public:
-	CHHFileSetPoint(const char* filename);
-	virtual ~CHHFileSetPoint(){}
+	HHFileSetPoint(const char* filename);
+	virtual ~HHFileSetPoint(){}
 };
 
-class CFixedStepSizeSetPoint: public CSetPoint
+class FixedStepSizeSetPoint: public SetPoint
 {
 	double m_stepTime;
 	double m_lastStepTime;
@@ -41,8 +41,8 @@ class CFixedStepSizeSetPoint: public CSetPoint
 	double m_min, m_max;
 
 public:
-	CFixedStepSizeSetPoint(double stepTime, double min, double max);
-	virtual ~CFixedStepSizeSetPoint();
+	FixedStepSizeSetPoint(double stepTime, double min, double max);
+	virtual ~FixedStepSizeSetPoint();
 
 	double getPointSet(double time);
 };

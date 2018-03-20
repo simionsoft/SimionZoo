@@ -10,21 +10,21 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace TileCoding
+namespace TileCodingTest
 {
 	TEST_CLASS(UnitTest1)
 	{
 	public:
 
-		void test_all_low(int highDimension, CTileCodingStateFeatureMap* map,
-			CFeatureList* outFeatureList, MULTI_VALUE<CSingleDimensionStateVariableGrid> m_grid, CState* s)
+		void test_all_low(int highDimension, TileCodingStateFeatureMap* map,
+			FeatureList* outFeatureList, MULTI_VALUE<SingleDimensionStateVariableGrid> m_grid, State* s)
 		{
 			outFeatureList->clear();
 
 			//set al values to min value
 			for (int i = 0; i < m_grid.size(); i++)
 			{
-				CNamedVarProperties& prop = m_grid[i]->getVarProperties(s, NULL);
+				NamedVarProperties& prop = m_grid[i]->getVarProperties(s, NULL);
 
 				double val = prop.getMin();
 				s->set(prop.getName(), val);
@@ -33,7 +33,7 @@ namespace TileCoding
 			}
 
 			//set the one dimension to its max value
-			CNamedVarProperties& prop = m_grid[highDimension]->getVarProperties(s, NULL);
+			NamedVarProperties& prop = m_grid[highDimension]->getVarProperties(s, NULL);
 			double val = prop.getMax();
 			s->set(prop.getName(), val);
 
@@ -55,19 +55,19 @@ namespace TileCoding
 		{
 			DWORD buffer[512];
 			GetCurrentDirectory(512, (LPWSTR)buffer);
-			CConfigFile configFile;
-			CConfigNode* pConfigNode = configFile.loadFile("..\\tests\\pull-box-1.simion.exp");
+			ConfigFile configFile;
+			ConfigNode* pConfigNode = configFile.loadFile("..\\tests\\pull-box-1.simion.exp");
 			RLSimionApp *pApp = new RLSimionApp(pConfigNode);
 
-			CState* s = pApp->pWorld->getDynamicModel()->getStateInstance();
-			CAction* a = pApp->pWorld->getDynamicModel()->getActionInstance();
+			State* s = pApp->pWorld->getDynamicModel()->getStateInstance();
+			Action* a = pApp->pWorld->getDynamicModel()->getActionInstance();
 
-			CStateFeatureMap* rawMap = pApp->pSimGod->getGlobalStateFeatureMap().get();
-			CTileCodingStateFeatureMap* map = (CTileCodingStateFeatureMap*)rawMap;
+			StateFeatureMap* rawMap = pApp->pSimGod->getGlobalStateFeatureMap().get();
+			TileCodingStateFeatureMap* map = (TileCodingStateFeatureMap*)rawMap;
 
-			CFeatureList* outFeatureList = new CFeatureList("testFeatureList");
+			FeatureList* outFeatureList = new FeatureList("testFeatureList");
 
-			MULTI_VALUE<CSingleDimensionStateVariableGrid> m_grid = map->returnGrid();
+			MULTI_VALUE<SingleDimensionStateVariableGrid> m_grid = map->returnGrid();
 
 			for (int i = 0; i < m_grid.size(); i++)
 			{

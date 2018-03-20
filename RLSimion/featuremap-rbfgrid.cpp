@@ -8,20 +8,20 @@
 #define ACTIVATION_THRESHOLD 0.0001
 
 template <typename dimensionGridType>
-CGaussianRBFGridFeatureMap<dimensionGridType>::CGaussianRBFGridFeatureMap(CConfigNode* pParameters)
+GaussianRBFGridFeatureMap<dimensionGridType>::GaussianRBFGridFeatureMap(ConfigNode* pParameters)
 {
 }
 
 
 
 template <typename dimensionGridType>
-CGaussianRBFGridFeatureMap<dimensionGridType>::~CGaussianRBFGridFeatureMap()
+GaussianRBFGridFeatureMap<dimensionGridType>::~GaussianRBFGridFeatureMap()
 {
 	delete m_pVarFeatures;
 }
 
 template <typename dimensionGridType>
-void CGaussianRBFGridFeatureMap<dimensionGridType>::getFeatures(const CState* s, const CAction* a, CFeatureList* outFeatures)
+void GaussianRBFGridFeatureMap<dimensionGridType>::getFeatures(const State* s, const Action* a, FeatureList* outFeatures)
 {
 	unsigned int offset = 1;
 
@@ -44,7 +44,7 @@ void CGaussianRBFGridFeatureMap<dimensionGridType>::getFeatures(const CState* s,
 }
 
 template <typename dimensionGridType>
-void CGaussianRBFGridFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, CState* s, CAction* a)
+void GaussianRBFGridFeatureMap<dimensionGridType>::getFeatureStateAction(unsigned int feature, State* s, Action* a)
 {
 	unsigned int dimFeature;
 
@@ -58,12 +58,12 @@ void CGaussianRBFGridFeatureMap<dimensionGridType>::getFeatureStateAction(unsign
 	}
 }
 
-CGaussianRBFStateGridFeatureMap::CGaussianRBFStateGridFeatureMap(CConfigNode* pConfigNode)
-	: CGaussianRBFGridFeatureMap(pConfigNode), CStateFeatureMap(pConfigNode)
+GaussianRBFStateGridFeatureMap::GaussianRBFStateGridFeatureMap(ConfigNode* pConfigNode)
+	: GaussianRBFGridFeatureMap(pConfigNode), StateFeatureMap(pConfigNode)
 {
-	m_pVarFeatures = new CFeatureList("RBFGrid/var");
+	m_pVarFeatures = new FeatureList("RBFGrid/var");
 
-	m_grid = MULTI_VALUE<CStateVariableGridRBF>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the state-dimension's grid");
+	m_grid = MULTI_VALUE<StateVariableGridRBF>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the state-dimension's grid");
 
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;
@@ -76,12 +76,12 @@ CGaussianRBFStateGridFeatureMap::CGaussianRBFStateGridFeatureMap(CConfigNode* pC
 		m_maxNumActiveFeatures *= MAX_NUM_ACTIVE_FEATURES_PER_DIMENSION;
 }
 
-CGaussianRBFActionGridFeatureMap::CGaussianRBFActionGridFeatureMap(CConfigNode* pConfigNode)
-	: CGaussianRBFGridFeatureMap(pConfigNode), CActionFeatureMap(pConfigNode)
+GaussianRBFActionGridFeatureMap::GaussianRBFActionGridFeatureMap(ConfigNode* pConfigNode)
+	: GaussianRBFGridFeatureMap(pConfigNode), ActionFeatureMap(pConfigNode)
 {
-	m_pVarFeatures = new CFeatureList("RBFGrid/var");
+	m_pVarFeatures = new FeatureList("RBFGrid/var");
 
-	m_grid = MULTI_VALUE<CActionVariableGridRBF>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid");
+	m_grid = MULTI_VALUE<ActionVariableGridRBF>(pConfigNode, "RBF-Grid-Dimension", "Parameters of the action-dimension's grid");
 
 	//pre-calculate number of features
 	m_totalNumFeatures = 1;

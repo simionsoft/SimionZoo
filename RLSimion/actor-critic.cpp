@@ -8,28 +8,28 @@
 
 #define MIN_PROBABILITY 0.00001
 
-CActorCritic::CActorCritic(CConfigNode* pConfigNode)
+ActorCritic::ActorCritic(ConfigNode* pConfigNode)
 {
 	m_td = 0.0;
-	CSimionApp::get()->pLogger->addVarToStats<double>("TD-error", "TD-error", m_td);
+	SimionApp::get()->pLogger->addVarToStats<double>("TD-error", "TD-error", m_td);
 
-	m_pActor = CHILD_OBJECT<CActor>(pConfigNode, "Actor", "The actor");
+	m_pActor = CHILD_OBJECT<Actor>(pConfigNode, "Actor", "The actor");
 	m_pCritic = CHILD_OBJECT_FACTORY<ICritic>(pConfigNode, "Critic", "The critic");
 }
 
-double CActorCritic::selectAction(const CState *s, CAction *a)
+double ActorCritic::selectAction(const State *s, Action *a)
 {
 	return m_pActor->selectAction(s, a);
 }
 
-double CActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
+double ActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	//sample importance weigthing: rho= pi(a_t|x_t) / mu(a_t|x_t)
 	//where mu is the behavior from which the sample is drawn
 
 	double sampleWeight = 1.0;
 	double policyProb;
-	if (CSimionApp::get()->pSimGod->useSampleImportanceWeights())
+	if (SimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
 		policyProb = m_pActor->getActionProbability(s,a,false);
 		sampleWeight = policyProb;// std::min(10.0, std::max(MIN_PROBABILITY, policyProb / behaviorProb));

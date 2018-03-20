@@ -7,26 +7,26 @@
 #include "../parameters.h"
 #include "templatedConfigFile.h"
 
-class CSetPoint;
-class CRewardFunction;
+class SetPoint;
+class RewardFunction;
 
-class CFASTWindTurbine : public CDynamicModel, public CDeferredLoad
+class FASTWindTurbine : public DynamicModel, public DeferredLoad
 {
-	CProcess FASTprocess,TurbSimProcess;
+	Process FASTprocess,TurbSimProcess;
 	CNamedPipeServer m_namedPipeServer;
 
-	CTemplatedConfigFile m_FASTConfigTemplate, m_FASTWindConfigTemplate, m_TurbSimConfigTemplate;
+	TemplatedConfigFile m_FASTConfigTemplate, m_FASTWindConfigTemplate, m_TurbSimConfigTemplate;
 
 	MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM,double> m_trainingMeanWindSpeeds;
 	MULTI_VALUE_SIMPLE_PARAM<DOUBLE_PARAM, double> m_evaluationMeanWindSpeeds;
 
 public:
 
-	CFASTWindTurbine(CConfigNode* pParameters);
-	virtual ~CFASTWindTurbine();
+	FASTWindTurbine(ConfigNode* pParameters);
+	virtual ~FASTWindTurbine();
 
-	void reset(CState *s);
-	void executeAction(CState *s, const CAction *a, double dt);
+	void reset(State *s);
+	void executeAction(State *s, const Action *a, double dt);
 
 	virtual void deferredLoadStep();
 };

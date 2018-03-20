@@ -7,48 +7,48 @@
 #define DEFAULT_FEATURE_THRESHOLD 0.000001
 
 
-CFeatureList::CFeatureList(const char* pName, OverwriteMode overwriteMode)
+FeatureList::FeatureList(const char* pName, OverwriteMode overwriteMode)
 {
 	m_name = pName;
 	m_numAllocFeatures = FEATURE_BLOCK_SIZE;
-	m_pFeatures = new CFeature[m_numAllocFeatures];
+	m_pFeatures = new Feature[m_numAllocFeatures];
 	m_numFeatures = 0;
 	m_overwriteMode = overwriteMode;
 }
 
-CFeatureList::~CFeatureList()
+FeatureList::~FeatureList()
 {
 	delete[] m_pFeatures;
 }
 
 //we only add the number of features of named feature lists (e-traces most probably)
-void CFeatureList::setName(const char* name)
+void FeatureList::setName(const char* name)
 {
 	m_name = name;
-	CSimionApp::get()->pLogger->addVarToStats<unsigned int>("Features", m_name, m_numFeatures);
+	SimionApp::get()->pLogger->addVarToStats<unsigned int>("Features", m_name, m_numFeatures);
 }
-const char* CFeatureList::getName()
+const char* FeatureList::getName()
 {
 	return m_name;
 }
 
-void CFeatureList::clear()
+void FeatureList::clear()
 {
 	m_numFeatures = 0;
 }
 
-void CFeatureList::resize(unsigned int newSize, bool bKeepFeatures)
+void FeatureList::resize(unsigned int newSize, bool bKeepFeatures)
 {
 	//make the newSize a multiple of the block size
 	if (newSize%FEATURE_BLOCK_SIZE != 0)
 		newSize += FEATURE_BLOCK_SIZE - (newSize%FEATURE_BLOCK_SIZE);
 
-	CFeature* pNewFeatures = new CFeature[newSize];
+	Feature* pNewFeatures = new Feature[newSize];
 
-	unsigned int oldsize = sizeof(CFeature)*m_numFeatures;
-	unsigned int newsize = sizeof(CFeature)*newSize;
+	unsigned int oldsize = sizeof(Feature)*m_numFeatures;
+	unsigned int newsize = sizeof(Feature)*newSize;
 	if (bKeepFeatures)
-		memcpy_s(pNewFeatures, sizeof(CFeature)*newSize, m_pFeatures, sizeof(CFeature)*m_numFeatures);
+		memcpy_s(pNewFeatures, sizeof(Feature)*newSize, m_pFeatures, sizeof(Feature)*m_numFeatures);
 	else m_numFeatures = 0;
 
 	delete[] m_pFeatures;
@@ -56,7 +56,7 @@ void CFeatureList::resize(unsigned int newSize, bool bKeepFeatures)
 	m_numAllocFeatures = newSize;
 }
 
-void CFeatureList::mult(double factor)
+void FeatureList::mult(double factor)
 {
 	for (unsigned int i = 0; i < m_numFeatures; i++)
 	{
@@ -64,14 +64,14 @@ void CFeatureList::mult(double factor)
 	}
 }
 //
-//void CFeatureList::swapFeatureLists(CFeatureList** pList1,CFeatureList** pList2)
+//void FeatureList::swapFeatureLists(FeatureList** pList1,FeatureList** pList2)
 //{
-//	CFeatureList *auxList= *pList1;
+//	FeatureList *auxList= *pList1;
 //	*pList1= *pList2;
 //	*pList2= auxList;
 //}
 
-double CFeatureList::getFactor(unsigned int index) const
+double FeatureList::getFactor(unsigned int index) const
 {
 	double factor = 0.0;
 	for (unsigned int i = 0; i < m_numFeatures; i++)
@@ -85,7 +85,7 @@ double CFeatureList::getFactor(unsigned int index) const
 	return factor;
 }
 
-double CFeatureList::innerProduct(const CFeatureList *inList)
+double FeatureList::innerProduct(const FeatureList *inList)
 {
 	double innerprod = 0.0;
 	for (unsigned int i = 0; i < m_numFeatures; i++)
@@ -95,7 +95,7 @@ double CFeatureList::innerProduct(const CFeatureList *inList)
 	return innerprod;
 }
 
-void CFeatureList::copyMult(double factor, const CFeatureList *inList)
+void FeatureList::copyMult(double factor, const FeatureList *inList)
 {
 	if (m_numAllocFeatures < inList->m_numFeatures)
 		resize(inList->m_numFeatures);
@@ -108,7 +108,7 @@ void CFeatureList::copyMult(double factor, const CFeatureList *inList)
 	}
 }
 
-void CFeatureList::addFeatureList(const CFeatureList *inList, double factor)
+void FeatureList::addFeatureList(const FeatureList *inList, double factor)
 {
 	//if (m_numFeatures+inList->m_numFeatures >m_numAllocFeatures)
 	//	resize (m_numFeatures+inList->m_numFeatures);
@@ -119,7 +119,7 @@ void CFeatureList::addFeatureList(const CFeatureList *inList, double factor)
 	}
 }
 
-int CFeatureList::getFeaturePos(unsigned int index)
+int FeatureList::getFeaturePos(unsigned int index)
 {
 	for (unsigned int i = 0; i < m_numFeatures; i++)
 	{
@@ -128,7 +128,7 @@ int CFeatureList::getFeaturePos(unsigned int index)
 	return -1;
 }
 
-void CFeatureList::add(unsigned int index, double value)
+void FeatureList::add(unsigned int index, double value)
 {
 	bool bCheckIfExists = m_overwriteMode != OverwriteMode::AllowDuplicates;
 	int pos;
@@ -155,7 +155,7 @@ void CFeatureList::add(unsigned int index, double value)
 }
 
 //spawn: all features (indices and values) are spawned by those in inList
-void CFeatureList::spawn(const CFeatureList *inList, unsigned int indexOffset)
+void FeatureList::spawn(const FeatureList *inList, unsigned int indexOffset)
 {
 	unsigned int newNumFeatures = inList->m_numFeatures * m_numFeatures;
 
@@ -177,7 +177,7 @@ void CFeatureList::spawn(const CFeatureList *inList, unsigned int indexOffset)
 	m_numFeatures = newNumFeatures;
 }
 
-void CFeatureList::applyThreshold(double threshold)
+void FeatureList::applyThreshold(double threshold)
 {
 	unsigned int oldNumFeatures = m_numFeatures;
 	int firstUnderThreshold = -1;
@@ -200,7 +200,7 @@ void CFeatureList::applyThreshold(double threshold)
 	}
 }
 
-void CFeatureList::normalize()
+void FeatureList::normalize()
 {
 	double sum = 0.0;
 	for (unsigned int i = 0; i < m_numFeatures; i++)
@@ -212,7 +212,7 @@ void CFeatureList::normalize()
 		m_pFeatures[i].m_factor *= sum;
 }
 
-void CFeatureList::copy(const CFeatureList* inList)
+void FeatureList::copy(const FeatureList* inList)
 {
 	if (m_numAllocFeatures < inList->m_numFeatures)
 		resize(inList->m_numFeatures, false);
@@ -226,14 +226,14 @@ void CFeatureList::copy(const CFeatureList* inList)
 	}
 }
 
-void CFeatureList::offsetIndices(int offset)
+void FeatureList::offsetIndices(int offset)
 {
 	if (offset == 0) return;
 	for (unsigned int i = 0; i < m_numFeatures; i++)
 		m_pFeatures[i].m_index += offset;
 }
 
-void CFeatureList::split(CFeatureList *outList1, CFeatureList *outList2, unsigned int splitOffset) const
+void FeatureList::split(FeatureList *outList1, FeatureList *outList2, unsigned int splitOffset) const
 {
 	for (unsigned int i = 0; i < m_numFeatures; i++)
 	{
@@ -245,7 +245,7 @@ void CFeatureList::split(CFeatureList *outList1, CFeatureList *outList2, unsigne
 }
 
 
-void CFeatureList::multIndices(int mult)
+void FeatureList::multIndices(int mult)
 {
 	if (mult <= 1) return;
 	for (unsigned int i = 0; i < m_numFeatures; i++)

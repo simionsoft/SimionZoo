@@ -7,14 +7,14 @@
 #include "named-var-set.h"
 #include <algorithm>
 
-CToleranceRegionReward::CToleranceRegionReward(string variable, double tolerance, double scale)
+ToleranceRegionReward::ToleranceRegionReward(string variable, double tolerance, double scale)
 {
 	m_name= "r/(" + variable + ")";
 	m_pVariableName = variable.c_str();
 	m_tolerance = tolerance;
 	m_scale = scale;
 }
-double CToleranceRegionReward::getReward(const CState *s, const CAction* a, const CState *s_p)
+double ToleranceRegionReward::getReward(const State *s, const Action* a, const State *s_p)
 {
 	double rew, error;
 
@@ -29,29 +29,29 @@ double CToleranceRegionReward::getReward(const CState *s, const CAction* a, cons
 	return rew;
 }
 
-const char* CToleranceRegionReward::getName(){ return m_name.c_str(); }
+const char* ToleranceRegionReward::getName(){ return m_name.c_str(); }
 
 
-CRewardFunction::CRewardFunction()
+RewardFunction::RewardFunction()
 {
 	m_bInitialized = false;
 }
 
-CRewardFunction::~CRewardFunction()
+RewardFunction::~RewardFunction()
 {
 	//we have to delete the reward components
 	for (auto it = m_rewardComponents.begin(); it != m_rewardComponents.end(); ++it) delete *it;
 }
 
-void CRewardFunction::addRewardComponent(IRewardComponent* rewardComponent)
+void RewardFunction::addRewardComponent(IRewardComponent* rewardComponent)
 {
 	m_rewardComponents.push_back(rewardComponent);
 }
 
-double CRewardFunction::getReward(const CState* s, const CAction* a, const CState* s_p)
+double RewardFunction::getReward(const State* s, const Action* a, const State* s_p)
 {
 	if (!m_bInitialized)
-		CSimionApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
+		SimionApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
 
 	if (m_bOverride)
 	{
@@ -71,7 +71,7 @@ double CRewardFunction::getReward(const CState* s, const CAction* a, const CStat
 	return reward;
 }
 
-void CRewardFunction::initialize()
+void RewardFunction::initialize()
 {
 	size_t numComponents;
 	if (!m_bInitialized)
@@ -92,19 +92,19 @@ void CRewardFunction::initialize()
 		
 		m_bInitialized = true;
 	}
-	else CSimionApp::get()->pLogger->logMessage(MessageType::Warning, "Reward function already initialized. Can't initialize again");
+	else SimionApp::get()->pLogger->logMessage(MessageType::Warning, "Reward function already initialized. Can't initialize again");
 }
 
 
-CReward* CRewardFunction::getRewardVector()
+Reward* RewardFunction::getRewardVector()
 {
 	if (!m_bInitialized)
-		CSimionApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
+		SimionApp::get()->pLogger->logMessage(MessageType::Error, "Reward has not been initialized, can't use it");
 
 	return m_pRewardVector;
 }
 
-void CRewardFunction::override(double reward)
+void RewardFunction::override(double reward)
 {
 	m_bOverride = true;
 	m_overrideValue = reward;

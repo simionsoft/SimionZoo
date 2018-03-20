@@ -1,6 +1,6 @@
 #pragma once
 
-class CTemplatedConfigFile
+class TemplatedConfigFile
 {
 	char *m_pTemplateConfigFileContent;
 	char *m_pInstantiatedConfigFile;
@@ -9,8 +9,8 @@ class CTemplatedConfigFile
 
 public:
 
-	CTemplatedConfigFile();
-	virtual ~CTemplatedConfigFile();
+	TemplatedConfigFile();
+	virtual ~TemplatedConfigFile();
 
 	bool load(const char* inTemplateConfigFile);
 

@@ -4,11 +4,11 @@
 #include <string>
 using namespace std;
 
-class CRenderer;
-class CExperimentLog;
-class C2DText;
-class CEpisode;
-class CStep;
+class Renderer;
+class ExperimentLog;
+class Text2D;
+class Episode;
+class Step;
 
 class SimionLogViewer: public IInputHandler
 {
@@ -17,18 +17,18 @@ class SimionLogViewer: public IInputHandler
 	int m_numEpisodes;
 	double m_episodeSimTime = 0.0;
 
-	CStep* 	m_pInterpolatedStep;
-	CEpisode* m_pCurrentEpisode;
+	Step* 	m_pInterpolatedStep;
+	Episode* m_pCurrentEpisode;
 
-	CExperimentLog* m_pExperimentLog;
-	CRenderer* m_pRenderer;
+	ExperimentLog* m_pExperimentLog;
+	Renderer* m_pRenderer;
 
-	C2DText * m_pTimeText;
-	C2DText * m_pEpisodeText;
+	Text2D * m_pTimeText;
+	Text2D * m_pEpisodeText;
 
 	bool m_bExitRequested = false;
 
-	CTimer m_timer;
+	Timer m_timer;
 
 	static void _onKeyPressed(unsigned char key, int x, int y);
 	static void _onKeyReleased(unsigned char key, int x, int y);
@@ -46,7 +46,7 @@ class SimionLogViewer: public IInputHandler
 
 
 
-	void interpolateStepData(double t, CEpisode* pInEpisode, CStep* pOutInterpolatedData) const;
+	void interpolateStepData(double t, Episode* pInEpisode, Step* pOutInterpolatedData) const;
 public:
 	SimionLogViewer();
 	virtual ~SimionLogViewer();

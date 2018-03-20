@@ -1,55 +1,55 @@
 #pragma once
 #include "parameters.h"
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
 
-class CFeatureList;
-class CETraces;
-class CPolicy;
-class CConfigNode;
-class CNumericValue;
+class FeatureList;
+class ETraces;
+class Policy;
+class ConfigNode;
+class NumericValue;
 
-class CPolicyLearner
+class PolicyLearner
 {
 protected:
-	CHILD_OBJECT_FACTORY<CPolicy> m_pPolicy;
+	CHILD_OBJECT_FACTORY<Policy> m_pPolicy;
 
 public:
-	CPolicyLearner(CConfigNode* pParameters);
-	virtual ~CPolicyLearner();
+	PolicyLearner(ConfigNode* pParameters);
+	virtual ~PolicyLearner();
 
-	virtual void update(const CState *s, const CAction *a,const CState *s_p, double r, double td)= 0;
+	virtual void update(const State *s, const Action *a,const State *s_p, double r, double td)= 0;
 
-	CPolicy* getPolicy(){ return m_pPolicy.ptr(); }
+	Policy* getPolicy(){ return m_pPolicy.ptr(); }
 
-	static std::shared_ptr<CPolicyLearner> getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<PolicyLearner> getInstance(ConfigNode* pParameters);
 };
 
 
 
 
 
-class CCACLALearner : public CPolicyLearner
+class CACLALearner : public PolicyLearner
 {
-	CFeatureList *m_pStateFeatures;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	FeatureList *m_pStateFeatures;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pAlpha;
 public:
 
-	CCACLALearner(CConfigNode *pParameters);
-	virtual ~CCACLALearner();
+	CACLALearner(ConfigNode *pParameters);
+	virtual ~CACLALearner();
 
-	void update(const CState *s, const CAction *a, const CState *s_p, double r, double td);
+	void update(const State *s, const Action *a, const State *s_p, double r, double td);
 };
 
-class CRegularPolicyGradientLearner :public CPolicyLearner
+class RegularPolicyGradientLearner :public PolicyLearner
 {
-	CFeatureList *m_pStateFeatures;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_pAlpha;
+	FeatureList *m_pStateFeatures;
+	CHILD_OBJECT_FACTORY<NumericValue> m_pAlpha;
 public:
 
-	CRegularPolicyGradientLearner(CConfigNode *pParameters);
-	virtual ~CRegularPolicyGradientLearner();
+	RegularPolicyGradientLearner(ConfigNode *pParameters);
+	virtual ~RegularPolicyGradientLearner();
 
-	void update(const CState *s, const CAction *a, const CState *s_p, double r, double td);
+	void update(const State *s, const Action *a, const State *s_p, double r, double td);
 };

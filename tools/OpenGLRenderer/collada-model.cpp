@@ -101,19 +101,19 @@ tinyxml2::XMLElement* deepSearch(tinyxml2::XMLElement* pNode, const char* elemen
 }
 
 
-CMesh* CColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, CGeometry* pGeometry, Matrix44& nodeTransform)
+Mesh* ColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, Geometry* pGeometry, Matrix44& nodeTransform)
 {
-	CMesh* pMesh;
-	CSource* pPosSource = 0;
-	CSource* pNormSource = 0;
-	CSource* pTexCoordSource = 0;
-	CInputDef m_definitions;
+	Mesh* pMesh;
+	Source* pPosSource = 0;
+	Source* pNormSource = 0;
+	Source* pTexCoordSource = 0;
+	MultiInputDef m_definitions;
 	int m_numIndicesPerPrimitive = 0;
 	bool bVertexDefCounted = false;
 
 	if (!pNode) return nullptr;
 
-	pMesh = new CMesh();
+	pMesh = new Mesh();
 	//material
 	string materialName;
 	if (pNode->Attribute(XML_TAG_COLLADA_MATERIAL_ATTR) != nullptr)
@@ -126,7 +126,7 @@ CMesh* CColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement
 
 	//vector<const char*> semanticTags = { XML_TAG_COLLADA_POSITION_SEMANTIC,XML_TAG_COLLADA_NORMAL_SEMANTIC
 	//			,XML_TAG_COLLADA_TEXCOORD_SEMANTIC };
-	//vector<CSource*> pSources = { pPosSource,pNormSource,pTexCoordSource };
+	//vector<Source*> pSources = { pPosSource,pNormSource,pTexCoordSource };
 
 	//find the source with the vertex positions
 	if (m_definitions.defines(XML_TAG_COLLADA_POSITION_SEMANTIC))
@@ -254,11 +254,11 @@ CMesh* CColladaModel::loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement
 }
 
 
-CInputDef::CInputDef() {}
+MultiInputDef::MultiInputDef() {}
 
-CInputDef::~CInputDef() {}
+MultiInputDef::~MultiInputDef() {}
 
-void CInputDef::load(tinyxml2::XMLElement* pNode)
+void MultiInputDef::load(tinyxml2::XMLElement* pNode)
 {
 	InputDef inputDef;
 	tinyxml2::XMLElement* pInput = pNode->FirstChildElement(XML_TAG_COLLADA_INPUT);
@@ -279,7 +279,7 @@ void CInputDef::load(tinyxml2::XMLElement* pNode)
 	}
 }
 
-string CInputDef::getSourceName(string semantic)
+string MultiInputDef::getSourceName(string semantic)
 {
 	for (auto it = m_definitions.begin(); it != m_definitions.end(); ++it)
 	{
@@ -290,7 +290,7 @@ string CInputDef::getSourceName(string semantic)
 	return string("Undefined");
 }
 
-bool CInputDef::defines(string semantic)
+bool MultiInputDef::defines(string semantic)
 {
 	for (auto it = m_definitions.begin(); it != m_definitions.end(); ++it)
 	{
@@ -300,13 +300,13 @@ bool CInputDef::defines(string semantic)
 	return false;
 }
 
-CVertexDef::CVertexDef()
+VertexDef::VertexDef()
 {}
 
-CVertexDef::~CVertexDef()
+VertexDef::~VertexDef()
 {}
 
-void CVertexDef::load(tinyxml2::XMLElement* pNode)
+void VertexDef::load(tinyxml2::XMLElement* pNode)
 {
 	if (pNode->Attribute(XML_TAG_COLLADA_ID_ATTR) != nullptr)
 		m_definitionId = pNode->Attribute(XML_TAG_COLLADA_ID_ATTR);
@@ -314,21 +314,21 @@ void CVertexDef::load(tinyxml2::XMLElement* pNode)
 	m_inputDefinition.load(pNode);
 }
 
-string CVertexDef::getSourceName(string semantic)
+string VertexDef::getSourceName(string semantic)
 {
 	if (m_inputDefinition.defines(semantic))
 		return m_inputDefinition.getSourceName(semantic);
 	return string("");
 }
 
-CSource::CSource(CGeometry* pParent): m_pParent(pParent)
+Source::Source(Geometry* pParent): m_pParent(pParent)
 {}
 
-CSource::~CSource()
+Source::~Source()
 {
 }
 
-void CSource::loadAccesor(tinyxml2::XMLElement* pNode)
+void Source::loadAccesor(tinyxml2::XMLElement* pNode)
 {
 	const char* pName;
 	int offset = 0;
@@ -346,7 +346,7 @@ void CSource::loadAccesor(tinyxml2::XMLElement* pNode)
 	m_elementStride = offset;
 }
 
-void CSource::loadArray(tinyxml2::XMLElement* pNode)
+void Source::loadArray(tinyxml2::XMLElement* pNode)
 {
 	if (pNode->Attribute(XML_TAG_COLLADA_ID_ATTR) != nullptr)
 		m_arrayId = string(pNode->Attribute(XML_TAG_COLLADA_ID_ATTR));
@@ -358,7 +358,7 @@ void CSource::loadArray(tinyxml2::XMLElement* pNode)
 	m_pFloatArrayAsString= (char*)pNode->GetText();
 }
 
-void CSource::load(tinyxml2::XMLElement* pNode)
+void Source::load(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement *pArray, *pTechnique, *pAccesor;
 	if (pNode->Attribute(XML_TAG_COLLADA_ID_ATTR) != nullptr)
@@ -381,25 +381,25 @@ void CSource::load(tinyxml2::XMLElement* pNode)
 	}
 }
 
-CGeometry::CGeometry(CColladaModel* pParent): m_pParent(pParent)
+Geometry::Geometry(ColladaModel* pParent): m_pParent(pParent)
 {}
 
-CGeometry::~CGeometry()
+Geometry::~Geometry()
 {
 	for (auto it = m_sources.begin(); it != m_sources.end(); ++it)
 		delete *it;
 }
 
-void CGeometry::load(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, Matrix44& nodeTransform)
+void Geometry::load(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, Matrix44& nodeTransform)
 {
-	CSource* pSource;
+	Source* pSource;
 	tinyxml2::XMLElement* pMeshNode = pNode->FirstChildElement(XML_TAG_COLLADA_MESH);
 
 	//load sources
 	tinyxml2::XMLElement* pSourceCfg = pMeshNode->FirstChildElement(XML_TAG_COLLADA_SOURCE);
 	while (pSourceCfg != nullptr)
 	{
-		pSource = new CSource(this);
+		pSource = new Source(this);
 		pSource->load(pSourceCfg);
 		m_sources.push_back(pSource);
 
@@ -413,7 +413,7 @@ void CGeometry::load(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, M
 
 	//load meshes
 	tinyxml2::XMLElement* pPrimitiveNode;
-	CMesh* pMesh;
+	Mesh* pMesh;
 	vector<string> primitives = { XML_TAG_COLLADA_TRIANGLES,XML_TAG_COLLADA_POLYLIST,XML_TAG_COLLADA_POLYGONS };
 	for (auto it = primitives.begin(); it != primitives.end(); ++it)
 	{
@@ -430,7 +430,7 @@ void CGeometry::load(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, M
 	
 }
 
-CSource* CGeometry::getSource(string inputName, string requestedSemantic)
+Source* Geometry::getSource(string inputName, string requestedSemantic)
 {
 	if (inputName == m_vertexDef.id())
 		inputName = m_vertexDef.getSourceName(requestedSemantic);
@@ -443,20 +443,20 @@ CSource* CGeometry::getSource(string inputName, string requestedSemantic)
 	return nullptr;
 }
 
-CColladaModel::CColladaModel(tinyxml2::XMLElement* pNode): CGraphicObject(pNode)
+ColladaModel::ColladaModel(tinyxml2::XMLElement* pNode): GraphicObject(pNode)
 {
 	tinyxml2::XMLElement* pChild;
 
 	m_path = string(pNode->Attribute(XML_TAG_PATH_ATTR));
 
 	string pDir= getDirectory(m_path.c_str());
-	string dataFolder = CRenderer::get()->getDataFolder();
-	string previousTextureFolder= CRenderer::get()->getTextureManager()->getFolder();
-	CRenderer::get()->getTextureManager()->setFolder(dataFolder + pDir);
+	string dataFolder = Renderer::get()->getDataFolder();
+	string previousTextureFolder= Renderer::get()->getTextureManager()->getFolder();
+	Renderer::get()->getTextureManager()->setFolder(dataFolder + pDir);
 
 	loadFromFile(m_path.c_str());
 
-	CRenderer::get()->getTextureManager()->setFolder(previousTextureFolder);
+	Renderer::get()->getTextureManager()->setFolder(previousTextureFolder);
 
 	updateBoundingBox();
 
@@ -477,10 +477,10 @@ CColladaModel::CColladaModel(tinyxml2::XMLElement* pNode): CGraphicObject(pNode)
 	}
 }
 
-void CColladaModel::instanceGeometry(tinyxml2::XMLElement* pRootNode, const char* geometryId, Matrix44& nodeTransform)
+void ColladaModel::instanceGeometry(tinyxml2::XMLElement* pRootNode, const char* geometryId, Matrix44& nodeTransform)
 {
 	//load the meshes
-	CGeometry geometry(this);
+	Geometry geometry(this);
 	tinyxml2::XMLElement *pGeometryNode = pRootNode->FirstChildElement(XML_TAG_COLLADA_LIB_GEOM)
 		->FirstChildElement(XML_TAG_COLLADA_GEOMETRY);
 	while (pGeometryNode != nullptr)
@@ -496,7 +496,7 @@ void CColladaModel::instanceGeometry(tinyxml2::XMLElement* pRootNode, const char
 	return;
 }
 
-void CColladaModel::traverseVisualScene(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLElement* pNode, Matrix44& nodeTransform)
+void ColladaModel::traverseVisualScene(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLElement* pNode, Matrix44& nodeTransform)
 {
 	//node has a transform matrix??
 	Vector3D translation;
@@ -533,7 +533,7 @@ void CColladaModel::traverseVisualScene(tinyxml2::XMLElement* pRootNode, tinyxml
 	}
 }
 
-void CColladaModel::loadVisualScenes(tinyxml2::XMLElement* pRootNode)
+void ColladaModel::loadVisualScenes(tinyxml2::XMLElement* pRootNode)
 {
 	//load the visual scene
 	tinyxml2::XMLElement* pVisualScene, *pNode;
@@ -555,7 +555,7 @@ void CColladaModel::loadVisualScenes(tinyxml2::XMLElement* pRootNode)
 	}
 }
 
-void CColladaModel::loadSkin(tinyxml2::XMLElement* pRootNode)
+void ColladaModel::loadSkin(tinyxml2::XMLElement* pRootNode)
 {
 	Matrix44 matrix;
 	matrix.setIdentity();
@@ -583,11 +583,11 @@ void CColladaModel::loadSkin(tinyxml2::XMLElement* pRootNode)
 }
 
 
-void CColladaModel::loadFromFile(const char* file)
+void ColladaModel::loadFromFile(const char* file)
 {
 	tinyxml2::XMLDocument doc;
 
-	string path = CRenderer::get()->getDataFolder() + string(file);
+	string path = Renderer::get()->getDataFolder() + string(file);
 
 
 	doc.LoadFile(path.c_str());
@@ -603,7 +603,7 @@ void CColladaModel::loadFromFile(const char* file)
 	}
 }
 
-const char* CColladaModel::findTexture(tinyxml2::XMLElement* pRootNode, string textureName)
+const char* ColladaModel::findTexture(tinyxml2::XMLElement* pRootNode, string textureName)
 {
 	static string imageFile;
 	tinyxml2::XMLElement* pImageLib = pRootNode->FirstChildElement(XML_TAG_COLLADA_IMAGE_LIB);
@@ -628,7 +628,7 @@ const char* CColladaModel::findTexture(tinyxml2::XMLElement* pRootNode, string t
 	return nullptr;
 }
 
-const char* CColladaModel::findTextureRedirection(tinyxml2::XMLElement* pFxProfile, string textureName)
+const char* ColladaModel::findTextureRedirection(tinyxml2::XMLElement* pFxProfile, string textureName)
 {
 	tinyxml2::XMLElement* pRedir;
 	tinyxml2::XMLElement* pNewParam = pFxProfile->FirstChildElement(XML_TAG_COLLADA_NEWPARAM);
@@ -656,7 +656,7 @@ const char* CColladaModel::findTextureRedirection(tinyxml2::XMLElement* pFxProfi
 	return nullptr;
 }
 
-int CColladaModel::loadTexture(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLElement* pFxProfile, string textureName)
+int ColladaModel::loadTexture(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLElement* pFxProfile, string textureName)
 {
 	size_t textureId;
 	//first, we assume the number of the texture in the diffuse element is the name of a texture resource
@@ -675,15 +675,15 @@ int CColladaModel::loadTexture(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLEle
 	}
 	if (imageFile != nullptr)
 	{
-		textureId = CRenderer::get()->getTextureManager()->loadTexture(imageFile);
+		textureId = Renderer::get()->getTextureManager()->loadTexture(imageFile);
 		return (int)textureId;
 	}
 
 	return -1;
 }
 
-void CColladaModel::loadMaterialProperties(tinyxml2::XMLElement* pRootNode
-	, const char* fxName, CSimpleTLMaterial* pMaterial)
+void ColladaModel::loadMaterialProperties(tinyxml2::XMLElement* pRootNode
+	, const char* fxName, SimpleTLMaterial* pMaterial)
 {
 	string textureName;
 	double rgba[4];
@@ -749,7 +749,7 @@ void CColladaModel::loadMaterialProperties(tinyxml2::XMLElement* pRootNode
 	}
 }
 
-const char* CColladaModel::findMaterialFxName(tinyxml2::XMLElement* pRootNode, string materialName)
+const char* ColladaModel::findMaterialFxName(tinyxml2::XMLElement* pRootNode, string materialName)
 {
 	bool bMatFound = false;
 	tinyxml2::XMLElement* pMat, *pInstFX;
@@ -771,9 +771,9 @@ const char* CColladaModel::findMaterialFxName(tinyxml2::XMLElement* pRootNode, s
 	return nullptr;
 }
 
-CSimpleTLMaterial* CColladaModel::loadMaterial(tinyxml2::XMLElement* pRootNode, string materialName)
+SimpleTLMaterial* ColladaModel::loadMaterial(tinyxml2::XMLElement* pRootNode, string materialName)
 {
-	CSimpleTLMaterial* pMaterial;
+	SimpleTLMaterial* pMaterial;
 	const char* fxName = nullptr;
 	//find the material's effect
 	string name;
@@ -796,7 +796,7 @@ CSimpleTLMaterial* CColladaModel::loadMaterial(tinyxml2::XMLElement* pRootNode, 
 
 	if (fxName !=nullptr)
 	{
-		pMaterial = new CSimpleTLMaterial();
+		pMaterial = new SimpleTLMaterial();
 		loadMaterialProperties(pRootNode,fxName,pMaterial);
 		return pMaterial;
 	}
@@ -805,6 +805,6 @@ CSimpleTLMaterial* CColladaModel::loadMaterial(tinyxml2::XMLElement* pRootNode, 
 }
 
 
-CColladaModel::~CColladaModel()
+ColladaModel::~ColladaModel()
 {
 }

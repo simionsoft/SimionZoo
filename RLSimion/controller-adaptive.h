@@ -5,46 +5,46 @@
 #include "vfa-critic.h"
 #include "policy-learner.h"
 
-class CExtendedWindTurbineVidalController: public CWindTurbineVidalController
+class ExtendedWindTurbineVidalController: public WindTurbineVidalController
 {
 	unsigned int m_aActionId, m_KAlphaActionId, m_KPActionId;
 
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
-	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pALearner, m_pKAlphaLearner, m_pKPLearner;
+	CHILD_OBJECT_FACTORY<PolicyLearner> m_pALearner, m_pKAlphaLearner, m_pKPLearner;
 
 public:
-	CExtendedWindTurbineVidalController(CConfigNode* pConfigNode);
-	virtual ~CExtendedWindTurbineVidalController();
+	ExtendedWindTurbineVidalController(ConfigNode* pConfigNode);
+	virtual ~ExtendedWindTurbineVidalController();
 
-	virtual double selectAction(const CState *s, CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
+	virtual double selectAction(const State *s, Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };
 
-class CExtendedWindTurbineBoukhezzarController : public CWindTurbineBoukhezzarController
+class ExtendedWindTurbineBoukhezzarController : public WindTurbineBoukhezzarController
 {
 	unsigned int m_C0ActionId, m_KPActionId;
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
-	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pC0Learner, m_pKPLearner;
+	CHILD_OBJECT_FACTORY<PolicyLearner> m_pC0Learner, m_pKPLearner;
 
 public:
-	CExtendedWindTurbineBoukhezzarController(CConfigNode* pConfigNode);
-	virtual ~CExtendedWindTurbineBoukhezzarController();
+	ExtendedWindTurbineBoukhezzarController(ConfigNode* pConfigNode);
+	virtual ~ExtendedWindTurbineBoukhezzarController();
 
-	virtual double selectAction(const CState *s, CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
+	virtual double selectAction(const State *s, Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };
 
-class CExtendedWindTurbineJonkmanController : public CWindTurbineJonkmanController
+class ExtendedWindTurbineJonkmanController : public WindTurbineJonkmanController
 {
 	double m_td;
 	unsigned int m_KPActionId;
 	CHILD_OBJECT_FACTORY<ICritic> m_pCritic;
-	CHILD_OBJECT_FACTORY<CPolicyLearner> m_pPC_KP_Learner;
+	CHILD_OBJECT_FACTORY<PolicyLearner> m_pPC_KP_Learner;
 
 public:
-	CExtendedWindTurbineJonkmanController(CConfigNode* pConfigNode);
-	virtual ~CExtendedWindTurbineJonkmanController();
+	ExtendedWindTurbineJonkmanController(ConfigNode* pConfigNode);
+	virtual ~ExtendedWindTurbineJonkmanController();
 
-	virtual double selectAction(const CState *s, CAction *a);
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb);
+	virtual double selectAction(const State *s, Action *a);
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };

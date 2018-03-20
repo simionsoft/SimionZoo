@@ -5,17 +5,17 @@
 #include "config.h"
 #include "single-dimension-grid.h"
 
-CBagStateFeatureMap::CBagStateFeatureMap(CConfigNode* pParameters) : CStateFeatureMap(pParameters)
+BagStateFeatureMap::BagStateFeatureMap(ConfigNode* pParameters) : StateFeatureMap(pParameters)
 {
 	m_stateVariables = MULTI_VALUE_VARIABLE<STATE_VARIABLE>(pParameters, "State-Variables", "The state variables");
 }
 
-CBagActionFeatureMap::CBagActionFeatureMap(CConfigNode* pParameters) : CActionFeatureMap(pParameters)
+BagActionFeatureMap::BagActionFeatureMap(ConfigNode* pParameters) : ActionFeatureMap(pParameters)
 {
 	m_actionVariables = MULTI_VALUE_VARIABLE<ACTION_VARIABLE>(pParameters, "Action-Variables", "The action variables");
 }
 
-void CBagStateFeatureMap::getFeatures(const CState* s, CFeatureList* outFeatures)
+void BagStateFeatureMap::getFeatures(const State* s, FeatureList* outFeatures)
 {
 	outFeatures->clear();
 	for (size_t i = 0; i < m_stateVariables.size(); i++)
@@ -25,12 +25,12 @@ void CBagStateFeatureMap::getFeatures(const CState* s, CFeatureList* outFeatures
 	}
 }
 
-void CBagStateFeatureMap::getFeatureState(unsigned int feature, CState* s)
+void BagStateFeatureMap::getFeatureState(unsigned int feature, State* s)
 {
 
 }
 
-void CBagActionFeatureMap::getFeatures(const CAction* a, CFeatureList* outFeatures)
+void BagActionFeatureMap::getFeatures(const Action* a, FeatureList* outFeatures)
 {
 	outFeatures->clear();
 	for (size_t i = 0; i < m_actionVariables.size(); i++)
@@ -40,7 +40,7 @@ void CBagActionFeatureMap::getFeatures(const CAction* a, CFeatureList* outFeatur
 	}
 }
 
-void CBagActionFeatureMap::getFeatureAction(unsigned int feature, CAction* s)
+void BagActionFeatureMap::getFeatureAction(unsigned int feature, Action* s)
 {
 
 }

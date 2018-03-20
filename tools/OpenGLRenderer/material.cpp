@@ -4,25 +4,25 @@
 #include "renderer.h"
 #include "texture-manager.h"
 
-CMaterial::CMaterial()
+Material::Material()
 {
 }
 
 
-CMaterial::~CMaterial()
+Material::~Material()
 {
 }
 
-CMaterial* CMaterial::getInstance(tinyxml2::XMLElement* pNode)
+Material* Material::getInstance(tinyxml2::XMLElement* pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_SIMPLE_TL_MATERIAL))
-		return new CSimpleTLMaterial(pNode);
+		return new SimpleTLMaterial(pNode);
 	if (!strcmp(pNode->Name(), XML_TAG_TRANSLUCENT_MATERIAL))
-		return new CTranslucentMaterial(pNode);
+		return new TranslucentMaterial(pNode);
 	return nullptr;
 }
 
-CSimpleTLMaterial::CSimpleTLMaterial(tinyxml2::XMLElement* pNode)
+SimpleTLMaterial::SimpleTLMaterial(tinyxml2::XMLElement* pNode)
 {
 	tinyxml2::XMLElement *pChild, *pChild2;
 	pChild = pNode->FirstChildElement(XML_TAG_AMBIENT);
@@ -40,11 +40,11 @@ CSimpleTLMaterial::CSimpleTLMaterial(tinyxml2::XMLElement* pNode)
 	{
 		pChild2 = pChild->FirstChildElement(XML_TAG_PATH);
 		if (pChild2!=nullptr)
-			m_textureId = (int) CRenderer::get()->getTextureManager()->loadTexture(pChild2->GetText());
+			m_textureId = (int) Renderer::get()->getTextureManager()->loadTexture(pChild2->GetText());
 	}
 }
 
-void CSimpleTLMaterial::set()
+void SimpleTLMaterial::set()
 {
 	//no alpha blending
 	glEnable(GL_LIGHTING);
@@ -52,7 +52,7 @@ void CSimpleTLMaterial::set()
 	glDepthMask(GL_TRUE);
 	glEnable(GL_CULL_FACE);
 
-	CRenderer::get()->getTextureManager()->set(m_textureId);
+	Renderer::get()->getTextureManager()->set(m_textureId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_textureWrapModeS);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_textureWrapModeT);
 
@@ -65,7 +65,7 @@ void CSimpleTLMaterial::set()
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-void CTranslucentMaterial::set()
+void TranslucentMaterial::set()
 {
 	glEnable(GL_LIGHTING);
 	//alpha blending: no depth writing, no face culling
@@ -74,7 +74,7 @@ void CTranslucentMaterial::set()
 //	glDepthMask(GL_FALSE);
 	glDisable(GL_CULL_FACE);
 
-	CRenderer::get()->getTextureManager()->set(m_textureId);
+	Renderer::get()->getTextureManager()->set(m_textureId);
 
 	glShadeModel(GL_SMOOTH);
 
@@ -85,21 +85,21 @@ void CTranslucentMaterial::set()
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
-CSimpleTLMaterial::CSimpleTLMaterial(Color ambient, Color diffuse, Color specular, Color emission
+SimpleTLMaterial::SimpleTLMaterial(Color ambient, Color diffuse, Color specular, Color emission
 	, double shininess, string texture)
 	:m_ambient(ambient), m_diffuse(diffuse), m_specular(specular), m_emission(emission)
 	, m_shininess(shininess)
 {
-	m_textureId= (int) CRenderer::get()->getTextureManager()->loadTexture(texture);
+	m_textureId= (int) Renderer::get()->getTextureManager()->loadTexture(texture);
 }
 
-CSimpleTLMaterial::CSimpleTLMaterial(string texturePath)
+SimpleTLMaterial::SimpleTLMaterial(string texturePath)
 {
-	m_textureId= (int)CRenderer::get()->getTextureManager()->loadTexture(texturePath);
+	m_textureId= (int)Renderer::get()->getTextureManager()->loadTexture(texturePath);
 }
 
 
-void CColorMaterial::set()
+void ColorMaterial::set()
 {
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);
@@ -109,7 +109,7 @@ void CColorMaterial::set()
 	glColor4fv(m_color.rgba());
 }
 
-void CLineMaterial::set()
+void LineMaterial::set()
 {
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_LIGHTING);

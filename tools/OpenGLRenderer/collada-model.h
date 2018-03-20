@@ -6,11 +6,11 @@
 #include <map>
 
 namespace tinyxml2 { class XMLElement; }
-class CColladaModel;
-class CGeometry;
-class CSource;
-class CSimpleTLMaterial;
-class CMesh;
+class ColladaModel;
+class Geometry;
+class Source;
+class SimpleTLMaterial;
+class Mesh;
 
 using namespace std;
 
@@ -22,34 +22,34 @@ struct InputDef
 	string source;
 };
 
-class CInputDef
+class MultiInputDef
 {
 	vector<InputDef> m_definitions;
 
 public:
-	CInputDef();
-	~CInputDef();
+	MultiInputDef();
+	~MultiInputDef();
 	void load(tinyxml2::XMLElement* pNode);
 
 	string getSourceName(string semantic);
 	bool defines(string semantic);
 };
 
-class CVertexDef
+class VertexDef
 {
 	string m_definitionId;
-	CInputDef m_inputDefinition;
+	MultiInputDef m_inputDefinition;
 public:
-	CVertexDef();
-	~CVertexDef();
+	VertexDef();
+	~VertexDef();
 	string id() { return m_definitionId; }
 	void load(tinyxml2::XMLElement* pNode);
 	string getSourceName(string semantic);
 };
 
-class CSource
+class Source
 {
-	CGeometry* m_pParent = 0;
+	Geometry* m_pParent = 0;
 	char* m_pFloatArrayAsString= nullptr;
 	int m_valueCount=0;
 	int m_elementStride = 0;
@@ -62,8 +62,8 @@ class CSource
 	void loadAccesor(tinyxml2::XMLElement* pNode);
 	void loadArray(tinyxml2::XMLElement* pNode);
 public:
-	CSource(CGeometry* pParent);
-	~CSource();
+	Source(Geometry* pParent);
+	~Source();
 	string getId() { return m_id; }
 	int getNumElements() { return m_numElements; }
 	int getNumValues() { return m_valueCount; }
@@ -72,20 +72,20 @@ public:
 	void load(tinyxml2::XMLElement* pNode);
 };
 
-class CGeometry
+class Geometry
 {
-	CColladaModel* m_pParent;
-	vector<CSource*> m_sources;
-	CVertexDef m_vertexDef;
+	ColladaModel* m_pParent;
+	vector<Source*> m_sources;
+	VertexDef m_vertexDef;
 public:
-	CGeometry(CColladaModel* pParent);
-	~CGeometry();
+	Geometry(ColladaModel* pParent);
+	~Geometry();
 	void load(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, Matrix44& nodeTransform);
 
-	CSource* getSource(string inputName, string requestedSemantic);
+	Source* getSource(string inputName, string requestedSemantic);
 };
 
-class CColladaModel: public CGraphicObject
+class ColladaModel: public GraphicObject
 {
 	string m_path;
 
@@ -95,16 +95,16 @@ class CColladaModel: public CGraphicObject
 	int loadTexture(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLElement* pFxProfile, string textureName);
 	const char* findTextureRedirection(tinyxml2::XMLElement* pFxProfile, string textureName);
 	const char* findTexture(tinyxml2::XMLElement* pRootNode,string textureName);
-	void loadMaterialProperties(tinyxml2::XMLElement* pRootNode, const char* fxName, CSimpleTLMaterial* pMaterial);
+	void loadMaterialProperties(tinyxml2::XMLElement* pRootNode, const char* fxName, SimpleTLMaterial* pMaterial);
 	void instanceGeometry(tinyxml2::XMLElement* pRootNode, const char* geometryId, Matrix44& nodeTransform);
 	void traverseVisualScene(tinyxml2::XMLElement* pRootNode, tinyxml2::XMLElement* pNode, Matrix44& matrix);
 	void loadVisualScenes(tinyxml2::XMLElement* pRootNode);
 	void loadSkin(tinyxml2::XMLElement* pRootNode);
 public:
-	CColladaModel(tinyxml2::XMLElement* pNode);
-	virtual ~CColladaModel();
+	ColladaModel(tinyxml2::XMLElement* pNode);
+	virtual ~ColladaModel();
 
-	CSimpleTLMaterial* loadMaterial(tinyxml2::XMLElement* pNode, string materialName);
-	CMesh* loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, CGeometry* pGeometry, Matrix44& nodeTransform);
+	SimpleTLMaterial* loadMaterial(tinyxml2::XMLElement* pNode, string materialName);
+	Mesh* loadMesh(tinyxml2::XMLElement* pRoot, tinyxml2::XMLElement* pNode, Geometry* pGeometry, Matrix44& nodeTransform);
 };
 

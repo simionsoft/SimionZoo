@@ -78,7 +78,7 @@ SFG_State fgState = { { -1, -1, GL_FALSE },  /* Position */
                       -1,                     /* GameModeDepth */
                       -1,                     /* GameModeRefresh */
                       GLUT_ACTION_EXIT,       /* ActionOnWindowClose */
-                      GLUT_EXEC_STATE_INIT,   /* ExecState */
+                      GLUT_EXEC_STATE_INIT,   /* ExeState */
                       NULL,                   /* ProgramName */
                       GL_FALSE,               /* JoysticksInitialised */
                       0,                      /* NumActiveJoysticks */

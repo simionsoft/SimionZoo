@@ -5,24 +5,24 @@
 #include <string>
 #include <algorithm>
 
-CSimpleMemPool::CSimpleMemPool(BUFFER_SIZE elementCount) {}
-CSimpleMemPool::~CSimpleMemPool()
+SimpleMemPool::SimpleMemPool(BUFFER_SIZE elementCount) {}
+SimpleMemPool::~SimpleMemPool()
 {
 	for (auto it = m_buffers.begin(); it != m_buffers.end(); ++it)
 		delete *it;
 }
 
-IMemBuffer* CSimpleMemPool::getHandler(BUFFER_SIZE elementCount)
+IMemBuffer* SimpleMemPool::getHandler(BUFFER_SIZE elementCount)
 {
-	m_buffers.push_back(new CSimpleMemBuffer(this, elementCount));
+	m_buffers.push_back(new SimpleMemBuffer(this, elementCount));
 	return m_buffers.back();
 }
 
-void CSimpleMemPool::init(BUFFER_SIZE blockSize)
+void SimpleMemPool::init(BUFFER_SIZE blockSize)
 {
 }
 
-void CSimpleMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
+void SimpleMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 {
 	BUFFER_SIZE numElements = pSrc->getNumElements();
 	if ( numElements == pDst->getNumElements())
@@ -39,13 +39,13 @@ void CSimpleMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 //Interleaved Memory Pool
 //a set arrays with the same size are interleaved to improve cache hits
 
-CSimionMemPool::CSimionMemPool(BUFFER_SIZE numElements)
+SimionMemPool::SimionMemPool(BUFFER_SIZE numElements)
 {
 	m_numElements = numElements;
 }
 
 
-CSimionMemPool::~CSimionMemPool()
+SimionMemPool::~SimionMemPool()
 {
 	for (auto it = m_memBufferHandlers.begin(); it != m_memBufferHandlers.end(); ++it)
 	{
@@ -58,23 +58,23 @@ CSimionMemPool::~CSimionMemPool()
 }
 
 
-void CSimionMemPool::addMemBufferHandler(CSimionMemBuffer* pMemBufferHandler)
+void SimionMemPool::addMemBufferHandler(SimionMemBuffer* pMemBufferHandler)
 {
 	BUFFER_SIZE newMemBufferOffset = m_elementSize;
 	m_elementSize += pMemBufferHandler->getElementSize();
 	m_memBufferHandlers.push_back(pMemBufferHandler);
 }
 
-IMemBuffer* CSimionMemPool::getHandler(BUFFER_SIZE elementCount)
+IMemBuffer* SimionMemPool::getHandler(BUFFER_SIZE elementCount)
 {
-	CSimionMemBuffer* pHandler 
-		= new CSimionMemBuffer(this, elementCount, 1, m_elementSize);
+	SimionMemBuffer* pHandler 
+		= new SimionMemBuffer(this, elementCount, 1, m_elementSize);
 	addMemBufferHandler(pHandler);
 	return pHandler;
 }
 
 
-double& CSimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
+double& SimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 {
 	++m_accessCounter;
 
@@ -82,7 +82,7 @@ double& CSimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 	BUFFER_SIZE blockId = elementStartByte / m_memBlockSize;
 	BUFFER_SIZE relBlockAddr = elementStartByte % m_memBlockSize;
 	double* pMemBuffer= 0;
-	CMemBlock* pBlock = m_memBlocks[(size_t)blockId];
+	MemBlock* pBlock = m_memBlocks[(size_t)blockId];
 	try
 	{
 		if (!pBlock->bAllocated())
@@ -125,17 +125,17 @@ double& CSimionMemPool::get(BUFFER_SIZE elementIndex, BUFFER_SIZE bufferOffset)
 	return (*pBlock)[relBlockAddr];
 }
 
-bool compare_lastAccess(CMemBlock* pFirst, CMemBlock* pSecond)
+bool compare_lastAccess(MemBlock* pFirst, MemBlock* pSecond)
 {
 	return (pFirst->getLastAccess() > pSecond->getLastAccess());
 }
 
-double* CSimionMemPool::recycleMem()
+double* SimionMemPool::recycleMem()
 {
 	std::sort(m_allocatedMemBlocks.begin(),m_allocatedMemBlocks.end(),compare_lastAccess);
 
 	//blocks are sorted from last accest to oldest accest
-	CMemBlock* pRecycledMemBlock = m_allocatedMemBlocks.back();
+	MemBlock* pRecycledMemBlock = m_allocatedMemBlocks.back();
 	pRecycledMemBlock->dumpToFile();
 	double* pBuffer= pRecycledMemBlock->deallocate();
 	m_allocatedMemBlocks.pop_back();
@@ -143,7 +143,7 @@ double* CSimionMemPool::recycleMem()
 	return pBuffer;
 }
 
-void CSimionMemPool::resetAccessCounter()
+void SimionMemPool::resetAccessCounter()
 {
 	std::sort(m_allocatedMemBlocks.begin(), m_allocatedMemBlocks.end(), compare_lastAccess);
 
@@ -154,7 +154,7 @@ void CSimionMemPool::resetAccessCounter()
 	m_accessCounter = 0;
 }
 
-void CSimionMemPool::initialize(CMemBlock* pBlock)
+void SimionMemPool::initialize(MemBlock* pBlock)
 {
 	BUFFER_SIZE blockId = pBlock->getId();
 	size_t firstElement = blockId*pBlock->size();
@@ -173,7 +173,7 @@ void CSimionMemPool::initialize(CMemBlock* pBlock)
 	pBlock->setInitialized();
 }
 
-double* CSimionMemPool::tryToAllocateMem(BUFFER_SIZE blockSize)
+double* SimionMemPool::tryToAllocateMem(BUFFER_SIZE blockSize)
 {
 	double* pNewMemBlock;
 	try
@@ -187,9 +187,9 @@ double* CSimionMemPool::tryToAllocateMem(BUFFER_SIZE blockSize)
 	}
 }
 
-void CSimionMemPool::init(BUFFER_SIZE blockSize)
+void SimionMemPool::init(BUFFER_SIZE blockSize)
 {
-	CMemBlock* pNewMemBlock;
+	MemBlock* pNewMemBlock;
 	size_t totalNumElements= m_numElements * (int)m_memBufferHandlers.size();
 	m_memBlockSize = std::min(blockSize,totalNumElements);
 
@@ -206,7 +206,7 @@ void CSimionMemPool::init(BUFFER_SIZE blockSize)
 
 	for (size_t i = 0; i < numBlocks; ++i)
 	{
-		pNewMemBlock = new CMemBlock(this,i, m_memBlockSize);
+		pNewMemBlock = new MemBlock(this,i, m_memBlockSize);
 		m_memBlocks.push_back(pNewMemBlock);
 	}
 
@@ -215,10 +215,10 @@ void CSimionMemPool::init(BUFFER_SIZE blockSize)
 		m_memLimit = std::max(m_memLimit, (BUFFER_SIZE)(m_memBlockSize * sizeof(double)));
 }
 
-void CSimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
+void SimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 {
-	CSimionMemBuffer* pSrcBuffer = dynamic_cast<CSimionMemBuffer*>(pSrc);
-	CSimionMemBuffer* pDstBuffer = dynamic_cast<CSimionMemBuffer*>(pDst);
+	SimionMemBuffer* pSrcBuffer = dynamic_cast<SimionMemBuffer*>(pSrc);
+	SimionMemBuffer* pDstBuffer = dynamic_cast<SimionMemBuffer*>(pDst);
 	size_t numBlocksCopied = 0;
 	if (pSrcBuffer && pDstBuffer)
 	{
@@ -246,7 +246,7 @@ void CSimionMemPool::copy(IMemBuffer* pSrc, IMemBuffer* pDst)
 	}
 }
 
-BUFFER_SIZE CSimionMemPool::getAccessCounter()
+BUFFER_SIZE SimionMemPool::getAccessCounter()
 {
 	return ++m_accessCounter;
 }

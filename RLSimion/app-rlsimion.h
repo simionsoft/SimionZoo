@@ -4,25 +4,25 @@
 #include "../tools/WindowsUtils/Timer.h"
 #define MAX_PATH_SIZE 1024
 
-class CRenderer;
+class Renderer;
 class IInputHandler;
-class C2DText;
-class C2DMeter;
+class Text2D;
+class Meter2D;
 using namespace std;
 
-class RLSimionApp : public CSimionApp
+class RLSimionApp : public SimionApp
 {
 	//Rendering
-	CTimer m_timer;
-	CRenderer *m_pRenderer = 0;
+	Timer m_timer;
+	Renderer *m_pRenderer = 0;
 	IInputHandler *m_pInputHandler = 0;
 	void initRenderer(string sceneFile);
-	void updateScene(CState* s);
-	C2DText* m_pProgressText= 0;
-	vector<C2DMeter*> m_pStatsText;
+	void updateScene(State* s);
+	Text2D* m_pProgressText= 0;
+	vector<Meter2D*> m_pStatsText;
 public:
 
-	RLSimionApp(CConfigNode* pParameters);
+	RLSimionApp(ConfigNode* pParameters);
 	virtual ~RLSimionApp();
 
 	void run();

@@ -2,11 +2,11 @@
 #include "mem-manager.h"
 #include <string>
 using namespace std;
-class CSimionMemPool;
+class SimionMemPool;
 
-class CMemBlock
+class MemBlock
 {
-	CSimionMemPool* m_pPool;
+	SimionMemPool* m_pPool;
 	double* m_pBuffer = nullptr;
 	size_t m_blockSize = 0;
 	bool m_bInitialized = false;
@@ -16,8 +16,8 @@ class CMemBlock
 
 	string getDumpFileName();
 public:
-	CMemBlock(CSimionMemPool* pPool,int id, size_t elementCount);
-	virtual ~CMemBlock();
+	MemBlock(SimionMemPool* pPool,int id, size_t elementCount);
+	virtual ~MemBlock();
 
 	bool bAllocated() const { return m_pBuffer != nullptr; }
 	double* deallocate();

@@ -6,14 +6,14 @@
 #include "simgod.h"
 #include <algorithm>
 
-CExperienceTuple::CExperienceTuple()
+ExperienceTuple::ExperienceTuple()
 {
-	s = CSimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
-	a = CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
-	s_p = CSimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
+	s = SimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
+	a = SimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
+	s_p = SimionApp::get()->pWorld->getDynamicModel()->getStateInstance();
 }
 
-void CExperienceTuple::copy(const CState* s, const CAction* a, const CState* s_p, double r, double probability)
+void ExperienceTuple::copy(const State* s, const Action* a, const State* s_p, double r, double probability)
 {
 	this->s->copy(s);
 	this->a->copy(a);
@@ -23,19 +23,19 @@ void CExperienceTuple::copy(const CState* s, const CAction* a, const CState* s_p
 }
 
 
-CExperienceReplay::CExperienceReplay(CConfigNode* pConfigNode)
+ExperienceReplay::ExperienceReplay(ConfigNode* pConfigNode)
 {
 	m_blockSize = INT_PARAM(pConfigNode, "Buffer-Size", "Size of the buffer used to store experience tuples", 1000);
 	m_updateBatchSize = INT_PARAM(pConfigNode, "Update-Batch-Size", "Number of tuples used each time-step in the update", 10);
 
-	CLogger::logMessage(MessageType::Info, "Experience replay buffer initialized");
+	Logger::logMessage(MessageType::Info, "Experience replay buffer initialized");
 
 	m_pTupleBuffer = 0;
 	m_currentPosition = 0;
 	m_numTuples = 0;
 }
 
-CExperienceReplay::CExperienceReplay() : CDeferredLoad()
+ExperienceReplay::ExperienceReplay() : DeferredLoad()
 {
 	//default behaviour when experience replay is not used
 	m_blockSize.set(0);
@@ -46,28 +46,28 @@ CExperienceReplay::CExperienceReplay() : CDeferredLoad()
 	m_numTuples = 0;
 }
 
-bool CExperienceReplay::bUsing()
+bool ExperienceReplay::bUsing()
 {
 	return m_blockSize.get() != 0;
 }
 
-void CExperienceReplay::deferredLoadStep()
+void ExperienceReplay::deferredLoadStep()
 {
-	m_pTupleBuffer = new CExperienceTuple[m_blockSize.get()];
+	m_pTupleBuffer = new ExperienceTuple[m_blockSize.get()];
 }
 
-CExperienceReplay::~CExperienceReplay()
+ExperienceReplay::~ExperienceReplay()
 {
 	if (m_pTupleBuffer)
 		delete[] m_pTupleBuffer;
 }
 
-int CExperienceReplay::getUpdateBatchSize()
+int ExperienceReplay::getUpdateBatchSize()
 {
 	return std::min(m_updateBatchSize.get(), m_numTuples);
 }
 
-void CExperienceReplay::addTuple(const CState* s, const  CAction* a, const CState* s_p, double r, double probability)
+void ExperienceReplay::addTuple(const State* s, const  Action* a, const State* s_p, double r, double probability)
 {
 	//add the experience tuple to the buffer
 	if (!bUsing()) return;
@@ -86,7 +86,7 @@ void CExperienceReplay::addTuple(const CState* s, const  CAction* a, const CStat
 	m_currentPosition = ++m_currentPosition % m_blockSize.get();
 }
 
-CExperienceTuple* CExperienceReplay::getRandomTupleFromBuffer()
+ExperienceTuple* ExperienceReplay::getRandomTupleFromBuffer()
 {
 	int randomIndex = rand() % m_numTuples;
 

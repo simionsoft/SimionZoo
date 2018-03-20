@@ -5,7 +5,7 @@
 #include "material.h"
 #include <algorithm>
 
-CMesh::CMesh()
+Mesh::Mesh()
 {
 	m_pPositions = 0;
 	m_pNormals = 0;
@@ -14,7 +14,7 @@ CMesh::CMesh()
 	m_pMaterial = 0;
 }
 
-CMesh::~CMesh()
+Mesh::~Mesh()
 {
 	if (m_pPositions != nullptr)
 		delete[] m_pPositions;
@@ -29,7 +29,7 @@ CMesh::~CMesh()
 }
 
 
-void CMesh::draw()
+void Mesh::draw()
 {
 	if (m_pMaterial)
 		m_pMaterial->set();
@@ -54,13 +54,13 @@ void CMesh::draw()
 	glEnd();
 }
 
-void CMesh::updateBoundingBox(BoundingBox3D& bb)
+void Mesh::updateBoundingBox(BoundingBox3D& bb)
 {
 	for (unsigned int i = 0; i < m_numPositions; ++i)
 		bb.addPoint(m_pPositions[i]);
 }
 
-void CMesh::transformVertices(Vector3D& translation, Vector3D& scale)
+void Mesh::transformVertices(Vector3D& translation, Vector3D& scale)
 {
 	// transform vertices
 	for (unsigned int i= 0; i<m_numPositions; ++i)
@@ -70,7 +70,7 @@ void CMesh::transformVertices(Vector3D& translation, Vector3D& scale)
 	}
 }
 
-void CMesh::flipYZAxis()
+void Mesh::flipYZAxis()
 {
 	double tmp;
 	// transform vertices
@@ -89,13 +89,13 @@ void CMesh::flipYZAxis()
 	}
 }
 
-void CMesh::flipVTexCoord()
+void Mesh::flipVTexCoord()
 {
 	for (unsigned int i = 0; i < m_numTexCoords; ++i)
 		m_pTexCoords[i].setY(1.0 - m_pTexCoords[i].t());
 }
 
-void CMesh::reorderIndices()
+void Mesh::reorderIndices()
 {
 	int tmp;
 	for (unsigned int i = 0; i < m_numIndices/(3*m_numIndicesPerVertex); i+=3*m_numIndicesPerVertex)

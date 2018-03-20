@@ -13,7 +13,7 @@
 #define mu 0.01
 
 
-CSwingupPendulum::CSwingupPendulum(CConfigNode* pConfigNode)
+SwingupPendulum::SwingupPendulum(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Swing-up-pendulum");
 	m_sAngle = addStateVariable("angle", "rad", -3.14, 3.14, true); // M_PI
@@ -23,16 +23,16 @@ CSwingupPendulum::CSwingupPendulum(CConfigNode* pConfigNode)
 	m_aTorque = addActionVariable("torque", "Nm", -2.0, 2.0); //maxTorque=2.0
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CSwingupPendulumReward());
+	m_pRewardFunction->addRewardComponent(new SwingupPendulumReward());
 	m_pRewardFunction->initialize();
 }
 
-CSwingupPendulum::~CSwingupPendulum()
+SwingupPendulum::~SwingupPendulum()
 {
 
 }
 
-void CSwingupPendulum::reset(CState *s)
+void SwingupPendulum::reset(State *s)
 {
 	//fix theta € [-pi, pi]
 	//omega = 0
@@ -41,7 +41,7 @@ void CSwingupPendulum::reset(CState *s)
 	s->set(m_sNormalizedTimeInTargetPosition, 0.0);
 }
 
-void CSwingupPendulum::executeAction(CState *s, const CAction *a, double dt)
+void SwingupPendulum::executeAction(State *s, const Action *a, double dt)
 {
 	double angle = s->get(m_sAngle);
 	double angularVelocity = s->get(m_sAngularVelocity);
@@ -90,20 +90,20 @@ void CSwingupPendulum::executeAction(CState *s, const CAction *a, double dt)
 	s->set(m_sNormalizedTimeInTargetPosition, normalizedTimeInTargetPosition);
 }
 
-double CSwingupPendulumReward::getReward(const CState* s, const CAction* a, const CState* s_p)
+double SwingupPendulumReward::getReward(const State* s, const Action* a, const State* s_p)
 {
 	double angel = s_p->get("angle");
 	double normalizedTimeInTargetPosition = s->get("normalized-time-in-target-position");
 	
 	if (normalizedTimeInTargetPosition >= 1.0)
 	{
-		CSimionApp::get()->pExperiment->setTerminalState();
+		SimionApp::get()->pExperiment->setTerminalState();
 	}
 	
 
 	return cos(angel);
 }
 
-double CSwingupPendulumReward::getMin() { return -1.0; }
+double SwingupPendulumReward::getMin() { return -1.0; }
 
-double CSwingupPendulumReward::getMax() { return 1.0; }
+double SwingupPendulumReward::getMax() { return 1.0; }

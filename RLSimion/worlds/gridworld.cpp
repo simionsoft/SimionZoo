@@ -4,7 +4,7 @@
 #include "../reward.h"
 #include "../app.h"
 
-CContinuousGridWorld::CContinuousGridWorld(CConfigNode* pConfigNode)
+ContinuousGridWorld::ContinuousGridWorld(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Continuous-GridWorld");
 
@@ -18,16 +18,16 @@ CContinuousGridWorld::CContinuousGridWorld(CConfigNode* pConfigNode)
 	m_aYStep = addActionVariable("y-step", "m", -1.0, 1.0);
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CContinuousGridWorldReward(m_targetX.get(), m_targetY.get()));
+	m_pRewardFunction->addRewardComponent(new ContinuousGridWorldReward(m_targetX.get(), m_targetY.get()));
 	m_pRewardFunction->initialize();
 }
 
-CContinuousGridWorld::~CContinuousGridWorld()
+ContinuousGridWorld::~ContinuousGridWorld()
 {
 
 }
 
-void CContinuousGridWorld::reset(CState *s)
+void ContinuousGridWorld::reset(State *s)
 {
 
 	//fixed setting
@@ -36,7 +36,7 @@ void CContinuousGridWorld::reset(CState *s)
 }
 
 
-void CContinuousGridWorld::executeAction(CState *s, const CAction *a, double dt)
+void ContinuousGridWorld::executeAction(State *s, const Action *a, double dt)
 {
 	//this simulation model ignores dt!!
 
@@ -60,14 +60,14 @@ void CContinuousGridWorld::executeAction(CState *s, const CAction *a, double dt)
 
 #define ALLOWED_ERROR 0.01
 
-CContinuousGridWorldReward::CContinuousGridWorldReward(int targetX, int targetY)
+ContinuousGridWorldReward::ContinuousGridWorldReward(int targetX, int targetY)
 {
 	m_xTarget = (double)targetX;
 	m_yTarget = (double)targetY;
 }
 
 
-double CContinuousGridWorldReward::getReward(const CState* s, const CAction* a, const CState* s_p)
+double ContinuousGridWorldReward::getReward(const State* s, const Action* a, const State* s_p)
 {
 	double xPosition = s_p->get("x-position");
 	double yPosition = s_p->get("y-position");
@@ -84,20 +84,20 @@ double CContinuousGridWorldReward::getReward(const CState* s, const CAction* a, 
 	//reached the goal?
 	if (fabs(m_xTarget - xPosition) < ALLOWED_ERROR && fabs(m_yTarget - yPosition) < ALLOWED_ERROR)
 	{
-		CSimionApp::get()->pExperiment->setTerminalState();
+		SimionApp::get()->pExperiment->setTerminalState();
 		return 10.0;
 	}
 
 	return 0;
 }
 
-double CContinuousGridWorldReward::getMin() { return -1.0; }
+double ContinuousGridWorldReward::getMin() { return -1.0; }
 
-double CContinuousGridWorldReward::getMax() { return 10.0; }
+double ContinuousGridWorldReward::getMax() { return 10.0; }
 
 
 //DISCRETE GRIDWORLD
-CDiscreteGridWorld::CDiscreteGridWorld(CConfigNode* pConfigNode)
+DiscreteGridWorld::DiscreteGridWorld(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Discrete-GridWorld");
 
@@ -110,21 +110,21 @@ CDiscreteGridWorld::CDiscreteGridWorld(CConfigNode* pConfigNode)
 	m_aStep = addActionVariable("step", "m", 0, 3);
 
 	//the reward function
-	m_pRewardFunction->addRewardComponent(new CDiscreteGridWorldReward(m_targetX.get(), m_targetY.get()));
+	m_pRewardFunction->addRewardComponent(new DiscreteGridWorldReward(m_targetX.get(), m_targetY.get()));
 	m_pRewardFunction->initialize();
 }
 
-CDiscreteGridWorld::~CDiscreteGridWorld()
+DiscreteGridWorld::~DiscreteGridWorld()
 {
 }
 
-void CDiscreteGridWorld::reset(CState *s)
+void DiscreteGridWorld::reset(State *s)
 {
 	s->set(m_sXPosition, 0);
 	s->set(m_sYPosition, 0);
 }
 
-void CDiscreteGridWorld::executeAction(CState *s, const CAction *a, double dt)
+void DiscreteGridWorld::executeAction(State *s, const Action *a, double dt)
 {
 	//this simulation model ignores dt!!
 	int xPosition = (int)s->get(m_sXPosition);
@@ -157,13 +157,13 @@ void CDiscreteGridWorld::executeAction(CState *s, const CAction *a, double dt)
 	s->set(m_sYPosition, yPosition);
 }
 
-CDiscreteGridWorldReward::CDiscreteGridWorldReward(int targetX, int targetY)
+DiscreteGridWorldReward::DiscreteGridWorldReward(int targetX, int targetY)
 {
 	m_xTarget = targetX;
 	m_yTarget = targetY;
 }
 
-double CDiscreteGridWorldReward::getReward(const CState* s, const CAction* a, const CState* s_p)
+double DiscreteGridWorldReward::getReward(const State* s, const Action* a, const State* s_p)
 {
 	int xPosition = (int) s_p->get("x-position");
 	int yPosition = (int) s_p->get("y-position");
@@ -180,13 +180,13 @@ double CDiscreteGridWorldReward::getReward(const CState* s, const CAction* a, co
 	//reached the goal?
 	if (m_xTarget == xPosition && m_yTarget == yPosition)
 	{
-		CSimionApp::get()->pExperiment->setTerminalState();
+		SimionApp::get()->pExperiment->setTerminalState();
 		return 10.0;
 	}
 
 	return 0;
 }
 
-double CDiscreteGridWorldReward::getMin() { return -1.0; }
+double DiscreteGridWorldReward::getMin() { return -1.0; }
 
-double CDiscreteGridWorldReward::getMax() { return 10.0; }
+double DiscreteGridWorldReward::getMax() { return 10.0; }

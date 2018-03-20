@@ -5,7 +5,7 @@ class BulletPhysics;
 
 
 //Move box with 1 robot
-class CPushBox1 : public CDynamicModel
+class PushBox1 : public DynamicModel
 {
 	/// State variables
 	int m_target_X, m_target_Y;
@@ -21,10 +21,10 @@ class CPushBox1 : public CDynamicModel
 
 public:
 
-	CPushBox1(CConfigNode* pParameters);
-	virtual ~CPushBox1();
+	PushBox1(ConfigNode* pParameters);
+	virtual ~PushBox1();
 
-	void reset(CState *s);
-	void executeAction(CState *s, const CAction *a, double dt);
+	void reset(State *s);
+	void executeAction(State *s, const Action *a, double dt);
 
 };

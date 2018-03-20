@@ -8,27 +8,27 @@
 #include "config.h"
 #include "app.h"
 
-CTrueOnlineTDLambdaCritic::CTrueOnlineTDLambdaCritic(CConfigNode* pConfigNode): CVLearnerCritic(pConfigNode)
+TrueOnlineTDLambdaCritic::TrueOnlineTDLambdaCritic(ConfigNode* pConfigNode): VLearnerCritic(pConfigNode)
 {
-	m_e = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
+	m_e = CHILD_OBJECT<ETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
 	m_e->setName("Critic/E-Traces" );
-	m_aux= new CFeatureList("Critic/aux");
+	m_aux= new FeatureList("Critic/aux");
 	m_v_s= 0.0;
-	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "Learning gain of the critic");
+	m_pAlpha= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Alpha", "Learning gain of the critic");
 }
 
-CTrueOnlineTDLambdaCritic::~CTrueOnlineTDLambdaCritic()
+TrueOnlineTDLambdaCritic::~TrueOnlineTDLambdaCritic()
 {
 	delete m_aux;
 }
 
-double CTrueOnlineTDLambdaCritic::update(const CState *s,const  CAction *a,const CState *s_p, double r, double rho)
+double TrueOnlineTDLambdaCritic::update(const State *s,const  Action *a,const State *s_p, double r, double rho)
 {
 	double v_s_p;
 
 	if (m_pAlpha->get()==0.0) return 0.0;
 	
-	if (CSimionApp::get()->pExperiment->isFirstStep())
+	if (SimionApp::get()->pExperiment->isFirstStep())
 	{
 		//vs= theta^T * phi(s)
 		m_pVFunction->getFeatures(s,m_aux);
@@ -39,7 +39,7 @@ double CTrueOnlineTDLambdaCritic::update(const CState *s,const  CAction *a,const
 	m_pVFunction->getFeatures(s_p,m_aux);
 	v_s_p= m_pVFunction->get(m_aux);
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	double alpha = m_pAlpha->get();
 	//delta= R + gamma* v_s_p - v_s
 	double td = r + gamma*v_s_p - m_v_s;

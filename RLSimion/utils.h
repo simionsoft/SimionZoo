@@ -3,18 +3,18 @@
 #include <vector>
 using namespace std;
 
-class CConfigNode;
+class ConfigNode;
 
 
-class CTable
+class Table
 {
 	vector<double> m_columns;
 	vector<double> m_rows;
 	vector<double> m_values;
 	bool m_bSuccess = false;
 public:
-	CTable();
-	~CTable();
+	Table();
+	~Table();
 
 	double getMinCol() const;
 	double getMaxCol() const;

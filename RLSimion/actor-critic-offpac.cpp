@@ -11,10 +11,10 @@
 #include "policy.h"
 #include "app.h"
 
-COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
+OffPolicyActorCritic::OffPolicyActorCritic(ConfigNode* pConfigNode)
 {
-	CSimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);
-	CSimionApp::get()->pLogger->addVarToStats("m_rho", "m_rho", m_rho);
+	SimionApp::get()->pLogger->addVarToStats("TD-error", "TD-error", m_td);
+	SimionApp::get()->pLogger->addVarToStats("m_rho", "m_rho", m_rho);
 	//td error
 	m_td = 0.0;
 
@@ -22,43 +22,43 @@ COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 	m_rho = 0.0;
 
 	//base policy b(a|s)
-	m_b_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "b-Policy", "The base-policy b(a|s)");
+	m_b_policies = MULTI_VALUE_FACTORY<Policy>(pConfigNode, "b-Policy", "The base-policy b(a|s)");
 
 	/*critic's stuff*/
 	//linear state value function (represented by v^t * x in the paper)
-	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
+	m_pVFunction = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
 	//buffer to store features of the value function activated by the state s and the state s'
-	m_s_features = new CFeatureList("Critic/s");
-	m_s_p_features = new CFeatureList("Critic/s_p");
+	m_s_features = new FeatureList("Critic/s");
+	m_s_p_features = new FeatureList("Critic/s_p");
 	//learning rates
-	m_pAlphaV = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
-	m_pAlphaW = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-w", "Learning gain used to average the reward");
+	m_pAlphaV = CHILD_OBJECT_FACTORY <NumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
+	m_pAlphaW = CHILD_OBJECT_FACTORY <NumericValue>(pConfigNode, "Alpha-w", "Learning gain used to average the reward");
 	//eligibility trace
-	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "ETraces", "Traces used by the critic and the actor", true);
+	m_e_v = CHILD_OBJECT<ETraces>(pConfigNode, "ETraces", "Traces used by the critic and the actor", true);
 	m_e_v->setName("Critic/e_v");
 
 
 	/*actor's stuff*/
 	//list of policies
-	m_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy");
+	m_policies = MULTI_VALUE_FACTORY<Policy>(pConfigNode, "Policy", "The policy");
 
 	//list of weight vector w for updating the value of v
-	m_w = new CFeatureList*[m_policies.size()];
+	m_w = new FeatureList*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_w[i] = new CFeatureList("INAC/Actor/w");
+		m_w[i] = new FeatureList("INAC/Actor/w");
 	}
 
 	//gradient of the policy with respect to its parameters
-	m_grad_u = new CFeatureList("INAC/Actor/grad-u");
+	m_grad_u = new FeatureList("INAC/Actor/grad-u");
 
 	//learning rate
-	m_pAlphaU = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha-u", "Learning gain used by the actor");
+	m_pAlphaU = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Alpha-u", "Learning gain used by the actor");
 	//eligibility trace
-	m_e_u = new CETraces*[m_policies.size()];
+	m_e_u = new ETraces*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_e_u[i] = new CETraces(pConfigNode);
+		m_e_u[i] = new ETraces(pConfigNode);
 		//we name all the same to avoid having to store all pointers and then freeing them in the constructor
 		//the actual dimension it belongs to doesn't seem very important at the moment
 		static std::string name= "Actor/E-Trace";
@@ -73,7 +73,7 @@ COffPolicyActorCritic::COffPolicyActorCritic(CConfigNode* pConfigNode)
 	}
 }
 
-COffPolicyActorCritic::~COffPolicyActorCritic()
+OffPolicyActorCritic::~OffPolicyActorCritic()
 {
 	delete m_s_features;
 	delete m_s_p_features;
@@ -90,7 +90,7 @@ COffPolicyActorCritic::~COffPolicyActorCritic()
 }
 
 #include <iostream>
-void COffPolicyActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void OffPolicyActorCritic::updateValue(const State *s, const Action *a, const State *s_p, double r)
 {
 	//td = r + gamma*V(s') - V(s)
 	//rho = pi(a|s)/b(a|s)
@@ -101,7 +101,7 @@ void COffPolicyActorCritic::updateValue(const CState *s, const CAction *a, const
 	//v   = v + alpha_v * (td * e_v - gamma(s')*(1-lambda)*(w^T*e_v)*x(s))
 	//w   = w + alpha_w * (td * e_v - (w^T*x(s))*x(s))
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	double alpha_v = m_pAlphaV->get();
 	double alpha_w = m_pAlphaW->get();
 
@@ -130,7 +130,7 @@ void COffPolicyActorCritic::updateValue(const CState *s, const CAction *a, const
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		if (CSimionApp::get()->pExperiment->isFirstStep())
+		if (SimionApp::get()->pExperiment->isFirstStep())
 			m_w[i]->clear();
 
 		m_pVFunction->add(m_e_v.ptr(), m_td*alpha_v);
@@ -143,19 +143,19 @@ void COffPolicyActorCritic::updateValue(const CState *s, const CAction *a, const
 	}
 }
 
-void COffPolicyActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
+void OffPolicyActorCritic::updatePolicy(const State* s, const State* a, const State *s_p, double r)
 {
 	//update the policy/critic
 	//psi(s,a) = (grad_u pi(a|s)) / (pi(a|s))
 	//e_u = e_u + rho * (psi(s, a) + gamma(s) * lambda * e_u)
 	//u   = u + alpha_u * td * e_u
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	double alpha_u = m_pAlphaU->get();
 
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		if (CSimionApp::get()->pExperiment->isFirstStep())
+		if (SimionApp::get()->pExperiment->isFirstStep())
 			m_w[i]->clear();
 
 		//calculate the gradient
@@ -168,17 +168,17 @@ void COffPolicyActorCritic::updatePolicy(const CState* s, const CState* a, const
 	}
 }
 
-double COffPolicyActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
+double OffPolicyActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	updateValue(s, a, s_p, r);
 	updatePolicy(s, a, s_p, r);
 	return 1.0;
 }
 
-double COffPolicyActorCritic::selectAction(const CState *s, CAction *a)
+double OffPolicyActorCritic::selectAction(const State *s, Action *a)
 {
 	double prob = 1.0;
-	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		for (unsigned int i = 0; i < m_policies.size(); i++)
 		{

@@ -148,7 +148,7 @@ namespace XML
 				value = atof(pChild->GetText());
 			pBindingName = pChild->Attribute(XML_ATTR_BINDING);
 			if (pBindingName)
-				CRenderer::get()->registerBinding<T>(pBindingName, obj, xmlTag);
+				Renderer::get()->registerBinding<T>(pBindingName, obj, xmlTag);
 			return value;
 		}
 		return value;

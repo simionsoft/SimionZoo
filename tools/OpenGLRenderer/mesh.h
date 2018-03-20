@@ -4,15 +4,15 @@
 #include "../GeometryLib/matrix44.h"
 #include "../GeometryLib/vector3d.h"
 #include "../GeometryLib/vector2d.h"
-class CMaterial;
-class CColladaModel;
-class CGeometry;
+class Material;
+class ColladaModel;
+class Geometry;
 namespace tinyxml2 { class XMLElement; }
 #include <string>
 using namespace std;
 
 
-class CMesh
+class Mesh
 {
 	unsigned int m_primitiveType = GL_TRIANGLES; //fans and strips not yet supported
 										//indices to vertices
@@ -33,15 +33,15 @@ class CMesh
 	unsigned int m_numTexCoords = 0;
 
 	//material
-	CMaterial* m_pMaterial = 0;
+	Material* m_pMaterial = 0;
 
 public:
-	CMesh();
-	~CMesh();
+	Mesh();
+	~Mesh();
 
 	void draw();
 
-	void setMaterial(CMaterial* pMaterial) { m_pMaterial = pMaterial; }
+	void setMaterial(Material* pMaterial) { m_pMaterial = pMaterial; }
 	void updateBoundingBox(BoundingBox3D& bb);
 	void transformVertices(Vector3D& translation, Vector3D& scale);
 

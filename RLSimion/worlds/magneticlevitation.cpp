@@ -8,7 +8,7 @@
 #include "../reward.h"
 
 
-CMagneticLevitation::CMagneticLevitation(CConfigNode* pConfigNode)
+MagneticLevitation::MagneticLevitation(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Magnetic-levitation");
 	m_sPositionSetpoint= addStateVariable("position-setpoint","m",0.0,0.013);
@@ -22,24 +22,24 @@ CMagneticLevitation::CMagneticLevitation(CConfigNode* pConfigNode)
 
 	FILE_PATH_PARAM filename= FILE_PATH_PARAM(pConfigNode, "Evaluation-Set-Point"
 		,"The setpoint file", "../config/world/magnetic-levitation/setpoint.txt");
-	m_pEvalSetPoint = new CFileSetPoint(filename.get());
+	m_pEvalSetPoint = new FileSetPoint(filename.get());
 
-	m_pLearnSetPoint= new CFixedStepSizeSetPoint(0.32,0.0, 0.013);
+	m_pLearnSetPoint= new FixedStepSizeSetPoint(0.32,0.0, 0.013);
 
-	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("position-deviation", 0.001, 1.0));
+	m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("position-deviation", 0.001, 1.0));
 	m_pRewardFunction->initialize();
 }
 
-CMagneticLevitation::~CMagneticLevitation()
+MagneticLevitation::~MagneticLevitation()
 {
 	delete m_pEvalSetPoint;
 	delete m_pLearnSetPoint;
 }
 
-void CMagneticLevitation::reset(CState *s)
+void MagneticLevitation::reset(State *s)
 {
-	CSetPoint *pSetPoint;
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	SetPoint *pSetPoint;
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		pSetPoint= m_pEvalSetPoint;
 	else
 		pSetPoint= m_pLearnSetPoint;
@@ -53,7 +53,7 @@ void CMagneticLevitation::reset(CState *s)
 
 
 	//initialization procedure: 0.5 seconds with 15V
-	/*CAction *a= CSimionApp::getSample()->pWorld->getActionDescriptor();
+	/*Action *a= SimionApp::getSample()->pWorld->getActionDescriptor();
 	a->set("voltage",15.0);
 	double t= 0.0;
 	double dt= 0.01;
@@ -68,17 +68,17 @@ void CMagneticLevitation::reset(CState *s)
 #define xi 0.001599
 #define G 9.8
 
-void CMagneticLevitation::executeAction(CState *s, CAction *a, double dt)
+void MagneticLevitation::executeAction(State *s, Action *a, double dt)
 {
 	double d= s->get(m_sPosition);
 	double d_dot= s->get(m_sVelocity);
 	double I= s->get(m_sCurrent);
 	double setpoint;
 	
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
-		setpoint = m_pEvalSetPoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
+		setpoint = m_pEvalSetPoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
 	else
-		setpoint = m_pLearnSetPoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
+		setpoint = m_pLearnSetPoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
 
 
 

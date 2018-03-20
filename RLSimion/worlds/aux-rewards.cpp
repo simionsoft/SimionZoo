@@ -9,7 +9,7 @@ double static getDistanceBetweenPoints(double x1, double y1, double x2, double y
 	return distance;
 }
 
-CDistanceReward2D::CDistanceReward2D(CDescriptor& stateDescr, const char* var1xName, const char* var1yName, const char* var2xName, const char* var2yName)
+DistanceReward2D::DistanceReward2D(Descriptor& stateDescr, const char* var1xName, const char* var1yName, const char* var2xName, const char* var2yName)
 {
 	m_var1xId = stateDescr.getVarIndex(var1xName);
 	m_var1yId = stateDescr.getVarIndex(var1yName);
@@ -21,7 +21,7 @@ CDistanceReward2D::CDistanceReward2D(CDescriptor& stateDescr, const char* var1xN
 		+ stateDescr[m_var1yId].getRangeWidth()*stateDescr[m_var1yId].getRangeWidth());
 }
 
-CDistanceReward2D::CDistanceReward2D(CDescriptor& stateDescr, int var1xId, int var1yId, int var2xId, int var2yId)
+DistanceReward2D::DistanceReward2D(Descriptor& stateDescr, int var1xId, int var1yId, int var2xId, int var2yId)
 {
 	m_var1xId = var1xId;
 	m_var1yId = var1yId;
@@ -34,7 +34,7 @@ CDistanceReward2D::CDistanceReward2D(CDescriptor& stateDescr, int var1xId, int v
 
 }
 
-double CDistanceReward2D::getReward(const CState* s, const CAction* a, const CState* s_p)
+double DistanceReward2D::getReward(const State* s, const Action* a, const State* s_p)
 {
 	double boxX = s_p->get(m_var1xId);
 	double boxY = s_p->get(m_var1yId);
@@ -51,12 +51,12 @@ double CDistanceReward2D::getReward(const CState* s, const CAction* a, const CSt
 
 }
 
-double CDistanceReward2D::getMin()
+double DistanceReward2D::getMin()
 {
 	return 0.0;
 }
 
-double CDistanceReward2D::getMax()
+double DistanceReward2D::getMax()
 {
 	return 1.0;
 }

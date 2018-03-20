@@ -3,27 +3,27 @@
 #include "logger.h"
 
 
-CConfigNode* CConfigFile::loadFile(const char* fileName, const char* nodeName)
+ConfigNode* ConfigFile::loadFile(const char* fileName, const char* nodeName)
 {
 	LoadFile(fileName);
 	if (Error()) throw std::exception((std::string("Couldn't load file: ") + std::string(fileName)).c_str());
 
 	if (nodeName)
-		return (CConfigNode*) (this->FirstChildElement(nodeName));
-	return (CConfigNode*)this->FirstChildElement();
+		return (ConfigNode*) (this->FirstChildElement(nodeName));
+	return (ConfigNode*)this->FirstChildElement();
 	
 }
 
-const char* CConfigFile::getError()
+const char* ConfigFile::getError()
 {
 	return ErrorName();
 }
 
 
-int CConfigNode::countChildren(const char* name)
+int ConfigNode::countChildren(const char* name)
 {
 	int count = 0;
-	CConfigNode* p;
+	ConfigNode* p;
 
 	if (!this)
 		throw std::exception((std::string("Illegal count of children parameters")).c_str());
@@ -44,7 +44,7 @@ int CConfigNode::countChildren(const char* name)
 
 
 
-bool CConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
+bool ConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
 
@@ -66,12 +66,12 @@ bool CConfigNode::getConstBoolean(const char* paramName, bool defaultValue)
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
-	CLogger::logMessage(Warning, msg);
+	Logger::logMessage(Warning, msg);
 
 	return defaultValue;
 }
 
-int CConfigNode::getConstInteger(const char* paramName, int defaultValue)
+int ConfigNode::getConstInteger(const char* paramName, int defaultValue)
 {
 	tinyxml2::XMLElement* pParameter;
 	if (!this)
@@ -88,13 +88,13 @@ int CConfigNode::getConstInteger(const char* paramName, int defaultValue)
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %d", getName(), paramName, defaultValue);
-	CLogger::logMessage(Warning, msg);
+	Logger::logMessage(Warning, msg);
 	return defaultValue;
 }
 
-double CConfigNode::getConstDouble(const char* paramName, double defaultValue)
+double ConfigNode::getConstDouble(const char* paramName, double defaultValue)
 {
-	CConfigNode* pParameter;
+	ConfigNode* pParameter;
 	if (!this)
 		throw std::exception((std::string("Illegal access to double parameter") + std::string(paramName)).c_str());
 
@@ -109,14 +109,14 @@ double CConfigNode::getConstDouble(const char* paramName, double defaultValue)
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %f", getName(), paramName, defaultValue);
-	CLogger::logMessage(Warning, msg);
+	Logger::logMessage(Warning, msg);
 
 	return defaultValue;
 }
 
-const char* CConfigNode::getConstString(const char* paramName, const char* defaultValue)
+const char* ConfigNode::getConstString(const char* paramName, const char* defaultValue)
 {
-	CConfigNode* pParameter;
+	ConfigNode* pParameter;
 	if (!this)
 		throw std::exception((std::string("Illegal access to string parameter") + std::string(paramName)).c_str());
 
@@ -131,30 +131,30 @@ const char* CConfigNode::getConstString(const char* paramName, const char* defau
 
 	char msg[128];
 	sprintf_s(msg, 128, "Parameter %s/%s not found. Using default value %s", getName(), paramName, defaultValue);
-	CLogger::logMessage(Warning, msg);
+	Logger::logMessage(Warning, msg);
 
 	return defaultValue;
 }
 
-CConfigNode* CConfigNode::getChild(const char* paramName)
+ConfigNode* ConfigNode::getChild(const char* paramName)
 {
 	if (!this)
 		throw std::exception((std::string("Illegal access to child parameter ") + std::string(paramName)).c_str());
 
 	tinyxml2::XMLElement* child = FirstChildElement(paramName);
-	return static_cast<CConfigNode*> (child);
+	return static_cast<ConfigNode*> (child);
 }
 
-CConfigNode* CConfigNode::getNextSibling(const char* paramName)
+ConfigNode* ConfigNode::getNextSibling(const char* paramName)
 {
 	if (!this)
 		throw std::exception((std::string("Illegal access to child parameter ") + std::string(paramName)).c_str());
 
 	tinyxml2::XMLElement* child = NextSiblingElement(paramName);
-	return static_cast<CConfigNode*> (child);
+	return static_cast<ConfigNode*> (child);
 }
 
-const char* CConfigNode::getName()
+const char* ConfigNode::getName()
 {
 	if (!this)
 		throw std::exception("Illegal access to inexistant parameter's name");
@@ -162,17 +162,17 @@ const char* CConfigNode::getName()
 	return Name();
 }
 
-void CConfigNode::saveFile(const char* pFilename)
+void ConfigNode::saveFile(const char* pFilename)
 {
 	SaveFile(pFilename, false);
 }
 
-void CConfigNode::saveFile(FILE* pFile)
+void ConfigNode::saveFile(FILE* pFile)
 {
 	SaveFile(pFile, false);
 }
 
-void CConfigNode::clone(CConfigFile* parameterFile)
+void ConfigNode::clone(ConfigFile* parameterFile)
 {
 	this->DeleteChildren();
 

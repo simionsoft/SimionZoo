@@ -6,19 +6,19 @@
 #include "app.h"
 #include <assert.h>
 
-CSingleDimensionGridRBF::CSingleDimensionGridRBF()
+SingleDimensionGridRBF::SingleDimensionGridRBF()
 {
 	m_pCenters = 0;
 	m_min = 0.0;
 	m_max = 0.0;
 }
 
-CSingleDimensionGridRBF::~CSingleDimensionGridRBF()
+SingleDimensionGridRBF::~SingleDimensionGridRBF()
 {
 	delete[] m_pCenters;
 }
 
-void CSingleDimensionGridRBF::initCenterPoints()
+void SingleDimensionGridRBF::initCenterPoints()
 {
 	m_pCenters = new double[m_numCenters.get()];
 
@@ -46,7 +46,7 @@ void CSingleDimensionGridRBF::initCenterPoints()
 	}
 }
 
-void CSingleDimensionGridRBF::getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures)
+void SingleDimensionGridRBF::getFeatures(const State* s, const Action* a, FeatureList* outDimFeatures)
 {
 	double u;
 	int i;
@@ -57,7 +57,7 @@ void CSingleDimensionGridRBF::getFeatures(const CState* s, const CAction* a, CFe
 
 	assert(numCenters >= 2);
 	double value = getVarValue(s, a);
-	CNamedVarProperties& properties = getVarProperties(s, a);
+	NamedVarProperties& properties = getVarProperties(s, a);
 
 	if (value <= m_pCenters[1])
 	{
@@ -117,7 +117,7 @@ void CSingleDimensionGridRBF::getFeatures(const CState* s, const CAction* a, CFe
 	outDimFeatures->normalize();
 }
 
-double CSingleDimensionGridRBF::getFeatureFactor(int feature, double value)
+double SingleDimensionGridRBF::getFeatureFactor(int feature, double value)
 {
 	double range, dist;
 	assert(feature >= 0 && feature <= m_numCenters.get() - 1);
@@ -149,7 +149,7 @@ double CSingleDimensionGridRBF::getFeatureFactor(int feature, double value)
 	//return my_exp(- pow(distance / diffNextPart * 2, 2)) ;
 }
 
-CStateVariableGridRBF::CStateVariableGridRBF(CConfigNode* pConfigNode)
+StateVariableGridRBF::StateVariableGridRBF(ConfigNode* pConfigNode)
 {
 	m_hVariable = STATE_VARIABLE(pConfigNode,"Variable", "The state variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Num-Features","The number of points that form the grid",3);
@@ -161,16 +161,16 @@ CStateVariableGridRBF::CStateVariableGridRBF(CConfigNode* pConfigNode)
 	initCenterPoints();
 }
 
-void CStateVariableGridRBF::initVarRange()
+void StateVariableGridRBF::initVarRange()
 {
-	CDescriptor &descriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	Descriptor &descriptor = World::getDynamicModel()->getStateDescriptor();
+	NamedVarProperties properties = descriptor[m_hVariable.get()];
 	m_min = properties.getMin();
 	m_max = properties.getMax();
 }
 
 
-CStateVariableGridRBF::CStateVariableGridRBF(int m_hVar, int numCenters, Distribution distr)
+StateVariableGridRBF::StateVariableGridRBF(int m_hVar, int numCenters, Distribution distr)
 {
 	m_hVariable.set(m_hVar);
 	m_numCenters.set(numCenters);
@@ -179,22 +179,22 @@ CStateVariableGridRBF::CStateVariableGridRBF(int m_hVar, int numCenters, Distrib
 	initVarRange();
 	initCenterPoints();
 }
-void CStateVariableGridRBF::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
+void StateVariableGridRBF::setFeatureStateAction(unsigned int feature, State* s, State* a)
 {
 	s->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CStateVariableGridRBF::getVarValue(const CState* s, const CAction* a)
+double StateVariableGridRBF::getVarValue(const State* s, const Action* a)
 {
 	return s->get(m_hVariable.get());
 }
 
-CNamedVarProperties& CStateVariableGridRBF::getVarProperties(const CState* s, const CAction* a)
+NamedVarProperties& StateVariableGridRBF::getVarProperties(const State* s, const Action* a)
 {
 	return s->getProperties(m_hVariable.get());
 }
 
-CActionVariableGridRBF::CActionVariableGridRBF(CConfigNode* pConfigNode)
+ActionVariableGridRBF::ActionVariableGridRBF(ConfigNode* pConfigNode)
 {
 	m_hVariable = ACTION_VARIABLE(pConfigNode,"Variable", "The action variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Num-Features","The number of points that form the grid",3);
@@ -205,25 +205,25 @@ CActionVariableGridRBF::CActionVariableGridRBF(CConfigNode* pConfigNode)
 	initCenterPoints();
 }
 
-void CActionVariableGridRBF::initVarRange()
+void ActionVariableGridRBF::initVarRange()
 {
-	CDescriptor &descriptor = CWorld::getDynamicModel()->getActionDescriptor();
-	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	Descriptor &descriptor = World::getDynamicModel()->getActionDescriptor();
+	NamedVarProperties properties = descriptor[m_hVariable.get()];
 	m_min = properties.getMin();
 	m_max = properties.getMax();
 }
 
-void CActionVariableGridRBF::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
+void ActionVariableGridRBF::setFeatureStateAction(unsigned int feature, State* s, State* a)
 {
 	a->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CActionVariableGridRBF::getVarValue(const CState* s, const CAction* a)
+double ActionVariableGridRBF::getVarValue(const State* s, const Action* a)
 {
 	return a->get(m_hVariable.get());
 }
 
-CNamedVarProperties& CActionVariableGridRBF::getVarProperties(const CState* s, const CAction* a)
+NamedVarProperties& ActionVariableGridRBF::getVarProperties(const State* s, const Action* a)
 {
 	return a->getProperties(m_hVariable.get());
 }

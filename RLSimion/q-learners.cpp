@@ -13,26 +13,26 @@
 
 ///////////////////////////////////////
 //Q-function-based POLICIES
-std::shared_ptr<CQPolicy> CQPolicy::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<QPolicy> QPolicy::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CQPolicy>(pConfigNode,"Policy", "The exploration policy used to learn",
+	return CHOICE<QPolicy>(pConfigNode,"Policy", "The exploration policy used to learn",
 	{
-		{"Epsilon-Greedy",CHOICE_ELEMENT_NEW<CQEGreedyPolicy>},
-		{"Soft-Max",CHOICE_ELEMENT_NEW<CQSoftMaxPolicy>}
+		{"Epsilon-Greedy",CHOICE_ELEMENT_NEW<QEGreedyPolicy>},
+		{"Soft-Max",CHOICE_ELEMENT_NEW<QSoftMaxPolicy>}
 	});
 }
 
 //Epsilon-greedy
-CQEGreedyPolicy::CQEGreedyPolicy(CConfigNode* pConfigNode)
+QEGreedyPolicy::QEGreedyPolicy(ConfigNode* pConfigNode)
 {
-	m_pEpsilon= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Epsilon", "The epsilon parameter that balances exploitation and exploration");
+	m_pEpsilon= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Epsilon", "The epsilon parameter that balances exploitation and exploration");
 }
 
-CQEGreedyPolicy::~CQEGreedyPolicy()
+QEGreedyPolicy::~QEGreedyPolicy()
 {
 }
 
-double CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
+double QEGreedyPolicy::selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)
 {
 	double epsilon = m_pEpsilon->get();
 	double randomValue = getRandomValue();
@@ -52,18 +52,18 @@ double CQEGreedyPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 }
 
 //Soft-Max
-CQSoftMaxPolicy::CQSoftMaxPolicy(CConfigNode* pConfigNode)
+QSoftMaxPolicy::QSoftMaxPolicy(ConfigNode* pConfigNode)
 {
 	m_pProbabilities = 0;
-	m_pTau= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Tau", "Temperature parameter");
+	m_pTau= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,"Tau", "Temperature parameter");
 }
 
-CQSoftMaxPolicy::~CQSoftMaxPolicy()
+QSoftMaxPolicy::~QSoftMaxPolicy()
 {
 	if (m_pProbabilities) delete[] m_pProbabilities;
 }
 
-double CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CState* s, CAction* a)
+double QSoftMaxPolicy::selectAction(LinearStateActionVFA* pQFunction, const State* s, Action* a)
 {
 	if (m_pTau->get() == 0.0)
 	{
@@ -107,29 +107,29 @@ double CQSoftMaxPolicy::selectAction(CLinearStateActionVFA* pQFunction, const CS
 ///////////////////////////////////
 //Q-Learning
 
-CQLearningCritic::CQLearningCritic(CConfigNode* pConfigNode)
+QLearningCritic::QLearningCritic(ConfigNode* pConfigNode)
 {
-	m_pQFunction = CHILD_OBJECT<CLinearStateActionVFA>(pConfigNode, "Q-Function", "The parameterization of the Q-Function");
+	m_pQFunction = CHILD_OBJECT<LinearStateActionVFA>(pConfigNode, "Q-Function", "The parameterization of the Q-Function");
 	m_pQFunction->setCanUseDeferredUpdates(true);
 	
-	m_eTraces = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "E-Traces", true);
+	m_eTraces = CHILD_OBJECT<ETraces>(pConfigNode, "E-Traces", "E-Traces", true);
 	m_eTraces->setName("Q-Learning/traces");
-	m_pAlpha = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha", "The learning gain [0-1]");
+	m_pAlpha = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Alpha", "The learning gain [0-1]");
 
-	m_pAux = new CFeatureList("QLearning/aux");
+	m_pAux = new FeatureList("QLearning/aux");
 }
 
-CQLearningCritic::~CQLearningCritic()
+QLearningCritic::~QLearningCritic()
 {
 	delete m_pAux;
 }
 
-double CQLearningCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
+double QLearningCritic::update(const State *s, const Action *a, const State *s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node78.html
 	m_eTraces->update();
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
 	m_eTraces->addFeatureList(m_pAux, gamma);
 
@@ -144,47 +144,47 @@ double CQLearningCritic::update(const CState *s, const CAction *a, const CState 
 	else return td;
 }
 
-CQLearning::CQLearning(CConfigNode* pConfigNode): CQLearningCritic(pConfigNode)
+QLearning::QLearning(ConfigNode* pConfigNode): QLearningCritic(pConfigNode)
 {
-	m_pQPolicy= CHILD_OBJECT_FACTORY<CQPolicy>(pConfigNode, "Policy", "The policy to be followed");
+	m_pQPolicy= CHILD_OBJECT_FACTORY<QPolicy>(pConfigNode, "Policy", "The policy to be followed");
 	m_bUseVFunctionAsBaseline = false;
 }
-CQLearning::~CQLearning()
+QLearning::~QLearning()
 {
 
 }
 
-double CQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
+double QLearning::update(const State *s, const Action *a, const State *s_p, double r, double probability)
 {
-	return CQLearningCritic::update(s, a, s_p, r, probability);
+	return QLearningCritic::update(s, a, s_p, r, probability);
 }
 
 
-double CQLearning::selectAction(const CState *s, CAction *a)
+double QLearning::selectAction(const State *s, Action *a)
 {
 	return m_pQPolicy->selectAction(m_pQFunction.ptr(), s, a);
 }
 
 ///////////////////////////////////////////////////
 //Q-Learning
-CDoubleQLearning::CDoubleQLearning(CConfigNode* pConfigNode) : CQLearning(pConfigNode)
+DoubleQLearning::DoubleQLearning(ConfigNode* pConfigNode) : QLearning(pConfigNode)
 {
 	//no need to parameterize the second Q-function (Q_b), just clone the original q-function (Q_a)
-	m_pQFunction2 = new CLinearStateActionVFA(m_pQFunction.ptr());
+	m_pQFunction2 = new LinearStateActionVFA(m_pQFunction.ptr());
 }
 
-CDoubleQLearning::~CDoubleQLearning()
+DoubleQLearning::~DoubleQLearning()
 {
 	delete m_pQFunction2;
 }
 
-double CDoubleQLearning::update(const CState *s, const CAction *a, const CState *s_p, double r, double probability)
+double DoubleQLearning::update(const State *s, const Action *a, const State *s_p, double r, double probability)
 {
-	double gamma= CSimionApp::get()->pSimGod->getGamma();
+	double gamma= SimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
 
 	//Randomly select the target function
-	CLinearStateActionVFA *pQ_a, *pQ_b;
+	LinearStateActionVFA *pQ_a, *pQ_b;
 	if (getRandomValue()<0.5)
 	{
 		pQ_a = m_pQFunction.ptr();
@@ -205,19 +205,19 @@ double CDoubleQLearning::update(const CState *s, const CAction *a, const CState 
 
 /////////////////////////////////////////////////
 //SARSA
-CSARSA::CSARSA(CConfigNode* pConfigNode) : CQLearning(pConfigNode)
+SARSA::SARSA(ConfigNode* pConfigNode) : QLearning(pConfigNode)
 {
 	m_nextAProbability = 0.0;
 	m_bNextActionSelected = false;
-	m_nextA = CSimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
+	m_nextA = SimionApp::get()->pWorld->getDynamicModel()->getActionInstance();
 }
 
-CSARSA::~CSARSA()
+SARSA::~SARSA()
 {
 	delete m_nextA;
 }
 
-double CSARSA::selectAction(const CState *s, CAction *a)
+double SARSA::selectAction(const State *s, Action *a)
 {
 	if (m_bNextActionSelected)
 	{
@@ -231,7 +231,7 @@ double CSARSA::selectAction(const CState *s, CAction *a)
 	}
 }
 
-double CSARSA::update(const CState* s, const CAction* a, const CState* s_p, double r, double probability)
+double SARSA::update(const State* s, const Action* a, const State* s_p, double r, double probability)
 {
 	//https://webdocs.cs.ualberta.ca/~sutton/book/ebook/node77.html
 	m_eTraces->update();
@@ -240,7 +240,7 @@ double CSARSA::update(const CState* s, const CAction* a, const CState* s_p, doub
 	m_nextAProbability= m_pQPolicy->selectAction(m_pQFunction.ptr(), s_p, m_nextA);
 	m_bNextActionSelected = true;
 
-	double gamma= CSimionApp::get()->pSimGod->getGamma();
+	double gamma= SimionApp::get()->pSimGod->getGamma();
 	m_pQFunction->getFeatures(s, a, m_pAux);
 	m_eTraces->addFeatureList(m_pAux, gamma);
 

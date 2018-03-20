@@ -8,7 +8,7 @@ class BulletBody;
 class BulletPhysics;
 
 //Move box with 2 robots
-class CRobotControl : public CDynamicModel
+class RobotControl : public DynamicModel
 {
 	/// All-Simulation variables
 	double MASS_TARGET;
@@ -28,11 +28,11 @@ class CRobotControl : public CDynamicModel
 	BulletPhysics* m_pBulletPhysics;
 
 public:
-	CRobotControl(CConfigNode* pParameters);
-	virtual ~CRobotControl();
+	RobotControl(ConfigNode* pParameters);
+	virtual ~RobotControl();
 
-	void reset(CState *s);
-	void executeAction(CState *s, const CAction *a, double dt);
+	void reset(State *s);
+	void executeAction(State *s, const Action *a, double dt);
 
 };
 

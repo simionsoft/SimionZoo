@@ -3,34 +3,34 @@
 #include "policy.h"
 #include "parameters-numeric.h"
 
-class CDiscreteDeepPolicy
+class DiscreteDeepPolicy
 {
 protected:
 
 public:
-	static std::shared_ptr<CDiscreteDeepPolicy> CDiscreteDeepPolicy::getInstance(CConfigNode* pConfigNode);
+	static std::shared_ptr<DiscreteDeepPolicy> DiscreteDeepPolicy::getInstance(ConfigNode* pConfigNode);
 
-	CDiscreteDeepPolicy(CConfigNode* pConfigNode);
+	DiscreteDeepPolicy(ConfigNode* pConfigNode);
 
 	virtual int selectAction(std::vector<double> values) = 0;
 };
 
-class CDiscreteEpsilonGreedyDeepPolicy : public CDiscreteDeepPolicy
+class DiscreteEpsilonGreedyDeepPolicy : public DiscreteDeepPolicy
 {
 protected:
-	CHILD_OBJECT_FACTORY<CNumericValue> m_epsilon;
+	CHILD_OBJECT_FACTORY<NumericValue> m_epsilon;
 public:
-	CDiscreteEpsilonGreedyDeepPolicy(CConfigNode* pConfigNode);
+	DiscreteEpsilonGreedyDeepPolicy(ConfigNode* pConfigNode);
 
 	virtual int selectAction(std::vector<double> values);
 };
 
-class CDiscreteSoftmaxDeepPolicy : public CDiscreteDeepPolicy
+class DiscreteSoftmaxDeepPolicy : public DiscreteDeepPolicy
 {
 protected:
-	CHILD_OBJECT_FACTORY<CNumericValue> m_temperature;
+	CHILD_OBJECT_FACTORY<NumericValue> m_temperature;
 public:
-	CDiscreteSoftmaxDeepPolicy(CConfigNode* pConfigNode);
+	DiscreteSoftmaxDeepPolicy(ConfigNode* pConfigNode);
 
 	virtual int selectAction(std::vector<double> values);
 };

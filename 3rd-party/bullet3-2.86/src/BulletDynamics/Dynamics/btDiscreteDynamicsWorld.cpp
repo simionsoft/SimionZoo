@@ -259,7 +259,7 @@ btDiscreteDynamicsWorld::~btDiscreteDynamicsWorld()
 	}
 }
 
-void	btDiscreteDynamicsWorld::saveKinematicState(btScalar timeStep)
+void	btDiscreteDynamicsWorld::saveKinematiState(btScalar timeStep)
 {
 ///would like to iterate over m_nonStaticRigidBodies, but unfortunately old API allows
 ///to switch status _after_ adding kinematic objects to the world
@@ -273,7 +273,7 @@ void	btDiscreteDynamicsWorld::saveKinematicState(btScalar timeStep)
 			if (body->isKinematicObject())
 			{
 				//to calculate velocities next frame
-				body->saveKinematicState(timeStep);
+				body->saveKinematiState(timeStep);
 			}
 		}
 	}
@@ -445,7 +445,7 @@ int	btDiscreteDynamicsWorld::stepSimulation( btScalar timeStep,int maxSubSteps, 
 		//clamp the number of substeps, to prevent simulation grinding spiralling down to a halt
 		int clampedSimulationSteps = (numSimulationSubSteps > maxSubSteps)? maxSubSteps : numSimulationSubSteps;
 
-		saveKinematicState(fixedTimeStep*clampedSimulationSteps);
+		saveKinematiState(fixedTimeStep*clampedSimulationSteps);
 
 		applyGravity();
 

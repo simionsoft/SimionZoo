@@ -5643,7 +5643,7 @@ namespace CNTK
     ///
     class TrainingSession
     {
-        struct PeriodicAction
+        struct PeriodiAction
         {
             size_t frequency;
             size_t currentIndex;
@@ -5762,7 +5762,7 @@ namespace CNTK
         // Scaler for the minibatch size in distributed mode.
         size_t m_mbSizeScaleFactor;
 
-        std::vector<PeriodicAction> m_actions;
+        std::vector<PeriodiAction> m_actions;
 
         // Training.
         TrainerPtr m_trainer;

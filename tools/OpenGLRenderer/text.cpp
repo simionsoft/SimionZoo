@@ -4,12 +4,12 @@
 
 
 
-C2DText::C2DText(string name, Vector2D origin, int depth)
-	: m_color(Color(0.0, 0.0, 0.0, 1.0)), CGraphicObject2D(name)
+Text2D::Text2D(string name, Vector2D origin, int depth)
+	: m_color(Color(0.0, 0.0, 0.0, 1.0)), GraphicObject2D(name)
 {
 	int screenWidth, screenHeight;
 
-	CRenderer::get()->getWindowsSize(screenWidth, screenHeight);
+	Renderer::get()->getWindowsSize(screenWidth, screenHeight);
 	m_absPosX = (int) (origin.x()*screenWidth);
 	m_absPosY = (int) (origin.y()*screenHeight);
 
@@ -18,11 +18,11 @@ C2DText::C2DText(string name, Vector2D origin, int depth)
 	m_transform.setDepth(depth);
 }
 
-C2DText::~C2DText()
+Text2D::~Text2D()
 {
 }
 
-void C2DText::draw()
+void Text2D::draw()
 {
 	//set color
 	glColor3fv(m_color.rgba());
@@ -36,7 +36,7 @@ void C2DText::draw()
 
 }
 
-void C2DText::addPixelOffset(const Vector2D offset)
+void Text2D::addPixelOffset(const Vector2D offset)
 {
 	m_transform.setTranslation( m_transform.translation()+offset );
 }

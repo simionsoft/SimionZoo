@@ -1,32 +1,32 @@
 #pragma once
 #include "parameters.h"
 
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
 
-class CConfigNode;
-class CLinearStateVFA;
+class ConfigNode;
+class LinearStateVFA;
 
 class ICritic
 {
 public:
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho = 1.0) = 0;
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double rho = 1.0) = 0;
 
-	static std::shared_ptr<ICritic> getInstance(CConfigNode* pParameters);
+	static std::shared_ptr<ICritic> getInstance(ConfigNode* pParameters);
 };
 
-class CVLearnerCritic: public ICritic
+class VLearnerCritic: public ICritic
 {
 
 protected:
-	CHILD_OBJECT<CLinearStateVFA> m_pVFunction; //value function approximator
+	CHILD_OBJECT<LinearStateVFA> m_pVFunction; //value function approximator
 
 public:
-	CVLearnerCritic(CConfigNode* pParameters);
-	virtual ~CVLearnerCritic();
+	VLearnerCritic(ConfigNode* pParameters);
+	virtual ~VLearnerCritic();
 
-	virtual double update(const CState *s, const CAction *a, const CState *s_p, double r, double rho= 1.0) = 0;
+	virtual double update(const State *s, const Action *a, const State *s_p, double r, double rho= 1.0) = 0;
 
 };
 

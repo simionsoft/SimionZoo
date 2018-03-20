@@ -84,7 +84,7 @@ namespace Badger.Simion
         public const string renameAttr = "Rename";
 
         //the name of the configuration class used in the C++ source code
-        public const string srcConfigClassName = "CConfigNode";
+        public const string srcConfigClassName = "ConfigNode";
         //Text colors
         public const string colorDefaultValue = "DarkOrange";
         public const string colorValidValue = "Gray";

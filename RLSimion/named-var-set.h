@@ -3,7 +3,7 @@
 #define VAR_NAME_MAX_LENGTH 128
 #include <vector>
 
-class CNamedVarProperties
+class NamedVarProperties
 {
 	char m_name[VAR_NAME_MAX_LENGTH];
 	char m_units[VAR_NAME_MAX_LENGTH];
@@ -12,7 +12,7 @@ class CNamedVarProperties
 	bool m_bCircular;
 public:
 	//bCircular must be true for variables holding angles
-	CNamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular= false);
+	NamedVarProperties(const char* name, const char* units, double min, double max, bool bCircular= false);
 	const char* getName() const { return m_name; }
 	void setName(const char* name);
 	double getMin() const { return m_min; }
@@ -22,29 +22,29 @@ public:
 	bool bIsCircular() const { return m_bCircular; }
 };
 
-class CNamedVarSet;
+class NamedVarSet;
 
-class CDescriptor
+class Descriptor
 {
-	std::vector<CNamedVarProperties*> m_pProperties;
+	std::vector<NamedVarProperties*> m_pProperties;
 public:
-	CNamedVarSet* getInstance();
+	NamedVarSet* getInstance();
 	size_t size() const { return m_pProperties.size(); }
-	CNamedVarProperties& operator[](int idx) { return *m_pProperties[idx]; }
-	const CNamedVarProperties& operator[](int idx) const { return *m_pProperties[idx]; }
+	NamedVarProperties& operator[](int idx) { return *m_pProperties[idx]; }
+	const NamedVarProperties& operator[](int idx) const { return *m_pProperties[idx]; }
 	int addVariable(const char* name, const char* units, double min, double max, bool bCircular= false);
 	int getVarIndex (const char* name);
 };
 
-class CNamedVarSet
+class NamedVarSet
 {
-	CDescriptor &m_pProperties;
+	Descriptor &m_pProperties;
 	double *m_pValues;
 	int m_numVars;
 
 public:
-	CNamedVarSet(CDescriptor& descriptor);
-	virtual ~CNamedVarSet();
+	NamedVarSet(Descriptor& descriptor);
+	virtual ~NamedVarSet();
 
 	int getNumVars() const{ return m_numVars; }
 
@@ -65,17 +65,17 @@ public:
 	//returns the sum of all the values, i.e. used to scalarise a reward vector
 	double getSumValue() const;
 
-	void copy(const CNamedVarSet* nvs);
-	CNamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
-	CNamedVarProperties& getProperties(const char* varName) const;
-	CDescriptor& getProperties() { return m_pProperties; }
-	CDescriptor* getPropertiesPtr() { return &m_pProperties; }
+	void copy(const NamedVarSet* nvs);
+	NamedVarProperties& getProperties(int i) const { return m_pProperties[i]; }
+	NamedVarProperties& getProperties(const char* varName) const;
+	Descriptor& getProperties() { return m_pProperties; }
+	Descriptor* getPropertiesPtr() { return &m_pProperties; }
 
 public:
 	void addOffset(double offset);
 };
 
-using CState= CNamedVarSet;
-using CAction= CNamedVarSet;
-using CReward= CNamedVarSet;
+using State= NamedVarSet;
+using Action= NamedVarSet;
+using Reward= NamedVarSet;
 

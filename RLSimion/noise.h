@@ -1,20 +1,20 @@
 #pragma once
 #include "parameters.h"
 
-class CConfigNode;
-class CNumericValue;
+class ConfigNode;
+class NumericValue;
 
 double getRandomValue();// returns a random value in range [0,1]
 int chooseRandomInteger(vector<double>& probability); //returns an integer in range [0, probability.size] according to the given probability
 
-class CNoise
+class Noise
 {
 protected:
-	CNoise();
+	Noise();
 	double m_lastValue;
 public:
-	static std::shared_ptr<CNoise> getInstance(CConfigNode* pParameters);
-	virtual ~CNoise() {}
+	static std::shared_ptr<Noise> getInstance(ConfigNode* pParameters);
+	virtual ~Noise() {}
 
 	virtual double getVariance() = 0;
 	virtual double unscale(double noise) { return noise; }
@@ -27,15 +27,15 @@ public:
 
 
 
-class CGaussianNoise: public CNoise
+class GaussianNoise: public Noise
 {
 	DOUBLE_PARAM m_sigma;
 	DOUBLE_PARAM m_alpha;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_scale;
+	CHILD_OBJECT_FACTORY<NumericValue> m_scale;
 public:
-	CGaussianNoise(CConfigNode* pParameters);
-	CGaussianNoise(double sigma, double alpha, CNumericValue* scale);
-	~CGaussianNoise()= default;
+	GaussianNoise(ConfigNode* pParameters);
+	GaussianNoise(double sigma, double alpha, NumericValue* scale);
+	~GaussianNoise()= default;
 	double getVariance();
 	double unscale(double noise);
 	double getSample();
@@ -46,29 +46,29 @@ public:
 	static double getPDF(double mean, double sigma, double value,double scaleFactor=1.0);
 };
 
-class CSinusoidalNoise : public CNoise
+class SinusoidalNoise : public Noise
 {
-	CHILD_OBJECT_FACTORY<CNumericValue> m_scale;
+	CHILD_OBJECT_FACTORY<NumericValue> m_scale;
 	DOUBLE_PARAM m_timeFreq;
 public:
-	CSinusoidalNoise(CConfigNode* pParameters);
-	CSinusoidalNoise(CNumericValue* scale, double timeFreq);
-	~CSinusoidalNoise() = default;
+	SinusoidalNoise(ConfigNode* pParameters);
+	SinusoidalNoise(NumericValue* scale, double timeFreq);
+	~SinusoidalNoise() = default;
 	double getVariance();
 	double unscale(double noise);
 	double getSample();
 	double getSampleProbability(double sample, bool bUseMarginalNoise = false);
 };
 
-class COrnsteinUhlenbeckNoise : public CNoise
+class OrnsteinUhlenbeckNoise : public Noise
 {
 	DOUBLE_PARAM m_theta, m_sigma,m_mu;
-	CHILD_OBJECT_FACTORY<CNumericValue> m_scale;
+	CHILD_OBJECT_FACTORY<NumericValue> m_scale;
 	double m_dt;
 public:
-	COrnsteinUhlenbeckNoise(CConfigNode* pParameters);
-	COrnsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt);
-	~COrnsteinUhlenbeckNoise();
+	OrnsteinUhlenbeckNoise(ConfigNode* pParameters);
+	OrnsteinUhlenbeckNoise(double theta, double sigma, double mu, double dt);
+	~OrnsteinUhlenbeckNoise();
 	double getVariance();
 	double unscale(double noise);
 	double getSample();

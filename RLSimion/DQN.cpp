@@ -11,7 +11,7 @@
 #include "parameters-numeric.h"
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 
-CDQN::~CDQN()
+DQN::~DQN()
 {
 	delete m_pStateOutFeatures;
 	delete[] m_pMinibatchExperienceTuples;
@@ -20,29 +20,29 @@ CDQN::~CDQN()
 	CNTKWrapperLoader::UnLoad();
 }
 
-CDQN::CDQN(CConfigNode* pConfigNode)
+DQN::DQN(ConfigNode* pConfigNode)
 {
 	CNTKWrapperLoader::Load();
-	m_policy = CHILD_OBJECT_FACTORY<CDiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
+	m_policy = CHILD_OBJECT_FACTORY<DiscreteDeepPolicy>(pConfigNode, "Policy", "The policy");
 	m_QNetwork = NEURAL_NETWORK(pConfigNode, "neural-network", "Neural Network Architecture");
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
-	m_experienceReplay = CHILD_OBJECT<CExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
+	m_experienceReplay = CHILD_OBJECT<ExperienceReplay>(pConfigNode, "experience-replay", "Experience replay", false);
 
-	m_pStateOutFeatures = new CFeatureList("state-input");
+	m_pStateOutFeatures = new FeatureList("state-input");
 
-	m_numberOfStateFeatures = CSimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
+	m_numberOfStateFeatures = SimGod::getGlobalStateFeatureMap()->getTotalNumFeatures();
 	if (m_numberOfStateFeatures == 0)
-		CLogger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
+		Logger::logMessage(MessageType::Error, "Invalid State-Map chosen (it will return 0 features at most, but at least 1 has to be returned)");
 
-	if (dynamic_cast<CDiscreteActionFeatureMap*>(CSimGod::getGlobalActionFeatureMap().get()) == nullptr)
-		CLogger::logMessage(MessageType::Error, "The CDiscreteEpsilonGreedyDeepPolicy requires a CDiscreteActionFeatureMap as the action-feature-map.");
+	if (dynamic_cast<DiscreteActionFeatureMap*>(SimGod::getGlobalActionFeatureMap().get()) == nullptr)
+		Logger::logMessage(MessageType::Error, "The DiscreteEpsilonGreedyDeepPolicy requires a DiscreteActionFeatureMap as the action-feature-map.");
 	
-	m_pGrid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputActionIndex.get()]));
+	m_pGrid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[m_outputActionIndex.get()]));
 
 	m_numberOfActions = m_QNetwork.getNetwork()->getTotalSize();
 
 	if (m_pGrid->getNumCenters() != m_numberOfActions)
-		CLogger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
+		Logger::logMessage(MessageType::Error, "Output of the network has not the same size as the discrete action grid has centers/discrete values");
 
 	m_stateVector = std::vector<double>(m_numberOfStateFeatures, 0.0);
 	m_actionValuePredictionVector = std::vector<double>(m_numberOfActions);
@@ -50,16 +50,16 @@ CDQN::CDQN(CConfigNode* pConfigNode)
 	m_minibatchStateVector = std::vector<double>(m_numberOfStateFeatures * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
 	m_minibatchActionValuePredictionVector = std::vector<double>(m_numberOfActions * m_experienceReplay->getMaxUpdateBatchSize(), 0.0);
 
-	m_pMinibatchExperienceTuples = new CExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
+	m_pMinibatchExperienceTuples = new ExperienceTuple*[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionTargetValues = new double[m_experienceReplay->getMaxUpdateBatchSize()];
 	m_pMinibatchChosenActionIndex = new int[m_experienceReplay->getMaxUpdateBatchSize()];
 
 	m_pPredictionNetwork = nullptr;
 }
 
-INetwork* CDQN::getPredictionNetwork()
+INetwork* DQN::getPredictionNetwork()
 {
-	if (CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
+	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
 	{
 		if (m_pPredictionNetwork == nullptr)
 			m_pPredictionNetwork = m_QNetwork.getNetwork()->cloneNonTrainable();
@@ -69,9 +69,9 @@ INetwork* CDQN::getPredictionNetwork()
 		return m_QNetwork.getNetwork();
 }
 
-double CDQN::selectAction(const CState * s, CAction * a)
+double DQN::selectAction(const State * s, Action * a)
 {
-	CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
+	SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(s, m_pStateOutFeatures);
 
 	//TODO: use sparse representation
 	for (size_t i = 0; i < m_pStateOutFeatures->m_numFeatures; i++)
@@ -92,9 +92,9 @@ double CDQN::selectAction(const CState * s, CAction * a)
 	return 1.0;
 }
 
-double CDQN::update(const CState * s, const CAction * a, const CState * s_p, double r, double behaviorProb)
+double DQN::update(const State * s, const Action * a, const State * s_p, double r, double behaviorProb)
 {
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 
 	m_experienceReplay->addTuple(s, a, s_p, r, 1.0);
 
@@ -107,7 +107,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 		m_pMinibatchExperienceTuples[i] = m_experienceReplay->getRandomTupleFromBuffer();
 
 		//get Q(s_p) for entire minibatch
-		CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
+		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s_p, m_pStateOutFeatures);
 		for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
 			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 
@@ -127,7 +127,7 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 	//get Q(s) for entire minibatch
 	for (int i = 0; i < m_experienceReplay->getMaxUpdateBatchSize(); i++)
 	{
-		CSimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
+		SimionApp::get()->pSimGod->getGlobalStateFeatureMap()->getFeatures(m_pMinibatchExperienceTuples[i]->s, m_pStateOutFeatures);
 		for (size_t n = 0; n < m_pStateOutFeatures->m_numFeatures; n++)
 			m_minibatchStateVector[m_pStateOutFeatures->m_pFeatures[n].m_index + i*m_numberOfStateFeatures] = m_pStateOutFeatures->m_pFeatures[n].m_factor;
 	}
@@ -139,8 +139,8 @@ double CDQN::update(const CState * s, const CAction * a, const CState * s_p, dou
 	//update the network finally
 	m_QNetwork.getNetwork()->train(inputMap, m_minibatchActionValuePredictionVector);
 
-	if (CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
-		if (CSimionApp::get()->pExperiment->getExperimentStep() % CSimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
+	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
+		if (SimionApp::get()->pExperiment->getExperimentStep() % SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq() == 0)
 		{
 			delete m_pPredictionNetwork;
 			m_pPredictionNetwork = m_QNetwork.getNetwork()->cloneNonTrainable();

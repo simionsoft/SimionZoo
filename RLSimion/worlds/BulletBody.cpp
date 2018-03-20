@@ -61,7 +61,7 @@ void BulletBody::setOrigin(double x, double y, double theta)
 }
 
 
-void BulletBody::reset(CState* s)
+void BulletBody::reset(State* s)
 {
 	btTransform bodyTransform;
 	btQuaternion orientation;
@@ -85,7 +85,7 @@ void BulletBody::reset(CState* s)
 	updateState(s);
 }
 
-void BulletBody::updateState(CState* s)
+void BulletBody::updateState(State* s)
 {
 	btTransform trans;
 	if (bSetAbsStateVars())
@@ -103,7 +103,7 @@ void BulletBody::updateState(CState* s)
 	}
 }
 
-void BulletBody::updateYawState(CState* s)
+void BulletBody::updateYawState(State* s)
 {
 	if (m_thetaId >= 0)
 	{

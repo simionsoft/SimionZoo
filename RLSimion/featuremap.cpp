@@ -3,36 +3,36 @@
 #include "app.h"
 
 
-CStateFeatureMap::CStateFeatureMap(CConfigNode* pConfigNode)
+StateFeatureMap::StateFeatureMap(ConfigNode* pConfigNode)
 {
 	m_pParameters = pConfigNode;
 }
 
-std::shared_ptr<CStateFeatureMap> CStateFeatureMap::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<StateFeatureMap> StateFeatureMap::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CStateFeatureMap>(pConfigNode, "Type", "Feature map type",
+	return CHOICE<StateFeatureMap>(pConfigNode, "Type", "Feature map type",
 	{
-		{"Discrete-State-Grid", CHOICE_ELEMENT_NEW<CDiscreteStateFeatureMap>},
-		{"RBF-State-Grid", CHOICE_ELEMENT_NEW<CGaussianRBFStateGridFeatureMap>},
-		{ "Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<CTileCodingStateFeatureMap>},
-		{"State-Bag", CHOICE_ELEMENT_NEW<CBagStateFeatureMap>}
+		{"Discrete-State-Grid", CHOICE_ELEMENT_NEW<DiscreteStateFeatureMap>},
+		{"RBF-State-Grid", CHOICE_ELEMENT_NEW<GaussianRBFStateGridFeatureMap>},
+		{ "Tile-Coding-State-Grid", CHOICE_ELEMENT_NEW<TileCodingStateFeatureMap>},
+		{"State-Bag", CHOICE_ELEMENT_NEW<BagStateFeatureMap>}
 	});
 }
 
 
-CActionFeatureMap::CActionFeatureMap(CConfigNode* pConfigNode)
+ActionFeatureMap::ActionFeatureMap(ConfigNode* pConfigNode)
 {
 	m_pParameters = pConfigNode;
 }
 
-std::shared_ptr<CActionFeatureMap> CActionFeatureMap::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<ActionFeatureMap> ActionFeatureMap::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CActionFeatureMap>(pConfigNode, "Type", "Feature map type",
+	return CHOICE<ActionFeatureMap>(pConfigNode, "Type", "Feature map type",
 	{
-		{"Discrete-Action-Grid", CHOICE_ELEMENT_NEW<CDiscreteActionFeatureMap>},
-		{"RBF-Action-Grid", CHOICE_ELEMENT_NEW<CGaussianRBFActionGridFeatureMap>},
-		{"Tile-Coding-Action-Grid", CHOICE_ELEMENT_NEW<CTileCodingActionFeatureMap>},
-		{"Action-Bag", CHOICE_ELEMENT_NEW<CBagActionFeatureMap>}
+		{"Discrete-Action-Grid", CHOICE_ELEMENT_NEW<DiscreteActionFeatureMap>},
+		{"RBF-Action-Grid", CHOICE_ELEMENT_NEW<GaussianRBFActionGridFeatureMap>},
+		{"Tile-Coding-Action-Grid", CHOICE_ELEMENT_NEW<TileCodingActionFeatureMap>},
+		{"Action-Bag", CHOICE_ELEMENT_NEW<BagActionFeatureMap>}
 	});
 }
 

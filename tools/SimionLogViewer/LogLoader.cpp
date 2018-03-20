@@ -2,20 +2,20 @@
 #include "LogLoader.h"
 #include "../WindowsUtils/FileUtils.h"
 
-//vector<string> CExperimentLog::m_variableNames;
+//vector<string> ExperimentLog::m_variableNames;
 
-CStep::CStep(int numVariables)
+Step::Step(int numVariables)
 {
 	m_numValues = numVariables;
 	m_pValues = new double[numVariables];
 }
 
-CStep::~CStep()
+Step::~Step()
 {
 	if (m_pValues) delete [] m_pValues;
 }
 
-void CStep::load(FILE* pFile)
+void Step::load(FILE* pFile)
 {
 	size_t elementsRead = fread_s((void*)&m_header, sizeof(StepHeader), sizeof(StepHeader), 1, pFile);
 	if (elementsRead == 1 && !bEnd())
@@ -24,61 +24,61 @@ void CStep::load(FILE* pFile)
 	}
 }
 
-double CStep::getValue(int i) const
+double Step::getValue(int i) const
 {
 	if (i>=0 && i<m_numValues)
 		return m_pValues[i];
 	return 0.0;
 }
 
-void CStep::setValue(int i, double value)
+void Step::setValue(int i, double value)
 {
 	if (i >= 0 && i<m_numValues)
 		m_pValues[i]= value;
 }
 
-double CStep::getExperimentRealTime() const
+double Step::getExperimentRealTime() const
 {
 	return m_header.experimentRealTime;
 }
-double CStep::getEpisodeSimTime() const
+double Step::getEpisodeSimTime() const
 {
 	return m_header.m_episodeSimTime;
 }
-double CStep::getEpisodeRealTime() const
+double Step::getEpisodeRealTime() const
 {
 	return m_header.episodeRealTime;
 }
 
-bool CStep::bEnd()
+bool Step::bEnd()
 {
 	return m_header.magicNumber == EPISODE_END_HEADER;
 }
 
-void CEpisode::load(FILE* pFile)
+void Episode::load(FILE* pFile)
 {
 	size_t elementsRead = fread_s((void*)&m_header, sizeof(EpisodeHeader), sizeof(EpisodeHeader), 1, pFile);
 	if (elementsRead == 1)
 	{
-		CStep *pStep= new CStep((int)m_header.numVariablesLogged);
+		Step *pStep= new Step((int)m_header.numVariablesLogged);
 		pStep->load(pFile);
 		while (!pStep->bEnd())
 		{
 			m_pSteps.push_back(pStep);
 
-			pStep = new CStep((int)m_header.numVariablesLogged);
+			pStep = new Step((int)m_header.numVariablesLogged);
 			pStep->load(pFile);
 		}
 	}
 }
 
-CEpisode::~CEpisode()
+Episode::~Episode()
 {
 	for (auto it = m_pSteps.begin(); it != m_pSteps.end(); ++it)
 		delete (*it);
 }
 
-CStep* CEpisode::getStep(int i)
+Step* Episode::getStep(int i)
 {
 	if (i>=0 && i<m_pSteps.size())
 		return m_pSteps[i];
@@ -87,7 +87,7 @@ CStep* CEpisode::getStep(int i)
 
 
 
-bool CExperimentLog::load(string descriptorFile, string& outSceneFile)
+bool ExperimentLog::load(string descriptorFile, string& outSceneFile)
 {
 	//Load the XML descriptor
 	tinyxml2::XMLDocument doc;
@@ -126,7 +126,7 @@ bool CExperimentLog::load(string descriptorFile, string& outSceneFile)
 		size_t elementsRead = fread_s((void*)&m_header, sizeof(ExperimentHeader), sizeof(ExperimentHeader), 1, pFile);
 		if (elementsRead == 1)
 		{
-			m_pEpisodes = new CEpisode[getNumEpisodes()];
+			m_pEpisodes = new Episode[getNumEpisodes()];
 			for (int i = 0; i < getNumEpisodes(); ++i)
 			{
 				m_pEpisodes[i].load(pFile);
@@ -137,12 +137,12 @@ bool CExperimentLog::load(string descriptorFile, string& outSceneFile)
 	return true;
 }
 
-CExperimentLog::~CExperimentLog()
+ExperimentLog::~ExperimentLog()
 {
 	if (m_pEpisodes) delete [] m_pEpisodes;
 }
 
-int CExperimentLog::getVariableIndex(string variableName) const
+int ExperimentLog::getVariableIndex(string variableName) const
 {
 	for (int i = 0; i < m_variableNames.size(); ++i)
 		if (m_variableNames[i] == variableName)

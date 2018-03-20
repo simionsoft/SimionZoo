@@ -17,23 +17,23 @@
 #define PROBABILITY_INTEGRATION_WIDTH 0.05
 //0.05
 
-std::shared_ptr<CPolicy> CPolicy::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<Policy> Policy::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CPolicy>(pConfigNode, "Policy", "The policy type",
+	return CHOICE<Policy>(pConfigNode, "Policy", "The policy type",
 	{
-		{"Deterministic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<CDeterministicPolicyGaussianNoise>},
-		{"Stochastic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<CStochasticGaussianPolicy>},
-		{"Uniform-Policy",CHOICE_ELEMENT_NEW<CStochasticUniformPolicy>}
+		{"Deterministic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<DeterministicPolicyGaussianNoise>},
+		{"Stochastic-Policy-Gaussian-Noise",CHOICE_ELEMENT_NEW<StochasticGaussianPolicy>},
+		{"Uniform-Policy",CHOICE_ELEMENT_NEW<StochasticUniformPolicy>}
 	});
 }
 
-CPolicy::CPolicy(CConfigNode* pConfigNode)
+Policy::Policy(ConfigNode* pConfigNode)
 {
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action variable");
 
-	//only CDiscreteActionFeatureMap is supported for the discrete mode
-	if (CSimGod::getGlobalActionFeatureMap().get() != NULL)
-		m_discreteActionSpace = (typeid(*CSimGod::getGlobalActionFeatureMap().get()) == typeid(CDiscreteActionFeatureMap));
+	//only DiscreteActionFeatureMap is supported for the discrete mode
+	if (SimGod::getGlobalActionFeatureMap().get() != NULL)
+		m_discreteActionSpace = (typeid(*SimGod::getGlobalActionFeatureMap().get()) == typeid(DiscreteActionFeatureMap));
 	else
 		m_discreteActionSpace = false;
 
@@ -41,43 +41,43 @@ CPolicy::CPolicy(CConfigNode* pConfigNode)
 	{
 		//calculate the density of the space
 		m_space_density = 1.0;
-		for (size_t i = 0; i < CWorld::getDynamicModel()->getActionDescriptor().size(); i++)
+		for (size_t i = 0; i < World::getDynamicModel()->getActionDescriptor().size(); i++)
 		{
-			m_space_density *= ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[i]))->getStepSize();
+			m_space_density *= ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[i]))->getStepSize();
 		}
 	}
 }
 
-CPolicy::~CPolicy()
+Policy::~Policy()
 {
 }
 
-CDeterministicPolicy::CDeterministicPolicy(CConfigNode* pConfigNode) : CPolicy(pConfigNode) {}
+DeterministicPolicy::DeterministicPolicy(ConfigNode* pConfigNode) : Policy(pConfigNode) {}
 
-CStochasticPolicy::CStochasticPolicy(CConfigNode* pConfigNode) : CPolicy(pConfigNode) {}
+StochasticPolicy::StochasticPolicy(ConfigNode* pConfigNode) : Policy(pConfigNode) {}
 
 
-//CStochasticUniformPolicy/////////////////////////////////////////
+//StochasticUniformPolicy/////////////////////////////////////////
 /////////////////////////////////////////////////////////
-CStochasticUniformPolicy::CStochasticUniformPolicy(CConfigNode* pConfigNode)
-	: CStochasticPolicy(pConfigNode)
+StochasticUniformPolicy::StochasticUniformPolicy(ConfigNode* pConfigNode)
+	: StochasticPolicy(pConfigNode)
 {
-	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
 	m_minActionValue = pActionDescriptor[m_outputActionIndex.get()].getMin();
 	m_maxActionValue = pActionDescriptor[m_outputActionIndex.get()].getMax();
 	m_action_width = pActionDescriptor[m_outputActionIndex.get()].getRangeWidth();
 }
 
-CStochasticUniformPolicy::~CStochasticUniformPolicy()
+StochasticUniformPolicy::~StochasticUniformPolicy()
 {
 }
 
-void CStochasticUniformPolicy::getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
+void StochasticUniformPolicy::getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient)
 {
-	throw "CStochasticUniformPolicy::getParameterGradient() is not implemented";
+	throw "StochasticUniformPolicy::getParameterGradient() is not implemented";
 }
 
-double CStochasticUniformPolicy::selectAction(const CState *s, CAction *a)
+double StochasticUniformPolicy::selectAction(const State *s, Action *a)
 {
 	int actionIndex = m_outputActionIndex.get();
 
@@ -87,7 +87,7 @@ double CStochasticUniformPolicy::selectAction(const CState *s, CAction *a)
 
 	if (m_discreteActionSpace)
 	{
-		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		randomValue = grid->getCenters()[grid->getClosestCenter(randomValue)];
 		probability = 1.0 / grid->getNumCenters();
 	}
@@ -97,7 +97,7 @@ double CStochasticUniformPolicy::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CStochasticUniformPolicy::getProbability(const CState* s, const CAction* a, bool bStochastic)
+double StochasticUniformPolicy::getProbability(const State* s, const Action* a, bool bStochastic)
 {
 	int actionIndex = m_outputActionIndex.get();
 
@@ -106,52 +106,52 @@ double CStochasticUniformPolicy::getProbability(const CState* s, const CAction* 
 
 	if (m_discreteActionSpace)
 	{
-		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		probability = 1.0 / grid->getNumCenters();
 	}
 
 	return probability;
 }
 
-void CStochasticUniformPolicy::getFeatures(const CState* state, CFeatureList* outFeatureList)
+void StochasticUniformPolicy::getFeatures(const State* state, FeatureList* outFeatureList)
 {
-	throw "CStochasticUniformPolicy::getFeatures() is not implemented";
+	throw "StochasticUniformPolicy::getFeatures() is not implemented";
 }
 
-void CStochasticUniformPolicy::addFeatures(const CFeatureList* pFeatureList, double factor)
+void StochasticUniformPolicy::addFeatures(const FeatureList* pFeatureList, double factor)
 {
-	throw "CStochasticUniformPolicy::addFeatures() is not implemented";
+	throw "StochasticUniformPolicy::addFeatures() is not implemented";
 }
 
-double CStochasticUniformPolicy::getDeterministicOutput(const CFeatureList* pFeatureList)
+double StochasticUniformPolicy::getDeterministicOutput(const FeatureList* pFeatureList)
 {
-	throw "CStochasticUniformPolicy::getDeterministicOutput() is not implemented";
+	throw "StochasticUniformPolicy::getDeterministicOutput() is not implemented";
 }
 
 
 //CDetPolicyGaussianNoise////////////////////////////////
 /////////////////////////////////////////////////////////
-CDeterministicPolicyGaussianNoise::CDeterministicPolicyGaussianNoise(CConfigNode* pConfigNode)
-	: CDeterministicPolicy(pConfigNode)
+DeterministicPolicyGaussianNoise::DeterministicPolicyGaussianNoise(ConfigNode* pConfigNode)
+	: DeterministicPolicy(pConfigNode)
 {
-	m_pDeterministicVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Deterministic-Policy-VFA"
+	m_pDeterministicVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Deterministic-Policy-VFA"
 		, "The parameterized VFA that approximates the function");
-	m_pExpNoise = CHILD_OBJECT_FACTORY<CNoise>(pConfigNode, "Exploration-Noise"
+	m_pExpNoise = CHILD_OBJECT_FACTORY<Noise>(pConfigNode, "Exploration-Noise"
 		, "Parameters of the noise used as exploration");
 
-	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
 	m_pDeterministicVFA->saturateOutput(pActionDescriptor[m_outputActionIndex.get()].getMin()
 		, pActionDescriptor[m_outputActionIndex.get()].getMax());
 
 	m_lastNoise = 0.0;
-	CSimionApp::get()->pLogger->addVarToStats<double>("Policy", "Noise", m_lastNoise);
+	SimionApp::get()->pLogger->addVarToStats<double>("Policy", "Noise", m_lastNoise);
 }
 
-CDeterministicPolicyGaussianNoise::~CDeterministicPolicyGaussianNoise()
+DeterministicPolicyGaussianNoise::~DeterministicPolicyGaussianNoise()
 {
 }
 
-void CDeterministicPolicyGaussianNoise::getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
+void DeterministicPolicyGaussianNoise::getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient)
 {
 	//0. Grad_u pi(a|s)/pi(a|s) = (a - pi(s)) * phi(s) / sigma*2
 	m_pDeterministicVFA->getFeatures(s, pOutGradient);
@@ -159,7 +159,7 @@ void CDeterministicPolicyGaussianNoise::getParameterGradient(const CState* s, co
 	double sigma = std::max(0.0000001, m_pExpNoise->getVariance());
 
 	double noise = a->get(m_outputActionIndex.get())
-		- m_pDeterministicVFA->get((const CFeatureList*)pOutGradient);
+		- m_pDeterministicVFA->get((const FeatureList*)pOutGradient);
 
 	double unscaled_noise = m_pExpNoise->unscale(noise);
 	double factor = unscaled_noise / (sigma*sigma);
@@ -167,9 +167,9 @@ void CDeterministicPolicyGaussianNoise::getParameterGradient(const CState* s, co
 	pOutGradient->mult(factor);
 }
 
-double CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction *a)
+double DeterministicPolicyGaussianNoise::selectAction(const State *s, Action *a)
 {
-	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 		m_lastNoise = m_pExpNoise->getSample();
 	else m_lastNoise = 0.0;
 
@@ -177,15 +177,15 @@ double CDeterministicPolicyGaussianNoise::selectAction(const CState *s, CAction 
 
 	a->set(m_outputActionIndex.get(), output + m_lastNoise);
 
-	if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 		return m_pExpNoise->getSampleProbability(m_lastNoise);
 	return 1.0;
 }
 
-double CDeterministicPolicyGaussianNoise::getProbability(const CState* s, const CAction* a, bool bStochastic)
+double DeterministicPolicyGaussianNoise::getProbability(const State* s, const Action* a, bool bStochastic)
 {
 	double noise;
-	if (CSimionApp::get()->pSimGod->useSampleImportanceWeights())
+	if (SimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
 		noise = a->get(m_outputActionIndex.get()) - m_pDeterministicVFA->get(s);
 		return m_pExpNoise->getSampleProbability(noise, !bStochastic);
@@ -193,17 +193,17 @@ double CDeterministicPolicyGaussianNoise::getProbability(const CState* s, const 
 	return 1.0;
 }
 
-void CDeterministicPolicyGaussianNoise::getFeatures(const CState* state, CFeatureList* outFeatureList)
+void DeterministicPolicyGaussianNoise::getFeatures(const State* state, FeatureList* outFeatureList)
 {
 	m_pDeterministicVFA->getFeatures(state, outFeatureList);
 }
 
-void CDeterministicPolicyGaussianNoise::addFeatures(const CFeatureList* pFeatureList, double factor)
+void DeterministicPolicyGaussianNoise::addFeatures(const FeatureList* pFeatureList, double factor)
 {
 	m_pDeterministicVFA->add(pFeatureList, factor);
 }
 
-double CDeterministicPolicyGaussianNoise::getDeterministicOutput(const CFeatureList* pFeatureList)
+double DeterministicPolicyGaussianNoise::getDeterministicOutput(const FeatureList* pFeatureList)
 {
 	return m_pDeterministicVFA->get(pFeatureList);
 }
@@ -211,24 +211,24 @@ double CDeterministicPolicyGaussianNoise::getDeterministicOutput(const CFeatureL
 
 //CStoPolicyGaussianNoise//////////////////////////
 ////////////////////////////////////////////////
-CStochasticGaussianPolicy::CStochasticGaussianPolicy(CConfigNode* pConfigNode)
-	: CStochasticPolicy(pConfigNode)
+StochasticGaussianPolicy::StochasticGaussianPolicy(ConfigNode* pConfigNode)
+	: StochasticPolicy(pConfigNode)
 {
-	m_pMeanVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
-	m_pSigmaVFA = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
+	m_pMeanVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Mean-VFA", "The parameterized VFA that approximates the function");
+	m_pSigmaVFA = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "Sigma-VFA", "The parameterized VFA that approximates variance(s)");
 	//m_pSigmaVFA->saturateOutput(0.0, 1.0);
 	m_pSigmaVFA->setIndexOffset(m_pMeanVFA->getNumWeights());
-	m_pMeanFeatures = new CFeatureList("Sto-Policy/mean-features");
-	m_pSigmaFeatures = new CFeatureList("Sto-Policy/sigma-features");
+	m_pMeanFeatures = new FeatureList("Sto-Policy/mean-features");
+	m_pSigmaFeatures = new FeatureList("Sto-Policy/sigma-features");
 
 	m_lastNoise = 0.0;
-	CSimionApp::get()->pLogger->addVarToStats<double>("Stoch.Policy", "Noise", m_lastNoise);
+	SimionApp::get()->pLogger->addVarToStats<double>("Stoch.Policy", "Noise", m_lastNoise);
 	//will be used as temp. buffers in the add method
-	//m_pMeanAddList = new CFeatureList("meanAddList");
-	//m_pSigmaAddList = new CFeatureList("sigmaAddList");
+	//m_pMeanAddList = new FeatureList("meanAddList");
+	//m_pSigmaAddList = new FeatureList("sigmaAddList");
 }
 
-CStochasticGaussianPolicy::~CStochasticGaussianPolicy()
+StochasticGaussianPolicy::~StochasticGaussianPolicy()
 {
 	delete m_pMeanFeatures;
 	delete m_pSigmaFeatures;
@@ -239,7 +239,7 @@ double clip(double n, double lower, double upper)
 	return std::max(lower, std::min(n, upper));
 }
 
-double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
+double StochasticGaussianPolicy::selectAction(const State *s, Action *a)
 {
 	double mean = m_pMeanVFA->get(s);
 	double sigma = exp(m_pSigmaVFA->get(s));
@@ -247,11 +247,11 @@ double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
 	double probability;
 
 	//TODO: Add If statement again?
-	//if (!CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	//if (!SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
 		//Training: add noise
 		sigma = exp(m_pSigmaVFA->get(s));
-		output = CGaussianNoise::getNormalDistributionSample(mean, sigma);
+		output = GaussianNoise::getNormalDistributionSample(mean, sigma);
 	}
 
 	//clip the output between the min and max value of the action space
@@ -261,14 +261,14 @@ double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
 	//disctingtion between continuous and discrete action variables
 	if (m_discreteActionSpace)
 	{
-		CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+		SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 		output = grid->getCenters()[grid->getClosestCenter(output)];
 
-		probability = CGaussianNoise::getPDF(mean, sigma, output) * m_space_density;
+		probability = GaussianNoise::getPDF(mean, sigma, output) * m_space_density;
 	}
 	else
 	{
-		probability = CGaussianNoise::getSampleProbability(mean, sigma, output);
+		probability = GaussianNoise::getSampleProbability(mean, sigma, output);
 	}
 
 	m_lastNoise = output - mean;
@@ -284,32 +284,32 @@ double CStochasticGaussianPolicy::selectAction(const CState *s, CAction *a)
 	return probability;
 }
 
-double CStochasticGaussianPolicy::getProbability(const CState *s, const CState *a, bool bStochastic)
+double StochasticGaussianPolicy::getProbability(const State *s, const State *a, bool bStochastic)
 {
 	double mean = m_pMeanVFA->get(s);
 
-	if (bStochastic && CSimionApp::get()->pSimGod->useSampleImportanceWeights())
+	if (bStochastic && SimionApp::get()->pSimGod->useSampleImportanceWeights())
 	{
 		unsigned int actionIndex = m_outputActionIndex.get();
 		double value = a->get(actionIndex);
 
 		if (m_discreteActionSpace)
 		{
-			CSingleDimensionDiscreteActionVariableGrid* grid = ((CSingleDimensionDiscreteActionVariableGrid*)(((CDiscreteActionFeatureMap*)CSimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
+			SingleDimensionDiscreteActionVariableGrid* grid = ((SingleDimensionDiscreteActionVariableGrid*)(((DiscreteActionFeatureMap*)SimGod::getGlobalActionFeatureMap().get())->returnGrid()[actionIndex]));
 			//TODO: Multiply with width of the action space!
 			//P(x) = pdf(x) * space_density
-			return CGaussianNoise::getPDF(mean, exp(m_pSigmaVFA->get(s)), value) * m_space_density;
+			return GaussianNoise::getPDF(mean, exp(m_pSigmaVFA->get(s)), value) * m_space_density;
 		}
 		else
 		{
-			return CGaussianNoise::getSampleProbability(mean, exp(m_pSigmaVFA->get(s)), value);
+			return GaussianNoise::getSampleProbability(mean, exp(m_pSigmaVFA->get(s)), value);
 		}
 	}
 	return 1.0;
 }
 
 //according to https://hal.inria.fr/hal-00764281/document
-void CStochasticGaussianPolicy::getParameterGradient(const CState* s, const CAction* a, CFeatureList* pOutGradient)
+void StochasticGaussianPolicy::getParameterGradient(const State* s, const Action* a, FeatureList* pOutGradient)
 {
 	m_pMeanFeatures->clear();
 	m_pSigmaFeatures->clear();
@@ -333,13 +333,13 @@ void CStochasticGaussianPolicy::getParameterGradient(const CState* s, const CAct
 	pOutGradient->addFeatureList(m_pSigmaFeatures, factor);
 }
 
-void CStochasticGaussianPolicy::getFeatures(const CState* state, CFeatureList* outFeatureList)
+void StochasticGaussianPolicy::getFeatures(const State* state, FeatureList* outFeatureList)
 {
 	m_pMeanVFA->getFeatures(state, outFeatureList);
 	m_pSigmaVFA->getFeatures(state, m_pSigmaFeatures);
 	outFeatureList->addFeatureList(m_pSigmaFeatures);
 }
-void CStochasticGaussianPolicy::addFeatures(const CFeatureList* pFeatureList, double factor)
+void StochasticGaussianPolicy::addFeatures(const FeatureList* pFeatureList, double factor)
 {
 	//m_pMeanAddList->clear();
 	//m_pSigmaAddList->clear();
@@ -353,7 +353,7 @@ void CStochasticGaussianPolicy::addFeatures(const CFeatureList* pFeatureList, do
 	m_pMeanVFA->add(pFeatureList);
 	m_pSigmaVFA->add(pFeatureList);
 }
-double CStochasticGaussianPolicy::getDeterministicOutput(const CFeatureList* pFeatureList)
+double StochasticGaussianPolicy::getDeterministicOutput(const FeatureList* pFeatureList)
 {
 	return m_pMeanVFA->get(pFeatureList);
 }

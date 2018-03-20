@@ -4,15 +4,15 @@
 
 namespace tinyxml2 { class XMLElement; }
 
-class CCamera: public CSceneActor
+class Camera: public SceneActor
 {
 protected:
 	Frustum m_frustum;
 public:
-	CCamera();
-	virtual ~CCamera();
+	Camera();
+	virtual ~Camera();
 
-	static CCamera* getInstance(tinyxml2::XMLElement* pNode);
+	static Camera* getInstance(tinyxml2::XMLElement* pNode);
 	virtual void set()= 0;
 
 	static void set2DView();
@@ -21,11 +21,11 @@ public:
 	Frustum& getFrustum(){ return m_frustum; }
 };
 
-class CSimpleCamera : public CCamera
+class SimpleCamera : public Camera
 {
 	double nearPlane = 1.0, farPlane = 100.0;
 public:
-	CSimpleCamera();
-	CSimpleCamera(tinyxml2::XMLElement* pNode);
+	SimpleCamera();
+	SimpleCamera(tinyxml2::XMLElement* pNode);
 	void set();
 };

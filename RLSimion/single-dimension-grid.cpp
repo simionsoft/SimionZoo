@@ -6,19 +6,19 @@
 #include "app.h"
 #include <assert.h>
 
-CSingleDimensionGrid::CSingleDimensionGrid()
+SingleDimensionGrid::SingleDimensionGrid()
 {
 	m_pCenters = 0;
 	m_min = 0.0;
 	m_max = 0.0;
 }
 
-CSingleDimensionGrid::~CSingleDimensionGrid()
+SingleDimensionGrid::~SingleDimensionGrid()
 {
 	delete[] m_pCenters;
 }
 
-void CSingleDimensionGrid::initCenterPoints()
+void SingleDimensionGrid::initCenterPoints()
 {
 	m_pCenters = new double[m_numCenters.get()];
 
@@ -46,14 +46,14 @@ void CSingleDimensionGrid::initCenterPoints()
 	}
 }
 
-void CSingleDimensionGrid::getFeatures(const CState* s, const CAction* a, CFeatureList* outDimFeatures)
+void SingleDimensionGrid::getFeatures(const State* s, const Action* a, FeatureList* outDimFeatures)
 {
 	double value = getVarValue(s, a) + m_offset;
 	outDimFeatures->clear();
 	outDimFeatures->add(getClosestCenter(value), 1.0);
 }
 
-int CSingleDimensionGrid::getClosestCenter(double value)
+int SingleDimensionGrid::getClosestCenter(double value)
 {
 	unsigned int numCenters = m_numCenters.get();
 	assert(numCenters >= 2);
@@ -71,7 +71,7 @@ int CSingleDimensionGrid::getClosestCenter(double value)
 	return nearestIndex;
 }
 
-CSingleDimensionStateVariableGrid::CSingleDimensionStateVariableGrid(CConfigNode* pConfigNode)
+SingleDimensionStateVariableGrid::SingleDimensionStateVariableGrid(ConfigNode* pConfigNode)
 {
 	m_hVariable = STATE_VARIABLE(pConfigNode, "Variable", "The state variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Num-Features", "The number of points that form the grid", 3);
@@ -83,16 +83,16 @@ CSingleDimensionStateVariableGrid::CSingleDimensionStateVariableGrid(CConfigNode
 	initCenterPoints();
 }
 
-void CSingleDimensionStateVariableGrid::initVarRange()
+void SingleDimensionStateVariableGrid::initVarRange()
 {
-	CDescriptor &descriptor = CWorld::getDynamicModel()->getStateDescriptor();
-	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	Descriptor &descriptor = World::getDynamicModel()->getStateDescriptor();
+	NamedVarProperties properties = descriptor[m_hVariable.get()];
 	m_min = properties.getMin();
 	m_max = properties.getMax();
 }
 
 
-CSingleDimensionStateVariableGrid::CSingleDimensionStateVariableGrid(int m_hVar, int numCenters, Distribution distr)
+SingleDimensionStateVariableGrid::SingleDimensionStateVariableGrid(int m_hVar, int numCenters, Distribution distr)
 {
 	m_hVariable.set(m_hVar);
 	m_numCenters.set(numCenters);
@@ -101,22 +101,22 @@ CSingleDimensionStateVariableGrid::CSingleDimensionStateVariableGrid(int m_hVar,
 	initVarRange();
 	initCenterPoints();
 }
-void CSingleDimensionStateVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
+void SingleDimensionStateVariableGrid::setFeatureStateAction(unsigned int feature, State* s, State* a)
 {
 	s->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CSingleDimensionStateVariableGrid::getVarValue(const CState* s, const CAction* a)
+double SingleDimensionStateVariableGrid::getVarValue(const State* s, const Action* a)
 {
 	return s->get(m_hVariable.get());
 }
 
-CNamedVarProperties& CSingleDimensionStateVariableGrid::getVarProperties(const CState* s, const CAction* a)
+NamedVarProperties& SingleDimensionStateVariableGrid::getVarProperties(const State* s, const Action* a)
 {
 	return s->getProperties(m_hVariable.get());
 }
 
-CSingleDimensionActionVariableGrid::CSingleDimensionActionVariableGrid(CConfigNode* pConfigNode)
+SingleDimensionActionVariableGrid::SingleDimensionActionVariableGrid(ConfigNode* pConfigNode)
 {
 	m_hVariable = ACTION_VARIABLE(pConfigNode, "Variable", "The action variable");
 	m_numCenters = INT_PARAM(pConfigNode, "Num-Features", "The number of points that form the grid", 3);
@@ -127,35 +127,35 @@ CSingleDimensionActionVariableGrid::CSingleDimensionActionVariableGrid(CConfigNo
 	initCenterPoints();
 }
 
-void CSingleDimensionActionVariableGrid::initVarRange()
+void SingleDimensionActionVariableGrid::initVarRange()
 {
-	CDescriptor &descriptor = CWorld::getDynamicModel()->getActionDescriptor();
-	CNamedVarProperties properties = descriptor[m_hVariable.get()];
+	Descriptor &descriptor = World::getDynamicModel()->getActionDescriptor();
+	NamedVarProperties properties = descriptor[m_hVariable.get()];
 	m_min = properties.getMin();
 	m_max = properties.getMax();
 }
 
-void CSingleDimensionActionVariableGrid::setFeatureStateAction(unsigned int feature, CState* s, CState* a)
+void SingleDimensionActionVariableGrid::setFeatureStateAction(unsigned int feature, State* s, State* a)
 {
 	a->set(m_hVariable.get(), m_pCenters[feature]);
 }
 
-double CSingleDimensionActionVariableGrid::getVarValue(const CState* s, const CAction* a)
+double SingleDimensionActionVariableGrid::getVarValue(const State* s, const Action* a)
 {
 	return a->get(m_hVariable.get());
 }
 
-CNamedVarProperties& CSingleDimensionActionVariableGrid::getVarProperties(const CState* s, const CAction* a)
+NamedVarProperties& SingleDimensionActionVariableGrid::getVarProperties(const State* s, const Action* a)
 {
 	return a->getProperties(m_hVariable.get());
 }
 
-void CSingleDimensionStateVariableGrid::setOffset(double offset)
+void SingleDimensionStateVariableGrid::setOffset(double offset)
 {
 	m_offset = offset;
 }
 
-void CSingleDimensionActionVariableGrid::setOffset(double offset)
+void SingleDimensionActionVariableGrid::setOffset(double offset)
 {
 	m_offset = offset;
 }

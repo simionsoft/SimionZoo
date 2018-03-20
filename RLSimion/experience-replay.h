@@ -2,27 +2,27 @@
 
 #include "deferred-load.h"
 #include "parameters.h"
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
-class CConfigNode;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
+class ConfigNode;
 
-class CExperienceTuple
+class ExperienceTuple
 {
 public:
-	CState* s;
-	CAction* a;
-	CState* s_p;
+	State* s;
+	Action* a;
+	State* s_p;
 	double r;
 	double probability; //probability under which the actor took action a in state s
 
-	CExperienceTuple();
-	void copy(const CState* s, const CAction* a, const  CState* s_p, double r,double probability);
+	ExperienceTuple();
+	void copy(const State* s, const Action* a, const  State* s_p, double r,double probability);
 };
 
-class CExperienceReplay: public CDeferredLoad
+class ExperienceReplay: public DeferredLoad
 {
-	CExperienceTuple* m_pTupleBuffer;
+	ExperienceTuple* m_pTupleBuffer;
 	INT_PARAM m_blockSize;
 	INT_PARAM m_updateBatchSize;
 
@@ -30,16 +30,16 @@ class CExperienceReplay: public CDeferredLoad
 	int m_numTuples= 0;
 
 public:
-	CExperienceReplay(CConfigNode* pParameters);
-	CExperienceReplay();
-	~CExperienceReplay();
+	ExperienceReplay(ConfigNode* pParameters);
+	ExperienceReplay();
+	~ExperienceReplay();
 
 	bool bUsing();
 
-	void addTuple(const CState* s, const CAction* a, const CState* s_p, double r, double probability);
+	void addTuple(const State* s, const Action* a, const State* s_p, double r, double probability);
 	int getUpdateBatchSize();
 	int getMaxUpdateBatchSize() { return m_updateBatchSize.get(); }
-	CExperienceTuple* getRandomTupleFromBuffer();
+	ExperienceTuple* getRandomTupleFromBuffer();
 
 	void deferredLoadStep();
 };

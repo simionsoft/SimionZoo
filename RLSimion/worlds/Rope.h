@@ -12,11 +12,11 @@ class Rope: public BulletBody
 	std::vector<btSoftBody*>* m_pSoftBodies;
 public:
 
-	Rope(CDynamicModel* pWorld, std::vector<btSoftBody*>* arr);
+	Rope(DynamicModel* pWorld, std::vector<btSoftBody*>* arr);
 	~Rope() = default;
 
 	//override these two methods from BulletBody
-	virtual void updateState(CState* s);
-	virtual void reset(CState* s);
+	virtual void updateState(State* s);
+	virtual void reset(State* s);
 	virtual bool bIsRigidBody() { return false; }
 };

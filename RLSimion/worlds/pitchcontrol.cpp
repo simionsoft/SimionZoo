@@ -7,7 +7,7 @@
 #include "../config.h"
 #include "../app.h"
 
-CPitchControl::CPitchControl(CConfigNode* pConfigNode)
+PitchControl::PitchControl(ConfigNode* pConfigNode)
 {
 	METADATA("World", "Pitch-control");
 	m_sSetpointPitch = addStateVariable("setpoint-pitch","rad", -3.14159265, 3.14159265);
@@ -19,23 +19,23 @@ CPitchControl::CPitchControl(CConfigNode* pConfigNode)
 	m_aPitch = addActionVariable("pitch","rad",-1.4,1.4);
 
 	FILE_PATH_PARAM filename= FILE_PATH_PARAM(pConfigNode, "Set-Point-File","The setpoint file", "../config/world/pitch-control/setpoint.txt");
-	m_pSetpoint = new CFileSetPoint(filename.get());
+	m_pSetpoint = new FileSetPoint(filename.get());
 
-	m_pRewardFunction = new CRewardFunction();
-	m_pRewardFunction->addRewardComponent(new CToleranceRegionReward("control-deviation", 0.02, 1.0));
+	m_pRewardFunction = new RewardFunction();
+	m_pRewardFunction->addRewardComponent(new ToleranceRegionReward("control-deviation", 0.02, 1.0));
 	m_pRewardFunction->initialize();
 }
 
-CPitchControl::~CPitchControl()
+PitchControl::~PitchControl()
 {
 	delete m_pSetpoint;
 }
 
-void CPitchControl::reset(CState *s)
+void PitchControl::reset(State *s)
 {
 	double u;
 
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 		//setpoint file in case we're evaluating
 		s->set(m_sSetpointPitch,m_pSetpoint->getPointSet(0.0));
 	else
@@ -50,13 +50,13 @@ void CPitchControl::reset(CState *s)
 	s->set(m_sControlDeviation,m_pSetpoint->getPointSet(0.0));
 }
 
-void CPitchControl::executeAction(CState *s, const CAction *a, double dt)
+void PitchControl::executeAction(State *s, const Action *a, double dt)
 {
 	double setpoint_pitch;
 	
-	if (CSimionApp::get()->pExperiment->isEvaluationEpisode())
+	if (SimionApp::get()->pExperiment->isEvaluationEpisode())
 	{
-		setpoint_pitch = m_pSetpoint->getPointSet(CSimionApp::get()->pWorld->getEpisodeSimTime());
+		setpoint_pitch = m_pSetpoint->getPointSet(SimionApp::get()->pWorld->getEpisodeSimTime());
 		s->set(m_sSetpointPitch, setpoint_pitch);
 	}
 	else

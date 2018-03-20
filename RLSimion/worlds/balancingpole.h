@@ -1,14 +1,14 @@
 #pragma once
 
 #include "world.h"
-class CSetPoint;
+class SetPoint;
 #include "../reward.h"
 
 //Original implementation in C by Sutton et al can be found in:
 //https://webdocs.cs.ualberta.ca/~sutton/book/code/pole.c
 
 //BALANCING POLE
-class CBalancingPole: public CDynamicModel
+class BalancingPole: public DynamicModel
 {
 	double GRAVITY;
 	double MASSCART;
@@ -22,18 +22,18 @@ class CBalancingPole: public CDynamicModel
 	int m_aPitch;
 
 public:
-	CBalancingPole(CConfigNode* pParameters);
-	virtual ~CBalancingPole() = default;
+	BalancingPole(ConfigNode* pParameters);
+	virtual ~BalancingPole() = default;
 
-	void reset(CState *s);
+	void reset(State *s);
 
-	void executeAction(CState *s, const CAction *a, double dt);
+	void executeAction(State *s, const Action *a, double dt);
 };
 
-class CBalancingPoleReward : public IRewardComponent
+class BalancingPoleReward : public IRewardComponent
 {
 public:
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
+	double getReward(const State *s, const Action *a, const State *s_p);
 	const char* getName(){ return "reward"; }
 	double getMin();
 	double getMax();

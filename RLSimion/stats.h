@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-class CStatsInfo
+class StatsInfo
 {
 	double m_min;
 	double m_max;
@@ -15,7 +15,7 @@ class CStatsInfo
 
 	bool m_bLog;
 public:
-	CStatsInfo();
+	StatsInfo();
 
 	void reset();
 
@@ -33,11 +33,11 @@ public:
 class IStats
 {
 protected:
-	CStatsInfo m_statsInfo;
+	StatsInfo m_statsInfo;
 	string m_key;
 	string m_subkey;
 public:
-	CStatsInfo* getStatsInfo() { return &m_statsInfo; }
+	StatsInfo* getStatsInfo() { return &m_statsInfo; }
 	string getKey() { return m_key; }
 	string getSubkey() { return m_subkey; }
 	void reset() { m_statsInfo.reset(); }
@@ -47,18 +47,18 @@ public:
 };
 
 template <typename T>
-class CStats: public IStats
+class Stats: public IStats
 {
 	T& m_variable;
 public:
 	template <typename T>
-	CStats(string key, string subkey, T& variable): m_variable(variable)
+	Stats(string key, string subkey, T& variable): m_variable(variable)
 	{
 		m_key = key;
 		m_subkey = subkey;
 		reset();
 	}
-	virtual ~CStats() {}
+	virtual ~Stats() {}
 
 	virtual void addSample() { m_statsInfo.addSample(m_variable); }
 	virtual double get() { return (double)m_variable; }

@@ -2,18 +2,18 @@
 #include <Windows.h>
 #include <memory>
 
-CProcess::CProcess()
+Process::Process()
 {
 	m_handle = INVALID_HANDLE_VALUE;
 }
 
-CProcess::~CProcess()
+Process::~Process()
 {
 	//If the process is still running when the owner "dies", kill it
 	kill();
 }
 
-void CProcess::kill()
+void Process::kill()
 {
 	if (m_handle != INVALID_HANDLE_VALUE)
 	{
@@ -23,7 +23,7 @@ void CProcess::kill()
 	}
 }
 
-bool CProcess::spawn(const char* commandLine, bool bAwait)
+bool Process::spawn(const char* commandLine, bool bAwait)
 {
 	STARTUPINFO startupInfo;
 	PROCESS_INFORMATION processInformation;
@@ -44,7 +44,7 @@ bool CProcess::spawn(const char* commandLine, bool bAwait)
 	return bSuccess;
 }
 
-bool CProcess::isRunning()
+bool Process::isRunning()
 {
 	DWORD returnCode;
 

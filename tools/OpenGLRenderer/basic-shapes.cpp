@@ -5,23 +5,23 @@
 #include "material.h"
 #include "mesh.h"
 
-CBasicShape::CBasicShape(tinyxml2::XMLElement* pNode) : CGraphicObject(pNode)
+BasicShape::BasicShape(tinyxml2::XMLElement* pNode) : GraphicObject(pNode)
 {
 	tinyxml2::XMLElement* pChild;
 	pChild= pNode->FirstChildElement(XML_TAG_MATERIAL);
 	if (pChild)
-		m_pMaterialLoaded = CMaterial::getInstance(pChild->FirstChildElement());
+		m_pMaterialLoaded = Material::getInstance(pChild->FirstChildElement());
 }
 
-CBasicShape::CBasicShape(string name) : CGraphicObject(name)
+BasicShape::BasicShape(string name) : GraphicObject(name)
 {
 
 }
 
-CBasicShape::~CBasicShape()
+BasicShape::~BasicShape()
 {}
 
-CSphere::CSphere(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
+Sphere::Sphere(tinyxml2::XMLElement* pNode): BasicShape(pNode)
 {
 	/*
 	void GL_ShapeDrawer::drawSphere(btScalar radius, int lats, int longs)
@@ -53,7 +53,7 @@ CSphere::CSphere(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
 	*/
 }
 
-CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
+Box::Box(tinyxml2::XMLElement* pNode) : BasicShape(pNode)
 {
 	bool bDrawTopSide= true;
 	//box attributes
@@ -62,7 +62,7 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 			|| !strcmp(pNode->Attribute(XML_TAG_BOX_DRAW_TOP), "False")))
 		bDrawTopSide = false;
 
-	CMesh* pMesh = new CMesh();
+	Mesh* pMesh = new Mesh();
 	//vertex positions
 	pMesh->allocPositions(8);
 	pMesh->getPosArray()[0] = Point3D(m_min.x(), m_min.y(),m_max.z());
@@ -177,7 +177,7 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 		double factor = atoi(pNode->Attribute(XML_TAG_TEX_COORD_MULT_FACTOR));
 		for (unsigned int i = 0; i < pMesh->getNumTexCoords(); ++i)
 			pMesh->getTexCoord(i) *= factor;
-		CSimpleTLMaterial* pMaterial= dynamic_cast<CSimpleTLMaterial*>(m_pMaterialLoaded);
+		SimpleTLMaterial* pMaterial= dynamic_cast<SimpleTLMaterial*>(m_pMaterialLoaded);
 		if (pMaterial)
 			pMaterial->setTextureWrapMode(GL_REPEAT);
 	}
@@ -193,12 +193,12 @@ CBox::CBox(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
 	m_bb = BoundingBox3D(m_transform.scale()*m_min, m_transform.scale()*m_max);
 }
 
-CCilinder::CCilinder(tinyxml2::XMLElement* pNode) : CBasicShape(pNode)
+Cilinder::Cilinder(tinyxml2::XMLElement* pNode) : BasicShape(pNode)
 {
 
 }
 
-CPolyline::CPolyline(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
+PolyLine::PolyLine(tinyxml2::XMLElement* pNode): BasicShape(pNode)
 {
 	tinyxml2::XMLElement* pChild;
 
@@ -215,14 +215,14 @@ CPolyline::CPolyline(tinyxml2::XMLElement* pNode): CBasicShape(pNode)
 	pChild = pNode->FirstChildElement(XML_TAG_COLOR);
 	if (pChild)
 		XML::load(pChild,color);
-	CLineMaterial* pMaterial = new CLineMaterial();
+	LineMaterial* pMaterial = new LineMaterial();
 	pMaterial->setColor(color);
 	pMaterial->setWidth(width);
 
 	//read points and construct the mesh
 	//points
 
-	CMesh* pMesh = new CMesh();
+	Mesh* pMesh = new Mesh();
 	pMesh->allocPositions(numPoints);
 
 	pChild = pNode->FirstChildElement(XML_TAG_POINT);

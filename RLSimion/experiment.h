@@ -1,31 +1,31 @@
 #pragma once
 #include "parameters.h"
-class CNamedVarSet;
-typedef CNamedVarSet CState;
-typedef CNamedVarSet CAction;
-typedef CNamedVarSet CReward;
-class CConfigNode;
-class CTimer;
+class NamedVarSet;
+typedef NamedVarSet State;
+typedef NamedVarSet Action;
+typedef NamedVarSet Reward;
+class ConfigNode;
+class Timer;
 
 #define MAX_PROGRESS_MSG_LEN 1024
 
 //utility class to getSample a experiment time reference
 //for example, we can use this reference to know if some feature vector has already been calculated in this time-step
-class CExperimentTime
+class ExperimentTime
 {
 public:
 	unsigned int m_episodeIndex; //[1..g_numEpisodes]
 	unsigned int m_step; //]1..g_numStepsPerEpisode]
 
-	CExperimentTime(unsigned int episodeIndex, unsigned int step){ m_episodeIndex = episodeIndex; m_step = step; }
+	ExperimentTime(unsigned int episodeIndex, unsigned int step){ m_episodeIndex = episodeIndex; m_step = step; }
 
-	CExperimentTime& operator=(CExperimentTime& exp);
-	bool operator==(CExperimentTime& exp);
+	ExperimentTime& operator=(ExperimentTime& exp);
+	bool operator==(ExperimentTime& exp);
 };
 
 
 
-class CExperiment
+class Experiment
 {
 	unsigned int m_episodeIndex; //[1..g_numEpisodes]
 	unsigned int m_step; //]1..g_numStepsPerEpisode]
@@ -47,16 +47,16 @@ class CExperiment
 	bool m_bTerminalState;
 
 	DOUBLE_PARAM m_progUpdateFreq; //in seconds: time between progress updates
-	CTimer* m_pProgressTimer;
+	Timer* m_pProgressTimer;
 
 	char m_progressMsg[MAX_PROGRESS_MSG_LEN];
 
 public:
-	CExperiment(CConfigNode* pParameters);
-	CExperiment() = default;
-	virtual ~CExperiment();
+	Experiment(ConfigNode* pParameters);
+	Experiment() = default;
+	virtual ~Experiment();
 
-	void getExperimentTime(CExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }
+	void getExperimentTime(ExperimentTime& ref) { ref.m_episodeIndex = m_episodeIndex; ref.m_step = m_step; }
 	void reset();
 
 	//STEP
@@ -103,5 +103,5 @@ public:
 
 	const char* getProgressString();
 
-	void timestep(CState *s, CAction *a,CState *s_p, CReward* pReward);
+	void timestep(State *s, Action *a,State *s_p, Reward* pReward);
 };

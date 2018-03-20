@@ -14,10 +14,10 @@ namespace CNamedVarSets
 		{
 			double lowerLimit = -3.1415;
 			double upperLimit = 3.1415;
-			CDescriptor desc;
+			Descriptor desc;
 			desc.addVariable("var1", "rad", lowerLimit, upperLimit, true);
 			desc.addVariable("var2", "rad", lowerLimit, upperLimit);
-			CState* s= desc.getInstance();
+			State* s= desc.getInstance();
 
 			//lower limit
 			s->set("var1", lowerLimit - 0.1);

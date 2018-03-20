@@ -13,51 +13,51 @@
 #include <iostream>
 #include "CNTKWrapperLoader.h"
 
-CIncrementalNaturalActorCritic::CIncrementalNaturalActorCritic(CConfigNode* pConfigNode)
+IncrementalNaturalActorCritic::IncrementalNaturalActorCritic(ConfigNode* pConfigNode)
 {
 	cout.precision(5);
 	m_td = 0.0;
 	m_v_s = 0.0;
 	m_v_s_p = 0.0;
 
-	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s)", m_v_s);
-	CSimionApp::get()->pLogger->addVarToStats("Actor", "V(s')", m_v_s_p);
+	SimionApp::get()->pLogger->addVarToStats("Actor", "V(s)", m_v_s);
+	SimionApp::get()->pLogger->addVarToStats("Actor", "V(s')", m_v_s_p);
 
 	//critic's stuff
-	m_pVFunction = CHILD_OBJECT<CLinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
-	m_s_features = new CFeatureList("Critic/s");
-	m_s_p_features = new CFeatureList("Critic/s_p");
-	m_pAlphaV = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
-	m_pAlphaR = CHILD_OBJECT_FACTORY <CNumericValue>(pConfigNode, "Alpha-r", "Learning gain used to average the reward");
+	m_pVFunction = CHILD_OBJECT<LinearStateVFA>(pConfigNode, "VFunction", "The Value-function");
+	m_s_features = new FeatureList("Critic/s");
+	m_s_p_features = new FeatureList("Critic/s_p");
+	m_pAlphaV = CHILD_OBJECT_FACTORY <NumericValue>(pConfigNode, "Alpha-v", "Learning gain used by the critic");
+	m_pAlphaR = CHILD_OBJECT_FACTORY <NumericValue>(pConfigNode, "Alpha-r", "Learning gain used to average the reward");
 
-	m_e_v = CHILD_OBJECT<CETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
+	m_e_v = CHILD_OBJECT<ETraces>(pConfigNode, "V-ETraces", "Traces used by the critic", true);
 	m_e_v->setName("Critic/e_v");
 
 	//actor's stuff
-	m_policies = MULTI_VALUE_FACTORY<CPolicy>(pConfigNode, "Policy", "The policy");
+	m_policies = MULTI_VALUE_FACTORY<Policy>(pConfigNode, "Policy", "The policy");
 
-	m_w = new CFeatureList*[m_policies.size()];
+	m_w = new FeatureList*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_w[i] = new CFeatureList("INAC/Actor/w");
+		m_w[i] = new FeatureList("INAC/Actor/w");
 	}
 
 
-	m_grad_u = new CFeatureList("INAC/Actor/grad-u");
+	m_grad_u = new FeatureList("INAC/Actor/grad-u");
 
-	m_pAlphaU = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "Alpha-u", "Learning gain used by the actor");
+	m_pAlphaU = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "Alpha-u", "Learning gain used by the actor");
 
-	m_e_u = new CETraces*[m_policies.size()];
+	m_e_u = new ETraces*[m_policies.size()];
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
-		m_e_u[i] = new CETraces(pConfigNode);
+		m_e_u[i] = new ETraces(pConfigNode);
 		char* buffer = new char[1024];
 		sprintf_s(buffer, 1024, "Actor/E-Trace %i", i);
 		m_e_u[i]->setName("Actor/E-Trace");
 	}
 }
 
-CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
+IncrementalNaturalActorCritic::~IncrementalNaturalActorCritic()
 {
 	delete m_s_features;
 	delete m_s_p_features;
@@ -65,7 +65,7 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 	for (unsigned int i = 0; i < m_policies.size(); i++)
 	{
 		delete m_w[i];
-		delete[] m_e_u[i]->getName(); //the destructor of CETraces doesn't free the memory reserved for the name
+		delete[] m_e_u[i]->getName(); //the destructor of ETraces doesn't free the memory reserved for the name
 		delete m_e_u[i];
 	}
 	delete[]m_w;
@@ -73,9 +73,9 @@ CIncrementalNaturalActorCritic::~CIncrementalNaturalActorCritic()
 	delete m_grad_u;
 }
 
-void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction *a, const CState *s_p, double r)
+void IncrementalNaturalActorCritic::updateValue(const State *s, const Action *a, const State *s_p, double r)
 {
-	if (CSimionApp::get()->pExperiment->isFirstStep())
+	if (SimionApp::get()->pExperiment->isFirstStep())
 	{
 		m_avg_r = 0.0;
 		m_e_v->clear();
@@ -94,7 +94,7 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	//e_v= gamma* lambda*e_v + phi(s)
 	//v = v + alpha_v*td*e_v
 	double alpha_v = m_pAlphaV->get();
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 
 	m_pVFunction->getFeatures(s, m_s_features);
 	m_pVFunction->getFeatures(s_p, m_s_p_features);
@@ -116,7 +116,7 @@ void CIncrementalNaturalActorCritic::updateValue(const CState *s, const CAction 
 	m_pVFunction->add(m_e_v.ptr(), alpha_v*m_td);
 }
 
-void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState* a, const CState *s_p, double r)
+void IncrementalNaturalActorCritic::updatePolicy(const State* s, const State* a, const State *s_p, double r)
 {
 	//Incremental Natural Actor-Critic (INAC)
 	//Actor update:
@@ -133,7 +133,7 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	// \Psi_sa= \delta log pi(s,a)= (a_t-\pi(s_t)) * phi(s_t) / sigma^2
 
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	double alpha_v = m_pAlphaV->get();
 	double alpha_u = m_pAlphaU->get();
 
@@ -193,17 +193,17 @@ void CIncrementalNaturalActorCritic::updatePolicy(const CState* s, const CState*
 	}
 }
 
-double CIncrementalNaturalActorCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double behaviorProb)
+double IncrementalNaturalActorCritic::update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb)
 {
 	updateValue(s, a, s_p, r);
 	updatePolicy(s, a, s_p, r);
 	return 1.0;
 }
 
-double CIncrementalNaturalActorCritic::selectAction(const CState *s, CAction *a)
+double IncrementalNaturalActorCritic::selectAction(const State *s, Action *a)
 {
 	/*
-	if (CSimionApp::get()->pExperiment->isFirstStep())
+	if (SimionApp::get()->pExperiment->isFirstStep())
 	{
 		cout << "first step\n";
 	}

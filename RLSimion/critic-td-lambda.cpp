@@ -8,21 +8,21 @@
 #include "parameters-numeric.h"
 #include "app-rlsimion.h"
 
-CTDLambdaCritic::CTDLambdaCritic(CConfigNode* pConfigNode)
-	: CVLearnerCritic(pConfigNode)
+TDLambdaCritic::TDLambdaCritic(ConfigNode* pConfigNode)
+	: VLearnerCritic(pConfigNode)
 {
-	m_z = CHILD_OBJECT<CETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
+	m_z = CHILD_OBJECT<ETraces>(pConfigNode, "E-Traces", "Eligibility traces of the critic", true);
 	m_z->setName("Critic/E-Traces" );
-	m_aux= new CFeatureList("Critic/aux");
-	m_pAlpha= CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode,"Alpha","Learning gain");
+	m_aux= new FeatureList("Critic/aux");
+	m_pAlpha= CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode,"Alpha","Learning gain");
 }
 
-CTDLambdaCritic::~CTDLambdaCritic()
+TDLambdaCritic::~TDLambdaCritic()
 {
 	delete m_aux;
 }
 
-double CTDLambdaCritic::update(const CState *s, const CAction *a, const CState *s_p, double r, double rho)
+double TDLambdaCritic::update(const State *s, const Action *a, const State *s_p, double r, double rho)
 {
 	double alpha = m_pAlpha->get();
 	if (alpha==0.0) return 0.0;
@@ -30,7 +30,7 @@ double CTDLambdaCritic::update(const CState *s, const CAction *a, const CState *
 	//using sample importance
 	//z= gamma * lambda * rho * z + phi_v(s)
 
-	double gamma = CSimionApp::get()->pSimGod->getGamma();
+	double gamma = SimionApp::get()->pSimGod->getGamma();
 	m_z->update(gamma*rho);
 
 	m_pVFunction->getFeatures(s, m_aux);

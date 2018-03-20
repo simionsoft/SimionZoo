@@ -8,18 +8,18 @@
 #include <algorithm>
 
 
-std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
+std::shared_ptr<Controller> Controller::getInstance(ConfigNode* pConfigNode)
 {
-	return CHOICE<CController>(pConfigNode, "Controller", "The specific controller to be used",
+	return CHOICE<Controller>(pConfigNode, "Controller", "The specific controller to be used",
 	{
-		{"PID",CHOICE_ELEMENT_NEW<CPIDController>},
-		{"LQR",CHOICE_ELEMENT_NEW<CLQRController>},
-		{"Jonkman",CHOICE_ELEMENT_NEW<CWindTurbineJonkmanController>},
-		{"Extended-Jonkman",CHOICE_ELEMENT_NEW<CExtendedWindTurbineJonkmanController>},
-		{"Vidal",CHOICE_ELEMENT_NEW<CWindTurbineVidalController>},
-		{"Extended-Vidal",CHOICE_ELEMENT_NEW<CExtendedWindTurbineVidalController>},
-		{"Boukhezzar",CHOICE_ELEMENT_NEW<CWindTurbineBoukhezzarController>},
-		{"Extended-Boukhezzar",CHOICE_ELEMENT_NEW<CExtendedWindTurbineBoukhezzarController>}
+		{"PID",CHOICE_ELEMENT_NEW<PIDController>},
+		{"LQR",CHOICE_ELEMENT_NEW<LQRController>},
+		{"Jonkman",CHOICE_ELEMENT_NEW<WindTurbineJonkmanController>},
+		{"Extended-Jonkman",CHOICE_ELEMENT_NEW<ExtendedWindTurbineJonkmanController>},
+		{"Vidal",CHOICE_ELEMENT_NEW<WindTurbineVidalController>},
+		{"Extended-Vidal",CHOICE_ELEMENT_NEW<ExtendedWindTurbineVidalController>},
+		{"Boukhezzar",CHOICE_ELEMENT_NEW<WindTurbineBoukhezzarController>},
+		{"Extended-Boukhezzar",CHOICE_ELEMENT_NEW<ExtendedWindTurbineBoukhezzarController>}
 	});
 }
 
@@ -31,21 +31,21 @@ std::shared_ptr<CController> CController::getInstance(CConfigNode* pConfigNode)
 	double *m_pGains;
 	int numVars;*/
 
-CLQRGain::CLQRGain(CConfigNode* pConfigNode)
+LQRGain::LQRGain(ConfigNode* pConfigNode)
 {
 	m_variableIndex = STATE_VARIABLE(pConfigNode, "Variable", "The input state variable");
 	m_gain = DOUBLE_PARAM(pConfigNode, "Gain", "The gain applied to the input state variable", 0.1);
 }
-CLQRController::CLQRController(CConfigNode* pConfigNode)
+LQRController::LQRController(ConfigNode* pConfigNode)
 {
 	m_outputActionIndex = ACTION_VARIABLE(pConfigNode, "Output-Actionn", "The output action");
-	m_gains = MULTI_VALUE<CLQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
+	m_gains = MULTI_VALUE<LQRGain>(pConfigNode, "LQR-Gain", "An LQR gain on an input state variable");
 
 }
 
-CLQRController::~CLQRController(){}
+LQRController::~LQRController(){}
 
-double CLQRController::selectAction(const CState *s, CAction *a)
+double LQRController::selectAction(const State *s, Action *a)
 {
 	double output= 0.0; // only 1-dimension so far
 
@@ -59,56 +59,56 @@ double CLQRController::selectAction(const CState *s, CAction *a)
 	return 1.0;
 }
 
-int CLQRController::getNumOutputs()
+int LQRController::getNumOutputs()
 {
 	return 1;
 }
-int CLQRController::getOutputActionIndex(int output)
+int LQRController::getOutputActionIndex(int output)
 {
 	if (output == 0)
 		return m_outputActionIndex.get();
-	throw std::exception("CLQRController. Invalid action output given.");
+	throw std::exception("LQRController. Invalid action output given.");
 	return -1;
 }
 
 //PID//////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-CPIDController::CPIDController(CConfigNode* pConfigNode)
+PIDController::PIDController(ConfigNode* pConfigNode)
 {
 	m_outputActionIndex= ACTION_VARIABLE(pConfigNode, "Output-Action", "The output action");
-	m_pKP = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KP", "Proportional gain");
-	m_pKI = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KI", "Integral gain");
-	m_pKD = CHILD_OBJECT_FACTORY<CNumericValue>(pConfigNode, "KD", "Derivative gain");
+	m_pKP = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KP", "Proportional gain");
+	m_pKI = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KI", "Integral gain");
+	m_pKD = CHILD_OBJECT_FACTORY<NumericValue>(pConfigNode, "KD", "Derivative gain");
 
 	m_errorVariableIndex = STATE_VARIABLE(pConfigNode, "Input-Variable", "The input state variable");
 
 	m_intError= 0.0;
 }
 
-CPIDController::~CPIDController()
+PIDController::~PIDController()
 {}
 
-int CPIDController::getNumOutputs()
+int PIDController::getNumOutputs()
 {
 	return 1;
 }
-int CPIDController::getOutputActionIndex(int output)
+int PIDController::getOutputActionIndex(int output)
 {
 	if (output == 0)
 		return m_outputActionIndex.get();
-	throw std::exception("CLQRController. Invalid action output given.");
+	throw std::exception("LQRController. Invalid action output given.");
 	return -1;
 }
 
-double CPIDController::selectAction(const CState *s, CAction *a)
+double PIDController::selectAction(const State *s, Action *a)
 {
-	if (CSimionApp::get()->pWorld->getEpisodeSimTime()== 0.0)
+	if (SimionApp::get()->pWorld->getEpisodeSimTime()== 0.0)
 		m_intError= 0.0;
 
 	double error= s->get(m_errorVariableIndex.get());
-	double dError = error*CSimionApp::get()->pWorld->getDT();
-	m_intError += error*CSimionApp::get()->pWorld->getDT();
+	double dError = error*SimionApp::get()->pWorld->getDT();
+	m_intError += error*SimionApp::get()->pWorld->getDT();
 
 	a->set(m_outputActionIndex.get()
 		,error*m_pKP->get() + m_intError*m_pKI->get() + dError*m_pKD->get());
@@ -121,18 +121,18 @@ double CPIDController::selectAction(const CState *s, CAction *a)
 //VIDAL////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CWindTurbineVidalController::~CWindTurbineVidalController()
+WindTurbineVidalController::~WindTurbineVidalController()
 {
 }
 
-CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNode)
+WindTurbineVidalController::WindTurbineVidalController(ConfigNode* pConfigNode)
 {
 	m_pA= DOUBLE_PARAM(pConfigNode, "A", "A parameter of the torque controller",1.0);
 	m_pK_alpha = DOUBLE_PARAM(pConfigNode,  "K_alpha", "K_alpha parameter of the torque controller",5000000);
 	m_pKP = DOUBLE_PARAM(pConfigNode, "KP", "Proportional gain of the pitch controller",1.0);
 	m_pKI = DOUBLE_PARAM(pConfigNode, "KI", "Integral gain of the pitch controller",0.0);
 
-	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
+	Descriptor& pStateDescriptor = World::getDynamicModel()->getStateDescriptor();
 	m_omega_r = pStateDescriptor.getVarIndex("omega_r");
 	m_d_omega_r = pStateDescriptor.getVarIndex("d_omega_r");
 	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
@@ -142,34 +142,34 @@ CWindTurbineVidalController::CWindTurbineVidalController(CConfigNode* pConfigNod
 	m_beta = pStateDescriptor.getVarIndex("beta");
 	m_E_int_omega_r = pStateDescriptor.getVarIndex("E_int_omega_r");
 
-	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
 
 	m_a_beta = pActionDescriptor.getVarIndex("beta");
 	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 
-	m_ratedPower = CWorld::getDynamicModel()->getConstant("RatedPower")
-		/ CWorld::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
-	m_genElecEff = CWorld::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
+	m_ratedPower = World::getDynamicModel()->getConstant("RatedPower")
+		/ World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
+	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
 }
 
-int CWindTurbineVidalController::getNumOutputs()
+int WindTurbineVidalController::getNumOutputs()
 {
 	return 2;
 }
-int CWindTurbineVidalController::getOutputActionIndex(int output)
+int WindTurbineVidalController::getOutputActionIndex(int output)
 {
 	switch (output)
 	{
 	case 0: return m_a_beta;
 	case 1: return m_a_T_g;
-	default: throw std::exception("CLQRController. Invalid action output given.");
+	default: throw std::exception("LQRController. Invalid action output given.");
 	}
 	
 	return -1;
 }
 
 //aux function used in WindTurbineVidal controller
-double CWindTurbineVidalController::sgn(double value)
+double WindTurbineVidalController::sgn(double value)
 {
 	if (value<0.0) return -1.0;
 	else if (value>0.0) return 1.0;
@@ -177,11 +177,11 @@ double CWindTurbineVidalController::sgn(double value)
 	return 0.0;
 }
 
-double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
+double WindTurbineVidalController::selectAction(const State *s,Action *a)
 {
-	bool evaluation = CSimionApp::get()->pExperiment->isEvaluationEpisode();
+	bool evaluation = SimionApp::get()->pExperiment->isEvaluationEpisode();
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
-	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
+	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0)
 		m_lastT_g = 0.0;
 
 	//d(Tg)/dt= (-1/omega_g)*(T_g*(a*omega_g-d_omega_g)-a*P_setpoint + K_alpha*sgn(P_a-P_setpoint))
@@ -202,14 +202,14 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 		- m_pA.get()*m_ratedPower + m_pK_alpha.get()*sgn(error_P));
 	else d_T_g= 0.0;
 
-	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
+	double e_omega_g = omega_g - World::getDynamicModel()->getConstant("RatedGeneratorSpeed");
 	double beta = 0.5*m_pKP.get()*e_omega_g*(1.0 + sgn(e_omega_g))
 				+ m_pKI.get()*s->get("E_int_omega_g");
 
 	beta = std::min(a->getProperties("beta").getMax(), std::max(beta, a->getProperties("beta").getMin()));
 	d_T_g = std::min(std::max(s->getProperties("d_T_g").getMin(), d_T_g), s->getProperties("d_T_g").getMax());
 	a->set(m_a_beta,beta);
-	double nextT_g = m_lastT_g + d_T_g* CSimionApp::get()->pWorld->getDT();
+	double nextT_g = m_lastT_g + d_T_g* SimionApp::get()->pWorld->getDT();
 	a->set(m_a_T_g,nextT_g);
 	m_lastT_g = nextT_g;
 
@@ -219,22 +219,22 @@ double CWindTurbineVidalController::selectAction(const CState *s,CAction *a)
 //BOUKHEZZAR CONTROLLER////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////
 
-CWindTurbineBoukhezzarController::~CWindTurbineBoukhezzarController()
+WindTurbineBoukhezzarController::~WindTurbineBoukhezzarController()
 {
 
 }
 
-CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* pConfigNode)
+WindTurbineBoukhezzarController::WindTurbineBoukhezzarController(ConfigNode* pConfigNode)
 {
 	m_pC_0	= DOUBLE_PARAM(pConfigNode,"C_0", "C_0 parameter",1.0);
 	m_pKP = DOUBLE_PARAM(pConfigNode,"KP", "Proportional gain of the pitch controller",1.0);
 	m_pKI = DOUBLE_PARAM(pConfigNode,"KI", "Integral gain of the pitch controller",0.0);
 
-	m_J_t = CWorld::getDynamicModel()->getConstant("TotalTurbineInertia");
-	m_K_t = CWorld::getDynamicModel()->getConstant("TotalTurbineTorsionalDamping");
-	m_genElecEff = CWorld::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
+	m_J_t = World::getDynamicModel()->getConstant("TotalTurbineInertia");
+	m_K_t = World::getDynamicModel()->getConstant("TotalTurbineTorsionalDamping");
+	m_genElecEff = World::getDynamicModel()->getConstant("ElectricalGeneratorEfficiency");
 
-	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
+	Descriptor& pStateDescriptor = World::getDynamicModel()->getStateDescriptor();
 	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
 	m_d_omega_g = pStateDescriptor.getVarIndex("d_omega_g");
 	m_E_p = pStateDescriptor.getVarIndex("E_p");
@@ -244,34 +244,34 @@ CWindTurbineBoukhezzarController::CWindTurbineBoukhezzarController(CConfigNode* 
 	m_d_T_g = pStateDescriptor.getVarIndex("d_T_g");
 	m_E_int_omega_g = pStateDescriptor.getVarIndex("E_int_omega_g");
 
-	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
 
 	m_a_beta = pActionDescriptor.getVarIndex("beta");
 	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 }
 
-int CWindTurbineBoukhezzarController::getNumOutputs()
+int WindTurbineBoukhezzarController::getNumOutputs()
 {
 	return 2;
 }
-int CWindTurbineBoukhezzarController::getOutputActionIndex(int output)
+int WindTurbineBoukhezzarController::getOutputActionIndex(int output)
 {
 	switch (output)
 	{
 	case 0: return m_a_beta;
 	case 1: return m_a_T_g;
-	default: throw std::exception("CLQRController. Invalid action output given.");
+	default: throw std::exception("LQRController. Invalid action output given.");
 	}
 
 	return -1;
 }
 
 
-double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a)
+double WindTurbineBoukhezzarController::selectAction(const State *s,Action *a)
 {
 	//initialise m_lastT_g if we have to, controllers don't implement reset()
-	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0)
-		m_lastT_g = 0.0;// CSimionApp::get()->pWorld->getDynamicModel()->getConstant("RatedGeneratorTorque");
+	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0)
+		m_lastT_g = 0.0;// SimionApp::get()->pWorld->getDynamicModel()->getConstant("RatedGeneratorTorque");
 
 	//d(Tg)/dt= (1/omega_g)*(C_0*error_P - (1/J_t)*(T_a*T_g - K_t*omega_g*T_g - T_g*T_g))
 	//d(beta)/dt= K_p*(omega_ref - omega_g)
@@ -292,11 +292,11 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 
 	d_T_g = std::min(std::max(s->getProperties(m_d_T_g).getMin(), d_T_g), s->getProperties(m_d_T_g).getMax());
 
-	double e_omega_g = omega_g - CWorld::getDynamicModel()->getConstant("RatedGeneratorSpeed");
+	double e_omega_g = omega_g - World::getDynamicModel()->getConstant("RatedGeneratorSpeed");
 	double desiredBeta = m_pKP.get()*e_omega_g +m_pKI.get()*s->get(m_E_int_omega_g);
 
 	a->set(m_a_beta,desiredBeta);
-	double nextT_g = m_lastT_g + d_T_g*CSimionApp::get()->pWorld->getDT();
+	double nextT_g = m_lastT_g + d_T_g*SimionApp::get()->pWorld->getDT();
 	a->set(m_a_T_g, nextT_g);
 	m_lastT_g = nextT_g;
 
@@ -306,17 +306,17 @@ double CWindTurbineBoukhezzarController::selectAction(const CState *s,CAction *a
 //JONKMAN//////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-CWindTurbineJonkmanController::~CWindTurbineJonkmanController()
+WindTurbineJonkmanController::~WindTurbineJonkmanController()
 {
 }
 
-CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfigNode)
+WindTurbineJonkmanController::WindTurbineJonkmanController(ConfigNode* pConfigNode)
 {
 	//GENERATOR SPEED FILTER PARAMETERS
 	m_CornerFreq = DOUBLE_PARAM(pConfigNode, "CornerFreq", "Corner Freq. parameter", 1.570796);
 
 	//TORQUE CONTROLLER'S PARAMETERS
-	CDynamicModel* pDynamicModel = CSimionApp::get()->pWorld->getDynamicModel();
+	DynamicModel* pDynamicModel = SimionApp::get()->pWorld->getDynamicModel();
 	m_ratedGenSpeed = pDynamicModel->getConstant("RatedGeneratorSpeed");
 	m_ratedPower = pDynamicModel->getConstant("RatedPower")/pDynamicModel->getConstant("ElectricalGeneratorEfficiency");
 	m_VS_SlPc = DOUBLE_PARAM(pConfigNode, "VS_SlPc", "SIPc parameter", 10.0);
@@ -342,50 +342,50 @@ CWindTurbineJonkmanController::CWindTurbineJonkmanController(CConfigNode* pConfi
 
 	m_IntSpdErr= 0.0;
 
-	CDescriptor& pStateDescriptor = CWorld::getDynamicModel()->getStateDescriptor();
+	Descriptor& pStateDescriptor = World::getDynamicModel()->getStateDescriptor();
 	m_omega_g = pStateDescriptor.getVarIndex("omega_g");
 
 	m_E_p = pStateDescriptor.getVarIndex("E_p");
 	m_T_g = pStateDescriptor.getVarIndex("T_g");
 	m_beta = pStateDescriptor.getVarIndex("beta");
 
-	CDescriptor& pActionDescriptor = CWorld::getDynamicModel()->getActionDescriptor();
+	Descriptor& pActionDescriptor = World::getDynamicModel()->getActionDescriptor();
 
 	m_a_beta = pActionDescriptor.getVarIndex("beta");
 	m_a_T_g = pActionDescriptor.getVarIndex("T_g");
 }
 
-int CWindTurbineJonkmanController::getNumOutputs()
+int WindTurbineJonkmanController::getNumOutputs()
 {
 	return 2;
 }
-int CWindTurbineJonkmanController::getOutputActionIndex(int output)
+int WindTurbineJonkmanController::getOutputActionIndex(int output)
 {
 	switch (output)
 	{
 	case 0: return m_a_beta;
 	case 1: return m_a_T_g;
-	default: throw std::exception("CLQRController. Invalid action output given.");
+	default: throw std::exception("LQRController. Invalid action output given.");
 	}
 
 	return -1;
 }
 
-double CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
+double WindTurbineJonkmanController::selectAction(const State *s,Action *a)
 {
 	//Filter the generator speed
 	double lowPassFilterAlpha;
 
-	double time = CSimionApp::get()->pWorld->getEpisodeSimTime();
+	double time = SimionApp::get()->pWorld->getEpisodeSimTime();
 
-	if (CSimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
+	if (SimionApp::get()->pWorld->getEpisodeSimTime() == 0.0)
 	{
 		lowPassFilterAlpha= 1.0;
 		m_GenSpeedF= s->get(m_omega_g);
 		m_IntSpdErr = 0.0;
 	}
 	else
-		lowPassFilterAlpha = exp(-CSimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
+		lowPassFilterAlpha = exp(-SimionApp::get()->pWorld->getDT()*m_CornerFreq.get());
 
 	m_GenSpeedF = (1.0 - lowPassFilterAlpha)*s->get(m_omega_g) + lowPassFilterAlpha*m_GenSpeedF;
 
@@ -413,7 +413,7 @@ double CWindTurbineJonkmanController::selectAction(const CState *s,CAction *a)
 	//Compute the current speed error and its integral w.r.t. time; saturate the
 	//  integral term using the pitch angle limits:
 	double SpdErr= m_GenSpeedF - m_PC_RefSpd.get();                                 //Current speed error
-	m_IntSpdErr = m_IntSpdErr + SpdErr*CSimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
+	m_IntSpdErr = m_IntSpdErr + SpdErr*SimionApp::get()->pWorld->getDT();                           //Current integral of speed error w.r.t. time
 	//Saturate the integral term using the pitch angle limits, converted to integral speed error limits
 	m_IntSpdErr = std::min( std::max( m_IntSpdErr, s->getProperties(m_beta).getMin()/( GK*m_PC_KI.get() ) )
 		, s->getProperties(m_beta).getMax()/( GK*m_PC_KI.get() ));

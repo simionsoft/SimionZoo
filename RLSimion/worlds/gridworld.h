@@ -1,11 +1,11 @@
 #pragma once
 
 #include "world.h"
-class CSetPoint;
+class SetPoint;
 #include "../reward.h"
 
 //CONTINUOUS GRIDWORLD
-class CContinuousGridWorld : public CDynamicModel
+class ContinuousGridWorld : public DynamicModel
 {
 	int m_sXPosition, m_sYPosition;
 
@@ -15,22 +15,22 @@ class CContinuousGridWorld : public CDynamicModel
 	int m_aXStep, m_aYStep;
 
 public:
-	CContinuousGridWorld(CConfigNode* pParameters);
-	virtual ~CContinuousGridWorld();
+	ContinuousGridWorld(ConfigNode* pParameters);
+	virtual ~ContinuousGridWorld();
 
-	void reset(CState *s);
+	void reset(State *s);
 
-	void executeAction(CState *s, const CAction *a, double dt);
+	void executeAction(State *s, const Action *a, double dt);
 };
 
-class CContinuousGridWorldReward : public IRewardComponent
+class ContinuousGridWorldReward : public IRewardComponent
 {
 protected:
 	double m_xTarget, m_yTarget;
 
 public:
-	CContinuousGridWorldReward(int targetX, int targetY);
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
+	ContinuousGridWorldReward(int targetX, int targetY);
+	double getReward(const State *s, const Action *a, const State *s_p);
 	const char* getName() { return "reward"; }
 	double getMin();
 	double getMax();
@@ -38,7 +38,7 @@ public:
 
 
 //DISCRETE GRIDWORLD
-class CDiscreteGridWorld : public CDynamicModel
+class DiscreteGridWorld : public DynamicModel
 {
 	int m_sXPosition, m_sYPosition;
 
@@ -48,22 +48,22 @@ class CDiscreteGridWorld : public CDynamicModel
 	int m_aStep;
 
 public:
-	CDiscreteGridWorld(CConfigNode* pParameters);
-	virtual ~CDiscreteGridWorld();
+	DiscreteGridWorld(ConfigNode* pParameters);
+	virtual ~DiscreteGridWorld();
 
-	void reset(CState *s);
+	void reset(State *s);
 
-	void executeAction(CState *s, const CAction *a, double dt);
+	void executeAction(State *s, const Action *a, double dt);
 };
 
-class CDiscreteGridWorldReward : public IRewardComponent
+class DiscreteGridWorldReward : public IRewardComponent
 {
 protected:
 	int m_xTarget, m_yTarget;
 
 public:
-	CDiscreteGridWorldReward(int targetX, int targetY);
-	double getReward(const CState *s, const CAction *a, const CState *s_p);
+	DiscreteGridWorldReward(int targetX, int targetY);
+	double getReward(const State *s, const Action *a, const State *s_p);
 	const char* getName() { return "reward"; }
 	double getMin();
 	double getMax();

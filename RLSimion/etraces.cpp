@@ -3,7 +3,7 @@
 #include "config.h"
 #include "app.h"
 
-CETraces::CETraces(CConfigNode* pConfigNode): CFeatureList("ETraces")
+ETraces::ETraces(ConfigNode* pConfigNode): FeatureList("ETraces")
 {
 	if (pConfigNode)
 	{
@@ -20,19 +20,19 @@ CETraces::CETraces(CConfigNode* pConfigNode): CFeatureList("ETraces")
 
 }
 
-CETraces::CETraces():CFeatureList("ETraces")
+ETraces::ETraces():FeatureList("ETraces")
 {
 	m_bUse = false;
 	m_overwriteMode = OverwriteMode::Replace;
 }
 
-CETraces::~CETraces()
+ETraces::~ETraces()
 {}
 
 
-void CETraces::update(double factor)
+void ETraces::update(double factor)
 {
-	if (!CSimionApp::get()->pExperiment->isFirstStep() && m_bUse)
+	if (!SimionApp::get()->pExperiment->isFirstStep() && m_bUse)
 	{
 		mult(factor* m_lambda.get());
 		applyThreshold(m_threshold.get());
@@ -41,11 +41,11 @@ void CETraces::update(double factor)
 		clear();
 }
 
-void CETraces::addFeatureList(CFeatureList* inList, double factor)
+void ETraces::addFeatureList(FeatureList* inList, double factor)
 {
 	if (m_bUse)
 	{
-		CFeatureList::addFeatureList(inList, factor);
+		FeatureList::addFeatureList(inList, factor);
 	}
 	else
 	{

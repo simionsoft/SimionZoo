@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 
-class CTexture
+class Texture
 {
 	unsigned int numRefs = 0;
 public:
@@ -16,17 +16,17 @@ public:
 	void addRef() { ++numRefs; }
 	void set();
 
-	CTexture();
-	~CTexture();
+	Texture();
+	~Texture();
 };
 
-class CTextureManager
+class TextureManager
 {
 	string m_folder;
-	vector<CTexture*> m_textures;
+	vector<Texture*> m_textures;
 public:
-	CTextureManager();
-	virtual ~CTextureManager();
+	TextureManager();
+	virtual ~TextureManager();
 
 	size_t loadTexture(string filename);
 	void set(int textureId);
