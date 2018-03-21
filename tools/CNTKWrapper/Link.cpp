@@ -75,7 +75,7 @@ std::vector<const Link*> Link::getDependencies() const
 
 	if (m_linkType == LinkType::MergeLayer)
 	{
-		auto dependenciesList = getParameterByName<CLinkConnectionListParameter>("Links");
+		auto dependenciesList = getParameterByName<LinkConnectionListParameter>("Links");
 		for each (LinkConnection* var in dependenciesList->getValue())
 			result.push_back(m_pParentChain->getParentNetworkArchitecture()->getLinkById(var->getTargetId().c_str()));
 	}

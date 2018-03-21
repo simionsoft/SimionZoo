@@ -13,23 +13,27 @@
 #include "ParameterValues.h"
 
 template <typename T>
-CParameterBase<T>::~CParameterBase()
+ParameterBase<T>::~ParameterBase()
 {
 
 }
 
 template <typename T>
-CParameterBase<T>::CParameterBase(tinyxml2::XMLElement* pNode)
+ParameterBase<T>::ParameterBase(tinyxml2::XMLElement* pNode)
 {
 	m_name = pNode->Attribute(XML_ATTRIBUTE_Name);
 }
 
-CDoubleParameter::CDoubleParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<double>(pParentNode)
+DoubleParameter::DoubleParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<double>(pParentNode)
 {
+	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 
+	const char* rawValue = pNode->GetText();
+
+	m_value = atof(rawValue);
 }
 
-CActivationFunctionParameter::CActivationFunctionParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<ActivationFunction>(pParentNode)
+ActivationFunctionParameter::ActivationFunctionParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<ActivationFunction>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	const char* type = pNode->GetText();
@@ -57,38 +61,38 @@ CActivationFunctionParameter::CActivationFunctionParameter(tinyxml2::XMLElement*
 		throw ProblemParserElementValueNotValid(XML_TAG_Value);
 }
 
-CInputDataParameter::CInputDataParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<string>(pParentNode)
+InputDataParameter::InputDataParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<string>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	m_value = pNode->GetText();
 }
 
-CIntParameter::CIntParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<int>(pParentNode)
+IntParameter::IntParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<int>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	const char* rawValue = pNode->GetText();
 	m_value = stoi(rawValue);
 }
 
-CIntTuple1DParameter::CIntTuple1DParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<CIntTuple1D>(pParentNode)
+IntTuple1DParameter::IntTuple1DParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<CIntTuple1D>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	m_value = *CIntTuple1D::getInstance(pNode);
 }
 
-CIntTuple2DParameter::CIntTuple2DParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<CIntTuple2D>(pParentNode)
+IntTuple2DParameter::IntTuple2DParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<CIntTuple2D>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	m_value = *CIntTuple2D::getInstance(pNode);
 }
 
-CIntTuple3DParameter::CIntTuple3DParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<CIntTuple3D>(pParentNode)
+IntTuple3DParameter::IntTuple3DParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<CIntTuple3D>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	m_value = *CIntTuple3D::getInstance(pNode);
 }
 
-CIntTuple4DParameter::CIntTuple4DParameter(tinyxml2::XMLElement* pParentNode) : CParameterBase<CIntTuple4D>(pParentNode)
+IntTuple4DParameter::IntTuple4DParameter(tinyxml2::XMLElement* pParentNode) : ParameterBase<CIntTuple4D>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	m_value = *CIntTuple4D::getInstance(pNode);
@@ -100,23 +104,23 @@ IParameter* IParameter::getInstance(tinyxml2::XMLElement* pNode)
 	{
 		const char* type = pNode->Attribute(XML_ATTRIBUTE_Type);
 		if (!strcmp(type, XML_ATTRIBUTE_ActivationFunctionParameter))
-			return new CActivationFunctionParameter(pNode);
+			return new ActivationFunctionParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_DoubleParameter))
-			return new CDoubleParameter(pNode);
+			return new DoubleParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_InputDataParameter))
-			return new CInputDataParameter(pNode);
+			return new InputDataParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_IntParameter))
-			return new CIntParameter(pNode);
+			return new IntParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_IntTuple1DParameter))
-			return new CIntTuple1DParameter(pNode);
+			return new IntTuple1DParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_IntTuple2DParameter))
-			return new CIntTuple2DParameter(pNode);
+			return new IntTuple2DParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_IntTuple3DParameter))
-			return new CIntTuple3DParameter(pNode);
+			return new IntTuple3DParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_IntTuple4DParameter))
-			return new CIntTuple4DParameter(pNode);
+			return new IntTuple4DParameter(pNode);
 		else if (!strcmp(type, XML_ATTRIBUTE_LinkConnectionListParameter))
-			return new CLinkConnectionListParameter(pNode);
+			return new LinkConnectionListParameter(pNode);
 		else
 			throw ProblemParserElementValueNotValid(XML_ATTRIBUTE_Type);
 	}
@@ -124,7 +128,7 @@ IParameter* IParameter::getInstance(tinyxml2::XMLElement* pNode)
 	return nullptr;
 }
 
-CLinkConnectionListParameter::CLinkConnectionListParameter(tinyxml2::XMLElement * pParentNode) : CParameterBase<vector<LinkConnection*>>(pParentNode)
+LinkConnectionListParameter::LinkConnectionListParameter(tinyxml2::XMLElement * pParentNode) : ParameterBase<vector<LinkConnection*>>(pParentNode)
 {
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_Value);
 	loadChildren<LinkConnection>(pNode, XML_TAG_LinkConnection, m_value);

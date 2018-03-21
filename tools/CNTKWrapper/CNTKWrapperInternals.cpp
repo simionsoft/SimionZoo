@@ -18,7 +18,7 @@
 CNTK::FunctionPtr CNTKWrapper::InputLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 	//determine the linked input data
-	string inputID = pLink->getParameterByName<CInputDataParameter>("Input Data")->getValue();
+	string inputID = pLink->getParameterByName<InputDataParameter>("Input Data")->getValue();
 	auto inputList = pLink->getParentChain()->getParentNetworkArchitecture()->getParentProblem()->getInputs();
 
 	CNTK::FunctionPtr pInput;
@@ -35,7 +35,7 @@ CNTK::FunctionPtr CNTKWrapper::InputLayer(const Link * pLink, vector<const Link*
 
 CNTK::FunctionPtr CNTKWrapper::ActivationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
-	auto activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
+	auto activationFunction = pLink->getParameterByName<ActivationFunctionParameter>("Activation")->getValue();
 	return CNTKWrapper::Internal::applyActivationFunction(dependencies.at(0)->getFunctionPtr(), activationFunction);
 }
 
@@ -46,10 +46,10 @@ CNTK::FunctionPtr CNTKWrapper::Convolution1DLayer(const Link * pLink, vector<con
 
 	string name = pLink->getName();
 
-	size_t filters = pLink->getParameterByName<CIntParameter>("Filters")->getValue();
-	CIntTuple1D kernelShape = pLink->getParameterByName<CIntTuple1DParameter>("Kernel Size")->getValue();
-	CIntTuple1D strideShape = pLink->getParameterByName<CIntTuple1DParameter>("Stride")->getValue();
-	ActivationFunction activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
+	size_t filters = pLink->getParameterByName<IntParameter>("Filters")->getValue();
+	CIntTuple1D kernelShape = pLink->getParameterByName<IntTuple1DParameter>("Kernel Size")->getValue();
+	CIntTuple1D strideShape = pLink->getParameterByName<IntTuple1DParameter>("Stride")->getValue();
+	ActivationFunction activationFunction = pLink->getParameterByName<ActivationFunctionParameter>("Activation")->getValue();
 
 	size_t kernel = (size_t)kernelShape.getX1();
 
@@ -65,10 +65,10 @@ CNTK::FunctionPtr CNTKWrapper::Convolution2DLayer(const Link * pLink, vector<con
 
 	string name = pLink->getName();
 
-	size_t filters = pLink->getParameterByName<CIntParameter>("Filters")->getValue();
-	CIntTuple2D kernelShape = pLink->getParameterByName<CIntTuple2DParameter>("Kernel Size")->getValue();
-	CIntTuple2D strideShape = pLink->getParameterByName<CIntTuple2DParameter>("Stride")->getValue();
-	ActivationFunction activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
+	size_t filters = pLink->getParameterByName<IntParameter>("Filters")->getValue();
+	CIntTuple2D kernelShape = pLink->getParameterByName<IntTuple2DParameter>("Kernel Size")->getValue();
+	CIntTuple2D strideShape = pLink->getParameterByName<IntTuple2DParameter>("Stride")->getValue();
+	ActivationFunction activationFunction = pLink->getParameterByName<ActivationFunctionParameter>("Activation")->getValue();
 
 	size_t kernelWidth = (size_t)kernelShape.getX1();
 	size_t kernelHeight = (size_t)kernelShape.getX2();
@@ -86,10 +86,10 @@ CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const Link * pLink, vector<con
 
 	string name = pLink->getName();
 
-	size_t filters = pLink->getParameterByName<CIntParameter>("Filters")->getValue();
-	CIntTuple3D kernelShape = pLink->getParameterByName<CIntTuple3DParameter>("Kernel Size")->getValue();
-	CIntTuple3D strideShape = pLink->getParameterByName<CIntTuple3DParameter>("Stride")->getValue();
-	ActivationFunction activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
+	size_t filters = pLink->getParameterByName<IntParameter>("Filters")->getValue();
+	CIntTuple3D kernelShape = pLink->getParameterByName<IntTuple3DParameter>("Kernel Size")->getValue();
+	CIntTuple3D strideShape = pLink->getParameterByName<IntTuple3DParameter>("Stride")->getValue();
+	ActivationFunction activationFunction = pLink->getParameterByName<ActivationFunctionParameter>("Activation")->getValue();
 
 	size_t kernelWidth = (size_t)kernelShape.getX1();
 	size_t kernelHeight = (size_t)kernelShape.getX2();
@@ -105,9 +105,9 @@ CNTK::FunctionPtr CNTKWrapper::Convolution3DLayer(const Link * pLink, vector<con
 CNTK::FunctionPtr CNTKWrapper::DenseLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor& device)
 {
 
-	int output_nodes = pLink->getParameterByName<CIntParameter>("Units")->getValue();
+	int output_nodes = pLink->getParameterByName<IntParameter>("Units")->getValue();
 	wstring name = CNTKWrapper::Internal::string2wstring(pLink->getName());
-	auto activationFunction = pLink->getParameterByName<CActivationFunctionParameter>("Activation")->getValue();
+	auto activationFunction = pLink->getParameterByName<ActivationFunctionParameter>("Activation")->getValue();
 
 	return CNTKWrapper::Internal::FullyConnectedDNNLayer(dependencies.at(0)->getFunctionPtr(), output_nodes, device, activationFunction, name);
 }
@@ -131,7 +131,7 @@ CNTK::FunctionPtr CNTKWrapper::ReshapeLayer(const Link * pLink, vector<const Lin
 {
 
 	wstring name = Internal::string2wstring(pLink->getName());
-	CIntTuple4D shapeTuple = pLink->getParameterByName<CIntTuple4DParameter>("4D Shape")->getValue();
+	CIntTuple4D shapeTuple = pLink->getParameterByName<IntTuple4DParameter>("4D Shape")->getValue();
 	NDShape shape = {};
 	if (shapeTuple.getX1() != 0)
 		shape = shape.AppendShape({ (size_t)shapeTuple.getX1() });
@@ -155,7 +155,7 @@ CNTK::FunctionPtr CNTKWrapper::MergeLayer(const Link * pLink, vector<const Link*
 		for each(auto pItem in dependencies)
 			inputs.push_back((CNTK::Variable)pItem->getFunctionPtr());
 
-		auto axisIndex = pLink->getParameterByName<CIntParameter>("Axis")->getValue();
+		auto axisIndex = pLink->getParameterByName<IntParameter>("Axis")->getValue();
 		auto axis = CNTK::Axis::Axis(axisIndex);
 		return Splice(inputs, axis);
 	}
@@ -187,8 +187,8 @@ CNTK::FunctionPtr CNTKWrapper::BatchNormalizationLayer(const Link * pLink, vecto
 CNTK::FunctionPtr CNTKWrapper::LinearTransformationLayer(const Link * pLink, vector<const Link*> dependencies, CNTK::DeviceDescriptor & device)
 {
 	wstring name = Internal::string2wstring(pLink->getName());
-	double offset = pLink->getParameterByName<CDoubleParameter>("Offset")->getValue();
-	double scale = pLink->getParameterByName<CDoubleParameter>("Scale")->getValue();
+	double offset = pLink->getParameterByName<DoubleParameter>("Offset")->getValue();
+	double scale = pLink->getParameterByName<DoubleParameter>("Scale")->getValue();
 
 	auto timesParam = Constant::Scalar(DataType::Float, (float)scale, device);
 

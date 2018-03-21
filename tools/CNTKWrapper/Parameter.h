@@ -18,80 +18,79 @@ public:
 };
 
 template <typename T>
-class CParameterBase : public IParameter
+class ParameterBase : public IParameter
 {
 protected:
 	T m_value;
-	CParameterBase(tinyxml2::XMLElement* pNode);
+	ParameterBase(tinyxml2::XMLElement* pNode);
 
 public:
-	CParameterBase() : IParameter() {};
-	~CParameterBase();
+	ParameterBase() : IParameter() {};
+	~ParameterBase();
 
 	T getValue() const { return m_value; }
 	void setValue(T value) { m_value = value; }
 
 };
 
-class CDoubleParameter :public CParameterBase<double>
+class DoubleParameter :public ParameterBase<double>
 {
 public:
-	CDoubleParameter(tinyxml2::XMLElement* pNode);
+	DoubleParameter(tinyxml2::XMLElement* pNode);
 
 };
 
-class CIntParameter : public CParameterBase<int>
+class IntParameter : public ParameterBase<int>
 {
 public:
-	CIntParameter(tinyxml2::XMLElement* pNode);
-	CIntParameter() : CParameterBase<int>() {};
+	IntParameter(tinyxml2::XMLElement* pNode);
+	IntParameter() : ParameterBase<int>() {};
 
 };
 
-class CIntTuple1DParameter : public CParameterBase<CIntTuple1D>
+class IntTuple1DParameter : public ParameterBase<CIntTuple1D>
 {
 public:
-	CIntTuple1DParameter(tinyxml2::XMLElement* pNode);
+	IntTuple1DParameter(tinyxml2::XMLElement* pNode);
+};
+
+class IntTuple2DParameter : public ParameterBase<CIntTuple2D>
+{
+public:
+	IntTuple2DParameter(tinyxml2::XMLElement* pNode);
 
 };
 
-class CIntTuple2DParameter : public CParameterBase<CIntTuple2D>
+class IntTuple3DParameter : public ParameterBase<CIntTuple3D>
 {
 public:
-	CIntTuple2DParameter(tinyxml2::XMLElement* pNode);
+	IntTuple3DParameter(tinyxml2::XMLElement* pNode);
 
 };
 
-class CIntTuple3DParameter : public CParameterBase<CIntTuple3D>
+class IntTuple4DParameter : public ParameterBase<CIntTuple4D>
 {
 public:
-	CIntTuple3DParameter(tinyxml2::XMLElement* pNode);
+	IntTuple4DParameter(tinyxml2::XMLElement* pNode);
+};
+
+class ActivationFunctionParameter : public ParameterBase<ActivationFunction>
+{
+public:
+	ActivationFunctionParameter(tinyxml2::XMLElement* pNode);
 
 };
 
-class CIntTuple4DParameter : public CParameterBase<CIntTuple4D>
+class InputDataParameter : public ParameterBase<string>
 {
 public:
-	CIntTuple4DParameter(tinyxml2::XMLElement* pNode);
-};
-
-class CActivationFunctionParameter : public CParameterBase<ActivationFunction>
-{
-public:
-	CActivationFunctionParameter(tinyxml2::XMLElement* pNode);
+	InputDataParameter(tinyxml2::XMLElement* pNode);
 
 };
 
-class CInputDataParameter : public CParameterBase<string>
+class LinkConnectionListParameter : public ParameterBase<vector<LinkConnection*>>
 {
 public:
-	CInputDataParameter(tinyxml2::XMLElement* pNode);
-
-};
-
-class CLinkConnectionListParameter : public CParameterBase<vector<LinkConnection*>>
-{
-public:
-	CLinkConnectionListParameter(tinyxml2::XMLElement* pNode);
+	LinkConnectionListParameter(tinyxml2::XMLElement* pNode);
 
 };
