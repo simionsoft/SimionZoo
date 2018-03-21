@@ -10,7 +10,7 @@
 class SingleDimensionDiscreteActionVariableGrid;
 class ExperienceReplay;
 class ExperienceTuple;
-
+/*
 class AsyncQLearning : public Simion
 {
 protected:
@@ -53,6 +53,6 @@ public:
 
 	//updates the target network and sometimes the prediction network
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
-};
+};*/
 #endif
 

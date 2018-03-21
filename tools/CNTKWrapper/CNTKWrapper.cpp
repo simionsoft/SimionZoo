@@ -21,7 +21,7 @@
 IProblem* CNTKWrapper::getProblemInstance(tinyxml2::XMLElement* pNode)
 {
 #pragma EXPORT
-	return CProblem::getInstance(pNode);
+	return Problem::getInstance(pNode);
 }
 
 

@@ -39,7 +39,6 @@ class INetwork;
 class IProblem
 {
 public:
-	//virtual IProblem(tinyxml2::XMLElement* pNode)= 0;
 	virtual void destroy() = 0;
 
 	virtual NetworkArchitecture* getNetworkArchitecture() = 0;
@@ -75,6 +74,8 @@ public:
 		, std::vector<double>& targetOutputData)= 0;
 	virtual void predict(std::unordered_map<std::string, std::vector<double>&>& inputDataMap
 		, std::vector<double>& predictionData)= 0;
+
+	virtual void setParent() = 0;
 };
 
 

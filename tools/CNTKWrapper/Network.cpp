@@ -8,6 +8,7 @@
 #include "CNTKWrapperInternals.h"
 #include "OptimizerSetting.h"
 #include "InputData.h"
+#include "Problem.h"
 
 Network::Network()
 {
@@ -203,9 +204,12 @@ INetwork* Network::cloneNonTrainable() const
 		}
 	}
 
-
-
 	return result;
+}
+
+void Network::setParent(Problem* pProblem)
+{
+	m_pParent = pProblem;
 }
 
 #endif // _WIN64

@@ -9,7 +9,7 @@ class Network;
 class LinkConnection;
 class OptimizerSetting;
 
-class CProblem: public IProblem
+class Problem: public IProblem
 {
 protected:
 	std::vector<InputData*> m_inputs;
@@ -19,9 +19,9 @@ protected:
 	
 	
 public:
-	CProblem();
-	~CProblem();
-	CProblem(tinyxml2::XMLElement* pNode);
+	Problem();
+	~Problem();
+	Problem(tinyxml2::XMLElement* pNode);
 
 	void destroy();
 
@@ -30,10 +30,10 @@ public:
 	const LinkConnection* getOutput() const { return m_pOutput; }
 	const OptimizerSetting* getOptimizerSetting() const { return m_pOptimizerSetting; }
 
-	static CProblem* getInstance(tinyxml2::XMLElement* pNode);
+	static Problem* getInstance(tinyxml2::XMLElement* pNode);
 
-	static CProblem* loadFromFile(std::string fileName);
-	static CProblem* loadFromString(std::string content);
+	static Problem* loadFromFile(std::string fileName);
+	static Problem* loadFromString(std::string content);
 
 	INetwork* createNetwork();
 };

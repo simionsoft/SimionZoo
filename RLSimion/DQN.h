@@ -50,7 +50,7 @@ public:
 	//updates the critic and the actor
 	virtual double update(const State *s, const Action *a, const State *s_p, double r, double behaviorProb);
 };
-
+/*
 class DoubleDQN : public DQN
 {
 protected:
@@ -108,5 +108,5 @@ public:
 	//update q network
 	void updateCritic();
 };
-
+*/
 #endif

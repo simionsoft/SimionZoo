@@ -16,7 +16,7 @@
 #include "../tools/CNTKWrapper/CNTKWrapper.h"
 
 #include <algorithm>
-
+/*
 AsyncQLearning::AsyncQLearning(ConfigNode* pConfigNode)
 {
 	CNTKWrapperLoader::Load();
@@ -172,6 +172,6 @@ double AsyncQLearning::update(const State * s, const Action * a, const State * s
 		}
 	}
 }
-
+*/
 
 #endif

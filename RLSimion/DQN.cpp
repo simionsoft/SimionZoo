@@ -154,7 +154,7 @@ double DQN::update(const State * s, const Action * a, const State * s_p, double 
 		}
 	return 1.0; //TODO: estimate the probability
 }
-
+/*
 INetwork* DoubleDQN::getPredictionNetwork()
 {
 	if (SimionApp::get()->pSimGod->getTargetFunctionUpdateFreq())
@@ -423,19 +423,19 @@ void DDPG::updateActor()
 
 	m_predictionPolicyNetwork.getNetwork()->getTrainer()->ParameterLearners()[0]->Update(gradients, m_experienceReplay->getUpdateBatchSize());
 
-	/*
-	we have to perform something like this
+	
+	//we have to perform something like this
 
-	self.q_gradient_input = tf.placeholder("float",[None,self.action_dim])
-	self.parameters_gradients = tf.gradients(self.action_output,self.net,-self.q_gradient_input)
-	self.optimizer = tf.train.AdamOptimizer(LEARNING_RATE).apply_gradients(zip(self.parameters_gradients,self.net))
+	//self.q_gradient_input = tf.placeholder("float",[None,self.action_dim])
+	//self.parameters_gradients = tf.gradients(self.action_output,self.net,-self.q_gradient_input)
+	//self.optimizer = tf.train.AdamOptimizer(LEARNING_RATE).apply_gradients(zip(self.parameters_gradients,self.net))
 
-	maybe this helps
-	https://stackoverflow.com/questions/41814858/how-to-access-gradients-and-modify-weights-parameters-directly-during-training
+	//maybe this helps
+	//https://stackoverflow.com/questions/41814858/how-to-access-gradients-and-modify-weights-parameters-directly-during-training
 
-	python: Learner.update(gradient_values, training_sample_count)
-	C++:    model->getTrainer()->ParameterLearners()[0]->Update();
-	*/
+	//python: Learner.update(gradient_values, training_sample_count)
+	//C++:    model->getTrainer()->ParameterLearners()[0]->Update();
+	
 }
 
 void DDPG::updateCritic()
@@ -482,5 +482,5 @@ void DDPG::updateCritic()
 
 	m_predictionQNetwork.getNetwork()->train(inputMap, m_minibatchQVector);
 }
-
+*/
 #endif

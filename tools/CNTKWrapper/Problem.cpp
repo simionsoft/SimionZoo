@@ -13,7 +13,7 @@
 #include "OptimizerSetting.h"
 #include "Exceptions.h"
 
-CProblem::CProblem(tinyxml2::XMLElement * pParentNode)
+Problem::Problem(tinyxml2::XMLElement * pParentNode)
 {
 	//load architecture
 	tinyxml2::XMLElement *pNode = pParentNode->FirstChildElement(XML_TAG_NETWORK_ARCHITECTURE);
@@ -45,28 +45,28 @@ CProblem::CProblem(tinyxml2::XMLElement * pParentNode)
 	m_pOptimizerSetting = OptimizerSetting::getInstance(pNode);
 }
 
-CProblem::CProblem()
+Problem::Problem()
 {
 }
 
-CProblem::~CProblem()
+Problem::~Problem()
 {
 }
 
-void CProblem::destroy()
+void Problem::destroy()
 {
 	delete this;
 }
 
-CProblem * CProblem::getInstance(tinyxml2::XMLElement * pNode)
+Problem * Problem::getInstance(tinyxml2::XMLElement * pNode)
 {
 	if (!strcmp(pNode->Name(), XML_TAG_Problem))
-		return new CProblem(pNode);
+		return new Problem(pNode);
 
 	return nullptr;
 }
 
-CProblem * CProblem::loadFromFile(std::string fileName)
+Problem * Problem::loadFromFile(std::string fileName)
 {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(fileName.c_str());
@@ -76,14 +76,14 @@ CProblem * CProblem::loadFromFile(std::string fileName)
 		tinyxml2::XMLElement *pRoot = doc.RootElement();
 		if (pRoot)
 		{
-			return CProblem::getInstance(pRoot);
+			return Problem::getInstance(pRoot);
 		}
 	}
 
 	return nullptr;
 }
 
-CProblem * CProblem::loadFromString(std::string content)
+Problem * Problem::loadFromString(std::string content)
 {
 	tinyxml2::XMLDocument doc;
 
@@ -92,14 +92,14 @@ CProblem * CProblem::loadFromString(std::string content)
 		tinyxml2::XMLElement *pRoot = doc.RootElement();
 		if (pRoot)
 		{
-			return CProblem::getInstance(pRoot);
+			return Problem::getInstance(pRoot);
 		}
 	}
 
 	return nullptr;
 }
 
-INetwork * CProblem::createNetwork()
+INetwork * Problem::createNetwork()
 {
 	Network* result = new Network();
 	/*
